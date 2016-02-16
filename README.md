@@ -1,2 +1,2 @@
 # Chain
-Micro ORM for managing database data.
+Micro ORM for .Net
