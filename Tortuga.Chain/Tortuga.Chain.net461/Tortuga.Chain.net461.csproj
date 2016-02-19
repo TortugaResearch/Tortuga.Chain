@@ -21,6 +21,10 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\Tortuga.Chain.XML</DocumentationFile>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <CodeAnalysisRuleSet>..\..\..\Anchor\Tortuga.Anchor\Tortuga.Chain.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,20 +33,108 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\Tortuga.Chain.XML</DocumentationFile>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <CodeAnalysisRuleSet>..\..\..\Anchor\Tortuga.Anchor\Tortuga.Chain.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>Tortuga Chain.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Collections.Immutable, Version=1.1.37.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Collections.Immutable.1.1.37\lib\dotnet\System.Collections.Immutable.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="Tortuga.Anchor, Version=0.1.5893.4595, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tortuga.Anchor.0.1.5893.4595\lib\net461\Tortuga.Anchor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="DataSource`2.cs" />
+    <Compile Include="DbCommandBuilder`2.cs" />
+    <Compile Include="DeleteOptions.cs" />
+    <Compile Include="ExecutionToken`2.cs" />
+    <Compile Include="Formatters\BooleanListResult.cs" />
+    <Compile Include="Formatters\BooleanOrNullResult.cs" />
+    <Compile Include="Formatters\BooleanResult.cs" />
+    <Compile Include="Formatters\ByteArrayResult.cs" />
+    <Compile Include="Formatters\DataSetResult.cs" />
+    <Compile Include="Formatters\DataTableResult.cs" />
+    <Compile Include="Formatters\DateTimeListResult.cs" />
+    <Compile Include="Formatters\DateTimeOffsetListResult.cs" />
+    <Compile Include="Formatters\DateTimeOffsetOrNullResult.cs" />
+    <Compile Include="Formatters\DateTimeOffsetResult.cs" />
+    <Compile Include="Formatters\DateTimeOrNullResult.cs" />
+    <Compile Include="Formatters\DateTimeResult.cs" />
+    <Compile Include="Formatters\DecimalListResult.cs" />
+    <Compile Include="Formatters\DecimalOrNullResult.cs" />
+    <Compile Include="Formatters\DecimalResult.cs" />
+    <Compile Include="Formatters\DoubleListResult.cs" />
+    <Compile Include="Formatters\DoubleOrNullResult.cs" />
+    <Compile Include="Formatters\DoubleResult.cs" />
+    <Compile Include="Formatters\Formatter`2.cs" />
+    <Compile Include="Formatters\Formatter`3.cs" />
+    <Compile Include="Formatters\GuidListResult.cs" />
+    <Compile Include="Formatters\GuidOrNullResult.cs" />
+    <Compile Include="Formatters\GuidResult.cs" />
+    <Compile Include="Formatters\Int16ListResult.cs" />
+    <Compile Include="Formatters\Int16OrNullResult.cs" />
+    <Compile Include="Formatters\Int16Result.cs" />
+    <Compile Include="Formatters\Int32ListResult.cs" />
+    <Compile Include="Formatters\Int32OrNullResult.cs" />
+    <Compile Include="Formatters\Int32Result.cs" />
+    <Compile Include="Formatters\Int64ListResult.cs" />
+    <Compile Include="Formatters\Int64OrNullResult.cs" />
+    <Compile Include="Formatters\Int64Result.cs" />
+    <Compile Include="Formatters\ModelCollectionResult.cs" />
+    <Compile Include="Formatters\ModelResult.cs" />
+    <Compile Include="Formatters\NonQueryResult.cs" />
+    <Compile Include="Formatters\RowResult.cs" />
+    <Compile Include="Formatters\SingleColumnFormatterBase.cs" />
+    <Compile Include="Formatters\SingleListResult.cs" />
+    <Compile Include="Formatters\SingleOrNullResult.cs" />
+    <Compile Include="Formatters\SingleResult.cs" />
+    <Compile Include="Formatters\StringListResult.cs" />
+    <Compile Include="Formatters\StringResult.cs" />
+    <Compile Include="Formatters\TableResult.cs" />
+    <Compile Include="Formatters\TableSetResult.cs" />
+    <Compile Include="Formatters\TimeSpanListResult.cs" />
+    <Compile Include="Formatters\TimeSpanOrNullResult.cs" />
+    <Compile Include="Formatters\TimeSpanResult.cs" />
+    <Compile Include="InsertOrUpdateOptions.cs" />
+    <Compile Include="ListOptions.cs" />
+    <Compile Include="Metadata\ColumnMetadata.cs" />
+    <Compile Include="Metadata\DatabaseMetadataCache`1.cs" />
+    <Compile Include="Metadata\ParameterMetadata.cs" />
+    <Compile Include="Metadata\StoredProcedureMetadata`1.cs" />
+    <Compile Include="Metadata\TableFunctionMetadata`1.cs" />
+    <Compile Include="Metadata\TableViewMetadata`1.cs" />
+    <Compile Include="Metadata\Utilities.cs" />
+    <Compile Include="MissingObjectException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RowOptions.cs" />
+    <Compile Include="Table.cs" />
+    <Compile Include="TableSet.cs" />
+    <Compile Include="UpdateOptions.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="Tortuga Chain.snk" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

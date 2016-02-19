@@ -4,11 +4,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Tortuga.Chain.net461")]
+[assembly: AssemblyTitle("Tortuga.Chain.SQLite.net461")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Tortuga.Chain.net461")]
+[assembly: AssemblyProduct("Tortuga.Chain.SQLite.net461")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -19,7 +19,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("2c523692-a40b-4a7e-a95a-fbe373f263f7")]
+[assembly: Guid("e92091c6-46f6-423e-b5ce-7ddcd2840cce")]
 
 // Version information for an assembly consists of the following four values:
 //
