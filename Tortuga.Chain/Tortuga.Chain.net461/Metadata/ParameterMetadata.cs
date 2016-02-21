@@ -1,3 +1,4 @@
+using System.Data;
 namespace Tortuga.Chain.Metadata
 {
     /// <summary>
@@ -7,16 +8,21 @@ namespace Tortuga.Chain.Metadata
     {
         private readonly string m_ClrName;
         private readonly string m_SqlName;
+        private readonly SqlDbType? m_SqlDbType;
+        private readonly string m_TypeName;
 
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ParameterMetadata"/> class.
+        /// Initializes a new instance of the <see cref="ParameterMetadata" /> class.
         /// </summary>
         /// <param name="name">The name.</param>
-        public ParameterMetadata(string name)
+        /// <param name="typeName">Name of the type.</param>
+        public ParameterMetadata(string name, string typeName)
         {
+            m_TypeName = typeName;
             m_SqlName = name;
             m_ClrName = Utilities.ToClrName(name);
+            m_SqlDbType = Utilities.TypeNameToSqlDbType(typeName);
         }
 
         /// <summary>
@@ -33,6 +39,14 @@ namespace Tortuga.Chain.Metadata
         public string SqlName
         {
             get { return m_SqlName; }
+        }
+
+        /// <summary>
+        /// Gets the type used by SQL Server.
+        /// </summary>
+        public SqlDbType? SqlDbType
+        {
+            get { return m_SqlDbType; }
         }
     }
 }

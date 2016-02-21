@@ -1,4 +1,6 @@
 
+using System.Data;
+
 namespace Tortuga.Chain.Metadata
 {
     /// <summary>
@@ -11,6 +13,8 @@ namespace Tortuga.Chain.Metadata
         private readonly bool m_IsIdentity;
         private readonly bool m_IsPrimaryKey;
         private readonly string m_SqlName;
+        private readonly string m_TypeName;
+        private readonly SqlDbType? m_SqlDbType;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ColumnMetadata" /> class.
@@ -19,13 +23,16 @@ namespace Tortuga.Chain.Metadata
         /// <param name="isComputed">if set to <c>true</c> is a computed column.</param>
         /// <param name="isPrimaryKey">if set to <c>true</c> is a primary key.</param>
         /// <param name="isIdentity">if set to <c>true</c> [is identity].</param>
-        public ColumnMetadata(string name, bool isComputed, bool isPrimaryKey, bool isIdentity)
+        /// <param name="typeName">Name of the type.</param>
+        public ColumnMetadata(string name, bool isComputed, bool isPrimaryKey, bool isIdentity, string typeName)
         {
+            m_TypeName = typeName;
             m_SqlName = name;
             m_ClrName = Utilities.ToClrName(name);
             m_IsComputed = isComputed;
             m_IsPrimaryKey = isPrimaryKey;
             m_IsIdentity = isIdentity;
+            m_SqlDbType = Utilities.TypeNameToSqlDbType(typeName);
         }
 
         /// <summary>
@@ -86,6 +93,14 @@ namespace Tortuga.Chain.Metadata
         public string SqlVariableName
         {
             get { return "@" + m_SqlName; }
+        }
+
+        /// <summary>
+        /// Gets the type used by SQL databases.
+        /// </summary>
+        public SqlDbType? SqlDbType
+        {
+            get { return m_SqlDbType; }
         }
     }
 }

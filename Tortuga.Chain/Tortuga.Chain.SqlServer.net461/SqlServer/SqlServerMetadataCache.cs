@@ -83,25 +83,27 @@ namespace Tortuga.Chain.SqlServer
         {
             const string ColumnSql =
                 @"WITH    PKS
-                          AS ( SELECT   c.name ,
-                                        1 AS is_primary_key
-                               FROM     sys.indexes i
-                                        INNER JOIN sys.index_columns ic ON i.index_id = ic.index_id
-                                                                           AND ic.object_id = @ObjectId
-                                        INNER JOIN sys.columns c ON ic.column_id = c.column_id
-                                                                    AND c.object_id = @ObjectId
-                               WHERE    i.is_primary_key = 1
-                                        AND ic.is_included_column = 0
-                                        AND i.object_id = @ObjectId
-                             )
-                    SELECT  c.name AS ColumnName ,
-                            c.is_computed ,
-                            c.is_identity ,
-                            c.column_id ,
-                            Convert(bit, ISNULL(PKS.is_primary_key, 0)) AS is_primary_key
-                    FROM    sys.columns c
-                            LEFT JOIN PKS ON c.name = PKS.name
-                    WHERE   object_id = @ObjectId;";
+						  AS ( SELECT   c.name ,
+										1 AS is_primary_key
+							   FROM     sys.indexes i
+										INNER JOIN sys.index_columns ic ON i.index_id = ic.index_id
+																		   AND ic.object_id = @ObjectId
+										INNER JOIN sys.columns c ON ic.column_id = c.column_id
+																	AND c.object_id = @ObjectId
+							   WHERE    i.is_primary_key = 1
+										AND ic.is_included_column = 0
+										AND i.object_id = @ObjectId
+							 )
+					SELECT  c.name AS ColumnName ,
+							c.is_computed ,
+							c.is_identity ,
+							c.column_id ,
+							Convert(bit, ISNULL(PKS.is_primary_key, 0)) AS is_primary_key,
+							t.name as TypeName
+					FROM    sys.columns c
+							LEFT JOIN PKS ON c.name = PKS.name
+							LEFT JOIN sys.types t on c.system_type_id = t.user_type_id
+							WHERE   object_id = @ObjectId;";
 
             var columns = new List<ColumnMetadata>();
             using (var con = new SqlConnection(m_ConnectionBuilder.ConnectionString))
@@ -118,7 +120,8 @@ namespace Tortuga.Chain.SqlServer
                             var computed = reader.GetBoolean(reader.GetOrdinal("is_computed"));
                             var primary = reader.GetBoolean(reader.GetOrdinal("is_primary_key"));
                             var isIdentity = reader.GetBoolean(reader.GetOrdinal("is_identity"));
-                            columns.Add(new ColumnMetadata(name, computed, primary, isIdentity));
+                            var typeName = reader.GetString(reader.GetOrdinal("TypeName"));
+                            columns.Add(new ColumnMetadata(name, computed, primary, isIdentity, typeName));
                         }
                     }
                 }
@@ -130,12 +133,12 @@ namespace Tortuga.Chain.SqlServer
         {
             const string StoredProcedureSql =
                 @"SELECT 
-                s.name AS SchemaName,
-                o.name AS Name,
-                o.object_id AS ObjectId
-                FROM sys.objects o
-                INNER JOIN sys.schemas s ON o.schema_id = s.schema_id
-                WHERE o.type = 'TF' AND s.name = @Schema AND o.Name = @Name";
+				s.name AS SchemaName,
+				o.name AS Name,
+				o.object_id AS ObjectId
+				FROM sys.objects o
+				INNER JOIN sys.schemas s ON o.schema_id = s.schema_id
+				WHERE o.type = 'TF' AND s.name = @Schema AND o.Name = @Name";
 
 
             string actualSchema;
@@ -169,10 +172,12 @@ namespace Tortuga.Chain.SqlServer
         {
             const string ParameterSql =
                 @"SELECT 
-                p.name AS ParameterName
-                FROM sys.parameters p 
-                WHERE p.object_id = @ObjectId
-                ORDER BY parameter_id";
+				p.name AS ParameterName,
+				t.name as TypeName
+				FROM sys.parameters p 
+				LEFT JOIN sys.types t ON p.system_type_id = t.user_type_id
+				WHERE p.object_id = @ObjectId
+				ORDER BY parameter_id";
 
             var parameters = new List<ParameterMetadata>();
 
@@ -188,7 +193,8 @@ namespace Tortuga.Chain.SqlServer
                         while (reader.Read())
                         {
                             var name = reader.GetString(reader.GetOrdinal("ParameterName"));
-                            parameters.Add(new ParameterMetadata(name));
+                            var typeName = reader.GetString(reader.GetOrdinal("TypeName"));
+                            parameters.Add(new ParameterMetadata(name, typeName));
                         }
                     }
                 }
@@ -200,12 +206,12 @@ namespace Tortuga.Chain.SqlServer
         {
             const string StoredProcedureSql =
                 @"SELECT 
-                s.name AS SchemaName,
-                sp.name AS Name,
-                sp.object_id AS ObjectId
-                FROM SYS.procedures sp
-                INNER JOIN sys.schemas s ON sp.schema_id = s.schema_id
-                WHERE s.name = @Schema AND sp.Name = @Name";
+				s.name AS SchemaName,
+				sp.name AS Name,
+				sp.object_id AS ObjectId
+				FROM SYS.procedures sp
+				INNER JOIN sys.schemas s ON sp.schema_id = s.schema_id
+				WHERE s.name = @Schema AND sp.Name = @Name";
 
 
             string actualSchema;
@@ -237,24 +243,24 @@ namespace Tortuga.Chain.SqlServer
         {
             const string TableSql =
                 @"SELECT 
-                s.name AS SchemaName,
-                t.name AS Name,
-                t.object_id AS ObjectId,
-                CONVERT(BIT, 1) AS IsTable 
-                FROM SYS.tables t
-                INNER JOIN sys.schemas s ON t.schema_id = s.schema_id
-                WHERE s.name = @Schema AND t.Name = @Name
+				s.name AS SchemaName,
+				t.name AS Name,
+				t.object_id AS ObjectId,
+				CONVERT(BIT, 1) AS IsTable 
+				FROM SYS.tables t
+				INNER JOIN sys.schemas s ON t.schema_id = s.schema_id
+				WHERE s.name = @Schema AND t.Name = @Name
 
-                UNION ALL
+				UNION ALL
 
-                SELECT 
-                s.name AS SchemaName,
-                t.name AS Name,
-                t.object_id AS ObjectId,
-                CONVERT(BIT, 0) AS IsTable 
-                FROM SYS.views t
-                INNER JOIN sys.schemas s ON t.schema_id = s.schema_id
-                WHERE s.name = @Schema AND t.Name = @Name";
+				SELECT 
+				s.name AS SchemaName,
+				t.name AS Name,
+				t.object_id AS ObjectId,
+				CONVERT(BIT, 0) AS IsTable 
+				FROM SYS.views t
+				INNER JOIN sys.schemas s ON t.schema_id = s.schema_id
+				WHERE s.name = @Schema AND t.Name = @Name";
 
 
             string actualSchema;
