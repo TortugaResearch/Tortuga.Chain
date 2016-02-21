@@ -13,11 +13,11 @@ namespace Tortuga.Chain.Formatters
     /// </summary>
     /// <typeparam name="TCommandType">The type of the t command type.</typeparam>
     /// <typeparam name="TParameterType">The type of the t parameter type.</typeparam>
-    /// <typeparam name="TModel">The type of the model.</typeparam>
+    /// <typeparam name="TObject">The type of the object returned.</typeparam>
     /// <seealso cref="Formatters.Formatter{TCommandType, TParameterType, TModel}" />
-    public class ModelResult<TCommandType, TParameterType, TModel> : Formatter<TCommandType, TParameterType, TModel>
+    public class ObjectResult<TCommandType, TParameterType, TObject> : Formatter<TCommandType, TParameterType, TObject>
         where TCommandType : DbCommand
-        where TModel : class, new()
+        where TObject : class, new()
         where TParameterType : DbParameter
     {
 
@@ -27,7 +27,7 @@ namespace Tortuga.Chain.Formatters
         /// </summary>
         /// <param name="commandBuilder">The command builder.</param>
         /// <param name="rowOptions">The row options.</param>
-        public ModelResult(DbCommandBuilder<TCommandType, TParameterType> commandBuilder, RowOptions rowOptions)
+        public ObjectResult(DbCommandBuilder<TCommandType, TParameterType> commandBuilder, RowOptions rowOptions)
             : base(commandBuilder)
         {
             m_RowOptions = rowOptions;
@@ -37,7 +37,7 @@ namespace Tortuga.Chain.Formatters
         /// Execute the operation synchronously.
         /// </summary>
         /// <returns></returns>
-        public override TModel Execute(object state = null)
+        public override TObject Execute(object state = null)
         {
             Table table = null;
             var executionToken = Prepare();
@@ -74,7 +74,7 @@ namespace Tortuga.Chain.Formatters
                 ex.Data["RowCount"] = table.Rows.Count;
                 throw ex;
             }
-            return table.ToModels<TModel>().First();
+            return table.ToModels<TObject>().First();
         }
 
 
@@ -85,7 +85,7 @@ namespace Tortuga.Chain.Formatters
         /// <param name="state">User defined state, usually used for logging.</param>
         /// <returns></returns>
         /// <exception cref="DataException">Unexpected null result</exception>
-        public override async Task<TModel> ExecuteAsync(CancellationToken cancellationToken, object state = null)
+        public override async Task<TObject> ExecuteAsync(CancellationToken cancellationToken, object state = null)
         {
             Table table = null;
 
@@ -124,7 +124,7 @@ namespace Tortuga.Chain.Formatters
                 ex.Data["RowCount"] = table.Rows.Count;
                 throw ex;
             }
-            return table.ToModels<TModel>().First();
+            return table.ToModels<TObject>().First();
         }
 
         /// <summary>
@@ -133,7 +133,7 @@ namespace Tortuga.Chain.Formatters
         /// <returns></returns>
         public override IReadOnlyList<string> DesiredColumns()
         {
-            return MetadataCache.GetMetadata(typeof(TModel)).ColumnsFor;
+            return MetadataCache.GetMetadata(typeof(TObject)).ColumnsFor;
         }
 
     }

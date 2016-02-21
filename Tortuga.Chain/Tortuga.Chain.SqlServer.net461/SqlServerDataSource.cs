@@ -50,7 +50,6 @@ namespace Tortuga.Chain
         public SqlServerDataSource(string connectionString)
             : this(null, connectionString)
         {
-
         }
 
         /// <summary>
@@ -237,8 +236,6 @@ namespace Tortuga.Chain
                 throw new ArgumentNullException("executionToken", "executionToken is null.");
             if (implementation == null)
                 throw new ArgumentNullException("implementation", "implementation is null.");
-            if (state == null)
-                throw new ArgumentNullException("state", "state is null.");
 
             var startTime = DateTimeOffset.Now;
             //OnOperationStarted(operation, startTime, state, executionToken);

@@ -41,7 +41,7 @@ namespace Tortuga.Chain.SqlServer
         public override ExecutionToken<SqlCommand, SqlParameter> Prepare(Formatter<SqlCommand, SqlParameter> formatter)
         {
             var parameters = new List<SqlParameter>();
-            var expectedParameters = DataSource.DatabaseMetadata.GetStoredProcedure(m_ProcedureName).Parameters.ToDictionary(p => p.ClrName);
+            var expectedParameters = DataSource.DatabaseMetadata.GetStoredProcedure(m_ProcedureName).Parameters.ToDictionary(p => p.ClrName, StringComparer.InvariantCultureIgnoreCase);
 
 
             if (m_ArgumentValue is IEnumerable<SqlParameter>)
@@ -56,7 +56,7 @@ namespace Tortuga.Chain.SqlServer
                     Metadata.ParameterMetadata paramInfo;
                     if (expectedParameters.TryGetValue(item.Key, out paramInfo))
                     {
-                        var newSqlParameter = new SqlParameter(item.Key, item.Value ?? DBNull.Value);
+                        var newSqlParameter = new SqlParameter("@" + item.Key, item.Value ?? DBNull.Value);
                         if (paramInfo.SqlDbType.HasValue)
                             newSqlParameter.SqlDbType = paramInfo.SqlDbType.Value;
                         parameters.Add(newSqlParameter);
@@ -70,7 +70,7 @@ namespace Tortuga.Chain.SqlServer
                     Metadata.ParameterMetadata paramInfo;
                     if (expectedParameters.TryGetValue(property.MappedColumnName, out paramInfo))
                     {
-                        var newSqlParameter = new SqlParameter(property.MappedColumnName, property.InvokeGet(m_ArgumentValue) ?? DBNull.Value);
+                        var newSqlParameter = new SqlParameter("@" + property.MappedColumnName, property.InvokeGet(m_ArgumentValue) ?? DBNull.Value);
                         if (paramInfo.SqlDbType.HasValue)
                             newSqlParameter.SqlDbType = paramInfo.SqlDbType.Value;
                         parameters.Add(newSqlParameter);

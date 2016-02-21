@@ -101,8 +101,8 @@
     <Compile Include="Formatters\Int64ListResult.cs" />
     <Compile Include="Formatters\Int64OrNullResult.cs" />
     <Compile Include="Formatters\Int64Result.cs" />
-    <Compile Include="Formatters\ModelCollectionResult.cs" />
-    <Compile Include="Formatters\ModelResult.cs" />
+    <Compile Include="Formatters\CollectionResult`4.cs" />
+    <Compile Include="Formatters\ObjectResult`3.cs" />
     <Compile Include="Formatters\NonQueryResult.cs" />
     <Compile Include="Formatters\RowResult.cs" />
     <Compile Include="Formatters\SingleColumnFormatterBase.cs" />

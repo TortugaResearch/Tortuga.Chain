@@ -12,21 +12,21 @@ namespace Tortuga.Chain.Formatters
     /// </summary>
     /// <typeparam name="TCommandType">The type of the t command type.</typeparam>
     /// <typeparam name="TParameterType">The type of the t parameter type.</typeparam>
-    /// <typeparam name="TModel">The type of the model.</typeparam>
+    /// <typeparam name="TObject">The type of the object returned.</typeparam>
     /// <typeparam name="TCollection">The type of the collection.</typeparam>
     /// <seealso cref="Formatters.Formatter{TCommandType, TParameterType, TCollection}" />
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1005:AvoidExcessiveParametersOnGenericTypes")]
-    public class ModelCollectionResult<TCommandType, TParameterType, TModel, TCollection> : Formatter<TCommandType, TParameterType, TCollection>
+    public class CollectionResult<TCommandType, TParameterType, TObject, TCollection> : Formatter<TCommandType, TParameterType, TCollection>
         where TCommandType : DbCommand
-        where TModel : class, new()
-        where TCollection : ICollection<TModel>, new()
+        where TObject : class, new()
+        where TCollection : ICollection<TObject>, new()
         where TParameterType : DbParameter
     {
 
         /// <summary>
         /// </summary>
         /// <param name="commandBuilder">The associated operation.</param>
-        public ModelCollectionResult(DbCommandBuilder<TCommandType, TParameterType> commandBuilder)
+        public CollectionResult(DbCommandBuilder<TCommandType, TParameterType> commandBuilder)
             : base(commandBuilder)
         {
         }
@@ -49,7 +49,7 @@ namespace Tortuga.Chain.Formatters
                 }
             }, state);
 
-            foreach (var item in table.ToModels<TModel>())
+            foreach (var item in table.ToModels<TObject>())
                 result.Add(item);
             return result;
         }
@@ -76,7 +76,7 @@ namespace Tortuga.Chain.Formatters
                 }
             }, cancellationToken, state).ConfigureAwait(false);
 
-            foreach (var item in table.ToModels<TModel>())
+            foreach (var item in table.ToModels<TObject>())
                 result.Add(item);
             return result;
         }
@@ -87,7 +87,7 @@ namespace Tortuga.Chain.Formatters
         /// <returns></returns>
         public override IReadOnlyList<string> DesiredColumns()
         {
-            return MetadataCache.GetMetadata(typeof(TModel)).ColumnsFor;
+            return MetadataCache.GetMetadata(typeof(TObject)).ColumnsFor;
         }
     }
 }

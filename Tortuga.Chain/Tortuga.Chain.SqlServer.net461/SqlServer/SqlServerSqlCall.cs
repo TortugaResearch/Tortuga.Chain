@@ -47,10 +47,10 @@ namespace Tortuga.Chain.SqlServer
                     parameters.Add(param);
             else if (m_ArgumentValue is IReadOnlyDictionary<string, object>)
                 foreach (var item in (IReadOnlyDictionary<string, object>)m_ArgumentValue)
-                    parameters.Add(new SqlParameter(item.Key, item.Value ?? DBNull.Value));
+                    parameters.Add(new SqlParameter("@" + item.Key, item.Value ?? DBNull.Value));
             else if (m_ArgumentValue != null)
                 foreach (var property in MetadataCache.GetMetadata(m_ArgumentValue.GetType()).Properties)
-                    parameters.Add(new SqlParameter(property.MappedColumnName, property.InvokeGet(m_ArgumentValue) ?? DBNull.Value));
+                    parameters.Add(new SqlParameter("@" + property.MappedColumnName, property.InvokeGet(m_ArgumentValue) ?? DBNull.Value));
 
             return new ExecutionToken<SqlCommand, SqlParameter>(DataSource, "Raw SQL call", m_SqlStatement, parameters, CommandType.Text);
         }

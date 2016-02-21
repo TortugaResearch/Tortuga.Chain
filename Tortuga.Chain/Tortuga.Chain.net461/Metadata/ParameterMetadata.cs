@@ -48,5 +48,13 @@ namespace Tortuga.Chain.Metadata
         {
             get { return m_SqlDbType; }
         }
+
+        /// <summary>
+        /// Gets the name of the type.
+        /// </summary>
+        public string TypeName
+        {
+            get { return m_TypeName; }
+        }
     }
 }

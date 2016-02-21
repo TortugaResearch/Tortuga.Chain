@@ -21,6 +21,7 @@ namespace Tortuga.Chain.Metadata
             return result;
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
         public static SqlDbType? TypeNameToSqlDbType(string typeName)
         {
             switch (typeName)
