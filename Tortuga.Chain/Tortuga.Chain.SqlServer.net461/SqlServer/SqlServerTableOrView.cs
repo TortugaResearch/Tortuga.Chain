@@ -2,7 +2,7 @@
 namespace Tortuga.Chain.SqlServer
 {
     /// <summary>
-    /// Class SqlServerTableOrView.
+    /// SqlServerTableOrView supports queries against tables and views.
     /// </summary>
     public class SqlServerTableOrView
     {

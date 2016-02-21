@@ -20,7 +20,7 @@ namespace Tortuga.Chain.SqlServer
         /// <returns></returns>
         public SqlServerProcedureCall Procedure(SqlServerObjectName procedureName)
         {
-            return new SqlServerProcedureCall(this, procedureName);
+            return new SqlServerProcedureCall(this, procedureName, null);
         }
 
 
@@ -116,22 +116,16 @@ namespace Tortuga.Chain.SqlServer
         /// This is used to query a table value function.
         /// </summary>
         /// <param name="tableFunctionName">Name of the table or view.</param>
-        /// <param name="whereClause">The where clause. Do not prefix this clause with "WHERE".</param>
-        /// <param name="argumentValue">Optional argument value. Every property in the argument value must have a matching parameter in the WHERE clause</param>
+        /// <param name="whereClause">An optional where clause. Do not prefix this clause with "WHERE".</param>
+        /// <param name="argumentValue">An optional argument value.</param>
         /// <returns></returns>
-        /// <exception cref="System.ArgumentException">
-        /// tableName is empty.;tableName
-        /// or
-        /// Table or view named + tableName +  could not be found. Check to see if the user has permissions to execute this procedure.
-        /// </exception>
-        /// <exception cref="System.ArgumentNullException">argumentValue;argumentValue is null.</exception>
-        public SqlServerTableFunction FromTableFunction(SqlServerObjectName tableFunctionName, string whereClause, object argumentValue)
+        public SqlServerTableFunction FromFunction(SqlServerObjectName tableFunctionName, string whereClause, object argumentValue)
         {
             return new SqlServerTableFunction(this, tableFunctionName, whereClause, argumentValue);
         }
 
         /// <summary>
-        /// Inserts an object model into the specified table.
+        /// Inserts an object into the specified table.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="argumentValue">The argument value.</param>
@@ -143,7 +137,7 @@ namespace Tortuga.Chain.SqlServer
         }
 
         /// <summary>
-        /// Updates an object model in the specified table.
+        /// Updates an object in the specified table.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="argumentValue">The argument value.</param>

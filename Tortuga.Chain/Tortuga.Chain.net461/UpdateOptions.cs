@@ -25,5 +25,6 @@ namespace Tortuga.Chain
         /// </summary>
         /// <remarks>This is generally used for heap-style tables, though technically heap tables may have primary, non-clustered keys.</remarks>
         UseKeyAttribute = 2
+
     }
 }

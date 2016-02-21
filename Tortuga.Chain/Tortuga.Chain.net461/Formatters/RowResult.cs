@@ -15,7 +15,6 @@ namespace Tortuga.Chain.Formatters
         where TParameterType : DbParameter
     {
         readonly RowOptions m_RowOptions;
-        readonly TableResult<TCommandType, TParameterType> m_Formatter; //rewrite this to skip the table result step
 
         /// <summary>
         /// </summary>
@@ -25,7 +24,6 @@ namespace Tortuga.Chain.Formatters
             : base(commandBuilder)
         {
             m_RowOptions = rowOptions;
-            m_Formatter = new TableResult<TCommandType, TParameterType>(commandBuilder);
         }
 
         /// <summary>
