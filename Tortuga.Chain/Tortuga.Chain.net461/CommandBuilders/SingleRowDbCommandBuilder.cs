@@ -22,48 +22,9 @@ namespace Tortuga.Chain.CommandBuilders
         }
 
         /// <summary>
-        /// Indicates the results should be formatted as a nullable Decimal.
+        /// Indicates the results should be formatted as a Boolean.
         /// </summary>
-        public DecimalOrNullResult<TCommandType, TParameterType> AsDecimalOrNull() { return new DecimalOrNullResult<TCommandType, TParameterType>(this); }
-
-        /// <summary>
-        /// Indicates the results should be formatted as a Decimal.
-        /// </summary>
-        public DecimalResult<TCommandType, TParameterType> AsDecimal() { return new DecimalResult<TCommandType, TParameterType>(this); }
-
-        /// <summary>
-        /// Indicates the results should be formatted as a byte array.
-        /// </summary>
-        public ByteArrayResult<TCommandType, TParameterType> AsByteArray() { return new ByteArrayResult<TCommandType, TParameterType>(this); }
-
-
-
-        /// <summary>
-        /// Indicates the results should be formatted as a nullable TimeSpan.
-        /// </summary>
-        public TimeSpanOrNullResult<TCommandType, TParameterType> AsTimeSpanOrNull() { return new TimeSpanOrNullResult<TCommandType, TParameterType>(this); }
-
-        /// <summary>
-        /// Indicates the results should be formatted as a TimeSpan.
-        /// </summary>
-        public TimeSpanResult<TCommandType, TParameterType> AsTimeSpan() { return new TimeSpanResult<TCommandType, TParameterType>(this); }
-
-
-        /// <summary>
-        /// Indicates the results should be formatted as a nullable Guid.
-        /// </summary>
-        public GuidOrNullResult<TCommandType, TParameterType> AsGuidOrNull() { return new GuidOrNullResult<TCommandType, TParameterType>(this); }
-
-        /// <summary>
-        /// Indicates the results should be formatted as a Guid.
-        /// </summary>
-        public GuidResult<TCommandType, TParameterType> AsGuid() { return new GuidResult<TCommandType, TParameterType>(this); }
-
-        /// <summary>
-        /// Indicates the results should be formatted as a Row.
-        /// </summary>
-        public RowResult<TCommandType, TParameterType> AsRow(RowOptions rowOptions = RowOptions.None) { return new RowResult<TCommandType, TParameterType>(this, rowOptions); }
-
+        public BooleanResult<TCommandType, TParameterType> AsBoolean() { return new BooleanResult<TCommandType, TParameterType>(this); }
 
         /// <summary>
         /// Indicates the results should be formatted as a nullable Boolean.
@@ -71,34 +32,14 @@ namespace Tortuga.Chain.CommandBuilders
         public BooleanOrNullResult<TCommandType, TParameterType> AsBooleanOrNull() { return new BooleanOrNullResult<TCommandType, TParameterType>(this); }
 
         /// <summary>
-        /// Indicates the results should be formatted as a Boolean.
+        /// Indicates the results should be formatted as a byte array.
         /// </summary>
-        public BooleanResult<TCommandType, TParameterType> AsBoolean() { return new BooleanResult<TCommandType, TParameterType>(this); }
-
+        public ByteArrayResult<TCommandType, TParameterType> AsByteArray() { return new ByteArrayResult<TCommandType, TParameterType>(this); }
 
         /// <summary>
-        /// Indicates the results should be formatted as a nullable Single.
+        /// Indicates the results should be formatted as a DateTime.
         /// </summary>
-        public SingleOrNullResult<TCommandType, TParameterType> AsSingleOrNull() { return new SingleOrNullResult<TCommandType, TParameterType>(this); }
-
-        /// <summary>
-        /// Indicates the results should be formatted as a Single.
-        /// </summary>
-        public SingleResult<TCommandType, TParameterType> AsSingle() { return new SingleResult<TCommandType, TParameterType>(this); }
-
-
-        /// <summary>
-        /// Indicates the results should be formatted as a nullable string.
-        /// </summary>
-        /// <returns></returns>
-        public StringResult<TCommandType, TParameterType> AsString() { return new StringResult<TCommandType, TParameterType>(this); }
-
-
-
-        /// <summary>
-        /// Indicates the results should be formatted as a nullable DateTimeOffset.
-        /// </summary>
-        public DateTimeOffsetOrNullResult<TCommandType, TParameterType> AsDateTimeOffsetOrNull() { return new DateTimeOffsetOrNullResult<TCommandType, TParameterType>(this); }
+        public DateTimeResult<TCommandType, TParameterType> AsDateTime() { return new DateTimeResult<TCommandType, TParameterType>(this); }
 
         /// <summary>
         /// Indicates the results should be formatted as a DateTimeOffset.
@@ -106,15 +47,28 @@ namespace Tortuga.Chain.CommandBuilders
         public DateTimeOffsetResult<TCommandType, TParameterType> AsDateTimeOffset() { return new DateTimeOffsetResult<TCommandType, TParameterType>(this); }
 
         /// <summary>
+        /// Indicates the results should be formatted as a nullable DateTimeOffset.
+        /// </summary>
+        public DateTimeOffsetOrNullResult<TCommandType, TParameterType> AsDateTimeOffsetOrNull() { return new DateTimeOffsetOrNullResult<TCommandType, TParameterType>(this); }
+
+        /// <summary>
         /// Indicates the results should be formatted as a nullable DateTime.
         /// </summary>
         public DateTimeOrNullResult<TCommandType, TParameterType> AsDateTimeOrNull() { return new DateTimeOrNullResult<TCommandType, TParameterType>(this); }
 
         /// <summary>
-        /// Indicates the results should be formatted as a DateTime.
+        /// Indicates the results should be formatted as a Decimal.
         /// </summary>
-        public DateTimeResult<TCommandType, TParameterType> AsDateTime() { return new DateTimeResult<TCommandType, TParameterType>(this); }
+        public DecimalResult<TCommandType, TParameterType> AsDecimal() { return new DecimalResult<TCommandType, TParameterType>(this); }
 
+        /// <summary>
+        /// Indicates the results should be formatted as a nullable Decimal.
+        /// </summary>
+        public DecimalOrNullResult<TCommandType, TParameterType> AsDecimalOrNull() { return new DecimalOrNullResult<TCommandType, TParameterType>(this); }
+        /// <summary>
+        /// Indicates the results should be formatted as a Double.
+        /// </summary>
+        public DoubleResult<TCommandType, TParameterType> AsDouble() { return new DoubleResult<TCommandType, TParameterType>(this); }
 
         /// <summary>
         /// Indicates the results should be formatted as a nullable Double.
@@ -122,14 +76,14 @@ namespace Tortuga.Chain.CommandBuilders
         public DoubleOrNullResult<TCommandType, TParameterType> AsDoubleOrNull() { return new DoubleOrNullResult<TCommandType, TParameterType>(this); }
 
         /// <summary>
-        /// Indicates the results should be formatted as a Double.
+        /// Indicates the results should be formatted as a Guid.
         /// </summary>
-        public DoubleResult<TCommandType, TParameterType> AsDouble() { return new DoubleResult<TCommandType, TParameterType>(this); }
+        public GuidResult<TCommandType, TParameterType> AsGuid() { return new GuidResult<TCommandType, TParameterType>(this); }
 
         /// <summary>
-        /// Indicates the results should be formatted as a nullable Int16.
+        /// Indicates the results should be formatted as a nullable Guid.
         /// </summary>
-        public Int16OrNullResult<TCommandType, TParameterType> AsInt16OrNull() { return new Int16OrNullResult<TCommandType, TParameterType>(this); }
+        public GuidOrNullResult<TCommandType, TParameterType> AsGuidOrNull() { return new GuidOrNullResult<TCommandType, TParameterType>(this); }
 
         /// <summary>
         /// Indicates the results should be formatted as a Int16.
@@ -137,9 +91,9 @@ namespace Tortuga.Chain.CommandBuilders
         public Int16Result<TCommandType, TParameterType> AsInt16() { return new Int16Result<TCommandType, TParameterType>(this); }
 
         /// <summary>
-        /// Indicates the results should be formatted as a nullable Int32.
+        /// Indicates the results should be formatted as a nullable Int16.
         /// </summary>
-        public Int32OrNullResult<TCommandType, TParameterType> AsInt32OrNull() { return new Int32OrNullResult<TCommandType, TParameterType>(this); }
+        public Int16OrNullResult<TCommandType, TParameterType> AsInt16OrNull() { return new Int16OrNullResult<TCommandType, TParameterType>(this); }
 
         /// <summary>
         /// Indicates the results should be formatted as a Int32.
@@ -147,14 +101,19 @@ namespace Tortuga.Chain.CommandBuilders
         public Int32Result<TCommandType, TParameterType> AsInt32() { return new Int32Result<TCommandType, TParameterType>(this); }
 
         /// <summary>
-        /// Indicates the results should be formatted as a nullable Int64.
+        /// Indicates the results should be formatted as a nullable Int32.
         /// </summary>
-        public Int64OrNullResult<TCommandType, TParameterType> AsInt64OrNull() { return new Int64OrNullResult<TCommandType, TParameterType>(this); }
+        public Int32OrNullResult<TCommandType, TParameterType> AsInt32OrNull() { return new Int32OrNullResult<TCommandType, TParameterType>(this); }
 
         /// <summary>
         /// Indicates the results should be formatted as a Int64.
         /// </summary>
         public Int64Result<TCommandType, TParameterType> AsInt64() { return new Int64Result<TCommandType, TParameterType>(this); }
+
+        /// <summary>
+        /// Indicates the results should be formatted as a nullable Int64.
+        /// </summary>
+        public Int64OrNullResult<TCommandType, TParameterType> AsInt64OrNull() { return new Int64OrNullResult<TCommandType, TParameterType>(this); }
 
         /// <summary>
         /// Formats the result as an instance of the indicated type
@@ -168,5 +127,35 @@ namespace Tortuga.Chain.CommandBuilders
             return new ObjectResult<TCommandType, TParameterType, TObject>(this, rowOptions);
         }
 
+        /// <summary>
+        /// Indicates the results should be formatted as a Row.
+        /// </summary>
+        public RowResult<TCommandType, TParameterType> AsRow(RowOptions rowOptions = RowOptions.None) { return new RowResult<TCommandType, TParameterType>(this, rowOptions); }
+
+        /// <summary>
+        /// Indicates the results should be formatted as a Single.
+        /// </summary>
+        public SingleResult<TCommandType, TParameterType> AsSingle() { return new SingleResult<TCommandType, TParameterType>(this); }
+
+        /// <summary>
+        /// Indicates the results should be formatted as a nullable Single.
+        /// </summary>
+        public SingleOrNullResult<TCommandType, TParameterType> AsSingleOrNull() { return new SingleOrNullResult<TCommandType, TParameterType>(this); }
+
+        /// <summary>
+        /// Indicates the results should be formatted as a nullable string.
+        /// </summary>
+        /// <returns></returns>
+        public StringResult<TCommandType, TParameterType> AsString() { return new StringResult<TCommandType, TParameterType>(this); }
+
+        /// <summary>
+        /// Indicates the results should be formatted as a TimeSpan.
+        /// </summary>
+        public TimeSpanResult<TCommandType, TParameterType> AsTimeSpan() { return new TimeSpanResult<TCommandType, TParameterType>(this); }
+
+        /// <summary>
+        /// Indicates the results should be formatted as a nullable TimeSpan.
+        /// </summary>
+        public TimeSpanOrNullResult<TCommandType, TParameterType> AsTimeSpanOrNull() { return new TimeSpanOrNullResult<TCommandType, TParameterType>(this); }
     }
 }

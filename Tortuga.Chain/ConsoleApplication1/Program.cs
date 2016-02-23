@@ -20,19 +20,37 @@ namespace ConsoleApplication1
             foreach (var item in cards1.Take(10))
                 Console.WriteLine(item.CardNumber);
 
-            var code = new Currency();
-            code.CurrencyCode = (DateTime.Now.Ticks % 1000).ToString();
-            code.CurrencyName = "Test " + code.CurrencyCode;
+            {
+                var code = new Currency();
+                code.CurrencyCode = (DateTime.Now.Ticks % 1000).ToString();
+                code.CurrencyName = "Test " + code.CurrencyCode;
 
-            dataSource.StrictMode = true;
+                dataSource.StrictMode = true;
 
-            var newCode = dataSource.Insert(SalesCurrency, code).AsString().Execute();
+                var newCode = dataSource.Insert(SalesCurrency, code).AsString().Execute();
 
-            code.CurrencyName += " modified";
+                code.CurrencyName += " modified";
 
-            dataSource.Update(SalesCurrency, code).Execute();
+                dataSource.Update(SalesCurrency, code).Execute();
 
-            dataSource.Delete(SalesCurrency, code).Execute();
+                dataSource.Delete(SalesCurrency, code).Execute();
+            }
+
+            {
+                var code = new Currency();
+                code.CurrencyCode = (DateTime.Now.Ticks % 1000).ToString();
+                code.CurrencyName = "Test " + code.CurrencyCode;
+
+                dataSource.StrictMode = true;
+
+                var newCode = dataSource.InsertOrUpdate(SalesCurrency, code).AsString().Execute();
+
+                code.CurrencyName += " modified";
+
+                dataSource.InsertOrUpdate(SalesCurrency, code).Execute();
+
+                dataSource.Delete(SalesCurrency, code).Execute();
+            }
 
         }
     }

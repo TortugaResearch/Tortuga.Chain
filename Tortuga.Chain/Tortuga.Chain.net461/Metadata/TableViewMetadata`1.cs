@@ -145,11 +145,15 @@ namespace Tortuga.Chain.Metadata
                 result = result.Where(c => !c.Property.IsKey).ToImmutableList();
             }
 
+            if (filter.HasFlag(GetPropertiesFilter.UpdatableOnly))
+            {
+                result = result.Where(c => !c.Column.IsComputed && !c.Column.IsIdentity).ToImmutableList();
+            }
+
             if (filter.HasFlag(GetPropertiesFilter.ThrowOnNoMatch) && result.Count == 0)
             {
                 throw new DataException($"None of the properties for {type.Name} match the {filterText} columns for {Name}");
             }
-
 
             return result;
         }

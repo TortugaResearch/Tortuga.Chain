@@ -41,14 +41,14 @@ namespace Tortuga.Chain.SqlServer
             var output = OutputClause(formatter, m_Options.HasFlag(UpdateOptions.ReturnOldValues));
             var where = WhereClause(parameters, m_Options.HasFlag(UpdateOptions.UseKeyAttribute));
 
-            var sql = $"UPDATE {TableName.ToQuotedString()} {set} {output} {where}";
+            var sql = $"UPDATE {TableName.ToQuotedString()} {set} {output} WHERE {where}";
 
             return new ExecutionToken<SqlCommand, SqlParameter>(DataSource, "Update " + TableName, sql, parameters);
         }
 
         private string SetClause(List<SqlParameter> parameters)
         {
-            var filter = GetPropertiesFilter.ThrowOnNoMatch;
+            var filter = GetPropertiesFilter.ThrowOnNoMatch | GetPropertiesFilter.UpdatableOnly;
 
             if (m_Options.HasFlag(UpdateOptions.UseKeyAttribute))
                 filter = filter | GetPropertiesFilter.ObjectDefinedNonKey;

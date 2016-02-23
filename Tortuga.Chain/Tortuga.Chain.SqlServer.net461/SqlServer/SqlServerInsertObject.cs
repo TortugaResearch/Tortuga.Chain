@@ -43,7 +43,7 @@ namespace Tortuga.Chain.SqlServer
 
         private void ColumnsAndValuesClause(out string columns, out string values, List<SqlParameter> parameters)
         {
-            var availableColumns = Metadata.GetPropertiesFor(ArgumentValue.GetType(), GetPropertiesFilter.ThrowOnNoMatch).Where(c => !c.Column.IsIdentity && !c.Column.IsComputed).ToList();
+            var availableColumns = Metadata.GetPropertiesFor(ArgumentValue.GetType(), GetPropertiesFilter.ThrowOnNoMatch | GetPropertiesFilter.UpdatableOnly).Where(c => !c.Column.IsIdentity && !c.Column.IsComputed).ToList();
 
             columns = "(" + string.Join(", ", availableColumns.Select(c => c.Column.QuotedSqlName)) + ")";
             values = "VALUES (" + string.Join(", ", availableColumns.Select(c => c.Column.SqlVariableName)) + ")";

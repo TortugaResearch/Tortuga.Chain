@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Formatters;
 using Tortuga.Chain.Metadata;
-using Tortuga.Chain.CommandBuilders;
 
 namespace Tortuga.Chain.SqlServer
 {
@@ -105,7 +105,7 @@ namespace Tortuga.Chain.SqlServer
 
             var columns = Metadata.GetPropertiesFor(ArgumentValue.GetType(), filter);
 
-            var result = "WHERE " + string.Join(" AND ", columns.Select(c => $"{c.Column.QuotedSqlName} = {c.Column.SqlVariableName}"));
+            var result = string.Join(" AND ", columns.Select(c => $"{c.Column.QuotedSqlName} = {c.Column.SqlVariableName}"));
 
             foreach (var item in columns)
             {

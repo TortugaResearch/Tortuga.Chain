@@ -35,7 +35,7 @@ namespace Tortuga.Chain.SqlServer
 
             var where = WhereClause(parameters, m_Options.HasFlag(DeleteOptions.UseKeyAttribute));
             var output = OutputClause(formatter, true);
-            var sql = $"DELETE FROM {TableName.ToQuotedString()} {output} {where}";
+            var sql = $"DELETE FROM {TableName.ToQuotedString()} {output} WHERE {where}";
 
             return new ExecutionToken<SqlCommand, SqlParameter>(DataSource, "Delete from " + TableName, sql, parameters);
         }

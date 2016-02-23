@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
-using Tortuga.Chain.Formatters;
 using Tortuga.Chain.DataSources;
+using Tortuga.Chain.Formatters;
 
 namespace Tortuga.Chain.CommandBuilders
 {
@@ -26,63 +26,11 @@ namespace Tortuga.Chain.CommandBuilders
 
 
         /// <summary>
-        /// Indicates the results should be formatted as a list of numbers.
-        /// </summary>
-        /// <param name="listOptions">The list options.</param>
-        /// <returns></returns>
-        public DoubleListResult<TCommandType, TParameterType> AsDoubleList(ListOptions listOptions = ListOptions.None) { return new DoubleListResult<TCommandType, TParameterType>(this, listOptions); }
-
-        /// <summary>
         /// Indicates the results should be formatted as a list of booleans.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
         public BooleanListResult<TCommandType, TParameterType> AsBooleanList(ListOptions listOptions = ListOptions.None) { return new BooleanListResult<TCommandType, TParameterType>(this, listOptions); }
-
-        /// <summary>
-        /// Indicates the results should be formatted as a list of TimeSpan.
-        /// </summary>
-        /// <param name="listOptions">The list options.</param>
-        /// <returns></returns>
-        public TimeSpanListResult<TCommandType, TParameterType> AsTimeSpanList(ListOptions listOptions = ListOptions.None) { return new TimeSpanListResult<TCommandType, TParameterType>(this, listOptions); }
-
-        /// <summary>
-        /// Indicates the results should be formatted as a list of numbers.
-        /// </summary>
-        /// <param name="listOptions">The list options.</param>
-        /// <returns></returns>
-        public SingleListResult<TCommandType, TParameterType> AsSingleList(ListOptions listOptions = ListOptions.None) { return new SingleListResult<TCommandType, TParameterType>(this, listOptions); }
-
-
-        /// <summary>
-        /// Indicates the results should be formatted as a list of numbers.
-        /// </summary>
-        /// <param name="listOptions">The list options.</param>
-        /// <returns></returns>
-        public DecimalListResult<TCommandType, TParameterType> AsDecimalList(ListOptions listOptions = ListOptions.None) { return new DecimalListResult<TCommandType, TParameterType>(this, listOptions); }
-
-
-
-        /// <summary>
-        /// Indicates the results should be formatted as a DataSet.
-        /// </summary>
-        public DataTableResult<TCommandType, TParameterType> AsDataTableResult() { return new DataTableResult<TCommandType, TParameterType>(this); }
-
-
-        /// <summary>
-        /// Indicates the results should be formatted as a list of DateTime.
-        /// </summary>
-        /// <param name="listOptions">The list options.</param>
-        /// <returns></returns>
-        public DateTimeListResult<TCommandType, TParameterType> AsDateTimeList(ListOptions listOptions = ListOptions.None) { return new DateTimeListResult<TCommandType, TParameterType>(this, listOptions); }
-
-        /// <summary>
-        /// Indicates the results should be formatted as a list of DateTimeOffset.
-        /// </summary>
-        /// <param name="listOptions">The list options.</param>
-        /// <returns></returns>
-        public DateTimeOffsetListResult<TCommandType, TParameterType> AsDateTimeOffsetList(ListOptions listOptions = ListOptions.None) { return new DateTimeOffsetListResult<TCommandType, TParameterType>(this, listOptions); }
-
 
         /// <summary>
         /// Formats the result as a list of objects.
@@ -109,6 +57,44 @@ namespace Tortuga.Chain.CommandBuilders
             return new CollectionResult<TCommandType, TParameterType, TObject, TCollection>(this);
         }
 
+        /// <summary>
+        /// Indicates the results should be formatted as a DataSet.
+        /// </summary>
+        public DataTableResult<TCommandType, TParameterType> AsDataTableResult() { return new DataTableResult<TCommandType, TParameterType>(this); }
+
+        /// <summary>
+        /// Indicates the results should be formatted as a list of DateTime.
+        /// </summary>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns></returns>
+        public DateTimeListResult<TCommandType, TParameterType> AsDateTimeList(ListOptions listOptions = ListOptions.None) { return new DateTimeListResult<TCommandType, TParameterType>(this, listOptions); }
+
+        /// <summary>
+        /// Indicates the results should be formatted as a list of DateTimeOffset.
+        /// </summary>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns></returns>
+        public DateTimeOffsetListResult<TCommandType, TParameterType> AsDateTimeOffsetList(ListOptions listOptions = ListOptions.None) { return new DateTimeOffsetListResult<TCommandType, TParameterType>(this, listOptions); }
+
+        /// <summary>
+        /// Indicates the results should be formatted as a list of numbers.
+        /// </summary>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns></returns>
+        public DecimalListResult<TCommandType, TParameterType> AsDecimalList(ListOptions listOptions = ListOptions.None) { return new DecimalListResult<TCommandType, TParameterType>(this, listOptions); }
+
+        /// <summary>
+        /// Indicates the results should be formatted as a list of numbers.
+        /// </summary>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns></returns>
+        public DoubleListResult<TCommandType, TParameterType> AsDoubleList(ListOptions listOptions = ListOptions.None) { return new DoubleListResult<TCommandType, TParameterType>(this, listOptions); }
+        /// <summary>
+        /// Indicates the results should be formatted as a list of Guids.
+        /// </summary>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns></returns>
+        public GuidListResult<TCommandType, TParameterType> AsGuidList(ListOptions listOptions = ListOptions.None) { return new GuidListResult<TCommandType, TParameterType>(this, listOptions); }
 
         /// <summary>
         /// Indicates the results should be formatted as a list of integers.
@@ -124,7 +110,6 @@ namespace Tortuga.Chain.CommandBuilders
         /// <returns></returns>
         public Int32ListResult<TCommandType, TParameterType> AsInt32List(ListOptions listOptions = ListOptions.None) { return new Int32ListResult<TCommandType, TParameterType>(this, listOptions); }
 
-
         /// <summary>
         /// Indicates the results should be formatted as a list of integers.
         /// </summary>
@@ -132,9 +117,12 @@ namespace Tortuga.Chain.CommandBuilders
         /// <returns></returns>
         public Int64ListResult<TCommandType, TParameterType> AsInt64List(ListOptions listOptions = ListOptions.None) { return new Int64ListResult<TCommandType, TParameterType>(this, listOptions); }
 
-
-
-
+        /// <summary>
+        /// Indicates the results should be formatted as a list of numbers.
+        /// </summary>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns></returns>
+        public SingleListResult<TCommandType, TParameterType> AsSingleList(ListOptions listOptions = ListOptions.None) { return new SingleListResult<TCommandType, TParameterType>(this, listOptions); }
 
         /// <summary>
         /// Indicates the results should be formatted as a list of strings.
@@ -143,19 +131,16 @@ namespace Tortuga.Chain.CommandBuilders
         /// <returns></returns>
         public StringListResult<TCommandType, TParameterType> AsStringList(ListOptions listOptions = ListOptions.None) { return new StringListResult<TCommandType, TParameterType>(this, listOptions); }
 
-
         /// <summary>
         /// Indicates the results should be formatted as a Table.
         /// </summary>
         public TableResult<TCommandType, TParameterType> AsTable() { return new TableResult<TCommandType, TParameterType>(this); }
 
         /// <summary>
-        /// Indicates the results should be formatted as a list of Guids.
+        /// Indicates the results should be formatted as a list of TimeSpan.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        public GuidListResult<TCommandType, TParameterType> AsGuidList(ListOptions listOptions = ListOptions.None) { return new GuidListResult<TCommandType, TParameterType>(this, listOptions); }
-
-
+        public TimeSpanListResult<TCommandType, TParameterType> AsTimeSpanList(ListOptions listOptions = ListOptions.None) { return new TimeSpanListResult<TCommandType, TParameterType>(this, listOptions); }
     }
 }

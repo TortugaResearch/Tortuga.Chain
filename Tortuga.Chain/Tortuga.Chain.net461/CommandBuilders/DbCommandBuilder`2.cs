@@ -1,8 +1,8 @@
 ﻿using System.Data.Common;
-using Tortuga.Chain.Formatters;
-using Tortuga.Chain.DataSources;
-using System.Threading.Tasks;
 using System.Threading;
+using System.Threading.Tasks;
+using Tortuga.Chain.DataSources;
+using Tortuga.Chain.Formatters;
 
 namespace Tortuga.Chain.CommandBuilders
 {
@@ -27,13 +27,6 @@ namespace Tortuga.Chain.CommandBuilders
         }
 
         /// <summary>
-        /// Prepares the command for execution by generating any necessary SQL.
-        /// </summary>
-        /// <param name="formatter">The formatter.</param>
-        /// <returns>ExecutionToken&lt;TCommandType&gt;.</returns>
-        public abstract ExecutionToken<TCommandType, TParameterType> Prepare(Formatter<TCommandType, TParameterType> formatter);
-
-        /// <summary>
         /// Gets the data source.
         /// </summary>
         /// <value>The data source.</value>
@@ -42,13 +35,11 @@ namespace Tortuga.Chain.CommandBuilders
             get { return m_DataSource; }
         }
 
-
         /// <summary>
         /// Indicates this operation has no result set.
         /// </summary>
         /// <returns></returns>
         public NonQueryResult<TCommandType, TParameterType> AsNonQuery() { return new NonQueryResult<TCommandType, TParameterType>(this); }
-
 
         /// <summary>
         /// Execute the operation synchronously.
@@ -80,5 +71,11 @@ namespace Tortuga.Chain.CommandBuilders
             return AsNonQuery().ExecuteAsync(cancellationToken, state);
         }
 
+        /// <summary>
+        /// Prepares the command for execution by generating any necessary SQL.
+        /// </summary>
+        /// <param name="formatter">The formatter.</param>
+        /// <returns>ExecutionToken&lt;TCommandType&gt;.</returns>
+        public abstract ExecutionToken<TCommandType, TParameterType> Prepare(Formatter<TCommandType, TParameterType> formatter);
     }
 }

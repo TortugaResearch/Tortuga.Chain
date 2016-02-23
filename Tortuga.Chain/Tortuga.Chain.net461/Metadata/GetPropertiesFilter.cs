@@ -48,7 +48,13 @@ namespace Tortuga.Chain.Metadata
         /// Throw an exception if there are key columns that can't be mapped to a property.
         /// </summary>
         /// <remarks>Only applies when using the PrimaryKey flag.</remarks>
-        ThrowOnMissingProperties = 64
+        ThrowOnMissingProperties = 64,
+
+        /// <summary>
+        /// Only return columns that can be updated. This means no identity or computed columns
+        /// </summary>
+        UpdatableOnly = 128
+
 
     }
 }
