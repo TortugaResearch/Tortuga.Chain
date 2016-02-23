@@ -120,7 +120,7 @@ namespace Tortuga.Chain.SqlServer
                             var computed = reader.GetBoolean(reader.GetOrdinal("is_computed"));
                             var primary = reader.GetBoolean(reader.GetOrdinal("is_primary_key"));
                             var isIdentity = reader.GetBoolean(reader.GetOrdinal("is_identity"));
-                            var typeName = reader.GetString(reader.GetOrdinal("TypeName"));
+                            var typeName = reader.IsDBNull(reader.GetOrdinal("TypeName")) ? null : reader.GetString(reader.GetOrdinal("TypeName"));
                             columns.Add(new ColumnMetadata(name, computed, primary, isIdentity, typeName));
                         }
                     }
@@ -292,6 +292,62 @@ namespace Tortuga.Chain.SqlServer
 
             return new TableOrViewMetadata<SqlServerObjectName>(new SqlServerObjectName(actualSchema, actualName), isTable, columns);
         }
+
+        /// <summary>
+        /// Preloads metadata for all tables.
+        /// </summary>
+        /// <remarks>This is normally used only for testing. By default, metadata is loaded as needed.</remarks>
+        public void PreloadTables()
+        {
+            const string tableList = "SELECT t.name AS Name, s.name AS SchemaName FROM sys.tables t INNER JOIN sys.schemas s ON t.schema_id=s.schema_id ORDER BY s.name, t.name";
+
+            using (var con = new SqlConnection(m_ConnectionBuilder.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = new SqlCommand(tableList, con))
+                {
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var schema = reader.GetString(reader.GetOrdinal("SchemaName"));
+                            var name = reader.GetString(reader.GetOrdinal("Name"));
+                            GetTableOrView(new SqlServerObjectName(schema, name));
+                        }
+                    }
+                }
+            }
+
+        }
+
+
+        /// <summary>
+        /// Preloads metadata for all views.
+        /// </summary>
+        /// <remarks>This is normally used only for testing. By default, metadata is loaded as needed.</remarks>
+        public void PreloadViews()
+        {
+            const string tableList = "SELECT t.name AS Name, s.name AS SchemaName FROM sys.views t INNER JOIN sys.schemas s ON t.schema_id=s.schema_id ORDER BY s.name, t.name";
+
+            using (var con = new SqlConnection(m_ConnectionBuilder.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = new SqlCommand(tableList, con))
+                {
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var schema = reader.GetString(reader.GetOrdinal("SchemaName"));
+                            var name = reader.GetString(reader.GetOrdinal("Name"));
+                            GetTableOrView(new SqlServerObjectName(schema, name));
+                        }
+                    }
+                }
+            }
+
+        }
+
     }
 
 }

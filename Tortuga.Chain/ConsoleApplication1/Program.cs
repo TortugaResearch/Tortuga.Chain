@@ -11,6 +11,9 @@ namespace ConsoleApplication1
             var connectionString = "Server=.;Database=AdventureWorks2014;Trusted_Connection=True;";
             var dataSource = new Tortuga.Chain.SqlServerDataSource(connectionString);
 
+            dataSource.DatabaseMetadata.PreloadTables();
+            dataSource.DatabaseMetadata.PreloadViews();
+
             const string SalesCurrency = "Sales.Currency";
             var currencyList = dataSource.From(SalesCurrency).AsCollection<Currency>().Execute();
             foreach (var item in currencyList)
@@ -52,6 +55,7 @@ namespace ConsoleApplication1
                 dataSource.Delete(SalesCurrency, code).Execute();
             }
 
+            Console.ReadKey();
         }
     }
 
