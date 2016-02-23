@@ -2,14 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using Tortuga.Anchor.Metadata;
+using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Formatters;
 
-namespace Tortuga.Chain.SqlServer
+namespace Tortuga.Chain.SqlServer.CommandBuilders
 {
     /// <summary>
     /// Class SqlServerSqlCall.
     /// </summary>
-    public class SqlServerSqlCall : CommandBuilders.MultipleTableDbCommandBuilder<SqlCommand, SqlParameter>
+    public class SqlServerSqlCall : MultipleTableDbCommandBuilder<SqlCommand, SqlParameter>
     {
         private readonly object m_ArgumentValue;
         private readonly string m_SqlStatement;

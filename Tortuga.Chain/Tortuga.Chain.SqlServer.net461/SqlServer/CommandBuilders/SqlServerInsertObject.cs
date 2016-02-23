@@ -6,7 +6,7 @@ using System.Linq;
 using Tortuga.Chain.Formatters;
 using Tortuga.Chain.Metadata;
 
-namespace Tortuga.Chain.SqlServer
+namespace Tortuga.Chain.SqlServer.CommandBuilders
 {
     /// <summary>
     /// Class SqlServerInsertObject.

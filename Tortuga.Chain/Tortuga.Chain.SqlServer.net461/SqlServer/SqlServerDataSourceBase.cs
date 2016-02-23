@@ -1,5 +1,6 @@
 using System.Data.SqlClient;
 using Tortuga.Chain.DataSources;
+using Tortuga.Chain.SqlServer.CommandBuilders;
 
 namespace Tortuga.Chain.SqlServer
 {

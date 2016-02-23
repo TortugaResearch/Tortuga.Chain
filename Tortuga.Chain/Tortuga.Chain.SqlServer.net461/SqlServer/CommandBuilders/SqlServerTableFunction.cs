@@ -1,5 +1,5 @@
 ﻿using System;
-namespace Tortuga.Chain.SqlServer
+namespace Tortuga.Chain.SqlServer.CommandBuilders
 {
     /// <summary>
     /// Class SqlServerTableFunction.

@@ -58,21 +58,21 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="SqlServer\SqlServerDeleteObject.cs" />
-    <Compile Include="SqlServer\SqlServerInsertObject.cs" />
-    <Compile Include="SqlServer\SqlServerInsertOrUpdateObject.cs" />
-    <Compile Include="SqlServer\SqlServerObjectCommand.cs" />
-    <Compile Include="SqlServer\SqlServerSqlCall.cs" />
-    <Compile Include="SqlServer\SqlServerTableFunction.cs" />
-    <Compile Include="SqlServer\SqlServerTableOrView.cs" />
+    <Compile Include="SqlServer\CommandBuilders\SqlServerDeleteObject.cs" />
+    <Compile Include="SqlServer\CommandBuilders\SqlServerInsertObject.cs" />
+    <Compile Include="SqlServer\CommandBuilders\SqlServerInsertOrUpdateObject.cs" />
+    <Compile Include="SqlServer\CommandBuilders\SqlServerObjectCommand.cs" />
+    <Compile Include="SqlServer\CommandBuilders\SqlServerSqlCall.cs" />
+    <Compile Include="SqlServer\CommandBuilders\SqlServerTableFunction.cs" />
+    <Compile Include="SqlServer\CommandBuilders\SqlServerTableOrView.cs" />
     <Compile Include="SqlServer\SqlServerTransactionalDataSource.cs" />
     <Compile Include="SqlServer\SqlServerDataSourceBase.cs" />
     <Compile Include="SqlServer\SqlServerMetadataCache.cs" />
     <Compile Include="SqlServer\SqlServerObjectName.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlServerDataSource.cs" />
-    <Compile Include="SqlServer\SqlServerProcedureCall.cs" />
-    <Compile Include="SqlServer\SqlServerUpdateObject.cs" />
+    <Compile Include="SqlServer\CommandBuilders\SqlServerProcedureCall.cs" />
+    <Compile Include="SqlServer\CommandBuilders\SqlServerUpdateObject.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

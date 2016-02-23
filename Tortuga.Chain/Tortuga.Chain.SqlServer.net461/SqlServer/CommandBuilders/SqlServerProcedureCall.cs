@@ -8,7 +8,7 @@ using Tortuga.Chain.Formatters;
 using Tortuga.Chain.Metadata;
 using Tortuga.Chain.CommandBuilders;
 
-namespace Tortuga.Chain.SqlServer
+namespace Tortuga.Chain.SqlServer.CommandBuilders
 {
 
     /// <summary>

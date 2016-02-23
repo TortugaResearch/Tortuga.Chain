@@ -2,7 +2,7 @@
 using System.Data.SqlClient;
 using Tortuga.Chain.Formatters;
 
-namespace Tortuga.Chain.SqlServer
+namespace Tortuga.Chain.SqlServer.CommandBuilders
 {
     /// <summary>
     /// Class SqlServerDeleteObject.

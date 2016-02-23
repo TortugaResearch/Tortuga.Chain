@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Threading;
@@ -8,11 +9,11 @@ using Tortuga.Chain.CommandBuilders;
 namespace Tortuga.Chain.Formatters
 {
     /// <summary>
-    /// Formats the result set as a list of integers.
+    /// Formats the result set as a list of Guids.
     /// </summary>
     /// <typeparam name="TCommandType">The type of the t command type.</typeparam>
     /// <typeparam name="TParameterType">The type of the t parameter type.</typeparam>
-    public class Int32ListResult<TCommandType, TParameterType> : SingleColumnFormatter<TCommandType, TParameterType, List<int>> where TCommandType : DbCommand
+    public class GuidListResult<TCommandType, TParameterType> : SingleColumnFormatter<TCommandType, TParameterType, List<Guid>> where TCommandType : DbCommand
         where TParameterType : DbParameter
     {
 
@@ -23,7 +24,7 @@ namespace Tortuga.Chain.Formatters
         /// <param name="commandBuilder">The command builder.</param>
         /// <param name="listOptions">The list options.</param>
         /// <param name="columnName">Name of the desired column.</param>
-        public Int32ListResult(DbCommandBuilder<TCommandType, TParameterType> commandBuilder, ListOptions listOptions, string columnName = null)
+        public GuidListResult(DbCommandBuilder<TCommandType, TParameterType> commandBuilder, ListOptions listOptions, string columnName = null)
             : base(commandBuilder, columnName)
         {
             m_ListOptions = listOptions;
@@ -34,9 +35,9 @@ namespace Tortuga.Chain.Formatters
         /// Execute the operation synchronously.
         /// </summary>
         /// <returns></returns>
-        public override List<int> Execute(object state = null)
+        public override List<Guid> Execute(object state = null)
         {
-            var result = new List<int>();
+            var result = new List<Guid>();
 
             ExecuteCore(cmd =>
             {
@@ -44,9 +45,7 @@ namespace Tortuga.Chain.Formatters
                 using (var reader = cmd.ExecuteReader())
                 {
                     if (reader.FieldCount > 1 && !m_ListOptions.HasFlag(ListOptions.IgnoreExtraColumns))
-                    {
                         throw new DataException(string.Format("Expected one column but found {0} columns", reader.FieldCount));
-                    }
 
                     var columnCount = m_ListOptions.HasFlag(ListOptions.FlattenExtraColumns) ? reader.FieldCount : 1;
                     var discardNulls = m_ListOptions.HasFlag(ListOptions.DiscardNulls);
@@ -57,7 +56,7 @@ namespace Tortuga.Chain.Formatters
                             if (reader.IsDBNull(i) && !discardNulls)
                                 throw new DataException("Unexpected null value");
 
-                            result.Add(reader.GetInt32(i));
+                            result.Add(reader.GetGuid(i));
                         }
                     }
                 }
@@ -68,16 +67,15 @@ namespace Tortuga.Chain.Formatters
         }
 
 
-
         /// <summary>
         /// Execute the operation asynchronously.
         /// </summary>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <param name="state">User defined state, usually used for logging.</param>
         /// <returns></returns>
-        public override async Task<List<int>> ExecuteAsync(CancellationToken cancellationToken, object state = null)
+        public override async Task<List<Guid>> ExecuteAsync(CancellationToken cancellationToken, object state = null)
         {
-            var result = new List<int>();
+            var result = new List<Guid>();
 
             await ExecuteCoreAsync(async cmd =>
             {
@@ -85,9 +83,7 @@ namespace Tortuga.Chain.Formatters
                 using (var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SequentialAccess, cancellationToken).ConfigureAwait(false))
                 {
                     if (reader.FieldCount > 1 && !m_ListOptions.HasFlag(ListOptions.IgnoreExtraColumns))
-                    {
                         throw new DataException(string.Format("Expected one column but found {0} columns", reader.FieldCount));
-                    }
 
                     var columnCount = m_ListOptions.HasFlag(ListOptions.FlattenExtraColumns) ? reader.FieldCount : 1;
                     var discardNulls = m_ListOptions.HasFlag(ListOptions.DiscardNulls);
@@ -99,7 +95,7 @@ namespace Tortuga.Chain.Formatters
                             if (reader.IsDBNull(i) && !discardNulls)
                                 throw new DataException("Unexpected null value");
 
-                            result.Add(reader.GetInt32(i));
+                            result.Add(reader.GetGuid(i));
                         }
                     }
                 }
