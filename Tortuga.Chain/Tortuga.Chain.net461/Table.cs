@@ -106,10 +106,10 @@ namespace Tortuga.Chain
 
 
         /// <summary>
-        /// Converts the table into an enumeration of models of the indicated type.
+        /// Converts the table into an enumeration of objects of the indicated type.
         /// </summary>
-        /// <typeparam name="T">Desired model type</typeparam>
-        public IEnumerable<T> ToModels<T>() where T : new()
+        /// <typeparam name="T">Desired object type</typeparam>
+        public IEnumerable<T> ToObjects<T>() where T : new()
         {
             foreach (var row in Rows)
             {

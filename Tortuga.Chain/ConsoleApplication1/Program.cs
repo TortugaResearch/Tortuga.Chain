@@ -17,7 +17,15 @@ namespace ConsoleApplication1
             var cards1 = dataSource.From("Sales.CreditCard", new { @CardType = "Vista" }).AsCollection<CreditCard>().Execute();
             foreach (var item in cards1)
                 Console.WriteLine(item.CardNumber);
-            
+
+            var code = new Currency();
+            code.CurrencyCode = (DateTime.Now.Ticks % 1000).ToString();
+            code.CurrencyName = "Test " + code.CurrencyCode;
+
+            var newCode = dataSource.Insert("Sales.Currency", code).AsString().Execute();
+
+            dataSource.Delete("Sales.Currency", code);
+
 
         }
     }

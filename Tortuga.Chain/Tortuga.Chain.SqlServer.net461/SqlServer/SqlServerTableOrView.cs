@@ -62,22 +62,22 @@ namespace Tortuga.Chain.SqlServer
             var parameters = new List<SqlParameter>();
             var metadata = DataSource.DatabaseMetadata.GetTableOrView(m_TableOrViewName);
 
-            var select = SelectString(formatter, metadata);
-            var from = FromString();
+            var select = SelectClause(formatter, metadata);
+            var from = FromClause();
 
             string where = null;
 
             if (m_FilterValue != null)
-                where = WhereStringA(metadata, parameters);
+                where = WhereClauseA(metadata, parameters);
             else if (!string.IsNullOrWhiteSpace(m_WhereClause))
-                where = WhereStringB(parameters);
+                where = WhereClauseB(parameters);
 
             var sql = $"{select} {from} {where};";
 
-            return new ExecutionToken<SqlCommand, SqlParameter>(DataSource, "Query " + m_TableOrViewName, sql, parameters, CommandType.Text);
+            return new ExecutionToken<SqlCommand, SqlParameter>(DataSource, "Query " + m_TableOrViewName, sql, parameters);
         }
 
-        private string SelectString(Formatter<SqlCommand, SqlParameter> formatter, TableOrViewMetadata<SqlServerObjectName> metadata)
+        private string SelectClause(Formatter<SqlCommand, SqlParameter> formatter, TableOrViewMetadata<SqlServerObjectName> metadata)
         {
             var desiredColumns = formatter.DesiredColumns().ToDictionary(c => c, StringComparer.InvariantCultureIgnoreCase);
             var availableColumns = metadata.Columns;
@@ -93,12 +93,12 @@ namespace Tortuga.Chain.SqlServer
 
         }
 
-        private string FromString()
+        private string FromClause()
         {
             return $"FROM {m_TableOrViewName.ToQuotedString()}";
         }
 
-        private string WhereStringA(TableOrViewMetadata<SqlServerObjectName> metadata, List<SqlParameter> parameters)
+        private string WhereClauseA(TableOrViewMetadata<SqlServerObjectName> metadata, List<SqlParameter> parameters)
         {
             var availableColumns = metadata.Columns.ToDictionary(c => c.ClrName, StringComparer.InvariantCultureIgnoreCase);
             var properties = MetadataCache.GetMetadata(m_FilterValue.GetType()).Properties;
@@ -151,7 +151,7 @@ namespace Tortuga.Chain.SqlServer
             return "WHERE " + string.Join(" AND ", actualColumns);
         }
 
-        private string WhereStringB(List<SqlParameter> parameters)
+        private string WhereClauseB(List<SqlParameter> parameters)
         {
             if (m_ArgumentValue is IEnumerable<SqlParameter>)
                 foreach (var param in (IEnumerable<SqlParameter>)m_ArgumentValue)

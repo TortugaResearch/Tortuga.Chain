@@ -49,7 +49,7 @@ namespace Tortuga.Chain.Formatters
                 }
             }, state);
 
-            foreach (var item in table.ToModels<TObject>())
+            foreach (var item in table.ToObjects<TObject>())
                 result.Add(item);
             return result;
         }
@@ -76,7 +76,7 @@ namespace Tortuga.Chain.Formatters
                 }
             }, cancellationToken, state).ConfigureAwait(false);
 
-            foreach (var item in table.ToModels<TObject>())
+            foreach (var item in table.ToObjects<TObject>())
                 result.Add(item);
             return result;
         }

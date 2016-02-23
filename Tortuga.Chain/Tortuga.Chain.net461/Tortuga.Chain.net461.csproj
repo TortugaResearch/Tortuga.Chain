@@ -119,7 +119,9 @@
     <Compile Include="InsertOrUpdateOptions.cs" />
     <Compile Include="ListOptions.cs" />
     <Compile Include="Metadata\ColumnMetadata.cs" />
+    <Compile Include="Metadata\ColumnPropertyMap.cs" />
     <Compile Include="Metadata\DatabaseMetadataCache`1.cs" />
+    <Compile Include="Metadata\GetPropertiesFilter.cs" />
     <Compile Include="Metadata\ParameterMetadata.cs" />
     <Compile Include="Metadata\StoredProcedureMetadata`1.cs" />
     <Compile Include="Metadata\TableFunctionMetadata`1.cs" />

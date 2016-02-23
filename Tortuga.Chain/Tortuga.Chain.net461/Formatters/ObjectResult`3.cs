@@ -14,7 +14,7 @@ namespace Tortuga.Chain.Formatters
     /// <typeparam name="TCommandType">The type of the t command type.</typeparam>
     /// <typeparam name="TParameterType">The type of the t parameter type.</typeparam>
     /// <typeparam name="TObject">The type of the object returned.</typeparam>
-    /// <seealso cref="Formatters.Formatter{TCommandType, TParameterType, TModel}" />
+    /// <seealso cref="Formatters.Formatter{TCommandType, TParameterType, TTObject}" />
     public class ObjectResult<TCommandType, TParameterType, TObject> : Formatter<TCommandType, TParameterType, TObject>
         where TCommandType : DbCommand
         where TObject : class, new()
@@ -74,7 +74,7 @@ namespace Tortuga.Chain.Formatters
                 ex.Data["RowCount"] = table.Rows.Count;
                 throw ex;
             }
-            return table.ToModels<TObject>().First();
+            return table.ToObjects<TObject>().First();
         }
 
 
@@ -124,7 +124,7 @@ namespace Tortuga.Chain.Formatters
                 ex.Data["RowCount"] = table.Rows.Count;
                 throw ex;
             }
-            return table.ToModels<TObject>().First();
+            return table.ToObjects<TObject>().First();
         }
 
         /// <summary>

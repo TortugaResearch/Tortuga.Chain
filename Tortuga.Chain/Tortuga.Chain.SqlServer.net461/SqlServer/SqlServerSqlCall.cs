@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.SqlClient;
 using Tortuga.Anchor.Metadata;
 using Tortuga.Chain.Formatters;
@@ -52,7 +51,7 @@ namespace Tortuga.Chain.SqlServer
                 foreach (var property in MetadataCache.GetMetadata(m_ArgumentValue.GetType()).Properties)
                     parameters.Add(new SqlParameter("@" + property.MappedColumnName, property.InvokeGet(m_ArgumentValue) ?? DBNull.Value));
 
-            return new ExecutionToken<SqlCommand, SqlParameter>(DataSource, "Raw SQL call", m_SqlStatement, parameters, CommandType.Text);
+            return new ExecutionToken<SqlCommand, SqlParameter>(DataSource, "Raw SQL call", m_SqlStatement, parameters);
         }
     }
 }

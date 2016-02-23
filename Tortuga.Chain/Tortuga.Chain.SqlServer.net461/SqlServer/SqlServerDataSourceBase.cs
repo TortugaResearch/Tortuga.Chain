@@ -131,9 +131,9 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="argumentValue">The argument value.</param>
         /// <returns>SqlServerInsert.</returns>
         /// <exception cref="System.ArgumentException">tableName is empty.;tableName</exception>
-        public SqlServerInsertModel Insert(SqlServerObjectName tableName, object argumentValue)
+        public SqlServerInsertObject Insert(SqlServerObjectName tableName, object argumentValue)
         {
-            return new SqlServerInsertModel(this, tableName, argumentValue);
+            return new SqlServerInsertObject(this, tableName, argumentValue);
         }
 
         /// <summary>
@@ -144,9 +144,9 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="options">The update options.</param>
         /// <returns>SqlServerInsert.</returns>
         /// <exception cref="System.ArgumentException">tableName is empty.;tableName</exception>
-        public SqlServerUpdateModel Update(SqlServerObjectName tableName, object argumentValue, UpdateOptions options = UpdateOptions.None)
+        public SqlServerUpdateObject Update(SqlServerObjectName tableName, object argumentValue, UpdateOptions options = UpdateOptions.None)
         {
-            return new SqlServerUpdateModel(this, tableName, argumentValue, options);
+            return new SqlServerUpdateObject(this, tableName, argumentValue, options);
         }
 
         /// <summary>
@@ -157,9 +157,9 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="options">The options for how the insert/update occurs.</param>
         /// <returns>SqlServerUpdate.</returns>
         /// <exception cref="System.ArgumentException">tableName is empty.;tableName</exception>
-        public SqlServerInsertOrUpdateModel InsertOrUpdate(SqlServerObjectName tableName, object argumentValue, InsertOrUpdateOptions options = InsertOrUpdateOptions.None)
+        public SqlServerInsertOrUpdateObject InsertOrUpdate(SqlServerObjectName tableName, object argumentValue, InsertOrUpdateOptions options = InsertOrUpdateOptions.None)
         {
-            return new SqlServerInsertOrUpdateModel(this, tableName, argumentValue, options);
+            return new SqlServerInsertOrUpdateObject(this, tableName, argumentValue, options);
         }
 
         /// <summary>
@@ -170,9 +170,9 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="options">The delete options.</param>
         /// <returns>SqlServerInsert.</returns>
         /// <exception cref="System.ArgumentException">tableName is empty.;tableName</exception>
-        public SqlServerDeleteModel Delete(SqlServerObjectName tableName, object argumentValue, DeleteOptions options = DeleteOptions.None)
+        public SqlServerDeleteObject Delete(SqlServerObjectName tableName, object argumentValue, DeleteOptions options = DeleteOptions.None)
         {
-            return new SqlServerDeleteModel(this, tableName, argumentValue, options);
+            return new SqlServerDeleteObject(this, tableName, argumentValue, options);
         }
 
     }
