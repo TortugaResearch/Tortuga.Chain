@@ -2,7 +2,7 @@ using System;
 using System.Data.Common;
 using System.Threading.Tasks;
 
-namespace Tortuga.Chain
+namespace Tortuga.Chain.DataSources
 {
     /// <summary>
     /// Class DataSource.
@@ -53,6 +53,12 @@ namespace Tortuga.Chain
         /// The name of the data source.
         /// </value>
         public string Name { get; protected set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether strict mode is enabled.
+        /// </summary>
+        /// <remarks>Strict mode requires all properties that don't represent columns to be marked with the NotMapped attribute.</remarks>
+        public bool StrictMode { get; set; }
 
     }
 }

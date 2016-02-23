@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Linq;
 using Tortuga.Chain.Formatters;
+using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.SqlServer
 {
@@ -32,7 +35,43 @@ namespace Tortuga.Chain.SqlServer
 
         public override ExecutionToken<SqlCommand, SqlParameter> Prepare(Formatter<SqlCommand, SqlParameter> formatter)
         {
-            throw new NotImplementedException();
+            var parameters = new List<SqlParameter>();
+
+            var set = SetClause(parameters);
+            var output = OutputClause(formatter, m_Options.HasFlag(UpdateOptions.ReturnOldValues));
+            var where = WhereClause(parameters, m_Options.HasFlag(UpdateOptions.UseKeyAttribute));
+
+            var sql = $"UPDATE {TableName.ToQuotedString()} {set} {output} {where}";
+
+            return new ExecutionToken<SqlCommand, SqlParameter>(DataSource, "Update " + TableName, sql, parameters);
+        }
+
+        private string SetClause(List<SqlParameter> parameters)
+        {
+            var filter = GetPropertiesFilter.ThrowOnNoMatch;
+
+            if (m_Options.HasFlag(UpdateOptions.UseKeyAttribute))
+                filter = filter | GetPropertiesFilter.ObjectDefinedNonKey;
+            else
+                filter = filter | GetPropertiesFilter.NonPrimaryKey;
+
+            if (DataSource.StrictMode)
+                filter = filter | GetPropertiesFilter.ThrowOnMissingColumns;
+
+            var availableColumns = Metadata.GetPropertiesFor(ArgumentValue.GetType(), filter);
+
+            var result = "SET " + string.Join(", ", availableColumns.Select(c => $"{c.Column.QuotedSqlName} = {c.Column.SqlVariableName}"));
+
+            foreach (var item in availableColumns)
+            {
+                var value = item.Property.InvokeGet(ArgumentValue) ?? DBNull.Value;
+                var parameter = new SqlParameter(item.Column.SqlVariableName, value);
+                if (item.Column.SqlDbType.HasValue)
+                    parameter.SqlDbType = item.Column.SqlDbType.Value;
+                parameters.Add(parameter);
+            }
+
+            return result;
         }
     }
 }

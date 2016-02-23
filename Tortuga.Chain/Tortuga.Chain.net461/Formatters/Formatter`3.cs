@@ -1,12 +1,13 @@
 using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
+using Tortuga.Chain.CommandBuilders;
 
 namespace Tortuga.Chain.Formatters
 {
 
     /// <summary>
-    /// This is the base class for formatters that return a value. Most operation are not executed without first attaching a result formatter subclass.
+    /// This is the base class for formatters that return a value. Most operation are not executed without first attaching a formatter subclass.
     /// </summary>
     /// <typeparam name="TCommandType">The type of the t command type.</typeparam>
     /// <typeparam name="TParameterType">The type of the t parameter type.</typeparam>

@@ -9,9 +9,8 @@ namespace Tortuga.Chain.SqlServer
     /// <summary>
     /// Class SqlServerSqlCall.
     /// </summary>
-    public class SqlServerSqlCall : SqlServerDbCommandBuilder
+    public class SqlServerSqlCall : CommandBuilders.MultipleTableDbCommandBuilder<SqlCommand, SqlParameter>
     {
-
         private readonly object m_ArgumentValue;
         private readonly string m_SqlStatement;
 

@@ -24,7 +24,14 @@ namespace Tortuga.Chain
         /// Ignore the primary keys on the table and perform the update using the Key attribute on properties to construct the where clause.
         /// </summary>
         /// <remarks>This is generally used for heap-style tables, though technically heap tables may have primary, non-clustered keys.</remarks>
-        UseKeyAttribute = 2
+        UseKeyAttribute = 2,
+
+        /// <summary>
+        /// The return original values instead of the updated values.
+        /// </summary>
+        /// <remarks>This has no effect when using the NonQuery formatter.</remarks>
+        ReturnOldValues = 4
+
 
     }
 }

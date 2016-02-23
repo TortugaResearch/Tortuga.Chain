@@ -84,6 +84,7 @@ namespace Tortuga.Chain.Metadata
             return result.Value;
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
         private ImmutableList<ColumnPropertyMap> GetPropertiesForImplementation(Type type, GetPropertiesFilter filter)
         {
             //The none option is used as a basis for all of the filtered versions
@@ -115,6 +116,14 @@ namespace Tortuga.Chain.Metadata
             else if (filter.HasFlag(GetPropertiesFilter.NonPrimaryKey))
             {
                 filterText = "non-primary key";
+
+                if (filter.HasFlag(GetPropertiesFilter.ThrowOnMissingColumns))
+                {
+                    var missingColumns = MetadataCache.GetMetadata(type).Properties.Where(p => p.MappedColumnName != null && !result.Any(r => r.Property == p)).ToList();
+                    if (missingColumns.Count > 0)
+                        throw new DataException($"The table {Name} is missing a column mapped to the properties: " + string.Join(", ", missingColumns.Select(p => p.MappedColumnName)) + $" on type {type.Name}. Use the Column and/or NotMapped attributes to correct this or disable strict mode.");
+                }
+
                 result = result.Where(c => !c.Column.IsPrimaryKey).ToImmutableList();
             }
             else if (filter.HasFlag(GetPropertiesFilter.ObjectDefinedKey))
@@ -141,14 +150,6 @@ namespace Tortuga.Chain.Metadata
                 throw new DataException($"None of the properties for {type.Name} match the {filterText} columns for {Name}");
             }
 
-            if (filter.HasFlag(GetPropertiesFilter.ThrowOnMissingColumns) && !filter.HasFlag(GetPropertiesFilter.ObjectDefinedKey))
-            {
-                //Note: the combination ThrowOnMissingColumns+ObjectDefinedKey is handled above
-
-                var missingColumns = MetadataCache.GetMetadata(type).Properties.Where(p => !result.Any(r => r.Property == p)).ToList();
-                if (missingColumns.Count > 0)
-                    throw new DataException($"The table {Name} is missing a column mapped to the properties: " + string.Join(", ", missingColumns.Select(p => p.MappedColumnName)) + $" on type {type.Name}. Use the Column and/or NotMapped attributes to correct this or disable strict mode.");
-            }
 
             return result;
         }

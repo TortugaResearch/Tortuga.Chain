@@ -67,7 +67,6 @@
     <Compile Include="SqlServer\SqlServerTableOrView.cs" />
     <Compile Include="SqlServer\SqlServerTransactionalDataSource.cs" />
     <Compile Include="SqlServer\SqlServerDataSourceBase.cs" />
-    <Compile Include="SqlServer\SqlServerDbCommandBuilder.cs" />
     <Compile Include="SqlServer\SqlServerMetadataCache.cs" />
     <Compile Include="SqlServer\SqlServerObjectName.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

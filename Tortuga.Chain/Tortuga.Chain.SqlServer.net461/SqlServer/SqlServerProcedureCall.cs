@@ -5,6 +5,8 @@ using System.Data.SqlClient;
 using System.Linq;
 using Tortuga.Anchor.Metadata;
 using Tortuga.Chain.Formatters;
+using Tortuga.Chain.Metadata;
+using Tortuga.Chain.CommandBuilders;
 
 namespace Tortuga.Chain.SqlServer
 {
@@ -12,10 +14,11 @@ namespace Tortuga.Chain.SqlServer
     /// <summary>
     /// Class SqlServerProcedureCall.
     /// </summary>
-    public class SqlServerProcedureCall : SqlServerDbCommandBuilder
+    public class SqlServerProcedureCall : MultipleTableDbCommandBuilder<SqlCommand, SqlParameter>
     {
 
         private readonly object m_ArgumentValue;
+        private readonly StoredProcedureMetadata<SqlServerObjectName> m_Metadata;
         private readonly SqlServerObjectName m_ProcedureName;
 
         /// <summary>
@@ -31,6 +34,7 @@ namespace Tortuga.Chain.SqlServer
 
             m_ArgumentValue = argumentValue;
             m_ProcedureName = procedureName;
+            m_Metadata = ((SqlServerDataSourceBase)DataSource).DatabaseMetadata.GetStoredProcedure(procedureName);
         }
 
         /// <summary>
@@ -41,8 +45,7 @@ namespace Tortuga.Chain.SqlServer
         public override ExecutionToken<SqlCommand, SqlParameter> Prepare(Formatter<SqlCommand, SqlParameter> formatter)
         {
             var parameters = new List<SqlParameter>();
-            var expectedParameters = DataSource.DatabaseMetadata.GetStoredProcedure(m_ProcedureName).Parameters.ToDictionary(p => p.ClrName, StringComparer.InvariantCultureIgnoreCase);
-
+            var expectedParameters = m_Metadata.Parameters.ToDictionary(p => p.ClrName, StringComparer.InvariantCultureIgnoreCase);
 
             if (m_ArgumentValue is IEnumerable<SqlParameter>)
             {
@@ -53,7 +56,7 @@ namespace Tortuga.Chain.SqlServer
             {
                 foreach (var item in (IReadOnlyDictionary<string, object>)m_ArgumentValue)
                 {
-                    Metadata.ParameterMetadata paramInfo;
+                    ParameterMetadata paramInfo;
                     if (expectedParameters.TryGetValue(item.Key, out paramInfo))
                     {
                         var newSqlParameter = new SqlParameter("@" + item.Key, item.Value ?? DBNull.Value);
@@ -67,7 +70,7 @@ namespace Tortuga.Chain.SqlServer
             {
                 foreach (var property in MetadataCache.GetMetadata(m_ArgumentValue.GetType()).Properties)
                 {
-                    Metadata.ParameterMetadata paramInfo;
+                    ParameterMetadata paramInfo;
                     if (expectedParameters.TryGetValue(property.MappedColumnName, out paramInfo))
                     {
                         var newSqlParameter = new SqlParameter("@" + property.MappedColumnName, property.InvokeGet(m_ArgumentValue) ?? DBNull.Value);

@@ -6,16 +6,17 @@ using System.Linq;
 using Tortuga.Anchor.Metadata;
 using Tortuga.Chain.Formatters;
 using Tortuga.Chain.Metadata;
+using Tortuga.Chain.CommandBuilders;
 
 namespace Tortuga.Chain.SqlServer
 {
     /// <summary>
     /// SqlServerTableOrView supports queries against tables and views.
     /// </summary>
-    public class SqlServerTableOrView : SqlServerDbCommandBuilder
+    public class SqlServerTableOrView : MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> 
     {
         private readonly object m_FilterValue;
-        private readonly SqlServerObjectName m_TableOrViewName;
+        private readonly TableOrViewMetadata<SqlServerObjectName> m_Metadata;
         private readonly string m_WhereClause;
         private readonly object m_ArgumentValue;
 
@@ -32,7 +33,7 @@ namespace Tortuga.Chain.SqlServer
                 throw new ArgumentException($"{nameof(tableOrViewName)} is empty", nameof(tableOrViewName));
 
             m_FilterValue = filterValue;
-            m_TableOrViewName = tableOrViewName;
+            m_Metadata = ((SqlServerDataSourceBase)DataSource).DatabaseMetadata.GetTableOrView(tableOrViewName);
         }
 
         /// <summary>
@@ -49,7 +50,7 @@ namespace Tortuga.Chain.SqlServer
 
             m_ArgumentValue = argumentValue;
             m_WhereClause = whereClause;
-            m_TableOrViewName = tableOrViewName;
+            m_Metadata = ((SqlServerDataSourceBase)DataSource).DatabaseMetadata.GetTableOrView(tableOrViewName);
         }
 
         /// <summary>
@@ -60,47 +61,41 @@ namespace Tortuga.Chain.SqlServer
         public override ExecutionToken<SqlCommand, SqlParameter> Prepare(Formatter<SqlCommand, SqlParameter> formatter)
         {
             var parameters = new List<SqlParameter>();
-            var metadata = DataSource.DatabaseMetadata.GetTableOrView(m_TableOrViewName);
 
-            var select = SelectClause(formatter, metadata);
-            var from = FromClause();
+            var select = SelectClause(formatter);
+            var from = $"FROM {m_Metadata.Name.ToQuotedString()}";
 
             string where = null;
 
             if (m_FilterValue != null)
-                where = WhereClauseA(metadata, parameters);
+                where = WhereClauseA(parameters);
             else if (!string.IsNullOrWhiteSpace(m_WhereClause))
                 where = WhereClauseB(parameters);
 
             var sql = $"{select} {from} {where};";
 
-            return new ExecutionToken<SqlCommand, SqlParameter>(DataSource, "Query " + m_TableOrViewName, sql, parameters);
+            return new ExecutionToken<SqlCommand, SqlParameter>(DataSource, "Query " + m_Metadata.Name, sql, parameters);
         }
 
-        private string SelectClause(Formatter<SqlCommand, SqlParameter> formatter, TableOrViewMetadata<SqlServerObjectName> metadata)
+        private string SelectClause(Formatter<SqlCommand, SqlParameter> formatter)
         {
             var desiredColumns = formatter.DesiredColumns().ToDictionary(c => c, StringComparer.InvariantCultureIgnoreCase);
-            var availableColumns = metadata.Columns;
+            var availableColumns = m_Metadata.Columns;
 
             if (desiredColumns.Count == 0)
                 return "SELECT " + string.Join(",", availableColumns.Select(c => c.QuotedSqlName));
 
             var actualColumns = availableColumns.Where(c => desiredColumns.ContainsKey(c.ClrName)).ToList();
             if (actualColumns.Count == 0)
-                throw new DataException($"None of the requested columns were found in {m_TableOrViewName}."); //TODO - Create a custom exception type and list the available/desired columns
+                throw new DataException($"None of the requested columns were found in {m_Metadata.Name}."); //TODO - Create a custom exception type and list the available/desired columns
 
             return "SELECT " + string.Join(",", actualColumns.Select(c => c.QuotedSqlName));
 
         }
-
-        private string FromClause()
+        
+        private string WhereClauseA(List<SqlParameter> parameters)
         {
-            return $"FROM {m_TableOrViewName.ToQuotedString()}";
-        }
-
-        private string WhereClauseA(TableOrViewMetadata<SqlServerObjectName> metadata, List<SqlParameter> parameters)
-        {
-            var availableColumns = metadata.Columns.ToDictionary(c => c.ClrName, StringComparer.InvariantCultureIgnoreCase);
+            var availableColumns = m_Metadata.Columns.ToDictionary(c => c.ClrName, StringComparer.InvariantCultureIgnoreCase);
             var properties = MetadataCache.GetMetadata(m_FilterValue.GetType()).Properties;
             var actualColumns = new List<string>();
 
@@ -146,7 +141,7 @@ namespace Tortuga.Chain.SqlServer
             }
 
             if (actualColumns.Count == 0)
-                throw new DataException($"Unable to find any properties on type {m_FilterValue.GetType().Name} that match the columns on {m_TableOrViewName}");
+                throw new DataException($"Unable to find any properties on type {m_FilterValue.GetType().Name} that match the columns on {m_Metadata.Name}");
 
             return "WHERE " + string.Join(" AND ", actualColumns);
         }

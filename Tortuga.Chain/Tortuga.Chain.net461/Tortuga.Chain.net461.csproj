@@ -65,8 +65,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataSource`2.cs" />
-    <Compile Include="DbCommandBuilder`2.cs" />
+    <Compile Include="DataSources\DataSource`2.cs" />
+    <Compile Include="CommandBuilders\DbCommandBuilder`2.cs" />
     <Compile Include="DeleteOptions.cs" />
     <Compile Include="ExecutionToken`2.cs" />
     <Compile Include="Formatters\BooleanListResult.cs" />
@@ -128,8 +128,11 @@
     <Compile Include="Metadata\TableViewMetadata`1.cs" />
     <Compile Include="Metadata\Utilities.cs" />
     <Compile Include="MissingObjectException.cs" />
+    <Compile Include="CommandBuilders\MultipleRowDbCommandBuilder.cs" />
+    <Compile Include="CommandBuilders\MultipleTableDbCommandBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RowOptions.cs" />
+    <Compile Include="CommandBuilders\SingleRowDbCommandBuilder.cs" />
     <Compile Include="Table.cs" />
     <Compile Include="TableSet.cs" />
     <Compile Include="UpdateOptions.cs" />

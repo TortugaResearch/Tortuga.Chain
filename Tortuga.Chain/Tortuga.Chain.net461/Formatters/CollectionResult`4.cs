@@ -4,6 +4,7 @@ using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
 using Tortuga.Anchor.Metadata;
+using Tortuga.Chain.CommandBuilders;
 
 namespace Tortuga.Chain.Formatters
 {
@@ -82,7 +83,7 @@ namespace Tortuga.Chain.Formatters
         }
 
         /// <summary>
-        /// Returns the list of columns the result formatter would like to have.
+        /// Returns the list of columns the formatter would like to have.
         /// </summary>
         /// <returns></returns>
         public override IReadOnlyList<string> DesiredColumns()

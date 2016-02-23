@@ -1,8 +1,12 @@
+using System;
+
 namespace Tortuga.Chain.Metadata
 {
     /// <summary>
     /// Enum GetPropertiesFilter
     /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1714:FlagsEnumsShouldHavePluralNames")]
+    [Flags]
     public enum GetPropertiesFilter
     {
         /// <summary>

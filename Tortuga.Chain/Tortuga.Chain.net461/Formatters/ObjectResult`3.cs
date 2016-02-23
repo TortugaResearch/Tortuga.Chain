@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Tortuga.Anchor.Metadata;
+using Tortuga.Chain.CommandBuilders;
 
 namespace Tortuga.Chain.Formatters
 {
