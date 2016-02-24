@@ -22,13 +22,13 @@ namespace Tortuga.Chain.CommandBuilders
 
 
         /// <summary>
-        /// Indicates the results should be formatted as a DataSet.
+        /// Indicates the results should be materialized as a DataSet.
         /// </summary>
         /// <param name="tableNames">The table names.</param>
         public DataSetMaterializer<TCommandType, TParameterType> AsDataSet(params string[] tableNames) { return new DataSetMaterializer<TCommandType, TParameterType>(this, tableNames); }
 
         /// <summary>
-        /// Indicates the results should be formatted as a set of tables.
+        /// Indicates the results should be materialized as a set of tables.
         /// </summary>
         public TableSetMaterializer<TCommandType, TParameterType> AsTableSet(params string[] tableNames) { return new TableSetMaterializer<TCommandType, TParameterType>(this, tableNames); }
 

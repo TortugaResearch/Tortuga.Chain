@@ -9,22 +9,22 @@ using Tortuga.Chain.CommandBuilders;
 namespace Tortuga.Chain.Materializers
 {
     /// <summary>
-    /// This is the base class for formatters that don't return a value. Most operation are not executed without first attaching a formatter subclass.
+    /// This is the base class for materializers that don't return a value. Most operation are not executed without first attaching a materializer subclass.
     /// </summary>
     /// <typeparam name="TCommandType">The type of the t command type.</typeparam>
     /// <typeparam name="TParameterType">The type of the t parameter type.</typeparam>
-    public abstract class Formatter<TCommandType, TParameterType>
+    public abstract class Materializer<TCommandType, TParameterType>
         where TCommandType : DbCommand
         where TParameterType : DbParameter
     {
         readonly DbCommandBuilder<TCommandType, TParameterType> m_CommandBuilder;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Formatter{TCommandType, TParameterType}"/> class.
+        /// Initializes a new instance of the <see cref="Materializer{TCommandType, TParameterType}"/> class.
         /// </summary>
         /// <param name="commandBuilder">The associated command builder.</param>
         /// <exception cref="ArgumentNullException">operation;operation is null.</exception>
-        protected Formatter(DbCommandBuilder<TCommandType, TParameterType> commandBuilder)
+        protected Materializer(DbCommandBuilder<TCommandType, TParameterType> commandBuilder)
         {
             if (commandBuilder == null)
                 throw new ArgumentNullException(nameof(commandBuilder), $"{nameof(commandBuilder)} is null.");
@@ -48,7 +48,7 @@ namespace Tortuga.Chain.Materializers
         public string CommandText() => CommandBuilder.Prepare(this).CommandText;
 
         /// <summary>
-        /// Returns the list of columns the formatter would like to have.
+        /// Returns the list of columns the materializer would like to have.
         /// </summary>
         /// <returns>IReadOnlyList&lt;System.String&gt;.</returns>
         public virtual IReadOnlyList<string> DesiredColumns()

@@ -56,13 +56,13 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// <summary>
         /// Prepares the command for execution by generating any necessary SQL.
         /// </summary>
-        /// <param name="formatter">The formatter.</param>
+        /// <param name="materializer">The materializer.</param>
         /// <returns>ExecutionToken&lt;TCommandType&gt;.</returns>
-        public override ExecutionToken<SqlCommand, SqlParameter> Prepare(Formatter<SqlCommand, SqlParameter> formatter)
+        public override ExecutionToken<SqlCommand, SqlParameter> Prepare(Materializer<SqlCommand, SqlParameter> materializer)
         {
             var parameters = new List<SqlParameter>();
 
-            var select = SelectClause(formatter);
+            var select = SelectClause(materializer);
             var from = $"FROM {m_Metadata.Name.ToQuotedString()}";
 
             string where = null;
@@ -77,9 +77,9 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             return new ExecutionToken<SqlCommand, SqlParameter>(DataSource, "Query " + m_Metadata.Name, sql, parameters);
         }
 
-        private string SelectClause(Formatter<SqlCommand, SqlParameter> formatter)
+        private string SelectClause(Materializer<SqlCommand, SqlParameter> materializer)
         {
-            var desiredColumns = formatter.DesiredColumns().ToDictionary(c => c, StringComparer.InvariantCultureIgnoreCase);
+            var desiredColumns = materializer.DesiredColumns().ToDictionary(c => c, StringComparer.InvariantCultureIgnoreCase);
             var availableColumns = m_Metadata.Columns;
 
             if (desiredColumns.Count == 0)

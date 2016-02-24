@@ -53,16 +53,16 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// <summary>
         /// Builds an output clause.
         /// </summary>
-        /// <param name="formatter">The formatter.</param>
+        /// <param name="materializer">The materializer.</param>
         /// <param name="returnDeletedColumns">if set to <c>true</c> [return deleted columns].</param>
         /// <returns>System.String.</returns>
         /// <exception cref="DataException"></exception>
-        protected string OutputClause(Formatter<SqlCommand, SqlParameter> formatter, bool returnDeletedColumns)
+        protected string OutputClause(Materializer<SqlCommand, SqlParameter> materializer, bool returnDeletedColumns)
         {
-            if (formatter is NonQueryMaterializer<SqlCommand, SqlParameter>)
+            if (materializer is NonQueryMaterializer<SqlCommand, SqlParameter>)
                 return null;
 
-            var desiredColumns = formatter.DesiredColumns().ToLookup(c => c);
+            var desiredColumns = materializer.DesiredColumns().ToLookup(c => c);
             if (desiredColumns.Count > 0)
             {
                 var availableColumns = Metadata.Columns.Where(c => desiredColumns.Contains(c.ClrName)).ToList();

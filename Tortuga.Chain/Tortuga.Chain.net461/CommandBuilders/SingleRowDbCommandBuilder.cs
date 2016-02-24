@@ -22,101 +22,101 @@ namespace Tortuga.Chain.CommandBuilders
         }
 
         /// <summary>
-        /// Indicates the results should be formatted as a Boolean.
+        /// Indicates the results should be materialized as a Boolean.
         /// </summary>
         public BooleanMaterializer<TCommandType, TParameterType> AsBoolean() { return new BooleanMaterializer<TCommandType, TParameterType>(this); }
 
         /// <summary>
-        /// Indicates the results should be formatted as a nullable Boolean.
+        /// Indicates the results should be materialized as a nullable Boolean.
         /// </summary>
         public BooleanOrNullMaterializer<TCommandType, TParameterType> AsBooleanOrNull() { return new BooleanOrNullMaterializer<TCommandType, TParameterType>(this); }
 
         /// <summary>
-        /// Indicates the results should be formatted as a byte array.
+        /// Indicates the results should be materialized as a byte array.
         /// </summary>
         public ByteArrayMaterializer<TCommandType, TParameterType> AsByteArray() { return new ByteArrayMaterializer<TCommandType, TParameterType>(this); }
 
         /// <summary>
-        /// Indicates the results should be formatted as a DateTime.
+        /// Indicates the results should be materialized as a DateTime.
         /// </summary>
         public DateTimeMaterializer<TCommandType, TParameterType> AsDateTime() { return new DateTimeMaterializer<TCommandType, TParameterType>(this); }
 
         /// <summary>
-        /// Indicates the results should be formatted as a DateTimeOffset.
+        /// Indicates the results should be materialized as a DateTimeOffset.
         /// </summary>
         public DateTimeOffsetMaterializer<TCommandType, TParameterType> AsDateTimeOffset() { return new DateTimeOffsetMaterializer<TCommandType, TParameterType>(this); }
 
         /// <summary>
-        /// Indicates the results should be formatted as a nullable DateTimeOffset.
+        /// Indicates the results should be materialized as a nullable DateTimeOffset.
         /// </summary>
         public DateTimeOffsetOrNullMaterializer<TCommandType, TParameterType> AsDateTimeOffsetOrNull() { return new DateTimeOffsetOrNullMaterializer<TCommandType, TParameterType>(this); }
 
         /// <summary>
-        /// Indicates the results should be formatted as a nullable DateTime.
+        /// Indicates the results should be materialized as a nullable DateTime.
         /// </summary>
         public DateTimeOrNullMaterializer<TCommandType, TParameterType> AsDateTimeOrNull() { return new DateTimeOrNullMaterializer<TCommandType, TParameterType>(this); }
 
         /// <summary>
-        /// Indicates the results should be formatted as a Decimal.
+        /// Indicates the results should be materialized as a Decimal.
         /// </summary>
         public DecimalMaterializer<TCommandType, TParameterType> AsDecimal() { return new DecimalMaterializer<TCommandType, TParameterType>(this); }
 
         /// <summary>
-        /// Indicates the results should be formatted as a nullable Decimal.
+        /// Indicates the results should be materialized as a nullable Decimal.
         /// </summary>
         public DecimalOrNullMaterializer<TCommandType, TParameterType> AsDecimalOrNull() { return new DecimalOrNullMaterializer<TCommandType, TParameterType>(this); }
         /// <summary>
-        /// Indicates the results should be formatted as a Double.
+        /// Indicates the results should be materialized as a Double.
         /// </summary>
         public DoubleMaterializer<TCommandType, TParameterType> AsDouble() { return new DoubleMaterializer<TCommandType, TParameterType>(this); }
 
         /// <summary>
-        /// Indicates the results should be formatted as a nullable Double.
+        /// Indicates the results should be materialized as a nullable Double.
         /// </summary>
         public DoubleOrNullMaterializer<TCommandType, TParameterType> AsDoubleOrNull() { return new DoubleOrNullMaterializer<TCommandType, TParameterType>(this); }
 
         /// <summary>
-        /// Indicates the results should be formatted as a Guid.
+        /// Indicates the results should be materialized as a Guid.
         /// </summary>
         public GuidMaterializer<TCommandType, TParameterType> AsGuid() { return new GuidMaterializer<TCommandType, TParameterType>(this); }
 
         /// <summary>
-        /// Indicates the results should be formatted as a nullable Guid.
+        /// Indicates the results should be materialized as a nullable Guid.
         /// </summary>
         public GuidOrNullMaterializer<TCommandType, TParameterType> AsGuidOrNull() { return new GuidOrNullMaterializer<TCommandType, TParameterType>(this); }
 
         /// <summary>
-        /// Indicates the results should be formatted as a Int16.
+        /// Indicates the results should be materialized as a Int16.
         /// </summary>
         public Int16Materializer<TCommandType, TParameterType> AsInt16() { return new Int16Materializer<TCommandType, TParameterType>(this); }
 
         /// <summary>
-        /// Indicates the results should be formatted as a nullable Int16.
+        /// Indicates the results should be materialized as a nullable Int16.
         /// </summary>
         public Int16OrNullMaterializer<TCommandType, TParameterType> AsInt16OrNull() { return new Int16OrNullMaterializer<TCommandType, TParameterType>(this); }
 
         /// <summary>
-        /// Indicates the results should be formatted as a Int32.
+        /// Indicates the results should be materialized as a Int32.
         /// </summary>
         public Int32Materializer<TCommandType, TParameterType> AsInt32() { return new Int32Materializer<TCommandType, TParameterType>(this); }
 
         /// <summary>
-        /// Indicates the results should be formatted as a nullable Int32.
+        /// Indicates the results should be materialized as a nullable Int32.
         /// </summary>
         public Int32OrNullMaterializer<TCommandType, TParameterType> AsInt32OrNull() { return new Int32OrNullMaterializer<TCommandType, TParameterType>(this); }
 
         /// <summary>
-        /// Indicates the results should be formatted as a Int64.
+        /// Indicates the results should be materialized as a Int64.
         /// </summary>
         public Int64Materializer<TCommandType, TParameterType> AsInt64() { return new Int64Materializer<TCommandType, TParameterType>(this); }
 
         /// <summary>
-        /// Indicates the results should be formatted as a nullable Int64.
+        /// Indicates the results should be materialized as a nullable Int64.
         /// </summary>
         public Int64OrNullMaterializer<TCommandType, TParameterType> AsInt64OrNull() { return new Int64OrNullMaterializer<TCommandType, TParameterType>(this); }
 
         /// <summary>
-        /// Formats the result as an instance of the indicated type
+        /// Materializes the result as an instance of the indicated type
         /// </summary>
         /// <typeparam name="TObject">The type of the object returned.</typeparam>
         /// <param name="rowOptions">The row options.</param>
@@ -128,33 +128,33 @@ namespace Tortuga.Chain.CommandBuilders
         }
 
         /// <summary>
-        /// Indicates the results should be formatted as a Row.
+        /// Indicates the results should be materialized as a Row.
         /// </summary>
         public RowMaterializer<TCommandType, TParameterType> AsRow(RowOptions rowOptions = RowOptions.None) { return new RowMaterializer<TCommandType, TParameterType>(this, rowOptions); }
 
         /// <summary>
-        /// Indicates the results should be formatted as a Single.
+        /// Indicates the results should be materialized as a Single.
         /// </summary>
         public SingleMaterializer<TCommandType, TParameterType> AsSingle() { return new SingleMaterializer<TCommandType, TParameterType>(this); }
 
         /// <summary>
-        /// Indicates the results should be formatted as a nullable Single.
+        /// Indicates the results should be materialized as a nullable Single.
         /// </summary>
         public SingleOrNullMaterializer<TCommandType, TParameterType> AsSingleOrNull() { return new SingleOrNullMaterializer<TCommandType, TParameterType>(this); }
 
         /// <summary>
-        /// Indicates the results should be formatted as a nullable string.
+        /// Indicates the results should be materialized as a nullable string.
         /// </summary>
         /// <returns></returns>
         public StringMaterializer<TCommandType, TParameterType> AsString() { return new StringMaterializer<TCommandType, TParameterType>(this); }
 
         /// <summary>
-        /// Indicates the results should be formatted as a TimeSpan.
+        /// Indicates the results should be materialized as a TimeSpan.
         /// </summary>
         public TimeSpanMaterializer<TCommandType, TParameterType> AsTimeSpan() { return new TimeSpanMaterializer<TCommandType, TParameterType>(this); }
 
         /// <summary>
-        /// Indicates the results should be formatted as a nullable TimeSpan.
+        /// Indicates the results should be materialized as a nullable TimeSpan.
         /// </summary>
         public TimeSpanOrNullMaterializer<TCommandType, TParameterType> AsTimeSpanOrNull() { return new TimeSpanOrNullMaterializer<TCommandType, TParameterType>(this); }
     }

@@ -1,34 +1,27 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Tortuga.Anchor.Metadata;
 using Tortuga.Chain.CommandBuilders;
 
 namespace Tortuga.Chain.Materializers
 {
     /// <summary>
-    /// Materializes the result set as an instance of the indicated type.
+    /// Materializes the result set as a single row.
     /// </summary>
     /// <typeparam name="TCommandType">The type of the t command type.</typeparam>
     /// <typeparam name="TParameterType">The type of the t parameter type.</typeparam>
-    /// <typeparam name="TObject">The type of the object returned.</typeparam>
-    /// <seealso cref="Materializer{TCommandType, TParameterType, TTObject}" />
-    public class ObjectMaterializer<TCommandType, TParameterType, TObject> : Materializer<TCommandType, TParameterType, TObject>
-        where TCommandType : DbCommand
-        where TObject : class, new()
+    public class RowMaterializer<TCommandType, TParameterType> : Materializer<TCommandType, TParameterType, IReadOnlyDictionary<string, object>> where TCommandType : DbCommand
         where TParameterType : DbParameter
     {
-
         readonly RowOptions m_RowOptions;
 
         /// <summary>
         /// </summary>
         /// <param name="commandBuilder">The command builder.</param>
         /// <param name="rowOptions">The row options.</param>
-        public ObjectMaterializer(DbCommandBuilder<TCommandType, TParameterType> commandBuilder, RowOptions rowOptions)
+        public RowMaterializer(DbCommandBuilder<TCommandType, TParameterType> commandBuilder, RowOptions rowOptions)
             : base(commandBuilder)
         {
             m_RowOptions = rowOptions;
@@ -38,10 +31,11 @@ namespace Tortuga.Chain.Materializers
         /// Execute the operation synchronously.
         /// </summary>
         /// <returns></returns>
-        public override TObject Execute(object state = null)
+        public override IReadOnlyDictionary<string, object> Execute(object state = null)
         {
-            Table table = null;
             var executionToken = Prepare();
+
+            Table table = null;
             executionToken.Execute(cmd =>
             {
                 using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess))
@@ -50,6 +44,7 @@ namespace Tortuga.Chain.Materializers
                     return table.Rows.Count;
                 }
             }, state);
+
 
             if (table.Rows.Count == 0)
             {
@@ -75,7 +70,7 @@ namespace Tortuga.Chain.Materializers
                 ex.Data["RowCount"] = table.Rows.Count;
                 throw ex;
             }
-            return table.ToObjects<TObject>().First();
+            return table.Rows[0];
         }
 
 
@@ -85,12 +80,11 @@ namespace Tortuga.Chain.Materializers
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <param name="state">User defined state, usually used for logging.</param>
         /// <returns></returns>
-        /// <exception cref="DataException">Unexpected null result</exception>
-        public override async Task<TObject> ExecuteAsync(CancellationToken cancellationToken, object state = null)
+        public override async Task<IReadOnlyDictionary<string, object>> ExecuteAsync(CancellationToken cancellationToken, object state = null)
         {
-            Table table = null;
-
             var executionToken = Prepare();
+
+            Table table = null;
             await executionToken.ExecuteAsync(async cmd =>
             {
                 using (var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SequentialAccess, cancellationToken).ConfigureAwait(false))
@@ -125,17 +119,7 @@ namespace Tortuga.Chain.Materializers
                 ex.Data["RowCount"] = table.Rows.Count;
                 throw ex;
             }
-            return table.ToObjects<TObject>().First();
+            return table.Rows[0];
         }
-
-        /// <summary>
-        /// Returns the list of columns the result materializer would like to have.
-        /// </summary>
-        /// <returns></returns>
-        public override IReadOnlyList<string> DesiredColumns()
-        {
-            return MetadataCache.GetMetadata(typeof(TObject)).ColumnsFor;
-        }
-
     }
 }

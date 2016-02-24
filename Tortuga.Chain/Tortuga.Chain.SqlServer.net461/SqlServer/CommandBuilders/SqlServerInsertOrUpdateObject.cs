@@ -29,10 +29,10 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// <summary>
         /// Prepares the command for execution by generating any necessary SQL.
         /// </summary>
-        /// <param name="formatter">The formatter.</param>
+        /// <param name="materializer">The materializer.</param>
         /// <returns>ExecutionToken&lt;TCommandType&gt;.</returns>
 
-        public override ExecutionToken<SqlCommand, SqlParameter> Prepare(Formatter<SqlCommand, SqlParameter> formatter)
+        public override ExecutionToken<SqlCommand, SqlParameter> Prepare(Materializer<SqlCommand, SqlParameter> materializer)
         {
             var parameters = new List<SqlParameter>();
 

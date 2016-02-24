@@ -29,7 +29,7 @@ namespace Tortuga.Chain
         /// <summary>
         /// The return original values instead of the updated values.
         /// </summary>
-        /// <remarks>This has no effect when using the NonQuery formatter.</remarks>
+        /// <remarks>This has no effect when using the NonQuery materializer.</remarks>
         ReturnOldValues = 4
 
 

@@ -74,8 +74,8 @@ namespace Tortuga.Chain.CommandBuilders
         /// <summary>
         /// Prepares the command for execution by generating any necessary SQL.
         /// </summary>
-        /// <param name="formatter">The formatter.</param>
+        /// <param name="materializer">The materializer.</param>
         /// <returns>ExecutionToken&lt;TCommandType&gt;.</returns>
-        public abstract ExecutionToken<TCommandType, TParameterType> Prepare(Formatter<TCommandType, TParameterType> formatter);
+        public abstract ExecutionToken<TCommandType, TParameterType> Prepare(Materializer<TCommandType, TParameterType> materializer);
     }
 }
