@@ -4,7 +4,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using Tortuga.Chain.CommandBuilders;
-using Tortuga.Chain.Formatters;
+using Tortuga.Chain.Materializers;
 using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.SqlServer.CommandBuilders
@@ -59,7 +59,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// <exception cref="DataException"></exception>
         protected string OutputClause(Formatter<SqlCommand, SqlParameter> formatter, bool returnDeletedColumns)
         {
-            if (formatter is NonQueryResult<SqlCommand, SqlParameter>)
+            if (formatter is NonQueryMaterializer<SqlCommand, SqlParameter>)
                 return null;
 
             var desiredColumns = formatter.DesiredColumns().ToLookup(c => c);

@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Tortuga.Chain.DataSources;
-using Tortuga.Chain.Formatters;
+using Tortuga.Chain.Materializers;
 
 namespace Tortuga.Chain.CommandBuilders
 {
@@ -39,7 +39,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// Indicates this operation has no result set.
         /// </summary>
         /// <returns></returns>
-        public NonQueryResult<TCommandType, TParameterType> AsNonQuery() { return new NonQueryResult<TCommandType, TParameterType>(this); }
+        public NonQueryMaterializer<TCommandType, TParameterType> AsNonQuery() { return new NonQueryMaterializer<TCommandType, TParameterType>(this); }
 
         /// <summary>
         /// Execute the operation synchronously.

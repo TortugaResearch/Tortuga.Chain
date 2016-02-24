@@ -1,5 +1,5 @@
 using System.Data.Common;
-using Tortuga.Chain.Formatters;
+using Tortuga.Chain.Materializers;
 using Tortuga.Chain.DataSources;
 
 namespace Tortuga.Chain.CommandBuilders
@@ -25,12 +25,12 @@ namespace Tortuga.Chain.CommandBuilders
         /// Indicates the results should be formatted as a DataSet.
         /// </summary>
         /// <param name="tableNames">The table names.</param>
-        public DataSetResult<TCommandType, TParameterType> AsDataSet(params string[] tableNames) { return new DataSetResult<TCommandType, TParameterType>(this, tableNames); }
+        public DataSetMaterializer<TCommandType, TParameterType> AsDataSet(params string[] tableNames) { return new DataSetMaterializer<TCommandType, TParameterType>(this, tableNames); }
 
         /// <summary>
         /// Indicates the results should be formatted as a set of tables.
         /// </summary>
-        public TableSetResult<TCommandType, TParameterType> AsTableSet(params string[] tableNames) { return new TableSetResult<TCommandType, TParameterType>(this, tableNames); }
+        public TableSetMaterializer<TCommandType, TParameterType> AsTableSet(params string[] tableNames) { return new TableSetMaterializer<TCommandType, TParameterType>(this, tableNames); }
 
     }
 }
