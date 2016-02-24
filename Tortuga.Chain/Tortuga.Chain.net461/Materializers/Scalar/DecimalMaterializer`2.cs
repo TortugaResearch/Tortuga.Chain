@@ -34,7 +34,7 @@ namespace Tortuga.Chain.Materializers
             object temp = null;
             ExecuteCore(cmd => temp = cmd.ExecuteScalar(), state);
             if (temp == DBNull.Value)
-                throw new DataException("Unexpected null result");
+                throw new MissingDataException("Unexpected null result");
 
             return (decimal)temp;
         }
@@ -52,7 +52,7 @@ namespace Tortuga.Chain.Materializers
             object temp = null;
             await ExecuteCoreAsync(async cmd => temp = await cmd.ExecuteScalarAsync(cancellationToken), cancellationToken, state).ConfigureAwait(false);
             if (temp == DBNull.Value)
-                throw new DataException("Unexpected null result");
+                throw new MissingDataException("Unexpected null result");
 
             return (decimal)temp;
         }

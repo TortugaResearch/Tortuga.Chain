@@ -69,6 +69,7 @@
     <Compile Include="CommandBuilders\DbCommandBuilder`2.cs" />
     <Compile Include="DeleteOptions.cs" />
     <Compile Include="ExecutionToken`2.cs" />
+    <Compile Include="MappingException.cs" />
     <Compile Include="Materializers\SingleColumn\BooleanListMaterializer`2.cs" />
     <Compile Include="Materializers\Scalar\BooleanOrNullMaterializer`2.cs" />
     <Compile Include="Materializers\Scalar\BooleanMaterializer`2.cs" />
@@ -127,6 +128,7 @@
     <Compile Include="Metadata\TableFunctionMetadata`1.cs" />
     <Compile Include="Metadata\TableViewMetadata`1.cs" />
     <Compile Include="Metadata\Utilities.cs" />
+    <Compile Include="MissingDataException.cs" />
     <Compile Include="MissingObjectException.cs" />
     <Compile Include="CommandBuilders\MultipleRowDbCommandBuilder.cs" />
     <Compile Include="CommandBuilders\MultipleTableDbCommandBuilder.cs" />
@@ -135,6 +137,7 @@
     <Compile Include="CommandBuilders\SingleRowDbCommandBuilder.cs" />
     <Compile Include="Table.cs" />
     <Compile Include="TableSet.cs" />
+    <Compile Include="UnexpectedDataException.cs" />
     <Compile Include="UpdateOptions.cs" />
   </ItemGroup>
   <ItemGroup>

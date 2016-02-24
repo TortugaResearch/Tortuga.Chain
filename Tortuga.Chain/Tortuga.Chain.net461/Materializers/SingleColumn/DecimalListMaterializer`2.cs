@@ -47,7 +47,7 @@ namespace Tortuga.Chain.Materializers
                 {
                     if (reader.FieldCount > 1 && !m_ListOptions.HasFlag(ListOptions.IgnoreExtraColumns))
                     {
-                        throw new DataException(string.Format("Expected one column but found {0} columns", reader.FieldCount));
+                        throw new UnexpectedDataException($"Expected one column but found {reader.FieldCount} columns");
                     }
 
                     var columnCount = m_ListOptions.HasFlag(ListOptions.FlattenExtraColumns) ? reader.FieldCount : 1;
@@ -88,7 +88,7 @@ namespace Tortuga.Chain.Materializers
                 {
                     if (reader.FieldCount > 1 && !m_ListOptions.HasFlag(ListOptions.IgnoreExtraColumns))
                     {
-                        throw new DataException(string.Format("Expected one column but found {0} columns", reader.FieldCount));
+                        throw new UnexpectedDataException($"Expected one column but found {reader.FieldCount} columns");
                     }
 
                     var columnCount = m_ListOptions.HasFlag(ListOptions.FlattenExtraColumns) ? reader.FieldCount : 1;

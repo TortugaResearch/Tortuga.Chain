@@ -47,7 +47,7 @@ namespace Tortuga.Chain.Materializers
 
             if (m_TableNames.Length > result.Count)
             {
-                var ex = new DataException(string.Format("Expected at least {0} tables but received {1} tables", m_TableNames.Length, result.Count));
+                var ex = new DataException($"Expected at least {m_TableNames.Length} tables but received {result.Count} tables");
                 ex.Data["DataSource"] = CommandBuilder.DataSource.Name;
                 ex.Data["Operation"] = executionToken.OperationName;
                 ex.Data["CommandText"] = executionToken.CommandText;
@@ -82,7 +82,7 @@ namespace Tortuga.Chain.Materializers
 
             if (m_TableNames.Length > result.Count)
             {
-                var ex = new DataException(string.Format("Expected at least {0} tables but received {1} tables", m_TableNames.Length, result.Count));
+                var ex = new DataException($"Expected at least {m_TableNames.Length} tables but received {result.Count} tables");
                 ex.Data["DataSource"] = CommandBuilder.DataSource.Name;
                 ex.Data["Operation"] = executionToken.OperationName;
                 ex.Data["CommandText"] = executionToken.CommandText;
