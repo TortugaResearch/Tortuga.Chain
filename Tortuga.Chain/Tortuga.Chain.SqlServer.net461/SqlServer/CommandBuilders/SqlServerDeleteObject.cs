@@ -26,15 +26,15 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// <summary>
         /// Prepares the command for execution by generating any necessary SQL.
         /// </summary>
-        /// <param name="formatter">The formatter.</param>
+        /// <param name="materializer">The materializer.</param>
         /// <returns>ExecutionToken&lt;TCommandType&gt;.</returns>
 
-        public override ExecutionToken<SqlCommand, SqlParameter> Prepare(Formatter<SqlCommand, SqlParameter> formatter)
+        public override ExecutionToken<SqlCommand, SqlParameter> Prepare(Materializer<SqlCommand, SqlParameter> materializer)
         {
             var parameters = new List<SqlParameter>();
 
             var where = WhereClause(parameters, m_Options.HasFlag(DeleteOptions.UseKeyAttribute));
-            var output = OutputClause(formatter, true);
+            var output = OutputClause(materializer, true);
             var sql = $"DELETE FROM {TableName.ToQuotedString()} {output} WHERE {where}";
 
             return new ExecutionToken<SqlCommand, SqlParameter>(DataSource, "Delete from " + TableName, sql, parameters);

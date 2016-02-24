@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using Tortuga.Chain.Metadata;
 
@@ -9,12 +10,12 @@ namespace Tortuga.Chain.SqlServer
     /// <summary>
     /// Class SqlServerMetadataCache.
     /// </summary>
-    public class SqlServerMetadataCache : DatabaseMetadataCache<SqlServerObjectName>
+    public class SqlServerMetadataCache : DatabaseMetadataCache<SqlServerObjectName, SqlDbType>
     {
         private readonly SqlConnectionStringBuilder m_ConnectionBuilder;
-        private readonly ConcurrentDictionary<SqlServerObjectName, StoredProcedureMetadata<SqlServerObjectName>> m_StoredProcedures = new ConcurrentDictionary<SqlServerObjectName, StoredProcedureMetadata<SqlServerObjectName>>();
-        private readonly ConcurrentDictionary<SqlServerObjectName, TableFunctionMetadata<SqlServerObjectName>> m_TableFunctions = new ConcurrentDictionary<SqlServerObjectName, TableFunctionMetadata<SqlServerObjectName>>();
-        private readonly ConcurrentDictionary<SqlServerObjectName, TableOrViewMetadata<SqlServerObjectName>> m_Tables = new ConcurrentDictionary<SqlServerObjectName, TableOrViewMetadata<SqlServerObjectName>>();
+        private readonly ConcurrentDictionary<SqlServerObjectName, StoredProcedureMetadata<SqlServerObjectName, SqlDbType>> m_StoredProcedures = new ConcurrentDictionary<SqlServerObjectName, StoredProcedureMetadata<SqlServerObjectName, SqlDbType>>();
+        private readonly ConcurrentDictionary<SqlServerObjectName, TableFunctionMetadata<SqlServerObjectName, SqlDbType>> m_TableFunctions = new ConcurrentDictionary<SqlServerObjectName, TableFunctionMetadata<SqlServerObjectName, SqlDbType>>();
+        private readonly ConcurrentDictionary<SqlServerObjectName, TableOrViewMetadata<SqlServerObjectName, SqlDbType>> m_Tables = new ConcurrentDictionary<SqlServerObjectName, TableOrViewMetadata<SqlServerObjectName, SqlDbType>>();
         private readonly ConcurrentDictionary<Type, string> m_UdtTypeMap = new ConcurrentDictionary<Type, string>();
 
         /// <summary>
@@ -42,7 +43,7 @@ namespace Tortuga.Chain.SqlServer
         /// </summary>
         /// <param name="procedureName">Name of the procedure.</param>
         /// <returns>Null if the object could not be found.</returns>
-        public override StoredProcedureMetadata<SqlServerObjectName> GetStoredProcedure(SqlServerObjectName procedureName)
+        public override StoredProcedureMetadata<SqlServerObjectName, SqlDbType> GetStoredProcedure(SqlServerObjectName procedureName)
         {
             return m_StoredProcedures.GetOrAdd(procedureName, GetStoredProcedureInternal);
         }
@@ -52,7 +53,7 @@ namespace Tortuga.Chain.SqlServer
         /// </summary>
         /// <param name="tableFunctionName">Name of the table function.</param>
         /// <returns>Null if the object could not be found.</returns>
-        public override TableFunctionMetadata<SqlServerObjectName> GetTableFunction(SqlServerObjectName tableFunctionName)
+        public override TableFunctionMetadata<SqlServerObjectName, SqlDbType> GetTableFunction(SqlServerObjectName tableFunctionName)
         {
             return m_TableFunctions.GetOrAdd(tableFunctionName, GetFunctionInternal);
         }
@@ -62,7 +63,7 @@ namespace Tortuga.Chain.SqlServer
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <returns>Null if the object could not be found.</returns>
-        public override TableOrViewMetadata<SqlServerObjectName> GetTableOrView(SqlServerObjectName tableName)
+        public override TableOrViewMetadata<SqlServerObjectName, SqlDbType> GetTableOrView(SqlServerObjectName tableName)
         {
             return m_Tables.GetOrAdd(tableName, GetTableOrViewInternal);
         }
@@ -79,7 +80,7 @@ namespace Tortuga.Chain.SqlServer
             m_UdtTypeMap.TryGetValue(type, out result);
             return result;
         }
-        List<ColumnMetadata> GetColumns(int objectId)
+        List<ColumnMetadata<SqlDbType>> GetColumns(int objectId)
         {
             const string ColumnSql =
                 @"WITH    PKS
@@ -105,7 +106,7 @@ namespace Tortuga.Chain.SqlServer
 							LEFT JOIN sys.types t on c.system_type_id = t.user_type_id
 							WHERE   object_id = @ObjectId;";
 
-            var columns = new List<ColumnMetadata>();
+            var columns = new List<ColumnMetadata<SqlDbType>>();
             using (var con = new SqlConnection(m_ConnectionBuilder.ConnectionString))
             {
                 con.Open();
@@ -121,7 +122,7 @@ namespace Tortuga.Chain.SqlServer
                             var primary = reader.GetBoolean(reader.GetOrdinal("is_primary_key"));
                             var isIdentity = reader.GetBoolean(reader.GetOrdinal("is_identity"));
                             var typeName = reader.IsDBNull(reader.GetOrdinal("TypeName")) ? null : reader.GetString(reader.GetOrdinal("TypeName"));
-                            columns.Add(new ColumnMetadata(name, computed, primary, isIdentity, typeName));
+                            columns.Add(new ColumnMetadata<SqlDbType>(name, computed, primary, isIdentity, typeName, TypeNameToSqlDbType(typeName)));
                         }
                     }
                 }
@@ -129,7 +130,7 @@ namespace Tortuga.Chain.SqlServer
             return columns;
         }
 
-        private TableFunctionMetadata<SqlServerObjectName> GetFunctionInternal(SqlServerObjectName tableFunctionName)
+        private TableFunctionMetadata<SqlServerObjectName, SqlDbType> GetFunctionInternal(SqlServerObjectName tableFunctionName)
         {
             const string StoredProcedureSql =
                 @"SELECT 
@@ -165,10 +166,10 @@ namespace Tortuga.Chain.SqlServer
             var columns = GetColumns(objectId);
             var parameters = GetParameters(objectId);
 
-            return new TableFunctionMetadata<SqlServerObjectName>(new SqlServerObjectName(actualSchema, actualName), parameters, columns);
+            return new TableFunctionMetadata<SqlServerObjectName, SqlDbType>(new SqlServerObjectName(actualSchema, actualName), parameters, columns);
         }
 
-        List<ParameterMetadata> GetParameters(int objectId)
+        List<ParameterMetadata<SqlDbType>> GetParameters(int objectId)
         {
             const string ParameterSql =
                 @"SELECT 
@@ -179,7 +180,7 @@ namespace Tortuga.Chain.SqlServer
 				WHERE p.object_id = @ObjectId
 				ORDER BY parameter_id";
 
-            var parameters = new List<ParameterMetadata>();
+            var parameters = new List<ParameterMetadata<SqlDbType>>();
 
             using (var con = new SqlConnection(m_ConnectionBuilder.ConnectionString))
             {
@@ -194,7 +195,7 @@ namespace Tortuga.Chain.SqlServer
                         {
                             var name = reader.GetString(reader.GetOrdinal("ParameterName"));
                             var typeName = reader.GetString(reader.GetOrdinal("TypeName"));
-                            parameters.Add(new ParameterMetadata(name, typeName));
+                            parameters.Add(new ParameterMetadata<SqlDbType>(name, typeName, TypeNameToSqlDbType(typeName)));
                         }
                     }
                 }
@@ -202,7 +203,7 @@ namespace Tortuga.Chain.SqlServer
             return parameters;
         }
 
-        private StoredProcedureMetadata<SqlServerObjectName> GetStoredProcedureInternal(SqlServerObjectName procedureName)
+        private StoredProcedureMetadata<SqlServerObjectName, SqlDbType> GetStoredProcedureInternal(SqlServerObjectName procedureName)
         {
             const string StoredProcedureSql =
                 @"SELECT 
@@ -237,9 +238,9 @@ namespace Tortuga.Chain.SqlServer
             }
             var parameters = GetParameters(objectId);
 
-            return new StoredProcedureMetadata<SqlServerObjectName>(new SqlServerObjectName(actualSchema, actualName), parameters);
+            return new StoredProcedureMetadata<SqlServerObjectName, SqlDbType>(new SqlServerObjectName(actualSchema, actualName), parameters);
         }
-        TableOrViewMetadata<SqlServerObjectName> GetTableOrViewInternal(SqlServerObjectName tableName)
+        TableOrViewMetadata<SqlServerObjectName, SqlDbType> GetTableOrViewInternal(SqlServerObjectName tableName)
         {
             const string TableSql =
                 @"SELECT 
@@ -290,7 +291,7 @@ namespace Tortuga.Chain.SqlServer
 
             var columns = GetColumns(objectId);
 
-            return new TableOrViewMetadata<SqlServerObjectName>(new SqlServerObjectName(actualSchema, actualName), isTable, columns);
+            return new TableOrViewMetadata<SqlServerObjectName, SqlDbType>(new SqlServerObjectName(actualSchema, actualName), isTable, columns);
         }
 
         /// <summary>
@@ -347,6 +348,51 @@ namespace Tortuga.Chain.SqlServer
             }
 
         }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
+        internal static SqlDbType? TypeNameToSqlDbType(string typeName)
+        {
+            switch (typeName)
+            {
+                case "bigint": return SqlDbType.BigInt;
+                case "binary": return SqlDbType.Binary;
+                case "bit": return SqlDbType.Bit;
+                case "char": return SqlDbType.Char;
+                case "date": return SqlDbType.Date;
+                case "datetime": return SqlDbType.DateTime;
+                case "datetime2": return SqlDbType.DateTime2;
+                case "datetimeoffset": return SqlDbType.DateTimeOffset;
+                case "decimal": return SqlDbType.Decimal;
+                case "float": return SqlDbType.Float;
+                //case "geography": m_SqlDbType = SqlDbType.; 
+                //case "geometry": m_SqlDbType = SqlDbType; 
+                //case "hierarchyid": m_SqlDbType = SqlDbType.; 
+                case "image": return SqlDbType.Image;
+                case "int": return SqlDbType.Int;
+                case "money": return SqlDbType.Money;
+                case "nchar": return SqlDbType.NChar;
+                case "ntext": return SqlDbType.NText;
+                case "numeric": return SqlDbType.Decimal;
+                case "nvarchar": return SqlDbType.NVarChar;
+                case "real": return SqlDbType.Real;
+                case "smalldatetime": return SqlDbType.SmallDateTime;
+                case "smallint": return SqlDbType.SmallInt;
+                case "smallmoney": return SqlDbType.SmallMoney;
+                //case "sql_variant": m_SqlDbType = SqlDbType; 
+                //case "sysname": m_SqlDbType = SqlDbType; 
+                case "text": return SqlDbType.Text;
+                case "time": return SqlDbType.Time;
+                case "timestamp": return SqlDbType.Timestamp;
+                case "tinyint": return SqlDbType.TinyInt;
+                case "uniqueidentifier": return SqlDbType.UniqueIdentifier;
+                case "varbinary": return SqlDbType.VarBinary;
+                case "varchar": return SqlDbType.VarChar;
+                case "xml": return SqlDbType.Xml;
+            }
+
+            return null;
+        }
+
 
     }
 

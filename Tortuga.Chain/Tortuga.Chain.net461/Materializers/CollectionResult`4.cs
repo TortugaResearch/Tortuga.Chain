@@ -9,15 +9,15 @@ using Tortuga.Chain.CommandBuilders;
 namespace Tortuga.Chain.Materializers
 {
     /// <summary>
-    /// Formats the result set as a collection of the indicated type.
+    /// Materializes the result set as a collection of the indicated type.
     /// </summary>
     /// <typeparam name="TCommandType">The type of the t command type.</typeparam>
     /// <typeparam name="TParameterType">The type of the t parameter type.</typeparam>
     /// <typeparam name="TObject">The type of the object returned.</typeparam>
     /// <typeparam name="TCollection">The type of the collection.</typeparam>
-    /// <seealso cref="Formatter{TCommandType, TParameterType, TCollection}" />
+    /// <seealso cref="Materializer{TCommandType, TParameterType, TCollection}" />
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1005:AvoidExcessiveParametersOnGenericTypes")]
-    public class CollectionMaterializer<TCommandType, TParameterType, TObject, TCollection> : Formatter<TCommandType, TParameterType, TCollection>
+    public class CollectionMaterializer<TCommandType, TParameterType, TObject, TCollection> : Materializer<TCommandType, TParameterType, TCollection>
         where TCommandType : DbCommand
         where TObject : class, new()
         where TCollection : ICollection<TObject>, new()
@@ -83,7 +83,7 @@ namespace Tortuga.Chain.Materializers
         }
 
         /// <summary>
-        /// Returns the list of columns the formatter would like to have.
+        /// Returns the list of columns the materializer would like to have.
         /// </summary>
         /// <returns></returns>
         public override IReadOnlyList<string> DesiredColumns()

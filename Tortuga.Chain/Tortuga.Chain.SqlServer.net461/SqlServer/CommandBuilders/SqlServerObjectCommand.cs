@@ -15,7 +15,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
     public abstract class SqlServerObjectCommand : SingleRowDbCommandBuilder<SqlCommand, SqlParameter>
     {
         private readonly object m_ArgumentValue;
-        private readonly TableOrViewMetadata<SqlServerObjectName> m_Metadata;
+        private readonly TableOrViewMetadata<SqlServerObjectName, SqlDbType> m_Metadata;
         private readonly SqlServerObjectName m_TableName;
 
         /// <summary>
@@ -53,21 +53,21 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// <summary>
         /// Builds an output clause.
         /// </summary>
-        /// <param name="formatter">The formatter.</param>
+        /// <param name="materializer">The materializer.</param>
         /// <param name="returnDeletedColumns">if set to <c>true</c> [return deleted columns].</param>
         /// <returns>System.String.</returns>
         /// <exception cref="DataException"></exception>
-        protected string OutputClause(Formatter<SqlCommand, SqlParameter> formatter, bool returnDeletedColumns)
+        protected string OutputClause(Materializer<SqlCommand, SqlParameter> materializer, bool returnDeletedColumns)
         {
-            if (formatter is NonQueryMaterializer<SqlCommand, SqlParameter>)
+            if (materializer is NonQueryMaterializer<SqlCommand, SqlParameter>)
                 return null;
 
-            var desiredColumns = formatter.DesiredColumns().ToLookup(c => c);
+            var desiredColumns = materializer.DesiredColumns().ToLookup(c => c);
             if (desiredColumns.Count > 0)
             {
                 var availableColumns = Metadata.Columns.Where(c => desiredColumns.Contains(c.ClrName)).ToList();
                 if (availableColumns.Count == 0)
-                    throw new DataException($"None of the requested columns[{ string.Join(", ", desiredColumns) }] where not found on { TableName}");
+                    throw new MappingException($"None of the requested columns[{ string.Join(", ", desiredColumns) }] where not found on { TableName}");
                 string prefix = returnDeletedColumns ? "Deleted." : "Inserted.";
                 return "OUTPUT " + string.Join(", ", availableColumns.Select(c => prefix + c.QuotedSqlName));
             }
@@ -85,7 +85,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             }
             else
             {
-                throw new DataException($"Output was requested, but no columns were specified and the table {TableName} has no primary keys.");
+                throw new MappingException($"Output was requested, but no columns were specified and the table {TableName} has no primary keys.");
             }
         }
 
@@ -124,7 +124,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// Gets the table metadata.
         /// </summary>
         /// <value>The metadata.</value>
-        public TableOrViewMetadata<SqlServerObjectName> Metadata
+        public TableOrViewMetadata<SqlServerObjectName, SqlDbType> Metadata
         {
             get { return m_Metadata; }
         }

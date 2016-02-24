@@ -10,13 +10,13 @@ using Tortuga.Chain.CommandBuilders;
 namespace Tortuga.Chain.Materializers
 {
     /// <summary>
-    /// Formats the result set as an instance of the indicated type.
+    /// Materializes the result set as an instance of the indicated type.
     /// </summary>
     /// <typeparam name="TCommandType">The type of the t command type.</typeparam>
     /// <typeparam name="TParameterType">The type of the t parameter type.</typeparam>
     /// <typeparam name="TObject">The type of the object returned.</typeparam>
-    /// <seealso cref="Formatter{TCommandType, TParameterType, TTObject}" />
-    public class ObjectMaterializer<TCommandType, TParameterType, TObject> : Formatter<TCommandType, TParameterType, TObject>
+    /// <seealso cref="Materializer{TCommandType, TParameterType, TTObject}" />
+    public class ObjectMaterializer<TCommandType, TParameterType, TObject> : Materializer<TCommandType, TParameterType, TObject>
         where TCommandType : DbCommand
         where TObject : class, new()
         where TParameterType : DbParameter
@@ -129,7 +129,7 @@ namespace Tortuga.Chain.Materializers
         }
 
         /// <summary>
-        /// Returns the list of columns the result formatter would like to have.
+        /// Returns the list of columns the result materializer would like to have.
         /// </summary>
         /// <returns></returns>
         public override IReadOnlyList<string> DesiredColumns()

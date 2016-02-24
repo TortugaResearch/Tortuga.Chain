@@ -7,22 +7,22 @@ namespace Tortuga.Chain.Materializers
 {
 
     /// <summary>
-    /// This is the base class for formatters that return a value. Most operation are not executed without first attaching a formatter subclass.
+    /// This is the base class for materializers that return a value. Most operation are not executed without first attaching a materializer subclass.
     /// </summary>
     /// <typeparam name="TCommandType">The type of the t command type.</typeparam>
     /// <typeparam name="TParameterType">The type of the t parameter type.</typeparam>
     /// <typeparam name="TResultType">The type of the t result type.</typeparam>
-    /// <seealso cref="Formatter{TCommandType, TParameterType}" />
-    public abstract class Formatter<TCommandType, TParameterType, TResultType> : Formatter<TCommandType, TParameterType>
+    /// <seealso cref="Materializer{TCommandType, TParameterType}" />
+    public abstract class Materializer<TCommandType, TParameterType, TResultType> : Materializer<TCommandType, TParameterType>
         where TCommandType : DbCommand
         where TParameterType : DbParameter
     {
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Formatter{TCommandType, TParameterType, TResultType}"/> class.
+        /// Initializes a new instance of the <see cref="Materializer{TCommandType, TParameterType, TResultType}"/> class.
         /// </summary>
         /// <param name="commandBuilder">The associated operation.</param>
-        protected Formatter(DbCommandBuilder<TCommandType, TParameterType> commandBuilder) : base(commandBuilder) { }
+        protected Materializer(DbCommandBuilder<TCommandType, TParameterType> commandBuilder) : base(commandBuilder) { }
 
 
         /// <summary>

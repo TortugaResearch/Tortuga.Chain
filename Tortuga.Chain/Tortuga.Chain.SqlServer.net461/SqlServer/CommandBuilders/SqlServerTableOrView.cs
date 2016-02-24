@@ -16,7 +16,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
     public class SqlServerTableOrView : MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> 
     {
         private readonly object m_FilterValue;
-        private readonly TableOrViewMetadata<SqlServerObjectName> m_Metadata;
+        private readonly TableOrViewMetadata<SqlServerObjectName, SqlDbType> m_Metadata;
         private readonly string m_WhereClause;
         private readonly object m_ArgumentValue;
 
@@ -56,13 +56,13 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// <summary>
         /// Prepares the command for execution by generating any necessary SQL.
         /// </summary>
-        /// <param name="formatter">The formatter.</param>
+        /// <param name="materializer">The materializer.</param>
         /// <returns>ExecutionToken&lt;TCommandType&gt;.</returns>
-        public override ExecutionToken<SqlCommand, SqlParameter> Prepare(Formatter<SqlCommand, SqlParameter> formatter)
+        public override ExecutionToken<SqlCommand, SqlParameter> Prepare(Materializer<SqlCommand, SqlParameter> materializer)
         {
             var parameters = new List<SqlParameter>();
 
-            var select = SelectClause(formatter);
+            var select = SelectClause(materializer);
             var from = $"FROM {m_Metadata.Name.ToQuotedString()}";
 
             string where = null;
@@ -77,9 +77,9 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             return new ExecutionToken<SqlCommand, SqlParameter>(DataSource, "Query " + m_Metadata.Name, sql, parameters);
         }
 
-        private string SelectClause(Formatter<SqlCommand, SqlParameter> formatter)
+        private string SelectClause(Materializer<SqlCommand, SqlParameter> materializer)
         {
-            var desiredColumns = formatter.DesiredColumns().ToDictionary(c => c, StringComparer.InvariantCultureIgnoreCase);
+            var desiredColumns = materializer.DesiredColumns().ToDictionary(c => c, StringComparer.InvariantCultureIgnoreCase);
             var availableColumns = m_Metadata.Columns;
 
             if (desiredColumns.Count == 0)
@@ -87,7 +87,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 
             var actualColumns = availableColumns.Where(c => desiredColumns.ContainsKey(c.ClrName)).ToList();
             if (actualColumns.Count == 0)
-                throw new DataException($"None of the requested columns were found in {m_Metadata.Name}."); //TODO - Create a custom exception type and list the available/desired columns
+                throw new MappingException($"None of the requested columns were found in {m_Metadata.Name}."); 
 
             return "SELECT " + string.Join(",", actualColumns.Select(c => c.QuotedSqlName));
 
@@ -103,7 +103,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             {
                 foreach (var item in (IReadOnlyDictionary<string, object>)m_ArgumentValue)
                 {
-                    ColumnMetadata column;
+                    ColumnMetadata<SqlDbType> column;
                     if (availableColumns.TryGetValue(item.Key, out column))
                     {
                         object value = item.Value ?? DBNull.Value;
@@ -123,7 +123,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             {
                 foreach (var item in properties)
                 {
-                    ColumnMetadata column;
+                    ColumnMetadata < SqlDbType> column;
                     if (availableColumns.TryGetValue(item.MappedColumnName, out column))
                     {
                         object value = item.InvokeGet(m_FilterValue) ?? DBNull.Value;
@@ -141,7 +141,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             }
 
             if (actualColumns.Count == 0)
-                throw new DataException($"Unable to find any properties on type {m_FilterValue.GetType().Name} that match the columns on {m_Metadata.Name}");
+                throw new MappingException($"Unable to find any properties on type {m_FilterValue.GetType().Name} that match the columns on {m_Metadata.Name}");
 
             return "WHERE " + string.Join(" AND ", actualColumns);
         }

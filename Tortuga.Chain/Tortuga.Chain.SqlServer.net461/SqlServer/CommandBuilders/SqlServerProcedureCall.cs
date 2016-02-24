@@ -18,7 +18,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
     {
 
         private readonly object m_ArgumentValue;
-        private readonly StoredProcedureMetadata<SqlServerObjectName> m_Metadata;
+        private readonly StoredProcedureMetadata<SqlServerObjectName, SqlDbType> m_Metadata;
         private readonly SqlServerObjectName m_ProcedureName;
 
         /// <summary>
@@ -40,9 +40,9 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// <summary>
         /// Prepares the command for execution by generating any necessary SQL.
         /// </summary>
-        /// <param name="formatter">The formatter.</param>
+        /// <param name="materializer">The materializer.</param>
         /// <returns>ExecutionToken&lt;TCommandType&gt;.</returns>
-        public override ExecutionToken<SqlCommand, SqlParameter> Prepare(Formatter<SqlCommand, SqlParameter> formatter)
+        public override ExecutionToken<SqlCommand, SqlParameter> Prepare(Materializer<SqlCommand, SqlParameter> materializer)
         {
             var parameters = new List<SqlParameter>();
             var expectedParameters = m_Metadata.Parameters.ToDictionary(p => p.ClrName, StringComparer.InvariantCultureIgnoreCase);
@@ -56,7 +56,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             {
                 foreach (var item in (IReadOnlyDictionary<string, object>)m_ArgumentValue)
                 {
-                    ParameterMetadata paramInfo;
+                    ParameterMetadata<SqlDbType> paramInfo;
                     if (expectedParameters.TryGetValue(item.Key, out paramInfo))
                     {
                         var newSqlParameter = new SqlParameter("@" + item.Key, item.Value ?? DBNull.Value);
@@ -70,7 +70,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             {
                 foreach (var property in MetadataCache.GetMetadata(m_ArgumentValue.GetType()).Properties)
                 {
-                    ParameterMetadata paramInfo;
+                    ParameterMetadata < SqlDbType> paramInfo;
                     if (expectedParameters.TryGetValue(property.MappedColumnName, out paramInfo))
                     {
                         var newSqlParameter = new SqlParameter("@" + property.MappedColumnName, property.InvokeGet(m_ArgumentValue) ?? DBNull.Value);

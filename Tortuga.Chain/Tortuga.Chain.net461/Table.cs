@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
-using System.Diagnostics.Contracts;
 using Tortuga.Anchor.Metadata;
 
 namespace Tortuga.Chain
@@ -47,8 +46,7 @@ namespace Tortuga.Chain
             if (source == null)
                 throw new ArgumentNullException("source", "source is null.");
             if (source.FieldCount == 0)
-                throw new DataException("No columns were returned");
-            Contract.EndContractBlock();
+                throw new ArgumentException("No columns were returned", "source");
 
             var cols = new List<string>(source.FieldCount);
             var colTypes = new Dictionary<string, Type>(source.FieldCount, StringComparer.OrdinalIgnoreCase);
