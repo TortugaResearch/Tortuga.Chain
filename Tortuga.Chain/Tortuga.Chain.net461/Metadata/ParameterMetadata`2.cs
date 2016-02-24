@@ -1,28 +1,31 @@
-using System.Data;
 namespace Tortuga.Chain.Metadata
 {
     /// <summary>
     /// Metadata for a stored procedure parameter
     /// </summary>
-    public class ParameterMetadata
+    /// <typeparam name="TDbType">The variant of DbType used by this data source.</typeparam>
+    public class ParameterMetadata<TDbType>
+        where TDbType : struct
     {
         private readonly string m_ClrName;
         private readonly string m_SqlName;
-        private readonly SqlDbType? m_SqlDbType;
+        private readonly TDbType? m_DbType;
         private readonly string m_TypeName;
 
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ParameterMetadata" /> class.
+        /// Initializes a new instance of the <see cref="ParameterMetadata{TDbType}" /> class.
         /// </summary>
         /// <param name="name">The name.</param>
         /// <param name="typeName">Name of the type.</param>
-        public ParameterMetadata(string name, string typeName)
+        /// <param name="dbType">Type of the database.</param>
+        public ParameterMetadata(string name, string typeName, TDbType? dbType)
         {
             m_TypeName = typeName;
             m_SqlName = name;
             m_ClrName = Utilities.ToClrName(name);
-            m_SqlDbType = Utilities.TypeNameToSqlDbType(typeName);
+            m_DbType = dbType;
+            //m_DbType = Utilities.TypeNameToSqlDbType(typeName);
         }
 
         /// <summary>
@@ -42,11 +45,11 @@ namespace Tortuga.Chain.Metadata
         }
 
         /// <summary>
-        /// Gets the type used by SQL Server.
+        /// Gets the type used by the database.
         /// </summary>
-        public SqlDbType? SqlDbType
+        public TDbType? SqlDbType
         {
-            get { return m_SqlDbType; }
+            get { return m_DbType; }
         }
 
         /// <summary>

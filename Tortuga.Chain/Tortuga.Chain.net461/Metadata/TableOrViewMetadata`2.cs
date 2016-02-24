@@ -14,23 +14,25 @@ namespace Tortuga.Chain.Metadata
     /// Metadata for a database table or view.
     /// </summary>
     /// <typeparam name="TName">The type used to represent database object names.</typeparam>
-    public class TableOrViewMetadata<TName>
+    /// <typeparam name="TDbType">The variant of DbType used by this data source.</typeparam>
+    public class TableOrViewMetadata<TName, TDbType>
+        where TDbType : struct
     {
         private readonly bool m_IsTable;
         private readonly TName m_Name;
-        private readonly ReadOnlyCollection<ColumnMetadata> m_Columns;
-        private readonly ConcurrentDictionary<Tuple<Type, GetPropertiesFilter>, Lazy<ImmutableList<ColumnPropertyMap>>> m_PropertyMap = new ConcurrentDictionary<Tuple<Type, GetPropertiesFilter>, Lazy<ImmutableList<ColumnPropertyMap>>>();
+        private readonly ReadOnlyCollection<ColumnMetadata<TDbType>> m_Columns;
+        private readonly ConcurrentDictionary<Tuple<Type, GetPropertiesFilter>, Lazy<ImmutableList<ColumnPropertyMap<TDbType>>>> m_PropertyMap = new ConcurrentDictionary<Tuple<Type, GetPropertiesFilter>, Lazy<ImmutableList<ColumnPropertyMap<TDbType>>>>();
 
         /// <summary>
         /// </summary>
         /// <param name="name">The name.</param>
         /// <param name="isTable">if set to <c>true</c> [is table].</param>
         /// <param name="columns">The columns.</param>
-        public TableOrViewMetadata(TName name, bool isTable, IList<ColumnMetadata> columns)
+        public TableOrViewMetadata(TName name, bool isTable, IList<ColumnMetadata<TDbType>> columns)
         {
             m_IsTable = isTable;
             m_Name = name;
-            m_Columns = new ReadOnlyCollection<ColumnMetadata>(columns);
+            m_Columns = new ReadOnlyCollection<ColumnMetadata<TDbType>>(columns);
         }
 
 
@@ -62,7 +64,7 @@ namespace Tortuga.Chain.Metadata
         /// <value>
         /// The columns.
         /// </value>
-        public ReadOnlyCollection<ColumnMetadata> Columns
+        public ReadOnlyCollection<ColumnMetadata<TDbType>> Columns
         {
             get { return m_Columns; }
         }
@@ -74,18 +76,18 @@ namespace Tortuga.Chain.Metadata
         /// <param name="filter">The filter.</param>
         /// <returns>ImmutableList&lt;ColumnPropertyMap&gt;.</returns>
         /// <remarks>This will cache and rethrow exceptions thrown by GetPropertiesForImplementation</remarks>
-        public ImmutableList<ColumnPropertyMap> GetPropertiesFor(Type type, GetPropertiesFilter filter)
+        public ImmutableList<ColumnPropertyMap<TDbType>> GetPropertiesFor(Type type, GetPropertiesFilter filter)
         {
             var result = m_PropertyMap.GetOrAdd(Tuple.Create(type, filter), key =>
             {
-                return new Lazy<ImmutableList<ColumnPropertyMap>>(() => GetPropertiesForImplementation(key.Item1, key.Item2), System.Threading.LazyThreadSafetyMode.ExecutionAndPublication);
+                return new Lazy<ImmutableList<ColumnPropertyMap<TDbType>>>(() => GetPropertiesForImplementation(key.Item1, key.Item2), System.Threading.LazyThreadSafetyMode.ExecutionAndPublication);
             });
 
             return result.Value;
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
-        private ImmutableList<ColumnPropertyMap> GetPropertiesForImplementation(Type type, GetPropertiesFilter filter)
+        private ImmutableList<ColumnPropertyMap<TDbType>> GetPropertiesForImplementation(Type type, GetPropertiesFilter filter)
         {
             //The none option is used as a basis for all of the filtered versions
             if (filter == GetPropertiesFilter.None)
@@ -93,7 +95,7 @@ namespace Tortuga.Chain.Metadata
                 return (from column in Columns
                         join property in MetadataCache.GetMetadata(type).Properties
                         on column.ClrName equals property.MappedColumnName
-                        select new ColumnPropertyMap(column, property)).ToImmutableList();
+                        select new ColumnPropertyMap<TDbType>(column, property)).ToImmutableList();
             }
 
             //Filtered versions rely on the unfiltered version.

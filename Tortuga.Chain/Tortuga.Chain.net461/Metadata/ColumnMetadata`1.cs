@@ -1,12 +1,11 @@
-
-using System.Data;
-
 namespace Tortuga.Chain.Metadata
 {
     /// <summary>
     /// Metadata for a table or view column
     /// </summary>
-    public class ColumnMetadata
+    /// <typeparam name="TDbType">The variant of DbType used by this data source.</typeparam>
+    public class ColumnMetadata<TDbType>
+        where TDbType : struct
     {
         private readonly string m_ClrName;
         private readonly bool m_IsComputed;
@@ -14,17 +13,18 @@ namespace Tortuga.Chain.Metadata
         private readonly bool m_IsPrimaryKey;
         private readonly string m_SqlName;
         private readonly string m_TypeName;
-        private readonly SqlDbType? m_SqlDbType;
+        private readonly TDbType? m_DbType;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ColumnMetadata" /> class.
+        /// Initializes a new instance of the <see cref="ColumnMetadata{TDbType}" /> class.
         /// </summary>
         /// <param name="name">The name.</param>
         /// <param name="isComputed">if set to <c>true</c> is a computed column.</param>
         /// <param name="isPrimaryKey">if set to <c>true</c> is a primary key.</param>
         /// <param name="isIdentity">if set to <c>true</c> [is identity].</param>
         /// <param name="typeName">Name of the type.</param>
-        public ColumnMetadata(string name, bool isComputed, bool isPrimaryKey, bool isIdentity, string typeName)
+        /// <param name="dbType">Type used by the database.</param>
+        public ColumnMetadata(string name, bool isComputed, bool isPrimaryKey, bool isIdentity, string typeName, TDbType? dbType)
         {
             m_TypeName = typeName;
             m_SqlName = name;
@@ -32,7 +32,8 @@ namespace Tortuga.Chain.Metadata
             m_IsComputed = isComputed;
             m_IsPrimaryKey = isPrimaryKey;
             m_IsIdentity = isIdentity;
-            m_SqlDbType = Utilities.TypeNameToSqlDbType(typeName);
+            //m_DbType = Utilities.TypeNameToSqlDbType(typeName);
+            m_DbType = dbType;
         }
 
         /// <summary>
@@ -44,7 +45,7 @@ namespace Tortuga.Chain.Metadata
         }
 
         /// <summary>
-        /// Gets a value indicating whether this <see cref="ColumnMetadata"/> is computed.
+        /// Gets a value indicating whether this <see cref="ColumnMetadata{TDbType}"/> is computed.
         /// </summary>
         /// <value>
         ///   <c>true</c> if computed; otherwise, <c>false</c>.
@@ -98,9 +99,9 @@ namespace Tortuga.Chain.Metadata
         /// <summary>
         /// Gets the type used by SQL databases.
         /// </summary>
-        public SqlDbType? SqlDbType
+        public TDbType? SqlDbType
         {
-            get { return m_SqlDbType; }
+            get { return m_DbType; }
         }
 
         /// <summary>

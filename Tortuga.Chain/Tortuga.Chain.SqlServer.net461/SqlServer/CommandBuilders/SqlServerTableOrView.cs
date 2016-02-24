@@ -16,7 +16,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
     public class SqlServerTableOrView : MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> 
     {
         private readonly object m_FilterValue;
-        private readonly TableOrViewMetadata<SqlServerObjectName> m_Metadata;
+        private readonly TableOrViewMetadata<SqlServerObjectName, SqlDbType> m_Metadata;
         private readonly string m_WhereClause;
         private readonly object m_ArgumentValue;
 
@@ -103,7 +103,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             {
                 foreach (var item in (IReadOnlyDictionary<string, object>)m_ArgumentValue)
                 {
-                    ColumnMetadata column;
+                    ColumnMetadata<SqlDbType> column;
                     if (availableColumns.TryGetValue(item.Key, out column))
                     {
                         object value = item.Value ?? DBNull.Value;
@@ -123,7 +123,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             {
                 foreach (var item in properties)
                 {
-                    ColumnMetadata column;
+                    ColumnMetadata < SqlDbType> column;
                     if (availableColumns.TryGetValue(item.MappedColumnName, out column))
                     {
                         object value = item.InvokeGet(m_FilterValue) ?? DBNull.Value;

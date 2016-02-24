@@ -15,7 +15,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
     public abstract class SqlServerObjectCommand : SingleRowDbCommandBuilder<SqlCommand, SqlParameter>
     {
         private readonly object m_ArgumentValue;
-        private readonly TableOrViewMetadata<SqlServerObjectName> m_Metadata;
+        private readonly TableOrViewMetadata<SqlServerObjectName, SqlDbType> m_Metadata;
         private readonly SqlServerObjectName m_TableName;
 
         /// <summary>
@@ -124,7 +124,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// Gets the table metadata.
         /// </summary>
         /// <value>The metadata.</value>
-        public TableOrViewMetadata<SqlServerObjectName> Metadata
+        public TableOrViewMetadata<SqlServerObjectName, SqlDbType> Metadata
         {
             get { return m_Metadata; }
         }
