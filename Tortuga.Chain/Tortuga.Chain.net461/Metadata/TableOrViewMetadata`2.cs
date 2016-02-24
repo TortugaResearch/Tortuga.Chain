@@ -100,14 +100,14 @@ namespace Tortuga.Chain.Metadata
             }
 
             //Filtered versions rely on the unfiltered version.
-            var result = GetPropertiesFor(type, GetPropertiesFilter.None);
+            IEnumerable<ColumnPropertyMap<TDbType>> result = GetPropertiesFor(type, GetPropertiesFilter.None);
 
             var filterText = "";
 
             if (filter.HasFlag(GetPropertiesFilter.PrimaryKey))
             {
                 filterText = "primary key";
-                result = result.Where(c => c.Column.IsPrimaryKey).ToImmutableList();
+                result = result.Where(c => c.Column.IsPrimaryKey).ToList();
 
                 if (filter.HasFlag(GetPropertiesFilter.ThrowOnMissingProperties))
                 {
@@ -127,12 +127,12 @@ namespace Tortuga.Chain.Metadata
                         throw new MappingException($"The table {Name} is missing a column mapped to the properties: " + string.Join(", ", missingColumns.Select(p => p.MappedColumnName)) + $" on type {type.Name}. Use the Column and/or NotMapped attributes to correct this or disable strict mode.");
                 }
 
-                result = result.Where(c => !c.Column.IsPrimaryKey).ToImmutableList();
+                result = result.Where(c => !c.Column.IsPrimaryKey).ToList();
             }
             else if (filter.HasFlag(GetPropertiesFilter.ObjectDefinedKey))
             {
                 filterText = "object defined key";
-                result = result.Where(c => c.Property.IsKey).ToImmutableList();
+                result = result.Where(c => c.Property.IsKey).ToList();
 
                 if (filter.HasFlag(GetPropertiesFilter.ThrowOnMissingColumns))
                 {
@@ -145,20 +145,33 @@ namespace Tortuga.Chain.Metadata
             else if (filter.HasFlag(GetPropertiesFilter.ObjectDefinedNonKey))
             {
                 filterText = "object defined non-key";
-                result = result.Where(c => !c.Property.IsKey).ToImmutableList();
+                result = result.Where(c => !c.Property.IsKey);
             }
 
             if (filter.HasFlag(GetPropertiesFilter.UpdatableOnly))
             {
-                result = result.Where(c => !c.Column.IsComputed && !c.Column.IsIdentity).ToImmutableList();
+                filterText = "updateable " + filterText;
+                result = result.Where(c => !c.Column.IsComputed && !c.Column.IsIdentity);
             }
 
-            if (filter.HasFlag(GetPropertiesFilter.ThrowOnNoMatch) && result.Count == 0)
+            if (filter.HasFlag(GetPropertiesFilter.ForInsert))
+            {
+                filterText = filterText + " for insert";
+                result = result.Where(c => !c.Property.IgnoreOnInsert);
+            }
+
+            if (filter.HasFlag(GetPropertiesFilter.ForUpdate))
+            {
+                filterText = filterText + " for update";
+                result = result.Where(c => !c.Property.IgnoreOnUpdate);
+            }
+
+            if (filter.HasFlag(GetPropertiesFilter.ThrowOnNoMatch) && !result.Any())
             {
                 throw new MappingException($"None of the properties for {type.Name} match the {filterText} columns for {Name}");
             }
 
-            return result;
+            return result.ToImmutableList();
         }
 
     }
