@@ -58,7 +58,7 @@ namespace Tortuga.Chain.Materializers
                         for (var i = 0; i < columnCount; i++)
                         {
                             if (reader.IsDBNull(i) && !discardNulls)
-                                throw new DataException("Unexpected null value");
+                                throw new MissingDataException("Unexpected null value");
 
                             result.Add((DateTimeOffset)reader.GetValue(i));
                         }
@@ -99,7 +99,7 @@ namespace Tortuga.Chain.Materializers
                         for (var i = 0; i < columnCount; i++)
                         {
                             if (reader.IsDBNull(i) && !discardNulls)
-                                throw new DataException("Unexpected null value");
+                                throw new MissingDataException("Unexpected null value");
 
                             result.Add((DateTimeOffset)reader.GetValue(i));
                         }

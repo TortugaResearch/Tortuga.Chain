@@ -67,7 +67,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             {
                 var availableColumns = Metadata.Columns.Where(c => desiredColumns.Contains(c.ClrName)).ToList();
                 if (availableColumns.Count == 0)
-                    throw new DataException($"None of the requested columns[{ string.Join(", ", desiredColumns) }] where not found on { TableName}");
+                    throw new MappingException($"None of the requested columns[{ string.Join(", ", desiredColumns) }] where not found on { TableName}");
                 string prefix = returnDeletedColumns ? "Deleted." : "Inserted.";
                 return "OUTPUT " + string.Join(", ", availableColumns.Select(c => prefix + c.QuotedSqlName));
             }
@@ -85,7 +85,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             }
             else
             {
-                throw new DataException($"Output was requested, but no columns were specified and the table {TableName} has no primary keys.");
+                throw new MappingException($"Output was requested, but no columns were specified and the table {TableName} has no primary keys.");
             }
         }
 

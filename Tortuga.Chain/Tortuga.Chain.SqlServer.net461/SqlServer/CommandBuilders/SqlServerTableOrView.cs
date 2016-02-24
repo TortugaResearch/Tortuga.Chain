@@ -87,7 +87,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 
             var actualColumns = availableColumns.Where(c => desiredColumns.ContainsKey(c.ClrName)).ToList();
             if (actualColumns.Count == 0)
-                throw new DataException($"None of the requested columns were found in {m_Metadata.Name}."); //TODO - Create a custom exception type and list the available/desired columns
+                throw new MappingException($"None of the requested columns were found in {m_Metadata.Name}."); 
 
             return "SELECT " + string.Join(",", actualColumns.Select(c => c.QuotedSqlName));
 
@@ -141,7 +141,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             }
 
             if (actualColumns.Count == 0)
-                throw new DataException($"Unable to find any properties on type {m_FilterValue.GetType().Name} that match the columns on {m_Metadata.Name}");
+                throw new MappingException($"Unable to find any properties on type {m_FilterValue.GetType().Name} that match the columns on {m_Metadata.Name}");
 
             return "WHERE " + string.Join(" AND ", actualColumns);
         }

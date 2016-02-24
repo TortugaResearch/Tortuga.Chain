@@ -86,6 +86,7 @@ namespace Tortuga.Chain.Metadata
             return result.Value;
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "NotMapped")]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
         private ImmutableList<ColumnPropertyMap<TDbType>> GetPropertiesForImplementation(Type type, GetPropertiesFilter filter)
         {
@@ -112,7 +113,7 @@ namespace Tortuga.Chain.Metadata
                 {
                     var missingProperties = Columns.Where(c => c.IsPrimaryKey && !result.Any(r => r.Column == c)).ToList();
                     if (missingProperties.Count > 0)
-                        throw new DataException($"The type {type.Name} is missing a property mapped to the primary key column(s): " + string.Join(", ", missingProperties.Select(c => c.SqlName)) + " on table " + Name);
+                        throw new MappingException($"The type {type.Name} is missing a property mapped to the primary key column(s): " + string.Join(", ", missingProperties.Select(c => c.SqlName)) + " on table " + Name);
                 }
             }
             else if (filter.HasFlag(GetPropertiesFilter.NonPrimaryKey))
@@ -123,7 +124,7 @@ namespace Tortuga.Chain.Metadata
                 {
                     var missingColumns = MetadataCache.GetMetadata(type).Properties.Where(p => p.MappedColumnName != null && !result.Any(r => r.Property == p)).ToList();
                     if (missingColumns.Count > 0)
-                        throw new DataException($"The table {Name} is missing a column mapped to the properties: " + string.Join(", ", missingColumns.Select(p => p.MappedColumnName)) + $" on type {type.Name}. Use the Column and/or NotMapped attributes to correct this or disable strict mode.");
+                        throw new MappingException($"The table {Name} is missing a column mapped to the properties: " + string.Join(", ", missingColumns.Select(p => p.MappedColumnName)) + $" on type {type.Name}. Use the Column and/or NotMapped attributes to correct this or disable strict mode.");
                 }
 
                 result = result.Where(c => !c.Column.IsPrimaryKey).ToImmutableList();
@@ -137,7 +138,7 @@ namespace Tortuga.Chain.Metadata
                 {
                     var missingColumns = MetadataCache.GetMetadata(type).Properties.Where(p => p.IsKey && !result.Any(r => r.Property == p)).ToList();
                     if (missingColumns.Count > 0)
-                        throw new DataException($"The table {Name} is missing a column mapped to the key properties: " + string.Join(", ", missingColumns.Select(p => p.MappedColumnName)) + " on type " + type.Name);
+                        throw new MappingException($"The table {Name} is missing a column mapped to the key properties: " + string.Join(", ", missingColumns.Select(p => p.MappedColumnName)) + " on type " + type.Name);
 
                 }
             }
@@ -154,7 +155,7 @@ namespace Tortuga.Chain.Metadata
 
             if (filter.HasFlag(GetPropertiesFilter.ThrowOnNoMatch) && result.Count == 0)
             {
-                throw new DataException($"None of the properties for {type.Name} match the {filterText} columns for {Name}");
+                throw new MappingException($"None of the properties for {type.Name} match the {filterText} columns for {Name}");
             }
 
             return result;
