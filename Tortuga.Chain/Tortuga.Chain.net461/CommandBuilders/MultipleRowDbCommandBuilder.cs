@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
 using Tortuga.Chain.DataSources;
-using Tortuga.Chain.Formatters;
+using Tortuga.Chain.Materializers;
 
 namespace Tortuga.Chain.CommandBuilders
 {
@@ -30,17 +30,17 @@ namespace Tortuga.Chain.CommandBuilders
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        public BooleanListResult<TCommandType, TParameterType> AsBooleanList(ListOptions listOptions = ListOptions.None) { return new BooleanListResult<TCommandType, TParameterType>(this, listOptions); }
+        public BooleanListMaterializer<TCommandType, TParameterType> AsBooleanList(ListOptions listOptions = ListOptions.None) { return new BooleanListMaterializer<TCommandType, TParameterType>(this, listOptions); }
 
         /// <summary>
         /// Formats the result as a list of objects.
         /// </summary>
         /// <typeparam name="TObject">The type of the model.</typeparam>
         /// <returns></returns>
-        public CollectionResult<TCommandType, TParameterType, TObject, List<TObject>> AsCollection<TObject>()
+        public CollectionMaterializer<TCommandType, TParameterType, TObject, List<TObject>> AsCollection<TObject>()
             where TObject : class, new()
         {
-            return new CollectionResult<TCommandType, TParameterType, TObject, List<TObject>>(this);
+            return new CollectionMaterializer<TCommandType, TParameterType, TObject, List<TObject>>(this);
         }
 
         /// <summary>
@@ -50,97 +50,97 @@ namespace Tortuga.Chain.CommandBuilders
         /// <typeparam name="TCollection">The type of the collection.</typeparam>
         /// <returns></returns>
         [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-        public CollectionResult<TCommandType, TParameterType, TObject, TCollection> AsCollection<TObject, TCollection>()
+        public CollectionMaterializer<TCommandType, TParameterType, TObject, TCollection> AsCollection<TObject, TCollection>()
             where TObject : class, new()
             where TCollection : ICollection<TObject>, new()
         {
-            return new CollectionResult<TCommandType, TParameterType, TObject, TCollection>(this);
+            return new CollectionMaterializer<TCommandType, TParameterType, TObject, TCollection>(this);
         }
 
         /// <summary>
         /// Indicates the results should be formatted as a DataSet.
         /// </summary>
-        public DataTableResult<TCommandType, TParameterType> AsDataTableResult() { return new DataTableResult<TCommandType, TParameterType>(this); }
+        public DataTableMaterializer<TCommandType, TParameterType> AsDataTable() { return new DataTableMaterializer<TCommandType, TParameterType>(this); }
 
         /// <summary>
         /// Indicates the results should be formatted as a list of DateTime.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        public DateTimeListResult<TCommandType, TParameterType> AsDateTimeList(ListOptions listOptions = ListOptions.None) { return new DateTimeListResult<TCommandType, TParameterType>(this, listOptions); }
+        public DateTimeListMaterializer<TCommandType, TParameterType> AsDateTimeList(ListOptions listOptions = ListOptions.None) { return new DateTimeListMaterializer<TCommandType, TParameterType>(this, listOptions); }
 
         /// <summary>
         /// Indicates the results should be formatted as a list of DateTimeOffset.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        public DateTimeOffsetListResult<TCommandType, TParameterType> AsDateTimeOffsetList(ListOptions listOptions = ListOptions.None) { return new DateTimeOffsetListResult<TCommandType, TParameterType>(this, listOptions); }
+        public DateTimeOffsetListMaterializer<TCommandType, TParameterType> AsDateTimeOffsetList(ListOptions listOptions = ListOptions.None) { return new DateTimeOffsetListMaterializer<TCommandType, TParameterType>(this, listOptions); }
 
         /// <summary>
         /// Indicates the results should be formatted as a list of numbers.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        public DecimalListResult<TCommandType, TParameterType> AsDecimalList(ListOptions listOptions = ListOptions.None) { return new DecimalListResult<TCommandType, TParameterType>(this, listOptions); }
+        public DecimalListMaterializer<TCommandType, TParameterType> AsDecimalList(ListOptions listOptions = ListOptions.None) { return new DecimalListMaterializer<TCommandType, TParameterType>(this, listOptions); }
 
         /// <summary>
         /// Indicates the results should be formatted as a list of numbers.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        public DoubleListResult<TCommandType, TParameterType> AsDoubleList(ListOptions listOptions = ListOptions.None) { return new DoubleListResult<TCommandType, TParameterType>(this, listOptions); }
+        public DoubleListMaterializer<TCommandType, TParameterType> AsDoubleList(ListOptions listOptions = ListOptions.None) { return new DoubleListMaterializer<TCommandType, TParameterType>(this, listOptions); }
         /// <summary>
         /// Indicates the results should be formatted as a list of Guids.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        public GuidListResult<TCommandType, TParameterType> AsGuidList(ListOptions listOptions = ListOptions.None) { return new GuidListResult<TCommandType, TParameterType>(this, listOptions); }
+        public GuidListMaterializer<TCommandType, TParameterType> AsGuidList(ListOptions listOptions = ListOptions.None) { return new GuidListMaterializer<TCommandType, TParameterType>(this, listOptions); }
 
         /// <summary>
         /// Indicates the results should be formatted as a list of integers.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        public Int16ListResult<TCommandType, TParameterType> AsInt16List(ListOptions listOptions = ListOptions.None) { return new Int16ListResult<TCommandType, TParameterType>(this, listOptions); }
+        public Int16ListMaterializer<TCommandType, TParameterType> AsInt16List(ListOptions listOptions = ListOptions.None) { return new Int16ListMaterializer<TCommandType, TParameterType>(this, listOptions); }
 
         /// <summary>
         /// Indicates the results should be formatted as a list of integers.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        public Int32ListResult<TCommandType, TParameterType> AsInt32List(ListOptions listOptions = ListOptions.None) { return new Int32ListResult<TCommandType, TParameterType>(this, listOptions); }
+        public Int32ListMaterializer<TCommandType, TParameterType> AsInt32List(ListOptions listOptions = ListOptions.None) { return new Int32ListMaterializer<TCommandType, TParameterType>(this, listOptions); }
 
         /// <summary>
         /// Indicates the results should be formatted as a list of integers.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        public Int64ListResult<TCommandType, TParameterType> AsInt64List(ListOptions listOptions = ListOptions.None) { return new Int64ListResult<TCommandType, TParameterType>(this, listOptions); }
+        public Int64ListMaterializer<TCommandType, TParameterType> AsInt64List(ListOptions listOptions = ListOptions.None) { return new Int64ListMaterializer<TCommandType, TParameterType>(this, listOptions); }
 
         /// <summary>
         /// Indicates the results should be formatted as a list of numbers.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        public SingleListResult<TCommandType, TParameterType> AsSingleList(ListOptions listOptions = ListOptions.None) { return new SingleListResult<TCommandType, TParameterType>(this, listOptions); }
+        public SingleListMaterializer<TCommandType, TParameterType> AsSingleList(ListOptions listOptions = ListOptions.None) { return new SingleListMaterializer<TCommandType, TParameterType>(this, listOptions); }
 
         /// <summary>
         /// Indicates the results should be formatted as a list of strings.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        public StringListResult<TCommandType, TParameterType> AsStringList(ListOptions listOptions = ListOptions.None) { return new StringListResult<TCommandType, TParameterType>(this, listOptions); }
+        public StringListMaterializer<TCommandType, TParameterType> AsStringList(ListOptions listOptions = ListOptions.None) { return new StringListMaterializer<TCommandType, TParameterType>(this, listOptions); }
 
         /// <summary>
         /// Indicates the results should be formatted as a Table.
         /// </summary>
-        public TableResult<TCommandType, TParameterType> AsTable() { return new TableResult<TCommandType, TParameterType>(this); }
+        public TableMaterializer<TCommandType, TParameterType> AsTable() { return new TableMaterializer<TCommandType, TParameterType>(this); }
 
         /// <summary>
         /// Indicates the results should be formatted as a list of TimeSpan.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        public TimeSpanListResult<TCommandType, TParameterType> AsTimeSpanList(ListOptions listOptions = ListOptions.None) { return new TimeSpanListResult<TCommandType, TParameterType>(this, listOptions); }
+        public TimeSpanListMaterializer<TCommandType, TParameterType> AsTimeSpanList(ListOptions listOptions = ListOptions.None) { return new TimeSpanListMaterializer<TCommandType, TParameterType>(this, listOptions); }
     }
 }

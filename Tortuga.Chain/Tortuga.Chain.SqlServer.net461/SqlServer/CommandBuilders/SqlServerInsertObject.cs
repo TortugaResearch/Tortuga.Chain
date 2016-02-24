@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
-using Tortuga.Chain.Formatters;
+using Tortuga.Chain.Materializers;
 using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.SqlServer.CommandBuilders

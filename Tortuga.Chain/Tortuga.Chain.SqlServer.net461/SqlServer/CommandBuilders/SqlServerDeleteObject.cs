@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Data.SqlClient;
-using Tortuga.Chain.Formatters;
+using Tortuga.Chain.Materializers;
 
 namespace Tortuga.Chain.SqlServer.CommandBuilders
 {

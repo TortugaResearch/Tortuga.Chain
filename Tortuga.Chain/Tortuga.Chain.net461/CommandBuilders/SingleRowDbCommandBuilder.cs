@@ -1,5 +1,5 @@
 using System.Data.Common;
-using Tortuga.Chain.Formatters;
+using Tortuga.Chain.Materializers;
 
 namespace Tortuga.Chain.CommandBuilders
 {
@@ -24,96 +24,96 @@ namespace Tortuga.Chain.CommandBuilders
         /// <summary>
         /// Indicates the results should be formatted as a Boolean.
         /// </summary>
-        public BooleanResult<TCommandType, TParameterType> AsBoolean() { return new BooleanResult<TCommandType, TParameterType>(this); }
+        public BooleanMaterializer<TCommandType, TParameterType> AsBoolean() { return new BooleanMaterializer<TCommandType, TParameterType>(this); }
 
         /// <summary>
         /// Indicates the results should be formatted as a nullable Boolean.
         /// </summary>
-        public BooleanOrNullResult<TCommandType, TParameterType> AsBooleanOrNull() { return new BooleanOrNullResult<TCommandType, TParameterType>(this); }
+        public BooleanOrNullMaterializer<TCommandType, TParameterType> AsBooleanOrNull() { return new BooleanOrNullMaterializer<TCommandType, TParameterType>(this); }
 
         /// <summary>
         /// Indicates the results should be formatted as a byte array.
         /// </summary>
-        public ByteArrayResult<TCommandType, TParameterType> AsByteArray() { return new ByteArrayResult<TCommandType, TParameterType>(this); }
+        public ByteArrayMaterializer<TCommandType, TParameterType> AsByteArray() { return new ByteArrayMaterializer<TCommandType, TParameterType>(this); }
 
         /// <summary>
         /// Indicates the results should be formatted as a DateTime.
         /// </summary>
-        public DateTimeResult<TCommandType, TParameterType> AsDateTime() { return new DateTimeResult<TCommandType, TParameterType>(this); }
+        public DateTimeMaterializer<TCommandType, TParameterType> AsDateTime() { return new DateTimeMaterializer<TCommandType, TParameterType>(this); }
 
         /// <summary>
         /// Indicates the results should be formatted as a DateTimeOffset.
         /// </summary>
-        public DateTimeOffsetResult<TCommandType, TParameterType> AsDateTimeOffset() { return new DateTimeOffsetResult<TCommandType, TParameterType>(this); }
+        public DateTimeOffsetMaterializer<TCommandType, TParameterType> AsDateTimeOffset() { return new DateTimeOffsetMaterializer<TCommandType, TParameterType>(this); }
 
         /// <summary>
         /// Indicates the results should be formatted as a nullable DateTimeOffset.
         /// </summary>
-        public DateTimeOffsetOrNullResult<TCommandType, TParameterType> AsDateTimeOffsetOrNull() { return new DateTimeOffsetOrNullResult<TCommandType, TParameterType>(this); }
+        public DateTimeOffsetOrNullMaterializer<TCommandType, TParameterType> AsDateTimeOffsetOrNull() { return new DateTimeOffsetOrNullMaterializer<TCommandType, TParameterType>(this); }
 
         /// <summary>
         /// Indicates the results should be formatted as a nullable DateTime.
         /// </summary>
-        public DateTimeOrNullResult<TCommandType, TParameterType> AsDateTimeOrNull() { return new DateTimeOrNullResult<TCommandType, TParameterType>(this); }
+        public DateTimeOrNullMaterializer<TCommandType, TParameterType> AsDateTimeOrNull() { return new DateTimeOrNullMaterializer<TCommandType, TParameterType>(this); }
 
         /// <summary>
         /// Indicates the results should be formatted as a Decimal.
         /// </summary>
-        public DecimalResult<TCommandType, TParameterType> AsDecimal() { return new DecimalResult<TCommandType, TParameterType>(this); }
+        public DecimalMaterializer<TCommandType, TParameterType> AsDecimal() { return new DecimalMaterializer<TCommandType, TParameterType>(this); }
 
         /// <summary>
         /// Indicates the results should be formatted as a nullable Decimal.
         /// </summary>
-        public DecimalOrNullResult<TCommandType, TParameterType> AsDecimalOrNull() { return new DecimalOrNullResult<TCommandType, TParameterType>(this); }
+        public DecimalOrNullMaterializer<TCommandType, TParameterType> AsDecimalOrNull() { return new DecimalOrNullMaterializer<TCommandType, TParameterType>(this); }
         /// <summary>
         /// Indicates the results should be formatted as a Double.
         /// </summary>
-        public DoubleResult<TCommandType, TParameterType> AsDouble() { return new DoubleResult<TCommandType, TParameterType>(this); }
+        public DoubleMaterializer<TCommandType, TParameterType> AsDouble() { return new DoubleMaterializer<TCommandType, TParameterType>(this); }
 
         /// <summary>
         /// Indicates the results should be formatted as a nullable Double.
         /// </summary>
-        public DoubleOrNullResult<TCommandType, TParameterType> AsDoubleOrNull() { return new DoubleOrNullResult<TCommandType, TParameterType>(this); }
+        public DoubleOrNullMaterializer<TCommandType, TParameterType> AsDoubleOrNull() { return new DoubleOrNullMaterializer<TCommandType, TParameterType>(this); }
 
         /// <summary>
         /// Indicates the results should be formatted as a Guid.
         /// </summary>
-        public GuidResult<TCommandType, TParameterType> AsGuid() { return new GuidResult<TCommandType, TParameterType>(this); }
+        public GuidMaterializer<TCommandType, TParameterType> AsGuid() { return new GuidMaterializer<TCommandType, TParameterType>(this); }
 
         /// <summary>
         /// Indicates the results should be formatted as a nullable Guid.
         /// </summary>
-        public GuidOrNullResult<TCommandType, TParameterType> AsGuidOrNull() { return new GuidOrNullResult<TCommandType, TParameterType>(this); }
+        public GuidOrNullMaterializer<TCommandType, TParameterType> AsGuidOrNull() { return new GuidOrNullMaterializer<TCommandType, TParameterType>(this); }
 
         /// <summary>
         /// Indicates the results should be formatted as a Int16.
         /// </summary>
-        public Int16Result<TCommandType, TParameterType> AsInt16() { return new Int16Result<TCommandType, TParameterType>(this); }
+        public Int16Materializer<TCommandType, TParameterType> AsInt16() { return new Int16Materializer<TCommandType, TParameterType>(this); }
 
         /// <summary>
         /// Indicates the results should be formatted as a nullable Int16.
         /// </summary>
-        public Int16OrNullResult<TCommandType, TParameterType> AsInt16OrNull() { return new Int16OrNullResult<TCommandType, TParameterType>(this); }
+        public Int16OrNullMaterializer<TCommandType, TParameterType> AsInt16OrNull() { return new Int16OrNullMaterializer<TCommandType, TParameterType>(this); }
 
         /// <summary>
         /// Indicates the results should be formatted as a Int32.
         /// </summary>
-        public Int32Result<TCommandType, TParameterType> AsInt32() { return new Int32Result<TCommandType, TParameterType>(this); }
+        public Int32Materializer<TCommandType, TParameterType> AsInt32() { return new Int32Materializer<TCommandType, TParameterType>(this); }
 
         /// <summary>
         /// Indicates the results should be formatted as a nullable Int32.
         /// </summary>
-        public Int32OrNullResult<TCommandType, TParameterType> AsInt32OrNull() { return new Int32OrNullResult<TCommandType, TParameterType>(this); }
+        public Int32OrNullMaterializer<TCommandType, TParameterType> AsInt32OrNull() { return new Int32OrNullMaterializer<TCommandType, TParameterType>(this); }
 
         /// <summary>
         /// Indicates the results should be formatted as a Int64.
         /// </summary>
-        public Int64Result<TCommandType, TParameterType> AsInt64() { return new Int64Result<TCommandType, TParameterType>(this); }
+        public Int64Materializer<TCommandType, TParameterType> AsInt64() { return new Int64Materializer<TCommandType, TParameterType>(this); }
 
         /// <summary>
         /// Indicates the results should be formatted as a nullable Int64.
         /// </summary>
-        public Int64OrNullResult<TCommandType, TParameterType> AsInt64OrNull() { return new Int64OrNullResult<TCommandType, TParameterType>(this); }
+        public Int64OrNullMaterializer<TCommandType, TParameterType> AsInt64OrNull() { return new Int64OrNullMaterializer<TCommandType, TParameterType>(this); }
 
         /// <summary>
         /// Formats the result as an instance of the indicated type
@@ -121,41 +121,41 @@ namespace Tortuga.Chain.CommandBuilders
         /// <typeparam name="TObject">The type of the object returned.</typeparam>
         /// <param name="rowOptions">The row options.</param>
         /// <returns></returns>
-        public ObjectResult<TCommandType, TParameterType, TObject> AsObject<TObject>(RowOptions rowOptions = RowOptions.None)
+        public ObjectMaterializer<TCommandType, TParameterType, TObject> AsObject<TObject>(RowOptions rowOptions = RowOptions.None)
             where TObject : class, new()
         {
-            return new ObjectResult<TCommandType, TParameterType, TObject>(this, rowOptions);
+            return new ObjectMaterializer<TCommandType, TParameterType, TObject>(this, rowOptions);
         }
 
         /// <summary>
         /// Indicates the results should be formatted as a Row.
         /// </summary>
-        public RowResult<TCommandType, TParameterType> AsRow(RowOptions rowOptions = RowOptions.None) { return new RowResult<TCommandType, TParameterType>(this, rowOptions); }
+        public RowMaterializer<TCommandType, TParameterType> AsRow(RowOptions rowOptions = RowOptions.None) { return new RowMaterializer<TCommandType, TParameterType>(this, rowOptions); }
 
         /// <summary>
         /// Indicates the results should be formatted as a Single.
         /// </summary>
-        public SingleResult<TCommandType, TParameterType> AsSingle() { return new SingleResult<TCommandType, TParameterType>(this); }
+        public SingleMaterializer<TCommandType, TParameterType> AsSingle() { return new SingleMaterializer<TCommandType, TParameterType>(this); }
 
         /// <summary>
         /// Indicates the results should be formatted as a nullable Single.
         /// </summary>
-        public SingleOrNullResult<TCommandType, TParameterType> AsSingleOrNull() { return new SingleOrNullResult<TCommandType, TParameterType>(this); }
+        public SingleOrNullMaterializer<TCommandType, TParameterType> AsSingleOrNull() { return new SingleOrNullMaterializer<TCommandType, TParameterType>(this); }
 
         /// <summary>
         /// Indicates the results should be formatted as a nullable string.
         /// </summary>
         /// <returns></returns>
-        public StringResult<TCommandType, TParameterType> AsString() { return new StringResult<TCommandType, TParameterType>(this); }
+        public StringMaterializer<TCommandType, TParameterType> AsString() { return new StringMaterializer<TCommandType, TParameterType>(this); }
 
         /// <summary>
         /// Indicates the results should be formatted as a TimeSpan.
         /// </summary>
-        public TimeSpanResult<TCommandType, TParameterType> AsTimeSpan() { return new TimeSpanResult<TCommandType, TParameterType>(this); }
+        public TimeSpanMaterializer<TCommandType, TParameterType> AsTimeSpan() { return new TimeSpanMaterializer<TCommandType, TParameterType>(this); }
 
         /// <summary>
         /// Indicates the results should be formatted as a nullable TimeSpan.
         /// </summary>
-        public TimeSpanOrNullResult<TCommandType, TParameterType> AsTimeSpanOrNull() { return new TimeSpanOrNullResult<TCommandType, TParameterType>(this); }
+        public TimeSpanOrNullMaterializer<TCommandType, TParameterType> AsTimeSpanOrNull() { return new TimeSpanOrNullMaterializer<TCommandType, TParameterType>(this); }
     }
 }
