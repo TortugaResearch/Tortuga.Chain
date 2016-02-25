@@ -8,8 +8,7 @@ namespace ConsoleApplication1
     {
         static void Main(string[] args)
         {
-            var connectionString = "Server=.;Database=AdventureWorks2014;Trusted_Connection=True;";
-            var dataSource = new Tortuga.Chain.SqlServerDataSource(connectionString);
+            var dataSource = new Tortuga.Chain.SqlServerDataSource("Adventure DB", "Server=.;Database=AdventureWorks2014;Trusted_Connection=True;");
 
             dataSource.DatabaseMetadata.PreloadTables();
             dataSource.DatabaseMetadata.PreloadViews();
