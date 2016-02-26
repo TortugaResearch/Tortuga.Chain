@@ -51,9 +51,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Tortuga.Chain.net461\Tortuga.Chain.net461.csproj">
+    <ProjectReference Include="..\Tortuga.Chain.Core.net461\Tortuga.Chain.Core.net461.csproj">
       <Project>{2c523692-a40b-4a7e-a95a-fbe373f263f7}</Project>
-      <Name>Tortuga.Chain.net461</Name>
+      <Name>Tortuga.Chain.Core.net461</Name>
     </ProjectReference>
     <ProjectReference Include="..\Tortuga.Chain.SqlServer.net461\Tortuga.Chain.SqlServer.net461.csproj">
       <Project>{5d3159ad-141c-4853-9ecc-a1fd603bd8c4}</Project>
