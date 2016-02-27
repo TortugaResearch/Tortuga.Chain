@@ -1,21 +1,21 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Data;
 using System.Data.SQLite;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Tortuga.Chain.Metadata;
 
-namespace Tortuga.Chain.SQLite.Sqlite
+namespace Tortuga.Chain.SQLite
 {
     /// <summary>
     /// Handles caching of metadata for various SQLite tables and views.
     /// </summary>
-    class SQLiteMetadataCache : DatabaseMetadataCache<string>
+    public class SQLiteMetadataCache : DatabaseMetadataCache<string, DbType>
     {
         private readonly SQLiteConnectionStringBuilder m_ConnectionBuilder;
-        private readonly ConcurrentDictionary<string, TableOrViewMetadata<string>> m_Tables = new ConcurrentDictionary<string, TableOrViewMetadata<string>>();
+        private readonly ConcurrentDictionary<string, TableOrViewMetadata<string, DbType>> m_Tables = new ConcurrentDictionary<string, TableOrViewMetadata<string, DbType>>();
+        //private readonly ImmutableHashSet<string> m_Curr;
 
         /// <summary>
         /// Creates a new instance of <see cref="SQLiteMetadataCache"/>
@@ -32,10 +32,9 @@ namespace Tortuga.Chain.SQLite.Sqlite
         /// </summary>
         /// <param name="procedureName"></param>
         /// <returns></returns>
-        public override StoredProcedureMetadata<string> GetStoredProcedure(string procedureName)
+        public override StoredProcedureMetadata<string, DbType> GetStoredProcedure(string procedureName)
         {
-            //throw new NotSupportedException();
-            return null;
+            throw new NotSupportedException();
         }
 
         /// <summary>
@@ -44,10 +43,9 @@ namespace Tortuga.Chain.SQLite.Sqlite
         /// </summary>
         /// <param name="tableFunctionName"></param>
         /// <returns></returns>
-        public override TableFunctionMetadata<string> GetTableFunction(string tableFunctionName)
+        public override TableFunctionMetadata<string, DbType> GetTableFunction(string tableFunctionName)
         {
-            //throw new NotSupportedException();
-            return null; 
+            throw new NotSupportedException();
         }
 
         /// <summary>
@@ -55,12 +53,12 @@ namespace Tortuga.Chain.SQLite.Sqlite
         /// </summary>
         /// <param name="tableName"></param>
         /// <returns></returns>
-        public override TableOrViewMetadata<string> GetTableOrView(string tableName)
+        public override TableOrViewMetadata<string, DbType> GetTableOrView(string tableName)
         {
             return m_Tables.GetOrAdd(tableName, GetTableOrViewInternal);
         }
 
-        private TableOrViewMetadata<string> GetTableOrViewInternal(string tableName)
+        private TableOrViewMetadata<string, DbType> GetTableOrViewInternal(string tableName)
         {
             const string tableSql =
                 @"SELECT 
@@ -90,7 +88,7 @@ namespace Tortuga.Chain.SQLite.Sqlite
             }
 
             var columns = GetColumns(tableName);
-            return new TableOrViewMetadata<string>(tableName, isTable, columns);
+            return new TableOrViewMetadata<string, DbType>(tableName, isTable, columns);
         }
 
         /// <summary>
@@ -151,17 +149,19 @@ namespace Tortuga.Chain.SQLite.Sqlite
             }
         }
 
-        private List<ColumnMetadata> GetColumns(string tableName)
+        private List<ColumnMetadata<DbType>> GetColumns(string tableName)
         {
-            const string columnSql = "PRAGMA table_info(@TableName)";
+            /*  NOTE: Should be safe since GetTableOrViewInternal returns null after querying the table name with a 
+            **  prepared statement. 
+            */
+            string columnSql = "PRAGMA table_info('" + tableName + "')";
 
-            var columns = new List<ColumnMetadata>();
+            var columns = new List<ColumnMetadata<DbType>>();
             using (var con = new SQLiteConnection(m_ConnectionBuilder.ConnectionString))
             {
                 con.Open();
                 using (var cmd = new SQLiteCommand(columnSql, con))
                 {
-                    cmd.Parameters.AddWithValue("@TableName", tableName);
                     using (var reader = cmd.ExecuteReader())
                     {
                         while(reader.Read())
@@ -170,13 +170,39 @@ namespace Tortuga.Chain.SQLite.Sqlite
                             var typeName = reader.GetString(reader.GetOrdinal("type"));
                             var isPrimaryKey = reader.GetInt32(reader.GetOrdinal("pk")) != 0 ? true : false;
 
-                            columns.Add(new ColumnMetadata(name, false, isPrimaryKey, false, typeName));
+                            columns.Add(new ColumnMetadata<DbType>(name, false, isPrimaryKey, false, typeName, TypeNameToDbType(typeName)));
                         }
                     }
                 }
             }
 
             return columns;
+        }
+
+        internal static DbType? TypeNameToDbType(string typeName)
+        {
+            //var typeParts = typeName.Split('(');
+            //var baseTypeName = typeParts[0].ToUpper();
+
+            /*  NOTE: It looks like SQLite has a very loose typing system. This follows the Column Affinity
+            **  information, but might need to be refactored for more granularity.
+            */
+            if (string.IsNullOrEmpty(typeName))
+                return DbType.Binary;
+            else if (typeName.Contains("INT"))
+                return DbType.Byte;
+            else if (typeName.Contains("BLOB"))
+                return DbType.Binary;
+            else if (typeName.Contains("CHAR") ||
+                     typeName.Contains("CLOB") ||
+                     typeName.Contains("TEXT"))
+                return DbType.String;
+            else if (typeName.Contains("REAL") ||
+                     typeName.Contains("FLOA") ||
+                     typeName.Contains("DOUB"))
+                return DbType.Double;
+            else
+                return DbType.Decimal;
         }
     }
 }

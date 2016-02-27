@@ -101,7 +101,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 
             if (m_FilterValue is IReadOnlyDictionary<string, object>)
             {
-                foreach (var item in (IReadOnlyDictionary<string, object>)m_ArgumentValue)
+                foreach (var item in (IReadOnlyDictionary<string, object>)m_FilterValue)
                 {
                     ColumnMetadata<SqlDbType> column;
                     if (availableColumns.TryGetValue(item.Key, out column))
