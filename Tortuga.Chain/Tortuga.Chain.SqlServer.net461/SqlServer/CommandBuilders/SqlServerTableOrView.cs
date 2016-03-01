@@ -79,7 +79,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 
         private string SelectClause(Materializer<SqlCommand, SqlParameter> materializer)
         {
-            var desiredColumns = materializer.DesiredColumns().ToDictionary(c => c, StringComparer.InvariantCultureIgnoreCase);
+            var desiredColumns = materializer.DesiredColumns().ToDictionary(c => c, StringComparer.OrdinalIgnoreCase);
             var availableColumns = m_Metadata.Columns;
 
             if (desiredColumns.Count == 0)
@@ -95,7 +95,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 
         private string WhereClauseA(List<SqlParameter> parameters)
         {
-            var availableColumns = m_Metadata.Columns.ToDictionary(c => c.ClrName, StringComparer.InvariantCultureIgnoreCase);
+            var availableColumns = m_Metadata.Columns.ToDictionary(c => c.ClrName, StringComparer.OrdinalIgnoreCase);
             var properties = MetadataCache.GetMetadata(m_FilterValue.GetType()).Properties;
             var actualColumns = new List<string>();
 

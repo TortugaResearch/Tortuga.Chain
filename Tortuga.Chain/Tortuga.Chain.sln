@@ -12,7 +12,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{AAE3DA8A-65B5-4A2E-BB48-002C3C8D045B}"
 	ProjectSection(SolutionItems) = preProject
 		..\README.md = ..\README.md
-		..\..\Anchor\Tortuga.Anchor\Tortuga.Chain.ruleset = ..\..\Anchor\Tortuga.Anchor\Tortuga.Chain.ruleset
+		Tortuga.Chain.ruleset = Tortuga.Chain.ruleset
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApplication1", "ConsoleApplication1\ConsoleApplication1.csproj", "{7698A185-9FAF-4681-B781-4425869A85AB}"

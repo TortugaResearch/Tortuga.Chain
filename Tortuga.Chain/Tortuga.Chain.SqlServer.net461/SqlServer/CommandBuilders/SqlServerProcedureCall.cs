@@ -44,6 +44,9 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// <returns>ExecutionToken&lt;TCommandType&gt;.</returns>
         public override ExecutionToken<SqlCommand, SqlParameter> Prepare(Materializer<SqlCommand, SqlParameter> materializer)
         {
+            if (materializer == null)
+                throw new ArgumentNullException("materializer", "materializer is null.");
+
             var parameters = new List<SqlParameter>();
             var expectedParameters = m_Metadata.Parameters.ToDictionary(p => p.ClrName, StringComparer.InvariantCultureIgnoreCase);
 
@@ -70,7 +73,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             {
                 foreach (var property in MetadataCache.GetMetadata(m_ArgumentValue.GetType()).Properties)
                 {
-                    ParameterMetadata < SqlDbType> paramInfo;
+                    ParameterMetadata<SqlDbType> paramInfo;
                     if (expectedParameters.TryGetValue(property.MappedColumnName, out paramInfo))
                     {
                         var newSqlParameter = new SqlParameter("@" + property.MappedColumnName, property.InvokeGet(m_ArgumentValue) ?? DBNull.Value);

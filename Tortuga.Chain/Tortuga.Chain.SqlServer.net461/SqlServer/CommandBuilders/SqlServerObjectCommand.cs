@@ -59,6 +59,9 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// <exception cref="DataException"></exception>
         protected string OutputClause(Materializer<SqlCommand, SqlParameter> materializer, bool returnDeletedColumns)
         {
+            if (materializer == null)
+                throw new ArgumentNullException("materializer", "materializer is null.");
+
             if (materializer is NonQueryMaterializer<SqlCommand, SqlParameter>)
                 return null;
 
@@ -97,6 +100,9 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// <returns>System.String.</returns>
         protected string WhereClause(List<SqlParameter> parameters, bool useKeyAttribute)
         {
+            if (parameters == null)
+                throw new ArgumentNullException("parameters", "parameters is null.");
+
             GetPropertiesFilter filter;
             if (useKeyAttribute)
                 filter = (GetPropertiesFilter.ObjectDefinedKey | GetPropertiesFilter.ThrowOnMissingColumns);
