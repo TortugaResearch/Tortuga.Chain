@@ -141,6 +141,12 @@
     <Compile Include="UpdateOptions.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="CommandBuilders\readme.md" />
+    <None Include="DataSources\readme.md" />
+    <None Include="Materializers\readme.md" />
+    <None Include="Materializers\Scalar\readme.md" />
+    <None Include="Materializers\SingleColumn\readme.md" />
+    <None Include="Metadata\readme.md" />
     <None Include="packages.config" />
     <None Include="readme.md" />
     <None Include="Tortuga Chain.snk" />

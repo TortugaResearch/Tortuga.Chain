@@ -77,6 +77,8 @@
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="readme.md" />
+    <None Include="SqlServer\CommandBuilders\readme.md" />
+    <None Include="SqlServer\readme.md" />
     <None Include="Tortuga Chain.snk" />
   </ItemGroup>
   <ItemGroup>
