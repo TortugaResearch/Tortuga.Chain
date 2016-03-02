@@ -54,6 +54,7 @@ namespace ConsoleApplication1
                 dataSource.Delete(SalesCurrency, code).Execute();
             }
 
+            Console.WriteLine("Done!");
             Console.ReadKey();
         }
     }
@@ -74,8 +75,12 @@ namespace ConsoleApplication1
         public int CreditCardID { get; set; }
         public string CardType { get; set; }
         public string CardNumber { get; set; }
-        public int ExpMonth { get; set; }
-        public int ExpYear { get; set; }
+        public System.DayOfWeek?  ExpMonth { get; set; }
+        public short ExpYear { get; set; }
         public DateTime ModifiedDate { get; set; }
     }
+
+
 }
+
+

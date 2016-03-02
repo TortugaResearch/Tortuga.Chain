@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
+using System.Xml.Linq;
 using Tortuga.Anchor.Metadata;
 
 namespace Tortuga.Chain
@@ -112,8 +113,80 @@ namespace Tortuga.Chain
             foreach (var row in Rows)
             {
                 var item = new T();
-                MetadataCache.PopulateComplexObject(row, item, null);
+                PopulateComplexObject(row, item, null);
                 yield return item;
+            }
+        }
+
+        /// <summary>
+        /// Populates the complex object.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <param name="target">The object being populated.</param>
+        /// <param name="decompositionPrefix">The decomposition prefix.</param>
+        /// <remarks>This honors the Column and Decompose attributes.</remarks>
+        static private void PopulateComplexObject(IReadOnlyDictionary<string, object> source, object target, string decompositionPrefix)
+        {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source), $"{nameof(source)} is null.");
+            if (target == null)
+                throw new ArgumentNullException(nameof(target), $"{nameof(target)} is null.");
+
+            foreach (var property in MetadataCache.GetMetadata(target.GetType()).Properties)
+            {
+                if (property.CanWrite && source.ContainsKey(decompositionPrefix + property.MappedColumnName))
+                {
+                    var value = source[property.MappedColumnName];
+
+                    if (value != null && property.PropertyType != value.GetType())
+                    {
+                        var targetType = property.PropertyType;
+
+                        //For Nullable<T>, we only care about the type parameter
+                        if (targetType.Name == "Nullable`1" && targetType.IsGenericType)
+                            targetType = targetType.GenericTypeArguments[0];
+
+
+                        //XML values come to us as strings
+                        if (value is string)
+                        {
+                            if (targetType == typeof(XElement))
+                                value = XElement.Parse((string)value);
+                            else if (targetType == typeof(XDocument))
+                                value = XDocument.Parse((string)value);
+                            else if (targetType.IsEnum)
+                                value = Enum.Parse(targetType, (string)value);
+                        }
+                        else
+                        {
+                            if (targetType.IsEnum)
+                                value = Enum.ToObject(targetType, value);
+                        }
+
+                        //this will handle integer conversions
+                        if (value != null && targetType != value.GetType())
+                        {
+                            value = Convert.ChangeType(value, targetType);
+                        }
+                    }
+                    property.InvokeSet(target, value);
+                }
+                else if (property.Decompose)
+                {
+                    object child = null;
+
+                    if (property.CanRead)
+                        child = property.InvokeGet(target);
+
+                    if (child == null && property.CanWrite && property.PropertyType.GetConstructor(new Type[0]) != null)
+                    {
+                        child = Activator.CreateInstance(property.PropertyType);
+                        property.InvokeSet(target, child);
+                    }
+
+                    if (child != null)
+                        PopulateComplexObject(source, child, decompositionPrefix + property.DecompositionPrefix);
+                }
             }
         }
     }
