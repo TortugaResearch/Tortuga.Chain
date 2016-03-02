@@ -16,26 +16,30 @@ namespace ConsoleApplication1
         private static void SQLiteTest()
         {
             var connectionString = "Data Source=C:\\Users\\DocEvaad\\Desktop\\SQLiteStudio\\TortugaChainTestDb.sqlite3; Version=3;";
-            /* using (var con = new SQLiteConnection(connectionString))
-             {
-                 con.Open();
-                 using (var cmd = new SQLiteCommand("PRAGMA table_info('@TableName');", con))
-                 {
-                     //cmd.Parameters.Add(new SQLiteParameter("@TableName", "Currency"));
-                     cmd.
-                     using (var reader = cmd.ExecuteReader())
-                     {
-                         while (reader.Read())
-                         {
-                             var name = reader.GetString(reader.GetOrdinal("name"));
-                             var typeName = reader.GetString(reader.GetOrdinal("type"));
+            /*
+            using (var con = new SQLiteConnection(connectionString))
+            {
+                con.Open();
 
-                             Console.WriteLine($"Table: {name}, Type: {typeName}");
-                         }
-                     }
-                 } 
-             }
-             ;*/
+                using (var cmd = new SQLiteCommand(string.Format("PRAGMA table_info({0});", con)))
+                {
+                    //cmd.Parameters.Add(new SQLiteParameter("@TableName", "Currency"));
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        Console.WriteLine(reader.ToString());
+
+                        while (reader.Read())
+                        {
+                            var name = reader.GetString(reader.GetOrdinal("name"));
+                            var typeName = reader.GetString(reader.GetOrdinal("type"));
+
+                            Console.WriteLine($"Table: {name}, Type: {typeName}");
+                        }
+                    }
+                } 
+            }
+            */
             var dataSource = new Tortuga.Chain.SQLiteDataSource(connectionString);
 
             dataSource.DatabaseMetaData.PreloadTables();
@@ -52,6 +56,22 @@ namespace ConsoleApplication1
             var cards1 = dataSource.From("CreditCard", new { @CardType = "Vista" }).AsCollection<CreditCard>().Execute();
             foreach (var item in cards1.Take(10))
                 Console.WriteLine(item.CardNumber);
+
+            {
+                var newCurrency = new Currency();
+                newCurrency.CurrencyCode = "XYZ";
+                newCurrency.CurrencyName = "Test " + newCurrency.CurrencyCode;
+
+                dataSource.StrictMode = true;
+
+                var insertedCode = dataSource.Insert("Currency", newCurrency).AsObject<Currency>().Execute();
+
+                Console.WriteLine($"Inserted new code: {insertedCode.CurrencyCode} - {newCurrency.CurrencyName}");
+
+                dataSource.Delete("Currency", insertedCode).Execute();
+
+                Console.WriteLine("Finised deleting object.");
+            }
             Console.ReadKey();
         }
 
@@ -121,7 +141,8 @@ namespace ConsoleApplication1
 
     class CreditCard
     {
-        public int CreditCardId { get; set; }
+        //Need to work on the materializer
+        public long CreditCardId { get; set; }
         public string CardType { get; set; }
         public string CardNumber { get; set; }
         public int ExpMonth { get; set; }

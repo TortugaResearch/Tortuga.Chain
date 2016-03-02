@@ -79,5 +79,15 @@ namespace Tortuga.Chain.SQLite
         {
             return new SQLiteTableOrView(this, tableOrViewName, filterValue);
         }
+
+        public SQLiteInsertObject Insert(string tableName, object argumentValue)
+        {
+            return new SQLiteInsertObject(this, tableName, argumentValue);
+        }
+
+        public SQLiteDeleteObject Delete(string tableName, object argumentValue, DeleteOptions options = DeleteOptions.None)
+        {
+            return new SQLiteDeleteObject(this, tableName, argumentValue, options);
+        }
     }
 }

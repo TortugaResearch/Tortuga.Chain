@@ -65,7 +65,8 @@ namespace Tortuga.Chain.SQLite
                 type AS ObjectType,
                 tbl_name AS ObjectName
                 FROM sqlite_master
-                WHERE tbl_name = @Name";
+                WHERE tbl_name = @Name AND
+                      (type='table' OR type='view')";
 
             string actualName;
             bool isTable;
