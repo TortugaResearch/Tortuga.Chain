@@ -15,5 +15,7 @@ namespace Tests
         {
             get { return m_DataSource; }
         }
+        public string EmployeeTableName { get { return "HR.Employee"; } }
+
     }
 }

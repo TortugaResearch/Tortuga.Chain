@@ -2,6 +2,8 @@
 using System.Data.SQLite;
 using System.Threading;
 using System.Threading.Tasks;
+using Tortuga.Chain.CommandBuilders;
+using Tortuga.Chain.Metadata;
 using Tortuga.Chain.SQLite;
 
 namespace Tortuga.Chain
@@ -9,7 +11,7 @@ namespace Tortuga.Chain
     /// <summary>
     /// Class that represets a SQLite Datasource.
     /// </summary>
-    public class SQLiteDataSource : SQLiteDataSourceBase
+    public class SQLiteDataSource : SQLiteDataSourceBase, IClass1DataSource
     {
         private readonly SQLiteConnectionStringBuilder m_ConnectionBuilder;
         private readonly SQLiteMetadataCache m_DatabaseMetadata;
@@ -209,9 +211,54 @@ namespace Tortuga.Chain
             return con;
         }
 
+        ISingleRowDbCommandBuilder IClass1DataSource.Insert(string tableName, object argumentValue)
+        {
+            return Insert(tableName, argumentValue);
+        }
+
+        ISingleRowDbCommandBuilder IClass1DataSource.Update(string tableName, object argumentValue, UpdateOptions options)
+        {
+            throw new NotImplementedException();
+        }
+
+        IDbCommandBuilder IClass1DataSource.Delete(string tableName, object argumentValue, DeleteOptions options)
+        {
+            return Delete(tableName, argumentValue, options);
+        }
+
+        IMultipleRowDbCommandBuilder IClass1DataSource.From(string tableOrViewName)
+        {
+            return From(tableOrViewName);
+        }
+
+        IMultipleRowDbCommandBuilder IClass1DataSource.From(string tableOrViewName, string whereClause)
+        {
+            return From(tableOrViewName, whereClause);
+        }
+
+        IMultipleRowDbCommandBuilder IClass1DataSource.From(string tableOrViewName, string whereClause, object argumentValue)
+        {
+            return From(tableOrViewName, whereClause, argumentValue);
+        }
+
+        IMultipleRowDbCommandBuilder IClass1DataSource.From(string tableOrViewName, object filterValue)
+        {
+            return From(tableOrViewName, filterValue);
+        }
+
+        ISingleRowDbCommandBuilder IClass1DataSource.InsertOrUpdate(string tableName, object argumentValue, InsertOrUpdateOptions options)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Normally we use a reader/writer lock to avoid simutaneous writes to a SQlite database. If you disable this locking, you may see extra noise in your tracing output or unexcepted exceptions.
         /// </summary>
         public bool DisableLocks { get; set; }
+
+        IDatabaseMetadataCache IClass1DataSource.DatabaseMetadata
+        {
+            get { return m_DatabaseMetadata; }
+        }
     }
 }

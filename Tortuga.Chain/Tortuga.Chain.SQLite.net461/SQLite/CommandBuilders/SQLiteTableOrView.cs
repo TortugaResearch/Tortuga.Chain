@@ -109,8 +109,8 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
                     {
                         object value = item.Value ?? DBNull.Value;
                         var parameter = new SQLiteParameter(column.SqlVariableName, value);
-                        if (column.SqlDbType.HasValue)
-                            parameter.DbType = column.SqlDbType.Value;
+                        if (column.DbType.HasValue)
+                            parameter.DbType = column.DbType.Value;
                         parameters.Add(parameter);
 
                         if (value == DBNull.Value)
@@ -129,8 +129,8 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
                     {
                         object value = item.InvokeGet(m_FilterValue) ?? DBNull.Value;
                         var parameter = new SQLiteParameter(column.SqlVariableName, value);
-                        if (column.SqlDbType.HasValue)
-                            parameter.DbType = column.SqlDbType.Value;
+                        if (column.DbType.HasValue)
+                            parameter.DbType = column.DbType.Value;
                         parameters.Add(parameter);
 
                         if (value == DBNull.Value)
