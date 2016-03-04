@@ -1,0 +1,173 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{2C523692-A40B-4A7E-A95A-FBE373F263F7}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Tortuga.Chain</RootNamespace>
+    <AssemblyName>Tortuga.Chain.Core</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\Tortuga.Chain.Core.xml</DocumentationFile>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <CodeAnalysisRuleSet>..\Tortuga.Chain.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\Tortuga.Chain.Core.xml</DocumentationFile>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <CodeAnalysisRuleSet>
+    </CodeAnalysisRuleSet>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>Tortuga Chain.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Collections.Immutable, Version=1.1.37.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Collections.Immutable.1.1.37\lib\dotnet\System.Collections.Immutable.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Caching" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Tortuga.Anchor, Version=0.1.5904.38525, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tortuga.Anchor.0.1.5904.38525\lib\net461\Tortuga.Anchor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CommandBuilders\IDbCommandBuilder.cs" />
+    <Compile Include="CommandBuilders\IMultipleRowDbCommandBuilder.cs" />
+    <Compile Include="CommandBuilders\ISingleRowDbCommandBuilder.cs" />
+    <Compile Include="DataSources\DataSource`2.cs" />
+    <Compile Include="CommandBuilders\DbCommandBuilder`2.cs" />
+    <Compile Include="DeleteOptions.cs" />
+    <Compile Include="ExecutionToken`2.cs" />
+    <Compile Include="IClass1DataSource.cs" />
+    <Compile Include="MappingException.cs" />
+    <Compile Include="Materializers\IMaterializer`1.cs" />
+    <Compile Include="Materializers\IMaterializer.cs" />
+    <Compile Include="Materializers\SingleColumn\BooleanListMaterializer`2.cs" />
+    <Compile Include="Materializers\Scalar\BooleanOrNullMaterializer`2.cs" />
+    <Compile Include="Materializers\Scalar\BooleanMaterializer`2.cs" />
+    <Compile Include="Materializers\Scalar\ByteArrayMaterializer`2.cs" />
+    <Compile Include="Materializers\DataSetMaterializer`2.cs" />
+    <Compile Include="Materializers\DataTableMaterializer`2.cs" />
+    <Compile Include="Materializers\SingleColumn\DateTimeListMaterializer`2.cs" />
+    <Compile Include="Materializers\SingleColumn\DateTimeOffsetListMaterializer`2.cs" />
+    <Compile Include="Materializers\Scalar\DateTimeOffsetOrNullMaterializer`2.cs" />
+    <Compile Include="Materializers\Scalar\DateTimeOffsetMaterializer`2.cs" />
+    <Compile Include="Materializers\Scalar\DateTimeOrNullMaterializer`2.cs" />
+    <Compile Include="Materializers\Scalar\DateTimeMaterializer`2.cs" />
+    <Compile Include="Materializers\SingleColumn\DecimalListMaterializer`2.cs" />
+    <Compile Include="Materializers\Scalar\DecimalOrNullMaterializer`2.cs" />
+    <Compile Include="Materializers\Scalar\DecimalMaterializer`2.cs" />
+    <Compile Include="Materializers\SingleColumn\DoubleListMaterializer`2.cs" />
+    <Compile Include="Materializers\Scalar\DoubleOrNullMaterializer`2.cs" />
+    <Compile Include="Materializers\Scalar\DoubleMaterializer`2.cs" />
+    <Compile Include="Materializers\Materializer`2.cs" />
+    <Compile Include="Materializers\Materializer`3.cs" />
+    <Compile Include="Materializers\SingleColumn\GuidListMaterializer`2.cs" />
+    <Compile Include="Materializers\Scalar\GuidOrNullMaterializer`2.cs" />
+    <Compile Include="Materializers\Scalar\GuidMaterializer`2.cs" />
+    <Compile Include="Materializers\SingleColumn\Int16ListMaterializer`2.cs" />
+    <Compile Include="Materializers\Scalar\Int16OrNullMaterializer`2.cs" />
+    <Compile Include="Materializers\Scalar\Int16Materializer`2.cs" />
+    <Compile Include="Materializers\SingleColumn\Int32ListMaterializer`2.cs" />
+    <Compile Include="Materializers\Scalar\Int32OrNullMaterializer`2.cs" />
+    <Compile Include="Materializers\Scalar\Int32Materializer`2.cs" />
+    <Compile Include="Materializers\SingleColumn\Int64ListMaterializer`2.cs" />
+    <Compile Include="Materializers\Scalar\Int64OrNullMaterializer`2.cs" />
+    <Compile Include="Materializers\Scalar\Int64Materializer`2.cs" />
+    <Compile Include="Materializers\CollectionResult`4.cs" />
+    <Compile Include="Materializers\ObjectResult`3.cs" />
+    <Compile Include="Materializers\NonQueryMaterializer`2.cs" />
+    <Compile Include="Materializers\RowMaterializer`2.cs" />
+    <Compile Include="Materializers\SingleColumn\SingleColumnFormatterBase.cs" />
+    <Compile Include="Materializers\SingleColumn\SingleListMaterializer`2.cs" />
+    <Compile Include="Materializers\Scalar\SingleOrNullMaterializer`2.cs" />
+    <Compile Include="Materializers\Scalar\SingleMaterializer`2.cs" />
+    <Compile Include="Materializers\SingleColumn\StringListMaterializer`2.cs" />
+    <Compile Include="Materializers\Scalar\StringMaterializer`2.cs" />
+    <Compile Include="Materializers\TableMaterializer`2.cs" />
+    <Compile Include="Materializers\TableSetMaterializer`2.cs" />
+    <Compile Include="Materializers\SingleColumn\TimeSpanListMaterializer`2.cs" />
+    <Compile Include="Materializers\Scalar\TimeSpanOrNullMaterializer`2.cs" />
+    <Compile Include="Materializers\Scalar\TimeSpanMaterializer`2.cs" />
+    <Compile Include="InsertOrUpdateOptions.cs" />
+    <Compile Include="ListOptions.cs" />
+    <Compile Include="Metadata\ColumnMetadata`1.cs" />
+    <Compile Include="Metadata\ColumnPropertyMap`1.cs" />
+    <Compile Include="Metadata\DatabaseMetadataCache`2.cs" />
+    <Compile Include="Metadata\GetKeysFilter.cs" />
+    <Compile Include="Metadata\GetPropertiesFilter.cs" />
+    <Compile Include="Metadata\IColumnMetadata.cs" />
+    <Compile Include="Metadata\IDatabaseMetadataCache.cs" />
+    <Compile Include="Metadata\ITableOrViewMetadata.cs" />
+    <Compile Include="Metadata\ParameterMetadata`2.cs" />
+    <Compile Include="Metadata\StoredProcedureMetadata`2.cs" />
+    <Compile Include="Metadata\TableFunctionMetadata`2.cs" />
+    <Compile Include="Metadata\TableOrViewMetadata`2.cs" />
+    <Compile Include="Metadata\Utilities.cs" />
+    <Compile Include="MissingDataException.cs" />
+    <Compile Include="MissingObjectException.cs" />
+    <Compile Include="CommandBuilders\MultipleRowDbCommandBuilder.cs" />
+    <Compile Include="CommandBuilders\MultipleTableDbCommandBuilder.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RowOptions.cs" />
+    <Compile Include="CommandBuilders\SingleRowDbCommandBuilder.cs" />
+    <Compile Include="Table.cs" />
+    <Compile Include="TableSet.cs" />
+    <Compile Include="UnexpectedDataException.cs" />
+    <Compile Include="UpdateOptions.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CommandBuilders\readme.md" />
+    <None Include="DataSources\readme.md" />
+    <None Include="Materializers\readme.md" />
+    <None Include="Materializers\Scalar\readme.md" />
+    <None Include="Materializers\SingleColumn\readme.md" />
+    <None Include="Metadata\readme.md" />
+    <None Include="packages.config" />
+    <None Include="readme.md" />
+    <None Include="Tortuga Chain.snk" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

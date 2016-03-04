@@ -20,7 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>..\..\..\Anchor\Tortuga.Anchor\Tortuga.Chain.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>..\Tortuga.Chain.ruleset</CodeAnalysisRuleSet>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <DocumentationFile>bin\Debug\Tortuga.Chain.SqlServer.XML</DocumentationFile>
     <RunCodeAnalysis>false</RunCodeAnalysis>
@@ -32,10 +32,17 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>..\..\..\Anchor\Tortuga.Anchor\Tortuga.Chain.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>
+    </CodeAnalysisRuleSet>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <DocumentationFile>bin\Release\Tortuga.Chain.SqlServer.XML</DocumentationFile>
-    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>Tortuga Chain.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -52,8 +59,8 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="Tortuga.Anchor, Version=0.1.5893.4595, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
-      <HintPath>..\packages\Tortuga.Anchor.0.1.5893.4595\lib\net461\Tortuga.Anchor.dll</HintPath>
+    <Reference Include="Tortuga.Anchor, Version=0.1.5904.38525, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tortuga.Anchor.0.1.5904.38525\lib\net461\Tortuga.Anchor.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
@@ -76,12 +83,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="readme.md" />
+    <None Include="SqlServer\CommandBuilders\readme.md" />
+    <None Include="SqlServer\readme.md" />
     <None Include="Tortuga Chain.snk" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Tortuga.Chain.net461\Tortuga.Chain.net461.csproj">
+    <ProjectReference Include="..\Tortuga.Chain.Core.net461\Tortuga.Chain.Core.net461.csproj">
       <Project>{2c523692-a40b-4a7e-a95a-fbe373f263f7}</Project>
-      <Name>Tortuga.Chain.net461</Name>
+      <Name>Tortuga.Chain.Core.net461</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

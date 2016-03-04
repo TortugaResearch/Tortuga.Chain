@@ -48,30 +48,58 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 
         private string SetClause(List<SqlParameter> parameters)
         {
-            var filter = GetPropertiesFilter.ThrowOnNoMatch | GetPropertiesFilter.UpdatableOnly;
-
-            if (m_Options.HasFlag(UpdateOptions.UseKeyAttribute))
-                filter = filter | GetPropertiesFilter.ObjectDefinedNonKey;
-            else
-                filter = filter | GetPropertiesFilter.NonPrimaryKey;
-
-            if (DataSource.StrictMode)
-                filter = filter | GetPropertiesFilter.ThrowOnMissingColumns;
-
-            var availableColumns = Metadata.GetPropertiesFor(ArgumentValue.GetType(), filter);
-
-            var result = "SET " + string.Join(", ", availableColumns.Select(c => $"{c.Column.QuotedSqlName} = {c.Column.SqlVariableName}"));
-
-            foreach (var item in availableColumns)
+            if (ArgumentDictionary != null)
             {
-                var value = item.Property.InvokeGet(ArgumentValue) ?? DBNull.Value;
-                var parameter = new SqlParameter(item.Column.SqlVariableName, value);
-                if (item.Column.SqlDbType.HasValue)
-                    parameter.SqlDbType = item.Column.SqlDbType.Value;
-                parameters.Add(parameter);
-            }
 
-            return result;
+                var filter = GetKeysFilter.ThrowOnNoMatch | GetKeysFilter.UpdatableOnly;
+
+                filter = filter | GetKeysFilter.NonPrimaryKey;
+
+                if (DataSource.StrictMode)
+                    filter = filter | GetKeysFilter.ThrowOnMissingColumns;
+
+                var availableColumns = Metadata.GetKeysFor(ArgumentDictionary, filter);
+
+                var result = "SET " + string.Join(", ", availableColumns.Select(c => $"{c.QuotedSqlName} = {c.SqlVariableName}"));
+
+                foreach (var item in availableColumns)
+                {
+                    var value = ArgumentDictionary[item.ClrName] ?? DBNull.Value;
+                    var parameter = new SqlParameter(item.SqlVariableName, value);
+                    if (item.DbType.HasValue)
+                        parameter.SqlDbType = item.DbType.Value;
+                    parameters.Add(parameter);
+                }
+
+                return result;
+            }
+            else
+            {
+                var filter = GetPropertiesFilter.ThrowOnNoMatch | GetPropertiesFilter.UpdatableOnly;
+
+                if (m_Options.HasFlag(UpdateOptions.UseKeyAttribute))
+                    filter = filter | GetPropertiesFilter.ObjectDefinedNonKey;
+                else
+                    filter = filter | GetPropertiesFilter.NonPrimaryKey;
+
+                if (DataSource.StrictMode)
+                    filter = filter | GetPropertiesFilter.ThrowOnMissingColumns;
+
+                var availableColumns = Metadata.GetPropertiesFor(ArgumentValue.GetType(), filter);
+
+                var result = "SET " + string.Join(", ", availableColumns.Select(c => $"{c.Column.QuotedSqlName} = {c.Column.SqlVariableName}"));
+
+                foreach (var item in availableColumns)
+                {
+                    var value = item.Property.InvokeGet(ArgumentValue) ?? DBNull.Value;
+                    var parameter = new SqlParameter(item.Column.SqlVariableName, value);
+                    if (item.Column.DbType.HasValue)
+                        parameter.SqlDbType = item.Column.DbType.Value;
+                    parameters.Add(parameter);
+                }
+
+                return result;
+            }
         }
     }
 }

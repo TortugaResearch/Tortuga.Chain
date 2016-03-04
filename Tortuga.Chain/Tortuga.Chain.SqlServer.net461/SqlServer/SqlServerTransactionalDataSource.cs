@@ -111,6 +111,11 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="state">User supplied state.</param>
         protected override void Execute(ExecutionToken<SqlCommand, SqlParameter> executionToken, Func<SqlCommand, int?> implementation, object state)
         {
+            if (executionToken == null)
+                throw new ArgumentNullException("executionToken", "executionToken is null.");
+            if (implementation == null)
+                throw new ArgumentNullException("implementation", "implementation is null.");
+
             var startTime = DateTimeOffset.Now;
             //OnOperationStarted(operation, startTime, state, executionToken);
 
