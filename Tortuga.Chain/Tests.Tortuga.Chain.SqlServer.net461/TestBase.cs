@@ -17,6 +17,11 @@ namespace Tests
         {
             get { return m_DataSource; }
         }
+
+        public SqlServerDataSource DataSource
+        {
+            get { return m_DataSource; }
+        }
     }
 
 }

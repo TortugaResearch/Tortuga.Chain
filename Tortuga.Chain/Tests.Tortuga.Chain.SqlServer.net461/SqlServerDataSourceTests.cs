@@ -4,7 +4,7 @@ using Tortuga.Chain;
 namespace Tests
 {
     [TestClass]
-    public class SqlServerDataSourceTests
+    public class SqlServerDataSourceTests 
     {
         [TestMethod]
         public void SqlServerDataSourceTests_Ctr()
@@ -13,5 +13,7 @@ namespace Tests
             var dataSource = new SqlServerDataSource(connectionString);
             dataSource.TestConnection();
         }
+
+
     }
 }
