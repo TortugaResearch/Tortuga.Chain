@@ -1,6 +1,6 @@
-﻿using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Tests.Repository
 {
@@ -10,7 +10,7 @@ namespace Tests.Repository
         [TestMethod]
         public void BasicCrud()
         {
-            var repo = new Repository<Employee, int>(Class1DataSource, EmployeeTableName );
+            var repo = new Repository<Employee, int>(DataSource, EmployeeTableName);
 
             var emp1 = new Employee() { FirstName = "Tom", LastName = "Jones", Title = "President" };
             var echo1 = repo.Insert(emp1);
@@ -47,9 +47,9 @@ namespace Tests.Repository
         [TestMethod]
         public void InsertWithDictionary()
         {
-            var repo = new Repository<Employee, int>(Class1DataSource, "HR.Employee");
+            var repo = new Repository<Employee, int>(DataSource, "HR.Employee");
 
-            var emp1 = new Dictionary<string, object>() { { "FirstName", "Tom" }, { "LastName", "Jones" }, {"Title", "President" } };
+            var emp1 = new Dictionary<string, object>() { { "FirstName", "Tom" }, { "LastName", "Jones" }, { "Title", "President" } };
             var echo1 = repo.Insert(emp1);
 
             Assert.AreNotEqual(0, echo1.EmployeeKey, "EmployeeKey was not set");
@@ -64,7 +64,7 @@ namespace Tests.Repository
         [TestMethod]
         public void UpdateWithDictionary()
         {
-            var repo = new Repository<Employee, int>(Class1DataSource, "HR.Employee");
+            var repo = new Repository<Employee, int>(DataSource, "HR.Employee");
 
             var emp1 = new Dictionary<string, object>() { { "FirstName", "Tom" }, { "LastName", "Jones" }, { "Title", "President" } };
             var echo1 = repo.Insert(emp1);
@@ -74,7 +74,7 @@ namespace Tests.Repository
             Assert.AreEqual(emp1["LastName"], echo1.LastName, "LastName");
             Assert.AreEqual(emp1["Title"], echo1.Title, "Title");
 
-            var emp2 = new Dictionary<string, object>() { { "EmployeeKey", echo1.EmployeeKey }, { "LastName", "Brown" }};
+            var emp2 = new Dictionary<string, object>() { { "EmployeeKey", echo1.EmployeeKey }, { "LastName", "Brown" } };
             repo.Update(emp2);
             var echo2 = repo.Get(echo1.EmployeeKey.Value);
 

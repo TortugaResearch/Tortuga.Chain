@@ -67,6 +67,7 @@
     <Compile Include="..\Tests.Tortuga.Chain.SqlServer.net461\Repository\Repository`2.cs">
       <Link>Repository\Repository`2.cs</Link>
     </Compile>
+    <Compile Include="Metadata\MetadataTests.cs" />
     <Compile Include="Setup.cs" />
     <Compile Include="TestBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

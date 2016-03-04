@@ -34,7 +34,7 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
                 throw new ArgumentException("table/view name string is empty");
 
             m_FilterValue = filterValue;
-            m_MetaData = ((SQLiteDataSourceBase)DataSource).DatabaseMetaData.GetTableOrView(tableOrViewName);
+            m_MetaData = ((SQLiteDataSourceBase)DataSource).DatabaseMetadata.GetTableOrView(tableOrViewName);
         }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
 
             m_ArgumentValue = argumentValue;
             m_WhereClause = whereClause;
-            m_MetaData = ((SQLiteDataSourceBase)DataSource).DatabaseMetaData.GetTableOrView(tableOrViewName);
+            m_MetaData = ((SQLiteDataSourceBase)DataSource).DatabaseMetadata.GetTableOrView(tableOrViewName);
         }
 
         /// <summary>

@@ -27,7 +27,7 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
         {
             m_TableName = tableName;
             m_ArgumentValue = argumentValue;
-            m_Metadata = ((SQLiteDataSourceBase)DataSource).DatabaseMetaData.GetTableOrView(m_TableName);
+            m_Metadata = ((SQLiteDataSourceBase)DataSource).DatabaseMetadata.GetTableOrView(m_TableName);
         }
 
         protected string TableName

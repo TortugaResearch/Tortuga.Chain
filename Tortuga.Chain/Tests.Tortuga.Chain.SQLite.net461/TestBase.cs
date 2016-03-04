@@ -1,4 +1,3 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Tortuga.Chain;
 
 namespace Tests
@@ -12,7 +11,7 @@ namespace Tests
             m_DataSource = new SQLiteDataSource(System.Configuration.ConfigurationManager.ConnectionStrings["SQLiteTestDatabase"].ConnectionString);
         }
 
-        public IClass1DataSource Class1DataSource
+        public SQLiteDataSource DataSource
         {
             get { return m_DataSource; }
         }

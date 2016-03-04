@@ -48,7 +48,7 @@ namespace Tortuga.Chain
         /// <summary>
         /// This object can be used to lookup database information.
         /// </summary>
-        public override SQLiteMetadataCache DatabaseMetaData
+        public override SQLiteMetadataCache DatabaseMetadata
         {
             get { return m_DatabaseMetadata; }
         }

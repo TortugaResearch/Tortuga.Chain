@@ -13,7 +13,7 @@ namespace Tortuga.Chain.SQLite
         /// Gets the database metadata.
         /// </summary>
         /// <value>The database metadata.</value>
-        public abstract SQLiteMetadataCache DatabaseMetaData { get; }
+        public abstract SQLiteMetadataCache DatabaseMetadata { get; }
 
         /// <summary>
         /// Creates a operation based on a raw SQL statement.
