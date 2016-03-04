@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.SQLite;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Tortuga.Chain.SQLite;
@@ -16,6 +13,7 @@ namespace Tortuga.Chain
     {
         private readonly SQLiteConnectionStringBuilder m_ConnectionBuilder;
         private readonly SQLiteMetadataCache m_DatabaseMetadata;
+        private readonly ReaderWriterLockSlim m_SyncLock = new ReaderWriterLockSlim(); //Sqlite is single-threaded for writes. It says otherwise, but it spams the trace window with excpetions.
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SQLiteDataSource" /> class.
@@ -89,8 +87,16 @@ namespace Tortuga.Chain
             if (implementation == null)
                 throw new ArgumentNullException("implementation", "implementation is null.");
 
+            var mode = DisableLocks ? LockType.None : (executionToken as SQLiteExecutionToken)?.LockType ?? LockType.Write;
+
             try
             {
+                switch (mode)
+                {
+                    case LockType.Read: m_SyncLock.EnterReadLock(); break;
+                    case LockType.Write: m_SyncLock.EnterWriteLock(); break;
+                }
+
                 using (var con = CreateSQLiteConnection())
                 {
                     using (var cmd = new SQLiteCommand())
@@ -106,13 +112,21 @@ namespace Tortuga.Chain
                     }
                 }
             }
-            catch(SQLiteException ex)
+            catch (SQLiteException ex)
             {
                 ex.Data["DataSource"] = Name;
                 ex.Data["Operation"] = executionToken.OperationName;
                 ex.Data["CommandText"] = executionToken.CommandText;
                 ex.Data["Parameters"] = executionToken.Parameters;
                 throw;
+            }
+            finally
+            {
+                switch (mode)
+                {
+                    case LockType.Read: m_SyncLock.ExitReadLock(); break;
+                    case LockType.Write: m_SyncLock.ExitWriteLock(); break;
+                }
             }
         }
 
@@ -130,9 +144,17 @@ namespace Tortuga.Chain
                 throw new ArgumentNullException("executionToken", "executionToken is null.");
             if (implementation == null)
                 throw new ArgumentNullException("implementation", "implementation is null.");
-        
+
+            var mode = DisableLocks ? LockType.None : (executionToken as SQLiteExecutionToken)?.LockType ?? LockType.Write;
+
             try
             {
+                switch (mode)
+                {
+                    case LockType.Read: m_SyncLock.EnterReadLock(); break;
+                    case LockType.Write: m_SyncLock.EnterWriteLock(); break;
+                }
+
                 using (var con = await CreateSqlConnectionAsync(cancellationToken).ConfigureAwait(false))
                 {
                     using (var cmd = new SQLiteCommand())
@@ -167,6 +189,14 @@ namespace Tortuga.Chain
                     throw;
                 }
             }
+            finally
+            {
+                switch (mode)
+                {
+                    case LockType.Read: m_SyncLock.ExitReadLock(); break;
+                    case LockType.Write: m_SyncLock.ExitWriteLock(); break;
+                }
+            }
         }
 
         private async Task<SQLiteConnection> CreateSqlConnectionAsync(CancellationToken cancellationToken)
@@ -178,5 +208,10 @@ namespace Tortuga.Chain
 
             return con;
         }
+
+        /// <summary>
+        /// Normally we use a reader/writer lock to avoid simutaneous writes to a SQlite database. If you disable this locking, you may see extra noise in your tracing output or unexcepted exceptions.
+        /// </summary>
+        public bool DisableLocks { get; set; }
     }
 }

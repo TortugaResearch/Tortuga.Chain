@@ -20,9 +20,9 @@ namespace Tortuga.Chain.SQLite
         /// </summary>
         /// <param name="sqlStatement"></param>
         /// <returns></returns>
-        public SQLiteSqlCall Sql(string sqlStatement)
+        public SQLiteSqlCall Sql(string sqlStatement, LockType lockType)
         {
-            return new SQLiteSqlCall(this, sqlStatement, null);
+            return new SQLiteSqlCall(this, sqlStatement, null, lockType);
         }
 
         /// <summary>
@@ -31,9 +31,9 @@ namespace Tortuga.Chain.SQLite
         /// <param name="sqlStatement"></param>
         /// <param name="argumentValue"></param>
         /// <returns></returns>
-        public SQLiteSqlCall Sql(string sqlStatement, object argumentValue)
+        public SQLiteSqlCall Sql(string sqlStatement, object argumentValue, LockType lockType)
         {
-            return new SQLiteSqlCall(this, sqlStatement, argumentValue);
+            return new SQLiteSqlCall(this, sqlStatement, argumentValue, lockType);
         }
 
         /// <summary>

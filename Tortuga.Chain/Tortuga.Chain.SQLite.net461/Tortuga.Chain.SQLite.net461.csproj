@@ -7,7 +7,7 @@
     <ProjectGuid>{E92091C6-46F6-423E-B5CE-7DDCD2840CCE}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Tortuga.Chain.SQLite</RootNamespace>
+    <RootNamespace>Tortuga.Chain</RootNamespace>
     <AssemblyName>Tortuga.Chain.SQLite</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -71,7 +71,9 @@
     <Compile Include="SQLite\CommandBuilders\SQLiteSqlCall.cs" />
     <Compile Include="SQLite\CommandBuilders\SQLiteTableOrView.cs" />
     <Compile Include="SQLite\CommandBuilders\SQLiteUpdateObject.cs" />
+    <Compile Include="SQLite\LockType.cs" />
     <Compile Include="SQLite\SQLiteDataSourceBase.cs" />
+    <Compile Include="SQLite\SQLiteExecutionToken.cs" />
     <Compile Include="SQLite\SQLiteMetadataCache.cs" />
   </ItemGroup>
   <ItemGroup>

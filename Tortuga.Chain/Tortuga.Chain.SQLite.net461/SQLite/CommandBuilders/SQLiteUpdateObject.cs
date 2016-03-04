@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Tortuga.Chain.Materializers;
 using Tortuga.Chain.Metadata;
 
@@ -33,7 +30,7 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
             else
                 sql = $"UPDATE {TableName} {set} WHERE {where}; {output};";
 
-            return new ExecutionToken<SQLiteCommand, SQLiteParameter>(DataSource, "Update " + TableName, sql, parameters);
+            return new SQLiteExecutionToken(DataSource, "Update " + TableName, sql, parameters, lockType: LockType.Write);
         }
 
         private string SetClause(List<SQLiteParameter> parameters)

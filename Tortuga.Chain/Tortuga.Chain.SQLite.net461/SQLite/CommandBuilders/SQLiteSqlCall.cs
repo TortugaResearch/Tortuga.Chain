@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Tortuga.Anchor.Metadata;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Materializers;
@@ -15,6 +12,7 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
     /// </summary>
     public class SQLiteSqlCall : MultipleTableDbCommandBuilder<SQLiteCommand, SQLiteParameter>
     {
+        readonly LockType m_LockType;
         private readonly object m_ArgumentValue;
         private readonly string m_SqlStatement;
 
@@ -24,9 +22,10 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
         /// <param name="dataSource"></param>
         /// <param name="sqlStatement"></param>
         /// <param name="argumentValue"></param>
-        public SQLiteSqlCall(SQLiteDataSourceBase dataSource, string sqlStatement, object argumentValue) :
+        public SQLiteSqlCall(SQLiteDataSourceBase dataSource, string sqlStatement, object argumentValue, LockType lockType) :
             base(dataSource)
         {
+            m_LockType = lockType;
             if (string.IsNullOrEmpty(sqlStatement))
                 throw new ArgumentException("SQL statement is null or empty.", "sqlStatement");
 
@@ -53,7 +52,7 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
                 foreach (var property in MetadataCache.GetMetadata(m_ArgumentValue.GetType()).Properties)
                     parameters.Add(new SQLiteParameter("@" + property.MappedColumnName, property.InvokeGet(m_ArgumentValue) ?? DBNull.Value));
 
-            return new ExecutionToken<SQLiteCommand, SQLiteParameter>(DataSource, "Raw SQL call", m_SqlStatement, parameters);
+            return new SQLiteExecutionToken(DataSource, "Raw SQL call", m_SqlStatement, parameters, lockType: m_LockType);
         }
     }
 }

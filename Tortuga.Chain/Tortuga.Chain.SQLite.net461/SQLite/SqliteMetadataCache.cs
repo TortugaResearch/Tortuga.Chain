@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Data;
 using System.Data.SQLite;
 using Tortuga.Chain.Metadata;
@@ -111,7 +110,7 @@ namespace Tortuga.Chain.SQLite
                 {
                     using (var reader = cmd.ExecuteReader())
                     {
-                        while(reader.Read())
+                        while (reader.Read())
                         {
                             var tableName = reader.GetString(reader.GetOrdinal("TableName"));
                             GetTableOrView(tableName);
@@ -165,7 +164,7 @@ namespace Tortuga.Chain.SQLite
                 {
                     using (var reader = cmd.ExecuteReader())
                     {
-                        while(reader.Read())
+                        while (reader.Read())
                         {
                             var name = reader.GetString(reader.GetOrdinal("name"));
                             var typeName = reader.GetString(reader.GetOrdinal("type"));

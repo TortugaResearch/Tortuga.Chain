@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data.SQLite;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Tortuga.Chain.Materializers;
 
 namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
@@ -25,7 +21,7 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
             var where = WhereClause(parameters, m_Options.HasFlag(DeleteOptions.UseKeyAttribute));
             var sql = $"DELETE FROM {TableName} WHERE {where};";
 
-            return new ExecutionToken<SQLiteCommand, SQLiteParameter>(DataSource, "Delete from " + TableName, sql, parameters);
+            return new SQLiteExecutionToken(DataSource, "Delete from " + TableName, sql, parameters, lockType: LockType.Write);
         }
     }
 }

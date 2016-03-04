@@ -27,7 +27,7 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
         /// <param name="dataSource"></param>
         /// <param name="tableOrViewName"></param>
         /// <param name="filterValue"></param>
-        public SQLiteTableOrView(SQLiteDataSourceBase dataSource, string tableOrViewName,  object filterValue) :
+        public SQLiteTableOrView(SQLiteDataSourceBase dataSource, string tableOrViewName, object filterValue) :
             base(dataSource)
         {
             if (string.IsNullOrEmpty(tableOrViewName))
@@ -76,7 +76,7 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
 
             var sql = $"{select} {from} {where}";
 
-            return new ExecutionToken<SQLiteCommand, SQLiteParameter>(DataSource, "Query " + m_MetaData.Name, sql, parameters);
+            return new SQLiteExecutionToken(DataSource, "Query " + m_MetaData.Name, sql, parameters, lockType: LockType.Read);
         }
 
         private string SelectClause(Materializer<SQLiteCommand, SQLiteParameter> materializer)
@@ -102,7 +102,7 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
 
             if (m_FilterValue is IReadOnlyDictionary<string, object>)
             {
-                foreach(var item in (IReadOnlyDictionary<string, object>)m_FilterValue)
+                foreach (var item in (IReadOnlyDictionary<string, object>)m_FilterValue)
                 {
                     ColumnMetadata<DbType> column;
                     if (availableColumns.TryGetValue(item.Key, out column))
@@ -122,10 +122,10 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
             }
             else
             {
-                foreach(var item in properties)
+                foreach (var item in properties)
                 {
                     ColumnMetadata<DbType> column;
-                    if(availableColumns.TryGetValue(item.MappedColumnName, out column))
+                    if (availableColumns.TryGetValue(item.MappedColumnName, out column))
                     {
                         object value = item.InvokeGet(m_FilterValue) ?? DBNull.Value;
                         var parameter = new SQLiteParameter(column.SqlVariableName, value);

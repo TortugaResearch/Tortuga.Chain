@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Tortuga.Chain.Materializers;
 using Tortuga.Chain.Metadata;
 
@@ -34,12 +31,12 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
             var output = OutputClause(materializer);
             var sql = $"INSERT INTO {TableName} {columns} {values}; {output};";
 
-            return new ExecutionToken<SQLiteCommand, SQLiteParameter>(DataSource, "Insert into " + TableName, sql, parameters);
+            return new SQLiteExecutionToken(DataSource, "Insert into " + TableName, sql, parameters, lockType: LockType.Write);
         }
 
         private void ColumnsAndValuesClause(out string columns, out string values, List<SQLiteParameter> parameters)
         {
-            var availableColumns = Metadata.GetPropertiesFor(ArgumentValue.GetType(), 
+            var availableColumns = Metadata.GetPropertiesFor(ArgumentValue.GetType(),
                  GetPropertiesFilter.ThrowOnNoMatch | GetPropertiesFilter.UpdatableOnly | GetPropertiesFilter.ForInsert);
 
             columns = "(" + string.Join(", ", availableColumns.Select(c => c.Column.QuotedSqlName)) + ")";
