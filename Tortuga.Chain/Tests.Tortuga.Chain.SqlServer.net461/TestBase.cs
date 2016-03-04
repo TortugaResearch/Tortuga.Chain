@@ -1,3 +1,5 @@
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Diagnostics;
 using Tortuga.Chain;
 
 namespace Tests
@@ -16,4 +18,6 @@ namespace Tests
             get { return m_DataSource; }
         }
     }
+
 }
+

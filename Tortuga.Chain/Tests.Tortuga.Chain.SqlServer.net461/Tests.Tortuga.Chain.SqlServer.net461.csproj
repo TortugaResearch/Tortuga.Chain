@@ -57,6 +57,7 @@
     <Compile Include="Repository\Employee.cs" />
     <Compile Include="Repository\Repository`2.cs" />
     <Compile Include="Repository\RepositoryTests.cs" />
+    <Compile Include="Setup.cs" />
     <Compile Include="SqlServerDataSourceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestBase.cs" />

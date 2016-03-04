@@ -39,14 +39,14 @@ namespace Tortuga.Chain.SqlServer
             else
                 m_Transaction = m_Connection.BeginTransaction(isolationLevel.Value, transactionName);
 
-            //if (forwardEvents)
-            //{
-            //    OperationStarted += (sender, e) => dataSource.OnOperationStarted(e);
-            //    OperationFinished += (sender, e) => dataSource.OnOperationFinished(e);
-            //    OperationError += (sender, e) => dataSource.OnOperationError(e);
-            //    OperationCanceled += (sender, e) => dataSource.OnOperationCanceled(e);
-            //    SuppressGlobalEvents = true;
-            //}
+            if (forwardEvents)
+            {
+                ExecutionStarted += (sender, e) => dataSource.OnExecutionStarted(e);
+                ExecutionFinished += (sender, e) => dataSource.OnExecutionFinished(e);
+                ExecutionError += (sender, e) => dataSource.OnExecutionError(e);
+                ExecutionCanceled += (sender, e) => dataSource.OnExecutionCanceled(e);
+                SuppressGlobalEvents = true;
+            }
         }
 
         /// <summary>
@@ -117,7 +117,7 @@ namespace Tortuga.Chain.SqlServer
                 throw new ArgumentNullException("implementation", "implementation is null.");
 
             var startTime = DateTimeOffset.Now;
-            //OnOperationStarted(operation, startTime, state, executionToken);
+            OnExecutionStarted(executionToken,startTime, state);
 
             try
             {
@@ -131,7 +131,7 @@ namespace Tortuga.Chain.SqlServer
                         cmd.Parameters.Add(param);
 
                     var rows = implementation(cmd);
-                    //OnOperationFinished(operation, startTime, DateTimeOffset.Now, rows, state, executionToken);
+                    OnExecutionFinished(executionToken,startTime, DateTimeOffset.Now, rows, state);
                 }
             }
             catch (SqlException ex)
@@ -141,7 +141,7 @@ namespace Tortuga.Chain.SqlServer
                 ex.Data["Operation"] = executionToken.OperationName;
                 ex.Data["CommandText"] = executionToken.CommandText;
                 ex.Data["Parameters"] = executionToken.Parameters;
-                //OnOperationError(operation, startTime, DateTimeOffset.Now, ex, state, executionToken);
+                OnExecutionError(executionToken,startTime, DateTimeOffset.Now, ex, state);
                 throw;
             }
             catch (SqlTypeException ex)
@@ -151,7 +151,7 @@ namespace Tortuga.Chain.SqlServer
                 ex.Data["Operation"] = executionToken.OperationName;
                 ex.Data["CommandText"] = executionToken.CommandText;
                 ex.Data["Parameters"] = executionToken.Parameters;
-                //OnOperationError(operation, startTime, DateTimeOffset.Now, ex, state, executionToken);
+                OnExecutionError(executionToken,startTime, DateTimeOffset.Now, ex, state);
                 throw;
             }
         }
@@ -167,7 +167,7 @@ namespace Tortuga.Chain.SqlServer
         protected override async Task ExecuteAsync(ExecutionToken<SqlCommand, SqlParameter> executionToken, Func<SqlCommand, Task<int?>> implementation, CancellationToken cancellationToken, object state)
         {
             var startTime = DateTimeOffset.Now;
-            //OnOperationStarted(operation, startTime, state, executionToken);
+            OnExecutionStarted(executionToken,startTime, state);
 
             try
             {
@@ -180,7 +180,7 @@ namespace Tortuga.Chain.SqlServer
                     foreach (var param in executionToken.Parameters)
                         cmd.Parameters.Add(param);
                     var rows = await implementation(cmd).ConfigureAwait(false);
-                    //OnOperationFinished(operation, startTime, DateTimeOffset.Now, rows, state, executionToken);
+                    OnExecutionFinished(executionToken,startTime, DateTimeOffset.Now, rows, state);
                 }
 
             }
@@ -194,7 +194,7 @@ namespace Tortuga.Chain.SqlServer
                     ex2.Data["Operation"] = executionToken.OperationName;
                     ex2.Data["CommandText"] = executionToken.CommandText;
                     ex2.Data["Parameters"] = executionToken.Parameters;
-                    //OnOperationCanceled(operation, startTime, DateTimeOffset.Now, state, executionToken);
+                    OnExecutionCanceled(executionToken,startTime, DateTimeOffset.Now, state);
                     throw ex2;
                 }
                 else
@@ -204,7 +204,7 @@ namespace Tortuga.Chain.SqlServer
                     ex.Data["Operation"] = executionToken.OperationName;
                     ex.Data["CommandText"] = executionToken.CommandText;
                     ex.Data["Parameters"] = executionToken.Parameters;
-                    //OnOperationError(operation, startTime, DateTimeOffset.Now, ex, state, executionToken);
+                    OnExecutionError(executionToken,startTime, DateTimeOffset.Now, ex, state);
                     throw;
                 }
             }
@@ -215,7 +215,7 @@ namespace Tortuga.Chain.SqlServer
                 ex.Data["Operation"] = executionToken.OperationName;
                 ex.Data["CommandText"] = executionToken.CommandText;
                 ex.Data["Parameters"] = executionToken.Parameters;
-                //OnOperationError(operation, startTime, DateTimeOffset.Now, ex, state, executionToken);
+                OnExecutionError(executionToken,startTime, DateTimeOffset.Now, ex, state);
                 throw;
             }
         }
