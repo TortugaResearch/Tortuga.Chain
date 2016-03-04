@@ -128,8 +128,8 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
                 {
                     var value = ArgumentDictionary[item.ClrName] ?? DBNull.Value;
                     var parameter = new SqlParameter(item.SqlVariableName, value);
-                    if (item.SqlDbType.HasValue)
-                        parameter.SqlDbType = item.SqlDbType.Value;
+                    if (item.DbType.HasValue)
+                        parameter.SqlDbType = item.DbType.Value;
                     parameters.Add(parameter);
                 }
             }
@@ -150,8 +150,8 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
                 {
                     var value = item.Property.InvokeGet(ArgumentValue) ?? DBNull.Value;
                     var parameter = new SqlParameter(item.Column.SqlVariableName, value);
-                    if (item.Column.SqlDbType.HasValue)
-                        parameter.SqlDbType = item.Column.SqlDbType.Value;
+                    if (item.Column.DbType.HasValue)
+                        parameter.SqlDbType = item.Column.DbType.Value;
                     parameters.Add(parameter);
                 }
             }

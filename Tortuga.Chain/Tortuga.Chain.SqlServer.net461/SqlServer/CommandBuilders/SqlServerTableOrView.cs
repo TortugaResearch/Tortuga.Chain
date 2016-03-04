@@ -108,8 +108,8 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
                     {
                         object value = item.Value ?? DBNull.Value;
                         var parameter = new SqlParameter(column.SqlVariableName, value);
-                        if (column.SqlDbType.HasValue)
-                            parameter.SqlDbType = column.SqlDbType.Value;
+                        if (column.DbType.HasValue)
+                            parameter.SqlDbType = column.DbType.Value;
                         parameters.Add(parameter);
 
                         if (value == DBNull.Value)
@@ -128,8 +128,8 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
                     {
                         object value = item.InvokeGet(m_FilterValue) ?? DBNull.Value;
                         var parameter = new SqlParameter(column.SqlVariableName, value);
-                        if (column.SqlDbType.HasValue)
-                            parameter.SqlDbType = column.SqlDbType.Value;
+                        if (column.DbType.HasValue)
+                            parameter.SqlDbType = column.DbType.Value;
                         parameters.Add(parameter);
 
                         if (value == DBNull.Value)

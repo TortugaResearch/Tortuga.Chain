@@ -40,10 +40,10 @@ namespace Tortuga.Chain.Metadata
         /// </summary>
         ThrowOnNoMatch = 16,
 
-        ///// <summary>
-        ///// Throw an exception if there are properties on the object that can't be mapped to a column.
-        ///// </summary>
-        //ThrowOnMissingColumns = 32,
+        /// <summary>
+        /// Throw an exception if there are properties on the object that can't be mapped to a column.
+        /// </summary>
+        ThrowOnMissingColumns = 32,
 
         /// <summary>
         /// Throw an exception if there are key columns that can't be mapped to a property.

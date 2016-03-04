@@ -42,7 +42,7 @@ namespace Tortuga.Chain.Metadata
         /// <summary>
         /// Gets the type used by the database.
         /// </summary>
-        object SqlDbType { get; }
+        object DbType { get; }
 
         /// <summary>
         /// Gets the name of the type.

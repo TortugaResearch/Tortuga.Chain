@@ -214,7 +214,14 @@ namespace Tortuga.Chain.Metadata
             else if (filter.HasFlag(GetKeysFilter.NonPrimaryKey))
             {
                 filterText = "non-primary key";
-                result = result.Where(c => !c.IsPrimaryKey);
+                result = result.Where(c => !c.IsPrimaryKey).ToList();
+
+                if (filter.HasFlag(GetKeysFilter.ThrowOnMissingColumns))
+                {
+                    var missingColumns = argument.Keys.Where(p => !result.Any(r => r.ClrName == p)).ToList();
+                    if (missingColumns.Count > 0)
+                        throw new MappingException($"The table {Name} is missing a column mapped to the properties: " + string.Join(", ", missingColumns + $". Remove the unused keys or disable strict mode."));
+                }
             }
 
             if (filter.HasFlag(GetKeysFilter.UpdatableOnly))

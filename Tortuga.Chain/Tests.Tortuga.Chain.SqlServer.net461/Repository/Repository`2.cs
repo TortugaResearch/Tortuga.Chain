@@ -34,6 +34,11 @@ namespace Tests.Repository
             return Source.From(TableName).AsCollection<TObject>().Execute();
         }
 
+        public TObject Insert(IReadOnlyDictionary<string, object> entity)
+        {
+            return Source.Insert(TableName, entity).AsObject<TObject>().Execute();
+        }
+
         public TObject Insert(TObject entity)
         {
             return Source.Insert(TableName, entity).AsObject<TObject>().Execute();
@@ -49,6 +54,10 @@ namespace Tests.Repository
             Source.Delete(TableName, GetKeyFilter(id)).Execute();
         }
 
+        internal void Update(IReadOnlyDictionary<string, object> entity)
+        {
+            Source.Update(TableName, entity).Execute();
+        }
     }
 
 }

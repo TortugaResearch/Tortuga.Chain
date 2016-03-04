@@ -98,7 +98,7 @@ namespace Tortuga.Chain.Metadata
         /// <summary>
         /// Gets the type used by the database.
         /// </summary>
-        public TDbType? SqlDbType
+        public TDbType? DbType
         {
             get { return m_DbType; }
         }
@@ -112,9 +112,9 @@ namespace Tortuga.Chain.Metadata
             get { return m_TypeName; }
         }
 
-        object IColumnMetadata.SqlDbType
+        object IColumnMetadata.DbType
         {
-            get { return SqlDbType; }
+            get { return DbType; }
         }
 
     }
