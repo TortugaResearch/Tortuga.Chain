@@ -69,9 +69,11 @@
     <Compile Include="CommandBuilders\IDbCommandBuilder.cs" />
     <Compile Include="CommandBuilders\IMultipleRowDbCommandBuilder.cs" />
     <Compile Include="CommandBuilders\ISingleRowDbCommandBuilder.cs" />
+    <Compile Include="DataSources\DataSource.cs" />
     <Compile Include="DataSources\DataSource`2.cs" />
     <Compile Include="CommandBuilders\DbCommandBuilder`2.cs" />
     <Compile Include="DeleteOptions.cs" />
+    <Compile Include="ExecutionToken.cs" />
     <Compile Include="ExecutionToken`2.cs" />
     <Compile Include="IClass1DataSource.cs" />
     <Compile Include="MappingException.cs" />
@@ -143,6 +145,7 @@
     <Compile Include="MissingObjectException.cs" />
     <Compile Include="CommandBuilders\MultipleRowDbCommandBuilder.cs" />
     <Compile Include="CommandBuilders\MultipleTableDbCommandBuilder.cs" />
+    <Compile Include="ExecutionEventArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RowOptions.cs" />
     <Compile Include="CommandBuilders\SingleRowDbCommandBuilder.cs" />

@@ -1,3 +1,5 @@
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Diagnostics;
 using Tortuga.Chain;
 
 namespace Tests
@@ -15,7 +17,14 @@ namespace Tests
         {
             get { return m_DataSource; }
         }
+
+        public SqlServerDataSource DataSource
+        {
+            get { return m_DataSource; }
+        }
         public string EmployeeTableName { get { return "HR.Employee"; } }
 
     }
+
 }
+
