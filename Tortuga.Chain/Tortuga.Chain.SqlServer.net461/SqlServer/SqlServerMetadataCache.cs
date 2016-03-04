@@ -393,7 +393,15 @@ namespace Tortuga.Chain.SqlServer
             return null;
         }
 
-
+        /// <summary>
+        /// Parse a string and return the database specific representation of the object name.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        protected override SqlServerObjectName ParseObjectName(string name)
+        {
+            return new SqlServerObjectName(name);
+        }
     }
 
 }

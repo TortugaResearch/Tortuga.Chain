@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.Data;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Tortuga.Anchor.Metadata;
 
@@ -15,7 +16,7 @@ namespace Tortuga.Chain.Metadata
     /// </summary>
     /// <typeparam name="TName">The type used to represent database object names.</typeparam>
     /// <typeparam name="TDbType">The variant of DbType used by this data source.</typeparam>
-    public class TableOrViewMetadata<TName, TDbType>
+    public class TableOrViewMetadata<TName, TDbType> : ITableOrViewMetadata
         where TDbType : struct
     {
         private readonly bool m_IsTable;
@@ -69,8 +70,19 @@ namespace Tortuga.Chain.Metadata
             get { return m_Columns; }
         }
 
+
+        string ITableOrViewMetadata.Name
+        {
+            get { return Name.ToString(); }
+        }
+
+        IReadOnlyList<IColumnMetadata> ITableOrViewMetadata.Columns
+        {
+            get { return Columns; }
+        }
+
         /// <summary>
-        /// Gets the properties for the given type which map columns on this table or view.
+        /// Gets the properties for the given type which map to columns on this table or view.
         /// </summary>
         /// <param name="type">The type to examine.</param>
         /// <param name="filter">The filter.</param>
@@ -86,8 +98,8 @@ namespace Tortuga.Chain.Metadata
             return result.Value;
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "NotMapped")]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
+        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "NotMapped")]
+        [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
         private ImmutableList<ColumnPropertyMap<TDbType>> GetPropertiesForImplementation(Type type, GetPropertiesFilter filter)
         {
             //The none option is used as a basis for all of the filtered versions
@@ -169,6 +181,51 @@ namespace Tortuga.Chain.Metadata
             if (filter.HasFlag(GetPropertiesFilter.ThrowOnNoMatch) && !result.Any())
             {
                 throw new MappingException($"None of the properties for {type.Name} match the {filterText} columns for {Name}");
+            }
+
+            return result.ToImmutableList();
+        }
+
+        /// <summary>
+        /// Gets the keys for the given dictionary that map to columns on this table or view.
+        /// </summary>
+        /// <param name="argument">The parameter dictionary to examine.</param>
+        /// <param name="filter">The filter.</param>
+        /// <returns>ImmutableList&lt;ColumnPropertyMap&gt;.</returns>
+        public ImmutableList<ColumnMetadata<TDbType>> GetKeysFor(IReadOnlyDictionary<string, object> argument, GetKeysFilter filter)
+        {
+            //Filtered versions rely on the unfiltered version.
+            IEnumerable<ColumnMetadata<TDbType>> result = Columns.Where(c => argument.ContainsKey(c.ClrName));
+
+            var filterText = "";
+
+            if (filter.HasFlag(GetKeysFilter.PrimaryKey))
+            {
+                filterText = "primary key";
+                result = result.Where(c => c.IsPrimaryKey).ToList();
+
+                if (filter.HasFlag(GetKeysFilter.ThrowOnMissingProperties))
+                {
+                    var missingProperties = Columns.Where(c => c.IsPrimaryKey && !result.Any(r => r == c)).ToList();
+                    if (missingProperties.Count > 0)
+                        throw new MappingException($"The parameter dictionary is missing a property mapped to the primary key column(s): " + string.Join(", ", missingProperties.Select(c => c.SqlName)) + " on table " + Name);
+                }
+            }
+            else if (filter.HasFlag(GetKeysFilter.NonPrimaryKey))
+            {
+                filterText = "non-primary key";
+                result = result.Where(c => !c.IsPrimaryKey);
+            }
+
+            if (filter.HasFlag(GetKeysFilter.UpdatableOnly))
+            {
+                filterText = "updateable " + filterText;
+                result = result.Where(c => !c.IsComputed && !c.IsIdentity);
+            }
+
+            if (filter.HasFlag(GetKeysFilter.ThrowOnNoMatch) && !result.Any())
+            {
+                throw new MappingException($"None of the properties for the parameter dictionary match the {filterText} columns for {Name}");
             }
 
             return result.ToImmutableList();

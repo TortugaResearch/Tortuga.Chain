@@ -4,7 +4,7 @@ namespace Tortuga.Chain.Metadata
     /// Metadata for a table or view column
     /// </summary>
     /// <typeparam name="TDbType">The variant of DbType used by this data source.</typeparam>
-    public class ColumnMetadata<TDbType>
+    public class ColumnMetadata<TDbType> : IColumnMetadata
         where TDbType : struct
     {
         private readonly string m_ClrName;
@@ -32,7 +32,6 @@ namespace Tortuga.Chain.Metadata
             m_IsComputed = isComputed;
             m_IsPrimaryKey = isPrimaryKey;
             m_IsIdentity = isIdentity;
-            //m_DbType = Utilities.TypeNameToSqlDbType(typeName);
             m_DbType = dbType;
         }
 
@@ -97,7 +96,7 @@ namespace Tortuga.Chain.Metadata
         }
 
         /// <summary>
-        /// Gets the type used by SQL databases.
+        /// Gets the type used by the database.
         /// </summary>
         public TDbType? SqlDbType
         {
@@ -112,5 +111,11 @@ namespace Tortuga.Chain.Metadata
         {
             get { return m_TypeName; }
         }
+
+        object IColumnMetadata.SqlDbType
+        {
+            get { return SqlDbType; }
+        }
+
     }
 }

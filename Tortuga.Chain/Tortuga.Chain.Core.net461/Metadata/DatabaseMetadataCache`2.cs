@@ -1,11 +1,12 @@
 ﻿namespace Tortuga.Chain.Metadata
 {
+
     /// <summary>
     /// An abstract database metadata cache
     /// </summary>
     /// <typeparam name="TName">The type used to represent database object names.</typeparam>
     /// <typeparam name="TDbType">The variant of DbType used by this data source.</typeparam>
-    public abstract class DatabaseMetadataCache<TName, TDbType>
+    public abstract class DatabaseMetadataCache<TName, TDbType> : IDatabaseMetadataCache
         where TDbType : struct
     {
         /// <summary>
@@ -27,5 +28,17 @@
         /// <param name="tableName">Name of the table.</param>
         /// <returns></returns>
         public abstract TableOrViewMetadata<TName, TDbType> GetTableOrView(TName tableName);
+
+        ITableOrViewMetadata IDatabaseMetadataCache.GetTableOrView(string tableName)
+        {
+            return GetTableOrView(ParseObjectName(tableName));
+        }
+
+        /// <summary>
+        /// Parse a string and return the database specific representation of the object name.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        protected abstract TName ParseObjectName(string name);
     }
 }

@@ -13,7 +13,7 @@ namespace Tortuga.Chain.Materializers
     /// <typeparam name="TParameterType">The type of the t parameter type.</typeparam>
     /// <typeparam name="TResultType">The type of the t result type.</typeparam>
     /// <seealso cref="Materializer{TCommandType, TParameterType}" />
-    public abstract class Materializer<TCommandType, TParameterType, TResultType> : Materializer<TCommandType, TParameterType>
+    public abstract class Materializer<TCommandType, TParameterType, TResultType> : Materializer<TCommandType, TParameterType>, IMaterializer<TResultType>
         where TCommandType : DbCommand
         where TParameterType : DbParameter
     {

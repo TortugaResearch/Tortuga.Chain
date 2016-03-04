@@ -8,7 +8,7 @@ namespace Tortuga.Chain.Materializers
     /// <summary>
     /// This class indicates the associated operation should be executed without returning a result set.
     /// </summary>
-    public class NonQueryMaterializer<TCommandType, TParameterType> : Materializer<TCommandType, TParameterType>
+    public class NonQueryMaterializer<TCommandType, TParameterType> : Materializer<TCommandType, TParameterType>, IMaterializer
         where TCommandType : DbCommand
         where TParameterType : DbParameter
     {

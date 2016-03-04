@@ -12,7 +12,7 @@ namespace Tortuga.Chain.CommandBuilders
     /// </summary>
     /// <typeparam name="TCommandType">The type of the command used.</typeparam>
     /// <typeparam name="TParameterType">The type of the t parameter type.</typeparam>
-    public abstract class DbCommandBuilder<TCommandType, TParameterType>
+    public abstract class DbCommandBuilder<TCommandType, TParameterType> : IDbCommandBuilder
         where TCommandType : DbCommand
         where TParameterType : DbParameter
     {
@@ -39,7 +39,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// Indicates this operation has no result set.
         /// </summary>
         /// <returns></returns>
-        public NonQueryMaterializer<TCommandType, TParameterType> AsNonQuery() { return new NonQueryMaterializer<TCommandType, TParameterType>(this); }
+        public IMaterializer AsNonQuery() { return new NonQueryMaterializer<TCommandType, TParameterType>(this); }
 
         /// <summary>
         /// Execute the operation synchronously.

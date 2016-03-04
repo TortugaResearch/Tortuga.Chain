@@ -1,6 +1,7 @@
 using System.Data.Common;
 using Tortuga.Chain.Materializers;
 using Tortuga.Chain.DataSources;
+using System.Data;
 
 namespace Tortuga.Chain.CommandBuilders
 {
@@ -25,12 +26,12 @@ namespace Tortuga.Chain.CommandBuilders
         /// Indicates the results should be materialized as a DataSet.
         /// </summary>
         /// <param name="tableNames">The table names.</param>
-        public DataSetMaterializer<TCommandType, TParameterType> AsDataSet(params string[] tableNames) { return new DataSetMaterializer<TCommandType, TParameterType>(this, tableNames); }
+        public IMaterializer<DataSet> AsDataSet(params string[] tableNames) { return new DataSetMaterializer<TCommandType, TParameterType>(this, tableNames); }
 
         /// <summary>
         /// Indicates the results should be materialized as a set of tables.
         /// </summary>
-        public TableSetMaterializer<TCommandType, TParameterType> AsTableSet(params string[] tableNames) { return new TableSetMaterializer<TCommandType, TParameterType>(this, tableNames); }
+        public IMaterializer<TableSet> AsTableSet(params string[] tableNames) { return new TableSetMaterializer<TCommandType, TParameterType>(this, tableNames); }
 
     }
 }
