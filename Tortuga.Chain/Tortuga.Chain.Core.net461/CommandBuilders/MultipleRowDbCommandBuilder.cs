@@ -33,14 +33,14 @@ namespace Tortuga.Chain.CommandBuilders
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        public IMaterializer<List<bool>> AsBooleanList(ListOptions listOptions = ListOptions.None) { return new BooleanListMaterializer<TCommandType, TParameterType>(this, listOptions); }
+        public ILink<List<bool>> AsBooleanList(ListOptions listOptions = ListOptions.None) { return new BooleanListMaterializer<TCommandType, TParameterType>(this, listOptions); }
 
         /// <summary>
         /// Materializes the result as a list of objects.
         /// </summary>
         /// <typeparam name="TObject">The type of the model.</typeparam>
         /// <returns></returns>
-        public IMaterializer<List<TObject>> AsCollection<TObject>()
+        public ILink<List<TObject>> AsCollection<TObject>()
             where TObject : class, new()
         {
             return new CollectionMaterializer<TCommandType, TParameterType, TObject, List<TObject>>(this);
@@ -53,7 +53,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <typeparam name="TCollection">The type of the collection.</typeparam>
         /// <returns></returns>
         [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-        public IMaterializer<TCollection> AsCollection<TObject, TCollection>()
+        public ILink<TCollection> AsCollection<TObject, TCollection>()
             where TObject : class, new()
             where TCollection : ICollection<TObject>, new()
         {
@@ -63,87 +63,87 @@ namespace Tortuga.Chain.CommandBuilders
         /// <summary>
         /// Indicates the results should be materialized as a DataSet.
         /// </summary>
-        public IMaterializer<DataTable> AsDataTable() { return new DataTableMaterializer<TCommandType, TParameterType>(this); }
+        public ILink<DataTable> AsDataTable() { return new DataTableMaterializer<TCommandType, TParameterType>(this); }
 
         /// <summary>
         /// Indicates the results should be materialized as a list of DateTime.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        public IMaterializer<List<DateTime>> AsDateTimeList(ListOptions listOptions = ListOptions.None) { return new DateTimeListMaterializer<TCommandType, TParameterType>(this, listOptions); }
+        public ILink<List<DateTime>> AsDateTimeList(ListOptions listOptions = ListOptions.None) { return new DateTimeListMaterializer<TCommandType, TParameterType>(this, listOptions); }
 
         /// <summary>
         /// Indicates the results should be materialized as a list of DateTimeOffset.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        public IMaterializer<List<DateTimeOffset>> AsDateTimeOffsetList(ListOptions listOptions = ListOptions.None) { return new DateTimeOffsetListMaterializer<TCommandType, TParameterType>(this, listOptions); }
+        public ILink<List<DateTimeOffset>> AsDateTimeOffsetList(ListOptions listOptions = ListOptions.None) { return new DateTimeOffsetListMaterializer<TCommandType, TParameterType>(this, listOptions); }
 
         /// <summary>
         /// Indicates the results should be materialized as a list of numbers.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        public IMaterializer<List<decimal>> AsDecimalList(ListOptions listOptions = ListOptions.None) { return new DecimalListMaterializer<TCommandType, TParameterType>(this, listOptions); }
+        public ILink<List<decimal>> AsDecimalList(ListOptions listOptions = ListOptions.None) { return new DecimalListMaterializer<TCommandType, TParameterType>(this, listOptions); }
 
         /// <summary>
         /// Indicates the results should be materialized as a list of numbers.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        public IMaterializer<List<double>> AsDoubleList(ListOptions listOptions = ListOptions.None) { return new DoubleListMaterializer<TCommandType, TParameterType>(this, listOptions); }
+        public ILink<List<double>> AsDoubleList(ListOptions listOptions = ListOptions.None) { return new DoubleListMaterializer<TCommandType, TParameterType>(this, listOptions); }
         /// <summary>
         /// Indicates the results should be materialized as a list of Guids.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        public IMaterializer<List<Guid>> AsGuidList(ListOptions listOptions = ListOptions.None) { return new GuidListMaterializer<TCommandType, TParameterType>(this, listOptions); }
+        public ILink<List<Guid>> AsGuidList(ListOptions listOptions = ListOptions.None) { return new GuidListMaterializer<TCommandType, TParameterType>(this, listOptions); }
 
         /// <summary>
         /// Indicates the results should be materialized as a list of integers.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        public IMaterializer<List<short>> AsInt16List(ListOptions listOptions = ListOptions.None) { return new Int16ListMaterializer<TCommandType, TParameterType>(this, listOptions); }
+        public ILink<List<short>> AsInt16List(ListOptions listOptions = ListOptions.None) { return new Int16ListMaterializer<TCommandType, TParameterType>(this, listOptions); }
 
         /// <summary>
         /// Indicates the results should be materialized as a list of integers.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        public IMaterializer<List<int>> AsInt32List(ListOptions listOptions = ListOptions.None) { return new Int32ListMaterializer<TCommandType, TParameterType>(this, listOptions); }
+        public ILink<List<int>> AsInt32List(ListOptions listOptions = ListOptions.None) { return new Int32ListMaterializer<TCommandType, TParameterType>(this, listOptions); }
 
         /// <summary>
         /// Indicates the results should be materialized as a list of integers.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        public IMaterializer<List<long>> AsInt64List(ListOptions listOptions = ListOptions.None) { return new Int64ListMaterializer<TCommandType, TParameterType>(this, listOptions); }
+        public ILink<List<long>> AsInt64List(ListOptions listOptions = ListOptions.None) { return new Int64ListMaterializer<TCommandType, TParameterType>(this, listOptions); }
 
         /// <summary>
         /// Indicates the results should be materialized as a list of numbers.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        public IMaterializer<List<float>> AsSingleList(ListOptions listOptions = ListOptions.None) { return new SingleListMaterializer<TCommandType, TParameterType>(this, listOptions); }
+        public ILink<List<float>> AsSingleList(ListOptions listOptions = ListOptions.None) { return new SingleListMaterializer<TCommandType, TParameterType>(this, listOptions); }
 
         /// <summary>
         /// Indicates the results should be materialized as a list of strings.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        public IMaterializer<List<string>> AsStringList(ListOptions listOptions = ListOptions.None) { return new StringListMaterializer<TCommandType, TParameterType>(this, listOptions); }
+        public ILink<List<string>> AsStringList(ListOptions listOptions = ListOptions.None) { return new StringListMaterializer<TCommandType, TParameterType>(this, listOptions); }
 
         /// <summary>
         /// Indicates the results should be materialized as a Table.
         /// </summary>
-        public IMaterializer<Table> AsTable() { return new TableMaterializer<TCommandType, TParameterType>(this); }
+        public ILink<Table> AsTable() { return new TableMaterializer<TCommandType, TParameterType>(this); }
 
         /// <summary>
         /// Indicates the results should be materialized as a list of TimeSpan.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        public IMaterializer<List<TimeSpan>> AsTimeSpanList(ListOptions listOptions = ListOptions.None) { return new TimeSpanListMaterializer<TCommandType, TParameterType>(this, listOptions); }
+        public ILink<List<TimeSpan>> AsTimeSpanList(ListOptions listOptions = ListOptions.None) { return new TimeSpanListMaterializer<TCommandType, TParameterType>(this, listOptions); }
     }
 }

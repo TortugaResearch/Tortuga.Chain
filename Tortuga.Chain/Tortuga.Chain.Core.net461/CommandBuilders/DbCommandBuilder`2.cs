@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Materializers;
-
 namespace Tortuga.Chain.CommandBuilders
 {
 
@@ -39,7 +38,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// Indicates this operation has no result set.
         /// </summary>
         /// <returns></returns>
-        public IMaterializer AsNonQuery() { return new NonQueryMaterializer<TCommandType, TParameterType>(this); }
+        public ILink AsNonQuery() { return new NonQueryMaterializer<TCommandType, TParameterType>(this); }
 
         /// <summary>
         /// Execute the operation synchronously.
@@ -71,6 +70,8 @@ namespace Tortuga.Chain.CommandBuilders
             return AsNonQuery().ExecuteAsync(cancellationToken, state);
         }
 
+
+
         /// <summary>
         /// Prepares the command for execution by generating any necessary SQL.
         /// </summary>
@@ -79,3 +80,4 @@ namespace Tortuga.Chain.CommandBuilders
         public abstract ExecutionToken<TCommandType, TParameterType> Prepare(Materializer<TCommandType, TParameterType> materializer);
     }
 }
+

@@ -4,6 +4,7 @@ using Tortuga.Chain;
 
 namespace Tests.Repository
 {
+
     public class Repository<TObject, TKey> where TObject : class, new()
     {
 

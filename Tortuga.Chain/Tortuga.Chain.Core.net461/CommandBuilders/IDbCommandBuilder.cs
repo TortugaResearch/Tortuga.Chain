@@ -1,6 +1,5 @@
 using System.Threading;
 using System.Threading.Tasks;
-using Tortuga.Chain.Materializers;
 
 namespace Tortuga.Chain.CommandBuilders
 {
@@ -13,7 +12,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// Indicates this operation has no result set.
         /// </summary>
         /// <returns></returns>
-        IMaterializer AsNonQuery();
+        ILink AsNonQuery();
         /// <summary>
         /// Execute the operation synchronously.
         /// </summary>

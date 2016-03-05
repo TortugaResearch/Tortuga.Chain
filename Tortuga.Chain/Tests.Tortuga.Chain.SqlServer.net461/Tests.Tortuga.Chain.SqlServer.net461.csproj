@@ -43,6 +43,7 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Runtime.Caching" />
     <Reference Include="Tortuga.Anchor, Version=0.2.5907.30996, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
       <HintPath>..\packages\Tortuga.Anchor.0.2.5907.30996\lib\net461\Tortuga.Anchor.dll</HintPath>
       <Private>True</Private>
@@ -65,6 +66,7 @@
   <ItemGroup>
     <Compile Include="Metadata\MetadataTests.cs" />
     <Compile Include="Repository\Employee.cs" />
+    <Compile Include="Repository\RepositoryWithCaching.cs" />
     <Compile Include="Repository\Repository`2.cs" />
     <Compile Include="Repository\RepositoryTests.cs" />
     <Compile Include="Setup.cs" />

@@ -1,12 +1,13 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using Tortuga.Chain.DataSources;
 
-namespace Tortuga.Chain.Materializers
+namespace Tortuga.Chain
 {
     /// <summary>
-    /// This indicates the associated operation should be executed without returning a result set.
+    /// This is implemented by materializers and appenders that do not return a value
     /// </summary>
-    public interface IMaterializer
+    public interface ILink
     {
         /// <summary>
         /// Execute the operation synchronously.
@@ -28,5 +29,12 @@ namespace Tortuga.Chain.Materializers
         /// <param name="state">User defined state, usually used for logging.</param>
         /// <returns></returns>
         Task ExecuteAsync(CancellationToken cancellationToken, object state = null);
+
+        /// <summary>
+        /// Gets the data source that is associated with this materilizer or appender.
+        /// </summary>
+        /// <value>The data source.</value>
+        DataSource DataSource { get; }
     }
+
 }

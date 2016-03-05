@@ -65,9 +65,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Appenders\Appender.cs" />
+    <Compile Include="Appenders\Appender`1.cs" />
+    <Compile Include="Appenders\CacheAllItemsAppender.cs" />
+    <Compile Include="Appenders\CacheResultAppender`1.cs" />
     <Compile Include="CommandBuilders\IDbCommandBuilder.cs" />
     <Compile Include="CommandBuilders\IMultipleRowDbCommandBuilder.cs" />
     <Compile Include="CommandBuilders\ISingleRowDbCommandBuilder.cs" />
+    <Compile Include="CommonAppenders.cs" />
     <Compile Include="DataSources\DataSource.cs" />
     <Compile Include="DataSources\DataSource`2.cs" />
     <Compile Include="CommandBuilders\DbCommandBuilder`2.cs" />
@@ -76,8 +81,11 @@
     <Compile Include="ExecutionToken`2.cs" />
     <Compile Include="IClass1DataSource.cs" />
     <Compile Include="MappingException.cs" />
-    <Compile Include="Materializers\IMaterializer`1.cs" />
-    <Compile Include="Materializers\IMaterializer.cs" />
+    <Compile Include="Appenders\ReadOrCacheResultAppender`1.cs" />
+    <Compile Include="ILink`1.cs" />
+    <Compile Include="ILink.cs" />
+    <Compile Include="Appenders\InvalidateCacheAppender.cs" />
+    <Compile Include="Appenders\InvalidateCacheAppender`1.cs" />
     <Compile Include="Materializers\SingleColumn\BooleanListMaterializer`2.cs" />
     <Compile Include="Materializers\Scalar\BooleanOrNullMaterializer`2.cs" />
     <Compile Include="Materializers\Scalar\BooleanMaterializer`2.cs" />

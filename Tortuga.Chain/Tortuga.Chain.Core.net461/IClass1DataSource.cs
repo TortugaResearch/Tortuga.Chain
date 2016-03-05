@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.Caching;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Metadata;
 
@@ -88,5 +89,41 @@ namespace Tortuga.Chain
         /// Returns an abstract metadata cache.
         /// </summary>
         IDatabaseMetadataCache DatabaseMetadata { get; }
+
+
+        /// <summary>
+        /// Try to read from the cache.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="regionName">Name of the region. WARNING: some cache providers, including .NET's MemoryCache, don't support regions.</param>
+        /// <param name="cacheKey">The cache key.</param>
+        /// <param name="result">The cached result.</param>
+        /// <returns><c>true</c> if the key was found in the cache, <c>false</c> otherwise.</returns>
+        bool TryReadFromCache<T>(string cacheKey, string regionName, out T result);
+
+        /// <summary>
+        /// Gets or sets the cache to be used by this data source. The default is .NET's MemoryCache.
+        /// </summary>
+        /// <remarks>This is used by the WithCaching materializer.</remarks>
+        ObjectCache Cache { get; set; }
+
+        /// <summary>
+        /// Writes to cache, replacing any previous value.
+        /// </summary>
+        /// <param name="item">The cache item.</param>
+        /// <param name="policy">Optional cache invalidation policy.</param>
+        /// <exception cref="ArgumentNullException">item;item is null.</exception>
+        void WriteToCache(CacheItem item, CacheItemPolicy policy);
+
+
+        /// <summary>
+        /// Invalidates a cache key.
+        /// </summary>
+        /// <param name="regionName">Name of the region. WARNING: some cache providers, including .NET's MemoryCache, don't support regions.</param>
+        /// <param name="cacheKey">The cache key.</param>
+        /// <exception cref="System.ArgumentException">cacheKey is null or empty.;cacheKey</exception>
+        /// <exception cref="ArgumentException">cacheKey is null or empty.;cacheKey</exception>
+        void InvalidateCache(string cacheKey, string regionName);
+
     }
 }

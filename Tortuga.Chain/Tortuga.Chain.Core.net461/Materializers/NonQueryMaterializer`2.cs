@@ -2,13 +2,14 @@ using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
 using Tortuga.Chain.CommandBuilders;
+using Tortuga.Chain.DataSources;
 
 namespace Tortuga.Chain.Materializers
 {
     /// <summary>
     /// This class indicates the associated operation should be executed without returning a result set.
     /// </summary>
-    public class NonQueryMaterializer<TCommandType, TParameterType> : Materializer<TCommandType, TParameterType>, IMaterializer
+    public class NonQueryMaterializer<TCommandType, TParameterType> : Materializer<TCommandType, TParameterType>, ILink
         where TCommandType : DbCommand
         where TParameterType : DbParameter
     {
@@ -49,6 +50,14 @@ namespace Tortuga.Chain.Materializers
             return ExecuteCoreAsync(async cmd => await cmd.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false), cancellationToken, state);
         }
 
+        /// <summary>
+        /// Gets the data source that is associated with this materilizer or appender.
+        /// </summary>
+        /// <value>The data source.</value>
+        public DataSource DataSource
+        {
+            get { return CommandBuilder.DataSource; }
+        }
     }
 
 }

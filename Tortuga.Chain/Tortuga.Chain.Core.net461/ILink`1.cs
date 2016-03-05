@@ -1,26 +1,27 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using Tortuga.Chain.DataSources;
 
-namespace Tortuga.Chain.Materializers
+namespace Tortuga.Chain
 {
     /// <summary>
-    /// This is used for materializers that return a value.
+    /// This is implemented by materializers and appenders that return a value.
     /// </summary>
 
-    public interface IMaterializer<T>
+    public interface ILink<TResult>
     {
         /// <summary>
         /// Execute the operation synchronously.
         /// </summary>
         /// <param name="state">User defined state, usually used for logging.</param>
-        T Execute(object state = null);
+        TResult Execute(object state = null);
 
         /// <summary>
         /// Execute the operation asynchronously.
         /// </summary>
         /// <param name="state">User defined state, usually used for logging.</param>
         /// <returns></returns>
-        Task<T> ExecuteAsync(object state = null);
+        Task<TResult> ExecuteAsync(object state = null);
 
         /// <summary>
         /// Execute the operation asynchronously.
@@ -28,7 +29,12 @@ namespace Tortuga.Chain.Materializers
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <param name="state">User defined state, usually used for logging.</param>
         /// <returns></returns>
-        Task<T> ExecuteAsync(CancellationToken cancellationToken, object state = null);
+        Task<TResult> ExecuteAsync(CancellationToken cancellationToken, object state = null);
 
+        /// <summary>
+        /// Gets the data source that is associated with this materilizer or appender.
+        /// </summary>
+        /// <value>The data source.</value>
+        DataSource DataSource { get; }
     }
 }

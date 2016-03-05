@@ -2,6 +2,7 @@ using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
 using Tortuga.Chain.CommandBuilders;
+using Tortuga.Chain.DataSources;
 
 namespace Tortuga.Chain.Materializers
 {
@@ -13,7 +14,7 @@ namespace Tortuga.Chain.Materializers
     /// <typeparam name="TParameterType">The type of the t parameter type.</typeparam>
     /// <typeparam name="TResultType">The type of the t result type.</typeparam>
     /// <seealso cref="Materializer{TCommandType, TParameterType}" />
-    public abstract class Materializer<TCommandType, TParameterType, TResultType> : Materializer<TCommandType, TParameterType>, IMaterializer<TResultType>
+    public abstract class Materializer<TCommandType, TParameterType, TResultType> : Materializer<TCommandType, TParameterType>, ILink<TResultType>
         where TCommandType : DbCommand
         where TParameterType : DbParameter
     {
@@ -23,7 +24,6 @@ namespace Tortuga.Chain.Materializers
         /// </summary>
         /// <param name="commandBuilder">The associated operation.</param>
         protected Materializer(DbCommandBuilder<TCommandType, TParameterType> commandBuilder) : base(commandBuilder) { }
-
 
         /// <summary>
         /// Execute the operation synchronously.
@@ -49,6 +49,14 @@ namespace Tortuga.Chain.Materializers
         /// <returns></returns>
         public abstract Task<TResultType> ExecuteAsync(CancellationToken cancellationToken, object state = null);
 
+        /// <summary>
+        /// Gets the data source that is associated with this materilizer or appender.
+        /// </summary>
+        /// <value>The data source.</value>
+        public DataSource DataSource
+        {
+            get { return CommandBuilder.DataSource; }
+        }
     }
 }
 
