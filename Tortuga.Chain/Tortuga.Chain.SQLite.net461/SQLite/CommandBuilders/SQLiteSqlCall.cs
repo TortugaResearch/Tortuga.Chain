@@ -17,11 +17,13 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
         private readonly string m_SqlStatement;
 
         /// <summary>
-        /// Creates a new instance of <see cref="SQLiteSqlCall"/>
+        /// Creates a new instance of <see cref="SQLiteSqlCall" />
         /// </summary>
-        /// <param name="dataSource"></param>
-        /// <param name="sqlStatement"></param>
-        /// <param name="argumentValue"></param>
+        /// <param name="dataSource">The data source.</param>
+        /// <param name="sqlStatement">The SQL statement.</param>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="lockType">Type of the lock.</param>
+        /// <exception cref="ArgumentException">SQL statement is null or empty.;sqlStatement</exception>
         public SQLiteSqlCall(SQLiteDataSourceBase dataSource, string sqlStatement, object argumentValue, LockType lockType) :
             base(dataSource)
         {

@@ -13,12 +13,12 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
         private readonly DeleteOptions m_Options;
 
         /// <summary>
-        /// Initializes an instance of <see cref="SQLiteDeleteObject" /> for delete operations.
+        /// Initializes a new instance of the <see cref="SQLiteDeleteObject"/> class.
         /// </summary>
-        /// <param name="dataSource"></param>
-        /// <param name="table"></param>
-        /// <param name="argumentValue"></param>
-        /// <param name="options"></param>
+        /// <param name="dataSource">The data source.</param>
+        /// <param name="table">The table.</param>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="options">The options.</param>
         public SQLiteDeleteObject(SQLiteDataSourceBase dataSource, string table, object argumentValue, DeleteOptions options)
             : base(dataSource, table, argumentValue)
         {

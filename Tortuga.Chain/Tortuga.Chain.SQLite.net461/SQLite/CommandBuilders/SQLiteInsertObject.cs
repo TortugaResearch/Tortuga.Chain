@@ -13,10 +13,11 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
     public class SQLiteInsertObject : SQLiteObjectCommand
     {
         /// <summary>
-        /// Initializes a new instance of <see cref="SQLiteInsertObject"/> class.
+        /// Initializes a new instance of <see cref="SQLiteInsertObject" /> class.
         /// </summary>
-        /// <param name="dataSource"></param>
-        /// <param name="tableName"></param>
+        /// <param name="dataSource">The data source.</param>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="argumentValue">The argument value.</param>
         public SQLiteInsertObject(SQLiteDataSourceBase dataSource, string tableName, object argumentValue)
             : base(dataSource, tableName, argumentValue)
         {
@@ -52,14 +53,14 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
             }
             else
             {
-                var availableColumns = Metadata.GetPropertiesFor(ArgumentValue.GetType(), 
-                     GetPropertiesFilter.ThrowOnNoMatch | GetPropertiesFilter.UpdatableOnly | GetPropertiesFilter.ForInsert);
+            var availableColumns = Metadata.GetPropertiesFor(ArgumentValue.GetType(), 
+                 GetPropertiesFilter.ThrowOnNoMatch | GetPropertiesFilter.UpdatableOnly | GetPropertiesFilter.ForInsert);
 
-                columns = "(" + string.Join(", ", availableColumns.Select(c => c.Column.QuotedSqlName)) + ")";
-                values = "VALUES (" + string.Join(", ", availableColumns.Select(c => c.Column.SqlVariableName)) + ")";
-                LoadParameters(availableColumns, parameters);
-            }
-            
+            columns = "(" + string.Join(", ", availableColumns.Select(c => c.Column.QuotedSqlName)) + ")";
+            values = "VALUES (" + string.Join(", ", availableColumns.Select(c => c.Column.SqlVariableName)) + ")";
+            LoadParameters(availableColumns, parameters);
+        }
+
         }
     }
 }

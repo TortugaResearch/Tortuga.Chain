@@ -5,18 +5,22 @@ using Tortuga.Chain.DataSources;
 
 namespace Tortuga.Chain.SQLite
 {
+    /// <summary>
+    /// Class SQLiteExecutionToken.
+    /// </summary>
     public class SQLiteExecutionToken : ExecutionToken<SQLiteCommand, SQLiteParameter>
     {
         private readonly LockType m_LockType;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ExecutionToken{TCommandType, TParameterType}"/> class.
+        /// Initializes a new instance of the <see cref="ExecutionToken{TCommandType, TParameterType}" /> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
         /// <param name="operationName">Name of the operation. This is used for logging.</param>
         /// <param name="commandText">The SQL to be executed.</param>
         /// <param name="parameters">The parameters.</param>
         /// <param name="commandType">Type of the command.</param>
+        /// <param name="lockType">Type of the lock.</param>
         public SQLiteExecutionToken(DataSource<SQLiteCommand, SQLiteParameter> dataSource, string operationName, string commandText, IReadOnlyList<SQLiteParameter> parameters, CommandType commandType = CommandType.Text, LockType lockType = LockType.Write)
             : base(dataSource, operationName, commandText, parameters, commandType)
         {

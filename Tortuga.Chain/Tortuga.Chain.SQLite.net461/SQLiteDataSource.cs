@@ -12,11 +12,10 @@ namespace Tortuga.Chain
     /// <summary>
     /// Class that represets a SQLite Datasource.
     /// </summary>
-    public class SQLiteDataSource : SQLiteDataSourceBase, IClass1DataSource
+    public class SQLiteDataSource : SQLiteDataSourceBase
     {
         private readonly SQLiteConnectionStringBuilder m_ConnectionBuilder;
         private readonly SQLiteMetadataCache m_DatabaseMetadata;
-        private readonly ReaderWriterLockSlim m_SyncLock = new ReaderWriterLockSlim(); //Sqlite is single-threaded for writes. It says otherwise, but it spams the trace window with exceptions.
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SQLiteDataSource" /> class.
@@ -141,8 +140,8 @@ namespace Tortuga.Chain
             {
                 switch (mode)
                 {
-                    case LockType.Read: m_SyncLock.EnterReadLock(); break;
-                    case LockType.Write: m_SyncLock.EnterWriteLock(); break;
+                    case LockType.Read: SyncLock.EnterReadLock(); break;
+                    case LockType.Write: SyncLock.EnterWriteLock(); break;
                 }
 
                 using (var con = CreateSQLiteConnection())
@@ -174,8 +173,8 @@ namespace Tortuga.Chain
             {
                 switch (mode)
                 {
-                    case LockType.Read: m_SyncLock.ExitReadLock(); break;
-                    case LockType.Write: m_SyncLock.ExitWriteLock(); break;
+                    case LockType.Read: SyncLock.ExitReadLock(); break;
+                    case LockType.Write: SyncLock.ExitWriteLock(); break;
                 }
             }
         }
@@ -204,8 +203,8 @@ namespace Tortuga.Chain
             {
                 switch (mode)
                 {
-                    case LockType.Read: m_SyncLock.EnterReadLock(); break;
-                    case LockType.Write: m_SyncLock.EnterWriteLock(); break;
+                    case LockType.Read: SyncLock.EnterReadLock(); break;
+                    case LockType.Write: SyncLock.EnterWriteLock(); break;
                 }
 
                 using (var con = await CreateSQLiteConnectionAsync(cancellationToken).ConfigureAwait(false))
@@ -249,8 +248,8 @@ namespace Tortuga.Chain
             {
                 switch (mode)
                 {
-                    case LockType.Read: m_SyncLock.ExitReadLock(); break;
-                    case LockType.Write: m_SyncLock.ExitWriteLock(); break;
+                    case LockType.Read: SyncLock.ExitReadLock(); break;
+                    case LockType.Write: SyncLock.ExitWriteLock(); break;
                 }
             }
         }
@@ -265,54 +264,9 @@ namespace Tortuga.Chain
             return con;
         }
 
-        ISingleRowDbCommandBuilder IClass1DataSource.Insert(string tableName, object argumentValue)
-        {
-            return Insert(tableName, argumentValue);
-        }
 
-        ISingleRowDbCommandBuilder IClass1DataSource.Update(string tableName, object argumentValue, UpdateOptions options)
-        {
-            return Update(tableName, argumentValue, options);
-        }
 
-        IDbCommandBuilder IClass1DataSource.Delete(string tableName, object argumentValue, DeleteOptions options)
-        {
-            return Delete(tableName, argumentValue, options);
-        }
 
-        IMultipleRowDbCommandBuilder IClass1DataSource.From(string tableOrViewName)
-        {
-            return From(tableOrViewName);
-        }
 
-        IMultipleRowDbCommandBuilder IClass1DataSource.From(string tableOrViewName, string whereClause)
-        {
-            return From(tableOrViewName, whereClause);
-        }
-
-        IMultipleRowDbCommandBuilder IClass1DataSource.From(string tableOrViewName, string whereClause, object argumentValue)
-        {
-            return From(tableOrViewName, whereClause, argumentValue);
-        }
-
-        IMultipleRowDbCommandBuilder IClass1DataSource.From(string tableOrViewName, object filterValue)
-        {
-            return From(tableOrViewName, filterValue);
-        }
-
-        ISingleRowDbCommandBuilder IClass1DataSource.InsertOrUpdate(string tableName, object argumentValue, InsertOrUpdateOptions options)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Normally we use a reader/writer lock to avoid simutaneous writes to a SQlite database. If you disable this locking, you may see extra noise in your tracing output or unexcepted exceptions.
-        /// </summary>
-        public bool DisableLocks { get; set; }
-
-        IDatabaseMetadataCache IClass1DataSource.DatabaseMetadata
-        {
-            get { return m_DatabaseMetadata; }
-        }
     }
 }

@@ -68,18 +68,19 @@ namespace Tortuga.Chain.SqlServer
             return m_Tables.GetOrAdd(tableName, GetTableOrViewInternal);
         }
 
-        /// <summary>
-        /// Gets the UDT name of the indicated type.
-        /// </summary>
-        /// <param name="type">The type.</param>
-        /// <returns></returns>
-        /// <remarks>You may add custom UDTs to this list using AddUdtTypeName</remarks>
-        internal string GetUdtName(Type type)
-        {
-            string result;
-            m_UdtTypeMap.TryGetValue(type, out result);
-            return result;
-        }
+        ///// <summary>
+        ///// Gets the UDT name of the indicated type.
+        ///// </summary>
+        ///// <param name="type">The type.</param>
+        ///// <returns></returns>
+        ///// <remarks>You may add custom UDTs to this list using AddUdtTypeName</remarks>
+        //internal string GetUdtName(Type type)
+        //{
+        //    string result;
+        //    m_UdtTypeMap.TryGetValue(type, out result);
+        //    return result;
+        //}
+
         List<ColumnMetadata<SqlDbType>> GetColumns(int objectId)
         {
             const string ColumnSql =

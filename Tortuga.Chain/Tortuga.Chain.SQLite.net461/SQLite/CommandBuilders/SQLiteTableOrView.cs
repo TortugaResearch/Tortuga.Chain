@@ -19,7 +19,7 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
         private readonly string m_WhereClause;
         private readonly object m_ArgumentValue;
 
-        public object MetadataCache { get; private set; }
+        //public object MetadataCache { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SQLiteTableOrView" /> class.

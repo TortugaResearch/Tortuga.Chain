@@ -17,9 +17,16 @@ namespace Tortuga.Chain.SQLite
         private readonly SQLiteConnection m_Connection;
         private readonly SQLiteDataSource m_Dispatcher;
         private readonly SQLiteTransaction m_Transaction;
-        private readonly ReaderWriterLockSlim m_SyncLock = new ReaderWriterLockSlim(); //Sqlite is single-threaded for writes. It says otherwise, but it spams the trace window with exceptions.
+        
         private bool m_Disposed;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SQLiteTransactionalDataSource"/> class.
+        /// </summary>
+        /// <param name="dataSource">The data source.</param>
+        /// <param name="transactionName">Name of the transaction.</param>
+        /// <param name="isolationLevel">The isolation level.</param>
+        /// <param name="forwardEvents">if set to <c>true</c> [forward events].</param>
         protected internal SQLiteTransactionalDataSource(SQLiteDataSource dataSource, string transactionName, IsolationLevel? isolationLevel, bool forwardEvents)
         {
             Name = dataSource.Name;
@@ -42,16 +49,21 @@ namespace Tortuga.Chain.SQLite
             }
         }
 
+        /// <summary>
+        /// Gets the database metadata.
+        /// </summary>
+        /// <value>The database metadata.</value>
         public override SQLiteMetadataCache DatabaseMetadata
         {
             get { return m_Dispatcher.DatabaseMetadata; }
         }
 
-        /// <summary>
-        /// Normally we use a reader/writer lock to avoid simutaneous writes to a SQlite database. If you disable this locking, you may see extra noise in your tracing output or unexcepted exceptions.
-        /// </summary>
-        public bool DisableLocks { get; set; }
 
+
+        /// <summary>
+        /// Commits this instance.
+        /// </summary>
+        /// <exception cref="System.ObjectDisposedException">Transaction is disposed.</exception>
         public void Commit()
         {
             if (m_Disposed)
@@ -61,12 +73,19 @@ namespace Tortuga.Chain.SQLite
             Dispose(true);
         }
 
+        /// <summary>
+        /// Disposes this instance.
+        /// </summary>
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>
+        /// Rolls the back.
+        /// </summary>
+        /// <exception cref="System.ObjectDisposedException">Transaction is disposed.</exception>
         public void RollBack()
         {
             if(m_Disposed)
@@ -76,6 +95,10 @@ namespace Tortuga.Chain.SQLite
             Dispose(true);
         }
 
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         protected virtual void Dispose(bool disposing)
         {
             if(disposing)
@@ -86,6 +109,17 @@ namespace Tortuga.Chain.SQLite
             }
         }
 
+        /// <summary>
+        /// Executes the specified execution token.
+        /// </summary>
+        /// <param name="executionToken">The execution token.</param>
+        /// <param name="implementation">The implementation.</param>
+        /// <param name="state">The state.</param>
+        /// <exception cref="System.ArgumentNullException">
+        /// executionToken;executionToken is null.
+        /// or
+        /// implementation;implementation is null.
+        /// </exception>
         protected override void Execute(ExecutionToken<SQLiteCommand, SQLiteParameter> executionToken, Func<SQLiteCommand, int?> implementation, object state)
         {
             if(executionToken == null)
@@ -102,8 +136,8 @@ namespace Tortuga.Chain.SQLite
             {
                 switch(mode)
                 {
-                    case LockType.Read: m_SyncLock.EnterReadLock(); break;
-                    case LockType.Write: m_SyncLock.EnterWriteLock(); break;
+                    case LockType.Read: SyncLock.EnterReadLock(); break;
+                    case LockType.Write: SyncLock.EnterWriteLock(); break;
                 }
 
                 using (var cmd = new SQLiteCommand())
@@ -132,12 +166,25 @@ namespace Tortuga.Chain.SQLite
             {
                 switch (mode)
                 {
-                    case LockType.Read: m_SyncLock.ExitReadLock(); break;
-                    case LockType.Write: m_SyncLock.ExitWriteLock(); break;
+                    case LockType.Read: SyncLock.ExitReadLock(); break;
+                    case LockType.Write: SyncLock.ExitWriteLock(); break;
                 }
             }
         }
 
+        /// <summary>
+        /// execute as an asynchronous operation.
+        /// </summary>
+        /// <param name="executionToken">The execution token.</param>
+        /// <param name="implementation">The implementation.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>Task.</returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// executionToken;executionToken is null.
+        /// or
+        /// implementation;implementation is null.
+        /// </exception>
         protected override async Task ExecuteAsync(ExecutionToken<SQLiteCommand, SQLiteParameter> executionToken, Func<SQLiteCommand, Task<int?>> implementation, CancellationToken cancellationToken, object state)
         {
             if (executionToken == null)
@@ -154,8 +201,8 @@ namespace Tortuga.Chain.SQLite
             {
                 switch (mode)
                 {
-                    case LockType.Read: m_SyncLock.EnterReadLock(); break;
-                    case LockType.Write: m_SyncLock.EnterWriteLock(); break;
+                    case LockType.Read: SyncLock.EnterReadLock(); break;
+                    case LockType.Write: SyncLock.EnterWriteLock(); break;
                 }
 
                 using (var cmd = new SQLiteCommand())
@@ -197,8 +244,8 @@ namespace Tortuga.Chain.SQLite
             {
                 switch (mode)
                 {
-                    case LockType.Read: m_SyncLock.ExitReadLock(); break;
-                    case LockType.Write: m_SyncLock.ExitWriteLock(); break;
+                    case LockType.Read: SyncLock.ExitReadLock(); break;
+                    case LockType.Write: SyncLock.ExitWriteLock(); break;
                 }
             }
         }

@@ -21,10 +21,11 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
         private readonly TableOrViewMetadata<string, DbType> m_Metadata;
         
         /// <summary>
-        /// Initializes a new instance of the <see cref="SQLiteObjectCommand"/> class
+        /// Initializes a new instance of the <see cref="SQLiteObjectCommand" /> class
         /// </summary>
-        /// <param name="dataSource"></param>
-        /// <param name="tableName"></param>
+        /// <param name="dataSource">The data source.</param>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="argumentValue">The argument value.</param>
         protected SQLiteObjectCommand(SQLiteDataSourceBase dataSource, string tableName, object argumentValue)
             : base(dataSource)
         {
@@ -103,6 +104,11 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
             }
         }
 
+        /// <summary>
+        /// Loads the dictionary parameters.
+        /// </summary>
+        /// <param name="columnProps">The column props.</param>
+        /// <param name="parameters">The parameters.</param>
         protected void LoadDictionaryParameters(IImmutableList<ColumnMetadata<DbType>> columnProps, List<SQLiteParameter> parameters)
         {
             foreach (var item in columnProps)

@@ -5,6 +5,9 @@ namespace Tortuga.Chain.SQLite
     /// </summary>
     public enum LockType
     {
+        /// <summary>
+        /// No lock will be obtained by Chain. 
+        /// </summary>
         None = 0,
 
         /// <summary>
