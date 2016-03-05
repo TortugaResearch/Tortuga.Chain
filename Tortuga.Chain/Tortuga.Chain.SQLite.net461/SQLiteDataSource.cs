@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Data.SQLite;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,7 +16,7 @@ namespace Tortuga.Chain
     {
         private readonly SQLiteConnectionStringBuilder m_ConnectionBuilder;
         private readonly SQLiteMetadataCache m_DatabaseMetadata;
-        private readonly ReaderWriterLockSlim m_SyncLock = new ReaderWriterLockSlim(); //Sqlite is single-threaded for writes. It says otherwise, but it spams the trace window with excpetions.
+        private readonly ReaderWriterLockSlim m_SyncLock = new ReaderWriterLockSlim(); //Sqlite is single-threaded for writes. It says otherwise, but it spams the trace window with exceptions.
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SQLiteDataSource" /> class.
@@ -46,6 +47,34 @@ namespace Tortuga.Chain
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="SQLiteDataSource" /> class. 
+        /// </summary>
+        /// <param name="connectionName"></param>
+        /// <param name="connectionStringBuilder"></param>
+        public SQLiteDataSource(string connectionName, SQLiteConnectionStringBuilder connectionStringBuilder)
+        {
+            if(connectionStringBuilder == null)
+                throw new ArgumentNullException("connectionStringBuilder", "connectionStringBuilder is null.");
+
+            m_ConnectionBuilder = connectionStringBuilder;
+            if (string.IsNullOrEmpty(connectionName))
+                Name = m_ConnectionBuilder.DataSource;
+            else
+                Name = connectionName;
+
+            m_DatabaseMetadata = new SQLiteMetadataCache(m_ConnectionBuilder);
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SQLiteDataSource" /> class.
+        /// </summary>
+        /// <param name="connectionStringBuilder"></param>
+        public SQLiteDataSource(SQLiteConnectionStringBuilder connectionStringBuilder)
+         : this(null, connectionStringBuilder)
+        {
+        }
+
+        /// <summary>
         /// This object can be used to lookup database information.
         /// </summary>
         public override SQLiteMetadataCache DatabaseMetadata
@@ -59,6 +88,20 @@ namespace Tortuga.Chain
         internal string ConnectionString
         {
             get { return m_ConnectionBuilder.ConnectionString; }
+        }
+
+        /// <summary>
+        /// Creates a new connection using the connection string in the app.config file.
+        /// </summary>
+        /// <param name="connectionName"></param>
+        /// <returns></returns>
+        public static SQLiteDataSource CreateFromConfig(string connectionName)
+        {
+            var settings = ConfigurationManager.ConnectionStrings[connectionName];
+            if (settings == null)
+                throw new InvalidOperationException("The configuration file does not contain a connection named " + connectionName);
+
+            return new SQLiteDataSource(connectionName, settings.ConnectionString);
         }
 
         /// <summary>
@@ -91,6 +134,9 @@ namespace Tortuga.Chain
 
             var mode = DisableLocks ? LockType.None : (executionToken as SQLiteExecutionToken)?.LockType ?? LockType.Write;
 
+            var startTime = DateTimeOffset.Now;
+            OnExecutionStarted(executionToken, startTime, state);
+
             try
             {
                 switch (mode)
@@ -111,6 +157,7 @@ namespace Tortuga.Chain
                             cmd.Parameters.Add(param);
 
                         var rows = implementation(cmd);
+                        OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
                     }
                 }
             }
@@ -120,6 +167,7 @@ namespace Tortuga.Chain
                 ex.Data["Operation"] = executionToken.OperationName;
                 ex.Data["CommandText"] = executionToken.CommandText;
                 ex.Data["Parameters"] = executionToken.Parameters;
+                OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
                 throw;
             }
             finally
@@ -149,6 +197,9 @@ namespace Tortuga.Chain
 
             var mode = DisableLocks ? LockType.None : (executionToken as SQLiteExecutionToken)?.LockType ?? LockType.Write;
 
+            var startTime = DateTimeOffset.Now;
+            OnExecutionStarted(executionToken, startTime, state);
+
             try
             {
                 switch (mode)
@@ -157,7 +208,7 @@ namespace Tortuga.Chain
                     case LockType.Write: m_SyncLock.EnterWriteLock(); break;
                 }
 
-                using (var con = await CreateSqlConnectionAsync(cancellationToken).ConfigureAwait(false))
+                using (var con = await CreateSQLiteConnectionAsync(cancellationToken).ConfigureAwait(false))
                 {
                     using (var cmd = new SQLiteCommand())
                     {
@@ -168,6 +219,7 @@ namespace Tortuga.Chain
                             cmd.Parameters.Add(param);
 
                         var rows = await implementation(cmd).ConfigureAwait(false);
+                        OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
                     }
                 }
             }
@@ -180,6 +232,7 @@ namespace Tortuga.Chain
                     ex2.Data["Operation"] = executionToken.OperationName;
                     ex2.Data["CommandText"] = executionToken.CommandText;
                     ex2.Data["Parameters"] = executionToken.Parameters;
+                    OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex2, state);
                     throw ex2;
                 }
                 else
@@ -188,6 +241,7 @@ namespace Tortuga.Chain
                     ex.Data["Operation"] = executionToken.OperationName;
                     ex.Data["CommandText"] = executionToken.CommandText;
                     ex.Data["Parameters"] = executionToken.Parameters;
+                    OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
                     throw;
                 }
             }
@@ -201,7 +255,7 @@ namespace Tortuga.Chain
             }
         }
 
-        private async Task<SQLiteConnection> CreateSqlConnectionAsync(CancellationToken cancellationToken)
+        private async Task<SQLiteConnection> CreateSQLiteConnectionAsync(CancellationToken cancellationToken)
         {
             var con = new SQLiteConnection(ConnectionString);
             await con.OpenAsync(cancellationToken).ConfigureAwait(false);
@@ -218,7 +272,7 @@ namespace Tortuga.Chain
 
         ISingleRowDbCommandBuilder IClass1DataSource.Update(string tableName, object argumentValue, UpdateOptions options)
         {
-            throw new NotImplementedException();
+            return Update(tableName, argumentValue, options);
         }
 
         IDbCommandBuilder IClass1DataSource.Delete(string tableName, object argumentValue, DeleteOptions options)

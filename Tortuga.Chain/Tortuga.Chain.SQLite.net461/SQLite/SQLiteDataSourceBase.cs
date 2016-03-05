@@ -80,11 +80,36 @@ namespace Tortuga.Chain.SQLite
             return new SQLiteTableOrView(this, tableOrViewName, filterValue);
         }
 
+        /// <summary>
+        /// Creates a <see cref="SQLiteInsertObject" /> used to perform an insert operation.
+        /// </summary>
+        /// <param name="tableName"></param>
+        /// <param name="argumentValue"></param>
+        /// <returns></returns>
         public SQLiteInsertObject Insert(string tableName, object argumentValue)
         {
             return new SQLiteInsertObject(this, tableName, argumentValue);
         }
 
+        /// <summary>
+        /// Creates a <see cref="SQLiteUpdateObject" /> used to perform an update operation.
+        /// </summary>
+        /// <param name="tableName"></param>
+        /// <param name="argumentValue"></param>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        public SQLiteUpdateObject Update(string tableName, object argumentValue, UpdateOptions options = UpdateOptions.None)
+        {
+            return new SQLiteUpdateObject(this, tableName, argumentValue, options);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="SQLiteDeleteObject" /> used to perform a delete operation.
+        /// </summary>
+        /// <param name="tableName"></param>
+        /// <param name="argumentValue"></param>
+        /// <param name="options"></param>
+        /// <returns></returns>
         public SQLiteDeleteObject Delete(string tableName, object argumentValue, DeleteOptions options = DeleteOptions.None)
         {
             return new SQLiteDeleteObject(this, tableName, argumentValue, options);
