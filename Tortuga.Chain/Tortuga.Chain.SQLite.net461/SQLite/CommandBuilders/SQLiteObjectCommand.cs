@@ -4,18 +4,20 @@ using System.Collections.Immutable;
 using System.Data;
 using System.Data.SQLite;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Materializers;
 using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
 {
+    /// <summary>
+    /// Base class that describes a SQLite database command.
+    /// </summary>
     public abstract class SQLiteObjectCommand : SingleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter>
     {
         private readonly string m_TableName;
         private readonly object m_ArgumentValue;
+        private readonly IReadOnlyDictionary<string, object> m_ArgumentDictionary;
         private readonly TableOrViewMetadata<string, DbType> m_Metadata;
         
         /// <summary>
@@ -28,24 +30,48 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
         {
             m_TableName = tableName;
             m_ArgumentValue = argumentValue;
+            m_ArgumentDictionary = ArgumentValue as IReadOnlyDictionary<string, object>;
             m_Metadata = ((SQLiteDataSourceBase)DataSource).DatabaseMetadata.GetTableOrView(m_TableName);
         }
 
+        /// <summary>
+        /// Gets the table name.
+        /// </summary>
         protected string TableName
         {
             get { return m_TableName; }
         }
 
+        /// <summary>
+        /// Gets the argument value.
+        /// </summary>
         protected object ArgumentValue
         {
             get { return m_ArgumentValue; }
         }
 
+        /// <summary>
+        /// Gets the argument value as a read only dictionary.
+        /// </summary>
+        protected IReadOnlyDictionary<string, object> ArgumentDictionary
+        {
+            get { return m_ArgumentDictionary; }
+        }
+
+        /// <summary>
+        /// Gets the table metadata.
+        /// </summary>
         public TableOrViewMetadata<string, DbType> Metadata
         {
             get { return m_Metadata; }
         }
 
+        /// <summary>
+        /// Builds a where clause.
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// <param name="useKeyAttribute"></param>
+        /// <returns></returns>
         protected string WhereClause(List<SQLiteParameter> parameters, bool useKeyAttribute)
         {
             GetPropertiesFilter filter;
@@ -60,6 +86,11 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
             return where;
         }
 
+        /// <summary>
+        /// Loads the parameters from a list of <see cref="ColumnPropertyMap{TDbType}"></see>
+        /// </summary>
+        /// <param name="columnProps"></param>
+        /// <param name="parameters"></param>
         protected void LoadParameters(ImmutableList<ColumnPropertyMap<DbType>> columnProps, List<SQLiteParameter> parameters)
         {
             foreach(var columnProp in columnProps)
@@ -72,6 +103,24 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
             }
         }
 
+        protected void LoadDictionaryParameters(IImmutableList<ColumnMetadata<DbType>> columnProps, List<SQLiteParameter> parameters)
+        {
+            foreach (var item in columnProps)
+            {
+                var value = ArgumentDictionary[item.ClrName] ?? DBNull.Value;
+                var parameter = new SQLiteParameter(item.SqlVariableName, value);
+                if (item.DbType.HasValue)
+                    parameter.DbType = item.DbType.Value;
+                parameters.Add(parameter);
+            }
+        }
+
+        /// <summary>
+        /// Builds a simulated output clause.
+        /// </summary>
+        /// <param name="materializer"></param>
+        /// <param name="whereClause"></param>
+        /// <returns></returns>
         protected string OutputClause(Materializer<SQLiteCommand, SQLiteParameter> materializer, string whereClause)
         {
             if (materializer is NonQueryMaterializer<SQLiteCommand, SQLiteParameter>)

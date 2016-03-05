@@ -6,16 +6,31 @@ using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
 {
+    /// <summary>
+    /// Command object that represents an update operation.
+    /// </summary>
     public class SQLiteUpdateObject : SQLiteObjectCommand
     {
         private readonly UpdateOptions m_Options;
 
+        /// <summary>
+        /// Initializes an instance of <see cref="SQLiteUpdateObject"></see> for update operations.
+        /// </summary>
+        /// <param name="dataSource"></param>
+        /// <param name="tableName"></param>
+        /// <param name="argumentValue"></param>
+        /// <param name="options"></param>
         public SQLiteUpdateObject(SQLiteDataSourceBase dataSource, string tableName, object argumentValue, UpdateOptions options)
             : base(dataSource, tableName, argumentValue)
         {
             m_Options = options;
         }
 
+        /// <summary>
+        /// Prepares the command for execution by generating any necessary SQL.
+        /// </summary>
+        /// <param name="materializer"></param>
+        /// <returns><see cref="SQLiteExecutionToken" /></returns>
         public override ExecutionToken<SQLiteCommand, SQLiteParameter> Prepare(Materializer<SQLiteCommand, SQLiteParameter> materializer)
         {
             var parameters = new List<SQLiteParameter>();
@@ -35,21 +50,37 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
 
         private string SetClause(List<SQLiteParameter> parameters)
         {
-            var filter = GetPropertiesFilter.ThrowOnNoMatch | GetPropertiesFilter.UpdatableOnly;
+            if (ArgumentDictionary != null)
+            {
+                var filter = GetKeysFilter.ThrowOnNoMatch | GetKeysFilter.UpdatableOnly | GetKeysFilter.NonPrimaryKey;
 
-            if (m_Options.HasFlag(UpdateOptions.UseKeyAttribute))
-                filter |= GetPropertiesFilter.ObjectDefinedNonKey;
+                if (DataSource.StrictMode)
+                    filter |= GetKeysFilter.ThrowOnMissingColumns;
+
+                var availableColumns = Metadata.GetKeysFor(ArgumentDictionary, filter);
+
+                var set = "SET " + string.Join(", ", availableColumns.Select(c => $"{c.QuotedSqlName} = {c.SqlVariableName}"));
+                LoadDictionaryParameters(availableColumns, parameters);
+                return set;
+            }
             else
-                filter |= GetPropertiesFilter.NonPrimaryKey;
+            {
+                var filter = GetPropertiesFilter.ThrowOnNoMatch | GetPropertiesFilter.UpdatableOnly;
 
-            if (DataSource.StrictMode)
-                filter |= GetPropertiesFilter.ThrowOnMissingColumns;
+                if (m_Options.HasFlag(UpdateOptions.UseKeyAttribute))
+                    filter |= GetPropertiesFilter.ObjectDefinedNonKey;
+                else
+                    filter |= GetPropertiesFilter.NonPrimaryKey;
 
-            var availableColumns = Metadata.GetPropertiesFor(ArgumentValue.GetType(), filter);
+                if (DataSource.StrictMode)
+                    filter |= GetPropertiesFilter.ThrowOnMissingColumns;
 
-            var set = "SET " + string.Join(", ", availableColumns.Select(c => $"{c.Column.QuotedSqlName} = {c.Column.SqlVariableName}"));
-            LoadParameters(availableColumns, parameters);
-            return set;
+                var availableColumns = Metadata.GetPropertiesFor(ArgumentValue.GetType(), filter);
+
+                var set = "SET " + string.Join(", ", availableColumns.Select(c => $"{c.Column.QuotedSqlName} = {c.Column.SqlVariableName}"));
+                LoadParameters(availableColumns, parameters);
+                return set;
+            }
         }
     }
 }
