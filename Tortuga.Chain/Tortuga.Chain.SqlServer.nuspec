@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package>
+  <metadata>
+    <id>Tortuga.Chain.SqlServer</id>
+    <version></version>
+    <authors>David Tomcik, Jonathan Allen</authors>
+    <copyright>Copyright David Tomcik, Jonathan Allen 2016</copyright>
+    <description>Fluent ORM for .NET and SQL Server.</description>
+    <tags>.net461</tags>
+    <language>en-US</language>
+    <projectUrl>https://github.com/docevaad/Chain</projectUrl>
+    <references>
+      <reference file="Tortuga.Chain.SqlServer.dll" />
+    </references>
+    <frameworkAssemblies>
+      <frameworkAssembly assemblyName="System.Data" targetFramework="net461" />
+      <frameworkAssembly assemblyName="System.ComponentModel.DataAnnotations" targetFramework="net461" />
+      <frameworkAssembly assemblyName="System.Xml" targetFramework="net461" />
+      <frameworkAssembly assemblyName="System.Xml.Linq" targetFramework="net461" />
+      <frameworkAssembly assemblyName="System.Runtime.Caching" targetFramework="net461" />
+    </frameworkAssemblies>
+
+    <dependencies>
+      <group targetFramework="net461">
+        <dependency id="System.Collections.Immutable" version="1.1.37" />
+        <dependency id="Tortuga.Anchor" version="0.2.5907.30996" />
+        <dependency id="Tortuga.Chain.SqlServer" version="0.1" />
+      </group>
+
+    </dependencies>
+
+  </metadata>
+
+</package>

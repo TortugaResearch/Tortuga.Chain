@@ -4,9 +4,9 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using Tortuga.Anchor.Metadata;
+using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Materializers;
 using Tortuga.Chain.Metadata;
-using Tortuga.Chain.CommandBuilders;
 
 namespace Tortuga.Chain.SqlServer.CommandBuilders
 {
@@ -48,7 +48,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
                 throw new ArgumentNullException("materializer", "materializer is null.");
 
             var parameters = new List<SqlParameter>();
-            var expectedParameters = m_Metadata.Parameters.ToDictionary(p => p.ClrName, StringComparer.InvariantCultureIgnoreCase);
+            var expectedParameters = m_Metadata.Parameters.ToDictionary(p => p.ClrName, StringComparer.OrdinalIgnoreCase);
 
             if (m_ArgumentValue is IEnumerable<SqlParameter>)
             {

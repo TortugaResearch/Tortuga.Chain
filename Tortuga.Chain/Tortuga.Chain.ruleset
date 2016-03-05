@@ -148,7 +148,7 @@
     <Rule Id="CA2003" Action="Error" />
     <Rule Id="CA2004" Action="Error" />
     <Rule Id="CA2006" Action="Error" />
-    <Rule Id="CA2100" Action="Error" />
+    <Rule Id="CA2100" Action="None" />
     <Rule Id="CA2101" Action="Error" />
     <Rule Id="CA2102" Action="Error" />
     <Rule Id="CA2103" Action="Error" />
