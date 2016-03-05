@@ -1,6 +1,6 @@
-﻿using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Tests.Repository
 {
@@ -10,7 +10,7 @@ namespace Tests.Repository
         [TestMethod]
         public void BasicCrud()
         {
-            var repo = new Repository<Employee, int>(Class1DataSource, "HR.Employee");
+            var repo = new Repository<Employee, int>(DataSource, EmployeeTableName);
 
             var emp1 = new Employee() { FirstName = "Tom", LastName = "Jones", Title = "President" };
             var echo1 = repo.Insert(emp1);
@@ -33,11 +33,11 @@ namespace Tests.Repository
             Assert.IsTrue(list.Any(e => e.EmployeeKey == echo1.EmployeeKey), "Employee 1 is missing");
             Assert.IsTrue(list.Any(e => e.EmployeeKey == echo2.EmployeeKey), "Employee 2 is missing");
 
-            var get1 = repo.Get(echo1.EmployeeKey);
+            var get1 = repo.Get(echo1.EmployeeKey.Value);
             Assert.AreEqual(echo1.EmployeeKey, get1.EmployeeKey);
 
-            repo.Delete(echo2.EmployeeKey);
-            repo.Delete(echo1.EmployeeKey);
+            repo.Delete(echo2.EmployeeKey.Value);
+            repo.Delete(echo1.EmployeeKey.Value);
 
             var list2 = repo.GetAll();
             Assert.AreEqual(list.Count - 2, list2.Count);
@@ -47,24 +47,7 @@ namespace Tests.Repository
         [TestMethod]
         public void InsertWithDictionary()
         {
-            var repo = new Repository<Employee, int>(Class1DataSource, "HR.Employee");
-
-            var emp1 = new Dictionary<string, object>() { { "FirstName", "Tom" }, { "LastName", "Jones" }, {"Title", "President" } };
-            var echo1 = repo.Insert(emp1);
-
-            Assert.AreNotEqual(0, echo1.EmployeeKey, "EmployeeKey was not set");
-            Assert.AreEqual(emp1["FirstName"], echo1.FirstName, "FirstName");
-            Assert.AreEqual(emp1["LastName"], echo1.LastName, "LastName");
-            Assert.AreEqual(emp1["Title"], echo1.Title, "Title");
-
-            repo.Delete(echo1.EmployeeKey);
-
-        }
-
-        [TestMethod]
-        public void UpdateWithDictionary()
-        {
-            var repo = new Repository<Employee, int>(Class1DataSource, "HR.Employee");
+            var repo = new Repository<Employee, int>(DataSource, "HR.Employee");
 
             var emp1 = new Dictionary<string, object>() { { "FirstName", "Tom" }, { "LastName", "Jones" }, { "Title", "President" } };
             var echo1 = repo.Insert(emp1);
@@ -74,9 +57,26 @@ namespace Tests.Repository
             Assert.AreEqual(emp1["LastName"], echo1.LastName, "LastName");
             Assert.AreEqual(emp1["Title"], echo1.Title, "Title");
 
-            var emp2 = new Dictionary<string, object>() { { "EmployeeKey", echo1.EmployeeKey }, { "LastName", "Brown" }};
+            repo.Delete(echo1.EmployeeKey.Value);
+
+        }
+
+        [TestMethod]
+        public void UpdateWithDictionary()
+        {
+            var repo = new Repository<Employee, int>(DataSource, "HR.Employee");
+
+            var emp1 = new Dictionary<string, object>() { { "FirstName", "Tom" }, { "LastName", "Jones" }, { "Title", "President" } };
+            var echo1 = repo.Insert(emp1);
+
+            Assert.AreNotEqual(0, echo1.EmployeeKey, "EmployeeKey was not set");
+            Assert.AreEqual(emp1["FirstName"], echo1.FirstName, "FirstName");
+            Assert.AreEqual(emp1["LastName"], echo1.LastName, "LastName");
+            Assert.AreEqual(emp1["Title"], echo1.Title, "Title");
+
+            var emp2 = new Dictionary<string, object>() { { "EmployeeKey", echo1.EmployeeKey }, { "LastName", "Brown" } };
             repo.Update(emp2);
-            var echo2 = repo.Get(echo1.EmployeeKey);
+            var echo2 = repo.Get(echo1.EmployeeKey.Value);
 
             //these were changed
             Assert.AreEqual(echo1.EmployeeKey, echo2.EmployeeKey, "EmployeeKey was not set");
@@ -87,7 +87,7 @@ namespace Tests.Repository
             Assert.AreEqual(emp1["Title"], echo2.Title, "Title");
 
 
-            repo.Delete(echo1.EmployeeKey);
+            repo.Delete(echo1.EmployeeKey.Value);
 
         }
     }
