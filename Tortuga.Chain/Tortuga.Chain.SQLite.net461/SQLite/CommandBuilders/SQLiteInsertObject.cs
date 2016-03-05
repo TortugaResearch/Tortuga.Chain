@@ -28,7 +28,7 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
             string columns;
             string values;
             ColumnsAndValuesClause(out columns, out values, parameters);
-            var output = OutputClause(materializer);
+            var output = OutputClause(materializer, "WHERE ROWID=last_insert_rowid();");
             var sql = $"INSERT INTO {TableName} {columns} {values}; {output};";
 
             return new SQLiteExecutionToken(DataSource, "Insert into " + TableName, sql, parameters, lockType: LockType.Write);
@@ -42,30 +42,6 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
             columns = "(" + string.Join(", ", availableColumns.Select(c => c.Column.QuotedSqlName)) + ")";
             values = "VALUES (" + string.Join(", ", availableColumns.Select(c => c.Column.SqlVariableName)) + ")";
             LoadParameters(availableColumns, parameters);
-        }
-
-        private string OutputClause(Materializer<SQLiteCommand, SQLiteParameter> materializer)
-        {
-            if (materializer is NonQueryMaterializer<SQLiteCommand, SQLiteParameter>)
-                return null;
-
-            var desiredColumns = materializer.DesiredColumns().ToLookup(c => c);
-            if (desiredColumns.Count > 0)
-            {
-                var availableColumns = Metadata.Columns.Where(c => desiredColumns.Contains(c.ClrName)).ToList();
-                if (availableColumns.Count == 0)
-                    throw new MappingException($"None of the requested columns[{string.Join(", ", desiredColumns)}] were not found on {TableName}");
-                return $"SELECT {string.Join(", ", availableColumns.Select(c => c.QuotedSqlName))} FROM {TableName} WHERE ROWID = last_insert_rowid()";
-            }
-            else if (Metadata.Columns.Any(c => c.IsPrimaryKey))
-            {
-                var availableColumns = Metadata.Columns.Where(c => c.IsPrimaryKey).Select(c => c.QuotedSqlName).ToList();
-                return $"SELECT {string.Join(", ", availableColumns)} FROM {TableName} WHERE ROWID = last_insert_rowid()";
-            }
-            else
-            {
-                return "SELECT last_insert_rowid()";
-            }
         }
     }
 }

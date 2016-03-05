@@ -51,29 +51,5 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
             LoadParameters(availableColumns, parameters);
             return set;
         }
-
-        private string OutputClause(Materializer<SQLiteCommand, SQLiteParameter> materializer, string whereClause)
-        {
-            if (materializer is NonQueryMaterializer<SQLiteCommand, SQLiteParameter>)
-                return null;
-
-            var desiredColumns = materializer.DesiredColumns().ToLookup(c => c);
-            if (desiredColumns.Count > 0)
-            {
-                var availableColumns = Metadata.Columns.Where(c => desiredColumns.Contains(c.ClrName)).ToList();
-                if (availableColumns.Count == 0)
-                    throw new MappingException($"None of the requested columns [{string.Join(", ", desiredColumns)}] were found on table {TableName}.");
-                return $"SELECT {string.Join(", ", availableColumns.Select(c => c.QuotedSqlName))} FROM {TableName} {whereClause}";                    
-            }
-            else if (Metadata.Columns.Any(c => c.IsPrimaryKey))
-            {
-                var availableColumns = Metadata.Columns.Where(c => c.IsPrimaryKey).Select(c => c.QuotedSqlName).ToList();
-                return $"SELECT {string.Join(", ", availableColumns)} FROM {TableName} {whereClause}";
-            }
-            else
-            {
-                return "SELECT ROWID FROM {TableName} {whereClause}";
-            }
-        }
     }
 }

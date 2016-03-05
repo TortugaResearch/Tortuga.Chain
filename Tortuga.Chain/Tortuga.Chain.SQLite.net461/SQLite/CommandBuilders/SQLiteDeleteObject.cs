@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Data.SQLite;
+using System.Linq;
 using Tortuga.Chain.Materializers;
 
 namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
@@ -19,7 +20,8 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
             var parameters = new List<SQLiteParameter>();
 
             var where = WhereClause(parameters, m_Options.HasFlag(DeleteOptions.UseKeyAttribute));
-            var sql = $"DELETE FROM {TableName} WHERE {where};";
+            var output = OutputClause(materializer, where);
+            var sql = $"{output}; DELETE FROM {TableName} WHERE {where};";
 
             return new SQLiteExecutionToken(DataSource, "Delete from " + TableName, sql, parameters, lockType: LockType.Write);
         }

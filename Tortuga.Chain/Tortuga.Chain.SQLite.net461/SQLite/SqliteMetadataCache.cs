@@ -27,7 +27,7 @@ namespace Tortuga.Chain.SQLite
 
         /// <summary>
         /// Gets the metadata for a stored procedure.
-        /// NOTE:Currently returns null since SQLite doesn't support stored procedures.
+        /// NOTE:Currently throws a <see cref"NotSupportedException" /> since SQLite doesn't support stored procedures.
         /// </summary>
         /// <param name="procedureName"></param>
         /// <returns></returns>
@@ -38,7 +38,7 @@ namespace Tortuga.Chain.SQLite
 
         /// <summary>
         /// Gets the metadata for a table function.
-        /// NOTE:Currently returns null since SQLite doesn't support stored procedures. 
+        /// NOTE:Currently throws a <see cref"NotSupportedException" /> since SQLite doesn't support stored procedures. 
         /// </summary>
         /// <param name="tableFunctionName"></param>
         /// <returns></returns>
