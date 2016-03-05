@@ -27,7 +27,7 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
         {
             m_TableName = tableName;
             m_ArgumentValue = argumentValue;
-            m_Metadata = ((SQLiteDataSourceBase)DataSource).DatabaseMetaData.GetTableOrView(m_TableName);
+            m_Metadata = ((SQLiteDataSourceBase)DataSource).DatabaseMetadata.GetTableOrView(m_TableName);
         }
 
         protected string TableName
@@ -65,8 +65,8 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
             {
                 var value = columnProp.Property.InvokeGet(ArgumentValue) ?? DBNull.Value;
                 var parameter = new SQLiteParameter(columnProp.Column.SqlVariableName, value);
-                if (columnProp.Column.SqlDbType.HasValue)
-                    parameter.DbType = columnProp.Column.SqlDbType.Value;
+                if (columnProp.Column.DbType.HasValue)
+                    parameter.DbType = columnProp.Column.DbType.Value;
                 parameters.Add(parameter);
             }
         }

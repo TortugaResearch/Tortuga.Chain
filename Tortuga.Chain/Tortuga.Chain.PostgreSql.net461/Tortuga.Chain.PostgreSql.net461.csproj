@@ -20,7 +20,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>..\..\..\Anchor\Tortuga.Anchor\Tortuga.Chain.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>
+    </CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,7 +30,8 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>..\..\..\Anchor\Tortuga.Anchor\Tortuga.Chain.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>
+    </CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
@@ -57,6 +59,12 @@
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="Tortuga Chain.snk" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Tortuga.Chain.Core.net461\Tortuga.Chain.Core.net461.csproj">
+      <Project>{2c523692-a40b-4a7e-a95a-fbe373f263f7}</Project>
+      <Name>Tortuga.Chain.Core.net461</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

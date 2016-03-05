@@ -42,8 +42,8 @@ namespace ConsoleApplication1
             */
             var dataSource = new Tortuga.Chain.SQLiteDataSource(connectionString);
 
-            dataSource.DatabaseMetaData.PreloadTables();
-            dataSource.DatabaseMetaData.PreloadViews();
+            dataSource.DatabaseMetadata.PreloadTables();
+            dataSource.DatabaseMetadata.PreloadViews();
 
             var currencyList = dataSource.From("Currency").AsCollection<Currency>().Execute();
 

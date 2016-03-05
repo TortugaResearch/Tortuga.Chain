@@ -230,6 +230,7 @@ namespace Tortuga.Chain
         /// <param name="executionToken">The execution token.</param>
         /// <param name="implementation">The implementation that handles processing the result of the command.</param>
         /// <param name="state">User supplied state.</param>
+        [SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
         protected override void Execute(ExecutionToken<SqlCommand, SqlParameter> executionToken, Func<SqlCommand, int?> implementation, object state)
         {
             if (executionToken == null)
@@ -238,7 +239,7 @@ namespace Tortuga.Chain
                 throw new ArgumentNullException("implementation", "implementation is null.");
 
             var startTime = DateTimeOffset.Now;
-            //OnOperationStarted(operation, startTime, state, executionToken);
+            OnExecutionStarted(executionToken, startTime, state);
 
             try
             {
@@ -253,7 +254,7 @@ namespace Tortuga.Chain
                             cmd.Parameters.Add(param);
 
                         var rows = implementation(cmd);
-                        //OnOperationFinished(operation, startTime, DateTimeOffset.Now, rows, state, executionToken);
+                        OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
                     }
                 }
             }
@@ -263,7 +264,7 @@ namespace Tortuga.Chain
                 ex.Data["Operation"] = executionToken.OperationName;
                 ex.Data["CommandText"] = executionToken.CommandText;
                 ex.Data["Parameters"] = executionToken.Parameters;
-                //OnOperationError(operation, startTime, DateTimeOffset.Now, ex, state, executionToken);
+                OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
                 throw;
             }
             catch (SqlTypeException ex)
@@ -272,7 +273,7 @@ namespace Tortuga.Chain
                 ex.Data["Operation"] = executionToken.OperationName;
                 ex.Data["CommandText"] = executionToken.CommandText;
                 ex.Data["Parameters"] = executionToken.Parameters;
-                //OnOperationError(operation, startTime, DateTimeOffset.Now, ex, state, executionToken);
+                OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
                 throw;
             }
         }
@@ -288,7 +289,7 @@ namespace Tortuga.Chain
         protected override async Task ExecuteAsync(ExecutionToken<SqlCommand, SqlParameter> executionToken, Func<SqlCommand, Task<int?>> implementation, CancellationToken cancellationToken, object state)
         {
             var startTime = DateTimeOffset.Now;
-            //OnOperationStarted(operation, startTime, state, executionToken);
+            OnExecutionStarted(executionToken, startTime, state);
 
             try
             {
@@ -302,7 +303,7 @@ namespace Tortuga.Chain
                         foreach (var param in executionToken.Parameters)
                             cmd.Parameters.Add(param);
                         var rows = await implementation(cmd).ConfigureAwait(false);
-                        //OnOperationFinished(operation, startTime, DateTimeOffset.Now, rows, state, executionToken);
+                        OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
                     }
                 }
             }
@@ -315,7 +316,7 @@ namespace Tortuga.Chain
                     ex2.Data["Operation"] = executionToken.OperationName;
                     ex2.Data["CommandText"] = executionToken.CommandText;
                     ex2.Data["Parameters"] = executionToken.Parameters;
-                    //OnOperationCanceled(operation, startTime, DateTimeOffset.Now, state, executionToken);
+                    OnExecutionCanceled(executionToken, startTime, DateTimeOffset.Now, state);
                     throw ex2;
                 }
                 else
@@ -324,7 +325,7 @@ namespace Tortuga.Chain
                     ex.Data["Operation"] = executionToken.OperationName;
                     ex.Data["CommandText"] = executionToken.CommandText;
                     ex.Data["Parameters"] = executionToken.Parameters;
-                    //OnOperationError(operation, startTime, DateTimeOffset.Now, ex, state, executionToken);
+                    OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
                     throw;
                 }
             }
@@ -334,7 +335,7 @@ namespace Tortuga.Chain
                 ex.Data["Operation"] = executionToken.OperationName;
                 ex.Data["CommandText"] = executionToken.CommandText;
                 ex.Data["Parameters"] = executionToken.Parameters;
-                //OnOperationError(operation, startTime, DateTimeOffset.Now, ex, state, executionToken);
+                OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
                 throw;
             }
         }

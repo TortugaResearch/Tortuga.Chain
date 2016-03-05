@@ -36,7 +36,7 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
 
         private void ColumnsAndValuesClause(out string columns, out string values, List<SQLiteParameter> parameters)
         {
-            var availableColumns = Metadata.GetPropertiesFor(ArgumentValue.GetType(),
+            var availableColumns = Metadata.GetPropertiesFor(ArgumentValue.GetType(), 
                  GetPropertiesFilter.ThrowOnNoMatch | GetPropertiesFilter.UpdatableOnly | GetPropertiesFilter.ForInsert);
 
             columns = "(" + string.Join(", ", availableColumns.Select(c => c.Column.QuotedSqlName)) + ")";

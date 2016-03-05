@@ -4,16 +4,16 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using Tortuga.Anchor.Metadata;
+using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Materializers;
 using Tortuga.Chain.Metadata;
-using Tortuga.Chain.CommandBuilders;
 
 namespace Tortuga.Chain.SqlServer.CommandBuilders
 {
     /// <summary>
     /// SqlServerTableOrView supports queries against tables and views.
     /// </summary>
-    public class SqlServerTableOrView : MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> 
+    public class SqlServerTableOrView : MultipleRowDbCommandBuilder<SqlCommand, SqlParameter>
     {
         private readonly object m_FilterValue;
         private readonly TableOrViewMetadata<SqlServerObjectName, SqlDbType> m_Metadata;
@@ -79,7 +79,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 
         private string SelectClause(Materializer<SqlCommand, SqlParameter> materializer)
         {
-            var desiredColumns = materializer.DesiredColumns().ToDictionary(c => c, StringComparer.InvariantCultureIgnoreCase);
+            var desiredColumns = materializer.DesiredColumns().ToDictionary(c => c, StringComparer.OrdinalIgnoreCase);
             var availableColumns = m_Metadata.Columns;
 
             if (desiredColumns.Count == 0)
@@ -87,15 +87,15 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 
             var actualColumns = availableColumns.Where(c => desiredColumns.ContainsKey(c.ClrName)).ToList();
             if (actualColumns.Count == 0)
-                throw new MappingException($"None of the requested columns were found in {m_Metadata.Name}."); 
+                throw new MappingException($"None of the requested columns were found in {m_Metadata.Name}.");
 
             return "SELECT " + string.Join(",", actualColumns.Select(c => c.QuotedSqlName));
 
         }
-        
+
         private string WhereClauseA(List<SqlParameter> parameters)
         {
-            var availableColumns = m_Metadata.Columns.ToDictionary(c => c.ClrName, StringComparer.InvariantCultureIgnoreCase);
+            var availableColumns = m_Metadata.Columns.ToDictionary(c => c.ClrName, StringComparer.OrdinalIgnoreCase);
             var properties = MetadataCache.GetMetadata(m_FilterValue.GetType()).Properties;
             var actualColumns = new List<string>();
 
@@ -108,8 +108,8 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
                     {
                         object value = item.Value ?? DBNull.Value;
                         var parameter = new SqlParameter(column.SqlVariableName, value);
-                        if (column.SqlDbType.HasValue)
-                            parameter.SqlDbType = column.SqlDbType.Value;
+                        if (column.DbType.HasValue)
+                            parameter.SqlDbType = column.DbType.Value;
                         parameters.Add(parameter);
 
                         if (value == DBNull.Value)
@@ -123,13 +123,13 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             {
                 foreach (var item in properties)
                 {
-                    ColumnMetadata < SqlDbType> column;
+                    ColumnMetadata<SqlDbType> column;
                     if (availableColumns.TryGetValue(item.MappedColumnName, out column))
                     {
                         object value = item.InvokeGet(m_FilterValue) ?? DBNull.Value;
                         var parameter = new SqlParameter(column.SqlVariableName, value);
-                        if (column.SqlDbType.HasValue)
-                            parameter.SqlDbType = column.SqlDbType.Value;
+                        if (column.DbType.HasValue)
+                            parameter.SqlDbType = column.DbType.Value;
                         parameters.Add(parameter);
 
                         if (value == DBNull.Value)

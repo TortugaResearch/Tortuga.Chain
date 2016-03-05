@@ -1,5 +1,8 @@
+using System;
 using System.Data.SqlClient;
+using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.DataSources;
+using Tortuga.Chain.Metadata;
 using Tortuga.Chain.SqlServer.CommandBuilders;
 
 namespace Tortuga.Chain.SqlServer
@@ -7,7 +10,7 @@ namespace Tortuga.Chain.SqlServer
     /// <summary>
     /// Class SqlServerDataSourceBase.
     /// </summary>
-    public abstract class SqlServerDataSourceBase : DataSource<SqlCommand, SqlParameter>
+    public abstract class SqlServerDataSourceBase : DataSource<SqlCommand, SqlParameter>, IClass1DataSource
     {
 
         /// <summary>
@@ -15,6 +18,12 @@ namespace Tortuga.Chain.SqlServer
         /// </summary>
         /// <value>The database metadata.</value>
         public abstract SqlServerMetadataCache DatabaseMetadata { get; }
+
+        IDatabaseMetadataCache IClass1DataSource.DatabaseMetadata
+        {
+            get { return DatabaseMetadata; }
+        }
+
         /// <summary>
         /// Loads a procedure definition
         /// </summary>
@@ -67,7 +76,7 @@ namespace Tortuga.Chain.SqlServer
         /// </summary>
         /// <param name="tableOrViewName">Name of the table or view.</param>
         /// <returns></returns>
-        /// <exception cref="System.ArgumentException">
+        /// <exception cref="ArgumentException">
         /// tableName is empty.;tableName
         /// or
         /// Table or view named + tableName +  could not be found. Check to see if the user has permissions to execute this procedure.
@@ -83,7 +92,7 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="tableOrViewName">Name of the table or view.</param>
         /// <param name="whereClause">The where clause. Do not prefix this clause with "WHERE".</param>
         /// <returns>SqlServerTableOrView.</returns>
-        /// <exception cref="System.ArgumentException">tableOrViewName is empty.;tableOrViewName</exception>
+        /// <exception cref="ArgumentException">tableOrViewName is empty.;tableOrViewName</exception>
         public SqlServerTableOrView From(SqlServerObjectName tableOrViewName, string whereClause)
         {
             return new SqlServerTableOrView(this, tableOrViewName, whereClause, null);
@@ -96,7 +105,7 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="whereClause">The where clause. Do not prefix this clause with "WHERE".</param>
         /// <param name="argumentValue">Optional argument value. Every property in the argument value must have a matching parameter in the WHERE clause</param>
         /// <returns>SqlServerTableOrView.</returns>
-        /// <exception cref="System.ArgumentException">tableOrViewName is empty.;tableOrViewName</exception>
+        /// <exception cref="ArgumentException">tableOrViewName is empty.;tableOrViewName</exception>
         public SqlServerTableOrView From(SqlServerObjectName tableOrViewName, string whereClause, object argumentValue)
         {
             return new SqlServerTableOrView(this, tableOrViewName, whereClause, argumentValue);
@@ -108,7 +117,7 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="tableOrViewName">Name of the table or view.</param>
         /// <param name="filterValue">The filter value is used to generate a simple AND style WHERE clause.</param>
         /// <returns>SqlServerTableOrView.</returns>
-        /// <exception cref="System.ArgumentException">tableOrViewName is empty.;tableOrViewName</exception>
+        /// <exception cref="ArgumentException">tableOrViewName is empty.;tableOrViewName</exception>
         public SqlServerTableOrView From(SqlServerObjectName tableOrViewName, object filterValue)
         {
             return new SqlServerTableOrView(this, tableOrViewName, filterValue);
@@ -132,7 +141,7 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="tableName">Name of the table.</param>
         /// <param name="argumentValue">The argument value.</param>
         /// <returns>SqlServerInsert.</returns>
-        /// <exception cref="System.ArgumentException">tableName is empty.;tableName</exception>
+        /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
         public SqlServerInsertObject Insert(SqlServerObjectName tableName, object argumentValue)
         {
             return new SqlServerInsertObject(this, tableName, argumentValue);
@@ -145,7 +154,7 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="argumentValue">The argument value.</param>
         /// <param name="options">The update options.</param>
         /// <returns>SqlServerInsert.</returns>
-        /// <exception cref="System.ArgumentException">tableName is empty.;tableName</exception>
+        /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
         public SqlServerUpdateObject Update(SqlServerObjectName tableName, object argumentValue, UpdateOptions options = UpdateOptions.None)
         {
             return new SqlServerUpdateObject(this, tableName, argumentValue, options);
@@ -158,7 +167,7 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="argumentValue">The argument value.</param>
         /// <param name="options">The options for how the insert/update occurs.</param>
         /// <returns>SqlServerUpdate.</returns>
-        /// <exception cref="System.ArgumentException">tableName is empty.;tableName</exception>
+        /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
         public SqlServerInsertOrUpdateObject InsertOrUpdate(SqlServerObjectName tableName, object argumentValue, InsertOrUpdateOptions options = InsertOrUpdateOptions.None)
         {
             return new SqlServerInsertOrUpdateObject(this, tableName, argumentValue, options);
@@ -171,11 +180,52 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="argumentValue">The argument value.</param>
         /// <param name="options">The delete options.</param>
         /// <returns>SqlServerInsert.</returns>
-        /// <exception cref="System.ArgumentException">tableName is empty.;tableName</exception>
+        /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
         public SqlServerDeleteObject Delete(SqlServerObjectName tableName, object argumentValue, DeleteOptions options = DeleteOptions.None)
         {
             return new SqlServerDeleteObject(this, tableName, argumentValue, options);
         }
+
+        ISingleRowDbCommandBuilder IClass1DataSource.Insert(string tableName, object argumentValue)
+        {
+            return Insert(tableName, argumentValue);
+        }
+
+        ISingleRowDbCommandBuilder IClass1DataSource.Update(string tableName, object argumentValue, UpdateOptions options)
+        {
+            return Update(tableName, argumentValue, options);
+        }
+
+        IDbCommandBuilder IClass1DataSource.Delete(string tableName, object argumentValue, DeleteOptions options)
+        {
+            return Delete(tableName, argumentValue, options);
+        }
+
+        IMultipleRowDbCommandBuilder IClass1DataSource.From(string tableOrViewName)
+        {
+            return From(tableOrViewName);
+        }
+
+        IMultipleRowDbCommandBuilder IClass1DataSource.From(string tableOrViewName, object filterValue)
+        {
+            return From(tableOrViewName, filterValue);
+        }
+
+        IMultipleRowDbCommandBuilder IClass1DataSource.From(string tableOrViewName, string whereClause)
+        {
+            return From(tableOrViewName, whereClause);
+        }
+
+        IMultipleRowDbCommandBuilder IClass1DataSource.From(string tableOrViewName, string whereClause, object argumentValue)
+        {
+            return From(tableOrViewName, whereClause, argumentValue);
+        }
+
+        ISingleRowDbCommandBuilder IClass1DataSource.InsertOrUpdate(string tableName, object argumentValue, InsertOrUpdateOptions options)
+        {
+            return InsertOrUpdate(tableName, argumentValue, options);
+        }
+
 
     }
 }

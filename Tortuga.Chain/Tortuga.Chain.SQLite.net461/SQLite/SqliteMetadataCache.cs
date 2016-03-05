@@ -187,22 +187,33 @@ namespace Tortuga.Chain.SQLite
             /*  NOTE: It looks like SQLite has a very loose typing system. This follows the Column Affinity
             **  information, but might need to be refactored for more granularity.
             */
-            if (string.IsNullOrEmpty(typeName))
-                return DbType.Binary;
-            else if (typeName.Contains("INT"))
-                return DbType.Byte;
-            else if (typeName.Contains("BLOB"))
-                return DbType.Binary;
-            else if (typeName.Contains("CHAR") ||
-                     typeName.Contains("CLOB") ||
-                     typeName.Contains("TEXT"))
-                return DbType.String;
-            else if (typeName.Contains("REAL") ||
-                     typeName.Contains("FLOA") ||
-                     typeName.Contains("DOUB"))
-                return DbType.Double;
-            else
-                return DbType.Decimal;
+
+
+            //if (string.IsNullOrEmpty(typeName))
+            //    return DbType.Binary;
+            //else if (typeName.Contains("INT"))
+            //    return DbType.Byte;
+            //else if (typeName.Contains("BLOB"))
+            //    return DbType.Binary;
+            //else if (typeName.Contains("CHAR") ||
+            //         typeName.Contains("CLOB") ||
+            //         typeName.Contains("TEXT") ||
+            //         typeName.Contains("NVARCHAR")) 
+            //    return DbType.String;
+            //else if (typeName.Contains("REAL") ||
+            //         typeName.Contains("FLOA") ||
+            //         typeName.Contains("DOUB"))
+            //    return DbType.Double;
+            //else
+            //    return DbType.Decimal;
+
+            //SQLite's type system is so screwy that we should just skip type detection for now.
+            return null;
+        }
+
+        protected override string ParseObjectName(string name)
+        {
+            return name;
         }
     }
 }

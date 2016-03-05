@@ -14,6 +14,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
     /// </summary>
     public abstract class SqlServerObjectCommand : SingleRowDbCommandBuilder<SqlCommand, SqlParameter>
     {
+        private readonly IReadOnlyDictionary<string, object> m_ArgumentDictionary;
         private readonly object m_ArgumentValue;
         private readonly TableOrViewMetadata<SqlServerObjectName, SqlDbType> m_Metadata;
         private readonly SqlServerObjectName m_TableName;
@@ -28,6 +29,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             : base(dataSource)
         {
             m_ArgumentValue = argumentValue;
+            m_ArgumentDictionary = ArgumentValue as IReadOnlyDictionary<string, object>;
             m_TableName = tableName;
             m_Metadata = ((SqlServerDataSourceBase)DataSource).DatabaseMetadata.GetTableOrView(m_TableName);
         }
@@ -51,6 +53,14 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        protected IReadOnlyDictionary<string, object> ArgumentDictionary
+        {
+            get { return m_ArgumentDictionary; }
+        }
+
+        /// <summary>
         /// Builds an output clause.
         /// </summary>
         /// <param name="materializer">The materializer.</param>
@@ -59,6 +69,9 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// <exception cref="DataException"></exception>
         protected string OutputClause(Materializer<SqlCommand, SqlParameter> materializer, bool returnDeletedColumns)
         {
+            if (materializer == null)
+                throw new ArgumentNullException("materializer", "materializer is null.");
+
             if (materializer is NonQueryMaterializer<SqlCommand, SqlParameter>)
                 return null;
 
@@ -97,23 +110,50 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// <returns>System.String.</returns>
         protected string WhereClause(List<SqlParameter> parameters, bool useKeyAttribute)
         {
-            GetPropertiesFilter filter;
-            if (useKeyAttribute)
-                filter = (GetPropertiesFilter.ObjectDefinedKey | GetPropertiesFilter.ThrowOnMissingColumns);
-            else
-                filter = (GetPropertiesFilter.PrimaryKey | GetPropertiesFilter.ThrowOnMissingProperties);
+            if (parameters == null)
+                throw new ArgumentNullException("parameters", "parameters is null.");
 
-            var columns = Metadata.GetPropertiesFor(ArgumentValue.GetType(), filter);
+            string result;
 
-            var result = string.Join(" AND ", columns.Select(c => $"{c.Column.QuotedSqlName} = {c.Column.SqlVariableName}"));
-
-            foreach (var item in columns)
+            
+            if (ArgumentDictionary != null)
             {
-                var value = item.Property.InvokeGet(ArgumentValue) ?? DBNull.Value;
-                var parameter = new SqlParameter(item.Column.SqlVariableName, value);
-                if (item.Column.SqlDbType.HasValue)
-                    parameter.SqlDbType = item.Column.SqlDbType.Value;
-                parameters.Add(parameter);
+                GetKeysFilter filter = (GetKeysFilter.PrimaryKey | GetKeysFilter.ThrowOnMissingProperties);
+
+                var columns = Metadata.GetKeysFor(ArgumentDictionary, filter);
+
+                result = string.Join(" AND ", columns.Select(c => $"{c.QuotedSqlName} = {c.SqlVariableName}"));
+
+                foreach (var item in columns)
+                {
+                    var value = ArgumentDictionary[item.ClrName] ?? DBNull.Value;
+                    var parameter = new SqlParameter(item.SqlVariableName, value);
+                    if (item.DbType.HasValue)
+                        parameter.SqlDbType = item.DbType.Value;
+                    parameters.Add(parameter);
+                }
+            }
+            else
+            {
+                GetPropertiesFilter filter;
+                if (useKeyAttribute)
+                    filter = (GetPropertiesFilter.ObjectDefinedKey | GetPropertiesFilter.ThrowOnMissingColumns);
+                else
+                    filter = (GetPropertiesFilter.PrimaryKey | GetPropertiesFilter.ThrowOnMissingProperties);
+
+
+                var columns = Metadata.GetPropertiesFor(ArgumentValue.GetType(), filter);
+
+                result = string.Join(" AND ", columns.Select(c => $"{c.Column.QuotedSqlName} = {c.Column.SqlVariableName}"));
+
+                foreach (var item in columns)
+                {
+                    var value = item.Property.InvokeGet(ArgumentValue) ?? DBNull.Value;
+                    var parameter = new SqlParameter(item.Column.SqlVariableName, value);
+                    if (item.Column.DbType.HasValue)
+                        parameter.SqlDbType = item.Column.DbType.Value;
+                    parameters.Add(parameter);
+                }
             }
 
             return result;

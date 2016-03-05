@@ -58,8 +58,8 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             {
                 var value = item.Property.InvokeGet(ArgumentValue) ?? DBNull.Value;
                 var parameter = new SqlParameter(item.Column.SqlVariableName, value);
-                if (item.Column.SqlDbType.HasValue)
-                    parameter.SqlDbType = item.Column.SqlDbType.Value;
+                if (item.Column.DbType.HasValue)
+                    parameter.SqlDbType = item.Column.DbType.Value;
                 parameters.Add(parameter);
             }
 
