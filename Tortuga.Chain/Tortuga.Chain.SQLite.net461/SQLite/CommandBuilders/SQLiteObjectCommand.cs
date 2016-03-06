@@ -75,16 +75,33 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
         /// <returns></returns>
         protected string WhereClause(List<SQLiteParameter> parameters, bool useKeyAttribute)
         {
-            GetPropertiesFilter filter;
-            if (useKeyAttribute)
-                filter = (GetPropertiesFilter.ObjectDefinedKey | GetPropertiesFilter.ThrowOnMissingColumns);
-            else
-                filter = (GetPropertiesFilter.PrimaryKey | GetPropertiesFilter.ThrowOnMissingProperties);
+            if(ArgumentDictionary != null)
+            {
+                GetKeysFilter filter;
+                if (useKeyAttribute)
+                    filter = (GetKeysFilter.NonPrimaryKey | GetKeysFilter.ThrowOnMissingColumns);
+                else
+                    filter = (GetKeysFilter.PrimaryKey | GetKeysFilter.ThrowOnMissingProperties);
 
-            var columns = Metadata.GetPropertiesFor(ArgumentValue.GetType(), filter);
-            var where = string.Join(" AND ", columns.Select(c => $"{c.Column.QuotedSqlName} = {c.Column.SqlVariableName}"));
-            LoadParameters(columns, parameters);
-            return where;
+                var columns = Metadata.GetKeysFor(ArgumentDictionary, filter);
+                var where = string.Join(" AND ", columns.Select(c => $"{c.QuotedSqlName} = {c.SqlVariableName}"));
+                LoadDictionaryParameters(columns, parameters);
+                return where;
+            }
+            else
+            {
+                GetPropertiesFilter filter;
+                if (useKeyAttribute)
+                    filter = (GetPropertiesFilter.ObjectDefinedKey | GetPropertiesFilter.ThrowOnMissingColumns);
+                else
+                    filter = (GetPropertiesFilter.PrimaryKey | GetPropertiesFilter.ThrowOnMissingProperties);
+
+                var columns = Metadata.GetPropertiesFor(ArgumentValue.GetType(), filter);
+                var where = string.Join(" AND ", columns.Select(c => $"{c.Column.QuotedSqlName} = {c.Column.SqlVariableName}"));
+                LoadParameters(columns, parameters);
+                return where;
+            }
+            
         }
 
         /// <summary>
