@@ -55,9 +55,19 @@ namespace Tests.Repository
             Source.Delete(TableName, GetKeyFilter(id)).Execute();
         }
 
-        internal void Update(IReadOnlyDictionary<string, object> entity)
+        public void Update(IReadOnlyDictionary<string, object> entity)
         {
             Source.Update(TableName, entity).Execute();
+        }
+
+        public IList<Employee> Query(string whereClause, object argumentValue)
+        {
+            return Source.From(TableName, whereClause, argumentValue).AsCollection<Employee>().Execute();
+        }
+
+        public IList<Employee> Query(object filterValue)
+        {
+            return Source.From(TableName, filterValue).AsCollection<Employee>().Execute();
         }
     }
 

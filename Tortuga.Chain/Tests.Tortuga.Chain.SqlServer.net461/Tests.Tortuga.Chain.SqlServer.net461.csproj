@@ -66,6 +66,7 @@
   <ItemGroup>
     <Compile Include="Metadata\MetadataTests.cs" />
     <Compile Include="Repository\Employee.cs" />
+    <Compile Include="Repository\StrictRepositoryTests.cs" />
     <Compile Include="Repository\RepositoryWithCachingTests.cs" />
     <Compile Include="Repository\RepositoryWithCaching`2.cs" />
     <Compile Include="Repository\Repository`2.cs" />

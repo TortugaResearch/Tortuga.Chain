@@ -5,12 +5,17 @@ using System.Linq;
 namespace Tests.Repository
 {
     [TestClass]
-    public class RepositoryWithCachingTests : TestBase
+    public class StrictRepositoryTests : TestBase
     {
+        public StrictRepositoryTests()
+        {
+            DataSource.StrictMode = true;
+        }
+
         [TestMethod]
         public void BasicCrud()
         {
-            var repo = new RepositoryWithCaching<Employee, int>(DataSource, EmployeeTableName);
+            var repo = new Repository<Employee, int>(DataSource, EmployeeTableName);
 
             var emp1 = new Employee() { FirstName = "Tom", LastName = "Jones", Title = "President" };
             var echo1 = repo.Insert(emp1);
@@ -22,9 +27,6 @@ namespace Tests.Repository
 
             echo1.MiddleName = "G";
             repo.Update(echo1);
-
-            var cached1 = repo.Get(echo1.EmployeeKey.Value);
-            Assert.AreSame(echo1, cached1, "Item should have been cached");
 
             var emp2 = new Employee() { FirstName = "Lisa", LastName = "Green", Title = "VP Transportation", ManagerKey = echo1.EmployeeKey };
             var echo2 = repo.Insert(emp2);
@@ -38,29 +40,32 @@ namespace Tests.Repository
             Assert.IsTrue(list.Any(e => e.EmployeeKey == echo1.EmployeeKey), "Employee 1 is missing");
             Assert.IsTrue(list.Any(e => e.EmployeeKey == echo2.EmployeeKey), "Employee 2 is missing");
 
-            var list2 = repo.GetAll();
-            Assert.AreSame(list, list2, "GetAll should have been cached");
-
-            var cached1b = repo.Get(echo1.EmployeeKey.Value);
-            Assert.AreNotSame(echo1, cached1b, "Cached item was replaced");
-            Assert.IsTrue(list.Contains(cached1b), "Single item should have been contained in the list we previously cached.");
-
-
             var get1 = repo.Get(echo1.EmployeeKey.Value);
             Assert.AreEqual(echo1.EmployeeKey, get1.EmployeeKey);
+
+
+
+            var whereSearch1 = repo.Query("FirstName = @FN", new { FN = "Tom" });
+            Assert.IsTrue(whereSearch1.Any(x => x.EmployeeKey == echo1.EmployeeKey), "Emp1 should have been returned");
+            Assert.IsTrue(whereSearch1.All(x => x.FirstName == "Tom"), "Checking for incorrect return values");
+
+            var whereSearch2 = repo.Query(new { FirstName = "Tom" });
+            Assert.IsTrue(whereSearch2.Any(x => x.EmployeeKey == echo1.EmployeeKey), "Emp1 should have been returned");
+            Assert.IsTrue(whereSearch2.All(x => x.FirstName == "Tom"), "Checking for incorrect return values");
+
 
             repo.Delete(echo2.EmployeeKey.Value);
             repo.Delete(echo1.EmployeeKey.Value);
 
-            var list3 = repo.GetAll();
-            Assert.AreEqual(list.Count - 2, list3.Count);
+            var list2 = repo.GetAll();
+            Assert.AreEqual(list.Count - 2, list2.Count);
 
         }
 
         [TestMethod]
         public void InsertWithDictionary()
         {
-            var repo = new RepositoryWithCaching<Employee, int>(DataSource, "HR.Employee");
+            var repo = new Repository<Employee, int>(DataSource, "HR.Employee");
 
             var emp1 = new Dictionary<string, object>() { { "FirstName", "Tom" }, { "LastName", "Jones" }, { "Title", "President" } };
             var echo1 = repo.Insert(emp1);
@@ -77,7 +82,7 @@ namespace Tests.Repository
         [TestMethod]
         public void UpdateWithDictionary()
         {
-            var repo = new RepositoryWithCaching<Employee, int>(DataSource, "HR.Employee");
+            var repo = new Repository<Employee, int>(DataSource, "HR.Employee");
 
             var emp1 = new Dictionary<string, object>() { { "FirstName", "Tom" }, { "LastName", "Jones" }, { "Title", "President" } };
             var echo1 = repo.Insert(emp1);

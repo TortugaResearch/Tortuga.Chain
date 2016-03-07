@@ -20,6 +20,8 @@ namespace Tests.Repository
             Assert.AreEqual(emp1.LastName, echo1.LastName, "LastName");
             Assert.AreEqual(emp1.Title, echo1.Title, "Title");
 
+            echo1.MiddleName = "G";
+            repo.Update(echo1);
 
             var emp2 = new Employee() { FirstName = "Lisa", LastName = "Green", Title = "VP Transportation", ManagerKey = echo1.EmployeeKey };
             var echo2 = repo.Insert(emp2);
@@ -35,6 +37,17 @@ namespace Tests.Repository
 
             var get1 = repo.Get(echo1.EmployeeKey.Value);
             Assert.AreEqual(echo1.EmployeeKey, get1.EmployeeKey);
+
+
+
+            var whereSearch1 = repo.Query("FirstName = @FN", new { FN = "Tom" });
+            Assert.IsTrue(whereSearch1.Any(x => x.EmployeeKey == echo1.EmployeeKey), "Emp1 should have been returned");
+            Assert.IsTrue(whereSearch1.All(x => x.FirstName == "Tom"), "Checking for incorrect return values");
+
+            var whereSearch2 = repo.Query(new { FirstName = "Tom" });
+            Assert.IsTrue(whereSearch2.Any(x => x.EmployeeKey == echo1.EmployeeKey), "Emp1 should have been returned");
+            Assert.IsTrue(whereSearch2.All(x => x.FirstName == "Tom"), "Checking for incorrect return values");
+
 
             repo.Delete(echo2.EmployeeKey.Value);
             repo.Delete(echo1.EmployeeKey.Value);
