@@ -77,6 +77,7 @@
     <Compile Include="SQLiteDataSource.cs" />
     <Compile Include="SQLite\CommandBuilders\SQLiteDeleteObject.cs" />
     <Compile Include="SQLite\CommandBuilders\SQLiteInsertObject.cs" />
+    <Compile Include="SQLite\CommandBuilders\SQLiteInsertOrUpdateObject.cs" />
     <Compile Include="SQLite\CommandBuilders\SQLiteObjectCommand.cs" />
     <Compile Include="SQLite\CommandBuilders\SQLiteSqlCall.cs" />
     <Compile Include="SQLite\CommandBuilders\SQLiteTableOrView.cs" />
