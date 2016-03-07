@@ -13,10 +13,10 @@ namespace Tortuga.Chain.Appenders
     /// <typeparam name="TResultType">The type of the t result type.</typeparam>
     public class CacheResultAppender<TResultType> : Appender<TResultType>
     {
-        private readonly Func<TResultType, string> m_CacheKeyFunction;
         private readonly string m_CacheKey;
-        private readonly string m_RegionName;
+        private readonly Func<TResultType, string> m_CacheKeyFunction;
         private readonly CacheItemPolicy m_Policy;
+        private readonly string m_RegionName;
         private readonly Func<TResultType, string> m_RegionNameFunction;
 
         /// <summary>
@@ -33,11 +33,8 @@ namespace Tortuga.Chain.Appenders
             if (previousLink == null)
                 throw new ArgumentNullException("previousLink", "previousLink is null.");
 
-            if (regionNameFunction == null)
-                regionNameFunction = (x) => null;
-
             m_CacheKeyFunction = cacheKeyFunction;
-            m_RegionNameFunction = regionNameFunction;
+            m_RegionNameFunction = regionNameFunction ?? ((x) => null);
             m_Policy = policy;
         }
 

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Tortuga.Chain.CommandBuilders
 {
@@ -28,7 +29,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <typeparam name="TObject">The type of the model.</typeparam>
         /// <typeparam name="TCollection">The type of the collection.</typeparam>
         /// <returns></returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
+        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         ILink<TCollection> AsCollection<TObject, TCollection>()
             where TObject : class, new()
             where TCollection : ICollection<TObject>, new();

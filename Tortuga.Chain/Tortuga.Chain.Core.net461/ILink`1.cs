@@ -11,6 +11,12 @@ namespace Tortuga.Chain
     public interface ILink<TResult>
     {
         /// <summary>
+        /// Gets the data source that is associated with this materilizer or appender.
+        /// </summary>
+        /// <value>The data source.</value>
+        DataSource DataSource { get; }
+
+        /// <summary>
         /// Execute the operation synchronously.
         /// </summary>
         /// <param name="state">User defined state, usually used for logging.</param>
@@ -30,11 +36,5 @@ namespace Tortuga.Chain
         /// <param name="state">User defined state, usually used for logging.</param>
         /// <returns></returns>
         Task<TResult> ExecuteAsync(CancellationToken cancellationToken, object state = null);
-
-        /// <summary>
-        /// Gets the data source that is associated with this materilizer or appender.
-        /// </summary>
-        /// <value>The data source.</value>
-        DataSource DataSource { get; }
     }
 }

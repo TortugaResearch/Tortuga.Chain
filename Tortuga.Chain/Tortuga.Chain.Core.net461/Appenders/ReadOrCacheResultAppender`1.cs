@@ -15,8 +15,8 @@ namespace Tortuga.Chain.Appenders
     public class ReadOrCacheResultAppender<TResultType> : Appender<TResultType>
     {
         private readonly string m_CacheKey;
-        private readonly string m_RegionName;
         private readonly CacheItemPolicy m_Policy;
+        private readonly string m_RegionName;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ReadOrCacheResultAppender{TResultType}" /> class.

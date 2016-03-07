@@ -1,5 +1,4 @@
 using System;
-using System.Runtime.Caching;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,8 +12,6 @@ namespace Tortuga.Chain.Appenders
     {
         private readonly string m_CacheKey;
         private readonly string m_RegionName;
-        private readonly CacheItemPolicy m_Policy;
-
 
         /// <summary>
         /// Initializes a new instance of the <see cref="InvalidateCacheAppender{TResultType}"/> class.
@@ -22,15 +19,13 @@ namespace Tortuga.Chain.Appenders
         /// <param name="previousLink">The previous link.</param>
         /// <param name="cacheKey">The cache key.</param>
         /// <param name="regionName">Optional name of the cache region. WARNING: The default cache does not support region names.</param>
-        /// <param name="policy">Optional cache policy.</param>
         /// <exception cref="ArgumentNullException">previousLink;previousLink is null.</exception>
         /// <exception cref="ArgumentException">cacheKey is null or empty.;cacheKey</exception>
-        public InvalidateCacheAppender(ILink<TResultType> previousLink, string cacheKey, string regionName, CacheItemPolicy policy) : base(previousLink)
+        public InvalidateCacheAppender(ILink<TResultType> previousLink, string cacheKey, string regionName) : base(previousLink)
         {
             if (string.IsNullOrEmpty(cacheKey))
                 throw new ArgumentException("cacheKey is null or empty.", "cacheKey");
 
-            m_Policy = policy;
             m_RegionName = regionName;
             m_CacheKey = cacheKey;
         }

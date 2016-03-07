@@ -74,8 +74,11 @@
     <Compile Include="..\Tests.Tortuga.Chain.SqlServer.net461\Repository\RepositoryTests.cs">
       <Link>Repository\RepositoryTests.cs</Link>
     </Compile>
-    <Compile Include="..\Tests.Tortuga.Chain.SqlServer.net461\Repository\RepositoryWithCaching.cs">
-      <Link>RepositoryWithCaching.cs</Link>
+    <Compile Include="..\Tests.Tortuga.Chain.SqlServer.net461\Repository\RepositoryWithCachingTests.cs">
+      <Link>Repository\RepositoryWithCachingTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Tests.Tortuga.Chain.SqlServer.net461\Repository\RepositoryWithCaching`2.cs">
+      <Link>Repository\RepositoryWithCaching`2.cs</Link>
     </Compile>
     <Compile Include="..\Tests.Tortuga.Chain.SqlServer.net461\Repository\Repository`2.cs">
       <Link>Repository\Repository`2.cs</Link>

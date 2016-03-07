@@ -11,31 +11,23 @@ namespace Tortuga.Chain
     public interface IClass1DataSource
     {
         /// <summary>
-        /// Inserts an object into the specified table.
+        /// Gets or sets the cache to be used by this data source. The default is .NET's MemoryCache.
         /// </summary>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="argumentValue">The argument value.</param>
-        /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
-        ISingleRowDbCommandBuilder Insert(string tableName, object argumentValue);
-
+        /// <remarks>This is used by the WithCaching materializer.</remarks>
+        ObjectCache Cache { get; set; }
 
         /// <summary>
-        /// Updates an object in the specified table.
+        /// Returns an abstract metadata cache.
         /// </summary>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="argumentValue">The argument value.</param>
-        /// <param name="options">The update options.</param>
-        /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
-        ISingleRowDbCommandBuilder Update(string tableName, object argumentValue, UpdateOptions options = UpdateOptions.None);
+        IDatabaseMetadataCache DatabaseMetadata { get; }
 
         /// <summary>
-        /// Inserts an object model from the specified table.
+        /// Deletes an object model from the specified table.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="argumentValue">The argument value.</param>
         /// <param name="options">The delete options.</param>
         /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
-
         IDbCommandBuilder Delete(string tableName, object argumentValue, DeleteOptions options = DeleteOptions.None);
 
         /// <summary>
@@ -75,6 +67,14 @@ namespace Tortuga.Chain
         /// <exception cref="ArgumentException">tableOrViewName is empty.;tableOrViewName</exception>
         IMultipleRowDbCommandBuilder From(string tableOrViewName, object filterValue);
 
+        /// <summary>
+        /// Inserts an object into the specified table.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
+        ISingleRowDbCommandBuilder Insert(string tableName, object argumentValue);
+
 
         /// <summary>
         /// Performs an insert or update operation as appropriate.
@@ -86,10 +86,12 @@ namespace Tortuga.Chain
         ISingleRowDbCommandBuilder InsertOrUpdate(string tableName, object argumentValue, InsertOrUpdateOptions options = InsertOrUpdateOptions.None);
 
         /// <summary>
-        /// Returns an abstract metadata cache.
+        /// Invalidates a cache key.
         /// </summary>
-        IDatabaseMetadataCache DatabaseMetadata { get; }
-
+        /// <param name="regionName">Name of the region. WARNING: some cache providers, including .NET's MemoryCache, don't support regions.</param>
+        /// <param name="cacheKey">The cache key.</param>
+        /// <exception cref="ArgumentException">cacheKey is null or empty.;cacheKey</exception>
+        void InvalidateCache(string cacheKey, string regionName);
 
         /// <summary>
         /// Try to read from the cache.
@@ -102,10 +104,13 @@ namespace Tortuga.Chain
         bool TryReadFromCache<T>(string cacheKey, string regionName, out T result);
 
         /// <summary>
-        /// Gets or sets the cache to be used by this data source. The default is .NET's MemoryCache.
+        /// Updates an object in the specified table.
         /// </summary>
-        /// <remarks>This is used by the WithCaching materializer.</remarks>
-        ObjectCache Cache { get; set; }
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="options">The update options.</param>
+        /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
+        ISingleRowDbCommandBuilder Update(string tableName, object argumentValue, UpdateOptions options = UpdateOptions.None);
 
         /// <summary>
         /// Writes to cache, replacing any previous value.
@@ -114,16 +119,5 @@ namespace Tortuga.Chain
         /// <param name="policy">Optional cache invalidation policy.</param>
         /// <exception cref="ArgumentNullException">item;item is null.</exception>
         void WriteToCache(CacheItem item, CacheItemPolicy policy);
-
-
-        /// <summary>
-        /// Invalidates a cache key.
-        /// </summary>
-        /// <param name="regionName">Name of the region. WARNING: some cache providers, including .NET's MemoryCache, don't support regions.</param>
-        /// <param name="cacheKey">The cache key.</param>
-        /// <exception cref="System.ArgumentException">cacheKey is null or empty.;cacheKey</exception>
-        /// <exception cref="ArgumentException">cacheKey is null or empty.;cacheKey</exception>
-        void InvalidateCache(string cacheKey, string regionName);
-
     }
 }
