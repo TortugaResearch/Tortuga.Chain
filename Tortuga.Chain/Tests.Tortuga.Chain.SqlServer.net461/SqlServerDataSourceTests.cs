@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Tortuga.Chain;
@@ -128,6 +129,40 @@ SELECT @Option AS [Option];";
             Debug.WriteLine($"NumericRoundAbort = {settings.NumericRoundAbort}");
             Debug.WriteLine($"QuotedIdentifier = {settings.QuotedIdentifier}");
             Debug.WriteLine($"XactAbort = {settings.XactAbort}");
+        }
+
+        [TestMethod]
+        public void SqlServerDataSourceTests_OnError()
+        {
+            int count = 0;
+            var dataSource = SqlServerDataSource.CreateFromConfig("SqlServerTestDatabase");
+            dataSource.ExecutionError += (s, e) => count++;
+            try
+            {
+                dataSource.Sql("THIS ISN'T VALID SQL").Execute();
+                Assert.Fail("excected a sql exception");
+            }
+            catch (SqlException)
+            {
+                Assert.AreEqual(1, count, "Expected one error event notification");
+            }
+        }
+
+        [TestMethod]
+        public async Task SqlServerDataSourceTests_OnErrorAsync()
+        {
+            int count = 0;
+            var dataSource = SqlServerDataSource.CreateFromConfig("SqlServerTestDatabase");
+            dataSource.ExecutionError += (s, e) => count++;
+            try
+            {
+                await dataSource.Sql("THIS ISN'T VALID SQL").ExecuteAsync();
+                Assert.Fail("excected a sql exception");
+            }
+            catch (SqlException)
+            {
+                Assert.AreEqual(1, count, "Expected one error event notification");
+            }
         }
     }
 }

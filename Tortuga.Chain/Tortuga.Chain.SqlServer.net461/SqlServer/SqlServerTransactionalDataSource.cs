@@ -1,7 +1,6 @@
 using System;
 using System.Data;
 using System.Data.SqlClient;
-using System.Data.SqlTypes;
 using System.Threading;
 using System.Threading.Tasks;
 using Tortuga.Chain.Core;
@@ -134,7 +133,7 @@ namespace Tortuga.Chain.SqlServer
                     OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
                 }
             }
-            catch (SqlException ex)
+            catch (Exception ex)
             {
                 ex.Data["DataSource"] = Name;
                 ex.Data["TransactionName"] = m_TransactionName;
@@ -144,16 +143,7 @@ namespace Tortuga.Chain.SqlServer
                 OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
                 throw;
             }
-            catch (SqlTypeException ex)
-            {
-                ex.Data["DataSource"] = Name;
-                ex.Data["TransactionName"] = m_TransactionName;
-                ex.Data["Operation"] = executionToken.OperationName;
-                ex.Data["CommandText"] = executionToken.CommandText;
-                ex.Data["Parameters"] = executionToken.Parameters;
-                OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
-                throw;
-            }
+
         }
 
         /// <summary>
@@ -184,9 +174,9 @@ namespace Tortuga.Chain.SqlServer
                 }
 
             }
-            catch (SqlException ex)
+            catch (Exception ex)
             {
-                if (cancellationToken.IsCancellationRequested) //convert SqlException into a OperationCanceledException 
+                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException 
                 {
                     var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);
                     ex2.Data["DataSource"] = Name;
@@ -208,16 +198,7 @@ namespace Tortuga.Chain.SqlServer
                     throw;
                 }
             }
-            catch (SqlTypeException ex)
-            {
-                ex.Data["Dispatcher"] = Name;
-                ex.Data["TransactionName"] = m_TransactionName;
-                ex.Data["Operation"] = executionToken.OperationName;
-                ex.Data["CommandText"] = executionToken.CommandText;
-                ex.Data["Parameters"] = executionToken.Parameters;
-                OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
-                throw;
-            }
+
         }
 
 

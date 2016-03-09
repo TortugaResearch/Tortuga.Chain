@@ -114,7 +114,7 @@ namespace Tortuga.Chain
                     }
                 }
             }
-            catch (SQLiteException ex)
+            catch (Exception ex)
             {
                 ex.Data["DataSource"] = Name;
                 ex.Data["Operation"] = executionToken.OperationName;
@@ -171,7 +171,7 @@ namespace Tortuga.Chain
                     }
                 }
             }
-            catch (SQLiteException ex)
+            catch (Exception ex)
             {
                 if (cancellationToken.IsCancellationRequested) //convert SQLiteException into a OperationCanceledException 
                 {

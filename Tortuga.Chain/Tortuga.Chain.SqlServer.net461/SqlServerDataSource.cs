@@ -2,13 +2,12 @@
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
-using System.Data.SqlTypes;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Tortuga.Chain.SqlServer;
 using Tortuga.Chain.Core;
+using Tortuga.Chain.SqlServer;
 namespace Tortuga.Chain
 {
 
@@ -272,7 +271,7 @@ namespace Tortuga.Chain
                     }
                 }
             }
-            catch (SqlException ex)
+            catch (Exception ex)
             {
                 ex.Data["DataSource"] = Name;
                 ex.Data["Operation"] = executionToken.OperationName;
@@ -281,15 +280,7 @@ namespace Tortuga.Chain
                 OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
                 throw;
             }
-            catch (SqlTypeException ex)
-            {
-                ex.Data["DataSource"] = Name;
-                ex.Data["Operation"] = executionToken.OperationName;
-                ex.Data["CommandText"] = executionToken.CommandText;
-                ex.Data["Parameters"] = executionToken.Parameters;
-                OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
-                throw;
-            }
+
         }
 
         /// <summary>
@@ -324,9 +315,9 @@ namespace Tortuga.Chain
                     }
                 }
             }
-            catch (SqlException ex)
+            catch (Exception ex)
             {
-                if (cancellationToken.IsCancellationRequested) //convert SqlException into a OperationCanceledException 
+                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException 
                 {
                     var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);
                     ex2.Data["DataSource"] = Name;
@@ -346,15 +337,7 @@ namespace Tortuga.Chain
                     throw;
                 }
             }
-            catch (SqlTypeException ex)
-            {
-                ex.Data["Dispatcher"] = Name;
-                ex.Data["Operation"] = executionToken.OperationName;
-                ex.Data["CommandText"] = executionToken.CommandText;
-                ex.Data["Parameters"] = executionToken.Parameters;
-                OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
-                throw;
-            }
+
         }
 
         /// <summary>
