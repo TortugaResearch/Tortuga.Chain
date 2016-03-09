@@ -40,7 +40,7 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
         /// </summary>
         /// <param name="materializer"></param>
         /// <returns></returns>
-        public override ExecutionToken<SQLiteCommand, SQLiteParameter> Prepare(Materializer<SQLiteCommand, SQLiteParameter> materializer)
+        public override Tortuga.Chain.Core.ExecutionToken<SQLiteCommand, SQLiteParameter> Prepare(Materializer<SQLiteCommand, SQLiteParameter> materializer)
         {
             var parameters = new List<SQLiteParameter>();
 

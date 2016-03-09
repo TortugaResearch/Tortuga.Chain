@@ -4,10 +4,11 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Data.SqlTypes;
 using System.Diagnostics.CodeAnalysis;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Tortuga.Chain.SqlServer;
-
+using Tortuga.Chain.Core;
 namespace Tortuga.Chain
 {
 
@@ -19,6 +20,11 @@ namespace Tortuga.Chain
     {
         private readonly SqlConnectionStringBuilder m_ConnectionBuilder;
         private readonly SqlServerMetadataCache m_DatabaseMetadata;
+
+        /// <summary>
+        /// This is used to decide which option overides to set when establishing a connection.
+        /// </summary>
+        private SqlServerEffectiveSettings m_ServerDefaultSettings;
         private readonly object m_SyncRoot = new object();
         private bool m_IsSqlDependencyActive;
 
@@ -81,12 +87,7 @@ namespace Tortuga.Chain
         {
         }
 
-        /// <summary>
-        /// When not null, this will set the ArithAbort for new connections.
-        /// </summary>
-        /// <remarks>Microsoft recommends setting ArithAbort=On for all connections. To avoid an additional round-trip to the server, do this at the server level instead of at the connection level.</remarks>
-        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Arith")]
-        public bool? ArithAbort { get; set; }
+
 
         /// <summary>
         /// This object can be used to lookup database information.
@@ -104,13 +105,6 @@ namespace Tortuga.Chain
         {
             get { return m_IsSqlDependencyActive; }
         }
-
-
-        /// <summary>
-        /// When not null, this will set the XACT_ABORT for new connections.
-        /// </summary>
-        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Xact")]
-        public bool? XactAbort { get; set; }
 
         /// <summary>
         /// Gets the connection string.
@@ -158,19 +152,37 @@ namespace Tortuga.Chain
         [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         public SqlConnection CreateSqlConnection()
         {
+
             var con = new SqlConnection(ConnectionString);
             con.Open();
 
-            if (ArithAbort.HasValue)
-                using (var cmd = new SqlCommand("SET ARITHABORT " + (ArithAbort.Value ? "ON" : "OFF"), con))
-                    cmd.ExecuteNonQuery();
+            if (m_ServerDefaultSettings == null)
+            {
+                var temp = new SqlServerEffectiveSettings();
+                temp.Reload(con, null);
+                Thread.MemoryBarrier();
+                m_ServerDefaultSettings = temp;
+            }
 
-            if (XactAbort.HasValue)
-                using (var cmd = new SqlCommand("SET XACT_ABORT  " + (XactAbort.Value ? "ON" : "OFF"), con))
+            var sql = BuildConnectionSettingsOverride();
+
+            if (sql.Length > 0)
+                using (var cmd = new SqlCommand(sql.ToString(), con))
                     cmd.ExecuteNonQuery();
 
             return con;
+        }
 
+        private string BuildConnectionSettingsOverride()
+        {
+            var sql = new StringBuilder();
+
+            if (Settings.ArithAbort.HasValue && Settings.ArithAbort != m_ServerDefaultSettings.ArithAbort)
+                sql.AppendLine("SET ARITHABORT " + (Settings.ArithAbort.Value ? "ON" : "OFF"));
+            if (Settings.XactAbort.HasValue && Settings.XactAbort != m_ServerDefaultSettings.XactAbort)
+                sql.AppendLine("SET XACT_ABORT  " + (Settings.XactAbort.Value ? "ON" : "OFF"));
+
+            return sql.ToString();
         }
 
         /// <summary>
@@ -253,6 +265,8 @@ namespace Tortuga.Chain
                         foreach (var param in executionToken.Parameters)
                             cmd.Parameters.Add(param);
 
+                        executionToken.ApplyCommandOverrides(cmd);
+
                         var rows = implementation(cmd);
                         OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
                     }
@@ -302,6 +316,9 @@ namespace Tortuga.Chain
                         cmd.CommandType = executionToken.CommandType;
                         foreach (var param in executionToken.Parameters)
                             cmd.Parameters.Add(param);
+
+                        executionToken.ApplyCommandOverrides(cmd);
+
                         var rows = await implementation(cmd).ConfigureAwait(false);
                         OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
                     }
@@ -348,20 +365,59 @@ namespace Tortuga.Chain
         /// <remarks>
         /// The caller of this method is responsible for closing the connection.
         /// </remarks>
-        private async Task<SqlConnection> CreateSqlConnectionAsync(CancellationToken cancellationToken)
+        private async Task<SqlConnection> CreateSqlConnectionAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             var con = new SqlConnection(ConnectionString);
             await con.OpenAsync(cancellationToken).ConfigureAwait(false);
 
-            if (ArithAbort.HasValue)
-                using (var cmd = new SqlCommand("set ARITHABORT " + (ArithAbort.Value ? "ON" : "OFF"), con))
-                    await cmd.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false);
+            if (m_ServerDefaultSettings == null)
+            {
+                var temp = new SqlServerEffectiveSettings();
+                await temp.ReloadAsync(con, null);
+                Thread.MemoryBarrier();
+                m_ServerDefaultSettings = temp;
+            }
 
-            if (XactAbort.HasValue)
-                using (var cmd = new SqlCommand("set XACT_ABORT  " + (XactAbort.Value ? "ON" : "OFF"), con))
-                    await cmd.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false);
+            var sql = BuildConnectionSettingsOverride();
+
+            if (sql.Length > 0)
+                using (var cmd = new SqlCommand(sql.ToString(), con))
+                    await cmd.ExecuteNonQueryAsync();
 
             return con;
         }
+
+        /// <summary>
+        /// Gets the options set by the client. If an option is null, the server-defined defaults will be in effect.
+        /// </summary>
+        /// <value>The options.</value>
+        public SqlServerSettings Settings { get; } = new SqlServerSettings();
+
+        /// <summary>
+        /// Gets the options that are currently in effect. This takes into account server-defined defaults.
+        /// </summary>
+        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
+        public SqlServerEffectiveSettings GetEffectiveSettings()
+        {
+            var result = new SqlServerEffectiveSettings();
+            using (var con = CreateSqlConnection())
+                result.Reload(con, null);
+            return result;
+        }
+
+        /// <summary>
+        /// Gets the options that are currently in effect. This takes into account server-defined defaults.
+        /// </summary>
+        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
+        public async Task<SqlServerEffectiveSettings> GetEffectiveSettingsAsync()
+        {
+            var result = new SqlServerEffectiveSettings();
+            using (var con = await CreateSqlConnectionAsync())
+                await result.ReloadAsync(con, null);
+            return result;
+        }
+
     }
+
+
 }

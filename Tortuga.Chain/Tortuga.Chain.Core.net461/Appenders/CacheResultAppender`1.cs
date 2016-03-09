@@ -2,8 +2,8 @@
 using System.Runtime.Caching;
 using System.Threading;
 using System.Threading.Tasks;
+using Tortuga.Chain.Core;
 using Tortuga.Chain.DataSources;
-
 namespace Tortuga.Chain.Appenders
 {
 
@@ -69,16 +69,6 @@ namespace Tortuga.Chain.Appenders
             DataSource.WriteToCache(new CacheItem(m_CacheKey ?? m_CacheKeyFunction(result), result, m_RegionName ?? m_RegionNameFunction(result)), m_Policy);
 
             return result;
-        }
-
-        /// <summary>
-        /// Execute the operation asynchronously.
-        /// </summary>
-        /// <param name="state">User defined state, usually used for logging.</param>
-        /// <returns></returns>
-        public override Task<TResultType> ExecuteAsync(object state = null)
-        {
-            return ExecuteAsync(CancellationToken.None, state);
         }
 
         /// <summary>

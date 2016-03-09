@@ -1,6 +1,6 @@
 using System;
 using System.Runtime.Caching;
-
+using Tortuga.Chain.Core;
 namespace Tortuga.Chain.DataSources
 {
     /// <summary>

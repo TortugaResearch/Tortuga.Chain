@@ -2,7 +2,7 @@
 using System.Data;
 using System.Data.SQLite;
 using Tortuga.Chain.DataSources;
-
+using Tortuga.Chain.Core;
 namespace Tortuga.Chain.SQLite
 {
     /// <summary>

@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Tortuga.Chain.Core;
 using Tortuga.Chain.DataSources;
 
 namespace Tortuga.Chain.Appenders
@@ -22,6 +23,7 @@ namespace Tortuga.Chain.Appenders
                 throw new ArgumentNullException("previousLink", "previousLink is null.");
 
             m_PreviousLink = previousLink;
+            m_PreviousLink.ExecutionTokenPrepared += (s, e) => ExecutionTokenPrepared?.Invoke(this, e);
         }
 
         /// <summary>
@@ -42,6 +44,12 @@ namespace Tortuga.Chain.Appenders
         }
 
         /// <summary>
+        /// Occurs when an execution token has been prepared.
+        /// </summary>
+        /// <remarks>This is mostly used by appenders to override command behavior.</remarks>
+        public event EventHandler<ExecutionTokenPreparedEventArgs> ExecutionTokenPrepared;
+
+        /// <summary>
         /// Execute the operation synchronously.
         /// </summary>
         /// <param name="state">User defined state, usually used for logging.</param>
@@ -52,6 +60,7 @@ namespace Tortuga.Chain.Appenders
         /// <param name="state">User defined state, usually used for logging.</param>
         /// <returns></returns>
         public abstract Task ExecuteAsync(object state = null);
+
         /// <summary>
         /// Execute the operation asynchronously.
         /// </summary>
@@ -59,5 +68,6 @@ namespace Tortuga.Chain.Appenders
         /// <param name="state">User defined state, usually used for logging.</param>
         /// <returns></returns>
         public abstract Task ExecuteAsync(CancellationToken cancellationToken, object state = null);
+
     }
 }

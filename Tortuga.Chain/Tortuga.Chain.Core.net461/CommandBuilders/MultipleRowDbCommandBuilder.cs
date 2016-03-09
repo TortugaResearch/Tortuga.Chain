@@ -5,7 +5,7 @@ using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Materializers;
-
+using Tortuga.Chain.Core;
 namespace Tortuga.Chain.CommandBuilders
 {
 

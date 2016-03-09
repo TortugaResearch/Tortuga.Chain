@@ -3,17 +3,21 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Tortuga.Anchor.Metadata;
 using Tortuga.Chain.CommandBuilders;
+using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
 using Tortuga.Chain.Metadata;
-
+using Tortuga.Chain.SqlServer.Materializers;
+using Tortuga.Chain.SqlServer.Core;
 namespace Tortuga.Chain.SqlServer.CommandBuilders
 {
     /// <summary>
     /// SqlServerTableOrView supports queries against tables and views.
     /// </summary>
-    public class SqlServerTableOrView : MultipleRowDbCommandBuilder<SqlCommand, SqlParameter>
+    public class SqlServerTableOrView : MultipleRowDbCommandBuilder<SqlCommand, SqlParameter>, ISupportsChangeListener
     {
         private readonly object m_FilterValue;
         private readonly TableOrViewMetadata<SqlServerObjectName, SqlDbType> m_Metadata;
@@ -57,7 +61,6 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// Prepares the command for execution by generating any necessary SQL.
         /// </summary>
         /// <param name="materializer">The materializer.</param>
-        /// <returns>ExecutionToken&lt;TCommandType&gt;.</returns>
         public override ExecutionToken<SqlCommand, SqlParameter> Prepare(Materializer<SqlCommand, SqlParameter> materializer)
         {
             var parameters = new List<SqlParameter>();
@@ -74,7 +77,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 
             var sql = $"{select} {from} {where};";
 
-            return new ExecutionToken<SqlCommand, SqlParameter>(DataSource, "Query " + m_Metadata.Name, sql, parameters);
+            return new SqlServerExecutionToken(DataSource, "Query " + m_Metadata.Name, sql, parameters);
         }
 
         private string SelectClause(Materializer<SqlCommand, SqlParameter> materializer)
@@ -161,6 +164,24 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             return "WHERE " + m_WhereClause;
         }
 
+
+
+        /// <summary>
+        /// Waits for change in the data that is returned by this operation.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <param name="state">User defined state, usually used for logging.</param>
+        /// <returns>Task that can be waited for.</returns>
+        /// <remarks>This requires the use of SQL Dependency</remarks>
+        public Task WaitForChange(CancellationToken cancellationToken, object state = null)
+        {
+            return WaitForChangeMaterializer.GenerateTask(this, cancellationToken, state);
+        }
+
+        SqlServerExecutionToken ISupportsChangeListener.Prepare(Materializer<SqlCommand, SqlParameter> materializer)
+        {
+            return (SqlServerExecutionToken)Prepare(materializer);
+        }
     }
 }
 

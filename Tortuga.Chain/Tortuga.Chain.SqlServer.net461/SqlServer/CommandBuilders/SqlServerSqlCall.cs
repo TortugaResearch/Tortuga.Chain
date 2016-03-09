@@ -1,16 +1,21 @@
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Threading;
+using System.Threading.Tasks;
 using Tortuga.Anchor.Metadata;
 using Tortuga.Chain.CommandBuilders;
+using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
-
+using Tortuga.Chain.SqlServer.Materializers;
+using Tortuga.Chain.SqlServer.Core;
 namespace Tortuga.Chain.SqlServer.CommandBuilders
 {
+
     /// <summary>
     /// Class SqlServerSqlCall.
     /// </summary>
-    public class SqlServerSqlCall : MultipleTableDbCommandBuilder<SqlCommand, SqlParameter>
+    public class SqlServerSqlCall : MultipleTableDbCommandBuilder<SqlCommand, SqlParameter>, ISupportsChangeListener
     {
         private readonly object m_ArgumentValue;
         private readonly string m_SqlStatement;
@@ -51,7 +56,24 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
                 foreach (var property in MetadataCache.GetMetadata(m_ArgumentValue.GetType()).Properties)
                     parameters.Add(new SqlParameter("@" + property.MappedColumnName, property.InvokeGet(m_ArgumentValue) ?? DBNull.Value));
 
-            return new ExecutionToken<SqlCommand, SqlParameter>(DataSource, "Raw SQL call", m_SqlStatement, parameters);
+            return new SqlServerExecutionToken(DataSource, "Raw SQL call", m_SqlStatement, parameters);
+        }
+
+        /// <summary>
+        /// Waits for change in the data that is returned by this operation.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <param name="state">User defined state, usually used for logging.</param>
+        /// <returns>Task that can be waited for.</returns>
+        /// <remarks>This requires the use of SQL Dependency</remarks>
+        public Task WaitForChange(CancellationToken cancellationToken, object state = null)
+        {
+            return WaitForChangeMaterializer.GenerateTask(this, cancellationToken, state);
+        }
+
+        SqlServerExecutionToken ISupportsChangeListener.Prepare(Materializer<SqlCommand, SqlParameter> materializer)
+        {
+            return (SqlServerExecutionToken)Prepare(materializer);
         }
     }
 }

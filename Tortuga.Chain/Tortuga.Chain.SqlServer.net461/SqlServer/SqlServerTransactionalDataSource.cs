@@ -4,7 +4,7 @@ using System.Data.SqlClient;
 using System.Data.SqlTypes;
 using System.Threading;
 using System.Threading.Tasks;
-
+using Tortuga.Chain.Core;
 namespace Tortuga.Chain.SqlServer
 {
     /// <summary>

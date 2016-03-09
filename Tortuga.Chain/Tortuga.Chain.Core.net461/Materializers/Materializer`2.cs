@@ -5,6 +5,7 @@ using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
 using Tortuga.Chain.CommandBuilders;
+using Tortuga.Chain.Core;
 
 namespace Tortuga.Chain.Materializers
 {
@@ -60,7 +61,14 @@ namespace Tortuga.Chain.Materializers
         /// Prepares this operation for execution.
         /// </summary>
         /// <returns>ExecutionToken&lt;TCommandType, TParameterType&gt;.</returns>
-        protected ExecutionToken<TCommandType, TParameterType> Prepare() => CommandBuilder.Prepare(this);
+        protected ExecutionToken<TCommandType, TParameterType> Prepare()
+        {
+            var executionToken = CommandBuilder.Prepare(this);
+
+            ExecutionTokenPrepared?.Invoke(this, new ExecutionTokenPreparedEventArgs(executionToken));
+
+            return executionToken;
+        }
 
         /// <summary>
         /// Helper method for executing the operation.
@@ -108,6 +116,13 @@ namespace Tortuga.Chain.Materializers
                 return null;
             }, cancellationToken, state);
         }
+
+
+        /// <summary>
+        /// Occurs when an execution token has been prepared.
+        /// </summary>
+        /// <remarks>This is mostly used by appenders to override command behavior.</remarks>
+        public event EventHandler<ExecutionTokenPreparedEventArgs> ExecutionTokenPrepared;
     }
 
 }

@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
 using Tortuga.Chain.Metadata;
-
+using Tortuga.Chain.SqlServer.Core;
 namespace Tortuga.Chain.SqlServer.CommandBuilders
 {
     /// <summary>
@@ -38,7 +39,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             var output = OutputClause(materializer, false);
             var sql = $"INSERT INTO {TableName.ToQuotedString()} {columns} {output} {values}";
 
-            return new ExecutionToken<SqlCommand, SqlParameter>(DataSource, "Insert into " + TableName, sql, parameters);
+            return new SqlServerExecutionToken(DataSource, "Insert into " + TableName, sql, parameters);
         }
 
         private void ColumnsAndValuesClause(out string columns, out string values, List<SqlParameter> parameters)

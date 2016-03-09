@@ -82,7 +82,7 @@ namespace Tortuga.Chain
         /// <param name="executionToken"></param>
         /// <param name="implementation"></param>
         /// <param name="state"></param>
-        protected override void Execute(ExecutionToken<SQLiteCommand, SQLiteParameter> executionToken, Func<SQLiteCommand, int?> implementation, object state)
+        protected override void Execute(Tortuga.Chain.Core.ExecutionToken<SQLiteCommand, SQLiteParameter> executionToken, Func<SQLiteCommand, int?> implementation, object state)
         {
             if (executionToken == null)
                 throw new ArgumentNullException("executionToken", "executionToken is null.");
@@ -140,7 +140,7 @@ namespace Tortuga.Chain
         /// <param name="cancellationToken"></param>
         /// <param name="state"></param>
         /// <returns></returns>
-        protected override async Task ExecuteAsync(ExecutionToken<SQLiteCommand, SQLiteParameter> executionToken, Func<SQLiteCommand, Task<int?>> implementation, CancellationToken cancellationToken, object state)
+        protected override async Task ExecuteAsync(Tortuga.Chain.Core.ExecutionToken<SQLiteCommand, SQLiteParameter> executionToken, Func<SQLiteCommand, Task<int?>> implementation, CancellationToken cancellationToken, object state)
         {
             if (executionToken == null)
                 throw new ArgumentNullException("executionToken", "executionToken is null.");

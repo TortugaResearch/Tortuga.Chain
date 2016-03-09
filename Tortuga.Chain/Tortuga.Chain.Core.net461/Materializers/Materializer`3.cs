@@ -2,6 +2,7 @@ using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
 using Tortuga.Chain.CommandBuilders;
+using Tortuga.Chain.Core;
 using Tortuga.Chain.DataSources;
 
 namespace Tortuga.Chain.Materializers

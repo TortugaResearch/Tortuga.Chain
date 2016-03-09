@@ -1,4 +1,5 @@
 ﻿using System;
+using Tortuga.Chain.Core;
 
 namespace Tortuga.Chain
 {

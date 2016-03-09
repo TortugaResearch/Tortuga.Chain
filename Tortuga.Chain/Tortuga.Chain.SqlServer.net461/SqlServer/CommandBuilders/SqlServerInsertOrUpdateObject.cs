@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
 using Tortuga.Chain.Metadata;
-
+using Tortuga.Chain.SqlServer.Core;
 namespace Tortuga.Chain.SqlServer.CommandBuilders
 {
     /// <summary>
@@ -45,7 +46,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 
             var sql = $"MERGE INTO {TableName.ToQuotedString()} target USING {source} ON {on} WHEN MATCHED THEN UPDATE SET {set} WHEN NOT MATCHED THEN INSERT ( {insertColumns} ) VALUES ({insertValues}) ;";
 
-            return new ExecutionToken<SqlCommand, SqlParameter>(DataSource, "Insert or update " + Metadata.Name, sql, parameters);
+            return new SqlServerExecutionToken(DataSource, "Insert or update " + Metadata.Name, sql, parameters);
         }
 
 

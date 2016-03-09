@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.Caching;
 using System.Threading;
 using System.Threading.Tasks;
-
+using Tortuga.Chain.Core;
 namespace Tortuga.Chain.Appenders
 {
     /// <summary>
@@ -50,16 +50,6 @@ namespace Tortuga.Chain.Appenders
             CacheItems(result);
 
             return result;
-        }
-
-        /// <summary>
-        /// Execute the operation asynchronously.
-        /// </summary>
-        /// <param name="state">User defined state, usually used for logging.</param>
-        /// <returns></returns>
-        public override Task<TCollection> ExecuteAsync(object state = null)
-        {
-            return ExecuteAsync(CancellationToken.None, state);
         }
 
         /// <summary>

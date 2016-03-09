@@ -27,7 +27,7 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
         /// </summary>
         /// <param name="materializer">The materializer.</param>
         /// <returns>ExecutionToken&lt;SQLiteCommand, SQLiteParameter&gt;.</returns>
-        public override ExecutionToken<SQLiteCommand, SQLiteParameter> Prepare(Materializer<SQLiteCommand, SQLiteParameter> materializer)
+        public override Tortuga.Chain.Core.ExecutionToken<SQLiteCommand, SQLiteParameter> Prepare(Materializer<SQLiteCommand, SQLiteParameter> materializer)
         {
             var parameters = new List<SQLiteParameter>();
 
@@ -42,7 +42,7 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
 
         private void ColumnsAndValuesClause(out string columns, out string values, List<SQLiteParameter> parameters)
         {
-            var availableColumns = Metadata.GetPropertiesFor(ArgumentValue.GetType(), 
+            var availableColumns = Metadata.GetPropertiesFor(ArgumentValue.GetType(),
                  GetPropertiesFilter.ThrowOnNoMatch | GetPropertiesFilter.UpdatableOnly | GetPropertiesFilter.ForInsert);
 
             columns = "(" + string.Join(", ", availableColumns.Select(c => c.Column.QuotedSqlName)) + ")";

@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Tortuga.Chain.DataSources;
 
-namespace Tortuga.Chain
+namespace Tortuga.Chain.Core
 {
     /// <summary>
     /// This class represents the actual preparation and execution of a command.
@@ -19,6 +19,12 @@ namespace Tortuga.Chain
     {
         private readonly DataSource<TCommandType, TParameterType> m_DataSource;
         private readonly IReadOnlyList<TParameterType> m_Parameters;
+
+        /// <summary>
+        /// Occurs when a command has been built.
+        /// </summary>
+        /// <remarks>This is mostly used by appenders to override command behavior.</remarks>
+        public event EventHandler<CommandBuiltEventArgs> CommandBuilt;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ExecutionToken{TCommandType, TParameterType}"/> class.
@@ -68,5 +74,23 @@ namespace Tortuga.Chain
         {
             get { return m_Parameters; }
         }
+
+
+        /// <summary>
+        /// Applies the command overrides by calling OnBuildCommand, then firing the CommandBuilt event.
+        /// </summary>
+        /// <param name="command">The command.</param>
+        public virtual void ApplyCommandOverrides(TCommandType command)
+        {
+            OnBuildCommand(command);
+            CommandBuilt?.Invoke(this, new CommandBuiltEventArgs(command));
+        }
+
+        /// <summary>
+        /// Subclasses can override this method to change the command object after the command text and parameters are loaded.
+        /// </summary>
+        /// <remarks></remarks>
+        protected virtual void OnBuildCommand(TCommandType command) { }
+
     }
 }

@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-
+using Tortuga.Chain.Core;
 namespace Tortuga.Chain.Appenders
 {
     /// <summary>
@@ -39,16 +39,6 @@ namespace Tortuga.Chain.Appenders
             PreviousLink.DataSource.InvalidateCache(m_CacheKey, m_RegionName);
 
             return PreviousLink.Execute(state);
-        }
-
-        /// <summary>
-        /// Execute the operation asynchronously.
-        /// </summary>
-        /// <param name="state">User defined state, usually used for logging.</param>
-        /// <returns></returns>
-        public override Task<TResultType> ExecuteAsync(object state = null)
-        {
-            return ExecuteAsync(CancellationToken.None, state);
         }
 
         /// <summary>

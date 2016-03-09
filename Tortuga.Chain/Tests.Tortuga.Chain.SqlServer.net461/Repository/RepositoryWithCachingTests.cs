@@ -60,7 +60,7 @@ namespace Tests.Repository
         [TestMethod]
         public void InsertWithDictionary()
         {
-            var repo = new RepositoryWithCaching<Employee, int>(DataSource, "HR.Employee");
+            var repo = new RepositoryWithCaching<Employee, int>(DataSource, EmployeeTableName);
 
             var emp1 = new Dictionary<string, object>() { { "FirstName", "Tom" }, { "LastName", "Jones" }, { "Title", "President" } };
             var echo1 = repo.Insert(emp1);
@@ -77,7 +77,7 @@ namespace Tests.Repository
         [TestMethod]
         public void UpdateWithDictionary()
         {
-            var repo = new RepositoryWithCaching<Employee, int>(DataSource, "HR.Employee");
+            var repo = new RepositoryWithCaching<Employee, int>(DataSource, EmployeeTableName);
 
             var emp1 = new Dictionary<string, object>() { { "FirstName", "Tom" }, { "LastName", "Jones" }, { "Title", "President" } };
             var echo1 = repo.Insert(emp1);

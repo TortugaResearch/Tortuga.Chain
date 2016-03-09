@@ -2,7 +2,7 @@ using System.Data;
 using System.Data.Common;
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Materializers;
-
+using Tortuga.Chain.Core;
 namespace Tortuga.Chain.CommandBuilders
 {
     /// <summary>

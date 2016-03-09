@@ -6,7 +6,7 @@ using Tortuga.Chain;
 
 namespace Tests.Repository
 {
-    public class RepositoryWithCaching<TObject, TKey> where TObject : class, new()
+    public class RepositoryWithCaching<TEntity, TKey> where TEntity : class, new()
     {
 
         protected string TableName { get; private set; }
@@ -38,33 +38,33 @@ namespace Tests.Repository
             return $"{TableName} {PrimaryKey}={id}";
         }
 
-        protected string CacheKey(TObject entity)
+        protected string CacheKey(TEntity entity)
         {
             var id = (TKey)MetadataCache.GetMetadata(entity.GetType()).Properties[PrimaryKey].InvokeGet(entity);
             return CacheKey(id);
         }
 
-        public TObject Get(TKey id)
+        public TEntity Get(TKey id)
         {
-            return Source.From(TableName, GetKeyFilter(id)).AsObject<TObject>().ReadOrCache(CacheKey(id), policy: Policy).Execute();
+            return Source.From(TableName, GetKeyFilter(id)).AsObject<TEntity>().ReadOrCache(CacheKey(id), policy: Policy).Execute();
         }
 
-        public IList<TObject> GetAll()
+        public IList<TEntity> GetAll()
         {
-            return Source.From(TableName).AsCollection<TObject>().CacheAllItems((TObject x) => CacheKey(x), policy: Policy).ReadOrCache(AllCacheKey, policy: Policy).Execute();
+            return Source.From(TableName).AsCollection<TEntity>().CacheAllItems((TEntity x) => CacheKey(x), policy: Policy).ReadOrCache(AllCacheKey, policy: Policy).Execute();
         }
 
-        public TObject Insert(IReadOnlyDictionary<string, object> entity)
+        public TEntity Insert(IReadOnlyDictionary<string, object> entity)
         {
-            return Source.Insert(TableName, entity).AsObject<TObject>().InvalidateCache(AllCacheKey).Cache((TObject x) => CacheKey(x), policy: Policy).Execute();
+            return Source.Insert(TableName, entity).AsObject<TEntity>().InvalidateCache(AllCacheKey).Cache((TEntity x) => CacheKey(x), policy: Policy).Execute();
         }
 
-        public TObject Insert(TObject entity)
+        public TEntity Insert(TEntity entity)
         {
-            return Source.Insert(TableName, entity).AsObject<TObject>().InvalidateCache(AllCacheKey).Cache((TObject x) => CacheKey(x), policy: Policy).Execute();
+            return Source.Insert(TableName, entity).AsObject<TEntity>().InvalidateCache(AllCacheKey).Cache((TEntity x) => CacheKey(x), policy: Policy).Execute();
         }
 
-        public void Update(TObject entity)
+        public void Update(TEntity entity)
         {
             Source.Update(TableName, entity).InvalidateCache(AllCacheKey).Execute();
             Source.WriteToCache(new CacheItem(CacheKey(entity), entity), Policy);

@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Materializers;
+using Tortuga.Chain.Core;
 namespace Tortuga.Chain.CommandBuilders
 {
 

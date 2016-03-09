@@ -64,8 +64,12 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="CommandBuilders\UnitTest1.cs" />
     <Compile Include="Metadata\MetadataTests.cs" />
     <Compile Include="Repository\Employee.cs" />
+    <Compile Include="Repository\AsyncRepository`2.cs" />
+    <Compile Include="Repository\AsyncRepositoryTests.cs" />
+    <Compile Include="Repository\TransactionalRepositoryTests.cs" />
     <Compile Include="Repository\StrictRepositoryTests.cs" />
     <Compile Include="Repository\RepositoryWithCachingTests.cs" />
     <Compile Include="Repository\RepositoryWithCaching`2.cs" />

@@ -68,6 +68,10 @@
     <Compile Include="..\Tortuga.Chain.Core.net461\Properties\LibrarySharedAssemblyInfo.cs">
       <Link>Properties\LibrarySharedAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="SqlServer\Appenders\NotifyChangeAppender`1.cs" />
+    <Compile Include="SqlServer\Materializers\WaitForChangeMaterializer`1.cs" />
+    <Compile Include="SqlServer\Materializers\WaitForChangeMaterializer.cs" />
+    <Compile Include="SqlServer\CommandBuilders\ISupportsChangeListener.cs" />
     <Compile Include="SqlServer\CommandBuilders\SqlServerDeleteObject.cs" />
     <Compile Include="SqlServer\CommandBuilders\SqlServerInsertObject.cs" />
     <Compile Include="SqlServer\CommandBuilders\SqlServerInsertOrUpdateObject.cs" />
@@ -75,6 +79,10 @@
     <Compile Include="SqlServer\CommandBuilders\SqlServerSqlCall.cs" />
     <Compile Include="SqlServer\CommandBuilders\SqlServerTableFunction.cs" />
     <Compile Include="SqlServer\CommandBuilders\SqlServerTableOrView.cs" />
+    <Compile Include="SqlServer\SqlServerAppenders.cs" />
+    <Compile Include="SqlServer\SqlServerEffectiveSettings.cs" />
+    <Compile Include="SqlServer\Core\SqlServerExecutionToken.cs" />
+    <Compile Include="SqlServer\SqlServerSettings.cs" />
     <Compile Include="SqlServer\SqlServerTransactionalDataSource.cs" />
     <Compile Include="SqlServer\SqlServerDataSourceBase.cs" />
     <Compile Include="SqlServer\SqlServerMetadataCache.cs" />
@@ -96,6 +104,11 @@
       <Project>{2c523692-a40b-4a7e-a95a-fbe373f263f7}</Project>
       <Name>Tortuga.Chain.Core.net461</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="..\Tortuga.Chain.Core.net461\CustomDictionary.xml">
+      <Link>CustomDictionary.xml</Link>
+    </CodeAnalysisDictionary>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

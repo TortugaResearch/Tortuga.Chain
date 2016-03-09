@@ -1,8 +1,9 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Tortuga.Chain.DataSources;
 
-namespace Tortuga.Chain
+namespace Tortuga.Chain.Core
 {
     /// <summary>
     /// This is implemented by materializers and appenders that do not return a value
@@ -35,6 +36,13 @@ namespace Tortuga.Chain
         /// <param name="state">User defined state, usually used for logging.</param>
         /// <returns></returns>
         Task ExecuteAsync(CancellationToken cancellationToken, object state = null);
+
+        /// <summary>
+        /// Occurs when an execution token has been prepared.
+        /// </summary>
+        /// <remarks>This is mostly used by appenders to override command behavior.</remarks>
+        event EventHandler<ExecutionTokenPreparedEventArgs> ExecutionTokenPrepared;
+
     }
 
 }

@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
 using Tortuga.Chain.Metadata;
-
+using Tortuga.Chain.SqlServer.Core;
 namespace Tortuga.Chain.SqlServer.CommandBuilders
 {
     /// <summary>
@@ -43,7 +44,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 
             var sql = $"UPDATE {TableName.ToQuotedString()} {set} {output} WHERE {where}";
 
-            return new ExecutionToken<SqlCommand, SqlParameter>(DataSource, "Update " + TableName, sql, parameters);
+            return new SqlServerExecutionToken(DataSource, "Update " + TableName, sql, parameters);
         }
 
         private string SetClause(List<SqlParameter> parameters)

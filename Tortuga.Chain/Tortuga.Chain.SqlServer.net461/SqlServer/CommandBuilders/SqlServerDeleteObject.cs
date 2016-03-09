@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Data.SqlClient;
+using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
-
+using Tortuga.Chain.SqlServer.Core;
 namespace Tortuga.Chain.SqlServer.CommandBuilders
 {
     /// <summary>
@@ -37,7 +38,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             var output = OutputClause(materializer, true);
             var sql = $"DELETE FROM {TableName.ToQuotedString()} {output} WHERE {where}";
 
-            return new ExecutionToken<SqlCommand, SqlParameter>(DataSource, "Delete from " + TableName, sql, parameters);
+            return new SqlServerExecutionToken(DataSource, "Delete from " + TableName, sql, parameters);
         }
 
 

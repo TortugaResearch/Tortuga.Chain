@@ -5,7 +5,7 @@ using Tortuga.Chain;
 namespace Tests.Repository
 {
 
-    public class Repository<TObject, TKey> where TObject : class, new()
+    public class Repository<TEntity, TKey> where TEntity : class, new()
     {
 
         protected string TableName { get; private set; }
@@ -25,27 +25,27 @@ namespace Tests.Repository
             PrimaryKey = Source.DatabaseMetadata.GetTableOrView(tableName).Columns.Single(c => c.IsPrimaryKey).ClrName;
         }
 
-        public TObject Get(TKey id)
+        public TEntity Get(TKey id)
         {
-            return Source.From(TableName, GetKeyFilter(id)).AsObject<TObject>().Execute();
+            return Source.From(TableName, GetKeyFilter(id)).AsObject<TEntity>().Execute();
         }
 
-        public IList<TObject> GetAll()
+        public IList<TEntity> GetAll()
         {
-            return Source.From(TableName).AsCollection<TObject>().Execute();
+            return Source.From(TableName).AsCollection<TEntity>().Execute();
         }
 
-        public TObject Insert(IReadOnlyDictionary<string, object> entity)
+        public TEntity Insert(IReadOnlyDictionary<string, object> entity)
         {
-            return Source.Insert(TableName, entity).AsObject<TObject>().Execute();
+            return Source.Insert(TableName, entity).AsObject<TEntity>().Execute();
         }
 
-        public TObject Insert(TObject entity)
+        public TEntity Insert(TEntity entity)
         {
-            return Source.Insert(TableName, entity).AsObject<TObject>().Execute();
+            return Source.Insert(TableName, entity).AsObject<TEntity>().Execute();
         }
 
-        public void Update(TObject entity)
+        public void Update(TEntity entity)
         {
             Source.Update(TableName, entity).Execute();
         }

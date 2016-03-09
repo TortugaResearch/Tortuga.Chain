@@ -1,7 +1,7 @@
 using System.Data;
 using Tortuga.Chain.DataSources;
 
-namespace Tortuga.Chain
+namespace Tortuga.Chain.Core
 {
     /// <summary>
     /// This class represents the actual preparation and execution of a command.

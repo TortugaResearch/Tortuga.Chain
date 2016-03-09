@@ -4,7 +4,6 @@ using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Metadata;
 using Tortuga.Chain.SqlServer.CommandBuilders;
-
 namespace Tortuga.Chain.SqlServer
 {
     /// <summary>
@@ -227,5 +226,8 @@ namespace Tortuga.Chain.SqlServer
         }
 
 
+
+
     }
 }
+
