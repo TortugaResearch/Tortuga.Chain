@@ -215,3 +215,5 @@ ModelManifest.xml
 /Tortuga.Chain/Build-SqlServer
 /Tortuga.Chain/Index.dat
 /Tortuga.Chain/Storage.dat
+
+!SqlServerTestDatabase.publish.xml
