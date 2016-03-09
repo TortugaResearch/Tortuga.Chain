@@ -36,5 +36,11 @@ namespace Tortuga.Chain
         /// <param name="state">User defined state, usually used for logging.</param>
         /// <returns></returns>
         Task<TResult> ExecuteAsync(CancellationToken cancellationToken, object state = null);
+
+        /// <summary>
+        /// Returns generated SQL without executing it.
+        /// </summary>
+        /// <returns></returns>
+        string Sql();
     }
 }

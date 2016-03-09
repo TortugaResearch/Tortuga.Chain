@@ -61,5 +61,14 @@ namespace Tortuga.Chain.Appenders
         /// <param name="state">User defined state, usually used for logging.</param>
         /// <returns></returns>
         public abstract Task<TResultType> ExecuteAsync(CancellationToken cancellationToken, object state = null);
+
+        /// <summary>
+        /// Returns the generated SQL statement of the previous link.
+        /// </summary>
+        /// <returns></returns>
+        public string Sql()
+        {
+            return m_PreviousLink.Sql();
+        }
     }
 }
