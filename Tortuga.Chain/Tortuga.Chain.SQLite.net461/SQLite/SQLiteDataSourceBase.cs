@@ -4,6 +4,7 @@ using System.Threading;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Metadata;
+using Tortuga.Chain.SQLite.CommandBuilders;
 using Tortuga.Chain.SQLite.SQLite.CommandBuilders;
 
 namespace Tortuga.Chain.SQLite
@@ -101,6 +102,18 @@ namespace Tortuga.Chain.SQLite
         }
 
         /// <summary>
+        /// Creates a <see cref="SQLiteInsertOrUpdateObject"/> used to perform an "upsert" operation.
+        /// </summary>
+        /// <param name="tableName"></param>
+        /// <param name="argumentValue"></param>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        public SQLiteInsertOrUpdateObject InsertOrUpdate(string tableName, object argumentValue, InsertOrUpdateOptions options = InsertOrUpdateOptions.None)
+        {
+            return new SQLiteInsertOrUpdateObject(this, tableName, argumentValue, options);
+        }
+
+        /// <summary>
         /// Creates a <see cref="SQLiteUpdateObject" /> used to perform an update operation.
         /// </summary>
         /// <param name="tableName"></param>
@@ -161,7 +174,7 @@ namespace Tortuga.Chain.SQLite
 
         ISingleRowDbCommandBuilder IClass1DataSource.InsertOrUpdate(string tableName, object argumentValue, InsertOrUpdateOptions options)
         {
-            throw new NotImplementedException();
+            return InsertOrUpdate(tableName, argumentValue, options);
         }
 
         IDatabaseMetadataCache IClass1DataSource.DatabaseMetadata

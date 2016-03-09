@@ -35,7 +35,7 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
             string columns;
             string values;
             ColumnsAndValuesClause(out columns, out values, parameters);
-            var output = OutputClause(materializer, "WHERE ROWID=last_insert_rowid();");
+            var output = OutputClause(materializer, "ROWID=last_insert_rowid()");
             var sql = $"INSERT INTO {TableName} {columns} {values}; {output};";
 
             return new SQLiteExecutionToken(DataSource, "Insert into " + TableName, sql, parameters, lockType: LockType.Write);
@@ -59,8 +59,7 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
             columns = "(" + string.Join(", ", availableColumns.Select(c => c.Column.QuotedSqlName)) + ")";
             values = "VALUES (" + string.Join(", ", availableColumns.Select(c => c.Column.SqlVariableName)) + ")";
             LoadParameters(availableColumns, parameters);
-        }
-
+            }
         }
     }
 }

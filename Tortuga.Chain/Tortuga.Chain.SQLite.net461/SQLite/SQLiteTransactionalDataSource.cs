@@ -24,10 +24,9 @@ namespace Tortuga.Chain.SQLite
         /// Initializes a new instance of the <see cref="SQLiteTransactionalDataSource"/> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
-        /// <param name="transactionName">Name of the transaction.</param>
         /// <param name="isolationLevel">The isolation level.</param>
         /// <param name="forwardEvents">if set to <c>true</c> [forward events].</param>
-        protected internal SQLiteTransactionalDataSource(SQLiteDataSource dataSource, string transactionName, IsolationLevel? isolationLevel, bool forwardEvents)
+        protected internal SQLiteTransactionalDataSource(SQLiteDataSource dataSource, IsolationLevel? isolationLevel, bool forwardEvents)
         {
             Name = dataSource.Name;
 

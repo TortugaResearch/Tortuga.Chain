@@ -16,40 +16,12 @@ namespace ConsoleApplication1
         private static void SQLiteTest()
         {
             var connectionString = "Data Source=C:\\Users\\DocEvaad\\Desktop\\SQLiteStudio\\TortugaChainTestDb.sqlite3; Version=3;";
-            /*
-            using (var con = new SQLiteConnection(connectionString))
-            {
-                con.Open();
-
-                using (var cmd = new SQLiteCommand(string.Format("PRAGMA table_info({0});", con)))
-                {
-                    //cmd.Parameters.Add(new SQLiteParameter("@TableName", "Currency"));
-
-                    using (var reader = cmd.ExecuteReader())
-                    {
-                        Console.WriteLine(reader.ToString());
-
-                        while (reader.Read())
-                        {
-                            var name = reader.GetString(reader.GetOrdinal("name"));
-                            var typeName = reader.GetString(reader.GetOrdinal("type"));
-
-                            Console.WriteLine($"Table: {name}, Type: {typeName}");
-                        }
-                    }
-                } 
-            }
-            */
             var dataSource = new Tortuga.Chain.SQLiteDataSource(connectionString);
 
             dataSource.DatabaseMetadata.PreloadTables();
             dataSource.DatabaseMetadata.PreloadViews();
 
             var currencyList = dataSource.From("Currency").AsCollection<Currency>().Execute();
-
-
-            var test = dataSource.From("test");
-
             foreach (var item in currencyList)
                 Console.WriteLine(item.CurrencyCode + " " + item.CurrencyName);
 
@@ -65,10 +37,13 @@ namespace ConsoleApplication1
                 dataSource.StrictMode = true;
 
                 var insertedCode = dataSource.Insert("Currency", newCurrency).AsObject<Currency>().Execute();
+                Console.WriteLine($"Inserted new code: {insertedCode.CurrencyName} - {newCurrency.CurrencyName}");
 
-                Console.WriteLine($"Inserted new code: {insertedCode.CurrencyCode} - {newCurrency.CurrencyName}");
+                newCurrency.CurrencyName = "Modified Currency";
+                var updateCode = dataSource.InsertOrUpdate("Currency", newCurrency).AsObject<Currency>().Execute();
+                Console.WriteLine($"Upserted code: {updateCode.CurrencyName} - {insertedCode.CurrencyName}");
 
-                dataSource.Delete("Currency", insertedCode).Execute();
+                //dataSource.Delete("Currency", insertedCode).Execute();
 
                 Console.WriteLine("Finised deleting object.");
             }

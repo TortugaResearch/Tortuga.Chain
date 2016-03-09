@@ -65,22 +65,22 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
             }
             else
             {
-            var filter = GetPropertiesFilter.ThrowOnNoMatch | GetPropertiesFilter.UpdatableOnly;
+                var filter = GetPropertiesFilter.ThrowOnNoMatch | GetPropertiesFilter.UpdatableOnly;
 
-            if (m_Options.HasFlag(UpdateOptions.UseKeyAttribute))
-                filter |= GetPropertiesFilter.ObjectDefinedNonKey;
-            else
-                filter |= GetPropertiesFilter.NonPrimaryKey;
+                if (m_Options.HasFlag(UpdateOptions.UseKeyAttribute))
+                    filter |= GetPropertiesFilter.ObjectDefinedNonKey;
+                else
+                    filter |= GetPropertiesFilter.NonPrimaryKey;
 
-            if (DataSource.StrictMode)
-                filter |= GetPropertiesFilter.ThrowOnMissingColumns;
+                if (DataSource.StrictMode)
+                    filter |= GetPropertiesFilter.ThrowOnMissingColumns;
 
-            var availableColumns = Metadata.GetPropertiesFor(ArgumentValue.GetType(), filter);
+                var availableColumns = Metadata.GetPropertiesFor(ArgumentValue.GetType(), filter);
 
-            var set = "SET " + string.Join(", ", availableColumns.Select(c => $"{c.Column.QuotedSqlName} = {c.Column.SqlVariableName}"));
-            LoadParameters(availableColumns, parameters);
-            return set;
-        }
+                var set = "SET " + string.Join(", ", availableColumns.Select(c => $"{c.Column.QuotedSqlName} = {c.Column.SqlVariableName}"));
+                LoadParameters(availableColumns, parameters);
+                return set;
+            }
         }
     }
 }

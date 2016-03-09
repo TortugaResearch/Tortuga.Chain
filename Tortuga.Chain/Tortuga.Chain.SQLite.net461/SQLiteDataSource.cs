@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Configuration;
+using System.Data;
 using System.Data.SQLite;
 using System.Threading;
 using System.Threading.Tasks;
@@ -116,6 +117,18 @@ namespace Tortuga.Chain
             //TODO: Research any potential PRAGMA/Rollback options
 
             return con;
+        }
+
+        /// <summary>
+        /// Creates a new transaction.
+        /// </summary>
+        /// <param name="isolationLevel"></param>
+        /// <param name="forwardEvents"></param>
+        /// <returns></returns>
+        /// <remarks>The caller of this method is responsible for closing the connection.</remarks>
+        public virtual SQLiteTransactionalDataSource BeginTransaction(IsolationLevel? isolationLevel = null, bool forwardEvents = true)
+        {
+            return new SQLiteTransactionalDataSource(this, isolationLevel, forwardEvents);
         }
 
         /// <summary>
@@ -263,10 +276,5 @@ namespace Tortuga.Chain
 
             return con;
         }
-
-
-
-
-
     }
 }

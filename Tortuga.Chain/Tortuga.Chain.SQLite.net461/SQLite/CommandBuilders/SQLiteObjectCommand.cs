@@ -155,16 +155,16 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
                 var availableColumns = Metadata.Columns.Where(c => desiredColumns.Contains(c.ClrName)).ToList();
                 if (availableColumns.Count == 0)
                     throw new MappingException($"None of the requested columns [{string.Join(", ", desiredColumns)}] were found on table {TableName}.");
-                return $"SELECT {string.Join(", ", availableColumns.Select(c => c.QuotedSqlName))} FROM {TableName} {whereClause}";
+                return $"SELECT {string.Join(", ", availableColumns.Select(c => c.QuotedSqlName))} FROM {TableName} WHERE {whereClause}";
             }
             else if (Metadata.Columns.Any(c => c.IsPrimaryKey))
             {
                 var availableColumns = Metadata.Columns.Where(c => c.IsPrimaryKey).Select(c => c.QuotedSqlName).ToList();
-                return $"SELECT {string.Join(", ", availableColumns)} FROM {TableName} {whereClause}";
+                return $"SELECT {string.Join(", ", availableColumns)} FROM {TableName} WHERE {whereClause}";
             }
             else
             {
-                return $"SELECT ROWID FROM {TableName} {whereClause}";
+                return $"SELECT ROWID FROM {TableName} WHERE {whereClause}";
             }
         }
     }
