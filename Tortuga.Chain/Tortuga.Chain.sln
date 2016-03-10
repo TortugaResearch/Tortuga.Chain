@@ -14,10 +14,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\.gitignore = ..\.gitignore
 		Package.msbuild = Package.msbuild
 		..\README.md = ..\README.md
-		Tortuga.Chain.Core.nuspec = Tortuga.Chain.Core.nuspec
 		Tortuga.Chain.ruleset = Tortuga.Chain.ruleset
-		Tortuga.Chain.SQLite.nuspec = Tortuga.Chain.SQLite.nuspec
-		Tortuga.Chain.SqlServer.nuspec = Tortuga.Chain.SqlServer.nuspec
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApplication1", "ConsoleApplication1\ConsoleApplication1.csproj", "{7698A185-9FAF-4681-B781-4425869A85AB}"
@@ -33,30 +30,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.Tortuga.Chain.SQLite.net461", "Tests.Tortuga.Chain.SQLite.net461\Tests.Tortuga.Chain.SQLite.net461.csproj", "{60649569-197C-4E0F-95F4-F87CFF73A610}"
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "SqlServerTestDatabase", "SqlServerTestDatabase\SqlServerTestDatabase.sqlproj", "{4AFDE645-5868-4C91-BCE3-D09F69958AE8}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{8DF42353-FD28-4FDA-B2C2-FEF1A4BC684A}"
-	ProjectSection(SolutionItems) = preProject
-		Tortuga.Chain.Core.nuspec = Tortuga.Chain.Core.nuspec
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MySql", "MySql", "{DDA47DFA-A8C9-45B7-9915-8A6344F36EFA}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PostgreSql", "PostgreSql", "{A0972CFD-833B-4745-BAB3-6EEAD7B95AB4}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQLite", "SQLite", "{3272741F-4EDF-455A-8265-E245996FACFB}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQL Server", "SQL Server", "{0BCBC8FA-1D17-4385-BCC5-4B97241071FB}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DB2", "DB2", "{287AB5E9-53DA-4E2E-A04E-299D3A63B800}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Oracle", "Oracle", "{8A014379-09E3-4956-A488-76E24FBDE6AF}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{2D78D32E-AA91-4C9A-BEE3-3ACD9C25B3A0}"
-	ProjectSection(SolutionItems) = preProject
-		Build.proj = Build.proj
-		.build\MSBuild.Community.Tasks.dll = .build\MSBuild.Community.Tasks.dll
-		.build\MSBuild.Community.Tasks.targets = .build\MSBuild.Community.Tasks.targets
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -109,16 +82,5 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{5D3159AD-141C-4853-9ECC-A1FD603BD8C4} = {0BCBC8FA-1D17-4385-BCC5-4B97241071FB}
-		{98F3B971-7741-43F0-9BE8-2A53F2A4F611} = {A0972CFD-833B-4745-BAB3-6EEAD7B95AB4}
-		{E92091C6-46F6-423E-B5CE-7DDCD2840CCE} = {3272741F-4EDF-455A-8265-E245996FACFB}
-		{2C523692-A40B-4A7E-A95A-FBE373F263F7} = {8DF42353-FD28-4FDA-B2C2-FEF1A4BC684A}
-		{62634749-A18D-4882-917E-FB6E8B6EE3D1} = {8DF42353-FD28-4FDA-B2C2-FEF1A4BC684A}
-		{A0504A3A-92DB-4EE2-8738-4ED2E3D94BE7} = {0BCBC8FA-1D17-4385-BCC5-4B97241071FB}
-		{FD09730B-90E3-491B-AFA8-0D17AE6C841D} = {A0972CFD-833B-4745-BAB3-6EEAD7B95AB4}
-		{60649569-197C-4E0F-95F4-F87CFF73A610} = {3272741F-4EDF-455A-8265-E245996FACFB}
-		{4AFDE645-5868-4C91-BCE3-D09F69958AE8} = {0BCBC8FA-1D17-4385-BCC5-4B97241071FB}
 	EndGlobalSection
 EndGlobal

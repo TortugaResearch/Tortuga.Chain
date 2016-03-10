@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Data.SQLite;
+using System.Linq;
+using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
 
 namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
 {
     /// <summary>
-    /// Class SQLiteDeleteObject.
+    /// Command object that represents a delete operation.
     /// </summary>
     public class SQLiteDeleteObject : SQLiteObjectCommand
     {
@@ -25,16 +27,17 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
         }
 
         /// <summary>
-        /// Prepares the specified materializer.
+        /// Prepares the command for execution by generating any necessary SQL.
         /// </summary>
-        /// <param name="materializer">The materializer.</param>
-        /// <returns>ExecutionToken&lt;SQLiteCommand, SQLiteParameter&gt;.</returns>
-        public override Tortuga.Chain.Core.ExecutionToken<SQLiteCommand, SQLiteParameter> Prepare(Materializer<SQLiteCommand, SQLiteParameter> materializer)
+        /// <param name="materializer"></param>
+        /// <returns><see cref="SQLiteExecutionToken" /></returns>
+        public override ExecutionToken<SQLiteCommand, SQLiteParameter> Prepare(Materializer<SQLiteCommand, SQLiteParameter> materializer)
         {
             var parameters = new List<SQLiteParameter>();
 
             var where = WhereClause(parameters, m_Options.HasFlag(DeleteOptions.UseKeyAttribute));
-            var sql = $"DELETE FROM {TableName} WHERE {where};";
+            var output = OutputClause(materializer, where);
+            var sql = $"{output}; DELETE FROM {TableName} WHERE {where};";
 
             return new SQLiteExecutionToken(DataSource, "Delete from " + TableName, sql, parameters, lockType: LockType.Write);
         }

@@ -7,9 +7,8 @@ using Tortuga.Chain.Metadata;
 namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
 {
     /// <summary>
-    /// Class SQLiteUpdateObject.
+    /// Command object that represents an update operation.
     /// </summary>
-    /// <seealso cref="Tortuga.Chain.SQLite.SQLite.CommandBuilders.SQLiteObjectCommand" />
     public class SQLiteUpdateObject : SQLiteObjectCommand
     {
         private readonly UpdateOptions m_Options;
@@ -28,11 +27,11 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
         }
 
         /// <summary>
-        /// Prepares the specified materializer.
+        /// Prepares the command for execution by generating any necessary SQL.
         /// </summary>
-        /// <param name="materializer">The materializer.</param>
-        /// <returns>ExecutionToken&lt;SQLiteCommand, SQLiteParameter&gt;.</returns>
-        public override Tortuga.Chain.Core.ExecutionToken<SQLiteCommand, SQLiteParameter> Prepare(Materializer<SQLiteCommand, SQLiteParameter> materializer)
+        /// <param name="materializer"></param>
+        /// <returns><see cref="SQLiteExecutionToken" /></returns>
+        public override ExecutionToken<SQLiteCommand, SQLiteParameter> Prepare(Materializer<SQLiteCommand, SQLiteParameter> materializer)
         {
             var parameters = new List<SQLiteParameter>();
 
@@ -51,6 +50,21 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
 
         private string SetClause(List<SQLiteParameter> parameters)
         {
+            if (ArgumentDictionary != null)
+            {
+                var filter = GetKeysFilter.ThrowOnNoMatch | GetKeysFilter.UpdatableOnly | GetKeysFilter.NonPrimaryKey;
+
+                if (DataSource.StrictMode)
+                    filter |= GetKeysFilter.ThrowOnMissingColumns;
+
+                var availableColumns = Metadata.GetKeysFor(ArgumentDictionary, filter);
+
+                var set = "SET " + string.Join(", ", availableColumns.Select(c => $"{c.QuotedSqlName} = {c.SqlVariableName}"));
+                LoadDictionaryParameters(availableColumns, parameters);
+                return set;
+            }
+            else
+            {
             var filter = GetPropertiesFilter.ThrowOnNoMatch | GetPropertiesFilter.UpdatableOnly;
 
             if (m_Options.HasFlag(UpdateOptions.UseKeyAttribute))
@@ -67,29 +81,6 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
             LoadParameters(availableColumns, parameters);
             return set;
         }
-
-        private string OutputClause(Materializer<SQLiteCommand, SQLiteParameter> materializer, string whereClause)
-        {
-            if (materializer is NonQueryMaterializer<SQLiteCommand, SQLiteParameter>)
-                return null;
-
-            var desiredColumns = materializer.DesiredColumns().ToLookup(c => c);
-            if (desiredColumns.Count > 0)
-            {
-                var availableColumns = Metadata.Columns.Where(c => desiredColumns.Contains(c.ClrName)).ToList();
-                if (availableColumns.Count == 0)
-                    throw new MappingException($"None of the requested columns [{string.Join(", ", desiredColumns)}] were found on table {TableName}.");
-                return $"SELECT {string.Join(", ", availableColumns.Select(c => c.QuotedSqlName))} FROM {TableName} {whereClause}";
-            }
-            else if (Metadata.Columns.Any(c => c.IsPrimaryKey))
-            {
-                var availableColumns = Metadata.Columns.Where(c => c.IsPrimaryKey).Select(c => c.QuotedSqlName).ToList();
-                return $"SELECT {string.Join(", ", availableColumns)} FROM {TableName} {whereClause}";
-            }
-            else
-            {
-                return "SELECT ROWID FROM {TableName} {whereClause}";
-            }
         }
     }
 }

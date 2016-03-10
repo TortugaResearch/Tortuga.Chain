@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Configuration;
+using System.Data;
 using System.Data.SQLite;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,11 +13,10 @@ namespace Tortuga.Chain
     /// <summary>
     /// Class that represets a SQLite Datasource.
     /// </summary>
-    public class SQLiteDataSource : SQLiteDataSourceBase, IClass1DataSource
+    public class SQLiteDataSource : SQLiteDataSourceBase
     {
         private readonly SQLiteConnectionStringBuilder m_ConnectionBuilder;
         private readonly SQLiteMetadataCache m_DatabaseMetadata;
-        private readonly ReaderWriterLockSlim m_SyncLock = new ReaderWriterLockSlim(); //Sqlite is single-threaded for writes. It says otherwise, but it spams the trace window with excpetions.
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SQLiteDataSource" /> class.
@@ -46,6 +47,34 @@ namespace Tortuga.Chain
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="SQLiteDataSource" /> class. 
+        /// </summary>
+        /// <param name="connectionName"></param>
+        /// <param name="connectionStringBuilder"></param>
+        public SQLiteDataSource(string connectionName, SQLiteConnectionStringBuilder connectionStringBuilder)
+        {
+            if(connectionStringBuilder == null)
+                throw new ArgumentNullException("connectionStringBuilder", "connectionStringBuilder is null.");
+
+            m_ConnectionBuilder = connectionStringBuilder;
+            if (string.IsNullOrEmpty(connectionName))
+                Name = m_ConnectionBuilder.DataSource;
+            else
+                Name = connectionName;
+
+            m_DatabaseMetadata = new SQLiteMetadataCache(m_ConnectionBuilder);
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SQLiteDataSource" /> class.
+        /// </summary>
+        /// <param name="connectionStringBuilder"></param>
+        public SQLiteDataSource(SQLiteConnectionStringBuilder connectionStringBuilder)
+         : this(null, connectionStringBuilder)
+        {
+        }
+
+        /// <summary>
         /// This object can be used to lookup database information.
         /// </summary>
         public override SQLiteMetadataCache DatabaseMetadata
@@ -59,6 +88,20 @@ namespace Tortuga.Chain
         internal string ConnectionString
         {
             get { return m_ConnectionBuilder.ConnectionString; }
+        }
+
+        /// <summary>
+        /// Creates a new connection using the connection string in the app.config file.
+        /// </summary>
+        /// <param name="connectionName"></param>
+        /// <returns></returns>
+        public static SQLiteDataSource CreateFromConfig(string connectionName)
+        {
+            var settings = ConfigurationManager.ConnectionStrings[connectionName];
+            if (settings == null)
+                throw new InvalidOperationException("The configuration file does not contain a connection named " + connectionName);
+
+            return new SQLiteDataSource(connectionName, settings.ConnectionString);
         }
 
         /// <summary>
@@ -77,6 +120,18 @@ namespace Tortuga.Chain
         }
 
         /// <summary>
+        /// Creates a new transaction.
+        /// </summary>
+        /// <param name="isolationLevel"></param>
+        /// <param name="forwardEvents"></param>
+        /// <returns></returns>
+        /// <remarks>The caller of this method is responsible for closing the connection.</remarks>
+        public virtual SQLiteTransactionalDataSource BeginTransaction(IsolationLevel? isolationLevel = null, bool forwardEvents = true)
+        {
+            return new SQLiteTransactionalDataSource(this, isolationLevel, forwardEvents);
+        }
+
+        /// <summary>
         /// Executes the specified operation.
         /// </summary>
         /// <param name="executionToken"></param>
@@ -91,12 +146,15 @@ namespace Tortuga.Chain
 
             var mode = DisableLocks ? LockType.None : (executionToken as SQLiteExecutionToken)?.LockType ?? LockType.Write;
 
+            var startTime = DateTimeOffset.Now;
+            OnExecutionStarted(executionToken, startTime, state);
+
             try
             {
                 switch (mode)
                 {
-                    case LockType.Read: m_SyncLock.EnterReadLock(); break;
-                    case LockType.Write: m_SyncLock.EnterWriteLock(); break;
+                    case LockType.Read: SyncLock.EnterReadLock(); break;
+                    case LockType.Write: SyncLock.EnterWriteLock(); break;
                 }
 
                 using (var con = CreateSQLiteConnection())
@@ -111,6 +169,7 @@ namespace Tortuga.Chain
                             cmd.Parameters.Add(param);
 
                         var rows = implementation(cmd);
+                        OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
                     }
                 }
             }
@@ -120,14 +179,15 @@ namespace Tortuga.Chain
                 ex.Data["Operation"] = executionToken.OperationName;
                 ex.Data["CommandText"] = executionToken.CommandText;
                 ex.Data["Parameters"] = executionToken.Parameters;
+                OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
                 throw;
             }
             finally
             {
                 switch (mode)
                 {
-                    case LockType.Read: m_SyncLock.ExitReadLock(); break;
-                    case LockType.Write: m_SyncLock.ExitWriteLock(); break;
+                    case LockType.Read: SyncLock.ExitReadLock(); break;
+                    case LockType.Write: SyncLock.ExitWriteLock(); break;
                 }
             }
         }
@@ -149,15 +209,18 @@ namespace Tortuga.Chain
 
             var mode = DisableLocks ? LockType.None : (executionToken as SQLiteExecutionToken)?.LockType ?? LockType.Write;
 
+            var startTime = DateTimeOffset.Now;
+            OnExecutionStarted(executionToken, startTime, state);
+
             try
             {
                 switch (mode)
                 {
-                    case LockType.Read: m_SyncLock.EnterReadLock(); break;
-                    case LockType.Write: m_SyncLock.EnterWriteLock(); break;
+                    case LockType.Read: SyncLock.EnterReadLock(); break;
+                    case LockType.Write: SyncLock.EnterWriteLock(); break;
                 }
 
-                using (var con = await CreateSqlConnectionAsync(cancellationToken).ConfigureAwait(false))
+                using (var con = await CreateSQLiteConnectionAsync(cancellationToken).ConfigureAwait(false))
                 {
                     using (var cmd = new SQLiteCommand())
                     {
@@ -168,6 +231,7 @@ namespace Tortuga.Chain
                             cmd.Parameters.Add(param);
 
                         var rows = await implementation(cmd).ConfigureAwait(false);
+                        OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
                     }
                 }
             }
@@ -180,6 +244,7 @@ namespace Tortuga.Chain
                     ex2.Data["Operation"] = executionToken.OperationName;
                     ex2.Data["CommandText"] = executionToken.CommandText;
                     ex2.Data["Parameters"] = executionToken.Parameters;
+                    OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex2, state);
                     throw ex2;
                 }
                 else
@@ -188,6 +253,7 @@ namespace Tortuga.Chain
                     ex.Data["Operation"] = executionToken.OperationName;
                     ex.Data["CommandText"] = executionToken.CommandText;
                     ex.Data["Parameters"] = executionToken.Parameters;
+                    OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
                     throw;
                 }
             }
@@ -195,13 +261,13 @@ namespace Tortuga.Chain
             {
                 switch (mode)
                 {
-                    case LockType.Read: m_SyncLock.ExitReadLock(); break;
-                    case LockType.Write: m_SyncLock.ExitWriteLock(); break;
+                    case LockType.Read: SyncLock.ExitReadLock(); break;
+                    case LockType.Write: SyncLock.ExitWriteLock(); break;
                 }
             }
         }
 
-        private async Task<SQLiteConnection> CreateSqlConnectionAsync(CancellationToken cancellationToken)
+        private async Task<SQLiteConnection> CreateSQLiteConnectionAsync(CancellationToken cancellationToken)
         {
             var con = new SQLiteConnection(ConnectionString);
             await con.OpenAsync(cancellationToken).ConfigureAwait(false);
@@ -209,56 +275,6 @@ namespace Tortuga.Chain
             //TODO: Add in needed PRAGMA statements
 
             return con;
-        }
-
-        ISingleRowDbCommandBuilder IClass1DataSource.Insert(string tableName, object argumentValue)
-        {
-            return Insert(tableName, argumentValue);
-        }
-
-        ISingleRowDbCommandBuilder IClass1DataSource.Update(string tableName, object argumentValue, UpdateOptions options)
-        {
-            throw new NotImplementedException();
-        }
-
-        IDbCommandBuilder IClass1DataSource.Delete(string tableName, object argumentValue, DeleteOptions options)
-        {
-            return Delete(tableName, argumentValue, options);
-        }
-
-        IMultipleRowDbCommandBuilder IClass1DataSource.From(string tableOrViewName)
-        {
-            return From(tableOrViewName);
-        }
-
-        IMultipleRowDbCommandBuilder IClass1DataSource.From(string tableOrViewName, string whereClause)
-        {
-            return From(tableOrViewName, whereClause);
-        }
-
-        IMultipleRowDbCommandBuilder IClass1DataSource.From(string tableOrViewName, string whereClause, object argumentValue)
-        {
-            return From(tableOrViewName, whereClause, argumentValue);
-        }
-
-        IMultipleRowDbCommandBuilder IClass1DataSource.From(string tableOrViewName, object filterValue)
-        {
-            return From(tableOrViewName, filterValue);
-        }
-
-        ISingleRowDbCommandBuilder IClass1DataSource.InsertOrUpdate(string tableName, object argumentValue, InsertOrUpdateOptions options)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Normally we use a reader/writer lock to avoid simutaneous writes to a SQlite database. If you disable this locking, you may see extra noise in your tracing output or unexcepted exceptions.
-        /// </summary>
-        public bool DisableLocks { get; set; }
-
-        IDatabaseMetadataCache IClass1DataSource.DatabaseMetadata
-        {
-            get { return m_DatabaseMetadata; }
         }
     }
 }
