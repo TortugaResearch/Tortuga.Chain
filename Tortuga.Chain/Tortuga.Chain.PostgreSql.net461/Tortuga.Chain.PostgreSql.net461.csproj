@@ -66,6 +66,7 @@
     <Compile Include="..\Tortuga.Chain.Core.net461\Properties\LibrarySharedAssemblyInfo.cs">
       <Link>Properties\LibrarySharedAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="PostgreSql\PostgreSqlMetadataCache.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
