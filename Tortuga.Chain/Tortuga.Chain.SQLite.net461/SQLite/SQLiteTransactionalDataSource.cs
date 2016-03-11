@@ -10,12 +10,12 @@ namespace Tortuga.Chain.SQLite
     /// <summary>
     /// Class SQLiteTransactionalDataSource
     /// </summary>
-    public class SQLiteTransactionalDataSource : SQLiteDataSourceBase
+    public class SQLiteTransactionalDataSource : SQLiteDataSourceBase, IDisposable
     {
         private readonly SQLiteConnection m_Connection;
         private readonly SQLiteDataSource m_Dispatcher;
         private readonly SQLiteTransaction m_Transaction;
-        
+
         private bool m_Disposed;
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace Tortuga.Chain.SQLite
         /// <exception cref="System.ObjectDisposedException">Transaction is disposed.</exception>
         public void RollBack()
         {
-            if(m_Disposed)
+            if (m_Disposed)
                 throw new ObjectDisposedException("Transaction is disposed.");
 
             m_Transaction.Rollback();
@@ -98,7 +98,7 @@ namespace Tortuga.Chain.SQLite
         /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         protected virtual void Dispose(bool disposing)
         {
-            if(disposing)
+            if (disposing)
             {
                 m_Transaction.Dispose();
                 m_Connection.Dispose();
@@ -119,7 +119,7 @@ namespace Tortuga.Chain.SQLite
         /// </exception>
         protected override void Execute(ExecutionToken<SQLiteCommand, SQLiteParameter> executionToken, Func<SQLiteCommand, int?> implementation, object state)
         {
-            if(executionToken == null)
+            if (executionToken == null)
                 throw new ArgumentNullException("executionToken", "executionToken is null.");
             if (implementation == null)
                 throw new ArgumentNullException("implementation", "implementation is null.");
@@ -131,7 +131,7 @@ namespace Tortuga.Chain.SQLite
 
             try
             {
-                switch(mode)
+                switch (mode)
                 {
                     case LockType.Read: SyncLock.EnterReadLock(); break;
                     case LockType.Write: SyncLock.EnterWriteLock(); break;
@@ -141,6 +141,8 @@ namespace Tortuga.Chain.SQLite
                 {
                     cmd.Connection = m_Connection;
                     cmd.Transaction = m_Transaction;
+                    if (DefaultCommandTimeout.HasValue)
+                        cmd.CommandTimeout = (int)DefaultCommandTimeout.Value.TotalSeconds;
                     cmd.CommandText = executionToken.CommandText;
                     cmd.CommandType = executionToken.CommandType;
                     foreach (var param in executionToken.Parameters)
@@ -150,12 +152,8 @@ namespace Tortuga.Chain.SQLite
                     OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
                 }
             }
-            catch (SQLiteException ex)
+            catch (Exception ex)
             {
-                ex.Data["DataSource"] = Name;
-                ex.Data["Operation"] = executionToken.OperationName;
-                ex.Data["CommandText"] = executionToken.CommandText;
-                ex.Data["Parameters"] = executionToken.Parameters;
                 OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
                 throw;
             }
@@ -206,6 +204,8 @@ namespace Tortuga.Chain.SQLite
                 {
                     cmd.Connection = m_Connection;
                     cmd.Transaction = m_Transaction;
+                    if (DefaultCommandTimeout.HasValue)
+                        cmd.CommandTimeout = (int)DefaultCommandTimeout.Value.TotalSeconds;
                     cmd.CommandText = executionToken.CommandText;
                     cmd.CommandType = executionToken.CommandType;
                     foreach (var param in executionToken.Parameters)
@@ -215,24 +215,16 @@ namespace Tortuga.Chain.SQLite
                     OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
                 }
             }
-            catch (SQLiteException ex)
+            catch (Exception ex)
             {
                 if (cancellationToken.IsCancellationRequested) //convert SQLiteException into a OperationCanceledException 
                 {
                     var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);
-                    ex2.Data["DataSource"] = Name;
-                    ex2.Data["Operation"] = executionToken.OperationName;
-                    ex2.Data["CommandText"] = executionToken.CommandText;
-                    ex2.Data["Parameters"] = executionToken.Parameters;
                     OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex2, state);
                     throw ex2;
                 }
                 else
                 {
-                    ex.Data["DataSource"] = Name;
-                    ex.Data["Operation"] = executionToken.OperationName;
-                    ex.Data["CommandText"] = executionToken.CommandText;
-                    ex.Data["Parameters"] = executionToken.Parameters;
                     OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
                     throw;
                 }

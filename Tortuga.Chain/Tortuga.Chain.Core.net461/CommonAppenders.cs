@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Runtime.Caching;
 using Tortuga.Chain.Appenders;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Core;
+
 namespace Tortuga.Chain
 {
     /// <summary>
@@ -18,9 +20,9 @@ namespace Tortuga.Chain
         /// <param name="cacheKey">The cache key.</param>
         /// <param name="regionName">Optional name of the cache region. WARNING: The default cache does not support region names.</param>
         /// <param name="policy">Optional cache policy.</param>
-        public static ILink<TResultType> Cache<TResultType>(this ILink<TResultType> previousLink, string cacheKey, string regionName = null, CacheItemPolicy policy = null)
+        public static ILink<TResult> Cache<TResult>(this ILink<TResult> previousLink, string cacheKey, string regionName = null, CacheItemPolicy policy = null)
         {
-            return new CacheResultAppender<TResultType>(previousLink, cacheKey, regionName, policy);
+            return new CacheResultAppender<TResult>(previousLink, cacheKey, regionName, policy);
         }
 
         /// <summary>
@@ -30,9 +32,9 @@ namespace Tortuga.Chain
         /// <param name="cacheKeyFunction">Function to generate cache keys.</param>
         /// <param name="regionNameFunction">Optional function to generate region names.</param>
         /// <param name="policy">Optional cache policy.</param>
-        public static ILink<TResultType> Cache<TResultType>(this ILink<TResultType> previousLink, Func<TResultType, string> cacheKeyFunction, Func<TResultType, string> regionNameFunction = null, CacheItemPolicy policy = null)
+        public static ILink<TResult> Cache<TResult>(this ILink<TResult> previousLink, Func<TResult, string> cacheKeyFunction, Func<TResult, string> regionNameFunction = null, CacheItemPolicy policy = null)
         {
-            return new CacheResultAppender<TResultType>(previousLink, cacheKeyFunction, regionNameFunction, policy);
+            return new CacheResultAppender<TResult>(previousLink, cacheKeyFunction, regionNameFunction, policy);
         }
 
         /// <summary>
@@ -57,9 +59,9 @@ namespace Tortuga.Chain
         /// <param name="previousLink">The previous link.</param>
         /// <param name="cacheKey">The cache key.</param>
         /// <param name="regionName">Optional name of the cache region. WARNING: The default cache does not support region names.</param>
-        public static ILink<TResultType> InvalidateCache<TResultType>(this ILink<TResultType> previousLink, string cacheKey, string regionName = null)
+        public static ILink<TResult> InvalidateCache<TResult>(this ILink<TResult> previousLink, string cacheKey, string regionName = null)
         {
-            return new InvalidateCacheAppender<TResultType>(previousLink, cacheKey, regionName);
+            return new InvalidateCacheAppender<TResult>(previousLink, cacheKey, regionName);
         }
 
         /// <summary>
@@ -94,9 +96,91 @@ namespace Tortuga.Chain
         /// <param name="cacheKey">The cache key.</param>
         /// <param name="regionName">Optional name of the cache region. WARNING: The default cache does not support region names.</param>
         /// <param name="policy">Optional cache policy.</param>
-        public static ILink<TResultType> ReadOrCache<TResultType>(this ILink<TResultType> previousLink, string cacheKey, string regionName = null, CacheItemPolicy policy = null)
+        public static ILink<TResult> ReadOrCache<TResult>(this ILink<TResult> previousLink, string cacheKey, string regionName = null, CacheItemPolicy policy = null)
         {
-            return new ReadOrCacheResultAppender<TResultType>(previousLink, cacheKey, regionName, policy);
+            return new ReadOrCacheResultAppender<TResult>(previousLink, cacheKey, regionName, policy);
+        }
+
+        /// <summary>
+        /// Adds DB Command tracing. Information is send to the Debug stream.
+        /// </summary>
+        /// <param name="previousLink">The previous link.</param>
+        public static ILink WithTracingToDebug(this ILink previousLink)
+        {
+            return new TraceAppender(previousLink);
+        }
+
+        /// <summary>
+        /// Adds DB Command tracing. Information is send to the Debug stream.
+        /// </summary>
+        /// <param name="previousLink">The previous link.</param>
+        public static ILink<TResult> WithTracingToDebug<TResult>(this ILink<TResult> previousLink)
+        {
+            return new TraceAppender<TResult>(previousLink);
+        }
+
+        /// <summary>
+        /// Adds DB Command tracing. Information is send to the Debug stream.
+        /// </summary>
+        /// <param name="previousLink">The previous link.</param>
+        public static ILink WithTracingToConsole(this ILink previousLink)
+        {
+            return new TraceAppender(previousLink, Console.Out);
+        }
+
+        /// <summary>
+        /// Adds DB Command tracing. Information is send to the Debug stream.
+        /// </summary>
+        /// <param name="previousLink">The previous link.</param>
+        public static ILink<TResult> WithTracingToConsole<TResult>(this ILink<TResult> previousLink)
+        {
+            return new TraceAppender<TResult>(previousLink, Console.Out);
+        }
+
+        /// <summary>
+        /// Adds DB Command tracing. Information is send to the Debug stream.
+        /// </summary>
+        /// <param name="previousLink">The previous link.</param>
+        /// <param name="stream">The stream.</param>
+        /// <returns>ILink.</returns>
+        public static ILink WithTracing(this ILink previousLink, TextWriter stream)
+        {
+            return new TraceAppender(previousLink, stream);
+        }
+
+
+        /// <summary>
+        /// Adds DB Command tracing. Information is send to the Debug stream.
+        /// </summary>
+        /// <param name="previousLink">The previous link.</param>
+        /// <param name="stream">The stream.</param>
+        /// <returns>ILink&lt;TResult&gt;.</returns>
+        public static ILink<TResult> WithTracing<TResult>(this ILink<TResult> previousLink, TextWriter stream)
+        {
+            return new TraceAppender<TResult>(previousLink, stream);
+        }
+
+        /// <summary>
+        /// Sets the command timeout, overriding the value set in the DataSource.
+        /// </summary>
+        /// <typeparam name="TResult">The type of the t result.</typeparam>
+        /// <param name="previousLink">The previous link.</param>
+        /// <param name="timeout">The timeout.</param>
+        /// <returns>ILink&lt;TResult&gt;.</returns>
+        public static ILink<TResult> SetTimeout<TResult>(this ILink<TResult> previousLink, TimeSpan timeout)
+        {
+            return new TimeoutAppender<TResult>(previousLink, timeout);
+        }
+
+        /// <summary>
+        /// Sets the command timeout, overriding the value set in the DataSource.
+        /// </summary>
+        /// <param name="previousLink">The previous link.</param>
+        /// <param name="timeout">The timeout.</param>
+        /// <returns>ILink.</returns>
+        public static ILink SetTimeout(this ILink previousLink, TimeSpan timeout)
+        {
+            return new TimeoutAppender(previousLink, timeout);
         }
     }
 }

@@ -12,7 +12,7 @@ namespace Tortuga.Chain.SqlServer.Materializers
             where TCommandBuilder : DbCommandBuilder<SqlCommand, SqlParameter>, ISupportsChangeListener
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="Materializer{TCommandType, TParameterType}"/> class.
+        /// Initializes a new instance of the <see cref="Materializer{TCommand, TParameter}"/> class.
         /// </summary>
         /// <param name="commandBuilder">The associated command builder.</param>
         /// <exception cref="ArgumentNullException">operation;operation is null.</exception>

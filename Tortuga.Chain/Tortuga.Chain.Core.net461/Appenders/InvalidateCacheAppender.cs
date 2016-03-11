@@ -13,7 +13,7 @@ namespace Tortuga.Chain.Appenders
         private readonly string m_RegionName;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="InvalidateCacheAppender{TResultType}"/> class.
+        /// Initializes a new instance of the <see cref="InvalidateCacheAppender{TResult}"/> class.
         /// </summary>
         /// <param name="previousLink">The previous link.</param>
         /// <param name="cacheKey">The cache key.</param>
@@ -38,16 +38,6 @@ namespace Tortuga.Chain.Appenders
             DataSource.InvalidateCache(m_CacheKey, m_RegionName);
 
             PreviousLink.Execute(state);
-        }
-
-        /// <summary>
-        /// Execute the operation asynchronously.
-        /// </summary>
-        /// <param name="state">User defined state, usually used for logging.</param>
-        /// <returns></returns>
-        public override Task ExecuteAsync(object state = null)
-        {
-            return ExecuteAsync(CancellationToken.None, state);
         }
 
         /// <summary>

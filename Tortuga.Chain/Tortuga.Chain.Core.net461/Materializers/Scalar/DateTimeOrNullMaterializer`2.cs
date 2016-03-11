@@ -9,18 +9,18 @@ namespace Tortuga.Chain.Materializers
     /// <summary>
     /// Materializes the result set as a DateTime.
     /// </summary>
-    /// <typeparam name="TCommandType">The type of the t command type.</typeparam>
-    /// <typeparam name="TParameterType">The type of the t parameter type.</typeparam>
-    public class DateTimeOrNullMaterializer<TCommandType, TParameterType> : SingleColumnMaterializer<TCommandType, TParameterType, DateTime?> where TCommandType : DbCommand
-        where TParameterType : DbParameter
+    /// <typeparam name="TCommand">The type of the t command type.</typeparam>
+    /// <typeparam name="TParameter">The type of the t parameter type.</typeparam>
+    public class DateTimeOrNullMaterializer<TCommand, TParameter> : SingleColumnMaterializer<TCommand, TParameter, DateTime?> where TCommand : DbCommand
+        where TParameter : DbParameter
 
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="DateTimeOrNullMaterializer{TCommandType, TParameterType}"/> class.
+        /// Initializes a new instance of the <see cref="DateTimeOrNullMaterializer{TCommand, TParameter}"/> class.
         /// </summary>
         /// <param name="commandBuilder">The command builder.</param>
         /// <param name="columnName">Name of the desired column.</param>
-        public DateTimeOrNullMaterializer(DbCommandBuilder<TCommandType, TParameterType> commandBuilder, string columnName = null)
+        public DateTimeOrNullMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, string columnName = null)
             : base(commandBuilder, columnName)
         { }
 

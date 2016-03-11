@@ -10,10 +10,10 @@ namespace Tortuga.Chain.Materializers
     /// <summary>
     /// Materializes the result set as a TableSet.
     /// </summary>
-    /// <typeparam name="TCommandType">The type of the t command type.</typeparam>
-    /// <typeparam name="TParameterType">The type of the t parameter type.</typeparam>
-    public class TableSetMaterializer<TCommandType, TParameterType> : Materializer<TCommandType, TParameterType, TableSet> where TCommandType : DbCommand
-        where TParameterType : DbParameter
+    /// <typeparam name="TCommand">The type of the t command type.</typeparam>
+    /// <typeparam name="TParameter">The type of the t parameter type.</typeparam>
+    public class TableSetMaterializer<TCommand, TParameter> : Materializer<TCommand, TParameter, TableSet> where TCommand : DbCommand
+        where TParameter : DbParameter
     {
         readonly string[] m_TableNames;
 
@@ -21,7 +21,7 @@ namespace Tortuga.Chain.Materializers
         /// </summary>
         /// <param name="commandBuilder">The command builder.</param>
         /// <param name="tableNames">The table names.</param>
-        public TableSetMaterializer(DbCommandBuilder<TCommandType, TParameterType> commandBuilder, string[] tableNames)
+        public TableSetMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, string[] tableNames)
             : base(commandBuilder)
         {
             m_TableNames = tableNames;
@@ -46,15 +46,7 @@ namespace Tortuga.Chain.Materializers
                         }, state);
 
             if (m_TableNames.Length > result.Count)
-            {
-                var ex = new DataException($"Expected at least {m_TableNames.Length} tables but received {result.Count} tables");
-                ex.Data["DataSource"] = CommandBuilder.DataSource.Name;
-                ex.Data["Operation"] = executionToken.OperationName;
-                ex.Data["CommandText"] = executionToken.CommandText;
-                ex.Data["Parameters"] = executionToken.Parameters;
-                ex.Data["TableCount"] = result.Count;
-                throw ex;
-            }
+                throw new DataException($"Expected at least {m_TableNames.Length} tables but received {result.Count} tables");
 
             return result;
         }
@@ -81,15 +73,7 @@ namespace Tortuga.Chain.Materializers
             }, cancellationToken, state).ConfigureAwait(false);
 
             if (m_TableNames.Length > result.Count)
-            {
-                var ex = new DataException($"Expected at least {m_TableNames.Length} tables but received {result.Count} tables");
-                ex.Data["DataSource"] = CommandBuilder.DataSource.Name;
-                ex.Data["Operation"] = executionToken.OperationName;
-                ex.Data["CommandText"] = executionToken.CommandText;
-                ex.Data["Parameters"] = executionToken.Parameters;
-                ex.Data["TableCount"] = result.Count;
-                throw ex;
-            }
+                throw new DataException($"Expected at least {m_TableNames.Length} tables but received {result.Count} tables");
 
             return result;
         }

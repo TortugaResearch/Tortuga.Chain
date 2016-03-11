@@ -9,16 +9,16 @@ namespace Tortuga.Chain.Materializers
     /// <summary>
     /// Materializes the result set as a TimeSpan.
     /// </summary>
-    /// <typeparam name="TCommandType">The type of the t command type.</typeparam>
-    /// <typeparam name="TParameterType">The type of the t parameter type.</typeparam>
-    public class TimeSpanOrNullMaterializer<TCommandType, TParameterType> : SingleColumnMaterializer<TCommandType, TParameterType, TimeSpan?> where TCommandType : DbCommand
-        where TParameterType : DbParameter
+    /// <typeparam name="TCommand">The type of the t command type.</typeparam>
+    /// <typeparam name="TParameter">The type of the t parameter type.</typeparam>
+    public class TimeSpanOrNullMaterializer<TCommand, TParameter> : SingleColumnMaterializer<TCommand, TParameter, TimeSpan?> where TCommand : DbCommand
+        where TParameter : DbParameter
     {
         /// <summary>
         /// </summary>
         /// <param name="commandBuilder">The command builder.</param>
         /// <param name="columnName">Name of the desired column.</param>
-        public TimeSpanOrNullMaterializer(DbCommandBuilder<TCommandType, TParameterType> commandBuilder, string columnName = null)
+        public TimeSpanOrNullMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, string columnName = null)
             : base(commandBuilder, columnName)
         { }
 

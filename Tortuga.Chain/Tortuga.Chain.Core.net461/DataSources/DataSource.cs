@@ -72,13 +72,6 @@ namespace Tortuga.Chain.DataSources
         public TimeSpan? DefaultCommandTimeout { get; set; }
 
         /// <summary>
-        /// Gets or sets the default connection timeout.
-        /// </summary>
-        /// <value>
-        /// The default connection timeout.
-        /// </value>
-        public TimeSpan? DefaultConnectionTimeout { get; set; }
-        /// <summary>
         /// Gets the name of the data source.
         /// </summary>
         /// <value>

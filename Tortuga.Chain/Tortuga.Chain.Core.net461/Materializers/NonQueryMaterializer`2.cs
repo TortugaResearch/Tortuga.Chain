@@ -2,21 +2,21 @@ using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
 using Tortuga.Chain.CommandBuilders;
-using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Core;
+using Tortuga.Chain.DataSources;
 namespace Tortuga.Chain.Materializers
 {
     /// <summary>
     /// This class indicates the associated operation should be executed without returning a result set.
     /// </summary>
-    public class NonQueryMaterializer<TCommandType, TParameterType> : Materializer<TCommandType, TParameterType>, ILink
-        where TCommandType : DbCommand
-        where TParameterType : DbParameter
+    public class NonQueryMaterializer<TCommand, TParameter> : Materializer<TCommand, TParameter>, ILink
+        where TCommand : DbCommand
+        where TParameter : DbParameter
     {
         /// <summary>
         /// </summary>
         /// <param name="commandBuilder">The associated command builder.</param>
-        public NonQueryMaterializer(DbCommandBuilder<TCommandType, TParameterType> commandBuilder)
+        public NonQueryMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder)
             : base(commandBuilder)
         { }
 

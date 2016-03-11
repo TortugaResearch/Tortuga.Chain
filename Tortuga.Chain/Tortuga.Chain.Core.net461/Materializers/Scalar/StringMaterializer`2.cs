@@ -9,16 +9,16 @@ namespace Tortuga.Chain.Materializers
     /// <summary>
     /// Materializes the result set as a string.
     /// </summary>
-    /// <typeparam name="TCommandType">The type of the t command type.</typeparam>
-    /// <typeparam name="TParameterType">The type of the t parameter type.</typeparam>
-    public class StringMaterializer<TCommandType, TParameterType> : SingleColumnMaterializer<TCommandType, TParameterType, string> where TCommandType : DbCommand
-        where TParameterType : DbParameter
+    /// <typeparam name="TCommand">The type of the t command type.</typeparam>
+    /// <typeparam name="TParameter">The type of the t parameter type.</typeparam>
+    public class StringMaterializer<TCommand, TParameter> : SingleColumnMaterializer<TCommand, TParameter, string> where TCommand : DbCommand
+        where TParameter : DbParameter
     {
         /// <summary>
         /// </summary>
         /// <param name="commandBuilder">The command builder.</param>
         /// <param name="columnName">Name of the desired column.</param>
-        public StringMaterializer(DbCommandBuilder<TCommandType, TParameterType> commandBuilder, string columnName = null)
+        public StringMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, string columnName = null)
             : base(commandBuilder, columnName)
         { }
 

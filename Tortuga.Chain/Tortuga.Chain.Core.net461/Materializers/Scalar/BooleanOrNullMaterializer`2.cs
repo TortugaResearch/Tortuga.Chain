@@ -9,18 +9,18 @@ namespace Tortuga.Chain.Materializers
     /// <summary>
     /// Materializes the result set as a boolean.
     /// </summary>
-    /// <typeparam name="TCommandType">The type of the t command type.</typeparam>
-    /// <typeparam name="TParameterType">The type of the t parameter type.</typeparam>
-    public class BooleanOrNullMaterializer<TCommandType, TParameterType> : SingleColumnMaterializer<TCommandType, TParameterType, bool?>
-        where TCommandType : DbCommand
-        where TParameterType : DbParameter
+    /// <typeparam name="TCommand">The type of the t command type.</typeparam>
+    /// <typeparam name="TParameter">The type of the t parameter type.</typeparam>
+    public class BooleanOrNullMaterializer<TCommand, TParameter> : SingleColumnMaterializer<TCommand, TParameter, bool?>
+        where TCommand : DbCommand
+        where TParameter : DbParameter
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="BooleanOrNullMaterializer{TCommandType, TParameterType}"/> class.
+        /// Initializes a new instance of the <see cref="BooleanOrNullMaterializer{TCommand, TParameter}"/> class.
         /// </summary>
         /// <param name="commandBuilder">The command builder.</param>
         /// <param name="columnName">Name of the desired column.</param>
-        public BooleanOrNullMaterializer(DbCommandBuilder<TCommandType, TParameterType> commandBuilder, string columnName = null)
+        public BooleanOrNullMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, string columnName = null)
             : base(commandBuilder, columnName)
         { }
 

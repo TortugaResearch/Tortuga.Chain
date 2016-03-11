@@ -3,30 +3,53 @@ using System.Threading;
 using System.Threading.Tasks;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.DataSources;
+
 namespace Tortuga.Chain.Appenders
 {
     /// <summary>
     /// An appender modifies the execution chain of an operation, usually by performing an action just before or after the database call.
     /// </summary>
-    /// <typeparam name="TResultType">The operation's result type.</typeparam>
-    public abstract class Appender<TResultType> : ILink<TResultType>
+    /// <typeparam name="TResult">The operation's result type.</typeparam>
+    public abstract class Appender<TResult> : ILink<TResult>
     {
-        private readonly ILink<TResultType> m_PreviousLink;
+        private readonly ILink<TResult> m_PreviousLink;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Appender{TResultType}"/> class.
+        /// Initializes a new instance of the <see cref="Appender{TResult}"/> class.
         /// </summary>
         /// <param name="previousLink">The previous link.</param>
-        protected Appender(ILink<TResultType> previousLink)
+        protected Appender(ILink<TResult> previousLink)
         {
             if (previousLink == null)
                 throw new ArgumentNullException("previousLink", "previousLink is null.");
 
             m_PreviousLink = previousLink;
-            m_PreviousLink.ExecutionTokenPrepared += (s, e) => ExecutionTokenPrepared?.Invoke(this, e);
+            m_PreviousLink.ExecutionTokenPrepared += (s, e) =>
+            {
+                OnExecutionTokenPrepared(e); //left first
+                ExecutionTokenPrepared?.Invoke(this, e); //then right
+                e.ExecutionToken.CommandBuilt += (s2, e2) => OnCommandBuilt(e2);
+            };
 
         }
 
+        /// <summary>
+        /// Override this if you want to examine or modify the DBCommand before it is executed. 
+        /// </summary>
+        /// <param name="e">The <see cref="CommandBuiltEventArgs"/> instance containing the event data.</param>
+        protected virtual void OnCommandBuilt(CommandBuiltEventArgs e)
+        {
+
+        }
+
+        /// <summary>
+        /// Override this if you want to examine or modify the execution token before the DBCommand object is built.
+        /// </summary>
+        /// <param name="e">The <see cref="ExecutionTokenPreparedEventArgs"/> instance containing the event data.</param>
+        protected virtual void OnExecutionTokenPrepared(ExecutionTokenPreparedEventArgs e)
+        {
+
+        }
 
 
         /// <summary>
@@ -41,7 +64,7 @@ namespace Tortuga.Chain.Appenders
         /// <summary>
         /// Gets the previous link in the operation chain.
         /// </summary>
-        public ILink<TResultType> PreviousLink
+        public ILink<TResult> PreviousLink
         {
             get { return m_PreviousLink; }
         }
@@ -50,14 +73,18 @@ namespace Tortuga.Chain.Appenders
         /// Execute the operation synchronously.
         /// </summary>
         /// <param name="state">User defined state, usually used for logging.</param>
-        public abstract TResultType Execute(object state = null);
+        /// <remarks>If you don't override this method, it will call execute on the previous link.</remarks>
+        public virtual TResult Execute(object state = null)
+        {
+            return PreviousLink.Execute(state);
+        }
 
         /// <summary>
         /// Execute the operation asynchronously.
         /// </summary>
         /// <param name="state">User defined state, usually used for logging.</param>
         /// <returns></returns>
-        public Task<TResultType> ExecuteAsync(object state = null)
+        public Task<TResult> ExecuteAsync(object state = null)
         {
             return ExecuteAsync(CancellationToken.None, state);
         }
@@ -68,7 +95,12 @@ namespace Tortuga.Chain.Appenders
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <param name="state">User defined state, usually used for logging.</param>
         /// <returns></returns>
-        public abstract Task<TResultType> ExecuteAsync(CancellationToken cancellationToken, object state = null);
+        /// <remarks>If you don't override this method, it will call execute on the previous link.</remarks>
+        public virtual Task<TResult> ExecuteAsync(CancellationToken cancellationToken, object state = null)
+        {
+            return PreviousLink.ExecuteAsync(cancellationToken, state);
+        }
+
 
         /// <summary>
         /// Occurs when an execution token has been prepared.

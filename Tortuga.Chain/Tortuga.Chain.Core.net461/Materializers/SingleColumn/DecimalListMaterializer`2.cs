@@ -10,22 +10,22 @@ namespace Tortuga.Chain.Materializers
     /// <summary>
     /// Materializes the result set as a list of numbers.
     /// </summary>
-    /// <typeparam name="TCommandType">The type of the t command type.</typeparam>
-    /// <typeparam name="TParameterType">The type of the t parameter type.</typeparam>
-    public class DecimalListMaterializer<TCommandType, TParameterType> : SingleColumnMaterializer<TCommandType, TParameterType, List<decimal>> where TCommandType : DbCommand
-        where TParameterType : DbParameter
+    /// <typeparam name="TCommand">The type of the t command type.</typeparam>
+    /// <typeparam name="TParameter">The type of the t parameter type.</typeparam>
+    public class DecimalListMaterializer<TCommand, TParameter> : SingleColumnMaterializer<TCommand, TParameter, List<decimal>> where TCommand : DbCommand
+        where TParameter : DbParameter
 
     {
 
         readonly ListOptions m_ListOptions;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DecimalListMaterializer{TCommandType, TParameterType}"/> class.
+        /// Initializes a new instance of the <see cref="DecimalListMaterializer{TCommand, TParameter}"/> class.
         /// </summary>
         /// <param name="commandBuilder">The command builder.</param>
         /// <param name="listOptions">The list options.</param>
         /// <param name="columnName">Name of the desired column.</param>
-        public DecimalListMaterializer(DbCommandBuilder<TCommandType, TParameterType> commandBuilder, ListOptions listOptions, string columnName = null)
+        public DecimalListMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, ListOptions listOptions, string columnName = null)
             : base(commandBuilder, columnName)
         {
             m_ListOptions = listOptions;

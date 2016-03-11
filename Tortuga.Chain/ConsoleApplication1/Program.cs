@@ -40,7 +40,7 @@ namespace ConsoleApplication1
                 Console.WriteLine($"Inserted new code: {insertedCode.CurrencyName} - {newCurrency.CurrencyName}");
 
                 newCurrency.CurrencyName = "Modified Currency";
-                var updateCode = dataSource.InsertOrUpdate("Currency", newCurrency).AsObject<Currency>().Execute();
+                var updateCode = dataSource.Upsert("Currency", newCurrency).AsObject<Currency>().Execute();
                 Console.WriteLine($"Upserted code: {updateCode.CurrencyName} - {insertedCode.CurrencyName}");
 
                 //dataSource.Delete("Currency", insertedCode).Execute();
@@ -90,11 +90,11 @@ namespace ConsoleApplication1
 
                 dataSource.StrictMode = true;
 
-                var newCode = dataSource.InsertOrUpdate(SalesCurrency, code).AsString().Execute();
+                var newCode = dataSource.Upsert(SalesCurrency, code).AsString().Execute();
 
                 code.CurrencyName += " modified";
 
-                dataSource.InsertOrUpdate(SalesCurrency, code).Execute();
+                dataSource.Upsert(SalesCurrency, code).Execute();
 
                 dataSource.Delete(SalesCurrency, code).Execute();
             }

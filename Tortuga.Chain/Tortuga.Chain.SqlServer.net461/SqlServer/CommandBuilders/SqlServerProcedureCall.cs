@@ -10,8 +10,8 @@ using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
 using Tortuga.Chain.Metadata;
-using Tortuga.Chain.SqlServer.Materializers;
 using Tortuga.Chain.SqlServer.Core;
+using Tortuga.Chain.SqlServer.Materializers;
 namespace Tortuga.Chain.SqlServer.CommandBuilders
 {
 
@@ -45,7 +45,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// Prepares the command for execution by generating any necessary SQL.
         /// </summary>
         /// <param name="materializer">The materializer.</param>
-        /// <returns>ExecutionToken&lt;TCommandType&gt;.</returns>
+        /// <returns>ExecutionToken&lt;TCommand&gt;.</returns>
         public override ExecutionToken<SqlCommand, SqlParameter> Prepare(Materializer<SqlCommand, SqlParameter> materializer)
         {
             if (materializer == null)

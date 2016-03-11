@@ -124,6 +124,8 @@ namespace Tortuga.Chain.SqlServer
                 {
                     cmd.Connection = m_Connection;
                     cmd.Transaction = m_Transaction;
+                    if (DefaultCommandTimeout.HasValue)
+                        cmd.CommandTimeout = (int)DefaultCommandTimeout.Value.TotalSeconds;
                     cmd.CommandText = executionToken.CommandText;
                     cmd.CommandType = executionToken.CommandType;
                     foreach (var param in executionToken.Parameters)
@@ -135,11 +137,6 @@ namespace Tortuga.Chain.SqlServer
             }
             catch (Exception ex)
             {
-                ex.Data["DataSource"] = Name;
-                ex.Data["TransactionName"] = m_TransactionName;
-                ex.Data["Operation"] = executionToken.OperationName;
-                ex.Data["CommandText"] = executionToken.CommandText;
-                ex.Data["Parameters"] = executionToken.Parameters;
                 OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
                 throw;
             }
@@ -165,6 +162,8 @@ namespace Tortuga.Chain.SqlServer
                 {
                     cmd.Connection = m_Connection;
                     cmd.Transaction = m_Transaction;
+                    if (DefaultCommandTimeout.HasValue)
+                        cmd.CommandTimeout = (int)DefaultCommandTimeout.Value.TotalSeconds;
                     cmd.CommandText = executionToken.CommandText;
                     cmd.CommandType = executionToken.CommandType;
                     foreach (var param in executionToken.Parameters)
@@ -179,28 +178,24 @@ namespace Tortuga.Chain.SqlServer
                 if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException 
                 {
                     var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);
-                    ex2.Data["DataSource"] = Name;
-                    ex.Data["TransactionName"] = m_TransactionName;
-                    ex2.Data["Operation"] = executionToken.OperationName;
-                    ex2.Data["CommandText"] = executionToken.CommandText;
-                    ex2.Data["Parameters"] = executionToken.Parameters;
                     OnExecutionCanceled(executionToken, startTime, DateTimeOffset.Now, state);
                     throw ex2;
                 }
                 else
                 {
-                    ex.Data["DataSource"] = Name;
-                    ex.Data["TransactionName"] = m_TransactionName;
-                    ex.Data["Operation"] = executionToken.OperationName;
-                    ex.Data["CommandText"] = executionToken.CommandText;
-                    ex.Data["Parameters"] = executionToken.Parameters;
                     OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
                     throw;
                 }
             }
-
         }
 
-
+        /// <summary>
+        /// Gets the name of the transaction.
+        /// </summary>
+        /// <value>The name of the transaction.</value>
+        public string TransactionName
+        {
+            get { return m_TransactionName; }
+        }
     }
 }

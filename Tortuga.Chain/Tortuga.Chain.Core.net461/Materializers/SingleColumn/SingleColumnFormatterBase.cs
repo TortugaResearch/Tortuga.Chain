@@ -7,18 +7,18 @@ namespace Tortuga.Chain.Materializers
     /// <summary>
     /// This class represents result materializers that read from a single column. 
     /// </summary>
-    public abstract class SingleColumnMaterializer<TCommandType, TParameterType, TResultType> : Materializer<TCommandType, TParameterType, TResultType>
-            where TCommandType : DbCommand
-        where TParameterType : DbParameter
+    public abstract class SingleColumnMaterializer<TCommand, TParameter, TResult> : Materializer<TCommand, TParameter, TResult>
+            where TCommand : DbCommand
+        where TParameter : DbParameter
     {
         readonly string m_DesiredColumns;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SingleColumnMaterializer{TCommandType, TParameterType, TResultType}" /> class.
+        /// Initializes a new instance of the <see cref="SingleColumnMaterializer{TCommand, TParameter, TResult}" /> class.
         /// </summary>
         /// <param name="commandBuilder">The command builder.</param>
         /// <param name="columnName">Name of the desired column.</param>
-        protected SingleColumnMaterializer(DbCommandBuilder<TCommandType, TParameterType> commandBuilder, string columnName)
+        protected SingleColumnMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, string columnName)
             : base(commandBuilder)
         {
             m_DesiredColumns = columnName;

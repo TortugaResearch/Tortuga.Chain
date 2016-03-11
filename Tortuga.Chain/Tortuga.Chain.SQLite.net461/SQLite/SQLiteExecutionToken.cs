@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
-using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Core;
+using Tortuga.Chain.DataSources;
 namespace Tortuga.Chain.SQLite
 {
     /// <summary>
@@ -13,7 +13,7 @@ namespace Tortuga.Chain.SQLite
         private readonly LockType m_LockType;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ExecutionToken{TCommandType, TParameterType}" /> class.
+        /// Initializes a new instance of the <see cref="ExecutionToken{TCommand, TParameter}" /> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
         /// <param name="operationName">Name of the operation. This is used for logging.</param>

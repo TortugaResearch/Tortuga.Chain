@@ -108,7 +108,7 @@ namespace Tortuga.Chain.SQLite
         /// <param name="argumentValue"></param>
         /// <param name="options"></param>
         /// <returns></returns>
-        public SQLiteInsertOrUpdateObject InsertOrUpdate(string tableName, object argumentValue, InsertOrUpdateOptions options = InsertOrUpdateOptions.None)
+        public SQLiteInsertOrUpdateObject Upsert(string tableName, object argumentValue, InsertOrUpdateOptions options = InsertOrUpdateOptions.None)
         {
             return new SQLiteInsertOrUpdateObject(this, tableName, argumentValue, options);
         }
@@ -172,9 +172,9 @@ namespace Tortuga.Chain.SQLite
             return From(tableOrViewName, filterValue);
         }
 
-        ISingleRowDbCommandBuilder IClass1DataSource.InsertOrUpdate(string tableName, object argumentValue, InsertOrUpdateOptions options)
+        ISingleRowDbCommandBuilder IClass1DataSource.Upsert(string tableName, object argumentValue, InsertOrUpdateOptions options)
         {
-            return InsertOrUpdate(tableName, argumentValue, options);
+            return Upsert(tableName, argumentValue, options);
         }
 
         IDatabaseMetadataCache IClass1DataSource.DatabaseMetadata

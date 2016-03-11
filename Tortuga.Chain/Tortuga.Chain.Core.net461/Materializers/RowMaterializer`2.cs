@@ -10,10 +10,10 @@ namespace Tortuga.Chain.Materializers
     /// <summary>
     /// Materializes the result set as a single row.
     /// </summary>
-    /// <typeparam name="TCommandType">The type of the t command type.</typeparam>
-    /// <typeparam name="TParameterType">The type of the t parameter type.</typeparam>
-    public class RowMaterializer<TCommandType, TParameterType> : Materializer<TCommandType, TParameterType, IReadOnlyDictionary<string, object>> where TCommandType : DbCommand
-        where TParameterType : DbParameter
+    /// <typeparam name="TCommand">The type of the t command type.</typeparam>
+    /// <typeparam name="TParameter">The type of the t parameter type.</typeparam>
+    public class RowMaterializer<TCommand, TParameter> : Materializer<TCommand, TParameter, IReadOnlyDictionary<string, object>> where TCommand : DbCommand
+        where TParameter : DbParameter
     {
         readonly RowOptions m_RowOptions;
 
@@ -21,7 +21,7 @@ namespace Tortuga.Chain.Materializers
         /// </summary>
         /// <param name="commandBuilder">The command builder.</param>
         /// <param name="rowOptions">The row options.</param>
-        public RowMaterializer(DbCommandBuilder<TCommandType, TParameterType> commandBuilder, RowOptions rowOptions)
+        public RowMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, RowOptions rowOptions)
             : base(commandBuilder)
         {
             m_RowOptions = rowOptions;
@@ -52,23 +52,12 @@ namespace Tortuga.Chain.Materializers
                     return null;
                 else
                 {
-                    var ex = new DataException("No rows were returned");
-                    ex.Data["DataSource"] = CommandBuilder.DataSource.Name;
-                    ex.Data["Operation"] = executionToken.OperationName;
-                    ex.Data["CommandText"] = executionToken.CommandText;
-                    ex.Data["Parameters"] = executionToken.Parameters;
-                    throw ex;
+                    throw new DataException("No rows were returned");
                 }
             }
             else if (table.Rows.Count > 1 && !m_RowOptions.HasFlag(RowOptions.DiscardExtraRows))
             {
-                var ex = new DataException("Expected 1 row but received " + table.Rows.Count + " rows");
-                ex.Data["DataSource"] = CommandBuilder.DataSource.Name;
-                ex.Data["Operation"] = executionToken.OperationName;
-                ex.Data["CommandText"] = executionToken.CommandText;
-                ex.Data["Parameters"] = executionToken.Parameters;
-                ex.Data["RowCount"] = table.Rows.Count;
-                throw ex;
+                throw new DataException("Expected 1 row but received " + table.Rows.Count + " rows");
             }
             return table.Rows[0];
         }
@@ -101,23 +90,12 @@ namespace Tortuga.Chain.Materializers
                     return null;
                 else
                 {
-                    var ex = new DataException("No rows were returned");
-                    ex.Data["DataSource"] = CommandBuilder.DataSource.Name;
-                    ex.Data["Operation"] = executionToken.OperationName;
-                    ex.Data["CommandText"] = executionToken.CommandText;
-                    ex.Data["Parameters"] = executionToken.Parameters;
-                    throw ex;
+                    throw new DataException("No rows were returned");
                 }
             }
             else if (table.Rows.Count > 1 && !m_RowOptions.HasFlag(RowOptions.DiscardExtraRows))
             {
-                var ex = new DataException("Expected 1 row but received " + table.Rows.Count + " rows");
-                ex.Data["DataSource"] = CommandBuilder.DataSource.Name;
-                ex.Data["Operation"] = executionToken.OperationName;
-                ex.Data["CommandText"] = executionToken.CommandText;
-                ex.Data["Parameters"] = executionToken.Parameters;
-                ex.Data["RowCount"] = table.Rows.Count;
-                throw ex;
+                throw new DataException("Expected 1 row but received " + table.Rows.Count + " rows");
             }
             return table.Rows[0];
         }

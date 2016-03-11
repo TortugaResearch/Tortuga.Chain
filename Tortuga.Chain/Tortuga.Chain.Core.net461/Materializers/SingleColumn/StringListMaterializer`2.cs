@@ -10,10 +10,10 @@ namespace Tortuga.Chain.Materializers
     /// <summary>
     /// Materializes the result set as a list of strings.
     /// </summary>
-    /// <typeparam name="TCommandType">The type of the t command type.</typeparam>
-    /// <typeparam name="TParameterType">The type of the t parameter type.</typeparam>
-    public class StringListMaterializer<TCommandType, TParameterType> : SingleColumnMaterializer<TCommandType, TParameterType, List<string>> where TCommandType : DbCommand
-        where TParameterType : DbParameter
+    /// <typeparam name="TCommand">The type of the t command type.</typeparam>
+    /// <typeparam name="TParameter">The type of the t parameter type.</typeparam>
+    public class StringListMaterializer<TCommand, TParameter> : SingleColumnMaterializer<TCommand, TParameter, List<string>> where TCommand : DbCommand
+        where TParameter : DbParameter
     {
 
         readonly ListOptions m_ListOptions;
@@ -23,7 +23,7 @@ namespace Tortuga.Chain.Materializers
         /// <param name="commandBuilder">The command builder.</param>
         /// <param name="listOptions">The list options.</param>
         /// <param name="columnName">Name of the desired column.</param>
-        public StringListMaterializer(DbCommandBuilder<TCommandType, TParameterType> commandBuilder, ListOptions listOptions, string columnName = null)
+        public StringListMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, ListOptions listOptions, string columnName = null)
             : base(commandBuilder, columnName)
         {
             m_ListOptions = listOptions;

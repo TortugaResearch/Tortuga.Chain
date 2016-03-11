@@ -28,7 +28,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// Prepares the command for execution by generating any necessary SQL.
         /// </summary>
         /// <param name="materializer">The materializer.</param>
-        /// <returns>ExecutionToken&lt;TCommandType&gt;.</returns>
+        /// <returns>ExecutionToken&lt;TCommand&gt;.</returns>
 
         public override ExecutionToken<SqlCommand, SqlParameter> Prepare(Materializer<SqlCommand, SqlParameter> materializer)
         {

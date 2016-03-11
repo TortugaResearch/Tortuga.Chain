@@ -4,8 +4,6 @@ using System.Data;
 using System.Data.SQLite;
 using System.Threading;
 using System.Threading.Tasks;
-using Tortuga.Chain.CommandBuilders;
-using Tortuga.Chain.Metadata;
 using Tortuga.Chain.SQLite;
 
 namespace Tortuga.Chain
@@ -53,7 +51,7 @@ namespace Tortuga.Chain
         /// <param name="connectionStringBuilder"></param>
         public SQLiteDataSource(string connectionName, SQLiteConnectionStringBuilder connectionStringBuilder)
         {
-            if(connectionStringBuilder == null)
+            if (connectionStringBuilder == null)
                 throw new ArgumentNullException("connectionStringBuilder", "connectionStringBuilder is null.");
 
             m_ConnectionBuilder = connectionStringBuilder;
@@ -162,6 +160,8 @@ namespace Tortuga.Chain
                     using (var cmd = new SQLiteCommand())
                     {
                         cmd.Connection = con;
+                        if (DefaultCommandTimeout.HasValue)
+                            cmd.CommandTimeout = (int)DefaultCommandTimeout.Value.TotalSeconds;
                         cmd.CommandText = executionToken.CommandText;
                         //TODO: add potential check for this type.
                         cmd.CommandType = executionToken.CommandType;
@@ -175,10 +175,6 @@ namespace Tortuga.Chain
             }
             catch (Exception ex)
             {
-                ex.Data["DataSource"] = Name;
-                ex.Data["Operation"] = executionToken.OperationName;
-                ex.Data["CommandText"] = executionToken.CommandText;
-                ex.Data["Parameters"] = executionToken.Parameters;
                 OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
                 throw;
             }
@@ -225,6 +221,8 @@ namespace Tortuga.Chain
                     using (var cmd = new SQLiteCommand())
                     {
                         cmd.Connection = con;
+                        if (DefaultCommandTimeout.HasValue)
+                            cmd.CommandTimeout = (int)DefaultCommandTimeout.Value.TotalSeconds;
                         cmd.CommandText = executionToken.CommandText;
                         cmd.CommandType = executionToken.CommandType;
                         foreach (var param in executionToken.Parameters)
@@ -240,19 +238,11 @@ namespace Tortuga.Chain
                 if (cancellationToken.IsCancellationRequested) //convert SQLiteException into a OperationCanceledException 
                 {
                     var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);
-                    ex2.Data["DataSource"] = Name;
-                    ex2.Data["Operation"] = executionToken.OperationName;
-                    ex2.Data["CommandText"] = executionToken.CommandText;
-                    ex2.Data["Parameters"] = executionToken.Parameters;
                     OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex2, state);
                     throw ex2;
                 }
                 else
                 {
-                    ex.Data["DataSource"] = Name;
-                    ex.Data["Operation"] = executionToken.OperationName;
-                    ex.Data["CommandText"] = executionToken.CommandText;
-                    ex.Data["Parameters"] = executionToken.Parameters;
                     OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
                     throw;
                 }

@@ -68,6 +68,12 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="..\Tests.Tortuga.Chain.SqlServer.net461\Repository\AsyncRepositoryTests.cs">
+      <Link>Repository\AsyncRepositoryTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Tests.Tortuga.Chain.SqlServer.net461\Repository\AsyncRepository`2.cs">
+      <Link>Repository\AsyncRepository`2.cs</Link>
+    </Compile>
     <Compile Include="..\Tests.Tortuga.Chain.SqlServer.net461\Repository\Employee.cs">
       <Link>Repository\Employee.cs</Link>
     </Compile>
@@ -82,6 +88,12 @@
     </Compile>
     <Compile Include="..\Tests.Tortuga.Chain.SqlServer.net461\Repository\Repository`2.cs">
       <Link>Repository\Repository`2.cs</Link>
+    </Compile>
+    <Compile Include="..\Tests.Tortuga.Chain.SqlServer.net461\Repository\StrictRepositoryTests.cs">
+      <Link>Repository\StrictRepositoryTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Tests.Tortuga.Chain.SqlServer.net461\Repository\TransactionalRepositoryTests.cs">
+      <Link>Repository\TransactionalRepositoryTests.cs</Link>
     </Compile>
     <Compile Include="Metadata\MetadataTests.cs" />
     <Compile Include="Setup.cs" />

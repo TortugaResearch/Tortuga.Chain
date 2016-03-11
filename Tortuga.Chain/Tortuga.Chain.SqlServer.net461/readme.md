@@ -8,7 +8,7 @@ Tortuga Chain for SQL Server supports these command builders:
 * `dataSource.From` Reading from tables and views using simple filters
 * `dataSource.Insert` Use an object to insert a single record.
 * `dataSource.Update` Use an object to update a single record.
-* `dataSource.InsertOrUpdate` Use an object to perform an “upsert”.
+* `dataSource.Upsert` Use an object to perform an “upsert”.
  * `dataSource.Delete` User an object to delete a single record. 
 
 ##SQL Dependency

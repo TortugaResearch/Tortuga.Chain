@@ -3,25 +3,25 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
+using Tortuga.Chain.Core;
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Materializers;
-using Tortuga.Chain.Core;
 namespace Tortuga.Chain.CommandBuilders
 {
 
     /// <summary>
     /// This is the base class for command builders that can potentially return multiple rows.
     /// </summary>
-    /// <typeparam name="TCommandType">The type of the t command type.</typeparam>
-    /// <typeparam name="TParameterType">The type of the t parameter type.</typeparam>
-    public abstract class MultipleRowDbCommandBuilder<TCommandType, TParameterType> : SingleRowDbCommandBuilder<TCommandType, TParameterType>, IMultipleRowDbCommandBuilder
-        where TCommandType : DbCommand
-        where TParameterType : DbParameter
+    /// <typeparam name="TCommand">The type of the t command type.</typeparam>
+    /// <typeparam name="TParameter">The type of the t parameter type.</typeparam>
+    public abstract class MultipleRowDbCommandBuilder<TCommand, TParameter> : SingleRowDbCommandBuilder<TCommand, TParameter>, IMultipleRowDbCommandBuilder
+        where TCommand : DbCommand
+        where TParameter : DbParameter
     {
         /// <summary>
         /// </summary>
         /// <param name="dataSource">The data source.</param>
-        protected MultipleRowDbCommandBuilder(DataSource<TCommandType, TParameterType> dataSource)
+        protected MultipleRowDbCommandBuilder(DataSource<TCommand, TParameter> dataSource)
             : base(dataSource)
         {
 
@@ -33,7 +33,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        public ILink<List<bool>> AsBooleanList(ListOptions listOptions = ListOptions.None) { return new BooleanListMaterializer<TCommandType, TParameterType>(this, listOptions); }
+        public ILink<List<bool>> AsBooleanList(ListOptions listOptions = ListOptions.None) { return new BooleanListMaterializer<TCommand, TParameter>(this, listOptions); }
 
         /// <summary>
         /// Materializes the result as a list of objects.
@@ -43,7 +43,7 @@ namespace Tortuga.Chain.CommandBuilders
         public ILink<List<TObject>> AsCollection<TObject>()
             where TObject : class, new()
         {
-            return new CollectionMaterializer<TCommandType, TParameterType, TObject, List<TObject>>(this);
+            return new CollectionMaterializer<TCommand, TParameter, TObject, List<TObject>>(this);
         }
 
         /// <summary>
@@ -57,93 +57,93 @@ namespace Tortuga.Chain.CommandBuilders
             where TObject : class, new()
             where TCollection : ICollection<TObject>, new()
         {
-            return new CollectionMaterializer<TCommandType, TParameterType, TObject, TCollection>(this);
+            return new CollectionMaterializer<TCommand, TParameter, TObject, TCollection>(this);
         }
 
         /// <summary>
         /// Indicates the results should be materialized as a DataSet.
         /// </summary>
-        public ILink<DataTable> AsDataTable() { return new DataTableMaterializer<TCommandType, TParameterType>(this); }
+        public ILink<DataTable> AsDataTable() { return new DataTableMaterializer<TCommand, TParameter>(this); }
 
         /// <summary>
         /// Indicates the results should be materialized as a list of DateTime.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        public ILink<List<DateTime>> AsDateTimeList(ListOptions listOptions = ListOptions.None) { return new DateTimeListMaterializer<TCommandType, TParameterType>(this, listOptions); }
+        public ILink<List<DateTime>> AsDateTimeList(ListOptions listOptions = ListOptions.None) { return new DateTimeListMaterializer<TCommand, TParameter>(this, listOptions); }
 
         /// <summary>
         /// Indicates the results should be materialized as a list of DateTimeOffset.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        public ILink<List<DateTimeOffset>> AsDateTimeOffsetList(ListOptions listOptions = ListOptions.None) { return new DateTimeOffsetListMaterializer<TCommandType, TParameterType>(this, listOptions); }
+        public ILink<List<DateTimeOffset>> AsDateTimeOffsetList(ListOptions listOptions = ListOptions.None) { return new DateTimeOffsetListMaterializer<TCommand, TParameter>(this, listOptions); }
 
         /// <summary>
         /// Indicates the results should be materialized as a list of numbers.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        public ILink<List<decimal>> AsDecimalList(ListOptions listOptions = ListOptions.None) { return new DecimalListMaterializer<TCommandType, TParameterType>(this, listOptions); }
+        public ILink<List<decimal>> AsDecimalList(ListOptions listOptions = ListOptions.None) { return new DecimalListMaterializer<TCommand, TParameter>(this, listOptions); }
 
         /// <summary>
         /// Indicates the results should be materialized as a list of numbers.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        public ILink<List<double>> AsDoubleList(ListOptions listOptions = ListOptions.None) { return new DoubleListMaterializer<TCommandType, TParameterType>(this, listOptions); }
+        public ILink<List<double>> AsDoubleList(ListOptions listOptions = ListOptions.None) { return new DoubleListMaterializer<TCommand, TParameter>(this, listOptions); }
         /// <summary>
         /// Indicates the results should be materialized as a list of Guids.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        public ILink<List<Guid>> AsGuidList(ListOptions listOptions = ListOptions.None) { return new GuidListMaterializer<TCommandType, TParameterType>(this, listOptions); }
+        public ILink<List<Guid>> AsGuidList(ListOptions listOptions = ListOptions.None) { return new GuidListMaterializer<TCommand, TParameter>(this, listOptions); }
 
         /// <summary>
         /// Indicates the results should be materialized as a list of integers.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        public ILink<List<short>> AsInt16List(ListOptions listOptions = ListOptions.None) { return new Int16ListMaterializer<TCommandType, TParameterType>(this, listOptions); }
+        public ILink<List<short>> AsInt16List(ListOptions listOptions = ListOptions.None) { return new Int16ListMaterializer<TCommand, TParameter>(this, listOptions); }
 
         /// <summary>
         /// Indicates the results should be materialized as a list of integers.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        public ILink<List<int>> AsInt32List(ListOptions listOptions = ListOptions.None) { return new Int32ListMaterializer<TCommandType, TParameterType>(this, listOptions); }
+        public ILink<List<int>> AsInt32List(ListOptions listOptions = ListOptions.None) { return new Int32ListMaterializer<TCommand, TParameter>(this, listOptions); }
 
         /// <summary>
         /// Indicates the results should be materialized as a list of integers.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        public ILink<List<long>> AsInt64List(ListOptions listOptions = ListOptions.None) { return new Int64ListMaterializer<TCommandType, TParameterType>(this, listOptions); }
+        public ILink<List<long>> AsInt64List(ListOptions listOptions = ListOptions.None) { return new Int64ListMaterializer<TCommand, TParameter>(this, listOptions); }
 
         /// <summary>
         /// Indicates the results should be materialized as a list of numbers.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        public ILink<List<float>> AsSingleList(ListOptions listOptions = ListOptions.None) { return new SingleListMaterializer<TCommandType, TParameterType>(this, listOptions); }
+        public ILink<List<float>> AsSingleList(ListOptions listOptions = ListOptions.None) { return new SingleListMaterializer<TCommand, TParameter>(this, listOptions); }
 
         /// <summary>
         /// Indicates the results should be materialized as a list of strings.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        public ILink<List<string>> AsStringList(ListOptions listOptions = ListOptions.None) { return new StringListMaterializer<TCommandType, TParameterType>(this, listOptions); }
+        public ILink<List<string>> AsStringList(ListOptions listOptions = ListOptions.None) { return new StringListMaterializer<TCommand, TParameter>(this, listOptions); }
 
         /// <summary>
         /// Indicates the results should be materialized as a Table.
         /// </summary>
-        public ILink<Table> AsTable() { return new TableMaterializer<TCommandType, TParameterType>(this); }
+        public ILink<Table> AsTable() { return new TableMaterializer<TCommand, TParameter>(this); }
 
         /// <summary>
         /// Indicates the results should be materialized as a list of TimeSpan.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        public ILink<List<TimeSpan>> AsTimeSpanList(ListOptions listOptions = ListOptions.None) { return new TimeSpanListMaterializer<TCommandType, TParameterType>(this, listOptions); }
+        public ILink<List<TimeSpan>> AsTimeSpanList(ListOptions listOptions = ListOptions.None) { return new TimeSpanListMaterializer<TCommand, TParameter>(this, listOptions); }
     }
 }

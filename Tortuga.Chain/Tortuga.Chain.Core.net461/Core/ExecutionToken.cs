@@ -1,6 +1,7 @@
 using System.Data;
 using Tortuga.Chain.DataSources;
-
+using System.Data.Common;
+using System;
 namespace Tortuga.Chain.Core
 {
     /// <summary>
@@ -62,6 +63,17 @@ namespace Tortuga.Chain.Core
         public DataSource DataSource
         {
             get { return m_DataSource; }
+        }
+
+        /// <summary>
+        /// Occurs when a command has been built.
+        /// </summary>
+        /// <remarks>This is mostly used by appenders to override command behavior.</remarks>
+        public event EventHandler<CommandBuiltEventArgs> CommandBuilt;
+
+        internal void RaiseCommandBuild(DbCommand command)
+        {
+            CommandBuilt?.Invoke(this, new CommandBuiltEventArgs(command));
         }
     }
 }

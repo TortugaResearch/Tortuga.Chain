@@ -11,23 +11,23 @@ namespace Tortuga.Chain.Materializers
     /// <summary>
     /// Materializes the result set as a collection of the indicated type.
     /// </summary>
-    /// <typeparam name="TCommandType">The type of the t command type.</typeparam>
-    /// <typeparam name="TParameterType">The type of the t parameter type.</typeparam>
+    /// <typeparam name="TCommand">The type of the t command type.</typeparam>
+    /// <typeparam name="TParameter">The type of the t parameter type.</typeparam>
     /// <typeparam name="TObject">The type of the object returned.</typeparam>
     /// <typeparam name="TCollection">The type of the collection.</typeparam>
-    /// <seealso cref="Materializer{TCommandType, TParameterType, TCollection}" />
+    /// <seealso cref="Materializer{TCommand, TParameter, TCollection}" />
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1005:AvoidExcessiveParametersOnGenericTypes")]
-    public class CollectionMaterializer<TCommandType, TParameterType, TObject, TCollection> : Materializer<TCommandType, TParameterType, TCollection>
-        where TCommandType : DbCommand
+    public class CollectionMaterializer<TCommand, TParameter, TObject, TCollection> : Materializer<TCommand, TParameter, TCollection>
+        where TCommand : DbCommand
         where TObject : class, new()
         where TCollection : ICollection<TObject>, new()
-        where TParameterType : DbParameter
+        where TParameter : DbParameter
     {
 
         /// <summary>
         /// </summary>
         /// <param name="commandBuilder">The associated operation.</param>
-        public CollectionMaterializer(DbCommandBuilder<TCommandType, TParameterType> commandBuilder)
+        public CollectionMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder)
             : base(commandBuilder)
         {
         }

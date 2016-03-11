@@ -10,16 +10,16 @@ namespace Tortuga.Chain.Materializers
     /// <summary>
     /// Materializes the result set as a DataTable.
     /// </summary>
-    /// <typeparam name="TCommandType">The type of the t command type.</typeparam>
-    /// <typeparam name="TParameterType">The type of the t parameter type.</typeparam>
-    public class DataTableMaterializer<TCommandType, TParameterType> : Materializer<TCommandType, TParameterType, DataTable> where TCommandType : DbCommand
-        where TParameterType : DbParameter
+    /// <typeparam name="TCommand">The type of the t command type.</typeparam>
+    /// <typeparam name="TParameter">The type of the t parameter type.</typeparam>
+    public class DataTableMaterializer<TCommand, TParameter> : Materializer<TCommand, TParameter, DataTable> where TCommand : DbCommand
+        where TParameter : DbParameter
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="DataTableMaterializer{TCommandType, TParameterType}"/> class.
+        /// Initializes a new instance of the <see cref="DataTableMaterializer{TCommand, TParameter}"/> class.
         /// </summary>
         /// <param name="commandBuilder">The associated operation.</param>
-        public DataTableMaterializer(DbCommandBuilder<TCommandType, TParameterType> commandBuilder)
+        public DataTableMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder)
             : base(commandBuilder)
         { }
 

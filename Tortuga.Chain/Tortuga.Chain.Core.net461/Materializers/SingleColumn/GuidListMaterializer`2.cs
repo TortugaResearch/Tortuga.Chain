@@ -11,10 +11,10 @@ namespace Tortuga.Chain.Materializers
     /// <summary>
     /// Materializes the result set as a list of Guids.
     /// </summary>
-    /// <typeparam name="TCommandType">The type of the t command type.</typeparam>
-    /// <typeparam name="TParameterType">The type of the t parameter type.</typeparam>
-    public class GuidListMaterializer<TCommandType, TParameterType> : SingleColumnMaterializer<TCommandType, TParameterType, List<Guid>> where TCommandType : DbCommand
-        where TParameterType : DbParameter
+    /// <typeparam name="TCommand">The type of the t command type.</typeparam>
+    /// <typeparam name="TParameter">The type of the t parameter type.</typeparam>
+    public class GuidListMaterializer<TCommand, TParameter> : SingleColumnMaterializer<TCommand, TParameter, List<Guid>> where TCommand : DbCommand
+        where TParameter : DbParameter
     {
 
         readonly ListOptions m_ListOptions;
@@ -24,7 +24,7 @@ namespace Tortuga.Chain.Materializers
         /// <param name="commandBuilder">The command builder.</param>
         /// <param name="listOptions">The list options.</param>
         /// <param name="columnName">Name of the desired column.</param>
-        public GuidListMaterializer(DbCommandBuilder<TCommandType, TParameterType> commandBuilder, ListOptions listOptions, string columnName = null)
+        public GuidListMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, ListOptions listOptions, string columnName = null)
             : base(commandBuilder, columnName)
         {
             m_ListOptions = listOptions;

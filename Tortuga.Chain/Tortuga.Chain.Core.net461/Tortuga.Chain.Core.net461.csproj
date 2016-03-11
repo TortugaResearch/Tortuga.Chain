@@ -69,6 +69,10 @@
     <Compile Include="Appenders\Appender`1.cs" />
     <Compile Include="Appenders\CacheAllItemsAppender.cs" />
     <Compile Include="Appenders\CacheResultAppender`1.cs" />
+    <Compile Include="Appenders\TimeoutAppender.cs" />
+    <Compile Include="Appenders\TimeoutAppender`1.cs" />
+    <Compile Include="Appenders\TraceAppender`1.cs" />
+    <Compile Include="Appenders\TraceAppender.cs" />
     <Compile Include="CommandBuilders\IDbCommandBuilder.cs" />
     <Compile Include="CommandBuilders\IMultipleRowDbCommandBuilder.cs" />
     <Compile Include="CommandBuilders\ISingleRowDbCommandBuilder.cs" />
@@ -81,11 +85,11 @@
     <Compile Include="Core\CommandBuiltEventArgs.cs" />
     <Compile Include="Core\ExecutionToken.cs" />
     <Compile Include="Core\ExecutionToken`2.cs" />
-    <Compile Include="DataSources\IClass1DataSource.cs" />
+    <Compile Include="IClass1DataSource.cs" />
     <Compile Include="MappingException.cs" />
     <Compile Include="Appenders\ReadOrCacheResultAppender`1.cs" />
-    <Compile Include="Core\ILink`1.cs" />
-    <Compile Include="Core\ILink.cs" />
+    <Compile Include="ILink`1.cs" />
+    <Compile Include="ILink.cs" />
     <Compile Include="Appenders\InvalidateCacheAppender.cs" />
     <Compile Include="Appenders\InvalidateCacheAppender`1.cs" />
     <Compile Include="Materializers\SingleColumn\BooleanListMaterializer`2.cs" />

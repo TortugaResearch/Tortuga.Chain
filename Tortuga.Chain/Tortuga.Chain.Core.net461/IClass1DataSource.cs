@@ -83,7 +83,7 @@ namespace Tortuga.Chain
         /// <param name="argumentValue">The argument value.</param>
         /// <param name="options">The options for how the insert/update occurs.</param>
         /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
-        ISingleRowDbCommandBuilder InsertOrUpdate(string tableName, object argumentValue, InsertOrUpdateOptions options = InsertOrUpdateOptions.None);
+        ISingleRowDbCommandBuilder Upsert(string tableName, object argumentValue, InsertOrUpdateOptions options = InsertOrUpdateOptions.None);
 
         /// <summary>
         /// Invalidates a cache key.

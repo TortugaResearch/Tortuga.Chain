@@ -15,7 +15,7 @@ namespace Tortuga.Chain.SqlServer.Core
         private OnChangeEventHandler m_OnChangeEventHandler;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ExecutionToken{TCommandType, TParameterType}"/> class.
+        /// Initializes a new instance of the <see cref="ExecutionToken{TCommand, TParameter}"/> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
         /// <param name="operationName">Name of the operation. This is used for logging.</param>

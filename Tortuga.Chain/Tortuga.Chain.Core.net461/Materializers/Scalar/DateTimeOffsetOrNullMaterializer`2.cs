@@ -9,18 +9,18 @@ namespace Tortuga.Chain.Materializers
     /// <summary>
     /// Materializes the result set as a DateTimeOffset.
     /// </summary>
-    /// <typeparam name="TCommandType">The type of the t command type.</typeparam>
-    /// <typeparam name="TParameterType">The type of the t parameter type.</typeparam>
-    public class DateTimeOffsetOrNullMaterializer<TCommandType, TParameterType> : SingleColumnMaterializer<TCommandType, TParameterType, DateTimeOffset?> where TCommandType : DbCommand
-        where TParameterType : DbParameter
+    /// <typeparam name="TCommand">The type of the t command type.</typeparam>
+    /// <typeparam name="TParameter">The type of the t parameter type.</typeparam>
+    public class DateTimeOffsetOrNullMaterializer<TCommand, TParameter> : SingleColumnMaterializer<TCommand, TParameter, DateTimeOffset?> where TCommand : DbCommand
+        where TParameter : DbParameter
 
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="DateTimeOffsetOrNullMaterializer{TCommandType, TParameterType}"/> class.
+        /// Initializes a new instance of the <see cref="DateTimeOffsetOrNullMaterializer{TCommand, TParameter}"/> class.
         /// </summary>
         /// <param name="commandBuilder">The command builder.</param>
         /// <param name="columnName">Name of the desired column.</param>
-        public DateTimeOffsetOrNullMaterializer(DbCommandBuilder<TCommandType, TParameterType> commandBuilder, string columnName = null)
+        public DateTimeOffsetOrNullMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, string columnName = null)
             : base(commandBuilder, columnName)
         { }
 

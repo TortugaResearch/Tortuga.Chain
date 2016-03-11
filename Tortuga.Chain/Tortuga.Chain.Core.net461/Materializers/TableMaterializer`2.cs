@@ -9,15 +9,15 @@ namespace Tortuga.Chain.Materializers
     /// <summary>
     /// Materializes the result set as a Table.
     /// </summary>
-    /// <typeparam name="TCommandType">The type of the t command type.</typeparam>
-    /// <typeparam name="TParameterType">The type of the t parameter type.</typeparam>
-    public class TableMaterializer<TCommandType, TParameterType> : Materializer<TCommandType, TParameterType, Table> where TCommandType : DbCommand
-        where TParameterType : DbParameter
+    /// <typeparam name="TCommand">The type of the t command type.</typeparam>
+    /// <typeparam name="TParameter">The type of the t parameter type.</typeparam>
+    public class TableMaterializer<TCommand, TParameter> : Materializer<TCommand, TParameter, Table> where TCommand : DbCommand
+        where TParameter : DbParameter
     {
         /// <summary>
         /// </summary>
         /// <param name="commandBuilder">The associated operation.</param>
-        public TableMaterializer(DbCommandBuilder<TCommandType, TParameterType> commandBuilder)
+        public TableMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder)
             : base(commandBuilder)
         { }
 
@@ -54,7 +54,7 @@ namespace Tortuga.Chain.Materializers
             {
                 using (var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SequentialAccess, cancellationToken).ConfigureAwait(false))
                 {
-                    t = new Table(reader); 
+                    t = new Table(reader);
                     return t.Rows.Count;
                 }
             }, cancellationToken, state).ConfigureAwait(false);

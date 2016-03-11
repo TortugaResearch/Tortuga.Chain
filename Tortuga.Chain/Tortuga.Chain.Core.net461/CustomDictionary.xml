@@ -7,6 +7,7 @@
     <Recognized>
       <Word>Appender</Word>
       <Word>Appenders</Word>
+      <Word>Upsert</Word>
     </Recognized>
     <Deprecated>
       <Term PreferredAlternate=""></Term>

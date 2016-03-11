@@ -11,19 +11,19 @@ namespace Tortuga.Chain.Materializers
     /// <summary>
     /// Materializes the result set as a DataSet.
     /// </summary>
-    /// <typeparam name="TCommandType">The type of the t command type.</typeparam>
-    /// <typeparam name="TParameterType">The type of the t parameter type.</typeparam>
-    public class DataSetMaterializer<TCommandType, TParameterType> : Materializer<TCommandType, TParameterType, DataSet> where TCommandType : DbCommand
-        where TParameterType : DbParameter
+    /// <typeparam name="TCommand">The type of the t command type.</typeparam>
+    /// <typeparam name="TParameter">The type of the t parameter type.</typeparam>
+    public class DataSetMaterializer<TCommand, TParameter> : Materializer<TCommand, TParameter, DataSet> where TCommand : DbCommand
+        where TParameter : DbParameter
     {
         readonly string[] m_TableNames;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DataSetMaterializer{TCommandType, TParameterType}"/> class.
+        /// Initializes a new instance of the <see cref="DataSetMaterializer{TCommand, TParameter}"/> class.
         /// </summary>
         /// <param name="commandBuilder">The command builder.</param>
         /// <param name="tableNames">The table names.</param>
-        public DataSetMaterializer(DbCommandBuilder<TCommandType, TParameterType> commandBuilder, string[] tableNames)
+        public DataSetMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, string[] tableNames)
             : base(commandBuilder)
         {
             m_TableNames = tableNames;
