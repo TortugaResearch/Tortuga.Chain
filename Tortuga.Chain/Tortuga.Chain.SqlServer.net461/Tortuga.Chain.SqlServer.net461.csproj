@@ -77,7 +77,6 @@
     <Compile Include="SqlServer\CommandBuilders\SqlServerInsertOrUpdateObject.cs" />
     <Compile Include="SqlServer\CommandBuilders\SqlServerObjectCommand.cs" />
     <Compile Include="SqlServer\CommandBuilders\SqlServerSqlCall.cs" />
-    <Compile Include="SqlServer\CommandBuilders\SqlServerTableFunction.cs" />
     <Compile Include="SqlServer\CommandBuilders\SqlServerTableOrView.cs" />
     <Compile Include="SqlServer\SqlServerAppenders.cs" />
     <Compile Include="SqlServer\SqlServerEffectiveSettings.cs" />

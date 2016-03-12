@@ -11,111 +11,111 @@ namespace Tortuga.Chain.CommandBuilders
         /// <summary>
         /// Indicates the results should be materialized as a Boolean.
         /// </summary>
-        ILink<bool> AsBoolean();
+        ILink<bool> ToBoolean();
         /// <summary>
         /// Indicates the results should be materialized as a nullable Boolean.
         /// </summary>
-        ILink<bool?> AsBooleanOrNull();
+        ILink<bool?> ToBooleanOrNull();
         /// <summary>
         /// Indicates the results should be materialized as a byte array.
         /// </summary>
-        ILink<byte[]> AsByteArray();
+        ILink<byte[]> ToByteArray();
         /// <summary>
         /// Indicates the results should be materialized as a DateTime.
         /// </summary>
-        ILink<DateTime> AsDateTime();
+        ILink<DateTime> ToDateTime();
         /// <summary>
         /// Indicates the results should be materialized as a DateTimeOffset.
         /// </summary>
-        ILink<DateTimeOffset> AsDateTimeOffset();
+        ILink<DateTimeOffset> ToDateTimeOffset();
         /// <summary>
         /// Indicates the results should be materialized as a nullable DateTimeOffset.
         /// </summary>
-        ILink<DateTimeOffset?> AsDateTimeOffsetOrNull();
+        ILink<DateTimeOffset?> ToDateTimeOffsetOrNull();
         /// <summary>
         /// Indicates the results should be materialized as a nullable DateTime.
         /// </summary>
-        ILink<DateTime?> AsDateTimeOrNull();
+        ILink<DateTime?> ToDateTimeOrNull();
         /// <summary>
         /// Indicates the results should be materialized as a Decimal.
         /// </summary>
-        ILink<decimal> AsDecimal();
+        ILink<decimal> ToDecimal();
         /// <summary>
         /// Indicates the results should be materialized as a nullable Decimal.
         /// </summary>
-        ILink<decimal?> AsDecimalOrNull();
+        ILink<decimal?> ToDecimalOrNull();
         /// <summary>
         /// Indicates the results should be materialized as a Double.
         /// </summary>
-        ILink<double> AsDouble();
+        ILink<double> ToDouble();
         /// <summary>
         /// Indicates the results should be materialized as a nullable Double.
         /// </summary>
-        ILink<double?> AsDoubleOrNull();
+        ILink<double?> ToDoubleOrNull();
         /// <summary>
         /// Indicates the results should be materialized as a Guid.
         /// </summary>
-        ILink<Guid> AsGuid();
+        ILink<Guid> ToGuid();
         /// <summary>
         /// Indicates the results should be materialized as a nullable Guid.
         /// </summary>
-        ILink<Guid?> AsGuidOrNull();
+        ILink<Guid?> ToGuidOrNull();
         /// <summary>
         /// Indicates the results should be materialized as a Int16.
         /// </summary>
-        ILink<short> AsInt16();
+        ILink<short> ToInt16();
         /// <summary>
         /// Indicates the results should be materialized as a nullable Int16.
         /// </summary>
-        ILink<short?> AsInt16OrNull();
+        ILink<short?> ToInt16OrNull();
         /// <summary>
         /// Indicates the results should be materialized as a Int32.
         /// </summary>
-        ILink<int> AsInt32();
+        ILink<int> ToInt32();
         /// <summary>
         /// Indicates the results should be materialized as a nullable Int32.
         /// </summary>
-        ILink<int?> AsInt32OrNull();
+        ILink<int?> ToInt32OrNull();
         /// <summary>
         /// Indicates the results should be materialized as a Int64.
         /// </summary>
-        ILink<long> AsInt64();
+        ILink<long> ToInt64();
         /// <summary>
         /// Indicates the results should be materialized as a nullable Int64.
         /// </summary>
-        ILink<long?> AsInt64OrNull();
+        ILink<long?> ToInt64OrNull();
         /// <summary>
         /// Materializes the result as an instance of the indicated type
         /// </summary>
         /// <typeparam name="TObject">The type of the object returned.</typeparam>
         /// <param name="rowOptions">The row options.</param>
         /// <returns></returns>
-        ILink<TObject> AsObject<TObject>(RowOptions rowOptions = RowOptions.None)
+        ILink<TObject> ToObject<TObject>(RowOptions rowOptions = RowOptions.None)
             where TObject : class, new();
         /// <summary>
         /// Indicates the results should be materialized as a Row.
         /// </summary>
-        ILink<IReadOnlyDictionary<string, object>> AsRow(RowOptions rowOptions = RowOptions.None);
+        ILink<IReadOnlyDictionary<string, object>> ToRow(RowOptions rowOptions = RowOptions.None);
         /// <summary>
         /// Indicates the results should be materialized as a Single.
         /// </summary>
-        ILink<float> AsSingle();
+        ILink<float> ToSingle();
         /// <summary>
         /// Indicates the results should be materialized as a nullable Single.
         /// </summary>
-        ILink<float?> AsSingleOrNull();
+        ILink<float?> ToSingleOrNull();
         /// <summary>
         /// Indicates the results should be materialized as a nullable string.
         /// </summary>
         /// <returns></returns>
-        ILink<string> AsString();
+        ILink<string> ToString();
         /// <summary>
         /// Indicates the results should be materialized as a TimeSpan.
         /// </summary>
-        ILink<TimeSpan> AsTimeSpan();
+        ILink<TimeSpan> ToTimeSpan();
         /// <summary>
         /// Indicates the results should be materialized as a nullable TimeSpan.
         /// </summary>
-        ILink<TimeSpan?> AsTimeSpanOrNull();
+        ILink<TimeSpan?> ToTimeSpanOrNull();
     }
 }

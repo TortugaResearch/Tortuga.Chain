@@ -28,22 +28,22 @@ namespace Tests.Repository
 
         public Task<TEntity> GetAsync(TKey id)
         {
-            return Source.From(TableName, GetKeyFilter(id)).AsObject<TEntity>().ExecuteAsync();
+            return Source.From(TableName, GetKeyFilter(id)).ToObject<TEntity>().ExecuteAsync();
         }
 
         public Task<List<TEntity>> GetAllAsync()
         {
-            return Source.From(TableName).AsCollection<TEntity>().ExecuteAsync();
+            return Source.From(TableName).ToCollection<TEntity>().ExecuteAsync();
         }
 
         public Task<TEntity> InsertAsync(IReadOnlyDictionary<string, object> entity)
         {
-            return Source.Insert(TableName, entity).AsObject<TEntity>().ExecuteAsync();
+            return Source.Insert(TableName, entity).ToObject<TEntity>().ExecuteAsync();
         }
 
         public Task<TEntity> InsertAsync(TEntity entity)
         {
-            return Source.Insert(TableName, entity).AsObject<TEntity>().ExecuteAsync();
+            return Source.Insert(TableName, entity).ToObject<TEntity>().ExecuteAsync();
         }
 
         public Task UpdateAsync(TEntity entity)
@@ -63,12 +63,12 @@ namespace Tests.Repository
 
         public Task<List<Employee>> QueryAsync(string whereClause, object argumentValue)
         {
-            return Source.From(TableName, whereClause, argumentValue).AsCollection<Employee>().ExecuteAsync();
+            return Source.From(TableName, whereClause, argumentValue).ToCollection<Employee>().ExecuteAsync();
         }
 
         public Task<List<Employee>> QueryAsync(object filterValue)
         {
-            return Source.From(TableName, filterValue).AsCollection<Employee>().ExecuteAsync();
+            return Source.From(TableName, filterValue).ToCollection<Employee>().ExecuteAsync();
         }
     }
 

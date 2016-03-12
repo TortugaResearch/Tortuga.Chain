@@ -5,7 +5,7 @@
 	 DefaultTargets="Build">
 
   <PropertyGroup>
-    <MainSolution>Tortuga.Chain.sln</MainSolution>
+    <MainSolution>Tortuga.Chain-Nuget.sln</MainSolution>
     <MSBuildCommunityTasksPath>$(MSBuildProjectDirectory)\.build</MSBuildCommunityTasksPath>
     <!--<HelpPath>$(MSBuildProjectDirectory)\Help</HelpPath>-->
     <ReadmePath>$(MSBuildProjectDirectory)\..\readme.md</ReadmePath>

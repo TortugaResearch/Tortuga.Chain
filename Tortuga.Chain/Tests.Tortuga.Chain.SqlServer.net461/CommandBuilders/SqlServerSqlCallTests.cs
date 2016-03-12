@@ -10,7 +10,7 @@ namespace Tests.CommandBuilders
         public void SqlServerSqlCallTests_Sql_1()
         {
             var sql = "SELECT 5";
-            var result = DataSource.Sql(sql).AsInt32().Execute();
+            var result = DataSource.Sql(sql).ToInt32().Execute();
             Assert.AreEqual(5, result);
         }
 
@@ -18,7 +18,7 @@ namespace Tests.CommandBuilders
         public void SqlServerSqlCallTests_Sql_2()
         {
             var sql = "SELECT @Input";
-            var result = DataSource.Sql(sql, new { @Input = 5 }).AsInt32().WithTracingToDebug().Execute();
+            var result = DataSource.Sql(sql, new { @Input = 5 }).ToInt32().WithTracingToDebug().Execute();
             Assert.AreEqual(5, result);
         }
 

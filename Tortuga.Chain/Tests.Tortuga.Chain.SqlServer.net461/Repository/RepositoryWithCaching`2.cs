@@ -46,22 +46,22 @@ namespace Tests.Repository
 
         public TEntity Get(TKey id)
         {
-            return Source.From(TableName, GetKeyFilter(id)).AsObject<TEntity>().ReadOrCache(CacheKey(id), policy: Policy).Execute();
+            return Source.From(TableName, GetKeyFilter(id)).ToObject<TEntity>().ReadOrCache(CacheKey(id), policy: Policy).Execute();
         }
 
         public IList<TEntity> GetAll()
         {
-            return Source.From(TableName).AsCollection<TEntity>().CacheAllItems((TEntity x) => CacheKey(x), policy: Policy).ReadOrCache(AllCacheKey, policy: Policy).Execute();
+            return Source.From(TableName).ToCollection<TEntity>().CacheAllItems((TEntity x) => CacheKey(x), policy: Policy).ReadOrCache(AllCacheKey, policy: Policy).Execute();
         }
 
         public TEntity Insert(IReadOnlyDictionary<string, object> entity)
         {
-            return Source.Insert(TableName, entity).AsObject<TEntity>().InvalidateCache(AllCacheKey).Cache((TEntity x) => CacheKey(x), policy: Policy).Execute();
+            return Source.Insert(TableName, entity).ToObject<TEntity>().InvalidateCache(AllCacheKey).Cache((TEntity x) => CacheKey(x), policy: Policy).Execute();
         }
 
         public TEntity Insert(TEntity entity)
         {
-            return Source.Insert(TableName, entity).AsObject<TEntity>().InvalidateCache(AllCacheKey).Cache((TEntity x) => CacheKey(x), policy: Policy).Execute();
+            return Source.Insert(TableName, entity).ToObject<TEntity>().InvalidateCache(AllCacheKey).Cache((TEntity x) => CacheKey(x), policy: Policy).Execute();
         }
 
         public void Update(TEntity entity)

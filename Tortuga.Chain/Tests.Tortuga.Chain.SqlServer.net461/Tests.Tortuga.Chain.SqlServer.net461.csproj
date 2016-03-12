@@ -64,7 +64,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="CommandBuilders\UnitTest1.cs" />
+    <Compile Include="CommandBuilders\SqlServerSqlCallTests.cs" />
     <Compile Include="Metadata\MetadataTests.cs" />
     <Compile Include="Repository\Employee.cs" />
     <Compile Include="Repository\AsyncRepository`2.cs" />

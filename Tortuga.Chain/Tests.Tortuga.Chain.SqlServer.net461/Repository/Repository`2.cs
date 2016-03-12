@@ -27,22 +27,22 @@ namespace Tests.Repository
 
         public TEntity Get(TKey id)
         {
-            return Source.From(TableName, GetKeyFilter(id)).AsObject<TEntity>().Execute();
+            return Source.From(TableName, GetKeyFilter(id)).ToObject<TEntity>().Execute();
         }
 
         public IList<TEntity> GetAll()
         {
-            return Source.From(TableName).AsCollection<TEntity>().Execute();
+            return Source.From(TableName).ToCollection<TEntity>().Execute();
         }
 
         public TEntity Insert(IReadOnlyDictionary<string, object> entity)
         {
-            return Source.Insert(TableName, entity).AsObject<TEntity>().Execute();
+            return Source.Insert(TableName, entity).ToObject<TEntity>().Execute();
         }
 
         public TEntity Insert(TEntity entity)
         {
-            return Source.Insert(TableName, entity).AsObject<TEntity>().Execute();
+            return Source.Insert(TableName, entity).ToObject<TEntity>().Execute();
         }
 
         public void Update(TEntity entity)
@@ -62,12 +62,12 @@ namespace Tests.Repository
 
         public IList<Employee> Query(string whereClause, object argumentValue)
         {
-            return Source.From(TableName, whereClause, argumentValue).AsCollection<Employee>().Execute();
+            return Source.From(TableName, whereClause, argumentValue).ToCollection<Employee>().Execute();
         }
 
         public IList<Employee> Query(object filterValue)
         {
-            return Source.From(TableName, filterValue).AsCollection<Employee>().Execute();
+            return Source.From(TableName, filterValue).ToCollection<Employee>().Execute();
         }
     }
 

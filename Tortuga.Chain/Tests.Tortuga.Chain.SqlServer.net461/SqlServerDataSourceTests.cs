@@ -34,22 +34,22 @@ SELECT @Option AS [Option];";
 
             var dataSource = SqlServerDataSource.CreateFromConfig("SqlServerTestDatabase");
 
-            var settingOriginal = dataSource.Sql(sql).AsBoolean().Execute();
+            var settingOriginal = dataSource.Sql(sql).ToBoolean().Execute();
 
             dataSource.Settings.XactAbort = true;
-            var settingOnA = dataSource.Sql(sql).AsBoolean().Execute();
+            var settingOnA = dataSource.Sql(sql).ToBoolean().Execute();
             var settingOnB = dataSource.GetEffectiveSettings();
             Assert.IsTrue(settingOnA, "XACT_ABORT should have been turned on.");
             Assert.IsTrue(settingOnB.XactAbort, "XACT_ABORT should have been turned on in effective settings.");
 
             dataSource.Settings.XactAbort = false;
-            var settingOffA = dataSource.Sql(sql).AsBoolean().Execute();
+            var settingOffA = dataSource.Sql(sql).ToBoolean().Execute();
             var settingOffB = dataSource.GetEffectiveSettings();
             Assert.IsFalse(settingOffA, "XACT_ABORT should have been turned off.");
             Assert.IsFalse(settingOffB.XactAbort, "XACT_ABORT should have been turned off in effective settings.");
 
             dataSource.Settings.XactAbort = null;
-            var settingDefaultA = dataSource.Sql(sql).AsBoolean().Execute();
+            var settingDefaultA = dataSource.Sql(sql).ToBoolean().Execute();
             var settingDefaultB = dataSource.GetEffectiveSettings();
             Assert.AreEqual(settingOriginal, settingDefaultA, "XACT_ABORT should have returned to the default setting");
             Assert.AreEqual(settingOriginal, settingDefaultB.XactAbort, "XACT_ABORT should have returned to the default setting in effective settings");
@@ -65,23 +65,23 @@ SELECT @Option AS [Option];";
 
             var dataSource = SqlServerDataSource.CreateFromConfig("SqlServerTestDatabase");
 
-            var settingOriginal = dataSource.Sql(sql).AsBoolean().Execute();
+            var settingOriginal = dataSource.Sql(sql).ToBoolean().Execute();
             var settingOriginalB = dataSource.GetEffectiveSettings();
 
             dataSource.Settings.ArithAbort = true;
-            var settingOnA = dataSource.Sql(sql).AsBoolean().Execute();
+            var settingOnA = dataSource.Sql(sql).ToBoolean().Execute();
             var settingOnB = dataSource.GetEffectiveSettings();
             Assert.IsTrue(settingOnA, "ARITHABORT should have been turned on.");
             Assert.IsTrue(settingOnB.ArithAbort, "ARITHABORT should have been turned on in effective settings.");
 
             dataSource.Settings.ArithAbort = false;
-            var settingOffA = dataSource.Sql(sql).AsBoolean().Execute();
+            var settingOffA = dataSource.Sql(sql).ToBoolean().Execute();
             var settingOffB = dataSource.GetEffectiveSettings();
             Assert.IsFalse(settingOffA, "ARITHABORT should have been turned off.");
             Assert.IsFalse(settingOffB.ArithAbort, "ARITHABORT should have been turned off in effective settings.");
 
             dataSource.Settings.ArithAbort = null;
-            var settingDefaultA = dataSource.Sql(sql).AsBoolean().Execute();
+            var settingDefaultA = dataSource.Sql(sql).ToBoolean().Execute();
             var settingDefaultB = dataSource.GetEffectiveSettings();
             Assert.AreEqual(settingOriginal, settingDefaultA, "ARITHABORT should have returned to the default setting");
             Assert.AreEqual(settingOriginal, settingDefaultB.ArithAbort, "ARITHABORT should have returned to the default setting in effective settings");

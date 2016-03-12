@@ -26,12 +26,12 @@ namespace Tortuga.Chain.CommandBuilders
         /// Indicates the results should be materialized as a DataSet.
         /// </summary>
         /// <param name="tableNames">The table names.</param>
-        public ILink<DataSet> AsDataSet(params string[] tableNames) { return new DataSetMaterializer<TCommand, TParameter>(this, tableNames); }
+        public ILink<DataSet> ToDataSet(params string[] tableNames) { return new DataSetMaterializer<TCommand, TParameter>(this, tableNames); }
 
         /// <summary>
         /// Indicates the results should be materialized as a set of tables.
         /// </summary>
-        public ILink<TableSet> AsTableSet(params string[] tableNames) { return new TableSetMaterializer<TCommand, TParameter>(this, tableNames); }
+        public ILink<TableSet> ToTableSet(params string[] tableNames) { return new TableSetMaterializer<TCommand, TParameter>(this, tableNames); }
 
     }
 }

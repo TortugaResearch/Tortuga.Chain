@@ -1,0 +1,86 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tortuga.Chain.SqlServer.net461", "Tortuga.Chain.SqlServer.net461\Tortuga.Chain.SqlServer.net461.csproj", "{5D3159AD-141C-4853-9ECC-A1FD603BD8C4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tortuga.Chain.SQLite.net461", "Tortuga.Chain.SQLite.net461\Tortuga.Chain.SQLite.net461.csproj", "{E92091C6-46F6-423E-B5CE-7DDCD2840CCE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{AAE3DA8A-65B5-4A2E-BB48-002C3C8D045B}"
+	ProjectSection(SolutionItems) = preProject
+		..\.gitignore = ..\.gitignore
+		Package.msbuild = Package.msbuild
+		..\README.md = ..\README.md
+		Tortuga.Chain.Core.nuspec = Tortuga.Chain.Core.nuspec
+		Tortuga.Chain.ruleset = Tortuga.Chain.ruleset
+		Tortuga.Chain.SQLite.nuspec = Tortuga.Chain.SQLite.nuspec
+		Tortuga.Chain.SqlServer.nuspec = Tortuga.Chain.SqlServer.nuspec
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tortuga.Chain.Core.net461", "Tortuga.Chain.Core.net461\Tortuga.Chain.Core.net461.csproj", "{2C523692-A40B-4A7E-A95A-FBE373F263F7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.Tortuga.Chain.Core.net461", "Tests.Tortuga.Chain.Core.net461\Tests.Tortuga.Chain.Core.net461.csproj", "{62634749-A18D-4882-917E-FB6E8B6EE3D1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.Tortuga.Chain.SqlServer.net461", "Tests.Tortuga.Chain.SqlServer.net461\Tests.Tortuga.Chain.SqlServer.net461.csproj", "{A0504A3A-92DB-4EE2-8738-4ED2E3D94BE7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.Tortuga.Chain.SQLite.net461", "Tests.Tortuga.Chain.SQLite.net461\Tests.Tortuga.Chain.SQLite.net461.csproj", "{60649569-197C-4E0F-95F4-F87CFF73A610}"
+EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "SqlServerTestDatabase", "SqlServerTestDatabase\SqlServerTestDatabase.sqlproj", "{4AFDE645-5868-4C91-BCE3-D09F69958AE8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQL Server", "SQL Server", "{05542BBF-0A44-4F28-A504-640F319CC546}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQLite", "SQLite", "{D6583546-CE70-4444-AA54-0AD7AD0026C9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{6FB40F3D-E4CC-4E11-952C-BBD437AD2BF8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5D3159AD-141C-4853-9ECC-A1FD603BD8C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D3159AD-141C-4853-9ECC-A1FD603BD8C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D3159AD-141C-4853-9ECC-A1FD603BD8C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D3159AD-141C-4853-9ECC-A1FD603BD8C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E92091C6-46F6-423E-B5CE-7DDCD2840CCE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E92091C6-46F6-423E-B5CE-7DDCD2840CCE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E92091C6-46F6-423E-B5CE-7DDCD2840CCE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E92091C6-46F6-423E-B5CE-7DDCD2840CCE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C523692-A40B-4A7E-A95A-FBE373F263F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C523692-A40B-4A7E-A95A-FBE373F263F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C523692-A40B-4A7E-A95A-FBE373F263F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C523692-A40B-4A7E-A95A-FBE373F263F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{62634749-A18D-4882-917E-FB6E8B6EE3D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62634749-A18D-4882-917E-FB6E8B6EE3D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62634749-A18D-4882-917E-FB6E8B6EE3D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62634749-A18D-4882-917E-FB6E8B6EE3D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A0504A3A-92DB-4EE2-8738-4ED2E3D94BE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A0504A3A-92DB-4EE2-8738-4ED2E3D94BE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A0504A3A-92DB-4EE2-8738-4ED2E3D94BE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A0504A3A-92DB-4EE2-8738-4ED2E3D94BE7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60649569-197C-4E0F-95F4-F87CFF73A610}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60649569-197C-4E0F-95F4-F87CFF73A610}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60649569-197C-4E0F-95F4-F87CFF73A610}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60649569-197C-4E0F-95F4-F87CFF73A610}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4AFDE645-5868-4C91-BCE3-D09F69958AE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4AFDE645-5868-4C91-BCE3-D09F69958AE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4AFDE645-5868-4C91-BCE3-D09F69958AE8}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{4AFDE645-5868-4C91-BCE3-D09F69958AE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4AFDE645-5868-4C91-BCE3-D09F69958AE8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4AFDE645-5868-4C91-BCE3-D09F69958AE8}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5D3159AD-141C-4853-9ECC-A1FD603BD8C4} = {05542BBF-0A44-4F28-A504-640F319CC546}
+		{E92091C6-46F6-423E-B5CE-7DDCD2840CCE} = {D6583546-CE70-4444-AA54-0AD7AD0026C9}
+		{2C523692-A40B-4A7E-A95A-FBE373F263F7} = {6FB40F3D-E4CC-4E11-952C-BBD437AD2BF8}
+		{62634749-A18D-4882-917E-FB6E8B6EE3D1} = {6FB40F3D-E4CC-4E11-952C-BBD437AD2BF8}
+		{A0504A3A-92DB-4EE2-8738-4ED2E3D94BE7} = {05542BBF-0A44-4F28-A504-640F319CC546}
+		{60649569-197C-4E0F-95F4-F87CFF73A610} = {D6583546-CE70-4444-AA54-0AD7AD0026C9}
+		{4AFDE645-5868-4C91-BCE3-D09F69958AE8} = {05542BBF-0A44-4F28-A504-640F319CC546}
+	EndGlobalSection
+EndGlobal

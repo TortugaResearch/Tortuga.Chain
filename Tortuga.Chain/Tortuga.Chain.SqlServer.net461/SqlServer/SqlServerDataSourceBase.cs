@@ -122,17 +122,17 @@ namespace Tortuga.Chain.SqlServer
             return new SqlServerTableOrView(this, tableOrViewName, filterValue);
         }
 
-        /// <summary>
-        /// This is used to query a table value function.
-        /// </summary>
-        /// <param name="tableFunctionName">Name of the table or view.</param>
-        /// <param name="whereClause">An optional where clause. Do not prefix this clause with "WHERE".</param>
-        /// <param name="argumentValue">An optional argument value.</param>
-        /// <returns></returns>
-        public SqlServerTableFunction FromFunction(SqlServerObjectName tableFunctionName, string whereClause, object argumentValue)
-        {
-            return new SqlServerTableFunction(this, tableFunctionName, whereClause, argumentValue);
-        }
+        ///// <summary>
+        ///// This is used to query a table value function.
+        ///// </summary>
+        ///// <param name="tableFunctionName">Name of the table or view.</param>
+        ///// <param name="whereClause">An optional where clause. Do not prefix this clause with "WHERE".</param>
+        ///// <param name="argumentValue">An optional argument value.</param>
+        ///// <returns></returns>
+        //public SqlServerTableFunction FromFunction(SqlServerObjectName tableFunctionName, string whereClause, object argumentValue)
+        //{
+        //    return new SqlServerTableFunction(this, tableFunctionName, whereClause, argumentValue);
+        //}
 
         /// <summary>
         /// Inserts an object into the specified table.

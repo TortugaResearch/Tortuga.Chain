@@ -15,13 +15,13 @@ namespace Tortuga.Chain.CommandBuilders
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        ILink<List<bool>> AsBooleanList(ListOptions listOptions = ListOptions.None);
+        ILink<List<bool>> ToBooleanList(ListOptions listOptions = ListOptions.None);
         /// <summary>
         /// Materializes the result as a list of objects.
         /// </summary>
         /// <typeparam name="TObject">The type of the model.</typeparam>
         /// <returns></returns>
-        ILink<List<TObject>> AsCollection<TObject>()
+        ILink<List<TObject>> ToCollection<TObject>()
             where TObject : class, new();
         /// <summary>
         /// Materializes the result as a list of objects.
@@ -30,82 +30,82 @@ namespace Tortuga.Chain.CommandBuilders
         /// <typeparam name="TCollection">The type of the collection.</typeparam>
         /// <returns></returns>
         [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-        ILink<TCollection> AsCollection<TObject, TCollection>()
+        ILink<TCollection> ToCollection<TObject, TCollection>()
             where TObject : class, new()
             where TCollection : ICollection<TObject>, new();
         /// <summary>
         /// Indicates the results should be materialized as a DataSet.
         /// </summary>
-        ILink<DataTable> AsDataTable();
+        ILink<DataTable> ToDataTable();
         /// <summary>
         /// Indicates the results should be materialized as a list of DateTime.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        ILink<List<DateTime>> AsDateTimeList(ListOptions listOptions = ListOptions.None);
+        ILink<List<DateTime>> ToDateTimeList(ListOptions listOptions = ListOptions.None);
         /// <summary>
         /// Indicates the results should be materialized as a list of DateTimeOffset.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        ILink<List<DateTimeOffset>> AsDateTimeOffsetList(ListOptions listOptions = ListOptions.None);
+        ILink<List<DateTimeOffset>> ToDateTimeOffsetList(ListOptions listOptions = ListOptions.None);
         /// <summary>
         /// Indicates the results should be materialized as a list of numbers.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        ILink<List<decimal>> AsDecimalList(ListOptions listOptions = ListOptions.None);
+        ILink<List<decimal>> ToDecimalList(ListOptions listOptions = ListOptions.None);
         /// <summary>
         /// Indicates the results should be materialized as a list of numbers.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        ILink<List<double>> AsDoubleList(ListOptions listOptions = ListOptions.None);
+        ILink<List<double>> ToDoubleList(ListOptions listOptions = ListOptions.None);
         /// <summary>
         /// Indicates the results should be materialized as a list of Guids.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        ILink<List<Guid>> AsGuidList(ListOptions listOptions = ListOptions.None);
+        ILink<List<Guid>> ToGuidList(ListOptions listOptions = ListOptions.None);
         /// <summary>
         /// Indicates the results should be materialized as a list of integers.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        ILink<List<short>> AsInt16List(ListOptions listOptions = ListOptions.None);
+        ILink<List<short>> ToInt16List(ListOptions listOptions = ListOptions.None);
         /// <summary>
         /// Indicates the results should be materialized as a list of integers.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        ILink<List<int>> AsInt32List(ListOptions listOptions = ListOptions.None);
+        ILink<List<int>> ToInt32List(ListOptions listOptions = ListOptions.None);
         /// <summary>
         /// Indicates the results should be materialized as a list of integers.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        ILink<List<long>> AsInt64List(ListOptions listOptions = ListOptions.None);
+        ILink<List<long>> ToInt64List(ListOptions listOptions = ListOptions.None);
         /// <summary>
         /// Indicates the results should be materialized as a list of numbers.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        ILink<List<float>> AsSingleList(ListOptions listOptions = ListOptions.None);
+        ILink<List<float>> ToSingleList(ListOptions listOptions = ListOptions.None);
         /// <summary>
         /// Indicates the results should be materialized as a list of strings.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        ILink<List<string>> AsStringList(ListOptions listOptions = ListOptions.None);
+        ILink<List<string>> ToStringList(ListOptions listOptions = ListOptions.None);
         /// <summary>
         /// Indicates the results should be materialized as a Table.
         /// </summary>
-        ILink<Table> AsTable();
+        ILink<Table> ToTable();
         /// <summary>
         /// Indicates the results should be materialized as a list of TimeSpan.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        ILink<List<TimeSpan>> AsTimeSpanList(ListOptions listOptions = ListOptions.None);
+        ILink<List<TimeSpan>> ToTimeSpanList(ListOptions listOptions = ListOptions.None);
     }
 }
