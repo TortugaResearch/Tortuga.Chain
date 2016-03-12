@@ -88,8 +88,9 @@ namespace Tests.Repository
             Assert.AreEqual(emp1["Title"], echo1.Title, "Title");
 
             var emp2 = new Dictionary<string, object>() { { "EmployeeKey", echo1.EmployeeKey }, { "LastName", "Brown" } };
-            repo.Update(emp2);
-            var echo2 = repo.Get(echo1.EmployeeKey.Value);
+
+            var echo2 = repo.Update(emp2);
+            //var echo2 = repo.Get(echo1.EmployeeKey.Value);
 
             //these were changed
             Assert.AreEqual(echo1.EmployeeKey, echo2.EmployeeKey, "EmployeeKey was not set");
@@ -118,9 +119,11 @@ namespace Tests.Repository
             Assert.AreEqual(emp1.Title, echo1.Title, "Title");
 
             echo1.MiddleName = "G";
-            repo.Upsert(echo1);
+            var echo2 = repo.Upsert(echo1);
+            Assert.AreEqual("G", echo2.MiddleName);
 
-            Assert.AreEqual("G", echo1.MiddleName);
+            var echo3 = repo.Get(echo1.EmployeeKey.Value);
+            Assert.AreEqual("G", echo3.MiddleName);
 
             repo.Delete(echo1.EmployeeKey.Value);
         }

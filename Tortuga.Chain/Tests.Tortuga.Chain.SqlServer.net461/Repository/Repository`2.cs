@@ -45,9 +45,9 @@ namespace Tests.Repository
             return Source.Insert(TableName, entity).ToObject<TEntity>().Execute();
         }
 
-        public void Update(TEntity entity)
+        public TEntity Update(TEntity entity)
         {
-            Source.Update(TableName, entity).Execute();
+            return Source.Update(TableName, entity).ToObject<TEntity>().Execute();
         }
 
         public void Delete(TKey id)
@@ -55,9 +55,9 @@ namespace Tests.Repository
             Source.Delete(TableName, GetKeyFilter(id)).Execute();
         }
 
-        public void Update(IReadOnlyDictionary<string, object> entity)
+        public TEntity Update(IReadOnlyDictionary<string, object> entity)
         {
-            Source.Update(TableName, entity).Execute();
+            return Source.Update(TableName, entity).ToObject<TEntity>().Execute();
         }
 
         public TEntity Upsert(TEntity entity)

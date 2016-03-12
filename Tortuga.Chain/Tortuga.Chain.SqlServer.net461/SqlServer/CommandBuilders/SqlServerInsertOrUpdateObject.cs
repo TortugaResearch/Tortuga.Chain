@@ -42,9 +42,10 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             string insertColumns;
             string insertValues;
             string source = SourceClause(parameters);
+            string output = OutputClause(materializer, false);
             InsertClauses(out insertColumns, out insertValues);
 
-            var sql = $"MERGE INTO {TableName.ToQuotedString()} target USING {source} ON {on} WHEN MATCHED THEN UPDATE SET {set} WHEN NOT MATCHED THEN INSERT ( {insertColumns} ) VALUES ({insertValues}) ;";
+            var sql = $"MERGE INTO {TableName.ToQuotedString()} target USING {source} ON {on} WHEN MATCHED THEN UPDATE SET {set} WHEN NOT MATCHED THEN INSERT ( {insertColumns} ) VALUES ({insertValues}) {output} ;";
 
             return new SqlServerExecutionToken(DataSource, "Insert or update " + Metadata.Name, sql, parameters);
         }
@@ -52,7 +53,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 
         private string SourceClause(List<SqlParameter> parameters)
         {
-            var availableColumns = Metadata.GetPropertiesFor(ArgumentValue.GetType(), GetPropertiesFilter.None).Where(c => !c.Column.IsIdentity);
+            var availableColumns = Metadata.GetPropertiesFor(ArgumentValue.GetType(), GetPropertiesFilter.None);//.Where(c => !c.Column.IsIdentity);
 
 
             foreach (var item in availableColumns)
