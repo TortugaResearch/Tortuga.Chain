@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Runtime.Caching;
 using Tortuga.Chain.Core;
 namespace Tortuga.Chain.DataSources
@@ -110,6 +111,7 @@ namespace Tortuga.Chain.DataSources
         /// Raises the <see cref="E:ExecutionCanceled" /> event.
         /// </summary>
         /// <param name="e">The <see cref="ExecutionEventArgs"/> instance containing the event data.</param>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public void OnExecutionCanceled(ExecutionEventArgs e)
         {
             if (e == null)
@@ -123,6 +125,7 @@ namespace Tortuga.Chain.DataSources
         /// Raises the <see cref="E:ExecutionError" /> event.
         /// </summary>
         /// <param name="e">The <see cref="ExecutionEventArgs"/> instance containing the event data.</param>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public void OnExecutionError(ExecutionEventArgs e)
         {
             if (e == null)
@@ -136,6 +139,7 @@ namespace Tortuga.Chain.DataSources
         /// Raises the <see cref="E:ExecutionFinished" /> event.
         /// </summary>
         /// <param name="e">The <see cref="ExecutionEventArgs"/> instance containing the event data.</param>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public void OnExecutionFinished(ExecutionEventArgs e)
         {
             if (e == null)
@@ -149,6 +153,7 @@ namespace Tortuga.Chain.DataSources
         /// Raises the <see cref="E:ExecutionStarted" /> event.
         /// </summary>
         /// <param name="e">The <see cref="ExecutionEventArgs"/> instance containing the event data.</param>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public void OnExecutionStarted(ExecutionEventArgs e)
         {
             if (e == null)

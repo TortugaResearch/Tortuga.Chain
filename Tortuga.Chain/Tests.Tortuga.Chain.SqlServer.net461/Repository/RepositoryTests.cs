@@ -103,5 +103,48 @@ namespace Tests.Repository
             repo.Delete(echo1.EmployeeKey.Value);
 
         }
+
+        [TestMethod]
+        public void Upsert()
+        {
+            var repo = new Repository<Employee, int>(DataSource, EmployeeTableName);
+
+            var emp1 = new Employee() { FirstName = "Tom", LastName = "Jones", Title = "President" };
+            var echo1 = repo.Upsert(emp1);
+
+            Assert.AreNotEqual(0, echo1.EmployeeKey, "EmployeeKey was not set");
+            Assert.AreEqual(emp1.FirstName, echo1.FirstName, "FirstName");
+            Assert.AreEqual(emp1.LastName, echo1.LastName, "LastName");
+            Assert.AreEqual(emp1.Title, echo1.Title, "Title");
+
+            echo1.MiddleName = "G";
+            repo.Upsert(echo1);
+
+            Assert.AreEqual("G", echo1.MiddleName);
+
+            repo.Delete(echo1.EmployeeKey.Value);
+        }
+
+        [TestMethod]
+        public void Upsert_Dictionary()
+        {
+            var repo = new Repository<Employee, int>(DataSource, EmployeeTableName);
+
+            var emp1 = new Dictionary<string, object>() { { "FirstName", "Tom" }, { "LastName", "Jones" }, { "Title", "President" } };
+            var echo1 = repo.Upsert(emp1);
+
+            Assert.AreNotEqual(0, echo1.EmployeeKey, "EmployeeKey was not set");
+            Assert.AreEqual(emp1["FirstName"], echo1.FirstName, "FirstName");
+            Assert.AreEqual(emp1["LastName"], echo1.LastName, "LastName");
+            Assert.AreEqual(emp1["Title"], echo1.Title, "Title");
+
+            echo1.MiddleName = "G";
+            repo.Upsert(echo1);
+
+            Assert.AreEqual("G", echo1.MiddleName);
+
+            repo.Delete(echo1.EmployeeKey.Value);
+        }
+
     }
 }

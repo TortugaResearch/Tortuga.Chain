@@ -23,6 +23,7 @@
     <SqlServerVerification>False</SqlServerVerification>
     <IncludeCompositeObjects>True</IncludeCompositeObjects>
     <TargetDatabaseSet>True</TargetDatabaseSet>
+    <ServiceBrokerOption>EnableBroker</ServiceBrokerOption>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>bin\Release\</OutputPath>

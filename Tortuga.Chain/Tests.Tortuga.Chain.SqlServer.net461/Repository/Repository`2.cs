@@ -60,14 +60,24 @@ namespace Tests.Repository
             Source.Update(TableName, entity).Execute();
         }
 
-        public IList<Employee> Query(string whereClause, object argumentValue)
+        public TEntity Upsert(TEntity entity)
         {
-            return Source.From(TableName, whereClause, argumentValue).ToCollection<Employee>().Execute();
+            return Source.Upsert(TableName, entity).ToObject<TEntity>().Execute();
         }
 
-        public IList<Employee> Query(object filterValue)
+        public TEntity Upsert(IReadOnlyDictionary<string, object> entity)
         {
-            return Source.From(TableName, filterValue).ToCollection<Employee>().Execute();
+            return Source.Upsert(TableName, entity).ToObject<TEntity>().Execute();
+        }
+
+        public IList<TEntity> Query(string whereClause, object argumentValue)
+        {
+            return Source.From(TableName, whereClause, argumentValue).ToCollection<TEntity>().Execute();
+        }
+
+        public IList<TEntity> Query(object filterValue)
+        {
+            return Source.From(TableName, filterValue).ToCollection<TEntity>().Execute();
         }
     }
 

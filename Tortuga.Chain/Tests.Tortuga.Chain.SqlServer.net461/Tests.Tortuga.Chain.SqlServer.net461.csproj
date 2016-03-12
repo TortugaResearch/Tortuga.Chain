@@ -64,6 +64,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="CommandBuilders\SqlServerProcedureCallTests .cs" />
     <Compile Include="CommandBuilders\SqlServerSqlCallTests.cs" />
     <Compile Include="Metadata\MetadataTests.cs" />
     <Compile Include="Repository\TransactionalAsyncRepositoryTests.cs" />

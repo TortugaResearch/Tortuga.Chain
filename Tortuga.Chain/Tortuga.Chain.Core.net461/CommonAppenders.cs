@@ -4,7 +4,6 @@ using System.IO;
 using System.Runtime.Caching;
 using Tortuga.Chain.Appenders;
 using Tortuga.Chain.CommandBuilders;
-using Tortuga.Chain.Core;
 
 namespace Tortuga.Chain
 {

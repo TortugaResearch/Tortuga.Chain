@@ -1,5 +1,4 @@
 ﻿using System.Data.SqlClient;
-using Tortuga.Chain.Core;
 using Tortuga.Chain.SqlServer.Appenders;
 
 namespace Tortuga.Chain.SqlServer

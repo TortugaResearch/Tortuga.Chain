@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
-using Tortuga.Chain.Core;
 namespace Tortuga.Chain.CommandBuilders
 {
     /// <summary>

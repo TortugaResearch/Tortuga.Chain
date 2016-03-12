@@ -1,4 +1,5 @@
-﻿using System.Data.Common;
+﻿using System.ComponentModel;
+using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
 using Tortuga.Chain.Core;
@@ -30,6 +31,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// Gets the data source.
         /// </summary>
         /// <value>The data source.</value>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public DataSource<TCommand, TParameter> DataSource
         {
             get { return m_DataSource; }

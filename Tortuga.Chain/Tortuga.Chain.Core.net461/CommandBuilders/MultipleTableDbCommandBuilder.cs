@@ -1,8 +1,8 @@
 using System.Data;
 using System.Data.Common;
-using Tortuga.Chain.Core;
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Materializers;
+
 namespace Tortuga.Chain.CommandBuilders
 {
     /// <summary>

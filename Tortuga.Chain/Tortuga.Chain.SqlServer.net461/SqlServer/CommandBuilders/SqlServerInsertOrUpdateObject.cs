@@ -103,7 +103,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             else
                 filter = (GetPropertiesFilter.PrimaryKey | GetPropertiesFilter.ThrowOnMissingProperties);
 
-            var columns = Metadata.GetPropertiesFor(ArgumentValue.GetType(), filter).Where(c => !c.Column.IsIdentity);
+            var columns = Metadata.GetPropertiesFor(ArgumentValue.GetType(), filter); //.Where(c => !c.Column.IsIdentity);
 
             return string.Join(" AND ", columns.Select(c => $"target.{c.Column.QuotedSqlName} = source.{c.Column.QuotedSqlName}"));
         }

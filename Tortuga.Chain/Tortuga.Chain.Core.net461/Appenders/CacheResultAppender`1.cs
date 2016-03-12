@@ -2,7 +2,6 @@
 using System.Runtime.Caching;
 using System.Threading;
 using System.Threading.Tasks;
-using Tortuga.Chain.Core;
 using Tortuga.Chain.DataSources;
 namespace Tortuga.Chain.Appenders
 {

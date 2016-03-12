@@ -2,6 +2,7 @@
 using System;
 using System.Data.SqlClient;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 using Tortuga.Chain;
 
@@ -19,10 +20,29 @@ namespace Tests
         }
 
         [TestMethod]
+        public void SqlServerDataSourceTests_CreateFromConnectionStringBuilder()
+        {
+            var connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["SqlServerTestDatabase"].ConnectionString;
+            var csb = new SqlConnectionStringBuilder(connectionString);
+            var dataSource = new SqlServerDataSource("Foo", csb);
+            Assert.AreEqual("Foo", dataSource.Name);
+            dataSource.TestConnection();
+        }
+
+        [TestMethod]
         public void SqlServerDataSourceTests_CreateFromConfig()
         {
             var dataSource = SqlServerDataSource.CreateFromConfig("SqlServerTestDatabase");
             dataSource.TestConnection();
+        }
+
+        [TestMethod]
+        public void SqlServerDataSourceTests_SqlDependency()
+        {
+            var dataSource = SqlServerDataSource.CreateFromConfig("SqlServerTestDatabase");
+            dataSource.StartSqlDependency();
+            dataSource.TestConnection();
+            dataSource.StopSqlDependency();
         }
 
 
@@ -64,6 +84,36 @@ SELECT @Option AS [Option];";
             dataSource.Settings.XactAbort = null;
             var settingDefaultA = dataSource.Sql(sql).ToBoolean().Execute();
             var settingDefaultB = dataSource.GetEffectiveSettings();
+            Assert.AreEqual(settingOriginal, settingDefaultA, "XACT_ABORT should have returned to the default setting");
+            Assert.AreEqual(settingOriginal, settingDefaultB.XactAbort, "XACT_ABORT should have returned to the default setting in effective settings");
+
+        }
+
+        public async Task SqlServerDataSourceTests_XactAbortAsync()
+        {
+            const string sql = @"DECLARE @Option bit  = 0;
+IF ( (16384 & @@OPTIONS) = 16384 ) SET @Option = 1;
+SELECT @Option AS [Option];";
+
+            var dataSource = SqlServerDataSource.CreateFromConfig("SqlServerTestDatabase");
+
+            var settingOriginal = await dataSource.Sql(sql).ToBoolean().ExecuteAsync();
+
+            dataSource.Settings.XactAbort = true;
+            var settingOnA = await dataSource.Sql(sql).ToBoolean().ExecuteAsync();
+            var settingOnB = await dataSource.GetEffectiveSettingsAsync();
+            Assert.IsTrue(settingOnA, "XACT_ABORT should have been turned on.");
+            Assert.IsTrue(settingOnB.XactAbort, "XACT_ABORT should have been turned on in effective settings.");
+
+            dataSource.Settings.XactAbort = false;
+            var settingOffA = await dataSource.Sql(sql).ToBoolean().ExecuteAsync();
+            var settingOffB = await dataSource.GetEffectiveSettingsAsync();
+            Assert.IsFalse(settingOffA, "XACT_ABORT should have been turned off.");
+            Assert.IsFalse(settingOffB.XactAbort, "XACT_ABORT should have been turned off in effective settings.");
+
+            dataSource.Settings.XactAbort = null;
+            var settingDefaultA = await dataSource.Sql(sql).ToBoolean().ExecuteAsync();
+            var settingDefaultB = await dataSource.GetEffectiveSettingsAsync();
             Assert.AreEqual(settingOriginal, settingDefaultA, "XACT_ABORT should have returned to the default setting");
             Assert.AreEqual(settingOriginal, settingDefaultB.XactAbort, "XACT_ABORT should have returned to the default setting in effective settings");
 
@@ -178,6 +228,52 @@ SELECT @Option AS [Option];";
             }
         }
 
+        [TestMethod]
+        public async Task SqlServerDataSourceTests_CancelTest_Async()
+        {
+            var sql = "WAITFOR DELAY '00:00:05'";
+            var dataSource = SqlServerDataSource.CreateFromConfig("SqlServerTestDatabase");
+            var cts = new CancellationTokenSource(TimeSpan.FromSeconds(3));
+
+            try
+            {
+                await dataSource.Sql(sql).ExecuteAsync(cts.Token);
+                Assert.Fail("Expected OperationCanceledException exception");
+            }
+            catch (OperationCanceledException) { }
+        }
+
+        [TestMethod]
+        public async Task SqlServerDataSourceTests_CommandTimeout_Async()
+        {
+            var sql = "WAITFOR DELAY '00:00:05'";
+            var dataSource = SqlServerDataSource.CreateFromConfig("SqlServerTestDatabase");
+            dataSource.DefaultCommandTimeout = TimeSpan.FromSeconds(3);
+
+            try
+            {
+                await dataSource.Sql(sql).ExecuteAsync();
+                Assert.Fail("Expected SqlException exception");
+            }
+            catch (SqlException) { }
+        }
+
+        [TestMethod]
+        public void SqlServerDataSourceTests_CommandTimeout()
+        {
+            var sql = "WAITFOR DELAY '00:00:05'";
+            var dataSource = SqlServerDataSource.CreateFromConfig("SqlServerTestDatabase");
+            dataSource.DefaultCommandTimeout = TimeSpan.FromSeconds(3);
+
+            try
+            {
+                dataSource.Sql(sql).Execute();
+                Assert.Fail("Expected SqlException exception");
+            }
+            catch (SqlException) { }
+        }
 
     }
 }
+
+
