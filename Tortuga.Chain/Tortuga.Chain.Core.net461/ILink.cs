@@ -43,6 +43,11 @@ namespace Tortuga.Chain.Core
         /// <remarks>This is mostly used by appenders to override command behavior.</remarks>
         event EventHandler<ExecutionTokenPreparedEventArgs> ExecutionTokenPrepared;
 
-    }
 
+        /// <summary>
+        /// Returns SQL generated SQL without executing it.
+        /// </summary>
+        /// <returns></returns>
+        string Sql();
+    }
 }

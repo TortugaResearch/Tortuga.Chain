@@ -103,5 +103,14 @@ namespace Tortuga.Chain.Appenders
         {
             return PreviousLink.ExecuteAsync(cancellationToken, state);
         }
+
+        /// <summary>
+        /// Returns the generated SQL statement of the previous link.
+        /// </summary>
+        /// <returns></returns>
+        public string Sql()
+        {
+            return m_PreviousLink.Sql();
+        }
     }
 }

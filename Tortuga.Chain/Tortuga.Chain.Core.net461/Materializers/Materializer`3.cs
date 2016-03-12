@@ -58,6 +58,15 @@ namespace Tortuga.Chain.Materializers
         {
             get { return CommandBuilder.DataSource; }
         }
+
+        /// <summary>
+        /// Returns the generated SQL statement without executing it.
+        /// </summary>
+        /// <returns></returns>
+        public string Sql()
+        {
+            return Prepare().CommandText;
+        }
     }
 }
 

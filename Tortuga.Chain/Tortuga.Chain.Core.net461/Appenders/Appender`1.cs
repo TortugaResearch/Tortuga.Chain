@@ -107,5 +107,14 @@ namespace Tortuga.Chain.Appenders
         /// </summary>
         /// <remarks>This is mostly used by appenders to override command behavior.</remarks>
         public event EventHandler<ExecutionTokenPreparedEventArgs> ExecutionTokenPrepared;
+
+        /// <summary>
+        /// Returns the generated SQL statement of the previous link.
+        /// </summary>
+        /// <returns></returns>
+        public string Sql()
+        {
+            return m_PreviousLink.Sql();
+        }
     }
 }
