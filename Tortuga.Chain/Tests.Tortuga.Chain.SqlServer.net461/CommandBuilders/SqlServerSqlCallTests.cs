@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Threading.Tasks;
 using Tortuga.Chain;
 
 namespace Tests.CommandBuilders
@@ -20,6 +21,9 @@ namespace Tests.CommandBuilders
             var sql = "SELECT @Input";
             var result = DataSource.Sql(sql, new { @Input = 5 }).ToInt32().WithTracingToDebug().Execute();
             Assert.AreEqual(5, result);
+
+            var outSql = DataSource.Sql(sql, new { @Input = 5 }).ToInt32().WithTracingToDebug().Sql();
+            Assert.AreEqual(sql, outSql);
         }
 
 
@@ -28,6 +32,28 @@ namespace Tests.CommandBuilders
         {
             var sql = "SELECT @Input";
             DataSource.Sql(sql, new { @Input = 5 }).AsNonQuery().WithTracingToDebug().Execute();
+
+            var outSql = DataSource.Sql(sql, new { @Input = 5 }).ToInt32().WithTracingToDebug().Sql();
+            Assert.AreEqual(sql, outSql);
         }
+
+        [TestMethod]
+        public async Task SqlServerSqlCallTests_Sql_2_Async()
+        {
+            var sql = "SELECT @Input";
+            var result = await DataSource.Sql(sql, new { @Input = 5 }).ToInt32().WithTracingToDebug().ExecuteAsync();
+            Assert.AreEqual(5, result);
+
+        }
+
+
+        [TestMethod]
+        public async Task SqlServerSqlCallTests_Sql_2nq_Async()
+        {
+            var sql = "SELECT @Input";
+            await DataSource.Sql(sql, new { @Input = 5 }).AsNonQuery().WithTracingToDebug().ExecuteAsync();
+
+        }
+
     }
 }

@@ -92,6 +92,9 @@
     <Compile Include="..\Tests.Tortuga.Chain.SqlServer.net461\Repository\StrictRepositoryTests.cs">
       <Link>Repository\StrictRepositoryTests.cs</Link>
     </Compile>
+    <Compile Include="..\Tests.Tortuga.Chain.SqlServer.net461\Repository\TransactionalAsyncRepositoryTests.cs">
+      <Link>Repository\TransactionalAsyncRepositoryTests.cs</Link>
+    </Compile>
     <Compile Include="..\Tests.Tortuga.Chain.SqlServer.net461\Repository\TransactionalRepositoryTests.cs">
       <Link>Repository\TransactionalRepositoryTests.cs</Link>
     </Compile>

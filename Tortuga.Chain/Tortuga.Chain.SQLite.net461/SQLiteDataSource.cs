@@ -168,6 +168,8 @@ namespace Tortuga.Chain
                         foreach (var param in executionToken.Parameters)
                             cmd.Parameters.Add(param);
 
+                        executionToken.ApplyCommandOverrides(cmd);
+
                         var rows = implementation(cmd);
                         OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
                     }
@@ -227,6 +229,8 @@ namespace Tortuga.Chain
                         cmd.CommandType = executionToken.CommandType;
                         foreach (var param in executionToken.Parameters)
                             cmd.Parameters.Add(param);
+
+                        executionToken.ApplyCommandOverrides(cmd);
 
                         var rows = await implementation(cmd).ConfigureAwait(false);
                         OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);

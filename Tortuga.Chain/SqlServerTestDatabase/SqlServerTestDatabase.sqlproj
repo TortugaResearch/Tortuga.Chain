@@ -67,6 +67,8 @@
     <Build Include="HR\Employee.sql" />
     <Build Include="Sales\Sales.sql" />
     <Build Include="HR\HR.sql" />
+    <Build Include="Sales\Order.sql" />
+    <Build Include="Sales\CustomerWithOrdersByState.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="SqlServerTestDatabase.refactorlog" />

@@ -66,6 +66,7 @@
   <ItemGroup>
     <Compile Include="CommandBuilders\SqlServerSqlCallTests.cs" />
     <Compile Include="Metadata\MetadataTests.cs" />
+    <Compile Include="Repository\TransactionalAsyncRepositoryTests.cs" />
     <Compile Include="Repository\Employee.cs" />
     <Compile Include="Repository\AsyncRepository`2.cs" />
     <Compile Include="Repository\AsyncRepositoryTests.cs" />

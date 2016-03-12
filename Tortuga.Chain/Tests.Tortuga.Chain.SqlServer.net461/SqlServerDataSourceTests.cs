@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -22,6 +23,18 @@ namespace Tests
         {
             var dataSource = SqlServerDataSource.CreateFromConfig("SqlServerTestDatabase");
             dataSource.TestConnection();
+        }
+
+
+        [TestMethod]
+        public void SqlServerDataSourceTests_CreateFromConfig_Fail()
+        {
+            try
+            {
+                var dataSource = SqlServerDataSource.CreateFromConfig("FAKE");
+                Assert.Fail("Error expected");
+            }
+            catch (InvalidOperationException) { }
         }
 
 
@@ -164,5 +177,7 @@ SELECT @Option AS [Option];";
                 Assert.AreEqual(1, count, "Expected one error event notification");
             }
         }
+
+
     }
 }

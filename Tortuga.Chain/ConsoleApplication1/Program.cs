@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Data.SQLite;
 using System.Linq;
+using Tortuga.Chain;
 
 namespace ConsoleApplication1
 {
@@ -16,16 +16,16 @@ namespace ConsoleApplication1
         private static void SQLiteTest()
         {
             var connectionString = "Data Source=C:\\Users\\DocEvaad\\Desktop\\SQLiteStudio\\TortugaChainTestDb.sqlite3; Version=3;";
-            var dataSource = new Tortuga.Chain.SQLiteDataSource(connectionString);
+            var dataSource = new SQLiteDataSource(connectionString);
 
             dataSource.DatabaseMetadata.PreloadTables();
             dataSource.DatabaseMetadata.PreloadViews();
 
-            var currencyList = dataSource.From("Currency").AsCollection<Currency>().Execute();
+            var currencyList = dataSource.From("Currency").ToCollection<Currency>().Execute();
             foreach (var item in currencyList)
                 Console.WriteLine(item.CurrencyCode + " " + item.CurrencyName);
 
-            var cards1 = dataSource.From("CreditCard", new { @CardType = "Vista" }).AsCollection<CreditCard>().Execute();
+            var cards1 = dataSource.From("CreditCard", new { @CardType = "Vista" }).ToCollection<CreditCard>().Execute();
             foreach (var item in cards1.Take(10))
                 Console.WriteLine(item.CardNumber);
 
@@ -36,11 +36,11 @@ namespace ConsoleApplication1
 
                 dataSource.StrictMode = true;
 
-                var insertedCode = dataSource.Insert("Currency", newCurrency).AsObject<Currency>().Execute();
+                var insertedCode = dataSource.Insert("Currency", newCurrency).ToObject<Currency>().Execute();
                 Console.WriteLine($"Inserted new code: {insertedCode.CurrencyName} - {newCurrency.CurrencyName}");
 
                 newCurrency.CurrencyName = "Modified Currency";
-                var updateCode = dataSource.Upsert("Currency", newCurrency).AsObject<Currency>().Execute();
+                var updateCode = dataSource.Upsert("Currency", newCurrency).ToObject<Currency>().Execute();
                 Console.WriteLine($"Upserted code: {updateCode.CurrencyName} - {insertedCode.CurrencyName}");
 
                 //dataSource.Delete("Currency", insertedCode).Execute();
@@ -53,17 +53,17 @@ namespace ConsoleApplication1
         private static void SqlServerTest()
         {
             var connectionString = "Server=.;Database=AdventureWorks2014;Trusted_Connection=True;";
-            var dataSource = new Tortuga.Chain.SqlServerDataSource(connectionString);
+            var dataSource = new SqlServerDataSource(connectionString);
 
             dataSource.DatabaseMetadata.PreloadTables();
             dataSource.DatabaseMetadata.PreloadViews();
 
             const string SalesCurrency = "Sales.Currency";
-            var currencyList = dataSource.From(SalesCurrency).AsCollection<Currency>().Execute();
+            var currencyList = dataSource.From(SalesCurrency).ToCollection<Currency>().Execute();
             foreach (var item in currencyList)
                 Console.WriteLine(item.CurrencyCode + " " + item.CurrencyName);
 
-            var cards1 = dataSource.From("Sales.CreditCard", new { @CardType = "Vista" }).AsCollection<CreditCard>().Execute();
+            var cards1 = dataSource.From("Sales.CreditCard", new { @CardType = "Vista" }).ToCollection<CreditCard>().Execute();
             foreach (var item in cards1.Take(10))
                 Console.WriteLine(item.CardNumber);
 
@@ -74,7 +74,7 @@ namespace ConsoleApplication1
 
                 dataSource.StrictMode = true;
 
-                var newCode = dataSource.Insert(SalesCurrency, code).AsString().Execute();
+                var newCode = dataSource.Insert(SalesCurrency, code).ToString().Execute();
 
                 code.CurrencyName += " modified";
 
@@ -90,7 +90,7 @@ namespace ConsoleApplication1
 
                 dataSource.StrictMode = true;
 
-                var newCode = dataSource.Upsert(SalesCurrency, code).AsString().Execute();
+                var newCode = dataSource.Upsert(SalesCurrency, code).ToString().Execute();
 
                 code.CurrencyName += " modified";
 
