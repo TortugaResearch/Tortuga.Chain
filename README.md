@@ -23,7 +23,7 @@ Transactions still need to contained within a `using` statement and explicitly c
 
 Command chains are the primary way of working with Tortuga. Each link in the chain is used to inform the previous link about what actions are desired. Here is a basic example:
 
-    dataSource.Procedure("uspGetEmployeeManagers", new {@BusinessEntityID = 100}).AsCollection<Manager>().Execute();
+    dataSource.Procedure("uspGetEmployeeManagers", new {@BusinessEntityID = 100}).ToCollection<Manager>().Execute();
 
 Breaking this down, we have:
 
@@ -53,14 +53,14 @@ Chain command builders honor .NET's `NotMapped` and `Column` attributes.
 
 Materializers are an optional link, you only need them if you want something back from the database.
 
-An interesting feature of the materializer is that it participates in SQL generation. For example, if you use the `AsObject<T>` or `AsCollection<T>` materializer, then it will read the list of properties on class T. That list of properties will be used to generate the SELECT clause, ensuring that you don't pull back more information than you actually need. This in turn means that indexes are used more efficiently and performance is improved.
+An interesting feature of the materializer is that it participates in SQL generation. For example, if you use the `ToObject<T>` or `ToCollection<T>` materializer, then it will read the list of properties on class T. That list of properties will be used to generate the SELECT clause, ensuring that you don't pull back more information than you actually need. This in turn means that indexes are used more efficiently and performance is improved.
 
 Materializers call into several categories:
 
-* Scalar: `AsInt`, `AsIntOrNull`, `AsString`
-* Row: `AsRow`, `AsDataRow`, `AsObject`
-* Table: `AsTable`, `AsDataTable`, `AsCollection`
-* Multiple Tables: `AsTableSet`, `AsDataSet`
+* Scalar: `ToInt`, `ToIntOrNull`, `ToString`
+* Row: `ToRow`, `ToDataRow`, `ToObject`
+* Table: `ToTable`, `ToDataTable`, `ToCollection`
+* Multiple Tables: `ToTableSet`, `ToDataSet`
 
 ###Execution Modes
 
