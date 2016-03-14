@@ -1,4 +1,6 @@
-﻿namespace Tortuga.Chain.Metadata
+﻿using System;
+
+namespace Tortuga.Chain.Metadata
 {
 
     /// <summary>
@@ -14,13 +16,19 @@
         /// </summary>
         /// <param name="procedureName">Name of the procedure.</param>
         /// <returns></returns>
-        public abstract StoredProcedureMetadata<TName, TDbType> GetStoredProcedure(TName procedureName);
+        public virtual StoredProcedureMetadata<TName, TDbType> GetStoredProcedure(TName procedureName)
+        {
+            throw new NotSupportedException("Stored procedures are not supported by this data source");
+        }
 
         /// <summary>
         /// Gets the metadata for a table function.
         /// </summary>
         /// <param name="tableFunctionName">Name of the table function.</param>
-        public abstract TableFunctionMetadata<TName, TDbType> GetTableFunction(TName tableFunctionName);
+        public virtual TableFunctionMetadata<TName, TDbType> GetTableFunction(TName tableFunctionName)
+        {
+            throw new NotSupportedException("Table value functions are not supported by this data source");
+        }
 
         /// <summary>
         /// Gets the metadata for a table.

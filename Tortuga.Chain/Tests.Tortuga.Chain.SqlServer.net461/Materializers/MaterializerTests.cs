@@ -34,6 +34,33 @@ namespace Tests.Materializers
         }
 
 
+        async Task ScalarFailOnNullTest<TResult>(string columnName, Type materializerType)
+        {
+
+            var cb1 = DataSource.From("dbo.AllTypes", "Id In (3)");
+
+            ILink<TResult> materializer1 = (ILink<TResult>)Activator.CreateInstance(materializerType, new object[] { cb1, columnName });
+            try
+            {
+                var result1 = materializer1.Execute();
+                Assert.Fail("Exception expected");
+            }
+            catch (MissingDataException)
+            {
+                //Expected
+            }
+            try
+            {
+                var result1a = await materializer1.ExecuteAsync();
+                Assert.Fail("Exception expected");
+            }
+            catch (MissingDataException)
+            {
+                //Expected
+            }
+
+        }
+
         async Task ScalarOrNullTest<TResult>(string columnName, Type materializerType)
         {
             var cb1 = DataSource.From("dbo.AllTypes", "Id = 1");
@@ -93,6 +120,32 @@ namespace Tests.Materializers
             var result1 = materializer1.Execute();
             var result1a = await materializer1.ExecuteAsync();
             Assert.AreEqual(result1.Count, result1a.Count, "Results don't match");
+        }
+
+
+        async Task FailedListWithNullsTest<TResult>(string columnName, Type materializerType)
+        {
+            var cb1 = DataSource.From("dbo.AllTypes", "Id In (1, 2, 3, 4)");
+
+            ILink<List<TResult>> materializer1 = (ILink<List<TResult>>)Activator.CreateInstance(materializerType, new object[] { cb1, columnName, ListOptions.None });
+            try
+            {
+                var result1 = materializer1.Execute();
+                Assert.Fail("Exception expected");
+            }
+            catch (MissingDataException)
+            {
+                //Expected
+            }
+            try
+            {
+                var result1a = await materializer1.ExecuteAsync();
+                Assert.Fail("Exception expected");
+            }
+            catch (MissingDataException)
+            {
+                //Expected
+            }
         }
 
 
@@ -1432,8 +1485,196 @@ namespace Tests.Materializers
 
 
 
+        //*****************************
 
 
+        [TestMethod]
+        public async Task CharNull_String_ListWithNullsTest()
+        {
+            await ListWithNullsTest<string>("CharNull", typeof(StringListMaterializer<SqlCommand, SqlParameter>));
+        }
+
+
+        [TestMethod]
+        public async Task VarCharNull_String_ListWithNullsTest()
+        {
+            await ListWithNullsTest<string>("VarCharNull", typeof(StringListMaterializer<SqlCommand, SqlParameter>));
+        }
+
+
+        [TestMethod]
+        public async Task NCharNull_String_ListWithNullsTest()
+        {
+            await ListWithNullsTest<string>("NCharNull", typeof(StringListMaterializer<SqlCommand, SqlParameter>));
+        }
+
+
+        [TestMethod]
+        public async Task NVarCharNull_String_ListWithNullsTest()
+        {
+            await ListWithNullsTest<string>("NVarCharNull", typeof(StringListMaterializer<SqlCommand, SqlParameter>));
+        }
+
+
+        [TestMethod]
+        public async Task BitNull_Boolean_ListWithNullsTest()
+        {
+            await FailedListWithNullsTest<bool>("BitNull", typeof(BooleanListMaterializer<SqlCommand, SqlParameter>));
+        }
+
+
+        [TestMethod]
+        public async Task TinyIntNull_Byte_ListWithNullsTest()
+        {
+            await FailedListWithNullsTest<byte>("TinyIntNull", typeof(ByteListMaterializer<SqlCommand, SqlParameter>));
+        }
+
+
+        [TestMethod]
+        public async Task IntNull_Int32_ListWithNullsTest()
+        {
+            await FailedListWithNullsTest<int>("IntNull", typeof(Int32ListMaterializer<SqlCommand, SqlParameter>));
+        }
+
+
+        [TestMethod]
+        public async Task BigIntNull_Int64_ListWithNullsTest()
+        {
+            await FailedListWithNullsTest<long>("BigIntNull", typeof(Int64ListMaterializer<SqlCommand, SqlParameter>));
+        }
+
+
+        [TestMethod]
+        public async Task NumericNull_Decimal_ListWithNullsTest()
+        {
+            await FailedListWithNullsTest<decimal>("NumericNull", typeof(DecimalListMaterializer<SqlCommand, SqlParameter>));
+        }
+
+
+        [TestMethod]
+        public async Task SmallIntNull_Int16_ListWithNullsTest()
+        {
+            await FailedListWithNullsTest<short>("SmallIntNull", typeof(Int16ListMaterializer<SqlCommand, SqlParameter>));
+        }
+
+
+        [TestMethod]
+        public async Task DecimalNull_Decimal_ListWithNullsTest()
+        {
+            await FailedListWithNullsTest<decimal>("DecimalNull", typeof(DecimalListMaterializer<SqlCommand, SqlParameter>));
+        }
+
+
+        [TestMethod]
+        public async Task SmallMoneyNull_Decimal_ListWithNullsTest()
+        {
+            await FailedListWithNullsTest<decimal>("SmallMoneyNull", typeof(DecimalListMaterializer<SqlCommand, SqlParameter>));
+        }
+
+
+        [TestMethod]
+        public async Task MoneyNull_Decimal_ListWithNullsTest()
+        {
+            await FailedListWithNullsTest<decimal>("MoneyNull", typeof(DecimalListMaterializer<SqlCommand, SqlParameter>));
+        }
+
+
+        [TestMethod]
+        public async Task FloatNull_Double_ListWithNullsTest()
+        {
+            await FailedListWithNullsTest<double>("FloatNull", typeof(DoubleListMaterializer<SqlCommand, SqlParameter>));
+        }
+
+
+        [TestMethod]
+        public async Task RealNull_Single_ListWithNullsTest()
+        {
+            await FailedListWithNullsTest<float>("RealNull", typeof(SingleListMaterializer<SqlCommand, SqlParameter>));
+        }
+
+
+        [TestMethod]
+        public async Task DateNull_DateTime_ListWithNullsTest()
+        {
+            await FailedListWithNullsTest<DateTime>("DateNull", typeof(DateTimeListMaterializer<SqlCommand, SqlParameter>));
+        }
+
+
+        [TestMethod]
+        public async Task DatetimeoffsetNull_DateTimeOffset_ListWithNullsTest()
+        {
+            await FailedListWithNullsTest<DateTimeOffset>("DatetimeoffsetNull", typeof(DateTimeOffsetListMaterializer<SqlCommand, SqlParameter>));
+        }
+
+
+        [TestMethod]
+        public async Task Datetime2Null_DateTime_ListWithNullsTest()
+        {
+            await FailedListWithNullsTest<DateTime>("Datetime2Null", typeof(DateTimeListMaterializer<SqlCommand, SqlParameter>));
+        }
+
+
+        [TestMethod]
+        public async Task SmalldatetimeNull_DateTime_ListWithNullsTest()
+        {
+            await FailedListWithNullsTest<DateTime>("SmalldatetimeNull", typeof(DateTimeListMaterializer<SqlCommand, SqlParameter>));
+        }
+
+
+        [TestMethod]
+        public async Task DatetimeNull_DateTime_ListWithNullsTest()
+        {
+            await FailedListWithNullsTest<DateTime>("DatetimeNull", typeof(DateTimeListMaterializer<SqlCommand, SqlParameter>));
+        }
+
+
+        [TestMethod]
+        public async Task TimeNull_TimeSpan_ListWithNullsTest()
+        {
+            await FailedListWithNullsTest<TimeSpan>("TimeNull", typeof(TimeSpanListMaterializer<SqlCommand, SqlParameter>));
+        }
+
+
+        [TestMethod]
+        public async Task TextNull_String_ListWithNullsTest()
+        {
+            await ListWithNullsTest<string>("TextNull", typeof(StringListMaterializer<SqlCommand, SqlParameter>));
+        }
+
+
+        [TestMethod]
+        public async Task NTextNull_String_ListWithNullsTest()
+        {
+            await ListWithNullsTest<string>("NTextNull", typeof(StringListMaterializer<SqlCommand, SqlParameter>));
+        }
+
+
+        [TestMethod]
+        public async Task BinaryNull_ByteArray_ListWithNullsTest()
+        {
+            await FailedListWithNullsTest<byte[]>("BinaryNull", typeof(ByteArrayListMaterializer<SqlCommand, SqlParameter>));
+        }
+
+
+        [TestMethod]
+        public async Task VarBinaryNull_ByteArray_ListWithNullsTest()
+        {
+            await FailedListWithNullsTest<byte[]>("VarBinaryNull", typeof(ByteArrayListMaterializer<SqlCommand, SqlParameter>));
+        }
+
+
+        [TestMethod]
+        public async Task UniqueidentifierNull_Guid_ListWithNullsTest()
+        {
+            await FailedListWithNullsTest<Guid>("UniqueidentifierNull", typeof(GuidListMaterializer<SqlCommand, SqlParameter>));
+        }
+
+
+        [TestMethod]
+        public async Task XmlNull_String_ListWithNullsTest()
+        {
+            await ListWithNullsTest<string>("XmlNull", typeof(StringListMaterializer<SqlCommand, SqlParameter>));
+        }
 
 
 
@@ -1441,30 +1682,202 @@ namespace Tests.Materializers
         //*****************************
 
 
-        //[TestMethod]
-        //public async Task TestMethod1()
-        //{
-        //    var columnName = "CharNull";
-        //    await ScalarTest<string>(columnName, typeof(StringMaterializer<SqlCommand, SqlParameter>));
-        //    await ScalarOrNullTest<string>(columnName, typeof(StringMaterializer<SqlCommand, SqlParameter>));
-        //    await ListTest<string>(columnName, typeof(StringListMaterializer<SqlCommand, SqlParameter>));
-        //    await ListDisardNullTest<string>(columnName, typeof(StringListMaterializer<SqlCommand, SqlParameter>));
-        //    await ListWithNullsTest<string>(columnName, typeof(StringListMaterializer<SqlCommand, SqlParameter>));
-        //}
-
-        //[TestMethod]
-        //public async Task TestMethod2()
-        //{
-        //    var columnName = "IntNull";
-        //    await ScalarTest<int>(columnName, typeof(Int32Materializer<SqlCommand, SqlParameter>));
-        //    await ScalarOrNullTest<int?>(columnName, typeof(Int32OrNullMaterializer<SqlCommand, SqlParameter>));
-        //    await ListTest<int>(columnName, typeof(Int32ListMaterializer<SqlCommand, SqlParameter>));
-        //    await ListDisardNullTest<int>(columnName, typeof(Int32ListMaterializer<SqlCommand, SqlParameter>));
-        //    await ListWithNullsTest<int>(columnName, typeof(Int32ListMaterializer<SqlCommand, SqlParameter>));
-        //}
+        [TestMethod]
+        public async Task BitNull_Boolean_ScalarFailOnNullTest()
+        {
+            await ScalarFailOnNullTest<bool>("BitNull", typeof(BooleanMaterializer<SqlCommand, SqlParameter>));
+        }
 
 
+        [TestMethod]
+        public async Task TinyIntNull_Byte_ScalarFailOnNullTest()
+        {
+            await ScalarFailOnNullTest<byte>("TinyIntNull", typeof(ByteMaterializer<SqlCommand, SqlParameter>));
+        }
 
+
+        [TestMethod]
+        public async Task IntNull_Int32_ScalarFailOnNullTest()
+        {
+            await ScalarFailOnNullTest<int>("IntNull", typeof(Int32Materializer<SqlCommand, SqlParameter>));
+        }
+
+
+        [TestMethod]
+        public async Task BigIntNull_Int64_ScalarFailOnNullTest()
+        {
+            await ScalarFailOnNullTest<long>("BigIntNull", typeof(Int64Materializer<SqlCommand, SqlParameter>));
+        }
+
+
+        [TestMethod]
+        public async Task NumericNull_Decimal_ScalarFailOnNullTest()
+        {
+            await ScalarFailOnNullTest<decimal>("NumericNull", typeof(DecimalMaterializer<SqlCommand, SqlParameter>));
+        }
+
+
+        [TestMethod]
+        public async Task SmallIntNull_Int16_ScalarFailOnNullTest()
+        {
+            await ScalarFailOnNullTest<short>("SmallIntNull", typeof(Int16Materializer<SqlCommand, SqlParameter>));
+        }
+
+
+        [TestMethod]
+        public async Task DecimalNull_Decimal_ScalarFailOnNullTest()
+        {
+            await ScalarFailOnNullTest<decimal>("DecimalNull", typeof(DecimalMaterializer<SqlCommand, SqlParameter>));
+        }
+
+
+        [TestMethod]
+        public async Task SmallMoneyNull_Decimal_ScalarFailOnNullTest()
+        {
+            await ScalarFailOnNullTest<decimal>("SmallMoneyNull", typeof(DecimalMaterializer<SqlCommand, SqlParameter>));
+        }
+
+
+        [TestMethod]
+        public async Task MoneyNull_Decimal_ScalarFailOnNullTest()
+        {
+            await ScalarFailOnNullTest<decimal>("MoneyNull", typeof(DecimalMaterializer<SqlCommand, SqlParameter>));
+        }
+
+
+        [TestMethod]
+        public async Task FloatNull_Double_ScalarFailOnNullTest()
+        {
+            await ScalarFailOnNullTest<double>("FloatNull", typeof(DoubleMaterializer<SqlCommand, SqlParameter>));
+        }
+
+
+        [TestMethod]
+        public async Task RealNull_Single_ScalarFailOnNullTest()
+        {
+            await ScalarFailOnNullTest<float>("RealNull", typeof(SingleMaterializer<SqlCommand, SqlParameter>));
+        }
+
+
+        [TestMethod]
+        public async Task DateNull_DateTime_ScalarFailOnNullTest()
+        {
+            await ScalarFailOnNullTest<DateTime>("DateNull", typeof(DateTimeMaterializer<SqlCommand, SqlParameter>));
+        }
+
+
+        [TestMethod]
+        public async Task DatetimeoffsetNull_DateTimeOffset_ScalarFailOnNullTest()
+        {
+            await ScalarFailOnNullTest<DateTimeOffset>("DatetimeoffsetNull", typeof(DateTimeOffsetMaterializer<SqlCommand, SqlParameter>));
+        }
+
+
+        [TestMethod]
+        public async Task Datetime2Null_DateTime_ScalarFailOnNullTest()
+        {
+            await ScalarFailOnNullTest<DateTime>("Datetime2Null", typeof(DateTimeMaterializer<SqlCommand, SqlParameter>));
+        }
+
+
+        [TestMethod]
+        public async Task SmalldatetimeNull_DateTime_ScalarFailOnNullTest()
+        {
+            await ScalarFailOnNullTest<DateTime>("SmalldatetimeNull", typeof(DateTimeMaterializer<SqlCommand, SqlParameter>));
+        }
+
+
+        [TestMethod]
+        public async Task DatetimeNull_DateTime_ScalarFailOnNullTest()
+        {
+            await ScalarFailOnNullTest<DateTime>("DatetimeNull", typeof(DateTimeMaterializer<SqlCommand, SqlParameter>));
+        }
+
+
+        [TestMethod]
+        public async Task TimeNull_TimeSpan_ScalarFailOnNullTest()
+        {
+            await ScalarFailOnNullTest<TimeSpan>("TimeNull", typeof(TimeSpanMaterializer<SqlCommand, SqlParameter>));
+        }
+
+
+        [TestMethod]
+        public async Task UniqueidentifierNull_Guid_ScalarFailOnNullTest()
+        {
+            await ScalarFailOnNullTest<Guid>("UniqueidentifierNull", typeof(GuidMaterializer<SqlCommand, SqlParameter>));
+        }
+
+
+
+        //*****************************
+
+
+        [TestMethod]
+        public async Task Table()
+        {
+            var materializer = DataSource.From("dbo.AllTypes").ToTable();
+            var result1 = materializer.Execute();
+            var result1a = await materializer.ExecuteAsync();
+        }
+
+
+
+        [TestMethod]
+        public async Task DataTable()
+        {
+            var materializer = DataSource.From("dbo.AllTypes").ToDataTable();
+            var result1 = materializer.Execute();
+            var result1a = await materializer.ExecuteAsync();
+        }
+
+
+        [TestMethod]
+        public async Task TableSet()
+        {
+            var materializer = DataSource.Procedure("Sales.CustomerWithOrdersByState", new { State = "CA" }).ToTableSet();
+            var result1 = materializer.Execute();
+            var result1a = await materializer.ExecuteAsync();
+        }
+
+
+
+
+        [TestMethod]
+        public async Task TableSet2()
+        {
+            var materializer = DataSource.Procedure("Sales.CustomerWithOrdersByState", new { State = "CA" }).ToTableSet("Customers", "Orders");
+            var result1 = materializer.Execute();
+            var result1a = await materializer.ExecuteAsync();
+        }
+
+
+        [TestMethod]
+        public async Task DataTableSet()
+        {
+            var materializer = DataSource.Procedure("Sales.CustomerWithOrdersByState", new { State = "CA" }).ToDataSet("Customers", "Orders");
+            var result1 = materializer.Execute();
+            var result1a = await materializer.ExecuteAsync();
+        }
+
+
+
+        [TestMethod]
+        public async Task TableSet_Dict()
+        {
+            var materializer = DataSource.Procedure("Sales.CustomerWithOrdersByState", new Dictionary<string, object>() { { "State", "CA" } }).ToTableSet();
+            var result1 = materializer.Execute();
+            var result1a = await materializer.ExecuteAsync();
+        }
+
+
+
+        [TestMethod]
+        public async Task DataTableSet_Dict()
+        {
+            var materializer = DataSource.Procedure("Sales.CustomerWithOrdersByState", new Dictionary<string, object>() { { "State", "CA" } }).ToDataSet("Customers", "Orders");
+            var result1 = materializer.Execute();
+            var result1a = await materializer.ExecuteAsync();
+        }
 
     }
 }

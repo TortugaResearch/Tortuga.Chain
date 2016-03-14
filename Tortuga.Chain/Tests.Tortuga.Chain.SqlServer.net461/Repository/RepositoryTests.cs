@@ -133,7 +133,7 @@ namespace Tests.Repository
         {
             var repo = new Repository<Employee, int>(DataSource, EmployeeTableName);
 
-            var emp1 = new Dictionary<string, object>() { { "FirstName", "Tom" }, { "LastName", "Jones" }, { "Title", "President" } };
+            var emp1 = new Dictionary<string, object>() { { "FirstName", "Tom" }, { "LastName", "Jones" }, { "Title", "President" }, { "EmployeeKey", null } };
             var echo1 = repo.Upsert(emp1);
 
             Assert.AreNotEqual(0, echo1.EmployeeKey, "EmployeeKey was not set");

@@ -53,60 +53,118 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 
         private string SourceClause(List<SqlParameter> parameters)
         {
-            var availableColumns = Metadata.GetPropertiesFor(ArgumentValue.GetType(), GetPropertiesFilter.None);//.Where(c => !c.Column.IsIdentity);
-
-
-            foreach (var item in availableColumns)
+            if (ArgumentDictionary != null)
             {
-                var value = item.Property.InvokeGet(ArgumentValue) ?? DBNull.Value;
-                var parameter = new SqlParameter(item.Column.SqlVariableName, value);
-                if (item.Column.DbType.HasValue)
-                    parameter.SqlDbType = item.Column.DbType.Value;
-                parameters.Add(parameter);
+                var availableColumns = Metadata.GetKeysFor(ArgumentDictionary, GetKeysFilter.None);
+
+
+                foreach (var item in availableColumns)
+                {
+                    var value = ArgumentDictionary[item.ClrName] ?? DBNull.Value;
+                    var parameter = new SqlParameter(item.SqlVariableName, value);
+                    if (item.DbType.HasValue)
+                        parameter.SqlDbType = item.DbType.Value;
+                    parameters.Add(parameter);
+                }
+
+
+                return "(VALUES (" + string.Join(", ", availableColumns.Select(c => c.SqlVariableName)) + ")) AS source (" + string.Join(", ", availableColumns.Select(c => c.QuotedSqlName)) + ")";
+
             }
+            else
+            {
+                var availableColumns = Metadata.GetPropertiesFor(ArgumentValue.GetType(), GetPropertiesFilter.None);
 
 
-            return "(VALUES (" + string.Join(", ", availableColumns.Select(c => c.Column.SqlVariableName)) + ")) AS source (" + string.Join(", ", availableColumns.Select(c => c.Column.QuotedSqlName)) + ")";
+                foreach (var item in availableColumns)
+                {
+                    var value = item.Property.InvokeGet(ArgumentValue) ?? DBNull.Value;
+                    var parameter = new SqlParameter(item.Column.SqlVariableName, value);
+                    if (item.Column.DbType.HasValue)
+                        parameter.SqlDbType = item.Column.DbType.Value;
+                    parameters.Add(parameter);
+                }
 
+
+                return "(VALUES (" + string.Join(", ", availableColumns.Select(c => c.Column.SqlVariableName)) + ")) AS source (" + string.Join(", ", availableColumns.Select(c => c.Column.QuotedSqlName)) + ")";
+            }
         }
 
 
         private string UpdateClauses()
         {
-            var filter = GetPropertiesFilter.ThrowOnNoMatch | GetPropertiesFilter.UpdatableOnly;
+            if (ArgumentDictionary != null)
+            {
+                var filter = GetKeysFilter.ThrowOnNoMatch | GetKeysFilter.UpdatableOnly | GetKeysFilter.NonPrimaryKey;
 
-            if (m_Options.HasFlag(InsertOrUpdateOptions.UseKeyAttribute))
-                filter = filter | GetPropertiesFilter.ObjectDefinedNonKey;
+                if (DataSource.StrictMode)
+                    filter = filter | GetKeysFilter.ThrowOnMissingColumns;
+
+                var availableColumns = Metadata.GetKeysFor(ArgumentDictionary, filter);
+
+                return string.Join(", ", availableColumns.Select(c => $"target.{c.QuotedSqlName} = source.{c.QuotedSqlName}"));
+
+            }
             else
-                filter = filter | GetPropertiesFilter.NonPrimaryKey;
+            {
+                var filter = GetPropertiesFilter.ThrowOnNoMatch | GetPropertiesFilter.UpdatableOnly;
 
-            if (DataSource.StrictMode)
-                filter = filter | GetPropertiesFilter.ThrowOnMissingColumns;
+                if (m_Options.HasFlag(InsertOrUpdateOptions.UseKeyAttribute))
+                    filter = filter | GetPropertiesFilter.ObjectDefinedNonKey;
+                else
+                    filter = filter | GetPropertiesFilter.NonPrimaryKey;
 
-            var availableColumns = Metadata.GetPropertiesFor(ArgumentValue.GetType(), filter);
+                if (DataSource.StrictMode)
+                    filter = filter | GetPropertiesFilter.ThrowOnMissingColumns;
 
-            return string.Join(", ", availableColumns.Select(c => $"target.{c.Column.QuotedSqlName} = source.{c.Column.QuotedSqlName}"));
+                var availableColumns = Metadata.GetPropertiesFor(ArgumentValue.GetType(), filter);
+
+                return string.Join(", ", availableColumns.Select(c => $"target.{c.Column.QuotedSqlName} = source.{c.Column.QuotedSqlName}"));
+            }
         }
 
         private void InsertClauses(out string insertColumns, out string insertValues)
         {
-            var availableColumns = Metadata.GetPropertiesFor(ArgumentValue.GetType(), GetPropertiesFilter.UpdatableOnly);
+            if (ArgumentDictionary != null)
+            {
+                var availableColumns = Metadata.GetKeysFor(ArgumentDictionary, GetKeysFilter.UpdatableOnly);
 
-            insertColumns = string.Join(", ", availableColumns.Select(c => $"{c.Column.QuotedSqlName}"));
-            insertValues = string.Join(", ", availableColumns.Select(c => $"source.{c.Column.QuotedSqlName}"));
+                insertColumns = string.Join(", ", availableColumns.Select(c => $"{c.QuotedSqlName}"));
+                insertValues = string.Join(", ", availableColumns.Select(c => $"source.{c.QuotedSqlName}"));
+
+            }
+            else
+            {
+                var availableColumns = Metadata.GetPropertiesFor(ArgumentValue.GetType(), GetPropertiesFilter.UpdatableOnly);
+
+                insertColumns = string.Join(", ", availableColumns.Select(c => $"{c.Column.QuotedSqlName}"));
+                insertValues = string.Join(", ", availableColumns.Select(c => $"source.{c.Column.QuotedSqlName}"));
+            }
         }
 
         private string OnClause(bool useKeyAttribute)
         {
-            GetPropertiesFilter filter;
-            if (useKeyAttribute)
-                filter = (GetPropertiesFilter.ObjectDefinedKey | GetPropertiesFilter.ThrowOnMissingColumns);
+            if (ArgumentDictionary != null)
+            {
+                GetKeysFilter filter = (GetKeysFilter.PrimaryKey | GetKeysFilter.ThrowOnMissingProperties);
+
+                var columns = Metadata.GetKeysFor(ArgumentDictionary, filter);
+
+                return string.Join(" AND ", columns.Select(c => $"target.{c.QuotedSqlName} = source.{c.QuotedSqlName}"));
+
+            }
             else
-                filter = (GetPropertiesFilter.PrimaryKey | GetPropertiesFilter.ThrowOnMissingProperties);
+            {
+                GetPropertiesFilter filter;
+                if (useKeyAttribute)
+                    filter = (GetPropertiesFilter.ObjectDefinedKey | GetPropertiesFilter.ThrowOnMissingColumns);
+                else
+                    filter = (GetPropertiesFilter.PrimaryKey | GetPropertiesFilter.ThrowOnMissingProperties);
 
-            var columns = Metadata.GetPropertiesFor(ArgumentValue.GetType(), filter); //.Where(c => !c.Column.IsIdentity);
+                var columns = Metadata.GetPropertiesFor(ArgumentValue.GetType(), filter); //.Where(c => !c.Column.IsIdentity);
 
-            return string.Join(" AND ", columns.Select(c => $"target.{c.Column.QuotedSqlName} = source.{c.Column.QuotedSqlName}"));
+                return string.Join(" AND ", columns.Select(c => $"target.{c.Column.QuotedSqlName} = source.{c.Column.QuotedSqlName}"));
+            }
         }
     }
 }
