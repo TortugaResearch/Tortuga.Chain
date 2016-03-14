@@ -11,3 +11,4 @@ Post-Deployment Script Template
 */
 
 :r ".\Data\Employee.sql"
+:r ".\Data\AllTypes.sql"

@@ -92,6 +92,10 @@
     <Compile Include="ILink.cs" />
     <Compile Include="Appenders\InvalidateCacheAppender.cs" />
     <Compile Include="Appenders\InvalidateCacheAppender`1.cs" />
+    <Compile Include="Materializers\Scalar\ByteOrNullMaterializer`2.cs" />
+    <Compile Include="Materializers\Scalar\ByteMaterializer`2.cs" />
+    <Compile Include="Materializers\SingleColumn\ByteArrayListMaterializer`2.cs" />
+    <Compile Include="Materializers\SingleColumn\ByteListMaterializer`2.cs" />
     <Compile Include="Materializers\SingleColumn\BooleanListMaterializer`2.cs" />
     <Compile Include="Materializers\Scalar\BooleanOrNullMaterializer`2.cs" />
     <Compile Include="Materializers\Scalar\BooleanMaterializer`2.cs" />

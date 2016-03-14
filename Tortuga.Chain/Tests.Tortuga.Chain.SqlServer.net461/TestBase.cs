@@ -4,19 +4,18 @@ namespace Tests
 {
     public abstract class TestBase
     {
-        private readonly SqlServerDataSource m_DataSource;
+        private static readonly SqlServerDataSource s_DataSource;
 
-        protected TestBase()
+        static TestBase()
         {
-            m_DataSource = new SqlServerDataSource(System.Configuration.ConfigurationManager.ConnectionStrings["SqlServerTestDatabase"].ConnectionString);
+            s_DataSource = SqlServerDataSource.CreateFromConfig("SqlServerTestDatabase");
         }
 
-
-
-        public SqlServerDataSource DataSource
+        public static SqlServerDataSource DataSource
         {
-            get { return m_DataSource; }
+            get { return s_DataSource; }
         }
+
         public string EmployeeTableName { get { return "HR.Employee"; } }
 
     }

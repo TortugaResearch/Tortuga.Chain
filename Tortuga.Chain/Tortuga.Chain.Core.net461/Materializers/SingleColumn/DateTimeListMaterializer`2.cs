@@ -26,7 +26,7 @@ namespace Tortuga.Chain.Materializers
         /// <param name="commandBuilder">The command builder.</param>
         /// <param name="listOptions">The list options.</param>
         /// <param name="columnName">Name of the desired column.</param>
-        public DateTimeListMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, ListOptions listOptions, string columnName = null)
+        public DateTimeListMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, string columnName = null, ListOptions listOptions = ListOptions.None)
         : base(commandBuilder, columnName)
         {
             m_ListOptions = listOptions;
@@ -57,10 +57,10 @@ namespace Tortuga.Chain.Materializers
                     {
                         for (var i = 0; i < columnCount; i++)
                         {
-                            if (reader.IsDBNull(i) && !discardNulls)
+                            if (!reader.IsDBNull(i))
+                                result.Add(reader.GetDateTime(i));
+                            else if (!discardNulls)
                                 throw new MissingDataException("Unexpected null value");
-
-                            result.Add(reader.GetDateTime(i));
                         }
                     }
                 }
@@ -98,10 +98,10 @@ namespace Tortuga.Chain.Materializers
                     {
                         for (var i = 0; i < columnCount; i++)
                         {
-                            if (reader.IsDBNull(i) && !discardNulls)
+                            if (!reader.IsDBNull(i))
+                                result.Add(reader.GetDateTime(i));
+                            else if (!discardNulls)
                                 throw new MissingDataException("Unexpected null value");
-
-                            result.Add(reader.GetDateTime(i));
                         }
                     }
                 }

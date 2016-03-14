@@ -217,3 +217,4 @@ ModelManifest.xml
 /Tortuga.Chain/Storage.dat
 
 !SqlServerTestDatabase.publish.xml
+!localhost.publish.xml

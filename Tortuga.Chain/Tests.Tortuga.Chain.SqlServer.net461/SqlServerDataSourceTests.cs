@@ -8,6 +8,7 @@ using Tortuga.Chain;
 
 namespace Tests
 {
+
     [TestClass]
     public class SqlServerDataSourceTests
     {
@@ -36,14 +37,6 @@ namespace Tests
             dataSource.TestConnection();
         }
 
-        [TestMethod]
-        public void SqlServerDataSourceTests_SqlDependency()
-        {
-            var dataSource = SqlServerDataSource.CreateFromConfig("SqlServerTestDatabase");
-            dataSource.StartSqlDependency();
-            dataSource.TestConnection();
-            dataSource.StopSqlDependency();
-        }
 
 
         [TestMethod]

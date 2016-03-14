@@ -43,11 +43,27 @@ namespace Tortuga.Chain.CommandBuilders
         /// <returns></returns>
         ILink<List<DateTime>> ToDateTimeList(ListOptions listOptions = ListOptions.None);
         /// <summary>
+        /// Indicates the results should be materialized as a list of DateTime.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns></returns>
+        ILink<List<DateTime>> ToDateTimeList(string columnName, ListOptions listOptions = ListOptions.None);
+
+        /// <summary>
         /// Indicates the results should be materialized as a list of DateTimeOffset.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
         ILink<List<DateTimeOffset>> ToDateTimeOffsetList(ListOptions listOptions = ListOptions.None);
+        /// <summary>
+        /// Indicates the results should be materialized as a list of DateTimeOffset.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns></returns>
+        ILink<List<DateTimeOffset>> ToDateTimeOffsetList(string columnName, ListOptions listOptions = ListOptions.None);
+
         /// <summary>
         /// Indicates the results should be materialized as a list of numbers.
         /// </summary>
@@ -57,15 +73,39 @@ namespace Tortuga.Chain.CommandBuilders
         /// <summary>
         /// Indicates the results should be materialized as a list of numbers.
         /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns></returns>
+        ILink<List<decimal>> ToDecimalList(string columnName, ListOptions listOptions = ListOptions.None);
+
+        /// <summary>
+        /// Indicates the results should be materialized as a list of numbers.
+        /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
         ILink<List<double>> ToDoubleList(ListOptions listOptions = ListOptions.None);
+        /// <summary>
+        /// Indicates the results should be materialized as a list of numbers.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns></returns>
+        ILink<List<double>> ToDoubleList(string columnName, ListOptions listOptions = ListOptions.None);
+
         /// <summary>
         /// Indicates the results should be materialized as a list of Guids.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
         ILink<List<Guid>> ToGuidList(ListOptions listOptions = ListOptions.None);
+        /// <summary>
+        /// Indicates the results should be materialized as a list of Guids.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns></returns>
+        ILink<List<Guid>> ToGuidList(string columnName, ListOptions listOptions = ListOptions.None);
+
         /// <summary>
         /// Indicates the results should be materialized as a list of integers.
         /// </summary>
@@ -75,9 +115,25 @@ namespace Tortuga.Chain.CommandBuilders
         /// <summary>
         /// Indicates the results should be materialized as a list of integers.
         /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns></returns>
+        ILink<List<short>> ToInt16List(string columnName, ListOptions listOptions = ListOptions.None);
+
+        /// <summary>
+        /// Indicates the results should be materialized as a list of integers.
+        /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
         ILink<List<int>> ToInt32List(ListOptions listOptions = ListOptions.None);
+        /// <summary>
+        /// Indicates the results should be materialized as a list of integers.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns></returns>
+        ILink<List<int>> ToInt32List(string columnName, ListOptions listOptions = ListOptions.None);
+
         /// <summary>
         /// Indicates the results should be materialized as a list of integers.
         /// </summary>
@@ -85,17 +141,41 @@ namespace Tortuga.Chain.CommandBuilders
         /// <returns></returns>
         ILink<List<long>> ToInt64List(ListOptions listOptions = ListOptions.None);
         /// <summary>
+        /// Indicates the results should be materialized as a list of integers.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns></returns>
+        ILink<List<long>> ToInt64List(string columnName, ListOptions listOptions = ListOptions.None);
+
+        /// <summary>
         /// Indicates the results should be materialized as a list of numbers.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
         ILink<List<float>> ToSingleList(ListOptions listOptions = ListOptions.None);
         /// <summary>
+        /// Indicates the results should be materialized as a list of numbers.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns></returns>
+        ILink<List<float>> ToSingleList(string columnName, ListOptions listOptions = ListOptions.None);
+
+        /// <summary>
         /// Indicates the results should be materialized as a list of strings.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
         ILink<List<string>> ToStringList(ListOptions listOptions = ListOptions.None);
+        /// <summary>
+        /// Indicates the results should be materialized as a list of strings.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns></returns>
+        ILink<List<string>> ToStringList(string columnName, ListOptions listOptions = ListOptions.None);
+
         /// <summary>
         /// Indicates the results should be materialized as a Table.
         /// </summary>
@@ -106,5 +186,13 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
         ILink<List<TimeSpan>> ToTimeSpanList(ListOptions listOptions = ListOptions.None);
+        /// <summary>
+        /// Indicates the results should be materialized as a list of TimeSpan.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns></returns>
+        ILink<List<TimeSpan>> ToTimeSpanList(string columnName, ListOptions listOptions = ListOptions.None);
+
     }
 }

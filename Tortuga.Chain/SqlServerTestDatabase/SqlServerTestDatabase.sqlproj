@@ -70,13 +70,15 @@
     <Build Include="HR\HR.sql" />
     <Build Include="Sales\Order.sql" />
     <Build Include="Sales\CustomerWithOrdersByState.sql" />
+    <Build Include="dbo\AllTypes.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="SqlServerTestDatabase.refactorlog" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="SqlServerTestDatabase.publish.xml" />
+    <None Include="localhost.publish.xml" />
     <None Include="Data\Employee.sql" />
+    <None Include="Data\AllTypes.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Script.PostDeployment.sql" />

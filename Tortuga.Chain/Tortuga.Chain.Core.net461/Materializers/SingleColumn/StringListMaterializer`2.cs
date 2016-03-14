@@ -23,7 +23,7 @@ namespace Tortuga.Chain.Materializers
         /// <param name="commandBuilder">The command builder.</param>
         /// <param name="listOptions">The list options.</param>
         /// <param name="columnName">Name of the desired column.</param>
-        public StringListMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, ListOptions listOptions, string columnName = null)
+        public StringListMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, string columnName = null, ListOptions listOptions = ListOptions.None)
             : base(commandBuilder, columnName)
         {
             m_ListOptions = listOptions;
@@ -52,12 +52,10 @@ namespace Tortuga.Chain.Materializers
                     {
                         for (var i = 0; i < columnCount; i++)
                         {
-                            if (reader.IsDBNull(i))
-                            {
-                                if (!discardNulls)
-                                    result.Add(null);
-                            }
-                            result.Add(reader.GetString(i));
+                            if (!reader.IsDBNull(i))
+                                result.Add(reader.GetString(i));
+                            else if (!discardNulls)
+                                result.Add(null);
                         }
                     }
                 }
@@ -93,12 +91,10 @@ namespace Tortuga.Chain.Materializers
                     {
                         for (var i = 0; i < columnCount; i++)
                         {
-                            if (reader.IsDBNull(i))
-                            {
-                                if (!discardNulls)
-                                    result.Add(null);
-                            }
-                            result.Add(reader.GetString(i));
+                            if (!reader.IsDBNull(i))
+                                result.Add(reader.GetString(i));
+                            else if (!discardNulls)
+                                result.Add(null);
                         }
                     }
                 }

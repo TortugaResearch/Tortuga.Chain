@@ -8,23 +8,24 @@ using Tortuga.Chain.CommandBuilders;
 namespace Tortuga.Chain.Materializers
 {
     /// <summary>
-    /// Materializes the result set as a list of numbers.
+    /// Materializes the result set as a list of byte.
     /// </summary>
     /// <typeparam name="TCommand">The type of the t command type.</typeparam>
     /// <typeparam name="TParameter">The type of the t parameter type.</typeparam>
-    public class DoubleListMaterializer<TCommand, TParameter> : SingleColumnMaterializer<TCommand, TParameter, List<double>> where TCommand : DbCommand
+    public class ByteListMaterializer<TCommand, TParameter> : SingleColumnMaterializer<TCommand, TParameter, List<byte>>
+        where TCommand : DbCommand
         where TParameter : DbParameter
     {
 
         readonly ListOptions m_ListOptions;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DoubleListMaterializer{TCommand, TParameter}"/> class.
+        /// Initializes a new instance of the <see cref="BooleanListMaterializer{TCommand, TParameter}"/> class.
         /// </summary>
         /// <param name="commandBuilder">The command builder.</param>
         /// <param name="listOptions">The list options.</param>
         /// <param name="columnName">Name of the desired column.</param>
-        public DoubleListMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, string columnName = null, ListOptions listOptions = ListOptions.None)
+        public ByteListMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, string columnName = null, ListOptions listOptions = ListOptions.None)
             : base(commandBuilder, columnName)
         {
             m_ListOptions = listOptions;
@@ -35,9 +36,9 @@ namespace Tortuga.Chain.Materializers
         /// Execute the operation synchronously.
         /// </summary>
         /// <returns></returns>
-        public override List<double> Execute(object state = null)
+        public override List<byte> Execute(object state = null)
         {
-            var result = new List<double>();
+            var result = new List<byte>();
 
             ExecuteCore(cmd =>
             {
@@ -56,10 +57,9 @@ namespace Tortuga.Chain.Materializers
                         for (var i = 0; i < columnCount; i++)
                         {
                             if (!reader.IsDBNull(i))
-                                result.Add(reader.GetDouble(i));
+                                result.Add(reader.GetByte(i));
                             else if (!discardNulls)
                                 throw new MissingDataException("Unexpected null value");
-
                         }
                     }
                 }
@@ -76,9 +76,9 @@ namespace Tortuga.Chain.Materializers
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <param name="state">User defined state, usually used for logging.</param>
         /// <returns></returns>
-        public override async Task<List<double>> ExecuteAsync(CancellationToken cancellationToken, object state = null)
+        public override async Task<List<byte>> ExecuteAsync(CancellationToken cancellationToken, object state = null)
         {
-            var result = new List<double>();
+            var result = new List<byte>();
 
             await ExecuteCoreAsync(async cmd =>
             {
@@ -98,7 +98,7 @@ namespace Tortuga.Chain.Materializers
                         for (var i = 0; i < columnCount; i++)
                         {
                             if (!reader.IsDBNull(i))
-                                result.Add(reader.GetDouble(i));
+                                result.Add(reader.GetByte(i));
                             else if (!discardNulls)
                                 throw new MissingDataException("Unexpected null value");
                         }
