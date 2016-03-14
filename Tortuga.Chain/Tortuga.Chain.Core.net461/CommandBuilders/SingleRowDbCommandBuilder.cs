@@ -35,9 +35,25 @@ namespace Tortuga.Chain.CommandBuilders
         public ILink<bool?> ToBooleanOrNull() { return new BooleanOrNullMaterializer<TCommand, TParameter>(this); }
 
         /// <summary>
+        /// Indicates the results should be materialized as a byte.
+        /// </summary>
+        public ILink<byte> ToByte()
+        {
+            return new ByteMaterializer<TCommand, TParameter>(this);
+        }
+
+        /// <summary>
         /// Indicates the results should be materialized as a byte array.
         /// </summary>
         public ILink<byte[]> ToByteArray() { return new ByteArrayMaterializer<TCommand, TParameter>(this); }
+
+        /// <summary>
+        /// Indicates the results should be materialized as a nullable byte.
+        /// </summary>
+        public ILink<byte?> ToByteOrNull()
+        {
+            return new ByteOrNullMaterializer<TCommand, TParameter>(this);
+        }
 
         /// <summary>
         /// Indicates the results should be materialized as a DateTime.

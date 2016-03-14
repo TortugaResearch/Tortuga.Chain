@@ -7,18 +7,30 @@ namespace Tortuga.Chain.CommandBuilders
     /// </summary>
     public interface ISingleRowDbCommandBuilder : IDbCommandBuilder
     {
+
         /// <summary>
         /// Indicates the results should be materialized as a Boolean.
         /// </summary>
         ILink<bool> ToBoolean();
+
         /// <summary>
         /// Indicates the results should be materialized as a nullable Boolean.
         /// </summary>
         ILink<bool?> ToBooleanOrNull();
+
+        /// <summary>
+        /// Indicates the results should be materialized as a byte.
+        /// </summary>
+        ILink<byte> ToByte();
         /// <summary>
         /// Indicates the results should be materialized as a byte array.
         /// </summary>
         ILink<byte[]> ToByteArray();
+
+        /// <summary>
+        /// Indicates the results should be materialized as a nullable byte.
+        /// </summary>
+        ILink<byte?> ToByteOrNull();
         /// <summary>
         /// Indicates the results should be materialized as a DateTime.
         /// </summary>

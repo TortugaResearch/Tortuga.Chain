@@ -12,9 +12,34 @@ namespace Tortuga.Chain.CommandBuilders
         /// <summary>
         /// Indicates the results should be materialized as a list of booleans.
         /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns></returns>
+        ILink<List<bool>> ToBooleanList(string columnName, ListOptions listOptions = ListOptions.None);
+
+        /// <summary>
+        /// Indicates the results should be materialized as a list of booleans.
+        /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
         ILink<List<bool>> ToBooleanList(ListOptions listOptions = ListOptions.None);
+
+        /// <summary>
+        /// Indicates the results should be materialized as a list of byte arrays.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns></returns>
+        ILink<List<byte[]>> ToByteArrayList(string columnName, ListOptions listOptions = ListOptions.None);
+
+        /// <summary>
+        /// Indicates the results should be materialized as a list of byte arrays.
+        /// </summary>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns></returns>
+        ILink<List<byte[]>> ToByteArrayList(ListOptions listOptions = ListOptions.None);
+
+
         /// <summary>
         /// Materializes the result as a list of objects.
         /// </summary>
@@ -193,6 +218,5 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
         ILink<List<TimeSpan>> ToTimeSpanList(string columnName, ListOptions listOptions = ListOptions.None);
-
     }
 }

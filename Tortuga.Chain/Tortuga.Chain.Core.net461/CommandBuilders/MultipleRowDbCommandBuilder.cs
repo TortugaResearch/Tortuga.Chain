@@ -317,5 +317,26 @@ namespace Tortuga.Chain.CommandBuilders
             return new TimeSpanListMaterializer<TCommand, TParameter>(this, null, listOptions);
         }
 
+        /// <summary>
+        /// Indicates the results should be materialized as a list of byte arrays.
+        /// </summary>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns></returns>
+        public ILink<List<byte[]>> ToByteArrayList(ListOptions listOptions = ListOptions.None)
+        {
+            return new ByteArrayListMaterializer<TCommand, TParameter>(this, null, listOptions);
+        }
+
+
+        /// <summary>
+        /// Indicates the results should be materialized as a list of byte arrays.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns></returns>
+        public ILink<List<byte[]>> ToByteArrayList(string columnName, ListOptions listOptions = ListOptions.None)
+        {
+            return new ByteArrayListMaterializer<TCommand, TParameter>(this, columnName, listOptions);
+        }
     }
 }
