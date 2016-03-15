@@ -119,6 +119,8 @@ namespace Tortuga.Chain.DataSources
 
             if (ExecutionCanceled != null)
                 ExecutionCanceled(this, e);
+            if (!SuppressGlobalEvents && GlobalExecutionCanceled != null)
+                GlobalExecutionCanceled(this, e);
         }
 
         /// <summary>
@@ -133,6 +135,8 @@ namespace Tortuga.Chain.DataSources
 
             if (ExecutionError != null)
                 ExecutionError(this, e);
+            if (!SuppressGlobalEvents && GlobalExecutionError != null)
+                GlobalExecutionError(this, e);
         }
 
         /// <summary>
@@ -147,6 +151,8 @@ namespace Tortuga.Chain.DataSources
 
             if (ExecutionFinished != null)
                 ExecutionFinished(this, e);
+            if (!SuppressGlobalEvents && GlobalExecutionFinished != null)
+                GlobalExecutionFinished(this, e);
         }
 
         /// <summary>
@@ -161,6 +167,8 @@ namespace Tortuga.Chain.DataSources
 
             if (ExecutionStarted != null)
                 ExecutionStarted(this, e);
+            if (!SuppressGlobalEvents && GlobalExecutionStarted != null)
+                GlobalExecutionStarted(this, e);
         }
 
         /// <summary>
