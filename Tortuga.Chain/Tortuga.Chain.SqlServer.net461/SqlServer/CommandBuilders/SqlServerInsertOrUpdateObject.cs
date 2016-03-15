@@ -95,7 +95,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         {
             if (ArgumentDictionary != null)
             {
-                var filter = GetKeysFilter.ThrowOnNoMatch | GetKeysFilter.UpdatableOnly | GetKeysFilter.NonPrimaryKey;
+                var filter = GetKeysFilter.ThrowOnNoMatch | GetKeysFilter.MutableColumns | GetKeysFilter.NonPrimaryKey;
 
                 if (DataSource.StrictMode)
                     filter = filter | GetKeysFilter.ThrowOnMissingColumns;
@@ -107,7 +107,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             }
             else
             {
-                var filter = GetPropertiesFilter.ThrowOnNoMatch | GetPropertiesFilter.UpdatableOnly;
+                var filter = GetPropertiesFilter.ThrowOnNoMatch | GetPropertiesFilter.MutableColumns | GetPropertiesFilter.ForUpdate;
 
                 if (m_Options.HasFlag(InsertOrUpdateOptions.UseKeyAttribute))
                     filter = filter | GetPropertiesFilter.ObjectDefinedNonKey;
@@ -127,7 +127,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         {
             if (ArgumentDictionary != null)
             {
-                var availableColumns = Metadata.GetKeysFor(ArgumentDictionary, GetKeysFilter.UpdatableOnly);
+                var availableColumns = Metadata.GetKeysFor(ArgumentDictionary, GetKeysFilter.MutableColumns);
 
                 insertColumns = string.Join(", ", availableColumns.Select(c => $"{c.QuotedSqlName}"));
                 insertValues = string.Join(", ", availableColumns.Select(c => $"source.{c.QuotedSqlName}"));
@@ -135,7 +135,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             }
             else
             {
-                var availableColumns = Metadata.GetPropertiesFor(ArgumentValue.GetType(), GetPropertiesFilter.UpdatableOnly);
+                var availableColumns = Metadata.GetPropertiesFor(ArgumentValue.GetType(), GetPropertiesFilter.MutableColumns | GetPropertiesFilter.ForInsert);
 
                 insertColumns = string.Join(", ", availableColumns.Select(c => $"{c.Column.QuotedSqlName}"));
                 insertValues = string.Join(", ", availableColumns.Select(c => $"source.{c.Column.QuotedSqlName}"));

@@ -39,12 +39,52 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
             var parameters = new List<SQLiteParameter>();
 
             var where = WhereClause(parameters, m_Options.HasFlag(InsertOrUpdateOptions.UseKeyAttribute));
-            var output = OutputClause(materializer, where);
+
+            var output = OutputClause(materializer, WhereClauseForOutput(m_Options.HasFlag(InsertOrUpdateOptions.UseKeyAttribute)));
             var update = UpdateClause(parameters, where);
             var insert = InsertClause(parameters);
             var sql = $"{update}; {insert}; {output};";
 
             return new SQLiteExecutionToken(DataSource, "Insert Or Update on " + TableName, sql, parameters);
+        }
+
+
+        string WhereClauseForOutput(bool useKeyAttribute)
+        {
+            if (ArgumentDictionary != null)
+            {
+                GetKeysFilter filter = (GetKeysFilter.PrimaryKey | GetKeysFilter.ThrowOnMissingProperties);
+
+                var columns = Metadata.GetKeysFor(ArgumentDictionary, filter);
+                if (columns.Count > 1)
+                    return string.Join(" AND ", columns.Select(c => $"{c.QuotedSqlName} = {c.SqlVariableName}"));
+                else
+                {
+                    //we can support auto-incremented primary key
+                    var column = columns[0];
+                    return $"{column.SqlName} = CASE WHEN {column.SqlVariableName} IS NULL OR {column.SqlVariableName} = 0 THEN last_insert_rowid() ELSE {column.SqlVariableName} END";
+                }
+
+            }
+            else
+            {
+                GetPropertiesFilter filter;
+                if (useKeyAttribute)
+                    filter = (GetPropertiesFilter.ObjectDefinedKey | GetPropertiesFilter.ThrowOnMissingColumns);
+                else
+                    filter = (GetPropertiesFilter.PrimaryKey | GetPropertiesFilter.ThrowOnMissingProperties);
+
+                var columns = Metadata.GetPropertiesFor(ArgumentValue.GetType(), filter);
+                if (columns.Count > 1)
+                    return string.Join(" AND ", columns.Select(c => $"{c.Column.QuotedSqlName} = {c.Column.SqlVariableName}"));
+                else
+                {
+                    //we can support auto-incremented primary key
+                    var column = columns[0].Column;
+                    return $"{column.SqlName} = CASE WHEN {column.SqlVariableName} IS NULL OR {column.SqlVariableName} = 0 THEN last_insert_rowid() ELSE {column.SqlVariableName} END";
+                }
+            }
+
         }
 
         private string UpdateClause(List<SQLiteParameter> parameters, string whereClause)
@@ -65,7 +105,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
         {
             if (ArgumentDictionary != null)
             {
-                var availableColumns = Metadata.GetKeysFor(ArgumentDictionary, GetKeysFilter.ThrowOnNoMatch | GetKeysFilter.UpdatableOnly);
+                var availableColumns = Metadata.GetKeysFor(ArgumentDictionary, GetKeysFilter.ThrowOnNoMatch | GetKeysFilter.MutableColumns);
 
                 columns = "(" + string.Join(", ", availableColumns.Select(c => c.QuotedSqlName)) + ")";
                 values = "VALUES (" + string.Join(", ", availableColumns.Select(c => c.SqlVariableName)) + ")";
@@ -74,7 +114,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
             else
             {
                 var availableColumns = Metadata.GetPropertiesFor(ArgumentValue.GetType(),
-                     GetPropertiesFilter.ThrowOnNoMatch | GetPropertiesFilter.UpdatableOnly | GetPropertiesFilter.ForInsert);
+                     GetPropertiesFilter.ThrowOnNoMatch | GetPropertiesFilter.MutableColumns | GetPropertiesFilter.ForInsert);
 
                 columns = "(" + string.Join(", ", availableColumns.Select(c => c.Column.QuotedSqlName)) + ")";
                 values = "VALUES (" + string.Join(", ", availableColumns.Select(c => c.Column.SqlVariableName)) + ")";
@@ -86,7 +126,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
         {
             if (ArgumentDictionary != null)
             {
-                var filter = GetKeysFilter.ThrowOnNoMatch | GetKeysFilter.UpdatableOnly | GetKeysFilter.NonPrimaryKey;
+                var filter = GetKeysFilter.ThrowOnNoMatch | GetKeysFilter.MutableColumns | GetKeysFilter.NonPrimaryKey;
 
                 if (DataSource.StrictMode)
                     filter |= GetKeysFilter.ThrowOnMissingColumns;
@@ -99,7 +139,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
             }
             else
             {
-                var filter = GetPropertiesFilter.ThrowOnNoMatch | GetPropertiesFilter.UpdatableOnly;
+                var filter = GetPropertiesFilter.ThrowOnNoMatch | GetPropertiesFilter.MutableColumns | GetPropertiesFilter.ForUpdate;
 
                 if (m_Options.HasFlag(InsertOrUpdateOptions.UseKeyAttribute))
                     filter |= GetPropertiesFilter.ObjectDefinedNonKey;

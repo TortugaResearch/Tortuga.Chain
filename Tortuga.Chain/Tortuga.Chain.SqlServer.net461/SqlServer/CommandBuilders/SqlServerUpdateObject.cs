@@ -52,7 +52,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             if (ArgumentDictionary != null)
             {
 
-                var filter = GetKeysFilter.ThrowOnNoMatch | GetKeysFilter.UpdatableOnly;
+                var filter = GetKeysFilter.ThrowOnNoMatch | GetKeysFilter.MutableColumns;
 
                 filter = filter | GetKeysFilter.NonPrimaryKey;
 
@@ -76,7 +76,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             }
             else
             {
-                var filter = GetPropertiesFilter.ThrowOnNoMatch | GetPropertiesFilter.UpdatableOnly;
+                var filter = GetPropertiesFilter.ThrowOnNoMatch | GetPropertiesFilter.MutableColumns | GetPropertiesFilter.ForUpdate;
 
                 if (m_Options.HasFlag(UpdateOptions.UseKeyAttribute))
                     filter = filter | GetPropertiesFilter.ObjectDefinedNonKey;

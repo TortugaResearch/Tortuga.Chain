@@ -54,7 +54,7 @@ namespace Tortuga.Chain.Metadata
         /// <summary>
         /// Only return columns that can be updated. This means no identity or computed columns
         /// </summary>
-        UpdatableOnly = 128,
+        MutableColumns = 128,
 
         /// <summary>
         /// An insert operation is being performed, so honor the IgnoreOnInsert attribute on properties.

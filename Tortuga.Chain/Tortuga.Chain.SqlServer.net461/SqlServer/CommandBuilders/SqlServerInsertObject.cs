@@ -46,7 +46,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         {
             if (ArgumentDictionary != null)
             {
-                var availableColumns = Metadata.GetKeysFor(ArgumentDictionary, GetKeysFilter.ThrowOnNoMatch | GetKeysFilter.UpdatableOnly).Where(c => !c.IsIdentity && !c.IsComputed).ToList();
+                var availableColumns = Metadata.GetKeysFor(ArgumentDictionary, GetKeysFilter.ThrowOnNoMatch | GetKeysFilter.MutableColumns).Where(c => !c.IsIdentity && !c.IsComputed).ToList();
 
                 columns = "(" + string.Join(", ", availableColumns.Select(c => c.QuotedSqlName)) + ")";
                 values = "VALUES (" + string.Join(", ", availableColumns.Select(c => c.SqlVariableName)) + ")";
@@ -62,7 +62,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             }
             else
             {
-                var availableColumns = Metadata.GetPropertiesFor(ArgumentValue.GetType(), GetPropertiesFilter.ThrowOnNoMatch | GetPropertiesFilter.UpdatableOnly).Where(c => !c.Column.IsIdentity && !c.Column.IsComputed).ToList();
+                var availableColumns = Metadata.GetPropertiesFor(ArgumentValue.GetType(), GetPropertiesFilter.ThrowOnNoMatch | GetPropertiesFilter.MutableColumns | GetPropertiesFilter.ForInsert).Where(c => !c.Column.IsIdentity && !c.Column.IsComputed).ToList();
 
                 columns = "(" + string.Join(", ", availableColumns.Select(c => c.Column.QuotedSqlName)) + ")";
                 values = "VALUES (" + string.Join(", ", availableColumns.Select(c => c.Column.SqlVariableName)) + ")";

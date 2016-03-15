@@ -1,7 +1,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Diagnostics;
 using Tortuga.Chain;
-
+using Tortuga.Chain.DataSources;
 namespace Tests
 {
     [TestClass]
@@ -11,10 +11,10 @@ namespace Tests
         public static void AssemblyInit(TestContext context)
 
         {
-            Tortuga.Chain.DataSources.DataSource.GlobalExecutionCanceled += DefaultDispatcher_ExecutionCanceled;
-            Tortuga.Chain.DataSources.DataSource.GlobalExecutionError += DefaultDispatcher_ExecutionError;
-            Tortuga.Chain.DataSources.DataSource.GlobalExecutionFinished += DefaultDispatcher_ExecutionFinished;
-            Tortuga.Chain.DataSources.DataSource.GlobalExecutionStarted += DefaultDispatcher_ExecutionStarted;
+            DataSource.GlobalExecutionCanceled += DefaultDispatcher_ExecutionCanceled;
+            DataSource.GlobalExecutionError += DefaultDispatcher_ExecutionError;
+            DataSource.GlobalExecutionFinished += DefaultDispatcher_ExecutionFinished;
+            DataSource.GlobalExecutionStarted += DefaultDispatcher_ExecutionStarted;
         }
 
         static void DefaultDispatcher_ExecutionCanceled(object sender, ExecutionEventArgs e)

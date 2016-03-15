@@ -53,7 +53,7 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
         {
             if (ArgumentDictionary != null)
             {
-                var filter = GetKeysFilter.ThrowOnNoMatch | GetKeysFilter.UpdatableOnly | GetKeysFilter.NonPrimaryKey;
+                var filter = GetKeysFilter.ThrowOnNoMatch | GetKeysFilter.MutableColumns | GetKeysFilter.NonPrimaryKey ;
 
                 if (DataSource.StrictMode)
                     filter |= GetKeysFilter.ThrowOnMissingColumns;
@@ -66,7 +66,7 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
             }
             else
             {
-            var filter = GetPropertiesFilter.ThrowOnNoMatch | GetPropertiesFilter.UpdatableOnly;
+            var filter = GetPropertiesFilter.ThrowOnNoMatch | GetPropertiesFilter.MutableColumns | GetPropertiesFilter.ForUpdate;
 
             if (m_Options.HasFlag(UpdateOptions.UseKeyAttribute))
                 filter |= GetPropertiesFilter.ObjectDefinedNonKey;

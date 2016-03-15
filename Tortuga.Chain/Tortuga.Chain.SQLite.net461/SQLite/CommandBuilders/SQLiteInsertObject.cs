@@ -43,9 +43,9 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
 
         private void ColumnsAndValuesClause(out string columns, out string values, List<SQLiteParameter> parameters)
         {
-            if(ArgumentDictionary != null)
+            if (ArgumentDictionary != null)
             {
-                var availableColumns = Metadata.GetKeysFor(ArgumentDictionary, GetKeysFilter.ThrowOnNoMatch | GetKeysFilter.UpdatableOnly);
+                var availableColumns = Metadata.GetKeysFor(ArgumentDictionary, GetKeysFilter.ThrowOnNoMatch | GetKeysFilter.MutableColumns);
 
                 columns = "(" + string.Join(", ", availableColumns.Select(c => c.QuotedSqlName)) + ")";
                 values = "VALUES (" + string.Join(", ", availableColumns.Select(c => c.SqlVariableName)) + ")";
@@ -53,13 +53,13 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
             }
             else
             {
-            var availableColumns = Metadata.GetPropertiesFor(ArgumentValue.GetType(), 
-                 GetPropertiesFilter.ThrowOnNoMatch | GetPropertiesFilter.UpdatableOnly | GetPropertiesFilter.ForInsert);
+                var availableColumns = Metadata.GetPropertiesFor(ArgumentValue.GetType(),
+                     GetPropertiesFilter.ThrowOnNoMatch | GetPropertiesFilter.MutableColumns | GetPropertiesFilter.ForInsert);
 
-            columns = "(" + string.Join(", ", availableColumns.Select(c => c.Column.QuotedSqlName)) + ")";
-            values = "VALUES (" + string.Join(", ", availableColumns.Select(c => c.Column.SqlVariableName)) + ")";
-            LoadParameters(availableColumns, parameters);
-        }
+                columns = "(" + string.Join(", ", availableColumns.Select(c => c.Column.QuotedSqlName)) + ")";
+                values = "VALUES (" + string.Join(", ", availableColumns.Select(c => c.Column.SqlVariableName)) + ")";
+                LoadParameters(availableColumns, parameters);
+            }
         }
     }
 }

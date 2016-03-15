@@ -160,7 +160,7 @@ namespace Tortuga.Chain.Metadata
                 result = result.Where(c => !c.Property.IsKey);
             }
 
-            if (filter.HasFlag(GetPropertiesFilter.UpdatableOnly))
+            if (filter.HasFlag(GetPropertiesFilter.MutableColumns))
             {
                 filterText = "updateable " + filterText;
                 result = result.Where(c => !c.Column.IsComputed && !c.Column.IsIdentity);
@@ -225,7 +225,7 @@ namespace Tortuga.Chain.Metadata
 
             }
 
-            if (filter.HasFlag(GetKeysFilter.UpdatableOnly))
+            if (filter.HasFlag(GetKeysFilter.MutableColumns))
             {
                 filterText = "updateable " + filterText;
                 result = result.Where(c => !c.IsComputed && !c.IsIdentity);
