@@ -224,9 +224,9 @@ SELECT @Option AS [Option];";
         [TestMethod]
         public async Task SqlServerDataSourceTests_CancelTest_Async()
         {
-            var sql = "WAITFOR DELAY '00:00:05'";
+            var sql = "WAITFOR DELAY '00:00:03'";
             var dataSource = SqlServerDataSource.CreateFromConfig("SqlServerTestDatabase");
-            var cts = new CancellationTokenSource(TimeSpan.FromSeconds(3));
+            var cts = new CancellationTokenSource(TimeSpan.FromSeconds(1));
 
             try
             {
@@ -239,9 +239,9 @@ SELECT @Option AS [Option];";
         [TestMethod]
         public async Task SqlServerDataSourceTests_CommandTimeout_Async()
         {
-            var sql = "WAITFOR DELAY '00:00:05'";
+            var sql = "WAITFOR DELAY '00:00:03'";
             var dataSource = SqlServerDataSource.CreateFromConfig("SqlServerTestDatabase");
-            dataSource.DefaultCommandTimeout = TimeSpan.FromSeconds(3);
+            dataSource.DefaultCommandTimeout = TimeSpan.FromSeconds(1);
 
             try
             {
@@ -254,9 +254,9 @@ SELECT @Option AS [Option];";
         [TestMethod]
         public void SqlServerDataSourceTests_CommandTimeout()
         {
-            var sql = "WAITFOR DELAY '00:00:05'";
+            var sql = "WAITFOR DELAY '00:00:03'";
             var dataSource = SqlServerDataSource.CreateFromConfig("SqlServerTestDatabase");
-            dataSource.DefaultCommandTimeout = TimeSpan.FromSeconds(3);
+            dataSource.DefaultCommandTimeout = TimeSpan.FromSeconds(1);
 
             try
             {

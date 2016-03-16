@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
 using Tortuga.Chain.Metadata;
 using Tortuga.Chain.SqlServer.Core;
+
 namespace Tortuga.Chain.SqlServer.CommandBuilders
 {
     /// <summary>
@@ -57,16 +57,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             {
                 var availableColumns = Metadata.GetKeysFor(ArgumentDictionary, GetKeysFilter.None);
 
-
-                foreach (var item in availableColumns)
-                {
-                    var value = ArgumentDictionary[item.ClrName] ?? DBNull.Value;
-                    var parameter = new SqlParameter(item.SqlVariableName, value);
-                    if (item.DbType.HasValue)
-                        parameter.SqlDbType = item.DbType.Value;
-                    parameters.Add(parameter);
-                }
-
+                DataSource.LoadDictionaryParameters(ArgumentDictionary, parameters, availableColumns);
 
                 return "(VALUES (" + string.Join(", ", availableColumns.Select(c => c.SqlVariableName)) + ")) AS source (" + string.Join(", ", availableColumns.Select(c => c.QuotedSqlName)) + ")";
 
@@ -75,16 +66,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             {
                 var availableColumns = Metadata.GetPropertiesFor(ArgumentValue.GetType(), GetPropertiesFilter.None);
 
-
-                foreach (var item in availableColumns)
-                {
-                    var value = item.Property.InvokeGet(ArgumentValue) ?? DBNull.Value;
-                    var parameter = new SqlParameter(item.Column.SqlVariableName, value);
-                    if (item.Column.DbType.HasValue)
-                        parameter.SqlDbType = item.Column.DbType.Value;
-                    parameters.Add(parameter);
-                }
-
+                DataSource.LoadParameters(ArgumentValue, parameters, availableColumns);
 
                 return "(VALUES (" + string.Join(", ", availableColumns.Select(c => c.Column.SqlVariableName)) + ")) AS source (" + string.Join(", ", availableColumns.Select(c => c.Column.QuotedSqlName)) + ")";
             }

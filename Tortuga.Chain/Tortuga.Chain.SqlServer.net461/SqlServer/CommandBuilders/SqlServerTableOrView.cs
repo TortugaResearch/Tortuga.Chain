@@ -37,7 +37,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
                 throw new ArgumentException($"{nameof(tableOrViewName)} is empty", nameof(tableOrViewName));
 
             m_FilterValue = filterValue;
-            m_Metadata = ((SqlServerDataSourceBase)DataSource).DatabaseMetadata.GetTableOrView(tableOrViewName);
+            m_Metadata = DataSource.DatabaseMetadata.GetTableOrView(tableOrViewName);
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 
             m_ArgumentValue = argumentValue;
             m_WhereClause = whereClause;
-            m_Metadata = ((SqlServerDataSourceBase)DataSource).DatabaseMetadata.GetTableOrView(tableOrViewName);
+            m_Metadata = DataSource.DatabaseMetadata.GetTableOrView(tableOrViewName);
         }
 
         /// <summary>
@@ -181,6 +181,15 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         SqlServerExecutionToken ISupportsChangeListener.Prepare(Materializer<SqlCommand, SqlParameter> materializer)
         {
             return (SqlServerExecutionToken)Prepare(materializer);
+        }
+
+        /// <summary>
+        /// Gets the data source.
+        /// </summary>
+        /// <value>The data source.</value>
+        public new SqlServerDataSourceBase DataSource
+        {
+            get { return (SqlServerDataSourceBase)base.DataSource; }
         }
     }
 }

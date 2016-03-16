@@ -38,7 +38,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 
             m_ArgumentValue = argumentValue;
             m_ProcedureName = procedureName;
-            m_Metadata = ((SqlServerDataSourceBase)DataSource).DatabaseMetadata.GetStoredProcedure(procedureName);
+            m_Metadata = DataSource.DatabaseMetadata.GetStoredProcedure(procedureName);
         }
 
         /// <summary>
@@ -54,12 +54,8 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             var parameters = new List<SqlParameter>();
             var expectedParameters = m_Metadata.Parameters.ToDictionary(p => p.ClrName, StringComparer.OrdinalIgnoreCase);
 
-            if (m_ArgumentValue is IEnumerable<SqlParameter>)
-            {
-                foreach (var param in (IEnumerable<SqlParameter>)m_ArgumentValue)
-                    parameters.Add(param);
-            }
-            else if (m_ArgumentValue is IReadOnlyDictionary<string, object>)
+
+            if (m_ArgumentValue is IReadOnlyDictionary<string, object>)
             {
                 foreach (var item in (IReadOnlyDictionary<string, object>)m_ArgumentValue)
                 {
@@ -106,6 +102,15 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         SqlServerExecutionToken ISupportsChangeListener.Prepare(Materializer<SqlCommand, SqlParameter> materializer)
         {
             return (SqlServerExecutionToken)Prepare(materializer);
+        }
+
+        /// <summary>
+        /// Gets the data source.
+        /// </summary>
+        /// <value>The data source.</value>
+        public new SqlServerDataSourceBase DataSource
+        {
+            get { return (SqlServerDataSourceBase)base.DataSource; }
         }
     }
 

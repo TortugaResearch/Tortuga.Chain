@@ -31,7 +31,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             m_ArgumentValue = argumentValue;
             m_ArgumentDictionary = ArgumentValue as IReadOnlyDictionary<string, object>;
             m_TableName = tableName;
-            m_Metadata = ((SqlServerDataSourceBase)DataSource).DatabaseMetadata.GetTableOrView(m_TableName);
+            m_Metadata = DataSource.DatabaseMetadata.GetTableOrView(m_TableName);
         }
 
         /// <summary>
@@ -102,6 +102,8 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             }
         }
 
+
+
         /// <summary>
         /// Generates a where clause for update/delete operations.
         /// </summary>
@@ -124,14 +126,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 
                 result = string.Join(" AND ", columns.Select(c => $"{c.QuotedSqlName} = {c.SqlVariableName}"));
 
-                foreach (var item in columns)
-                {
-                    var value = ArgumentDictionary[item.ClrName] ?? DBNull.Value;
-                    var parameter = new SqlParameter(item.SqlVariableName, value);
-                    if (item.DbType.HasValue)
-                        parameter.SqlDbType = item.DbType.Value;
-                    parameters.Add(parameter);
-                }
+                DataSource.LoadDictionaryParameters(ArgumentDictionary, parameters, columns);
             }
             else
             {
@@ -146,14 +141,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 
                 result = string.Join(" AND ", columns.Select(c => $"{c.Column.QuotedSqlName} = {c.Column.SqlVariableName}"));
 
-                foreach (var item in columns)
-                {
-                    var value = item.Property.InvokeGet(ArgumentValue) ?? DBNull.Value;
-                    var parameter = new SqlParameter(item.Column.SqlVariableName, value);
-                    if (item.Column.DbType.HasValue)
-                        parameter.SqlDbType = item.Column.DbType.Value;
-                    parameters.Add(parameter);
-                }
+                DataSource.LoadParameters(ArgumentValue, parameters, columns);
             }
 
             return result;
@@ -169,5 +157,13 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             get { return m_Metadata; }
         }
 
+        /// <summary>
+        /// Gets the data source.
+        /// </summary>
+        /// <value>The data source.</value>
+        public new SqlServerDataSourceBase DataSource
+        {
+            get { return (SqlServerDataSourceBase)base.DataSource; }
+        }
     }
 }

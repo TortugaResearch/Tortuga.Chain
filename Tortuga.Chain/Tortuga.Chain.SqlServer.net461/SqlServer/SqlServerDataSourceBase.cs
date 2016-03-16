@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.DataSources;
@@ -227,7 +229,59 @@ namespace Tortuga.Chain.SqlServer
 
 
 
+        /// <summary>
+        /// Loads the parameters from the ArgumentValue.
+        /// </summary>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="parameters">The parameters.</param>
+        /// <param name="columns">The columns.</param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
+        [Obsolete("This method will be removed in a future version.")]
+        public void LoadParameters(object argumentValue, List<SqlParameter> parameters, IEnumerable<ColumnPropertyMap<SqlDbType>> columns)
+        {
+            if (argumentValue == null)
+                throw new ArgumentNullException("argumentValue", "argumentValue is null.");
+            if (parameters == null)
+                throw new ArgumentNullException("parameters", "parameters is null.");
+            if (columns == null)
+                throw new ArgumentNullException("columns", "columns is null.");
 
+            foreach (var item in columns)
+            {
+                var value = item.Property.InvokeGet(argumentValue) ?? DBNull.Value;
+                var parameter = new SqlParameter(item.Column.SqlVariableName, value);
+                if (item.Column.DbType.HasValue)
+                    parameter.SqlDbType = item.Column.DbType.Value;
+                parameters.Add(parameter);
+            }
+        }
+
+        /// <summary>
+        /// Loads the parameters from the ArgumentDictionary.
+        /// </summary>
+        /// <param name="argumentDictionary">The argument dictionary.</param>
+        /// <param name="parameters">The parameters.</param>
+        /// <param name="columns">The columns.</param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
+        [Obsolete("This method will be removed in a future version.")]
+        public void LoadDictionaryParameters(IReadOnlyDictionary<string, object> argumentDictionary, List<SqlParameter> parameters, IEnumerable<ColumnMetadata<SqlDbType>> columns)
+        {
+            if (argumentDictionary == null)
+                throw new ArgumentNullException("argumentDictionary", "argumentDictionary is null.");
+            if (parameters == null)
+                throw new ArgumentNullException("parameters", "parameters is null.");
+            if (columns == null)
+                throw new ArgumentNullException("columns", "columns is null.");
+
+            foreach (var item in columns)
+            {
+                var value = argumentDictionary[item.ClrName] ?? DBNull.Value;
+                var parameter = new SqlParameter(item.SqlVariableName, value);
+                if (item.DbType.HasValue)
+                    parameter.SqlDbType = item.DbType.Value;
+                parameters.Add(parameter);
+            }
+        }
     }
 }
 

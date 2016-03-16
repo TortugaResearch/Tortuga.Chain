@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using Tortuga.Chain.Core;
@@ -63,14 +62,8 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 
                 var result = "SET " + string.Join(", ", availableColumns.Select(c => $"{c.QuotedSqlName} = {c.SqlVariableName}"));
 
-                foreach (var item in availableColumns)
-                {
-                    var value = ArgumentDictionary[item.ClrName] ?? DBNull.Value;
-                    var parameter = new SqlParameter(item.SqlVariableName, value);
-                    if (item.DbType.HasValue)
-                        parameter.SqlDbType = item.DbType.Value;
-                    parameters.Add(parameter);
-                }
+                DataSource.LoadDictionaryParameters(ArgumentDictionary, parameters, availableColumns);
+
 
                 return result;
             }
@@ -90,14 +83,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 
                 var result = "SET " + string.Join(", ", availableColumns.Select(c => $"{c.Column.QuotedSqlName} = {c.Column.SqlVariableName}"));
 
-                foreach (var item in availableColumns)
-                {
-                    var value = item.Property.InvokeGet(ArgumentValue) ?? DBNull.Value;
-                    var parameter = new SqlParameter(item.Column.SqlVariableName, value);
-                    if (item.Column.DbType.HasValue)
-                        parameter.SqlDbType = item.Column.DbType.Value;
-                    parameters.Add(parameter);
-                }
+                DataSource.LoadParameters(ArgumentValue, parameters, availableColumns);
 
                 return result;
             }
