@@ -24,7 +24,6 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         public SqlServerUpdateObject(SqlServerDataSourceBase dataSource, SqlServerObjectName tableName, object argumentValue, UpdateOptions options) : base(dataSource, tableName, argumentValue)
         {
             m_Options = options;
-
         }
 
         /// <summary>

@@ -13,7 +13,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
     /// </summary>
     public class SqlServerInsertOrUpdateObject : SqlServerObjectCommand
     {
-        private readonly InsertOrUpdateOptions m_Options;
+        private readonly UpsertOptions m_Options;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlServerInsertOrUpdateObject"/> class.
@@ -22,7 +22,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// <param name="tableName">Name of the table.</param>
         /// <param name="argumentValue">The argument value.</param>
         /// <param name="options">The options.</param>
-        public SqlServerInsertOrUpdateObject(SqlServerDataSourceBase dataSource, SqlServerObjectName tableName, object argumentValue, InsertOrUpdateOptions options) : base(dataSource, tableName, argumentValue)
+        public SqlServerInsertOrUpdateObject(SqlServerDataSourceBase dataSource, SqlServerObjectName tableName, object argumentValue, UpsertOptions options) : base(dataSource, tableName, argumentValue)
         {
             m_Options = options;
         }
@@ -37,7 +37,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         {
             var parameters = new List<SqlParameter>();
 
-            string on = OnClause(m_Options.HasFlag(InsertOrUpdateOptions.UseKeyAttribute));
+            string on = OnClause(m_Options.HasFlag(UpsertOptions.UseKeyAttribute));
             string set = UpdateClauses();
             string insertColumns;
             string insertValues;
@@ -91,7 +91,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             {
                 var filter = GetPropertiesFilter.ThrowOnNoMatch | GetPropertiesFilter.MutableColumns | GetPropertiesFilter.ForUpdate;
 
-                if (m_Options.HasFlag(InsertOrUpdateOptions.UseKeyAttribute))
+                if (m_Options.HasFlag(UpsertOptions.UseKeyAttribute))
                     filter = filter | GetPropertiesFilter.ObjectDefinedNonKey;
                 else
                     filter = filter | GetPropertiesFilter.NonPrimaryKey;

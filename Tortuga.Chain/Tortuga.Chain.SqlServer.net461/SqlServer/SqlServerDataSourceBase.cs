@@ -169,7 +169,7 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="options">The options for how the insert/update occurs.</param>
         /// <returns>SqlServerUpdate.</returns>
         /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
-        public SqlServerInsertOrUpdateObject Upsert(SqlServerObjectName tableName, object argumentValue, InsertOrUpdateOptions options = InsertOrUpdateOptions.None)
+        public SqlServerInsertOrUpdateObject Upsert(SqlServerObjectName tableName, object argumentValue, UpsertOptions options = UpsertOptions.None)
         {
             return new SqlServerInsertOrUpdateObject(this, tableName, argumentValue, options);
         }
@@ -222,7 +222,7 @@ namespace Tortuga.Chain.SqlServer
             return From(tableOrViewName, whereClause, argumentValue);
         }
 
-        ISingleRowDbCommandBuilder IClass1DataSource.Upsert(string tableName, object argumentValue, InsertOrUpdateOptions options)
+        ISingleRowDbCommandBuilder IClass1DataSource.Upsert(string tableName, object argumentValue, UpsertOptions options)
         {
             return Upsert(tableName, argumentValue, options);
         }

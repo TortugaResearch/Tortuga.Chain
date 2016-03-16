@@ -6,7 +6,7 @@ namespace Tortuga.Chain
     /// Controls what happens when performing a model-based insert or update 
     /// </summary>
     [Flags]
-    public enum InsertOrUpdateOptions
+    public enum UpsertOptions
     {
 
         /// <summary>
@@ -15,10 +15,10 @@ namespace Tortuga.Chain
         None = 0,
 
 
-        /// <summary>
-        /// Uses the IPropertyChangeTracking interface to only update changed properties. This flag has no effect when performing an insert.
-        /// </summary>
-        ChangedPropertiesOnly = 1,
+        ///// <summary>
+        ///// Uses the IPropertyChangeTracking interface to only update changed properties. This flag has no effect when performing an insert.
+        ///// </summary>
+        //ChangedPropertiesOnly = 1,
 
         /// <summary>
         /// Ignore the primary keys on the table and perform the update using the Key attribute on properties to construct the where clause.

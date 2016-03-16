@@ -15,10 +15,10 @@ namespace Tortuga.Chain
         None = 0,
 
 
-        /// <summary>
-        /// Uses the IPropertyChangeTracking interface to only update changed properties.
-        /// </summary>
-        ChangedPropertiesOnly = 1,
+        ///// <summary>
+        ///// Uses the IPropertyChangeTracking interface to only update changed properties.
+        ///// </summary>
+        //ChangedPropertiesOnly = 1,
 
         /// <summary>
         /// Ignore the primary keys on the table and perform the update using the Key attribute on properties to construct the where clause.

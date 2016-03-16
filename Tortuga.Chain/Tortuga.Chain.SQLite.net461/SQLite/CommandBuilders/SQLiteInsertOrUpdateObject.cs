@@ -14,7 +14,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
     /// </summary>
     public class SQLiteInsertOrUpdateObject : SQLiteObjectCommand
     {
-        private readonly InsertOrUpdateOptions m_Options;
+        private readonly UpsertOptions m_Options;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SQLiteInsertOrUpdateObject"/> class.
@@ -23,7 +23,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
         /// <param name="tableName"></param>
         /// <param name="argumentValue"></param>
         /// <param name="options"></param>
-        public SQLiteInsertOrUpdateObject(SQLiteDataSourceBase dataSource, string tableName, object argumentValue, InsertOrUpdateOptions options)
+        public SQLiteInsertOrUpdateObject(SQLiteDataSourceBase dataSource, string tableName, object argumentValue, UpsertOptions options)
             :base(dataSource, tableName, argumentValue)
         {
             m_Options = options;
@@ -38,9 +38,9 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
         {
             var parameters = new List<SQLiteParameter>();
 
-            var where = WhereClause(parameters, m_Options.HasFlag(InsertOrUpdateOptions.UseKeyAttribute));
+            var where = WhereClause(parameters, m_Options.HasFlag(UpsertOptions.UseKeyAttribute));
 
-            var output = OutputClause(materializer, WhereClauseForOutput(m_Options.HasFlag(InsertOrUpdateOptions.UseKeyAttribute)));
+            var output = OutputClause(materializer, WhereClauseForOutput(m_Options.HasFlag(UpsertOptions.UseKeyAttribute)));
             var update = UpdateClause(parameters, where);
             var insert = InsertClause(parameters);
             var sql = $"{update}; {insert}; {output};";
@@ -141,7 +141,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
             {
                 var filter = GetPropertiesFilter.ThrowOnNoMatch | GetPropertiesFilter.MutableColumns | GetPropertiesFilter.ForUpdate;
 
-                if (m_Options.HasFlag(InsertOrUpdateOptions.UseKeyAttribute))
+                if (m_Options.HasFlag(UpsertOptions.UseKeyAttribute))
                     filter |= GetPropertiesFilter.ObjectDefinedNonKey;
                 else
                     filter |= GetPropertiesFilter.NonPrimaryKey;
