@@ -7,7 +7,6 @@ using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Tortuga.Anchor.Metadata;
-
 namespace Tortuga.Chain.Metadata
 {
 
@@ -116,6 +115,19 @@ namespace Tortuga.Chain.Metadata
 
             var filterText = "";
 
+
+            var checkCount = 0;
+            if (filter.HasFlag(GetPropertiesFilter.PrimaryKey))
+                checkCount += 1;
+            if (filter.HasFlag(GetPropertiesFilter.NonPrimaryKey))
+                checkCount += 1;
+            if (filter.HasFlag(GetPropertiesFilter.ObjectDefinedKey))
+                checkCount += 1;
+            if (filter.HasFlag(GetPropertiesFilter.ObjectDefinedNonKey))
+                checkCount += 1;
+            if (checkCount > 1)
+                throw new ArgumentException("Cannot specify more than one of (PrimaryKey, NonPrimaryKey, ObjectDefinedKey, ObjectDefinedNonKey)", nameof(filter));
+
             if (filter.HasFlag(GetPropertiesFilter.PrimaryKey))
             {
                 filterText = "primary key";
@@ -192,12 +204,21 @@ namespace Tortuga.Chain.Metadata
         /// <param name="argument">The parameter dictionary to examine.</param>
         /// <param name="filter">The filter.</param>
         /// <returns>ImmutableList&lt;ColumnPropertyMap&gt;.</returns>
+        [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
         public ImmutableList<ColumnMetadata<TDbType>> GetKeysFor(IReadOnlyDictionary<string, object> argument, GetKeysFilter filter)
         {
             //Filtered versions rely on the unfiltered version.
             IEnumerable<ColumnMetadata<TDbType>> result = Columns.Where(c => argument.ContainsKey(c.ClrName));
 
             var filterText = "";
+
+            var checkCount = 0;
+            if (filter.HasFlag(GetKeysFilter.PrimaryKey))
+                checkCount += 1;
+            if (filter.HasFlag(GetKeysFilter.NonPrimaryKey))
+                checkCount += 1;
+            if (checkCount > 1)
+                throw new ArgumentException("Cannot specify more than one of (PrimaryKey, NonPrimaryKey)", nameof(filter));
 
             if (filter.HasFlag(GetKeysFilter.PrimaryKey))
             {
