@@ -62,6 +62,29 @@ Materializers call into several categories:
 * Table: `ToTable`, `ToDataTable`, `ToCollection`
 * Multiple Tables: `ToTableSet`, `ToDataSet`
 
+###Appenders
+
+Appenders are links that can change the rules before, during, or after execution.  An appender can be added after a materializer or another appender.
+
+Caching appenders include:
+
+* `Cache`: Writes to the cache, overwriting any previous value. (Use with Update and Procedure operations.)
+* `ReadOrCache`: If it can read from the cache, the database operation is aborted. Otherwise the value is cached. 
+* `CacheAllItems`: Cache each item in the result list individually. Useful when using a GetAll style operation.
+* `InvalidateCache`: Removes a cache entry. Use with any operation that modifies a record.
+
+If using SQL Server, you can also use `WithChangeNotification`. This uses SQL Dependency to listen for changes to the table(s) you queried.
+
+When debugging applications, it is often nice to dump the SQL somewhere. This is where the tracing appenders come into play.
+
+* `WithTracing`: Writes to an arbitrary TextWriter style stream.
+* `WithTracingToConsole`: Writes to the Console window
+* `WithTracingToDebug`: Writes to the Debug window
+
+You can also override DBCommand settings such as the command timeout. For example:
+
+    ds.Procedure("ExpensiveReport").ToDataSet().SetTimeout(TimeSpan.FromHours(3)).Execute()
+
 ###Execution Modes
 
 The final link in any chain is the execution mode. There are two basic options:
