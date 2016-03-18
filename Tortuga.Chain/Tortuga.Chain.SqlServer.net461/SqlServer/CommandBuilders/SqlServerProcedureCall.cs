@@ -60,9 +60,10 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
                 foreach (var item in (IReadOnlyDictionary<string, object>)m_ArgumentValue)
                 {
                     ParameterMetadata<SqlDbType> paramInfo;
-                    if (expectedParameters.TryGetValue(item.Key, out paramInfo))
+                    string key = item.Key.StartsWith("@", StringComparison.OrdinalIgnoreCase) ? item.Key.Substring(1) : item.Key; //normalize
+                    if (expectedParameters.TryGetValue(key, out paramInfo))
                     {
-                        var newSqlParameter = new SqlParameter("@" + item.Key, item.Value ?? DBNull.Value);
+                        var newSqlParameter = new SqlParameter(paramInfo.SqlParameterName, item.Value ?? DBNull.Value);
                         if (paramInfo.SqlDbType.HasValue)
                             newSqlParameter.SqlDbType = paramInfo.SqlDbType.Value;
                         parameters.Add(newSqlParameter);

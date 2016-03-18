@@ -33,7 +33,7 @@ namespace Tortuga.Chain.Materializers
             if (temp == null || temp == DBNull.Value)
                 return null;
 
-            return (int)temp;
+            return Convert.ToInt32(temp);
         }
 
 
@@ -50,7 +50,7 @@ namespace Tortuga.Chain.Materializers
             if (temp == null || temp == DBNull.Value)
                 return null;
 
-            return (int)temp;
+            return Convert.ToInt32(temp);
         }
     }
 }

@@ -112,11 +112,12 @@ namespace Tortuga.Chain.SQLite
         /// <param name="executionToken">The execution token.</param>
         /// <param name="implementation">The implementation.</param>
         /// <param name="state">The state.</param>
-        /// <exception cref="System.ArgumentNullException">
+        /// <exception cref="ArgumentNullException">
         /// executionToken;executionToken is null.
         /// or
         /// implementation;implementation is null.
         /// </exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
         protected override void Execute(ExecutionToken<SQLiteCommand, SQLiteParameter> executionToken, Func<SQLiteCommand, int?> implementation, object state)
         {
             if (executionToken == null)

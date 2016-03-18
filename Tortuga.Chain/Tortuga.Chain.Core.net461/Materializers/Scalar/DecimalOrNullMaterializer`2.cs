@@ -35,7 +35,7 @@ namespace Tortuga.Chain.Materializers
             if (temp == null || temp == DBNull.Value)
                 return null;
 
-            return (decimal)temp;
+            return Convert.ToDecimal(temp);
         }
 
 
@@ -52,7 +52,7 @@ namespace Tortuga.Chain.Materializers
             if (temp == null || temp == DBNull.Value)
                 return null;
 
-            return (decimal)temp;
+            return Convert.ToDecimal(temp);
         }
     }
 }

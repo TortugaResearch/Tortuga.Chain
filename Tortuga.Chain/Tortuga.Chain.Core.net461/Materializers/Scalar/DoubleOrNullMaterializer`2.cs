@@ -34,7 +34,7 @@ namespace Tortuga.Chain.Materializers
             if (temp == null || temp == DBNull.Value)
                 return null;
 
-            return (double)temp;
+            return Convert.ToDouble(temp);
         }
 
 
@@ -51,7 +51,7 @@ namespace Tortuga.Chain.Materializers
             if (temp == null || temp == DBNull.Value)
                 return null;
 
-            return (double)temp;
+            return Convert.ToDouble(temp);
         }
     }
 }

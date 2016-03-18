@@ -61,14 +61,14 @@ namespace Tests.Repository
             return Source.Update(TableName, entity).ExecuteAsync();
         }
 
-        public Task<List<Employee>> QueryAsync(string whereClause, object argumentValue)
+        public Task<List<Tests.Models.Employee>> QueryAsync(string whereClause, object argumentValue)
         {
-            return Source.From(TableName, whereClause, argumentValue).ToCollection<Employee>().ExecuteAsync();
+            return Source.From(TableName, whereClause, argumentValue).ToCollection<Tests.Models.Employee>().ExecuteAsync();
         }
 
-        public Task<List<Employee>> QueryAsync(object filterValue)
+        public Task<List<Tests.Models.Employee>> QueryAsync(object filterValue)
         {
-            return Source.From(TableName, filterValue).ToCollection<Employee>().ExecuteAsync();
+            return Source.From(TableName, filterValue).ToCollection<Tests.Models.Employee>().ExecuteAsync();
         }
     }
 

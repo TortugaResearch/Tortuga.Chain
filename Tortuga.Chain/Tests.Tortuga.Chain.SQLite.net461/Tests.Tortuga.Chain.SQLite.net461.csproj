@@ -36,6 +36,15 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug-Unchecked|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug-Unchecked\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Collections.Immutable, Version=1.1.37.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -68,14 +77,17 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="..\Tests.Tortuga.Chain.SqlServer.net461\Class1Databases\SqlTests.cs">
+      <Link>Class1Databases\SqlTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Tests.Tortuga.Chain.SqlServer.net461\Models\Employee.cs">
+      <Link>Models\Employee.cs</Link>
+    </Compile>
     <Compile Include="..\Tests.Tortuga.Chain.SqlServer.net461\Repository\AsyncRepositoryTests.cs">
       <Link>Repository\AsyncRepositoryTests.cs</Link>
     </Compile>
     <Compile Include="..\Tests.Tortuga.Chain.SqlServer.net461\Repository\AsyncRepository`2.cs">
       <Link>Repository\AsyncRepository`2.cs</Link>
-    </Compile>
-    <Compile Include="..\Tests.Tortuga.Chain.SqlServer.net461\Repository\Employee.cs">
-      <Link>Repository\Employee.cs</Link>
     </Compile>
     <Compile Include="..\Tests.Tortuga.Chain.SqlServer.net461\Repository\RepositoryTests.cs">
       <Link>Repository\RepositoryTests.cs</Link>

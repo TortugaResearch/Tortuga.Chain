@@ -135,6 +135,7 @@ namespace Tortuga.Chain
         /// <param name="executionToken"></param>
         /// <param name="implementation"></param>
         /// <param name="state"></param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
         protected override void Execute(Tortuga.Chain.Core.ExecutionToken<SQLiteCommand, SQLiteParameter> executionToken, Func<SQLiteCommand, int?> implementation, object state)
         {
             if (executionToken == null)

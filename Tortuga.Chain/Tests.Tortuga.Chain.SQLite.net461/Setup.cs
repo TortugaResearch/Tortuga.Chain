@@ -34,7 +34,9 @@ CREATE TABLE Employee
 	MiddleName nvarChar(25) NULL,
 	LastName nVarChar(25) NOT NULL,
 	Title nVarChar(100) null,
-	ManagerKey INT NULL REferences Employee(EmployeeKey)
+	ManagerKey INT NULL REferences Employee(EmployeeKey),
+    CreatedDate DateTime NOT NULL DEFAULT CURRENT_TIME,
+    UpdatedDate DateTime NULL
 )";
 
             using (SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection))

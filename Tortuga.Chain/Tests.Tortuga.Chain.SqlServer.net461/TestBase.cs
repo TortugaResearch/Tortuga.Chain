@@ -18,6 +18,7 @@ namespace Tests
 
         public string EmployeeTableName { get { return "HR.Employee"; } }
 
+        public string Proc1Name { get { return "Sales.CustomerWithOrdersByState"; } }
     }
 
 }

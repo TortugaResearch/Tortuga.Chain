@@ -8,7 +8,7 @@ namespace Tortuga.Chain.Metadata
         where TDbType : struct
     {
         private readonly string m_ClrName;
-        private readonly string m_SqlName;
+        private readonly string m_SqlParameterName;
         private readonly TDbType? m_DbType;
         private readonly string m_TypeName;
 
@@ -16,16 +16,15 @@ namespace Tortuga.Chain.Metadata
         /// <summary>
         /// Initializes a new instance of the <see cref="ParameterMetadata{TDbType}" /> class.
         /// </summary>
-        /// <param name="name">The name.</param>
+        /// <param name="sqlParameterName">Name of the SQL parameter.</param>
         /// <param name="typeName">Name of the type.</param>
         /// <param name="dbType">Type of the database.</param>
-        public ParameterMetadata(string name, string typeName, TDbType? dbType)
+        public ParameterMetadata(string sqlParameterName, string typeName, TDbType? dbType)
         {
             m_TypeName = typeName;
-            m_SqlName = name;
-            m_ClrName = Utilities.ToClrName(name);
+            m_SqlParameterName = sqlParameterName;
+            m_ClrName = Utilities.ToClrName(sqlParameterName);
             m_DbType = dbType;
-            //m_DbType = Utilities.TypeNameToSqlDbType(typeName);
         }
 
         /// <summary>
@@ -37,11 +36,11 @@ namespace Tortuga.Chain.Metadata
         }
 
         /// <summary>
-        /// Gets the name used by SQL Server.
+        /// Gets the name used by the database.
         /// </summary>
-        public string SqlName
+        public string SqlParameterName
         {
-            get { return m_SqlName; }
+            get { return m_SqlParameterName; }
         }
 
         /// <summary>

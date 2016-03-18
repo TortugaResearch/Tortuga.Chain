@@ -119,5 +119,12 @@ namespace Tortuga.Chain
         /// <param name="policy">Optional cache invalidation policy.</param>
         /// <exception cref="ArgumentNullException">item;item is null.</exception>
         void WriteToCache(CacheItem item, CacheItemPolicy policy);
+
+        /// <summary>
+        /// Creates a operation based on a raw SQL statement.
+        /// </summary>
+        /// <param name="sqlStatement">The SQL statement.</param>
+        /// <param name="argumentValue">The argument value.</param>
+        IMultipleTableDbCommandBuilder Sql(string sqlStatement, object argumentValue);
     }
 }

@@ -45,6 +45,19 @@
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>Tortuga Chain.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug-Unchecked|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug-Unchecked\</OutputPath>
+    <DefineConstants>CODE_ANALYSIS;DEBUG;TRACE</DefineConstants>
+    <DocumentationFile>bin\Debug\Tortuga.Chain.Core.xml</DocumentationFile>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>..\Tortuga.Chain.ruleset</CodeAnalysisRuleSet>
+    <NoWarn>1591</NoWarn>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Collections.Immutable, Version=1.1.37.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -75,6 +88,7 @@
     <Compile Include="Appenders\TraceAppender.cs" />
     <Compile Include="CommandBuilders\IDbCommandBuilder.cs" />
     <Compile Include="CommandBuilders\IMultipleRowDbCommandBuilder.cs" />
+    <Compile Include="CommandBuilders\IMultipleTableDbCommandBuilder.cs" />
     <Compile Include="CommandBuilders\ISingleRowDbCommandBuilder.cs" />
     <Compile Include="CommonAppenders.cs" />
     <Compile Include="Core\ExecutionTokenPreparedEventArgs.cs" />
@@ -86,6 +100,7 @@
     <Compile Include="Core\ExecutionToken.cs" />
     <Compile Include="Core\ExecutionToken`2.cs" />
     <Compile Include="IClass1DataSource.cs" />
+    <Compile Include="IClass2DataSource.cs" />
     <Compile Include="MappingException.cs" />
     <Compile Include="Appenders\ReadOrCacheResultAppender`1.cs" />
     <Compile Include="ILink`1.cs" />
@@ -153,7 +168,7 @@
     <Compile Include="Metadata\IColumnMetadata.cs" />
     <Compile Include="Metadata\IDatabaseMetadataCache.cs" />
     <Compile Include="Metadata\ITableOrViewMetadata.cs" />
-    <Compile Include="Metadata\ParameterMetadata`2.cs" />
+    <Compile Include="Metadata\ParameterMetadata`1.cs" />
     <Compile Include="Metadata\StoredProcedureMetadata`2.cs" />
     <Compile Include="Metadata\TableFunctionMetadata`2.cs" />
     <Compile Include="Metadata\TableOrViewMetadata`2.cs" />

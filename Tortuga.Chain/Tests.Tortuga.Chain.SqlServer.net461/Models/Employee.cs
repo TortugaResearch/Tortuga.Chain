@@ -1,5 +1,8 @@
 
-namespace Tests.Repository
+using System;
+using Tortuga.Anchor.Modeling;
+
+namespace Tests.Models
 {
     public class Employee
     {
@@ -9,5 +12,11 @@ namespace Tests.Repository
         public string LastName { get; set; }
         public string Title { get; set; }
         public int? ManagerKey { get; set; }
+
+        [IgnoreOnInsert, IgnoreOnUpdate]
+        public DateTime? CreatedDate { get; set; }
+
+        [IgnoreOnUpdate]
+        public DateTime? UpdatedDate { get; set; }
     }
 }

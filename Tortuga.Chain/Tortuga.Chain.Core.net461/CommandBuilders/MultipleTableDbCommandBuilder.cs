@@ -5,12 +5,13 @@ using Tortuga.Chain.Materializers;
 
 namespace Tortuga.Chain.CommandBuilders
 {
+
     /// <summary>
     /// This is the base class for command builders that can potentially return multiple result sets.
     /// </summary>
     /// <typeparam name="TCommand">The type of the t command type.</typeparam>
     /// <typeparam name="TParameter">The type of the t parameter type.</typeparam>
-    public abstract class MultipleTableDbCommandBuilder<TCommand, TParameter> : MultipleRowDbCommandBuilder<TCommand, TParameter>
+    public abstract class MultipleTableDbCommandBuilder<TCommand, TParameter> : MultipleRowDbCommandBuilder<TCommand, TParameter>, IMultipleTableDbCommandBuilder
         where TCommand : DbCommand
         where TParameter : DbParameter
     {

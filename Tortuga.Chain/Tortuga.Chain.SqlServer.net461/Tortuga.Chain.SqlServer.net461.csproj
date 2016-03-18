@@ -44,6 +44,19 @@
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>Tortuga Chain.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug-Unchecked|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug-Unchecked\</OutputPath>
+    <DefineConstants>CODE_ANALYSIS;DEBUG;TRACE</DefineConstants>
+    <DocumentationFile>bin\Debug\Tortuga.Chain.SqlServer.XML</DocumentationFile>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <NoWarn>618</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>..\Tortuga.Chain.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Collections.Immutable, Version=1.1.37.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -69,6 +82,7 @@
     <Compile Include="..\Tortuga.Chain.Core.net461\Properties\LibrarySharedAssemblyInfo.cs">
       <Link>Properties\LibrarySharedAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="SqlServer\Appenders\NotifyChangeAppender`1.cs" />
     <Compile Include="SqlServer\Materializers\WaitForChangeMaterializer`1.cs" />
     <Compile Include="SqlServer\Materializers\WaitForChangeMaterializer.cs" />

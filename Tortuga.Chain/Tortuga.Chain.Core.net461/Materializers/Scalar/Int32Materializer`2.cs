@@ -35,7 +35,7 @@ namespace Tortuga.Chain.Materializers
             if (temp == DBNull.Value)
                 throw new MissingDataException("Unexpected null result");
 
-            return (int)temp;
+            return Convert.ToInt32(temp);
         }
 
 
@@ -54,7 +54,7 @@ namespace Tortuga.Chain.Materializers
             if (temp == DBNull.Value)
                 throw new MissingDataException("Unexpected null result");
 
-            return (int)temp;
+            return Convert.ToInt32(temp);
         }
     }
 }
