@@ -23,12 +23,19 @@ namespace Tortuga.Chain.Appenders
                 throw new ArgumentNullException("previousLink", "previousLink is null.");
 
             m_PreviousLink = previousLink;
-            m_PreviousLink.ExecutionTokenPrepared += (s, e) =>
-            {
-                OnExecutionTokenPrepared(e); //left first
-                ExecutionTokenPrepared?.Invoke(this, e); //then right
-                e.ExecutionToken.CommandBuilt += (s2, e2) => OnCommandBuilt(e2);
-            };
+            m_PreviousLink.ExecutionTokenPrepared += PreviousLink_ExecutionTokenPrepared;
+        }
+
+        private void PreviousLink_ExecutionTokenPrepared(object sender, ExecutionTokenPreparedEventArgs e)
+        {
+            OnExecutionTokenPrepared(e); //left first
+            ExecutionTokenPrepared?.Invoke(this, e); //then right
+            e.ExecutionToken.CommandBuilt += ExecutionToken_CommandBuilt;
+        }
+
+        private void ExecutionToken_CommandBuilt(object sender, CommandBuiltEventArgs e)
+        {
+            OnCommandBuilt(e);
         }
 
         /// <summary>
