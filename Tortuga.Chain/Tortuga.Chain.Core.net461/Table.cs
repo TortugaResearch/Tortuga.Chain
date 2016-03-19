@@ -17,9 +17,9 @@ namespace Tortuga.Chain
     [SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
     public class Table
     {
-        readonly IReadOnlyList<IReadOnlyDictionary<string, object>> m_Rows;
-        readonly IReadOnlyList<string> m_Columns;
-        readonly IReadOnlyDictionary<string, Type> m_ColumnTypes;
+        readonly RowCollection m_Rows;
+        readonly ReadOnlyCollection<string> m_Columns;
+        readonly ReadOnlyDictionary<string, Type> m_ColumnTypes;
 
         /// <summary>
         /// Creates a new NamedTable from an IDataReader
@@ -59,7 +59,7 @@ namespace Tortuga.Chain
             m_Columns = new ReadOnlyCollection<string>(cols);
             m_ColumnTypes = new ReadOnlyDictionary<string, Type>(colTypes);
 
-            var rows = new Collection<ReadOnlyDictionary<string, object>>();
+            var rows = new Collection<Row>();
             while (source.Read())
             {
                 var row = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
@@ -72,9 +72,9 @@ namespace Tortuga.Chain
                     row.Add(m_Columns[i], temp);
                 }
 
-                rows.Add(new ReadOnlyDictionary<string, object>(row));
+                rows.Add(new Row(row));
             }
-            m_Rows = new ReadOnlyCollection<ReadOnlyDictionary<string, object>>(rows);
+            m_Rows = new RowCollection(rows);
         }
 
 
