@@ -1,11 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SQLite;
 using System.Linq;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Materializers;
 using Tortuga.Chain.Metadata;
+
+#if SDS
+using System.Data.SQLite;
+#else
+using SQLiteCommand = Microsoft.Data.Sqlite.SqliteCommand;
+using SQLiteParameter = Microsoft.Data.Sqlite.SqliteParameter;
+using SQLiteConnection = Microsoft.Data.Sqlite.SqliteConnection;
+using SQLiteTransaction = Microsoft.Data.Sqlite.SqliteTransaction;
+using SQLiteConnectionStringBuilder = Microsoft.Data.Sqlite.SqliteConnectionStringBuilder;
+#endif
+
 
 namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
 {
@@ -81,7 +91,7 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
 
         private string SelectClause(Materializer<SQLiteCommand, SQLiteParameter> materializer)
         {
-            var desiredColumns = materializer.DesiredColumns().ToDictionary(c => c, StringComparer.InvariantCultureIgnoreCase);
+            var desiredColumns = materializer.DesiredColumns().ToDictionary(c => c, StringComparer.OrdinalIgnoreCase);
             var availableColumns = m_MetaData.Columns;
 
             if (desiredColumns.Count == 0)
@@ -96,7 +106,7 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
 
         private string WhereClauseFromFilter(List<SQLiteParameter> parameters)
         {
-            var availableColumns = m_MetaData.Columns.ToDictionary(c => c.ClrName, StringComparer.InvariantCultureIgnoreCase);
+            var availableColumns = m_MetaData.Columns.ToDictionary(c => c.ClrName, StringComparer.OrdinalIgnoreCase);
             var properties = Anchor.Metadata.MetadataCache.GetMetadata(m_FilterValue.GetType()).Properties;
             var actualColumns = new List<string>();
 

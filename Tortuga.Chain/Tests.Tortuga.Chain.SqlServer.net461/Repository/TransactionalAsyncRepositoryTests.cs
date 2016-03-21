@@ -1,7 +1,13 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
+#if MSTest
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+#elif WINDOWS_UWP 
+using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
+#endif
+
 
 namespace Tests.Repository
 {

@@ -1,6 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
-using System.Data;
+using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Tortuga.Chain
@@ -18,7 +18,7 @@ namespace Tortuga.Chain
         /// </summary>
         /// <param name="reader">The data reader used to populate this TableSet.</param>
         /// <param name="tableNames">Optional list of table names.</param>
-        public TableSet(IDataReader reader, params string[] tableNames)
+        public TableSet(DbDataReader reader, params string[] tableNames)
         {
             if (reader == null)
                 throw new ArgumentNullException("reader", "reader is null.");

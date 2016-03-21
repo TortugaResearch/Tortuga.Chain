@@ -1,6 +1,11 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Tortuga.Chain;
+
+#if MSTest
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+#elif WINDOWS_UWP 
+using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
+#endif
 
 namespace Tests.Class1Databases
 {

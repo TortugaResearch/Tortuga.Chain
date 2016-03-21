@@ -2,11 +2,19 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Data;
-using System.Data.SQLite;
 using System.Linq;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Materializers;
 using Tortuga.Chain.Metadata;
+
+#if SDS
+using System.Data.SQLite;
+#else
+using SQLiteCommand = Microsoft.Data.Sqlite.SqliteCommand;
+using SQLiteParameter = Microsoft.Data.Sqlite.SqliteParameter;
+using SQLiteConnection = Microsoft.Data.Sqlite.SqliteConnection;
+using SQLiteTransaction = Microsoft.Data.Sqlite.SqliteTransaction;
+#endif
 
 namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
 {

@@ -1,7 +1,10 @@
-﻿using System;
-using System.Runtime.Caching;
-using Tortuga.Chain.CommandBuilders;
+﻿using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Metadata;
+
+#if !WINDOWS_UWP
+using System;
+using System.Runtime.Caching;
+#endif
 
 namespace Tortuga.Chain
 {
@@ -10,11 +13,14 @@ namespace Tortuga.Chain
     /// </summary>
     public interface IClass1DataSource
     {
+
+#if !WINDOWS_UWP
         /// <summary>
         /// Gets or sets the cache to be used by this data source. The default is .NET's MemoryCache.
         /// </summary>
         /// <remarks>This is used by the WithCaching materializer.</remarks>
         ObjectCache Cache { get; set; }
+#endif
 
         /// <summary>
         /// Returns an abstract metadata cache.
@@ -85,6 +91,7 @@ namespace Tortuga.Chain
         /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
         ISingleRowDbCommandBuilder Upsert(string tableName, object argumentValue, UpsertOptions options = UpsertOptions.None);
 
+#if !WINDOWS_UWP
         /// <summary>
         /// Invalidates a cache key.
         /// </summary>
@@ -102,6 +109,7 @@ namespace Tortuga.Chain
         /// <param name="result">The cached result.</param>
         /// <returns><c>true</c> if the key was found in the cache, <c>false</c> otherwise.</returns>
         bool TryReadFromCache<T>(string cacheKey, string regionName, out T result);
+#endif
 
         /// <summary>
         /// Updates an object in the specified table.
@@ -112,6 +120,8 @@ namespace Tortuga.Chain
         /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
         ISingleRowDbCommandBuilder Update(string tableName, object argumentValue, UpdateOptions options = UpdateOptions.None);
 
+#if !WINDOWS_UWP
+
         /// <summary>
         /// Writes to cache, replacing any previous value.
         /// </summary>
@@ -119,6 +129,7 @@ namespace Tortuga.Chain
         /// <param name="policy">Optional cache invalidation policy.</param>
         /// <exception cref="ArgumentNullException">item;item is null.</exception>
         void WriteToCache(CacheItem item, CacheItemPolicy policy);
+#endif
 
         /// <summary>
         /// Creates a operation based on a raw SQL statement.

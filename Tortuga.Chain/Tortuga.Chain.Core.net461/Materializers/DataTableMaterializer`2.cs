@@ -1,3 +1,4 @@
+#if !WINDOWS_UWP
 using System.Data;
 using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
@@ -67,3 +68,4 @@ namespace Tortuga.Chain.Materializers
         }
     }
 }
+#endif

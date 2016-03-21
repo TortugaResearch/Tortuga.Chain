@@ -5,6 +5,8 @@ using System.Diagnostics;
 using System.IO;
 using Tortuga.Chain;
 using Tortuga.Chain.DataSources;
+using Tortuga.Chain.SQLite;
+
 namespace Tests
 {
     [TestClass]
@@ -71,7 +73,7 @@ CREATE TABLE Employee
         {
             Debug.WriteLine("******");
             Debug.WriteLine($"Execution canceled: {e.ExecutionDetails.OperationName}. Duration: {e.Duration.Value.TotalSeconds.ToString("N3")} sec.");
-            WriteDetails(e);
+            //WriteDetails(e);
         }
 
         static void DefaultDispatcher_ExecutionError(object sender, ExecutionEventArgs e)
@@ -100,7 +102,10 @@ CREATE TABLE Employee
             Debug.WriteLine("");
             Debug.WriteLine("Command text: ");
             Debug.WriteLine(e.ExecutionDetails.CommandText);
-            //TODO: add parameter dump
+            Debug.Indent();
+            foreach (var item in ((SQLiteExecutionToken)e.ExecutionDetails).Parameters)
+                Debug.WriteLine(item.ParameterName + ": " + (item.Value == null || item.Value == DBNull.Value ? "<NULL>" : item.Value));
+            Debug.Unindent();
             Debug.WriteLine("******");
             Debug.WriteLine("");
         }

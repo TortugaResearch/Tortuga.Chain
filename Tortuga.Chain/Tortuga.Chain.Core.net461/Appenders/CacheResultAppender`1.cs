@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !WINDOWS_UWP
+using System;
 using System.Runtime.Caching;
 using System.Threading;
 using System.Threading.Tasks;
@@ -89,3 +90,4 @@ namespace Tortuga.Chain.Appenders
     }
 
 }
+#endif

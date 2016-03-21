@@ -1,10 +1,23 @@
 ﻿using System;
-using System.Configuration;
 using System.Data;
-using System.Data.SQLite;
 using System.Threading;
 using System.Threading.Tasks;
 using Tortuga.Chain.SQLite;
+
+#if !WINDOWS_UWP
+using System.Configuration;
+#endif
+
+#if SDS
+using System.Data.SQLite;
+#else
+using SQLiteCommand = Microsoft.Data.Sqlite.SqliteCommand;
+using SQLiteParameter = Microsoft.Data.Sqlite.SqliteParameter;
+using SQLiteConnection = Microsoft.Data.Sqlite.SqliteConnection;
+using SQLiteTransaction = Microsoft.Data.Sqlite.SqliteTransaction;
+using SQLiteConnectionStringBuilder = Microsoft.Data.Sqlite.SqliteConnectionStringBuilder;
+#endif
+
 
 namespace Tortuga.Chain
 {
@@ -88,6 +101,7 @@ namespace Tortuga.Chain
             get { return m_ConnectionBuilder.ConnectionString; }
         }
 
+#if !WINDOWS_UWP
         /// <summary>
         /// Creates a new connection using the connection string in the app.config file.
         /// </summary>
@@ -101,6 +115,7 @@ namespace Tortuga.Chain
 
             return new SQLiteDataSource(connectionName, settings.ConnectionString);
         }
+#endif
 
         /// <summary>
         /// Creates and opens a new SQLite connection

@@ -57,10 +57,13 @@ namespace Tortuga.Chain.CommandBuilders
         ILink<TCollection> ToCollection<TObject, TCollection>()
             where TObject : class, new()
             where TCollection : ICollection<TObject>, new();
+
+#if !WINDOWS_UWP
         /// <summary>
         /// Indicates the results should be materialized as a DataSet.
         /// </summary>
         ILink<DataTable> ToDataTable();
+#endif
         /// <summary>
         /// Indicates the results should be materialized as a list of DateTime.
         /// </summary>

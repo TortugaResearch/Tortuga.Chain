@@ -8,9 +8,12 @@ namespace Tortuga.Chain
     /// This exception indicates that unexpected data was returned from the database.
     /// </summary>
     /// <remarks>This can occur when more rows or columns than expected were returned.</remarks>
+#if !WINDOWS_UWP
     [Serializable]
+#endif
     public class UnexpectedDataException : DataException
     {
+#if !WINDOWS_UWP
         /// <summary>
         /// Initializes a new instance of the <see cref="UnexpectedDataException"/> class.
         /// </summary>
@@ -21,6 +24,7 @@ namespace Tortuga.Chain
         {
 
         }
+#endif
         /// <summary>
         /// Initializes a new instance of the <see cref="UnexpectedDataException"/> class.
         /// </summary>

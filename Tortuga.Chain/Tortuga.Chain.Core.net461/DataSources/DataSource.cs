@@ -1,7 +1,11 @@
 using System;
 using System.ComponentModel;
-using System.Runtime.Caching;
 using Tortuga.Chain.Core;
+
+#if !WINDOWS_UWP
+using System.Runtime.Caching;
+#endif
+
 namespace Tortuga.Chain.DataSources
 {
     /// <summary>
@@ -15,7 +19,9 @@ namespace Tortuga.Chain.DataSources
         /// </summary>
         protected DataSource()
         {
+#if !WINDOWS_UWP
             Cache = MemoryCache.Default;
+#endif
         }
 
         /// <summary>
@@ -60,11 +66,13 @@ namespace Tortuga.Chain.DataSources
         /// </summary>
         public event EventHandler<ExecutionEventArgs> ExecutionStarted;
 
+#if !WINDOWS_UWP
         /// <summary>
         /// Gets or sets the cache to be used by this data source. The default is .NET's MemoryCache.
         /// </summary>
         /// <remarks>This is used by the WithCaching materializer.</remarks>
         public ObjectCache Cache { get; set; }
+#endif
 
         /// <summary>
         /// Gets or sets the default command timeout.
@@ -92,6 +100,7 @@ namespace Tortuga.Chain.DataSources
         /// <value>If <c>true</c>, this data source will not honor global event handlers.</value>
         public bool SuppressGlobalEvents { get; set; }
 
+#if !WINDOWS_UWP
         /// <summary>
         /// Invalidates a cache key.
         /// </summary>
@@ -106,6 +115,7 @@ namespace Tortuga.Chain.DataSources
 
             Cache.Remove(cacheKey, regionName);
         }
+#endif
 
         /// <summary>
         /// Raises the <see cref="E:ExecutionCanceled" /> event.
@@ -171,6 +181,7 @@ namespace Tortuga.Chain.DataSources
                 GlobalExecutionStarted(this, e);
         }
 
+#if !WINDOWS_UWP
         /// <summary>
 		/// Try to read from the cache.
 		/// </summary>
@@ -225,6 +236,7 @@ namespace Tortuga.Chain.DataSources
 
             Cache.Set(item, policy);
         }
+#endif
 
         /// <summary>
         /// Data sources can use this to indicate an executionDetails was canceled.
