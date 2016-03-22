@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using Tortuga.Chain.Metadata;
+using System;
 
 #if SDS
 using System.Data.SQLite;
@@ -19,7 +20,7 @@ namespace Tortuga.Chain.SQLite
     public sealed class SQLiteMetadataCache : DatabaseMetadataCache<string, DbType>
     {
         private readonly SQLiteConnectionStringBuilder m_ConnectionBuilder;
-        private readonly ConcurrentDictionary<string, TableOrViewMetadata<string, DbType>> m_Tables = new ConcurrentDictionary<string, TableOrViewMetadata<string, DbType>>();
+        private readonly ConcurrentDictionary<string, TableOrViewMetadata<string, DbType>> m_Tables = new ConcurrentDictionary<string, TableOrViewMetadata<string, DbType>>(StringComparer.OrdinalIgnoreCase);
         //private readonly ImmutableHashSet<string> m_Curr;
 
         /// <summary>
@@ -72,7 +73,7 @@ namespace Tortuga.Chain.SQLite
             }
 
             var columns = GetColumns(tableName);
-            return new TableOrViewMetadata<string, DbType>(tableName, isTable, columns);
+            return new TableOrViewMetadata<string, DbType>(actualName, isTable, columns);
         }
 
         /// <summary>

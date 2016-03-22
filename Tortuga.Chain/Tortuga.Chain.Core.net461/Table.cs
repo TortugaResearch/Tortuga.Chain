@@ -135,9 +135,10 @@ namespace Tortuga.Chain
 
             foreach (var property in MetadataCache.GetMetadata(target.GetType()).Properties)
             {
-                if (property.CanWrite && source.ContainsKey(decompositionPrefix + property.MappedColumnName))
+                string mappedColumnName = decompositionPrefix + property.MappedColumnName;
+                if (property.CanWrite && source.ContainsKey(mappedColumnName))
                 {
-                    var value = source[property.MappedColumnName];
+                    var value = source[mappedColumnName];
 
                     if (value != null && property.PropertyType != value.GetType())
                     {

@@ -142,8 +142,9 @@ namespace Tortuga.Chain.SqlServer
         /// <remarks>This is a case-insensitive comparison.</remarks>
         public static bool operator ==(SqlServerObjectName left, SqlServerObjectName right)
         {
-            return string.Equals(left.Schema, right.Schema, StringComparison.OrdinalIgnoreCase) &&
-                string.Equals(left.Name, right.Name, StringComparison.OrdinalIgnoreCase);
+            return string.Equals(left.Database, right.Database, StringComparison.OrdinalIgnoreCase)
+                && string.Equals(left.Schema, right.Schema, StringComparison.OrdinalIgnoreCase)
+                && string.Equals(left.Name, right.Name, StringComparison.OrdinalIgnoreCase);
         }
 
         /// <summary>

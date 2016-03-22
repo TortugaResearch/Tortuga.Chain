@@ -16,17 +16,14 @@ namespace Tortuga.Chain.Appenders
         private readonly string m_CacheKey;
         private readonly Func<TResult, string> m_CacheKeyFunction;
         private readonly CacheItemPolicy m_Policy;
-        private readonly string m_RegionName;
-        private readonly Func<TResult, string> m_RegionNameFunction;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CacheResultAppender{TResult}" /> class.
         /// </summary>
         /// <param name="previousLink">The previous link.</param>
         /// <param name="cacheKeyFunction">Function to generate cache keys.</param>
-        /// <param name="regionNameFunction">Optional function to generate region names.</param>
         /// <param name="policy">Optional cache policy.</param>
-        public CacheResultAppender(ILink<TResult> previousLink, Func<TResult, string> cacheKeyFunction, Func<TResult, string> regionNameFunction = null, CacheItemPolicy policy = null) : base(previousLink)
+        public CacheResultAppender(ILink<TResult> previousLink, Func<TResult, string> cacheKeyFunction, CacheItemPolicy policy = null) : base(previousLink)
         {
             if (cacheKeyFunction == null)
                 throw new ArgumentNullException("cacheKeyFunction", "cacheKeyFunction is null.");
@@ -34,7 +31,6 @@ namespace Tortuga.Chain.Appenders
                 throw new ArgumentNullException("previousLink", "previousLink is null.");
 
             m_CacheKeyFunction = cacheKeyFunction;
-            m_RegionNameFunction = regionNameFunction ?? ((x) => null);
             m_Policy = policy;
         }
 
@@ -43,9 +39,8 @@ namespace Tortuga.Chain.Appenders
         /// </summary>
         /// <param name="previousLink">The previous link.</param>
         /// <param name="cacheKey">The cache key.</param>
-        /// <param name="regionName">Optional name of the cache region. WARNING: The default cache does not support region names.</param>
         /// <param name="policy">Optional cache policy.</param>
-        public CacheResultAppender(ILink<TResult> previousLink, string cacheKey, string regionName, CacheItemPolicy policy) : base(previousLink)
+        public CacheResultAppender(ILink<TResult> previousLink, string cacheKey, CacheItemPolicy policy) : base(previousLink)
         {
             if (previousLink == null)
                 throw new ArgumentNullException("previousLink", "previousLink is null.");
@@ -53,7 +48,6 @@ namespace Tortuga.Chain.Appenders
                 throw new ArgumentException("cacheKey is null or empty.", "cacheKey");
 
             m_Policy = policy;
-            m_RegionName = regionName;
             m_CacheKey = cacheKey;
         }
 
@@ -66,7 +60,7 @@ namespace Tortuga.Chain.Appenders
 
             var result = PreviousLink.Execute(state);
 
-            DataSource.WriteToCache(new CacheItem(m_CacheKey ?? m_CacheKeyFunction(result), result, m_RegionName ?? m_RegionNameFunction(result)), m_Policy);
+            DataSource.WriteToCache(new CacheItem(m_CacheKey ?? m_CacheKeyFunction(result), result, null), m_Policy);
 
             return result;
         }
@@ -82,7 +76,7 @@ namespace Tortuga.Chain.Appenders
 
             var result = await PreviousLink.ExecuteAsync(state).ConfigureAwait(false);
 
-            DataSource.WriteToCache(new CacheItem(m_CacheKey, result, m_RegionName), m_Policy);
+            DataSource.WriteToCache(new CacheItem(m_CacheKey ?? m_CacheKeyFunction(result), result, null), m_Policy);
 
             return result;
         }

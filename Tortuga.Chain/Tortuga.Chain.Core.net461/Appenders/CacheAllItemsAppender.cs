@@ -15,18 +15,16 @@ namespace Tortuga.Chain.Appenders
     {
         private readonly Func<TItem, string> m_CacheKeyFunction;
         private readonly CacheItemPolicy m_Policy;
-        private readonly Func<TItem, string> m_RegionNameFunction;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CacheAllItemsAppender{TCollection, TItem}" /> class.
         /// </summary>
         /// <param name="previousLink">The previous link.</param>
         /// <param name="cacheKeyFunction">Function to generate cache keys.</param>
-        /// <param name="regionNameFunction">Optional function to generate region names.</param>
         /// <param name="policy">Optional cache policy.</param>
         /// <exception cref="ArgumentNullException">previousLink;previousLink is null.</exception>
         /// <exception cref="ArgumentException">cacheKey is null or empty.;cacheKey</exception>
-        public CacheAllItemsAppender(ILink<TCollection> previousLink, Func<TItem, string> cacheKeyFunction, Func<TItem, string> regionNameFunction = null, CacheItemPolicy policy = null) : base(previousLink)
+        public CacheAllItemsAppender(ILink<TCollection> previousLink, Func<TItem, string> cacheKeyFunction, CacheItemPolicy policy = null) : base(previousLink)
         {
             if (cacheKeyFunction == null)
                 throw new ArgumentNullException("cacheKeyFunction", "cacheKeyFunction is null.");
@@ -34,8 +32,6 @@ namespace Tortuga.Chain.Appenders
                 throw new ArgumentNullException("previousLink", "previousLink is null.");
 
             m_CacheKeyFunction = cacheKeyFunction;
-            m_RegionNameFunction = regionNameFunction ?? ((x) => null);
-
             m_Policy = policy;
         }
 
@@ -70,7 +66,7 @@ namespace Tortuga.Chain.Appenders
         private void CacheItems(IEnumerable<TItem> list)
         {
             foreach (var item in list)
-                DataSource.WriteToCache(new CacheItem(m_CacheKeyFunction(item), item, m_RegionNameFunction(item)), m_Policy);
+                DataSource.WriteToCache(new CacheItem(m_CacheKeyFunction(item), item, null), m_Policy);
         }
     }
 }

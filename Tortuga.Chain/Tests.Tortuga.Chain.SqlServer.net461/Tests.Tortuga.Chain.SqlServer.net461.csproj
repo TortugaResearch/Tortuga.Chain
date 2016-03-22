@@ -75,9 +75,11 @@
   <ItemGroup>
     <Compile Include="Class1Databases\SqlTests.cs" />
     <Compile Include="Class2Databases\ProcedureTests.cs" />
-    <Compile Include="CommandBuilders\SqlServerSqlCallTests.cs" />
     <Compile Include="Materializers\MaterializerTests.cs" />
+    <Compile Include="Materializers\ModelTests.cs" />
     <Compile Include="Metadata\MetadataTests.cs" />
+    <Compile Include="Models\AuditInfo.cs" />
+    <Compile Include="Models\EmployeeWithManager.cs" />
     <Compile Include="Repository\TransactionalAsyncRepositoryTests.cs" />
     <Compile Include="Models\Employee.cs" />
     <Compile Include="Repository\AsyncRepository`2.cs" />

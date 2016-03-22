@@ -64,10 +64,9 @@ namespace Tests.Repository
             return Source.Insert(TableName, entity).ToObject<TEntity>().InvalidateCache(AllCacheKey).Cache((TEntity x) => CacheKey(x), policy: Policy).Execute();
         }
 
-        public void Update(TEntity entity)
+        public TEntity Update(TEntity entity)
         {
-            Source.Update(TableName, entity).InvalidateCache(AllCacheKey).Execute();
-            Source.WriteToCache(new CacheItem(CacheKey(entity), entity), Policy);
+            return Source.Update(TableName, entity).ToObject<TEntity>().Cache(CacheKey(entity)).InvalidateCache(AllCacheKey).Execute();
         }
 
         public void Delete(TKey id)

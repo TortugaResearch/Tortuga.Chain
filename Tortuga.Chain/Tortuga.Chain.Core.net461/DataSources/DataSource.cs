@@ -104,16 +104,13 @@ namespace Tortuga.Chain.DataSources
         /// <summary>
         /// Invalidates a cache key.
         /// </summary>
-        /// <param name="regionName">Name of the region. WARNING: some cache providers, including .NET's MemoryCache, don't support regions.</param>
         /// <param name="cacheKey">The cache key.</param>
-        /// <exception cref="ArgumentException">cacheKey is null or empty.;cacheKey</exception>
-        /// <exception cref="ArgumentException">cacheKey is null or empty.;cacheKey</exception>
-        public void InvalidateCache(string cacheKey, string regionName)
+        internal void InvalidateCache(string cacheKey)
         {
             if (string.IsNullOrEmpty(cacheKey))
                 throw new ArgumentException("cacheKey is null or empty.", "cacheKey");
 
-            Cache.Remove(cacheKey, regionName);
+            Cache.Remove(cacheKey, null);
         }
 #endif
 
@@ -186,18 +183,17 @@ namespace Tortuga.Chain.DataSources
 		/// Try to read from the cache.
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
-        /// <param name="regionName">Name of the region. WARNING: some cache providers, including .NET's MemoryCache, don't support regions.</param>
 		/// <param name="cacheKey">The cache key.</param>
 		/// <param name="result">The cached result.</param>
 		/// <returns><c>true</c> if the key was found in the cache, <c>false</c> otherwise.</returns>
 		/// <exception cref="ArgumentException">cacheKey is null or empty.;cacheKey</exception>
 		/// <exception cref="InvalidOperationException">Cache is corrupted.</exception>
-		public bool TryReadFromCache<T>(string cacheKey, string regionName, out T result)
+		internal bool TryReadFromCache<T>(string cacheKey, out T result)
         {
             if (string.IsNullOrEmpty(cacheKey))
                 throw new ArgumentException("cacheKey is null or empty.", "cacheKey");
 
-            var cacheItem = Cache.GetCacheItem(cacheKey, regionName);
+            var cacheItem = Cache.GetCacheItem(cacheKey, null);
             if (cacheItem == null)
             {
                 result = default(T);
@@ -212,7 +208,7 @@ namespace Tortuga.Chain.DataSources
             }
 
             if (!(cacheItem.Value is T))
-                throw new InvalidOperationException($"Cache is corrupted. Cache Key \"{cacheKey}\" in region \"{regionName}\" is a {cacheItem.Value.GetType().Name} not a {typeof(T).Name}");
+                throw new InvalidOperationException($"Cache is corrupted. Cache Key \"{cacheKey}\" is a {cacheItem.Value.GetType().Name} not a {typeof(T).Name}");
 
             result = (T)cacheItem.Value;
 
@@ -225,7 +221,7 @@ namespace Tortuga.Chain.DataSources
         /// <param name="item">The cache item.</param>
         /// <param name="policy">Optional cache invalidation policy.</param>
         /// <exception cref="ArgumentNullException">item;item is null.</exception>
-        public void WriteToCache(CacheItem item, CacheItemPolicy policy)
+        internal void WriteToCache(CacheItem item, CacheItemPolicy policy)
         {
             if (item == null)
                 throw new ArgumentNullException("item", "item is null.");

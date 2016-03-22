@@ -80,8 +80,14 @@
     <Compile Include="..\Tests.Tortuga.Chain.SqlServer.net461\Class1Databases\SqlTests.cs">
       <Link>Class1Databases\SqlTests.cs</Link>
     </Compile>
+    <Compile Include="..\Tests.Tortuga.Chain.SqlServer.net461\Models\AuditInfo.cs">
+      <Link>AuditInfo.cs</Link>
+    </Compile>
     <Compile Include="..\Tests.Tortuga.Chain.SqlServer.net461\Models\Employee.cs">
       <Link>Models\Employee.cs</Link>
+    </Compile>
+    <Compile Include="..\Tests.Tortuga.Chain.SqlServer.net461\Models\EmployeeWithManager.cs">
+      <Link>EmployeeWithManager.cs</Link>
     </Compile>
     <Compile Include="..\Tests.Tortuga.Chain.SqlServer.net461\Repository\AsyncRepositoryTests.cs">
       <Link>Repository\AsyncRepositoryTests.cs</Link>

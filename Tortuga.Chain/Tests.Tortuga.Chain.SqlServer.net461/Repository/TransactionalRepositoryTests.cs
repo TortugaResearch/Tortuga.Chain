@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Tests.Models;
 
 #if MSTest
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -19,9 +20,9 @@ namespace Tests.Repository
             using (var trans = DataSource.BeginTransaction())
             {
 
-                var repo = new Repository<Tests.Models.Employee, int>(trans, EmployeeTableName);
+                var repo = new Repository<Employee, int>(trans, EmployeeTableName);
 
-                var emp1 = new Tests.Models.Employee() { FirstName = "Tom", LastName = "Jones", Title = "President" };
+                var emp1 = new Employee() { FirstName = "Tom", LastName = "Jones", Title = "President" };
                 var echo1 = repo.Insert(emp1);
 
                 Assert.AreNotEqual(0, echo1.EmployeeKey, "EmployeeKey was not set");
@@ -32,7 +33,7 @@ namespace Tests.Repository
                 echo1.MiddleName = "G";
                 repo.Update(echo1);
 
-                var emp2 = new Tests.Models.Employee() { FirstName = "Lisa", LastName = "Green", Title = "VP Transportation", ManagerKey = echo1.EmployeeKey };
+                var emp2 = new Employee() { FirstName = "Lisa", LastName = "Green", Title = "VP Transportation", ManagerKey = echo1.EmployeeKey };
                 var echo2 = repo.Insert(emp2);
                 Assert.AreNotEqual(0, echo2.EmployeeKey, "EmployeeKey was not set");
                 Assert.AreEqual(emp2.FirstName, echo2.FirstName, "FirstName");
@@ -75,7 +76,7 @@ namespace Tests.Repository
             using (var trans = DataSource.BeginTransaction())
             {
 
-                var repo = new Repository<Tests.Models.Employee, int>(trans, EmployeeTableName);
+                var repo = new Repository<Employee, int>(trans, EmployeeTableName);
                 var emp1 = new Dictionary<string, object>() { { "FirstName", "Tom" }, { "LastName", "Jones" }, { "Title", "President" } };
                 var echo1 = repo.Insert(emp1);
 
@@ -97,7 +98,7 @@ namespace Tests.Repository
             using (var trans = DataSource.BeginTransaction())
             {
 
-                var repo = new Repository<Tests.Models.Employee, int>(trans, EmployeeTableName);
+                var repo = new Repository<Employee, int>(trans, EmployeeTableName);
 
                 var emp1 = new Dictionary<string, object>() { { "FirstName", "Tom" }, { "LastName", "Jones" }, { "Title", "President" } };
                 var echo1 = repo.Insert(emp1);

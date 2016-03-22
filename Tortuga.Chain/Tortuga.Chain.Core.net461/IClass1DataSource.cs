@@ -3,7 +3,7 @@ using Tortuga.Chain.Metadata;
 
 #if !WINDOWS_UWP
 using System;
-using System.Runtime.Caching;
+//using System.Runtime.Caching;
 #endif
 
 namespace Tortuga.Chain
@@ -91,26 +91,6 @@ namespace Tortuga.Chain
         /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
         ISingleRowDbCommandBuilder Upsert(string tableName, object argumentValue, UpsertOptions options = UpsertOptions.None);
 
-#if !WINDOWS_UWP
-        /// <summary>
-        /// Invalidates a cache key.
-        /// </summary>
-        /// <param name="regionName">Name of the region. WARNING: some cache providers, including .NET's MemoryCache, don't support regions.</param>
-        /// <param name="cacheKey">The cache key.</param>
-        /// <exception cref="ArgumentException">cacheKey is null or empty.;cacheKey</exception>
-        void InvalidateCache(string cacheKey, string regionName);
-
-        /// <summary>
-        /// Try to read from the cache.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="regionName">Name of the region. WARNING: some cache providers, including .NET's MemoryCache, don't support regions.</param>
-        /// <param name="cacheKey">The cache key.</param>
-        /// <param name="result">The cached result.</param>
-        /// <returns><c>true</c> if the key was found in the cache, <c>false</c> otherwise.</returns>
-        bool TryReadFromCache<T>(string cacheKey, string regionName, out T result);
-#endif
-
         /// <summary>
         /// Updates an object in the specified table.
         /// </summary>
@@ -119,17 +99,6 @@ namespace Tortuga.Chain
         /// <param name="options">The update options.</param>
         /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
         ISingleRowDbCommandBuilder Update(string tableName, object argumentValue, UpdateOptions options = UpdateOptions.None);
-
-#if !WINDOWS_UWP
-
-        /// <summary>
-        /// Writes to cache, replacing any previous value.
-        /// </summary>
-        /// <param name="item">The cache item.</param>
-        /// <param name="policy">Optional cache invalidation policy.</param>
-        /// <exception cref="ArgumentNullException">item;item is null.</exception>
-        void WriteToCache(CacheItem item, CacheItemPolicy policy);
-#endif
 
         /// <summary>
         /// Creates a operation based on a raw SQL statement.

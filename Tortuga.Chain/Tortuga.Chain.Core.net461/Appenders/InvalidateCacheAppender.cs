@@ -10,22 +10,19 @@ namespace Tortuga.Chain.Appenders
     internal sealed class InvalidateCacheAppender : Appender
     {
         private readonly string m_CacheKey;
-        private readonly string m_RegionName;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="InvalidateCacheAppender{TResult}"/> class.
         /// </summary>
         /// <param name="previousLink">The previous link.</param>
         /// <param name="cacheKey">The cache key.</param>
-        /// <param name="regionName">Optional name of the cache region. WARNING: The default cache does not support region names.</param>
         /// <exception cref="ArgumentNullException">previousLink;previousLink is null.</exception>
         /// <exception cref="ArgumentException">cacheKey is null or empty.;cacheKey</exception>
-        public InvalidateCacheAppender(ILink previousLink, string cacheKey, string regionName) : base(previousLink)
+        public InvalidateCacheAppender(ILink previousLink, string cacheKey) : base(previousLink)
         {
             if (string.IsNullOrEmpty(cacheKey))
                 throw new ArgumentException("cacheKey is null or empty.", "cacheKey");
 
-            m_RegionName = regionName;
             m_CacheKey = cacheKey;
         }
 
@@ -35,7 +32,7 @@ namespace Tortuga.Chain.Appenders
         /// <param name="state">User defined state, usually used for logging.</param>
         public override void Execute(object state = null)
         {
-            DataSource.InvalidateCache(m_CacheKey, m_RegionName);
+            DataSource.InvalidateCache(m_CacheKey);
 
             PreviousLink.Execute(state);
         }
@@ -48,7 +45,7 @@ namespace Tortuga.Chain.Appenders
         /// <returns></returns>
         public override async Task ExecuteAsync(CancellationToken cancellationToken, object state = null)
         {
-            DataSource.InvalidateCache(m_CacheKey, m_RegionName);
+            DataSource.InvalidateCache(m_CacheKey);
 
             await PreviousLink.ExecuteAsync(state).ConfigureAwait(false);
         }

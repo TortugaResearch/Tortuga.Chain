@@ -4,6 +4,7 @@ using System.Runtime.Caching;
 using System.Threading;
 using System.Threading.Tasks;
 using Tortuga.Chain.DataSources;
+
 namespace Tortuga.Chain.Appenders
 {
 
@@ -16,16 +17,14 @@ namespace Tortuga.Chain.Appenders
     {
         private readonly string m_CacheKey;
         private readonly CacheItemPolicy m_Policy;
-        private readonly string m_RegionName;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ReadOrCacheResultAppender{TResult}" /> class.
         /// </summary>
         /// <param name="previousLink">The previous link.</param>
         /// <param name="cacheKey">The cache key.</param>
-        /// <param name="regionName">Optional name of the cache region. WARNING: The default cache does not support region names.</param>
         /// <param name="policy">Optional cache policy.</param>
-        public ReadOrCacheResultAppender(ILink<TResult> previousLink, string cacheKey, string regionName, CacheItemPolicy policy) : base(previousLink)
+        public ReadOrCacheResultAppender(ILink<TResult> previousLink, string cacheKey, CacheItemPolicy policy) : base(previousLink)
         {
             if (previousLink == null)
                 throw new ArgumentNullException("previousLink", "previousLink is null.");
@@ -33,7 +32,6 @@ namespace Tortuga.Chain.Appenders
                 throw new ArgumentException("cacheKey is null or empty.", "cacheKey");
 
             m_Policy = policy;
-            m_RegionName = regionName;
             m_CacheKey = cacheKey;
         }
 
@@ -44,12 +42,12 @@ namespace Tortuga.Chain.Appenders
         public override TResult Execute(object state = null)
         {
             TResult result;
-            if (PreviousLink.DataSource.TryReadFromCache(m_CacheKey, m_RegionName, out result))
+            if (PreviousLink.DataSource.TryReadFromCache(m_CacheKey, out result))
                 return result;
 
             result = PreviousLink.Execute(state);
 
-            DataSource.WriteToCache(new CacheItem(m_CacheKey, result, m_RegionName), m_Policy);
+            DataSource.WriteToCache(new CacheItem(m_CacheKey, result, null), m_Policy);
 
             return result;
         }
@@ -63,12 +61,12 @@ namespace Tortuga.Chain.Appenders
         public override async Task<TResult> ExecuteAsync(CancellationToken cancellationToken, object state = null)
         {
             TResult result;
-            if (DataSource.TryReadFromCache(m_CacheKey, m_RegionName, out result))
+            if (DataSource.TryReadFromCache(m_CacheKey, out result))
                 return result;
 
             result = await PreviousLink.ExecuteAsync(state).ConfigureAwait(false);
 
-            DataSource.WriteToCache(new CacheItem(m_CacheKey, result, m_RegionName), m_Policy);
+            DataSource.WriteToCache(new CacheItem(m_CacheKey, result, null), m_Policy);
 
             return result;
         }

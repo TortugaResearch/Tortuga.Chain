@@ -21,11 +21,10 @@ namespace Tortuga.Chain
         /// </summary>
         /// <param name="previousLink">The previous link.</param>
         /// <param name="cacheKey">The cache key.</param>
-        /// <param name="regionName">Optional name of the cache region. WARNING: The default cache does not support region names.</param>
         /// <param name="policy">Optional cache policy.</param>
-        public static ILink<TResult> Cache<TResult>(this ILink<TResult> previousLink, string cacheKey, string regionName = null, CacheItemPolicy policy = null)
+        public static ILink<TResult> Cache<TResult>(this ILink<TResult> previousLink, string cacheKey, CacheItemPolicy policy = null)
         {
-            return new CacheResultAppender<TResult>(previousLink, cacheKey, regionName, policy);
+            return new CacheResultAppender<TResult>(previousLink, cacheKey, policy);
         }
 
         /// <summary>
@@ -33,11 +32,10 @@ namespace Tortuga.Chain
         /// </summary>
         /// <param name="previousLink">The previous link.</param>
         /// <param name="cacheKeyFunction">Function to generate cache keys.</param>
-        /// <param name="regionNameFunction">Optional function to generate region names.</param>
         /// <param name="policy">Optional cache policy.</param>
-        public static ILink<TResult> Cache<TResult>(this ILink<TResult> previousLink, Func<TResult, string> cacheKeyFunction, Func<TResult, string> regionNameFunction = null, CacheItemPolicy policy = null)
+        public static ILink<TResult> Cache<TResult>(this ILink<TResult> previousLink, Func<TResult, string> cacheKeyFunction, CacheItemPolicy policy = null)
         {
-            return new CacheResultAppender<TResult>(previousLink, cacheKeyFunction, regionNameFunction, policy);
+            return new CacheResultAppender<TResult>(previousLink, cacheKeyFunction, policy);
         }
 
         /// <summary>
@@ -47,13 +45,12 @@ namespace Tortuga.Chain
         /// <typeparam name="TItem">The type of the t item.</typeparam>
         /// <param name="previousLink">The previous link.</param>
         /// <param name="cacheKeyFunction">Function to generate cache keys.</param>
-        /// <param name="regionNameFunction">Optional function to generate region names.</param>
         /// <param name="policy">Optional cache policy.</param>
         /// <returns>ILink&lt;TCollection&gt;.</returns>
-        public static ILink<TCollection> CacheAllItems<TCollection, TItem>(this ILink<TCollection> previousLink, Func<TItem, string> cacheKeyFunction, Func<TItem, string> regionNameFunction = null, CacheItemPolicy policy = null)
+        public static ILink<TCollection> CacheAllItems<TCollection, TItem>(this ILink<TCollection> previousLink, Func<TItem, string> cacheKeyFunction, CacheItemPolicy policy = null)
             where TCollection : IEnumerable<TItem>
         {
-            return new CacheAllItemsAppender<TCollection, TItem>(previousLink, cacheKeyFunction, regionNameFunction, policy);
+            return new CacheAllItemsAppender<TCollection, TItem>(previousLink, cacheKeyFunction, policy);
         }
 
         /// <summary>
@@ -61,10 +58,9 @@ namespace Tortuga.Chain
         /// </summary>
         /// <param name="previousLink">The previous link.</param>
         /// <param name="cacheKey">The cache key.</param>
-        /// <param name="regionName">Optional name of the cache region. WARNING: The default cache does not support region names.</param>
-        public static ILink<TResult> InvalidateCache<TResult>(this ILink<TResult> previousLink, string cacheKey, string regionName = null)
+        public static ILink<TResult> InvalidateCache<TResult>(this ILink<TResult> previousLink, string cacheKey)
         {
-            return new InvalidateCacheAppender<TResult>(previousLink, cacheKey, regionName);
+            return new InvalidateCacheAppender<TResult>(previousLink, cacheKey);
         }
 
         /// <summary>
@@ -72,10 +68,9 @@ namespace Tortuga.Chain
         /// </summary>
         /// <param name="previousLink">The previous link.</param>
         /// <param name="cacheKey">The cache key.</param>
-        /// <param name="regionName">Optional name of the cache region. WARNING: The default cache does not support region names.</param>
-        public static ILink InvalidateCache(this ILink previousLink, string cacheKey, string regionName = null)
+        public static ILink InvalidateCache(this ILink previousLink, string cacheKey)
         {
-            return new InvalidateCacheAppender(previousLink, cacheKey, regionName);
+            return new InvalidateCacheAppender(previousLink, cacheKey);
         }
 
         /// <summary>
@@ -83,13 +78,12 @@ namespace Tortuga.Chain
         /// </summary>
         /// <param name="commandBuilder">The command builder.</param>
         /// <param name="cacheKey">The cache key.</param>
-        /// <param name="regionName">Optional name of the cache region. WARNING: The default cache does not support region names.</param>
         /// <returns>ILink.</returns>
-        public static ILink InvalidateCache(this IDbCommandBuilder commandBuilder, string cacheKey, string regionName = null)
+        public static ILink InvalidateCache(this IDbCommandBuilder commandBuilder, string cacheKey)
         {
             if (commandBuilder == null)
                 throw new ArgumentNullException("commandBuilder", "commandBuilder is null.");
-            return new InvalidateCacheAppender(commandBuilder.AsNonQuery(), cacheKey, regionName);
+            return new InvalidateCacheAppender(commandBuilder.AsNonQuery(), cacheKey);
         }
 
         /// <summary>
@@ -97,11 +91,10 @@ namespace Tortuga.Chain
         /// </summary>
         /// <param name="previousLink">The previous link.</param>
         /// <param name="cacheKey">The cache key.</param>
-        /// <param name="regionName">Optional name of the cache region. WARNING: The default cache does not support region names.</param>
         /// <param name="policy">Optional cache policy.</param>
-        public static ILink<TResult> ReadOrCache<TResult>(this ILink<TResult> previousLink, string cacheKey, string regionName = null, CacheItemPolicy policy = null)
+        public static ILink<TResult> ReadOrCache<TResult>(this ILink<TResult> previousLink, string cacheKey, CacheItemPolicy policy = null)
         {
-            return new ReadOrCacheResultAppender<TResult>(previousLink, cacheKey, regionName, policy);
+            return new ReadOrCacheResultAppender<TResult>(previousLink, cacheKey, policy);
         }
 #endif
 
