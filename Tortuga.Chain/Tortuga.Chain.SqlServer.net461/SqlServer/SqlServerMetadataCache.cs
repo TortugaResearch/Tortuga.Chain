@@ -10,7 +10,7 @@ namespace Tortuga.Chain.SqlServer
     /// <summary>
     /// Class SqlServerMetadataCache.
     /// </summary>
-    public class SqlServerMetadataCache : DatabaseMetadataCache<SqlServerObjectName, SqlDbType>
+    public sealed class SqlServerMetadataCache : DatabaseMetadataCache<SqlServerObjectName, SqlDbType>
     {
         private readonly SqlConnectionStringBuilder m_ConnectionBuilder;
         private readonly ConcurrentDictionary<SqlServerObjectName, StoredProcedureMetadata<SqlServerObjectName, SqlDbType>> m_StoredProcedures = new ConcurrentDictionary<SqlServerObjectName, StoredProcedureMetadata<SqlServerObjectName, SqlDbType>>();

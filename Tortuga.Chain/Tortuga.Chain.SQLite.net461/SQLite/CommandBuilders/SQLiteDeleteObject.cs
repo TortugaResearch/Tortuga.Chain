@@ -14,7 +14,7 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
     /// <summary>
     /// Command object that represents a delete operation.
     /// </summary>
-    public class SQLiteDeleteObject : SQLiteObjectCommand
+    internal sealed class SQLiteDeleteObject : SQLiteObjectCommand
     {
         private readonly DeleteOptions m_Options;
 

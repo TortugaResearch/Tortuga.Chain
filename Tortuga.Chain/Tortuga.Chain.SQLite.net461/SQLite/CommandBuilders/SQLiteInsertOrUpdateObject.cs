@@ -18,7 +18,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
     /// <summary>
     /// Class SQLiteInsertOrUpdateObject
     /// </summary>
-    public class SQLiteInsertOrUpdateObject : SQLiteObjectCommand
+    internal sealed class SQLiteInsertOrUpdateObject : SQLiteObjectCommand
     {
         private readonly UpsertOptions m_Options;
 

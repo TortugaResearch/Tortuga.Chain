@@ -11,7 +11,7 @@ namespace Tortuga.Chain
     /// </summary>
     /// <seealso cref="IReadOnlyDictionary{String, Object}" />
     [SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
-    public class Row : IReadOnlyDictionary<string, object>
+    public sealed class Row : IReadOnlyDictionary<string, object>
     {
         private readonly Dictionary<string, object> m_Contents;
 

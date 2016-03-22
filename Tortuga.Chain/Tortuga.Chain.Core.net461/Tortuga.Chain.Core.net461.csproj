@@ -143,7 +143,7 @@
     <Compile Include="Materializers\Scalar\Int64OrNullMaterializer`2.cs" />
     <Compile Include="Materializers\Scalar\Int64Materializer`2.cs" />
     <Compile Include="Materializers\CollectionResult`4.cs" />
-    <Compile Include="Materializers\ObjectResult`3.cs" />
+    <Compile Include="Materializers\ObjectMaterializer`3.cs" />
     <Compile Include="Materializers\NonQueryMaterializer`2.cs" />
     <Compile Include="Materializers\RowMaterializer`2.cs" />
     <Compile Include="Materializers\SingleColumn\SingleColumnFormatterBase.cs" />

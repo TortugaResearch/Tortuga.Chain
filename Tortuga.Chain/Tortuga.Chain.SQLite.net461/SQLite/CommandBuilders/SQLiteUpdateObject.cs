@@ -17,7 +17,7 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
     /// <summary>
     /// Command object that represents an update operation.
     /// </summary>
-    public class SQLiteUpdateObject : SQLiteObjectCommand
+    internal sealed class SQLiteUpdateObject : SQLiteObjectCommand
     {
         private readonly UpdateOptions m_Options;
 

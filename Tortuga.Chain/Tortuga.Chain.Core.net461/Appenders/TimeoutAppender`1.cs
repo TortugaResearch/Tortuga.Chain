@@ -7,7 +7,7 @@ namespace Tortuga.Chain.Appenders
     /// Class TimeoutAppender.
     /// </summary>
     /// <typeparam name="TResult">The type of the t result.</typeparam>
-    public class TimeoutAppender<TResult> : Appender<TResult>
+    internal sealed class TimeoutAppender<TResult> : Appender<TResult>
     {
         readonly TimeSpan m_Timeout;
 

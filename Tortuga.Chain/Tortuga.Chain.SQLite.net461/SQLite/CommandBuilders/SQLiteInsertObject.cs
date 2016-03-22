@@ -16,7 +16,7 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
     /// <summary>
     /// Class that represents a SQLite Insert.
     /// </summary>
-    public class SQLiteInsertObject : SQLiteObjectCommand
+    internal sealed class SQLiteInsertObject : SQLiteObjectCommand
     {
         /// <summary>
         /// Initializes a new instance of <see cref="SQLiteInsertObject" /> class.

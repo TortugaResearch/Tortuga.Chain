@@ -6,7 +6,7 @@ namespace Tortuga.Chain
     /// <summary>
     /// Collection of row objects
     /// </summary>
-    public class RowCollection : ReadOnlyCollection<Row>
+    public sealed class RowCollection : ReadOnlyCollection<Row>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="RowCollection"/> class.

@@ -18,7 +18,7 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
     /// <summary>
     /// Class that represents an operation based on a raw SQL statement.
     /// </summary>
-    public class SQLiteSqlCall : MultipleTableDbCommandBuilder<SQLiteCommand, SQLiteParameter>
+    internal sealed class SQLiteSqlCall : MultipleTableDbCommandBuilder<SQLiteCommand, SQLiteParameter>
     {
         readonly LockType m_LockType;
         private readonly object m_ArgumentValue;

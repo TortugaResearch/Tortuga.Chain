@@ -12,7 +12,7 @@ namespace Tortuga.Chain.Materializers
     /// </summary>
     /// <typeparam name="TCommand">The type of the t command type.</typeparam>
     /// <typeparam name="TParameter">The type of the t parameter type.</typeparam>
-    public class TableSetMaterializer<TCommand, TParameter> : Materializer<TCommand, TParameter, TableSet> where TCommand : DbCommand
+    internal sealed class TableSetMaterializer<TCommand, TParameter> : Materializer<TCommand, TParameter, TableSet> where TCommand : DbCommand
         where TParameter : DbParameter
     {
         readonly string[] m_TableNames;

@@ -18,7 +18,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
     /// <summary>
     /// Class SqlServerProcedureCall.
     /// </summary>
-    public class SqlServerProcedureCall : MultipleTableDbCommandBuilder<SqlCommand, SqlParameter>, ISupportsChangeListener
+    internal sealed class SqlServerProcedureCall : MultipleTableDbCommandBuilder<SqlCommand, SqlParameter>, ISupportsChangeListener
     {
 
         private readonly object m_ArgumentValue;

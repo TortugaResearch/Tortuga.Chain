@@ -16,7 +16,7 @@ namespace Tortuga.Chain.Materializers
     /// <typeparam name="TParameter">The type of the t parameter type.</typeparam>
     /// <typeparam name="TObject">The type of the object returned.</typeparam>
     /// <seealso cref="Materializer{TCommand, TParameter, TTObject}" />
-    public class ObjectMaterializer<TCommand, TParameter, TObject> : Materializer<TCommand, TParameter, TObject>
+    internal sealed class ObjectMaterializer<TCommand, TParameter, TObject> : Materializer<TCommand, TParameter, TObject>
         where TCommand : DbCommand
         where TObject : class, new()
         where TParameter : DbParameter

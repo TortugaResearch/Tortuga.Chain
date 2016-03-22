@@ -9,7 +9,7 @@ namespace Tortuga.Chain.Appenders
     /// <summary>
     /// Class TraceAppender.
     /// </summary>
-    public class TraceAppender : Appender
+    internal sealed class TraceAppender : Appender
     {
         private readonly TextWriter m_Stream;
 

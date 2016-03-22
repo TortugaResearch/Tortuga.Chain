@@ -10,7 +10,7 @@ namespace Tortuga.Chain
     /// </summary>
     /// <remarks>This is much faster than a DataSet, but lacks most of its features.</remarks>
     [SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
-    public class TableSet : KeyedCollection<string, Table>
+    public sealed class TableSet : KeyedCollection<string, Table>
     {
 
         /// <summary>

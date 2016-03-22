@@ -8,7 +8,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
     /// <summary>
     /// This is applied to command builders that support SqlDependency operations.
     /// </summary>
-    public interface ISupportsChangeListener
+    internal interface ISupportsChangeListener
     {
         /// <summary>
         /// Waits for change in the data that is returned by this operation.

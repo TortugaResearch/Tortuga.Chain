@@ -3,6 +3,7 @@ using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
 using Tortuga.Chain.Core;
+using System.Diagnostics.CodeAnalysis;
 
 
 #if SDS
@@ -21,7 +22,7 @@ namespace Tortuga.Chain.SQLite
     /// <summary>
     /// Class SQLiteTransactionalDataSource
     /// </summary>
-    public class SQLiteTransactionalDataSource : SQLiteDataSourceBase, IDisposable
+    public sealed class SQLiteTransactionalDataSource : SQLiteDataSourceBase, IDisposable
     {
         private readonly SQLiteConnection m_Connection;
         private readonly SQLiteDataSource m_Dispatcher;
@@ -35,7 +36,7 @@ namespace Tortuga.Chain.SQLite
         /// <param name="dataSource">The data source.</param>
         /// <param name="isolationLevel">The isolation level.</param>
         /// <param name="forwardEvents">if set to <c>true</c> [forward events].</param>
-        protected internal SQLiteTransactionalDataSource(SQLiteDataSource dataSource, IsolationLevel? isolationLevel, bool forwardEvents)
+        internal SQLiteTransactionalDataSource(SQLiteDataSource dataSource, IsolationLevel? isolationLevel, bool forwardEvents)
         {
             Name = dataSource.Name;
 
@@ -107,7 +108,7 @@ namespace Tortuga.Chain.SQLite
         /// Releases unmanaged and - optionally - managed resources.
         /// </summary>
         /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (disposing)
             {
@@ -128,7 +129,7 @@ namespace Tortuga.Chain.SQLite
         /// or
         /// implementation;implementation is null.
         /// </exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
+        [SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
         protected override void Execute(ExecutionToken<SQLiteCommand, SQLiteParameter> executionToken, Func<SQLiteCommand, int?> implementation, object state)
         {
             if (executionToken == null)

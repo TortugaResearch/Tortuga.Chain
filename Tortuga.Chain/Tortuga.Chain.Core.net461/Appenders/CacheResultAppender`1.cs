@@ -11,7 +11,7 @@ namespace Tortuga.Chain.Appenders
     /// Executes the previous link and caches the result.
     /// </summary>
     /// <typeparam name="TResult">The type of the t result type.</typeparam>
-    public class CacheResultAppender<TResult> : Appender<TResult>
+    internal sealed class CacheResultAppender<TResult> : Appender<TResult>
     {
         private readonly string m_CacheKey;
         private readonly Func<TResult, string> m_CacheKeyFunction;

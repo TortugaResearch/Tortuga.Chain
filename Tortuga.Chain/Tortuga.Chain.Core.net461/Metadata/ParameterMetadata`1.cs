@@ -4,7 +4,7 @@ namespace Tortuga.Chain.Metadata
     /// Metadata for a stored procedure parameter
     /// </summary>
     /// <typeparam name="TDbType">The variant of DbType used by this data source.</typeparam>
-    public class ParameterMetadata<TDbType>
+    public sealed class ParameterMetadata<TDbType>
         where TDbType : struct
     {
         /// <summary>

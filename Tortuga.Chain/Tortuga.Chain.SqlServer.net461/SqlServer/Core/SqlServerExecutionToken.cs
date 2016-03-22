@@ -10,7 +10,7 @@ namespace Tortuga.Chain.SqlServer.Core
     /// <summary>
     /// An execution token specific to Sql Server.
     /// </summary>
-    public class SqlServerExecutionToken : ExecutionToken<SqlCommand, SqlParameter>
+    public sealed class SqlServerExecutionToken : ExecutionToken<SqlCommand, SqlParameter>
     {
         private OnChangeEventHandler m_OnChangeEventHandler;
 

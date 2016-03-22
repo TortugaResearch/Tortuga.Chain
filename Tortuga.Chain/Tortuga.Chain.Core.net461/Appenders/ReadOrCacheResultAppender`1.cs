@@ -12,7 +12,7 @@ namespace Tortuga.Chain.Appenders
     /// </summary>
     /// <typeparam name="TResult">The type of the t result type.</typeparam>
     /// <remarks>If this successfully reads from the cache, it will prevent prior links from executing.</remarks>
-    public class ReadOrCacheResultAppender<TResult> : Appender<TResult>
+    internal sealed class ReadOrCacheResultAppender<TResult> : Appender<TResult>
     {
         private readonly string m_CacheKey;
         private readonly CacheItemPolicy m_Policy;

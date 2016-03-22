@@ -25,7 +25,7 @@ namespace Tortuga.Chain
     /// <summary>
     /// Class that represets a SQLite Datasource.
     /// </summary>
-    public class SQLiteDataSource : SQLiteDataSourceBase
+    public sealed class SQLiteDataSource : SQLiteDataSourceBase
     {
         private readonly SQLiteConnectionStringBuilder m_ConnectionBuilder;
         private readonly SQLiteMetadataCache m_DatabaseMetadata;
@@ -141,7 +141,7 @@ namespace Tortuga.Chain
         /// <param name="forwardEvents"></param>
         /// <returns></returns>
         /// <remarks>The caller of this method is responsible for closing the connection.</remarks>
-        public virtual SQLiteTransactionalDataSource BeginTransaction(IsolationLevel? isolationLevel = null, bool forwardEvents = true)
+        public SQLiteTransactionalDataSource BeginTransaction(IsolationLevel? isolationLevel = null, bool forwardEvents = true)
         {
             return new SQLiteTransactionalDataSource(this, isolationLevel, forwardEvents);
         }

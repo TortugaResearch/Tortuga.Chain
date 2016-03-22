@@ -12,7 +12,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
     /// <summary>
     /// Class SqlServerInsertObject.
     /// </summary>
-    public class SqlServerInsertObject : SqlServerObjectCommand
+    internal sealed class SqlServerInsertObject : SqlServerObjectCommand
     {
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
                 columns = "(" + string.Join(", ", availableColumns.Select(c => c.QuotedSqlName)) + ")";
                 values = "VALUES (" + string.Join(", ", availableColumns.Select(c => c.SqlVariableName)) + ")";
 
-                DataSource.LoadDictionaryParameters(ArgumentDictionary,  parameters, availableColumns);
+                DataSource.LoadDictionaryParameters(ArgumentDictionary, parameters, availableColumns);
 
             }
             else

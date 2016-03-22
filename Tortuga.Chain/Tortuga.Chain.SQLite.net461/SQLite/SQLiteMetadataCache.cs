@@ -16,7 +16,7 @@ namespace Tortuga.Chain.SQLite
     /// <summary>
     /// Handles caching of metadata for various SQLite tables and views.
     /// </summary>
-    public class SQLiteMetadataCache : DatabaseMetadataCache<string, DbType>
+    public sealed class SQLiteMetadataCache : DatabaseMetadataCache<string, DbType>
     {
         private readonly SQLiteConnectionStringBuilder m_ConnectionBuilder;
         private readonly ConcurrentDictionary<string, TableOrViewMetadata<string, DbType>> m_Tables = new ConcurrentDictionary<string, TableOrViewMetadata<string, DbType>>();

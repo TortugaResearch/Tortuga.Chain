@@ -71,7 +71,7 @@ namespace Tortuga.Chain.DataSources
         /// Gets or sets the cache to be used by this data source. The default is .NET's MemoryCache.
         /// </summary>
         /// <remarks>This is used by the WithCaching materializer.</remarks>
-        public ObjectCache Cache { get; set; }
+        internal ObjectCache Cache { get; set; }
 #endif
 
         /// <summary>

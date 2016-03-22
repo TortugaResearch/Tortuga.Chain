@@ -11,7 +11,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
     /// <summary>
     /// Class SqlServerInsertOrUpdateObject.
     /// </summary>
-    public class SqlServerInsertOrUpdateObject : SqlServerObjectCommand
+    internal sealed class SqlServerInsertOrUpdateObject : SqlServerObjectCommand
     {
         private readonly UpsertOptions m_Options;
 

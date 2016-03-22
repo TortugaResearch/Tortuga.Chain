@@ -10,7 +10,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
     /// <summary>
     /// Class SqlServerUpdateObject.
     /// </summary>
-    public class SqlServerUpdateObject : SqlServerObjectCommand
+    internal sealed class SqlServerUpdateObject : SqlServerObjectCommand
     {
         private readonly UpdateOptions m_Options;
 

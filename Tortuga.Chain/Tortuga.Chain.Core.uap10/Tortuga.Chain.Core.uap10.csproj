@@ -237,8 +237,8 @@
     <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\NonQueryMaterializer`2.cs">
       <Link>Materializers\NonQueryMaterializer`2.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\ObjectResult`3.cs">
-      <Link>Materializers\ObjectResult`3.cs</Link>
+    <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\ObjectMaterializer`3.cs">
+      <Link>Materializers\ObjectMaterializer`3.cs</Link>
     </Compile>
     <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\RowMaterializer`2.cs">
       <Link>Materializers\RowMaterializer`2.cs</Link>

@@ -6,7 +6,7 @@ namespace Tortuga.Chain.Metadata
     /// This maps database columns (tables and views) to class properties.
     /// </summary>
     /// <typeparam name="TDbType">The variant of DbType used by this data source.</typeparam>
-    public class ColumnPropertyMap<TDbType>
+    public sealed class ColumnPropertyMap<TDbType>
         where TDbType : struct
     {
         /// <summary>

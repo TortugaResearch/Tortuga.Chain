@@ -20,7 +20,7 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
     /// <summary>
     /// SQliteTableOrView supports queries against tables and views.
     /// </summary>
-    public class SQLiteTableOrView : MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter>
+    internal sealed class SQLiteTableOrView : MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter>
     {
         private readonly object m_FilterValue;
         private readonly TableOrViewMetadata<string, DbType> m_MetaData;

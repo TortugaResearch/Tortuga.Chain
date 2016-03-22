@@ -8,7 +8,7 @@ namespace Tortuga.Chain.Appenders
     /// Causes the cache to be invalidated when this operation is executed.
     /// </summary>
     /// <typeparam name="TResult"></typeparam>
-    public class InvalidateCacheAppender<TResult> : Appender<TResult>
+    internal sealed class InvalidateCacheAppender<TResult> : Appender<TResult>
     {
         private readonly string m_CacheKey;
         private readonly string m_RegionName;

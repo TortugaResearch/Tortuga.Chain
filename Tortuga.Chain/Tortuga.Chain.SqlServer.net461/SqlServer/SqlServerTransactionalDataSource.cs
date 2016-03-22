@@ -9,7 +9,7 @@ namespace Tortuga.Chain.SqlServer
     /// <summary>
     /// Class SqlServerTransactionalDataSource.
     /// </summary>
-    public class SqlServerTransactionalDataSource : SqlServerDataSourceBase, IDisposable
+    public sealed class SqlServerTransactionalDataSource : SqlServerDataSourceBase, IDisposable
     {
 
         private readonly SqlConnection m_Connection;
@@ -25,7 +25,7 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="transactionName">Name of the transaction.</param>
         /// <param name="isolationLevel">The isolation level. If not supplied, will use the database default.</param>
         /// <param name="forwardEvents">If true, logging events are forwarded to the parent connection.</param>
-        protected internal SqlServerTransactionalDataSource(SqlServerDataSource dataSource, string transactionName, IsolationLevel? isolationLevel, bool forwardEvents)
+        internal SqlServerTransactionalDataSource(SqlServerDataSource dataSource, string transactionName, IsolationLevel? isolationLevel, bool forwardEvents)
         {
             Name = dataSource.Name;
 
@@ -93,7 +93,7 @@ namespace Tortuga.Chain.SqlServer
         /// Closes the current transaction and connection. If not committed, the transaction is rolled back.
         /// </summary>
         /// <param name="disposing"></param>
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (disposing)
             {

@@ -12,7 +12,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
     /// <summary>
     /// Class SqlServerObjectCommand.
     /// </summary>
-    public abstract class SqlServerObjectCommand : SingleRowDbCommandBuilder<SqlCommand, SqlParameter>
+    internal abstract class SqlServerObjectCommand : SingleRowDbCommandBuilder<SqlCommand, SqlParameter>
     {
         private readonly IReadOnlyDictionary<string, object> m_ArgumentDictionary;
         private readonly object m_ArgumentValue;
@@ -117,7 +117,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 
             string result;
 
-            
+
             if (ArgumentDictionary != null)
             {
                 GetKeysFilter filter = (GetKeysFilter.PrimaryKey | GetKeysFilter.ThrowOnMissingProperties);

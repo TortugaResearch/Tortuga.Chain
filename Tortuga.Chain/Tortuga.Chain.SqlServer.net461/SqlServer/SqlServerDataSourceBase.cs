@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Diagnostics.CodeAnalysis;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Metadata;
@@ -33,7 +34,7 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="options">The delete options.</param>
         /// <returns>SqlServerInsert.</returns>
         /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
-        public SqlServerDeleteObject Delete(SqlServerObjectName tableName, object argumentValue, DeleteOptions options = DeleteOptions.None)
+        public ISingleRowDbCommandBuilder Delete(SqlServerObjectName tableName, object argumentValue, DeleteOptions options = DeleteOptions.None)
         {
             return new SqlServerDeleteObject(this, tableName, argumentValue, options);
         }
@@ -48,7 +49,7 @@ namespace Tortuga.Chain.SqlServer
         /// or
         /// Table or view named + tableName +  could not be found. Check to see if the user has permissions to execute this procedure.
         /// </exception>
-        public SqlServerTableOrView From(SqlServerObjectName tableOrViewName)
+        public IMultipleRowDbCommandBuilder From(SqlServerObjectName tableOrViewName)
         {
             return new SqlServerTableOrView(this, tableOrViewName, null, null);
         }
@@ -60,7 +61,7 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="whereClause">The where clause. Do not prefix this clause with "WHERE".</param>
         /// <returns>SqlServerTableOrView.</returns>
         /// <exception cref="ArgumentException">tableOrViewName is empty.;tableOrViewName</exception>
-        public SqlServerTableOrView From(SqlServerObjectName tableOrViewName, string whereClause)
+        public IMultipleRowDbCommandBuilder From(SqlServerObjectName tableOrViewName, string whereClause)
         {
             return new SqlServerTableOrView(this, tableOrViewName, whereClause, null);
         }
@@ -73,7 +74,7 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="argumentValue">Optional argument value. Every property in the argument value must have a matching parameter in the WHERE clause</param>
         /// <returns>SqlServerTableOrView.</returns>
         /// <exception cref="ArgumentException">tableOrViewName is empty.;tableOrViewName</exception>
-        public SqlServerTableOrView From(SqlServerObjectName tableOrViewName, string whereClause, object argumentValue)
+        public IMultipleRowDbCommandBuilder From(SqlServerObjectName tableOrViewName, string whereClause, object argumentValue)
         {
             return new SqlServerTableOrView(this, tableOrViewName, whereClause, argumentValue);
         }
@@ -85,7 +86,7 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="filterValue">The filter value is used to generate a simple AND style WHERE clause.</param>
         /// <returns>SqlServerTableOrView.</returns>
         /// <exception cref="ArgumentException">tableOrViewName is empty.;tableOrViewName</exception>
-        public SqlServerTableOrView From(SqlServerObjectName tableOrViewName, object filterValue)
+        public IMultipleRowDbCommandBuilder From(SqlServerObjectName tableOrViewName, object filterValue)
         {
             return new SqlServerTableOrView(this, tableOrViewName, filterValue);
         }
@@ -187,7 +188,7 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="argumentValue">The argument value.</param>
         /// <returns>SqlServerInsert.</returns>
         /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
-        public SqlServerInsertObject Insert(SqlServerObjectName tableName, object argumentValue)
+        public ISingleRowDbCommandBuilder Insert(SqlServerObjectName tableName, object argumentValue)
         {
             return new SqlServerInsertObject(this, tableName, argumentValue);
         }
@@ -198,9 +199,9 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="argumentDictionary">The argument dictionary.</param>
         /// <param name="parameters">The parameters.</param>
         /// <param name="columns">The columns.</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
+        [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
         [Obsolete("This method will be removed in a future version.")]
-        public void LoadDictionaryParameters(IReadOnlyDictionary<string, object> argumentDictionary, List<SqlParameter> parameters, IEnumerable<ColumnMetadata<SqlDbType>> columns)
+        internal void LoadDictionaryParameters(IReadOnlyDictionary<string, object> argumentDictionary, List<SqlParameter> parameters, IEnumerable<ColumnMetadata<SqlDbType>> columns)
         {
             if (argumentDictionary == null)
                 throw new ArgumentNullException("argumentDictionary", "argumentDictionary is null.");
@@ -225,9 +226,9 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="argumentValue">The argument value.</param>
         /// <param name="parameters">The parameters.</param>
         /// <param name="columns">The columns.</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
+        [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
         [Obsolete("This method will be removed in a future version.")]
-        public void LoadParameters(object argumentValue, List<SqlParameter> parameters, IEnumerable<ColumnPropertyMap<SqlDbType>> columns)
+        internal void LoadParameters(object argumentValue, List<SqlParameter> parameters, IEnumerable<ColumnPropertyMap<SqlDbType>> columns)
         {
             if (argumentValue == null)
                 throw new ArgumentNullException("argumentValue", "argumentValue is null.");
@@ -251,7 +252,7 @@ namespace Tortuga.Chain.SqlServer
         /// </summary>
         /// <param name="procedureName">Name of the procedure.</param>
         /// <returns></returns>
-        public SqlServerProcedureCall Procedure(SqlServerObjectName procedureName)
+        public IMultipleTableDbCommandBuilder Procedure(SqlServerObjectName procedureName)
         {
             return new SqlServerProcedureCall(this, procedureName, null);
         }
@@ -266,7 +267,7 @@ namespace Tortuga.Chain.SqlServer
         /// <remarks>
         /// The procedure's definition is loaded from the database and used to determine which properties on the parameter object to use.
         /// </remarks>
-        public SqlServerProcedureCall Procedure(SqlServerObjectName procedureName, object argumentValue)
+        public IMultipleTableDbCommandBuilder Procedure(SqlServerObjectName procedureName, object argumentValue)
         {
             return new SqlServerProcedureCall(this, procedureName, argumentValue);
         }
@@ -276,7 +277,7 @@ namespace Tortuga.Chain.SqlServer
         /// </summary>
         /// <param name="sqlStatement">The SQL statement.</param>
         /// <returns></returns>
-        public SqlServerSqlCall Sql(string sqlStatement)
+        public IMultipleTableDbCommandBuilder Sql(string sqlStatement)
         {
             return new SqlServerSqlCall(this, sqlStatement, null);
         }
@@ -287,7 +288,7 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="sqlStatement">The SQL statement.</param>
         /// <param name="argumentValue">The argument value.</param>
         /// <returns>SqlServerSqlCall.</returns>
-        public SqlServerSqlCall Sql(string sqlStatement, object argumentValue)
+        public IMultipleTableDbCommandBuilder Sql(string sqlStatement, object argumentValue)
         {
             return new SqlServerSqlCall(this, sqlStatement, argumentValue);
         }
@@ -299,7 +300,7 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="options">The update options.</param>
         /// <returns>SqlServerInsert.</returns>
         /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
-        public SqlServerUpdateObject Update(SqlServerObjectName tableName, object argumentValue, UpdateOptions options = UpdateOptions.None)
+        public ISingleRowDbCommandBuilder Update(SqlServerObjectName tableName, object argumentValue, UpdateOptions options = UpdateOptions.None)
         {
             return new SqlServerUpdateObject(this, tableName, argumentValue, options);
         }
@@ -312,7 +313,7 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="options">The options for how the insert/update occurs.</param>
         /// <returns>SqlServerUpdate.</returns>
         /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
-        public SqlServerInsertOrUpdateObject Upsert(SqlServerObjectName tableName, object argumentValue, UpsertOptions options = UpsertOptions.None)
+        public ISingleRowDbCommandBuilder Upsert(SqlServerObjectName tableName, object argumentValue, UpsertOptions options = UpsertOptions.None)
         {
             return new SqlServerInsertOrUpdateObject(this, tableName, argumentValue, options);
         }

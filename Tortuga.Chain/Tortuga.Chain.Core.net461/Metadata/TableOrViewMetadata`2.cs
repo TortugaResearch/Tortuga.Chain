@@ -19,7 +19,7 @@ namespace Tortuga.Chain.Metadata
     /// </summary>
     /// <typeparam name="TName">The type used to represent database object names.</typeparam>
     /// <typeparam name="TDbType">The variant of DbType used by this data source.</typeparam>
-    public class TableOrViewMetadata<TName, TDbType> : ITableOrViewMetadata
+    public sealed class TableOrViewMetadata<TName, TDbType> : ITableOrViewMetadata
         where TDbType : struct
     {
         private readonly ConcurrentDictionary<Tuple<Type, GetPropertiesFilter>, Lazy<ImmutableList<ColumnPropertyMap<TDbType>>>> m_PropertyMap = new ConcurrentDictionary<Tuple<Type, GetPropertiesFilter>, Lazy<ImmutableList<ColumnPropertyMap<TDbType>>>>();

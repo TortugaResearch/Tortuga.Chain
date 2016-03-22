@@ -10,7 +10,7 @@ namespace Tortuga.Chain.Appenders
     /// Caches each individual item in the collection.
     /// </summary>
     /// <remarks>This operation will not read from the cache.</remarks>
-    public class CacheAllItemsAppender<TCollection, TItem> : Appender<TCollection>
+    internal sealed class CacheAllItemsAppender<TCollection, TItem> : Appender<TCollection>
         where TCollection : IEnumerable<TItem>
     {
         private readonly Func<TItem, string> m_CacheKeyFunction;

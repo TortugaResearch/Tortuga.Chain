@@ -19,7 +19,7 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
     /// <summary>
     /// Base class that describes a SQLite database command.
     /// </summary>
-    public abstract class SQLiteObjectCommand : SingleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter>
+    internal abstract class SQLiteObjectCommand : SingleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter>
     {
         private readonly string m_TableName;
         private readonly object m_ArgumentValue;

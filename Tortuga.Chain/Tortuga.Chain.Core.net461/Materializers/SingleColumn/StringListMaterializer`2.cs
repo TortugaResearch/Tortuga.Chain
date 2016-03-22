@@ -12,7 +12,7 @@ namespace Tortuga.Chain.Materializers
     /// </summary>
     /// <typeparam name="TCommand">The type of the t command type.</typeparam>
     /// <typeparam name="TParameter">The type of the t parameter type.</typeparam>
-    public class StringListMaterializer<TCommand, TParameter> : SingleColumnMaterializer<TCommand, TParameter, List<string>> where TCommand : DbCommand
+    internal sealed class StringListMaterializer<TCommand, TParameter> : SingleColumnMaterializer<TCommand, TParameter, List<string>> where TCommand : DbCommand
         where TParameter : DbParameter
     {
 

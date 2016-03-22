@@ -11,7 +11,7 @@ namespace Tortuga.Chain.Materializers
     /// </summary>
     /// <typeparam name="TCommand">The type of the tt command type.</typeparam>
     /// <typeparam name="TParameter">The type of the t parameter type.</typeparam>
-    public class ByteArrayMaterializer<TCommand, TParameter> : SingleColumnMaterializer<TCommand, TParameter, byte[]>
+    internal sealed class ByteArrayMaterializer<TCommand, TParameter> : SingleColumnMaterializer<TCommand, TParameter, byte[]>
         where TCommand : DbCommand
         where TParameter : DbParameter
     {

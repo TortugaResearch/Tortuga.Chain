@@ -10,14 +10,14 @@ using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
 using Tortuga.Chain.Metadata;
-using Tortuga.Chain.SqlServer.Materializers;
 using Tortuga.Chain.SqlServer.Core;
+using Tortuga.Chain.SqlServer.Materializers;
 namespace Tortuga.Chain.SqlServer.CommandBuilders
 {
     /// <summary>
     /// SqlServerTableOrView supports queries against tables and views.
     /// </summary>
-    public class SqlServerTableOrView : MultipleRowDbCommandBuilder<SqlCommand, SqlParameter>, ISupportsChangeListener
+    internal sealed class SqlServerTableOrView : MultipleRowDbCommandBuilder<SqlCommand, SqlParameter>, ISupportsChangeListener
     {
         private readonly object m_FilterValue;
         private readonly TableOrViewMetadata<SqlServerObjectName, SqlDbType> m_Metadata;

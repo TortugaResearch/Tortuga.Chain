@@ -8,7 +8,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
     /// <summary>
     /// Class SqlServerDeleteObject.
     /// </summary>
-    public class SqlServerDeleteObject : SqlServerObjectCommand
+    internal sealed class SqlServerDeleteObject : SqlServerObjectCommand
     {
         private readonly DeleteOptions m_Options;
 

@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 using Tortuga.Anchor.Metadata;
 using Tortuga.Chain.CommandBuilders;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Tortuga.Chain.Materializers
 {
@@ -18,7 +18,7 @@ namespace Tortuga.Chain.Materializers
     /// <typeparam name="TCollection">The type of the collection.</typeparam>
     /// <seealso cref="Materializer{TCommand, TParameter, TCollection}" />
     [SuppressMessage("Microsoft.Design", "CA1005:AvoidExcessiveParametersOnGenericTypes")]
-    public class CollectionMaterializer<TCommand, TParameter, TObject, TCollection> : Materializer<TCommand, TParameter, TCollection>
+    internal sealed class CollectionMaterializer<TCommand, TParameter, TObject, TCollection> : Materializer<TCommand, TParameter, TCollection>
         where TCommand : DbCommand
         where TObject : class, new()
         where TCollection : ICollection<TObject>, new()

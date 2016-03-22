@@ -16,7 +16,7 @@ namespace Tortuga.Chain
     /// This is much faster than a DataTable, but lacks most of its features.
     /// </remarks>
     [SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
-    public class Table
+    public sealed class Table
     {
         readonly RowCollection m_Rows;
         readonly ReadOnlyCollection<string> m_Columns;

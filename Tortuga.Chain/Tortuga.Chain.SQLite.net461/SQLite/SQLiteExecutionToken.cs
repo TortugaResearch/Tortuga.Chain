@@ -15,7 +15,7 @@ namespace Tortuga.Chain.SQLite
     /// <summary>
     /// Class SQLiteExecutionToken.
     /// </summary>
-    public class SQLiteExecutionToken : ExecutionToken<SQLiteCommand, SQLiteParameter>
+    public sealed class SQLiteExecutionToken : ExecutionToken<SQLiteCommand, SQLiteParameter>
     {
         private readonly LockType m_LockType;
 

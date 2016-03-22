@@ -6,7 +6,7 @@ namespace Tortuga.Chain.Appenders
     /// <summary>
     /// Class TimeoutAppender.
     /// </summary>
-    public class TimeoutAppender : Appender
+    internal sealed class TimeoutAppender : Appender
     {
         readonly TimeSpan m_Timeout;
 
