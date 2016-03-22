@@ -74,6 +74,9 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="..\Tests.Tortuga.Chain.SQLite.net461\Metadata\MetadataTests.cs">
+      <Link>Metadata\MetadataTests.cs</Link>
+    </Compile>
     <Compile Include="..\tests.tortuga.chain.sqlserver.net461\class1databases\SqlTests.cs">
       <Link>Class1Databases\SqlTests.cs</Link>
     </Compile>
@@ -107,7 +110,6 @@
     <Compile Include="..\tests.tortuga.chain.sqlserver.net461\repository\TransactionalRepositoryTests.cs">
       <Link>Repository\TransactionalRepositoryTests.cs</Link>
     </Compile>
-    <Compile Include="Metadata\MetadataTests.cs" />
     <Compile Include="Setup.cs" />
     <Compile Include="TestBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
