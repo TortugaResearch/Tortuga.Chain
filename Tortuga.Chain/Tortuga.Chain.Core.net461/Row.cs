@@ -9,6 +9,7 @@ namespace Tortuga.Chain
     /// A lightweigh row expressed as a dictionary.
     /// </summary>
     /// <seealso cref="IReadOnlyDictionary{String, Object}" />
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
     public class Row : IReadOnlyDictionary<string, object>
     {
         private Dictionary<string, object> m_Contents;
