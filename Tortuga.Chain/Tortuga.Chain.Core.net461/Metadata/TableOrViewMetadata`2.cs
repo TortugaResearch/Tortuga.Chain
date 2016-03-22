@@ -22,9 +22,6 @@ namespace Tortuga.Chain.Metadata
     public class TableOrViewMetadata<TName, TDbType> : ITableOrViewMetadata
         where TDbType : struct
     {
-        private readonly bool m_IsTable;
-        private readonly TName m_Name;
-        private readonly ReadOnlyCollection<ColumnMetadata<TDbType>> m_Columns;
         private readonly ConcurrentDictionary<Tuple<Type, GetPropertiesFilter>, Lazy<ImmutableList<ColumnPropertyMap<TDbType>>>> m_PropertyMap = new ConcurrentDictionary<Tuple<Type, GetPropertiesFilter>, Lazy<ImmutableList<ColumnPropertyMap<TDbType>>>>();
 
         /// <summary>
@@ -34,9 +31,9 @@ namespace Tortuga.Chain.Metadata
         /// <param name="columns">The columns.</param>
         public TableOrViewMetadata(TName name, bool isTable, IList<ColumnMetadata<TDbType>> columns)
         {
-            m_IsTable = isTable;
-            m_Name = name;
-            m_Columns = new ReadOnlyCollection<ColumnMetadata<TDbType>>(columns);
+            IsTable = isTable;
+            Name = name;
+            Columns = new ReadOnlyCollection<ColumnMetadata<TDbType>>(columns);
         }
 
 
@@ -46,10 +43,7 @@ namespace Tortuga.Chain.Metadata
         /// <value>
         ///   <c>true</c> if this instance is a table; otherwise, <c>false</c>.
         /// </value>
-        public bool IsTable
-        {
-            get { return m_IsTable; }
-        }
+        public bool IsTable { get; }
 
         /// <summary>
         /// Gets the name.
@@ -57,10 +51,7 @@ namespace Tortuga.Chain.Metadata
         /// <value>
         /// The name.
         /// </value>
-        public TName Name
-        {
-            get { return m_Name; }
-        }
+        public TName Name { get; }
 
         /// <summary>
         /// Gets the columns.
@@ -68,10 +59,7 @@ namespace Tortuga.Chain.Metadata
         /// <value>
         /// The columns.
         /// </value>
-        public ReadOnlyCollection<ColumnMetadata<TDbType>> Columns
-        {
-            get { return m_Columns; }
-        }
+        public ReadOnlyCollection<ColumnMetadata<TDbType>> Columns { get; }
 
 
         string ITableOrViewMetadata.Name

@@ -18,7 +18,6 @@ namespace Tortuga.Chain.Core
         where TParameter : DbParameter
     {
         private readonly DataSource<TCommand, TParameter> m_DataSource;
-        private readonly IReadOnlyList<TParameter> m_Parameters;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ExecutionToken{TCommand, TParameter}"/> class.
@@ -31,8 +30,8 @@ namespace Tortuga.Chain.Core
         public ExecutionToken(DataSource<TCommand, TParameter> dataSource, string operationName, string commandText, IReadOnlyList<TParameter> parameters, CommandType commandType = CommandType.Text)
             : base(dataSource, operationName, commandText, commandType)
         {
-            m_Parameters = parameters;
             m_DataSource = dataSource;
+            Parameters = parameters;
         }
 
 
@@ -64,11 +63,7 @@ namespace Tortuga.Chain.Core
         /// Gets the parameters.
         /// </summary>
         /// <value>The parameters.</value>
-        public IReadOnlyList<TParameter> Parameters
-        {
-            get { return m_Parameters; }
-        }
-
+        public IReadOnlyList<TParameter> Parameters { get; }
 
         /// <summary>
         /// Applies the command overrides by calling OnBuildCommand, then firing the CommandBuilt event.

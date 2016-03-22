@@ -13,7 +13,7 @@ namespace Tortuga.Chain
     [SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
     public class Row : IReadOnlyDictionary<string, object>
     {
-        private Dictionary<string, object> m_Contents;
+        private readonly Dictionary<string, object> m_Contents;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Row"/> class.

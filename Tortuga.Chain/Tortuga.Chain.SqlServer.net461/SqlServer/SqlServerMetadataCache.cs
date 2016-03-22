@@ -123,7 +123,7 @@ namespace Tortuga.Chain.SqlServer
                             var primary = reader.GetBoolean(reader.GetOrdinal("is_primary_key"));
                             var isIdentity = reader.GetBoolean(reader.GetOrdinal("is_identity"));
                             var typeName = reader.IsDBNull(reader.GetOrdinal("TypeName")) ? null : reader.GetString(reader.GetOrdinal("TypeName"));
-                            columns.Add(new ColumnMetadata<SqlDbType>(name, computed, primary, isIdentity, typeName, TypeNameToSqlDbType(typeName)));
+                            columns.Add(new ColumnMetadata<SqlDbType>(name, computed, primary, isIdentity, typeName, TypeNameToSqlDbType(typeName), "[" + name + "]"));
                         }
                     }
                 }

@@ -13,9 +13,6 @@ namespace Tortuga.Chain.Metadata
     public class TableFunctionMetadata<TName, TDbType>
         where TDbType : struct
     {
-        private readonly ReadOnlyCollection<ColumnMetadata<TDbType>> m_Columns;
-        private readonly TName m_Name;
-        private readonly ReadOnlyCollection<ParameterMetadata<TDbType>> m_Parameters;
 
         /// <summary>
         /// </summary>
@@ -24,9 +21,9 @@ namespace Tortuga.Chain.Metadata
         /// <param name="columns">The columns.</param>
         public TableFunctionMetadata(TName name, IList<ParameterMetadata<TDbType>> parameters, IList<ColumnMetadata<TDbType>> columns)
         {
-            m_Name = name;
-            m_Columns = new ReadOnlyCollection<ColumnMetadata<TDbType>>(columns);
-            m_Parameters = new ReadOnlyCollection<ParameterMetadata<TDbType>>(parameters);
+            Name = name;
+            Columns = new ReadOnlyCollection<ColumnMetadata<TDbType>>(columns);
+            Parameters = new ReadOnlyCollection<ParameterMetadata<TDbType>>(parameters);
 
         }
 
@@ -37,10 +34,7 @@ namespace Tortuga.Chain.Metadata
         /// <value>
         /// The columns.
         /// </value>
-        public ReadOnlyCollection<ColumnMetadata<TDbType>> Columns
-        {
-            get { return m_Columns; }
-        }
+        public ReadOnlyCollection<ColumnMetadata<TDbType>> Columns { get; }
 
         /// <summary>
         /// Gets the name.
@@ -48,20 +42,15 @@ namespace Tortuga.Chain.Metadata
         /// <value>
         /// The name.
         /// </value>
-        public TName Name
-        {
-            get { return m_Name; }
-        }
+        public TName Name { get; }
+
         /// <summary>
         /// Gets the parameters.
         /// </summary>
         /// <value>
         /// The parameters.
         /// </value>
-        public ReadOnlyCollection<ParameterMetadata<TDbType>> Parameters
-        {
-            get { return m_Parameters; }
-        }
+        public ReadOnlyCollection<ParameterMetadata<TDbType>> Parameters { get; }
 
     }
 }

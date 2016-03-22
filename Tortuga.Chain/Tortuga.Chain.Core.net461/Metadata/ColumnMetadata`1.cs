@@ -7,13 +7,6 @@ namespace Tortuga.Chain.Metadata
     public class ColumnMetadata<TDbType> : IColumnMetadata
         where TDbType : struct
     {
-        private readonly string m_ClrName;
-        private readonly bool m_IsComputed;
-        private readonly bool m_IsIdentity;
-        private readonly bool m_IsPrimaryKey;
-        private readonly string m_SqlName;
-        private readonly string m_TypeName;
-        private readonly TDbType? m_DbType;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ColumnMetadata{TDbType}" /> class.
@@ -24,24 +17,25 @@ namespace Tortuga.Chain.Metadata
         /// <param name="isIdentity">if set to <c>true</c> [is identity].</param>
         /// <param name="typeName">Name of the type.</param>
         /// <param name="dbType">Type used by the database.</param>
-        public ColumnMetadata(string name, bool isComputed, bool isPrimaryKey, bool isIdentity, string typeName, TDbType? dbType)
+        /// <param name="quotedSqlName">Name of the quoted SQL.</param>
+        public ColumnMetadata(string name, bool isComputed, bool isPrimaryKey, bool isIdentity, string typeName, TDbType? dbType, string quotedSqlName)
         {
-            m_TypeName = typeName;
-            m_SqlName = name;
-            m_ClrName = Utilities.ToClrName(name);
-            m_IsComputed = isComputed;
-            m_IsPrimaryKey = isPrimaryKey;
-            m_IsIdentity = isIdentity;
-            m_DbType = dbType;
+            TypeName = typeName;
+            SqlName = name;
+            IsComputed = isComputed;
+            IsPrimaryKey = isPrimaryKey;
+            IsIdentity = isIdentity;
+            DbType = dbType;
+            QuotedSqlName = quotedSqlName;
+
+            ClrName = Utilities.ToClrName(name);
+            SqlVariableName = "@" + SqlName;
         }
 
         /// <summary>
         /// Gets the name used by CLR objects.
         /// </summary>
-        public string ClrName
-        {
-            get { return m_ClrName; }
-        }
+        public string ClrName { get; }
 
         /// <summary>
         /// Gets a value indicating whether this <see cref="ColumnMetadata{TDbType}"/> is computed.
@@ -49,68 +43,45 @@ namespace Tortuga.Chain.Metadata
         /// <value>
         ///   <c>true</c> if computed; otherwise, <c>false</c>.
         /// </value>
-        public bool IsComputed
-        {
-            get { return m_IsComputed; }
-        }
+        public bool IsComputed { get; }
 
         /// <summary>
         /// Gets a value indicating whether this column is an identity column.
         /// </summary>
         /// <value><c>true</c> if this instance is identity; otherwise, <c>false</c>.</value>
-        public bool IsIdentity
-        {
-            get { return m_IsIdentity; }
-        }
+        public bool IsIdentity { get; }
 
         /// <summary>
         /// Gets a value indicating whether this column is a primary key.
         /// </summary>
         /// <value><c>true</c> if this instance is primary key; otherwise, <c>false</c>.</value>
-        public bool IsPrimaryKey
-        {
-            get { return m_IsPrimaryKey; }
-        }
+        public bool IsPrimaryKey { get; }
 
         /// <summary>
         /// Gets the name used by SQL Server, quoted.
         /// </summary>
-        public string QuotedSqlName
-        {
-            get { return "[" + m_SqlName + "]"; }
-        }
+        public string QuotedSqlName { get; }
 
         /// <summary>
         /// Gets the name used by SQL Server.
         /// </summary>
-        public string SqlName
-        {
-            get { return m_SqlName; }
-        }
+        public string SqlName { get; }
+
         /// <summary>
         /// Gets the column, formatted as a SQL variable.
         /// </summary>
-        public string SqlVariableName
-        {
-            get { return "@" + m_SqlName; }
-        }
+        public string SqlVariableName { get; }
 
         /// <summary>
         /// Gets the type used by the database.
         /// </summary>
-        public TDbType? DbType
-        {
-            get { return m_DbType; }
-        }
+        public TDbType? DbType { get; }
 
         /// <summary>
         /// Gets the name of the type.
         /// </summary>
         /// <value>The name of the type.</value>
-        public string TypeName
-        {
-            get { return m_TypeName; }
-        }
+        public string TypeName { get; }
 
         object IColumnMetadata.DbType
         {

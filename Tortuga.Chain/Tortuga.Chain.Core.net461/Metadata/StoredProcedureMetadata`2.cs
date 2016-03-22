@@ -11,8 +11,6 @@ namespace Tortuga.Chain.Metadata
     public class StoredProcedureMetadata<TName, TDbType>
         where TDbType : struct
     {
-        private readonly TName m_Name;
-        private readonly ReadOnlyCollection<ParameterMetadata<TDbType>> m_Parameters;
 
         /// <summary>
         /// </summary>
@@ -20,8 +18,8 @@ namespace Tortuga.Chain.Metadata
         /// <param name="parameters">The parameters.</param>
         public StoredProcedureMetadata(TName name, IList<ParameterMetadata<TDbType>> parameters)
         {
-            m_Name = name;
-            m_Parameters = new ReadOnlyCollection<ParameterMetadata<TDbType>>(parameters);
+            Name = name;
+            Parameters = new ReadOnlyCollection<ParameterMetadata<TDbType>>(parameters);
         }
 
         /// <summary>
@@ -30,10 +28,7 @@ namespace Tortuga.Chain.Metadata
         /// <value>
         /// The name.
         /// </value>
-        public TName Name
-        {
-            get { return m_Name; }
-        }
+        public TName Name { get; }
 
         /// <summary>
         /// Gets the parameters.
@@ -41,9 +36,6 @@ namespace Tortuga.Chain.Metadata
         /// <value>
         /// The parameters.
         /// </value>
-        public ReadOnlyCollection<ParameterMetadata<TDbType>> Parameters
-        {
-            get { return m_Parameters; }
-        }
+        public ReadOnlyCollection<ParameterMetadata<TDbType>> Parameters { get; }
     }
 }

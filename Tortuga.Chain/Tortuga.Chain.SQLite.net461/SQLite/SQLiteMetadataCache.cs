@@ -155,7 +155,7 @@ namespace Tortuga.Chain.SQLite
                             var typeName = reader.GetString(reader.GetOrdinal("type"));
                             var isPrimaryKey = reader.GetInt32(reader.GetOrdinal("pk")) != 0 ? true : false;
 
-                            columns.Add(new ColumnMetadata<DbType>(name, false, isPrimaryKey, false, typeName, null));
+                            columns.Add(new ColumnMetadata<DbType>(name, false, isPrimaryKey, false, typeName, null, "[" + name + "]"));
                         }
                     }
                 }

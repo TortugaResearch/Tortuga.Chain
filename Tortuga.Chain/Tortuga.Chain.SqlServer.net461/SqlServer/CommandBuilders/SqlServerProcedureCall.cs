@@ -64,8 +64,8 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
                     if (expectedParameters.TryGetValue(key, out paramInfo))
                     {
                         var newSqlParameter = new SqlParameter(paramInfo.SqlParameterName, item.Value ?? DBNull.Value);
-                        if (paramInfo.SqlDbType.HasValue)
-                            newSqlParameter.SqlDbType = paramInfo.SqlDbType.Value;
+                        if (paramInfo.DbType.HasValue)
+                            newSqlParameter.SqlDbType = paramInfo.DbType.Value;
                         parameters.Add(newSqlParameter);
                     }
                 }
@@ -78,8 +78,8 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
                     if (expectedParameters.TryGetValue(property.MappedColumnName, out paramInfo))
                     {
                         var newSqlParameter = new SqlParameter("@" + property.MappedColumnName, property.InvokeGet(m_ArgumentValue) ?? DBNull.Value);
-                        if (paramInfo.SqlDbType.HasValue)
-                            newSqlParameter.SqlDbType = paramInfo.SqlDbType.Value;
+                        if (paramInfo.DbType.HasValue)
+                            newSqlParameter.SqlDbType = paramInfo.DbType.Value;
                         parameters.Add(newSqlParameter);
                     }
                 }

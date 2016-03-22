@@ -7,12 +7,6 @@ namespace Tortuga.Chain.Metadata
     public class ParameterMetadata<TDbType>
         where TDbType : struct
     {
-        private readonly string m_ClrName;
-        private readonly string m_SqlParameterName;
-        private readonly TDbType? m_DbType;
-        private readonly string m_TypeName;
-
-
         /// <summary>
         /// Initializes a new instance of the <see cref="ParameterMetadata{TDbType}" /> class.
         /// </summary>
@@ -21,42 +15,30 @@ namespace Tortuga.Chain.Metadata
         /// <param name="dbType">Type of the database.</param>
         public ParameterMetadata(string sqlParameterName, string typeName, TDbType? dbType)
         {
-            m_TypeName = typeName;
-            m_SqlParameterName = sqlParameterName;
-            m_ClrName = Utilities.ToClrName(sqlParameterName);
-            m_DbType = dbType;
+            TypeName = typeName;
+            SqlParameterName = sqlParameterName;
+            ClrName = Utilities.ToClrName(sqlParameterName);
+            DbType = dbType;
         }
 
         /// <summary>
         /// Gets the name used by CLR objects.
         /// </summary>
-        public string ClrName
-        {
-            get { return m_ClrName; }
-        }
+        public string ClrName { get; }
 
         /// <summary>
         /// Gets the name used by the database.
         /// </summary>
-        public string SqlParameterName
-        {
-            get { return m_SqlParameterName; }
-        }
+        public string SqlParameterName { get; }
 
         /// <summary>
         /// Gets the type used by the database.
         /// </summary>
-        public TDbType? SqlDbType
-        {
-            get { return m_DbType; }
-        }
+        public TDbType? DbType { get; }
 
         /// <summary>
         /// Gets the name of the type.
         /// </summary>
-        public string TypeName
-        {
-            get { return m_TypeName; }
-        }
+        public string TypeName { get; }
     }
 }

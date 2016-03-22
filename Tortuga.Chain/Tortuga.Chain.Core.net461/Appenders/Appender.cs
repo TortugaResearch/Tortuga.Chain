@@ -11,8 +11,6 @@ namespace Tortuga.Chain.Appenders
     /// </summary>
     public abstract class Appender : ILink
     {
-        private readonly ILink m_PreviousLink;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="Appender{TResult}"/> class.
         /// </summary>
@@ -22,8 +20,8 @@ namespace Tortuga.Chain.Appenders
             if (previousLink == null)
                 throw new ArgumentNullException("previousLink", "previousLink is null.");
 
-            m_PreviousLink = previousLink;
-            m_PreviousLink.ExecutionTokenPrepared += PreviousLink_ExecutionTokenPrepared;
+            PreviousLink = previousLink;
+            PreviousLink.ExecutionTokenPrepared += PreviousLink_ExecutionTokenPrepared;
         }
 
         private void PreviousLink_ExecutionTokenPrepared(object sender, ExecutionTokenPreparedEventArgs e)
@@ -68,10 +66,7 @@ namespace Tortuga.Chain.Appenders
         /// <summary>
         /// Gets the previous link in the operation chain.
         /// </summary>
-        public ILink PreviousLink
-        {
-            get { return m_PreviousLink; }
-        }
+        public ILink PreviousLink { get; }
 
         /// <summary>
         /// Occurs when an execution token has been prepared.
@@ -117,7 +112,7 @@ namespace Tortuga.Chain.Appenders
         /// <returns></returns>
         public string Sql()
         {
-            return m_PreviousLink.Sql();
+            return PreviousLink.Sql();
         }
     }
 }
