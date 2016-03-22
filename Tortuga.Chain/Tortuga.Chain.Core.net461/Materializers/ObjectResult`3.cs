@@ -76,7 +76,6 @@ namespace Tortuga.Chain.Materializers
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <param name="state">User defined state, usually used for logging.</param>
         /// <returns></returns>
-        /// <exception cref="DataException">Unexpected null result</exception>
         public override async Task<TObject> ExecuteAsync(CancellationToken cancellationToken, object state = null)
         {
             Table table = null;

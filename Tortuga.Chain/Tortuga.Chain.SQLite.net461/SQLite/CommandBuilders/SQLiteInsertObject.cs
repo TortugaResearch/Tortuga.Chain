@@ -9,9 +9,6 @@ using System.Data.SQLite;
 #else
 using SQLiteCommand = Microsoft.Data.Sqlite.SqliteCommand;
 using SQLiteParameter = Microsoft.Data.Sqlite.SqliteParameter;
-using SQLiteConnection = Microsoft.Data.Sqlite.SqliteConnection;
-using SQLiteTransaction = Microsoft.Data.Sqlite.SqliteTransaction;
-using SQLiteConnectionStringBuilder = Microsoft.Data.Sqlite.SqliteConnectionStringBuilder;
 #endif
 
 namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders

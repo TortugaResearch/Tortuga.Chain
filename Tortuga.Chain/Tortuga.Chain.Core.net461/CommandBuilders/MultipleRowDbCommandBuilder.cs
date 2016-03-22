@@ -1,10 +1,14 @@
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Materializers;
+
+#if !WINDOWS_UWP
+using System.Data;
+#endif
+
 namespace Tortuga.Chain.CommandBuilders
 {
 

@@ -12,7 +12,6 @@ using SQLiteCommand = Microsoft.Data.Sqlite.SqliteCommand;
 using SQLiteParameter = Microsoft.Data.Sqlite.SqliteParameter;
 using SQLiteConnection = Microsoft.Data.Sqlite.SqliteConnection;
 using SQLiteTransaction = Microsoft.Data.Sqlite.SqliteTransaction;
-using SQLiteConnectionStringBuilder = Microsoft.Data.Sqlite.SqliteConnectionStringBuilder;
 #endif
 
 
@@ -72,7 +71,7 @@ namespace Tortuga.Chain.SQLite
         /// <summary>
         /// Commits this instance.
         /// </summary>
-        /// <exception cref="System.ObjectDisposedException">Transaction is disposed.</exception>
+        /// <exception cref="ObjectDisposedException">Transaction is disposed.</exception>
         public void Commit()
         {
             if (m_Disposed)
@@ -94,8 +93,8 @@ namespace Tortuga.Chain.SQLite
         /// <summary>
         /// Rolls the back.
         /// </summary>
-        /// <exception cref="System.ObjectDisposedException">Transaction is disposed.</exception>
-        public void RollBack()
+        /// <exception cref="ObjectDisposedException">Transaction is disposed.</exception>
+        public void Rollback()
         {
             if (m_Disposed)
                 throw new ObjectDisposedException("Transaction is disposed.");
@@ -190,7 +189,7 @@ namespace Tortuga.Chain.SQLite
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <param name="state">The state.</param>
         /// <returns>Task.</returns>
-        /// <exception cref="System.ArgumentNullException">
+        /// <exception cref="ArgumentNullException">
         /// executionToken;executionToken is null.
         /// or
         /// implementation;implementation is null.

@@ -37,6 +37,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <DocumentationFile>bin\Release\Tortuga.Chain.SqlServer.XML</DocumentationFile>
     <RunCodeAnalysis>true</RunCodeAnalysis>
+    <NoWarn>618</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>false</SignAssembly>

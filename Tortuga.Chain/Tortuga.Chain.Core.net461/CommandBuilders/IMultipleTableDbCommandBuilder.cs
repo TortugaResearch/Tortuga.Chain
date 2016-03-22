@@ -1,4 +1,6 @@
+#if !WINDOWS_UWP
 using System.Data;
+#endif
 
 namespace Tortuga.Chain.CommandBuilders
 {

@@ -1,7 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Diagnostics.CodeAnalysis;
+
+#if !WINDOWS_UWP
+using System.Data;
+#endif
+
 namespace Tortuga.Chain.CommandBuilders
 {
     /// <summary>

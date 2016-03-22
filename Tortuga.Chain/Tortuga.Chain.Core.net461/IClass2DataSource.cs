@@ -1,6 +1,10 @@
 using System.Collections.Generic;
-using System.Data;
 using Tortuga.Chain.CommandBuilders;
+
+#if !WINDOWS_UWP
+using System.Data;
+#endif
+
 
 namespace Tortuga.Chain
 {

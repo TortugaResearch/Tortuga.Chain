@@ -314,11 +314,13 @@ namespace Tortuga.Chain.DataSources
             if (!SuppressGlobalEvents && GlobalExecutionStarted != null)
                 GlobalExecutionStarted(this, new ExecutionEventArgs(executionDetails, startTime, state));
         }
+#if !WINDOWS_UWP
         private class NullObject
         {
             public static readonly NullObject Default = new NullObject();
 
             private NullObject() { }
         }
+#endif 
     }
 }

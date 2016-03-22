@@ -14,7 +14,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\.gitignore = ..\.gitignore
 		Package.msbuild = Package.msbuild
 		..\README.md = ..\README.md
+		Tortuga.Chain.Core.nuspec = Tortuga.Chain.Core.nuspec
 		Tortuga.Chain.ruleset = Tortuga.Chain.ruleset
+		Tortuga.Chain.SQLite.nuspec = Tortuga.Chain.SQLite.nuspec
+		Tortuga.Chain.SqlServer.nuspec = Tortuga.Chain.SqlServer.nuspec
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApplication1", "ConsoleApplication1\ConsoleApplication1.csproj", "{7698A185-9FAF-4681-B781-4425869A85AB}"
@@ -267,7 +270,6 @@ Global
 		{60649569-197C-4E0F-95F4-F87CFF73A610}.Release|x86.Build.0 = Release|Any CPU
 		{4AFDE645-5868-4C91-BCE3-D09F69958AE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4AFDE645-5868-4C91-BCE3-D09F69958AE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4AFDE645-5868-4C91-BCE3-D09F69958AE8}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
 		{4AFDE645-5868-4C91-BCE3-D09F69958AE8}.Debug|ARM.ActiveCfg = Debug|Any CPU
 		{4AFDE645-5868-4C91-BCE3-D09F69958AE8}.Debug|ARM.Build.0 = Debug|Any CPU
 		{4AFDE645-5868-4C91-BCE3-D09F69958AE8}.Debug|ARM.Deploy.0 = Debug|Any CPU
@@ -279,7 +281,6 @@ Global
 		{4AFDE645-5868-4C91-BCE3-D09F69958AE8}.Debug|x86.Deploy.0 = Debug|Any CPU
 		{4AFDE645-5868-4C91-BCE3-D09F69958AE8}.Debug-Unchecked|Any CPU.ActiveCfg = Debug-Unchecked|Any CPU
 		{4AFDE645-5868-4C91-BCE3-D09F69958AE8}.Debug-Unchecked|Any CPU.Build.0 = Debug-Unchecked|Any CPU
-		{4AFDE645-5868-4C91-BCE3-D09F69958AE8}.Debug-Unchecked|Any CPU.Deploy.0 = Debug-Unchecked|Any CPU
 		{4AFDE645-5868-4C91-BCE3-D09F69958AE8}.Debug-Unchecked|ARM.ActiveCfg = Debug-Unchecked|Any CPU
 		{4AFDE645-5868-4C91-BCE3-D09F69958AE8}.Debug-Unchecked|ARM.Build.0 = Debug-Unchecked|Any CPU
 		{4AFDE645-5868-4C91-BCE3-D09F69958AE8}.Debug-Unchecked|ARM.Deploy.0 = Debug-Unchecked|Any CPU
@@ -291,7 +292,6 @@ Global
 		{4AFDE645-5868-4C91-BCE3-D09F69958AE8}.Debug-Unchecked|x86.Deploy.0 = Debug-Unchecked|Any CPU
 		{4AFDE645-5868-4C91-BCE3-D09F69958AE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4AFDE645-5868-4C91-BCE3-D09F69958AE8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4AFDE645-5868-4C91-BCE3-D09F69958AE8}.Release|Any CPU.Deploy.0 = Release|Any CPU
 		{4AFDE645-5868-4C91-BCE3-D09F69958AE8}.Release|ARM.ActiveCfg = Release|Any CPU
 		{4AFDE645-5868-4C91-BCE3-D09F69958AE8}.Release|ARM.Build.0 = Release|Any CPU
 		{4AFDE645-5868-4C91-BCE3-D09F69958AE8}.Release|ARM.Deploy.0 = Release|Any CPU
@@ -333,8 +333,8 @@ Global
 		{0CE9F498-3B08-4DA4-95F4-BC825EC708CC}.Debug|x64.Build.0 = Debug|x64
 		{0CE9F498-3B08-4DA4-95F4-BC825EC708CC}.Debug|x86.ActiveCfg = Debug|x86
 		{0CE9F498-3B08-4DA4-95F4-BC825EC708CC}.Debug|x86.Build.0 = Debug|x86
-		{0CE9F498-3B08-4DA4-95F4-BC825EC708CC}.Debug-Unchecked|Any CPU.ActiveCfg = Debug|Any CPU
-		{0CE9F498-3B08-4DA4-95F4-BC825EC708CC}.Debug-Unchecked|Any CPU.Build.0 = Debug|Any CPU
+		{0CE9F498-3B08-4DA4-95F4-BC825EC708CC}.Debug-Unchecked|Any CPU.ActiveCfg = Debug-Unchecked|Any CPU
+		{0CE9F498-3B08-4DA4-95F4-BC825EC708CC}.Debug-Unchecked|Any CPU.Build.0 = Debug-Unchecked|Any CPU
 		{0CE9F498-3B08-4DA4-95F4-BC825EC708CC}.Debug-Unchecked|ARM.ActiveCfg = Debug|ARM
 		{0CE9F498-3B08-4DA4-95F4-BC825EC708CC}.Debug-Unchecked|ARM.Build.0 = Debug|ARM
 		{0CE9F498-3B08-4DA4-95F4-BC825EC708CC}.Debug-Unchecked|x64.ActiveCfg = Debug|x64
@@ -357,8 +357,8 @@ Global
 		{C9870DED-A478-452B-B94A-9ECABEB8261A}.Debug|x64.Build.0 = Debug|x64
 		{C9870DED-A478-452B-B94A-9ECABEB8261A}.Debug|x86.ActiveCfg = Debug|x86
 		{C9870DED-A478-452B-B94A-9ECABEB8261A}.Debug|x86.Build.0 = Debug|x86
-		{C9870DED-A478-452B-B94A-9ECABEB8261A}.Debug-Unchecked|Any CPU.ActiveCfg = Debug|Any CPU
-		{C9870DED-A478-452B-B94A-9ECABEB8261A}.Debug-Unchecked|Any CPU.Build.0 = Debug|Any CPU
+		{C9870DED-A478-452B-B94A-9ECABEB8261A}.Debug-Unchecked|Any CPU.ActiveCfg = Debug-Unchecked|Any CPU
+		{C9870DED-A478-452B-B94A-9ECABEB8261A}.Debug-Unchecked|Any CPU.Build.0 = Debug-Unchecked|Any CPU
 		{C9870DED-A478-452B-B94A-9ECABEB8261A}.Debug-Unchecked|ARM.ActiveCfg = Debug|ARM
 		{C9870DED-A478-452B-B94A-9ECABEB8261A}.Debug-Unchecked|ARM.Build.0 = Debug|ARM
 		{C9870DED-A478-452B-B94A-9ECABEB8261A}.Debug-Unchecked|x64.ActiveCfg = Debug|x64
@@ -381,8 +381,8 @@ Global
 		{CEFBBA53-50C5-449F-B20E-56C9A946D2B0}.Debug|x64.Build.0 = Debug|Any CPU
 		{CEFBBA53-50C5-449F-B20E-56C9A946D2B0}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{CEFBBA53-50C5-449F-B20E-56C9A946D2B0}.Debug|x86.Build.0 = Debug|Any CPU
-		{CEFBBA53-50C5-449F-B20E-56C9A946D2B0}.Debug-Unchecked|Any CPU.ActiveCfg = Debug|Any CPU
-		{CEFBBA53-50C5-449F-B20E-56C9A946D2B0}.Debug-Unchecked|Any CPU.Build.0 = Debug|Any CPU
+		{CEFBBA53-50C5-449F-B20E-56C9A946D2B0}.Debug-Unchecked|Any CPU.ActiveCfg = Debug-Unchecked|Any CPU
+		{CEFBBA53-50C5-449F-B20E-56C9A946D2B0}.Debug-Unchecked|Any CPU.Build.0 = Debug-Unchecked|Any CPU
 		{CEFBBA53-50C5-449F-B20E-56C9A946D2B0}.Debug-Unchecked|ARM.ActiveCfg = Debug|Any CPU
 		{CEFBBA53-50C5-449F-B20E-56C9A946D2B0}.Debug-Unchecked|ARM.Build.0 = Debug|Any CPU
 		{CEFBBA53-50C5-449F-B20E-56C9A946D2B0}.Debug-Unchecked|x64.ActiveCfg = Debug|Any CPU
@@ -405,8 +405,8 @@ Global
 		{344A5AFA-7C3F-460F-8916-6E103AB31488}.Debug|x64.Build.0 = Debug|Any CPU
 		{344A5AFA-7C3F-460F-8916-6E103AB31488}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{344A5AFA-7C3F-460F-8916-6E103AB31488}.Debug|x86.Build.0 = Debug|Any CPU
-		{344A5AFA-7C3F-460F-8916-6E103AB31488}.Debug-Unchecked|Any CPU.ActiveCfg = Debug|Any CPU
-		{344A5AFA-7C3F-460F-8916-6E103AB31488}.Debug-Unchecked|Any CPU.Build.0 = Debug|Any CPU
+		{344A5AFA-7C3F-460F-8916-6E103AB31488}.Debug-Unchecked|Any CPU.ActiveCfg = Debug-Unchecked|Any CPU
+		{344A5AFA-7C3F-460F-8916-6E103AB31488}.Debug-Unchecked|Any CPU.Build.0 = Debug-Unchecked|Any CPU
 		{344A5AFA-7C3F-460F-8916-6E103AB31488}.Debug-Unchecked|ARM.ActiveCfg = Debug|Any CPU
 		{344A5AFA-7C3F-460F-8916-6E103AB31488}.Debug-Unchecked|ARM.Build.0 = Debug|Any CPU
 		{344A5AFA-7C3F-460F-8916-6E103AB31488}.Debug-Unchecked|x64.ActiveCfg = Debug|Any CPU
@@ -422,6 +422,7 @@ Global
 		{344A5AFA-7C3F-460F-8916-6E103AB31488}.Release|x86.ActiveCfg = Release|Any CPU
 		{344A5AFA-7C3F-460F-8916-6E103AB31488}.Release|x86.Build.0 = Release|Any CPU
 		{263F76BD-E80D-40A6-8B17-1003E0766EF6}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{263F76BD-E80D-40A6-8B17-1003E0766EF6}.Debug|Any CPU.Build.0 = Debug|x86
 		{263F76BD-E80D-40A6-8B17-1003E0766EF6}.Debug|ARM.ActiveCfg = Debug|ARM
 		{263F76BD-E80D-40A6-8B17-1003E0766EF6}.Debug|ARM.Build.0 = Debug|ARM
 		{263F76BD-E80D-40A6-8B17-1003E0766EF6}.Debug|ARM.Deploy.0 = Debug|ARM
@@ -431,9 +432,8 @@ Global
 		{263F76BD-E80D-40A6-8B17-1003E0766EF6}.Debug|x86.ActiveCfg = Debug|x86
 		{263F76BD-E80D-40A6-8B17-1003E0766EF6}.Debug|x86.Build.0 = Debug|x86
 		{263F76BD-E80D-40A6-8B17-1003E0766EF6}.Debug|x86.Deploy.0 = Debug|x86
-		{263F76BD-E80D-40A6-8B17-1003E0766EF6}.Debug-Unchecked|Any CPU.ActiveCfg = Release|x64
-		{263F76BD-E80D-40A6-8B17-1003E0766EF6}.Debug-Unchecked|Any CPU.Build.0 = Release|x64
-		{263F76BD-E80D-40A6-8B17-1003E0766EF6}.Debug-Unchecked|Any CPU.Deploy.0 = Release|x64
+		{263F76BD-E80D-40A6-8B17-1003E0766EF6}.Debug-Unchecked|Any CPU.ActiveCfg = Debug-Unchecked|x64
+		{263F76BD-E80D-40A6-8B17-1003E0766EF6}.Debug-Unchecked|Any CPU.Build.0 = Debug-Unchecked|x64
 		{263F76BD-E80D-40A6-8B17-1003E0766EF6}.Debug-Unchecked|ARM.ActiveCfg = Debug|ARM
 		{263F76BD-E80D-40A6-8B17-1003E0766EF6}.Debug-Unchecked|ARM.Build.0 = Debug|ARM
 		{263F76BD-E80D-40A6-8B17-1003E0766EF6}.Debug-Unchecked|ARM.Deploy.0 = Debug|ARM
@@ -444,6 +444,7 @@ Global
 		{263F76BD-E80D-40A6-8B17-1003E0766EF6}.Debug-Unchecked|x86.Build.0 = Debug|x86
 		{263F76BD-E80D-40A6-8B17-1003E0766EF6}.Debug-Unchecked|x86.Deploy.0 = Debug|x86
 		{263F76BD-E80D-40A6-8B17-1003E0766EF6}.Release|Any CPU.ActiveCfg = Release|x86
+		{263F76BD-E80D-40A6-8B17-1003E0766EF6}.Release|Any CPU.Build.0 = Release|x86
 		{263F76BD-E80D-40A6-8B17-1003E0766EF6}.Release|ARM.ActiveCfg = Release|ARM
 		{263F76BD-E80D-40A6-8B17-1003E0766EF6}.Release|ARM.Build.0 = Release|ARM
 		{263F76BD-E80D-40A6-8B17-1003E0766EF6}.Release|ARM.Deploy.0 = Release|ARM

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using Tortuga.Chain.Metadata;
@@ -8,9 +7,7 @@ using Tortuga.Chain.Metadata;
 using System.Data.SQLite;
 #else
 using SQLiteCommand = Microsoft.Data.Sqlite.SqliteCommand;
-using SQLiteParameter = Microsoft.Data.Sqlite.SqliteParameter;
 using SQLiteConnection = Microsoft.Data.Sqlite.SqliteConnection;
-using SQLiteTransaction = Microsoft.Data.Sqlite.SqliteTransaction;
 using SQLiteConnectionStringBuilder = Microsoft.Data.Sqlite.SqliteConnectionStringBuilder;
 #endif
 
@@ -158,45 +155,13 @@ namespace Tortuga.Chain.SQLite
                             var typeName = reader.GetString(reader.GetOrdinal("type"));
                             var isPrimaryKey = reader.GetInt32(reader.GetOrdinal("pk")) != 0 ? true : false;
 
-                            columns.Add(new ColumnMetadata<DbType>(name, false, isPrimaryKey, false, typeName, TypeNameToDbType(typeName)));
+                            columns.Add(new ColumnMetadata<DbType>(name, false, isPrimaryKey, false, typeName, null));
                         }
                     }
                 }
             }
 
             return columns;
-        }
-
-        internal static DbType? TypeNameToDbType(string typeName)
-        {
-            //var typeParts = typeName.Split('(');
-            //var baseTypeName = typeParts[0].ToUpper();
-
-            /*  NOTE: It looks like SQLite has a very loose typing system. This follows the Column Affinity
-            **  information, but might need to be refactored for more granularity.
-            */
-
-
-            //if (string.IsNullOrEmpty(typeName))
-            //    return DbType.Binary;
-            //else if (typeName.Contains("INT"))
-            //    return DbType.Byte;
-            //else if (typeName.Contains("BLOB"))
-            //    return DbType.Binary;
-            //else if (typeName.Contains("CHAR") ||
-            //         typeName.Contains("CLOB") ||
-            //         typeName.Contains("TEXT") ||
-            //         typeName.Contains("NVARCHAR")) 
-            //    return DbType.String;
-            //else if (typeName.Contains("REAL") ||
-            //         typeName.Contains("FLOA") ||
-            //         typeName.Contains("DOUB"))
-            //    return DbType.Double;
-            //else
-            //    return DbType.Decimal;
-
-            //SQLite's type system is so screwy that we should just skip type detection for now.
-            return null;
         }
 
         /// <summary>

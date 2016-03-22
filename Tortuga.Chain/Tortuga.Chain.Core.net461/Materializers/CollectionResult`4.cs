@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Tortuga.Anchor.Metadata;
 using Tortuga.Chain.CommandBuilders;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Tortuga.Chain.Materializers
 {
@@ -16,7 +17,7 @@ namespace Tortuga.Chain.Materializers
     /// <typeparam name="TObject">The type of the object returned.</typeparam>
     /// <typeparam name="TCollection">The type of the collection.</typeparam>
     /// <seealso cref="Materializer{TCommand, TParameter, TCollection}" />
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1005:AvoidExcessiveParametersOnGenericTypes")]
+    [SuppressMessage("Microsoft.Design", "CA1005:AvoidExcessiveParametersOnGenericTypes")]
     public class CollectionMaterializer<TCommand, TParameter, TObject, TCollection> : Materializer<TCommand, TParameter, TCollection>
         where TCommand : DbCommand
         where TObject : class, new()
@@ -36,7 +37,6 @@ namespace Tortuga.Chain.Materializers
         /// Execute the operation synchronously.
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="DataException">Unexpected null result</exception>
         public override TCollection Execute(object state = null)
         {
             var result = new TCollection();
@@ -62,7 +62,6 @@ namespace Tortuga.Chain.Materializers
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <param name="state">User defined state, usually used for logging.</param>
         /// <returns></returns>
-        /// <exception cref="DataException">Unexpected null result</exception>
         public override async Task<TCollection> ExecuteAsync(CancellationToken cancellationToken, object state = null)
         {
             var result = new TCollection();

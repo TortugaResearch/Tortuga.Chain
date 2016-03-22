@@ -1,12 +1,15 @@
-using System;
+
+#if !WINDOWS_UWP
 using System.Runtime.Serialization;
+#endif
+
 
 namespace System.Data
 {
     /// <summary>
     /// 
     /// </summary>
-    /// <seealso cref="System.Exception" />
+    /// <seealso cref="Exception" />
     public class DataException : Exception
     {
         /// <summary>

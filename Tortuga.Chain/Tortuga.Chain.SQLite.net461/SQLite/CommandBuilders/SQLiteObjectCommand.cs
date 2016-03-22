@@ -12,8 +12,6 @@ using System.Data.SQLite;
 #else
 using SQLiteCommand = Microsoft.Data.Sqlite.SqliteCommand;
 using SQLiteParameter = Microsoft.Data.Sqlite.SqliteParameter;
-using SQLiteConnection = Microsoft.Data.Sqlite.SqliteConnection;
-using SQLiteTransaction = Microsoft.Data.Sqlite.SqliteTransaction;
 #endif
 
 namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
@@ -27,7 +25,7 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
         private readonly object m_ArgumentValue;
         private readonly IReadOnlyDictionary<string, object> m_ArgumentDictionary;
         private readonly TableOrViewMetadata<string, DbType> m_Metadata;
-        
+
         /// <summary>
         /// Initializes a new instance of the <see cref="SQLiteObjectCommand" /> class
         /// </summary>
@@ -83,7 +81,7 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
         /// <returns></returns>
         protected string WhereClause(List<SQLiteParameter> parameters, bool useKeyAttribute)
         {
-            if(ArgumentDictionary != null)
+            if (ArgumentDictionary != null)
             {
                 GetKeysFilter filter;
                 if (useKeyAttribute)
@@ -109,7 +107,7 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
                 LoadParameters(columns, parameters);
                 return where;
             }
-            
+
         }
 
         /// <summary>
@@ -119,7 +117,12 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
         /// <param name="parameters"></param>
         protected void LoadParameters(ImmutableList<ColumnPropertyMap<DbType>> columnProps, List<SQLiteParameter> parameters)
         {
-            foreach(var columnProp in columnProps)
+            if (columnProps == null)
+                throw new ArgumentNullException("columnProps", "columnProps is null.");
+            if (parameters == null)
+                throw new ArgumentNullException("parameters", "parameters is null.");
+
+            foreach (var columnProp in columnProps)
             {
                 var value = columnProp.Property.InvokeGet(ArgumentValue) ?? DBNull.Value;
                 var parameter = new SQLiteParameter(columnProp.Column.SqlVariableName, value);
@@ -136,6 +139,11 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
         /// <param name="parameters">The parameters.</param>
         protected void LoadDictionaryParameters(IImmutableList<ColumnMetadata<DbType>> columnProps, List<SQLiteParameter> parameters)
         {
+            if (columnProps == null)
+                throw new ArgumentNullException("columnProps", "columnProps is null.");
+            if (parameters == null)
+                throw new ArgumentNullException("parameters", "parameters is null.");
+
             foreach (var item in columnProps)
             {
                 var value = ArgumentDictionary[item.ClrName] ?? DBNull.Value;
@@ -154,6 +162,9 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
         /// <returns></returns>
         protected string OutputClause(Materializer<SQLiteCommand, SQLiteParameter> materializer, string whereClause)
         {
+            if (materializer == null)
+                throw new ArgumentNullException("materializer", "materializer is null.");
+
             if (materializer is NonQueryMaterializer<SQLiteCommand, SQLiteParameter>)
                 return null;
 

@@ -1,6 +1,10 @@
 using System;
 using System.Data;
+
+#if !WINDOWS_UWP
 using System.Runtime.Serialization;
+#endif
+
 
 namespace Tortuga.Chain
 {

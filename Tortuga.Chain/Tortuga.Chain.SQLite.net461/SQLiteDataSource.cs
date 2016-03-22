@@ -3,6 +3,8 @@ using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
 using Tortuga.Chain.SQLite;
+using Tortuga.Chain.Core;
+using System.Diagnostics.CodeAnalysis;
 
 #if !WINDOWS_UWP
 using System.Configuration;
@@ -14,7 +16,6 @@ using System.Data.SQLite;
 using SQLiteCommand = Microsoft.Data.Sqlite.SqliteCommand;
 using SQLiteParameter = Microsoft.Data.Sqlite.SqliteParameter;
 using SQLiteConnection = Microsoft.Data.Sqlite.SqliteConnection;
-using SQLiteTransaction = Microsoft.Data.Sqlite.SqliteTransaction;
 using SQLiteConnectionStringBuilder = Microsoft.Data.Sqlite.SqliteConnectionStringBuilder;
 #endif
 
@@ -122,6 +123,7 @@ namespace Tortuga.Chain
         /// </summary>
         /// <returns></returns>
         /// <remarks>The caller of this method is responsible for closing the connection.</remarks>
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         public SQLiteConnection CreateSQLiteConnection()
         {
             var con = new SQLiteConnection(ConnectionString);
@@ -150,8 +152,8 @@ namespace Tortuga.Chain
         /// <param name="executionToken"></param>
         /// <param name="implementation"></param>
         /// <param name="state"></param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
-        protected override void Execute(Tortuga.Chain.Core.ExecutionToken<SQLiteCommand, SQLiteParameter> executionToken, Func<SQLiteCommand, int?> implementation, object state)
+        [SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
+        protected override void Execute(ExecutionToken<SQLiteCommand, SQLiteParameter> executionToken, Func<SQLiteCommand, int?> implementation, object state)
         {
             if (executionToken == null)
                 throw new ArgumentNullException("executionToken", "executionToken is null.");
@@ -214,7 +216,7 @@ namespace Tortuga.Chain
         /// <param name="cancellationToken"></param>
         /// <param name="state"></param>
         /// <returns></returns>
-        protected override async Task ExecuteAsync(Tortuga.Chain.Core.ExecutionToken<SQLiteCommand, SQLiteParameter> executionToken, Func<SQLiteCommand, Task<int?>> implementation, CancellationToken cancellationToken, object state)
+        protected override async Task ExecuteAsync(ExecutionToken<SQLiteCommand, SQLiteParameter> executionToken, Func<SQLiteCommand, Task<int?>> implementation, CancellationToken cancellationToken, object state)
         {
             if (executionToken == null)
                 throw new ArgumentNullException("executionToken", "executionToken is null.");

@@ -9,9 +9,6 @@ using System.Data.SQLite;
 #else
 using SQLiteCommand = Microsoft.Data.Sqlite.SqliteCommand;
 using SQLiteParameter = Microsoft.Data.Sqlite.SqliteParameter;
-using SQLiteConnection = Microsoft.Data.Sqlite.SqliteConnection;
-using SQLiteTransaction = Microsoft.Data.Sqlite.SqliteTransaction;
-using SQLiteConnectionStringBuilder = Microsoft.Data.Sqlite.SqliteConnectionStringBuilder;
 #endif
 
 
@@ -63,7 +60,7 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
         {
             if (ArgumentDictionary != null)
             {
-                var filter = GetKeysFilter.ThrowOnNoMatch | GetKeysFilter.MutableColumns | GetKeysFilter.NonPrimaryKey ;
+                var filter = GetKeysFilter.ThrowOnNoMatch | GetKeysFilter.MutableColumns | GetKeysFilter.NonPrimaryKey;
 
                 if (DataSource.StrictMode)
                     filter |= GetKeysFilter.ThrowOnMissingColumns;
@@ -76,22 +73,22 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
             }
             else
             {
-            var filter = GetPropertiesFilter.ThrowOnNoMatch | GetPropertiesFilter.MutableColumns | GetPropertiesFilter.ForUpdate;
+                var filter = GetPropertiesFilter.ThrowOnNoMatch | GetPropertiesFilter.MutableColumns | GetPropertiesFilter.ForUpdate;
 
-            if (m_Options.HasFlag(UpdateOptions.UseKeyAttribute))
-                filter |= GetPropertiesFilter.ObjectDefinedNonKey;
-            else
-                filter |= GetPropertiesFilter.NonPrimaryKey;
+                if (m_Options.HasFlag(UpdateOptions.UseKeyAttribute))
+                    filter |= GetPropertiesFilter.ObjectDefinedNonKey;
+                else
+                    filter |= GetPropertiesFilter.NonPrimaryKey;
 
-            if (DataSource.StrictMode)
-                filter |= GetPropertiesFilter.ThrowOnMissingColumns;
+                if (DataSource.StrictMode)
+                    filter |= GetPropertiesFilter.ThrowOnMissingColumns;
 
-            var availableColumns = Metadata.GetPropertiesFor(ArgumentValue.GetType(), filter);
+                var availableColumns = Metadata.GetPropertiesFor(ArgumentValue.GetType(), filter);
 
-            var set = "SET " + string.Join(", ", availableColumns.Select(c => $"{c.Column.QuotedSqlName} = {c.Column.SqlVariableName}"));
-            LoadParameters(availableColumns, parameters);
-            return set;
-        }
+                var set = "SET " + string.Join(", ", availableColumns.Select(c => $"{c.Column.QuotedSqlName} = {c.Column.SqlVariableName}"));
+                LoadParameters(availableColumns, parameters);
+                return set;
+            }
         }
     }
 }
