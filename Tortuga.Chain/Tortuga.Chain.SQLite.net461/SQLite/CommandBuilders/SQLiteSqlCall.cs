@@ -1,9 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SQLite;
 using Tortuga.Anchor.Metadata;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Materializers;
+using Tortuga.Chain.Core;
+
+#if SDS
+using System.Data.SQLite;
+#else
+using SQLiteCommand = Microsoft.Data.Sqlite.SqliteCommand;
+using SQLiteParameter = Microsoft.Data.Sqlite.SqliteParameter;
+#endif
+
 
 namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
 {
@@ -40,7 +48,7 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
         /// </summary>
         /// <param name="materializer"></param>
         /// <returns></returns>
-        public override Tortuga.Chain.Core.ExecutionToken<SQLiteCommand, SQLiteParameter> Prepare(Materializer<SQLiteCommand, SQLiteParameter> materializer)
+        public override ExecutionToken<SQLiteCommand, SQLiteParameter> Prepare(Materializer<SQLiteCommand, SQLiteParameter> materializer)
         {
             var parameters = new List<SQLiteParameter>();
 

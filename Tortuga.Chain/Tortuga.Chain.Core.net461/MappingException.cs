@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Data;
+#if !WINDOWS_UWP
 using System.Runtime.Serialization;
+#endif
 
 namespace Tortuga.Chain
 {
@@ -8,9 +10,12 @@ namespace Tortuga.Chain
     /// This exception occurs when there is a mismatch between the database schema and the object model.
     /// </summary>
     /// <seealso cref="DataException" />
+#if !WINDOWS_UWP
     [Serializable]
+#endif
     public class MappingException : DataException
     {
+#if !WINDOWS_UWP
         /// <summary>
         /// Initializes a new instance of the <see cref="MappingException"/> class.
         /// </summary>
@@ -21,6 +26,8 @@ namespace Tortuga.Chain
         {
 
         }
+#endif
+
         /// <summary>
         /// Initializes a new instance of the <see cref="MappingException"/> class.
         /// </summary>

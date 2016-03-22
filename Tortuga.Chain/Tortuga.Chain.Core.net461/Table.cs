@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Data;
+using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 using System.Xml.Linq;
 using Tortuga.Anchor.Metadata;
 
@@ -26,7 +27,7 @@ namespace Tortuga.Chain
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="source">The source.</param>
-        public Table(string tableName, IDataReader source)
+        public Table(string tableName, DbDataReader source)
             : this(source)
         {
             TableName = tableName;
@@ -42,7 +43,7 @@ namespace Tortuga.Chain
         /// Creates a new Table from an IDataReader
         /// </summary>
         /// <param name="source"></param>
-        public Table(IDataReader source)
+        public Table(DbDataReader source)
         {
             if (source == null)
                 throw new ArgumentNullException("source", "source is null.");
@@ -141,11 +142,14 @@ namespace Tortuga.Chain
                     if (value != null && property.PropertyType != value.GetType())
                     {
                         var targetType = property.PropertyType;
+                        var targetTypeInfo = targetType.GetTypeInfo();
 
                         //For Nullable<T>, we only care about the type parameter
-                        if (targetType.Name == "Nullable`1" && targetType.IsGenericType)
+                        if (targetType.Name == "Nullable`1" && targetTypeInfo.IsGenericType)
+                        {
                             targetType = targetType.GenericTypeArguments[0];
-
+                            targetTypeInfo = targetType.GetTypeInfo();
+                        }
 
                         //XML values come to us as strings
                         if (value is string)
@@ -154,12 +158,12 @@ namespace Tortuga.Chain
                                 value = XElement.Parse((string)value);
                             else if (targetType == typeof(XDocument))
                                 value = XDocument.Parse((string)value);
-                            else if (targetType.IsEnum)
+                            else if (targetTypeInfo.IsEnum)
                                 value = Enum.Parse(targetType, (string)value);
                         }
                         else
                         {
-                            if (targetType.IsEnum)
+                            if (targetTypeInfo.IsEnum)
                                 value = Enum.ToObject(targetType, value);
                         }
 

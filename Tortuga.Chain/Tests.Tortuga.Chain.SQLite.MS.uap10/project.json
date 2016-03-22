@@ -1,0 +1,18 @@
+﻿{
+  "dependencies": {
+    "Microsoft.Data.SQLite": "1.0.0-rc1-final",
+    "Microsoft.NETCore.UniversalWindowsPlatform": "5.0.0",
+    "Tortuga.Anchor": "0.3.5923.41844"
+  },
+  "frameworks": {
+    "uap10.0": {}
+  },
+  "runtimes": {
+    "win10-arm": {},
+    "win10-arm-aot": {},
+    "win10-x86": {},
+    "win10-x86-aot": {},
+    "win10-x64": {},
+    "win10-x64-aot": {}
+  }
+}

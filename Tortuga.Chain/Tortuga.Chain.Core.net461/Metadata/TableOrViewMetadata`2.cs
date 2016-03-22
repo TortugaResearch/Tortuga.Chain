@@ -3,10 +3,14 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
-using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Tortuga.Anchor.Metadata;
+
+#if !WINDOWS_UWP
+using System.Data;
+#endif
+
 namespace Tortuga.Chain.Metadata
 {
 

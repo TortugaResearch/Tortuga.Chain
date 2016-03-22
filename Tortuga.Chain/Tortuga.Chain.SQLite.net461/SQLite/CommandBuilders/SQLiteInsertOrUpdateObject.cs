@@ -1,11 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.SQLite;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
 using Tortuga.Chain.Metadata;
 using Tortuga.Chain.SQLite.SQLite.CommandBuilders;
+
+#if SDS
+using System.Data.SQLite;
+#else
+using SQLiteCommand = Microsoft.Data.Sqlite.SqliteCommand;
+using SQLiteParameter = Microsoft.Data.Sqlite.SqliteParameter;
+#endif
+
 
 namespace Tortuga.Chain.SQLite.CommandBuilders
 {
@@ -24,7 +30,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
         /// <param name="argumentValue"></param>
         /// <param name="options"></param>
         public SQLiteInsertOrUpdateObject(SQLiteDataSourceBase dataSource, string tableName, object argumentValue, UpsertOptions options)
-            :base(dataSource, tableName, argumentValue)
+            : base(dataSource, tableName, argumentValue)
         {
             m_Options = options;
         }

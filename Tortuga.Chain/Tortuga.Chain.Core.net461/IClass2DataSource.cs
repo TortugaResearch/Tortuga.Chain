@@ -1,6 +1,10 @@
 using System.Collections.Generic;
-using System.Data;
 using Tortuga.Chain.CommandBuilders;
+
+#if !WINDOWS_UWP
+using System.Data;
+#endif
+
 
 namespace Tortuga.Chain
 {
@@ -71,6 +75,7 @@ namespace Tortuga.Chain
         /// <returns></returns>
         ILink BulkInsert<T>(string tableName, IEnumerable<T> values);
 
+#if !WINDOWS_UWP
         /// <summary>
         /// Performs a bulk insert.
         /// </summary>
@@ -86,5 +91,7 @@ namespace Tortuga.Chain
         /// <param name="values">The values to be inserted.</param>
         /// <returns></returns>
         ILink BulkInsert(string tableName, IDataReader values);
+#endif
+
     }
 }

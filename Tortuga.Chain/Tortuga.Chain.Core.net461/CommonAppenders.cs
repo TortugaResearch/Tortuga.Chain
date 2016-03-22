@@ -1,9 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Runtime.Caching;
 using Tortuga.Chain.Appenders;
+
+#if !WINDOWS_UWP
+using System.Collections.Generic;
+using System.Runtime.Caching;
 using Tortuga.Chain.CommandBuilders;
+#endif
 
 namespace Tortuga.Chain
 {
@@ -12,6 +15,7 @@ namespace Tortuga.Chain
     /// </summary>
     public static class CommonAppenders
     {
+#if !WINDOWS_UWP
         /// <summary>
         /// Executes the previous link and caches the result.
         /// </summary>
@@ -99,6 +103,7 @@ namespace Tortuga.Chain
         {
             return new ReadOrCacheResultAppender<TResult>(previousLink, cacheKey, regionName, policy);
         }
+#endif
 
         /// <summary>
         /// Adds DB Command tracing. Information is send to the Debug stream.
@@ -118,6 +123,7 @@ namespace Tortuga.Chain
             return new TraceAppender<TResult>(previousLink);
         }
 
+#if !WINDOWS_UWP
         /// <summary>
         /// Adds DB Command tracing. Information is send to the Debug stream.
         /// </summary>
@@ -135,6 +141,7 @@ namespace Tortuga.Chain
         {
             return new TraceAppender<TResult>(previousLink, Console.Out);
         }
+#endif
 
         /// <summary>
         /// Adds DB Command tracing. Information is send to the Debug stream.

@@ -1,10 +1,17 @@
-﻿using System.Data.SQLite;
-using System.Threading;
+﻿using System.Threading;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Metadata;
 using Tortuga.Chain.SQLite.CommandBuilders;
 using Tortuga.Chain.SQLite.SQLite.CommandBuilders;
+
+#if SDS
+using System.Data.SQLite;
+#else
+using SQLiteCommand = Microsoft.Data.Sqlite.SqliteCommand;
+using SQLiteParameter = Microsoft.Data.Sqlite.SqliteParameter;
+#endif
+
 
 namespace Tortuga.Chain.SQLite
 {

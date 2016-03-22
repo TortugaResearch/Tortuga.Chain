@@ -1,6 +1,10 @@
 using System;
 using System.Data;
+
+#if !WINDOWS_UWP
 using System.Runtime.Serialization;
+#endif
+
 
 namespace Tortuga.Chain
 {
@@ -8,9 +12,12 @@ namespace Tortuga.Chain
     /// This exception indicates that the expected data was not found.
     /// </summary>
     /// <remarks>This can occur when a null or empty result set is returned from the database.</remarks>
+#if !WINDOWS_UWP
     [Serializable]
+#endif
     public class MissingDataException : DataException
     {
+#if !WINDOWS_UWP
         /// <summary>
         /// Initializes a new instance of the <see cref="MissingDataException"/> class.
         /// </summary>
@@ -21,6 +28,7 @@ namespace Tortuga.Chain
         {
 
         }
+#endif
         /// <summary>
         /// Initializes a new instance of the <see cref="MissingDataException"/> class.
         /// </summary>

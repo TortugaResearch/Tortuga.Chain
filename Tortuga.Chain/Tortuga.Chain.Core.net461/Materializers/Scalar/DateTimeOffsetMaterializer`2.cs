@@ -1,5 +1,4 @@
 using System;
-using System.Data;
 using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,7 +28,6 @@ namespace Tortuga.Chain.Materializers
         /// Execute the operation synchronously.
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="DataException">Unexpected null result</exception>
         public override DateTimeOffset Execute(object state = null)
         {
             object temp = null;
@@ -48,7 +46,6 @@ namespace Tortuga.Chain.Materializers
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <param name="state">User defined state, usually used for logging.</param>
         /// <returns></returns>
-        /// <exception cref="DataException">Unexpected null result</exception>
         public override async Task<DateTimeOffset> ExecuteAsync(CancellationToken cancellationToken, object state = null)
         {
             object temp = null;
