@@ -86,6 +86,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="EmployeeRepositoryChainCompiled.cs" />
     <Compile Include="EmployeeRepositoryChain.cs" />
     <Compile Include="EmployeeRepositoryDapper.cs" />
     <Compile Include="EmployeeRepositoryEF_Intermediate.cs" />
@@ -100,6 +101,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Tortuga.Chain.CompiledMaterializers.net461\Tortuga.Chain.CompiledMaterializers.net461.csproj">
+      <Project>{42d213ca-8584-4b1b-8928-a54c5d937e86}</Project>
+      <Name>Tortuga.Chain.CompiledMaterializers.net461</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Tortuga.Chain.Core.net461\Tortuga.Chain.Core.net461.csproj">
       <Project>{2c523692-a40b-4a7e-a95a-fbe373f263f7}</Project>
       <Name>Tortuga.Chain.Core.net461</Name>

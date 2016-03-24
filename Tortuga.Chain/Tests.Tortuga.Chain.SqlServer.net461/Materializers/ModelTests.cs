@@ -1,5 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Tests.Models;
+using Tortuga.Chain;
+using System.Linq;
 
 namespace Tests.Materializers
 {
@@ -31,6 +33,27 @@ namespace Tests.Materializers
 
             Assert.IsNotNull(echo.AuditInfo.CreatedDate, "CreatedDate via AuditInfo");
 
+        }
+
+        [TestMethod]
+        public void CompiledTest()
+        {
+            var ds = DataSource;
+
+            var emp1 = new Employee() { FirstName = "Tom", LastName = "Jones", Title = "President" };
+            var emp1Key = ds.Insert(EmployeeTableName, emp1).ToInt32().Execute();
+
+            var emp2 = new Employee() { FirstName = "Lisa", LastName = "Green", Title = "VP Transportation", ManagerKey = emp1Key };
+            var emp2Key = ds.Insert(EmployeeTableName, emp2).ToInt32().Execute();
+
+            var echo = ds.From("HR.EmployeeWithManager", new { @EmployeeKey = emp2Key }).Compiled().ToObject<Employee>().Execute();
+            var list = ds.From("HR.EmployeeWithManager", new { @EmployeeKey = emp2Key }).Compiled().ToCollection<Employee>().Execute();
+
+
+            Assert.AreNotEqual(0, echo.EmployeeKey, "EmployeeKey was not set");
+            Assert.AreEqual(emp2.FirstName, echo.FirstName, "FirstName");
+            Assert.AreEqual(emp2.LastName, echo.LastName, "LastName");
+            Assert.AreEqual(emp2.Title, echo.Title, "Title");
         }
     }
 }
