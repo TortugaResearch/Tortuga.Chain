@@ -62,6 +62,13 @@ Materializers call into several categories:
 * Table: `ToTable`, `ToDataTable`, `ToCollection`
 * Multiple Tables: `ToTableSet`, `ToDataSet`
 
+For better performance, you can use the compiled materializer extension:
+
+* Row: `.Compile().ToObject<TObject>()`
+* Table: `.Compile().ToCollection<TObject>()`, `.Compile().ToCollection<TList, TObject>()`
+
+This requires the `Tortuga.Chain.CompiledMaterializers` package, which includes CS-Script as a dependency. 
+
 ###Appenders
 
 Appenders are links that can change the rules before, during, or after execution.  An appender can be added after a materializer or another appender.
