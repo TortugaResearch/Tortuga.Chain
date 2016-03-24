@@ -15,8 +15,6 @@ namespace Tortuga.Chain.Materializers
             where TParameter : DbParameter
     {
 
-        //System.Collections.Concurrent.ConcurrentDictionary<string, >
-
         /// <summary>
         /// </summary>
         /// <param name="commandBuilder">The associated operation.</param>
@@ -30,7 +28,7 @@ namespace Tortuga.Chain.Materializers
             var result = new TCollection();
             ExecuteCore(cmd =>
             {
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess))
                 {
                     var factory = CompiledMaterializers.CreateBuilder<TObject>(DataSource, cmd.CommandText, reader);
                     while (reader.Read())
@@ -50,7 +48,7 @@ namespace Tortuga.Chain.Materializers
 
             await ExecuteCoreAsync(async cmd =>
             {
-                using (var reader = await cmd.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false))
+                using (var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SequentialAccess, cancellationToken).ConfigureAwait(false))
                 {
                     var factory = CompiledMaterializers.CreateBuilder<TObject>(DataSource, cmd.CommandText, reader);
                     while (await reader.ReadAsync())

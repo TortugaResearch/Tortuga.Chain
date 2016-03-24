@@ -1,21 +1,32 @@
 ﻿using CSScriptLibrary;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
 using Tortuga.Anchor.Metadata;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.DataSources;
+using Tortuga.Chain.Materializers;
 
 namespace Tortuga.Chain
 {
+    /// <summary>
+    /// Utility class that enables access to the compiled version of the Object and Collection materializers.
+    /// </summary>
     public static class CompiledMaterializers
     {
 
-        public static Compiled<TCommand, TParameter> Compiled<TCommand, TParameter>(this DbCommandBuilder<TCommand, TParameter> commandBuilder)
+        /// <summary>
+        /// Allows compilation of the ToObject and ToCollection materializer.
+        /// </summary>
+        /// <typeparam name="TCommand">The type of the command.</typeparam>
+        /// <typeparam name="TParameter">The type of the parameter.</typeparam>
+        /// <param name="commandBuilder">The command builder.</param>
+        /// <returns></returns>
+        public static Compiled<TCommand, TParameter> Compile<TCommand, TParameter>(this DbCommandBuilder<TCommand, TParameter> commandBuilder)
             where TCommand : DbCommand
             where TParameter : DbParameter
         {
@@ -31,8 +42,6 @@ namespace Tortuga.Chain
                 return result;
 
             var code = new StringBuilder();
-
-            var localsList = MetadataCache.GetMetadata(typeof(TObject)).ColumnsFor;
 
             var typeName = typeof(TObject).FullName; //TODO: Add support for generic types and inner classes
 
@@ -62,50 +71,33 @@ namespace Tortuga.Chain
             }
 
 
-            var eval = CSScript.Evaluator.ReferenceAssemblyOf<TObject>().ReferenceAssemblyOf<IDataReader>(); //.ReferenceDomainAssemblies(DomainAssemblies.None);
+            var eval = CreateScriptEvaluator(typeof(TObject), CSScript.Evaluator.ReferenceAssemblyOf(reader).ReferenceAssemblyOf<IDataReader>());
 
 
-            code.AppendLine($"{typeName} Load(System.Data.IDataReader reader)");
+            code.AppendLine($"{typeName} Load({reader.GetType().FullName} reader)");
             code.AppendLine("{");
             code.AppendLine($"    var result = new {typeName}();");
-            foreach (var property in MetadataCache.GetMetadata(typeof(TObject)).Properties)
+
+            var properties = MetadataCache.GetMetadata(typeof(TObject)).Properties;
+            var path = "result";
+
+            ConstructDecomposedObjects(code, path, properties);
+
+            //This loop is slow, but it ensure that we always generate the reader.GetXxx methods in the correct order.
+            for (var i = 0; i < reader.FieldCount; i++)
             {
-                if (property.Decompose)
-                    throw new InvalidOperationException("Compiled materializers do not support the Decompose atrtibute");
-
-                if (property.MappedColumnName == null)
-                    continue;
-
-                Tuple<int, Type, string> column;
-                if (!columns.TryGetValue(property.MappedColumnName, out column))
-                    continue;
-
-
-                if (property.PropertyType.IsClass || property.PropertyType.Name == "Nullable`1" && property.PropertyType.IsGenericType)
-                {
-                    //null handler
-                    code.AppendLine($"    if (reader.IsDBNull({column.Item1}))");
-                    code.AppendLine($"        result.{property.Name} = null;");
-                    code.AppendLine($"    else");
-                    code.AppendLine($"        result.{property.Name} = ({column.Item2.FullName}){column.Item3}({column.Item1});");
-                }
-                else
-                {
-                    //non-null handler
-                    code.AppendLine($"    result.{property.Name} = ({column.Item2.FullName}){column.Item3}({column.Item1});");
-                }
-
+                SetProperties(code, columns, properties, i, "result", null);
             }
-
             code.AppendLine("    return result;");
             code.AppendLine("}");
 
 
+            var codeToString = code.ToString();
             try
             {
-                result = eval.CreateDelegate<TObject>(code.ToString());
+                result = eval.CreateDelegate<TObject>(codeToString);
 
-                MaterializerCompiled?.Invoke(typeof(CompiledMaterializers), new MaterializerCompiledEventArgs(dataSource, sql, code.ToString(), typeof(TObject)));
+                MaterializerCompiled?.Invoke(typeof(CompiledMaterializers), new MaterializerCompilerEventArgs(dataSource, sql, codeToString, typeof(TObject)));
 
                 cache.StoreBuilder(sql, result);
 
@@ -113,17 +105,99 @@ namespace Tortuga.Chain
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(code.ToString());
-                ex.Data["Code"] = code.ToString();
+                Debug.WriteLine(codeToString);
+                ex.Data["Code"] = codeToString;
                 throw;
             }
 
         }
 
         /// <summary>
+        /// Creates the script evaluator by ensuring that all of the relevant assemblies are loaded.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <param name="evaluator">The evaluator.</param>
+        /// <returns></returns>
+        private static IEvaluator CreateScriptEvaluator(Type type, IEvaluator evaluator)
+        {
+            evaluator = evaluator.ReferenceAssembly(type.Assembly);
+            foreach (var property in MetadataCache.GetMetadata(type).Properties.Where(p => p.Decompose))
+                evaluator = CreateScriptEvaluator(property.PropertyType, evaluator);
+            return evaluator;
+        }
+
+        /// <summary>
+        /// Constructs the decomposed objects as necessary.
+        /// </summary>
+        /// <param name="code">The code.</param>
+        /// <param name="path">The path.</param>
+        /// <param name="properties">The properties.</param>
+        private static void ConstructDecomposedObjects(StringBuilder code, string path, PropertyMetadataCollection properties)
+        {
+            foreach (var property in properties)
+            {
+                if (property.Decompose)
+                {
+                    if (property.CanWrite)
+                    {
+                        code.AppendLine($"    if ({path}.{property.Name} == null)");
+                        code.AppendLine($"    {path}.{property.Name} = new {property.PropertyType.FullName}();");
+                    }
+
+                    ConstructDecomposedObjects(code, path + "." + property.Name, MetadataCache.GetMetadata(property.PropertyType).Properties);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Sets the properties.
+        /// </summary>
+        /// <param name="code">The code being generated.</param>
+        /// <param name="columns">The columns in the data reader.</param>
+        /// <param name="properties">The properties for the curent object.</param>
+        /// <param name="columnIndex">Index of the column being read.</param>
+        /// <param name="path">The path to the object whose properties are being set.</param>
+        /// <param name="decompositionPrefix">The decomposition prefix used when reading the column data.</param>
+        private static void SetProperties(StringBuilder code, Dictionary<string, Tuple<int, Type, string>> columns, PropertyMetadataCollection properties, int columnIndex, string path, string decompositionPrefix)
+        {
+            foreach (var property in properties)
+            {
+                if (property.Decompose)
+                {
+                    SetProperties(code, columns, MetadataCache.GetMetadata(property.PropertyType).Properties, columnIndex, path + "." + property.Name, decompositionPrefix + property.DecompositionPrefix);
+                }
+
+                if (property.MappedColumnName == null)
+                    continue;
+
+                Tuple<int, Type, string> column;
+                if (!columns.TryGetValue(decompositionPrefix + property.MappedColumnName, out column))
+                    continue; //not a valid column
+
+                if (column.Item1 != columnIndex)
+                    continue; //we'll get it on another iteration
+
+                if (property.PropertyType.IsClass || property.PropertyType.Name == "Nullable`1" && property.PropertyType.IsGenericType)
+                {
+                    //null handler
+                    code.AppendLine($"    if (reader.IsDBNull({column.Item1}))");
+                    code.AppendLine($"        {path}.{property.Name} = null;");
+                    code.AppendLine($"    else");
+                    code.AppendLine($"        {path}.{property.Name} = ({column.Item2.FullName}){column.Item3}({column.Item1});");
+                }
+                else
+                {
+                    //non-null handler
+                    code.AppendLine($"    {path}.{property.Name} = ({column.Item2.FullName}){column.Item3}({column.Item1});");
+                }
+
+            }
+        }
+
+        /// <summary>
         /// Occurs when a materializer is compiled.
         /// </summary>
-        public static event EventHandler<MaterializerCompiledEventArgs> MaterializerCompiled;
+        public static event EventHandler<MaterializerCompilerEventArgs> MaterializerCompiled;
     }
 
 }

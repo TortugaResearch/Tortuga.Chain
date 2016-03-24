@@ -2,10 +2,15 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
 using Tortuga.Chain.CommandBuilders;
-using Tortuga.Chain.Materializers;
 
-namespace Tortuga.Chain
+namespace Tortuga.Chain.Materializers
 {
+    /// <summary>
+    /// Extension for using compiled materializers with Tortuga Chain
+    /// </summary>
+    /// <typeparam name="TCommand">The type of the command.</typeparam>
+    /// <typeparam name="TParameter">The type of the parameter.</typeparam>
+    [SuppressMessage("Microsoft.Performance", "CA1815:OverrideEqualsAndOperatorEqualsOnValueTypes")]
     public struct Compiled<TCommand, TParameter>
             where TCommand : DbCommand
             where TParameter : DbParameter
@@ -13,6 +18,10 @@ namespace Tortuga.Chain
 
         private readonly DbCommandBuilder<TCommand, TParameter> m_CommandBuilder;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Compiled{TCommand, TParameter}"/> struct.
+        /// </summary>
+        /// <param name="commandBuilder">The command builder.</param>
         public Compiled(DbCommandBuilder<TCommand, TParameter> commandBuilder)
         {
             m_CommandBuilder = commandBuilder;
@@ -54,14 +63,5 @@ namespace Tortuga.Chain
         {
             return new CompiledCollectionMaterializer<TCommand, TParameter, TObject, TCollection>(m_CommandBuilder);
         }
-    }
-
-    internal static class CompilerCache<TCommand, TParameter, TObject>
-        where TCommand : DbCommand
-        where TParameter : DbParameter
-        where TObject : class, new()
-    {
-
-
     }
 }

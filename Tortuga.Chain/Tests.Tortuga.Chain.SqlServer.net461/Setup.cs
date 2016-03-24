@@ -22,7 +22,7 @@ namespace Tests
             CompiledMaterializers.MaterializerCompiled += CompiledMaterializers_MaterializerCompiled;
         }
 
-        private static void CompiledMaterializers_MaterializerCompiled(object sender, MaterializerCompiledEventArgs e)
+        private static void CompiledMaterializers_MaterializerCompiled(object sender, MaterializerCompilerEventArgs e)
         {
             Debug.WriteLine("******");
             Debug.WriteLine("Compiled Materializer");

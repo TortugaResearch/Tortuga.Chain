@@ -28,7 +28,7 @@ namespace Tortuga.Chain.Materializers
             var executionToken = Prepare();
             executionToken.Execute(cmd =>
             {
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess))
                 {
                     var factory = CompiledMaterializers.CreateBuilder<TObject>(DataSource, cmd.CommandText, reader);
                     while (reader.Read())

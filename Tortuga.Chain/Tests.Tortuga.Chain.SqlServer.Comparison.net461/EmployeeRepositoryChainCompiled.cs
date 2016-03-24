@@ -22,22 +22,22 @@ namespace Tests
 
         public Employee Get(int employeeKey)
         {
-            return m_DataSource.From(TableName, new { @EmployeeKey = employeeKey }).Compiled().ToObject<Employee>().Execute();
+            return m_DataSource.From(TableName, new { @EmployeeKey = employeeKey }).Compile().ToObject<Employee>().Execute();
         }
 
         public IList<Employee> GetAll()
         {
-            return m_DataSource.From(TableName).Compiled().ToCollection<Employee>().Execute();
+            return m_DataSource.From(TableName).Compile().ToCollection<Employee>().Execute();
         }
 
         public IList<Employee> GetByManager(int managerKey)
         {
-            return m_DataSource.From(TableName, new { @ManagerKey = managerKey }).Compiled().ToCollection<Employee>().Execute();
+            return m_DataSource.From(TableName, new { @ManagerKey = managerKey }).Compile().ToCollection<Employee>().Execute();
         }
 
         public IList<EmployeeOfficePhone> GetOfficePhoneNumbers()
         {
-            return m_DataSource.From(TableName).Compiled().ToCollection<EmployeeOfficePhone>().Execute();
+            return m_DataSource.From(TableName).Compile().ToCollection<EmployeeOfficePhone>().Execute();
         }
 
         public int Insert(Employee employee)
@@ -57,7 +57,7 @@ namespace Tests
 
         public Employee InsertAndReturn(Employee employee)
         {
-            return m_DataSource.Insert(TableName, employee).Compiled().ToObject<Employee>().Execute();
+            return m_DataSource.Insert(TableName, employee).Compile().ToObject<Employee>().Execute();
         }
 
         public int Upsert(Employee employee)

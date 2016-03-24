@@ -1,9 +1,8 @@
 using CSScriptLibrary;
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 
-namespace Tortuga.Chain
+namespace Tortuga.Chain.Materializers
 {
     internal class CompilerCache
     {

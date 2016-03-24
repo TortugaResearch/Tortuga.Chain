@@ -6,17 +6,19 @@ namespace Tortuga.Chain
     /// <summary>
     /// Class MaterializerCompiledEventArgs.
     /// </summary>
-    public class MaterializerCompiledEventArgs : EventArgs
+    public class MaterializerCompilerEventArgs : EventArgs
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="MaterializerCompiledEventArgs"/> class.
+        /// Initializes a new instance of the <see cref="MaterializerCompilerEventArgs" /> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
         /// <param name="sql">The SQL.</param>
         /// <param name="code">The code.</param>
         /// <param name="targetType">Type of the target.</param>
-        public MaterializerCompiledEventArgs(DataSource dataSource, string sql, string code, Type targetType)
+        /// <param name="exception">The exception.</param>
+        public MaterializerCompilerEventArgs(DataSource dataSource, string sql, string code, Type targetType, Exception exception = null)
         {
+            Exception = exception;
             TargetType = targetType;
             Code = code;
             Sql = sql;
@@ -46,6 +48,14 @@ namespace Tortuga.Chain
         /// </summary>
         /// <value>The type of the target.</value>
         public Type TargetType { get; }
+
+        /// <summary>
+        /// Gets the exception.
+        /// </summary>
+        /// <value>
+        /// The exception.
+        /// </value>
+        public Exception Exception { get; }
     }
 
 }
