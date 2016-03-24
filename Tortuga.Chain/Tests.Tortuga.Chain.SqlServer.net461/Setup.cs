@@ -18,6 +18,20 @@ namespace Tests
             DataSource.GlobalExecutionError += DefaultDispatcher_ExecutionError;
             DataSource.GlobalExecutionFinished += DefaultDispatcher_ExecutionFinished;
             DataSource.GlobalExecutionStarted += DefaultDispatcher_ExecutionStarted;
+
+            CompiledMaterializers.MaterializerCompiled += CompiledMaterializers_MaterializerCompiled;
+        }
+
+        private static void CompiledMaterializers_MaterializerCompiled(object sender, MaterializerCompilerEventArgs e)
+        {
+            Debug.WriteLine("******");
+            Debug.WriteLine("Compiled Materializer");
+            Debug.Indent();
+            Debug.WriteLine("SQL");
+            Debug.WriteLine(e.Sql);
+            Debug.WriteLine("Code");
+            Debug.WriteLine(e.Code);
+            Debug.Unindent();
         }
 
         static void DefaultDispatcher_ExecutionCanceled(object sender, ExecutionEventArgs e)

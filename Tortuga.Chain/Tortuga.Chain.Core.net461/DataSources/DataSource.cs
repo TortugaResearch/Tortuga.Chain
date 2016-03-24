@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using Tortuga.Chain.Core;
+using System.Collections.Concurrent;
 
 #if !WINDOWS_UWP
 using System.Runtime.Caching;
@@ -317,6 +318,24 @@ namespace Tortuga.Chain.DataSources
 
             private NullObject() { }
         }
-#endif 
+#endif
+
+        /// <summary>
+        /// The extension cache is used by extensions to store data source specific informmation.
+        /// </summary>
+        /// <value>The extension cache.</value>
+        private readonly ConcurrentDictionary<Type, object> m_ExtensionCache = new ConcurrentDictionary<Type, object>();
+
+        /// <summary>
+        /// Gets the extension data.
+        /// </summary>
+        /// <typeparam name="TTKey">The type of extension data desired.</typeparam>
+        /// <returns>T.</returns>
+        /// <remarks>Chain extensions can use this to store data source specific data. The key should be a data type defined by the extension.</remarks>
+        public TTKey GetExtensionData<TTKey>()
+            where TTKey : new()
+        {
+            return (TTKey)m_ExtensionCache.GetOrAdd(typeof(TTKey), x => new TTKey());
+        }
     }
 }

@@ -64,7 +64,8 @@ namespace Tortuga.Chain.SQLite
                     using (var reader = cmd.ExecuteReader())
                     {
                         if (!reader.Read())
-                            return null;
+                            throw new MissingObjectException($"Could not find table or view {tableName}");
+
                         actualName = reader.GetString(reader.GetOrdinal("ObjectName"));
                         var objectType = reader.GetString(reader.GetOrdinal("ObjectType"));
                         isTable = objectType.Equals("table");
