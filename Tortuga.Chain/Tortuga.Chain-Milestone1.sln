@@ -15,6 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Tortuga.Chain.Core.nuspec = Tortuga.Chain.Core.nuspec
 		Tortuga.Chain.ruleset = Tortuga.Chain.ruleset
 		Tortuga.Chain.SQLite.nuspec = Tortuga.Chain.SQLite.nuspec
+		Tortuga.Chain.CompiledMaterializers.nuspec = Tortuga.Chain.CompiledMaterializers.nuspec
 		Tortuga.Chain.SqlServer.nuspec = Tortuga.Chain.SqlServer.nuspec
 	EndProjectSection
 EndProject
@@ -39,6 +40,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PackageTest.Tortuga.Chain.SqlServer.net461", "PackageTest.Tortuga.Chain.SqlServer.net461\PackageTest.Tortuga.Chain.SqlServer.net461.csproj", "{28E091C5-82B1-4A63-978B-ED6F2F420618}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PackageTest.Tortuga.Chain.SQLite.net461", "PackageTest.Tortuga.Chain.SQLite.net461\PackageTest.Tortuga.Chain.SQLite.net461.csproj", "{768B1D21-5458-4E4C-9A83-5D6AFF01873B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tortuga.Chain.CompiledMaterializers.net461", "Tortuga.Chain.CompiledMaterializers.net461\Tortuga.Chain.CompiledMaterializers.net461.csproj", "{42D213CA-8584-4B1B-8928-A54C5D937E86}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -305,6 +308,30 @@ Global
 		{768B1D21-5458-4E4C-9A83-5D6AFF01873B}.Release|x64.Build.0 = Release|Any CPU
 		{768B1D21-5458-4E4C-9A83-5D6AFF01873B}.Release|x86.ActiveCfg = Release|Any CPU
 		{768B1D21-5458-4E4C-9A83-5D6AFF01873B}.Release|x86.Build.0 = Release|Any CPU
+		{42D213CA-8584-4B1B-8928-A54C5D937E86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42D213CA-8584-4B1B-8928-A54C5D937E86}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{42D213CA-8584-4B1B-8928-A54C5D937E86}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{42D213CA-8584-4B1B-8928-A54C5D937E86}.Debug|ARM.Build.0 = Debug|Any CPU
+		{42D213CA-8584-4B1B-8928-A54C5D937E86}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{42D213CA-8584-4B1B-8928-A54C5D937E86}.Debug|x64.Build.0 = Debug|Any CPU
+		{42D213CA-8584-4B1B-8928-A54C5D937E86}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{42D213CA-8584-4B1B-8928-A54C5D937E86}.Debug|x86.Build.0 = Debug|Any CPU
+		{42D213CA-8584-4B1B-8928-A54C5D937E86}.Debug-Unchecked|Any CPU.ActiveCfg = Debug-Unchecked|Any CPU
+		{42D213CA-8584-4B1B-8928-A54C5D937E86}.Debug-Unchecked|Any CPU.Build.0 = Debug-Unchecked|Any CPU
+		{42D213CA-8584-4B1B-8928-A54C5D937E86}.Debug-Unchecked|ARM.ActiveCfg = Debug|Any CPU
+		{42D213CA-8584-4B1B-8928-A54C5D937E86}.Debug-Unchecked|ARM.Build.0 = Debug|Any CPU
+		{42D213CA-8584-4B1B-8928-A54C5D937E86}.Debug-Unchecked|x64.ActiveCfg = Debug|Any CPU
+		{42D213CA-8584-4B1B-8928-A54C5D937E86}.Debug-Unchecked|x64.Build.0 = Debug|Any CPU
+		{42D213CA-8584-4B1B-8928-A54C5D937E86}.Debug-Unchecked|x86.ActiveCfg = Debug|Any CPU
+		{42D213CA-8584-4B1B-8928-A54C5D937E86}.Debug-Unchecked|x86.Build.0 = Debug|Any CPU
+		{42D213CA-8584-4B1B-8928-A54C5D937E86}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{42D213CA-8584-4B1B-8928-A54C5D937E86}.Release|Any CPU.Build.0 = Release|Any CPU
+		{42D213CA-8584-4B1B-8928-A54C5D937E86}.Release|ARM.ActiveCfg = Release|Any CPU
+		{42D213CA-8584-4B1B-8928-A54C5D937E86}.Release|ARM.Build.0 = Release|Any CPU
+		{42D213CA-8584-4B1B-8928-A54C5D937E86}.Release|x64.ActiveCfg = Release|Any CPU
+		{42D213CA-8584-4B1B-8928-A54C5D937E86}.Release|x64.Build.0 = Release|Any CPU
+		{42D213CA-8584-4B1B-8928-A54C5D937E86}.Release|x86.ActiveCfg = Release|Any CPU
+		{42D213CA-8584-4B1B-8928-A54C5D937E86}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -318,5 +345,6 @@ Global
 		{60649569-197C-4E0F-95F4-F87CFF73A610} = {D6583546-CE70-4444-AA54-0AD7AD0026C9}
 		{4AFDE645-5868-4C91-BCE3-D09F69958AE8} = {05542BBF-0A44-4F28-A504-640F319CC546}
 		{268686C1-5787-42EC-82EF-AC52C23075AE} = {05542BBF-0A44-4F28-A504-640F319CC546}
+		{42D213CA-8584-4B1B-8928-A54C5D937E86} = {6FB40F3D-E4CC-4E11-952C-BBD437AD2BF8}
 	EndGlobalSection
 EndGlobal

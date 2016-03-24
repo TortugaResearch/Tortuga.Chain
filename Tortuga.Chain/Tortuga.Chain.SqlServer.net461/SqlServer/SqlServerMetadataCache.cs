@@ -157,7 +157,7 @@ namespace Tortuga.Chain.SqlServer
                     using (var reader = cmd.ExecuteReader())
                     {
                         if (!reader.Read())
-                            return null;
+                            throw new MissingObjectException($"Could not find table valued function {tableFunctionName}");
                         actualSchema = reader.GetString(reader.GetOrdinal("SchemaName"));
                         actualName = reader.GetString(reader.GetOrdinal("Name"));
                         objectId = reader.GetInt32(reader.GetOrdinal("ObjectId"));
@@ -230,7 +230,8 @@ namespace Tortuga.Chain.SqlServer
                     using (var reader = cmd.ExecuteReader())
                     {
                         if (!reader.Read())
-                            return null;
+                            throw new MissingObjectException($"Could not find stored procedure {procedureName}");
+
                         actualSchema = reader.GetString(reader.GetOrdinal("SchemaName"));
                         actualName = reader.GetString(reader.GetOrdinal("Name"));
                         objectId = reader.GetInt32(reader.GetOrdinal("ObjectId"));
@@ -280,7 +281,7 @@ namespace Tortuga.Chain.SqlServer
                     using (var reader = cmd.ExecuteReader())
                     {
                         if (!reader.Read())
-                            return null;
+                            throw new MissingObjectException($"Could not find table or view {tableName}");
                         actualSchema = reader.GetString(reader.GetOrdinal("SchemaName"));
                         actualName = reader.GetString(reader.GetOrdinal("Name"));
                         objectId = reader.GetInt32(reader.GetOrdinal("ObjectId"));

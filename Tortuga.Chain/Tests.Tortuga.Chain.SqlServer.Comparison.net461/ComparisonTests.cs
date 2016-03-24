@@ -10,12 +10,13 @@ namespace Tests.Tortuga.Chain.SqlServer.Comparison.net461
     [TestClass]
     public class ComparisonTests
     {
-        static int Iterations = 1;
-        static bool Warmup = false;
+        static int Iterations = 100;
+        static bool Warmup = true;
 
 
         static EmployeeRepositoryDapper s_DapperRepo;
         static EmployeeRepositoryChain s_ChainRepo;
+        static EmployeeRepositoryChainCompiled s_ChainCompiledRepo;
         static EmployeeRepositoryEF_Intermediate s_EFIntermediateRepo;
         static EmployeeRepositoryEF_Novice s_EFNoviceRepo;
 
@@ -24,6 +25,7 @@ namespace Tests.Tortuga.Chain.SqlServer.Comparison.net461
         {
             s_DapperRepo = new EmployeeRepositoryDapper(ConfigurationManager.ConnectionStrings["CodeFirstModels"].ConnectionString);
             s_ChainRepo = new EmployeeRepositoryChain(SqlServerDataSource.CreateFromConfig("CodeFirstModels"));
+            s_ChainCompiledRepo = new EmployeeRepositoryChainCompiled(SqlServerDataSource.CreateFromConfig("CodeFirstModels"));
             s_EFIntermediateRepo = new EmployeeRepositoryEF_Intermediate();
             s_EFNoviceRepo = new EmployeeRepositoryEF_Novice();
 
@@ -31,6 +33,7 @@ namespace Tests.Tortuga.Chain.SqlServer.Comparison.net461
             {
                 CrudTestCore(s_DapperRepo);
                 CrudTestCore(s_ChainRepo);
+                CrudTestCore(s_ChainCompiledRepo);
                 CrudTestCore(s_EFIntermediateRepo);
                 CrudTestCore(s_EFNoviceRepo);
             }
@@ -48,6 +51,12 @@ namespace Tests.Tortuga.Chain.SqlServer.Comparison.net461
         public void Chain_CrudTest()
         {
             CrudTest(s_ChainRepo);
+        }
+
+        [TestMethod]
+        public void ChainCompiled_CrudTest()
+        {
+            CrudTest(s_ChainCompiledRepo);
         }
 
         [TestMethod]
