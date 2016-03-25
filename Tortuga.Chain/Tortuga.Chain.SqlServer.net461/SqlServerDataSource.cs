@@ -30,19 +30,19 @@ namespace Tortuga.Chain
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlServerDataSource" /> class.
         /// </summary>
-        /// <param name="connectionName">Name of the connection.</param>
+        /// <param name="name">Name of the data source.</param>
         /// <param name="connectionString">The connection string.</param>
         /// <exception cref="ArgumentException">connectionString is null or empty.;connectionString</exception>
-        public SqlServerDataSource(string connectionName, string connectionString)
+        public SqlServerDataSource(string name, string connectionString)
         {
             if (string.IsNullOrEmpty(connectionString))
                 throw new ArgumentException("connectionString is null or empty.", "connectionString");
 
             m_ConnectionBuilder = new SqlConnectionStringBuilder(connectionString);
-            if (string.IsNullOrEmpty(connectionName))
+            if (string.IsNullOrEmpty(name))
                 Name = m_ConnectionBuilder.InitialCatalog ?? m_ConnectionBuilder.DataSource;
             else
-                Name = connectionName;
+                Name = name;
 
             m_DatabaseMetadata = new SqlServerMetadataCache(m_ConnectionBuilder);
         }
@@ -60,19 +60,19 @@ namespace Tortuga.Chain
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlServerDataSource" /> class.
         /// </summary>
-        /// <param name="connectionName">Optional name of the connection.</param>
+        /// <param name="name">Optional name of the data source.</param>
         /// <param name="connectionStringBuilder">The connection string builder.</param>
         /// <exception cref="ArgumentNullException">connectionStringBuilder;connectionStringBuilder is null.</exception>
-        public SqlServerDataSource(string connectionName, SqlConnectionStringBuilder connectionStringBuilder)
+        public SqlServerDataSource(string name, SqlConnectionStringBuilder connectionStringBuilder)
         {
             if (connectionStringBuilder == null)
                 throw new ArgumentNullException("connectionStringBuilder", "connectionStringBuilder is null.");
 
             m_ConnectionBuilder = connectionStringBuilder;
-            if (string.IsNullOrEmpty(connectionName))
+            if (string.IsNullOrEmpty(name))
                 Name = m_ConnectionBuilder.InitialCatalog ?? m_ConnectionBuilder.DataSource;
             else
-                Name = connectionName;
+                Name = name;
 
             m_DatabaseMetadata = new SqlServerMetadataCache(m_ConnectionBuilder);
         }

@@ -25,7 +25,7 @@ namespace Tortuga.Chain.SQLite
     public sealed class SQLiteTransactionalDataSource : SQLiteDataSourceBase, IDisposable
     {
         private readonly SQLiteConnection m_Connection;
-        private readonly SQLiteDataSource m_Dispatcher;
+        private readonly SQLiteDataSource m_BaseDataSource;
         private readonly SQLiteTransaction m_Transaction;
 
         private bool m_Disposed;
@@ -40,7 +40,7 @@ namespace Tortuga.Chain.SQLite
         {
             Name = dataSource.Name;
 
-            m_Dispatcher = dataSource;
+            m_BaseDataSource = dataSource;
             m_Connection = dataSource.CreateSQLiteConnection();
 
             if (isolationLevel == null)
@@ -64,7 +64,7 @@ namespace Tortuga.Chain.SQLite
         /// <value>The database metadata.</value>
         public override SQLiteMetadataCache DatabaseMetadata
         {
-            get { return m_Dispatcher.DatabaseMetadata; }
+            get { return m_BaseDataSource.DatabaseMetadata; }
         }
 
 
@@ -254,6 +254,18 @@ namespace Tortuga.Chain.SQLite
                     case LockType.Write: SyncLock.ExitWriteLock(); break;
                 }
             }
+        }
+
+        /// <summary>
+        /// Gets the extension data.
+        /// </summary>
+        /// <typeparam name="TTKey">The type of extension data desired.</typeparam>
+        /// <returns>T.</returns>
+        /// <remarks>Chain extensions can use this to store data source specific data. The key should be a data type defined by the extension.
+        /// Transactional data sources should override this method and return the value held by their parent data source.</remarks>
+        public override TTKey GetExtensionData<TTKey>()
+        {
+            return m_BaseDataSource.GetExtensionData<TTKey>();
         }
     }
 }

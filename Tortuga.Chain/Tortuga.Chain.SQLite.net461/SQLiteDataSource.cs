@@ -33,18 +33,19 @@ namespace Tortuga.Chain
         /// <summary>
         /// Initializes a new instance of the <see cref="SQLiteDataSource" /> class.
         /// </summary>
-        /// <param name="connectionName"></param>
-        /// <param name="connectionString"></param>
-        public SQLiteDataSource(string connectionName, string connectionString)
+        /// <param name="name">The name of the data source.</param>
+        /// <param name="connectionString">The connection string.</param>
+        /// <exception cref="ArgumentException">Connection string is null or emtpy.;connectionString</exception>
+        public SQLiteDataSource(string name, string connectionString)
         {
             if (string.IsNullOrEmpty(connectionString))
                 throw new ArgumentException("Connection string is null or emtpy.", "connectionString");
 
             m_ConnectionBuilder = new SQLiteConnectionStringBuilder(connectionString);
-            if (string.IsNullOrEmpty(connectionName))
+            if (string.IsNullOrEmpty(name))
                 Name = m_ConnectionBuilder.DataSource;
             else
-                Name = connectionName;
+                Name = name;
 
             m_DatabaseMetadata = new SQLiteMetadataCache(m_ConnectionBuilder);
         }
@@ -59,20 +60,21 @@ namespace Tortuga.Chain
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SQLiteDataSource" /> class. 
+        /// Initializes a new instance of the <see cref="SQLiteDataSource" /> class.
         /// </summary>
-        /// <param name="connectionName"></param>
-        /// <param name="connectionStringBuilder"></param>
-        public SQLiteDataSource(string connectionName, SQLiteConnectionStringBuilder connectionStringBuilder)
+        /// <param name="name">The name of the data source.</param>
+        /// <param name="connectionStringBuilder">The connection string builder.</param>
+        /// <exception cref="ArgumentNullException">connectionStringBuilder;connectionStringBuilder is null.</exception>
+        public SQLiteDataSource(string name, SQLiteConnectionStringBuilder connectionStringBuilder)
         {
             if (connectionStringBuilder == null)
                 throw new ArgumentNullException("connectionStringBuilder", "connectionStringBuilder is null.");
 
             m_ConnectionBuilder = connectionStringBuilder;
-            if (string.IsNullOrEmpty(connectionName))
+            if (string.IsNullOrEmpty(name))
                 Name = m_ConnectionBuilder.DataSource;
             else
-                Name = connectionName;
+                Name = name;
 
             m_DatabaseMetadata = new SQLiteMetadataCache(m_ConnectionBuilder);
         }
