@@ -60,6 +60,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
+    <None Include="Page\DataSources.md" />
     <None Include="Page\page1.md" />
     <None Include="Page\page2.md" />
     <None Include="projbook.json" />
