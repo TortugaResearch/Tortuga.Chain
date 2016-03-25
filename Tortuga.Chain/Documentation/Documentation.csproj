@@ -43,7 +43,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
     <Compile Include="Code\SampleClass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -60,9 +59,28 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
+    <None Include="Page\Appenders\SqlDependency.md" />
+    <None Include="Page\Appenders\Tracing.md" />
+    <None Include="Page\Appenders\Caching.md" />
+    <None Include="Page\CommandBuilders.md" />
+    <None Include="Page\CommandBuilders\Delete.md" />
+    <None Include="Page\CommandBuilders\Procedure.md" />
+    <None Include="Page\CommandBuilders\Upsert.md" />
+    <None Include="Page\CommandBuilders\Update.md" />
+    <None Include="Page\CommandBuilders\Insert.md" />
+    <None Include="Page\CommandBuilders\SQL.md" />
+    <None Include="Page\Materializers.md" />
     <None Include="Page\DataSources.md" />
+    <None Include="Page\Materializers\Compiled.md" />
+    <None Include="Page\Materializers\DataTable.md" />
+    <None Include="Page\Materializers\Table.md" />
+    <None Include="Page\Materializers\Object.md" />
+    <None Include="Page\Materializers\List.md" />
+    <None Include="Page\Materializers\Scalar.md" />
     <None Include="Page\page1.md" />
-    <None Include="Page\page2.md" />
+    <None Include="Page\CommandBuilders\From.md" />
+    <None Include="Page\Appenders.md" />
+    <None Include="Page\Introduction.md" />
     <None Include="projbook.json" />
     <None Include="Scripts\jquery-1.9.0.min.map" />
   </ItemGroup>
@@ -102,24 +120,7 @@
     <Content Include="template-pdf.html" />
     <Content Include="template.html" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Tortuga.Chain.CompiledMaterializers.net461\Tortuga.Chain.CompiledMaterializers.net461.csproj">
-      <Project>{42d213ca-8584-4b1b-8928-a54c5d937e86}</Project>
-      <Name>Tortuga.Chain.CompiledMaterializers.net461</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Tortuga.Chain.Core.net461\Tortuga.Chain.Core.net461.csproj">
-      <Project>{2c523692-a40b-4a7e-a95a-fbe373f263f7}</Project>
-      <Name>Tortuga.Chain.Core.net461</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Tortuga.Chain.SQLite.net461\Tortuga.Chain.SQLite.net461.csproj">
-      <Project>{e92091c6-46f6-423e-b5ce-7ddcd2840cce}</Project>
-      <Name>Tortuga.Chain.SQLite.net461</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Tortuga.Chain.SqlServer.net461\Tortuga.Chain.SqlServer.net461.csproj">
-      <Project>{5d3159ad-141c-4853-9ecc-a1fd603bd8c4}</Project>
-      <Name>Tortuga.Chain.SqlServer.net461</Name>
-    </ProjectReference>
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
