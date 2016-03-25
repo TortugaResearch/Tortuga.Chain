@@ -1,0 +1,18 @@
+﻿{
+  "title": "Sample document",
+  "template-html": "template.html",
+  "template-pdf": "template-pdf.html",
+  "output-html": "documentation.html",
+  "output-pdf": "documentation-pdf-input.html",
+  "section-title-base": 1,
+  "pages": [
+    {
+      "title": "First page",
+      "path": "Page/page1.md"
+    },
+    {
+      "title": "Second page",
+      "path": "Page/page2.md"
+    }
+  ]
+}
