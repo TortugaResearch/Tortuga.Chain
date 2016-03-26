@@ -27,7 +27,7 @@ namespace Tests.Class1Databases
             var result = DataSource.Sql(sql, new { @Input = 5 }).ToInt32().WithTracingToDebug().Execute();
             Assert.AreEqual(5, result);
 
-            var outSql = DataSource.Sql(sql, new { @Input = 5 }).ToInt32().WithTracingToDebug().Sql();
+            var outSql = DataSource.Sql(sql, new { @Input = 5 }).ToInt32().WithTracingToDebug().CommandText();
             Assert.AreEqual(sql, outSql);
         }
 
@@ -38,7 +38,7 @@ namespace Tests.Class1Databases
             var sql = "SELECT @Input";
             DataSource.Sql(sql, new { @Input = 5 }).AsNonQuery().WithTracingToDebug().Execute();
 
-            var outSql = DataSource.Sql(sql, new { @Input = 5 }).ToInt32().WithTracingToDebug().Sql();
+            var outSql = DataSource.Sql(sql, new { @Input = 5 }).ToInt32().WithTracingToDebug().CommandText();
             Assert.AreEqual(sql, outSql);
         }
 

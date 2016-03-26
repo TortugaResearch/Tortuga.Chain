@@ -78,6 +78,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Appenders\Appender.cs" />
+    <Compile Include="Appenders\Appender`2.cs" />
     <Compile Include="Appenders\Appender`1.cs" />
     <Compile Include="Appenders\CacheAllItemsAppender.cs" />
     <Compile Include="Appenders\CacheResultAppender`1.cs" />
@@ -106,6 +107,8 @@
     <Compile Include="ILink.cs" />
     <Compile Include="Appenders\InvalidateCacheAppender.cs" />
     <Compile Include="Appenders\InvalidateCacheAppender`1.cs" />
+    <Compile Include="Materializers\Materializer.cs" />
+    <Compile Include="Materializers\DataRowMaterializer`2.cs" />
     <Compile Include="Materializers\Scalar\ByteOrNullMaterializer`2.cs" />
     <Compile Include="Materializers\Scalar\ByteMaterializer`2.cs" />
     <Compile Include="Materializers\SingleColumn\ByteArrayListMaterializer`2.cs" />

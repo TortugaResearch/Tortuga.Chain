@@ -8,7 +8,8 @@
     <MainSolution>Tortuga.Chain-Nuget.sln</MainSolution>
     <MSBuildCommunityTasksPath>$(MSBuildProjectDirectory)\.build</MSBuildCommunityTasksPath>
     <!--<HelpPath>$(MSBuildProjectDirectory)\Help</HelpPath>-->
-    <ReadmePath>$(MSBuildProjectDirectory)\..\readme.md</ReadmePath>
+    <PdfPath>$(MSBuildProjectDirectory)\Documentation\bin\Release\chain-pdf.pdf</PdfPath>
+    <!--<ReadmePath>$(MSBuildProjectDirectory)\..\readme.md</ReadmePath>-->
   </PropertyGroup>
 
   <PropertyGroup>
@@ -67,7 +68,7 @@
     <CallTarget Targets="Clean" />
     <CallTarget Targets="Compile" />
     <CallTarget Targets="PackageBinaries" />
-    <!--<CallTarget Targets="PackageHelp" />-->
+    <CallTarget Targets="PackageHelp" />
     <CallTarget Targets="BuildNugetFile" />
   </Target>
 
@@ -120,17 +121,18 @@
 
   </Target>
 
-  <!--<Target Name="PackageHelp">
+  <Target Name="PackageHelp">
 
-    <Message Text="Compressing help files..." />
+    <!--<Message Text="Compressing help files..." />
     <ItemGroup>
       <HelpFiles Include="$(HelpPath)\**" />
     </ItemGroup>
-    <Zip ZipFileName="$(BuildOutputPath)\docs\Help.zip" WorkingDirectory="$(MSBuildProjectDirectory)" Files="@(HelpFiles)" />
+    <Zip ZipFileName="$(BuildOutputPath)\docs\Help.zip" WorkingDirectory="$(MSBuildProjectDirectory)" Files="@(HelpFiles)" />-->
 
-    <Copy SourceFiles="$(ReadmePath)" DestinationFolder="$(BuildOutputPath)\docs" />
+    <Copy SourceFiles="$(PdfPath)" DestinationFolder="$(BuildOutputPath-Core)\docs" />
+    <!--<Copy SourceFiles="$(ReadmePath)" DestinationFolder="$(BuildOutputPath)\docs" />-->
 
-  </Target>-->
+  </Target>
 
   <Target Name="BuildNugetFile">
 

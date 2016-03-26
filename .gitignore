@@ -211,6 +211,7 @@ GeneratedArtifacts/
 _Pvt_Extensions/
 ModelManifest.xml
 /Tortuga.Chain/Build-Core
+/Tortuga.Chain/Build-CompiledMaterializers
 /Tortuga.Chain/Build-SQLite
 /Tortuga.Chain/Build-SqlServer
 /Tortuga.Chain/Index.dat

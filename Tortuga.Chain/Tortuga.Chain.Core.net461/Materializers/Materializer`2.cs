@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,12 +7,13 @@ using Tortuga.Chain.Core;
 
 namespace Tortuga.Chain.Materializers
 {
+
     /// <summary>
     /// This is the base class for materializers that don't return a value. Most operation are not executed without first attaching a materializer subclass.
     /// </summary>
     /// <typeparam name="TCommand">The type of the t command type.</typeparam>
     /// <typeparam name="TParameter">The type of the t parameter type.</typeparam>
-    public abstract class Materializer<TCommand, TParameter>
+    public abstract class Materializer<TCommand, TParameter> : Materializer
         where TCommand : DbCommand
         where TParameter : DbParameter
     {
@@ -43,19 +42,11 @@ namespace Tortuga.Chain.Materializers
         }
 
         /// <summary>
-        /// Returns the command text (usually SQL) that would have been executed. 
+        /// Returns the command text (usually SQL) without executing it. 
         /// </summary>
         /// <returns>System.String.</returns>
         public string CommandText() => CommandBuilder.Prepare(this).CommandText;
 
-        /// <summary>
-        /// Returns the list of columns the materializer would like to have.
-        /// </summary>
-        /// <returns>IReadOnlyList&lt;System.String&gt;.</returns>
-        public virtual IReadOnlyList<string> DesiredColumns()
-        {
-            return ImmutableList<string>.Empty;
-        }
 
         /// <summary>
         /// Prepares this operation for execution.
@@ -65,7 +56,7 @@ namespace Tortuga.Chain.Materializers
         {
             var executionToken = CommandBuilder.Prepare(this);
 
-            ExecutionTokenPrepared?.Invoke(this, new ExecutionTokenPreparedEventArgs(executionToken));
+            OnExecutionTokenPrepared(new ExecutionTokenPreparedEventArgs(executionToken));
 
             return executionToken;
         }
@@ -117,12 +108,6 @@ namespace Tortuga.Chain.Materializers
             }, cancellationToken, state);
         }
 
-
-        /// <summary>
-        /// Occurs when an execution token has been prepared.
-        /// </summary>
-        /// <remarks>This is mostly used by appenders to override command behavior.</remarks>
-        public event EventHandler<ExecutionTokenPreparedEventArgs> ExecutionTokenPrepared;
     }
 
 }

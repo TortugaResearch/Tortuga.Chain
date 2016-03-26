@@ -50,9 +50,9 @@ namespace Tortuga.Chain
         event EventHandler<ExecutionTokenPreparedEventArgs> ExecutionTokenPrepared;
 
         /// <summary>
-        /// Returns generated SQL without executing it.
+        /// Returns command text (usually SQL) without executing it.
         /// </summary>
         /// <returns></returns>
-        string Sql();
+        string CommandText();
     }
 }
