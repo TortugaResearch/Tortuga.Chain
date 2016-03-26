@@ -87,8 +87,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             else if (desiredColumns.Count > 0)
             {
                 var lookup = desiredColumns.ToLookup(c => c);
-
-                var availableColumns = Metadata.Columns.Where(c => desiredColumns.Contains(c.ClrName)).ToList();
+                var availableColumns = Metadata.Columns.Where(c => lookup.Contains(c.ClrName)).ToList();
                 if (availableColumns.Count == 0)
                     throw new MappingException($"None of the requested columns[{ string.Join(", ", desiredColumns) }] where not found on { TableName}");
                 string prefix = returnDeletedColumns ? "Deleted." : "Inserted.";
