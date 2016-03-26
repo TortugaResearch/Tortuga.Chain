@@ -1,8 +1,11 @@
 using System;
-using System.Collections.Generic;
 using System.Data.Common;
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Materializers;
+
+#if !WINDOWS_UWP
+using System.Data;
+#endif
 
 namespace Tortuga.Chain.CommandBuilders
 {
@@ -146,10 +149,17 @@ namespace Tortuga.Chain.CommandBuilders
             return new ObjectMaterializer<TCommand, TParameter, TObject>(this, rowOptions);
         }
 
+#if !WINDOWS_UWP
         /// <summary>
         /// Indicates the results should be materialized as a Row.
         /// </summary>
-        public ILink<IReadOnlyDictionary<string, object>> ToRow(RowOptions rowOptions = RowOptions.None) { return new RowMaterializer<TCommand, TParameter>(this, rowOptions); }
+        public ILink<DataRow> ToDataRow(RowOptions rowOptions = RowOptions.None) { return new DataRowMaterializer<TCommand, TParameter>(this, rowOptions); }
+#endif
+
+        /// <summary>
+        /// Indicates the results should be materialized as a Row.
+        /// </summary>
+        public ILink<Row> ToRow(RowOptions rowOptions = RowOptions.None) { return new RowMaterializer<TCommand, TParameter>(this, rowOptions); }
 
         /// <summary>
         /// Indicates the results should be materialized as a Single.

@@ -114,9 +114,9 @@ namespace Tortuga.Chain.Appenders
         /// Returns the generated SQL statement of the previous link.
         /// </summary>
         /// <returns></returns>
-        public string Sql()
+        public string CommandText()
         {
-            return PreviousLink.Sql();
+            return PreviousLink.CommandText();
         }
     }
 }

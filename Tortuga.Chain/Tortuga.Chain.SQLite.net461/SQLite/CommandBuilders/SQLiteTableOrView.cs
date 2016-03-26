@@ -89,13 +89,17 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
 
         private string SelectClause(Materializer<SQLiteCommand, SQLiteParameter> materializer)
         {
-            var desiredColumns = materializer.DesiredColumns().ToDictionary(c => c, StringComparer.OrdinalIgnoreCase);
+            var desiredColumns = materializer.DesiredColumns();
+            if (desiredColumns == Materializer.NoColumns)
+                return "SELECT 1";
+
             var availableColumns = m_MetaData.Columns;
 
-            if (desiredColumns.Count == 0)
+            if (desiredColumns == Materializer.AllColumns)
                 return "SELECT " + string.Join(",", availableColumns.Select(c => c.QuotedSqlName));
 
-            var actualColumns = availableColumns.Where(c => desiredColumns.ContainsKey(c.ClrName)).ToList();
+            var lookup = desiredColumns.ToDictionary(c => c, StringComparer.OrdinalIgnoreCase);
+            var actualColumns = availableColumns.Where(c => lookup.ContainsKey(c.ClrName)).ToList();
             if (actualColumns.Count == 0)
                 throw new MappingException($"None of the request columns were found in {m_MetaData.Name}");
 

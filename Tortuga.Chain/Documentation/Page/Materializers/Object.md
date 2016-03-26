@@ -20,6 +20,10 @@ Object/Collection materializers honor the NotMapped attribute, which prevent the
 
 Object/Collection materializers honor the Decompose attribute. This allows properties on the child object when they match columns in the query result set.
 
+## SQL Generation
+
+As per above, mapped properties on the object (and child properties on a decomposed property) will be requested.
+
 ## Limitations
 
 Object/Collection materializers require that the Decompose attribute be applied correctly. The materializer needs to walk the entire object graph, and if there are any cycles represented by decomposed properties then a stack overflow exception will occur.

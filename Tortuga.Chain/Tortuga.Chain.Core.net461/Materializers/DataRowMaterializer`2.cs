@@ -1,6 +1,8 @@
-using System.Collections.Generic;
+#if !WINDOWS_UWP
+
 using System.Data;
 using System.Data.Common;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 using Tortuga.Chain.CommandBuilders;
@@ -12,7 +14,7 @@ namespace Tortuga.Chain.Materializers
     /// </summary>
     /// <typeparam name="TCommand">The type of the t command type.</typeparam>
     /// <typeparam name="TParameter">The type of the t parameter type.</typeparam>
-    internal sealed class RowMaterializer<TCommand, TParameter> : Materializer<TCommand, TParameter, Row> where TCommand : DbCommand
+    internal sealed class DataRowMaterializer<TCommand, TParameter> : Materializer<TCommand, TParameter, DataRow> where TCommand : DbCommand
         where TParameter : DbParameter
     {
         readonly RowOptions m_RowOptions;
@@ -21,7 +23,7 @@ namespace Tortuga.Chain.Materializers
         /// </summary>
         /// <param name="commandBuilder">The command builder.</param>
         /// <param name="rowOptions">The row options.</param>
-        public RowMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, RowOptions rowOptions)
+        public DataRowMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, RowOptions rowOptions)
             : base(commandBuilder)
         {
             m_RowOptions = rowOptions;
@@ -31,16 +33,17 @@ namespace Tortuga.Chain.Materializers
         /// Execute the operation synchronously.
         /// </summary>
         /// <returns></returns>
-        public override Row Execute(object state = null)
+        [SuppressMessage("Microsoft.Globalization", "CA1306:SetLocaleForDataTypes")]
+        public override DataRow Execute(object state = null)
         {
             var executionToken = Prepare();
 
-            Table table = null;
+            var table = new DataTable();
             executionToken.Execute(cmd =>
             {
                 using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess))
                 {
-                    table = new Table(reader);
+                    table.Load(reader);
                     return table.Rows.Count;
                 }
             }, state);
@@ -51,9 +54,7 @@ namespace Tortuga.Chain.Materializers
                 if (m_RowOptions.HasFlag(RowOptions.AllowEmptyResults))
                     return null;
                 else
-                {
                     throw new MissingDataException("No rows were returned");
-                }
             }
             else if (table.Rows.Count > 1 && !m_RowOptions.HasFlag(RowOptions.DiscardExtraRows))
             {
@@ -69,16 +70,17 @@ namespace Tortuga.Chain.Materializers
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <param name="state">User defined state, usually used for logging.</param>
         /// <returns></returns>
-        public override async Task<Row> ExecuteAsync(CancellationToken cancellationToken, object state = null)
+        [SuppressMessage("Microsoft.Globalization", "CA1306:SetLocaleForDataTypes")]
+        public override async Task<DataRow> ExecuteAsync(CancellationToken cancellationToken, object state = null)
         {
             var executionToken = Prepare();
 
-            Table table = null;
+            var table = new DataTable();
             await executionToken.ExecuteAsync(async cmd =>
             {
                 using (var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SequentialAccess, cancellationToken).ConfigureAwait(false))
                 {
-                    table = new Table(reader);
+                    table.Load(reader);
                     return table.Rows.Count;
                 }
             }, cancellationToken, state).ConfigureAwait(false);
@@ -89,9 +91,7 @@ namespace Tortuga.Chain.Materializers
                 if (m_RowOptions.HasFlag(RowOptions.AllowEmptyResults))
                     return null;
                 else
-                {
                     throw new MissingDataException("No rows were returned");
-                }
             }
             else if (table.Rows.Count > 1 && !m_RowOptions.HasFlag(RowOptions.DiscardExtraRows))
             {
@@ -99,19 +99,6 @@ namespace Tortuga.Chain.Materializers
             }
             return table.Rows[0];
         }
-
-        /// <summary>
-        /// Returns the list of columns the materializer would like to have.
-        /// </summary>
-        /// <returns>
-        /// IReadOnlyList&lt;System.String&gt;.
-        /// </returns>
-        /// <remarks>
-        /// If AutoSelectDesiredColumns is returned, the command builder is allowed to choose which columns to return. If NoColumns is returned, the command builder should omit the SELECT/OUTPUT clause.
-        /// </remarks>
-        public override IReadOnlyList<string> DesiredColumns()
-        {
-            return AllColumns;
-        }
     }
 }
+#endif

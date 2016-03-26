@@ -165,13 +165,20 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
             if (materializer == null)
                 throw new ArgumentNullException("materializer", "materializer is null.");
 
-            if (materializer is NonQueryMaterializer<SQLiteCommand, SQLiteParameter>)
+            var desiredColumns = materializer.DesiredColumns();
+
+            if (desiredColumns == Materializer.NoColumns)
                 return null;
 
-            var desiredColumns = materializer.DesiredColumns().ToLookup(c => c);
-            if (desiredColumns.Count > 0)
+            if (desiredColumns == Materializer.AllColumns)
             {
-                var availableColumns = Metadata.Columns.Where(c => desiredColumns.Contains(c.ClrName)).ToList();
+                return $"SELECT {string.Join(", ", Metadata.Columns.Select(c => c.QuotedSqlName))} FROM {TableName} WHERE {whereClause}";
+            }
+            else if (desiredColumns.Count > 0)
+            {
+                var lookup = desiredColumns.ToLookup(c => c);
+
+                var availableColumns = Metadata.Columns.Where(c => lookup.Contains(c.ClrName)).ToList();
                 if (availableColumns.Count == 0)
                     throw new MappingException($"None of the requested columns [{string.Join(", ", desiredColumns)}] were found on table {TableName}.");
                 return $"SELECT {string.Join(", ", availableColumns.Select(c => c.QuotedSqlName))} FROM {TableName} WHERE {whereClause}";

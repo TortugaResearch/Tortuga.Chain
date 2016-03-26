@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
@@ -58,13 +59,19 @@ namespace Tortuga.Chain.Materializers
             get { return CommandBuilder.DataSource; }
         }
 
+
         /// <summary>
-        /// Returns the generated SQL without executing the statement.
+        /// Returns the list of columns the materializer would like to have.
         /// </summary>
-        /// <returns></returns>
-        public string Sql()
+        /// <returns>
+        /// IReadOnlyList&lt;System.String&gt;.
+        /// </returns>
+        /// <remarks>
+        /// If AutoSelectDesiredColumns is returned, the command builder is allowed to choose which columns to return. If NoColumns is returned, the command builder should omit the SELECT/OUTPUT clause.
+        /// </remarks>
+        public override IReadOnlyList<string> DesiredColumns()
         {
-            return Prepare().CommandText;
+            return NoColumns;
         }
     }
 

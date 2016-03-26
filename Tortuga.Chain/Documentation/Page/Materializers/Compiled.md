@@ -11,6 +11,9 @@ Compiled materializers require the `Tortuga.Chain.CompiledMaterializers` package
 The `ToObject` materializer supports the `RowOptions` enumeration.
 
 The `ToCollection` materializer returns a `List<TCollection>` by default. You can override the collection type with any `ICollection<TObject>` so long as it isn’t read-only.
+## SQL Generation
+
+See Object/Collection materializers.
 
 ## Limitations
 
