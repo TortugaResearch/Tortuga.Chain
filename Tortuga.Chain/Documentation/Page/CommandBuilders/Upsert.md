@@ -6,6 +6,8 @@ The command performs a insert or update using the provided model.
 
 The parameter object must contain the primary key(s) necessary to locate the record. The keys are normally read from the database, but you can override this behavior to use properties on the object that use the Key attribute.
 
+Upsert will honor the IgnoreOnInsert and IgnoreOnUpdate attributes.
+
 Alternately, a parameter dictionary of type IReadonlyDictionary<string, object> may be used. Again, the primary keys will be read from database metadata.
 
 ## SQL Generation
