@@ -78,6 +78,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Appenders\Appender.cs" />
+    <Compile Include="Appenders\Appender`2.cs" />
     <Compile Include="Appenders\Appender`1.cs" />
     <Compile Include="Appenders\CacheAllItemsAppender.cs" />
     <Compile Include="Appenders\CacheResultAppender`1.cs" />

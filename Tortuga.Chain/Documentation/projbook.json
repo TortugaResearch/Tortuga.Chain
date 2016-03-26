@@ -89,7 +89,7 @@
       "path": "Page/Appenders/Tracing.md"
     },
     {
-      "title": "SQL Dependency Appenders",
+      "title": "Change Notification Appenders",
       "path": "Page/Appenders/SqlDependency.md"
     }
 
