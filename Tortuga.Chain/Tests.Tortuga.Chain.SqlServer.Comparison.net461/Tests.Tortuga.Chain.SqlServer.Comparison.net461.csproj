@@ -89,6 +89,7 @@
     <Compile Include="EmployeeRepositoryChainCompiled.cs" />
     <Compile Include="EmployeeRepositoryChain.cs" />
     <Compile Include="EmployeeRepositoryDapper.cs" />
+    <Compile Include="EmployeeRepositoryEF_Intermediate_NoTrack.cs" />
     <Compile Include="EmployeeRepositoryEF_Intermediate.cs" />
     <Compile Include="EmployeeRepositoryEF_Novice.cs" />
     <Compile Include="ISimpleRepository.cs" />
