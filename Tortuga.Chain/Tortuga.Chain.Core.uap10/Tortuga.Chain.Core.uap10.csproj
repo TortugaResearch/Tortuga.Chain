@@ -228,6 +228,9 @@
     <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\DataTableMaterializer`2.cs">
       <Link>Materializers\DataTableMaterializer`2.cs</Link>
     </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\Materializer.cs">
+      <Link>Materializer.cs</Link>
+    </Compile>
     <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\Materializer`2.cs">
       <Link>Materializers\Materializer`2.cs</Link>
     </Compile>

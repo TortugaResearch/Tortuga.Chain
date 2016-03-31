@@ -1,5 +1,9 @@
 using System;
-using System.Collections.Generic;
+
+#if !WINDOWS_UWP
+using System.Data;
+#endif
+
 namespace Tortuga.Chain.CommandBuilders
 {
     /// <summary>
@@ -106,7 +110,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <summary>
         /// Indicates the results should be materialized as a Row.
         /// </summary>
-        ILink<IReadOnlyDictionary<string, object>> ToRow(RowOptions rowOptions = RowOptions.None);
+        ILink<Row> ToRow(RowOptions rowOptions = RowOptions.None);
         /// <summary>
         /// Indicates the results should be materialized as a Single.
         /// </summary>
@@ -128,5 +132,13 @@ namespace Tortuga.Chain.CommandBuilders
         /// Indicates the results should be materialized as a nullable TimeSpan.
         /// </summary>
         ILink<TimeSpan?> ToTimeSpanOrNull();
+
+#if !WINDOWS_UWP
+        /// <summary>
+        /// Indicates the results should be materialized as a Row.
+        /// </summary>
+        ILink<DataRow> ToDataRow(RowOptions rowOptions = RowOptions.None);
+#endif
+
     }
 }

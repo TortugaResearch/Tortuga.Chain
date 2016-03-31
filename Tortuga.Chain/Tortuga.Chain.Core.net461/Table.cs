@@ -99,7 +99,7 @@ namespace Tortuga.Chain
         /// Gets the rows.
         /// </summary>
         /// <value>The rows.</value>
-        public IReadOnlyList<IReadOnlyDictionary<string, object>> Rows
+        public IReadOnlyList<Row> Rows
         {
             get { return m_Rows; }
         }
@@ -126,7 +126,7 @@ namespace Tortuga.Chain
         /// <param name="target">The object being populated.</param>
         /// <param name="decompositionPrefix">The decomposition prefix.</param>
         /// <remarks>This honors the Column and Decompose attributes.</remarks>
-        static private void PopulateComplexObject(IReadOnlyDictionary<string, object> source, object target, string decompositionPrefix)
+        static private void PopulateComplexObject(Row source, object target, string decompositionPrefix)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source), $"{nameof(source)} is null.");

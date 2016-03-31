@@ -12,7 +12,7 @@ namespace Tortuga.Chain.Materializers
     /// </summary>
     /// <typeparam name="TCommand">The type of the t command type.</typeparam>
     /// <typeparam name="TParameter">The type of the t parameter type.</typeparam>
-    /// <typeparam name="TResult">The type of the t result type.</typeparam>
+    /// <typeparam name="TResult">The tyCommandTextpe of the t result type.</typeparam>
     /// <seealso cref="Materializer{TCommand, TParameter}" />
     public abstract class Materializer<TCommand, TParameter, TResult> : Materializer<TCommand, TParameter>, ILink<TResult>
         where TCommand : DbCommand
@@ -58,14 +58,6 @@ namespace Tortuga.Chain.Materializers
             get { return CommandBuilder.DataSource; }
         }
 
-        /// <summary>
-        /// Returns the generated SQL statement without executing it.
-        /// </summary>
-        /// <returns></returns>
-        public string Sql()
-        {
-            return Prepare().CommandText;
-        }
     }
 }
 

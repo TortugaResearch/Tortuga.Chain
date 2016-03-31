@@ -12,7 +12,7 @@ namespace Tortuga.Chain.Materializers
     /// </summary>
     /// <typeparam name="TCommand">The type of the t command type.</typeparam>
     /// <typeparam name="TParameter">The type of the t parameter type.</typeparam>
-    internal sealed class RowMaterializer<TCommand, TParameter> : Materializer<TCommand, TParameter, IReadOnlyDictionary<string, object>> where TCommand : DbCommand
+    internal sealed class RowMaterializer<TCommand, TParameter> : Materializer<TCommand, TParameter, Row> where TCommand : DbCommand
         where TParameter : DbParameter
     {
         readonly RowOptions m_RowOptions;
@@ -31,7 +31,7 @@ namespace Tortuga.Chain.Materializers
         /// Execute the operation synchronously.
         /// </summary>
         /// <returns></returns>
-        public override IReadOnlyDictionary<string, object> Execute(object state = null)
+        public override Row Execute(object state = null)
         {
             var executionToken = Prepare();
 
@@ -52,12 +52,12 @@ namespace Tortuga.Chain.Materializers
                     return null;
                 else
                 {
-                    throw new DataException("No rows were returned");
+                    throw new MissingDataException("No rows were returned");
                 }
             }
             else if (table.Rows.Count > 1 && !m_RowOptions.HasFlag(RowOptions.DiscardExtraRows))
             {
-                throw new DataException("Expected 1 row but received " + table.Rows.Count + " rows");
+                throw new UnexpectedDataException("Expected 1 row but received " + table.Rows.Count + " rows");
             }
             return table.Rows[0];
         }
@@ -69,7 +69,7 @@ namespace Tortuga.Chain.Materializers
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <param name="state">User defined state, usually used for logging.</param>
         /// <returns></returns>
-        public override async Task<IReadOnlyDictionary<string, object>> ExecuteAsync(CancellationToken cancellationToken, object state = null)
+        public override async Task<Row> ExecuteAsync(CancellationToken cancellationToken, object state = null)
         {
             var executionToken = Prepare();
 
@@ -90,14 +90,28 @@ namespace Tortuga.Chain.Materializers
                     return null;
                 else
                 {
-                    throw new DataException("No rows were returned");
+                    throw new MissingDataException("No rows were returned");
                 }
             }
             else if (table.Rows.Count > 1 && !m_RowOptions.HasFlag(RowOptions.DiscardExtraRows))
             {
-                throw new DataException("Expected 1 row but received " + table.Rows.Count + " rows");
+                throw new UnexpectedDataException("Expected 1 row but received " + table.Rows.Count + " rows");
             }
             return table.Rows[0];
+        }
+
+        /// <summary>
+        /// Returns the list of columns the materializer would like to have.
+        /// </summary>
+        /// <returns>
+        /// IReadOnlyList&lt;System.String&gt;.
+        /// </returns>
+        /// <remarks>
+        /// If AutoSelectDesiredColumns is returned, the command builder is allowed to choose which columns to return. If NoColumns is returned, the command builder should omit the SELECT/OUTPUT clause.
+        /// </remarks>
+        public override IReadOnlyList<string> DesiredColumns()
+        {
+            return AllColumns;
         }
     }
 }

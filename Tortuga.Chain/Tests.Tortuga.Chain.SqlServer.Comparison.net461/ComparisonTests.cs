@@ -10,14 +10,14 @@ namespace Tests.Tortuga.Chain.SqlServer.Comparison.net461
     [TestClass]
     public class ComparisonTests
     {
-        static int Iterations = 100;
-        static bool Warmup = true;
-
+        static int Iterations = 1;
+        static bool Warmup = false;
 
         static EmployeeRepositoryDapper s_DapperRepo;
         static EmployeeRepositoryChain s_ChainRepo;
         static EmployeeRepositoryChainCompiled s_ChainCompiledRepo;
         static EmployeeRepositoryEF_Intermediate s_EFIntermediateRepo;
+        static EmployeeRepositoryEF_Intermediate_NoTrack s_EFIntermediateNoTrackRepo;
         static EmployeeRepositoryEF_Novice s_EFNoviceRepo;
 
         [AssemblyInitialize]
@@ -27,6 +27,7 @@ namespace Tests.Tortuga.Chain.SqlServer.Comparison.net461
             s_ChainRepo = new EmployeeRepositoryChain(SqlServerDataSource.CreateFromConfig("CodeFirstModels"));
             s_ChainCompiledRepo = new EmployeeRepositoryChainCompiled(SqlServerDataSource.CreateFromConfig("CodeFirstModels"));
             s_EFIntermediateRepo = new EmployeeRepositoryEF_Intermediate();
+            s_EFIntermediateNoTrackRepo = new EmployeeRepositoryEF_Intermediate_NoTrack();
             s_EFNoviceRepo = new EmployeeRepositoryEF_Novice();
 
             if (Warmup)
@@ -35,6 +36,7 @@ namespace Tests.Tortuga.Chain.SqlServer.Comparison.net461
                 CrudTestCore(s_ChainRepo);
                 CrudTestCore(s_ChainCompiledRepo);
                 CrudTestCore(s_EFIntermediateRepo);
+                CrudTestCore(s_EFIntermediateNoTrackRepo);
                 CrudTestCore(s_EFNoviceRepo);
             }
         }
@@ -72,18 +74,15 @@ namespace Tests.Tortuga.Chain.SqlServer.Comparison.net461
 
         }
 
+        [TestMethod]
+        public void EF_Intermediate_NoTrack_CrudTest()
+        {
+            CrudTest(s_EFIntermediateNoTrackRepo);
+
+        }
+
         static void CrudTest(ISimpleEmployeeRepository repo)
         {
-
-            ////warmup
-            //const int warmups = 10;
-            //var sw = Stopwatch.StartNew();
-            //for (var i = 0; i < warmups; i++)
-            //{
-            //    CrudTestCore(repo);
-            //}
-            //sw.Stop();
-            //Debug.WriteLine("Warmup Duration: " + sw.Elapsed.TotalMilliseconds.ToString("N2") + " ms");
 
             //actual
             var sw2 = Stopwatch.StartNew();
@@ -148,5 +147,7 @@ namespace Tests.Tortuga.Chain.SqlServer.Comparison.net461
             var list2 = repo.GetAll();
             Assert.AreEqual(list.Count - 2, list2.Count);
         }
+
+
     }
 }

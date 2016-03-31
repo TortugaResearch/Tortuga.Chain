@@ -52,6 +52,6 @@ namespace Tortuga.Chain
         /// Returns SQL generated SQL without executing it.
         /// </summary>
         /// <returns></returns>
-        string Sql();
+        string CommandText();
     }
 }

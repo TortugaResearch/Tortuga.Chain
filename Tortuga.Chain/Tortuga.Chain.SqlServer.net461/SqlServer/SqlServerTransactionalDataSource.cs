@@ -13,7 +13,7 @@ namespace Tortuga.Chain.SqlServer
     {
 
         private readonly SqlConnection m_Connection;
-        private readonly SqlServerDataSource m_Dispatcher;
+        private readonly SqlServerDataSource m_BaseDataSource;
         private readonly SqlTransaction m_Transaction;
         private readonly string m_TransactionName;
         private bool m_Disposed;
@@ -29,7 +29,7 @@ namespace Tortuga.Chain.SqlServer
         {
             Name = dataSource.Name;
 
-            m_Dispatcher = dataSource;
+            m_BaseDataSource = dataSource;
             m_Connection = dataSource.CreateSqlConnection();
             m_TransactionName = transactionName;
 
@@ -53,7 +53,7 @@ namespace Tortuga.Chain.SqlServer
         /// </summary>
         public override SqlServerMetadataCache DatabaseMetadata
         {
-            get { return m_Dispatcher.DatabaseMetadata; }
+            get { return m_BaseDataSource.DatabaseMetadata; }
         }
 
         /// <summary>
@@ -196,6 +196,18 @@ namespace Tortuga.Chain.SqlServer
         public string TransactionName
         {
             get { return m_TransactionName; }
+        }
+
+        /// <summary>
+        /// Gets the extension data.
+        /// </summary>
+        /// <typeparam name="TTKey">The type of extension data desired.</typeparam>
+        /// <returns>T.</returns>
+        /// <remarks>Chain extensions can use this to store data source specific data. The key should be a data type defined by the extension.
+        /// Transactional data sources should override this method and return the value held by their parent data source.</remarks>
+        public override TTKey GetExtensionData<TTKey>()
+        {
+            return m_BaseDataSource.GetExtensionData<TTKey>();
         }
     }
 }

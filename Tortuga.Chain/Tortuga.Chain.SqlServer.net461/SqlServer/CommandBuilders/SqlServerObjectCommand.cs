@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Materializers;
@@ -67,33 +68,39 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// <param name="returnDeletedColumns">if set to <c>true</c> [return deleted columns].</param>
         /// <returns>System.String.</returns>
         /// <exception cref="DataException"></exception>
+        [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
         protected string OutputClause(Materializer<SqlCommand, SqlParameter> materializer, bool returnDeletedColumns)
         {
             if (materializer == null)
                 throw new ArgumentNullException("materializer", "materializer is null.");
 
-            if (materializer is NonQueryMaterializer<SqlCommand, SqlParameter>)
+            var desiredColumns = materializer.DesiredColumns();
+
+            if (desiredColumns == Materializer.NoColumns)
                 return null;
 
-            var desiredColumns = materializer.DesiredColumns().ToLookup(c => c);
-            if (desiredColumns.Count > 0)
+            if (desiredColumns == Materializer.AllColumns)
             {
-                var availableColumns = Metadata.Columns.Where(c => desiredColumns.Contains(c.ClrName)).ToList();
+                string prefix = returnDeletedColumns ? "Deleted." : "Inserted.";
+                return "OUTPUT " + string.Join(", ", Metadata.Columns.ToList().Select(c => prefix + c.QuotedSqlName));
+            }
+            else if (desiredColumns.Count > 0)
+            {
+                var lookup = desiredColumns.ToLookup(c => c);
+                var availableColumns = Metadata.Columns.Where(c => lookup.Contains(c.ClrName)).ToList();
                 if (availableColumns.Count == 0)
                     throw new MappingException($"None of the requested columns[{ string.Join(", ", desiredColumns) }] where not found on { TableName}");
                 string prefix = returnDeletedColumns ? "Deleted." : "Inserted.";
                 return "OUTPUT " + string.Join(", ", availableColumns.Select(c => prefix + c.QuotedSqlName));
             }
-            else
-                if (Metadata.Columns.Any(c => c.IsIdentity))
-            {
-                var availableColumns = Metadata.Columns.Where(c => c.IsIdentity).Select(c => "Inserted." + c.QuotedSqlName).ToList();
-                return "OUTPUT " + string.Join(", ", availableColumns);
-            }
-            else
-                    if (Metadata.Columns.Any(c => c.IsPrimaryKey))
+            else if (Metadata.Columns.Any(c => c.IsPrimaryKey))
             {
                 var availableColumns = Metadata.Columns.Where(c => c.IsPrimaryKey).Select(c => "Inserted." + c.QuotedSqlName).ToList();
+                return "OUTPUT " + string.Join(", ", availableColumns);
+            }
+            else if (Metadata.Columns.Any(c => c.IsIdentity))
+            {
+                var availableColumns = Metadata.Columns.Where(c => c.IsIdentity).Select(c => "Inserted." + c.QuotedSqlName).ToList();
                 return "OUTPUT " + string.Join(", ", availableColumns);
             }
             else
