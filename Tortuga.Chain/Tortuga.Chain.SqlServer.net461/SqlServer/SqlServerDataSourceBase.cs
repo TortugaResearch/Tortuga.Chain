@@ -121,7 +121,7 @@ namespace Tortuga.Chain.SqlServer
             return Insert(tableName, argumentValue);
         }
 
-        IMultipleTableDbCommandBuilder IClass1DataSource.Sql(string sqlStatement, object argumentValue)
+        IMultipleTableDbCommandBuilder IClass0DataSource.Sql(string sqlStatement, object argumentValue)
         {
             return Sql(sqlStatement, argumentValue);
         }
@@ -317,6 +317,7 @@ namespace Tortuga.Chain.SqlServer
         {
             return new SqlServerInsertOrUpdateObject(this, tableName, argumentValue, options);
         }
+
     }
 }
 

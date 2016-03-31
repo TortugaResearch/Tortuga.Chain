@@ -86,6 +86,7 @@
     <Compile Include="Appenders\TimeoutAppender`1.cs" />
     <Compile Include="Appenders\TraceAppender`1.cs" />
     <Compile Include="Appenders\TraceAppender.cs" />
+    <Compile Include="CommandBuilders\GenericDbSqlCall.cs" />
     <Compile Include="CommandBuilders\IDbCommandBuilder.cs" />
     <Compile Include="CommandBuilders\IMultipleRowDbCommandBuilder.cs" />
     <Compile Include="CommandBuilders\IMultipleTableDbCommandBuilder.cs" />
@@ -99,6 +100,9 @@
     <Compile Include="Core\CommandBuiltEventArgs.cs" />
     <Compile Include="Core\ExecutionToken.cs" />
     <Compile Include="Core\ExecutionToken`2.cs" />
+    <Compile Include="GenericDbDataSource`3.cs" />
+    <Compile Include="GenericDbDataSource.cs" />
+    <Compile Include="IClass0DataSource.cs" />
     <Compile Include="IClass1DataSource.cs" />
     <Compile Include="IClass2DataSource.cs" />
     <Compile Include="MappingException.cs" />

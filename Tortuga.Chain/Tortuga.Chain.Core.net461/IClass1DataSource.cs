@@ -8,10 +8,11 @@ using System;
 
 namespace Tortuga.Chain
 {
+
     /// <summary>
     /// A class 1 data source supports basic CRUD operations. This is the bare minimum needed to implement the repostiory pattern.
     /// </summary>
-    public interface IClass1DataSource
+    public interface IClass1DataSource : IClass0DataSource
     {
 
         //#if !WINDOWS_UWP
@@ -100,11 +101,6 @@ namespace Tortuga.Chain
         /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
         ISingleRowDbCommandBuilder Update(string tableName, object argumentValue, UpdateOptions options = UpdateOptions.None);
 
-        /// <summary>
-        /// Creates a operation based on a raw SQL statement.
-        /// </summary>
-        /// <param name="sqlStatement">The SQL statement.</param>
-        /// <param name="argumentValue">The argument value.</param>
-        IMultipleTableDbCommandBuilder Sql(string sqlStatement, object argumentValue);
+
     }
 }
