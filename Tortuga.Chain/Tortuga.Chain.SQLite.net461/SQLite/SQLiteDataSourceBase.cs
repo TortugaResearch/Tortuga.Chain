@@ -129,7 +129,7 @@ namespace Tortuga.Chain.SQLite
         {
             return From(tableOrViewName, filterValue);
         }
-        IMultipleTableDbCommandBuilder IClass1DataSource.Sql(string sqlStatement, object argumentValue)
+        IMultipleTableDbCommandBuilder IClass0DataSource.Sql(string sqlStatement, object argumentValue)
         {
             return Sql(sqlStatement, argumentValue);
         }

@@ -41,7 +41,7 @@ namespace Tortuga.Chain.SQLite
             Name = dataSource.Name;
 
             m_BaseDataSource = dataSource;
-            m_Connection = dataSource.CreateSQLiteConnection();
+            m_Connection = dataSource.CreateConnection();
 
             if (isolationLevel == null)
                 m_Transaction = m_Connection.BeginTransaction();

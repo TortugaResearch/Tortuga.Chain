@@ -30,7 +30,7 @@ namespace Tortuga.Chain.SqlServer
             Name = dataSource.Name;
 
             m_BaseDataSource = dataSource;
-            m_Connection = dataSource.CreateSqlConnection();
+            m_Connection = dataSource.CreateConnection();
             m_TransactionName = transactionName;
 
             if (isolationLevel == null)

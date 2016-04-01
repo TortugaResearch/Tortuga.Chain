@@ -5,4 +5,4 @@
 [assembly: AssemblyCopyright("Copyright © 2016 David Tomcik, Jonathan Allen")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-[assembly: AssemblyVersion("0.8.*")]
+[assembly: AssemblyVersion("0.9.*")]

@@ -149,7 +149,7 @@ namespace Tortuga.Chain
         /// <returns></returns>
         /// <remarks>The caller of this method is responsible for closing the connection.</remarks>
         [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-        public SqlConnection CreateSqlConnection()
+        internal SqlConnection CreateConnection()
         {
 
             var con = new SqlConnection(ConnectionString);
@@ -228,7 +228,7 @@ namespace Tortuga.Chain
         /// </summary>
         public void TestConnection()
         {
-            using (var con = CreateSqlConnection())
+            using (var con = CreateConnection())
             {
                 using (var cmd = new SqlCommand("SELECT 1", con))
                     cmd.ExecuteScalar();
@@ -254,7 +254,7 @@ namespace Tortuga.Chain
 
             try
             {
-                using (var con = CreateSqlConnection())
+                using (var con = CreateConnection())
                 {
                     using (var cmd = new SqlCommand())
                     {
@@ -375,7 +375,7 @@ namespace Tortuga.Chain
         public SqlServerEffectiveSettings GetEffectiveSettings()
         {
             var result = new SqlServerEffectiveSettings();
-            using (var con = CreateSqlConnection())
+            using (var con = CreateConnection())
                 result.Reload(con, null);
             return result;
         }

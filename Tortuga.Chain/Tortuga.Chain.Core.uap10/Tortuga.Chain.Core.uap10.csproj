@@ -11,7 +11,7 @@
     <AssemblyName>Tortuga.Chain.Core</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
-    <TargetPlatformVersion>10.0.10586.0</TargetPlatformVersion>
+    <TargetPlatformVersion>10.0.10240.0</TargetPlatformVersion>
     <TargetPlatformMinVersion>10.0.10240.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <FileAlignment>512</FileAlignment>
@@ -150,6 +150,9 @@
     <Compile Include="..\Tortuga.Chain.Core.net461\CommandBuilders\DbCommandBuilder`2.cs">
       <Link>CommandBuilders\DbCommandBuilder`2.cs</Link>
     </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.net461\CommandBuilders\GenericDbSqlCall.cs">
+      <Link>CommandBuilders\GenericDbSqlCall.cs</Link>
+    </Compile>
     <Compile Include="..\Tortuga.Chain.Core.net461\CommandBuilders\IDbCommandBuilder.cs">
       <Link>CommandBuilders\IDbCommandBuilder.cs</Link>
     </Compile>
@@ -197,6 +200,15 @@
     </Compile>
     <Compile Include="..\Tortuga.Chain.Core.net461\ExecutionEventArgs.cs">
       <Link>ExecutionEventArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.net461\GenericDbDataSource.cs">
+      <Link>DataSources\GenericDbDataSource.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.net461\GenericDbDataSource`3.cs">
+      <Link>DataSources\GenericDbDataSource`3.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.net461\IClass0DataSource.cs">
+      <Link>IClass0DataSource.cs</Link>
     </Compile>
     <Compile Include="..\Tortuga.Chain.Core.net461\IClass1DataSource.cs">
       <Link>IClass1DataSource.cs</Link>
