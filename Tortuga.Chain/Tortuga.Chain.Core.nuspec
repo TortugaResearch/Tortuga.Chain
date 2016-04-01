@@ -23,10 +23,10 @@
     <dependencies>
       <group targetFramework="net461">
         <dependency id="System.Collections.Immutable" version="1.1.37" />
-        <dependency id="Tortuga.Anchor" version="0.3.5927.3723" />
+        <dependency id="Tortuga.Anchor" version="0.4.5935.6732" />
       </group>
       <group targetFramework="uap10">
-        <dependency id="Tortuga.Anchor" version="0.3.5927.3723" />
+        <dependency id="Tortuga.Anchor" version="0.4.5935.6732" />
       </group>
     </dependencies>
 
