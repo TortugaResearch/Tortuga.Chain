@@ -67,6 +67,7 @@
       <Link>Properties\LibrarySharedAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="PostgreSql\PostgreSqlMetadataCache.cs" />
+    <Compile Include="PostgreSql\PostgreSqlObjectName.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
