@@ -219,4 +219,9 @@ ModelManifest.xml
 
 !SqlServerTestDatabase.publish.xml
 !localhost.publish.xml
+
 /Tortuga.Chain/Build.Core
+/Tortuga.Chain/Build.SqlServer
+/Tortuga.Chain/Build.SQLite
+/Tortuga.Chain/Build.SQLite.MS
+/Tortuga.Chain/Build.SQLite.CompiledMaterializers
