@@ -1,0 +1,184 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project
+	 xmlns="http://schemas.microsoft.com/developer/msbuild/2003"
+	 ToolsVersion="4.0"
+	 DefaultTargets="Build">
+
+  <PropertyGroup>
+    <MainSolution>Tortuga.Chain-Nuget.sln</MainSolution>
+    <MSBuildCommunityTasksPath>$(MSBuildProjectDirectory)\.build</MSBuildCommunityTasksPath>
+    <!--<HelpPath>$(MSBuildProjectDirectory)\Help</HelpPath>-->
+    <PdfPath>$(MSBuildProjectDirectory)\Documentation\bin\Release\chain-pdf.pdf</PdfPath>
+    <!--<ReadmePath>$(MSBuildProjectDirectory)\..\readme.md</ReadmePath>-->
+  </PropertyGroup>
+
+  <PropertyGroup>
+
+    <BuildOutputPath-Core>$(MSBuildProjectDirectory)\Build-Core</BuildOutputPath-Core>
+    <ResultDll-Core>Tortuga.Chain.Core.dll</ResultDll-Core>
+    <ResultPdb-Core>Tortuga.Chain.Core.pdb</ResultPdb-Core>
+    <ResultXml-Core>Tortuga.Chain.Core.xml</ResultXml-Core>
+    <Net461Path-Core>$(MSBuildProjectDirectory)\Tortuga.Chain.Core.net461</Net461Path-Core>
+    <VersionSource-Core>$(Net461Path-Core)\bin\Release\$(ResultDll-Core)</VersionSource-Core>
+    <NuspecName-Core>Tortuga.Chain.Core.nuspec</NuspecName-Core>
+        
+  </PropertyGroup>
+
+  <PropertyGroup>
+
+    <BuildOutputPath-SqlServer>$(MSBuildProjectDirectory)\Build-SqlServer</BuildOutputPath-SqlServer>
+    <ResultDll-SqlServer>Tortuga.Chain.SqlServer.dll</ResultDll-SqlServer>
+    <ResultPdb-SqlServer>Tortuga.Chain.SqlServer.pdb</ResultPdb-SqlServer>
+    <ResultXml-SqlServer>Tortuga.Chain.SqlServer.xml</ResultXml-SqlServer>
+    <Net461Path-SqlServer>$(MSBuildProjectDirectory)\Tortuga.Chain.SqlServer.net461</Net461Path-SqlServer>
+    <VersionSource-SqlServer>$(Net461Path-SqlServer)\bin\Release\$(ResultDll-SqlServer)</VersionSource-SqlServer>
+    <NuspecName-SqlServer>Tortuga.Chain.SqlServer.nuspec</NuspecName-SqlServer>
+
+  </PropertyGroup>
+
+  <PropertyGroup>
+
+    <BuildOutputPath-SQLite>$(MSBuildProjectDirectory)\Build-SQLite</BuildOutputPath-SQLite>
+    <ResultDll-SQLite>Tortuga.Chain.SQLite.dll</ResultDll-SQLite>
+    <ResultPdb-SQLite>Tortuga.Chain.SQLite.pdb</ResultPdb-SQLite>
+    <ResultXml-SQLite>Tortuga.Chain.SQLite.xml</ResultXml-SQLite>
+    <Net461Path-SQLite>$(MSBuildProjectDirectory)\Tortuga.Chain.SQLite.net461</Net461Path-SQLite>
+    <VersionSource-SQLite>$(Net461Path-SQLite)\bin\Release\$(ResultDll-SQLite)</VersionSource-SQLite>
+    <NuspecName-SQLite>Tortuga.Chain.SQLite.nuspec</NuspecName-SQLite>
+
+  </PropertyGroup>
+
+  <PropertyGroup>
+
+    <BuildOutputPath-CompiledMaterializers>$(MSBuildProjectDirectory)\Build-CompiledMaterializers</BuildOutputPath-CompiledMaterializers>
+    <ResultDll-CompiledMaterializers>Tortuga.Chain.CompiledMaterializers.dll</ResultDll-CompiledMaterializers>
+    <ResultPdb-CompiledMaterializers>Tortuga.Chain.CompiledMaterializers.pdb</ResultPdb-CompiledMaterializers>
+    <ResultXml-CompiledMaterializers>Tortuga.Chain.CompiledMaterializers.xml</ResultXml-CompiledMaterializers>
+    <Net461Path-CompiledMaterializers>$(MSBuildProjectDirectory)\Tortuga.Chain.CompiledMaterializers.net461</Net461Path-CompiledMaterializers>
+    <VersionSource-CompiledMaterializers>$(Net461Path-CompiledMaterializers)\bin\Release\$(ResultDll-CompiledMaterializers)</VersionSource-CompiledMaterializers>
+    <NuspecName-CompiledMaterializers>Tortuga.Chain.CompiledMaterializers.nuspec</NuspecName-CompiledMaterializers>
+
+  </PropertyGroup>
+
+  <Import Project=".build\MSBuild.Community.Tasks.Targets" />
+
+  <UsingTask TaskName="UpdateNuspecVersionFromAssembly" AssemblyFile="$(MSBuildProjectDirectory)\MSBuild.Task.AssemblyVersion.dll"/>
+
+  <Target Name="Build">
+    <CallTarget Targets="Clean" />
+    <CallTarget Targets="Compile" />
+    <CallTarget Targets="PackageBinaries" />
+    <CallTarget Targets="PackageHelp" />
+    <CallTarget Targets="BuildNugetFile" />
+  </Target>
+
+  <Target Name="Clean" >
+    <Message Text="Cleaning..." />
+    <Deletetree Directories="$(BuildOutputPath-Core)" />
+    <Deletetree Directories="$(BuildOutputPath-SQLite)" />
+    <Deletetree Directories="$(BuildOutputPath-SqlServer)" />
+    <Deletetree Directories="$(BuildOutputPath-CompiledMaterializers)" />
+    
+    <MSBuild Projects="$(MainSolution)" Properties="Configuration=Debug" Targets="Clean" StopOnFirstFailure="true" />
+    <MSBuild Projects="$(MainSolution)" Properties="Configuration=Release" Targets="Clean" StopOnFirstFailure="true"/>
+  </Target>
+
+  <Target Name="Compile">
+    <Message Text="Building..." />
+    <MSBuild Projects="$(MainSolution)" Properties="Configuration=Release" Targets="Rebuild" StopOnFirstFailure="true"/>
+  </Target>
+
+  <Target Name="PackageBinaries">
+    <Message Text="Copying binaries..." />
+    
+    <ItemGroup>
+      <Net461Output-Core Include="$(Net461Path-Core)\bin\Release\$(ResultDll-Core)" />
+      <Net461Output-Core Include="$(Net461Path-Core)\bin\Release\$(ResultPdb-Core)" />
+      <Net461Output-Core Include="$(Net461Path-Core)\bin\Release\$(ResultXml-Core)" />
+    </ItemGroup>
+    <Copy SourceFiles="@(Net461Output-Core)" DestinationFolder="$(BuildOutputPath-Core)\lib\net461" />
+
+    <ItemGroup>
+      <Net461Output-SqlServer Include="$(Net461Path-SqlServer)\bin\Release\$(ResultDll-SqlServer)" />
+      <Net461Output-SqlServer Include="$(Net461Path-SqlServer)\bin\Release\$(ResultPdb-SqlServer)" />
+      <Net461Output-SqlServer Include="$(Net461Path-SqlServer)\bin\Release\$(ResultXml-SqlServer)" />
+    </ItemGroup>
+    <Copy SourceFiles="@(Net461Output-SqlServer)" DestinationFolder="$(BuildOutputPath-SqlServer)\lib\net461" />
+
+    <ItemGroup>
+      <Net461Output-SQLite Include="$(Net461Path-SQLite)\bin\Release\$(ResultDll-SQLite)" />
+      <Net461Output-SQLite Include="$(Net461Path-SQLite)\bin\Release\$(ResultPdb-SQLite)" />
+      <Net461Output-SQLite Include="$(Net461Path-SQLite)\bin\Release\$(ResultXml-SQLite)" />
+    </ItemGroup>
+    <Copy SourceFiles="@(Net461Output-SQLite)" DestinationFolder="$(BuildOutputPath-SQLite)\lib\net461" />
+
+    <ItemGroup>
+      <Net461Output-CompiledMaterializers Include="$(Net461Path-CompiledMaterializers)\bin\Release\$(ResultDll-CompiledMaterializers)" />
+      <Net461Output-CompiledMaterializers Include="$(Net461Path-CompiledMaterializers)\bin\Release\$(ResultPdb-CompiledMaterializers)" />
+      <Net461Output-CompiledMaterializers Include="$(Net461Path-CompiledMaterializers)\bin\Release\$(ResultXml-CompiledMaterializers)" />
+    </ItemGroup>
+    <Copy SourceFiles="@(Net461Output-CompiledMaterializers)" DestinationFolder="$(BuildOutputPath-CompiledMaterializers)\lib\net461" />
+
+  </Target>
+
+  <Target Name="PackageHelp">
+
+    <!--<Message Text="Compressing help files..." />
+    <ItemGroup>
+      <HelpFiles Include="$(HelpPath)\**" />
+    </ItemGroup>
+    <Zip ZipFileName="$(BuildOutputPath)\docs\Help.zip" WorkingDirectory="$(MSBuildProjectDirectory)" Files="@(HelpFiles)" />-->
+
+    <Copy SourceFiles="$(PdfPath)" DestinationFolder="$(BuildOutputPath-Core)\docs" />
+    <!--<Copy SourceFiles="$(ReadmePath)" DestinationFolder="$(BuildOutputPath)\docs" />-->
+
+  </Target>
+
+  <Target Name="BuildNugetFile">
+
+    <Message Text="Updating Nuspec File..." />
+
+    <Copy SourceFiles="$(MSBuildProjectDirectory)\$(NuspecName-Core)" DestinationFolder="$(BuildOutputPath-Core)" />
+    <GetAssemblyIdentity AssemblyFiles="$(VersionSource-Core)">
+      <Output TaskParameter="Assemblies" ItemName="AssemblyIdentity-Core" />
+    </GetAssemblyIdentity>
+    <XmlUpdate
+			 XmlFileName="$(BuildOutputPath-Core)\$(NuspecName-Core)"
+			 XPath="/package/metadata/version"
+			 Value="%(AssemblyIdentity-Core.Version)" />
+    <Exec Command='"$(MSBuildProjectDirectory)\.nuget\NuGet.exe" pack $(NuspecName-Core)"' WorkingDirectory="$(BuildOutputPath-Core)" />
+
+    <Copy SourceFiles="$(MSBuildProjectDirectory)\$(NuspecName-SqlServer)" DestinationFolder="$(BuildOutputPath-SqlServer)" />
+    <GetAssemblyIdentity AssemblyFiles="$(VersionSource-SqlServer)">
+      <Output TaskParameter="Assemblies" ItemName="AssemblyIdentity-SqlServer" />
+    </GetAssemblyIdentity>
+    <XmlUpdate
+			 XmlFileName="$(BuildOutputPath-SqlServer)\$(NuspecName-SqlServer)"
+			 XPath="/package/metadata/version"
+			 Value="%(AssemblyIdentity-SqlServer.Version)" />
+    <Exec Command='"$(MSBuildProjectDirectory)\.nuget\NuGet.exe" pack $(NuspecName-SqlServer)"' WorkingDirectory="$(BuildOutputPath-SqlServer)" />
+
+    <Copy SourceFiles="$(MSBuildProjectDirectory)\$(NuspecName-SQLite)" DestinationFolder="$(BuildOutputPath-SQLite)" />
+    <GetAssemblyIdentity AssemblyFiles="$(VersionSource-SQLite)">
+      <Output TaskParameter="Assemblies" ItemName="AssemblyIdentity-SQLite" />
+    </GetAssemblyIdentity>
+    <XmlUpdate
+			 XmlFileName="$(BuildOutputPath-SQLite)\$(NuspecName-SQLite)"
+			 XPath="/package/metadata/version"
+			 Value="%(AssemblyIdentity-SQLite.Version)" />
+    <Exec Command='"$(MSBuildProjectDirectory)\.nuget\NuGet.exe" pack $(NuspecName-SQLite)"' WorkingDirectory="$(BuildOutputPath-SQLite)" />
+
+    <Copy SourceFiles="$(MSBuildProjectDirectory)\$(NuspecName-CompiledMaterializers)" DestinationFolder="$(BuildOutputPath-CompiledMaterializers)" />
+    <GetAssemblyIdentity AssemblyFiles="$(VersionSource-CompiledMaterializers)">
+      <Output TaskParameter="Assemblies" ItemName="AssemblyIdentity-CompiledMaterializers" />
+    </GetAssemblyIdentity>
+    <XmlUpdate
+			 XmlFileName="$(BuildOutputPath-CompiledMaterializers)\$(NuspecName-CompiledMaterializers)"
+			 XPath="/package/metadata/version"
+			 Value="%(AssemblyIdentity-CompiledMaterializers.Version)" />
+    <Exec Command='"$(MSBuildProjectDirectory)\.nuget\NuGet.exe" pack $(NuspecName-CompiledMaterializers)"' WorkingDirectory="$(BuildOutputPath-CompiledMaterializers)" />
+
+
+  </Target>
+
+</Project>

@@ -219,3 +219,4 @@ ModelManifest.xml
 
 !SqlServerTestDatabase.publish.xml
 !localhost.publish.xml
+/Tortuga.Chain/Build.Core

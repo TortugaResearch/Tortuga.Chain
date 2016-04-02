@@ -28,6 +28,8 @@
     <WarningLevel>4</WarningLevel>
     <RunCodeAnalysis>true</RunCodeAnalysis>
     <CodeAnalysisRuleSet>..\Tortuga.Chain.ruleset</CodeAnalysisRuleSet>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <DocumentationFile>bin\Debug\Tortuga.Chain.Core.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -39,6 +41,8 @@
     <WarningLevel>4</WarningLevel>
     <RunCodeAnalysis>true</RunCodeAnalysis>
     <CodeAnalysisRuleSet>..\Tortuga.Chain.ruleset</CodeAnalysisRuleSet>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <DocumentationFile>bin\Release\Tortuga.Chain.Core.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <PlatformTarget>x86</PlatformTarget>
@@ -108,352 +112,355 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
-    <None Include="..\Tortuga.Chain.Core.net461\Tortuga Chain.snk">
+    <None Include="..\Tortuga.Chain.Core.source\Tortuga Chain.snk">
       <Link>Tortuga Chain.snk</Link>
     </None>
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Appenders\Appender.cs">
+    <Compile Include="..\ProductSharedAssemblyInfo.cs">
+      <Link>Properties\ProductSharedAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\Appenders\Appender.cs">
       <Link>Appenders\Appender.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Appenders\Appender`1.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Appenders\Appender`1.cs">
       <Link>Appenders\Appender`1.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Appenders\CacheAllItemsAppender.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Appenders\CacheAllItemsAppender.cs">
       <Link>Appenders\CacheAllItemsAppender.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Appenders\CacheResultAppender`1.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Appenders\CacheResultAppender`1.cs">
       <Link>Appenders\CacheResultAppender`1.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Appenders\InvalidateCacheAppender.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Appenders\InvalidateCacheAppender.cs">
       <Link>Appenders\InvalidateCacheAppender.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Appenders\InvalidateCacheAppender`1.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Appenders\InvalidateCacheAppender`1.cs">
       <Link>Appenders\InvalidateCacheAppender`1.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Appenders\ReadOrCacheResultAppender`1.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Appenders\ReadOrCacheResultAppender`1.cs">
       <Link>Appenders\ReadOrCacheResultAppender`1.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Appenders\TimeoutAppender.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Appenders\TimeoutAppender.cs">
       <Link>Appenders\TimeoutAppender.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Appenders\TimeoutAppender`1.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Appenders\TimeoutAppender`1.cs">
       <Link>Appenders\TimeoutAppender`1.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Appenders\TraceAppender.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Appenders\TraceAppender.cs">
       <Link>Appenders\TraceAppender.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Appenders\TraceAppender`1.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Appenders\TraceAppender`1.cs">
       <Link>Appenders\TraceAppender`1.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\CommandBuilders\DbCommandBuilder`2.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\CommandBuilders\DbCommandBuilder`2.cs">
       <Link>CommandBuilders\DbCommandBuilder`2.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\CommandBuilders\GenericDbSqlCall.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\CommandBuilders\GenericDbSqlCall.cs">
       <Link>CommandBuilders\GenericDbSqlCall.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\CommandBuilders\IDbCommandBuilder.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\CommandBuilders\IDbCommandBuilder.cs">
       <Link>CommandBuilders\IDbCommandBuilder.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\CommandBuilders\IMultipleRowDbCommandBuilder.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\CommandBuilders\IMultipleRowDbCommandBuilder.cs">
       <Link>CommandBuilders\IMultipleRowDbCommandBuilder.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\CommandBuilders\IMultipleTableDbCommandBuilder.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\CommandBuilders\IMultipleTableDbCommandBuilder.cs">
       <Link>CommandBuilders\IMultipleTableDbCommandBuilder.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\CommandBuilders\ISingleRowDbCommandBuilder.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\CommandBuilders\ISingleRowDbCommandBuilder.cs">
       <Link>CommandBuilders\ISingleRowDbCommandBuilder.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\CommandBuilders\MultipleRowDbCommandBuilder.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\CommandBuilders\MultipleRowDbCommandBuilder.cs">
       <Link>CommandBuilders\MultipleRowDbCommandBuilder.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\CommandBuilders\MultipleTableDbCommandBuilder.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\CommandBuilders\MultipleTableDbCommandBuilder.cs">
       <Link>CommandBuilders\MultipleTableDbCommandBuilder.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\CommandBuilders\SingleRowDbCommandBuilder.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\CommandBuilders\SingleRowDbCommandBuilder.cs">
       <Link>CommandBuilders\SingleRowDbCommandBuilder.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\CommonAppenders.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\CommonAppenders.cs">
       <Link>CommonAppenders.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Core\CommandBuiltEventArgs.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Core\CommandBuiltEventArgs.cs">
       <Link>Core\CommandBuiltEventArgs.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Core\ExecutionToken.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Core\ExecutionToken.cs">
       <Link>Core\ExecutionToken.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Core\ExecutionTokenPreparedEventArgs.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Core\ExecutionTokenPreparedEventArgs.cs">
       <Link>Core\ExecutionTokenPreparedEventArgs.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Core\ExecutionToken`2.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Core\ExecutionToken`2.cs">
       <Link>Core\ExecutionToken`2.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\DataSources\DataSource.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\DataSources\DataSource.cs">
       <Link>DataSources\DataSource.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\DataSources\DataSource`2.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\DataSources\DataSource`2.cs">
       <Link>DataSources\DataSource`2.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\DeleteOptions.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\DeleteOptions.cs">
       <Link>DeleteOptions.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\ExecutionEventArgs.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\ExecutionEventArgs.cs">
       <Link>ExecutionEventArgs.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\GenericDbDataSource.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\GenericDbDataSource.cs">
       <Link>DataSources\GenericDbDataSource.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\GenericDbDataSource`3.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\GenericDbDataSource`3.cs">
       <Link>DataSources\GenericDbDataSource`3.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\IClass0DataSource.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\IClass0DataSource.cs">
       <Link>IClass0DataSource.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\IClass1DataSource.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\IClass1DataSource.cs">
       <Link>IClass1DataSource.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\IClass2DataSource.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\IClass2DataSource.cs">
       <Link>IClass2DataSource.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\ILink.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\ILink.cs">
       <Link>ILink.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\ILink`1.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\ILink`1.cs">
       <Link>ILink`1.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\InsertOrUpdateOptions.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\InsertOrUpdateOptions.cs">
       <Link>InsertOrUpdateOptions.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\ListOptions.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\ListOptions.cs">
       <Link>ListOptions.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\MappingException.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\MappingException.cs">
       <Link>MappingException.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\CollectionResult`4.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\CollectionResult`4.cs">
       <Link>Materializers\CollectionResult`4.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\DataSetMaterializer`2.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\DataSetMaterializer`2.cs">
       <Link>Materializers\DataSetMaterializer`2.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\DataTableMaterializer`2.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\DataTableMaterializer`2.cs">
       <Link>Materializers\DataTableMaterializer`2.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\Materializer.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\Materializer.cs">
       <Link>Materializer.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\Materializer`2.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\Materializer`2.cs">
       <Link>Materializers\Materializer`2.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\Materializer`3.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\Materializer`3.cs">
       <Link>Materializers\Materializer`3.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\NonQueryMaterializer`2.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\NonQueryMaterializer`2.cs">
       <Link>Materializers\NonQueryMaterializer`2.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\ObjectMaterializer`3.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\ObjectMaterializer`3.cs">
       <Link>Materializers\ObjectMaterializer`3.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\RowMaterializer`2.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\RowMaterializer`2.cs">
       <Link>Materializers\RowMaterializer`2.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\Scalar\BooleanMaterializer`2.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\Scalar\BooleanMaterializer`2.cs">
       <Link>Materializers\Scalar\BooleanMaterializer`2.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\Scalar\BooleanOrNullMaterializer`2.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\Scalar\BooleanOrNullMaterializer`2.cs">
       <Link>Materializers\Scalar\BooleanOrNullMaterializer`2.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\Scalar\ByteArrayMaterializer`2.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\Scalar\ByteArrayMaterializer`2.cs">
       <Link>Materializers\Scalar\ByteArrayMaterializer`2.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\Scalar\ByteMaterializer`2.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\Scalar\ByteMaterializer`2.cs">
       <Link>Materializers\Scalar\ByteMaterializer`2.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\Scalar\ByteOrNullMaterializer`2.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\Scalar\ByteOrNullMaterializer`2.cs">
       <Link>Materializers\Scalar\ByteOrNullMaterializer`2.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\Scalar\DateTimeMaterializer`2.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\Scalar\DateTimeMaterializer`2.cs">
       <Link>Materializers\Scalar\DateTimeMaterializer`2.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\Scalar\DateTimeOffsetMaterializer`2.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\Scalar\DateTimeOffsetMaterializer`2.cs">
       <Link>Materializers\Scalar\DateTimeOffsetMaterializer`2.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\Scalar\DateTimeOffsetOrNullMaterializer`2.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\Scalar\DateTimeOffsetOrNullMaterializer`2.cs">
       <Link>Materializers\Scalar\DateTimeOffsetOrNullMaterializer`2.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\Scalar\DateTimeOrNullMaterializer`2.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\Scalar\DateTimeOrNullMaterializer`2.cs">
       <Link>Materializers\Scalar\DateTimeOrNullMaterializer`2.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\Scalar\DecimalMaterializer`2.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\Scalar\DecimalMaterializer`2.cs">
       <Link>Materializers\Scalar\DecimalMaterializer`2.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\Scalar\DecimalOrNullMaterializer`2.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\Scalar\DecimalOrNullMaterializer`2.cs">
       <Link>Materializers\Scalar\DecimalOrNullMaterializer`2.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\Scalar\DoubleMaterializer`2.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\Scalar\DoubleMaterializer`2.cs">
       <Link>Materializers\Scalar\DoubleMaterializer`2.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\Scalar\DoubleOrNullMaterializer`2.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\Scalar\DoubleOrNullMaterializer`2.cs">
       <Link>Materializers\Scalar\DoubleOrNullMaterializer`2.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\Scalar\GuidMaterializer`2.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\Scalar\GuidMaterializer`2.cs">
       <Link>Materializers\Scalar\GuidMaterializer`2.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\Scalar\GuidOrNullMaterializer`2.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\Scalar\GuidOrNullMaterializer`2.cs">
       <Link>Materializers\Scalar\GuidOrNullMaterializer`2.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\Scalar\Int16Materializer`2.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\Scalar\Int16Materializer`2.cs">
       <Link>Materializers\Scalar\Int16Materializer`2.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\Scalar\Int16OrNullMaterializer`2.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\Scalar\Int16OrNullMaterializer`2.cs">
       <Link>Materializers\Scalar\Int16OrNullMaterializer`2.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\Scalar\Int32Materializer`2.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\Scalar\Int32Materializer`2.cs">
       <Link>Materializers\Scalar\Int32Materializer`2.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\Scalar\Int32OrNullMaterializer`2.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\Scalar\Int32OrNullMaterializer`2.cs">
       <Link>Materializers\Scalar\Int32OrNullMaterializer`2.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\Scalar\Int64Materializer`2.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\Scalar\Int64Materializer`2.cs">
       <Link>Materializers\Scalar\Int64Materializer`2.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\Scalar\Int64OrNullMaterializer`2.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\Scalar\Int64OrNullMaterializer`2.cs">
       <Link>Materializers\Scalar\Int64OrNullMaterializer`2.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\Scalar\SingleMaterializer`2.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\Scalar\SingleMaterializer`2.cs">
       <Link>Materializers\Scalar\SingleMaterializer`2.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\Scalar\SingleOrNullMaterializer`2.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\Scalar\SingleOrNullMaterializer`2.cs">
       <Link>Materializers\Scalar\SingleOrNullMaterializer`2.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\Scalar\StringMaterializer`2.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\Scalar\StringMaterializer`2.cs">
       <Link>Materializers\Scalar\StringMaterializer`2.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\Scalar\TimeSpanMaterializer`2.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\Scalar\TimeSpanMaterializer`2.cs">
       <Link>Materializers\Scalar\TimeSpanMaterializer`2.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\Scalar\TimeSpanOrNullMaterializer`2.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\Scalar\TimeSpanOrNullMaterializer`2.cs">
       <Link>Materializers\Scalar\TimeSpanOrNullMaterializer`2.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\SingleColumn\BooleanListMaterializer`2.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\SingleColumn\BooleanListMaterializer`2.cs">
       <Link>Materializers\SingleColumn\BooleanListMaterializer`2.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\SingleColumn\ByteArrayListMaterializer`2.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\SingleColumn\ByteArrayListMaterializer`2.cs">
       <Link>Materializers\SingleColumn\ByteArrayListMaterializer`2.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\SingleColumn\ByteListMaterializer`2.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\SingleColumn\ByteListMaterializer`2.cs">
       <Link>Materializers\SingleColumn\ByteListMaterializer`2.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\SingleColumn\DateTimeListMaterializer`2.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\SingleColumn\DateTimeListMaterializer`2.cs">
       <Link>Materializers\SingleColumn\DateTimeListMaterializer`2.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\SingleColumn\DateTimeOffsetListMaterializer`2.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\SingleColumn\DateTimeOffsetListMaterializer`2.cs">
       <Link>Materializers\SingleColumn\DateTimeOffsetListMaterializer`2.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\SingleColumn\DecimalListMaterializer`2.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\SingleColumn\DecimalListMaterializer`2.cs">
       <Link>Materializers\SingleColumn\DecimalListMaterializer`2.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\SingleColumn\DoubleListMaterializer`2.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\SingleColumn\DoubleListMaterializer`2.cs">
       <Link>Materializers\SingleColumn\DoubleListMaterializer`2.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\SingleColumn\GuidListMaterializer`2.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\SingleColumn\GuidListMaterializer`2.cs">
       <Link>Materializers\SingleColumn\GuidListMaterializer`2.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\SingleColumn\Int16ListMaterializer`2.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\SingleColumn\Int16ListMaterializer`2.cs">
       <Link>Materializers\SingleColumn\Int16ListMaterializer`2.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\SingleColumn\Int32ListMaterializer`2.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\SingleColumn\Int32ListMaterializer`2.cs">
       <Link>Materializers\SingleColumn\Int32ListMaterializer`2.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\SingleColumn\Int64ListMaterializer`2.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\SingleColumn\Int64ListMaterializer`2.cs">
       <Link>Materializers\SingleColumn\Int64ListMaterializer`2.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\SingleColumn\SingleColumnFormatterBase.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\SingleColumn\SingleColumnFormatterBase.cs">
       <Link>Materializers\SingleColumn\SingleColumnFormatterBase.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\SingleColumn\SingleListMaterializer`2.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\SingleColumn\SingleListMaterializer`2.cs">
       <Link>Materializers\SingleColumn\SingleListMaterializer`2.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\SingleColumn\StringListMaterializer`2.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\SingleColumn\StringListMaterializer`2.cs">
       <Link>Materializers\SingleColumn\StringListMaterializer`2.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\SingleColumn\TimeSpanListMaterializer`2.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\SingleColumn\TimeSpanListMaterializer`2.cs">
       <Link>Materializers\SingleColumn\TimeSpanListMaterializer`2.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\TableMaterializer`2.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\TableMaterializer`2.cs">
       <Link>Materializers\TableMaterializer`2.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Materializers\TableSetMaterializer`2.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\TableSetMaterializer`2.cs">
       <Link>Materializers\TableSetMaterializer`2.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Metadata\ColumnMetadata`1.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Metadata\ColumnMetadata`1.cs">
       <Link>Metadata\ColumnMetadata`1.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Metadata\ColumnPropertyMap`1.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Metadata\ColumnPropertyMap`1.cs">
       <Link>Metadata\ColumnPropertyMap`1.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Metadata\DatabaseMetadataCache`2.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Metadata\DatabaseMetadataCache`2.cs">
       <Link>Metadata\DatabaseMetadataCache`2.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Metadata\GetKeysFilter.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Metadata\GetKeysFilter.cs">
       <Link>Metadata\GetKeysFilter.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Metadata\GetPropertiesFilter.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Metadata\GetPropertiesFilter.cs">
       <Link>Metadata\GetPropertiesFilter.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Metadata\IColumnMetadata.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Metadata\IColumnMetadata.cs">
       <Link>Metadata\IColumnMetadata.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Metadata\IDatabaseMetadataCache.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Metadata\IDatabaseMetadataCache.cs">
       <Link>Metadata\IDatabaseMetadataCache.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Metadata\ITableOrViewMetadata.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Metadata\ITableOrViewMetadata.cs">
       <Link>Metadata\ITableOrViewMetadata.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Metadata\ParameterMetadata`1.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Metadata\ParameterMetadata`1.cs">
       <Link>Metadata\ParameterMetadata`1.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Metadata\StoredProcedureMetadata`2.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Metadata\StoredProcedureMetadata`2.cs">
       <Link>Metadata\StoredProcedureMetadata`2.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Metadata\TableFunctionMetadata`2.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Metadata\TableFunctionMetadata`2.cs">
       <Link>Metadata\TableFunctionMetadata`2.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Metadata\TableOrViewMetadata`2.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Metadata\TableOrViewMetadata`2.cs">
       <Link>Metadata\TableOrViewMetadata`2.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Metadata\Utilities.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Metadata\Utilities.cs">
       <Link>Metadata\Utilities.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\MissingDataException.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\MissingDataException.cs">
       <Link>MissingDataException.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\MissingObjectException.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\MissingObjectException.cs">
       <Link>MissingObjectException.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Properties\LibrarySharedAssemblyInfo.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Properties\LibrarySharedAssemblyInfo.cs">
       <Link>Properties\LibrarySharedAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Row.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Row.cs">
       <Link>Row.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\RowCollection.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\RowCollection.cs">
       <Link>RowCollection.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\RowOptions.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\RowOptions.cs">
       <Link>RowOptions.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Table.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\Table.cs">
       <Link>Table.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\TableSet.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\TableSet.cs">
       <Link>TableSet.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\UnexpectedDataException.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\UnexpectedDataException.cs">
       <Link>UnexpectedDataException.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.net461\UpdateOptions.cs">
+    <Compile Include="..\Tortuga.Chain.Core.source\UpdateOptions.cs">
       <Link>UpdateOptions.cs</Link>
     </Compile>
     <Compile Include="Missing\DataException.cs" />
@@ -461,11 +468,10 @@
     <EmbeddedResource Include="Properties\Tortuga.Chain.Core.uap10.rd.xml" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="..\Tortuga.Chain.Core.net461\CustomDictionary.xml">
+    <CodeAnalysisDictionary Include="..\CustomDictionary.xml">
       <Link>CustomDictionary.xml</Link>
     </CodeAnalysisDictionary>
   </ItemGroup>
-  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>
@@ -476,10 +482,11 @@
     <NoStdLib>true</NoStdLib>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>..\Tortuga.Chain.ruleset</CodeAnalysisRuleSet>
+    <DocumentationFile>bin\Debug-Unchecked\Tortuga.Chain.Core.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug-Unchecked|x86'">
     <DebugSymbols>true</DebugSymbols>

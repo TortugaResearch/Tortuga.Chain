@@ -5,23 +5,34 @@
     <version></version>
     <authors>David Tomcik, Jonathan Allen</authors>
     <copyright>Copyright David Tomcik, Jonathan Allen 2016</copyright>
-    <description>Fluent ORM for .NET.</description>
-    <tags>.net461</tags>
+    <description>A fluent ORM for .NET.</description>
+    <tags>ORM, Fluent</tags>
     <language>en-US</language>
     <projectUrl>https://github.com/docevaad/Chain</projectUrl>
     <references>
       <reference file="Tortuga.Chain.Core.dll" />
     </references>
     <frameworkAssemblies>
-      <frameworkAssembly assemblyName="System.Data" targetFramework="net461" />
-      <frameworkAssembly assemblyName="System.ComponentModel.DataAnnotations" targetFramework="net461" />
-      <frameworkAssembly assemblyName="System.Xml" targetFramework="net461" />
-      <frameworkAssembly assemblyName="System.Xml.Linq" targetFramework="net461" />
-      <frameworkAssembly assemblyName="System.Runtime.Caching" targetFramework="net461" />
+
+      <frameworkAssembly assemblyName="System.Data" targetFramework="net45" />
+      <frameworkAssembly assemblyName="System.ComponentModel.DataAnnotations" targetFramework="net45" />
+      <frameworkAssembly assemblyName="System.Xml" targetFramework="net45" />
+      <frameworkAssembly assemblyName="System.Xml.Linq" targetFramework="net45" />
+      <frameworkAssembly assemblyName="System.Runtime.Caching" targetFramework="net45" />
+      
+      <frameworkAssembly assemblyName="System.Data" targetFramework="net46" />
+      <frameworkAssembly assemblyName="System.ComponentModel.DataAnnotations" targetFramework="net46" />
+      <frameworkAssembly assemblyName="System.Xml" targetFramework="net46" />
+      <frameworkAssembly assemblyName="System.Xml.Linq" targetFramework="net46" />
+      <frameworkAssembly assemblyName="System.Runtime.Caching" targetFramework="net46" />
     </frameworkAssemblies>
 
     <dependencies>
-      <group targetFramework="net461">
+      <group targetFramework="net45">
+        <dependency id="System.Collections.Immutable" version="1.1.37" />
+        <dependency id="Tortuga.Anchor" version="0.4.5935.6732" />
+      </group>
+      <group targetFramework="net46">
         <dependency id="System.Collections.Immutable" version="1.1.37" />
         <dependency id="Tortuga.Anchor" version="0.4.5935.6732" />
       </group>
