@@ -120,15 +120,15 @@
     <None Include="SqlServer\readme.md" />
   </ItemGroup>
   <ItemGroup>
+    <CodeAnalysisDictionary Include="..\CustomDictionary.xml">
+      <Link>CustomDictionary.xml</Link>
+    </CodeAnalysisDictionary>
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Tortuga.Chain.Core.source\Tortuga.Chain.Core.source.csproj">
       <Project>{2c523692-a40b-4a7e-a95a-fbe373f263f7}</Project>
       <Name>Tortuga.Chain.Core.source</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <CodeAnalysisDictionary Include="..\CustomDictionary.xml">
-      <Link>CustomDictionary.xml</Link>
-    </CodeAnalysisDictionary>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

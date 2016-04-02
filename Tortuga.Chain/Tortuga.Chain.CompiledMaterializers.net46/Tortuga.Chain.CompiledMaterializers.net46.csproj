@@ -4,12 +4,12 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{42D213CA-8584-4B1B-8928-A54C5D937E86}</ProjectGuid>
+    <ProjectGuid>{49D257F5-365A-446C-83CA-AA29640F9CA5}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Tortuga.Chain</RootNamespace>
     <AssemblyName>Tortuga.Chain.CompiledMaterializers</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -21,9 +21,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <DocumentationFile>bin\Debug\Tortuga.Chain.CompiledMaterializers.XML</DocumentationFile>
     <RunCodeAnalysis>true</RunCodeAnalysis>
     <CodeAnalysisRuleSet>..\Tortuga.Chain.ruleset</CodeAnalysisRuleSet>
-    <DocumentationFile>bin\Debug\Tortuga.Chain.CompiledMaterializers.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -32,19 +32,16 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <RunCodeAnalysis>true</RunCodeAnalysis>
-    <CodeAnalysisRuleSet>..\Tortuga.Chain.ruleset</CodeAnalysisRuleSet>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <DocumentationFile>bin\Release\Tortuga.Chain.CompiledMaterializers.XML</DocumentationFile>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <CodeAnalysisRuleSet>..\Tortuga.Chain.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug-Unchecked|AnyCPU'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\Debug-Unchecked\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>..\Tortuga Chain.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CSScriptLibrary, Version=3.12.1.0, Culture=neutral, PublicKeyToken=70fcc3d18c749033, processorArchitecture=MSIL">
@@ -90,6 +87,7 @@
       <HintPath>..\packages\CS-Script.bin.3.12.1.0\lib\net45\System.Reflection.Metadata.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -101,19 +99,37 @@
       <HintPath>..\packages\Tortuga.Anchor.0.4.5935.6732\lib\net46\Tortuga.Anchor.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Tortuga.Chain.Core, Version=0.9.5936.4891, Culture=neutral, PublicKeyToken=8769fd32a2872cf0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tortuga.Chain.Core.0.9.5936.4881\lib\net46\Tortuga.Chain.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\ProductSharedAssemblyInfo.cs">
       <Link>Properties\ProductSharedAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Materializers\CompilerCache.cs" />
-    <Compile Include="MaterializerCompiledEventArgs.cs" />
-    <Compile Include="Materializers\Compiled.cs" />
-    <Compile Include="CompiledMaterializers.cs" />
-    <Compile Include="Materializers\CompiledCollectionMaterializer.cs" />
-    <Compile Include="Materializers\CompiledObjectMaterializer.cs" />
+    <Compile Include="..\Tortuga.Chain.CompiledMaterializers.source\CompiledMaterializers.cs">
+      <Link>CompiledMaterializers.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.CompiledMaterializers.source\MaterializerCompiledEventArgs.cs">
+      <Link>MaterializerCompiledEventArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.CompiledMaterializers.source\Materializers\Compiled.cs">
+      <Link>Materializers\Compiled.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.CompiledMaterializers.source\Materializers\CompiledCollectionMaterializer.cs">
+      <Link>Materializers\CompiledCollectionMaterializer.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.CompiledMaterializers.source\Materializers\CompiledObjectMaterializer.cs">
+      <Link>Materializers\CompiledObjectMaterializer.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.CompiledMaterializers.source\Materializers\CompilerCache.cs">
+      <Link>Materializers\CompilerCache.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.CompiledMaterializers.source\Properties\LibrarySharedAssemblyInfo.cs">
+      <Link>Properties\LibrarySharedAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\LibrarySharedAssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Tortuga Chain.snk">
@@ -125,12 +141,6 @@
     <CodeAnalysisDictionary Include="..\CustomDictionary.xml">
       <Link>CustomDictionary.xml</Link>
     </CodeAnalysisDictionary>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Tortuga.Chain.Core.source\Tortuga.Chain.Core.source.csproj">
-      <Project>{2c523692-a40b-4a7e-a95a-fbe373f263f7}</Project>
-      <Name>Tortuga.Chain.Core.source</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

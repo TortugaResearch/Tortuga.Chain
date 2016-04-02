@@ -63,8 +63,8 @@
       <HintPath>..\packages\Tortuga.Anchor.0.4.5935.6732\lib\net46\Tortuga.Anchor.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Tortuga.Chain.Core, Version=0.9.5935.33830, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Tortuga.Chain.Core.0.9.5935.33826\lib\net46\Tortuga.Chain.Core.dll</HintPath>
+    <Reference Include="Tortuga.Chain.Core, Version=0.9.5936.4891, Culture=neutral, PublicKeyToken=8769fd32a2872cf0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tortuga.Chain.Core.0.9.5936.4881\lib\net46\Tortuga.Chain.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>

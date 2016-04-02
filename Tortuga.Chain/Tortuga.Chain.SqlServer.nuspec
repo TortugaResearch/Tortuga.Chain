@@ -33,12 +33,12 @@
       <group targetFramework="net45">
         <dependency id="System.Collections.Immutable" version="1.1.37" />
         <dependency id="Tortuga.Anchor" version="0.4.5935.6732" />
-        <dependency id="Tortuga.Chain.Core" version="0.9.5935.33826" />
+        <dependency id="Tortuga.Chain.Core" version="0.9.5936.4881" />
       </group>
       <group targetFramework="net46">
         <dependency id="System.Collections.Immutable" version="1.1.37" />
         <dependency id="Tortuga.Anchor" version="0.4.5935.6732" />
-        <dependency id="Tortuga.Chain.Core" version="0.9.5935.33826" />
+        <dependency id="Tortuga.Chain.Core" version="0.9.5936.4881" />
       </group>
     </dependencies>
 

@@ -224,4 +224,4 @@ ModelManifest.xml
 /Tortuga.Chain/Build.SqlServer
 /Tortuga.Chain/Build.SQLite
 /Tortuga.Chain/Build.SQLite.MS
-/Tortuga.Chain/Build.SQLite.CompiledMaterializers
+/Tortuga.Chain/Build.CompiledMaterializers
