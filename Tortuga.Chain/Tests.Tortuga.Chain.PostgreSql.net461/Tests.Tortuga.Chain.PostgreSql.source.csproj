@@ -41,8 +41,9 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="Tortuga.Anchor, Version=0.2.5907.30996, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
-      <HintPath>..\packages\Tortuga.Anchor.0.2.5907.30996\lib\net461\Tortuga.Anchor.dll</HintPath>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="Tortuga.Anchor, Version=0.4.5935.6732, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tortuga.Anchor.0.4.5935.6732\lib\net46\Tortuga.Anchor.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
@@ -63,13 +64,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Tortuga.Chain.Core.net461\Tortuga.Chain.Core.net461.csproj">
+    <ProjectReference Include="..\Tortuga.Chain.Core.net461\Tortuga.Chain.Core.source.csproj">
       <Project>{2c523692-a40b-4a7e-a95a-fbe373f263f7}</Project>
-      <Name>Tortuga.Chain.Core.net461</Name>
+      <Name>Tortuga.Chain.Core.source</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Tortuga.Chain.PostgreSql.net461\Tortuga.Chain.PostgreSql.net461.csproj">
+    <ProjectReference Include="..\Tortuga.Chain.PostgreSql.net461\Tortuga.Chain.PostgreSql.source.csproj">
       <Project>{98f3b971-7741-43f0-9be8-2a53f2a4f611}</Project>
-      <Name>Tortuga.Chain.PostgreSql.net461</Name>
+      <Name>Tortuga.Chain.PostgreSql.source</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

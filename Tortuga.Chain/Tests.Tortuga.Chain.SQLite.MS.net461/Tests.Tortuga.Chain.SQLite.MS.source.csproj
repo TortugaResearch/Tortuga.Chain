@@ -1,13 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Microsoft.Data.Sqlite.1.0.0-rc1-final\build\net451\Microsoft.Data.Sqlite.props" Condition="Exists('..\packages\Microsoft.Data.Sqlite.1.0.0-rc1-final\build\net451\Microsoft.Data.Sqlite.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{268686C1-5787-42EC-82EF-AC52C23075AE}</ProjectGuid>
+    <ProjectGuid>{344A5AFA-7C3F-460F-8916-6E103AB31488}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Tests</RootNamespace>
-    <AssemblyName>Tests.Tortuga.Chain.SqlServer.Comparison.net461</AssemblyName>
+    <AssemblyName>Tests.Tortuga.Chain.SQLite.MS.net461</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -16,13 +17,15 @@
     <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
     <IsCodedUITest>False</IsCodedUITest>
     <TestProjectType>UnitTest</TestProjectType>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;MSTest</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -30,33 +33,29 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;MSTest</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug-Unchecked|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\Debug-Unchecked\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;MSTest</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Dapper, Version=1.40.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Dapper.1.42\lib\net45\Dapper.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Data.Sqlite, Version=1.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Data.Sqlite.1.0.0-rc1-final\lib\net451\Microsoft.Data.Sqlite.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.PlatformAbstractions, Version=1.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.PlatformAbstractions.1.0.0-rc1-final\lib\net451\Microsoft.Extensions.PlatformAbstractions.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Collections.Immutable, Version=1.1.37.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Collections.Immutable.1.1.37\lib\dotnet\System.Collections.Immutable.dll</HintPath>
@@ -65,11 +64,10 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Security" />
-    <Reference Include="System.Xml" />
-    <Reference Include="Tortuga.Anchor, Version=0.3.5927.3723, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
-      <HintPath>..\packages\Tortuga.Anchor.0.3.5927.3723\lib\net461\Tortuga.Anchor.dll</HintPath>
+    <Reference Include="Tortuga.Anchor, Version=0.4.5935.6732, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tortuga.Anchor.0.4.5935.6732\lib\net46\Tortuga.Anchor.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
@@ -86,37 +84,60 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="EmployeeRepositoryChainCompiled.cs" />
-    <Compile Include="EmployeeRepositoryChain.cs" />
-    <Compile Include="EmployeeRepositoryDapper.cs" />
-    <Compile Include="EmployeeRepositoryEF_Intermediate_NoTrack.cs" />
-    <Compile Include="EmployeeRepositoryEF_Intermediate.cs" />
-    <Compile Include="EmployeeRepositoryEF_Novice.cs" />
-    <Compile Include="ISimpleRepository.cs" />
-    <Compile Include="Models\CodeFirstModels.cs" />
-    <Compile Include="Models\Customer.cs" />
-    <Compile Include="Models\Employee.cs" />
-    <Compile Include="Models\EmployeeOfficePhone.cs" />
-    <Compile Include="ComparisonTests.cs" />
-    <Compile Include="Models\Order.cs" />
+    <Compile Include="..\Tests.Tortuga.Chain.SQLite.net461\Metadata\MetadataTests.cs">
+      <Link>Metadata\MetadataTests.cs</Link>
+    </Compile>
+    <Compile Include="..\tests.tortuga.chain.sqlserver.net461\class1databases\SqlTests.cs">
+      <Link>Class1Databases\SqlTests.cs</Link>
+    </Compile>
+    <Compile Include="..\tests.tortuga.chain.sqlserver.net461\models\Employee.cs">
+      <Link>Models\Employee.cs</Link>
+    </Compile>
+    <Compile Include="..\tests.tortuga.chain.sqlserver.net461\repository\AsyncRepositoryTests.cs">
+      <Link>Repository\AsyncRepositoryTests.cs</Link>
+    </Compile>
+    <Compile Include="..\tests.tortuga.chain.sqlserver.net461\repository\AsyncRepository`2.cs">
+      <Link>Repository\AsyncRepository`2.cs</Link>
+    </Compile>
+    <Compile Include="..\tests.tortuga.chain.sqlserver.net461\repository\RepositoryTests.cs">
+      <Link>Repository\RepositoryTests.cs</Link>
+    </Compile>
+    <Compile Include="..\tests.tortuga.chain.sqlserver.net461\repository\RepositoryWithCachingTests.cs">
+      <Link>Repository\RepositoryWithCachingTests.cs</Link>
+    </Compile>
+    <Compile Include="..\tests.tortuga.chain.sqlserver.net461\repository\RepositoryWithCaching`2.cs">
+      <Link>Repository\RepositoryWithCaching`2.cs</Link>
+    </Compile>
+    <Compile Include="..\tests.tortuga.chain.sqlserver.net461\repository\Repository`2.cs">
+      <Link>Repository\Repository`2.cs</Link>
+    </Compile>
+    <Compile Include="..\tests.tortuga.chain.sqlserver.net461\repository\StrictRepositoryTests.cs">
+      <Link>Repository\StrictRepositoryTests.cs</Link>
+    </Compile>
+    <Compile Include="..\tests.tortuga.chain.sqlserver.net461\repository\TransactionalAsyncRepositoryTests.cs">
+      <Link>Repository\TransactionalAsyncRepositoryTests.cs</Link>
+    </Compile>
+    <Compile Include="..\tests.tortuga.chain.sqlserver.net461\repository\TransactionalRepositoryTests.cs">
+      <Link>Repository\TransactionalRepositoryTests.cs</Link>
+    </Compile>
+    <Compile Include="Setup.cs" />
+    <Compile Include="TestBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Tortuga.Chain.CompiledMaterializers.net461\Tortuga.Chain.CompiledMaterializers.net461.csproj">
-      <Project>{42d213ca-8584-4b1b-8928-a54c5d937e86}</Project>
-      <Name>Tortuga.Chain.CompiledMaterializers.net461</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Tortuga.Chain.Core.net461\Tortuga.Chain.Core.net461.csproj">
+    <ProjectReference Include="..\Tortuga.Chain.Core.net461\Tortuga.Chain.Core.source.csproj">
       <Project>{2c523692-a40b-4a7e-a95a-fbe373f263f7}</Project>
-      <Name>Tortuga.Chain.Core.net461</Name>
+      <Name>Tortuga.Chain.Core.source</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Tortuga.Chain.SqlServer.net461\Tortuga.Chain.SqlServer.net461.csproj">
-      <Project>{5d3159ad-141c-4853-9ecc-a1fd603bd8c4}</Project>
-      <Name>Tortuga.Chain.SqlServer.net461</Name>
+    <ProjectReference Include="..\Tortuga.Chain.SQLite.MS.net461\Tortuga.Chain.SQLite.MS.source.csproj">
+      <Project>{cefbba53-50c5-449f-b20e-56c9a946d2b0}</Project>
+      <Name>Tortuga.Chain.SQLite.MS.source</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <Choose>
@@ -139,6 +160,12 @@
   </Choose>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.Data.Sqlite.1.0.0-rc1-final\build\net451\Microsoft.Data.Sqlite.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Data.Sqlite.1.0.0-rc1-final\build\net451\Microsoft.Data.Sqlite.props'))" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

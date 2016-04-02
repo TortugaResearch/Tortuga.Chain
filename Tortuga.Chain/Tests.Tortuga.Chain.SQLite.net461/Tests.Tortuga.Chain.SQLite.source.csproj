@@ -59,8 +59,9 @@
       <HintPath>..\packages\System.Data.SQLite.Core.1.0.99.0\lib\net46\System.Data.SQLite.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Tortuga.Anchor, Version=0.3.5927.3723, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
-      <HintPath>..\packages\Tortuga.Anchor.0.3.5927.3723\lib\net461\Tortuga.Anchor.dll</HintPath>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="Tortuga.Anchor, Version=0.4.5935.6732, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tortuga.Anchor.0.4.5935.6732\lib\net46\Tortuga.Anchor.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
@@ -122,13 +123,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Tortuga.Chain.Core.net461\Tortuga.Chain.Core.net461.csproj">
+    <ProjectReference Include="..\Tortuga.Chain.Core.net461\Tortuga.Chain.Core.source.csproj">
       <Project>{2c523692-a40b-4a7e-a95a-fbe373f263f7}</Project>
-      <Name>Tortuga.Chain.Core.net461</Name>
+      <Name>Tortuga.Chain.Core.source</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Tortuga.Chain.SQLite.net461\Tortuga.Chain.SQLite.net461.csproj">
+    <ProjectReference Include="..\Tortuga.Chain.SQLite.net461\Tortuga.Chain.SQLite.source.csproj">
       <Project>{e92091c6-46f6-423e-b5ce-7ddcd2840cce}</Project>
-      <Name>Tortuga.Chain.SQLite.net461</Name>
+      <Name>Tortuga.Chain.SQLite.source</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

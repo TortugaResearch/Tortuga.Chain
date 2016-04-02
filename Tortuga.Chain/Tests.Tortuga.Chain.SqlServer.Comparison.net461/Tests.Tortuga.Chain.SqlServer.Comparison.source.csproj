@@ -3,11 +3,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{A0504A3A-92DB-4EE2-8738-4ED2E3D94BE7}</ProjectGuid>
+    <ProjectGuid>{268686C1-5787-42EC-82EF-AC52C23075AE}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Tests</RootNamespace>
-    <AssemblyName>Tests.Tortuga.Chain.SqlServer.net461</AssemblyName>
+    <AssemblyName>Tests.Tortuga.Chain.SqlServer.Comparison.net461</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -22,7 +22,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;MSTest</DefineConstants>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -30,20 +30,33 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;MSTest</DefineConstants>
+    <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug-Unchecked|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\Debug-Unchecked\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;MSTest</DefineConstants>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Dapper, Version=1.40.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dapper.1.42\lib\net45\Dapper.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Collections.Immutable, Version=1.1.37.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Collections.Immutable.1.1.37\lib\dotnet\System.Collections.Immutable.dll</HintPath>
@@ -52,9 +65,11 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Runtime.Caching" />
-    <Reference Include="Tortuga.Anchor, Version=0.3.5927.3723, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
-      <HintPath>..\packages\Tortuga.Anchor.0.3.5927.3723\lib\net461\Tortuga.Anchor.dll</HintPath>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Tortuga.Anchor, Version=0.4.5935.6732, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tortuga.Anchor.0.4.5935.6732\lib\net46\Tortuga.Anchor.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
@@ -66,58 +81,44 @@
     </When>
     <Otherwise>
       <ItemGroup>
-        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework">
-          <Private>False</Private>
-        </Reference>
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
       </ItemGroup>
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="Class1Databases\SqlTests.cs" />
-    <Compile Include="Class2Databases\ProcedureTests.cs" />
-    <Compile Include="Materializers\MaterializerTests.cs" />
-    <Compile Include="Materializers\ModelTests.cs" />
-    <Compile Include="Metadata\MetadataTests.cs" />
-    <Compile Include="Models\AuditInfo.cs" />
-    <Compile Include="Models\EmployeeWithManager.cs" />
-    <Compile Include="Repository\TransactionalAsyncRepositoryTests.cs" />
+    <Compile Include="EmployeeRepositoryChainCompiled.cs" />
+    <Compile Include="EmployeeRepositoryChain.cs" />
+    <Compile Include="EmployeeRepositoryDapper.cs" />
+    <Compile Include="EmployeeRepositoryEF_Intermediate_NoTrack.cs" />
+    <Compile Include="EmployeeRepositoryEF_Intermediate.cs" />
+    <Compile Include="EmployeeRepositoryEF_Novice.cs" />
+    <Compile Include="ISimpleRepository.cs" />
+    <Compile Include="Models\CodeFirstModels.cs" />
+    <Compile Include="Models\Customer.cs" />
     <Compile Include="Models\Employee.cs" />
-    <Compile Include="Repository\AsyncRepository`2.cs" />
-    <Compile Include="Repository\AsyncRepositoryTests.cs" />
-    <Compile Include="Repository\TransactionalRepositoryTests.cs" />
-    <Compile Include="Repository\StrictRepositoryTests.cs" />
-    <Compile Include="Repository\RepositoryWithCachingTests.cs" />
-    <Compile Include="Repository\RepositoryWithCaching`2.cs" />
-    <Compile Include="Repository\Repository`2.cs" />
-    <Compile Include="Repository\RepositoryTests.cs" />
-    <Compile Include="Setup.cs" />
-    <Compile Include="SqlDependencyTest.cs" />
-    <Compile Include="SqlServerDataSourceTests.cs" />
+    <Compile Include="Models\EmployeeOfficePhone.cs" />
+    <Compile Include="ComparisonTests.cs" />
+    <Compile Include="Models\Order.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestBase.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Tortuga.Chain.CompiledMaterializers.net461\Tortuga.Chain.CompiledMaterializers.net461.csproj">
+    <ProjectReference Include="..\Tortuga.Chain.CompiledMaterializers.net461\Tortuga.Chain.CompiledMaterializers.source.csproj">
       <Project>{42d213ca-8584-4b1b-8928-a54c5d937e86}</Project>
-      <Name>Tortuga.Chain.CompiledMaterializers.net461</Name>
+      <Name>Tortuga.Chain.CompiledMaterializers.source</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Tortuga.Chain.Core.net461\Tortuga.Chain.Core.net461.csproj">
+    <ProjectReference Include="..\Tortuga.Chain.Core.net461\Tortuga.Chain.Core.source.csproj">
       <Project>{2c523692-a40b-4a7e-a95a-fbe373f263f7}</Project>
-      <Name>Tortuga.Chain.Core.net461</Name>
+      <Name>Tortuga.Chain.Core.source</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Tortuga.Chain.SqlServer.net461\Tortuga.Chain.SqlServer.net461.csproj">
+    <ProjectReference Include="..\Tortuga.Chain.SqlServer.net461\Tortuga.Chain.SqlServer.source.csproj">
       <Project>{5d3159ad-141c-4853-9ecc-a1fd603bd8c4}</Project>
-      <Name>Tortuga.Chain.SqlServer.net461</Name>
+      <Name>Tortuga.Chain.SqlServer.source</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config">
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="App.config" />
     <None Include="packages.config" />
-    <None Include="readme.md" />
   </ItemGroup>
-  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

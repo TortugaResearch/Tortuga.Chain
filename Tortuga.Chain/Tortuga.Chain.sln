@@ -1,13 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tortuga.Chain.SqlServer.net461", "Tortuga.Chain.SqlServer.net461\Tortuga.Chain.SqlServer.net461.csproj", "{5D3159AD-141C-4853-9ECC-A1FD603BD8C4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tortuga.Chain.SqlServer.source", "Tortuga.Chain.SqlServer.net461\Tortuga.Chain.SqlServer.source.csproj", "{5D3159AD-141C-4853-9ECC-A1FD603BD8C4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tortuga.Chain.PostgreSql.net461", "Tortuga.Chain.PostgreSql.net461\Tortuga.Chain.PostgreSql.net461.csproj", "{98F3B971-7741-43F0-9BE8-2A53F2A4F611}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tortuga.Chain.PostgreSql.source", "Tortuga.Chain.PostgreSql.net461\Tortuga.Chain.PostgreSql.source.csproj", "{98F3B971-7741-43F0-9BE8-2A53F2A4F611}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tortuga.Chain.SQLite.net461", "Tortuga.Chain.SQLite.net461\Tortuga.Chain.SQLite.net461.csproj", "{E92091C6-46F6-423E-B5CE-7DDCD2840CCE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tortuga.Chain.SQLite.source", "Tortuga.Chain.SQLite.net461\Tortuga.Chain.SQLite.source.csproj", "{E92091C6-46F6-423E-B5CE-7DDCD2840CCE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{AAE3DA8A-65B5-4A2E-BB48-002C3C8D045B}"
 	ProjectSection(SolutionItems) = preProject
@@ -20,17 +20,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Tortuga.Chain.SqlServer.nuspec = Tortuga.Chain.SqlServer.nuspec
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApplication1", "ConsoleApplication1\ConsoleApplication1.csproj", "{7698A185-9FAF-4681-B781-4425869A85AB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tortuga.Chain.Core.source", "Tortuga.Chain.Core.net461\Tortuga.Chain.Core.source.csproj", "{2C523692-A40B-4A7E-A95A-FBE373F263F7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tortuga.Chain.Core.net461", "Tortuga.Chain.Core.net461\Tortuga.Chain.Core.net461.csproj", "{2C523692-A40B-4A7E-A95A-FBE373F263F7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.Tortuga.Chain.Core.source", "Tests.Tortuga.Chain.Core.net461\Tests.Tortuga.Chain.Core.source.csproj", "{62634749-A18D-4882-917E-FB6E8B6EE3D1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.Tortuga.Chain.Core.net461", "Tests.Tortuga.Chain.Core.net461\Tests.Tortuga.Chain.Core.net461.csproj", "{62634749-A18D-4882-917E-FB6E8B6EE3D1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.Tortuga.Chain.SqlServer.source", "Tests.Tortuga.Chain.SqlServer.net461\Tests.Tortuga.Chain.SqlServer.source.csproj", "{A0504A3A-92DB-4EE2-8738-4ED2E3D94BE7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.Tortuga.Chain.SqlServer.net461", "Tests.Tortuga.Chain.SqlServer.net461\Tests.Tortuga.Chain.SqlServer.net461.csproj", "{A0504A3A-92DB-4EE2-8738-4ED2E3D94BE7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.Tortuga.Chain.PostgreSql.source", "Tests.Tortuga.Chain.PostgreSql.net461\Tests.Tortuga.Chain.PostgreSql.source.csproj", "{FD09730B-90E3-491B-AFA8-0D17AE6C841D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.Tortuga.Chain.PostgreSql.net461", "Tests.Tortuga.Chain.PostgreSql.net461\Tests.Tortuga.Chain.PostgreSql.net461.csproj", "{FD09730B-90E3-491B-AFA8-0D17AE6C841D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.Tortuga.Chain.SQLite.net461", "Tests.Tortuga.Chain.SQLite.net461\Tests.Tortuga.Chain.SQLite.net461.csproj", "{60649569-197C-4E0F-95F4-F87CFF73A610}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.Tortuga.Chain.SQLite.source", "Tests.Tortuga.Chain.SQLite.net461\Tests.Tortuga.Chain.SQLite.source.csproj", "{60649569-197C-4E0F-95F4-F87CFF73A610}"
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "SqlServerTestDatabase", "SqlServerTestDatabase\SqlServerTestDatabase.sqlproj", "{4AFDE645-5868-4C91-BCE3-D09F69958AE8}"
 EndProject
@@ -44,23 +42,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PostgreSQL", "PostgreSQL", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MySQL", "MySQL", "{DB9BEC77-71BD-47A1-889C-8EF8DDD94D76}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.Tortuga.Chain.SqlServer.Comparison.net461", "Tests.Tortuga.Chain.SqlServer.Comparison.net461\Tests.Tortuga.Chain.SqlServer.Comparison.net461.csproj", "{268686C1-5787-42EC-82EF-AC52C23075AE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.Tortuga.Chain.SqlServer.Comparison.source", "Tests.Tortuga.Chain.SqlServer.Comparison.net461\Tests.Tortuga.Chain.SqlServer.Comparison.source.csproj", "{268686C1-5787-42EC-82EF-AC52C23075AE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tortuga.Chain.Core.uap10", "Tortuga.Chain.Core.uap10\Tortuga.Chain.Core.uap10.csproj", "{0CE9F498-3B08-4DA4-95F4-BC825EC708CC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tortuga.Chain.SQLite.MS.uap10", "Tortuga.Chain.SQLite.MS.uap10\Tortuga.Chain.SQLite.MS.uap10.csproj", "{C9870DED-A478-452B-B94A-9ECABEB8261A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tortuga.Chain.SQLite.MS.net461", "Tortuga.Chain.SQLite.MS.net461\Tortuga.Chain.SQLite.MS.net461.csproj", "{CEFBBA53-50C5-449F-B20E-56C9A946D2B0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tortuga.Chain.SQLite.MS.source", "Tortuga.Chain.SQLite.MS.net461\Tortuga.Chain.SQLite.MS.source.csproj", "{CEFBBA53-50C5-449F-B20E-56C9A946D2B0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.Tortuga.Chain.SQLite.MS.net461", "Tests.Tortuga.Chain.SQLite.MS.net461\Tests.Tortuga.Chain.SQLite.MS.net461.csproj", "{344A5AFA-7C3F-460F-8916-6E103AB31488}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.Tortuga.Chain.SQLite.MS.source", "Tests.Tortuga.Chain.SQLite.MS.net461\Tests.Tortuga.Chain.SQLite.MS.source.csproj", "{344A5AFA-7C3F-460F-8916-6E103AB31488}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.Tortuga.Chain.SQLite.MS.uap10", "Tests.Tortuga.Chain.SQLite.MS.uap10\Tests.Tortuga.Chain.SQLite.MS.uap10.csproj", "{263F76BD-E80D-40A6-8B17-1003E0766EF6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PackageTest.Tortuga.Chain.SqlServer.net461", "PackageTest.Tortuga.Chain.SqlServer.net461\PackageTest.Tortuga.Chain.SqlServer.net461.csproj", "{28E091C5-82B1-4A63-978B-ED6F2F420618}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PackageTest.Tortuga.Chain.SQLite.net461", "PackageTest.Tortuga.Chain.SQLite.net461\PackageTest.Tortuga.Chain.SQLite.net461.csproj", "{768B1D21-5458-4E4C-9A83-5D6AFF01873B}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tortuga.Chain.CompiledMaterializers.net461", "Tortuga.Chain.CompiledMaterializers.net461\Tortuga.Chain.CompiledMaterializers.net461.csproj", "{42D213CA-8584-4B1B-8928-A54C5D937E86}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tortuga.Chain.CompiledMaterializers.source", "Tortuga.Chain.CompiledMaterializers.net461\Tortuga.Chain.CompiledMaterializers.source.csproj", "{42D213CA-8584-4B1B-8928-A54C5D937E86}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Documentation", "Documentation\Documentation.csproj", "{C9FBB568-46CE-4587-B2BC-F689887F4A6A}"
 EndProject
@@ -142,30 +136,6 @@ Global
 		{E92091C6-46F6-423E-B5CE-7DDCD2840CCE}.Release|x64.Build.0 = Release|Any CPU
 		{E92091C6-46F6-423E-B5CE-7DDCD2840CCE}.Release|x86.ActiveCfg = Release|Any CPU
 		{E92091C6-46F6-423E-B5CE-7DDCD2840CCE}.Release|x86.Build.0 = Release|Any CPU
-		{7698A185-9FAF-4681-B781-4425869A85AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7698A185-9FAF-4681-B781-4425869A85AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7698A185-9FAF-4681-B781-4425869A85AB}.Debug|ARM.ActiveCfg = Debug|Any CPU
-		{7698A185-9FAF-4681-B781-4425869A85AB}.Debug|ARM.Build.0 = Debug|Any CPU
-		{7698A185-9FAF-4681-B781-4425869A85AB}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{7698A185-9FAF-4681-B781-4425869A85AB}.Debug|x64.Build.0 = Debug|Any CPU
-		{7698A185-9FAF-4681-B781-4425869A85AB}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{7698A185-9FAF-4681-B781-4425869A85AB}.Debug|x86.Build.0 = Debug|Any CPU
-		{7698A185-9FAF-4681-B781-4425869A85AB}.Debug-Unchecked|Any CPU.ActiveCfg = Debug-Unchecked|Any CPU
-		{7698A185-9FAF-4681-B781-4425869A85AB}.Debug-Unchecked|Any CPU.Build.0 = Debug-Unchecked|Any CPU
-		{7698A185-9FAF-4681-B781-4425869A85AB}.Debug-Unchecked|ARM.ActiveCfg = Debug-Unchecked|Any CPU
-		{7698A185-9FAF-4681-B781-4425869A85AB}.Debug-Unchecked|ARM.Build.0 = Debug-Unchecked|Any CPU
-		{7698A185-9FAF-4681-B781-4425869A85AB}.Debug-Unchecked|x64.ActiveCfg = Debug-Unchecked|Any CPU
-		{7698A185-9FAF-4681-B781-4425869A85AB}.Debug-Unchecked|x64.Build.0 = Debug-Unchecked|Any CPU
-		{7698A185-9FAF-4681-B781-4425869A85AB}.Debug-Unchecked|x86.ActiveCfg = Debug-Unchecked|Any CPU
-		{7698A185-9FAF-4681-B781-4425869A85AB}.Debug-Unchecked|x86.Build.0 = Debug-Unchecked|Any CPU
-		{7698A185-9FAF-4681-B781-4425869A85AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7698A185-9FAF-4681-B781-4425869A85AB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7698A185-9FAF-4681-B781-4425869A85AB}.Release|ARM.ActiveCfg = Release|Any CPU
-		{7698A185-9FAF-4681-B781-4425869A85AB}.Release|ARM.Build.0 = Release|Any CPU
-		{7698A185-9FAF-4681-B781-4425869A85AB}.Release|x64.ActiveCfg = Release|Any CPU
-		{7698A185-9FAF-4681-B781-4425869A85AB}.Release|x64.Build.0 = Release|Any CPU
-		{7698A185-9FAF-4681-B781-4425869A85AB}.Release|x86.ActiveCfg = Release|Any CPU
-		{7698A185-9FAF-4681-B781-4425869A85AB}.Release|x86.Build.0 = Release|Any CPU
 		{2C523692-A40B-4A7E-A95A-FBE373F263F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2C523692-A40B-4A7E-A95A-FBE373F263F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2C523692-A40B-4A7E-A95A-FBE373F263F7}.Debug|ARM.ActiveCfg = Debug|Any CPU
@@ -462,54 +432,6 @@ Global
 		{263F76BD-E80D-40A6-8B17-1003E0766EF6}.Release|x86.ActiveCfg = Release|x86
 		{263F76BD-E80D-40A6-8B17-1003E0766EF6}.Release|x86.Build.0 = Release|x86
 		{263F76BD-E80D-40A6-8B17-1003E0766EF6}.Release|x86.Deploy.0 = Release|x86
-		{28E091C5-82B1-4A63-978B-ED6F2F420618}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{28E091C5-82B1-4A63-978B-ED6F2F420618}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{28E091C5-82B1-4A63-978B-ED6F2F420618}.Debug|ARM.ActiveCfg = Debug|Any CPU
-		{28E091C5-82B1-4A63-978B-ED6F2F420618}.Debug|ARM.Build.0 = Debug|Any CPU
-		{28E091C5-82B1-4A63-978B-ED6F2F420618}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{28E091C5-82B1-4A63-978B-ED6F2F420618}.Debug|x64.Build.0 = Debug|Any CPU
-		{28E091C5-82B1-4A63-978B-ED6F2F420618}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{28E091C5-82B1-4A63-978B-ED6F2F420618}.Debug|x86.Build.0 = Debug|Any CPU
-		{28E091C5-82B1-4A63-978B-ED6F2F420618}.Debug-Unchecked|Any CPU.ActiveCfg = Debug|Any CPU
-		{28E091C5-82B1-4A63-978B-ED6F2F420618}.Debug-Unchecked|Any CPU.Build.0 = Debug|Any CPU
-		{28E091C5-82B1-4A63-978B-ED6F2F420618}.Debug-Unchecked|ARM.ActiveCfg = Debug|Any CPU
-		{28E091C5-82B1-4A63-978B-ED6F2F420618}.Debug-Unchecked|ARM.Build.0 = Debug|Any CPU
-		{28E091C5-82B1-4A63-978B-ED6F2F420618}.Debug-Unchecked|x64.ActiveCfg = Debug|Any CPU
-		{28E091C5-82B1-4A63-978B-ED6F2F420618}.Debug-Unchecked|x64.Build.0 = Debug|Any CPU
-		{28E091C5-82B1-4A63-978B-ED6F2F420618}.Debug-Unchecked|x86.ActiveCfg = Debug|Any CPU
-		{28E091C5-82B1-4A63-978B-ED6F2F420618}.Debug-Unchecked|x86.Build.0 = Debug|Any CPU
-		{28E091C5-82B1-4A63-978B-ED6F2F420618}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{28E091C5-82B1-4A63-978B-ED6F2F420618}.Release|Any CPU.Build.0 = Release|Any CPU
-		{28E091C5-82B1-4A63-978B-ED6F2F420618}.Release|ARM.ActiveCfg = Release|Any CPU
-		{28E091C5-82B1-4A63-978B-ED6F2F420618}.Release|ARM.Build.0 = Release|Any CPU
-		{28E091C5-82B1-4A63-978B-ED6F2F420618}.Release|x64.ActiveCfg = Release|Any CPU
-		{28E091C5-82B1-4A63-978B-ED6F2F420618}.Release|x64.Build.0 = Release|Any CPU
-		{28E091C5-82B1-4A63-978B-ED6F2F420618}.Release|x86.ActiveCfg = Release|Any CPU
-		{28E091C5-82B1-4A63-978B-ED6F2F420618}.Release|x86.Build.0 = Release|Any CPU
-		{768B1D21-5458-4E4C-9A83-5D6AFF01873B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{768B1D21-5458-4E4C-9A83-5D6AFF01873B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{768B1D21-5458-4E4C-9A83-5D6AFF01873B}.Debug|ARM.ActiveCfg = Debug|Any CPU
-		{768B1D21-5458-4E4C-9A83-5D6AFF01873B}.Debug|ARM.Build.0 = Debug|Any CPU
-		{768B1D21-5458-4E4C-9A83-5D6AFF01873B}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{768B1D21-5458-4E4C-9A83-5D6AFF01873B}.Debug|x64.Build.0 = Debug|Any CPU
-		{768B1D21-5458-4E4C-9A83-5D6AFF01873B}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{768B1D21-5458-4E4C-9A83-5D6AFF01873B}.Debug|x86.Build.0 = Debug|Any CPU
-		{768B1D21-5458-4E4C-9A83-5D6AFF01873B}.Debug-Unchecked|Any CPU.ActiveCfg = Debug|Any CPU
-		{768B1D21-5458-4E4C-9A83-5D6AFF01873B}.Debug-Unchecked|Any CPU.Build.0 = Debug|Any CPU
-		{768B1D21-5458-4E4C-9A83-5D6AFF01873B}.Debug-Unchecked|ARM.ActiveCfg = Debug|Any CPU
-		{768B1D21-5458-4E4C-9A83-5D6AFF01873B}.Debug-Unchecked|ARM.Build.0 = Debug|Any CPU
-		{768B1D21-5458-4E4C-9A83-5D6AFF01873B}.Debug-Unchecked|x64.ActiveCfg = Debug|Any CPU
-		{768B1D21-5458-4E4C-9A83-5D6AFF01873B}.Debug-Unchecked|x64.Build.0 = Debug|Any CPU
-		{768B1D21-5458-4E4C-9A83-5D6AFF01873B}.Debug-Unchecked|x86.ActiveCfg = Debug|Any CPU
-		{768B1D21-5458-4E4C-9A83-5D6AFF01873B}.Debug-Unchecked|x86.Build.0 = Debug|Any CPU
-		{768B1D21-5458-4E4C-9A83-5D6AFF01873B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{768B1D21-5458-4E4C-9A83-5D6AFF01873B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{768B1D21-5458-4E4C-9A83-5D6AFF01873B}.Release|ARM.ActiveCfg = Release|Any CPU
-		{768B1D21-5458-4E4C-9A83-5D6AFF01873B}.Release|ARM.Build.0 = Release|Any CPU
-		{768B1D21-5458-4E4C-9A83-5D6AFF01873B}.Release|x64.ActiveCfg = Release|Any CPU
-		{768B1D21-5458-4E4C-9A83-5D6AFF01873B}.Release|x64.Build.0 = Release|Any CPU
-		{768B1D21-5458-4E4C-9A83-5D6AFF01873B}.Release|x86.ActiveCfg = Release|Any CPU
-		{768B1D21-5458-4E4C-9A83-5D6AFF01873B}.Release|x86.Build.0 = Release|Any CPU
 		{42D213CA-8584-4B1B-8928-A54C5D937E86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{42D213CA-8584-4B1B-8928-A54C5D937E86}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{42D213CA-8584-4B1B-8928-A54C5D937E86}.Debug|ARM.ActiveCfg = Debug|Any CPU
