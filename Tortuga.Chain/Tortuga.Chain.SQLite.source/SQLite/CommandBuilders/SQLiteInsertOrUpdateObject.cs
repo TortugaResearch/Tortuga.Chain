@@ -62,7 +62,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
                 GetKeysFilter filter = (GetKeysFilter.PrimaryKey | GetKeysFilter.ThrowOnMissingProperties);
 
                 var columns = Metadata.GetKeysFor(ArgumentDictionary, filter);
-                if (columns.Count > 1)
+                if (columns.Length > 1)
                     return string.Join(" AND ", columns.Select(c => $"{c.QuotedSqlName} = {c.SqlVariableName}"));
                 else
                 {
@@ -81,7 +81,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
                     filter = (GetPropertiesFilter.PrimaryKey | GetPropertiesFilter.ThrowOnMissingProperties);
 
                 var columns = Metadata.GetPropertiesFor(ArgumentValue.GetType(), filter);
-                if (columns.Count > 1)
+                if (columns.Length > 1)
                     return string.Join(" AND ", columns.Select(c => $"{c.Column.QuotedSqlName} = {c.Column.SqlVariableName}"));
                 else
                 {

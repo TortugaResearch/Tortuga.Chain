@@ -115,7 +115,7 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
         /// </summary>
         /// <param name="columnProps"></param>
         /// <param name="parameters"></param>
-        protected void LoadParameters(ImmutableList<ColumnPropertyMap<DbType>> columnProps, List<SQLiteParameter> parameters)
+        protected void LoadParameters(ImmutableArray<ColumnPropertyMap<DbType>> columnProps, List<SQLiteParameter> parameters)
         {
             if (columnProps == null)
                 throw new ArgumentNullException("columnProps", "columnProps is null.");
@@ -137,7 +137,7 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
         /// </summary>
         /// <param name="columnProps">The column props.</param>
         /// <param name="parameters">The parameters.</param>
-        protected void LoadDictionaryParameters(IImmutableList<ColumnMetadata<DbType>> columnProps, List<SQLiteParameter> parameters)
+        protected void LoadDictionaryParameters(ImmutableArray<ColumnMetadata<DbType>> columnProps, List<SQLiteParameter> parameters)
         {
             if (columnProps == null)
                 throw new ArgumentNullException("columnProps", "columnProps is null.");
