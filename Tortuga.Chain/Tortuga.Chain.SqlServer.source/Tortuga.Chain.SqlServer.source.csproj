@@ -43,7 +43,8 @@
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>Tortuga Chain.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug-Unchecked|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -110,11 +111,13 @@
     <Compile Include="SqlServer\CommandBuilders\SqlServerUpdateObject.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\Tortuga Chain.snk">
+      <Link>Tortuga Chain.snk</Link>
+    </None>
     <None Include="packages.config" />
     <None Include="readme.md" />
     <None Include="SqlServer\CommandBuilders\readme.md" />
     <None Include="SqlServer\readme.md" />
-    <None Include="Tortuga Chain.snk" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Tortuga.Chain.Core.source\Tortuga.Chain.Core.source.csproj">

@@ -1,0 +1,986 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Tortuga.Chain.SqlServer</name>
+    </assembly>
+    <members>
+        <member name="T:Tortuga.Chain.SqlServerDataSource">
+            <summary>
+            Class SqlServerDataSource.
+            </summary>
+            <seealso cref="T:Tortuga.Chain.SqlServer.SqlServerDataSourceBase" />
+        </member>
+        <member name="F:Tortuga.Chain.SqlServerDataSource.m_ServerDefaultSettings">
+            <summary>
+            This is used to decide which option overides to set when establishing a connection.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServerDataSource.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.SqlServerDataSource" /> class.
+            </summary>
+            <param name="name">Name of the data source.</param>
+            <param name="connectionString">The connection string.</param>
+            <exception cref="T:System.ArgumentException">connectionString is null or empty.;connectionString</exception>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServerDataSource.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.SqlServerDataSource" /> class.
+            </summary>
+            <param name="connectionString">The connection string.</param>
+            <exception cref="T:System.ArgumentException">connectionString is null or empty.;connectionString</exception>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServerDataSource.#ctor(System.String,System.Data.SqlClient.SqlConnectionStringBuilder)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.SqlServerDataSource" /> class.
+            </summary>
+            <param name="name">Optional name of the data source.</param>
+            <param name="connectionStringBuilder">The connection string builder.</param>
+            <exception cref="T:System.ArgumentNullException">connectionStringBuilder;connectionStringBuilder is null.</exception>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServerDataSource.#ctor(System.Data.SqlClient.SqlConnectionStringBuilder)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.SqlServerDataSource"/> class.
+            </summary>
+            <param name="connectionStringBuilder">The connection string builder.</param>
+        </member>
+        <member name="P:Tortuga.Chain.SqlServerDataSource.DatabaseMetadata">
+            <summary>
+            This object can be used to lookup database information.
+            </summary>
+        </member>
+        <member name="P:Tortuga.Chain.SqlServerDataSource.IsSqlDependencyActive">
+            <summary>
+            Gets a value indicating whether SQL dependency support is active for this dispatcher.
+            </summary>
+            <value><c>true</c> if this SQL dependency is active; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:Tortuga.Chain.SqlServerDataSource.ConnectionString">
+            <summary>
+            Gets the connection string.
+            </summary>
+            <value>
+            The connection string.
+            </value>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServerDataSource.CreateFromConfig(System.String)">
+            <summary>
+            Creates a new connection using the connection string settings in the app.config file.
+            </summary>
+            <param name="connectionName"></param>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServerDataSource.BeginTransaction(System.String,System.Nullable{System.Data.IsolationLevel},System.Boolean)">
+            <summary>
+            Creates a new transaction
+            </summary>
+            <param name="transactionName">optional name of the transaction.</param>
+            <param name="isolationLevel">the isolation level. if not supplied, will use the database default.</param>
+            <param name="forwardEvents">if true, logging events are forwarded to the parent connection.</param>
+            <returns></returns>
+            <remarks>
+            the caller of this function is responsible for closing the transaction.
+            </remarks>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServerDataSource.CreateConnection">
+            <summary>
+            Creates and opens a SQL connection.
+            </summary>
+            <returns></returns>
+            <remarks>The caller of this method is responsible for closing the connection.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServerDataSource.StartSqlDependency">
+            <summary>
+            Starts SQL dependency.
+            </summary>
+            <remarks>
+            true if the listener initialized successfully; false if a compatible listener
+            already exists.
+            </remarks>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServerDataSource.StopSqlDependency">
+            <summary>
+            Stops SQL dependency.
+            </summary>
+            <remarks>
+            true if the listener was completely stopped; false if the System.AppDomain
+            was unbound from the listener, but there are is at least one other System.AppDomain
+            using the same listener.
+            </remarks>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServerDataSource.TestConnection">
+            <summary>
+            Tests the connection.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServerDataSource.Execute(Tortuga.Chain.Core.ExecutionToken{System.Data.SqlClient.SqlCommand,System.Data.SqlClient.SqlParameter},System.Func{System.Data.SqlClient.SqlCommand,System.Nullable{System.Int32}},System.Object)">
+            <summary>
+            Executes the specified operation.
+            </summary>
+            <param name="executionToken">The execution token.</param>
+            <param name="implementation">The implementation that handles processing the result of the command.</param>
+            <param name="state">User supplied state.</param>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServerDataSource.ExecuteAsync(Tortuga.Chain.Core.ExecutionToken{System.Data.SqlClient.SqlCommand,System.Data.SqlClient.SqlParameter},System.Func{System.Data.SqlClient.SqlCommand,System.Threading.Tasks.Task{System.Nullable{System.Int32}}},System.Threading.CancellationToken,System.Object)">
+            <summary>
+            execute the operation asynchronously.
+            </summary>
+            <param name="executionToken">The execution token.</param>
+            <param name="implementation">The implementation that handles processing the result of the command.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name="state">User supplied state.</param>
+            <returns>Task.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServerDataSource.CreateSqlConnectionAsync(System.Threading.CancellationToken)">
+            <summary>
+            Creates and opens a SQL connection.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns></returns>
+            <remarks>
+            The caller of this method is responsible for closing the connection.
+            </remarks>
+        </member>
+        <member name="P:Tortuga.Chain.SqlServerDataSource.Settings">
+            <summary>
+            Gets the options set by the client. If an option is null, the server-defined defaults will be in effect.
+            </summary>
+            <value>The options.</value>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServerDataSource.GetEffectiveSettings">
+            <summary>
+            Gets the options that are currently in effect. This takes into account server-defined defaults.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServerDataSource.GetEffectiveSettingsAsync">
+            <summary>
+            Gets the options that are currently in effect. This takes into account server-defined defaults.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.Appenders.NotifyChangeAppender`1.#ctor(Tortuga.Chain.ILink{`0},System.Data.SqlClient.OnChangeEventHandler)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Appenders.Appender`1" /> class.
+            </summary>
+            <param name="previousLink">The previous link.</param>
+            <param name="eventHandler">The event handler to fire when then associated SQL Dependency is fired..</param>
+        </member>
+        <member name="T:Tortuga.Chain.SqlServer.CommandBuilders.ISupportsChangeListener">
+            <summary>
+            This is applied to command builders that support SqlDependency operations.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.ISupportsChangeListener.WaitForChange(System.Threading.CancellationToken,System.Object)">
+            <summary>
+            Waits for change in the data that is returned by this operation.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name="state">User defined state, usually used for logging.</param>
+            <returns>Task that can be waited for.</returns>
+            <remarks>This requires the use of SQL Dependency</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.ISupportsChangeListener.Prepare(Tortuga.Chain.Materializers.Materializer{System.Data.SqlClient.SqlCommand,System.Data.SqlClient.SqlParameter})">
+            <summary>
+            Prepares the command for execution by generating any necessary SQL.
+            </summary>
+            <param name="materializer">The materializer.</param>
+        </member>
+        <member name="T:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerDeleteObject">
+            <summary>
+            Class SqlServerDeleteObject.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerDeleteObject.#ctor(Tortuga.Chain.SqlServer.SqlServerDataSourceBase,Tortuga.Chain.SqlServer.SqlServerObjectName,System.Object,Tortuga.Chain.DeleteOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerDeleteObject"/> class.
+            </summary>
+            <param name="dataSource">The data source.</param>
+            <param name="tableName">Name of the table.</param>
+            <param name="argumentValue">The argument value.</param>
+            <param name="options">The options.</param>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerDeleteObject.Prepare(Tortuga.Chain.Materializers.Materializer{System.Data.SqlClient.SqlCommand,System.Data.SqlClient.SqlParameter})">
+            <summary>
+            Prepares the command for execution by generating any necessary SQL.
+            </summary>
+            <param name="materializer">The materializer.</param>
+            <returns>ExecutionToken&lt;TCommand&gt;.</returns>
+        </member>
+        <member name="T:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerInsertObject">
+            <summary>
+            Class SqlServerInsertObject.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerInsertObject.#ctor(Tortuga.Chain.SqlServer.SqlServerDataSourceBase,Tortuga.Chain.SqlServer.SqlServerObjectName,System.Object)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerInsertObject"/> class.
+            </summary>
+            <param name="dataSource">The data source.</param>
+            <param name="tableName">Name of the table.</param>
+            <param name="argumentValue">The argument value.</param>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerInsertObject.Prepare(Tortuga.Chain.Materializers.Materializer{System.Data.SqlClient.SqlCommand,System.Data.SqlClient.SqlParameter})">
+            <summary>
+            Prepares the command for execution by generating any necessary SQL.
+            </summary>
+            <param name="materializer">The materializer.</param>
+            <returns>ExecutionToken&lt;TCommand&gt;.</returns>
+        </member>
+        <member name="T:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerInsertOrUpdateObject">
+            <summary>
+            Class SqlServerInsertOrUpdateObject.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerInsertOrUpdateObject.#ctor(Tortuga.Chain.SqlServer.SqlServerDataSourceBase,Tortuga.Chain.SqlServer.SqlServerObjectName,System.Object,Tortuga.Chain.UpsertOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerInsertOrUpdateObject"/> class.
+            </summary>
+            <param name="dataSource">The data source.</param>
+            <param name="tableName">Name of the table.</param>
+            <param name="argumentValue">The argument value.</param>
+            <param name="options">The options.</param>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerInsertOrUpdateObject.Prepare(Tortuga.Chain.Materializers.Materializer{System.Data.SqlClient.SqlCommand,System.Data.SqlClient.SqlParameter})">
+            <summary>
+            Prepares the command for execution by generating any necessary SQL.
+            </summary>
+            <param name="materializer">The materializer.</param>
+            <returns>ExecutionToken&lt;TCommand&gt;.</returns>
+        </member>
+        <member name="T:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerObjectCommand">
+            <summary>
+            Class SqlServerObjectCommand.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerObjectCommand.#ctor(Tortuga.Chain.SqlServer.SqlServerDataSourceBase,Tortuga.Chain.SqlServer.SqlServerObjectName,System.Object)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerObjectCommand" /> class.
+            </summary>
+            <param name="dataSource">The data source.</param>
+            <param name="tableName">Name of the table.</param>
+            <param name="argumentValue">The argument value.</param>
+        </member>
+        <member name="P:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerObjectCommand.TableName">
+            <summary>
+            Gets the name of the table.
+            </summary>
+            <value>The name of the table.</value>
+        </member>
+        <member name="P:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerObjectCommand.ArgumentValue">
+            <summary>
+            Gets the argument value.
+            </summary>
+            <value>The argument value.</value>
+        </member>
+        <member name="P:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerObjectCommand.ArgumentDictionary">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerObjectCommand.OutputClause(Tortuga.Chain.Materializers.Materializer{System.Data.SqlClient.SqlCommand,System.Data.SqlClient.SqlParameter},System.Boolean)">
+            <summary>
+            Builds an output clause.
+            </summary>
+            <param name="materializer">The materializer.</param>
+            <param name="returnDeletedColumns">if set to <c>true</c> [return deleted columns].</param>
+            <returns>System.String.</returns>
+            <exception cref="T:System.Data.DataException"></exception>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerObjectCommand.WhereClause(System.Collections.Generic.List{System.Data.SqlClient.SqlParameter},System.Boolean)">
+            <summary>
+            Generates a where clause for update/delete operations.
+            </summary>
+            <param name="parameters">The parameters.</param>
+            <param name="useKeyAttribute">if set to <c>true</c> use key attribute.</param>
+            <returns>System.String.</returns>
+        </member>
+        <member name="P:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerObjectCommand.Metadata">
+            <summary>
+            Gets the table metadata.
+            </summary>
+            <value>The metadata.</value>
+        </member>
+        <member name="P:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerObjectCommand.DataSource">
+            <summary>
+            Gets the data source.
+            </summary>
+            <value>The data source.</value>
+        </member>
+        <member name="T:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerProcedureCall">
+            <summary>
+            Class SqlServerProcedureCall.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerProcedureCall.#ctor(Tortuga.Chain.SqlServer.SqlServerDataSourceBase,Tortuga.Chain.SqlServer.SqlServerObjectName,System.Object)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerProcedureCall"/> class.
+            </summary>
+            <param name="dataSource">The data source.</param>
+            <param name="procedureName">Name of the procedure.</param>
+            <param name="argumentValue">The argument value.</param>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerProcedureCall.Prepare(Tortuga.Chain.Materializers.Materializer{System.Data.SqlClient.SqlCommand,System.Data.SqlClient.SqlParameter})">
+            <summary>
+            Prepares the command for execution by generating any necessary SQL.
+            </summary>
+            <param name="materializer">The materializer.</param>
+            <returns>ExecutionToken&lt;TCommand&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerProcedureCall.WaitForChange(System.Threading.CancellationToken,System.Object)">
+            <summary>
+            Waits for change in the data that is returned by this operation.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name="state">User defined state, usually used for logging.</param>
+            <returns>Task that can be waited for.</returns>
+            <remarks>This requires the use of SQL Dependency</remarks>
+        </member>
+        <member name="P:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerProcedureCall.DataSource">
+            <summary>
+            Gets the data source.
+            </summary>
+            <value>The data source.</value>
+        </member>
+        <member name="T:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerSqlCall">
+            <summary>
+            Class SqlServerSqlCall.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerSqlCall.#ctor(Tortuga.Chain.SqlServer.SqlServerDataSourceBase,System.String,System.Object)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerSqlCall" /> class.
+            </summary>
+            <param name="dataSource">The data source.</param>
+            <param name="sqlStatement">The SQL statement.</param>
+            <param name="argumentValue">The argument value.</param>
+            <exception cref="T:System.ArgumentException">sqlStatement is null or empty.;sqlStatement</exception>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerSqlCall.Prepare(Tortuga.Chain.Materializers.Materializer{System.Data.SqlClient.SqlCommand,System.Data.SqlClient.SqlParameter})">
+            <summary>
+            Prepares the command for execution by generating any necessary SQL.
+            </summary>
+            <param name="materializer">The materializer.</param>
+            <returns>ExecutionToken&lt;TCommand&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerSqlCall.WaitForChange(System.Threading.CancellationToken,System.Object)">
+            <summary>
+            Waits for change in the data that is returned by this operation.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name="state">User defined state, usually used for logging.</param>
+            <returns>Task that can be waited for.</returns>
+            <remarks>This requires the use of SQL Dependency</remarks>
+        </member>
+        <member name="T:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableFunction">
+            <summary>
+            Class SqlServerTableFunction.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableFunction.#ctor(Tortuga.Chain.SqlServer.SqlServerDataSourceBase,Tortuga.Chain.SqlServer.SqlServerObjectName,System.String,System.Object)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableFunction"/> class.
+            </summary>
+            <param name="dataSource">The data source.</param>
+            <param name="tableFunctionName">Name of the table function.</param>
+            <param name="whereClause">The where clause.</param>
+            <param name="argumentValue">The argument value.</param>
+        </member>
+        <member name="T:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableOrView">
+            <summary>
+            SqlServerTableOrView supports queries against tables and views.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableOrView.#ctor(Tortuga.Chain.SqlServer.SqlServerDataSourceBase,Tortuga.Chain.SqlServer.SqlServerObjectName,System.Object)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableOrView"/> class.
+            </summary>
+            <param name="dataSource">The data source.</param>
+            <param name="tableOrViewName">Name of the table or view.</param>
+            <param name="filterValue">The filter value.</param>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableOrView.#ctor(Tortuga.Chain.SqlServer.SqlServerDataSourceBase,Tortuga.Chain.SqlServer.SqlServerObjectName,System.String,System.Object)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableOrView"/> class.
+            </summary>
+            <param name="dataSource">The data source.</param>
+            <param name="tableOrViewName">Name of the table or view.</param>
+            <param name="whereClause">The where clause.</param>
+            <param name="argumentValue">The argument value.</param>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableOrView.Prepare(Tortuga.Chain.Materializers.Materializer{System.Data.SqlClient.SqlCommand,System.Data.SqlClient.SqlParameter})">
+            <summary>
+            Prepares the command for execution by generating any necessary SQL.
+            </summary>
+            <param name="materializer">The materializer.</param>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableOrView.WaitForChange(System.Threading.CancellationToken,System.Object)">
+            <summary>
+            Waits for change in the data that is returned by this operation.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name="state">User defined state, usually used for logging.</param>
+            <returns>Task that can be waited for.</returns>
+            <remarks>This requires the use of SQL Dependency</remarks>
+        </member>
+        <member name="P:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableOrView.DataSource">
+            <summary>
+            Gets the data source.
+            </summary>
+            <value>The data source.</value>
+        </member>
+        <member name="T:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerUpdateObject">
+            <summary>
+            Class SqlServerUpdateObject.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerUpdateObject.#ctor(Tortuga.Chain.SqlServer.SqlServerDataSourceBase,Tortuga.Chain.SqlServer.SqlServerObjectName,System.Object,Tortuga.Chain.UpdateOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerUpdateObject"/> class.
+            </summary>
+            <param name="dataSource">The data source.</param>
+            <param name="tableName">Name of the table.</param>
+            <param name="argumentValue">The argument value.</param>
+            <param name="options">The options.</param>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerUpdateObject.Prepare(Tortuga.Chain.Materializers.Materializer{System.Data.SqlClient.SqlCommand,System.Data.SqlClient.SqlParameter})">
+            <summary>
+            Prepares the command for execution by generating any necessary SQL.
+            </summary>
+            <param name="materializer">The materializer.</param>
+            <returns>ExecutionToken&lt;TCommand&gt;.</returns>
+        </member>
+        <member name="T:Tortuga.Chain.SqlServer.Core.SqlServerExecutionToken">
+            <summary>
+            An execution token specific to Sql Server.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.Core.SqlServerExecutionToken.#ctor(Tortuga.Chain.DataSources.DataSource{System.Data.SqlClient.SqlCommand,System.Data.SqlClient.SqlParameter},System.String,System.String,System.Collections.Generic.IReadOnlyList{System.Data.SqlClient.SqlParameter},System.Data.CommandType)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Core.ExecutionToken`2"/> class.
+            </summary>
+            <param name="dataSource">The data source.</param>
+            <param name="operationName">Name of the operation. This is used for logging.</param>
+            <param name="commandText">The SQL to be executed.</param>
+            <param name="parameters">The parameters.</param>
+            <param name="commandType">Type of the command.</param>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.Core.SqlServerExecutionToken.AddChangeListener(System.Data.SqlClient.OnChangeEventHandler)">
+            <summary>
+            Adds a SQL Dependency based change listener.
+            </summary>
+            <param name="eventHandler">The event handler.</param>
+            <remarks>This requires SQL Dependency to be active.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.Core.SqlServerExecutionToken.OnBuildCommand(System.Data.SqlClient.SqlCommand)">
+            <summary>
+            Subclasses can override this method to change the command object after the command text and parameters are loaded.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.Materializers.WaitForChangeMaterializer`1.#ctor(`0)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Materializers.Materializer`2"/> class.
+            </summary>
+            <param name="commandBuilder">The associated command builder.</param>
+        </member>
+        <member name="T:Tortuga.Chain.SqlServer.SqlServerAppenders">
+            <summary>
+            Class SqlServerAppenders.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerAppenders.WithChangeNotification``1(Tortuga.Chain.ILink{``0},System.Data.SqlClient.OnChangeEventHandler)">
+            <summary>
+            Attaches a SQL Server dependency change listener to this operation.
+            </summary>
+            <typeparam name="TResult">The type of the t result type.</typeparam>
+            <param name="previousLink">The previous link.</param>
+            <param name="eventHandler">The event handler to fire when the underlying data changes.</param>
+            <returns>Tortuga.Chain.Core.ILink&lt;TResult&gt;.</returns>
+            <remarks>This will only work for operations against non-transactional SQL Server data sources that also comform to the rules about using SQL Dependency.</remarks>
+        </member>
+        <member name="T:Tortuga.Chain.SqlServer.SqlServerDataSourceBase">
+            <summary>
+            Class SqlServerDataSourceBase.
+            </summary>
+        </member>
+        <member name="P:Tortuga.Chain.SqlServer.SqlServerDataSourceBase.DatabaseMetadata">
+            <summary>
+            Gets the database metadata.
+            </summary>
+            <value>The database metadata.</value>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Delete(Tortuga.Chain.SqlServer.SqlServerObjectName,System.Object,Tortuga.Chain.DeleteOptions)">
+            <summary>
+            Inserts an object model from the specified table.
+            </summary>
+            <param name="tableName">Name of the table.</param>
+            <param name="argumentValue">The argument value.</param>
+            <param name="options">The delete options.</param>
+            <returns>SqlServerInsert.</returns>
+            <exception cref="T:System.ArgumentException">tableName is empty.;tableName</exception>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerDataSourceBase.From(Tortuga.Chain.SqlServer.SqlServerObjectName)">
+            <summary>
+            This is used to directly query a table or view.
+            </summary>
+            <param name="tableOrViewName">Name of the table or view.</param>
+            <returns></returns>
+            <exception cref="T:System.ArgumentException">
+            tableName is empty.;tableName
+            or
+            Table or view named + tableName +  could not be found. Check to see if the user has permissions to execute this procedure.
+            </exception>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerDataSourceBase.From(Tortuga.Chain.SqlServer.SqlServerObjectName,System.String)">
+            <summary>
+            This is used to directly query a table or view.
+            </summary>
+            <param name="tableOrViewName">Name of the table or view.</param>
+            <param name="whereClause">The where clause. Do not prefix this clause with "WHERE".</param>
+            <returns>SqlServerTableOrView.</returns>
+            <exception cref="T:System.ArgumentException">tableOrViewName is empty.;tableOrViewName</exception>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerDataSourceBase.From(Tortuga.Chain.SqlServer.SqlServerObjectName,System.String,System.Object)">
+            <summary>
+            This is used to directly query a table or view.
+            </summary>
+            <param name="tableOrViewName">Name of the table or view.</param>
+            <param name="whereClause">The where clause. Do not prefix this clause with "WHERE".</param>
+            <param name="argumentValue">Optional argument value. Every property in the argument value must have a matching parameter in the WHERE clause</param>
+            <returns>SqlServerTableOrView.</returns>
+            <exception cref="T:System.ArgumentException">tableOrViewName is empty.;tableOrViewName</exception>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerDataSourceBase.From(Tortuga.Chain.SqlServer.SqlServerObjectName,System.Object)">
+            <summary>
+            This is used to directly query a table or view.
+            </summary>
+            <param name="tableOrViewName">Name of the table or view.</param>
+            <param name="filterValue">The filter value is used to generate a simple AND style WHERE clause.</param>
+            <returns>SqlServerTableOrView.</returns>
+            <exception cref="T:System.ArgumentException">tableOrViewName is empty.;tableOrViewName</exception>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Insert(Tortuga.Chain.SqlServer.SqlServerObjectName,System.Object)">
+            <summary>
+            Inserts an object into the specified table.
+            </summary>
+            <param name="tableName">Name of the table.</param>
+            <param name="argumentValue">The argument value.</param>
+            <returns>SqlServerInsert.</returns>
+            <exception cref="T:System.ArgumentException">tableName is empty.;tableName</exception>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerDataSourceBase.LoadDictionaryParameters(System.Collections.Generic.IReadOnlyDictionary{System.String,System.Object},System.Collections.Generic.List{System.Data.SqlClient.SqlParameter},System.Collections.Generic.IEnumerable{Tortuga.Chain.Metadata.ColumnMetadata{System.Data.SqlDbType}})">
+            <summary>
+            Loads the parameters from the ArgumentDictionary.
+            </summary>
+            <param name="argumentDictionary">The argument dictionary.</param>
+            <param name="parameters">The parameters.</param>
+            <param name="columns">The columns.</param>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerDataSourceBase.LoadParameters(System.Object,System.Collections.Generic.List{System.Data.SqlClient.SqlParameter},System.Collections.Generic.IEnumerable{Tortuga.Chain.Metadata.ColumnPropertyMap{System.Data.SqlDbType}})">
+            <summary>
+            Loads the parameters from the ArgumentValue.
+            </summary>
+            <param name="argumentValue">The argument value.</param>
+            <param name="parameters">The parameters.</param>
+            <param name="columns">The columns.</param>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Procedure(Tortuga.Chain.SqlServer.SqlServerObjectName)">
+            <summary>
+            Loads a procedure definition
+            </summary>
+            <param name="procedureName">Name of the procedure.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Procedure(Tortuga.Chain.SqlServer.SqlServerObjectName,System.Object)">
+            <summary>
+            Loads a procedure definition and populates it using the parameter object.
+            </summary>
+            <param name="procedureName">Name of the procedure.</param>
+            <param name="argumentValue">The argument value.</param>
+            <returns></returns>
+            <remarks>
+            The procedure's definition is loaded from the database and used to determine which properties on the parameter object to use.
+            </remarks>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Sql(System.String)">
+            <summary>
+            Creates a operation based on a raw SQL statement.
+            </summary>
+            <param name="sqlStatement">The SQL statement.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Sql(System.String,System.Object)">
+            <summary>
+            Creates a operation based on a raw SQL statement.
+            </summary>
+            <param name="sqlStatement">The SQL statement.</param>
+            <param name="argumentValue">The argument value.</param>
+            <returns>SqlServerSqlCall.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Update(Tortuga.Chain.SqlServer.SqlServerObjectName,System.Object,Tortuga.Chain.UpdateOptions)">
+            <summary>
+            Updates an object in the specified table.
+            </summary>
+            <param name="tableName">Name of the table.</param>
+            <param name="argumentValue">The argument value.</param>
+            <param name="options">The update options.</param>
+            <returns>SqlServerInsert.</returns>
+            <exception cref="T:System.ArgumentException">tableName is empty.;tableName</exception>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Upsert(Tortuga.Chain.SqlServer.SqlServerObjectName,System.Object,Tortuga.Chain.UpsertOptions)">
+            <summary>
+            Performs an insert or update operation as appropriate.
+            </summary>
+            <param name="tableName">Name of the table.</param>
+            <param name="argumentValue">The argument value.</param>
+            <param name="options">The options for how the insert/update occurs.</param>
+            <returns>SqlServerUpdate.</returns>
+            <exception cref="T:System.ArgumentException">tableName is empty.;tableName</exception>
+        </member>
+        <member name="T:Tortuga.Chain.SqlServer.SqlServerEffectiveSettings">
+            <summary>
+            This contains the connection options that are currently in effect.
+            </summary>
+        </member>
+        <member name="P:Tortuga.Chain.SqlServer.SqlServerEffectiveSettings.DisableDeferredConstraintChecking">
+            <summary>
+            DISABLE_DEF_CNST_CHK. Controls interim or deferred constraint checking.
+            </summary>
+        </member>
+        <member name="P:Tortuga.Chain.SqlServer.SqlServerEffectiveSettings.CursorCloseOnCommit">
+            <summary>
+            CURSOR_CLOSE_ON_COMMIT. Controls behavior of cursors after a commit operation has been performed.
+            </summary>
+        </member>
+        <member name="P:Tortuga.Chain.SqlServer.SqlServerEffectiveSettings.AnsiWarning">
+            <summary>
+            ANSI_WARNINGS. Controls truncation and NULL in aggregate warnings.
+            </summary>
+        </member>
+        <member name="P:Tortuga.Chain.SqlServer.SqlServerEffectiveSettings.AnsiPadding">
+            <summary>
+            ANSI_PADDING. Controls padding of fixed-length variables.
+            </summary>
+        </member>
+        <member name="P:Tortuga.Chain.SqlServer.SqlServerEffectiveSettings.AnsiNulls">
+            <summary>
+            ANSI_NULLS. Controls NULL handling when using equality operators.
+            </summary>
+        </member>
+        <member name="P:Tortuga.Chain.SqlServer.SqlServerEffectiveSettings.ArithAbort">
+            <summary>
+            ARITHABORT. Terminates a query when an overflow or divide-by-zero error occurs during query execution.
+            </summary>
+        </member>
+        <member name="P:Tortuga.Chain.SqlServer.SqlServerEffectiveSettings.ArithIgnore">
+            <summary>
+            ARITHIGNORE. Returns NULL when an overflow or divide-by-zero error occurs during a query.
+            </summary>
+        </member>
+        <member name="P:Tortuga.Chain.SqlServer.SqlServerEffectiveSettings.QuotedIdentifier">
+            <summary>
+            QUOTED_IDENTIFIER. Differentiates between single and double quotation marks when evaluating an expression.
+            </summary>
+        </member>
+        <member name="P:Tortuga.Chain.SqlServer.SqlServerEffectiveSettings.NoCount">
+            <summary>
+            NOCOUNT. Turns off the message returned at the end of each statement that states how many rows were affected.
+            </summary>
+        </member>
+        <member name="P:Tortuga.Chain.SqlServer.SqlServerEffectiveSettings.AnsiNullDefaultOn">
+            <summary>
+            ANSI_NULL_DFLT_ON. Alters the session's behavior to use ANSI compatibility for nullability. New columns defined without explicit nullability are defined to allow nulls.
+            </summary>
+        </member>
+        <member name="P:Tortuga.Chain.SqlServer.SqlServerEffectiveSettings.AnsiNullDefaultOff">
+            <summary>
+            ANSI_NULL_DFLT_OFF. Alters the session's behavior not to use ANSI compatibility for nullability. New columns defined without explicit nullability do not allow nulls.
+            </summary>
+        </member>
+        <member name="P:Tortuga.Chain.SqlServer.SqlServerEffectiveSettings.ConcatNullYieldsNull">
+            <summary>
+            CONCAT_NULL_YIELDS_NULL. Returns NULL when concatenating a NULL value with a string.
+            </summary>
+        </member>
+        <member name="P:Tortuga.Chain.SqlServer.SqlServerEffectiveSettings.NumericRoundAbort">
+            <summary>
+            NUMERIC_ROUNDABORT. Generates an error when a loss of precision occurs in an expression.
+            </summary>
+        </member>
+        <member name="P:Tortuga.Chain.SqlServer.SqlServerEffectiveSettings.XactAbort">
+            <summary>
+            XACT_ABORT. Rolls back a transaction if a Transact-SQL statement raises a run-time error.
+            </summary>
+        </member>
+        <member name="T:Tortuga.Chain.SqlServer.SqlServerMetadataCache">
+            <summary>
+            Class SqlServerMetadataCache.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerMetadataCache.#ctor(System.Data.SqlClient.SqlConnectionStringBuilder)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.SqlServer.SqlServerMetadataCache"/> class.
+            </summary>
+            <param name="connectionBuilder">The connection builder.</param>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerMetadataCache.AddUdtTypeName(System.Type,System.String)">
+            <summary>
+            It is necessary to map some types to their corresponding UDT Names in Sql Server.
+            </summary>
+            <param name="type">The type to be mapped</param>
+            <param name="udtName">The name that SQL server sees</param>
+            <remarks>The types SqlGeometry and SqlGeography are automatically included in the map.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerMetadataCache.GetStoredProcedure(Tortuga.Chain.SqlServer.SqlServerObjectName)">
+            <summary>
+            Gets the stored procedure's metadata.
+            </summary>
+            <param name="procedureName">Name of the procedure.</param>
+            <returns>Null if the object could not be found.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerMetadataCache.GetTableFunction(Tortuga.Chain.SqlServer.SqlServerObjectName)">
+            <summary>
+            Gets the metadata for a table function.
+            </summary>
+            <param name="tableFunctionName">Name of the table function.</param>
+            <returns>Null if the object could not be found.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerMetadataCache.GetTableOrView(Tortuga.Chain.SqlServer.SqlServerObjectName)">
+            <summary>
+            Gets the metadata for a table.
+            </summary>
+            <param name="tableName">Name of the table.</param>
+            <returns>Null if the object could not be found.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerMetadataCache.PreloadTables">
+            <summary>
+            Preloads metadata for all tables.
+            </summary>
+            <remarks>This is normally used only for testing. By default, metadata is loaded as needed.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerMetadataCache.PreloadViews">
+            <summary>
+            Preloads metadata for all views.
+            </summary>
+            <remarks>This is normally used only for testing. By default, metadata is loaded as needed.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerMetadataCache.ParseObjectName(System.String)">
+            <summary>
+            Parse a string and return the database specific representation of the object name.
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Tortuga.Chain.SqlServer.SqlServerObjectName">
+            <summary>
+            Represents an object in SQL Server (e.g. table, view, procedure)
+            </summary>
+        </member>
+        <member name="F:Tortuga.Chain.SqlServer.SqlServerObjectName.Empty">
+            <summary>
+            An empty schema/name pair
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerObjectName.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.SqlServer.SqlServerObjectName"/> struct.
+            </summary>
+            <param name="schema">The schema.</param>
+            <param name="name">The name.</param>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerObjectName.#ctor(System.String,System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.SqlServer.SqlServerObjectName" /> struct.
+            </summary>
+            <param name="database">The database.</param>
+            <param name="schema">The schema.</param>
+            <param name="name">The name.</param>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerObjectName.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.SqlServer.SqlServerObjectName"/> struct.
+            </summary>
+            <param name="schemaAndName">Name of the schema and.</param>
+        </member>
+        <member name="P:Tortuga.Chain.SqlServer.SqlServerObjectName.Database">
+            <summary>
+            Gets the database.
+            </summary>
+            <value>The database.</value>
+        </member>
+        <member name="P:Tortuga.Chain.SqlServer.SqlServerObjectName.Name">
+            <summary>
+            Gets the name.
+            </summary>
+            <value>
+            The name.
+            </value>
+        </member>
+        <member name="P:Tortuga.Chain.SqlServer.SqlServerObjectName.Schema">
+            <summary>
+            Gets the schema.
+            </summary>
+            <value>
+            The schema.
+            </value>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerObjectName.op_Implicit(System.String)~Tortuga.Chain.SqlServer.SqlServerObjectName">
+            <summary>
+            Performs an implicit conversion from <see cref="T:System.String"/> to <see cref="T:Tortuga.Chain.SqlServer.SqlServerObjectName"/>.
+            </summary>
+            <param name="value">The value.</param>
+            <returns>
+            The result of the conversion.
+            </returns>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerObjectName.op_Inequality(Tortuga.Chain.SqlServer.SqlServerObjectName,Tortuga.Chain.SqlServer.SqlServerObjectName)">
+            <summary>
+            Implements the operator !=.
+            </summary>
+            <param name="left">The left value.</param>
+            <param name="right">The right value.</param>
+            <returns>
+            The result of the operator.
+            </returns>
+            <remarks>This is a case-insensitive comparison.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerObjectName.op_Equality(Tortuga.Chain.SqlServer.SqlServerObjectName,Tortuga.Chain.SqlServer.SqlServerObjectName)">
+            <summary>
+            Implements the operator ==.
+            </summary>
+            <param name="left">The left value.</param>
+            <param name="right">The right value.</param>
+            <returns>
+            The result of the operator.
+            </returns>
+            <remarks>This is a case-insensitive comparison.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerObjectName.Equals(System.Object)">
+            <summary>
+            Determines whether the specified <see cref="T:System.Object" />, is equal to this instance.
+            </summary>
+            <param name="obj">The <see cref="T:System.Object" /> to compare with this instance.</param>
+            <returns>
+              <c>true</c> if the specified <see cref="T:System.Object" /> is equal to this instance; otherwise, <c>false</c>.
+            </returns>
+            <remarks>This is a case-insensitive comparison.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerObjectName.Equals(Tortuga.Chain.SqlServer.SqlServerObjectName)">
+            <summary>
+            Returns true if the two objects are equal.
+            </summary>
+            <param name="other"></param>
+            <returns></returns>
+            <remarks>This is a case-insensitive comparison.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerObjectName.GetHashCode">
+            <summary>
+            Returns a hash code for this instance.
+            </summary>
+            <returns>
+            A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+            </returns>
+            <remarks>This is a case-insensitive comparison.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerObjectName.ToQuotedString">
+            <summary>
+            To the quoted string.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerObjectName.ToString">
+            <summary>
+            Returns a <see cref="T:System.String" /> that represents this instance.
+            </summary>
+            <returns>
+            A <see cref="T:System.String" /> that represents this instance.
+            </returns>
+        </member>
+        <member name="T:Tortuga.Chain.SqlServer.SqlServerSettings">
+            <summary>
+            This allows overriding connection options.
+            </summary>
+        </member>
+        <member name="P:Tortuga.Chain.SqlServer.SqlServerSettings.XactAbort">
+            <summary>
+            Rolls back a transaction if a Transact-SQL statement raises a run-time error.
+            </summary>
+        </member>
+        <member name="P:Tortuga.Chain.SqlServer.SqlServerSettings.ArithAbort">
+            <summary>
+            Terminates a query when an overflow or divide-by-zero error occurs during query execution.
+            </summary>
+            <remarks>Microsoft recommends setting ArithAbort=On for all connections. To avoid an additional round-trip to the server, do this at the server level instead of at the connection level.</remarks>
+        </member>
+        <member name="T:Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource">
+            <summary>
+            Class SqlServerTransactionalDataSource.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource.#ctor(Tortuga.Chain.SqlServerDataSource,System.String,System.Nullable{System.Data.IsolationLevel},System.Boolean)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource"/> class.
+            </summary>
+            <param name="dataSource">The parent connection.</param>
+            <param name="transactionName">Name of the transaction.</param>
+            <param name="isolationLevel">The isolation level. If not supplied, will use the database default.</param>
+            <param name="forwardEvents">If true, logging events are forwarded to the parent connection.</param>
+        </member>
+        <member name="P:Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource.DatabaseMetadata">
+            <summary>
+            This object can be used to lookup database information.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource.Commit">
+            <summary>
+            Commits the transaction and disposes the underlying connection.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource.Dispose">
+            <summary>
+            Closes the current transaction and connection. If not committed, the transaction is rolled back.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource.Rollback">
+            <summary>
+            Rolls back the transaction and disposes the underlying connection.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource.Dispose(System.Boolean)">
+            <summary>
+            Closes the current transaction and connection. If not committed, the transaction is rolled back.
+            </summary>
+            <param name="disposing"></param>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource.Execute(Tortuga.Chain.Core.ExecutionToken{System.Data.SqlClient.SqlCommand,System.Data.SqlClient.SqlParameter},System.Func{System.Data.SqlClient.SqlCommand,System.Nullable{System.Int32}},System.Object)">
+            <summary>
+            Executes the specified operation.
+            </summary>
+            <param name="executionToken">The execution token.</param>
+            <param name="implementation">The implementation that handles processing the result of the command.</param>
+            <param name="state">User supplied state.</param>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource.ExecuteAsync(Tortuga.Chain.Core.ExecutionToken{System.Data.SqlClient.SqlCommand,System.Data.SqlClient.SqlParameter},System.Func{System.Data.SqlClient.SqlCommand,System.Threading.Tasks.Task{System.Nullable{System.Int32}}},System.Threading.CancellationToken,System.Object)">
+            <summary>
+            execute as an asynchronous operation.
+            </summary>
+            <param name="executionToken">The execution token.</param>
+            <param name="implementation">The implementation that handles processing the result of the command.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name="state">User supplied state.</param>
+            <returns>Task.</returns>
+        </member>
+        <member name="P:Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource.TransactionName">
+            <summary>
+            Gets the name of the transaction.
+            </summary>
+            <value>The name of the transaction.</value>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource.GetExtensionData``1">
+            <summary>
+            Gets the extension data.
+            </summary>
+            <typeparam name="TTKey">The type of extension data desired.</typeparam>
+            <returns>T.</returns>
+            <remarks>Chain extensions can use this to store data source specific data. The key should be a data type defined by the extension.
+            Transactional data sources should override this method and return the value held by their parent data source.</remarks>
+        </member>
+    </members>
+</doc>

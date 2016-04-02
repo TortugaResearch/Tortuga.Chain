@@ -1,4 +1,3 @@
-using System;
 using System.Data.SqlClient;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,7 +14,6 @@ namespace Tortuga.Chain.SqlServer.Materializers
         /// Initializes a new instance of the <see cref="Materializer{TCommand, TParameter}"/> class.
         /// </summary>
         /// <param name="commandBuilder">The associated command builder.</param>
-        /// <exception cref="ArgumentNullException">operation;operation is null.</exception>
         public WaitForChangeMaterializer(TCommandBuilder commandBuilder)
             : base(commandBuilder)
         { }

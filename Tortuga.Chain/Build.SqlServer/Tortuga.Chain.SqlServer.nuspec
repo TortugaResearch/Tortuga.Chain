@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>Tortuga.Chain.SqlServer</id>
-    <version></version>
+    <version>0.9.5935.35025</version>
     <authors>David Tomcik, Jonathan Allen</authors>
     <copyright>Copyright David Tomcik, Jonathan Allen 2016</copyright>
     <description>Fluent ORM for .NET and SQL Server.</description>
@@ -19,8 +19,6 @@
       <frameworkAssembly assemblyName="System.Xml.Linq" targetFramework="net45" />
       <frameworkAssembly assemblyName="System.Runtime.Caching" targetFramework="net45" />
       <frameworkAssembly assemblyName="System.Configuration" targetFramework="net45" />
-
-      
       <frameworkAssembly assemblyName="System.Data" targetFramework="net46" />
       <frameworkAssembly assemblyName="System.ComponentModel.DataAnnotations" targetFramework="net46" />
       <frameworkAssembly assemblyName="System.Xml" targetFramework="net46" />
@@ -28,7 +26,6 @@
       <frameworkAssembly assemblyName="System.Runtime.Caching" targetFramework="net46" />
       <frameworkAssembly assemblyName="System.Configuration" targetFramework="net46" />
     </frameworkAssemblies>
-
     <dependencies>
       <group targetFramework="net45">
         <dependency id="System.Collections.Immutable" version="1.1.37" />
@@ -41,7 +38,5 @@
         <dependency id="Tortuga.Chain.Core" version="0.9.5935.33826" />
       </group>
     </dependencies>
-
   </metadata>
-
 </package>
