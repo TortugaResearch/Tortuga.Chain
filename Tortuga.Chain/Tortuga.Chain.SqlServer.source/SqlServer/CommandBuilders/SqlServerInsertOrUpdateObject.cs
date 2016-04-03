@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Text;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
-using Tortuga.Chain.Metadata;
 using Tortuga.Chain.SqlServer.Core;
 
 namespace Tortuga.Chain.SqlServer.CommandBuilders
@@ -35,118 +35,31 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 
         public override ExecutionToken<SqlCommand, SqlParameter> Prepare(Materializer<SqlCommand, SqlParameter> materializer)
         {
-            var parameters = new List<SqlParameter>();
 
-            string on = OnClause(m_Options.HasFlag(UpsertOptions.UseKeyAttribute));
-            string set = UpdateClauses();
-            string insertColumns;
-            string insertValues;
-            string source = SourceClause(parameters);
-            string output = OutputClause(materializer, false);
-            InsertClauses(out insertColumns, out insertValues);
+            var sqlBuilder = Metadata.CreateSqlBuilder();
+            sqlBuilder.ApplyArgumentValue(ArgumentValue, false, DataSource.StrictMode);
+            sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns(), DataSource.StrictMode);
 
-            var sql = $"MERGE INTO {TableName.ToQuotedString()} target USING {source} ON {on} WHEN MATCHED THEN UPDATE SET {set} WHEN NOT MATCHED THEN INSERT ( {insertColumns} ) VALUES ({insertValues}) {output} ;";
+            var availableColumns = sqlBuilder.GetParameterizedColumns().ToList();
 
-            return new SqlServerExecutionToken(DataSource, "Insert or update " + Metadata.Name, sql, parameters);
-        }
+            var sql = new StringBuilder($"MERGE INTO {TableName.ToQuotedString()} target USING ");
+            sql.Append("(VALUES (" + string.Join(", ", availableColumns.Select(c => c.SqlVariableName)) + ")) AS source (" + string.Join(", ", availableColumns.Select(c => c.QuotedSqlName)) + ")");
+            sql.Append(" ON ");
+            sql.Append(string.Join(" AND ", sqlBuilder.GetKeyColumns().ToList().Select(c => $"target.{c.QuotedSqlName} = source.{c.QuotedSqlName}")));
 
+            sql.Append(" WHEN MATCHED THEN UPDATE SET ");
+            sql.Append(string.Join(", ", sqlBuilder.GetUpdateColumns().Select(x => $"{x.QuotedSqlName} = source.{x.QuotedSqlName}")));
 
-        private string SourceClause(List<SqlParameter> parameters)
-        {
-            if (ArgumentDictionary != null)
-            {
-                var availableColumns = Metadata.GetKeysFor(ArgumentDictionary, GetKeysFilter.None);
+            var insertColumns = sqlBuilder.GetInsertColumns();
+            sql.Append(" WHEN NOT MATCHED THEN INSERT (");
+            sql.Append(string.Join(", ", insertColumns.Select(x => x.QuotedSqlName)));
+            sql.Append(") VALUES (");
+            sql.Append(string.Join(", ", insertColumns.Select(x => "source." + x.QuotedSqlName)));
+            sql.Append(" )");
+            sqlBuilder.BuildSelectClause(sql, " OUTPUT ", "Inserted.", null);
+            sql.Append(";");
 
-                DataSource.LoadDictionaryParameters(ArgumentDictionary, parameters, availableColumns);
-
-                return "(VALUES (" + string.Join(", ", availableColumns.Select(c => c.SqlVariableName)) + ")) AS source (" + string.Join(", ", availableColumns.Select(c => c.QuotedSqlName)) + ")";
-
-            }
-            else
-            {
-                var availableColumns = Metadata.GetPropertiesFor(ArgumentValue.GetType(), GetPropertiesFilter.None);
-
-                DataSource.LoadParameters(ArgumentValue, parameters, availableColumns);
-
-                return "(VALUES (" + string.Join(", ", availableColumns.Select(c => c.Column.SqlVariableName)) + ")) AS source (" + string.Join(", ", availableColumns.Select(c => c.Column.QuotedSqlName)) + ")";
-            }
-        }
-
-
-        private string UpdateClauses()
-        {
-            if (ArgumentDictionary != null)
-            {
-                var filter = GetKeysFilter.ThrowOnNoMatch | GetKeysFilter.MutableColumns | GetKeysFilter.NonPrimaryKey;
-
-                if (DataSource.StrictMode)
-                    filter = filter | GetKeysFilter.ThrowOnMissingColumns;
-
-                var availableColumns = Metadata.GetKeysFor(ArgumentDictionary, filter);
-
-                return string.Join(", ", availableColumns.Select(c => $"target.{c.QuotedSqlName} = source.{c.QuotedSqlName}"));
-
-            }
-            else
-            {
-                var filter = GetPropertiesFilter.ThrowOnNoMatch | GetPropertiesFilter.MutableColumns | GetPropertiesFilter.ForUpdate;
-
-                if (m_Options.HasFlag(UpsertOptions.UseKeyAttribute))
-                    filter = filter | GetPropertiesFilter.ObjectDefinedNonKey;
-                else
-                    filter = filter | GetPropertiesFilter.NonPrimaryKey;
-
-                if (DataSource.StrictMode)
-                    filter = filter | GetPropertiesFilter.ThrowOnMissingColumns;
-
-                var availableColumns = Metadata.GetPropertiesFor(ArgumentValue.GetType(), filter);
-
-                return string.Join(", ", availableColumns.Select(c => $"target.{c.Column.QuotedSqlName} = source.{c.Column.QuotedSqlName}"));
-            }
-        }
-
-        private void InsertClauses(out string insertColumns, out string insertValues)
-        {
-            if (ArgumentDictionary != null)
-            {
-                var availableColumns = Metadata.GetKeysFor(ArgumentDictionary, GetKeysFilter.MutableColumns);
-
-                insertColumns = string.Join(", ", availableColumns.Select(c => $"{c.QuotedSqlName}"));
-                insertValues = string.Join(", ", availableColumns.Select(c => $"source.{c.QuotedSqlName}"));
-
-            }
-            else
-            {
-                var availableColumns = Metadata.GetPropertiesFor(ArgumentValue.GetType(), GetPropertiesFilter.MutableColumns | GetPropertiesFilter.ForInsert);
-
-                insertColumns = string.Join(", ", availableColumns.Select(c => $"{c.Column.QuotedSqlName}"));
-                insertValues = string.Join(", ", availableColumns.Select(c => $"source.{c.Column.QuotedSqlName}"));
-            }
-        }
-
-        private string OnClause(bool useKeyAttribute)
-        {
-            if (ArgumentDictionary != null)
-            {
-                GetKeysFilter filter = (GetKeysFilter.PrimaryKey | GetKeysFilter.ThrowOnMissingProperties);
-
-                var columns = Metadata.GetKeysFor(ArgumentDictionary, filter);
-
-                return string.Join(" AND ", columns.Select(c => $"target.{c.QuotedSqlName} = source.{c.QuotedSqlName}"));
-
-            }
-            else
-            {
-                GetPropertiesFilter filter;
-                if (useKeyAttribute)
-                    filter = (GetPropertiesFilter.ObjectDefinedKey | GetPropertiesFilter.ThrowOnMissingColumns);
-                else
-                    filter = (GetPropertiesFilter.PrimaryKey | GetPropertiesFilter.ThrowOnMissingProperties);
-
-                var columns = Metadata.GetPropertiesFor(ArgumentValue.GetType(), filter); //.Where(c => !c.Column.IsIdentity);
-
-                return string.Join(" AND ", columns.Select(c => $"target.{c.Column.QuotedSqlName} = source.{c.Column.QuotedSqlName}"));
-            }
+            return new SqlServerExecutionToken(DataSource, "Insert or update " + TableName, sql.ToString(), sqlBuilder.GetParameters());
         }
     }
 }

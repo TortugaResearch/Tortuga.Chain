@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Linq;
+﻿using System.Data.SqlClient;
+using System.Text;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
-using Tortuga.Chain.Metadata;
 using Tortuga.Chain.SqlServer.Core;
+
 namespace Tortuga.Chain.SqlServer.CommandBuilders
 {
     /// <summary>
@@ -34,59 +33,24 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 
         public override ExecutionToken<SqlCommand, SqlParameter> Prepare(Materializer<SqlCommand, SqlParameter> materializer)
         {
-            var parameters = new List<SqlParameter>();
 
-            var set = SetClause(parameters);
-            var output = OutputClause(materializer, m_Options.HasFlag(UpdateOptions.ReturnOldValues));
-            var where = WhereClause(parameters, m_Options.HasFlag(UpdateOptions.UseKeyAttribute));
+            var sqlBuilder = Metadata.CreateSqlBuilder();
+            sqlBuilder.ApplyArgumentValue(ArgumentValue, m_Options.HasFlag(UpdateOptions.UseKeyAttribute), DataSource.StrictMode);
+            sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns(), DataSource.StrictMode);
 
-            var sql = $"UPDATE {TableName.ToQuotedString()} {set} {output} WHERE {where}";
+            var prefix = m_Options.HasFlag(UpdateOptions.ReturnOldValues) ? "Deleted." : "Inserted.";
 
-            return new SqlServerExecutionToken(DataSource, "Update " + TableName, sql, parameters);
+            var sql = new StringBuilder($"UPDATE {TableName.ToQuotedString()}");
+            sqlBuilder.BuildSetClause(sql, " SET ", null, null);
+            sqlBuilder.BuildSelectClause(sql, " OUTPUT ", prefix, null);
+            sqlBuilder.BuildWhereClause(sql, " WHERE ", null);
+            sql.Append(";");
+
+
+            return new SqlServerExecutionToken(DataSource, "Update " + TableName, sql.ToString(), sqlBuilder.GetParameters());
         }
 
-        private string SetClause(List<SqlParameter> parameters)
-        {
-            if (ArgumentDictionary != null)
-            {
 
-                var filter = GetKeysFilter.ThrowOnNoMatch | GetKeysFilter.MutableColumns;
-
-                filter = filter | GetKeysFilter.NonPrimaryKey;
-
-                if (DataSource.StrictMode)
-                    filter = filter | GetKeysFilter.ThrowOnMissingColumns;
-
-                var availableColumns = Metadata.GetKeysFor(ArgumentDictionary, filter);
-
-                var result = "SET " + string.Join(", ", availableColumns.Select(c => $"{c.QuotedSqlName} = {c.SqlVariableName}"));
-
-                DataSource.LoadDictionaryParameters(ArgumentDictionary, parameters, availableColumns);
-
-
-                return result;
-            }
-            else
-            {
-                var filter = GetPropertiesFilter.ThrowOnNoMatch | GetPropertiesFilter.MutableColumns | GetPropertiesFilter.ForUpdate;
-
-                if (m_Options.HasFlag(UpdateOptions.UseKeyAttribute))
-                    filter = filter | GetPropertiesFilter.ObjectDefinedNonKey;
-                else
-                    filter = filter | GetPropertiesFilter.NonPrimaryKey;
-
-                if (DataSource.StrictMode)
-                    filter = filter | GetPropertiesFilter.ThrowOnMissingColumns;
-
-                var availableColumns = Metadata.GetPropertiesFor(ArgumentValue.GetType(), filter);
-
-                var result = "SET " + string.Join(", ", availableColumns.Select(c => $"{c.Column.QuotedSqlName} = {c.Column.SqlVariableName}"));
-
-                DataSource.LoadParameters(ArgumentValue, parameters, availableColumns);
-
-                return result;
-            }
-        }
     }
 }
 

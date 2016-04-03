@@ -50,4 +50,5 @@ namespace Tortuga.Chain.Metadata
         /// <value>The name of the type.</value>
         string TypeName { get; }
     }
+
 }

@@ -41,7 +41,7 @@ namespace Tortuga.Chain.Materializers
         public static readonly IReadOnlyList<string> AutoSelectDesiredColumns = new ReadOnlyCollection<string>(new List<string>());
 
         /// <summary>
-        /// The automatic select desired columns. If there is an identity column, return it. Otherwise choose the primary key(s). 
+        /// Return no columns. Used when the result of the operation is not desired (e.g. insert/update).
         /// </summary>
         [SuppressMessage("Microsoft.Security", "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes")]
         public static readonly IReadOnlyList<string> NoColumns = new ReadOnlyCollection<string>(new List<string>());

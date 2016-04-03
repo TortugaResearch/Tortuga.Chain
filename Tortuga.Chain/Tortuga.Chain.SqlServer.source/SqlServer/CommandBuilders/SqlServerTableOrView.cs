@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Tortuga.Anchor.Metadata;
@@ -63,42 +64,21 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// <param name="materializer">The materializer.</param>
         public override ExecutionToken<SqlCommand, SqlParameter> Prepare(Materializer<SqlCommand, SqlParameter> materializer)
         {
+            var sqlBuilder = m_Metadata.CreateSqlBuilder();
+            sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns(), DataSource.StrictMode);
+
             var parameters = new List<SqlParameter>();
 
-            var select = SelectClause(materializer);
-            var from = $"FROM {m_Metadata.Name.ToQuotedString()}";
-
-            string where = null;
+            var sql = new StringBuilder();
+            sqlBuilder.BuildSelectClause(sql, "SELECT ", null , " FROM " + m_Metadata.Name.ToQuotedString());
 
             if (m_FilterValue != null)
-                where = WhereClauseA(parameters);
+                sql.Append( WhereClauseA(parameters));
             else if (!string.IsNullOrWhiteSpace(m_WhereClause))
-                where = WhereClauseB(parameters);
+                sql.Append(WhereClauseB(parameters));
+            sql.Append(";");
 
-            var sql = $"{select} {from} {where};";
-
-            return new SqlServerExecutionToken(DataSource, "Query " + m_Metadata.Name, sql, parameters);
-        }
-
-        private string SelectClause(Materializer<SqlCommand, SqlParameter> materializer)
-        {
-            var desiredColumns = materializer.DesiredColumns();
-
-            if (desiredColumns == Materializer.NoColumns)
-                return "SELECT 1";
-
-            var availableColumns = m_Metadata.Columns;
-
-            if (desiredColumns == Materializer.AllColumns)
-                return "SELECT " + string.Join(",", availableColumns.Select(c => c.QuotedSqlName));
-
-            var lookup = desiredColumns.ToDictionary(c => c, StringComparer.OrdinalIgnoreCase);
-            var actualColumns = availableColumns.Where(c => lookup.ContainsKey(c.ClrName)).ToList();
-            if (actualColumns.Count == 0)
-                throw new MappingException($"None of the requested columns were found in {m_Metadata.Name}.");
-
-            return "SELECT " + string.Join(",", actualColumns.Select(c => c.QuotedSqlName));
-
+            return new SqlServerExecutionToken(DataSource, "Query " + m_Metadata.Name, sql.ToString(), parameters);
         }
 
         private string WhereClauseA(List<SqlParameter> parameters)
@@ -118,12 +98,16 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
                         var parameter = new SqlParameter(column.SqlVariableName, value);
                         if (column.DbType.HasValue)
                             parameter.SqlDbType = column.DbType.Value;
-                        parameters.Add(parameter);
 
                         if (value == DBNull.Value)
+                        {
                             actualColumns.Add($"{column.QuotedSqlName} IS NULL");
+                        }
                         else
+                        {
                             actualColumns.Add($"{column.QuotedSqlName} = {column.SqlVariableName}");
+                            parameters.Add(parameter);
+                        }
                     }
                 }
             }
@@ -138,12 +122,16 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
                         var parameter = new SqlParameter(column.SqlVariableName, value);
                         if (column.DbType.HasValue)
                             parameter.SqlDbType = column.DbType.Value;
-                        parameters.Add(parameter);
 
                         if (value == DBNull.Value)
+                        {
                             actualColumns.Add($"{column.QuotedSqlName} IS NULL");
+                        }
                         else
+                        {
                             actualColumns.Add($"{column.QuotedSqlName} = {column.SqlVariableName}");
+                            parameters.Add(parameter);
+                        }
                     }
                 }
             }

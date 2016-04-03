@@ -175,5 +175,16 @@ namespace Tortuga.Chain.SQLite
         {
             return name;
         }
+
+        public override void Preload()
+        {
+            PreloadTables();
+            PreloadViews();
+        }
+
+        public override ICollection<TableOrViewMetadata<string, DbType>> GetTablesAndViews()
+        {
+            return m_Tables.Values;
+        }
     }
 }

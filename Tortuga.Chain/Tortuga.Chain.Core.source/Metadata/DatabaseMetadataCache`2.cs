@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Tortuga.Chain.Metadata
 {
@@ -48,5 +49,37 @@ namespace Tortuga.Chain.Metadata
         /// <param name="name"></param>
         /// <returns></returns>
         protected abstract TName ParseObjectName(string name);
+
+        /// <summary>
+        /// Preloads all of the metadata for this data source.
+        /// </summary>
+        public abstract void Preload();
+
+        /// <summary>
+        /// Gets the tables and views that were loaded by this cache.
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>Call Preload before invoking this method to ensure that all tables and views were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.</remarks>
+        public abstract ICollection<TableOrViewMetadata<TName, TDbType>> GetTablesAndViews();
+        
+        /// <summary>
+        /// Gets the stored procedures that were loaded by this cache.
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>Call Preload before invoking this method to ensure that all stored procedures were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.</remarks>
+        public virtual ICollection<StoredProcedureMetadata<TName, TDbType>> GetStoredProcedures()
+        {
+            throw new NotSupportedException("Stored procedures are not supported by this data source");
+        }
+
+        /// <summary>
+        /// Gets the table-valued functions that were loaded by this cache.
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>Call Preload before invoking this method to ensure that all table-valued functions were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.</remarks>
+        public virtual ICollection<TableFunctionMetadata<TName, TDbType>> GetTableFunctions()
+        {
+            throw new NotSupportedException("Table value functions are not supported by this data source");
+        }
     }
 }

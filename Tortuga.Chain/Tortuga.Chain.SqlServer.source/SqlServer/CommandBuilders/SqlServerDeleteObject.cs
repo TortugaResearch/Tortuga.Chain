@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Data.SqlClient;
+﻿using System.Data.SqlClient;
+using System.Text;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
 using Tortuga.Chain.SqlServer.Core;
+
 namespace Tortuga.Chain.SqlServer.CommandBuilders
 {
     /// <summary>
@@ -32,13 +33,17 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 
         public override ExecutionToken<SqlCommand, SqlParameter> Prepare(Materializer<SqlCommand, SqlParameter> materializer)
         {
-            var parameters = new List<SqlParameter>();
+            var sqlBuilder = Metadata.CreateSqlBuilder();
+            sqlBuilder.ApplyArgumentValue(ArgumentValue, m_Options.HasFlag(DeleteOptions.UseKeyAttribute), DataSource.StrictMode);
+            sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns(), DataSource.StrictMode);
 
-            var where = WhereClause(parameters, m_Options.HasFlag(DeleteOptions.UseKeyAttribute));
-            var output = OutputClause(materializer, true);
-            var sql = $"DELETE FROM {TableName.ToQuotedString()} {output} WHERE {where}";
+            var sql = new StringBuilder();
+            sql.Append("DELETE FROM " + Metadata.Name.ToQuotedString());
+            sqlBuilder.BuildSelectClause(sql, " OUTPUT ", "Deleted.", null);
+            sqlBuilder.BuildWhereClause(sql, " WHERE ", null);
+            sql.Append(";");
 
-            return new SqlServerExecutionToken(DataSource, "Delete from " + TableName, sql, parameters);
+            return new SqlServerExecutionToken(DataSource, "Delete from " + TableName, sql.ToString(), sqlBuilder.GetParameters());
         }
 
 

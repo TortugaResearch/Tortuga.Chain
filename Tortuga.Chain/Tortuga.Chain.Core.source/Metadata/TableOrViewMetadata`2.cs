@@ -246,6 +246,12 @@ namespace Tortuga.Chain.Metadata
             return result.ToImmutableArray();
         }
 
+
+        public SqlBuilder<TDbType> CreateSqlBuilder()
+        {
+            return new SqlBuilder<TDbType>(Name.ToString(), Columns);
+        }
+
     }
 
 }

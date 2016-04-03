@@ -178,6 +178,8 @@
     <Compile Include="Metadata\IDatabaseMetadataCache.cs" />
     <Compile Include="Metadata\ITableOrViewMetadata.cs" />
     <Compile Include="Metadata\ParameterMetadata`1.cs" />
+    <Compile Include="Metadata\SqlBuilder.cs" />
+    <Compile Include="Metadata\SqlBuilderEntry.cs" />
     <Compile Include="Metadata\StoredProcedureMetadata`2.cs" />
     <Compile Include="Metadata\TableFunctionMetadata`2.cs" />
     <Compile Include="Metadata\TableOrViewMetadata`2.cs" />

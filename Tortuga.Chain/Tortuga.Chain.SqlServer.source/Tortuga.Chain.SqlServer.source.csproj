@@ -109,6 +109,7 @@
     <Compile Include="SqlServerDataSource.cs" />
     <Compile Include="SqlServer\CommandBuilders\SqlServerProcedureCall.cs" />
     <Compile Include="SqlServer\CommandBuilders\SqlServerUpdateObject.cs" />
+    <Compile Include="SqlServer\Utilities.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Tortuga Chain.snk">

@@ -10,8 +10,8 @@ namespace Tests.Tortuga.Chain.SqlServer.Comparison.net461
     [TestClass]
     public class ComparisonTests
     {
-        static int Iterations = 1;
-        static bool Warmup = false;
+        static int Iterations = 25;
+        static bool Warmup = true;
 
         static EmployeeRepositoryDapper s_DapperRepo;
         static EmployeeRepositoryChain s_ChainRepo;

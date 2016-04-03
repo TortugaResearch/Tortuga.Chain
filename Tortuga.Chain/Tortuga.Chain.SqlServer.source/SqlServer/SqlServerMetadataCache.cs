@@ -49,6 +49,18 @@ namespace Tortuga.Chain.SqlServer
         }
 
         /// <summary>
+        /// Gets the stored procedures that were loaded by this cache.
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>
+        /// Call Preload before invoking this method to ensure that all stored procedures were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.
+        /// </remarks>
+        public override ICollection<StoredProcedureMetadata<SqlServerObjectName, SqlDbType>> GetStoredProcedures()
+        {
+            return m_StoredProcedures.Values;
+        }
+
+        /// <summary>
         /// Gets the metadata for a table function.
         /// </summary>
         /// <param name="tableFunctionName">Name of the table function.</param>
@@ -56,6 +68,18 @@ namespace Tortuga.Chain.SqlServer
         public override TableFunctionMetadata<SqlServerObjectName, SqlDbType> GetTableFunction(SqlServerObjectName tableFunctionName)
         {
             return m_TableFunctions.GetOrAdd(tableFunctionName, GetFunctionInternal);
+        }
+
+        /// <summary>
+        /// Gets the table-valued functions that were loaded by this cache.
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>
+        /// Call Preload before invoking this method to ensure that all table-valued functions were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.
+        /// </remarks>
+        public override ICollection<TableFunctionMetadata<SqlServerObjectName, SqlDbType>> GetTableFunctions()
+        {
+            return m_TableFunctions.Values;
         }
 
         /// <summary>
@@ -80,6 +104,203 @@ namespace Tortuga.Chain.SqlServer
         //    m_UdtTypeMap.TryGetValue(type, out result);
         //    return result;
         //}
+
+        /// <summary>
+        /// Gets the tables and views that were loaded by this cache.
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>
+        /// Call Preload before invoking this method to ensure that all tables and views were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.
+        /// </remarks>
+        public override ICollection<TableOrViewMetadata<SqlServerObjectName, SqlDbType>> GetTablesAndViews()
+        {
+            return m_Tables.Values;
+        }
+
+        /// <summary>
+        /// Preloads all of the metadata for this data source.
+        /// </summary>
+        public override void Preload()
+        {
+            PreloadTables();
+            PreloadViews();
+            PreloadStoredProcedures();
+            PreloadTableValueFunctions();
+        }
+
+        /// <summary>
+        /// Preloads the stored procedures.
+        /// </summary>
+        public void PreloadStoredProcedures()
+        {
+            const string StoredProcedureSql =
+            @"SELECT 
+				s.name AS SchemaName,
+				sp.name AS Name
+				FROM SYS.procedures sp
+				INNER JOIN sys.schemas s ON sp.schema_id = s.schema_id;";
+
+
+            using (var con = new SqlConnection(m_ConnectionBuilder.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = new SqlCommand(StoredProcedureSql, con))
+                {
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var schema = reader.GetString(reader.GetOrdinal("SchemaName"));
+                            var name = reader.GetString(reader.GetOrdinal("Name"));
+                            GetStoredProcedure(new SqlServerObjectName(schema, name));
+                        }
+                    }
+                }
+            }
+
+        }
+
+        /// <summary>
+        /// Preloads metadata for all tables.
+        /// </summary>
+        /// <remarks>This is normally used only for testing. By default, metadata is loaded as needed.</remarks>
+        public void PreloadTables()
+        {
+            const string tableList = "SELECT t.name AS Name, s.name AS SchemaName FROM sys.tables t INNER JOIN sys.schemas s ON t.schema_id=s.schema_id ORDER BY s.name, t.name";
+
+            using (var con = new SqlConnection(m_ConnectionBuilder.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = new SqlCommand(tableList, con))
+                {
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var schema = reader.GetString(reader.GetOrdinal("SchemaName"));
+                            var name = reader.GetString(reader.GetOrdinal("Name"));
+                            GetTableOrView(new SqlServerObjectName(schema, name));
+                        }
+                    }
+                }
+            }
+
+        }
+
+        /// <summary>
+        /// Preloads the table value functions.
+        /// </summary>
+        public void PreloadTableValueFunctions()
+        {
+            const string TvfSql =
+                @"SELECT 
+				s.name AS SchemaName,
+				o.name AS Name,
+				o.object_id AS ObjectId
+				FROM sys.objects o
+				INNER JOIN sys.schemas s ON o.schema_id = s.schema_id
+				WHERE o.type in ('TF', 'IF', 'FT')";
+
+
+            using (var con = new SqlConnection(m_ConnectionBuilder.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = new SqlCommand(TvfSql, con))
+                {
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var schema = reader.GetString(reader.GetOrdinal("SchemaName"));
+                            var name = reader.GetString(reader.GetOrdinal("Name"));
+                            GetTableFunction(new SqlServerObjectName(schema, name));
+                        }
+                    }
+                }
+            }
+
+        }
+
+        /// <summary>
+        /// Preloads metadata for all views.
+        /// </summary>
+        /// <remarks>This is normally used only for testing. By default, metadata is loaded as needed.</remarks>
+        public void PreloadViews()
+        {
+            const string tableList = "SELECT t.name AS Name, s.name AS SchemaName FROM sys.views t INNER JOIN sys.schemas s ON t.schema_id=s.schema_id ORDER BY s.name, t.name";
+
+            using (var con = new SqlConnection(m_ConnectionBuilder.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = new SqlCommand(tableList, con))
+                {
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var schema = reader.GetString(reader.GetOrdinal("SchemaName"));
+                            var name = reader.GetString(reader.GetOrdinal("Name"));
+                            GetTableOrView(new SqlServerObjectName(schema, name));
+                        }
+                    }
+                }
+            }
+
+        }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
+        internal static SqlDbType? TypeNameToSqlDbType(string typeName)
+        {
+            switch (typeName)
+            {
+                case "bigint": return SqlDbType.BigInt;
+                case "binary": return SqlDbType.Binary;
+                case "bit": return SqlDbType.Bit;
+                case "char": return SqlDbType.Char;
+                case "date": return SqlDbType.Date;
+                case "datetime": return SqlDbType.DateTime;
+                case "datetime2": return SqlDbType.DateTime2;
+                case "datetimeoffset": return SqlDbType.DateTimeOffset;
+                case "decimal": return SqlDbType.Decimal;
+                case "float": return SqlDbType.Float;
+                //case "geography": m_SqlDbType = SqlDbType.; 
+                //case "geometry": m_SqlDbType = SqlDbType; 
+                //case "hierarchyid": m_SqlDbType = SqlDbType.; 
+                case "image": return SqlDbType.Image;
+                case "int": return SqlDbType.Int;
+                case "money": return SqlDbType.Money;
+                case "nchar": return SqlDbType.NChar;
+                case "ntext": return SqlDbType.NText;
+                case "numeric": return SqlDbType.Decimal;
+                case "nvarchar": return SqlDbType.NVarChar;
+                case "real": return SqlDbType.Real;
+                case "smalldatetime": return SqlDbType.SmallDateTime;
+                case "smallint": return SqlDbType.SmallInt;
+                case "smallmoney": return SqlDbType.SmallMoney;
+                //case "sql_variant": m_SqlDbType = SqlDbType; 
+                //case "sysname": m_SqlDbType = SqlDbType; 
+                case "text": return SqlDbType.Text;
+                case "time": return SqlDbType.Time;
+                case "timestamp": return SqlDbType.Timestamp;
+                case "tinyint": return SqlDbType.TinyInt;
+                case "uniqueidentifier": return SqlDbType.UniqueIdentifier;
+                case "varbinary": return SqlDbType.VarBinary;
+                case "varchar": return SqlDbType.VarChar;
+                case "xml": return SqlDbType.Xml;
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Parse a string and return the database specific representation of the object name.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        protected override SqlServerObjectName ParseObjectName(string name)
+        {
+            return new SqlServerObjectName(name);
+        }
 
         List<ColumnMetadata<SqlDbType>> GetColumns(int objectId)
         {
@@ -133,14 +354,20 @@ namespace Tortuga.Chain.SqlServer
 
         private TableFunctionMetadata<SqlServerObjectName, SqlDbType> GetFunctionInternal(SqlServerObjectName tableFunctionName)
         {
-            const string StoredProcedureSql =
+            const string TvfSql =
                 @"SELECT 
 				s.name AS SchemaName,
 				o.name AS Name,
 				o.object_id AS ObjectId
 				FROM sys.objects o
 				INNER JOIN sys.schemas s ON o.schema_id = s.schema_id
-				WHERE o.type = 'TF' AND s.name = @Schema AND o.Name = @Name";
+				WHERE o.type in ('TF', 'IF', 'FT') AND s.name = @Schema AND o.Name = @Name";
+
+            /*
+             * TF = SQL table-valued-function
+             * IF = SQL inline table-valued function
+             * FT = Assembly (CLR) table-valued function
+             */
 
 
             string actualSchema;
@@ -150,7 +377,7 @@ namespace Tortuga.Chain.SqlServer
             using (var con = new SqlConnection(m_ConnectionBuilder.ConnectionString))
             {
                 con.Open();
-                using (var cmd = new SqlCommand(StoredProcedureSql, con))
+                using (var cmd = new SqlCommand(TvfSql, con))
                 {
                     cmd.Parameters.AddWithValue("@Schema", tableFunctionName.Schema);
                     cmd.Parameters.AddWithValue("@Name", tableFunctionName.Name);
@@ -296,114 +523,7 @@ namespace Tortuga.Chain.SqlServer
             return new TableOrViewMetadata<SqlServerObjectName, SqlDbType>(new SqlServerObjectName(actualSchema, actualName), isTable, columns);
         }
 
-        /// <summary>
-        /// Preloads metadata for all tables.
-        /// </summary>
-        /// <remarks>This is normally used only for testing. By default, metadata is loaded as needed.</remarks>
-        public void PreloadTables()
-        {
-            const string tableList = "SELECT t.name AS Name, s.name AS SchemaName FROM sys.tables t INNER JOIN sys.schemas s ON t.schema_id=s.schema_id ORDER BY s.name, t.name";
 
-            using (var con = new SqlConnection(m_ConnectionBuilder.ConnectionString))
-            {
-                con.Open();
-                using (var cmd = new SqlCommand(tableList, con))
-                {
-                    using (var reader = cmd.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            var schema = reader.GetString(reader.GetOrdinal("SchemaName"));
-                            var name = reader.GetString(reader.GetOrdinal("Name"));
-                            GetTableOrView(new SqlServerObjectName(schema, name));
-                        }
-                    }
-                }
-            }
-
-        }
-
-
-        /// <summary>
-        /// Preloads metadata for all views.
-        /// </summary>
-        /// <remarks>This is normally used only for testing. By default, metadata is loaded as needed.</remarks>
-        public void PreloadViews()
-        {
-            const string tableList = "SELECT t.name AS Name, s.name AS SchemaName FROM sys.views t INNER JOIN sys.schemas s ON t.schema_id=s.schema_id ORDER BY s.name, t.name";
-
-            using (var con = new SqlConnection(m_ConnectionBuilder.ConnectionString))
-            {
-                con.Open();
-                using (var cmd = new SqlCommand(tableList, con))
-                {
-                    using (var reader = cmd.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            var schema = reader.GetString(reader.GetOrdinal("SchemaName"));
-                            var name = reader.GetString(reader.GetOrdinal("Name"));
-                            GetTableOrView(new SqlServerObjectName(schema, name));
-                        }
-                    }
-                }
-            }
-
-        }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
-        internal static SqlDbType? TypeNameToSqlDbType(string typeName)
-        {
-            switch (typeName)
-            {
-                case "bigint": return SqlDbType.BigInt;
-                case "binary": return SqlDbType.Binary;
-                case "bit": return SqlDbType.Bit;
-                case "char": return SqlDbType.Char;
-                case "date": return SqlDbType.Date;
-                case "datetime": return SqlDbType.DateTime;
-                case "datetime2": return SqlDbType.DateTime2;
-                case "datetimeoffset": return SqlDbType.DateTimeOffset;
-                case "decimal": return SqlDbType.Decimal;
-                case "float": return SqlDbType.Float;
-                //case "geography": m_SqlDbType = SqlDbType.; 
-                //case "geometry": m_SqlDbType = SqlDbType; 
-                //case "hierarchyid": m_SqlDbType = SqlDbType.; 
-                case "image": return SqlDbType.Image;
-                case "int": return SqlDbType.Int;
-                case "money": return SqlDbType.Money;
-                case "nchar": return SqlDbType.NChar;
-                case "ntext": return SqlDbType.NText;
-                case "numeric": return SqlDbType.Decimal;
-                case "nvarchar": return SqlDbType.NVarChar;
-                case "real": return SqlDbType.Real;
-                case "smalldatetime": return SqlDbType.SmallDateTime;
-                case "smallint": return SqlDbType.SmallInt;
-                case "smallmoney": return SqlDbType.SmallMoney;
-                //case "sql_variant": m_SqlDbType = SqlDbType; 
-                //case "sysname": m_SqlDbType = SqlDbType; 
-                case "text": return SqlDbType.Text;
-                case "time": return SqlDbType.Time;
-                case "timestamp": return SqlDbType.Timestamp;
-                case "tinyint": return SqlDbType.TinyInt;
-                case "uniqueidentifier": return SqlDbType.UniqueIdentifier;
-                case "varbinary": return SqlDbType.VarBinary;
-                case "varchar": return SqlDbType.VarChar;
-                case "xml": return SqlDbType.Xml;
-            }
-
-            return null;
-        }
-
-        /// <summary>
-        /// Parse a string and return the database specific representation of the object name.
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        protected override SqlServerObjectName ParseObjectName(string name)
-        {
-            return new SqlServerObjectName(name);
-        }
     }
 
 }
