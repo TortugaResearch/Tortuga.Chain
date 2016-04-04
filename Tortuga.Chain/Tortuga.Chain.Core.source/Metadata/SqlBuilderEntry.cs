@@ -1,11 +1,8 @@
 namespace Tortuga.Chain.Metadata
 {
-    /// <summary>
-    /// 
-    /// </summary>
     /// <typeparam name="TDbType">The type of the database type.</typeparam>
     /// <remarks>This is a struct because we want fast allocations and copies. Try to keep it at 16 bytes or less.</remarks>
-    public struct SqlBuilderEntry<TDbType>
+    internal struct SqlBuilderEntry<TDbType>
         where TDbType : struct
     {
         /// <summary>
@@ -14,7 +11,15 @@ namespace Tortuga.Chain.Metadata
         /// <value>
         /// The column.
         /// </value>
-        public ColumnMetadata<TDbType> Column { get; set; }
+        public ISqlBuilderEntryDetails<TDbType> Details { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this is a formal parameter for a stored procedure or table value function.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [formal parameter]; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsFormalParameter { get; internal set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether this <see cref="SqlBuilderEntry{TDbType}"/> participates in insert operations.
@@ -22,23 +27,26 @@ namespace Tortuga.Chain.Metadata
         /// <value>
         ///   <c>true</c> if insert; otherwise, <c>false</c>.
         /// </value>
-        public bool Insert { get; set; }
+        public bool UseForInsert { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether this instance is key.
+        /// Gets or sets a value indicating whether this column should be treated as primary key.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if this instance is key; otherwise, <c>false</c>.
+        /// <c>true</c> if this instance is primary key; otherwise, <c>false</c>.
         /// </value>
-        /// <remarks>This can be overriden. For example, if the parameter object defines its own alternate keys.</remarks>
-        public bool IsPrimaryKey { get; set; }
+        /// <remarks>
+        /// This can be overriden. For example, if the parameter object defines its own alternate keys.
+        /// </remarks>
+        public bool IsKey { get; set; }
+
         /// <summary>
         /// Gets or sets the value to be used when constructing parameters.
         /// </summary>
         /// <value>
         /// The parameter value.
         /// </value>
-        /// <remarks>A null means this parameter is not used. A DBNull.Value means it is passed to the database as a null.</remarks>
+        /// <remarks>A null means this parameter's value was not set. A DBNull.Value means it is passed to the database as a null.</remarks>
         public object ParameterValue { get; set; }
 
         /// <summary>
@@ -47,7 +55,7 @@ namespace Tortuga.Chain.Metadata
         /// <value>
         ///   <c>true</c> if read; otherwise, <c>false</c>.
         /// </value>
-        public bool Read { get; set; }
+        public bool UseForRead { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether this <see cref="SqlBuilderEntry{TDbType}"/> participates in update operations.
@@ -55,7 +63,7 @@ namespace Tortuga.Chain.Metadata
         /// <value>
         ///   <c>true</c> if update; otherwise, <c>false</c>.
         /// </value>
-        public bool Update { get; set; }
+        public bool UseForUpdate { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether this <see cref="SqlBuilderEntry{TDbType}"/> participates in parameter generation.

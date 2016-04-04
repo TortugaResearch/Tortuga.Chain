@@ -6,6 +6,8 @@ using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
 using Tortuga.Chain.Metadata;
+using Tortuga.Anchor.Metadata;
+using System.Text;
 
 #if SDS
 using System.Data.SQLite;
@@ -23,7 +25,7 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
     internal sealed class SQLiteTableOrView : MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter>
     {
         private readonly object m_FilterValue;
-        private readonly TableOrViewMetadata<string, DbType> m_MetaData;
+        private readonly TableOrViewMetadata<string, DbType> m_Metadata;
         private readonly string m_WhereClause;
         private readonly object m_ArgumentValue;
 
@@ -42,7 +44,7 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
                 throw new ArgumentException("table/view name string is empty");
 
             m_FilterValue = filterValue;
-            m_MetaData = ((SQLiteDataSourceBase)DataSource).DatabaseMetadata.GetTableOrView(tableOrViewName);
+            m_Metadata = ((SQLiteDataSourceBase)DataSource).DatabaseMetadata.GetTableOrView(tableOrViewName);
         }
 
         /// <summary>
@@ -60,7 +62,7 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
 
             m_ArgumentValue = argumentValue;
             m_WhereClause = whereClause;
-            m_MetaData = ((SQLiteDataSourceBase)DataSource).DatabaseMetadata.GetTableOrView(tableOrViewName);
+            m_Metadata = ((SQLiteDataSourceBase)DataSource).DatabaseMetadata.GetTableOrView(tableOrViewName);
         }
 
         /// <summary>
@@ -70,21 +72,31 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
         /// <returns></returns>
         public override ExecutionToken<SQLiteCommand, SQLiteParameter> Prepare(Materializer<SQLiteCommand, SQLiteParameter> materializer)
         {
-            var parameters = new List<SQLiteParameter>();
+            var sqlBuilder = m_Metadata.CreateSqlBuilder();
+            sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns(), DataSource.StrictMode);
 
-            var select = SelectClause(materializer);
-            var from = $"FROM {m_MetaData.Name}";
+            List<SQLiteParameter> parameters;
 
-            string where = null;
+            var sql = new StringBuilder();
+            sqlBuilder.BuildSelectClause(sql, "SELECT ", null, " FROM " + m_Metadata.Name);
 
             if (m_FilterValue != null)
-                where = WhereClauseFromFilter(parameters);
-            else if (!string.IsNullOrEmpty(m_WhereClause))
-                where = WhereClauseFromString(parameters);
+            {
+                sql.Append(" WHERE " + sqlBuilder.ApplyFilterValue(m_FilterValue, DataSource.StrictMode));
+                parameters = sqlBuilder.GetParameters();
+            }
+            else if (!string.IsNullOrWhiteSpace(m_WhereClause))
+            {
+                parameters = SqlBuilder.GetParameters<SQLiteParameter>(m_ArgumentValue);
+                sql.Append(" WHERE " + m_WhereClause);
+            }
+            else
+            {
+                parameters = new List<SQLiteParameter>();
+            }
+            sql.Append(";");
 
-            var sql = $"{select} {from} {where}";
-
-            return new SQLiteExecutionToken(DataSource, "Query " + m_MetaData.Name, sql, parameters, lockType: LockType.Read);
+            return new SQLiteExecutionToken(DataSource, "Query " + m_Metadata.Name, sql.ToString(), parameters, lockType: LockType.Read);
         }
 
         private string SelectClause(Materializer<SQLiteCommand, SQLiteParameter> materializer)
@@ -93,7 +105,7 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
             if (desiredColumns == Materializer.NoColumns)
                 return "SELECT 1";
 
-            var availableColumns = m_MetaData.Columns;
+            var availableColumns = m_Metadata.Columns;
 
             if (desiredColumns == Materializer.AllColumns)
                 return "SELECT " + string.Join(",", availableColumns.Select(c => c.QuotedSqlName));
@@ -101,15 +113,15 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
             var lookup = desiredColumns.ToDictionary(c => c, StringComparer.OrdinalIgnoreCase);
             var actualColumns = availableColumns.Where(c => lookup.ContainsKey(c.ClrName)).ToList();
             if (actualColumns.Count == 0)
-                throw new MappingException($"None of the request columns were found in {m_MetaData.Name}");
+                throw new MappingException($"None of the request columns were found in {m_Metadata.Name}");
 
             return "SELECT " + string.Join(",", actualColumns.Select(c => c.QuotedSqlName));
         }
 
         private string WhereClauseFromFilter(List<SQLiteParameter> parameters)
         {
-            var availableColumns = m_MetaData.Columns.ToDictionary(c => c.ClrName, StringComparer.OrdinalIgnoreCase);
-            var properties = Anchor.Metadata.MetadataCache.GetMetadata(m_FilterValue.GetType()).Properties;
+            var availableColumns = m_Metadata.Columns.ToDictionary(c => c.ClrName, StringComparer.OrdinalIgnoreCase);
+            var properties = MetadataCache.GetMetadata(m_FilterValue.GetType()).Properties;
             var actualColumns = new List<string>();
 
             if (m_FilterValue is IReadOnlyDictionary<string, object>)
@@ -123,12 +135,16 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
                         var parameter = new SQLiteParameter(column.SqlVariableName, value);
                         if (column.DbType.HasValue)
                             parameter.DbType = column.DbType.Value;
-                        parameters.Add(parameter);
 
                         if (value == DBNull.Value)
+                        {
                             actualColumns.Add($"{column.QuotedSqlName} IS NULL");
+                        }
                         else
+                        {
                             actualColumns.Add($"{column.QuotedSqlName} = {column.SqlVariableName}");
+                            parameters.Add(parameter);
+                        }
                     }
                 }
             }
@@ -143,20 +159,24 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
                         var parameter = new SQLiteParameter(column.SqlVariableName, value);
                         if (column.DbType.HasValue)
                             parameter.DbType = column.DbType.Value;
-                        parameters.Add(parameter);
 
                         if (value == DBNull.Value)
+                        {
                             actualColumns.Add($"{column.QuotedSqlName} IS NULL");
+                        }
                         else
+                        {
                             actualColumns.Add($"{column.QuotedSqlName} = {column.SqlVariableName}");
+                            parameters.Add(parameter);
+                        }
                     }
                 }
             }
 
             if (actualColumns.Count == 0)
-                throw new MappingException($"Unable to find any properties on type {m_FilterValue.GetType().Name} that match the columns on {m_MetaData.Name}");
+                throw new MappingException($"Unable to find any properties on type {m_FilterValue.GetType().Name} that match the columns on {m_Metadata.Name}");
 
-            return "WHERE " + string.Join(" AND ", actualColumns);
+            return " WHERE " + string.Join(" AND ", actualColumns);
         }
 
         private string WhereClauseFromString(List<SQLiteParameter> parameters)
@@ -175,3 +195,5 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
         }
     }
 }
+
+

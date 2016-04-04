@@ -5,7 +5,6 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Tortuga.Anchor.Metadata;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
@@ -51,6 +50,22 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             if (materializer == null)
                 throw new ArgumentNullException("materializer", "materializer is null.");
 
+            List<SqlParameter> parameters;
+
+            if (m_ArgumentValue is IEnumerable<SqlParameter>)
+            {
+                parameters = ((IEnumerable<SqlParameter>)m_ArgumentValue).ToList();
+            }
+            else
+            {
+                var sqlBuilder = m_Metadata.CreateSqlBuilder();
+                sqlBuilder.ApplyArgumentValue(m_ArgumentValue, false, DataSource.StrictMode);
+                parameters = sqlBuilder.GetParameters();
+            }
+
+            return new SqlServerExecutionToken(DataSource, m_ProcedureName.ToString(), m_ProcedureName.ToQuotedString(), parameters, CommandType.StoredProcedure);
+
+            /*
             var parameters = new List<SqlParameter>();
             var expectedParameters = m_Metadata.Parameters.ToDictionary(p => p.ClrName, StringComparer.OrdinalIgnoreCase);
 
@@ -84,8 +99,8 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
                     }
                 }
             }
+            */
 
-            return new SqlServerExecutionToken(DataSource, m_ProcedureName.ToString(), m_ProcedureName.ToQuotedString(), parameters, CommandType.StoredProcedure);
         }
 
         /// <summary>

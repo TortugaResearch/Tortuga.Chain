@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Tortuga.Chain.Core;
+﻿using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
-using Tortuga.Chain.Metadata;
+using System.Text;
 
 #if SDS
 using System.Data.SQLite;
@@ -36,36 +34,18 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
         /// <returns><see cref="SQLiteExecutionToken" /></returns>
         public override ExecutionToken<SQLiteCommand, SQLiteParameter> Prepare(Materializer<SQLiteCommand, SQLiteParameter> materializer)
         {
-            var parameters = new List<SQLiteParameter>();
+            var sqlBuilder = Metadata.CreateSqlBuilder();
+            sqlBuilder.ApplyArgumentValue(ArgumentValue, false, DataSource.StrictMode);
+            sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns(), DataSource.StrictMode);
 
-            string columns;
-            string values;
-            ColumnsAndValuesClause(out columns, out values, parameters);
-            var output = OutputClause(materializer, "ROWID=last_insert_rowid()");
-            var sql = $"INSERT INTO {TableName} {columns} {values}; {output};";
+            var sql = new StringBuilder();
+            sqlBuilder.BuildInsertStatment(sql, TableName, ";");
+            sql.AppendLine();
+            sqlBuilder.BuildSelectClause(sql, "SELECT ", null, $" FROM {TableName} WHERE ROWID=last_insert_rowid();");
 
-            return new SQLiteExecutionToken(DataSource, "Insert into " + TableName, sql, parameters, lockType: LockType.Write);
+            return new SQLiteExecutionToken(DataSource, "Insert into " + TableName, sql.ToString(), sqlBuilder.GetParameters(), lockType: LockType.Write);
         }
 
-        private void ColumnsAndValuesClause(out string columns, out string values, List<SQLiteParameter> parameters)
-        {
-            if (ArgumentDictionary != null)
-            {
-                var availableColumns = Metadata.GetKeysFor(ArgumentDictionary, GetKeysFilter.ThrowOnNoMatch | GetKeysFilter.MutableColumns);
-
-                columns = "(" + string.Join(", ", availableColumns.Select(c => c.QuotedSqlName)) + ")";
-                values = "VALUES (" + string.Join(", ", availableColumns.Select(c => c.SqlVariableName)) + ")";
-                LoadDictionaryParameters(availableColumns, parameters);
-            }
-            else
-            {
-                var availableColumns = Metadata.GetPropertiesFor(ArgumentValue.GetType(),
-                     GetPropertiesFilter.ThrowOnNoMatch | GetPropertiesFilter.MutableColumns | GetPropertiesFilter.ForInsert);
-
-                columns = "(" + string.Join(", ", availableColumns.Select(c => c.Column.QuotedSqlName)) + ")";
-                values = "VALUES (" + string.Join(", ", availableColumns.Select(c => c.Column.SqlVariableName)) + ")";
-                LoadParameters(availableColumns, parameters);
-            }
-        }
     }
 }
+

@@ -4,7 +4,7 @@ namespace Tortuga.Chain.Metadata
     /// Metadata for a table or view column
     /// </summary>
     /// <typeparam name="TDbType">The variant of DbType used by this data source.</typeparam>
-    public sealed class ColumnMetadata<TDbType> : IColumnMetadata
+    public sealed class ColumnMetadata<TDbType> : IColumnMetadata, ISqlBuilderEntryDetails<TDbType>
         where TDbType : struct
     {
 
@@ -88,5 +88,9 @@ namespace Tortuga.Chain.Metadata
             get { return DbType; }
         }
 
+        public override string ToString()
+        {
+            return SqlName + " (" +  TypeName +")";
+        }
     }
 }

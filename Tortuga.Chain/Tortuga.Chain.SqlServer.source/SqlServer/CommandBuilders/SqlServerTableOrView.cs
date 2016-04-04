@@ -2,17 +2,16 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Tortuga.Anchor.Metadata;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
 using Tortuga.Chain.Metadata;
 using Tortuga.Chain.SqlServer.Core;
 using Tortuga.Chain.SqlServer.Materializers;
+
 namespace Tortuga.Chain.SqlServer.CommandBuilders
 {
     /// <summary>
@@ -67,97 +66,30 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             var sqlBuilder = m_Metadata.CreateSqlBuilder();
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns(), DataSource.StrictMode);
 
-            var parameters = new List<SqlParameter>();
+            List<SqlParameter> parameters;
 
             var sql = new StringBuilder();
-            sqlBuilder.BuildSelectClause(sql, "SELECT ", null , " FROM " + m_Metadata.Name.ToQuotedString());
+            sqlBuilder.BuildSelectClause(sql, "SELECT ", null, " FROM " + m_Metadata.Name.ToQuotedString());
 
             if (m_FilterValue != null)
-                sql.Append( WhereClauseA(parameters));
+            {
+                sql.Append(" WHERE " + sqlBuilder.ApplyFilterValue(m_FilterValue, DataSource.StrictMode));
+                parameters = sqlBuilder.GetParameters();
+            }
             else if (!string.IsNullOrWhiteSpace(m_WhereClause))
-                sql.Append(WhereClauseB(parameters));
+            {
+                var argumentValue = m_ArgumentValue;
+                parameters = SqlBuilder.GetParameters<SqlParameter>(argumentValue);
+                sql.Append(" WHERE " + m_WhereClause);
+            }
+            else
+            {
+                parameters = new List<SqlParameter>();
+            }
             sql.Append(";");
 
             return new SqlServerExecutionToken(DataSource, "Query " + m_Metadata.Name, sql.ToString(), parameters);
         }
-
-        private string WhereClauseA(List<SqlParameter> parameters)
-        {
-            var availableColumns = m_Metadata.Columns.ToDictionary(c => c.ClrName, StringComparer.OrdinalIgnoreCase);
-            var properties = MetadataCache.GetMetadata(m_FilterValue.GetType()).Properties;
-            var actualColumns = new List<string>();
-
-            if (m_FilterValue is IReadOnlyDictionary<string, object>)
-            {
-                foreach (var item in (IReadOnlyDictionary<string, object>)m_FilterValue)
-                {
-                    ColumnMetadata<SqlDbType> column;
-                    if (availableColumns.TryGetValue(item.Key, out column))
-                    {
-                        object value = item.Value ?? DBNull.Value;
-                        var parameter = new SqlParameter(column.SqlVariableName, value);
-                        if (column.DbType.HasValue)
-                            parameter.SqlDbType = column.DbType.Value;
-
-                        if (value == DBNull.Value)
-                        {
-                            actualColumns.Add($"{column.QuotedSqlName} IS NULL");
-                        }
-                        else
-                        {
-                            actualColumns.Add($"{column.QuotedSqlName} = {column.SqlVariableName}");
-                            parameters.Add(parameter);
-                        }
-                    }
-                }
-            }
-            else
-            {
-                foreach (var item in properties)
-                {
-                    ColumnMetadata<SqlDbType> column;
-                    if (availableColumns.TryGetValue(item.MappedColumnName, out column))
-                    {
-                        object value = item.InvokeGet(m_FilterValue) ?? DBNull.Value;
-                        var parameter = new SqlParameter(column.SqlVariableName, value);
-                        if (column.DbType.HasValue)
-                            parameter.SqlDbType = column.DbType.Value;
-
-                        if (value == DBNull.Value)
-                        {
-                            actualColumns.Add($"{column.QuotedSqlName} IS NULL");
-                        }
-                        else
-                        {
-                            actualColumns.Add($"{column.QuotedSqlName} = {column.SqlVariableName}");
-                            parameters.Add(parameter);
-                        }
-                    }
-                }
-            }
-
-            if (actualColumns.Count == 0)
-                throw new MappingException($"Unable to find any properties on type {m_FilterValue.GetType().Name} that match the columns on {m_Metadata.Name}");
-
-            return "WHERE " + string.Join(" AND ", actualColumns);
-        }
-
-        private string WhereClauseB(List<SqlParameter> parameters)
-        {
-            if (m_ArgumentValue is IEnumerable<SqlParameter>)
-                foreach (var param in (IEnumerable<SqlParameter>)m_ArgumentValue)
-                    parameters.Add(param);
-            else if (m_ArgumentValue is IReadOnlyDictionary<string, object>)
-                foreach (var item in (IReadOnlyDictionary<string, object>)m_ArgumentValue)
-                    parameters.Add(new SqlParameter("@" + item.Key, item.Value ?? DBNull.Value));
-            else if (m_ArgumentValue != null)
-                foreach (var property in MetadataCache.GetMetadata(m_ArgumentValue.GetType()).Properties)
-                    parameters.Add(new SqlParameter("@" + property.MappedColumnName, property.InvokeGet(m_ArgumentValue) ?? DBNull.Value));
-
-            return "WHERE " + m_WhereClause;
-        }
-
-
 
         /// <summary>
         /// Waits for change in the data that is returned by this operation.
@@ -186,5 +118,4 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         }
     }
 }
-
 

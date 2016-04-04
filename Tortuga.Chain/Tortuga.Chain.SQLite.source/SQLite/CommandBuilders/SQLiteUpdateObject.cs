@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Tortuga.Chain.Core;
+﻿using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
-using Tortuga.Chain.Metadata;
+using System.Text;
 
 #if SDS
 using System.Data.SQLite;
@@ -41,54 +39,26 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
         /// <returns><see cref="SQLiteExecutionToken" /></returns>
         public override ExecutionToken<SQLiteCommand, SQLiteParameter> Prepare(Materializer<SQLiteCommand, SQLiteParameter> materializer)
         {
-            var parameters = new List<SQLiteParameter>();
 
-            var set = SetClause(parameters);
-            var where = WhereClause(parameters, m_Options.HasFlag(UpdateOptions.UseKeyAttribute));
-            var output = OutputClause(materializer, where);
-            string sql;
+            var sqlBuilder = Metadata.CreateSqlBuilder();
+            sqlBuilder.ApplyArgumentValue(ArgumentValue, m_Options.HasFlag(UpdateOptions.UseKeyAttribute), DataSource.StrictMode);
+            sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns(), DataSource.StrictMode);
 
+            var sql = new StringBuilder();
             if (m_Options.HasFlag(UpdateOptions.ReturnOldValues))
-                sql = $"{output}; UPDATE {TableName} {set} WHERE {where};";
-            else
-                sql = $"UPDATE {TableName} {set} WHERE {where}; {output};";
+            {
+                sqlBuilder.BuildSelectByKeyStatment(sql, TableName, ";");
+                sql.AppendLine();
+            }
+            sqlBuilder.BuildUpdateByKeyStatment(sql, TableName, ";");
+            if (!m_Options.HasFlag(UpdateOptions.ReturnOldValues))
+            {
+                sql.AppendLine();
+                sqlBuilder.BuildSelectByKeyStatment(sql, TableName, ";");
+            }
 
-            return new SQLiteExecutionToken(DataSource, "Update " + TableName, sql, parameters, lockType: LockType.Write);
+            return new SQLiteExecutionToken(DataSource, "Update " + TableName, sql.ToString(), sqlBuilder.GetParameters(), lockType: LockType.Write);
         }
 
-        private string SetClause(List<SQLiteParameter> parameters)
-        {
-            if (ArgumentDictionary != null)
-            {
-                var filter = GetKeysFilter.ThrowOnNoMatch | GetKeysFilter.MutableColumns | GetKeysFilter.NonPrimaryKey;
-
-                if (DataSource.StrictMode)
-                    filter |= GetKeysFilter.ThrowOnMissingColumns;
-
-                var availableColumns = Metadata.GetKeysFor(ArgumentDictionary, filter);
-
-                var set = "SET " + string.Join(", ", availableColumns.Select(c => $"{c.QuotedSqlName} = {c.SqlVariableName}"));
-                LoadDictionaryParameters(availableColumns, parameters);
-                return set;
-            }
-            else
-            {
-                var filter = GetPropertiesFilter.ThrowOnNoMatch | GetPropertiesFilter.MutableColumns | GetPropertiesFilter.ForUpdate;
-
-                if (m_Options.HasFlag(UpdateOptions.UseKeyAttribute))
-                    filter |= GetPropertiesFilter.ObjectDefinedNonKey;
-                else
-                    filter |= GetPropertiesFilter.NonPrimaryKey;
-
-                if (DataSource.StrictMode)
-                    filter |= GetPropertiesFilter.ThrowOnMissingColumns;
-
-                var availableColumns = Metadata.GetPropertiesFor(ArgumentValue.GetType(), filter);
-
-                var set = "SET " + string.Join(", ", availableColumns.Select(c => $"{c.Column.QuotedSqlName} = {c.Column.SqlVariableName}"));
-                LoadParameters(availableColumns, parameters);
-                return set;
-            }
-        }
     }
 }

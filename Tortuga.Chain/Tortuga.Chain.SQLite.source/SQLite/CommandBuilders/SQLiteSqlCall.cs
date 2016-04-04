@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using Tortuga.Anchor.Metadata;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Materializers;
 using Tortuga.Chain.Core;
+using Tortuga.Chain.Metadata;
 
 #if SDS
 using System.Data.SQLite;
@@ -50,19 +49,7 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
         /// <returns></returns>
         public override ExecutionToken<SQLiteCommand, SQLiteParameter> Prepare(Materializer<SQLiteCommand, SQLiteParameter> materializer)
         {
-            var parameters = new List<SQLiteParameter>();
-
-            if (m_ArgumentValue is IEnumerable<SQLiteParameter>)
-                foreach (var param in (IEnumerable<SQLiteParameter>)m_ArgumentValue)
-                    parameters.Add(param);
-            else if (m_ArgumentValue is IReadOnlyDictionary<string, object>)
-                foreach (var item in (IReadOnlyDictionary<string, object>)m_ArgumentValue)
-                    parameters.Add(new SQLiteParameter("@" + item.Key, item.Value ?? DBNull.Value));
-            else if (m_ArgumentValue != null)
-                foreach (var property in MetadataCache.GetMetadata(m_ArgumentValue.GetType()).Properties)
-                    parameters.Add(new SQLiteParameter("@" + property.MappedColumnName, property.InvokeGet(m_ArgumentValue) ?? DBNull.Value));
-
-            return new SQLiteExecutionToken(DataSource, "Raw SQL call", m_SqlStatement, parameters, lockType: m_LockType);
+            return new SQLiteExecutionToken(DataSource, "Raw SQL call", m_SqlStatement, SqlBuilder.GetParameters<SQLiteParameter>(m_ArgumentValue), lockType: m_LockType);
         }
     }
 }

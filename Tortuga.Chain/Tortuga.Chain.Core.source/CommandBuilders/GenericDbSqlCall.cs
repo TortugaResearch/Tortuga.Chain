@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.Common;
-using Tortuga.Anchor.Metadata;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
+using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.CommandBuilders
 {
@@ -38,32 +37,8 @@ namespace Tortuga.Chain.CommandBuilders
         /// <returns>ExecutionToken&lt;TCommand&gt;.</returns>
         public override ExecutionToken<DbCommand, DbParameter> Prepare(Materializer<DbCommand, DbParameter> materializer)
         {
-            var parameters = new List<DbParameter>();
-
-            if (m_ArgumentValue is IEnumerable<DbParameter>)
-                foreach (var param in (IEnumerable<DbParameter>)m_ArgumentValue)
-                    parameters.Add(param);
-            else if (m_ArgumentValue is IReadOnlyDictionary<string, object>)
-                foreach (var item in (IReadOnlyDictionary<string, object>)m_ArgumentValue)
-                {
-                    var param = m_DataSource.CreateParameter();
-                    param.ParameterName = item.Key.StartsWith("@", StringComparison.OrdinalIgnoreCase) ? item.Key : "@" + item.Key;
-                    param.Value = item.Value ?? DBNull.Value;
-                    parameters.Add(param);
-                }
-            else if (m_ArgumentValue != null)
-                foreach (var property in MetadataCache.GetMetadata(m_ArgumentValue.GetType()).Properties)
-                {
-                    var param = m_DataSource.CreateParameter();
-                    param.ParameterName = "@" + property.MappedColumnName;
-                    param.Value = property.InvokeGet(m_ArgumentValue) ?? DBNull.Value;
-                    parameters.Add(param);
-                }
-
+            var parameters = SqlBuilder.GetParameters(m_ArgumentValue, () => m_DataSource.CreateParameter());
             return new ExecutionToken<DbCommand, DbParameter>(DataSource, "Raw SQL call", m_SqlStatement, parameters);
         }
-
-
-
     }
 }

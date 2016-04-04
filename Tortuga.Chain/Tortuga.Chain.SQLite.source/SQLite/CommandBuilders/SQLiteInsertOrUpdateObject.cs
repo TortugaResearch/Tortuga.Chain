@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
-using Tortuga.Chain.Metadata;
 using Tortuga.Chain.SQLite.SQLite.CommandBuilders;
+using System.Text;
+using System;
 
 #if SDS
 using System.Data.SQLite;
@@ -42,125 +42,33 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
         /// <returns><see cref="SQLiteExecutionToken" /></returns>
         public override ExecutionToken<SQLiteCommand, SQLiteParameter> Prepare(Materializer<SQLiteCommand, SQLiteParameter> materializer)
         {
-            var parameters = new List<SQLiteParameter>();
 
-            var where = WhereClause(parameters, m_Options.HasFlag(UpsertOptions.UseKeyAttribute));
+            var sqlBuilder = Metadata.CreateSqlBuilder();
+            sqlBuilder.ApplyArgumentValue(ArgumentValue, m_Options.HasFlag(UpsertOptions.UseKeyAttribute), DataSource.StrictMode);
+            sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns(), DataSource.StrictMode);
 
-            var output = OutputClause(materializer, WhereClauseForOutput(m_Options.HasFlag(UpsertOptions.UseKeyAttribute)));
-            var update = UpdateClause(parameters, where);
-            var insert = InsertClause(parameters);
-            var sql = $"{update}; {insert}; {output};";
+            var sql = new StringBuilder();
+            sqlBuilder.BuildUpdateByKeyStatment(sql, TableName, ";");
+            sql.AppendLine();
 
-            return new SQLiteExecutionToken(DataSource, "Insert Or Update on " + TableName, sql, parameters);
-        }
+            sqlBuilder.BuildInsertClause(sql, $"INSERT OR IGNORE INTO {TableName} (", null, ")");
+            sqlBuilder.BuildValuesClause(sql, " VALUES (", ");");
+            sql.AppendLine();
 
-
-        string WhereClauseForOutput(bool useKeyAttribute)
-        {
-            if (ArgumentDictionary != null)
+            if (sqlBuilder.HasReadFields)
             {
-                GetKeysFilter filter = (GetKeysFilter.PrimaryKey | GetKeysFilter.ThrowOnMissingProperties);
+                var keys = sqlBuilder.GetKeyColumns().ToList();
+                if (keys.Count != 1)
+                    throw new NotSupportedException("Cannot return data from a SQLite Upsert unless there is a single primary key.");
+                var key = keys[0];
 
-                var columns = Metadata.GetKeysFor(ArgumentDictionary, filter);
-                if (columns.Length > 1)
-                    return string.Join(" AND ", columns.Select(c => $"{c.QuotedSqlName} = {c.SqlVariableName}"));
-                else
-                {
-                    //we can support auto-incremented primary key
-                    var column = columns[0];
-                    return $"{column.SqlName} = CASE WHEN {column.SqlVariableName} IS NULL OR {column.SqlVariableName} = 0 THEN last_insert_rowid() ELSE {column.SqlVariableName} END";
-                }
+                sqlBuilder.BuildSelectClause(sql, "SELECT ", null, $" FROM {TableName} WHERE {key.QuotedSqlName} = CASE WHEN {key.SqlVariableName} IS NULL OR {key.SqlVariableName} = 0 THEN last_insert_rowid() ELSE {key.SqlVariableName} END;");
 
             }
-            else
-            {
-                GetPropertiesFilter filter;
-                if (useKeyAttribute)
-                    filter = (GetPropertiesFilter.ObjectDefinedKey | GetPropertiesFilter.ThrowOnMissingColumns);
-                else
-                    filter = (GetPropertiesFilter.PrimaryKey | GetPropertiesFilter.ThrowOnMissingProperties);
 
-                var columns = Metadata.GetPropertiesFor(ArgumentValue.GetType(), filter);
-                if (columns.Length > 1)
-                    return string.Join(" AND ", columns.Select(c => $"{c.Column.QuotedSqlName} = {c.Column.SqlVariableName}"));
-                else
-                {
-                    //we can support auto-incremented primary key
-                    var column = columns[0].Column;
-                    return $"{column.SqlName} = CASE WHEN {column.SqlVariableName} IS NULL OR {column.SqlVariableName} = 0 THEN last_insert_rowid() ELSE {column.SqlVariableName} END";
-                }
-            }
+            return new SQLiteExecutionToken(DataSource, "Insert or update " + TableName, sql.ToString(), sqlBuilder.GetParameters(), lockType: LockType.Write);
 
         }
 
-        private string UpdateClause(List<SQLiteParameter> parameters, string whereClause)
-        {
-            var set = SetClause(parameters);
-            return $"UPDATE {TableName} {set} WHERE {whereClause}";
-        }
-
-        private string InsertClause(List<SQLiteParameter> parameters)
-        {
-            string columns;
-            string values;
-            ColumnsAndValuesClause(out columns, out values, parameters);
-            return $"INSERT OR IGNORE INTO {TableName} {columns} {values}";
-        }
-
-        private void ColumnsAndValuesClause(out string columns, out string values, List<SQLiteParameter> parameters)
-        {
-            if (ArgumentDictionary != null)
-            {
-                var availableColumns = Metadata.GetKeysFor(ArgumentDictionary, GetKeysFilter.ThrowOnNoMatch | GetKeysFilter.MutableColumns);
-
-                columns = "(" + string.Join(", ", availableColumns.Select(c => c.QuotedSqlName)) + ")";
-                values = "VALUES (" + string.Join(", ", availableColumns.Select(c => c.SqlVariableName)) + ")";
-                LoadDictionaryParameters(availableColumns, parameters);
-            }
-            else
-            {
-                var availableColumns = Metadata.GetPropertiesFor(ArgumentValue.GetType(),
-                     GetPropertiesFilter.ThrowOnNoMatch | GetPropertiesFilter.MutableColumns | GetPropertiesFilter.ForInsert);
-
-                columns = "(" + string.Join(", ", availableColumns.Select(c => c.Column.QuotedSqlName)) + ")";
-                values = "VALUES (" + string.Join(", ", availableColumns.Select(c => c.Column.SqlVariableName)) + ")";
-                LoadParameters(availableColumns, parameters);
-            }
-        }
-
-        private string SetClause(List<SQLiteParameter> parameters)
-        {
-            if (ArgumentDictionary != null)
-            {
-                var filter = GetKeysFilter.ThrowOnNoMatch | GetKeysFilter.MutableColumns | GetKeysFilter.NonPrimaryKey;
-
-                if (DataSource.StrictMode)
-                    filter |= GetKeysFilter.ThrowOnMissingColumns;
-
-                var availableColumns = Metadata.GetKeysFor(ArgumentDictionary, filter);
-
-                var set = "SET " + string.Join(", ", availableColumns.Select(c => $"{c.QuotedSqlName} = {c.SqlVariableName}"));
-                LoadDictionaryParameters(availableColumns, parameters);
-                return set;
-            }
-            else
-            {
-                var filter = GetPropertiesFilter.ThrowOnNoMatch | GetPropertiesFilter.MutableColumns | GetPropertiesFilter.ForUpdate;
-
-                if (m_Options.HasFlag(UpsertOptions.UseKeyAttribute))
-                    filter |= GetPropertiesFilter.ObjectDefinedNonKey;
-                else
-                    filter |= GetPropertiesFilter.NonPrimaryKey;
-
-                if (DataSource.StrictMode)
-                    filter |= GetPropertiesFilter.ThrowOnMissingColumns;
-
-                var availableColumns = Metadata.GetPropertiesFor(ArgumentValue.GetType(), filter);
-
-                var set = "SET " + string.Join(", ", availableColumns.Select(c => $"{c.Column.QuotedSqlName} = {c.Column.SqlVariableName}"));
-                LoadParameters(availableColumns, parameters);
-                return set;
-            }
-        }
     }
 }

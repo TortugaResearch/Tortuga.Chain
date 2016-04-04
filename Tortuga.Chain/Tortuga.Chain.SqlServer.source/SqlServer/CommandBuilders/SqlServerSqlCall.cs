@@ -1,12 +1,11 @@
 using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Threading;
 using System.Threading.Tasks;
-using Tortuga.Anchor.Metadata;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
+using Tortuga.Chain.Metadata;
 using Tortuga.Chain.SqlServer.Core;
 using Tortuga.Chain.SqlServer.Materializers;
 namespace Tortuga.Chain.SqlServer.CommandBuilders
@@ -44,19 +43,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// <returns>ExecutionToken&lt;TCommand&gt;.</returns>
         public override ExecutionToken<SqlCommand, SqlParameter> Prepare(Materializer<SqlCommand, SqlParameter> materializer)
         {
-            var parameters = new List<SqlParameter>();
-
-            if (m_ArgumentValue is IEnumerable<SqlParameter>)
-                foreach (var param in (IEnumerable<SqlParameter>)m_ArgumentValue)
-                    parameters.Add(param);
-            else if (m_ArgumentValue is IReadOnlyDictionary<string, object>)
-                foreach (var item in (IReadOnlyDictionary<string, object>)m_ArgumentValue)
-                    parameters.Add(new SqlParameter("@" + item.Key, item.Value ?? DBNull.Value));
-            else if (m_ArgumentValue != null)
-                foreach (var property in MetadataCache.GetMetadata(m_ArgumentValue.GetType()).Properties)
-                    parameters.Add(new SqlParameter("@" + property.MappedColumnName, property.InvokeGet(m_ArgumentValue) ?? DBNull.Value));
-
-            return new SqlServerExecutionToken(DataSource, "Raw SQL call", m_SqlStatement, parameters);
+            return new SqlServerExecutionToken(DataSource, "Raw SQL call", m_SqlStatement, SqlBuilder.GetParameters<SqlParameter>(m_ArgumentValue));
         }
 
         /// <summary>

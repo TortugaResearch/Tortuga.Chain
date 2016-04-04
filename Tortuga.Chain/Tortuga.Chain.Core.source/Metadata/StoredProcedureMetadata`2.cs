@@ -37,5 +37,14 @@ namespace Tortuga.Chain.Metadata
         /// The parameters.
         /// </value>
         public ReadOnlyCollection<ParameterMetadata<TDbType>> Parameters { get; }
+
+        /// <summary>
+        /// Creates a SQL builder.
+        /// </summary>
+        /// <returns></returns>
+        public SqlBuilder<TDbType> CreateSqlBuilder()
+        {
+            return new SqlBuilder<TDbType>(Name.ToString(), Parameters);
+        }
     }
 }

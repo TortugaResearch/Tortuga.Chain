@@ -163,6 +163,8 @@ namespace Tortuga.Chain.SQLite
                 }
             }
 
+            columns.Add(new ColumnMetadata<DbType>("ROWID", true, false, true, "INTEGER", null, "ROWID"));
+
             return columns;
         }
 
