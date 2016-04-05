@@ -66,8 +66,8 @@
       <HintPath>..\packages\Tortuga.Anchor.0.4.5935.6732\lib\net45\Tortuga.Anchor.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Tortuga.Chain.Core, Version=0.9.5936.4888, Culture=neutral, PublicKeyToken=8769fd32a2872cf0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Tortuga.Chain.Core.0.9.5936.4881\lib\net45\Tortuga.Chain.Core.dll</HintPath>
+    <Reference Include="Tortuga.Chain.Core, Version=0.10.5938.39411, Culture=neutral, PublicKeyToken=8769fd32a2872cf0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tortuga.Chain.Core.0.10.5938.39404\lib\net45\Tortuga.Chain.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
@@ -146,6 +146,9 @@
     </Compile>
     <Compile Include="..\tortuga.chain.sqlserver.source\sqlserver\SqlServerTransactionalDataSource.cs">
       <Link>SqlServer\SqlServerTransactionalDataSource.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.SqlServer.source\SqlServer\Utilities.cs">
+      <Link>SqlServer\Utilities.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
