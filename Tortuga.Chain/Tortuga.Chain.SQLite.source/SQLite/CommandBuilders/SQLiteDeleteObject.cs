@@ -4,6 +4,7 @@ using System.Text;
 
 #if SDS
 using System.Data.SQLite;
+using System;
 #else
 using SQLiteCommand = Microsoft.Data.Sqlite.SqliteCommand;
 using SQLiteParameter = Microsoft.Data.Sqlite.SqliteParameter;
@@ -38,15 +39,17 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
         /// <returns><see cref="SQLiteExecutionToken" /></returns>
         public override ExecutionToken<SQLiteCommand, SQLiteParameter> Prepare(Materializer<SQLiteCommand, SQLiteParameter> materializer)
         {
+            if (materializer == null)
+                throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
 
             var sqlBuilder = Metadata.CreateSqlBuilder();
             sqlBuilder.ApplyArgumentValue(ArgumentValue, m_Options.HasFlag(DeleteOptions.UseKeyAttribute), DataSource.StrictMode);
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns(), DataSource.StrictMode);
 
             var sql = new StringBuilder();
-            sqlBuilder.BuildSelectByKeyStatment(sql, TableName, ";");
+            sqlBuilder.BuildSelectByKeyStatement(sql, TableName, ";");
             sql.AppendLine();
-            sqlBuilder.BuildDeleteStatment(sql, TableName, ";");
+            sqlBuilder.BuildDeleteStatement(sql, TableName, ";");
 
             return new SQLiteExecutionToken(DataSource, "Delete from " + TableName, sql.ToString(), sqlBuilder.GetParameters(), lockType: LockType.Write);
         }

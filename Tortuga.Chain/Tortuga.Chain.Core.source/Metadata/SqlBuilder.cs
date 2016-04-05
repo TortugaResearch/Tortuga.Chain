@@ -34,6 +34,9 @@ namespace Tortuga.Chain.Metadata
         public static List<TParameter> GetParameters<TParameter>(object argumentValue, Func<TParameter> parameterBuilder)
             where TParameter : DbParameter
         {
+            if (parameterBuilder == null)
+                throw new ArgumentNullException(nameof(parameterBuilder), $"{nameof(parameterBuilder)} is null.");
+
             var result = new List<TParameter>();
 
             if (argumentValue is IEnumerable<TParameter>)

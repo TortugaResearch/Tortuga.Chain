@@ -4,6 +4,7 @@ using System.Text;
 
 #if SDS
 using System.Data.SQLite;
+using System;
 #else
 using SQLiteCommand = Microsoft.Data.Sqlite.SqliteCommand;
 using SQLiteParameter = Microsoft.Data.Sqlite.SqliteParameter;
@@ -39,6 +40,8 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
         /// <returns><see cref="SQLiteExecutionToken" /></returns>
         public override ExecutionToken<SQLiteCommand, SQLiteParameter> Prepare(Materializer<SQLiteCommand, SQLiteParameter> materializer)
         {
+            if (materializer == null)
+                throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
 
             var sqlBuilder = Metadata.CreateSqlBuilder();
             sqlBuilder.ApplyArgumentValue(ArgumentValue, m_Options.HasFlag(UpdateOptions.UseKeyAttribute), DataSource.StrictMode);
@@ -47,14 +50,14 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
             var sql = new StringBuilder();
             if (m_Options.HasFlag(UpdateOptions.ReturnOldValues))
             {
-                sqlBuilder.BuildSelectByKeyStatment(sql, TableName, ";");
+                sqlBuilder.BuildSelectByKeyStatement(sql, TableName, ";");
                 sql.AppendLine();
             }
-            sqlBuilder.BuildUpdateByKeyStatment(sql, TableName, ";");
+            sqlBuilder.BuildUpdateByKeyStatement(sql, TableName, ";");
             if (!m_Options.HasFlag(UpdateOptions.ReturnOldValues))
             {
                 sql.AppendLine();
-                sqlBuilder.BuildSelectByKeyStatment(sql, TableName, ";");
+                sqlBuilder.BuildSelectByKeyStatement(sql, TableName, ";");
             }
 
             return new SQLiteExecutionToken(DataSource, "Update " + TableName, sql.ToString(), sqlBuilder.GetParameters(), lockType: LockType.Write);

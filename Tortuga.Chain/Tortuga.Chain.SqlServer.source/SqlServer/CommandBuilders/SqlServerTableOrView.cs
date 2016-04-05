@@ -63,6 +63,9 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// <param name="materializer">The materializer.</param>
         public override ExecutionToken<SqlCommand, SqlParameter> Prepare(Materializer<SqlCommand, SqlParameter> materializer)
         {
+            if (materializer == null)
+                throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
+
             var sqlBuilder = m_Metadata.CreateSqlBuilder();
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns(), DataSource.StrictMode);
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Tortuga.Chain.Metadata
 {
@@ -60,13 +61,15 @@ namespace Tortuga.Chain.Metadata
         /// </summary>
         /// <returns></returns>
         /// <remarks>Call Preload before invoking this method to ensure that all tables and views were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.</remarks>
+        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
         public abstract ICollection<TableOrViewMetadata<TName, TDbType>> GetTablesAndViews();
-        
+
         /// <summary>
         /// Gets the stored procedures that were loaded by this cache.
         /// </summary>
         /// <returns></returns>
         /// <remarks>Call Preload before invoking this method to ensure that all stored procedures were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.</remarks>
+        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
         public virtual ICollection<StoredProcedureMetadata<TName, TDbType>> GetStoredProcedures()
         {
             throw new NotSupportedException("Stored procedures are not supported by this data source");
@@ -77,6 +80,7 @@ namespace Tortuga.Chain.Metadata
         /// </summary>
         /// <returns></returns>
         /// <remarks>Call Preload before invoking this method to ensure that all table-valued functions were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.</remarks>
+        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
         public virtual ICollection<TableFunctionMetadata<TName, TDbType>> GetTableFunctions()
         {
             throw new NotSupportedException("Table value functions are not supported by this data source");

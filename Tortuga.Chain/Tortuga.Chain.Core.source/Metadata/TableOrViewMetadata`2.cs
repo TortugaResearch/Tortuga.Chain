@@ -247,6 +247,10 @@ namespace Tortuga.Chain.Metadata
         }
 
 
+        /// <summary>
+        /// Creates the SQL builder.
+        /// </summary>
+        /// <returns></returns>
         public SqlBuilder<TDbType> CreateSqlBuilder()
         {
             return new SqlBuilder<TDbType>(Name.ToString(), Columns);

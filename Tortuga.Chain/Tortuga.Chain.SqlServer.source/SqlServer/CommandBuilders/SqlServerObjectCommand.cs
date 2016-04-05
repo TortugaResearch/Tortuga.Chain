@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using Tortuga.Chain.CommandBuilders;
@@ -11,7 +10,6 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
     /// </summary>
     internal abstract class SqlServerObjectCommand : SingleRowDbCommandBuilder<SqlCommand, SqlParameter>
     {
-        private readonly IReadOnlyDictionary<string, object> m_ArgumentDictionary;
         private readonly object m_ArgumentValue;
         private readonly TableOrViewMetadata<SqlServerObjectName, SqlDbType> m_Metadata;
         private readonly SqlServerObjectName m_TableName;
@@ -26,7 +24,6 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             : base(dataSource)
         {
             m_ArgumentValue = argumentValue;
-            m_ArgumentDictionary = ArgumentValue as IReadOnlyDictionary<string, object>;
             m_TableName = tableName;
             m_Metadata = DataSource.DatabaseMetadata.GetTableOrView(m_TableName);
         }

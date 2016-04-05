@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
 using Tortuga.Chain.Metadata;
-using Tortuga.Anchor.Metadata;
 using System.Text;
 
 #if SDS
@@ -72,6 +70,9 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
         /// <returns></returns>
         public override ExecutionToken<SQLiteCommand, SQLiteParameter> Prepare(Materializer<SQLiteCommand, SQLiteParameter> materializer)
         {
+            if (materializer == null)
+                throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
+
             var sqlBuilder = m_Metadata.CreateSqlBuilder();
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns(), DataSource.StrictMode);
 
@@ -99,100 +100,6 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
             return new SQLiteExecutionToken(DataSource, "Query " + m_Metadata.Name, sql.ToString(), parameters, lockType: LockType.Read);
         }
 
-        private string SelectClause(Materializer<SQLiteCommand, SQLiteParameter> materializer)
-        {
-            var desiredColumns = materializer.DesiredColumns();
-            if (desiredColumns == Materializer.NoColumns)
-                return "SELECT 1";
-
-            var availableColumns = m_Metadata.Columns;
-
-            if (desiredColumns == Materializer.AllColumns)
-                return "SELECT " + string.Join(",", availableColumns.Select(c => c.QuotedSqlName));
-
-            var lookup = desiredColumns.ToDictionary(c => c, StringComparer.OrdinalIgnoreCase);
-            var actualColumns = availableColumns.Where(c => lookup.ContainsKey(c.ClrName)).ToList();
-            if (actualColumns.Count == 0)
-                throw new MappingException($"None of the request columns were found in {m_Metadata.Name}");
-
-            return "SELECT " + string.Join(",", actualColumns.Select(c => c.QuotedSqlName));
-        }
-
-        private string WhereClauseFromFilter(List<SQLiteParameter> parameters)
-        {
-            var availableColumns = m_Metadata.Columns.ToDictionary(c => c.ClrName, StringComparer.OrdinalIgnoreCase);
-            var properties = MetadataCache.GetMetadata(m_FilterValue.GetType()).Properties;
-            var actualColumns = new List<string>();
-
-            if (m_FilterValue is IReadOnlyDictionary<string, object>)
-            {
-                foreach (var item in (IReadOnlyDictionary<string, object>)m_FilterValue)
-                {
-                    ColumnMetadata<DbType> column;
-                    if (availableColumns.TryGetValue(item.Key, out column))
-                    {
-                        object value = item.Value ?? DBNull.Value;
-                        var parameter = new SQLiteParameter(column.SqlVariableName, value);
-                        if (column.DbType.HasValue)
-                            parameter.DbType = column.DbType.Value;
-
-                        if (value == DBNull.Value)
-                        {
-                            actualColumns.Add($"{column.QuotedSqlName} IS NULL");
-                        }
-                        else
-                        {
-                            actualColumns.Add($"{column.QuotedSqlName} = {column.SqlVariableName}");
-                            parameters.Add(parameter);
-                        }
-                    }
-                }
-            }
-            else
-            {
-                foreach (var item in properties)
-                {
-                    ColumnMetadata<DbType> column;
-                    if (availableColumns.TryGetValue(item.MappedColumnName, out column))
-                    {
-                        object value = item.InvokeGet(m_FilterValue) ?? DBNull.Value;
-                        var parameter = new SQLiteParameter(column.SqlVariableName, value);
-                        if (column.DbType.HasValue)
-                            parameter.DbType = column.DbType.Value;
-
-                        if (value == DBNull.Value)
-                        {
-                            actualColumns.Add($"{column.QuotedSqlName} IS NULL");
-                        }
-                        else
-                        {
-                            actualColumns.Add($"{column.QuotedSqlName} = {column.SqlVariableName}");
-                            parameters.Add(parameter);
-                        }
-                    }
-                }
-            }
-
-            if (actualColumns.Count == 0)
-                throw new MappingException($"Unable to find any properties on type {m_FilterValue.GetType().Name} that match the columns on {m_Metadata.Name}");
-
-            return " WHERE " + string.Join(" AND ", actualColumns);
-        }
-
-        private string WhereClauseFromString(List<SQLiteParameter> parameters)
-        {
-            if (m_ArgumentValue is IEnumerable<SQLiteParameter>)
-                foreach (var param in (IEnumerable<SQLiteParameter>)m_ArgumentValue)
-                    parameters.Add(param);
-            else if (m_ArgumentValue is IReadOnlyDictionary<string, object>)
-                foreach (var item in (IReadOnlyDictionary<string, object>)m_ArgumentValue)
-                    parameters.Add(new SQLiteParameter("@" + item.Key, item.Value ?? DBNull.Value));
-            else if (m_ArgumentValue != null)
-                foreach (var property in Anchor.Metadata.MetadataCache.GetMetadata(m_ArgumentValue.GetType()).Properties)
-                    parameters.Add(new SQLiteParameter("@" + property.MappedColumnName, property.InvokeGet(m_ArgumentValue) ?? DBNull.Value));
-
-            return "WHERE " + m_WhereClause;
-        }
     }
 }
 

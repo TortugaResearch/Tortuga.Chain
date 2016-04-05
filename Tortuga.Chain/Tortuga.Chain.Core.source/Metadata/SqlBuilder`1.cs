@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using Tortuga.Anchor.Metadata;
@@ -8,6 +9,10 @@ using Tortuga.Chain.Materializers;
 
 namespace Tortuga.Chain.Metadata
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="TDbType">The type of the database type.</typeparam>
     public class SqlBuilder<TDbType>
         where TDbType : struct
     {
@@ -81,6 +86,9 @@ namespace Tortuga.Chain.Metadata
         /// <exception cref="MappingException">This is thrown is no keys could be matched to a column. If strict mode, all keys must match columns.</exception>
         public void ApplyArgumentDictionary(IReadOnlyDictionary<string, object> value, bool strictMode)
         {
+            if (value == null || value.Count == 0)
+                throw new ArgumentException($"{nameof(value)} is null or empty.", nameof(value));
+
             bool found = false;
 
             foreach (var item in value)
@@ -180,6 +188,9 @@ namespace Tortuga.Chain.Metadata
         /// <remarks>Calling this a second time will be additive with prior call.</remarks>
         public void ApplyDesiredColumns(IEnumerable<string> desiredColumns, bool strictMode)
         {
+            if (desiredColumns == null)
+                throw new ArgumentNullException(nameof(desiredColumns), $"{nameof(desiredColumns)} is null.");
+
             bool found = false;
 
             if (desiredColumns == Materializer.NoColumns)
@@ -260,6 +271,9 @@ namespace Tortuga.Chain.Metadata
         /// <returns></returns>
         public string ApplyFilterValue(object filterValue, bool strictMode)
         {
+            if (filterValue == null)
+                throw new ArgumentNullException(nameof(filterValue), $"{nameof(filterValue)} is null.");
+
             var parts = new List<string>();
             bool found = false;
 
@@ -386,13 +400,19 @@ namespace Tortuga.Chain.Metadata
                 throw new MappingException($"None of the properties on {value.GetType().Name} could be matched to columns in {m_Name}.");
         }
         /// <summary>
-        /// Builds a complete select statment using the keys as a filter. This is mostly used in conjunction with an UPDATE or DELETE operation.
+        /// Builds a complete select statement using the keys as a filter. This is mostly used in conjunction with an UPDATE or DELETE operation.
         /// </summary>
         /// <param name="sql">The SQL.</param>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="footer">Optional footer, usually the statement terminator (;).</param>
-        public void BuildDeleteStatment(StringBuilder sql, string tableName, string footer)
+        public void BuildDeleteStatement(StringBuilder sql, string tableName, string footer)
         {
+
+            if (sql == null)
+                throw new ArgumentNullException(nameof(sql), $"{nameof(sql)} is null.");
+            if (string.IsNullOrEmpty(tableName))
+                throw new ArgumentException($"{nameof(tableName)} is null or empty.", nameof(tableName));
+
             sql.Append("DELETE FROM " + tableName);
             BuildWhereClause(sql, " WHERE ", footer);
         }
@@ -415,8 +435,19 @@ namespace Tortuga.Chain.Metadata
             sql.Append(footer);
         }
 
-        public void BuildInsertStatment(StringBuilder sql, string tableName, string footer)
+        /// <summary>
+        /// Builds a complete insert statement.
+        /// </summary>
+        /// <param name="sql">The SQL.</param>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="footer">The footer.</param>
+        public void BuildInsertStatement(StringBuilder sql, string tableName, string footer)
         {
+            if (sql == null)
+                throw new ArgumentNullException(nameof(sql), $"{nameof(sql)} is null.");
+            if (string.IsNullOrEmpty(tableName))
+                throw new ArgumentException($"{nameof(tableName)} is null or empty.", nameof(tableName));
+
             BuildInsertClause(sql, "INSERT INTO " + tableName + " (", null, ")");
             BuildValuesClause(sql, " VALUES (", ")");
             sql.Append(footer);
@@ -428,8 +459,13 @@ namespace Tortuga.Chain.Metadata
         /// <param name="sql">The SQL.</param>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="footer">Optional footer, usually the statement terminator (;).</param>
-        public void BuildSelectByKeyStatment(StringBuilder sql, string tableName, string footer)
+        public void BuildSelectByKeyStatement(StringBuilder sql, string tableName, string footer)
         {
+            if (sql == null)
+                throw new ArgumentNullException(nameof(sql), $"{nameof(sql)} is null.");
+            if (string.IsNullOrEmpty(tableName))
+                throw new ArgumentException($"{nameof(tableName)} is null or empty.", nameof(tableName));
+
             if (!HasReadFields)
                 return;
 
@@ -478,7 +514,13 @@ namespace Tortuga.Chain.Metadata
             sql.Append(footer);
         }
 
-        public void BuildUpdateByKeyStatment(StringBuilder sql, string tableName, string footer)
+        /// <summary>
+        /// Builds the complete update statment using primary keys.
+        /// </summary>
+        /// <param name="sql">The SQL.</param>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="footer">The footer.</param>
+        public void BuildUpdateByKeyStatement(StringBuilder sql, string tableName, string footer)
         {
             BuildSetClause(sql, "UPDATE " + tableName + " SET ", null, null);
             BuildWhereClause(sql, " WHERE ", null);
@@ -532,6 +574,7 @@ namespace Tortuga.Chain.Metadata
         /// </summary>
         /// <returns>Each pair has the column's QuotedSqlName and SqlVariableName</returns>
         /// <remarks>This will mark the returned columns as participating in the parameter generation.</remarks>
+        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
         public IEnumerable<ColumnNamePair> GetInsertColumns()
         {
             for (var i = 0; i < m_Entries.Length; i++)
@@ -549,6 +592,7 @@ namespace Tortuga.Chain.Metadata
         /// </summary>
         /// <returns>Each pair has the column's QuotedSqlName and SqlVariableName</returns>
         /// <remarks>This will mark the returned columns as participating in the parameter generation.</remarks>
+        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
         public IEnumerable<ColumnNamePair> GetKeyColumns()
         {
             for (var i = 0; i < m_Entries.Length; i++)
@@ -566,6 +610,7 @@ namespace Tortuga.Chain.Metadata
         /// </summary>
         /// <returns>Each pair has the column's QuotedSqlName and SqlVariableName</returns>
         /// <remarks>This will mark the returned columns as participating in the parameter generation.</remarks>
+        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
         public IEnumerable<ColumnNamePair> GetParameterizedColumns()
         {
             for (var i = 0; i < m_Entries.Length; i++)
@@ -587,6 +632,9 @@ namespace Tortuga.Chain.Metadata
         public List<TParameter> GetParameters<TParameter>(Func<TDbType?, TParameter> parameterBuilder)
             where TParameter : DbParameter
         {
+            if (parameterBuilder == null)
+                throw new ArgumentNullException(nameof(parameterBuilder), $"{nameof(parameterBuilder)} is null.");
+
             var result = new List<TParameter>();
 
             for (var i = 0; i < m_Entries.Length; i++)
@@ -608,6 +656,7 @@ namespace Tortuga.Chain.Metadata
         /// Gets the select columns.
         /// </summary>
         /// <returns>Each entry has the column's QuotedSqlName</returns>
+        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
         public IEnumerable<string> GetSelectColumns()
         {
             for (var i = 0; i < m_Entries.Length; i++)
@@ -622,6 +671,7 @@ namespace Tortuga.Chain.Metadata
         /// </summary>
         /// <returns>Each pair has the column's QuotedSqlName and SqlVariableName</returns>
         /// <remarks>This will mark the returned columns as participating in the parameter generation.</remarks>
+        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
         public IEnumerable<ColumnNamePair> GetUpdateColumns()
         {
             for (var i = 0; i < m_Entries.Length; i++)

@@ -42,13 +42,15 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
         /// <returns><see cref="SQLiteExecutionToken" /></returns>
         public override ExecutionToken<SQLiteCommand, SQLiteParameter> Prepare(Materializer<SQLiteCommand, SQLiteParameter> materializer)
         {
+            if (materializer == null)
+                throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
 
             var sqlBuilder = Metadata.CreateSqlBuilder();
             sqlBuilder.ApplyArgumentValue(ArgumentValue, m_Options.HasFlag(UpsertOptions.UseKeyAttribute), DataSource.StrictMode);
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns(), DataSource.StrictMode);
 
             var sql = new StringBuilder();
-            sqlBuilder.BuildUpdateByKeyStatment(sql, TableName, ";");
+            sqlBuilder.BuildUpdateByKeyStatement(sql, TableName, ";");
             sql.AppendLine();
 
             sqlBuilder.BuildInsertClause(sql, $"INSERT OR IGNORE INTO {TableName} (", null, ")");

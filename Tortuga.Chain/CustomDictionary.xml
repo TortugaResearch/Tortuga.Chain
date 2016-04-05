@@ -8,6 +8,7 @@
       <Word>Appender</Word>
       <Word>Appenders</Word>
       <Word>Upsert</Word>
+      <Word>NotMapped</Word>
     </Recognized>
     <Deprecated>
       <Term PreferredAlternate=""></Term>

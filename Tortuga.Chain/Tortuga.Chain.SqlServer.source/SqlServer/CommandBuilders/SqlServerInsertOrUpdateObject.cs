@@ -5,6 +5,7 @@ using System.Text;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
 using Tortuga.Chain.SqlServer.Core;
+using System;
 
 namespace Tortuga.Chain.SqlServer.CommandBuilders
 {
@@ -35,9 +36,11 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 
         public override ExecutionToken<SqlCommand, SqlParameter> Prepare(Materializer<SqlCommand, SqlParameter> materializer)
         {
+            if (materializer == null)
+                throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
 
             var sqlBuilder = Metadata.CreateSqlBuilder();
-            sqlBuilder.ApplyArgumentValue(ArgumentValue, false, DataSource.StrictMode);
+            sqlBuilder.ApplyArgumentValue(ArgumentValue, m_Options.HasFlag(UpsertOptions.UseKeyAttribute), DataSource.StrictMode);
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns(), DataSource.StrictMode);
 
             var availableColumns = sqlBuilder.GetParameterizedColumns().ToList();

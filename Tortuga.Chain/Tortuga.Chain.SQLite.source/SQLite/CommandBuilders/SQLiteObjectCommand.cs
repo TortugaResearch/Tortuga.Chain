@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Data;
+﻿using System.Data;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Metadata;
 
@@ -19,7 +18,6 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
     {
         private readonly string m_TableName;
         private readonly object m_ArgumentValue;
-        private readonly IReadOnlyDictionary<string, object> m_ArgumentDictionary;
         private readonly TableOrViewMetadata<string, DbType> m_Metadata;
 
         /// <summary>
@@ -33,7 +31,6 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
         {
             m_TableName = tableName;
             m_ArgumentValue = argumentValue;
-            m_ArgumentDictionary = ArgumentValue as IReadOnlyDictionary<string, object>;
             m_Metadata = ((SQLiteDataSourceBase)DataSource).DatabaseMetadata.GetTableOrView(m_TableName);
         }
 

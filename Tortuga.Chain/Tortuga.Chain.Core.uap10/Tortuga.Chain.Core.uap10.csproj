@@ -397,6 +397,9 @@
     <Compile Include="..\Tortuga.Chain.Core.source\Metadata\ColumnMetadata`1.cs">
       <Link>Metadata\ColumnMetadata`1.cs</Link>
     </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\Metadata\ColumnNamePair.cs">
+      <Link>Metadata\ColumnNamePair.cs</Link>
+    </Compile>
     <Compile Include="..\Tortuga.Chain.Core.source\Metadata\ColumnPropertyMap`1.cs">
       <Link>Metadata\ColumnPropertyMap`1.cs</Link>
     </Compile>
@@ -415,11 +418,23 @@
     <Compile Include="..\Tortuga.Chain.Core.source\Metadata\IDatabaseMetadataCache.cs">
       <Link>Metadata\IDatabaseMetadataCache.cs</Link>
     </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\Metadata\ISqlBuilderEntryDetails.cs">
+      <Link>Metadata\ISqlBuilderEntryDetails.cs</Link>
+    </Compile>
     <Compile Include="..\Tortuga.Chain.Core.source\Metadata\ITableOrViewMetadata.cs">
       <Link>Metadata\ITableOrViewMetadata.cs</Link>
     </Compile>
     <Compile Include="..\Tortuga.Chain.Core.source\Metadata\ParameterMetadata`1.cs">
       <Link>Metadata\ParameterMetadata`1.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\Metadata\SqlBuilder.cs">
+      <Link>Metadata\SqlBuilder.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\Metadata\SqlBuilderEntry.cs">
+      <Link>Metadata\SqlBuilderEntry.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\Metadata\SqlBuilder`1.cs">
+      <Link>Metadata\SqlBuilder`1.cs</Link>
     </Compile>
     <Compile Include="..\Tortuga.Chain.Core.source\Metadata\StoredProcedureMetadata`2.cs">
       <Link>Metadata\StoredProcedureMetadata`2.cs</Link>
