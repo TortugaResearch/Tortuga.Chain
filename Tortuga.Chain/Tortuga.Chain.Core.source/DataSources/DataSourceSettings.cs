@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Tortuga.Chain
+namespace Tortuga.Chain.DataSources
 {
     /// <summary>
     /// This class is used to modify settings that are not represented by the connection string. 

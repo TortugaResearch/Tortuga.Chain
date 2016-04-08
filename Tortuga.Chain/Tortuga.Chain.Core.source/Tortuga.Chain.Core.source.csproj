@@ -100,7 +100,7 @@
     <Compile Include="CommonAppenders.cs" />
     <Compile Include="Core\ExecutionTokenPreparedEventArgs.cs" />
     <Compile Include="Core\ExecutionTokenPreparingEventArgs.cs" />
-    <Compile Include="DataSourceSettings.cs" />
+    <Compile Include="DataSources\DataSourceSettings.cs" />
     <Compile Include="DataSources\DataSource.cs" />
     <Compile Include="DataSources\DataSource`2.cs" />
     <Compile Include="CommandBuilders\DbCommandBuilder`2.cs" />

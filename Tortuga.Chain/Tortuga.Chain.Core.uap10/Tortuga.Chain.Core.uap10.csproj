@@ -211,6 +211,9 @@
     <Compile Include="..\Tortuga.Chain.Core.source\DataSources\DataSource.cs">
       <Link>DataSources\DataSource.cs</Link>
     </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\DataSources\DataSourceSettings.cs">
+      <Link>DataSources\DataSourceSettings.cs</Link>
+    </Compile>
     <Compile Include="..\Tortuga.Chain.Core.source\DataSources\DataSource`2.cs">
       <Link>DataSources\DataSource`2.cs</Link>
     </Compile>

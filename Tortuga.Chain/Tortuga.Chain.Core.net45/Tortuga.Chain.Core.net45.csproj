@@ -168,6 +168,9 @@
     <Compile Include="..\tortuga.chain.core.source\datasources\DataSource.cs">
       <Link>DataSources\DataSource.cs</Link>
     </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\DataSources\DataSourceSettings.cs">
+      <Link>DataSources\DataSourceSettings.cs</Link>
+    </Compile>
     <Compile Include="..\tortuga.chain.core.source\datasources\DataSource`2.cs">
       <Link>DataSources\DataSource`2.cs</Link>
     </Compile>
@@ -197,9 +200,6 @@
     </Compile>
     <Compile Include="..\Tortuga.Chain.Core.source\ILink`1.cs">
       <Link>ILink`1.cs</Link>
-    </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.source\InsertOrUpdateOptions.cs">
-      <Link>InsertOrUpdateOptions.cs</Link>
     </Compile>
     <Compile Include="..\Tortuga.Chain.Core.source\ListOptions.cs">
       <Link>ListOptions.cs</Link>
