@@ -69,8 +69,8 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Tortuga.Anchor, Version=0.4.5935.6732, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
-      <HintPath>..\packages\Tortuga.Anchor.0.4.5935.6732\lib\net46\Tortuga.Anchor.dll</HintPath>
+    <Reference Include="Tortuga.Anchor, Version=0.5.5941.41176, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tortuga.Anchor.0.5.5941.41176\lib\net46\Tortuga.Anchor.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
@@ -99,6 +99,12 @@
     <Compile Include="..\tortuga.chain.core.source\appenders\ReadOrCacheResultAppender`1.cs">
       <Link>Appenders\ReadOrCacheResultAppender`1.cs</Link>
     </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\Appenders\StrictModeAppender.cs">
+      <Link>Appenders\StrictModeAppender.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\Appenders\StrictModeAppender1.cs">
+      <Link>Appenders\StrictModeAppender1.cs</Link>
+    </Compile>
     <Compile Include="..\tortuga.chain.core.source\appenders\TimeoutAppender.cs">
       <Link>Appenders\TimeoutAppender.cs</Link>
     </Compile>
@@ -110,6 +116,9 @@
     </Compile>
     <Compile Include="..\tortuga.chain.core.source\appenders\TraceAppender`1.cs">
       <Link>Appenders\TraceAppender`1.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\CommandBuilders\DbCommandBuilder.cs">
+      <Link>CommandBuilders\DbCommandBuilder.cs</Link>
     </Compile>
     <Compile Include="..\tortuga.chain.core.source\commandbuilders\DbCommandBuilder`2.cs">
       <Link>CommandBuilders\DbCommandBuilder`2.cs</Link>
@@ -149,6 +158,9 @@
     </Compile>
     <Compile Include="..\tortuga.chain.core.source\core\ExecutionTokenPreparedEventArgs.cs">
       <Link>Core\ExecutionTokenPreparedEventArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\Core\ExecutionTokenPreparingEventArgs.cs">
+      <Link>Core\ExecutionTokenPreparingEventArgs.cs</Link>
     </Compile>
     <Compile Include="..\tortuga.chain.core.source\core\ExecutionToken`2.cs">
       <Link>Core\ExecutionToken`2.cs</Link>
@@ -437,6 +449,9 @@
     </Compile>
     <Compile Include="..\Tortuga.Chain.Core.source\UpdateOptions.cs">
       <Link>UpdateOptions.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\UpsertOptions.cs">
+      <Link>UpsertOptions.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

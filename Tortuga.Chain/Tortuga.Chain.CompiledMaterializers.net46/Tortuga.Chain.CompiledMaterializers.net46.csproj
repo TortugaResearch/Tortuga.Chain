@@ -95,8 +95,8 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="Tortuga.Anchor, Version=0.4.5935.6732, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
-      <HintPath>..\packages\Tortuga.Anchor.0.4.5935.6732\lib\net46\Tortuga.Anchor.dll</HintPath>
+    <Reference Include="Tortuga.Anchor, Version=0.5.5941.41176, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tortuga.Anchor.0.5.5941.41176\lib\net46\Tortuga.Anchor.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Tortuga.Chain.Core, Version=0.10.5938.39414, Culture=neutral, PublicKeyToken=8769fd32a2872cf0, processorArchitecture=MSIL">
@@ -114,14 +114,20 @@
     <Compile Include="..\Tortuga.Chain.CompiledMaterializers.source\MaterializerCompiledEventArgs.cs">
       <Link>MaterializerCompiledEventArgs.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.CompiledMaterializers.source\Materializers\Compiled.cs">
-      <Link>Materializers\Compiled.cs</Link>
-    </Compile>
     <Compile Include="..\Tortuga.Chain.CompiledMaterializers.source\Materializers\CompiledCollectionMaterializer.cs">
       <Link>Materializers\CompiledCollectionMaterializer.cs</Link>
     </Compile>
+    <Compile Include="..\Tortuga.Chain.CompiledMaterializers.source\Materializers\CompiledMultipleRow`2.cs">
+      <Link>Materializers\CompiledMultipleRow`2.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.CompiledMaterializers.source\Materializers\CompiledMultipleTable`2.cs">
+      <Link>Materializers\CompiledMultipleTable`2.cs</Link>
+    </Compile>
     <Compile Include="..\Tortuga.Chain.CompiledMaterializers.source\Materializers\CompiledObjectMaterializer.cs">
       <Link>Materializers\CompiledObjectMaterializer.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.CompiledMaterializers.source\Materializers\CompiledSingleRow`2.cs">
+      <Link>Materializers\CompiledSingleRow`2.cs</Link>
     </Compile>
     <Compile Include="..\Tortuga.Chain.CompiledMaterializers.source\Materializers\CompilerCache.cs">
       <Link>Materializers\CompilerCache.cs</Link>
@@ -135,6 +141,7 @@
     <None Include="..\Tortuga Chain.snk">
       <Link>Tortuga Chain.snk</Link>
     </None>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
