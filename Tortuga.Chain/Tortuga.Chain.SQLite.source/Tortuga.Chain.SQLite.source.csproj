@@ -102,6 +102,7 @@
     <Compile Include="SQLite\SQLiteDataSourceBase.cs" />
     <Compile Include="SQLite\SQLiteExecutionToken.cs" />
     <Compile Include="SQLite\SQLiteMetadataCache.cs" />
+    <Compile Include="SQLite\SQLiteSettings.cs" />
     <Compile Include="SQLite\SQLiteTransactionalDataSource.cs" />
     <Compile Include="SQLite\Utilities.cs" />
   </ItemGroup>

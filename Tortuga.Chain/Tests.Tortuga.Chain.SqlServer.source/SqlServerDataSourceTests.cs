@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Tortuga.Chain;
+using Tortuga.Chain.SqlServer;
 
 namespace Tests
 {
@@ -58,27 +59,21 @@ namespace Tests
 IF ( (16384 & @@OPTIONS) = 16384 ) SET @Option = 1;
 SELECT @Option AS [Option];";
 
-            var dataSource = SqlServerDataSource.CreateFromConfig("SqlServerTestDatabase");
+            var dataSource = SqlServerDataSource.CreateFromConfig("SqlServerTestDatabase").WithSettings(new SqlServerDataSourceSettings() { XactAbort = true }); ;
 
-            var settingOriginal = dataSource.Sql(sql).ToBoolean().Execute();
-
-            dataSource.Settings.XactAbort = true;
             var settingOnA = dataSource.Sql(sql).ToBoolean().Execute();
             var settingOnB = dataSource.GetEffectiveSettings();
             Assert.IsTrue(settingOnA, "XACT_ABORT should have been turned on.");
             Assert.IsTrue(settingOnB.XactAbort, "XACT_ABORT should have been turned on in effective settings.");
 
-            dataSource.Settings.XactAbort = false;
+            dataSource = dataSource.WithSettings(new SqlServerDataSourceSettings() { XactAbort = false }); ;
+
             var settingOffA = dataSource.Sql(sql).ToBoolean().Execute();
             var settingOffB = dataSource.GetEffectiveSettings();
             Assert.IsFalse(settingOffA, "XACT_ABORT should have been turned off.");
             Assert.IsFalse(settingOffB.XactAbort, "XACT_ABORT should have been turned off in effective settings.");
 
-            dataSource.Settings.XactAbort = null;
-            var settingDefaultA = dataSource.Sql(sql).ToBoolean().Execute();
-            var settingDefaultB = dataSource.GetEffectiveSettings();
-            Assert.AreEqual(settingOriginal, settingDefaultA, "XACT_ABORT should have returned to the default setting");
-            Assert.AreEqual(settingOriginal, settingDefaultB.XactAbort, "XACT_ABORT should have returned to the default setting in effective settings");
+         
 
         }
 
@@ -88,28 +83,18 @@ SELECT @Option AS [Option];";
 IF ( (16384 & @@OPTIONS) = 16384 ) SET @Option = 1;
 SELECT @Option AS [Option];";
 
-            var dataSource = SqlServerDataSource.CreateFromConfig("SqlServerTestDatabase");
-
-            var settingOriginal = await dataSource.Sql(sql).ToBoolean().ExecuteAsync();
-
-            dataSource.Settings.XactAbort = true;
+            
+            var dataSource = SqlServerDataSource.CreateFromConfig("SqlServerTestDatabase").WithSettings(new SqlServerDataSourceSettings() { XactAbort = true }); ;
             var settingOnA = await dataSource.Sql(sql).ToBoolean().ExecuteAsync();
             var settingOnB = await dataSource.GetEffectiveSettingsAsync();
             Assert.IsTrue(settingOnA, "XACT_ABORT should have been turned on.");
             Assert.IsTrue(settingOnB.XactAbort, "XACT_ABORT should have been turned on in effective settings.");
 
-            dataSource.Settings.XactAbort = false;
+            dataSource = dataSource.WithSettings(new SqlServerDataSourceSettings() { XactAbort = false }); ;
             var settingOffA = await dataSource.Sql(sql).ToBoolean().ExecuteAsync();
             var settingOffB = await dataSource.GetEffectiveSettingsAsync();
             Assert.IsFalse(settingOffA, "XACT_ABORT should have been turned off.");
             Assert.IsFalse(settingOffB.XactAbort, "XACT_ABORT should have been turned off in effective settings.");
-
-            dataSource.Settings.XactAbort = null;
-            var settingDefaultA = await dataSource.Sql(sql).ToBoolean().ExecuteAsync();
-            var settingDefaultB = await dataSource.GetEffectiveSettingsAsync();
-            Assert.AreEqual(settingOriginal, settingDefaultA, "XACT_ABORT should have returned to the default setting");
-            Assert.AreEqual(settingOriginal, settingDefaultB.XactAbort, "XACT_ABORT should have returned to the default setting in effective settings");
-
         }
 
         [TestMethod]
@@ -119,29 +104,17 @@ SELECT @Option AS [Option];";
 IF ( (64 & @@OPTIONS) = 64 ) SET @Option = 1;
 SELECT @Option AS [Option];";
 
-            var dataSource = SqlServerDataSource.CreateFromConfig("SqlServerTestDatabase");
-
-            var settingOriginal = dataSource.Sql(sql).ToBoolean().Execute();
-            var settingOriginalB = dataSource.GetEffectiveSettings();
-
-            dataSource.Settings.ArithAbort = true;
+            var dataSource = SqlServerDataSource.CreateFromConfig("SqlServerTestDatabase").WithSettings(new SqlServerDataSourceSettings() { ArithAbort = true }); ;
             var settingOnA = dataSource.Sql(sql).ToBoolean().Execute();
             var settingOnB = dataSource.GetEffectiveSettings();
             Assert.IsTrue(settingOnA, "ARITHABORT should have been turned on.");
             Assert.IsTrue(settingOnB.ArithAbort, "ARITHABORT should have been turned on in effective settings.");
 
-            dataSource.Settings.ArithAbort = false;
+            dataSource = dataSource.WithSettings(new SqlServerDataSourceSettings() { ArithAbort = false }); ;
             var settingOffA = dataSource.Sql(sql).ToBoolean().Execute();
             var settingOffB = dataSource.GetEffectiveSettings();
             Assert.IsFalse(settingOffA, "ARITHABORT should have been turned off.");
             Assert.IsFalse(settingOffB.ArithAbort, "ARITHABORT should have been turned off in effective settings.");
-
-            dataSource.Settings.ArithAbort = null;
-            var settingDefaultA = dataSource.Sql(sql).ToBoolean().Execute();
-            var settingDefaultB = dataSource.GetEffectiveSettings();
-            Assert.AreEqual(settingOriginal, settingDefaultA, "ARITHABORT should have returned to the default setting");
-            Assert.AreEqual(settingOriginal, settingDefaultB.ArithAbort, "ARITHABORT should have returned to the default setting in effective settings");
-
         }
 
 
@@ -240,8 +213,7 @@ SELECT @Option AS [Option];";
         public async Task SqlServerDataSourceTests_CommandTimeout_Async()
         {
             var sql = "WAITFOR DELAY '00:00:03'";
-            var dataSource = SqlServerDataSource.CreateFromConfig("SqlServerTestDatabase");
-            dataSource.DefaultCommandTimeout = TimeSpan.FromSeconds(1);
+            var dataSource = SqlServerDataSource.CreateFromConfig("SqlServerTestDatabase").WithSettings(new SqlServerDataSourceSettings() { DefaultCommandTimeout = TimeSpan.FromSeconds(1) });
 
             try
             {
@@ -255,9 +227,7 @@ SELECT @Option AS [Option];";
         public void SqlServerDataSourceTests_CommandTimeout()
         {
             var sql = "WAITFOR DELAY '00:00:03'";
-            var dataSource = SqlServerDataSource.CreateFromConfig("SqlServerTestDatabase");
-            dataSource.DefaultCommandTimeout = TimeSpan.FromSeconds(1);
-
+            var dataSource = SqlServerDataSource.CreateFromConfig("SqlServerTestDatabase").WithSettings(new SqlServerDataSourceSettings() { DefaultCommandTimeout = TimeSpan.FromSeconds(1) }); ;
             try
             {
                 dataSource.Sql(sql).Execute();

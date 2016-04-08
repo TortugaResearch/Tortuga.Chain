@@ -1,19 +1,27 @@
 using Tortuga.Chain;
+using Tortuga.Chain.SQLite;
 
 namespace Tests
 {
     public abstract class TestBase
     {
-        private readonly SQLiteDataSource m_DataSource;
+        private static SQLiteDataSource s_DataSource;
+        private static readonly SQLiteDataSource s_StrictDataSource;
 
-        protected TestBase()
+        static TestBase()
         {
-            m_DataSource = new SQLiteDataSource(System.Configuration.ConfigurationManager.ConnectionStrings["SQLiteTestDatabase"].ConnectionString);
+            s_DataSource = new SQLiteDataSource(System.Configuration.ConfigurationManager.ConnectionStrings["SQLiteTestDatabase"].ConnectionString);
+            s_StrictDataSource = s_DataSource.WithSettings(new SQLiteDataSourceSettings() { StrictMode = true });
         }
 
-        public SQLiteDataSource DataSource
+        public static SQLiteDataSource DataSource
         {
-            get { return m_DataSource; }
+            get { return s_DataSource; }
+        }
+
+        public static SQLiteDataSource StrictDataSource
+        {
+            get { return s_StrictDataSource; }
         }
 
         public string EmployeeTableName { get { return "Employee"; } }

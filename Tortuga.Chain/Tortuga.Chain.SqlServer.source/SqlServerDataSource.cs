@@ -18,22 +18,24 @@ namespace Tortuga.Chain
     public class SqlServerDataSource : SqlServerDataSourceBase
     {
         private readonly SqlConnectionStringBuilder m_ConnectionBuilder;
-        private readonly SqlServerMetadataCache m_DatabaseMetadata;
+        private SqlServerMetadataCache m_DatabaseMetadata;
+
+        private readonly object m_SyncRoot = new object();
+
+        private bool m_IsSqlDependencyActive;
 
         /// <summary>
         /// This is used to decide which option overides to set when establishing a connection.
         /// </summary>
         private SqlServerEffectiveSettings m_ServerDefaultSettings;
-        private readonly object m_SyncRoot = new object();
-        private bool m_IsSqlDependencyActive;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlServerDataSource" /> class.
         /// </summary>
         /// <param name="name">Name of the data source.</param>
         /// <param name="connectionString">The connection string.</param>
+        /// <param name="settings">Optional settings object.</param>
         /// <exception cref="ArgumentException">connectionString is null or empty.;connectionString</exception>
-        public SqlServerDataSource(string name, string connectionString)
+        public SqlServerDataSource(string name, string connectionString, SqlServerDataSourceSettings settings = null) : base(settings)
         {
             if (string.IsNullOrEmpty(connectionString))
                 throw new ArgumentException("connectionString is null or empty.", "connectionString");
@@ -45,15 +47,22 @@ namespace Tortuga.Chain
                 Name = name;
 
             m_DatabaseMetadata = new SqlServerMetadataCache(m_ConnectionBuilder);
+
+            if (settings != null)
+            {
+                XactAbort = settings.XactAbort;
+                ArithAbort = settings.ArithAbort;
+            }
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlServerDataSource" /> class.
         /// </summary>
         /// <param name="connectionString">The connection string.</param>
+        /// <param name="settings">Optional settings object.</param>
         /// <exception cref="ArgumentException">connectionString is null or empty.;connectionString</exception>
-        public SqlServerDataSource(string connectionString)
-            : this(null, connectionString)
+        public SqlServerDataSource(string connectionString, SqlServerDataSourceSettings settings = null)
+            : this(null, connectionString, settings)
         {
         }
 
@@ -62,8 +71,9 @@ namespace Tortuga.Chain
         /// </summary>
         /// <param name="name">Optional name of the data source.</param>
         /// <param name="connectionStringBuilder">The connection string builder.</param>
+        /// <param name="settings">Optional settings object.</param>
         /// <exception cref="ArgumentNullException">connectionStringBuilder;connectionStringBuilder is null.</exception>
-        public SqlServerDataSource(string name, SqlConnectionStringBuilder connectionStringBuilder)
+        public SqlServerDataSource(string name, SqlConnectionStringBuilder connectionStringBuilder, SqlServerDataSourceSettings settings = null) : base(settings)
         {
             if (connectionStringBuilder == null)
                 throw new ArgumentNullException("connectionStringBuilder", "connectionStringBuilder is null.");
@@ -75,18 +85,32 @@ namespace Tortuga.Chain
                 Name = name;
 
             m_DatabaseMetadata = new SqlServerMetadataCache(m_ConnectionBuilder);
+
+            if (settings != null)
+            {
+                XactAbort = settings.XactAbort;
+                ArithAbort = settings.ArithAbort;
+            }
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlServerDataSource"/> class.
         /// </summary>
         /// <param name="connectionStringBuilder">The connection string builder.</param>
-        public SqlServerDataSource(SqlConnectionStringBuilder connectionStringBuilder)
-            : this(null, connectionStringBuilder)
+        /// <param name="settings">Optional settings object.</param>
+        public SqlServerDataSource(SqlConnectionStringBuilder connectionStringBuilder, SqlServerDataSourceSettings settings = null)
+            : this(null, connectionStringBuilder, settings)
         {
         }
 
 
+
+        /// <summary>
+        /// Terminates a query when an overflow or divide-by-zero error occurs during query execution.
+        /// </summary>
+        /// <remarks>Microsoft recommends setting ArithAbort=On for all connections. To avoid an additional round-trip to the server, do this at the server level instead of at the connection level.</remarks>
+        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Arith")]
+        public bool? ArithAbort { get; }
 
         /// <summary>
         /// This object can be used to lookup database information.
@@ -104,6 +128,12 @@ namespace Tortuga.Chain
         {
             get { return m_IsSqlDependencyActive; }
         }
+
+        /// <summary>
+        /// Rolls back a transaction if a Transact-SQL statement raises a run-time error.
+        /// </summary>
+        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Xact")]
+        public bool? XactAbort { get; }
 
         /// <summary>
         /// Gets the connection string.
@@ -144,44 +174,27 @@ namespace Tortuga.Chain
             return new SqlServerTransactionalDataSource(this, transactionName, isolationLevel, forwardEvents);
         }
         /// <summary>
-        /// Creates and opens a SQL connection.
+        /// Gets the options that are currently in effect. This takes into account server-defined defaults.
         /// </summary>
-        /// <returns></returns>
-        /// <remarks>The caller of this method is responsible for closing the connection.</remarks>
-        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-        internal SqlConnection CreateConnection()
+        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
+        public SqlServerEffectiveSettings GetEffectiveSettings()
         {
-
-            var con = new SqlConnection(ConnectionString);
-            con.Open();
-
-            if (m_ServerDefaultSettings == null)
-            {
-                var temp = new SqlServerEffectiveSettings();
-                temp.Reload(con, null);
-                Thread.MemoryBarrier();
-                m_ServerDefaultSettings = temp;
-            }
-
-            var sql = BuildConnectionSettingsOverride();
-
-            if (sql.Length > 0)
-                using (var cmd = new SqlCommand(sql.ToString(), con))
-                    cmd.ExecuteNonQuery();
-
-            return con;
+            var result = new SqlServerEffectiveSettings();
+            using (var con = CreateConnection())
+                result.Reload(con, null);
+            return result;
         }
 
-        private string BuildConnectionSettingsOverride()
+        /// <summary>
+        /// Gets the options that are currently in effect. This takes into account server-defined defaults.
+        /// </summary>
+        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
+        public async Task<SqlServerEffectiveSettings> GetEffectiveSettingsAsync()
         {
-            var sql = new StringBuilder();
-
-            if (Settings.ArithAbort.HasValue && Settings.ArithAbort != m_ServerDefaultSettings.ArithAbort)
-                sql.AppendLine("SET ARITHABORT " + (Settings.ArithAbort.Value ? "ON" : "OFF"));
-            if (Settings.XactAbort.HasValue && Settings.XactAbort != m_ServerDefaultSettings.XactAbort)
-                sql.AppendLine("SET XACT_ABORT  " + (Settings.XactAbort.Value ? "ON" : "OFF"));
-
-            return sql.ToString();
+            var result = new SqlServerEffectiveSettings();
+            using (var con = await CreateSqlConnectionAsync())
+                await result.ReloadAsync(con, null);
+            return result;
         }
 
         /// <summary>
@@ -233,6 +246,35 @@ namespace Tortuga.Chain
                 using (var cmd = new SqlCommand("SELECT 1", con))
                     cmd.ExecuteScalar();
             }
+        }
+
+        /// <summary>
+        /// Creates and opens a SQL connection.
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>The caller of this method is responsible for closing the connection.</remarks>
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
+        internal SqlConnection CreateConnection()
+        {
+
+            var con = new SqlConnection(ConnectionString);
+            con.Open();
+
+            if (m_ServerDefaultSettings == null)
+            {
+                var temp = new SqlServerEffectiveSettings();
+                temp.Reload(con, null);
+                Thread.MemoryBarrier();
+                m_ServerDefaultSettings = temp;
+            }
+
+            var sql = BuildConnectionSettingsOverride();
+
+            if (sql.Length > 0)
+                using (var cmd = new SqlCommand(sql.ToString(), con))
+                    cmd.ExecuteNonQuery();
+
+            return con;
         }
 
         /// <summary>
@@ -332,6 +374,18 @@ namespace Tortuga.Chain
 
         }
 
+        private string BuildConnectionSettingsOverride()
+        {
+            var sql = new StringBuilder();
+
+            if (ArithAbort.HasValue && ArithAbort != m_ServerDefaultSettings.ArithAbort)
+                sql.AppendLine("SET ARITHABORT " + (ArithAbort.Value ? "ON" : "OFF"));
+            if (XactAbort.HasValue && XactAbort != m_ServerDefaultSettings.XactAbort)
+                sql.AppendLine("SET XACT_ABORT  " + (XactAbort.Value ? "ON" : "OFF"));
+
+            return sql.ToString();
+        }
+
         /// <summary>
         /// Creates and opens a SQL connection.
         /// </summary>
@@ -363,35 +417,28 @@ namespace Tortuga.Chain
         }
 
         /// <summary>
-        /// Gets the options set by the client. If an option is null, the server-defined defaults will be in effect.
+        /// Creates a new data source with the indicated changes to the settings.
         /// </summary>
-        /// <value>The options.</value>
-        public SqlServerSettings Settings { get; } = new SqlServerSettings();
-
-        /// <summary>
-        /// Gets the options that are currently in effect. This takes into account server-defined defaults.
-        /// </summary>
-        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
-        public SqlServerEffectiveSettings GetEffectiveSettings()
+        /// <param name="settings">The new settings to use.</param>
+        /// <returns></returns>
+        /// <remarks>The new data source will share the same database metadata cache.</remarks>
+        public SqlServerDataSource WithSettings(SqlServerDataSourceSettings settings)
         {
-            var result = new SqlServerEffectiveSettings();
-            using (var con = CreateConnection())
-                result.Reload(con, null);
+            if (settings == null)
+                throw new ArgumentNullException(nameof(settings), $"{nameof(settings)} is null.");
+
+            var mergedSettings = new SqlServerDataSourceSettings()
+            {
+                DefaultCommandTimeout = settings.DefaultCommandTimeout ?? DefaultCommandTimeout,
+                SuppressGlobalEvents = settings.SuppressGlobalEvents ?? SuppressGlobalEvents,
+                StrictMode = settings.StrictMode ?? StrictMode,
+                XactAbort = settings.XactAbort ?? XactAbort,
+                ArithAbort = settings.ArithAbort ?? ArithAbort
+            };
+            var result = new SqlServerDataSource(Name, m_ConnectionBuilder, mergedSettings);
+            result.m_DatabaseMetadata = m_DatabaseMetadata;
             return result;
         }
-
-        /// <summary>
-        /// Gets the options that are currently in effect. This takes into account server-defined defaults.
-        /// </summary>
-        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
-        public async Task<SqlServerEffectiveSettings> GetEffectiveSettingsAsync()
-        {
-            var result = new SqlServerEffectiveSettings();
-            using (var con = await CreateSqlConnectionAsync())
-                await result.ReloadAsync(con, null);
-            return result;
-        }
-
     }
 
 

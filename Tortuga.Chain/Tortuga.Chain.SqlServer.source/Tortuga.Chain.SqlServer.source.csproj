@@ -100,7 +100,7 @@
     <Compile Include="SqlServer\SqlServerAppenders.cs" />
     <Compile Include="SqlServer\SqlServerEffectiveSettings.cs" />
     <Compile Include="SqlServer\Core\SqlServerExecutionToken.cs" />
-    <Compile Include="SqlServer\SqlServerSettings.cs" />
+    <Compile Include="SqlServer\SqlServerDataSourceSettings.cs" />
     <Compile Include="SqlServer\SqlServerTransactionalDataSource.cs" />
     <Compile Include="SqlServer\SqlServerDataSourceBase.cs" />
     <Compile Include="SqlServer\SqlServerMetadataCache.cs" />

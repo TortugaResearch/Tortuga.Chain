@@ -28,15 +28,16 @@ namespace Tortuga.Chain
     public sealed class SQLiteDataSource : SQLiteDataSourceBase
     {
         private readonly SQLiteConnectionStringBuilder m_ConnectionBuilder;
-        private readonly SQLiteMetadataCache m_DatabaseMetadata;
+        private SQLiteMetadataCache m_DatabaseMetadata;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SQLiteDataSource" /> class.
         /// </summary>
         /// <param name="name">The name of the data source.</param>
         /// <param name="connectionString">The connection string.</param>
+        /// <param name="settings">Optional settings object.</param>
         /// <exception cref="ArgumentException">Connection string is null or emtpy.;connectionString</exception>
-        public SQLiteDataSource(string name, string connectionString)
+        public SQLiteDataSource(string name, string connectionString, SQLiteDataSourceSettings settings = null) : base(settings)
         {
             if (string.IsNullOrEmpty(connectionString))
                 throw new ArgumentException("Connection string is null or emtpy.", "connectionString");
@@ -54,8 +55,9 @@ namespace Tortuga.Chain
         /// Initializes a new instance of the <see cref="SQLiteDataSource" /> class.
         /// </summary>
         /// <param name="connectionString"></param>
-        public SQLiteDataSource(string connectionString)
-            : this(null, connectionString)
+        /// <param name="settings">Optional settings object.</param>
+        public SQLiteDataSource(string connectionString, SQLiteDataSourceSettings settings = null)
+            : this(null, connectionString, settings)
         {
         }
 
@@ -64,8 +66,9 @@ namespace Tortuga.Chain
         /// </summary>
         /// <param name="name">The name of the data source.</param>
         /// <param name="connectionStringBuilder">The connection string builder.</param>
+        /// <param name="settings">Optional settings object.</param>
         /// <exception cref="ArgumentNullException">connectionStringBuilder;connectionStringBuilder is null.</exception>
-        public SQLiteDataSource(string name, SQLiteConnectionStringBuilder connectionStringBuilder)
+        public SQLiteDataSource(string name, SQLiteConnectionStringBuilder connectionStringBuilder, SQLiteDataSourceSettings settings = null) : base(settings)
         {
             if (connectionStringBuilder == null)
                 throw new ArgumentNullException("connectionStringBuilder", "connectionStringBuilder is null.");
@@ -83,8 +86,9 @@ namespace Tortuga.Chain
         /// Initializes a new instance of the <see cref="SQLiteDataSource" /> class.
         /// </summary>
         /// <param name="connectionStringBuilder"></param>
-        public SQLiteDataSource(SQLiteConnectionStringBuilder connectionStringBuilder)
-         : this(null, connectionStringBuilder)
+        /// <param name="settings">Optional settings object.</param>
+        public SQLiteDataSource(SQLiteConnectionStringBuilder connectionStringBuilder, SQLiteDataSourceSettings settings = null)
+         : this(null, connectionStringBuilder, settings)
         {
         }
 
@@ -289,6 +293,29 @@ namespace Tortuga.Chain
             //TODO: Add in needed PRAGMA statements
 
             return con;
+        }
+
+        /// <summary>
+        /// Creates a new data source with the indicated changes to the settings.
+        /// </summary>
+        /// <param name="settings">The new settings to use.</param>
+        /// <returns></returns>
+        /// <remarks>The new data source will share the same database metadata cache.</remarks>
+        public SQLiteDataSource WithSettings(SQLiteDataSourceSettings settings)
+        {
+            if (settings == null)
+                throw new ArgumentNullException(nameof(settings), $"{nameof(settings)} is null.");
+
+            var mergedSettings = new SQLiteDataSourceSettings()
+            {
+                DefaultCommandTimeout = settings.DefaultCommandTimeout ?? DefaultCommandTimeout,
+                SuppressGlobalEvents = settings.SuppressGlobalEvents ?? SuppressGlobalEvents,
+                StrictMode = settings.StrictMode ?? StrictMode,
+                DisableLocks = settings.DisableLocks ?? DisableLocks,
+            };
+            var result = new SQLiteDataSource(Name, m_ConnectionBuilder, mergedSettings);
+            result.m_DatabaseMetadata = m_DatabaseMetadata;
+            return result;
         }
     }
 }

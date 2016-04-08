@@ -23,6 +23,18 @@ namespace Tortuga.Chain.SQLite
     {
         private readonly ReaderWriterLockSlim m_SyncLock = new ReaderWriterLockSlim(); //Sqlite is single-threaded for writes. It says otherwise, but it spams the trace window with exceptions.
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SQLiteDataSourceBase"/> class.
+        /// </summary>
+        /// <param name="settings">Optional settings object.</param>
+        protected SQLiteDataSourceBase(SQLiteDataSourceSettings settings) : base(settings)
+        {
+            if (settings != null)
+            {
+                DisableLocks = settings.DisableLocks ?? false;
+            }
+        }
+
 
         /// <summary>
         /// Gets the database metadata.
@@ -33,7 +45,7 @@ namespace Tortuga.Chain.SQLite
         /// <summary>
         /// Normally we use a reader/writer lock to avoid simutaneous writes to a SQlite database. If you disable this locking, you may see extra noise in your tracing output or unexcepted exceptions.
         /// </summary>
-        public bool DisableLocks { get; set; }
+        public bool DisableLocks { get; }
 
         IDatabaseMetadataCache IClass1DataSource.DatabaseMetadata
         {
@@ -205,4 +217,6 @@ namespace Tortuga.Chain.SQLite
             return new SQLiteUpdateObject(this, tableName, argumentValue, options);
         }
     }
+
+
 }

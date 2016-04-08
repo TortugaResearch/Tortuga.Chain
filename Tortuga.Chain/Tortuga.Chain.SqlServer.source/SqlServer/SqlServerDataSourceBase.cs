@@ -14,6 +14,14 @@ namespace Tortuga.Chain.SqlServer
     /// </summary>
     public abstract class SqlServerDataSourceBase : DataSource<SqlCommand, SqlParameter>, IClass2DataSource
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SqlServerDataSourceBase"/> class.
+        /// </summary>
+        /// <param name="settings">Optional settings value.</param>
+        protected SqlServerDataSourceBase(SqlServerDataSourceSettings settings) : base(settings)
+        {
+
+        }
 
         /// <summary>
         /// Gets the database metadata.
@@ -263,6 +271,7 @@ namespace Tortuga.Chain.SqlServer
         {
             return new SqlServerInsertOrUpdateObject(this, tableName, argumentValue, options);
         }
+
 
     }
 }

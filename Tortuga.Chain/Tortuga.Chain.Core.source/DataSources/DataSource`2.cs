@@ -16,6 +16,12 @@ namespace Tortuga.Chain.DataSources
     {
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="DataSource{TCommand, TParameter}"/> class.
+        /// </summary>
+        /// <param name="settings">Optional settings object.</param>
+        protected DataSource(DataSourceSettings settings) : base(settings) { }
+
+        /// <summary>
         /// Executes the specified operation.
         /// </summary>
         /// <param name="executionToken">The execution token.</param>

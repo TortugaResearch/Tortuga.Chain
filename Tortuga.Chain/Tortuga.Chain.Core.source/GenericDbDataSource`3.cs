@@ -20,8 +20,9 @@ namespace Tortuga.Chain
         /// </summary>
         /// <param name="name">Name of the data source.</param>
         /// <param name="connectionString">The connection string.</param>
+        /// <param name="settings">Optional settings object.</param>
         /// <exception cref="System.ArgumentException">connectionString is null or empty.;connectionString</exception>
-        public GenericDbDataSource(string name, string connectionString) : base(name, connectionString)
+        public GenericDbDataSource(string name, string connectionString, DataSourceSettings settings = null) : base(name, connectionString, settings)
         {
         }
 
@@ -29,9 +30,10 @@ namespace Tortuga.Chain
         /// Initializes a new instance of the <see cref="GenericDbDataSource{TConnection, TCommand, TParameter}"/> class.
         /// </summary>
         /// <param name="connectionString">The connection string.</param>
+        /// <param name="settings">Optional settings object.</param>
         /// <exception cref="System.ArgumentException">connectionString is null or empty.;connectionString</exception>
-        public GenericDbDataSource(string connectionString)
-            : this(null, connectionString)
+        public GenericDbDataSource(string connectionString, DataSourceSettings settings = null)
+            : this(null, connectionString, settings)
         {
         }
 
@@ -40,8 +42,9 @@ namespace Tortuga.Chain
         /// </summary>
         /// <param name="name">Optional name of the data source.</param>
         /// <param name="connectionStringBuilder">The connection string builder.</param>
+        /// <param name="settings">Optional settings object.</param>
         /// <exception cref="System.ArgumentNullException">connectionStringBuilder;connectionStringBuilder is null.</exception>
-        public GenericDbDataSource(string name, DbConnectionStringBuilder connectionStringBuilder) : base(name, connectionStringBuilder)
+        public GenericDbDataSource(string name, DbConnectionStringBuilder connectionStringBuilder, DataSourceSettings settings = null) : base(name, connectionStringBuilder, settings)
         {
         }
 
@@ -49,8 +52,9 @@ namespace Tortuga.Chain
         /// Initializes a new instance of the <see cref="GenericDbDataSource{TConnection, TCommand, TParameter}"/> class.
         /// </summary>
         /// <param name="connectionStringBuilder">The connection string builder.</param>
-        public GenericDbDataSource(DbConnectionStringBuilder connectionStringBuilder)
-            : this(null, connectionStringBuilder)
+        /// <param name="settings">Optional settings object.</param>
+        public GenericDbDataSource(DbConnectionStringBuilder connectionStringBuilder, DataSourceSettings settings = null)
+            : this(null, connectionStringBuilder, settings)
         {
         }
 

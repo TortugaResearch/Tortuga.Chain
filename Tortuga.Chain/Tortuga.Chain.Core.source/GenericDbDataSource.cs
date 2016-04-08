@@ -45,9 +45,10 @@ namespace Tortuga.Chain
         /// <param name="factory">The factory used to get provider specifc objects.</param>
         /// <param name="name">Name of the data source.</param>
         /// <param name="connectionString">The connection string.</param>
+        /// <param name="settings">Optional settings object.</param>
         /// <exception cref="ArgumentException">connectionString is null or empty.;connectionString</exception>
         /// <exception cref="ArgumentException">connectionString is null or empty.;connectionString</exception>
-        public GenericDbDataSource(DbProviderFactory factory, string name, string connectionString)
+        public GenericDbDataSource(DbProviderFactory factory, string name, string connectionString, DataSourceSettings settings = null) : base(settings)
         {
             if (factory == null)
                 throw new ArgumentNullException("factory", "factory is null.");
@@ -61,17 +62,16 @@ namespace Tortuga.Chain
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="GenericDbDataSource"/> class.
+        /// Initializes a new instance of the <see cref="GenericDbDataSource" /> class.
         /// </summary>
         /// <param name="factory">The factory.</param>
         /// <param name="name">The name.</param>
         /// <param name="connectionStringBuilder">The connection string builder.</param>
-        /// <exception cref="ArgumentNullException">
-        /// factory;factory is null.
+        /// <param name="settings">Optional settings object.</param>
+        /// <exception cref="ArgumentNullException">factory;factory is null.
         /// or
-        /// connectionStringBuilder;connectionStringBuilder is null.
-        /// </exception>
-        public GenericDbDataSource(DbProviderFactory factory, string name, DbConnectionStringBuilder connectionStringBuilder)
+        /// connectionStringBuilder;connectionStringBuilder is null.</exception>
+        public GenericDbDataSource(DbProviderFactory factory, string name, DbConnectionStringBuilder connectionStringBuilder, DataSourceSettings settings = null) : base(settings)
         {
             if (factory == null)
                 throw new ArgumentNullException("factory", "factory is null.");
@@ -83,7 +83,7 @@ namespace Tortuga.Chain
             Name = name;
         }
 
-        internal GenericDbDataSource(string name, string connectionString)
+        internal GenericDbDataSource(string name, string connectionString, DataSourceSettings settings = null) : base(settings)
         {
             if (string.IsNullOrEmpty(connectionString))
                 throw new ArgumentException("connectionString is null or empty.", "connectionString");
@@ -93,7 +93,7 @@ namespace Tortuga.Chain
             Name = name;
         }
 
-        internal GenericDbDataSource(string name, DbConnectionStringBuilder connectionStringBuilder)
+        internal GenericDbDataSource(string name, DbConnectionStringBuilder connectionStringBuilder, DataSourceSettings settings = null) : base(settings)
         {
             if (connectionStringBuilder == null)
                 throw new ArgumentNullException("connectionStringBuilder", "connectionStringBuilder is null.");

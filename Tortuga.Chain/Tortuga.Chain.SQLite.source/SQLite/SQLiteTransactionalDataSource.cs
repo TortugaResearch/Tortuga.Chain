@@ -36,7 +36,7 @@ namespace Tortuga.Chain.SQLite
         /// <param name="dataSource">The data source.</param>
         /// <param name="isolationLevel">The isolation level.</param>
         /// <param name="forwardEvents">if set to <c>true</c> [forward events].</param>
-        internal SQLiteTransactionalDataSource(SQLiteDataSource dataSource, IsolationLevel? isolationLevel, bool forwardEvents)
+        internal SQLiteTransactionalDataSource(SQLiteDataSource dataSource, IsolationLevel? isolationLevel, bool forwardEvents) : base(new SQLiteDataSourceSettings() { DefaultCommandTimeout = dataSource.DefaultCommandTimeout, StrictMode = dataSource.StrictMode, SuppressGlobalEvents = dataSource.SuppressGlobalEvents || forwardEvents, DisableLocks = dataSource.DisableLocks })
         {
             Name = dataSource.Name;
 
@@ -54,7 +54,6 @@ namespace Tortuga.Chain.SQLite
                 ExecutionFinished += (sender, e) => dataSource.OnExecutionFinished(e);
                 ExecutionError += (sender, e) => dataSource.OnExecutionError(e);
                 ExecutionCanceled += (sender, e) => dataSource.OnExecutionCanceled(e);
-                SuppressGlobalEvents = true;
             }
         }
 

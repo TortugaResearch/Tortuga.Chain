@@ -15,13 +15,13 @@ namespace Tests.Repository
     {
         public StrictRepositoryTests()
         {
-            DataSource.StrictMode = true;
+            
         }
 
         [TestMethod]
         public void BasicCrud()
         {
-            var repo = new Repository<Employee, int>(DataSource, EmployeeTableName);
+            var repo = new Repository<Employee, int>(StrictDataSource, EmployeeTableName);
 
             var emp1 = new Employee() { FirstName = "Tom", LastName = "Jones", Title = "President" };
             var echo1 = repo.Insert(emp1);
@@ -71,7 +71,7 @@ namespace Tests.Repository
         [TestMethod]
         public void InsertWithDictionary()
         {
-            var repo = new Repository<Employee, int>(DataSource, EmployeeTableName);
+            var repo = new Repository<Employee, int>(StrictDataSource, EmployeeTableName);
 
             var emp1 = new Dictionary<string, object>() { { "FirstName", "Tom" }, { "LastName", "Jones" }, { "Title", "President" } };
             var echo1 = repo.Insert(emp1);
@@ -88,7 +88,7 @@ namespace Tests.Repository
         [TestMethod]
         public void UpdateWithDictionary()
         {
-            var repo = new Repository<Employee, int>(DataSource, EmployeeTableName);
+            var repo = new Repository<Employee, int>(StrictDataSource, EmployeeTableName);
 
             var emp1 = new Dictionary<string, object>() { { "FirstName", "Tom" }, { "LastName", "Jones" }, { "Title", "President" } };
             var echo1 = repo.Insert(emp1);
