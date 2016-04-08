@@ -166,7 +166,7 @@ namespace Tortuga.Chain.SQLite
         /// <param name="sqlStatement">The SQL statement.</param>
         /// <param name="lockType">Type of the lock.</param>
         /// <returns>SQLiteSqlCall.</returns>
-        public IMultipleTableDbCommandBuilder Sql(string sqlStatement, LockType lockType = LockType.Write)
+        public MultipleTableDbCommandBuilder<SQLiteCommand, SQLiteParameter> Sql(string sqlStatement, LockType lockType = LockType.Write)
         {
             return new SQLiteSqlCall(this, sqlStatement, null, lockType);
         }
@@ -178,7 +178,7 @@ namespace Tortuga.Chain.SQLite
         /// <param name="argumentValue">The argument value.</param>
         /// <param name="lockType">Type of the lock.</param>
         /// <returns>SQLiteSqlCall.</returns>
-        public IMultipleTableDbCommandBuilder Sql(string sqlStatement, object argumentValue, LockType lockType = LockType.Write)
+        public MultipleTableDbCommandBuilder<SQLiteCommand, SQLiteParameter> Sql(string sqlStatement, object argumentValue, LockType lockType = LockType.Write)
         {
             return new SQLiteSqlCall(this, sqlStatement, argumentValue, lockType);
         }
@@ -188,7 +188,7 @@ namespace Tortuga.Chain.SQLite
         /// <param name="tableName"></param>
         /// <param name="argumentValue"></param>
         /// <returns></returns>
-        public ISingleRowDbCommandBuilder Insert(string tableName, object argumentValue)
+        public SingleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> Insert(string tableName, object argumentValue)
         {
             return new SQLiteInsertObject(this, tableName, argumentValue);
         }
@@ -200,7 +200,7 @@ namespace Tortuga.Chain.SQLite
         /// <param name="argumentValue"></param>
         /// <param name="options"></param>
         /// <returns></returns>
-        public ISingleRowDbCommandBuilder Upsert(string tableName, object argumentValue, UpsertOptions options = UpsertOptions.None)
+        public SingleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> Upsert(string tableName, object argumentValue, UpsertOptions options = UpsertOptions.None)
         {
             return new SQLiteInsertOrUpdateObject(this, tableName, argumentValue, options);
         }
@@ -212,7 +212,7 @@ namespace Tortuga.Chain.SQLite
         /// <param name="argumentValue"></param>
         /// <param name="options"></param>
         /// <returns></returns>
-        public ISingleRowDbCommandBuilder Update(string tableName, object argumentValue, UpdateOptions options = UpdateOptions.None)
+        public SingleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> Update(string tableName, object argumentValue, UpdateOptions options = UpdateOptions.None)
         {
             return new SQLiteUpdateObject(this, tableName, argumentValue, options);
         }

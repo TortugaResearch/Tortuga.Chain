@@ -19,7 +19,7 @@ namespace Tortuga.Chain.Metadata
         /// <param name="argumentValue">The argument value .</param>
         /// <returns></returns>
         public static List<TParameter> GetParameters<TParameter>(object argumentValue)
-    where TParameter : DbParameter, new()
+            where TParameter : DbParameter, new()
         {
             return GetParameters(argumentValue, () => new TParameter());
         }

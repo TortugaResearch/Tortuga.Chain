@@ -4,6 +4,7 @@ using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
+using Tortuga.Anchor.ComponentModel;
 using Tortuga.Anchor.Metadata;
 using Tortuga.Chain.Materializers;
 
@@ -130,13 +131,78 @@ namespace Tortuga.Chain.Metadata
         /// Applies the argument value.
         /// </summary>
         /// <param name="value">The value.</param>
-        /// <param name="useObjectDefinedKeys">if set to <c>true</c> use object defined keys.</param>
-        /// <exception cref="ArgumentNullException">value;value is null.</exception>
         /// <exception cref="MappingException">This is thrown is no properties could be matched to a column. If strict mode, all properties must match columns.</exception>
+        /// <exception cref="ArgumentNullException">value;value is null.</exception>
         /// <remarks>
         /// If the object implements IReadOnlyDictionary[string, object], ApplyArgumentDictionary will be implicitly called instead.
         /// </remarks>
-        public void ApplyArgumentValue(object value, bool useObjectDefinedKeys)
+        public void ApplyArgumentValue(object value)
+        {
+            ApplyArgumentValue(value, false, false);
+        }
+
+        /// <summary>
+        /// Applies the argument value.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <param name="options">The options.</param>
+        /// <exception cref="MappingException">This is thrown is no properties could be matched to a column. If strict mode, all properties must match columns.</exception>
+        /// <exception cref="ArgumentNullException">value;value is null.</exception>
+        /// <remarks>
+        /// If the object implements IReadOnlyDictionary[string, object], ApplyArgumentDictionary will be implicitly called instead.
+        /// </remarks>
+        public void ApplyArgumentValue(object value, DeleteOptions options)
+        {
+            ApplyArgumentValue(value, options.HasFlag(DeleteOptions.UseKeyAttribute), false);
+        }
+
+        /// <summary>
+        /// Applies the argument value.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <param name="options">The options.</param>
+        /// <exception cref="MappingException">This is thrown is no properties could be matched to a column. If strict mode, all properties must match columns.</exception>
+        /// <exception cref="ArgumentNullException">value;value is null.</exception>
+        /// <remarks>
+        /// If the object implements IReadOnlyDictionary[string, object], ApplyArgumentDictionary will be implicitly called instead.
+        /// If the object does not implement IPropertyChangeTracking, the changedPropertiesOnly flag has no effect.
+        /// </remarks>
+
+        public void ApplyArgumentValue(object value, UpsertOptions options)
+        {
+            ApplyArgumentValue(value, options.HasFlag(UpsertOptions.UseKeyAttribute), options.HasFlag(UpsertOptions.ChangedPropertiesOnly));
+        }
+
+        /// <summary>
+        /// Applies the argument value.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <param name="options">The options.</param>
+        /// <exception cref="MappingException">This is thrown is no properties could be matched to a column. If strict mode, all properties must match columns.</exception>
+        /// <exception cref="ArgumentNullException">value;value is null.</exception>
+        /// <remarks>
+        /// If the object implements IReadOnlyDictionary[string, object], ApplyArgumentDictionary will be implicitly called instead.
+        /// If the object does not implement IPropertyChangeTracking and changedPropertiesOnly is set, an error will occur.
+        /// </remarks>
+
+        public void ApplyArgumentValue(object value, UpdateOptions options)
+        {
+            ApplyArgumentValue(value, options.HasFlag(UpdateOptions.UseKeyAttribute), options.HasFlag(UpdateOptions.ChangedPropertiesOnly));
+        }
+
+        /// <summary>
+        /// Applies the argument value.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <param name="useObjectDefinedKeys">if set to <c>true</c> use object defined keys.</param>
+        /// <param name="changedPropertiesOnly">if set to <c>true</c> filter the update list according to IPropertyChangeTracking.ChangedProperties.</param>
+        /// <exception cref="MappingException">This is thrown is no properties could be matched to a column. If strict mode, all properties must match columns.</exception>
+        /// <exception cref="ArgumentNullException">value;value is null.</exception>
+        /// <remarks>
+        /// If the object implements IReadOnlyDictionary[string, object], ApplyArgumentDictionary will be implicitly called instead.
+        /// If the object does not implement IPropertyChangeTracking and changedPropertiesOnly is set, an error will occur.
+        /// </remarks>
+        private void ApplyArgumentValue(object value, bool useObjectDefinedKeys, bool changedPropertiesOnly)
         {
             if (value == null)
                 throw new ArgumentNullException("value", "value is null.");
@@ -145,6 +211,19 @@ namespace Tortuga.Chain.Metadata
             {
                 ApplyArgumentDictionary((IReadOnlyDictionary<string, object>)value);
                 return;
+            }
+
+            IReadOnlyList<string> changedProperties = null;
+            if (changedPropertiesOnly)
+            {
+                if (value is IPropertyChangeTracking)
+                {
+                    changedProperties = ((IPropertyChangeTracking)value).ChangedProperties();
+                    if (changedProperties.Count == 0)
+                        throw new ArgumentException($"Changed properties were requested, but no properties were marked as changed.");
+                }
+                else
+                    throw new ArgumentException($"Changed properties were requested, but {value.GetType().Name} does not implement IPropertyChangeTracking.");
             }
 
             if (useObjectDefinedKeys)
@@ -167,15 +246,24 @@ namespace Tortuga.Chain.Metadata
                     {
                         found = true;
                         propertyFound = true;
+
                         if (useObjectDefinedKeys && property.IsKey)
                             m_Entries[i].IsKey = true;
+
                         m_Entries[i].ParameterValue = property.InvokeGet(value) ?? DBNull.Value;
+
                         if (property.IgnoreOnInsert)
                             m_Entries[i].UseForInsert = false;
+
                         if (property.IgnoreOnUpdate)
                             m_Entries[i].UseForUpdate = false;
+
+                        if (changedPropertiesOnly && !changedProperties.Contains(property.Name))
+                            m_Entries[i].UseForUpdate = false;
+
                         if (m_Entries[i].IsFormalParameter)
                             m_Entries[i].UseParameter = true;
+
                         break;
                     }
                 }

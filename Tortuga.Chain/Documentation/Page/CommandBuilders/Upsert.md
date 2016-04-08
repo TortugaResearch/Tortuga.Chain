@@ -8,6 +8,8 @@ The parameter object must contain the primary key(s) necessary to locate the rec
 
 Upsert will honor the IgnoreOnInsert and IgnoreOnUpdate attributes.
 
+If you use the ChangedPropertiesOnly option, only properties marked as changed by `IPropertyChangeTracking.ChangedProperties()` will be used for the insert part of the operation. This interface is found in the `Tortuga.Anchor.ComponentModel` namespace.
+
 Alternately, a parameter dictionary of type IReadonlyDictionary<string, object> may be used. Again, the primary keys will be read from database metadata.
 
 ## SQL Generation

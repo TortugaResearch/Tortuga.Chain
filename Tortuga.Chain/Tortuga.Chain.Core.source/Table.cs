@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
@@ -115,6 +116,11 @@ namespace Tortuga.Chain
             {
                 var item = new T();
                 PopulateComplexObject(row, item, null);
+
+                //Change tracking objects shouldn't be materialized as unchanged.
+                var tracking = item as IChangeTracking;
+                tracking?.AcceptChanges();
+
                 yield return item;
             }
         }

@@ -11,18 +11,18 @@ namespace Tortuga.Chain.Materializers
     /// <typeparam name="TCommand">The type of the command.</typeparam>
     /// <typeparam name="TParameter">The type of the parameter.</typeparam>
     [SuppressMessage("Microsoft.Performance", "CA1815:OverrideEqualsAndOperatorEqualsOnValueTypes")]
-    public struct Compiled<TCommand, TParameter>
+    public struct CompiledMultipleTable<TCommand, TParameter>
             where TCommand : DbCommand
             where TParameter : DbParameter
     {
 
-        private readonly DbCommandBuilder<TCommand, TParameter> m_CommandBuilder;
+        private readonly MultipleTableDbCommandBuilder<TCommand, TParameter> m_CommandBuilder;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Compiled{TCommand, TParameter}"/> struct.
+        /// Initializes a new instance of the <see cref="CompiledMultipleTable{TCommand, TParameter}"/> struct.
         /// </summary>
         /// <param name="commandBuilder">The command builder.</param>
-        public Compiled(DbCommandBuilder<TCommand, TParameter> commandBuilder)
+        public CompiledMultipleTable(MultipleTableDbCommandBuilder<TCommand, TParameter> commandBuilder)
         {
             m_CommandBuilder = commandBuilder;
         }
@@ -64,4 +64,6 @@ namespace Tortuga.Chain.Materializers
             return new CompiledCollectionMaterializer<TCommand, TParameter, TObject, TCollection>(m_CommandBuilder);
         }
     }
+
+
 }

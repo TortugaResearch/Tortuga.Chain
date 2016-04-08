@@ -14,11 +14,11 @@ namespace Tortuga.Chain
         /// </summary>
         None = 0,
 
-
-        ///// <summary>
-        ///// Uses the IPropertyChangeTracking interface to only update changed properties. This flag has no effect when performing an insert.
-        ///// </summary>
-        //ChangedPropertiesOnly = 1,
+        /// <summary>
+        /// Uses the IPropertyChangeTracking interface to only update changed properties. This flag has no effect when performing an insert.
+        /// </summary>
+        /// <remarks>If this flag is set and IPropertyChangeTracking.IsChanged is false, an error will occur.</remarks>
+        ChangedPropertiesOnly = 1,
 
         /// <summary>
         /// Ignore the primary keys on the table and perform the update using the Key attribute on properties to construct the where clause.

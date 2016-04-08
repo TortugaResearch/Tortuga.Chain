@@ -20,6 +20,8 @@ Object/Collection materializers honor the NotMapped attribute, which prevent the
 
 Object/Collection materializers honor the Decompose attribute. This allows properties on the child object when they match columns in the query result set.
 
+If the desried object implementes `IChangeTracking`, then `AcceptChanges()` will be called automatically.
+
 ## SQL Generation
 
 As per above, mapped properties on the object (and child properties on a decomposed property) will be requested.

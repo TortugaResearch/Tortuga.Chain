@@ -3,9 +3,9 @@
       EmployeeKey INT NOT NULL
                       IDENTITY
                       PRIMARY KEY ,
-      FirstName NVARCHAR(25) NOT NULL ,
-      MiddleName NVARCHAR(25) NULL ,
-      LastName NVARCHAR(25) NOT NULL ,
+      FirstName NVARCHAR(50) NOT NULL ,
+      MiddleName NVARCHAR(50) NULL ,
+      LastName NVARCHAR(50) NOT NULL ,
       Title NVARCHAR(100) NULL ,
       ManagerKey INT NULL
                      REFERENCES HR.Employee ( EmployeeKey ) ,

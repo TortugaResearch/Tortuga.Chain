@@ -1,9 +1,9 @@
 ﻿using CSScriptLibrary;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Data.Common;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using Tortuga.Anchor.Metadata;
@@ -20,19 +20,56 @@ namespace Tortuga.Chain
     {
 
         /// <summary>
+        /// Allows compilation of the ToObject materializer.
+        /// </summary>
+        /// <typeparam name="TCommand">The type of the command.</typeparam>
+        /// <typeparam name="TParameter">The type of the parameter.</typeparam>
+        /// <param name="commandBuilder">The command builder.</param>
+        /// <returns></returns>
+        public static CompiledSingleRow<TCommand, TParameter> Compile<TCommand, TParameter>(this SingleRowDbCommandBuilder<TCommand, TParameter> commandBuilder)
+            where TCommand : DbCommand
+            where TParameter : DbParameter
+        {
+            return new CompiledSingleRow<TCommand, TParameter>(commandBuilder);
+        }
+
+
+        /// <summary>
         /// Allows compilation of the ToObject and ToCollection materializer.
         /// </summary>
         /// <typeparam name="TCommand">The type of the command.</typeparam>
         /// <typeparam name="TParameter">The type of the parameter.</typeparam>
         /// <param name="commandBuilder">The command builder.</param>
         /// <returns></returns>
-        public static Compiled<TCommand, TParameter> Compile<TCommand, TParameter>(this DbCommandBuilder<TCommand, TParameter> commandBuilder)
+        public static CompiledMultipleRow<TCommand, TParameter> Compile<TCommand, TParameter>(this MultipleRowDbCommandBuilder<TCommand, TParameter> commandBuilder)
             where TCommand : DbCommand
             where TParameter : DbParameter
         {
-            return new Compiled<TCommand, TParameter>(commandBuilder);
+            return new CompiledMultipleRow<TCommand, TParameter>(commandBuilder);
         }
 
+        /// <summary>
+        /// Allows compilation of the ToObject and ToCollection materializer.
+        /// </summary>
+        /// <typeparam name="TCommand">The type of the command.</typeparam>
+        /// <typeparam name="TParameter">The type of the parameter.</typeparam>
+        /// <param name="commandBuilder">The command builder.</param>
+        /// <returns></returns>
+        public static CompiledMultipleTable<TCommand, TParameter> Compile<TCommand, TParameter>(this MultipleTableDbCommandBuilder<TCommand, TParameter> commandBuilder)
+            where TCommand : DbCommand
+            where TParameter : DbParameter
+        {
+            return new CompiledMultipleTable<TCommand, TParameter>(commandBuilder);
+        }
+
+        /// <summary>
+        /// Creates the builder.
+        /// </summary>
+        /// <typeparam name="TObject">The type of the object.</typeparam>
+        /// <param name="dataSource">The data source.</param>
+        /// <param name="sql">The SQL.</param>
+        /// <param name="reader">The reader.</param>
+        /// <returns></returns>
         internal static MethodDelegate<TObject> CreateBuilder<TObject>(DataSource dataSource, string sql, IDataReader reader)
             where TObject : new()
         {
@@ -44,6 +81,8 @@ namespace Tortuga.Chain
             var code = new StringBuilder();
 
             var typeName = typeof(TObject).FullName; //TODO: Add support for generic types and inner classes
+
+            var changeTracker = typeof(TObject).GetInterfaces().Any(x => x == typeof(IChangeTracking));
 
 
             var columns = new Dictionary<string, Tuple<int, Type, string>>(StringComparer.OrdinalIgnoreCase);
@@ -71,7 +110,12 @@ namespace Tortuga.Chain
             }
 
 
-            var eval = CreateScriptEvaluator(typeof(TObject), CSScript.Evaluator.ReferenceAssemblyOf(reader).ReferenceAssemblyOf<IDataReader>());
+            var evaluator = CSScript.RoslynEvaluator.Reset(false);
+            //evaluator = evaluator.ReferenceAssemblyOf<string>();
+            //evaluator = evaluator.ReferenceAssemblyOf<IDataReader>();
+            //evaluator = evaluator.ReferenceAssemblyOf<IChangeTracking>();
+            evaluator = evaluator.ReferenceAssemblyOf(reader);
+            evaluator = AugmentScriptEvaluator(evaluator, typeof(TObject));
 
 
             code.AppendLine($"{typeName} Load({reader.GetType().FullName} reader)");
@@ -88,6 +132,10 @@ namespace Tortuga.Chain
             {
                 SetProperties(code, columns, properties, i, "result", null);
             }
+
+            if (changeTracker)
+                code.AppendLine("    ((System.ComponentModel.IChangeTracking)result).AcceptChanges();");
+
             code.AppendLine("    return result;");
             code.AppendLine("}");
 
@@ -95,7 +143,7 @@ namespace Tortuga.Chain
             var codeToString = code.ToString();
             try
             {
-                result = eval.CreateDelegate<TObject>(codeToString);
+                result = evaluator.CreateDelegate<TObject>(codeToString);
 
                 MaterializerCompiled?.Invoke(typeof(CompiledMaterializers), new MaterializerCompilerEventArgs(dataSource, sql, codeToString, typeof(TObject)));
 
@@ -105,8 +153,11 @@ namespace Tortuga.Chain
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(codeToString);
+                //Debug.WriteLine(codeToString);
+                //foreach (var item in evaluator.GetReferencedAssemblies())
+                //    Debug.WriteLine("Referenced Assembly: " + item.FullName);
                 ex.Data["Code"] = codeToString;
+                ex.Data["Evaluator"] = evaluator;
                 throw;
             }
 
@@ -115,14 +166,14 @@ namespace Tortuga.Chain
         /// <summary>
         /// Creates the script evaluator by ensuring that all of the relevant assemblies are loaded.
         /// </summary>
-        /// <param name="type">The type.</param>
         /// <param name="evaluator">The evaluator.</param>
+        /// <param name="type">The type.</param>
         /// <returns></returns>
-        private static IEvaluator CreateScriptEvaluator(Type type, IEvaluator evaluator)
+        private static IEvaluator AugmentScriptEvaluator(IEvaluator evaluator, Type type)
         {
             evaluator = evaluator.ReferenceAssembly(type.Assembly);
             foreach (var property in MetadataCache.GetMetadata(type).Properties.Where(p => p.Decompose))
-                evaluator = CreateScriptEvaluator(property.PropertyType, evaluator);
+                evaluator = AugmentScriptEvaluator(evaluator, property.PropertyType);
             return evaluator;
         }
 
@@ -197,6 +248,7 @@ namespace Tortuga.Chain
         /// <summary>
         /// Occurs when a materializer is compiled.
         /// </summary>
+        /// <remarks>This is primarily for diagnostic purposes. It isn't meant for production use.</remarks>
         public static event EventHandler<MaterializerCompilerEventArgs> MaterializerCompiled;
     }
 

@@ -11,7 +11,7 @@ namespace Tests
 {
 
     [TestClass]
-    public class SqlServerDataSourceTests
+    public class SqlServerDataSourceTests : TestBase
     {
         [TestMethod]
         public void SqlServerDataSourceTests_Ctr()
@@ -73,7 +73,7 @@ SELECT @Option AS [Option];";
             Assert.IsFalse(settingOffA, "XACT_ABORT should have been turned off.");
             Assert.IsFalse(settingOffB.XactAbort, "XACT_ABORT should have been turned off in effective settings.");
 
-         
+
 
         }
 
@@ -83,7 +83,7 @@ SELECT @Option AS [Option];";
 IF ( (16384 & @@OPTIONS) = 16384 ) SET @Option = 1;
 SELECT @Option AS [Option];";
 
-            
+
             var dataSource = SqlServerDataSource.CreateFromConfig("SqlServerTestDatabase").WithSettings(new SqlServerDataSourceSettings() { XactAbort = true }); ;
             var settingOnA = await dataSource.Sql(sql).ToBoolean().ExecuteAsync();
             var settingOnB = await dataSource.GetEffectiveSettingsAsync();
@@ -227,7 +227,7 @@ SELECT @Option AS [Option];";
         public void SqlServerDataSourceTests_CommandTimeout()
         {
             var sql = "WAITFOR DELAY '00:00:03'";
-            var dataSource = SqlServerDataSource.CreateFromConfig("SqlServerTestDatabase").WithSettings(new SqlServerDataSourceSettings() { DefaultCommandTimeout = TimeSpan.FromSeconds(1) }); ;
+            var dataSource = SqlServerDataSource.CreateFromConfig("SqlServerTestDatabase").WithSettings(new SqlServerDataSourceSettings() { DefaultCommandTimeout = TimeSpan.FromSeconds(1) });
             try
             {
                 dataSource.Sql(sql).Execute();
@@ -235,6 +235,11 @@ SELECT @Option AS [Option];";
             }
             catch (SqlException) { }
         }
+
+
+
+
+
 
     }
 }

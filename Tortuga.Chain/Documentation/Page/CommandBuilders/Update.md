@@ -8,7 +8,9 @@ The parameter object must contain the primary key(s) necessary to locate the rec
 
 The remaining properties on the parameter object are used to construct the UPDATE statment. If a property is marked with the IgnoreOnUpdate attribute, it will not participate in this step. This attribute is usually applied to columns that should never be changed such as CretedBy/CreatedDate.
 
-Alternately, a parameter dictionary of type IReadonlyDictionary<string, object> may be used. Again, the primary keys will be read from database metadata.
+If you use the ChangedPropertiesOnly option, only properties marked as changed by `IPropertyChangeTracking.ChangedProperties()` will be used. This interface is found in the `Tortuga.Anchor.ComponentModel` namespace.
+
+Alternately, a parameter dictionary of type `IReadonlyDictionary<string, object>` may be used. Again, the primary keys will be read from database metadata.
 
 ## SQL Generation
 
