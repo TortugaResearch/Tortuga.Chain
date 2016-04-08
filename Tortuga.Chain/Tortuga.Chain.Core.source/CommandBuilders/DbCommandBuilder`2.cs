@@ -1,19 +1,18 @@
 ﻿using System.ComponentModel;
 using System.Data.Common;
-using System.Threading;
-using System.Threading.Tasks;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Materializers;
+using System;
+
 namespace Tortuga.Chain.CommandBuilders
 {
-
     /// <summary>
     /// This is the base class from which all other command builders are created.
     /// </summary>
     /// <typeparam name="TCommand">The type of the command used.</typeparam>
     /// <typeparam name="TParameter">The type of the t parameter type.</typeparam>
-    public abstract class DbCommandBuilder<TCommand, TParameter> : IDbCommandBuilder
+    public abstract class DbCommandBuilder<TCommand, TParameter> : DbCommandBuilder
         where TCommand : DbCommand
         where TParameter : DbParameter
     {
@@ -24,7 +23,11 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="dataSource">The data source.</param>
         protected DbCommandBuilder(DataSource<TCommand, TParameter> dataSource)
         {
+            if (dataSource == null)
+                throw new ArgumentNullException(nameof(dataSource), $"{nameof(dataSource)} is null.");
+
             m_DataSource = dataSource;
+            StrictMode = dataSource.StrictMode;
         }
 
         /// <summary>
@@ -37,42 +40,12 @@ namespace Tortuga.Chain.CommandBuilders
             get { return m_DataSource; }
         }
 
+
         /// <summary>
         /// Indicates this operation has no result set.
         /// </summary>
         /// <returns></returns>
-        public ILink AsNonQuery() { return new NonQueryMaterializer<TCommand, TParameter>(this); }
-
-        /// <summary>
-        /// Execute the operation synchronously.
-        /// </summary>
-        /// <param name="state">User defined state, usually used for logging.</param>
-        public void Execute(object state = null)
-        {
-            AsNonQuery().Execute(state);
-        }
-
-        /// <summary>
-        /// Execute the operation asynchronously.
-        /// </summary>
-        /// <param name="state">User defined state, usually used for logging.</param>
-        /// <returns>Task.</returns>
-        public Task ExecuteAsync(object state = null)
-        {
-            return AsNonQuery().ExecuteAsync(state);
-        }
-
-        /// <summary>
-        /// Execute the operation asynchronously.
-        /// </summary>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <param name="state">User defined state, usually used for logging.</param>
-        /// <returns>Task.</returns>
-        public Task ExecuteAsync(CancellationToken cancellationToken, object state = null)
-        {
-            return AsNonQuery().ExecuteAsync(cancellationToken, state);
-        }
-
+        public override sealed ILink AsNonQuery() { return new NonQueryMaterializer<TCommand, TParameter>(this); }
 
 
         /// <summary>

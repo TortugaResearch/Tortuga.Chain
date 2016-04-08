@@ -37,9 +37,9 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             if (materializer == null)
                 throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
 
-            var sqlBuilder = Metadata.CreateSqlBuilder();
-            sqlBuilder.ApplyArgumentValue(ArgumentValue, m_Options.HasFlag(UpdateOptions.UseKeyAttribute), DataSource.StrictMode);
-            sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns(), DataSource.StrictMode);
+            var sqlBuilder = Metadata.CreateSqlBuilder(StrictMode);
+            sqlBuilder.ApplyArgumentValue(ArgumentValue, m_Options.HasFlag(UpdateOptions.UseKeyAttribute));
+            sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
             var prefix = m_Options.HasFlag(UpdateOptions.ReturnOldValues) ? "Deleted." : "Inserted.";
 

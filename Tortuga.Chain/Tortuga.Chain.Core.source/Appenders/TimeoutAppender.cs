@@ -33,5 +33,4 @@ namespace Tortuga.Chain.Appenders
             e.Command.CommandTimeout = (int)m_Timeout.TotalSeconds;
         }
     }
-
 }

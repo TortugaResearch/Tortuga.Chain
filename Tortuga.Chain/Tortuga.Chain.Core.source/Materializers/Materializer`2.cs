@@ -49,19 +49,6 @@ namespace Tortuga.Chain.Materializers
 
 
         /// <summary>
-        /// Prepares this operation for execution.
-        /// </summary>
-        /// <returns>ExecutionToken&lt;TCommand, TParameter&gt;.</returns>
-        protected ExecutionToken<TCommand, TParameter> Prepare()
-        {
-            var executionToken = CommandBuilder.Prepare(this);
-
-            OnExecutionTokenPrepared(new ExecutionTokenPreparedEventArgs(executionToken));
-
-            return executionToken;
-        }
-
-        /// <summary>
         /// Helper method for executing the operation.
         /// </summary>
         /// <param name="implementation">The implementation.</param>
@@ -81,7 +68,6 @@ namespace Tortuga.Chain.Materializers
                 return null;
             }, state);
         }
-
 
         /// <summary>
         /// Helper method for executing the operation.
@@ -108,6 +94,20 @@ namespace Tortuga.Chain.Materializers
             }, cancellationToken, state);
         }
 
+        /// <summary>
+        /// Prepares this operation for execution.
+        /// </summary>
+        /// <returns>ExecutionToken&lt;TCommand, TParameter&gt;.</returns>
+        protected ExecutionToken<TCommand, TParameter> Prepare()
+        {
+            OnExecutionTokenPreparing(new ExecutionTokenPreparingEventArgs(CommandBuilder));
+
+            var executionToken = CommandBuilder.Prepare(this);
+
+            OnExecutionTokenPrepared(new ExecutionTokenPreparedEventArgs(executionToken));
+
+            return executionToken;
+        }
     }
 
 }

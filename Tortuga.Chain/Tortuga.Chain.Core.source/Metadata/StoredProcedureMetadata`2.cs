@@ -42,9 +42,9 @@ namespace Tortuga.Chain.Metadata
         /// Creates a SQL builder.
         /// </summary>
         /// <returns></returns>
-        public SqlBuilder<TDbType> CreateSqlBuilder()
+        public SqlBuilder<TDbType> CreateSqlBuilder(bool strictMode)
         {
-            return new SqlBuilder<TDbType>(Name.ToString(), Parameters);
+            return new SqlBuilder<TDbType>(Name.ToString(), Parameters, strictMode);
         }
     }
 }

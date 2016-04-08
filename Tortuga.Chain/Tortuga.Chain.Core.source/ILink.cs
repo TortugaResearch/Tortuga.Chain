@@ -13,11 +13,31 @@ namespace Tortuga.Chain
     public interface ILink
     {
         /// <summary>
+        /// Occurs when an execution token has been prepared.
+        /// </summary>
+        /// <remarks>This is mostly used by appenders to override command behavior.</remarks>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        event EventHandler<ExecutionTokenPreparedEventArgs> ExecutionTokenPrepared;
+
+        /// <summary>
+        /// Occurs when an execution token is about to be prepared.
+        /// </summary>
+        /// <remarks>This is mostly used by appenders to override SQL generation.</remarks>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        event EventHandler<ExecutionTokenPreparingEventArgs> ExecutionTokenPreparing;
+
+        /// <summary>
         /// Gets the data source that is associated with this materilizer or appender.
         /// </summary>
         /// <value>The data source.</value>
         [EditorBrowsable(EditorBrowsableState.Never)]
         DataSource DataSource { get; }
+
+        /// <summary>
+        /// Returns SQL generated SQL without executing it.
+        /// </summary>
+        /// <returns></returns>
+        string CommandText();
 
         /// <summary>
         /// Execute the operation synchronously.
@@ -39,19 +59,5 @@ namespace Tortuga.Chain
         /// <param name="state">User defined state, usually used for logging.</param>
         /// <returns></returns>
         Task ExecuteAsync(CancellationToken cancellationToken, object state = null);
-
-        /// <summary>
-        /// Occurs when an execution token has been prepared.
-        /// </summary>
-        /// <remarks>This is mostly used by appenders to override command behavior.</remarks>
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        event EventHandler<ExecutionTokenPreparedEventArgs> ExecutionTokenPrepared;
-
-
-        /// <summary>
-        /// Returns SQL generated SQL without executing it.
-        /// </summary>
-        /// <returns></returns>
-        string CommandText();
     }
 }

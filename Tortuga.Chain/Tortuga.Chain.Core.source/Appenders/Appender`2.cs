@@ -26,6 +26,7 @@ namespace Tortuga.Chain.Appenders
 
             PreviousLink = previousLink;
             PreviousLink.ExecutionTokenPrepared += PreviousLink_ExecutionTokenPrepared;
+            PreviousLink.ExecutionTokenPreparing += PreviousLink_ExecutionTokenPreparing;
         }
 
         private void PreviousLink_ExecutionTokenPrepared(object sender, ExecutionTokenPreparedEventArgs e)
@@ -33,6 +34,12 @@ namespace Tortuga.Chain.Appenders
             OnExecutionTokenPrepared(e); //left first
             ExecutionTokenPrepared?.Invoke(this, e); //then right
             e.ExecutionToken.CommandBuilt += ExecutionToken_CommandBuilt;
+        }
+
+        private void PreviousLink_ExecutionTokenPreparing(object sender, ExecutionTokenPreparingEventArgs e)
+        {
+            OnExecutionTokenPreparing(e); //left first
+            ExecutionTokenPreparing?.Invoke(this, e); //then right
         }
 
         private void ExecutionToken_CommandBuilt(object sender, CommandBuiltEventArgs e)
@@ -58,6 +65,14 @@ namespace Tortuga.Chain.Appenders
 
         }
 
+        /// <summary>
+        /// Override this if you want to examine or modify the command builder before the execution token is built.
+        /// </summary>
+        /// <param name="e">The <see cref="ExecutionTokenPreparingEventArgs"/> instance containing the event data.</param>
+        protected virtual void OnExecutionTokenPreparing(ExecutionTokenPreparingEventArgs e)
+        {
+
+        }
         /// <summary>
         /// Gets the data source that is associated with this materilizer or appender.
         /// </summary>
@@ -103,6 +118,14 @@ namespace Tortuga.Chain.Appenders
         /// </summary>
         /// <remarks>This is mostly used by appenders to override command behavior.</remarks>
         public event EventHandler<ExecutionTokenPreparedEventArgs> ExecutionTokenPrepared;
+
+        /// <summary>
+        /// Occurs when an execution token is about to be prepared.
+        /// </summary>
+        /// <remarks>
+        /// This is mostly used by appenders to override SQL generation.
+        /// </remarks>
+        public event EventHandler<ExecutionTokenPreparingEventArgs> ExecutionTokenPreparing;
 
         /// <summary>
         /// Returns the generated SQL statement of the previous link.

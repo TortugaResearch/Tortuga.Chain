@@ -33,9 +33,9 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             if (materializer == null)
                 throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
 
-            var sqlBuilder = Metadata.CreateSqlBuilder();
-            sqlBuilder.ApplyArgumentValue(ArgumentValue, false, DataSource.StrictMode);
-            sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns(), DataSource.StrictMode);
+            var sqlBuilder = Metadata.CreateSqlBuilder(StrictMode);
+            sqlBuilder.ApplyArgumentValue(ArgumentValue, false);
+            sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
             var sql = new StringBuilder();
             sqlBuilder.BuildInsertClause(sql, $"INSERT INTO {TableName.ToQuotedString()} (", null, ")");

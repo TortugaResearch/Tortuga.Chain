@@ -181,5 +181,27 @@ namespace Tortuga.Chain
         {
             return new TimeoutAppender(previousLink, timeout);
         }
+
+        /// <summary>
+        /// Sets the strict mode, overriding the value set in the DataSource.
+        /// </summary>
+        /// <param name="previousLink">The previous link.</param>
+        /// <param name="strictMode">if set to <c>true</c> [strict mode].</param>
+        /// <returns></returns>
+        public static ILink SetStrictMode(this ILink previousLink, bool strictMode)
+        {
+            return new StrictModeAppender(previousLink, strictMode);
+        }
+
+        /// <summary>
+        /// Sets the strict mode, overriding the value set in the DataSource.
+        /// </summary>
+        /// <param name="previousLink">The previous link.</param>
+        /// <param name="strictMode">if set to <c>true</c> [strict mode].</param>
+        /// <returns></returns>
+        public static ILink<TResult> SetStrictMode<TResult>(this ILink<TResult> previousLink, bool strictMode)
+        {
+            return new StrictModeAppender<TResult>(previousLink, strictMode);
+        }
     }
 }

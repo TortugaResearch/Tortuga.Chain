@@ -66,8 +66,8 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             if (materializer == null)
                 throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
 
-            var sqlBuilder = m_Metadata.CreateSqlBuilder();
-            sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns(), DataSource.StrictMode);
+            var sqlBuilder = m_Metadata.CreateSqlBuilder(StrictMode);
+            sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
             List<SqlParameter> parameters;
 
@@ -76,7 +76,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 
             if (m_FilterValue != null)
             {
-                sql.Append(" WHERE " + sqlBuilder.ApplyFilterValue(m_FilterValue, DataSource.StrictMode));
+                sql.Append(" WHERE " + sqlBuilder.ApplyFilterValue(m_FilterValue));
                 parameters = sqlBuilder.GetParameters();
             }
             else if (!string.IsNullOrWhiteSpace(m_WhereClause))

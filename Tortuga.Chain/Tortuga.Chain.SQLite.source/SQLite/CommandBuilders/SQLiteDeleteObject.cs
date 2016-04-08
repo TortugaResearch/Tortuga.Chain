@@ -42,9 +42,9 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
             if (materializer == null)
                 throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
 
-            var sqlBuilder = Metadata.CreateSqlBuilder();
-            sqlBuilder.ApplyArgumentValue(ArgumentValue, m_Options.HasFlag(DeleteOptions.UseKeyAttribute), DataSource.StrictMode);
-            sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns(), DataSource.StrictMode);
+            var sqlBuilder = Metadata.CreateSqlBuilder(StrictMode);
+            sqlBuilder.ApplyArgumentValue(ArgumentValue, m_Options.HasFlag(DeleteOptions.UseKeyAttribute));
+            sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
             var sql = new StringBuilder();
             sqlBuilder.BuildSelectByKeyStatement(sql, TableName, ";");

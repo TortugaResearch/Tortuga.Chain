@@ -6,6 +6,7 @@ using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.CommandBuilders
 {
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1501:AvoidExcessiveInheritance")]
     class GenericDbSqlCall : MultipleTableDbCommandBuilder<DbCommand, DbParameter>
     {
         private readonly object m_ArgumentValue;

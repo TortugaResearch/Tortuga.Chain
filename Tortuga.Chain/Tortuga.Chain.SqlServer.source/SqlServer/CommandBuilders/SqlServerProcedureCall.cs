@@ -58,48 +58,12 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             }
             else
             {
-                var sqlBuilder = m_Metadata.CreateSqlBuilder();
-                sqlBuilder.ApplyArgumentValue(m_ArgumentValue, false, DataSource.StrictMode);
+                var sqlBuilder = m_Metadata.CreateSqlBuilder(StrictMode);
+                sqlBuilder.ApplyArgumentValue(m_ArgumentValue, false);
                 parameters = sqlBuilder.GetParameters();
             }
 
             return new SqlServerExecutionToken(DataSource, m_ProcedureName.ToString(), m_ProcedureName.ToQuotedString(), parameters, CommandType.StoredProcedure);
-
-            /*
-            var parameters = new List<SqlParameter>();
-            var expectedParameters = m_Metadata.Parameters.ToDictionary(p => p.ClrName, StringComparer.OrdinalIgnoreCase);
-
-
-            if (m_ArgumentValue is IReadOnlyDictionary<string, object>)
-            {
-                foreach (var item in (IReadOnlyDictionary<string, object>)m_ArgumentValue)
-                {
-                    ParameterMetadata<SqlDbType> paramInfo;
-                    string key = item.Key.StartsWith("@", StringComparison.OrdinalIgnoreCase) ? item.Key.Substring(1) : item.Key; //normalize
-                    if (expectedParameters.TryGetValue(key, out paramInfo))
-                    {
-                        var newSqlParameter = new SqlParameter(paramInfo.SqlParameterName, item.Value ?? DBNull.Value);
-                        if (paramInfo.DbType.HasValue)
-                            newSqlParameter.SqlDbType = paramInfo.DbType.Value;
-                        parameters.Add(newSqlParameter);
-                    }
-                }
-            }
-            else if (m_ArgumentValue != null)
-            {
-                foreach (var property in MetadataCache.GetMetadata(m_ArgumentValue.GetType()).Properties)
-                {
-                    ParameterMetadata<SqlDbType> paramInfo;
-                    if (expectedParameters.TryGetValue(property.MappedColumnName, out paramInfo))
-                    {
-                        var newSqlParameter = new SqlParameter("@" + property.MappedColumnName, property.InvokeGet(m_ArgumentValue) ?? DBNull.Value);
-                        if (paramInfo.DbType.HasValue)
-                            newSqlParameter.SqlDbType = paramInfo.DbType.Value;
-                        parameters.Add(newSqlParameter);
-                    }
-                }
-            }
-            */
 
         }
 

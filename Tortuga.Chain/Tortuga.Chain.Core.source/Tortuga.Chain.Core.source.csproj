@@ -85,10 +85,13 @@
     <Compile Include="Appenders\Appender`1.cs" />
     <Compile Include="Appenders\CacheAllItemsAppender.cs" />
     <Compile Include="Appenders\CacheResultAppender`1.cs" />
+    <Compile Include="Appenders\StrictModeAppender.cs" />
+    <Compile Include="Appenders\StrictModeAppender1.cs" />
     <Compile Include="Appenders\TimeoutAppender.cs" />
     <Compile Include="Appenders\TimeoutAppender`1.cs" />
     <Compile Include="Appenders\TraceAppender`1.cs" />
     <Compile Include="Appenders\TraceAppender.cs" />
+    <Compile Include="CommandBuilders\DbCommandBuilder.cs" />
     <Compile Include="CommandBuilders\GenericDbSqlCall.cs" />
     <Compile Include="CommandBuilders\IDbCommandBuilder.cs" />
     <Compile Include="CommandBuilders\IMultipleRowDbCommandBuilder.cs" />
@@ -96,6 +99,7 @@
     <Compile Include="CommandBuilders\ISingleRowDbCommandBuilder.cs" />
     <Compile Include="CommonAppenders.cs" />
     <Compile Include="Core\ExecutionTokenPreparedEventArgs.cs" />
+    <Compile Include="Core\ExecutionTokenPreparingEventArgs.cs" />
     <Compile Include="DataSourceSettings.cs" />
     <Compile Include="DataSources\DataSource.cs" />
     <Compile Include="DataSources\DataSource`2.cs" />

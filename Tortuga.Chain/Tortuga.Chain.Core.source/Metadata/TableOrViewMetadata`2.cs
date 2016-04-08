@@ -34,12 +34,30 @@ namespace Tortuga.Chain.Metadata
 
 
         /// <summary>
+        /// Gets the columns.
+        /// </summary>
+        /// <value>
+        /// The columns.
+        /// </value>
+        public ReadOnlyCollection<ColumnMetadata<TDbType>> Columns { get; }
+
+        /// <summary>
         /// Gets a value indicating whether this instance is table or a view.
         /// </summary>
         /// <value>
         ///   <c>true</c> if this instance is a table; otherwise, <c>false</c>.
         /// </value>
         public bool IsTable { get; }
+
+        IReadOnlyList<IColumnMetadata> ITableOrViewMetadata.Columns
+        {
+            get { return Columns; }
+        }
+
+        string ITableOrViewMetadata.Name
+        {
+            get { return Name.ToString(); }
+        }
 
         /// <summary>
         /// Gets the name.
@@ -48,24 +66,74 @@ namespace Tortuga.Chain.Metadata
         /// The name.
         /// </value>
         public TName Name { get; }
-
         /// <summary>
-        /// Gets the columns.
+        /// Creates the SQL builder.
         /// </summary>
-        /// <value>
-        /// The columns.
-        /// </value>
-        public ReadOnlyCollection<ColumnMetadata<TDbType>> Columns { get; }
-
-
-        string ITableOrViewMetadata.Name
+        /// <returns></returns>
+        public SqlBuilder<TDbType> CreateSqlBuilder(bool strictMode)
         {
-            get { return Name.ToString(); }
+            return new SqlBuilder<TDbType>(Name.ToString(), Columns, strictMode);
         }
 
-        IReadOnlyList<IColumnMetadata> ITableOrViewMetadata.Columns
+        /// <summary>
+        /// Gets the keys for the given dictionary that map to columns on this table or view.
+        /// </summary>
+        /// <param name="argument">The parameter dictionary to examine.</param>
+        /// <param name="filter">The filter.</param>
+        [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
+        public ImmutableArray<ColumnMetadata<TDbType>> GetKeysFor(IReadOnlyDictionary<string, object> argument, GetKeysFilter filter)
         {
-            get { return Columns; }
+            //Filtered versions rely on the unfiltered version.
+            IEnumerable<ColumnMetadata<TDbType>> result = Columns.Where(c => argument.ContainsKey(c.ClrName));
+
+            var filterText = "";
+
+            var checkCount = 0;
+            if (filter.HasFlag(GetKeysFilter.PrimaryKey))
+                checkCount += 1;
+            if (filter.HasFlag(GetKeysFilter.NonPrimaryKey))
+                checkCount += 1;
+            if (checkCount > 1)
+                throw new ArgumentException("Cannot specify more than one of (PrimaryKey, NonPrimaryKey)", nameof(filter));
+
+            if (filter.HasFlag(GetKeysFilter.PrimaryKey))
+            {
+                filterText = "primary key";
+                result = result.Where(c => c.IsPrimaryKey).ToList();
+
+                if (filter.HasFlag(GetKeysFilter.ThrowOnMissingProperties))
+                {
+                    var missingProperties = Columns.Where(c => c.IsPrimaryKey && !result.Any(r => r == c)).ToList();
+                    if (missingProperties.Count > 0)
+                        throw new MappingException($"The parameter dictionary is missing a property mapped to the primary key column(s): " + string.Join(", ", missingProperties.Select(c => c.SqlName)) + " on table " + Name);
+                }
+            }
+            else if (filter.HasFlag(GetKeysFilter.NonPrimaryKey))
+            {
+                filterText = "non-primary key";
+
+                if (filter.HasFlag(GetKeysFilter.ThrowOnMissingColumns))
+                {
+                    var missingColumns = argument.Keys.Where(p => !result.Any(r => r.ClrName == p)).ToList();
+                    if (missingColumns.Count > 0)
+                        throw new MappingException($"The table {Name} is missing a column mapped to the properties: " + string.Join(", ", missingColumns + $". Remove the unused keys or disable strict mode."));
+                }
+                result = result.Where(c => !c.IsPrimaryKey).ToList();
+
+            }
+
+            if (filter.HasFlag(GetKeysFilter.MutableColumns))
+            {
+                filterText = "updateable " + filterText;
+                result = result.Where(c => !c.IsComputed && !c.IsIdentity);
+            }
+
+            if (filter.HasFlag(GetKeysFilter.ThrowOnNoMatch) && !result.Any())
+            {
+                throw new MappingException($"None of the properties for the parameter dictionary match the {filterText} columns for {Name}");
+            }
+
+            return result.ToImmutableArray();
         }
 
         /// <summary>
@@ -184,78 +252,6 @@ namespace Tortuga.Chain.Metadata
 
             return result.ToImmutableArray();
         }
-
-        /// <summary>
-        /// Gets the keys for the given dictionary that map to columns on this table or view.
-        /// </summary>
-        /// <param name="argument">The parameter dictionary to examine.</param>
-        /// <param name="filter">The filter.</param>
-        [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
-        public ImmutableArray<ColumnMetadata<TDbType>> GetKeysFor(IReadOnlyDictionary<string, object> argument, GetKeysFilter filter)
-        {
-            //Filtered versions rely on the unfiltered version.
-            IEnumerable<ColumnMetadata<TDbType>> result = Columns.Where(c => argument.ContainsKey(c.ClrName));
-
-            var filterText = "";
-
-            var checkCount = 0;
-            if (filter.HasFlag(GetKeysFilter.PrimaryKey))
-                checkCount += 1;
-            if (filter.HasFlag(GetKeysFilter.NonPrimaryKey))
-                checkCount += 1;
-            if (checkCount > 1)
-                throw new ArgumentException("Cannot specify more than one of (PrimaryKey, NonPrimaryKey)", nameof(filter));
-
-            if (filter.HasFlag(GetKeysFilter.PrimaryKey))
-            {
-                filterText = "primary key";
-                result = result.Where(c => c.IsPrimaryKey).ToList();
-
-                if (filter.HasFlag(GetKeysFilter.ThrowOnMissingProperties))
-                {
-                    var missingProperties = Columns.Where(c => c.IsPrimaryKey && !result.Any(r => r == c)).ToList();
-                    if (missingProperties.Count > 0)
-                        throw new MappingException($"The parameter dictionary is missing a property mapped to the primary key column(s): " + string.Join(", ", missingProperties.Select(c => c.SqlName)) + " on table " + Name);
-                }
-            }
-            else if (filter.HasFlag(GetKeysFilter.NonPrimaryKey))
-            {
-                filterText = "non-primary key";
-
-                if (filter.HasFlag(GetKeysFilter.ThrowOnMissingColumns))
-                {
-                    var missingColumns = argument.Keys.Where(p => !result.Any(r => r.ClrName == p)).ToList();
-                    if (missingColumns.Count > 0)
-                        throw new MappingException($"The table {Name} is missing a column mapped to the properties: " + string.Join(", ", missingColumns + $". Remove the unused keys or disable strict mode."));
-                }
-                result = result.Where(c => !c.IsPrimaryKey).ToList();
-
-            }
-
-            if (filter.HasFlag(GetKeysFilter.MutableColumns))
-            {
-                filterText = "updateable " + filterText;
-                result = result.Where(c => !c.IsComputed && !c.IsIdentity);
-            }
-
-            if (filter.HasFlag(GetKeysFilter.ThrowOnNoMatch) && !result.Any())
-            {
-                throw new MappingException($"None of the properties for the parameter dictionary match the {filterText} columns for {Name}");
-            }
-
-            return result.ToImmutableArray();
-        }
-
-
-        /// <summary>
-        /// Creates the SQL builder.
-        /// </summary>
-        /// <returns></returns>
-        public SqlBuilder<TDbType> CreateSqlBuilder()
-        {
-            return new SqlBuilder<TDbType>(Name.ToString(), Columns);
-        }
-
     }
 
 }

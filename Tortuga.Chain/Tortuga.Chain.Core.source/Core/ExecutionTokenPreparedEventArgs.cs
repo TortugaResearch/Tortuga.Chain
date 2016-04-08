@@ -3,8 +3,9 @@ using System;
 namespace Tortuga.Chain.Core
 {
     /// <summary>
-    /// 
+    /// This occurs just after an execution token is prepared.
     /// </summary>
+    /// <seealso cref="EventArgs" />
     public class ExecutionTokenPreparedEventArgs : EventArgs
     {
         /// <summary>
@@ -22,4 +23,7 @@ namespace Tortuga.Chain.Core
         /// <value>The execution token.</value>
         public ExecutionToken ExecutionToken { get; }
     }
+
+
+
 }

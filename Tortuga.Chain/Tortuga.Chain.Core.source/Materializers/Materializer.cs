@@ -13,22 +13,6 @@ namespace Tortuga.Chain.Materializers
     {
 
         /// <summary>
-        /// Occurs when an execution token has been prepared.
-        /// </summary>
-        /// <remarks>This is mostly used by appenders to override command behavior.</remarks>
-        public event EventHandler<ExecutionTokenPreparedEventArgs> ExecutionTokenPrepared;
-
-        /// <summary>
-        /// Returns the list of columns the materializer would like to have. 
-        /// </summary>
-        /// <returns>IReadOnlyList&lt;System.String&gt;.</returns>
-        /// <remarks>If AutoSelectDesiredColumns is returned, the command builder is allowed to choose which columns to return. If NoColumns is returned, the command builder should omit the SELECT/OUTPUT clause.</remarks>
-        public virtual IReadOnlyList<string> DesiredColumns()
-        {
-            return AutoSelectDesiredColumns;
-        }
-
-        /// <summary>
         /// Return all columns.
         /// </summary>
         [SuppressMessage("Microsoft.Security", "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes")]
@@ -47,6 +31,28 @@ namespace Tortuga.Chain.Materializers
         public static readonly IReadOnlyList<string> NoColumns = new ReadOnlyCollection<string>(new List<string>());
 
         /// <summary>
+        /// Occurs when an execution token has been prepared.
+        /// </summary>
+        /// <remarks>This is mostly used by appenders to override command behavior.</remarks>
+        public event EventHandler<ExecutionTokenPreparedEventArgs> ExecutionTokenPrepared;
+
+
+        /// <summary>
+        /// Occurs when execution token is about to be been prepared.
+        /// </summary>
+        /// <remarks>This is mostly used by appenders to override SQL generation.</remarks>
+        public event EventHandler<ExecutionTokenPreparingEventArgs> ExecutionTokenPreparing;
+
+        /// <summary>
+        /// Returns the list of columns the materializer would like to have. 
+        /// </summary>
+        /// <returns>IReadOnlyList&lt;System.String&gt;.</returns>
+        /// <remarks>If AutoSelectDesiredColumns is returned, the command builder is allowed to choose which columns to return. If NoColumns is returned, the command builder should omit the SELECT/OUTPUT clause.</remarks>
+        public virtual IReadOnlyList<string> DesiredColumns()
+        {
+            return AutoSelectDesiredColumns;
+        }
+        /// <summary>
         /// Raises the <see cref="E:ExecutionTokenPrepared" /> event.
         /// </summary>
         /// <param name="e">The <see cref="ExecutionTokenPreparedEventArgs"/> instance containing the event data.</param>
@@ -54,6 +60,16 @@ namespace Tortuga.Chain.Materializers
         {
             ExecutionTokenPrepared?.Invoke(this, e);
         }
+
+        /// <summary>
+        /// Raises the <see cref="E:ExecutionTokenPreparing" /> event.
+        /// </summary>
+        /// <param name="e">The <see cref="ExecutionTokenPreparingEventArgs"/> instance containing the event data.</param>
+        protected void OnExecutionTokenPreparing(ExecutionTokenPreparingEventArgs e)
+        {
+            ExecutionTokenPreparing?.Invoke(this, e);
+        }
+
     }
 
 }

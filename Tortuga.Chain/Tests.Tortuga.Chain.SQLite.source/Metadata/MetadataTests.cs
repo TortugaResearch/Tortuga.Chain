@@ -55,8 +55,8 @@ namespace Tests.Metadata
             DataSource.DatabaseMetadata.Preload();
             foreach (var item in DataSource.DatabaseMetadata.GetTablesAndViews().Where(x => x.IsTable))
             {
-                var builder = item.CreateSqlBuilder();
-                builder.ApplyDesiredColumns(Tortuga.Chain.Materializers.Materializer.AllColumns, false);
+                var builder = item.CreateSqlBuilder(false);
+                builder.ApplyDesiredColumns(Tortuga.Chain.Materializers.Materializer.AllColumns);
 
 
                 var selectColumns = builder.GetSelectColumns().ToList();

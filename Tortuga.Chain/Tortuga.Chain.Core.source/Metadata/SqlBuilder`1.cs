@@ -19,16 +19,15 @@ namespace Tortuga.Chain.Metadata
         private readonly SqlBuilderEntry<TDbType>[] m_Entries;
 
         private readonly string m_Name;
+        private readonly bool m_StrictMode;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SqlBuilder{TDbType}"/> class.
-        /// </summary>
-        /// <param name="name">The name of the object (e.g. table or view).</param>
-        /// <param name="columns">The columns.</param>
-        internal SqlBuilder(string name, IReadOnlyList<ColumnMetadata<TDbType>> columns)
+        internal SqlBuilder(string name, IReadOnlyList<ColumnMetadata<TDbType>> columns, bool strictMode)
         {
             m_Name = name;
+            m_StrictMode = strictMode;
+
             m_Entries = new SqlBuilderEntry<TDbType>[columns.Count];
+
             for (int i = 0; i < columns.Count; i++)
             {
                 var column = columns[i];
@@ -42,9 +41,11 @@ namespace Tortuga.Chain.Metadata
             }
         }
 
-        internal SqlBuilder(string name, IReadOnlyList<ParameterMetadata<TDbType>> parameters)
+        internal SqlBuilder(string name, IReadOnlyList<ParameterMetadata<TDbType>> parameters, bool strictMode)
         {
             m_Name = name;
+            m_StrictMode = strictMode;
+
             m_Entries = new SqlBuilderEntry<TDbType>[parameters.Count];
             for (int i = 0; i < parameters.Count; i++)
             {
@@ -78,13 +79,21 @@ namespace Tortuga.Chain.Metadata
                 return false;
             }
         }
+
+        /// <summary>
+        /// Gets a value indicating whether strict mode is enabled
+        /// </summary>
+        public bool StrictMode
+        {
+            get { return m_StrictMode; }
+        }
+
         /// <summary>
         /// Applies an argument dictionary, overriding any perviously applied values.
         /// </summary>
         /// <param name="value">The value.</param>
-        /// <param name="strictMode">if set to <c>true</c> [strict mode].</param>
         /// <exception cref="MappingException">This is thrown is no keys could be matched to a column. If strict mode, all keys must match columns.</exception>
-        public void ApplyArgumentDictionary(IReadOnlyDictionary<string, object> value, bool strictMode)
+        public void ApplyArgumentDictionary(IReadOnlyDictionary<string, object> value)
         {
             if (value == null || value.Count == 0)
                 throw new ArgumentException($"{nameof(value)} is null or empty.", nameof(value));
@@ -109,7 +118,7 @@ namespace Tortuga.Chain.Metadata
                         break;
                     }
                 }
-                if (strictMode && !keyFound)
+                if (m_StrictMode && !keyFound)
                     throw new MappingException($"Strict mode was enabled, but property {item.Key} could be matched to a column in {m_Name}. Disable strict mode or remove the item from the dictionary.");
             }
 
@@ -122,20 +131,19 @@ namespace Tortuga.Chain.Metadata
         /// </summary>
         /// <param name="value">The value.</param>
         /// <param name="useObjectDefinedKeys">if set to <c>true</c> use object defined keys.</param>
-        /// <param name="strictMode">if set to <c>true</c> [strict mode].</param>
         /// <exception cref="ArgumentNullException">value;value is null.</exception>
         /// <exception cref="MappingException">This is thrown is no properties could be matched to a column. If strict mode, all properties must match columns.</exception>
         /// <remarks>
         /// If the object implements IReadOnlyDictionary[string, object], ApplyArgumentDictionary will be implicitly called instead.
         /// </remarks>
-        public void ApplyArgumentValue(object value, bool useObjectDefinedKeys, bool strictMode)
+        public void ApplyArgumentValue(object value, bool useObjectDefinedKeys)
         {
             if (value == null)
                 throw new ArgumentNullException("value", "value is null.");
 
             if (value is IReadOnlyDictionary<string, object>)
             {
-                ApplyArgumentDictionary((IReadOnlyDictionary<string, object>)value, strictMode);
+                ApplyArgumentDictionary((IReadOnlyDictionary<string, object>)value);
                 return;
             }
 
@@ -171,7 +179,7 @@ namespace Tortuga.Chain.Metadata
                         break;
                     }
                 }
-                if (strictMode && !propertyFound)
+                if (m_StrictMode && !propertyFound)
                     throw new MappingException($"Strict mode was enabled, but property {property.Name} could be matched to a column in {m_Name}. Disable strict mode or mark the property as NotMapped.");
             }
 
@@ -183,10 +191,9 @@ namespace Tortuga.Chain.Metadata
         /// Uses a desired columns enumeration to indicate which columns should be set to read-mode.
         /// </summary>
         /// <param name="desiredColumns">The desired columns. This also supports Materializer.NoColumns, Materializer.AutoSelectDesiredColumns, and Materializer.AllColumns.</param>
-        /// <param name="strictMode">if set to <c>true</c> [strict mode].</param>
         /// <exception cref="MappingException">This is thrown is no desired columns were actually part of the table or view. If strict mode, all desired columns must be found.</exception>        
         /// <remarks>Calling this a second time will be additive with prior call.</remarks>
-        public void ApplyDesiredColumns(IEnumerable<string> desiredColumns, bool strictMode)
+        public void ApplyDesiredColumns(IEnumerable<string> desiredColumns)
         {
             if (desiredColumns == null)
                 throw new ArgumentNullException(nameof(desiredColumns), $"{nameof(desiredColumns)} is null.");
@@ -254,7 +261,7 @@ namespace Tortuga.Chain.Metadata
 
                 }
 
-                if (strictMode && !columnFound)
+                if (m_StrictMode && !columnFound)
                     throw new MappingException($"Strict mode was enabled, but desired column {column} was not found on {m_Name}. Disable strict mode or mark the property as NotMapped.");
             }
 
@@ -267,9 +274,8 @@ namespace Tortuga.Chain.Metadata
         /// Applies the filter value, returning a set of expressions suitable for use in a WHERE clause.
         /// </summary>
         /// <param name="filterValue">The filter value.</param>
-        /// <param name="strictMode">if set to <c>true</c> [strict mode].</param>
         /// <returns></returns>
-        public string ApplyFilterValue(object filterValue, bool strictMode)
+        public string ApplyFilterValue(object filterValue)
         {
             if (filterValue == null)
                 throw new ArgumentNullException(nameof(filterValue), $"{nameof(filterValue)} is null.");
@@ -305,7 +311,7 @@ namespace Tortuga.Chain.Metadata
                             break;
                         }
                     }
-                    if (strictMode && !keyFound)
+                    if (m_StrictMode && !keyFound)
                         throw new MappingException($"Strict mode was enabled, but property {item.Key} could be matched to a column in {m_Name}. Disable strict mode or remove the item from the dictionary.");
                 }
             }
@@ -336,7 +342,7 @@ namespace Tortuga.Chain.Metadata
                             break;
                         }
                     }
-                    if (strictMode && !propertyFound)
+                    if (m_StrictMode && !propertyFound)
                         throw new MappingException($"Strict mode was enabled, but property {property.Name} could be matched to a column in {m_Name}. Disable strict mode or mark the property as NotMapped.");
 
                 }
@@ -353,20 +359,19 @@ namespace Tortuga.Chain.Metadata
         /// Overrides the pervious selected values with the values in the indicated object.
         /// </summary>
         /// <param name="value">The value.</param>
-        /// <param name="strictMode">if set to <c>true</c> [strict mode].</param>
         /// <exception cref="ArgumentNullException">value;value is null.</exception>
         /// <exception cref="MappingException">This is thrown is no properties could be matched to a column. If strict mode, all properties must match columns.</exception>
         /// <remarks>This will not alter the IsPrimaryKey, Insert, or Update column settings.
         /// If the object implements IReadOnlyDictionary[string, object], ApplyArgumentDictionary will be implicitly called instead.
         /// </remarks>
-        public void ApplyValueOverrides(object value, bool strictMode)
+        public void ApplyValueOverrides(object value)
         {
             if (value == null)
                 throw new ArgumentNullException("value", "value is null.");
 
             if (value is IReadOnlyDictionary<string, object>)
             {
-                ApplyArgumentDictionary((IReadOnlyDictionary<string, object>)value, strictMode);
+                ApplyArgumentDictionary((IReadOnlyDictionary<string, object>)value);
                 return;
             }
 
@@ -392,7 +397,7 @@ namespace Tortuga.Chain.Metadata
                         break;
                     }
                 }
-                if (strictMode && !propertyFound)
+                if (m_StrictMode && !propertyFound)
                     throw new MappingException($"Strict mode was enabled, but property {property.Name} could be matched to a column in {m_Name}. Disable strict mode or mark the property as NotMapped.");
             }
 

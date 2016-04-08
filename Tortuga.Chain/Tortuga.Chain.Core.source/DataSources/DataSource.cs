@@ -341,6 +341,6 @@ namespace Tortuga.Chain.DataSources
         /// </summary>
         /// <value>The extension cache.</value>
         private readonly ConcurrentDictionary<Type, object> m_ExtensionCache = new ConcurrentDictionary<Type, object>();
-        
+
     }
 }
