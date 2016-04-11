@@ -85,9 +85,9 @@ namespace Tests.AuditRules
             var currentUser2 = users.First();
 
             var dsWithRules = DataSourceWithAuditRules().WithRules(
-                new SoftDeleteRule("DeletedFlag", 1, OperationType.SelectOrDelete),
-                new ApplyUserDataRule("DeletedByKey", "EmployeeKey", OperationType.Delete),
-                new ApplyDateTimeOffsetRule("DeletedDate", OperationType.Delete)
+                new SoftDeleteRule("DeletedFlag", 1, OperationTypes.SelectOrDelete),
+                new UserDataRule("DeletedByKey", "EmployeeKey", OperationTypes.Delete),
+                new DateTimeOffsetRule("DeletedDate", OperationTypes.Delete)
                 );
 
             var ds1 = dsWithRules.WithUser(currentUser1);

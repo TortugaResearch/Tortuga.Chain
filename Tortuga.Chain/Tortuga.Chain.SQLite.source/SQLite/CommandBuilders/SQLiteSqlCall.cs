@@ -2,7 +2,6 @@
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Materializers;
 using Tortuga.Chain.Core;
-using Tortuga.Chain.Metadata;
 
 #if SDS
 using System.Data.SQLite;

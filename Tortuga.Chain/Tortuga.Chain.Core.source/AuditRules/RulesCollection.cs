@@ -18,6 +18,7 @@ namespace Tortuga.Chain.AuditRules
         /// <summary>
         /// Returns an empty RulesCollection.
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes")]
         public static readonly RulesCollection Empty = new RulesCollection();
 
         /// <summary>
@@ -44,6 +45,11 @@ namespace Tortuga.Chain.AuditRules
         /// <param name="additionalRules">The additional rules.</param>
         public RulesCollection(RulesCollection baseRules, IEnumerable<Rule> additionalRules)
         {
+            if (baseRules == null)
+                throw new ArgumentNullException(nameof(baseRules), $"{nameof(baseRules)} is null.");
+            if (additionalRules == null)
+                throw new ArgumentNullException(nameof(additionalRules), $"{nameof(additionalRules)} is null.");
+
             m_List = baseRules.m_List.AddRange(additionalRules);
         }
 
@@ -90,7 +96,7 @@ namespace Tortuga.Chain.AuditRules
         /// <returns></returns>
         public bool UseSoftDelete(ITableOrViewMetadata table)
         {
-            return m_List.Where(r => r.AppliesWhen.HasFlag(OperationType.Delete)).OfType<SoftDeleteRule>().Any(r => table.Columns.Any(c => c.SqlName.Equals(r.ColumnName, StringComparison.OrdinalIgnoreCase)));
+            return m_List.Where(r => r.AppliesWhen.HasFlag(OperationTypes.Delete)).OfType<SoftDeleteRule>().Any(r => table.Columns.Any(c => c.SqlName.Equals(r.ColumnName, StringComparison.OrdinalIgnoreCase)));
         }
 
         internal void CheckValidation(object argumentValue)
@@ -99,7 +105,7 @@ namespace Tortuga.Chain.AuditRules
                 item.CheckValue(argumentValue);
         }
 
-        internal IEnumerable<ColumnRule> GetRulesForColumn(string sqlName, string clrName, OperationType appliesWhen)
+        internal IEnumerable<ColumnRule> GetRulesForColumn(string sqlName, string clrName, OperationTypes appliesWhen)
         {
             return m_List.OfType<ColumnRule>().Where(c => (c.AppliesWhen & appliesWhen) > 0 && c.ColumnName.Equals(sqlName, StringComparison.OrdinalIgnoreCase) || c.ColumnName.Equals(clrName, StringComparison.OrdinalIgnoreCase));
         }

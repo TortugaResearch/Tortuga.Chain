@@ -141,7 +141,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <remarks>
         /// If the object implements IReadOnlyDictionary[string, object], ApplyArgumentDictionary will be implicitly called instead.
         /// </remarks>
-        public void ApplyArgumentValue(DataSource dataSource, OperationType appliesWhen, object argumentValue)
+        public void ApplyArgumentValue(DataSource dataSource, OperationTypes appliesWhen, object argumentValue)
         {
             ApplyArgumentValue(dataSource, appliesWhen, argumentValue, false, false);
         }
@@ -157,9 +157,10 @@ namespace Tortuga.Chain.CommandBuilders
         /// <remarks>
         /// If the object implements IReadOnlyDictionary[string, object], ApplyArgumentDictionary will be implicitly called instead.
         /// </remarks>
+        [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "options")]
         public void ApplyArgumentValue(DataSource dataSource, object argumentValue, InsertOptions options)
         {
-            ApplyArgumentValue(dataSource, OperationType.Insert, argumentValue, false, false);
+            ApplyArgumentValue(dataSource, OperationTypes.Insert, argumentValue, false, false);
         }
 
         /// <summary>
@@ -175,7 +176,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// </remarks>
         public void ApplyArgumentValue(DataSource dataSource, object argumentValue, DeleteOptions options)
         {
-            ApplyArgumentValue(dataSource, OperationType.Delete, argumentValue, options.HasFlag(DeleteOptions.UseKeyAttribute), false);
+            ApplyArgumentValue(dataSource, OperationTypes.Delete, argumentValue, options.HasFlag(DeleteOptions.UseKeyAttribute), false);
         }
 
         /// <summary>
@@ -193,7 +194,7 @@ namespace Tortuga.Chain.CommandBuilders
 
         public void ApplyArgumentValue(DataSource dataSource, object argumentValue, UpsertOptions options)
         {
-            ApplyArgumentValue(dataSource, OperationType.InsertOrUpdate, argumentValue, options.HasFlag(UpsertOptions.UseKeyAttribute), options.HasFlag(UpsertOptions.ChangedPropertiesOnly));
+            ApplyArgumentValue(dataSource, OperationTypes.InsertOrUpdate, argumentValue, options.HasFlag(UpsertOptions.UseKeyAttribute), options.HasFlag(UpsertOptions.ChangedPropertiesOnly));
         }
 
         /// <summary>
@@ -212,9 +213,9 @@ namespace Tortuga.Chain.CommandBuilders
         public void ApplyArgumentValue(DataSource dataSource, object argumentValue, UpdateOptions options)
         {
             if (options.HasFlag(UpdateOptions.SoftDelete))
-                ApplyArgumentValue(dataSource, OperationType.Delete, argumentValue, options.HasFlag(UpdateOptions.UseKeyAttribute), options.HasFlag(UpdateOptions.ChangedPropertiesOnly));
+                ApplyArgumentValue(dataSource, OperationTypes.Delete, argumentValue, options.HasFlag(UpdateOptions.UseKeyAttribute), options.HasFlag(UpdateOptions.ChangedPropertiesOnly));
             else
-                ApplyArgumentValue(dataSource, OperationType.Update, argumentValue, options.HasFlag(UpdateOptions.UseKeyAttribute), options.HasFlag(UpdateOptions.ChangedPropertiesOnly));
+                ApplyArgumentValue(dataSource, OperationTypes.Update, argumentValue, options.HasFlag(UpdateOptions.UseKeyAttribute), options.HasFlag(UpdateOptions.ChangedPropertiesOnly));
         }
 
         /// <summary>
@@ -231,7 +232,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// If the object implements IReadOnlyDictionary[string, object], ApplyArgumentDictionary will be implicitly called instead.
         /// If the object does not implement IPropertyChangeTracking and changedPropertiesOnly is set, an error will occur.
         /// </remarks>
-        private void ApplyArgumentValue(DataSource dataSource, OperationType appliesWhen, object argumentValue, bool useObjectDefinedKeys, bool changedPropertiesOnly)
+        private void ApplyArgumentValue(DataSource dataSource, OperationTypes appliesWhen, object argumentValue, bool useObjectDefinedKeys, bool changedPropertiesOnly)
         {
             if (dataSource == null)
                 throw new ArgumentNullException(nameof(dataSource), $"{nameof(dataSource)} is null.");
@@ -395,13 +396,12 @@ namespace Tortuga.Chain.CommandBuilders
         /// <summary>
         /// Applies the filter value, returning a set of expressions suitable for use in a WHERE clause.
         /// </summary>
-        /// <param name="dataSource">The data source.</param>
         /// <param name="filterValue">The filter value.</param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="MappingException">
         /// </exception>
-        public string ApplyFilterValue(DataSource dataSource, object filterValue)
+        public string ApplyFilterValue(object filterValue)
         {
             if (filterValue == null)
                 throw new ArgumentNullException(nameof(filterValue), $"{nameof(filterValue)} is null.");
@@ -702,10 +702,12 @@ namespace Tortuga.Chain.CommandBuilders
         /// <exception cref="ArgumentNullException"></exception>
         public void BuildSoftDeleteClause(StringBuilder sql, string header, DataSource dataSource, string footer)
         {
+            if (dataSource == null)
+                throw new ArgumentNullException(nameof(dataSource), $"{nameof(dataSource)} is null.");
             if (sql == null)
                 throw new ArgumentNullException(nameof(sql), $"{nameof(sql)} was null.");
 
-            var softDeletes = dataSource.AuditRules.Where(r => r.AppliesWhen.HasFlag(OperationType.Select)).OfType<SoftDeleteRule>().ToList();
+            var softDeletes = dataSource.AuditRules.Where(r => r.AppliesWhen.HasFlag(OperationTypes.Select)).OfType<SoftDeleteRule>().ToList();
 
             var applicableColumns = new HashSet<SqlBuilderEntry<TDbType>>();
 
@@ -862,7 +864,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="appliesWhen">The type of.</param>
         /// <param name="argumentValue">The argument value.</param>
         /// <param name="userValue">The user value.</param>
-        void ApplyRules(RulesCollection rules, OperationType appliesWhen, object argumentValue, object userValue)
+        void ApplyRules(RulesCollection rules, OperationTypes appliesWhen, object argumentValue, object userValue)
         {
             rules.CheckValidation(argumentValue);
 
@@ -871,11 +873,11 @@ namespace Tortuga.Chain.CommandBuilders
                 {
                     m_Entries[i].ParameterValue = rule.GenerateValue(argumentValue, userValue, m_Entries[i].ParameterValue);
 
-                    if (rule.AppliesWhen.HasFlag(OperationType.Insert))
+                    if (rule.AppliesWhen.HasFlag(OperationTypes.Insert))
                         m_Entries[i].UseForInsert = true;
 
                     //Update is used for soft deletes
-                    if (rule.AppliesWhen.HasFlag(OperationType.Update) || rule.AppliesWhen.HasFlag(OperationType.Delete))
+                    if (rule.AppliesWhen.HasFlag(OperationTypes.Update) || rule.AppliesWhen.HasFlag(OperationTypes.Delete))
                         m_Entries[i].UseForUpdate = true;
 
                 }

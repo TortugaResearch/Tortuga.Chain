@@ -193,8 +193,9 @@ namespace Tortuga.Chain.SQLite
         /// <summary>
         /// Creates a <see cref="SQLiteInsertObject" /> used to perform an insert operation.
         /// </summary>
-        /// <param name="tableName"></param>
-        /// <param name="argumentValue"></param>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="options">The options.</param>
         /// <returns></returns>
         public SingleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> Insert(string tableName, object argumentValue, InsertOptions options = InsertOptions.None)
         {

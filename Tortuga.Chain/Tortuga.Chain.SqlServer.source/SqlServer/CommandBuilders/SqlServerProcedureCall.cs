@@ -60,7 +60,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             else
             {
                 var sqlBuilder = m_Metadata.CreateSqlBuilder(StrictMode);
-                sqlBuilder.ApplyArgumentValue(DataSource, OperationType.None, m_ArgumentValue);
+                sqlBuilder.ApplyArgumentValue(DataSource, OperationTypes.None, m_ArgumentValue);
                 parameters = sqlBuilder.GetParameters();
             }
 

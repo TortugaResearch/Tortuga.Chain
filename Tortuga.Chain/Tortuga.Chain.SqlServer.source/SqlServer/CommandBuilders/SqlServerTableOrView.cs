@@ -76,7 +76,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 
             if (m_FilterValue != null)
             {
-                sql.Append(" WHERE " + sqlBuilder.ApplyFilterValue(DataSource, m_FilterValue));
+                sql.Append(" WHERE " + sqlBuilder.ApplyFilterValue(m_FilterValue));
                 sqlBuilder.BuildSoftDeleteClause(sql, " AND ", DataSource, null);
 
                 parameters = sqlBuilder.GetParameters();

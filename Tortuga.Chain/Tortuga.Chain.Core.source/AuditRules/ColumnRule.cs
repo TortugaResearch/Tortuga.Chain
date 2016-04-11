@@ -9,7 +9,13 @@ namespace Tortuga.Chain.AuditRules
     /// <seealso cref="Rule" />
     abstract public class ColumnRule : Rule
     {
-        protected ColumnRule(string columnName, OperationType appliesWhen) : base(appliesWhen)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ColumnRule"/> class.
+        /// </summary>
+        /// <param name="columnName">Name of the column.</param>
+        /// <param name="appliesWhen">The applies when.</param>
+        /// <exception cref="ArgumentException"></exception>
+        protected ColumnRule(string columnName, OperationTypes appliesWhen) : base(appliesWhen)
         {
             if (string.IsNullOrEmpty(columnName))
                 throw new ArgumentException($"{nameof(columnName)} is null or empty.", nameof(columnName));
@@ -27,7 +33,7 @@ namespace Tortuga.Chain.AuditRules
         public string ColumnName { get; }
 
         /// <summary>
-        /// Generates the value.
+        /// Generates the value to be used for the operation.
         /// </summary>
         /// <param name="argumentValue">The argument value.</param>
         /// <param name="userValue">The user value.</param>

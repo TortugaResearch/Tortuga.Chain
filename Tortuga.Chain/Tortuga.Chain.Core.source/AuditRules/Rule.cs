@@ -9,7 +9,7 @@
         /// Initializes a new instance of the <see cref="Rule"/> class.
         /// </summary>
         /// <param name="appliesWhen">The rule applies when.</param>
-        protected Rule(OperationType appliesWhen)
+        protected Rule(OperationTypes appliesWhen)
         {
             AppliesWhen = appliesWhen;
         }
@@ -21,7 +21,7 @@
         /// <value>
         /// The rule applies when.
         /// </value>
-        public OperationType AppliesWhen { get; }
+        public OperationTypes AppliesWhen { get; }
 
     }
 

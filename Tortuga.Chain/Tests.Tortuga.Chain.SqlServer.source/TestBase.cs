@@ -34,11 +34,11 @@ namespace Tests
         protected static SqlServerDataSource DataSourceWithAuditRules()
         {
             return DataSource.WithRules(
-                new ApplyDateTimeRule("CreatedDate", DateTimeKind.Local, OperationType.Insert),
-                new ApplyDateTimeRule("UpdatedDate", DateTimeKind.Local, OperationType.InsertOrUpdate),
-                new ApplyUserDataRule("UpdatedByKey", "EmployeeKey", OperationType.Insert),
-                new ApplyUserDataRule("CreatedByKey", "EmployeeKey", OperationType.InsertOrUpdate),
-                new ValidationWithValidatable(OperationType.InsertOrUpdate)
+                new DateTimeRule("CreatedDate", DateTimeKind.Local, OperationTypes.Insert),
+                new DateTimeRule("UpdatedDate", DateTimeKind.Local, OperationTypes.InsertOrUpdate),
+                new UserDataRule("UpdatedByKey", "EmployeeKey", OperationTypes.Insert),
+                new UserDataRule("CreatedByKey", "EmployeeKey", OperationTypes.InsertOrUpdate),
+                new ValidateWithValidatable(OperationTypes.InsertOrUpdate)
                 );
         }
 

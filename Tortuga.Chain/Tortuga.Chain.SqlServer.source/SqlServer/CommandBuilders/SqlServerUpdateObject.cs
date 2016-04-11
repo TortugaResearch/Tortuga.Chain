@@ -13,7 +13,6 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
     internal sealed class SqlServerUpdateObject : SqlServerObjectCommand
     {
         private readonly UpdateOptions m_Options;
-        private readonly bool m_SoftDelete;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlServerUpdateObject" /> class.

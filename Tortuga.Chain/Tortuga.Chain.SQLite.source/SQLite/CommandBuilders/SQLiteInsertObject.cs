@@ -25,6 +25,7 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
         /// <param name="dataSource">The data source.</param>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="argumentValue">The argument value.</param>
+        /// <param name="options">The options.</param>
         public SQLiteInsertObject(SQLiteDataSourceBase dataSource, string tableName, object argumentValue, InsertOptions options)
             : base(dataSource, tableName, argumentValue)
         {
