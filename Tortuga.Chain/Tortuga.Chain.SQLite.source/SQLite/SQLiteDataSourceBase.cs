@@ -70,7 +70,15 @@ namespace Tortuga.Chain.SQLite
         /// <returns></returns>
         public ISingleRowDbCommandBuilder Delete(string tableName, object argumentValue, DeleteOptions options = DeleteOptions.None)
         {
-            return new SQLiteDeleteObject(this, tableName, argumentValue, options);
+            var table = DatabaseMetadata.GetTableOrView(tableName);
+            if (!AuditRules.UseSoftDelete(table))
+                return new SQLiteDeleteObject(this, tableName, argumentValue, options);
+
+            UpdateOptions effectiveOptions = UpdateOptions.SoftDelete;
+            if (options.HasFlag(DeleteOptions.UseKeyAttribute))
+                effectiveOptions = effectiveOptions | UpdateOptions.UseKeyAttribute;
+
+            return new SQLiteUpdateObject(this, tableName, argumentValue, effectiveOptions);
         }
 
         /// <summary>
@@ -155,9 +163,9 @@ namespace Tortuga.Chain.SQLite
             return Upsert(tableName, argumentValue, options);
         }
 
-        ISingleRowDbCommandBuilder IClass1DataSource.Insert(string tableName, object argumentValue)
+        ISingleRowDbCommandBuilder IClass1DataSource.Insert(string tableName, object argumentValue, InsertOptions options)
         {
-            return Insert(tableName, argumentValue);
+            return Insert(tableName, argumentValue, options);
         }
 
         /// <summary>
@@ -188,9 +196,9 @@ namespace Tortuga.Chain.SQLite
         /// <param name="tableName"></param>
         /// <param name="argumentValue"></param>
         /// <returns></returns>
-        public SingleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> Insert(string tableName, object argumentValue)
+        public SingleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> Insert(string tableName, object argumentValue, InsertOptions options = InsertOptions.None)
         {
-            return new SQLiteInsertObject(this, tableName, argumentValue);
+            return new SQLiteInsertObject(this, tableName, argumentValue, options);
         }
 
         /// <summary>

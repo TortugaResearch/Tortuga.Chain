@@ -4,4 +4,4 @@
 [assembly: AssemblyDescription("A fluent ORM for .NET.")]
 
 [assembly: AssemblyCulture("")]
-[assembly: AssemblyVersion("0.11.*")]
+[assembly: AssemblyVersion("0.12.*")]

@@ -60,8 +60,8 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="Tortuga.Anchor, Version=0.5.5941.41176, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
-      <HintPath>..\packages\Tortuga.Anchor.0.5.5941.41176\lib\net46\Tortuga.Anchor.dll</HintPath>
+    <Reference Include="Tortuga.Anchor, Version=0.6.5944.41376, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tortuga.Anchor.0.6.5944.41376\lib\net46\Tortuga.Anchor.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
@@ -78,6 +78,9 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="..\Tests.Tortuga.Chain.SqlServer.source\AuditRules\AuditRulesTests.cs">
+      <Link>AuditRules\AuditRulesTests.cs</Link>
+    </Compile>
     <Compile Include="..\Tests.Tortuga.Chain.SqlServer.source\Class1Databases\InsertTests.cs">
       <Link>Class1Databases\InsertTests.cs</Link>
     </Compile>
@@ -95,6 +98,9 @@
     </Compile>
     <Compile Include="..\Tests.Tortuga.Chain.SqlServer.source\Models\ChangeTrackingEmployee.cs">
       <Link>Models\ChangeTrackingEmployee.cs</Link>
+    </Compile>
+    <Compile Include="..\Tests.Tortuga.Chain.SqlServer.source\Models\CustomerWithValidation.cs">
+      <Link>Models\CustomerWithValidation.cs</Link>
     </Compile>
     <Compile Include="..\Tests.Tortuga.Chain.SqlServer.source\Models\Employee.cs">
       <Link>Models\Employee.cs</Link>

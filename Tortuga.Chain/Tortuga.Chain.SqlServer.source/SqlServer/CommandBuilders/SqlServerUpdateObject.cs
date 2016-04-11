@@ -13,9 +13,10 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
     internal sealed class SqlServerUpdateObject : SqlServerObjectCommand
     {
         private readonly UpdateOptions m_Options;
+        private readonly bool m_SoftDelete;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SqlServerUpdateObject"/> class.
+        /// Initializes a new instance of the <see cref="SqlServerUpdateObject" /> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
         /// <param name="tableName">Name of the table.</param>
@@ -38,7 +39,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
                 throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
 
             var sqlBuilder = Metadata.CreateSqlBuilder(StrictMode);
-            sqlBuilder.ApplyArgumentValue(ArgumentValue, m_Options);
+            sqlBuilder.ApplyArgumentValue(DataSource, ArgumentValue, m_Options);
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
             var prefix = m_Options.HasFlag(UpdateOptions.ReturnOldValues) ? "Deleted." : "Inserted.";

@@ -83,17 +83,23 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
 
             if (m_FilterValue != null)
             {
-                sql.Append(" WHERE " + sqlBuilder.ApplyFilterValue(m_FilterValue));
+                sql.Append(" WHERE " + sqlBuilder.ApplyFilterValue(DataSource, m_FilterValue));
+                sqlBuilder.BuildSoftDeleteClause(sql, " AND ", DataSource, null);
+
                 parameters = sqlBuilder.GetParameters();
             }
             else if (!string.IsNullOrWhiteSpace(m_WhereClause))
             {
-                parameters = SqlBuilder.GetParameters<SQLiteParameter>(m_ArgumentValue);
                 sql.Append(" WHERE " + m_WhereClause);
+                sqlBuilder.BuildSoftDeleteClause(sql, " AND ", DataSource, null);
+
+                parameters = SqlBuilder.GetParameters<SQLiteParameter>(m_ArgumentValue);
+                parameters.AddRange(sqlBuilder.GetParameters());
             }
             else
             {
-                parameters = new List<SQLiteParameter>();
+                sqlBuilder.BuildSoftDeleteClause(sql, " WHERE ", DataSource, null);
+                parameters = sqlBuilder.GetParameters();
             }
             sql.Append(";");
 

@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 
 namespace Tortuga.Chain
 {
@@ -13,7 +14,6 @@ namespace Tortuga.Chain
         /// Update all non-primary key columns using the primary key columns for the where clause.
         /// </summary>
         None = 0,
-
 
         /// <summary>
         /// Uses the IPropertyChangeTracking interface to only update changed properties.
@@ -31,8 +31,13 @@ namespace Tortuga.Chain
         /// The return original values instead of the updated values.
         /// </summary>
         /// <remarks>This has no effect when using the NonQuery materializer.</remarks>
-        ReturnOldValues = 4
+        ReturnOldValues = 4,
 
-
+        /// <summary>
+        /// Perform a soft delete as part of this update operation.
+        /// </summary>
+        /// <remarks>This is meant for internl use only.</remarks>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        SoftDelete = 8
     }
 }

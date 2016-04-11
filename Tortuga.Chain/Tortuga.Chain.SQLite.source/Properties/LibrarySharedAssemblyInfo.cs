@@ -4,4 +4,4 @@
 [assembly: AssemblyDescription("Fluent ORM for .NET and SQLite.")]
 
 [assembly: AssemblyCulture("")]
-[assembly: AssemblyVersion("0.11.*")]
+[assembly: AssemblyVersion("0.12.*")]

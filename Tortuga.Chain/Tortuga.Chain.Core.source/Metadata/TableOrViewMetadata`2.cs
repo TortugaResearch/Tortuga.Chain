@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Tortuga.Anchor.Metadata;
+using Tortuga.Chain.CommandBuilders;
 
 namespace Tortuga.Chain.Metadata
 {

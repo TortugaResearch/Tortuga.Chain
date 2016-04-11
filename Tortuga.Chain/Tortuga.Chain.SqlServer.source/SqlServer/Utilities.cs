@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using Tortuga.Chain.Metadata;
+using Tortuga.Chain.CommandBuilders;
 
 namespace Tortuga.Chain.SqlServer
 {

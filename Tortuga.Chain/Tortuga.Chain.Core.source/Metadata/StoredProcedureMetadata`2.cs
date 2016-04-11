@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Tortuga.Chain.CommandBuilders;
 
 namespace Tortuga.Chain.Metadata
 {

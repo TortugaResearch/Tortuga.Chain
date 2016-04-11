@@ -1,4 +1,6 @@
-namespace Tortuga.Chain.Metadata
+using Tortuga.Chain.Metadata;
+
+namespace Tortuga.Chain.CommandBuilders
 {
     /// <typeparam name="TDbType">The type of the database type.</typeparam>
     /// <remarks>This is a struct because we want fast allocations and copies. Try to keep it at 16 bytes or less.</remarks>
