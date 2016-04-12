@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !IDataErrorInfo_Missing
+using System;
 using System.ComponentModel;
 
 namespace Tortuga.Chain.AuditRules
@@ -41,3 +42,4 @@ namespace Tortuga.Chain.AuditRules
     }
 
 }
+#endif
