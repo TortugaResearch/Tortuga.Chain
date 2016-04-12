@@ -34,13 +34,13 @@
         <dependency id="System.Collections.Immutable" version="1.1.37" />
         <dependency id="Tortuga.Anchor" version="0.6.5944.41376" />
         <dependency id="System.Data.SQLite.Core" version="1.0.99.0" />
-        <dependency id="Tortuga.Chain.Core" version="0.11.5942.1164" />
+        <dependency id="Tortuga.Chain.Core" version="0.12.5946.1835" />
       </group>
       <group targetFramework="net46">
         <dependency id="System.Collections.Immutable" version="1.1.37" />
         <dependency id="Tortuga.Anchor" version="0.6.5944.41376" />
         <dependency id="System.Data.SQLite.Core" version="1.0.99.0" />
-        <dependency id="Tortuga.Chain.Core" version="0.11.5942.1164" />
+        <dependency id="Tortuga.Chain.Core" version="0.12.5946.1835" />
       </group>
     </dependencies>
 
