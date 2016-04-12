@@ -41,10 +41,28 @@ CREATE TABLE Employee
     UpdatedDate DateTime NULL
 )";
 
+            string sql2 = @"CREATE TABLE Customer
+(
+	CustomerKey INTEGER PRIMARY KEY, 
+    FullName NVARCHAR(100) NULL,
+	State Char(2) NOT NULL,
+
+    CreatedByKey INTEGER NULL,
+    UpdatedByKey INTEGER NULL,
+
+	CreatedDate DATETIME2 NULL,
+    UpdatedDate DATETIME2 NULL,
+
+	DeletedFlag BIT NOT NULL Default 0,
+	DeletedDate DateTimeOffset NULL,
+	DeletedByKey INTEGER NULL
+)";
+
             using (SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection))
-            {
                 command.ExecuteNonQuery();
-            }
+
+            using (SQLiteCommand command = new SQLiteCommand(sql2, m_dbConnection))
+                command.ExecuteNonQuery();
 
             sql = @"INSERT INTO Employee ([EmployeeKey], [FirstName], [MiddleName], [LastName], [Title], [ManagerKey]) VALUES (@EmployeeKey, @FirstName, @MiddleName, @LastName, @Title, @ManagerKey); SELECT [EmployeeKey], [FirstName], [MiddleName], [LastName], [Title], [ManagerKey] FROM Employee WHERE ROWID = last_insert_rowid();";
 

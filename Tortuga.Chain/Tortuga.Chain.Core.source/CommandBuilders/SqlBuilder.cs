@@ -4,7 +4,7 @@ using System.Data.Common;
 using System.Linq;
 using Tortuga.Anchor.Metadata;
 
-namespace Tortuga.Chain.Metadata
+namespace Tortuga.Chain.CommandBuilders
 {
     /// <summary>
     /// Helper functions for buildering SQL statements.

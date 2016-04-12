@@ -1,4 +1,6 @@
+using System;
 using Tortuga.Chain;
+using Tortuga.Chain.AuditRules;
 using Tortuga.Chain.SqlServer;
 
 namespace Tests
@@ -25,8 +27,21 @@ namespace Tests
         }
 
         public string EmployeeTableName { get { return "HR.Employee"; } }
+        public string CustomerTableName { get { return "Sales.Customer"; } }
 
         public string Proc1Name { get { return "Sales.CustomerWithOrdersByState"; } }
+
+        protected static SqlServerDataSource DataSourceWithAuditRules()
+        {
+            return DataSource.WithRules(
+                new DateTimeRule("CreatedDate", DateTimeKind.Local, OperationTypes.Insert),
+                new DateTimeRule("UpdatedDate", DateTimeKind.Local, OperationTypes.InsertOrUpdate),
+                new UserDataRule("UpdatedByKey", "EmployeeKey", OperationTypes.Insert),
+                new UserDataRule("CreatedByKey", "EmployeeKey", OperationTypes.InsertOrUpdate),
+                new ValidateWithValidatable(OperationTypes.InsertOrUpdate)
+                );
+        }
+
     }
 
 }

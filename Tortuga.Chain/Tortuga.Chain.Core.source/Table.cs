@@ -132,6 +132,7 @@ namespace Tortuga.Chain
         /// <param name="target">The object being populated.</param>
         /// <param name="decompositionPrefix">The decomposition prefix.</param>
         /// <remarks>This honors the Column and Decompose attributes.</remarks>
+        [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
         static private void PopulateComplexObject(Row source, object target, string decompositionPrefix)
         {
             if (source == null)
@@ -158,7 +159,7 @@ namespace Tortuga.Chain
                             targetTypeInfo = targetType.GetTypeInfo();
                         }
 
-                        //XML values come to us as strings
+                        //some database return strings when we want strong types
                         if (value is string)
                         {
                             if (targetType == typeof(XElement))
@@ -167,6 +168,26 @@ namespace Tortuga.Chain
                                 value = XDocument.Parse((string)value);
                             else if (targetTypeInfo.IsEnum)
                                 value = Enum.Parse(targetType, (string)value);
+
+                            else if (targetType == typeof(bool))
+                                value = bool.Parse((string)value);
+                            else if (targetType == typeof(short))
+                                value = short.Parse((string)value);
+                            else if (targetType == typeof(int))
+                                value = int.Parse((string)value);
+                            else if (targetType == typeof(long))
+                                value = long.Parse((string)value);
+                            else if (targetType == typeof(float))
+                                value = float.Parse((string)value);
+                            else if (targetType == typeof(double))
+                                value = double.Parse((string)value);
+                            else if (targetType == typeof(decimal))
+                                value = decimal.Parse((string)value);
+
+                            else if (targetType == typeof(DateTime))
+                                value = DateTime.Parse((string)value);
+                            else if (targetType == typeof(DateTimeOffset))
+                                value = DateTimeOffset.Parse((string)value);
                         }
                         else
                         {
@@ -174,12 +195,20 @@ namespace Tortuga.Chain
                                 value = Enum.ToObject(targetType, value);
                         }
 
-                        //this will handle integer conversions
+                        //this will handle numeric conversions
                         if (value != null && targetType != value.GetType())
                         {
-                            value = Convert.ChangeType(value, targetType);
+                            try
+                            {
+                                value = Convert.ChangeType(value, targetType);
+                            }
+                            catch (Exception ex)
+                            {
+                                throw new MappingException($"Cannot map value of type {value.GetType().FullName} to property {property.Name} of type {targetType.Name}.", ex);
+                            }
                         }
                     }
+
                     property.InvokeSet(target, value);
                 }
                 else if (property.Decompose)

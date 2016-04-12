@@ -77,17 +77,22 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             if (m_FilterValue != null)
             {
                 sql.Append(" WHERE " + sqlBuilder.ApplyFilterValue(m_FilterValue));
+                sqlBuilder.BuildSoftDeleteClause(sql, " AND ", DataSource, null);
+
                 parameters = sqlBuilder.GetParameters();
             }
             else if (!string.IsNullOrWhiteSpace(m_WhereClause))
             {
-                var argumentValue = m_ArgumentValue;
-                parameters = SqlBuilder.GetParameters<SqlParameter>(argumentValue);
                 sql.Append(" WHERE " + m_WhereClause);
+                sqlBuilder.BuildSoftDeleteClause(sql, " AND ", DataSource, null);
+
+                parameters = SqlBuilder.GetParameters<SqlParameter>(m_ArgumentValue);
+                parameters.AddRange(sqlBuilder.GetParameters());
             }
             else
             {
-                parameters = new List<SqlParameter>();
+                sqlBuilder.BuildSoftDeleteClause(sql, " WHERE ", DataSource, null);
+                parameters = sqlBuilder.GetParameters();
             }
             sql.Append(";");
 

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.ComponentModel;
 using Tortuga.Chain.Core;
+using Tortuga.Chain.AuditRules;
 
 #if !WINDOWS_UWP
 using System.Runtime.Caching;
@@ -342,5 +343,20 @@ namespace Tortuga.Chain.DataSources
         /// <value>The extension cache.</value>
         private readonly ConcurrentDictionary<Type, object> m_ExtensionCache = new ConcurrentDictionary<Type, object>();
 
+        /// <summary>
+        /// Gets or sets the user value to use with audit rules.
+        /// </summary>
+        /// <value>
+        /// The user value.
+        /// </value>
+        public object UserValue { get; protected set; }
+
+        /// <summary>
+        /// Gets or sets the audit rules.
+        /// </summary>
+        /// <value>
+        /// The audit rules.
+        /// </value>
+        public RulesCollection AuditRules { get; protected set; } = RulesCollection.Empty;
     }
 }

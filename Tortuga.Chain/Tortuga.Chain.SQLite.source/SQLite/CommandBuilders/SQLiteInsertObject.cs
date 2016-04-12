@@ -17,15 +17,19 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
     /// </summary>
     internal sealed class SQLiteInsertObject : SQLiteObjectCommand
     {
+        private readonly InsertOptions m_Options;
+
         /// <summary>
         /// Initializes a new instance of <see cref="SQLiteInsertObject" /> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="argumentValue">The argument value.</param>
-        public SQLiteInsertObject(SQLiteDataSourceBase dataSource, string tableName, object argumentValue)
+        /// <param name="options">The options.</param>
+        public SQLiteInsertObject(SQLiteDataSourceBase dataSource, string tableName, object argumentValue, InsertOptions options)
             : base(dataSource, tableName, argumentValue)
         {
+            m_Options = options;
         }
 
         /// <summary>
@@ -39,7 +43,7 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
                 throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
 
             var sqlBuilder = Metadata.CreateSqlBuilder(StrictMode);
-            sqlBuilder.ApplyArgumentValue(ArgumentValue);
+            sqlBuilder.ApplyArgumentValue(DataSource, ArgumentValue, m_Options);
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
             var sql = new StringBuilder();

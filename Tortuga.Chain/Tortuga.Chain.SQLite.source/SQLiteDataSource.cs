@@ -8,6 +8,8 @@ using System.Diagnostics.CodeAnalysis;
 
 #if !WINDOWS_UWP
 using System.Configuration;
+using Tortuga.Chain.AuditRules;
+using System.Collections.Generic;
 #endif
 
 #if SDS
@@ -303,18 +305,56 @@ namespace Tortuga.Chain
         /// <remarks>The new data source will share the same database metadata cache.</remarks>
         public SQLiteDataSource WithSettings(SQLiteDataSourceSettings settings)
         {
-            if (settings == null)
-                throw new ArgumentNullException(nameof(settings), $"{nameof(settings)} is null.");
-
             var mergedSettings = new SQLiteDataSourceSettings()
             {
-                DefaultCommandTimeout = settings.DefaultCommandTimeout ?? DefaultCommandTimeout,
-                SuppressGlobalEvents = settings.SuppressGlobalEvents ?? SuppressGlobalEvents,
-                StrictMode = settings.StrictMode ?? StrictMode,
-                DisableLocks = settings.DisableLocks ?? DisableLocks,
+                DefaultCommandTimeout = settings?.DefaultCommandTimeout ?? DefaultCommandTimeout,
+                SuppressGlobalEvents = settings?.SuppressGlobalEvents ?? SuppressGlobalEvents,
+                StrictMode = settings?.StrictMode ?? StrictMode,
+                DisableLocks = settings?.DisableLocks ?? DisableLocks,
             };
             var result = new SQLiteDataSource(Name, m_ConnectionBuilder, mergedSettings);
             result.m_DatabaseMetadata = m_DatabaseMetadata;
+            result.AuditRules = AuditRules;
+            result.UserValue = UserValue;
+            return result;
+        }
+
+        /// <summary>
+        /// Creates a new data source with additional audit rules.
+        /// </summary>
+        /// <param name="additionalRules">The additional rules.</param>
+        /// <returns></returns>
+        public SQLiteDataSource WithRules(params AuditRules.Rule[] additionalRules)
+        {
+            var result = WithSettings(null);
+            result.AuditRules = new RulesCollection(AuditRules, additionalRules);
+            return result;
+        }
+
+        /// <summary>
+        /// Creates a new data source with additional audit rules.
+        /// </summary>
+        /// <param name="additionalRules">The additional rules.</param>
+        /// <returns></returns>
+        public SQLiteDataSource WithRules(IEnumerable<AuditRules.Rule> additionalRules)
+        {
+            var result = WithSettings(null);
+            result.AuditRules = new RulesCollection(AuditRules, additionalRules);
+            return result;
+        }
+
+        /// <summary>
+        /// Creates a new data source with the indicated user.
+        /// </summary>
+        /// <param name="userValue">The user value.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// This is used in conjunction with audit rules.
+        /// </remarks>
+        public SQLiteDataSource WithUser(object userValue)
+        {
+            var result = WithSettings(null);
+            result.UserValue = userValue;
             return result;
         }
     }

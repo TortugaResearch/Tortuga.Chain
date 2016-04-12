@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
@@ -6,6 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Tortuga.Chain.AuditRules;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.SqlServer;
 namespace Tortuga.Chain
@@ -424,19 +426,57 @@ namespace Tortuga.Chain
         /// <remarks>The new data source will share the same database metadata cache.</remarks>
         public SqlServerDataSource WithSettings(SqlServerDataSourceSettings settings)
         {
-            if (settings == null)
-                throw new ArgumentNullException(nameof(settings), $"{nameof(settings)} is null.");
-
             var mergedSettings = new SqlServerDataSourceSettings()
             {
-                DefaultCommandTimeout = settings.DefaultCommandTimeout ?? DefaultCommandTimeout,
-                SuppressGlobalEvents = settings.SuppressGlobalEvents ?? SuppressGlobalEvents,
-                StrictMode = settings.StrictMode ?? StrictMode,
-                XactAbort = settings.XactAbort ?? XactAbort,
-                ArithAbort = settings.ArithAbort ?? ArithAbort
+                DefaultCommandTimeout = settings?.DefaultCommandTimeout ?? DefaultCommandTimeout,
+                SuppressGlobalEvents = settings?.SuppressGlobalEvents ?? SuppressGlobalEvents,
+                StrictMode = settings?.StrictMode ?? StrictMode,
+                XactAbort = settings?.XactAbort ?? XactAbort,
+                ArithAbort = settings?.ArithAbort ?? ArithAbort
             };
             var result = new SqlServerDataSource(Name, m_ConnectionBuilder, mergedSettings);
             result.m_DatabaseMetadata = m_DatabaseMetadata;
+            result.AuditRules = AuditRules;
+            result.UserValue = UserValue;
+            return result;
+        }
+
+        /// <summary>
+        /// Creates a new data source with additional audit rules.
+        /// </summary>
+        /// <param name="additionalRules">The additional rules.</param>
+        /// <returns></returns>
+        public SqlServerDataSource WithRules(params AuditRules.Rule[] additionalRules)
+        {
+            var result = WithSettings(null);
+            result.AuditRules = new RulesCollection(AuditRules, additionalRules);
+            return result;
+        }
+
+        /// <summary>
+        /// Creates a new data source with additional audit rules.
+        /// </summary>
+        /// <param name="additionalRules">The additional rules.</param>
+        /// <returns></returns>
+        public SqlServerDataSource WithRules(IEnumerable<AuditRules.Rule> additionalRules)
+        {
+            var result = WithSettings(null);
+            result.AuditRules = new RulesCollection(AuditRules, additionalRules);
+            return result;
+        }
+
+        /// <summary>
+        /// Creates a new data source with the indicated user.
+        /// </summary>
+        /// <param name="userValue">The user value.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// This is used in conjunction with audit rules.
+        /// </remarks>
+        public SqlServerDataSource WithUser(object userValue)
+        {
+            var result = WithSettings(null);
+            result.UserValue = userValue;
             return result;
         }
     }

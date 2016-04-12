@@ -69,8 +69,8 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Tortuga.Anchor, Version=0.5.5941.41169, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
-      <HintPath>..\packages\Tortuga.Anchor.0.5.5941.41176\lib\net45\Tortuga.Anchor.dll</HintPath>
+    <Reference Include="Tortuga.Anchor, Version=0.6.5944.41370, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tortuga.Anchor.0.6.5944.41376\lib\net45\Tortuga.Anchor.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
@@ -117,6 +117,54 @@
     <Compile Include="..\tortuga.chain.core.source\appenders\TraceAppender`1.cs">
       <Link>Appenders\TraceAppender`1.cs</Link>
     </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\AuditRules\ColumnRule.cs">
+      <Link>AuditRules\ColumnRule.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\AuditRules\ColumnValueGenerator.cs">
+      <Link>AuditRules\ColumnValueGenerator.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\AuditRules\DateTimeOffsetRule.cs">
+      <Link>AuditRules\DateTimeOffsetRule.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\AuditRules\DateTimeRule.cs">
+      <Link>AuditRules\DateTimeRule.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\AuditRules\OperationTypes.cs">
+      <Link>AuditRules\OperationTypes.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\AuditRules\Rule.cs">
+      <Link>AuditRules\Rule.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\AuditRules\RulesCollection.cs">
+      <Link>AuditRules\RulesCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\AuditRules\SoftDeleteRule.cs">
+      <Link>AuditRules\SoftDeleteRule.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\AuditRules\UserDataRule.cs">
+      <Link>AuditRules\UserDataRule.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\AuditRules\ValidateWithDataErrorInfo.cs">
+      <Link>AuditRules\ValidateWithDataErrorInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\AuditRules\ValidateWithDataErrorInfo`1.cs">
+      <Link>AuditRules\ValidateWithDataErrorInfo`1.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\AuditRules\ValidateWithNotifyDataErrorInfo.cs">
+      <Link>AuditRules\ValidateWithNotifyDataErrorInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\AuditRules\ValidateWithNotifyDataErrorInfo`1.cs">
+      <Link>AuditRules\ValidateWithNotifyDataErrorInfo`1.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\AuditRules\ValidateWithValidatable.cs">
+      <Link>AuditRules\ValidateWithValidatable.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\AuditRules\ValidationRule.cs">
+      <Link>AuditRules\ValidationRule.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\AuditRules\ValueRule.cs">
+      <Link>AuditRules\ValueRule.cs</Link>
+    </Compile>
     <Compile Include="..\Tortuga.Chain.Core.source\CommandBuilders\DbCommandBuilder.cs">
       <Link>CommandBuilders\DbCommandBuilder.cs</Link>
     </Compile>
@@ -146,6 +194,15 @@
     </Compile>
     <Compile Include="..\tortuga.chain.core.source\commandbuilders\SingleRowDbCommandBuilder.cs">
       <Link>CommandBuilders\SingleRowDbCommandBuilder.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\CommandBuilders\SqlBuilder.cs">
+      <Link>CommandBuilders\SqlBuilder.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\CommandBuilders\SqlBuilderEntry.cs">
+      <Link>CommandBuilders\SqlBuilderEntry.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\CommandBuilders\SqlBuilder`1.cs">
+      <Link>CommandBuilders\SqlBuilder`1.cs</Link>
     </Compile>
     <Compile Include="..\Tortuga.Chain.Core.source\CommonAppenders.cs">
       <Link>CommonAppenders.cs</Link>
@@ -200,6 +257,9 @@
     </Compile>
     <Compile Include="..\Tortuga.Chain.Core.source\ILink`1.cs">
       <Link>ILink`1.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\InsertOptions.cs">
+      <Link>InsertOptions.cs</Link>
     </Compile>
     <Compile Include="..\Tortuga.Chain.Core.source\ListOptions.cs">
       <Link>ListOptions.cs</Link>
@@ -398,15 +458,6 @@
     </Compile>
     <Compile Include="..\tortuga.chain.core.source\metadata\ParameterMetadata`1.cs">
       <Link>Metadata\ParameterMetadata`1.cs</Link>
-    </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.source\Metadata\SqlBuilder.cs">
-      <Link>Metadata\SqlBuilder.cs</Link>
-    </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.source\Metadata\SqlBuilderEntry.cs">
-      <Link>Metadata\SqlBuilderEntry.cs</Link>
-    </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.source\Metadata\SqlBuilder`1.cs">
-      <Link>Metadata\SqlBuilder`1.cs</Link>
     </Compile>
     <Compile Include="..\tortuga.chain.core.source\metadata\StoredProcedureMetadata`2.cs">
       <Link>Metadata\StoredProcedureMetadata`2.cs</Link>

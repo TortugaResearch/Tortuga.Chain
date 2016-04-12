@@ -1,9 +1,9 @@
-﻿using System.Data.SqlClient;
+﻿using System;
+using System.Data.SqlClient;
 using System.Text;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
 using Tortuga.Chain.SqlServer.Core;
-using System;
 
 namespace Tortuga.Chain.SqlServer.CommandBuilders
 {
@@ -38,7 +38,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
                 throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
 
             var sqlBuilder = Metadata.CreateSqlBuilder(StrictMode);
-            sqlBuilder.ApplyArgumentValue(ArgumentValue, m_Options);
+            sqlBuilder.ApplyArgumentValue(DataSource, ArgumentValue, m_Options);
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
             var sql = new StringBuilder();

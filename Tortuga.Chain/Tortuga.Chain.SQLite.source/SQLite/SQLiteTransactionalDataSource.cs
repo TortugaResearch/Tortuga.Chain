@@ -55,6 +55,9 @@ namespace Tortuga.Chain.SQLite
                 ExecutionError += (sender, e) => dataSource.OnExecutionError(e);
                 ExecutionCanceled += (sender, e) => dataSource.OnExecutionCanceled(e);
             }
+
+            AuditRules = dataSource.AuditRules;
+            UserValue = dataSource.UserValue;
         }
 
         /// <summary>

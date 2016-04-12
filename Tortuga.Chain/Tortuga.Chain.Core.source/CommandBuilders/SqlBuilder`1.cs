@@ -6,9 +6,12 @@ using System.Linq;
 using System.Text;
 using Tortuga.Anchor.ComponentModel;
 using Tortuga.Anchor.Metadata;
+using Tortuga.Chain.AuditRules;
+using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Materializers;
+using Tortuga.Chain.Metadata;
 
-namespace Tortuga.Chain.Metadata
+namespace Tortuga.Chain.CommandBuilders
 {
     /// <summary>
     /// 
@@ -94,7 +97,7 @@ namespace Tortuga.Chain.Metadata
         /// </summary>
         /// <param name="value">The value.</param>
         /// <exception cref="MappingException">This is thrown is no keys could be matched to a column. If strict mode, all keys must match columns.</exception>
-        public void ApplyArgumentDictionary(IReadOnlyDictionary<string, object> value)
+        void ApplyArgumentDictionary(IReadOnlyDictionary<string, object> value)
         {
             if (value == null || value.Count == 0)
                 throw new ArgumentException($"{nameof(value)} is null or empty.", nameof(value));
@@ -130,36 +133,57 @@ namespace Tortuga.Chain.Metadata
         /// <summary>
         /// Applies the argument value.
         /// </summary>
-        /// <param name="value">The value.</param>
+        /// <param name="dataSource">The data source.</param>
+        /// <param name="appliesWhen">The applies when.</param>
+        /// <param name="argumentValue">The value.</param>
         /// <exception cref="MappingException">This is thrown is no properties could be matched to a column. If strict mode, all properties must match columns.</exception>
         /// <exception cref="ArgumentNullException">value;value is null.</exception>
         /// <remarks>
         /// If the object implements IReadOnlyDictionary[string, object], ApplyArgumentDictionary will be implicitly called instead.
         /// </remarks>
-        public void ApplyArgumentValue(object value)
+        public void ApplyArgumentValue(DataSource dataSource, OperationTypes appliesWhen, object argumentValue)
         {
-            ApplyArgumentValue(value, false, false);
+            ApplyArgumentValue(dataSource, appliesWhen, argumentValue, false, false);
         }
 
         /// <summary>
         /// Applies the argument value.
         /// </summary>
-        /// <param name="value">The value.</param>
+        /// <param name="dataSource">The data source.</param>
+        /// <param name="argumentValue">The value.</param>
         /// <param name="options">The options.</param>
         /// <exception cref="MappingException">This is thrown is no properties could be matched to a column. If strict mode, all properties must match columns.</exception>
         /// <exception cref="ArgumentNullException">value;value is null.</exception>
         /// <remarks>
         /// If the object implements IReadOnlyDictionary[string, object], ApplyArgumentDictionary will be implicitly called instead.
         /// </remarks>
-        public void ApplyArgumentValue(object value, DeleteOptions options)
+        [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "options")]
+        public void ApplyArgumentValue(DataSource dataSource, object argumentValue, InsertOptions options)
         {
-            ApplyArgumentValue(value, options.HasFlag(DeleteOptions.UseKeyAttribute), false);
+            ApplyArgumentValue(dataSource, OperationTypes.Insert, argumentValue, false, false);
         }
 
         /// <summary>
         /// Applies the argument value.
         /// </summary>
-        /// <param name="value">The value.</param>
+        /// <param name="dataSource">The data source.</param>
+        /// <param name="argumentValue">The value.</param>
+        /// <param name="options">The options.</param>
+        /// <exception cref="MappingException">This is thrown is no properties could be matched to a column. If strict mode, all properties must match columns.</exception>
+        /// <exception cref="ArgumentNullException">value;value is null.</exception>
+        /// <remarks>
+        /// If the object implements IReadOnlyDictionary[string, object], ApplyArgumentDictionary will be implicitly called instead.
+        /// </remarks>
+        public void ApplyArgumentValue(DataSource dataSource, object argumentValue, DeleteOptions options)
+        {
+            ApplyArgumentValue(dataSource, OperationTypes.Delete, argumentValue, options.HasFlag(DeleteOptions.UseKeyAttribute), false);
+        }
+
+        /// <summary>
+        /// Applies the argument value.
+        /// </summary>
+        /// <param name="dataSource">The data source.</param>
+        /// <param name="argumentValue">The value.</param>
         /// <param name="options">The options.</param>
         /// <exception cref="MappingException">This is thrown is no properties could be matched to a column. If strict mode, all properties must match columns.</exception>
         /// <exception cref="ArgumentNullException">value;value is null.</exception>
@@ -168,15 +192,16 @@ namespace Tortuga.Chain.Metadata
         /// If the object does not implement IPropertyChangeTracking, the changedPropertiesOnly flag has no effect.
         /// </remarks>
 
-        public void ApplyArgumentValue(object value, UpsertOptions options)
+        public void ApplyArgumentValue(DataSource dataSource, object argumentValue, UpsertOptions options)
         {
-            ApplyArgumentValue(value, options.HasFlag(UpsertOptions.UseKeyAttribute), options.HasFlag(UpsertOptions.ChangedPropertiesOnly));
+            ApplyArgumentValue(dataSource, OperationTypes.InsertOrUpdate, argumentValue, options.HasFlag(UpsertOptions.UseKeyAttribute), options.HasFlag(UpsertOptions.ChangedPropertiesOnly));
         }
 
         /// <summary>
         /// Applies the argument value.
         /// </summary>
-        /// <param name="value">The value.</param>
+        /// <param name="dataSource">The data source.</param>
+        /// <param name="argumentValue">The value.</param>
         /// <param name="options">The options.</param>
         /// <exception cref="MappingException">This is thrown is no properties could be matched to a column. If strict mode, all properties must match columns.</exception>
         /// <exception cref="ArgumentNullException">value;value is null.</exception>
@@ -185,15 +210,20 @@ namespace Tortuga.Chain.Metadata
         /// If the object does not implement IPropertyChangeTracking and changedPropertiesOnly is set, an error will occur.
         /// </remarks>
 
-        public void ApplyArgumentValue(object value, UpdateOptions options)
+        public void ApplyArgumentValue(DataSource dataSource, object argumentValue, UpdateOptions options)
         {
-            ApplyArgumentValue(value, options.HasFlag(UpdateOptions.UseKeyAttribute), options.HasFlag(UpdateOptions.ChangedPropertiesOnly));
+            if (options.HasFlag(UpdateOptions.SoftDelete))
+                ApplyArgumentValue(dataSource, OperationTypes.Delete, argumentValue, options.HasFlag(UpdateOptions.UseKeyAttribute), options.HasFlag(UpdateOptions.ChangedPropertiesOnly));
+            else
+                ApplyArgumentValue(dataSource, OperationTypes.Update, argumentValue, options.HasFlag(UpdateOptions.UseKeyAttribute), options.HasFlag(UpdateOptions.ChangedPropertiesOnly));
         }
 
         /// <summary>
         /// Applies the argument value.
         /// </summary>
-        /// <param name="value">The value.</param>
+        /// <param name="dataSource">The data source.</param>
+        /// <param name="appliesWhen">The applies when.</param>
+        /// <param name="argumentValue">The argument value.</param>
         /// <param name="useObjectDefinedKeys">if set to <c>true</c> use object defined keys.</param>
         /// <param name="changedPropertiesOnly">if set to <c>true</c> filter the update list according to IPropertyChangeTracking.ChangedProperties.</param>
         /// <exception cref="MappingException">This is thrown is no properties could be matched to a column. If strict mode, all properties must match columns.</exception>
@@ -202,77 +232,82 @@ namespace Tortuga.Chain.Metadata
         /// If the object implements IReadOnlyDictionary[string, object], ApplyArgumentDictionary will be implicitly called instead.
         /// If the object does not implement IPropertyChangeTracking and changedPropertiesOnly is set, an error will occur.
         /// </remarks>
-        private void ApplyArgumentValue(object value, bool useObjectDefinedKeys, bool changedPropertiesOnly)
+        private void ApplyArgumentValue(DataSource dataSource, OperationTypes appliesWhen, object argumentValue, bool useObjectDefinedKeys, bool changedPropertiesOnly)
         {
-            if (value == null)
-                throw new ArgumentNullException("value", "value is null.");
+            if (dataSource == null)
+                throw new ArgumentNullException(nameof(dataSource), $"{nameof(dataSource)} is null.");
+            if (argumentValue == null)
+                throw new ArgumentNullException(nameof(argumentValue), $"{nameof(argumentValue)} is null.");
 
-            if (value is IReadOnlyDictionary<string, object>)
+            if (argumentValue is IReadOnlyDictionary<string, object>)
             {
-                ApplyArgumentDictionary((IReadOnlyDictionary<string, object>)value);
-                return;
+                ApplyArgumentDictionary((IReadOnlyDictionary<string, object>)argumentValue);
             }
-
-            IReadOnlyList<string> changedProperties = null;
-            if (changedPropertiesOnly)
+            else
             {
-                if (value is IPropertyChangeTracking)
+                IReadOnlyList<string> changedProperties = null;
+                if (changedPropertiesOnly)
                 {
-                    changedProperties = ((IPropertyChangeTracking)value).ChangedProperties();
-                    if (changedProperties.Count == 0)
-                        throw new ArgumentException($"Changed properties were requested, but no properties were marked as changed.");
-                }
-                else
-                    throw new ArgumentException($"Changed properties were requested, but {value.GetType().Name} does not implement IPropertyChangeTracking.");
-            }
-
-            if (useObjectDefinedKeys)
-                for (var i = 0; i < m_Entries.Length; i++)
-                    m_Entries[i].IsKey = false;
-
-            var found = false;
-
-            var metadata = MetadataCache.GetMetadata(value.GetType());
-            foreach (var property in metadata.Properties)
-            {
-                var propertyFound = false;
-
-                if (property.MappedColumnName == null)
-                    continue;
-
-                for (var i = 0; i < m_Entries.Length; i++)
-                {
-                    if (m_Entries[i].Details.ClrName.Equals(property.MappedColumnName, StringComparison.OrdinalIgnoreCase))
+                    if (argumentValue is IPropertyChangeTracking)
                     {
-                        found = true;
-                        propertyFound = true;
-
-                        if (useObjectDefinedKeys && property.IsKey)
-                            m_Entries[i].IsKey = true;
-
-                        m_Entries[i].ParameterValue = property.InvokeGet(value) ?? DBNull.Value;
-
-                        if (property.IgnoreOnInsert)
-                            m_Entries[i].UseForInsert = false;
-
-                        if (property.IgnoreOnUpdate)
-                            m_Entries[i].UseForUpdate = false;
-
-                        if (changedPropertiesOnly && !changedProperties.Contains(property.Name))
-                            m_Entries[i].UseForUpdate = false;
-
-                        if (m_Entries[i].IsFormalParameter)
-                            m_Entries[i].UseParameter = true;
-
-                        break;
+                        changedProperties = ((IPropertyChangeTracking)argumentValue).ChangedProperties();
+                        if (changedProperties.Count == 0)
+                            throw new ArgumentException($"Changed properties were requested, but no properties were marked as changed.");
                     }
+                    else
+                        throw new ArgumentException($"Changed properties were requested, but {argumentValue.GetType().Name} does not implement IPropertyChangeTracking.");
                 }
-                if (m_StrictMode && !propertyFound)
-                    throw new MappingException($"Strict mode was enabled, but property {property.Name} could be matched to a column in {m_Name}. Disable strict mode or mark the property as NotMapped.");
+
+                if (useObjectDefinedKeys)
+                    for (var i = 0; i < m_Entries.Length; i++)
+                        m_Entries[i].IsKey = false;
+
+                var found = false;
+
+                var metadata = MetadataCache.GetMetadata(argumentValue.GetType());
+                foreach (var property in metadata.Properties)
+                {
+                    var propertyFound = false;
+
+                    if (property.MappedColumnName == null)
+                        continue;
+
+                    for (var i = 0; i < m_Entries.Length; i++)
+                    {
+                        if (m_Entries[i].Details.ClrName.Equals(property.MappedColumnName, StringComparison.OrdinalIgnoreCase))
+                        {
+                            found = true;
+                            propertyFound = true;
+
+                            if (useObjectDefinedKeys && property.IsKey)
+                                m_Entries[i].IsKey = true;
+
+                            m_Entries[i].ParameterValue = property.InvokeGet(argumentValue) ?? DBNull.Value;
+
+                            if (property.IgnoreOnInsert)
+                                m_Entries[i].UseForInsert = false;
+
+                            if (property.IgnoreOnUpdate)
+                                m_Entries[i].UseForUpdate = false;
+
+                            if (changedPropertiesOnly && !changedProperties.Contains(property.Name))
+                                m_Entries[i].UseForUpdate = false;
+
+                            if (m_Entries[i].IsFormalParameter)
+                                m_Entries[i].UseParameter = true;
+
+                            break;
+                        }
+                    }
+                    if (m_StrictMode && !propertyFound)
+                        throw new MappingException($"Strict mode was enabled, but property {property.Name} could be matched to a column in {m_Name}. Disable strict mode or mark the property as NotMapped.");
+                }
+
+                if (!found)
+                    throw new MappingException($"None of the properties on {argumentValue.GetType().Name} could be matched to columns in {m_Name}.");
             }
 
-            if (!found)
-                throw new MappingException($"None of the properties on {value.GetType().Name} could be matched to columns in {m_Name}.");
+            ApplyRules(dataSource.AuditRules, appliesWhen, argumentValue, dataSource.UserValue);
         }
 
         /// <summary>
@@ -363,6 +398,9 @@ namespace Tortuga.Chain.Metadata
         /// </summary>
         /// <param name="filterValue">The filter value.</param>
         /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="MappingException">
+        /// </exception>
         public string ApplyFilterValue(object filterValue)
         {
             if (filterValue == null)
@@ -653,6 +691,48 @@ namespace Tortuga.Chain.Metadata
             sql.Append(string.Join(" AND ", GetKeyColumns().Select(x => x.QuotedSqlName + " = " + x.SqlVariableName)));
             sql.Append(footer);
         }
+
+        /// <summary>
+        /// Builds the soft delete clause.
+        /// </summary>
+        /// <param name="sql">The SQL.</param>
+        /// <param name="header">The header.</param>
+        /// <param name="dataSource">The data source.</param>
+        /// <param name="footer">The footer.</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public void BuildSoftDeleteClause(StringBuilder sql, string header, DataSource dataSource, string footer)
+        {
+            if (dataSource == null)
+                throw new ArgumentNullException(nameof(dataSource), $"{nameof(dataSource)} is null.");
+            if (sql == null)
+                throw new ArgumentNullException(nameof(sql), $"{nameof(sql)} was null.");
+
+            var softDeletes = dataSource.AuditRules.Where(r => r.AppliesWhen.HasFlag(OperationTypes.Select)).OfType<SoftDeleteRule>().ToList();
+
+            var applicableColumns = new HashSet<SqlBuilderEntry<TDbType>>();
+
+            for (var i = 0; i < m_Entries.Length; i++)
+            {
+                foreach (var rule in softDeletes)
+                {
+                    if (m_Entries[i].Details.SqlName.Equals(rule.ColumnName, StringComparison.OrdinalIgnoreCase) || m_Entries[i].Details.ClrName.Equals(rule.ColumnName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        m_Entries[i].ParameterValue = rule.DeletedValue;
+                        m_Entries[i].UseParameter = true;
+                        applicableColumns.Add(m_Entries[i]);
+                    }
+                }
+            }
+
+            if (applicableColumns.Count > 0)
+            {
+                sql.Append(header);
+                sql.Append(string.Join(" AND ", applicableColumns.Select(x => x.Details.QuotedSqlName + " <> " + x.Details.SqlVariableName)));
+                sql.Append(footer);
+            }
+
+        }
+
         /// <summary>
         /// Clones this instance so that you can modify it without affecting the cached origianl.
         /// </summary>
@@ -777,8 +857,31 @@ namespace Tortuga.Chain.Metadata
             }
         }
 
+        /// <summary>
+        /// Applies the indicated rules.
+        /// </summary>
+        /// <param name="rules">The rules.</param>
+        /// <param name="appliesWhen">The type of.</param>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="userValue">The user value.</param>
+        void ApplyRules(RulesCollection rules, OperationTypes appliesWhen, object argumentValue, object userValue)
+        {
+            rules.CheckValidation(argumentValue);
+
+            for (var i = 0; i < m_Entries.Length; i++)
+                foreach (var rule in rules.GetRulesForColumn(m_Entries[i].Details.SqlName, m_Entries[i].Details.ClrName, appliesWhen))
+                {
+                    m_Entries[i].ParameterValue = rule.GenerateValue(argumentValue, userValue, m_Entries[i].ParameterValue);
+
+                    if (rule.AppliesWhen.HasFlag(OperationTypes.Insert))
+                        m_Entries[i].UseForInsert = true;
+
+                    //Update is used for soft deletes
+                    if (rule.AppliesWhen.HasFlag(OperationTypes.Update) || rule.AppliesWhen.HasFlag(OperationTypes.Delete))
+                        m_Entries[i].UseForUpdate = true;
+
+                }
+        }
 
     }
-
-
 }

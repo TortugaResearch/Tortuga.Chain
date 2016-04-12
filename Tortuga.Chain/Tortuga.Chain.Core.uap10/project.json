@@ -2,7 +2,7 @@
   "dependencies": {
     "Microsoft.NETCore.UniversalWindowsPlatform": "5.0.0",
     "System.Data.Common": "4.0.0",
-    "Tortuga.Anchor": "0.5.5941.41176"
+    "Tortuga.Anchor": "0.6.5944.41376"
   },
   "frameworks": {
     "uap10.0": {}

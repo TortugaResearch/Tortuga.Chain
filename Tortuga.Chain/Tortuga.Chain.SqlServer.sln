@@ -34,6 +34,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tortuga.Chain.SqlServer.net
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tortuga.Chain.CompiledMaterializers.source", "Tortuga.Chain.CompiledMaterializers.source\Tortuga.Chain.CompiledMaterializers.source.csproj", "{42D213CA-8584-4B1B-8928-A54C5D937E86}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.Tortuga.Chain.SqlServer.net46", "Tests.Tortuga.Chain.SqlServer.net46\Tests.Tortuga.Chain.SqlServer.net46.csproj", "{A3875C77-1276-4BF3-A2BF-EE268B1A6181}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -254,6 +256,30 @@ Global
 		{42D213CA-8584-4B1B-8928-A54C5D937E86}.Release|x64.Build.0 = Release|Any CPU
 		{42D213CA-8584-4B1B-8928-A54C5D937E86}.Release|x86.ActiveCfg = Release|Any CPU
 		{42D213CA-8584-4B1B-8928-A54C5D937E86}.Release|x86.Build.0 = Release|Any CPU
+		{A3875C77-1276-4BF3-A2BF-EE268B1A6181}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3875C77-1276-4BF3-A2BF-EE268B1A6181}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3875C77-1276-4BF3-A2BF-EE268B1A6181}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{A3875C77-1276-4BF3-A2BF-EE268B1A6181}.Debug|ARM.Build.0 = Debug|Any CPU
+		{A3875C77-1276-4BF3-A2BF-EE268B1A6181}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A3875C77-1276-4BF3-A2BF-EE268B1A6181}.Debug|x64.Build.0 = Debug|Any CPU
+		{A3875C77-1276-4BF3-A2BF-EE268B1A6181}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A3875C77-1276-4BF3-A2BF-EE268B1A6181}.Debug|x86.Build.0 = Debug|Any CPU
+		{A3875C77-1276-4BF3-A2BF-EE268B1A6181}.Debug-Unchecked|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3875C77-1276-4BF3-A2BF-EE268B1A6181}.Debug-Unchecked|Any CPU.Build.0 = Debug|Any CPU
+		{A3875C77-1276-4BF3-A2BF-EE268B1A6181}.Debug-Unchecked|ARM.ActiveCfg = Debug|Any CPU
+		{A3875C77-1276-4BF3-A2BF-EE268B1A6181}.Debug-Unchecked|ARM.Build.0 = Debug|Any CPU
+		{A3875C77-1276-4BF3-A2BF-EE268B1A6181}.Debug-Unchecked|x64.ActiveCfg = Debug|Any CPU
+		{A3875C77-1276-4BF3-A2BF-EE268B1A6181}.Debug-Unchecked|x64.Build.0 = Debug|Any CPU
+		{A3875C77-1276-4BF3-A2BF-EE268B1A6181}.Debug-Unchecked|x86.ActiveCfg = Debug|Any CPU
+		{A3875C77-1276-4BF3-A2BF-EE268B1A6181}.Debug-Unchecked|x86.Build.0 = Debug|Any CPU
+		{A3875C77-1276-4BF3-A2BF-EE268B1A6181}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3875C77-1276-4BF3-A2BF-EE268B1A6181}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3875C77-1276-4BF3-A2BF-EE268B1A6181}.Release|ARM.ActiveCfg = Release|Any CPU
+		{A3875C77-1276-4BF3-A2BF-EE268B1A6181}.Release|ARM.Build.0 = Release|Any CPU
+		{A3875C77-1276-4BF3-A2BF-EE268B1A6181}.Release|x64.ActiveCfg = Release|Any CPU
+		{A3875C77-1276-4BF3-A2BF-EE268B1A6181}.Release|x64.Build.0 = Release|Any CPU
+		{A3875C77-1276-4BF3-A2BF-EE268B1A6181}.Release|x86.ActiveCfg = Release|Any CPU
+		{A3875C77-1276-4BF3-A2BF-EE268B1A6181}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -267,5 +293,6 @@ Global
 		{921BF2D5-9097-4BDD-8D6A-339DAA23EC24} = {05542BBF-0A44-4F28-A504-640F319CC546}
 		{0D09BB54-BEEF-41CB-965D-0D7F3CFD2270} = {05542BBF-0A44-4F28-A504-640F319CC546}
 		{42D213CA-8584-4B1B-8928-A54C5D937E86} = {6FB40F3D-E4CC-4E11-952C-BBD437AD2BF8}
+		{A3875C77-1276-4BF3-A2BF-EE268B1A6181} = {05542BBF-0A44-4F28-A504-640F319CC546}
 	EndGlobalSection
 EndGlobal

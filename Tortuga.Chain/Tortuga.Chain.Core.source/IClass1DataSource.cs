@@ -1,6 +1,6 @@
-﻿using Tortuga.Chain.CommandBuilders;
+﻿using System;
+using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Metadata;
-using System;
 
 #if !WINDOWS_UWP
 //using System.Runtime.Caching;
@@ -79,8 +79,10 @@ namespace Tortuga.Chain
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="argumentValue">The argument value.</param>
+        /// <param name="options">The options for how the isnert occurs.</param>
+        /// <returns></returns>
         /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
-        ISingleRowDbCommandBuilder Insert(string tableName, object argumentValue);
+        ISingleRowDbCommandBuilder Insert(string tableName, object argumentValue, InsertOptions options = InsertOptions.None);
 
 
         /// <summary>

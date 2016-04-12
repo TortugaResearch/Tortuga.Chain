@@ -91,7 +91,10 @@
     {
       "title": "Change Notification Appenders",
       "path": "Page/Appenders/SqlDependency.md"
+    },
+    {
+      "title": "Audit Rules",
+      "path": "Page/AuditRules.md"
     }
-
   ]
 }

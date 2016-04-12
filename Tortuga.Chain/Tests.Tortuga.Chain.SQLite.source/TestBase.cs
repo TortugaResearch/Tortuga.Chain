@@ -1,4 +1,6 @@
+using System;
 using Tortuga.Chain;
+using Tortuga.Chain.AuditRules;
 using Tortuga.Chain.SQLite;
 
 namespace Tests
@@ -25,6 +27,18 @@ namespace Tests
         }
 
         public string EmployeeTableName { get { return "Employee"; } }
+        public string CustomerTableName { get { return "Customer"; } }
 
+
+        protected static SQLiteDataSource DataSourceWithAuditRules()
+        {
+            return DataSource.WithRules(
+                new DateTimeRule("CreatedDate", DateTimeKind.Local, OperationTypes.Insert),
+                new DateTimeRule("UpdatedDate", DateTimeKind.Local, OperationTypes.InsertOrUpdate),
+                new UserDataRule("UpdatedByKey", "EmployeeKey", OperationTypes.Insert),
+                new UserDataRule("CreatedByKey", "EmployeeKey", OperationTypes.InsertOrUpdate),
+                new ValidateWithValidatable(OperationTypes.InsertOrUpdate)
+                );
+        }
     }
 }

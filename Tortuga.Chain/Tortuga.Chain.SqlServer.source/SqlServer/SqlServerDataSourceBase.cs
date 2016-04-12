@@ -44,7 +44,15 @@ namespace Tortuga.Chain.SqlServer
         /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
         public SingleRowDbCommandBuilder<SqlCommand, SqlParameter> Delete(SqlServerObjectName tableName, object argumentValue, DeleteOptions options = DeleteOptions.None)
         {
-            return new SqlServerDeleteObject(this, tableName, argumentValue, options);
+            var table = DatabaseMetadata.GetTableOrView(tableName);
+            if (!AuditRules.UseSoftDelete(table))
+                return new SqlServerDeleteObject(this, tableName, argumentValue, options);
+
+            UpdateOptions effectiveOptions = UpdateOptions.SoftDelete;
+            if (options.HasFlag(DeleteOptions.UseKeyAttribute))
+                effectiveOptions = effectiveOptions | UpdateOptions.UseKeyAttribute;
+
+            return new SqlServerUpdateObject(this, tableName, argumentValue, effectiveOptions);
         }
 
         /// <summary>
@@ -124,9 +132,9 @@ namespace Tortuga.Chain.SqlServer
             return From(tableOrViewName, whereClause, argumentValue);
         }
 
-        ISingleRowDbCommandBuilder IClass1DataSource.Insert(string tableName, object argumentValue)
+        ISingleRowDbCommandBuilder IClass1DataSource.Insert(string tableName, object argumentValue, InsertOptions options)
         {
-            return Insert(tableName, argumentValue);
+            return Insert(tableName, argumentValue, options);
         }
 
         IMultipleTableDbCommandBuilder IClass0DataSource.Sql(string sqlStatement, object argumentValue)
@@ -194,11 +202,14 @@ namespace Tortuga.Chain.SqlServer
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="argumentValue">The argument value.</param>
-        /// <returns>SqlServerInsert.</returns>
+        /// <param name="options">The options.</param>
+        /// <returns>
+        /// SqlServerInsert.
+        /// </returns>
         /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
-        public SingleRowDbCommandBuilder<SqlCommand, SqlParameter> Insert(SqlServerObjectName tableName, object argumentValue)
+        public SingleRowDbCommandBuilder<SqlCommand, SqlParameter> Insert(SqlServerObjectName tableName, object argumentValue, InsertOptions options = InsertOptions.None)
         {
-            return new SqlServerInsertObject(this, tableName, argumentValue);
+            return new SqlServerInsertObject(this, tableName, argumentValue, options);
         }
 
         /// <summary>

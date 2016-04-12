@@ -71,8 +71,8 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Tortuga.Anchor, Version=0.5.5941.41176, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
-      <HintPath>..\packages\Tortuga.Anchor.0.5.5941.41176\lib\net46\Tortuga.Anchor.dll</HintPath>
+    <Reference Include="Tortuga.Anchor, Version=0.6.5944.41376, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tortuga.Anchor.0.6.5944.41376\lib\net46\Tortuga.Anchor.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
@@ -91,6 +91,13 @@
     <Compile Include="Appenders\TimeoutAppender`1.cs" />
     <Compile Include="Appenders\TraceAppender`1.cs" />
     <Compile Include="Appenders\TraceAppender.cs" />
+    <Compile Include="AuditRules\ColumnRule.cs" />
+    <Compile Include="AuditRules\ValidationRule.cs" />
+    <Compile Include="AuditRules\ValidateWithValidatable.cs" />
+    <Compile Include="AuditRules\ValidateWithDataErrorInfo.cs" />
+    <Compile Include="AuditRules\ValidateWithNotifyDataErrorInfo.cs" />
+    <Compile Include="AuditRules\ValidateWithDataErrorInfo`1.cs" />
+    <Compile Include="AuditRules\ValidateWithNotifyDataErrorInfo`1.cs" />
     <Compile Include="CommandBuilders\DbCommandBuilder.cs" />
     <Compile Include="CommandBuilders\GenericDbSqlCall.cs" />
     <Compile Include="CommandBuilders\IDbCommandBuilder.cs" />
@@ -104,6 +111,7 @@
     <Compile Include="DataSources\DataSource.cs" />
     <Compile Include="DataSources\DataSource`2.cs" />
     <Compile Include="CommandBuilders\DbCommandBuilder`2.cs" />
+    <Compile Include="InsertOptions.cs" />
     <Compile Include="DeleteOptions.cs" />
     <Compile Include="Core\CommandBuiltEventArgs.cs" />
     <Compile Include="Core\ExecutionToken.cs" />
@@ -172,6 +180,15 @@
     <Compile Include="Materializers\SingleColumn\TimeSpanListMaterializer`2.cs" />
     <Compile Include="Materializers\Scalar\TimeSpanOrNullMaterializer`2.cs" />
     <Compile Include="Materializers\Scalar\TimeSpanMaterializer`2.cs" />
+    <Compile Include="AuditRules\UserDataRule.cs" />
+    <Compile Include="AuditRules\ValueRule.cs" />
+    <Compile Include="AuditRules\Rule.cs" />
+    <Compile Include="AuditRules\OperationTypes.cs" />
+    <Compile Include="AuditRules\RulesCollection.cs" />
+    <Compile Include="AuditRules\ColumnValueGenerator.cs" />
+    <Compile Include="AuditRules\SoftDeleteRule.cs" />
+    <Compile Include="AuditRules\DateTimeOffsetRule.cs" />
+    <Compile Include="AuditRules\DateTimeRule.cs" />
     <Compile Include="UpsertOptions.cs" />
     <Compile Include="ListOptions.cs" />
     <Compile Include="Metadata\ColumnMetadata`1.cs" />
@@ -185,9 +202,9 @@
     <Compile Include="Metadata\ISqlBuilderEntryDetails.cs" />
     <Compile Include="Metadata\ITableOrViewMetadata.cs" />
     <Compile Include="Metadata\ParameterMetadata`1.cs" />
-    <Compile Include="Metadata\SqlBuilder`1.cs" />
-    <Compile Include="Metadata\SqlBuilderEntry.cs" />
-    <Compile Include="Metadata\SqlBuilder.cs" />
+    <Compile Include="CommandBuilders\SqlBuilder`1.cs" />
+    <Compile Include="CommandBuilders\SqlBuilderEntry.cs" />
+    <Compile Include="CommandBuilders\SqlBuilder.cs" />
     <Compile Include="Metadata\StoredProcedureMetadata`2.cs" />
     <Compile Include="Metadata\TableFunctionMetadata`2.cs" />
     <Compile Include="Metadata\TableOrViewMetadata`2.cs" />
