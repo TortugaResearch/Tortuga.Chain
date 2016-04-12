@@ -30,14 +30,14 @@
       <group targetFramework="net45">
         <dependency id="System.Collections.Immutable" version="1.1.37" />
         <dependency id="Tortuga.Anchor" version="0.6.5944.41376" />
-        <dependency id="Tortuga.Chain.Core" version="0.11.5942.1164" />
-        <dependency id="CS-Script.bin" version="3.12.0.1" />
+        <dependency id="Tortuga.Chain.Core" version="0.12.5946.1835" />
+        <dependency id="CS-Script.bin" version="3.12.1.0" />
       </group>
       <group targetFramework="net46">
         <dependency id="System.Collections.Immutable" version="1.1.37" />
         <dependency id="Tortuga.Anchor" version="0.6.5944.41376" />
-        <dependency id="Tortuga.Chain.Core" version="0.11.5942.1164" />
-        <dependency id="CS-Script.bin" version="3.12.0.1" />
+        <dependency id="Tortuga.Chain.Core" version="0.12.5946.1835" />
+        <dependency id="CS-Script.bin" version="3.12.1.0" />
       </group>
     </dependencies>
 
