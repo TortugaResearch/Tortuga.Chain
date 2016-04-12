@@ -1,6 +1,6 @@
 ﻿# Audit Rules
 
-Audit rules allow you to drastically reduce the amount of boilerplate code needed for common scenarios. 
+Audit rules allow you to drastically reduce the amount of boilerplate code needed for common scenarios such as verifying a record is valid before saving it, setting the created by or updated by column, and honoring soft deletes. 
 
 Note that all of these rules are applied at the data source level. You cannot selectively apply them to individual tables, though you can use multiple data sources with different rules. 
 
