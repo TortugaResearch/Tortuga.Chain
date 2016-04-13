@@ -39,5 +39,6 @@ namespace Tortuga.Chain.CommandBuilders
         /// </summary>
         public ILink<TableSet> ToTableSet(params string[] tableNames) { return new TableSetMaterializer<TCommand, TParameter>(this, tableNames); }
 
+
     }
 }

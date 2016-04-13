@@ -52,7 +52,11 @@ namespace Tortuga.Chain.CommandBuilders
             return AsNonQuery().ExecuteAsync(cancellationToken, state);
         }
 
-
+        /// <summary>
+        /// Returns the number of rows affected.
+        /// </summary>
+        /// <returns>ILink&lt;System.Int32&gt;.</returns>
+        public abstract ILink<int> AsRowsAffected();
     }
 }
 

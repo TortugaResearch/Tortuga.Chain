@@ -63,7 +63,7 @@ namespace Tortuga.Chain.Materializers
             DataSet ds = new DataSet();
             await ExecuteCoreAsync(async cmd =>
             {
-                using (var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SequentialAccess, cancellationToken))
+                using (var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SequentialAccess, cancellationToken).ConfigureAwait(false))
                 {
                     ds.Load(reader, LoadOption.OverwriteChanges, m_TableNames);
                     return ds.Tables.Cast<DataTable>().Sum(t => t.Rows.Count);

@@ -51,6 +51,13 @@ namespace Tortuga.Chain.CommandBuilders
         /// <returns></returns>
         ILink<List<TObject>> ToCollection<TObject>()
             where TObject : class, new();
+
+        /// <summary>
+        /// Materializes the result as a list of dynamically typed objects.
+        /// </summary>
+        /// <returns></returns>
+        ILink<List<dynamic>> ToDynamicCollection();
+
         /// <summary>
         /// Materializes the result as a list of objects.
         /// </summary>

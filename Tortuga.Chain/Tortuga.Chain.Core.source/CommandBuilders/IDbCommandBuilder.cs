@@ -30,5 +30,12 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="state">User defined state, usually used for logging.</param>
         /// <returns>Task.</returns>
         Task ExecuteAsync(CancellationToken cancellationToken, object state = null);
+
+
+        /// <summary>
+        /// Returns the number of rows affected.
+        /// </summary>
+        /// <returns>ILink&lt;System.Int32&gt;.</returns>
+        ILink<int> AsRowsAffected();
     }
 }

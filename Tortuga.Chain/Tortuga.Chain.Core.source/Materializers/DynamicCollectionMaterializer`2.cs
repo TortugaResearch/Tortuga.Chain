@@ -1,8 +1,7 @@
-#if !WINDOWS_UWP
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-using System.Diagnostics.CodeAnalysis;
+using System.Dynamic;
 using System.Threading;
 using System.Threading.Tasks;
 using Tortuga.Chain.CommandBuilders;
@@ -10,18 +9,18 @@ using Tortuga.Chain.CommandBuilders;
 namespace Tortuga.Chain.Materializers
 {
     /// <summary>
-    /// Materializes the result set as a DataTable.
+    /// Materializes the result set as a List of dynamic objects.
     /// </summary>
     /// <typeparam name="TCommand">The type of the t command type.</typeparam>
     /// <typeparam name="TParameter">The type of the t parameter type.</typeparam>
-    internal sealed class DataTableMaterializer<TCommand, TParameter> : Materializer<TCommand, TParameter, DataTable> where TCommand : DbCommand
+    internal sealed class DynamicCollectionMaterializer<TCommand, TParameter> : Materializer<TCommand, TParameter, List<dynamic>> where TCommand : DbCommand
         where TParameter : DbParameter
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="DataTableMaterializer{TCommand, TParameter}"/> class.
+        /// Initializes a new instance of the <see cref="DynamicCollectionMaterializer{TCommand, TParameter}"/> class.
         /// </summary>
         /// <param name="commandBuilder">The associated operation.</param>
-        public DataTableMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder)
+        public DynamicCollectionMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder)
             : base(commandBuilder)
         { }
 
@@ -29,20 +28,31 @@ namespace Tortuga.Chain.Materializers
         /// Execute the operation synchronously.
         /// </summary>
         /// <returns></returns>
-        [SuppressMessage("Microsoft.Globalization", "CA1306:SetLocaleForDataTypes")]
-        public override DataTable Execute(object state = null)
+        public override List<dynamic> Execute(object state = null)
         {
-            DataTable dt = new DataTable();
+            var result = new List<dynamic>();
             ExecuteCore(cmd =>
             {
                 using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess))
                 {
-                    dt.Load(reader);
-                    return dt.Rows.Count;
+                    while (reader.Read())
+                    {
+                        IDictionary<string, object> item = new ExpandoObject();
+                        for (var i = 0; i < reader.FieldCount; i++)
+                        {
+                            if (reader.IsDBNull(i))
+                                item[reader.GetName(i)] = null;
+                            else
+                                item[reader.GetName(i)] = reader.GetValue(i);
+                        }
+                        result.Add(item);
+
+                    }
+                    return result.Count;
                 }
             }, state);
 
-            return dt;
+            return result;
         }
 
 
@@ -53,19 +63,32 @@ namespace Tortuga.Chain.Materializers
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <param name="state">User defined state, usually used for logging.</param>
         /// <returns></returns>
-        public override async Task<DataTable> ExecuteAsync(CancellationToken cancellationToken, object state = null)
+        public override async Task<List<dynamic>> ExecuteAsync(CancellationToken cancellationToken, object state = null)
         {
-            DataTable dt = new DataTable();
+            var result = new List<dynamic>();
+
             await ExecuteCoreAsync(async cmd =>
             {
                 using (var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SequentialAccess, cancellationToken).ConfigureAwait(false))
                 {
-                    dt.Load(reader);
-                    return dt.Rows.Count;
+                    while (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
+                    {
+                        IDictionary<string, object> item = new ExpandoObject();
+                        for (var i = 0; i < reader.FieldCount; i++)
+                        {
+                            if (reader.IsDBNull(i))
+                                item[reader.GetName(i)] = null;
+                            else
+                                item[reader.GetName(i)] = reader.GetValue(i);
+                        }
+                        result.Add(item);
+
+                    }
+                    return result.Count;
                 }
             }, cancellationToken, state);
 
-            return dt;
+            return result;
         }
 
         /// <summary>
@@ -83,4 +106,3 @@ namespace Tortuga.Chain.Materializers
         }
     }
 }
-#endif

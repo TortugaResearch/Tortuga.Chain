@@ -127,8 +127,11 @@
     <Compile Include="ILink.cs" />
     <Compile Include="Appenders\InvalidateCacheAppender.cs" />
     <Compile Include="Appenders\InvalidateCacheAppender`1.cs" />
+    <Compile Include="Materializers\DynamicObjectMaterializer`2.cs" />
+    <Compile Include="Materializers\DynamicCollectionMaterializer`2.cs" />
     <Compile Include="Materializers\Materializer.cs" />
     <Compile Include="Materializers\DataRowMaterializer`2.cs" />
+    <Compile Include="Materializers\RowsAffectedMaterializer`2.cs" />
     <Compile Include="Materializers\Scalar\ByteOrNullMaterializer`2.cs" />
     <Compile Include="Materializers\Scalar\ByteMaterializer`2.cs" />
     <Compile Include="Materializers\SingleColumn\ByteArrayListMaterializer`2.cs" />

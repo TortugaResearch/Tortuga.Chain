@@ -54,6 +54,15 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="materializer">The materializer.</param>
         /// <returns>ExecutionToken&lt;TCommand&gt;.</returns>
         public abstract ExecutionToken<TCommand, TParameter> Prepare(Materializer<TCommand, TParameter> materializer);
+
+        /// <summary>
+        /// Returns the number of rows affected.
+        /// </summary>
+        /// <returns>ILink&lt;System.Int32&gt;.</returns>
+        public override sealed ILink<int> AsRowsAffected()
+        {
+            return new RowsAffectedMaterializer<TCommand, TParameter>(this);
+        }
     }
 }
 

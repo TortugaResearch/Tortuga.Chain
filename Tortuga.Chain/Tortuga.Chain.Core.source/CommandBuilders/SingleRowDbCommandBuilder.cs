@@ -149,6 +149,16 @@ namespace Tortuga.Chain.CommandBuilders
             return new ObjectMaterializer<TCommand, TParameter, TObject>(this, rowOptions);
         }
 
+        /// <summary>
+        /// Materializes the result as a dynamic object
+        /// </summary>
+        /// <param name="rowOptions">The row options.</param>
+        /// <returns></returns>
+        public ILink<dynamic> ToDynamicObject(RowOptions rowOptions = RowOptions.None)
+        {
+            return new DynamicObjectMaterializer<TCommand, TParameter>(this, rowOptions);
+        }
+
 #if !WINDOWS_UWP
         /// <summary>
         /// Indicates the results should be materialized as a Row.

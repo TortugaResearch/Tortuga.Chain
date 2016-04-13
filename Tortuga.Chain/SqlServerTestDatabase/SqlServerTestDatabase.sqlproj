@@ -83,6 +83,7 @@
     <Build Include="Sales\CustomerWithOrdersByState.sql" />
     <Build Include="dbo\AllTypes.sql" />
     <Build Include="HR\EmployeeWithManager.sql" />
+    <Build Include="dbo\Dog.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="SqlServerTestDatabase.refactorlog" />

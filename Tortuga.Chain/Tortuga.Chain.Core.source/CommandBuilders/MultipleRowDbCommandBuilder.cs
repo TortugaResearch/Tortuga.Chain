@@ -50,6 +50,15 @@ namespace Tortuga.Chain.CommandBuilders
         }
 
         /// <summary>
+        /// Materializes the result as a list of dynamically typed objects.
+        /// </summary>
+        /// <returns></returns>
+        public ILink<List<dynamic>> ToDynamicCollection()
+        {
+            return new DynamicCollectionMaterializer<TCommand, TParameter>(this);
+        }
+
+        /// <summary>
         /// Materializes the result as a list of objects.
         /// </summary>
         /// <typeparam name="TObject">The type of the model.</typeparam>
@@ -229,7 +238,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        public ILink<List<DateTimeOffset>> ToDateTimeOffsetList( ListOptions listOptions = ListOptions.None)
+        public ILink<List<DateTimeOffset>> ToDateTimeOffsetList(ListOptions listOptions = ListOptions.None)
         {
             return new DateTimeOffsetListMaterializer<TCommand, TParameter>(this, null, listOptions);
         }
@@ -239,7 +248,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        public ILink<List<decimal>> ToDecimalList( ListOptions listOptions = ListOptions.None)
+        public ILink<List<decimal>> ToDecimalList(ListOptions listOptions = ListOptions.None)
         {
             return new DecimalListMaterializer<TCommand, TParameter>(this, null, listOptions);
         }
@@ -249,7 +258,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        public ILink<List<double>> ToDoubleList( ListOptions listOptions = ListOptions.None)
+        public ILink<List<double>> ToDoubleList(ListOptions listOptions = ListOptions.None)
         {
             return new DoubleListMaterializer<TCommand, TParameter>(this, null, listOptions);
         }
@@ -258,7 +267,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        public ILink<List<Guid>> ToGuidList( ListOptions listOptions = ListOptions.None)
+        public ILink<List<Guid>> ToGuidList(ListOptions listOptions = ListOptions.None)
         {
             return new GuidListMaterializer<TCommand, TParameter>(this, null, listOptions);
         }
@@ -268,7 +277,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        public ILink<List<short>> ToInt16List( ListOptions listOptions = ListOptions.None)
+        public ILink<List<short>> ToInt16List(ListOptions listOptions = ListOptions.None)
         {
             return new Int16ListMaterializer<TCommand, TParameter>(this, null, listOptions);
         }
@@ -278,7 +287,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        public ILink<List<int>> ToInt32List( ListOptions listOptions = ListOptions.None)
+        public ILink<List<int>> ToInt32List(ListOptions listOptions = ListOptions.None)
         {
             return new Int32ListMaterializer<TCommand, TParameter>(this, null, listOptions);
         }
@@ -288,7 +297,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        public ILink<List<long>> ToInt64List( ListOptions listOptions = ListOptions.None)
+        public ILink<List<long>> ToInt64List(ListOptions listOptions = ListOptions.None)
         {
             return new Int64ListMaterializer<TCommand, TParameter>(this, null, listOptions);
         }
@@ -298,7 +307,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        public ILink<List<float>> ToSingleList( ListOptions listOptions = ListOptions.None)
+        public ILink<List<float>> ToSingleList(ListOptions listOptions = ListOptions.None)
         {
             return new SingleListMaterializer<TCommand, TParameter>(this, null, listOptions);
         }
@@ -308,17 +317,17 @@ namespace Tortuga.Chain.CommandBuilders
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        public ILink<List<string>> ToStringList( ListOptions listOptions = ListOptions.None)
+        public ILink<List<string>> ToStringList(ListOptions listOptions = ListOptions.None)
         {
             return new StringListMaterializer<TCommand, TParameter>(this, null, listOptions);
         }
 
-         /// <summary>
+        /// <summary>
         /// Indicates the results should be materialized as a list of TimeSpan.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        public ILink<List<TimeSpan>> ToTimeSpanList( ListOptions listOptions = ListOptions.None)
+        public ILink<List<TimeSpan>> ToTimeSpanList(ListOptions listOptions = ListOptions.None)
         {
             return new TimeSpanListMaterializer<TCommand, TParameter>(this, null, listOptions);
         }
