@@ -39,7 +39,9 @@ namespace Tortuga.Chain.CommandBuilders
 
             var result = new List<TParameter>();
 
-            if (argumentValue is IEnumerable<TParameter>)
+            if (argumentValue is TParameter)
+                result.Add((TParameter)argumentValue);
+            else if (argumentValue is IEnumerable<TParameter>)
                 foreach (var param in (IEnumerable<TParameter>)argumentValue)
                     result.Add(param);
             else if (argumentValue is IReadOnlyDictionary<string, object>)

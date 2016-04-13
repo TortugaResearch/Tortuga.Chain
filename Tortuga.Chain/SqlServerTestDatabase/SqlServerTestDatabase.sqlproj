@@ -84,6 +84,15 @@
     <Build Include="dbo\AllTypes.sql" />
     <Build Include="HR\EmployeeWithManager.sql" />
     <Build Include="dbo\Dog.sql" />
+    <Build Include="dbo\Posts.sql" />
+    <Build Include="dbo\Users.sql" />
+    <Build Include="dbo\PostsWithOwnersView.sql" />
+    <Build Include="dbo\MyTable.sql" />
+    <Build Include="Sales\Return.sql" />
+    <Build Include="dbo\spGetUser.sql" />
+    <Build Include="dbo\spMagicProc.sql" />
+    <Build Include="dbo\Vehicle.sql" />
+    <Build Include="dbo\Owner.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="SqlServerTestDatabase.refactorlog" />

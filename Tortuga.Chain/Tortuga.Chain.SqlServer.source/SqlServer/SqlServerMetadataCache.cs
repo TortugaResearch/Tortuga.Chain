@@ -18,6 +18,8 @@ namespace Tortuga.Chain.SqlServer
         private readonly ConcurrentDictionary<SqlServerObjectName, TableOrViewMetadata<SqlServerObjectName, SqlDbType>> m_Tables = new ConcurrentDictionary<SqlServerObjectName, TableOrViewMetadata<SqlServerObjectName, SqlDbType>>();
         private readonly ConcurrentDictionary<Type, string> m_UdtTypeMap = new ConcurrentDictionary<Type, string>();
 
+        private string m_DefaultSchema;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlServerMetadataCache"/> class.
         /// </summary>
@@ -25,6 +27,30 @@ namespace Tortuga.Chain.SqlServer
         public SqlServerMetadataCache(SqlConnectionStringBuilder connectionBuilder)
         {
             m_ConnectionBuilder = connectionBuilder;
+        }
+
+
+        /// <summary>
+        /// Returns the user's default schema.
+        /// </summary>
+        /// <returns></returns>
+        public string DefaultSchema
+        {
+            get
+            {
+                if (m_DefaultSchema == null)
+                {
+                    using (var con = new SqlConnection(m_ConnectionBuilder.ConnectionString))
+                    {
+                        con.Open();
+                        using (var cmd = new SqlCommand("SELECT SCHEMA_NAME () AS DefaultSchema", con))
+                        {
+                            m_DefaultSchema = (string)cmd.ExecuteScalar();
+                        }
+                    }
+                }
+                return m_DefaultSchema;
+            }
         }
 
         /// <summary>
@@ -379,7 +405,7 @@ namespace Tortuga.Chain.SqlServer
                 con.Open();
                 using (var cmd = new SqlCommand(TvfSql, con))
                 {
-                    cmd.Parameters.AddWithValue("@Schema", tableFunctionName.Schema);
+                    cmd.Parameters.AddWithValue("@Schema", tableFunctionName.Schema ?? DefaultSchema);
                     cmd.Parameters.AddWithValue("@Name", tableFunctionName.Name);
                     using (var reader = cmd.ExecuteReader())
                     {
@@ -452,7 +478,7 @@ namespace Tortuga.Chain.SqlServer
                 con.Open();
                 using (var cmd = new SqlCommand(StoredProcedureSql, con))
                 {
-                    cmd.Parameters.AddWithValue("@Schema", procedureName.Schema);
+                    cmd.Parameters.AddWithValue("@Schema", procedureName.Schema ?? DefaultSchema);
                     cmd.Parameters.AddWithValue("@Name", procedureName.Name);
                     using (var reader = cmd.ExecuteReader())
                     {
@@ -503,7 +529,7 @@ namespace Tortuga.Chain.SqlServer
                 con.Open();
                 using (var cmd = new SqlCommand(TableSql, con))
                 {
-                    cmd.Parameters.AddWithValue("@Schema", tableName.Schema);
+                    cmd.Parameters.AddWithValue("@Schema", tableName.Schema ?? DefaultSchema);
                     cmd.Parameters.AddWithValue("@Name", tableName.Name);
                     using (var reader = cmd.ExecuteReader())
                     {

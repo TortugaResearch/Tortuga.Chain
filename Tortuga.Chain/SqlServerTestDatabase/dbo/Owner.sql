@@ -1,0 +1,13 @@
+﻿CREATE TABLE Owner
+(
+	OwnerKey INT NOT NULL IDENTITY PRIMARY KEY,
+	DriversLicense VARCHAR(20) NOT NULL UNIQUE,
+	FirstName NVARCHAR(50) NOT NULL,
+	LastName NVARCHAR(50) NOT NULL,
+	AddressLine1 NVARCHAR(200)  NULL,
+	AddressLine2 NVARCHAR(200) NULL,
+	City NVARCHAR(200)  NULL,
+	State CHAR(2)  NULL,
+	Zip smallint  NULL
+)
+

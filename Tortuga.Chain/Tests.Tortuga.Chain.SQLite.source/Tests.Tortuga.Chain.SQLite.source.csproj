@@ -81,6 +81,9 @@
     <Compile Include="..\Tests.Tortuga.Chain.SqlServer.source\AuditRules\AuditRulesTests.cs">
       <Link>AuditRules\AuditRulesTests.cs</Link>
     </Compile>
+    <Compile Include="..\Tests.Tortuga.Chain.SqlServer.source\Class1Databases\FromTests.cs">
+      <Link>Class1Databases\FromTests.cs</Link>
+    </Compile>
     <Compile Include="..\Tests.Tortuga.Chain.SqlServer.source\Class1Databases\InsertTests.cs">
       <Link>Class1Databases\InsertTests.cs</Link>
     </Compile>

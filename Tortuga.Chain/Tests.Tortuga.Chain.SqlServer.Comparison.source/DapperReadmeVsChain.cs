@@ -3,13 +3,16 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
-using Tortuga.Anchor.Modeling;
+using Tests.Models;
 using Tortuga.Chain;
 
 namespace Tests
 {
+
+
     [TestClass]
     public class DapperReadmeVsChain
 
@@ -24,16 +27,6 @@ namespace Tests
             s_DataSource = SqlServerDataSource.CreateFromConfig("CodeFirstModels");
         }
 
-        public class Dog
-        {
-            public int? Age { get; set; }
-            [IgnoreOnInsert, IgnoreOnUpdate]
-            public Guid Id { get; set; }
-            public string Name { get; set; }
-            public float? Weight { get; set; }
-
-            public int IgnoredProperty { get { return 1; } }
-        }
 
         /// <summary>
         /// Execute a query and map the results to a strongly typed List
@@ -60,7 +53,7 @@ namespace Tests
             Guid key;
             using (var connection = new SqlConnection(s_ConnectionString))
             {
-                const string insertSql = "INSERT INTO dbo.Dog (Age, Name, Weight) OUTPUT Inserted.Id VALUES (@Age, @Name, @Weight);";
+                const string insertSql = "INSERT INTO Dog (Age, Name, Weight) OUTPUT Inserted.Id VALUES (@Age, @Name, @Weight);";
                 key = connection.ExecuteScalar<Guid>(insertSql, originalDog);
             }
 
@@ -68,7 +61,7 @@ namespace Tests
             Dog fetchedDog;
             using (var connection = new SqlConnection(s_ConnectionString))
             {
-                const string selectSql = "SELECT Age, Name, Weight FROM dbo.Dog WHERE Id = @Id;";
+                const string selectSql = "SELECT Age, Name, Weight FROM Dog WHERE Id = @Id;";
                 fetchedDog = connection.Query<Dog>(selectSql, new { Id = key }).Single();
             }
 
@@ -99,10 +92,10 @@ namespace Tests
             //Make it more realistic by actually inserting a record
             var originalDog = new Dog() { Age = 2, Name = "Fido", Weight = 2.5f };
 
-            var key = s_DataSource.Insert("dbo.Dog", originalDog).ToGuid().Execute();
+            var key = s_DataSource.Insert("Dog", originalDog).ToGuid().Execute();
 
             //And then re-read it back
-            var fetchedDog = s_DataSource.From("dbo.Dog", new { Id = key }).ToObject<Dog>().Execute();
+            var fetchedDog = s_DataSource.GetByKey("Dog", key).ToObject<Dog>().Execute();
 
             Assert.AreEqual(originalDog.Age, fetchedDog.Age);
             Assert.AreEqual(originalDog.Name, fetchedDog.Name);
@@ -135,13 +128,19 @@ namespace Tests
         [TestMethod]
         public void Example2_Chain()
         {
-            //Dictionary based approach
-            var rows = s_DataSource.Sql("select 1 A, 2 B union all select 3, 4").ToDynamicCollection().Execute();
+            //DataTable - When you want to bind to WinForms or WPF data grids.
+            DataTable dt = s_DataSource.Sql("select 1 A, 2 B union all select 3, 4").ToDataTable().Execute();
 
-            Assert.AreEqual(1, ((int)rows[0].A));
-            Assert.AreEqual(2, ((int)rows[0].B));
-            Assert.AreEqual(3, ((int)rows[1].A));
-            Assert.AreEqual(4, ((int)rows[1].B));
+            //Table - When you want a lightweight alternative to DataTable
+            Table table = s_DataSource.Sql("select 1 A, 2 B union all select 3, 4").ToTable().Execute();
+
+            //Dynamic Objects - When you want the convience of dynamic typing
+            List<dynamic> rows = s_DataSource.Sql("select 1 A, 2 B union all select 3, 4").ToDynamicCollection().Execute();
+
+            Assert.AreEqual(1, rows[0].A);
+            Assert.AreEqual(2, rows[0].B);
+            Assert.AreEqual(3, rows[1].A);
+            Assert.AreEqual(4, rows[1].B);
         }
 
         /// <summary>
@@ -212,10 +211,215 @@ namespace Tests
         [TestMethod]
         public void Example4_Chain()
         {
-            Assert.Inconclusive("Bulk inserts are not yet supported. See issue #48");
+            //Bulk inserts are not yet supported. See issue #48
+
+            s_DataSource.Insert("MyTable", new { colA = 1, colB = 1 }).Execute();
+            s_DataSource.Insert("MyTable", new { colA = 2, colB = 2 }).Execute();
+            s_DataSource.Insert("MyTable", new { colA = 3, colB = 3 }).Execute();
+        }
+
+        /// <summary>
+        /// List Support
+        /// </summary>
+        [TestMethod]
+        public void Example5_Dapper()
+        {
+            using (var connection = new SqlConnection(s_ConnectionString))
+            {
+                connection.Query<int>("select * from (select 1 as Id union all select 2 union all select 3) as X where Id in @Ids", new { Ids = new int[] { 1, 2, 3 } });
+            }
+        }
+
+        /// <summary>
+        /// List Support
+        /// </summary>
+        [TestMethod]
+        public void Example5_Chain()
+        {
+            //List support is only available for primary keys.
+            var posts = s_DataSource.GetByKey("Posts", 1, 2, 3).ToCollection<Post>().Execute();
+        }
+
+        /// <summary>
+        /// Multi Mapping
+        /// </summary>
+        [TestMethod]
+        public void Example6_Dapper()
+        {
+
+            SetupExample6();
+
+
+            using (var connection = new SqlConnection(s_ConnectionString))
+            {
+                var sql =
+  @"select * from Posts p 
+            left join Users u on u.Id = p.OwnerId 
+            Order by p.Id";
+
+                var data = connection.Query<Post, User, Post>(sql, (p, user) => { p.Owner = user; return p; });
+                var post = data.First();
+
+                Assert.AreEqual("Sams Post1", post.Content);
+                Assert.AreEqual(1, post.Id);
+                Assert.AreEqual("Sam", post.Owner.Name);
+                Assert.AreEqual(99, post.Owner.Id);
+            }
+        }
+
+        /// <summary>
+        /// Multi Mapping
+        /// </summary>
+        [TestMethod]
+        public void Example6_Chain()
+        {
+            SetupExample6();
+
+
+            var data = s_DataSource.From("PostsWithOwnersView").ToCollection<Post>().Execute();
+            var post = data.First();
+
+            Assert.AreEqual("Sams Post1", post.Content);
+            Assert.AreEqual(1, post.Id);
+            Assert.AreEqual("Sam", post.Owner.Name);
+            Assert.AreEqual(99, post.Owner.Id);
+
+        }
+
+        void SetupExample6()
+        {
+            s_DataSource.Sql("DELETE FROM Posts").Execute();
+            s_DataSource.Sql("DELETE FROM Users").Execute();
+
+            s_DataSource.Insert("Users", new User() { Id = 99, Name = "Sam" }).Execute();
+            s_DataSource.Insert("Posts", new Post() { Id = 1, Content = "Sams Post1", OwnerId = 99, Title = "About me" }).Execute();
+        }
+
+        /// <summary>
+        /// Multiple Results
+        /// </summary>
+        [TestMethod]
+        public void Example7_Dapper()
+        {
+            var sql =
+@"
+select * from Sales.Customer where CustomerKey = @id
+select * from Sales.[Order] where CustomerKey = @id
+select * from Sales.[Return] where CustomerKey = @id";
+
+            var selectedId = 1;
+
+            using (var connection = new SqlConnection(s_ConnectionString))
+            {
+                using (var multi = connection.QueryMultiple(sql, new { id = selectedId }))
+                {
+                    var customer = multi.Read<Customer>().SingleOrDefault();
+                    var orders = multi.Read<Order>().ToList();
+                    var returns = multi.Read<Return>().ToList();
+
+                }
+            }
+        }
+
+        /// <summary>
+        /// Multiple Results
+        /// </summary>
+        [TestMethod]
+        public void Example7_Chain()
+        {
+            var sql =
+@"
+select * from Sales.Customer where CustomerKey = @id
+select * from Sales.[Order] where CustomerKey = @id
+select * from Sales.[Return] where CustomerKey = @id"; ;
+
+            var selectedId = 1;
+
+            //Note: This can be reduced to one line if C# 7 supports multiple returns
+            var tableSet = s_DataSource.Sql(sql, new { id = selectedId }).ToTableSet("Customer", "Order", "Return").Execute();
+            var customer = tableSet["Customer"].ToObjects<Customer>().SingleOrDefault();
+            var orders = tableSet["Order"].ToObjects<Order>();
+            var returns = tableSet["Return"].ToObjects<Return>();
+        }
+
+        /// <summary>
+        /// Stored Procedures
+        /// </summary>
+        [TestMethod]
+        public void Example8_Dapper()
+        {
+            using (var cnn = new SqlConnection(s_ConnectionString))
+            {
+                var user = cnn.Query<User>("spGetUser", new { Id = 1 }, commandType: CommandType.StoredProcedure).SingleOrDefault();
+            }
+
+            //With OUT parameters
+            using (var cnn = new SqlConnection(s_ConnectionString))
+            {
+                var p = new DynamicParameters();
+                p.Add("@a", 11);
+                p.Add("@b", dbType: DbType.Int32, direction: ParameterDirection.Output);
+                p.Add("@c", dbType: DbType.Int32, direction: ParameterDirection.ReturnValue);
+
+                cnn.Execute("spMagicProc", p, commandType: CommandType.StoredProcedure);
+
+                int b = p.Get<int>("@b");
+                int c = p.Get<int>("@c");
+
+                Assert.AreEqual(10, b);
+                Assert.AreEqual(5, c);
+            }
+
+        }
+
+        /// <summary>
+        /// Stored Procedures
+        /// </summary>
+        [TestMethod]
+        public void Example8_Chain()
+        {
+            var user = s_DataSource.Procedure("spGetUser", new { Id = 1 }).ToObject<User>(RowOptions.AllowEmptyResults).Execute();
+
+            //With OUT parameters
+            var p = new List<SqlParameter>();
+            p.Add(new SqlParameter("@a", 11));
+            p.Add(new SqlParameter("@b", SqlDbType.Int) { Direction = ParameterDirection.Output });
+            p.Add(new SqlParameter("@c", SqlDbType.Int) { Direction = ParameterDirection.ReturnValue });
+
+            s_DataSource.Procedure("spMagicProc", p).Execute();
+
+            int b = (int)p[1].Value;
+            int c = (int)p[2].Value;
+
+            Assert.AreEqual(10, b);
+            Assert.AreEqual(5, c);
         }
 
 
+        /// <summary>
+        /// Ansi Strings and varchar
+        /// </summary>
+        [TestMethod]
+        public void Example9_Dapper()
+        {
+            using (var cnn = new SqlConnection(s_ConnectionString))
+            {
+                var users = cnn.Query<User>("select * from Users where Name = @Name", new { Name = new DbString { Value = "abcde", IsFixedLength = true, Length = 50, IsAnsi = true } });
+            }
+
+
+
+        }
+
+        /// <summary>
+        /// Ansi Strings and varchar
+        /// </summary>
+        [TestMethod]
+        public void Example9_Chain()
+        {
+            //We automatically use ANSI strings if the column is a char or varChar.
+            var users = s_DataSource.From("Users", new { Name = "abcde" }).ToCollection<User>().Execute();
+        }
     }
 }
 

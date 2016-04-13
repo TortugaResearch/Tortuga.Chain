@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Metadata;
 
@@ -103,6 +104,36 @@ namespace Tortuga.Chain
         /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
         ISingleRowDbCommandBuilder Update(string tableName, object argumentValue, UpdateOptions options = UpdateOptions.None);
 
+
+        /// <summary>
+        /// Gets a record by its primary key.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="key">The key.</param>
+        /// <returns></returns>
+        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
+        ISingleRowDbCommandBuilder GetByKey<T>(string tableName, T key);
+
+        /// <summary>
+        /// Gets a set of records by their primary key.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="keys">The keys.</param>
+        /// <returns></returns>
+        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
+        IMultipleRowDbCommandBuilder GetByKey<T>(string tableName, IEnumerable<T> keys);
+
+        /// <summary>
+        /// Gets a set of records by their primary key.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="keys">The keys.</param>
+        /// <returns></returns>
+        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
+        IMultipleRowDbCommandBuilder GetByKey<T>(string tableName, params T[] keys);
 
     }
 }

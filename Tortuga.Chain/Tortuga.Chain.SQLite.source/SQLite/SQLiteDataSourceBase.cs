@@ -4,6 +4,10 @@ using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Metadata;
 using Tortuga.Chain.SQLite.CommandBuilders;
 using Tortuga.Chain.SQLite.SQLite.CommandBuilders;
+using System.Collections.Generic;
+using System.Linq;
+using Tortuga.Anchor;
+using System.Diagnostics.CodeAnalysis;
 
 #if SDS
 using System.Data.SQLite;
@@ -18,7 +22,7 @@ namespace Tortuga.Chain.SQLite
     /// <summary>
     /// Base class that represents a SQLite Datasource.
     /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1001:TypesThatOwnDisposableFieldsShouldBeDisposable")]
+    [SuppressMessage("Microsoft.Design", "CA1001:TypesThatOwnDisposableFieldsShouldBeDisposable")]
     public abstract class SQLiteDataSourceBase : DataSource<SQLiteCommand, SQLiteParameter>, IClass1DataSource
     {
         private readonly ReaderWriterLockSlim m_SyncLock = new ReaderWriterLockSlim(); //Sqlite is single-threaded for writes. It says otherwise, but it spams the trace window with exceptions.
@@ -68,7 +72,7 @@ namespace Tortuga.Chain.SQLite
         /// <param name="argumentValue"></param>
         /// <param name="options"></param>
         /// <returns></returns>
-        public ISingleRowDbCommandBuilder Delete(string tableName, object argumentValue, DeleteOptions options = DeleteOptions.None)
+        public SingleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> Delete(string tableName, object argumentValue, DeleteOptions options = DeleteOptions.None)
         {
             var table = DatabaseMetadata.GetTableOrView(tableName);
             if (!AuditRules.UseSoftDelete(table))
@@ -86,7 +90,7 @@ namespace Tortuga.Chain.SQLite
         /// </summary>
         /// <param name="tableOrViewName"></param>
         /// <returns></returns>
-        public IMultipleRowDbCommandBuilder From(string tableOrViewName)
+        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> From(string tableOrViewName)
         {
             return new SQLiteTableOrView(this, tableOrViewName, null, null);
         }
@@ -97,7 +101,7 @@ namespace Tortuga.Chain.SQLite
         /// <param name="tableOrViewName"></param>
         /// <param name="whereClause"></param>
         /// <returns></returns>
-        public IMultipleRowDbCommandBuilder From(string tableOrViewName, string whereClause)
+        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> From(string tableOrViewName, string whereClause)
         {
             return new SQLiteTableOrView(this, tableOrViewName, whereClause, null);
         }
@@ -109,7 +113,7 @@ namespace Tortuga.Chain.SQLite
         /// <param name="whereClause"></param>
         /// <param name="argumentValue"></param>
         /// <returns></returns>
-        public IMultipleRowDbCommandBuilder From(string tableOrViewName, string whereClause, object argumentValue)
+        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> From(string tableOrViewName, string whereClause, object argumentValue)
         {
             return new SQLiteTableOrView(this, tableOrViewName, whereClause, argumentValue);
         }
@@ -120,7 +124,7 @@ namespace Tortuga.Chain.SQLite
         /// <param name="tableOrViewName"></param>
         /// <param name="filterValue"></param>
         /// <returns></returns>
-        public IMultipleRowDbCommandBuilder From(string tableOrViewName, object filterValue)
+        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> From(string tableOrViewName, object filterValue)
         {
             return new SQLiteTableOrView(this, tableOrViewName, filterValue);
         }
@@ -224,6 +228,93 @@ namespace Tortuga.Chain.SQLite
         public SingleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> Update(string tableName, object argumentValue, UpdateOptions options = UpdateOptions.None)
         {
             return new SQLiteUpdateObject(this, tableName, argumentValue, options);
+        }
+
+
+        ISingleRowDbCommandBuilder IClass1DataSource.GetByKey<T>(string tableName, T key)
+        {
+            return GetByKey(tableName, key);
+        }
+
+        IMultipleRowDbCommandBuilder IClass1DataSource.GetByKey<T>(string tableName, IEnumerable<T> keys)
+        {
+            return GetByKey(tableName, keys);
+        }
+
+        IMultipleRowDbCommandBuilder IClass1DataSource.GetByKey<T>(string tableName, params T[] keys)
+        {
+            return GetByKey(tableName, (IEnumerable<T>)keys);
+        }
+
+        /// <summary>
+        /// Gets a record by its primary key.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="key">The key.</param>
+        /// <returns></returns>
+        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
+        public SingleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> GetByKey<T>(string tableName, T key)
+        {
+            var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).Columns.Where(c => c.IsPrimaryKey).ToList();
+            if (primaryKeys.Count != 1)
+                throw new MappingException($"GetByKey operation isn't allowed on {tableName} because it doesn't have a single primary key. Use DataSource.From instead.");
+
+            var columnMetadata = primaryKeys.Single();
+            var where = columnMetadata.SqlName + " = " + columnMetadata.SqlVariableName;
+
+            var parameters = new List<SQLiteParameter>();
+
+            var param = new SQLiteParameter(columnMetadata.SqlVariableName, key);
+            if (columnMetadata.DbType.HasValue)
+                param.DbType = columnMetadata.DbType.Value;
+            parameters.Add(param);
+
+
+            return new SQLiteTableOrView(this, tableName, where, parameters);
+        }
+
+        /// <summary>
+        /// Gets a set of records by their primary key.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="keys">The keys.</param>
+        /// <returns></returns>
+        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
+        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> GetByKey<T>(string tableName, params T[] keys)
+        {
+            return GetByKey(tableName, (IEnumerable<T>)keys);
+        }
+
+        /// <summary>
+        /// Gets a set of records by their primary key.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="keys">The keys.</param>
+        /// <returns></returns>
+        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
+        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> GetByKey<T>(string tableName, IEnumerable<T> keys)
+        {
+            var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).Columns.Where(c => c.IsPrimaryKey).ToList();
+            if (primaryKeys.Count != 1)
+                throw new MappingException($"GetByKey operation isn't allowed on {tableName} because it doesn't have a single primary key. Use DataSource.From instead.");
+
+            var keyList = keys.AsList();
+            var columnMetadata = primaryKeys.Single();
+            var where = columnMetadata.SqlName + " IN (" + string.Join(", ", keyList.Select((s, i) => "@Param" + i)) + ")";
+
+            var parameters = new List<SQLiteParameter>();
+            for (var i = 0; i < keyList.Count; i++)
+            {
+                var param = new SQLiteParameter("@Param" + i, keyList[i]);
+                if (columnMetadata.DbType.HasValue)
+                    param.DbType = columnMetadata.DbType.Value;
+                parameters.Add(param);
+            }
+
+            return new SQLiteTableOrView(this, tableName, where, parameters);
         }
     }
 
