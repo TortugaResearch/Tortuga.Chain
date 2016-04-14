@@ -319,6 +319,12 @@
     <Compile Include="..\Tortuga.Chain.Core.source\Materializers\DataTableMaterializer`2.cs">
       <Link>Materializers\DataTableMaterializer`2.cs</Link>
     </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\DynamicCollectionMaterializer`2.cs">
+      <Link>Materializers\DynamicCollectionMaterializer`2.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\DynamicObjectMaterializer`2.cs">
+      <Link>Materializers\DynamicObjectMaterializer`2.cs</Link>
+    </Compile>
     <Compile Include="..\Tortuga.Chain.Core.source\Materializers\Materializer.cs">
       <Link>Materializer.cs</Link>
     </Compile>
@@ -336,6 +342,9 @@
     </Compile>
     <Compile Include="..\Tortuga.Chain.Core.source\Materializers\RowMaterializer`2.cs">
       <Link>Materializers\RowMaterializer`2.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\RowsAffectedMaterializer`2.cs">
+      <Link>Materializers\RowsAffectedMaterializer`2.cs</Link>
     </Compile>
     <Compile Include="..\Tortuga.Chain.Core.source\Materializers\Scalar\BooleanMaterializer`2.cs">
       <Link>Materializers\Scalar\BooleanMaterializer`2.cs</Link>

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Collections.Immutable;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Tortuga.Chain.CommandBuilders;
 
@@ -16,7 +13,7 @@ namespace Tortuga.Chain.Metadata
     public sealed class TableOrViewMetadata<TName, TDbType> : ITableOrViewMetadata
         where TDbType : struct
     {
-        private readonly ConcurrentDictionary<Tuple<Type, GetPropertiesFilter>, Lazy<ImmutableArray<ColumnPropertyMap<TDbType>>>> m_PropertyMap = new ConcurrentDictionary<Tuple<Type, GetPropertiesFilter>, Lazy<ImmutableArray<ColumnPropertyMap<TDbType>>>>();
+        //private readonly ConcurrentDictionary<Tuple<Type, GetPropertiesFilter>, Lazy<ImmutableArray<ColumnPropertyMap<TDbType>>>> m_PropertyMap = new ConcurrentDictionary<Tuple<Type, GetPropertiesFilter>, Lazy<ImmutableArray<ColumnPropertyMap<TDbType>>>>();
 
         /// <summary>
         /// </summary>
