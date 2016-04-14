@@ -130,6 +130,38 @@ namespace Tortuga.Chain.CommandBuilders
                 throw new MappingException($"None of the keys could be matched to columns in {m_Name}.");
         }
 
+        public void BuildOrderByClause(StringBuilder sql, string header, IEnumerable<SortExpression> sortExpressions, string footer)
+        {
+            if (sql == null)
+                throw new ArgumentNullException(nameof(sql), $"{nameof(sql)} is null.");
+
+            if (sortExpressions == null || sortExpressions.Count() == 0)
+                return;
+
+
+            foreach (var expression in sortExpressions)
+            {
+                for (var i = 0; i < m_Entries.Length; i++)
+                {
+                    var details = m_Entries[i].Details;
+                    if (details.SqlName.Equals(expression.ColumnName, StringComparison.OrdinalIgnoreCase) || details.ClrName.Equals(expression.ColumnName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        expression.Column = details;
+                        break;
+                    }
+
+                }
+                if (expression.Column == null)
+                    throw new MappingException($"Cannot find a column on {m_Name} named {expression.ColumnName}");
+            }
+
+            sql.Append(header);
+            sql.Append(string.Join(", ", sortExpressions.Select(s => s.ColumnName + (s.Direction == SortDirection.Descending ? " DESC " : null))));
+            sql.Append(footer);
+
+        }
+
+
         /// <summary>
         /// Applies the argument value.
         /// </summary>

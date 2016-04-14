@@ -8,6 +8,8 @@ using System.Data;
 
 namespace Tortuga.Chain.CommandBuilders
 {
+
+
     /// <summary>
     /// This allows the use of multi-row materializers against a command builder.
     /// </summary>

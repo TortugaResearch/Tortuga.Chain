@@ -20,12 +20,13 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
     /// <summary>
     /// SQliteTableOrView supports queries against tables and views.
     /// </summary>
-    internal sealed class SQLiteTableOrView : MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter>
+    internal sealed class SQLiteTableOrView : TableDbCommandBuilder<SQLiteCommand, SQLiteParameter>
     {
         private readonly object m_FilterValue;
         private readonly TableOrViewMetadata<string, DbType> m_Metadata;
         private readonly string m_WhereClause;
         private readonly object m_ArgumentValue;
+        private IEnumerable<SortExpression> m_SortExpressions;
 
         //public object MetadataCache { get; private set; }
 
@@ -101,11 +102,22 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
                 sqlBuilder.BuildSoftDeleteClause(sql, " WHERE ", DataSource, null);
                 parameters = sqlBuilder.GetParameters();
             }
+            sqlBuilder.BuildOrderByClause(sql, " ORDER BY ", m_SortExpressions, null);
             sql.Append(";");
 
             return new SQLiteExecutionToken(DataSource, "Query " + m_Metadata.Name, sql.ToString(), parameters, lockType: LockType.Read);
         }
 
+        /// <summary>
+        /// Adds sorting to the command builder.
+        /// </summary>
+        /// <param name="sortExpressions">The sort expressions.</param>
+        /// <returns></returns>
+        public override TableDbCommandBuilder<SQLiteCommand, SQLiteParameter> WithSorting(IEnumerable<SortExpression> sortExpressions)
+        {
+            m_SortExpressions = sortExpressions;
+            return this;
+        }
     }
 }
 

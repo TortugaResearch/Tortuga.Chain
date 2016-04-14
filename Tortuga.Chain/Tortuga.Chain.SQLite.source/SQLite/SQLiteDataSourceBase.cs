@@ -90,7 +90,7 @@ namespace Tortuga.Chain.SQLite
         /// </summary>
         /// <param name="tableOrViewName"></param>
         /// <returns></returns>
-        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> From(string tableOrViewName)
+        public TableDbCommandBuilder<SQLiteCommand, SQLiteParameter> From(string tableOrViewName)
         {
             return new SQLiteTableOrView(this, tableOrViewName, null, null);
         }
@@ -101,7 +101,7 @@ namespace Tortuga.Chain.SQLite
         /// <param name="tableOrViewName"></param>
         /// <param name="whereClause"></param>
         /// <returns></returns>
-        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> From(string tableOrViewName, string whereClause)
+        public TableDbCommandBuilder<SQLiteCommand, SQLiteParameter> From(string tableOrViewName, string whereClause)
         {
             return new SQLiteTableOrView(this, tableOrViewName, whereClause, null);
         }
@@ -113,7 +113,7 @@ namespace Tortuga.Chain.SQLite
         /// <param name="whereClause"></param>
         /// <param name="argumentValue"></param>
         /// <returns></returns>
-        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> From(string tableOrViewName, string whereClause, object argumentValue)
+        public TableDbCommandBuilder<SQLiteCommand, SQLiteParameter> From(string tableOrViewName, string whereClause, object argumentValue)
         {
             return new SQLiteTableOrView(this, tableOrViewName, whereClause, argumentValue);
         }
@@ -124,7 +124,7 @@ namespace Tortuga.Chain.SQLite
         /// <param name="tableOrViewName"></param>
         /// <param name="filterValue"></param>
         /// <returns></returns>
-        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> From(string tableOrViewName, object filterValue)
+        public TableDbCommandBuilder<SQLiteCommand, SQLiteParameter> From(string tableOrViewName, object filterValue)
         {
             return new SQLiteTableOrView(this, tableOrViewName, filterValue);
         }
@@ -134,22 +134,22 @@ namespace Tortuga.Chain.SQLite
             return Delete(tableName, argumentValue, options);
         }
 
-        IMultipleRowDbCommandBuilder IClass1DataSource.From(string tableOrViewName)
+        ITableDbCommandBuilder IClass1DataSource.From(string tableOrViewName)
         {
             return From(tableOrViewName);
         }
 
-        IMultipleRowDbCommandBuilder IClass1DataSource.From(string tableOrViewName, string whereClause)
+        ITableDbCommandBuilder IClass1DataSource.From(string tableOrViewName, string whereClause)
         {
             return From(tableOrViewName, whereClause);
         }
 
-        IMultipleRowDbCommandBuilder IClass1DataSource.From(string tableOrViewName, string whereClause, object argumentValue)
+        ITableDbCommandBuilder IClass1DataSource.From(string tableOrViewName, string whereClause, object argumentValue)
         {
             return From(tableOrViewName, whereClause, argumentValue);
         }
 
-        IMultipleRowDbCommandBuilder IClass1DataSource.From(string tableOrViewName, object filterValue)
+        ITableDbCommandBuilder IClass1DataSource.From(string tableOrViewName, object filterValue)
         {
             return From(tableOrViewName, filterValue);
         }

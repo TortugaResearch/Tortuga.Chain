@@ -67,7 +67,7 @@ namespace Tortuga.Chain.SqlServer
         /// or
         /// Table or view named + tableName +  could not be found. Check to see if the user has permissions to execute this procedure.
         /// </exception>
-        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> From(SqlServerObjectName tableOrViewName)
+        public TableDbCommandBuilder<SqlCommand, SqlParameter> From(SqlServerObjectName tableOrViewName)
         {
             return new SqlServerTableOrView(this, tableOrViewName, null, null);
         }
@@ -79,7 +79,7 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="whereClause">The where clause. Do not prefix this clause with "WHERE".</param>
         /// <returns>SqlServerTableOrView.</returns>
         /// <exception cref="ArgumentException">tableOrViewName is empty.;tableOrViewName</exception>
-        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> From(SqlServerObjectName tableOrViewName, string whereClause)
+        public TableDbCommandBuilder<SqlCommand, SqlParameter> From(SqlServerObjectName tableOrViewName, string whereClause)
         {
             return new SqlServerTableOrView(this, tableOrViewName, whereClause, null);
         }
@@ -92,7 +92,7 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="argumentValue">Optional argument value. Every property in the argument value must have a matching parameter in the WHERE clause</param>
         /// <returns>SqlServerTableOrView.</returns>
         /// <exception cref="ArgumentException">tableOrViewName is empty.;tableOrViewName</exception>
-        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> From(SqlServerObjectName tableOrViewName, string whereClause, object argumentValue)
+        public TableDbCommandBuilder<SqlCommand, SqlParameter> From(SqlServerObjectName tableOrViewName, string whereClause, object argumentValue)
         {
             return new SqlServerTableOrView(this, tableOrViewName, whereClause, argumentValue);
         }
@@ -104,7 +104,7 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="filterValue">The filter value is used to generate a simple AND style WHERE clause.</param>
         /// <returns>SqlServerTableOrView.</returns>
         /// <exception cref="ArgumentException">tableOrViewName is empty.;tableOrViewName</exception>
-        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> From(SqlServerObjectName tableOrViewName, object filterValue)
+        public TableDbCommandBuilder<SqlCommand, SqlParameter> From(SqlServerObjectName tableOrViewName, object filterValue)
         {
             return new SqlServerTableOrView(this, tableOrViewName, filterValue);
         }
@@ -190,22 +190,22 @@ namespace Tortuga.Chain.SqlServer
             return Delete(tableName, argumentValue, options);
         }
 
-        IMultipleRowDbCommandBuilder IClass1DataSource.From(string tableOrViewName)
+        ITableDbCommandBuilder IClass1DataSource.From(string tableOrViewName)
         {
             return From(tableOrViewName);
         }
 
-        IMultipleRowDbCommandBuilder IClass1DataSource.From(string tableOrViewName, object filterValue)
+        ITableDbCommandBuilder IClass1DataSource.From(string tableOrViewName, object filterValue)
         {
             return From(tableOrViewName, filterValue);
         }
 
-        IMultipleRowDbCommandBuilder IClass1DataSource.From(string tableOrViewName, string whereClause)
+        ITableDbCommandBuilder IClass1DataSource.From(string tableOrViewName, string whereClause)
         {
             return From(tableOrViewName, whereClause);
         }
 
-        IMultipleRowDbCommandBuilder IClass1DataSource.From(string tableOrViewName, string whereClause, object argumentValue)
+        ITableDbCommandBuilder IClass1DataSource.From(string tableOrViewName, string whereClause, object argumentValue)
         {
             return From(tableOrViewName, whereClause, argumentValue);
         }

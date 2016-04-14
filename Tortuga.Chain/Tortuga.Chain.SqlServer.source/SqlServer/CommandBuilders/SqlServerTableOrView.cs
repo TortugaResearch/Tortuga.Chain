@@ -17,12 +17,13 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
     /// <summary>
     /// SqlServerTableOrView supports queries against tables and views.
     /// </summary>
-    internal sealed class SqlServerTableOrView : MultipleRowDbCommandBuilder<SqlCommand, SqlParameter>, ISupportsChangeListener
+    internal sealed class SqlServerTableOrView : TableDbCommandBuilder<SqlCommand, SqlParameter>, ISupportsChangeListener
     {
         private readonly object m_FilterValue;
         private readonly TableOrViewMetadata<SqlServerObjectName, SqlDbType> m_Metadata;
         private readonly string m_WhereClause;
         private readonly object m_ArgumentValue;
+        private IEnumerable<SortExpression> m_SortExpressions;
 
 
         /// <summary>
@@ -94,6 +95,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
                 sqlBuilder.BuildSoftDeleteClause(sql, " WHERE ", DataSource, null);
                 parameters = sqlBuilder.GetParameters();
             }
+            sqlBuilder.BuildOrderByClause(sql, " ORDER BY ", m_SortExpressions, null);
             sql.Append(";");
 
             return new SqlServerExecutionToken(DataSource, "Query " + m_Metadata.Name, sql.ToString(), parameters);
@@ -114,6 +116,17 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         SqlServerExecutionToken ISupportsChangeListener.Prepare(Materializer<SqlCommand, SqlParameter> materializer)
         {
             return (SqlServerExecutionToken)Prepare(materializer);
+        }
+
+        /// <summary>
+        /// Adds sorting to the command builder.
+        /// </summary>
+        /// <param name="sortExpressions">The sort expressions.</param>
+        /// <returns></returns>
+        public override TableDbCommandBuilder<SqlCommand, SqlParameter> WithSorting(IEnumerable<SortExpression> sortExpressions)
+        {
+            m_SortExpressions = sortExpressions;
+            return this;
         }
 
         /// <summary>

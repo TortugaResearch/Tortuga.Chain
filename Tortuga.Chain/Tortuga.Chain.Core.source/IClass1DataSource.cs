@@ -47,7 +47,7 @@ namespace Tortuga.Chain
         /// or
         /// Table or view named + tableName +  could not be found. Check to see if the user has permissions to execute this procedure.
         /// </exception>
-        IMultipleRowDbCommandBuilder From(string tableOrViewName);
+        ITableDbCommandBuilder From(string tableOrViewName);
 
         /// <summary>
         /// This is used to directly query a table or view.
@@ -55,7 +55,7 @@ namespace Tortuga.Chain
         /// <param name="tableOrViewName">Name of the table or view.</param>
         /// <param name="whereClause">The where clause. Do not prefix this clause with "WHERE".</param>
         /// <exception cref="ArgumentException">tableOrViewName is empty.;tableOrViewName</exception>
-        IMultipleRowDbCommandBuilder From(string tableOrViewName, string whereClause);
+        ITableDbCommandBuilder From(string tableOrViewName, string whereClause);
 
         /// <summary>
         /// This is used to directly query a table or view.
@@ -64,7 +64,7 @@ namespace Tortuga.Chain
         /// <param name="whereClause">The where clause. Do not prefix this clause with "WHERE".</param>
         /// <param name="argumentValue">Optional argument value. Every property in the argument value must have a matching parameter in the WHERE clause</param>
         /// <exception cref="ArgumentException">tableOrViewName is empty.;tableOrViewName</exception>
-        IMultipleRowDbCommandBuilder From(string tableOrViewName, string whereClause, object argumentValue);
+        ITableDbCommandBuilder From(string tableOrViewName, string whereClause, object argumentValue);
 
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace Tortuga.Chain
         /// <param name="tableOrViewName">Name of the table or view.</param>
         /// <param name="filterValue">The filter value is used to generate a simple AND style WHERE clause.</param>
         /// <exception cref="ArgumentException">tableOrViewName is empty.;tableOrViewName</exception>
-        IMultipleRowDbCommandBuilder From(string tableOrViewName, object filterValue);
+        ITableDbCommandBuilder From(string tableOrViewName, object filterValue);
 
         /// <summary>
         /// Inserts an object into the specified table.

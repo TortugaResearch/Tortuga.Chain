@@ -104,6 +104,8 @@
     <Compile Include="CommandBuilders\IMultipleRowDbCommandBuilder.cs" />
     <Compile Include="CommandBuilders\IMultipleTableDbCommandBuilder.cs" />
     <Compile Include="CommandBuilders\ISingleRowDbCommandBuilder.cs" />
+    <Compile Include="CommandBuilders\ITableDbCommandBuilder.cs" />
+    <Compile Include="CommandBuilders\TableDbCommandBuilder.cs" />
     <Compile Include="CommonAppenders.cs" />
     <Compile Include="Core\ExecutionTokenPreparedEventArgs.cs" />
     <Compile Include="Core\ExecutionTokenPreparingEventArgs.cs" />
@@ -192,6 +194,7 @@
     <Compile Include="AuditRules\SoftDeleteRule.cs" />
     <Compile Include="AuditRules\DateTimeOffsetRule.cs" />
     <Compile Include="AuditRules\DateTimeRule.cs" />
+    <Compile Include="SortExpression.cs" />
     <Compile Include="UpsertOptions.cs" />
     <Compile Include="ListOptions.cs" />
     <Compile Include="Metadata\ColumnMetadata`1.cs" />
