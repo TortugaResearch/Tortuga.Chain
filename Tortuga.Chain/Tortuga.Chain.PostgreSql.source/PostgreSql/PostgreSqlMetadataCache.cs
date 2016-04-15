@@ -63,7 +63,6 @@ namespace Tortuga.Chain.PostgreSql
         /// <summary>
         /// Preloads all of the metadata for this data source.
         /// </summary>
-        /// <exception cref="NotImplementedException"></exception>
         public override void Preload()
         {
             PreloadTables();

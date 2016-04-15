@@ -64,11 +64,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Tortuga.Chain.Core.net461\Tortuga.Chain.Core.source.csproj">
+    <ProjectReference Include="..\Tortuga.Chain.Core.source\Tortuga.Chain.Core.source.csproj">
       <Project>{2c523692-a40b-4a7e-a95a-fbe373f263f7}</Project>
       <Name>Tortuga.Chain.Core.source</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Tortuga.Chain.PostgreSql.net461\Tortuga.Chain.PostgreSql.source.csproj">
+    <ProjectReference Include="..\Tortuga.Chain.PostgreSql.source\Tortuga.Chain.PostgreSql.source.csproj">
       <Project>{98f3b971-7741-43f0-9be8-2a53f2a4f611}</Project>
       <Name>Tortuga.Chain.PostgreSql.source</Name>
     </ProjectReference>

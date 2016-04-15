@@ -44,6 +44,8 @@
       <HintPath>..\packages\Npgsql.3.0.5\lib\net45\Npgsql.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Collections.Immutable, Version=1.1.37.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Collections.Immutable.1.1.37\lib\dotnet\System.Collections.Immutable.dll</HintPath>
@@ -62,8 +64,12 @@
       <HintPath>..\packages\Tortuga.Anchor.0.4.5935.6732\lib\net46\Tortuga.Anchor.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PostgreSqlDataSource.cs" />
+    <Compile Include="PostgreSql\CommandBuilders\PostgreSqlSqlCall.cs" />
+    <Compile Include="PostgreSql\CommandBuilders\PostgreSqlTableOrView.cs" />
     <Compile Include="PostgreSql\PostgreSqlDataSourceBase.cs" />
     <Compile Include="PostgreSql\PostgreSqlMetadataCache.cs" />
     <Compile Include="PostgreSql\PostgreSqlObjectName.cs" />
