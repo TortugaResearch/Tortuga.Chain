@@ -113,6 +113,7 @@
     <Compile Include="DataSources\DataSource.cs" />
     <Compile Include="DataSources\DataSource`2.cs" />
     <Compile Include="CommandBuilders\DbCommandBuilder`2.cs" />
+    <Compile Include="InsertBatchOptions.cs" />
     <Compile Include="InsertOptions.cs" />
     <Compile Include="DeleteOptions.cs" />
     <Compile Include="Core\CommandBuiltEventArgs.cs" />
@@ -123,6 +124,7 @@
     <Compile Include="IClass0DataSource.cs" />
     <Compile Include="IClass1DataSource.cs" />
     <Compile Include="IClass2DataSource.cs" />
+    <Compile Include="LimitOptions.cs" />
     <Compile Include="MappingException.cs" />
     <Compile Include="Appenders\ReadOrCacheResultAppender`1.cs" />
     <Compile Include="ILink`1.cs" />

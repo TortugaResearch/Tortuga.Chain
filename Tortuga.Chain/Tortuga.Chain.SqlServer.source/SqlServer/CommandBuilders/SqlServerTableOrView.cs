@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,13 +18,17 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
     /// <summary>
     /// SqlServerTableOrView supports queries against tables and views.
     /// </summary>
-    internal sealed class SqlServerTableOrView : TableDbCommandBuilder<SqlCommand, SqlParameter>, ISupportsChangeListener
+    internal sealed class SqlServerTableOrView : TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOptions>, ISupportsChangeListener
     {
         private readonly object m_FilterValue;
         private readonly TableOrViewMetadata<SqlServerObjectName, SqlDbType> m_Metadata;
         private readonly string m_WhereClause;
         private readonly object m_ArgumentValue;
-        private IEnumerable<SortExpression> m_SortExpressions;
+        private IEnumerable<SortExpression> m_SortExpressions = Enumerable.Empty<SortExpression>();
+        private SqlServerLimitOptions m_LimitOptions;
+        private int? m_Skip;
+        private int? m_Take;
+        private int? m_Seed;
 
 
         /// <summary>
@@ -70,10 +75,59 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             var sqlBuilder = m_Metadata.CreateSqlBuilder(StrictMode);
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
-            List<SqlParameter> parameters;
+            //Support check
+            if (!Enum.IsDefined(typeof(SqlServerLimitOptions), m_LimitOptions))
+                throw new NotSupportedException($"SQL Server does not support limit option {(LimitOptions)m_LimitOptions}");
 
+            //Validation
+            if (m_Skip < 0)
+                throw new InvalidOperationException($"Cannot skip {m_Skip} rows");
+
+            if (m_Skip > 0 && m_LimitOptions != SqlServerLimitOptions.Rows)
+                throw new InvalidOperationException($"Cannot perform a Skip operation with limit option {m_LimitOptions}");
+
+            if (m_Take <= 0)
+                throw new InvalidOperationException($"Cannot take {m_Take} rows");
+
+            if ((m_LimitOptions == SqlServerLimitOptions.TableSampleSystemRows|| m_LimitOptions == SqlServerLimitOptions.TableSampleSystemPercentage) && m_SortExpressions.Any())
+                throw new InvalidOperationException($"Cannot perform random sampling when sorting.");
+
+            if ((m_LimitOptions == SqlServerLimitOptions.RowsWithTies || m_LimitOptions == SqlServerLimitOptions.PercentageWithTies) && !m_SortExpressions.Any())
+                throw new InvalidOperationException($"Cannot perform a WITH TIES operation without sorting.");
+
+            //SQL Generation
+            List<SqlParameter> parameters;
             var sql = new StringBuilder();
-            sqlBuilder.BuildSelectClause(sql, "SELECT ", null, " FROM " + m_Metadata.Name.ToQuotedString());
+
+            string topClause = null;
+            switch (m_LimitOptions)
+            {
+                case SqlServerLimitOptions.Percentage:
+                    topClause = $"TOP (@fetch_row_count_expression) PERCENT ";
+                    break;
+                case SqlServerLimitOptions.PercentageWithTies:
+                    topClause = $"TOP (@fetch_row_count_expression) PERCENT WITH TIES ";
+                    break;
+                case SqlServerLimitOptions.RowsWithTies:
+                    topClause = $"TOP (@fetch_row_count_expression) WITH TIES ";
+                    break;
+            }
+
+            sqlBuilder.BuildSelectClause(sql, "SELECT " + topClause, null, " FROM " + m_Metadata.Name.ToQuotedString());
+
+            switch (m_LimitOptions)
+            {
+                case SqlServerLimitOptions.TableSampleSystemRows:
+                    sql.Append($" TABLESAMPLE SYSTEM ({m_Take} ROWS) ");
+                    if (m_Seed.HasValue)
+                        sql.Append($"REPEATABLE ({m_Seed}) ");
+                    break;
+                case SqlServerLimitOptions.TableSampleSystemPercentage:
+                    sql.Append($" TABLESAMPLE SYSTEM ({m_Take} PERCENT) ");
+                    if (m_Seed.HasValue)
+                        sql.Append($"REPEATABLE ({m_Seed}) ");
+                    break;
+            }
 
             if (m_FilterValue != null)
             {
@@ -96,6 +150,30 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
                 parameters = sqlBuilder.GetParameters();
             }
             sqlBuilder.BuildOrderByClause(sql, " ORDER BY ", m_SortExpressions, null);
+
+            switch (m_LimitOptions)
+            {
+                case SqlServerLimitOptions.Rows:
+
+                    sql.Append(" OFFSET @offset_row_count_expression ROWS ");
+                    parameters.Add(new SqlParameter("@offset_row_count_expression", m_Skip ?? 0));
+
+                    if (m_Take.HasValue)
+                    {
+                        sql.Append(" FETCH NEXT @fetch_row_count_expression ROWS ONLY");
+                        parameters.Add(new SqlParameter("@fetch_row_count_expression", m_Take));
+                    }
+
+                    break;
+
+                case SqlServerLimitOptions.Percentage:
+                case SqlServerLimitOptions.PercentageWithTies:
+                case SqlServerLimitOptions.RowsWithTies:
+                    parameters.Add(new SqlParameter("@fetch_row_count_expression", m_Take));
+
+                    break;
+            }
+
             sql.Append(";");
 
             return new SqlServerExecutionToken(DataSource, "Query " + m_Metadata.Name, sql.ToString(), parameters);
@@ -123,9 +201,30 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// </summary>
         /// <param name="sortExpressions">The sort expressions.</param>
         /// <returns></returns>
-        public override TableDbCommandBuilder<SqlCommand, SqlParameter> WithSorting(IEnumerable<SortExpression> sortExpressions)
+        public override TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOptions> WithSorting(IEnumerable<SortExpression> sortExpressions)
         {
+            if (sortExpressions == null)
+                throw new ArgumentNullException(nameof(sortExpressions), $"{nameof(sortExpressions)} is null.");
+
             m_SortExpressions = sortExpressions;
+            return this;
+        }
+
+        protected override TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOptions> OnWithLimits(int? skip, int? take, SqlServerLimitOptions limitOptions, int? seed)
+        {
+            m_Seed = seed;
+            m_Skip = skip;
+            m_Take = take;
+            m_LimitOptions = limitOptions;
+            return this;
+        }
+
+        protected override TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOptions> OnWithLimits(int? skip, int? take, LimitOptions limitOptions, int? seed)
+        {
+            m_Seed = seed;
+            m_Skip = skip;
+            m_Take = take;
+            m_LimitOptions = (SqlServerLimitOptions)limitOptions;
             return this;
         }
 

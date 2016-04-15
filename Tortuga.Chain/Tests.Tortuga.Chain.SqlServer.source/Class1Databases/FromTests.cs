@@ -9,6 +9,36 @@ namespace Tests.Class1Databases
     [TestClass]
     public class FromTests : TestBase
     {
+        //static string Key10;
+        //static string Key100;
+        static string Key1000;
+        //static string Key10000;
+
+        [ClassInitialize()]
+        public static void AssemblyInit(TestContext context)
+        {
+            using (var trans = DataSource.BeginTransaction())
+            {
+                //Key10 = Guid.NewGuid().ToString();
+                //for (var i = 0; i < 100 i++)
+                //    DataSource.Insert(EmployeeTableName, new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = Key10 }).ToObject<Employee>().Execute();
+
+                //Key100 = Guid.NewGuid().ToString();
+                //for (var i = 0; i < 100; i++)
+                //    DataSource.Insert(EmployeeTableName, new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = Key100 }).ToObject<Employee>().Execute();
+
+                Key1000 = Guid.NewGuid().ToString();
+                for (var i = 0; i < 1000; i++)
+                    trans.Insert(EmployeeTableName, new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = Key1000 }).ToObject<Employee>().Execute();
+
+                //Key10000 = Guid.NewGuid().ToString();
+                //for (var i = 0; i < 10000; i++)
+                //    DataSource.Insert(EmployeeTableName, new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = Key10000 }).ToObject<Employee>().Execute();
+
+                trans.Commit();
+            }
+        }
+
         [TestMethod]
         public void FromTests_Sorting()
         {
@@ -67,5 +97,152 @@ namespace Tests.Class1Databases
             Assert.IsTrue(list.Any(e => e.EmployeeKey == emp4.EmployeeKey));
 
         }
+
+
+
+
+        [TestMethod]
+        public void FromTests_Take()
+        {
+
+            var result = DataSource.From(EmployeeTableName, new { Title = Key1000 }).WithSorting("FirstName").WithLimits(10).ToCollection<Employee>().Execute();
+            Assert.AreEqual(10, result.Count, "Count");
+            foreach (var item in result)
+            {
+                Assert.AreEqual(Key1000, item.Title, "Filter");
+                Assert.IsTrue(int.Parse(item.FirstName) >= 0, "Range");
+                Assert.IsTrue(int.Parse(item.FirstName) < 10, "Range");
+            }
+
+
+        }
+
+        [TestMethod]
+        public void FromTests_SkipTake()
+        {
+
+
+            var result = DataSource.From(EmployeeTableName, new { Title = Key1000 }).WithSorting("FirstName").WithLimits(10, 15).ToCollection<Employee>().Execute();
+            Assert.AreEqual(15, result.Count, "Count");
+            foreach (var item in result)
+            {
+                Assert.AreEqual(Key1000, item.Title, "Filter");
+                Assert.IsTrue(int.Parse(item.FirstName) >= 10, "Range");
+                Assert.IsTrue(int.Parse(item.FirstName) < 25, "Range");
+            }
+
+        }
+
+#if SqlServer
+        [TestMethod]
+        public void FromTests_TakePercent()
+        {
+
+
+            var result = DataSource.From(EmployeeTableName, new { Title = Key1000 }).WithSorting("FirstName").WithLimits(10, SqlServerLimitOptions.Percentage).ToCollection<Employee>().Execute();
+            Assert.AreEqual(100, result.Count, "Count");
+            foreach (var item in result)
+            {
+                Assert.AreEqual(Key1000, item.Title, "Filter");
+                Assert.IsTrue(int.Parse(item.FirstName) >= 0, "Range");
+                Assert.IsTrue(int.Parse(item.FirstName) < 100, "Range");
+            }
+
+
+        }
+
+        [TestMethod]
+        public void FromTests_TakePercentWithTies()
+        {
+
+            var result = DataSource.From(EmployeeTableName, new { Title = Key1000 }).WithSorting("FirstName").WithLimits(10, SqlServerLimitOptions.PercentageWithTies).ToCollection<Employee>().Execute();
+            Assert.AreEqual(100, result.Count, "Count");
+            foreach (var item in result)
+            {
+                Assert.AreEqual(Key1000, item.Title, "Filter");
+                Assert.IsTrue(int.Parse(item.FirstName) >= 0, "Range");
+                Assert.IsTrue(int.Parse(item.FirstName) < 100, "Range");
+            }
+
+
+        }
+
+        [TestMethod]
+        public void FromTests_TakeWithTies()
+        {
+            var result = DataSource.From(EmployeeTableName, new { Title = Key1000 }).WithSorting("FirstName").WithLimits(10, SqlServerLimitOptions.RowsWithTies).ToCollection<Employee>().Execute();
+            Assert.AreEqual(10, result.Count, "Count");
+            foreach (var item in result)
+            {
+                Assert.AreEqual(Key1000, item.Title, "Filter");
+                Assert.IsTrue(int.Parse(item.FirstName) >= 0, "Range");
+                Assert.IsTrue(int.Parse(item.FirstName) < 10, "Range");
+            }
+
+
+        }
+
+        [TestMethod]
+        public void FromTests_TableSampleSystemPercentage()
+        {
+            var result = DataSource.From(EmployeeTableName, new { Title = Key1000 }).WithLimits(100, SqlServerLimitOptions.TableSampleSystemPercentage).ToCollection<Employee>().Execute();
+
+            //SQL Server is really inaccurate here for low row counts. We could get 0 rows, 55 rows, or 175 rows depending on where the data lands on the page.
+            foreach (var item in result)
+            {
+                Assert.AreEqual(Key1000, item.Title, "Filter");
+            }
+        }
+
+        [TestMethod]
+        public void FromTests_TableSampleSystemRows()
+        {
+            var result = DataSource.From(EmployeeTableName, new { Title = Key1000 }).WithLimits(100, SqlServerLimitOptions.TableSampleSystemRows).ToCollection<Employee>().Execute();
+
+            //SQL Server is really inaccurate here for low row counts. We could get 0 rows, 55 rows, or 175 rows depending on where the data lands on the page.
+            foreach (var item in result)
+            {
+                Assert.AreEqual(Key1000, item.Title, "Filter");
+            }
+        }
+
+        [TestMethod]
+        public void FromTests_TableSampleSystemPercentage_Repeatable()
+        {
+            var seed = 1;
+            var result1 = DataSource.From(EmployeeTableName, new { Title = Key1000 }).WithLimits(100, SqlServerLimitOptions.TableSampleSystemPercentage, seed).ToCollection<Employee>().Execute();
+            var result2 = DataSource.From(EmployeeTableName, new { Title = Key1000 }).WithLimits(100, SqlServerLimitOptions.TableSampleSystemPercentage, seed).ToCollection<Employee>().Execute();
+
+            Assert.AreEqual(result1.Count, result2.Count, "Row count");
+        }
+
+        [TestMethod]
+        public void FromTests_TableSampleSystemRows_Repeatable()
+        {
+            var seed = 1;
+            var result1 = DataSource.From(EmployeeTableName, new { Title = Key1000 }).WithLimits(100, SqlServerLimitOptions.TableSampleSystemRows, seed).ToCollection<Employee>().Execute();
+            var result2 = DataSource.From(EmployeeTableName, new { Title = Key1000 }).WithLimits(100, SqlServerLimitOptions.TableSampleSystemRows, seed).ToCollection<Employee>().Execute();
+
+            Assert.AreEqual(result1.Count, result2.Count, "Row count");
+        }
+
+#endif
+
+#if SQLite
+
+
+        [TestMethod]
+        public void FromTests_TakeRandom()
+        {
+            var result = DataSource.From(EmployeeTableName, new { Title = Key1000 }).WithLimits(100, SQLiteLimitOptions.RandomSampleRows).ToCollection<Employee>().Execute();
+            Assert.AreEqual(100, result.Count, "Count");
+            foreach (var item in result)
+            {
+                Assert.AreEqual(Key1000, item.Title, "Filter");
+            }
+        }
+#endif
+
+
     }
 }

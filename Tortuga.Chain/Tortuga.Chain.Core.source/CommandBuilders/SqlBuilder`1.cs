@@ -138,7 +138,6 @@ namespace Tortuga.Chain.CommandBuilders
             if (sortExpressions == null || sortExpressions.Count() == 0)
                 return;
 
-
             foreach (var expression in sortExpressions)
             {
                 for (var i = 0; i < m_Entries.Length; i++)

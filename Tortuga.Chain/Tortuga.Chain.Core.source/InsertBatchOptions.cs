@@ -1,12 +1,13 @@
-using System;
+﻿using System;
 
 namespace Tortuga.Chain
 {
+
     /// <summary>
-    /// Controls what happens when performing a model-based insert
+    /// Controls what happens when performing a insert across a set of records
     /// </summary>
     [Flags]
-    public enum InsertOptions
+    public enum InsertBatchOptions
     {
 
         /// <summary>
@@ -23,7 +24,13 @@ namespace Tortuga.Chain
         /// <remarks>This may require elevated privileges.</remarks>
         IdentityOverride = 2
         */
-    }
 
-        
+        /*
+         * Task-48: Add support for bulk insert
+        /// <summary>
+        /// Use the database's bulk copy option instead of using SQL
+        /// </summary>
+        BulkCopy = 4
+        */
+    }
 }

@@ -21,5 +21,27 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="sortExpressions">The sort expressions.</param>
         /// <returns></returns>
         ITableDbCommandBuilder WithSorting(IEnumerable<SortExpression> sortExpressions);
+
+
+        /// <summary>
+        /// Adds limits to the command builder.
+        /// </summary>
+        /// <param name="take">Number of rows to take.</param>
+        /// <param name="limitOptions">The limit options.</param>
+        /// <param name="seed">The seed for repeatable reads. Only applies to random sampling</param>
+        /// <returns></returns>
+        ITableDbCommandBuilder WithLimits(int take, LimitOptions limitOptions = LimitOptions.Rows, int? seed = null);
+
+
+        /// <summary>
+        /// Adds limits to the command builder.
+        /// </summary>
+        /// <param name="skip">The number of rows to skip.</param>
+        /// <param name="take">The number of rows to take.</param>
+        /// <returns></returns>
+        /// <remarks>Warning: row skipping using this method can be significantly slower than using a WHERE clause that uses an indexed column.</remarks>
+        ITableDbCommandBuilder WithLimits(int skip, int take);
+
+
     }
 }

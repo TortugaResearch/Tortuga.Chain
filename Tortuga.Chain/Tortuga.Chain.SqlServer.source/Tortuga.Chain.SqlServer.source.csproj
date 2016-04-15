@@ -50,7 +50,8 @@
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\Debug-Unchecked\</OutputPath>
     <DefineConstants>CODE_ANALYSIS;DEBUG;TRACE</DefineConstants>
-    <DocumentationFile>bin\Debug-Unchecked\Tortuga.Chain.SqlServer.XML</DocumentationFile>
+    <DocumentationFile>
+    </DocumentationFile>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <NoWarn>618</NoWarn>
     <DebugType>full</DebugType>
@@ -87,6 +88,7 @@
     </Compile>
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Properties\LibrarySharedAssemblyInfo.cs" />
+    <Compile Include="SqlServerLimitOptions.cs" />
     <Compile Include="SqlServer\Appenders\NotifyChangeAppender`1.cs" />
     <Compile Include="SqlServer\Materializers\WaitForChangeMaterializer`1.cs" />
     <Compile Include="SqlServer\Materializers\WaitForChangeMaterializer.cs" />
