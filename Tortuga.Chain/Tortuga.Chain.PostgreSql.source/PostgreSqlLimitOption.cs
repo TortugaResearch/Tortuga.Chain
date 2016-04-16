@@ -1,7 +1,7 @@
-﻿namespace Tortuga.Chain.PostgreSql
+﻿namespace Tortuga.Chain
 {
     /// <summary>
-    /// Limit options supported by Postgre SQL.
+    /// Limit options supported by PostgreSQL.
     /// </summary>
     /// <remarks>This is a strict subset of LimitOptions</remarks>
     public enum PostgreSqlLimitOption

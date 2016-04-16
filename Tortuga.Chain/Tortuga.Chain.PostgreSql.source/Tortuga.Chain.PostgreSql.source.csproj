@@ -81,9 +81,11 @@
     <Compile Include="PostgreSql\PostgreSqlDataSourceBase.cs" />
     <Compile Include="PostgreSql\PostgreSqlMetadataCache.cs" />
     <Compile Include="PostgreSql\PostgreSqlObjectName.cs" />
+    <Compile Include="PostgreSql\PostgreSqlOpenDataSource.cs" />
     <Compile Include="PostgreSql\Utilities.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SqlServerLimitOption.cs" />
+    <Compile Include="PostgreSqlExtensions.cs" />
+    <Compile Include="PostgreSqlLimitOption.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

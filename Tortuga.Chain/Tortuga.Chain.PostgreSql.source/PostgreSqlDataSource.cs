@@ -6,8 +6,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Tortuga.Chain.AuditRules;
 using Tortuga.Chain.Core;
+using Tortuga.Chain.PostgreSql;
 
-namespace Tortuga.Chain.PostgreSql
+namespace Tortuga.Chain
 {
     /// <summary>
     /// Class PostgreSqlDataSource.
