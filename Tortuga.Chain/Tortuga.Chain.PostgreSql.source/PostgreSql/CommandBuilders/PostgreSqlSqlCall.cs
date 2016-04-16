@@ -3,7 +3,6 @@ using System;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
-using Tortuga.Chain.PostgreSql;
 
 namespace Tortuga.Chain.PostgreSql.CommandBuilders
 {

@@ -19,6 +19,11 @@ namespace Tortuga.Chain
         private readonly NpgsqlConnectionStringBuilder m_ConnectionBuilder;
         private PostgreSqlMetadataCache m_DatabaseMetadata;
 
+        public PostgreSqlTransactionalDataSource BeginTransaction()
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="PostgreSqlDataSource"/> class.
         /// </summary>

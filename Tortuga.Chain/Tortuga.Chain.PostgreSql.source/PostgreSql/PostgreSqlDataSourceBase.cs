@@ -76,6 +76,11 @@ namespace Tortuga.Chain.PostgreSql
             return new PostgreSqlInsertObject(this, tableName, argumentValue, options);
         }
 
+        public MultipleTableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> Sql(string sqlStatement)
+        {
+            return new PostgreSqlSqlCall(this, sqlStatement, null);
+        }
+
         public MultipleTableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> Sql(string sqlStatement, object argumentValue)
         {
             return new PostgreSqlSqlCall(this, sqlStatement, argumentValue);

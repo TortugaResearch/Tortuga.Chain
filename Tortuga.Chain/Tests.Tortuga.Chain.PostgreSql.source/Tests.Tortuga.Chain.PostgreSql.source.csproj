@@ -22,7 +22,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;MSTest</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -30,17 +30,24 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;MSTest</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Npgsql, Version=3.0.5.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Npgsql.3.0.5\lib\net45\Npgsql.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Collections.Immutable, Version=1.1.37.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Collections.Immutable.1.1.37\lib\dotnet\System.Collections.Immutable.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="Tortuga.Anchor, Version=0.4.5935.6732, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
       <HintPath>..\packages\Tortuga.Anchor.0.4.5935.6732\lib\net46\Tortuga.Anchor.dll</HintPath>
@@ -60,10 +67,76 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="UnitTest1.cs" />
+    <Compile Include="..\tests.tortuga.chain.sqlserver.source\auditrules\AuditRulesTests.cs">
+      <Link>AuditRules\AuditRulesTests.cs</Link>
+    </Compile>
+    <Compile Include="..\tests.tortuga.chain.sqlserver.source\class1databases\FromTests.cs">
+      <Link>Class1Databases\FromTests.cs</Link>
+    </Compile>
+    <Compile Include="..\tests.tortuga.chain.sqlserver.source\class1databases\InsertTests.cs">
+      <Link>Class1Databases\InsertTests.cs</Link>
+    </Compile>
+    <Compile Include="..\tests.tortuga.chain.sqlserver.source\class1databases\SqlTests.cs">
+      <Link>Class1Databases\SqlTests.cs</Link>
+    </Compile>
+    <Compile Include="..\tests.tortuga.chain.sqlserver.source\class1databases\UpdateTests.cs">
+      <Link>Class1Databases\UpdateTests.cs</Link>
+    </Compile>
+    <Compile Include="..\tests.tortuga.chain.sqlserver.source\class1databases\UpsertTests.cs">
+      <Link>Class1Databases\UpsertTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Tests.Tortuga.Chain.SqlServer.source\Models\AuditInfo.cs">
+      <Link>AuditInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\tests.tortuga.chain.sqlserver.source\models\ChangeTrackingEmployee.cs">
+      <Link>Models\ChangeTrackingEmployee.cs</Link>
+    </Compile>
+    <Compile Include="..\tests.tortuga.chain.sqlserver.source\models\CustomerWithValidation.cs">
+      <Link>Models\CustomerWithValidation.cs</Link>
+    </Compile>
+    <Compile Include="..\tests.tortuga.chain.sqlserver.source\models\Employee.cs">
+      <Link>Models\Employee.cs</Link>
+    </Compile>
+    <Compile Include="..\Tests.Tortuga.Chain.SqlServer.source\Models\EmployeeWithManager.cs">
+      <Link>EmployeeWithManager.cs</Link>
+    </Compile>
+    <Compile Include="..\tests.tortuga.chain.sqlserver.source\repository\AsyncRepositoryTests.cs">
+      <Link>Repository\AsyncRepositoryTests.cs</Link>
+    </Compile>
+    <Compile Include="..\tests.tortuga.chain.sqlserver.source\repository\AsyncRepository`2.cs">
+      <Link>Repository\AsyncRepository`2.cs</Link>
+    </Compile>
+    <Compile Include="..\tests.tortuga.chain.sqlserver.source\repository\RepositoryTests.cs">
+      <Link>Repository\RepositoryTests.cs</Link>
+    </Compile>
+    <Compile Include="..\tests.tortuga.chain.sqlserver.source\repository\RepositoryWithCachingTests.cs">
+      <Link>Repository\RepositoryWithCachingTests.cs</Link>
+    </Compile>
+    <Compile Include="..\tests.tortuga.chain.sqlserver.source\repository\RepositoryWithCaching`2.cs">
+      <Link>Repository\RepositoryWithCaching`2.cs</Link>
+    </Compile>
+    <Compile Include="..\tests.tortuga.chain.sqlserver.source\repository\Repository`2.cs">
+      <Link>Repository\Repository`2.cs</Link>
+    </Compile>
+    <Compile Include="..\tests.tortuga.chain.sqlserver.source\repository\StrictRepositoryTests.cs">
+      <Link>Repository\StrictRepositoryTests.cs</Link>
+    </Compile>
+    <Compile Include="..\tests.tortuga.chain.sqlserver.source\repository\TransactionalAsyncRepositoryTests.cs">
+      <Link>Repository\TransactionalAsyncRepositoryTests.cs</Link>
+    </Compile>
+    <Compile Include="..\tests.tortuga.chain.sqlserver.source\repository\TransactionalRepositoryTests.cs">
+      <Link>Repository\TransactionalRepositoryTests.cs</Link>
+    </Compile>
+    <Compile Include="Metadata\MetadataTests.cs" />
+    <Compile Include="Setup.cs" />
+    <Compile Include="TestBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Tortuga.Chain.CompiledMaterializers.source\Tortuga.Chain.CompiledMaterializers.source.csproj">
+      <Project>{42d213ca-8584-4b1b-8928-a54c5d937e86}</Project>
+      <Name>Tortuga.Chain.CompiledMaterializers.source</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Tortuga.Chain.Core.source\Tortuga.Chain.Core.source.csproj">
       <Project>{2c523692-a40b-4a7e-a95a-fbe373f263f7}</Project>
       <Name>Tortuga.Chain.Core.source</Name>
