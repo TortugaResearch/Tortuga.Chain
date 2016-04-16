@@ -203,5 +203,19 @@ namespace Tortuga.Chain.PostgreSql
             else
                 return $"{Database}.{Schema}.{Name}";
         }
+
+        /// <summary>
+        /// To the quoted string.
+        /// </summary>
+        /// <returns>System.String.</returns>
+        public string ToQuotedString()
+        {
+            if (Schema == null)
+                return $"\"{Name}\"";
+            else if (Database == null)
+                return $"\"{Schema}\".\"{Name}\"";
+            else
+                return $"\"{Database}\".\"{Schema}\".\"{Name}\"";
+        }
     }
 }

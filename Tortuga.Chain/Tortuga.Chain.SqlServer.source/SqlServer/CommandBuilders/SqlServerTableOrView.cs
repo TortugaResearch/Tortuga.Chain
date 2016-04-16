@@ -10,7 +10,6 @@ using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
 using Tortuga.Chain.Metadata;
-using Tortuga.Chain.SqlServer.Core;
 using Tortuga.Chain.SqlServer.Materializers;
 
 namespace Tortuga.Chain.SqlServer.CommandBuilders

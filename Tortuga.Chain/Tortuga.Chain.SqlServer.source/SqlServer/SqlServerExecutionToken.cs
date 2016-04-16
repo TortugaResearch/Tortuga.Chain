@@ -5,7 +5,7 @@ using System.Data.SqlClient;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.DataSources;
 
-namespace Tortuga.Chain.SqlServer.Core
+namespace Tortuga.Chain.SqlServer
 {
     /// <summary>
     /// An execution token specific to Sql Server.

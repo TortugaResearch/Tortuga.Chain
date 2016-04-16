@@ -2,7 +2,6 @@ using System.Data.SqlClient;
 using System.Threading;
 using System.Threading.Tasks;
 using Tortuga.Chain.Materializers;
-using Tortuga.Chain.SqlServer.Core;
 namespace Tortuga.Chain.SqlServer.CommandBuilders
 {
     /// <summary>

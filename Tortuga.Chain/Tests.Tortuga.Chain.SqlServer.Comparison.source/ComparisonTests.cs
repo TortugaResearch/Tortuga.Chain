@@ -5,7 +5,7 @@ using System.Linq;
 using Tests.Models;
 using Tortuga.Chain;
 
-namespace Tests.Tortuga.Chain.SqlServer.Comparison.net461
+namespace Tests
 {
     [TestClass]
     public class ComparisonTests

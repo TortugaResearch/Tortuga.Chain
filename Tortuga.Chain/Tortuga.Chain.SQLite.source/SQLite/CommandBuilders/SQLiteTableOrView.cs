@@ -16,7 +16,7 @@ using SQLiteParameter = Microsoft.Data.Sqlite.SqliteParameter;
 #endif
 
 
-namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
+namespace Tortuga.Chain.SQLite.CommandBuilders
 {
     /// <summary>
     /// SQliteTableOrView supports queries against tables and views.

@@ -3,7 +3,6 @@ using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Metadata;
 using Tortuga.Chain.SQLite.CommandBuilders;
-using Tortuga.Chain.SQLite.SQLite.CommandBuilders;
 using System.Collections.Generic;
 using System.Linq;
 using Tortuga.Anchor;

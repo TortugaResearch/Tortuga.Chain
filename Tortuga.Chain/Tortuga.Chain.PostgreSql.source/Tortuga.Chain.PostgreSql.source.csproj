@@ -7,7 +7,7 @@
     <ProjectGuid>{98F3B971-7741-43F0-9BE8-2A53F2A4F611}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Tortuga.Chain.PostgreSql</RootNamespace>
+    <RootNamespace>Tortuga.Chain</RootNamespace>
     <AssemblyName>Tortuga.Chain.PostgreSql</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -68,11 +68,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="PostgreSqlDataSource.cs" />
+    <Compile Include="PostgreSql\PostgreSqlDataSourceSettings.cs" />
     <Compile Include="PostgreSql\CommandBuilders\PostgreSqlSqlCall.cs" />
     <Compile Include="PostgreSql\CommandBuilders\PostgreSqlTableOrView.cs" />
+    <Compile Include="PostgreSql\CommandBuilders\PostgreSqlDeleteObject.cs" />
+    <Compile Include="PostgreSql\CommandBuilders\PostgreSqlInsertObject.cs" />
+    <Compile Include="PostgreSql\CommandBuilders\PostgreSqlInsertOrUpdateObject.cs" />
+    <Compile Include="PostgreSql\CommandBuilders\PostgreSqlObjectCommand.cs" />
+    <Compile Include="PostgreSql\CommandBuilders\PostgreSqlUpdateObject.cs" />
+    <Compile Include="PostgreSql\PostgreSqlExecutionToken.cs" />
     <Compile Include="PostgreSql\PostgreSqlDataSourceBase.cs" />
     <Compile Include="PostgreSql\PostgreSqlMetadataCache.cs" />
     <Compile Include="PostgreSql\PostgreSqlObjectName.cs" />
+    <Compile Include="PostgreSql\Utilities.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlServerLimitOption.cs" />
   </ItemGroup>

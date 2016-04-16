@@ -101,7 +101,7 @@
     <Compile Include="SqlServer\CommandBuilders\SqlServerTableOrView.cs" />
     <Compile Include="SqlServer\SqlServerAppenders.cs" />
     <Compile Include="SqlServer\SqlServerEffectiveSettings.cs" />
-    <Compile Include="SqlServer\Core\SqlServerExecutionToken.cs" />
+    <Compile Include="SqlServer\SqlServerExecutionToken.cs" />
     <Compile Include="SqlServer\SqlServerDataSourceSettings.cs" />
     <Compile Include="SqlServer\SqlServerTransactionalDataSource.cs" />
     <Compile Include="SqlServer\SqlServerDataSourceBase.cs" />

@@ -1,12 +1,10 @@
 ﻿using Npgsql;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Tortuga.Chain.DataSources;
 using Tortuga.Chain.CommandBuilders;
+using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Metadata;
+using Tortuga.Chain.PostgreSql.CommandBuilders;
 
 namespace Tortuga.Chain.PostgreSql
 {
@@ -33,110 +31,127 @@ namespace Tortuga.Chain.PostgreSql
             get { return DatabaseMetadata; }
         }
 
-        public IDbCommandBuilder Delete(string tableName, object argumentValue, DeleteOptions options = DeleteOptions.None)
+        public DbCommandBuilder<NpgsqlCommand, NpgsqlParameter> Delete(PostgreSqlObjectName tableName, object argumentValue, DeleteOptions options = DeleteOptions.None)
+        {
+            return new PostgreSqlDeleteObject(this, tableName, argumentValue, options);
+        }
+
+        public TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption> From(PostgreSqlObjectName tableOrViewName)
+        {
+            return new PostgreSqlTableOrView(this, tableOrViewName);
+        }
+
+        public TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption> From(PostgreSqlObjectName tableOrViewName, object filterValue)
+        {
+            return new PostgreSqlTableOrView(this, tableOrViewName, filterValue);
+        }
+
+        public TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption> From(PostgreSqlObjectName tableOrViewName, string whereClause)
+        {
+            return new PostgreSqlTableOrView(this, tableOrViewName, whereClause);
+        }
+
+        public TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption> From(PostgreSqlObjectName tableOrViewName, string whereClause, object argumentValue)
+        {
+            return new PostgreSqlTableOrView(this, tableOrViewName, whereClause, argumentValue);
+        }
+
+        public MultipleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> GetByKey<T>(PostgreSqlObjectName tableName, IEnumerable<T> keys)
         {
             throw new NotImplementedException();
         }
 
-        public IMultipleRowDbCommandBuilder From(string tableOrViewName)
+        public MultipleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> GetByKey<T>(PostgreSqlObjectName tableName, params T[] keys)
         {
             throw new NotImplementedException();
         }
 
-        public IMultipleRowDbCommandBuilder From(string tableOrViewName, object filterValue)
+        public SingleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> GetByKey<T>(PostgreSqlObjectName tableName, T key)
         {
             throw new NotImplementedException();
         }
 
-        public IMultipleRowDbCommandBuilder From(string tableOrViewName, string whereClause)
+        public SingleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> Insert(PostgreSqlObjectName tableName, object argumentValue, InsertOptions options = InsertOptions.None)
         {
-            throw new NotImplementedException();
+            return new PostgreSqlInsertObject(this, tableName, argumentValue, options);
         }
 
-        public IMultipleRowDbCommandBuilder From(string tableOrViewName, string whereClause, object argumentValue)
+        public MultipleTableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> Sql(string sqlStatement, object argumentValue)
         {
-            throw new NotImplementedException();
+            return new PostgreSqlSqlCall(this, sqlStatement, argumentValue);
         }
 
-        public ISingleRowDbCommandBuilder Insert(string tableName, object argumentValue, InsertOptions options = InsertOptions.None)
+        public SingleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> Update(PostgreSqlObjectName tableName, object argumentValue, UpdateOptions options = UpdateOptions.None)
         {
-            throw new NotImplementedException();
+            return new PostgreSqlUpdateObject(this, tableName, argumentValue, options);
         }
 
-        public IMultipleTableDbCommandBuilder Sql(string sqlStatement, object argumentValue)
+        public SingleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> Upsert(PostgreSqlObjectName tableName, object argumentValue, UpsertOptions options = UpsertOptions.None)
         {
-            throw new NotImplementedException();
-        }
-
-        public ISingleRowDbCommandBuilder Update(string tableName, object argumentValue, UpdateOptions options = UpdateOptions.None)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ISingleRowDbCommandBuilder Upsert(string tableName, object argumentValue, UpsertOptions options = UpsertOptions.None)
-        {
-            throw new NotImplementedException();
+            return new PostgreSqlInsertOrUpdateObject(this, tableName, argumentValue, options);
         }
 
         IDbCommandBuilder IClass1DataSource.Delete(string tableName, object argumentValue, DeleteOptions options)
         {
-            throw new NotImplementedException();
+            return Delete(tableName, argumentValue, options);
         }
 
         ITableDbCommandBuilder IClass1DataSource.From(string tableOrViewName)
         {
-            throw new NotImplementedException();
+            return From(tableOrViewName);
         }
 
         ITableDbCommandBuilder IClass1DataSource.From(string tableOrViewName, object filterValue)
         {
-            throw new NotImplementedException();
+            return From(tableOrViewName, filterValue);
         }
 
         ITableDbCommandBuilder IClass1DataSource.From(string tableOrViewName, string whereClause)
         {
-            throw new NotImplementedException();
+            return From(tableOrViewName, whereClause);
         }
 
         ITableDbCommandBuilder IClass1DataSource.From(string tableOrViewName, string whereClause, object argumentValue)
         {
-            throw new NotImplementedException();
-        }
-
-        IMultipleRowDbCommandBuilder IClass1DataSource.GetByKey<T>(string tableName, params T[] keys)
-        {
-            throw new NotImplementedException();
+            return From(tableOrViewName, whereClause, argumentValue);
         }
 
         IMultipleRowDbCommandBuilder IClass1DataSource.GetByKey<T>(string tableName, IEnumerable<T> keys)
         {
-            throw new NotImplementedException();
+            return GetByKey(tableName, keys);
+        }
+
+        IMultipleRowDbCommandBuilder IClass1DataSource.GetByKey<T>(string tableName, params T[] keys)
+        {
+            return GetByKey(tableName, keys);
         }
 
         ISingleRowDbCommandBuilder IClass1DataSource.GetByKey<T>(string tableName, T key)
         {
-            throw new NotImplementedException();
+            return GetByKey(tableName, key);
         }
 
         ISingleRowDbCommandBuilder IClass1DataSource.Insert(string tableName, object argumentValue, InsertOptions options)
         {
-            throw new NotImplementedException();
+            return Insert(tableName, argumentValue, options);
         }
 
         IMultipleTableDbCommandBuilder IClass0DataSource.Sql(string sqlStatement, object argumentValue)
         {
-            throw new NotImplementedException();
+            return Sql(sqlStatement, argumentValue);
         }
 
         ISingleRowDbCommandBuilder IClass1DataSource.Update(string tableName, object argumentValue, UpdateOptions options)
         {
-            throw new NotImplementedException();
+            return Update(tableName, argumentValue, options);
         }
 
         ISingleRowDbCommandBuilder IClass1DataSource.Upsert(string tableName, object argumentValue, UpsertOptions options)
         {
-            throw new NotImplementedException();
+            return Upsert(tableName, argumentValue, options);
         }
+
+
 
         //TODO: implement ClassXMetadata
 

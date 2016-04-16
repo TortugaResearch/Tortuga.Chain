@@ -10,7 +10,7 @@ using SQLiteCommand = Microsoft.Data.Sqlite.SqliteCommand;
 using SQLiteParameter = Microsoft.Data.Sqlite.SqliteParameter;
 #endif
 
-namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
+namespace Tortuga.Chain.SQLite.CommandBuilders
 {
     /// <summary>
     /// Class that represents a SQLite Insert.

@@ -64,7 +64,7 @@ namespace Tortuga.Chain
         /// <summary>
         /// Adds the Table Sample Bernoulli algorithm behavior to a random sample.
         /// </summary>
-        TableSampleSystemBernoulli = 32,
+        TableSampleBernoulli = 32,
 
         /// <summary>
         /// Randomly sample N rows using the Table Sample System algorithm.
@@ -74,7 +74,7 @@ namespace Tortuga.Chain
         /// <summary>
         /// Randomly sample N rows using the Table Sample Bernoulli algorithm.
         /// </summary>
-        TableSampleSystemBernoulliRows = RandomSample | TableSampleSystem | Rows,
+        TableSampleBernoulliRows = RandomSample | TableSampleBernoulli | Rows,
 
         /// <summary>
         /// Randomly sample N percentage of rows using the Table Sample System algorithm.
@@ -84,7 +84,7 @@ namespace Tortuga.Chain
         /// <summary>
         /// Randomly sample N percentage of rows using the Table Sample Bernoulli algorithm.
         /// </summary>
-        TableSampleSystemBernoulliPercentage = RandomSample | TableSampleSystem | Percentage,
+        TableSampleBernoulliPercentage = RandomSample | TableSampleBernoulli | Percentage,
 
     }
 }

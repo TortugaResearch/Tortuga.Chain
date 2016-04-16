@@ -3,7 +3,7 @@ using System;
 using System.Diagnostics;
 using Tortuga.Chain;
 using Tortuga.Chain.DataSources;
-using Tortuga.Chain.SqlServer.Core;
+using Tortuga.Chain.SqlServer;
 
 namespace Tests
 {

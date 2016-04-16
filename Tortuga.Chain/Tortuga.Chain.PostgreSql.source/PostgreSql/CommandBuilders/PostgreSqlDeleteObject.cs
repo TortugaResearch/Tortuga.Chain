@@ -1,32 +1,26 @@
-﻿using System;
+﻿using Npgsql;
+using System;
+using System.Text;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
-using System.Text;
 
-#if SDS
-using System.Data.SQLite;
-#else
-using SQLiteCommand = Microsoft.Data.Sqlite.SqliteCommand;
-using SQLiteParameter = Microsoft.Data.Sqlite.SqliteParameter;
-#endif
-
-namespace Tortuga.Chain.SQLite.CommandBuilders
+namespace Tortuga.Chain.PostgreSql.CommandBuilders
 {
     /// <summary>
     /// Command object that represents a delete operation.
     /// </summary>
-    internal sealed class SQLiteDeleteObject : SQLiteObjectCommand
+    internal sealed class PostgreSqlDeleteObject : PostgreSqlObjectCommand
     {
         private readonly DeleteOptions m_Options;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SQLiteDeleteObject"/> class.
+        /// Initializes a new instance of the <see cref="PostgreSqlDeleteObject"/> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
         /// <param name="table">The table.</param>
         /// <param name="argumentValue">The argument value.</param>
         /// <param name="options">The options.</param>
-        public SQLiteDeleteObject(SQLiteDataSourceBase dataSource, string table, object argumentValue, DeleteOptions options)
+        public PostgreSqlDeleteObject(PostgreSqlDataSourceBase dataSource, PostgreSqlObjectName table, object argumentValue, DeleteOptions options)
             : base(dataSource, table, argumentValue)
         {
             m_Options = options;
@@ -36,8 +30,8 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
         /// Prepares the command for execution by generating any necessary SQL.
         /// </summary>
         /// <param name="materializer"></param>
-        /// <returns><see cref="SQLiteExecutionToken" /></returns>
-        public override ExecutionToken<SQLiteCommand, SQLiteParameter> Prepare(Materializer<SQLiteCommand, SQLiteParameter> materializer)
+        /// <returns><see cref="PostgreSqlExecutionToken" /></returns>
+        public override ExecutionToken<NpgsqlCommand, NpgsqlParameter> Prepare(Materializer<NpgsqlCommand, NpgsqlParameter> materializer)
         {
             if (materializer == null)
                 throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
@@ -47,11 +41,9 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
             var sql = new StringBuilder();
-            sqlBuilder.BuildSelectByKeyStatement(sql, TableName, ";");
-            sql.AppendLine();
-            sqlBuilder.BuildDeleteStatement(sql, TableName, ";");
+            //Use the RETURNING clause for output similar to SQL Server's OUTPUT clause: http://www.postgresql.org/docs/current/static/sql-delete.html
 
-            return new SQLiteExecutionToken(DataSource, "Delete from " + TableName, sql.ToString(), sqlBuilder.GetParameters(), lockType: LockType.Write);
+            return new PostgreSqlExecutionToken(DataSource, "Delete from " + TableName, sql.ToString(), sqlBuilder.GetParameters());
         }
     }
 }

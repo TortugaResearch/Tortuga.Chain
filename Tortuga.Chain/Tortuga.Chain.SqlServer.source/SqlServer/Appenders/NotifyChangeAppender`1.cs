@@ -3,7 +3,6 @@ using System.Data.SqlClient;
 using System.Diagnostics.CodeAnalysis;
 using Tortuga.Chain.Appenders;
 using Tortuga.Chain.Core;
-using Tortuga.Chain.SqlServer.Core;
 
 namespace Tortuga.Chain.SqlServer.Appenders
 {

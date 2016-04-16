@@ -3,7 +3,6 @@ using System.Data.SqlClient;
 using System.Text;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
-using Tortuga.Chain.SqlServer.Core;
 
 namespace Tortuga.Chain.SqlServer.CommandBuilders
 {

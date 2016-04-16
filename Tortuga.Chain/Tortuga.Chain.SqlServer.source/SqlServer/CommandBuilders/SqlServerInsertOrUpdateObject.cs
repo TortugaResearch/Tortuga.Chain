@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
-using Tortuga.Chain.SqlServer.Core;
 
 namespace Tortuga.Chain.SqlServer.CommandBuilders
 {

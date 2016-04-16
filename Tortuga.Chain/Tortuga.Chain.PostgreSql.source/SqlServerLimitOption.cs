@@ -24,6 +24,6 @@
         /// <summary>
         /// Randomly sample N percentage of rows using the Table Sample Bernoulli algorithm.
         /// </summary>
-        TableSampleSystemBernoulliPercentage = LimitOptions.TableSampleSystemPercentage,
+        TableSampleBernoulliPercentage = LimitOptions.TableSampleBernoulliPercentage,
     }
 }
