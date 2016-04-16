@@ -74,6 +74,7 @@
     <Compile Include="PostgreSql\PostgreSqlMetadataCache.cs" />
     <Compile Include="PostgreSql\PostgreSqlObjectName.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SqlServerLimitOption.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

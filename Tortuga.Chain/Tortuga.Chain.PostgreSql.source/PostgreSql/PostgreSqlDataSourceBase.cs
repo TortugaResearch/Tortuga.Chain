@@ -78,6 +78,66 @@ namespace Tortuga.Chain.PostgreSql
             throw new NotImplementedException();
         }
 
+        IDbCommandBuilder IClass1DataSource.Delete(string tableName, object argumentValue, DeleteOptions options)
+        {
+            throw new NotImplementedException();
+        }
+
+        ITableDbCommandBuilder IClass1DataSource.From(string tableOrViewName)
+        {
+            throw new NotImplementedException();
+        }
+
+        ITableDbCommandBuilder IClass1DataSource.From(string tableOrViewName, object filterValue)
+        {
+            throw new NotImplementedException();
+        }
+
+        ITableDbCommandBuilder IClass1DataSource.From(string tableOrViewName, string whereClause)
+        {
+            throw new NotImplementedException();
+        }
+
+        ITableDbCommandBuilder IClass1DataSource.From(string tableOrViewName, string whereClause, object argumentValue)
+        {
+            throw new NotImplementedException();
+        }
+
+        IMultipleRowDbCommandBuilder IClass1DataSource.GetByKey<T>(string tableName, params T[] keys)
+        {
+            throw new NotImplementedException();
+        }
+
+        IMultipleRowDbCommandBuilder IClass1DataSource.GetByKey<T>(string tableName, IEnumerable<T> keys)
+        {
+            throw new NotImplementedException();
+        }
+
+        ISingleRowDbCommandBuilder IClass1DataSource.GetByKey<T>(string tableName, T key)
+        {
+            throw new NotImplementedException();
+        }
+
+        ISingleRowDbCommandBuilder IClass1DataSource.Insert(string tableName, object argumentValue, InsertOptions options)
+        {
+            throw new NotImplementedException();
+        }
+
+        IMultipleTableDbCommandBuilder IClass0DataSource.Sql(string sqlStatement, object argumentValue)
+        {
+            throw new NotImplementedException();
+        }
+
+        ISingleRowDbCommandBuilder IClass1DataSource.Update(string tableName, object argumentValue, UpdateOptions options)
+        {
+            throw new NotImplementedException();
+        }
+
+        ISingleRowDbCommandBuilder IClass1DataSource.Upsert(string tableName, object argumentValue, UpsertOptions options)
+        {
+            throw new NotImplementedException();
+        }
+
         //TODO: implement ClassXMetadata
 
     }

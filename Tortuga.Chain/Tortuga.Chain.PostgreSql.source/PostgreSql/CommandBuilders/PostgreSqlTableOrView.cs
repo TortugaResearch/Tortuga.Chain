@@ -7,6 +7,7 @@ using Tortuga.Chain.Metadata;
 using NpgsqlTypes;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 namespace Tortuga.Chain.PostgreSql.CommandBuilders
 {
@@ -20,6 +21,11 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         private readonly string m_WhereClause;
         private readonly object m_ArgumentValue;
 
+        private IEnumerable<SortExpression> m_SortExpressions = Enumerable.Empty<SortExpression>();
+        private PostgreSqlLimitOption m_LimitOptions;
+        private int? m_Skip;
+        private int? m_Take;
+        private int? m_Seed;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PostgreSqlTableOrView"/> class.
