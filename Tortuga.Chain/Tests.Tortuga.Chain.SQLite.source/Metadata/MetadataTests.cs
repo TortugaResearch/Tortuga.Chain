@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Tortuga.Chain.Materializers;
 
 #if MSTest
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -56,7 +57,7 @@ namespace Tests.Metadata
             foreach (var item in DataSource.DatabaseMetadata.GetTablesAndViews().Where(x => x.IsTable))
             {
                 var builder = item.CreateSqlBuilder(false);
-                builder.ApplyDesiredColumns(Tortuga.Chain.Materializers.Materializer.AllColumns);
+                builder.ApplyDesiredColumns(Materializer.AllColumns);
 
 
                 var selectColumns = builder.GetSelectColumns().ToList();

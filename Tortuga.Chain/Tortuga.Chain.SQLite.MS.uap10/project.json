@@ -2,7 +2,7 @@
   "dependencies": {
     "Microsoft.Data.SQLite": "1.0.0-rc1-final",
     "Microsoft.NETCore.UniversalWindowsPlatform": "5.0.0",
-    "Tortuga.Anchor": "0.4.5935.6732"
+    "Tortuga.Anchor": "0.6.5944.41376"
   },
   "frameworks": {
     "uap10.0": {}

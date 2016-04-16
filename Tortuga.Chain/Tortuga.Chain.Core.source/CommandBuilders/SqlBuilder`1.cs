@@ -130,6 +130,15 @@ namespace Tortuga.Chain.CommandBuilders
                 throw new MappingException($"None of the keys could be matched to columns in {m_Name}.");
         }
 
+        /// <summary>
+        /// Builds an order by clause.
+        /// </summary>
+        /// <param name="sql">The SQL.</param>
+        /// <param name="header">The header.</param>
+        /// <param name="sortExpressions">The sort expressions.</param>
+        /// <param name="footer">The footer.</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="MappingException"></exception>
         public void BuildOrderByClause(StringBuilder sql, string header, IEnumerable<SortExpression> sortExpressions, string footer)
         {
             if (sql == null)
@@ -895,7 +904,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="appliesWhen">The type of.</param>
         /// <param name="argumentValue">The argument value.</param>
         /// <param name="userValue">The user value.</param>
-        void ApplyRules(RulesCollection rules, OperationTypes appliesWhen, object argumentValue, object userValue)
+        void ApplyRules(AuditRuleCollection rules, OperationTypes appliesWhen, object argumentValue, object userValue)
         {
             rules.CheckValidation(argumentValue);
 

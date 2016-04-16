@@ -189,13 +189,14 @@
     <Compile Include="Materializers\Scalar\TimeSpanMaterializer`2.cs" />
     <Compile Include="AuditRules\UserDataRule.cs" />
     <Compile Include="AuditRules\ValueRule.cs" />
-    <Compile Include="AuditRules\Rule.cs" />
+    <Compile Include="AuditRules\AuditRule.cs" />
     <Compile Include="AuditRules\OperationTypes.cs" />
-    <Compile Include="AuditRules\RulesCollection.cs" />
+    <Compile Include="AuditRules\AuditRuleCollection.cs" />
     <Compile Include="AuditRules\ColumnValueGenerator.cs" />
     <Compile Include="AuditRules\SoftDeleteRule.cs" />
     <Compile Include="AuditRules\DateTimeOffsetRule.cs" />
     <Compile Include="AuditRules\DateTimeRule.cs" />
+    <Compile Include="SortDirection.cs" />
     <Compile Include="SortExpression.cs" />
     <Compile Include="UpsertOptions.cs" />
     <Compile Include="ListOptions.cs" />

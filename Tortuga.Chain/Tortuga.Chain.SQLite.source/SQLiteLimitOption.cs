@@ -1,13 +1,10 @@
-﻿using System;
-
-namespace Tortuga.Chain
+﻿namespace Tortuga.Chain
 {
     /// <summary>
     /// Limit options supported by SQL Server.
     /// </summary>
     /// <remarks>This is a strict subset of LimitOptions</remarks>
-    [Flags]
-    public enum SQLiteLimitOptions
+    public enum SQLiteLimitOption
     {
         /// <summary>
         /// No limits were applied.

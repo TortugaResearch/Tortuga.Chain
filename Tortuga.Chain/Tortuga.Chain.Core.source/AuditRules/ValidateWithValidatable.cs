@@ -9,7 +9,7 @@ namespace Tortuga.Chain.AuditRules
     /// <summary>
     /// When this rule is in effect, objects that implement IValidatable will be checked.
     /// </summary>
-    /// <seealso cref="Rule" />
+    /// <seealso cref="AuditRule" />
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Validatable")]
     public class ValidateWithValidatable : ValidationRule
     {

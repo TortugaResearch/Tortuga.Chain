@@ -11,39 +11,39 @@ namespace Tortuga.Chain.AuditRules
     /// An immutable collection of rules.
     /// </summary>
     /// <seealso cref="IReadOnlyList{Rule}" />
-    public class RulesCollection : IReadOnlyList<Rule>
+    public class AuditRuleCollection : IReadOnlyList<AuditRule>
     {
-        private readonly ImmutableArray<Rule> m_List;
+        private readonly ImmutableArray<AuditRule> m_List;
 
         /// <summary>
         /// Returns an empty RulesCollection.
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes")]
-        public static readonly RulesCollection Empty = new RulesCollection();
+        public static readonly AuditRuleCollection Empty = new AuditRuleCollection();
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RulesCollection"/> class.
+        /// Initializes a new instance of the <see cref="AuditRuleCollection"/> class.
         /// </summary>
-        private RulesCollection()
+        private AuditRuleCollection()
         {
-            m_List = ImmutableArray.Create<Rule>();
+            m_List = ImmutableArray.Create<AuditRule>();
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RulesCollection"/> class.
+        /// Initializes a new instance of the <see cref="AuditRuleCollection"/> class.
         /// </summary>
-        /// <param name="rules">The list of rules used to build this colleciton.</param>
-        public RulesCollection(IEnumerable<Rule> rules)
+        /// <param name="rules">The list of rules used to build this collection.</param>
+        public AuditRuleCollection(IEnumerable<AuditRule> rules)
         {
             m_List = ImmutableArray.CreateRange(rules);
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RulesCollection"/> class.
+        /// Initializes a new instance of the <see cref="AuditRuleCollection"/> class.
         /// </summary>
         /// <param name="baseRules">The list of rules to be added upon.</param>
         /// <param name="additionalRules">The additional rules.</param>
-        public RulesCollection(RulesCollection baseRules, IEnumerable<Rule> additionalRules)
+        public AuditRuleCollection(AuditRuleCollection baseRules, IEnumerable<AuditRule> additionalRules)
         {
             if (baseRules == null)
                 throw new ArgumentNullException(nameof(baseRules), $"{nameof(baseRules)} is null.");
@@ -62,14 +62,14 @@ namespace Tortuga.Chain.AuditRules
         }
 
         /// <summary>
-        /// Gets the <see cref="Rule"/> at the specified index.
+        /// Gets the <see cref="AuditRule"/> at the specified index.
         /// </summary>
         /// <value>
-        /// The <see cref="Rule"/>.
+        /// The <see cref="AuditRule"/>.
         /// </value>
         /// <param name="index">The index.</param>
         /// <returns></returns>
-        public Rule this[int index]
+        public AuditRule this[int index]
         {
             get { return m_List[index]; }
         }
@@ -79,9 +79,9 @@ namespace Tortuga.Chain.AuditRules
         /// <returns>
         /// An enumerator that can be used to iterate through the collection.
         /// </returns>
-        public IEnumerator<Rule> GetEnumerator()
+        public IEnumerator<AuditRule> GetEnumerator()
         {
-            return ((IEnumerable<Rule>)m_List).GetEnumerator();
+            return ((IEnumerable<AuditRule>)m_List).GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()

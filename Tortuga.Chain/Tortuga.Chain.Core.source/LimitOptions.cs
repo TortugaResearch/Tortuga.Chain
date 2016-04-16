@@ -2,6 +2,10 @@
 
 namespace Tortuga.Chain
 {
+    /// <summary>
+    /// Types of limits that can be applied to a table, view, or table-value function query.
+    /// </summary>
+    /// <remarks>Databases are expected to provide their own enumeration that represents a subset of these options.</remarks>
     [Flags]
     public enum LimitOptions
     {

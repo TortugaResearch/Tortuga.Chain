@@ -153,11 +153,13 @@ namespace Tortuga.Chain
             }
             catch (Exception ex)
             {
+                MaterializerCompilerFailed?.Invoke(typeof(CompiledMaterializers), new MaterializerCompilerEventArgs(dataSource, sql, codeToString, typeof(TObject)));
+
                 //Debug.WriteLine(codeToString);
                 //foreach (var item in evaluator.GetReferencedAssemblies())
                 //    Debug.WriteLine("Referenced Assembly: " + item.FullName);
                 ex.Data["Code"] = codeToString;
-                ex.Data["Evaluator"] = evaluator;
+                //ex.Data["Evaluator"] = evaluator;
                 throw;
             }
 
@@ -267,8 +269,13 @@ namespace Tortuga.Chain
         /// <summary>
         /// Occurs when a materializer is compiled.
         /// </summary>
-        /// <remarks>This is primarily for diagnostic purposes. It isn't meant for production use.</remarks>
         public static event EventHandler<MaterializerCompilerEventArgs> MaterializerCompiled;
+
+        /// <summary>
+        /// Occurs when materializer failes to compile.
+        /// </summary>
+        public static event EventHandler<MaterializerCompilerEventArgs> MaterializerCompilerFailed;
+
     }
 
 }

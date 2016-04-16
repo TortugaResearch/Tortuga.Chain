@@ -357,6 +357,6 @@ namespace Tortuga.Chain.DataSources
         /// <value>
         /// The audit rules.
         /// </value>
-        public RulesCollection AuditRules { get; protected set; } = RulesCollection.Empty;
+        public AuditRuleCollection AuditRules { get; protected set; } = AuditRuleCollection.Empty;
     }
 }

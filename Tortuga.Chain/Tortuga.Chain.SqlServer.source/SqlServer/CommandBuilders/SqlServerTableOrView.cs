@@ -18,14 +18,14 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
     /// <summary>
     /// SqlServerTableOrView supports queries against tables and views.
     /// </summary>
-    internal sealed class SqlServerTableOrView : TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOptions>, ISupportsChangeListener
+    internal sealed class SqlServerTableOrView : TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption>, ISupportsChangeListener
     {
         private readonly object m_FilterValue;
         private readonly TableOrViewMetadata<SqlServerObjectName, SqlDbType> m_Metadata;
         private readonly string m_WhereClause;
         private readonly object m_ArgumentValue;
         private IEnumerable<SortExpression> m_SortExpressions = Enumerable.Empty<SortExpression>();
-        private SqlServerLimitOptions m_LimitOptions;
+        private SqlServerLimitOption m_LimitOptions;
         private int? m_Skip;
         private int? m_Take;
         private int? m_Seed;
@@ -67,6 +67,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// Prepares the command for execution by generating any necessary SQL.
         /// </summary>
         /// <param name="materializer">The materializer.</param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
         public override ExecutionToken<SqlCommand, SqlParameter> Prepare(Materializer<SqlCommand, SqlParameter> materializer)
         {
             if (materializer == null)
@@ -76,23 +77,23 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
             //Support check
-            if (!Enum.IsDefined(typeof(SqlServerLimitOptions), m_LimitOptions))
+            if (!Enum.IsDefined(typeof(SqlServerLimitOption), m_LimitOptions))
                 throw new NotSupportedException($"SQL Server does not support limit option {(LimitOptions)m_LimitOptions}");
 
             //Validation
             if (m_Skip < 0)
                 throw new InvalidOperationException($"Cannot skip {m_Skip} rows");
 
-            if (m_Skip > 0 && m_LimitOptions != SqlServerLimitOptions.Rows)
+            if (m_Skip > 0 && m_LimitOptions != SqlServerLimitOption.Rows)
                 throw new InvalidOperationException($"Cannot perform a Skip operation with limit option {m_LimitOptions}");
 
             if (m_Take <= 0)
                 throw new InvalidOperationException($"Cannot take {m_Take} rows");
 
-            if ((m_LimitOptions == SqlServerLimitOptions.TableSampleSystemRows|| m_LimitOptions == SqlServerLimitOptions.TableSampleSystemPercentage) && m_SortExpressions.Any())
+            if ((m_LimitOptions == SqlServerLimitOption.TableSampleSystemRows|| m_LimitOptions == SqlServerLimitOption.TableSampleSystemPercentage) && m_SortExpressions.Any())
                 throw new InvalidOperationException($"Cannot perform random sampling when sorting.");
 
-            if ((m_LimitOptions == SqlServerLimitOptions.RowsWithTies || m_LimitOptions == SqlServerLimitOptions.PercentageWithTies) && !m_SortExpressions.Any())
+            if ((m_LimitOptions == SqlServerLimitOption.RowsWithTies || m_LimitOptions == SqlServerLimitOption.PercentageWithTies) && !m_SortExpressions.Any())
                 throw new InvalidOperationException($"Cannot perform a WITH TIES operation without sorting.");
 
             //SQL Generation
@@ -102,13 +103,13 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             string topClause = null;
             switch (m_LimitOptions)
             {
-                case SqlServerLimitOptions.Percentage:
+                case SqlServerLimitOption.Percentage:
                     topClause = $"TOP (@fetch_row_count_expression) PERCENT ";
                     break;
-                case SqlServerLimitOptions.PercentageWithTies:
+                case SqlServerLimitOption.PercentageWithTies:
                     topClause = $"TOP (@fetch_row_count_expression) PERCENT WITH TIES ";
                     break;
-                case SqlServerLimitOptions.RowsWithTies:
+                case SqlServerLimitOption.RowsWithTies:
                     topClause = $"TOP (@fetch_row_count_expression) WITH TIES ";
                     break;
             }
@@ -117,12 +118,12 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 
             switch (m_LimitOptions)
             {
-                case SqlServerLimitOptions.TableSampleSystemRows:
+                case SqlServerLimitOption.TableSampleSystemRows:
                     sql.Append($" TABLESAMPLE SYSTEM ({m_Take} ROWS) ");
                     if (m_Seed.HasValue)
                         sql.Append($"REPEATABLE ({m_Seed}) ");
                     break;
-                case SqlServerLimitOptions.TableSampleSystemPercentage:
+                case SqlServerLimitOption.TableSampleSystemPercentage:
                     sql.Append($" TABLESAMPLE SYSTEM ({m_Take} PERCENT) ");
                     if (m_Seed.HasValue)
                         sql.Append($"REPEATABLE ({m_Seed}) ");
@@ -153,7 +154,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 
             switch (m_LimitOptions)
             {
-                case SqlServerLimitOptions.Rows:
+                case SqlServerLimitOption.Rows:
 
                     sql.Append(" OFFSET @offset_row_count_expression ROWS ");
                     parameters.Add(new SqlParameter("@offset_row_count_expression", m_Skip ?? 0));
@@ -166,9 +167,9 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 
                     break;
 
-                case SqlServerLimitOptions.Percentage:
-                case SqlServerLimitOptions.PercentageWithTies:
-                case SqlServerLimitOptions.RowsWithTies:
+                case SqlServerLimitOption.Percentage:
+                case SqlServerLimitOption.PercentageWithTies:
+                case SqlServerLimitOption.RowsWithTies:
                     parameters.Add(new SqlParameter("@fetch_row_count_expression", m_Take));
 
                     break;
@@ -201,7 +202,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// </summary>
         /// <param name="sortExpressions">The sort expressions.</param>
         /// <returns></returns>
-        public override TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOptions> WithSorting(IEnumerable<SortExpression> sortExpressions)
+        public override TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption> WithSorting(IEnumerable<SortExpression> sortExpressions)
         {
             if (sortExpressions == null)
                 throw new ArgumentNullException(nameof(sortExpressions), $"{nameof(sortExpressions)} is null.");
@@ -210,7 +211,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             return this;
         }
 
-        protected override TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOptions> OnWithLimits(int? skip, int? take, SqlServerLimitOptions limitOptions, int? seed)
+        protected override TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption> OnWithLimits(int? skip, int? take, SqlServerLimitOption limitOptions, int? seed)
         {
             m_Seed = seed;
             m_Skip = skip;
@@ -219,12 +220,12 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             return this;
         }
 
-        protected override TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOptions> OnWithLimits(int? skip, int? take, LimitOptions limitOptions, int? seed)
+        protected override TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption> OnWithLimits(int? skip, int? take, LimitOptions limitOptions, int? seed)
         {
             m_Seed = seed;
             m_Skip = skip;
             m_Take = take;
-            m_LimitOptions = (SqlServerLimitOptions)limitOptions;
+            m_LimitOptions = (SqlServerLimitOption)limitOptions;
             return this;
         }
 

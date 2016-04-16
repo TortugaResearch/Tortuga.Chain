@@ -1,11 +1,16 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading;
 using Tests.Models;
 using Tortuga.Chain;
 using Tortuga.Chain.AuditRules;
+
+#if MSTest
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+#elif WINDOWS_UWP 
+using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
+#endif
 
 namespace Tests.AuditRules
 {
@@ -46,6 +51,7 @@ namespace Tests.AuditRules
             }
         }
 
+#if !WINDOWS_UWP
         [TestMethod]
         public void AuditRulesTests_InsertUpdateRules()
         {
@@ -66,7 +72,7 @@ namespace Tests.AuditRules
             Assert.IsNotNull(cust2.CreatedDate, "CreatedDate was not set");
             Assert.IsNotNull(cust2.UpdatedDate, "UpdatedDate was not set");
 
-            Thread.Sleep(1000); //make sure the curent time is different enough for the database to notice
+            Thread.Sleep(1000); //make sure the current time is different enough for the database to notice
 
             cust2.State = "NV";
             var cust3 = ds2.Update(CustomerTableName, cust2).ToObject<CustomerWithValidation>().Execute();
@@ -76,7 +82,7 @@ namespace Tests.AuditRules
             Assert.AreNotEqual(cust2.UpdatedDate, cust3.UpdatedDate, "UpdatedDate was suposed to change");
 
         }
-
+#endif 
         [TestMethod]
         public void AuditRulesTests_SoftDelete()
         {

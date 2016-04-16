@@ -6,8 +6,8 @@ namespace Tortuga.Chain.AuditRules
     /// <summary>
     /// Base class for validation style rules.
     /// </summary>
-    /// <seealso cref="Rule" />
-    public abstract class ValidationRule : Rule
+    /// <seealso cref="AuditRule" />
+    public abstract class ValidationRule : AuditRule
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ValidationRule"/> class.

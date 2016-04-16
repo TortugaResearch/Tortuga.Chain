@@ -1,13 +1,21 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
+﻿using System;
 using Tests.Models;
 using Tortuga.Chain;
+
+#if MSTest
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+#elif WINDOWS_UWP 
+using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
+#endif
 
 namespace Tests.Class1Databases
 {
     [TestClass]
     public class UpsertTests : TestBase
     {
+
+#if !Roslyn_Missing
+        
         [TestMethod]
         public void UpsertTests_ChangeTrackingTest_Compiled()
         {
@@ -54,7 +62,7 @@ namespace Tests.Class1Databases
                 //pass
             }
         }
-
+#endif 
 
         [TestMethod]
         public void UpsertTests_ChangeTrackingTest_NothingChanged()

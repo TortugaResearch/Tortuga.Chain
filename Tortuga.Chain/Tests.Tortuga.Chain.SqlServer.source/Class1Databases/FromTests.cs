@@ -1,8 +1,14 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿
 using System;
 using System.Linq;
 using Tests.Models;
 using Tortuga.Chain;
+
+#if MSTest
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+#elif WINDOWS_UWP 
+using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
+#endif
 
 namespace Tests.Class1Databases
 {
@@ -139,7 +145,7 @@ namespace Tests.Class1Databases
         {
 
 
-            var result = DataSource.From(EmployeeTableName, new { Title = Key1000 }).WithSorting("FirstName").WithLimits(10, SqlServerLimitOptions.Percentage).ToCollection<Employee>().Execute();
+            var result = DataSource.From(EmployeeTableName, new { Title = Key1000 }).WithSorting("FirstName").WithLimits(10, SqlServerLimitOption.Percentage).ToCollection<Employee>().Execute();
             Assert.AreEqual(100, result.Count, "Count");
             foreach (var item in result)
             {
@@ -155,7 +161,7 @@ namespace Tests.Class1Databases
         public void FromTests_TakePercentWithTies()
         {
 
-            var result = DataSource.From(EmployeeTableName, new { Title = Key1000 }).WithSorting("FirstName").WithLimits(10, SqlServerLimitOptions.PercentageWithTies).ToCollection<Employee>().Execute();
+            var result = DataSource.From(EmployeeTableName, new { Title = Key1000 }).WithSorting("FirstName").WithLimits(10, SqlServerLimitOption.PercentageWithTies).ToCollection<Employee>().Execute();
             Assert.AreEqual(100, result.Count, "Count");
             foreach (var item in result)
             {
@@ -170,7 +176,7 @@ namespace Tests.Class1Databases
         [TestMethod]
         public void FromTests_TakeWithTies()
         {
-            var result = DataSource.From(EmployeeTableName, new { Title = Key1000 }).WithSorting("FirstName").WithLimits(10, SqlServerLimitOptions.RowsWithTies).ToCollection<Employee>().Execute();
+            var result = DataSource.From(EmployeeTableName, new { Title = Key1000 }).WithSorting("FirstName").WithLimits(10, SqlServerLimitOption.RowsWithTies).ToCollection<Employee>().Execute();
             Assert.AreEqual(10, result.Count, "Count");
             foreach (var item in result)
             {
@@ -185,7 +191,7 @@ namespace Tests.Class1Databases
         [TestMethod]
         public void FromTests_TableSampleSystemPercentage()
         {
-            var result = DataSource.From(EmployeeTableName, new { Title = Key1000 }).WithLimits(100, SqlServerLimitOptions.TableSampleSystemPercentage).ToCollection<Employee>().Execute();
+            var result = DataSource.From(EmployeeTableName, new { Title = Key1000 }).WithLimits(100, SqlServerLimitOption.TableSampleSystemPercentage).ToCollection<Employee>().Execute();
 
             //SQL Server is really inaccurate here for low row counts. We could get 0 rows, 55 rows, or 175 rows depending on where the data lands on the page.
             foreach (var item in result)
@@ -197,7 +203,7 @@ namespace Tests.Class1Databases
         [TestMethod]
         public void FromTests_TableSampleSystemRows()
         {
-            var result = DataSource.From(EmployeeTableName, new { Title = Key1000 }).WithLimits(100, SqlServerLimitOptions.TableSampleSystemRows).ToCollection<Employee>().Execute();
+            var result = DataSource.From(EmployeeTableName, new { Title = Key1000 }).WithLimits(100, SqlServerLimitOption.TableSampleSystemRows).ToCollection<Employee>().Execute();
 
             //SQL Server is really inaccurate here for low row counts. We could get 0 rows, 55 rows, or 175 rows depending on where the data lands on the page.
             foreach (var item in result)
@@ -210,8 +216,8 @@ namespace Tests.Class1Databases
         public void FromTests_TableSampleSystemPercentage_Repeatable()
         {
             var seed = 1;
-            var result1 = DataSource.From(EmployeeTableName, new { Title = Key1000 }).WithLimits(100, SqlServerLimitOptions.TableSampleSystemPercentage, seed).ToCollection<Employee>().Execute();
-            var result2 = DataSource.From(EmployeeTableName, new { Title = Key1000 }).WithLimits(100, SqlServerLimitOptions.TableSampleSystemPercentage, seed).ToCollection<Employee>().Execute();
+            var result1 = DataSource.From(EmployeeTableName, new { Title = Key1000 }).WithLimits(100, SqlServerLimitOption.TableSampleSystemPercentage, seed).ToCollection<Employee>().Execute();
+            var result2 = DataSource.From(EmployeeTableName, new { Title = Key1000 }).WithLimits(100, SqlServerLimitOption.TableSampleSystemPercentage, seed).ToCollection<Employee>().Execute();
 
             Assert.AreEqual(result1.Count, result2.Count, "Row count");
         }
@@ -220,8 +226,8 @@ namespace Tests.Class1Databases
         public void FromTests_TableSampleSystemRows_Repeatable()
         {
             var seed = 1;
-            var result1 = DataSource.From(EmployeeTableName, new { Title = Key1000 }).WithLimits(100, SqlServerLimitOptions.TableSampleSystemRows, seed).ToCollection<Employee>().Execute();
-            var result2 = DataSource.From(EmployeeTableName, new { Title = Key1000 }).WithLimits(100, SqlServerLimitOptions.TableSampleSystemRows, seed).ToCollection<Employee>().Execute();
+            var result1 = DataSource.From(EmployeeTableName, new { Title = Key1000 }).WithLimits(100, SqlServerLimitOption.TableSampleSystemRows, seed).ToCollection<Employee>().Execute();
+            var result2 = DataSource.From(EmployeeTableName, new { Title = Key1000 }).WithLimits(100, SqlServerLimitOption.TableSampleSystemRows, seed).ToCollection<Employee>().Execute();
 
             Assert.AreEqual(result1.Count, result2.Count, "Row count");
         }
@@ -234,7 +240,7 @@ namespace Tests.Class1Databases
         [TestMethod]
         public void FromTests_TakeRandom()
         {
-            var result = DataSource.From(EmployeeTableName, new { Title = Key1000 }).WithLimits(100, SQLiteLimitOptions.RandomSampleRows).ToCollection<Employee>().Execute();
+            var result = DataSource.From(EmployeeTableName, new { Title = Key1000 }).WithLimits(100, SQLiteLimitOption.RandomSampleRows).ToCollection<Employee>().Execute();
             Assert.AreEqual(100, result.Count, "Count");
             foreach (var item in result)
             {

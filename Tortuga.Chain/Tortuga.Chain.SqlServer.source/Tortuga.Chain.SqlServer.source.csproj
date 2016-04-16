@@ -88,7 +88,7 @@
     </Compile>
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Properties\LibrarySharedAssemblyInfo.cs" />
-    <Compile Include="SqlServerLimitOptions.cs" />
+    <Compile Include="SqlServerLimitOption.cs" />
     <Compile Include="SqlServer\Appenders\NotifyChangeAppender`1.cs" />
     <Compile Include="SqlServer\Materializers\WaitForChangeMaterializer`1.cs" />
     <Compile Include="SqlServer\Materializers\WaitForChangeMaterializer.cs" />

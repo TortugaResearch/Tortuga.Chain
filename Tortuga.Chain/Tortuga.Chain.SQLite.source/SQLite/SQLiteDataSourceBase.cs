@@ -90,7 +90,7 @@ namespace Tortuga.Chain.SQLite
         /// </summary>
         /// <param name="tableOrViewName"></param>
         /// <returns></returns>
-        public TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOptions> From(string tableOrViewName)
+        public TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> From(string tableOrViewName)
         {
             return new SQLiteTableOrView(this, tableOrViewName, null, null);
         }
@@ -101,7 +101,7 @@ namespace Tortuga.Chain.SQLite
         /// <param name="tableOrViewName"></param>
         /// <param name="whereClause"></param>
         /// <returns></returns>
-        public TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOptions> From(string tableOrViewName, string whereClause)
+        public TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> From(string tableOrViewName, string whereClause)
         {
             return new SQLiteTableOrView(this, tableOrViewName, whereClause, null);
         }
@@ -113,7 +113,7 @@ namespace Tortuga.Chain.SQLite
         /// <param name="whereClause"></param>
         /// <param name="argumentValue"></param>
         /// <returns></returns>
-        public TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOptions> From(string tableOrViewName, string whereClause, object argumentValue)
+        public TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> From(string tableOrViewName, string whereClause, object argumentValue)
         {
             return new SQLiteTableOrView(this, tableOrViewName, whereClause, argumentValue);
         }
@@ -124,7 +124,7 @@ namespace Tortuga.Chain.SQLite
         /// <param name="tableOrViewName"></param>
         /// <param name="filterValue"></param>
         /// <returns></returns>
-        public TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOptions> From(string tableOrViewName, object filterValue)
+        public TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> From(string tableOrViewName, object filterValue)
         {
             return new SQLiteTableOrView(this, tableOrViewName, filterValue);
         }

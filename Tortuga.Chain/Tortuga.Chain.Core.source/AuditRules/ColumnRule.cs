@@ -6,8 +6,8 @@ namespace Tortuga.Chain.AuditRules
     /// <summary>
     /// This is the base class for rules that affect a single column.
     /// </summary>
-    /// <seealso cref="Rule" />
-    abstract public class ColumnRule : Rule
+    /// <seealso cref="AuditRule" />
+    abstract public class ColumnRule : AuditRule
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ColumnRule"/> class.

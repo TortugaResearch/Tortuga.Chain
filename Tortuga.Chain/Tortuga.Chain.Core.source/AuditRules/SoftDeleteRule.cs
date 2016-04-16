@@ -5,7 +5,7 @@ namespace Tortuga.Chain.AuditRules
     /// <summary>
     /// If a column matching this rule is found, then soft deletes will be applied instead of hard deletes.
     /// </summary>
-    /// <seealso cref="Rule" />
+    /// <seealso cref="AuditRule" />
     public sealed class SoftDeleteRule : ColumnRule
     {
         /// <summary>
