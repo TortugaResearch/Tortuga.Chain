@@ -16,8 +16,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQLite", "SQLite", "{D65835
 		Tortuga.Chain.SQLite.nuspec = Tortuga.Chain.SQLite.nuspec
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{6FB40F3D-E4CC-4E11-952C-BBD437AD2BF8}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tortuga.Chain.Core.source", "Tortuga.Chain.Core.source\Tortuga.Chain.Core.source.csproj", "{2C523692-A40B-4A7E-A95A-FBE373F263F7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tortuga.Chain.CompiledMaterializers.source", "Tortuga.Chain.CompiledMaterializers.source\Tortuga.Chain.CompiledMaterializers.source.csproj", "{42D213CA-8584-4B1B-8928-A54C5D937E86}"
@@ -31,6 +29,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tortuga.Chain.SQLite.net45", "Tortuga.Chain.SQLite.net45\Tortuga.Chain.SQLite.net45.csproj", "{2AE1D392-1143-4A0E-AD6A-1D564DE81033}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tortuga.Chain.SQLite.net46", "Tortuga.Chain.SQLite.net46\Tortuga.Chain.SQLite.net46.csproj", "{AE1B96D9-4C66-4A89-975C-8E8BC8C816F6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tortuga.Chain.Core.uap10", "Tortuga.Chain.Core.uap10\Tortuga.Chain.Core.uap10.csproj", "{0CE9F498-3B08-4DA4-95F4-BC825EC708CC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -192,6 +192,30 @@ Global
 		{AE1B96D9-4C66-4A89-975C-8E8BC8C816F6}.Release|x64.Build.0 = Release|Any CPU
 		{AE1B96D9-4C66-4A89-975C-8E8BC8C816F6}.Release|x86.ActiveCfg = Release|Any CPU
 		{AE1B96D9-4C66-4A89-975C-8E8BC8C816F6}.Release|x86.Build.0 = Release|Any CPU
+		{0CE9F498-3B08-4DA4-95F4-BC825EC708CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0CE9F498-3B08-4DA4-95F4-BC825EC708CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0CE9F498-3B08-4DA4-95F4-BC825EC708CC}.Debug|ARM.ActiveCfg = Debug|ARM
+		{0CE9F498-3B08-4DA4-95F4-BC825EC708CC}.Debug|ARM.Build.0 = Debug|ARM
+		{0CE9F498-3B08-4DA4-95F4-BC825EC708CC}.Debug|x64.ActiveCfg = Debug|x64
+		{0CE9F498-3B08-4DA4-95F4-BC825EC708CC}.Debug|x64.Build.0 = Debug|x64
+		{0CE9F498-3B08-4DA4-95F4-BC825EC708CC}.Debug|x86.ActiveCfg = Debug|x86
+		{0CE9F498-3B08-4DA4-95F4-BC825EC708CC}.Debug|x86.Build.0 = Debug|x86
+		{0CE9F498-3B08-4DA4-95F4-BC825EC708CC}.Debug-Unchecked|Any CPU.ActiveCfg = Debug-Unchecked|Any CPU
+		{0CE9F498-3B08-4DA4-95F4-BC825EC708CC}.Debug-Unchecked|Any CPU.Build.0 = Debug-Unchecked|Any CPU
+		{0CE9F498-3B08-4DA4-95F4-BC825EC708CC}.Debug-Unchecked|ARM.ActiveCfg = Debug-Unchecked|ARM
+		{0CE9F498-3B08-4DA4-95F4-BC825EC708CC}.Debug-Unchecked|ARM.Build.0 = Debug-Unchecked|ARM
+		{0CE9F498-3B08-4DA4-95F4-BC825EC708CC}.Debug-Unchecked|x64.ActiveCfg = Debug-Unchecked|x64
+		{0CE9F498-3B08-4DA4-95F4-BC825EC708CC}.Debug-Unchecked|x64.Build.0 = Debug-Unchecked|x64
+		{0CE9F498-3B08-4DA4-95F4-BC825EC708CC}.Debug-Unchecked|x86.ActiveCfg = Debug-Unchecked|x86
+		{0CE9F498-3B08-4DA4-95F4-BC825EC708CC}.Debug-Unchecked|x86.Build.0 = Debug-Unchecked|x86
+		{0CE9F498-3B08-4DA4-95F4-BC825EC708CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0CE9F498-3B08-4DA4-95F4-BC825EC708CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0CE9F498-3B08-4DA4-95F4-BC825EC708CC}.Release|ARM.ActiveCfg = Release|ARM
+		{0CE9F498-3B08-4DA4-95F4-BC825EC708CC}.Release|ARM.Build.0 = Release|ARM
+		{0CE9F498-3B08-4DA4-95F4-BC825EC708CC}.Release|x64.ActiveCfg = Release|x64
+		{0CE9F498-3B08-4DA4-95F4-BC825EC708CC}.Release|x64.Build.0 = Release|x64
+		{0CE9F498-3B08-4DA4-95F4-BC825EC708CC}.Release|x86.ActiveCfg = Release|x86
+		{0CE9F498-3B08-4DA4-95F4-BC825EC708CC}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -203,5 +227,6 @@ Global
 		{60649569-197C-4E0F-95F4-F87CFF73A610} = {D6583546-CE70-4444-AA54-0AD7AD0026C9}
 		{2AE1D392-1143-4A0E-AD6A-1D564DE81033} = {D6583546-CE70-4444-AA54-0AD7AD0026C9}
 		{AE1B96D9-4C66-4A89-975C-8E8BC8C816F6} = {D6583546-CE70-4444-AA54-0AD7AD0026C9}
+		{0CE9F498-3B08-4DA4-95F4-BC825EC708CC} = {45AB3491-1D3C-472B-A4DA-3D9E70E3210A}
 	EndGlobalSection
 EndGlobal

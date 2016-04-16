@@ -6,6 +6,7 @@ using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
 using Tortuga.Chain.Metadata;
 using System.Text;
+using System.Linq;
 
 #if SDS
 using System.Data.SQLite;
@@ -20,12 +21,16 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
     /// <summary>
     /// SQliteTableOrView supports queries against tables and views.
     /// </summary>
-    internal sealed class SQLiteTableOrView : MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter>
+    internal sealed class SQLiteTableOrView : TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption>
     {
         private readonly object m_FilterValue;
         private readonly TableOrViewMetadata<string, DbType> m_Metadata;
         private readonly string m_WhereClause;
         private readonly object m_ArgumentValue;
+        private IEnumerable<SortExpression> m_SortExpressions = Enumerable.Empty<SortExpression>();
+        private SQLiteLimitOption m_LimitOptions;
+        private int? m_Skip;
+        private int? m_Take;
 
         //public object MetadataCache { get; private set; }
 
@@ -76,6 +81,21 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
             var sqlBuilder = m_Metadata.CreateSqlBuilder(StrictMode);
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
+            //Support check
+            if (!Enum.IsDefined(typeof(SQLiteLimitOption), m_LimitOptions))
+                throw new NotSupportedException($"SQL Server does not support limit option {(LimitOptions)m_LimitOptions}");
+
+            //Validation
+            if (m_Skip < 0)
+                throw new InvalidOperationException($"Cannot skip {m_Skip} rows");
+            if (m_Skip > 0 && m_LimitOptions != SQLiteLimitOption.Rows)
+                throw new InvalidOperationException($"Cannot perform a Skip operation with limit option {m_LimitOptions}");
+            if (m_Take <= 0)
+                throw new InvalidOperationException($"Cannot take {m_Take} rows");
+            if (m_LimitOptions == SQLiteLimitOption.RandomSampleRows && m_SortExpressions.Any())
+                throw new InvalidOperationException($"Cannot perform a random sampling when sorting.");
+
+            //SQL Generation
             List<SQLiteParameter> parameters;
 
             var sql = new StringBuilder();
@@ -101,11 +121,58 @@ namespace Tortuga.Chain.SQLite.SQLite.CommandBuilders
                 sqlBuilder.BuildSoftDeleteClause(sql, " WHERE ", DataSource, null);
                 parameters = sqlBuilder.GetParameters();
             }
+            sqlBuilder.BuildOrderByClause(sql, " ORDER BY ", m_SortExpressions, null);
+
+            switch (m_LimitOptions)
+            {
+                case SQLiteLimitOption.Rows:
+                    sql.Append(" LIMIT @fetch_row_count_expression OFFSET @offset_row_count_expression ");
+                    parameters.Add(new SQLiteParameter("@fetch_row_count_expression", m_Take));
+                    parameters.Add(new SQLiteParameter("@offset_row_count_expression", m_Skip ?? 0));
+
+                    break;
+                case SQLiteLimitOption.RandomSampleRows:
+                    sql.Append(" ORDER BY RANDOM() LIMIT @fetch_row_count_expression ");
+                    parameters.Add(new SQLiteParameter("@fetch_row_count_expression", m_Take));
+                    break;
+            }
+
             sql.Append(";");
 
             return new SQLiteExecutionToken(DataSource, "Query " + m_Metadata.Name, sql.ToString(), parameters, lockType: LockType.Read);
         }
 
+        /// <summary>
+        /// Adds sorting to the command builder.
+        /// </summary>
+        /// <param name="sortExpressions">The sort expressions.</param>
+        /// <returns></returns>
+        public override TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> WithSorting(IEnumerable<SortExpression> sortExpressions)
+        {
+            if (sortExpressions == null)
+                throw new ArgumentNullException(nameof(sortExpressions), $"{nameof(sortExpressions)} is null.");
+
+            m_SortExpressions = sortExpressions;
+            return this;
+        }
+
+        protected override TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> OnWithLimits(int? skip, int? take, SQLiteLimitOption limitOptions, int? seed)
+        {
+            //m_Seed = seed;
+            m_Skip = skip;
+            m_Take = take;
+            m_LimitOptions = limitOptions;
+            return this;
+        }
+
+        protected override TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> OnWithLimits(int? skip, int? take, LimitOptions limitOptions, int? seed)
+        {
+            //m_Seed = seed;
+            m_Skip = skip;
+            m_Take = take;
+            m_LimitOptions = (SQLiteLimitOption)limitOptions;
+            return this;
+        }
     }
 }
 

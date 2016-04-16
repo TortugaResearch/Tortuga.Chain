@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Metadata;
 
@@ -46,7 +47,7 @@ namespace Tortuga.Chain
         /// or
         /// Table or view named + tableName +  could not be found. Check to see if the user has permissions to execute this procedure.
         /// </exception>
-        IMultipleRowDbCommandBuilder From(string tableOrViewName);
+        ITableDbCommandBuilder From(string tableOrViewName);
 
         /// <summary>
         /// This is used to directly query a table or view.
@@ -54,7 +55,7 @@ namespace Tortuga.Chain
         /// <param name="tableOrViewName">Name of the table or view.</param>
         /// <param name="whereClause">The where clause. Do not prefix this clause with "WHERE".</param>
         /// <exception cref="ArgumentException">tableOrViewName is empty.;tableOrViewName</exception>
-        IMultipleRowDbCommandBuilder From(string tableOrViewName, string whereClause);
+        ITableDbCommandBuilder From(string tableOrViewName, string whereClause);
 
         /// <summary>
         /// This is used to directly query a table or view.
@@ -63,7 +64,7 @@ namespace Tortuga.Chain
         /// <param name="whereClause">The where clause. Do not prefix this clause with "WHERE".</param>
         /// <param name="argumentValue">Optional argument value. Every property in the argument value must have a matching parameter in the WHERE clause</param>
         /// <exception cref="ArgumentException">tableOrViewName is empty.;tableOrViewName</exception>
-        IMultipleRowDbCommandBuilder From(string tableOrViewName, string whereClause, object argumentValue);
+        ITableDbCommandBuilder From(string tableOrViewName, string whereClause, object argumentValue);
 
 
         /// <summary>
@@ -72,7 +73,7 @@ namespace Tortuga.Chain
         /// <param name="tableOrViewName">Name of the table or view.</param>
         /// <param name="filterValue">The filter value is used to generate a simple AND style WHERE clause.</param>
         /// <exception cref="ArgumentException">tableOrViewName is empty.;tableOrViewName</exception>
-        IMultipleRowDbCommandBuilder From(string tableOrViewName, object filterValue);
+        ITableDbCommandBuilder From(string tableOrViewName, object filterValue);
 
         /// <summary>
         /// Inserts an object into the specified table.
@@ -103,6 +104,36 @@ namespace Tortuga.Chain
         /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
         ISingleRowDbCommandBuilder Update(string tableName, object argumentValue, UpdateOptions options = UpdateOptions.None);
 
+
+        /// <summary>
+        /// Gets a record by its primary key.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="key">The key.</param>
+        /// <returns></returns>
+        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
+        ISingleRowDbCommandBuilder GetByKey<T>(string tableName, T key);
+
+        /// <summary>
+        /// Gets a set of records by their primary key.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="keys">The keys.</param>
+        /// <returns></returns>
+        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
+        IMultipleRowDbCommandBuilder GetByKey<T>(string tableName, IEnumerable<T> keys);
+
+        /// <summary>
+        /// Gets a set of records by their primary key.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="keys">The keys.</param>
+        /// <returns></returns>
+        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
+        IMultipleRowDbCommandBuilder GetByKey<T>(string tableName, params T[] keys);
 
     }
 }

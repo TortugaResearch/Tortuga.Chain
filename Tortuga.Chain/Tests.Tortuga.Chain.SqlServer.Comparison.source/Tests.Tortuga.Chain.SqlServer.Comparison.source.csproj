@@ -88,6 +88,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Models\Dog.cs" />
     <Compile Include="EmployeeRepositoryChainCompiled.cs" />
     <Compile Include="EmployeeRepositoryChain.cs" />
     <Compile Include="EmployeeRepositoryDapper.cs" />
@@ -101,8 +102,12 @@
     <Compile Include="Models\EmployeeOfficePhone.cs" />
     <Compile Include="ComparisonTests.cs" />
     <Compile Include="Models\Order.cs" />
+    <Compile Include="Models\Return.cs" />
+    <Compile Include="Models\Post.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DapperReadmeVsChain.cs" />
+    <Compile Include="Setup.cs" />
+    <Compile Include="Models\User.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Tortuga.Chain.CompiledMaterializers.source\Tortuga.Chain.CompiledMaterializers.source.csproj">

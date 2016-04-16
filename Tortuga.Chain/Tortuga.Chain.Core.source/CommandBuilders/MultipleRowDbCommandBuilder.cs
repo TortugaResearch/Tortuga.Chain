@@ -12,6 +12,7 @@ using System.Data;
 namespace Tortuga.Chain.CommandBuilders
 {
 
+
     /// <summary>
     /// This is the base class for command builders that can potentially return multiple rows.
     /// </summary>

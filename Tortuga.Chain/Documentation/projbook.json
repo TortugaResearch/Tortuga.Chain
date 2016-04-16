@@ -31,6 +31,10 @@
       "path": "Page/CommandBuilders/From.md"
     },
     {
+      "title": "Get By Id Command Builder",
+      "path": "Page/CommandBuilders/GetById.md"
+    },
+    {
       "title": "Insert Command Builder",
       "path": "Page/CommandBuilders/Insert.md"
     },
@@ -54,7 +58,10 @@
       "title": "Procedure Command Builder",
       "path": "Page/CommandBuilders/Procedure.md"
     },
-
+    {
+      "title": "Non-Query Materializers",
+      "path": "Page/Materializers/NonQuery.md"
+    },
     {
       "title": "Scalar Materializers",
       "path": "Page/Materializers/Scalar.md"

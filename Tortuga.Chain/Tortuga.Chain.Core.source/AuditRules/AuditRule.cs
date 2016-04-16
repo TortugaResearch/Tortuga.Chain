@@ -1,15 +1,15 @@
 ﻿namespace Tortuga.Chain.AuditRules
 {
     /// <summary>
-    /// Base class for all rules.
+    /// Base class for all audit rules.
     /// </summary>
-    abstract public class Rule
+    abstract public class AuditRule
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="Rule"/> class.
+        /// Initializes a new instance of the <see cref="AuditRule"/> class.
         /// </summary>
         /// <param name="appliesWhen">The rule applies when.</param>
-        protected Rule(OperationTypes appliesWhen)
+        protected AuditRule(OperationTypes appliesWhen)
         {
             AppliesWhen = appliesWhen;
         }

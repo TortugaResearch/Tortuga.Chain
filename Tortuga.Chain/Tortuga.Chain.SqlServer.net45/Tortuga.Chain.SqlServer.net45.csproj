@@ -66,8 +66,8 @@
       <HintPath>..\packages\Tortuga.Anchor.0.6.5944.41376\lib\net45\Tortuga.Anchor.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Tortuga.Chain.Core, Version=0.12.5946.1844, Culture=neutral, PublicKeyToken=8769fd32a2872cf0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Tortuga.Chain.Core.0.12.5946.1835\lib\net45\Tortuga.Chain.Core.dll</HintPath>
+    <Reference Include="Tortuga.Chain.Core, Version=0.14.5949.33723, Culture=neutral, PublicKeyToken=8769fd32a2872cf0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tortuga.Chain.Core.0.14.5949.33710\lib\net45\Tortuga.Chain.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
@@ -83,6 +83,9 @@
     </Compile>
     <Compile Include="..\Tortuga.Chain.SqlServer.source\SqlServerDataSource.cs">
       <Link>SqlServerDataSource.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.SqlServer.source\SqlServerLimitOption.cs">
+      <Link>SqlServerLimitOption.cs</Link>
     </Compile>
     <Compile Include="..\tortuga.chain.sqlserver.source\sqlserver\appenders\NotifyChangeAppender`1.cs">
       <Link>SqlServer\Appenders\NotifyChangeAppender`1.cs</Link>

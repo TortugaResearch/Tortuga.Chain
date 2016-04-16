@@ -3,7 +3,7 @@ using System;
 namespace Tortuga.Chain
 {
     /// <summary>
-    /// Controls what happens when performing a model-based delete
+    /// Controls what happens when performing a model-based insert
     /// </summary>
     [Flags]
     public enum InsertOptions
@@ -24,4 +24,6 @@ namespace Tortuga.Chain
         IdentityOverride = 2
         */
     }
+
+        
 }

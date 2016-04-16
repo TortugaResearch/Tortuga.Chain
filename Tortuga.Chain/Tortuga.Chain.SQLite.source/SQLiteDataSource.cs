@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 using Tortuga.Chain.SQLite;
 using Tortuga.Chain.Core;
 using System.Diagnostics.CodeAnalysis;
+using System.Collections.Generic;
+using Tortuga.Chain.AuditRules;
 
 #if !WINDOWS_UWP
 using System.Configuration;
-using Tortuga.Chain.AuditRules;
-using System.Collections.Generic;
 #endif
 
 #if SDS
@@ -25,7 +25,7 @@ using SQLiteConnectionStringBuilder = Microsoft.Data.Sqlite.SqliteConnectionStri
 namespace Tortuga.Chain
 {
     /// <summary>
-    /// Class that represets a SQLite Datasource.
+    /// Class that represents a SQLite Data Source.
     /// </summary>
     public sealed class SQLiteDataSource : SQLiteDataSourceBase
     {
@@ -324,10 +324,10 @@ namespace Tortuga.Chain
         /// </summary>
         /// <param name="additionalRules">The additional rules.</param>
         /// <returns></returns>
-        public SQLiteDataSource WithRules(params AuditRules.Rule[] additionalRules)
+        public SQLiteDataSource WithRules(params AuditRule[] additionalRules)
         {
             var result = WithSettings(null);
-            result.AuditRules = new RulesCollection(AuditRules, additionalRules);
+            result.AuditRules = new AuditRuleCollection(AuditRules, additionalRules);
             return result;
         }
 
@@ -336,10 +336,10 @@ namespace Tortuga.Chain
         /// </summary>
         /// <param name="additionalRules">The additional rules.</param>
         /// <returns></returns>
-        public SQLiteDataSource WithRules(IEnumerable<AuditRules.Rule> additionalRules)
+        public SQLiteDataSource WithRules(IEnumerable<AuditRule> additionalRules)
         {
             var result = WithSettings(null);
-            result.AuditRules = new RulesCollection(AuditRules, additionalRules);
+            result.AuditRules = new AuditRuleCollection(AuditRules, additionalRules);
             return result;
         }
 

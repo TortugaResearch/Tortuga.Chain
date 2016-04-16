@@ -153,11 +153,13 @@ namespace Tortuga.Chain
             }
             catch (Exception ex)
             {
+                MaterializerCompilerFailed?.Invoke(typeof(CompiledMaterializers), new MaterializerCompilerEventArgs(dataSource, sql, codeToString, typeof(TObject)));
+
                 //Debug.WriteLine(codeToString);
                 //foreach (var item in evaluator.GetReferencedAssemblies())
                 //    Debug.WriteLine("Referenced Assembly: " + item.FullName);
                 ex.Data["Code"] = codeToString;
-                ex.Data["Evaluator"] = evaluator;
+                //ex.Data["Evaluator"] = evaluator;
                 throw;
             }
 
@@ -228,28 +230,52 @@ namespace Tortuga.Chain
                 if (column.Item1 != columnIndex)
                     continue; //we'll get it on another iteration
 
-                if (property.PropertyType.IsClass || property.PropertyType.Name == "Nullable`1" && property.PropertyType.IsGenericType)
+                if (property.PropertyType == column.Item2 || (property.PropertyType.Name == "Nullable`1" && property.PropertyType.IsGenericType && property.PropertyType.GenericTypeArguments[0] == column.Item2))
                 {
-                    //null handler
-                    code.AppendLine($"    if (reader.IsDBNull({column.Item1}))");
-                    code.AppendLine($"        {path}.{property.Name} = null;");
-                    code.AppendLine($"    else");
-                    code.AppendLine($"        {path}.{property.Name} = ({column.Item2.FullName}){column.Item3}({column.Item1});");
+                    if (property.PropertyType.IsClass || (property.PropertyType.Name == "Nullable`1" && property.PropertyType.IsGenericType))
+                    {
+                        //null handler
+                        code.AppendLine($"    if (reader.IsDBNull({column.Item1}))");
+                        code.AppendLine($"        {path}.{property.Name} = null;");
+                        code.AppendLine($"    else");
+                        code.AppendLine($"        {path}.{property.Name} = {column.Item3}({column.Item1});");
+                    }
+                    else
+                    {
+                        //non-null handler
+                        code.AppendLine($"    {path}.{property.Name} = {column.Item3}({column.Item1});");
+                    }
                 }
-                else
+                else //type casting is required
                 {
-                    //non-null handler
-                    code.AppendLine($"    {path}.{property.Name} = ({column.Item2.FullName}){column.Item3}({column.Item1});");
-                }
 
+                    if (property.PropertyType.IsClass || (property.PropertyType.Name == "Nullable`1" && property.PropertyType.IsGenericType))
+                    {
+                        //null handler
+                        code.AppendLine($"    if (reader.IsDBNull({column.Item1}))");
+                        code.AppendLine($"        {path}.{property.Name} = null;");
+                        code.AppendLine($"    else");
+                        code.AppendLine($"        {path}.{property.Name} = ({column.Item2.FullName}){column.Item3}({column.Item1});");
+                    }
+                    else
+                    {
+                        //non-null handler
+                        code.AppendLine($"    {path}.{property.Name} = ({column.Item2.FullName}){column.Item3}({column.Item1});");
+                    }
+                }
             }
         }
 
         /// <summary>
         /// Occurs when a materializer is compiled.
         /// </summary>
-        /// <remarks>This is primarily for diagnostic purposes. It isn't meant for production use.</remarks>
         public static event EventHandler<MaterializerCompilerEventArgs> MaterializerCompiled;
+
+        /// <summary>
+        /// Occurs when materializer failes to compile.
+        /// </summary>
+        public static event EventHandler<MaterializerCompilerEventArgs> MaterializerCompilerFailed;
+
     }
 
 }

@@ -1,7 +1,5 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("Tortuga.Chain.SQLite.MS")]
-[assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
+[assembly: AssemblyConfiguration("Universal Windows Applications 10")]
 [assembly: ComVisible(false)]

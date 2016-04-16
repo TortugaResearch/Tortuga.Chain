@@ -8,7 +8,7 @@ namespace Tortuga.Chain.AuditRules
     /// <summary>
     /// When this rule is in effect, objects of type T will be checked.
     /// </summary>
-    /// <seealso cref="Rule" />
+    /// <seealso cref="AuditRule" />
     public class ValidateWithDataErrorInfo<T> : ValidateWithDataErrorInfo
         where T : class, IDataErrorInfo
     {

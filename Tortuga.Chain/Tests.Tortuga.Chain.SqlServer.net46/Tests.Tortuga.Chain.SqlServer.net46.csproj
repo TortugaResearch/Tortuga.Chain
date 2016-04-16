@@ -87,12 +87,12 @@
       <HintPath>..\packages\Tortuga.Anchor.0.6.5944.41376\lib\net46\Tortuga.Anchor.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Tortuga.Chain.CompiledMaterializers, Version=0.11.5942.1306, Culture=neutral, PublicKeyToken=8769fd32a2872cf0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Tortuga.Chain.CompiledMaterializers.0.11.5942.1297\lib\net46\Tortuga.Chain.CompiledMaterializers.dll</HintPath>
+    <Reference Include="Tortuga.Chain.CompiledMaterializers, Version=0.12.5946.3549, Culture=neutral, PublicKeyToken=8769fd32a2872cf0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tortuga.Chain.CompiledMaterializers.0.12.5946.3539\lib\net46\Tortuga.Chain.CompiledMaterializers.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Tortuga.Chain.Core, Version=0.12.5946.1847, Culture=neutral, PublicKeyToken=8769fd32a2872cf0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Tortuga.Chain.Core.0.12.5946.1835\lib\net46\Tortuga.Chain.Core.dll</HintPath>
+    <Reference Include="Tortuga.Chain.Core, Version=0.14.5949.33729, Culture=neutral, PublicKeyToken=8769fd32a2872cf0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tortuga.Chain.Core.0.14.5949.33710\lib\net46\Tortuga.Chain.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>

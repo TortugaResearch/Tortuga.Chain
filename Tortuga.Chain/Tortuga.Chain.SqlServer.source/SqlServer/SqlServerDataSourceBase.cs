@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
+using Tortuga.Anchor;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Metadata;
@@ -65,7 +67,7 @@ namespace Tortuga.Chain.SqlServer
         /// or
         /// Table or view named + tableName +  could not be found. Check to see if the user has permissions to execute this procedure.
         /// </exception>
-        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> From(SqlServerObjectName tableOrViewName)
+        public TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption> From(SqlServerObjectName tableOrViewName)
         {
             return new SqlServerTableOrView(this, tableOrViewName, null, null);
         }
@@ -77,7 +79,7 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="whereClause">The where clause. Do not prefix this clause with "WHERE".</param>
         /// <returns>SqlServerTableOrView.</returns>
         /// <exception cref="ArgumentException">tableOrViewName is empty.;tableOrViewName</exception>
-        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> From(SqlServerObjectName tableOrViewName, string whereClause)
+        public TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption> From(SqlServerObjectName tableOrViewName, string whereClause)
         {
             return new SqlServerTableOrView(this, tableOrViewName, whereClause, null);
         }
@@ -90,7 +92,7 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="argumentValue">Optional argument value. Every property in the argument value must have a matching parameter in the WHERE clause</param>
         /// <returns>SqlServerTableOrView.</returns>
         /// <exception cref="ArgumentException">tableOrViewName is empty.;tableOrViewName</exception>
-        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> From(SqlServerObjectName tableOrViewName, string whereClause, object argumentValue)
+        public TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption> From(SqlServerObjectName tableOrViewName, string whereClause, object argumentValue)
         {
             return new SqlServerTableOrView(this, tableOrViewName, whereClause, argumentValue);
         }
@@ -102,39 +104,80 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="filterValue">The filter value is used to generate a simple AND style WHERE clause.</param>
         /// <returns>SqlServerTableOrView.</returns>
         /// <exception cref="ArgumentException">tableOrViewName is empty.;tableOrViewName</exception>
-        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> From(SqlServerObjectName tableOrViewName, object filterValue)
+        public TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption> From(SqlServerObjectName tableOrViewName, object filterValue)
         {
             return new SqlServerTableOrView(this, tableOrViewName, filterValue);
         }
 
-        IDbCommandBuilder IClass1DataSource.Delete(string tableName, object argumentValue, DeleteOptions options)
+        /// <summary>
+        /// Gets a record by its primary key.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="key">The key.</param>
+        /// <returns></returns>
+        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
+        public SingleRowDbCommandBuilder<SqlCommand, SqlParameter> GetByKey<T>(SqlServerObjectName tableName, T key)
         {
-            return Delete(tableName, argumentValue, options);
+            var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).Columns.Where(c => c.IsPrimaryKey).ToList();
+            if (primaryKeys.Count != 1)
+                throw new MappingException($"GetByKey operation isn't allowed on {tableName} because it doesn't have a single primary key. Use DataSource.From instead.");
+
+            var columnMetadata = primaryKeys.Single();
+            var where = columnMetadata.SqlName + " = " + columnMetadata.SqlVariableName;
+
+            var parameters = new List<SqlParameter>();
+
+            var param = new SqlParameter(columnMetadata.SqlVariableName, key);
+            if (columnMetadata.DbType.HasValue)
+                param.SqlDbType = columnMetadata.DbType.Value;
+            parameters.Add(param);
+
+
+            return new SqlServerTableOrView(this, tableName, where, parameters);
         }
 
-        IMultipleRowDbCommandBuilder IClass1DataSource.From(string tableOrViewName)
+        /// <summary>
+        /// Gets a set of records by their primary key.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="keys">The keys.</param>
+        /// <returns></returns>
+        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
+        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> GetByKey<T>(SqlServerObjectName tableName, params T[] keys)
         {
-            return From(tableOrViewName);
+            return GetByKey(tableName, (IEnumerable<T>)keys);
         }
 
-        IMultipleRowDbCommandBuilder IClass1DataSource.From(string tableOrViewName, object filterValue)
+        /// <summary>
+        /// Gets a set of records by their primary key.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="keys">The keys.</param>
+        /// <returns></returns>
+        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
+        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> GetByKey<T>(SqlServerObjectName tableName, IEnumerable<T> keys)
         {
-            return From(tableOrViewName, filterValue);
-        }
+            var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).Columns.Where(c => c.IsPrimaryKey).ToList();
+            if (primaryKeys.Count != 1)
+                throw new MappingException($"GetByKey operation isn't allowed on {tableName} because it doesn't have a single primary key. Use DataSource.From instead.");
 
-        IMultipleRowDbCommandBuilder IClass1DataSource.From(string tableOrViewName, string whereClause)
-        {
-            return From(tableOrViewName, whereClause);
-        }
+            var keyList = keys.AsList();
+            var columnMetadata = primaryKeys.Single();
+            var where = columnMetadata.SqlName + " IN (" + string.Join(", ", keyList.Select((s, i) => "@Param" + i)) + ")";
 
-        IMultipleRowDbCommandBuilder IClass1DataSource.From(string tableOrViewName, string whereClause, object argumentValue)
-        {
-            return From(tableOrViewName, whereClause, argumentValue);
-        }
+            var parameters = new List<SqlParameter>();
+            for (var i = 0; i < keyList.Count; i++)
+            {
+                var param = new SqlParameter("@Param" + i, keyList[i]);
+                if (columnMetadata.DbType.HasValue)
+                    param.SqlDbType = columnMetadata.DbType.Value;
+                parameters.Add(param);
+            }
 
-        ISingleRowDbCommandBuilder IClass1DataSource.Insert(string tableName, object argumentValue, InsertOptions options)
-        {
-            return Insert(tableName, argumentValue, options);
+            return new SqlServerTableOrView(this, tableName, where, parameters);
         }
 
         IMultipleTableDbCommandBuilder IClass0DataSource.Sql(string sqlStatement, object argumentValue)
@@ -142,6 +185,50 @@ namespace Tortuga.Chain.SqlServer
             return Sql(sqlStatement, argumentValue);
         }
 
+        IDbCommandBuilder IClass1DataSource.Delete(string tableName, object argumentValue, DeleteOptions options)
+        {
+            return Delete(tableName, argumentValue, options);
+        }
+
+        ITableDbCommandBuilder IClass1DataSource.From(string tableOrViewName)
+        {
+            return From(tableOrViewName);
+        }
+
+        ITableDbCommandBuilder IClass1DataSource.From(string tableOrViewName, object filterValue)
+        {
+            return From(tableOrViewName, filterValue);
+        }
+
+        ITableDbCommandBuilder IClass1DataSource.From(string tableOrViewName, string whereClause)
+        {
+            return From(tableOrViewName, whereClause);
+        }
+
+        ITableDbCommandBuilder IClass1DataSource.From(string tableOrViewName, string whereClause, object argumentValue)
+        {
+            return From(tableOrViewName, whereClause, argumentValue);
+        }
+
+        ISingleRowDbCommandBuilder IClass1DataSource.GetByKey<T>(string tableName, T key)
+        {
+            return GetByKey(tableName, key);
+        }
+
+        IMultipleRowDbCommandBuilder IClass1DataSource.GetByKey<T>(string tableName, IEnumerable<T> keys)
+        {
+            return GetByKey(tableName, keys);
+        }
+
+        IMultipleRowDbCommandBuilder IClass1DataSource.GetByKey<T>(string tableName, params T[] keys)
+        {
+            return GetByKey(tableName, (IEnumerable<T>)keys);
+        }
+
+        ISingleRowDbCommandBuilder IClass1DataSource.Insert(string tableName, object argumentValue, InsertOptions options)
+        {
+            return Insert(tableName, argumentValue, options);
+        }
         ISingleRowDbCommandBuilder IClass1DataSource.Update(string tableName, object argumentValue, UpdateOptions options)
         {
             return Update(tableName, argumentValue, options);
@@ -282,8 +369,6 @@ namespace Tortuga.Chain.SqlServer
         {
             return new SqlServerInsertOrUpdateObject(this, tableName, argumentValue, options);
         }
-
-
     }
 }
 

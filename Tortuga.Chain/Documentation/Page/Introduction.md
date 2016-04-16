@@ -1,4 +1,5 @@
 # Tortuga Chain
+
 A Fluent ORM for .NET
 
 ## Getting Started
@@ -6,6 +7,10 @@ A Fluent ORM for .NET
 To get started with Chain, you need to create a data source. This can be done using a connection string or a `SqlConnectionStringBuilder`. Optionally, you can also name your data source. (This has no functional effect, but does assist in logging.)
 
     dataSource = new Tortuga.Chain.SqlServerDataSource("Adventure DB", "Server=.;Database=AdventureWorks2014;Trusted_Connection=True;");
+
+Or from your app.config file:
+
+    dataSource = Tortuga.Chain.SqlServerDataSource.CreateFromConfig("AdventureDB");
 
 Your data source should be treated as a singleton object; you only need one per unique connection string. This is important because your data source will cache information about your database.
 
@@ -69,6 +74,27 @@ For better performance, you can use the compiled materializer extension:
 
 This requires the `Tortuga.Chain.CompiledMaterializers` package, which includes CS-Script as a dependency. 
 
+### CRUD Operations
+
+By combining commands and materializers, you can perform all of the basic CRUD operations. Here are some examples.
+
+#### Create
+
+    var vehicleKey = dataSource.Insert("Vehicle", new { VehicleID = "65476XC54E", Make = "Cadillac", Model = "Fleetwood Series 60", Year = 1955 }).ToInt32().Execute();
+
+#### Read
+
+    var car = dataSource.GetById("Vehicle", vehicleKey).ToObject<Vehicle>().Execute();
+    var cars = dataSource.From("Vehicle", new {Make = "Cadillac").ToCollection<Vehicle>().Execute();
+
+#### Update
+
+    dataSource.Update("Vehicle", new { VehicleKey = vehicleKey, Year = 1957 }).Execute();
+
+#### Delete
+
+    dataSource.Delete("Vehicle", new { VehicleKey = vehicleKey }).Execute();
+
 ### Appenders
 
 Appenders are links that can change the rules before, during, or after execution.  An appender can be added after a materializer or another appender.
@@ -79,6 +105,12 @@ Caching appenders include:
 * `ReadOrCache`: If it can read from the cache, the database operation is aborted. Otherwise the value is cached. 
 * `CacheAllItems`: Cache each item in the result list individually. Useful when using a GetAll style operation.
 * `InvalidateCache`: Removes a cache entry. Use with any operation that modifies a record.
+
+Here is an example of CRUD operations using caching.
+
+    var car = dataSource.GetById("Vehicle", vehicleKey).ToObject<Vehicle>().ReadOrCache("Vehicle " + vehicleKey).Execute();
+    car = dataSource.Update("Vehicle", new { VehicleKey = vehicleKey, Year = 1957 }).ToObject<Vehicle>().Cache("Vehicle " + vehicleKey).Execute();
+    dataSource.Delete("Vehicle", new { VehicleKey = vehicleKey }).InvalidateCache("Vehicle " + vehicleKey.Execute();
 
 If using SQL Server, you can also use `WithChangeNotification`. This uses SQL Dependency to listen for changes to the table(s) you queried.
 

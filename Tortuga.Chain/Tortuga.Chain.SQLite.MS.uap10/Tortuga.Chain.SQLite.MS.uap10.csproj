@@ -112,50 +112,65 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
+    <None Include="..\Tortuga Chain.snk">
+      <Link>Tortuga Chain.snk</Link>
+    </None>
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Tortuga.Chain.Core.net461\Properties\LibrarySharedAssemblyInfo.cs">
+    <Compile Include="..\ProductSharedAssemblyInfo.cs">
+      <Link>Properties\ProductSharedAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.SQLite.source\Properties\LibrarySharedAssemblyInfo.cs">
       <Link>Properties\LibrarySharedAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.SQLite.net461\SQLiteDataSource.cs">
+    <Compile Include="..\Tortuga.Chain.SQLite.source\SQLiteDataSource.cs">
       <Link>SQLiteDataSource.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.SQLite.net461\SQLite\CommandBuilders\SQLiteDeleteObject.cs">
+    <Compile Include="..\Tortuga.Chain.SQLite.source\SQLiteLimitOption.cs">
+      <Link>SQLiteLimitOption.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.SQLite.source\SQLite\CommandBuilders\SQLiteDeleteObject.cs">
       <Link>SQLite\CommandBuilders\SQLiteDeleteObject.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.SQLite.net461\SQLite\CommandBuilders\SQLiteInsertObject.cs">
+    <Compile Include="..\Tortuga.Chain.SQLite.source\SQLite\CommandBuilders\SQLiteInsertObject.cs">
       <Link>SQLite\CommandBuilders\SQLiteInsertObject.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.SQLite.net461\SQLite\CommandBuilders\SQLiteInsertOrUpdateObject.cs">
+    <Compile Include="..\Tortuga.Chain.SQLite.source\SQLite\CommandBuilders\SQLiteInsertOrUpdateObject.cs">
       <Link>SQLite\CommandBuilders\SQLiteInsertOrUpdateObject.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.SQLite.net461\SQLite\CommandBuilders\SQLiteObjectCommand.cs">
+    <Compile Include="..\Tortuga.Chain.SQLite.source\SQLite\CommandBuilders\SQLiteObjectCommand.cs">
       <Link>SQLite\CommandBuilders\SQLiteObjectCommand.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.SQLite.net461\SQLite\CommandBuilders\SQLiteSqlCall.cs">
+    <Compile Include="..\Tortuga.Chain.SQLite.source\SQLite\CommandBuilders\SQLiteSqlCall.cs">
       <Link>SQLite\CommandBuilders\SQLiteSqlCall.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.SQLite.net461\SQLite\CommandBuilders\SQLiteTableOrView.cs">
+    <Compile Include="..\Tortuga.Chain.SQLite.source\SQLite\CommandBuilders\SQLiteTableOrView.cs">
       <Link>SQLite\CommandBuilders\SQLiteTableOrView.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.SQLite.net461\SQLite\CommandBuilders\SQLiteUpdateObject.cs">
+    <Compile Include="..\Tortuga.Chain.SQLite.source\SQLite\CommandBuilders\SQLiteUpdateObject.cs">
       <Link>SQLite\CommandBuilders\SQLiteUpdateObject.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.SQLite.net461\SQLite\LockType.cs">
+    <Compile Include="..\Tortuga.Chain.SQLite.source\SQLite\LockType.cs">
       <Link>SQLite\LockType.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.SQLite.net461\SQLite\SQLiteDataSourceBase.cs">
+    <Compile Include="..\Tortuga.Chain.SQLite.source\SQLite\SQLiteDataSourceBase.cs">
       <Link>SQLite\SQLiteDataSourceBase.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.SQLite.net461\SQLite\SQLiteExecutionToken.cs">
+    <Compile Include="..\Tortuga.Chain.SQLite.source\SQLite\SQLiteDataSourceSettings.cs">
+      <Link>SQLite\SQLiteDataSourceSettings.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.SQLite.source\SQLite\SQLiteExecutionToken.cs">
       <Link>SQLite\SQLiteExecutionToken.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.SQLite.net461\SQLite\SQLiteMetadataCache.cs">
+    <Compile Include="..\Tortuga.Chain.SQLite.source\SQLite\SQLiteMetadataCache.cs">
       <Link>SQLite\SQLiteMetadataCache.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.SQLite.net461\SQLite\SQLiteTransactionalDataSource.cs">
+    <Compile Include="..\Tortuga.Chain.SQLite.source\SQLite\SQLiteTransactionalDataSource.cs">
       <Link>SQLite\SQLiteTransactionalDataSource.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.SQLite.source\SQLite\Utilities.cs">
+      <Link>SQLite\Utilities.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Tortuga.Chain.SQLite.uap10.rd.xml" />
@@ -167,7 +182,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="..\Tortuga.Chain.Core.net461\CustomDictionary.xml">
+    <CodeAnalysisDictionary Include="..\CustomDictionary.xml">
       <Link>CustomDictionary.xml</Link>
     </CodeAnalysisDictionary>
   </ItemGroup>

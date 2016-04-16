@@ -446,10 +446,10 @@ namespace Tortuga.Chain
         /// </summary>
         /// <param name="additionalRules">The additional rules.</param>
         /// <returns></returns>
-        public SqlServerDataSource WithRules(params AuditRules.Rule[] additionalRules)
+        public SqlServerDataSource WithRules(params AuditRule[] additionalRules)
         {
             var result = WithSettings(null);
-            result.AuditRules = new RulesCollection(AuditRules, additionalRules);
+            result.AuditRules = new AuditRuleCollection(AuditRules, additionalRules);
             return result;
         }
 
@@ -458,10 +458,10 @@ namespace Tortuga.Chain
         /// </summary>
         /// <param name="additionalRules">The additional rules.</param>
         /// <returns></returns>
-        public SqlServerDataSource WithRules(IEnumerable<AuditRules.Rule> additionalRules)
+        public SqlServerDataSource WithRules(IEnumerable<AuditRule> additionalRules)
         {
             var result = WithSettings(null);
-            result.AuditRules = new RulesCollection(AuditRules, additionalRules);
+            result.AuditRules = new AuditRuleCollection(AuditRules, additionalRules);
             return result;
         }
 

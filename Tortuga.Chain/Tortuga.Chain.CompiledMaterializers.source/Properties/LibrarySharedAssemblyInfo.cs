@@ -4,4 +4,4 @@
 [assembly: AssemblyDescription("This library adds compiled versions of the ToObject and ToCollection materializers.")]
 
 [assembly: AssemblyCulture("")]
-[assembly: AssemblyVersion("0.12.*")]
+[assembly: AssemblyVersion("0.13.*")]

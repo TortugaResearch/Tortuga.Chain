@@ -160,6 +160,12 @@
     <Compile Include="..\Tortuga.Chain.Core.source\Appenders\TraceAppender`1.cs">
       <Link>Appenders\TraceAppender`1.cs</Link>
     </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\AuditRules\AuditRule.cs">
+      <Link>AuditRules\AuditRule.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\AuditRules\AuditRuleCollection.cs">
+      <Link>AuditRules\AuditRuleCollection.cs</Link>
+    </Compile>
     <Compile Include="..\tortuga.chain.core.source\auditrules\ColumnRule.cs">
       <Link>AuditRules\ColumnRule.cs</Link>
     </Compile>
@@ -174,12 +180,6 @@
     </Compile>
     <Compile Include="..\tortuga.chain.core.source\auditrules\OperationTypes.cs">
       <Link>AuditRules\OperationTypes.cs</Link>
-    </Compile>
-    <Compile Include="..\tortuga.chain.core.source\auditrules\Rule.cs">
-      <Link>AuditRules\Rule.cs</Link>
-    </Compile>
-    <Compile Include="..\tortuga.chain.core.source\auditrules\RulesCollection.cs">
-      <Link>AuditRules\RulesCollection.cs</Link>
     </Compile>
     <Compile Include="..\tortuga.chain.core.source\auditrules\SoftDeleteRule.cs">
       <Link>AuditRules\SoftDeleteRule.cs</Link>
@@ -229,6 +229,9 @@
     <Compile Include="..\Tortuga.Chain.Core.source\CommandBuilders\ISingleRowDbCommandBuilder.cs">
       <Link>CommandBuilders\ISingleRowDbCommandBuilder.cs</Link>
     </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\CommandBuilders\ITableDbCommandBuilder.cs">
+      <Link>CommandBuilders\ITableDbCommandBuilder.cs</Link>
+    </Compile>
     <Compile Include="..\Tortuga.Chain.Core.source\CommandBuilders\MultipleRowDbCommandBuilder.cs">
       <Link>CommandBuilders\MultipleRowDbCommandBuilder.cs</Link>
     </Compile>
@@ -246,6 +249,9 @@
     </Compile>
     <Compile Include="..\Tortuga.Chain.Core.source\CommandBuilders\SqlBuilder`1.cs">
       <Link>CommandBuilders\SqlBuilder`1.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\CommandBuilders\TableDbCommandBuilder.cs">
+      <Link>CommandBuilders\TableDbCommandBuilder.cs</Link>
     </Compile>
     <Compile Include="..\Tortuga.Chain.Core.source\CommonAppenders.cs">
       <Link>CommonAppenders.cs</Link>
@@ -304,6 +310,9 @@
     <Compile Include="..\Tortuga.Chain.Core.source\InsertOptions.cs">
       <Link>InsertOptions.cs</Link>
     </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\LimitOptions.cs">
+      <Link>LimitOptions.cs</Link>
+    </Compile>
     <Compile Include="..\Tortuga.Chain.Core.source\ListOptions.cs">
       <Link>ListOptions.cs</Link>
     </Compile>
@@ -318,6 +327,12 @@
     </Compile>
     <Compile Include="..\Tortuga.Chain.Core.source\Materializers\DataTableMaterializer`2.cs">
       <Link>Materializers\DataTableMaterializer`2.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\DynamicCollectionMaterializer`2.cs">
+      <Link>Materializers\DynamicCollectionMaterializer`2.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\DynamicObjectMaterializer`2.cs">
+      <Link>Materializers\DynamicObjectMaterializer`2.cs</Link>
     </Compile>
     <Compile Include="..\Tortuga.Chain.Core.source\Materializers\Materializer.cs">
       <Link>Materializer.cs</Link>
@@ -336,6 +351,9 @@
     </Compile>
     <Compile Include="..\Tortuga.Chain.Core.source\Materializers\RowMaterializer`2.cs">
       <Link>Materializers\RowMaterializer`2.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\RowsAffectedMaterializer`2.cs">
+      <Link>Materializers\RowsAffectedMaterializer`2.cs</Link>
     </Compile>
     <Compile Include="..\Tortuga.Chain.Core.source\Materializers\Scalar\BooleanMaterializer`2.cs">
       <Link>Materializers\Scalar\BooleanMaterializer`2.cs</Link>
@@ -528,6 +546,12 @@
     </Compile>
     <Compile Include="..\Tortuga.Chain.Core.source\RowOptions.cs">
       <Link>RowOptions.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\SortDirection.cs">
+      <Link>SortDirection.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\SortExpression.cs">
+      <Link>SortExpression.cs</Link>
     </Compile>
     <Compile Include="..\Tortuga.Chain.Core.source\Table.cs">
       <Link>Table.cs</Link>

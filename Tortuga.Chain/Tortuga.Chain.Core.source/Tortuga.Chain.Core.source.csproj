@@ -104,6 +104,8 @@
     <Compile Include="CommandBuilders\IMultipleRowDbCommandBuilder.cs" />
     <Compile Include="CommandBuilders\IMultipleTableDbCommandBuilder.cs" />
     <Compile Include="CommandBuilders\ISingleRowDbCommandBuilder.cs" />
+    <Compile Include="CommandBuilders\ITableDbCommandBuilder.cs" />
+    <Compile Include="CommandBuilders\TableDbCommandBuilder.cs" />
     <Compile Include="CommonAppenders.cs" />
     <Compile Include="Core\ExecutionTokenPreparedEventArgs.cs" />
     <Compile Include="Core\ExecutionTokenPreparingEventArgs.cs" />
@@ -111,6 +113,7 @@
     <Compile Include="DataSources\DataSource.cs" />
     <Compile Include="DataSources\DataSource`2.cs" />
     <Compile Include="CommandBuilders\DbCommandBuilder`2.cs" />
+    <Compile Include="InsertBatchOptions.cs" />
     <Compile Include="InsertOptions.cs" />
     <Compile Include="DeleteOptions.cs" />
     <Compile Include="Core\CommandBuiltEventArgs.cs" />
@@ -121,6 +124,7 @@
     <Compile Include="IClass0DataSource.cs" />
     <Compile Include="IClass1DataSource.cs" />
     <Compile Include="IClass2DataSource.cs" />
+    <Compile Include="LimitOptions.cs" />
     <Compile Include="MappingException.cs" />
     <Compile Include="Appenders\ReadOrCacheResultAppender`1.cs" />
     <Compile Include="ILink`1.cs" />
@@ -185,13 +189,15 @@
     <Compile Include="Materializers\Scalar\TimeSpanMaterializer`2.cs" />
     <Compile Include="AuditRules\UserDataRule.cs" />
     <Compile Include="AuditRules\ValueRule.cs" />
-    <Compile Include="AuditRules\Rule.cs" />
+    <Compile Include="AuditRules\AuditRule.cs" />
     <Compile Include="AuditRules\OperationTypes.cs" />
-    <Compile Include="AuditRules\RulesCollection.cs" />
+    <Compile Include="AuditRules\AuditRuleCollection.cs" />
     <Compile Include="AuditRules\ColumnValueGenerator.cs" />
     <Compile Include="AuditRules\SoftDeleteRule.cs" />
     <Compile Include="AuditRules\DateTimeOffsetRule.cs" />
     <Compile Include="AuditRules\DateTimeRule.cs" />
+    <Compile Include="SortDirection.cs" />
+    <Compile Include="SortExpression.cs" />
     <Compile Include="UpsertOptions.cs" />
     <Compile Include="ListOptions.cs" />
     <Compile Include="Metadata\ColumnMetadata`1.cs" />

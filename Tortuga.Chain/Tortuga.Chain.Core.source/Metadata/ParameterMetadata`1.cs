@@ -31,22 +31,22 @@ namespace Tortuga.Chain.Metadata
         /// </summary>
         public TDbType? DbType { get; }
 
-        bool ISqlBuilderEntryDetails<TDbType>.IsIdentity
+        bool ISqlBuilderEntryDetails.IsIdentity
         {
             get { return false; }
         }
 
-        string ISqlBuilderEntryDetails<TDbType>.QuotedSqlName
+        string ISqlBuilderEntryDetails.QuotedSqlName
         {
             get { return null; }
         }
 
-        string ISqlBuilderEntryDetails<TDbType>.SqlName
+        string ISqlBuilderEntryDetails.SqlName
         {
             get { return null; }
         }
 
-        string ISqlBuilderEntryDetails<TDbType>.SqlVariableName
+        string ISqlBuilderEntryDetails.SqlVariableName
         {
             get { return SqlParameterName; }
         }

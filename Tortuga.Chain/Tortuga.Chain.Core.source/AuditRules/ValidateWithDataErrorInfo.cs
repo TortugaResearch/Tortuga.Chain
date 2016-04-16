@@ -9,7 +9,7 @@ namespace Tortuga.Chain.AuditRules
     /// <summary>
     /// When this rule is in effect, objects that implement IDataErrorInfo will be checked.
     /// </summary>
-    /// <seealso cref="Rule" />
+    /// <seealso cref="AuditRule" />
     public class ValidateWithDataErrorInfo : ValidationRule
     {
         /// <summary>

@@ -1,82 +1,40 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Diagnostics;
-using System.IO;
 using Tortuga.Chain;
 using Tortuga.Chain.DataSources;
-using Tortuga.Chain.SQLite;
-
-#if SDS
-using System.Data.SQLite;
-#else
-using SQLiteCommand = Microsoft.Data.Sqlite.SqliteCommand;
-using SQLiteParameter = Microsoft.Data.Sqlite.SqliteParameter;
-using SQLiteConnection = Microsoft.Data.Sqlite.SqliteConnection;
-using SQLiteTransaction = Microsoft.Data.Sqlite.SqliteTransaction;
-using SQLiteConnectionStringBuilder = Microsoft.Data.Sqlite.SqliteConnectionStringBuilder;
-#endif
+using Tortuga.Chain.SqlServer.Core;
 
 namespace Tests
 {
     [TestClass]
     public class Setup
     {
-        private const string databaseFileName = "SQLiteTestDatabase.MS.sqlite";
         [AssemblyInitialize]
         public static void AssemblyInit(TestContext context)
+
         {
+#if DEBUG
             DataSource.GlobalExecutionCanceled += DefaultDispatcher_ExecutionCanceled;
             DataSource.GlobalExecutionError += DefaultDispatcher_ExecutionError;
             DataSource.GlobalExecutionFinished += DefaultDispatcher_ExecutionFinished;
             DataSource.GlobalExecutionStarted += DefaultDispatcher_ExecutionStarted;
 
-            File.Delete(databaseFileName);
-
-            //SqliteConnection.CreateFile(databaseFileName);
-            var m_dbConnection = new SQLiteConnection("Data Source=SQLiteTestDatabase.MS.sqlite;");
-            m_dbConnection.Open();
-
-
-            string sql = @"
-CREATE TABLE Employee
-(
-	EmployeeKey INTEGER PRIMARY KEY,
-	FirstName nvarChar(25) NOT NULL,
-	MiddleName nvarChar(25) NULL,
-	LastName nVarChar(25) NOT NULL,
-	Title nVarChar(100) null,
-	ManagerKey INT NULL REferences Employee(EmployeeKey),
-    CreatedDate DateTime NOT NULL DEFAULT CURRENT_TIME,
-    UpdatedDate DateTime NULL
-)";
-
-            using (SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection))
-            {
-                command.ExecuteNonQuery();
-            }
-
-            sql = @"INSERT INTO Employee ([EmployeeKey], [FirstName], [MiddleName], [LastName], [Title], [ManagerKey]) VALUES (@EmployeeKey, @FirstName, @MiddleName, @LastName, @Title, @ManagerKey); SELECT [EmployeeKey], [FirstName], [MiddleName], [LastName], [Title], [ManagerKey] FROM Employee WHERE ROWID = last_insert_rowid();";
-
-            for (var i = 0; i < 10; i++)
-                using (SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection))
-                {
-                    command.Parameters.AddWithValue("@EmployeeKey", DBNull.Value);
-                    command.Parameters.AddWithValue("@FirstName", "Tom");
-                    command.Parameters.AddWithValue("@MiddleName", DBNull.Value);
-                    command.Parameters.AddWithValue("@LastName", "Jones");
-                    command.Parameters.AddWithValue("@Title", "CEO");
-                    command.Parameters.AddWithValue("@ManagerKey", DBNull.Value);
-                    var key = command.ExecuteScalar();
-                }
+            CompiledMaterializers.MaterializerCompiled += CompiledMaterializers_MaterializerCompiled;
+#endif
         }
 
-        [AssemblyCleanup]
-        public static void AssemblyCleanup()
+        private static void CompiledMaterializers_MaterializerCompiled(object sender, MaterializerCompilerEventArgs e)
         {
-            File.Delete(databaseFileName);
+            Debug.WriteLine("******");
+            Debug.WriteLine("Compiled Materializer");
+            Debug.Indent();
+            Debug.WriteLine("SQL");
+            Debug.WriteLine(e.Sql);
+            Debug.WriteLine("Code");
+            Debug.WriteLine(e.Code);
+            Debug.Unindent();
         }
-
-
 
         static void DefaultDispatcher_ExecutionCanceled(object sender, ExecutionEventArgs e)
         {
@@ -112,7 +70,7 @@ CREATE TABLE Employee
             Debug.WriteLine("Command text: ");
             Debug.WriteLine(e.ExecutionDetails.CommandText);
             Debug.Indent();
-            foreach (var item in ((SQLiteExecutionToken)e.ExecutionDetails).Parameters)
+            foreach (var item in ((SqlServerExecutionToken)e.ExecutionDetails).Parameters)
                 Debug.WriteLine(item.ParameterName + ": " + (item.Value == null || item.Value == DBNull.Value ? "<NULL>" : item.Value));
             Debug.Unindent();
             Debug.WriteLine("******");

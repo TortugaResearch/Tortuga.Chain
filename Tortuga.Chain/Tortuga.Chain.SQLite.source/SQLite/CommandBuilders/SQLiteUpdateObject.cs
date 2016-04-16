@@ -1,10 +1,10 @@
 ﻿using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
 using System.Text;
+using System;
 
 #if SDS
 using System.Data.SQLite;
-using System;
 #else
 using SQLiteCommand = Microsoft.Data.Sqlite.SqliteCommand;
 using SQLiteParameter = Microsoft.Data.Sqlite.SqliteParameter;

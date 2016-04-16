@@ -149,5 +149,162 @@ namespace Tortuga.Chain.CommandBuilders
 #endif
 
 
+
+        /// <summary>
+        /// Indicates the results should be materialized as a nullable TimeSpan.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        ILink<TimeSpan?> ToTimeSpanOrNull(string columnName);
+
+
+
+
+        /// <summary>
+        /// Indicates the results should be materialized as a Boolean.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        ILink<bool> ToBoolean(string columnName);
+
+        /// <summary>
+        /// Indicates the results should be materialized as a nullable Boolean.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        ILink<bool?> ToBooleanOrNull(string columnName);
+
+        /// <summary>
+        /// Indicates the results should be materialized as a byte.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        ILink<byte> ToByte(string columnName);
+
+        /// <summary>
+        /// Indicates the results should be materialized as a byte array.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        ILink<byte[]> ToByteArray(string columnName);
+
+        /// <summary>
+        /// Indicates the results should be materialized as a nullable byte.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        ILink<byte?> ToByteOrNull(string columnName);
+
+        /// <summary>
+        /// Indicates the results should be materialized as a DateTime.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        ILink<DateTime> ToDateTime(string columnName);
+
+        /// <summary>
+        /// Indicates the results should be materialized as a DateTimeOffset.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        ILink<DateTimeOffset> ToDateTimeOffset(string columnName);
+
+        /// <summary>
+        /// Indicates the results should be materialized as a nullable DateTimeOffset.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        ILink<DateTimeOffset?> ToDateTimeOffsetOrNull(string columnName);
+
+        /// <summary>
+        /// Indicates the results should be materialized as a nullable DateTime.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        ILink<DateTime?> ToDateTimeOrNull(string columnName);
+
+        /// <summary>
+        /// Indicates the results should be materialized as a Decimal.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        ILink<decimal> ToDecimal(string columnName);
+
+        /// <summary>
+        /// Indicates the results should be materialized as a nullable Decimal.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        ILink<decimal?> ToDecimalOrNull(string columnName);
+        /// <summary>
+        /// Indicates the results should be materialized as a Double.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        ILink<double> ToDouble(string columnName);
+
+        /// <summary>
+        /// Indicates the results should be materialized as a nullable Double.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        ILink<double?> ToDoubleOrNull(string columnName);
+
+        /// <summary>
+        /// Indicates the results should be materialized as a Guid.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        ILink<Guid> ToGuid(string columnName);
+
+        /// <summary>
+        /// Indicates the results should be materialized as a nullable Guid.
+        /// </summary>
+        ILink<Guid?> ToGuidOrNull(string columnName);
+
+        /// <summary>
+        /// Indicates the results should be materialized as a Int16.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        ILink<short> ToInt16(string columnName);
+
+        /// <summary>
+        /// Indicates the results should be materialized as a nullable Int16.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        ILink<short?> ToInt16OrNull(string columnName);
+
+        /// <summary>
+        /// Indicates the results should be materialized as a Int32.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        ILink<int> ToInt32(string columnName);
+
+        /// <summary>
+        /// Indicates the results should be materialized as a nullable Int32.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        ILink<int?> ToInt32OrNull(string columnName);
+
+        /// <summary>
+        /// Indicates the results should be materialized as a Int64.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        ILink<long> ToInt64(string columnName);
+
+        /// <summary>
+        /// Indicates the results should be materialized as a nullable Int64.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        ILink<long?> ToInt64OrNull(string columnName);
+
+        /// <summary>
+        /// Indicates the results should be materialized as a Single.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        ILink<float> ToSingle(string columnName);
+
+        /// <summary>
+        /// Indicates the results should be materialized as a nullable Single.
+        /// </summary>
+        ILink<float?> ToSingleOrNull(string columnName);
+
+        /// <summary>
+        /// Indicates the results should be materialized as a nullable string.
+        /// </summary>
+        /// <returns></returns>
+        /// <param name="columnName">Name of the desired column.</param>
+        ILink<string> ToString(string columnName);
+
+        /// <summary>
+        /// Indicates the results should be materialized as a TimeSpan.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        ILink<TimeSpan> ToTimeSpan(string columnName);
     }
 }

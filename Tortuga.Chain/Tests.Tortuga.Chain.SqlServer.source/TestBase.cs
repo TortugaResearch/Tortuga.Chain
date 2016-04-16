@@ -26,8 +26,8 @@ namespace Tests
             get { return s_StrictDataSource; }
         }
 
-        public string EmployeeTableName { get { return "HR.Employee"; } }
-        public string CustomerTableName { get { return "Sales.Customer"; } }
+        public static string EmployeeTableName { get { return "HR.Employee"; } }
+        public static string CustomerTableName { get { return "Sales.Customer"; } }
 
         public string Proc1Name { get { return "Sales.CustomerWithOrdersByState"; } }
 

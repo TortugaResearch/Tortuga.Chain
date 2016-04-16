@@ -26,8 +26,8 @@ namespace Tests
             get { return s_StrictDataSource; }
         }
 
-        public string EmployeeTableName { get { return "Employee"; } }
-        public string CustomerTableName { get { return "Customer"; } }
+        public static string EmployeeTableName { get { return "Employee"; } }
+        public static string CustomerTableName { get { return "Customer"; } }
 
 
         protected static SQLiteDataSource DataSourceWithAuditRules()

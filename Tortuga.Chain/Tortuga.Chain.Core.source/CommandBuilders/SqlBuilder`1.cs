@@ -131,6 +131,46 @@ namespace Tortuga.Chain.CommandBuilders
         }
 
         /// <summary>
+        /// Builds an order by clause.
+        /// </summary>
+        /// <param name="sql">The SQL.</param>
+        /// <param name="header">The header.</param>
+        /// <param name="sortExpressions">The sort expressions.</param>
+        /// <param name="footer">The footer.</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="MappingException"></exception>
+        public void BuildOrderByClause(StringBuilder sql, string header, IEnumerable<SortExpression> sortExpressions, string footer)
+        {
+            if (sql == null)
+                throw new ArgumentNullException(nameof(sql), $"{nameof(sql)} is null.");
+
+            if (sortExpressions == null || sortExpressions.Count() == 0)
+                return;
+
+            foreach (var expression in sortExpressions)
+            {
+                for (var i = 0; i < m_Entries.Length; i++)
+                {
+                    var details = m_Entries[i].Details;
+                    if (details.SqlName.Equals(expression.ColumnName, StringComparison.OrdinalIgnoreCase) || details.ClrName.Equals(expression.ColumnName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        expression.Column = details;
+                        break;
+                    }
+
+                }
+                if (expression.Column == null)
+                    throw new MappingException($"Cannot find a column on {m_Name} named {expression.ColumnName}");
+            }
+
+            sql.Append(header);
+            sql.Append(string.Join(", ", sortExpressions.Select(s => s.ColumnName + (s.Direction == SortDirection.Descending ? " DESC " : null))));
+            sql.Append(footer);
+
+        }
+
+
+        /// <summary>
         /// Applies the argument value.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
@@ -864,7 +904,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="appliesWhen">The type of.</param>
         /// <param name="argumentValue">The argument value.</param>
         /// <param name="userValue">The user value.</param>
-        void ApplyRules(RulesCollection rules, OperationTypes appliesWhen, object argumentValue, object userValue)
+        void ApplyRules(AuditRuleCollection rules, OperationTypes appliesWhen, object argumentValue, object userValue)
         {
             rules.CheckValidation(argumentValue);
 

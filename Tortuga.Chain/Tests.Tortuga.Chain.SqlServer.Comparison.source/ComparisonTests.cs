@@ -20,7 +20,7 @@ namespace Tests.Tortuga.Chain.SqlServer.Comparison.net461
         static EmployeeRepositoryEF_Intermediate_NoTrack s_EFIntermediateNoTrackRepo;
         static EmployeeRepositoryEF_Novice s_EFNoviceRepo;
 
-        [AssemblyInitialize]
+        [ClassInitialize()]
         public static void AssemblyInit(TestContext context)
         {
             s_DapperRepo = new EmployeeRepositoryDapper(ConfigurationManager.ConnectionStrings["CodeFirstModels"].ConnectionString);
