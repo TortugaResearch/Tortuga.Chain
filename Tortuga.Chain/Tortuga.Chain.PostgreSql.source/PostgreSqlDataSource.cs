@@ -1,6 +1,7 @@
 ﻿using Npgsql;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Threading;
 using System.Threading.Tasks;
 using Tortuga.Chain.AuditRules;
@@ -156,5 +157,21 @@ namespace Tortuga.Chain.PostgreSql
             result.UserValue = userValue;
             return result;
         }
+
+#if !WINDOWS_UWP
+        /// <summary>
+        /// Creates a new connection using the connection string in the app.config file.
+        /// </summary>
+        /// <param name="connectionName"></param>
+        /// <returns></returns>
+        public static PostgreSqlDataSource CreateFromConfig(string connectionName)
+        {
+            var settings = ConfigurationManager.ConnectionStrings[connectionName];
+            if (settings == null)
+                throw new InvalidOperationException("The configuration file does not contain a connection named " + connectionName);
+
+            return new PostgreSqlDataSource(connectionName, settings.ConnectionString);
+        }
+#endif
     }
 }
