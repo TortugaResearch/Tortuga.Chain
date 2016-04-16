@@ -88,6 +88,7 @@
     </Compile>
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Properties\LibrarySharedAssemblyInfo.cs" />
+    <Compile Include="SqlServerExtensions.cs" />
     <Compile Include="SqlServerLimitOption.cs" />
     <Compile Include="SqlServer\Appenders\NotifyChangeAppender`1.cs" />
     <Compile Include="SqlServer\Materializers\WaitForChangeMaterializer`1.cs" />
@@ -103,6 +104,7 @@
     <Compile Include="SqlServer\SqlServerEffectiveSettings.cs" />
     <Compile Include="SqlServer\SqlServerExecutionToken.cs" />
     <Compile Include="SqlServer\SqlServerDataSourceSettings.cs" />
+    <Compile Include="SqlServer\SqlServerOpenDataSource.cs" />
     <Compile Include="SqlServer\SqlServerTransactionalDataSource.cs" />
     <Compile Include="SqlServer\SqlServerDataSourceBase.cs" />
     <Compile Include="SqlServer\SqlServerMetadataCache.cs" />

@@ -120,9 +120,6 @@
     <Compile Include="..\tortuga.chain.sqlserver.source\sqlserver\commandbuilders\SqlServerUpdateObject.cs">
       <Link>SqlServer\CommandBuilders\SqlServerUpdateObject.cs</Link>
     </Compile>
-    <Compile Include="..\tortuga.chain.sqlserver.source\sqlserver\core\SqlServerExecutionToken.cs">
-      <Link>SqlServer\Core\SqlServerExecutionToken.cs</Link>
-    </Compile>
     <Compile Include="..\tortuga.chain.sqlserver.source\sqlserver\materializers\WaitForChangeMaterializer.cs">
       <Link>SqlServer\Materializers\WaitForChangeMaterializer.cs</Link>
     </Compile>
@@ -140,6 +137,9 @@
     </Compile>
     <Compile Include="..\tortuga.chain.sqlserver.source\sqlserver\SqlServerEffectiveSettings.cs">
       <Link>SqlServer\SqlServerEffectiveSettings.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.SqlServer.source\SqlServer\SqlServerExecutionToken.cs">
+      <Link>SqlServer\SqlServerExecutionToken.cs</Link>
     </Compile>
     <Compile Include="..\tortuga.chain.sqlserver.source\sqlserver\SqlServerMetadataCache.cs">
       <Link>SqlServer\SqlServerMetadataCache.cs</Link>

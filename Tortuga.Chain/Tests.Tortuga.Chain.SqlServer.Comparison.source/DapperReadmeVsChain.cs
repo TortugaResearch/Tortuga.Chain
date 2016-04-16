@@ -38,7 +38,6 @@ namespace Tests
             var guid = Guid.NewGuid();
             using (var connection = new SqlConnection(s_ConnectionString))
             {
-                connection.Open();
                 dog = connection.Query<Dog>("select Age = @Age, Id = @Id", new { Age = (int?)null, Id = guid });
             }
 
@@ -96,6 +95,49 @@ namespace Tests
 
             //And then re-read it back
             var fetchedDog = s_DataSource.GetByKey("Dog", key).ToObject<Dog>().Execute();
+
+            Assert.AreEqual(originalDog.Age, fetchedDog.Age);
+            Assert.AreEqual(originalDog.Name, fetchedDog.Name);
+            Assert.AreEqual(originalDog.Weight, fetchedDog.Weight);
+        }
+
+        /// <summary>
+        /// Execute a query and map the results to a strongly typed List
+        /// </summary>
+        [TestMethod]
+        public void Example1_DapperMigrated()
+        {
+            IEnumerable<Dog> dog;
+            var guid = Guid.NewGuid();
+            using (var connection = new SqlConnection(s_ConnectionString))
+            {
+                dog = connection.Query<Dog>("select Age = @Age, Id = @Id", new { Age = (int?)null, Id = guid });
+            }
+
+            Assert.AreEqual(1, dog.Count());
+            Assert.IsNull(dog.First().Age);
+            Assert.AreEqual(guid, dog.First().Id);
+
+
+            //Make it more realistic by actually inserting a record
+            var originalDog = new Dog() { Age = 2, Name = "Fido", Weight = 2.5f };
+
+            Guid key;
+            using (var connection = new SqlConnection(s_ConnectionString))
+            {
+                //const string insertSql = "INSERT INTO Dog (Age, Name, Weight) OUTPUT Inserted.Id VALUES (@Age, @Name, @Weight);";
+                //key = connection.ExecuteScalar<Guid>(insertSql, originalDog);
+                key = connection.AsDataSource().Insert("Dog", originalDog).ToGuid().Execute();
+            }
+
+            //And then re-read it back
+            Dog fetchedDog;
+            using (var connection = new SqlConnection(s_ConnectionString))
+            {
+                //const string selectSql = "SELECT Age, Name, Weight FROM Dog WHERE Id = @Id;";
+                //fetchedDog = connection.Query<Dog>(selectSql, new { Id = key }).Single();
+                fetchedDog = connection.AsDataSource().GetByKey("Dog", key).ToObject<Dog>().Execute();
+            }
 
             Assert.AreEqual(originalDog.Age, fetchedDog.Age);
             Assert.AreEqual(originalDog.Name, fetchedDog.Name);

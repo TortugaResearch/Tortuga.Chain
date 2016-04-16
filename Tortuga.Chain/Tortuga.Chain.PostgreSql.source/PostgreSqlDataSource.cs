@@ -17,7 +17,6 @@ namespace Tortuga.Chain.PostgreSql
     {
         private readonly NpgsqlConnectionStringBuilder m_ConnectionBuilder;
         private PostgreSqlMetadataCache m_DatabaseMetadata;
-        private PostgreSqlDataSourceSettings settings;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PostgreSqlDataSource"/> class.

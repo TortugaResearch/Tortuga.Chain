@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -101,7 +100,7 @@ WHERE	EmployeeKey = @p3
         {
             using (var context = new CodeFirstModels())
             {
-                if(employee.EmployeeKey == 0)
+                if (employee.EmployeeKey == 0)
                     context.Entry(employee).State = EntityState.Added;
                 else
                     context.Entry(employee).State = EntityState.Modified;

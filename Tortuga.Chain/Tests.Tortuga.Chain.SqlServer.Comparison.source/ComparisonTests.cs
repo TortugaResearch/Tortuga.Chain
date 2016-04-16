@@ -91,7 +91,7 @@ namespace Tests
                 CrudTestCore(repo);
             }
             sw2.Stop();
-            Debug.WriteLine("Run Duration: " + (sw2.Elapsed.TotalMilliseconds / Iterations).ToString("N2") + " ms per iteration.");
+            Trace.WriteLine("Run Duration: " + (sw2.Elapsed.TotalMilliseconds / Iterations).ToString("N2") + " ms per iteration.");
 
         }
 

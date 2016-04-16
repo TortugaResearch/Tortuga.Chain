@@ -9,6 +9,7 @@
     <tags>ORM, Fluent</tags>
     <language>en-US</language>
     <projectUrl>https://github.com/docevaad/Chain</projectUrl>
+    <licenseUrl>https://github.com/docevaad/Chain/blob/master/License.txt</licenseUrl>
     <references>
       <reference file="Tortuga.Chain.Core.dll" />
     </references>

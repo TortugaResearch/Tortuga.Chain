@@ -72,7 +72,7 @@ namespace Tests.AuditRules
             Assert.IsNotNull(cust2.CreatedDate, "CreatedDate was not set");
             Assert.IsNotNull(cust2.UpdatedDate, "UpdatedDate was not set");
 
-            Thread.Sleep(1000); //make sure the current time is different enough for the database to notice
+            Thread.Sleep(100); //make sure the current time is different enough for the database to notice
 
             cust2.State = "NV";
             var cust3 = ds2.Update(CustomerTableName, cust2).ToObject<CustomerWithValidation>().Execute();
