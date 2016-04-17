@@ -23,10 +23,10 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
     /// </summary>
     internal sealed class SQLiteTableOrView : TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption>
     {
-        private readonly object m_FilterValue;
         private readonly TableOrViewMetadata<string, DbType> m_Metadata;
-        private readonly string m_WhereClause;
-        private readonly object m_ArgumentValue;
+        private object m_FilterValue;
+        private string m_WhereClause;
+        private object m_ArgumentValue;
         private IEnumerable<SortExpression> m_SortExpressions = Enumerable.Empty<SortExpression>();
         private SQLiteLimitOption m_LimitOptions;
         private int? m_Skip;
@@ -156,6 +156,14 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
             return this;
         }
 
+        /// <summary>
+        /// Adds limits to the command builder.
+        /// </summary>
+        /// <param name="skip">The number of rows to skip.</param>
+        /// <param name="take">Number of rows to take.</param>
+        /// <param name="limitOptions">The limit options.</param>
+        /// <param name="seed">The seed for repeatable reads. Only applies to random sampling</param>
+        /// <returns></returns>
         protected override TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> OnWithLimits(int? skip, int? take, SQLiteLimitOption limitOptions, int? seed)
         {
             //m_Seed = seed;
@@ -165,12 +173,60 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
             return this;
         }
 
+        /// <summary>
+        /// Adds limits to the command builder.
+        /// </summary>
+        /// <param name="skip">The number of rows to skip.</param>
+        /// <param name="take">Number of rows to take.</param>
+        /// <param name="limitOptions">The limit options.</param>
+        /// <param name="seed">The seed for repeatable reads. Only applies to random sampling</param>
+        /// <returns></returns>
         protected override TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> OnWithLimits(int? skip, int? take, LimitOptions limitOptions, int? seed)
         {
             //m_Seed = seed;
             m_Skip = skip;
             m_Take = take;
             m_LimitOptions = (SQLiteLimitOption)limitOptions;
+            return this;
+        }
+
+        /// <summary>
+        /// Adds (or replaces) the filter on this command builder.
+        /// </summary>
+        /// <param name="filterValue">The filter value.</param>
+        /// <returns></returns>
+        public override TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> WithFilter(object filterValue)
+        {
+            m_FilterValue = filterValue;
+            m_WhereClause = null;
+            m_ArgumentValue = null;
+            return this;
+        }
+
+        /// <summary>
+        /// Adds (or replaces) the filter on this command builder.
+        /// </summary>
+        /// <param name="whereClause">The where clause.</param>
+        /// <returns></returns>
+        public override TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> WithFilter(string whereClause)
+        {
+            m_FilterValue = null;
+            m_WhereClause = whereClause;
+            m_ArgumentValue = null;
+            return this;
+        }
+
+        /// <summary>
+        /// Adds (or replaces) the filter on this command builder.
+        /// </summary>
+        /// <param name="whereClause">The where clause.</param>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <returns></returns>
+        public override TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> WithFilter(string whereClause, object argumentValue)
+        {
+            m_FilterValue = null;
+            m_WhereClause = whereClause;
+            m_ArgumentValue = argumentValue;
             return this;
         }
     }

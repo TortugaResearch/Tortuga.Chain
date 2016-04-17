@@ -106,6 +106,21 @@ namespace Tests.Class1Databases
 
 
 
+        [TestMethod]
+        public void FromTests_Take_NoSort()
+        {
+
+            var result = DataSource.From(EmployeeTableName, new { Title = Key1000 }).WithLimits(10).ToCollection<Employee>().Execute();
+            Assert.AreEqual(10, result.Count, "Count");
+            foreach (var item in result)
+            {
+                Assert.AreEqual(Key1000, item.Title, "Filter");
+                Assert.IsTrue(int.Parse(item.FirstName) >= 0, "Range");
+                Assert.IsTrue(int.Parse(item.FirstName) < 10, "Range");
+            }
+
+
+        }
 
         [TestMethod]
         public void FromTests_Take()
