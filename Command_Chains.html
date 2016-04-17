@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Command Chains</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="css/grayscale.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="http://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-custom navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-main-collapse">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <a class="navbar-brand page-scroll" href="index.html">
+                    <i class="fa fa-play-circle"></i>  <span class="light">Tortuga </span> Chain
+                </a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse navbar-right navbar-main-collapse">
+                <ul class="nav navbar-nav">
+               
+                    <li>
+                        <a  href="Transactions.html">Transactions</a>
+                    </li>
+                    <li>
+                        <a  href="Command_Chains.html">Command Chains</a>
+                    </li>
+                    <li>
+                        <a  href="CRUD_Operations.html">CRUD Operations</a>
+                    </li>
+                    <li>
+                        <a  href="Appenders.html">Appenders</a>
+                    </li>
+                    <li>
+                        <a  href="Execution_Modes.html">Execution Modes</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Intro Header -->
+    <header class="intro">
+        <div class="intro-body">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-8 col-md-offset-2">
+                        <h1 class="brand-heading">Tortuga </span> Chain</h1>
+                        <p class="intro-text">A Fluent ORM for .NET</p>
+                        <a href="#about" class="btn btn-circle page-scroll">
+                            <i class="fa fa-angle-double-down animated"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section id="about"  class="container content-section text-center">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2">
+                <h2>Command Chains</h2>
+                <p>Command chains are the primary way of working with Tortuga. Each link in the chain is used to inform the previous link about what actions are desired. Here is a basic example:</p>
+                
+                <div class="jumbotron ">
+                    <code class="codeStyle">
+                         dataSource.Procedure("uspGetEmployeeManagers", new {@BusinessEntityID = 100}).ToCollection&lt;Manager&gt;().Execute();
+                    </code>
+                </div>
+
+                <p> Breaking this down, we have: </p>
+
+                <ul style="font-size: 18px;">
+                    <li>The data source </li>
+                    <li>The command being performed </li>
+                    <li>How the results of the command should be returned </li>
+                    <li>If the operation should be executed synchronously or asynchronously </li>
+                </ul>
+
+            </div>
+        </div>
+    </section>
+
+    <br><br><br>
+
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2">
+                <h3>Commands</h3>
+                <p>The list of available commands depends on the data source. Most data sources support:</p>
+
+                <ul style="font-size: 18px;">
+                    <li>Raw sql </li>
+                    <li>Table/View queries </li>
+                    <li>Insert, Update, and Delete operations (some also include 'upserts') </li>
+                </ul>
+                <br>
+
+                <p>Advanced ones may also include:</p>
+
+                <ul style="font-size: 18px;">
+                    <li>Stored procedures and/or Table Value Functions </li>
+                    <li>Batch insert, a.k.a. bulk copy </li>
+                </ul>
+                <br>
+
+                <p>Most commands accept a parameter object. The parameter object can be a normal class, a dictionary of type IDictionary&lt;string, object&gt;, or a list of appropriate DbParameter objects. <br> Chain command builders honor .NET's NotMapped and Column attributes. </p>
+
+            </div>
+        </div>
+
+    <br><br><br>
+
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2">
+                <h3>Materializers</h3>
+                <p>Materializers are an optional link, you only need them if you want something back from the database.<br>
+
+An interesting feature of the materializer is that it participates in SQL generation. For example, if you use the ToObject&lt;T&gt; or ToCollection<T> materializer, then it will read the list of properties on class T. That list of properties will be used to generate the SELECT clause, ensuring that you don't pull back more information than you actually need. This in turn means that indexes are used more efficiently and performance is improved.</p>
+                
+                <p> Materializers call into several categories: </p>
+
+                <ul style="font-size: 18px;">
+                    <li>Scalar: ToInt, ToIntOrNull, ToString </li>
+                    <li>Row: ToRow, ToDataRow, ToObject </li>
+                    <li>Table: ToTable, ToDataTable, ToCollection </li>
+                    <li>Multiple Tables: ToTableSet, ToDataSet </li>
+                </ul>
+                <br>
+
+                <p>For better performance, you can use the compiled materializer extension:</p>
+
+                <ul style="font-size: 18px;">
+                    <li style="color: orange;">Row: .Compile().ToObject&lt;TObject&gt;() </li>
+                    <li style="color: orange;">Table: .Compile().ToCollection&lt;TObject&gt;(), .Compile().ToCollection&lt;TList, TObject&gt;() </li>
+                </ul>
+                <br>
+
+                <p>This requires the Tortuga.Chain.CompiledMaterializers package, which includes CS-Script as a dependency. </p>
+
+            </div>
+        </div>
+
+
+    <!-- Footer -->
+    <footer>
+        <div class="container text-center">
+            <p>Copyright &copy; Tortuga Chain</p>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
+
+    <!-- Plugin JavaScript -->
+    <script src="js/jquery.easing.min.js"></script>
+
+    <!-- Google Maps API Key - Use your own API key to enable the map feature. More information on the Google Maps API can be found at https://developers.google.com/maps/ -->
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCRngKslUGJTlibkQ3FkfTxj3Xss1UlZDA&sensor=false"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script src="js/grayscale.js"></script>
+
+</body>
+
+</html>
