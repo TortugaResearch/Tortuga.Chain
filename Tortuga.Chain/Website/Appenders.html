@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Appenders</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="css/grayscale.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="http://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-custom navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-main-collapse">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <a class="navbar-brand page-scroll" href="index.html">
+                    <i class="fa fa-play-circle"></i>  <span class="light">Tortuga </span> Chain
+                </a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse navbar-right navbar-main-collapse">
+                <ul class="nav navbar-nav">
+               
+                    <li>
+                        <a  href="Transactions.html">Transactions</a>
+                    </li>
+                    <li>
+                        <a  href="Command_Chains.html">Command Chains</a>
+                    </li>
+                    <li>
+                        <a  href="CRUD_Operations.html">CRUD Operations</a>
+                    </li>
+                    <li>
+                        <a  href="Appenders.html">Appenders</a>
+                    </li>
+                    <li>
+                        <a  href="Execution_Modes.html">Execution Modes</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Intro Header -->
+    <header class="intro">
+        <div class="intro-body">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-8 col-md-offset-2">
+                        <h1 class="brand-heading">Tortuga </span> Chain</h1>
+                        <p class="intro-text">A Fluent ORM for .NET</p>
+                        <a href="#about" class="btn btn-circle page-scroll">
+                            <i class="fa fa-angle-double-down animated"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- About Section -->
+    <section id="about" class="container content-section ">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2">
+                <h2 class="text-center">Appenders</h2>
+                <p class="text-center">Appenders are links that can change the rules before, during, or after execution. An appender can be added after a materializer or another appender.</p>
+                
+                <p>Caching appenders include:</p>
+                
+                <ul style="font-size: 18px;">
+                    <li>Cache: Writes to the cache, overwriting any previous value. (Use with Update and Procedure operations.) </li><br>
+                    <li>ReadOrCache: If it can read from the cache, the database operation is aborted. Otherwise the value is cached.</li><br>
+                    <li>CacheAllItems: Cache each item in the result list individually. Useful when using a GetAll style operation. </li><br>
+                    <li>InvalidateCache: Removes a cache entry. Use with any operation that modifies a record.</li><br>
+                </ul><br><br>
+
+                <h4>Here is an example of CRUD operations using caching.</h4>
+                <div class="jumbotron ">
+                    <code class="codeStyle">
+                          var car = dataSource.GetById("Vehicle", vehicleKey).ToObject&lt;Vehicle&gt;().ReadOrCache("Vehicle " + vehicleKey).Execute();<br>
+                          car = dataSource.Update("Vehicle", new { VehicleKey = vehicleKey, Year = 1957 }).ToObject&lt;Vehicle&gt;().Cache("Vehicle " + vehicleKey).Execute();<br>
+                          dataSource.Delete("Vehicle", new { VehicleKey = vehicleKey }).InvalidateCache("Vehicle " + vehicleKey.Execute();
+                    </code>
+                </div>
+
+                <p>If using SQL Server, you can also use WithChangeNotification. This uses SQL Dependency to listen for changes to the table(s) you queried.<br><br>
+
+                When debugging applications, it is often nice to dump the SQL somewhere. This is where the tracing appenders come into play.</p>
+                
+                <ul style="font-size: 18px;">
+                    <li>WithTracing: Writes to an arbitrary TextWriter style stream.</li>
+                    <li>WithTracingToConsole: Writes to the Console window</li>
+                    <li>WithTracingToDebug: Writes to the Debug window </li>
+                </ul><br><br>
+
+                <h4>You can also override DBCommand settings such as the command timeout. For example:</h4>
+                <div class="jumbotron ">
+                    <code class="codeStyle">
+                          ds.Procedure("ExpensiveReport").ToDataSet().SetTimeout(TimeSpan.<br>FromHours(3)).Execute()
+                    </code>
+                </div>
+
+            </div>
+        </div>
+    </section> 
+
+    <!-- Footer -->
+    <footer>
+        <div class="container text-center">
+            <p>Copyright &copy; Tortuga Chain</p>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
+
+    <!-- Plugin JavaScript -->
+    <script src="js/jquery.easing.min.js"></script>
+
+    <!-- Google Maps API Key - Use your own API key to enable the map feature. More information on the Google Maps API can be found at https://developers.google.com/maps/ -->
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCRngKslUGJTlibkQ3FkfTxj3Xss1UlZDA&sensor=false"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script src="js/grayscale.js"></script>
+
+</body>
+
+</html>
