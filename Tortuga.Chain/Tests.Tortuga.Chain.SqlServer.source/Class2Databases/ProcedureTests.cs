@@ -49,6 +49,12 @@ namespace Tests.Class2Databases
             var result = await DataSource.Procedure(Proc1Name, new Dictionary<string, object>() { { "@State", "CA" } }).ToTableSet("cust", "order").ExecuteAsync();
             Assert.AreEqual(2, result.Count);
         }
+
+        [TestMethod]
+        public async Task Proc1_ToCollectionSet()
+        {
+            var result = await DataSource.Procedure(Proc1Name, new { @State = "CA" }).ToCollectionSet<Customer, Order>().ExecuteAsync();
+        }
     }
 }
 

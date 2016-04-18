@@ -36,7 +36,7 @@ namespace Tortuga.Chain
         /// <summary>
         /// Perform a soft delete as part of this update operation.
         /// </summary>
-        /// <remarks>This is meant for internl use only.</remarks>
+        /// <remarks>This is meant for internal use only.</remarks>
         [EditorBrowsable(EditorBrowsableState.Never)]
         SoftDelete = 8
     }

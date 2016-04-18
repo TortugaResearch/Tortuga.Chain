@@ -100,8 +100,11 @@
     <Compile Include="AuditRules\ValidateWithNotifyDataErrorInfo`1.cs" />
     <Compile Include="CollectionOptions.cs" />
     <Compile Include="CommandBuilders\DbCommandBuilder.cs" />
-    <Compile Include="Materializers\InitializedDictionary.cs" />
-    <Compile Include="Materializers\InitializedImmutableDictionary.cs" />
+    <Compile Include="Materializers\CollectionSetMaterializer`5.cs" />
+    <Compile Include="Materializers\CollectionSetMaterializer`6.cs" />
+    <Compile Include="Materializers\CollectionSetMaterializer`7.cs" />
+    <Compile Include="Materializers\InitializedDictionary`5.cs" />
+    <Compile Include="Materializers\InitializedImmutableDictionary`4.cs" />
     <Compile Include="DictionaryOptions.cs" />
     <Compile Include="CommandBuilders\GenericDbSqlCall.cs" />
     <Compile Include="CommandBuilders\IDbCommandBuilder.cs" />
@@ -191,6 +194,7 @@
     <Compile Include="Materializers\SingleColumn\StringListMaterializer`2.cs" />
     <Compile Include="Materializers\Scalar\StringMaterializer`2.cs" />
     <Compile Include="Materializers\TableMaterializer`2.cs" />
+    <Compile Include="Materializers\CollectionSetMaterializer`4.cs" />
     <Compile Include="Materializers\TableSetMaterializer`2.cs" />
     <Compile Include="Materializers\SingleColumn\TimeSpanListMaterializer`2.cs" />
     <Compile Include="Materializers\Scalar\TimeSpanOrNullMaterializer`2.cs" />

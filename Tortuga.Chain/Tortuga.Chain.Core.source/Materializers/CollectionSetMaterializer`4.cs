@@ -1,0 +1,110 @@
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Tortuga.Chain.CommandBuilders;
+
+namespace Tortuga.Chain.Materializers
+{
+    /// <summary>
+    /// Materializes the result set as a TableSet.
+    /// </summary>
+    /// <typeparam name="TCommand">The type of the t command type.</typeparam>
+    /// <typeparam name="TParameter">The type of the t parameter type.</typeparam>
+    /// <typeparam name="T1">The type of the 1.</typeparam>
+    /// <typeparam name="T2">The type of the 2.</typeparam>
+    internal sealed class CollectionSetMaterializer<TCommand, TParameter, T1, T2> : Materializer<TCommand, TParameter, Tuple<List<T1>, List<T2>>>
+        where TCommand : DbCommand
+        where TParameter : DbParameter
+        where T1 : class, new()
+        where T2 : class, new()
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CollectionSetMaterializer{TCommand, TParameter, T1, T2}"/> class.
+        /// </summary>
+        /// <param name="commandBuilder">The command builder.</param>
+        public CollectionSetMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder)
+            : base(commandBuilder)
+        {
+        }
+
+        /// <summary>
+        /// Execute the operation synchronously.
+        /// </summary>
+        /// <returns></returns>
+        public override Tuple<List<T1>, List<T2>> Execute(object state = null)
+        {
+            TableSet result = null;
+
+            var executionToken = Prepare();
+            executionToken.Execute(cmd =>
+                        {
+                            using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess))
+                            {
+                                result = new TableSet(reader);
+                                return result.Sum(t => t.Rows.Count);
+                            }
+                        }, state);
+
+
+            return BuildResult(result);
+
+        }
+
+        /// <summary>
+        /// Execute the operation asynchronously.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <param name="state">User defined state, usually used for logging.</param>
+        /// <returns></returns>
+        public override async Task<Tuple<List<T1>, List<T2>>> ExecuteAsync(CancellationToken cancellationToken, object state = null)
+        {
+            TableSet result = null;
+
+            var executionToken = Prepare();
+
+            await executionToken.ExecuteAsync(async cmd =>
+            {
+                using (var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SequentialAccess).ConfigureAwait(false))
+                {
+                    result = new TableSet(reader);
+                    return result.Sum(t => t.Rows.Count);
+                }
+            }, cancellationToken, state).ConfigureAwait(false);
+
+
+
+            return BuildResult(result);
+
+        }
+
+        private static Tuple<List<T1>, List<T2>> BuildResult(TableSet result)
+        {
+            if (result.Count != 2)
+                throw new DataException($"Expected 2 tables but received {result.Count} tables");
+
+            return Tuple.Create(
+                result[0].ToObjects<T1>().ToList(),
+                result[1].ToObjects<T2>().ToList()
+                );
+        }
+
+        /// <summary>
+        /// Returns the list of columns the materializer would like to have.
+        /// </summary>
+        /// <returns>
+        /// IReadOnlyList&lt;System.String&gt;.
+        /// </returns>
+        /// <remarks>
+        /// If AutoSelectDesiredColumns is returned, the command builder is allowed to choose which columns to return. If NoColumns is returned, the command builder should omit the SELECT/OUTPUT clause.
+        /// </remarks>
+        public override IReadOnlyList<string> DesiredColumns()
+        {
+            return AllColumns;
+        }
+
+    }
+}
