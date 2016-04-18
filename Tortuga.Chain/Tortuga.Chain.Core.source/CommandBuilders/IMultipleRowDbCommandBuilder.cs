@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Collections.Immutable;
 
 #if !WINDOWS_UWP
 using System.Data;
@@ -50,9 +51,10 @@ namespace Tortuga.Chain.CommandBuilders
         /// Materializes the result as a list of objects.
         /// </summary>
         /// <typeparam name="TObject">The type of the model.</typeparam>
+        /// <param name="collectionOptions">The collection options.</param>
         /// <returns></returns>
-        ILink<List<TObject>> ToCollection<TObject>()
-            where TObject : class, new();
+        ILink<List<TObject>> ToCollection<TObject>(CollectionOptions collectionOptions = CollectionOptions.None)
+            where TObject : class;
 
         /// <summary>
         /// Materializes the result as a list of dynamically typed objects.
@@ -65,10 +67,11 @@ namespace Tortuga.Chain.CommandBuilders
         /// </summary>
         /// <typeparam name="TObject">The type of the model.</typeparam>
         /// <typeparam name="TCollection">The type of the collection.</typeparam>
+        /// <param name="collectionOptions">The collection options.</param>
         /// <returns></returns>
         [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-        ILink<TCollection> ToCollection<TObject, TCollection>()
-            where TObject : class, new()
+        ILink<TCollection> ToCollection<TObject, TCollection>(CollectionOptions collectionOptions = CollectionOptions.None)
+            where TObject : class
             where TCollection : ICollection<TObject>, new();
 
 #if !WINDOWS_UWP
@@ -234,5 +237,130 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
         ILink<List<TimeSpan>> ToTimeSpanList(string columnName, ListOptions listOptions = ListOptions.None);
+
+        /// <summary>
+        /// Materializes the result as a immutable dictionary of objects.
+        /// </summary>
+        /// <typeparam name="TKey">The type of the key.</typeparam>
+        /// <typeparam name="TObject">The type of the model.</typeparam>
+        /// <param name="keyFunction">The key function.</param>
+        /// <param name="dictionaryOptions">The dictionary options.</param>
+        /// <returns></returns>
+        ILink<ImmutableDictionary<TKey, TObject>> ToImmutableDictionary<TKey, TObject>(Func<TObject, TKey> keyFunction, DictionaryOptions dictionaryOptions = DictionaryOptions.None)
+            where TObject : class;
+
+        /// <summary>
+        /// Materializes the result as a immutable dictionary of objects.
+        /// </summary>
+        /// <typeparam name="TKey">The type of the key.</typeparam>
+        /// <typeparam name="TObject">The type of the model.</typeparam>
+        /// <param name="keyColumn">The key column.</param>
+        /// <param name="dictionaryOptions">The dictionary options.</param>
+        /// <returns></returns>
+        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
+        ILink<ImmutableDictionary<TKey, TObject>> ToImmutableDictionary<TKey, TObject>(string keyColumn, DictionaryOptions dictionaryOptions = DictionaryOptions.None)
+            where TObject : class;
+
+        /// <summary>
+        /// Materializes the result as a immutable dictionary of objects.
+        /// </summary>
+        /// <typeparam name="TKey">The type of the key.</typeparam>
+        /// <typeparam name="TObject">The type of the model.</typeparam>
+        /// <param name="keyFunction">The key function.</param>
+        /// <param name="constructorSignature">The constructor signature.</param>
+        /// <param name="dictionaryOptions">The dictionary options.</param>
+        /// <returns></returns>
+        ILink<ImmutableDictionary<TKey, TObject>> ToImmutableDictionary<TKey, TObject>(Func<TObject, TKey> keyFunction, Type[] constructorSignature, DictionaryOptions dictionaryOptions = DictionaryOptions.None)
+            where TObject : class;
+
+        /// <summary>
+        /// Materializes the result as a immutable dictionary of objects.
+        /// </summary>
+        /// <typeparam name="TKey">The type of the key.</typeparam>
+        /// <typeparam name="TObject">The type of the model.</typeparam>
+        /// <param name="keyColumn">The key column.</param>
+        /// <param name="constructorSignature">The constructor signature.</param>
+        /// <param name="dictionaryOptions">The dictionary options.</param>
+        /// <returns></returns>
+        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
+        ILink<ImmutableDictionary<TKey, TObject>> ToImmutableDictionary<TKey, TObject>(string keyColumn, Type[] constructorSignature, DictionaryOptions dictionaryOptions = DictionaryOptions.None)
+            where TObject : class;
+
+
+
+
+        /// <summary>
+        /// Materializes the result as a list of objects.
+        /// </summary>
+        /// <typeparam name="TObject">The type of the model.</typeparam>
+        /// <returns></returns>
+        ILink<List<TObject>> ToCollection<TObject>(Type[] constructorSignature)
+            where TObject : class;
+
+        /// <summary>
+        /// Materializes the result as a list of objects.
+        /// </summary>
+        /// <typeparam name="TObject">The type of the model.</typeparam>
+        /// <typeparam name="TCollection">The type of the collection.</typeparam>
+        /// <returns></returns>
+        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
+        ILink<TCollection> ToCollection<TObject, TCollection>(Type[] constructorSignature)
+            where TObject : class
+            where TCollection : ICollection<TObject>, new();
+
+        /// <summary>
+        /// Materializes the result as a dictionary of objects.
+        /// </summary>
+        /// <typeparam name="TKey">The type of the key.</typeparam>
+        /// <typeparam name="TObject">The type of the model.</typeparam>
+        /// <param name="keyColumn">The key column.</param>
+        /// <param name="constructorSignature">The constructor signature.</param>
+        /// <param name="dictionaryOptions">The dictionary options.</param>
+        /// <returns></returns>
+        ILink<Dictionary<TKey, TObject>> ToDictionary<TKey, TObject>(string keyColumn, Type[] constructorSignature, DictionaryOptions dictionaryOptions = DictionaryOptions.None)
+            where TObject : class;
+
+        /// <summary>
+        /// Materializes the result as a dictionary of objects.
+        /// </summary>
+        /// <typeparam name="TKey">The type of the key.</typeparam>
+        /// <typeparam name="TObject">The type of the model.</typeparam>
+        /// <typeparam name="TDictionary">The type of dictionary.</typeparam>
+        /// <param name="keyColumn">The key column.</param>
+        /// <param name="constructorSignature">The constructor signature.</param>
+        /// <param name="dictionaryOptions">The dictionary options.</param>
+        /// <returns></returns>
+        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
+        ILink<TDictionary> ToDictionary<TKey, TObject, TDictionary>(string keyColumn, Type[] constructorSignature, DictionaryOptions dictionaryOptions = DictionaryOptions.None)
+            where TObject : class
+            where TDictionary : IDictionary<TKey, TObject>, new();
+
+        /// <summary>
+        /// Materializes the result as a dictionary of objects.
+        /// </summary>
+        /// <typeparam name="TKey">The type of the key.</typeparam>
+        /// <typeparam name="TObject">The type of the model.</typeparam>
+        /// <param name="keyFunction">The key function.</param>
+        /// <param name="constructorSignature">The constructor signature.</param>
+        /// <param name="dictionaryOptions">The dictionary options.</param>
+        /// <returns></returns>
+        ILink<Dictionary<TKey, TObject>> ToDictionary<TKey, TObject>(Func<TObject, TKey> keyFunction, Type[] constructorSignature, DictionaryOptions dictionaryOptions = DictionaryOptions.None)
+            where TObject : class;
+
+        /// <summary>
+        /// Materializes the result as a dictionary of objects.
+        /// </summary>
+        /// <typeparam name="TKey">The type of the key.</typeparam>
+        /// <typeparam name="TObject">The type of the model.</typeparam>
+        /// <typeparam name="TDictionary">The type of dictionary.</typeparam>
+        /// <param name="keyFunction">The key function.</param>
+        /// <param name="constructorSignature">The constructor signature.</param>
+        /// <param name="dictionaryOptions">The dictionary options.</param>
+        /// <returns></returns>
+        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
+        ILink<TDictionary> ToDictionary<TKey, TObject, TDictionary>(Func<TObject, TKey> keyFunction, Type[] constructorSignature, DictionaryOptions dictionaryOptions = DictionaryOptions.None)
+            where TObject : class
+            where TDictionary : IDictionary<TKey, TObject>, new();
+
     }
 }

@@ -20,10 +20,9 @@ namespace Tortuga.Chain
     [SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
     public sealed class Table
     {
-        readonly RowCollection m_Rows;
         readonly ReadOnlyCollection<string> m_Columns;
         readonly ReadOnlyDictionary<string, Type> m_ColumnTypes;
-
+        readonly RowCollection m_Rows;
         /// <summary>
         /// Creates a new NamedTable from an IDataReader
         /// </summary>
@@ -34,12 +33,6 @@ namespace Tortuga.Chain
         {
             TableName = tableName;
         }
-
-        /// <summary>
-        /// Gets the name of the table.
-        /// </summary>
-        /// <value>The name of the table.</value>
-        public string TableName { get; set; }
 
         /// <summary>
         /// Creates a new Table from an IDataReader
@@ -80,6 +73,86 @@ namespace Tortuga.Chain
             m_Rows = new RowCollection(rows);
         }
 
+        /// <summary>
+        /// List of column names in their original order.
+        /// </summary>
+        public IReadOnlyList<string> ColumnNames
+        {
+            get { return m_Columns; }
+        }
+
+        /// <summary>
+        /// List of columns and their types.
+        /// </summary>
+        public IReadOnlyDictionary<string, Type> ColumnTypeMap
+        {
+            get { return m_ColumnTypes; }
+        }
+
+        /// <summary>
+        /// Gets the rows.
+        /// </summary>
+        /// <value>The rows.</value>
+        public IReadOnlyList<Row> Rows
+        {
+            get { return m_Rows; }
+        }
+
+        /// <summary>
+        /// Gets the name of the table.
+        /// </summary>
+        /// <value>The name of the table.</value>
+        public string TableName { get; set; }
+        /// <summary>
+        /// Converts the table into an enumeration of objects of the indicated type.
+        /// </summary>
+        /// <typeparam name="T">Desired object type</typeparam>
+        public IEnumerable<T> ToObjects<T>() where T : new()
+        {
+            foreach (var row in Rows)
+            {
+                var item = new T();
+                PopulateComplexObject(row, item, null);
+
+                //Change tracking objects shouldn't be materialized as unchanged.
+                var tracking = item as IChangeTracking;
+                tracking?.AcceptChanges();
+
+                yield return item;
+            }
+        }
+
+        internal IEnumerable<KeyValuePair<Row, T>> ToObjectsWithEcho<T>(Type[] constructorSignature)
+        {
+            var desiredType = typeof(T);
+            var constructor = desiredType.GetConstructor(constructorSignature);
+
+            if (constructor == null)
+            {
+                var types = string.Join(", ", constructorSignature.Select(t => t.Name));
+                throw new MappingException($"Cannot find a constructor on {desiredType.Name} with the types [{types}]");
+            }
+
+            var constructorParameters = constructor.GetParameters();
+            for (var i = 0; i < constructorSignature.Length; i++)
+            {
+                if (!ColumnNames.Any(p => p.Equals(constructorParameters[i].Name, StringComparison.OrdinalIgnoreCase)))
+                    throw new MappingException($"Cannot find a column that matches the parameter {constructorParameters[i].Name}");
+            }
+
+            foreach (var item in Rows)
+            {
+                var parameters = new object[constructorSignature.Length];
+                for (var i = 0; i < constructorSignature.Length; i++)
+                {
+                    parameters[i] = item[constructorParameters[i].Name];
+                }
+                var result = constructor.Invoke(parameters);
+                yield return new KeyValuePair<Row, T>(item, (T)result);
+            }
+
+        }
+
         internal IEnumerable<T> ToObjects<T>(Type[] constructorSignature)
         {
             var desiredType = typeof(T);
@@ -88,7 +161,7 @@ namespace Tortuga.Chain
             if (constructor == null)
             {
                 var types = string.Join(", ", constructorSignature.Select(t => t.Name));
-                throw new MappingException($"Cannot find a constuctor on {desiredType.Name} with the types [{types}]");
+                throw new MappingException($"Cannot find a constructor on {desiredType.Name} with the types [{types}]");
             }
 
             var constructorParameters = constructor.GetParameters();
@@ -110,39 +183,11 @@ namespace Tortuga.Chain
             }
 
         }
-
-
-        /// <summary>
-        /// List of columns and their types.
-        /// </summary>
-        public IReadOnlyDictionary<string, Type> ColumnTypeMap
-        {
-            get { return m_ColumnTypes; }
-        }
-
-        /// <summary>
-        /// List of column names in their original order.
-        /// </summary>
-        public IReadOnlyList<string> ColumnNames
-        {
-            get { return m_Columns; }
-        }
-
-        /// <summary>
-        /// Gets the rows.
-        /// </summary>
-        /// <value>The rows.</value>
-        public IReadOnlyList<Row> Rows
-        {
-            get { return m_Rows; }
-        }
-
-
         /// <summary>
         /// Converts the table into an enumeration of objects of the indicated type.
         /// </summary>
         /// <typeparam name="T">Desired object type</typeparam>
-        public IEnumerable<T> ToObjects<T>() where T : new()
+        internal IEnumerable<KeyValuePair<Row, T>> ToObjectsWithEcho<T>() where T : new()
         {
             foreach (var row in Rows)
             {
@@ -153,26 +198,7 @@ namespace Tortuga.Chain
                 var tracking = item as IChangeTracking;
                 tracking?.AcceptChanges();
 
-                yield return item;
-            }
-        }
-
-        /// <summary>
-        /// Converts the table into an enumeration of objects of the indicated type.
-        /// </summary>
-        /// <typeparam name="T">Desired object type</typeparam>
-        internal IEnumerable<Tuple<Row, T>> ToObjectsWithEcho<T>() where T : new()
-        {
-            foreach (var row in Rows)
-            {
-                var item = new T();
-                PopulateComplexObject(row, item, null);
-
-                //Change tracking objects shouldn't be materialized as unchanged.
-                var tracking = item as IChangeTracking;
-                tracking?.AcceptChanges();
-
-                yield return Tuple.Create(row, item);
+                yield return new KeyValuePair<Row, T>(row, item);
             }
         }
 

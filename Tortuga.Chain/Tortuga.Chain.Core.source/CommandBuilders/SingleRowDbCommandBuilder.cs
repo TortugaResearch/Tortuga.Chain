@@ -149,19 +149,23 @@ namespace Tortuga.Chain.CommandBuilders
         {
             if (rowOptions.HasFlag(RowOptions.InferConstructor))
             {
-                var constructors = typeof(TObject).GetConstructors();
-                if (constructors.Length == 0)
-                    throw new MappingException($"Type {typeof(TObject).Name} has does not have any constructors.");
-                if (constructors.Length > 1)
-                    throw new MappingException($"Type {typeof(TObject).Name} has more than one constructor. Please specify which one to use.");
-                return new InitializedObjectMaterializer<TCommand, TParameter, TObject>(this, constructors[0].GetParameters().Select(p => p.ParameterType).ToArray(), rowOptions);
+                var constructors = typeof(TObject).GetConstructors().Select(c => c.GetParameters()).Where(c => c.Length > 0).ToList();
+                if (constructors.Count == 0)
+                    throw new MappingException($"Type {typeof(TObject).Name} has does not have any non-default constructors.");
+                if (constructors.Count > 1)
+                    throw new MappingException($"Type {typeof(TObject).Name} has more than one non-default constructor. Please specify which one to use.");
+                return new InitializedObjectMaterializer<TCommand, TParameter, TObject>(this, constructors[0].Select(p => p.ParameterType).ToArray(), rowOptions);
 
             }
             else
             {
+                var constructor = typeof(TObject).GetConstructor(new Type[] { });
+                if (constructor == null)
+                    throw new MappingException($"Type {typeof(TObject).Name} has does not have a default constructor.");
+
                 var rawType = typeof(ObjectMaterializer<,,>);
-                Type[] typeArgs = { typeof(TCommand), typeof(TParameter), typeof(TObject) };
-                Type constructedType = rawType.MakeGenericType(typeArgs);
+                var typeArgs = new Type[] { typeof(TCommand), typeof(TParameter), typeof(TObject) };
+                var constructedType = rawType.MakeGenericType(typeArgs);
                 var result = Activator.CreateInstance(constructedType, new object[] { this, rowOptions });
                 return (ILink<TObject>)result;
             }

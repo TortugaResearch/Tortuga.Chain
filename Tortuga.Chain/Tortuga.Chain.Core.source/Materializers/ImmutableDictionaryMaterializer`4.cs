@@ -27,15 +27,24 @@ namespace Tortuga.Chain.Materializers
 
         private readonly Func<TObject, TKey> m_KeyFunction;
         private readonly string m_KeyColumn;
+        //private readonly DictionaryOptions m_DictionaryOptions;
 
-        public ImmutableDictionaryMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, Func<TObject, TKey> keyFunction) : base(commandBuilder)
+        public ImmutableDictionaryMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, Func<TObject, TKey> keyFunction, DictionaryOptions dictionaryOptions) : base(commandBuilder)
         {
+            if (dictionaryOptions.HasFlag(DictionaryOptions.DiscardDuplicates))
+                throw new NotImplementedException("DiscardDuplicates is not implemented for ImmutableDictionary with default constructors.");
+
             m_KeyFunction = keyFunction;
+            //m_DictionaryOptions = dictionaryOptions;
         }
 
-        public ImmutableDictionaryMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, string keyColumn) : base(commandBuilder)
+        public ImmutableDictionaryMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, string keyColumn, DictionaryOptions dictionaryOptions) : base(commandBuilder)
         {
+            if (dictionaryOptions.HasFlag(DictionaryOptions.DiscardDuplicates))
+                throw new NotImplementedException("DiscardDuplicates is not implemented for ImmutableDictionary with default constructors.");
+
             m_KeyColumn = keyColumn;
+            //m_DictionaryOptions = dictionaryOptions;
         }
 
         public override ImmutableDictionary<TKey, TObject> Execute(object state = null)
@@ -76,9 +85,9 @@ namespace Tortuga.Chain.Materializers
                 return ImmutableDictionary.CreateRange(table.ToObjects<TObject>().Select(x => new KeyValuePair<TKey, TObject>(m_KeyFunction(x), x)));
 
             if (!table.ColumnNames.Contains(m_KeyColumn))
-                throw new MappingException("Resultset does not contain a column named " + m_KeyColumn);
+                throw new MappingException("The result set does not contain a column named " + m_KeyColumn);
 
-            return ImmutableDictionary.CreateRange(table.ToObjectsWithEcho<TObject>().Select(x => new KeyValuePair<TKey, TObject>((TKey)x.Item1[m_KeyColumn], x.Item2)));
+            return ImmutableDictionary.CreateRange(table.ToObjectsWithEcho<TObject>().Select(x => new KeyValuePair<TKey, TObject>((TKey)x.Key[m_KeyColumn], x.Value)));
         }
 
         /// <summary>

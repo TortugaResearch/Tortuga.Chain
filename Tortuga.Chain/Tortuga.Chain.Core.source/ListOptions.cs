@@ -25,15 +25,12 @@ namespace Tortuga.Chain
         /// </summary>
         IgnoreExtraColumns = 2,
 
-
         /// <summary>
         /// All columns will be incorporated into the result set. Values are read left to right, then top to bottom.
         /// </summary>
         FlattenExtraColumns = 2 + 4,
 
-        /// <summary>
-        /// Infer which constructor to use. When this option is chosen, individual properties will not be set.
-        /// </summary>
-        InferConstructor = 8,
     }
+
+
 }

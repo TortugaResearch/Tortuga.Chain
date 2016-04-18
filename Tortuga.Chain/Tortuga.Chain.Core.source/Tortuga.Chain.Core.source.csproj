@@ -98,7 +98,11 @@
     <Compile Include="AuditRules\ValidateWithNotifyDataErrorInfo.cs" />
     <Compile Include="AuditRules\ValidateWithDataErrorInfo`1.cs" />
     <Compile Include="AuditRules\ValidateWithNotifyDataErrorInfo`1.cs" />
+    <Compile Include="CollectionOptions.cs" />
     <Compile Include="CommandBuilders\DbCommandBuilder.cs" />
+    <Compile Include="Materializers\InitializedDictionary.cs" />
+    <Compile Include="Materializers\InitializedImmutableDictionary.cs" />
+    <Compile Include="DictionaryOptions.cs" />
     <Compile Include="CommandBuilders\GenericDbSqlCall.cs" />
     <Compile Include="CommandBuilders\IDbCommandBuilder.cs" />
     <Compile Include="CommandBuilders\IMultipleRowDbCommandBuilder.cs" />
@@ -131,7 +135,8 @@
     <Compile Include="ILink.cs" />
     <Compile Include="Appenders\InvalidateCacheAppender.cs" />
     <Compile Include="Appenders\InvalidateCacheAppender`1.cs" />
-    <Compile Include="Materializers\DictionaryMaterializer`5 - Copy.cs" />
+    <Compile Include="Materializers\InitializedCollectionMaterializer`4.cs" />
+    <Compile Include="Materializers\ImmutableDictionaryMaterializer`4.cs" />
     <Compile Include="Materializers\DictionaryMaterializer`5.cs" />
     <Compile Include="Materializers\DynamicObjectMaterializer`2.cs" />
     <Compile Include="Materializers\DynamicCollectionMaterializer`2.cs" />

@@ -35,6 +35,9 @@ namespace Tortuga.Chain.Materializers
         public InitializedObjectMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, Type[] constructorSignature, RowOptions rowOptions)
             : base(commandBuilder)
         {
+            if (constructorSignature == null || constructorSignature.Length == 0)
+                throw new ArgumentException($"{nameof(constructorSignature)} is null or empty.", nameof(constructorSignature));
+
             m_RowOptions = rowOptions;
             m_ConstructorSignature = constructorSignature;
         }
@@ -124,7 +127,7 @@ namespace Tortuga.Chain.Materializers
             if (constructor == null)
             {
                 var types = string.Join(", ", m_ConstructorSignature.Select(t => t.Name));
-                throw new MappingException($"Cannot find a constuctor on {desiredType.Name} with the types [{types}]");
+                throw new MappingException($"Cannot find a constructor on {desiredType.Name} with the types [{types}]");
             }
 
             return ImmutableList.CreateRange(constructor.GetParameters().Select(p => p.Name));

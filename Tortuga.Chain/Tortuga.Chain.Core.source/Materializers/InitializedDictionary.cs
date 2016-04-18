@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Data;
 using System.Data.Common;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Tortuga.Anchor.Metadata;
 using Tortuga.Chain.CommandBuilders;
 
 namespace Tortuga.Chain.Materializers
@@ -19,27 +19,30 @@ namespace Tortuga.Chain.Materializers
     /// <typeparam name="TObject">The type of the object.</typeparam>
     /// <typeparam name="TDictionary">The type of the dictionary.</typeparam>
     /// <seealso cref="Materializer{TCommand, TParameter, TDictionary}" />
-    internal class DictionaryMaterializer<TCommand, TParameter, TKey, TObject, TDictionary> : Materializer<TCommand, TParameter, TDictionary>
+    internal class InitializedDictionaryMaterializer<TCommand, TParameter, TKey, TObject, TDictionary> : Materializer<TCommand, TParameter, TDictionary>
         where TCommand : DbCommand
-        where TObject : class, new()
+        where TObject : class
         where TDictionary : IDictionary<TKey, TObject>, new()
         where TParameter : DbParameter
     {
 
         private readonly Func<TObject, TKey> m_KeyFunction;
         private readonly string m_KeyColumn;
-        private readonly  DictionaryOptions m_DictionaryOptions;
+        private readonly DictionaryOptions m_DictionaryOptions;
+        readonly Type[] m_ConstructorSignature;
 
-        public DictionaryMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, Func<TObject, TKey> keyFunction, DictionaryOptions dictionaryOptions ) : base(commandBuilder)
+        public InitializedDictionaryMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, Func<TObject, TKey> keyFunction, Type[] constructorSignature, DictionaryOptions dictionaryOptions) : base(commandBuilder)
         {
             m_KeyFunction = keyFunction;
             m_DictionaryOptions = dictionaryOptions;
+            m_ConstructorSignature = constructorSignature;
         }
 
-        public DictionaryMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, string keyColumn, DictionaryOptions dictionaryOptions ) : base(commandBuilder)
+        public InitializedDictionaryMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, string keyColumn, Type[] constructorSignature, DictionaryOptions dictionaryOptions) : base(commandBuilder)
         {
             m_KeyColumn = keyColumn;
             m_DictionaryOptions = dictionaryOptions;
+            m_ConstructorSignature = constructorSignature;
         }
 
         public override TDictionary Execute(object state = null)
@@ -81,12 +84,12 @@ namespace Tortuga.Chain.Materializers
             {
                 if (m_DictionaryOptions.HasFlag(DictionaryOptions.DiscardDuplicates))
                 {
-                    foreach (var item in table.ToObjects<TObject>())
+                    foreach (var item in table.ToObjects<TObject>(m_ConstructorSignature))
                         result[m_KeyFunction(item)] = item;
                 }
                 else
                 {
-                    foreach (var item in table.ToObjects<TObject>())
+                    foreach (var item in table.ToObjects<TObject>(m_ConstructorSignature))
                         result.Add(m_KeyFunction(item), item);
                 }
             }
@@ -97,12 +100,12 @@ namespace Tortuga.Chain.Materializers
 
                 if (m_DictionaryOptions.HasFlag(DictionaryOptions.DiscardDuplicates))
                 {
-                    foreach (var item in table.ToObjectsWithEcho<TObject>())
+                    foreach (var item in table.ToObjectsWithEcho<TObject>(m_ConstructorSignature))
                         result[(TKey)item.Key[m_KeyColumn]] = item.Value;
                 }
                 else
                 {
-                    foreach (var item in table.ToObjectsWithEcho<TObject>())
+                    foreach (var item in table.ToObjectsWithEcho<TObject>(m_ConstructorSignature))
                         result.Add((TKey)item.Key[m_KeyColumn], item.Value);
                 }
             }
@@ -116,12 +119,16 @@ namespace Tortuga.Chain.Materializers
         /// <returns></returns>
         public override IReadOnlyList<string> DesiredColumns()
         {
-            var columns = MetadataCache.GetMetadata(typeof(TObject)).ColumnsFor;
+            var desiredType = typeof(TObject);
+            var constructor = desiredType.GetConstructor(m_ConstructorSignature);
 
-            if (m_KeyColumn != null && !columns.Contains(m_KeyColumn))
-                columns = columns.Add(m_KeyColumn);
+            if (constructor == null)
+            {
+                var types = string.Join(", ", m_ConstructorSignature.Select(t => t.Name));
+                throw new MappingException($"Cannot find a constructor on {desiredType.Name} with the types [{types}]");
+            }
 
-            return columns;
+            return ImmutableList.CreateRange(constructor.GetParameters().Select(p => p.Name));
         }
 
     }
