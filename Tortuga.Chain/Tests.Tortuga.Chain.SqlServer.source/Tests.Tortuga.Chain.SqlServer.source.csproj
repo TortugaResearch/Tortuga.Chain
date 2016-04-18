@@ -88,6 +88,7 @@
     <Compile Include="Models\AuditInfo.cs" />
     <Compile Include="Models\ChangeTrackingEmployee.cs" />
     <Compile Include="Models\CustomerWithValidation.cs" />
+    <Compile Include="Models\EmployeeLookup.cs" />
     <Compile Include="Models\EmployeeWithManager.cs" />
     <Compile Include="Repository\TransactionalAsyncRepositoryTests.cs" />
     <Compile Include="Models\Employee.cs" />

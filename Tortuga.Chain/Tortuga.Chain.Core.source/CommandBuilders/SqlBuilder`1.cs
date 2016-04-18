@@ -162,11 +162,7 @@ namespace Tortuga.Chain.CommandBuilders
                 throw new MappingException($"None of the keys could be matched to columns in {m_Name}.");
         }
 
-        public void ApplyArgumentValue(object dataSource, OperationTypes none, object m_ArgumentValue)
-        {
-            throw new NotImplementedException();
-        }
-
+        
         /// <summary>
         /// Builds an order by clause.
         /// </summary>
@@ -214,6 +210,9 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="footer">The footer.</param>
         public void BuildFromFunctionClause(StringBuilder sql, string header, string footer)
         {
+            if (sql == null)
+                throw new ArgumentNullException(nameof(sql), $"{nameof(sql)} is null.");
+
             sql.Append(header);
             sql.Append(string.Join(", ", GetFormalParameters().Select(s => s.SqlVariableName)));
             sql.Append(footer);

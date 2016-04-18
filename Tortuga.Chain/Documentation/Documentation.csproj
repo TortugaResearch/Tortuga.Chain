@@ -71,6 +71,7 @@
     <None Include="Page\AuditRules.md" />
     <None Include="Page\CommandBuilders.md" />
     <None Include="Page\CommandBuilders\Delete.md" />
+    <None Include="Page\CommandBuilders\TableFunction.md" />
     <None Include="Page\CommandBuilders\GetById.md" />
     <None Include="Page\CommandBuilders\Procedure.md" />
     <None Include="Page\CommandBuilders\Upsert.md" />

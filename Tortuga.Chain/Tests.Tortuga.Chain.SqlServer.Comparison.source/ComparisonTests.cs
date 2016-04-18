@@ -10,7 +10,7 @@ namespace Tests
     [TestClass]
     public class ComparisonTests
     {
-        static int Iterations = 25;
+        static int Iterations = 50;
         static bool Warmup = true;
 
         static EmployeeRepositoryDapper s_DapperRepo;

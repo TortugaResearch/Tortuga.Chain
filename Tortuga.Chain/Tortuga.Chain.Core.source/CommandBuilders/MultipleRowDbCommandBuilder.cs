@@ -4,6 +4,7 @@ using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Materializers;
+using System.Collections.Immutable;
 
 #if !WINDOWS_UWP
 using System.Data;
@@ -51,15 +52,6 @@ namespace Tortuga.Chain.CommandBuilders
         }
 
         /// <summary>
-        /// Materializes the result as a list of dynamically typed objects.
-        /// </summary>
-        /// <returns></returns>
-        public ILink<List<dynamic>> ToDynamicCollection()
-        {
-            return new DynamicCollectionMaterializer<TCommand, TParameter>(this);
-        }
-
-        /// <summary>
         /// Materializes the result as a list of objects.
         /// </summary>
         /// <typeparam name="TObject">The type of the model.</typeparam>
@@ -72,6 +64,17 @@ namespace Tortuga.Chain.CommandBuilders
         {
             return new CollectionMaterializer<TCommand, TParameter, TObject, TCollection>(this);
         }
+
+        /// <summary>
+        /// Materializes the result as a list of dynamically typed objects.
+        /// </summary>
+        /// <returns></returns>
+        public ILink<List<dynamic>> ToDynamicCollection()
+        {
+            return new DynamicCollectionMaterializer<TCommand, TParameter>(this);
+        }
+
+
 
 #if !WINDOWS_UWP
         /// <summary>
@@ -103,6 +106,91 @@ namespace Tortuga.Chain.CommandBuilders
         public ILink<List<DateTimeOffset>> ToDateTimeOffsetList(string columnName, ListOptions listOptions = ListOptions.None)
         {
             return new DateTimeOffsetListMaterializer<TCommand, TParameter>(this, columnName, listOptions);
+        }
+
+
+        /// <summary>
+        /// Materializes the result as a dictionary of objects.
+        /// </summary>
+        /// <typeparam name="TKey">The type of the key.</typeparam>
+        /// <typeparam name="TObject">The type of the model.</typeparam>
+        /// <param name="keyColumn">The key column.</param>
+        /// <returns></returns>
+        public ILink<Dictionary<TKey, TObject>> ToDictionary<TKey, TObject>(string keyColumn)
+            where TObject : class, new()
+        {
+            return new DictionaryMaterializer<TCommand, TParameter, TKey, TObject, Dictionary<TKey, TObject>>(this, keyColumn);
+        }
+
+        /// <summary>
+        /// Materializes the result as a dictionary of objects.
+        /// </summary>
+        /// <typeparam name="TKey">The type of the key.</typeparam>
+        /// <typeparam name="TObject">The type of the model.</typeparam>
+        /// <typeparam name="TDictionary">The type of dictionary.</typeparam>
+        /// <returns></returns>
+        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
+        public ILink<TDictionary> ToDictionary<TKey, TObject, TDictionary>(string keyColumn)
+            where TObject : class, new()
+            where TDictionary : IDictionary<TKey, TObject>, new()
+        {
+            return new DictionaryMaterializer<TCommand, TParameter, TKey, TObject, TDictionary>(this, keyColumn);
+        }
+
+        /// <summary>
+        /// Materializes the result as a dictionary of objects.
+        /// </summary>
+        /// <typeparam name="TKey">The type of the key.</typeparam>
+        /// <typeparam name="TObject">The type of the model.</typeparam>
+        /// <param name="keyFunction">The key function.</param>
+        /// <returns></returns>
+        public ILink<Dictionary<TKey, TObject>> ToDictionary<TKey, TObject>(Func<TObject, TKey> keyFunction)
+            where TObject : class, new()
+        {
+            return new DictionaryMaterializer<TCommand, TParameter, TKey, TObject, Dictionary<TKey, TObject>>(this, keyFunction);
+        }
+
+        /// <summary>
+        /// Materializes the result as a dictionary of objects.
+        /// </summary>
+        /// <typeparam name="TKey">The type of the key.</typeparam>
+        /// <typeparam name="TObject">The type of the model.</typeparam>
+        /// <typeparam name="TDictionary">The type of dictionary.</typeparam>
+        /// <param name="keyFunction">The key function.</param>
+        /// <returns></returns>
+        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
+        public ILink<TDictionary> ToDictionary<TKey, TObject, TDictionary>(Func<TObject, TKey> keyFunction)
+            where TObject : class, new()
+            where TDictionary : IDictionary<TKey, TObject>, new()
+        {
+            return new DictionaryMaterializer<TCommand, TParameter, TKey, TObject, TDictionary>(this, keyFunction);
+        }
+
+        /// <summary>
+        /// Materializes the result as a immutable dictionary of objects.
+        /// </summary>
+        /// <typeparam name="TKey">The type of the key.</typeparam>
+        /// <typeparam name="TObject">The type of the model.</typeparam>
+        /// <param name="keyFunction">The key function.</param>
+        /// <returns></returns>
+        public ILink<ImmutableDictionary<TKey, TObject>> ToImmutableDictionary<TKey, TObject>(Func<TObject, TKey> keyFunction)
+            where TObject : class, new()
+        {
+            return new ImmutableDictionaryMaterializer<TCommand, TParameter, TKey, TObject>(this, keyFunction);
+        }
+
+        /// <summary>
+        /// Materializes the result as a immutable dictionary of objects.
+        /// </summary>
+        /// <typeparam name="TKey">The type of the key.</typeparam>
+        /// <typeparam name="TObject">The type of the model.</typeparam>
+        /// <param name="keyColumn">The key column.</param>
+        /// <returns></returns>
+        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
+        public ILink<ImmutableDictionary<TKey, TObject>> ToImmutableDictionary<TKey, TObject>(string keyColumn)
+            where TObject : class, new()
+        {
+            return new ImmutableDictionaryMaterializer<TCommand, TParameter, TKey, TObject>(this, keyColumn);
         }
 
         /// <summary>

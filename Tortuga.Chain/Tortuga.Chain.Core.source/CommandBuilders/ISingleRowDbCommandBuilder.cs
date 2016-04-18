@@ -106,7 +106,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="rowOptions">The row options.</param>
         /// <returns></returns>
         ILink<TObject> ToObject<TObject>(RowOptions rowOptions = RowOptions.None)
-            where TObject : class, new();
+            where TObject : class;
 
         /// <summary>
         /// Materializes the result as a dynamic object

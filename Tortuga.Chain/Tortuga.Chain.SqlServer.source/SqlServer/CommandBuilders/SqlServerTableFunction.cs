@@ -138,6 +138,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// ExecutionToken&lt;TCommand&gt;.
         /// </returns>
         /// <exception cref="NotImplementedException"></exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
         public override ExecutionToken<SqlCommand, SqlParameter> Prepare(Materializer<SqlCommand, SqlParameter> materializer)
         {
             if (materializer == null)
@@ -153,6 +154,8 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
                 throw new NotSupportedException($"SQL Server does not support limit option {(LimitOptions)m_LimitOptions}");
             if (m_LimitOptions == SqlServerLimitOption.TableSampleSystemRows || m_LimitOptions == SqlServerLimitOption.TableSampleSystemPercentage)
                 throw new NotSupportedException($"SQL Server does not support limit option {(LimitOptions)m_LimitOptions} with table-valued functions");
+            if (m_Seed.HasValue)
+                throw new NotSupportedException($"SQL Server does not setting a random seed for table-valued functions");
 
             //Validation
             if (m_Skip < 0)

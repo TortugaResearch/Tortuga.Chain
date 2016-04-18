@@ -3,6 +3,7 @@ using System;
 using System.Linq;
 using Tests.Models;
 using Tortuga.Chain;
+using System.Collections.Concurrent;
 
 #if MSTest
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -44,6 +45,95 @@ namespace Tests.Class1Databases
                 trans.Commit();
             }
         }
+
+        [TestMethod]
+        public void FromTests_ToImmutableObject()
+        {
+            var uniqueKey = Guid.NewGuid().ToString();
+
+            var emp1 = new Employee() { FirstName = "A", LastName = "1", Title = uniqueKey };
+
+            var lookup = DataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToObject<EmployeeLookup>(new Type[] { typeof(int), typeof(string), typeof(string) }).Execute();
+
+            Assert.AreEqual("A", lookup.FirstName);
+            Assert.AreEqual("1", lookup.LastName);
+
+        }
+
+
+        [TestMethod]
+        public void FromTests_ToInferredObject()
+        {
+            var uniqueKey = Guid.NewGuid().ToString();
+
+            var emp1 = new Employee() { FirstName = "A", LastName = "1", Title = uniqueKey };
+
+            var lookup = DataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToObject<EmployeeLookup>(RowOptions.InferConstructor).Execute();
+
+            Assert.AreEqual("A", lookup.FirstName);
+            Assert.AreEqual("1", lookup.LastName);
+
+        }
+
+        [TestMethod]
+        public void FromTests_ToDictionary()
+        {
+            var uniqueKey = Guid.NewGuid().ToString();
+
+            var emp1 = new Employee() { FirstName = "A", LastName = "1", Title = uniqueKey };
+            var emp2 = new Employee() { FirstName = "B", LastName = "2", Title = uniqueKey };
+            var emp3 = new Employee() { FirstName = "C", LastName = "3", Title = uniqueKey };
+            var emp4 = new Employee() { FirstName = "D", LastName = "4", Title = uniqueKey };
+
+            emp1 = DataSource.Insert(EmployeeTableName, emp1).ToObject<Employee>().Execute();
+            emp2 = DataSource.Insert(EmployeeTableName, emp2).ToObject<Employee>().Execute();
+            emp3 = DataSource.Insert(EmployeeTableName, emp3).ToObject<Employee>().Execute();
+            emp4 = DataSource.Insert(EmployeeTableName, emp4).ToObject<Employee>().Execute();
+
+            var test1 = DataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToDictionary<string, Employee>("FirstName").Execute();
+
+            Assert.AreEqual("1", test1["A"].LastName);
+            Assert.AreEqual("2", test1["B"].LastName);
+            Assert.AreEqual("3", test1["C"].LastName);
+            Assert.AreEqual("4", test1["D"].LastName);
+
+            var test2 = DataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToDictionary<int, Employee>(e => int.Parse(e.LastName)).Execute();
+
+            Assert.AreEqual("A", test2[1].FirstName);
+            Assert.AreEqual("B", test2[2].FirstName);
+            Assert.AreEqual("C", test2[3].FirstName);
+            Assert.AreEqual("D", test2[4].FirstName);
+
+            var test3 = DataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToDictionary<string, Employee, ConcurrentDictionary<string, Employee>>("FirstName").Execute();
+            Assert.IsInstanceOfType(test3, typeof(ConcurrentDictionary<string, Employee>));
+            Assert.AreEqual("1", test3["A"].LastName);
+            Assert.AreEqual("2", test3["B"].LastName);
+            Assert.AreEqual("3", test3["C"].LastName);
+            Assert.AreEqual("4", test3["D"].LastName);
+
+            var test4 = DataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToDictionary<int, Employee, ConcurrentDictionary<int, Employee>>(e => int.Parse(e.LastName)).Execute();
+            Assert.IsInstanceOfType(test4, typeof(ConcurrentDictionary<int, Employee>));
+            Assert.AreEqual("A", test4[1].FirstName);
+            Assert.AreEqual("B", test4[2].FirstName);
+            Assert.AreEqual("C", test4[3].FirstName);
+            Assert.AreEqual("D", test4[4].FirstName);
+
+            var test5 = DataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToImmutableDictionary<string, Employee>("FirstName").Execute();
+            Assert.IsInstanceOfType(test3, typeof(ConcurrentDictionary<string, Employee>));
+            Assert.AreEqual("1", test5["A"].LastName);
+            Assert.AreEqual("2", test5["B"].LastName);
+            Assert.AreEqual("3", test5["C"].LastName);
+            Assert.AreEqual("4", test5["D"].LastName);
+
+            var test6 = DataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToImmutableDictionary<int, Employee>(e => int.Parse(e.LastName)).Execute();
+            Assert.IsInstanceOfType(test4, typeof(ConcurrentDictionary<int, Employee>));
+            Assert.AreEqual("A", test6[1].FirstName);
+            Assert.AreEqual("B", test6[2].FirstName);
+            Assert.AreEqual("C", test6[3].FirstName);
+            Assert.AreEqual("D", test6[4].FirstName);
+
+        }
+
 
         [TestMethod]
         public void FromTests_Sorting()
@@ -101,9 +191,7 @@ namespace Tests.Class1Databases
             Assert.IsTrue(list.Any(e => e.EmployeeKey == emp2.EmployeeKey));
             Assert.IsTrue(list.Any(e => e.EmployeeKey == emp3.EmployeeKey));
             Assert.IsTrue(list.Any(e => e.EmployeeKey == emp4.EmployeeKey));
-
         }
-
 
 
         [TestMethod]
@@ -118,8 +206,6 @@ namespace Tests.Class1Databases
                 Assert.IsTrue(int.Parse(item.FirstName) >= 0, "Range");
                 Assert.IsTrue(int.Parse(item.FirstName) < 10, "Range");
             }
-
-
         }
 
         [TestMethod]
@@ -134,15 +220,11 @@ namespace Tests.Class1Databases
                 Assert.IsTrue(int.Parse(item.FirstName) >= 0, "Range");
                 Assert.IsTrue(int.Parse(item.FirstName) < 10, "Range");
             }
-
-
         }
 
         [TestMethod]
         public void FromTests_SkipTake()
         {
-
-
             var result = DataSource.From(EmployeeTableName, new { Title = Key1000 }).WithSorting("FirstName").WithLimits(10, 15).ToCollection<Employee>().Execute();
             Assert.AreEqual(15, result.Count, "Count");
             foreach (var item in result)
@@ -151,15 +233,12 @@ namespace Tests.Class1Databases
                 Assert.IsTrue(int.Parse(item.FirstName) >= 10, "Range");
                 Assert.IsTrue(int.Parse(item.FirstName) < 25, "Range");
             }
-
         }
 
 #if SqlServer
         [TestMethod]
         public void FromTests_TakePercent()
         {
-
-
             var result = DataSource.From(EmployeeTableName, new { Title = Key1000 }).WithSorting("FirstName").WithLimits(10, SqlServerLimitOption.Percentage).ToCollection<Employee>().Execute();
             Assert.AreEqual(100, result.Count, "Count");
             foreach (var item in result)
@@ -184,8 +263,6 @@ namespace Tests.Class1Databases
                 Assert.IsTrue(int.Parse(item.FirstName) >= 0, "Range");
                 Assert.IsTrue(int.Parse(item.FirstName) < 100, "Range");
             }
-
-
         }
 
         [TestMethod]
@@ -199,8 +276,6 @@ namespace Tests.Class1Databases
                 Assert.IsTrue(int.Parse(item.FirstName) >= 0, "Range");
                 Assert.IsTrue(int.Parse(item.FirstName) < 10, "Range");
             }
-
-
         }
 
         [TestMethod]

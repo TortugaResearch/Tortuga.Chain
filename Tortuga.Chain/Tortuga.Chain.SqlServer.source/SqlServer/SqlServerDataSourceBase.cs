@@ -113,7 +113,6 @@ namespace Tortuga.Chain.SqlServer
         /// This is used to query a table valued function.
         /// </summary>
         /// <param name="tableFunctionName">Name of the table function.</param>
-        /// <param name="functionArgument">The function argument.</param>
         /// <returns></returns>
         public TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption> TableFunction(SqlServerObjectName tableFunctionName)
         {

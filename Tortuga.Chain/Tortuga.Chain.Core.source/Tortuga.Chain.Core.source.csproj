@@ -131,10 +131,13 @@
     <Compile Include="ILink.cs" />
     <Compile Include="Appenders\InvalidateCacheAppender.cs" />
     <Compile Include="Appenders\InvalidateCacheAppender`1.cs" />
+    <Compile Include="Materializers\DictionaryMaterializer`5 - Copy.cs" />
+    <Compile Include="Materializers\DictionaryMaterializer`5.cs" />
     <Compile Include="Materializers\DynamicObjectMaterializer`2.cs" />
     <Compile Include="Materializers\DynamicCollectionMaterializer`2.cs" />
     <Compile Include="Materializers\Materializer.cs" />
     <Compile Include="Materializers\DataRowMaterializer`2.cs" />
+    <Compile Include="Materializers\InitializedObjectMaterializer`3.cs" />
     <Compile Include="Materializers\RowsAffectedMaterializer`2.cs" />
     <Compile Include="Materializers\Scalar\ByteOrNullMaterializer`2.cs" />
     <Compile Include="Materializers\Scalar\ByteMaterializer`2.cs" />
@@ -172,7 +175,7 @@
     <Compile Include="Materializers\SingleColumn\Int64ListMaterializer`2.cs" />
     <Compile Include="Materializers\Scalar\Int64OrNullMaterializer`2.cs" />
     <Compile Include="Materializers\Scalar\Int64Materializer`2.cs" />
-    <Compile Include="Materializers\CollectionResult`4.cs" />
+    <Compile Include="Materializers\CollectionMaterializer`4.cs" />
     <Compile Include="Materializers\ObjectMaterializer`3.cs" />
     <Compile Include="Materializers\NonQueryMaterializer`2.cs" />
     <Compile Include="Materializers\RowMaterializer`2.cs" />

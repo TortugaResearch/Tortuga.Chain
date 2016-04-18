@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Reflection;
 using System.Xml.Linq;
 using Tortuga.Anchor.Metadata;
@@ -79,6 +80,37 @@ namespace Tortuga.Chain
             m_Rows = new RowCollection(rows);
         }
 
+        internal IEnumerable<T> ToObjects<T>(Type[] constructorSignature)
+        {
+            var desiredType = typeof(T);
+            var constructor = desiredType.GetConstructor(constructorSignature);
+
+            if (constructor == null)
+            {
+                var types = string.Join(", ", constructorSignature.Select(t => t.Name));
+                throw new MappingException($"Cannot find a constuctor on {desiredType.Name} with the types [{types}]");
+            }
+
+            var constructorParameters = constructor.GetParameters();
+            for (var i = 0; i < constructorSignature.Length; i++)
+            {
+                if (!ColumnNames.Any(p => p.Equals(constructorParameters[i].Name, StringComparison.OrdinalIgnoreCase)))
+                    throw new MappingException($"Cannot find a column that matches the parameter {constructorParameters[i].Name}");
+            }
+
+            foreach (var item in Rows)
+            {
+                var parameters = new object[constructorSignature.Length];
+                for (var i = 0; i < constructorSignature.Length; i++)
+                {
+                    parameters[i] = item[constructorParameters[i].Name];
+                }
+                var result = constructor.Invoke(parameters);
+                yield return (T)result;
+            }
+
+        }
+
 
         /// <summary>
         /// List of columns and their types.
@@ -122,6 +154,25 @@ namespace Tortuga.Chain
                 tracking?.AcceptChanges();
 
                 yield return item;
+            }
+        }
+
+        /// <summary>
+        /// Converts the table into an enumeration of objects of the indicated type.
+        /// </summary>
+        /// <typeparam name="T">Desired object type</typeparam>
+        internal IEnumerable<Tuple<Row, T>> ToObjectsWithEcho<T>() where T : new()
+        {
+            foreach (var row in Rows)
+            {
+                var item = new T();
+                PopulateComplexObject(row, item, null);
+
+                //Change tracking objects shouldn't be materialized as unchanged.
+                var tracking = item as IChangeTracking;
+                tracking?.AcceptChanges();
+
+                yield return Tuple.Create(row, item);
             }
         }
 

@@ -31,6 +31,9 @@ namespace Tortuga.Chain
         /// </summary>
         FlattenExtraColumns = 2 + 4,
 
-
+        /// <summary>
+        /// Infer which constructor to use. When this option is chosen, individual properties will not be set.
+        /// </summary>
+        InferConstructor = 8,
     }
 }
