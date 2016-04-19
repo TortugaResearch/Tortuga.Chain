@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Linq;
@@ -19,6 +20,9 @@ namespace Tortuga.Chain.Materializers
         public CompiledObjectMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, RowOptions rowOptions) : base(commandBuilder)
         {
             m_RowOptions = rowOptions;
+
+            if (rowOptions.HasFlag(RowOptions.InferConstructor))
+                throw new NotSupportedException("Compiled materializers do not support non-default constructors");
         }
 
         public override TObject Execute(object state = null)

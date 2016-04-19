@@ -6,6 +6,7 @@ namespace Tortuga.Chain.CommandBuilders
     /// This is a specialization of IMultipleRowDbCommandBuilder that includes support for sorting and limiting
     /// </summary>
     /// <seealso cref="IMultipleRowDbCommandBuilder" />
+    /// <remarks>Warning: This interface is meant to simulate multiple inheritance and work-around some issues with exposing generic types. Do not implement it in client code, as new method will be added over time.</remarks>
     public interface ITableDbCommandBuilder : IMultipleRowDbCommandBuilder
     {
         /// <summary>

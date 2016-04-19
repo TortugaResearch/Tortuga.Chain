@@ -2,7 +2,6 @@ using System;
 using System.Data.Common;
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Materializers;
-using System.Linq;
 
 #if !WINDOWS_UWP
 using System.Data;
@@ -144,48 +143,12 @@ namespace Tortuga.Chain.CommandBuilders
         /// <typeparam name="TObject">The type of the object returned.</typeparam>
         /// <param name="rowOptions">The row options.</param>
         /// <returns></returns>
-        public ILink<TObject> ToObject<TObject>(RowOptions rowOptions = RowOptions.None)
+        public IConstructibleMaterializer<TObject> ToObject<TObject>(RowOptions rowOptions = RowOptions.None)
             where TObject : class
         {
-            if (rowOptions.HasFlag(RowOptions.InferConstructor))
-            {
-                var constructors = typeof(TObject).GetConstructors().Select(c => c.GetParameters()).Where(c => c.Length > 0).ToList();
-                if (constructors.Count == 0)
-                    throw new MappingException($"Type {typeof(TObject).Name} has does not have any non-default constructors.");
-                if (constructors.Count > 1)
-                    throw new MappingException($"Type {typeof(TObject).Name} has more than one non-default constructor. Please specify which one to use.");
-                return new InitializedObjectMaterializer<TCommand, TParameter, TObject>(this, constructors[0].Select(p => p.ParameterType).ToArray(), rowOptions);
-
-            }
-            else
-            {
-                var constructor = typeof(TObject).GetConstructor(new Type[] { });
-                if (constructor == null)
-                    throw new MappingException($"Type {typeof(TObject).Name} has does not have a default constructor.");
-
-                var rawType = typeof(ObjectMaterializer<,,>);
-                var typeArgs = new Type[] { typeof(TCommand), typeof(TParameter), typeof(TObject) };
-                var constructedType = rawType.MakeGenericType(typeArgs);
-                var result = Activator.CreateInstance(constructedType, new object[] { this, rowOptions });
-                return (ILink<TObject>)result;
-            }
+            return new ObjectMaterializer<TCommand, TParameter, TObject>(this, rowOptions);
         }
 
-
-
-        /// <summary>
-        /// Materializes the result as an instance of the indicated type
-        /// </summary>
-        /// <typeparam name="TObject">The type of the object returned.</typeparam>
-        /// <param name="rowOptions">The row options.</param>
-        /// <param name="constructorSignature">The constructor signature to use.</param>
-        /// <returns></returns>
-        /// <remarks>This version will not set properties.</remarks>
-        public ILink<TObject> ToObject<TObject>(Type[] constructorSignature, RowOptions rowOptions = RowOptions.None)
-            where TObject : class
-        {
-            return new InitializedObjectMaterializer<TCommand, TParameter, TObject>(this, constructorSignature, rowOptions);
-        }
 
         /// <summary>
         /// Materializes the result as a dynamic object

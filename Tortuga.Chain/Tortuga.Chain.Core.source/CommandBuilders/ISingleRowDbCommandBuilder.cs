@@ -9,6 +9,7 @@ namespace Tortuga.Chain.CommandBuilders
     /// <summary>
     /// This allows the use of scalar and single row materializers against a command builder.
     /// </summary>
+    /// <remarks>Warning: This interface is meant to simulate multiple inheritance and work-around some issues with exposing generic types. Do not implement it in client code, as new method will be added over time.</remarks>
     public interface ISingleRowDbCommandBuilder : IDbCommandBuilder
     {
 
@@ -105,9 +106,9 @@ namespace Tortuga.Chain.CommandBuilders
         /// <typeparam name="TObject">The type of the object returned.</typeparam>
         /// <param name="rowOptions">The row options.</param>
         /// <returns></returns>
-        ILink<TObject> ToObject<TObject>(RowOptions rowOptions = RowOptions.None)
+        IConstructibleMaterializer<TObject> ToObject<TObject>(RowOptions rowOptions = RowOptions.None)
             where TObject : class;
-
+        
         /// <summary>
         /// Materializes the result as a dynamic object
         /// </summary>

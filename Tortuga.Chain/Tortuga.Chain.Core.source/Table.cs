@@ -122,10 +122,22 @@ namespace Tortuga.Chain
             }
         }
 
-        internal IEnumerable<KeyValuePair<Row, T>> ToObjectsWithEcho<T>(Type[] constructorSignature)
+        internal IEnumerable<KeyValuePair<Row, T>> ToObjectsWithEcho<T>(IReadOnlyList<Type> constructorSignature)
+        {
+            if (constructorSignature == null)
+            {
+                var methodType = GetType().GetMethods(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).Where(m => m.Name == "ToObjectsWithEcho_New").Single();
+                var genericMethod = methodType.MakeGenericMethod(typeof(T));
+                return (IEnumerable<KeyValuePair<Row, T>>)genericMethod.Invoke(this, null);
+            }
+            else
+                return ToObjectsWithEcho_Core<T>(constructorSignature);
+        }
+
+        internal IEnumerable<KeyValuePair<Row, T>> ToObjectsWithEcho_Core<T>(IReadOnlyList<Type> constructorSignature)
         {
             var desiredType = typeof(T);
-            var constructor = desiredType.GetConstructor(constructorSignature);
+            var constructor = MetadataCache.GetMetadata(desiredType).Constructors.Find(constructorSignature);
 
             if (constructor == null)
             {
@@ -133,30 +145,48 @@ namespace Tortuga.Chain
                 throw new MappingException($"Cannot find a constructor on {desiredType.Name} with the types [{types}]");
             }
 
-            var constructorParameters = constructor.GetParameters();
-            for (var i = 0; i < constructorSignature.Length; i++)
+            var constructorParameters = constructor.ParameterNames;
+            for (var i = 0; i < constructorParameters.Length; i++)
             {
-                if (!ColumnNames.Any(p => p.Equals(constructorParameters[i].Name, StringComparison.OrdinalIgnoreCase)))
-                    throw new MappingException($"Cannot find a column that matches the parameter {constructorParameters[i].Name}");
+                if (!ColumnNames.Any(p => p.Equals(constructorParameters[i], StringComparison.OrdinalIgnoreCase)))
+                    throw new MappingException($"Cannot find a column that matches the parameter {constructorParameters[i]}");
             }
 
             foreach (var item in Rows)
             {
-                var parameters = new object[constructorSignature.Length];
-                for (var i = 0; i < constructorSignature.Length; i++)
+                var parameters = new object[constructorParameters.Length];
+                for (var i = 0; i < constructorParameters.Length; i++)
                 {
-                    parameters[i] = item[constructorParameters[i].Name];
+                    parameters[i] = item[constructorParameters[i]];
                 }
-                var result = constructor.Invoke(parameters);
+                var result = constructor.ConstructorInfo.Invoke(parameters);
                 yield return new KeyValuePair<Row, T>(item, (T)result);
             }
 
         }
 
-        internal IEnumerable<T> ToObjects<T>(Type[] constructorSignature)
+        /// <summary>
+        /// Converts the table into an enumeration of objects of the indicated type using the indicated constructor.
+        /// </summary>
+        /// <typeparam name="T">Desired object type</typeparam>
+        /// <param name="constructorSignature">The constructor signature.</param>
+        /// <returns>IEnumerable&lt;T&gt;.</returns>
+        public IEnumerable<T> ToObjects<T>(IReadOnlyList<Type> constructorSignature)
+        {
+            if (constructorSignature == null)
+            {
+                var methodType = GetType().GetMethod("ToObjects", new Type[0]);
+                var genericMethod = methodType.MakeGenericMethod(typeof(T));
+                return (IEnumerable<T>)genericMethod.Invoke(this, null);
+            }
+            else
+                return ToObjects_Core<T>(constructorSignature);
+        }
+
+        internal IEnumerable<T> ToObjects_Core<T>(IReadOnlyList<Type> constructorSignature)
         {
             var desiredType = typeof(T);
-            var constructor = desiredType.GetConstructor(constructorSignature);
+            var constructor = MetadataCache.GetMetadata(desiredType).Constructors.Find(constructorSignature);
 
             if (constructor == null)
             {
@@ -164,21 +194,21 @@ namespace Tortuga.Chain
                 throw new MappingException($"Cannot find a constructor on {desiredType.Name} with the types [{types}]");
             }
 
-            var constructorParameters = constructor.GetParameters();
-            for (var i = 0; i < constructorSignature.Length; i++)
+            var constructorParameters = constructor.ParameterNames;
+            for (var i = 0; i < constructorParameters.Length; i++)
             {
-                if (!ColumnNames.Any(p => p.Equals(constructorParameters[i].Name, StringComparison.OrdinalIgnoreCase)))
-                    throw new MappingException($"Cannot find a column that matches the parameter {constructorParameters[i].Name}");
+                if (!ColumnNames.Any(p => p.Equals(constructorParameters[i], StringComparison.OrdinalIgnoreCase)))
+                    throw new MappingException($"Cannot find a column that matches the parameter {constructorParameters[i]}");
             }
 
             foreach (var item in Rows)
             {
-                var parameters = new object[constructorSignature.Length];
-                for (var i = 0; i < constructorSignature.Length; i++)
+                var parameters = new object[constructorParameters.Length];
+                for (var i = 0; i < constructorParameters.Length; i++)
                 {
-                    parameters[i] = item[constructorParameters[i].Name];
+                    parameters[i] = item[constructorParameters[i]];
                 }
-                var result = constructor.Invoke(parameters);
+                var result = constructor.ConstructorInfo.Invoke(parameters);
                 yield return (T)result;
             }
 
@@ -187,7 +217,7 @@ namespace Tortuga.Chain
         /// Converts the table into an enumeration of objects of the indicated type.
         /// </summary>
         /// <typeparam name="T">Desired object type</typeparam>
-        internal IEnumerable<KeyValuePair<Row, T>> ToObjectsWithEcho<T>() where T : new()
+        internal IEnumerable<KeyValuePair<Row, T>> ToObjectsWithEcho_New<T>() where T : new()
         {
             foreach (var row in Rows)
             {

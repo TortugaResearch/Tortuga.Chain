@@ -46,6 +46,8 @@ namespace Tests.Class1Databases
             }
         }
 
+#if !SQLite
+
         [TestMethod]
         public void FromTests_ToImmutableObject()
         {
@@ -54,12 +56,13 @@ namespace Tests.Class1Databases
             var emp1 = new Employee() { FirstName = "A", LastName = "1", Title = uniqueKey };
             DataSource.Insert(EmployeeTableName, emp1).ToObject<Employee>().Execute();
 
-            var lookup = DataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToObject<EmployeeLookup>(new Type[] { typeof(int), typeof(string), typeof(string) }).Execute();
+            var lookup = DataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToObject<EmployeeLookup>().WithConstructor<int, string, string>().Execute();
 
             Assert.AreEqual("A", lookup.FirstName);
             Assert.AreEqual("1", lookup.LastName);
 
         }
+#endif
 
 
         [TestMethod]
@@ -77,6 +80,8 @@ namespace Tests.Class1Databases
 
         }
 
+#if !SQLite
+
         [TestMethod]
         public void FromTests_ToDictionary_ImmutableObject()
         {
@@ -92,42 +97,42 @@ namespace Tests.Class1Databases
             emp3 = DataSource.Insert(EmployeeTableName, emp3).ToObject<Employee>().Execute();
             emp4 = DataSource.Insert(EmployeeTableName, emp4).ToObject<Employee>().Execute();
 
-            var test1 = DataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToDictionary<string, EmployeeLookup>("FirstName", new Type[] { typeof(int), typeof(string), typeof(string) }).Execute();
+            var test1 = DataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToDictionary<string, EmployeeLookup>("FirstName").WithConstructor<int, string, string>().Execute();
 
             Assert.AreEqual("1", test1["A"].LastName);
             Assert.AreEqual("2", test1["B"].LastName);
             Assert.AreEqual("3", test1["C"].LastName);
             Assert.AreEqual("4", test1["D"].LastName);
 
-            var test2 = DataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToDictionary<int, EmployeeLookup>(e => int.Parse(e.LastName), new Type[] { typeof(int), typeof(string), typeof(string) }).Execute();
+            var test2 = DataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToDictionary<int, EmployeeLookup>(e => int.Parse(e.LastName)).WithConstructor<int, string, string>().Execute();
 
             Assert.AreEqual("A", test2[1].FirstName);
             Assert.AreEqual("B", test2[2].FirstName);
             Assert.AreEqual("C", test2[3].FirstName);
             Assert.AreEqual("D", test2[4].FirstName);
 
-            var test3 = DataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToDictionary<string, EmployeeLookup, ConcurrentDictionary<string, EmployeeLookup>>("FirstName", new Type[] { typeof(int), typeof(string), typeof(string) }).Execute();
+            var test3 = DataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToDictionary<string, EmployeeLookup, ConcurrentDictionary<string, EmployeeLookup>>("FirstName").WithConstructor<int, string, string>().Execute();
             Assert.IsInstanceOfType(test3, typeof(ConcurrentDictionary<string, EmployeeLookup>));
             Assert.AreEqual("1", test3["A"].LastName);
             Assert.AreEqual("2", test3["B"].LastName);
             Assert.AreEqual("3", test3["C"].LastName);
             Assert.AreEqual("4", test3["D"].LastName);
 
-            var test4 = DataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToDictionary<int, EmployeeLookup, ConcurrentDictionary<int, EmployeeLookup>>(e => int.Parse(e.LastName), new Type[] { typeof(int), typeof(string), typeof(string) }).Execute();
+            var test4 = DataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToDictionary<int, EmployeeLookup, ConcurrentDictionary<int, EmployeeLookup>>(e => int.Parse(e.LastName)).WithConstructor<int, string, string>().Execute();
             Assert.IsInstanceOfType(test4, typeof(ConcurrentDictionary<int, EmployeeLookup>));
             Assert.AreEqual("A", test4[1].FirstName);
             Assert.AreEqual("B", test4[2].FirstName);
             Assert.AreEqual("C", test4[3].FirstName);
             Assert.AreEqual("D", test4[4].FirstName);
 
-            var test5 = DataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToImmutableDictionary<string, EmployeeLookup>("FirstName", new Type[] { typeof(int), typeof(string), typeof(string) }).Execute();
+            var test5 = DataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToImmutableDictionary<string, EmployeeLookup>("FirstName").WithConstructor<int, string, string>().Execute();
             Assert.IsInstanceOfType(test3, typeof(ConcurrentDictionary<string, EmployeeLookup>));
             Assert.AreEqual("1", test5["A"].LastName);
             Assert.AreEqual("2", test5["B"].LastName);
             Assert.AreEqual("3", test5["C"].LastName);
             Assert.AreEqual("4", test5["D"].LastName);
 
-            var test6 = DataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToImmutableDictionary<int, EmployeeLookup>(e => int.Parse(e.LastName), new Type[] { typeof(int), typeof(string), typeof(string) }).Execute();
+            var test6 = DataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToImmutableDictionary<int, EmployeeLookup>(e => int.Parse(e.LastName)).WithConstructor<int, string, string>().Execute();
             Assert.IsInstanceOfType(test4, typeof(ConcurrentDictionary<int, EmployeeLookup>));
             Assert.AreEqual("A", test6[1].FirstName);
             Assert.AreEqual("B", test6[2].FirstName);
@@ -135,6 +140,7 @@ namespace Tests.Class1Databases
             Assert.AreEqual("D", test6[4].FirstName);
 
         }
+#endif
 
         [TestMethod]
         public void FromTests_ToDictionary_InferredObject()
@@ -290,6 +296,7 @@ namespace Tests.Class1Databases
 
         }
 
+#if !SQLite
         [TestMethod]
         public void FromTests_Sorting_ImmutableCollection()
         {
@@ -305,25 +312,26 @@ namespace Tests.Class1Databases
             emp3 = DataSource.Insert(EmployeeTableName, emp3).ToObject<Employee>().Execute();
             emp4 = DataSource.Insert(EmployeeTableName, emp4).ToObject<Employee>().Execute();
 
-            var test1 = DataSource.From(EmployeeTableName, new { Title = uniqueKey }).WithSorting("FirstName").ToCollection<EmployeeLookup>(new Type[] { typeof(int), typeof(string), typeof(string) }).Execute();
+            var test1 = DataSource.From(EmployeeTableName, new { Title = uniqueKey }).WithSorting("FirstName").ToCollection<EmployeeLookup>().WithConstructor<int, string, string>().Execute();
             Assert.AreEqual(emp1.EmployeeKey, test1[0].EmployeeKey);
             Assert.AreEqual(emp2.EmployeeKey, test1[1].EmployeeKey);
             Assert.AreEqual(emp3.EmployeeKey, test1[2].EmployeeKey);
             Assert.AreEqual(emp4.EmployeeKey, test1[3].EmployeeKey);
 
-            var test2 = DataSource.From(EmployeeTableName, new { Title = uniqueKey }).WithSorting(new SortExpression("FirstName", SortDirection.Descending)).ToCollection<EmployeeLookup>(new Type[] { typeof(int), typeof(string), typeof(string) }).Execute();
+            var test2 = DataSource.From(EmployeeTableName, new { Title = uniqueKey }).WithSorting(new SortExpression("FirstName", SortDirection.Descending)).ToCollection<EmployeeLookup>().WithConstructor<int, string, string>().Execute();
             Assert.AreEqual(emp4.EmployeeKey, test2[0].EmployeeKey);
             Assert.AreEqual(emp3.EmployeeKey, test2[1].EmployeeKey);
             Assert.AreEqual(emp2.EmployeeKey, test2[2].EmployeeKey);
             Assert.AreEqual(emp1.EmployeeKey, test2[3].EmployeeKey);
 
-            var test3 = DataSource.From(EmployeeTableName, new { Title = uniqueKey }).WithSorting("LastName", "FirstName").ToCollection<EmployeeLookup>(new Type[] { typeof(int), typeof(string), typeof(string) }).Execute();
+            var test3 = DataSource.From(EmployeeTableName, new { Title = uniqueKey }).WithSorting("LastName", "FirstName").ToCollection<EmployeeLookup>().WithConstructor<int, string, string>().Execute();
             Assert.AreEqual(emp3.EmployeeKey, test3[0].EmployeeKey);
             Assert.AreEqual(emp4.EmployeeKey, test3[1].EmployeeKey);
             Assert.AreEqual(emp1.EmployeeKey, test3[2].EmployeeKey);
             Assert.AreEqual(emp2.EmployeeKey, test3[3].EmployeeKey);
 
         }
+#endif
 
         [TestMethod]
         public void FromTests_Sorting()

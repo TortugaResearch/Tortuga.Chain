@@ -71,8 +71,8 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Tortuga.Anchor, Version=0.6.5944.41376, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
-      <HintPath>..\packages\Tortuga.Anchor.0.6.5944.41376\lib\net46\Tortuga.Anchor.dll</HintPath>
+    <Reference Include="Tortuga.Anchor, Version=0.7.5952.32542, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tortuga.Anchor.0.7.5952.32542\lib\net46\Tortuga.Anchor.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
@@ -103,8 +103,8 @@
     <Compile Include="Materializers\CollectionSetMaterializer`5.cs" />
     <Compile Include="Materializers\CollectionSetMaterializer`6.cs" />
     <Compile Include="Materializers\CollectionSetMaterializer`7.cs" />
-    <Compile Include="Materializers\InitializedDictionary`5.cs" />
-    <Compile Include="Materializers\InitializedImmutableDictionary`4.cs" />
+    <Compile Include="Materializers\ConstructibleMaterializer`4.cs" />
+    <Compile Include="IConstructibleMaterializer`1.cs" />
     <Compile Include="DictionaryOptions.cs" />
     <Compile Include="CommandBuilders\GenericDbSqlCall.cs" />
     <Compile Include="CommandBuilders\IDbCommandBuilder.cs" />
@@ -138,14 +138,12 @@
     <Compile Include="ILink.cs" />
     <Compile Include="Appenders\InvalidateCacheAppender.cs" />
     <Compile Include="Appenders\InvalidateCacheAppender`1.cs" />
-    <Compile Include="Materializers\InitializedCollectionMaterializer`4.cs" />
     <Compile Include="Materializers\ImmutableDictionaryMaterializer`4.cs" />
     <Compile Include="Materializers\DictionaryMaterializer`5.cs" />
     <Compile Include="Materializers\DynamicObjectMaterializer`2.cs" />
     <Compile Include="Materializers\DynamicCollectionMaterializer`2.cs" />
     <Compile Include="Materializers\Materializer.cs" />
     <Compile Include="Materializers\DataRowMaterializer`2.cs" />
-    <Compile Include="Materializers\InitializedObjectMaterializer`3.cs" />
     <Compile Include="Materializers\RowsAffectedMaterializer`2.cs" />
     <Compile Include="Materializers\Scalar\ByteOrNullMaterializer`2.cs" />
     <Compile Include="Materializers\Scalar\ByteMaterializer`2.cs" />

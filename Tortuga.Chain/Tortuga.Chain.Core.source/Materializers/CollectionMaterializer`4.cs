@@ -2,9 +2,9 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Tortuga.Anchor.Metadata;
 using Tortuga.Chain.CommandBuilders;
 
 namespace Tortuga.Chain.Materializers
@@ -18,19 +18,35 @@ namespace Tortuga.Chain.Materializers
     /// <typeparam name="TCollection">The type of the collection.</typeparam>
     /// <seealso cref="Materializer{TCommand, TParameter, TCollection}" />
     [SuppressMessage("Microsoft.Design", "CA1005:AvoidExcessiveParametersOnGenericTypes")]
-    internal sealed class CollectionMaterializer<TCommand, TParameter, TObject, TCollection> : Materializer<TCommand, TParameter, TCollection>
+    internal sealed class CollectionMaterializer<TCommand, TParameter, TObject, TCollection> : ConstructibleMaterializer<TCommand, TParameter, TCollection, TObject>
         where TCommand : DbCommand
-        where TObject : class, new()
+        where TObject : class
         where TCollection : ICollection<TObject>, new()
         where TParameter : DbParameter
     {
 
+        private readonly CollectionOptions m_CollectionOptions;
+
         /// <summary>
+        /// Initializes a new instance of the <see cref="CollectionMaterializer{TCommand, TParameter, TObject, TCollection}"/> class.
         /// </summary>
         /// <param name="commandBuilder">The associated operation.</param>
-        public CollectionMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder)
+        /// <param name="collectionOptions">The collection options.</param>
+        public CollectionMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, CollectionOptions collectionOptions)
             : base(commandBuilder)
         {
+            m_CollectionOptions = collectionOptions;
+
+
+            if (m_CollectionOptions.HasFlag(CollectionOptions.InferConstructor))
+            {
+                var constructors = ObjectMetadata.Constructors.Where(x => x.Signature.Length > 0).ToList();
+                if (constructors.Count == 0)
+                    throw new MappingException($"Type {typeof(TObject).Name} has does not have any non-default constructors.");
+                if (constructors.Count > 1)
+                    throw new MappingException($"Type {typeof(TObject).Name} has more than one non-default constructor. Please use the WithConstructor method to specify which one to use.");
+                ConstructorSignature = constructors[0].Signature;
+            }
         }
 
         /// <summary>
@@ -50,7 +66,7 @@ namespace Tortuga.Chain.Materializers
                 }
             }, state);
 
-            foreach (var item in table.ToObjects<TObject>())
+            foreach (var item in table.ToObjects<TObject>(ConstructorSignature))
                 result.Add(item);
             return result;
         }
@@ -76,7 +92,7 @@ namespace Tortuga.Chain.Materializers
                 }
             }, cancellationToken, state).ConfigureAwait(false);
 
-            foreach (var item in table.ToObjects<TObject>())
+            foreach (var item in table.ToObjects<TObject>(ConstructorSignature))
                 result.Add(item);
             return result;
         }
@@ -87,7 +103,19 @@ namespace Tortuga.Chain.Materializers
         /// <returns></returns>
         public override IReadOnlyList<string> DesiredColumns()
         {
-            return MetadataCache.GetMetadata(typeof(TObject)).ColumnsFor;
+            if (ConstructorSignature == null)
+                return ObjectMetadata.ColumnsFor;
+
+            var desiredType = typeof(TObject);
+            var constructor = ObjectMetadata.Constructors.Find(ConstructorSignature);
+
+            if (constructor == null)
+            {
+                var types = string.Join(", ", ConstructorSignature.Select(t => t.Name));
+                throw new MappingException($"Cannot find a constructor on {desiredType.Name} with the types [{types}]");
+            }
+
+            return constructor.ParameterNames;
         }
     }
 }

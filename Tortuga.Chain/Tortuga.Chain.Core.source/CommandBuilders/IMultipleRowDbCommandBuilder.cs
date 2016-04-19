@@ -14,6 +14,7 @@ namespace Tortuga.Chain.CommandBuilders
     /// <summary>
     /// This allows the use of multi-row materializers against a command builder.
     /// </summary>
+    /// <remarks>Warning: This interface is meant to simulate multiple inheritance and work-around some issues with exposing generic types. Do not implement it in client code, as new method will be added over time.</remarks>
     public interface IMultipleRowDbCommandBuilder : ISingleRowDbCommandBuilder
     {
         /// <summary>
@@ -53,7 +54,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <typeparam name="TObject">The type of the model.</typeparam>
         /// <param name="collectionOptions">The collection options.</param>
         /// <returns></returns>
-        ILink<List<TObject>> ToCollection<TObject>(CollectionOptions collectionOptions = CollectionOptions.None)
+        IConstructibleMaterializer<List<TObject>> ToCollection<TObject>(CollectionOptions collectionOptions = CollectionOptions.None)
             where TObject : class;
 
         /// <summary>
@@ -70,7 +71,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="collectionOptions">The collection options.</param>
         /// <returns></returns>
         [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-        ILink<TCollection> ToCollection<TObject, TCollection>(CollectionOptions collectionOptions = CollectionOptions.None)
+        IConstructibleMaterializer<TCollection> ToCollection<TObject, TCollection>(CollectionOptions collectionOptions = CollectionOptions.None)
             where TObject : class
             where TCollection : ICollection<TObject>, new();
 
@@ -246,7 +247,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="keyFunction">The key function.</param>
         /// <param name="dictionaryOptions">The dictionary options.</param>
         /// <returns></returns>
-        ILink<ImmutableDictionary<TKey, TObject>> ToImmutableDictionary<TKey, TObject>(Func<TObject, TKey> keyFunction, DictionaryOptions dictionaryOptions = DictionaryOptions.None)
+        IConstructibleMaterializer<ImmutableDictionary<TKey, TObject>> ToImmutableDictionary<TKey, TObject>(Func<TObject, TKey> keyFunction, DictionaryOptions dictionaryOptions = DictionaryOptions.None)
             where TObject : class;
 
         /// <summary>
@@ -258,55 +259,9 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="dictionaryOptions">The dictionary options.</param>
         /// <returns></returns>
         [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-        ILink<ImmutableDictionary<TKey, TObject>> ToImmutableDictionary<TKey, TObject>(string keyColumn, DictionaryOptions dictionaryOptions = DictionaryOptions.None)
+        IConstructibleMaterializer<ImmutableDictionary<TKey, TObject>> ToImmutableDictionary<TKey, TObject>(string keyColumn, DictionaryOptions dictionaryOptions = DictionaryOptions.None)
             where TObject : class;
 
-        /// <summary>
-        /// Materializes the result as a immutable dictionary of objects.
-        /// </summary>
-        /// <typeparam name="TKey">The type of the key.</typeparam>
-        /// <typeparam name="TObject">The type of the model.</typeparam>
-        /// <param name="keyFunction">The key function.</param>
-        /// <param name="constructorSignature">The constructor signature.</param>
-        /// <param name="dictionaryOptions">The dictionary options.</param>
-        /// <returns></returns>
-        ILink<ImmutableDictionary<TKey, TObject>> ToImmutableDictionary<TKey, TObject>(Func<TObject, TKey> keyFunction, Type[] constructorSignature, DictionaryOptions dictionaryOptions = DictionaryOptions.None)
-            where TObject : class;
-
-        /// <summary>
-        /// Materializes the result as a immutable dictionary of objects.
-        /// </summary>
-        /// <typeparam name="TKey">The type of the key.</typeparam>
-        /// <typeparam name="TObject">The type of the model.</typeparam>
-        /// <param name="keyColumn">The key column.</param>
-        /// <param name="constructorSignature">The constructor signature.</param>
-        /// <param name="dictionaryOptions">The dictionary options.</param>
-        /// <returns></returns>
-        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-        ILink<ImmutableDictionary<TKey, TObject>> ToImmutableDictionary<TKey, TObject>(string keyColumn, Type[] constructorSignature, DictionaryOptions dictionaryOptions = DictionaryOptions.None)
-            where TObject : class;
-
-
-
-
-        /// <summary>
-        /// Materializes the result as a list of objects.
-        /// </summary>
-        /// <typeparam name="TObject">The type of the model.</typeparam>
-        /// <returns></returns>
-        ILink<List<TObject>> ToCollection<TObject>(Type[] constructorSignature)
-            where TObject : class;
-
-        /// <summary>
-        /// Materializes the result as a list of objects.
-        /// </summary>
-        /// <typeparam name="TObject">The type of the model.</typeparam>
-        /// <typeparam name="TCollection">The type of the collection.</typeparam>
-        /// <returns></returns>
-        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-        ILink<TCollection> ToCollection<TObject, TCollection>(Type[] constructorSignature)
-            where TObject : class
-            where TCollection : ICollection<TObject>, new();
 
         /// <summary>
         /// Materializes the result as a dictionary of objects.
@@ -314,10 +269,9 @@ namespace Tortuga.Chain.CommandBuilders
         /// <typeparam name="TKey">The type of the key.</typeparam>
         /// <typeparam name="TObject">The type of the model.</typeparam>
         /// <param name="keyColumn">The key column.</param>
-        /// <param name="constructorSignature">The constructor signature.</param>
         /// <param name="dictionaryOptions">The dictionary options.</param>
-        /// <returns></returns>
-        ILink<Dictionary<TKey, TObject>> ToDictionary<TKey, TObject>(string keyColumn, Type[] constructorSignature, DictionaryOptions dictionaryOptions = DictionaryOptions.None)
+        /// <returns>IConstructibleMaterializer&lt;Dictionary&lt;TKey, TObject&gt;&gt;.</returns>
+        IConstructibleMaterializer<Dictionary<TKey, TObject>> ToDictionary<TKey, TObject>(string keyColumn, DictionaryOptions dictionaryOptions = DictionaryOptions.None)
             where TObject : class;
 
         /// <summary>
@@ -327,11 +281,10 @@ namespace Tortuga.Chain.CommandBuilders
         /// <typeparam name="TObject">The type of the model.</typeparam>
         /// <typeparam name="TDictionary">The type of dictionary.</typeparam>
         /// <param name="keyColumn">The key column.</param>
-        /// <param name="constructorSignature">The constructor signature.</param>
         /// <param name="dictionaryOptions">The dictionary options.</param>
-        /// <returns></returns>
+        /// <returns>IConstructibleMaterializer&lt;TDictionary&gt;.</returns>
         [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-        ILink<TDictionary> ToDictionary<TKey, TObject, TDictionary>(string keyColumn, Type[] constructorSignature, DictionaryOptions dictionaryOptions = DictionaryOptions.None)
+        IConstructibleMaterializer<TDictionary> ToDictionary<TKey, TObject, TDictionary>(string keyColumn, DictionaryOptions dictionaryOptions = DictionaryOptions.None)
             where TObject : class
             where TDictionary : IDictionary<TKey, TObject>, new();
 
@@ -341,10 +294,9 @@ namespace Tortuga.Chain.CommandBuilders
         /// <typeparam name="TKey">The type of the key.</typeparam>
         /// <typeparam name="TObject">The type of the model.</typeparam>
         /// <param name="keyFunction">The key function.</param>
-        /// <param name="constructorSignature">The constructor signature.</param>
         /// <param name="dictionaryOptions">The dictionary options.</param>
-        /// <returns></returns>
-        ILink<Dictionary<TKey, TObject>> ToDictionary<TKey, TObject>(Func<TObject, TKey> keyFunction, Type[] constructorSignature, DictionaryOptions dictionaryOptions = DictionaryOptions.None)
+        /// <returns>IConstructibleMaterializer&lt;Dictionary&lt;TKey, TObject&gt;&gt;.</returns>
+        IConstructibleMaterializer<Dictionary<TKey, TObject>> ToDictionary<TKey, TObject>(Func<TObject, TKey> keyFunction, DictionaryOptions dictionaryOptions = DictionaryOptions.None)
             where TObject : class;
 
         /// <summary>
@@ -354,11 +306,10 @@ namespace Tortuga.Chain.CommandBuilders
         /// <typeparam name="TObject">The type of the model.</typeparam>
         /// <typeparam name="TDictionary">The type of dictionary.</typeparam>
         /// <param name="keyFunction">The key function.</param>
-        /// <param name="constructorSignature">The constructor signature.</param>
         /// <param name="dictionaryOptions">The dictionary options.</param>
-        /// <returns></returns>
+        /// <returns>IConstructibleMaterializer&lt;TDictionary&gt;.</returns>
         [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-        ILink<TDictionary> ToDictionary<TKey, TObject, TDictionary>(Func<TObject, TKey> keyFunction, Type[] constructorSignature, DictionaryOptions dictionaryOptions = DictionaryOptions.None)
+        IConstructibleMaterializer<TDictionary> ToDictionary<TKey, TObject, TDictionary>(Func<TObject, TKey> keyFunction, DictionaryOptions dictionaryOptions = DictionaryOptions.None)
             where TObject : class
             where TDictionary : IDictionary<TKey, TObject>, new();
 
