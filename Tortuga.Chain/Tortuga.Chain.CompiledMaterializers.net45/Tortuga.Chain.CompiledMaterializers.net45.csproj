@@ -95,12 +95,12 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="Tortuga.Anchor, Version=0.6.5944.41370, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
-      <HintPath>..\packages\Tortuga.Anchor.0.6.5944.41376\lib\net45\Tortuga.Anchor.dll</HintPath>
+    <Reference Include="Tortuga.Anchor, Version=0.7.5952.32532, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tortuga.Anchor.0.7.5952.32542\lib\net45\Tortuga.Anchor.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Tortuga.Chain.Core, Version=0.14.5949.33723, Culture=neutral, PublicKeyToken=8769fd32a2872cf0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Tortuga.Chain.Core.0.14.5949.33710\lib\net45\Tortuga.Chain.Core.dll</HintPath>
+    <Reference Include="Tortuga.Chain.Core, Version=0.15.5953.37133, Culture=neutral, PublicKeyToken=8769fd32a2872cf0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tortuga.Chain.Core.0.15.5953.37118\lib\net45\Tortuga.Chain.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
