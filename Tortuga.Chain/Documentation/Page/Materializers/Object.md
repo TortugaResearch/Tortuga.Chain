@@ -2,11 +2,15 @@
 
 * `.ToObect<TObject>`
 * `.ToCollection<TObject>`
-* `.ToCollection<TCollection, TObject>`
+* `.ToCollection<TObject, TCollection>`
+* `.ToImmutableArray<TObject>`
+* `.ToImmutableList<TObject>`
+
 
 ## Options
 
-The `ToObject` materializer supports the `RowOptions` enumeration.
+The `ToObject` materializer supports the `RowOptions` enumeration. 
+The `ToCollection` materializer supports the `CollectionOptions` enumeration. 
 
 The `ToCollection` materializer returns a `List<TCollection>` by default. You can override the collection type with any `ICollection<TObject>` so long as it isn’t read-only.
 
@@ -24,7 +28,7 @@ If the desried object implementes `IChangeTracking`, then `AcceptChanges()` will
 
 ## Non-default Constructors
 
-If you use the `InferConstructor` option or explicit provide a constuctor signature, the behavior changes. Instead of setting properties, the indicated constructor will be called.
+If you use the `InferConstructor` option or the `WithConstructor` method, the behavior changes. Instead of setting properties, the indicated non-default constructor will be called. (With `InferConstructor`, there can only be one non-default constructor.)
 
 The `Decompose` attribute doesn't apply when using a non-default constructor.
 

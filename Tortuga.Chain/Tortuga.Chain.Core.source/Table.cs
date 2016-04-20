@@ -217,6 +217,7 @@ namespace Tortuga.Chain
         /// Converts the table into an enumeration of objects of the indicated type.
         /// </summary>
         /// <typeparam name="T">Desired object type</typeparam>
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         internal IEnumerable<KeyValuePair<Row, T>> ToObjectsWithEcho_New<T>() where T : new()
         {
             foreach (var row in Rows)

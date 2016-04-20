@@ -69,7 +69,33 @@ namespace Tortuga.Chain.CommandBuilders
             return new CollectionMaterializer<TCommand, TParameter, TObject, TCollection>(this, collectionOptions);
         }
 
+        /// <summary>
+        /// Materializes the result as an immutable array of objects.
+        /// </summary>
+        /// <typeparam name="TObject">The type of the model.</typeparam>
+        /// <param name="collectionOptions">The collection options.</param>
+        /// <returns>Tortuga.Chain.IConstructibleMaterializer&lt;System.Collections.Immutable.ImmutableArray&lt;TObject&gt;&gt;.</returns>
+        /// <exception cref="MappingException"></exception>
+        /// <remarks>In theory this will offer better performance than ToImmutableList if you only intend to read the result.</remarks>
+        public IConstructibleMaterializer<ImmutableArray<TObject>> ToImmutableArray<TObject>(CollectionOptions collectionOptions = CollectionOptions.None)
+    where TObject : class
+        {
+            return new ImmutableArrayMaterializer<TCommand, TParameter, TObject>(this, collectionOptions);
+        }
 
+        /// <summary>
+        /// Materializes the result as an immutable list of objects.
+        /// </summary>
+        /// <typeparam name="TObject">The type of the model.</typeparam>
+        /// <param name="collectionOptions">The collection options.</param>
+        /// <returns>Tortuga.Chain.IConstructibleMaterializer&lt;System.Collections.Immutable.ImmutableList&lt;TObject&gt;&gt;.</returns>
+        /// <exception cref="MappingException"></exception>
+        /// <remarks>In theory this will offer better performance than ToImmutableArray if you intend to further modify the result.</remarks>
+        public IConstructibleMaterializer<ImmutableList<TObject>> ToImmutableList<TObject>(CollectionOptions collectionOptions = CollectionOptions.None)
+        where TObject : class
+        {
+            return new ImmutableListMaterializer<TCommand, TParameter, TObject>(this, collectionOptions);
+        }
 
 
         /// <summary>
