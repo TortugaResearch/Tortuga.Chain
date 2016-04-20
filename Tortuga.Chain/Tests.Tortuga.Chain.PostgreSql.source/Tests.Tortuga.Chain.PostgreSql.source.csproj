@@ -97,6 +97,9 @@
     <Compile Include="..\tests.tortuga.chain.sqlserver.source\models\Employee.cs">
       <Link>Models\Employee.cs</Link>
     </Compile>
+    <Compile Include="..\Tests.Tortuga.Chain.SqlServer.source\Models\EmployeeLookup.cs">
+      <Link>Models\EmployeeLookup.cs</Link>
+    </Compile>
     <Compile Include="..\Tests.Tortuga.Chain.SqlServer.source\Models\EmployeeWithManager.cs">
       <Link>EmployeeWithManager.cs</Link>
     </Compile>
