@@ -92,10 +92,10 @@ namespace Tests.Class1Databases
             var emp3 = new Employee() { FirstName = "C", LastName = "3", Title = uniqueKey };
             var emp4 = new Employee() { FirstName = "D", LastName = "4", Title = uniqueKey };
 
-            emp1 = DataSource.Insert(EmployeeTableName, emp1).ToObject<Employee>().Execute();
-            emp2 = DataSource.Insert(EmployeeTableName, emp2).ToObject<Employee>().Execute();
-            emp3 = DataSource.Insert(EmployeeTableName, emp3).ToObject<Employee>().Execute();
-            emp4 = DataSource.Insert(EmployeeTableName, emp4).ToObject<Employee>().Execute();
+            DataSource.Insert(EmployeeTableName, emp1).WithRefresh().Execute();
+            DataSource.Insert(EmployeeTableName, emp2).WithRefresh().Execute();
+            DataSource.Insert(EmployeeTableName, emp3).WithRefresh().Execute();
+            DataSource.Insert(EmployeeTableName, emp4).WithRefresh().Execute();
 
             var test1 = DataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToDictionary<string, EmployeeLookup>("FirstName").WithConstructor<int, string, string>().Execute();
 

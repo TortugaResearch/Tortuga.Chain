@@ -9,7 +9,8 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
     /// <summary>
     /// Class SqlServerUpdateObject.
     /// </summary>
-    internal sealed class SqlServerUpdateObject : SqlServerObjectCommand
+    internal sealed class SqlServerUpdateObject<TArgument> : SqlServerObjectCommand<TArgument>
+        where TArgument : class
     {
         private readonly UpdateOptions m_Options;
 
@@ -20,7 +21,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// <param name="tableName">Name of the table.</param>
         /// <param name="argumentValue">The argument value.</param>
         /// <param name="options">The options.</param>
-        public SqlServerUpdateObject(SqlServerDataSourceBase dataSource, SqlServerObjectName tableName, object argumentValue, UpdateOptions options) : base(dataSource, tableName, argumentValue)
+        public SqlServerUpdateObject(SqlServerDataSourceBase dataSource, SqlServerObjectName tableName, TArgument argumentValue, UpdateOptions options) : base(dataSource, tableName, argumentValue)
         {
             m_Options = options;
         }

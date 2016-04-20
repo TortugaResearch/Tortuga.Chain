@@ -15,7 +15,8 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
     /// <summary>
     /// Command object that represents a delete operation.
     /// </summary>
-    internal sealed class SQLiteDeleteObject : SQLiteObjectCommand
+    internal sealed class SQLiteDeleteObject<TArgument> : SQLiteObjectCommand<TArgument>
+        where TArgument : class
     {
         private readonly DeleteOptions m_Options;
 
@@ -26,7 +27,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
         /// <param name="table">The table.</param>
         /// <param name="argumentValue">The argument value.</param>
         /// <param name="options">The options.</param>
-        public SQLiteDeleteObject(SQLiteDataSourceBase dataSource, string table, object argumentValue, DeleteOptions options)
+        public SQLiteDeleteObject(SQLiteDataSourceBase dataSource, string table, TArgument argumentValue, DeleteOptions options)
             : base(dataSource, table, argumentValue)
         {
             m_Options = options;

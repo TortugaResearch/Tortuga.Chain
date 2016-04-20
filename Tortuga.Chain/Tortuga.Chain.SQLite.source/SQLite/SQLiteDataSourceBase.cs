@@ -71,17 +71,18 @@ namespace Tortuga.Chain.SQLite
         /// <param name="argumentValue"></param>
         /// <param name="options"></param>
         /// <returns></returns>
-        public SingleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> Delete(string tableName, object argumentValue, DeleteOptions options = DeleteOptions.None)
+        public ObjectDbCommandBuilder<SQLiteCommand, SQLiteParameter, TArgument> Delete<TArgument>(string tableName, TArgument argumentValue, DeleteOptions options = DeleteOptions.None)
+        where TArgument : class
         {
             var table = DatabaseMetadata.GetTableOrView(tableName);
             if (!AuditRules.UseSoftDelete(table))
-                return new SQLiteDeleteObject(this, tableName, argumentValue, options);
+                return new SQLiteDeleteObject<TArgument>(this, tableName, argumentValue, options);
 
             UpdateOptions effectiveOptions = UpdateOptions.SoftDelete;
             if (options.HasFlag(DeleteOptions.UseKeyAttribute))
                 effectiveOptions = effectiveOptions | UpdateOptions.UseKeyAttribute;
 
-            return new SQLiteUpdateObject(this, tableName, argumentValue, effectiveOptions);
+            return new SQLiteUpdateObject<TArgument>(this, tableName, argumentValue, effectiveOptions);
         }
 
         /// <summary>
@@ -128,7 +129,7 @@ namespace Tortuga.Chain.SQLite
             return new SQLiteTableOrView(this, tableOrViewName, filterValue);
         }
 
-        IDbCommandBuilder IClass1DataSource.Delete(string tableName, object argumentValue, DeleteOptions options)
+        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Delete<TArgument>(string tableName, TArgument argumentValue, DeleteOptions options)
         {
             return Delete(tableName, argumentValue, options);
         }
@@ -156,17 +157,17 @@ namespace Tortuga.Chain.SQLite
         {
             return Sql(sqlStatement, argumentValue);
         }
-        ISingleRowDbCommandBuilder IClass1DataSource.Update(string tableName, object argumentValue, UpdateOptions options)
+        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Update<TArgument>(string tableName, TArgument argumentValue, UpdateOptions options)
         {
             return Update(tableName, argumentValue, options);
         }
 
-        ISingleRowDbCommandBuilder IClass1DataSource.Upsert(string tableName, object argumentValue, UpsertOptions options)
+        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Upsert<TArgument>(string tableName, TArgument argumentValue, UpsertOptions options)
         {
             return Upsert(tableName, argumentValue, options);
         }
 
-        ISingleRowDbCommandBuilder IClass1DataSource.Insert(string tableName, object argumentValue, InsertOptions options)
+        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Insert<TArgument>(string tableName, TArgument argumentValue, InsertOptions options)
         {
             return Insert(tableName, argumentValue, options);
         }
@@ -200,9 +201,10 @@ namespace Tortuga.Chain.SQLite
         /// <param name="argumentValue">The argument value.</param>
         /// <param name="options">The options.</param>
         /// <returns></returns>
-        public SingleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> Insert(string tableName, object argumentValue, InsertOptions options = InsertOptions.None)
+        public ObjectDbCommandBuilder<SQLiteCommand, SQLiteParameter, TArgument> Insert<TArgument>(string tableName, TArgument argumentValue, InsertOptions options = InsertOptions.None)
+        where TArgument : class
         {
-            return new SQLiteInsertObject(this, tableName, argumentValue, options);
+            return new SQLiteInsertObject<TArgument>(this, tableName, argumentValue, options);
         }
 
         /// <summary>
@@ -212,9 +214,10 @@ namespace Tortuga.Chain.SQLite
         /// <param name="argumentValue"></param>
         /// <param name="options"></param>
         /// <returns></returns>
-        public SingleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> Upsert(string tableName, object argumentValue, UpsertOptions options = UpsertOptions.None)
+        public ObjectDbCommandBuilder<SQLiteCommand, SQLiteParameter, TArgument> Upsert<TArgument>(string tableName, TArgument argumentValue, UpsertOptions options = UpsertOptions.None)
+        where TArgument : class
         {
-            return new SQLiteInsertOrUpdateObject(this, tableName, argumentValue, options);
+            return new SQLiteInsertOrUpdateObject<TArgument>(this, tableName, argumentValue, options);
         }
 
         /// <summary>
@@ -224,9 +227,10 @@ namespace Tortuga.Chain.SQLite
         /// <param name="argumentValue"></param>
         /// <param name="options"></param>
         /// <returns></returns>
-        public SingleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> Update(string tableName, object argumentValue, UpdateOptions options = UpdateOptions.None)
+        public ObjectDbCommandBuilder<SQLiteCommand, SQLiteParameter, TArgument> Update<TArgument>(string tableName, TArgument argumentValue, UpdateOptions options = UpdateOptions.None)
+        where TArgument : class
         {
-            return new SQLiteUpdateObject(this, tableName, argumentValue, options);
+            return new SQLiteUpdateObject<TArgument>(this, tableName, argumentValue, options);
         }
 
 

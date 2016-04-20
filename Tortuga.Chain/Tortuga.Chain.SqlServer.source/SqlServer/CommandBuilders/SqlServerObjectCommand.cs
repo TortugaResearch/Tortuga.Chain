@@ -8,52 +8,34 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
     /// <summary>
     /// Class SqlServerObjectCommand.
     /// </summary>
-    internal abstract class SqlServerObjectCommand : SingleRowDbCommandBuilder<SqlCommand, SqlParameter>
+    /// <typeparam name="TArgument">The type of the argument.</typeparam>
+    internal abstract class SqlServerObjectCommand<TArgument> : ObjectDbCommandBuilder<SqlCommand, SqlParameter, TArgument>
+        where TArgument : class
     {
-        private readonly object m_ArgumentValue;
-        private readonly TableOrViewMetadata<SqlServerObjectName, SqlDbType> m_Metadata;
-        private readonly SqlServerObjectName m_TableName;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlServerObjectCommand" /> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="argumentValue">The argument value.</param>
-        protected SqlServerObjectCommand(SqlServerDataSourceBase dataSource, SqlServerObjectName tableName, object argumentValue)
-            : base(dataSource)
+        protected SqlServerObjectCommand(SqlServerDataSourceBase dataSource, SqlServerObjectName tableName, TArgument argumentValue)
+            : base(dataSource, argumentValue)
         {
-            m_ArgumentValue = argumentValue;
-            m_TableName = tableName;
-            m_Metadata = DataSource.DatabaseMetadata.GetTableOrView(m_TableName);
+            TableName = tableName;
+            Metadata = DataSource.DatabaseMetadata.GetTableOrView(tableName);
         }
 
         /// <summary>
         /// Gets the name of the table.
         /// </summary>
         /// <value>The name of the table.</value>
-        protected SqlServerObjectName TableName
-        {
-            get { return m_TableName; }
-        }
-
-        /// <summary>
-        /// Gets the argument value.
-        /// </summary>
-        /// <value>The argument value.</value>
-        public object ArgumentValue
-        {
-            get { return m_ArgumentValue; }
-        }
+        protected SqlServerObjectName TableName { get; }
 
         /// <summary>
         /// Gets the table metadata.
         /// </summary>
         /// <value>The metadata.</value>
-        public TableOrViewMetadata<SqlServerObjectName, SqlDbType> Metadata
-        {
-            get { return m_Metadata; }
-        }
+        public TableOrViewMetadata<SqlServerObjectName, SqlDbType> Metadata { get; }
 
         /// <summary>
         /// Gets the data source.

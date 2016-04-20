@@ -9,7 +9,8 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
     /// <summary>
     /// Class that represents a PostgreSql Insert.
     /// </summary>
-    internal sealed class PostgreSqlInsertObject : PostgreSqlObjectCommand
+    internal sealed class PostgreSqlInsertObject<TArgument> : PostgreSqlObjectCommand<TArgument>
+        where TArgument : class
     {
         private readonly InsertOptions m_Options;
 
@@ -20,7 +21,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         /// <param name="tableName">Name of the table.</param>
         /// <param name="argumentValue">The argument value.</param>
         /// <param name="options">The options.</param>
-        public PostgreSqlInsertObject(PostgreSqlDataSourceBase dataSource, PostgreSqlObjectName tableName, object argumentValue, InsertOptions options)
+        public PostgreSqlInsertObject(PostgreSqlDataSourceBase dataSource, PostgreSqlObjectName tableName, TArgument argumentValue, InsertOptions options)
             : base(dataSource, tableName, argumentValue)
         {
             m_Options = options;

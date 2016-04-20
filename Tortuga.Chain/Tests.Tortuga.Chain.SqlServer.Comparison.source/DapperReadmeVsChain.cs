@@ -448,9 +448,6 @@ select * from Sales.[Return] where CustomerKey = @id"; ;
             {
                 var users = cnn.Query<User>("select * from Users where Name = @Name", new { Name = new DbString { Value = "abcde", IsFixedLength = true, Length = 50, IsAnsi = true } });
             }
-
-
-
         }
 
         /// <summary>

@@ -65,15 +65,11 @@ namespace Tortuga.Chain.Materializers
                 if (m_RowOptions.HasFlag(RowOptions.AllowEmptyResults))
                     return null;
                 else
-                {
-                    var ex = new DataException("No rows were returned");
-                    throw ex;
-                }
+                    throw new DataException("No rows were returned");
             }
             else if (table.Rows.Count > 1 && !m_RowOptions.HasFlag(RowOptions.DiscardExtraRows))
             {
-                var ex = new DataException("Expected 1 row but received " + table.Rows.Count + " rows");
-                throw ex;
+                throw new DataException("Expected 1 row but received " + table.Rows.Count + " rows");
             }
             return table.ToObjects<TObject>(ConstructorSignature).First();
         }
@@ -105,9 +101,7 @@ namespace Tortuga.Chain.Materializers
                 if (m_RowOptions.HasFlag(RowOptions.AllowEmptyResults))
                     return null;
                 else
-                {
                     throw new DataException("No rows were returned");
-                }
             }
             else if (table.Rows.Count > 1 && !m_RowOptions.HasFlag(RowOptions.DiscardExtraRows))
             {

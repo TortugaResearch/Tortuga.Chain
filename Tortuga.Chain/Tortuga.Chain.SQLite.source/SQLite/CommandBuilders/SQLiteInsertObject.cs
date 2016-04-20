@@ -15,7 +15,8 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
     /// <summary>
     /// Class that represents a SQLite Insert.
     /// </summary>
-    internal sealed class SQLiteInsertObject : SQLiteObjectCommand
+    internal sealed class SQLiteInsertObject<TArgument> : SQLiteObjectCommand<TArgument>
+        where TArgument : class
     {
         private readonly InsertOptions m_Options;
 
@@ -26,7 +27,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
         /// <param name="tableName">Name of the table.</param>
         /// <param name="argumentValue">The argument value.</param>
         /// <param name="options">The options.</param>
-        public SQLiteInsertObject(SQLiteDataSourceBase dataSource, string tableName, object argumentValue, InsertOptions options)
+        public SQLiteInsertObject(SQLiteDataSourceBase dataSource, string tableName, TArgument argumentValue, InsertOptions options)
             : base(dataSource, tableName, argumentValue)
         {
             m_Options = options;

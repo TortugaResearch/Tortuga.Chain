@@ -9,7 +9,8 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
     /// <summary>
     /// Class SqlServerDeleteObject.
     /// </summary>
-    internal sealed class SqlServerDeleteObject : SqlServerObjectCommand
+    internal sealed class SqlServerDeleteObject<TArgument> : SqlServerObjectCommand<TArgument>
+        where TArgument : class
     {
         private readonly DeleteOptions m_Options;
 
@@ -20,7 +21,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// <param name="tableName">Name of the table.</param>
         /// <param name="argumentValue">The argument value.</param>
         /// <param name="options">The options.</param>
-        public SqlServerDeleteObject(SqlServerDataSourceBase dataSource, SqlServerObjectName tableName, object argumentValue, DeleteOptions options) : base(dataSource, tableName, argumentValue)
+        public SqlServerDeleteObject(SqlServerDataSourceBase dataSource, SqlServerObjectName tableName, TArgument argumentValue, DeleteOptions options) : base(dataSource, tableName, argumentValue)
         {
             m_Options = options;
         }

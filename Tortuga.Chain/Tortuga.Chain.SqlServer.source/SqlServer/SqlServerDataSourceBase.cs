@@ -44,17 +44,18 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="options">The delete options.</param>
         /// <returns>SqlServerInsert.</returns>
         /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
-        public SingleRowDbCommandBuilder<SqlCommand, SqlParameter> Delete(SqlServerObjectName tableName, object argumentValue, DeleteOptions options = DeleteOptions.None)
+        public ObjectDbCommandBuilder<SqlCommand, SqlParameter, TArgument> Delete<TArgument>(SqlServerObjectName tableName, TArgument argumentValue, DeleteOptions options = DeleteOptions.None)
+        where TArgument : class
         {
             var table = DatabaseMetadata.GetTableOrView(tableName);
             if (!AuditRules.UseSoftDelete(table))
-                return new SqlServerDeleteObject(this, tableName, argumentValue, options);
+                return new SqlServerDeleteObject<TArgument>(this, tableName, argumentValue, options);
 
             UpdateOptions effectiveOptions = UpdateOptions.SoftDelete;
             if (options.HasFlag(DeleteOptions.UseKeyAttribute))
                 effectiveOptions = effectiveOptions | UpdateOptions.UseKeyAttribute;
 
-            return new SqlServerUpdateObject(this, tableName, argumentValue, effectiveOptions);
+            return new SqlServerUpdateObject<TArgument>(this, tableName, argumentValue, effectiveOptions);
         }
 
         /// <summary>
@@ -206,7 +207,7 @@ namespace Tortuga.Chain.SqlServer
             return Sql(sqlStatement, argumentValue);
         }
 
-        IDbCommandBuilder IClass1DataSource.Delete(string tableName, object argumentValue, DeleteOptions options)
+        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Delete<TArgument>(string tableName, TArgument argumentValue, DeleteOptions options)
         {
             return Delete(tableName, argumentValue, options);
         }
@@ -246,16 +247,16 @@ namespace Tortuga.Chain.SqlServer
             return GetByKey(tableName, (IEnumerable<T>)keys);
         }
 
-        ISingleRowDbCommandBuilder IClass1DataSource.Insert(string tableName, object argumentValue, InsertOptions options)
+        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Insert<TArgument>(string tableName, TArgument argumentValue, InsertOptions options)
         {
             return Insert(tableName, argumentValue, options);
         }
-        ISingleRowDbCommandBuilder IClass1DataSource.Update(string tableName, object argumentValue, UpdateOptions options)
+        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Update<TArgument>(string tableName, TArgument argumentValue, UpdateOptions options)
         {
             return Update(tableName, argumentValue, options);
         }
 
-        ISingleRowDbCommandBuilder IClass1DataSource.Upsert(string tableName, object argumentValue, UpsertOptions options)
+        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Upsert<TArgument>(string tableName, TArgument argumentValue, UpsertOptions options)
         {
             return Upsert(tableName, argumentValue, options);
         }
@@ -296,9 +297,10 @@ namespace Tortuga.Chain.SqlServer
         /// SqlServerInsert.
         /// </returns>
         /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
-        public SingleRowDbCommandBuilder<SqlCommand, SqlParameter> Insert(SqlServerObjectName tableName, object argumentValue, InsertOptions options = InsertOptions.None)
+        public ObjectDbCommandBuilder<SqlCommand, SqlParameter, TArgument> Insert<TArgument>(SqlServerObjectName tableName, TArgument argumentValue, InsertOptions options = InsertOptions.None)
+        where TArgument : class
         {
-            return new SqlServerInsertObject(this, tableName, argumentValue, options);
+            return new SqlServerInsertObject<TArgument>(this, tableName, argumentValue, options);
         }
 
         /// <summary>
@@ -354,9 +356,10 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="options">The update options.</param>
         /// <returns>SqlServerInsert.</returns>
         /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
-        public SingleRowDbCommandBuilder<SqlCommand, SqlParameter> Update(SqlServerObjectName tableName, object argumentValue, UpdateOptions options = UpdateOptions.None)
+        public ObjectDbCommandBuilder<SqlCommand, SqlParameter, TArgument> Update<TArgument>(SqlServerObjectName tableName, TArgument argumentValue, UpdateOptions options = UpdateOptions.None)
+        where TArgument : class
         {
-            return new SqlServerUpdateObject(this, tableName, argumentValue, options);
+            return new SqlServerUpdateObject<TArgument>(this, tableName, argumentValue, options);
         }
 
         /// <summary>
@@ -367,9 +370,10 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="options">The options for how the insert/update occurs.</param>
         /// <returns>SqlServerUpdate.</returns>
         /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
-        public SingleRowDbCommandBuilder<SqlCommand, SqlParameter> Upsert(SqlServerObjectName tableName, object argumentValue, UpsertOptions options = UpsertOptions.None)
+        public ObjectDbCommandBuilder<SqlCommand, SqlParameter, TArgument> Upsert<TArgument>(SqlServerObjectName tableName, TArgument argumentValue, UpsertOptions options = UpsertOptions.None)
+        where TArgument : class
         {
-            return new SqlServerInsertOrUpdateObject(this, tableName, argumentValue, options);
+            return new SqlServerInsertOrUpdateObject<TArgument>(this, tableName, argumentValue, options);
         }
 
         ITableDbCommandBuilder IClass2DataSource.TableFunction(string functionName)

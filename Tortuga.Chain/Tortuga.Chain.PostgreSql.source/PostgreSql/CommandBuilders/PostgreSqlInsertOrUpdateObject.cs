@@ -11,7 +11,8 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
     /// <summary>
     /// Class PostgreSqlInsertOrUpdateObject
     /// </summary>
-    internal sealed class PostgreSqlInsertOrUpdateObject : PostgreSqlObjectCommand
+    internal sealed class PostgreSqlInsertOrUpdateObject<TArgument> : PostgreSqlObjectCommand<TArgument>
+        where TArgument : class
     {
         private readonly UpsertOptions m_Options;
 
@@ -22,7 +23,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         /// <param name="tableName"></param>
         /// <param name="argumentValue"></param>
         /// <param name="options"></param>
-        public PostgreSqlInsertOrUpdateObject(PostgreSqlDataSourceBase dataSource, PostgreSqlObjectName tableName, object argumentValue, UpsertOptions options)
+        public PostgreSqlInsertOrUpdateObject(PostgreSqlDataSourceBase dataSource, PostgreSqlObjectName tableName, TArgument argumentValue, UpsertOptions options)
             : base(dataSource, tableName, argumentValue)
         {
             m_Options = options;

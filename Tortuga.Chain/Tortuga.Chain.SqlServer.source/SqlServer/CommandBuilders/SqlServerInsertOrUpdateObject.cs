@@ -11,7 +11,8 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
     /// <summary>
     /// Class SqlServerInsertOrUpdateObject.
     /// </summary>
-    internal sealed class SqlServerInsertOrUpdateObject : SqlServerObjectCommand
+    internal sealed class SqlServerInsertOrUpdateObject<TArgument> : SqlServerObjectCommand<TArgument>
+        where TArgument : class
     {
         private readonly UpsertOptions m_Options;
 
@@ -22,7 +23,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// <param name="tableName">Name of the table.</param>
         /// <param name="argumentValue">The argument value.</param>
         /// <param name="options">The options.</param>
-        public SqlServerInsertOrUpdateObject(SqlServerDataSourceBase dataSource, SqlServerObjectName tableName, object argumentValue, UpsertOptions options) : base(dataSource, tableName, argumentValue)
+        public SqlServerInsertOrUpdateObject(SqlServerDataSourceBase dataSource, SqlServerObjectName tableName, TArgument argumentValue, UpsertOptions options) : base(dataSource, tableName, argumentValue)
         {
             m_Options = options;
         }

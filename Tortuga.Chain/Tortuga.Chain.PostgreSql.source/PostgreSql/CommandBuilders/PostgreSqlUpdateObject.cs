@@ -9,7 +9,8 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
     /// <summary>
     /// Command object that represents an update operation.
     /// </summary>
-    internal sealed class PostgreSqlUpdateObject : PostgreSqlObjectCommand
+    internal sealed class PostgreSqlUpdateObject<TArgument> : PostgreSqlObjectCommand<TArgument>
+        where TArgument : class
     {
         private readonly UpdateOptions m_Options;
 
@@ -20,7 +21,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         /// <param name="tableName">Name of the table.</param>
         /// <param name="argumentValue">The argument value.</param>
         /// <param name="options">The options.</param>
-        public PostgreSqlUpdateObject(PostgreSqlDataSourceBase dataSource, PostgreSqlObjectName tableName, object argumentValue, UpdateOptions options)
+        public PostgreSqlUpdateObject(PostgreSqlDataSourceBase dataSource, PostgreSqlObjectName tableName, TArgument argumentValue, UpdateOptions options)
             : base(dataSource, tableName, argumentValue)
         {
             m_Options = options;

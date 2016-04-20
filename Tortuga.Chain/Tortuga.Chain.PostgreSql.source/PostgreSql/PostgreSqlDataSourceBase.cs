@@ -31,9 +31,10 @@ namespace Tortuga.Chain.PostgreSql
             get { return DatabaseMetadata; }
         }
 
-        public DbCommandBuilder<NpgsqlCommand, NpgsqlParameter> Delete(PostgreSqlObjectName tableName, object argumentValue, DeleteOptions options = DeleteOptions.None)
+        public ObjectDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, TArgument> Delete<TArgument>(PostgreSqlObjectName tableName, TArgument argumentValue, DeleteOptions options = DeleteOptions.None)
+        where TArgument : class
         {
-            return new PostgreSqlDeleteObject(this, tableName, argumentValue, options);
+            return new PostgreSqlDeleteObject<TArgument>(this, tableName, argumentValue, options);
         }
 
         public TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption> From(PostgreSqlObjectName tableOrViewName)
@@ -71,9 +72,10 @@ namespace Tortuga.Chain.PostgreSql
             throw new NotImplementedException();
         }
 
-        public SingleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> Insert(PostgreSqlObjectName tableName, object argumentValue, InsertOptions options = InsertOptions.None)
+        public ObjectDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, TArgument> Insert<TArgument>(PostgreSqlObjectName tableName, TArgument argumentValue, InsertOptions options = InsertOptions.None)
+        where TArgument : class
         {
-            return new PostgreSqlInsertObject(this, tableName, argumentValue, options);
+            return new PostgreSqlInsertObject<TArgument>(this, tableName, argumentValue, options);
         }
 
         public MultipleTableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> Sql(string sqlStatement, object argumentValue)
@@ -81,17 +83,19 @@ namespace Tortuga.Chain.PostgreSql
             return new PostgreSqlSqlCall(this, sqlStatement, argumentValue);
         }
 
-        public SingleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> Update(PostgreSqlObjectName tableName, object argumentValue, UpdateOptions options = UpdateOptions.None)
+        public ObjectDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, TArgument> Update<TArgument>(PostgreSqlObjectName tableName, TArgument argumentValue, UpdateOptions options = UpdateOptions.None)
+        where TArgument : class
         {
-            return new PostgreSqlUpdateObject(this, tableName, argumentValue, options);
+            return new PostgreSqlUpdateObject<TArgument>(this, tableName, argumentValue, options);
         }
 
-        public SingleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> Upsert(PostgreSqlObjectName tableName, object argumentValue, UpsertOptions options = UpsertOptions.None)
+        public ObjectDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, TArgument> Upsert<TArgument>(PostgreSqlObjectName tableName, TArgument argumentValue, UpsertOptions options = UpsertOptions.None)
+        where TArgument : class
         {
-            return new PostgreSqlInsertOrUpdateObject(this, tableName, argumentValue, options);
+            return new PostgreSqlInsertOrUpdateObject<TArgument>(this, tableName, argumentValue, options);
         }
 
-        IDbCommandBuilder IClass1DataSource.Delete(string tableName, object argumentValue, DeleteOptions options)
+        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Delete<TArgument>(string tableName, TArgument argumentValue, DeleteOptions options)
         {
             return Delete(tableName, argumentValue, options);
         }
@@ -131,7 +135,7 @@ namespace Tortuga.Chain.PostgreSql
             return GetByKey(tableName, key);
         }
 
-        ISingleRowDbCommandBuilder IClass1DataSource.Insert(string tableName, object argumentValue, InsertOptions options)
+        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Insert<TArgument>(string tableName, TArgument argumentValue, InsertOptions options)
         {
             return Insert(tableName, argumentValue, options);
         }
@@ -141,12 +145,12 @@ namespace Tortuga.Chain.PostgreSql
             return Sql(sqlStatement, argumentValue);
         }
 
-        ISingleRowDbCommandBuilder IClass1DataSource.Update(string tableName, object argumentValue, UpdateOptions options)
+        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Update<TArgument>(string tableName, TArgument argumentValue, UpdateOptions options)
         {
             return Update(tableName, argumentValue, options);
         }
 
-        ISingleRowDbCommandBuilder IClass1DataSource.Upsert(string tableName, object argumentValue, UpsertOptions options)
+        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Upsert<TArgument>(string tableName, TArgument argumentValue, UpsertOptions options)
         {
             return Upsert(tableName, argumentValue, options);
         }

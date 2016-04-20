@@ -14,11 +14,9 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
     /// <summary>
     /// Base class that describes a SQLite database command.
     /// </summary>
-    internal abstract class SQLiteObjectCommand : SingleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter>
+    internal abstract class SQLiteObjectCommand<TArgument> : ObjectDbCommandBuilder<SQLiteCommand, SQLiteParameter, TArgument>
+        where TArgument : class
     {
-        private readonly string m_TableName;
-        private readonly object m_ArgumentValue;
-        private readonly TableOrViewMetadata<string, DbType> m_Metadata;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SQLiteObjectCommand" /> class
@@ -26,37 +24,22 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
         /// <param name="dataSource">The data source.</param>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="argumentValue">The argument value.</param>
-        protected SQLiteObjectCommand(SQLiteDataSourceBase dataSource, string tableName, object argumentValue)
-            : base(dataSource)
+        protected SQLiteObjectCommand(SQLiteDataSourceBase dataSource, string tableName, TArgument argumentValue)
+            : base(dataSource, argumentValue)
         {
-            m_TableName = tableName;
-            m_ArgumentValue = argumentValue;
-            m_Metadata = ((SQLiteDataSourceBase)DataSource).DatabaseMetadata.GetTableOrView(m_TableName);
+            TableName = tableName;
+            Metadata = ((SQLiteDataSourceBase)DataSource).DatabaseMetadata.GetTableOrView(tableName);
         }
 
         /// <summary>
         /// Gets the table name.
         /// </summary>
-        protected string TableName
-        {
-            get { return m_TableName; }
-        }
-
-        /// <summary>
-        /// Gets the argument value.
-        /// </summary>
-        protected object ArgumentValue
-        {
-            get { return m_ArgumentValue; }
-        }
+        protected string TableName { get; }
 
         /// <summary>
         /// Gets the table metadata.
         /// </summary>
-        public TableOrViewMetadata<string, DbType> Metadata
-        {
-            get { return m_Metadata; }
-        }
+        public TableOrViewMetadata<string, DbType> Metadata { get; }
 
     }
 }

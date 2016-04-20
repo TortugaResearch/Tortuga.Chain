@@ -241,7 +241,7 @@ namespace Tortuga.Chain
         /// <param name="decompositionPrefix">The decomposition prefix.</param>
         /// <remarks>This honors the Column and Decompose attributes.</remarks>
         [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
-        static private void PopulateComplexObject(Row source, object target, string decompositionPrefix)
+        static internal void PopulateComplexObject(Row source, object target, string decompositionPrefix)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source), $"{nameof(source)} is null.");

@@ -16,7 +16,8 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
     /// <summary>
     /// Command object that represents an update operation.
     /// </summary>
-    internal sealed class SQLiteUpdateObject : SQLiteObjectCommand
+    internal sealed class SQLiteUpdateObject<TArgument> : SQLiteObjectCommand<TArgument>
+        where TArgument : class
     {
         private readonly UpdateOptions m_Options;
 
@@ -27,7 +28,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
         /// <param name="tableName">Name of the table.</param>
         /// <param name="argumentValue">The argument value.</param>
         /// <param name="options">The options.</param>
-        public SQLiteUpdateObject(SQLiteDataSourceBase dataSource, string tableName, object argumentValue, UpdateOptions options)
+        public SQLiteUpdateObject(SQLiteDataSourceBase dataSource, string tableName, TArgument argumentValue, UpdateOptions options)
             : base(dataSource, tableName, argumentValue)
         {
             m_Options = options;

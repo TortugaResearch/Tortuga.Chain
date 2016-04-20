@@ -17,7 +17,8 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
     /// <summary>
     /// Class SQLiteInsertOrUpdateObject
     /// </summary>
-    internal sealed class SQLiteInsertOrUpdateObject : SQLiteObjectCommand
+    internal sealed class SQLiteInsertOrUpdateObject<TArgument> : SQLiteObjectCommand<TArgument>
+        where TArgument : class
     {
         private readonly UpsertOptions m_Options;
 
@@ -28,7 +29,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
         /// <param name="tableName"></param>
         /// <param name="argumentValue"></param>
         /// <param name="options"></param>
-        public SQLiteInsertOrUpdateObject(SQLiteDataSourceBase dataSource, string tableName, object argumentValue, UpsertOptions options)
+        public SQLiteInsertOrUpdateObject(SQLiteDataSourceBase dataSource, string tableName, TArgument argumentValue, UpsertOptions options)
             : base(dataSource, tableName, argumentValue)
         {
             m_Options = options;

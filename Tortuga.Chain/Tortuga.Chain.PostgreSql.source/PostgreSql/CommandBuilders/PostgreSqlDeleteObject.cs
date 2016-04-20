@@ -9,7 +9,8 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
     /// <summary>
     /// Command object that represents a delete operation.
     /// </summary>
-    internal sealed class PostgreSqlDeleteObject : PostgreSqlObjectCommand
+    internal sealed class PostgreSqlDeleteObject<TArgument> : PostgreSqlObjectCommand<TArgument>
+        where TArgument : class
     {
         private readonly DeleteOptions m_Options;
 
@@ -20,7 +21,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         /// <param name="table">The table.</param>
         /// <param name="argumentValue">The argument value.</param>
         /// <param name="options">The options.</param>
-        public PostgreSqlDeleteObject(PostgreSqlDataSourceBase dataSource, PostgreSqlObjectName table, object argumentValue, DeleteOptions options)
+        public PostgreSqlDeleteObject(PostgreSqlDataSourceBase dataSource, PostgreSqlObjectName table, TArgument argumentValue, DeleteOptions options)
             : base(dataSource, table, argumentValue)
         {
             m_Options = options;
