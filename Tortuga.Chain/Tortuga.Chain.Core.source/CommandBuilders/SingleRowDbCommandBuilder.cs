@@ -143,11 +143,12 @@ namespace Tortuga.Chain.CommandBuilders
         /// <typeparam name="TObject">The type of the object returned.</typeparam>
         /// <param name="rowOptions">The row options.</param>
         /// <returns></returns>
-        public ILink<TObject> ToObject<TObject>(RowOptions rowOptions = RowOptions.None)
-            where TObject : class, new()
+        public IConstructibleMaterializer<TObject> ToObject<TObject>(RowOptions rowOptions = RowOptions.None)
+            where TObject : class
         {
             return new ObjectMaterializer<TCommand, TParameter, TObject>(this, rowOptions);
         }
+
 
         /// <summary>
         /// Materializes the result as a dynamic object

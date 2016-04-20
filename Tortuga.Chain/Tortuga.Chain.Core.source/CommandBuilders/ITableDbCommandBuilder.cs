@@ -6,6 +6,7 @@ namespace Tortuga.Chain.CommandBuilders
     /// This is a specialization of IMultipleRowDbCommandBuilder that includes support for sorting and limiting
     /// </summary>
     /// <seealso cref="IMultipleRowDbCommandBuilder" />
+    /// <remarks>Warning: This interface is meant to simulate multiple inheritance and work-around some issues with exposing generic types. Do not implement it in client code, as new method will be added over time.</remarks>
     public interface ITableDbCommandBuilder : IMultipleRowDbCommandBuilder
     {
         /// <summary>
@@ -42,6 +43,28 @@ namespace Tortuga.Chain.CommandBuilders
         /// <remarks>Warning: row skipping using this method can be significantly slower than using a WHERE clause that uses an indexed column.</remarks>
         ITableDbCommandBuilder WithLimits(int skip, int take);
 
+
+        /// <summary>
+        /// Adds (or replaces) the filter on this command builder.
+        /// </summary>
+        /// <param name="filterValue">The filter value.</param>
+        /// <returns></returns>
+        ITableDbCommandBuilder WithFilter(object filterValue);
+
+        /// <summary>
+        /// Adds (or replaces) the filter on this command builder.
+        /// </summary>
+        /// <param name="whereClause">The where clause.</param>
+        /// <returns></returns>
+        ITableDbCommandBuilder WithFilter(string whereClause);
+
+        /// <summary>
+        /// Adds (or replaces) the filter on this command builder.
+        /// </summary>
+        /// <param name="whereClause">The where clause.</param>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <returns></returns>
+        ITableDbCommandBuilder WithFilter(string whereClause, object argumentValue);
 
     }
 }

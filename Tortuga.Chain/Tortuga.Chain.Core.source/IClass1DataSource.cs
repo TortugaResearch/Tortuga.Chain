@@ -13,6 +13,7 @@ namespace Tortuga.Chain
     /// <summary>
     /// A class 1 data source supports basic CRUD operations. This is the bare minimum needed to implement the repostiory pattern.
     /// </summary>
+    /// <remarks>Warning: This interface is meant to simulate multiple inheritance and work-around some issues with exposing generic types. Do not implement it in client code, as new method will be added over time.</remarks>
     public interface IClass1DataSource : IClass0DataSource
     {
 

@@ -128,5 +128,43 @@ namespace Tortuga.Chain.CommandBuilders
         {
             return OnWithLimits(skip, take, LimitOptions.Rows, null);
         }
+
+
+        /// <summary>
+        /// Adds (or replaces) the filter on this command builder.
+        /// </summary>
+        /// <param name="filterValue">The filter value.</param>
+        /// <returns></returns>
+        public abstract TableDbCommandBuilder<TCommand, TParameter, TLimit> WithFilter(object filterValue);
+
+        /// <summary>
+        /// Adds (or replaces) the filter on this command builder.
+        /// </summary>
+        /// <param name="whereClause">The where clause.</param>
+        /// <returns></returns>
+        public abstract TableDbCommandBuilder<TCommand, TParameter, TLimit> WithFilter(string whereClause);
+
+        /// <summary>
+        /// Adds (or replaces) the filter on this command builder.
+        /// </summary>
+        /// <param name="whereClause">The where clause.</param>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <returns></returns>
+        public abstract TableDbCommandBuilder<TCommand, TParameter, TLimit> WithFilter(string whereClause, object argumentValue);
+
+        ITableDbCommandBuilder ITableDbCommandBuilder.WithFilter(object filterValue)
+        {
+            return WithFilter(filterValue);
+        }
+
+        ITableDbCommandBuilder ITableDbCommandBuilder.WithFilter(string whereClause)
+        {
+            return WithFilter(whereClause);
+        }
+
+        ITableDbCommandBuilder ITableDbCommandBuilder.WithFilter(string whereClause, object argumentValue)
+        {
+            return WithFilter(whereClause, argumentValue);
+        }
     }
 }

@@ -25,6 +25,38 @@ namespace Tortuga.Chain.CommandBuilders
         private readonly string m_Name;
         private readonly bool m_StrictMode;
 
+        internal SqlBuilder(string name, IReadOnlyList<ColumnMetadata<TDbType>> columns, IReadOnlyList<ParameterMetadata<TDbType>> parameters, bool strictMode)
+        {
+            m_Name = name;
+            m_StrictMode = strictMode;
+
+            m_Entries = new SqlBuilderEntry<TDbType>[columns.Count + parameters.Count];
+
+            for (int i = 0; i < columns.Count; i++)
+            {
+                var column = columns[i];
+                m_Entries[i] = new SqlBuilderEntry<TDbType>()
+                {
+                    Details = column,
+                    IsKey = column.IsPrimaryKey,
+                    UseForInsert = !column.IsComputed && !column.IsIdentity,
+                    UseForUpdate = !column.IsComputed && !column.IsIdentity
+                };
+            }
+
+            var offset = columns.Count;
+            for (int i = 0; i < parameters.Count; i++)
+            {
+                var column = parameters[i];
+                m_Entries[offset + i] = new SqlBuilderEntry<TDbType>()
+                {
+                    Details = column,
+                    IsFormalParameter = true
+                };
+            }
+
+        }
+
         internal SqlBuilder(string name, IReadOnlyList<ColumnMetadata<TDbType>> columns, bool strictMode)
         {
             m_Name = name;
@@ -57,7 +89,7 @@ namespace Tortuga.Chain.CommandBuilders
                 m_Entries[i] = new SqlBuilderEntry<TDbType>()
                 {
                     Details = column,
-                    IsFormalParameter = true,
+                    IsFormalParameter = true
                 };
             }
         }
@@ -119,7 +151,7 @@ namespace Tortuga.Chain.CommandBuilders
                         m_Entries[i].ParameterValue = item.Value ?? DBNull.Value;
                         found = true;
                         keyFound = true;
-                        break;
+                        //break; In the case of TVFs, the same column may appear twice
                     }
                 }
                 if (m_StrictMode && !keyFound)
@@ -130,6 +162,7 @@ namespace Tortuga.Chain.CommandBuilders
                 throw new MappingException($"None of the keys could be matched to columns in {m_Name}.");
         }
 
+        
         /// <summary>
         /// Builds an order by clause.
         /// </summary>
@@ -167,6 +200,22 @@ namespace Tortuga.Chain.CommandBuilders
             sql.Append(string.Join(", ", sortExpressions.Select(s => s.ColumnName + (s.Direction == SortDirection.Descending ? " DESC " : null))));
             sql.Append(footer);
 
+        }
+
+        /// <summary>
+        /// Builds FROM clause for a function.
+        /// </summary>
+        /// <param name="sql">The SQL.</param>
+        /// <param name="header">The header.</param>
+        /// <param name="footer">The footer.</param>
+        public void BuildFromFunctionClause(StringBuilder sql, string header, string footer)
+        {
+            if (sql == null)
+                throw new ArgumentNullException(nameof(sql), $"{nameof(sql)} is null.");
+
+            sql.Append(header);
+            sql.Append(string.Join(", ", GetFormalParameters().Select(s => s.SqlVariableName)));
+            sql.Append(footer);
         }
 
 
@@ -336,7 +385,7 @@ namespace Tortuga.Chain.CommandBuilders
                             if (m_Entries[i].IsFormalParameter)
                                 m_Entries[i].UseParameter = true;
 
-                            break;
+                            //break; In the case of TVFs, the same column may appear twice
                         }
                     }
                     if (m_StrictMode && !propertyFound)
@@ -402,7 +451,8 @@ namespace Tortuga.Chain.CommandBuilders
             if (desiredColumns == Materializer.AllColumns)
             {
                 for (var i = 0; i < m_Entries.Length; i++)
-                    m_Entries[i].UseForRead = true;
+                    if (m_Entries[i].Details.SqlName != null)
+                        m_Entries[i].UseForRead = true;
                 return;
             }
 
@@ -816,6 +866,19 @@ namespace Tortuga.Chain.CommandBuilders
                     yield return new ColumnNamePair(m_Entries[i].Details.QuotedSqlName, m_Entries[i].Details.SqlVariableName);
                 }
             }
+        }
+
+        /// <summary>
+        /// Gets every column with a ParameterValue.
+        /// </summary>
+        /// <returns>Each pair has the column's QuotedSqlName and SqlVariableName</returns>
+        /// <remarks>This will mark the returned columns as participating in the parameter generation.</remarks>
+        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
+        public IEnumerable<ColumnNamePair> GetFormalParameters()
+        {
+            for (var i = 0; i < m_Entries.Length; i++)
+                if (m_Entries[i].IsFormalParameter && m_Entries[i].ParameterValue != null)
+                    yield return new ColumnNamePair(m_Entries[i].Details.QuotedSqlName, m_Entries[i].Details.SqlVariableName);
         }
 
         /// <summary>

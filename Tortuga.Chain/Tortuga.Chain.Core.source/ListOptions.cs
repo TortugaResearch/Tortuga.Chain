@@ -25,12 +25,12 @@ namespace Tortuga.Chain
         /// </summary>
         IgnoreExtraColumns = 2,
 
-
         /// <summary>
         /// All columns will be incorporated into the result set. Values are read left to right, then top to bottom.
         /// </summary>
         FlattenExtraColumns = 2 + 4,
 
-
     }
+
+
 }

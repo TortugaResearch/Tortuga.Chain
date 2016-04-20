@@ -71,8 +71,8 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Tortuga.Anchor, Version=0.6.5944.41376, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
-      <HintPath>..\packages\Tortuga.Anchor.0.6.5944.41376\lib\net46\Tortuga.Anchor.dll</HintPath>
+    <Reference Include="Tortuga.Anchor, Version=0.7.5952.32542, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tortuga.Anchor.0.7.5952.32542\lib\net46\Tortuga.Anchor.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
@@ -98,7 +98,10 @@
     <Compile Include="AuditRules\ValidateWithNotifyDataErrorInfo.cs" />
     <Compile Include="AuditRules\ValidateWithDataErrorInfo`1.cs" />
     <Compile Include="AuditRules\ValidateWithNotifyDataErrorInfo`1.cs" />
+    <Compile Include="CollectionOptions.cs" />
     <Compile Include="CommandBuilders\DbCommandBuilder.cs" />
+    <Compile Include="IConstructibleMaterializer`1.cs" />
+    <Compile Include="DictionaryOptions.cs" />
     <Compile Include="CommandBuilders\GenericDbSqlCall.cs" />
     <Compile Include="CommandBuilders\IDbCommandBuilder.cs" />
     <Compile Include="CommandBuilders\IMultipleRowDbCommandBuilder.cs" />
@@ -131,62 +134,6 @@
     <Compile Include="ILink.cs" />
     <Compile Include="Appenders\InvalidateCacheAppender.cs" />
     <Compile Include="Appenders\InvalidateCacheAppender`1.cs" />
-    <Compile Include="Materializers\DynamicObjectMaterializer`2.cs" />
-    <Compile Include="Materializers\DynamicCollectionMaterializer`2.cs" />
-    <Compile Include="Materializers\Materializer.cs" />
-    <Compile Include="Materializers\DataRowMaterializer`2.cs" />
-    <Compile Include="Materializers\RowsAffectedMaterializer`2.cs" />
-    <Compile Include="Materializers\Scalar\ByteOrNullMaterializer`2.cs" />
-    <Compile Include="Materializers\Scalar\ByteMaterializer`2.cs" />
-    <Compile Include="Materializers\SingleColumn\ByteArrayListMaterializer`2.cs" />
-    <Compile Include="Materializers\SingleColumn\ByteListMaterializer`2.cs" />
-    <Compile Include="Materializers\SingleColumn\BooleanListMaterializer`2.cs" />
-    <Compile Include="Materializers\Scalar\BooleanOrNullMaterializer`2.cs" />
-    <Compile Include="Materializers\Scalar\BooleanMaterializer`2.cs" />
-    <Compile Include="Materializers\Scalar\ByteArrayMaterializer`2.cs" />
-    <Compile Include="Materializers\DataSetMaterializer`2.cs" />
-    <Compile Include="Materializers\DataTableMaterializer`2.cs" />
-    <Compile Include="Materializers\SingleColumn\DateTimeListMaterializer`2.cs" />
-    <Compile Include="Materializers\SingleColumn\DateTimeOffsetListMaterializer`2.cs" />
-    <Compile Include="Materializers\Scalar\DateTimeOffsetOrNullMaterializer`2.cs" />
-    <Compile Include="Materializers\Scalar\DateTimeOffsetMaterializer`2.cs" />
-    <Compile Include="Materializers\Scalar\DateTimeOrNullMaterializer`2.cs" />
-    <Compile Include="Materializers\Scalar\DateTimeMaterializer`2.cs" />
-    <Compile Include="Materializers\SingleColumn\DecimalListMaterializer`2.cs" />
-    <Compile Include="Materializers\Scalar\DecimalOrNullMaterializer`2.cs" />
-    <Compile Include="Materializers\Scalar\DecimalMaterializer`2.cs" />
-    <Compile Include="Materializers\SingleColumn\DoubleListMaterializer`2.cs" />
-    <Compile Include="Materializers\Scalar\DoubleOrNullMaterializer`2.cs" />
-    <Compile Include="Materializers\Scalar\DoubleMaterializer`2.cs" />
-    <Compile Include="Materializers\Materializer`2.cs" />
-    <Compile Include="Materializers\Materializer`3.cs" />
-    <Compile Include="Materializers\SingleColumn\GuidListMaterializer`2.cs" />
-    <Compile Include="Materializers\Scalar\GuidOrNullMaterializer`2.cs" />
-    <Compile Include="Materializers\Scalar\GuidMaterializer`2.cs" />
-    <Compile Include="Materializers\SingleColumn\Int16ListMaterializer`2.cs" />
-    <Compile Include="Materializers\Scalar\Int16OrNullMaterializer`2.cs" />
-    <Compile Include="Materializers\Scalar\Int16Materializer`2.cs" />
-    <Compile Include="Materializers\SingleColumn\Int32ListMaterializer`2.cs" />
-    <Compile Include="Materializers\Scalar\Int32OrNullMaterializer`2.cs" />
-    <Compile Include="Materializers\Scalar\Int32Materializer`2.cs" />
-    <Compile Include="Materializers\SingleColumn\Int64ListMaterializer`2.cs" />
-    <Compile Include="Materializers\Scalar\Int64OrNullMaterializer`2.cs" />
-    <Compile Include="Materializers\Scalar\Int64Materializer`2.cs" />
-    <Compile Include="Materializers\CollectionResult`4.cs" />
-    <Compile Include="Materializers\ObjectMaterializer`3.cs" />
-    <Compile Include="Materializers\NonQueryMaterializer`2.cs" />
-    <Compile Include="Materializers\RowMaterializer`2.cs" />
-    <Compile Include="Materializers\SingleColumn\SingleColumnFormatterBase.cs" />
-    <Compile Include="Materializers\SingleColumn\SingleListMaterializer`2.cs" />
-    <Compile Include="Materializers\Scalar\SingleOrNullMaterializer`2.cs" />
-    <Compile Include="Materializers\Scalar\SingleMaterializer`2.cs" />
-    <Compile Include="Materializers\SingleColumn\StringListMaterializer`2.cs" />
-    <Compile Include="Materializers\Scalar\StringMaterializer`2.cs" />
-    <Compile Include="Materializers\TableMaterializer`2.cs" />
-    <Compile Include="Materializers\TableSetMaterializer`2.cs" />
-    <Compile Include="Materializers\SingleColumn\TimeSpanListMaterializer`2.cs" />
-    <Compile Include="Materializers\Scalar\TimeSpanOrNullMaterializer`2.cs" />
-    <Compile Include="Materializers\Scalar\TimeSpanMaterializer`2.cs" />
     <Compile Include="AuditRules\UserDataRule.cs" />
     <Compile Include="AuditRules\ValueRule.cs" />
     <Compile Include="AuditRules\AuditRule.cs" />
@@ -196,6 +143,71 @@
     <Compile Include="AuditRules\SoftDeleteRule.cs" />
     <Compile Include="AuditRules\DateTimeOffsetRule.cs" />
     <Compile Include="AuditRules\DateTimeRule.cs" />
+    <Compile Include="Materializers\MultipleRow\ImmutableListMaterializer`3.cs" />
+    <Compile Include="Materializers\MultipleRow\ImmutableArrayMaterializer`3.cs" />
+    <Compile Include="Materializers\MultipleRow\CollectionMaterializer`4.cs" />
+    <Compile Include="Materializers\MultipleTable\CollectionSetMaterializer`4.cs" />
+    <Compile Include="Materializers\MultipleTable\CollectionSetMaterializer`5.cs" />
+    <Compile Include="Materializers\MultipleTable\CollectionSetMaterializer`6.cs" />
+    <Compile Include="Materializers\MultipleTable\CollectionSetMaterializer`7.cs" />
+    <Compile Include="Materializers\ConstructibleMaterializer`4.cs" />
+    <Compile Include="Materializers\SingleRow\DataRowMaterializer`2.cs" />
+    <Compile Include="Materializers\MultipleTable\DataSetMaterializer`2.cs" />
+    <Compile Include="Materializers\MultipleRow\DataTableMaterializer`2.cs" />
+    <Compile Include="Materializers\MultipleRow\DictionaryMaterializer`5.cs" />
+    <Compile Include="Materializers\MultipleRow\DynamicCollectionMaterializer`2.cs" />
+    <Compile Include="Materializers\SingleRow\DynamicObjectMaterializer`2.cs" />
+    <Compile Include="Materializers\MultipleRow\ImmutableDictionaryMaterializer`4.cs" />
+    <Compile Include="Materializers\Materializer.cs" />
+    <Compile Include="Materializers\Materializer`2.cs" />
+    <Compile Include="Materializers\Materializer`3.cs" />
+    <Compile Include="Materializers\NonQueryMaterializer`2.cs" />
+    <Compile Include="Materializers\SingleRow\ObjectMaterializer`3.cs" />
+    <Compile Include="Materializers\SingleRow\RowMaterializer`2.cs" />
+    <Compile Include="Materializers\RowsAffectedMaterializer`2.cs" />
+    <Compile Include="Materializers\Scalar\BooleanMaterializer`2.cs" />
+    <Compile Include="Materializers\Scalar\BooleanOrNullMaterializer`2.cs" />
+    <Compile Include="Materializers\Scalar\ByteArrayMaterializer`2.cs" />
+    <Compile Include="Materializers\Scalar\ByteMaterializer`2.cs" />
+    <Compile Include="Materializers\Scalar\ByteOrNullMaterializer`2.cs" />
+    <Compile Include="Materializers\Scalar\DateTimeMaterializer`2.cs" />
+    <Compile Include="Materializers\Scalar\DateTimeOffsetMaterializer`2.cs" />
+    <Compile Include="Materializers\Scalar\DateTimeOffsetOrNullMaterializer`2.cs" />
+    <Compile Include="Materializers\Scalar\DateTimeOrNullMaterializer`2.cs" />
+    <Compile Include="Materializers\Scalar\DecimalMaterializer`2.cs" />
+    <Compile Include="Materializers\Scalar\DecimalOrNullMaterializer`2.cs" />
+    <Compile Include="Materializers\Scalar\DoubleMaterializer`2.cs" />
+    <Compile Include="Materializers\Scalar\DoubleOrNullMaterializer`2.cs" />
+    <Compile Include="Materializers\Scalar\GuidMaterializer`2.cs" />
+    <Compile Include="Materializers\Scalar\GuidOrNullMaterializer`2.cs" />
+    <Compile Include="Materializers\Scalar\Int16Materializer`2.cs" />
+    <Compile Include="Materializers\Scalar\Int16OrNullMaterializer`2.cs" />
+    <Compile Include="Materializers\Scalar\Int32Materializer`2.cs" />
+    <Compile Include="Materializers\Scalar\Int32OrNullMaterializer`2.cs" />
+    <Compile Include="Materializers\Scalar\Int64Materializer`2.cs" />
+    <Compile Include="Materializers\Scalar\Int64OrNullMaterializer`2.cs" />
+    <Compile Include="Materializers\Scalar\SingleMaterializer`2.cs" />
+    <Compile Include="Materializers\Scalar\SingleOrNullMaterializer`2.cs" />
+    <Compile Include="Materializers\Scalar\StringMaterializer`2.cs" />
+    <Compile Include="Materializers\Scalar\TimeSpanMaterializer`2.cs" />
+    <Compile Include="Materializers\Scalar\TimeSpanOrNullMaterializer`2.cs" />
+    <Compile Include="Materializers\SingleColumn\BooleanListMaterializer`2.cs" />
+    <Compile Include="Materializers\SingleColumn\ByteArrayListMaterializer`2.cs" />
+    <Compile Include="Materializers\SingleColumn\ByteListMaterializer`2.cs" />
+    <Compile Include="Materializers\SingleColumn\DateTimeListMaterializer`2.cs" />
+    <Compile Include="Materializers\SingleColumn\DateTimeOffsetListMaterializer`2.cs" />
+    <Compile Include="Materializers\SingleColumn\DecimalListMaterializer`2.cs" />
+    <Compile Include="Materializers\SingleColumn\DoubleListMaterializer`2.cs" />
+    <Compile Include="Materializers\SingleColumn\GuidListMaterializer`2.cs" />
+    <Compile Include="Materializers\SingleColumn\Int16ListMaterializer`2.cs" />
+    <Compile Include="Materializers\SingleColumn\Int32ListMaterializer`2.cs" />
+    <Compile Include="Materializers\SingleColumn\Int64ListMaterializer`2.cs" />
+    <Compile Include="Materializers\SingleColumn\SingleColumnFormatterBase.cs" />
+    <Compile Include="Materializers\SingleColumn\SingleListMaterializer`2.cs" />
+    <Compile Include="Materializers\SingleColumn\StringListMaterializer`2.cs" />
+    <Compile Include="Materializers\SingleColumn\TimeSpanListMaterializer`2.cs" />
+    <Compile Include="Materializers\MultipleRow\TableMaterializer`2.cs" />
+    <Compile Include="Materializers\MultipleTable\TableSetMaterializer`2.cs" />
     <Compile Include="SortDirection.cs" />
     <Compile Include="SortExpression.cs" />
     <Compile Include="UpsertOptions.cs" />
@@ -252,6 +264,7 @@
       <Link>CustomDictionary.xml</Link>
     </CodeAnalysisDictionary>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

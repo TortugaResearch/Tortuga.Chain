@@ -16,10 +16,10 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
     /// </summary>
     public class PostgreSqlTableOrView : TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption>
     {
-        private readonly object m_FilterValue;
         private readonly TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType> m_Metadata;
-        private readonly string m_WhereClause;
-        private readonly object m_ArgumentValue;
+        private object m_FilterValue;
+        private string m_WhereClause;
+        private object m_ArgumentValue;
 
         private IEnumerable<SortExpression> m_SortExpressions = Enumerable.Empty<SortExpression>();
         private PostgreSqlLimitOption m_LimitOptions;
@@ -195,6 +195,29 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
             return this;
         }
 
+        public override TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption> WithFilter(object filterValue)
+        {
+            m_FilterValue = filterValue;
+            m_WhereClause = null;
+            m_ArgumentValue = null;
+            return this;
+        }
+
+        public override TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption> WithFilter(string whereClause)
+        {
+            m_FilterValue = null;
+            m_WhereClause = whereClause;
+            m_ArgumentValue = null;
+            return this;
+        }
+
+        public override TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption> WithFilter(string whereClause, object argumentValue)
+        {
+            m_FilterValue = null;
+            m_WhereClause = whereClause;
+            m_ArgumentValue = argumentValue;
+            return this;
+        }
 
         public new PostgreSqlDataSourceBase DataSource
         {
@@ -202,3 +225,4 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         }
     }
 }
+

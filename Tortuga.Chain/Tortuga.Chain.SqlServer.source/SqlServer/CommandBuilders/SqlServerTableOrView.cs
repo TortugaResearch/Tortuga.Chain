@@ -19,10 +19,10 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
     /// </summary>
     internal sealed class SqlServerTableOrView : TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption>, ISupportsChangeListener
     {
-        private readonly object m_FilterValue;
         private readonly TableOrViewMetadata<SqlServerObjectName, SqlDbType> m_Metadata;
-        private readonly string m_WhereClause;
-        private readonly object m_ArgumentValue;
+        private object m_FilterValue;
+        private string m_WhereClause;
+        private object m_ArgumentValue;
         private IEnumerable<SortExpression> m_SortExpressions = Enumerable.Empty<SortExpression>();
         private SqlServerLimitOption m_LimitOptions;
         private int? m_Skip;
@@ -83,13 +83,16 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             if (m_Skip < 0)
                 throw new InvalidOperationException($"Cannot skip {m_Skip} rows");
 
+            if (m_Skip > 0 && !m_SortExpressions.Any())
+                throw new InvalidOperationException($"Cannot perform a Skip operation with out a sort expression.");
+
             if (m_Skip > 0 && m_LimitOptions != SqlServerLimitOption.Rows)
                 throw new InvalidOperationException($"Cannot perform a Skip operation with limit option {m_LimitOptions}");
 
             if (m_Take <= 0)
                 throw new InvalidOperationException($"Cannot take {m_Take} rows");
 
-            if ((m_LimitOptions == SqlServerLimitOption.TableSampleSystemRows|| m_LimitOptions == SqlServerLimitOption.TableSampleSystemPercentage) && m_SortExpressions.Any())
+            if ((m_LimitOptions == SqlServerLimitOption.TableSampleSystemRows || m_LimitOptions == SqlServerLimitOption.TableSampleSystemPercentage) && m_SortExpressions.Any())
                 throw new InvalidOperationException($"Cannot perform random sampling when sorting.");
 
             if ((m_LimitOptions == SqlServerLimitOption.RowsWithTies || m_LimitOptions == SqlServerLimitOption.PercentageWithTies) && !m_SortExpressions.Any())
@@ -102,6 +105,10 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             string topClause = null;
             switch (m_LimitOptions)
             {
+                case SqlServerLimitOption.Rows:
+                    if (!m_SortExpressions.Any())
+                        topClause = $"TOP (@fetch_row_count_expression) ";
+                    break;
                 case SqlServerLimitOption.Percentage:
                     topClause = $"TOP (@fetch_row_count_expression) PERCENT ";
                     break;
@@ -155,15 +162,21 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             {
                 case SqlServerLimitOption.Rows:
 
-                    sql.Append(" OFFSET @offset_row_count_expression ROWS ");
-                    parameters.Add(new SqlParameter("@offset_row_count_expression", m_Skip ?? 0));
-
-                    if (m_Take.HasValue)
+                    if (m_SortExpressions.Any())
                     {
-                        sql.Append(" FETCH NEXT @fetch_row_count_expression ROWS ONLY");
+                        sql.Append(" OFFSET @offset_row_count_expression ROWS ");
+                        parameters.Add(new SqlParameter("@offset_row_count_expression", m_Skip ?? 0));
+
+                        if (m_Take.HasValue)
+                        {
+                            sql.Append(" FETCH NEXT @fetch_row_count_expression ROWS ONLY");
+                            parameters.Add(new SqlParameter("@fetch_row_count_expression", m_Take));
+                        }
+                    }
+                    else
+                    {
                         parameters.Add(new SqlParameter("@fetch_row_count_expression", m_Take));
                     }
-
                     break;
 
                 case SqlServerLimitOption.Percentage:
@@ -210,6 +223,14 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             return this;
         }
 
+        /// <summary>
+        /// Adds limits to the command builder.
+        /// </summary>
+        /// <param name="skip">The number of rows to skip.</param>
+        /// <param name="take">Number of rows to take.</param>
+        /// <param name="limitOptions">The limit options.</param>
+        /// <param name="seed">The seed for repeatable reads. Only applies to random sampling</param>
+        /// <returns></returns>
         protected override TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption> OnWithLimits(int? skip, int? take, SqlServerLimitOption limitOptions, int? seed)
         {
             m_Seed = seed;
@@ -219,12 +240,60 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             return this;
         }
 
+        /// <summary>
+        /// Adds limits to the command builder.
+        /// </summary>
+        /// <param name="skip">The number of rows to skip.</param>
+        /// <param name="take">Number of rows to take.</param>
+        /// <param name="limitOptions">The limit options.</param>
+        /// <param name="seed">The seed for repeatable reads. Only applies to random sampling</param>
+        /// <returns></returns>
         protected override TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption> OnWithLimits(int? skip, int? take, LimitOptions limitOptions, int? seed)
         {
             m_Seed = seed;
             m_Skip = skip;
             m_Take = take;
             m_LimitOptions = (SqlServerLimitOption)limitOptions;
+            return this;
+        }
+
+        /// <summary>
+        /// Adds (or replaces) the filter on this command builder.
+        /// </summary>
+        /// <param name="filterValue">The filter value.</param>
+        /// <returns></returns>
+        public override TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption> WithFilter(object filterValue)
+        {
+            m_FilterValue = filterValue;
+            m_WhereClause = null;
+            m_ArgumentValue = null;
+            return this;
+        }
+
+        /// <summary>
+        /// Adds (or replaces) the filter on this command builder.
+        /// </summary>
+        /// <param name="whereClause">The where clause.</param>
+        /// <returns></returns>
+        public override TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption> WithFilter(string whereClause)
+        {
+            m_FilterValue = null;
+            m_WhereClause = whereClause;
+            m_ArgumentValue = null;
+            return this;
+        }
+
+        /// <summary>
+        /// Adds (or replaces) the filter on this command builder.
+        /// </summary>
+        /// <param name="whereClause">The where clause.</param>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <returns></returns>
+        public override TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption> WithFilter(string whereClause, object argumentValue)
+        {
+            m_FilterValue = null;
+            m_WhereClause = whereClause;
+            m_ArgumentValue = argumentValue;
             return this;
         }
 

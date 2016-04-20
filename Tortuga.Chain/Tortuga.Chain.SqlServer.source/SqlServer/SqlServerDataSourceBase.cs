@@ -110,6 +110,27 @@ namespace Tortuga.Chain.SqlServer
         }
 
         /// <summary>
+        /// This is used to query a table valued function.
+        /// </summary>
+        /// <param name="tableFunctionName">Name of the table function.</param>
+        /// <returns></returns>
+        public TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption> TableFunction(SqlServerObjectName tableFunctionName)
+        {
+            return new SqlServerTableFunction(this, tableFunctionName, null);
+        }
+
+        /// <summary>
+        /// This is used to query a table valued function.
+        /// </summary>
+        /// <param name="tableFunctionName">Name of the table function.</param>
+        /// <param name="functionArgumentValue">The function argument.</param>
+        /// <returns></returns>
+        public TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption> TableFunction(SqlServerObjectName tableFunctionName, object functionArgumentValue)
+        {
+            return new SqlServerTableFunction(this, tableFunctionName, functionArgumentValue);
+        }
+
+        /// <summary>
         /// Gets a record by its primary key.
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -264,25 +285,6 @@ namespace Tortuga.Chain.SqlServer
             return Procedure(procedureName, argumentValue);
         }
 
-        IMultipleRowDbCommandBuilder IClass2DataSource.TableFunction(string functionName, object functionArgumentValue)
-        {
-            throw new NotImplementedException("This feature is planned for a future version");
-        }
-
-        IMultipleRowDbCommandBuilder IClass2DataSource.TableFunction(string functionName, object functionArgumentValue, object filterValue)
-        {
-            throw new NotImplementedException("This feature is planned for a future version");
-        }
-
-        IMultipleRowDbCommandBuilder IClass2DataSource.TableFunction(string functionName, object functionArgumentValue, string whereClause)
-        {
-            throw new NotImplementedException("This feature is planned for a future version");
-        }
-
-        IMultipleRowDbCommandBuilder IClass2DataSource.TableFunction(string functionName, object functionArgumentValue, string whereClause, object whereClauseArgumentValue)
-        {
-            throw new NotImplementedException("This feature is planned for a future version");
-        }
 
         /// <summary>
         /// Inserts an object into the specified table.
@@ -368,6 +370,16 @@ namespace Tortuga.Chain.SqlServer
         public SingleRowDbCommandBuilder<SqlCommand, SqlParameter> Upsert(SqlServerObjectName tableName, object argumentValue, UpsertOptions options = UpsertOptions.None)
         {
             return new SqlServerInsertOrUpdateObject(this, tableName, argumentValue, options);
+        }
+
+        ITableDbCommandBuilder IClass2DataSource.TableFunction(string functionName)
+        {
+            return TableFunction(functionName);
+        }
+
+        ITableDbCommandBuilder IClass2DataSource.TableFunction(string functionName, object functionArgumentValue)
+        {
+            return TableFunction(functionName, functionArgumentValue);
         }
     }
 }

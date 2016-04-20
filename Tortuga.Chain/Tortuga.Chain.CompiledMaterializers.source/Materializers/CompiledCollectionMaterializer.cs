@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
@@ -16,11 +17,16 @@ namespace Tortuga.Chain.Materializers
     {
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="CompiledCollectionMaterializer{TCommand, TParameter, TObject, TCollection}"/> class.
         /// </summary>
         /// <param name="commandBuilder">The associated operation.</param>
-        public CompiledCollectionMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder)
+        /// <param name="collectionOptions">The collection options.</param>
+        /// <exception cref="NotSupportedException">Compiled materializers do not support non-default constructors</exception>
+        public CompiledCollectionMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, CollectionOptions collectionOptions)
             : base(commandBuilder)
         {
+            if (collectionOptions.HasFlag(CollectionOptions.InferConstructor))
+                throw new NotSupportedException("Compiled materializers do not support non-default constructors");
         }
 
         public override TCollection Execute(object state = null)

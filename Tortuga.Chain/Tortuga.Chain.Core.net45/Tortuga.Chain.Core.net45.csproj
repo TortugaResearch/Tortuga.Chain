@@ -69,8 +69,8 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Tortuga.Anchor, Version=0.6.5944.41370, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
-      <HintPath>..\packages\Tortuga.Anchor.0.6.5944.41376\lib\net45\Tortuga.Anchor.dll</HintPath>
+    <Reference Include="Tortuga.Anchor, Version=0.7.5952.32532, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tortuga.Anchor.0.7.5952.32542\lib\net45\Tortuga.Anchor.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
@@ -165,6 +165,9 @@
     <Compile Include="..\Tortuga.Chain.Core.source\AuditRules\ValueRule.cs">
       <Link>AuditRules\ValueRule.cs</Link>
     </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\CollectionOptions.cs">
+      <Link>CollectionOptions.cs</Link>
+    </Compile>
     <Compile Include="..\Tortuga.Chain.Core.source\CommandBuilders\DbCommandBuilder.cs">
       <Link>CommandBuilders\DbCommandBuilder.cs</Link>
     </Compile>
@@ -240,6 +243,9 @@
     <Compile Include="..\Tortuga.Chain.Core.source\DeleteOptions.cs">
       <Link>DeleteOptions.cs</Link>
     </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\DictionaryOptions.cs">
+      <Link>DictionaryOptions.cs</Link>
+    </Compile>
     <Compile Include="..\Tortuga.Chain.Core.source\ExecutionEventArgs.cs">
       <Link>ExecutionEventArgs.cs</Link>
     </Compile>
@@ -257,6 +263,9 @@
     </Compile>
     <Compile Include="..\Tortuga.Chain.Core.source\IClass2DataSource.cs">
       <Link>IClass2DataSource.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\IConstructibleMaterializer`1.cs">
+      <Link>IConstructibleMaterializer`1.cs</Link>
     </Compile>
     <Compile Include="..\Tortuga.Chain.Core.source\ILink.cs">
       <Link>ILink.cs</Link>
@@ -276,23 +285,8 @@
     <Compile Include="..\Tortuga.Chain.Core.source\MappingException.cs">
       <Link>MappingException.cs</Link>
     </Compile>
-    <Compile Include="..\tortuga.chain.core.source\materializers\CollectionResult`4.cs">
-      <Link>Materializers\CollectionResult`4.cs</Link>
-    </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\DataRowMaterializer`2.cs">
-      <Link>Materializers\DataRowMaterializer`2.cs</Link>
-    </Compile>
-    <Compile Include="..\tortuga.chain.core.source\materializers\DataSetMaterializer`2.cs">
-      <Link>Materializers\DataSetMaterializer`2.cs</Link>
-    </Compile>
-    <Compile Include="..\tortuga.chain.core.source\materializers\DataTableMaterializer`2.cs">
-      <Link>Materializers\DataTableMaterializer`2.cs</Link>
-    </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\DynamicCollectionMaterializer`2.cs">
-      <Link>Materializers\DynamicCollectionMaterializer`2.cs</Link>
-    </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\DynamicObjectMaterializer`2.cs">
-      <Link>Materializers\DynamicObjectMaterializer`2.cs</Link>
+    <Compile Include="..\tortuga.chain.core.source\materializers\ConstructibleMaterializer`4.cs">
+      <Link>Materializers\ConstructibleMaterializer`4.cs</Link>
     </Compile>
     <Compile Include="..\Tortuga.Chain.Core.source\Materializers\Materializer.cs">
       <Link>Materializer.cs</Link>
@@ -303,16 +297,52 @@
     <Compile Include="..\tortuga.chain.core.source\materializers\Materializer`3.cs">
       <Link>Materializers\Materializer`3.cs</Link>
     </Compile>
+    <Compile Include="..\tortuga.chain.core.source\materializers\multiplerow\CollectionMaterializer`4.cs">
+      <Link>Materializers\MultipleRow\CollectionMaterializer`4.cs</Link>
+    </Compile>
+    <Compile Include="..\tortuga.chain.core.source\materializers\multiplerow\DataTableMaterializer`2.cs">
+      <Link>Materializers\MultipleRow\DataTableMaterializer`2.cs</Link>
+    </Compile>
+    <Compile Include="..\tortuga.chain.core.source\materializers\multiplerow\DictionaryMaterializer`5.cs">
+      <Link>Materializers\MultipleRow\DictionaryMaterializer`5.cs</Link>
+    </Compile>
+    <Compile Include="..\tortuga.chain.core.source\materializers\multiplerow\DynamicCollectionMaterializer`2.cs">
+      <Link>Materializers\MultipleRow\DynamicCollectionMaterializer`2.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\MultipleRow\ImmutableArrayMaterializer`3.cs">
+      <Link>Materializers\MultipleRow\ImmutableArrayMaterializer`3.cs</Link>
+    </Compile>
+    <Compile Include="..\tortuga.chain.core.source\materializers\multiplerow\ImmutableDictionaryMaterializer`4.cs">
+      <Link>Materializers\MultipleRow\ImmutableDictionaryMaterializer`4.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\MultipleRow\ImmutableListMaterializer`3.cs">
+      <Link>Materializers\MultipleRow\ImmutableListMaterializer`3.cs</Link>
+    </Compile>
+    <Compile Include="..\tortuga.chain.core.source\materializers\multiplerow\TableMaterializer`2.cs">
+      <Link>Materializers\MultipleRow\TableMaterializer`2.cs</Link>
+    </Compile>
+    <Compile Include="..\tortuga.chain.core.source\materializers\multipletable\CollectionSetMaterializer`4.cs">
+      <Link>Materializers\MultipleTable\CollectionSetMaterializer`4.cs</Link>
+    </Compile>
+    <Compile Include="..\tortuga.chain.core.source\materializers\multipletable\CollectionSetMaterializer`5.cs">
+      <Link>Materializers\MultipleTable\CollectionSetMaterializer`5.cs</Link>
+    </Compile>
+    <Compile Include="..\tortuga.chain.core.source\materializers\multipletable\CollectionSetMaterializer`6.cs">
+      <Link>Materializers\MultipleTable\CollectionSetMaterializer`6.cs</Link>
+    </Compile>
+    <Compile Include="..\tortuga.chain.core.source\materializers\multipletable\CollectionSetMaterializer`7.cs">
+      <Link>Materializers\MultipleTable\CollectionSetMaterializer`7.cs</Link>
+    </Compile>
+    <Compile Include="..\tortuga.chain.core.source\materializers\multipletable\DataSetMaterializer`2.cs">
+      <Link>Materializers\MultipleTable\DataSetMaterializer`2.cs</Link>
+    </Compile>
+    <Compile Include="..\tortuga.chain.core.source\materializers\multipletable\TableSetMaterializer`2.cs">
+      <Link>Materializers\MultipleTable\TableSetMaterializer`2.cs</Link>
+    </Compile>
     <Compile Include="..\tortuga.chain.core.source\materializers\NonQueryMaterializer`2.cs">
       <Link>Materializers\NonQueryMaterializer`2.cs</Link>
     </Compile>
-    <Compile Include="..\tortuga.chain.core.source\materializers\ObjectMaterializer`3.cs">
-      <Link>Materializers\ObjectMaterializer`3.cs</Link>
-    </Compile>
-    <Compile Include="..\tortuga.chain.core.source\materializers\RowMaterializer`2.cs">
-      <Link>Materializers\RowMaterializer`2.cs</Link>
-    </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\RowsAffectedMaterializer`2.cs">
+    <Compile Include="..\tortuga.chain.core.source\materializers\RowsAffectedMaterializer`2.cs">
       <Link>Materializers\RowsAffectedMaterializer`2.cs</Link>
     </Compile>
     <Compile Include="..\tortuga.chain.core.source\materializers\scalar\BooleanMaterializer`2.cs">
@@ -438,11 +468,17 @@
     <Compile Include="..\tortuga.chain.core.source\materializers\singlecolumn\TimeSpanListMaterializer`2.cs">
       <Link>Materializers\SingleColumn\TimeSpanListMaterializer`2.cs</Link>
     </Compile>
-    <Compile Include="..\tortuga.chain.core.source\materializers\TableMaterializer`2.cs">
-      <Link>Materializers\TableMaterializer`2.cs</Link>
+    <Compile Include="..\tortuga.chain.core.source\materializers\singlerow\DataRowMaterializer`2.cs">
+      <Link>Materializers\SingleRow\DataRowMaterializer`2.cs</Link>
     </Compile>
-    <Compile Include="..\tortuga.chain.core.source\materializers\TableSetMaterializer`2.cs">
-      <Link>Materializers\TableSetMaterializer`2.cs</Link>
+    <Compile Include="..\tortuga.chain.core.source\materializers\singlerow\DynamicObjectMaterializer`2.cs">
+      <Link>Materializers\SingleRow\DynamicObjectMaterializer`2.cs</Link>
+    </Compile>
+    <Compile Include="..\tortuga.chain.core.source\materializers\singlerow\ObjectMaterializer`3.cs">
+      <Link>Materializers\SingleRow\ObjectMaterializer`3.cs</Link>
+    </Compile>
+    <Compile Include="..\tortuga.chain.core.source\materializers\singlerow\RowMaterializer`2.cs">
+      <Link>Materializers\SingleRow\RowMaterializer`2.cs</Link>
     </Compile>
     <Compile Include="..\tortuga.chain.core.source\metadata\ColumnMetadata`1.cs">
       <Link>Metadata\ColumnMetadata`1.cs</Link>
@@ -533,6 +569,15 @@
   <ItemGroup>
     <None Include="..\Tortuga Chain.snk">
       <Link>Tortuga Chain.snk</Link>
+    </None>
+    <None Include="..\tortuga.chain.core.source\materializers\readme.md">
+      <Link>Materializers\readme.md</Link>
+    </None>
+    <None Include="..\tortuga.chain.core.source\materializers\scalar\readme.md">
+      <Link>Materializers\Scalar\readme.md</Link>
+    </None>
+    <None Include="..\tortuga.chain.core.source\materializers\singlecolumn\readme.md">
+      <Link>Materializers\SingleColumn\readme.md</Link>
     </None>
     <None Include="packages.config" />
   </ItemGroup>

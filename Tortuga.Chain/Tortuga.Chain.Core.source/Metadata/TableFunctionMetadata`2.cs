@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-
-
+using Tortuga.Chain.CommandBuilders;
 
 namespace Tortuga.Chain.Metadata
 {
@@ -52,5 +51,14 @@ namespace Tortuga.Chain.Metadata
         /// </value>
         public ReadOnlyCollection<ParameterMetadata<TDbType>> Parameters { get; }
 
+        /// <summary>
+        /// Creates a SQL builder.
+        /// </summary>
+        /// <param name="strictMode">if set to <c>true</c> [strict mode].</param>
+        /// <returns></returns>
+        public SqlBuilder<TDbType> CreateSqlBuilder(bool strictMode)
+        {
+            return new SqlBuilder<TDbType>(Name.ToString(), Columns, Parameters, strictMode);
+        }
     }
 }

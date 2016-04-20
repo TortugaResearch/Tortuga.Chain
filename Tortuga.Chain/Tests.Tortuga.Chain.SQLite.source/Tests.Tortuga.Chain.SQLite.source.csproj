@@ -60,8 +60,8 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="Tortuga.Anchor, Version=0.6.5944.41376, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
-      <HintPath>..\packages\Tortuga.Anchor.0.6.5944.41376\lib\net46\Tortuga.Anchor.dll</HintPath>
+    <Reference Include="Tortuga.Anchor, Version=0.7.5952.32542, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tortuga.Anchor.0.7.5952.32542\lib\net46\Tortuga.Anchor.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
@@ -107,6 +107,9 @@
     </Compile>
     <Compile Include="..\Tests.Tortuga.Chain.SqlServer.source\Models\Employee.cs">
       <Link>Models\Employee.cs</Link>
+    </Compile>
+    <Compile Include="..\Tests.Tortuga.Chain.SqlServer.source\Models\EmployeeLookup.cs">
+      <Link>Models\EmployeeLookup.cs</Link>
     </Compile>
     <Compile Include="..\Tests.Tortuga.Chain.SqlServer.source\Models\EmployeeWithManager.cs">
       <Link>EmployeeWithManager.cs</Link>
