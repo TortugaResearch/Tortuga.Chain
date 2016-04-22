@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
 using Tortuga.Anchor;
@@ -14,7 +15,7 @@ namespace Tortuga.Chain.SqlServer
     /// <summary>
     /// Class SqlServerDataSourceBase.
     /// </summary>
-    public abstract class SqlServerDataSourceBase : DataSource<SqlCommand, SqlParameter>, IClass2DataSource
+    public abstract class SqlServerDataSourceBase : DataSource<SqlConnection, SqlTransaction, SqlCommand, SqlParameter>, IClass2DataSource
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlServerDataSourceBase"/> class.
@@ -384,6 +385,39 @@ namespace Tortuga.Chain.SqlServer
         ITableDbCommandBuilder IClass2DataSource.TableFunction(string functionName, object functionArgumentValue)
         {
             return TableFunction(functionName, functionArgumentValue);
+        }
+
+        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> InsertBatch(SqlServerObjectName tableName, SqlServerObjectName tableTypeName, DataTable dataTable, InsertOptions options = InsertOptions.None)
+        {
+            return new SqlServerInsertBatch(this, tableName, tableTypeName, dataTable, options);
+        }
+
+        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> InsertBatch(SqlServerObjectName tableName, SqlServerObjectName tableTypeName, DbDataReader dataReader, InsertOptions options = InsertOptions.None)
+        {
+            return new SqlServerInsertBatch(this, tableName, tableTypeName, dataReader, options);
+        }
+
+        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> InsertBatch<T>(SqlServerObjectName tableName, SqlServerObjectName tableTypeName, IEnumerable<T> objects, InsertOptions options = InsertOptions.None)
+        {
+            var tableType = DatabaseMetadata.GetUserDefinedType(tableTypeName);
+            return new SqlServerInsertBatch(this, tableName, tableTypeName, new ObjectDataReader<T>(tableType, objects), options);
+        }
+
+
+        public SqlServerInsertBulk InsertBulk(SqlServerObjectName tableName, DataTable dataTable, SqlBulkCopyOptions options = SqlBulkCopyOptions.Default, int? batchSize = null)
+        {
+            return new SqlServerInsertBulk(this, tableName, dataTable, options, batchSize);
+        }
+
+        public SqlServerInsertBulk InsertBulk(SqlServerObjectName tableName, IDataReader dataReader, SqlBulkCopyOptions options = SqlBulkCopyOptions.Default, int? batchSize = null)
+        {
+            return new SqlServerInsertBulk(this, tableName, dataReader, options, batchSize);
+        }
+
+        public SqlServerInsertBulk InsertBulk<T>(SqlServerObjectName tableName, IEnumerable<T> objects, SqlBulkCopyOptions options = SqlBulkCopyOptions.Default, int? batchSize = null)
+        {
+            var tableType = DatabaseMetadata.GetTableOrView(tableName);
+            return new SqlServerInsertBulk(this, tableName, new ObjectDataReader<T>(tableType, objects), options, batchSize);
         }
     }
 }

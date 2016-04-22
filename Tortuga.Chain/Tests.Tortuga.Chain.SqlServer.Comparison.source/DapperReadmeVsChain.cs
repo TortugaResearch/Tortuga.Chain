@@ -230,8 +230,7 @@ namespace Tests
                       insert #t 
                       select @a a union all select @b 
                       set nocount on 
-                      drop table #t", new { a = 1, b = 2 }).AsRowsAffected().Execute()
-                );
+                      drop table #t", new { a = 1, b = 2 }).Execute().Value);
         }
 
         /// <summary>

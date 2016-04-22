@@ -23,19 +23,13 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         protected PostgreSqlObjectCommand(PostgreSqlDataSourceBase dataSource, PostgreSqlObjectName tableName, TArgument argumentValue)
             : base(dataSource, argumentValue)
         {
-            TableName = tableName;
-            Metadata = ((PostgreSqlDataSourceBase)DataSource).DatabaseMetadata.GetTableOrView(tableName);
+            Table = ((PostgreSqlDataSourceBase)DataSource).DatabaseMetadata.GetTableOrView(tableName);
         }
-
-        /// <summary>
-        /// Gets the table name.
-        /// </summary>
-        protected PostgreSqlObjectName TableName { get; }
 
         /// <summary>
         /// Gets the table metadata.
         /// </summary>
-        public TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType> Metadata { get; }
+        public TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType> Table { get; }
 
     }
 }

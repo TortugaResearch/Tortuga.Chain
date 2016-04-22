@@ -22,7 +22,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
         private readonly UpdateOptions m_Options;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SQLiteUpdateObject"/> class.
+        /// Initializes a new instance of the <see cref="SQLiteUpdateObject{TArgument}"/> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
         /// <param name="tableName">Name of the table.</param>
@@ -44,24 +44,24 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
             if (materializer == null)
                 throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
 
-            var sqlBuilder = Metadata.CreateSqlBuilder(StrictMode);
+            var sqlBuilder = Table.CreateSqlBuilder(StrictMode);
             sqlBuilder.ApplyArgumentValue(DataSource, ArgumentValue, m_Options);
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
             var sql = new StringBuilder();
             if (m_Options.HasFlag(UpdateOptions.ReturnOldValues))
             {
-                sqlBuilder.BuildSelectByKeyStatement(sql, TableName, ";");
+                sqlBuilder.BuildSelectByKeyStatement(sql, Table.Name, ";");
                 sql.AppendLine();
             }
-            sqlBuilder.BuildUpdateByKeyStatement(sql, TableName, ";");
+            sqlBuilder.BuildUpdateByKeyStatement(sql, Table.Name, ";");
             if (!m_Options.HasFlag(UpdateOptions.ReturnOldValues))
             {
                 sql.AppendLine();
-                sqlBuilder.BuildSelectByKeyStatement(sql, TableName, ";");
+                sqlBuilder.BuildSelectByKeyStatement(sql, Table.Name, ";");
             }
 
-            return new SQLiteExecutionToken(DataSource, "Update " + TableName, sql.ToString(), sqlBuilder.GetParameters(), lockType: LockType.Write);
+            return new SQLiteExecutionToken(DataSource, "Update " + Table.Name, sql.ToString(), sqlBuilder.GetParameters(), lockType: LockType.Write);
         }
 
     }

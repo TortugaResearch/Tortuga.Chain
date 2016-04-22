@@ -42,12 +42,12 @@ namespace Tortuga.Chain.Appenders
         public override TResult Execute(object state = null)
         {
             TResult result;
-            if (PreviousLink.DataSource.TryReadFromCache(m_CacheKey, out result))
+            if (((DataSource)DataSource).TryReadFromCache(m_CacheKey, out result))
                 return result;
 
             result = PreviousLink.Execute(state);
 
-            DataSource.WriteToCache(new CacheItem(m_CacheKey, result, null), m_Policy);
+            ((DataSource)DataSource).WriteToCache(new CacheItem(m_CacheKey, result, null), m_Policy);
 
             return result;
         }
@@ -61,12 +61,12 @@ namespace Tortuga.Chain.Appenders
         public override async Task<TResult> ExecuteAsync(CancellationToken cancellationToken, object state = null)
         {
             TResult result;
-            if (DataSource.TryReadFromCache(m_CacheKey, out result))
+            if (((DataSource)DataSource).TryReadFromCache(m_CacheKey, out result))
                 return result;
 
             result = await PreviousLink.ExecuteAsync(state).ConfigureAwait(false);
 
-            DataSource.WriteToCache(new CacheItem(m_CacheKey, result, null), m_Policy);
+            ((DataSource)DataSource).WriteToCache(new CacheItem(m_CacheKey, result, null), m_Policy);
 
             return result;
         }

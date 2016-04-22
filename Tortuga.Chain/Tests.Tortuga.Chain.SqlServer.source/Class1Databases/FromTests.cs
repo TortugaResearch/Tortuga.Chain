@@ -22,7 +22,7 @@ namespace Tests.Class1Databases
         //static string Key10000;
 
         [ClassInitialize()]
-        public static void AssemblyInit(TestContext context)
+        public static void ClassInitialize(TestContext context)
         {
             using (var trans = DataSource.BeginTransaction())
             {

@@ -13,7 +13,7 @@ namespace Tortuga.Chain.DataSources
     /// <summary>
     /// Class DataSource.
     /// </summary>
-    public abstract class DataSource
+    public abstract class DataSource : IDataSource
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="DataSource"/> class.

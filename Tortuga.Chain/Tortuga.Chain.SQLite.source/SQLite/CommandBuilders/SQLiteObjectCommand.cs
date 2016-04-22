@@ -19,7 +19,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
     {
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SQLiteObjectCommand" /> class
+        /// Initializes a new instance of the <see cref="SQLiteObjectCommand{TArgument}" /> class
         /// </summary>
         /// <param name="dataSource">The data source.</param>
         /// <param name="tableName">Name of the table.</param>
@@ -27,19 +27,13 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
         protected SQLiteObjectCommand(SQLiteDataSourceBase dataSource, string tableName, TArgument argumentValue)
             : base(dataSource, argumentValue)
         {
-            TableName = tableName;
-            Metadata = ((SQLiteDataSourceBase)DataSource).DatabaseMetadata.GetTableOrView(tableName);
+            Table = ((SQLiteDataSourceBase)DataSource).DatabaseMetadata.GetTableOrView(tableName);
         }
-
-        /// <summary>
-        /// Gets the table name.
-        /// </summary>
-        protected string TableName { get; }
 
         /// <summary>
         /// Gets the table metadata.
         /// </summary>
-        public TableOrViewMetadata<string, DbType> Metadata { get; }
+        public TableOrViewMetadata<string, DbType> Table { get; }
 
     }
 }

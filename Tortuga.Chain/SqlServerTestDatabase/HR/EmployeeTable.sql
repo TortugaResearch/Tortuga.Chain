@@ -1,0 +1,11 @@
+﻿CREATE TYPE HR.EmployeeTable AS TABLE
+(
+EmployeeKey INT NOT NULL,
+FirstName NVARCHAR(50) NOT NULL ,
+MiddleName NVARCHAR(50) NULL ,
+LastName NVARCHAR(50) NOT NULL ,
+Title NVARCHAR(100) NULL ,
+ManagerKey INT NULL,
+OfficePhone VARCHAR(15) NULL ,
+CellPhone VARCHAR(15) NULL
+);

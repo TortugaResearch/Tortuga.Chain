@@ -100,8 +100,13 @@
     <Compile Include="AuditRules\ValidateWithNotifyDataErrorInfo`1.cs" />
     <Compile Include="CollectionOptions.cs" />
     <Compile Include="CommandBuilders\DbCommandBuilder.cs" />
+    <Compile Include="CommandBuilders\DbOperationBuilder`2.cs" />
     <Compile Include="CommandBuilders\IObjectDbCommandBuilder.cs" />
     <Compile Include="CommandBuilders\ObjectDbCommandBuilder.cs" />
+    <Compile Include="Core\OperationExecutionToken.cs" />
+    <Compile Include="DataSources\ICommandDataSource.cs" />
+    <Compile Include="DataSources\IDataSource.cs" />
+    <Compile Include="DataSources\IOperationDataSource.cs" />
     <Compile Include="IConstructibleMaterializer`1.cs" />
     <Compile Include="DictionaryOptions.cs" />
     <Compile Include="CommandBuilders\GenericDbSqlCall.cs" />
@@ -116,7 +121,7 @@
     <Compile Include="Core\ExecutionTokenPreparingEventArgs.cs" />
     <Compile Include="DataSources\DataSourceSettings.cs" />
     <Compile Include="DataSources\DataSource.cs" />
-    <Compile Include="DataSources\DataSource`2.cs" />
+    <Compile Include="DataSources\DataSource`4.cs" />
     <Compile Include="CommandBuilders\DbCommandBuilder`2.cs" />
     <Compile Include="InsertBatchOptions.cs" />
     <Compile Include="InsertOptions.cs" />
@@ -153,6 +158,7 @@
     <Compile Include="Materializers\MultipleTable\CollectionSetMaterializer`6.cs" />
     <Compile Include="Materializers\MultipleTable\CollectionSetMaterializer`7.cs" />
     <Compile Include="Materializers\ConstructibleMaterializer`4.cs" />
+    <Compile Include="Materializers\Operation`2.cs" />
     <Compile Include="Materializers\SingleRow\DataRowMaterializer`2.cs" />
     <Compile Include="Materializers\MultipleTable\DataSetMaterializer`2.cs" />
     <Compile Include="Materializers\MultipleRow\DataTableMaterializer`2.cs" />
@@ -211,6 +217,9 @@
     <Compile Include="Materializers\SingleColumn\TimeSpanListMaterializer`2.cs" />
     <Compile Include="Materializers\MultipleRow\TableMaterializer`2.cs" />
     <Compile Include="Materializers\MultipleTable\TableSetMaterializer`2.cs" />
+    <Compile Include="Metadata\IUserDefinedTypeMetadata.cs" />
+    <Compile Include="Metadata\UserDefinedTypeMetadata.cs" />
+    <Compile Include="ObjectDataReader.cs" />
     <Compile Include="SortDirection.cs" />
     <Compile Include="SortExpression.cs" />
     <Compile Include="UpsertOptions.cs" />

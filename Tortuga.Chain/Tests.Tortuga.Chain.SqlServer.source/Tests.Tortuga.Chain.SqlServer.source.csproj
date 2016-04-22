@@ -80,6 +80,8 @@
     <Compile Include="Class1Databases\SqlTests.cs" />
     <Compile Include="Class1Databases\UpdateTests.cs" />
     <Compile Include="Class1Databases\UpsertTests.cs" />
+    <Compile Include="Class2Databases\InsertBulkTests.cs" />
+    <Compile Include="Class2Databases\InsertBatchTests.cs" />
     <Compile Include="Class2Databases\TableFunctionTests.cs" />
     <Compile Include="Class2Databases\ProcedureTests.cs" />
     <Compile Include="Materializers\MaterializerTests.cs" />

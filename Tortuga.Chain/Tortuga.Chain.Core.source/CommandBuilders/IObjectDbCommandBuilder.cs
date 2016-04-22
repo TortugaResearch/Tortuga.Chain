@@ -1,11 +1,15 @@
 namespace Tortuga.Chain.CommandBuilders
 {
     /// <summary>
-    /// This representes command builders that operate on single object parameters: Insert, Update, Upsert, Delete
+    /// This represents command builders that operate on single object parameters: Insert, Update, Upsert, Delete
     /// </summary>
     /// <typeparam name="TArgument">The type of the argument.</typeparam>
     public interface IObjectDbCommandBuilder<TArgument> : ISingleRowDbCommandBuilder
     {
+        /// <summary>
+        /// Gets the argument value passed to the command builder.
+        /// </summary>
+        /// <value>The argument value.</value>
         TArgument ArgumentValue { get; }
 
         /// <summary>

@@ -73,10 +73,10 @@ namespace Tortuga.Chain.Appenders
         }
 
         /// <summary>
-        /// Gets the data source that is associated with this materilizer or appender.
+        /// Gets the data source that is associated with this materializer or appender.
         /// </summary>
         /// <value>The data source.</value>
-        public DataSource DataSource
+        public IDataSource DataSource
         {
             get { return PreviousLink.DataSource; }
         }

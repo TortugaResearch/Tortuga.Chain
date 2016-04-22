@@ -15,7 +15,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         private readonly InsertOptions m_Options;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SqlServerInsertObject" /> class.
+        /// Initializes a new instance of the <see cref="SqlServerInsertObject{TArgument}" /> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
         /// <param name="tableName">Name of the table.</param>
@@ -39,17 +39,17 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             if (materializer == null)
                 throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
 
-            var sqlBuilder = Metadata.CreateSqlBuilder(StrictMode);
+            var sqlBuilder = Table.CreateSqlBuilder(StrictMode);
             sqlBuilder.ApplyArgumentValue(DataSource, ArgumentValue, m_Options);
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
             var sql = new StringBuilder();
-            sqlBuilder.BuildInsertClause(sql, $"INSERT INTO {TableName.ToQuotedString()} (", null, ")");
+            sqlBuilder.BuildInsertClause(sql, $"INSERT INTO {Table.Name.ToQuotedString()} (", null, ")");
             sqlBuilder.BuildSelectClause(sql, " OUTPUT ", "Inserted.", null);
             sqlBuilder.BuildValuesClause(sql, " VALUES (", ")");
             sql.Append(";");
 
-            return new SqlServerExecutionToken(DataSource, "Insert into " + TableName, sql.ToString(), sqlBuilder.GetParameters());
+            return new SqlServerExecutionToken(DataSource, "Insert into " + Table.Name, sql.ToString(), sqlBuilder.GetParameters());
 
         }
 

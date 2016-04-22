@@ -3,13 +3,12 @@ using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
 using Tortuga.Chain.CommandBuilders;
-using Tortuga.Chain.DataSources;
 namespace Tortuga.Chain.Materializers
 {
     /// <summary>
     /// This class indicates the associated operation should be executed without returning a result set.
     /// </summary>
-    public class NonQueryMaterializer<TCommand, TParameter> : Materializer<TCommand, TParameter>, ILink
+    public class NonQueryMaterializer<TCommand, TParameter> : Materializer<TCommand, TParameter, int?>
         where TCommand : DbCommand
         where TParameter : DbParameter
     {
@@ -24,19 +23,11 @@ namespace Tortuga.Chain.Materializers
         /// Execute the operation synchronously.
         /// </summary>
         /// <param name="state">User defined state, usually used for logging.</param>
-        public void Execute(object state = null)
+        public override int? Execute(object state = null)
         {
-            ExecuteCore(cmd => cmd.ExecuteNonQuery(), state);
-        }
-
-        /// <summary>
-        /// Execute the operation asynchronously.
-        /// </summary>
-        /// <param name="state">User defined state, usually used for logging.</param>
-        /// <returns></returns>
-        public Task ExecuteAsync(object state = null)
-        {
-            return ExecuteAsync(CancellationToken.None, state);
+            int result = 0;
+            ExecuteCore(cmd => result = cmd.ExecuteNonQuery(), state);
+            return result;
         }
 
         /// <summary>
@@ -45,19 +36,21 @@ namespace Tortuga.Chain.Materializers
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <param name="state">User defined state, usually used for logging.</param>
         /// <returns></returns>
-        public Task ExecuteAsync(CancellationToken cancellationToken, object state = null)
+        public override async Task<int?> ExecuteAsync(CancellationToken cancellationToken, object state = null)
         {
-            return ExecuteCoreAsync(async cmd => await cmd.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false), cancellationToken, state);
+            int result = 0;
+            await ExecuteCoreAsync(async cmd => result = await cmd.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false), cancellationToken, state).ConfigureAwait(false);
+            return result;
         }
 
-        /// <summary>
-        /// Gets the data source that is associated with this materilizer or appender.
-        /// </summary>
-        /// <value>The data source.</value>
-        public DataSource DataSource
-        {
-            get { return CommandBuilder.DataSource; }
-        }
+        ///// <summary>
+        ///// Gets the data source that is associated with this materializer or appender.
+        ///// </summary>
+        ///// <value>The data source.</value>
+        //public IDataSource DataSource
+        //{
+        //    get { return CommandBuilder.DataSource; }
+        //}
 
 
         /// <summary>

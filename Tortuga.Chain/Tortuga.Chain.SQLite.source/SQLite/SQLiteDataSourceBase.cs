@@ -65,7 +65,7 @@ namespace Tortuga.Chain.SQLite
         }
 
         /// <summary>
-        /// Creates a <see cref="SQLiteDeleteObject" /> used to perform a delete operation.
+        /// Creates a <see cref="SQLiteDeleteObject{TArgument}" /> used to perform a delete operation.
         /// </summary>
         /// <param name="tableName"></param>
         /// <param name="argumentValue"></param>
@@ -195,7 +195,7 @@ namespace Tortuga.Chain.SQLite
             return new SQLiteSqlCall(this, sqlStatement, argumentValue, lockType);
         }
         /// <summary>
-        /// Creates a <see cref="SQLiteInsertObject" /> used to perform an insert operation.
+        /// Creates a <see cref="SQLiteInsertObject{TArgument}" /> used to perform an insert operation.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="argumentValue">The argument value.</param>
@@ -208,7 +208,7 @@ namespace Tortuga.Chain.SQLite
         }
 
         /// <summary>
-        /// Creates a <see cref="SQLiteInsertOrUpdateObject"/> used to perform an "upsert" operation.
+        /// Creates a <see cref="SQLiteInsertOrUpdateObject{TArgument}"/> used to perform an "upsert" operation.
         /// </summary>
         /// <param name="tableName"></param>
         /// <param name="argumentValue"></param>
@@ -221,7 +221,7 @@ namespace Tortuga.Chain.SQLite
         }
 
         /// <summary>
-        /// Creates a <see cref="SQLiteUpdateObject" /> used to perform an update operation.
+        /// Creates a <see cref="SQLiteUpdateObject{TArgument}" /> used to perform an update operation.
         /// </summary>
         /// <param name="tableName"></param>
         /// <param name="argumentValue"></param>

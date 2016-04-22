@@ -37,7 +37,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
             if (materializer == null)
                 throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
 
-            var sqlBuilder = Metadata.CreateSqlBuilder(StrictMode);
+            var sqlBuilder = Table.CreateSqlBuilder(StrictMode);
             sqlBuilder.ApplyArgumentValue(DataSource, ArgumentValue, m_Options);
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
@@ -47,7 +47,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
             //Use RETURNING in place of SQL Servers OUTPUT clause for new values http://www.postgresql.org/docs/current/static/sql-update.html
 
 
-            return new PostgreSqlExecutionToken(DataSource, "Update " + TableName, sql.ToString(), sqlBuilder.GetParameters());
+            return new PostgreSqlExecutionToken(DataSource, "Update " + Table.Name, sql.ToString(), sqlBuilder.GetParameters());
         }
 
     }

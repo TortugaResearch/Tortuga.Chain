@@ -13,7 +13,7 @@ namespace Tortuga.Chain
     /// <summary>
     /// The GenericDbDataSource is the most simplistic of all of the data sources. The command builder only supports raw SQL, but you still have access to all of the materializers.
     /// </summary>
-    public class GenericDbDataSource : DataSource<DbCommand, DbParameter>, IClass0DataSource
+    public class GenericDbDataSource : DataSource<DbConnection, DbTransaction, DbCommand, DbParameter>, IClass0DataSource
     {
         private readonly DbConnectionStringBuilder m_ConnectionBuilder;
         private readonly DbProviderFactory m_Factory;
@@ -133,7 +133,7 @@ namespace Tortuga.Chain
         /// or
         /// implementation;implementation is null.
         /// </exception>
-        protected internal override void Execute(ExecutionToken<DbCommand, DbParameter> executionToken, Func<DbCommand, int?> implementation, object state)
+        protected internal override void Execute(ExecutionToken<DbCommand, DbParameter> executionToken, CommandImplementation<DbCommand> implementation, object state)
         {
             if (executionToken == null)
                 throw new ArgumentNullException("executionToken", "executionToken is null.");
@@ -179,8 +179,13 @@ namespace Tortuga.Chain
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <param name="state">User supplied state.</param>
         /// <returns>Task.</returns>
-        protected internal override async Task ExecuteAsync(ExecutionToken<DbCommand, DbParameter> executionToken, Func<DbCommand, Task<int?>> implementation, CancellationToken cancellationToken, object state)
+        protected internal override async Task ExecuteAsync(ExecutionToken<DbCommand, DbParameter> executionToken, CommandImplementationAsync<DbCommand> implementation, CancellationToken cancellationToken, object state)
         {
+            if (executionToken == null)
+                throw new ArgumentNullException("executionToken", "executionToken is null.");
+            if (implementation == null)
+                throw new ArgumentNullException("implementation", "implementation is null.");
+
             var startTime = DateTimeOffset.Now;
             OnExecutionStarted(executionToken, startTime, state);
 
@@ -280,6 +285,86 @@ namespace Tortuga.Chain
         IMultipleTableDbCommandBuilder IClass0DataSource.Sql(string sqlStatement, object argumentValue)
         {
             return Sql(sqlStatement, argumentValue);
+        }
+
+        /// <summary>
+        /// Executes the specified operation.
+        /// </summary>
+        /// <param name="executionToken">The execution token.</param>
+        /// <param name="implementation">The implementation.</param>
+        /// <param name="state">The state.</param>
+        /// <exception cref="ArgumentNullException">
+        /// executionToken;executionToken is null.
+        /// or
+        /// implementation;implementation is null.
+        /// </exception>
+        protected internal override int? Execute(OperationExecutionToken<DbConnection, DbTransaction> executionToken, OperationImplementation<DbConnection, DbTransaction> implementation, object state)
+        {
+            if (executionToken == null)
+                throw new ArgumentNullException("executionToken", "executionToken is null.");
+            if (implementation == null)
+                throw new ArgumentNullException("implementation", "implementation is null.");
+
+            var startTime = DateTimeOffset.Now;
+            OnExecutionStarted(executionToken, startTime, state);
+
+            try
+            {
+                using (var con = CreateConnection())
+                {
+                    var rows = implementation(con, null);
+                    OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
+                    return rows;
+                }
+            }
+            catch (Exception ex)
+            {
+                OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// execute as an asynchronous operation.
+        /// </summary>
+        /// <param name="executionToken">The execution token.</param>
+        /// <param name="implementation">The implementation.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>Task.</returns>
+        protected internal override async Task<int?> ExecuteAsync(OperationExecutionToken<DbConnection, DbTransaction> executionToken, OperationImplementationAsync<DbConnection, DbTransaction> implementation, CancellationToken cancellationToken, object state)
+        {
+            if (executionToken == null)
+                throw new ArgumentNullException("executionToken", "executionToken is null.");
+            if (implementation == null)
+                throw new ArgumentNullException("implementation", "implementation is null.");
+
+            var startTime = DateTimeOffset.Now;
+            OnExecutionStarted(executionToken, startTime, state);
+
+            try
+            {
+                using (var con = await CreateConnectionAsync(cancellationToken).ConfigureAwait(false))
+                {
+                    var rows = await implementation(con, null, cancellationToken).ConfigureAwait(false);
+                    OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
+                    return rows;
+                }
+            }
+            catch (Exception ex)
+            {
+                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException 
+                {
+                    var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);
+                    OnExecutionCanceled(executionToken, startTime, DateTimeOffset.Now, state);
+                    throw ex2;
+                }
+                else
+                {
+                    OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
+                    throw;
+                }
+            }
         }
     }
 

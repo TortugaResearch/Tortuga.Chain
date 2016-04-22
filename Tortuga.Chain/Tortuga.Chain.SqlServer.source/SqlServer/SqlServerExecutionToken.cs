@@ -22,7 +22,7 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="commandText">The SQL to be executed.</param>
         /// <param name="parameters">The parameters.</param>
         /// <param name="commandType">Type of the command.</param>
-        public SqlServerExecutionToken(DataSource<SqlCommand, SqlParameter> dataSource, string operationName, string commandText, IReadOnlyList<SqlParameter> parameters, CommandType commandType = CommandType.Text)
+        public SqlServerExecutionToken(ICommandDataSource<SqlCommand, SqlParameter> dataSource, string operationName, string commandText, IReadOnlyList<SqlParameter> parameters, CommandType commandType = CommandType.Text)
             : base(dataSource, operationName, commandText, parameters, commandType)
         {
 

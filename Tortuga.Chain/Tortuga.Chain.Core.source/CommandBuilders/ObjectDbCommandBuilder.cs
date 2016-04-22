@@ -5,7 +5,7 @@ using Tortuga.Chain.Materializers;
 namespace Tortuga.Chain.CommandBuilders
 {
     /// <summary>
-    /// This representes command builders that operate on single object parameters: Insert, Update, Upsert, Delete
+    /// This represents command builders that operate on single object parameters: Insert, Update, Upsert, Delete
     /// </summary>
     /// <typeparam name="TCommand">The type of the command.</typeparam>
     /// <typeparam name="TParameter">The type of the parameter.</typeparam>
@@ -15,9 +15,18 @@ namespace Tortuga.Chain.CommandBuilders
         where TParameter : DbParameter
         where TArgument : class
     {
+        /// <summary>
+        /// Gets the argument value passed to the command builder.
+        /// </summary>
+        /// <value>The argument value.</value>
         public TArgument ArgumentValue { get; }
 
-        protected ObjectDbCommandBuilder(DataSource<TCommand, TParameter> dataSource, TArgument argumentValue) : base(dataSource)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ObjectDbCommandBuilder{TCommand, TParameter, TArgument}"/> class.
+        /// </summary>
+        /// <param name="dataSource">The data source.</param>
+        /// <param name="argumentValue">The argument value.</param>
+        protected ObjectDbCommandBuilder(ICommandDataSource<TCommand, TParameter> dataSource, TArgument argumentValue) : base(dataSource)
         {
             ArgumentValue = argumentValue;
         }

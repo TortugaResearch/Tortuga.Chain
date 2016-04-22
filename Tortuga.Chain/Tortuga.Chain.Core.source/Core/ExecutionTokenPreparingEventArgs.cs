@@ -29,7 +29,7 @@ namespace Tortuga.Chain.Core
         /// </value>
         public DbCommandBuilder CommandBuilder
         {
-            get { return m_CommandBuilder; }
+            get;
         }
     }
 

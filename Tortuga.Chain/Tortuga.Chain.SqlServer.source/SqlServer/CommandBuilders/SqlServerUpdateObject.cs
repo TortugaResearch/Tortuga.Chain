@@ -15,7 +15,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         private readonly UpdateOptions m_Options;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SqlServerUpdateObject" /> class.
+        /// Initializes a new instance of the <see cref="SqlServerUpdateObject{TArgument}" /> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
         /// <param name="tableName">Name of the table.</param>
@@ -37,20 +37,20 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             if (materializer == null)
                 throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
 
-            var sqlBuilder = Metadata.CreateSqlBuilder(StrictMode);
+            var sqlBuilder = Table.CreateSqlBuilder(StrictMode);
             sqlBuilder.ApplyArgumentValue(DataSource, ArgumentValue, m_Options);
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
             var prefix = m_Options.HasFlag(UpdateOptions.ReturnOldValues) ? "Deleted." : "Inserted.";
 
-            var sql = new StringBuilder($"UPDATE {TableName.ToQuotedString()}");
+            var sql = new StringBuilder($"UPDATE {Table.Name.ToQuotedString()}");
             sqlBuilder.BuildSetClause(sql, " SET ", null, null);
             sqlBuilder.BuildSelectClause(sql, " OUTPUT ", prefix, null);
             sqlBuilder.BuildWhereClause(sql, " WHERE ", null);
             sql.Append(";");
 
 
-            return new SqlServerExecutionToken(DataSource, "Update " + TableName, sql.ToString(), sqlBuilder.GetParameters());
+            return new SqlServerExecutionToken(DataSource, "Update " + Table.Name, sql.ToString(), sqlBuilder.GetParameters());
         }
 
 

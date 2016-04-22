@@ -53,7 +53,10 @@ namespace Tortuga.Chain.Materializers
         /// </summary>
         /// <param name="implementation">The implementation.</param>
         /// <param name="state">The state.</param>
-        protected void ExecuteCore(Func<TCommand, int?> implementation, object state) => Prepare().Execute(implementation, state);
+        protected void ExecuteCore(CommandImplementation<TCommand> implementation, object state)
+        {
+            Prepare().Execute(implementation, state);
+        }
 
         /// <summary>
         /// Helper method for executing the operation.
@@ -76,7 +79,10 @@ namespace Tortuga.Chain.Materializers
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <param name="state">The state.</param>
         /// <returns>Task.</returns>
-        protected Task ExecuteCoreAsync(Func<TCommand, Task<int?>> implementation, CancellationToken cancellationToken, object state) => Prepare().ExecuteAsync(implementation, cancellationToken, state);
+        protected Task ExecuteCoreAsync(CommandImplementationAsync<TCommand> implementation, CancellationToken cancellationToken, object state)
+        {
+            return Prepare().ExecuteAsync(implementation, cancellationToken, state);
+        }
 
         /// <summary>
         /// Helper method for executing the operation.

@@ -16,7 +16,7 @@ namespace Tortuga.Chain
         /// <param name="code">The code.</param>
         /// <param name="targetType">Type of the target.</param>
         /// <param name="exception">The exception.</param>
-        public MaterializerCompilerEventArgs(DataSource dataSource, string sql, string code, Type targetType, Exception exception = null)
+        public MaterializerCompilerEventArgs(IDataSource dataSource, string sql, string code, Type targetType, Exception exception = null)
         {
             Exception = exception;
             TargetType = targetType;
@@ -35,7 +35,7 @@ namespace Tortuga.Chain
         /// Gets the data source.
         /// </summary>
         /// <value>The data source.</value>
-        public DataSource DataSource { get; }
+        public IDataSource DataSource { get; }
 
         /// <summary>
         /// Gets the SQL.

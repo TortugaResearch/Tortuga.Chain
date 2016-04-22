@@ -95,6 +95,7 @@
     <Build Include="dbo\Owner.sql" />
     <Build Include="Sales\CustomersByState.sql" />
     <Build Include="Sales\CustomersByStateInline.sql" />
+    <Build Include="HR\EmployeeTable.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="SqlServerTestDatabase.refactorlog" />

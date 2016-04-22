@@ -13,7 +13,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         where TArgument : class
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="SqlServerObjectCommand" /> class.
+        /// Initializes a new instance of the <see cref="SqlServerObjectCommand{TArgument}" /> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
         /// <param name="tableName">Name of the table.</param>
@@ -21,21 +21,14 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         protected SqlServerObjectCommand(SqlServerDataSourceBase dataSource, SqlServerObjectName tableName, TArgument argumentValue)
             : base(dataSource, argumentValue)
         {
-            TableName = tableName;
-            Metadata = DataSource.DatabaseMetadata.GetTableOrView(tableName);
+            Table = DataSource.DatabaseMetadata.GetTableOrView(tableName);
         }
-
-        /// <summary>
-        /// Gets the name of the table.
-        /// </summary>
-        /// <value>The name of the table.</value>
-        protected SqlServerObjectName TableName { get; }
 
         /// <summary>
         /// Gets the table metadata.
         /// </summary>
         /// <value>The metadata.</value>
-        public TableOrViewMetadata<SqlServerObjectName, SqlDbType> Metadata { get; }
+        public TableOrViewMetadata<SqlServerObjectName, SqlDbType> Table { get; }
 
         /// <summary>
         /// Gets the data source.

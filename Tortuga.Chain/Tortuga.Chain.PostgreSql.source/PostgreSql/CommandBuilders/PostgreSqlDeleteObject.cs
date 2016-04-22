@@ -37,14 +37,14 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
             if (materializer == null)
                 throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
 
-            var sqlBuilder = Metadata.CreateSqlBuilder(StrictMode);
+            var sqlBuilder = Table.CreateSqlBuilder(StrictMode);
             sqlBuilder.ApplyArgumentValue(DataSource, ArgumentValue, m_Options);
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
             var sql = new StringBuilder();
             //Use the RETURNING clause for output similar to SQL Server's OUTPUT clause: http://www.postgresql.org/docs/current/static/sql-delete.html
 
-            return new PostgreSqlExecutionToken(DataSource, "Delete from " + TableName, sql.ToString(), sqlBuilder.GetParameters());
+            return new PostgreSqlExecutionToken(DataSource, "Delete from " + Table.Name, sql.ToString(), sqlBuilder.GetParameters());
         }
     }
 }

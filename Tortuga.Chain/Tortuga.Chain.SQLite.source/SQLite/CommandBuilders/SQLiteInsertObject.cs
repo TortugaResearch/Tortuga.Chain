@@ -21,7 +21,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
         private readonly InsertOptions m_Options;
 
         /// <summary>
-        /// Initializes a new instance of <see cref="SQLiteInsertObject" /> class.
+        /// Initializes a new instance of <see cref="SQLiteInsertObject{TArgument}" /> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
         /// <param name="tableName">Name of the table.</param>
@@ -43,16 +43,16 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
             if (materializer == null)
                 throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
 
-            var sqlBuilder = Metadata.CreateSqlBuilder(StrictMode);
+            var sqlBuilder = Table.CreateSqlBuilder(StrictMode);
             sqlBuilder.ApplyArgumentValue(DataSource, ArgumentValue, m_Options);
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
             var sql = new StringBuilder();
-            sqlBuilder.BuildInsertStatement(sql, TableName, ";");
+            sqlBuilder.BuildInsertStatement(sql, Table.Name, ";");
             sql.AppendLine();
-            sqlBuilder.BuildSelectClause(sql, "SELECT ", null, $" FROM {TableName} WHERE ROWID=last_insert_rowid();");
+            sqlBuilder.BuildSelectClause(sql, "SELECT ", null, $" FROM {Table.Name} WHERE ROWID=last_insert_rowid();");
 
-            return new SQLiteExecutionToken(DataSource, "Insert into " + TableName, sql.ToString(), sqlBuilder.GetParameters(), lockType: LockType.Write);
+            return new SQLiteExecutionToken(DataSource, "Insert into " + Table.Name, sql.ToString(), sqlBuilder.GetParameters(), lockType: LockType.Write);
         }
 
     }

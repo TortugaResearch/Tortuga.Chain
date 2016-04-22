@@ -60,7 +60,7 @@ namespace Tortuga.Chain.Appenders
 
             var result = PreviousLink.Execute(state);
 
-            DataSource.WriteToCache(new CacheItem(m_CacheKey ?? m_CacheKeyFunction(result), result, null), m_Policy);
+            ((DataSource)DataSource).WriteToCache(new CacheItem(m_CacheKey ?? m_CacheKeyFunction(result), result, null), m_Policy);
 
             return result;
         }
@@ -76,7 +76,7 @@ namespace Tortuga.Chain.Appenders
 
             var result = await PreviousLink.ExecuteAsync(state).ConfigureAwait(false);
 
-            DataSource.WriteToCache(new CacheItem(m_CacheKey ?? m_CacheKeyFunction(result), result, null), m_Policy);
+            ((DataSource)DataSource).WriteToCache(new CacheItem(m_CacheKey ?? m_CacheKeyFunction(result), result, null), m_Policy);
 
             return result;
         }

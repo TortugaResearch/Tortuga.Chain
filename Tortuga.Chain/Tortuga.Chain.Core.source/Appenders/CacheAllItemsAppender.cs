@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Runtime.Caching;
 using System.Threading;
 using System.Threading.Tasks;
+using Tortuga.Chain.DataSources;
+
 namespace Tortuga.Chain.Appenders
 {
     /// <summary>
@@ -66,7 +68,7 @@ namespace Tortuga.Chain.Appenders
         private void CacheItems(IEnumerable<TItem> list)
         {
             foreach (var item in list)
-                DataSource.WriteToCache(new CacheItem(m_CacheKeyFunction(item), item, null), m_Policy);
+                ((DataSource)DataSource).WriteToCache(new CacheItem(m_CacheKeyFunction(item), item, null), m_Policy);
         }
     }
 }

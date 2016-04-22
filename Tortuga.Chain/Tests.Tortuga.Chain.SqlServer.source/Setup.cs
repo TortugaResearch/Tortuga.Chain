@@ -64,15 +64,18 @@ namespace Tests
 
         static void WriteDetails(ExecutionEventArgs e)
         {
-            Debug.WriteLine("");
-            Debug.WriteLine("Command text: ");
-            Debug.WriteLine(e.ExecutionDetails.CommandText);
-            Debug.Indent();
-            foreach (var item in ((SqlServerExecutionToken)e.ExecutionDetails).Parameters)
-                Debug.WriteLine(item.ParameterName + ": " + (item.Value == null || item.Value == DBNull.Value ? "<NULL>" : item.Value));
-            Debug.Unindent();
-            Debug.WriteLine("******");
-            Debug.WriteLine("");
+            if (e.ExecutionDetails is SqlServerExecutionToken)
+            {
+                Debug.WriteLine("");
+                Debug.WriteLine("Command text: ");
+                Debug.WriteLine(e.ExecutionDetails.CommandText);
+                Debug.Indent();
+                foreach (var item in ((SqlServerExecutionToken)e.ExecutionDetails).Parameters)
+                    Debug.WriteLine(item.ParameterName + ": " + (item.Value == null || item.Value == DBNull.Value ? "<NULL>" : item.Value));
+                Debug.Unindent();
+                Debug.WriteLine("******");
+                Debug.WriteLine("");
+            }
         }
     }
 }

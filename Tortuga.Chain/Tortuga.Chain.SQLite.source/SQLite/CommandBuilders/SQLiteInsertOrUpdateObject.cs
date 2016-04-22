@@ -23,7 +23,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
         private readonly UpsertOptions m_Options;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SQLiteInsertOrUpdateObject"/> class.
+        /// Initializes a new instance of the <see cref="SQLiteInsertOrUpdateObject{TArgument}"/> class.
         /// </summary>
         /// <param name="dataSource"></param>
         /// <param name="tableName"></param>
@@ -45,15 +45,15 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
             if (materializer == null)
                 throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
 
-            var sqlBuilder = Metadata.CreateSqlBuilder(StrictMode);
+            var sqlBuilder = Table.CreateSqlBuilder(StrictMode);
             sqlBuilder.ApplyArgumentValue(DataSource, ArgumentValue, m_Options);
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
             var sql = new StringBuilder();
-            sqlBuilder.BuildUpdateByKeyStatement(sql, TableName, ";");
+            sqlBuilder.BuildUpdateByKeyStatement(sql, Table.Name, ";");
             sql.AppendLine();
 
-            sqlBuilder.BuildInsertClause(sql, $"INSERT OR IGNORE INTO {TableName} (", null, ")");
+            sqlBuilder.BuildInsertClause(sql, $"INSERT OR IGNORE INTO {Table.Name} (", null, ")");
             sqlBuilder.BuildValuesClause(sql, " VALUES (", ");");
             sql.AppendLine();
 
@@ -64,11 +64,11 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
                     throw new NotSupportedException("Cannot return data from a SQLite Upsert unless there is a single primary key.");
                 var key = keys[0];
 
-                sqlBuilder.BuildSelectClause(sql, "SELECT ", null, $" FROM {TableName} WHERE {key.QuotedSqlName} = CASE WHEN {key.SqlVariableName} IS NULL OR {key.SqlVariableName} = 0 THEN last_insert_rowid() ELSE {key.SqlVariableName} END;");
+                sqlBuilder.BuildSelectClause(sql, "SELECT ", null, $" FROM {Table.Name} WHERE {key.QuotedSqlName} = CASE WHEN {key.SqlVariableName} IS NULL OR {key.SqlVariableName} = 0 THEN last_insert_rowid() ELSE {key.SqlVariableName} END;");
 
             }
 
-            return new SQLiteExecutionToken(DataSource, "Insert or update " + TableName, sql.ToString(), sqlBuilder.GetParameters(), lockType: LockType.Write);
+            return new SQLiteExecutionToken(DataSource, "Insert or update " + Table.Name, sql.ToString(), sqlBuilder.GetParameters(), lockType: LockType.Write);
 
         }
 

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
@@ -13,11 +12,12 @@ namespace Tortuga.Chain.Core
     /// </summary>
     /// <typeparam name="TCommand">The type of the command used.</typeparam>
     /// <typeparam name="TParameter">The type of the t parameter type.</typeparam>
+    /// <seealso cref="ExecutionToken" />
     public class ExecutionToken<TCommand, TParameter> : ExecutionToken
         where TCommand : DbCommand
         where TParameter : DbParameter
     {
-        private readonly DataSource<TCommand, TParameter> m_DataSource;
+        private readonly ICommandDataSource<TCommand, TParameter> m_DataSource;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ExecutionToken{TCommand, TParameter}"/> class.
@@ -27,7 +27,7 @@ namespace Tortuga.Chain.Core
         /// <param name="commandText">The SQL to be executed.</param>
         /// <param name="parameters">The parameters.</param>
         /// <param name="commandType">Type of the command.</param>
-        public ExecutionToken(DataSource<TCommand, TParameter> dataSource, string operationName, string commandText, IReadOnlyList<TParameter> parameters, CommandType commandType = CommandType.Text)
+        public ExecutionToken(ICommandDataSource<TCommand, TParameter> dataSource, string operationName, string commandText, IReadOnlyList<TParameter> parameters, CommandType commandType = CommandType.Text)
             : base(dataSource, operationName, commandText, commandType)
         {
             m_DataSource = dataSource;
@@ -40,7 +40,7 @@ namespace Tortuga.Chain.Core
         /// </summary>
         /// <param name="implementation">The implementation.</param>
         /// <param name="state">The state.</param>
-        public void Execute(Func<TCommand, int?> implementation, object state)
+        public void Execute(CommandImplementation<TCommand> implementation, object state)
         {
             m_DataSource.Execute(this, implementation, state);
         }
@@ -52,12 +52,10 @@ namespace Tortuga.Chain.Core
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <param name="state">The state.</param>
         /// <returns>Task.</returns>
-        public Task ExecuteAsync(Func<TCommand, Task<int?>> implementation, CancellationToken cancellationToken, object state)
+        public Task ExecuteAsync(CommandImplementationAsync<TCommand> implementation, CancellationToken cancellationToken, object state)
         {
             return m_DataSource.ExecuteAsync(this, implementation, cancellationToken, state);
         }
-
-
 
         /// <summary>
         /// Gets the parameters.
@@ -82,4 +80,24 @@ namespace Tortuga.Chain.Core
         protected virtual void OnBuildCommand(TCommand command) { }
 
     }
+
+    /// <summary>
+    /// The implementation of an operation from a CommandBuilder.
+    /// </summary>
+    /// <typeparam name="TCommand">The type of the t command.</typeparam>
+    /// <param name="command">The command.</param>
+    /// <returns>System.Nullable&lt;System.Int32&gt;.</returns>
+    public delegate int? CommandImplementation<TCommand>(TCommand command)
+               where TCommand : DbCommand
+;
+
+    /// <summary>
+    /// The implementation of an operation from a CommandBuilder.
+    /// </summary>
+    /// <typeparam name="TCommand">The type of the t command.</typeparam>
+    /// <param name="command">The command.</param>
+    /// <returns>Task&lt;System.Nullable&lt;System.Int32&gt;&gt;.</returns>
+    public delegate Task<int?> CommandImplementationAsync<TCommand>(TCommand command)
+              where TCommand : DbCommand;
+
 }

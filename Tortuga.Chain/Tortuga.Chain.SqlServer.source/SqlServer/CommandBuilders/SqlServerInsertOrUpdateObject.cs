@@ -17,7 +17,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         private readonly UpsertOptions m_Options;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SqlServerInsertOrUpdateObject"/> class.
+        /// Initializes a new instance of the <see cref="SqlServerInsertOrUpdateObject{TArgument}"/> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
         /// <param name="tableName">Name of the table.</param>
@@ -39,13 +39,13 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             if (materializer == null)
                 throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
 
-            var sqlBuilder = Metadata.CreateSqlBuilder(StrictMode);
+            var sqlBuilder = Table.CreateSqlBuilder(StrictMode);
             sqlBuilder.ApplyArgumentValue(DataSource, ArgumentValue, m_Options);
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
             var availableColumns = sqlBuilder.GetParameterizedColumns().ToList();
 
-            var sql = new StringBuilder($"MERGE INTO {TableName.ToQuotedString()} target USING ");
+            var sql = new StringBuilder($"MERGE INTO {Table.Name.ToQuotedString()} target USING ");
             sql.Append("(VALUES (" + string.Join(", ", availableColumns.Select(c => c.SqlVariableName)) + ")) AS source (" + string.Join(", ", availableColumns.Select(c => c.QuotedSqlName)) + ")");
             sql.Append(" ON ");
             sql.Append(string.Join(" AND ", sqlBuilder.GetKeyColumns().ToList().Select(c => $"target.{c.QuotedSqlName} = source.{c.QuotedSqlName}")));
@@ -62,7 +62,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             sqlBuilder.BuildSelectClause(sql, " OUTPUT ", "Inserted.", null);
             sql.Append(";");
 
-            return new SqlServerExecutionToken(DataSource, "Insert or update " + TableName, sql.ToString(), sqlBuilder.GetParameters());
+            return new SqlServerExecutionToken(DataSource, "Insert or update " + Table.Name, sql.ToString(), sqlBuilder.GetParameters());
         }
     }
 }

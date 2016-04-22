@@ -21,7 +21,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// Initializes a new instance of the <see cref="TableDbCommandBuilder{TCommand, TParameter, TLimit}"/> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
-        protected TableDbCommandBuilder(DataSource<TCommand, TParameter> dataSource) : base(dataSource)
+        protected TableDbCommandBuilder(ICommandDataSource<TCommand, TParameter> dataSource) : base(dataSource)
         {
 
         }

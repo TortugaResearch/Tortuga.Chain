@@ -85,5 +85,26 @@ namespace Tortuga.Chain.Metadata
         {
             throw new NotSupportedException("Table value functions are not supported by this data source");
         }
+
+        /// <summary>
+        /// Gets the table-valued functions that were loaded by this cache.
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>Call Preload before invoking this method to ensure that all table-valued functions were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.</remarks>
+        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
+        public virtual ICollection<UserDefinedTypeMetadata<TName, TDbType>> GetUserDefinedTypes()
+        {
+            throw new NotSupportedException("Table value functions are not supported by this data source");
+        }
+
+        /// <summary>
+        /// Gets the metadata for a user defined type.
+        /// </summary>
+        /// <param name="typeName">Name of the type.</param>
+        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
+        public virtual UserDefinedTypeMetadata<TName, TDbType> GetUserDefinedType(TName typeName)
+        {
+            throw new NotSupportedException("User defined types are not supported by this data source");
+        }
     }
 }
