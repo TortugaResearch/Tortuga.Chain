@@ -58,14 +58,24 @@ namespace Tortuga.Chain.CommandBuilders
         /// <returns>ExecutionToken&lt;TCommand&gt;.</returns>
         public abstract OperationExecutionToken<TConnection, TTransaction> Prepare();
 
-        //internal abstract OperationImplementation<TConnection, TTransaction> GetOperationImplementation();
-        //internal abstract OperationImplementationAsync<TConnection, TTransaction> GetOperationImplementationAsync();
 
-
+        /// <summary>
+        /// Implementation the specified operation.
+        /// </summary>
+        /// <param name="connection">The connection.</param>
+        /// <param name="transaction">The transaction.</param>
+        /// <returns>System.Nullable&lt;System.Int32&gt;.</returns>
         protected internal abstract int? Implementation(TConnection connection, TTransaction transaction);
 
+        /// <summary>
+        /// Implementation the specified operation.
+        /// </summary>
+        /// <param name="connection">The connection.</param>
+        /// <param name="transaction">The transaction.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task&lt;System.Nullable&lt;System.Int32&gt;&gt;.</returns>
         protected internal abstract Task<int?> ImplementationAsync(TConnection connection, TTransaction transaction, CancellationToken cancellationToken);
 
-  
+
     }
 }

@@ -2,6 +2,7 @@
 using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Tortuga.Chain.AuditRules;
 using Tortuga.Chain.CommandBuilders;
@@ -14,6 +15,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
     internal class SqlServerInsertBatch : MultipleRowDbCommandBuilder<SqlCommand, SqlParameter>
     {
         private readonly object m_Source;
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields", Justification = "For future use")]
         private readonly InsertOptions m_Options;
         private readonly TableOrViewMetadata<SqlServerObjectName, SqlDbType> m_Table;
         private readonly UserDefinedTypeMetadata<SqlServerObjectName, SqlDbType> m_TableType;

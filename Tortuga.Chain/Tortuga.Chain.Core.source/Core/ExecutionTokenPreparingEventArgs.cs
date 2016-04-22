@@ -10,15 +10,13 @@ namespace Tortuga.Chain.Core
     /// <seealso cref="EventArgs" />
     public class ExecutionTokenPreparingEventArgs : EventArgs
     {
-        private readonly DbCommandBuilder m_CommandBuilder;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="ExecutionTokenPreparingEventArgs"/> class.
         /// </summary>
         /// <param name="commandBuilder">The command builder.</param>
         public ExecutionTokenPreparingEventArgs(DbCommandBuilder commandBuilder)
         {
-            m_CommandBuilder = commandBuilder;
+            CommandBuilder = commandBuilder;
         }
 
         /// <summary>
@@ -27,10 +25,7 @@ namespace Tortuga.Chain.Core
         /// <value>
         /// The command builder.
         /// </value>
-        public DbCommandBuilder CommandBuilder
-        {
-            get;
-        }
+        public DbCommandBuilder CommandBuilder { get; }
     }
 
 }

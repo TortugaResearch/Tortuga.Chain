@@ -8,6 +8,11 @@ using Tortuga.Chain.DataSources;
 
 namespace Tortuga.Chain.Materializers
 {
+    /// <summary>
+    /// This is the operation equivalent to the NonQueryMaterializer.
+    /// </summary>
+    /// <typeparam name="TConnection">The type of the t connection.</typeparam>
+    /// <typeparam name="TTransaction">The type of the t transaction.</typeparam>
     public class Operation<TConnection, TTransaction> : ILink<int?>
         where TConnection : DbConnection
         where TTransaction : DbTransaction
@@ -15,24 +20,49 @@ namespace Tortuga.Chain.Materializers
 
         private readonly DbOperationBuilder<TConnection, TTransaction> m_OperationBuilder;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Operation{TConnection, TTransaction}"/> class.
+        /// </summary>
+        /// <param name="operationBuilder">The operation builder.</param>
         public Operation(DbOperationBuilder<TConnection, TTransaction> operationBuilder)
         {
             m_OperationBuilder = operationBuilder;
         }
 
+        /// <summary>
+        /// Gets the data source that is associated with this materializer or appender.
+        /// </summary>
+        /// <value>The data source.</value>
+        /// <remarks>This is only used for</remarks>
         public IDataSource DataSource
         {
             get { return m_OperationBuilder.DataSource; }
         }
 
+        /// <summary>
+        /// Occurs when an execution token has been prepared.
+        /// </summary>
+        /// <remarks>This is mostly used by appenders to override command behavior.</remarks>
         public event EventHandler<ExecutionTokenPreparedEventArgs> ExecutionTokenPrepared;
+
+        /// <summary>
+        /// Occurs when an execution token is about to be prepared.
+        /// </summary>
+        /// <remarks>This is mostly used by appenders to override SQL generation.</remarks>
         public event EventHandler<ExecutionTokenPreparingEventArgs> ExecutionTokenPreparing;
 
-        public string CommandText()
+
+        string ILink<int?>.CommandText()
         {
-            throw new NotImplementedException();
+            return null;
         }
 
+
+        /// <summary>
+        /// Execute the operation synchronously.
+        /// </summary>
+        /// <param name="state">User defined state, usually used for logging.</param>
+        /// <returns>System.Nullable&lt;System.Int32&gt;.</returns>
         public int? Execute(object state = null)
         {
             var token = Prepare();
@@ -41,11 +71,22 @@ namespace Tortuga.Chain.Materializers
 
         }
 
+        /// <summary>
+        /// Execute the operation asynchronously.
+        /// </summary>
+        /// <param name="state">User defined state, usually used for logging.</param>
+        /// <returns>Task&lt;System.Nullable&lt;System.Int32&gt;&gt;.</returns>
         public Task<int?> ExecuteAsync(object state = null)
         {
             return ExecuteAsync(CancellationToken.None, state);
         }
 
+        /// <summary>
+        /// Execute the operation asynchronously.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <param name="state">User defined state, usually used for logging.</param>
+        /// <returns>Task&lt;System.Nullable&lt;System.Int32&gt;&gt;.</returns>
         public Task<int?> ExecuteAsync(CancellationToken cancellationToken, object state = null)
         {
             var token = Prepare();

@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Data;
 using System.Data.Common;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Tortuga.Anchor.Metadata;
+using Tortuga.Chain.AuditRules;
 using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain
@@ -16,11 +17,10 @@ namespace Tortuga.Chain
     /// </summary>
     /// <typeparam name="TObject"></typeparam>
     /// <seealso cref="DbDataReader" />
+    [SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
+    [SuppressMessage("Microsoft.Design", "CA1010:CollectionsShouldImplementGenericInterface")]
     public class ObjectDataReader<TObject> : DbDataReader
     {
-        private static readonly ConcurrentDictionary<object, ObjectDataReaderMetatData> s_MetadataCache = new ConcurrentDictionary<object, ObjectDataReaderMetatData>();
-
-        private readonly string m_TargetName;
         private IEnumerator<TObject> m_Source;
         private readonly DataTable m_Schema;
         private readonly ImmutableArray<PropertyMetadata> m_PropertyList;
@@ -28,7 +28,13 @@ namespace Tortuga.Chain
         private int? m_RecordCount;
 
 
-        public ObjectDataReader(IUserDefinedTypeMetadata tableType, IEnumerable<TObject> source)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ObjectDataReader{TObject}" /> class.
+        /// </summary>
+        /// <param name="tableType">Type of the table.</param>
+        /// <param name="source">The source.</param>
+        /// <param name="operationType">Type of the operation being performed.</param>
+        public ObjectDataReader(IUserDefinedTypeMetadata tableType, IEnumerable<TObject> source, OperationTypes operationType = OperationTypes.None)
         {
             if (tableType == null)
                 throw new ArgumentNullException(nameof(tableType), $"{nameof(tableType)} is null.");
@@ -40,15 +46,20 @@ namespace Tortuga.Chain
                 m_RecordCount = ((ICollection)source).Count;
 
             m_Source = source.GetEnumerator();
-            m_TargetName = tableType.Name;
-            var metadata = BuildStructure(tableType, tableType.Name, tableType.Columns, true);
+            var metadata = BuildStructure(tableType.Name, tableType.Columns, true, operationType);
             m_Schema = metadata.Schema;
             m_PropertyList = metadata.Properties;
             m_PropertyLookup = metadata.PropertyLookup;
         }
 
 
-        public ObjectDataReader(ITableOrViewMetadata tableOrView, IEnumerable<TObject> source)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ObjectDataReader{TObject}" /> class.
+        /// </summary>
+        /// <param name="tableOrView">The table or view.</param>
+        /// <param name="source">The source.</param>
+        /// <param name="operationType">Type of the operation being performed.</param>
+        public ObjectDataReader(ITableOrViewMetadata tableOrView, IEnumerable<TObject> source, OperationTypes operationType = OperationTypes.None)
         {
             if (tableOrView == null)
                 throw new ArgumentNullException(nameof(tableOrView), $"{nameof(tableOrView)} is null.");
@@ -61,8 +72,7 @@ namespace Tortuga.Chain
                 m_RecordCount = ((ICollection)source).Count;
 
             m_Source = source.GetEnumerator();
-            m_TargetName = tableOrView.Name;
-            var metadata = BuildStructure(tableOrView, tableOrView.Name, tableOrView.Columns, false);
+            var metadata = BuildStructure(tableOrView.Name, tableOrView.Columns, false, operationType);
             m_Schema = metadata.Schema;
             m_PropertyList = metadata.Properties;
             m_PropertyLookup = metadata.PropertyLookup;
@@ -82,14 +92,16 @@ namespace Tortuga.Chain
 
         }
 
-        private static ObjectDataReaderMetatData BuildStructure(object target, string targetName, IReadOnlyList<IColumnMetadata> columns, bool allColumnsRequired)
+        [SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling")]
+        [SuppressMessage("Microsoft.Globalization", "CA1306:SetLocaleForDataTypes")]
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
+        private static ObjectDataReaderMetatData BuildStructure(string targetName, IReadOnlyList<IColumnMetadata> columns, bool allColumnsRequired, OperationTypes operationType)
         {
-            ObjectDataReaderMetatData result;
-            if (s_MetadataCache.TryGetValue(target, out result))
-                return result;
-
 
             var propertyList = MetadataCache.GetMetadata(typeof(TObject)).Properties.Where(p => p.CanRead && p.MappedColumnName != null).ToList();
+            bool checkIgnoreOnInsert = operationType == OperationTypes.Insert;
+            bool checkIgnoreOnUpdate = operationType == OperationTypes.Update;
+
 
             var dt = new DataTable();
             dt.Columns.Add("ColumnName", typeof(string));
@@ -127,10 +139,18 @@ namespace Tortuga.Chain
                 {
                     if (column.ClrName.Equals(item.MappedColumnName, StringComparison.OrdinalIgnoreCase) || column.SqlName.Equals(item.MappedColumnName, StringComparison.OrdinalIgnoreCase))
                     {
+                        if (checkIgnoreOnInsert && item.IgnoreOnInsert)
+                            continue; //look for another match
+
+                        if (checkIgnoreOnUpdate && item.IgnoreOnUpdate)
+                            continue; //look for another match
+
                         property = item;
                         break;
                     }
                 }
+
+
                 if (property == null)
                 {
                     if (allColumnsRequired)
@@ -173,11 +193,8 @@ namespace Tortuga.Chain
             }
 
 
-            result = new ObjectDataReaderMetatData(dt, realPropertyList.ToImmutableArray(), realPropertyList.Select((p, x) => new { Index = x, Property = p }).ToImmutableDictionary(px => px.Property.Name, px => px.Index, StringComparer.OrdinalIgnoreCase));
+            return new ObjectDataReaderMetatData(dt, realPropertyList.ToImmutableArray(), realPropertyList.Select((p, x) => new { Index = x, Property = p }).ToImmutableDictionary(px => px.Property.Name, px => px.Index, StringComparer.OrdinalIgnoreCase));
 
-            s_MetadataCache.TryAdd(target, result);
-
-            return result;
         }
 
 
@@ -277,6 +294,11 @@ namespace Tortuga.Chain
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Gets the value of the specified column as a single character.
+        /// </summary>
+        /// <param name="ordinal">The zero-based column ordinal.</param>
+        /// <returns>The value of the specified column.</returns>
         public override char GetChar(int ordinal) => (char)this[ordinal];
 
         /// <summary>
@@ -457,6 +479,10 @@ namespace Tortuga.Chain
             base.Dispose(disposing);
         }
 
+        /// <summary>
+        /// Returns a <see cref="T:System.Data.DataTable" /> that describes the column metadata of the <see cref="T:System.Data.Common.DbDataReader" />.
+        /// </summary>
+        /// <returns>A <see cref="T:System.Data.DataTable" /> that describes the column metadata.</returns>
         public override DataTable GetSchemaTable()
         {
             return m_Schema;

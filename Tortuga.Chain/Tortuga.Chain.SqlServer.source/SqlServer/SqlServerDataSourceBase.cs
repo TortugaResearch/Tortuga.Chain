@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Tortuga.Anchor;
+using Tortuga.Chain.AuditRules;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Metadata;
@@ -387,16 +389,42 @@ namespace Tortuga.Chain.SqlServer
             return TableFunction(functionName, functionArgumentValue);
         }
 
+        /// <summary>
+        /// Inserts the batch of records as one operation.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="tableTypeName">Name of the table type.</param>
+        /// <param name="dataTable">The data table.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
         public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> InsertBatch(SqlServerObjectName tableName, SqlServerObjectName tableTypeName, DataTable dataTable, InsertOptions options = InsertOptions.None)
         {
             return new SqlServerInsertBatch(this, tableName, tableTypeName, dataTable, options);
         }
 
+        /// <summary>
+        /// Inserts the batch of records as one operation.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="tableTypeName">Name of the table type.</param>
+        /// <param name="dataReader">The data reader.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
         public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> InsertBatch(SqlServerObjectName tableName, SqlServerObjectName tableTypeName, DbDataReader dataReader, InsertOptions options = InsertOptions.None)
         {
             return new SqlServerInsertBatch(this, tableName, tableTypeName, dataReader, options);
         }
 
+        /// <summary>
+        /// Inserts the batch of records as one operation..
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="tableTypeName">Name of the table type.</param>
+        /// <param name="objects">The objects.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> InsertBatch<T>(SqlServerObjectName tableName, SqlServerObjectName tableTypeName, IEnumerable<T> objects, InsertOptions options = InsertOptions.None)
         {
             var tableType = DatabaseMetadata.GetUserDefinedType(tableTypeName);
@@ -404,20 +432,44 @@ namespace Tortuga.Chain.SqlServer
         }
 
 
-        public SqlServerInsertBulk InsertBulk(SqlServerObjectName tableName, DataTable dataTable, SqlBulkCopyOptions options = SqlBulkCopyOptions.Default, int? batchSize = null)
+        /// <summary>
+        /// Inserts the batch of records using bulk insert.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="dataTable">The data table.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>SqlServerInsertBulk.</returns>
+        public SqlServerInsertBulk InsertBulk(SqlServerObjectName tableName, DataTable dataTable, SqlBulkCopyOptions options = SqlBulkCopyOptions.Default)
         {
-            return new SqlServerInsertBulk(this, tableName, dataTable, options, batchSize);
+            return new SqlServerInsertBulk(this, tableName, dataTable, options);
         }
 
-        public SqlServerInsertBulk InsertBulk(SqlServerObjectName tableName, IDataReader dataReader, SqlBulkCopyOptions options = SqlBulkCopyOptions.Default, int? batchSize = null)
+
+        /// <summary>
+        /// Inserts the batch of records using bulk insert.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="dataReader">The data reader.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>SqlServerInsertBulk.</returns>
+        public SqlServerInsertBulk InsertBulk(SqlServerObjectName tableName, IDataReader dataReader, SqlBulkCopyOptions options = SqlBulkCopyOptions.Default)
         {
-            return new SqlServerInsertBulk(this, tableName, dataReader, options, batchSize);
+            return new SqlServerInsertBulk(this, tableName, dataReader, options);
         }
 
-        public SqlServerInsertBulk InsertBulk<T>(SqlServerObjectName tableName, IEnumerable<T> objects, SqlBulkCopyOptions options = SqlBulkCopyOptions.Default, int? batchSize = null)
+        /// <summary>
+        /// Inserts the batch of records using bulk insert.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="objects">The objects.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>SqlServerInsertBulk.</returns>
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
+        public SqlServerInsertBulk InsertBulk<T>(SqlServerObjectName tableName, IEnumerable<T> objects, SqlBulkCopyOptions options = SqlBulkCopyOptions.Default)
         {
             var tableType = DatabaseMetadata.GetTableOrView(tableName);
-            return new SqlServerInsertBulk(this, tableName, new ObjectDataReader<T>(tableType, objects), options, batchSize);
+            return new SqlServerInsertBulk(this, tableName, new ObjectDataReader<T>(tableType, objects, OperationTypes.Insert), options);
         }
     }
 }

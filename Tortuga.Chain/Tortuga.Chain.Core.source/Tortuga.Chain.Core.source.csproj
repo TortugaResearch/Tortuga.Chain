@@ -107,6 +107,7 @@
     <Compile Include="DataSources\ICommandDataSource.cs" />
     <Compile Include="DataSources\IDataSource.cs" />
     <Compile Include="DataSources\IOperationDataSource.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="IConstructibleMaterializer`1.cs" />
     <Compile Include="DictionaryOptions.cs" />
     <Compile Include="CommandBuilders\GenericDbSqlCall.cs" />

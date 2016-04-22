@@ -8,6 +8,13 @@ namespace Tortuga.Chain.DataSources
 
 
 
+    /// <summary>
+    /// This interface exposes the execute command methods. 
+    /// </summary>
+    /// <typeparam name="TCommand">The type of the t command.</typeparam>
+    /// <typeparam name="TParameter">The type of the t parameter.</typeparam>
+    /// <seealso cref="IDataSource" />
+    /// <remarks>This is for internal use only.</remarks>
     public interface ICommandDataSource<TCommand, TParameter> : IDataSource
      where TCommand : DbCommand
         where TParameter : DbParameter

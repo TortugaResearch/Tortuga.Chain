@@ -3,6 +3,9 @@ using Tortuga.Chain.AuditRules;
 namespace Tortuga.Chain.DataSources
 {
 
+    /// <summary>
+    /// Interface IDataSource is used to expose a data source to appenders. 
+    /// </summary>
     public interface IDataSource
     {
         /// <summary>

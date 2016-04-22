@@ -5,11 +5,13 @@ using Tortuga.Chain.Core;
 
 namespace Tortuga.Chain.DataSources
 {
-
-
-
-
-
+    /// <summary>
+    /// This interface exposes the execute operation methods. 
+    /// </summary>
+    /// <typeparam name="TConnection">The type of the t connection.</typeparam>
+    /// <typeparam name="TTransaction">The type of the t transaction.</typeparam>
+    /// <seealso cref="IDataSource" />
+    /// <remarks>This is for internal use only.</remarks>
     public interface IOperationDataSource<TConnection, TTransaction> : IDataSource
         where TConnection : DbConnection
         where TTransaction : DbTransaction
@@ -21,6 +23,7 @@ namespace Tortuga.Chain.DataSources
         /// <param name="executionToken">The execution token.</param>
         /// <param name="implementation">The implementation.</param>
         /// <param name="state">The state.</param>
+        /// <returns>System.Nullable&lt;System.Int32&gt;.</returns>
         int? Execute(OperationExecutionToken<TConnection, TTransaction> executionToken, OperationImplementation<TConnection, TTransaction> implementation, object state);
 
         /// <summary>

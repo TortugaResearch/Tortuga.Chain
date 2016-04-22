@@ -46,6 +46,21 @@ namespace Tests.Class2Databases
             Assert.AreEqual(-1, count); //streaming prevents returning a row count;
         }
 
+        [TestMethod]
+        public void InsertBulk_WithEvents()
+        {
+            long runningCount = 0;
+            var key = Guid.NewGuid().ToString();
+            var employeeList = new List<Employee>();
+
+            var count = DataSource.InsertBulk(EmployeeTableName, StreamRecords(key, 1000)).WithBatchSize(75).WithNotifications((s, e) =>
+            {
+                Debug.WriteLine($"Copied {e.RowsCopied} rows");
+                runningCount = e.RowsCopied;
+            }, 90).Execute();
+            Assert.AreEqual(-1, count); //streaming prevents returning a row count;
+            Assert.AreNotEqual(0, runningCount); //but we can get it another way
+        }
 
         IEnumerable<Employee> StreamRecords(string key, int maxRecords)
         {
