@@ -25,7 +25,7 @@ namespace Tortuga.Chain.DataSources
         /// <param name="executionToken">The execution token.</param>
         /// <param name="implementation">The implementation that handles processing the result of the command.</param>
         /// <param name="state">User supplied state.</param>
-        void Execute(ExecutionToken<TCommand, TParameter> executionToken, CommandImplementation<TCommand> implementation, object state);
+        void Execute(CommandExecutionToken<TCommand, TParameter> executionToken, CommandImplementation<TCommand> implementation, object state);
 
         /// <summary>
         /// Executes the operation asynchronously.
@@ -35,7 +35,7 @@ namespace Tortuga.Chain.DataSources
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <param name="state">User supplied state.</param>
         /// <returns>Task.</returns>
-        Task ExecuteAsync(ExecutionToken<TCommand, TParameter> executionToken, CommandImplementationAsync<TCommand> implementation, CancellationToken cancellationToken, object state);
+        Task ExecuteAsync(CommandExecutionToken<TCommand, TParameter> executionToken, CommandImplementationAsync<TCommand> implementation, CancellationToken cancellationToken, object state);
 
     }
 }

@@ -40,7 +40,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
                 throw new MappingException($"{m_TableType.Name} is not a user defined table type");
         }
 
-        public override ExecutionToken<SqlCommand, SqlParameter> Prepare(Materializer<SqlCommand, SqlParameter> materializer)
+        public override CommandExecutionToken<SqlCommand, SqlParameter> Prepare(Materializer<SqlCommand, SqlParameter> materializer)
         {
             if (materializer == null)
                 throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");

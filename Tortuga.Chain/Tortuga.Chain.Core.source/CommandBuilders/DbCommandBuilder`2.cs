@@ -53,7 +53,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// </summary>
         /// <param name="materializer">The materializer.</param>
         /// <returns>ExecutionToken&lt;TCommand&gt;.</returns>
-        public abstract ExecutionToken<TCommand, TParameter> Prepare(Materializer<TCommand, TParameter> materializer);
+        public abstract CommandExecutionToken<TCommand, TParameter> Prepare(Materializer<TCommand, TParameter> materializer);
 
         ///// <summary>
         ///// Returns the number of rows affected.

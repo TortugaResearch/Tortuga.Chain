@@ -10,12 +10,12 @@ namespace Tortuga.Chain.SqlServer
     /// <summary>
     /// An execution token specific to Sql Server.
     /// </summary>
-    public sealed class SqlServerExecutionToken : ExecutionToken<SqlCommand, SqlParameter>
+    public sealed class SqlServerExecutionToken : CommandExecutionToken<SqlCommand, SqlParameter>
     {
         private OnChangeEventHandler m_OnChangeEventHandler;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ExecutionToken{TCommand, TParameter}"/> class.
+        /// Initializes a new instance of the <see cref="CommandExecutionToken{TCommand, TParameter}"/> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
         /// <param name="operationName">Name of the operation. This is used for logging.</param>

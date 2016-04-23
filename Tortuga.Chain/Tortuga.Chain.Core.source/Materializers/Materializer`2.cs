@@ -104,7 +104,7 @@ namespace Tortuga.Chain.Materializers
         /// Prepares this operation for execution.
         /// </summary>
         /// <returns>ExecutionToken&lt;TCommand, TParameter&gt;.</returns>
-        protected ExecutionToken<TCommand, TParameter> Prepare()
+        protected CommandExecutionToken<TCommand, TParameter> Prepare()
         {
             OnExecutionTokenPreparing(new ExecutionTokenPreparingEventArgs(CommandBuilder));
 

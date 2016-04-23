@@ -9,14 +9,14 @@ namespace Tortuga.Chain.PostgreSql
     /// <summary>
     /// 
     /// </summary>
-    /// <seealso cref="ExecutionToken{NpgsqlCommand, NpgsqlParameter}" />
-    internal class PostgreSqlExecutionToken : ExecutionToken<NpgsqlCommand, NpgsqlParameter>
+    /// <seealso cref="CommandExecutionToken{NpgsqlCommand, NpgsqlParameter}" />
+    internal class PostgreSqlExecutionToken : CommandExecutionToken<NpgsqlCommand, NpgsqlParameter>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="PostgreSqlExecutionToken" /> class.
         /// </summary>
         /// <returns>PostgreSqlxecutionToken.</returns>
-        public PostgreSqlExecutionToken(DataSource<NpgsqlCommand, NpgsqlParameter> dataSource, string operationName, string commandText, IReadOnlyList<NpgsqlParameter> parameters, CommandType commandType = CommandType.Text) : base(dataSource, operationName, commandText, parameters, commandType)
+        public PostgreSqlExecutionToken(ICommandDataSource<NpgsqlCommand, NpgsqlParameter> dataSource, string operationName, string commandText, IReadOnlyList<NpgsqlParameter> parameters, CommandType commandType = CommandType.Text) : base(dataSource, operationName, commandText, parameters, commandType)
         {
         }
     }

@@ -100,10 +100,11 @@
     <Compile Include="SQLite\CommandBuilders\SQLiteUpdateObject.cs" />
     <Compile Include="SQLite\LockType.cs" />
     <Compile Include="SQLite\SQLiteDataSourceBase.cs" />
-    <Compile Include="SQLite\SQLiteExecutionToken.cs" />
+    <Compile Include="SQLite\SQLiteCommandExecutionToken.cs" />
     <Compile Include="SQLite\SQLiteMetadataCache.cs" />
     <Compile Include="SQLite\SQLiteDataSourceSettings.cs" />
     <Compile Include="SQLite\SQLiteOpenDataSource.cs" />
+    <Compile Include="SQLite\SQLiteOperationExecutionToken.cs" />
     <Compile Include="SQLite\SQLiteTransactionalDataSource.cs" />
     <Compile Include="SQLite\Utilities.cs" />
     <Compile Include="SQLiteLimitOption.cs" />

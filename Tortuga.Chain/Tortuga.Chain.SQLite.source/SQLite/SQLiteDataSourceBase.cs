@@ -19,10 +19,10 @@ using SQLiteParameter = Microsoft.Data.Sqlite.SqliteParameter;
 namespace Tortuga.Chain.SQLite
 {
     /// <summary>
-    /// Base class that represents a SQLite Datasource.
+    /// Base class that represents a SQLite Data Source.
     /// </summary>
     [SuppressMessage("Microsoft.Design", "CA1001:TypesThatOwnDisposableFieldsShouldBeDisposable")]
-    public abstract class SQLiteDataSourceBase : DataSource<SQLiteCommand, SQLiteParameter>, IClass1DataSource
+    public abstract class SQLiteDataSourceBase : DataSource<SQLiteConnection, SQLiteTransaction, SQLiteCommand, SQLiteParameter>, IClass1DataSource
     {
         private readonly ReaderWriterLockSlim m_SyncLock = new ReaderWriterLockSlim(); //Sqlite is single-threaded for writes. It says otherwise, but it spams the trace window with exceptions.
 
@@ -46,7 +46,7 @@ namespace Tortuga.Chain.SQLite
         public abstract SQLiteMetadataCache DatabaseMetadata { get; }
 
         /// <summary>
-        /// Normally we use a reader/writer lock to avoid simutaneous writes to a SQlite database. If you disable this locking, you may see extra noise in your tracing output or unexcepted exceptions.
+        /// Normally we use a reader/writer lock to avoid simultaneous writes to a SQlite database. If you disable this locking, you may see extra noise in your tracing output or unexpected exceptions.
         /// </summary>
         public bool DisableLocks { get; }
 
@@ -56,7 +56,7 @@ namespace Tortuga.Chain.SQLite
         }
 
         /// <summary>
-        /// Gets the synchronize lock used during exection of database operations.
+        /// Gets the synchronize lock used during execution of database operations.
         /// </summary>
         /// <value>The synchronize lock.</value>
         protected ReaderWriterLockSlim SyncLock

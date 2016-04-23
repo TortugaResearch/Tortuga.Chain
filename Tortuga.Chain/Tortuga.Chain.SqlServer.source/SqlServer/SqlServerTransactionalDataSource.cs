@@ -109,7 +109,7 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="executionToken">The execution token.</param>
         /// <param name="implementation">The implementation that handles processing the result of the command.</param>
         /// <param name="state">User supplied state.</param>
-        protected override void Execute(ExecutionToken<SqlCommand, SqlParameter> executionToken, CommandImplementation<SqlCommand> implementation, object state)
+        protected override void Execute(CommandExecutionToken<SqlCommand, SqlParameter> executionToken, CommandImplementation<SqlCommand> implementation, object state)
         {
             if (executionToken == null)
                 throw new ArgumentNullException("executionToken", "executionToken is null.");
@@ -152,7 +152,7 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <param name="state">User supplied state.</param>
         /// <returns>Task.</returns>
-        protected override async Task ExecuteAsync(ExecutionToken<SqlCommand, SqlParameter> executionToken, CommandImplementationAsync<SqlCommand> implementation, CancellationToken cancellationToken, object state)
+        protected override async Task ExecuteAsync(CommandExecutionToken<SqlCommand, SqlParameter> executionToken, CommandImplementationAsync<SqlCommand> implementation, CancellationToken cancellationToken, object state)
         {
             if (executionToken == null)
                 throw new ArgumentNullException("executionToken", "executionToken is null.");

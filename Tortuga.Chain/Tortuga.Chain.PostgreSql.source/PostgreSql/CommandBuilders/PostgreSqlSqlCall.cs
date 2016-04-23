@@ -38,9 +38,9 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         /// <returns>
         /// ExecutionToken&lt;TCommand&gt;.
         /// </returns>
-        public override ExecutionToken<NpgsqlCommand, NpgsqlParameter> Prepare(Materializer<NpgsqlCommand, NpgsqlParameter> materializer)
+        public override CommandExecutionToken<NpgsqlCommand, NpgsqlParameter> Prepare(Materializer<NpgsqlCommand, NpgsqlParameter> materializer)
         {
-            return new ExecutionToken<NpgsqlCommand, NpgsqlParameter>(DataSource, "Raw SQL Call", m_SqlStatement, SqlBuilder.GetParameters<NpgsqlParameter>(m_ArgumentValue));
+            return new CommandExecutionToken<NpgsqlCommand, NpgsqlParameter>(DataSource, "Raw SQL Call", m_SqlStatement, SqlBuilder.GetParameters<NpgsqlParameter>(m_ArgumentValue));
         }
     }
 }

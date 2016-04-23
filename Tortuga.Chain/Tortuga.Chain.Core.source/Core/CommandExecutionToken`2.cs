@@ -13,21 +13,21 @@ namespace Tortuga.Chain.Core
     /// <typeparam name="TCommand">The type of the command used.</typeparam>
     /// <typeparam name="TParameter">The type of the t parameter type.</typeparam>
     /// <seealso cref="ExecutionToken" />
-    public class ExecutionToken<TCommand, TParameter> : ExecutionToken
+    public class CommandExecutionToken<TCommand, TParameter> : ExecutionToken
         where TCommand : DbCommand
         where TParameter : DbParameter
     {
         private readonly ICommandDataSource<TCommand, TParameter> m_DataSource;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ExecutionToken{TCommand, TParameter}"/> class.
+        /// Initializes a new instance of the <see cref="CommandExecutionToken{TCommand, TParameter}"/> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
         /// <param name="operationName">Name of the operation. This is used for logging.</param>
         /// <param name="commandText">The SQL to be executed.</param>
         /// <param name="parameters">The parameters.</param>
         /// <param name="commandType">Type of the command.</param>
-        public ExecutionToken(ICommandDataSource<TCommand, TParameter> dataSource, string operationName, string commandText, IReadOnlyList<TParameter> parameters, CommandType commandType = CommandType.Text)
+        public CommandExecutionToken(ICommandDataSource<TCommand, TParameter> dataSource, string operationName, string commandText, IReadOnlyList<TParameter> parameters, CommandType commandType = CommandType.Text)
             : base(dataSource, operationName, commandText, commandType)
         {
             m_DataSource = dataSource;

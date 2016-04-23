@@ -11,7 +11,7 @@ namespace Tortuga.Chain.PostgreSql
     /// <summary>
     /// Class PostgreSqlDataSourceBase.
     /// </summary>
-    public abstract class PostgreSqlDataSourceBase : DataSource<NpgsqlCommand, NpgsqlParameter>, IClass1DataSource
+    public abstract class PostgreSqlDataSourceBase : DataSource<NpgsqlConnection, NpgsqlTransaction, NpgsqlCommand, NpgsqlParameter>, IClass1DataSource
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="PostgreSqlDataSourceBase"/> class.

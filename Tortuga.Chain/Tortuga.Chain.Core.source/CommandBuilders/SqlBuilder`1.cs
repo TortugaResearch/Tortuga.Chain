@@ -814,7 +814,7 @@ namespace Tortuga.Chain.CommandBuilders
         }
 
         /// <summary>
-        /// Builds the complete update statment using primary keys.
+        /// Builds the complete update statement using primary keys.
         /// </summary>
         /// <param name="sql">The SQL.</param>
         /// <param name="tableName">Name of the table.</param>
@@ -868,7 +868,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="dataSource">The data source.</param>
         /// <param name="footer">The footer.</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public void BuildSoftDeleteClause(StringBuilder sql, string header, DataSource dataSource, string footer)
+        public void BuildSoftDeleteClause(StringBuilder sql, string header, IDataSource dataSource, string footer)
         {
             if (dataSource == null)
                 throw new ArgumentNullException(nameof(dataSource), $"{nameof(dataSource)} is null.");

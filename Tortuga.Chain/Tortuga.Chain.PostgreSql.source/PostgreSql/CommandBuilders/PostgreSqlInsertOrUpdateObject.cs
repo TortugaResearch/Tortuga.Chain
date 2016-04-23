@@ -34,7 +34,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         /// </summary>
         /// <param name="materializer"></param>
         /// <returns><see cref="PostgreSqlExecutionToken" /></returns>
-        public override ExecutionToken<NpgsqlCommand, NpgsqlParameter> Prepare(Materializer<NpgsqlCommand, NpgsqlParameter> materializer)
+        public override CommandExecutionToken<NpgsqlCommand, NpgsqlParameter> Prepare(Materializer<NpgsqlCommand, NpgsqlParameter> materializer)
         {
             if (materializer == null)
                 throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
