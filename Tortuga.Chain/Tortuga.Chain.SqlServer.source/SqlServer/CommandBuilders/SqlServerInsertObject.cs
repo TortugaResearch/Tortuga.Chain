@@ -49,7 +49,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             sqlBuilder.BuildValuesClause(sql, " VALUES (", ")");
             sql.Append(";");
 
-            return new SqlServerExecutionToken(DataSource, "Insert into " + Table.Name, sql.ToString(), sqlBuilder.GetParameters());
+            return new SqlServerCommandExecutionToken(DataSource, "Insert into " + Table.Name, sql.ToString(), sqlBuilder.GetParameters());
 
         }
 

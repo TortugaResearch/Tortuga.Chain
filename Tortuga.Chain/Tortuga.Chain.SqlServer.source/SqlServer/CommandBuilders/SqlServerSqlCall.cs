@@ -41,7 +41,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// <returns>ExecutionToken&lt;TCommand&gt;.</returns>
         public override CommandExecutionToken<SqlCommand, SqlParameter> Prepare(Materializer<SqlCommand, SqlParameter> materializer)
         {
-            return new SqlServerExecutionToken(DataSource, "Raw SQL call", m_SqlStatement, SqlBuilder.GetParameters<SqlParameter>(m_ArgumentValue));
+            return new SqlServerCommandExecutionToken(DataSource, "Raw SQL call", m_SqlStatement, SqlBuilder.GetParameters<SqlParameter>(m_ArgumentValue));
         }
 
         /// <summary>
@@ -56,9 +56,9 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             return WaitForChangeMaterializer.GenerateTask(this, cancellationToken, state);
         }
 
-        SqlServerExecutionToken ISupportsChangeListener.Prepare(Materializer<SqlCommand, SqlParameter> materializer)
+        SqlServerCommandExecutionToken ISupportsChangeListener.Prepare(Materializer<SqlCommand, SqlParameter> materializer)
         {
-            return (SqlServerExecutionToken)Prepare(materializer);
+            return (SqlServerCommandExecutionToken)Prepare(materializer);
         }
     }
 }

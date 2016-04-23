@@ -50,7 +50,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             sql.Append(";");
 
 
-            return new SqlServerExecutionToken(DataSource, "Update " + Table.Name, sql.ToString(), sqlBuilder.GetParameters());
+            return new SqlServerCommandExecutionToken(DataSource, "Update " + Table.Name, sql.ToString(), sqlBuilder.GetParameters());
         }
 
 

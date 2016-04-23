@@ -32,7 +32,7 @@ namespace Tortuga.Chain.SqlServer.Appenders
             if (e == null)
                 throw new ArgumentNullException("e", "e is null.");
 
-            var token = e.ExecutionToken as SqlServerExecutionToken;
+            var token = e.ExecutionToken as SqlServerCommandExecutionToken;
             if (token == null)
                 throw new NotSupportedException($"This type of command builder does not support SQL Dependency, which is required for the {nameof(NotifyChangeAppender<TResult>)}.");
             token.AddChangeListener(m_EventHandler);

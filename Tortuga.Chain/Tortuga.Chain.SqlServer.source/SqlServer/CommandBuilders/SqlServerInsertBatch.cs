@@ -63,7 +63,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
                 SqlDbType = SqlDbType.Structured,
                 TypeName = m_TableType.Name.ToQuotedString()
             });
-            return new SqlServerExecutionToken(DataSource, "Insert batch into " + m_Table.Name, sql.ToString(), parameters);
+            return new SqlServerCommandExecutionToken(DataSource, "Insert batch into " + m_Table.Name, sql.ToString(), parameters);
         }
     }
 }

@@ -189,7 +189,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 
             sql.Append(";");
 
-            return new SqlServerExecutionToken(DataSource, "Query " + m_Metadata.Name, sql.ToString(), parameters);
+            return new SqlServerCommandExecutionToken(DataSource, "Query " + m_Metadata.Name, sql.ToString(), parameters);
         }
 
         /// <summary>
@@ -204,9 +204,9 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             return WaitForChangeMaterializer.GenerateTask(this, cancellationToken, state);
         }
 
-        SqlServerExecutionToken ISupportsChangeListener.Prepare(Materializer<SqlCommand, SqlParameter> materializer)
+        SqlServerCommandExecutionToken ISupportsChangeListener.Prepare(Materializer<SqlCommand, SqlParameter> materializer)
         {
-            return (SqlServerExecutionToken)Prepare(materializer);
+            return (SqlServerCommandExecutionToken)Prepare(materializer);
         }
 
         /// <summary>

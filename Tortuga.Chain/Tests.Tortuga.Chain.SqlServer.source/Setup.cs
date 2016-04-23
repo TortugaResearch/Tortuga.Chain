@@ -64,13 +64,13 @@ namespace Tests
 
         static void WriteDetails(ExecutionEventArgs e)
         {
-            if (e.ExecutionDetails is SqlServerExecutionToken)
+            if (e.ExecutionDetails is SqlServerCommandExecutionToken)
             {
                 Debug.WriteLine("");
                 Debug.WriteLine("Command text: ");
                 Debug.WriteLine(e.ExecutionDetails.CommandText);
                 Debug.Indent();
-                foreach (var item in ((SqlServerExecutionToken)e.ExecutionDetails).Parameters)
+                foreach (var item in ((SqlServerCommandExecutionToken)e.ExecutionDetails).Parameters)
                     Debug.WriteLine(item.ParameterName + ": " + (item.Value == null || item.Value == DBNull.Value ? "<NULL>" : item.Value));
                 Debug.Unindent();
                 Debug.WriteLine("******");

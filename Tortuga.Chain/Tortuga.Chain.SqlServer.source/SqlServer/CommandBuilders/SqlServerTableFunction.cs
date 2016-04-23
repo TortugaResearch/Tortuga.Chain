@@ -250,7 +250,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 
             sql.Append(";");
 
-            return new SqlServerExecutionToken(DataSource, "Query Function " + m_Metadata.Name, sql.ToString(), parameters);
+            return new SqlServerCommandExecutionToken(DataSource, "Query Function " + m_Metadata.Name, sql.ToString(), parameters);
         }
 
         /// <summary>

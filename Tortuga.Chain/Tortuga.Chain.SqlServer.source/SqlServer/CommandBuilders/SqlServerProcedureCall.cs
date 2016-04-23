@@ -63,7 +63,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
                 parameters = sqlBuilder.GetParameters();
             }
 
-            return new SqlServerExecutionToken(DataSource, m_ProcedureName.ToString(), m_ProcedureName.ToQuotedString(), parameters, CommandType.StoredProcedure);
+            return new SqlServerCommandExecutionToken(DataSource, m_ProcedureName.ToString(), m_ProcedureName.ToQuotedString(), parameters, CommandType.StoredProcedure);
 
         }
 
@@ -79,9 +79,9 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             return WaitForChangeMaterializer.GenerateTask(this, cancellationToken, state);
         }
 
-        SqlServerExecutionToken ISupportsChangeListener.Prepare(Materializer<SqlCommand, SqlParameter> materializer)
+        SqlServerCommandExecutionToken ISupportsChangeListener.Prepare(Materializer<SqlCommand, SqlParameter> materializer)
         {
-            return (SqlServerExecutionToken)Prepare(materializer);
+            return (SqlServerCommandExecutionToken)Prepare(materializer);
         }
 
         /// <summary>

@@ -47,7 +47,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             sqlBuilder.BuildWhereClause(sql, " WHERE ", null);
             sql.Append(";");
 
-            return new SqlServerExecutionToken(DataSource, "Delete from " + Table.Name, sql.ToString(), sqlBuilder.GetParameters());
+            return new SqlServerCommandExecutionToken(DataSource, "Delete from " + Table.Name, sql.ToString(), sqlBuilder.GetParameters());
         }
 
 

@@ -570,6 +570,9 @@
     <Compile Include="..\Tortuga.Chain.Core.source\MissingObjectException.cs">
       <Link>MissingObjectException.cs</Link>
     </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\ObjectDataReader.cs">
+      <Link>ObjectDataReader.cs</Link>
+    </Compile>
     <Compile Include="..\Tortuga.Chain.Core.source\Properties\LibrarySharedAssemblyInfo.cs">
       <Link>Properties\LibrarySharedAssemblyInfo.cs</Link>
     </Compile>

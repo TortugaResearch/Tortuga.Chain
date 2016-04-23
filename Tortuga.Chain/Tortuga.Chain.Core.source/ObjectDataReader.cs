@@ -487,5 +487,13 @@ namespace Tortuga.Chain
         {
             return m_Schema;
         }
+
+        /// <summary>
+        /// Closes the <see cref="T:System.Data.Common.DbDataReader" /> object.
+        /// </summary>
+        public override void Close()
+        {
+            Dispose();
+        }
     }
 }

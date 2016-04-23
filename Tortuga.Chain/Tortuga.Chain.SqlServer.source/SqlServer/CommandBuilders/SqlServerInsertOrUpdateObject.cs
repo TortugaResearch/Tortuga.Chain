@@ -62,7 +62,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             sqlBuilder.BuildSelectClause(sql, " OUTPUT ", "Inserted.", null);
             sql.Append(";");
 
-            return new SqlServerExecutionToken(DataSource, "Insert or update " + Table.Name, sql.ToString(), sqlBuilder.GetParameters());
+            return new SqlServerCommandExecutionToken(DataSource, "Insert or update " + Table.Name, sql.ToString(), sqlBuilder.GetParameters());
         }
     }
 }
