@@ -19,8 +19,8 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
     internal sealed class SQLiteSqlCall : MultipleTableDbCommandBuilder<SQLiteCommand, SQLiteParameter>
     {
         readonly LockType m_LockType;
-        private readonly object m_ArgumentValue;
-        private readonly string m_SqlStatement;
+        readonly object m_ArgumentValue;
+        readonly string m_SqlStatement;
 
         /// <summary>
         /// Creates a new instance of <see cref="SQLiteSqlCall" />

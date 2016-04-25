@@ -16,7 +16,7 @@ namespace Tortuga.Chain.Materializers
             where TParameter : DbParameter
     {
 
-        private readonly MultipleTableDbCommandBuilder<TCommand, TParameter> m_CommandBuilder;
+        readonly MultipleTableDbCommandBuilder<TCommand, TParameter> m_CommandBuilder;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CompiledMultipleTable{TCommand, TParameter}"/> struct.

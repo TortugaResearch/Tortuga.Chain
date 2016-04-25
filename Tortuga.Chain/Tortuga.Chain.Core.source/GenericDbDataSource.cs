@@ -15,8 +15,8 @@ namespace Tortuga.Chain
     /// </summary>
     public class GenericDbDataSource : DataSource<DbConnection, DbTransaction, DbCommand, DbParameter>, IClass0DataSource
     {
-        private readonly DbConnectionStringBuilder m_ConnectionBuilder;
-        private readonly DbProviderFactory m_Factory;
+        readonly DbConnectionStringBuilder m_ConnectionBuilder;
+        readonly DbProviderFactory m_Factory;
 
         /// <summary>
         /// Creates a operation based on a raw SQL statement.
@@ -133,7 +133,7 @@ namespace Tortuga.Chain
         /// or
         /// implementation;implementation is null.
         /// </exception>
-        protected internal override void Execute(CommandExecutionToken<DbCommand, DbParameter> executionToken, CommandImplementation<DbCommand> implementation, object state)
+        protected internal override int? Execute(CommandExecutionToken<DbCommand, DbParameter> executionToken, CommandImplementation<DbCommand> implementation, object state)
         {
             if (executionToken == null)
                 throw new ArgumentNullException("executionToken", "executionToken is null.");
@@ -161,6 +161,7 @@ namespace Tortuga.Chain
 
                         var rows = implementation(cmd);
                         OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
+                        return rows;
                     }
                 }
             }
@@ -179,7 +180,7 @@ namespace Tortuga.Chain
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <param name="state">User supplied state.</param>
         /// <returns>Task.</returns>
-        protected internal override async Task ExecuteAsync(CommandExecutionToken<DbCommand, DbParameter> executionToken, CommandImplementationAsync<DbCommand> implementation, CancellationToken cancellationToken, object state)
+        protected internal override async Task<int?> ExecuteAsync(CommandExecutionToken<DbCommand, DbParameter> executionToken, CommandImplementationAsync<DbCommand> implementation, CancellationToken cancellationToken, object state)
         {
             if (executionToken == null)
                 throw new ArgumentNullException("executionToken", "executionToken is null.");
@@ -207,6 +208,7 @@ namespace Tortuga.Chain
 
                         var rows = await implementation(cmd).ConfigureAwait(false);
                         OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
+                        return rows;
                     }
                 }
             }

@@ -14,7 +14,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
     internal sealed class PostgreSqlInsertOrUpdateObject<TArgument> : PostgreSqlObjectCommand<TArgument>
         where TArgument : class
     {
-        private readonly UpsertOptions m_Options;
+        readonly UpsertOptions m_Options;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PostgreSqlInsertOrUpdateObject"/> class.

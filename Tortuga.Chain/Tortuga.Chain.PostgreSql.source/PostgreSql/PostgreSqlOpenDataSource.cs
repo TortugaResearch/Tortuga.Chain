@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Npgsql;
+using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Threading;
+using System.Threading.Tasks;
 using Tortuga.Chain.AuditRules;
 using Tortuga.Chain.Core;
-using Npgsql;
 
 namespace Tortuga.Chain.PostgreSql
 {
@@ -14,12 +14,12 @@ namespace Tortuga.Chain.PostgreSql
     /// <seealso cref="SQLiteDataSourceBase" />
     public class PostgreSqlOpenDataSource : PostgreSqlDataSourceBase
     {
-        private readonly PostgreSqlDataSource m_BaseDataSource;
-        private readonly NpgsqlConnection m_Connection;
-        private readonly NpgsqlTransaction m_Transaction;
-         
+        readonly PostgreSqlDataSource m_BaseDataSource;
+        readonly NpgsqlConnection m_Connection;
+        readonly NpgsqlTransaction m_Transaction;
 
-        
+
+
         internal PostgreSqlOpenDataSource(PostgreSqlDataSource dataSource, NpgsqlConnection connection, NpgsqlTransaction transaction) : base(new PostgreSqlDataSourceSettings() { DefaultCommandTimeout = dataSource.DefaultCommandTimeout, StrictMode = dataSource.StrictMode, SuppressGlobalEvents = dataSource.SuppressGlobalEvents })
         {
             if (connection == null)
@@ -39,7 +39,7 @@ namespace Tortuga.Chain.PostgreSql
             get { return m_BaseDataSource.DatabaseMetadata; }
         }
 
-        
+
 
         /// <summary>
         /// Gets the extension data.
@@ -96,7 +96,7 @@ namespace Tortuga.Chain.PostgreSql
         /// <param name="implementation">The implementation that handles processing the result of the command.</param>
         /// <param name="state">User supplied state.</param>
         /// <exception cref="System.NotImplementedException"></exception>
-        protected override void Execute(CommandExecutionToken<NpgsqlCommand, NpgsqlParameter> executionToken, CommandImplementation<NpgsqlCommand> implementation, object state)
+        protected override int? Execute(CommandExecutionToken<NpgsqlCommand, NpgsqlParameter> executionToken, CommandImplementation<NpgsqlCommand> implementation, object state)
         {
             throw new NotImplementedException();
         }
@@ -110,7 +110,7 @@ namespace Tortuga.Chain.PostgreSql
         /// <param name="state">User supplied state.</param>
         /// <returns>Task.</returns>
         /// <exception cref="System.NotImplementedException"></exception>
-        protected override Task ExecuteAsync(CommandExecutionToken<NpgsqlCommand, NpgsqlParameter> executionToken, CommandImplementationAsync<NpgsqlCommand> implementation, CancellationToken cancellationToken, object state)
+        protected override Task<int?> ExecuteAsync(CommandExecutionToken<NpgsqlCommand, NpgsqlParameter> executionToken, CommandImplementationAsync<NpgsqlCommand> implementation, CancellationToken cancellationToken, object state)
         {
             throw new NotImplementedException();
         }

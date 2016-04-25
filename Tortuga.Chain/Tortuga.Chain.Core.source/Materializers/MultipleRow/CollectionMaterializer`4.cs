@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Data;
 using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -25,7 +24,7 @@ namespace Tortuga.Chain.Materializers
         where TParameter : DbParameter
     {
 
-        private readonly CollectionOptions m_CollectionOptions;
+        readonly CollectionOptions m_CollectionOptions;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CollectionMaterializer{TCommand, TParameter, TObject, TCollection}"/> class.
@@ -56,18 +55,16 @@ namespace Tortuga.Chain.Materializers
         public override TCollection Execute(object state = null)
         {
             var result = new TCollection();
-            Table table = null;
             ExecuteCore(cmd =>
             {
-                using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess))
+                using (var reader = cmd.ExecuteReader().AsObjectConstructor<TObject>(ConstructorSignature))
                 {
-                    table = new Table(reader);
-                    return table.Rows.Count;
+                    while (reader.Read())
+                        result.Add(reader.Current);
+                    return result.Count;
                 }
             }, state);
 
-            foreach (var item in table.ToObjects<TObject>(ConstructorSignature))
-                result.Add(item);
             return result;
         }
 
@@ -82,18 +79,16 @@ namespace Tortuga.Chain.Materializers
         {
             var result = new TCollection();
 
-            Table table = null;
             await ExecuteCoreAsync(async cmd =>
             {
-                using (var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SequentialAccess, cancellationToken).ConfigureAwait(false))
+                using (var reader = (await cmd.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false)).AsObjectConstructor<TObject>(ConstructorSignature))
                 {
-                    table = new Table(reader);
-                    return table.Rows.Count;
+                    while (await reader.ReadAsync())
+                        result.Add(reader.Current);
+                    return result.Count;
                 }
             }, cancellationToken, state).ConfigureAwait(false);
 
-            foreach (var item in table.ToObjects<TObject>(ConstructorSignature))
-                result.Add(item);
             return result;
         }
 

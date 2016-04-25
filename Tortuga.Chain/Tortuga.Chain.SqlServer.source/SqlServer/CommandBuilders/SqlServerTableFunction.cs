@@ -18,8 +18,8 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
     /// <seealso cref="TableDbCommandBuilder{SqlCommand, SqlParameter, SqlServerLimitOption}" />
     internal class SqlServerTableFunction : TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption>
     {
-        private readonly TableFunctionMetadata<SqlServerObjectName, SqlDbType> m_Metadata;
-        private readonly object m_FunctionArgumentValue;
+        readonly TableFunctionMetadata<SqlServerObjectName, SqlDbType> m_Metadata;
+        readonly object m_FunctionArgumentValue;
         private object m_FilterValue;
         private string m_WhereClause;
         private object m_ArgumentValue;

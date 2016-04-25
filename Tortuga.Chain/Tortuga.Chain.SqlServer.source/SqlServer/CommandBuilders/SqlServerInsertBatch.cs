@@ -14,11 +14,11 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 {
     internal class SqlServerInsertBatch : MultipleRowDbCommandBuilder<SqlCommand, SqlParameter>
     {
-        private readonly object m_Source;
+        readonly object m_Source;
         [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields", Justification = "For future use")]
-        private readonly InsertOptions m_Options;
-        private readonly TableOrViewMetadata<SqlServerObjectName, SqlDbType> m_Table;
-        private readonly UserDefinedTypeMetadata<SqlServerObjectName, SqlDbType> m_TableType;
+        readonly InsertOptions m_Options;
+        readonly TableOrViewMetadata<SqlServerObjectName, SqlDbType> m_Table;
+        readonly UserDefinedTypeMetadata<SqlServerObjectName, SqlDbType> m_TableType;
 
         public SqlServerInsertBatch(SqlServerDataSourceBase dataSource, SqlServerObjectName tableName, SqlServerObjectName tableTypeName, DataTable dataTable, InsertOptions options) : base(dataSource)
         {

@@ -18,7 +18,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
     internal sealed class SQLiteInsertObject<TArgument> : SQLiteObjectCommand<TArgument>
         where TArgument : class
     {
-        private readonly InsertOptions m_Options;
+        readonly InsertOptions m_Options;
 
         /// <summary>
         /// Initializes a new instance of <see cref="SQLiteInsertObject{TArgument}" /> class.

@@ -9,9 +9,9 @@ namespace Tortuga.Chain.CommandBuilders
     [SuppressMessage("Microsoft.Maintainability", "CA1501:AvoidExcessiveInheritance")]
     class GenericDbSqlCall : MultipleTableDbCommandBuilder<DbCommand, DbParameter>
     {
-        private readonly object m_ArgumentValue;
-        private readonly GenericDbDataSource m_DataSource;
-        private readonly string m_SqlStatement;
+        readonly object m_ArgumentValue;
+        readonly GenericDbDataSource m_DataSource;
+        readonly string m_SqlStatement;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GenericDbSqlCall"/> class.

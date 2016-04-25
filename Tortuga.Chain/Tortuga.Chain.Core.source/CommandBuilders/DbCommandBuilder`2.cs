@@ -16,7 +16,7 @@ namespace Tortuga.Chain.CommandBuilders
         where TCommand : DbCommand
         where TParameter : DbParameter
     {
-        private readonly ICommandDataSource<TCommand, TParameter> m_DataSource;
+        readonly ICommandDataSource<TCommand, TParameter> m_DataSource;
 
         /// <summary>
         /// </summary>

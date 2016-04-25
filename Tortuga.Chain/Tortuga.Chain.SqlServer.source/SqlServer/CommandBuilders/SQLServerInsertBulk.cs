@@ -15,10 +15,10 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
     /// <seealso cref="DbOperationBuilder{SqlConnection, SqlTransaction}" />
     public sealed class SqlServerInsertBulk : DbOperationBuilder<SqlConnection, SqlTransaction>
     {
-        private readonly IDataReader m_Source;
-        private readonly SqlServerDataSourceBase m_DataSource;
-        private readonly SqlBulkCopyOptions m_Options;
-        private readonly TableOrViewMetadata<SqlServerObjectName, SqlDbType> m_Table;
+        readonly IDataReader m_Source;
+        readonly SqlServerDataSourceBase m_DataSource;
+        readonly SqlBulkCopyOptions m_Options;
+        readonly TableOrViewMetadata<SqlServerObjectName, SqlDbType> m_Table;
         private int? m_BatchSize;
         private bool m_EnableStreaming;
         private int? m_NotifyAfter;

@@ -30,7 +30,7 @@ namespace Tortuga.Chain
             }
         }
 
-        private readonly TSKeyedCollection m_Internal = new TSKeyedCollection();
+        readonly TSKeyedCollection m_Internal = new TSKeyedCollection();
 
         /// <summary>
         /// Gets the number of elements in the collection.

@@ -14,7 +14,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
     internal sealed class SqlServerInsertOrUpdateObject<TArgument> : SqlServerObjectCommand<TArgument>
         where TArgument : class
     {
-        private readonly UpsertOptions m_Options;
+        readonly UpsertOptions m_Options;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlServerInsertOrUpdateObject{TArgument}"/> class.

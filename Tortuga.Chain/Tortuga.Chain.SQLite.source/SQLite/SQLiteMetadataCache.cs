@@ -19,9 +19,9 @@ namespace Tortuga.Chain.SQLite
     /// </summary>
     public sealed class SQLiteMetadataCache : DatabaseMetadataCache<string, DbType>
     {
-        private readonly SQLiteConnectionStringBuilder m_ConnectionBuilder;
-        private readonly ConcurrentDictionary<string, TableOrViewMetadata<string, DbType>> m_Tables = new ConcurrentDictionary<string, TableOrViewMetadata<string, DbType>>(StringComparer.OrdinalIgnoreCase);
-        //private readonly ImmutableHashSet<string> m_Curr;
+        readonly SQLiteConnectionStringBuilder m_ConnectionBuilder;
+        readonly ConcurrentDictionary<string, TableOrViewMetadata<string, DbType>> m_Tables = new ConcurrentDictionary<string, TableOrViewMetadata<string, DbType>>(StringComparer.OrdinalIgnoreCase);
+        //readonly ImmutableHashSet<string> m_Curr;
 
         /// <summary>
         /// Creates a new instance of <see cref="SQLiteMetadataCache"/>

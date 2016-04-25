@@ -17,7 +17,7 @@ namespace Tortuga.Chain.Core
         where TConnection : DbConnection
         where TTransaction : DbTransaction
     {
-        private readonly IOperationDataSource<TConnection, TTransaction> m_DataSource;
+        readonly IOperationDataSource<TConnection, TTransaction> m_DataSource;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="OperationExecutionToken{TConnection, TTransaction}"/> class.

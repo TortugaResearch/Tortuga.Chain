@@ -19,7 +19,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
     /// </summary>
     internal sealed class SqlServerTableOrView : TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption>, ISupportsChangeListener
     {
-        private readonly TableOrViewMetadata<SqlServerObjectName, SqlDbType> m_Metadata;
+        readonly TableOrViewMetadata<SqlServerObjectName, SqlDbType> m_Metadata;
         private object m_FilterValue;
         private string m_WhereClause;
         private object m_ArgumentValue;

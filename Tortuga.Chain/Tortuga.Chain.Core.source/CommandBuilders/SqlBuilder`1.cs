@@ -20,10 +20,10 @@ namespace Tortuga.Chain.CommandBuilders
     public class SqlBuilder<TDbType>
         where TDbType : struct
     {
-        private readonly SqlBuilderEntry<TDbType>[] m_Entries;
+        readonly SqlBuilderEntry<TDbType>[] m_Entries;
 
-        private readonly string m_Name;
-        private readonly bool m_StrictMode;
+        readonly string m_Name;
+        readonly bool m_StrictMode;
 
         internal SqlBuilder(string name, IReadOnlyList<ColumnMetadata<TDbType>> columns, IReadOnlyList<ParameterMetadata<TDbType>> parameters, bool strictMode)
         {

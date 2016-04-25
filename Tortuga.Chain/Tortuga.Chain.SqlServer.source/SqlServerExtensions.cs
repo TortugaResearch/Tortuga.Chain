@@ -11,7 +11,7 @@ namespace Tortuga.Chain
     /// </summary>
     public static class SqlServerExtensions
     {
-        private readonly static ConcurrentDictionary<string, SqlServerDataSource> s_CachedDataSources = new ConcurrentDictionary<string, SqlServerDataSource>();
+        readonly static ConcurrentDictionary<string, SqlServerDataSource> s_CachedDataSources = new ConcurrentDictionary<string, SqlServerDataSource>();
 
         /// <summary>
         /// Returns a data source wrapped around the connection.

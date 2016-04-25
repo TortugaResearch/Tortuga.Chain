@@ -151,6 +151,8 @@
     <Compile Include="AuditRules\SoftDeleteRule.cs" />
     <Compile Include="AuditRules\DateTimeOffsetRule.cs" />
     <Compile Include="AuditRules\DateTimeRule.cs" />
+    <Compile Include="Materializers\MaterializerUtilities.cs" />
+    <Compile Include="Materializers\MultipleRow\StreamMaterializer`3.cs" />
     <Compile Include="Materializers\MultipleRow\ImmutableListMaterializer`3.cs" />
     <Compile Include="Materializers\MultipleRow\ImmutableArrayMaterializer`3.cs" />
     <Compile Include="Materializers\MultipleRow\CollectionMaterializer`4.cs" />
@@ -218,6 +220,7 @@
     <Compile Include="Materializers\SingleColumn\TimeSpanListMaterializer`2.cs" />
     <Compile Include="Materializers\MultipleRow\TableMaterializer`2.cs" />
     <Compile Include="Materializers\MultipleTable\TableSetMaterializer`2.cs" />
+    <Compile Include="Materializers\StreamingObjectConstructor.cs" />
     <Compile Include="Metadata\IUserDefinedTypeMetadata.cs" />
     <Compile Include="Metadata\UserDefinedTypeMetadata.cs" />
     <Compile Include="ObjectDataReader.cs" />

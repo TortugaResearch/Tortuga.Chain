@@ -12,7 +12,7 @@ namespace Tortuga.Chain.Appenders
     /// <typeparam name="TResult"></typeparam>
     internal sealed class InvalidateCacheAppender<TResult> : Appender<TResult>
     {
-        private readonly string m_CacheKey;
+        readonly string m_CacheKey;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="InvalidateCacheAppender{TResult}"/> class.

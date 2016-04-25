@@ -12,7 +12,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
     internal sealed class SqlServerDeleteObject<TArgument> : SqlServerObjectCommand<TArgument>
         where TArgument : class
     {
-        private readonly DeleteOptions m_Options;
+        readonly DeleteOptions m_Options;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlServerDeleteObject{TArgument}"/> class.

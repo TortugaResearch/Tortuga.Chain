@@ -12,8 +12,8 @@ namespace Tortuga.Chain
     /// <remarks>You can implicitly convert strings into sort expressions.</remarks>
     public class SortExpression
     {
-        private readonly string m_ColumnName;
-        private readonly SortDirection m_Direction;
+        readonly string m_ColumnName;
+        readonly SortDirection m_Direction;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SortExpression"/> class.

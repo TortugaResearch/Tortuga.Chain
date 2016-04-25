@@ -13,7 +13,7 @@ namespace Tortuga.Chain.AuditRules
     /// <seealso cref="IReadOnlyList{Rule}" />
     public class AuditRuleCollection : IReadOnlyList<AuditRule>
     {
-        private readonly ImmutableArray<AuditRule> m_List;
+        readonly ImmutableArray<AuditRule> m_List;
 
         /// <summary>
         /// Returns an empty RulesCollection.

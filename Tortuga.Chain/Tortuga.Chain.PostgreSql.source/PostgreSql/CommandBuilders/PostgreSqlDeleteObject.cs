@@ -12,7 +12,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
     internal sealed class PostgreSqlDeleteObject<TArgument> : PostgreSqlObjectCommand<TArgument>
         where TArgument : class
     {
-        private readonly DeleteOptions m_Options;
+        readonly DeleteOptions m_Options;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PostgreSqlDeleteObject"/> class.
