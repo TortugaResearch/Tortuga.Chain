@@ -38,7 +38,7 @@ namespace Tortuga.Chain.Metadata
                     if (item.SqlName.Equals(columnName, System.StringComparison.OrdinalIgnoreCase))
                         return item;
 
-                throw new MappingException($"Could not find column named {columnName} in object {m_Name}");
+                throw new KeyNotFoundException($"Could not find column named {columnName} in object {m_Name}");
             }
         }
     }

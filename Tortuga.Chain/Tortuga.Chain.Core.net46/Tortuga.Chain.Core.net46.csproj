@@ -318,6 +318,9 @@
     <Compile Include="..\Tortuga.Chain.Core.source\Materializers\Materializer.cs">
       <Link>Materializer.cs</Link>
     </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\MaterializerUtilities.cs">
+      <Link>Materializers\MaterializerUtilities.cs</Link>
+    </Compile>
     <Compile Include="..\Tortuga.Chain.Core.source\Materializers\Materializer`2.cs">
       <Link>Materializers\Materializer`2.cs</Link>
     </Compile>
@@ -512,6 +515,12 @@
     </Compile>
     <Compile Include="..\Tortuga.Chain.Core.source\Materializers\SingleRow\RowMaterializer`2.cs">
       <Link>Materializers\SingleRow\RowMaterializer`2.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\StreamingObjectConstructor.cs">
+      <Link>Materializers\StreamingObjectConstructor.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\Metadata\ColumnMetadataCollection.cs">
+      <Link>Metadata\ColumnMetadataCollection.cs</Link>
     </Compile>
     <Compile Include="..\Tortuga.Chain.Core.source\Metadata\ColumnMetadata`1.cs">
       <Link>Metadata\ColumnMetadata`1.cs</Link>
