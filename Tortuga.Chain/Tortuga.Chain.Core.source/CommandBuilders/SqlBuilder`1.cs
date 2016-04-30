@@ -875,7 +875,10 @@ namespace Tortuga.Chain.CommandBuilders
             if (sql == null)
                 throw new ArgumentNullException(nameof(sql), $"{nameof(sql)} was null.");
 
-            var softDeletes = dataSource.AuditRules.Where(r => r.AppliesWhen.HasFlag(OperationTypes.Select)).OfType<SoftDeleteRule>().ToList();
+            var softDeletes = dataSource.AuditRules.SoftDeleteForSelect; 
+
+            if (softDeletes.Length == 0)
+                return;
 
             var applicableColumns = new HashSet<SqlBuilderEntry<TDbType>>();
 

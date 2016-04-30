@@ -36,9 +36,7 @@ namespace Tortuga.Chain.Materializers
                 {
                     var factory = CompiledMaterializers.CreateBuilder<TObject>(DataSource, cmd.CommandText, reader);
                     while (reader.Read())
-                    {
                         result.Add(factory(reader));
-                    }
                     return result.Count;
                 }
             }, state);
@@ -48,15 +46,11 @@ namespace Tortuga.Chain.Materializers
                 if (m_RowOptions.HasFlag(RowOptions.AllowEmptyResults))
                     return null;
                 else
-                {
-                    var ex = new DataException("No rows were returned");
-                    throw ex;
-                }
+                    throw new DataException("No rows were returned");
             }
             else if (result.Count > 1 && !m_RowOptions.HasFlag(RowOptions.DiscardExtraRows))
             {
-                var ex = new DataException("Expected 1 row but received " + result.Count + " rows");
-                throw ex;
+                throw new DataException("Expected 1 row but received " + result.Count + " rows");
             }
             return result.First();
         }
@@ -72,9 +66,7 @@ namespace Tortuga.Chain.Materializers
                 {
                     var factory = CompiledMaterializers.CreateBuilder<TObject>(DataSource, cmd.CommandText, reader);
                     while (await reader.ReadAsync())
-                    {
                         result.Add(factory(reader));
-                    }
                     return result.Count;
                 }
             }, cancellationToken, state).ConfigureAwait(false);
@@ -85,9 +77,7 @@ namespace Tortuga.Chain.Materializers
                 if (m_RowOptions.HasFlag(RowOptions.AllowEmptyResults))
                     return null;
                 else
-                {
                     throw new DataException("No rows were returned");
-                }
             }
             else if (result.Count > 1 && !m_RowOptions.HasFlag(RowOptions.DiscardExtraRows))
             {
