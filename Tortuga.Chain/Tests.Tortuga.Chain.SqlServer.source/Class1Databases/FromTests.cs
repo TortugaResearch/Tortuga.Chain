@@ -64,8 +64,24 @@ namespace Tests.Class1Databases
         }
 
 
-#if !SQLite
 
+#if SQLite
+        [TestMethod]
+        public void FromTests_ToImmutableObject()
+        {
+            var uniqueKey = Guid.NewGuid().ToString();
+
+            var emp1 = new Employee() { FirstName = "A", LastName = "1", Title = uniqueKey };
+            DataSource.Insert(EmployeeTableName, emp1).ToObject<Employee>().Execute();
+
+            var lookup = DataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToObject<EmployeeLookup>().WithConstructor<long, string, string>().Execute();
+
+            Assert.AreEqual("A", lookup.FirstName);
+            Assert.AreEqual("1", lookup.LastName);
+
+        }
+
+#else
         [TestMethod]
         public void FromTests_ToImmutableObject()
         {
