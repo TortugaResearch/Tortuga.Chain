@@ -66,8 +66,8 @@
       <HintPath>..\packages\Tortuga.Anchor.0.7.5952.32542\lib\net45\Tortuga.Anchor.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Tortuga.Chain.Core, Version=0.15.5953.37133, Culture=neutral, PublicKeyToken=8769fd32a2872cf0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Tortuga.Chain.Core.0.15.5953.37118\lib\net45\Tortuga.Chain.Core.dll</HintPath>
+    <Reference Include="Tortuga.Chain.Core, Version=0.16.5956.36119, Culture=neutral, PublicKeyToken=8769fd32a2872cf0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tortuga.Chain.Core.0.16.5956.36108\lib\net45\Tortuga.Chain.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
@@ -95,6 +95,12 @@
     </Compile>
     <Compile Include="..\tortuga.chain.sqlserver.source\sqlserver\commandbuilders\SqlServerDeleteObject.cs">
       <Link>SqlServer\CommandBuilders\SqlServerDeleteObject.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.SqlServer.source\SqlServer\CommandBuilders\SqlServerInsertBatch.cs">
+      <Link>SqlServer\CommandBuilders\SqlServerInsertBatch.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.SqlServer.source\SqlServer\CommandBuilders\SQLServerInsertBulk.cs">
+      <Link>SqlServer\CommandBuilders\SQLServerInsertBulk.cs</Link>
     </Compile>
     <Compile Include="..\tortuga.chain.sqlserver.source\sqlserver\commandbuilders\SqlServerInsertObject.cs">
       <Link>SqlServer\CommandBuilders\SqlServerInsertObject.cs</Link>
@@ -129,6 +135,9 @@
     <Compile Include="..\tortuga.chain.sqlserver.source\sqlserver\SqlServerAppenders.cs">
       <Link>SqlServer\SqlServerAppenders.cs</Link>
     </Compile>
+    <Compile Include="..\Tortuga.Chain.SqlServer.source\SqlServer\SqlServerCommandExecutionToken.cs">
+      <Link>SqlServer\SqlServerCommandExecutionToken.cs</Link>
+    </Compile>
     <Compile Include="..\tortuga.chain.sqlserver.source\sqlserver\SqlServerDataSourceBase.cs">
       <Link>SqlServer\SqlServerDataSourceBase.cs</Link>
     </Compile>
@@ -138,14 +147,14 @@
     <Compile Include="..\tortuga.chain.sqlserver.source\sqlserver\SqlServerEffectiveSettings.cs">
       <Link>SqlServer\SqlServerEffectiveSettings.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.SqlServer.source\SqlServer\SqlServerExecutionToken.cs">
-      <Link>SqlServer\SqlServerExecutionToken.cs</Link>
-    </Compile>
     <Compile Include="..\tortuga.chain.sqlserver.source\sqlserver\SqlServerMetadataCache.cs">
       <Link>SqlServer\SqlServerMetadataCache.cs</Link>
     </Compile>
     <Compile Include="..\tortuga.chain.sqlserver.source\sqlserver\SqlServerObjectName.cs">
       <Link>SqlServer\SqlServerObjectName.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.SqlServer.source\SqlServer\SqlServerOperationExecutionToken.cs">
+      <Link>SqlServer\SqlServerOperationExecutionToken.cs</Link>
     </Compile>
     <Compile Include="..\tortuga.chain.sqlserver.source\sqlserver\SqlServerTransactionalDataSource.cs">
       <Link>SqlServer\SqlServerTransactionalDataSource.cs</Link>

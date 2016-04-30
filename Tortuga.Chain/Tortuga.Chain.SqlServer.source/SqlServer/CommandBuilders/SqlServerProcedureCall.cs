@@ -20,9 +20,9 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
     internal sealed class SqlServerProcedureCall : MultipleTableDbCommandBuilder<SqlCommand, SqlParameter>, ISupportsChangeListener
     {
 
-        private readonly object m_ArgumentValue;
-        private readonly StoredProcedureMetadata<SqlServerObjectName, SqlDbType> m_Metadata;
-        private readonly SqlServerObjectName m_ProcedureName;
+        readonly object m_ArgumentValue;
+        readonly StoredProcedureMetadata<SqlServerObjectName, SqlDbType> m_Metadata;
+        readonly SqlServerObjectName m_ProcedureName;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlServerProcedureCall"/> class.
@@ -45,7 +45,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// </summary>
         /// <param name="materializer">The materializer.</param>
         /// <returns>ExecutionToken&lt;TCommand&gt;.</returns>
-        public override ExecutionToken<SqlCommand, SqlParameter> Prepare(Materializer<SqlCommand, SqlParameter> materializer)
+        public override CommandExecutionToken<SqlCommand, SqlParameter> Prepare(Materializer<SqlCommand, SqlParameter> materializer)
         {
             if (materializer == null)
                 throw new ArgumentNullException("materializer", "materializer is null.");
@@ -63,7 +63,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
                 parameters = sqlBuilder.GetParameters();
             }
 
-            return new SqlServerExecutionToken(DataSource, m_ProcedureName.ToString(), m_ProcedureName.ToQuotedString(), parameters, CommandType.StoredProcedure);
+            return new SqlServerCommandExecutionToken(DataSource, m_ProcedureName.ToString(), m_ProcedureName.ToQuotedString(), parameters, CommandType.StoredProcedure);
 
         }
 
@@ -79,9 +79,9 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             return WaitForChangeMaterializer.GenerateTask(this, cancellationToken, state);
         }
 
-        SqlServerExecutionToken ISupportsChangeListener.Prepare(Materializer<SqlCommand, SqlParameter> materializer)
+        SqlServerCommandExecutionToken ISupportsChangeListener.Prepare(Materializer<SqlCommand, SqlParameter> materializer)
         {
-            return (SqlServerExecutionToken)Prepare(materializer);
+            return (SqlServerCommandExecutionToken)Prepare(materializer);
         }
 
         /// <summary>

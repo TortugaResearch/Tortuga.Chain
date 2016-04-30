@@ -13,9 +13,9 @@ namespace Tortuga.Chain.Appenders
     /// <typeparam name="TResult">The type of the t result type.</typeparam>
     internal sealed class CacheResultAppender<TResult> : Appender<TResult>
     {
-        private readonly string m_CacheKey;
-        private readonly Func<TResult, string> m_CacheKeyFunction;
-        private readonly CacheItemPolicy m_Policy;
+        readonly string m_CacheKey;
+        readonly Func<TResult, string> m_CacheKeyFunction;
+        readonly CacheItemPolicy m_Policy;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CacheResultAppender{TResult}" /> class.
@@ -60,7 +60,7 @@ namespace Tortuga.Chain.Appenders
 
             var result = PreviousLink.Execute(state);
 
-            DataSource.WriteToCache(new CacheItem(m_CacheKey ?? m_CacheKeyFunction(result), result, null), m_Policy);
+            ((DataSource)DataSource).WriteToCache(new CacheItem(m_CacheKey ?? m_CacheKeyFunction(result), result, null), m_Policy);
 
             return result;
         }
@@ -76,7 +76,7 @@ namespace Tortuga.Chain.Appenders
 
             var result = await PreviousLink.ExecuteAsync(state).ConfigureAwait(false);
 
-            DataSource.WriteToCache(new CacheItem(m_CacheKey ?? m_CacheKeyFunction(result), result, null), m_Policy);
+            ((DataSource)DataSource).WriteToCache(new CacheItem(m_CacheKey ?? m_CacheKeyFunction(result), result, null), m_Policy);
 
             return result;
         }

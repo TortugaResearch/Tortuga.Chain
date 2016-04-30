@@ -23,7 +23,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <summary>
         /// </summary>
         /// <param name="dataSource">The data source.</param>
-        protected MultipleTableDbCommandBuilder(DataSource<TCommand, TParameter> dataSource)
+        protected MultipleTableDbCommandBuilder(ICommandDataSource<TCommand, TParameter> dataSource)
             : base(dataSource)
         { }
 

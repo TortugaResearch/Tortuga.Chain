@@ -2,6 +2,8 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Tortuga.Chain.DataSources;
+
 namespace Tortuga.Chain.Appenders
 {
     /// <summary>
@@ -10,7 +12,7 @@ namespace Tortuga.Chain.Appenders
     /// <typeparam name="TResult"></typeparam>
     internal sealed class InvalidateCacheAppender<TResult> : Appender<TResult>
     {
-        private readonly string m_CacheKey;
+        readonly string m_CacheKey;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="InvalidateCacheAppender{TResult}"/> class.
@@ -33,7 +35,7 @@ namespace Tortuga.Chain.Appenders
         /// <param name="state">User defined state, usually used for logging.</param>
         public override TResult Execute(object state = null)
         {
-            PreviousLink.DataSource.InvalidateCache(m_CacheKey);
+            ((DataSource)DataSource).InvalidateCache(m_CacheKey);
 
             return PreviousLink.Execute(state);
         }
@@ -46,7 +48,7 @@ namespace Tortuga.Chain.Appenders
         /// <returns></returns>
         public override async Task<TResult> ExecuteAsync(CancellationToken cancellationToken, object state = null)
         {
-            PreviousLink.DataSource.InvalidateCache(m_CacheKey);
+            ((DataSource)DataSource).InvalidateCache(m_CacheKey);
 
             return await PreviousLink.ExecuteAsync(state).ConfigureAwait(false);
         }

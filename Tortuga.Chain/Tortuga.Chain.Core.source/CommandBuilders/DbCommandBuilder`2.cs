@@ -1,9 +1,9 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Data.Common;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Materializers;
-using System;
 
 namespace Tortuga.Chain.CommandBuilders
 {
@@ -16,12 +16,12 @@ namespace Tortuga.Chain.CommandBuilders
         where TCommand : DbCommand
         where TParameter : DbParameter
     {
-        private readonly DataSource<TCommand, TParameter> m_DataSource;
+        readonly ICommandDataSource<TCommand, TParameter> m_DataSource;
 
         /// <summary>
         /// </summary>
         /// <param name="dataSource">The data source.</param>
-        protected DbCommandBuilder(DataSource<TCommand, TParameter> dataSource)
+        protected DbCommandBuilder(ICommandDataSource<TCommand, TParameter> dataSource)
         {
             if (dataSource == null)
                 throw new ArgumentNullException(nameof(dataSource), $"{nameof(dataSource)} is null.");
@@ -35,7 +35,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// </summary>
         /// <value>The data source.</value>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public DataSource<TCommand, TParameter> DataSource
+        public ICommandDataSource<TCommand, TParameter> DataSource
         {
             get { return m_DataSource; }
         }
@@ -45,7 +45,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// Indicates this operation has no result set.
         /// </summary>
         /// <returns></returns>
-        public override sealed ILink AsNonQuery() { return new NonQueryMaterializer<TCommand, TParameter>(this); }
+        public override sealed ILink<int?> AsNonQuery() { return new NonQueryMaterializer<TCommand, TParameter>(this); }
 
 
         /// <summary>
@@ -53,16 +53,16 @@ namespace Tortuga.Chain.CommandBuilders
         /// </summary>
         /// <param name="materializer">The materializer.</param>
         /// <returns>ExecutionToken&lt;TCommand&gt;.</returns>
-        public abstract ExecutionToken<TCommand, TParameter> Prepare(Materializer<TCommand, TParameter> materializer);
+        public abstract CommandExecutionToken<TCommand, TParameter> Prepare(Materializer<TCommand, TParameter> materializer);
 
-        /// <summary>
-        /// Returns the number of rows affected.
-        /// </summary>
-        /// <returns>ILink&lt;System.Int32&gt;.</returns>
-        public override sealed ILink<int> AsRowsAffected()
-        {
-            return new RowsAffectedMaterializer<TCommand, TParameter>(this);
-        }
+        ///// <summary>
+        ///// Returns the number of rows affected.
+        ///// </summary>
+        ///// <returns>ILink&lt;System.Int32&gt;.</returns>
+        //public override sealed ILink<int> AsRowsAffected()
+        //{
+        //    return new RowsAffectedMaterializer<TCommand, TParameter>(this);
+        //}
     }
 }
 

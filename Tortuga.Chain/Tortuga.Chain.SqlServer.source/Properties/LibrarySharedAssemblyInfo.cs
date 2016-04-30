@@ -4,4 +4,4 @@
 [assembly: AssemblyDescription("Fluent ORM for .NET and SQL Server.")]
 
 [assembly: AssemblyCulture("")]
-[assembly: AssemblyVersion("0.16.*")]
+[assembly: AssemblyVersion("0.17.*")]

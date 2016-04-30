@@ -13,9 +13,9 @@ namespace Tortuga.Chain.SqlServer
         /// </summary>
         public static readonly SqlServerObjectName Empty;
 
-        private readonly string m_Database;
-        private readonly string m_Name;
-        private readonly string m_Schema;
+        readonly string m_Database;
+        readonly string m_Name;
+        readonly string m_Schema;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlServerObjectName"/> struct.

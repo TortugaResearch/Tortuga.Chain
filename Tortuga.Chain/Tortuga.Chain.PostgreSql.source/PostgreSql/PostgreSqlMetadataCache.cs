@@ -9,8 +9,8 @@ namespace Tortuga.Chain.PostgreSql
 {
     public class PostgreSqlMetadataCache : DatabaseMetadataCache<PostgreSqlObjectName, NpgsqlDbType>
     {
-        private readonly NpgsqlConnectionStringBuilder m_ConnectionBuilder;
-        private readonly ConcurrentDictionary<PostgreSqlObjectName, TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType>> m_Tables = new ConcurrentDictionary<PostgreSqlObjectName, TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType>>();
+        readonly NpgsqlConnectionStringBuilder m_ConnectionBuilder;
+        readonly ConcurrentDictionary<PostgreSqlObjectName, TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType>> m_Tables = new ConcurrentDictionary<PostgreSqlObjectName, TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType>>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PostgreSqlMetadataCache"/> class.
@@ -152,7 +152,7 @@ namespace Tortuga.Chain.PostgreSql
                     cmd.Parameters.AddWithValue("@Name", tableName.Name);
                     using (var reader = cmd.ExecuteReader())
                     {
-                        while(reader.Read())
+                        while (reader.Read())
                         {
                             var name = reader.GetString(reader.GetOrdinal("column_name"));
                             var typename = reader.GetString(reader.GetOrdinal("data_type"));

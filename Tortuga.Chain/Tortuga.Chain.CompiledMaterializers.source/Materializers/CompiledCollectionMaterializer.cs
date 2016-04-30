@@ -38,9 +38,7 @@ namespace Tortuga.Chain.Materializers
                 {
                     var factory = CompiledMaterializers.CreateBuilder<TObject>(DataSource, cmd.CommandText, reader);
                     while (reader.Read())
-                    {
                         result.Add(factory(reader));
-                    }
                     return result.Count;
                 }
             }, state);
@@ -58,9 +56,7 @@ namespace Tortuga.Chain.Materializers
                 {
                     var factory = CompiledMaterializers.CreateBuilder<TObject>(DataSource, cmd.CommandText, reader);
                     while (await reader.ReadAsync())
-                    {
                         result.Add(factory(reader));
-                    }
                     return result.Count;
                 }
             }, cancellationToken, state).ConfigureAwait(false);

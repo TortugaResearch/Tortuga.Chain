@@ -74,28 +74,5 @@ namespace Tortuga.Chain
             return new TConnection();
         }
 
-        ///// <summary>
-        ///// Creates and opens a SQL connection.
-        ///// </summary>
-        ///// <returns></returns>
-        ///// <remarks>The caller of this method is responsible for closing the connection.</remarks>
-        //public new TConnection CreateConnection()
-        //{
-        //    return (TConnection)base.CreateConnection();
-        //}
-
-        ///// <summary>
-        ///// Creates and opens a SQL connection.
-        ///// </summary>
-        ///// <param name="cancellationToken">The cancellation token.</param>
-        ///// <returns></returns>
-        ///// <remarks>
-        ///// The caller of this method is responsible for closing the connection.
-        ///// </remarks>
-        //public new async Task<TConnection> CreateConnectionAsync(CancellationToken cancellationToken = default(CancellationToken))
-        //{
-        //    return (TConnection)(await base.CreateConnectionAsync(cancellationToken));
-        //}
-
     }
 }

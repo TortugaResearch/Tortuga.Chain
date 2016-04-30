@@ -19,15 +19,15 @@ namespace Tortuga.Chain
     /// <seealso cref="SqlServerDataSourceBase" />
     public class SqlServerDataSource : SqlServerDataSourceBase
     {
-        private readonly SqlConnectionStringBuilder m_ConnectionBuilder;
+        readonly SqlConnectionStringBuilder m_ConnectionBuilder;
         private SqlServerMetadataCache m_DatabaseMetadata;
 
-        private readonly object m_SyncRoot = new object();
+        readonly object m_SyncRoot = new object();
 
         private bool m_IsSqlDependencyActive;
 
         /// <summary>
-        /// This is used to decide which option overides to set when establishing a connection.
+        /// This is used to decide which option overrides to set when establishing a connection.
         /// </summary>
         private SqlServerEffectiveSettings m_ServerDefaultSettings;
         /// <summary>
@@ -286,7 +286,7 @@ namespace Tortuga.Chain
         /// <param name="implementation">The implementation that handles processing the result of the command.</param>
         /// <param name="state">User supplied state.</param>
         [SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
-        protected override void Execute(ExecutionToken<SqlCommand, SqlParameter> executionToken, Func<SqlCommand, int?> implementation, object state)
+        protected override int? Execute(CommandExecutionToken<SqlCommand, SqlParameter> executionToken, CommandImplementation<SqlCommand> implementation, object state)
         {
             if (executionToken == null)
                 throw new ArgumentNullException("executionToken", "executionToken is null.");
@@ -314,6 +314,7 @@ namespace Tortuga.Chain
 
                         var rows = implementation(cmd);
                         OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
+                        return rows;
                     }
                 }
             }
@@ -326,15 +327,95 @@ namespace Tortuga.Chain
         }
 
         /// <summary>
-        /// execute the operation asynchronously.
+        /// Executes the specified operation.
+        /// </summary>
+        /// <param name="executionToken">The execution token.</param>
+        /// <param name="implementation">The implementation.</param>
+        /// <param name="state">The state.</param>
+        protected override int? Execute(OperationExecutionToken<SqlConnection, SqlTransaction> executionToken, OperationImplementation<SqlConnection, SqlTransaction> implementation, object state)
+        {
+            if (executionToken == null)
+                throw new ArgumentNullException("executionToken", "executionToken is null.");
+            if (implementation == null)
+                throw new ArgumentNullException("implementation", "implementation is null.");
+
+            var startTime = DateTimeOffset.Now;
+            OnExecutionStarted(executionToken, startTime, state);
+
+            try
+            {
+                using (var con = CreateConnection())
+                {
+                    var rows = implementation(con, null);
+                    OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
+                    return rows;
+                }
+            }
+            catch (Exception ex)
+            {
+                OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Execute the operation asynchronously.
+        /// </summary>
+        /// <param name="executionToken">The execution token.</param>
+        /// <param name="implementation">The implementation.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>Task.</returns>
+        protected override async Task<int?> ExecuteAsync(OperationExecutionToken<SqlConnection, SqlTransaction> executionToken, OperationImplementationAsync<SqlConnection, SqlTransaction> implementation, CancellationToken cancellationToken, object state)
+        {
+            if (executionToken == null)
+                throw new ArgumentNullException("executionToken", "executionToken is null.");
+            if (implementation == null)
+                throw new ArgumentNullException("implementation", "implementation is null.");
+
+            var startTime = DateTimeOffset.Now;
+            OnExecutionStarted(executionToken, startTime, state);
+
+            try
+            {
+                using (var con = CreateConnection())
+                {
+                    var rows = await implementation(con, null, cancellationToken).ConfigureAwait(false);
+                    OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
+                    return rows;
+                }
+            }
+            catch (Exception ex)
+            {
+                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException 
+                {
+                    var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);
+                    OnExecutionCanceled(executionToken, startTime, DateTimeOffset.Now, state);
+                    throw ex2;
+                }
+                else
+                {
+                    OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
+                    throw;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Execute the operation asynchronously.
         /// </summary>
         /// <param name="executionToken">The execution token.</param>
         /// <param name="implementation">The implementation that handles processing the result of the command.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <param name="state">User supplied state.</param>
         /// <returns>Task.</returns>
-        protected override async Task ExecuteAsync(ExecutionToken<SqlCommand, SqlParameter> executionToken, Func<SqlCommand, Task<int?>> implementation, CancellationToken cancellationToken, object state)
+        protected override async Task<int?> ExecuteAsync(CommandExecutionToken<SqlCommand, SqlParameter> executionToken, CommandImplementationAsync<SqlCommand> implementation, CancellationToken cancellationToken, object state)
         {
+            if (executionToken == null)
+                throw new ArgumentNullException("executionToken", "executionToken is null.");
+            if (implementation == null)
+                throw new ArgumentNullException("implementation", "implementation is null.");
+
             var startTime = DateTimeOffset.Now;
             OnExecutionStarted(executionToken, startTime, state);
 
@@ -356,6 +437,7 @@ namespace Tortuga.Chain
 
                         var rows = await implementation(cmd).ConfigureAwait(false);
                         OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
+                        return rows;
                     }
                 }
             }
@@ -375,6 +457,7 @@ namespace Tortuga.Chain
             }
 
         }
+
 
         private string BuildConnectionSettingsOverride()
         {

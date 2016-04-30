@@ -9,18 +9,19 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
     /// <summary>
     /// Class SqlServerDeleteObject.
     /// </summary>
-    internal sealed class SqlServerDeleteObject : SqlServerObjectCommand
+    internal sealed class SqlServerDeleteObject<TArgument> : SqlServerObjectCommand<TArgument>
+        where TArgument : class
     {
-        private readonly DeleteOptions m_Options;
+        readonly DeleteOptions m_Options;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SqlServerDeleteObject"/> class.
+        /// Initializes a new instance of the <see cref="SqlServerDeleteObject{TArgument}"/> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="argumentValue">The argument value.</param>
         /// <param name="options">The options.</param>
-        public SqlServerDeleteObject(SqlServerDataSourceBase dataSource, SqlServerObjectName tableName, object argumentValue, DeleteOptions options) : base(dataSource, tableName, argumentValue)
+        public SqlServerDeleteObject(SqlServerDataSourceBase dataSource, SqlServerObjectName tableName, TArgument argumentValue, DeleteOptions options) : base(dataSource, tableName, argumentValue)
         {
             m_Options = options;
         }
@@ -31,22 +32,22 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// <param name="materializer">The materializer.</param>
         /// <returns>ExecutionToken&lt;TCommand&gt;.</returns>
 
-        public override ExecutionToken<SqlCommand, SqlParameter> Prepare(Materializer<SqlCommand, SqlParameter> materializer)
+        public override CommandExecutionToken<SqlCommand, SqlParameter> Prepare(Materializer<SqlCommand, SqlParameter> materializer)
         {
             if (materializer == null)
                 throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
 
-            var sqlBuilder = Metadata.CreateSqlBuilder(StrictMode);
+            var sqlBuilder = Table.CreateSqlBuilder(StrictMode);
             sqlBuilder.ApplyArgumentValue(DataSource, ArgumentValue, m_Options);
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
             var sql = new StringBuilder();
-            sql.Append("DELETE FROM " + Metadata.Name.ToQuotedString());
+            sql.Append("DELETE FROM " + Table.Name.ToQuotedString());
             sqlBuilder.BuildSelectClause(sql, " OUTPUT ", "Deleted.", null);
             sqlBuilder.BuildWhereClause(sql, " WHERE ", null);
             sql.Append(";");
 
-            return new SqlServerExecutionToken(DataSource, "Delete from " + TableName, sql.ToString(), sqlBuilder.GetParameters());
+            return new SqlServerCommandExecutionToken(DataSource, "Delete from " + Table.Name, sql.ToString(), sqlBuilder.GetParameters());
         }
 
 

@@ -79,11 +79,11 @@ namespace Tortuga.Chain
         /// <param name="commandBuilder">The command builder.</param>
         /// <param name="cacheKey">The cache key.</param>
         /// <returns>ILink.</returns>
-        public static ILink InvalidateCache(this IDbCommandBuilder commandBuilder, string cacheKey)
+        public static ILink<int?> InvalidateCache(this IDbCommandBuilder commandBuilder, string cacheKey)
         {
             if (commandBuilder == null)
                 throw new ArgumentNullException("commandBuilder", "commandBuilder is null.");
-            return new InvalidateCacheAppender(commandBuilder.AsNonQuery(), cacheKey);
+            return new InvalidateCacheAppender<int?>(commandBuilder.AsNonQuery(), cacheKey);
         }
 
         /// <summary>

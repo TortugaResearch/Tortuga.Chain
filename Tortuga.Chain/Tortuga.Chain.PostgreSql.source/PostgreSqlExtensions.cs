@@ -11,7 +11,7 @@ namespace Tortuga.Chain
     /// </summary>
     public static class PostgreSqlExtensions
     {
-        private readonly static ConcurrentDictionary<string, PostgreSqlDataSource> s_CachedDataSources = new ConcurrentDictionary<string, PostgreSqlDataSource>();
+        readonly static ConcurrentDictionary<string, PostgreSqlDataSource> s_CachedDataSources = new ConcurrentDictionary<string, PostgreSqlDataSource>();
 
         /// <summary>
         /// Returns a data source wrapped around the connection.

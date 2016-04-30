@@ -42,12 +42,12 @@ namespace Tests.Repository
 
         public TEntity Insert(TEntity entity)
         {
-            return Source.Insert(TableName, entity).ToObject<TEntity>().Execute();
+            return Source.Insert(TableName, entity).ToObject().Execute();
         }
 
         public TEntity Update(TEntity entity)
         {
-            return Source.Update(TableName, entity).ToObject<TEntity>().Execute();
+            return Source.Update(TableName, entity).ToObject().Execute();
         }
 
         public void Delete(TKey id)
@@ -62,7 +62,7 @@ namespace Tests.Repository
 
         public TEntity Upsert(TEntity entity)
         {
-            return Source.Upsert(TableName, entity).ToObject<TEntity>().Execute();
+            return Source.Upsert(TableName, entity).ToObject().Execute();
         }
 
         public TEntity Upsert(IReadOnlyDictionary<string, object> entity)

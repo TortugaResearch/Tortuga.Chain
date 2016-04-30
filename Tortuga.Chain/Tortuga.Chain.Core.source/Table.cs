@@ -6,8 +6,8 @@ using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
-using System.Xml.Linq;
 using Tortuga.Anchor.Metadata;
+using Tortuga.Chain.Materializers;
 
 namespace Tortuga.Chain
 {
@@ -56,20 +56,22 @@ namespace Tortuga.Chain
             m_ColumnTypes = new ReadOnlyDictionary<string, Type>(colTypes);
 
             var rows = new Collection<Row>();
+
             while (source.Read())
             {
-                var row = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+                var row = new Dictionary<string, object>(source.FieldCount, StringComparer.OrdinalIgnoreCase);
                 for (var i = 0; i < source.FieldCount; i++)
                 {
                     var temp = source[i];
                     if (temp == DBNull.Value)
                         temp = null;
 
-                    row.Add(m_Columns[i], temp);
+                    row.Add(source.GetName(i), temp);
                 }
 
                 rows.Add(new Row(row));
             }
+
             m_Rows = new RowCollection(rows);
         }
 
@@ -103,6 +105,7 @@ namespace Tortuga.Chain
         /// </summary>
         /// <value>The name of the table.</value>
         public string TableName { get; set; }
+
         /// <summary>
         /// Converts the table into an enumeration of objects of the indicated type.
         /// </summary>
@@ -112,7 +115,7 @@ namespace Tortuga.Chain
             foreach (var row in Rows)
             {
                 var item = new T();
-                PopulateComplexObject(row, item, null);
+                MaterializerUtilities.PopulateComplexObject(row, item, null);
 
                 //Change tracking objects shouldn't be materialized as unchanged.
                 var tracking = item as IChangeTracking;
@@ -223,7 +226,7 @@ namespace Tortuga.Chain
             foreach (var row in Rows)
             {
                 var item = new T();
-                PopulateComplexObject(row, item, null);
+                MaterializerUtilities.PopulateComplexObject(row, item, null);
 
                 //Change tracking objects shouldn't be materialized as unchanged.
                 var tracking = item as IChangeTracking;
@@ -233,109 +236,6 @@ namespace Tortuga.Chain
             }
         }
 
-        /// <summary>
-        /// Populates the complex object.
-        /// </summary>
-        /// <param name="source">The source.</param>
-        /// <param name="target">The object being populated.</param>
-        /// <param name="decompositionPrefix">The decomposition prefix.</param>
-        /// <remarks>This honors the Column and Decompose attributes.</remarks>
-        [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
-        static private void PopulateComplexObject(Row source, object target, string decompositionPrefix)
-        {
-            if (source == null)
-                throw new ArgumentNullException(nameof(source), $"{nameof(source)} is null.");
-            if (target == null)
-                throw new ArgumentNullException(nameof(target), $"{nameof(target)} is null.");
 
-            foreach (var property in MetadataCache.GetMetadata(target.GetType()).Properties)
-            {
-                string mappedColumnName = decompositionPrefix + property.MappedColumnName;
-                if (property.CanWrite && source.ContainsKey(mappedColumnName))
-                {
-                    var value = source[mappedColumnName];
-
-                    if (value != null && property.PropertyType != value.GetType())
-                    {
-                        var targetType = property.PropertyType;
-                        var targetTypeInfo = targetType.GetTypeInfo();
-
-                        //For Nullable<T>, we only care about the type parameter
-                        if (targetType.Name == "Nullable`1" && targetTypeInfo.IsGenericType)
-                        {
-                            targetType = targetType.GenericTypeArguments[0];
-                            targetTypeInfo = targetType.GetTypeInfo();
-                        }
-
-                        //some database return strings when we want strong types
-                        if (value is string)
-                        {
-                            if (targetType == typeof(XElement))
-                                value = XElement.Parse((string)value);
-                            else if (targetType == typeof(XDocument))
-                                value = XDocument.Parse((string)value);
-                            else if (targetTypeInfo.IsEnum)
-                                value = Enum.Parse(targetType, (string)value);
-
-                            else if (targetType == typeof(bool))
-                                value = bool.Parse((string)value);
-                            else if (targetType == typeof(short))
-                                value = short.Parse((string)value);
-                            else if (targetType == typeof(int))
-                                value = int.Parse((string)value);
-                            else if (targetType == typeof(long))
-                                value = long.Parse((string)value);
-                            else if (targetType == typeof(float))
-                                value = float.Parse((string)value);
-                            else if (targetType == typeof(double))
-                                value = double.Parse((string)value);
-                            else if (targetType == typeof(decimal))
-                                value = decimal.Parse((string)value);
-
-                            else if (targetType == typeof(DateTime))
-                                value = DateTime.Parse((string)value);
-                            else if (targetType == typeof(DateTimeOffset))
-                                value = DateTimeOffset.Parse((string)value);
-                        }
-                        else
-                        {
-                            if (targetTypeInfo.IsEnum)
-                                value = Enum.ToObject(targetType, value);
-                        }
-
-                        //this will handle numeric conversions
-                        if (value != null && targetType != value.GetType())
-                        {
-                            try
-                            {
-                                value = Convert.ChangeType(value, targetType);
-                            }
-                            catch (Exception ex)
-                            {
-                                throw new MappingException($"Cannot map value of type {value.GetType().FullName} to property {property.Name} of type {targetType.Name}.", ex);
-                            }
-                        }
-                    }
-
-                    property.InvokeSet(target, value);
-                }
-                else if (property.Decompose)
-                {
-                    object child = null;
-
-                    if (property.CanRead)
-                        child = property.InvokeGet(target);
-
-                    if (child == null && property.CanWrite && property.PropertyType.GetConstructor(new Type[0]) != null)
-                    {
-                        child = Activator.CreateInstance(property.PropertyType);
-                        property.InvokeSet(target, child);
-                    }
-
-                    if (child != null)
-                        PopulateComplexObject(source, child, decompositionPrefix + property.DecompositionPrefix);
-                }
-            }
-        }
     }
 }

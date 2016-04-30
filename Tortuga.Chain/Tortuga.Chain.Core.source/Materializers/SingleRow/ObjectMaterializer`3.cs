@@ -49,33 +49,19 @@ namespace Tortuga.Chain.Materializers
         /// <returns></returns>
         public override TObject Execute(object state = null)
         {
-            Table table = null;
+            IReadOnlyDictionary<string, object> row = null;
+
             var executionToken = Prepare();
-            executionToken.Execute(cmd =>
+            var rowCount = executionToken.Execute(cmd =>
             {
                 using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess))
                 {
-                    table = new Table(reader);
-                    return table.Rows.Count;
+                    row = reader.ReadDictionary();
+                    return (row != null ? 1 : 0) + reader.RemainingRowCount();
                 }
             }, state);
 
-            if (table.Rows.Count == 0)
-            {
-                if (m_RowOptions.HasFlag(RowOptions.AllowEmptyResults))
-                    return null;
-                else
-                {
-                    var ex = new DataException("No rows were returned");
-                    throw ex;
-                }
-            }
-            else if (table.Rows.Count > 1 && !m_RowOptions.HasFlag(RowOptions.DiscardExtraRows))
-            {
-                var ex = new DataException("Expected 1 row but received " + table.Rows.Count + " rows");
-                throw ex;
-            }
-            return table.ToObjects<TObject>(ConstructorSignature).First();
+            return ConstructObject(row, rowCount);
         }
 
 
@@ -87,33 +73,35 @@ namespace Tortuga.Chain.Materializers
         /// <returns></returns>
         public override async Task<TObject> ExecuteAsync(CancellationToken cancellationToken, object state = null)
         {
-            Table table = null;
+            IReadOnlyDictionary<string, object> row = null;
 
             var executionToken = Prepare();
-            await executionToken.ExecuteAsync(async cmd =>
+            var rowCount = await executionToken.ExecuteAsync(async cmd =>
             {
                 using (var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SequentialAccess, cancellationToken).ConfigureAwait(false))
                 {
-                    table = new Table(reader);
-                    return table.Rows.Count;
+                    row = await reader.ReadDictionaryAsync();
+                    return (row != null ? 1 : 0) + await reader.RemainingRowCountAsync();
                 }
             }, cancellationToken, state).ConfigureAwait(false);
 
+            return ConstructObject(row, rowCount);
+        }
 
-            if (table.Rows.Count == 0)
+        private TObject ConstructObject(IReadOnlyDictionary<string, object> row, int? rowCount)
+        {
+            if (rowCount == 0)
             {
                 if (m_RowOptions.HasFlag(RowOptions.AllowEmptyResults))
                     return null;
                 else
-                {
                     throw new DataException("No rows were returned");
-                }
             }
-            else if (table.Rows.Count > 1 && !m_RowOptions.HasFlag(RowOptions.DiscardExtraRows))
+            else if (rowCount > 1 && !m_RowOptions.HasFlag(RowOptions.DiscardExtraRows))
             {
-                throw new DataException("Expected 1 row but received " + table.Rows.Count + " rows");
+                throw new DataException($"Expected 1 row but received {rowCount} rows");
             }
-            return table.ToObjects<TObject>(ConstructorSignature).First();
+            return MaterializerUtilities.ConstructObject<TObject>(row, ConstructorSignature);
         }
 
         /// <summary>

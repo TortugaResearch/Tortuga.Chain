@@ -230,8 +230,7 @@ namespace Tests
                       insert #t 
                       select @a a union all select @b 
                       set nocount on 
-                      drop table #t", new { a = 1, b = 2 }).AsRowsAffected().Execute()
-                );
+                      drop table #t", new { a = 1, b = 2 }).Execute().Value);
         }
 
         /// <summary>
@@ -448,9 +447,6 @@ select * from Sales.[Return] where CustomerKey = @id"; ;
             {
                 var users = cnn.Query<User>("select * from Users where Name = @Name", new { Name = new DbString { Value = "abcde", IsFixedLength = true, Length = 50, IsAnsi = true } });
             }
-
-
-
         }
 
         /// <summary>

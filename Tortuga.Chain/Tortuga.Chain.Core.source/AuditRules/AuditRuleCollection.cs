@@ -13,7 +13,7 @@ namespace Tortuga.Chain.AuditRules
     /// <seealso cref="IReadOnlyList{Rule}" />
     public class AuditRuleCollection : IReadOnlyList<AuditRule>
     {
-        private readonly ImmutableArray<AuditRule> m_List;
+        readonly ImmutableArray<AuditRule> m_List;
 
         /// <summary>
         /// Returns an empty RulesCollection.
@@ -27,6 +27,8 @@ namespace Tortuga.Chain.AuditRules
         private AuditRuleCollection()
         {
             m_List = ImmutableArray.Create<AuditRule>();
+
+            SoftDeleteForSelect = ImmutableArray.Create<SoftDeleteRule>();
         }
 
         /// <summary>
@@ -36,6 +38,8 @@ namespace Tortuga.Chain.AuditRules
         public AuditRuleCollection(IEnumerable<AuditRule> rules)
         {
             m_List = ImmutableArray.CreateRange(rules);
+
+            SoftDeleteForSelect = this.Where(r => r.AppliesWhen.HasFlag(OperationTypes.Select)).OfType<SoftDeleteRule>().ToImmutableArray();
         }
 
         /// <summary>
@@ -51,6 +55,8 @@ namespace Tortuga.Chain.AuditRules
                 throw new ArgumentNullException(nameof(additionalRules), $"{nameof(additionalRules)} is null.");
 
             m_List = baseRules.m_List.AddRange(additionalRules);
+
+            SoftDeleteForSelect = this.Where(r => r.AppliesWhen.HasFlag(OperationTypes.Select)).OfType<SoftDeleteRule>().ToImmutableArray();
         }
 
         /// <summary>
@@ -60,6 +66,14 @@ namespace Tortuga.Chain.AuditRules
         {
             get { return m_List.Length; }
         }
+
+        /// <summary>
+        /// Gets the soft delete rules for select.
+        /// </summary>
+        /// <value>
+        /// The soft delete for select.
+        /// </value>
+        internal ImmutableArray<SoftDeleteRule> SoftDeleteForSelect { get; }
 
         /// <summary>
         /// Gets the <see cref="AuditRule"/> at the specified index.

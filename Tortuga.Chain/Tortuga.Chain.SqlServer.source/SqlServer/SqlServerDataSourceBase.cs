@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Data.SqlClient;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Tortuga.Anchor;
+using Tortuga.Chain.AuditRules;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Metadata;
@@ -14,7 +17,7 @@ namespace Tortuga.Chain.SqlServer
     /// <summary>
     /// Class SqlServerDataSourceBase.
     /// </summary>
-    public abstract class SqlServerDataSourceBase : DataSource<SqlCommand, SqlParameter>, IClass2DataSource
+    public abstract class SqlServerDataSourceBase : DataSource<SqlConnection, SqlTransaction, SqlCommand, SqlParameter>, IClass2DataSource
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlServerDataSourceBase"/> class.
@@ -44,17 +47,18 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="options">The delete options.</param>
         /// <returns>SqlServerInsert.</returns>
         /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
-        public SingleRowDbCommandBuilder<SqlCommand, SqlParameter> Delete(SqlServerObjectName tableName, object argumentValue, DeleteOptions options = DeleteOptions.None)
+        public ObjectDbCommandBuilder<SqlCommand, SqlParameter, TArgument> Delete<TArgument>(SqlServerObjectName tableName, TArgument argumentValue, DeleteOptions options = DeleteOptions.None)
+        where TArgument : class
         {
             var table = DatabaseMetadata.GetTableOrView(tableName);
             if (!AuditRules.UseSoftDelete(table))
-                return new SqlServerDeleteObject(this, tableName, argumentValue, options);
+                return new SqlServerDeleteObject<TArgument>(this, tableName, argumentValue, options);
 
             UpdateOptions effectiveOptions = UpdateOptions.SoftDelete;
             if (options.HasFlag(DeleteOptions.UseKeyAttribute))
                 effectiveOptions = effectiveOptions | UpdateOptions.UseKeyAttribute;
 
-            return new SqlServerUpdateObject(this, tableName, argumentValue, effectiveOptions);
+            return new SqlServerUpdateObject<TArgument>(this, tableName, argumentValue, effectiveOptions);
         }
 
         /// <summary>
@@ -206,7 +210,7 @@ namespace Tortuga.Chain.SqlServer
             return Sql(sqlStatement, argumentValue);
         }
 
-        IDbCommandBuilder IClass1DataSource.Delete(string tableName, object argumentValue, DeleteOptions options)
+        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Delete<TArgument>(string tableName, TArgument argumentValue, DeleteOptions options)
         {
             return Delete(tableName, argumentValue, options);
         }
@@ -246,16 +250,16 @@ namespace Tortuga.Chain.SqlServer
             return GetByKey(tableName, (IEnumerable<T>)keys);
         }
 
-        ISingleRowDbCommandBuilder IClass1DataSource.Insert(string tableName, object argumentValue, InsertOptions options)
+        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Insert<TArgument>(string tableName, TArgument argumentValue, InsertOptions options)
         {
             return Insert(tableName, argumentValue, options);
         }
-        ISingleRowDbCommandBuilder IClass1DataSource.Update(string tableName, object argumentValue, UpdateOptions options)
+        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Update<TArgument>(string tableName, TArgument argumentValue, UpdateOptions options)
         {
             return Update(tableName, argumentValue, options);
         }
 
-        ISingleRowDbCommandBuilder IClass1DataSource.Upsert(string tableName, object argumentValue, UpsertOptions options)
+        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Upsert<TArgument>(string tableName, TArgument argumentValue, UpsertOptions options)
         {
             return Upsert(tableName, argumentValue, options);
         }
@@ -296,9 +300,10 @@ namespace Tortuga.Chain.SqlServer
         /// SqlServerInsert.
         /// </returns>
         /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
-        public SingleRowDbCommandBuilder<SqlCommand, SqlParameter> Insert(SqlServerObjectName tableName, object argumentValue, InsertOptions options = InsertOptions.None)
+        public ObjectDbCommandBuilder<SqlCommand, SqlParameter, TArgument> Insert<TArgument>(SqlServerObjectName tableName, TArgument argumentValue, InsertOptions options = InsertOptions.None)
+        where TArgument : class
         {
-            return new SqlServerInsertObject(this, tableName, argumentValue, options);
+            return new SqlServerInsertObject<TArgument>(this, tableName, argumentValue, options);
         }
 
         /// <summary>
@@ -354,9 +359,10 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="options">The update options.</param>
         /// <returns>SqlServerInsert.</returns>
         /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
-        public SingleRowDbCommandBuilder<SqlCommand, SqlParameter> Update(SqlServerObjectName tableName, object argumentValue, UpdateOptions options = UpdateOptions.None)
+        public ObjectDbCommandBuilder<SqlCommand, SqlParameter, TArgument> Update<TArgument>(SqlServerObjectName tableName, TArgument argumentValue, UpdateOptions options = UpdateOptions.None)
+        where TArgument : class
         {
-            return new SqlServerUpdateObject(this, tableName, argumentValue, options);
+            return new SqlServerUpdateObject<TArgument>(this, tableName, argumentValue, options);
         }
 
         /// <summary>
@@ -367,9 +373,10 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="options">The options for how the insert/update occurs.</param>
         /// <returns>SqlServerUpdate.</returns>
         /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
-        public SingleRowDbCommandBuilder<SqlCommand, SqlParameter> Upsert(SqlServerObjectName tableName, object argumentValue, UpsertOptions options = UpsertOptions.None)
+        public ObjectDbCommandBuilder<SqlCommand, SqlParameter, TArgument> Upsert<TArgument>(SqlServerObjectName tableName, TArgument argumentValue, UpsertOptions options = UpsertOptions.None)
+        where TArgument : class
         {
-            return new SqlServerInsertOrUpdateObject(this, tableName, argumentValue, options);
+            return new SqlServerInsertOrUpdateObject<TArgument>(this, tableName, argumentValue, options);
         }
 
         ITableDbCommandBuilder IClass2DataSource.TableFunction(string functionName)
@@ -380,6 +387,89 @@ namespace Tortuga.Chain.SqlServer
         ITableDbCommandBuilder IClass2DataSource.TableFunction(string functionName, object functionArgumentValue)
         {
             return TableFunction(functionName, functionArgumentValue);
+        }
+
+        /// <summary>
+        /// Inserts the batch of records as one operation.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="tableTypeName">Name of the table type.</param>
+        /// <param name="dataTable">The data table.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
+        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> InsertBatch(SqlServerObjectName tableName, SqlServerObjectName tableTypeName, DataTable dataTable, InsertOptions options = InsertOptions.None)
+        {
+            return new SqlServerInsertBatch(this, tableName, tableTypeName, dataTable, options);
+        }
+
+        /// <summary>
+        /// Inserts the batch of records as one operation.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="tableTypeName">Name of the table type.</param>
+        /// <param name="dataReader">The data reader.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
+        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> InsertBatch(SqlServerObjectName tableName, SqlServerObjectName tableTypeName, DbDataReader dataReader, InsertOptions options = InsertOptions.None)
+        {
+            return new SqlServerInsertBatch(this, tableName, tableTypeName, dataReader, options);
+        }
+
+        /// <summary>
+        /// Inserts the batch of records as one operation..
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="tableTypeName">Name of the table type.</param>
+        /// <param name="objects">The objects.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
+        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> InsertBatch<T>(SqlServerObjectName tableName, SqlServerObjectName tableTypeName, IEnumerable<T> objects, InsertOptions options = InsertOptions.None)
+        {
+            var tableType = DatabaseMetadata.GetUserDefinedType(tableTypeName);
+            return new SqlServerInsertBatch(this, tableName, tableTypeName, new ObjectDataReader<T>(tableType, objects), options);
+        }
+
+
+        /// <summary>
+        /// Inserts the batch of records using bulk insert.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="dataTable">The data table.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>SqlServerInsertBulk.</returns>
+        public SqlServerInsertBulk InsertBulk(SqlServerObjectName tableName, DataTable dataTable, SqlBulkCopyOptions options = SqlBulkCopyOptions.Default)
+        {
+            return new SqlServerInsertBulk(this, tableName, dataTable, options);
+        }
+
+
+        /// <summary>
+        /// Inserts the batch of records using bulk insert.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="dataReader">The data reader.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>SqlServerInsertBulk.</returns>
+        public SqlServerInsertBulk InsertBulk(SqlServerObjectName tableName, IDataReader dataReader, SqlBulkCopyOptions options = SqlBulkCopyOptions.Default)
+        {
+            return new SqlServerInsertBulk(this, tableName, dataReader, options);
+        }
+
+        /// <summary>
+        /// Inserts the batch of records using bulk insert.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="objects">The objects.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>SqlServerInsertBulk.</returns>
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
+        public SqlServerInsertBulk InsertBulk<T>(SqlServerObjectName tableName, IEnumerable<T> objects, SqlBulkCopyOptions options = SqlBulkCopyOptions.Default)
+        {
+            var tableType = DatabaseMetadata.GetTableOrView(tableName);
+            return new SqlServerInsertBulk(this, tableName, new ObjectDataReader<T>(tableType, objects, OperationTypes.Insert), options);
         }
     }
 }

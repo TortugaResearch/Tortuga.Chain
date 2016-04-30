@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -13,7 +14,7 @@ namespace Tortuga.Chain
     [SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
     public sealed class Row : IReadOnlyDictionary<string, object>
     {
-        private readonly Dictionary<string, object> m_Contents;
+        readonly Dictionary<string, object> m_Contents;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Row"/> class.
@@ -21,6 +22,9 @@ namespace Tortuga.Chain
         /// <param name="contents">The contents.</param>
         internal Row(Dictionary<string, object> contents)
         {
+            if (contents == null || contents.Count == 0)
+                throw new ArgumentException($"{nameof(contents)} is null or empty.", nameof(contents));
+
             m_Contents = contents;
         }
 

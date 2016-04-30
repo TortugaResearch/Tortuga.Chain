@@ -1,7 +1,7 @@
-using System.Data;
-using Tortuga.Chain.DataSources;
-using System.Data.Common;
 using System;
+using System.Data;
+using System.Data.Common;
+using Tortuga.Chain.DataSources;
 namespace Tortuga.Chain.Core
 {
     /// <summary>
@@ -17,7 +17,7 @@ namespace Tortuga.Chain.Core
         /// <param name="operationName">Name of the operation.</param>
         /// <param name="commandText">The command text.</param>
         /// <param name="commandType">Type of the command.</param>
-        protected ExecutionToken(DataSource dataSource, string operationName, string commandText, CommandType commandType)
+        protected ExecutionToken(IDataSource dataSource, string operationName, string commandText, CommandType commandType)
         {
             DataSource = dataSource;
             OperationName = operationName;
@@ -46,7 +46,7 @@ namespace Tortuga.Chain.Core
         /// Gets the data source.
         /// </summary>
         /// <value>The data source.</value>
-        public DataSource DataSource { get; }
+        public IDataSource DataSource { get; }
 
         /// <summary>
         /// Occurs when a command has been built.

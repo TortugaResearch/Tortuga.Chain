@@ -1,5 +1,7 @@
 namespace Tortuga.Chain.Metadata
 {
+
+
     /// <summary>
     /// Metadata for a table or view column
     /// </summary>
@@ -28,8 +30,11 @@ namespace Tortuga.Chain.Metadata
             DbType = dbType;
             QuotedSqlName = quotedSqlName;
 
-            ClrName = Utilities.ToClrName(name);
-            SqlVariableName = "@" + SqlName;
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                ClrName = Utilities.ToClrName(name);
+                SqlVariableName = "@" + name;
+            }
         }
 
         /// <summary>
@@ -96,7 +101,7 @@ namespace Tortuga.Chain.Metadata
         /// </returns>
         public override string ToString()
         {
-            return SqlName + " (" +  TypeName +")";
+            return SqlName + " (" + TypeName + ")";
         }
     }
 }
