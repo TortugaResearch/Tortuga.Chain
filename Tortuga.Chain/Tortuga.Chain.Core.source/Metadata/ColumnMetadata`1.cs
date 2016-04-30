@@ -1,5 +1,7 @@
 namespace Tortuga.Chain.Metadata
 {
+
+
     /// <summary>
     /// Metadata for a table or view column
     /// </summary>

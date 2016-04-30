@@ -218,6 +218,7 @@
     <Compile Include="Materializers\SingleColumn\TimeSpanListMaterializer`2.cs" />
     <Compile Include="Materializers\MultipleRow\TableMaterializer`2.cs" />
     <Compile Include="Materializers\MultipleTable\TableSetMaterializer`2.cs" />
+    <Compile Include="Metadata\ColumnMetadataCollection.cs" />
     <Compile Include="Metadata\IUserDefinedTypeMetadata.cs" />
     <Compile Include="Metadata\UserDefinedTypeMetadata.cs" />
     <Compile Include="ObjectDataReader.cs" />

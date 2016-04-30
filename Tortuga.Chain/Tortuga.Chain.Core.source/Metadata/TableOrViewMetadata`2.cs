@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using Tortuga.Chain.CommandBuilders;
 
 namespace Tortuga.Chain.Metadata
@@ -23,7 +22,7 @@ namespace Tortuga.Chain.Metadata
         {
             IsTable = isTable;
             Name = name;
-            Columns = new ReadOnlyCollection<ColumnMetadata<TDbType>>(columns);
+            Columns = new ColumnMetadataCollection<TDbType>(name.ToString(), columns);
         }
 
 
@@ -33,7 +32,7 @@ namespace Tortuga.Chain.Metadata
         /// <value>
         /// The columns.
         /// </value>
-        public ReadOnlyCollection<ColumnMetadata<TDbType>> Columns { get; }
+        public ColumnMetadataCollection<TDbType> Columns { get; }
 
         /// <summary>
         /// Gets a value indicating whether this instance is table or a view.

@@ -166,5 +166,20 @@ namespace Tortuga.Chain.CommandBuilders
         {
             return WithFilter(whereClause, argumentValue);
         }
+
+        /// <summary>
+        /// Returns the row count using a <c>SELECT Count(*)</c> style query.
+        /// </summary>
+        /// <returns></returns>
+        public abstract ILink<long> AsCount();
+
+        /// <summary>
+        /// Returns the row count for a given column. <c>SELECT Count(columnName)</c>
+        /// </summary>
+        /// <param name="columnName">Name of the column.</param>
+        /// <param name="distinct">if set to <c>true</c> use <c>SELECT COUNT(DISTINCT columnName)</c>.</param>
+        /// <returns></returns>
+        public abstract ILink<long> AsCount(string columnName, bool distinct = false);
+
     }
 }

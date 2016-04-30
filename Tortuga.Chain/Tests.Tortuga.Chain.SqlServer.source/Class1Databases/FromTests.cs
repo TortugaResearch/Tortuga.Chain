@@ -36,7 +36,7 @@ namespace Tests.Class1Databases
 
                 Key1000 = Guid.NewGuid().ToString();
                 for (var i = 0; i < 1000; i++)
-                    trans.Insert(EmployeeTableName, new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = Key1000 }).ToObject<Employee>().Execute();
+                    trans.Insert(EmployeeTableName, new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = Key1000, MiddleName = i % 2 == 0 ? "A" + i : null }).ToObject<Employee>().Execute();
 
                 //Key10000 = Guid.NewGuid().ToString();
                 //for (var i = 0; i < 10000; i++)
@@ -45,6 +45,24 @@ namespace Tests.Class1Databases
                 trans.Commit();
             }
         }
+
+
+        [TestMethod]
+        public void FromTests_Counts()
+        {
+            var count = DataSource.From(EmployeeTableName, new { Title = Key1000 }).AsCount().Execute();
+            var columnCount = DataSource.From(EmployeeTableName, new { Title = Key1000 }).AsCount("Title").Execute();
+            var columnCount2 = DataSource.From(EmployeeTableName, new { Title = Key1000 }).AsCount("MiddleName").Execute();
+            var distinctColumnCount = DataSource.From(EmployeeTableName, new { Title = Key1000 }).AsCount("Title", true).Execute();
+            var distinctColumnCount2 = DataSource.From(EmployeeTableName, new { Title = Key1000 }).AsCount("LastName", true).Execute();
+
+            Assert.AreEqual(1000, count, "All of the rows");
+            Assert.AreEqual(1000, columnCount, "No nulls");
+            Assert.AreEqual(500, columnCount2, "Half of the rows are nul");
+            Assert.AreEqual(1, distinctColumnCount, "Only one distinct value");
+            Assert.AreEqual(1000, distinctColumnCount2, "Every value is distinct");
+        }
+
 
 #if !SQLite
 

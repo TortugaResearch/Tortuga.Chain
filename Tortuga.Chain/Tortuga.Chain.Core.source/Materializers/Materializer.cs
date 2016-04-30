@@ -11,7 +11,6 @@ namespace Tortuga.Chain.Materializers
     /// </summary>
     public abstract class Materializer
     {
-
         /// <summary>
         /// Return all columns.
         /// </summary>
@@ -29,6 +28,11 @@ namespace Tortuga.Chain.Materializers
         /// </summary>
         [SuppressMessage("Microsoft.Security", "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes")]
         public static readonly IReadOnlyList<string> NoColumns = new ReadOnlyCollection<string>(new List<string>());
+
+        ///// <summary>
+        ///// Indicates that AdvancedColumns should be used instead of DesiredColumns
+        ///// </summary>
+        //public static readonly IReadOnlyList<string> UseAdvancedColumns = new ReadOnlyCollection<string>(new List<string>());
 
         /// <summary>
         /// Occurs when an execution token has been prepared.
@@ -52,6 +56,7 @@ namespace Tortuga.Chain.Materializers
         {
             return AutoSelectDesiredColumns;
         }
+
         /// <summary>
         /// Raises the <see cref="E:ExecutionTokenPrepared" /> event.
         /// </summary>

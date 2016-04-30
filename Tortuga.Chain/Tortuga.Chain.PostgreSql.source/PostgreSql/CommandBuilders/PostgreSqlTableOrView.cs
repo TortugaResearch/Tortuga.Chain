@@ -26,6 +26,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         private int? m_Skip;
         private int? m_Take;
         private int? m_Seed;
+        private string m_SelectClause;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PostgreSqlTableOrView"/> class.
@@ -102,7 +103,12 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
             List<NpgsqlParameter> parameters;
             var sql = new StringBuilder();
 
-            sqlBuilder.BuildSelectClause(sql, "SELECT ", null, " FROM " + m_Metadata.Name.ToQuotedString());
+            if (m_SelectClause != null)
+                sql.Append($"SELECT {m_SelectClause} ");
+            else
+                sqlBuilder.BuildSelectClause(sql, "SELECT ", null, null);
+
+            sql.Append(" FROM " + m_Metadata.Name);
 
             switch (m_LimitOptions)
             {
@@ -217,6 +223,33 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
             m_WhereClause = whereClause;
             m_ArgumentValue = argumentValue;
             return this;
+        }
+
+        /// <summary>
+        /// Returns the row count using a <c>SELECT COUNT_BIG(*)</c> style query.
+        /// </summary>
+        /// <returns></returns>
+        public override ILink<long> AsCount()
+        {
+            m_SelectClause = "COUNT(*)";
+            return ToInt64();
+        }
+
+        /// <summary>
+        /// Returns the row count for a given column. <c>SELECT COUNT_BIG(columnName)</c>
+        /// </summary>
+        /// <param name="columnName">Name of the column.</param>
+        /// <param name="distinct">if set to <c>true</c> use <c>SELECT COUNT_BIG(DISTINCT columnName)</c>.</param>
+        /// <returns></returns>
+        public override ILink<long> AsCount(string columnName, bool distinct = false)
+        {
+            var column = m_Metadata.Columns[columnName];
+            if (distinct)
+                m_SelectClause = $"COUNT(DISTINCT {column.QuotedSqlName})";
+            else
+                m_SelectClause = $"COUNT({column.QuotedSqlName})";
+
+            return ToInt64();
         }
 
         public new PostgreSqlDataSourceBase DataSource
