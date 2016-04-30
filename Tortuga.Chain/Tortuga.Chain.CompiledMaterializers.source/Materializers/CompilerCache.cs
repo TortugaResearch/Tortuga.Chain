@@ -6,7 +6,7 @@ namespace Tortuga.Chain.Materializers
 {
     internal class CompilerCache
     {
-        private readonly ConcurrentDictionary<Type, ConcurrentDictionary<string, object>> m_Cache = new ConcurrentDictionary<Type, ConcurrentDictionary<string, object>>();
+        readonly ConcurrentDictionary<Type, ConcurrentDictionary<string, object>> m_Cache = new ConcurrentDictionary<Type, ConcurrentDictionary<string, object>>();
 
         public MethodDelegate<TObject> GetBuilder<TObject>(string sql)
             where TObject : new()

@@ -3,7 +3,6 @@ using System;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
-using Tortuga.Chain.PostgreSql;
 
 namespace Tortuga.Chain.PostgreSql.CommandBuilders
 {
@@ -12,8 +11,8 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
     /// </summary>
     public class PostgreSqlSqlCall : MultipleTableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter>
     {
-        private readonly object m_ArgumentValue;
-        private readonly string m_SqlStatement;
+        readonly object m_ArgumentValue;
+        readonly string m_SqlStatement;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PostgreSqlSqlCall"/> class.

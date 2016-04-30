@@ -19,7 +19,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
     internal sealed class SQLiteUpdateObject<TArgument> : SQLiteObjectCommand<TArgument>
         where TArgument : class
     {
-        private readonly UpdateOptions m_Options;
+        readonly UpdateOptions m_Options;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SQLiteUpdateObject{TArgument}"/> class.

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.Common;
 using System.Linq;
 using System.Threading;
@@ -25,9 +24,9 @@ namespace Tortuga.Chain.Materializers
         where TParameter : DbParameter
     {
 
-        private readonly Func<TObject, TKey> m_KeyFunction;
-        private readonly string m_KeyColumn;
-        private readonly DictionaryOptions m_DictionaryOptions;
+        readonly Func<TObject, TKey> m_KeyFunction;
+        readonly string m_KeyColumn;
+        readonly DictionaryOptions m_DictionaryOptions;
 
         public DictionaryMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, Func<TObject, TKey> keyFunction, DictionaryOptions dictionaryOptions) : base(commandBuilder)
         {
@@ -63,70 +62,60 @@ namespace Tortuga.Chain.Materializers
 
         public override TDictionary Execute(object state = null)
         {
-            Table table = null;
+            var result = new TDictionary();
             ExecuteCore(cmd =>
             {
-                using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess))
+                using (var reader = cmd.ExecuteReader().AsObjectConstructor<TObject>(ConstructorSignature))
                 {
-                    table = new Table(reader);
-                    return table.Rows.Count;
+                    while (reader.Read())
+                        AddToDictionary(result, reader);
+
+                    return reader.RowsRead;
                 }
             }, state);
 
-            return ToDictionary(table);
+            return result;
         }
 
         public override async Task<TDictionary> ExecuteAsync(CancellationToken cancellationToken, object state = null)
         {
 
-            Table table = null;
+            var result = new TDictionary();
             await ExecuteCoreAsync(async cmd =>
             {
-                using (var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SequentialAccess, cancellationToken).ConfigureAwait(false))
+                using (var reader = (await cmd.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false)).AsObjectConstructor<TObject>(ConstructorSignature))
                 {
-                    table = new Table(reader);
-                    return table.Rows.Count;
+                    while (await reader.ReadAsync())
+                        AddToDictionary(result, reader);
+
+                    return reader.RowsRead;
                 }
             }, cancellationToken, state).ConfigureAwait(false);
 
 
-            return ToDictionary(table);
+            return result;
         }
 
-        private TDictionary ToDictionary(Table table)
+        private void AddToDictionary(TDictionary result, StreamingObjectConstructor<TObject> source)
         {
-            var result = new TDictionary();
             if (m_KeyFunction != null)
             {
                 if (m_DictionaryOptions.HasFlag(DictionaryOptions.DiscardDuplicates))
-                {
-                    foreach (var item in table.ToObjects<TObject>(ConstructorSignature))
-                        result[m_KeyFunction(item)] = item;
-                }
+                    result[m_KeyFunction(source.Current)] = source.Current;
                 else
-                {
-                    foreach (var item in table.ToObjects<TObject>(ConstructorSignature))
-                        result.Add(m_KeyFunction(item), item);
-                }
+                    result.Add(m_KeyFunction(source.Current), source.Current);
             }
             else
             {
-                if (!table.ColumnNames.Contains(m_KeyColumn))
+                if (!source.CurrentDictionary.ContainsKey(m_KeyColumn))
                     throw new MappingException("The result set does not contain a column named " + m_KeyColumn);
 
                 if (m_DictionaryOptions.HasFlag(DictionaryOptions.DiscardDuplicates))
-                {
-                    foreach (var item in table.ToObjectsWithEcho<TObject>(ConstructorSignature))
-                        result[(TKey)item.Key[m_KeyColumn]] = item.Value;
-                }
+                    result[(TKey)source.CurrentDictionary[m_KeyColumn]] = source.Current;
                 else
-                {
-                    foreach (var item in table.ToObjectsWithEcho<TObject>(ConstructorSignature))
-                        result.Add((TKey)item.Key[m_KeyColumn], item.Value);
-                }
+                    result.Add((TKey)source.CurrentDictionary[m_KeyColumn], source.Current);
             }
 
-            return result;
         }
 
         /// <summary>

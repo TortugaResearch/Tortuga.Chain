@@ -19,7 +19,7 @@ namespace Tortuga.Chain.CommandBuilders
         where TConnection : DbConnection
         where TTransaction : DbTransaction
     {
-        private readonly IOperationDataSource<TConnection, TTransaction> m_DataSource;
+        readonly IOperationDataSource<TConnection, TTransaction> m_DataSource;
 
         /// <summary>
         /// </summary>

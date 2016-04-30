@@ -24,9 +24,9 @@ namespace Tortuga.Chain.SQLite
     /// </summary>
     public sealed class SQLiteTransactionalDataSource : SQLiteDataSourceBase, IDisposable
     {
-        private readonly SQLiteConnection m_Connection;
-        private readonly SQLiteDataSource m_BaseDataSource;
-        private readonly SQLiteTransaction m_Transaction;
+        readonly SQLiteConnection m_Connection;
+        readonly SQLiteDataSource m_BaseDataSource;
+        readonly SQLiteTransaction m_Transaction;
 
         private bool m_Disposed;
 
@@ -132,7 +132,7 @@ namespace Tortuga.Chain.SQLite
         /// implementation;implementation is null.
         /// </exception>
         [SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
-        protected override void Execute(CommandExecutionToken<SQLiteCommand, SQLiteParameter> executionToken, CommandImplementation<SQLiteCommand> implementation, object state)
+        protected override int? Execute(CommandExecutionToken<SQLiteCommand, SQLiteParameter> executionToken, CommandImplementation<SQLiteCommand> implementation, object state)
         {
             if (executionToken == null)
                 throw new ArgumentNullException("executionToken", "executionToken is null.");
@@ -167,6 +167,7 @@ namespace Tortuga.Chain.SQLite
 
                     var rows = implementation(cmd);
                     OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
+                    return rows;
                 }
             }
             catch (Exception ex)
@@ -197,7 +198,7 @@ namespace Tortuga.Chain.SQLite
         /// or
         /// implementation;implementation is null.
         /// </exception>
-        protected override async Task ExecuteAsync(CommandExecutionToken<SQLiteCommand, SQLiteParameter> executionToken, CommandImplementationAsync<SQLiteCommand> implementation, CancellationToken cancellationToken, object state)
+        protected override async Task<int?> ExecuteAsync(CommandExecutionToken<SQLiteCommand, SQLiteParameter> executionToken, CommandImplementationAsync<SQLiteCommand> implementation, CancellationToken cancellationToken, object state)
         {
             if (executionToken == null)
                 throw new ArgumentNullException("executionToken", "executionToken is null.");
@@ -232,6 +233,7 @@ namespace Tortuga.Chain.SQLite
 
                     var rows = await implementation(cmd).ConfigureAwait(false);
                     OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
+                    return rows;
                 }
             }
             catch (Exception ex)

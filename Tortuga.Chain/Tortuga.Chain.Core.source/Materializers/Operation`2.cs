@@ -18,7 +18,7 @@ namespace Tortuga.Chain.Materializers
         where TTransaction : DbTransaction
     {
 
-        private readonly DbOperationBuilder<TConnection, TTransaction> m_OperationBuilder;
+        readonly DbOperationBuilder<TConnection, TTransaction> m_OperationBuilder;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Operation{TConnection, TTransaction}"/> class.

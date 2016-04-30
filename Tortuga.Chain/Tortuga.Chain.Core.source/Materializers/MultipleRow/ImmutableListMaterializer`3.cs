@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Data;
 using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -24,7 +23,7 @@ namespace Tortuga.Chain.Materializers
         where TParameter : DbParameter
     {
 
-        private readonly CollectionOptions m_CollectionOptions;
+        readonly CollectionOptions m_CollectionOptions;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CollectionMaterializer{TCommand, TParameter, TObject, TCollection}"/> class.
@@ -54,18 +53,17 @@ namespace Tortuga.Chain.Materializers
         /// <returns></returns>
         public override ImmutableList<TObject> Execute(object state = null)
         {
-
-            Table table = null;
+            ImmutableList<TObject> result = null;
             ExecuteCore(cmd =>
             {
-                using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess))
+                using (var reader = cmd.ExecuteReader().AsObjectConstructor<TObject>(ConstructorSignature))
                 {
-                    table = new Table(reader);
-                    return table.Rows.Count;
+                    result = reader.ToObjects().ToImmutableList();
+                    return result.Count;
                 }
             }, state);
 
-            return ImmutableList.CreateRange(table.ToObjects<TObject>(ConstructorSignature));
+            return result;
         }
 
 
@@ -77,18 +75,17 @@ namespace Tortuga.Chain.Materializers
         /// <returns></returns>
         public override async Task<ImmutableList<TObject>> ExecuteAsync(CancellationToken cancellationToken, object state = null)
         {
-
-            Table table = null;
+            ImmutableList<TObject> result = null;
             await ExecuteCoreAsync(async cmd =>
             {
-                using (var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SequentialAccess, cancellationToken).ConfigureAwait(false))
+                using (var reader = (await cmd.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false)).AsObjectConstructor<TObject>(ConstructorSignature))
                 {
-                    table = new Table(reader);
-                    return table.Rows.Count;
+                    result = (await reader.ToListAsync()).ToImmutableList();
+                    return result.Count;
                 }
             }, cancellationToken, state).ConfigureAwait(false);
 
-            return ImmutableList.CreateRange(table.ToObjects<TObject>(ConstructorSignature));
+            return result;
         }
 
         /// <summary>

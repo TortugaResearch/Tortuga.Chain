@@ -24,9 +24,9 @@ namespace Tortuga.Chain.Materializers
         where TParameter : DbParameter
     {
 
-        private readonly Func<TObject, TKey> m_KeyFunction;
-        private readonly string m_KeyColumn;
-        private readonly DictionaryOptions m_DictionaryOptions;
+        readonly Func<TObject, TKey> m_KeyFunction;
+        readonly string m_KeyColumn;
+        readonly DictionaryOptions m_DictionaryOptions;
 
         public ImmutableDictionaryMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, Func<TObject, TKey> keyFunction, DictionaryOptions dictionaryOptions) : base(commandBuilder)
         {

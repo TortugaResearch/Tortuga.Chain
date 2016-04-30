@@ -15,8 +15,8 @@ namespace Tortuga.Chain.Appenders
     /// <remarks>If this successfully reads from the cache, it will prevent prior links from executing.</remarks>
     internal sealed class ReadOrCacheResultAppender<TResult> : Appender<TResult>
     {
-        private readonly string m_CacheKey;
-        private readonly CacheItemPolicy m_Policy;
+        readonly string m_CacheKey;
+        readonly CacheItemPolicy m_Policy;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ReadOrCacheResultAppender{TResult}" /> class.

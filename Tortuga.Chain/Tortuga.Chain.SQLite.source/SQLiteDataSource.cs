@@ -29,7 +29,7 @@ namespace Tortuga.Chain
     /// </summary>
     public sealed class SQLiteDataSource : SQLiteDataSourceBase
     {
-        private readonly SQLiteConnectionStringBuilder m_ConnectionBuilder;
+        readonly SQLiteConnectionStringBuilder m_ConnectionBuilder;
         private SQLiteMetadataCache m_DatabaseMetadata;
 
         /// <summary>
@@ -161,7 +161,7 @@ namespace Tortuga.Chain
         /// <param name="implementation"></param>
         /// <param name="state"></param>
         [SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
-        protected override void Execute(CommandExecutionToken<SQLiteCommand, SQLiteParameter> executionToken, CommandImplementation<SQLiteCommand> implementation, object state)
+        protected override int? Execute(CommandExecutionToken<SQLiteCommand, SQLiteParameter> executionToken, CommandImplementation<SQLiteCommand> implementation, object state)
         {
             if (executionToken == null)
                 throw new ArgumentNullException("executionToken", "executionToken is null.");
@@ -198,6 +198,7 @@ namespace Tortuga.Chain
 
                         var rows = implementation(cmd);
                         OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
+                        return rows;
                     }
                 }
             }
@@ -224,7 +225,7 @@ namespace Tortuga.Chain
         /// <param name="cancellationToken"></param>
         /// <param name="state"></param>
         /// <returns></returns>
-        protected override async Task ExecuteAsync(CommandExecutionToken<SQLiteCommand, SQLiteParameter> executionToken, CommandImplementationAsync<SQLiteCommand> implementation, CancellationToken cancellationToken, object state)
+        protected override async Task<int?> ExecuteAsync(CommandExecutionToken<SQLiteCommand, SQLiteParameter> executionToken, CommandImplementationAsync<SQLiteCommand> implementation, CancellationToken cancellationToken, object state)
         {
             if (executionToken == null)
                 throw new ArgumentNullException("executionToken", "executionToken is null.");
@@ -260,6 +261,7 @@ namespace Tortuga.Chain
 
                         var rows = await implementation(cmd).ConfigureAwait(false);
                         OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
+                        return rows;
                     }
                 }
             }

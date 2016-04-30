@@ -11,7 +11,7 @@ namespace Tortuga.Chain.Appenders
     /// </summary>
     internal sealed class TraceAppender : Appender
     {
-        private readonly TextWriter m_Stream;
+        readonly TextWriter m_Stream;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Appender{TResult}"/> class.

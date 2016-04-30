@@ -10,7 +10,7 @@ namespace Tortuga.Chain.AuditRules
     public class ValidateWithNotifyDataErrorInfo<T> : ValidateWithNotifyDataErrorInfo
         where T : class, INotifyDataErrorInfo
     {
-        private readonly Action<T> m_ValidationMethod;
+        readonly Action<T> m_ValidationMethod;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ValidateWithNotifyDataErrorInfo{T}" /> class.

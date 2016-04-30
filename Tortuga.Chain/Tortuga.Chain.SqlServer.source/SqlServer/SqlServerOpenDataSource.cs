@@ -14,9 +14,9 @@ namespace Tortuga.Chain.SqlServer
     public sealed class SqlServerOpenDataSource : SqlServerDataSourceBase
     {
 
-        private readonly SqlServerDataSource m_BaseDataSource;
-        private readonly SqlConnection m_Connection;
-        private readonly SqlTransaction m_Transaction;
+        readonly SqlServerDataSource m_BaseDataSource;
+        readonly SqlConnection m_Connection;
+        readonly SqlTransaction m_Transaction;
 
         internal SqlServerOpenDataSource(SqlServerDataSource dataSource, SqlConnection connection, SqlTransaction transaction) : base(new SqlServerDataSourceSettings() { DefaultCommandTimeout = dataSource.DefaultCommandTimeout, StrictMode = dataSource.StrictMode, SuppressGlobalEvents = dataSource.SuppressGlobalEvents })
         {
@@ -48,7 +48,7 @@ namespace Tortuga.Chain.SqlServer
         /// or
         /// implementation;implementation is null.
         /// </exception>
-        protected override void Execute(CommandExecutionToken<SqlCommand, SqlParameter> executionToken, CommandImplementation<SqlCommand> implementation, object state)
+        protected override int? Execute(CommandExecutionToken<SqlCommand, SqlParameter> executionToken, CommandImplementation<SqlCommand> implementation, object state)
         {
             if (executionToken == null)
                 throw new ArgumentNullException("executionToken", "executionToken is null.");
@@ -74,6 +74,7 @@ namespace Tortuga.Chain.SqlServer
 
                     var rows = implementation(cmd);
                     OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
+                    return rows;
                 }
             }
             catch (Exception ex)
@@ -92,7 +93,7 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="state">User supplied state.</param>
         /// <returns>Task.</returns>
         /// <exception cref="NotImplementedException"></exception>
-        protected override async Task ExecuteAsync(CommandExecutionToken<SqlCommand, SqlParameter> executionToken, CommandImplementationAsync<SqlCommand> implementation, CancellationToken cancellationToken, object state)
+        protected override async Task<int?> ExecuteAsync(CommandExecutionToken<SqlCommand, SqlParameter> executionToken, CommandImplementationAsync<SqlCommand> implementation, CancellationToken cancellationToken, object state)
         {
             if (executionToken == null)
                 throw new ArgumentNullException("executionToken", "executionToken is null.");
@@ -117,6 +118,7 @@ namespace Tortuga.Chain.SqlServer
                         cmd.Parameters.Add(param);
                     var rows = await implementation(cmd).ConfigureAwait(false);
                     OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
+                    return rows;
                 }
 
             }

@@ -22,9 +22,9 @@ namespace Tortuga.Chain
     public class ObjectDataReader<TObject> : DbDataReader
     {
         private IEnumerator<TObject> m_Source;
-        private readonly DataTable m_Schema;
-        private readonly ImmutableArray<PropertyMetadata> m_PropertyList;
-        private readonly ImmutableDictionary<string, int> m_PropertyLookup;
+        readonly DataTable m_Schema;
+        readonly ImmutableArray<PropertyMetadata> m_PropertyList;
+        readonly ImmutableDictionary<string, int> m_PropertyLookup;
         private int? m_RecordCount;
 
 

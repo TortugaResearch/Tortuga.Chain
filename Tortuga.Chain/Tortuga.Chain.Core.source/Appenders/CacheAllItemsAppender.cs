@@ -15,8 +15,8 @@ namespace Tortuga.Chain.Appenders
     internal sealed class CacheAllItemsAppender<TCollection, TItem> : Appender<TCollection>
         where TCollection : IEnumerable<TItem>
     {
-        private readonly Func<TItem, string> m_CacheKeyFunction;
-        private readonly CacheItemPolicy m_Policy;
+        readonly Func<TItem, string> m_CacheKeyFunction;
+        readonly CacheItemPolicy m_Policy;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CacheAllItemsAppender{TCollection, TItem}" /> class.

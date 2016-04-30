@@ -20,10 +20,10 @@ namespace Tortuga.Chain.CommandBuilders
     public class SqlBuilder<TDbType>
         where TDbType : struct
     {
-        private readonly SqlBuilderEntry<TDbType>[] m_Entries;
+        readonly SqlBuilderEntry<TDbType>[] m_Entries;
 
-        private readonly string m_Name;
-        private readonly bool m_StrictMode;
+        readonly string m_Name;
+        readonly bool m_StrictMode;
 
         internal SqlBuilder(string name, IReadOnlyList<ColumnMetadata<TDbType>> columns, IReadOnlyList<ParameterMetadata<TDbType>> parameters, bool strictMode)
         {
@@ -875,7 +875,10 @@ namespace Tortuga.Chain.CommandBuilders
             if (sql == null)
                 throw new ArgumentNullException(nameof(sql), $"{nameof(sql)} was null.");
 
-            var softDeletes = dataSource.AuditRules.Where(r => r.AppliesWhen.HasFlag(OperationTypes.Select)).OfType<SoftDeleteRule>().ToList();
+            var softDeletes = dataSource.AuditRules.SoftDeleteForSelect; 
+
+            if (softDeletes.Length == 0)
+                return;
 
             var applicableColumns = new HashSet<SqlBuilderEntry<TDbType>>();
 

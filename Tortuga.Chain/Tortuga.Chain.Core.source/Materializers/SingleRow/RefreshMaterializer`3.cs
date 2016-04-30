@@ -13,8 +13,8 @@ namespace Tortuga.Chain.Materializers
         where TParameter : DbParameter
         where TArgument : class
     {
-        private readonly ClassMetadata m_ObjectMetadata;
-        private readonly ObjectDbCommandBuilder<TCommand, TParameter, TArgument> m_CommandBuilder;
+        readonly ClassMetadata m_ObjectMetadata;
+        readonly ObjectDbCommandBuilder<TCommand, TParameter, TArgument> m_CommandBuilder;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RefreshMaterializer{TCommand, TParameter, TArgument}"/> class.
@@ -33,24 +33,25 @@ namespace Tortuga.Chain.Materializers
         /// <returns></returns>
         public override TArgument Execute(object state = null)
         {
-            Table table = null;
+            IReadOnlyDictionary<string, object> row = null;
+
             var executionToken = Prepare();
-            executionToken.Execute(cmd =>
+            var rowCount = executionToken.Execute(cmd =>
             {
                 using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess))
                 {
-                    table = new Table(reader);
-                    return table.Rows.Count;
+                    row = reader.ReadDictionary();
+                    return (row != null ? 1 : 0) + reader.RemainingRowCount();
                 }
             }, state);
 
-            if (table.Rows.Count == 0)
+            if (rowCount == 0)
                 throw new DataException("No rows were returned");
-            else if (table.Rows.Count > 1)
-                throw new DataException("Expected 1 row but received " + table.Rows.Count + " rows");
+            else if (rowCount > 1)
+                throw new DataException($"Expected 1 row but received {rowCount} rows");
 
             //update the ArgumentValue with any new keys, calculated fields, etc.
-            Table.PopulateComplexObject(table.Rows[0], m_CommandBuilder.ArgumentValue, null);
+            MaterializerUtilities.PopulateComplexObject(row, m_CommandBuilder.ArgumentValue, null);
 
             return m_CommandBuilder.ArgumentValue;
         }
@@ -64,26 +65,27 @@ namespace Tortuga.Chain.Materializers
         /// <returns></returns>
         public override async Task<TArgument> ExecuteAsync(CancellationToken cancellationToken, object state = null)
         {
-            Table table = null;
+            IReadOnlyDictionary<string, object> row = null;
+
 
             var executionToken = Prepare();
-            await executionToken.ExecuteAsync(async cmd =>
-            {
-                using (var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SequentialAccess, cancellationToken).ConfigureAwait(false))
-                {
-                    table = new Table(reader);
-                    return table.Rows.Count;
-                }
-            }, cancellationToken, state).ConfigureAwait(false);
+            var rowCount = await executionToken.ExecuteAsync(async cmd =>
+             {
+                 using (var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SequentialAccess, cancellationToken).ConfigureAwait(false))
+                 {
+                     row = await reader.ReadDictionaryAsync();
+                     return (row != null ? 1 : 0) + await reader.RemainingRowCountAsync();
+                 }
+             }, cancellationToken, state).ConfigureAwait(false);
 
 
-            if (table.Rows.Count == 0)
+            if (rowCount == 0)
                 throw new DataException("No rows were returned");
-            else if (table.Rows.Count > 1)
-                throw new DataException("Expected 1 row but received " + table.Rows.Count + " rows");
+            else if (rowCount > 1)
+                throw new DataException($"Expected 1 row but received {rowCount} rows");
 
             //update the ArgumentValue with any new keys, calculated fields, etc.
-            Table.PopulateComplexObject(table.Rows[0], m_CommandBuilder.ArgumentValue, null);
+            MaterializerUtilities.PopulateComplexObject(row, m_CommandBuilder.ArgumentValue, null);
 
             return m_CommandBuilder.ArgumentValue;
         }

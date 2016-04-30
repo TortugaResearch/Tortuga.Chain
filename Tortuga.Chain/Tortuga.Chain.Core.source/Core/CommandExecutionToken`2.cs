@@ -17,7 +17,7 @@ namespace Tortuga.Chain.Core
         where TCommand : DbCommand
         where TParameter : DbParameter
     {
-        private readonly ICommandDataSource<TCommand, TParameter> m_DataSource;
+        readonly ICommandDataSource<TCommand, TParameter> m_DataSource;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CommandExecutionToken{TCommand, TParameter}"/> class.
@@ -40,9 +40,9 @@ namespace Tortuga.Chain.Core
         /// </summary>
         /// <param name="implementation">The implementation.</param>
         /// <param name="state">The state.</param>
-        public void Execute(CommandImplementation<TCommand> implementation, object state)
+        public int? Execute(CommandImplementation<TCommand> implementation, object state)
         {
-            m_DataSource.Execute(this, implementation, state);
+            return m_DataSource.Execute(this, implementation, state);
         }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace Tortuga.Chain.Core
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <param name="state">The state.</param>
         /// <returns>Task.</returns>
-        public Task ExecuteAsync(CommandImplementationAsync<TCommand> implementation, CancellationToken cancellationToken, object state)
+        public Task<int?> ExecuteAsync(CommandImplementationAsync<TCommand> implementation, CancellationToken cancellationToken, object state)
         {
             return m_DataSource.ExecuteAsync(this, implementation, cancellationToken, state);
         }

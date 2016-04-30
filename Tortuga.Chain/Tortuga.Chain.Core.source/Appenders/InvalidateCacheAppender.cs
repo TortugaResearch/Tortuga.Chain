@@ -11,7 +11,7 @@ namespace Tortuga.Chain.Appenders
     /// </summary>
     internal sealed class InvalidateCacheAppender : Appender
     {
-        private readonly string m_CacheKey;
+        readonly string m_CacheKey;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="InvalidateCacheAppender{TResult}"/> class.

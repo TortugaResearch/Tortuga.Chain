@@ -23,7 +23,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
     /// </summary>
     internal sealed class SQLiteTableOrView : TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption>
     {
-        private readonly TableOrViewMetadata<string, DbType> m_Metadata;
+        readonly TableOrViewMetadata<string, DbType> m_Metadata;
         private object m_FilterValue;
         private string m_WhereClause;
         private object m_ArgumentValue;

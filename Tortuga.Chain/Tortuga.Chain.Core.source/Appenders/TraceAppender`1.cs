@@ -9,7 +9,7 @@ namespace Tortuga.Chain.Appenders
     /// <typeparam name="TResult">The type of the t result.</typeparam>
     internal sealed class TraceAppender<TResult> : Appender<TResult>
     {
-        private readonly TextWriter m_Stream;
+        readonly TextWriter m_Stream;
 
 
         /// <summary>
