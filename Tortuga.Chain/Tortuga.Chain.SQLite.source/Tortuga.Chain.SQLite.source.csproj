@@ -108,7 +108,7 @@
     <Compile Include="SQLite\SQLiteTransactionalDataSource.cs" />
     <Compile Include="SQLite\Utilities.cs" />
     <Compile Include="SQLiteLimitOption.cs" />
-    <Compile Include="SqlServerExtensions.cs" />
+    <Compile Include="SQLiteExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Tortuga Chain.snk">
