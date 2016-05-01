@@ -39,14 +39,14 @@ namespace Tortuga.Chain.Materializers
         public override DataSet Execute(object state = null)
         {
             DataSet ds = new DataSet();
-            ExecuteCore(cmd =>
-            {
-                using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess))
-                {
-                    ds.Load(reader, LoadOption.OverwriteChanges, m_TableNames);
-                    return ds.Tables.Cast<DataTable>().Sum(t => t.Rows.Count);
-                }
-            }, state);
+            Prepare().Execute(cmd =>
+             {
+                 using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess))
+                 {
+                     ds.Load(reader, LoadOption.OverwriteChanges, m_TableNames);
+                     return ds.Tables.Cast<DataTable>().Sum(t => t.Rows.Count);
+                 }
+             }, state);
 
             return ds;
         }
@@ -61,7 +61,7 @@ namespace Tortuga.Chain.Materializers
         public override async Task<DataSet> ExecuteAsync(CancellationToken cancellationToken, object state = null)
         {
             DataSet ds = new DataSet();
-            await ExecuteCoreAsync(async cmd =>
+            await Prepare().ExecuteAsync(async cmd =>
             {
                 using (var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SequentialAccess, cancellationToken).ConfigureAwait(false))
                 {

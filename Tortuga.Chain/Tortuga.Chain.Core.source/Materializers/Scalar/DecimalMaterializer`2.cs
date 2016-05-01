@@ -11,7 +11,7 @@ namespace Tortuga.Chain.Materializers
     /// </summary>
     /// <typeparam name="TCommand">The type of the t command type.</typeparam>
     /// <typeparam name="TParameter">The type of the t parameter type.</typeparam>
-    internal sealed class DecimalMaterializer<TCommand, TParameter> : SingleColumnMaterializer<TCommand, TParameter, decimal> where TCommand : DbCommand
+    internal sealed class DecimalMaterializer<TCommand, TParameter> : ScalarMaterializer<TCommand, TParameter, decimal> where TCommand : DbCommand
         where TParameter : DbParameter
     {
         /// <summary>

@@ -69,7 +69,7 @@ namespace Tortuga.Chain.Materializers
         public override ImmutableDictionary<TKey, TObject> Execute(object state = null)
         {
             Table table = null;
-            ExecuteCore(cmd =>
+            Prepare().Execute(cmd =>
             {
                 using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess))
                 {
@@ -85,7 +85,7 @@ namespace Tortuga.Chain.Materializers
         {
 
             Table table = null;
-            await ExecuteCoreAsync(async cmd =>
+            await Prepare().ExecuteAsync(async cmd =>
             {
                 using (var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SequentialAccess, cancellationToken).ConfigureAwait(false))
                 {

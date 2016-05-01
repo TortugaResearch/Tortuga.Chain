@@ -32,7 +32,7 @@ namespace Tortuga.Chain.Materializers
         public override TCollection Execute(object state = null)
         {
             var result = new TCollection();
-            ExecuteCore(cmd =>
+            Prepare().Execute(cmd =>
             {
                 using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess))
                 {
@@ -50,7 +50,7 @@ namespace Tortuga.Chain.Materializers
         {
             var result = new TCollection();
 
-            await ExecuteCoreAsync(async cmd =>
+            await Prepare().ExecuteAsync(async cmd =>
             {
                 using (var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SequentialAccess, cancellationToken).ConfigureAwait(false))
                 {

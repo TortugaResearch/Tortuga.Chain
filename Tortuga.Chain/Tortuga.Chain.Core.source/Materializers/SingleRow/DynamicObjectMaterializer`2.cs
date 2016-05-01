@@ -36,7 +36,7 @@ namespace Tortuga.Chain.Materializers
         public override dynamic Execute(object state = null)
         {
             var result = new List<dynamic>();
-            ExecuteCore(cmd =>
+            Prepare().Execute(cmd =>
             {
                 using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess))
                 {
@@ -84,7 +84,7 @@ namespace Tortuga.Chain.Materializers
         {
             var result = new List<dynamic>();
 
-            await ExecuteCoreAsync(async cmd =>
+            await Prepare().ExecuteAsync(async cmd =>
             {
                 using (var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SequentialAccess, cancellationToken).ConfigureAwait(false))
                 {

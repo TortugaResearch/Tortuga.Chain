@@ -33,7 +33,7 @@ namespace Tortuga.Chain.Materializers
         public override DataTable Execute(object state = null)
         {
             DataTable dt = new DataTable();
-            ExecuteCore(cmd =>
+            Prepare().Execute(cmd =>
             {
                 using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess))
                 {
@@ -56,7 +56,7 @@ namespace Tortuga.Chain.Materializers
         public override async Task<DataTable> ExecuteAsync(CancellationToken cancellationToken, object state = null)
         {
             DataTable dt = new DataTable();
-            await ExecuteCoreAsync(async cmd =>
+            await Prepare().ExecuteAsync(async cmd =>
             {
                 using (var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SequentialAccess, cancellationToken).ConfigureAwait(false))
                 {

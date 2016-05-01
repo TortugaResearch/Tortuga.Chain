@@ -38,7 +38,7 @@ namespace Tortuga.Chain.Materializers
         {
             var result = new List<int>();
 
-            ExecuteCore(cmd =>
+            Prepare().Execute(cmd =>
             {
 
                 using (var reader = cmd.ExecuteReader())
@@ -48,8 +48,10 @@ namespace Tortuga.Chain.Materializers
 
                     var columnCount = m_ListOptions.HasFlag(ListOptions.FlattenExtraColumns) ? reader.FieldCount : 1;
                     var discardNulls = m_ListOptions.HasFlag(ListOptions.DiscardNulls);
+                    var rowCount = 0;
                     while (reader.Read())
                     {
+                        rowCount++;
                         for (var i = 0; i < columnCount; i++)
                         {
                             if (!reader.IsDBNull(i))
@@ -58,6 +60,7 @@ namespace Tortuga.Chain.Materializers
                                 throw new MissingDataException("Unexpected null value");
                         }
                     }
+                    return rowCount;
                 }
             }, state);
 
@@ -77,7 +80,7 @@ namespace Tortuga.Chain.Materializers
         {
             var result = new List<int>();
 
-            await ExecuteCoreAsync(async cmd =>
+            await Prepare().ExecuteAsync(async cmd =>
             {
 
                 using (var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SequentialAccess, cancellationToken).ConfigureAwait(false))
@@ -88,8 +91,10 @@ namespace Tortuga.Chain.Materializers
                     var columnCount = m_ListOptions.HasFlag(ListOptions.FlattenExtraColumns) ? reader.FieldCount : 1;
                     var discardNulls = m_ListOptions.HasFlag(ListOptions.DiscardNulls);
 
+                    var rowCount = 0;
                     while (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
                     {
+                        rowCount++;
                         for (var i = 0; i < columnCount; i++)
                         {
                             if (!reader.IsDBNull(i))
@@ -98,6 +103,7 @@ namespace Tortuga.Chain.Materializers
                                 throw new MissingDataException("Unexpected null value");
                         }
                     }
+                    return rowCount;
                 }
             }, cancellationToken, state).ConfigureAwait(false);
 

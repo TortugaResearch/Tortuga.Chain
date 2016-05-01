@@ -162,6 +162,7 @@
     <Compile Include="Materializers\MultipleTable\CollectionSetMaterializer`7.cs" />
     <Compile Include="Materializers\ConstructibleMaterializer`4.cs" />
     <Compile Include="Materializers\Operation`2.cs" />
+    <Compile Include="Materializers\Scalar\SingleColumnMaterializer`3.cs" />
     <Compile Include="Materializers\SingleRow\DataRowMaterializer`2.cs" />
     <Compile Include="Materializers\MultipleTable\DataSetMaterializer`2.cs" />
     <Compile Include="Materializers\MultipleRow\DataTableMaterializer`2.cs" />
@@ -214,7 +215,7 @@
     <Compile Include="Materializers\SingleColumn\Int16ListMaterializer`2.cs" />
     <Compile Include="Materializers\SingleColumn\Int32ListMaterializer`2.cs" />
     <Compile Include="Materializers\SingleColumn\Int64ListMaterializer`2.cs" />
-    <Compile Include="Materializers\SingleColumn\SingleColumnFormatterBase.cs" />
+    <Compile Include="Materializers\SingleColumn\SingleColumnMaterializer`3.cs" />
     <Compile Include="Materializers\SingleColumn\SingleListMaterializer`2.cs" />
     <Compile Include="Materializers\SingleColumn\StringListMaterializer`2.cs" />
     <Compile Include="Materializers\SingleColumn\TimeSpanListMaterializer`2.cs" />
