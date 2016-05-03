@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-
-
+using Tortuga.Chain.CommandBuilders;
 
 namespace Tortuga.Chain.Metadata
 {
@@ -22,9 +21,8 @@ namespace Tortuga.Chain.Metadata
         public TableFunctionMetadata(TName name, IList<ParameterMetadata<TDbType>> parameters, IList<ColumnMetadata<TDbType>> columns)
         {
             Name = name;
-            Columns = new ReadOnlyCollection<ColumnMetadata<TDbType>>(columns);
+            Columns = new ColumnMetadataCollection<TDbType>(name.ToString(), columns);
             Parameters = new ReadOnlyCollection<ParameterMetadata<TDbType>>(parameters);
-
         }
 
 
@@ -34,7 +32,7 @@ namespace Tortuga.Chain.Metadata
         /// <value>
         /// The columns.
         /// </value>
-        public ReadOnlyCollection<ColumnMetadata<TDbType>> Columns { get; }
+        public ColumnMetadataCollection<TDbType> Columns { get; }
 
         /// <summary>
         /// Gets the name.
@@ -52,5 +50,14 @@ namespace Tortuga.Chain.Metadata
         /// </value>
         public ReadOnlyCollection<ParameterMetadata<TDbType>> Parameters { get; }
 
+        /// <summary>
+        /// Creates a SQL builder.
+        /// </summary>
+        /// <param name="strictMode">if set to <c>true</c> [strict mode].</param>
+        /// <returns></returns>
+        public SqlBuilder<TDbType> CreateSqlBuilder(bool strictMode)
+        {
+            return new SqlBuilder<TDbType>(Name.ToString(), Columns, Parameters, strictMode);
+        }
     }
 }

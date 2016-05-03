@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace Tests
     [TestClass]
     public class ComparisonTests
     {
-        static int Iterations = 25;
+        static int Iterations = 50;
         static bool Warmup = true;
 
         static EmployeeRepositoryDapper s_DapperRepo;
@@ -19,10 +20,12 @@ namespace Tests
         static EmployeeRepositoryEF_Intermediate s_EFIntermediateRepo;
         static EmployeeRepositoryEF_Intermediate_NoTrack s_EFIntermediateNoTrackRepo;
         static EmployeeRepositoryEF_Novice s_EFNoviceRepo;
+        static SqlServerDataSource s_DataSource;
 
         [ClassInitialize()]
         public static void AssemblyInit(TestContext context)
         {
+            s_DataSource = SqlServerDataSource.CreateFromConfig("CodeFirstModels");
             s_DapperRepo = new EmployeeRepositoryDapper(ConfigurationManager.ConnectionStrings["CodeFirstModels"].ConnectionString);
             s_ChainRepo = new EmployeeRepositoryChain(SqlServerDataSource.CreateFromConfig("CodeFirstModels"));
             s_ChainCompiledRepo = new EmployeeRepositoryChainCompiled(SqlServerDataSource.CreateFromConfig("CodeFirstModels"));
@@ -32,12 +35,12 @@ namespace Tests
 
             if (Warmup)
             {
-                CrudTestCore(s_DapperRepo);
-                CrudTestCore(s_ChainRepo);
+                //CrudTestCore(s_DapperRepo);
+                //CrudTestCore(s_ChainRepo);
                 CrudTestCore(s_ChainCompiledRepo);
-                CrudTestCore(s_EFIntermediateRepo);
-                CrudTestCore(s_EFIntermediateNoTrackRepo);
-                CrudTestCore(s_EFNoviceRepo);
+                //CrudTestCore(s_EFIntermediateRepo);
+                //CrudTestCore(s_EFIntermediateNoTrackRepo);
+                //CrudTestCore(s_EFNoviceRepo);
             }
         }
 
@@ -83,16 +86,36 @@ namespace Tests
 
         static void CrudTest(ISimpleEmployeeRepository repo)
         {
+            s_DataSource.Sql(@"DELETE FROM Sales.Customer;DELETE FROM HR.Employee;").Execute();
 
             //actual
-            var sw2 = Stopwatch.StartNew();
+            var spans = new List<double>(Iterations);
             for (var i = 0; i < Iterations; i++)
             {
+                var sw = Stopwatch.StartNew();
                 CrudTestCore(repo);
+                sw.Stop();
+                spans.Add(sw.Elapsed.TotalMilliseconds);
             }
-            sw2.Stop();
-            Trace.WriteLine("Run Duration: " + (sw2.Elapsed.TotalMilliseconds / Iterations).ToString("N2") + " ms per iteration.");
+            Trace.WriteLine("Run Duration: " + spans.Average().ToString("N2") + " ms per iteration. Min: " + spans.Min().ToString("N2") + " ms. Max: " + spans.Max().ToString("N2") + " ms.");
 
+            Trace.WriteLine("");
+            Trace.WriteLine("");
+            //foreach (var span in spans)
+            //    Trace.WriteLine("    " + span.ToString("N2"));
+
+            //Remove the highest and lowest two to reduce OS effects
+            spans.Remove(spans.Max());
+            spans.Remove(spans.Max());
+            spans.Remove(spans.Min());
+            spans.Remove(spans.Min());
+
+            Trace.WriteLine("Run Duration: " + spans.Average().ToString("N2") + " ms per iteration. Min: " + spans.Min().ToString("N2") + " ms. Max: " + spans.Max().ToString("N2") + " ms.");
+
+            long frequency = Stopwatch.Frequency;
+            Trace.WriteLine($"  Timer frequency in ticks per second = {frequency}");
+            long nanosecPerTick = (1000L * 1000L * 1000L) / frequency;
+            Trace.WriteLine($"  Timer is accurate within {nanosecPerTick} nanoseconds");
         }
 
         static void CrudTestCore(ISimpleEmployeeRepository repo)

@@ -20,15 +20,15 @@ namespace Tortuga.Chain.CommandBuilders
         /// Indicates this operation has no result set.
         /// </summary>
         /// <returns></returns>
-        public abstract ILink AsNonQuery();
+        public abstract ILink<int?> AsNonQuery();
 
         /// <summary>
         /// Execute the operation synchronously.
         /// </summary>
         /// <param name="state">User defined state, usually used for logging.</param>
-        public void Execute(object state = null)
+        public int? Execute(object state = null)
         {
-            AsNonQuery().Execute(state);
+            return AsNonQuery().Execute(state);
         }
 
         /// <summary>
@@ -36,7 +36,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// </summary>
         /// <param name="state">User defined state, usually used for logging.</param>
         /// <returns>Task.</returns>
-        public Task ExecuteAsync(object state = null)
+        public Task<int?> ExecuteAsync(object state = null)
         {
             return AsNonQuery().ExecuteAsync(state);
         }
@@ -47,16 +47,16 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <param name="state">User defined state, usually used for logging.</param>
         /// <returns>Task.</returns>
-        public Task ExecuteAsync(CancellationToken cancellationToken, object state = null)
+        public Task<int?> ExecuteAsync(CancellationToken cancellationToken, object state = null)
         {
             return AsNonQuery().ExecuteAsync(cancellationToken, state);
         }
 
-        /// <summary>
-        /// Returns the number of rows affected.
-        /// </summary>
-        /// <returns>ILink&lt;System.Int32&gt;.</returns>
-        public abstract ILink<int> AsRowsAffected();
+        ///// <summary>
+        ///// Returns the number of rows affected.
+        ///// </summary>
+        ///// <returns>ILink&lt;System.Int32&gt;.</returns>
+        //public abstract ILink<int> AsRowsAffected();
     }
 }
 

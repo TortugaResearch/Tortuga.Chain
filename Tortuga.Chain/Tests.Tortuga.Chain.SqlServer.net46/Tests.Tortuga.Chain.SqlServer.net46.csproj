@@ -83,16 +83,16 @@
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="Tortuga.Anchor, Version=0.6.5944.41376, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
-      <HintPath>..\packages\Tortuga.Anchor.0.6.5944.41376\lib\net46\Tortuga.Anchor.dll</HintPath>
+    <Reference Include="Tortuga.Anchor, Version=0.7.5952.32542, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tortuga.Anchor.0.7.5952.32542\lib\net46\Tortuga.Anchor.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Tortuga.Chain.CompiledMaterializers, Version=0.12.5946.3549, Culture=neutral, PublicKeyToken=8769fd32a2872cf0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Tortuga.Chain.CompiledMaterializers.0.12.5946.3539\lib\net46\Tortuga.Chain.CompiledMaterializers.dll</HintPath>
+    <Reference Include="Tortuga.Chain.CompiledMaterializers, Version=0.15.5956.35780, Culture=neutral, PublicKeyToken=8769fd32a2872cf0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tortuga.Chain.CompiledMaterializers.0.15.5956.35767\lib\net46\Tortuga.Chain.CompiledMaterializers.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Tortuga.Chain.Core, Version=0.14.5949.33729, Culture=neutral, PublicKeyToken=8769fd32a2872cf0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Tortuga.Chain.Core.0.14.5949.33710\lib\net46\Tortuga.Chain.Core.dll</HintPath>
+    <Reference Include="Tortuga.Chain.Core, Version=0.16.5956.36124, Culture=neutral, PublicKeyToken=8769fd32a2872cf0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tortuga.Chain.Core.0.16.5956.36108\lib\net46\Tortuga.Chain.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
@@ -124,8 +124,17 @@
     <Compile Include="..\Tests.Tortuga.Chain.SqlServer.source\Class1Databases\UpsertTests.cs">
       <Link>Class1Databases\UpsertTests.cs</Link>
     </Compile>
+    <Compile Include="..\Tests.Tortuga.Chain.SqlServer.source\Class2Databases\InsertBatchTests.cs">
+      <Link>Class2Databases\InsertBatchTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Tests.Tortuga.Chain.SqlServer.source\Class2Databases\InsertBulkTests.cs">
+      <Link>Class2Databases\InsertBulkTests.cs</Link>
+    </Compile>
     <Compile Include="..\Tests.Tortuga.Chain.SqlServer.source\Class2Databases\ProcedureTests.cs">
       <Link>Class2Databases\ProcedureTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Tests.Tortuga.Chain.SqlServer.source\Class2Databases\TableFunctionTests.cs">
+      <Link>Class2Databases\TableFunctionTests.cs</Link>
     </Compile>
     <Compile Include="..\Tests.Tortuga.Chain.SqlServer.source\Materializers\ModelTests.cs">
       <Link>Materializers\ModelTests.cs</Link>
@@ -144,6 +153,9 @@
     </Compile>
     <Compile Include="..\Tests.Tortuga.Chain.SqlServer.source\Models\Employee.cs">
       <Link>Models\Employee.cs</Link>
+    </Compile>
+    <Compile Include="..\Tests.Tortuga.Chain.SqlServer.source\Models\EmployeeLookup.cs">
+      <Link>Models\EmployeeLookup.cs</Link>
     </Compile>
     <Compile Include="..\Tests.Tortuga.Chain.SqlServer.source\Models\EmployeeWithManager.cs">
       <Link>Models\EmployeeWithManager.cs</Link>

@@ -9,9 +9,10 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
     /// <summary>
     /// Command object that represents a delete operation.
     /// </summary>
-    internal sealed class PostgreSqlDeleteObject : PostgreSqlObjectCommand
+    internal sealed class PostgreSqlDeleteObject<TArgument> : PostgreSqlObjectCommand<TArgument>
+        where TArgument : class
     {
-        private readonly DeleteOptions m_Options;
+        readonly DeleteOptions m_Options;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PostgreSqlDeleteObject"/> class.
@@ -20,7 +21,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         /// <param name="table">The table.</param>
         /// <param name="argumentValue">The argument value.</param>
         /// <param name="options">The options.</param>
-        public PostgreSqlDeleteObject(PostgreSqlDataSourceBase dataSource, PostgreSqlObjectName table, object argumentValue, DeleteOptions options)
+        public PostgreSqlDeleteObject(PostgreSqlDataSourceBase dataSource, PostgreSqlObjectName table, TArgument argumentValue, DeleteOptions options)
             : base(dataSource, table, argumentValue)
         {
             m_Options = options;
@@ -31,12 +32,12 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         /// </summary>
         /// <param name="materializer"></param>
         /// <returns><see cref="PostgreSqlExecutionToken" /></returns>
-        public override ExecutionToken<NpgsqlCommand, NpgsqlParameter> Prepare(Materializer<NpgsqlCommand, NpgsqlParameter> materializer)
+        public override CommandExecutionToken<NpgsqlCommand, NpgsqlParameter> Prepare(Materializer<NpgsqlCommand, NpgsqlParameter> materializer)
         {
             if (materializer == null)
                 throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
 
-            var sqlBuilder = Metadata.CreateSqlBuilder(StrictMode);
+            var sqlBuilder = Table.CreateSqlBuilder(StrictMode);
             sqlBuilder.ApplyArgumentValue(DataSource, ArgumentValue, m_Options);
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
@@ -44,7 +45,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
             sqlBuilder.BuildDeleteStatement(sql, TableName.ToString(), null);
             sqlBuilder.BuildSelectClause(sql, " RETURNING ", null, ";");
 
-            return new PostgreSqlExecutionToken(DataSource, "Delete from " + TableName, sql.ToString(), sqlBuilder.GetParameters());
+            return new PostgreSqlExecutionToken(DataSource, "Delete from " + Table.Name, sql.ToString(), sqlBuilder.GetParameters());
         }
     }
 }

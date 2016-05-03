@@ -16,9 +16,9 @@ The `ToCollection` materializer returns a `List<TCollection>` by default. You ca
 
 Object/Collection materializers honor the Column attribute, which changes which query result set column the property is mapped to.
 
-Object/Collection materializers honor the NotMapped attribute, which prevent the property from being mapped.
+Object/Collection materializers honor the `NotMapped` attribute, which prevent the property from being mapped.
 
-Object/Collection materializers honor the Decompose attribute. This allows properties on the child object when they match columns in the query result set.
+Object/Collection materializers honor the `Decompose` attribute. This allows properties on the child object when they match columns in the query result set.
 
 If the desried object implementes `IChangeTracking`, then `AcceptChanges()` will be called automatically.
 
@@ -28,7 +28,7 @@ See Object/Collection materializers.
 
 ## Limitations
 
-Object/Collection materializers require that the Decompose attribute be applied correctly. The materializer needs to walk the entire object graph, and if there are any cycles represented by decomposed properties then a stack overflow exception will occur.
+Object/Collection materializers require that the `Decompose` attribute be applied correctly. The materializer needs to walk the entire object graph, and if there are any cycles represented by decomposed properties then a stack overflow exception will occur.
 
 Object/Collection materializers can only populate public properties. It cannot set fields or non-public properties.
 

@@ -11,12 +11,19 @@
       <Word>NotMapped</Word>
       <Word>GetByKey</Word>
       <Word>DataSource</Word>
+      <Word>DiscardDuplicates</Word>
+      <Word>ImmutableDictionary</Word>
+      <Word>WithConstructor</Word>
+      <Word>Tvp</Word>
     </Recognized>
     <Deprecated>
       <Term PreferredAlternate=""></Term>
     </Deprecated>
     <Compound>
       <Term CompoundAlternate="">DataSource</Term>
+      <Term CompoundAlternate="">ImmutableDictionary</Term>
+      <Term CompoundAlternate="">DiscardDuplicates</Term>
+      <Term CompoundAlternate="">WithConstructor</Term>
     </Compound>
     <DiscreteExceptions>
       <Term></Term>

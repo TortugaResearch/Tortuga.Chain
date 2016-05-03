@@ -20,10 +20,42 @@ namespace Tortuga.Chain.CommandBuilders
     public class SqlBuilder<TDbType>
         where TDbType : struct
     {
-        private readonly SqlBuilderEntry<TDbType>[] m_Entries;
+        readonly SqlBuilderEntry<TDbType>[] m_Entries;
 
-        private readonly string m_Name;
-        private readonly bool m_StrictMode;
+        readonly string m_Name;
+        readonly bool m_StrictMode;
+
+        internal SqlBuilder(string name, IReadOnlyList<ColumnMetadata<TDbType>> columns, IReadOnlyList<ParameterMetadata<TDbType>> parameters, bool strictMode)
+        {
+            m_Name = name;
+            m_StrictMode = strictMode;
+
+            m_Entries = new SqlBuilderEntry<TDbType>[columns.Count + parameters.Count];
+
+            for (int i = 0; i < columns.Count; i++)
+            {
+                var column = columns[i];
+                m_Entries[i] = new SqlBuilderEntry<TDbType>()
+                {
+                    Details = column,
+                    IsKey = column.IsPrimaryKey,
+                    UseForInsert = !column.IsComputed && !column.IsIdentity,
+                    UseForUpdate = !column.IsComputed && !column.IsIdentity
+                };
+            }
+
+            var offset = columns.Count;
+            for (int i = 0; i < parameters.Count; i++)
+            {
+                var column = parameters[i];
+                m_Entries[offset + i] = new SqlBuilderEntry<TDbType>()
+                {
+                    Details = column,
+                    IsFormalParameter = true
+                };
+            }
+
+        }
 
         internal SqlBuilder(string name, IReadOnlyList<ColumnMetadata<TDbType>> columns, bool strictMode)
         {
@@ -45,6 +77,48 @@ namespace Tortuga.Chain.CommandBuilders
             }
         }
 
+
+        /// <summary>
+        /// Applies a user defined table type as the argument.
+        /// </summary>
+        /// <param name="dataSource">The data source.</param>
+        /// <param name="appliesWhen">The applies when.</param>
+        /// <param name="tableTypeColumns">The table type columns.</param>
+        public void ApplyTableType(IDataSource dataSource, OperationTypes appliesWhen, IEnumerable<ISqlBuilderEntryDetails<TDbType>> tableTypeColumns)
+        {
+            if (dataSource == null)
+                throw new ArgumentNullException(nameof(dataSource), $"{nameof(dataSource)} is null.");
+            if (tableTypeColumns == null)
+                throw new ArgumentNullException(nameof(tableTypeColumns), $"{nameof(tableTypeColumns)} is null.");
+
+            var found = false;
+
+
+            foreach (var column in tableTypeColumns)
+            {
+                // var propertyFound = false;
+
+                for (var i = 0; i < m_Entries.Length; i++)
+                {
+                    if (m_Entries[i].Details.SqlName.Equals(column.SqlName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        found = true;
+                        //propertyFound = true;
+
+                        m_Entries[i].ParameterColumn = column;
+                    }
+                }
+                //if (m_StrictMode && !propertyFound)
+                //    throw new MappingException($"Strict mode was enabled, but property {column.SqlName} could be matched to a column in {m_Name}. Disable strict mode or mark the property as NotMapped.");
+            }
+
+            if (!found)
+                throw new MappingException($"None of the columns on the indicated user defined type could be matched to columns in {m_Name}.");
+
+            ApplyRules(dataSource.AuditRules, appliesWhen, null, dataSource.UserValue);
+        }
+
+
         internal SqlBuilder(string name, IReadOnlyList<ParameterMetadata<TDbType>> parameters, bool strictMode)
         {
             m_Name = name;
@@ -57,7 +131,7 @@ namespace Tortuga.Chain.CommandBuilders
                 m_Entries[i] = new SqlBuilderEntry<TDbType>()
                 {
                     Details = column,
-                    IsFormalParameter = true,
+                    IsFormalParameter = true
                 };
             }
         }
@@ -119,7 +193,7 @@ namespace Tortuga.Chain.CommandBuilders
                         m_Entries[i].ParameterValue = item.Value ?? DBNull.Value;
                         found = true;
                         keyFound = true;
-                        break;
+                        //break; In the case of TVFs, the same column may appear twice
                     }
                 }
                 if (m_StrictMode && !keyFound)
@@ -129,6 +203,7 @@ namespace Tortuga.Chain.CommandBuilders
             if (!found)
                 throw new MappingException($"None of the keys could be matched to columns in {m_Name}.");
         }
+
 
         /// <summary>
         /// Builds an order by clause.
@@ -169,6 +244,22 @@ namespace Tortuga.Chain.CommandBuilders
 
         }
 
+        /// <summary>
+        /// Builds FROM clause for a function.
+        /// </summary>
+        /// <param name="sql">The SQL.</param>
+        /// <param name="header">The header.</param>
+        /// <param name="footer">The footer.</param>
+        public void BuildFromFunctionClause(StringBuilder sql, string header, string footer)
+        {
+            if (sql == null)
+                throw new ArgumentNullException(nameof(sql), $"{nameof(sql)} is null.");
+
+            sql.Append(header);
+            sql.Append(string.Join(", ", GetFormalParameters().Select(s => s.SqlVariableName)));
+            sql.Append(footer);
+        }
+
 
         /// <summary>
         /// Applies the argument value.
@@ -181,7 +272,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <remarks>
         /// If the object implements IReadOnlyDictionary[string, object], ApplyArgumentDictionary will be implicitly called instead.
         /// </remarks>
-        public void ApplyArgumentValue(DataSource dataSource, OperationTypes appliesWhen, object argumentValue)
+        public void ApplyArgumentValue(IDataSource dataSource, OperationTypes appliesWhen, object argumentValue)
         {
             ApplyArgumentValue(dataSource, appliesWhen, argumentValue, false, false);
         }
@@ -198,7 +289,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// If the object implements IReadOnlyDictionary[string, object], ApplyArgumentDictionary will be implicitly called instead.
         /// </remarks>
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "options")]
-        public void ApplyArgumentValue(DataSource dataSource, object argumentValue, InsertOptions options)
+        public void ApplyArgumentValue(IDataSource dataSource, object argumentValue, InsertOptions options)
         {
             ApplyArgumentValue(dataSource, OperationTypes.Insert, argumentValue, false, false);
         }
@@ -214,7 +305,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <remarks>
         /// If the object implements IReadOnlyDictionary[string, object], ApplyArgumentDictionary will be implicitly called instead.
         /// </remarks>
-        public void ApplyArgumentValue(DataSource dataSource, object argumentValue, DeleteOptions options)
+        public void ApplyArgumentValue(IDataSource dataSource, object argumentValue, DeleteOptions options)
         {
             ApplyArgumentValue(dataSource, OperationTypes.Delete, argumentValue, options.HasFlag(DeleteOptions.UseKeyAttribute), false);
         }
@@ -232,7 +323,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// If the object does not implement IPropertyChangeTracking, the changedPropertiesOnly flag has no effect.
         /// </remarks>
 
-        public void ApplyArgumentValue(DataSource dataSource, object argumentValue, UpsertOptions options)
+        public void ApplyArgumentValue(IDataSource dataSource, object argumentValue, UpsertOptions options)
         {
             ApplyArgumentValue(dataSource, OperationTypes.InsertOrUpdate, argumentValue, options.HasFlag(UpsertOptions.UseKeyAttribute), options.HasFlag(UpsertOptions.ChangedPropertiesOnly));
         }
@@ -250,7 +341,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// If the object does not implement IPropertyChangeTracking and changedPropertiesOnly is set, an error will occur.
         /// </remarks>
 
-        public void ApplyArgumentValue(DataSource dataSource, object argumentValue, UpdateOptions options)
+        public void ApplyArgumentValue(IDataSource dataSource, object argumentValue, UpdateOptions options)
         {
             if (options.HasFlag(UpdateOptions.SoftDelete))
                 ApplyArgumentValue(dataSource, OperationTypes.Delete, argumentValue, options.HasFlag(UpdateOptions.UseKeyAttribute), options.HasFlag(UpdateOptions.ChangedPropertiesOnly));
@@ -272,7 +363,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// If the object implements IReadOnlyDictionary[string, object], ApplyArgumentDictionary will be implicitly called instead.
         /// If the object does not implement IPropertyChangeTracking and changedPropertiesOnly is set, an error will occur.
         /// </remarks>
-        private void ApplyArgumentValue(DataSource dataSource, OperationTypes appliesWhen, object argumentValue, bool useObjectDefinedKeys, bool changedPropertiesOnly)
+        private void ApplyArgumentValue(IDataSource dataSource, OperationTypes appliesWhen, object argumentValue, bool useObjectDefinedKeys, bool changedPropertiesOnly)
         {
             if (dataSource == null)
                 throw new ArgumentNullException(nameof(dataSource), $"{nameof(dataSource)} is null.");
@@ -336,7 +427,7 @@ namespace Tortuga.Chain.CommandBuilders
                             if (m_Entries[i].IsFormalParameter)
                                 m_Entries[i].UseParameter = true;
 
-                            break;
+                            //break; In the case of TVFs, the same column may appear twice
                         }
                     }
                     if (m_StrictMode && !propertyFound)
@@ -402,7 +493,8 @@ namespace Tortuga.Chain.CommandBuilders
             if (desiredColumns == Materializer.AllColumns)
             {
                 for (var i = 0; i < m_Entries.Length; i++)
-                    m_Entries[i].UseForRead = true;
+                    if (m_Entries[i].Details.SqlName != null)
+                        m_Entries[i].UseForRead = true;
                 return;
             }
 
@@ -522,7 +614,7 @@ namespace Tortuga.Chain.CommandBuilders
         }
 
         /// <summary>
-        /// Overrides the pervious selected values with the values in the indicated object.
+        /// Overrides the previous selected values with the values in the indicated object.
         /// </summary>
         /// <param name="value">The value.</param>
         /// <exception cref="ArgumentNullException">value;value is null.</exception>
@@ -602,7 +694,7 @@ namespace Tortuga.Chain.CommandBuilders
                 throw new ArgumentNullException(nameof(sql), $"{nameof(sql)} was null.");
 
             sql.Append(header);
-            sql.Append(string.Join(", ", GetInsertColumns().ToList().Select(x => prefix + x.QuotedSqlName)));
+            sql.Append(string.Join(", ", GetInsertColumns().Select(x => prefix + x.QuotedSqlName)));
             sql.Append(footer);
         }
 
@@ -668,6 +760,42 @@ namespace Tortuga.Chain.CommandBuilders
         }
 
         /// <summary>
+        /// Builds a list of columns suitable for using in a SELECT from @TableParameter clause.
+        /// </summary>
+        /// <param name="sql">The SQL being generated.</param>
+        /// <param name="header">The optional header (e.g. "SELECT, OUTPUT).</param>
+        /// <param name="prefix">An optional prefix for each column name.</param>
+        /// <param name="footer">The optional footer.</param>
+        /// <remarks>
+        /// If no columns are marked for reading, the header and footer won't be emitted.
+        /// </remarks>
+        public void BuildSelectTvpClause(StringBuilder sql, string header, string prefix, string footer)
+        {
+            if (sql == null)
+                throw new ArgumentNullException(nameof(sql), $"{nameof(sql)} was null.");
+
+
+            var parts = new List<string>();
+
+            for (var i = 0; i < m_Entries.Length; i++)
+            {
+                if (m_Entries[i].UseForInsert && m_Entries[i].ParameterValue != null)
+                {
+                    m_Entries[i].UseParameter = true;
+                    parts.Add(prefix + m_Entries[i].Details.SqlVariableName);
+                }
+                else if (m_Entries[i].UseForInsert && m_Entries[i].ParameterColumn != null)
+                {
+                    parts.Add(prefix + m_Entries[i].ParameterColumn.QuotedSqlName);
+                }
+            }
+
+            sql.Append(header);
+            sql.Append(string.Join(", ", parts));
+            sql.Append(footer);
+        }
+
+        /// <summary>
         /// Builds a list of assignments suitable for using in the SET clause of UPDATE statement. This does not include the actual SET keyword.
         /// This will mark key columns for use in parameter building.
         /// </summary>
@@ -686,7 +814,7 @@ namespace Tortuga.Chain.CommandBuilders
         }
 
         /// <summary>
-        /// Builds the complete update statment using primary keys.
+        /// Builds the complete update statement using primary keys.
         /// </summary>
         /// <param name="sql">The SQL.</param>
         /// <param name="tableName">Name of the table.</param>
@@ -740,14 +868,17 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="dataSource">The data source.</param>
         /// <param name="footer">The footer.</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public void BuildSoftDeleteClause(StringBuilder sql, string header, DataSource dataSource, string footer)
+        public void BuildSoftDeleteClause(StringBuilder sql, string header, IDataSource dataSource, string footer)
         {
             if (dataSource == null)
                 throw new ArgumentNullException(nameof(dataSource), $"{nameof(dataSource)} is null.");
             if (sql == null)
                 throw new ArgumentNullException(nameof(sql), $"{nameof(sql)} was null.");
 
-            var softDeletes = dataSource.AuditRules.Where(r => r.AppliesWhen.HasFlag(OperationTypes.Select)).OfType<SoftDeleteRule>().ToList();
+            var softDeletes = dataSource.AuditRules.SoftDeleteForSelect; 
+
+            if (softDeletes.Length == 0)
+                return;
 
             var applicableColumns = new HashSet<SqlBuilderEntry<TDbType>>();
 
@@ -792,7 +923,7 @@ namespace Tortuga.Chain.CommandBuilders
         {
             for (var i = 0; i < m_Entries.Length; i++)
             {
-                if (m_Entries[i].UseForInsert && m_Entries[i].ParameterValue != null)
+                if (m_Entries[i].UseForInsert && (m_Entries[i].ParameterValue != null || m_Entries[i].ParameterColumn != null))
                 {
                     m_Entries[i].UseParameter = true;
                     yield return new ColumnNamePair(m_Entries[i].Details.QuotedSqlName, m_Entries[i].Details.SqlVariableName);
@@ -824,6 +955,19 @@ namespace Tortuga.Chain.CommandBuilders
         /// <returns>Each pair has the column's QuotedSqlName and SqlVariableName</returns>
         /// <remarks>This will mark the returned columns as participating in the parameter generation.</remarks>
         [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
+        public IEnumerable<ColumnNamePair> GetFormalParameters()
+        {
+            for (var i = 0; i < m_Entries.Length; i++)
+                if (m_Entries[i].IsFormalParameter && m_Entries[i].ParameterValue != null)
+                    yield return new ColumnNamePair(m_Entries[i].Details.QuotedSqlName, m_Entries[i].Details.SqlVariableName);
+        }
+
+        /// <summary>
+        /// Gets every column with a ParameterValue.
+        /// </summary>
+        /// <returns>Each pair has the column's QuotedSqlName and SqlVariableName</returns>
+        /// <remarks>This will mark the returned columns as participating in the parameter generation.</remarks>
+        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
         public IEnumerable<ColumnNamePair> GetParameterizedColumns()
         {
             for (var i = 0; i < m_Entries.Length; i++)
@@ -842,7 +986,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <typeparam name="TParameter">The type of the parameter.</typeparam>
         /// <param name="parameterBuilder">The parameter builder. This should set the parameter's database specific DbType property.</param>
         /// <returns></returns>
-        public List<TParameter> GetParameters<TParameter>(Func<TDbType?, TParameter> parameterBuilder)
+        public List<TParameter> GetParameters<TParameter>(ParameterBuilderCallback<TParameter, TDbType> parameterBuilder)
             where TParameter : DbParameter
         {
             if (parameterBuilder == null)
@@ -851,15 +995,8 @@ namespace Tortuga.Chain.CommandBuilders
             var result = new List<TParameter>();
 
             for (var i = 0; i < m_Entries.Length; i++)
-            {
                 if (m_Entries[i].UseParameter && m_Entries[i].ParameterValue != null)
-                {
-                    var item = parameterBuilder(m_Entries[i].Details.DbType);
-                    item.ParameterName = m_Entries[i].Details.SqlVariableName;
-                    item.Value = m_Entries[i].ParameterValue;
-                    result.Add(item);
-                }
-            }
+                    result.Add(parameterBuilder(m_Entries[i]));
 
             return result;
         }
@@ -934,12 +1071,14 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="userValue">The user value.</param>
         void ApplyRules(AuditRuleCollection rules, OperationTypes appliesWhen, object argumentValue, object userValue)
         {
-            rules.CheckValidation(argumentValue);
+            if (argumentValue != null)
+                rules.CheckValidation(argumentValue);
 
             for (var i = 0; i < m_Entries.Length; i++)
                 foreach (var rule in rules.GetRulesForColumn(m_Entries[i].Details.SqlName, m_Entries[i].Details.ClrName, appliesWhen))
                 {
                     m_Entries[i].ParameterValue = rule.GenerateValue(argumentValue, userValue, m_Entries[i].ParameterValue);
+                    m_Entries[i].ParameterColumn = null; //replaces the TVP columns
 
                     if (rule.AppliesWhen.HasFlag(OperationTypes.Insert))
                         m_Entries[i].UseForInsert = true;
@@ -951,4 +1090,16 @@ namespace Tortuga.Chain.CommandBuilders
                 }
         }
     }
+
+    /// <summary>
+    /// Callback for the parameter builder.
+    /// </summary>
+    /// <typeparam name="TParameter">The type of the desired DbParameter.</typeparam>
+    /// <typeparam name="TDbType">The database specific DbType</typeparam>
+    /// <param name="entry">Metadata about the parameter in question.</param>
+    /// <returns>TParameter.</returns>
+    /// <remarks>For internal use only.</remarks>
+    public delegate TParameter ParameterBuilderCallback<TParameter, TDbType>(SqlBuilderEntry<TDbType> entry)
+        where TDbType : struct
+        where TParameter : DbParameter;
 }

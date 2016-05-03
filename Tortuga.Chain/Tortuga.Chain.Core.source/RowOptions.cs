@@ -22,6 +22,11 @@ namespace Tortuga.Chain
         /// An error will not be raised if extra rows are returned. The extras will be discarded.
         /// </summary>
         /// <remarks></remarks>
-        DiscardExtraRows = 2
+        DiscardExtraRows = 2,
+
+        /// <summary>
+        /// Infer which constructor to use. When this option is chosen, individual properties will not be set.
+        /// </summary>
+        InferConstructor = 8,
     }
 }

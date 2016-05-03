@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Npgsql;
+using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Threading;
+using System.Threading.Tasks;
 using Tortuga.Chain.AuditRules;
 using Tortuga.Chain.Core;
-using Npgsql;
 
 namespace Tortuga.Chain.PostgreSql
 {
@@ -14,12 +14,12 @@ namespace Tortuga.Chain.PostgreSql
     /// <seealso cref="SQLiteDataSourceBase" />
     public class PostgreSqlOpenDataSource : PostgreSqlDataSourceBase
     {
-        private readonly PostgreSqlDataSource m_BaseDataSource;
-        private readonly NpgsqlConnection m_Connection;
-        private readonly NpgsqlTransaction m_Transaction;
-         
+        readonly PostgreSqlDataSource m_BaseDataSource;
+        readonly NpgsqlConnection m_Connection;
+        readonly NpgsqlTransaction m_Transaction;
 
-        
+
+
         internal PostgreSqlOpenDataSource(PostgreSqlDataSource dataSource, NpgsqlConnection connection, NpgsqlTransaction transaction) : base(new PostgreSqlDataSourceSettings() { DefaultCommandTimeout = dataSource.DefaultCommandTimeout, StrictMode = dataSource.StrictMode, SuppressGlobalEvents = dataSource.SuppressGlobalEvents })
         {
             if (connection == null)
@@ -39,35 +39,7 @@ namespace Tortuga.Chain.PostgreSql
             get { return m_BaseDataSource.DatabaseMetadata; }
         }
 
-        /// <summary>
-        /// Executes the specified operation.
-        /// </summary>
-        /// <param name="executionToken">The execution token.</param>
-        /// <param name="implementation">The implementation that handles processing the result of the command.</param>
-        /// <param name="state">User supplied state.</param>
-        /// <exception cref="ArgumentNullException">
-        /// executionToken;executionToken is null.
-        /// or
-        /// implementation;implementation is null.
-        /// </exception>
-        protected override void Execute(ExecutionToken<NpgsqlCommand, NpgsqlParameter> executionToken, Func<NpgsqlCommand, int?> implementation, object state)
-        {
-            throw new NotImplementedException();
-        }
 
-        /// <summary>
-        /// Executes the operation asynchronously.
-        /// </summary>
-        /// <param name="executionToken">The execution token.</param>
-        /// <param name="implementation">The implementation that handles processing the result of the command.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <param name="state">User supplied state.</param>
-        /// <returns>Task.</returns>
-        /// <exception cref="NotImplementedException"></exception>
-        protected override async Task ExecuteAsync(ExecutionToken<NpgsqlCommand, NpgsqlParameter> executionToken, Func<NpgsqlCommand, Task<int?>> implementation, CancellationToken cancellationToken, object state)
-        {
-            throw new NotImplementedException();
-        }
 
         /// <summary>
         /// Gets the extension data.
@@ -115,6 +87,59 @@ namespace Tortuga.Chain.PostgreSql
         {
             AuditRules = new AuditRuleCollection(AuditRules, additionalRules);
             return this;
+        }
+
+        /// <summary>
+        /// Executes the specified operation.
+        /// </summary>
+        /// <param name="executionToken">The execution token.</param>
+        /// <param name="implementation">The implementation that handles processing the result of the command.</param>
+        /// <param name="state">User supplied state.</param>
+        /// <exception cref="System.NotImplementedException"></exception>
+        protected override int? Execute(CommandExecutionToken<NpgsqlCommand, NpgsqlParameter> executionToken, CommandImplementation<NpgsqlCommand> implementation, object state)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Executes the operation asynchronously.
+        /// </summary>
+        /// <param name="executionToken">The execution token.</param>
+        /// <param name="implementation">The implementation that handles processing the result of the command.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <param name="state">User supplied state.</param>
+        /// <returns>Task.</returns>
+        /// <exception cref="System.NotImplementedException"></exception>
+        protected override Task<int?> ExecuteAsync(CommandExecutionToken<NpgsqlCommand, NpgsqlParameter> executionToken, CommandImplementationAsync<NpgsqlCommand> implementation, CancellationToken cancellationToken, object state)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Executes the specified operation.
+        /// </summary>
+        /// <param name="executionToken">The execution token.</param>
+        /// <param name="implementation">The implementation.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>System.Nullable&lt;System.Int32&gt;.</returns>
+        /// <exception cref="System.NotImplementedException"></exception>
+        protected override int? Execute(OperationExecutionToken<NpgsqlConnection, NpgsqlTransaction> executionToken, OperationImplementation<NpgsqlConnection, NpgsqlTransaction> implementation, object state)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Execute the operation asynchronously.
+        /// </summary>
+        /// <param name="executionToken">The execution token.</param>
+        /// <param name="implementation">The implementation.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>Task.</returns>
+        /// <exception cref="System.NotImplementedException"></exception>
+        protected override Task<int?> ExecuteAsync(OperationExecutionToken<NpgsqlConnection, NpgsqlTransaction> executionToken, OperationImplementationAsync<NpgsqlConnection, NpgsqlTransaction> implementation, CancellationToken cancellationToken, object state)
+        {
+            throw new NotImplementedException();
         }
     }
 }

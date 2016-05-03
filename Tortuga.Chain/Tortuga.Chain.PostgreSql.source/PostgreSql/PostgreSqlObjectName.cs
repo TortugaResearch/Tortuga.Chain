@@ -13,9 +13,9 @@ namespace Tortuga.Chain.PostgreSql
         /// </summary>
         public static readonly PostgreSqlObjectName Empty;
 
-        private readonly string m_Database;
-        private readonly string m_Schema;
-        private readonly string m_Name;
+        readonly string m_Database;
+        readonly string m_Schema;
+        readonly string m_Name;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PostgreSqlObjectName"/> struct.

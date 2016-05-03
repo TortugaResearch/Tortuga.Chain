@@ -16,16 +16,17 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
     /// </summary>
     public class PostgreSqlTableOrView : TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption>
     {
-        private readonly object m_FilterValue;
-        private readonly TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType> m_Metadata;
-        private readonly string m_WhereClause;
-        private readonly object m_ArgumentValue;
+        readonly TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType> m_Metadata;
+        private object m_FilterValue;
+        private string m_WhereClause;
+        private object m_ArgumentValue;
 
         private IEnumerable<SortExpression> m_SortExpressions = Enumerable.Empty<SortExpression>();
         private PostgreSqlLimitOption m_LimitOptions;
         private int? m_Skip;
         private int? m_Take;
         private int? m_Seed;
+        private string m_SelectClause;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PostgreSqlTableOrView"/> class.
@@ -72,7 +73,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         /// <returns>
         /// ExecutionToken&lt;TCommand&gt;.
         /// </returns>
-        public override ExecutionToken<NpgsqlCommand, NpgsqlParameter> Prepare(Materializer<NpgsqlCommand, NpgsqlParameter> materializer)
+        public override CommandExecutionToken<NpgsqlCommand, NpgsqlParameter> Prepare(Materializer<NpgsqlCommand, NpgsqlParameter> materializer)
         {
             if (materializer == null)
                 throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
@@ -102,7 +103,12 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
             List<NpgsqlParameter> parameters;
             var sql = new StringBuilder();
 
-            sqlBuilder.BuildSelectClause(sql, "SELECT ", null, " FROM " + m_Metadata.Name.ToQuotedString());
+            if (m_SelectClause != null)
+                sql.Append($"SELECT {m_SelectClause} ");
+            else
+                sqlBuilder.BuildSelectClause(sql, "SELECT ", null, null);
+
+            sql.Append(" FROM " + m_Metadata.Name);
 
             switch (m_LimitOptions)
             {
@@ -195,6 +201,56 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
             return this;
         }
 
+        public override TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption> WithFilter(object filterValue)
+        {
+            m_FilterValue = filterValue;
+            m_WhereClause = null;
+            m_ArgumentValue = null;
+            return this;
+        }
+
+        public override TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption> WithFilter(string whereClause)
+        {
+            m_FilterValue = null;
+            m_WhereClause = whereClause;
+            m_ArgumentValue = null;
+            return this;
+        }
+
+        public override TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption> WithFilter(string whereClause, object argumentValue)
+        {
+            m_FilterValue = null;
+            m_WhereClause = whereClause;
+            m_ArgumentValue = argumentValue;
+            return this;
+        }
+
+        /// <summary>
+        /// Returns the row count using a <c>SELECT COUNT_BIG(*)</c> style query.
+        /// </summary>
+        /// <returns></returns>
+        public override ILink<long> AsCount()
+        {
+            m_SelectClause = "COUNT(*)";
+            return ToInt64();
+        }
+
+        /// <summary>
+        /// Returns the row count for a given column. <c>SELECT COUNT_BIG(columnName)</c>
+        /// </summary>
+        /// <param name="columnName">Name of the column.</param>
+        /// <param name="distinct">if set to <c>true</c> use <c>SELECT COUNT_BIG(DISTINCT columnName)</c>.</param>
+        /// <returns></returns>
+        public override ILink<long> AsCount(string columnName, bool distinct = false)
+        {
+            var column = m_Metadata.Columns[columnName];
+            if (distinct)
+                m_SelectClause = $"COUNT(DISTINCT {column.QuotedSqlName})";
+            else
+                m_SelectClause = $"COUNT({column.QuotedSqlName})";
+
+            return ToInt64();
+        }
 
         public new PostgreSqlDataSourceBase DataSource
         {
@@ -202,3 +258,4 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         }
     }
 }
+

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Data.SqlClient;
 using Tortuga.Chain.CommandBuilders;
 
@@ -14,11 +15,18 @@ namespace Tortuga.Chain.SqlServer
         /// <returns></returns>
         public static List<SqlParameter> GetParameters(this SqlBuilder<SqlDbType> sqlBuilder)
         {
-            return sqlBuilder.GetParameters((SqlDbType? type) =>
+            return sqlBuilder.GetParameters((SqlBuilderEntry<SqlDbType> entry) =>
             {
                 var result = new SqlParameter();
-                if (type.HasValue)
-                    result.SqlDbType = type.Value;
+                result.ParameterName = entry.Details.SqlVariableName;
+                result.Value = entry.ParameterValue;
+
+                if (entry.Details.DbType.HasValue)
+                    result.SqlDbType = entry.Details.DbType.Value;
+
+                if (entry.ParameterValue is DbDataReader)
+                    result.SqlDbType = SqlDbType.Structured;
+
                 return result;
             });
         }

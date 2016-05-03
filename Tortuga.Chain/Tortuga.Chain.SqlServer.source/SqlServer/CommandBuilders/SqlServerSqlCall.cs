@@ -14,8 +14,8 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
     /// </summary>
     internal sealed class SqlServerSqlCall : MultipleTableDbCommandBuilder<SqlCommand, SqlParameter>, ISupportsChangeListener
     {
-        private readonly object m_ArgumentValue;
-        private readonly string m_SqlStatement;
+        readonly object m_ArgumentValue;
+        readonly string m_SqlStatement;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlServerSqlCall" /> class.
@@ -39,9 +39,9 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// </summary>
         /// <param name="materializer">The materializer.</param>
         /// <returns>ExecutionToken&lt;TCommand&gt;.</returns>
-        public override ExecutionToken<SqlCommand, SqlParameter> Prepare(Materializer<SqlCommand, SqlParameter> materializer)
+        public override CommandExecutionToken<SqlCommand, SqlParameter> Prepare(Materializer<SqlCommand, SqlParameter> materializer)
         {
-            return new SqlServerExecutionToken(DataSource, "Raw SQL call", m_SqlStatement, SqlBuilder.GetParameters<SqlParameter>(m_ArgumentValue));
+            return new SqlServerCommandExecutionToken(DataSource, "Raw SQL call", m_SqlStatement, SqlBuilder.GetParameters<SqlParameter>(m_ArgumentValue));
         }
 
         /// <summary>
@@ -56,9 +56,9 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             return WaitForChangeMaterializer.GenerateTask(this, cancellationToken, state);
         }
 
-        SqlServerExecutionToken ISupportsChangeListener.Prepare(Materializer<SqlCommand, SqlParameter> materializer)
+        SqlServerCommandExecutionToken ISupportsChangeListener.Prepare(Materializer<SqlCommand, SqlParameter> materializer)
         {
-            return (SqlServerExecutionToken)Prepare(materializer);
+            return (SqlServerCommandExecutionToken)Prepare(materializer);
         }
     }
 }

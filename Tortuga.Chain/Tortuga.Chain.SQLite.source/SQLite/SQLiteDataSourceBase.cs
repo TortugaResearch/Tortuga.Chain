@@ -19,12 +19,12 @@ using SQLiteParameter = Microsoft.Data.Sqlite.SqliteParameter;
 namespace Tortuga.Chain.SQLite
 {
     /// <summary>
-    /// Base class that represents a SQLite Datasource.
+    /// Base class that represents a SQLite Data Source.
     /// </summary>
     [SuppressMessage("Microsoft.Design", "CA1001:TypesThatOwnDisposableFieldsShouldBeDisposable")]
-    public abstract class SQLiteDataSourceBase : DataSource<SQLiteCommand, SQLiteParameter>, IClass1DataSource
+    public abstract class SQLiteDataSourceBase : DataSource<SQLiteConnection, SQLiteTransaction, SQLiteCommand, SQLiteParameter>, IClass1DataSource
     {
-        private readonly ReaderWriterLockSlim m_SyncLock = new ReaderWriterLockSlim(); //Sqlite is single-threaded for writes. It says otherwise, but it spams the trace window with exceptions.
+        readonly ReaderWriterLockSlim m_SyncLock = new ReaderWriterLockSlim(); //Sqlite is single-threaded for writes. It says otherwise, but it spams the trace window with exceptions.
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SQLiteDataSourceBase"/> class.
@@ -46,7 +46,7 @@ namespace Tortuga.Chain.SQLite
         public abstract SQLiteMetadataCache DatabaseMetadata { get; }
 
         /// <summary>
-        /// Normally we use a reader/writer lock to avoid simutaneous writes to a SQlite database. If you disable this locking, you may see extra noise in your tracing output or unexcepted exceptions.
+        /// Normally we use a reader/writer lock to avoid simultaneous writes to a SQlite database. If you disable this locking, you may see extra noise in your tracing output or unexpected exceptions.
         /// </summary>
         public bool DisableLocks { get; }
 
@@ -56,7 +56,7 @@ namespace Tortuga.Chain.SQLite
         }
 
         /// <summary>
-        /// Gets the synchronize lock used during exection of database operations.
+        /// Gets the synchronize lock used during execution of database operations.
         /// </summary>
         /// <value>The synchronize lock.</value>
         protected ReaderWriterLockSlim SyncLock
@@ -65,23 +65,24 @@ namespace Tortuga.Chain.SQLite
         }
 
         /// <summary>
-        /// Creates a <see cref="SQLiteDeleteObject" /> used to perform a delete operation.
+        /// Creates a <see cref="SQLiteDeleteObject{TArgument}" /> used to perform a delete operation.
         /// </summary>
         /// <param name="tableName"></param>
         /// <param name="argumentValue"></param>
         /// <param name="options"></param>
         /// <returns></returns>
-        public SingleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> Delete(string tableName, object argumentValue, DeleteOptions options = DeleteOptions.None)
+        public ObjectDbCommandBuilder<SQLiteCommand, SQLiteParameter, TArgument> Delete<TArgument>(string tableName, TArgument argumentValue, DeleteOptions options = DeleteOptions.None)
+        where TArgument : class
         {
             var table = DatabaseMetadata.GetTableOrView(tableName);
             if (!AuditRules.UseSoftDelete(table))
-                return new SQLiteDeleteObject(this, tableName, argumentValue, options);
+                return new SQLiteDeleteObject<TArgument>(this, tableName, argumentValue, options);
 
             UpdateOptions effectiveOptions = UpdateOptions.SoftDelete;
             if (options.HasFlag(DeleteOptions.UseKeyAttribute))
                 effectiveOptions = effectiveOptions | UpdateOptions.UseKeyAttribute;
 
-            return new SQLiteUpdateObject(this, tableName, argumentValue, effectiveOptions);
+            return new SQLiteUpdateObject<TArgument>(this, tableName, argumentValue, effectiveOptions);
         }
 
         /// <summary>
@@ -128,7 +129,7 @@ namespace Tortuga.Chain.SQLite
             return new SQLiteTableOrView(this, tableOrViewName, filterValue);
         }
 
-        IDbCommandBuilder IClass1DataSource.Delete(string tableName, object argumentValue, DeleteOptions options)
+        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Delete<TArgument>(string tableName, TArgument argumentValue, DeleteOptions options)
         {
             return Delete(tableName, argumentValue, options);
         }
@@ -156,17 +157,17 @@ namespace Tortuga.Chain.SQLite
         {
             return Sql(sqlStatement, argumentValue);
         }
-        ISingleRowDbCommandBuilder IClass1DataSource.Update(string tableName, object argumentValue, UpdateOptions options)
+        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Update<TArgument>(string tableName, TArgument argumentValue, UpdateOptions options)
         {
             return Update(tableName, argumentValue, options);
         }
 
-        ISingleRowDbCommandBuilder IClass1DataSource.Upsert(string tableName, object argumentValue, UpsertOptions options)
+        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Upsert<TArgument>(string tableName, TArgument argumentValue, UpsertOptions options)
         {
             return Upsert(tableName, argumentValue, options);
         }
 
-        ISingleRowDbCommandBuilder IClass1DataSource.Insert(string tableName, object argumentValue, InsertOptions options)
+        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Insert<TArgument>(string tableName, TArgument argumentValue, InsertOptions options)
         {
             return Insert(tableName, argumentValue, options);
         }
@@ -194,39 +195,42 @@ namespace Tortuga.Chain.SQLite
             return new SQLiteSqlCall(this, sqlStatement, argumentValue, lockType);
         }
         /// <summary>
-        /// Creates a <see cref="SQLiteInsertObject" /> used to perform an insert operation.
+        /// Creates a <see cref="SQLiteInsertObject{TArgument}" /> used to perform an insert operation.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="argumentValue">The argument value.</param>
         /// <param name="options">The options.</param>
         /// <returns></returns>
-        public SingleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> Insert(string tableName, object argumentValue, InsertOptions options = InsertOptions.None)
+        public ObjectDbCommandBuilder<SQLiteCommand, SQLiteParameter, TArgument> Insert<TArgument>(string tableName, TArgument argumentValue, InsertOptions options = InsertOptions.None)
+        where TArgument : class
         {
-            return new SQLiteInsertObject(this, tableName, argumentValue, options);
+            return new SQLiteInsertObject<TArgument>(this, tableName, argumentValue, options);
         }
 
         /// <summary>
-        /// Creates a <see cref="SQLiteInsertOrUpdateObject"/> used to perform an "upsert" operation.
+        /// Creates a <see cref="SQLiteInsertOrUpdateObject{TArgument}"/> used to perform an "upsert" operation.
         /// </summary>
         /// <param name="tableName"></param>
         /// <param name="argumentValue"></param>
         /// <param name="options"></param>
         /// <returns></returns>
-        public SingleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> Upsert(string tableName, object argumentValue, UpsertOptions options = UpsertOptions.None)
+        public ObjectDbCommandBuilder<SQLiteCommand, SQLiteParameter, TArgument> Upsert<TArgument>(string tableName, TArgument argumentValue, UpsertOptions options = UpsertOptions.None)
+        where TArgument : class
         {
-            return new SQLiteInsertOrUpdateObject(this, tableName, argumentValue, options);
+            return new SQLiteInsertOrUpdateObject<TArgument>(this, tableName, argumentValue, options);
         }
 
         /// <summary>
-        /// Creates a <see cref="SQLiteUpdateObject" /> used to perform an update operation.
+        /// Creates a <see cref="SQLiteUpdateObject{TArgument}" /> used to perform an update operation.
         /// </summary>
         /// <param name="tableName"></param>
         /// <param name="argumentValue"></param>
         /// <param name="options"></param>
         /// <returns></returns>
-        public SingleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> Update(string tableName, object argumentValue, UpdateOptions options = UpdateOptions.None)
+        public ObjectDbCommandBuilder<SQLiteCommand, SQLiteParameter, TArgument> Update<TArgument>(string tableName, TArgument argumentValue, UpdateOptions options = UpdateOptions.None)
+        where TArgument : class
         {
-            return new SQLiteUpdateObject(this, tableName, argumentValue, options);
+            return new SQLiteUpdateObject<TArgument>(this, tableName, argumentValue, options);
         }
 
 

@@ -21,7 +21,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// Initializes a new instance of the <see cref="TableDbCommandBuilder{TCommand, TParameter, TLimit}"/> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
-        protected TableDbCommandBuilder(DataSource<TCommand, TParameter> dataSource) : base(dataSource)
+        protected TableDbCommandBuilder(ICommandDataSource<TCommand, TParameter> dataSource) : base(dataSource)
         {
 
         }
@@ -128,5 +128,58 @@ namespace Tortuga.Chain.CommandBuilders
         {
             return OnWithLimits(skip, take, LimitOptions.Rows, null);
         }
+
+
+        /// <summary>
+        /// Adds (or replaces) the filter on this command builder.
+        /// </summary>
+        /// <param name="filterValue">The filter value.</param>
+        /// <returns></returns>
+        public abstract TableDbCommandBuilder<TCommand, TParameter, TLimit> WithFilter(object filterValue);
+
+        /// <summary>
+        /// Adds (or replaces) the filter on this command builder.
+        /// </summary>
+        /// <param name="whereClause">The where clause.</param>
+        /// <returns></returns>
+        public abstract TableDbCommandBuilder<TCommand, TParameter, TLimit> WithFilter(string whereClause);
+
+        /// <summary>
+        /// Adds (or replaces) the filter on this command builder.
+        /// </summary>
+        /// <param name="whereClause">The where clause.</param>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <returns></returns>
+        public abstract TableDbCommandBuilder<TCommand, TParameter, TLimit> WithFilter(string whereClause, object argumentValue);
+
+        ITableDbCommandBuilder ITableDbCommandBuilder.WithFilter(object filterValue)
+        {
+            return WithFilter(filterValue);
+        }
+
+        ITableDbCommandBuilder ITableDbCommandBuilder.WithFilter(string whereClause)
+        {
+            return WithFilter(whereClause);
+        }
+
+        ITableDbCommandBuilder ITableDbCommandBuilder.WithFilter(string whereClause, object argumentValue)
+        {
+            return WithFilter(whereClause, argumentValue);
+        }
+
+        /// <summary>
+        /// Returns the row count using a <c>SELECT Count(*)</c> style query.
+        /// </summary>
+        /// <returns></returns>
+        public abstract ILink<long> AsCount();
+
+        /// <summary>
+        /// Returns the row count for a given column. <c>SELECT Count(columnName)</c>
+        /// </summary>
+        /// <param name="columnName">Name of the column.</param>
+        /// <param name="distinct">if set to <c>true</c> use <c>SELECT COUNT(DISTINCT columnName)</c>.</param>
+        /// <returns></returns>
+        public abstract ILink<long> AsCount(string columnName, bool distinct = false);
+
     }
 }

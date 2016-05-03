@@ -12,6 +12,7 @@ namespace Tortuga.Chain
     /// A class 2 datasource includes stored procedures, table-value functions, and bulk insert.
     /// </summary>
     /// <seealso cref="IClass1DataSource" />
+    /// <remarks>Warning: This interface is meant to simulate multiple inheritance and work-around some issues with exposing generic types. Do not implement it in client code, as new method will be added over time.</remarks>
     public interface IClass2DataSource : IClass1DataSource
     {
         /// <summary>
@@ -33,38 +34,16 @@ namespace Tortuga.Chain
         /// Selects from the indicated table-value function.
         /// </summary>
         /// <param name="functionName">Name of the function.</param>
-        /// <param name="functionArgumentValue">The function argument value.</param>
         /// <returns></returns>
-        IMultipleRowDbCommandBuilder TableFunction(string functionName, object functionArgumentValue);
+        ITableDbCommandBuilder TableFunction(string functionName);
 
         /// <summary>
         /// Selects from the indicated table-value function.
         /// </summary>
         /// <param name="functionName">Name of the function.</param>
         /// <param name="functionArgumentValue">The function argument value.</param>
-        /// <param name="filterValue">The filter value is used to generate a simple AND style WHERE clause.</param>
         /// <returns></returns>
-        IMultipleRowDbCommandBuilder TableFunction(string functionName, object functionArgumentValue, object filterValue);
-
-        /// <summary>
-        /// Selects from the indicated table-value function.
-        /// </summary>
-        /// <param name="functionName">Name of the function.</param>
-        /// <param name="functionArgumentValue">The function argument value.</param>
-        /// <param name="whereClause">The where clause.</param>
-        /// <returns></returns>
-        IMultipleRowDbCommandBuilder TableFunction(string functionName, object functionArgumentValue, string whereClause);
-
-
-        /// <summary>
-        /// Selects from the indicated table-value function.
-        /// </summary>
-        /// <param name="functionName">Name of the function.</param>
-        /// <param name="functionArgumentValue">The function argument value.</param>
-        /// <param name="whereClause">The where clause.</param>
-        /// <param name="whereClauseArgumentValue">The argument value to apply to the where clause. Every property in the argument value must have a matching parameter in the WHERE clause and none may be same as those used in the function argument value.</param>
-        /// <returns></returns>
-        IMultipleRowDbCommandBuilder TableFunction(string functionName, object functionArgumentValue, string whereClause, object whereClauseArgumentValue);
+        ITableDbCommandBuilder TableFunction(string functionName, object functionArgumentValue);
 
         /// <summary>
         /// Performs a bulk insert.

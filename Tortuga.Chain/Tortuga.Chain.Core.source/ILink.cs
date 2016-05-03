@@ -27,11 +27,11 @@ namespace Tortuga.Chain
         event EventHandler<ExecutionTokenPreparingEventArgs> ExecutionTokenPreparing;
 
         /// <summary>
-        /// Gets the data source that is associated with this materilizer or appender.
+        /// Gets the data source that is associated with this materializer or appender.
         /// </summary>
         /// <value>The data source.</value>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        DataSource DataSource { get; }
+        IDataSource DataSource { get; }
 
         /// <summary>
         /// Returns SQL generated SQL without executing it.

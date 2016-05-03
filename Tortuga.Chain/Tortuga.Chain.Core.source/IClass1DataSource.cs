@@ -13,6 +13,7 @@ namespace Tortuga.Chain
     /// <summary>
     /// A class 1 data source supports basic CRUD operations. This is the bare minimum needed to implement the repostiory pattern.
     /// </summary>
+    /// <remarks>Warning: This interface is meant to simulate multiple inheritance and work-around some issues with exposing generic types. Do not implement it in client code, as new method will be added over time.</remarks>
     public interface IClass1DataSource : IClass0DataSource
     {
 
@@ -36,7 +37,7 @@ namespace Tortuga.Chain
         /// <param name="argumentValue">The argument value.</param>
         /// <param name="options">The delete options.</param>
         /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
-        IDbCommandBuilder Delete(string tableName, object argumentValue, DeleteOptions options = DeleteOptions.None);
+        IObjectDbCommandBuilder<TArgument> Delete<TArgument>(string tableName, TArgument argumentValue, DeleteOptions options = DeleteOptions.None) where TArgument : class;
 
         /// <summary>
         /// This is used to directly query a table or view.
@@ -83,7 +84,7 @@ namespace Tortuga.Chain
         /// <param name="options">The options for how the isnert occurs.</param>
         /// <returns></returns>
         /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
-        ISingleRowDbCommandBuilder Insert(string tableName, object argumentValue, InsertOptions options = InsertOptions.None);
+        IObjectDbCommandBuilder<TArgument> Insert<TArgument>(string tableName, TArgument argumentValue, InsertOptions options = InsertOptions.None) where TArgument : class;
 
 
         /// <summary>
@@ -93,7 +94,7 @@ namespace Tortuga.Chain
         /// <param name="argumentValue">The argument value.</param>
         /// <param name="options">The options for how the insert/update occurs.</param>
         /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
-        ISingleRowDbCommandBuilder Upsert(string tableName, object argumentValue, UpsertOptions options = UpsertOptions.None);
+        IObjectDbCommandBuilder<TArgument> Upsert<TArgument>(string tableName, TArgument argumentValue, UpsertOptions options = UpsertOptions.None) where TArgument : class;
 
         /// <summary>
         /// Updates an object in the specified table.
@@ -102,7 +103,7 @@ namespace Tortuga.Chain
         /// <param name="argumentValue">The argument value.</param>
         /// <param name="options">The update options.</param>
         /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
-        ISingleRowDbCommandBuilder Update(string tableName, object argumentValue, UpdateOptions options = UpdateOptions.None);
+        IObjectDbCommandBuilder<TArgument> Update<TArgument>(string tableName, TArgument argumentValue, UpdateOptions options = UpdateOptions.None) where TArgument : class;
 
 
         /// <summary>

@@ -11,7 +11,7 @@ namespace Tortuga.Chain
     /// </summary>
     public static class SQLiteExtensions
     {
-        private readonly static ConcurrentDictionary<string, SQLiteDataSource> s_CachedDataSources = new ConcurrentDictionary<string, SQLiteDataSource>();
+        readonly static ConcurrentDictionary<string, SQLiteDataSource> s_CachedDataSources = new ConcurrentDictionary<string, SQLiteDataSource>();
 
         /// <summary>
         /// Returns a data source wrapped around the connection.

@@ -16,7 +16,7 @@ namespace Tortuga.Chain
     /// <seealso cref="PostgreSqlDataSourceBase" />
     public class PostgreSqlDataSource : PostgreSqlDataSourceBase
     {
-        private readonly NpgsqlConnectionStringBuilder m_ConnectionBuilder;
+        readonly NpgsqlConnectionStringBuilder m_ConnectionBuilder;
         private PostgreSqlMetadataCache m_DatabaseMetadata;
 
         public PostgreSqlTransactionalDataSource BeginTransaction()
@@ -283,10 +283,5 @@ namespace Tortuga.Chain
             return new PostgreSqlDataSource(connectionName, settings.ConnectionString);
         }
 #endif
-
-        internal string ConnectionString
-        {
-            get { return m_ConnectionBuilder.ConnectionString; }
-        }
     }
 }

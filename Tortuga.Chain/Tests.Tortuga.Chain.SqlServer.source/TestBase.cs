@@ -31,6 +31,9 @@ namespace Tests
 
         public string Proc1Name { get { return "Sales.CustomerWithOrdersByState"; } }
 
+        public string TableFunction1Name { get { return "Sales.CustomersByState"; } }
+        public string TableFunction2Name { get { return "Sales.CustomersByStateInline"; } }
+
         protected static SqlServerDataSource DataSourceWithAuditRules()
         {
             return DataSource.WithRules(

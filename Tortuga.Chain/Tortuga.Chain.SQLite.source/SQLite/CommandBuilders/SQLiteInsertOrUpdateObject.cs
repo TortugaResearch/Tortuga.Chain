@@ -17,18 +17,19 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
     /// <summary>
     /// Class SQLiteInsertOrUpdateObject
     /// </summary>
-    internal sealed class SQLiteInsertOrUpdateObject : SQLiteObjectCommand
+    internal sealed class SQLiteInsertOrUpdateObject<TArgument> : SQLiteObjectCommand<TArgument>
+        where TArgument : class
     {
-        private readonly UpsertOptions m_Options;
+        readonly UpsertOptions m_Options;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SQLiteInsertOrUpdateObject"/> class.
+        /// Initializes a new instance of the <see cref="SQLiteInsertOrUpdateObject{TArgument}"/> class.
         /// </summary>
         /// <param name="dataSource"></param>
         /// <param name="tableName"></param>
         /// <param name="argumentValue"></param>
         /// <param name="options"></param>
-        public SQLiteInsertOrUpdateObject(SQLiteDataSourceBase dataSource, string tableName, object argumentValue, UpsertOptions options)
+        public SQLiteInsertOrUpdateObject(SQLiteDataSourceBase dataSource, string tableName, TArgument argumentValue, UpsertOptions options)
             : base(dataSource, tableName, argumentValue)
         {
             m_Options = options;
@@ -38,21 +39,21 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
         /// Prepares the command for execution by generating any necessary SQL.
         /// </summary>
         /// <param name="materializer"></param>
-        /// <returns><see cref="SQLiteExecutionToken" /></returns>
-        public override ExecutionToken<SQLiteCommand, SQLiteParameter> Prepare(Materializer<SQLiteCommand, SQLiteParameter> materializer)
+        /// <returns><see cref="SQLiteCommandExecutionToken" /></returns>
+        public override CommandExecutionToken<SQLiteCommand, SQLiteParameter> Prepare(Materializer<SQLiteCommand, SQLiteParameter> materializer)
         {
             if (materializer == null)
                 throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
 
-            var sqlBuilder = Metadata.CreateSqlBuilder(StrictMode);
+            var sqlBuilder = Table.CreateSqlBuilder(StrictMode);
             sqlBuilder.ApplyArgumentValue(DataSource, ArgumentValue, m_Options);
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
             var sql = new StringBuilder();
-            sqlBuilder.BuildUpdateByKeyStatement(sql, TableName, ";");
+            sqlBuilder.BuildUpdateByKeyStatement(sql, Table.Name, ";");
             sql.AppendLine();
 
-            sqlBuilder.BuildInsertClause(sql, $"INSERT OR IGNORE INTO {TableName} (", null, ")");
+            sqlBuilder.BuildInsertClause(sql, $"INSERT OR IGNORE INTO {Table.Name} (", null, ")");
             sqlBuilder.BuildValuesClause(sql, " VALUES (", ");");
             sql.AppendLine();
 
@@ -63,11 +64,11 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
                     throw new NotSupportedException("Cannot return data from a SQLite Upsert unless there is a single primary key.");
                 var key = keys[0];
 
-                sqlBuilder.BuildSelectClause(sql, "SELECT ", null, $" FROM {TableName} WHERE {key.QuotedSqlName} = CASE WHEN {key.SqlVariableName} IS NULL OR {key.SqlVariableName} = 0 THEN last_insert_rowid() ELSE {key.SqlVariableName} END;");
+                sqlBuilder.BuildSelectClause(sql, "SELECT ", null, $" FROM {Table.Name} WHERE {key.QuotedSqlName} = CASE WHEN {key.SqlVariableName} IS NULL OR {key.SqlVariableName} = 0 THEN last_insert_rowid() ELSE {key.SqlVariableName} END;");
 
             }
 
-            return new SQLiteExecutionToken(DataSource, "Insert or update " + TableName, sql.ToString(), sqlBuilder.GetParameters(), lockType: LockType.Write);
+            return new SQLiteCommandExecutionToken(DataSource, "Insert or update " + Table.Name, sql.ToString(), sqlBuilder.GetParameters(), lockType: LockType.Write);
 
         }
 

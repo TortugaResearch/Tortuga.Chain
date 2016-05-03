@@ -16,7 +16,7 @@ namespace Tortuga.Chain.Materializers
             where TParameter : DbParameter
     {
 
-        private readonly MultipleTableDbCommandBuilder<TCommand, TParameter> m_CommandBuilder;
+        readonly MultipleTableDbCommandBuilder<TCommand, TParameter> m_CommandBuilder;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CompiledMultipleTable{TCommand, TParameter}"/> struct.
@@ -32,7 +32,7 @@ namespace Tortuga.Chain.Materializers
         /// </summary>
         /// <typeparam name="TObject">The type of the object returned.</typeparam>
         /// <param name="rowOptions">The row options.</param>
-        /// <returns></returns>
+        /// <returns>ILink&lt;TObject&gt;.</returns>
         public ILink<TObject> ToObject<TObject>(RowOptions rowOptions = RowOptions.None)
             where TObject : class, new()
         {
@@ -43,11 +43,12 @@ namespace Tortuga.Chain.Materializers
         /// Materializes the result as a list of objects.
         /// </summary>
         /// <typeparam name="TObject">The type of the model.</typeparam>
-        /// <returns></returns>
-        public ILink<List<TObject>> ToCollection<TObject>()
+        /// <param name="collectionOptions">The collection options.</param>
+        /// <returns>ILink&lt;List&lt;TObject&gt;&gt;.</returns>
+        public ILink<List<TObject>> ToCollection<TObject>(CollectionOptions collectionOptions = CollectionOptions.None)
             where TObject : class, new()
         {
-            return new CompiledCollectionMaterializer<TCommand, TParameter, TObject, List<TObject>>(m_CommandBuilder);
+            return new CompiledCollectionMaterializer<TCommand, TParameter, TObject, List<TObject>>(m_CommandBuilder, collectionOptions);
         }
 
         /// <summary>
@@ -55,13 +56,14 @@ namespace Tortuga.Chain.Materializers
         /// </summary>
         /// <typeparam name="TObject">The type of the model.</typeparam>
         /// <typeparam name="TCollection">The type of the collection.</typeparam>
-        /// <returns></returns>
+        /// <param name="collectionOptions">The collection options.</param>
+        /// <returns>ILink&lt;TCollection&gt;.</returns>
         [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-        public ILink<TCollection> ToCollection<TObject, TCollection>()
+        public ILink<TCollection> ToCollection<TObject, TCollection>(CollectionOptions collectionOptions = CollectionOptions.None)
             where TObject : class, new()
             where TCollection : ICollection<TObject>, new()
         {
-            return new CompiledCollectionMaterializer<TCommand, TParameter, TObject, TCollection>(m_CommandBuilder);
+            return new CompiledCollectionMaterializer<TCommand, TParameter, TObject, TCollection>(m_CommandBuilder, collectionOptions);
         }
     }
 

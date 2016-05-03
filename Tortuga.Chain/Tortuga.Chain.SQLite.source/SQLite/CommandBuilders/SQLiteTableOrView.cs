@@ -23,14 +23,15 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
     /// </summary>
     internal sealed class SQLiteTableOrView : TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption>
     {
-        private readonly object m_FilterValue;
-        private readonly TableOrViewMetadata<string, DbType> m_Metadata;
-        private readonly string m_WhereClause;
-        private readonly object m_ArgumentValue;
+        readonly TableOrViewMetadata<string, DbType> m_Metadata;
+        private object m_FilterValue;
+        private string m_WhereClause;
+        private object m_ArgumentValue;
         private IEnumerable<SortExpression> m_SortExpressions = Enumerable.Empty<SortExpression>();
         private SQLiteLimitOption m_LimitOptions;
         private int? m_Skip;
         private int? m_Take;
+        private string m_SelectClause;
 
         //public object MetadataCache { get; private set; }
 
@@ -73,7 +74,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
         /// </summary>
         /// <param name="materializer"></param>
         /// <returns></returns>
-        public override ExecutionToken<SQLiteCommand, SQLiteParameter> Prepare(Materializer<SQLiteCommand, SQLiteParameter> materializer)
+        public override CommandExecutionToken<SQLiteCommand, SQLiteParameter> Prepare(Materializer<SQLiteCommand, SQLiteParameter> materializer)
         {
             if (materializer == null)
                 throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
@@ -99,7 +100,13 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
             List<SQLiteParameter> parameters;
 
             var sql = new StringBuilder();
-            sqlBuilder.BuildSelectClause(sql, "SELECT ", null, " FROM " + m_Metadata.Name);
+
+            if (m_SelectClause != null)
+                sql.Append($"SELECT {m_SelectClause} ");
+            else
+                sqlBuilder.BuildSelectClause(sql, "SELECT ", null, null);
+
+            sql.Append(" FROM " + m_Metadata.Name);
 
             if (m_FilterValue != null)
             {
@@ -139,7 +146,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
 
             sql.Append(";");
 
-            return new SQLiteExecutionToken(DataSource, "Query " + m_Metadata.Name, sql.ToString(), parameters, lockType: LockType.Read);
+            return new SQLiteCommandExecutionToken(DataSource, "Query " + m_Metadata.Name, sql.ToString(), parameters, lockType: LockType.Read);
         }
 
         /// <summary>
@@ -156,6 +163,14 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
             return this;
         }
 
+        /// <summary>
+        /// Adds limits to the command builder.
+        /// </summary>
+        /// <param name="skip">The number of rows to skip.</param>
+        /// <param name="take">Number of rows to take.</param>
+        /// <param name="limitOptions">The limit options.</param>
+        /// <param name="seed">The seed for repeatable reads. Only applies to random sampling</param>
+        /// <returns></returns>
         protected override TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> OnWithLimits(int? skip, int? take, SQLiteLimitOption limitOptions, int? seed)
         {
             //m_Seed = seed;
@@ -165,6 +180,14 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
             return this;
         }
 
+        /// <summary>
+        /// Adds limits to the command builder.
+        /// </summary>
+        /// <param name="skip">The number of rows to skip.</param>
+        /// <param name="take">Number of rows to take.</param>
+        /// <param name="limitOptions">The limit options.</param>
+        /// <param name="seed">The seed for repeatable reads. Only applies to random sampling</param>
+        /// <returns></returns>
         protected override TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> OnWithLimits(int? skip, int? take, LimitOptions limitOptions, int? seed)
         {
             //m_Seed = seed;
@@ -172,6 +195,73 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
             m_Take = take;
             m_LimitOptions = (SQLiteLimitOption)limitOptions;
             return this;
+        }
+
+        /// <summary>
+        /// Adds (or replaces) the filter on this command builder.
+        /// </summary>
+        /// <param name="filterValue">The filter value.</param>
+        /// <returns></returns>
+        public override TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> WithFilter(object filterValue)
+        {
+            m_FilterValue = filterValue;
+            m_WhereClause = null;
+            m_ArgumentValue = null;
+            return this;
+        }
+
+        /// <summary>
+        /// Adds (or replaces) the filter on this command builder.
+        /// </summary>
+        /// <param name="whereClause">The where clause.</param>
+        /// <returns></returns>
+        public override TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> WithFilter(string whereClause)
+        {
+            m_FilterValue = null;
+            m_WhereClause = whereClause;
+            m_ArgumentValue = null;
+            return this;
+        }
+
+        /// <summary>
+        /// Adds (or replaces) the filter on this command builder.
+        /// </summary>
+        /// <param name="whereClause">The where clause.</param>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <returns></returns>
+        public override TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> WithFilter(string whereClause, object argumentValue)
+        {
+            m_FilterValue = null;
+            m_WhereClause = whereClause;
+            m_ArgumentValue = argumentValue;
+            return this;
+        }
+
+        /// <summary>
+        /// Returns the row count using a <c>SELECT COUNT_BIG(*)</c> style query.
+        /// </summary>
+        /// <returns></returns>
+        public override ILink<long> AsCount()
+        {
+            m_SelectClause = "COUNT(*)";
+            return ToInt64();
+        }
+
+        /// <summary>
+        /// Returns the row count for a given column. <c>SELECT COUNT_BIG(columnName)</c>
+        /// </summary>
+        /// <param name="columnName">Name of the column.</param>
+        /// <param name="distinct">if set to <c>true</c> use <c>SELECT COUNT_BIG(DISTINCT columnName)</c>.</param>
+        /// <returns></returns>
+        public override ILink<long> AsCount(string columnName, bool distinct = false)
+        {
+            var column = m_Metadata.Columns[columnName];
+            if (distinct)
+                m_SelectClause = $"COUNT(DISTINCT {column.QuotedSqlName})";
+            else
+                m_SelectClause = $"COUNT({column.QuotedSqlName})";
+
+            return ToInt64();
         }
     }
 }

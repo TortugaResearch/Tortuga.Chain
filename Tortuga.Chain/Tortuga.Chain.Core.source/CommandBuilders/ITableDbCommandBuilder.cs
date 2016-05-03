@@ -6,6 +6,10 @@ namespace Tortuga.Chain.CommandBuilders
     /// This is a specialization of IMultipleRowDbCommandBuilder that includes support for sorting and limiting
     /// </summary>
     /// <seealso cref="IMultipleRowDbCommandBuilder" />
+    /// <remarks>
+    /// Warning: This interface is meant to simulate multiple inheritance and work-around some issues with exposing generic types. Do not implement it in client code, as new method will be added over time.
+    /// </remarks>
+    /// <seealso cref="IMultipleRowDbCommandBuilder" />
     public interface ITableDbCommandBuilder : IMultipleRowDbCommandBuilder
     {
         /// <summary>
@@ -43,5 +47,43 @@ namespace Tortuga.Chain.CommandBuilders
         ITableDbCommandBuilder WithLimits(int skip, int take);
 
 
+        /// <summary>
+        /// Adds (or replaces) the filter on this command builder.
+        /// </summary>
+        /// <param name="filterValue">The filter value.</param>
+        /// <returns></returns>
+        ITableDbCommandBuilder WithFilter(object filterValue);
+
+        /// <summary>
+        /// Adds (or replaces) the filter on this command builder.
+        /// </summary>
+        /// <param name="whereClause">The where clause.</param>
+        /// <returns></returns>
+        ITableDbCommandBuilder WithFilter(string whereClause);
+
+        /// <summary>
+        /// Adds (or replaces) the filter on this command builder.
+        /// </summary>
+        /// <param name="whereClause">The where clause.</param>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <returns></returns>
+        ITableDbCommandBuilder WithFilter(string whereClause, object argumentValue);
+
+        /// <summary>
+        /// Returns the row count using a <c>SELECT Count(*)</c> style query.
+        /// </summary>
+        /// <returns></returns>
+        ILink<long> AsCount();
+
+        /// <summary>
+        /// Returns the row count for a given column. <c>SELECT Count(columnName)</c>
+        /// </summary>
+        /// <param name="columnName">Name of the column.</param>
+        /// <param name="distinct">if set to <c>true</c> use <c>SELECT COUNT(DISTINCT columnName)</c>.</param>
+        /// <returns></returns>
+        ILink<long> AsCount(string columnName, bool distinct = false);
+
     }
+
+
 }

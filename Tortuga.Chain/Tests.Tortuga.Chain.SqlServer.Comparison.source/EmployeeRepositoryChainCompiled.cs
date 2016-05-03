@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Tests.Models;
 using Tortuga.Chain;
@@ -22,7 +21,7 @@ namespace Tests
 
         public Employee Get(int employeeKey)
         {
-            return m_DataSource.From(TableName, new { @EmployeeKey = employeeKey }).Compile().ToObject<Employee>().Execute();
+            return m_DataSource.GetByKey(TableName, employeeKey).Compile().ToObject<Employee>().Execute();
         }
 
         public IList<Employee> GetAll()

@@ -9,9 +9,10 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
     /// <summary>
     /// Command object that represents an update operation.
     /// </summary>
-    internal sealed class PostgreSqlUpdateObject : PostgreSqlObjectCommand
+    internal sealed class PostgreSqlUpdateObject<TArgument> : PostgreSqlObjectCommand<TArgument>
+        where TArgument : class
     {
-        private readonly UpdateOptions m_Options;
+        readonly UpdateOptions m_Options;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PostgreSqlUpdateObject"/> class.
@@ -20,7 +21,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         /// <param name="tableName">Name of the table.</param>
         /// <param name="argumentValue">The argument value.</param>
         /// <param name="options">The options.</param>
-        public PostgreSqlUpdateObject(PostgreSqlDataSourceBase dataSource, PostgreSqlObjectName tableName, object argumentValue, UpdateOptions options)
+        public PostgreSqlUpdateObject(PostgreSqlDataSourceBase dataSource, PostgreSqlObjectName tableName, TArgument argumentValue, UpdateOptions options)
             : base(dataSource, tableName, argumentValue)
         {
             m_Options = options;
@@ -31,12 +32,12 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         /// </summary>
         /// <param name="materializer"></param>
         /// <returns><see cref="PostgreSqlExecutionToken" /></returns>
-        public override ExecutionToken<NpgsqlCommand, NpgsqlParameter> Prepare(Materializer<NpgsqlCommand, NpgsqlParameter> materializer)
+        public override CommandExecutionToken<NpgsqlCommand, NpgsqlParameter> Prepare(Materializer<NpgsqlCommand, NpgsqlParameter> materializer)
         {
             if (materializer == null)
                 throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
 
-            var sqlBuilder = Metadata.CreateSqlBuilder(StrictMode);
+            var sqlBuilder = Table.CreateSqlBuilder(StrictMode);
             sqlBuilder.ApplyArgumentValue(DataSource, ArgumentValue, m_Options);
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
@@ -53,7 +54,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
             }
             sql.Append(";");
 
-            return new PostgreSqlExecutionToken(DataSource, "Update " + TableName, sql.ToString(), sqlBuilder.GetParameters());
+            return new PostgreSqlExecutionToken(DataSource, "Update " + Table.Name, sql.ToString(), sqlBuilder.GetParameters());
         }
     }
 }

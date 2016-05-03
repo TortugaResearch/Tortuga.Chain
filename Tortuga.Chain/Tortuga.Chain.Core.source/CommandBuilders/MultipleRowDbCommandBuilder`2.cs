@@ -4,6 +4,7 @@ using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Materializers;
+using System.Collections.Immutable;
 
 #if !WINDOWS_UWP
 using System.Data;
@@ -25,7 +26,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <summary>
         /// </summary>
         /// <param name="dataSource">The data source.</param>
-        protected MultipleRowDbCommandBuilder(DataSource<TCommand, TParameter> dataSource) : base(dataSource) { }
+        protected MultipleRowDbCommandBuilder(ICommandDataSource<TCommand, TParameter> dataSource) : base(dataSource) { }
 
 
         /// <summary>
@@ -43,12 +44,59 @@ namespace Tortuga.Chain.CommandBuilders
         /// Materializes the result as a list of objects.
         /// </summary>
         /// <typeparam name="TObject">The type of the model.</typeparam>
+        /// <param name="collectionOptions">The collection options.</param>
         /// <returns></returns>
-        public ILink<List<TObject>> ToCollection<TObject>()
-            where TObject : class, new()
+        public IConstructibleMaterializer<List<TObject>> ToCollection<TObject>(CollectionOptions collectionOptions = CollectionOptions.None)
+            where TObject : class
         {
-            return new CollectionMaterializer<TCommand, TParameter, TObject, List<TObject>>(this);
+            return ToCollection<TObject, List<TObject>>(collectionOptions);
         }
+
+        /// <summary>
+        /// Materializes the result as a list of objects.
+        /// </summary>
+        /// <typeparam name="TObject">The type of the model.</typeparam>
+        /// <typeparam name="TCollection">The type of the collection.</typeparam>
+        /// <param name="collectionOptions">The collection options.</param>
+        /// <returns></returns>
+        /// <exception cref="MappingException">
+        /// </exception>
+        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
+        public IConstructibleMaterializer<TCollection> ToCollection<TObject, TCollection>(CollectionOptions collectionOptions = CollectionOptions.None)
+            where TObject : class
+            where TCollection : ICollection<TObject>, new()
+        {
+            return new CollectionMaterializer<TCommand, TParameter, TObject, TCollection>(this, collectionOptions);
+        }
+
+        /// <summary>
+        /// Materializes the result as an immutable array of objects.
+        /// </summary>
+        /// <typeparam name="TObject">The type of the model.</typeparam>
+        /// <param name="collectionOptions">The collection options.</param>
+        /// <returns>Tortuga.Chain.IConstructibleMaterializer&lt;System.Collections.Immutable.ImmutableArray&lt;TObject&gt;&gt;.</returns>
+        /// <exception cref="MappingException"></exception>
+        /// <remarks>In theory this will offer better performance than ToImmutableList if you only intend to read the result.</remarks>
+        public IConstructibleMaterializer<ImmutableArray<TObject>> ToImmutableArray<TObject>(CollectionOptions collectionOptions = CollectionOptions.None)
+    where TObject : class
+        {
+            return new ImmutableArrayMaterializer<TCommand, TParameter, TObject>(this, collectionOptions);
+        }
+
+        /// <summary>
+        /// Materializes the result as an immutable list of objects.
+        /// </summary>
+        /// <typeparam name="TObject">The type of the model.</typeparam>
+        /// <param name="collectionOptions">The collection options.</param>
+        /// <returns>Tortuga.Chain.IConstructibleMaterializer&lt;System.Collections.Immutable.ImmutableList&lt;TObject&gt;&gt;.</returns>
+        /// <exception cref="MappingException"></exception>
+        /// <remarks>In theory this will offer better performance than ToImmutableArray if you intend to further modify the result.</remarks>
+        public IConstructibleMaterializer<ImmutableList<TObject>> ToImmutableList<TObject>(CollectionOptions collectionOptions = CollectionOptions.None)
+        where TObject : class
+        {
+            return new ImmutableListMaterializer<TCommand, TParameter, TObject>(this, collectionOptions);
+        }
+
 
         /// <summary>
         /// Materializes the result as a list of dynamically typed objects.
@@ -59,19 +107,7 @@ namespace Tortuga.Chain.CommandBuilders
             return new DynamicCollectionMaterializer<TCommand, TParameter>(this);
         }
 
-        /// <summary>
-        /// Materializes the result as a list of objects.
-        /// </summary>
-        /// <typeparam name="TObject">The type of the model.</typeparam>
-        /// <typeparam name="TCollection">The type of the collection.</typeparam>
-        /// <returns></returns>
-        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-        public ILink<TCollection> ToCollection<TObject, TCollection>()
-            where TObject : class, new()
-            where TCollection : ICollection<TObject>, new()
-        {
-            return new CollectionMaterializer<TCommand, TParameter, TObject, TCollection>(this);
-        }
+
 
 #if !WINDOWS_UWP
         /// <summary>
@@ -103,6 +139,96 @@ namespace Tortuga.Chain.CommandBuilders
         public ILink<List<DateTimeOffset>> ToDateTimeOffsetList(string columnName, ListOptions listOptions = ListOptions.None)
         {
             return new DateTimeOffsetListMaterializer<TCommand, TParameter>(this, columnName, listOptions);
+        }
+
+
+        /// <summary>
+        /// Materializes the result as a dictionary of objects.
+        /// </summary>
+        /// <typeparam name="TKey">The type of the key.</typeparam>
+        /// <typeparam name="TObject">The type of the model.</typeparam>
+        /// <param name="keyColumn">The key column.</param>
+        /// <param name="dictionaryOptions">The dictionary options.</param>
+        /// <returns></returns>
+        public IConstructibleMaterializer<Dictionary<TKey, TObject>> ToDictionary<TKey, TObject>(string keyColumn, DictionaryOptions dictionaryOptions = DictionaryOptions.None)
+            where TObject : class
+        {
+            return ToDictionary<TKey, TObject, Dictionary<TKey, TObject>>(keyColumn, dictionaryOptions);
+        }
+
+        /// <summary>
+        /// Materializes the result as a dictionary of objects.
+        /// </summary>
+        /// <typeparam name="TKey">The type of the key.</typeparam>
+        /// <typeparam name="TObject">The type of the model.</typeparam>
+        /// <typeparam name="TDictionary">The type of dictionary.</typeparam>
+        /// <returns></returns>
+        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
+        public IConstructibleMaterializer<TDictionary> ToDictionary<TKey, TObject, TDictionary>(string keyColumn, DictionaryOptions dictionaryOptions = DictionaryOptions.None)
+            where TObject : class
+            where TDictionary : IDictionary<TKey, TObject>, new()
+        {
+            return new DictionaryMaterializer<TCommand, TParameter, TKey, TObject, TDictionary>(this, keyColumn, dictionaryOptions);
+        }
+
+        /// <summary>
+        /// Materializes the result as a dictionary of objects.
+        /// </summary>
+        /// <typeparam name="TKey">The type of the key.</typeparam>
+        /// <typeparam name="TObject">The type of the model.</typeparam>
+        /// <param name="keyFunction">The key function.</param>
+        /// <param name="dictionaryOptions">The dictionary options.</param>
+        /// <returns></returns>
+        public IConstructibleMaterializer<Dictionary<TKey, TObject>> ToDictionary<TKey, TObject>(Func<TObject, TKey> keyFunction, DictionaryOptions dictionaryOptions = DictionaryOptions.None)
+            where TObject : class
+        {
+            return ToDictionary<TKey, TObject, Dictionary<TKey, TObject>>(keyFunction, dictionaryOptions);
+        }
+
+        /// <summary>
+        /// Materializes the result as a dictionary of objects.
+        /// </summary>
+        /// <typeparam name="TKey">The type of the key.</typeparam>
+        /// <typeparam name="TObject">The type of the model.</typeparam>
+        /// <typeparam name="TDictionary">The type of dictionary.</typeparam>
+        /// <param name="keyFunction">The key function.</param>
+        /// <param name="dictionaryOptions">The dictionary options.</param>
+        /// <returns></returns>
+        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
+        public IConstructibleMaterializer<TDictionary> ToDictionary<TKey, TObject, TDictionary>(Func<TObject, TKey> keyFunction, DictionaryOptions dictionaryOptions = DictionaryOptions.None)
+            where TObject : class
+            where TDictionary : IDictionary<TKey, TObject>, new()
+        {
+            return new DictionaryMaterializer<TCommand, TParameter, TKey, TObject, TDictionary>(this, keyFunction, dictionaryOptions);
+        }
+
+        /// <summary>
+        /// Materializes the result as a immutable dictionary of objects.
+        /// </summary>
+        /// <typeparam name="TKey">The type of the key.</typeparam>
+        /// <typeparam name="TObject">The type of the model.</typeparam>
+        /// <param name="keyFunction">The key function.</param>
+        /// <param name="dictionaryOptions">The dictionary options.</param>
+        /// <returns></returns>
+        public IConstructibleMaterializer<ImmutableDictionary<TKey, TObject>> ToImmutableDictionary<TKey, TObject>(Func<TObject, TKey> keyFunction, DictionaryOptions dictionaryOptions = DictionaryOptions.None)
+            where TObject : class
+        {
+            return new ImmutableDictionaryMaterializer<TCommand, TParameter, TKey, TObject>(this, keyFunction, dictionaryOptions);
+        }
+
+        /// <summary>
+        /// Materializes the result as a immutable dictionary of objects.
+        /// </summary>
+        /// <typeparam name="TKey">The type of the key.</typeparam>
+        /// <typeparam name="TObject">The type of the model.</typeparam>
+        /// <param name="keyColumn">The key column.</param>
+        /// <param name="dictionaryOptions">The dictionary options.</param>
+        /// <returns></returns>
+        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
+        public IConstructibleMaterializer<ImmutableDictionary<TKey, TObject>> ToImmutableDictionary<TKey, TObject>(string keyColumn, DictionaryOptions dictionaryOptions = DictionaryOptions.None)
+            where TObject : class
+        {
+            return new ImmutableDictionaryMaterializer<TCommand, TParameter, TKey, TObject>(this, keyColumn, dictionaryOptions);
         }
 
         /// <summary>
@@ -354,5 +480,7 @@ namespace Tortuga.Chain.CommandBuilders
         {
             return new ByteArrayListMaterializer<TCommand, TParameter>(this, columnName, listOptions);
         }
+
+
     }
 }

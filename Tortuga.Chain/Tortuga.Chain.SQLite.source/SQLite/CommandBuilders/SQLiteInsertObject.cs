@@ -15,18 +15,19 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
     /// <summary>
     /// Class that represents a SQLite Insert.
     /// </summary>
-    internal sealed class SQLiteInsertObject : SQLiteObjectCommand
+    internal sealed class SQLiteInsertObject<TArgument> : SQLiteObjectCommand<TArgument>
+        where TArgument : class
     {
-        private readonly InsertOptions m_Options;
+        readonly InsertOptions m_Options;
 
         /// <summary>
-        /// Initializes a new instance of <see cref="SQLiteInsertObject" /> class.
+        /// Initializes a new instance of <see cref="SQLiteInsertObject{TArgument}" /> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="argumentValue">The argument value.</param>
         /// <param name="options">The options.</param>
-        public SQLiteInsertObject(SQLiteDataSourceBase dataSource, string tableName, object argumentValue, InsertOptions options)
+        public SQLiteInsertObject(SQLiteDataSourceBase dataSource, string tableName, TArgument argumentValue, InsertOptions options)
             : base(dataSource, tableName, argumentValue)
         {
             m_Options = options;
@@ -36,22 +37,22 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
         /// Prepares the command for execution by generating any necessary SQL.
         /// </summary>
         /// <param name="materializer"></param>
-        /// <returns><see cref="SQLiteExecutionToken" /></returns>
-        public override ExecutionToken<SQLiteCommand, SQLiteParameter> Prepare(Materializer<SQLiteCommand, SQLiteParameter> materializer)
+        /// <returns><see cref="SQLiteCommandExecutionToken" /></returns>
+        public override CommandExecutionToken<SQLiteCommand, SQLiteParameter> Prepare(Materializer<SQLiteCommand, SQLiteParameter> materializer)
         {
             if (materializer == null)
                 throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
 
-            var sqlBuilder = Metadata.CreateSqlBuilder(StrictMode);
+            var sqlBuilder = Table.CreateSqlBuilder(StrictMode);
             sqlBuilder.ApplyArgumentValue(DataSource, ArgumentValue, m_Options);
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
             var sql = new StringBuilder();
-            sqlBuilder.BuildInsertStatement(sql, TableName, ";");
+            sqlBuilder.BuildInsertStatement(sql, Table.Name, ";");
             sql.AppendLine();
-            sqlBuilder.BuildSelectClause(sql, "SELECT ", null, $" FROM {TableName} WHERE ROWID=last_insert_rowid();");
+            sqlBuilder.BuildSelectClause(sql, "SELECT ", null, $" FROM {Table.Name} WHERE ROWID=last_insert_rowid();");
 
-            return new SQLiteExecutionToken(DataSource, "Insert into " + TableName, sql.ToString(), sqlBuilder.GetParameters(), lockType: LockType.Write);
+            return new SQLiteCommandExecutionToken(DataSource, "Insert into " + Table.Name, sql.ToString(), sqlBuilder.GetParameters(), lockType: LockType.Write);
         }
 
     }

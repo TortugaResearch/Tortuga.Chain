@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Tests.Models;
 using Tortuga.Chain;
 
 namespace Tests.Repository
@@ -43,7 +44,7 @@ namespace Tests.Repository
 
         public Task<TEntity> InsertAsync(TEntity entity)
         {
-            return Source.Insert(TableName, entity).ToObject<TEntity>().ExecuteAsync();
+            return Source.Insert(TableName, entity).ToObject().ExecuteAsync();
         }
 
         public Task UpdateAsync(TEntity entity)
@@ -61,14 +62,14 @@ namespace Tests.Repository
             return Source.Update(TableName, entity).ExecuteAsync();
         }
 
-        public Task<List<Tests.Models.Employee>> QueryAsync(string whereClause, object argumentValue)
+        public Task<List<TEntity>> QueryAsync(string whereClause, object argumentValue)
         {
-            return Source.From(TableName, whereClause, argumentValue).ToCollection<Tests.Models.Employee>().ExecuteAsync();
+            return Source.From(TableName, whereClause, argumentValue).ToCollection<TEntity>().ExecuteAsync();
         }
 
-        public Task<List<Tests.Models.Employee>> QueryAsync(object filterValue)
+        public Task<List<TEntity>> QueryAsync(object filterValue)
         {
-            return Source.From(TableName, filterValue).ToCollection<Tests.Models.Employee>().ExecuteAsync();
+            return Source.From(TableName, filterValue).ToCollection<TEntity>().ExecuteAsync();
         }
     }
 

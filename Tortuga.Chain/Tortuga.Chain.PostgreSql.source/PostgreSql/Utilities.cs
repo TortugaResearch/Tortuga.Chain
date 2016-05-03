@@ -14,11 +14,13 @@ namespace Tortuga.Chain.PostgreSql
         /// <returns></returns>
         public static List<NpgsqlParameter> GetParameters(this SqlBuilder<NpgsqlDbType> sqlBuilder)
         {
-            return sqlBuilder.GetParameters((NpgsqlDbType? type) =>
+            return sqlBuilder.GetParameters((SqlBuilderEntry<NpgsqlDbType> entry) =>
             {
                 var result = new NpgsqlParameter();
-                if (type.HasValue)
-                    result.NpgsqlDbType = type.Value;
+                result.ParameterName = entry.Details.SqlVariableName;
+                result.Value = entry.ParameterValue;
+                if (entry.Details.DbType.HasValue)
+                    result.NpgsqlDbType = entry.Details.DbType.Value;
                 return result;
             });
         }

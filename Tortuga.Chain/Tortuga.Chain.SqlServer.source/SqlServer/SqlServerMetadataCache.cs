@@ -12,11 +12,17 @@ namespace Tortuga.Chain.SqlServer
     /// </summary>
     public sealed class SqlServerMetadataCache : DatabaseMetadataCache<SqlServerObjectName, SqlDbType>
     {
-        private readonly SqlConnectionStringBuilder m_ConnectionBuilder;
-        private readonly ConcurrentDictionary<SqlServerObjectName, StoredProcedureMetadata<SqlServerObjectName, SqlDbType>> m_StoredProcedures = new ConcurrentDictionary<SqlServerObjectName, StoredProcedureMetadata<SqlServerObjectName, SqlDbType>>();
-        private readonly ConcurrentDictionary<SqlServerObjectName, TableFunctionMetadata<SqlServerObjectName, SqlDbType>> m_TableFunctions = new ConcurrentDictionary<SqlServerObjectName, TableFunctionMetadata<SqlServerObjectName, SqlDbType>>();
-        private readonly ConcurrentDictionary<SqlServerObjectName, TableOrViewMetadata<SqlServerObjectName, SqlDbType>> m_Tables = new ConcurrentDictionary<SqlServerObjectName, TableOrViewMetadata<SqlServerObjectName, SqlDbType>>();
-        private readonly ConcurrentDictionary<Type, string> m_UdtTypeMap = new ConcurrentDictionary<Type, string>();
+        readonly SqlConnectionStringBuilder m_ConnectionBuilder;
+
+        readonly ConcurrentDictionary<SqlServerObjectName, StoredProcedureMetadata<SqlServerObjectName, SqlDbType>> m_StoredProcedures = new ConcurrentDictionary<SqlServerObjectName, StoredProcedureMetadata<SqlServerObjectName, SqlDbType>>();
+
+        readonly ConcurrentDictionary<SqlServerObjectName, TableFunctionMetadata<SqlServerObjectName, SqlDbType>> m_TableFunctions = new ConcurrentDictionary<SqlServerObjectName, TableFunctionMetadata<SqlServerObjectName, SqlDbType>>();
+
+        readonly ConcurrentDictionary<SqlServerObjectName, TableOrViewMetadata<SqlServerObjectName, SqlDbType>> m_Tables = new ConcurrentDictionary<SqlServerObjectName, TableOrViewMetadata<SqlServerObjectName, SqlDbType>>();
+
+        readonly ConcurrentDictionary<SqlServerObjectName, UserDefinedTypeMetadata<SqlServerObjectName, SqlDbType>> m_UserDefinedTypes = new ConcurrentDictionary<SqlServerObjectName, UserDefinedTypeMetadata<SqlServerObjectName, SqlDbType>>();
+
+        readonly ConcurrentDictionary<Type, string> m_UdtTypeMap = new ConcurrentDictionary<Type, string>();
 
         private string m_DefaultSchema;
 
@@ -118,6 +124,7 @@ namespace Tortuga.Chain.SqlServer
             return m_Tables.GetOrAdd(tableName, GetTableOrViewInternal);
         }
 
+
         ///// <summary>
         ///// Gets the UDT name of the indicated type.
         ///// </summary>
@@ -152,6 +159,7 @@ namespace Tortuga.Chain.SqlServer
             PreloadViews();
             PreloadStoredProcedures();
             PreloadTableValueFunctions();
+            PreloadUserDefinedTypes();
         }
 
         /// <summary>
@@ -206,6 +214,32 @@ namespace Tortuga.Chain.SqlServer
                             var schema = reader.GetString(reader.GetOrdinal("SchemaName"));
                             var name = reader.GetString(reader.GetOrdinal("Name"));
                             GetTableOrView(new SqlServerObjectName(schema, name));
+                        }
+                    }
+                }
+            }
+
+        }
+        /// <summary>
+        /// Preloads the user defined types.
+        /// </summary>
+        /// <remarks>This is normally used only for testing. By default, metadata is loaded as needed.</remarks>
+        public void PreloadUserDefinedTypes()
+        {
+            const string tableList = @"SELECT s.name AS SchemaName, t.name AS Name FROM sys.types t INNER JOIN sys.schemas s ON t.schema_id = s.schema_id WHERE	t.is_user_defined = 1;";
+
+            using (var con = new SqlConnection(m_ConnectionBuilder.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = new SqlCommand(tableList, con))
+                {
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var schema = reader.GetString(reader.GetOrdinal("SchemaName"));
+                            var name = reader.GetString(reader.GetOrdinal("Name"));
+                            GetUserDefinedType(new SqlServerObjectName(schema, name));
                         }
                     }
                 }
@@ -550,6 +584,83 @@ namespace Tortuga.Chain.SqlServer
         }
 
 
+        /// <summary>
+        /// Gets the table-valued functions that were loaded by this cache.
+        /// </summary>
+        /// <returns>ICollection&lt;UserDefinedTypeMetadata&lt;SqlServerObjectName, SqlDbType&gt;&gt;.</returns>
+        /// <remarks>Call Preload before invoking this method to ensure that all table-valued functions were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.</remarks>
+        public override ICollection<UserDefinedTypeMetadata<SqlServerObjectName, SqlDbType>> GetUserDefinedTypes()
+        {
+            return m_UserDefinedTypes.Values;
+        }
+
+
+        /// <summary>
+        /// Gets the metadata for a user defined type.
+        /// </summary>
+        /// <param name="typeName">Name of the type.</param>
+        /// <returns>UserDefinedTypeMetadata&lt;SqlServerObjectName, SqlDbType&gt;.</returns>
+        public override UserDefinedTypeMetadata<SqlServerObjectName, SqlDbType> GetUserDefinedType(SqlServerObjectName typeName)
+        {
+            return m_UserDefinedTypes.GetOrAdd(typeName, GetUserDefinedTypeInternal);
+        }
+
+        UserDefinedTypeMetadata<SqlServerObjectName, SqlDbType> GetUserDefinedTypeInternal(SqlServerObjectName typeName)
+        {
+            const string sql =
+                @"SELECT	s.name AS SchemaName,
+		t.name AS Name,
+		tt.type_table_object_id AS ObjectId,
+		t.is_table_type AS IsTableType,
+		t2.name AS BaseTypeName
+FROM	sys.types t
+		INNER JOIN sys.schemas s ON t.schema_id = s.schema_id
+		LEFT JOIN sys.table_types tt ON tt.user_type_id = t.user_type_id
+		LEFT JOIN sys.types t2 ON t.system_type_id = t2.user_type_id
+WHERE	s.name = @Schema AND t.name = @Name;";
+
+            string actualSchema;
+            string actualName;
+            string baseTypeName = null;
+            int? objectId = null;
+            bool isTableType;
+
+            using (var con = new SqlConnection(m_ConnectionBuilder.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = new SqlCommand(sql, con))
+                {
+                    cmd.Parameters.AddWithValue("@Schema", typeName.Schema ?? DefaultSchema);
+                    cmd.Parameters.AddWithValue("@Name", typeName.Name);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        if (!reader.Read())
+                            throw new MissingObjectException($"Could not find user defined type {typeName}");
+
+                        actualSchema = reader.GetString(reader.GetOrdinal("SchemaName"));
+                        actualName = reader.GetString(reader.GetOrdinal("Name"));
+                        if (!reader.IsDBNull(reader.GetOrdinal("ObjectId")))
+                            objectId = reader.GetInt32(reader.GetOrdinal("ObjectId"));
+                        isTableType = reader.GetBoolean(reader.GetOrdinal("IsTableType"));
+                        if (!reader.IsDBNull(reader.GetOrdinal("BaseTypeName")))
+                            baseTypeName = reader.GetString(reader.GetOrdinal("BaseTypeName"));
+
+                    }
+                }
+            }
+
+            List<ColumnMetadata<SqlDbType>> columns;
+
+            if (isTableType)
+                columns = GetColumns(objectId.Value);
+            else
+            {
+                columns = new List<ColumnMetadata<SqlDbType>>();
+                columns.Add(new ColumnMetadata<SqlDbType>(null, false, false, false, baseTypeName, TypeNameToSqlDbType(baseTypeName), null));
+            }
+
+            return new UserDefinedTypeMetadata<SqlServerObjectName, SqlDbType>(new SqlServerObjectName(actualSchema, actualName), isTableType, columns);
+        }
     }
 
 }

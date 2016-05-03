@@ -23,6 +23,29 @@ namespace Tests.Metadata
         }
 
         [TestMethod]
+        public void PreloadUserDefinedTypes()
+        {
+            DataSource.DatabaseMetadata.PreloadUserDefinedTypes();
+            foreach (var type in DataSource.DatabaseMetadata.GetUserDefinedTypes())
+            {
+                Assert.IsFalse(string.IsNullOrWhiteSpace(type.Name.ToString()), "Name");
+                if (type.IsTableType)
+                {
+                    Assert.IsTrue(type.Columns.Count > 0, "Columns.Count");
+                    foreach (var column in type.Columns)
+                    {
+                        Assert.IsFalse(string.IsNullOrWhiteSpace(column.SqlName), "Name");
+                        Assert.IsFalse(string.IsNullOrWhiteSpace(column.ClrName), "Name");
+                    }
+                }
+                else
+                {
+                    Assert.IsTrue(type.Columns.Count == 1, $"Columns.Count was {type.Columns.Count} but it should be 1 for non-table type {type.Name} in sql server");
+                }
+            }
+        }
+
+        [TestMethod]
         public void PreloadViews()
         {
             DataSource.DatabaseMetadata.PreloadViews();

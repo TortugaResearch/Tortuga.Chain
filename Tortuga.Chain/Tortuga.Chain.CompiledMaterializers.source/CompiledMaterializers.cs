@@ -70,7 +70,7 @@ namespace Tortuga.Chain
         /// <param name="sql">The SQL.</param>
         /// <param name="reader">The reader.</param>
         /// <returns></returns>
-        internal static MethodDelegate<TObject> CreateBuilder<TObject>(DataSource dataSource, string sql, IDataReader reader)
+        internal static MethodDelegate<TObject> CreateBuilder<TObject>(IDataSource dataSource, string sql, IDataReader reader)
             where TObject : new()
         {
             var cache = dataSource.GetExtensionData<CompilerCache>();

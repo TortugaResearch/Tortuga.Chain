@@ -22,6 +22,6 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// Prepares the command for execution by generating any necessary SQL.
         /// </summary>
         /// <param name="materializer">The materializer.</param>
-        SqlServerExecutionToken Prepare(Materializer<SqlCommand, SqlParameter> materializer);
+        SqlServerCommandExecutionToken Prepare(Materializer<SqlCommand, SqlParameter> materializer);
     }
 }

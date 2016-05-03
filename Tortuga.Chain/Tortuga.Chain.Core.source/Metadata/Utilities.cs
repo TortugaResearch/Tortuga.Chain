@@ -7,6 +7,9 @@ namespace Tortuga.Chain.Metadata
 
         public static string ToClrName(string name)
         {
+            if (string.IsNullOrWhiteSpace(name))
+                return null;
+
             string result = name;
             foreach (char c in InvalidCharacters)
             {
