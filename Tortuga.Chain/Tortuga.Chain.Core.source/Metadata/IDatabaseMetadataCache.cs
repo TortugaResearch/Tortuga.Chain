@@ -11,5 +11,13 @@ namespace Tortuga.Chain.Metadata
         /// <param name="tableName">Name of the table.</param>
         /// <returns></returns>
         ITableOrViewMetadata GetTableOrView(string tableName);
+
+        /// <summary>
+        /// Returns the table or view derived from the class's name and/or Table attribute.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        ITableOrViewMetadata GetTableOrViewFromClass<T>() where T : class;
+
     }
 }

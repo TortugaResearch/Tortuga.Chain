@@ -40,6 +40,14 @@ namespace Tortuga.Chain
         IObjectDbCommandBuilder<TArgument> Delete<TArgument>(string tableName, TArgument argumentValue, DeleteOptions options = DeleteOptions.None) where TArgument : class;
 
         /// <summary>
+        /// Deletes an object model from the table indicated by the class's Table attribute.
+        /// </summary>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="options">The delete options.</param>
+        /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
+        IObjectDbCommandBuilder<TArgument> Delete<TArgument>(TArgument argumentValue, DeleteOptions options = DeleteOptions.None) where TArgument : class;
+
+        /// <summary>
         /// This is used to directly query a table or view.
         /// </summary>
         /// <param name="tableOrViewName">Name of the table or view.</param>

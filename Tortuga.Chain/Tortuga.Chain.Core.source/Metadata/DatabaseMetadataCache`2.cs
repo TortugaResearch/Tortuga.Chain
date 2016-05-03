@@ -106,5 +106,22 @@ namespace Tortuga.Chain.Metadata
         {
             throw new NotSupportedException("User defined types are not supported by this data source");
         }
+
+        /// <summary>
+        /// Returns the table or view derived from the class's name and/or Table attribute.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public abstract TableOrViewMetadata<TName, TDbType> GetTableOrViewFromClass<T>() where T : class;
+
+        /// <summary>
+        /// Returns the table or view derived from the class's name and/or Table attribute.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        ITableOrViewMetadata IDatabaseMetadataCache.GetTableOrViewFromClass<T>()
+        {
+            return GetTableOrViewFromClass<T>();
+        }
     }
 }

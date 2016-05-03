@@ -471,6 +471,27 @@ namespace Tortuga.Chain.SqlServer
             var tableType = DatabaseMetadata.GetTableOrView(tableName);
             return new SqlServerInsertBulk(this, tableName, new ObjectDataReader<T>(tableType, objects, OperationTypes.Insert), options);
         }
+
+        /// <summary>
+        /// Deletes an object model from the table indicated by the class's Table attribute.
+        /// </summary>
+        /// <typeparam name="TArgument"></typeparam>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="options">The delete options.</param>
+        /// <returns></returns>
+        public IObjectDbCommandBuilder<TArgument> Delete<TArgument>(TArgument argumentValue, DeleteOptions options = DeleteOptions.None) where TArgument : class
+        {
+            var table = DatabaseMetadata.GetTableOrViewFromClass<TArgument>();
+
+            if (!AuditRules.UseSoftDelete(table))
+                return new SqlServerDeleteObject<TArgument>(this, table.Name, argumentValue, options);
+
+            UpdateOptions effectiveOptions = UpdateOptions.SoftDelete;
+            if (options.HasFlag(DeleteOptions.UseKeyAttribute))
+                effectiveOptions = effectiveOptions | UpdateOptions.UseKeyAttribute;
+
+            return new SqlServerUpdateObject<TArgument>(this, table.Name, argumentValue, effectiveOptions);
+        }
     }
 }
 
