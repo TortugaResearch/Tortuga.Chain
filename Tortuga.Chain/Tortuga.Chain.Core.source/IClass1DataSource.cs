@@ -84,6 +84,39 @@ namespace Tortuga.Chain
         /// <exception cref="ArgumentException">tableOrViewName is empty.;tableOrViewName</exception>
         ITableDbCommandBuilder From(string tableOrViewName, object filterValue);
 
+
+        /// <summary>
+        /// This is used to directly query a table or view.
+        /// </summary>
+        ITableDbCommandBuilder From<TObject>() where TObject : class;
+
+        /// <summary>
+        /// This is used to directly query a table or view.
+        /// </summary>
+        /// <typeparam name="TObject">The type of the object.</typeparam>
+        /// <param name="whereClause">The where clause. Do not prefix this clause with "WHERE".</param>
+        /// <returns></returns>
+        ITableDbCommandBuilder From<TObject>(string whereClause) where TObject : class;
+
+        /// <summary>
+        /// This is used to directly query a table or view.
+        /// </summary>
+        /// <typeparam name="TObject">The type of the object.</typeparam>
+        /// <param name="whereClause">The where clause. Do not prefix this clause with "WHERE".</param>
+        /// <param name="argumentValue">Optional argument value. Every property in the argument value must have a matching parameter in the WHERE clause</param>
+        /// <returns></returns>
+        ITableDbCommandBuilder From<TObject>(string whereClause, object argumentValue) where TObject : class;
+
+
+        /// <summary>
+        /// This is used to directly query a table or view.
+        /// </summary>
+        /// <typeparam name="TObject">The type of the object.</typeparam>
+        /// <param name="filterValue">The filter value is used to generate a simple AND style WHERE clause.</param>
+        /// <returns></returns>
+        ITableDbCommandBuilder From<TObject>(object filterValue) where TObject : class;
+
+
         /// <summary>
         /// Inserts an object into the specified table.
         /// </summary>
@@ -96,6 +129,15 @@ namespace Tortuga.Chain
 
 
         /// <summary>
+        /// Inserts an object into the specified table.
+        /// </summary>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="options">The options for how the isnert occurs.</param>
+        /// <returns></returns>
+        IObjectDbCommandBuilder<TArgument> Insert<TArgument>(TArgument argumentValue, InsertOptions options = InsertOptions.None) where TArgument : class;
+
+
+        /// <summary>
         /// Performs an insert or update operation as appropriate.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
@@ -103,6 +145,15 @@ namespace Tortuga.Chain
         /// <param name="options">The options for how the insert/update occurs.</param>
         /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
         IObjectDbCommandBuilder<TArgument> Upsert<TArgument>(string tableName, TArgument argumentValue, UpsertOptions options = UpsertOptions.None) where TArgument : class;
+
+        /// <summary>
+        /// Performs an insert or update operation as appropriate.
+        /// </summary>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="options">The options for how the insert/update occurs.</param>
+        /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
+        IObjectDbCommandBuilder<TArgument> Upsert<TArgument>(TArgument argumentValue, UpsertOptions options = UpsertOptions.None) where TArgument : class;
+
 
         /// <summary>
         /// Updates an object in the specified table.
@@ -113,6 +164,13 @@ namespace Tortuga.Chain
         /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
         IObjectDbCommandBuilder<TArgument> Update<TArgument>(string tableName, TArgument argumentValue, UpdateOptions options = UpdateOptions.None) where TArgument : class;
 
+        /// <summary>
+        /// Updates an object in the specified table.
+        /// </summary>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="options">The update options.</param>
+        /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
+        IObjectDbCommandBuilder<TArgument> Update<TArgument>(TArgument argumentValue, UpdateOptions options = UpdateOptions.None) where TArgument : class;
 
         /// <summary>
         /// Gets a record by its primary key.

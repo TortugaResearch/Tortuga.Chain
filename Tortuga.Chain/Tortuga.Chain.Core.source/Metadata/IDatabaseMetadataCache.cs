@@ -15,9 +15,9 @@ namespace Tortuga.Chain.Metadata
         /// <summary>
         /// Returns the table or view derived from the class's name and/or Table attribute.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TObject"></typeparam>
         /// <returns></returns>
-        ITableOrViewMetadata GetTableOrViewFromClass<T>() where T : class;
+        ITableOrViewMetadata GetTableOrViewFromClass<TObject>() where TObject : class;
 
     }
 }

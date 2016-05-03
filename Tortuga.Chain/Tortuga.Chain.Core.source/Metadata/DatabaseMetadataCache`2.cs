@@ -110,18 +110,18 @@ namespace Tortuga.Chain.Metadata
         /// <summary>
         /// Returns the table or view derived from the class's name and/or Table attribute.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TObject">The type of the object.</typeparam>
         /// <returns></returns>
-        public abstract TableOrViewMetadata<TName, TDbType> GetTableOrViewFromClass<T>() where T : class;
+        public abstract TableOrViewMetadata<TName, TDbType> GetTableOrViewFromClass<TObject>() where TObject : class;
 
         /// <summary>
         /// Returns the table or view derived from the class's name and/or Table attribute.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TObject"></typeparam>
         /// <returns></returns>
-        ITableOrViewMetadata IDatabaseMetadataCache.GetTableOrViewFromClass<T>()
+        ITableOrViewMetadata IDatabaseMetadataCache.GetTableOrViewFromClass<TObject>() 
         {
-            return GetTableOrViewFromClass<T>();
+            return GetTableOrViewFromClass<TObject>();
         }
     }
 }

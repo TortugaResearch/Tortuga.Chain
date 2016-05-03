@@ -668,12 +668,12 @@ WHERE	s.name = @Schema AND t.name = @Name;";
         /// <summary>
         /// Returns the table or view derived from the class's name and/or Table attribute.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TObject"></typeparam>
         /// <returns></returns>
-        public override TableOrViewMetadata<SqlServerObjectName, SqlDbType> GetTableOrViewFromClass<T>()
+        public override TableOrViewMetadata<SqlServerObjectName, SqlDbType> GetTableOrViewFromClass<TObject>()
         {
 
-            var type = typeof(T);
+            var type = typeof(TObject);
             TableOrViewMetadata<SqlServerObjectName, SqlDbType> result;
             if (m_TypeTableMap.TryGetValue(type, out result))
                 return result;
