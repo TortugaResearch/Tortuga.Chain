@@ -54,7 +54,7 @@ namespace Tortuga.Chain.SqlServer
             if (!AuditRules.UseSoftDelete(table))
                 return new SqlServerDeleteObject<TArgument>(this, tableName, argumentValue, options);
 
-            UpdateOptions effectiveOptions = UpdateOptions.SoftDelete;
+            UpdateOptions effectiveOptions = UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected;
             if (options.HasFlag(DeleteOptions.UseKeyAttribute))
                 effectiveOptions = effectiveOptions | UpdateOptions.UseKeyAttribute;
 

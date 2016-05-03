@@ -99,10 +99,12 @@
     <Compile Include="AuditRules\ValidateWithDataErrorInfo`1.cs" />
     <Compile Include="AuditRules\ValidateWithNotifyDataErrorInfo`1.cs" />
     <Compile Include="CollectionOptions.cs" />
+    <Compile Include="CommandBuilders\CommandBuilderUtilities.cs" />
     <Compile Include="CommandBuilders\DbCommandBuilder.cs" />
     <Compile Include="CommandBuilders\DbOperationBuilder`2.cs" />
     <Compile Include="CommandBuilders\IObjectDbCommandBuilder`1.cs" />
     <Compile Include="CommandBuilders\ObjectDbCommandBuilder`3.cs" />
+    <Compile Include="Core\CommandExecutedEventArgs.cs" />
     <Compile Include="Core\OperationExecutionToken`2.cs" />
     <Compile Include="DataSources\ICommandDataSource`2.cs" />
     <Compile Include="DataSources\IDataSource.cs" />

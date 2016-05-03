@@ -8,21 +8,53 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Tortuga.Anchor.Metadata;
+using Tortuga.Chain.Core;
 
 namespace Tortuga.Chain.Materializers
 {
 
 
-    internal static class MaterializerUtilities
+    /// <summary>
+    /// Materializer utilities are used for constructing materializers. 
+    /// </summary>
+    /// <remarks>For internal use only.</remarks>
+    public static class MaterializerUtilities
     {
+        /// <summary>
+        /// Checks the update row count.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="executionToken">The execution token.</param>
+        /// <param name="updateOptions">The update options.</param>
+        /// <returns>The execution token with an attached event handler.</returns>
+        public static T CheckUpdateRowCount<T>(this T executionToken, UpdateOptions updateOptions) where T : ExecutionToken
+        {
+            if (!updateOptions.HasFlag(UpdateOptions.IgnoreRowsAffected))
+                executionToken.CommandExecuted += CheckUpdateRowCount;
+            return executionToken;
+        }
 
-        public static StreamingObjectConstructor<T> AsObjectConstructor<T>(this DbDataReader reader, IReadOnlyList<Type> constructorSignature)
+        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "UpdateOptions")]
+        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "IgnoreRowsAffected")]
+        private static void CheckUpdateRowCount(object sender, CommandExecutedEventArgs e)
+        {
+            var token = (ExecutionToken)sender;
+
+            if (e.RowsAffected == null)
+                throw new InvalidOperationException($"The database did not report how many rows were affected by operation {token.OperationName}. Either use the  UpdateOptions.IgnoreRowsAffected flag or report this as an bug in {token.GetType().FullName}.");
+            else if (e.RowsAffected == 0)
+                throw new MissingDataException($"Expected one row to be affected by the operation {token.OperationName} but none were.");
+            else if (e.RowsAffected > 1)
+                throw new UnexpectedDataException($"Expected one row to be affected by the operation {token.OperationName} but {e.RowsAffected} were affected instead.");
+        }
+
+        internal static StreamingObjectConstructor<T> AsObjectConstructor<T>(this DbDataReader reader, IReadOnlyList<Type> constructorSignature)
             where T : class
         {
             return new StreamingObjectConstructor<T>(reader, constructorSignature);
         }
 
-        
+
 
         static readonly Type[] s_EmptyTypeList = new Type[0];
 

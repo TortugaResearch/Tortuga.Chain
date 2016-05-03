@@ -78,7 +78,7 @@ namespace Tortuga.Chain.SQLite
             if (!AuditRules.UseSoftDelete(table))
                 return new SQLiteDeleteObject<TArgument>(this, tableName, argumentValue, options);
 
-            UpdateOptions effectiveOptions = UpdateOptions.SoftDelete;
+            UpdateOptions effectiveOptions = UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected;
             if (options.HasFlag(DeleteOptions.UseKeyAttribute))
                 effectiveOptions = effectiveOptions | UpdateOptions.UseKeyAttribute;
 
