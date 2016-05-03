@@ -1,5 +1,7 @@
 ﻿using Npgsql;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
@@ -38,18 +40,37 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
             if (materializer == null)
                 throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
 
+            var primaryKeyNames = Metadata.Columns.Where(x => x.IsPrimaryKey).Select(x => x.QuotedSqlName);
+            string conflictNames = string.Join(", ", primaryKeyNames);
+
             var sqlBuilder = Metadata.CreateSqlBuilder(StrictMode);
             sqlBuilder.ApplyArgumentValue(DataSource, ArgumentValue, m_Options);
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
             var sql = new StringBuilder();
+            List<NpgsqlParameter> keyParameters;
+            var isPrimaryKeyIdentity = sqlBuilder.PrimaryKeyisIdentity(out keyParameters);
+            if(isPrimaryKeyIdentity)
+            {
+                var areKeysNull = keyParameters.Any(c => c.Value == DBNull.Value || c.Value == null) ? true : false;
+                if (areKeysNull)
+                    sqlBuilder.BuildInsertStatement(sql, TableName.ToString(), null);
+                else
+                    sqlBuilder.BuildUpdateByKeyStatement(sql, TableName.ToString(), null);
+                sqlBuilder.BuildSelectClause(sql, " RETURNING ", null, ";");
+            }
+            else
+            {
+                sqlBuilder.BuildInsertClause(sql, $"INSERT INTO {TableName.ToString()} (", null, ")");
+                sqlBuilder.BuildValuesClause(sql, " VALUES (", ")");
+                sqlBuilder.BuildSetClause(sql, $" ON CONFLICT ({conflictNames}) DO UPDATE SET ", null, null);
+                sqlBuilder.BuildSelectClause(sql, " RETURNING ", null, ";");
+            }
 
             //Looks like ON CONFLICT is useful here http://www.postgresql.org/docs/current/static/sql-insert.html
             //Use RETURNING in place of SQL Servers OUTPUT clause http://www.postgresql.org/docs/current/static/sql-insert.html
 
             return new PostgreSqlExecutionToken(DataSource, "Insert or update " + TableName, sql.ToString(), sqlBuilder.GetParameters());
-
         }
-
     }
 }

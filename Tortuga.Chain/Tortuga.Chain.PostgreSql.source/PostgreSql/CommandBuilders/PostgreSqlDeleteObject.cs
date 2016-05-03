@@ -41,7 +41,8 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
             var sql = new StringBuilder();
-            //Use the RETURNING clause for output similar to SQL Server's OUTPUT clause: http://www.postgresql.org/docs/current/static/sql-delete.html
+            sqlBuilder.BuildDeleteStatement(sql, TableName.ToString(), null);
+            sqlBuilder.BuildSelectClause(sql, " RETURNING ", null, ";");
 
             return new PostgreSqlExecutionToken(DataSource, "Delete from " + TableName, sql.ToString(), sqlBuilder.GetParameters());
         }

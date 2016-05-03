@@ -74,7 +74,32 @@ namespace Tortuga.Chain.PostgreSql
         /// </summary>
         public void PreloadTables()
         {
+            const string TableSql =
+                @"SELECT
+                table_schema as schemaname,
+                table_name as tablename,
+                table_type as type
+                FROM information_schema.tables
+                WHERE table_type='BASE TABLE' AND
+                      table_schema<>'pg_catalog' AND
+                      table_schema<>'information_schema';";
 
+            using (var con = new NpgsqlConnection(m_ConnectionBuilder.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = new NpgsqlCommand(TableSql, con))
+                {
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var schema = reader.GetString(reader.GetOrdinal("schemaname"));
+                            var name = reader.GetString(reader.GetOrdinal("tablename"));
+                            GetTableOrView(new PostgreSqlObjectName(schema, name));
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -82,7 +107,32 @@ namespace Tortuga.Chain.PostgreSql
         /// </summary>
         public void PreloadViews()
         {
+            const string ViewSql =
+                @"SELECT
+                table_schema as schemaname,
+                table_name as tablename,
+                table_type as type
+                FROM information_schema.tables
+                WHERE table_type='VIEW' AND
+                      table_schema<>'pg_catalog' AND
+                      table_schema<>'information_schema';";
 
+            using (var con = new NpgsqlConnection(m_ConnectionBuilder.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = new NpgsqlCommand(ViewSql, con))
+                {
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var schema = reader.GetString(reader.GetOrdinal("schemaname"));
+                            var name = reader.GetString(reader.GetOrdinal("tablename"));
+                            GetTableOrView(new PostgreSqlObjectName(schema, name));
+                        }
+                    }
+                }
+            }
         }
 
         private TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType> GetTableOrViewInternal(PostgreSqlObjectName tableName)
@@ -128,19 +178,28 @@ namespace Tortuga.Chain.PostgreSql
         private List<ColumnMetadata<NpgsqlDbType>> GetColumns(PostgreSqlObjectName tableName)
         {
             const string ColumnSql =
-                @"SELECT 
-                    c.column_name as column_name, 
-                    c.data_type as data_type, 
-                    tc.constraint_type as is_primary_key
-                  FROM information_schema.columns AS c
-                  JOIN information_schema.constraint_column_usage AS ccu ON ccu.table_schema=c.table_schema AND 
-                                                                            ccu.table_name=c.table_name
-                  LEFT JOIN information_schema.table_constraints AS tc ON tc.table_schema=c.table_schema AND
-                                                                          tc.table_name=c.table_name AND
-                                                                          ccu.column_name=c.column_name AND 
-                                                                          tc.constraint_type='PRIMARY KEY'
-                  WHERE c.table_schema='chainschema' AND
-                        c.table_name='currency';";
+                @"
+SELECT att.attname as column_name,
+       t.typname as data_type,
+       pk.contype as is_primary_key,
+       seq.relname as is_identity
+FROM pg_class as c
+JOIN pg_namespace as ns on ns.oid=c.relnamespace
+JOIN pg_attribute as att on c.oid=att.attrelid AND
+                            att.attnum>0
+JOIN pg_type as t on t.oid=att.atttypid
+LEFT JOIN (SELECT cnst.conrelid,
+                  cnst.conkey,
+                  cnst.contype
+           FROM pg_constraint as cnst
+           WHERE cnst.contype='p') pk ON att.attnum=ANY(pk.conkey) AND
+                                         pk.conrelid=c.oid
+LEFT JOIN (SELECT c.relname
+           FROM pg_class as c
+           WHERE c.relkind='S') seq ON seq.relname~att.attname AND
+                                       seq.relname~c.relname
+WHERE c.relname=@Name AND
+      ns.nspname=@Schema;";
 
             var columns = new List<ColumnMetadata<NpgsqlDbType>>();
             using (var con = new NpgsqlConnection(m_ConnectionBuilder.ConnectionString))
@@ -156,8 +215,9 @@ namespace Tortuga.Chain.PostgreSql
                         {
                             var name = reader.GetString(reader.GetOrdinal("column_name"));
                             var typename = reader.GetString(reader.GetOrdinal("data_type"));
-                            var primary = reader.GetString(reader.GetOrdinal("is_primary_key")).Equals("PRIMARY KEY");
-                            columns.Add(new ColumnMetadata<NpgsqlDbType>(name, false, primary, false, typename, null, name));
+                            bool isPrimary = reader.IsDBNull(reader.GetOrdinal("is_primary_key")) ? false : true;
+                            bool isIdentity = reader.IsDBNull(reader.GetOrdinal("is_identity")) ? false : true;
+                            columns.Add(new ColumnMetadata<NpgsqlDbType>(name, false, isPrimary, isIdentity, typename, null, name));
                         }
                     }
                 }

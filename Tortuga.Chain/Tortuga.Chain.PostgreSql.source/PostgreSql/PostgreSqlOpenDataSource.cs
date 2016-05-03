@@ -116,7 +116,5 @@ namespace Tortuga.Chain.PostgreSql
             AuditRules = new AuditRuleCollection(AuditRules, additionalRules);
             return this;
         }
-
-
     }
 }

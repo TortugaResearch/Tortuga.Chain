@@ -155,10 +155,5 @@ namespace Tortuga.Chain.PostgreSql
         {
             return Upsert(tableName, argumentValue, options);
         }
-
-
-
-        //TODO: implement ClassXMetadata
-
     }
 }

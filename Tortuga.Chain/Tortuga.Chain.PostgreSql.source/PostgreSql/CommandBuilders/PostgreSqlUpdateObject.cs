@@ -41,13 +41,19 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
             var sql = new StringBuilder();
-
-            //Use a preceeding SELECT statement for the old values
-            //Use RETURNING in place of SQL Servers OUTPUT clause for new values http://www.postgresql.org/docs/current/static/sql-update.html
-
+            if (m_Options.HasFlag(UpdateOptions.ReturnOldValues))
+            {
+                sqlBuilder.BuildSelectByKeyStatement(sql, TableName.ToString(), ";");
+                sql.AppendLine();
+            }
+            sqlBuilder.BuildUpdateByKeyStatement(sql, TableName.ToString(), null);
+            if(!m_Options.HasFlag(UpdateOptions.ReturnOldValues))
+            {
+                sqlBuilder.BuildSelectClause(sql, " RETURNING ", null, null);
+            }
+            sql.Append(";");
 
             return new PostgreSqlExecutionToken(DataSource, "Update " + TableName, sql.ToString(), sqlBuilder.GetParameters());
         }
-
     }
 }

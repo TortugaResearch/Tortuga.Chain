@@ -82,7 +82,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 
             //Support check
             if (!Enum.IsDefined(typeof(PostgreSqlLimitOption), m_LimitOptions))
-                throw new NotSupportedException($"SQL Server does not support limit option {(LimitOptions)m_LimitOptions}");
+                throw new NotSupportedException($"Postgres does not support limit option {(LimitOptions)m_LimitOptions}");
 
             //Validation
             if (m_Skip < 0)

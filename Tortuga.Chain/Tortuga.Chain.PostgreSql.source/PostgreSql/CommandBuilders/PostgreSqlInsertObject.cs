@@ -1,5 +1,6 @@
 ﻿using Npgsql;
 using System;
+using System.Linq;
 using System.Text;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
@@ -41,8 +42,9 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
             var sql = new StringBuilder();
-
-            //Use RETURNING in place of SQL Servers OUTPUT clause http://www.postgresql.org/docs/current/static/sql-insert.html
+            sqlBuilder.BuildInsertClause(sql, $"INSERT INTO {TableName.ToString()} (", null, ")");
+            sqlBuilder.BuildValuesClause(sql, " VALUES (", ")");
+            sqlBuilder.BuildSelectClause(sql, " RETURNING ", null, ";");
 
             return new PostgreSqlExecutionToken(DataSource, "Insert into " + TableName, sql.ToString(), sqlBuilder.GetParameters());
         }

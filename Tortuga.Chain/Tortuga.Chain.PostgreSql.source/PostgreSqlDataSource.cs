@@ -93,14 +93,119 @@ namespace Tortuga.Chain
             get { return m_DatabaseMetadata; }
         }
 
-        protected override void Execute(ExecutionToken<NpgsqlCommand, NpgsqlParameter> executionToken, Func<NpgsqlCommand, int?> implementation, object state)
+        public void TestConnection()
         {
-            throw new NotImplementedException();
+            using (var con = CreateConnection())
+            {
+                using (var cmd = new NpgsqlCommand("SELECT 1;", con))
+                    cmd.ExecuteScalar();
+            }
         }
 
-        protected override Task ExecuteAsync(ExecutionToken<NpgsqlCommand, NpgsqlParameter> executionToken, Func<NpgsqlCommand, Task<int?>> implementation, CancellationToken cancellationToken, object state)
+        internal NpgsqlConnection CreateConnection()
         {
-            throw new NotImplementedException();
+            var con = new NpgsqlConnection(ConnectionString);
+            con.Open();
+
+            //TODO: Research server settings.
+
+            return con;
+        }
+
+        private async Task<NpgsqlConnection> CreateConnectionAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var con = new NpgsqlConnection(ConnectionString);
+            await con.OpenAsync(cancellationToken).ConfigureAwait(false);
+
+            //TODO: Research server settings.
+
+            return con;
+        }
+
+        protected override void Execute(ExecutionToken<NpgsqlCommand, NpgsqlParameter> executionToken, Func<NpgsqlCommand, int?> implementation, object state)
+        {
+            if (executionToken == null)
+                throw new ArgumentNullException("executionToken", "executionToken is null.");
+            if (implementation == null)
+                throw new ArgumentNullException("implementation", "implementation is null.");
+
+            var startTime = DateTimeOffset.Now;
+            OnExecutionStarted(executionToken, startTime, state);
+
+            try
+            {
+                using (var con = CreateConnection())
+                {
+                    using (var cmd = new NpgsqlCommand())
+                    {
+                        cmd.Connection = con;
+                        if (DefaultCommandTimeout.HasValue)
+                            cmd.CommandTimeout = (int)DefaultCommandTimeout.Value.TotalSeconds;
+                        cmd.CommandText = executionToken.CommandText;
+                        cmd.CommandType = executionToken.CommandType;
+                        foreach (var param in executionToken.Parameters)
+                            cmd.Parameters.Add(param);
+
+                        executionToken.ApplyCommandOverrides(cmd);
+
+                        var rows = implementation(cmd);
+                        OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
+                throw;
+            }
+
+        }
+
+        protected override async Task ExecuteAsync(ExecutionToken<NpgsqlCommand, NpgsqlParameter> executionToken, Func<NpgsqlCommand, Task<int?>> implementation, CancellationToken cancellationToken, object state)
+        {
+            if (executionToken == null)
+                throw new ArgumentNullException("executionToken", "executionToken is null.");
+            if (implementation == null)
+                throw new ArgumentNullException("implementation", "implementation is null.");
+
+            var startTime = DateTimeOffset.Now;
+            OnExecutionStarted(executionToken, startTime, state);
+
+            try
+            {
+                using (var con = await CreateConnectionAsync(cancellationToken).ConfigureAwait(false))
+                {
+                    using (var cmd = new NpgsqlCommand())
+                    {
+                        cmd.Connection = con;
+                        if (DefaultCommandTimeout.HasValue)
+                            cmd.CommandTimeout = (int)DefaultCommandTimeout.Value.TotalSeconds;
+                        cmd.CommandText = executionToken.CommandText;
+                        cmd.CommandType = executionToken.CommandType;
+                        foreach (var param in executionToken.Parameters)
+                            cmd.Parameters.Add(param);
+
+                        executionToken.ApplyCommandOverrides(cmd);
+
+                        var rows = await implementation(cmd).ConfigureAwait(false);
+                        OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException 
+                {
+                    var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);
+                    OnExecutionCanceled(executionToken, startTime, DateTimeOffset.Now, state);
+                    throw ex2;
+                }
+                else
+                {
+                    OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
+                    throw;
+                }
+            }
         }
 
         /// <summary>
@@ -178,5 +283,10 @@ namespace Tortuga.Chain
             return new PostgreSqlDataSource(connectionName, settings.ConnectionString);
         }
 #endif
+
+        internal string ConnectionString
+        {
+            get { return m_ConnectionBuilder.ConnectionString; }
+        }
     }
 }

@@ -26,8 +26,8 @@ namespace Tests
             get { return s_StrictDataSource; }
         }
 
-        public static string EmployeeTableName { get { return "Employee"; } }
-        public static string CustomerTableName { get { return "Customer"; } }
+        public static string EmployeeTableName { get { return "hr.employee"; } }
+        public static string CustomerTableName { get { return "sales.customer"; } }
 
 
         protected static PostgreSqlDataSource DataSourceWithAuditRules()

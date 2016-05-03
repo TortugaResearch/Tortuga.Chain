@@ -1,4 +1,5 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Npgsql;
 using System;
 using System.Diagnostics;
 using Tortuga.Chain;
@@ -27,12 +28,84 @@ namespace Tests
 
 
             //TODO - setup database?
+            using (var con = new NpgsqlConnection(@"User ID = postgres;
+                                             Password = toor; 
+                                             Host = localhost; 
+                                             Port = 5432;
+                                             Database = tortugachaintestdb;
+                                             Pooling = true;"))
+            {
+                con.Open();
+
+                string sql = @"
+DROP TABLE IF EXISTS hr.employee;
+DROP SCHEMA IF EXISTS hr;
+CREATE SCHEMA hr;
+CREATE TABLE hr.employee
+(
+	EmployeeKey SERIAL PRIMARY KEY,
+	FirstName VARCHAR(25) NOT NULL,
+	MiddleName VARCHAR(25) NULL,
+	LastName VARCHAR(25) NOT NULL,
+	Title VARCHAR(100) null,
+	ManagerKey INTEGER NULL REFERENCES HR.Employee(EmployeeKey),
+    CreatedDate TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UpdatedDate TIMESTAMP NULL
+)";
+
+                string sql2 = @"
+DROP TABLE IF EXISTS sales.customer;
+DROP SCHEMA IF EXISTS sales;
+CREATE SCHEMA sales;
+CREATE TABLE sales.customer
+(
+	CustomerKey SERIAL PRIMARY KEY, 
+    FullName VARCHAR(100) NULL,
+	State CHAR(2) NOT NULL,
+
+    CreatedByKey INTEGER NULL,
+    UpdatedByKey INTEGER NULL,
+
+	CreatedDate TIMESTAMP NULL,
+    UpdatedDate TIMESTAMP NULL,
+
+	DeletedFlag BIT NOT NULL DEFAULT 0::bit,
+	DeletedDate TIMESTAMP NULL,
+	DeletedByKey INTEGER NULL
+)";
+
+                using (NpgsqlCommand cmd = new NpgsqlCommand(sql, con))
+                    cmd.ExecuteNonQuery();
+
+                using (NpgsqlCommand cmd = new NpgsqlCommand(sql2, con))
+                    cmd.ExecuteNonQuery();
+
+            }
+
         }
 
         [AssemblyCleanup]
         public static void AssemblyCleanup()
         {
+            /*
+            using (var con = new NpgsqlConnection(@"User ID = postgres;
+                                             Password = toor; 
+                                             Host = localhost; 
+                                             Port = 5432;
+                                             Database = tortugachaintestdb;
+                                             Pooling = true;"))
+            {
+                con.Open();
 
+                string sql = "DROP TABLE HR.Employee; DROP SCHEMA HR;";
+                string sql2 = "DROP TABLE Sales.Customer; DROP SCHEMA Sales;"; 
+                using (NpgsqlCommand cmd = new NpgsqlCommand(sql, con))
+                    cmd.ExecuteNonQuery();
+
+                using (NpgsqlCommand cmd = new NpgsqlCommand(sql2, con))
+                    cmd.ExecuteNonQuery();
+
+            }*/
         }
 
 

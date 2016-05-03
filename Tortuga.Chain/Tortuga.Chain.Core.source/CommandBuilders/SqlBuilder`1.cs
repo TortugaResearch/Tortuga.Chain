@@ -898,6 +898,34 @@ namespace Tortuga.Chain.CommandBuilders
         }
 
         /// <summary>
+        /// Primaries the keyis identity.
+        /// </summary>
+        /// <typeparam name="TParameter">The type of the parameter.</typeparam>
+        /// <param name="parameterBuilder">The parameter builder.</param>
+        /// <param name="keyParameters">The key parameters.</param>
+        /// <returns></returns>
+        public bool PrimaryKeyisIdentity<TParameter>(Func<TDbType?, TParameter> parameterBuilder, out List<TParameter> keyParameters) 
+             where TParameter : DbParameter
+        {
+            bool primKeyIsIdent = false;
+            keyParameters = new List<TParameter>();
+            for (int i = 0; i < m_Entries.Length; i++)
+            {
+                if(m_Entries[i].IsKey && m_Entries[i].Details.IsIdentity)
+                {
+                    primKeyIsIdent = true;
+
+                    var item = parameterBuilder(m_Entries[i].Details.DbType);
+                    item.ParameterName = m_Entries[i].Details.SqlVariableName;
+                    item.Value = m_Entries[i].ParameterValue;
+                    keyParameters.Add(item);
+                }
+            }
+
+            return primKeyIsIdent;
+        }
+
+        /// <summary>
         /// Applies the indicated rules.
         /// </summary>
         /// <param name="rules">The rules.</param>
@@ -922,6 +950,5 @@ namespace Tortuga.Chain.CommandBuilders
 
                 }
         }
-
     }
 }
