@@ -92,6 +92,7 @@ namespace Tortuga.Chain.SQLite
                     executionToken.ApplyCommandOverrides(cmd);
 
                     var rows = implementation(cmd);
+                    executionToken.RaiseCommandExecuted(cmd, rows);
                     OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
                     return rows;
                 }
@@ -158,6 +159,7 @@ namespace Tortuga.Chain.SQLite
                     executionToken.ApplyCommandOverrides(cmd);
 
                     var rows = await implementation(cmd).ConfigureAwait(false);
+                    executionToken.RaiseCommandExecuted(cmd, rows);
                     OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
                     return rows;
                 }

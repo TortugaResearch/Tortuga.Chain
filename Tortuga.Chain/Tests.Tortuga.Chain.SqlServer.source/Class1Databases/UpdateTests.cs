@@ -66,6 +66,36 @@ namespace Tests.Class1Databases
         }
 
 
+        [TestMethod]
+        public void UpdateTests_FailedUpdateTest()
+        {
+
+            var original = new ChangeTrackingEmployee()
+            {
+                FirstName = "Test",
+                LastName = "Employee" + DateTime.Now.Ticks,
+                Title = "Mail Room"
+            };
+
+            var inserted = DataSource.Insert(EmployeeTableName, original).ToObject<ChangeTrackingEmployee>().Execute();
+
+            DataSource.Update(EmployeeTableName, inserted).Execute();
+            DataSource.Delete(EmployeeTableName, inserted).Execute();
+
+            try
+            {
+                DataSource.Update(EmployeeTableName, inserted).Execute();
+                Assert.Fail("Exception MissingDataException when trying to update a deleted row");
+            }
+            catch (MissingDataException)
+            {
+                //pass
+            }
+
+            DataSource.Update(EmployeeTableName, inserted, UpdateOptions.IgnoreRowsAffected).Execute(); //no error
+        }
+
+
 #if !Roslyn_Missing
 
         [TestMethod]

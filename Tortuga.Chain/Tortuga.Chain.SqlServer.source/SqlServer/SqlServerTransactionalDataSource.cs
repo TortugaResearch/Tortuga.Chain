@@ -133,6 +133,7 @@ namespace Tortuga.Chain.SqlServer
                         cmd.Parameters.Add(param);
 
                     var rows = implementation(cmd);
+                    executionToken.RaiseCommandExecuted(cmd, rows);
                     OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
                     return rows;
                 }
@@ -176,6 +177,7 @@ namespace Tortuga.Chain.SqlServer
                     foreach (var param in executionToken.Parameters)
                         cmd.Parameters.Add(param);
                     var rows = await implementation(cmd).ConfigureAwait(false);
+                    executionToken.RaiseCommandExecuted(cmd, rows);
                     OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
                     return rows;
                 }

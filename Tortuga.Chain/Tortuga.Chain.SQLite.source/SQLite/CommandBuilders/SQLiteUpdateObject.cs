@@ -61,7 +61,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
                 sqlBuilder.BuildSelectByKeyStatement(sql, Table.Name, ";");
             }
 
-            return new SQLiteCommandExecutionToken(DataSource, "Update " + Table.Name, sql.ToString(), sqlBuilder.GetParameters(), lockType: LockType.Write);
+            return new SQLiteCommandExecutionToken(DataSource, "Update " + Table.Name, sql.ToString(), sqlBuilder.GetParameters(), lockType: LockType.Write).CheckUpdateRowCount(m_Options);
         }
 
     }

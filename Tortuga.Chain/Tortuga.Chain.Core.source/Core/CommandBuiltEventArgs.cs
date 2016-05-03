@@ -22,4 +22,6 @@ namespace Tortuga.Chain.Core
         /// </summary>
         public DbCommand Command { get; }
     }
+
+
 }
