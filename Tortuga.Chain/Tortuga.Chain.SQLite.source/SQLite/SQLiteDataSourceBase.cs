@@ -1,5 +1,4 @@
-﻿using System.Threading;
-using Tortuga.Chain.CommandBuilders;
+﻿using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Metadata;
 using Tortuga.Chain.SQLite.CommandBuilders;
@@ -7,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Tortuga.Anchor;
 using System.Diagnostics.CodeAnalysis;
+using Nito.AsyncEx;
 
 #if SDS
 using System.Data.SQLite;
@@ -24,7 +24,7 @@ namespace Tortuga.Chain.SQLite
     [SuppressMessage("Microsoft.Design", "CA1001:TypesThatOwnDisposableFieldsShouldBeDisposable")]
     public abstract class SQLiteDataSourceBase : DataSource<SQLiteConnection, SQLiteTransaction, SQLiteCommand, SQLiteParameter>, IClass1DataSource
     {
-        readonly ReaderWriterLockSlim m_SyncLock = new ReaderWriterLockSlim(); //Sqlite is single-threaded for writes. It says otherwise, but it spams the trace window with exceptions.
+        readonly AsyncReaderWriterLock m_SyncLock = new AsyncReaderWriterLock(); //Sqlite is single-threaded for writes. It says otherwise, but it spams the trace window with exceptions.
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SQLiteDataSourceBase"/> class.
@@ -59,7 +59,7 @@ namespace Tortuga.Chain.SQLite
         /// Gets the synchronize lock used during execution of database operations.
         /// </summary>
         /// <value>The synchronize lock.</value>
-        protected ReaderWriterLockSlim SyncLock
+        protected AsyncReaderWriterLock SyncLock
         {
             get { return m_SyncLock; }
         }

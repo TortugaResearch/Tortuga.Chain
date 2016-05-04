@@ -69,12 +69,13 @@ namespace Tortuga.Chain.SQLite
             var startTime = DateTimeOffset.Now;
             OnExecutionStarted(executionToken, startTime, state);
 
+            IDisposable lockToken = null;
             try
             {
                 switch (mode)
                 {
-                    case LockType.Read: SyncLock.EnterReadLock(); break;
-                    case LockType.Write: SyncLock.EnterWriteLock(); break;
+                    case LockType.Read: lockToken = SyncLock.ReaderLock(); break;
+                    case LockType.Write: lockToken = SyncLock.WriterLock(); break;
                 }
 
                 using (var cmd = new SQLiteCommand())
@@ -104,11 +105,8 @@ namespace Tortuga.Chain.SQLite
             }
             finally
             {
-                switch (mode)
-                {
-                    case LockType.Read: SyncLock.ExitReadLock(); break;
-                    case LockType.Write: SyncLock.ExitWriteLock(); break;
-                }
+                if (lockToken != null)
+                    lockToken.Dispose();
             }
 
 
@@ -136,12 +134,13 @@ namespace Tortuga.Chain.SQLite
             var startTime = DateTimeOffset.Now;
             OnExecutionStarted(executionToken, startTime, state);
 
+            IDisposable lockToken = null;
             try
             {
                 switch (mode)
                 {
-                    case LockType.Read: SyncLock.EnterReadLock(); break;
-                    case LockType.Write: SyncLock.EnterWriteLock(); break;
+                    case LockType.Read: lockToken = await SyncLock.ReaderLockAsync().ConfigureAwait(false); break;
+                    case LockType.Write: lockToken = await SyncLock.WriterLockAsync().ConfigureAwait(false); break;
                 }
 
                 using (var cmd = new SQLiteCommand())
@@ -180,11 +179,8 @@ namespace Tortuga.Chain.SQLite
             }
             finally
             {
-                switch (mode)
-                {
-                    case LockType.Read: SyncLock.ExitReadLock(); break;
-                    case LockType.Write: SyncLock.ExitWriteLock(); break;
-                }
+                if (lockToken != null)
+                    lockToken.Dispose();
             }
         }
 
@@ -256,12 +252,13 @@ namespace Tortuga.Chain.SQLite
             var startTime = DateTimeOffset.Now;
             OnExecutionStarted(executionToken, startTime, state);
 
+            IDisposable lockToken = null;
             try
             {
                 switch (mode)
                 {
-                    case LockType.Read: SyncLock.EnterReadLock(); break;
-                    case LockType.Write: SyncLock.EnterWriteLock(); break;
+                    case LockType.Read: lockToken = SyncLock.ReaderLock(); break;
+                    case LockType.Write: lockToken = SyncLock.WriterLock(); break;
                 }
 
                 var rows = implementation(m_Connection, m_Transaction);
@@ -276,11 +273,8 @@ namespace Tortuga.Chain.SQLite
             }
             finally
             {
-                switch (mode)
-                {
-                    case LockType.Read: SyncLock.ExitReadLock(); break;
-                    case LockType.Write: SyncLock.ExitWriteLock(); break;
-                }
+                if (lockToken != null)
+                    lockToken.Dispose();
             }
         }
 
@@ -304,12 +298,13 @@ namespace Tortuga.Chain.SQLite
             var startTime = DateTimeOffset.Now;
             OnExecutionStarted(executionToken, startTime, state);
 
+            IDisposable lockToken = null;
             try
             {
                 switch (mode)
                 {
-                    case LockType.Read: SyncLock.EnterReadLock(); break;
-                    case LockType.Write: SyncLock.EnterWriteLock(); break;
+                    case LockType.Read: lockToken = await SyncLock.ReaderLockAsync().ConfigureAwait(false); break;
+                    case LockType.Write: lockToken = await SyncLock.WriterLockAsync().ConfigureAwait(false); break;
                 }
 
                 var rows = await implementation(m_Connection, m_Transaction, cancellationToken).ConfigureAwait(false);
@@ -333,11 +328,8 @@ namespace Tortuga.Chain.SQLite
             }
             finally
             {
-                switch (mode)
-                {
-                    case LockType.Read: SyncLock.ExitReadLock(); break;
-                    case LockType.Write: SyncLock.ExitWriteLock(); break;
-                }
+                if (lockToken != null)
+                    lockToken.Dispose();
             }
         }
     }
