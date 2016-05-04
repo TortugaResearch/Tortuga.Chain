@@ -78,6 +78,7 @@
     <Compile Include="Class1Databases\FromTests.cs" />
     <Compile Include="Class1Databases\InsertTests.cs" />
     <Compile Include="Class1Databases\SqlTests.cs" />
+    <Compile Include="Class1Databases\DeleteTests.cs" />
     <Compile Include="Class1Databases\UpdateTests.cs" />
     <Compile Include="Class1Databases\UpsertTests.cs" />
     <Compile Include="Class2Databases\InsertBulkTests.cs" />

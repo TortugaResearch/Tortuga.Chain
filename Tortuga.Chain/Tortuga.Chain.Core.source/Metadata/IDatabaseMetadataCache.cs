@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Tortuga.Chain.Metadata
 {
     /// <summary>
@@ -11,5 +13,14 @@ namespace Tortuga.Chain.Metadata
         /// <param name="tableName">Name of the table.</param>
         /// <returns></returns>
         ITableOrViewMetadata GetTableOrView(string tableName);
+
+        /// <summary>
+        /// Returns the table or view derived from the class's name and/or Table attribute.
+        /// </summary>
+        /// <typeparam name="TObject"></typeparam>
+        /// <returns></returns>
+        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
+        ITableOrViewMetadata GetTableOrViewFromClass<TObject>() where TObject : class;
+
     }
 }

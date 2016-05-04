@@ -106,5 +106,23 @@ namespace Tortuga.Chain.Metadata
         {
             throw new NotSupportedException("User defined types are not supported by this data source");
         }
+
+        /// <summary>
+        /// Returns the table or view derived from the class's name and/or Table attribute.
+        /// </summary>
+        /// <typeparam name="TObject">The type of the object.</typeparam>
+        /// <returns></returns>
+        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
+        public abstract TableOrViewMetadata<TName, TDbType> GetTableOrViewFromClass<TObject>() where TObject : class;
+
+        /// <summary>
+        /// Returns the table or view derived from the class's name and/or Table attribute.
+        /// </summary>
+        /// <typeparam name="TObject"></typeparam>
+        /// <returns></returns>
+        ITableOrViewMetadata IDatabaseMetadataCache.GetTableOrViewFromClass<TObject>() 
+        {
+            return GetTableOrViewFromClass<TObject>();
+        }
     }
 }

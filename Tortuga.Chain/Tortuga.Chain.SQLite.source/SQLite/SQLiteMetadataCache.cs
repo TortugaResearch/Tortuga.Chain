@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using Tortuga.Chain.Metadata;
 using System;
+using Tortuga.Anchor.Metadata;
 
 #if SDS
 using System.Data.SQLite;
@@ -21,7 +22,9 @@ namespace Tortuga.Chain.SQLite
     {
         readonly SQLiteConnectionStringBuilder m_ConnectionBuilder;
         readonly ConcurrentDictionary<string, TableOrViewMetadata<string, DbType>> m_Tables = new ConcurrentDictionary<string, TableOrViewMetadata<string, DbType>>(StringComparer.OrdinalIgnoreCase);
-        //readonly ImmutableHashSet<string> m_Curr;
+
+        readonly ConcurrentDictionary<Type, TableOrViewMetadata<string, DbType>> m_TypeTableMap = new ConcurrentDictionary<Type, TableOrViewMetadata<string, DbType>>();
+
 
         /// <summary>
         /// Creates a new instance of <see cref="SQLiteMetadataCache"/>
@@ -197,6 +200,32 @@ namespace Tortuga.Chain.SQLite
         public override ICollection<TableOrViewMetadata<string, DbType>> GetTablesAndViews()
         {
             return m_Tables.Values;
+        }
+
+        /// <summary>
+        /// Returns the table or view derived from the class's name and/or Table attribute.
+        /// </summary>
+        /// <typeparam name="TObject">The type of the object.</typeparam>
+        /// <returns>TableOrViewMetadata&lt;System.String, DbType&gt;.</returns>
+        public override TableOrViewMetadata<string, DbType> GetTableOrViewFromClass<TObject>()
+        {
+            var type = typeof(TObject);
+            TableOrViewMetadata<string, DbType> result;
+            if (m_TypeTableMap.TryGetValue(type, out result))
+                return result;
+
+            var typeInfo = MetadataCache.GetMetadata(type);
+            if (!string.IsNullOrEmpty(typeInfo.MappedTableName))
+            {
+                result = GetTableOrView(typeInfo.MappedTableName);
+                m_TypeTableMap[type] = result;
+                return result;
+            }
+
+            //infer table from class name
+            result = GetTableOrView(type.Name);
+            m_TypeTableMap[type] = result;
+            return result;
         }
     }
 }

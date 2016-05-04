@@ -95,11 +95,11 @@ namespace Tortuga.Chain.Materializers
                 if (m_RowOptions.HasFlag(RowOptions.AllowEmptyResults))
                     return null;
                 else
-                    throw new DataException("No rows were returned");
+                    throw new MissingDataException("No rows were returned");
             }
             else if (rowCount > 1 && !m_RowOptions.HasFlag(RowOptions.DiscardExtraRows))
             {
-                throw new DataException($"Expected 1 row but received {rowCount} rows");
+                throw new UnexpectedDataException($"Expected 1 row but received {rowCount} rows");
             }
             return MaterializerUtilities.ConstructObject<TObject>(row, ConstructorSignature);
         }
