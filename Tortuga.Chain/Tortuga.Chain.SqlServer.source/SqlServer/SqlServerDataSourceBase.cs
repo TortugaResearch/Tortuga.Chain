@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
@@ -389,11 +390,12 @@ namespace Tortuga.Chain.SqlServer
         /// <summary>
         /// Inserts the batch of records as one operation.
         /// </summary>
-        /// <param name="tableName">Name of the table.</param>
+        /// <typeparam name="TObject">The type of the t object.</typeparam>
         /// <param name="tableTypeName">Name of the table type.</param>
         /// <param name="dataTable">The data table.</param>
         /// <param name="options">The options.</param>
         /// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
+        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> InsertBatch<TObject>(SqlServerObjectName tableTypeName, DataTable dataTable, InsertOptions options = InsertOptions.None) where TObject : class
         {
             return InsertBatch(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, tableTypeName, dataTable, options);
@@ -415,11 +417,12 @@ namespace Tortuga.Chain.SqlServer
         /// <summary>
         /// Inserts the batch of records as one operation.
         /// </summary>
-        /// <param name="tableName">Name of the table.</param>
+        /// <typeparam name="TObject">The type of the t object.</typeparam>
         /// <param name="tableTypeName">Name of the table type.</param>
         /// <param name="dataReader">The data reader.</param>
         /// <param name="options">The options.</param>
         /// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
+        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> InsertBatch<TObject>(SqlServerObjectName tableTypeName, DbDataReader dataReader, InsertOptions options = InsertOptions.None) where TObject : class
         {
             return InsertBatch(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, tableTypeName, dataReader, options);
@@ -509,6 +512,7 @@ namespace Tortuga.Chain.SqlServer
         /// <returns>
         /// SqlServerInsertBulk.
         /// </returns>
+        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         public SqlServerInsertBulk InsertBulk<TObject>(DataTable dataTable, SqlBulkCopyOptions options = SqlBulkCopyOptions.Default) where TObject : class
         {
             return InsertBulk(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, dataTable, options);
@@ -524,6 +528,7 @@ namespace Tortuga.Chain.SqlServer
         /// <returns>
         /// SqlServerInsertBulk.
         /// </returns>
+        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         public SqlServerInsertBulk InsertBulk<TObject>(IDataReader dataReader, SqlBulkCopyOptions options = SqlBulkCopyOptions.Default) where TObject : class
         {
             return InsertBulk(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, dataReader, options);
@@ -575,6 +580,7 @@ namespace Tortuga.Chain.SqlServer
         /// </summary>
         /// <typeparam name="TObject"></typeparam>
         /// <returns></returns>
+        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         public TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption> From<TObject>() where TObject : class
         {
             return From(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name);
@@ -586,6 +592,7 @@ namespace Tortuga.Chain.SqlServer
         /// <typeparam name="TObject">The type of the object.</typeparam>
         /// <param name="whereClause">The where clause. Do not prefix this clause with "WHERE".</param>
         /// <returns></returns>
+        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         public TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption> From<TObject>(string whereClause) where TObject : class
         {
             return From(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, whereClause);
@@ -598,6 +605,7 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="whereClause">The where clause. Do not prefix this clause with "WHERE".</param>
         /// <param name="argumentValue">Optional argument value. Every property in the argument value must have a matching parameter in the WHERE clause</param>
         /// <returns></returns>
+        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         public TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption> From<TObject>(string whereClause, object argumentValue) where TObject : class
         {
             return From(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, whereClause, argumentValue);
@@ -609,6 +617,7 @@ namespace Tortuga.Chain.SqlServer
         /// <typeparam name="TObject">The type of the object.</typeparam>
         /// <param name="filterValue">The filter value is used to generate a simple AND style WHERE clause.</param>
         /// <returns></returns>
+        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         public TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption> From<TObject>(object filterValue) where TObject : class
         {
             return From(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, filterValue);
@@ -619,7 +628,7 @@ namespace Tortuga.Chain.SqlServer
         /// </summary>
         /// <typeparam name="TArgument"></typeparam>
         /// <param name="argumentValue">The argument value.</param>
-        /// <param name="options">The options for how the isnert occurs.</param>
+        /// <param name="options">The options for how the insert occurs.</param>
         /// <returns></returns>
         public ObjectDbCommandBuilder<SqlCommand, SqlParameter, TArgument> Insert<TArgument>(TArgument argumentValue, InsertOptions options = InsertOptions.None) where TArgument : class
         {

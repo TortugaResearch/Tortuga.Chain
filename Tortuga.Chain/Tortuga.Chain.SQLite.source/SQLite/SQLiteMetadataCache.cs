@@ -202,6 +202,11 @@ namespace Tortuga.Chain.SQLite
             return m_Tables.Values;
         }
 
+        /// <summary>
+        /// Returns the table or view derived from the class's name and/or Table attribute.
+        /// </summary>
+        /// <typeparam name="TObject">The type of the object.</typeparam>
+        /// <returns>TableOrViewMetadata&lt;System.String, DbType&gt;.</returns>
         public override TableOrViewMetadata<string, DbType> GetTableOrViewFromClass<TObject>()
         {
             var type = typeof(TObject);

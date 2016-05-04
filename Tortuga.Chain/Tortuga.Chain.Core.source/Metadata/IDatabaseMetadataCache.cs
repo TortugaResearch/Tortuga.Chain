@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Tortuga.Chain.Metadata
 {
     /// <summary>
@@ -17,6 +19,7 @@ namespace Tortuga.Chain.Metadata
         /// </summary>
         /// <typeparam name="TObject"></typeparam>
         /// <returns></returns>
+        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         ITableOrViewMetadata GetTableOrViewFromClass<TObject>() where TObject : class;
 
     }

@@ -50,7 +50,7 @@ namespace Tests.Class1Databases
             try
             {
                 DataSource.GetByKey(EmployeeTableName, key).ToObject<Employee>().Execute();
-                Assert.Fail("Excpected a missing data exception");
+                Assert.Fail("Expected a missing data exception");
             }
             catch (MissingDataException) { }
         }

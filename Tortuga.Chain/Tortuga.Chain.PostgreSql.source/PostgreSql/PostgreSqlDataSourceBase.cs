@@ -157,7 +157,147 @@ namespace Tortuga.Chain.PostgreSql
 
 
 
-        //TODO: implement ClassXMetadata
+        /// <summary>
+        /// Deletes an object model from the table indicated by the class's Table attribute.
+        /// </summary>
+        /// <typeparam name="TArgument"></typeparam>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="options">The delete options.</param>
+        /// <returns></returns>
+        public ObjectDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, TArgument> Delete<TArgument>(TArgument argumentValue, DeleteOptions options = DeleteOptions.None) where TArgument : class
+        {
+            var table = DatabaseMetadata.GetTableOrViewFromClass<TArgument>();
 
+            if (!AuditRules.UseSoftDelete(table))
+                return new PostgreSqlDeleteObject<TArgument>(this, table.Name, argumentValue, options);
+
+            UpdateOptions effectiveOptions = UpdateOptions.SoftDelete;
+            if (options.HasFlag(DeleteOptions.UseKeyAttribute))
+                effectiveOptions = effectiveOptions | UpdateOptions.UseKeyAttribute;
+
+            return new PostgreSqlUpdateObject<TArgument>(this, table.Name, argumentValue, effectiveOptions);
+        }
+
+
+        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Delete<TArgument>(TArgument argumentValue, DeleteOptions options)
+        {
+            return Delete(argumentValue, options);
+        }
+
+        /// <summary>
+        /// This is used to directly query a table or view.
+        /// </summary>
+        /// <typeparam name="TObject"></typeparam>
+        /// <returns></returns>
+        public TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption> From<TObject>() where TObject : class
+        {
+            return From(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name);
+        }
+
+        /// <summary>
+        /// This is used to directly query a table or view.
+        /// </summary>
+        /// <typeparam name="TObject">The type of the object.</typeparam>
+        /// <param name="whereClause">The where clause. Do not prefix this clause with "WHERE".</param>
+        /// <returns></returns>
+        public TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption> From<TObject>(string whereClause) where TObject : class
+        {
+            return From(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, whereClause);
+        }
+
+        /// <summary>
+        /// This is used to directly query a table or view.
+        /// </summary>
+        /// <typeparam name="TObject">The type of the object.</typeparam>
+        /// <param name="whereClause">The where clause. Do not prefix this clause with "WHERE".</param>
+        /// <param name="argumentValue">Optional argument value. Every property in the argument value must have a matching parameter in the WHERE clause</param>
+        /// <returns></returns>
+        public TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption> From<TObject>(string whereClause, object argumentValue) where TObject : class
+        {
+            return From(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, whereClause, argumentValue);
+        }
+
+        /// <summary>
+        /// This is used to directly query a table or view.
+        /// </summary>
+        /// <typeparam name="TObject">The type of the object.</typeparam>
+        /// <param name="filterValue">The filter value is used to generate a simple AND style WHERE clause.</param>
+        /// <returns></returns>
+        public TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption> From<TObject>(object filterValue) where TObject : class
+        {
+            return From(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, filterValue);
+        }
+
+        /// <summary>
+        /// Inserts an object into the specified table.
+        /// </summary>
+        /// <typeparam name="TArgument"></typeparam>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="options">The options for how the insert occurs.</param>
+        /// <returns></returns>
+        public ObjectDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, TArgument> Insert<TArgument>(TArgument argumentValue, InsertOptions options = InsertOptions.None) where TArgument : class
+        {
+            return Insert(DatabaseMetadata.GetTableOrViewFromClass<TArgument>().Name, argumentValue, options);
+        }
+
+        /// <summary>
+        /// Performs an insert or update operation as appropriate.
+        /// </summary>
+        /// <typeparam name="TArgument"></typeparam>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="options">The options for how the insert/update occurs.</param>
+        /// <returns></returns>
+        public ObjectDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, TArgument> Upsert<TArgument>(TArgument argumentValue, UpsertOptions options = UpsertOptions.None) where TArgument : class
+        {
+            return Upsert(DatabaseMetadata.GetTableOrViewFromClass<TArgument>().Name, argumentValue, options);
+        }
+
+        /// <summary>
+        /// Updates an object in the specified table.
+        /// </summary>
+        /// <typeparam name="TArgument"></typeparam>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="options">The update options.</param>
+        /// <returns></returns>
+        public ObjectDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, TArgument> Update<TArgument>(TArgument argumentValue, UpdateOptions options = UpdateOptions.None) where TArgument : class
+        {
+            return Update(DatabaseMetadata.GetTableOrViewFromClass<TArgument>().Name, argumentValue, options);
+        }
+
+
+        ITableDbCommandBuilder IClass1DataSource.From<TObject>()
+        {
+            return From<TObject>();
+        }
+
+        ITableDbCommandBuilder IClass1DataSource.From<TObject>(string whereClause)
+        {
+            return From<TObject>(whereClause);
+        }
+
+        ITableDbCommandBuilder IClass1DataSource.From<TObject>(string whereClause, object argumentValue)
+        {
+            return From<TObject>(whereClause, argumentValue);
+        }
+
+        ITableDbCommandBuilder IClass1DataSource.From<TObject>(object filterValue)
+        {
+            return From<TObject>(filterValue);
+        }
+
+        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Insert<TArgument>(TArgument argumentValue, InsertOptions options)
+        {
+            return Insert(argumentValue, options);
+        }
+
+        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Upsert<TArgument>(TArgument argumentValue, UpsertOptions options)
+        {
+            return Upsert(argumentValue, options);
+        }
+
+        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Update<TArgument>(TArgument argumentValue, UpdateOptions options)
+        {
+            return Update(argumentValue, options);
+        }
     }
 }

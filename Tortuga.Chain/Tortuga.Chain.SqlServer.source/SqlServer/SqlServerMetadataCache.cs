@@ -681,7 +681,10 @@ WHERE	s.name = @Schema AND t.name = @Name;";
             var typeInfo = MetadataCache.GetMetadata(type);
             if (!string.IsNullOrEmpty(typeInfo.MappedTableName))
             {
-                result = GetTableOrView(new SqlServerObjectName(typeInfo.MappedSchemaName, typeInfo.MappedTableName));
+                if (string.IsNullOrEmpty(typeInfo.MappedSchemaName))
+                    result = GetTableOrView(new SqlServerObjectName(typeInfo.MappedTableName));
+                else
+                    result = GetTableOrView(new SqlServerObjectName(typeInfo.MappedSchemaName, typeInfo.MappedTableName));
                 m_TypeTableMap[type] = result;
                 return result;
             }
@@ -689,7 +692,7 @@ WHERE	s.name = @Schema AND t.name = @Name;";
             //infer schema from namespace
             var schema = type.Namespace;
             if (schema?.Contains(".") ?? false)
-                schema = schema.Substring(schema.LastIndexOf(".") + 1);
+                schema = schema.Substring(schema.LastIndexOf(".", StringComparison.OrdinalIgnoreCase) + 1);
             var name = type.Name;
 
             try

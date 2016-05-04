@@ -88,6 +88,7 @@ namespace Tortuga.Chain
         /// <summary>
         /// This is used to directly query a table or view.
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         ITableDbCommandBuilder From<TObject>() where TObject : class;
 
         /// <summary>
@@ -96,6 +97,7 @@ namespace Tortuga.Chain
         /// <typeparam name="TObject">The type of the object.</typeparam>
         /// <param name="whereClause">The where clause. Do not prefix this clause with "WHERE".</param>
         /// <returns></returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         ITableDbCommandBuilder From<TObject>(string whereClause) where TObject : class;
 
         /// <summary>
@@ -105,6 +107,7 @@ namespace Tortuga.Chain
         /// <param name="whereClause">The where clause. Do not prefix this clause with "WHERE".</param>
         /// <param name="argumentValue">Optional argument value. Every property in the argument value must have a matching parameter in the WHERE clause</param>
         /// <returns></returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         ITableDbCommandBuilder From<TObject>(string whereClause, object argumentValue) where TObject : class;
 
 
@@ -114,6 +117,7 @@ namespace Tortuga.Chain
         /// <typeparam name="TObject">The type of the object.</typeparam>
         /// <param name="filterValue">The filter value is used to generate a simple AND style WHERE clause.</param>
         /// <returns></returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         ITableDbCommandBuilder From<TObject>(object filterValue) where TObject : class;
 
 
@@ -122,7 +126,7 @@ namespace Tortuga.Chain
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="argumentValue">The argument value.</param>
-        /// <param name="options">The options for how the isnert occurs.</param>
+        /// <param name="options">The options for how the insert occurs.</param>
         /// <returns></returns>
         /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
         IObjectDbCommandBuilder<TArgument> Insert<TArgument>(string tableName, TArgument argumentValue, InsertOptions options = InsertOptions.None) where TArgument : class;
@@ -132,7 +136,7 @@ namespace Tortuga.Chain
         /// Inserts an object into the specified table.
         /// </summary>
         /// <param name="argumentValue">The argument value.</param>
-        /// <param name="options">The options for how the isnert occurs.</param>
+        /// <param name="options">The options for how the insert occurs.</param>
         /// <returns></returns>
         IObjectDbCommandBuilder<TArgument> Insert<TArgument>(TArgument argumentValue, InsertOptions options = InsertOptions.None) where TArgument : class;
 

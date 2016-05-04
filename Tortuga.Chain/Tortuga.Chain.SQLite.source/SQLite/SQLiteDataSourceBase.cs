@@ -351,6 +351,7 @@ namespace Tortuga.Chain.SQLite
         /// </summary>
         /// <typeparam name="TObject"></typeparam>
         /// <returns></returns>
+        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         public TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> From<TObject>() where TObject : class
         {
             return From(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name);
@@ -362,6 +363,7 @@ namespace Tortuga.Chain.SQLite
         /// <typeparam name="TObject">The type of the object.</typeparam>
         /// <param name="whereClause">The where clause. Do not prefix this clause with "WHERE".</param>
         /// <returns></returns>
+        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         public TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> From<TObject>(string whereClause) where TObject : class
         {
             return From(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, whereClause);
@@ -374,6 +376,7 @@ namespace Tortuga.Chain.SQLite
         /// <param name="whereClause">The where clause. Do not prefix this clause with "WHERE".</param>
         /// <param name="argumentValue">Optional argument value. Every property in the argument value must have a matching parameter in the WHERE clause</param>
         /// <returns></returns>
+        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         public TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> From<TObject>(string whereClause, object argumentValue) where TObject : class
         {
             return From(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, whereClause, argumentValue);
@@ -385,6 +388,7 @@ namespace Tortuga.Chain.SQLite
         /// <typeparam name="TObject">The type of the object.</typeparam>
         /// <param name="filterValue">The filter value is used to generate a simple AND style WHERE clause.</param>
         /// <returns></returns>
+        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         public TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> From<TObject>(object filterValue) where TObject : class
         {
             return From(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, filterValue);
@@ -395,7 +399,7 @@ namespace Tortuga.Chain.SQLite
         /// </summary>
         /// <typeparam name="TArgument"></typeparam>
         /// <param name="argumentValue">The argument value.</param>
-        /// <param name="options">The options for how the isnert occurs.</param>
+        /// <param name="options">The options for how the insert occurs.</param>
         /// <returns></returns>
         public ObjectDbCommandBuilder<SQLiteCommand, SQLiteParameter, TArgument> Insert<TArgument>(TArgument argumentValue, InsertOptions options = InsertOptions.None) where TArgument : class
         {

@@ -112,6 +112,7 @@ namespace Tortuga.Chain.Metadata
         /// </summary>
         /// <typeparam name="TObject">The type of the object.</typeparam>
         /// <returns></returns>
+        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         public abstract TableOrViewMetadata<TName, TDbType> GetTableOrViewFromClass<TObject>() where TObject : class;
 
         /// <summary>
