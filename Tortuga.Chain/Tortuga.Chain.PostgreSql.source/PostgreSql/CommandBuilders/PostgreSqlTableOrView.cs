@@ -151,13 +151,13 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
             {
                 case PostgreSqlLimitOption.Rows:
 
-                    sql.Append(" OFFSET @offset_row_count_expression ROWS ");
+                    sql.Append(" OFFSET @offset_row_count_expression");
                     parameters.Add(new NpgsqlParameter("@offset_row_count_expression", m_Skip ?? 0));
 
                     if (m_Take.HasValue)
                     {
-                        sql.Append(" FETCH NEXT @fetch_row_count_expression ROWS ONLY");
-                        parameters.Add(new NpgsqlParameter("@fetch_row_count_expression", m_Take));
+                        sql.Append(" LIMIT @limit_row_count_expression");
+                        parameters.Add(new NpgsqlParameter("@limit_row_count_expression", m_Take));
                     }
 
                     break;

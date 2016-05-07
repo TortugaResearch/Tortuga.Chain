@@ -3,6 +3,7 @@ using Npgsql;
 using System;
 using System.Diagnostics;
 using Tortuga.Chain;
+using Tortuga.Chain.Core;
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.PostgreSql;
 
@@ -44,9 +45,9 @@ CREATE SCHEMA hr;
 CREATE TABLE hr.employee
 (
 	EmployeeKey SERIAL PRIMARY KEY,
-	FirstName VARCHAR(25) NOT NULL,
-	MiddleName VARCHAR(25) NULL,
-	LastName VARCHAR(25) NOT NULL,
+	FirstName VARCHAR(50) NOT NULL,
+	MiddleName VARCHAR(50) NULL,
+	LastName VARCHAR(50) NOT NULL,
 	Title VARCHAR(100) null,
 	ManagerKey INTEGER NULL REFERENCES HR.Employee(EmployeeKey),
     CreatedDate TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -60,7 +61,7 @@ CREATE SCHEMA sales;
 CREATE TABLE sales.customer
 (
 	CustomerKey SERIAL PRIMARY KEY, 
-    FullName VARCHAR(100) NULL,
+    FullName VARCHAR(150) NULL,
 	State CHAR(2) NOT NULL,
 
     CreatedByKey INTEGER NULL,
@@ -157,7 +158,7 @@ CREATE TABLE sales.customer
             Debug.WriteLine("Command text: ");
             Debug.WriteLine(e.ExecutionDetails.CommandText);
             Debug.Indent();
-            foreach (var item in ((PostgreSqlExecutionToken)e.ExecutionDetails).Parameters)
+            foreach (var item in ((CommandExecutionToken<NpgsqlCommand, NpgsqlParameter>)e.ExecutionDetails).Parameters)
                 Debug.WriteLine(item.ParameterName + ": " + (item.Value == null || item.Value == DBNull.Value ? "<NULL>" : item.Value));
             Debug.Unindent();
             Debug.WriteLine("******");

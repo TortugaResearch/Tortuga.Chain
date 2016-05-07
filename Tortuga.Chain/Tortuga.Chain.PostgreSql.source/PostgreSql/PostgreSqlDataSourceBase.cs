@@ -1,6 +1,8 @@
 ﻿using Npgsql;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Tortuga.Anchor;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Metadata;
@@ -59,17 +61,49 @@ namespace Tortuga.Chain.PostgreSql
 
         public MultipleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> GetByKey<T>(PostgreSqlObjectName tableName, IEnumerable<T> keys)
         {
-            throw new NotImplementedException();
+            var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).Columns.Where(c => c.IsPrimaryKey).ToList();
+            if (primaryKeys.Count != 1)
+                throw new MappingException($"GetByKey operation isn't allowed on {tableName} because it doesn't have a single primary key. Use DataSource.From instead.");
+
+            var keyList = keys.AsList();
+            var columnMetadata = primaryKeys.Single();
+            var where = columnMetadata.SqlName + " IN (" + string.Join(", ", keyList.Select((s, i) => "@Param" + i)) + ")";
+
+            var parameters = new List<NpgsqlParameter>();
+            for (var i = 0; i < keyList.Count; i++)
+            {
+                var param = new NpgsqlParameter("@Param" + i, keyList[i]);
+                if (columnMetadata.DbType.HasValue)
+                    param.NpgsqlDbType = columnMetadata.DbType.Value;
+                parameters.Add(param);
+            }
+
+            return new PostgreSqlTableOrView(this, tableName, where, parameters);
         }
 
         public MultipleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> GetByKey<T>(PostgreSqlObjectName tableName, params T[] keys)
         {
-            throw new NotImplementedException();
+            return GetByKey(tableName, (IEnumerable<T>)keys);
         }
 
         public SingleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> GetByKey<T>(PostgreSqlObjectName tableName, T key)
         {
-            throw new NotImplementedException();
+            var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).Columns.Where(c => c.IsPrimaryKey).ToList();
+            if(primaryKeys.Count != 1)
+                throw new MappingException($"GetByKey operation isn't allowed on {tableName} because it doesn't have a single primary key. Use DataSource.From instead.");
+
+            var columnMetadata = primaryKeys.Single();
+            var where = columnMetadata.SqlName + " = " + columnMetadata.SqlVariableName;
+
+            var parameters = new List<NpgsqlParameter>();
+
+            var param = new NpgsqlParameter(columnMetadata.SqlVariableName, key);
+            if (columnMetadata.DbType.HasValue)
+                param.NpgsqlDbType = columnMetadata.DbType.Value;
+            parameters.Add(param);
+
+
+            return new PostgreSqlTableOrView(this, tableName, where, parameters);
         }
 
         public ObjectDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, TArgument> Insert<TArgument>(PostgreSqlObjectName tableName, TArgument argumentValue, InsertOptions options = InsertOptions.None)
