@@ -11,7 +11,7 @@ namespace Tortuga.Chain.SqlServer
     /// <summary>
     /// Class SqlServerOpenDataSource.
     /// </summary>
-    public sealed class SqlServerOpenDataSource : SqlServerDataSourceBase
+    public class SqlServerOpenDataSource : SqlServerDataSourceBase
     {
 
         readonly SqlServerDataSource m_BaseDataSource;

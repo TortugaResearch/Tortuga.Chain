@@ -22,7 +22,7 @@ namespace Tortuga.Chain.SQLite
     /// <summary>
     /// Class SQLiteTransactionalDataSource
     /// </summary>
-    public sealed class SQLiteTransactionalDataSource : SQLiteDataSourceBase, IDisposable
+    public class SQLiteTransactionalDataSource : SQLiteDataSourceBase, IDisposable
     {
         readonly SQLiteConnection m_Connection;
         readonly SQLiteDataSource m_BaseDataSource;
@@ -36,7 +36,7 @@ namespace Tortuga.Chain.SQLite
         /// <param name="dataSource">The data source.</param>
         /// <param name="isolationLevel">The isolation level.</param>
         /// <param name="forwardEvents">if set to <c>true</c> [forward events].</param>
-        internal SQLiteTransactionalDataSource(SQLiteDataSource dataSource, IsolationLevel? isolationLevel, bool forwardEvents) : base(new SQLiteDataSourceSettings() { DefaultCommandTimeout = dataSource.DefaultCommandTimeout, StrictMode = dataSource.StrictMode, SuppressGlobalEvents = dataSource.SuppressGlobalEvents || forwardEvents, DisableLocks = dataSource.DisableLocks })
+        public SQLiteTransactionalDataSource(SQLiteDataSource dataSource, IsolationLevel? isolationLevel, bool forwardEvents) : base(new SQLiteDataSourceSettings() { DefaultCommandTimeout = dataSource.DefaultCommandTimeout, StrictMode = dataSource.StrictMode, SuppressGlobalEvents = dataSource.SuppressGlobalEvents || forwardEvents, DisableLocks = dataSource.DisableLocks })
         {
             Name = dataSource.Name;
 

@@ -27,7 +27,7 @@ namespace Tortuga.Chain
     /// <summary>
     /// Class that represents a SQLite Data Source.
     /// </summary>
-    public sealed class SQLiteDataSource : SQLiteDataSourceBase
+    public class SQLiteDataSource : SQLiteDataSourceBase
     {
         readonly SQLiteConnectionStringBuilder m_ConnectionBuilder;
         private SQLiteMetadataCache m_DatabaseMetadata;
