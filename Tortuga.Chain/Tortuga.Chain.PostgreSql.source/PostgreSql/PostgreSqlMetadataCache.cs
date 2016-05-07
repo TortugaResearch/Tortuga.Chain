@@ -217,7 +217,7 @@ WHERE c.relname=@Name AND
                             var typename = reader.GetString(reader.GetOrdinal("data_type"));
                             bool isPrimary = reader.IsDBNull(reader.GetOrdinal("is_primary_key")) ? false : true;
                             bool isIdentity = reader.IsDBNull(reader.GetOrdinal("is_identity")) ? false : true;
-                            columns.Add(new ColumnMetadata<NpgsqlDbType>(name, false, isPrimary, isIdentity, typename, null, name));
+                            columns.Add(new ColumnMetadata<NpgsqlDbType>(name, false, isPrimary, isIdentity, typename, null, "\"" + name + "\""));
                         }
                     }
                 }
