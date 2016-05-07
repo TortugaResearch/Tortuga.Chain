@@ -10,7 +10,7 @@ namespace Tortuga.Chain.PostgreSql
     /// 
     /// </summary>
     /// <seealso cref="CommandExecutionToken{NpgsqlCommand, NpgsqlParameter}" />
-    internal class PostgreSqlExecutionToken : CommandExecutionToken<NpgsqlCommand, NpgsqlParameter>
+    public class PostgreSqlExecutionToken : CommandExecutionToken<NpgsqlCommand, NpgsqlParameter>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="PostgreSqlExecutionToken" /> class.

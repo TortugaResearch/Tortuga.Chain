@@ -42,7 +42,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
             var sql = new StringBuilder();
-            sqlBuilder.BuildDeleteStatement(sql, TableName.ToString(), null);
+            sqlBuilder.BuildDeleteStatement(sql, Table.Name.ToString(), null);
             sqlBuilder.BuildSelectClause(sql, " RETURNING ", null, ";");
 
             return new PostgreSqlExecutionToken(DataSource, "Delete from " + Table.Name, sql.ToString(), sqlBuilder.GetParameters());

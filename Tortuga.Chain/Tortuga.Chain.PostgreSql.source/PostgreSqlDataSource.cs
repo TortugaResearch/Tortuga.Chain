@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
 using Tortuga.Chain.AuditRules;
@@ -19,9 +20,9 @@ namespace Tortuga.Chain
         readonly NpgsqlConnectionStringBuilder m_ConnectionBuilder;
         private PostgreSqlMetadataCache m_DatabaseMetadata;
 
-        public PostgreSqlTransactionalDataSource BeginTransaction()
+        public PostgreSqlTransactionalDataSource BeginTransaction(IsolationLevel? isolationLevel = null, bool forwardEvents = true)
         {
-            throw new NotImplementedException();
+            return new PostgreSqlTransactionalDataSource(this, isolationLevel, forwardEvents);
         }
 
         /// <summary>
@@ -122,92 +123,6 @@ namespace Tortuga.Chain
             return con;
         }
 
-        protected override void Execute(ExecutionToken<NpgsqlCommand, NpgsqlParameter> executionToken, Func<NpgsqlCommand, int?> implementation, object state)
-        {
-            if (executionToken == null)
-                throw new ArgumentNullException("executionToken", "executionToken is null.");
-            if (implementation == null)
-                throw new ArgumentNullException("implementation", "implementation is null.");
-
-            var startTime = DateTimeOffset.Now;
-            OnExecutionStarted(executionToken, startTime, state);
-
-            try
-            {
-                using (var con = CreateConnection())
-                {
-                    using (var cmd = new NpgsqlCommand())
-                    {
-                        cmd.Connection = con;
-                        if (DefaultCommandTimeout.HasValue)
-                            cmd.CommandTimeout = (int)DefaultCommandTimeout.Value.TotalSeconds;
-                        cmd.CommandText = executionToken.CommandText;
-                        cmd.CommandType = executionToken.CommandType;
-                        foreach (var param in executionToken.Parameters)
-                            cmd.Parameters.Add(param);
-
-                        executionToken.ApplyCommandOverrides(cmd);
-
-                        var rows = implementation(cmd);
-                        OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
-                throw;
-            }
-
-        }
-
-        protected override async Task ExecuteAsync(ExecutionToken<NpgsqlCommand, NpgsqlParameter> executionToken, Func<NpgsqlCommand, Task<int?>> implementation, CancellationToken cancellationToken, object state)
-        {
-            if (executionToken == null)
-                throw new ArgumentNullException("executionToken", "executionToken is null.");
-            if (implementation == null)
-                throw new ArgumentNullException("implementation", "implementation is null.");
-
-            var startTime = DateTimeOffset.Now;
-            OnExecutionStarted(executionToken, startTime, state);
-
-            try
-            {
-                using (var con = await CreateConnectionAsync(cancellationToken).ConfigureAwait(false))
-                {
-                    using (var cmd = new NpgsqlCommand())
-                    {
-                        cmd.Connection = con;
-                        if (DefaultCommandTimeout.HasValue)
-                            cmd.CommandTimeout = (int)DefaultCommandTimeout.Value.TotalSeconds;
-                        cmd.CommandText = executionToken.CommandText;
-                        cmd.CommandType = executionToken.CommandType;
-                        foreach (var param in executionToken.Parameters)
-                            cmd.Parameters.Add(param);
-
-                        executionToken.ApplyCommandOverrides(cmd);
-
-                        var rows = await implementation(cmd).ConfigureAwait(false);
-                        OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException 
-                {
-                    var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);
-                    OnExecutionCanceled(executionToken, startTime, DateTimeOffset.Now, state);
-                    throw ex2;
-                }
-                else
-                {
-                    OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
-                    throw;
-                }
-            }
-        }
-
         /// <summary>
         /// Creates a new data source with the indicated changes to the settings.
         /// </summary>
@@ -268,6 +183,11 @@ namespace Tortuga.Chain
             return result;
         }
 
+        internal string ConnectionString
+        {
+            get { return m_ConnectionBuilder.ConnectionString; }
+        }
+
 #if !WINDOWS_UWP
         /// <summary>
         /// Creates a new connection using the connection string in the app.config file.
@@ -281,6 +201,154 @@ namespace Tortuga.Chain
                 throw new InvalidOperationException("The configuration file does not contain a connection named " + connectionName);
 
             return new PostgreSqlDataSource(connectionName, settings.ConnectionString);
+        }
+
+        protected override int? Execute(CommandExecutionToken<NpgsqlCommand, NpgsqlParameter> executionToken, CommandImplementation<NpgsqlCommand> implementation, object state)
+        {
+            if (executionToken == null)
+                throw new ArgumentNullException("executionToken", "executionToken is null.");
+            if (implementation == null)
+                throw new ArgumentNullException("implementation", "implementation is null.");
+
+            var startTime = DateTimeOffset.Now;
+            OnExecutionStarted(executionToken, startTime, state);
+
+            try
+            {
+                using (var con = CreateConnection())
+                {
+                    using (var cmd = new NpgsqlCommand())
+                    {
+                        cmd.Connection = con;
+                        if (DefaultCommandTimeout.HasValue)
+                            cmd.CommandTimeout = (int)DefaultCommandTimeout.Value.TotalSeconds;
+                        cmd.CommandText = executionToken.CommandText;
+                        cmd.CommandType = executionToken.CommandType;
+                        foreach (var param in executionToken.Parameters)
+                            cmd.Parameters.Add(param);
+
+                        executionToken.ApplyCommandOverrides(cmd);
+
+                        var rows = implementation(cmd);
+                        OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
+                        return rows;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
+                throw;
+            }
+        }
+
+        protected override async Task<int?> ExecuteAsync(CommandExecutionToken<NpgsqlCommand, NpgsqlParameter> executionToken, CommandImplementationAsync<NpgsqlCommand> implementation, CancellationToken cancellationToken, object state)
+        {
+            if (executionToken == null)
+                throw new ArgumentNullException("executionToken", "executionToken is null.");
+            if (implementation == null)
+                throw new ArgumentNullException("implementation", "implementation is null.");
+
+            var startTime = DateTimeOffset.Now;
+            OnExecutionStarted(executionToken, startTime, state);
+
+            try
+            {
+                using (var con = await CreateConnectionAsync(cancellationToken).ConfigureAwait(false))
+                {
+                    using (var cmd = new NpgsqlCommand())
+                    {
+                        cmd.Connection = con;
+                        if (DefaultCommandTimeout.HasValue)
+                            cmd.CommandTimeout = (int)DefaultCommandTimeout.Value.TotalSeconds;
+                        cmd.CommandText = executionToken.CommandText;
+                        cmd.CommandType = executionToken.CommandType;
+                        foreach (var param in executionToken.Parameters)
+                            cmd.Parameters.Add(param);
+
+                        executionToken.ApplyCommandOverrides(cmd);
+
+                        var rows = await implementation(cmd).ConfigureAwait(false);
+                        OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
+                        return rows;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException 
+                {
+                    var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);
+                    OnExecutionCanceled(executionToken, startTime, DateTimeOffset.Now, state);
+                    throw ex2;
+                }
+                else
+                {
+                    OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
+                    throw;
+                }
+            }
+        }
+
+        protected override int? Execute(OperationExecutionToken<NpgsqlConnection, NpgsqlTransaction> executionToken, OperationImplementation<NpgsqlConnection, NpgsqlTransaction> implementation, object state)
+        {
+            if (executionToken == null)
+                throw new ArgumentNullException("executionToken", "executionToken is null.");
+            if (implementation == null)
+                throw new ArgumentNullException("implementation", "implementation is null.");
+
+            var startTime = DateTimeOffset.Now;
+            OnExecutionStarted(executionToken, startTime, state);
+
+            try
+            {
+                using (var con = CreateConnection())
+                {
+                    var rows = implementation(con, null);
+                    OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
+                    return rows;
+                }
+            }
+            catch (Exception ex)
+            {
+                OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
+                throw;
+            }
+        }
+
+        protected override async Task<int?> ExecuteAsync(OperationExecutionToken<NpgsqlConnection, NpgsqlTransaction> executionToken, OperationImplementationAsync<NpgsqlConnection, NpgsqlTransaction> implementation, CancellationToken cancellationToken, object state)
+        {
+            if (executionToken == null)
+                throw new ArgumentNullException("executionToken", "executionToken is null.");
+            if (implementation == null)
+                throw new ArgumentNullException("implementation", "implementation is null.");
+
+            var startTime = DateTimeOffset.Now;
+            OnExecutionStarted(executionToken, startTime, state);
+
+            try
+            {
+                using (var con = CreateConnection())
+                {
+                    var rows = await implementation(con, null, cancellationToken).ConfigureAwait(false);
+                    OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
+                    return rows;
+                }
+            }
+            catch (Exception ex)
+            {
+                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException 
+                {
+                    var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);
+                    OnExecutionCanceled(executionToken, startTime, DateTimeOffset.Now, state);
+                    throw ex2;
+                }
+                else
+                {
+                    OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
+                    throw;
+                }
+            }
         }
 #endif
     }

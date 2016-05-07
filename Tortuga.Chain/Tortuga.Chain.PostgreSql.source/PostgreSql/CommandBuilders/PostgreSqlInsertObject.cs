@@ -43,7 +43,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
             var sql = new StringBuilder();
-            sqlBuilder.BuildInsertClause(sql, $"INSERT INTO {TableName.ToString()} (", null, ")");
+            sqlBuilder.BuildInsertClause(sql, $"INSERT INTO {Table.Name.ToString()} (", null, ")");
             sqlBuilder.BuildValuesClause(sql, " VALUES (", ")");
             sqlBuilder.BuildSelectClause(sql, " RETURNING ", null, ";");
 
