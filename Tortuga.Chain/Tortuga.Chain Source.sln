@@ -9,6 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\README.md = ..\README.md
 		Tortuga.Chain.CompiledMaterializers.nuspec = Tortuga.Chain.CompiledMaterializers.nuspec
 		Tortuga.Chain.Core.nuspec = Tortuga.Chain.Core.nuspec
+		Tortuga.Chain.PostgreSql.nuspec = Tortuga.Chain.PostgreSql.nuspec
 		Tortuga.Chain.ruleset = Tortuga.Chain.ruleset
 		Tortuga.Chain.SQLite.nuspec = Tortuga.Chain.SQLite.nuspec
 		Tortuga.Chain.SqlServer.nuspec = Tortuga.Chain.SqlServer.nuspec

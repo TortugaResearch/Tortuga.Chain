@@ -99,8 +99,8 @@
       <HintPath>..\packages\Tortuga.Anchor.0.7.5952.32542\lib\net45\Tortuga.Anchor.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Tortuga.Chain.Core, Version=0.17.5964.22741, Culture=neutral, PublicKeyToken=8769fd32a2872cf0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Tortuga.Chain.Core.0.17.5964.22732\lib\net45\Tortuga.Chain.Core.dll</HintPath>
+    <Reference Include="Tortuga.Chain.Core, Version=0.18.5971.39788, Culture=neutral, PublicKeyToken=8769fd32a2872cf0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tortuga.Chain.Core.0.18.5971.39779\lib\net45\Tortuga.Chain.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
@@ -111,8 +111,8 @@
     <Compile Include="..\Tortuga.Chain.CompiledMaterializers.source\CompiledMaterializers.cs">
       <Link>CompiledMaterializers.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.CompiledMaterializers.source\MaterializerCompiledEventArgs.cs">
-      <Link>MaterializerCompiledEventArgs.cs</Link>
+    <Compile Include="..\Tortuga.Chain.CompiledMaterializers.source\MaterializerCompilerEventArgs.cs">
+      <Link>MaterializerCompilerEventArgs.cs</Link>
     </Compile>
     <Compile Include="..\Tortuga.Chain.CompiledMaterializers.source\Materializers\CompiledCollectionMaterializer.cs">
       <Link>Materializers\CompiledCollectionMaterializer.cs</Link>
