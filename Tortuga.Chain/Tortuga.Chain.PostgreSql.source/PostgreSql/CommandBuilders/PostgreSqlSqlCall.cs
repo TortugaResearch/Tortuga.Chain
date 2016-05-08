@@ -3,6 +3,7 @@ using System;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
+using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.PostgreSql.CommandBuilders
 {
@@ -40,6 +41,19 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         public override CommandExecutionToken<NpgsqlCommand, NpgsqlParameter> Prepare(Materializer<NpgsqlCommand, NpgsqlParameter> materializer)
         {
             return new CommandExecutionToken<NpgsqlCommand, NpgsqlParameter>(DataSource, "Raw SQL Call", m_SqlStatement, SqlBuilder.GetParameters<NpgsqlParameter>(m_ArgumentValue));
+        }
+
+        /// <summary>
+        /// Returns the column associated with the column name.
+        /// </summary>
+        /// <param name="columnName">Name of the column.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// If the column name was not found, this will return null
+        /// </remarks>
+        public override IColumnMetadata TryGetColumn(string columnName)
+        {
+            return null;
         }
     }
 }

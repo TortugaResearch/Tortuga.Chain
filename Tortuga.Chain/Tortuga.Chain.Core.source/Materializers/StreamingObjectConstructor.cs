@@ -21,7 +21,7 @@ namespace Tortuga.Chain.Materializers
         private T m_Current;
         private bool m_Disposed;
         private DbDataReader m_Source;
-        private int m_RowsRead = 0;
+        private int m_RowsRead;
 
         public StreamingObjectConstructor(DbDataReader source, IReadOnlyList<Type> constructorSignature)
         {

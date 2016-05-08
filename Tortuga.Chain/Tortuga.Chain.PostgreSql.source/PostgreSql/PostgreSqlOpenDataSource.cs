@@ -98,7 +98,40 @@ namespace Tortuga.Chain.PostgreSql
         /// <exception cref="System.NotImplementedException"></exception>
         protected override int? Execute(CommandExecutionToken<NpgsqlCommand, NpgsqlParameter> executionToken, CommandImplementation<NpgsqlCommand> implementation, object state)
         {
-            throw new NotImplementedException();
+            if (executionToken == null)
+                throw new ArgumentNullException("executionToken", "executionToken is null.");
+            if (implementation == null)
+                throw new ArgumentNullException("implementation", "implementation is null.");
+
+            var startTime = DateTimeOffset.Now;
+            OnExecutionStarted(executionToken, startTime, state);
+
+            try
+            {
+                using (var cmd = new NpgsqlCommand())
+                {
+                    cmd.Connection = m_Connection;
+                    if (m_Transaction != null)
+                        cmd.Transaction = m_Transaction;
+                    if (DefaultCommandTimeout.HasValue)
+                        cmd.CommandTimeout = (int)DefaultCommandTimeout.Value.TotalSeconds;
+                    cmd.CommandText = executionToken.CommandText;
+                    cmd.CommandType = executionToken.CommandType;
+                    foreach (var param in executionToken.Parameters)
+                        cmd.Parameters.Add(param);
+
+                    var rows = implementation(cmd);
+                    executionToken.RaiseCommandExecuted(cmd, rows);
+                    OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
+                    return rows;
+                }
+            }
+            catch (Exception ex)
+            {
+                OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
+                throw;
+
+            }
         }
 
         /// <summary>
@@ -110,9 +143,50 @@ namespace Tortuga.Chain.PostgreSql
         /// <param name="state">User supplied state.</param>
         /// <returns>Task.</returns>
         /// <exception cref="System.NotImplementedException"></exception>
-        protected override Task<int?> ExecuteAsync(CommandExecutionToken<NpgsqlCommand, NpgsqlParameter> executionToken, CommandImplementationAsync<NpgsqlCommand> implementation, CancellationToken cancellationToken, object state)
+        protected async override Task<int?> ExecuteAsync(CommandExecutionToken<NpgsqlCommand, NpgsqlParameter> executionToken, CommandImplementationAsync<NpgsqlCommand> implementation, CancellationToken cancellationToken, object state)
         {
-            throw new NotImplementedException();
+            if (executionToken == null)
+                throw new ArgumentNullException("executionToken", "executionToken is null.");
+            if (implementation == null)
+                throw new ArgumentNullException("implementation", "implementation is null.");
+
+            var startTime = DateTimeOffset.Now;
+            OnExecutionStarted(executionToken, startTime, state);
+
+            try
+            {
+                using (var cmd = new NpgsqlCommand())
+                {
+                    cmd.Connection = m_Connection;
+                    if (m_Transaction != null)
+                        cmd.Transaction = m_Transaction;
+                    if (DefaultCommandTimeout.HasValue)
+                        cmd.CommandTimeout = (int)DefaultCommandTimeout.Value.TotalSeconds;
+                    cmd.CommandText = executionToken.CommandText;
+                    cmd.CommandType = executionToken.CommandType;
+                    foreach (var param in executionToken.Parameters)
+                        cmd.Parameters.Add(param);
+                    var rows = await implementation(cmd).ConfigureAwait(false);
+                    executionToken.RaiseCommandExecuted(cmd, rows);
+                    OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
+                    return rows;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException 
+                {
+                    var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);
+                    OnExecutionCanceled(executionToken, startTime, DateTimeOffset.Now, state);
+                    throw ex2;
+                }
+                else
+                {
+                    OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
+                    throw;
+                }
+            }
         }
 
         /// <summary>
@@ -125,7 +199,25 @@ namespace Tortuga.Chain.PostgreSql
         /// <exception cref="System.NotImplementedException"></exception>
         protected override int? Execute(OperationExecutionToken<NpgsqlConnection, NpgsqlTransaction> executionToken, OperationImplementation<NpgsqlConnection, NpgsqlTransaction> implementation, object state)
         {
-            throw new NotImplementedException();
+            if (executionToken == null)
+                throw new ArgumentNullException("executionToken", "executionToken is null.");
+            if (implementation == null)
+                throw new ArgumentNullException("implementation", "implementation is null.");
+
+            var startTime = DateTimeOffset.Now;
+            OnExecutionStarted(executionToken, startTime, state);
+
+            try
+            {
+                var rows = implementation(m_Connection, m_Transaction);
+                OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
+                return rows;
+            }
+            catch (Exception ex)
+            {
+                OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
+                throw;
+            }
         }
 
         /// <summary>
@@ -137,9 +229,36 @@ namespace Tortuga.Chain.PostgreSql
         /// <param name="state">The state.</param>
         /// <returns>Task.</returns>
         /// <exception cref="System.NotImplementedException"></exception>
-        protected override Task<int?> ExecuteAsync(OperationExecutionToken<NpgsqlConnection, NpgsqlTransaction> executionToken, OperationImplementationAsync<NpgsqlConnection, NpgsqlTransaction> implementation, CancellationToken cancellationToken, object state)
+        protected override async Task<int?> ExecuteAsync(OperationExecutionToken<NpgsqlConnection, NpgsqlTransaction> executionToken, OperationImplementationAsync<NpgsqlConnection, NpgsqlTransaction> implementation, CancellationToken cancellationToken, object state)
         {
-            throw new NotImplementedException();
+            if (executionToken == null)
+                throw new ArgumentNullException("executionToken", "executionToken is null.");
+            if (implementation == null)
+                throw new ArgumentNullException("implementation", "implementation is null.");
+
+            var startTime = DateTimeOffset.Now;
+            OnExecutionStarted(executionToken, startTime, state);
+
+            try
+            {
+                var rows = await implementation(m_Connection, m_Transaction, cancellationToken).ConfigureAwait(false);
+                OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
+                return rows;
+            }
+            catch (Exception ex)
+            {
+                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException 
+                {
+                    var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);
+                    OnExecutionCanceled(executionToken, startTime, DateTimeOffset.Now, state);
+                    throw ex2;
+                }
+                else
+                {
+                    OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
+                    throw;
+                }
+            }
         }
     }
 }

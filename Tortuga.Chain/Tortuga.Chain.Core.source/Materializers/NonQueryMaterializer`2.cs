@@ -26,7 +26,11 @@ namespace Tortuga.Chain.Materializers
         public override int? Execute(object state = null)
         {
             int result = 0;
-            ExecuteCore(cmd => result = cmd.ExecuteNonQuery(), state);
+            Prepare().Execute(cmd =>
+             {
+                 result = cmd.ExecuteNonQuery();
+                 return result;
+             }, state);
             return result;
         }
 
@@ -39,7 +43,11 @@ namespace Tortuga.Chain.Materializers
         public override async Task<int?> ExecuteAsync(CancellationToken cancellationToken, object state = null)
         {
             int result = 0;
-            await ExecuteCoreAsync(async cmd => result = await cmd.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false), cancellationToken, state).ConfigureAwait(false);
+            await Prepare().ExecuteAsync(async cmd =>
+            {
+                result = await cmd.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false);
+                return result;
+            }, cancellationToken, state).ConfigureAwait(false);
             return result;
         }
 

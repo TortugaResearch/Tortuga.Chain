@@ -5,7 +5,6 @@ using System.Diagnostics;
 using Tortuga.Chain;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.DataSources;
-using Tortuga.Chain.PostgreSql;
 
 
 
@@ -70,7 +69,7 @@ CREATE TABLE sales.customer
 	CreatedDate TIMESTAMP NULL,
     UpdatedDate TIMESTAMP NULL,
 
-	DeletedFlag BIT NOT NULL DEFAULT 0::bit,
+	DeletedFlag boolean NOT NULL DEFAULT FALSE,
 	DeletedDate TIMESTAMP NULL,
 	DeletedByKey INTEGER NULL
 )";

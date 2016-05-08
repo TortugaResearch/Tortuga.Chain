@@ -11,7 +11,7 @@
     UpdatedDate DATETIME2 NULL,
 
 	DeletedFlag BIT NOT NULL Default 0,
-	DeletedDate DateTimeOffset NULL,
+	DeletedDate DATETIME2 NULL,
 	DeletedByKey INT NULL  REFERENCES HR.Employee(EmployeeKey)
 
 )

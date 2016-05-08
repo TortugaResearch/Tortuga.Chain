@@ -58,5 +58,22 @@ namespace Tortuga.Chain.Core
         {
             CommandBuilt?.Invoke(this, new CommandBuiltEventArgs(command));
         }
+
+        /// <summary>
+        /// Occurs when a command has been built.
+        /// </summary>
+        /// <remarks>This is mostly used by appenders to override command behavior.</remarks>
+        public event EventHandler<CommandExecutedEventArgs> CommandExecuted;
+
+        /// <summary>
+        /// Raises the command executed event.
+        /// </summary>
+        /// <param name="command">The command.</param>
+        /// <param name="rowsAffected">The rows affected.</param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1030:UseEventsWhereAppropriate")]
+        public void RaiseCommandExecuted(DbCommand command, int? rowsAffected)
+        {
+            CommandExecuted?.Invoke(this, new CommandExecutedEventArgs(command, rowsAffected));
+        }
     }
 }

@@ -57,9 +57,9 @@ namespace Tests.Models
         }
 
         [IgnoreOnInsert, IgnoreOnUpdate]
-        public DateTimeOffset? DeletedDate
+        public DateTime? DeletedDate
         {
-            get { return Get<DateTimeOffset?>(); }
+            get { return Get<DateTime?>(); }
             set { Set(value); }
         }
 

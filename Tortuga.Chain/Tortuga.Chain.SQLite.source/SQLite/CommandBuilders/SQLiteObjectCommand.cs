@@ -35,5 +35,18 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
         /// </summary>
         public TableOrViewMetadata<string, DbType> Table { get; }
 
+        /// <summary>
+        /// Returns the column associated with the column name.
+        /// </summary>
+        /// <param name="columnName">Name of the column.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// If the column name was not found, this will return null
+        /// </remarks>
+        public override IColumnMetadata TryGetColumn(string columnName)
+        {
+            return Table.Columns.TryGetColumn(columnName);
+        }
+
     }
 }

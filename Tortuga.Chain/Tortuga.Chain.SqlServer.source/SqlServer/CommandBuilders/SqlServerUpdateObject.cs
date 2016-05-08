@@ -49,8 +49,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             sqlBuilder.BuildWhereClause(sql, " WHERE ", null);
             sql.Append(";");
 
-
-            return new SqlServerCommandExecutionToken(DataSource, "Update " + Table.Name, sql.ToString(), sqlBuilder.GetParameters());
+            return new SqlServerCommandExecutionToken(DataSource, "Update " + Table.Name, sql.ToString(), sqlBuilder.GetParameters()).CheckUpdateRowCount(m_Options);
         }
 
 

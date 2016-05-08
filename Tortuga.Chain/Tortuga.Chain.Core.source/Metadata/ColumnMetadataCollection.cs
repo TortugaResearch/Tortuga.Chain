@@ -41,5 +41,20 @@ namespace Tortuga.Chain.Metadata
                 throw new KeyNotFoundException($"Could not find column named {columnName} in object {m_Name}");
             }
         }
+
+        /// <summary>
+        /// Returns the column associated with the column name.
+        /// </summary>
+        /// <param name="columnName">Name of the column.</param>
+        /// <returns></returns>
+        /// <remarks>If the column name was not found, this will return null</remarks>
+        public IColumnMetadata TryGetColumn(string columnName)
+        {
+            foreach (var item in this)
+                if (item.SqlName.Equals(columnName, System.StringComparison.OrdinalIgnoreCase))
+                    return item;
+
+            return null;
+        }
     }
 }

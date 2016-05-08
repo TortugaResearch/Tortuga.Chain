@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using Tortuga.Anchor.Metadata;
 using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.SqlServer
@@ -19,6 +20,8 @@ namespace Tortuga.Chain.SqlServer
         readonly ConcurrentDictionary<SqlServerObjectName, TableFunctionMetadata<SqlServerObjectName, SqlDbType>> m_TableFunctions = new ConcurrentDictionary<SqlServerObjectName, TableFunctionMetadata<SqlServerObjectName, SqlDbType>>();
 
         readonly ConcurrentDictionary<SqlServerObjectName, TableOrViewMetadata<SqlServerObjectName, SqlDbType>> m_Tables = new ConcurrentDictionary<SqlServerObjectName, TableOrViewMetadata<SqlServerObjectName, SqlDbType>>();
+
+        readonly ConcurrentDictionary<Type, TableOrViewMetadata<SqlServerObjectName, SqlDbType>> m_TypeTableMap = new ConcurrentDictionary<Type, TableOrViewMetadata<SqlServerObjectName, SqlDbType>>();
 
         readonly ConcurrentDictionary<SqlServerObjectName, UserDefinedTypeMetadata<SqlServerObjectName, SqlDbType>> m_UserDefinedTypes = new ConcurrentDictionary<SqlServerObjectName, UserDefinedTypeMetadata<SqlServerObjectName, SqlDbType>>();
 
@@ -660,6 +663,52 @@ WHERE	s.name = @Schema AND t.name = @Name;";
             }
 
             return new UserDefinedTypeMetadata<SqlServerObjectName, SqlDbType>(new SqlServerObjectName(actualSchema, actualName), isTableType, columns);
+        }
+
+        /// <summary>
+        /// Returns the table or view derived from the class's name and/or Table attribute.
+        /// </summary>
+        /// <typeparam name="TObject"></typeparam>
+        /// <returns></returns>
+        public override TableOrViewMetadata<SqlServerObjectName, SqlDbType> GetTableOrViewFromClass<TObject>()
+        {
+
+            var type = typeof(TObject);
+            TableOrViewMetadata<SqlServerObjectName, SqlDbType> result;
+            if (m_TypeTableMap.TryGetValue(type, out result))
+                return result;
+
+            var typeInfo = MetadataCache.GetMetadata(type);
+            if (!string.IsNullOrEmpty(typeInfo.MappedTableName))
+            {
+                if (string.IsNullOrEmpty(typeInfo.MappedSchemaName))
+                    result = GetTableOrView(new SqlServerObjectName(typeInfo.MappedTableName));
+                else
+                    result = GetTableOrView(new SqlServerObjectName(typeInfo.MappedSchemaName, typeInfo.MappedTableName));
+                m_TypeTableMap[type] = result;
+                return result;
+            }
+
+            //infer schema from namespace
+            var schema = type.Namespace;
+            if (schema?.Contains(".") ?? false)
+                schema = schema.Substring(schema.LastIndexOf(".", StringComparison.OrdinalIgnoreCase) + 1);
+            var name = type.Name;
+
+            try
+            {
+                result = GetTableOrView(new SqlServerObjectName(schema, name));
+                m_TypeTableMap[type] = result;
+                return result;
+            }
+            catch (MissingObjectException) { }
+
+
+            //that didn't work, so try the default schema
+            result = GetTableOrView(new SqlServerObjectName(null, name));
+            m_TypeTableMap[type] = result;
+            return result;
+
         }
     }
 

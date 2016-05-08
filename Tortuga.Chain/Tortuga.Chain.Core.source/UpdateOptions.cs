@@ -38,6 +38,11 @@ namespace Tortuga.Chain
         /// </summary>
         /// <remarks>This is meant for internal use only.</remarks>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        SoftDelete = 8
+        SoftDelete = 8,
+
+        /// <summary>
+        /// The ignore rows affected count. Without this flag, an error will be thrown if the rows affected by the update operation is not zero.
+        /// </summary>
+        IgnoreRowsAffected = 16
     }
 }

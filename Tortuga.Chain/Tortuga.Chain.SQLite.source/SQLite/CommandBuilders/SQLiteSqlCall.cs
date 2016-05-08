@@ -2,6 +2,7 @@
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Materializers;
 using Tortuga.Chain.Core;
+using Tortuga.Chain.Metadata;
 
 #if SDS
 using System.Data.SQLite;
@@ -49,6 +50,19 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
         public override CommandExecutionToken<SQLiteCommand, SQLiteParameter> Prepare(Materializer<SQLiteCommand, SQLiteParameter> materializer)
         {
             return new SQLiteCommandExecutionToken(DataSource, "Raw SQL call", m_SqlStatement, SqlBuilder.GetParameters<SQLiteParameter>(m_ArgumentValue), lockType: m_LockType);
+        }
+
+        /// <summary>
+        /// Returns the column associated with the column name.
+        /// </summary>
+        /// <param name="columnName">Name of the column.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// If the column name was not found, this will return null
+        /// </remarks>
+        public override IColumnMetadata TryGetColumn(string columnName)
+        {
+            return null;
         }
     }
 }

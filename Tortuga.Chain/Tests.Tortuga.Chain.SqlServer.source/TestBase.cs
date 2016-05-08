@@ -39,8 +39,8 @@ namespace Tests
             return DataSource.WithRules(
                 new DateTimeRule("CreatedDate", DateTimeKind.Local, OperationTypes.Insert),
                 new DateTimeRule("UpdatedDate", DateTimeKind.Local, OperationTypes.InsertOrUpdate),
-                new UserDataRule("UpdatedByKey", "EmployeeKey", OperationTypes.Insert),
-                new UserDataRule("CreatedByKey", "EmployeeKey", OperationTypes.InsertOrUpdate),
+                new UserDataRule("CreatedByKey", "EmployeeKey", OperationTypes.Insert),
+                new UserDataRule("UpdatedByKey", "EmployeeKey", OperationTypes.InsertOrUpdate),
                 new ValidateWithValidatable(OperationTypes.InsertOrUpdate)
                 );
         }

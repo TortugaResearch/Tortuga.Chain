@@ -92,6 +92,19 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         {
             get { return (SqlServerDataSourceBase)base.DataSource; }
         }
+
+        /// <summary>
+        /// Returns the column associated with the column name.
+        /// </summary>
+        /// <param name="columnName">Name of the column.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// If the column name was not found, this will return null
+        /// </remarks>
+        public override IColumnMetadata TryGetColumn(string columnName)
+        {
+            return null;
+        }
     }
 
 }

@@ -1,9 +1,11 @@
 
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
 using Tortuga.Anchor.Modeling;
 
 namespace Tests.Models
 {
+    [Table("Employee", Schema = "HR")]
     public class Employee
     {
         public int? EmployeeKey { get; set; }
@@ -20,7 +22,7 @@ namespace Tests.Models
         public DateTime? UpdatedDate { get; set; }
     }
 
-    
+
 
 
 }

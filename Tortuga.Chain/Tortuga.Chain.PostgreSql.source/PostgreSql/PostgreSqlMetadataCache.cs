@@ -3,6 +3,7 @@ using NpgsqlTypes;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using Tortuga.Anchor.Metadata;
 using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.PostgreSql
@@ -11,6 +12,7 @@ namespace Tortuga.Chain.PostgreSql
     {
         readonly NpgsqlConnectionStringBuilder m_ConnectionBuilder;
         readonly ConcurrentDictionary<PostgreSqlObjectName, TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType>> m_Tables = new ConcurrentDictionary<PostgreSqlObjectName, TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType>>();
+        readonly ConcurrentDictionary<Type, TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType>> m_TypeTableMap = new ConcurrentDictionary<Type, TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType>>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PostgreSqlMetadataCache"/> class.
@@ -228,6 +230,52 @@ WHERE c.relname=@Name AND
         protected override PostgreSqlObjectName ParseObjectName(string name)
         {
             return new PostgreSqlObjectName(name);
+        }
+
+        /// <summary>
+        /// Returns the table or view derived from the class's name and/or Table attribute.
+        /// </summary>
+        /// <typeparam name="TObject"></typeparam>
+        /// <returns></returns>
+        public override TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType> GetTableOrViewFromClass<TObject>()
+        {
+
+            var type = typeof(TObject);
+            TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType> result;
+            if (m_TypeTableMap.TryGetValue(type, out result))
+                return result;
+
+            var typeInfo = MetadataCache.GetMetadata(type);
+            if (!string.IsNullOrEmpty(typeInfo.MappedTableName))
+            {
+                if (string.IsNullOrEmpty(typeInfo.MappedSchemaName))
+                    result = GetTableOrView(new PostgreSqlObjectName(typeInfo.MappedTableName));
+                else
+                    result = GetTableOrView(new PostgreSqlObjectName(typeInfo.MappedSchemaName, typeInfo.MappedTableName));
+                m_TypeTableMap[type] = result;
+                return result;
+            }
+
+            //infer schema from namespace
+            var schema = type.Namespace;
+            if (schema?.Contains(".") ?? false)
+                schema = schema.Substring(schema.LastIndexOf(".") + 1);
+            var name = type.Name;
+
+            try
+            {
+                result = GetTableOrView(new PostgreSqlObjectName(schema, name));
+                m_TypeTableMap[type] = result;
+                return result;
+            }
+            catch (MissingObjectException) { }
+
+
+            //that didn't work, so try the default schema
+            result = GetTableOrView(new PostgreSqlObjectName(null, name));
+            m_TypeTableMap[type] = result;
+            return result;
+
         }
     }
 }

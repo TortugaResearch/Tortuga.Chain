@@ -1,5 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.CommandBuilders
 {
@@ -52,11 +53,16 @@ namespace Tortuga.Chain.CommandBuilders
             return AsNonQuery().ExecuteAsync(cancellationToken, state);
         }
 
-        ///// <summary>
-        ///// Returns the number of rows affected.
-        ///// </summary>
-        ///// <returns>ILink&lt;System.Int32&gt;.</returns>
-        //public abstract ILink<int> AsRowsAffected();
+
+
+        /// <summary>
+        /// Returns the column associated with the column name.
+        /// </summary>
+        /// <param name="columnName">Name of the column.</param>
+        /// <returns></returns>
+        /// <remarks>If the column name was not found, this will return null</remarks>
+        public abstract IColumnMetadata TryGetColumn(string columnName);
+
     }
 }
 

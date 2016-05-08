@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
+using Tortuga.Chain.Metadata;
 using Tortuga.Chain.SqlServer.Materializers;
 namespace Tortuga.Chain.SqlServer.CommandBuilders
 {
@@ -54,6 +55,19 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         public Task WaitForChange(CancellationToken cancellationToken, object state = null)
         {
             return WaitForChangeMaterializer.GenerateTask(this, cancellationToken, state);
+        }
+
+        /// <summary>
+        /// Returns the column associated with the column name.
+        /// </summary>
+        /// <param name="columnName">Name of the column.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// If the column name was not found, this will return null
+        /// </remarks>
+        public override IColumnMetadata TryGetColumn(string columnName)
+        {
+            return null;
         }
 
         SqlServerCommandExecutionToken ISupportsChangeListener.Prepare(Materializer<SqlCommand, SqlParameter> materializer)

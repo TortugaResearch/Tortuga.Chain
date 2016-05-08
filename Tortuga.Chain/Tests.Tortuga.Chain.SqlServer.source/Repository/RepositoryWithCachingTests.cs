@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Tests.Models;
+using System;
 
 #if MSTest
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -68,7 +69,7 @@ namespace Tests.Repository
         {
             var repo = new RepositoryWithCaching<Employee, int>(DataSource, EmployeeTableName);
 
-            var emp1 = new Dictionary<string, object>() { { "FirstName", "Tom" }, { "LastName", "Jones" }, { "Title", "President" } };
+            var emp1 = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase) { { "FirstName", "Tom" }, { "LastName", "Jones" }, { "Title", "President" } };
             var echo1 = repo.Insert(emp1);
 
             Assert.AreNotEqual(0, echo1.EmployeeKey, "EmployeeKey was not set");
@@ -85,7 +86,7 @@ namespace Tests.Repository
         {
             var repo = new RepositoryWithCaching<Employee, int>(DataSource, EmployeeTableName);
 
-            var emp1 = new Dictionary<string, object>() { { "FirstName", "Tom" }, { "LastName", "Jones" }, { "Title", "President" } };
+            var emp1 = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase) { { "FirstName", "Tom" }, { "LastName", "Jones" }, { "Title", "President" } };
             var echo1 = repo.Insert(emp1);
 
             Assert.AreNotEqual(0, echo1.EmployeeKey, "EmployeeKey was not set");
@@ -93,7 +94,7 @@ namespace Tests.Repository
             Assert.AreEqual(emp1["LastName"], echo1.LastName, "LastName");
             Assert.AreEqual(emp1["Title"], echo1.Title, "Title");
 
-            var emp2 = new Dictionary<string, object>() { { "EmployeeKey", echo1.EmployeeKey }, { "LastName", "Brown" } };
+            var emp2 = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase) { { "EmployeeKey", echo1.EmployeeKey }, { "LastName", "Brown" } };
             repo.Update(emp2);
             var echo2 = repo.Get(echo1.EmployeeKey.Value);
 

@@ -11,7 +11,7 @@ namespace Tortuga.Chain.Materializers
     /// </summary>
     /// <typeparam name="TCommand">The type of the t command type.</typeparam>
     /// <typeparam name="TParameter">The type of the t parameter type.</typeparam>
-    internal sealed class BooleanOrNullMaterializer<TCommand, TParameter> : SingleColumnMaterializer<TCommand, TParameter, bool?>
+    internal sealed class BooleanOrNullMaterializer<TCommand, TParameter> : ScalarMaterializer<TCommand, TParameter, bool?>
         where TCommand : DbCommand
         where TParameter : DbParameter
     {

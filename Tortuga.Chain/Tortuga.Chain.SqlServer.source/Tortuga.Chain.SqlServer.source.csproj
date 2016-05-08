@@ -91,7 +91,7 @@
     <Compile Include="SqlServerExtensions.cs" />
     <Compile Include="SqlServerLimitOption.cs" />
     <Compile Include="SqlServer\Appenders\NotifyChangeAppender`1.cs" />
-    <Compile Include="SqlServer\CommandBuilders\SQLServerInsertBulk.cs" />
+    <Compile Include="SqlServer\CommandBuilders\SqlServerInsertBulk.cs" />
     <Compile Include="SqlServer\CommandBuilders\SqlServerInsertBatch.cs" />
     <Compile Include="SqlServer\CommandBuilders\SqlServerTableFunction.cs" />
     <Compile Include="SqlServer\Materializers\WaitForChangeMaterializer`1.cs" />

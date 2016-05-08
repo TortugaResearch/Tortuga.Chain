@@ -1,5 +1,4 @@
-﻿using System.Threading;
-using Tortuga.Chain.CommandBuilders;
+﻿using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Metadata;
 using Tortuga.Chain.SQLite.CommandBuilders;
@@ -7,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Tortuga.Anchor;
 using System.Diagnostics.CodeAnalysis;
+using Nito.AsyncEx;
 
 #if SDS
 using System.Data.SQLite;
@@ -24,7 +24,7 @@ namespace Tortuga.Chain.SQLite
     [SuppressMessage("Microsoft.Design", "CA1001:TypesThatOwnDisposableFieldsShouldBeDisposable")]
     public abstract class SQLiteDataSourceBase : DataSource<SQLiteConnection, SQLiteTransaction, SQLiteCommand, SQLiteParameter>, IClass1DataSource
     {
-        readonly ReaderWriterLockSlim m_SyncLock = new ReaderWriterLockSlim(); //Sqlite is single-threaded for writes. It says otherwise, but it spams the trace window with exceptions.
+        readonly AsyncReaderWriterLock m_SyncLock = new AsyncReaderWriterLock(); //Sqlite is single-threaded for writes. It says otherwise, but it spams the trace window with exceptions.
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SQLiteDataSourceBase"/> class.
@@ -59,7 +59,7 @@ namespace Tortuga.Chain.SQLite
         /// Gets the synchronize lock used during execution of database operations.
         /// </summary>
         /// <value>The synchronize lock.</value>
-        protected ReaderWriterLockSlim SyncLock
+        protected AsyncReaderWriterLock SyncLock
         {
             get { return m_SyncLock; }
         }
@@ -78,7 +78,7 @@ namespace Tortuga.Chain.SQLite
             if (!AuditRules.UseSoftDelete(table))
                 return new SQLiteDeleteObject<TArgument>(this, tableName, argumentValue, options);
 
-            UpdateOptions effectiveOptions = UpdateOptions.SoftDelete;
+            UpdateOptions effectiveOptions = UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected;
             if (options.HasFlag(DeleteOptions.UseKeyAttribute))
                 effectiveOptions = effectiveOptions | UpdateOptions.UseKeyAttribute;
 
@@ -319,6 +319,152 @@ namespace Tortuga.Chain.SQLite
 
             return new SQLiteTableOrView(this, tableName, where, parameters);
         }
+
+        /// <summary>
+        /// Deletes an object model from the table indicated by the class's Table attribute.
+        /// </summary>
+        /// <typeparam name="TArgument"></typeparam>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="options">The delete options.</param>
+        /// <returns></returns>
+        public ObjectDbCommandBuilder<SQLiteCommand, SQLiteParameter, TArgument> Delete<TArgument>(TArgument argumentValue, DeleteOptions options = DeleteOptions.None) where TArgument : class
+        {
+            var table = DatabaseMetadata.GetTableOrViewFromClass<TArgument>();
+
+            if (!AuditRules.UseSoftDelete(table))
+                return new SQLiteDeleteObject<TArgument>(this, table.Name, argumentValue, options);
+
+            UpdateOptions effectiveOptions = UpdateOptions.SoftDelete;
+            if (options.HasFlag(DeleteOptions.UseKeyAttribute))
+                effectiveOptions = effectiveOptions | UpdateOptions.UseKeyAttribute;
+
+            return new SQLiteUpdateObject<TArgument>(this, table.Name, argumentValue, effectiveOptions);
+        }
+
+        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Delete<TArgument>(TArgument argumentValue, DeleteOptions options)
+        {
+            return Delete(argumentValue, options);
+        }
+
+        /// <summary>
+        /// This is used to directly query a table or view.
+        /// </summary>
+        /// <typeparam name="TObject"></typeparam>
+        /// <returns></returns>
+        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
+        public TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> From<TObject>() where TObject : class
+        {
+            return From(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name);
+        }
+
+        /// <summary>
+        /// This is used to directly query a table or view.
+        /// </summary>
+        /// <typeparam name="TObject">The type of the object.</typeparam>
+        /// <param name="whereClause">The where clause. Do not prefix this clause with "WHERE".</param>
+        /// <returns></returns>
+        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
+        public TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> From<TObject>(string whereClause) where TObject : class
+        {
+            return From(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, whereClause);
+        }
+
+        /// <summary>
+        /// This is used to directly query a table or view.
+        /// </summary>
+        /// <typeparam name="TObject">The type of the object.</typeparam>
+        /// <param name="whereClause">The where clause. Do not prefix this clause with "WHERE".</param>
+        /// <param name="argumentValue">Optional argument value. Every property in the argument value must have a matching parameter in the WHERE clause</param>
+        /// <returns></returns>
+        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
+        public TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> From<TObject>(string whereClause, object argumentValue) where TObject : class
+        {
+            return From(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, whereClause, argumentValue);
+        }
+
+        /// <summary>
+        /// This is used to directly query a table or view.
+        /// </summary>
+        /// <typeparam name="TObject">The type of the object.</typeparam>
+        /// <param name="filterValue">The filter value is used to generate a simple AND style WHERE clause.</param>
+        /// <returns></returns>
+        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
+        public TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> From<TObject>(object filterValue) where TObject : class
+        {
+            return From(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, filterValue);
+        }
+
+        /// <summary>
+        /// Inserts an object into the specified table.
+        /// </summary>
+        /// <typeparam name="TArgument"></typeparam>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="options">The options for how the insert occurs.</param>
+        /// <returns></returns>
+        public ObjectDbCommandBuilder<SQLiteCommand, SQLiteParameter, TArgument> Insert<TArgument>(TArgument argumentValue, InsertOptions options = InsertOptions.None) where TArgument : class
+        {
+            return Insert(DatabaseMetadata.GetTableOrViewFromClass<TArgument>().Name, argumentValue, options);
+        }
+
+        /// <summary>
+        /// Performs an insert or update operation as appropriate.
+        /// </summary>
+        /// <typeparam name="TArgument"></typeparam>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="options">The options for how the insert/update occurs.</param>
+        /// <returns></returns>
+        public ObjectDbCommandBuilder<SQLiteCommand, SQLiteParameter, TArgument> Upsert<TArgument>(TArgument argumentValue, UpsertOptions options = UpsertOptions.None) where TArgument : class
+        {
+            return Upsert(DatabaseMetadata.GetTableOrViewFromClass<TArgument>().Name, argumentValue, options);
+        }
+
+        /// <summary>
+        /// Updates an object in the specified table.
+        /// </summary>
+        /// <typeparam name="TArgument"></typeparam>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="options">The update options.</param>
+        /// <returns></returns>
+        public ObjectDbCommandBuilder<SQLiteCommand, SQLiteParameter, TArgument> Update<TArgument>(TArgument argumentValue, UpdateOptions options = UpdateOptions.None) where TArgument : class
+        {
+            return Update(DatabaseMetadata.GetTableOrViewFromClass<TArgument>().Name, argumentValue, options);
+        }
+
+        ITableDbCommandBuilder IClass1DataSource.From<TObject>()
+        {
+            return From<TObject>();
+        }
+
+        ITableDbCommandBuilder IClass1DataSource.From<TObject>(string whereClause)
+        {
+            return From<TObject>(whereClause);
+        }
+
+        ITableDbCommandBuilder IClass1DataSource.From<TObject>(string whereClause, object argumentValue)
+        {
+            return From<TObject>(whereClause, argumentValue);
+        }
+
+        ITableDbCommandBuilder IClass1DataSource.From<TObject>(object filterValue)
+        {
+            return From<TObject>(filterValue);
+        }
+
+        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Insert<TArgument>(TArgument argumentValue, InsertOptions options)
+        {
+            return Insert(argumentValue, options);
+        }
+
+        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Upsert<TArgument>(TArgument argumentValue, UpsertOptions options)
+        {
+            return Upsert(argumentValue, options);
+        }
+
+        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Update<TArgument>(TArgument argumentValue, UpdateOptions options)
+        {
+            return Update(argumentValue, options);
+        }
+
     }
 
 

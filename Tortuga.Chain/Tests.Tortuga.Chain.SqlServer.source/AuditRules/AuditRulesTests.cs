@@ -55,9 +55,14 @@ namespace Tests.AuditRules
         [TestMethod]
         public void AuditRulesTests_InsertUpdateRules()
         {
+
+            var key = Guid.NewGuid().ToString();
+            for (var i = 0; i < 2; i++)
+                DataSource.Insert(EmployeeTableName, new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = key, MiddleName = i % 2 == 0 ? "A" + i : null }).ToObject<Employee>().Execute();
+
             var users = DataSource.From(EmployeeTableName).ToCollection<Employee>().Execute();
             var currentUser1 = users.First();
-            var currentUser2 = users.First();
+            var currentUser2 = users.Skip(1).First();
 
             var dsWithRules = DataSourceWithAuditRules();
             var ds1 = dsWithRules.WithUser(currentUser1);
@@ -86,14 +91,18 @@ namespace Tests.AuditRules
         [TestMethod]
         public void AuditRulesTests_SoftDelete()
         {
+            var key = Guid.NewGuid().ToString();
+            for (var i = 0; i < 2; i++)
+                DataSource.Insert(EmployeeTableName, new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = key, MiddleName = i % 2 == 0 ? "A" + i : null }).ToObject<Employee>().Execute();
+
             var users = DataSource.From(EmployeeTableName).ToCollection<Employee>().Execute();
             var currentUser1 = users.First();
-            var currentUser2 = users.First();
+            var currentUser2 = users.Skip(1).First();
 
             var dsWithRules = DataSourceWithAuditRules().WithRules(
-                new SoftDeleteRule("DeletedFlag", 1, OperationTypes.SelectOrDelete),
+                new SoftDeleteRule("DeletedFlag", true, OperationTypes.SelectOrDelete),
                 new UserDataRule("DeletedByKey", "EmployeeKey", OperationTypes.Delete),
-                new DateTimeOffsetRule("DeletedDate", OperationTypes.Delete)
+                new DateTimeRule("DeletedDate", DateTimeKind.Local, OperationTypes.Delete)
                 );
 
             var ds1 = dsWithRules.WithUser(currentUser1);

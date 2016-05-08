@@ -9,7 +9,7 @@ namespace Tortuga.Chain.SqlServer
     /// <summary>
     /// Class SqlServerTransactionalDataSource.
     /// </summary>
-    public sealed class SqlServerTransactionalDataSource : SqlServerDataSourceBase, IDisposable
+    public class SqlServerTransactionalDataSource : SqlServerDataSourceBase, IDisposable
     {
 
         readonly SqlConnection m_Connection;
@@ -25,7 +25,7 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="transactionName">Name of the transaction.</param>
         /// <param name="isolationLevel">The isolation level. If not supplied, will use the database default.</param>
         /// <param name="forwardEvents">If true, logging events are forwarded to the parent connection.</param>
-        internal SqlServerTransactionalDataSource(SqlServerDataSource dataSource, string transactionName, IsolationLevel? isolationLevel, bool forwardEvents) : base(new SqlServerDataSourceSettings() { DefaultCommandTimeout = dataSource.DefaultCommandTimeout, StrictMode = dataSource.StrictMode, SuppressGlobalEvents = dataSource.SuppressGlobalEvents || forwardEvents })
+        public SqlServerTransactionalDataSource(SqlServerDataSource dataSource, string transactionName, IsolationLevel? isolationLevel, bool forwardEvents) : base(new SqlServerDataSourceSettings() { DefaultCommandTimeout = dataSource.DefaultCommandTimeout, StrictMode = dataSource.StrictMode, SuppressGlobalEvents = dataSource.SuppressGlobalEvents || forwardEvents })
         {
             Name = dataSource.Name;
 
@@ -133,6 +133,7 @@ namespace Tortuga.Chain.SqlServer
                         cmd.Parameters.Add(param);
 
                     var rows = implementation(cmd);
+                    executionToken.RaiseCommandExecuted(cmd, rows);
                     OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
                     return rows;
                 }
@@ -176,6 +177,7 @@ namespace Tortuga.Chain.SqlServer
                     foreach (var param in executionToken.Parameters)
                         cmd.Parameters.Add(param);
                     var rows = await implementation(cmd).ConfigureAwait(false);
+                    executionToken.RaiseCommandExecuted(cmd, rows);
                     OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
                     return rows;
                 }

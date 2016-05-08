@@ -18,6 +18,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <typeparam name="TParameter">The type of the parameter.</typeparam>
         /// <param name="argumentValue">The argument value .</param>
         /// <returns></returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists")]
         public static List<TParameter> GetParameters<TParameter>(object argumentValue)
             where TParameter : DbParameter, new()
         {
@@ -31,6 +32,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="argumentValue">The argument value .</param>
         /// <param name="parameterBuilder">The parameter builder. This should set the parameter's database specific DbType property.</param>
         /// <returns></returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists")]
         public static List<TParameter> GetParameters<TParameter>(object argumentValue, Func<TParameter> parameterBuilder)
             where TParameter : DbParameter
         {

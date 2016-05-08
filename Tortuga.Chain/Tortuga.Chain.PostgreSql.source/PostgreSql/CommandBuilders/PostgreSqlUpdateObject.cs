@@ -54,7 +54,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
             }
             sql.Append(";");
 
-            return new PostgreSqlExecutionToken(DataSource, "Update " + Table.Name, sql.ToString(), sqlBuilder.GetParameters());
+            return new PostgreSqlExecutionToken(DataSource, "Update " + Table.Name, sql.ToString(), sqlBuilder.GetParameters()).CheckUpdateRowCount(m_Options);
         }
     }
 }

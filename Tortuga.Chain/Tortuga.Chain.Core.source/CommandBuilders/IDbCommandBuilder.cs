@@ -1,5 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
+using Tortuga.Chain.Metadata;
+
 namespace Tortuga.Chain.CommandBuilders
 {
     /// <summary>
@@ -35,11 +37,12 @@ namespace Tortuga.Chain.CommandBuilders
         /// <returns>Task.</returns>
         Task<int?> ExecuteAsync(CancellationToken cancellationToken, object state = null);
 
-
-        ///// <summary>
-        ///// Returns the number of rows affected.
-        ///// </summary>
-        ///// <returns>ILink&lt;System.Int32&gt;.</returns>
-        //ILink<int> AsRowsAffected();
+        /// <summary>
+        /// Returns the column associated with the column name.
+        /// </summary>
+        /// <param name="columnName">Name of the column.</param>
+        /// <returns></returns>
+        /// <remarks>If the column name was not found, this will return null</remarks>
+        IColumnMetadata TryGetColumn(string columnName);
     }
 }

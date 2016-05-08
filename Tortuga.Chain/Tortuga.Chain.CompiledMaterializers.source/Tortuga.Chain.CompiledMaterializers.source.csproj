@@ -109,7 +109,7 @@
     <Compile Include="Materializers\CompiledMultipleTable`2.cs" />
     <Compile Include="Materializers\CompiledSingleRow`2.cs" />
     <Compile Include="Materializers\CompilerCache.cs" />
-    <Compile Include="MaterializerCompiledEventArgs.cs" />
+    <Compile Include="MaterializerCompilerEventArgs.cs" />
     <Compile Include="Materializers\CompiledMultipleRow`2.cs" />
     <Compile Include="CompiledMaterializers.cs" />
     <Compile Include="Materializers\CompiledCollectionMaterializer.cs" />

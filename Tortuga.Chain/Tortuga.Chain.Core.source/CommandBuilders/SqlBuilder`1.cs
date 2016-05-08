@@ -875,7 +875,7 @@ namespace Tortuga.Chain.CommandBuilders
             if (sql == null)
                 throw new ArgumentNullException(nameof(sql), $"{nameof(sql)} was null.");
 
-            var softDeletes = dataSource.AuditRules.SoftDeleteForSelect; 
+            var softDeletes = dataSource.AuditRules.SoftDeleteForSelect;
 
             if (softDeletes.Length == 0)
                 return;
@@ -986,6 +986,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <typeparam name="TParameter">The type of the parameter.</typeparam>
         /// <param name="parameterBuilder">The parameter builder. This should set the parameter's database specific DbType property.</param>
         /// <returns></returns>
+        [SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists")]
         public List<TParameter> GetParameters<TParameter>(ParameterBuilderCallback<TParameter, TDbType> parameterBuilder)
             where TParameter : DbParameter
         {
@@ -1041,14 +1042,19 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="parameterBuilder">The parameter builder.</param>
         /// <param name="keyParameters">The key parameters.</param>
         /// <returns></returns>
-        public bool PrimaryKeyisIdentity<TParameter>(Func<TDbType?, TParameter> parameterBuilder, out List<TParameter> keyParameters) 
+        [SuppressMessage("Microsoft.Design", "CA1021:AvoidOutParameters", MessageId = "1#")]
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "1")]
+        public bool PrimaryKeyIsIdentity<TParameter>(Func<TDbType?, TParameter> parameterBuilder, out List<TParameter> keyParameters)
              where TParameter : DbParameter
         {
+            if (parameterBuilder == null)
+                throw new ArgumentNullException(nameof(parameterBuilder), $"{nameof(parameterBuilder)} is null.");
+
             bool primKeyIsIdent = false;
             keyParameters = new List<TParameter>();
             for (int i = 0; i < m_Entries.Length; i++)
             {
-                if(m_Entries[i].IsKey && m_Entries[i].Details.IsIdentity)
+                if (m_Entries[i].IsKey && m_Entries[i].Details.IsIdentity)
                 {
                     primKeyIsIdent = true;
 
@@ -1091,15 +1097,5 @@ namespace Tortuga.Chain.CommandBuilders
         }
     }
 
-    /// <summary>
-    /// Callback for the parameter builder.
-    /// </summary>
-    /// <typeparam name="TParameter">The type of the desired DbParameter.</typeparam>
-    /// <typeparam name="TDbType">The database specific DbType</typeparam>
-    /// <param name="entry">Metadata about the parameter in question.</param>
-    /// <returns>TParameter.</returns>
-    /// <remarks>For internal use only.</remarks>
-    public delegate TParameter ParameterBuilderCallback<TParameter, TDbType>(SqlBuilderEntry<TDbType> entry)
-        where TDbType : struct
-        where TParameter : DbParameter;
+        
 }

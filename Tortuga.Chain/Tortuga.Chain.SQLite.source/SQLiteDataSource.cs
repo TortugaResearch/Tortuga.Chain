@@ -27,7 +27,7 @@ namespace Tortuga.Chain
     /// <summary>
     /// Class that represents a SQLite Data Source.
     /// </summary>
-    public sealed class SQLiteDataSource : SQLiteDataSourceBase
+    public class SQLiteDataSource : SQLiteDataSourceBase
     {
         readonly SQLiteConnectionStringBuilder m_ConnectionBuilder;
         private SQLiteMetadataCache m_DatabaseMetadata;
@@ -173,12 +173,13 @@ namespace Tortuga.Chain
             var startTime = DateTimeOffset.Now;
             OnExecutionStarted(executionToken, startTime, state);
 
+            IDisposable lockToken = null;
             try
             {
                 switch (mode)
                 {
-                    case LockType.Read: SyncLock.EnterReadLock(); break;
-                    case LockType.Write: SyncLock.EnterWriteLock(); break;
+                    case LockType.Read: lockToken = SyncLock.ReaderLock(); break;
+                    case LockType.Write: lockToken = SyncLock.WriterLock(); break;
                 }
 
                 using (var con = CreateConnection())
@@ -197,6 +198,7 @@ namespace Tortuga.Chain
                         executionToken.ApplyCommandOverrides(cmd);
 
                         var rows = implementation(cmd);
+                        executionToken.RaiseCommandExecuted(cmd, rows);
                         OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
                         return rows;
                     }
@@ -209,11 +211,8 @@ namespace Tortuga.Chain
             }
             finally
             {
-                switch (mode)
-                {
-                    case LockType.Read: SyncLock.ExitReadLock(); break;
-                    case LockType.Write: SyncLock.ExitWriteLock(); break;
-                }
+                if (lockToken != null)
+                    lockToken.Dispose();
             }
         }
 
@@ -237,12 +236,13 @@ namespace Tortuga.Chain
             var startTime = DateTimeOffset.Now;
             OnExecutionStarted(executionToken, startTime, state);
 
+            IDisposable lockToken = null;
             try
             {
                 switch (mode)
                 {
-                    case LockType.Read: SyncLock.EnterReadLock(); break;
-                    case LockType.Write: SyncLock.EnterWriteLock(); break;
+                    case LockType.Read: lockToken = await SyncLock.ReaderLockAsync().ConfigureAwait(false); break;
+                    case LockType.Write: lockToken = await SyncLock.WriterLockAsync().ConfigureAwait(false); break;
                 }
 
                 using (var con = await CreateConnectionAsync(cancellationToken).ConfigureAwait(false))
@@ -260,6 +260,7 @@ namespace Tortuga.Chain
                         executionToken.ApplyCommandOverrides(cmd);
 
                         var rows = await implementation(cmd).ConfigureAwait(false);
+                        executionToken.RaiseCommandExecuted(cmd, rows);
                         OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
                         return rows;
                     }
@@ -281,11 +282,8 @@ namespace Tortuga.Chain
             }
             finally
             {
-                switch (mode)
-                {
-                    case LockType.Read: SyncLock.ExitReadLock(); break;
-                    case LockType.Write: SyncLock.ExitWriteLock(); break;
-                }
+                if (lockToken != null)
+                    lockToken.Dispose();
             }
         }
 
@@ -380,12 +378,13 @@ namespace Tortuga.Chain
             var startTime = DateTimeOffset.Now;
             OnExecutionStarted(executionToken, startTime, state);
 
+            IDisposable lockToken = null;
             try
             {
                 switch (mode)
                 {
-                    case LockType.Read: SyncLock.EnterReadLock(); break;
-                    case LockType.Write: SyncLock.EnterWriteLock(); break;
+                    case LockType.Read: lockToken = SyncLock.ReaderLock(); break;
+                    case LockType.Write: lockToken = SyncLock.WriterLock(); break;
                 }
 
                 using (var con = CreateConnection())
@@ -402,11 +401,8 @@ namespace Tortuga.Chain
             }
             finally
             {
-                switch (mode)
-                {
-                    case LockType.Read: SyncLock.ExitReadLock(); break;
-                    case LockType.Write: SyncLock.ExitWriteLock(); break;
-                }
+                if (lockToken != null)
+                    lockToken.Dispose();
             }
         }
 
@@ -430,12 +426,13 @@ namespace Tortuga.Chain
             var startTime = DateTimeOffset.Now;
             OnExecutionStarted(executionToken, startTime, state);
 
+            IDisposable lockToken = null;
             try
             {
                 switch (mode)
                 {
-                    case LockType.Read: SyncLock.EnterReadLock(); break;
-                    case LockType.Write: SyncLock.EnterWriteLock(); break;
+                    case LockType.Read: lockToken = await SyncLock.ReaderLockAsync().ConfigureAwait(false); break;
+                    case LockType.Write: lockToken = await SyncLock.WriterLockAsync().ConfigureAwait(false); break;
                 }
 
                 using (var con = await CreateConnectionAsync(cancellationToken).ConfigureAwait(false))
@@ -461,11 +458,8 @@ namespace Tortuga.Chain
             }
             finally
             {
-                switch (mode)
-                {
-                    case LockType.Read: SyncLock.ExitReadLock(); break;
-                    case LockType.Write: SyncLock.ExitWriteLock(); break;
-                }
+                if (lockToken != null)
+                    lockToken.Dispose();
             }
         }
     }

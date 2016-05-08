@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Materializers;
+using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.CommandBuilders
 {
@@ -77,5 +78,17 @@ namespace Tortuga.Chain.CommandBuilders
         protected internal abstract Task<int?> ImplementationAsync(TConnection connection, TTransaction transaction, CancellationToken cancellationToken);
 
 
+        /// <summary>
+        /// Returns the column associated with the column name.
+        /// </summary>
+        /// <param name="columnName">Name of the column.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// If the column name was not found, this will return null
+        /// </remarks>
+        public override IColumnMetadata TryGetColumn(string columnName)
+        {
+            return null;
+        }
     }
 }

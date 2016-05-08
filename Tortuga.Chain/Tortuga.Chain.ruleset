@@ -1,10 +1,25 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <RuleSet Name="CA rules for Chain" ToolsVersion="14.0">
   <IncludeAll Action="Warning" />
+  <Rules AnalyzerId="DevExpress.CodeAnalysis.CSharp.Diagnostics" RuleNamespace="DevExpress.CodeAnalysis.CSharp.Diagnostics">
+    <Rule Id="CRR0013" Action="Info" />
+    <Rule Id="CRR0014" Action="Info" />
+  </Rules>
+  <Rules AnalyzerId="DevExpress.CodeAnalysis.CSharp.Features" RuleNamespace="DevExpress.CodeAnalysis.CSharp.Features">
+    <Rule Id="CR0001" Action="None" />
+    <Rule Id="CR0002" Action="None" />
+    <Rule Id="CR0003" Action="Info" />
+    <Rule Id="CR0004" Action="Info" />
+    <Rule Id="CR0006" Action="Info" />
+    <Rule Id="CR0007" Action="Info" />
+    <Rule Id="CR0008" Action="Info" />
+    <Rule Id="CR0009" Action="Info" />
+    <Rule Id="CR0010" Action="None" />
+  </Rules>
   <Rules AnalyzerId="Microsoft.Analyzers.ManagedCodeAnalysis" RuleNamespace="Microsoft.Rules.Managed">
     <Rule Id="CA1000" Action="Error" />
     <Rule Id="CA1001" Action="Error" />
-    <Rule Id="CA1002" Action="None" />
+    <Rule Id="CA1002" Action="Error" />
     <Rule Id="CA1003" Action="Error" />
     <Rule Id="CA1004" Action="Error" />
     <Rule Id="CA1005" Action="None" />
@@ -743,7 +758,7 @@
     <Rule Id="CS8009" Action="Error" />
     <Rule Id="CS8012" Action="Error" />
     <Rule Id="CS8018" Action="Error" />
-    <Rule Id="CS8019" Action="Error" />
+    <Rule Id="CS8019" Action="Info" />
     <Rule Id="CS8020" Action="Error" />
     <Rule Id="CS8021" Action="Error" />
     <Rule Id="CS8029" Action="Error" />
@@ -755,10 +770,11 @@
     <Rule Id="CS8094" Action="Error" />
   </Rules>
   <Rules AnalyzerId="Microsoft.CodeAnalysis.CSharp.Features" RuleNamespace="Microsoft.CodeAnalysis.CSharp.Features">
-    <Rule Id="IDE0001" Action="Error" />
-    <Rule Id="IDE0002" Action="Error" />
-    <Rule Id="IDE0003" Action="Error" />
-    <Rule Id="IDE0004" Action="Error" />
-    <Rule Id="IDE0005" Action="Error" />
+    <Rule Id="IDE0001" Action="Info" />
+    <Rule Id="IDE0002" Action="Info" />
+    <Rule Id="IDE0003" Action="Info" />
+    <Rule Id="IDE0004" Action="Info" />
+    <Rule Id="IDE0005" Action="Info" />
+    <Rule Id="IDE1005" Action="Info" />
   </Rules>
 </RuleSet>

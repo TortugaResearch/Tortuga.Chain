@@ -25,11 +25,11 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
         /// Initializes a new instance of the <see cref="SQLiteDeleteObject{TArgument}"/> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
-        /// <param name="table">The table.</param>
+        /// <param name="tableName">The table.</param>
         /// <param name="argumentValue">The argument value.</param>
         /// <param name="options">The options.</param>
-        public SQLiteDeleteObject(SQLiteDataSourceBase dataSource, string table, TArgument argumentValue, DeleteOptions options)
-            : base(dataSource, table, argumentValue)
+        public SQLiteDeleteObject(SQLiteDataSourceBase dataSource, string tableName, TArgument argumentValue, DeleteOptions options)
+            : base(dataSource, tableName, argumentValue)
         {
             m_Options = options;
         }
