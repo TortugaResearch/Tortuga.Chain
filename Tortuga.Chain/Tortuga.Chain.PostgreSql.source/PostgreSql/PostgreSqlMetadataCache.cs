@@ -12,6 +12,7 @@ namespace Tortuga.Chain.PostgreSql
     {
         readonly NpgsqlConnectionStringBuilder m_ConnectionBuilder;
         readonly ConcurrentDictionary<PostgreSqlObjectName, TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType>> m_Tables = new ConcurrentDictionary<PostgreSqlObjectName, TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType>>();
+        readonly ConcurrentDictionary<PostgreSqlObjectName, StoredProcedureMetadata<PostgreSqlObjectName, NpgsqlDbType>> m_StoredProcedures = new ConcurrentDictionary<PostgreSqlObjectName, StoredProcedureMetadata<PostgreSqlObjectName, NpgsqlDbType>>();
         readonly ConcurrentDictionary<Type, TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType>> m_TypeTableMap = new ConcurrentDictionary<Type, TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType>>();
 
         /// <summary>
@@ -28,10 +29,10 @@ namespace Tortuga.Chain.PostgreSql
         /// </summary>
         /// <param name="procedureName">Name of the procedure.</param>
         /// <returns></returns>
-        /// <exception cref="System.NotImplementedException"></exception>
+        /// <exception cref="NotImplementedException"></exception>
         public override StoredProcedureMetadata<PostgreSqlObjectName, NpgsqlDbType> GetStoredProcedure(PostgreSqlObjectName procedureName)
         {
-            throw new NotImplementedException();
+            return m_StoredProcedures.GetOrAdd(procedureName, GetStoredProcedureInteral);
         }
 
         /// <summary>
@@ -39,7 +40,7 @@ namespace Tortuga.Chain.PostgreSql
         /// </summary>
         /// <param name="tableFunctionName">Name of the table function.</param>
         /// <returns></returns>
-        /// <exception cref="System.NotImplementedException"></exception>
+        /// <exception cref="NotImplementedException"></exception>
         public override TableFunctionMetadata<PostgreSqlObjectName, NpgsqlDbType> GetTableFunction(PostgreSqlObjectName tableFunctionName)
         {
             throw new NotImplementedException();
@@ -177,6 +178,43 @@ namespace Tortuga.Chain.PostgreSql
             return new TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType>(new PostgreSqlObjectName(actualSchema, actualName), isTable, columns);
         }
 
+        private StoredProcedureMetadata<PostgreSqlObjectName, NpgsqlDbType> GetStoredProcedureInteral(PostgreSqlObjectName storedProcedureName)
+        {
+            const string StoredProcSql =
+                @"
+                SELECT 
+                sp.proname AS procname,
+                ns.nspname AS schema
+                FROM pg_proc AS sp
+                INNER JOIN pg_namespace AS ns ON ns.oid=sp.pronamespace
+                WHERE sp.proname=@ProcName AND
+                      ns.nspname=@Schema;";
+
+            string actualSchema;
+            string actualName;
+
+            using (var con = new NpgsqlConnection(m_ConnectionBuilder.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = new NpgsqlCommand(StoredProcSql, con))
+                {
+                    cmd.Parameters.AddWithValue("@Schema", storedProcedureName.Schema);
+                    cmd.Parameters.AddWithValue("@Name", storedProcedureName.Name);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        if (!reader.Read())
+                            throw new MissingObjectException($"Could not find pgsql function {storedProcedureName}");
+                        actualSchema = reader.GetString(reader.GetOrdinal("procname"));
+                        actualName = reader.GetString(reader.GetOrdinal("schema"));
+                    }
+                }
+            }
+
+            var parameters = GetParameters(actualSchema, actualName);
+            return new StoredProcedureMetadata<PostgreSqlObjectName, NpgsqlDbType>(new PostgreSqlObjectName(actualSchema, actualName), parameters);
+        }
+
+
         private List<ColumnMetadata<NpgsqlDbType>> GetColumns(PostgreSqlObjectName tableName)
         {
             const string ColumnSql =
@@ -225,6 +263,39 @@ WHERE c.relname=@Name AND
                 }
             }
             return columns;
+        }
+
+        private List<ParameterMetadata<NpgsqlDbType>> GetParameters(string schema, string procedureName)
+        {
+            const string parameterSql =
+                @"
+                SELECT
+                data_type,
+                parameter_name
+                FROM information_schema.parameters
+                WHERE specific_schema=@Schema AND
+                      specific_name~@Name;";
+
+            var parameters = new List<ParameterMetadata<NpgsqlDbType>>();
+            using (var con = new NpgsqlConnection(m_ConnectionBuilder.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = new NpgsqlCommand(parameterSql, con))
+                {
+                    cmd.Parameters.AddWithValue("@Schema", schema);
+                    cmd.Parameters.AddWithValue("@Name", procedureName);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var parameterName = reader.GetString(reader.GetOrdinal("parameter_name"));
+                            var dataType = reader.GetString(reader.GetOrdinal("data_type"));
+                            parameters.Add(new ParameterMetadata<NpgsqlDbType>(parameterName, dataType, null));
+                        }
+                    }
+                }
+            }
+            return parameters;
         }
 
         protected override PostgreSqlObjectName ParseObjectName(string name)
@@ -276,6 +347,34 @@ WHERE c.relname=@Name AND
             m_TypeTableMap[type] = result;
             return result;
 
+        }
+
+        /// <summary>
+        /// Types the type of the name to NPG SQL database.
+        /// </summary>
+        /// <param name="typeName">Name of the type.</param>
+        /// <returns></returns>
+        internal static NpgsqlDbType? TypeNameToNpgSqlDbType(string typeName)
+        {
+            switch(typeName)
+            {
+                case "bool": return NpgsqlDbType.Boolean;
+                case "int2": return NpgsqlDbType.Smallint;
+                case "int4": return NpgsqlDbType.Integer;
+                case "int8": return NpgsqlDbType.Bigint;
+                case "float4": return NpgsqlDbType.Real;
+                case "float8": return NpgsqlDbType.Double;
+                case "numeric": return NpgsqlDbType.Numeric;
+                case "money": return NpgsqlDbType.Money;
+                case "text": return NpgsqlDbType.Text;
+                case "varchar": return NpgsqlDbType.Varchar;
+                case "character":
+                case "char": return NpgsqlDbType.Char;
+                case "citext": return NpgsqlDbType.Citext;
+                case "json": return NpgsqlDbType.Json;
+                
+            }
+            return null;
         }
     }
 }
