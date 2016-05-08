@@ -105,8 +105,8 @@
     <Compile Include="..\Tortuga.Chain.Core.source\Appenders\StrictModeAppender.cs">
       <Link>Appenders\StrictModeAppender.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.source\Appenders\StrictModeAppender1.cs">
-      <Link>Appenders\StrictModeAppender1.cs</Link>
+    <Compile Include="..\Tortuga.Chain.Core.source\Appenders\StrictModeAppender`1.cs">
+      <Link>Appenders\StrictModeAppender`1.cs</Link>
     </Compile>
     <Compile Include="..\Tortuga.Chain.Core.source\Appenders\TimeoutAppender.cs">
       <Link>Appenders\TimeoutAppender.cs</Link>
@@ -171,6 +171,9 @@
     <Compile Include="..\Tortuga.Chain.Core.source\CollectionOptions.cs">
       <Link>CollectionOptions.cs</Link>
     </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\CommandBuilders\CommandBuilderUtilities.cs">
+      <Link>CommandBuilders\CommandBuilderUtilities.cs</Link>
+    </Compile>
     <Compile Include="..\Tortuga.Chain.Core.source\CommandBuilders\DbCommandBuilder.cs">
       <Link>CommandBuilders\DbCommandBuilder.cs</Link>
     </Compile>
@@ -210,6 +213,9 @@
     <Compile Include="..\Tortuga.Chain.Core.source\CommandBuilders\ObjectDbCommandBuilder`3.cs">
       <Link>CommandBuilders\ObjectDbCommandBuilder`3.cs</Link>
     </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\CommandBuilders\ParameterBuilderCallback.cs">
+      <Link>CommandBuilders\ParameterBuilderCallback.cs</Link>
+    </Compile>
     <Compile Include="..\Tortuga.Chain.Core.source\CommandBuilders\SingleRowDbCommandBuilder`2.cs">
       <Link>CommandBuilders\SingleRowDbCommandBuilder`2.cs</Link>
     </Compile>
@@ -231,8 +237,17 @@
     <Compile Include="..\Tortuga.Chain.Core.source\Core\CommandBuiltEventArgs.cs">
       <Link>Core\CommandBuiltEventArgs.cs</Link>
     </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\Core\CommandExecutedEventArgs.cs">
+      <Link>Core\CommandExecutedEventArgs.cs</Link>
+    </Compile>
     <Compile Include="..\Tortuga.Chain.Core.source\Core\CommandExecutionToken`2.cs">
       <Link>Core\CommandExecutionToken`2.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\Core\CommandImplementation.cs">
+      <Link>Core\CommandImplementation.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\Core\CommandImplementationAsync.cs">
+      <Link>Core\CommandImplementationAsync.cs</Link>
     </Compile>
     <Compile Include="..\Tortuga.Chain.Core.source\Core\ExecutionToken.cs">
       <Link>Core\ExecutionToken.cs</Link>
@@ -245,6 +260,12 @@
     </Compile>
     <Compile Include="..\Tortuga.Chain.Core.source\Core\OperationExecutionToken`2.cs">
       <Link>Core\OperationExecutionToken`2.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\Core\OperationImplementation.cs">
+      <Link>Core\OperationImplementation.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\Core\OperationImplementationAsync.cs">
+      <Link>Core\OperationImplementationAsync.cs</Link>
     </Compile>
     <Compile Include="..\Tortuga.Chain.Core.source\DataSources\DataSource.cs">
       <Link>DataSources\DataSource.cs</Link>
@@ -348,6 +369,9 @@
     <Compile Include="..\Tortuga.Chain.Core.source\Materializers\MultipleRow\ImmutableListMaterializer`3.cs">
       <Link>Materializers\MultipleRow\ImmutableListMaterializer`3.cs</Link>
     </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\MultipleRow\StreamMaterializer`3.cs">
+      <Link>Materializers\MultipleRow\StreamMaterializer`3.cs</Link>
+    </Compile>
     <Compile Include="..\Tortuga.Chain.Core.source\Materializers\MultipleRow\TableMaterializer`2.cs">
       <Link>Materializers\MultipleRow\TableMaterializer`2.cs</Link>
     </Compile>
@@ -441,6 +465,9 @@
     <Compile Include="..\Tortuga.Chain.Core.source\Materializers\Scalar\Int64OrNullMaterializer`2.cs">
       <Link>Materializers\Scalar\Int64OrNullMaterializer`2.cs</Link>
     </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\Scalar\SingleColumnMaterializer`3.cs">
+      <Link>Materializers\Scalar\SingleColumnMaterializer`3.cs</Link>
+    </Compile>
     <Compile Include="..\Tortuga.Chain.Core.source\Materializers\Scalar\SingleMaterializer`2.cs">
       <Link>Materializers\Scalar\SingleMaterializer`2.cs</Link>
     </Compile>
@@ -471,35 +498,68 @@
     <Compile Include="..\Tortuga.Chain.Core.source\Materializers\SingleColumn\DateTimeOffsetListMaterializer`2.cs">
       <Link>Materializers\SingleColumn\DateTimeOffsetListMaterializer`2.cs</Link>
     </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\SingleColumn\DateTimeOffsetSetMaterializer`2.cs">
+      <Link>Materializers\SingleColumn\DateTimeOffsetSetMaterializer`2.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\SingleColumn\DateTimeSetMaterializer`2.cs">
+      <Link>Materializers\SingleColumn\DateTimeSetMaterializer`2.cs</Link>
+    </Compile>
     <Compile Include="..\Tortuga.Chain.Core.source\Materializers\SingleColumn\DecimalListMaterializer`2.cs">
       <Link>Materializers\SingleColumn\DecimalListMaterializer`2.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\SingleColumn\DecimalSetMaterializer`2.cs">
+      <Link>Materializers\SingleColumn\DecimalSetMaterializer`2.cs</Link>
     </Compile>
     <Compile Include="..\Tortuga.Chain.Core.source\Materializers\SingleColumn\DoubleListMaterializer`2.cs">
       <Link>Materializers\SingleColumn\DoubleListMaterializer`2.cs</Link>
     </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\SingleColumn\DoubleSetMaterializer`2.cs">
+      <Link>Materializers\SingleColumn\DoubleSetMaterializer`2.cs</Link>
+    </Compile>
     <Compile Include="..\Tortuga.Chain.Core.source\Materializers\SingleColumn\GuidListMaterializer`2.cs">
       <Link>Materializers\SingleColumn\GuidListMaterializer`2.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\SingleColumn\GuidSetMaterializer`2.cs">
+      <Link>Materializers\SingleColumn\GuidSetMaterializer`2.cs</Link>
     </Compile>
     <Compile Include="..\Tortuga.Chain.Core.source\Materializers\SingleColumn\Int16ListMaterializer`2.cs">
       <Link>Materializers\SingleColumn\Int16ListMaterializer`2.cs</Link>
     </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\SingleColumn\Int16SetMaterializer`2.cs">
+      <Link>Materializers\SingleColumn\Int16SetMaterializer`2.cs</Link>
+    </Compile>
     <Compile Include="..\Tortuga.Chain.Core.source\Materializers\SingleColumn\Int32ListMaterializer`2.cs">
       <Link>Materializers\SingleColumn\Int32ListMaterializer`2.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\SingleColumn\Int32SetMaterializer`2.cs">
+      <Link>Materializers\SingleColumn\Int32SetMaterializer`2.cs</Link>
     </Compile>
     <Compile Include="..\Tortuga.Chain.Core.source\Materializers\SingleColumn\Int64ListMaterializer`2.cs">
       <Link>Materializers\SingleColumn\Int64ListMaterializer`2.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\SingleColumn\SingleColumnFormatterBase.cs">
-      <Link>Materializers\SingleColumn\SingleColumnFormatterBase.cs</Link>
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\SingleColumn\Int64SetMaterializer`2.cs">
+      <Link>Materializers\SingleColumn\Int64SetMaterializer`2.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\SingleColumn\SingleColumnMaterializer`3.cs">
+      <Link>Materializers\SingleColumn\SingleColumnMaterializer`3.cs</Link>
     </Compile>
     <Compile Include="..\Tortuga.Chain.Core.source\Materializers\SingleColumn\SingleListMaterializer`2.cs">
       <Link>Materializers\SingleColumn\SingleListMaterializer`2.cs</Link>
     </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\SingleColumn\SingleSetMaterializer`2.cs">
+      <Link>Materializers\SingleColumn\SingleSetMaterializer`2.cs</Link>
+    </Compile>
     <Compile Include="..\Tortuga.Chain.Core.source\Materializers\SingleColumn\StringListMaterializer`2.cs">
       <Link>Materializers\SingleColumn\StringListMaterializer`2.cs</Link>
     </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\SingleColumn\StringSetMaterializer`2.cs">
+      <Link>Materializers\SingleColumn\StringSetMaterializer`2.cs</Link>
+    </Compile>
     <Compile Include="..\Tortuga.Chain.Core.source\Materializers\SingleColumn\TimeSpanListMaterializer`2.cs">
       <Link>Materializers\SingleColumn\TimeSpanListMaterializer`2.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.Core.source\Materializers\SingleColumn\TimeSpanSetMaterializer`2.cs">
+      <Link>Materializers\SingleColumn\TimeSpanSetMaterializer`2.cs</Link>
     </Compile>
     <Compile Include="..\Tortuga.Chain.Core.source\Materializers\SingleRow\DataRowMaterializer`2.cs">
       <Link>Materializers\SingleRow\DataRowMaterializer`2.cs</Link>

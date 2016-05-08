@@ -1,6 +1,6 @@
 # Tortuga Chain
 
-A Fluent ORM for .NET
+A Fluent ORM for .NET. Works with SQL Server, PostgreSQL, and SQLite. 
 
 ## Getting Started
 
