@@ -55,6 +55,50 @@ namespace Tests.Class2Databases
         {
             var result = await DataSource.Procedure(Proc1Name, new { @State = "CA" }).ToCollectionSet<Customer, Order>().ExecuteAsync();
         }
+
+
+        [TestMethod]
+        public void Proc1_Object_DataSet()
+        {
+            var result = DataSource.Procedure(Proc1Name, new { @State = "CA" }).ToDataSet("cust", "order").Execute();
+            Assert.AreEqual(2, result.Tables.Count);
+        }
+
+        [TestMethod]
+        public async Task Proc1_Object_Async_DataSet()
+        {
+            var result = await DataSource.Procedure(Proc1Name, new { @State = "CA" }).ToDataSet("cust", "order").ExecuteAsync();
+            Assert.AreEqual(2, result.Tables.Count);
+        }
+
+
+        [TestMethod]
+        public void Proc1_Dictionary_DataSet()
+        {
+            var result = DataSource.Procedure(Proc1Name, new Dictionary<string, object>() { { "State", "CA" } }).ToDataSet("cust", "order").Execute();
+            Assert.AreEqual(2, result.Tables.Count);
+        }
+
+        [TestMethod]
+        public async Task Proc1_Dictionary_Async_DataSet()
+        {
+            var result = await DataSource.Procedure(Proc1Name, new Dictionary<string, object>() { { "State", "CA" } }).ToDataSet("cust", "order").ExecuteAsync();
+            Assert.AreEqual(2, result.Tables.Count);
+        }
+
+        [TestMethod]
+        public void Proc1_Dictionary2_DataSet()
+        {
+            var result = DataSource.Procedure(Proc1Name, new Dictionary<string, object>() { { "@State", "CA" } }).ToDataSet("cust", "order").Execute();
+            Assert.AreEqual(2, result.Tables.Count);
+        }
+
+        [TestMethod]
+        public async Task Proc1_Dictionary2_Async_DataSet()
+        {
+            var result = await DataSource.Procedure(Proc1Name, new Dictionary<string, object>() { { "@State", "CA" } }).ToDataSet("cust", "order").ExecuteAsync();
+            Assert.AreEqual(2, result.Tables.Count);
+        }
     }
 }
 
