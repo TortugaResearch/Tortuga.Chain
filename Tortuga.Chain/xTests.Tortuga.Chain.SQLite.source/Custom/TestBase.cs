@@ -12,6 +12,7 @@ namespace Tests
 {
     public abstract partial class TestBase
     {
+
         public TestBase(ITestOutputHelper output)
         {
             m_Output = output;
@@ -21,6 +22,7 @@ namespace Tests
 
         static protected readonly Dictionary<string, SQLiteDataSource> s_DataSources = new Dictionary<string, SQLiteDataSource>();
         static public readonly string AssemblyName = "SQLite";
+        protected static readonly SQLiteDataSource s_PrimaryDataSource;
 
         static TestBase()
         {
@@ -29,6 +31,7 @@ namespace Tests
             {
                 var ds = new SQLiteDataSource(con.Name, con.ConnectionString);
                 s_DataSources.Add(con.Name, ds);
+                if (s_PrimaryDataSource == null) s_PrimaryDataSource = ds;
             }
         }
 
@@ -79,6 +82,9 @@ namespace Tests
                 m_Output.WriteLine("");
             }
         }
+
+        public static string EmployeeTableName { get { return "Employee"; } }
+        public static string CustomerTableName { get { return "Customer"; } }
 
     }
 }

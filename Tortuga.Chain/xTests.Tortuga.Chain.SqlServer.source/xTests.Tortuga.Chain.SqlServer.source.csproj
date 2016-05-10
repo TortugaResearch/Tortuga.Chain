@@ -57,10 +57,6 @@
       <HintPath>..\packages\xunit.abstractions.2.0.0\lib\net35\xunit.abstractions.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="xunit.assert, Version=2.1.0.3179, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
-      <HintPath>..\packages\xunit.assert.2.1.0\lib\dotnet\xunit.assert.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="xunit.core, Version=2.1.0.3179, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
       <HintPath>..\packages\xunit.extensibility.core.2.1.0\lib\dotnet\xunit.core.dll</HintPath>
       <Private>True</Private>
@@ -79,6 +75,66 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="Asserts\Assert.cs" />
+    <Compile Include="Asserts\BooleanAsserts.cs" />
+    <Compile Include="Asserts\CollectionAsserts.cs" />
+    <Compile Include="Asserts\Comparers.cs" />
+    <Compile Include="Asserts\EqualityAsserts.cs" />
+    <Compile Include="Asserts\ExceptionAsserts.cs" />
+    <Compile Include="Asserts\Guards.cs" />
+    <Compile Include="Asserts\IdentityAsserts.cs" />
+    <Compile Include="Asserts\NullAsserts.cs" />
+    <Compile Include="Asserts\PropertyAsserts.cs" />
+    <Compile Include="Asserts\RangeAsserts.cs" />
+    <Compile Include="Asserts\Record.cs" />
+    <Compile Include="Asserts\Sdk\ArgumentFormatter.cs" />
+    <Compile Include="Asserts\Sdk\AssertComparer.cs" />
+    <Compile Include="Asserts\Sdk\AssertEqualityComparer.cs" />
+    <Compile Include="Asserts\Sdk\AssertEqualityComparerAdapter.cs" />
+    <Compile Include="Asserts\Sdk\Exceptions\AllException.cs" />
+    <Compile Include="Asserts\Sdk\Exceptions\AssertActualExpectedException.cs" />
+    <Compile Include="Asserts\Sdk\Exceptions\AssertCollectionCountException.cs" />
+    <Compile Include="Asserts\Sdk\Exceptions\CollectionException.cs" />
+    <Compile Include="Asserts\Sdk\Exceptions\ContainsException.cs" />
+    <Compile Include="Asserts\Sdk\Exceptions\DoesNotContainException.cs" />
+    <Compile Include="Asserts\Sdk\Exceptions\DoesNotMatchException.cs" />
+    <Compile Include="Asserts\Sdk\Exceptions\EmptyException.cs" />
+    <Compile Include="Asserts\Sdk\Exceptions\EndsWithException.cs" />
+    <Compile Include="Asserts\Sdk\Exceptions\EqualException.cs" />
+    <Compile Include="Asserts\Sdk\Exceptions\FalseException.cs" />
+    <Compile Include="Asserts\Sdk\Exceptions\InRangeException.cs" />
+    <Compile Include="Asserts\Sdk\Exceptions\IsAssignableFromException.cs" />
+    <Compile Include="Asserts\Sdk\Exceptions\IsNotTypeException.cs" />
+    <Compile Include="Asserts\Sdk\Exceptions\IsTypeException.cs" />
+    <Compile Include="Asserts\Sdk\Exceptions\MatchesException.cs" />
+    <Compile Include="Asserts\Sdk\Exceptions\NotEmptyException.cs" />
+    <Compile Include="Asserts\Sdk\Exceptions\NotEqualException.cs" />
+    <Compile Include="Asserts\Sdk\Exceptions\NotInRangeException.cs" />
+    <Compile Include="Asserts\Sdk\Exceptions\NotNullException.cs" />
+    <Compile Include="Asserts\Sdk\Exceptions\NotSameException.cs" />
+    <Compile Include="Asserts\Sdk\Exceptions\NullException.cs" />
+    <Compile Include="Asserts\Sdk\Exceptions\ParameterCountMismatchException.cs" />
+    <Compile Include="Asserts\Sdk\Exceptions\ProperSubsetException.cs" />
+    <Compile Include="Asserts\Sdk\Exceptions\ProperSupersetException.cs" />
+    <Compile Include="Asserts\Sdk\Exceptions\PropertyChangedException.cs" />
+    <Compile Include="Asserts\Sdk\Exceptions\SameException.cs" />
+    <Compile Include="Asserts\Sdk\Exceptions\SingleException.cs" />
+    <Compile Include="Asserts\Sdk\Exceptions\StartsWithException.cs" />
+    <Compile Include="Asserts\Sdk\Exceptions\SubsetException.cs" />
+    <Compile Include="Asserts\Sdk\Exceptions\SupersetException.cs" />
+    <Compile Include="Asserts\Sdk\Exceptions\ThrowsException.cs" />
+    <Compile Include="Asserts\Sdk\Exceptions\TrueException.cs" />
+    <Compile Include="Asserts\Sdk\Exceptions\XunitException.cs" />
+    <Compile Include="Asserts\SetAsserts.cs" />
+    <Compile Include="Asserts\StringAsserts.cs" />
+    <Compile Include="Asserts\TypeAsserts.cs" />
+    <Compile Include="CommandBuilders\DeleteTests.cs" />
+    <Compile Include="Models\AuditInfo.cs" />
+    <Compile Include="Models\ChangeTrackingEmployee.cs" />
+    <Compile Include="Models\CustomerWithValidation.cs" />
+    <Compile Include="Models\Employee.cs" />
+    <Compile Include="Models\EmployeeLookup.cs" />
+    <Compile Include="Models\EmployeeWithManager.cs" />
     <Compile Include="TheoryData\BasicData.cs" />
     <Compile Include="DataSourceType.cs" />
     <Compile Include="CommandBuilders\FromTests.cs" />

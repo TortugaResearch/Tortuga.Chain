@@ -21,6 +21,7 @@ namespace Tests
 
         static protected readonly Dictionary<string, PostgreSqlDataSource> s_DataSources = new Dictionary<string, PostgreSqlDataSource>();
         static public readonly string AssemblyName = "PostgreSql";
+        protected static readonly PostgreSqlDataSource s_PrimaryDataSource;
 
         static TestBase()
         {
@@ -28,6 +29,7 @@ namespace Tests
             foreach (ConnectionStringSettings con in ConfigurationManager.ConnectionStrings)
             {
                 var ds = new PostgreSqlDataSource(con.Name, con.ConnectionString);
+                if (s_PrimaryDataSource == null) s_PrimaryDataSource = ds;
                 s_DataSources.Add(con.Name, ds);
             }
         }
@@ -79,6 +81,15 @@ namespace Tests
                 m_Output.WriteLine("");
             }
         }
+
+        public static string EmployeeTableName { get { return "HR.Employee"; } }
+        public static string CustomerTableName { get { return "Sales.Customer"; } }
+
+        public string Proc1Name { get { return "Sales.CustomerWithOrdersByState"; } }
+
+        public string TableFunction1Name { get { return "Sales.CustomersByState"; } }
+        public string TableFunction2Name { get { return "Sales.CustomersByStateInline"; } }
+
     }
 }
 

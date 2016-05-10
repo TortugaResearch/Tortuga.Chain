@@ -5,7 +5,7 @@ using Tortuga.Chain;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Tests
+namespace Tests.CommandBuilders
 {
     public class FromTests : TestBase
     {

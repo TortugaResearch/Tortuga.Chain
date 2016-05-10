@@ -12,6 +12,7 @@ namespace Tests
 {
     public abstract partial class TestBase
     {
+
         public TestBase(ITestOutputHelper output)
         {
             m_Output = output;
@@ -20,14 +21,17 @@ namespace Tests
         protected readonly ITestOutputHelper m_Output;
 
         static protected readonly Dictionary<string, SqlServerDataSource> s_DataSources = new Dictionary<string, SqlServerDataSource>();
-        static public readonly string AssemblyName = "SQLite";
+        static public readonly string AssemblyName = "SQL Server";
+        protected static readonly SqlServerDataSource s_PrimaryDataSource;
 
         static TestBase()
         {
+
             foreach (ConnectionStringSettings con in ConfigurationManager.ConnectionStrings)
             {
                 var ds = new SqlServerDataSource(con.Name, con.ConnectionString);
                 s_DataSources.Add(con.Name, ds);
+                if (s_PrimaryDataSource == null) s_PrimaryDataSource = ds;
             }
         }
 
@@ -78,5 +82,16 @@ namespace Tests
                 m_Output.WriteLine("");
             }
         }
+
+
+        public static string EmployeeTableName { get { return "HR.Employee"; } }
+        public static string CustomerTableName { get { return "Sales.Customer"; } }
+
+        public string Proc1Name { get { return "Sales.CustomerWithOrdersByState"; } }
+
+        public string TableFunction1Name { get { return "Sales.CustomersByState"; } }
+        public string TableFunction2Name { get { return "Sales.CustomersByStateInline"; } }
+
+
     }
 }
