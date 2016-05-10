@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.Data.Common;
 using System.Data.SqlClient;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
@@ -9,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Tortuga.Chain.AuditRules;
 using Tortuga.Chain.Core;
+using Tortuga.Chain.DataSources;
 using Tortuga.Chain.SqlServer;
 namespace Tortuga.Chain
 {
@@ -17,7 +19,7 @@ namespace Tortuga.Chain
     /// Class SqlServerDataSource.
     /// </summary>
     /// <seealso cref="SqlServerDataSourceBase" />
-    public class SqlServerDataSource : SqlServerDataSourceBase
+    public class SqlServerDataSource : SqlServerDataSourceBase, IRootDataSource
     {
         readonly SqlConnectionStringBuilder m_ConnectionBuilder;
         private SqlServerMetadataCache m_DatabaseMetadata;
@@ -56,6 +58,8 @@ namespace Tortuga.Chain
                 ArithAbort = settings.ArithAbort;
             }
         }
+
+
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlServerDataSource" /> class.
@@ -175,6 +179,21 @@ namespace Tortuga.Chain
         {
             return new SqlServerTransactionalDataSource(this, transactionName, isolationLevel, forwardEvents);
         }
+
+        /// <summary>
+        /// Creates a new transaction
+        /// </summary>
+        /// <param name="transactionName">Name of the transaction.</param>
+        /// <param name="isolationLevel">The isolation level.</param>
+        /// <param name="forwardEvents">if set to <c>true</c> [forward events].</param>
+        /// <returns></returns>
+        public async Task<SqlServerTransactionalDataSource> BeginTransactionAsync(string transactionName = null, IsolationLevel? isolationLevel = null, bool forwardEvents = true)
+        {
+            var connection = await CreateConnectionAsync();
+            var transaction = connection.BeginTransaction();
+            return new SqlServerTransactionalDataSource(this, transactionName, forwardEvents, connection, transaction);
+        }
+
         /// <summary>
         /// Gets the options that are currently in effect. This takes into account server-defined defaults.
         /// </summary>
@@ -194,7 +213,7 @@ namespace Tortuga.Chain
         public async Task<SqlServerEffectiveSettings> GetEffectiveSettingsAsync()
         {
             var result = new SqlServerEffectiveSettings();
-            using (var con = await CreateSqlConnectionAsync())
+            using (var con = await CreateConnectionAsync())
                 await result.ReloadAsync(con, null);
             return result;
         }
@@ -241,13 +260,22 @@ namespace Tortuga.Chain
         /// <summary>
         /// Tests the connection.
         /// </summary>
-        public void TestConnection()
+        public override void TestConnection()
         {
             using (var con = CreateConnection())
-            {
-                using (var cmd = new SqlCommand("SELECT 1", con))
-                    cmd.ExecuteScalar();
-            }
+            using (var cmd = new SqlCommand("SELECT 1", con))
+                cmd.ExecuteScalar();
+        }
+
+        /// <summary>
+        /// Tests the connection asynchronously.
+        /// </summary>
+        /// <returns></returns>
+        public override async Task TestConnectionAsync()
+        {
+            using (var con = await CreateConnectionAsync())
+            using (var cmd = new SqlCommand("SELECT 1", con))
+                await cmd.ExecuteScalarAsync();
         }
 
         /// <summary>
@@ -422,7 +450,7 @@ namespace Tortuga.Chain
 
             try
             {
-                using (var con = await CreateSqlConnectionAsync(cancellationToken).ConfigureAwait(false))
+                using (var con = await CreateConnectionAsync(cancellationToken).ConfigureAwait(false))
                 {
                     using (var cmd = new SqlCommand())
                     {
@@ -481,7 +509,7 @@ namespace Tortuga.Chain
         /// <remarks>
         /// The caller of this method is responsible for closing the connection.
         /// </remarks>
-        private async Task<SqlConnection> CreateSqlConnectionAsync(CancellationToken cancellationToken = default(CancellationToken))
+        private async Task<SqlConnection> CreateConnectionAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             var con = new SqlConnection(ConnectionString);
             await con.OpenAsync(cancellationToken).ConfigureAwait(false);
@@ -565,7 +593,30 @@ namespace Tortuga.Chain
             return result;
         }
 
+        DbConnection IRootDataSource.CreateConnection()
+        {
+            return CreateConnection();
+        }
 
+        async Task<DbConnection> IRootDataSource.CreateConnectionAsync()
+        {
+            return await CreateConnectionAsync();
+        }
+
+        IOpenDataSource IRootDataSource.CreateOpenDataSource(DbConnection connection, DbTransaction transaction)
+        {
+            return new SqlServerOpenDataSource(this, (SqlConnection)connection, (SqlTransaction)transaction);
+        }
+
+        ITransactionalDataSource IRootDataSource.BeginTransaction()
+        {
+            return BeginTransaction();
+        }
+
+        async Task<ITransactionalDataSource> IRootDataSource.BeginTransactionAsync()
+        {
+            return await BeginTransactionAsync();
+        }
     }
 
 

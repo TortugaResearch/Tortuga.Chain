@@ -3,6 +3,7 @@ using NpgsqlTypes;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using Tortuga.Anchor;
 using Tortuga.Anchor.Metadata;
 using Tortuga.Chain.Metadata;
 
@@ -58,9 +59,9 @@ namespace Tortuga.Chain.PostgreSql
         /// <remarks>
         /// Call Preload before invoking this method to ensure that all tables and views were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.
         /// </remarks>
-        public override ICollection<TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType>> GetTablesAndViews()
+        public override IReadOnlyCollection<TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType>> GetTablesAndViews()
         {
-            return m_Tables.Values;
+            return m_Tables.GetValues();
         }
 
         /// <summary>
@@ -356,7 +357,7 @@ WHERE c.relname=@Name AND
         /// <returns></returns>
         internal static NpgsqlDbType? TypeNameToNpgSqlDbType(string typeName)
         {
-            switch(typeName)
+            switch (typeName)
             {
                 case "bool": return NpgsqlDbType.Boolean;
                 case "int2": return NpgsqlDbType.Smallint;
@@ -372,9 +373,16 @@ WHERE c.relname=@Name AND
                 case "char": return NpgsqlDbType.Char;
                 case "citext": return NpgsqlDbType.Citext;
                 case "json": return NpgsqlDbType.Json;
-                
+
             }
             return null;
+        }
+
+        public override void Reset()
+        {
+            m_StoredProcedures.Clear();
+            m_Tables.Clear();
+            m_TypeTableMap.Clear();
         }
     }
 }

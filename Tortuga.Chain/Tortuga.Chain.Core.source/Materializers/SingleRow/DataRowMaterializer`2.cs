@@ -1,5 +1,6 @@
 #if !WINDOWS_UWP
 
+using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
@@ -98,6 +99,11 @@ namespace Tortuga.Chain.Materializers
                 throw new UnexpectedDataException("Expected 1 row but received " + table.Rows.Count + " rows");
             }
             return table.Rows[0];
+        }
+
+        public override IReadOnlyList<string> DesiredColumns()
+        {
+            return AllColumns;
         }
     }
 }

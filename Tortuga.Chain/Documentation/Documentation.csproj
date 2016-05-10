@@ -103,7 +103,7 @@
     <None Include="Page\Appenders.md" />
     <None Include="Page\Introduction.md" />
     <None Include="projbook.json" />
-    <None Include="Scripts\jquery-2.2.2.min.map">
+    <None Include="Scripts\jquery-2.2.3.min.map">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
@@ -133,13 +133,13 @@
     <Content Include="Scripts\bootstrap.min.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Scripts\jquery-2.2.2.intellisense.js">
+    <Content Include="Scripts\jquery-2.2.3.intellisense.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Scripts\jquery-2.2.2.js">
+    <Content Include="Scripts\jquery-2.2.3.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Scripts\jquery-2.2.2.min.js">
+    <Content Include="Scripts\jquery-2.2.3.min.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Scripts\prism.js">

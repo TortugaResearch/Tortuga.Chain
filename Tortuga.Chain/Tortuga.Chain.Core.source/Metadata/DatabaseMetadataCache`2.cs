@@ -62,7 +62,7 @@ namespace Tortuga.Chain.Metadata
         /// <returns></returns>
         /// <remarks>Call Preload before invoking this method to ensure that all tables and views were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.</remarks>
         [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
-        public abstract ICollection<TableOrViewMetadata<TName, TDbType>> GetTablesAndViews();
+        public abstract IReadOnlyCollection<TableOrViewMetadata<TName, TDbType>> GetTablesAndViews();
 
         /// <summary>
         /// Gets the stored procedures that were loaded by this cache.
@@ -70,7 +70,7 @@ namespace Tortuga.Chain.Metadata
         /// <returns></returns>
         /// <remarks>Call Preload before invoking this method to ensure that all stored procedures were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.</remarks>
         [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
-        public virtual ICollection<StoredProcedureMetadata<TName, TDbType>> GetStoredProcedures()
+        public virtual IReadOnlyCollection<StoredProcedureMetadata<TName, TDbType>> GetStoredProcedures()
         {
             throw new NotSupportedException("Stored procedures are not supported by this data source");
         }
@@ -81,7 +81,7 @@ namespace Tortuga.Chain.Metadata
         /// <returns></returns>
         /// <remarks>Call Preload before invoking this method to ensure that all table-valued functions were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.</remarks>
         [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
-        public virtual ICollection<TableFunctionMetadata<TName, TDbType>> GetTableFunctions()
+        public virtual IReadOnlyCollection<TableFunctionMetadata<TName, TDbType>> GetTableFunctions()
         {
             throw new NotSupportedException("Table value functions are not supported by this data source");
         }
@@ -92,7 +92,7 @@ namespace Tortuga.Chain.Metadata
         /// <returns></returns>
         /// <remarks>Call Preload before invoking this method to ensure that all table-valued functions were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.</remarks>
         [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
-        public virtual ICollection<UserDefinedTypeMetadata<TName, TDbType>> GetUserDefinedTypes()
+        public virtual IReadOnlyCollection<UserDefinedTypeMetadata<TName, TDbType>> GetUserDefinedTypes()
         {
             throw new NotSupportedException("Table value functions are not supported by this data source");
         }
@@ -123,6 +123,47 @@ namespace Tortuga.Chain.Metadata
         ITableOrViewMetadata IDatabaseMetadataCache.GetTableOrViewFromClass<TObject>() 
         {
             return GetTableOrViewFromClass<TObject>();
+        }
+
+        /// <summary>
+        /// Resets the metadata cache, clearing out all cached metadata.
+        /// </summary>
+        public abstract void Reset();
+
+
+        IStoredProcedureMetadata IDatabaseMetadataCache.GetStoredProcedure(string procedureName)
+        {
+            return GetStoredProcedure(ParseObjectName(procedureName));
+        }
+
+        ITableFunctionMetadata IDatabaseMetadataCache.GetTableFunction(string tableFunctionName)
+        {
+            return GetTableFunction(ParseObjectName(tableFunctionName));
+        }
+
+        IReadOnlyCollection<ITableOrViewMetadata> IDatabaseMetadataCache.GetTablesAndViews()
+        {
+            return GetTablesAndViews();
+        }
+
+        IReadOnlyCollection<IStoredProcedureMetadata> IDatabaseMetadataCache.GetStoredProcedures()
+        {
+            return GetStoredProcedures();
+        }
+
+        IReadOnlyCollection<ITableFunctionMetadata> IDatabaseMetadataCache.GetTableFunctions()
+        {
+            return GetTableFunctions();
+        }
+
+        IReadOnlyCollection<IUserDefinedTypeMetadata> IDatabaseMetadataCache.GetUserDefinedTypes()
+        {
+            return GetUserDefinedTypes();
+        }
+
+        IUserDefinedTypeMetadata IDatabaseMetadataCache.GetUserDefinedType(string typeName)
+        {
+            return GetUserDefinedType(ParseObjectName(typeName));
         }
     }
 }

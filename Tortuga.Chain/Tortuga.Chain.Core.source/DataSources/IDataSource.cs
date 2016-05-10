@@ -1,8 +1,9 @@
+using System.Threading.Tasks;
 using Tortuga.Chain.AuditRules;
+using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.DataSources
 {
-
     /// <summary>
     /// Interface IDataSource is used to expose a data source to appenders. 
     /// </summary>
@@ -47,5 +48,24 @@ namespace Tortuga.Chain.DataSources
         /// The audit rules.
         /// </value>
         AuditRuleCollection AuditRules { get; }
+
+        /// <summary>
+        /// Tests the connection.
+        /// </summary>
+        void TestConnection();
+
+        /// <summary>
+        /// Tests the connection asynchronously.
+        /// </summary>
+        /// <returns></returns>
+        Task TestConnectionAsync();
+
+        /// <summary>
+        /// Gets the database metadata.
+        /// </summary>
+        /// <value>
+        /// The database metadata.
+        /// </value>
+        IDatabaseMetadataCache DatabaseMetadata { get; }
     }
 }

@@ -3,10 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
 using Tortuga.Chain.AuditRules;
 using Tortuga.Chain.Core;
+using Tortuga.Chain.DataSources;
 using Tortuga.Chain.PostgreSql;
 
 namespace Tortuga.Chain
@@ -15,14 +17,33 @@ namespace Tortuga.Chain
     /// Class PostgreSqlDataSource.
     /// </summary>
     /// <seealso cref="PostgreSqlDataSourceBase" />
-    public class PostgreSqlDataSource : PostgreSqlDataSourceBase
+    public class PostgreSqlDataSource : PostgreSqlDataSourceBase, IRootDataSource
     {
         readonly NpgsqlConnectionStringBuilder m_ConnectionBuilder;
         private PostgreSqlMetadataCache m_DatabaseMetadata;
 
+        /// <summary>
+        /// Begins the transaction.
+        /// </summary>
+        /// <param name="isolationLevel">The isolation level.</param>
+        /// <param name="forwardEvents">if set to <c>true</c> [forward events].</param>
+        /// <returns></returns>
         public PostgreSqlTransactionalDataSource BeginTransaction(IsolationLevel? isolationLevel = null, bool forwardEvents = true)
         {
             return new PostgreSqlTransactionalDataSource(this, isolationLevel, forwardEvents);
+        }
+
+        /// <summary>
+        /// Begins the transaction.
+        /// </summary>
+        /// <param name="isolationLevel">The isolation level.</param>
+        /// <param name="forwardEvents">if set to <c>true</c> [forward events].</param>
+        /// <returns></returns>
+        public async Task<PostgreSqlTransactionalDataSource> BeginTransactionAsync(IsolationLevel? isolationLevel = null, bool forwardEvents = true)
+        {
+            var connection = await CreateConnectionAsync();
+            var transaction = connection.BeginTransaction();
+            return new PostgreSqlTransactionalDataSource(this, isolationLevel, forwardEvents, connection, transaction);
         }
 
         /// <summary>
@@ -94,13 +115,25 @@ namespace Tortuga.Chain
             get { return m_DatabaseMetadata; }
         }
 
-        public void TestConnection()
+        /// <summary>
+        /// Tests the connection.
+        /// </summary>
+        public override void TestConnection()
         {
             using (var con = CreateConnection())
-            {
-                using (var cmd = new NpgsqlCommand("SELECT 1;", con))
-                    cmd.ExecuteScalar();
-            }
+            using (var cmd = new NpgsqlCommand("SELECT 1", con))
+                cmd.ExecuteScalar();
+        }
+
+        /// <summary>
+        /// Tests the connection asynchronously.
+        /// </summary>
+        /// <returns></returns>
+        public override async Task TestConnectionAsync()
+        {
+            using (var con = await CreateConnectionAsync())
+            using (var cmd = new NpgsqlCommand("SELECT 1", con))
+                await cmd.ExecuteScalarAsync();
         }
 
         internal NpgsqlConnection CreateConnection()
@@ -352,6 +385,33 @@ namespace Tortuga.Chain
                 }
             }
         }
+
+        DbConnection IRootDataSource.CreateConnection()
+        {
+            return CreateConnection();
+        }
+
+        async Task<DbConnection> IRootDataSource.CreateConnectionAsync()
+        {
+            return await CreateConnectionAsync();
+        }
+
+        IOpenDataSource IRootDataSource.CreateOpenDataSource(DbConnection connection, DbTransaction transaction)
+        {
+            return new PostgreSqlOpenDataSource(this, (NpgsqlConnection)connection, (NpgsqlTransaction)transaction);
+        }
+
+        ITransactionalDataSource IRootDataSource.BeginTransaction()
+        {
+            return BeginTransaction();
+        }
+
+        async Task<ITransactionalDataSource> IRootDataSource.BeginTransactionAsync()
+        {
+            return await BeginTransactionAsync();
+        }
 #endif
+
+
     }
 }

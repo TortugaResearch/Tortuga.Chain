@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using System.Threading;
 using Tortuga.Chain.AuditRules;
 using Tortuga.Chain.Core;
+using Tortuga.Chain.DataSources;
+using System.Data.Common;
 
 #if SDS
 using System.Data.SQLite;
@@ -20,7 +22,7 @@ namespace Tortuga.Chain.SQLite
     /// Class SQLiteOpenDataSource.
     /// </summary>
     /// <seealso cref="SQLiteDataSourceBase" />
-    public class SQLiteOpenDataSource : SQLiteDataSourceBase
+    public class SQLiteOpenDataSource : SQLiteDataSourceBase,IOpenDataSource
     {
         readonly SQLiteConnection m_Connection;
         readonly SQLiteDataSource m_BaseDataSource;
@@ -44,6 +46,22 @@ namespace Tortuga.Chain.SQLite
         public override SQLiteMetadataCache DatabaseMetadata
         {
             get { return m_BaseDataSource.DatabaseMetadata; }
+        }
+
+        DbConnection IOpenDataSource.AssociatedConnection
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        DbTransaction IOpenDataSource.AssociatedTransaction
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
         }
 
         /// <summary>
@@ -331,6 +349,40 @@ namespace Tortuga.Chain.SQLite
                 if (lockToken != null)
                     lockToken.Dispose();
             }
+        }
+
+        /// <summary>
+        /// Tests the connection.
+        /// </summary>
+        public override void TestConnection()
+        {
+            using (var cmd = new SQLiteCommand("SELECT 1", m_Connection))
+                cmd.ExecuteScalar();
+        }
+
+        /// <summary>
+        /// Tests the connection asynchronously.
+        /// </summary>
+        /// <returns></returns>
+        public override async Task TestConnectionAsync()
+        {
+            using (var cmd = new SQLiteCommand("SELECT 1", m_Connection))
+                await cmd.ExecuteScalarAsync();
+        }
+
+        bool IOpenDataSource.TryCommit()
+        {
+            if (m_Transaction == null)
+                return false;
+            m_Transaction.Commit();
+            return true;
+        }
+
+        void IOpenDataSource.Close()
+        {
+            if (m_Transaction != null)
+                m_Transaction.Dispose();
+            m_Connection.Dispose();
         }
     }
 }

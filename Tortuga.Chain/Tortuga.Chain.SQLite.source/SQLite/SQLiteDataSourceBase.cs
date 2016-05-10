@@ -43,13 +43,23 @@ namespace Tortuga.Chain.SQLite
         /// Gets the database metadata.
         /// </summary>
         /// <value>The database metadata.</value>
-        public abstract SQLiteMetadataCache DatabaseMetadata { get; }
+        public abstract new SQLiteMetadataCache DatabaseMetadata { get; }
+
 
         /// <summary>
         /// Normally we use a reader/writer lock to avoid simultaneous writes to a SQlite database. If you disable this locking, you may see extra noise in your tracing output or unexpected exceptions.
         /// </summary>
         public bool DisableLocks { get; }
 
+        /// <summary>
+        /// Gets the database metadata.
+        /// </summary>
+        /// <value>
+        /// The database metadata.
+        /// </value>
+        /// <remarks>
+        /// Data sources are expected to shadow this with their specific version.
+        /// </remarks>
         IDatabaseMetadataCache IClass1DataSource.DatabaseMetadata
         {
             get { return DatabaseMetadata; }
@@ -463,6 +473,16 @@ namespace Tortuga.Chain.SQLite
         IObjectDbCommandBuilder<TArgument> IClass1DataSource.Update<TArgument>(TArgument argumentValue, UpdateOptions options)
         {
             return Update(argumentValue, options);
+        }
+
+
+        /// <summary>
+        /// Called when Database.DatabaseMetadata is invoked.
+        /// </summary>
+        /// <returns></returns>
+        protected override IDatabaseMetadataCache OnGetDatabaseMetadata()
+        {
+            return DatabaseMetadata;
         }
 
     }

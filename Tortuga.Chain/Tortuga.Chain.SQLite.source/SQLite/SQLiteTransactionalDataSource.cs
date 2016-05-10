@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Tortuga.Chain.Core;
 using System.Diagnostics.CodeAnalysis;
+using Tortuga.Chain.DataSources;
 
 
 #if SDS
@@ -22,13 +23,41 @@ namespace Tortuga.Chain.SQLite
     /// <summary>
     /// Class SQLiteTransactionalDataSource
     /// </summary>
-    public class SQLiteTransactionalDataSource : SQLiteDataSourceBase, IDisposable
+    public class SQLiteTransactionalDataSource : SQLiteDataSourceBase, IDisposable, ITransactionalDataSource
     {
         readonly SQLiteConnection m_Connection;
         readonly SQLiteDataSource m_BaseDataSource;
         readonly SQLiteTransaction m_Transaction;
+        private IDisposable m_LockToken;
 
         private bool m_Disposed;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SQLiteTransactionalDataSource"/> class.
+        /// </summary>
+        /// <param name="dataSource">The data source.</param>
+        /// <param name="isolationLevel">The isolation level.</param>
+        /// <param name="forwardEvents">if set to <c>true</c> [forward events].</param>
+        internal SQLiteTransactionalDataSource(SQLiteDataSource dataSource, IsolationLevel? isolationLevel, bool forwardEvents, SQLiteConnection connection, SQLiteTransaction transaction, IDisposable lockToken) : base(new SQLiteDataSourceSettings() { DefaultCommandTimeout = dataSource.DefaultCommandTimeout, StrictMode = dataSource.StrictMode, SuppressGlobalEvents = dataSource.SuppressGlobalEvents || forwardEvents, DisableLocks = dataSource.DisableLocks })
+        {
+            Name = dataSource.Name;
+
+            m_BaseDataSource = dataSource;
+            m_Connection = connection;
+            m_Transaction = transaction;
+            m_LockToken = lockToken;
+
+            if (forwardEvents)
+            {
+                ExecutionStarted += (sender, e) => dataSource.OnExecutionStarted(e);
+                ExecutionFinished += (sender, e) => dataSource.OnExecutionFinished(e);
+                ExecutionError += (sender, e) => dataSource.OnExecutionError(e);
+                ExecutionCanceled += (sender, e) => dataSource.OnExecutionCanceled(e);
+            }
+
+            AuditRules = dataSource.AuditRules;
+            UserValue = dataSource.UserValue;
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SQLiteTransactionalDataSource"/> class.
@@ -68,8 +97,6 @@ namespace Tortuga.Chain.SQLite
         {
             get { return m_BaseDataSource.DatabaseMetadata; }
         }
-
-
 
         /// <summary>
         /// Commits this instance.
@@ -112,10 +139,15 @@ namespace Tortuga.Chain.SQLite
         /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         private void Dispose(bool disposing)
         {
+            if (m_Disposed)
+                return;
+
             if (disposing)
             {
                 m_Transaction.Dispose();
                 m_Connection.Dispose();
+                if (m_LockToken != null)
+                    m_LockToken.Dispose();
                 m_Disposed = true;
             }
         }
@@ -369,5 +401,25 @@ namespace Tortuga.Chain.SQLite
                     lockToken.Dispose();
             }
         }
+
+        /// <summary>
+        /// Tests the connection.
+        /// </summary>
+        public override void TestConnection()
+        {
+            using (var cmd = new SQLiteCommand("SELECT 1", m_Connection))
+                cmd.ExecuteScalar();
+        }
+
+        /// <summary>
+        /// Tests the connection asynchronously.
+        /// </summary>
+        /// <returns></returns>
+        public override async Task TestConnectionAsync()
+        {
+            using (var cmd = new SQLiteCommand("SELECT 1", m_Connection))
+                await cmd.ExecuteScalarAsync();
+        }
+
     }
 }

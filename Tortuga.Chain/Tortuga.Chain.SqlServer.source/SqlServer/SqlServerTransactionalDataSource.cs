@@ -4,12 +4,14 @@ using System.Data.SqlClient;
 using System.Threading;
 using System.Threading.Tasks;
 using Tortuga.Chain.Core;
+using Tortuga.Chain.DataSources;
+
 namespace Tortuga.Chain.SqlServer
 {
     /// <summary>
     /// Class SqlServerTransactionalDataSource.
     /// </summary>
-    public class SqlServerTransactionalDataSource : SqlServerDataSourceBase, IDisposable
+    public class SqlServerTransactionalDataSource : SqlServerDataSourceBase, IDisposable, ITransactionalDataSource
     {
 
         readonly SqlConnection m_Connection;
@@ -17,6 +19,8 @@ namespace Tortuga.Chain.SqlServer
         readonly SqlTransaction m_Transaction;
         readonly string m_TransactionName;
         private bool m_Disposed;
+        private SqlConnection connection;
+        private SqlTransaction transaction;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlServerTransactionalDataSource"/> class.
@@ -48,6 +52,35 @@ namespace Tortuga.Chain.SqlServer
             AuditRules = dataSource.AuditRules;
             UserValue = dataSource.UserValue;
         }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SqlServerTransactionalDataSource"/> class.
+        /// </summary>
+        /// <param name="dataSource">The parent connection.</param>
+        /// <param name="transactionName">Name of the transaction.</param>
+        /// <param name="forwardEvents">If true, logging events are forwarded to the parent connection.</param>
+        internal SqlServerTransactionalDataSource(SqlServerDataSource dataSource, string transactionName, bool forwardEvents, SqlConnection connection, SqlTransaction transaction) : base(new SqlServerDataSourceSettings() { DefaultCommandTimeout = dataSource.DefaultCommandTimeout, StrictMode = dataSource.StrictMode, SuppressGlobalEvents = dataSource.SuppressGlobalEvents || forwardEvents })
+        {
+            Name = dataSource.Name;
+
+            m_BaseDataSource = dataSource;
+            m_Connection = connection;
+            m_TransactionName = transactionName;
+            m_Transaction = transaction;
+
+
+            if (forwardEvents)
+            {
+                ExecutionStarted += (sender, e) => dataSource.OnExecutionStarted(e);
+                ExecutionFinished += (sender, e) => dataSource.OnExecutionFinished(e);
+                ExecutionError += (sender, e) => dataSource.OnExecutionError(e);
+                ExecutionCanceled += (sender, e) => dataSource.OnExecutionCanceled(e);
+            }
+            AuditRules = dataSource.AuditRules;
+            UserValue = dataSource.UserValue;
+        }
+
+
 
         /// <summary>
         /// This object can be used to lookup database information.
@@ -96,6 +129,9 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="disposing"></param>
         private void Dispose(bool disposing)
         {
+            if (m_Disposed)
+                return;
+
             if (disposing)
             {
                 m_Transaction.Dispose();
@@ -288,5 +324,33 @@ namespace Tortuga.Chain.SqlServer
         {
             return m_BaseDataSource.GetExtensionData<TTKey>();
         }
+
+        /// <summary>
+        /// Tests the connection.
+        /// </summary>
+        public override void TestConnection()
+        {
+            using (var cmd = new SqlCommand("SELECT 1", m_Connection))
+            {
+                cmd.Transaction = m_Transaction;
+                cmd.ExecuteScalar();
+            }
+        }
+
+        /// <summary>
+        /// Tests the connection asynchronously.
+        /// </summary>
+        /// <returns></returns>
+        public override async Task TestConnectionAsync()
+        {
+            using (var cmd = new SqlCommand("SELECT 1", m_Connection))
+            {
+                cmd.Transaction = m_Transaction;
+                await cmd.ExecuteScalarAsync();
+            }
+        }
+
     }
 }
+
+

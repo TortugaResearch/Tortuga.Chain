@@ -41,8 +41,8 @@
     </AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Npgsql, Version=3.0.5.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
-      <HintPath>..\packages\Npgsql.3.0.5\lib\net45\Npgsql.dll</HintPath>
+    <Reference Include="Npgsql, Version=3.0.7.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Npgsql.3.0.7\lib\net45\Npgsql.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="PresentationCore" />
@@ -71,6 +71,9 @@
   <ItemGroup>
     <Compile Include="..\ProductSharedAssemblyInfo.cs">
       <Link>Properties\ProductSharedAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.SqlServer.source\AnchorMissing.cs">
+      <Link>AnchorMissing.cs</Link>
     </Compile>
     <Compile Include="PostgreSqlDataSource.cs" />
     <Compile Include="PostgreSql\PostgreSqlTransactionalDataSource.cs" />

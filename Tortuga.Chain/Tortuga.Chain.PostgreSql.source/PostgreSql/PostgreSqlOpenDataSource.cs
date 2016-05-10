@@ -1,10 +1,12 @@
 ﻿using Npgsql;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
 using Tortuga.Chain.AuditRules;
 using Tortuga.Chain.Core;
+using Tortuga.Chain.DataSources;
 
 namespace Tortuga.Chain.PostgreSql
 {
@@ -12,7 +14,7 @@ namespace Tortuga.Chain.PostgreSql
     /// Class SQLiteOpenDataSource.
     /// </summary>
     /// <seealso cref="SQLiteDataSourceBase" />
-    public class PostgreSqlOpenDataSource : PostgreSqlDataSourceBase
+    public class PostgreSqlOpenDataSource : PostgreSqlDataSourceBase, IOpenDataSource
     {
         readonly PostgreSqlDataSource m_BaseDataSource;
         readonly NpgsqlConnection m_Connection;
@@ -37,6 +39,22 @@ namespace Tortuga.Chain.PostgreSql
         public override PostgreSqlMetadataCache DatabaseMetadata
         {
             get { return m_BaseDataSource.DatabaseMetadata; }
+        }
+
+        DbConnection IOpenDataSource.AssociatedConnection
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        DbTransaction IOpenDataSource.AssociatedTransaction
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
         }
 
 
@@ -259,6 +277,40 @@ namespace Tortuga.Chain.PostgreSql
                     throw;
                 }
             }
+        }
+
+        /// <summary>
+        /// Tests the connection.
+        /// </summary>
+        public override void TestConnection()
+        {
+            using (var cmd = new NpgsqlCommand("SELECT 1", m_Connection))
+                cmd.ExecuteScalar();
+        }
+
+        /// <summary>
+        /// Tests the connection asynchronously.
+        /// </summary>
+        /// <returns></returns>
+        public override async Task TestConnectionAsync()
+        {
+            using (var cmd = new NpgsqlCommand("SELECT 1", m_Connection))
+                await cmd.ExecuteScalarAsync();
+        }
+
+        bool IOpenDataSource.TryCommit()
+        {
+            if (m_Transaction == null)
+                return false;
+            m_Transaction.Commit();
+            return true;
+        }
+
+        void IOpenDataSource.Close()
+        {
+            if (m_Transaction != null)
+                m_Transaction.Dispose();
+            m_Connection.Dispose();
         }
     }
 }

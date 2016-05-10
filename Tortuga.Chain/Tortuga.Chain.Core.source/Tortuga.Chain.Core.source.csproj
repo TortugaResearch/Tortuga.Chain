@@ -113,7 +113,10 @@
     <Compile Include="Core\OperationImplementationAsync.cs" />
     <Compile Include="DataSources\ICommandDataSource`2.cs" />
     <Compile Include="DataSources\IDataSource.cs" />
+    <Compile Include="DataSources\IOpenDataSource.cs" />
     <Compile Include="DataSources\IOperationDataSource`2.cs" />
+    <Compile Include="DataSources\IRootDataSource.cs" />
+    <Compile Include="DataSources\ITransactionalDataSource.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="IConstructibleMaterializer`1.cs" />
     <Compile Include="DictionaryOptions.cs" />
@@ -240,7 +243,10 @@
     <Compile Include="Materializers\MultipleRow\TableMaterializer`2.cs" />
     <Compile Include="Materializers\MultipleTable\TableSetMaterializer`2.cs" />
     <Compile Include="Materializers\StreamingObjectConstructor.cs" />
+    <Compile Include="MetadataException.cs" />
     <Compile Include="Metadata\ColumnMetadataCollection.cs" />
+    <Compile Include="Metadata\IStoredProcedureMetadata.cs" />
+    <Compile Include="Metadata\ITableFunctionMetadata.cs" />
     <Compile Include="Metadata\IUserDefinedTypeMetadata.cs" />
     <Compile Include="Metadata\UserDefinedTypeMetadata.cs" />
     <Compile Include="ObjectDataReader.cs" />

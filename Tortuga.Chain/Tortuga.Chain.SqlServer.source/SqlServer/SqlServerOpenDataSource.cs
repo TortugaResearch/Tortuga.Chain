@@ -1,17 +1,19 @@
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Data.SqlClient;
 using System.Threading;
 using System.Threading.Tasks;
 using Tortuga.Chain.AuditRules;
 using Tortuga.Chain.Core;
+using Tortuga.Chain.DataSources;
 
 namespace Tortuga.Chain.SqlServer
 {
     /// <summary>
     /// Class SqlServerOpenDataSource.
     /// </summary>
-    public class SqlServerOpenDataSource : SqlServerDataSourceBase
+    public class SqlServerOpenDataSource : SqlServerDataSourceBase, IOpenDataSource
     {
 
         readonly SqlServerDataSource m_BaseDataSource;
@@ -35,6 +37,22 @@ namespace Tortuga.Chain.SqlServer
         public override SqlServerMetadataCache DatabaseMetadata
         {
             get { return m_BaseDataSource.DatabaseMetadata; }
+        }
+
+        DbConnection IOpenDataSource.AssociatedConnection
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        DbTransaction IOpenDataSource.AssociatedTransaction
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
         }
 
         /// <summary>
@@ -257,5 +275,49 @@ namespace Tortuga.Chain.SqlServer
             return this;
         }
 
+        /// <summary>
+        /// Tests the connection.
+        /// </summary>
+        public override void TestConnection()
+        {
+            using (var cmd = new SqlCommand("SELECT 1", m_Connection))
+            {
+                if (m_Transaction != null)
+                    cmd.Transaction = m_Transaction;
+                cmd.ExecuteScalar();
+            }
+        }
+
+        /// <summary>
+        /// Tests the connection asynchronously.
+        /// </summary>
+        /// <returns></returns>
+        public override async Task TestConnectionAsync()
+        {
+            using (var cmd = new SqlCommand("SELECT 1", m_Connection))
+            {
+                if (m_Transaction != null)
+                    cmd.Transaction = m_Transaction;
+                await cmd.ExecuteScalarAsync();
+            }
+        }
+
+        bool IOpenDataSource.TryCommit()
+        {
+            if (m_Transaction == null)
+                return false;
+
+            m_Transaction.Commit();
+            return true;
+        }
+
+        void IOpenDataSource.Close()
+        {
+            if (m_Transaction != null)
+                m_Transaction.Dispose();
+            m_Connection.Dispose();
+        }
     }
 }
+
+

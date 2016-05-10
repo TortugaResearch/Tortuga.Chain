@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.DataSources;
+using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain
 {
@@ -370,6 +371,47 @@ namespace Tortuga.Chain
                 }
             }
         }
+
+        /// <summary>
+        /// Tests the connection.
+        /// </summary>
+        public override void TestConnection()
+        {
+            using (var con = CreateConnection())
+            using (var cmd = CreateCommand())
+            {
+                cmd.Connection = con;
+                cmd.CommandText = "SELECT 1";
+                cmd.ExecuteScalar();
+            }
+        }
+
+        /// <summary>
+        /// Tests the connection asynchronously.
+        /// </summary>
+        /// <returns></returns>
+        public override async Task TestConnectionAsync()
+        {
+            using (var con = await CreateConnectionAsync())
+            using (var cmd = CreateCommand())
+            {
+                cmd.Connection = con;
+                cmd.CommandText = "SELECT 1";
+                await cmd.ExecuteScalarAsync();
+            }
+        }
+
+
+        /// <summary>
+        /// Called when Database.DatabaseMetadata is invoked.
+        /// </summary>
+        /// <returns></returns>
+        protected override IDatabaseMetadataCache OnGetDatabaseMetadata()
+        {
+            throw new NotSupportedException("This data source does not expose database metadata");
+        }
+
     }
 
 }
+

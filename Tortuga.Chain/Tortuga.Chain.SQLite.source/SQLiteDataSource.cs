@@ -7,9 +7,11 @@ using Tortuga.Chain.Core;
 using System.Diagnostics.CodeAnalysis;
 using System.Collections.Generic;
 using Tortuga.Chain.AuditRules;
+using Tortuga.Chain.DataSources;
 
 #if !WINDOWS_UWP
 using System.Configuration;
+using System.Data.Common;
 #endif
 
 #if SDS
@@ -27,7 +29,7 @@ namespace Tortuga.Chain
     /// <summary>
     /// Class that represents a SQLite Data Source.
     /// </summary>
-    public class SQLiteDataSource : SQLiteDataSourceBase
+    public class SQLiteDataSource : SQLiteDataSourceBase, IRootDataSource
     {
         readonly SQLiteConnectionStringBuilder m_ConnectionBuilder;
         private SQLiteMetadataCache m_DatabaseMetadata;
@@ -148,10 +150,44 @@ namespace Tortuga.Chain
         /// <param name="isolationLevel"></param>
         /// <param name="forwardEvents"></param>
         /// <returns></returns>
-        /// <remarks>The caller of this method is responsible for closing the connection.</remarks>
+        /// <remarks>The caller of this method is responsible for closing the transaction.</remarks>
         public SQLiteTransactionalDataSource BeginTransaction(IsolationLevel? isolationLevel = null, bool forwardEvents = true)
         {
-            return new SQLiteTransactionalDataSource(this, isolationLevel, forwardEvents);
+            IDisposable lockToken = null;
+            if (!DisableLocks)
+                lockToken = SyncLock.WriterLock();
+
+            var connection = CreateConnection();
+            SQLiteTransaction transaction;
+            if (isolationLevel == null)
+                transaction = connection.BeginTransaction();
+            else
+                transaction = connection.BeginTransaction(isolationLevel.Value);
+
+            return new SQLiteTransactionalDataSource(this, isolationLevel, forwardEvents, connection, transaction, lockToken);
+        }
+
+        /// <summary>
+        /// Creates a new transaction.
+        /// </summary>
+        /// <param name="isolationLevel"></param>
+        /// <param name="forwardEvents"></param>
+        /// <returns></returns>
+        /// <remarks>The caller of this method is responsible for closing the transaction.</remarks>
+        public async Task<SQLiteTransactionalDataSource> BeginTransactionAsync(IsolationLevel? isolationLevel = null, bool forwardEvents = true)
+        {
+            IDisposable lockToken = null;
+            if (!DisableLocks)
+                lockToken = await SyncLock.WriterLockAsync();
+
+            var connection = await CreateConnectionAsync();
+            SQLiteTransaction transaction;
+            if (isolationLevel == null)
+                transaction = connection.BeginTransaction();
+            else
+                transaction = connection.BeginTransaction(isolationLevel.Value);
+
+            return new SQLiteTransactionalDataSource(this, isolationLevel, forwardEvents, connection, transaction, lockToken);
         }
 
         /// <summary>
@@ -287,7 +323,7 @@ namespace Tortuga.Chain
             }
         }
 
-        private async Task<SQLiteConnection> CreateConnectionAsync(CancellationToken cancellationToken)
+        private async Task<SQLiteConnection> CreateConnectionAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             var con = new SQLiteConnection(ConnectionString);
             await con.OpenAsync(cancellationToken).ConfigureAwait(false);
@@ -461,6 +497,52 @@ namespace Tortuga.Chain
                 if (lockToken != null)
                     lockToken.Dispose();
             }
+        }
+
+        /// <summary>
+        /// Tests the connection.
+        /// </summary>
+        public override void TestConnection()
+        {
+            using (var con = CreateConnection())
+            using (var cmd = new SQLiteCommand("SELECT 1", con))
+                cmd.ExecuteScalar();
+        }
+
+        /// <summary>
+        /// Tests the connection asynchronously.
+        /// </summary>
+        /// <returns></returns>
+        public override async Task TestConnectionAsync()
+        {
+            using (var con = await CreateConnectionAsync())
+            using (var cmd = new SQLiteCommand("SELECT 1", con))
+                await cmd.ExecuteScalarAsync();
+        }
+
+        DbConnection IRootDataSource.CreateConnection()
+        {
+            return CreateConnection();
+        }
+
+        async Task<DbConnection> IRootDataSource.CreateConnectionAsync()
+        {
+            return await CreateConnectionAsync();
+        }
+
+        IOpenDataSource IRootDataSource.CreateOpenDataSource(DbConnection connection, DbTransaction transaction)
+        {
+            return new SQLiteOpenDataSource(this, (SQLiteConnection)connection, (SQLiteTransaction)transaction);
+        }
+
+        ITransactionalDataSource IRootDataSource.BeginTransaction()
+        {
+            return BeginTransaction();
+        }
+
+        async Task<ITransactionalDataSource> IRootDataSource.BeginTransactionAsync()
+        {
+            return await BeginTransactionAsync();
         }
     }
 }

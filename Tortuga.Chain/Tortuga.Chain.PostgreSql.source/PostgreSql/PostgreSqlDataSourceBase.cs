@@ -1,5 +1,4 @@
 ﻿using Npgsql;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Tortuga.Anchor;
@@ -26,7 +25,7 @@ namespace Tortuga.Chain.PostgreSql
         /// <summary>
         /// Gets the database metadata.
         /// </summary>
-        public abstract PostgreSqlMetadataCache DatabaseMetadata { get; }
+        public abstract new PostgreSqlMetadataCache DatabaseMetadata { get; }
 
         IDatabaseMetadataCache IClass1DataSource.DatabaseMetadata
         {
@@ -97,7 +96,7 @@ namespace Tortuga.Chain.PostgreSql
         public SingleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> GetByKey<T>(PostgreSqlObjectName tableName, T key)
         {
             var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).Columns.Where(c => c.IsPrimaryKey).ToList();
-            if(primaryKeys.Count != 1)
+            if (primaryKeys.Count != 1)
                 throw new MappingException($"GetByKey operation isn't allowed on {tableName} because it doesn't have a single primary key. Use DataSource.From instead.");
 
             var columnMetadata = primaryKeys.Single();
@@ -346,5 +345,16 @@ namespace Tortuga.Chain.PostgreSql
         {
             return Update(argumentValue, options);
         }
+
+
+        /// <summary>
+        /// Called when Database.DatabaseMetadata is invoked.
+        /// </summary>
+        /// <returns></returns>
+        protected override IDatabaseMetadataCache OnGetDatabaseMetadata()
+        {
+            return DatabaseMetadata;
+        }
+
     }
 }

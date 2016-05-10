@@ -3,6 +3,8 @@ using System.Collections.Concurrent;
 using System.ComponentModel;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.AuditRules;
+using System.Threading.Tasks;
+using Tortuga.Chain.Metadata;
 
 #if !WINDOWS_UWP
 using System.Runtime.Caching;
@@ -358,5 +360,32 @@ namespace Tortuga.Chain.DataSources
         /// The audit rules.
         /// </value>
         public AuditRuleCollection AuditRules { get; protected set; } = AuditRuleCollection.Empty;
+
+        /// <summary>
+        /// Tests the connection.
+        /// </summary>
+        public abstract void TestConnection();
+
+        /// <summary>
+        /// Tests the connection asynchronously.
+        /// </summary>
+        /// <returns></returns>
+        public abstract Task TestConnectionAsync();
+
+        /// <summary>
+        /// Gets the database metadata.
+        /// </summary>
+        /// <value>
+        /// The database metadata.
+        /// </value>
+        /// <remarks>Data sources are expected to shadow this with their specific version.</remarks>
+        public IDatabaseMetadataCache DatabaseMetadata { get { return OnGetDatabaseMetadata(); } }
+
+        /// <summary>
+        /// Called when Database.DatabaseMetadata is invoked.
+        /// </summary>
+        /// <returns></returns>
+        protected abstract IDatabaseMetadataCache OnGetDatabaseMetadata();
+
     }
 }

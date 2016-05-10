@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
@@ -32,7 +31,7 @@ namespace Tortuga.Chain.SqlServer
         /// Gets the database metadata.
         /// </summary>
         /// <value>The database metadata.</value>
-        public abstract SqlServerMetadataCache DatabaseMetadata { get; }
+        public abstract new SqlServerMetadataCache DatabaseMetadata { get; }
 
         IDatabaseMetadataCache IClass1DataSource.DatabaseMetadata
         {
@@ -693,6 +692,17 @@ namespace Tortuga.Chain.SqlServer
         {
             return Update(argumentValue, options);
         }
+
+
+        /// <summary>
+        /// Called when Database.DatabaseMetadata is invoked.
+        /// </summary>
+        /// <returns></returns>
+        protected override IDatabaseMetadataCache OnGetDatabaseMetadata()
+        {
+            return DatabaseMetadata;
+        }
+
     }
 }
 

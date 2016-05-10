@@ -86,6 +86,7 @@
     <Compile Include="..\ProductSharedAssemblyInfo.cs">
       <Link>Properties\ProductSharedAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="AnchorMissing.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Properties\LibrarySharedAssemblyInfo.cs" />
     <Compile Include="SqlServerExtensions.cs" />

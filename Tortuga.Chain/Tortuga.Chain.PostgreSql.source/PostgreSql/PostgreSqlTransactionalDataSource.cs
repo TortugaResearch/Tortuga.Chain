@@ -4,6 +4,7 @@ using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
 using Tortuga.Chain.Core;
+using Tortuga.Chain.DataSources;
 
 namespace Tortuga.Chain.PostgreSql
 {
@@ -12,7 +13,7 @@ namespace Tortuga.Chain.PostgreSql
     /// </summary>
     /// <seealso cref="PostgreSqlDataSourceBase" />
     /// <seealso cref="IDisposable" />
-    public class PostgreSqlTransactionalDataSource : PostgreSqlDataSourceBase, IDisposable
+    public class PostgreSqlTransactionalDataSource : PostgreSqlDataSourceBase, IDisposable, ITransactionalDataSource
     {
         private readonly NpgsqlConnection m_Connection;
         private readonly PostgreSqlDataSource m_DataSource;
@@ -25,7 +26,7 @@ namespace Tortuga.Chain.PostgreSql
         /// <param name="dataSource">The data source.</param>
         /// <param name="isolationLevel">The isolation level.</param>
         /// <param name="forwardEvents">if set to <c>true</c> [forward events].</param>
-        internal PostgreSqlTransactionalDataSource(PostgreSqlDataSource dataSource, IsolationLevel? isolationLevel, bool forwardEvents)
+        public PostgreSqlTransactionalDataSource(PostgreSqlDataSource dataSource, IsolationLevel? isolationLevel, bool forwardEvents)
             : base(new PostgreSqlDataSourceSettings { DefaultCommandTimeout = dataSource.DefaultCommandTimeout, StrictMode = dataSource.StrictMode, SuppressGlobalEvents = dataSource.SuppressGlobalEvents || forwardEvents })
         {
             Name = dataSource.Name;
@@ -50,6 +51,32 @@ namespace Tortuga.Chain.PostgreSql
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="PostgreSqlTransactionalDataSource"/> class.
+        /// </summary>
+        /// <param name="dataSource">The data source.</param>
+        /// <param name="isolationLevel">The isolation level.</param>
+        /// <param name="forwardEvents">if set to <c>true</c> [forward events].</param>
+        internal PostgreSqlTransactionalDataSource(PostgreSqlDataSource dataSource, IsolationLevel? isolationLevel, bool forwardEvents, NpgsqlConnection connection, NpgsqlTransaction transaction)
+            : base(new PostgreSqlDataSourceSettings { DefaultCommandTimeout = dataSource.DefaultCommandTimeout, StrictMode = dataSource.StrictMode, SuppressGlobalEvents = dataSource.SuppressGlobalEvents || forwardEvents })
+        {
+            Name = dataSource.Name;
+
+            m_DataSource = dataSource;
+            m_Connection = connection;
+            m_Transaction = transaction;
+
+
+            if (forwardEvents)
+            {
+                ExecutionStarted += (sender, e) => dataSource.OnExecutionStarted(e);
+                ExecutionFinished += (sender, e) => dataSource.OnExecutionFinished(e);
+                ExecutionError += (sender, e) => dataSource.OnExecutionError(e);
+                ExecutionCanceled += (sender, e) => dataSource.OnExecutionCanceled(e);
+            }
+            AuditRules = dataSource.AuditRules;
+            UserValue = dataSource.UserValue;
+        }
+        /// <summary>
         /// Gets the database metadata.
         /// </summary>
         public override PostgreSqlMetadataCache DatabaseMetadata
@@ -68,6 +95,9 @@ namespace Tortuga.Chain.PostgreSql
 
         private void Dispose(bool disposing)
         {
+            if (m_Disposed)
+                return;
+
             if (disposing)
             {
                 m_Transaction.Dispose();
@@ -308,5 +338,25 @@ namespace Tortuga.Chain.PostgreSql
         {
             return m_DataSource.GetExtensionData<TTKey>();
         }
+
+        /// <summary>
+        /// Tests the connection.
+        /// </summary>
+        public override void TestConnection()
+        {
+            using (var cmd = new NpgsqlCommand("SELECT 1", m_Connection))
+                cmd.ExecuteScalar();
+        }
+
+        /// <summary>
+        /// Tests the connection asynchronously.
+        /// </summary>
+        /// <returns></returns>
+        public override async Task TestConnectionAsync()
+        {
+            using (var cmd = new NpgsqlCommand("SELECT 1", m_Connection))
+                await cmd.ExecuteScalarAsync();
+        }
+
     }
 }

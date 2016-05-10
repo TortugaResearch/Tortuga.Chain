@@ -9,7 +9,7 @@ namespace Tortuga.Chain.Metadata
     /// </summary>
     /// <typeparam name="TName">The type used to represent database object names.</typeparam>
     /// <typeparam name="TDbType">The variant of DbType used by this data source.</typeparam>
-    public sealed class StoredProcedureMetadata<TName, TDbType>
+    public sealed class StoredProcedureMetadata<TName, TDbType> : IStoredProcedureMetadata
         where TDbType : struct
     {
 

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data;
 using System.Data.SqlClient;
+using Tortuga.Anchor;
 using Tortuga.Anchor.Metadata;
 using Tortuga.Chain.Metadata;
 
@@ -90,9 +92,9 @@ namespace Tortuga.Chain.SqlServer
         /// <remarks>
         /// Call Preload before invoking this method to ensure that all stored procedures were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.
         /// </remarks>
-        public override ICollection<StoredProcedureMetadata<SqlServerObjectName, SqlDbType>> GetStoredProcedures()
+        public override IReadOnlyCollection<StoredProcedureMetadata<SqlServerObjectName, SqlDbType>> GetStoredProcedures()
         {
-            return m_StoredProcedures.Values;
+            return m_StoredProcedures.GetValues();
         }
 
         /// <summary>
@@ -112,9 +114,9 @@ namespace Tortuga.Chain.SqlServer
         /// <remarks>
         /// Call Preload before invoking this method to ensure that all table-valued functions were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.
         /// </remarks>
-        public override ICollection<TableFunctionMetadata<SqlServerObjectName, SqlDbType>> GetTableFunctions()
+        public override IReadOnlyCollection<TableFunctionMetadata<SqlServerObjectName, SqlDbType>> GetTableFunctions()
         {
-            return m_TableFunctions.Values;
+            return m_TableFunctions.GetValues();
         }
 
         /// <summary>
@@ -148,9 +150,9 @@ namespace Tortuga.Chain.SqlServer
         /// <remarks>
         /// Call Preload before invoking this method to ensure that all tables and views were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.
         /// </remarks>
-        public override ICollection<TableOrViewMetadata<SqlServerObjectName, SqlDbType>> GetTablesAndViews()
+        public override IReadOnlyCollection<TableOrViewMetadata<SqlServerObjectName, SqlDbType>> GetTablesAndViews()
         {
-            return m_Tables.Values;
+            return m_Tables.GetValues();
         }
 
         /// <summary>
@@ -454,44 +456,53 @@ namespace Tortuga.Chain.SqlServer
                     }
                 }
             }
-            var columns = GetColumns(objectId);
-            var parameters = GetParameters(objectId);
+            var objectName = new SqlServerObjectName(actualSchema, actualName);
 
-            return new TableFunctionMetadata<SqlServerObjectName, SqlDbType>(new SqlServerObjectName(actualSchema, actualName), parameters, columns);
+            var columns = GetColumns(objectId);
+            var parameters = GetParameters(objectName.ToString(), objectId);
+
+            return new TableFunctionMetadata<SqlServerObjectName, SqlDbType>(objectName, parameters, columns);
         }
 
-        List<ParameterMetadata<SqlDbType>> GetParameters(int objectId)
+        List<ParameterMetadata<SqlDbType>> GetParameters(string procedureName, int objectId)
         {
-            const string ParameterSql =
-                @"SELECT 
-				p.name AS ParameterName,
-				t.name as TypeName
-				FROM sys.parameters p 
-				LEFT JOIN sys.types t ON p.system_type_id = t.user_type_id
-				WHERE p.object_id = @ObjectId
-				ORDER BY parameter_id";
-
-            var parameters = new List<ParameterMetadata<SqlDbType>>();
-
-            using (var con = new SqlConnection(m_ConnectionBuilder.ConnectionString))
+            try
             {
-                con.Open();
+                const string ParameterSql =
+                    @"SELECT  p.name AS ParameterName ,
+        COALESCE(t.name, t2.name) AS TypeName
+FROM    sys.parameters p
+        LEFT JOIN sys.types t ON p.system_type_id = t.user_type_id
+        LEFT JOIN sys.types t2 ON p.user_type_id = t2.user_type_id
+WHERE   p.object_id = @ObjectId
+ORDER BY p.parameter_id;";
 
-                using (var cmd = new SqlCommand(ParameterSql, con))
+                var parameters = new List<ParameterMetadata<SqlDbType>>();
+
+                using (var con = new SqlConnection(m_ConnectionBuilder.ConnectionString))
                 {
-                    cmd.Parameters.AddWithValue("@ObjectId", objectId);
-                    using (var reader = cmd.ExecuteReader())
+                    con.Open();
+
+                    using (var cmd = new SqlCommand(ParameterSql, con))
                     {
-                        while (reader.Read())
+                        cmd.Parameters.AddWithValue("@ObjectId", objectId);
+                        using (var reader = cmd.ExecuteReader())
                         {
-                            var name = reader.GetString(reader.GetOrdinal("ParameterName"));
-                            var typeName = reader.GetString(reader.GetOrdinal("TypeName"));
-                            parameters.Add(new ParameterMetadata<SqlDbType>(name, typeName, TypeNameToSqlDbType(typeName)));
+                            while (reader.Read())
+                            {
+                                var name = reader.GetString(reader.GetOrdinal("ParameterName"));
+                                var typeName = reader.GetString(reader.GetOrdinal("TypeName"));
+                                parameters.Add(new ParameterMetadata<SqlDbType>(name, typeName, TypeNameToSqlDbType(typeName)));
+                            }
                         }
                     }
                 }
+                return parameters;
             }
-            return parameters;
+            catch (Exception ex)
+            {
+                throw new MetadataException($"Error getting parameters for {procedureName}", ex);
+            }
         }
 
         private StoredProcedureMetadata<SqlServerObjectName, SqlDbType> GetStoredProcedureInternal(SqlServerObjectName procedureName)
@@ -528,9 +539,10 @@ namespace Tortuga.Chain.SqlServer
                     }
                 }
             }
-            var parameters = GetParameters(objectId);
+            var objectName = new SqlServerObjectName(actualSchema, actualName);
+            var parameters = GetParameters(objectName.ToString(), objectId);
 
-            return new StoredProcedureMetadata<SqlServerObjectName, SqlDbType>(new SqlServerObjectName(actualSchema, actualName), parameters);
+            return new StoredProcedureMetadata<SqlServerObjectName, SqlDbType>(objectName, parameters);
         }
         TableOrViewMetadata<SqlServerObjectName, SqlDbType> GetTableOrViewInternal(SqlServerObjectName tableName)
         {
@@ -592,9 +604,9 @@ namespace Tortuga.Chain.SqlServer
         /// </summary>
         /// <returns>ICollection&lt;UserDefinedTypeMetadata&lt;SqlServerObjectName, SqlDbType&gt;&gt;.</returns>
         /// <remarks>Call Preload before invoking this method to ensure that all table-valued functions were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.</remarks>
-        public override ICollection<UserDefinedTypeMetadata<SqlServerObjectName, SqlDbType>> GetUserDefinedTypes()
+        public override IReadOnlyCollection<UserDefinedTypeMetadata<SqlServerObjectName, SqlDbType>> GetUserDefinedTypes()
         {
-            return m_UserDefinedTypes.Values;
+            return m_UserDefinedTypes.GetValues();
         }
 
 
@@ -709,6 +721,19 @@ WHERE	s.name = @Schema AND t.name = @Name;";
             m_TypeTableMap[type] = result;
             return result;
 
+        }
+
+        /// <summary>
+        /// Resets the metadata cache, clearing out all cached metadata.
+        /// </summary>
+        public override void Reset()
+        {
+            m_StoredProcedures.Clear();
+            m_TableFunctions.Clear();
+            m_Tables.Clear();
+            m_TypeTableMap.Clear();
+            m_UdtTypeMap.Clear();
+            m_UserDefinedTypes.Clear();
         }
     }
 

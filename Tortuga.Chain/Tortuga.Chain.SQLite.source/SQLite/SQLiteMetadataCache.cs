@@ -4,6 +4,7 @@ using System.Data;
 using Tortuga.Chain.Metadata;
 using System;
 using Tortuga.Anchor.Metadata;
+using Tortuga.Anchor;
 
 #if SDS
 using System.Data.SQLite;
@@ -76,7 +77,7 @@ namespace Tortuga.Chain.SQLite
                 }
             }
 
-            var columns = GetColumns(tableName);
+            var columns = GetColumns(tableName, isTable);
             return new TableOrViewMetadata<string, DbType>(actualName, isTable, columns);
         }
 
@@ -139,12 +140,13 @@ namespace Tortuga.Chain.SQLite
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
-        private List<ColumnMetadata<DbType>> GetColumns(string tableName)
+        private List<ColumnMetadata<DbType>> GetColumns(string tableName, bool isTable)
         {
             /*  NOTE: Should be safe since GetTableOrViewInternal returns null after querying the table name with a 
             **  prepared statement. 
             */
-            string columnSql = "PRAGMA table_info('" + tableName + "')";
+            var hasPrimarykey = false;
+            var columnSql = "PRAGMA table_info('" + tableName + "')";
 
             var columns = new List<ColumnMetadata<DbType>>();
             using (var con = new SQLiteConnection(m_ConnectionBuilder.ConnectionString))
@@ -159,6 +161,7 @@ namespace Tortuga.Chain.SQLite
                             var name = reader.GetString(reader.GetOrdinal("name"));
                             var typeName = reader.GetString(reader.GetOrdinal("type"));
                             var isPrimaryKey = reader.GetInt32(reader.GetOrdinal("pk")) != 0 ? true : false;
+                            hasPrimarykey = hasPrimarykey || isPrimaryKey;
 
                             columns.Add(new ColumnMetadata<DbType>(name, false, isPrimaryKey, false, typeName, null, "[" + name + "]"));
                         }
@@ -166,7 +169,10 @@ namespace Tortuga.Chain.SQLite
                 }
             }
 
-            columns.Add(new ColumnMetadata<DbType>("ROWID", true, false, true, "INTEGER", null, "ROWID"));
+            //Tables wihtout a primary key always have a ROWID.
+            //We can't tell if other tables have one or not.
+            if (isTable && !hasPrimarykey)
+                columns.Add(new ColumnMetadata<DbType>("ROWID", true, false, true, "INTEGER", null, "[ROWID]"));
 
             return columns;
         }
@@ -197,9 +203,9 @@ namespace Tortuga.Chain.SQLite
         /// <remarks>
         /// Call Preload before invoking this method to ensure that all tables and views were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.
         /// </remarks>
-        public override ICollection<TableOrViewMetadata<string, DbType>> GetTablesAndViews()
+        public override IReadOnlyCollection<TableOrViewMetadata<string, DbType>> GetTablesAndViews()
         {
-            return m_Tables.Values;
+            return m_Tables.GetValues();
         }
 
         /// <summary>
@@ -226,6 +232,15 @@ namespace Tortuga.Chain.SQLite
             result = GetTableOrView(type.Name);
             m_TypeTableMap[type] = result;
             return result;
+        }
+
+        /// <summary>
+        /// Resets the metadata cache, clearing out all cached metadata.
+        /// </summary>
+        public override void Reset()
+        {
+            m_Tables.Clear();
+            m_TypeTableMap.Clear();
         }
     }
 }
