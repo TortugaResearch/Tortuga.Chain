@@ -40,6 +40,15 @@ namespace Tortuga.Chain.SQLite
         /// <param name="forwardEvents">if set to <c>true</c> [forward events].</param>
         internal SQLiteTransactionalDataSource(SQLiteDataSource dataSource, IsolationLevel? isolationLevel, bool forwardEvents, SQLiteConnection connection, SQLiteTransaction transaction, IDisposable lockToken) : base(new SQLiteDataSourceSettings() { DefaultCommandTimeout = dataSource.DefaultCommandTimeout, StrictMode = dataSource.StrictMode, SuppressGlobalEvents = dataSource.SuppressGlobalEvents || forwardEvents, DisableLocks = dataSource.DisableLocks })
         {
+            if (dataSource == null)
+                throw new ArgumentNullException(nameof(dataSource), $"{nameof(dataSource)} is null.");
+            if (connection == null)
+                throw new ArgumentNullException(nameof(connection), $"{nameof(connection)} is null.");
+            if (transaction == null)
+                throw new ArgumentNullException(nameof(transaction), $"{nameof(transaction)} is null.");
+            if (lockToken == null)
+                throw new ArgumentNullException(nameof(lockToken), $"{nameof(lockToken)} is null.");
+
             Name = dataSource.Name;
 
             m_BaseDataSource = dataSource;
@@ -67,10 +76,14 @@ namespace Tortuga.Chain.SQLite
         /// <param name="forwardEvents">if set to <c>true</c> [forward events].</param>
         public SQLiteTransactionalDataSource(SQLiteDataSource dataSource, IsolationLevel? isolationLevel, bool forwardEvents) : base(new SQLiteDataSourceSettings() { DefaultCommandTimeout = dataSource.DefaultCommandTimeout, StrictMode = dataSource.StrictMode, SuppressGlobalEvents = dataSource.SuppressGlobalEvents || forwardEvents, DisableLocks = dataSource.DisableLocks })
         {
+            if (dataSource == null)
+                throw new ArgumentNullException(nameof(dataSource), $"{nameof(dataSource)} is null.");
+
             Name = dataSource.Name;
 
             m_BaseDataSource = dataSource;
             m_Connection = dataSource.CreateConnection();
+            m_LockToken = SyncLock.WriterLock();
 
             if (isolationLevel == null)
                 m_Transaction = m_Connection.BeginTransaction();
@@ -176,14 +189,9 @@ namespace Tortuga.Chain.SQLite
             var startTime = DateTimeOffset.Now;
             OnExecutionStarted(executionToken, startTime, state);
 
-            IDisposable lockToken = null;
             try
             {
-                switch (mode)
-                {
-                    case LockType.Read: lockToken = SyncLock.ReaderLock(); break;
-                    case LockType.Write: lockToken = SyncLock.WriterLock(); break;
-                }
+
 
                 using (var cmd = new SQLiteCommand())
                 {
@@ -208,11 +216,6 @@ namespace Tortuga.Chain.SQLite
             {
                 OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
                 throw;
-            }
-            finally
-            {
-                if (lockToken != null)
-                    lockToken.Dispose();
             }
         }
 
@@ -241,14 +244,9 @@ namespace Tortuga.Chain.SQLite
             var startTime = DateTimeOffset.Now;
             OnExecutionStarted(executionToken, startTime, state);
 
-            IDisposable lockToken = null;
             try
             {
-                switch (mode)
-                {
-                    case LockType.Read: lockToken = await SyncLock.ReaderLockAsync().ConfigureAwait(false); break;
-                    case LockType.Write: lockToken = await SyncLock.WriterLockAsync().ConfigureAwait(false); break;
-                }
+
 
                 using (var cmd = new SQLiteCommand())
                 {
@@ -283,11 +281,6 @@ namespace Tortuga.Chain.SQLite
                     throw;
                 }
             }
-            finally
-            {
-                if (lockToken != null)
-                    lockToken.Dispose();
-            }
         }
 
         /// <summary>
@@ -321,15 +314,8 @@ namespace Tortuga.Chain.SQLite
             var startTime = DateTimeOffset.Now;
             OnExecutionStarted(executionToken, startTime, state);
 
-            IDisposable lockToken = null;
             try
             {
-                switch (mode)
-                {
-                    case LockType.Read: lockToken = SyncLock.ReaderLock(); break;
-                    case LockType.Write: lockToken = SyncLock.WriterLock(); break;
-                }
-
                 var rows = implementation(m_Connection, m_Transaction);
                 OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
                 return rows;
@@ -339,11 +325,6 @@ namespace Tortuga.Chain.SQLite
             {
                 OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
                 throw;
-            }
-            finally
-            {
-                if (lockToken != null)
-                    lockToken.Dispose();
             }
         }
 
@@ -367,15 +348,8 @@ namespace Tortuga.Chain.SQLite
             var startTime = DateTimeOffset.Now;
             OnExecutionStarted(executionToken, startTime, state);
 
-            IDisposable lockToken = null;
             try
             {
-                switch (mode)
-                {
-                    case LockType.Read: lockToken = await SyncLock.ReaderLockAsync().ConfigureAwait(false); break;
-                    case LockType.Write: lockToken = await SyncLock.WriterLockAsync().ConfigureAwait(false); break;
-                }
-
                 var rows = await implementation(m_Connection, m_Transaction, cancellationToken).ConfigureAwait(false);
                 OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
                 return rows;
@@ -394,11 +368,6 @@ namespace Tortuga.Chain.SQLite
                     OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
                     throw;
                 }
-            }
-            finally
-            {
-                if (lockToken != null)
-                    lockToken.Dispose();
             }
         }
 
