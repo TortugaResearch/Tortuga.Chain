@@ -1,9 +1,9 @@
 using Npgsql;
 using System;
+using System.Configuration;
 using System.Diagnostics;
 using Tortuga.Chain;
 using Tortuga.Chain.Core;
-using Tortuga.Chain.DataSources;
 
 
 
@@ -17,22 +17,8 @@ namespace Tests
 
         public static void AssemblyInit()
         {
-            DataSource.GlobalExecutionCanceled += DefaultDispatcher_ExecutionCanceled;
-            DataSource.GlobalExecutionError += DefaultDispatcher_ExecutionError;
-            DataSource.GlobalExecutionFinished += DefaultDispatcher_ExecutionFinished;
-            DataSource.GlobalExecutionStarted += DefaultDispatcher_ExecutionStarted;
-
-            CompiledMaterializers.MaterializerCompiled += CompiledMaterializers_MaterializerCompiled;
-            CompiledMaterializers.MaterializerCompilerFailed += CompiledMaterializers_MaterializerCompiled;
-
-
             //TODO - setup database?
-            using (var con = new NpgsqlConnection(@"User ID = postgres;
-                                             Password = toor; 
-                                             Host = localhost; 
-                                             Port = 5432;
-                                             Database = tortugachaintestdb;
-                                             Pooling = true;"))
+            using (var con = new NpgsqlConnection(ConfigurationManager.ConnectionStrings["PostgreSqlTestDatabase"].ConnectionString))
             {
                 con.Open();
 
