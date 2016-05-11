@@ -11,6 +11,14 @@ namespace Tests.CommandBuilders
     {
         public static TablesAndViewData TablesAndViews = new TablesAndViewData(s_DataSources.Values);
 
+#if SQL_SERVER
+        public static TablesAndViewLimitData<SqlServerLimitOption> TablesAndViewLimit = new TablesAndViewLimitData<SqlServerLimitOption>(s_DataSources.Values);
+#elif SQLITE
+        public static TablesAndViewLimitData<SQLiteLimitOption> TablesAndViewLimit = new TablesAndViewLimitData<SQLiteLimitOption>(s_DataSources.Values);
+#elif POSTGRESQL
+        public static TablesAndViewLimitData<PostgreSqlLimitOption> TablesAndViewLimit = new TablesAndViewLimitData<PostgreSqlLimitOption>(s_DataSources.Values);
+#endif
+
         public FromTests(ITestOutputHelper output) : base(output)
         {
 
@@ -288,6 +296,69 @@ namespace Tests.CommandBuilders
             }
 
         }
+
+
+
+        [Theory]
+        [MemberData("TablesAndViewLimit")]
+        public void ToTable_WithLimit(string assemblyName, string dataSourceName, DataSourceType mode, string tableName, LimitOptions limitOptions)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            m_Output.WriteLine($"Table {tableName}, Limit Option {limitOptions}");
+            try
+            {
+                var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
+
+                var prep = ((IClass1DataSource)dataSource).From(tableName).WithLimits(10, limitOptions);
+                switch (limitOptions)
+                {
+                    case LimitOptions.RowsWithTies:
+                    case LimitOptions.PercentageWithTies:
+                        prep = prep.WithSorting(table.Columns[0].SqlName);
+                        break;
+                }
+                var result = prep.ToTable().Execute();
+                //Assert.True(result.Rows.Count <= 10, $"Row count was {result.Rows.Count}");
+                Assert.Equal(table.Columns.Count, result.ColumnNames.Count);
+
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+
+        }
+
+        [Theory]
+        [MemberData("TablesAndViewLimit")]
+        public async Task ToTable_WithLimit_Async(string assemblyName, string dataSourceName, DataSourceType mode, string tableName, LimitOptions limitOptions)
+        {
+            var dataSource = await DataSourceAsync(dataSourceName, mode);
+            m_Output.WriteLine($"Table {tableName}, Limit Option {limitOptions}");
+            try
+            {
+                var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
+
+                var prep = ((IClass1DataSource)dataSource).From(tableName).WithLimits(10, limitOptions);
+                switch (limitOptions)
+                {
+                    case LimitOptions.RowsWithTies:
+                    case LimitOptions.PercentageWithTies:
+                        prep = prep.WithSorting(table.Columns[0].SqlName);
+                        break;
+                }
+                var result = await prep.ToTable().ExecuteAsync();
+                //Assert.True(result.Rows.Count <= 10, $"Row count was {result.Rows.Count}");
+                Assert.Equal(table.Columns.Count, result.ColumnNames.Count);
+
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+
+        }
+
 
     }
 }

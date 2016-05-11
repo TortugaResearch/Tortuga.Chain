@@ -147,8 +147,8 @@ namespace Tortuga.Chain.PostgreSql
                 table_name as tablename,
                 table_type as type
                 FROM information_schema.tables
-                WHERE table_schema=@Schema AND
-                      table_name=@Name AND
+                WHERE table_schema ILIKE @Schema AND
+                      table_name ILIKE @Name AND
                       (table_type='BASE TABLE' OR
                        table_type='VIEW');";
 
@@ -188,8 +188,8 @@ namespace Tortuga.Chain.PostgreSql
                 ns.nspname AS schema
                 FROM pg_proc AS sp
                 INNER JOIN pg_namespace AS ns ON ns.oid=sp.pronamespace
-                WHERE sp.proname=@ProcName AND
-                      ns.nspname=@Schema;";
+                WHERE sp.proname ILIKE @ProcName AND
+                      ns.nspname ILIKE @Schema;";
 
             string actualSchema;
             string actualName;
@@ -239,8 +239,8 @@ LEFT JOIN (SELECT c.relname
            FROM pg_class as c
            WHERE c.relkind='S') seq ON seq.relname~att.attname AND
                                        seq.relname~c.relname
-WHERE c.relname=@Name AND
-      ns.nspname=@Schema;";
+WHERE c.relname ILIKE @Name AND
+      ns.nspname ILIKE @Schema;";
 
             var columns = new List<ColumnMetadata<NpgsqlDbType>>();
             using (var con = new NpgsqlConnection(m_ConnectionBuilder.ConnectionString))
@@ -274,8 +274,8 @@ WHERE c.relname=@Name AND
                 data_type,
                 parameter_name
                 FROM information_schema.parameters
-                WHERE specific_schema=@Schema AND
-                      specific_name~@Name;";
+                WHERE specific_schema ILIKE @Schema AND
+                      specific_name ~* @Name;";
 
             var parameters = new List<ParameterMetadata<NpgsqlDbType>>();
             using (var con = new NpgsqlConnection(m_ConnectionBuilder.ConnectionString))
