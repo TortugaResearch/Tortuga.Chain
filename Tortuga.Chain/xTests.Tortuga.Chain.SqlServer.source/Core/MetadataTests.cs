@@ -48,6 +48,45 @@ namespace Tests.Core
 
         }
 
+
+        [Theory]
+        [MemberData("Tables")]
+        public void GetTable_LowerCase(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+                dataSource.DatabaseMetadata.Reset();
+                var table = dataSource.DatabaseMetadata.GetTableOrView(tableName.ToLower());
+                Assert.Equal(tableName, table.Name.ToString());
+                Assert.NotEmpty(table.Columns);
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+
+        }
+
+        [Theory]
+        [MemberData("Tables")]
+        public void GetTable_UpperCase(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+                dataSource.DatabaseMetadata.Reset();
+                var table = dataSource.DatabaseMetadata.GetTableOrView(tableName.ToUpper());
+                Assert.Equal(tableName, table.Name.ToString());
+                Assert.NotEmpty(table.Columns);
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+
+        }
+
         [Theory]
         [MemberData("Views")]
         public void GetView(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)

@@ -1,15 +1,16 @@
 ﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using Tortuga.Chain.CommandBuilders;
 
 namespace Tortuga.Chain.Metadata
 {
+        
+
     /// <summary>
     /// Metadata for a database table value function.
     /// </summary>
     /// <typeparam name="TName">The type used to represent database object names.</typeparam>
     /// <typeparam name="TDbType">The variant of DbType used by this data source.</typeparam>
-    public sealed class TableFunctionMetadata<TName, TDbType> : ITableFunctionMetadata
+    public sealed class TableFunctionMetadata<TName, TDbType> : TableFunctionMetadata
         where TDbType : struct
     {
 
@@ -21,8 +22,11 @@ namespace Tortuga.Chain.Metadata
         public TableFunctionMetadata(TName name, IList<ParameterMetadata<TDbType>> parameters, IList<ColumnMetadata<TDbType>> columns)
         {
             Name = name;
+            base.Name = name.ToString();
             Columns = new ColumnMetadataCollection<TDbType>(name.ToString(), columns);
-            Parameters = new ReadOnlyCollection<ParameterMetadata<TDbType>>(parameters);
+            base.Columns = Columns.GenericCollection;
+            Parameters = new ParameterMetadataCollection<TDbType>(name.ToString(), parameters);
+            base.Parameters = Parameters.GenericCollection;
         }
 
 
@@ -32,7 +36,7 @@ namespace Tortuga.Chain.Metadata
         /// <value>
         /// The columns.
         /// </value>
-        public ColumnMetadataCollection<TDbType> Columns { get; }
+        public new ColumnMetadataCollection<TDbType> Columns { get; }
 
         /// <summary>
         /// Gets the name.
@@ -40,7 +44,7 @@ namespace Tortuga.Chain.Metadata
         /// <value>
         /// The name.
         /// </value>
-        public TName Name { get; }
+        public new TName Name { get; }
 
         /// <summary>
         /// Gets the parameters.
@@ -48,7 +52,7 @@ namespace Tortuga.Chain.Metadata
         /// <value>
         /// The parameters.
         /// </value>
-        public ReadOnlyCollection<ParameterMetadata<TDbType>> Parameters { get; }
+        public new ParameterMetadataCollection<TDbType> Parameters { get; }
 
         /// <summary>
         /// Creates a SQL builder.

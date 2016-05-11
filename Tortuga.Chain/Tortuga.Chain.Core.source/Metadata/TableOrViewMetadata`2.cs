@@ -9,7 +9,7 @@ namespace Tortuga.Chain.Metadata
     /// </summary>
     /// <typeparam name="TName">The type used to represent database object names.</typeparam>
     /// <typeparam name="TDbType">The variant of DbType used by this data source.</typeparam>
-    public sealed class TableOrViewMetadata<TName, TDbType> : ITableOrViewMetadata
+    public sealed class TableOrViewMetadata<TName, TDbType> : TableOrViewMetadata
         where TDbType : struct
     {
 
@@ -22,7 +22,9 @@ namespace Tortuga.Chain.Metadata
         {
             IsTable = isTable;
             Name = name;
+            base.Name = name.ToString();
             Columns = new ColumnMetadataCollection<TDbType>(name.ToString(), columns);
+            base.Columns = Columns.GenericCollection;
         }
 
 
@@ -32,25 +34,7 @@ namespace Tortuga.Chain.Metadata
         /// <value>
         /// The columns.
         /// </value>
-        public ColumnMetadataCollection<TDbType> Columns { get; }
-
-        /// <summary>
-        /// Gets a value indicating whether this instance is table or a view.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if this instance is a table; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsTable { get; }
-
-        IReadOnlyList<IColumnMetadata> ITableOrViewMetadata.Columns
-        {
-            get { return Columns; }
-        }
-
-        string ITableOrViewMetadata.Name
-        {
-            get { return Name.ToString(); }
-        }
+        public new ColumnMetadataCollection<TDbType> Columns { get; }
 
         /// <summary>
         /// Gets the name.
@@ -58,10 +42,10 @@ namespace Tortuga.Chain.Metadata
         /// <value>
         /// The name.
         /// </value>
-        public TName Name { get; }
+        public new TName Name { get; }
 
         /// <summary>
-        /// Creates the SQL builder.
+        /// Creates the SQL builder
         /// </summary>
         /// <returns></returns>
         public SqlBuilder<TDbType> CreateSqlBuilder(bool strictMode)

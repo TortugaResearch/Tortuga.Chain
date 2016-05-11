@@ -1,10 +1,12 @@
 namespace Tortuga.Chain.Metadata
 {
+        
+
     /// <summary>
     /// Metadata for a stored procedure parameter
     /// </summary>
     /// <typeparam name="TDbType">The variant of DbType used by this data source.</typeparam>
-    public sealed class ParameterMetadata<TDbType> : ISqlBuilderEntryDetails<TDbType>
+    public sealed class ParameterMetadata<TDbType> : ParameterMetadata, ISqlBuilderEntryDetails<TDbType>
         where TDbType : struct
     {
         /// <summary>
@@ -19,17 +21,15 @@ namespace Tortuga.Chain.Metadata
             SqlParameterName = sqlParameterName;
             ClrName = Utilities.ToClrName(sqlParameterName);
             DbType = dbType;
+            base.DbType = dbType;
         }
 
-        /// <summary>
-        /// Gets the name used by CLR objects.
-        /// </summary>
-        public string ClrName { get; }
+
 
         /// <summary>
         /// Gets the type used by the database.
         /// </summary>
-        public TDbType? DbType { get; }
+        public new TDbType? DbType { get; }
 
         bool ISqlBuilderEntryDetails.IsIdentity
         {
@@ -50,14 +50,6 @@ namespace Tortuga.Chain.Metadata
         {
             get { return SqlParameterName; }
         }
-        /// <summary>
-        /// Gets the name used by the database.
-        /// </summary>
-        public string SqlParameterName { get; }
 
-        /// <summary>
-        /// Gets the name of the type.
-        /// </summary>
-        public string TypeName { get; }
     }
 }

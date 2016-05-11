@@ -50,18 +50,12 @@ namespace Tortuga.Chain.SQLite
 
         DbConnection IOpenDataSource.AssociatedConnection
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
+            get { return m_Connection; }
         }
 
         DbTransaction IOpenDataSource.AssociatedTransaction
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
+            get { return m_Transaction; }
         }
 
         /// <summary>

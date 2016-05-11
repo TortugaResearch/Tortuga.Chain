@@ -40,7 +40,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         /// <remarks>
         /// If the column name was not found, this will return null
         /// </remarks>
-        public override IColumnMetadata TryGetColumn(string columnName)
+        public override ColumnMetadata TryGetColumn(string columnName)
         {
             return Table.Columns.TryGetColumn(columnName);
         }

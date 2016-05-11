@@ -45,7 +45,6 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="argumentValue">The argument value.</param>
         /// <param name="options">The delete options.</param>
         /// <returns>SqlServerInsert.</returns>
-        /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
         public ObjectDbCommandBuilder<SqlCommand, SqlParameter, TArgument> Delete<TArgument>(SqlServerObjectName tableName, TArgument argumentValue, DeleteOptions options = DeleteOptions.None)
         where TArgument : class
         {
@@ -65,11 +64,6 @@ namespace Tortuga.Chain.SqlServer
         /// </summary>
         /// <param name="tableOrViewName">Name of the table or view.</param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException">
-        /// tableName is empty.;tableName
-        /// or
-        /// Table or view named + tableName +  could not be found. Check to see if the user has permissions to execute this procedure.
-        /// </exception>
         public TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption> From(SqlServerObjectName tableOrViewName)
         {
             return new SqlServerTableOrView(this, tableOrViewName, null, null);
@@ -81,7 +75,6 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="tableOrViewName">Name of the table or view.</param>
         /// <param name="whereClause">The where clause. Do not prefix this clause with "WHERE".</param>
         /// <returns>SqlServerTableOrView.</returns>
-        /// <exception cref="ArgumentException">tableOrViewName is empty.;tableOrViewName</exception>
         public TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption> From(SqlServerObjectName tableOrViewName, string whereClause)
         {
             return new SqlServerTableOrView(this, tableOrViewName, whereClause, null);
@@ -94,7 +87,6 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="whereClause">The where clause. Do not prefix this clause with "WHERE".</param>
         /// <param name="argumentValue">Optional argument value. Every property in the argument value must have a matching parameter in the WHERE clause</param>
         /// <returns>SqlServerTableOrView.</returns>
-        /// <exception cref="ArgumentException">tableOrViewName is empty.;tableOrViewName</exception>
         public TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption> From(SqlServerObjectName tableOrViewName, string whereClause, object argumentValue)
         {
             return new SqlServerTableOrView(this, tableOrViewName, whereClause, argumentValue);
@@ -106,7 +98,6 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="tableOrViewName">Name of the table or view.</param>
         /// <param name="filterValue">The filter value is used to generate a simple AND style WHERE clause.</param>
         /// <returns>SqlServerTableOrView.</returns>
-        /// <exception cref="ArgumentException">tableOrViewName is empty.;tableOrViewName</exception>
         public TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption> From(SqlServerObjectName tableOrViewName, object filterValue)
         {
             return new SqlServerTableOrView(this, tableOrViewName, filterValue);
@@ -283,7 +274,6 @@ namespace Tortuga.Chain.SqlServer
         /// <returns>
         /// SqlServerInsert.
         /// </returns>
-        /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
         public ObjectDbCommandBuilder<SqlCommand, SqlParameter, TArgument> Insert<TArgument>(SqlServerObjectName tableName, TArgument argumentValue, InsertOptions options = InsertOptions.None)
         where TArgument : class
         {
@@ -342,7 +332,6 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="argumentValue">The argument value.</param>
         /// <param name="options">The update options.</param>
         /// <returns>SqlServerInsert.</returns>
-        /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
         public ObjectDbCommandBuilder<SqlCommand, SqlParameter, TArgument> Update<TArgument>(SqlServerObjectName tableName, TArgument argumentValue, UpdateOptions options = UpdateOptions.None)
         where TArgument : class
         {
@@ -356,7 +345,6 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="argumentValue">The argument value.</param>
         /// <param name="options">The options for how the insert/update occurs.</param>
         /// <returns>SqlServerUpdate.</returns>
-        /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
         public ObjectDbCommandBuilder<SqlCommand, SqlParameter, TArgument> Upsert<TArgument>(SqlServerObjectName tableName, TArgument argumentValue, UpsertOptions options = UpsertOptions.None)
         where TArgument : class
         {

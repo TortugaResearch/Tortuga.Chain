@@ -3,52 +3,52 @@ namespace Tortuga.Chain.Metadata
     /// <summary>
     /// Abstract version of ColumnMetadata.
     /// </summary>
-    public interface IColumnMetadata
+    public abstract class ColumnMetadata
     {
         /// <summary>
         /// Gets the name used by CLR objects.
         /// </summary>
-        string ClrName { get; }
+        public string ClrName { get; protected set; }
         /// <summary>
         /// Gets a value indicating whether this <see cref="ColumnMetadata{TDbType}"/> is computed.
         /// </summary>
         /// <value>
         /// <c>true</c> if computed; otherwise, <c>false</c>.
         /// </value>
-        bool IsComputed { get; }
+        public bool IsComputed { get; protected set; }
         /// <summary>
         /// Gets a value indicating whether this column is an identity column.
         /// </summary>
         /// <value><c>true</c> if this instance is identity; otherwise, <c>false</c>.</value>
-        bool IsIdentity { get; }
+        public bool IsIdentity { get; protected set; }
         /// <summary>
         /// Gets a value indicating whether this column is a primary key.
         /// </summary>
         /// <value><c>true</c> if this instance is primary key; otherwise, <c>false</c>.</value>
-        bool IsPrimaryKey { get; }
+        public bool IsPrimaryKey { get; protected set; }
         /// <summary>
         /// Gets the name used by SQL Server, quoted.
         /// </summary>
-        string QuotedSqlName { get; }
+        public string QuotedSqlName { get; protected set; }
         /// <summary>
         /// Gets the name used by SQL Server.
         /// </summary>
-        string SqlName { get; }
+        public string SqlName { get; protected set; }
         /// <summary>
         /// Gets the column, formatted as a SQL variable.
         /// </summary>
-        string SqlVariableName { get; }
+        public string SqlVariableName { get; protected set; }
 
         /// <summary>
         /// Gets the type used by the database.
         /// </summary>
-        object DbType { get; }
+        public object DbType { get; protected set; }
 
         /// <summary>
         /// Gets the name of the type.
         /// </summary>
         /// <value>The name of the type.</value>
-        string TypeName { get; }
+        public string TypeName { get; protected set; }
     }
 
 }

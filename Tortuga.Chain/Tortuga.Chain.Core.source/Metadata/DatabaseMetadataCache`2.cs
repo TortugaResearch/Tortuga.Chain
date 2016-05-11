@@ -39,7 +39,7 @@ namespace Tortuga.Chain.Metadata
         /// <returns></returns>
         public abstract TableOrViewMetadata<TName, TDbType> GetTableOrView(TName tableName);
 
-        ITableOrViewMetadata IDatabaseMetadataCache.GetTableOrView(string tableName)
+        TableOrViewMetadata IDatabaseMetadataCache.GetTableOrView(string tableName)
         {
             return GetTableOrView(ParseObjectName(tableName));
         }
@@ -120,7 +120,7 @@ namespace Tortuga.Chain.Metadata
         /// </summary>
         /// <typeparam name="TObject"></typeparam>
         /// <returns></returns>
-        ITableOrViewMetadata IDatabaseMetadataCache.GetTableOrViewFromClass<TObject>() 
+        TableOrViewMetadata IDatabaseMetadataCache.GetTableOrViewFromClass<TObject>()
         {
             return GetTableOrViewFromClass<TObject>();
         }
@@ -131,37 +131,37 @@ namespace Tortuga.Chain.Metadata
         public abstract void Reset();
 
 
-        IStoredProcedureMetadata IDatabaseMetadataCache.GetStoredProcedure(string procedureName)
+        StoredProcedureMetadata IDatabaseMetadataCache.GetStoredProcedure(string procedureName)
         {
             return GetStoredProcedure(ParseObjectName(procedureName));
         }
 
-        ITableFunctionMetadata IDatabaseMetadataCache.GetTableFunction(string tableFunctionName)
+        TableFunctionMetadata IDatabaseMetadataCache.GetTableFunction(string tableFunctionName)
         {
             return GetTableFunction(ParseObjectName(tableFunctionName));
         }
 
-        IReadOnlyCollection<ITableOrViewMetadata> IDatabaseMetadataCache.GetTablesAndViews()
+        IReadOnlyCollection<TableOrViewMetadata> IDatabaseMetadataCache.GetTablesAndViews()
         {
             return GetTablesAndViews();
         }
 
-        IReadOnlyCollection<IStoredProcedureMetadata> IDatabaseMetadataCache.GetStoredProcedures()
+        IReadOnlyCollection<StoredProcedureMetadata> IDatabaseMetadataCache.GetStoredProcedures()
         {
             return GetStoredProcedures();
         }
 
-        IReadOnlyCollection<ITableFunctionMetadata> IDatabaseMetadataCache.GetTableFunctions()
+        IReadOnlyCollection<TableFunctionMetadata> IDatabaseMetadataCache.GetTableFunctions()
         {
             return GetTableFunctions();
         }
 
-        IReadOnlyCollection<IUserDefinedTypeMetadata> IDatabaseMetadataCache.GetUserDefinedTypes()
+        IReadOnlyCollection<UserDefinedTypeMetadata> IDatabaseMetadataCache.GetUserDefinedTypes()
         {
             return GetUserDefinedTypes();
         }
 
-        IUserDefinedTypeMetadata IDatabaseMetadataCache.GetUserDefinedType(string typeName)
+        UserDefinedTypeMetadata IDatabaseMetadataCache.GetUserDefinedType(string typeName)
         {
             return GetUserDefinedType(ParseObjectName(typeName));
         }

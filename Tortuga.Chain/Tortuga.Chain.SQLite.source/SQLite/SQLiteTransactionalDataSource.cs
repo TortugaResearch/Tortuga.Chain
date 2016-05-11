@@ -33,11 +33,16 @@ namespace Tortuga.Chain.SQLite
         private bool m_Disposed;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SQLiteTransactionalDataSource"/> class.
+        /// Initializes a new instance of the <see cref="SQLiteTransactionalDataSource" /> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
         /// <param name="isolationLevel">The isolation level.</param>
         /// <param name="forwardEvents">if set to <c>true</c> [forward events].</param>
+        /// <param name="connection">The connection.</param>
+        /// <param name="transaction">The transaction.</param>
+        /// <param name="lockToken">The lock token.</param>
+        /// <exception cref="System.ArgumentNullException">
+        /// </exception>
         internal SQLiteTransactionalDataSource(SQLiteDataSource dataSource, IsolationLevel? isolationLevel, bool forwardEvents, SQLiteConnection connection, SQLiteTransaction transaction, IDisposable lockToken) : base(new SQLiteDataSourceSettings() { DefaultCommandTimeout = dataSource.DefaultCommandTimeout, StrictMode = dataSource.StrictMode, SuppressGlobalEvents = dataSource.SuppressGlobalEvents || forwardEvents, DisableLocks = dataSource.DisableLocks })
         {
             if (dataSource == null)

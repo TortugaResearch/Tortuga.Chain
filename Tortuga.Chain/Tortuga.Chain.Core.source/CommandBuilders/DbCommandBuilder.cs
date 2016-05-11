@@ -61,7 +61,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="columnName">Name of the column.</param>
         /// <returns></returns>
         /// <remarks>If the column name was not found, this will return null</remarks>
-        public abstract IColumnMetadata TryGetColumn(string columnName);
+        public abstract ColumnMetadata TryGetColumn(string columnName);
 
     }
 }

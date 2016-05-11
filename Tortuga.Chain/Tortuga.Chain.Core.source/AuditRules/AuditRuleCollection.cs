@@ -108,7 +108,7 @@ namespace Tortuga.Chain.AuditRules
         /// </summary>
         /// <param name="table">The table.</param>
         /// <returns></returns>
-        public bool UseSoftDelete(ITableOrViewMetadata table)
+        public bool UseSoftDelete(TableOrViewMetadata table)
         {
             return m_List.Where(r => r.AppliesWhen.HasFlag(OperationTypes.Delete)).OfType<SoftDeleteRule>().Any(r => table.Columns.Any(c => c.SqlName.Equals(r.ColumnName, StringComparison.OrdinalIgnoreCase)));
         }

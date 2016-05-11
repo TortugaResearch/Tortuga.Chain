@@ -19,8 +19,6 @@ namespace Tortuga.Chain.SqlServer
         readonly SqlTransaction m_Transaction;
         readonly string m_TransactionName;
         private bool m_Disposed;
-        private SqlConnection connection;
-        private SqlTransaction transaction;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlServerTransactionalDataSource"/> class.
@@ -54,11 +52,13 @@ namespace Tortuga.Chain.SqlServer
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SqlServerTransactionalDataSource"/> class.
+        /// Initializes a new instance of the <see cref="SqlServerTransactionalDataSource" /> class.
         /// </summary>
         /// <param name="dataSource">The parent connection.</param>
         /// <param name="transactionName">Name of the transaction.</param>
         /// <param name="forwardEvents">If true, logging events are forwarded to the parent connection.</param>
+        /// <param name="connection">The connection.</param>
+        /// <param name="transaction">The transaction.</param>
         internal SqlServerTransactionalDataSource(SqlServerDataSource dataSource, string transactionName, bool forwardEvents, SqlConnection connection, SqlTransaction transaction) : base(new SqlServerDataSourceSettings() { DefaultCommandTimeout = dataSource.DefaultCommandTimeout, StrictMode = dataSource.StrictMode, SuppressGlobalEvents = dataSource.SuppressGlobalEvents || forwardEvents })
         {
             Name = dataSource.Name;

@@ -34,7 +34,7 @@ namespace Tortuga.Chain
         /// <param name="tableType">Type of the table.</param>
         /// <param name="source">The source.</param>
         /// <param name="operationType">Type of the operation being performed.</param>
-        public ObjectDataReader(IUserDefinedTypeMetadata tableType, IEnumerable<TObject> source, OperationTypes operationType = OperationTypes.None)
+        public ObjectDataReader(UserDefinedTypeMetadata tableType, IEnumerable<TObject> source, OperationTypes operationType = OperationTypes.None)
         {
             if (tableType == null)
                 throw new ArgumentNullException(nameof(tableType), $"{nameof(tableType)} is null.");
@@ -59,7 +59,7 @@ namespace Tortuga.Chain
         /// <param name="tableOrView">The table or view.</param>
         /// <param name="source">The source.</param>
         /// <param name="operationType">Type of the operation being performed.</param>
-        public ObjectDataReader(ITableOrViewMetadata tableOrView, IEnumerable<TObject> source, OperationTypes operationType = OperationTypes.None)
+        public ObjectDataReader(TableOrViewMetadata tableOrView, IEnumerable<TObject> source, OperationTypes operationType = OperationTypes.None)
         {
             if (tableOrView == null)
                 throw new ArgumentNullException(nameof(tableOrView), $"{nameof(tableOrView)} is null.");
@@ -95,7 +95,7 @@ namespace Tortuga.Chain
         [SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling")]
         [SuppressMessage("Microsoft.Globalization", "CA1306:SetLocaleForDataTypes")]
         [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-        private static ObjectDataReaderMetatData BuildStructure(string targetName, IReadOnlyList<IColumnMetadata> columns, bool allColumnsRequired, OperationTypes operationType)
+        private static ObjectDataReaderMetatData BuildStructure(string targetName, IReadOnlyList<ColumnMetadata> columns, bool allColumnsRequired, OperationTypes operationType)
         {
 
             var propertyList = MetadataCache.GetMetadata(typeof(TObject)).Properties.Where(p => p.CanRead && p.MappedColumnName != null).ToList();

@@ -1,45 +1,20 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace Tortuga.Chain.Metadata
 {
     /// <summary>
-    /// 
+    /// Class ColumnMetadataCollection.
     /// </summary>
-    /// <typeparam name="TDbType">The type of the database type.</typeparam>
-    public class ColumnMetadataCollection<TDbType> : ReadOnlyCollection<ColumnMetadata<TDbType>>
-        where TDbType : struct
+    public class ColumnMetadataCollection : ReadOnlyCollection<ColumnMetadata>
     {
-        private readonly string m_Name;
-
         /// <summary>
-        /// Initializes a new instance of the <see cref="ColumnMetadataCollection{TDbType}" /> class.
+        /// Initializes a new instance of the <see cref="ColumnMetadataCollection" /> class.
         /// </summary>
-        /// <param name="name">The name of the parent object.</param>
-        /// <param name="list">The list to wrap.</param>
-        public ColumnMetadataCollection(string name, IList<ColumnMetadata<TDbType>> list) : base(list)
+        /// <param name="source">The source.</param>
+        public ColumnMetadataCollection(IEnumerable<ColumnMetadata> source) : base(source.ToList())
         {
-            m_Name = name;
-        }
-
-        /// <summary>
-        /// Gets the <see cref="ColumnMetadata{TDbType}"/> with the specified column name.
-        /// </summary>
-        /// <value>
-        /// The <see cref="ColumnMetadata{TDbType}"/>.
-        /// </value>
-        /// <param name="columnName">Name of the column.</param>
-        /// <returns></returns>
-        public ColumnMetadata<TDbType> this[string columnName]
-        {
-            get
-            {
-                foreach (var item in this)
-                    if (item.SqlName.Equals(columnName, System.StringComparison.OrdinalIgnoreCase))
-                        return item;
-
-                throw new KeyNotFoundException($"Could not find column named {columnName} in object {m_Name}");
-            }
         }
 
         /// <summary>
@@ -48,7 +23,7 @@ namespace Tortuga.Chain.Metadata
         /// <param name="columnName">Name of the column.</param>
         /// <returns></returns>
         /// <remarks>If the column name was not found, this will return null</remarks>
-        public IColumnMetadata TryGetColumn(string columnName)
+        public ColumnMetadata TryGetColumn(string columnName)
         {
             foreach (var item in this)
                 if (item.SqlName.Equals(columnName, System.StringComparison.OrdinalIgnoreCase))

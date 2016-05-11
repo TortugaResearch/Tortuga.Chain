@@ -1,19 +1,19 @@
+
 namespace Tortuga.Chain.Metadata
 {
-
     /// <summary>
-    /// This interface represents user defined types.
+    /// Class TableFunctionMetadata.
     /// </summary>
-    public abstract class UserDefinedTypeMetadata
+    public abstract class TableFunctionMetadata
     {
-
         /// <summary>
-        /// Gets a value indicating whether this instance is table type or a normal UDF.
+        /// Gets the columns.
         /// </summary>
         /// <value>
-        /// <c>true</c> if this instance is a table type; otherwise, <c>false</c>.
+        /// The columns.
         /// </value>
-        public bool IsTableType { get; protected set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public ColumnMetadataCollection Columns { get; protected set; }
 
         /// <summary>
         /// Gets the name.
@@ -24,14 +24,14 @@ namespace Tortuga.Chain.Metadata
         public string Name { get; protected set; }
 
         /// <summary>
-        /// Gets the columns.
+        /// Gets the parameters.
         /// </summary>
         /// <value>
-        /// The columns.
+        /// The parameters.
         /// </value>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public ColumnMetadataCollection Columns { get; protected set; }
+        public ParameterMetadataCollection Parameters { get; protected set; }
+
 
     }
-
 }

@@ -5,8 +5,8 @@ using System.Linq;
 using System.Text;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
-
-
+using NpgsqlTypes;
+using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.PostgreSql.CommandBuilders
 {
@@ -41,6 +41,10 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
             if (materializer == null)
                 throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
 
+            foreach (ColumnMetadata<NpgsqlDbType> item in Table.Columns)
+            {
+
+            }
             var primaryKeyNames = Table.Columns.Where(x => x.IsPrimaryKey).Select(x => x.QuotedSqlName);
             string conflictNames = string.Join(", ", primaryKeyNames);
 

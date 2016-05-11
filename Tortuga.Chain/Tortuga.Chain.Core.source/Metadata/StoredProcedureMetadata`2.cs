@@ -1,15 +1,17 @@
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using Tortuga.Chain.CommandBuilders;
 
 namespace Tortuga.Chain.Metadata
 {
+
+
+
     /// <summary>
     /// Class StoredProcedureMetadata.
     /// </summary>
     /// <typeparam name="TName">The type used to represent database object names.</typeparam>
     /// <typeparam name="TDbType">The variant of DbType used by this data source.</typeparam>
-    public sealed class StoredProcedureMetadata<TName, TDbType> : IStoredProcedureMetadata
+    public sealed class StoredProcedureMetadata<TName, TDbType> : StoredProcedureMetadata
         where TDbType : struct
     {
 
@@ -20,7 +22,9 @@ namespace Tortuga.Chain.Metadata
         public StoredProcedureMetadata(TName name, IList<ParameterMetadata<TDbType>> parameters)
         {
             Name = name;
-            Parameters = new ReadOnlyCollection<ParameterMetadata<TDbType>>(parameters);
+            base.Name = name.ToString();
+            Parameters = new ParameterMetadataCollection<TDbType>(name.ToString(), parameters);
+            base.Parameters = Parameters.GenericCollection;
         }
 
         /// <summary>
@@ -29,7 +33,7 @@ namespace Tortuga.Chain.Metadata
         /// <value>
         /// The name.
         /// </value>
-        public TName Name { get; }
+        public new TName Name { get; }
 
         /// <summary>
         /// Gets the parameters.
@@ -37,7 +41,7 @@ namespace Tortuga.Chain.Metadata
         /// <value>
         /// The parameters.
         /// </value>
-        public ReadOnlyCollection<ParameterMetadata<TDbType>> Parameters { get; }
+        public new ParameterMetadataCollection<TDbType> Parameters { get; }
 
         /// <summary>
         /// Creates a SQL builder.

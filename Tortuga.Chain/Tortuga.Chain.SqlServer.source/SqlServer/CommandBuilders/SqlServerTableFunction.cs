@@ -303,7 +303,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// <remarks>
         /// If the column name was not found, this will return null
         /// </remarks>
-        public override IColumnMetadata TryGetColumn(string columnName)
+        public override ColumnMetadata TryGetColumn(string columnName)
         {
             return m_Metadata.Columns.TryGetColumn(columnName);
         }

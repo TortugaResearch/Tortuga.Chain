@@ -86,7 +86,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <remarks>
         /// If the column name was not found, this will return null
         /// </remarks>
-        public override IColumnMetadata TryGetColumn(string columnName)
+        public override ColumnMetadata TryGetColumn(string columnName)
         {
             return null;
         }

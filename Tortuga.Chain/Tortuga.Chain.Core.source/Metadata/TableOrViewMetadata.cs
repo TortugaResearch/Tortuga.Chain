@@ -1,11 +1,9 @@
-using System.Collections.Generic;
-
 namespace Tortuga.Chain.Metadata
 {
     /// <summary>
     /// Abstract version of TableOrViewMetadata.
     /// </summary>
-    public interface ITableOrViewMetadata
+    public abstract class TableOrViewMetadata
     {
         /// <summary>
         /// Gets a value indicating whether this instance is table or a view.
@@ -13,7 +11,7 @@ namespace Tortuga.Chain.Metadata
         /// <value>
         /// <c>true</c> if this instance is a table; otherwise, <c>false</c>.
         /// </value>
-        bool IsTable { get; }
+        public bool IsTable { get; protected set; }
 
         /// <summary>
         /// Gets the name.
@@ -21,7 +19,7 @@ namespace Tortuga.Chain.Metadata
         /// <value>
         /// The name.
         /// </value>
-        string Name { get; }
+        public string Name { get; protected set; }
 
         /// <summary>
         /// Gets the columns.
@@ -29,6 +27,7 @@ namespace Tortuga.Chain.Metadata
         /// <value>
         /// The columns.
         /// </value>
-        IReadOnlyList<IColumnMetadata> Columns { get; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public ColumnMetadataCollection Columns { get; protected set; }
     }
 }
