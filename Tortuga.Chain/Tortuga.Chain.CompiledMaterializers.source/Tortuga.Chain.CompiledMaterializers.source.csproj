@@ -106,14 +106,14 @@
     <Compile Include="..\ProductSharedAssemblyInfo.cs">
       <Link>Properties\ProductSharedAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Materializers\CompiledMultipleTable`2.cs" />
-    <Compile Include="Materializers\CompiledSingleRow`2.cs" />
-    <Compile Include="Materializers\CompilerCache.cs" />
-    <Compile Include="MaterializerCompilerEventArgs.cs" />
-    <Compile Include="Materializers\CompiledMultipleRow`2.cs" />
-    <Compile Include="CompiledMaterializers.cs" />
-    <Compile Include="Materializers\CompiledCollectionMaterializer.cs" />
-    <Compile Include="Materializers\CompiledObjectMaterializer.cs" />
+    <Compile Include="shared\Materializers\CompiledMultipleTable`2.cs" />
+    <Compile Include="shared\Materializers\CompiledSingleRow`2.cs" />
+    <Compile Include="shared\Materializers\CompilerCache.cs" />
+    <Compile Include="shared\MaterializerCompilerEventArgs.cs" />
+    <Compile Include="shared\Materializers\CompiledMultipleRow`2.cs" />
+    <Compile Include="shared\CompiledMaterializers.cs" />
+    <Compile Include="shared\Materializers\CompiledCollectionMaterializer.cs" />
+    <Compile Include="shared\Materializers\CompiledObjectMaterializer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\LibrarySharedAssemblyInfo.cs" />
   </ItemGroup>

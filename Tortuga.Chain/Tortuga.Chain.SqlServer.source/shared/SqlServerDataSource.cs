@@ -190,7 +190,12 @@ namespace Tortuga.Chain
         public async Task<SqlServerTransactionalDataSource> BeginTransactionAsync(string transactionName = null, IsolationLevel? isolationLevel = null, bool forwardEvents = true)
         {
             var connection = await CreateConnectionAsync();
-            var transaction = connection.BeginTransaction();
+
+            SqlTransaction transaction;
+            if (isolationLevel.HasValue)
+                transaction = connection.BeginTransaction(isolationLevel.Value);
+            else
+                transaction = connection.BeginTransaction();
             return new SqlServerTransactionalDataSource(this, transactionName, forwardEvents, connection, transaction);
         }
 

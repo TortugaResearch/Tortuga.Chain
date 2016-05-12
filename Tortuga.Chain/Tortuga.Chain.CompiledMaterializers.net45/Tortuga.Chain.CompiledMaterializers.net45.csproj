@@ -108,30 +108,6 @@
     <Compile Include="..\ProductSharedAssemblyInfo.cs">
       <Link>Properties\ProductSharedAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.CompiledMaterializers.source\CompiledMaterializers.cs">
-      <Link>CompiledMaterializers.cs</Link>
-    </Compile>
-    <Compile Include="..\Tortuga.Chain.CompiledMaterializers.source\MaterializerCompilerEventArgs.cs">
-      <Link>MaterializerCompilerEventArgs.cs</Link>
-    </Compile>
-    <Compile Include="..\Tortuga.Chain.CompiledMaterializers.source\Materializers\CompiledCollectionMaterializer.cs">
-      <Link>Materializers\CompiledCollectionMaterializer.cs</Link>
-    </Compile>
-    <Compile Include="..\Tortuga.Chain.CompiledMaterializers.source\Materializers\CompiledMultipleRow`2.cs">
-      <Link>Materializers\CompiledMultipleRow`2.cs</Link>
-    </Compile>
-    <Compile Include="..\Tortuga.Chain.CompiledMaterializers.source\Materializers\CompiledMultipleTable`2.cs">
-      <Link>Materializers\CompiledMultipleTable`2.cs</Link>
-    </Compile>
-    <Compile Include="..\Tortuga.Chain.CompiledMaterializers.source\Materializers\CompiledObjectMaterializer.cs">
-      <Link>Materializers\CompiledObjectMaterializer.cs</Link>
-    </Compile>
-    <Compile Include="..\Tortuga.Chain.CompiledMaterializers.source\Materializers\CompiledSingleRow`2.cs">
-      <Link>Materializers\CompiledSingleRow`2.cs</Link>
-    </Compile>
-    <Compile Include="..\Tortuga.Chain.CompiledMaterializers.source\Materializers\CompilerCache.cs">
-      <Link>Materializers\CompilerCache.cs</Link>
-    </Compile>
     <Compile Include="..\Tortuga.Chain.CompiledMaterializers.source\Properties\LibrarySharedAssemblyInfo.cs">
       <Link>Properties\LibrarySharedAssemblyInfo.cs</Link>
     </Compile>
@@ -149,6 +125,14 @@
     </CodeAnalysisDictionary>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+
+
+  <ItemGroup>
+    <Compile Include="..\Tortuga.Chain.CompiledMaterializers.source\shared\**\*.cs">
+      <Link>shared\%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </Compile>
+  </ItemGroup>
+
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

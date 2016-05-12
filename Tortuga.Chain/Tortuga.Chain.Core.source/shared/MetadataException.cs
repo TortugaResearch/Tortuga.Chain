@@ -1,5 +1,7 @@
 ﻿using System;
+#if !WINDOWS_UWP
 using System.Runtime.Serialization;
+#endif
 
 namespace Tortuga.Chain.SqlServer
 {
@@ -7,7 +9,9 @@ namespace Tortuga.Chain.SqlServer
     /// Error loading the schema metadata from the database.
     /// </summary>
     /// <seealso cref="Exception" />
+#if !WINDOWS_UWP
     [Serializable]
+#endif
     public class MetadataException : Exception
     {
         /// <summary>
@@ -33,7 +37,7 @@ namespace Tortuga.Chain.SqlServer
         public MetadataException(string message, Exception innerException) : base(message, innerException)
         {
         }
-
+#if !WINDOWS_UWP
         /// <summary>
         /// Initializes a new instance of the <see cref="MetadataException"/> class.
         /// </summary>
@@ -42,5 +46,6 @@ namespace Tortuga.Chain.SqlServer
         protected MetadataException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
+#endif
     }
 }
