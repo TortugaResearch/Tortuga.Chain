@@ -74,8 +74,8 @@
       <HintPath>..\packages\Tortuga.Anchor.0.7.5952.32542\lib\net45\Tortuga.Anchor.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Tortuga.Chain.Core, Version=0.18.5971.39788, Culture=neutral, PublicKeyToken=8769fd32a2872cf0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Tortuga.Chain.Core.0.18.5971.39779\lib\net45\Tortuga.Chain.Core.dll</HintPath>
+    <Reference Include="Tortuga.Chain.Core, Version=0.19.5975.42893, Culture=neutral, PublicKeyToken=8769fd32a2872cf0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tortuga.Chain.Core.0.19.5975.42880\lib\net45\Tortuga.Chain.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
@@ -83,65 +83,14 @@
     <Compile Include="..\ProductSharedAssemblyInfo.cs">
       <Link>Properties\ProductSharedAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="..\Tortuga.Chain.SQLite.source\GlobalSuppressions.cs">
+      <Link>GlobalSuppressions.cs</Link>
+    </Compile>
     <Compile Include="..\Tortuga.Chain.SQLite.source\Properties\LibrarySharedAssemblyInfo.cs">
       <Link>Properties\LibrarySharedAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.SQLite.source\SQLiteDataSource.cs">
-      <Link>SQLiteDataSource.cs</Link>
-    </Compile>
-    <Compile Include="..\Tortuga.Chain.SQLite.source\SQLiteExtensions.cs">
-      <Link>SQLiteExtensions.cs</Link>
-    </Compile>
-    <Compile Include="..\Tortuga.Chain.SQLite.source\SQLiteLimitOption.cs">
-      <Link>SQLiteLimitOption.cs</Link>
-    </Compile>
-    <Compile Include="..\tortuga.chain.sqlite.source\sqlite\commandbuilders\SQLiteDeleteObject.cs">
-      <Link>SQLite\CommandBuilders\SQLiteDeleteObject.cs</Link>
-    </Compile>
-    <Compile Include="..\tortuga.chain.sqlite.source\sqlite\commandbuilders\SQLiteInsertObject.cs">
-      <Link>SQLite\CommandBuilders\SQLiteInsertObject.cs</Link>
-    </Compile>
-    <Compile Include="..\tortuga.chain.sqlite.source\sqlite\commandbuilders\SQLiteInsertOrUpdateObject.cs">
-      <Link>SQLite\CommandBuilders\SQLiteInsertOrUpdateObject.cs</Link>
-    </Compile>
-    <Compile Include="..\tortuga.chain.sqlite.source\sqlite\commandbuilders\SQLiteObjectCommand.cs">
-      <Link>SQLite\CommandBuilders\SQLiteObjectCommand.cs</Link>
-    </Compile>
-    <Compile Include="..\tortuga.chain.sqlite.source\sqlite\commandbuilders\SQLiteSqlCall.cs">
-      <Link>SQLite\CommandBuilders\SQLiteSqlCall.cs</Link>
-    </Compile>
-    <Compile Include="..\tortuga.chain.sqlite.source\sqlite\commandbuilders\SQLiteTableOrView.cs">
-      <Link>SQLite\CommandBuilders\SQLiteTableOrView.cs</Link>
-    </Compile>
-    <Compile Include="..\tortuga.chain.sqlite.source\sqlite\commandbuilders\SQLiteUpdateObject.cs">
-      <Link>SQLite\CommandBuilders\SQLiteUpdateObject.cs</Link>
-    </Compile>
-    <Compile Include="..\tortuga.chain.sqlite.source\sqlite\LockType.cs">
-      <Link>SQLite\LockType.cs</Link>
-    </Compile>
-    <Compile Include="..\tortuga.chain.sqlite.source\sqlite\SQLiteCommandExecutionToken.cs">
-      <Link>SQLite\SQLiteCommandExecutionToken.cs</Link>
-    </Compile>
-    <Compile Include="..\tortuga.chain.sqlite.source\sqlite\SQLiteDataSourceBase.cs">
-      <Link>SQLite\SQLiteDataSourceBase.cs</Link>
-    </Compile>
-    <Compile Include="..\tortuga.chain.sqlite.source\sqlite\SQLiteDataSourceSettings.cs">
-      <Link>SQLite\SQLiteDataSourceSettings.cs</Link>
-    </Compile>
-    <Compile Include="..\tortuga.chain.sqlite.source\sqlite\SQLiteMetadataCache.cs">
-      <Link>SQLite\SQLiteMetadataCache.cs</Link>
-    </Compile>
-    <Compile Include="..\tortuga.chain.sqlite.source\sqlite\SQLiteOpenDataSource.cs">
-      <Link>SQLite\SQLiteOpenDataSource.cs</Link>
-    </Compile>
-    <Compile Include="..\tortuga.chain.sqlite.source\sqlite\SQLiteOperationExecutionToken.cs">
-      <Link>SQLite\SQLiteOperationExecutionToken.cs</Link>
-    </Compile>
-    <Compile Include="..\tortuga.chain.sqlite.source\sqlite\SQLiteTransactionalDataSource.cs">
-      <Link>SQLite\SQLiteTransactionalDataSource.cs</Link>
-    </Compile>
-    <Compile Include="..\tortuga.chain.sqlite.source\sqlite\Utilities.cs">
-      <Link>SQLite\Utilities.cs</Link>
+    <Compile Include="..\Tortuga.Chain.SqlServer.source\AnchorMissing.cs">
+      <Link>AnchorMissing.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -155,6 +104,11 @@
     <CodeAnalysisDictionary Include="..\CustomDictionary.xml">
       <Link>CustomDictionary.xml</Link>
     </CodeAnalysisDictionary>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\Tortuga.Chain.SQLite.source\shared\**\*.cs">
+      <Link>shared\%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.101.0\build\net45\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.101.0\build\net45\System.Data.SQLite.Core.targets')" />
