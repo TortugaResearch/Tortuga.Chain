@@ -66,8 +66,8 @@
       <HintPath>..\packages\Tortuga.Anchor.0.7.5952.32542\lib\net46\Tortuga.Anchor.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Tortuga.Chain.Core, Version=0.18.5971.39795, Culture=neutral, PublicKeyToken=8769fd32a2872cf0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Tortuga.Chain.Core.0.18.5971.39779\lib\net46\Tortuga.Chain.Core.dll</HintPath>
+    <Reference Include="Tortuga.Chain.Core, Version=0.19.5975.42899, Culture=neutral, PublicKeyToken=8769fd32a2872cf0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tortuga.Chain.Core.0.19.5975.42880\lib\net46\Tortuga.Chain.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
@@ -75,92 +75,14 @@
     <Compile Include="..\ProductSharedAssemblyInfo.cs">
       <Link>Properties\ProductSharedAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="..\Tortuga.Chain.SqlServer.source\AnchorMissing.cs">
+      <Link>AnchorMissing.cs</Link>
+    </Compile>
     <Compile Include="..\Tortuga.Chain.SqlServer.source\GlobalSuppressions.cs">
       <Link>GlobalSuppressions.cs</Link>
     </Compile>
     <Compile Include="..\Tortuga.Chain.SqlServer.source\Properties\LibrarySharedAssemblyInfo.cs">
       <Link>Properties\LibrarySharedAssemblyInfo.cs</Link>
-    </Compile>
-    <Compile Include="..\Tortuga.Chain.SqlServer.source\SqlServerDataSource.cs">
-      <Link>SqlServerDataSource.cs</Link>
-    </Compile>
-    <Compile Include="..\Tortuga.Chain.SqlServer.source\SqlServerLimitOption.cs">
-      <Link>SqlServerLimitOption.cs</Link>
-    </Compile>
-    <Compile Include="..\Tortuga.Chain.SqlServer.source\SqlServer\Appenders\NotifyChangeAppender`1.cs">
-      <Link>SqlServer\Appenders\NotifyChangeAppender`1.cs</Link>
-    </Compile>
-    <Compile Include="..\Tortuga.Chain.SqlServer.source\SqlServer\CommandBuilders\ISupportsChangeListener.cs">
-      <Link>SqlServer\CommandBuilders\ISupportsChangeListener.cs</Link>
-    </Compile>
-    <Compile Include="..\Tortuga.Chain.SqlServer.source\SqlServer\CommandBuilders\SqlServerDeleteObject.cs">
-      <Link>SqlServer\CommandBuilders\SqlServerDeleteObject.cs</Link>
-    </Compile>
-    <Compile Include="..\Tortuga.Chain.SqlServer.source\SqlServer\CommandBuilders\SqlServerInsertBatch.cs">
-      <Link>SqlServer\CommandBuilders\SqlServerInsertBatch.cs</Link>
-    </Compile>
-    <Compile Include="..\Tortuga.Chain.SqlServer.source\SqlServer\CommandBuilders\SQLServerInsertBulk.cs">
-      <Link>SqlServer\CommandBuilders\SQLServerInsertBulk.cs</Link>
-    </Compile>
-    <Compile Include="..\Tortuga.Chain.SqlServer.source\SqlServer\CommandBuilders\SqlServerInsertObject.cs">
-      <Link>SqlServer\CommandBuilders\SqlServerInsertObject.cs</Link>
-    </Compile>
-    <Compile Include="..\Tortuga.Chain.SqlServer.source\SqlServer\CommandBuilders\SqlServerInsertOrUpdateObject.cs">
-      <Link>SqlServer\CommandBuilders\SqlServerInsertOrUpdateObject.cs</Link>
-    </Compile>
-    <Compile Include="..\Tortuga.Chain.SqlServer.source\SqlServer\CommandBuilders\SqlServerObjectCommand.cs">
-      <Link>SqlServer\CommandBuilders\SqlServerObjectCommand.cs</Link>
-    </Compile>
-    <Compile Include="..\Tortuga.Chain.SqlServer.source\SqlServer\CommandBuilders\SqlServerProcedureCall.cs">
-      <Link>SqlServer\CommandBuilders\SqlServerProcedureCall.cs</Link>
-    </Compile>
-    <Compile Include="..\Tortuga.Chain.SqlServer.source\SqlServer\CommandBuilders\SqlServerSqlCall.cs">
-      <Link>SqlServer\CommandBuilders\SqlServerSqlCall.cs</Link>
-    </Compile>
-    <Compile Include="..\Tortuga.Chain.SqlServer.source\SqlServer\CommandBuilders\SqlServerTableFunction.cs">
-      <Link>SqlServer\CommandBuilders\SqlServerTableFunction.cs</Link>
-    </Compile>
-    <Compile Include="..\Tortuga.Chain.SqlServer.source\SqlServer\CommandBuilders\SqlServerTableOrView.cs">
-      <Link>SqlServer\CommandBuilders\SqlServerTableOrView.cs</Link>
-    </Compile>
-    <Compile Include="..\Tortuga.Chain.SqlServer.source\SqlServer\CommandBuilders\SqlServerUpdateObject.cs">
-      <Link>SqlServer\CommandBuilders\SqlServerUpdateObject.cs</Link>
-    </Compile>
-    <Compile Include="..\Tortuga.Chain.SqlServer.source\SqlServer\Materializers\WaitForChangeMaterializer.cs">
-      <Link>SqlServer\Materializers\WaitForChangeMaterializer.cs</Link>
-    </Compile>
-    <Compile Include="..\Tortuga.Chain.SqlServer.source\SqlServer\Materializers\WaitForChangeMaterializer`1.cs">
-      <Link>SqlServer\Materializers\WaitForChangeMaterializer`1.cs</Link>
-    </Compile>
-    <Compile Include="..\Tortuga.Chain.SqlServer.source\SqlServer\SqlServerAppenders.cs">
-      <Link>SqlServer\SqlServerAppenders.cs</Link>
-    </Compile>
-    <Compile Include="..\Tortuga.Chain.SqlServer.source\SqlServer\SqlServerCommandExecutionToken.cs">
-      <Link>SqlServer\SqlServerCommandExecutionToken.cs</Link>
-    </Compile>
-    <Compile Include="..\Tortuga.Chain.SqlServer.source\SqlServer\SqlServerDataSourceBase.cs">
-      <Link>SqlServer\SqlServerDataSourceBase.cs</Link>
-    </Compile>
-    <Compile Include="..\Tortuga.Chain.SqlServer.source\SqlServer\SqlServerDataSourceSettings.cs">
-      <Link>SqlServer\SqlServerDataSourceSettings.cs</Link>
-    </Compile>
-    <Compile Include="..\Tortuga.Chain.SqlServer.source\SqlServer\SqlServerEffectiveSettings.cs">
-      <Link>SqlServer\SqlServerEffectiveSettings.cs</Link>
-    </Compile>
-    <Compile Include="..\Tortuga.Chain.SqlServer.source\SqlServer\SqlServerMetadataCache.cs">
-      <Link>SqlServer\SqlServerMetadataCache.cs</Link>
-    </Compile>
-    <Compile Include="..\Tortuga.Chain.SqlServer.source\SqlServer\SqlServerObjectName.cs">
-      <Link>SqlServer\SqlServerObjectName.cs</Link>
-    </Compile>
-    <Compile Include="..\Tortuga.Chain.SqlServer.source\SqlServer\SqlServerOperationExecutionToken.cs">
-      <Link>SqlServer\SqlServerOperationExecutionToken.cs</Link>
-    </Compile>
-    <Compile Include="..\Tortuga.Chain.SqlServer.source\SqlServer\SqlServerTransactionalDataSource.cs">
-      <Link>SqlServer\SqlServerTransactionalDataSource.cs</Link>
-    </Compile>
-    <Compile Include="..\Tortuga.Chain.SqlServer.source\SqlServer\Utilities.cs">
-      <Link>SqlServer\Utilities.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -174,6 +96,11 @@
     <CodeAnalysisDictionary Include="..\CustomDictionary.xml">
       <Link>CustomDictionary.xml</Link>
     </CodeAnalysisDictionary>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\Tortuga.Chain.SqlServer.source\shared\**\*.cs">
+      <Link>shared\%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
