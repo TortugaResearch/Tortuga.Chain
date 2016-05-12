@@ -51,12 +51,13 @@ namespace Tortuga.Chain.PostgreSql
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PostgreSqlTransactionalDataSource"/> class.
+        /// Initializes a new instance of the <see cref="PostgreSqlTransactionalDataSource" /> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
-        /// <param name="isolationLevel">The isolation level.</param>
         /// <param name="forwardEvents">if set to <c>true</c> [forward events].</param>
-        internal PostgreSqlTransactionalDataSource(PostgreSqlDataSource dataSource, IsolationLevel? isolationLevel, bool forwardEvents, NpgsqlConnection connection, NpgsqlTransaction transaction)
+        /// <param name="connection">The connection.</param>
+        /// <param name="transaction">The transaction.</param>
+        internal PostgreSqlTransactionalDataSource(PostgreSqlDataSource dataSource, bool forwardEvents, NpgsqlConnection connection, NpgsqlTransaction transaction)
             : base(new PostgreSqlDataSourceSettings { DefaultCommandTimeout = dataSource.DefaultCommandTimeout, StrictMode = dataSource.StrictMode, SuppressGlobalEvents = dataSource.SuppressGlobalEvents || forwardEvents })
         {
             Name = dataSource.Name;
@@ -109,7 +110,7 @@ namespace Tortuga.Chain.PostgreSql
         /// <summary>
         /// Commits this transaction instance.
         /// </summary>
-        /// <exception cref="System.ObjectDisposedException">Transaction is disposed.</exception>
+        /// <exception cref="ObjectDisposedException">Transaction is disposed.</exception>
         public void Commit()
         {
             if (m_Disposed)
@@ -122,8 +123,8 @@ namespace Tortuga.Chain.PostgreSql
         /// <summary>
         /// Rolls the transaction back.
         /// </summary>
-        /// <exception cref="System.ObjectDisposedException">Transaction is disposed.</exception>
-        public void RollBack()
+        /// <exception cref="ObjectDisposedException">Transaction is disposed.</exception>
+        public void Rollback()
         {
             if (m_Disposed)
                 throw new ObjectDisposedException("Transaction is disposed.");

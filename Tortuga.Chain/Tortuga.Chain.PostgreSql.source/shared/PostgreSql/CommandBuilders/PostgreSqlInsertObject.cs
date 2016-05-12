@@ -1,6 +1,5 @@
 ﻿using Npgsql;
 using System;
-using System.Linq;
 using System.Text;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
@@ -15,8 +14,9 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
     {
         readonly InsertOptions m_Options;
 
+
         /// <summary>
-        /// Initializes a new instance of <see cref="PostgreSqlInsertObject" /> class.
+        /// Initializes a new instance of the <see cref="PostgreSqlInsertObject{TArgument}"/> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
         /// <param name="tableName">Name of the table.</param>

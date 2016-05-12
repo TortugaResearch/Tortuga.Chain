@@ -9,6 +9,9 @@ using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.PostgreSql
 {
+    /// <summary>
+    /// Class PostgreSqlMetadataCache.
+    /// </summary>
     public class PostgreSqlMetadataCache : DatabaseMetadataCache<PostgreSqlObjectName, NpgsqlDbType>
     {
         readonly NpgsqlConnectionStringBuilder m_ConnectionBuilder;
@@ -47,6 +50,11 @@ namespace Tortuga.Chain.PostgreSql
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Gets the metadata for a table.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <returns>TableOrViewMetadata&lt;PostgreSqlObjectName, NpgsqlDbType&gt;.</returns>
         public override TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType> GetTableOrView(PostgreSqlObjectName tableName)
         {
             return m_Tables.GetOrAdd(tableName, GetTableOrViewInternal);
@@ -204,7 +212,7 @@ namespace Tortuga.Chain.PostgreSql
                     using (var reader = cmd.ExecuteReader())
                     {
                         if (!reader.Read())
-                            throw new MissingObjectException($"Could not find pgsql function {storedProcedureName}");
+                            throw new MissingObjectException($"Could not find function {storedProcedureName}");
                         actualSchema = reader.GetString(reader.GetOrdinal("procname"));
                         actualName = reader.GetString(reader.GetOrdinal("schema"));
                     }
@@ -255,10 +263,10 @@ WHERE c.relname ILIKE @Name AND
                         while (reader.Read())
                         {
                             var name = reader.GetString(reader.GetOrdinal("column_name"));
-                            var typename = reader.GetString(reader.GetOrdinal("data_type"));
+                            var typeName = reader.GetString(reader.GetOrdinal("data_type"));
                             bool isPrimary = reader.IsDBNull(reader.GetOrdinal("is_primary_key")) ? false : true;
                             bool isIdentity = reader.IsDBNull(reader.GetOrdinal("is_identity")) ? false : true;
-                            columns.Add(new ColumnMetadata<NpgsqlDbType>(name, false, isPrimary, isIdentity, typename, null, "\"" + name + "\""));
+                            columns.Add(new ColumnMetadata<NpgsqlDbType>(name, false, isPrimary, isIdentity, typeName, TypeNameToNpgSqlDbType(typeName), "\"" + name + "\""));
                         }
                     }
                 }
@@ -290,8 +298,8 @@ WHERE c.relname ILIKE @Name AND
                         while (reader.Read())
                         {
                             var parameterName = reader.GetString(reader.GetOrdinal("parameter_name"));
-                            var dataType = reader.GetString(reader.GetOrdinal("data_type"));
-                            parameters.Add(new ParameterMetadata<NpgsqlDbType>(parameterName, dataType, null));
+                            var typeName = reader.GetString(reader.GetOrdinal("data_type"));
+                            parameters.Add(new ParameterMetadata<NpgsqlDbType>(parameterName, typeName, TypeNameToNpgSqlDbType(typeName)));
                         }
                     }
                 }
@@ -299,6 +307,11 @@ WHERE c.relname ILIKE @Name AND
             return parameters;
         }
 
+        /// <summary>
+        /// Parse a string and return the database specific representation of the object name.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <returns>PostgreSqlObjectName.</returns>
         protected override PostgreSqlObjectName ParseObjectName(string name)
         {
             return new PostgreSqlObjectName(name);
@@ -331,7 +344,7 @@ WHERE c.relname ILIKE @Name AND
             //infer schema from namespace
             var schema = type.Namespace;
             if (schema?.Contains(".") ?? false)
-                schema = schema.Substring(schema.LastIndexOf(".") + 1);
+                schema = schema.Substring(schema.LastIndexOf(".", StringComparison.OrdinalIgnoreCase) + 1);
             var name = type.Name;
 
             try
@@ -355,6 +368,7 @@ WHERE c.relname ILIKE @Name AND
         /// </summary>
         /// <param name="typeName">Name of the type.</param>
         /// <returns></returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
         internal static NpgsqlDbType? TypeNameToNpgSqlDbType(string typeName)
         {
             switch (typeName)
@@ -378,6 +392,9 @@ WHERE c.relname ILIKE @Name AND
             return null;
         }
 
+        /// <summary>
+        /// Resets the metadata cache, clearing out all cached metadata.
+        /// </summary>
         public override void Reset()
         {
             m_StoredProcedures.Clear();

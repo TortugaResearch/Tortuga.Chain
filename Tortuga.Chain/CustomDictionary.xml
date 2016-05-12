@@ -15,6 +15,8 @@
       <Word>ImmutableDictionary</Word>
       <Word>WithConstructor</Word>
       <Word>Tvp</Word>
+      <Word>Postgre</Word>
+      <Word>PostgreSql</Word>
     </Recognized>
     <Deprecated>
       <Term PreferredAlternate=""></Term>
@@ -24,6 +26,7 @@
       <Term CompoundAlternate="">ImmutableDictionary</Term>
       <Term CompoundAlternate="">DiscardDuplicates</Term>
       <Term CompoundAlternate="">WithConstructor</Term>
+      <Term CompoundAlternate="">PostgreSql</Term>
     </Compound>
     <DiscreteExceptions>
       <Term></Term>

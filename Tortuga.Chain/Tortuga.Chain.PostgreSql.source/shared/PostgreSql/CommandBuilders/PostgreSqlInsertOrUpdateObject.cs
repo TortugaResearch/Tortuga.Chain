@@ -5,8 +5,6 @@ using System.Linq;
 using System.Text;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
-using NpgsqlTypes;
-using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.PostgreSql.CommandBuilders
 {
@@ -18,13 +16,14 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
     {
         readonly UpsertOptions m_Options;
 
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="PostgreSqlInsertOrUpdateObject"/> class.
+        /// Initializes a new instance of the <see cref="PostgreSqlInsertOrUpdateObject{TArgument}"/> class.
         /// </summary>
-        /// <param name="dataSource"></param>
-        /// <param name="tableName"></param>
-        /// <param name="argumentValue"></param>
-        /// <param name="options"></param>
+        /// <param name="dataSource">The data source.</param>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="options">The options.</param>
         public PostgreSqlInsertOrUpdateObject(PostgreSqlDataSourceBase dataSource, PostgreSqlObjectName tableName, TArgument argumentValue, UpsertOptions options)
             : base(dataSource, tableName, argumentValue)
         {
@@ -41,10 +40,6 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
             if (materializer == null)
                 throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
 
-            foreach (ColumnMetadata<NpgsqlDbType> item in Table.Columns)
-            {
-
-            }
             var primaryKeyNames = Table.Columns.Where(x => x.IsPrimaryKey).Select(x => x.QuotedSqlName);
             string conflictNames = string.Join(", ", primaryKeyNames);
 
@@ -55,7 +50,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
             var sql = new StringBuilder();
             List<NpgsqlParameter> keyParameters;
             var isPrimaryKeyIdentity = sqlBuilder.PrimaryKeyisIdentity(out keyParameters);
-            if(isPrimaryKeyIdentity)
+            if (isPrimaryKeyIdentity)
             {
                 var areKeysNull = keyParameters.Any(c => c.Value == DBNull.Value || c.Value == null) ? true : false;
                 if (areKeysNull)

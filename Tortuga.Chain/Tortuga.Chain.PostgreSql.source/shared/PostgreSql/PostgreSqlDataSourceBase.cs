@@ -18,7 +18,7 @@ namespace Tortuga.Chain.PostgreSql
         /// Initializes a new instance of the <see cref="PostgreSqlDataSourceBase"/> class.
         /// </summary>
         /// <param name="settings">Optional settings object.</param>
-        public PostgreSqlDataSourceBase(DataSourceSettings settings) : base(settings)
+        protected PostgreSqlDataSourceBase(DataSourceSettings settings) : base(settings)
         {
         }
 
@@ -32,6 +32,14 @@ namespace Tortuga.Chain.PostgreSql
             get { return DatabaseMetadata; }
         }
 
+        /// <summary>
+        /// Deletes the specified table name.
+        /// </summary>
+        /// <typeparam name="TArgument">The type of the t argument.</typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>ObjectDbCommandBuilder&lt;NpgsqlCommand, NpgsqlParameter, TArgument&gt;.</returns>
         public ObjectDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, TArgument> Delete<TArgument>(PostgreSqlObjectName tableName, TArgument argumentValue, DeleteOptions options = DeleteOptions.None)
         where TArgument : class
         {
@@ -46,26 +54,58 @@ namespace Tortuga.Chain.PostgreSql
             return new PostgreSqlUpdateObject<TArgument>(this, tableName, argumentValue, effectiveOptions);
         }
 
+        /// <summary>
+        /// Froms the specified table or view name.
+        /// </summary>
+        /// <param name="tableOrViewName">Name of the table or view.</param>
+        /// <returns>TableDbCommandBuilder&lt;NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption&gt;.</returns>
         public TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption> From(PostgreSqlObjectName tableOrViewName)
         {
             return new PostgreSqlTableOrView(this, tableOrViewName);
         }
 
+        /// <summary>
+        /// Froms the specified table or view name.
+        /// </summary>
+        /// <param name="tableOrViewName">Name of the table or view.</param>
+        /// <param name="filterValue">The filter value.</param>
+        /// <returns>TableDbCommandBuilder&lt;NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption&gt;.</returns>
         public TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption> From(PostgreSqlObjectName tableOrViewName, object filterValue)
         {
             return new PostgreSqlTableOrView(this, tableOrViewName, filterValue);
         }
 
+        /// <summary>
+        /// Froms the specified table or view name.
+        /// </summary>
+        /// <param name="tableOrViewName">Name of the table or view.</param>
+        /// <param name="whereClause">The where clause.</param>
+        /// <returns>TableDbCommandBuilder&lt;NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption&gt;.</returns>
         public TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption> From(PostgreSqlObjectName tableOrViewName, string whereClause)
         {
             return new PostgreSqlTableOrView(this, tableOrViewName, whereClause);
         }
 
+        /// <summary>
+        /// Froms the specified table or view name.
+        /// </summary>
+        /// <param name="tableOrViewName">Name of the table or view.</param>
+        /// <param name="whereClause">The where clause.</param>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <returns>TableDbCommandBuilder&lt;NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption&gt;.</returns>
         public TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption> From(PostgreSqlObjectName tableOrViewName, string whereClause, object argumentValue)
         {
             return new PostgreSqlTableOrView(this, tableOrViewName, whereClause, argumentValue);
         }
 
+        /// <summary>
+        /// Gets the by key.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="keys">The keys.</param>
+        /// <returns>MultipleRowDbCommandBuilder&lt;NpgsqlCommand, NpgsqlParameter&gt;.</returns>
+        /// <exception cref="MappingException"></exception>
         public MultipleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> GetByKey<T>(PostgreSqlObjectName tableName, IEnumerable<T> keys)
         {
             var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).Columns.Where(c => c.IsPrimaryKey).ToList();
@@ -88,11 +128,26 @@ namespace Tortuga.Chain.PostgreSql
             return new PostgreSqlTableOrView(this, tableName, where, parameters);
         }
 
+        /// <summary>
+        /// Gets the by key.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="keys">The keys.</param>
+        /// <returns>MultipleRowDbCommandBuilder&lt;NpgsqlCommand, NpgsqlParameter&gt;.</returns>
         public MultipleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> GetByKey<T>(PostgreSqlObjectName tableName, params T[] keys)
         {
             return GetByKey(tableName, (IEnumerable<T>)keys);
         }
 
+        /// <summary>
+        /// Gets the by key.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="key">The key.</param>
+        /// <returns>SingleRowDbCommandBuilder&lt;NpgsqlCommand, NpgsqlParameter&gt;.</returns>
+        /// <exception cref="MappingException"></exception>
         public SingleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> GetByKey<T>(PostgreSqlObjectName tableName, T key)
         {
             var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).Columns.Where(c => c.IsPrimaryKey).ToList();
@@ -113,28 +168,63 @@ namespace Tortuga.Chain.PostgreSql
             return new PostgreSqlTableOrView(this, tableName, where, parameters);
         }
 
+        /// <summary>
+        /// Inserts the specified table name.
+        /// </summary>
+        /// <typeparam name="TArgument">The type of the t argument.</typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>ObjectDbCommandBuilder&lt;NpgsqlCommand, NpgsqlParameter, TArgument&gt;.</returns>
         public ObjectDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, TArgument> Insert<TArgument>(PostgreSqlObjectName tableName, TArgument argumentValue, InsertOptions options = InsertOptions.None)
         where TArgument : class
         {
             return new PostgreSqlInsertObject<TArgument>(this, tableName, argumentValue, options);
         }
 
+        /// <summary>
+        /// SQLs the specified SQL statement.
+        /// </summary>
+        /// <param name="sqlStatement">The SQL statement.</param>
+        /// <returns>MultipleTableDbCommandBuilder&lt;NpgsqlCommand, NpgsqlParameter&gt;.</returns>
         public MultipleTableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> Sql(string sqlStatement)
         {
             return new PostgreSqlSqlCall(this, sqlStatement, null);
         }
 
+        /// <summary>
+        /// SQLs the specified SQL statement.
+        /// </summary>
+        /// <param name="sqlStatement">The SQL statement.</param>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <returns>MultipleTableDbCommandBuilder&lt;NpgsqlCommand, NpgsqlParameter&gt;.</returns>
         public MultipleTableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> Sql(string sqlStatement, object argumentValue)
         {
             return new PostgreSqlSqlCall(this, sqlStatement, argumentValue);
         }
 
+        /// <summary>
+        /// Updates the specified table name.
+        /// </summary>
+        /// <typeparam name="TArgument">The type of the t argument.</typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>ObjectDbCommandBuilder&lt;NpgsqlCommand, NpgsqlParameter, TArgument&gt;.</returns>
         public ObjectDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, TArgument> Update<TArgument>(PostgreSqlObjectName tableName, TArgument argumentValue, UpdateOptions options = UpdateOptions.None)
         where TArgument : class
         {
             return new PostgreSqlUpdateObject<TArgument>(this, tableName, argumentValue, options);
         }
 
+        /// <summary>
+        /// Upserts the specified table name.
+        /// </summary>
+        /// <typeparam name="TArgument">The type of the t argument.</typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>ObjectDbCommandBuilder&lt;NpgsqlCommand, NpgsqlParameter, TArgument&gt;.</returns>
         public ObjectDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, TArgument> Upsert<TArgument>(PostgreSqlObjectName tableName, TArgument argumentValue, UpsertOptions options = UpsertOptions.None)
         where TArgument : class
         {
@@ -235,6 +325,7 @@ namespace Tortuga.Chain.PostgreSql
         /// </summary>
         /// <typeparam name="TObject"></typeparam>
         /// <returns></returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         public TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption> From<TObject>() where TObject : class
         {
             return From(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name);
@@ -246,6 +337,7 @@ namespace Tortuga.Chain.PostgreSql
         /// <typeparam name="TObject">The type of the object.</typeparam>
         /// <param name="whereClause">The where clause. Do not prefix this clause with "WHERE".</param>
         /// <returns></returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         public TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption> From<TObject>(string whereClause) where TObject : class
         {
             return From(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, whereClause);
@@ -258,6 +350,7 @@ namespace Tortuga.Chain.PostgreSql
         /// <param name="whereClause">The where clause. Do not prefix this clause with "WHERE".</param>
         /// <param name="argumentValue">Optional argument value. Every property in the argument value must have a matching parameter in the WHERE clause</param>
         /// <returns></returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         public TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption> From<TObject>(string whereClause, object argumentValue) where TObject : class
         {
             return From(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, whereClause, argumentValue);
@@ -269,6 +362,7 @@ namespace Tortuga.Chain.PostgreSql
         /// <typeparam name="TObject">The type of the object.</typeparam>
         /// <param name="filterValue">The filter value is used to generate a simple AND style WHERE clause.</param>
         /// <returns></returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         public TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption> From<TObject>(object filterValue) where TObject : class
         {
             return From(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, filterValue);

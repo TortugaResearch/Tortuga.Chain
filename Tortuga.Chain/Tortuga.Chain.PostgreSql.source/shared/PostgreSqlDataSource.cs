@@ -42,8 +42,12 @@ namespace Tortuga.Chain
         public async Task<PostgreSqlTransactionalDataSource> BeginTransactionAsync(IsolationLevel? isolationLevel = null, bool forwardEvents = true)
         {
             var connection = await CreateConnectionAsync();
-            var transaction = connection.BeginTransaction();
-            return new PostgreSqlTransactionalDataSource(this, isolationLevel, forwardEvents, connection, transaction);
+            NpgsqlTransaction transaction;
+            if (isolationLevel.HasValue)
+                transaction = connection.BeginTransaction(isolationLevel.Value);
+            else
+                transaction = connection.BeginTransaction();
+            return new PostgreSqlTransactionalDataSource(this, forwardEvents, connection, transaction);
         }
 
         /// <summary>
@@ -79,12 +83,12 @@ namespace Tortuga.Chain
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PostgreSqlDataSource"/> class.
+        /// Initializes a new instance of the <see cref="PostgreSqlDataSource" /> class.
         /// </summary>
         /// <param name="name">The name.</param>
-        /// <param name="connectionString">The connection string.</param>
+        /// <param name="connectionBuilder">The connection builder.</param>
         /// <param name="settings">The settings.</param>
-        /// <exception cref="ArgumentException">connectionString is null or empty.;connectionString</exception>
+        /// <exception cref="ArgumentNullException"></exception>
         public PostgreSqlDataSource(string name, NpgsqlConnectionStringBuilder connectionBuilder, PostgreSqlDataSourceSettings settings = null)
             : base(settings)
         {
@@ -101,15 +105,19 @@ namespace Tortuga.Chain
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PostgreSqlDataSource"/> class.
+        /// Initializes a new instance of the <see cref="PostgreSqlDataSource" /> class.
         /// </summary>
-        /// <param name="connectionString">The connection string.</param>
+        /// <param name="connectionBuilder">The connection builder.</param>
         /// <param name="settings">The settings.</param>
         public PostgreSqlDataSource(NpgsqlConnectionStringBuilder connectionBuilder, PostgreSqlDataSourceSettings settings = null)
             : this(null, connectionBuilder, settings)
         {
         }
 
+        /// <summary>
+        /// Gets the database metadata.
+        /// </summary>
+        /// <value>The database metadata.</value>
         public override PostgreSqlMetadataCache DatabaseMetadata
         {
             get { return m_DatabaseMetadata; }
@@ -136,6 +144,7 @@ namespace Tortuga.Chain
                 await cmd.ExecuteScalarAsync();
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         internal NpgsqlConnection CreateConnection()
         {
             var con = new NpgsqlConnection(ConnectionString);
@@ -162,6 +171,7 @@ namespace Tortuga.Chain
         /// <param name="settings">The new settings to use.</param>
         /// <returns></returns>
         /// <remarks>The new data source will share the same database metadata cache.</remarks>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public PostgreSqlDataSource WithSettings(PostgreSqlDataSourceSettings settings)
         {
             var mergedSettings = new PostgreSqlDataSourceSettings()
@@ -236,6 +246,16 @@ namespace Tortuga.Chain
             return new PostgreSqlDataSource(connectionName, settings.ConnectionString);
         }
 
+        /// <summary>
+        /// Executes the specified operation.
+        /// </summary>
+        /// <param name="executionToken">The execution token.</param>
+        /// <param name="implementation">The implementation that handles processing the result of the command.</param>
+        /// <param name="state">User supplied state.</param>
+        /// <returns>System.Nullable&lt;System.Int32&gt;.</returns>
+        /// <exception cref="ArgumentNullException">executionToken;executionToken is null.
+        /// or
+        /// implementation;implementation is null.</exception>
         protected override int? Execute(CommandExecutionToken<NpgsqlCommand, NpgsqlParameter> executionToken, CommandImplementation<NpgsqlCommand> implementation, object state)
         {
             if (executionToken == null)
@@ -276,6 +296,19 @@ namespace Tortuga.Chain
             }
         }
 
+        /// <summary>
+        /// execute as an asynchronous operation.
+        /// </summary>
+        /// <param name="executionToken">The execution token.</param>
+        /// <param name="implementation">The implementation that handles processing the result of the command.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <param name="state">User supplied state.</param>
+        /// <returns>Task.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// executionToken;executionToken is null.
+        /// or
+        /// implementation;implementation is null.
+        /// </exception>
         protected override async Task<int?> ExecuteAsync(CommandExecutionToken<NpgsqlCommand, NpgsqlParameter> executionToken, CommandImplementationAsync<NpgsqlCommand> implementation, CancellationToken cancellationToken, object state)
         {
             if (executionToken == null)
@@ -325,6 +358,18 @@ namespace Tortuga.Chain
             }
         }
 
+        /// <summary>
+        /// Executes the specified operation.
+        /// </summary>
+        /// <param name="executionToken">The execution token.</param>
+        /// <param name="implementation">The implementation.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>System.Nullable&lt;System.Int32&gt;.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// executionToken;executionToken is null.
+        /// or
+        /// implementation;implementation is null.
+        /// </exception>
         protected override int? Execute(OperationExecutionToken<NpgsqlConnection, NpgsqlTransaction> executionToken, OperationImplementation<NpgsqlConnection, NpgsqlTransaction> implementation, object state)
         {
             if (executionToken == null)
@@ -351,6 +396,19 @@ namespace Tortuga.Chain
             }
         }
 
+        /// <summary>
+        /// execute as an asynchronous operation.
+        /// </summary>
+        /// <param name="executionToken">The execution token.</param>
+        /// <param name="implementation">The implementation.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>Task.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// executionToken;executionToken is null.
+        /// or
+        /// implementation;implementation is null.
+        /// </exception>
         protected override async Task<int?> ExecuteAsync(OperationExecutionToken<NpgsqlConnection, NpgsqlTransaction> executionToken, OperationImplementationAsync<NpgsqlConnection, NpgsqlTransaction> implementation, CancellationToken cancellationToken, object state)
         {
             if (executionToken == null)

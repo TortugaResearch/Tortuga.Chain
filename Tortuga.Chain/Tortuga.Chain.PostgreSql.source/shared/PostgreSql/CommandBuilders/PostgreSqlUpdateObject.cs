@@ -14,8 +14,9 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
     {
         readonly UpdateOptions m_Options;
 
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="PostgreSqlUpdateObject"/> class.
+        /// Initializes a new instance of the <see cref="PostgreSqlUpdateObject{TArgument}"/> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
         /// <param name="tableName">Name of the table.</param>

@@ -14,8 +14,9 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         where TArgument : class
     {
 
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="PostgreSqlObjectCommand" /> class
+        /// Initializes a new instance of the <see cref="PostgreSqlObjectCommand{TArgument}"/> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
         /// <param name="tableName">Name of the table.</param>

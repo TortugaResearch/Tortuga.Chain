@@ -44,7 +44,7 @@ namespace Tortuga.Chain.PostgreSql
         /// Initializes a new instance of the <see cref="PostgreSqlObjectName"/> struct.
         /// </summary>
         /// <param name="qualifiedName">Name of the qualified.</param>
-        /// <exception cref="System.ArgumentException">
+        /// <exception cref="ArgumentException">
         /// Fully qualified name is null or empty.;qualifiedName
         /// or
         /// Four-part identifiers are not supported.
@@ -113,7 +113,7 @@ namespace Tortuga.Chain.PostgreSql
         }
 
         /// <summary>
-        /// Performs an implicit conversion from <see cref="System.String"/> to <see cref="PostgreSqlObjectName"/>.
+        /// Performs an implicit conversion from <see cref="string"/> to <see cref="PostgreSqlObjectName"/>.
         /// </summary>
         /// <param name="value">The value.</param>
         /// <returns>
@@ -153,11 +153,11 @@ namespace Tortuga.Chain.PostgreSql
         }
 
         /// <summary>
-        /// Determines whether the specified <see cref="System.Object" />, is equal to this instance.
+        /// Determines whether the specified <see cref="object" />, is equal to this instance.
         /// </summary>
-        /// <param name="obj">The <see cref="System.Object" /> to compare with this instance.</param>
+        /// <param name="obj">The <see cref="object" /> to compare with this instance.</param>
         /// <returns>
-        ///   <c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>.
+        ///   <c>true</c> if the specified <see cref="object" /> is equal to this instance; otherwise, <c>false</c>.
         /// </returns>
         public override bool Equals(object obj)
         {
@@ -189,10 +189,10 @@ namespace Tortuga.Chain.PostgreSql
         }
 
         /// <summary>
-        /// Returns a <see cref="System.String" /> that represents this instance.
+        /// Returns a <see cref="string" /> that represents this instance.
         /// </summary>
         /// <returns>
-        /// A <see cref="System.String" /> that represents this instance.
+        /// A <see cref="string" /> that represents this instance.
         /// </returns>
         public override string ToString()
         {

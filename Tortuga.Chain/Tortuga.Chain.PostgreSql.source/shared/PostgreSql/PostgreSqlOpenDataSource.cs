@@ -13,7 +13,6 @@ namespace Tortuga.Chain.PostgreSql
     /// <summary>
     /// Class SQLiteOpenDataSource.
     /// </summary>
-    /// <seealso cref="SQLiteDataSourceBase" />
     public class PostgreSqlOpenDataSource : PostgreSqlDataSourceBase, IOpenDataSource
     {
         readonly PostgreSqlDataSource m_BaseDataSource;
@@ -107,7 +106,6 @@ namespace Tortuga.Chain.PostgreSql
         /// <param name="executionToken">The execution token.</param>
         /// <param name="implementation">The implementation that handles processing the result of the command.</param>
         /// <param name="state">User supplied state.</param>
-        /// <exception cref="System.NotImplementedException"></exception>
         protected override int? Execute(CommandExecutionToken<NpgsqlCommand, NpgsqlParameter> executionToken, CommandImplementation<NpgsqlCommand> implementation, object state)
         {
             if (executionToken == null)
@@ -154,7 +152,6 @@ namespace Tortuga.Chain.PostgreSql
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <param name="state">User supplied state.</param>
         /// <returns>Task.</returns>
-        /// <exception cref="System.NotImplementedException"></exception>
         protected async override Task<int?> ExecuteAsync(CommandExecutionToken<NpgsqlCommand, NpgsqlParameter> executionToken, CommandImplementationAsync<NpgsqlCommand> implementation, CancellationToken cancellationToken, object state)
         {
             if (executionToken == null)
@@ -208,7 +205,6 @@ namespace Tortuga.Chain.PostgreSql
         /// <param name="implementation">The implementation.</param>
         /// <param name="state">The state.</param>
         /// <returns>System.Nullable&lt;System.Int32&gt;.</returns>
-        /// <exception cref="System.NotImplementedException"></exception>
         protected override int? Execute(OperationExecutionToken<NpgsqlConnection, NpgsqlTransaction> executionToken, OperationImplementation<NpgsqlConnection, NpgsqlTransaction> implementation, object state)
         {
             if (executionToken == null)
@@ -240,7 +236,6 @@ namespace Tortuga.Chain.PostgreSql
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <param name="state">The state.</param>
         /// <returns>Task.</returns>
-        /// <exception cref="System.NotImplementedException"></exception>
         protected override async Task<int?> ExecuteAsync(OperationExecutionToken<NpgsqlConnection, NpgsqlTransaction> executionToken, OperationImplementationAsync<NpgsqlConnection, NpgsqlTransaction> implementation, CancellationToken cancellationToken, object state)
         {
             if (executionToken == null)

@@ -15,7 +15,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         readonly DeleteOptions m_Options;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PostgreSqlDeleteObject"/> class.
+        /// Initializes a new instance of the <see cref="PostgreSqlDeleteObject{TArgument}"/> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
         /// <param name="table">The table.</param>

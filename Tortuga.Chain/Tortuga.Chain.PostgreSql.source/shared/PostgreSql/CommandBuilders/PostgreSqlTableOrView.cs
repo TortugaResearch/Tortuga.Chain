@@ -29,9 +29,11 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         private string m_SelectClause;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PostgreSqlTableOrView"/> class.
+        /// Initializes a new instance of the <see cref="PostgreSqlTableOrView" /> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
+        /// <param name="tableOrViewName">Name of the table or view.</param>
+        /// <exception cref="ArgumentException"></exception>
         public PostgreSqlTableOrView(PostgreSqlDataSourceBase dataSource, PostgreSqlObjectName tableOrViewName) :
             base(dataSource)
         {
@@ -42,9 +44,12 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PostgreSqlTableOrView"/> class.
+        /// Initializes a new instance of the <see cref="PostgreSqlTableOrView" /> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
+        /// <param name="tableOrViewName">Name of the table or view.</param>
+        /// <param name="filterValue">The filter value.</param>
+        /// <exception cref="ArgumentException"></exception>
         public PostgreSqlTableOrView(PostgreSqlDataSourceBase dataSource, PostgreSqlObjectName tableOrViewName, object filterValue) :
             base(dataSource)
         {
@@ -55,6 +60,14 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
             m_Metadata = DataSource.DatabaseMetadata.GetTableOrView(tableOrViewName);
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PostgreSqlTableOrView"/> class.
+        /// </summary>
+        /// <param name="dataSource">The data source.</param>
+        /// <param name="tableOrViewName">Name of the table or view.</param>
+        /// <param name="whereClause">The where clause.</param>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <exception cref="ArgumentException"></exception>
         public PostgreSqlTableOrView(PostgreSqlDataSourceBase dataSource, PostgreSqlObjectName tableOrViewName, string whereClause, object argumentValue)
             : base(dataSource)
         {
@@ -83,7 +96,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 
             //Support check
             if (!Enum.IsDefined(typeof(PostgreSqlLimitOption), m_LimitOptions))
-                throw new NotSupportedException($"Postgres does not support limit option {(LimitOptions)m_LimitOptions}");
+                throw new NotSupportedException($"PostgreSQL does not support limit option {(LimitOptions)m_LimitOptions}");
 
             //Validation
             if (m_Skip < 0)
@@ -183,6 +196,14 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
             return this;
         }
 
+        /// <summary>
+        /// Adds limits to the command builder.
+        /// </summary>
+        /// <param name="skip">The number of rows to skip.</param>
+        /// <param name="take">Number of rows to take.</param>
+        /// <param name="limitOptions">The limit options.</param>
+        /// <param name="seed">The seed for repeatable reads. Only applies to random sampling</param>
+        /// <returns>TableDbCommandBuilder&lt;NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption&gt;.</returns>
         protected override TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption> OnWithLimits(int? skip, int? take, PostgreSqlLimitOption limitOptions, int? seed)
         {
             m_Seed = seed;
@@ -192,6 +213,14 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
             return this;
         }
 
+        /// <summary>
+        /// Adds limits to the command builder.
+        /// </summary>
+        /// <param name="skip">The number of rows to skip.</param>
+        /// <param name="take">Number of rows to take.</param>
+        /// <param name="limitOptions">The limit options.</param>
+        /// <param name="seed">The seed for repeatable reads. Only applies to random sampling</param>
+        /// <returns>TableDbCommandBuilder&lt;NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption&gt;.</returns>
         protected override TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption> OnWithLimits(int? skip, int? take, LimitOptions limitOptions, int? seed)
         {
             m_Seed = seed;
@@ -201,6 +230,11 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
             return this;
         }
 
+        /// <summary>
+        /// Adds (or replaces) the filter on this command builder.
+        /// </summary>
+        /// <param name="filterValue">The filter value.</param>
+        /// <returns>TableDbCommandBuilder&lt;NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption&gt;.</returns>
         public override TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption> WithFilter(object filterValue)
         {
             m_FilterValue = filterValue;
@@ -209,6 +243,11 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
             return this;
         }
 
+        /// <summary>
+        /// Adds (or replaces) the filter on this command builder.
+        /// </summary>
+        /// <param name="whereClause">The where clause.</param>
+        /// <returns>TableDbCommandBuilder&lt;NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption&gt;.</returns>
         public override TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption> WithFilter(string whereClause)
         {
             m_FilterValue = null;
@@ -217,6 +256,12 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
             return this;
         }
 
+        /// <summary>
+        /// Adds (or replaces) the filter on this command builder.
+        /// </summary>
+        /// <param name="whereClause">The where clause.</param>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <returns>TableDbCommandBuilder&lt;NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption&gt;.</returns>
         public override TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption> WithFilter(string whereClause, object argumentValue)
         {
             m_FilterValue = null;
@@ -252,6 +297,10 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
             return ToInt64();
         }
 
+        /// <summary>
+        /// Gets the data source.
+        /// </summary>
+        /// <value>The data source.</value>
         public new PostgreSqlDataSourceBase DataSource
         {
             get { return (PostgreSqlDataSourceBase)base.DataSource; }
