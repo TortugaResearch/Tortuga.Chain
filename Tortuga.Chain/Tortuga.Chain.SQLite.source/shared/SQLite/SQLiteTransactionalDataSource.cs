@@ -36,14 +36,13 @@ namespace Tortuga.Chain.SQLite
         /// Initializes a new instance of the <see cref="SQLiteTransactionalDataSource" /> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
-        /// <param name="isolationLevel">The isolation level.</param>
         /// <param name="forwardEvents">if set to <c>true</c> [forward events].</param>
         /// <param name="connection">The connection.</param>
         /// <param name="transaction">The transaction.</param>
         /// <param name="lockToken">The lock token.</param>
-        /// <exception cref="System.ArgumentNullException">
+        /// <exception cref="ArgumentNullException">
         /// </exception>
-        internal SQLiteTransactionalDataSource(SQLiteDataSource dataSource, IsolationLevel? isolationLevel, bool forwardEvents, SQLiteConnection connection, SQLiteTransaction transaction, IDisposable lockToken) : base(new SQLiteDataSourceSettings() { DefaultCommandTimeout = dataSource.DefaultCommandTimeout, StrictMode = dataSource.StrictMode, SuppressGlobalEvents = dataSource.SuppressGlobalEvents || forwardEvents, DisableLocks = dataSource.DisableLocks })
+        internal SQLiteTransactionalDataSource(SQLiteDataSource dataSource, bool forwardEvents, SQLiteConnection connection, SQLiteTransaction transaction, IDisposable lockToken) : base(new SQLiteDataSourceSettings() { DefaultCommandTimeout = dataSource.DefaultCommandTimeout, StrictMode = dataSource.StrictMode, SuppressGlobalEvents = dataSource.SuppressGlobalEvents || forwardEvents, DisableLocks = dataSource.DisableLocks })
         {
             if (dataSource == null)
                 throw new ArgumentNullException(nameof(dataSource), $"{nameof(dataSource)} is null.");
@@ -189,8 +188,6 @@ namespace Tortuga.Chain.SQLite
             if (implementation == null)
                 throw new ArgumentNullException("implementation", "implementation is null.");
 
-            var mode = DisableLocks ? LockType.None : (executionToken as SQLiteCommandExecutionToken)?.LockType ?? LockType.Write;
-
             var startTime = DateTimeOffset.Now;
             OnExecutionStarted(executionToken, startTime, state);
 
@@ -313,8 +310,6 @@ namespace Tortuga.Chain.SQLite
                 throw new ArgumentNullException("executionToken", "executionToken is null.");
             if (implementation == null)
                 throw new ArgumentNullException("implementation", "implementation is null.");
-
-            var mode = DisableLocks ? LockType.None : (executionToken as SQLiteOperationExecutionToken)?.LockType ?? LockType.Write;
 
             var startTime = DateTimeOffset.Now;
             OnExecutionStarted(executionToken, startTime, state);

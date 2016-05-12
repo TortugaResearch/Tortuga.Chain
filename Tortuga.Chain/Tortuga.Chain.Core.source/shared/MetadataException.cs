@@ -6,7 +6,7 @@ namespace Tortuga.Chain.SqlServer
     /// <summary>
     /// Error loading the schema metadata from the database.
     /// </summary>
-    /// <seealso cref="System.Exception" />
+    /// <seealso cref="Exception" />
     [Serializable]
     public class MetadataException : Exception
     {

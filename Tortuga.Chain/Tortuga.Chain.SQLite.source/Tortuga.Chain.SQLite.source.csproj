@@ -103,27 +103,28 @@
     <Compile Include="..\Tortuga.Chain.SqlServer.source\AnchorMissing.cs">
       <Link>AnchorMissing.cs</Link>
     </Compile>
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\LibrarySharedAssemblyInfo.cs" />
-    <Compile Include="SQLiteDataSource.cs" />
-    <Compile Include="SQLite\CommandBuilders\SQLiteDeleteObject.cs" />
-    <Compile Include="SQLite\CommandBuilders\SQLiteInsertObject.cs" />
-    <Compile Include="SQLite\CommandBuilders\SQLiteInsertOrUpdateObject.cs" />
-    <Compile Include="SQLite\CommandBuilders\SQLiteObjectCommand.cs" />
-    <Compile Include="SQLite\CommandBuilders\SQLiteSqlCall.cs" />
-    <Compile Include="SQLite\CommandBuilders\SQLiteTableOrView.cs" />
-    <Compile Include="SQLite\CommandBuilders\SQLiteUpdateObject.cs" />
-    <Compile Include="SQLite\LockType.cs" />
-    <Compile Include="SQLite\SQLiteDataSourceBase.cs" />
-    <Compile Include="SQLite\SQLiteCommandExecutionToken.cs" />
-    <Compile Include="SQLite\SQLiteMetadataCache.cs" />
-    <Compile Include="SQLite\SQLiteDataSourceSettings.cs" />
-    <Compile Include="SQLite\SQLiteOpenDataSource.cs" />
-    <Compile Include="SQLite\SQLiteOperationExecutionToken.cs" />
-    <Compile Include="SQLite\SQLiteTransactionalDataSource.cs" />
-    <Compile Include="SQLite\Utilities.cs" />
-    <Compile Include="SQLiteLimitOption.cs" />
-    <Compile Include="SQLiteExtensions.cs" />
+    <Compile Include="shared\SQLiteDataSource.cs" />
+    <Compile Include="shared\SQLite\CommandBuilders\SQLiteDeleteObject.cs" />
+    <Compile Include="shared\SQLite\CommandBuilders\SQLiteInsertObject.cs" />
+    <Compile Include="shared\SQLite\CommandBuilders\SQLiteInsertOrUpdateObject.cs" />
+    <Compile Include="shared\SQLite\CommandBuilders\SQLiteObjectCommand.cs" />
+    <Compile Include="shared\SQLite\CommandBuilders\SQLiteSqlCall.cs" />
+    <Compile Include="shared\SQLite\CommandBuilders\SQLiteTableOrView.cs" />
+    <Compile Include="shared\SQLite\CommandBuilders\SQLiteUpdateObject.cs" />
+    <Compile Include="shared\SQLite\LockType.cs" />
+    <Compile Include="shared\SQLite\SQLiteDataSourceBase.cs" />
+    <Compile Include="shared\SQLite\SQLiteCommandExecutionToken.cs" />
+    <Compile Include="shared\SQLite\SQLiteMetadataCache.cs" />
+    <Compile Include="shared\SQLite\SQLiteDataSourceSettings.cs" />
+    <Compile Include="shared\SQLite\SQLiteOpenDataSource.cs" />
+    <Compile Include="shared\SQLite\SQLiteOperationExecutionToken.cs" />
+    <Compile Include="shared\SQLite\SQLiteTransactionalDataSource.cs" />
+    <Compile Include="shared\SQLite\Utilities.cs" />
+    <Compile Include="shared\SQLiteLimitOption.cs" />
+    <Compile Include="shared\SQLiteExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Tortuga Chain.snk">

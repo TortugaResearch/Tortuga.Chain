@@ -164,7 +164,7 @@ namespace Tortuga.Chain
             else
                 transaction = connection.BeginTransaction(isolationLevel.Value);
 
-            return new SQLiteTransactionalDataSource(this, isolationLevel, forwardEvents, connection, transaction, lockToken);
+            return new SQLiteTransactionalDataSource(this, forwardEvents, connection, transaction, lockToken);
         }
 
         /// <summary>
@@ -187,7 +187,7 @@ namespace Tortuga.Chain
             else
                 transaction = connection.BeginTransaction(isolationLevel.Value);
 
-            return new SQLiteTransactionalDataSource(this, isolationLevel, forwardEvents, connection, transaction, lockToken);
+            return new SQLiteTransactionalDataSource(this, forwardEvents, connection, transaction, lockToken);
         }
 
         /// <summary>

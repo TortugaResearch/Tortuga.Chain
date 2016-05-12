@@ -89,36 +89,36 @@
     <Compile Include="AnchorMissing.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Properties\LibrarySharedAssemblyInfo.cs" />
-    <Compile Include="SqlServerExtensions.cs" />
-    <Compile Include="SqlServerLimitOption.cs" />
-    <Compile Include="SqlServer\Appenders\NotifyChangeAppender`1.cs" />
-    <Compile Include="SqlServer\CommandBuilders\SqlServerInsertBulk.cs" />
-    <Compile Include="SqlServer\CommandBuilders\SqlServerInsertBatch.cs" />
-    <Compile Include="SqlServer\CommandBuilders\SqlServerTableFunction.cs" />
-    <Compile Include="SqlServer\Materializers\WaitForChangeMaterializer`1.cs" />
-    <Compile Include="SqlServer\Materializers\WaitForChangeMaterializer.cs" />
-    <Compile Include="SqlServer\CommandBuilders\ISupportsChangeListener.cs" />
-    <Compile Include="SqlServer\CommandBuilders\SqlServerDeleteObject.cs" />
-    <Compile Include="SqlServer\CommandBuilders\SqlServerInsertObject.cs" />
-    <Compile Include="SqlServer\CommandBuilders\SqlServerInsertOrUpdateObject.cs" />
-    <Compile Include="SqlServer\CommandBuilders\SqlServerObjectCommand.cs" />
-    <Compile Include="SqlServer\CommandBuilders\SqlServerSqlCall.cs" />
-    <Compile Include="SqlServer\CommandBuilders\SqlServerTableOrView.cs" />
-    <Compile Include="SqlServer\SqlServerAppenders.cs" />
-    <Compile Include="SqlServer\SqlServerEffectiveSettings.cs" />
-    <Compile Include="SqlServer\SqlServerCommandExecutionToken.cs" />
-    <Compile Include="SqlServer\SqlServerDataSourceSettings.cs" />
-    <Compile Include="SqlServer\SqlServerOpenDataSource.cs" />
-    <Compile Include="SqlServer\SqlServerOperationExecutionToken.cs" />
-    <Compile Include="SqlServer\SqlServerTransactionalDataSource.cs" />
-    <Compile Include="SqlServer\SqlServerDataSourceBase.cs" />
-    <Compile Include="SqlServer\SqlServerMetadataCache.cs" />
-    <Compile Include="SqlServer\SqlServerObjectName.cs" />
+    <Compile Include="shared\SqlServerExtensions.cs" />
+    <Compile Include="shared\SqlServerLimitOption.cs" />
+    <Compile Include="shared\SqlServer\Appenders\NotifyChangeAppender`1.cs" />
+    <Compile Include="shared\SqlServer\CommandBuilders\SqlServerInsertBulk.cs" />
+    <Compile Include="shared\SqlServer\CommandBuilders\SqlServerInsertBatch.cs" />
+    <Compile Include="shared\SqlServer\CommandBuilders\SqlServerTableFunction.cs" />
+    <Compile Include="shared\SqlServer\Materializers\WaitForChangeMaterializer`1.cs" />
+    <Compile Include="shared\SqlServer\Materializers\WaitForChangeMaterializer.cs" />
+    <Compile Include="shared\SqlServer\CommandBuilders\ISupportsChangeListener.cs" />
+    <Compile Include="shared\SqlServer\CommandBuilders\SqlServerDeleteObject.cs" />
+    <Compile Include="shared\SqlServer\CommandBuilders\SqlServerInsertObject.cs" />
+    <Compile Include="shared\SqlServer\CommandBuilders\SqlServerInsertOrUpdateObject.cs" />
+    <Compile Include="shared\SqlServer\CommandBuilders\SqlServerObjectCommand.cs" />
+    <Compile Include="shared\SqlServer\CommandBuilders\SqlServerSqlCall.cs" />
+    <Compile Include="shared\SqlServer\CommandBuilders\SqlServerTableOrView.cs" />
+    <Compile Include="shared\SqlServer\SqlServerAppenders.cs" />
+    <Compile Include="shared\SqlServer\SqlServerEffectiveSettings.cs" />
+    <Compile Include="shared\SqlServer\SqlServerCommandExecutionToken.cs" />
+    <Compile Include="shared\SqlServer\SqlServerDataSourceSettings.cs" />
+    <Compile Include="shared\SqlServer\SqlServerOpenDataSource.cs" />
+    <Compile Include="shared\SqlServer\SqlServerOperationExecutionToken.cs" />
+    <Compile Include="shared\SqlServer\SqlServerTransactionalDataSource.cs" />
+    <Compile Include="shared\SqlServer\SqlServerDataSourceBase.cs" />
+    <Compile Include="shared\SqlServer\SqlServerMetadataCache.cs" />
+    <Compile Include="shared\SqlServer\SqlServerObjectName.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SqlServerDataSource.cs" />
-    <Compile Include="SqlServer\CommandBuilders\SqlServerProcedureCall.cs" />
-    <Compile Include="SqlServer\CommandBuilders\SqlServerUpdateObject.cs" />
-    <Compile Include="SqlServer\Utilities.cs" />
+    <Compile Include="shared\SqlServerDataSource.cs" />
+    <Compile Include="shared\SqlServer\CommandBuilders\SqlServerProcedureCall.cs" />
+    <Compile Include="shared\SqlServer\CommandBuilders\SqlServerUpdateObject.cs" />
+    <Compile Include="shared\SqlServer\Utilities.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Tortuga Chain.snk">
@@ -126,8 +126,8 @@
     </None>
     <None Include="packages.config" />
     <None Include="readme.md" />
-    <None Include="SqlServer\CommandBuilders\readme.md" />
-    <None Include="SqlServer\readme.md" />
+    <None Include="shared\SqlServer\CommandBuilders\readme.md" />
+    <None Include="shared\SqlServer\readme.md" />
   </ItemGroup>
   <ItemGroup>
     <CodeAnalysisDictionary Include="..\CustomDictionary.xml">

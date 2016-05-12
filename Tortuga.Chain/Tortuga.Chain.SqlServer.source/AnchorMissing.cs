@@ -16,6 +16,7 @@ namespace Tortuga.Anchor
         /// <param name="dictionary">The dictionary.</param>
         /// <returns></returns>
         /// <remarks>This is just a cast. It accounts for an API bug in ConcurrentDictionary.</remarks>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public static ReadOnlyCollection<TKey> GetKeys<TKey, TValue>(this ConcurrentDictionary<TKey, TValue> dictionary)
         {
             return (ReadOnlyCollection<TKey>)dictionary.Keys;
