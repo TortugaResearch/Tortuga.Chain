@@ -73,7 +73,7 @@ namespace Tests
             //WriteDetails(e);
         }
 
-        void WriteLine(string message)
+        protected void WriteLine(string message)
         {
             m_Output.WriteLine(message);
             Debug.WriteLine(message);

@@ -148,7 +148,8 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             var sqlBuilder = m_Metadata.CreateSqlBuilder(StrictMode);
             if (m_FunctionArgumentValue != null)
                 sqlBuilder.ApplyArgumentValue(DataSource, OperationTypes.None, m_FunctionArgumentValue);
-            sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
+            if (m_SelectClause == null)
+                sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
             //Support check
             if (!Enum.IsDefined(typeof(SqlServerLimitOption), m_LimitOptions))

@@ -10,6 +10,7 @@ namespace Tests.CommandBuilders
     public class FromTests : TestBase
     {
         public static TablesAndViewData TablesAndViews = new TablesAndViewData(s_DataSources.Values);
+        public static TablesAndViewColumnsData TablesAndViewsWithColumns = new TablesAndViewColumnsData(s_DataSources.Values);
 
 #if SQL_SERVER
         public static TablesAndViewLimitData<SqlServerLimitOption> TablesAndViewLimit = new TablesAndViewLimitData<SqlServerLimitOption>(s_DataSources.Values);
@@ -291,7 +292,7 @@ namespace Tests.CommandBuilders
         public void ToTable_WithLimit(string assemblyName, string dataSourceName, DataSourceType mode, string tableName, LimitOptions limitOptions)
         {
             var dataSource = DataSource(dataSourceName, mode);
-            m_Output.WriteLine($"Table {tableName}, Limit Option {limitOptions}");
+            WriteLine($"Table {tableName}, Limit Option {limitOptions}");
             try
             {
                 var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
@@ -320,7 +321,7 @@ namespace Tests.CommandBuilders
         public async Task ToTable_WithLimit_Async(string assemblyName, string dataSourceName, DataSourceType mode, string tableName, LimitOptions limitOptions)
         {
             var dataSource = await DataSourceAsync(dataSourceName, mode);
-            m_Output.WriteLine($"Table {tableName}, Limit Option {limitOptions}");
+            WriteLine($"Table {tableName}, Limit Option {limitOptions}");
             try
             {
                 var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
@@ -345,9 +346,89 @@ namespace Tests.CommandBuilders
 
         }
 
+        [Theory, MemberData("TablesAndViews")]
+        public void Count(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            WriteLine($"Table {tableName}");
+            try
+            {
+                var count = dataSource.From(tableName).AsCount().Execute();
+                Assert.True(count >= 0);
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+
+        }
+
+        [Theory, MemberData("TablesAndViews")]
+        public async Task Count_Async(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
+        {
+            var dataSource = await DataSourceAsync(dataSourceName, mode);
+            WriteLine($"Table {tableName}");
+            try
+            {
+                var count = await dataSource.From(tableName).AsCount().ExecuteAsync();
+                Assert.True(count >= 0);
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+
+        }
+
+
+        [Theory, MemberData("TablesAndViewsWithColumns")]
+        public void CountByColumn(string assemblyName, string dataSourceName, DataSourceType mode, string tableName, string columnName)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            WriteLine($"Table {tableName}");
+            try
+            {
+                var columnType = dataSource.DatabaseMetadata.GetTableOrView(tableName).Columns[columnName].TypeName;
+                if (columnType == "xml" || columnType == "ntext" || columnType == "text" || columnType == "image")
+                    return; //SQL Server limitation
+
+                var count = dataSource.From(tableName).AsCount(columnName).Execute();
+                var countDistinct = dataSource.From(tableName).AsCount(columnName, true).Execute();
+                Assert.True(count >= 0, "Count cannot be less than zero");
+                Assert.True(countDistinct <= count, "Count distinct cannot be greater than count");
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+
+        [Theory, MemberData("TablesAndViewsWithColumns")]
+        public async Task CountByColumn_Async(string assemblyName, string dataSourceName, DataSourceType mode, string tableName, string columnName)
+        {
+            var dataSource = await DataSourceAsync(dataSourceName, mode);
+            WriteLine($"Table {tableName}");
+            try
+            {
+                var columnType = dataSource.DatabaseMetadata.GetTableOrView(tableName).Columns[columnName].TypeName;
+                if (columnType == "xml" || columnType == "ntext" || columnType == "text" || columnType == "image")
+                    return; //SQL Server limitation
+
+                    var count = await dataSource.From(tableName).AsCount(columnName).ExecuteAsync();
+                var countDistinct = await dataSource.From(tableName).AsCount(columnName, true).ExecuteAsync();
+                Assert.True(count >= 0, "Count cannot be less than zero");
+                Assert.True(countDistinct <= count, "Count distinct cannot be greater than count");
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
 
     }
 }
+
 
 
 

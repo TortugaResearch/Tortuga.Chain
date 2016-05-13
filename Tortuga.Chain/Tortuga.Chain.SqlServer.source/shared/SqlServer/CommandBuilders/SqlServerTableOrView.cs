@@ -73,7 +73,8 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
                 throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
 
             var sqlBuilder = m_Metadata.CreateSqlBuilder(StrictMode);
-            sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
+            if (m_SelectClause == null)
+                sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
             //Support check
             if (!Enum.IsDefined(typeof(SqlServerLimitOption), m_LimitOptions))
