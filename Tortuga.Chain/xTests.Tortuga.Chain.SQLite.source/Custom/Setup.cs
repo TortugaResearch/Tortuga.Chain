@@ -1,9 +1,14 @@
 using System;
 using System.Data.SQLite;
 using System.IO;
+using Xunit;
+
+//SQLite is not thread-safe, expecially when using translations. While we try to use locks to reduce the pain, it is still fundementally a bad idea, especially when combined with xUnits unknown threading model.
+[assembly: CollectionBehavior(DisableTestParallelization = true)]
 
 namespace Tests
 {
+
 
     public class Setup
     {

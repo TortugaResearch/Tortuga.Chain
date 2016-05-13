@@ -6,6 +6,7 @@ using Tortuga.Chain.AuditRules;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.DataSources;
 using System.Data.Common;
+using Nito.AsyncEx;
 
 #if SDS
 using System.Data.SQLite;
@@ -56,6 +57,11 @@ namespace Tortuga.Chain.SQLite
         DbTransaction IOpenDataSource.AssociatedTransaction
         {
             get { return m_Transaction; }
+        }
+
+        internal override AsyncReaderWriterLock SyncLock
+        {
+            get { return m_BaseDataSource.SyncLock; }
         }
 
         /// <summary>

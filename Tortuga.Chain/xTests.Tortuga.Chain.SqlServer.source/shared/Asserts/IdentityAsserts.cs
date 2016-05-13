@@ -1,4 +1,5 @@
-﻿using Xunit.Sdk;
+﻿using System;
+using Xunit.Sdk;
 
 namespace Xunit
 {
@@ -26,6 +27,11 @@ namespace Xunit
         {
             if (!object.ReferenceEquals(expected, actual))
                 throw new SameException(expected, actual);
+        }
+
+        internal static void AreNotEqual<T>(T expected , T actual, string userMessage)
+        {
+            NotEqual(expected, actual, userMessage);
         }
     }
 }

@@ -20,8 +20,7 @@ namespace Tests.CommandBuilders
         {
         }
 
-        [Theory]
-        [MemberData("Prime")]
+        [Theory, MemberData("Prime")]
         public void DeleteTests_Delete(string assemblyName, string dataSourceName, DataSourceType mode)
         {
 
@@ -46,8 +45,7 @@ namespace Tests.CommandBuilders
             }
         }
 
-        [Theory]
-        [MemberData("Prime")]
+        [Theory, MemberData("Prime")]
         public void DeleteTests_Delete_Attribute(string assemblyName, string dataSourceName, DataSourceType mode)
         {
 
@@ -79,8 +77,7 @@ namespace Tests.CommandBuilders
             }
         }
 
-        [Theory]
-        [MemberData("Prime")]
+        [Theory, MemberData("Prime")]
         public void DeleteTests_Delete_Implied(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);

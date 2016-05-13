@@ -25,8 +25,8 @@ namespace Xunit.Sdk
         /// </summary>
         /// <param name="expected">The expected object value</param>
         /// <param name="actual">The actual object value</param>
-        public EqualException(object expected, object actual)
-            : base(expected, actual, "Assert.Equal() Failure")
+        public EqualException(object expected, object actual, string userMessage = null)
+            : base(expected, actual, "Assert.Equal() Failure " + userMessage)
         {
             ActualIndex = -1;
             ExpectedIndex = -1;

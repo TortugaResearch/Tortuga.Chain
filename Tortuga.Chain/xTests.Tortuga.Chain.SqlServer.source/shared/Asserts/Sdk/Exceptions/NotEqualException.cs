@@ -8,8 +8,8 @@ namespace Xunit.Sdk
         /// <summary>
         /// Creates a new instance of the <see cref="NotEqualException"/> class.
         /// </summary>
-        public NotEqualException(string expected, string actual)
-            : base("Not " + expected, actual, "Assert.NotEqual() Failure")
+        public NotEqualException(string expected, string actual, string userMessage = null)
+            : base("Not " + expected, actual, "Assert.NotEqual() Failure " + userMessage)
         { }
     }
 }

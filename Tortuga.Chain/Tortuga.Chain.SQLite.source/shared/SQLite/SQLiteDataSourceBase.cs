@@ -24,7 +24,6 @@ namespace Tortuga.Chain.SQLite
     [SuppressMessage("Microsoft.Design", "CA1001:TypesThatOwnDisposableFieldsShouldBeDisposable")]
     public abstract class SQLiteDataSourceBase : DataSource<SQLiteConnection, SQLiteTransaction, SQLiteCommand, SQLiteParameter>, IClass1DataSource
     {
-        readonly AsyncReaderWriterLock m_SyncLock = new AsyncReaderWriterLock(); //Sqlite is single-threaded for writes. It says otherwise, but it spams the trace window with exceptions.
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SQLiteDataSourceBase"/> class.
@@ -69,10 +68,7 @@ namespace Tortuga.Chain.SQLite
         /// Gets the synchronize lock used during execution of database operations.
         /// </summary>
         /// <value>The synchronize lock.</value>
-        protected AsyncReaderWriterLock SyncLock
-        {
-            get { return m_SyncLock; }
-        }
+        internal abstract AsyncReaderWriterLock SyncLock { get; }
 
         /// <summary>
         /// Creates a <see cref="SQLiteDeleteObject{TArgument}" /> used to perform a delete operation.

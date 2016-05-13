@@ -14,9 +14,9 @@ namespace Xunit
         /// <param name="expected">The expected value</param>
         /// <param name="actual">The value to be compared against</param>
         /// <exception cref="EqualException">Thrown when the objects are not equal</exception>
-        public static void Equal<T>(T expected, T actual)
+        public static void Equal<T>(T expected, T actual, string userMessage = null)
         {
-            Equal(expected, actual, GetEqualityComparer<T>());
+            Equal(expected, actual, GetEqualityComparer<T>(), userMessage);
         }
 
         /// <summary>
@@ -27,12 +27,12 @@ namespace Xunit
         /// <param name="actual">The value to be compared against</param>
         /// <param name="comparer">The comparer used to compare the two objects</param>
         /// <exception cref="EqualException">Thrown when the objects are not equal</exception>
-        public static void Equal<T>(T expected, T actual, IEqualityComparer<T> comparer)
+        public static void Equal<T>(T expected, T actual, IEqualityComparer<T> comparer, string userMessage = null)
         {
             Assert.GuardArgumentNotNull("comparer", comparer);
 
             if (!comparer.Equals(expected, actual))
-                throw new EqualException(expected, actual);
+                throw new EqualException(expected, actual, userMessage);
         }
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace Xunit
         /// <param name="expected">The expected object</param>
         /// <param name="actual">The actual object</param>
         /// <exception cref="NotEqualException">Thrown when the objects are equal</exception>
-        public static void NotEqual<T>(T expected, T actual)
+        public static void NotEqual<T>(T expected, T actual, string userMessage)
         {
             NotEqual(expected, actual, GetEqualityComparer<T>());
         }
@@ -107,12 +107,12 @@ namespace Xunit
         /// <param name="actual">The actual object</param>
         /// <param name="comparer">The comparer used to examine the objects</param>
         /// <exception cref="NotEqualException">Thrown when the objects are equal</exception>
-        public static void NotEqual<T>(T expected, T actual, IEqualityComparer<T> comparer)
+        public static void NotEqual<T>(T expected, T actual, IEqualityComparer<T> comparer, string userMessage = null)
         {
             Assert.GuardArgumentNotNull("comparer", comparer);
 
             if (comparer.Equals(expected, actual))
-                throw new NotEqualException(ArgumentFormatter.Format(expected), ArgumentFormatter.Format(actual));
+                throw new NotEqualException(ArgumentFormatter.Format(expected), ArgumentFormatter.Format(actual), userMessage);
         }
 
         /// <summary>

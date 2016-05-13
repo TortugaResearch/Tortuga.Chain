@@ -65,6 +65,11 @@ namespace Xunit
             StartsWith(expectedStartString, actualString, StringComparison.CurrentCulture);
         }
 
+        internal static void AreEqual<T>(T expected, T actual, string userMessage)
+        {
+            Equal(expected, actual, userMessage);
+        }
+
         /// <summary>
         /// Verifies that a string starts with a given string, using the given comparison type.
         /// </summary>

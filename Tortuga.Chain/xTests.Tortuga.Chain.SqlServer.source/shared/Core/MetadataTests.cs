@@ -13,8 +13,7 @@ namespace Tests.Core
         {
         }
 
-        [Theory]
-        [MemberData("Basic")]
+        [Theory, MemberData("Basic")]
         public void Preload(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -29,8 +28,7 @@ namespace Tests.Core
 
         }
 
-        [Theory]
-        [MemberData("Tables")]
+        [Theory, MemberData("Tables")]
         public void GetTable(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -49,8 +47,7 @@ namespace Tests.Core
         }
 
 
-        [Theory]
-        [MemberData("Tables")]
+        [Theory, MemberData("Tables")]
         public void GetTable_LowerCase(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -68,8 +65,7 @@ namespace Tests.Core
 
         }
 
-        [Theory]
-        [MemberData("Tables")]
+        [Theory, MemberData("Tables")]
         public void GetTable_UpperCase(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -87,8 +83,7 @@ namespace Tests.Core
 
         }
 
-        [Theory]
-        [MemberData("Views")]
+        [Theory, MemberData("Views")]
         public void GetView(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
         {
             var dataSource = DataSource(dataSourceName, mode);

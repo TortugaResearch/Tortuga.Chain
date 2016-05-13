@@ -81,5 +81,10 @@ namespace Xunit
                 return ex;
             }
         }
+
+        internal static void IsNull(object @object, string userMessage)
+        {
+            Null(@object, userMessage);
+        }
     }
 }

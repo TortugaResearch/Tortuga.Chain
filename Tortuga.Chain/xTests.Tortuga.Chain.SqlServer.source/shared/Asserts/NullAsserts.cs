@@ -9,10 +9,10 @@ namespace Xunit
         /// </summary>
         /// <param name="object">The object to be validated</param>
         /// <exception cref="NotNullException">Thrown when the object is not null</exception>
-        public static void NotNull(object @object)
+        public static void NotNull(object @object, string userMessage)
         {
             if (@object == null)
-                throw new NotNullException();
+                throw new NotNullException(  userMessage);
         }
 
         /// <summary>
@@ -20,10 +20,10 @@ namespace Xunit
         /// </summary>
         /// <param name="object">The object to be inspected</param>
         /// <exception cref="NullException">Thrown when the object reference is not null</exception>
-        public static void Null(object @object)
+        public static void Null(object @object, string userMessage)
         {
             if (@object != null)
-                throw new NullException(@object);
+                throw new NullException(@object, userMessage);
         }
     }
 }

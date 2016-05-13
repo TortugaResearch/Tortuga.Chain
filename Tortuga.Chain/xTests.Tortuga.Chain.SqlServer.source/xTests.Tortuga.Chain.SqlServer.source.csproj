@@ -129,6 +129,7 @@
     <Compile Include="shared\Asserts\StringAsserts.cs" />
     <Compile Include="shared\Asserts\TypeAsserts.cs" />
     <Compile Include="shared\CommandBuilders\DeleteTests.cs" />
+    <Compile Include="shared\Core\AuditRulesTests.cs" />
     <Compile Include="shared\Models\AuditInfo.cs" />
     <Compile Include="shared\Models\ChangeTrackingEmployee.cs" />
     <Compile Include="shared\Models\CustomerWithValidation.cs" />
@@ -139,6 +140,7 @@
     <Compile Include="shared\DataSourceType.cs" />
     <Compile Include="shared\CommandBuilders\FromTests.cs" />
     <Compile Include="shared\Core\MetadataTests.cs" />
+    <Compile Include="shared\TheoryData\RootData.cs" />
     <Compile Include="shared\TheoryData\TableOrViewData.cs" />
     <Compile Include="shared\TheoryData\TableData.cs" />
     <Compile Include="shared\TestBase.Common.cs" />

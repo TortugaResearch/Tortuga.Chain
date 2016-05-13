@@ -12,6 +12,7 @@ using Tortuga.Chain.DataSources;
 #if !WINDOWS_UWP
 using System.Configuration;
 using System.Data.Common;
+using Nito.AsyncEx;
 #endif
 
 #if SDS
@@ -31,6 +32,8 @@ namespace Tortuga.Chain
     /// </summary>
     public class SQLiteDataSource : SQLiteDataSourceBase, IRootDataSource
     {
+        readonly AsyncReaderWriterLock m_SyncLock = new AsyncReaderWriterLock(); //Sqlite is single-threaded for writes. It says otherwise, but it spams the trace window with exceptions.
+
         readonly SQLiteConnectionStringBuilder m_ConnectionBuilder;
         private SQLiteMetadataCache m_DatabaseMetadata;
 
@@ -110,6 +113,11 @@ namespace Tortuga.Chain
         internal string ConnectionString
         {
             get { return m_ConnectionBuilder.ConnectionString; }
+        }
+
+        internal override AsyncReaderWriterLock SyncLock
+        {
+            get { return m_SyncLock; }
         }
 
 #if !WINDOWS_UWP

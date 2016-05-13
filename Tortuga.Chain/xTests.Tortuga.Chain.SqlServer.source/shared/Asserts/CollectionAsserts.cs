@@ -82,6 +82,11 @@ namespace Xunit
             Contains(expected, collection, GetEqualityComparer<T>());
         }
 
+        internal static void IsNotNull(object @object, string userMessage)
+        {
+            NotNull(@object, userMessage);
+        }
+
         /// <summary>
         /// Verifies that a collection contains a given object, using an equality comparer.
         /// </summary>

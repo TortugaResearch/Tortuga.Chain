@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Tortuga.Chain;
+using Tortuga.Chain.AuditRules;
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.PostgreSql;
 using Xunit.Abstractions;
@@ -32,6 +33,13 @@ namespace Tests
                 if (s_PrimaryDataSource == null) s_PrimaryDataSource = ds;
                 s_DataSources.Add(con.Name, ds);
             }
+        }
+
+        public PostgreSqlDataSource DataSource(string name, [CallerMemberName] string caller = null)
+        {
+            m_Output.WriteLine($"{caller} requested Data Source {name}");
+
+            return AttachTracers(s_DataSources[name]);
         }
 
         public PostgreSqlDataSourceBase DataSource(string name, DataSourceType mode, [CallerMemberName] string caller = null)
@@ -80,6 +88,17 @@ namespace Tests
                 m_Output.WriteLine("******");
                 m_Output.WriteLine("");
             }
+        }
+
+        public PostgreSqlDataSource AttachRules(PostgreSqlDataSource source)
+        {
+            return source.WithRules(
+                new DateTimeRule("CreatedDate", DateTimeKind.Local, OperationTypes.Insert),
+                new DateTimeRule("UpdatedDate", DateTimeKind.Local, OperationTypes.InsertOrUpdate),
+                new UserDataRule("CreatedByKey", "EmployeeKey", OperationTypes.Insert),
+                new UserDataRule("UpdatedByKey", "EmployeeKey", OperationTypes.InsertOrUpdate),
+                new ValidateWithValidatable(OperationTypes.InsertOrUpdate)
+                );
         }
 
         public static string EmployeeTableName { get { return "HR.Employee"; } }

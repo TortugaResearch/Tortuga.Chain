@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Tortuga.Chain;
+using Tortuga.Chain.AuditRules;
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.SqlServer;
 using Xunit.Abstractions;
@@ -33,6 +34,27 @@ namespace Tests
                 s_DataSources.Add(con.Name, ds);
                 if (s_PrimaryDataSource == null) s_PrimaryDataSource = ds;
             }
+
+
+
+        }
+
+        public SqlServerDataSource AttachRules(SqlServerDataSource source)
+        {
+            return source.WithRules(
+                new DateTimeRule("CreatedDate", DateTimeKind.Local, OperationTypes.Insert),
+                new DateTimeRule("UpdatedDate", DateTimeKind.Local, OperationTypes.InsertOrUpdate),
+                new UserDataRule("CreatedByKey", "EmployeeKey", OperationTypes.Insert),
+                new UserDataRule("UpdatedByKey", "EmployeeKey", OperationTypes.InsertOrUpdate),
+                new ValidateWithValidatable(OperationTypes.InsertOrUpdate)
+                );
+        }
+
+        public SqlServerDataSource DataSource(string name, [CallerMemberName] string caller = null)
+        {
+            m_Output.WriteLine($"{caller} requested Data Source {name}");
+
+            return AttachTracers(s_DataSources[name]);
         }
 
         public SqlServerDataSourceBase DataSource(string name, DataSourceType mode, [CallerMemberName] string caller = null)

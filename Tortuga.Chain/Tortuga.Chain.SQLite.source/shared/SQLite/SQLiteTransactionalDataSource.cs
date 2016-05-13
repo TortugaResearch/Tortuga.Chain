@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Tortuga.Chain.Core;
 using System.Diagnostics.CodeAnalysis;
 using Tortuga.Chain.DataSources;
+using Nito.AsyncEx;
 
 
 #if SDS
@@ -113,6 +114,11 @@ namespace Tortuga.Chain.SQLite
         public override SQLiteMetadataCache DatabaseMetadata
         {
             get { return m_BaseDataSource.DatabaseMetadata; }
+        }
+
+        internal override AsyncReaderWriterLock SyncLock
+        {
+            get { return m_BaseDataSource.SyncLock; }
         }
 
         /// <summary>

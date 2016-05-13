@@ -24,8 +24,7 @@ namespace Tests.CommandBuilders
 
         }
 
-        [Theory]
-        [MemberData("TablesAndViews")]
+        [Theory, MemberData("TablesAndViews")]
         public void ToDynamicCollection(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -49,8 +48,7 @@ namespace Tests.CommandBuilders
 
         }
 
-        [Theory]
-        [MemberData("TablesAndViews")]
+        [Theory, MemberData("TablesAndViews")]
         public async Task ToDynamicCollection_Async(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
         {
             var dataSource = await DataSourceAsync(dataSourceName, mode);
@@ -74,8 +72,7 @@ namespace Tests.CommandBuilders
 
         }
 
-        [Theory]
-        [MemberData("TablesAndViews")]
+        [Theory, MemberData("TablesAndViews")]
         public void ToDynamicObject(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -97,8 +94,7 @@ namespace Tests.CommandBuilders
 
         }
 
-        [Theory]
-        [MemberData("TablesAndViews")]
+        [Theory, MemberData("TablesAndViews")]
         public async Task ToDynamicObject_Async(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
         {
             var dataSource = await DataSourceAsync(dataSourceName, mode);
@@ -122,8 +118,7 @@ namespace Tests.CommandBuilders
 
 
 
-        [Theory]
-        [MemberData("TablesAndViews")]
+        [Theory, MemberData("TablesAndViews")]
         public void ToDataTable(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -143,8 +138,7 @@ namespace Tests.CommandBuilders
 
         }
 
-        [Theory]
-        [MemberData("TablesAndViews")]
+        [Theory, MemberData("TablesAndViews")]
         public async Task ToDataTable_Async(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
         {
             var dataSource = await DataSourceAsync(dataSourceName, mode);
@@ -164,8 +158,7 @@ namespace Tests.CommandBuilders
 
         }
 
-        [Theory]
-        [MemberData("TablesAndViews")]
+        [Theory, MemberData("TablesAndViews")]
         public void ToDataRow(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -186,8 +179,7 @@ namespace Tests.CommandBuilders
 
         }
 
-        [Theory]
-        [MemberData("TablesAndViews")]
+        [Theory, MemberData("TablesAndViews")]
         public async Task ToDataRow_Async(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
         {
             var dataSource = await DataSourceAsync(dataSourceName, mode);
@@ -211,8 +203,7 @@ namespace Tests.CommandBuilders
 
 
 
-        [Theory]
-        [MemberData("TablesAndViews")]
+        [Theory, MemberData("TablesAndViews")]
         public void ToTable(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -232,8 +223,7 @@ namespace Tests.CommandBuilders
 
         }
 
-        [Theory]
-        [MemberData("TablesAndViews")]
+        [Theory, MemberData("TablesAndViews")]
         public async Task ToTable_Async(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
         {
             var dataSource = await DataSourceAsync(dataSourceName, mode);
@@ -253,8 +243,7 @@ namespace Tests.CommandBuilders
 
         }
 
-        [Theory]
-        [MemberData("TablesAndViews")]
+        [Theory, MemberData("TablesAndViews")]
         public void ToRow(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -274,8 +263,7 @@ namespace Tests.CommandBuilders
             }
         }
 
-        [Theory]
-        [MemberData("TablesAndViews")]
+        [Theory, MemberData("TablesAndViews")]
         public async Task ToRow_Async(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
         {
             var dataSource = await DataSourceAsync(dataSourceName, mode);
@@ -299,8 +287,7 @@ namespace Tests.CommandBuilders
 
 
 
-        [Theory]
-        [MemberData("TablesAndViewLimit")]
+        [Theory, MemberData("TablesAndViewLimit")]
         public void ToTable_WithLimit(string assemblyName, string dataSourceName, DataSourceType mode, string tableName, LimitOptions limitOptions)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -329,8 +316,7 @@ namespace Tests.CommandBuilders
 
         }
 
-        [Theory]
-        [MemberData("TablesAndViewLimit")]
+        [Theory, MemberData("TablesAndViewLimit")]
         public async Task ToTable_WithLimit_Async(string assemblyName, string dataSourceName, DataSourceType mode, string tableName, LimitOptions limitOptions)
         {
             var dataSource = await DataSourceAsync(dataSourceName, mode);
