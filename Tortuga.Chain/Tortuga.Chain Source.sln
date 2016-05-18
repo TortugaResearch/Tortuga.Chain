@@ -23,8 +23,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{6FB40F3D-E
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PostgreSQL", "PostgreSQL", "{9DF4F809-0286-45B9-A736-813F8039ECEA}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MySQL", "MySQL", "{DB9BEC77-71BD-47A1-889C-8EF8DDD94D76}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tortuga.Chain.Core.source", "Tortuga.Chain.Core.source\Tortuga.Chain.Core.source.csproj", "{2C523692-A40B-4A7E-A95A-FBE373F263F7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.Tortuga.Chain.Core.source", "Tests.Tortuga.Chain.Core.source\Tests.Tortuga.Chain.Core.source.csproj", "{62634749-A18D-4882-917E-FB6E8B6EE3D1}"

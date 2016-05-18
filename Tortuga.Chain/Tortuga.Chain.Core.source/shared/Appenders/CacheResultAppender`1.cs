@@ -1,9 +1,7 @@
-﻿#if !WINDOWS_UWP
+﻿
 using System;
-using System.Runtime.Caching;
 using System.Threading;
 using System.Threading.Tasks;
-using Tortuga.Chain.DataSources;
 namespace Tortuga.Chain.Appenders
 {
 
@@ -15,7 +13,7 @@ namespace Tortuga.Chain.Appenders
     {
         readonly string m_CacheKey;
         readonly Func<TResult, string> m_CacheKeyFunction;
-        readonly CacheItemPolicy m_Policy;
+        readonly CachePolicy m_Policy;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CacheResultAppender{TResult}" /> class.
@@ -23,7 +21,7 @@ namespace Tortuga.Chain.Appenders
         /// <param name="previousLink">The previous link.</param>
         /// <param name="cacheKeyFunction">Function to generate cache keys.</param>
         /// <param name="policy">Optional cache policy.</param>
-        public CacheResultAppender(ILink<TResult> previousLink, Func<TResult, string> cacheKeyFunction, CacheItemPolicy policy = null) : base(previousLink)
+        public CacheResultAppender(ILink<TResult> previousLink, Func<TResult, string> cacheKeyFunction, CachePolicy policy = null) : base(previousLink)
         {
             if (cacheKeyFunction == null)
                 throw new ArgumentNullException("cacheKeyFunction", "cacheKeyFunction is null.");
@@ -40,7 +38,7 @@ namespace Tortuga.Chain.Appenders
         /// <param name="previousLink">The previous link.</param>
         /// <param name="cacheKey">The cache key.</param>
         /// <param name="policy">Optional cache policy.</param>
-        public CacheResultAppender(ILink<TResult> previousLink, string cacheKey, CacheItemPolicy policy) : base(previousLink)
+        public CacheResultAppender(ILink<TResult> previousLink, string cacheKey, CachePolicy policy) : base(previousLink)
         {
             if (previousLink == null)
                 throw new ArgumentNullException("previousLink", "previousLink is null.");
@@ -60,7 +58,7 @@ namespace Tortuga.Chain.Appenders
 
             var result = PreviousLink.Execute(state);
 
-            ((DataSource)DataSource).WriteToCache(new CacheItem(m_CacheKey ?? m_CacheKeyFunction(result), result, null), m_Policy);
+            DataSource.Cache.Write(m_CacheKey ?? m_CacheKeyFunction(result), result, m_Policy);
 
             return result;
         }
@@ -76,7 +74,7 @@ namespace Tortuga.Chain.Appenders
 
             var result = await PreviousLink.ExecuteAsync(state).ConfigureAwait(false);
 
-            ((DataSource)DataSource).WriteToCache(new CacheItem(m_CacheKey ?? m_CacheKeyFunction(result), result, null), m_Policy);
+            await DataSource.Cache.WriteAsync(m_CacheKey ?? m_CacheKeyFunction(result), result, m_Policy);
 
             return result;
         }
@@ -84,4 +82,3 @@ namespace Tortuga.Chain.Appenders
     }
 
 }
-#endif

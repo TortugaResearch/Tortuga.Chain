@@ -1,8 +1,7 @@
-#if !WINDOWS_UWP
+
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Tortuga.Chain.DataSources;
 
 namespace Tortuga.Chain.Appenders
 {
@@ -34,7 +33,7 @@ namespace Tortuga.Chain.Appenders
         /// <param name="state">User defined state, usually used for logging.</param>
         public override void Execute(object state = null)
         {
-            ((DataSource)DataSource).InvalidateCache(m_CacheKey);
+            DataSource.Cache.Invalidate(m_CacheKey);
 
             PreviousLink.Execute(state);
         }
@@ -47,10 +46,9 @@ namespace Tortuga.Chain.Appenders
         /// <returns></returns>
         public override async Task ExecuteAsync(CancellationToken cancellationToken, object state = null)
         {
-            ((DataSource)DataSource).InvalidateCache(m_CacheKey);
+            await DataSource.Cache.InvalidateAsync(m_CacheKey);
 
             await PreviousLink.ExecuteAsync(state).ConfigureAwait(false);
         }
     }
 }
-#endif

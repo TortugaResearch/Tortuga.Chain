@@ -6,6 +6,7 @@ using Tortuga.Chain.Core;
 using System.Diagnostics.CodeAnalysis;
 using Tortuga.Chain.DataSources;
 using Nito.AsyncEx;
+using System.Collections.Concurrent;
 
 
 #if SDS
@@ -394,6 +395,25 @@ namespace Tortuga.Chain.SQLite
         {
             using (var cmd = new SQLiteCommand("SELECT 1", m_Connection))
                 await cmd.ExecuteScalarAsync();
+        }
+
+        /// <summary>
+        /// Gets or sets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
+        /// </summary>
+        public override ICacheAdapter Cache
+        {
+            get { return m_BaseDataSource.Cache; }
+        }
+
+        /// <summary>
+        /// The extension cache is used by extensions to store data source specific information.
+        /// </summary>
+        /// <value>
+        /// The extension cache.
+        /// </value>
+        protected override ConcurrentDictionary<Type, object> ExtensionCache
+        {
+            get { return m_BaseDataSource.m_ExtensionCache; }
         }
 
     }

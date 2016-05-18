@@ -22,9 +22,9 @@ namespace Tests.Repository
 
 
         protected string AllCacheKey { get; private set; }
-        public CacheItemPolicy Policy { get; private set; }
+        public CachePolicy Policy { get; private set; }
 
-        public RepositoryWithCaching(IClass1DataSource source, string tableName, CacheItemPolicy policy = null)
+        public RepositoryWithCaching(IClass1DataSource source, string tableName, CachePolicy policy = null)
         {
             Policy = policy;
             Source = source;

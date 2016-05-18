@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -32,6 +33,7 @@ namespace Tortuga.Chain
         /// This is used to decide which option overrides to set when establishing a connection.
         /// </summary>
         private SqlServerEffectiveSettings m_ServerDefaultSettings;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlServerDataSource" /> class.
         /// </summary>
@@ -57,6 +59,9 @@ namespace Tortuga.Chain
                 XactAbort = settings.XactAbort;
                 ArithAbort = settings.ArithAbort;
             }
+
+            m_ExtensionCache = new ConcurrentDictionary<Type, object>();
+            m_Cache = DefaultCache;
         }
 
 
@@ -97,7 +102,32 @@ namespace Tortuga.Chain
                 XactAbort = settings.XactAbort;
                 ArithAbort = settings.ArithAbort;
             }
+            m_ExtensionCache = new ConcurrentDictionary<Type, object>();
+            m_Cache = DefaultCache;
         }
+
+        private SqlServerDataSource(string name, SqlConnectionStringBuilder connectionStringBuilder, SqlServerDataSourceSettings settings, SqlServerMetadataCache databaseMetadata, ICacheAdapter cache, ConcurrentDictionary<Type, object> extensionCache) : base(settings)
+        {
+            if (connectionStringBuilder == null)
+                throw new ArgumentNullException("connectionStringBuilder", "connectionStringBuilder is null.");
+
+            m_ConnectionBuilder = connectionStringBuilder;
+            if (string.IsNullOrEmpty(name))
+                Name = m_ConnectionBuilder.InitialCatalog ?? m_ConnectionBuilder.DataSource;
+            else
+                Name = name;
+
+            m_DatabaseMetadata = databaseMetadata;
+
+            if (settings != null)
+            {
+                XactAbort = settings.XactAbort;
+                ArithAbort = settings.ArithAbort;
+            }
+            m_ExtensionCache = extensionCache;
+            m_Cache = cache;
+        }
+
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlServerDataSource"/> class.
@@ -552,7 +582,7 @@ namespace Tortuga.Chain
                 XactAbort = settings?.XactAbort ?? XactAbort,
                 ArithAbort = settings?.ArithAbort ?? ArithAbort
             };
-            var result = new SqlServerDataSource(Name, m_ConnectionBuilder, mergedSettings);
+            var result = new SqlServerDataSource(Name, m_ConnectionBuilder, mergedSettings, m_DatabaseMetadata, m_Cache, m_ExtensionCache);
             result.m_DatabaseMetadata = m_DatabaseMetadata;
             result.AuditRules = AuditRules;
             result.UserValue = UserValue;
@@ -598,6 +628,18 @@ namespace Tortuga.Chain
             return result;
         }
 
+        /// <summary>
+        /// Craetes a new data source with the provided cache.
+        /// </summary>
+        /// <param name="cache">The cache.</param>
+        /// <returns></returns>
+        public SqlServerDataSource WithCache(ICacheAdapter cache)
+        {
+            var result = WithSettings(null);
+            result.m_Cache = cache;
+            return result;
+        }
+
         DbConnection IRootDataSource.CreateConnection()
         {
             return CreateConnection();
@@ -622,6 +664,30 @@ namespace Tortuga.Chain
         {
             return await BeginTransactionAsync();
         }
+
+        internal ICacheAdapter m_Cache;
+
+        /// <summary>
+        /// Gets or sets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
+        /// </summary>
+        public override ICacheAdapter Cache
+        {
+            get { return m_Cache; }
+        }
+
+        internal ConcurrentDictionary<Type, object> m_ExtensionCache;
+
+        /// <summary>
+        /// The extension cache is used by extensions to store data source specific information.
+        /// </summary>
+        /// <value>
+        /// The extension cache.
+        /// </value>
+        protected override ConcurrentDictionary<Type, object> ExtensionCache
+        {
+            get { return m_ExtensionCache; }
+        }
+
     }
 
 

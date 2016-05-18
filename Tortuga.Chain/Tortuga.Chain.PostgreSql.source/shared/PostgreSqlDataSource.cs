@@ -1,5 +1,6 @@
 ﻿using Npgsql;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -70,6 +71,8 @@ namespace Tortuga.Chain
                 Name = name;
 
             m_DatabaseMetadata = new PostgreSqlMetadataCache(m_ConnectionBuilder);
+            m_ExtensionCache = new ConcurrentDictionary<Type, object>();
+            m_Cache = DefaultCache;
         }
 
         /// <summary>
@@ -80,6 +83,23 @@ namespace Tortuga.Chain
         public PostgreSqlDataSource(string connectionString, PostgreSqlDataSourceSettings settings = null)
             : this(null, connectionString, settings)
         {
+        }
+
+        private PostgreSqlDataSource(string name, NpgsqlConnectionStringBuilder connectionBuilder, PostgreSqlDataSourceSettings settings, PostgreSqlMetadataCache databaseMetadata, ICacheAdapter cache, ConcurrentDictionary<Type, object> extensionCache)
+            : base(settings)
+        {
+            if (connectionBuilder == null)
+                throw new ArgumentNullException(nameof(connectionBuilder), $"{nameof(connectionBuilder)} is null.");
+
+            m_ConnectionBuilder = connectionBuilder;
+            if (string.IsNullOrEmpty(name))
+                Name = m_ConnectionBuilder.Database;
+            else
+                Name = name;
+
+            m_DatabaseMetadata = databaseMetadata;
+            m_ExtensionCache = extensionCache;
+            m_Cache = cache;
         }
 
         /// <summary>
@@ -102,6 +122,8 @@ namespace Tortuga.Chain
                 Name = name;
 
             m_DatabaseMetadata = new PostgreSqlMetadataCache(m_ConnectionBuilder);
+            m_ExtensionCache = new ConcurrentDictionary<Type, object>();
+            m_Cache = DefaultCache;
         }
 
         /// <summary>
@@ -180,7 +202,7 @@ namespace Tortuga.Chain
                 SuppressGlobalEvents = settings?.SuppressGlobalEvents ?? SuppressGlobalEvents,
                 StrictMode = settings?.StrictMode ?? StrictMode
             };
-            var result = new PostgreSqlDataSource(Name, m_ConnectionBuilder, mergedSettings);
+            var result = new PostgreSqlDataSource(Name, m_ConnectionBuilder, mergedSettings, m_DatabaseMetadata, m_Cache, m_ExtensionCache);
             result.m_DatabaseMetadata = m_DatabaseMetadata;
             result.AuditRules = AuditRules;
             result.UserValue = UserValue;
@@ -470,6 +492,40 @@ namespace Tortuga.Chain
         }
 #endif
 
+        /// <summary>
+        /// Craetes a new data source with the provided cache.
+        /// </summary>
+        /// <param name="cache">The cache.</param>
+        /// <returns></returns>
+        public PostgreSqlDataSource WithCache(ICacheAdapter cache)
+        {
+            var result = WithSettings(null);
+            result.m_Cache = cache;
+            return result;
+        }
+
+        internal ICacheAdapter m_Cache;
+
+        /// <summary>
+        /// Gets or sets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
+        /// </summary>
+        public override ICacheAdapter Cache
+        {
+            get { return m_Cache; }
+        }
+
+        internal ConcurrentDictionary<Type, object> m_ExtensionCache;
+
+        /// <summary>
+        /// The extension cache is used by extensions to store data source specific information.
+        /// </summary>
+        /// <value>
+        /// The extension cache.
+        /// </value>
+        protected override ConcurrentDictionary<Type, object> ExtensionCache
+        {
+            get { return m_ExtensionCache; }
+        }
 
     }
 }
