@@ -61,7 +61,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <returns></returns>
         public TableDbCommandBuilder<TCommand, TParameter, TLimit> WithLimits(int? skip, int? take)
         {
-            return OnWithLimits(skip, take, LimitOptions.Rows, null);
+            return OnWithLimits(skip, take, DefaultLimitOption, null);
         }
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <returns></returns>
         public TableDbCommandBuilder<TCommand, TParameter, TLimit> WithLimits(int? take)
         {
-            return OnWithLimits(null, take, LimitOptions.Rows, null);
+            return OnWithLimits(null, take, DefaultLimitOption, null);
         }
 
         /// <summary>
@@ -126,7 +126,7 @@ namespace Tortuga.Chain.CommandBuilders
 
         ITableDbCommandBuilder ITableDbCommandBuilder.WithLimits(int skip, int take)
         {
-            return OnWithLimits(skip, take, LimitOptions.Rows, null);
+            return OnWithLimits(skip, take, DefaultLimitOption, null);
         }
 
 
@@ -181,5 +181,16 @@ namespace Tortuga.Chain.CommandBuilders
         /// <returns></returns>
         public abstract ILink<long> AsCount(string columnName, bool distinct = false);
 
+        /// <summary>
+        /// Gets the default limit option.
+        /// </summary>
+        /// <value>
+        /// The default limit options.
+        /// </value>
+        /// <remarks>For most data sources, this will be LimitOptions.Rows. </remarks>
+        protected virtual LimitOptions DefaultLimitOption
+        {
+            get { return LimitOptions.Rows; }
+        }
     }
 }
