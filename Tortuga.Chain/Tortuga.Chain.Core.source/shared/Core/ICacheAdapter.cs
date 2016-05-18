@@ -36,7 +36,7 @@ namespace Tortuga.Chain.Core
         bool TryRead<T>(string cacheKey, out T result);
 
         /// <summary>
-        /// Tries the read from cache asynchronous.
+        /// Tries the read from cache asynchronously.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="cacheKey">The cache key.</param>

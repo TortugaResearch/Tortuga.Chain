@@ -231,7 +231,8 @@ namespace Tortuga.Chain.PostgreSql
 SELECT att.attname as column_name,
        t.typname as data_type,
        pk.contype as is_primary_key,
-       seq.relname as is_identity
+       seq.relname as is_identity,
+       att.attnotnull as not_null
 FROM pg_class as c
 JOIN pg_namespace as ns on ns.oid=c.relnamespace
 JOIN pg_attribute as att on c.oid=att.attrelid AND
@@ -266,7 +267,15 @@ WHERE c.relname ILIKE @Name AND
                             var typeName = reader.GetString(reader.GetOrdinal("data_type"));
                             bool isPrimary = reader.IsDBNull(reader.GetOrdinal("is_primary_key")) ? false : true;
                             bool isIdentity = reader.IsDBNull(reader.GetOrdinal("is_identity")) ? false : true;
-                            columns.Add(new ColumnMetadata<NpgsqlDbType>(name, false, isPrimary, isIdentity, typeName, TypeNameToNpgSqlDbType(typeName), "\"" + name + "\""));
+                            bool isNullable = !reader.GetBoolean(reader.GetOrdinal("not_null"));
+
+                            //Task-120: Add support for length, precision, and scale
+                            int? maxLength = null;
+                            int? precision = null;
+                            int? scale = null;
+                            string fullTypeName = null;
+
+                            columns.Add(new ColumnMetadata<NpgsqlDbType>(name, false, isPrimary, isIdentity, typeName, TypeNameToNpgSqlDbType(typeName), "\"" + name + "\"", isNullable, maxLength, precision, scale, fullTypeName));
                         }
                     }
                 }

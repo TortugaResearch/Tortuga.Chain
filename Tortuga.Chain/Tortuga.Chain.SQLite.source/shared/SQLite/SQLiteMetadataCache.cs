@@ -143,10 +143,10 @@ namespace Tortuga.Chain.SQLite
         private List<ColumnMetadata<DbType>> GetColumns(string tableName, bool isTable)
         {
             /*  NOTE: Should be safe since GetTableOrViewInternal returns null after querying the table name with a 
-            **  prepared statement. 
+            **  prepared statement, thus proving that the table name exists. 
             */
             var hasPrimarykey = false;
-            var columnSql = "PRAGMA table_info('" + tableName + "')";
+            var columnSql = $"PRAGMA table_info('{tableName}')";
 
             var columns = new List<ColumnMetadata<DbType>>();
             using (var con = new SQLiteConnection(m_ConnectionBuilder.ConnectionString))
@@ -161,9 +161,10 @@ namespace Tortuga.Chain.SQLite
                             var name = reader.GetString(reader.GetOrdinal("name"));
                             var typeName = reader.GetString(reader.GetOrdinal("type"));
                             var isPrimaryKey = reader.GetInt32(reader.GetOrdinal("pk")) != 0 ? true : false;
+                            var isnNullable = !reader.GetBoolean(reader.GetOrdinal("notnull"));
                             hasPrimarykey = hasPrimarykey || isPrimaryKey;
 
-                            columns.Add(new ColumnMetadata<DbType>(name, false, isPrimaryKey, false, typeName, null, "[" + name + "]"));
+                            columns.Add(new ColumnMetadata<DbType>(name, false, isPrimaryKey, false, typeName, null, "[" + name + "]", isnNullable, null, null, null, null));
                         }
                     }
                 }
@@ -172,7 +173,7 @@ namespace Tortuga.Chain.SQLite
             //Tables wihtout a primary key always have a ROWID.
             //We can't tell if other tables have one or not.
             if (isTable && !hasPrimarykey)
-                columns.Add(new ColumnMetadata<DbType>("ROWID", true, false, true, "INTEGER", null, "[ROWID]"));
+                columns.Add(new ColumnMetadata<DbType>("ROWID", true, false, true, "INTEGER", null, "[ROWID]", false, null, null, null, null));
 
             return columns;
         }
