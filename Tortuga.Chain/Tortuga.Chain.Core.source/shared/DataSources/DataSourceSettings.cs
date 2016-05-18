@@ -1,5 +1,4 @@
 ﻿using System;
-using Tortuga.Chain.Core;
 
 namespace Tortuga.Chain.DataSources
 {
@@ -29,11 +28,6 @@ namespace Tortuga.Chain.DataSources
         /// <remarks>Leave null to inherit settings from the parent data source.</remarks>
         public bool? SuppressGlobalEvents { get; set; }
 
-        /// <summary>
-        /// Gets or sets the object cache to use.
-        /// </summary>
-        /// <remarks>Leave null to inherit settings from the parent data source.</remarks>
-        public ICacheAdapter Cache { get; set; }
 
     }
 

@@ -131,19 +131,19 @@ namespace Tortuga.Chain.Core
         {
             if (string.IsNullOrEmpty(key))
                 throw new ArgumentException($"{nameof(key)} is null or empty.", nameof(key));
-            if (policy == null)
-                throw new ArgumentNullException(nameof(policy), $"{nameof(policy)} is null.");
-
 
             //Nulls can't be stored in a cache, so we simulate it using NullObject.Default.
             if (value == null)
                 value = NullObject.Default;
 
             var mappedPolicy = new CacheItemPolicy();
-            if (policy.AbsoluteExpiration.HasValue)
-                mappedPolicy.AbsoluteExpiration = policy.AbsoluteExpiration.Value;
-            if (policy.SlidingExpiration.HasValue)
-                mappedPolicy.SlidingExpiration = policy.SlidingExpiration.Value;
+            if (policy != null)
+            {
+                if (policy.AbsoluteExpiration.HasValue)
+                    mappedPolicy.AbsoluteExpiration = policy.AbsoluteExpiration.Value;
+                if (policy.SlidingExpiration.HasValue)
+                    mappedPolicy.SlidingExpiration = policy.SlidingExpiration.Value;
+            }
 
             m_ObjectCache.Set(new CacheItem(key, value), mappedPolicy);
         }

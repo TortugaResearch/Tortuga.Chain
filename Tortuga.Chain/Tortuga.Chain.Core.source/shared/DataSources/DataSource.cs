@@ -28,13 +28,7 @@ namespace Tortuga.Chain.DataSources
                 DefaultCommandTimeout = settings.DefaultCommandTimeout;
                 StrictMode = settings.StrictMode ?? false;
                 SuppressGlobalEvents = settings.SuppressGlobalEvents ?? false;
-                m_Cache = settings.Cache;
             }
-
-#if !WINDOWS_UWP
-            if (m_Cache == null)
-                m_Cache = new ObjectCacheAdapter(MemoryCache.Default);
-#endif
         }
 
         /// <summary>
@@ -49,14 +43,7 @@ namespace Tortuga.Chain.DataSources
                 DefaultCommandTimeout = settings.DefaultCommandTimeout;
                 StrictMode = settings.StrictMode ?? false;
                 SuppressGlobalEvents = settings.SuppressGlobalEvents ?? false;
-                m_Cache = settings.Cache ?? parent.Cache;
             }
-            else
-            {
-                m_Cache = parent.Cache;
-            }
-
-            m_ExtensionCache = parent.m_ExtensionCache;
         }
 
         /// <summary>
@@ -188,8 +175,6 @@ namespace Tortuga.Chain.DataSources
         {
             return (TTKey)ExtensionCache.GetOrAdd(typeof(TTKey), x => new TTKey());
         }
-
-        protected
 
         /// <summary>
         /// Raises the <see cref="E:ExecutionCanceled" /> event.
@@ -332,5 +317,12 @@ namespace Tortuga.Chain.DataSources
         /// <returns></returns>
         protected abstract IDatabaseMetadataCache OnGetDatabaseMetadata();
 
+        /// <summary>
+        /// Gets the default cache.
+        /// </summary>
+        /// <value>
+        /// The default cache.
+        /// </value>
+        protected static ICacheAdapter DefaultCache { get; } = new ObjectCacheAdapter(MemoryCache.Default);
     }
 }
