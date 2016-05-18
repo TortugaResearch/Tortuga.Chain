@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using Tortuga.Chain.AuditRules;
+using Tortuga.Chain.Core;
 using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.DataSources
@@ -67,5 +68,10 @@ namespace Tortuga.Chain.DataSources
         /// The database metadata.
         /// </value>
         IDatabaseMetadataCache DatabaseMetadata { get; }
+
+        /// <summary>
+        /// Gets or sets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
+        /// </summary>
+        ICacheAdapter Cache { get; }
     }
 }

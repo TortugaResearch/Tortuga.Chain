@@ -1,10 +1,8 @@
-#if !WINDOWS_UWP
+
 using System;
 using System.Collections.Generic;
-using System.Runtime.Caching;
 using System.Threading;
 using System.Threading.Tasks;
-using Tortuga.Chain.DataSources;
 
 namespace Tortuga.Chain.Appenders
 {
@@ -16,7 +14,7 @@ namespace Tortuga.Chain.Appenders
         where TCollection : IEnumerable<TItem>
     {
         readonly Func<TItem, string> m_CacheKeyFunction;
-        readonly CacheItemPolicy m_Policy;
+        readonly CachePolicy m_Policy;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CacheAllItemsAppender{TCollection, TItem}" /> class.
@@ -26,7 +24,7 @@ namespace Tortuga.Chain.Appenders
         /// <param name="policy">Optional cache policy.</param>
         /// <exception cref="ArgumentNullException">previousLink;previousLink is null.</exception>
         /// <exception cref="ArgumentException">cacheKey is null or empty.;cacheKey</exception>
-        public CacheAllItemsAppender(ILink<TCollection> previousLink, Func<TItem, string> cacheKeyFunction, CacheItemPolicy policy = null) : base(previousLink)
+        public CacheAllItemsAppender(ILink<TCollection> previousLink, Func<TItem, string> cacheKeyFunction, CachePolicy policy = null) : base(previousLink)
         {
             if (cacheKeyFunction == null)
                 throw new ArgumentNullException("cacheKeyFunction", "cacheKeyFunction is null.");
@@ -45,7 +43,8 @@ namespace Tortuga.Chain.Appenders
         {
             var result = PreviousLink.Execute(state);
 
-            CacheItems(result);
+            foreach (var item in result)
+                DataSource.Cache.Write(m_CacheKeyFunction(item), item, m_Policy);
 
             return result;
         }
@@ -60,16 +59,10 @@ namespace Tortuga.Chain.Appenders
         {
             var result = await PreviousLink.ExecuteAsync(cancellationToken, state).ConfigureAwait(false);
 
-            CacheItems(result);
+            foreach (var item in result)
+                await DataSource.Cache.WriteAsync(m_CacheKeyFunction(item), item, m_Policy);
 
             return result;
         }
-
-        private void CacheItems(IEnumerable<TItem> list)
-        {
-            foreach (var item in list)
-                ((DataSource)DataSource).WriteToCache(new CacheItem(m_CacheKeyFunction(item), item, null), m_Policy);
-        }
     }
 }
-#endif
