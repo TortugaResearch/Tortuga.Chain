@@ -12,6 +12,7 @@ namespace Tortuga.Chain.Metadata
     public sealed class TableOrViewMetadata<TName, TDbType> : TableOrViewMetadata
         where TDbType : struct
     {
+        readonly SqlBuilder<TDbType> m_Builder;
 
         /// <summary>
         /// </summary>
@@ -25,6 +26,7 @@ namespace Tortuga.Chain.Metadata
             base.Name = name.ToString();
             Columns = new ColumnMetadataCollection<TDbType>(name.ToString(), columns);
             base.Columns = Columns.GenericCollection;
+            m_Builder = new SqlBuilder<TDbType>(Name.ToString(), Columns);
         }
 
 
@@ -50,7 +52,7 @@ namespace Tortuga.Chain.Metadata
         /// <returns></returns>
         public SqlBuilder<TDbType> CreateSqlBuilder(bool strictMode)
         {
-            return new SqlBuilder<TDbType>(Name.ToString(), Columns, strictMode);
+            return m_Builder.Clone(strictMode);
         }
 
 

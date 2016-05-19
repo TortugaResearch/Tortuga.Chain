@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics.CodeAnalysis;
 using Tortuga.Chain.Metadata;
 
@@ -10,6 +11,8 @@ namespace Tortuga.Chain.CommandBuilders
     public struct SqlBuilderEntry<TDbType>
         where TDbType : struct
     {
+        private Flags m_Flags;
+
         /// <summary>
         /// Gets or sets the immutable column metadata.
         /// </summary>
@@ -24,7 +27,17 @@ namespace Tortuga.Chain.CommandBuilders
         /// <value>
         ///   <c>true</c> if [formal parameter]; otherwise, <c>false</c>.
         /// </value>
-        public bool IsFormalParameter { get; internal set; }
+        public bool IsFormalParameter
+        {
+            get { return (m_Flags & Flags.IsFormalParameter) > 0; }
+            internal set
+            {
+                if (value)
+                    m_Flags = m_Flags | Flags.IsFormalParameter;
+                else
+                    m_Flags = m_Flags & ~Flags.IsFormalParameter;
+            }
+        }
 
         /// <summary>
         /// Gets or sets a value indicating whether this <see cref="SqlBuilderEntry{TDbType}"/> participates in insert operations.
@@ -32,7 +45,17 @@ namespace Tortuga.Chain.CommandBuilders
         /// <value>
         ///   <c>true</c> if insert; otherwise, <c>false</c>.
         /// </value>
-        public bool UseForInsert { get; set; }
+        public bool UseForInsert
+        {
+            get { return (m_Flags & Flags.UseForInsert) > 0; }
+            internal set
+            {
+                if (value)
+                    m_Flags = m_Flags | Flags.UseForInsert;
+                else
+                    m_Flags = m_Flags & ~Flags.UseForInsert;
+            }
+        }
 
         /// <summary>
         /// Gets or sets a value indicating whether this column should be treated as primary key.
@@ -43,7 +66,18 @@ namespace Tortuga.Chain.CommandBuilders
         /// <remarks>
         /// This can be overridden. For example, if the parameter object defines its own alternate keys.
         /// </remarks>
-        public bool IsKey { get; set; }
+        public bool IsKey
+        {
+            get { return (m_Flags & Flags.IsKey) > 0; }
+            internal set
+            {
+                if (value)
+                    m_Flags = m_Flags | Flags.IsKey;
+                else
+                    m_Flags = m_Flags & ~Flags.IsKey;
+            }
+        }
+
 
         /// <summary>
         /// Gets or sets the value to be used when constructing parameters.
@@ -60,7 +94,17 @@ namespace Tortuga.Chain.CommandBuilders
         /// <value>
         ///   <c>true</c> if read; otherwise, <c>false</c>.
         /// </value>
-        public bool UseForRead { get; set; }
+        public bool UseForRead
+        {
+            get { return (m_Flags & Flags.UseForRead) > 0; }
+            internal set
+            {
+                if (value)
+                    m_Flags = m_Flags | Flags.UseForRead;
+                else
+                    m_Flags = m_Flags & ~Flags.UseForRead;
+            }
+        }
 
         /// <summary>
         /// Gets or sets a value indicating whether this <see cref="SqlBuilderEntry{TDbType}"/> participates in update operations.
@@ -68,7 +112,17 @@ namespace Tortuga.Chain.CommandBuilders
         /// <value>
         ///   <c>true</c> if update; otherwise, <c>false</c>.
         /// </value>
-        public bool UseForUpdate { get; set; }
+        public bool UseForUpdate
+        {
+            get { return (m_Flags & Flags.UseForUpdate) > 0; }
+            internal set
+            {
+                if (value)
+                    m_Flags = m_Flags | Flags.UseForUpdate;
+                else
+                    m_Flags = m_Flags & ~Flags.UseForUpdate;
+            }
+        }
 
         /// <summary>
         /// Gets or sets a value indicating whether this <see cref="SqlBuilderEntry{TDbType}"/> participates in parameter generation.
@@ -76,11 +130,81 @@ namespace Tortuga.Chain.CommandBuilders
         /// <value>
         ///   <c>true</c> if [use parameter]; otherwise, <c>false</c>.
         /// </value>
-        public bool UseParameter { get; set; }
+        public bool UseParameter
+        {
+            get { return (m_Flags & Flags.UseParameter) > 0; }
+            internal set
+            {
+                if (value)
+                    m_Flags = m_Flags | Flags.UseParameter;
+                else
+                    m_Flags = m_Flags & ~Flags.UseParameter;
+            }
+        }
 
         /// <summary>
         /// When non-null, this indicates that we want to use a table value parameter instead of a normal parameter.
         /// </summary>
         public ISqlBuilderEntryDetails<TDbType> ParameterColumn { get; set; }
+
+        /// <summary>
+        /// Gets a value indicating whether restricted from reading.
+        /// </summary>
+        public bool RestrictedRead
+        {
+            get { return (m_Flags & Flags.RestrictedRead) > 0; }
+            internal set
+            {
+                if (value)
+                    m_Flags = m_Flags | Flags.RestrictedRead;
+                else
+                    m_Flags = m_Flags & ~Flags.RestrictedRead;
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether restricted from inserting.
+        /// </summary>
+        public bool RestrictedInsert
+        {
+            get { return (m_Flags & Flags.RestrictedInsert) > 0; }
+            internal set
+            {
+                if (value)
+                    m_Flags = m_Flags | Flags.RestrictedInsert;
+                else
+                    m_Flags = m_Flags & ~Flags.RestrictedInsert;
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether restricted from updating.
+        /// </summary>
+        public bool RestrictedUpdate
+        {
+            get { return (m_Flags & Flags.RestrictedUpdate) > 0; }
+            internal set
+            {
+                if (value)
+                    m_Flags = m_Flags | Flags.RestrictedUpdate;
+                else
+                    m_Flags = m_Flags & ~Flags.RestrictedUpdate;
+            }
+        }
+
+        [Flags]
+        internal enum Flags : ushort //this is internal, so we can make it larger if needed
+        {
+            IsFormalParameter = 1,
+            UseForInsert = 2,
+            IsKey = 4,
+            UseForRead = 8,
+            UseForUpdate = 16,
+            UseParameter = 32,
+            RestrictedRead = 64,
+            RestrictedInsert = 128,
+            RestrictedUpdate = 256
+        }
+
     }
 }

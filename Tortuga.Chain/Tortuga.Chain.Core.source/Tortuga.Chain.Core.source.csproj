@@ -92,6 +92,7 @@
     <Compile Include="shared\Appenders\TraceAppender`1.cs" />
     <Compile Include="shared\Appenders\TraceAppender.cs" />
     <Compile Include="shared\AuditRules\ColumnRule.cs" />
+    <Compile Include="shared\AuditRules\RestrictColumn.cs" />
     <Compile Include="shared\AuditRules\ValidationRule.cs" />
     <Compile Include="shared\AuditRules\ValidateWithValidatable.cs" />
     <Compile Include="shared\AuditRules\ValidateWithDataErrorInfo.cs" />
