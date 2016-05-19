@@ -1,3 +1,4 @@
+#if !RUNTIME_CACHE_MISSING
 using System;
 using System.Runtime.Caching;
 using System.Threading.Tasks;
@@ -124,13 +125,14 @@ namespace Tortuga.Chain.Core
         /// <summary>
         /// Writes to cache.
         /// </summary>
-        /// <param name="key">The key.</param>
+        /// <param name="cacheKey">The cache key.</param>
         /// <param name="value">The value.</param>
         /// <param name="policy">The policy.</param>
-        public void Write(string key, object value, CachePolicy policy)
+        /// <exception cref="ArgumentException"></exception>
+        public void Write(string cacheKey, object value, CachePolicy policy)
         {
-            if (string.IsNullOrEmpty(key))
-                throw new ArgumentException($"{nameof(key)} is null or empty.", nameof(key));
+            if (string.IsNullOrEmpty(cacheKey))
+                throw new ArgumentException($"{nameof(cacheKey)} is null or empty.", nameof(cacheKey));
 
             //Nulls can't be stored in a cache, so we simulate it using NullObject.Default.
             if (value == null)
@@ -145,19 +147,21 @@ namespace Tortuga.Chain.Core
                     mappedPolicy.SlidingExpiration = policy.SlidingExpiration.Value;
             }
 
-            m_ObjectCache.Set(new CacheItem(key, value), mappedPolicy);
+            m_ObjectCache.Set(new CacheItem(cacheKey, value), mappedPolicy);
         }
 
         /// <summary>
         /// Writes to cache asynchronously.
         /// </summary>
-        /// <param name="key">The key.</param>
+        /// <param name="cacheKey">The cache key.</param>
         /// <param name="value">The value.</param>
         /// <param name="policy">The policy.</param>
-        /// <returns>Task.</returns>
-        public Task WriteAsync(string key, object value, CachePolicy policy)
+        /// <returns>
+        /// Task.
+        /// </returns>
+        public Task WriteAsync(string cacheKey, object value, CachePolicy policy)
         {
-            Write(key, value, policy);
+            Write(cacheKey, value, policy);
             return Task.CompletedTask;
         }
 
@@ -168,7 +172,6 @@ namespace Tortuga.Chain.Core
             private NullObject() { }
         }
     }
-
-
-
 }
+
+#endif

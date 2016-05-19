@@ -12,19 +12,21 @@ namespace Tortuga.Chain.Core
         /// <summary>
         /// Writes to cache.
         /// </summary>
-        /// <param name="key">The key.</param>
+        /// <param name="cacheKey">The cache key.</param>
         /// <param name="value">The value.</param>
         /// <param name="policy">The policy.</param>
-        void Write(string key, object value, CachePolicy policy);
+        void Write(string cacheKey, object value, CachePolicy policy);
 
         /// <summary>
         /// Writes to cache asynchronously.
         /// </summary>
-        /// <param name="key">The key.</param>
+        /// <param name="cacheKey">The cache key.</param>
         /// <param name="value">The value.</param>
         /// <param name="policy">The policy.</param>
-        /// <returns>Task.</returns>
-        Task WriteAsync(string key, object value, CachePolicy policy);
+        /// <returns>
+        /// Task.
+        /// </returns>
+        Task WriteAsync(string cacheKey, object value, CachePolicy policy);
 
         /// <summary>
         /// Tries the read from cache.

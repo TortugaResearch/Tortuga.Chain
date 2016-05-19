@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Concurrent;
 using System.ComponentModel;
-using Tortuga.Chain.Core;
-using Tortuga.Chain.AuditRules;
 using System.Threading.Tasks;
+using Tortuga.Chain.AuditRules;
+using Tortuga.Chain.Core;
 using Tortuga.Chain.Metadata;
 
 #if !WINDOWS_UWP
@@ -323,6 +323,10 @@ namespace Tortuga.Chain.DataSources
         /// <value>
         /// The default cache.
         /// </value>
-        protected static ICacheAdapter DefaultCache { get; } = new ObjectCacheAdapter(MemoryCache.Default);
+#if RUNTIME_CACHE_MISSING
+        protected static ICacheAdapter DefaultCache { get; } = new SimpleCache();
+#else
+    protected static ICacheAdapter DefaultCache { get; } = new ObjectCacheAdapter(MemoryCache.Default);
+#endif
     }
 }

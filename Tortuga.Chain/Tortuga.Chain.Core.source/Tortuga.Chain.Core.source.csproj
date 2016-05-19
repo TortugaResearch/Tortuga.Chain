@@ -115,6 +115,7 @@
     <Compile Include="shared\Core\OperationExecutionToken`2.cs" />
     <Compile Include="shared\Core\OperationImplementation.cs" />
     <Compile Include="shared\Core\OperationImplementationAsync.cs" />
+    <Compile Include="shared\Core\SimpleCache.cs" />
     <Compile Include="shared\DataSources\ICommandDataSource`2.cs" />
     <Compile Include="shared\DataSources\IDataSource.cs" />
     <Compile Include="shared\DataSources\IOpenDataSource.cs" />

@@ -4,8 +4,8 @@ using Tortuga.Chain.DataSources;
 #if SDS
 using System.Data.SQLite;
 #else
-using SQLiteCommand = Microsoft.Data.Sqlite.SqliteCommand;
-using SQLiteParameter = Microsoft.Data.Sqlite.SqliteParameter;
+using SQLiteConnection = Microsoft.Data.Sqlite.SqliteConnection;
+using SQLiteTransaction = Microsoft.Data.Sqlite.SqliteTransaction;
 #endif
 
 namespace Tortuga.Chain.SQLite
