@@ -22,7 +22,7 @@ namespace Tests
         protected readonly ITestOutputHelper m_Output;
 
         static protected readonly Dictionary<string, AccessDataSource> s_DataSources = new Dictionary<string, AccessDataSource>();
-        static public readonly string AssemblyName = "SQLite";
+        static public readonly string AssemblyName = "Access";
         protected static readonly AccessDataSource s_PrimaryDataSource;
 
         static TestBase()

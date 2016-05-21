@@ -64,6 +64,7 @@ namespace Tortuga.Chain.Access.CommandBuilders
                 throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
 
             var sqlBuilder = m_Metadata.CreateSqlBuilder(StrictMode);
+            sqlBuilder.ApplyRulesForSelect(DataSource);
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
             //Support check
