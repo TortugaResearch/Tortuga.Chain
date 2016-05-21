@@ -326,7 +326,7 @@ namespace Tortuga.Chain.DataSources
 #if RUNTIME_CACHE_MISSING
         protected static ICacheAdapter DefaultCache { get; } = new SimpleCache();
 #else
-    protected static ICacheAdapter DefaultCache { get; } = new ObjectCacheAdapter(MemoryCache.Default);
+        protected static ICacheAdapter DefaultCache { get; } = new ObjectCacheAdapter(MemoryCache.Default);
 #endif
     }
 }

@@ -206,6 +206,12 @@ namespace Tortuga.Chain
             result.m_DatabaseMetadata = m_DatabaseMetadata;
             result.AuditRules = AuditRules;
             result.UserValue = UserValue;
+
+            result.ExecutionStarted += (sender, e) => OnExecutionStarted(e);
+            result.ExecutionFinished += (sender, e) => OnExecutionFinished(e);
+            result.ExecutionError += (sender, e) => OnExecutionError(e);
+            result.ExecutionCanceled += (sender, e) => OnExecutionCanceled(e);
+
             return result;
         }
 

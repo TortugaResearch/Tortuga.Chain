@@ -146,6 +146,8 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
                 throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
 
             var sqlBuilder = m_Metadata.CreateSqlBuilder(StrictMode);
+            sqlBuilder.ApplyRulesForSelect(DataSource);
+
             if (m_FunctionArgumentValue != null)
                 sqlBuilder.ApplyArgumentValue(DataSource, OperationTypes.None, m_FunctionArgumentValue);
             if (m_SelectClause == null)

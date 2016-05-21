@@ -13,7 +13,8 @@ namespace Tortuga.Chain.Metadata
     public sealed class TableFunctionMetadata<TName, TDbType> : TableFunctionMetadata
         where TDbType : struct
     {
-
+        readonly SqlBuilder<TDbType> m_Builder;
+         
         /// <summary>
         /// </summary>
         /// <param name="name">The name.</param>
@@ -27,6 +28,8 @@ namespace Tortuga.Chain.Metadata
             base.Columns = Columns.GenericCollection;
             Parameters = new ParameterMetadataCollection<TDbType>(name.ToString(), parameters);
             base.Parameters = Parameters.GenericCollection;
+
+            m_Builder = new SqlBuilder<TDbType>(Name.ToString(), Columns, Parameters);
         }
 
 
@@ -61,7 +64,7 @@ namespace Tortuga.Chain.Metadata
         /// <returns></returns>
         public SqlBuilder<TDbType> CreateSqlBuilder(bool strictMode)
         {
-            return new SqlBuilder<TDbType>(Name.ToString(), Columns, Parameters, strictMode);
+            return m_Builder.Clone(strictMode);
         }
     }
 }

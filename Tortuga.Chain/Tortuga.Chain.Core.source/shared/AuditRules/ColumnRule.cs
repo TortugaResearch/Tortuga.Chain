@@ -42,5 +42,5 @@ namespace Tortuga.Chain.AuditRules
         public abstract object GenerateValue(object argumentValue, object userValue, object currentValue);
     }
 
-
+        
 }

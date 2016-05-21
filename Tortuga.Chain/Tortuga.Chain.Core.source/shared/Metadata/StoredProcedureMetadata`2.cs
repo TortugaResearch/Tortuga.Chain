@@ -14,6 +14,7 @@ namespace Tortuga.Chain.Metadata
     public sealed class StoredProcedureMetadata<TName, TDbType> : StoredProcedureMetadata
         where TDbType : struct
     {
+        SqlBuilder<TDbType> m_Builder;
 
         /// <summary>
         /// </summary>
@@ -25,6 +26,8 @@ namespace Tortuga.Chain.Metadata
             base.Name = name.ToString();
             Parameters = new ParameterMetadataCollection<TDbType>(name.ToString(), parameters);
             base.Parameters = Parameters.GenericCollection;
+
+            m_Builder = new SqlBuilder<TDbType>(Name.ToString(), Parameters);
         }
 
         /// <summary>
@@ -49,7 +52,7 @@ namespace Tortuga.Chain.Metadata
         /// <returns></returns>
         public SqlBuilder<TDbType> CreateSqlBuilder(bool strictMode)
         {
-            return new SqlBuilder<TDbType>(Name.ToString(), Parameters, strictMode);
+            return m_Builder.Clone(strictMode);
         }
     }
 }

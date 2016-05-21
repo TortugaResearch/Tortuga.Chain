@@ -52,7 +52,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             var sql = new StringBuilder();
             sqlBuilder.BuildInsertClause(sql, $"INSERT INTO {m_Table.Name.ToQuotedString()} (", null, ")");
             sqlBuilder.BuildSelectClause(sql, " OUTPUT ", "Inserted.", null);
-            sqlBuilder.BuildSelectTvpClause(sql, " SELECT ", null, " FROM @ValuesParameter ");
+            sqlBuilder.BuildSelectTvpForInsertClause(sql, " SELECT ", null, " FROM @ValuesParameter ");
             sql.Append(";");
 
             var parameters = sqlBuilder.GetParameters();

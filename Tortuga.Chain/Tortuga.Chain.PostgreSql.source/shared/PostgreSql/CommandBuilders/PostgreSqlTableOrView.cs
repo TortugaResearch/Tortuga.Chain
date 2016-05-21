@@ -92,6 +92,8 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
                 throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
 
             var sqlBuilder = m_Metadata.CreateSqlBuilder(StrictMode);
+            sqlBuilder.ApplyRulesForSelect(DataSource);
+
             if (m_SelectClause == null)
                 sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 

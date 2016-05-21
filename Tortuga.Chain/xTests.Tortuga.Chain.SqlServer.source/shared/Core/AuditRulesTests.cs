@@ -25,7 +25,7 @@ namespace Tests.shared.Core
             try
             {
                 var currentUser = dataSource.From(EmployeeTableName).ToObject<Employee>(RowOptions.DiscardExtraRows).Execute();
-                var ds =  AttachRules(dataSource).WithUser(currentUser);
+                var ds = AttachRules(dataSource).WithUser(currentUser);
             }
             finally
             {
@@ -161,5 +161,65 @@ namespace Tests.shared.Core
             }
         }
 
+
+        [Theory, MemberData("Prime")]
+        public void AuditRulesTests_RestrictedColumn(string assemblyName, string dataSourceName)
+        {
+
+            var dataSource = DataSource(dataSourceName);
+            try
+            {
+
+                var key = dataSource.Insert(EmployeeTableName, new Employee() { FirstName = "A", MiddleName = "B", LastName = "C" }).ToInt32().Execute();
+                var goodUser = new UserToken(true);
+                var badUser = new UserToken(false);
+                ExceptWhenPredicate isAdminCheck = user => ((UserToken)user).IsAdmin;
+                var dsReadCheck = dataSource.WithRules(new RestrictColumn("MiddleName", OperationTypes.Select, isAdminCheck));
+                var dsWriteCheck = dataSource.WithRules(new RestrictColumn("MiddleName", OperationTypes.Update, isAdminCheck));
+
+                //SELECT
+                {
+                    var shouldBeSet = dsReadCheck.WithUser(goodUser).GetByKey(EmployeeTableName, key).ToObject<Employee>().Execute();
+                    Assert.Equal("B", shouldBeSet.MiddleName, "MiddleName was to be set");
+                }
+                {
+                    var shouldBeMissing = dsReadCheck.WithUser(badUser).GetByKey(EmployeeTableName, key).ToObject<Employee>().Execute();
+                    Assert.IsNull(shouldBeMissing.MiddleName, "MiddleName was supposed to be clear");
+                }
+                //UPDATE
+                {
+                    var shouldNotBeChanged = dsWriteCheck.WithUser(badUser).Update(EmployeeTableName, new { FirstName = "AA", MiddleName = "Z", EmployeeKey = key }).ToObject<Employee>().Execute();
+                    Assert.Equal("B", shouldNotBeChanged.MiddleName, "MiddleName was not supposed to be changed");
+                }
+                {
+                    var shouldBeChanged = dsWriteCheck.WithUser(goodUser).Update(EmployeeTableName, new { FirstName = "BB", MiddleName = "X", EmployeeKey = key }).ToObject<Employee>().Execute();
+                    Assert.Equal("X", shouldBeChanged.MiddleName, "MiddleName was supposed to be changed");
+                }
+                //SELECT after UPDATE
+                {
+                    var shouldBeSet = dsReadCheck.WithUser(goodUser).Update(EmployeeTableName, new { FirstName = "AA", MiddleName = "B", EmployeeKey = key }).ToObject<Employee>().Execute();
+                    Assert.Equal("B", shouldBeSet.MiddleName, "MiddleName was to be set");
+                }
+                {
+                    var shouldBeMissing = dsReadCheck.WithUser(badUser).Update(EmployeeTableName, new { FirstName = "BB", MiddleName = "X", EmployeeKey = key }).ToObject<Employee>().Execute();
+                    Assert.IsNull(shouldBeMissing.MiddleName, "MiddleName was supposed to be clear");
+                }
+
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+        class UserToken
+        {
+            public UserToken(bool isAdmin)
+            {
+                IsAdmin = isAdmin;
+            }
+
+            public bool IsAdmin { get; set; }
+        }
     }
 }
