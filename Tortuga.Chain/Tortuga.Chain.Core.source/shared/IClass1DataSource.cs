@@ -17,14 +17,6 @@ namespace Tortuga.Chain
     public interface IClass1DataSource : IClass0DataSource
     {
 
-        //#if !WINDOWS_UWP
-        //        /// <summary>
-        //        /// Gets or sets the cache to be used by this data source. The default is .NET's MemoryCache.
-        //        /// </summary>
-        //        /// <remarks>This is used by the WithCaching materializer.</remarks>
-        //        ObjectCache Cache { get; set; }
-        //#endif
-
         /// <summary>
         /// Returns an abstract metadata cache.
         /// </summary>

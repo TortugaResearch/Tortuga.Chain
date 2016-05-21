@@ -1,11 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Tortuga.Chain.Appenders;
+using Tortuga.Chain.CommandBuilders;
 
 #if !WINDOWS_UWP
-using System.Collections.Generic;
-using System.Runtime.Caching;
-using Tortuga.Chain.CommandBuilders;
 #endif
 
 namespace Tortuga.Chain
@@ -15,14 +14,13 @@ namespace Tortuga.Chain
     /// </summary>
     public static class CommonAppenders
     {
-#if !WINDOWS_UWP
         /// <summary>
         /// Executes the previous link and caches the result.
         /// </summary>
         /// <param name="previousLink">The previous link.</param>
         /// <param name="cacheKey">The cache key.</param>
         /// <param name="policy">Optional cache policy.</param>
-        public static ILink<TResult> Cache<TResult>(this ILink<TResult> previousLink, string cacheKey, CacheItemPolicy policy = null)
+        public static ILink<TResult> Cache<TResult>(this ILink<TResult> previousLink, string cacheKey, CachePolicy policy = null)
         {
             return new CacheResultAppender<TResult>(previousLink, cacheKey, policy);
         }
@@ -33,7 +31,7 @@ namespace Tortuga.Chain
         /// <param name="previousLink">The previous link.</param>
         /// <param name="cacheKeyFunction">Function to generate cache keys.</param>
         /// <param name="policy">Optional cache policy.</param>
-        public static ILink<TResult> Cache<TResult>(this ILink<TResult> previousLink, Func<TResult, string> cacheKeyFunction, CacheItemPolicy policy = null)
+        public static ILink<TResult> Cache<TResult>(this ILink<TResult> previousLink, Func<TResult, string> cacheKeyFunction, CachePolicy policy = null)
         {
             return new CacheResultAppender<TResult>(previousLink, cacheKeyFunction, policy);
         }
@@ -47,7 +45,7 @@ namespace Tortuga.Chain
         /// <param name="cacheKeyFunction">Function to generate cache keys.</param>
         /// <param name="policy">Optional cache policy.</param>
         /// <returns>ILink&lt;TCollection&gt;.</returns>
-        public static ILink<TCollection> CacheAllItems<TCollection, TItem>(this ILink<TCollection> previousLink, Func<TItem, string> cacheKeyFunction, CacheItemPolicy policy = null)
+        public static ILink<TCollection> CacheAllItems<TCollection, TItem>(this ILink<TCollection> previousLink, Func<TItem, string> cacheKeyFunction, CachePolicy policy = null)
             where TCollection : IEnumerable<TItem>
         {
             return new CacheAllItemsAppender<TCollection, TItem>(previousLink, cacheKeyFunction, policy);
@@ -92,11 +90,10 @@ namespace Tortuga.Chain
         /// <param name="previousLink">The previous link.</param>
         /// <param name="cacheKey">The cache key.</param>
         /// <param name="policy">Optional cache policy.</param>
-        public static ILink<TResult> ReadOrCache<TResult>(this ILink<TResult> previousLink, string cacheKey, CacheItemPolicy policy = null)
+        public static ILink<TResult> ReadOrCache<TResult>(this ILink<TResult> previousLink, string cacheKey, CachePolicy policy = null)
         {
             return new ReadOrCacheResultAppender<TResult>(previousLink, cacheKey, policy);
         }
-#endif
 
         /// <summary>
         /// Adds DB Command tracing. Information is send to the Debug stream.

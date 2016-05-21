@@ -49,6 +49,46 @@ namespace Tortuga.Chain.Metadata
         /// </summary>
         /// <value>The name of the type.</value>
         public string TypeName { get; protected set; }
+
+        /// <summary>
+        /// Gets or sets the maximum length.
+        /// </summary>
+        /// <value>
+        /// The maximum length.
+        /// </value>
+        public int? MaxLength { get; protected set; }
+
+        /// <summary>
+        /// Gets or sets the precision.
+        /// </summary>
+        /// <value>
+        /// The precision.
+        /// </value>
+        public int? Precision { get; protected set; }
+
+        /// <summary>
+        /// Gets or sets the scale.
+        /// </summary>
+        /// <value>
+        /// The scale.
+        /// </value>
+        public int? Scale { get; protected set; }
+
+        /// <summary>
+        /// Gets or sets the full name of the type including max length, precsision, and/or scale.
+        /// </summary>
+        /// <value>
+        /// The full name of the type.
+        /// </value>
+        public string FullTypeName { get; protected set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this column is nullable.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if this column is nullable; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsNullable { get; protected set; }
     }
 
 }

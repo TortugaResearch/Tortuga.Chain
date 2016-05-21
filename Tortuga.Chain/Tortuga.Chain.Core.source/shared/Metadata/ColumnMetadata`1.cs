@@ -20,7 +20,12 @@ namespace Tortuga.Chain.Metadata
         /// <param name="typeName">Name of the type.</param>
         /// <param name="dbType">Type used by the database.</param>
         /// <param name="quotedSqlName">Name of the quoted SQL.</param>
-        public ColumnMetadata(string name, bool isComputed, bool isPrimaryKey, bool isIdentity, string typeName, TDbType? dbType, string quotedSqlName)
+        /// <param name="isNullable">Indicates if the column is nullable.</param>
+        /// <param name="maxLength">The maximum length.</param>
+        /// <param name="precision">The precision.</param>
+        /// <param name="scale">The scale.</param>
+        /// <param name="fullTypeName">Full name of the type.</param>
+        public ColumnMetadata(string name, bool isComputed, bool isPrimaryKey, bool isIdentity, string typeName, TDbType? dbType, string quotedSqlName, bool isNullable, int? maxLength, int? precision, int? scale, string fullTypeName)
         {
             TypeName = typeName;
             SqlName = name;
@@ -36,6 +41,12 @@ namespace Tortuga.Chain.Metadata
                 ClrName = Utilities.ToClrName(name);
                 SqlVariableName = "@" + name;
             }
+
+            IsNullable = isNullable;
+            Precision = precision;
+            MaxLength = maxLength;
+            Scale = scale;
+            FullTypeName = fullTypeName;
         }
 
         /// <summary>

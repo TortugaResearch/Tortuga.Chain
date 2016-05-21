@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
@@ -60,6 +61,8 @@ namespace Tortuga.Chain
             m_ConnectionBuilder = factory.CreateConnectionStringBuilder();
             m_ConnectionBuilder.ConnectionString = connectionString;
             Name = name;
+            m_ExtensionCache = new ConcurrentDictionary<Type, object>();
+            m_Cache = DefaultCache;
         }
 
         /// <summary>
@@ -82,6 +85,8 @@ namespace Tortuga.Chain
             m_Factory = factory;
             m_ConnectionBuilder = connectionStringBuilder;
             Name = name;
+            m_ExtensionCache = new ConcurrentDictionary<Type, object>();
+            m_Cache = DefaultCache;
         }
 
         internal GenericDbDataSource(string name, string connectionString, DataSourceSettings settings = null) : base(settings)
@@ -92,6 +97,8 @@ namespace Tortuga.Chain
             m_ConnectionBuilder = new DbConnectionStringBuilder();
             m_ConnectionBuilder.ConnectionString = connectionString;
             Name = name;
+            m_ExtensionCache = new ConcurrentDictionary<Type, object>();
+            m_Cache = DefaultCache;
         }
 
         internal GenericDbDataSource(string name, DbConnectionStringBuilder connectionStringBuilder, DataSourceSettings settings = null) : base(settings)
@@ -101,6 +108,8 @@ namespace Tortuga.Chain
 
             m_ConnectionBuilder = connectionStringBuilder;
             Name = name;
+            m_ExtensionCache = new ConcurrentDictionary<Type, object>();
+            m_Cache = DefaultCache;
         }
 
         [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "GenericDbDataSource")]
@@ -269,6 +278,29 @@ namespace Tortuga.Chain
         internal string ConnectionString
         {
             get { return m_ConnectionBuilder.ConnectionString; }
+        }
+
+        internal ICacheAdapter m_Cache;
+
+        /// <summary>
+        /// Gets or sets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
+        /// </summary>
+        public override ICacheAdapter Cache
+        {
+            get { return m_Cache; }
+        }
+
+        internal ConcurrentDictionary<Type, object> m_ExtensionCache;
+
+        /// <summary>
+        /// The extension cache is used by extensions to store data source specific information.
+        /// </summary>
+        /// <value>
+        /// The extension cache.
+        /// </value>
+        protected override ConcurrentDictionary<Type, object> ExtensionCache
+        {
+            get { return m_ExtensionCache; }
         }
 
         /// <summary>

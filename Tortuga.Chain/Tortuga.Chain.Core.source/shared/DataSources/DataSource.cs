@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Concurrent;
 using System.ComponentModel;
-using Tortuga.Chain.Core;
-using Tortuga.Chain.AuditRules;
 using System.Threading.Tasks;
+using Tortuga.Chain.AuditRules;
+using Tortuga.Chain.Core;
 using Tortuga.Chain.Metadata;
 
 #if !WINDOWS_UWP
@@ -29,10 +29,21 @@ namespace Tortuga.Chain.DataSources
                 StrictMode = settings.StrictMode ?? false;
                 SuppressGlobalEvents = settings.SuppressGlobalEvents ?? false;
             }
+        }
 
-#if !WINDOWS_UWP
-            Cache = MemoryCache.Default;
-#endif
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DataSource"/> class, copying its cache and extension data.
+        /// </summary>
+        /// <param name="parent">The parent data source.</param>
+        /// <param name="settings">The settings.</param>
+        protected DataSource(DataSource parent, DataSourceSettings settings)
+        {
+            if (settings != null)
+            {
+                DefaultCommandTimeout = settings.DefaultCommandTimeout;
+                StrictMode = settings.StrictMode ?? false;
+                SuppressGlobalEvents = settings.SuppressGlobalEvents ?? false;
+            }
         }
 
         /// <summary>
@@ -162,8 +173,9 @@ namespace Tortuga.Chain.DataSources
         public virtual TTKey GetExtensionData<TTKey>()
             where TTKey : new()
         {
-            return (TTKey)m_ExtensionCache.GetOrAdd(typeof(TTKey), x => new TTKey());
+            return (TTKey)ExtensionCache.GetOrAdd(typeof(TTKey), x => new TTKey());
         }
+
         /// <summary>
         /// Raises the <see cref="E:ExecutionCanceled" /> event.
         /// </summary>
@@ -250,100 +262,18 @@ namespace Tortuga.Chain.DataSources
         /// <value>If <c>true</c>, this data source will not honor global event handlers.</value>
         public bool SuppressGlobalEvents { get; }
 
-#if !WINDOWS_UWP
+
         /// <summary>
-        /// Gets or sets the cache to be used by this data source. The default is .NET's MemoryCache.
+        /// Gets or sets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
         /// </summary>
-        /// <remarks>This is used by the WithCaching materializer.</remarks>
-        internal ObjectCache Cache { get; set; }
-#endif
+        public abstract ICacheAdapter Cache { get; }
 
-
-#if !WINDOWS_UWP
-        /// <summary>
-        /// Invalidates a cache key.
-        /// </summary>
-        /// <param name="cacheKey">The cache key.</param>
-        internal void InvalidateCache(string cacheKey)
-        {
-            if (string.IsNullOrEmpty(cacheKey))
-                throw new ArgumentException("cacheKey is null or empty.", nameof(cacheKey));
-
-            Cache.Remove(cacheKey, null);
-        }
-#endif
-
-
-#if !WINDOWS_UWP
-        /// <summary>
-		/// Try to read from the cache.
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="cacheKey">The cache key.</param>
-		/// <param name="result">The cached result.</param>
-		/// <returns><c>true</c> if the key was found in the cache, <c>false</c> otherwise.</returns>
-		/// <exception cref="ArgumentException">cacheKey is null or empty.;cacheKey</exception>
-		/// <exception cref="InvalidOperationException">Cache is corrupted.</exception>
-		internal bool TryReadFromCache<T>(string cacheKey, out T result)
-        {
-            if (string.IsNullOrEmpty(cacheKey))
-                throw new ArgumentException("cacheKey is null or empty.", nameof(cacheKey));
-
-            var cacheItem = Cache.GetCacheItem(cacheKey, null);
-            if (cacheItem == null)
-            {
-                result = default(T);
-                return false;
-            }
-
-            //Nulls can't be stored in a cache, so we simulate it using NullObject.Default.
-            if (cacheItem.Value == NullObject.Default)
-            {
-                result = default(T);
-                return true;
-            }
-
-            if (!(cacheItem.Value is T))
-                throw new InvalidOperationException($"Cache is corrupted. Cache Key \"{cacheKey}\" is a {cacheItem.Value.GetType().Name} not a {typeof(T).Name}");
-
-            result = (T)cacheItem.Value;
-
-            return true;
-        }
 
         /// <summary>
-        /// Writes to cache, replacing any previous value.
-        /// </summary>
-        /// <param name="item">The cache item.</param>
-        /// <param name="policy">Optional cache invalidation policy.</param>
-        /// <exception cref="ArgumentNullException">item;item is null.</exception>
-        internal void WriteToCache(CacheItem item, CacheItemPolicy policy)
-        {
-            if (item == null)
-                throw new ArgumentNullException(nameof(item), "item is null.");
-
-            //Nulls can't be stored in a cache, so we simulate it using NullObject.Default.
-            if (item.Value == null)
-                item.Value = NullObject.Default;
-
-            Cache.Set(item, policy);
-        }
-#endif
-
-#if !WINDOWS_UWP
-        private class NullObject
-        {
-            public static readonly NullObject Default = new NullObject();
-
-            private NullObject() { }
-        }
-#endif
-
-        /// <summary>
-        /// The extension cache is used by extensions to store data source specific informmation.
+        /// The extension cache is used by extensions to store data source specific information.
         /// </summary>
         /// <value>The extension cache.</value>
-        readonly ConcurrentDictionary<Type, object> m_ExtensionCache = new ConcurrentDictionary<Type, object>();
+        protected abstract ConcurrentDictionary<Type, object> ExtensionCache { get; }
 
         /// <summary>
         /// Gets or sets the user value to use with audit rules.
@@ -387,5 +317,16 @@ namespace Tortuga.Chain.DataSources
         /// <returns></returns>
         protected abstract IDatabaseMetadataCache OnGetDatabaseMetadata();
 
+        /// <summary>
+        /// Gets the default cache.
+        /// </summary>
+        /// <value>
+        /// The default cache.
+        /// </value>
+#if RUNTIME_CACHE_MISSING
+        protected static ICacheAdapter DefaultCache { get; } = new SimpleCache();
+#else
+    protected static ICacheAdapter DefaultCache { get; } = new ObjectCacheAdapter(MemoryCache.Default);
+#endif
     }
 }

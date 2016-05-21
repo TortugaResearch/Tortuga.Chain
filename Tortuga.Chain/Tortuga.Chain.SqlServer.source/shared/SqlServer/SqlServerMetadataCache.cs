@@ -386,11 +386,16 @@ namespace Tortuga.Chain.SqlServer
 							c.is_identity ,
 							c.column_id ,
 							Convert(bit, ISNULL(PKS.is_primary_key, 0)) AS is_primary_key,
-							t.name as TypeName
+							COALESCE(t.name, t2.name) AS TypeName,
+							c.is_nullable,
+		                    CONVERT(INT, t.max_length) AS max_length, 
+		                    CONVERT(INT, t.precision) AS precision,
+		                    CONVERT(INT, t.scale) AS scale
 					FROM    sys.columns c
 							LEFT JOIN PKS ON c.name = PKS.name
 							LEFT JOIN sys.types t on c.system_type_id = t.user_type_id
-							WHERE   object_id = @ObjectId;";
+							LEFT JOIN sys.types t2 ON c.user_type_id = t2.user_type_id
+                            WHERE   object_id = @ObjectId;";
 
             var columns = new List<ColumnMetadata<SqlDbType>>();
             using (var con = new SqlConnection(m_ConnectionBuilder.ConnectionString))
@@ -408,12 +413,99 @@ namespace Tortuga.Chain.SqlServer
                             var primary = reader.GetBoolean(reader.GetOrdinal("is_primary_key"));
                             var isIdentity = reader.GetBoolean(reader.GetOrdinal("is_identity"));
                             var typeName = reader.IsDBNull(reader.GetOrdinal("TypeName")) ? null : reader.GetString(reader.GetOrdinal("TypeName"));
-                            columns.Add(new ColumnMetadata<SqlDbType>(name, computed, primary, isIdentity, typeName, TypeNameToSqlDbType(typeName), "[" + name + "]"));
+                            var isNullable = reader.GetBoolean(reader.GetOrdinal("is_nullable"));
+                            int? maxLength = reader.GetInt32(reader.GetOrdinal("max_length"));
+                            int? precision = reader.GetInt32(reader.GetOrdinal("precision"));
+                            int? scale = reader.GetInt32(reader.GetOrdinal("scale"));
+                            string fullTypeName;
+                            AdjustTypeDetails(typeName, ref maxLength, ref precision, ref scale, out fullTypeName);
+
+                            columns.Add(new ColumnMetadata<SqlDbType>(name, computed, primary, isIdentity, typeName, TypeNameToSqlDbType(typeName), "[" + name + "]", isNullable, maxLength, precision, scale, fullTypeName));
                         }
                     }
                 }
             }
             return columns;
+        }
+
+        private void AdjustTypeDetails(string typeName, ref int? maxLength, ref int? precision, ref int? scale, out string fullTypeName)
+        {
+            switch (typeName)
+            {
+                case "bigint":
+                case "bit":
+                case "date":
+                case "datetime":
+                case "timestamp":
+                case "tinyint":
+                case "uniqueidentifier":
+                case "smallint":
+                case "sql_variant":
+                case "float":
+                case "int":
+                    maxLength = null;
+                    precision = null;
+                    scale = null;
+                    fullTypeName = typeName;
+                    break;
+
+                case "binary":
+                case "char":
+                    precision = null;
+                    scale = null;
+                    fullTypeName = $"{typeName}({maxLength})";
+                    break;
+
+                case "datetime2":
+                case "datetimeoffset":
+                case "time":
+                    maxLength = null;
+                    precision = null;
+                    fullTypeName = $"{typeName}({scale})";
+                    break;
+
+                case "numeric":
+                case "decimal":
+                    fullTypeName = $"{typeName}({precision},{scale})";
+                    break;
+
+                case "nchar":
+                    maxLength = maxLength / 2;
+                    precision = null;
+                    scale = null;
+                    fullTypeName = $"nchar({maxLength})";
+                    break;
+
+                case "nvarchar":
+                    maxLength = maxLength / 2;
+                    precision = null;
+                    scale = null;
+                    if (maxLength > 0)
+                        fullTypeName = $"nvarchar({maxLength})";
+                    else
+                        fullTypeName = $"nvarchar(max)";
+                    break;
+
+                case "varbinary":
+                case "varchar":
+                    precision = null;
+                    scale = null;
+                    if (maxLength > 0)
+                        fullTypeName = $"{typeName}({maxLength})";
+                    else
+                        fullTypeName = $"{typeName}(max)";
+                    break;
+
+                default:
+                    if (maxLength <= 0)
+                        maxLength = 0;
+                    if (precision <= 0)
+                        precision = 0;
+                    if (scale <= 0)
+                        scale = 0;
+                    fullTypeName = typeName;
+                    break;
+            }
         }
 
         private TableFunctionMetadata<SqlServerObjectName, SqlDbType> GetFunctionInternal(SqlServerObjectName tableFunctionName)
@@ -469,12 +561,16 @@ namespace Tortuga.Chain.SqlServer
             {
                 const string ParameterSql =
                     @"SELECT  p.name AS ParameterName ,
-        COALESCE(t.name, t2.name) AS TypeName
-FROM    sys.parameters p
-        LEFT JOIN sys.types t ON p.system_type_id = t.user_type_id
-        LEFT JOIN sys.types t2 ON p.user_type_id = t2.user_type_id
-WHERE   p.object_id = @ObjectId
-ORDER BY p.parameter_id;";
+            COALESCE(t.name, t2.name) AS TypeName,
+			p.is_nullable,
+		    CONVERT(INT, t.max_length) AS max_length, 
+		    CONVERT(INT, t.precision) AS precision,
+		    CONVERT(INT, t.scale) AS scale
+            FROM    sys.parameters p
+                    LEFT JOIN sys.types t ON p.system_type_id = t.user_type_id
+                    LEFT JOIN sys.types t2 ON p.user_type_id = t2.user_type_id
+            WHERE   p.object_id = @ObjectId
+            ORDER BY p.parameter_id;";
 
                 var parameters = new List<ParameterMetadata<SqlDbType>>();
 
@@ -626,7 +722,11 @@ ORDER BY p.parameter_id;";
 		t.name AS Name,
 		tt.type_table_object_id AS ObjectId,
 		t.is_table_type AS IsTableType,
-		t2.name AS BaseTypeName
+		t2.name AS BaseTypeName,
+		t.is_nullable,
+		CONVERT(INT, t.max_length) AS max_length, 
+		CONVERT(INT, t.precision) AS precision,
+		CONVERT(INT, t.scale) AS scale
 FROM	sys.types t
 		INNER JOIN sys.schemas s ON t.schema_id = s.schema_id
 		LEFT JOIN sys.table_types tt ON tt.user_type_id = t.user_type_id
@@ -638,6 +738,11 @@ WHERE	s.name = @Schema AND t.name = @Name;";
             string baseTypeName = null;
             int? objectId = null;
             bool isTableType;
+            bool isNullable;
+            int? maxLength;
+            int? precision;
+            int? scale;
+            string fullTypeName;
 
             using (var con = new SqlConnection(m_ConnectionBuilder.ConnectionString))
             {
@@ -659,6 +764,13 @@ WHERE	s.name = @Schema AND t.name = @Name;";
                         if (!reader.IsDBNull(reader.GetOrdinal("BaseTypeName")))
                             baseTypeName = reader.GetString(reader.GetOrdinal("BaseTypeName"));
 
+                        isNullable = reader.GetBoolean(reader.GetOrdinal("is_nullable"));
+                        maxLength = reader.GetInt32(reader.GetOrdinal("max_length"));
+                        precision = reader.GetInt32(reader.GetOrdinal("precision"));
+                        scale = reader.GetInt32(reader.GetOrdinal("scale"));
+
+                        AdjustTypeDetails(baseTypeName, ref maxLength, ref precision, ref scale, out fullTypeName);
+
                     }
                 }
             }
@@ -670,7 +782,7 @@ WHERE	s.name = @Schema AND t.name = @Name;";
             else
             {
                 columns = new List<ColumnMetadata<SqlDbType>>();
-                columns.Add(new ColumnMetadata<SqlDbType>(null, false, false, false, baseTypeName, TypeNameToSqlDbType(baseTypeName), null));
+                columns.Add(new ColumnMetadata<SqlDbType>(null, false, false, false, baseTypeName, TypeNameToSqlDbType(baseTypeName), null, isNullable, maxLength, precision, scale, fullTypeName));
             }
 
             return new UserDefinedTypeMetadata<SqlServerObjectName, SqlDbType>(new SqlServerObjectName(actualSchema, actualName), isTableType, columns);

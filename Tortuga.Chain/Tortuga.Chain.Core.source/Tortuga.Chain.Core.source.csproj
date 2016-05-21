@@ -105,12 +105,17 @@
     <Compile Include="shared\CommandBuilders\IObjectDbCommandBuilder`1.cs" />
     <Compile Include="shared\CommandBuilders\ObjectDbCommandBuilder`3.cs" />
     <Compile Include="shared\CommandBuilders\ParameterBuilderCallback.cs" />
+    <Compile Include="shared\CachePolicy.cs" />
+    <Compile Include="shared\Core\CacheReadResult.cs" />
     <Compile Include="shared\Core\CommandExecutedEventArgs.cs" />
     <Compile Include="shared\Core\CommandImplementation.cs" />
     <Compile Include="shared\Core\CommandImplementationAsync.cs" />
+    <Compile Include="shared\Core\ICacheAdapter.cs" />
+    <Compile Include="shared\Core\ObjectCacheAdapter.cs" />
     <Compile Include="shared\Core\OperationExecutionToken`2.cs" />
     <Compile Include="shared\Core\OperationImplementation.cs" />
     <Compile Include="shared\Core\OperationImplementationAsync.cs" />
+    <Compile Include="shared\Core\SimpleCache.cs" />
     <Compile Include="shared\DataSources\ICommandDataSource`2.cs" />
     <Compile Include="shared\DataSources\IDataSource.cs" />
     <Compile Include="shared\DataSources\IOpenDataSource.cs" />

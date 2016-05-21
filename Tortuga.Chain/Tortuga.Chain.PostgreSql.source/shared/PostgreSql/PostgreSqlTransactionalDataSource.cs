@@ -1,5 +1,6 @@
 ﻿using Npgsql;
 using System;
+using System.Collections.Concurrent;
 using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,7 +17,7 @@ namespace Tortuga.Chain.PostgreSql
     public class PostgreSqlTransactionalDataSource : PostgreSqlDataSourceBase, IDisposable, ITransactionalDataSource
     {
         private readonly NpgsqlConnection m_Connection;
-        private readonly PostgreSqlDataSource m_DataSource;
+        private readonly PostgreSqlDataSource m_BaseDataSource;
         private readonly NpgsqlTransaction m_Transaction;
         private bool m_Disposed;
 
@@ -31,7 +32,7 @@ namespace Tortuga.Chain.PostgreSql
         {
             Name = dataSource.Name;
 
-            m_DataSource = dataSource;
+            m_BaseDataSource = dataSource;
             m_Connection = dataSource.CreateConnection();
 
             if (isolationLevel == null)
@@ -62,7 +63,7 @@ namespace Tortuga.Chain.PostgreSql
         {
             Name = dataSource.Name;
 
-            m_DataSource = dataSource;
+            m_BaseDataSource = dataSource;
             m_Connection = connection;
             m_Transaction = transaction;
 
@@ -82,7 +83,7 @@ namespace Tortuga.Chain.PostgreSql
         /// </summary>
         public override PostgreSqlMetadataCache DatabaseMetadata
         {
-            get { return m_DataSource.DatabaseMetadata; }
+            get { return m_BaseDataSource.DatabaseMetadata; }
         }
 
         /// <summary>
@@ -337,7 +338,7 @@ namespace Tortuga.Chain.PostgreSql
         /// </remarks>
         public override TTKey GetExtensionData<TTKey>()
         {
-            return m_DataSource.GetExtensionData<TTKey>();
+            return m_BaseDataSource.GetExtensionData<TTKey>();
         }
 
         /// <summary>
@@ -357,6 +358,25 @@ namespace Tortuga.Chain.PostgreSql
         {
             using (var cmd = new NpgsqlCommand("SELECT 1", m_Connection))
                 await cmd.ExecuteScalarAsync();
+        }
+
+        /// <summary>
+        /// Gets or sets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
+        /// </summary>
+        public override ICacheAdapter Cache
+        {
+            get { return m_BaseDataSource.Cache; }
+        }
+
+        /// <summary>
+        /// The extension cache is used by extensions to store data source specific information.
+        /// </summary>
+        /// <value>
+        /// The extension cache.
+        /// </value>
+        protected override ConcurrentDictionary<Type, object> ExtensionCache
+        {
+            get { return m_BaseDataSource.m_ExtensionCache; }
         }
 
     }
