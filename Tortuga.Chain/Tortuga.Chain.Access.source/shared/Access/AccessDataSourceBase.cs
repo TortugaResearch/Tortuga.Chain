@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.OleDb;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -153,7 +154,8 @@ namespace Tortuga.Chain.Access
 
         IObjectDbCommandBuilder<TArgument> IClass1DataSource.Upsert<TArgument>(string tableName, TArgument argumentValue, UpsertOptions options)
         {
-            return Upsert(tableName, argumentValue, options);
+            throw new NotImplementedException("See issue #122");
+            //return Upsert(tableName, argumentValue, options);
         }
 
         IObjectDbCommandBuilder<TArgument> IClass1DataSource.Insert<TArgument>(string tableName, TArgument argumentValue, InsertOptions options)
@@ -196,18 +198,18 @@ namespace Tortuga.Chain.Access
             return new AccessInsertObject<TArgument>(this, tableName, argumentValue, options);
         }
 
-        /// <summary>
-        /// Creates a <see cref="AccessInsertOrUpdateObject{TArgument}"/> used to perform an "upsert" operation.
-        /// </summary>
-        /// <param name="tableName"></param>
-        /// <param name="argumentValue"></param>
-        /// <param name="options"></param>
-        /// <returns></returns>
-        public ObjectDbCommandBuilder<OleDbCommand, OleDbParameter, TArgument> Upsert<TArgument>(AccessObjectName tableName, TArgument argumentValue, UpsertOptions options = UpsertOptions.None)
-        where TArgument : class
-        {
-            return new AccessInsertOrUpdateObject<TArgument>(this, tableName, argumentValue, options);
-        }
+        ///// <summary>
+        ///// Creates a <see cref="AccessInsertOrUpdateObject{TArgument}"/> used to perform an "upsert" operation.
+        ///// </summary>
+        ///// <param name="tableName"></param>
+        ///// <param name="argumentValue"></param>
+        ///// <param name="options"></param>
+        ///// <returns></returns>
+        //public ObjectDbCommandBuilder<OleDbCommand, OleDbParameter, TArgument> Upsert<TArgument>(AccessObjectName tableName, TArgument argumentValue, UpsertOptions options = UpsertOptions.None)
+        //where TArgument : class
+        //{
+        //    return new AccessInsertOrUpdateObject<TArgument>(this, tableName, argumentValue, options);
+        //}
 
         /// <summary>
         /// Creates a <see cref="AccessUpdateObject{TArgument}" /> used to perform an update operation.
@@ -395,17 +397,17 @@ namespace Tortuga.Chain.Access
             return Insert(DatabaseMetadata.GetTableOrViewFromClass<TArgument>().Name, argumentValue, options);
         }
 
-        /// <summary>
-        /// Performs an insert or update operation as appropriate.
-        /// </summary>
-        /// <typeparam name="TArgument"></typeparam>
-        /// <param name="argumentValue">The argument value.</param>
-        /// <param name="options">The options for how the insert/update occurs.</param>
-        /// <returns></returns>
-        public ObjectDbCommandBuilder<OleDbCommand, OleDbParameter, TArgument> Upsert<TArgument>(TArgument argumentValue, UpsertOptions options = UpsertOptions.None) where TArgument : class
-        {
-            return Upsert(DatabaseMetadata.GetTableOrViewFromClass<TArgument>().Name, argumentValue, options);
-        }
+        ///// <summary>
+        ///// Performs an insert or update operation as appropriate.
+        ///// </summary>
+        ///// <typeparam name="TArgument"></typeparam>
+        ///// <param name="argumentValue">The argument value.</param>
+        ///// <param name="options">The options for how the insert/update occurs.</param>
+        ///// <returns></returns>
+        //public ObjectDbCommandBuilder<OleDbCommand, OleDbParameter, TArgument> Upsert<TArgument>(TArgument argumentValue, UpsertOptions options = UpsertOptions.None) where TArgument : class
+        //{
+        //    return Upsert(DatabaseMetadata.GetTableOrViewFromClass<TArgument>().Name, argumentValue, options);
+        //}
 
         /// <summary>
         /// Updates an object in the specified table.
@@ -446,7 +448,8 @@ namespace Tortuga.Chain.Access
 
         IObjectDbCommandBuilder<TArgument> IClass1DataSource.Upsert<TArgument>(TArgument argumentValue, UpsertOptions options)
         {
-            return Upsert(argumentValue, options);
+            throw new NotImplementedException("See issue #122");
+            //return Upsert(argumentValue, options);
         }
 
         IObjectDbCommandBuilder<TArgument> IClass1DataSource.Update<TArgument>(TArgument argumentValue, UpdateOptions options)
