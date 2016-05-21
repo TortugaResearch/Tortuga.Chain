@@ -1,5 +1,8 @@
 namespace Tortuga.Chain.Metadata
 {
+    
+
+
     /// <summary>
     /// Abstract version of ColumnMetadata.
     /// </summary>

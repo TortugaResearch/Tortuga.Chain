@@ -96,7 +96,7 @@ namespace Tests.Class1Databases
         }
 
 
-#if !Roslyn_Missing
+#if !Roslyn_Missing && !SQLite
 
         [TestMethod]
         public void UpdateTests_ChangeTrackingTest_Compiled()

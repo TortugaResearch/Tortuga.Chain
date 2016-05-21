@@ -25,10 +25,9 @@ namespace Tortuga.Chain.CommandBuilders
         readonly string m_Name;
         readonly bool m_StrictMode;
 
-        internal SqlBuilder(string name, IReadOnlyList<ColumnMetadata<TDbType>> columns, IReadOnlyList<ParameterMetadata<TDbType>> parameters, bool strictMode)
+        internal SqlBuilder(string name, IReadOnlyList<ColumnMetadata<TDbType>> columns, IReadOnlyList<ParameterMetadata<TDbType>> parameters)
         {
             m_Name = name;
-            m_StrictMode = strictMode;
 
             m_Entries = new SqlBuilderEntry<TDbType>[columns.Count + parameters.Count];
 
@@ -57,10 +56,9 @@ namespace Tortuga.Chain.CommandBuilders
 
         }
 
-        internal SqlBuilder(string name, IReadOnlyList<ColumnMetadata<TDbType>> columns, bool strictMode)
+        internal SqlBuilder(string name, IReadOnlyList<ColumnMetadata<TDbType>> columns)
         {
             m_Name = name;
-            m_StrictMode = strictMode;
 
             m_Entries = new SqlBuilderEntry<TDbType>[columns.Count];
 
@@ -119,10 +117,9 @@ namespace Tortuga.Chain.CommandBuilders
         }
 
 
-        internal SqlBuilder(string name, IReadOnlyList<ParameterMetadata<TDbType>> parameters, bool strictMode)
+        internal SqlBuilder(string name, IReadOnlyList<ParameterMetadata<TDbType>> parameters)
         {
             m_Name = name;
-            m_StrictMode = strictMode;
 
             m_Entries = new SqlBuilderEntry<TDbType>[parameters.Count];
             for (int i = 0; i < parameters.Count; i++)
@@ -136,9 +133,11 @@ namespace Tortuga.Chain.CommandBuilders
             }
         }
 
-        private SqlBuilder(SqlBuilderEntry<TDbType>[] m_Entries)
+        private SqlBuilder(string name, SqlBuilderEntry<TDbType>[] entries, bool strictMode)
         {
-            this.m_Entries = m_Entries.ToArray(); //since this is an array of struct, this does a deep copy
+            m_Name = name;
+            m_Entries = entries.ToArray(); //since this is an array of struct, this does a deep copy
+            m_StrictMode = strictMode;
         }
 
         /// <summary>
@@ -439,6 +438,15 @@ namespace Tortuga.Chain.CommandBuilders
             }
 
             ApplyRules(dataSource.AuditRules, appliesWhen, argumentValue, dataSource.UserValue);
+        }
+
+        /// <summary>
+        /// Applies the audit rules for select operations.
+        /// </summary>
+        /// <param name="datasSource">The datas source.</param>
+        public void ApplyRulesForSelect(IDataSource datasSource)
+        {
+            ApplyRules(datasSource.AuditRules, OperationTypes.Select, null, datasSource.UserValue);
         }
 
         /// <summary>
@@ -769,7 +777,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <remarks>
         /// If no columns are marked for reading, the header and footer won't be emitted.
         /// </remarks>
-        public void BuildSelectTvpClause(StringBuilder sql, string header, string prefix, string footer)
+        public void BuildSelectTvpForInsertClause(StringBuilder sql, string header, string prefix, string footer)
         {
             if (sql == null)
                 throw new ArgumentNullException(nameof(sql), $"{nameof(sql)} was null.");
@@ -779,14 +787,17 @@ namespace Tortuga.Chain.CommandBuilders
 
             for (var i = 0; i < m_Entries.Length; i++)
             {
-                if (m_Entries[i].UseForInsert && m_Entries[i].ParameterValue != null)
+                if (!m_Entries[i].RestrictedInsert && m_Entries[i].UseForInsert)
                 {
-                    m_Entries[i].UseParameter = true;
-                    parts.Add(prefix + m_Entries[i].Details.SqlVariableName);
-                }
-                else if (m_Entries[i].UseForInsert && m_Entries[i].ParameterColumn != null)
-                {
-                    parts.Add(prefix + m_Entries[i].ParameterColumn.QuotedSqlName);
+                    if (m_Entries[i].ParameterValue != null)
+                    {
+                        m_Entries[i].UseParameter = true;
+                        parts.Add(prefix + m_Entries[i].Details.SqlVariableName);
+                    }
+                    else if (m_Entries[i].ParameterColumn != null)
+                    {
+                        parts.Add(prefix + m_Entries[i].ParameterColumn.QuotedSqlName);
+                    }
                 }
             }
 
@@ -908,9 +919,9 @@ namespace Tortuga.Chain.CommandBuilders
         /// Clones this instance so that you can modify it without affecting the cached origianl.
         /// </summary>
         /// <returns></returns>
-        public SqlBuilder<TDbType> Clone()
+        internal SqlBuilder<TDbType> Clone(bool strictMode)
         {
-            return new SqlBuilder<TDbType>(m_Entries);
+            return new SqlBuilder<TDbType>(m_Name, m_Entries, strictMode);
         }
 
         /// <summary>
@@ -923,7 +934,7 @@ namespace Tortuga.Chain.CommandBuilders
         {
             for (var i = 0; i < m_Entries.Length; i++)
             {
-                if (m_Entries[i].UseForInsert && (m_Entries[i].ParameterValue != null || m_Entries[i].ParameterColumn != null))
+                if (!m_Entries[i].RestrictedInsert && m_Entries[i].UseForInsert && (m_Entries[i].ParameterValue != null || m_Entries[i].ParameterColumn != null))
                 {
                     m_Entries[i].UseParameter = true;
                     yield return new ColumnNamePair(m_Entries[i].Details.QuotedSqlName, m_Entries[i].Details.SqlVariableName);
@@ -1012,7 +1023,7 @@ namespace Tortuga.Chain.CommandBuilders
         {
             for (var i = 0; i < m_Entries.Length; i++)
             {
-                if (m_Entries[i].UseForRead)
+                if (!m_Entries[i].RestrictedRead && m_Entries[i].UseForRead)
                     yield return m_Entries[i].Details.QuotedSqlName;
             }
         }
@@ -1027,7 +1038,7 @@ namespace Tortuga.Chain.CommandBuilders
         {
             for (var i = 0; i < m_Entries.Length; i++)
             {
-                if (m_Entries[i].UseForUpdate && m_Entries[i].ParameterValue != null)
+                if (!m_Entries[i].RestrictedUpdate && m_Entries[i].UseForUpdate && m_Entries[i].ParameterValue != null)
                 {
                     m_Entries[i].UseParameter = true;
                     yield return new ColumnNamePair(m_Entries[i].Details.QuotedSqlName, m_Entries[i].Details.SqlVariableName);
@@ -1081,6 +1092,7 @@ namespace Tortuga.Chain.CommandBuilders
                 rules.CheckValidation(argumentValue);
 
             for (var i = 0; i < m_Entries.Length; i++)
+            {
                 foreach (var rule in rules.GetRulesForColumn(m_Entries[i].Details.SqlName, m_Entries[i].Details.ClrName, appliesWhen))
                 {
                     m_Entries[i].ParameterValue = rule.GenerateValue(argumentValue, userValue, m_Entries[i].ParameterValue);
@@ -1094,6 +1106,31 @@ namespace Tortuga.Chain.CommandBuilders
                         m_Entries[i].UseForUpdate = true;
 
                 }
+
+                foreach (var rule in rules.GetRestrictionsForColumn(m_Name, m_Entries[i].Details.SqlName, m_Entries[i].Details.ClrName))
+                {
+                    var ignoreRule = rule.ExceptWhen(userValue);
+                    if (ignoreRule)
+                        continue;
+
+                    if (rule.AppliesWhen.HasFlag(OperationTypes.Insert))
+                    {
+                        m_Entries[i].RestrictedInsert = true;
+                        //m_Entries[i].UseForInsert = false;
+                    }
+                    if (rule.AppliesWhen.HasFlag(OperationTypes.Update))
+                    {
+                        m_Entries[i].RestrictedUpdate = true;
+                        //m_Entries[i].UseForUpdate = false;
+                    }
+                    if (rule.AppliesWhen.HasFlag(OperationTypes.Select))
+                    {
+                        m_Entries[i].RestrictedRead = true;
+                        //m_Entries[i].UseForRead = false;
+                    }
+
+                }
+            }
         }
 
         /// <summary>
@@ -1122,6 +1159,6 @@ namespace Tortuga.Chain.CommandBuilders
             return result;
         }
     }
-
-        
 }
+
+

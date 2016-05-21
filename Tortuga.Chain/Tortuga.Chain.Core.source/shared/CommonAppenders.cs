@@ -1,10 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Tortuga.Chain.Appenders;
+using Tortuga.Chain.CommandBuilders;
 
 #if !WINDOWS_UWP
-using System.Collections.Generic;
-using Tortuga.Chain.CommandBuilders;
 #endif
 
 namespace Tortuga.Chain

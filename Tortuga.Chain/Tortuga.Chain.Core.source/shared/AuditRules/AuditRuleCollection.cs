@@ -123,6 +123,15 @@ namespace Tortuga.Chain.AuditRules
         {
             return m_List.OfType<ColumnRule>().Where(c => (c.AppliesWhen & appliesWhen) > 0 && c.ColumnName.Equals(sqlName, StringComparison.OrdinalIgnoreCase) || c.ColumnName.Equals(clrName, StringComparison.OrdinalIgnoreCase));
         }
+
+        internal IEnumerable<RestrictColumn> GetRestrictionsForColumn(string objectName, string sqlName, string clrName)
+        {
+            return m_List.OfType<RestrictColumn>().Where(c =>
+                (c.ObjectName == null || c.ObjectName.Equals(objectName, StringComparison.OrdinalIgnoreCase))
+                &&
+                (c.ColumnName.Equals(sqlName, StringComparison.OrdinalIgnoreCase) || c.ColumnName.Equals(clrName, StringComparison.OrdinalIgnoreCase)));
+        }
+
     }
 }
 

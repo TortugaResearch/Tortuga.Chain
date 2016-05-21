@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\Microsoft.Data.Sqlite.1.0.0-rc1-final\build\net451\Microsoft.Data.Sqlite.props" Condition="Exists('..\packages\Microsoft.Data.Sqlite.1.0.0-rc1-final\build\net451\Microsoft.Data.Sqlite.props')" />
+  <Import Project="..\packages\Microsoft.Data.Sqlite.1.0.0-rc2-final\build\net451\Microsoft.Data.Sqlite.props" Condition="Exists('..\packages\Microsoft.Data.Sqlite.1.0.0-rc2-final\build\net451\Microsoft.Data.Sqlite.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -51,11 +51,23 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Data.Sqlite, Version=1.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Data.Sqlite.1.0.0-rc1-final\lib\net451\Microsoft.Data.Sqlite.dll</HintPath>
+      <HintPath>..\packages\Microsoft.Data.Sqlite.1.0.0-rc2-final\lib\net451\Microsoft.Data.Sqlite.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Extensions.PlatformAbstractions, Version=1.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Extensions.PlatformAbstractions.1.0.0-rc1-final\lib\net451\Microsoft.Extensions.PlatformAbstractions.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Nito.AsyncEx, Version=3.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Nito.AsyncEx.3.0.1\lib\net45\Nito.AsyncEx.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Nito.AsyncEx.Concurrent, Version=3.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Nito.AsyncEx.3.0.1\lib\net45\Nito.AsyncEx.Concurrent.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Nito.AsyncEx.Enlightenment, Version=3.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Nito.AsyncEx.3.0.1\lib\net45\Nito.AsyncEx.Enlightenment.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -74,8 +86,8 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="Tortuga.Anchor, Version=0.6.5944.41376, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
-      <HintPath>..\packages\Tortuga.Anchor.0.6.5944.41376\lib\net46\Tortuga.Anchor.dll</HintPath>
+    <Reference Include="Tortuga.Anchor, Version=0.7.5952.32542, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tortuga.Anchor.0.7.5952.32542\lib\net46\Tortuga.Anchor.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
@@ -86,53 +98,8 @@
     <Compile Include="..\Tortuga.Chain.SQLite.source\Properties\LibrarySharedAssemblyInfo.cs">
       <Link>Properties\LibrarySharedAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.SQLite.source\SQLiteDataSource.cs">
-      <Link>SQLiteDataSource.cs</Link>
-    </Compile>
-    <Compile Include="..\Tortuga.Chain.SQLite.source\SQLiteLimitOption.cs">
-      <Link>SQLiteLimitOption.cs</Link>
-    </Compile>
-    <Compile Include="..\tortuga.chain.sqlite.source\sqlite\commandbuilders\SQLiteDeleteObject.cs">
-      <Link>SQLite\CommandBuilders\SQLiteDeleteObject.cs</Link>
-    </Compile>
-    <Compile Include="..\tortuga.chain.sqlite.source\sqlite\commandbuilders\SQLiteInsertObject.cs">
-      <Link>SQLite\CommandBuilders\SQLiteInsertObject.cs</Link>
-    </Compile>
-    <Compile Include="..\tortuga.chain.sqlite.source\sqlite\commandbuilders\SQLiteInsertOrUpdateObject.cs">
-      <Link>SQLite\CommandBuilders\SQLiteInsertOrUpdateObject.cs</Link>
-    </Compile>
-    <Compile Include="..\tortuga.chain.sqlite.source\sqlite\commandbuilders\SQLiteObjectCommand.cs">
-      <Link>SQLite\CommandBuilders\SQLiteObjectCommand.cs</Link>
-    </Compile>
-    <Compile Include="..\tortuga.chain.sqlite.source\sqlite\commandbuilders\SQLiteSqlCall.cs">
-      <Link>SQLite\CommandBuilders\SQLiteSqlCall.cs</Link>
-    </Compile>
-    <Compile Include="..\tortuga.chain.sqlite.source\sqlite\commandbuilders\SQLiteTableOrView.cs">
-      <Link>SQLite\CommandBuilders\SQLiteTableOrView.cs</Link>
-    </Compile>
-    <Compile Include="..\tortuga.chain.sqlite.source\sqlite\commandbuilders\SQLiteUpdateObject.cs">
-      <Link>SQLite\CommandBuilders\SQLiteUpdateObject.cs</Link>
-    </Compile>
-    <Compile Include="..\tortuga.chain.sqlite.source\sqlite\LockType.cs">
-      <Link>SQLite\LockType.cs</Link>
-    </Compile>
-    <Compile Include="..\tortuga.chain.sqlite.source\sqlite\SQLiteDataSourceBase.cs">
-      <Link>SQLite\SQLiteDataSourceBase.cs</Link>
-    </Compile>
-    <Compile Include="..\tortuga.chain.sqlite.source\sqlite\SQLiteDataSourceSettings.cs">
-      <Link>SQLite\SQLiteDataSourceSettings.cs</Link>
-    </Compile>
-    <Compile Include="..\tortuga.chain.sqlite.source\sqlite\SQLiteExecutionToken.cs">
-      <Link>SQLite\SQLiteExecutionToken.cs</Link>
-    </Compile>
-    <Compile Include="..\tortuga.chain.sqlite.source\sqlite\SQLiteMetadataCache.cs">
-      <Link>SQLite\SQLiteMetadataCache.cs</Link>
-    </Compile>
-    <Compile Include="..\tortuga.chain.sqlite.source\sqlite\SQLiteTransactionalDataSource.cs">
-      <Link>SQLite\SQLiteTransactionalDataSource.cs</Link>
-    </Compile>
-    <Compile Include="..\tortuga.chain.sqlite.source\sqlite\Utilities.cs">
-      <Link>SQLite\Utilities.cs</Link>
+    <Compile Include="..\Tortuga.Chain.SqlServer.source\AnchorMissing.cs">
+      <Link>AnchorMissing.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -154,11 +121,16 @@
     </CodeAnalysisDictionary>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Compile Include="..\Tortuga.Chain.SQLite.source\shared\**\*.cs">
+      <Link>shared\%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </Compile>
+  </ItemGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Microsoft.Data.Sqlite.1.0.0-rc1-final\build\net451\Microsoft.Data.Sqlite.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Data.Sqlite.1.0.0-rc1-final\build\net451\Microsoft.Data.Sqlite.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.Data.Sqlite.1.0.0-rc2-final\build\net451\Microsoft.Data.Sqlite.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Data.Sqlite.1.0.0-rc2-final\build\net451\Microsoft.Data.Sqlite.props'))" />
   </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

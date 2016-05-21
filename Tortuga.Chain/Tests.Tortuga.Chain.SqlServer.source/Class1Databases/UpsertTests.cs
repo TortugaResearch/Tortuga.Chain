@@ -14,7 +14,7 @@ namespace Tests.Class1Databases
     public class UpsertTests : TestBase
     {
 
-#if !Roslyn_Missing
+#if !Roslyn_Missing && !SQLite
         
         [TestMethod]
         public void UpsertTests_ChangeTrackingTest_Compiled()

@@ -8,18 +8,19 @@ using System.Diagnostics.CodeAnalysis;
 using System.Collections.Generic;
 using Tortuga.Chain.AuditRules;
 using Tortuga.Chain.DataSources;
+using System.Data.Common;
+using System.Collections.Concurrent;
+using Nito.AsyncEx;
 
 #if !WINDOWS_UWP
 using System.Configuration;
-using System.Data.Common;
-using Nito.AsyncEx;
-using System.Collections.Concurrent;
 #endif
 
 #if SDS
 using System.Data.SQLite;
 #else
 using SQLiteCommand = Microsoft.Data.Sqlite.SqliteCommand;
+using SQLiteTransaction = Microsoft.Data.Sqlite.SqliteTransaction;
 using SQLiteParameter = Microsoft.Data.Sqlite.SqliteParameter;
 using SQLiteConnection = Microsoft.Data.Sqlite.SqliteConnection;
 using SQLiteConnectionStringBuilder = Microsoft.Data.Sqlite.SqliteConnectionStringBuilder;
@@ -381,6 +382,12 @@ namespace Tortuga.Chain
             result.m_DatabaseMetadata = m_DatabaseMetadata;
             result.AuditRules = AuditRules;
             result.UserValue = UserValue;
+
+            result.ExecutionStarted += (sender, e) => OnExecutionStarted(e);
+            result.ExecutionFinished += (sender, e) => OnExecutionFinished(e);
+            result.ExecutionError += (sender, e) => OnExecutionError(e);
+            result.ExecutionCanceled += (sender, e) => OnExecutionCanceled(e);
+
             return result;
         }
 
