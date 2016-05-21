@@ -18,6 +18,8 @@ namespace Tests.CommandBuilders
         public static TablesAndViewLimitData<SQLiteLimitOption> TablesAndViewLimit = new TablesAndViewLimitData<SQLiteLimitOption>(s_DataSources.Values);
 #elif POSTGRESQL
         public static TablesAndViewLimitData<PostgreSqlLimitOption> TablesAndViewLimit = new TablesAndViewLimitData<PostgreSqlLimitOption>(s_DataSources.Values);
+#elif ACCESS
+        public static TablesAndViewLimitData<AccessLimitOption> TablesAndViewLimit = new TablesAndViewLimitData<AccessLimitOption>(s_DataSources.Values);
 #endif
 
         public FromTests(ITestOutputHelper output) : base(output)
@@ -380,7 +382,28 @@ namespace Tests.CommandBuilders
 
         }
 
+#if NO_DISTINCT_COUNT
 
+        [Theory, MemberData("TablesAndViewsWithColumns")]
+        public void CountByColumn(string assemblyName, string dataSourceName, DataSourceType mode, string tableName, string columnName)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            WriteLine($"Table {tableName}");
+            try
+            {
+                var columnType = dataSource.DatabaseMetadata.GetTableOrView(tableName).Columns[columnName].TypeName;
+                if (columnType == "xml" || columnType == "ntext" || columnType == "text" || columnType == "image")
+                    return; //SQL Server limitation
+
+                var count = dataSource.From(tableName).AsCount(columnName).Execute();
+                Assert.True(count >= 0, "Count cannot be less than zero");
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+#else
         [Theory, MemberData("TablesAndViewsWithColumns")]
         public void CountByColumn(string assemblyName, string dataSourceName, DataSourceType mode, string tableName, string columnName)
         {
@@ -402,8 +425,10 @@ namespace Tests.CommandBuilders
                 Release(dataSource);
             }
         }
+#endif
 
 
+#if NO_DISTINCT_COUNT
         [Theory, MemberData("TablesAndViewsWithColumns")]
         public async Task CountByColumn_Async(string assemblyName, string dataSourceName, DataSourceType mode, string tableName, string columnName)
         {
@@ -415,7 +440,27 @@ namespace Tests.CommandBuilders
                 if (columnType == "xml" || columnType == "ntext" || columnType == "text" || columnType == "image")
                     return; //SQL Server limitation
 
-                    var count = await dataSource.From(tableName).AsCount(columnName).ExecuteAsync();
+                var count = await dataSource.From(tableName).AsCount(columnName).ExecuteAsync();
+                Assert.True(count >= 0, "Count cannot be less than zero");
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+#else
+        [Theory, MemberData("TablesAndViewsWithColumns")]
+        public async Task CountByColumn_Async(string assemblyName, string dataSourceName, DataSourceType mode, string tableName, string columnName)
+        {
+            var dataSource = await DataSourceAsync(dataSourceName, mode);
+            WriteLine($"Table {tableName}");
+            try
+            {
+                var columnType = dataSource.DatabaseMetadata.GetTableOrView(tableName).Columns[columnName].TypeName;
+                if (columnType == "xml" || columnType == "ntext" || columnType == "text" || columnType == "image")
+                    return; //SQL Server limitation
+
+                var count = await dataSource.From(tableName).AsCount(columnName).ExecuteAsync();
                 var countDistinct = await dataSource.From(tableName).AsCount(columnName, true).ExecuteAsync();
                 Assert.True(count >= 0, "Count cannot be less than zero");
                 Assert.True(countDistinct <= count, "Count distinct cannot be greater than count");
@@ -425,7 +470,7 @@ namespace Tests.CommandBuilders
                 Release(dataSource);
             }
         }
-
+#endif
     }
 }
 

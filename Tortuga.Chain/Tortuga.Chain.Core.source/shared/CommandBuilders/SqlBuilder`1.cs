@@ -1132,6 +1132,32 @@ namespace Tortuga.Chain.CommandBuilders
                 }
             }
         }
+
+        /// <summary>
+        /// Gets the parameters, but puts the keys last.
+        /// </summary>
+        /// <typeparam name="TParameter">The type of the parameter.</typeparam>
+        /// <param name="parameterBuilder">The parameter builder. This should set the parameter's database specific DbType property.</param>
+        /// <returns></returns>
+        /// <remarks>This is needed for positional parameters such as MS Access</remarks>
+        public List<TParameter> GetParametersKeysLast<TParameter>(ParameterBuilderCallback<TParameter, TDbType> parameterBuilder)
+            where TParameter : DbParameter
+        {
+            if (parameterBuilder == null)
+                throw new ArgumentNullException(nameof(parameterBuilder), $"{nameof(parameterBuilder)} is null.");
+
+            var result = new List<TParameter>();
+
+            for (var i = 0; i < m_Entries.Length; i++)
+                if (m_Entries[i].UseParameter && m_Entries[i].ParameterValue != null && !m_Entries[i].IsKey)
+                    result.Add(parameterBuilder(m_Entries[i]));
+
+            for (var i = 0; i < m_Entries.Length; i++)
+                if (m_Entries[i].UseParameter && m_Entries[i].ParameterValue != null && m_Entries[i].IsKey)
+                    result.Add(parameterBuilder(m_Entries[i]));
+
+            return result;
+        }
     }
 }
 
