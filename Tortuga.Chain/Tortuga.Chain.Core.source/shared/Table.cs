@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Data.Common;
+using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
@@ -28,7 +28,7 @@ namespace Tortuga.Chain
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="source">The source.</param>
-        public Table(string tableName, DbDataReader source)
+        public Table(string tableName, IDataReader source)
             : this(source)
         {
             TableName = tableName;
@@ -38,7 +38,7 @@ namespace Tortuga.Chain
         /// Creates a new Table from an IDataReader
         /// </summary>
         /// <param name="source"></param>
-        public Table(DbDataReader source)
+        public Table(IDataReader source)
         {
             if (source == null)
                 throw new ArgumentNullException("source", "source is null.");
