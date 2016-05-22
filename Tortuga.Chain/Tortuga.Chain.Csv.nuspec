@@ -20,26 +20,28 @@
       <frameworkAssembly assemblyName="System.Xml.Linq" targetFramework="net45" />
       <frameworkAssembly assemblyName="System.Runtime.Caching" targetFramework="net45" />
       <frameworkAssembly assemblyName="System.Configuration" targetFramework="net45" />
+      <frameworkAssembly assemblyName="Microsoft.VisualBasic" targetFramework="net45" />
 
-      
+
       <frameworkAssembly assemblyName="System.Data" targetFramework="net46" />
       <frameworkAssembly assemblyName="System.ComponentModel.DataAnnotations" targetFramework="net46" />
       <frameworkAssembly assemblyName="System.Xml" targetFramework="net46" />
       <frameworkAssembly assemblyName="System.Xml.Linq" targetFramework="net46" />
       <frameworkAssembly assemblyName="System.Runtime.Caching" targetFramework="net46" />
       <frameworkAssembly assemblyName="System.Configuration" targetFramework="net46" />
+      <frameworkAssembly assemblyName="Microsoft.VisualBasic" targetFramework="net46" />
     </frameworkAssemblies>
 
     <dependencies>
       <group targetFramework="net45">
         <dependency id="System.Collections.Immutable" version="1.1.37" />
-        <dependency id="Tortuga.Anchor" version="0.7.5952.32542" />
-        <dependency id="Tortuga.Chain.Core" version="0.19.5975.42880" />
+        <dependency id="Tortuga.Anchor" version="0.8.5985.31190" />
+        <dependency id="Tortuga.Chain.Core" version="0.20.5985.36626" />
       </group>
       <group targetFramework="net46">
         <dependency id="System.Collections.Immutable" version="1.1.37" />
-        <dependency id="Tortuga.Anchor" version="0.7.5952.32542" />
-        <dependency id="Tortuga.Chain.Core" version="0.19.5975.42880" />
+        <dependency id="Tortuga.Anchor" version="0.8.5985.31190" />
+        <dependency id="Tortuga.Chain.Core" version="0.20.5985.36626" />
       </group>
     </dependencies>
 

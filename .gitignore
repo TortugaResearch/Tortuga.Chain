@@ -226,3 +226,4 @@ ModelManifest.xml
 /Tortuga.Chain/Build.SQLite.MS
 /Tortuga.Chain/Build.CompiledMaterializers
 /Tortuga.Chain/Build.PostgreSql
+/Tortuga.Chain/Build.Csv
