@@ -443,10 +443,13 @@ namespace Tortuga.Chain.CommandBuilders
         /// <summary>
         /// Applies the audit rules for select operations.
         /// </summary>
-        /// <param name="datasSource">The datas source.</param>
-        public void ApplyRulesForSelect(IDataSource datasSource)
+        /// <param name="dataSource">The data source.</param>
+        public void ApplyRulesForSelect(IDataSource dataSource)
         {
-            ApplyRules(datasSource.AuditRules, OperationTypes.Select, null, datasSource.UserValue);
+            if (dataSource == null)
+                throw new ArgumentNullException(nameof(dataSource), $"{nameof(dataSource)} is null.");
+
+            ApplyRules(dataSource.AuditRules, OperationTypes.Select, null, dataSource.UserValue);
         }
 
         /// <summary>
@@ -1140,6 +1143,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="parameterBuilder">The parameter builder. This should set the parameter's database specific DbType property.</param>
         /// <returns></returns>
         /// <remarks>This is needed for positional parameters such as MS Access</remarks>
+        [SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists")]
         public List<TParameter> GetParametersKeysLast<TParameter>(ParameterBuilderCallback<TParameter, TDbType> parameterBuilder)
             where TParameter : DbParameter
         {

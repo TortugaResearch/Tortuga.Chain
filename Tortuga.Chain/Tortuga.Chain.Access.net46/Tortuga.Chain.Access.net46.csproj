@@ -4,14 +4,13 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{29250DD0-9A8E-49E9-BF19-5F45C54AC9FB}</ProjectGuid>
+    <ProjectGuid>{B1EDC366-7A51-4CEE-98F6-69561130BDC2}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Tortuga.Chain.Csv</RootNamespace>
-    <AssemblyName>Tortuga.Chain.Csv</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <RootNamespace>Tortuga.Chain.Access.net46</RootNamespace>
+    <AssemblyName>Tortuga.Chain.Access.net46</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -21,10 +20,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DocumentationFile>bin\Debug\Tortuga.Chain.Csv.XML</DocumentationFile>
-    <RunCodeAnalysis>true</RunCodeAnalysis>
-    <CodeAnalysisRuleSet>..\Tortuga.Chain.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -33,48 +28,44 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DocumentationFile>bin\Release\Tortuga.Chain.Csv.XML</DocumentationFile>
-    <RunCodeAnalysis>true</RunCodeAnalysis>
-    <CodeAnalysisRuleSet>..\Tortuga.Chain.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System" />
-    <Reference Include="System.Collections.Immutable, Version=1.1.37.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Collections.Immutable.1.1.37\lib\dotnet\System.Collections.Immutable.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="Tortuga.Anchor, Version=0.8.5985.31190, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
-      <HintPath>..\packages\Tortuga.Anchor.0.8.5985.31190\lib\net46\Tortuga.Anchor.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\ProductSharedAssemblyInfo.cs">
       <Link>Properties\ProductSharedAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="CsvSerializer.cs" />
-    <Compile Include="CsvDataReader.cs" />
-    <Compile Include="CsvValueConverter.cs" />
-    <Compile Include="ICsvValueConverter.cs" />
+    <Compile Include="..\Tortuga.Chain.Access.source\Properties\LibrarySharedAssemblyInfo.cs">
+      <Link>Properties\LibrarySharedAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.SqlServer.source\AnchorMissing.cs">
+      <Link>AnchorMissing.cs</Link>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\LibrarySharedAssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Tortuga.Chain.Core.source\Tortuga.Chain.Core.source.csproj">
-      <Project>{2C523692-A40B-4A7E-A95A-FBE373F263F7}</Project>
-      <Name>Tortuga.Chain.Core.source</Name>
-    </ProjectReference>
+    <CodeAnalysisDictionary Include="..\CustomDictionary.xml">
+      <Link>CustomDictionary.xml</Link>
+    </CodeAnalysisDictionary>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <Compile Include="..\Tortuga.Chain.SqlServer.source\shared\**\*.cs">
+      <Link>shared\%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\Tortuga Chain.snk">
+      <Link>Tortuga Chain.snk</Link>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

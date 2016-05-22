@@ -57,8 +57,8 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="Tortuga.Anchor, Version=0.7.5952.32542, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
-      <HintPath>..\packages\Tortuga.Anchor.0.7.5952.32542\lib\net46\Tortuga.Anchor.dll</HintPath>
+    <Reference Include="Tortuga.Anchor, Version=0.8.5985.31190, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tortuga.Anchor.0.8.5985.31190\lib\net46\Tortuga.Anchor.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="xunit.abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
@@ -109,13 +109,11 @@
       <Name>Tortuga.Chain.SQLite.source</Name>
     </ProjectReference>
   </ItemGroup>
-
   <ItemGroup>
-     <Compile Include="..\xTests.Tortuga.Chain.SqlServer.source\shared\**\*.cs">
+    <Compile Include="..\xTests.Tortuga.Chain.SqlServer.source\shared\**\*.cs">
       <Link>shared\%(RecursiveDir)%(Filename)%(Extension)</Link>
     </Compile>
- </ItemGroup>
- 
+  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

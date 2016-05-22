@@ -71,8 +71,8 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Tortuga.Anchor, Version=0.7.5952.32542, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
-      <HintPath>..\packages\Tortuga.Anchor.0.7.5952.32542\lib\net46\Tortuga.Anchor.dll</HintPath>
+    <Reference Include="Tortuga.Anchor, Version=0.8.5985.31190, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tortuga.Anchor.0.8.5985.31190\lib\net46\Tortuga.Anchor.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
@@ -92,6 +92,7 @@
     <Compile Include="shared\Appenders\TraceAppender`1.cs" />
     <Compile Include="shared\Appenders\TraceAppender.cs" />
     <Compile Include="shared\AuditRules\ColumnRule.cs" />
+    <Compile Include="shared\AuditRules\ExceptWhenPredicate.cs" />
     <Compile Include="shared\AuditRules\RestrictColumn.cs" />
     <Compile Include="shared\AuditRules\ValidationRule.cs" />
     <Compile Include="shared\AuditRules\ValidateWithValidatable.cs" />

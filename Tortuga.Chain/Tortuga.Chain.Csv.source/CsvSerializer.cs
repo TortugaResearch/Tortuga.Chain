@@ -28,6 +28,8 @@ namespace Tortuga.Chain.Csv
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
         static CsvSerializer()
         {
+#pragma warning disable IDE0001 // Simplify Names
+
             AddGlobalConverter<Missing>(v => "", s => null); //used for nulls when the type isn't otherwise known
 
             AddGlobalConverter<bool>(v => v ? "true" : "false", s => bool.Parse(s));
@@ -79,6 +81,7 @@ namespace Tortuga.Chain.Csv
             AddGlobalConverter<string>(v => v == null ? "" : "\"" + v.Replace("\"", "\"\"") + "\"", s => s);
 
             AddGlobalConverter<object>(v => v == null ? "" : "\"" + v.ToString().Replace("\"", "\"\"") + "\"", s => { throw new NotSupportedException(); });
+#pragma warning restore IDE0001 // Simplify Names
         }
 
 

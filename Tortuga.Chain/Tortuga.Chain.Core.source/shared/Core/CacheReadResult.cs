@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Tortuga.Chain.Core
 {
 
@@ -5,6 +7,7 @@ namespace Tortuga.Chain.Core
     /// Lightweight alternative to a Tuple for reading from the cache asynchronously.
     /// </summary>
     /// <typeparam name="T"></typeparam>
+    [SuppressMessage("Microsoft.Performance", "CA1815:OverrideEqualsAndOperatorEqualsOnValueTypes")]
     public struct CacheReadResult<T>
     {
         /// <summary>

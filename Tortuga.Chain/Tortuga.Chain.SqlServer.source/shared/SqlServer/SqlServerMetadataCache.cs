@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Diagnostics.CodeAnalysis;
 using Tortuga.Anchor;
 using Tortuga.Anchor.Metadata;
 using Tortuga.Chain.Metadata;
@@ -428,7 +429,8 @@ namespace Tortuga.Chain.SqlServer
             return columns;
         }
 
-        private void AdjustTypeDetails(string typeName, ref int? maxLength, ref int? precision, ref int? scale, out string fullTypeName)
+        [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
+        private static void AdjustTypeDetails(string typeName, ref int? maxLength, ref int? precision, ref int? scale, out string fullTypeName)
         {
             switch (typeName)
             {

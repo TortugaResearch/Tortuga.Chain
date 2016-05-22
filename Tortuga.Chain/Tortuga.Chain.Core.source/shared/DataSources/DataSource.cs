@@ -32,21 +32,6 @@ namespace Tortuga.Chain.DataSources
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DataSource"/> class, copying its cache and extension data.
-        /// </summary>
-        /// <param name="parent">The parent data source.</param>
-        /// <param name="settings">The settings.</param>
-        protected DataSource(DataSource parent, DataSourceSettings settings)
-        {
-            if (settings != null)
-            {
-                DefaultCommandTimeout = settings.DefaultCommandTimeout;
-                StrictMode = settings.StrictMode ?? false;
-                SuppressGlobalEvents = settings.SuppressGlobalEvents ?? false;
-            }
-        }
-
-        /// <summary>
         /// Raised when a executionDetails is canceled.
         /// </summary>
         /// <remarks>This is not used for timeouts.</remarks>

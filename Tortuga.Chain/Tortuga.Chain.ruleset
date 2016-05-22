@@ -770,7 +770,7 @@
     <Rule Id="CS8094" Action="Error" />
   </Rules>
   <Rules AnalyzerId="Microsoft.CodeAnalysis.CSharp.Features" RuleNamespace="Microsoft.CodeAnalysis.CSharp.Features">
-    <Rule Id="IDE0001" Action="Info" />
+    <Rule Id="IDE0001" Action="None" />
     <Rule Id="IDE0002" Action="Info" />
     <Rule Id="IDE0003" Action="Info" />
     <Rule Id="IDE0004" Action="Info" />
