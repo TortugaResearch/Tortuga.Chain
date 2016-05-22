@@ -1,16 +1,25 @@
 # Tortuga Chain
 
-A Fluent ORM for .NET. Works with SQL Server, PostgreSQL, and SQLite. 
+A Fluent ORM for .NET
+
+## Documentation
+
+[Documentation PDF](https://github.com/docevaad/Chain/blob/master/Chain.pdf)
+[Documentation Wiki](https://github.com/docevaad/Chain/wiki)
 
 ## Getting Started
 
 To get started with Chain, you need to create a data source. This can be done using a connection string or a `SqlConnectionStringBuilder`. Optionally, you can also name your data source. (This has no functional effect, but does assist in logging.)
 
-    dataSource = new Tortuga.Chain.SqlServerDataSource("Adventure DB", "Server=.;Database=AdventureWorks2014;Trusted_Connection=True;");
+```csharp 
+dataSource = new Tortuga.Chain.SqlServerDataSource("Adventure DB", "Server=.;Database=AdventureWorks2014;Trusted_Connection=True;");
+```
 
 Or from your app.config file:
 
-    dataSource = Tortuga.Chain.SqlServerDataSource.CreateFromConfig("AdventureDB");
+```csharp 
+dataSource = Tortuga.Chain.SqlServerDataSource.CreateFromConfig("AdventureDB");
+```
 
 Your data source should be treated as a singleton object; you only need one per unique connection string. This is important because your data source will cache information about your database.
 
@@ -28,7 +37,9 @@ Transactions still need to contained within a `using` statement and explicitly c
 
 Command chains are the primary way of working with Tortuga. Each link in the chain is used to inform the previous link about what actions are desired. Here is a basic example:
 
-    dataSource.Procedure("uspGetEmployeeManagers", new {@BusinessEntityID = 100}).ToCollection<Manager>().Execute();
+```csharp 
+dataSource.Procedure("uspGetEmployeeManagers", new {@BusinessEntityID = 100}).ToCollection<Manager>().Execute();
+```
 
 Breaking this down, we have:
 
@@ -80,20 +91,28 @@ By combining commands and materializers, you can perform all of the basic CRUD o
 
 #### Create
 
-    var vehicleKey = dataSource.Insert("Vehicle", new { VehicleID = "65476XC54E", Make = "Cadillac", Model = "Fleetwood Series 60", Year = 1955 }).ToInt32().Execute();
+```csharp 
+var vehicleKey = dataSource.Insert("Vehicle", new { VehicleID = "65476XC54E", Make = "Cadillac", Model = "Fleetwood Series 60", Year = 1955 }).ToInt32().Execute();
+```
 
 #### Read
 
-    var car = dataSource.GetById("Vehicle", vehicleKey).ToObject<Vehicle>().Execute();
-    var cars = dataSource.From("Vehicle", new {Make = "Cadillac").ToCollection<Vehicle>().Execute();
+```csharp
+var car = dataSource.GetById("Vehicle", vehicleKey).ToObject<Vehicle>().Execute();
+var cars = dataSource.From("Vehicle", new {Make = "Cadillac").ToCollection<Vehicle>().Execute();
+```
 
 #### Update
 
-    dataSource.Update("Vehicle", new { VehicleKey = vehicleKey, Year = 1957 }).Execute();
+```csharp
+dataSource.Update("Vehicle", new { VehicleKey = vehicleKey, Year = 1957 }).Execute();
+```
 
 #### Delete
 
-    dataSource.Delete("Vehicle", new { VehicleKey = vehicleKey }).Execute();
+```csharp
+dataSource.Delete("Vehicle", new { VehicleKey = vehicleKey }).Execute();
+```
 
 ### Appenders
 
@@ -108,9 +127,11 @@ Caching appenders include:
 
 Here is an example of CRUD operations using caching.
 
-    var car = dataSource.GetById("Vehicle", vehicleKey).ToObject<Vehicle>().ReadOrCache("Vehicle " + vehicleKey).Execute();
-    car = dataSource.Update("Vehicle", new { VehicleKey = vehicleKey, Year = 1957 }).ToObject<Vehicle>().Cache("Vehicle " + vehicleKey).Execute();
-    dataSource.Delete("Vehicle", new { VehicleKey = vehicleKey }).InvalidateCache("Vehicle " + vehicleKey.Execute();
+```csharp
+var car = dataSource.GetById("Vehicle", vehicleKey).ToObject<Vehicle>().ReadOrCache("Vehicle " + vehicleKey).Execute();
+car = dataSource.Update("Vehicle", new { VehicleKey = vehicleKey, Year = 1957 }).ToObject<Vehicle>().Cache("Vehicle " + vehicleKey).Execute();
+dataSource.Delete("Vehicle", new { VehicleKey = vehicleKey }).InvalidateCache("Vehicle " + vehicleKey.Execute();
+```
 
 If using SQL Server, you can also use `WithChangeNotification`. This uses SQL Dependency to listen for changes to the table(s) you queried.
 
@@ -122,7 +143,9 @@ When debugging applications, it is often nice to dump the SQL somewhere. This is
 
 You can also override DBCommand settings such as the command timeout. For example:
 
-    ds.Procedure("ExpensiveReport").ToDataSet().SetTimeout(TimeSpan.FromHours(3)).Execute()
+```csharp 
+ds.Procedure("ExpensiveReport").ToDataSet().SetTimeout(TimeSpan.FromHours(3)).Execute()
+```
 
 ### Execution Modes
 
