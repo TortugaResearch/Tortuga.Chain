@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.OleDb;
+using System.Globalization;
 using Tortuga.Anchor;
 using Tortuga.Anchor.Metadata;
 using Tortuga.Chain.Metadata;
@@ -97,14 +98,15 @@ namespace Tortuga.Chain.Access
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         private List<ColumnMetadata<OleDbType>> GetColumns(string tableName, DataTable columns, DataTable primaryKeys)
         {
             var result = new List<ColumnMetadata<OleDbType>>();
             DataTable tableSchema;
             using (var con = new OleDbConnection(m_ConnectionBuilder.ConnectionString))
             {
-                var adapter = new OleDbDataAdapter($"SELECT * FROM [{tableName}] WHERE 1=0", con);
-                tableSchema = adapter.FillSchema(new DataTable(), SchemaType.Source);
+                using (var adapter = new OleDbDataAdapter($"SELECT * FROM [{tableName}] WHERE 1=0", con))
+                    tableSchema = adapter.FillSchema(new DataTable() {Locale = CultureInfo.InvariantCulture }, SchemaType.Source);
             }
 
 
@@ -210,6 +212,11 @@ namespace Tortuga.Chain.Access
             m_SchemaLoaded = false;
         }
 
+        /// <summary>
+        /// Returns the table or view derived from the class's name and/or Table attribute.
+        /// </summary>
+        /// <typeparam name="TObject">The type of the object.</typeparam>
+        /// <returns>TableOrViewMetadata&lt;AccessObjectName, OleDbType&gt;.</returns>
         public override TableOrViewMetadata<AccessObjectName, OleDbType> GetTableOrViewFromClass<TObject>()
         {
             var type = typeof(TObject);

@@ -19,8 +19,6 @@ namespace Tortuga.Chain.Access
         /// <summary>
         /// Initializes a new instance of the <see cref="AccessObjectName" /> struct.
         /// </summary>
-        /// <param name="database">The database.</param>
-        /// <param name="schema">The schema.</param>
         /// <param name="name">The name.</param>
         public AccessObjectName(string name)
         {

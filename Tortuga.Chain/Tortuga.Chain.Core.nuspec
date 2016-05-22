@@ -31,14 +31,14 @@
     <dependencies>
       <group targetFramework="net45">
         <dependency id="System.Collections.Immutable" version="1.1.37" />
-        <dependency id="Tortuga.Anchor" version="0.7.5952.32542" />
+        <dependency id="Tortuga.Anchor" version="0.8.5985.31190" />
       </group>
       <group targetFramework="net46">
         <dependency id="System.Collections.Immutable" version="1.1.37" />
-        <dependency id="Tortuga.Anchor" version="0.7.5952.32542" />
+        <dependency id="Tortuga.Anchor" version="0.8.5985.31190" />
       </group>
       <group targetFramework="uap10">
-        <dependency id="Tortuga.Anchor" version="0.7.5952.32542" />
+        <dependency id="Tortuga.Anchor" version="0.8.5985.31190" />
       </group>
     </dependencies>
 

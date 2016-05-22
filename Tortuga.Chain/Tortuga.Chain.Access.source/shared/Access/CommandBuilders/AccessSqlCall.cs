@@ -22,8 +22,7 @@ namespace Tortuga.Chain.Access.CommandBuilders
         /// <param name="dataSource">The data source.</param>
         /// <param name="sqlStatement">The SQL statement.</param>
         /// <param name="argumentValue">The argument value.</param>
-        /// <param name="lockType">Type of the lock.</param>
-        /// <exception cref="ArgumentException">SQL statement is null or empty.;sqlStatement</exception>
+        /// <exception cref="System.ArgumentException">SQL statement is null or empty.;sqlStatement</exception>
         public AccessSqlCall(AccessDataSourceBase dataSource, string sqlStatement, object argumentValue) :
             base(dataSource)
         {

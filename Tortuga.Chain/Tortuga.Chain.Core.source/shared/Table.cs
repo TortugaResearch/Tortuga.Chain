@@ -2,12 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Data;
+using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using Tortuga.Anchor.Metadata;
 using Tortuga.Chain.Materializers;
+
+#if !WINDOWS_UWP
+using System.Data;
+#endif
 
 namespace Tortuga.Chain
 {
@@ -23,6 +27,9 @@ namespace Tortuga.Chain
         readonly ReadOnlyCollection<string> m_Columns;
         readonly ReadOnlyDictionary<string, Type> m_ColumnTypes;
         readonly RowCollection m_Rows;
+
+#if !WINDOWS_UWP
+
         /// <summary>
         /// Creates a new NamedTable from an IDataReader
         /// </summary>
@@ -33,7 +40,62 @@ namespace Tortuga.Chain
         {
             TableName = tableName;
         }
+#endif
 
+        /// <summary>
+        /// Creates a new NamedTable from an IDataReader
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="source">The source.</param>
+        public Table(string tableName, DbDataReader source)
+            : this(source)
+        {
+            TableName = tableName;
+        }
+
+        /// <summary>
+        /// Creates a new Table from an IDataReader
+        /// </summary>
+        /// <param name="source"></param>
+        public Table(DbDataReader source)
+        {
+            if (source == null)
+                throw new ArgumentNullException("source", "source is null.");
+            if (source.FieldCount == 0)
+                throw new ArgumentException("No columns were returned", "source");
+
+            var cols = new List<string>(source.FieldCount);
+            var colTypes = new Dictionary<string, Type>(source.FieldCount, StringComparer.OrdinalIgnoreCase);
+            for (var i = 0; i < source.FieldCount; i++)
+            {
+                cols.Add(source.GetName(i));
+                colTypes.Add(source.GetName(i), source.GetFieldType(i));
+            }
+            m_Columns = new ReadOnlyCollection<string>(cols);
+            m_ColumnTypes = new ReadOnlyDictionary<string, Type>(colTypes);
+
+            var rows = new Collection<Row>();
+
+            while (source.Read())
+            {
+                var row = new Dictionary<string, object>(source.FieldCount, StringComparer.OrdinalIgnoreCase);
+                for (var i = 0; i < source.FieldCount; i++)
+                {
+                    var temp = source[i];
+                    if (temp == DBNull.Value)
+                        temp = null;
+
+                    row.Add(source.GetName(i), temp);
+                }
+
+                rows.Add(new Row(row));
+            }
+
+            m_Rows = new RowCollection(rows);
+        }
+
+
+#if !WINDOWS_UWP
         /// <summary>
         /// Creates a new Table from an IDataReader
         /// </summary>
@@ -74,6 +136,7 @@ namespace Tortuga.Chain
 
             m_Rows = new RowCollection(rows);
         }
+#endif
 
         /// <summary>
         /// List of column names in their original order.

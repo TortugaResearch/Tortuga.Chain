@@ -167,7 +167,6 @@ namespace Tortuga.Chain.Access
         /// Creates a operation based on a raw SQL statement.
         /// </summary>
         /// <param name="sqlStatement">The SQL statement.</param>
-        /// <param name="lockType">Type of the lock.</param>
         /// <returns>AccessSqlCall.</returns>
         public MultipleTableDbCommandBuilder<OleDbCommand, OleDbParameter> Sql(string sqlStatement)
         {
@@ -179,7 +178,6 @@ namespace Tortuga.Chain.Access
         /// </summary>
         /// <param name="sqlStatement">The SQL statement.</param>
         /// <param name="argumentValue">The argument value.</param>
-        /// <param name="lockType">Type of the lock.</param>
         /// <returns>AccessSqlCall.</returns>
         public MultipleTableDbCommandBuilder<OleDbCommand, OleDbParameter> Sql(string sqlStatement, object argumentValue)
         {

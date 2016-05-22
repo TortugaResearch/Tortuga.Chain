@@ -215,6 +215,7 @@ namespace Tortuga.Chain
         /// <param name="settings">The new settings to use.</param>
         /// <returns></returns>
         /// <remarks>The new data source will share the same database metadata cache.</remarks>
+        [SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public AccessDataSource WithSettings(AccessDataSourceSettings settings)
         {
             var mergedSettings = new AccessDataSourceSettings()

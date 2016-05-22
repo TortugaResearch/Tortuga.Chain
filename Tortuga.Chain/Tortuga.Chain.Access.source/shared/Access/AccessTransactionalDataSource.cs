@@ -30,8 +30,7 @@ namespace Tortuga.Chain.Access
         /// <param name="forwardEvents">if set to <c>true</c> [forward events].</param>
         /// <param name="connection">The connection.</param>
         /// <param name="transaction">The transaction.</param>
-        /// <param name="lockToken">The lock token.</param>
-        /// <exception cref="ArgumentNullException">
+        /// <exception cref="System.ArgumentNullException">
         /// </exception>
         internal AccessTransactionalDataSource(AccessDataSource dataSource, bool forwardEvents, OleDbConnection connection, OleDbTransaction transaction) : base(new AccessDataSourceSettings() { DefaultCommandTimeout = dataSource.DefaultCommandTimeout, StrictMode = dataSource.StrictMode, SuppressGlobalEvents = dataSource.SuppressGlobalEvents || forwardEvents })
         {
@@ -179,8 +178,11 @@ namespace Tortuga.Chain.Access
         /// </summary>
         public override void TestConnection()
         {
-            using (var cmd = new OleDbCommand("SELECT 1", m_Connection) { Transaction = m_Transaction })
+            using (var cmd = new OleDbCommand("SELECT 1", m_Connection))
+            {
+                cmd.Transaction = m_Transaction;
                 cmd.ExecuteScalar();
+            }
         }
 
         /// <summary>

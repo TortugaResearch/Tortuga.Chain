@@ -41,7 +41,11 @@ namespace Tortuga.Chain.Core
         public Task ClearAsync()
         {
             Clear();
+#if NET_45
+            return Task.FromResult<object>(null);
+#else
             return Task.CompletedTask;
+#endif
         }
 
         /// <summary>
@@ -68,7 +72,11 @@ namespace Tortuga.Chain.Core
                 throw new ArgumentException($"{nameof(cacheKey)} is null or empty.", nameof(cacheKey));
 
             m_ObjectCache.Remove(cacheKey);
+#if NET_45
+            return Task.FromResult<object>(null);
+#else
             return Task.CompletedTask;
+#endif
         }
 
         /// <summary>
@@ -107,7 +115,7 @@ namespace Tortuga.Chain.Core
             return true;
         }
 
-#pragma warning disable CS1998 
+#pragma warning disable CS1998
         /// <summary>
         /// try read from cache as an asynchronous operation.
         /// </summary>
@@ -162,7 +170,11 @@ namespace Tortuga.Chain.Core
         public Task WriteAsync(string cacheKey, object value, CachePolicy policy)
         {
             Write(cacheKey, value, policy);
+#if NET_45
+            return Task.FromResult<object>(null);
+#else
             return Task.CompletedTask;
+#endif
         }
 
         private class NullObject

@@ -21,7 +21,6 @@ namespace Tortuga.Chain.Access
         /// <param name="commandText">The SQL to be executed.</param>
         /// <param name="parameters">The parameters.</param>
         /// <param name="commandType">Type of the command.</param>
-        /// <param name="lockType">Type of the lock.</param>
         public AccessCommandExecutionToken(ICommandDataSource<OleDbCommand, OleDbParameter> dataSource, string operationName, string commandText, IReadOnlyList<OleDbParameter> parameters, CommandType commandType = CommandType.Text)
             : base(dataSource, operationName, commandText, parameters, commandType)
         {

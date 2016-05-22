@@ -11,11 +11,10 @@ namespace Tortuga.Chain.Access
     public sealed class AccessOperationExecutionToken : OperationExecutionToken<OleDbConnection, OleDbTransaction>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="AccessOperationExecutionToken"/> class.
+        /// Initializes a new instance of the <see cref="AccessOperationExecutionToken" /> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
         /// <param name="operationName">Name of the operation. This is used for logging.</param>
-        /// <param name="lockType">Type of the lock.</param>
         public AccessOperationExecutionToken(IOperationDataSource<OleDbConnection, OleDbTransaction> dataSource, string operationName)
             : base(dataSource, operationName)
         {

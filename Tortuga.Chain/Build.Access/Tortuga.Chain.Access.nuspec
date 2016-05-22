@@ -1,47 +1,43 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package>
   <metadata>
-    <id>Tortuga.Chain.CompiledMaterializers</id>
-    <version></version>
+    <id>Tortuga.Chain.Access</id>
+    <version>0.1.5985.38341</version>
     <authors>David Tomcik, Jonathan Allen</authors>
     <copyright>Copyright David Tomcik, Jonathan Allen 2016</copyright>
-    <description>Adds Compiled Materializers to Tortuga Chain.</description>
-    <tags>ORM, Fluent</tags>
+    <description>Fluent ORM for .NET and Access.</description>
+    <tags>ORM, Fluent, Access</tags>
     <language>en-US</language>
     <projectUrl>https://github.com/docevaad/Chain</projectUrl>
     <licenseUrl>https://github.com/docevaad/Chain/blob/master/License.txt</licenseUrl>
     <references>
-      <reference file="Tortuga.Chain.CompiledMaterializers.dll" />
+      <reference file="Tortuga.Chain.Access.dll" />
     </references>
     <frameworkAssemblies>
       <frameworkAssembly assemblyName="System.Data" targetFramework="net45" />
       <frameworkAssembly assemblyName="System.ComponentModel.DataAnnotations" targetFramework="net45" />
       <frameworkAssembly assemblyName="System.Xml" targetFramework="net45" />
       <frameworkAssembly assemblyName="System.Xml.Linq" targetFramework="net45" />
-
-
+      <frameworkAssembly assemblyName="System.Runtime.Caching" targetFramework="net45" />
+      <frameworkAssembly assemblyName="System.Configuration" targetFramework="net45" />
       <frameworkAssembly assemblyName="System.Data" targetFramework="net46" />
       <frameworkAssembly assemblyName="System.ComponentModel.DataAnnotations" targetFramework="net46" />
       <frameworkAssembly assemblyName="System.Xml" targetFramework="net46" />
       <frameworkAssembly assemblyName="System.Xml.Linq" targetFramework="net46" />
+      <frameworkAssembly assemblyName="System.Runtime.Caching" targetFramework="net46" />
+      <frameworkAssembly assemblyName="System.Configuration" targetFramework="net46" />
     </frameworkAssemblies>
-
-
     <dependencies>
       <group targetFramework="net45">
         <dependency id="System.Collections.Immutable" version="1.1.37" />
         <dependency id="Tortuga.Anchor" version="0.8.5985.31190" />
         <dependency id="Tortuga.Chain.Core" version="0.20.5985.36626" />
-        <dependency id="CS-Script.bin" version="3.12.1.0" />
       </group>
       <group targetFramework="net46">
         <dependency id="System.Collections.Immutable" version="1.1.37" />
-        <dependency id="Tortuga.Anchor" version="0.7.5952.32542" />
+        <dependency id="Tortuga.Anchor" version="0.8.5985.31190" />
         <dependency id="Tortuga.Chain.Core" version="0.20.5985.36626" />
-        <dependency id="CS-Script.bin" version="3.12.1.0" />
       </group>
     </dependencies>
-
   </metadata>
-
 </package>
