@@ -174,8 +174,13 @@ namespace Tortuga.Chain
         private static IEvaluator AugmentScriptEvaluator(IEvaluator evaluator, Type type)
         {
             evaluator = evaluator.ReferenceAssembly(type.Assembly);
+
+            if (type.BaseType != typeof(object))
+                evaluator = AugmentScriptEvaluator(evaluator, type.BaseType);
+
             foreach (var property in MetadataCache.GetMetadata(type).Properties.Where(p => p.Decompose))
                 evaluator = AugmentScriptEvaluator(evaluator, property.PropertyType);
+
             return evaluator;
         }
 
