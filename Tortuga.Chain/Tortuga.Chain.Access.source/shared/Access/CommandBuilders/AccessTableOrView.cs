@@ -15,7 +15,7 @@ namespace Tortuga.Chain.Access.CommandBuilders
     /// </summary>
     internal sealed class AccessTableOrView : TableDbCommandBuilder<OleDbCommand, OleDbParameter, AccessLimitOption>
     {
-        readonly TableOrViewMetadata<AccessObjectName, OleDbType> m_Metadata;
+        readonly TableOrViewMetadata<AccessObjectName, OleDbType> m_Table;
         private object m_FilterValue;
         private string m_WhereClause;
         private object m_ArgumentValue;
@@ -35,7 +35,7 @@ namespace Tortuga.Chain.Access.CommandBuilders
             base(dataSource)
         {
             m_FilterValue = filterValue;
-            m_Metadata = ((AccessDataSourceBase)DataSource).DatabaseMetadata.GetTableOrView(tableOrViewName);
+            m_Table = ((AccessDataSourceBase)DataSource).DatabaseMetadata.GetTableOrView(tableOrViewName);
         }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace Tortuga.Chain.Access.CommandBuilders
         {
             m_ArgumentValue = argumentValue;
             m_WhereClause = whereClause;
-            m_Metadata = ((AccessDataSourceBase)DataSource).DatabaseMetadata.GetTableOrView(tableOrViewName);
+            m_Table = ((AccessDataSourceBase)DataSource).DatabaseMetadata.GetTableOrView(tableOrViewName);
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace Tortuga.Chain.Access.CommandBuilders
             if (materializer == null)
                 throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
 
-            var sqlBuilder = m_Metadata.CreateSqlBuilder(StrictMode);
+            var sqlBuilder = m_Table.CreateSqlBuilder(StrictMode);
             sqlBuilder.ApplyRulesForSelect(DataSource);
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
@@ -93,7 +93,7 @@ namespace Tortuga.Chain.Access.CommandBuilders
             else
                 sqlBuilder.BuildSelectClause(sql, "SELECT " + topClause, null, null);
 
-            sql.Append(" FROM " + m_Metadata.Name.ToQuotedString());
+            sql.Append(" FROM " + m_Table.Name.ToQuotedString());
 
             if (m_FilterValue != null)
             {
@@ -119,7 +119,7 @@ namespace Tortuga.Chain.Access.CommandBuilders
 
             sql.Append(";");
 
-            return new AccessCommandExecutionToken(DataSource, "Query " + m_Metadata.Name, sql.ToString(), parameters);
+            return new AccessCommandExecutionToken(DataSource, "Query " + m_Table.Name, sql.ToString(), parameters);
         }
 
         /// <summary>
@@ -240,7 +240,7 @@ namespace Tortuga.Chain.Access.CommandBuilders
             if (distinct)
                 throw new NotSupportedException("Access does not support distinct counts.");
 
-            var column = m_Metadata.Columns[columnName];
+            var column = m_Table.Columns[columnName];
             m_SelectClause = $"COUNT({column.QuotedSqlName})";
 
             return ToInt64();
@@ -256,7 +256,7 @@ namespace Tortuga.Chain.Access.CommandBuilders
         /// </remarks>
         public override ColumnMetadata TryGetColumn(string columnName)
         {
-            return m_Metadata.Columns.TryGetColumn(columnName);
+            return m_Table.Columns.TryGetColumn(columnName);
         }
 
         /// <summary>

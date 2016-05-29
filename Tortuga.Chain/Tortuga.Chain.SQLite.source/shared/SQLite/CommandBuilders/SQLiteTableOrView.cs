@@ -23,7 +23,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
     /// </summary>
     internal sealed class SQLiteTableOrView : TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption>
     {
-        readonly TableOrViewMetadata<string, DbType> m_Metadata;
+        readonly TableOrViewMetadata<string, DbType> m_Table;
         private object m_FilterValue;
         private string m_WhereClause;
         private object m_ArgumentValue;
@@ -48,7 +48,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
                 throw new ArgumentException("table/view name string is empty");
 
             m_FilterValue = filterValue;
-            m_Metadata = ((SQLiteDataSourceBase)DataSource).DatabaseMetadata.GetTableOrView(tableOrViewName);
+            m_Table = ((SQLiteDataSourceBase)DataSource).DatabaseMetadata.GetTableOrView(tableOrViewName);
         }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
 
             m_ArgumentValue = argumentValue;
             m_WhereClause = whereClause;
-            m_Metadata = ((SQLiteDataSourceBase)DataSource).DatabaseMetadata.GetTableOrView(tableOrViewName);
+            m_Table = ((SQLiteDataSourceBase)DataSource).DatabaseMetadata.GetTableOrView(tableOrViewName);
         }
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
             if (materializer == null)
                 throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
 
-            var sqlBuilder = m_Metadata.CreateSqlBuilder(StrictMode);
+            var sqlBuilder = m_Table.CreateSqlBuilder(StrictMode);
             sqlBuilder.ApplyRulesForSelect(DataSource);
 
             if (m_SelectClause == null)
@@ -109,7 +109,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
             else
                 sqlBuilder.BuildSelectClause(sql, "SELECT ", null, null);
 
-            sql.Append(" FROM " + m_Metadata.Name);
+            sql.Append(" FROM " + m_Table.Name);
 
             if (m_FilterValue != null)
             {
@@ -149,7 +149,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
 
             sql.Append(";");
 
-            return new SQLiteCommandExecutionToken(DataSource, "Query " + m_Metadata.Name, sql.ToString(), parameters, lockType: LockType.Read);
+            return new SQLiteCommandExecutionToken(DataSource, "Query " + m_Table.Name, sql.ToString(), parameters, lockType: LockType.Read);
         }
 
         /// <summary>
@@ -258,7 +258,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
         /// <returns></returns>
         public override ILink<long> AsCount(string columnName, bool distinct = false)
         {
-            var column = m_Metadata.Columns[columnName];
+            var column = m_Table.Columns[columnName];
             if (distinct)
                 m_SelectClause = $"COUNT(DISTINCT {column.QuotedSqlName})";
             else
@@ -277,7 +277,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
         /// </remarks>
         public override ColumnMetadata TryGetColumn(string columnName)
         {
-            return m_Metadata.Columns.TryGetColumn(columnName);
+            return m_Table.Columns.TryGetColumn(columnName);
         }
     }
 }

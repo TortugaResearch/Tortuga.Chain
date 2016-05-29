@@ -21,7 +21,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
     {
 
         readonly object m_ArgumentValue;
-        readonly StoredProcedureMetadata<SqlServerObjectName, SqlDbType> m_Metadata;
+        readonly StoredProcedureMetadata<SqlServerObjectName, SqlDbType> m_Procedure;
         readonly SqlServerObjectName m_ProcedureName;
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 
             m_ArgumentValue = argumentValue;
             m_ProcedureName = procedureName;
-            m_Metadata = DataSource.DatabaseMetadata.GetStoredProcedure(procedureName);
+            m_Procedure = DataSource.DatabaseMetadata.GetStoredProcedure(procedureName);
         }
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             }
             else
             {
-                var sqlBuilder = m_Metadata.CreateSqlBuilder(StrictMode);
+                var sqlBuilder = m_Procedure.CreateSqlBuilder(StrictMode);
                 sqlBuilder.ApplyArgumentValue(DataSource, OperationTypes.None, m_ArgumentValue);
                 parameters = sqlBuilder.GetParameters();
             }

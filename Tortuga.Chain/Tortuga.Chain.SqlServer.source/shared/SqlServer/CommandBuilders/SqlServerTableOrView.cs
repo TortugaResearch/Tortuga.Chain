@@ -19,7 +19,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
     /// </summary>
     internal sealed class SqlServerTableOrView : TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption>, ISupportsChangeListener
     {
-        readonly TableOrViewMetadata<SqlServerObjectName, SqlDbType> m_Metadata;
+        readonly TableOrViewMetadata<SqlServerObjectName, SqlDbType> m_Table;
         private object m_FilterValue;
         private string m_WhereClause;
         private object m_ArgumentValue;
@@ -42,7 +42,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
                 throw new ArgumentException($"{nameof(tableOrViewName)} is empty", nameof(tableOrViewName));
 
             m_FilterValue = filterValue;
-            m_Metadata = DataSource.DatabaseMetadata.GetTableOrView(tableOrViewName);
+            m_Table = DataSource.DatabaseMetadata.GetTableOrView(tableOrViewName);
         }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 
             m_ArgumentValue = argumentValue;
             m_WhereClause = whereClause;
-            m_Metadata = DataSource.DatabaseMetadata.GetTableOrView(tableOrViewName);
+            m_Table = DataSource.DatabaseMetadata.GetTableOrView(tableOrViewName);
         }
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             if (materializer == null)
                 throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
 
-            var sqlBuilder = m_Metadata.CreateSqlBuilder(StrictMode);
+            var sqlBuilder = m_Table.CreateSqlBuilder(StrictMode);
             sqlBuilder.ApplyRulesForSelect(DataSource);
 
             if (m_SelectClause == null)
@@ -128,7 +128,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             else
                 sqlBuilder.BuildSelectClause(sql, "SELECT " + topClause, null, null);
 
-            sql.Append(" FROM " + m_Metadata.Name.ToQuotedString());
+            sql.Append(" FROM " + m_Table.Name.ToQuotedString());
 
             switch (m_LimitOptions)
             {
@@ -197,7 +197,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 
             sql.Append(";");
 
-            return new SqlServerCommandExecutionToken(DataSource, "Query " + m_Metadata.Name, sql.ToString(), parameters);
+            return new SqlServerCommandExecutionToken(DataSource, "Query " + m_Table.Name, sql.ToString(), parameters);
         }
 
         /// <summary>
@@ -323,7 +323,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// <returns></returns>
         public override ILink<long> AsCount(string columnName, bool distinct = false)
         {
-            var column = m_Metadata.Columns[columnName];
+            var column = m_Table.Columns[columnName];
             if (distinct)
                 m_SelectClause = $"COUNT_BIG(DISTINCT {column.QuotedSqlName})";
             else
@@ -342,7 +342,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// </remarks>
         public override ColumnMetadata TryGetColumn(string columnName)
         {
-            return m_Metadata.Columns.TryGetColumn(columnName);
+            return m_Table.Columns.TryGetColumn(columnName);
         }
 
         /// <summary>

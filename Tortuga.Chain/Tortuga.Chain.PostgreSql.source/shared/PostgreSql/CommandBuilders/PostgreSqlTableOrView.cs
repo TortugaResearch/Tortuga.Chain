@@ -16,7 +16,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
     /// </summary>
     public class PostgreSqlTableOrView : TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption>
     {
-        readonly TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType> m_Metadata;
+        readonly TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType> m_Table;
         private object m_FilterValue;
         private string m_WhereClause;
         private object m_ArgumentValue;
@@ -40,7 +40,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
             if (tableOrViewName == PostgreSqlObjectName.Empty)
                 throw new ArgumentException($"{nameof(tableOrViewName)} is empty", nameof(tableOrViewName));
 
-            m_Metadata = DataSource.DatabaseMetadata.GetTableOrView(tableOrViewName);
+            m_Table = DataSource.DatabaseMetadata.GetTableOrView(tableOrViewName);
         }
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
                 throw new ArgumentException($"{nameof(tableOrViewName)} is empty", nameof(tableOrViewName));
 
             m_FilterValue = filterValue;
-            m_Metadata = DataSource.DatabaseMetadata.GetTableOrView(tableOrViewName);
+            m_Table = DataSource.DatabaseMetadata.GetTableOrView(tableOrViewName);
         }
 
         /// <summary>
@@ -76,7 +76,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 
             m_WhereClause = whereClause;
             m_ArgumentValue = argumentValue;
-            m_Metadata = DataSource.DatabaseMetadata.GetTableOrView(tableOrViewName);
+            m_Table = DataSource.DatabaseMetadata.GetTableOrView(tableOrViewName);
         }
 
         /// <summary>
@@ -91,7 +91,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
             if (materializer == null)
                 throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
 
-            var sqlBuilder = m_Metadata.CreateSqlBuilder(StrictMode);
+            var sqlBuilder = m_Table.CreateSqlBuilder(StrictMode);
             sqlBuilder.ApplyRulesForSelect(DataSource);
 
             if (m_SelectClause == null)
@@ -124,7 +124,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
             else
                 sqlBuilder.BuildSelectClause(sql, "SELECT ", null, null);
 
-            sql.Append(" FROM " + m_Metadata.Name);
+            sql.Append(" FROM " + m_Table.Name);
 
             switch (m_LimitOptions)
             {
@@ -181,7 +181,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 
             sql.Append(";");
 
-            return new PostgreSqlExecutionToken(DataSource, "Query " + m_Metadata.Name, sql.ToString(), parameters);
+            return new PostgreSqlExecutionToken(DataSource, "Query " + m_Table.Name, sql.ToString(), parameters);
         }
 
 
@@ -291,7 +291,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         /// <returns></returns>
         public override ILink<long> AsCount(string columnName, bool distinct = false)
         {
-            var column = m_Metadata.Columns[columnName];
+            var column = m_Table.Columns[columnName];
             if (distinct)
                 m_SelectClause = $"COUNT(DISTINCT {column.QuotedSqlName})";
             else
@@ -319,7 +319,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         /// </remarks>
         public override ColumnMetadata TryGetColumn(string columnName)
         {
-            return m_Metadata.Columns.TryGetColumn(columnName);
+            return m_Table.Columns.TryGetColumn(columnName);
         }
     }
 }
