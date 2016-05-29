@@ -86,6 +86,7 @@
     <None Include="Page\Appenders\SqlDependency.md" />
     <None Include="Page\Appenders\Tracing.md" />
     <None Include="Page\Appenders\Caching.md" />
+    <None Include="Page\RestrictedColumns.md" />
     <None Include="Page\AuditRules.md" />
     <None Include="Page\CommandBuilders.md" />
     <None Include="Page\CommandBuilders\BulkInsert.md" />

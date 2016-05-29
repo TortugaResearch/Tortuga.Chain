@@ -102,6 +102,10 @@
     {
       "title": "Audit Rules",
       "path": "Page/AuditRules.md"
+    },
+    {
+      "title": "Restricted Columns",
+      "path": "Page/RestrictedColumns.md"
     }
   ]
 }
