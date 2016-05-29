@@ -130,26 +130,22 @@ namespace Tortuga.Chain.SqlServer
         /// <typeparam name="T"></typeparam>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="key">The key.</param>
-        /// <returns></returns>
-        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
+        /// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
         public SingleRowDbCommandBuilder<SqlCommand, SqlParameter> GetByKey<T>(SqlServerObjectName tableName, T key)
+            where T : struct
         {
-            var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).Columns.Where(c => c.IsPrimaryKey).ToList();
-            if (primaryKeys.Count != 1)
-                throw new MappingException($"GetByKey operation isn't allowed on {tableName} because it doesn't have a single primary key. Use DataSource.From instead.");
+            return GetByKeyList(tableName, new List<T> { key });
+        }
 
-            var columnMetadata = primaryKeys.Single();
-            var where = columnMetadata.SqlName + " = " + columnMetadata.SqlVariableName;
-
-            var parameters = new List<SqlParameter>();
-
-            var param = new SqlParameter(columnMetadata.SqlVariableName, key);
-            if (columnMetadata.DbType.HasValue)
-                param.SqlDbType = columnMetadata.DbType.Value;
-            parameters.Add(param);
-
-
-            return new SqlServerTableOrView(this, tableName, where, parameters);
+        /// <summary>
+        /// Gets a record by its primary key.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="key">The key.</param>
+        /// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
+        public SingleRowDbCommandBuilder<SqlCommand, SqlParameter> GetByKey(SqlServerObjectName tableName, string key)
+        {
+            return GetByKeyList(tableName, new List<string> { key });
         }
 
         /// <summary>
@@ -161,8 +157,21 @@ namespace Tortuga.Chain.SqlServer
         /// <returns></returns>
         /// <remarks>This only works on tables that have a scalar primary key.</remarks>
         public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> GetByKey<T>(SqlServerObjectName tableName, params T[] keys)
+            where T : struct
         {
-            return GetByKey(tableName, (IEnumerable<T>)keys);
+            return GetByKeyList(tableName, keys);
+        }
+
+        /// <summary>
+        /// Gets a set of records by their primary key.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="keys">The keys.</param>
+        /// <returns></returns>
+        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
+        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> GetByKey(SqlServerObjectName tableName, params string[] keys)
+        {
+            return GetByKeyList(tableName, keys);
         }
 
         /// <summary>
@@ -173,7 +182,7 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="keys">The keys.</param>
         /// <returns></returns>
         /// <remarks>This only works on tables that have a scalar primary key.</remarks>
-        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> GetByKey<T>(SqlServerObjectName tableName, IEnumerable<T> keys)
+        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> GetByKeyList<T>(SqlServerObjectName tableName, IEnumerable<T> keys)
         {
             var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).Columns.Where(c => c.IsPrimaryKey).ToList();
             if (primaryKeys.Count != 1)
@@ -181,7 +190,11 @@ namespace Tortuga.Chain.SqlServer
 
             var keyList = keys.AsList();
             var columnMetadata = primaryKeys.Single();
-            var where = columnMetadata.SqlName + " IN (" + string.Join(", ", keyList.Select((s, i) => "@Param" + i)) + ")";
+            string where;
+            if (keys.Count() > 1)
+                where = columnMetadata.SqlName + " IN (" + string.Join(", ", keyList.Select((s, i) => "@Param" + i)) + ")";
+            else
+                where = columnMetadata.SqlName + " = @Param0";
 
             var parameters = new List<SqlParameter>();
             for (var i = 0; i < keyList.Count; i++)
@@ -193,6 +206,203 @@ namespace Tortuga.Chain.SqlServer
             }
 
             return new SqlServerTableOrView(this, tableName, where, parameters);
+        }
+
+        /// <summary>
+        /// Delete a record by its primary key.
+        /// </summary>
+        /// <typeparam name="TArgument">The type of the t argument.</typeparam>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="newValues">The new values to use.</param>
+        /// <param name="key">The key.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
+        public SingleRowDbCommandBuilder<SqlCommand, SqlParameter> UpdateByKey<TArgument, T>(SqlServerObjectName tableName, TArgument newValues, T key, UpdateOptions options = UpdateOptions.None)
+            where T : struct
+        {
+            return UpdateByKeyList(tableName, newValues, new List<T> { key }, options);
+        }
+
+        /// <summary>
+        /// Delete a record by its primary key.
+        /// </summary>
+        /// <typeparam name="TArgument">The type of the t argument.</typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="newValues">The new values to use.</param>
+        /// <param name="key">The key.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
+        public SingleRowDbCommandBuilder<SqlCommand, SqlParameter> UpdateByKey<TArgument>(SqlServerObjectName tableName, TArgument newValues, string key, UpdateOptions options = UpdateOptions.None)
+        {
+            return UpdateByKeyList(tableName, newValues, new List<string> { key }, options);
+        }
+
+        /// <summary>
+        /// Delete multiple rows by key.
+        /// </summary>
+        /// <typeparam name="TArgument">The type of the t argument.</typeparam>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="newValues">The new values to use.</param>
+        /// <param name="keys">The keys.</param>
+        /// <returns></returns>
+        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
+        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> UpdateByKey<TArgument, T>(SqlServerObjectName tableName, TArgument newValues, params T[] keys)
+            where T : struct
+        {
+            return UpdateByKeyList(tableName, newValues, keys);
+        }
+
+        /// <summary>
+        /// Delete multiple rows by key.
+        /// </summary>
+        /// <typeparam name="TArgument">The type of the t argument.</typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="newValues">The new values to use.</param>
+        /// <param name="keys">The keys.</param>
+        /// <returns></returns>
+        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
+        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> UpdateByKey<TArgument>(SqlServerObjectName tableName, TArgument newValues, params string[] keys)
+        {
+            return UpdateByKeyList(tableName, newValues, keys);
+        }
+
+
+        /// <summary>
+        /// Updates multiple rows by key.
+        /// </summary>
+        /// <typeparam name="TArgument">The type of the t argument.</typeparam>
+        /// <typeparam name="TKey">The type of the t key.</typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="newValues">The new values to use.</param>
+        /// <param name="keys">The keys.</param>
+        /// <param name="options">Update options.</param>
+        /// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
+        /// <exception cref="MappingException"></exception>
+        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "UpdateByKey")]
+        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> UpdateByKeyList<TArgument, TKey>(SqlServerObjectName tableName, TArgument newValues, IEnumerable<TKey> keys, UpdateOptions options = UpdateOptions.None)
+        {
+            var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).Columns.Where(c => c.IsPrimaryKey).ToList();
+            if (primaryKeys.Count != 1)
+                throw new MappingException($"UpdateByKey operation isn't allowed on {tableName} because it doesn't have a single primary key.");
+
+            var keyList = keys.AsList();
+            var columnMetadata = primaryKeys.Single();
+            string where;
+            if (keys.Count() > 1)
+                where = columnMetadata.SqlName + " IN (" + string.Join(", ", keyList.Select((s, i) => "@Param" + i)) + ")";
+            else
+                where = columnMetadata.SqlName + " = @Param0";
+
+            var parameters = new List<SqlParameter>();
+            for (var i = 0; i < keyList.Count; i++)
+            {
+                var param = new SqlParameter("@Param" + i, keyList[i]);
+                if (columnMetadata.DbType.HasValue)
+                    param.SqlDbType = columnMetadata.DbType.Value;
+                parameters.Add(param);
+            }
+
+            return new SqlServerUpdateMany(this, tableName, newValues, where, parameters, parameters.Count, options);
+        }
+
+        /// <summary>
+        /// Delete a record by its primary key.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="key">The key.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
+        public SingleRowDbCommandBuilder<SqlCommand, SqlParameter> DeleteByKey<T>(SqlServerObjectName tableName, T key, DeleteOptions options = DeleteOptions.None)
+            where T : struct
+        {
+            return DeleteByKeyList(tableName, new List<T> { key }, options);
+        }
+
+        /// <summary>
+        /// Delete a record by its primary key.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="key">The key.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
+        public SingleRowDbCommandBuilder<SqlCommand, SqlParameter> DeleteByKey(SqlServerObjectName tableName, string key, DeleteOptions options = DeleteOptions.None)
+        {
+            return DeleteByKeyList(tableName, new List<string> { key }, options);
+        }
+
+        /// <summary>
+        /// Delete multiple rows by key.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="keys">The keys.</param>
+        /// <returns></returns>
+        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
+        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> DeleteByKey<T>(SqlServerObjectName tableName, params T[] keys)
+            where T : struct
+        {
+            return DeleteByKeyList(tableName, keys);
+        }
+
+        /// <summary>
+        /// Delete multiple rows by key.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="keys">The keys.</param>
+        /// <returns></returns>
+        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
+        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> DeleteByKey(SqlServerObjectName tableName, params string[] keys)
+        {
+            return DeleteByKeyList(tableName, keys);
+        }
+
+
+        /// <summary>
+        /// Delete multiple rows by key.
+        /// </summary>
+        /// <typeparam name="TKey">The type of the t key.</typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="keys">The keys.</param>
+        /// <param name="options">Update options.</param>
+        /// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
+        /// <exception cref="MappingException"></exception>
+        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "DeleteByKey")]
+        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> DeleteByKeyList<TKey>(SqlServerObjectName tableName, IEnumerable<TKey> keys, DeleteOptions options = DeleteOptions.None)
+        {
+            var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).Columns.Where(c => c.IsPrimaryKey).ToList();
+            if (primaryKeys.Count != 1)
+                throw new MappingException($"DeleteByKey operation isn't allowed on {tableName} because it doesn't have a single primary key.");
+
+            var keyList = keys.AsList();
+            var columnMetadata = primaryKeys.Single();
+            string where;
+            if (keys.Count() > 1)
+                where = columnMetadata.SqlName + " IN (" + string.Join(", ", keyList.Select((s, i) => "@Param" + i)) + ")";
+            else
+                where = columnMetadata.SqlName + " = @Param0";
+
+            var parameters = new List<SqlParameter>();
+            for (var i = 0; i < keyList.Count; i++)
+            {
+                var param = new SqlParameter("@Param" + i, keyList[i]);
+                if (columnMetadata.DbType.HasValue)
+                    param.SqlDbType = columnMetadata.DbType.Value;
+                parameters.Add(param);
+            }
+
+            var table = DatabaseMetadata.GetTableOrView(tableName);
+            if (!AuditRules.UseSoftDelete(table))
+                return new SqlServerDeleteMany(this, tableName, where, parameters, options);
+
+            UpdateOptions effectiveOptions = UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected;
+            if (options.HasFlag(DeleteOptions.UseKeyAttribute))
+                effectiveOptions = effectiveOptions | UpdateOptions.UseKeyAttribute;
+
+            return new SqlServerUpdateMany(this, tableName, null, where, parameters, parameters.Count, effectiveOptions);
+
         }
 
         IMultipleTableDbCommandBuilder IClass0DataSource.Sql(string sqlStatement, object argumentValue)
@@ -230,14 +440,25 @@ namespace Tortuga.Chain.SqlServer
             return GetByKey(tableName, key);
         }
 
-        IMultipleRowDbCommandBuilder IClass1DataSource.GetByKey<T>(string tableName, IEnumerable<T> keys)
+
+        ISingleRowDbCommandBuilder IClass1DataSource.GetByKey(string tableName, string key)
         {
-            return GetByKey(tableName, keys);
+            return GetByKey(tableName, key);
         }
 
         IMultipleRowDbCommandBuilder IClass1DataSource.GetByKey<T>(string tableName, params T[] keys)
         {
-            return GetByKey(tableName, (IEnumerable<T>)keys);
+            return GetByKeyList(tableName, keys);
+        }
+
+        IMultipleRowDbCommandBuilder IClass1DataSource.GetByKey(string tableName, params string[] keys)
+        {
+            return GetByKeyList(tableName, keys);
+        }
+
+        IMultipleRowDbCommandBuilder IClass1DataSource.GetByKeyList<T>(string tableName, IEnumerable<T> keys)
+        {
+            return GetByKeyList(tableName, keys);
         }
 
         IObjectDbCommandBuilder<TArgument> IClass1DataSource.Insert<TArgument>(string tableName, TArgument argumentValue, InsertOptions options)

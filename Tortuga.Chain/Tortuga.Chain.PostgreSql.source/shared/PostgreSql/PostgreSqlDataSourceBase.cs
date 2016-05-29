@@ -106,7 +106,7 @@ namespace Tortuga.Chain.PostgreSql
         /// <param name="keys">The keys.</param>
         /// <returns>MultipleRowDbCommandBuilder&lt;NpgsqlCommand, NpgsqlParameter&gt;.</returns>
         /// <exception cref="MappingException"></exception>
-        public MultipleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> GetByKey<T>(PostgreSqlObjectName tableName, IEnumerable<T> keys)
+        public MultipleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> GetByKeyList<T>(PostgreSqlObjectName tableName, IEnumerable<T> keys)
         {
             var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).Columns.Where(c => c.IsPrimaryKey).ToList();
             if (primaryKeys.Count != 1)
@@ -114,7 +114,11 @@ namespace Tortuga.Chain.PostgreSql
 
             var keyList = keys.AsList();
             var columnMetadata = primaryKeys.Single();
-            var where = columnMetadata.SqlName + " IN (" + string.Join(", ", keyList.Select((s, i) => "@Param" + i)) + ")";
+            string where;
+            if (keys.Count() > 1)
+                where = columnMetadata.SqlName + " IN (" + string.Join(", ", keyList.Select((s, i) => "@Param" + i)) + ")";
+            else
+                where = columnMetadata.SqlName + " = @Param0";
 
             var parameters = new List<NpgsqlParameter>();
             for (var i = 0; i < keyList.Count; i++)
@@ -129,44 +133,55 @@ namespace Tortuga.Chain.PostgreSql
         }
 
         /// <summary>
-        /// Gets the by key.
+        /// Gets a set of records by their primary key.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="keys">The keys.</param>
-        /// <returns>MultipleRowDbCommandBuilder&lt;NpgsqlCommand, NpgsqlParameter&gt;.</returns>
+        /// <returns></returns>
+        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
         public MultipleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> GetByKey<T>(PostgreSqlObjectName tableName, params T[] keys)
+            where T : struct
         {
-            return GetByKey(tableName, (IEnumerable<T>)keys);
+            return GetByKeyList(tableName, keys);
         }
 
         /// <summary>
-        /// Gets the by key.
+        /// Gets a set of records by their primary key.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="keys">The keys.</param>
+        /// <returns></returns>
+        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
+        public MultipleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> GetByKey(PostgreSqlObjectName tableName, params string[] keys)
+        {
+            return GetByKeyList(tableName, keys);
+        }
+
+        /// <summary>
+        /// Gets a record by its key.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="key">The key.</param>
-        /// <returns>SingleRowDbCommandBuilder&lt;NpgsqlCommand, NpgsqlParameter&gt;.</returns>
-        /// <exception cref="MappingException"></exception>
+        /// <returns>MultipleRowDbCommandBuilder&lt;NpgsqlCommand, NpgsqlParameter&gt;.</returns>
         public SingleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> GetByKey<T>(PostgreSqlObjectName tableName, T key)
+            where T : struct
         {
-            var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).Columns.Where(c => c.IsPrimaryKey).ToList();
-            if (primaryKeys.Count != 1)
-                throw new MappingException($"GetByKey operation isn't allowed on {tableName} because it doesn't have a single primary key. Use DataSource.From instead.");
-
-            var columnMetadata = primaryKeys.Single();
-            var where = columnMetadata.SqlName + " = " + columnMetadata.SqlVariableName;
-
-            var parameters = new List<NpgsqlParameter>();
-
-            var param = new NpgsqlParameter(columnMetadata.SqlVariableName, key);
-            if (columnMetadata.DbType.HasValue)
-                param.NpgsqlDbType = columnMetadata.DbType.Value;
-            parameters.Add(param);
-
-
-            return new PostgreSqlTableOrView(this, tableName, where, parameters);
+            return GetByKeyList(tableName, new List<T> { key });
         }
+
+        /// <summary>
+        /// Gets a record by its key.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="key">The key.</param>
+        /// <returns>MultipleRowDbCommandBuilder&lt;NpgsqlCommand, NpgsqlParameter&gt;.</returns>
+        public SingleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> GetByKey(PostgreSqlObjectName tableName, string key)
+        {
+            return GetByKeyList(tableName, new List<string> { key });
+        }
+
 
         /// <summary>
         /// Inserts the specified table name.
@@ -256,19 +271,30 @@ namespace Tortuga.Chain.PostgreSql
             return From(tableOrViewName, whereClause, argumentValue);
         }
 
-        IMultipleRowDbCommandBuilder IClass1DataSource.GetByKey<T>(string tableName, IEnumerable<T> keys)
+        ISingleRowDbCommandBuilder IClass1DataSource.GetByKey<T>(string tableName, T key)
         {
-            return GetByKey(tableName, keys);
+            return GetByKey(tableName, key);
+        }
+
+
+        ISingleRowDbCommandBuilder IClass1DataSource.GetByKey(string tableName, string key)
+        {
+            return GetByKey(tableName, key);
         }
 
         IMultipleRowDbCommandBuilder IClass1DataSource.GetByKey<T>(string tableName, params T[] keys)
         {
-            return GetByKey(tableName, keys);
+            return GetByKeyList(tableName, keys);
         }
 
-        ISingleRowDbCommandBuilder IClass1DataSource.GetByKey<T>(string tableName, T key)
+        IMultipleRowDbCommandBuilder IClass1DataSource.GetByKey(string tableName, params string[] keys)
         {
-            return GetByKey(tableName, key);
+            return GetByKeyList(tableName, keys);
+        }
+
+        IMultipleRowDbCommandBuilder IClass1DataSource.GetByKeyList<T>(string tableName, IEnumerable<T> keys)
+        {
+            return GetByKeyList(tableName, keys);
         }
 
         IObjectDbCommandBuilder<TArgument> IClass1DataSource.Insert<TArgument>(string tableName, TArgument argumentValue, InsertOptions options)

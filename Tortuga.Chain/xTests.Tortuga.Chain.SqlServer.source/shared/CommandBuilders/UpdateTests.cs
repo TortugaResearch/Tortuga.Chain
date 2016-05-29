@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Tests.Models;
 using Tortuga.Chain;
 using Xunit;
@@ -19,7 +20,7 @@ namespace Tests.CommandBuilders
 
 
         [Theory, MemberData("Prime")]
-        public void UpdateTests_ChangeTrackingTest(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void ChangeTrackingTest(string assemblyName, string dataSourceName, DataSourceType mode)
         {
 
             var dataSource = DataSource(dataSourceName, mode);
@@ -53,7 +54,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData("Prime")]
-        public void UpdateTests_ChangeTrackingTest_NothingChanged(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void ChangeTrackingTest_NothingChanged(string assemblyName, string dataSourceName, DataSourceType mode)
         {
 
             var dataSource = DataSource(dataSourceName, mode);
@@ -87,7 +88,7 @@ namespace Tests.CommandBuilders
 
 
         [Theory, MemberData("Prime")]
-        public void UpdateTests_FailedUpdateTest(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void FailedUpdateTest(string assemblyName, string dataSourceName, DataSourceType mode)
         {
 
             var dataSource = DataSource(dataSourceName, mode);
@@ -127,7 +128,7 @@ namespace Tests.CommandBuilders
 #if !Roslyn_Missing && !SQLite
 
         [Theory, MemberData("Prime")]
-        public void UpdateTests_ChangeTrackingTest_Compiled(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void ChangeTrackingTest_Compiled(string assemblyName, string dataSourceName, DataSourceType mode)
         {
 
             var dataSource = DataSource(dataSourceName, mode);
@@ -159,7 +160,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData("Prime")]
-        public void UpdateTests_ChangeTrackingTest_NothingChanged_Compiled(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void ChangeTrackingTest_NothingChanged_Compiled(string assemblyName, string dataSourceName, DataSourceType mode)
         {
 
             var dataSource = DataSource(dataSourceName, mode);
@@ -189,6 +190,83 @@ namespace Tests.CommandBuilders
                 Release(dataSource);
             }
         }
+
+#endif
+
+#if SQL_SERVER
+
+        [Theory, MemberData("Prime")]
+        public void UpdateByKey(string assemblyName, string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+                var lookupKey = Guid.NewGuid().ToString();
+                for (var i = 0; i < 10; i++)
+                    dataSource.Insert(EmployeeTableName, new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = lookupKey, MiddleName = i % 2 == 0 ? "A" + i : null }).ToObject<Employee>().Execute();
+
+                var allKeys = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToInt32List("EmployeeKey").Execute();
+                var keyToUpdate = allKeys.First();
+
+                var newValues = new { FirstName = "Bob" };
+                dataSource.UpdateByKey(EmployeeTableName, newValues, keyToUpdate).Execute();
+
+                var allRows = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToCollection<Employee>().Execute();
+                foreach (var row in allRows)
+                {
+                    if (keyToUpdate == row.EmployeeKey.Value)
+                        Assert.Equal("Bob", row.FirstName, "FirstName should have been changed.");
+                    else
+                        Assert.NotEqual("Bob", row.FirstName, "FirstName should not have been changed.");
+                }
+
+
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+
+        }
+
+        [Theory, MemberData("Prime")]
+        public void UpdateByKeyList(string assemblyName, string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+                var lookupKey = Guid.NewGuid().ToString();
+                for (var i = 0; i < 10; i++)
+                    dataSource.Insert(EmployeeTableName, new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = lookupKey, MiddleName = i % 2 == 0 ? "A" + i : null }).ToObject<Employee>().Execute();
+
+                var allKeys = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToInt32List("EmployeeKey").Execute();
+                var keysToUpdate = allKeys.Take(5).ToList();
+
+                var newValues = new { FirstName = "Bob" };
+                var updatedRows = dataSource.UpdateByKeyList(EmployeeTableName, newValues, keysToUpdate).ToCollection<Employee>().Execute();
+
+                Assert.Equal(5, updatedRows.Count);
+                foreach (var row in updatedRows)
+                    Assert.Equal("Bob", row.FirstName);
+
+                var allRows = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToCollection<Employee>().Execute();
+                foreach (var row in allRows)
+                {
+                    if (keysToUpdate.Contains(row.EmployeeKey.Value))
+                        Assert.Equal("Bob", row.FirstName, "FirstName should have been changed.");
+                    else
+                        Assert.NotEqual("Bob", row.FirstName, "FirstName should not have been changed.");
+                }
+
+
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+
+        }
+
 
 #endif
 

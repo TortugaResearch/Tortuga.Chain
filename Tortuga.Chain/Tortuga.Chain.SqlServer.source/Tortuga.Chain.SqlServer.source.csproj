@@ -91,9 +91,11 @@
     <Compile Include="shared\SqlServerExtensions.cs" />
     <Compile Include="shared\SqlServerLimitOption.cs" />
     <Compile Include="shared\SqlServer\Appenders\NotifyChangeAppender`1.cs" />
+    <Compile Include="shared\SqlServer\CommandBuilders\SqlServerDeleteMany.cs" />
     <Compile Include="shared\SqlServer\CommandBuilders\SqlServerInsertBulk.cs" />
     <Compile Include="shared\SqlServer\CommandBuilders\SqlServerInsertBatch.cs" />
     <Compile Include="shared\SqlServer\CommandBuilders\SqlServerTableFunction.cs" />
+    <Compile Include="shared\SqlServer\CommandBuilders\SqlServerUpdateMany.cs" />
     <Compile Include="shared\SqlServer\Materializers\WaitForChangeMaterializer`1.cs" />
     <Compile Include="shared\SqlServer\Materializers\WaitForChangeMaterializer.cs" />
     <Compile Include="shared\SqlServer\CommandBuilders\ISupportsChangeListener.cs" />

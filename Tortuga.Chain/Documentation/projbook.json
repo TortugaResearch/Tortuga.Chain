@@ -31,8 +31,8 @@
       "path": "Page/CommandBuilders/From.md"
     },
     {
-      "title": "Get By Id Command Builder",
-      "path": "Page/CommandBuilders/GetById.md"
+      "title": "By Key Command Builder",
+      "path": "Page/CommandBuilders/ByKey.md"
     },
     {
       "title": "Insert Command Builder",

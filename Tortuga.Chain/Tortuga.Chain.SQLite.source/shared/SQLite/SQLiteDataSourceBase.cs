@@ -247,14 +247,25 @@ namespace Tortuga.Chain.SQLite
             return GetByKey(tableName, key);
         }
 
-        IMultipleRowDbCommandBuilder IClass1DataSource.GetByKey<T>(string tableName, IEnumerable<T> keys)
+
+        ISingleRowDbCommandBuilder IClass1DataSource.GetByKey(string tableName, string key)
         {
-            return GetByKey(tableName, keys);
+            return GetByKey(tableName, key);
         }
 
         IMultipleRowDbCommandBuilder IClass1DataSource.GetByKey<T>(string tableName, params T[] keys)
         {
-            return GetByKey(tableName, (IEnumerable<T>)keys);
+            return GetByKeyList(tableName, keys);
+        }
+
+        IMultipleRowDbCommandBuilder IClass1DataSource.GetByKey(string tableName, params string[] keys)
+        {
+            return GetByKeyList(tableName, keys);
+        }
+
+        IMultipleRowDbCommandBuilder IClass1DataSource.GetByKeyList<T>(string tableName, IEnumerable<T> keys)
+        {
+            return GetByKeyList(tableName, keys);
         }
 
         /// <summary>
@@ -263,26 +274,22 @@ namespace Tortuga.Chain.SQLite
         /// <typeparam name="T"></typeparam>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="key">The key.</param>
-        /// <returns></returns>
-        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
+        /// <returns>MultipleRowDbCommandBuilder&lt;SQLiteCommand, SQLiteParameter&gt;.</returns>
         public SingleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> GetByKey<T>(string tableName, T key)
+            where T : struct
         {
-            var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).Columns.Where(c => c.IsPrimaryKey).ToList();
-            if (primaryKeys.Count != 1)
-                throw new MappingException($"GetByKey operation isn't allowed on {tableName} because it doesn't have a single primary key. Use DataSource.From instead.");
+            return GetByKeyList(tableName, new List<T> { key });
+        }
 
-            var columnMetadata = primaryKeys.Single();
-            var where = columnMetadata.SqlName + " = " + columnMetadata.SqlVariableName;
-
-            var parameters = new List<SQLiteParameter>();
-
-            var param = new SQLiteParameter(columnMetadata.SqlVariableName, key);
-            if (columnMetadata.DbType.HasValue)
-                param.DbType = columnMetadata.DbType.Value;
-            parameters.Add(param);
-
-
-            return new SQLiteTableOrView(this, tableName, where, parameters);
+        /// <summary>
+        /// Gets a record by its primary key.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="key">The key.</param>
+        /// <returns>MultipleRowDbCommandBuilder&lt;SQLiteCommand, SQLiteParameter&gt;.</returns>
+        public SingleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> GetByKey(string tableName, string key)
+        {
+            return GetByKeyList(tableName, new List<string> { key });
         }
 
         /// <summary>
@@ -294,8 +301,21 @@ namespace Tortuga.Chain.SQLite
         /// <returns></returns>
         /// <remarks>This only works on tables that have a scalar primary key.</remarks>
         public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> GetByKey<T>(string tableName, params T[] keys)
+            where T : struct
         {
-            return GetByKey(tableName, (IEnumerable<T>)keys);
+            return GetByKeyList(tableName, keys);
+        }
+
+        /// <summary>
+        /// Gets a set of records by their primary key.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="keys">The keys.</param>
+        /// <returns></returns>
+        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
+        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> GetByKey(string tableName, params string[] keys)
+        {
+            return GetByKeyList(tableName, keys);
         }
 
         /// <summary>
@@ -306,7 +326,7 @@ namespace Tortuga.Chain.SQLite
         /// <param name="keys">The keys.</param>
         /// <returns></returns>
         /// <remarks>This only works on tables that have a scalar primary key.</remarks>
-        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> GetByKey<T>(string tableName, IEnumerable<T> keys)
+        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> GetByKeyList<T>(string tableName, IEnumerable<T> keys)
         {
             var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).Columns.Where(c => c.IsPrimaryKey).ToList();
             if (primaryKeys.Count != 1)
@@ -314,7 +334,12 @@ namespace Tortuga.Chain.SQLite
 
             var keyList = keys.AsList();
             var columnMetadata = primaryKeys.Single();
-            var where = columnMetadata.SqlName + " IN (" + string.Join(", ", keyList.Select((s, i) => "@Param" + i)) + ")";
+
+            string where;
+            if (keys.Count() > 1)
+                where = columnMetadata.SqlName + " IN (" + string.Join(", ", keyList.Select((s, i) => "@Param" + i)) + ")";
+            else
+                where = columnMetadata.SqlName + " = @Param0";
 
             var parameters = new List<SQLiteParameter>();
             for (var i = 0; i < keyList.Count; i++)

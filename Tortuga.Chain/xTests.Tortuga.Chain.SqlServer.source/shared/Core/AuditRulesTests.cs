@@ -212,6 +212,58 @@ namespace Tests.shared.Core
             }
         }
 
+#if SQL_SERVER
+
+        [Theory, MemberData("Prime")]
+        public void SoftDeleteByKey(string assemblyName, string dataSourceName)
+        {
+            var dataSource = DataSource(dataSourceName);
+            try
+            {
+                var users = dataSource.From(EmployeeTableName).ToCollection<Employee>().Execute();
+                var currentUser1 = users.First();
+                var currentUser2 = users.Skip(1).First();
+
+                var dsWithRules = dataSource.WithRules(
+                    new SoftDeleteRule("DeletedFlag", true, OperationTypes.SelectOrDelete),
+                    new UserDataRule("DeletedByKey", "EmployeeKey", OperationTypes.Delete),
+                    new DateTimeRule("DeletedDate", DateTimeKind.Local, OperationTypes.Delete)
+                    );
+
+                var ds1 = dsWithRules.WithUser(currentUser1);
+
+
+                var lookupKey = Guid.NewGuid().ToString();
+                for (var i = 0; i < 10; i++)
+                    dataSource.Insert(CustomerTableName, new CustomerWithValidation() { FullName = lookupKey, State = "CA" }).ToObject<CustomerWithValidation>().Execute();
+
+                var allKeys = dataSource.From(CustomerTableName, new { FullName = lookupKey }).ToInt32List("CustomerKey").Execute();
+                var keysToUpdate = allKeys.Take(5).ToList();
+
+                var updatedRows = ds1.DeleteByKeyList(CustomerTableName, keysToUpdate).ToCollection<CustomerWithValidation>().Execute();
+
+                foreach (var row in updatedRows)
+                    Assert.IsTrue(row.DeletedFlag, "Deleted flag was not set");
+
+                Assert.Equal(5, updatedRows.Count, "The wrong number of rows were deleted");
+
+                var allRows = ds1.From(CustomerTableName, new { FullName = lookupKey }).ToCollection<CustomerWithValidation>().Execute();
+                Assert.Equal(5, allRows.Count, "The wrong number of rows remain");
+
+                var allRowsBypass = dataSource.From(CustomerTableName, new { FullName = lookupKey }).ToCollection<CustomerWithValidation>().Execute();
+                Assert.Equal(10, allRowsBypass.Count, "The rows were supposed to be soft-deleted only");
+
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+
+        }
+
+#endif
+
+
         class UserToken
         {
             public UserToken(bool isAdmin)

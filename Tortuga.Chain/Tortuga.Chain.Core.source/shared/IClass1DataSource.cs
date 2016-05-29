@@ -168,6 +168,7 @@ namespace Tortuga.Chain
         /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
         IObjectDbCommandBuilder<TArgument> Update<TArgument>(TArgument argumentValue, UpdateOptions options = UpdateOptions.None) where TArgument : class;
 
+
         /// <summary>
         /// Gets a record by its primary key.
         /// </summary>
@@ -176,17 +177,17 @@ namespace Tortuga.Chain
         /// <param name="key">The key.</param>
         /// <returns></returns>
         /// <remarks>This only works on tables that have a scalar primary key.</remarks>
-        ISingleRowDbCommandBuilder GetByKey<T>(string tableName, T key);
+        ISingleRowDbCommandBuilder GetByKey<T>(string tableName, T key) where T : struct;
+
 
         /// <summary>
-        /// Gets a set of records by their primary key.
+        /// Gets a record by its primary key.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <param name="tableName">Name of the table.</param>
-        /// <param name="keys">The keys.</param>
+        /// <param name="key">The key.</param>
         /// <returns></returns>
         /// <remarks>This only works on tables that have a scalar primary key.</remarks>
-        IMultipleRowDbCommandBuilder GetByKey<T>(string tableName, IEnumerable<T> keys);
+        ISingleRowDbCommandBuilder GetByKey(string tableName, string key);
 
         /// <summary>
         /// Gets a set of records by their primary key.
@@ -197,6 +198,27 @@ namespace Tortuga.Chain
         /// <returns></returns>
         /// <remarks>This only works on tables that have a scalar primary key.</remarks>
         IMultipleRowDbCommandBuilder GetByKey<T>(string tableName, params T[] keys);
+
+        /// <summary>
+        /// Gets a set of records by their primary key.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="keys">The keys.</param>
+        /// <returns></returns>
+        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
+        IMultipleRowDbCommandBuilder GetByKey(string tableName, params string[] keys);
+
+
+        /// <summary>
+        /// Gets a set of records by their primary key.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="keys">The keys.</param>
+        /// <returns></returns>
+        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
+        IMultipleRowDbCommandBuilder GetByKeyList<T>(string tableName, IEnumerable<T> keys);
+
 
     }
 }

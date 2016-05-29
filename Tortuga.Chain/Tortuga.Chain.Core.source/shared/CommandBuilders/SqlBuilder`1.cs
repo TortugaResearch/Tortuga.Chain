@@ -366,10 +366,14 @@ namespace Tortuga.Chain.CommandBuilders
         {
             if (dataSource == null)
                 throw new ArgumentNullException(nameof(dataSource), $"{nameof(dataSource)} is null.");
-            if (argumentValue == null)
-                throw new ArgumentNullException(nameof(argumentValue), $"{nameof(argumentValue)} is null.");
+            //if (argumentValue == null)
+            //    throw new ArgumentNullException(nameof(argumentValue), $"{nameof(argumentValue)} is null.");
 
-            if (argumentValue is IReadOnlyDictionary<string, object>)
+            if (argumentValue == null)
+            {
+                //only apply audit rules
+            }
+            else if (argumentValue is IReadOnlyDictionary<string, object>)
             {
                 ApplyArgumentDictionary((IReadOnlyDictionary<string, object>)argumentValue);
             }

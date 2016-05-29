@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Tests.Models;
 using Tortuga.Chain;
 using Xunit;
@@ -103,6 +104,66 @@ namespace Tests.CommandBuilders
             }
 
         }
+
+#if SQL_SERVER
+
+        [Theory, MemberData("Prime")]
+        public void DeleteByKey(string assemblyName, string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+                var lookupKey = Guid.NewGuid().ToString();
+                for (var i = 0; i < 10; i++)
+                    dataSource.Insert(EmployeeTableName, new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = lookupKey, MiddleName = i % 2 == 0 ? "A" + i : null }).ToObject<Employee>().Execute();
+
+                var allKeys = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToInt32List("EmployeeKey").Execute();
+                var keyToUpdate = allKeys.First();
+
+                dataSource.DeleteByKey(EmployeeTableName, keyToUpdate).Execute();
+
+                var allRows = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToCollection<Employee>().Execute();
+                Assert.Equal(9, allRows.Count, "The wrong number of rows remain");
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+
+        }
+
+
+        [Theory, MemberData("Prime")]
+        public void DeleteByKeyList(string assemblyName, string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+                var lookupKey = Guid.NewGuid().ToString();
+                for (var i = 0; i < 10; i++)
+                    dataSource.Insert(EmployeeTableName, new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = lookupKey, MiddleName = i % 2 == 0 ? "A" + i : null }).ToObject<Employee>().Execute();
+
+                var allKeys = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToInt32List("EmployeeKey").Execute();
+                var keysToUpdate = allKeys.Take(5).ToList();
+
+                var updatedRows = dataSource.DeleteByKeyList(EmployeeTableName, keysToUpdate).ToCollection<Employee>().Execute();
+
+                Assert.Equal(5, updatedRows.Count, "The wrong number of rows were deleted");
+
+                var allRows = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToCollection<Employee>().Execute();
+                Assert.Equal(5, allRows.Count, "The wrong number of rows remain");
+
+
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+
+        }
+
+
+#endif
 
 
     }

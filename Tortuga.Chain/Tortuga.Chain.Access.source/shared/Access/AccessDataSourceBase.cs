@@ -222,20 +222,30 @@ namespace Tortuga.Chain.Access
             return new AccessUpdateObject<TArgument>(this, tableName, argumentValue, options);
         }
 
-
         ISingleRowDbCommandBuilder IClass1DataSource.GetByKey<T>(string tableName, T key)
         {
             return GetByKey(tableName, key);
         }
 
-        IMultipleRowDbCommandBuilder IClass1DataSource.GetByKey<T>(string tableName, IEnumerable<T> keys)
+
+        ISingleRowDbCommandBuilder IClass1DataSource.GetByKey(string tableName, string key)
         {
-            return GetByKey((AccessObjectName)tableName, keys);
+            return GetByKey(tableName, key);
         }
 
         IMultipleRowDbCommandBuilder IClass1DataSource.GetByKey<T>(string tableName, params T[] keys)
         {
-            return GetByKey((AccessObjectName)tableName, (IEnumerable<T>)keys);
+            return GetByKeyList(tableName, keys);
+        }
+
+        IMultipleRowDbCommandBuilder IClass1DataSource.GetByKey(string tableName, params string[] keys)
+        {
+            return GetByKeyList(tableName, keys);
+        }
+
+        IMultipleRowDbCommandBuilder IClass1DataSource.GetByKeyList<T>(string tableName, IEnumerable<T> keys)
+        {
+            return GetByKeyList(tableName, keys);
         }
 
         /// <summary>
@@ -244,26 +254,22 @@ namespace Tortuga.Chain.Access
         /// <typeparam name="T"></typeparam>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="key">The key.</param>
-        /// <returns></returns>
-        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
-        public SingleRowDbCommandBuilder<OleDbCommand, OleDbParameter> GetByKey<T>(string tableName, T key)
+        /// <returns>MultipleRowDbCommandBuilder&lt;OleDbCommand, OleDbParameter&gt;.</returns>
+        public SingleRowDbCommandBuilder<OleDbCommand, OleDbParameter> GetByKey<T>(AccessObjectName tableName, T key)
+            where T : struct
         {
-            var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).Columns.Where(c => c.IsPrimaryKey).ToList();
-            if (primaryKeys.Count != 1)
-                throw new MappingException($"GetByKey operation isn't allowed on {tableName} because it doesn't have a single primary key. Use DataSource.From instead.");
+            return GetByKeyList(tableName, new List<T> { key });
+        }
 
-            var columnMetadata = primaryKeys.Single();
-            var where = columnMetadata.SqlName + " = " + columnMetadata.SqlVariableName;
-
-            var parameters = new List<OleDbParameter>();
-
-            var param = new OleDbParameter(columnMetadata.SqlVariableName, key);
-            if (columnMetadata.DbType.HasValue)
-                param.OleDbType = columnMetadata.DbType.Value;
-            parameters.Add(param);
-
-
-            return new AccessTableOrView(this, tableName, where, parameters);
+        /// <summary>
+        /// Gets a record by its primary key.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="key">The key.</param>
+        /// <returns>MultipleRowDbCommandBuilder&lt;OleDbCommand, OleDbParameter&gt;.</returns>
+        public SingleRowDbCommandBuilder<OleDbCommand, OleDbParameter> GetByKey(AccessObjectName tableName, string key)
+        {
+            return GetByKeyList(tableName, new List<string> { key });
         }
 
         /// <summary>
@@ -275,9 +281,23 @@ namespace Tortuga.Chain.Access
         /// <returns></returns>
         /// <remarks>This only works on tables that have a scalar primary key.</remarks>
         public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> GetByKey<T>(AccessObjectName tableName, params T[] keys)
+            where T : struct
         {
-            return GetByKey(tableName, (IEnumerable<T>)keys);
+            return GetByKeyList(tableName, keys);
         }
+
+        /// <summary>
+        /// Gets a set of records by their primary key.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="keys">The keys.</param>
+        /// <returns></returns>
+        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
+        public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> GetByKey(AccessObjectName tableName, params string[] keys)
+        {
+            return GetByKeyList(tableName, keys);
+        }
+
 
         /// <summary>
         /// Gets a set of records by their primary key.
@@ -287,7 +307,7 @@ namespace Tortuga.Chain.Access
         /// <param name="keys">The keys.</param>
         /// <returns></returns>
         /// <remarks>This only works on tables that have a scalar primary key.</remarks>
-        public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> GetByKey<T>(AccessObjectName tableName, IEnumerable<T> keys)
+        public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> GetByKeyList<T>(AccessObjectName tableName, IEnumerable<T> keys)
         {
             var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).Columns.Where(c => c.IsPrimaryKey).ToList();
             if (primaryKeys.Count != 1)
@@ -295,7 +315,11 @@ namespace Tortuga.Chain.Access
 
             var keyList = keys.AsList();
             var columnMetadata = primaryKeys.Single();
-            var where = columnMetadata.SqlName + " IN (" + string.Join(", ", keyList.Select((s, i) => "@Param" + i)) + ")";
+            string where;
+            if (keys.Count() > 1)
+                where = columnMetadata.SqlName + " IN (" + string.Join(", ", keyList.Select((s, i) => "@Param" + i)) + ")";
+            else
+                where = columnMetadata.SqlName + " = @Param0";
 
             var parameters = new List<OleDbParameter>();
             for (var i = 0; i < keyList.Count; i++)

@@ -18,7 +18,7 @@ Sorting is often required when using Offset/Fetch. It is not allowed when using 
 
 ## Filters
 
-Filters can be added (or replaced) using the `.WithFilter(...)` method. This uses the same filters (WHERE clause or filter object) that are availble when calling `.From(...)`.
+Filters can be added (or replaced) using the `.WithFilter(...)` method. This uses the same filters (WHERE clause or filter object) that are available when calling `.From(...)`.
 
 If just the table name is provided, all rows are returned.
 
