@@ -16,5 +16,7 @@ namespace Xunit
         {
             return new AssertEqualityComparer<T>(skipTypeCheck, innerComparer);
         }
+
+        
     }
 }

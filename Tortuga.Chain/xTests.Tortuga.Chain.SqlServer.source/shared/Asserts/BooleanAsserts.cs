@@ -89,5 +89,16 @@ namespace Xunit
             if (!condition.HasValue || !condition.GetValueOrDefault())
                 throw new TrueException(userMessage, condition);
         }
+
+        public static void IsFalse(bool condition, string userMessage)
+        {
+            False(condition, userMessage);
+        }
+
+        public static void IsTrue(bool condition, string userMessage)
+        {
+            True(condition, userMessage);
+        }
     }
 }
+
