@@ -106,6 +106,7 @@
     <Compile Include="shared\SqlServer\CommandBuilders\SqlServerSqlCall.cs" />
     <Compile Include="shared\SqlServer\CommandBuilders\SqlServerTableOrView.cs" />
     <Compile Include="shared\SqlServer\SqlServerAppenders.cs" />
+    <Compile Include="shared\SqlServer\SqlServerDataSourceBase.Interfaces.cs" />
     <Compile Include="shared\SqlServer\SqlServerEffectiveSettings.cs" />
     <Compile Include="shared\SqlServer\SqlServerCommandExecutionToken.cs" />
     <Compile Include="shared\SqlServer\SqlServerDataSourceSettings.cs" />

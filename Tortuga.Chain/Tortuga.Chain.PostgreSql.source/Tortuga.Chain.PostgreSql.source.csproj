@@ -73,6 +73,7 @@
     </Compile>
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="shared\PostgreSqlDataSource.cs" />
+    <Compile Include="shared\PostgreSql\PostgreSqlDataSourceBase.Interfaces.cs" />
     <Compile Include="shared\PostgreSql\PostgreSqlTransactionalDataSource.cs" />
     <Compile Include="shared\PostgreSql\PostgreSqlDataSourceSettings.cs" />
     <Compile Include="shared\PostgreSql\CommandBuilders\PostgreSqlSqlCall.cs" />

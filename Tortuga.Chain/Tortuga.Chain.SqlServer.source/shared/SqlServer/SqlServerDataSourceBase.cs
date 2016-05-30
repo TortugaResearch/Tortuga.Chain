@@ -16,7 +16,7 @@ namespace Tortuga.Chain.SqlServer
     /// <summary>
     /// Class SqlServerDataSourceBase.
     /// </summary>
-    public abstract class SqlServerDataSourceBase : DataSource<SqlConnection, SqlTransaction, SqlCommand, SqlParameter>, IClass2DataSource
+    public abstract partial class SqlServerDataSourceBase : DataSource<SqlConnection, SqlTransaction, SqlCommand, SqlParameter>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlServerDataSourceBase"/> class.
@@ -32,11 +32,6 @@ namespace Tortuga.Chain.SqlServer
         /// </summary>
         /// <value>The database metadata.</value>
         public abstract new SqlServerMetadataCache DatabaseMetadata { get; }
-
-        IDatabaseMetadataCache IClass1DataSource.DatabaseMetadata
-        {
-            get { return DatabaseMetadata; }
-        }
 
         /// <summary>
         /// Inserts an object model from the specified table.
@@ -57,6 +52,124 @@ namespace Tortuga.Chain.SqlServer
                 effectiveOptions = effectiveOptions | UpdateOptions.UseKeyAttribute;
 
             return new SqlServerUpdateObject<TArgument>(this, tableName, argumentValue, effectiveOptions);
+        }
+
+        /// <summary>
+        /// Deletes an object model from the table indicated by the class's Table attribute.
+        /// </summary>
+        /// <typeparam name="TArgument"></typeparam>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="options">The delete options.</param>
+        /// <returns></returns>
+        public ObjectDbCommandBuilder<SqlCommand, SqlParameter, TArgument> Delete<TArgument>(TArgument argumentValue, DeleteOptions options = DeleteOptions.None) where TArgument : class
+        {
+            var table = DatabaseMetadata.GetTableOrViewFromClass<TArgument>();
+
+            if (!AuditRules.UseSoftDelete(table))
+                return new SqlServerDeleteObject<TArgument>(this, table.Name, argumentValue, options);
+
+            UpdateOptions effectiveOptions = UpdateOptions.SoftDelete;
+            if (options.HasFlag(DeleteOptions.UseKeyAttribute))
+                effectiveOptions = effectiveOptions | UpdateOptions.UseKeyAttribute;
+
+            return new SqlServerUpdateObject<TArgument>(this, table.Name, argumentValue, effectiveOptions);
+        }
+
+        /// <summary>
+        /// Delete a record by its primary key.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="key">The key.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
+        public SingleRowDbCommandBuilder<SqlCommand, SqlParameter> DeleteByKey<T>(SqlServerObjectName tableName, T key, DeleteOptions options = DeleteOptions.None)
+            where T : struct
+        {
+            return DeleteByKeyList(tableName, new List<T> { key }, options);
+        }
+
+        /// <summary>
+        /// Delete a record by its primary key.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="key">The key.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
+        public SingleRowDbCommandBuilder<SqlCommand, SqlParameter> DeleteByKey(SqlServerObjectName tableName, string key, DeleteOptions options = DeleteOptions.None)
+        {
+            return DeleteByKeyList(tableName, new List<string> { key }, options);
+        }
+
+        /// <summary>
+        /// Delete multiple rows by key.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="keys">The keys.</param>
+        /// <returns></returns>
+        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
+        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> DeleteByKey<T>(SqlServerObjectName tableName, params T[] keys)
+            where T : struct
+        {
+            return DeleteByKeyList(tableName, keys);
+        }
+
+        /// <summary>
+        /// Delete multiple rows by key.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="keys">The keys.</param>
+        /// <returns></returns>
+        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
+        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> DeleteByKey(SqlServerObjectName tableName, params string[] keys)
+        {
+            return DeleteByKeyList(tableName, keys);
+        }
+
+        /// <summary>
+        /// Delete multiple rows by key.
+        /// </summary>
+        /// <typeparam name="TKey">The type of the t key.</typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="keys">The keys.</param>
+        /// <param name="options">Update options.</param>
+        /// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
+        /// <exception cref="MappingException"></exception>
+        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "DeleteByKey")]
+        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> DeleteByKeyList<TKey>(SqlServerObjectName tableName, IEnumerable<TKey> keys, DeleteOptions options = DeleteOptions.None)
+        {
+            var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).Columns.Where(c => c.IsPrimaryKey).ToList();
+            if (primaryKeys.Count != 1)
+                throw new MappingException($"DeleteByKey operation isn't allowed on {tableName} because it doesn't have a single primary key.");
+
+            var keyList = keys.AsList();
+            var columnMetadata = primaryKeys.Single();
+            string where;
+            if (keys.Count() > 1)
+                where = columnMetadata.SqlName + " IN (" + string.Join(", ", keyList.Select((s, i) => "@Param" + i)) + ")";
+            else
+                where = columnMetadata.SqlName + " = @Param0";
+
+            var parameters = new List<SqlParameter>();
+            for (var i = 0; i < keyList.Count; i++)
+            {
+                var param = new SqlParameter("@Param" + i, keyList[i]);
+                if (columnMetadata.DbType.HasValue)
+                    param.SqlDbType = columnMetadata.DbType.Value;
+                parameters.Add(param);
+            }
+
+            var table = DatabaseMetadata.GetTableOrView(tableName);
+            if (!AuditRules.UseSoftDelete(table))
+                return new SqlServerDeleteMany(this, tableName, where, parameters, options);
+
+            UpdateOptions effectiveOptions = UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected;
+            if (options.HasFlag(DeleteOptions.UseKeyAttribute))
+                effectiveOptions = effectiveOptions | UpdateOptions.UseKeyAttribute;
+
+            return new SqlServerUpdateMany(this, tableName, null, where, parameters, parameters.Count, effectiveOptions);
+
         }
 
         /// <summary>
@@ -104,24 +217,51 @@ namespace Tortuga.Chain.SqlServer
         }
 
         /// <summary>
-        /// This is used to query a table valued function.
+        /// This is used to directly query a table or view.
         /// </summary>
-        /// <param name="tableFunctionName">Name of the table function.</param>
+        /// <typeparam name="TObject"></typeparam>
         /// <returns></returns>
-        public TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption> TableFunction(SqlServerObjectName tableFunctionName)
+        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
+        public TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption> From<TObject>() where TObject : class
         {
-            return new SqlServerTableFunction(this, tableFunctionName, null);
+            return From(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name);
         }
 
         /// <summary>
-        /// This is used to query a table valued function.
+        /// This is used to directly query a table or view.
         /// </summary>
-        /// <param name="tableFunctionName">Name of the table function.</param>
-        /// <param name="functionArgumentValue">The function argument.</param>
+        /// <typeparam name="TObject">The type of the object.</typeparam>
+        /// <param name="whereClause">The where clause. Do not prefix this clause with "WHERE".</param>
         /// <returns></returns>
-        public TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption> TableFunction(SqlServerObjectName tableFunctionName, object functionArgumentValue)
+        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
+        public TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption> From<TObject>(string whereClause) where TObject : class
         {
-            return new SqlServerTableFunction(this, tableFunctionName, functionArgumentValue);
+            return From(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, whereClause);
+        }
+
+        /// <summary>
+        /// This is used to directly query a table or view.
+        /// </summary>
+        /// <typeparam name="TObject">The type of the object.</typeparam>
+        /// <param name="whereClause">The where clause. Do not prefix this clause with "WHERE".</param>
+        /// <param name="argumentValue">Optional argument value. Every property in the argument value must have a matching parameter in the WHERE clause</param>
+        /// <returns></returns>
+        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
+        public TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption> From<TObject>(string whereClause, object argumentValue) where TObject : class
+        {
+            return From(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, whereClause, argumentValue);
+        }
+
+        /// <summary>
+        /// This is used to directly query a table or view.
+        /// </summary>
+        /// <typeparam name="TObject">The type of the object.</typeparam>
+        /// <param name="filterValue">The filter value is used to generate a simple AND style WHERE clause.</param>
+        /// <returns></returns>
+        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
+        public TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption> From<TObject>(object filterValue) where TObject : class
+        {
+            return From(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, filterValue);
         }
 
         /// <summary>
@@ -206,6 +346,291 @@ namespace Tortuga.Chain.SqlServer
             }
 
             return new SqlServerTableOrView(this, tableName, where, parameters);
+        }
+
+        /// <summary>
+        /// Inserts an object into the specified table.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>
+        /// SqlServerInsert.
+        /// </returns>
+        public ObjectDbCommandBuilder<SqlCommand, SqlParameter, TArgument> Insert<TArgument>(SqlServerObjectName tableName, TArgument argumentValue, InsertOptions options = InsertOptions.None)
+        where TArgument : class
+        {
+            return new SqlServerInsertObject<TArgument>(this, tableName, argumentValue, options);
+        }
+
+        /// <summary>
+        /// Inserts an object into the specified table.
+        /// </summary>
+        /// <typeparam name="TArgument"></typeparam>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="options">The options for how the insert occurs.</param>
+        /// <returns></returns>
+        public ObjectDbCommandBuilder<SqlCommand, SqlParameter, TArgument> Insert<TArgument>(TArgument argumentValue, InsertOptions options = InsertOptions.None) where TArgument : class
+        {
+            return Insert(DatabaseMetadata.GetTableOrViewFromClass<TArgument>().Name, argumentValue, options);
+        }
+
+        /// <summary>
+        /// Inserts the batch of records as one operation.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="tableTypeName">Name of the table type.</param>
+        /// <param name="dataTable">The data table.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
+        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> InsertBatch(SqlServerObjectName tableName, SqlServerObjectName tableTypeName, DataTable dataTable, InsertOptions options = InsertOptions.None)
+        {
+            return new SqlServerInsertBatch(this, tableName, tableTypeName, dataTable, options);
+        }
+
+        /// <summary>
+        /// Inserts the batch of records as one operation.
+        /// </summary>
+        /// <typeparam name="TObject">The type of the t object.</typeparam>
+        /// <param name="tableTypeName">Name of the table type.</param>
+        /// <param name="dataTable">The data table.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
+        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
+        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> InsertBatch<TObject>(SqlServerObjectName tableTypeName, DataTable dataTable, InsertOptions options = InsertOptions.None) where TObject : class
+        {
+            return InsertBatch(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, tableTypeName, dataTable, options);
+        }
+
+        /// <summary>
+        /// Inserts the batch of records as one operation.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="tableTypeName">Name of the table type.</param>
+        /// <param name="dataReader">The data reader.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
+        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> InsertBatch(SqlServerObjectName tableName, SqlServerObjectName tableTypeName, DbDataReader dataReader, InsertOptions options = InsertOptions.None)
+        {
+            return new SqlServerInsertBatch(this, tableName, tableTypeName, dataReader, options);
+        }
+
+        /// <summary>
+        /// Inserts the batch of records as one operation.
+        /// </summary>
+        /// <typeparam name="TObject">The type of the t object.</typeparam>
+        /// <param name="tableTypeName">Name of the table type.</param>
+        /// <param name="dataReader">The data reader.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
+        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
+        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> InsertBatch<TObject>(SqlServerObjectName tableTypeName, DbDataReader dataReader, InsertOptions options = InsertOptions.None) where TObject : class
+        {
+            return InsertBatch(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, tableTypeName, dataReader, options);
+        }
+
+        /// <summary>
+        /// Inserts the batch of records as one operation..
+        /// </summary>
+        /// <typeparam name="TObject"></typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="tableTypeName">Name of the table type.</param>
+        /// <param name="objects">The objects.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
+        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> InsertBatch<TObject>(SqlServerObjectName tableName, SqlServerObjectName tableTypeName, IEnumerable<TObject> objects, InsertOptions options = InsertOptions.None)
+        {
+            var tableType = DatabaseMetadata.GetUserDefinedType(tableTypeName);
+            return new SqlServerInsertBatch(this, tableName, tableTypeName, new ObjectDataReader<TObject>(tableType, objects), options);
+        }
+
+        /// <summary>
+        /// Inserts the batch of records as one operation..
+        /// </summary>
+        /// <typeparam name="TObject">The type of the object.</typeparam>
+        /// <param name="tableTypeName">Name of the table type.</param>
+        /// <param name="objects">The objects.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>
+        /// MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.
+        /// </returns>
+        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> InsertBatch<TObject>(SqlServerObjectName tableTypeName, IEnumerable<TObject> objects, InsertOptions options = InsertOptions.None) where TObject : class
+        {
+            return InsertBatch(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, tableTypeName, objects, options);
+        }
+
+        /// <summary>
+        /// Inserts the batch of records using bulk insert.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="dataTable">The data table.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>SqlServerInsertBulk.</returns>
+        public SqlServerInsertBulk InsertBulk(SqlServerObjectName tableName, DataTable dataTable, SqlBulkCopyOptions options = SqlBulkCopyOptions.Default)
+        {
+            return new SqlServerInsertBulk(this, tableName, dataTable, options);
+        }
+
+        /// <summary>
+        /// Inserts the batch of records using bulk insert.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="dataReader">The data reader.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>SqlServerInsertBulk.</returns>
+        public SqlServerInsertBulk InsertBulk(SqlServerObjectName tableName, IDataReader dataReader, SqlBulkCopyOptions options = SqlBulkCopyOptions.Default)
+        {
+            return new SqlServerInsertBulk(this, tableName, dataReader, options);
+        }
+
+        /// <summary>
+        /// Inserts the batch of records using bulk insert.
+        /// </summary>
+        /// <typeparam name="TObject"></typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="objects">The objects.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>SqlServerInsertBulk.</returns>
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
+        public SqlServerInsertBulk InsertBulk<TObject>(SqlServerObjectName tableName, IEnumerable<TObject> objects, SqlBulkCopyOptions options = SqlBulkCopyOptions.Default) where TObject : class
+        {
+            var tableType = DatabaseMetadata.GetTableOrView(tableName);
+            return new SqlServerInsertBulk(this, tableName, new ObjectDataReader<TObject>(tableType, objects, OperationTypes.Insert), options);
+        }
+
+        /// <summary>
+        /// Inserts the batch of records using bulk insert.
+        /// </summary>
+        /// <typeparam name="TObject">The type of the object.</typeparam>
+        /// <param name="dataTable">The data table.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>
+        /// SqlServerInsertBulk.
+        /// </returns>
+        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
+        public SqlServerInsertBulk InsertBulk<TObject>(DataTable dataTable, SqlBulkCopyOptions options = SqlBulkCopyOptions.Default) where TObject : class
+        {
+            return InsertBulk(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, dataTable, options);
+        }
+
+        /// <summary>
+        /// Inserts the batch of records using bulk insert.
+        /// </summary>
+        /// <typeparam name="TObject">The type of the object.</typeparam>
+        /// <param name="dataReader">The data reader.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>
+        /// SqlServerInsertBulk.
+        /// </returns>
+        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
+        public SqlServerInsertBulk InsertBulk<TObject>(IDataReader dataReader, SqlBulkCopyOptions options = SqlBulkCopyOptions.Default) where TObject : class
+        {
+            return InsertBulk(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, dataReader, options);
+        }
+
+        /// <summary>
+        /// Inserts the batch of records using bulk insert.
+        /// </summary>
+        /// <typeparam name="TObject">The type of the object.</typeparam>
+        /// <param name="objects">The objects.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>
+        /// SqlServerInsertBulk.
+        /// </returns>
+        public SqlServerInsertBulk InsertBulk<TObject>(IEnumerable<TObject> objects, SqlBulkCopyOptions options = SqlBulkCopyOptions.Default) where TObject : class
+        {
+            return InsertBulk(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, objects, options);
+        }
+
+        /// <summary>
+        /// Loads a procedure definition
+        /// </summary>
+        /// <param name="procedureName">Name of the procedure.</param>
+        /// <returns></returns>
+        public MultipleTableDbCommandBuilder<SqlCommand, SqlParameter> Procedure(SqlServerObjectName procedureName)
+        {
+            return new SqlServerProcedureCall(this, procedureName, null);
+        }
+
+        /// <summary>
+        /// Loads a procedure definition and populates it using the parameter object.
+        /// </summary>
+        /// <param name="procedureName">Name of the procedure.</param>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// The procedure's definition is loaded from the database and used to determine which properties on the parameter object to use.
+        /// </remarks>
+        public MultipleTableDbCommandBuilder<SqlCommand, SqlParameter> Procedure(SqlServerObjectName procedureName, object argumentValue)
+        {
+            return new SqlServerProcedureCall(this, procedureName, argumentValue);
+        }
+
+        /// <summary>
+        /// Creates a operation based on a raw SQL statement.
+        /// </summary>
+        /// <param name="sqlStatement">The SQL statement.</param>
+        /// <returns></returns>
+        public MultipleTableDbCommandBuilder<SqlCommand, SqlParameter> Sql(string sqlStatement)
+        {
+            return new SqlServerSqlCall(this, sqlStatement, null);
+        }
+
+        /// <summary>
+        /// Creates a operation based on a raw SQL statement.
+        /// </summary>
+        /// <param name="sqlStatement">The SQL statement.</param>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <returns>SqlServerSqlCall.</returns>
+        public MultipleTableDbCommandBuilder<SqlCommand, SqlParameter> Sql(string sqlStatement, object argumentValue)
+        {
+            return new SqlServerSqlCall(this, sqlStatement, argumentValue);
+        }
+
+        /// <summary>
+        /// This is used to query a table valued function.
+        /// </summary>
+        /// <param name="tableFunctionName">Name of the table function.</param>
+        /// <returns></returns>
+        public TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption> TableFunction(SqlServerObjectName tableFunctionName)
+        {
+            return new SqlServerTableFunction(this, tableFunctionName, null);
+        }
+
+        /// <summary>
+        /// This is used to query a table valued function.
+        /// </summary>
+        /// <param name="tableFunctionName">Name of the table function.</param>
+        /// <param name="functionArgumentValue">The function argument.</param>
+        /// <returns></returns>
+        public TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption> TableFunction(SqlServerObjectName tableFunctionName, object functionArgumentValue)
+        {
+            return new SqlServerTableFunction(this, tableFunctionName, functionArgumentValue);
+        }
+        /// <summary>
+        /// Updates an object in the specified table.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="options">The update options.</param>
+        /// <returns>SqlServerInsert.</returns>
+        public ObjectDbCommandBuilder<SqlCommand, SqlParameter, TArgument> Update<TArgument>(SqlServerObjectName tableName, TArgument argumentValue, UpdateOptions options = UpdateOptions.None)
+        where TArgument : class
+        {
+            return new SqlServerUpdateObject<TArgument>(this, tableName, argumentValue, options);
+        }
+
+        /// <summary>
+        /// Updates an object in the specified table.
+        /// </summary>
+        /// <typeparam name="TArgument"></typeparam>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="options">The update options.</param>
+        /// <returns></returns>
+        public ObjectDbCommandBuilder<SqlCommand, SqlParameter, TArgument> Update<TArgument>(TArgument argumentValue, UpdateOptions options = UpdateOptions.None) where TArgument : class
+        {
+            return Update(DatabaseMetadata.GetTableOrViewFromClass<TArgument>().Name, argumentValue, options);
         }
 
         /// <summary>
@@ -306,259 +731,6 @@ namespace Tortuga.Chain.SqlServer
 
             return new SqlServerUpdateMany(this, tableName, newValues, where, parameters, parameters.Count, options);
         }
-
-        /// <summary>
-        /// Delete a record by its primary key.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="key">The key.</param>
-        /// <param name="options">The options.</param>
-        /// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
-        public SingleRowDbCommandBuilder<SqlCommand, SqlParameter> DeleteByKey<T>(SqlServerObjectName tableName, T key, DeleteOptions options = DeleteOptions.None)
-            where T : struct
-        {
-            return DeleteByKeyList(tableName, new List<T> { key }, options);
-        }
-
-        /// <summary>
-        /// Delete a record by its primary key.
-        /// </summary>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="key">The key.</param>
-        /// <param name="options">The options.</param>
-        /// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
-        public SingleRowDbCommandBuilder<SqlCommand, SqlParameter> DeleteByKey(SqlServerObjectName tableName, string key, DeleteOptions options = DeleteOptions.None)
-        {
-            return DeleteByKeyList(tableName, new List<string> { key }, options);
-        }
-
-        /// <summary>
-        /// Delete multiple rows by key.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="keys">The keys.</param>
-        /// <returns></returns>
-        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
-        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> DeleteByKey<T>(SqlServerObjectName tableName, params T[] keys)
-            where T : struct
-        {
-            return DeleteByKeyList(tableName, keys);
-        }
-
-        /// <summary>
-        /// Delete multiple rows by key.
-        /// </summary>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="keys">The keys.</param>
-        /// <returns></returns>
-        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
-        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> DeleteByKey(SqlServerObjectName tableName, params string[] keys)
-        {
-            return DeleteByKeyList(tableName, keys);
-        }
-
-
-        /// <summary>
-        /// Delete multiple rows by key.
-        /// </summary>
-        /// <typeparam name="TKey">The type of the t key.</typeparam>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="keys">The keys.</param>
-        /// <param name="options">Update options.</param>
-        /// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
-        /// <exception cref="MappingException"></exception>
-        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "DeleteByKey")]
-        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> DeleteByKeyList<TKey>(SqlServerObjectName tableName, IEnumerable<TKey> keys, DeleteOptions options = DeleteOptions.None)
-        {
-            var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).Columns.Where(c => c.IsPrimaryKey).ToList();
-            if (primaryKeys.Count != 1)
-                throw new MappingException($"DeleteByKey operation isn't allowed on {tableName} because it doesn't have a single primary key.");
-
-            var keyList = keys.AsList();
-            var columnMetadata = primaryKeys.Single();
-            string where;
-            if (keys.Count() > 1)
-                where = columnMetadata.SqlName + " IN (" + string.Join(", ", keyList.Select((s, i) => "@Param" + i)) + ")";
-            else
-                where = columnMetadata.SqlName + " = @Param0";
-
-            var parameters = new List<SqlParameter>();
-            for (var i = 0; i < keyList.Count; i++)
-            {
-                var param = new SqlParameter("@Param" + i, keyList[i]);
-                if (columnMetadata.DbType.HasValue)
-                    param.SqlDbType = columnMetadata.DbType.Value;
-                parameters.Add(param);
-            }
-
-            var table = DatabaseMetadata.GetTableOrView(tableName);
-            if (!AuditRules.UseSoftDelete(table))
-                return new SqlServerDeleteMany(this, tableName, where, parameters, options);
-
-            UpdateOptions effectiveOptions = UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected;
-            if (options.HasFlag(DeleteOptions.UseKeyAttribute))
-                effectiveOptions = effectiveOptions | UpdateOptions.UseKeyAttribute;
-
-            return new SqlServerUpdateMany(this, tableName, null, where, parameters, parameters.Count, effectiveOptions);
-
-        }
-
-        IMultipleTableDbCommandBuilder IClass0DataSource.Sql(string sqlStatement, object argumentValue)
-        {
-            return Sql(sqlStatement, argumentValue);
-        }
-
-        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Delete<TArgument>(string tableName, TArgument argumentValue, DeleteOptions options)
-        {
-            return Delete(tableName, argumentValue, options);
-        }
-
-        ITableDbCommandBuilder IClass1DataSource.From(string tableOrViewName)
-        {
-            return From(tableOrViewName);
-        }
-
-        ITableDbCommandBuilder IClass1DataSource.From(string tableOrViewName, object filterValue)
-        {
-            return From(tableOrViewName, filterValue);
-        }
-
-        ITableDbCommandBuilder IClass1DataSource.From(string tableOrViewName, string whereClause)
-        {
-            return From(tableOrViewName, whereClause);
-        }
-
-        ITableDbCommandBuilder IClass1DataSource.From(string tableOrViewName, string whereClause, object argumentValue)
-        {
-            return From(tableOrViewName, whereClause, argumentValue);
-        }
-
-        ISingleRowDbCommandBuilder IClass1DataSource.GetByKey<T>(string tableName, T key)
-        {
-            return GetByKey(tableName, key);
-        }
-
-
-        ISingleRowDbCommandBuilder IClass1DataSource.GetByKey(string tableName, string key)
-        {
-            return GetByKey(tableName, key);
-        }
-
-        IMultipleRowDbCommandBuilder IClass1DataSource.GetByKey<T>(string tableName, params T[] keys)
-        {
-            return GetByKeyList(tableName, keys);
-        }
-
-        IMultipleRowDbCommandBuilder IClass1DataSource.GetByKey(string tableName, params string[] keys)
-        {
-            return GetByKeyList(tableName, keys);
-        }
-
-        IMultipleRowDbCommandBuilder IClass1DataSource.GetByKeyList<T>(string tableName, IEnumerable<T> keys)
-        {
-            return GetByKeyList(tableName, keys);
-        }
-
-        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Insert<TArgument>(string tableName, TArgument argumentValue, InsertOptions options)
-        {
-            return Insert(tableName, argumentValue, options);
-        }
-        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Update<TArgument>(string tableName, TArgument argumentValue, UpdateOptions options)
-        {
-            return Update(tableName, argumentValue, options);
-        }
-
-        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Upsert<TArgument>(string tableName, TArgument argumentValue, UpsertOptions options)
-        {
-            return Upsert(tableName, argumentValue, options);
-        }
-
-        IMultipleTableDbCommandBuilder IClass2DataSource.Procedure(string procedureName)
-        {
-            return Procedure(procedureName);
-        }
-
-        IMultipleTableDbCommandBuilder IClass2DataSource.Procedure(string procedureName, object argumentValue)
-        {
-            return Procedure(procedureName, argumentValue);
-        }
-
-
-        /// <summary>
-        /// Inserts an object into the specified table.
-        /// </summary>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="argumentValue">The argument value.</param>
-        /// <param name="options">The options.</param>
-        /// <returns>
-        /// SqlServerInsert.
-        /// </returns>
-        public ObjectDbCommandBuilder<SqlCommand, SqlParameter, TArgument> Insert<TArgument>(SqlServerObjectName tableName, TArgument argumentValue, InsertOptions options = InsertOptions.None)
-        where TArgument : class
-        {
-            return new SqlServerInsertObject<TArgument>(this, tableName, argumentValue, options);
-        }
-
-        /// <summary>
-        /// Loads a procedure definition
-        /// </summary>
-        /// <param name="procedureName">Name of the procedure.</param>
-        /// <returns></returns>
-        public MultipleTableDbCommandBuilder<SqlCommand, SqlParameter> Procedure(SqlServerObjectName procedureName)
-        {
-            return new SqlServerProcedureCall(this, procedureName, null);
-        }
-
-
-        /// <summary>
-        /// Loads a procedure definition and populates it using the parameter object.
-        /// </summary>
-        /// <param name="procedureName">Name of the procedure.</param>
-        /// <param name="argumentValue">The argument value.</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// The procedure's definition is loaded from the database and used to determine which properties on the parameter object to use.
-        /// </remarks>
-        public MultipleTableDbCommandBuilder<SqlCommand, SqlParameter> Procedure(SqlServerObjectName procedureName, object argumentValue)
-        {
-            return new SqlServerProcedureCall(this, procedureName, argumentValue);
-        }
-
-        /// <summary>
-        /// Creates a operation based on a raw SQL statement.
-        /// </summary>
-        /// <param name="sqlStatement">The SQL statement.</param>
-        /// <returns></returns>
-        public MultipleTableDbCommandBuilder<SqlCommand, SqlParameter> Sql(string sqlStatement)
-        {
-            return new SqlServerSqlCall(this, sqlStatement, null);
-        }
-
-        /// <summary>
-        /// Creates a operation based on a raw SQL statement.
-        /// </summary>
-        /// <param name="sqlStatement">The SQL statement.</param>
-        /// <param name="argumentValue">The argument value.</param>
-        /// <returns>SqlServerSqlCall.</returns>
-        public MultipleTableDbCommandBuilder<SqlCommand, SqlParameter> Sql(string sqlStatement, object argumentValue)
-        {
-            return new SqlServerSqlCall(this, sqlStatement, argumentValue);
-        }
-        /// <summary>
-        /// Updates an object in the specified table.
-        /// </summary>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="argumentValue">The argument value.</param>
-        /// <param name="options">The update options.</param>
-        /// <returns>SqlServerInsert.</returns>
-        public ObjectDbCommandBuilder<SqlCommand, SqlParameter, TArgument> Update<TArgument>(SqlServerObjectName tableName, TArgument argumentValue, UpdateOptions options = UpdateOptions.None)
-        where TArgument : class
-        {
-            return new SqlServerUpdateObject<TArgument>(this, tableName, argumentValue, options);
-        }
-
         /// <summary>
         /// Performs an insert or update operation as appropriate.
         /// </summary>
@@ -571,278 +743,6 @@ namespace Tortuga.Chain.SqlServer
         {
             return new SqlServerInsertOrUpdateObject<TArgument>(this, tableName, argumentValue, options);
         }
-
-        ITableDbCommandBuilder IClass2DataSource.TableFunction(string functionName)
-        {
-            return TableFunction(functionName);
-        }
-
-        ITableDbCommandBuilder IClass2DataSource.TableFunction(string functionName, object functionArgumentValue)
-        {
-            return TableFunction(functionName, functionArgumentValue);
-        }
-
-        /// <summary>
-        /// Inserts the batch of records as one operation.
-        /// </summary>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="tableTypeName">Name of the table type.</param>
-        /// <param name="dataTable">The data table.</param>
-        /// <param name="options">The options.</param>
-        /// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
-        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> InsertBatch(SqlServerObjectName tableName, SqlServerObjectName tableTypeName, DataTable dataTable, InsertOptions options = InsertOptions.None)
-        {
-            return new SqlServerInsertBatch(this, tableName, tableTypeName, dataTable, options);
-        }
-
-        /// <summary>
-        /// Inserts the batch of records as one operation.
-        /// </summary>
-        /// <typeparam name="TObject">The type of the t object.</typeparam>
-        /// <param name="tableTypeName">Name of the table type.</param>
-        /// <param name="dataTable">The data table.</param>
-        /// <param name="options">The options.</param>
-        /// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
-        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> InsertBatch<TObject>(SqlServerObjectName tableTypeName, DataTable dataTable, InsertOptions options = InsertOptions.None) where TObject : class
-        {
-            return InsertBatch(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, tableTypeName, dataTable, options);
-        }
-
-        /// <summary>
-        /// Inserts the batch of records as one operation.
-        /// </summary>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="tableTypeName">Name of the table type.</param>
-        /// <param name="dataReader">The data reader.</param>
-        /// <param name="options">The options.</param>
-        /// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
-        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> InsertBatch(SqlServerObjectName tableName, SqlServerObjectName tableTypeName, DbDataReader dataReader, InsertOptions options = InsertOptions.None)
-        {
-            return new SqlServerInsertBatch(this, tableName, tableTypeName, dataReader, options);
-        }
-
-        /// <summary>
-        /// Inserts the batch of records as one operation.
-        /// </summary>
-        /// <typeparam name="TObject">The type of the t object.</typeparam>
-        /// <param name="tableTypeName">Name of the table type.</param>
-        /// <param name="dataReader">The data reader.</param>
-        /// <param name="options">The options.</param>
-        /// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
-        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> InsertBatch<TObject>(SqlServerObjectName tableTypeName, DbDataReader dataReader, InsertOptions options = InsertOptions.None) where TObject : class
-        {
-            return InsertBatch(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, tableTypeName, dataReader, options);
-        }
-
-        /// <summary>
-        /// Inserts the batch of records as one operation..
-        /// </summary>
-        /// <typeparam name="TObject"></typeparam>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="tableTypeName">Name of the table type.</param>
-        /// <param name="objects">The objects.</param>
-        /// <param name="options">The options.</param>
-        /// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
-        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> InsertBatch<TObject>(SqlServerObjectName tableName, SqlServerObjectName tableTypeName, IEnumerable<TObject> objects, InsertOptions options = InsertOptions.None)
-        {
-            var tableType = DatabaseMetadata.GetUserDefinedType(tableTypeName);
-            return new SqlServerInsertBatch(this, tableName, tableTypeName, new ObjectDataReader<TObject>(tableType, objects), options);
-        }
-
-
-        /// <summary>
-        /// Inserts the batch of records as one operation..
-        /// </summary>
-        /// <typeparam name="TObject">The type of the object.</typeparam>
-        /// <param name="tableTypeName">Name of the table type.</param>
-        /// <param name="objects">The objects.</param>
-        /// <param name="options">The options.</param>
-        /// <returns>
-        /// MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.
-        /// </returns>
-        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> InsertBatch<TObject>(SqlServerObjectName tableTypeName, IEnumerable<TObject> objects, InsertOptions options = InsertOptions.None) where TObject : class
-        {
-            return InsertBatch(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, tableTypeName, objects, options);
-        }
-
-
-        /// <summary>
-        /// Inserts the batch of records using bulk insert.
-        /// </summary>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="dataTable">The data table.</param>
-        /// <param name="options">The options.</param>
-        /// <returns>SqlServerInsertBulk.</returns>
-        public SqlServerInsertBulk InsertBulk(SqlServerObjectName tableName, DataTable dataTable, SqlBulkCopyOptions options = SqlBulkCopyOptions.Default)
-        {
-            return new SqlServerInsertBulk(this, tableName, dataTable, options);
-        }
-
-
-        /// <summary>
-        /// Inserts the batch of records using bulk insert.
-        /// </summary>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="dataReader">The data reader.</param>
-        /// <param name="options">The options.</param>
-        /// <returns>SqlServerInsertBulk.</returns>
-        public SqlServerInsertBulk InsertBulk(SqlServerObjectName tableName, IDataReader dataReader, SqlBulkCopyOptions options = SqlBulkCopyOptions.Default)
-        {
-            return new SqlServerInsertBulk(this, tableName, dataReader, options);
-        }
-
-        /// <summary>
-        /// Inserts the batch of records using bulk insert.
-        /// </summary>
-        /// <typeparam name="TObject"></typeparam>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="objects">The objects.</param>
-        /// <param name="options">The options.</param>
-        /// <returns>SqlServerInsertBulk.</returns>
-        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-        public SqlServerInsertBulk InsertBulk<TObject>(SqlServerObjectName tableName, IEnumerable<TObject> objects, SqlBulkCopyOptions options = SqlBulkCopyOptions.Default) where TObject : class
-        {
-            var tableType = DatabaseMetadata.GetTableOrView(tableName);
-            return new SqlServerInsertBulk(this, tableName, new ObjectDataReader<TObject>(tableType, objects, OperationTypes.Insert), options);
-        }
-
-
-
-        /// <summary>
-        /// Inserts the batch of records using bulk insert.
-        /// </summary>
-        /// <typeparam name="TObject">The type of the object.</typeparam>
-        /// <param name="dataTable">The data table.</param>
-        /// <param name="options">The options.</param>
-        /// <returns>
-        /// SqlServerInsertBulk.
-        /// </returns>
-        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-        public SqlServerInsertBulk InsertBulk<TObject>(DataTable dataTable, SqlBulkCopyOptions options = SqlBulkCopyOptions.Default) where TObject : class
-        {
-            return InsertBulk(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, dataTable, options);
-        }
-
-
-        /// <summary>
-        /// Inserts the batch of records using bulk insert.
-        /// </summary>
-        /// <typeparam name="TObject">The type of the object.</typeparam>
-        /// <param name="dataReader">The data reader.</param>
-        /// <param name="options">The options.</param>
-        /// <returns>
-        /// SqlServerInsertBulk.
-        /// </returns>
-        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-        public SqlServerInsertBulk InsertBulk<TObject>(IDataReader dataReader, SqlBulkCopyOptions options = SqlBulkCopyOptions.Default) where TObject : class
-        {
-            return InsertBulk(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, dataReader, options);
-        }
-
-        /// <summary>
-        /// Inserts the batch of records using bulk insert.
-        /// </summary>
-        /// <typeparam name="TObject">The type of the object.</typeparam>
-        /// <param name="objects">The objects.</param>
-        /// <param name="options">The options.</param>
-        /// <returns>
-        /// SqlServerInsertBulk.
-        /// </returns>
-        public SqlServerInsertBulk InsertBulk<TObject>(IEnumerable<TObject> objects, SqlBulkCopyOptions options = SqlBulkCopyOptions.Default) where TObject : class
-        {
-            return InsertBulk(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, objects, options);
-        }
-
-
-        /// <summary>
-        /// Deletes an object model from the table indicated by the class's Table attribute.
-        /// </summary>
-        /// <typeparam name="TArgument"></typeparam>
-        /// <param name="argumentValue">The argument value.</param>
-        /// <param name="options">The delete options.</param>
-        /// <returns></returns>
-        public ObjectDbCommandBuilder<SqlCommand, SqlParameter, TArgument> Delete<TArgument>(TArgument argumentValue, DeleteOptions options = DeleteOptions.None) where TArgument : class
-        {
-            var table = DatabaseMetadata.GetTableOrViewFromClass<TArgument>();
-
-            if (!AuditRules.UseSoftDelete(table))
-                return new SqlServerDeleteObject<TArgument>(this, table.Name, argumentValue, options);
-
-            UpdateOptions effectiveOptions = UpdateOptions.SoftDelete;
-            if (options.HasFlag(DeleteOptions.UseKeyAttribute))
-                effectiveOptions = effectiveOptions | UpdateOptions.UseKeyAttribute;
-
-            return new SqlServerUpdateObject<TArgument>(this, table.Name, argumentValue, effectiveOptions);
-        }
-
-        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Delete<TArgument>(TArgument argumentValue, DeleteOptions options)
-        {
-            return Delete(argumentValue, options);
-        }
-
-        /// <summary>
-        /// This is used to directly query a table or view.
-        /// </summary>
-        /// <typeparam name="TObject"></typeparam>
-        /// <returns></returns>
-        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-        public TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption> From<TObject>() where TObject : class
-        {
-            return From(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name);
-        }
-
-        /// <summary>
-        /// This is used to directly query a table or view.
-        /// </summary>
-        /// <typeparam name="TObject">The type of the object.</typeparam>
-        /// <param name="whereClause">The where clause. Do not prefix this clause with "WHERE".</param>
-        /// <returns></returns>
-        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-        public TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption> From<TObject>(string whereClause) where TObject : class
-        {
-            return From(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, whereClause);
-        }
-
-        /// <summary>
-        /// This is used to directly query a table or view.
-        /// </summary>
-        /// <typeparam name="TObject">The type of the object.</typeparam>
-        /// <param name="whereClause">The where clause. Do not prefix this clause with "WHERE".</param>
-        /// <param name="argumentValue">Optional argument value. Every property in the argument value must have a matching parameter in the WHERE clause</param>
-        /// <returns></returns>
-        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-        public TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption> From<TObject>(string whereClause, object argumentValue) where TObject : class
-        {
-            return From(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, whereClause, argumentValue);
-        }
-
-        /// <summary>
-        /// This is used to directly query a table or view.
-        /// </summary>
-        /// <typeparam name="TObject">The type of the object.</typeparam>
-        /// <param name="filterValue">The filter value is used to generate a simple AND style WHERE clause.</param>
-        /// <returns></returns>
-        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-        public TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption> From<TObject>(object filterValue) where TObject : class
-        {
-            return From(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, filterValue);
-        }
-
-        /// <summary>
-        /// Inserts an object into the specified table.
-        /// </summary>
-        /// <typeparam name="TArgument"></typeparam>
-        /// <param name="argumentValue">The argument value.</param>
-        /// <param name="options">The options for how the insert occurs.</param>
-        /// <returns></returns>
-        public ObjectDbCommandBuilder<SqlCommand, SqlParameter, TArgument> Insert<TArgument>(TArgument argumentValue, InsertOptions options = InsertOptions.None) where TArgument : class
-        {
-            return Insert(DatabaseMetadata.GetTableOrViewFromClass<TArgument>().Name, argumentValue, options);
-        }
-
         /// <summary>
         /// Performs an insert or update operation as appropriate.
         /// </summary>
@@ -854,55 +754,6 @@ namespace Tortuga.Chain.SqlServer
         {
             return Upsert(DatabaseMetadata.GetTableOrViewFromClass<TArgument>().Name, argumentValue, options);
         }
-
-        /// <summary>
-        /// Updates an object in the specified table.
-        /// </summary>
-        /// <typeparam name="TArgument"></typeparam>
-        /// <param name="argumentValue">The argument value.</param>
-        /// <param name="options">The update options.</param>
-        /// <returns></returns>
-        public ObjectDbCommandBuilder<SqlCommand, SqlParameter, TArgument> Update<TArgument>(TArgument argumentValue, UpdateOptions options = UpdateOptions.None) where TArgument : class
-        {
-            return Update(DatabaseMetadata.GetTableOrViewFromClass<TArgument>().Name, argumentValue, options);
-        }
-
-        ITableDbCommandBuilder IClass1DataSource.From<TObject>()
-        {
-            return From<TObject>();
-        }
-
-        ITableDbCommandBuilder IClass1DataSource.From<TObject>(string whereClause)
-        {
-            return From<TObject>(whereClause);
-        }
-
-        ITableDbCommandBuilder IClass1DataSource.From<TObject>(string whereClause, object argumentValue)
-        {
-            return From<TObject>(whereClause, argumentValue);
-        }
-
-        ITableDbCommandBuilder IClass1DataSource.From<TObject>(object filterValue)
-        {
-            return From<TObject>(filterValue);
-        }
-
-        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Insert<TArgument>(TArgument argumentValue, InsertOptions options)
-        {
-            return Insert(argumentValue, options);
-        }
-
-        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Upsert<TArgument>(TArgument argumentValue, UpsertOptions options)
-        {
-            return Upsert(argumentValue, options);
-        }
-
-        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Update<TArgument>(TArgument argumentValue, UpdateOptions options)
-        {
-            return Update(argumentValue, options);
-        }
-
-
         /// <summary>
         /// Called when Database.DatabaseMetadata is invoked.
         /// </summary>

@@ -104,6 +104,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\LibrarySharedAssemblyInfo.cs" />
     <Compile Include="shared\SQLiteDataSource.cs" />
+    <Compile Include="shared\SQLite\SQLiteDataSourceBase.Interfaces.cs" />
     <Compile Include="shared\SQLite\SQLiteObjectName.cs" />
     <Compile Include="shared\SQLite\CommandBuilders\SQLiteDeleteObject.cs" />
     <Compile Include="shared\SQLite\CommandBuilders\SQLiteInsertObject.cs" />

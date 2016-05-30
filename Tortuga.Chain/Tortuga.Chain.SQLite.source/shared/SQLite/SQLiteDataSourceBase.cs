@@ -24,7 +24,7 @@ namespace Tortuga.Chain.SQLite
     /// Base class that represents a SQLite Data Source.
     /// </summary>
     [SuppressMessage("Microsoft.Design", "CA1001:TypesThatOwnDisposableFieldsShouldBeDisposable")]
-    public abstract class SQLiteDataSourceBase : DataSource<SQLiteConnection, SQLiteTransaction, SQLiteCommand, SQLiteParameter>, IClass1DataSource
+    public abstract partial class SQLiteDataSourceBase : DataSource<SQLiteConnection, SQLiteTransaction, SQLiteCommand, SQLiteParameter>
     {
 
         /// <summary>
@@ -52,19 +52,7 @@ namespace Tortuga.Chain.SQLite
         /// </summary>
         public bool DisableLocks { get; }
 
-        /// <summary>
-        /// Gets the database metadata.
-        /// </summary>
-        /// <value>
-        /// The database metadata.
-        /// </value>
-        /// <remarks>
-        /// Data sources are expected to shadow this with their specific version.
-        /// </remarks>
-        IDatabaseMetadataCache IClass1DataSource.DatabaseMetadata
-        {
-            get { return DatabaseMetadata; }
-        }
+
 
         /// <summary>
         /// Gets the synchronize lock used during execution of database operations.
@@ -91,6 +79,27 @@ namespace Tortuga.Chain.SQLite
                 effectiveOptions = effectiveOptions | UpdateOptions.UseKeyAttribute;
 
             return new SQLiteUpdateObject<TArgument>(this, tableName, argumentValue, effectiveOptions);
+        }
+
+        /// <summary>
+        /// Deletes an object model from the table indicated by the class's Table attribute.
+        /// </summary>
+        /// <typeparam name="TArgument"></typeparam>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="options">The delete options.</param>
+        /// <returns></returns>
+        public ObjectDbCommandBuilder<SQLiteCommand, SQLiteParameter, TArgument> Delete<TArgument>(TArgument argumentValue, DeleteOptions options = DeleteOptions.None) where TArgument : class
+        {
+            var table = DatabaseMetadata.GetTableOrViewFromClass<TArgument>();
+
+            if (!AuditRules.UseSoftDelete(table))
+                return new SQLiteDeleteObject<TArgument>(this, table.Name, argumentValue, options);
+
+            UpdateOptions effectiveOptions = UpdateOptions.SoftDelete;
+            if (options.HasFlag(DeleteOptions.UseKeyAttribute))
+                effectiveOptions = effectiveOptions | UpdateOptions.UseKeyAttribute;
+
+            return new SQLiteUpdateObject<TArgument>(this, table.Name, argumentValue, effectiveOptions);
         }
 
         /// <summary>
@@ -137,135 +146,52 @@ namespace Tortuga.Chain.SQLite
             return new SQLiteTableOrView(this, tableOrViewName, filterValue);
         }
 
-        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Delete<TArgument>(string tableName, TArgument argumentValue, DeleteOptions options)
-        {
-            return Delete(tableName, argumentValue, options);
-        }
-
-        ITableDbCommandBuilder IClass1DataSource.From(string tableOrViewName)
-        {
-            return From(tableOrViewName);
-        }
-
-        ITableDbCommandBuilder IClass1DataSource.From(string tableOrViewName, string whereClause)
-        {
-            return From(tableOrViewName, whereClause);
-        }
-
-        ITableDbCommandBuilder IClass1DataSource.From(string tableOrViewName, string whereClause, object argumentValue)
-        {
-            return From(tableOrViewName, whereClause, argumentValue);
-        }
-
-        ITableDbCommandBuilder IClass1DataSource.From(string tableOrViewName, object filterValue)
-        {
-            return From(tableOrViewName, filterValue);
-        }
-        IMultipleTableDbCommandBuilder IClass0DataSource.Sql(string sqlStatement, object argumentValue)
-        {
-            return Sql(sqlStatement, argumentValue);
-        }
-        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Update<TArgument>(string tableName, TArgument argumentValue, UpdateOptions options)
-        {
-            return Update(tableName, argumentValue, options);
-        }
-
-        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Upsert<TArgument>(string tableName, TArgument argumentValue, UpsertOptions options)
-        {
-            return Upsert(tableName, argumentValue, options);
-        }
-
-        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Insert<TArgument>(string tableName, TArgument argumentValue, InsertOptions options)
-        {
-            return Insert(tableName, argumentValue, options);
-        }
-
         /// <summary>
-        /// Creates a operation based on a raw SQL statement.
+        /// This is used to directly query a table or view.
         /// </summary>
-        /// <param name="sqlStatement">The SQL statement.</param>
-        /// <param name="lockType">Type of the lock.</param>
-        /// <returns>SQLiteSqlCall.</returns>
-        public MultipleTableDbCommandBuilder<SQLiteCommand, SQLiteParameter> Sql(string sqlStatement, LockType lockType = LockType.Write)
-        {
-            return new SQLiteSqlCall(this, sqlStatement, null, lockType);
-        }
-
-        /// <summary>
-        /// Creates a operation based on a raw SQL statement.
-        /// </summary>
-        /// <param name="sqlStatement">The SQL statement.</param>
-        /// <param name="argumentValue">The argument value.</param>
-        /// <param name="lockType">Type of the lock.</param>
-        /// <returns>SQLiteSqlCall.</returns>
-        public MultipleTableDbCommandBuilder<SQLiteCommand, SQLiteParameter> Sql(string sqlStatement, object argumentValue, LockType lockType = LockType.Write)
-        {
-            return new SQLiteSqlCall(this, sqlStatement, argumentValue, lockType);
-        }
-        /// <summary>
-        /// Creates a <see cref="SQLiteInsertObject{TArgument}" /> used to perform an insert operation.
-        /// </summary>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="argumentValue">The argument value.</param>
-        /// <param name="options">The options.</param>
+        /// <typeparam name="TObject"></typeparam>
         /// <returns></returns>
-        public ObjectDbCommandBuilder<SQLiteCommand, SQLiteParameter, TArgument> Insert<TArgument>(SQLiteObjectName tableName, TArgument argumentValue, InsertOptions options = InsertOptions.None)
-        where TArgument : class
+        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
+        public TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> From<TObject>() where TObject : class
         {
-            return new SQLiteInsertObject<TArgument>(this, tableName, argumentValue, options);
+            return From(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name);
         }
 
         /// <summary>
-        /// Creates a <see cref="SQLiteInsertOrUpdateObject{TArgument}"/> used to perform an "upsert" operation.
+        /// This is used to directly query a table or view.
         /// </summary>
-        /// <param name="tableName"></param>
-        /// <param name="argumentValue"></param>
-        /// <param name="options"></param>
+        /// <typeparam name="TObject">The type of the object.</typeparam>
+        /// <param name="whereClause">The where clause. Do not prefix this clause with "WHERE".</param>
         /// <returns></returns>
-        public ObjectDbCommandBuilder<SQLiteCommand, SQLiteParameter, TArgument> Upsert<TArgument>(SQLiteObjectName tableName, TArgument argumentValue, UpsertOptions options = UpsertOptions.None)
-        where TArgument : class
+        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
+        public TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> From<TObject>(string whereClause) where TObject : class
         {
-            return new SQLiteInsertOrUpdateObject<TArgument>(this, tableName, argumentValue, options);
+            return From(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, whereClause);
         }
 
         /// <summary>
-        /// Creates a <see cref="SQLiteUpdateObject{TArgument}" /> used to perform an update operation.
+        /// This is used to directly query a table or view.
         /// </summary>
-        /// <param name="tableName"></param>
-        /// <param name="argumentValue"></param>
-        /// <param name="options"></param>
+        /// <typeparam name="TObject">The type of the object.</typeparam>
+        /// <param name="whereClause">The where clause. Do not prefix this clause with "WHERE".</param>
+        /// <param name="argumentValue">Optional argument value. Every property in the argument value must have a matching parameter in the WHERE clause</param>
         /// <returns></returns>
-        public ObjectDbCommandBuilder<SQLiteCommand, SQLiteParameter, TArgument> Update<TArgument>(SQLiteObjectName tableName, TArgument argumentValue, UpdateOptions options = UpdateOptions.None)
-        where TArgument : class
+        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
+        public TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> From<TObject>(string whereClause, object argumentValue) where TObject : class
         {
-            return new SQLiteUpdateObject<TArgument>(this, tableName, argumentValue, options);
+            return From(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, whereClause, argumentValue);
         }
 
-
-        ISingleRowDbCommandBuilder IClass1DataSource.GetByKey<T>(string tableName, T key)
+        /// <summary>
+        /// This is used to directly query a table or view.
+        /// </summary>
+        /// <typeparam name="TObject">The type of the object.</typeparam>
+        /// <param name="filterValue">The filter value is used to generate a simple AND style WHERE clause.</param>
+        /// <returns></returns>
+        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
+        public TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> From<TObject>(object filterValue) where TObject : class
         {
-            return GetByKey(tableName, key);
-        }
-
-
-        ISingleRowDbCommandBuilder IClass1DataSource.GetByKey(string tableName, string key)
-        {
-            return GetByKey(tableName, key);
-        }
-
-        IMultipleRowDbCommandBuilder IClass1DataSource.GetByKey<T>(string tableName, params T[] keys)
-        {
-            return GetByKeyList(tableName, keys);
-        }
-
-        IMultipleRowDbCommandBuilder IClass1DataSource.GetByKey(string tableName, params string[] keys)
-        {
-            return GetByKeyList(tableName, keys);
-        }
-
-        IMultipleRowDbCommandBuilder IClass1DataSource.GetByKeyList<T>(string tableName, IEnumerable<T> keys)
-        {
-            return GetByKeyList(tableName, keys);
+            return From(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, filterValue);
         }
 
         /// <summary>
@@ -354,77 +280,16 @@ namespace Tortuga.Chain.SQLite
         }
 
         /// <summary>
-        /// Deletes an object model from the table indicated by the class's Table attribute.
+        /// Creates a <see cref="SQLiteInsertObject{TArgument}" /> used to perform an insert operation.
         /// </summary>
-        /// <typeparam name="TArgument"></typeparam>
+        /// <param name="tableName">Name of the table.</param>
         /// <param name="argumentValue">The argument value.</param>
-        /// <param name="options">The delete options.</param>
+        /// <param name="options">The options.</param>
         /// <returns></returns>
-        public ObjectDbCommandBuilder<SQLiteCommand, SQLiteParameter, TArgument> Delete<TArgument>(TArgument argumentValue, DeleteOptions options = DeleteOptions.None) where TArgument : class
+        public ObjectDbCommandBuilder<SQLiteCommand, SQLiteParameter, TArgument> Insert<TArgument>(SQLiteObjectName tableName, TArgument argumentValue, InsertOptions options = InsertOptions.None)
+        where TArgument : class
         {
-            var table = DatabaseMetadata.GetTableOrViewFromClass<TArgument>();
-
-            if (!AuditRules.UseSoftDelete(table))
-                return new SQLiteDeleteObject<TArgument>(this, table.Name, argumentValue, options);
-
-            UpdateOptions effectiveOptions = UpdateOptions.SoftDelete;
-            if (options.HasFlag(DeleteOptions.UseKeyAttribute))
-                effectiveOptions = effectiveOptions | UpdateOptions.UseKeyAttribute;
-
-            return new SQLiteUpdateObject<TArgument>(this, table.Name, argumentValue, effectiveOptions);
-        }
-
-        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Delete<TArgument>(TArgument argumentValue, DeleteOptions options)
-        {
-            return Delete(argumentValue, options);
-        }
-
-        /// <summary>
-        /// This is used to directly query a table or view.
-        /// </summary>
-        /// <typeparam name="TObject"></typeparam>
-        /// <returns></returns>
-        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-        public TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> From<TObject>() where TObject : class
-        {
-            return From(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name);
-        }
-
-        /// <summary>
-        /// This is used to directly query a table or view.
-        /// </summary>
-        /// <typeparam name="TObject">The type of the object.</typeparam>
-        /// <param name="whereClause">The where clause. Do not prefix this clause with "WHERE".</param>
-        /// <returns></returns>
-        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-        public TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> From<TObject>(string whereClause) where TObject : class
-        {
-            return From(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, whereClause);
-        }
-
-        /// <summary>
-        /// This is used to directly query a table or view.
-        /// </summary>
-        /// <typeparam name="TObject">The type of the object.</typeparam>
-        /// <param name="whereClause">The where clause. Do not prefix this clause with "WHERE".</param>
-        /// <param name="argumentValue">Optional argument value. Every property in the argument value must have a matching parameter in the WHERE clause</param>
-        /// <returns></returns>
-        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-        public TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> From<TObject>(string whereClause, object argumentValue) where TObject : class
-        {
-            return From(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, whereClause, argumentValue);
-        }
-
-        /// <summary>
-        /// This is used to directly query a table or view.
-        /// </summary>
-        /// <typeparam name="TObject">The type of the object.</typeparam>
-        /// <param name="filterValue">The filter value is used to generate a simple AND style WHERE clause.</param>
-        /// <returns></returns>
-        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-        public TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> From<TObject>(object filterValue) where TObject : class
-        {
-            return From(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, filterValue);
+            return new SQLiteInsertObject<TArgument>(this, tableName, argumentValue, options);
         }
 
         /// <summary>
@@ -440,15 +305,38 @@ namespace Tortuga.Chain.SQLite
         }
 
         /// <summary>
-        /// Performs an insert or update operation as appropriate.
+        /// Creates a operation based on a raw SQL statement.
         /// </summary>
-        /// <typeparam name="TArgument"></typeparam>
-        /// <param name="argumentValue">The argument value.</param>
-        /// <param name="options">The options for how the insert/update occurs.</param>
-        /// <returns></returns>
-        public ObjectDbCommandBuilder<SQLiteCommand, SQLiteParameter, TArgument> Upsert<TArgument>(TArgument argumentValue, UpsertOptions options = UpsertOptions.None) where TArgument : class
+        /// <param name="sqlStatement">The SQL statement.</param>
+        /// <param name="lockType">Type of the lock.</param>
+        /// <returns>SQLiteSqlCall.</returns>
+        public MultipleTableDbCommandBuilder<SQLiteCommand, SQLiteParameter> Sql(string sqlStatement, LockType lockType = LockType.Write)
         {
-            return Upsert(DatabaseMetadata.GetTableOrViewFromClass<TArgument>().Name, argumentValue, options);
+            return new SQLiteSqlCall(this, sqlStatement, null, lockType);
+        }
+
+        /// <summary>
+        /// Creates a operation based on a raw SQL statement.
+        /// </summary>
+        /// <param name="sqlStatement">The SQL statement.</param>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="lockType">Type of the lock.</param>
+        /// <returns>SQLiteSqlCall.</returns>
+        public MultipleTableDbCommandBuilder<SQLiteCommand, SQLiteParameter> Sql(string sqlStatement, object argumentValue, LockType lockType = LockType.Write)
+        {
+            return new SQLiteSqlCall(this, sqlStatement, argumentValue, lockType);
+        }
+        /// <summary>
+        /// Creates a <see cref="SQLiteUpdateObject{TArgument}" /> used to perform an update operation.
+        /// </summary>
+        /// <param name="tableName"></param>
+        /// <param name="argumentValue"></param>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        public ObjectDbCommandBuilder<SQLiteCommand, SQLiteParameter, TArgument> Update<TArgument>(SQLiteObjectName tableName, TArgument argumentValue, UpdateOptions options = UpdateOptions.None)
+        where TArgument : class
+        {
+            return new SQLiteUpdateObject<TArgument>(this, tableName, argumentValue, options);
         }
 
         /// <summary>
@@ -463,42 +351,29 @@ namespace Tortuga.Chain.SQLite
             return Update(DatabaseMetadata.GetTableOrViewFromClass<TArgument>().Name, argumentValue, options);
         }
 
-        ITableDbCommandBuilder IClass1DataSource.From<TObject>()
+        /// <summary>
+        /// Creates a <see cref="SQLiteInsertOrUpdateObject{TArgument}"/> used to perform an "upsert" operation.
+        /// </summary>
+        /// <param name="tableName"></param>
+        /// <param name="argumentValue"></param>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        public ObjectDbCommandBuilder<SQLiteCommand, SQLiteParameter, TArgument> Upsert<TArgument>(SQLiteObjectName tableName, TArgument argumentValue, UpsertOptions options = UpsertOptions.None)
+        where TArgument : class
         {
-            return From<TObject>();
+            return new SQLiteInsertOrUpdateObject<TArgument>(this, tableName, argumentValue, options);
         }
-
-        ITableDbCommandBuilder IClass1DataSource.From<TObject>(string whereClause)
+        /// <summary>
+        /// Performs an insert or update operation as appropriate.
+        /// </summary>
+        /// <typeparam name="TArgument"></typeparam>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="options">The options for how the insert/update occurs.</param>
+        /// <returns></returns>
+        public ObjectDbCommandBuilder<SQLiteCommand, SQLiteParameter, TArgument> Upsert<TArgument>(TArgument argumentValue, UpsertOptions options = UpsertOptions.None) where TArgument : class
         {
-            return From<TObject>(whereClause);
+            return Upsert(DatabaseMetadata.GetTableOrViewFromClass<TArgument>().Name, argumentValue, options);
         }
-
-        ITableDbCommandBuilder IClass1DataSource.From<TObject>(string whereClause, object argumentValue)
-        {
-            return From<TObject>(whereClause, argumentValue);
-        }
-
-        ITableDbCommandBuilder IClass1DataSource.From<TObject>(object filterValue)
-        {
-            return From<TObject>(filterValue);
-        }
-
-        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Insert<TArgument>(TArgument argumentValue, InsertOptions options)
-        {
-            return Insert(argumentValue, options);
-        }
-
-        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Upsert<TArgument>(TArgument argumentValue, UpsertOptions options)
-        {
-            return Upsert(argumentValue, options);
-        }
-
-        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Update<TArgument>(TArgument argumentValue, UpdateOptions options)
-        {
-            return Update(argumentValue, options);
-        }
-
-
         /// <summary>
         /// Called when Database.DatabaseMetadata is invoked.
         /// </summary>
