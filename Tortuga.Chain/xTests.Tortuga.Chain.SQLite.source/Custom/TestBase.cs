@@ -7,22 +7,15 @@ using Tortuga.Chain;
 using Tortuga.Chain.AuditRules;
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.SQLite;
-using Xunit.Abstractions;
 
 namespace Tests
 {
     public abstract partial class TestBase
     {
 
-        public TestBase(ITestOutputHelper output)
-        {
-            m_Output = output;
-        }
 
-        protected readonly ITestOutputHelper m_Output;
-
-        static protected readonly Dictionary<string, SQLiteDataSource> s_DataSources = new Dictionary<string, SQLiteDataSource>();
         static public readonly string AssemblyName = "SQLite";
+        static protected readonly Dictionary<string, SQLiteDataSource> s_DataSources = new Dictionary<string, SQLiteDataSource>();
         protected static readonly SQLiteDataSource s_PrimaryDataSource;
 
         static TestBase()
@@ -34,6 +27,21 @@ namespace Tests
                 s_DataSources.Add(con.Name, ds);
                 if (s_PrimaryDataSource == null) s_PrimaryDataSource = ds;
             }
+        }
+
+        public static string CustomerTableName { get { return "Customer"; } }
+
+        public static string EmployeeTableName { get { return "Employee"; } }
+
+        public SQLiteDataSource AttachRules(SQLiteDataSource source)
+        {
+            return source.WithRules(
+                new DateTimeRule("CreatedDate", DateTimeKind.Local, OperationTypes.Insert),
+                new DateTimeRule("UpdatedDate", DateTimeKind.Local, OperationTypes.InsertOrUpdate),
+                new UserDataRule("CreatedByKey", "EmployeeKey", OperationTypes.Insert),
+                new UserDataRule("UpdatedByKey", "EmployeeKey", OperationTypes.InsertOrUpdate),
+                new ValidateWithValidatable(OperationTypes.InsertOrUpdate)
+                );
         }
 
         public SQLiteDataSource DataSource(string name, [CallerMemberName] string caller = null)
@@ -90,20 +98,5 @@ namespace Tests
                 WriteLine("");
             }
         }
-
-        public SQLiteDataSource AttachRules(SQLiteDataSource source)
-        {
-            return source.WithRules(
-                new DateTimeRule("CreatedDate", DateTimeKind.Local, OperationTypes.Insert),
-                new DateTimeRule("UpdatedDate", DateTimeKind.Local, OperationTypes.InsertOrUpdate),
-                new UserDataRule("CreatedByKey", "EmployeeKey", OperationTypes.Insert),
-                new UserDataRule("UpdatedByKey", "EmployeeKey", OperationTypes.InsertOrUpdate),
-                new ValidateWithValidatable(OperationTypes.InsertOrUpdate)
-                );
-        }
-
-        public static string EmployeeTableName { get { return "Employee"; } }
-        public static string CustomerTableName { get { return "Customer"; } }
-
     }
 }

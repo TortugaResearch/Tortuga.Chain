@@ -7,21 +7,14 @@ using Tortuga.Chain;
 using Tortuga.Chain.AuditRules;
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.PostgreSql;
-using Xunit.Abstractions;
 
 namespace Tests
 {
     public abstract partial class TestBase
     {
-        public TestBase(ITestOutputHelper output)
-        {
-            m_Output = output;
-        }
 
-        protected readonly ITestOutputHelper m_Output;
-
-        static protected readonly Dictionary<string, PostgreSqlDataSource> s_DataSources = new Dictionary<string, PostgreSqlDataSource>();
         static public readonly string AssemblyName = "PostgreSql";
+        static protected readonly Dictionary<string, PostgreSqlDataSource> s_DataSources = new Dictionary<string, PostgreSqlDataSource>();
         protected static readonly PostgreSqlDataSource s_PrimaryDataSource;
 
         static TestBase()
@@ -35,16 +28,37 @@ namespace Tests
             }
         }
 
+        public static string CustomerTableName { get { return "Sales.Customer"; } }
+
+        public static string EmployeeTableName { get { return "HR.Employee"; } }
+
+        public string Proc1Name { get { return "Sales.CustomerWithOrdersByState"; } }
+
+        public string TableFunction1Name { get { return "Sales.CustomersByState"; } }
+
+        public string TableFunction2Name { get { return "Sales.CustomersByStateInline"; } }
+
+        public PostgreSqlDataSource AttachRules(PostgreSqlDataSource source)
+        {
+            return source.WithRules(
+                new DateTimeRule("CreatedDate", DateTimeKind.Local, OperationTypes.Insert),
+                new DateTimeRule("UpdatedDate", DateTimeKind.Local, OperationTypes.InsertOrUpdate),
+                new UserDataRule("CreatedByKey", "EmployeeKey", OperationTypes.Insert),
+                new UserDataRule("UpdatedByKey", "EmployeeKey", OperationTypes.InsertOrUpdate),
+                new ValidateWithValidatable(OperationTypes.InsertOrUpdate)
+                );
+        }
+
         public PostgreSqlDataSource DataSource(string name, [CallerMemberName] string caller = null)
         {
-            m_Output.WriteLine($"{caller} requested Data Source {name}");
+            WriteLine($"{caller} requested Data Source {name}");
 
             return AttachTracers(s_DataSources[name]);
         }
 
         public PostgreSqlDataSourceBase DataSource(string name, DataSourceType mode, [CallerMemberName] string caller = null)
         {
-            m_Output.WriteLine($"{caller} requested Data Source {name} with mode {mode}");
+            WriteLine($"{caller} requested Data Source {name} with mode {mode}");
 
             var ds = s_DataSources[name];
             switch (mode)
@@ -60,7 +74,7 @@ namespace Tests
 
         public async Task<PostgreSqlDataSourceBase> DataSourceAsync(string name, DataSourceType mode, [CallerMemberName] string caller = null)
         {
-            m_Output.WriteLine($"{caller} requested Data Source {name} with mode {mode}");
+            WriteLine($"{caller} requested Data Source {name} with mode {mode}");
 
             var ds = s_DataSources[name];
             switch (mode)
@@ -78,37 +92,17 @@ namespace Tests
         {
             if (e.ExecutionDetails is PostgreSqlExecutionToken)
             {
-                m_Output.WriteLine("");
-                m_Output.WriteLine("Command text: ");
-                m_Output.WriteLine(e.ExecutionDetails.CommandText);
-                //m_Output.Indent();
+                WriteLine("");
+                WriteLine("Command text: ");
+                WriteLine(e.ExecutionDetails.CommandText);
+                //Indent();
                 foreach (var item in ((PostgreSqlExecutionToken)e.ExecutionDetails).Parameters)
-                    m_Output.WriteLine(item.ParameterName + ": " + (item.Value == null || item.Value == DBNull.Value ? "<NULL>" : item.Value));
-                //m_Output.Unindent();
-                m_Output.WriteLine("******");
-                m_Output.WriteLine("");
+                    WriteLine(item.ParameterName + ": " + (item.Value == null || item.Value == DBNull.Value ? "<NULL>" : item.Value));
+                //Unindent();
+                WriteLine("******");
+                WriteLine("");
             }
         }
-
-        public PostgreSqlDataSource AttachRules(PostgreSqlDataSource source)
-        {
-            return source.WithRules(
-                new DateTimeRule("CreatedDate", DateTimeKind.Local, OperationTypes.Insert),
-                new DateTimeRule("UpdatedDate", DateTimeKind.Local, OperationTypes.InsertOrUpdate),
-                new UserDataRule("CreatedByKey", "EmployeeKey", OperationTypes.Insert),
-                new UserDataRule("UpdatedByKey", "EmployeeKey", OperationTypes.InsertOrUpdate),
-                new ValidateWithValidatable(OperationTypes.InsertOrUpdate)
-                );
-        }
-
-        public static string EmployeeTableName { get { return "HR.Employee"; } }
-        public static string CustomerTableName { get { return "Sales.Customer"; } }
-
-        public string Proc1Name { get { return "Sales.CustomerWithOrdersByState"; } }
-
-        public string TableFunction1Name { get { return "Sales.CustomersByState"; } }
-        public string TableFunction2Name { get { return "Sales.CustomersByStateInline"; } }
-
     }
 }
 
