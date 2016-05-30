@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Metadata;
 
-#if !WINDOWS_UWP
-//using System.Runtime.Caching;
-#endif
 
 namespace Tortuga.Chain
 {
@@ -172,12 +169,12 @@ namespace Tortuga.Chain
         /// <summary>
         /// Gets a record by its primary key.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TKey"></typeparam>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="key">The key.</param>
         /// <returns></returns>
         /// <remarks>This only works on tables that have a scalar primary key.</remarks>
-        ISingleRowDbCommandBuilder GetByKey<T>(string tableName, T key) where T : struct;
+        ISingleRowDbCommandBuilder GetByKey<TKey>(string tableName, TKey key) where TKey : struct;
 
 
         /// <summary>
@@ -192,12 +189,12 @@ namespace Tortuga.Chain
         /// <summary>
         /// Gets a set of records by their primary key.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TKey"></typeparam>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="keys">The keys.</param>
         /// <returns></returns>
         /// <remarks>This only works on tables that have a scalar primary key.</remarks>
-        IMultipleRowDbCommandBuilder GetByKey<T>(string tableName, params T[] keys);
+        IMultipleRowDbCommandBuilder GetByKey<TKey>(string tableName, params TKey[] keys);
 
         /// <summary>
         /// Gets a set of records by their primary key.
@@ -212,13 +209,124 @@ namespace Tortuga.Chain
         /// <summary>
         /// Gets a set of records by their primary key.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TKey"></typeparam>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="keys">The keys.</param>
         /// <returns></returns>
         /// <remarks>This only works on tables that have a scalar primary key.</remarks>
-        IMultipleRowDbCommandBuilder GetByKeyList<T>(string tableName, IEnumerable<T> keys);
+        IMultipleRowDbCommandBuilder GetByKeyList<TKey>(string tableName, IEnumerable<TKey> keys);
 
+
+
+        /// <summary>
+        /// Deletes by key.
+        /// </summary>
+        /// <typeparam name="TKey">The type of the t key.</typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="key">The key.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>ISingleRowDbCommandBuilder.</returns>
+        ISingleRowDbCommandBuilder DeleteByKey<TKey>(string tableName, TKey key, DeleteOptions options = DeleteOptions.None) where TKey : struct;
+
+        /// <summary>
+        /// Deletes by key.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="key">The key.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>ISingleRowDbCommandBuilder.</returns>
+        ISingleRowDbCommandBuilder DeleteByKey(string tableName, string key, DeleteOptions options = DeleteOptions.None);
+
+        /// <summary>
+        /// Deletes by key.
+        /// </summary>
+        /// <typeparam name="TKey">The type of the t key.</typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="keys">The keys.</param>
+        /// <returns>IMultipleRowDbCommandBuilder.</returns>
+        IMultipleRowDbCommandBuilder DeleteByKey<TKey>(string tableName, params TKey[] keys) where TKey : struct;
+
+        /// <summary>
+        /// Deletes by key.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="keys">The keys.</param>
+        /// <returns>IMultipleRowDbCommandBuilder.</returns>
+        IMultipleRowDbCommandBuilder DeleteByKey(string tableName, params string[] keys);
+
+        /// <summary>
+        /// Deletes by key.
+        /// </summary>
+        /// <typeparam name="TKey">The type of the t key.</typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="keys">The keys.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>IMultipleRowDbCommandBuilder.</returns>
+        IMultipleRowDbCommandBuilder DeleteByKeyList<TKey>(string tableName, IEnumerable<TKey> keys, DeleteOptions options = DeleteOptions.None);
+
+
+
+        /// <summary>
+        /// Delete a record by its primary key.
+        /// </summary>
+        /// <typeparam name="TArgument">The type of the t argument.</typeparam>
+        /// <typeparam name="TKey"></typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="newValues">The new values to use.</param>
+        /// <param name="key">The key.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
+        ISingleRowDbCommandBuilder UpdateByKey<TArgument, TKey>(string  tableName, TArgument newValues, TKey key, UpdateOptions options = UpdateOptions.None)
+            where TKey : struct;
+
+        /// <summary>
+        /// Delete a record by its primary key.
+        /// </summary>
+        /// <typeparam name="TArgument">The type of the t argument.</typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="newValues">The new values to use.</param>
+        /// <param name="key">The key.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
+        ISingleRowDbCommandBuilder UpdateByKey<TArgument>(string tableName, TArgument newValues, string key, UpdateOptions options = UpdateOptions.None);
+
+        /// <summary>
+        /// Delete multiple rows by key.
+        /// </summary>
+        /// <typeparam name="TArgument">The type of the t argument.</typeparam>
+        /// <typeparam name="TKey"></typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="newValues">The new values to use.</param>
+        /// <param name="keys">The keys.</param>
+        /// <returns></returns>
+        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
+        IMultipleRowDbCommandBuilder UpdateByKey<TArgument, TKey>(string tableName, TArgument newValues, params TKey[] keys)
+            where TKey : struct;
+
+        /// <summary>
+        /// Delete multiple rows by key.
+        /// </summary>
+        /// <typeparam name="TArgument">The type of the t argument.</typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="newValues">The new values to use.</param>
+        /// <param name="keys">The keys.</param>
+        /// <returns></returns>
+        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
+        IMultipleRowDbCommandBuilder UpdateByKey<TArgument>(string tableName, TArgument newValues, params string[] keys);
+
+
+        /// <summary>
+        /// Updates multiple rows by key.
+        /// </summary>
+        /// <typeparam name="TArgument">The type of the t argument.</typeparam>
+        /// <typeparam name="TKey">The type of the t key.</typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="newValues">The new values to use.</param>
+        /// <param name="keys">The keys.</param>
+        /// <param name="options">Update options.</param>
+        /// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
+        /// <exception cref="MappingException"></exception>
+        IMultipleRowDbCommandBuilder UpdateByKeyList<TArgument, TKey>(string tableName, TArgument newValues, IEnumerable<TKey> keys, UpdateOptions options = UpdateOptions.None);
 
     }
 }

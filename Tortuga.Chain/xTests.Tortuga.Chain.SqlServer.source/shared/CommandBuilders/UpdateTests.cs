@@ -193,7 +193,6 @@ namespace Tests.CommandBuilders
 
 #endif
 
-#if SQL_SERVER
 
         [Theory, MemberData("Prime")]
         public void UpdateByKey(string assemblyName, string dataSourceName, DataSourceType mode)
@@ -267,8 +266,6 @@ namespace Tests.CommandBuilders
 
         }
 
-
-#endif
 
 
     }

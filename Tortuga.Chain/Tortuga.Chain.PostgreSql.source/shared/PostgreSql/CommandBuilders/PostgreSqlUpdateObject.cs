@@ -45,10 +45,10 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
             var sql = new StringBuilder();
             if (m_Options.HasFlag(UpdateOptions.ReturnOldValues))
             {
-                sqlBuilder.BuildSelectByKeyStatement(sql, Table.Name.ToString(), ";");
+                sqlBuilder.BuildSelectByKeyStatement(sql, Table.Name.ToQuotedString(), ";");
                 sql.AppendLine();
             }
-            sqlBuilder.BuildUpdateByKeyStatement(sql, Table.Name.ToString(), null);
+            sqlBuilder.BuildUpdateByKeyStatement(sql, Table.Name.ToQuotedString(), null);
             if(!m_Options.HasFlag(UpdateOptions.ReturnOldValues))
             {
                 sqlBuilder.BuildSelectClause(sql, " RETURNING ", null, null);

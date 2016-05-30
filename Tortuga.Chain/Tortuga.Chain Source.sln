@@ -369,8 +369,8 @@ Global
 		{98F3B971-7741-43F0-9BE8-2A53F2A4F611}.Debug|x64.Build.0 = Debug|Any CPU
 		{98F3B971-7741-43F0-9BE8-2A53F2A4F611}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{98F3B971-7741-43F0-9BE8-2A53F2A4F611}.Debug|x86.Build.0 = Debug|Any CPU
-		{98F3B971-7741-43F0-9BE8-2A53F2A4F611}.Debug-Unchecked|Any CPU.ActiveCfg = Debug|Any CPU
-		{98F3B971-7741-43F0-9BE8-2A53F2A4F611}.Debug-Unchecked|Any CPU.Build.0 = Debug|Any CPU
+		{98F3B971-7741-43F0-9BE8-2A53F2A4F611}.Debug-Unchecked|Any CPU.ActiveCfg = Debug-Unchecked|Any CPU
+		{98F3B971-7741-43F0-9BE8-2A53F2A4F611}.Debug-Unchecked|Any CPU.Build.0 = Debug-Unchecked|Any CPU
 		{98F3B971-7741-43F0-9BE8-2A53F2A4F611}.Debug-Unchecked|ARM.ActiveCfg = Debug|Any CPU
 		{98F3B971-7741-43F0-9BE8-2A53F2A4F611}.Debug-Unchecked|ARM.Build.0 = Debug|Any CPU
 		{98F3B971-7741-43F0-9BE8-2A53F2A4F611}.Debug-Unchecked|x64.ActiveCfg = Debug|Any CPU
@@ -489,8 +489,8 @@ Global
 		{29250DD0-9A8E-49E9-BF19-5F45C54AC9FB}.Debug|x64.Build.0 = Debug|Any CPU
 		{29250DD0-9A8E-49E9-BF19-5F45C54AC9FB}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{29250DD0-9A8E-49E9-BF19-5F45C54AC9FB}.Debug|x86.Build.0 = Debug|Any CPU
-		{29250DD0-9A8E-49E9-BF19-5F45C54AC9FB}.Debug-Unchecked|Any CPU.ActiveCfg = Debug|Any CPU
-		{29250DD0-9A8E-49E9-BF19-5F45C54AC9FB}.Debug-Unchecked|Any CPU.Build.0 = Debug|Any CPU
+		{29250DD0-9A8E-49E9-BF19-5F45C54AC9FB}.Debug-Unchecked|Any CPU.ActiveCfg = Debug-Unchecked|Any CPU
+		{29250DD0-9A8E-49E9-BF19-5F45C54AC9FB}.Debug-Unchecked|Any CPU.Build.0 = Debug-Unchecked|Any CPU
 		{29250DD0-9A8E-49E9-BF19-5F45C54AC9FB}.Debug-Unchecked|ARM.ActiveCfg = Debug|Any CPU
 		{29250DD0-9A8E-49E9-BF19-5F45C54AC9FB}.Debug-Unchecked|ARM.Build.0 = Debug|Any CPU
 		{29250DD0-9A8E-49E9-BF19-5F45C54AC9FB}.Debug-Unchecked|x64.ActiveCfg = Debug|Any CPU
@@ -513,8 +513,8 @@ Global
 		{83313725-797D-4C95-AFDF-351F5B84EFC5}.Debug|x64.Build.0 = Debug|Any CPU
 		{83313725-797D-4C95-AFDF-351F5B84EFC5}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{83313725-797D-4C95-AFDF-351F5B84EFC5}.Debug|x86.Build.0 = Debug|Any CPU
-		{83313725-797D-4C95-AFDF-351F5B84EFC5}.Debug-Unchecked|Any CPU.ActiveCfg = Debug|Any CPU
-		{83313725-797D-4C95-AFDF-351F5B84EFC5}.Debug-Unchecked|Any CPU.Build.0 = Debug|Any CPU
+		{83313725-797D-4C95-AFDF-351F5B84EFC5}.Debug-Unchecked|Any CPU.ActiveCfg = Debug-Unchecked|Any CPU
+		{83313725-797D-4C95-AFDF-351F5B84EFC5}.Debug-Unchecked|Any CPU.Build.0 = Debug-Unchecked|Any CPU
 		{83313725-797D-4C95-AFDF-351F5B84EFC5}.Debug-Unchecked|ARM.ActiveCfg = Debug|Any CPU
 		{83313725-797D-4C95-AFDF-351F5B84EFC5}.Debug-Unchecked|ARM.Build.0 = Debug|Any CPU
 		{83313725-797D-4C95-AFDF-351F5B84EFC5}.Debug-Unchecked|x64.ActiveCfg = Debug|Any CPU

@@ -267,14 +267,14 @@ namespace Tortuga.Chain.SqlServer
         /// <summary>
         /// Gets a record by its primary key.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TKey"></typeparam>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="key">The key.</param>
         /// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
-        public SingleRowDbCommandBuilder<SqlCommand, SqlParameter> GetByKey<T>(SqlServerObjectName tableName, T key)
-            where T : struct
+        public SingleRowDbCommandBuilder<SqlCommand, SqlParameter> GetByKey<TKey>(SqlServerObjectName tableName, TKey key)
+            where TKey : struct
         {
-            return GetByKeyList(tableName, new List<T> { key });
+            return GetByKeyList(tableName, new List<TKey> { key });
         }
 
         /// <summary>
@@ -291,13 +291,13 @@ namespace Tortuga.Chain.SqlServer
         /// <summary>
         /// Gets a set of records by their primary key.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TKey"></typeparam>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="keys">The keys.</param>
         /// <returns></returns>
         /// <remarks>This only works on tables that have a scalar primary key.</remarks>
-        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> GetByKey<T>(SqlServerObjectName tableName, params T[] keys)
-            where T : struct
+        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> GetByKey<TKey>(SqlServerObjectName tableName, params TKey[] keys)
+            where TKey : struct
         {
             return GetByKeyList(tableName, keys);
         }
@@ -637,16 +637,16 @@ namespace Tortuga.Chain.SqlServer
         /// Delete a record by its primary key.
         /// </summary>
         /// <typeparam name="TArgument">The type of the t argument.</typeparam>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TKey"></typeparam>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="newValues">The new values to use.</param>
         /// <param name="key">The key.</param>
         /// <param name="options">The options.</param>
         /// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
-        public SingleRowDbCommandBuilder<SqlCommand, SqlParameter> UpdateByKey<TArgument, T>(SqlServerObjectName tableName, TArgument newValues, T key, UpdateOptions options = UpdateOptions.None)
-            where T : struct
+        public SingleRowDbCommandBuilder<SqlCommand, SqlParameter> UpdateByKey<TArgument, TKey>(SqlServerObjectName tableName, TArgument newValues, TKey key, UpdateOptions options = UpdateOptions.None)
+            where TKey : struct
         {
-            return UpdateByKeyList(tableName, newValues, new List<T> { key }, options);
+            return UpdateByKeyList(tableName, newValues, new List<TKey> { key }, options);
         }
 
         /// <summary>
@@ -667,14 +667,14 @@ namespace Tortuga.Chain.SqlServer
         /// Delete multiple rows by key.
         /// </summary>
         /// <typeparam name="TArgument">The type of the t argument.</typeparam>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TKey"></typeparam>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="newValues">The new values to use.</param>
         /// <param name="keys">The keys.</param>
         /// <returns></returns>
         /// <remarks>This only works on tables that have a scalar primary key.</remarks>
-        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> UpdateByKey<TArgument, T>(SqlServerObjectName tableName, TArgument newValues, params T[] keys)
-            where T : struct
+        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> UpdateByKey<TArgument, TKey>(SqlServerObjectName tableName, TArgument newValues, params TKey[] keys)
+            where TKey : struct
         {
             return UpdateByKeyList(tableName, newValues, keys);
         }

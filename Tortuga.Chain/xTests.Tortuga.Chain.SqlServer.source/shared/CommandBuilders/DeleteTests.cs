@@ -105,7 +105,6 @@ namespace Tests.CommandBuilders
 
         }
 
-#if SQL_SERVER
 
         [Theory, MemberData("Prime")]
         public void DeleteByKey(string assemblyName, string dataSourceName, DataSourceType mode)
@@ -161,9 +160,6 @@ namespace Tests.CommandBuilders
             }
 
         }
-
-
-#endif
 
 
     }
