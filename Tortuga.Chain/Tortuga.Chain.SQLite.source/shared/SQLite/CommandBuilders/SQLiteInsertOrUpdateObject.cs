@@ -29,7 +29,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
         /// <param name="tableName"></param>
         /// <param name="argumentValue"></param>
         /// <param name="options"></param>
-        public SQLiteInsertOrUpdateObject(SQLiteDataSourceBase dataSource, string tableName, TArgument argumentValue, UpsertOptions options)
+        public SQLiteInsertOrUpdateObject(SQLiteDataSourceBase dataSource, SQLiteObjectName tableName, TArgument argumentValue, UpsertOptions options)
             : base(dataSource, tableName, argumentValue)
         {
             m_Options = options;
@@ -50,10 +50,10 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
             var sql = new StringBuilder();
-            sqlBuilder.BuildUpdateByKeyStatement(sql, Table.Name, ";");
+            sqlBuilder.BuildUpdateByKeyStatement(sql, Table.Name.ToQuotedString(), ";");
             sql.AppendLine();
 
-            sqlBuilder.BuildInsertClause(sql, $"INSERT OR IGNORE INTO {Table.Name} (", null, ")");
+            sqlBuilder.BuildInsertClause(sql, $"INSERT OR IGNORE INTO {Table.Name.ToQuotedString()} (", null, ")");
             sqlBuilder.BuildValuesClause(sql, " VALUES (", ");");
             sql.AppendLine();
 
@@ -64,7 +64,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
                     throw new NotSupportedException("Cannot return data from a SQLite Upsert unless there is a single primary key.");
                 var key = keys[0];
 
-                sqlBuilder.BuildSelectClause(sql, "SELECT ", null, $" FROM {Table.Name} WHERE {key.QuotedSqlName} = CASE WHEN {key.SqlVariableName} IS NULL OR {key.SqlVariableName} = 0 THEN last_insert_rowid() ELSE {key.SqlVariableName} END;");
+                sqlBuilder.BuildSelectClause(sql, "SELECT ", null, $" FROM {Table.Name.ToQuotedString()} WHERE {key.QuotedSqlName} = CASE WHEN {key.SqlVariableName} IS NULL OR {key.SqlVariableName} = 0 THEN last_insert_rowid() ELSE {key.SqlVariableName} END;");
 
             }
 

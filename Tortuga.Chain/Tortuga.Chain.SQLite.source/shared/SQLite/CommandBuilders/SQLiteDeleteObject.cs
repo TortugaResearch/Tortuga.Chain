@@ -28,7 +28,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
         /// <param name="tableName">The table.</param>
         /// <param name="argumentValue">The argument value.</param>
         /// <param name="options">The options.</param>
-        public SQLiteDeleteObject(SQLiteDataSourceBase dataSource, string tableName, TArgument argumentValue, DeleteOptions options)
+        public SQLiteDeleteObject(SQLiteDataSourceBase dataSource, SQLiteObjectName tableName, TArgument argumentValue, DeleteOptions options)
             : base(dataSource, tableName, argumentValue)
         {
             m_Options = options;
@@ -49,9 +49,9 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
             var sql = new StringBuilder();
-            sqlBuilder.BuildSelectByKeyStatement(sql, Table.Name, ";");
+            sqlBuilder.BuildSelectByKeyStatement(sql, Table.Name.ToQuotedString(), ";");
             sql.AppendLine();
-            sqlBuilder.BuildDeleteStatement(sql, Table.Name, ";");
+            sqlBuilder.BuildDeleteStatement(sql, Table.Name.ToQuotedString(), ";");
 
             return new SQLiteCommandExecutionToken(DataSource, "Delete from " + Table.Name, sql.ToString(), sqlBuilder.GetParameters(), lockType: LockType.Write);
         }

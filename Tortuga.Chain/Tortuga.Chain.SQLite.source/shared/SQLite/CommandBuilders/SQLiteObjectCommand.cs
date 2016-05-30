@@ -24,16 +24,16 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
         /// <param name="dataSource">The data source.</param>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="argumentValue">The argument value.</param>
-        protected SQLiteObjectCommand(SQLiteDataSourceBase dataSource, string tableName, TArgument argumentValue)
+        protected SQLiteObjectCommand(SQLiteDataSourceBase dataSource, SQLiteObjectName tableName, TArgument argumentValue)
             : base(dataSource, argumentValue)
         {
-            Table = ((SQLiteDataSourceBase)DataSource).DatabaseMetadata.GetTableOrView(tableName);
+            Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
         }
 
         /// <summary>
         /// Gets the table metadata.
         /// </summary>
-        public TableOrViewMetadata<string, DbType> Table { get; }
+        public TableOrViewMetadata<SQLiteObjectName, DbType> Table { get; }
 
         /// <summary>
         /// Returns the column associated with the column name.

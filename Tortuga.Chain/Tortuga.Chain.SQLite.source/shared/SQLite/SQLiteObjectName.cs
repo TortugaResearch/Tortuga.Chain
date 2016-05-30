@@ -1,26 +1,26 @@
 ﻿using System;
 using System.Globalization;
 
-namespace Tortuga.Chain.Access
+namespace Tortuga.Chain.SQLite
 {
     /// <summary>
-    /// Represents an object in Acces (e.g. table, view, procedure)
+    /// Represents an object in SQLite (e.g. table, view, procedure)
     /// </summary>
-    public struct AccessObjectName
+    public struct SQLiteObjectName
     {
         /// <summary>
         /// An empty schema/name pair
         /// </summary>
-        public static readonly AccessObjectName Empty;
+        public static readonly SQLiteObjectName Empty;
 
         readonly string m_Name;
 
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AccessObjectName" /> struct.
+        /// Initializes a new instance of the <see cref="SQLiteObjectName" /> struct.
         /// </summary>
         /// <param name="name">The name.</param>
-        public AccessObjectName(string name)
+        public SQLiteObjectName(string name)
         {
             m_Name = Normalize(name);
         }
@@ -39,15 +39,15 @@ namespace Tortuga.Chain.Access
         }
 
         /// <summary>
-        /// Performs an implicit conversion from <see cref="string"/> to <see cref="AccessObjectName"/>.
+        /// Performs an implicit conversion from <see cref="string"/> to <see cref="SQLiteObjectName"/>.
         /// </summary>
         /// <param name="value">The value.</param>
         /// <returns>
         /// The result of the conversion.
         /// </returns>
-        public static implicit operator AccessObjectName(string value)
+        public static implicit operator SQLiteObjectName(string value)
         {
-            return new AccessObjectName(value);
+            return new SQLiteObjectName(value);
         }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace Tortuga.Chain.Access
         /// The result of the operator.
         /// </returns>
         /// <remarks>This is a case-insensitive comparison.</remarks>
-        public static bool operator !=(AccessObjectName left, AccessObjectName right)
+        public static bool operator !=(SQLiteObjectName left, SQLiteObjectName right)
         {
             return !(left == right);
         }
@@ -73,7 +73,7 @@ namespace Tortuga.Chain.Access
         /// The result of the operator.
         /// </returns>
         /// <remarks>This is a case-insensitive comparison.</remarks>
-        public static bool operator ==(AccessObjectName left, AccessObjectName right)
+        public static bool operator ==(SQLiteObjectName left, SQLiteObjectName right)
         {
             return string.Equals(left.Name, right.Name, StringComparison.OrdinalIgnoreCase);
         }
@@ -88,7 +88,7 @@ namespace Tortuga.Chain.Access
         /// <remarks>This is a case-insensitive comparison.</remarks>
         public override bool Equals(object obj)
         {
-            var other = obj as AccessObjectName?;
+            var other = obj as SQLiteObjectName?;
             if (other == null)
                 return false;
             return this == other;
@@ -100,7 +100,7 @@ namespace Tortuga.Chain.Access
         /// <param name="other"></param>
         /// <returns></returns>
         /// <remarks>This is a case-insensitive comparison.</remarks>
-        public bool Equals(AccessObjectName other)
+        public bool Equals(SQLiteObjectName other)
         {
             return this == other;
         }
@@ -123,7 +123,8 @@ namespace Tortuga.Chain.Access
         /// <returns></returns>
         public string ToQuotedString()
         {
-            return $"[{Name}]";
+            return Name;
+            //return $"[{Name}]";
         }
 
         /// <summary>

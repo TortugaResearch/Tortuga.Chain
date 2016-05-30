@@ -79,7 +79,7 @@ namespace Tortuga.Chain.SQLite
         /// <param name="argumentValue"></param>
         /// <param name="options"></param>
         /// <returns></returns>
-        public ObjectDbCommandBuilder<SQLiteCommand, SQLiteParameter, TArgument> Delete<TArgument>(string tableName, TArgument argumentValue, DeleteOptions options = DeleteOptions.None)
+        public ObjectDbCommandBuilder<SQLiteCommand, SQLiteParameter, TArgument> Delete<TArgument>(SQLiteObjectName tableName, TArgument argumentValue, DeleteOptions options = DeleteOptions.None)
         where TArgument : class
         {
             var table = DatabaseMetadata.GetTableOrView(tableName);
@@ -98,7 +98,7 @@ namespace Tortuga.Chain.SQLite
         /// </summary>
         /// <param name="tableOrViewName"></param>
         /// <returns></returns>
-        public TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> From(string tableOrViewName)
+        public TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> From(SQLiteObjectName tableOrViewName)
         {
             return new SQLiteTableOrView(this, tableOrViewName, null, null);
         }
@@ -109,7 +109,7 @@ namespace Tortuga.Chain.SQLite
         /// <param name="tableOrViewName"></param>
         /// <param name="whereClause"></param>
         /// <returns></returns>
-        public TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> From(string tableOrViewName, string whereClause)
+        public TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> From(SQLiteObjectName tableOrViewName, string whereClause)
         {
             return new SQLiteTableOrView(this, tableOrViewName, whereClause, null);
         }
@@ -121,7 +121,7 @@ namespace Tortuga.Chain.SQLite
         /// <param name="whereClause"></param>
         /// <param name="argumentValue"></param>
         /// <returns></returns>
-        public TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> From(string tableOrViewName, string whereClause, object argumentValue)
+        public TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> From(SQLiteObjectName tableOrViewName, string whereClause, object argumentValue)
         {
             return new SQLiteTableOrView(this, tableOrViewName, whereClause, argumentValue);
         }
@@ -132,7 +132,7 @@ namespace Tortuga.Chain.SQLite
         /// <param name="tableOrViewName"></param>
         /// <param name="filterValue"></param>
         /// <returns></returns>
-        public TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> From(string tableOrViewName, object filterValue)
+        public TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> From(SQLiteObjectName tableOrViewName, object filterValue)
         {
             return new SQLiteTableOrView(this, tableOrViewName, filterValue);
         }
@@ -209,7 +209,7 @@ namespace Tortuga.Chain.SQLite
         /// <param name="argumentValue">The argument value.</param>
         /// <param name="options">The options.</param>
         /// <returns></returns>
-        public ObjectDbCommandBuilder<SQLiteCommand, SQLiteParameter, TArgument> Insert<TArgument>(string tableName, TArgument argumentValue, InsertOptions options = InsertOptions.None)
+        public ObjectDbCommandBuilder<SQLiteCommand, SQLiteParameter, TArgument> Insert<TArgument>(SQLiteObjectName tableName, TArgument argumentValue, InsertOptions options = InsertOptions.None)
         where TArgument : class
         {
             return new SQLiteInsertObject<TArgument>(this, tableName, argumentValue, options);
@@ -222,7 +222,7 @@ namespace Tortuga.Chain.SQLite
         /// <param name="argumentValue"></param>
         /// <param name="options"></param>
         /// <returns></returns>
-        public ObjectDbCommandBuilder<SQLiteCommand, SQLiteParameter, TArgument> Upsert<TArgument>(string tableName, TArgument argumentValue, UpsertOptions options = UpsertOptions.None)
+        public ObjectDbCommandBuilder<SQLiteCommand, SQLiteParameter, TArgument> Upsert<TArgument>(SQLiteObjectName tableName, TArgument argumentValue, UpsertOptions options = UpsertOptions.None)
         where TArgument : class
         {
             return new SQLiteInsertOrUpdateObject<TArgument>(this, tableName, argumentValue, options);
@@ -235,7 +235,7 @@ namespace Tortuga.Chain.SQLite
         /// <param name="argumentValue"></param>
         /// <param name="options"></param>
         /// <returns></returns>
-        public ObjectDbCommandBuilder<SQLiteCommand, SQLiteParameter, TArgument> Update<TArgument>(string tableName, TArgument argumentValue, UpdateOptions options = UpdateOptions.None)
+        public ObjectDbCommandBuilder<SQLiteCommand, SQLiteParameter, TArgument> Update<TArgument>(SQLiteObjectName tableName, TArgument argumentValue, UpdateOptions options = UpdateOptions.None)
         where TArgument : class
         {
             return new SQLiteUpdateObject<TArgument>(this, tableName, argumentValue, options);
@@ -275,7 +275,7 @@ namespace Tortuga.Chain.SQLite
         /// <param name="tableName">Name of the table.</param>
         /// <param name="key">The key.</param>
         /// <returns>MultipleRowDbCommandBuilder&lt;SQLiteCommand, SQLiteParameter&gt;.</returns>
-        public SingleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> GetByKey<T>(string tableName, T key)
+        public SingleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> GetByKey<T>(SQLiteObjectName tableName, T key)
             where T : struct
         {
             return GetByKeyList(tableName, new List<T> { key });
@@ -287,7 +287,7 @@ namespace Tortuga.Chain.SQLite
         /// <param name="tableName">Name of the table.</param>
         /// <param name="key">The key.</param>
         /// <returns>MultipleRowDbCommandBuilder&lt;SQLiteCommand, SQLiteParameter&gt;.</returns>
-        public SingleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> GetByKey(string tableName, string key)
+        public SingleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> GetByKey(SQLiteObjectName tableName, string key)
         {
             return GetByKeyList(tableName, new List<string> { key });
         }
@@ -300,7 +300,7 @@ namespace Tortuga.Chain.SQLite
         /// <param name="keys">The keys.</param>
         /// <returns></returns>
         /// <remarks>This only works on tables that have a scalar primary key.</remarks>
-        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> GetByKey<T>(string tableName, params T[] keys)
+        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> GetByKey<T>(SQLiteObjectName tableName, params T[] keys)
             where T : struct
         {
             return GetByKeyList(tableName, keys);
@@ -313,7 +313,7 @@ namespace Tortuga.Chain.SQLite
         /// <param name="keys">The keys.</param>
         /// <returns></returns>
         /// <remarks>This only works on tables that have a scalar primary key.</remarks>
-        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> GetByKey(string tableName, params string[] keys)
+        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> GetByKey(SQLiteObjectName tableName, params string[] keys)
         {
             return GetByKeyList(tableName, keys);
         }
@@ -326,7 +326,7 @@ namespace Tortuga.Chain.SQLite
         /// <param name="keys">The keys.</param>
         /// <returns></returns>
         /// <remarks>This only works on tables that have a scalar primary key.</remarks>
-        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> GetByKeyList<T>(string tableName, IEnumerable<T> keys)
+        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> GetByKeyList<T>(SQLiteObjectName tableName, IEnumerable<T> keys)
         {
             var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).Columns.Where(c => c.IsPrimaryKey).ToList();
             if (primaryKeys.Count != 1)

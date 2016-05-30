@@ -27,7 +27,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
         /// <param name="tableName">Name of the table.</param>
         /// <param name="argumentValue">The argument value.</param>
         /// <param name="options">The options.</param>
-        public SQLiteInsertObject(SQLiteDataSourceBase dataSource, string tableName, TArgument argumentValue, InsertOptions options)
+        public SQLiteInsertObject(SQLiteDataSourceBase dataSource, SQLiteObjectName tableName, TArgument argumentValue, InsertOptions options)
             : base(dataSource, tableName, argumentValue)
         {
             m_Options = options;
@@ -48,9 +48,9 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
             var sql = new StringBuilder();
-            sqlBuilder.BuildInsertStatement(sql, Table.Name, ";");
+            sqlBuilder.BuildInsertStatement(sql, Table.Name.ToQuotedString(), ";");
             sql.AppendLine();
-            sqlBuilder.BuildSelectClause(sql, "SELECT ", null, $" FROM {Table.Name} WHERE ROWID=last_insert_rowid();");
+            sqlBuilder.BuildSelectClause(sql, "SELECT ", null, $" FROM {Table.Name.ToQuotedString()} WHERE ROWID=last_insert_rowid();");
 
             return new SQLiteCommandExecutionToken(DataSource, "Insert into " + Table.Name, sql.ToString(), sqlBuilder.GetParameters(), lockType: LockType.Write);
         }

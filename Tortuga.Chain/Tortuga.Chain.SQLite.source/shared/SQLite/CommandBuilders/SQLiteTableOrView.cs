@@ -23,7 +23,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
     /// </summary>
     internal sealed class SQLiteTableOrView : TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption>
     {
-        readonly TableOrViewMetadata<string, DbType> m_Table;
+        readonly TableOrViewMetadata<SQLiteObjectName, DbType> m_Table;
         private object m_FilterValue;
         private string m_WhereClause;
         private object m_ArgumentValue;
@@ -41,14 +41,11 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
         /// <param name="dataSource"></param>
         /// <param name="tableOrViewName"></param>
         /// <param name="filterValue"></param>
-        public SQLiteTableOrView(SQLiteDataSourceBase dataSource, string tableOrViewName, object filterValue) :
+        public SQLiteTableOrView(SQLiteDataSourceBase dataSource, SQLiteObjectName tableOrViewName, object filterValue) :
             base(dataSource)
         {
-            if (string.IsNullOrEmpty(tableOrViewName))
-                throw new ArgumentException("table/view name string is empty");
-
             m_FilterValue = filterValue;
-            m_Table = ((SQLiteDataSourceBase)DataSource).DatabaseMetadata.GetTableOrView(tableOrViewName);
+            m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableOrViewName);
         }
 
         /// <summary>
@@ -58,15 +55,12 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
         /// <param name="tableOrViewName"></param>
         /// <param name="whereClause"></param>
         /// <param name="argumentValue"></param>
-        public SQLiteTableOrView(SQLiteDataSourceBase dataSource, string tableOrViewName, string whereClause, object argumentValue) :
+        public SQLiteTableOrView(SQLiteDataSourceBase dataSource, SQLiteObjectName tableOrViewName, string whereClause, object argumentValue) :
             base(dataSource)
         {
-            if (string.IsNullOrEmpty(tableOrViewName))
-                throw new ArgumentException("table/view name string is empty");
-
             m_ArgumentValue = argumentValue;
             m_WhereClause = whereClause;
-            m_Table = ((SQLiteDataSourceBase)DataSource).DatabaseMetadata.GetTableOrView(tableOrViewName);
+            m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableOrViewName);
         }
 
         /// <summary>

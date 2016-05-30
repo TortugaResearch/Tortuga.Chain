@@ -19,12 +19,12 @@ namespace Tortuga.Chain.SQLite
     /// <summary>
     /// Handles caching of metadata for various SQLite tables and views.
     /// </summary>
-    public sealed class SQLiteMetadataCache : DatabaseMetadataCache<string, DbType>
+    public sealed class SQLiteMetadataCache : DatabaseMetadataCache<SQLiteObjectName, DbType>
     {
         readonly SQLiteConnectionStringBuilder m_ConnectionBuilder;
-        readonly ConcurrentDictionary<string, TableOrViewMetadata<string, DbType>> m_Tables = new ConcurrentDictionary<string, TableOrViewMetadata<string, DbType>>(StringComparer.OrdinalIgnoreCase);
+        readonly ConcurrentDictionary<SQLiteObjectName, TableOrViewMetadata<SQLiteObjectName, DbType>> m_Tables = new ConcurrentDictionary<SQLiteObjectName, TableOrViewMetadata<SQLiteObjectName, DbType>>();
 
-        readonly ConcurrentDictionary<Type, TableOrViewMetadata<string, DbType>> m_TypeTableMap = new ConcurrentDictionary<Type, TableOrViewMetadata<string, DbType>>();
+        readonly ConcurrentDictionary<Type, TableOrViewMetadata<SQLiteObjectName, DbType>> m_TypeTableMap = new ConcurrentDictionary<Type, TableOrViewMetadata<SQLiteObjectName, DbType>>();
 
 
         /// <summary>
@@ -41,12 +41,12 @@ namespace Tortuga.Chain.SQLite
         /// </summary>
         /// <param name="tableName"></param>
         /// <returns></returns>
-        public override TableOrViewMetadata<string, DbType> GetTableOrView(string tableName)
+        public override TableOrViewMetadata<SQLiteObjectName, DbType> GetTableOrView(SQLiteObjectName tableName)
         {
             return m_Tables.GetOrAdd(tableName, GetTableOrViewInternal);
         }
 
-        private TableOrViewMetadata<string, DbType> GetTableOrViewInternal(string tableName)
+        private TableOrViewMetadata<SQLiteObjectName, DbType> GetTableOrViewInternal(SQLiteObjectName tableName)
         {
             const string tableSql =
                 @"SELECT 
@@ -78,7 +78,7 @@ namespace Tortuga.Chain.SQLite
             }
 
             var columns = GetColumns(tableName, isTable);
-            return new TableOrViewMetadata<string, DbType>(actualName, isTable, columns);
+            return new TableOrViewMetadata<SQLiteObjectName, DbType>(actualName, isTable, columns);
         }
 
         /// <summary>
@@ -140,13 +140,13 @@ namespace Tortuga.Chain.SQLite
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
-        private List<ColumnMetadata<DbType>> GetColumns(string tableName, bool isTable)
+        private List<ColumnMetadata<DbType>> GetColumns(SQLiteObjectName tableName, bool isTable)
         {
             /*  NOTE: Should be safe since GetTableOrViewInternal returns null after querying the table name with a 
             **  prepared statement, thus proving that the table name exists. 
             */
             var hasPrimarykey = false;
-            var columnSql = $"PRAGMA table_info('{tableName}')";
+            var columnSql = $"PRAGMA table_info('{tableName.Name}')";
 
             var columns = new List<ColumnMetadata<DbType>>();
             using (var con = new SQLiteConnection(m_ConnectionBuilder.ConnectionString))
@@ -183,9 +183,9 @@ namespace Tortuga.Chain.SQLite
         /// </summary>
         /// <param name="name">The name.</param>
         /// <returns>System.String.</returns>
-        protected override string ParseObjectName(string name)
+        protected override SQLiteObjectName ParseObjectName(string name)
         {
-            return name;
+            return new SQLiteObjectName(name);
         }
 
         /// <summary>
@@ -204,7 +204,7 @@ namespace Tortuga.Chain.SQLite
         /// <remarks>
         /// Call Preload before invoking this method to ensure that all tables and views were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.
         /// </remarks>
-        public override IReadOnlyCollection<TableOrViewMetadata<string, DbType>> GetTablesAndViews()
+        public override IReadOnlyCollection<TableOrViewMetadata<SQLiteObjectName, DbType>> GetTablesAndViews()
         {
             return m_Tables.GetValues();
         }
@@ -214,10 +214,10 @@ namespace Tortuga.Chain.SQLite
         /// </summary>
         /// <typeparam name="TObject">The type of the object.</typeparam>
         /// <returns>TableOrViewMetadata&lt;System.String, DbType&gt;.</returns>
-        public override TableOrViewMetadata<string, DbType> GetTableOrViewFromClass<TObject>()
+        public override TableOrViewMetadata<SQLiteObjectName, DbType> GetTableOrViewFromClass<TObject>()
         {
             var type = typeof(TObject);
-            TableOrViewMetadata<string, DbType> result;
+            TableOrViewMetadata<SQLiteObjectName, DbType> result;
             if (m_TypeTableMap.TryGetValue(type, out result))
                 return result;
 

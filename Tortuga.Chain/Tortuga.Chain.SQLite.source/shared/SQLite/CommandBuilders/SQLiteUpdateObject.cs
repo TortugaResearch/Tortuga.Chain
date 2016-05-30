@@ -28,7 +28,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
         /// <param name="tableName">Name of the table.</param>
         /// <param name="argumentValue">The argument value.</param>
         /// <param name="options">The options.</param>
-        public SQLiteUpdateObject(SQLiteDataSourceBase dataSource, string tableName, TArgument argumentValue, UpdateOptions options)
+        public SQLiteUpdateObject(SQLiteDataSourceBase dataSource, SQLiteObjectName tableName, TArgument argumentValue, UpdateOptions options)
             : base(dataSource, tableName, argumentValue)
         {
             m_Options = options;
@@ -51,14 +51,14 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
             var sql = new StringBuilder();
             if (m_Options.HasFlag(UpdateOptions.ReturnOldValues))
             {
-                sqlBuilder.BuildSelectByKeyStatement(sql, Table.Name, ";");
+                sqlBuilder.BuildSelectByKeyStatement(sql, Table.Name.ToQuotedString(), ";");
                 sql.AppendLine();
             }
-            sqlBuilder.BuildUpdateByKeyStatement(sql, Table.Name, ";");
+            sqlBuilder.BuildUpdateByKeyStatement(sql, Table.Name.ToQuotedString(), ";");
             if (!m_Options.HasFlag(UpdateOptions.ReturnOldValues))
             {
                 sql.AppendLine();
-                sqlBuilder.BuildSelectByKeyStatement(sql, Table.Name, ";");
+                sqlBuilder.BuildSelectByKeyStatement(sql, Table.Name.ToQuotedString(), ";");
             }
 
             return new SQLiteCommandExecutionToken(DataSource, "Update " + Table.Name, sql.ToString(), sqlBuilder.GetParameters(), lockType: LockType.Write).CheckUpdateRowCount(m_Options);
