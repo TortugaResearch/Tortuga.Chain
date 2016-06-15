@@ -65,5 +65,3 @@ namespace Tortuga.Chain.Access.CommandBuilders
 
     }
 }
-
-

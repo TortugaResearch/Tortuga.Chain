@@ -2,10 +2,11 @@
 using NpgsqlTypes;
 using System;
 using System.Collections.Generic;
+using System.Text;
 using Tortuga.Chain.CommandBuilders;
-using Tortuga.Chain.Metadata;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
+using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.PostgreSql.CommandBuilders
 {
@@ -40,7 +41,21 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 
         public override CommandExecutionToken<NpgsqlCommand, NpgsqlParameter> Prepare(Materializer<NpgsqlCommand, NpgsqlParameter> materializer)
         {
-            throw new NotImplementedException();
+            if (materializer == null)
+                throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
+
+            var sqlBuilder = m_Table.CreateSqlBuilder(StrictMode);
+            sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
+
+            var sql = new StringBuilder();
+            sql.Append("DELETE FROM " + m_Table.Name.ToQuotedString());
+            sql.Append(" WHERE " + m_WhereClause);
+            sqlBuilder.BuildSelectClause(sql, " RETURNING ", null, ";");
+
+            var parameters = sqlBuilder.GetParameters();
+            parameters.AddRange(m_Parameters);
+
+            return new PostgreSqlExecutionToken(DataSource, "Delete from " + m_Table.Name, sql.ToString(), parameters);
         }
 
 

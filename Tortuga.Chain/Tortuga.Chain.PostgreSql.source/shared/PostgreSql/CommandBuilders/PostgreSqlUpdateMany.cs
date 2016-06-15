@@ -74,7 +74,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
             if (m_Parameters != null)
                 parameters.AddRange(m_Parameters);
 
-            return new PostgreSqlExecutionToken(DataSource, "Update " + m_Table.Name, sql.ToString(), parameters).CheckUpdateRowCount(m_Options);
+            return new PostgreSqlExecutionToken(DataSource, "Update " + m_Table.Name, sql.ToString(), parameters).CheckUpdateRowCount(m_Options, m_ExpectedRowCount);
         }
 
 
