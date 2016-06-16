@@ -1,7 +1,7 @@
 ﻿namespace Tests.Models
 {
     /// <summary>
-    /// This is used to test immutable object constuctors
+    /// This is used to test immutable object constructors
     /// </summary>
     public class EmployeeLookup
     {
