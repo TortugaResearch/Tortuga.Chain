@@ -564,7 +564,7 @@ namespace Tortuga.Chain.SqlServer
                 const string ParameterSql =
                     @"SELECT  p.name AS ParameterName ,
             COALESCE(t.name, t2.name) AS TypeName,
-			p.is_nullable,
+			COALESCE(t.is_nullable, t2.is_nullable)  as is_nullable,
 		    CONVERT(INT, t.max_length) AS max_length, 
 		    CONVERT(INT, t.precision) AS precision,
 		    CONVERT(INT, t.scale) AS scale
