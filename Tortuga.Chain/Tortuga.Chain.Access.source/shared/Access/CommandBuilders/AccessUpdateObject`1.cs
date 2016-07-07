@@ -40,8 +40,6 @@ namespace Tortuga.Chain.Access.CommandBuilders
             if (materializer == null)
                 throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
 
-            var desiredColumns = materializer.DesiredColumns();
-
             var sqlBuilder = Table.CreateSqlBuilder(StrictMode);
             sqlBuilder.ApplyArgumentValue(DataSource, ArgumentValue, m_Options);
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
@@ -55,6 +53,7 @@ namespace Tortuga.Chain.Access.CommandBuilders
             var updateCommand = new AccessCommandExecutionToken(DataSource, "Update " + Table.Name, sql.ToString(), sqlBuilder.GetParametersKeysLast()).CheckUpdateRowCount(m_Options);
             updateCommand.ExecutionMode = AccessCommandExecutionMode.NonQuery;
 
+            var desiredColumns = materializer.DesiredColumns();
             if (desiredColumns == Materializer.NoColumns)
                 return updateCommand;
 

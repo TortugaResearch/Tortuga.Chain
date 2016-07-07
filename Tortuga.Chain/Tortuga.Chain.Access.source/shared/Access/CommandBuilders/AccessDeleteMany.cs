@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.OleDb;
+using System.Linq;
+using System.Text;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
@@ -39,9 +41,56 @@ namespace Tortuga.Chain.Access.CommandBuilders
 
         public override CommandExecutionToken<OleDbCommand, OleDbParameter> Prepare(Materializer<OleDbCommand, OleDbParameter> materializer)
         {
-            throw new NotImplementedException();
-        }
+            if (materializer == null)
+                throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
 
+            var sqlBuilder = m_Table.CreateSqlBuilder(StrictMode);
+            sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
+
+            var sql = new StringBuilder();
+
+
+
+            sql.Append("DELETE FROM " + m_Table.Name.ToQuotedString());
+            sql.AppendLine(" WHERE " + m_WhereClause + ";");
+
+            var parameters = sqlBuilder.GetParameters();
+            if (m_Parameters != null)
+                parameters.AddRange(m_Parameters);
+
+            var deleteCommand = new AccessCommandExecutionToken(DataSource, "Delete from " + m_Table.Name, sql.ToString(), parameters);
+
+            var desiredColumns = materializer.DesiredColumns();
+            if (desiredColumns == Materializer.NoColumns)
+                return deleteCommand;
+
+            var result = PrepareRead(desiredColumns);
+            result.NextCommand = deleteCommand;
+            return result;
+
+            //var sqlBuilder2 
+
+            //    sqlBuilder.BuildSelectClause(sql, "SELECT ", null, " FROM " + m_Table.Name.ToQuotedString());
+            //    sql.AppendLine(" WHERE " + m_WhereClause + ";");
+
+        }
+        private AccessCommandExecutionToken PrepareRead(IReadOnlyList<string> desiredColumns)
+        {
+            var sqlBuilder = m_Table.CreateSqlBuilder(StrictMode);
+            sqlBuilder.ApplyDesiredColumns(desiredColumns);
+
+            var sql = new StringBuilder();
+            sqlBuilder.BuildSelectClause(sql, "SELECT ", null, null);
+            sql.Append(" FROM " + m_Table.Name.ToQuotedString());
+            sql.AppendLine(" WHERE " + m_WhereClause + ";");
+
+            var parameters = sqlBuilder.GetParameters();
+            if (m_Parameters != null)
+                parameters.AddRange(m_Parameters.Select(p => p.Clone()));
+
+
+            return new AccessCommandExecutionToken(DataSource, "Query after deleting " + m_Table.Name, sql.ToString(), parameters);
+        }
 
 
         /// <summary>

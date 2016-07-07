@@ -40,5 +40,24 @@ namespace Tortuga.Chain.Access
                 return result;
             });
         }
+
+        public static OleDbParameter Clone(this OleDbParameter original)
+        {
+            return new OleDbParameter()
+            {
+                 DbType = original.DbType,
+                 Direction=original.Direction,
+                 IsNullable=original.IsNullable,
+                 OleDbType=original.OleDbType,
+                 ParameterName=original.ParameterName,
+                 Precision=original.Precision,
+                 Scale=original.Scale,
+                 Size=original.Size,
+                 SourceColumn=original.SourceColumn,
+                 SourceColumnNullMapping=original.SourceColumnNullMapping,
+                 SourceVersion=original.SourceVersion,
+                 Value=original.Value 
+            };
+        }
     }
 }
