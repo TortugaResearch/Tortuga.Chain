@@ -4,4 +4,4 @@
 [assembly: AssemblyDescription("Lightweight CSV Serializer/Deserializer for use with Tortuga Chain.")]
 
 [assembly: AssemblyCulture("")]
-[assembly: AssemblyVersion("0.1.*")]
+[assembly: AssemblyVersion("0.2.*")]

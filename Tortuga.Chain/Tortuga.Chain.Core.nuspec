@@ -30,15 +30,17 @@
 
     <dependencies>
       <group targetFramework="net45">
-        <dependency id="System.Collections.Immutable" version="1.1.37" />
+        <dependency id="System.Collections.Immutable" version="1.2.0" />
         <dependency id="Tortuga.Anchor" version="0.8.5985.31190" />
       </group>
       <group targetFramework="net46">
-        <dependency id="System.Collections.Immutable" version="1.1.37" />
+        <dependency id="System.Collections.Immutable" version="1.2.0" />
         <dependency id="Tortuga.Anchor" version="0.8.5985.31190" />
       </group>
       <group targetFramework="uap10">
         <dependency id="Tortuga.Anchor" version="0.8.5985.31190" />
+        <dependency id="System.Data.Common" version="4.1.0" />
+        <dependency id="Microsoft.NETCore.UniversalWindowsPlatform" version="5.1.0" />
       </group>
     </dependencies>
 

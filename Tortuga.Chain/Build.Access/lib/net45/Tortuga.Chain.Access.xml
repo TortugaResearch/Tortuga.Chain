@@ -288,17 +288,6 @@
             </summary>
             <value>The database metadata.</value>
         </member>
-        <member name="P:Tortuga.Chain.Access.AccessDataSourceBase.Tortuga#Chain#IClass1DataSource#DatabaseMetadata">
-            <summary>
-            Gets the database metadata.
-            </summary>
-            <value>
-            The database metadata.
-            </value>
-            <remarks>
-            Data sources are expected to shadow this with their specific version.
-            </remarks>
-        </member>
         <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.Delete``1(Tortuga.Chain.Access.AccessObjectName,``0,Tortuga.Chain.DeleteOptions)">
             <summary>
             Creates a <see cref="T:Tortuga.Chain.Access.CommandBuilders.AccessDeleteObject`1" /> used to perform a delete operation.
@@ -306,6 +295,15 @@
             <param name="tableName"></param>
             <param name="argumentValue"></param>
             <param name="options"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.Delete``1(``0,Tortuga.Chain.DeleteOptions)">
+            <summary>
+            Deletes an object model from the table indicated by the class's Table attribute.
+            </summary>
+            <typeparam name="TArgument"></typeparam>
+            <param name="argumentValue">The argument value.</param>
+            <param name="options">The delete options.</param>
             <returns></returns>
         </member>
         <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.From(Tortuga.Chain.Access.AccessObjectName)">
@@ -340,78 +338,6 @@
             <param name="filterValue"></param>
             <returns></returns>
         </member>
-        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.Sql(System.String)">
-            <summary>
-            Creates a operation based on a raw SQL statement.
-            </summary>
-            <param name="sqlStatement">The SQL statement.</param>
-            <returns>AccessSqlCall.</returns>
-        </member>
-        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.Sql(System.String,System.Object)">
-            <summary>
-            Creates a operation based on a raw SQL statement.
-            </summary>
-            <param name="sqlStatement">The SQL statement.</param>
-            <param name="argumentValue">The argument value.</param>
-            <returns>AccessSqlCall.</returns>
-        </member>
-        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.Insert``1(Tortuga.Chain.Access.AccessObjectName,``0,Tortuga.Chain.InsertOptions)">
-            <summary>
-            Creates a <see cref="T:Tortuga.Chain.Access.CommandBuilders.AccessInsertObject`1" /> used to perform an insert operation.
-            </summary>
-            <param name="tableName">Name of the table.</param>
-            <param name="argumentValue">The argument value.</param>
-            <param name="options">The options.</param>
-            <returns></returns>
-        </member>
-        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.Update``1(Tortuga.Chain.Access.AccessObjectName,``0,Tortuga.Chain.UpdateOptions)">
-            <summary>
-            Creates a <see cref="T:Tortuga.Chain.Access.CommandBuilders.AccessUpdateObject`1" /> used to perform an update operation.
-            </summary>
-            <param name="tableName"></param>
-            <param name="argumentValue"></param>
-            <param name="options"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.GetByKey``1(System.String,``0)">
-            <summary>
-            Gets a record by its primary key.
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="tableName">Name of the table.</param>
-            <param name="key">The key.</param>
-            <returns></returns>
-            <remarks>This only works on tables that have a scalar primary key.</remarks>
-        </member>
-        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.GetByKey``1(Tortuga.Chain.Access.AccessObjectName,``0[])">
-            <summary>
-            Gets a set of records by their primary key.
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="tableName">Name of the table.</param>
-            <param name="keys">The keys.</param>
-            <returns></returns>
-            <remarks>This only works on tables that have a scalar primary key.</remarks>
-        </member>
-        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.GetByKey``1(Tortuga.Chain.Access.AccessObjectName,System.Collections.Generic.IEnumerable{``0})">
-            <summary>
-            Gets a set of records by their primary key.
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="tableName">Name of the table.</param>
-            <param name="keys">The keys.</param>
-            <returns></returns>
-            <remarks>This only works on tables that have a scalar primary key.</remarks>
-        </member>
-        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.Delete``1(``0,Tortuga.Chain.DeleteOptions)">
-            <summary>
-            Deletes an object model from the table indicated by the class's Table attribute.
-            </summary>
-            <typeparam name="TArgument"></typeparam>
-            <param name="argumentValue">The argument value.</param>
-            <param name="options">The delete options.</param>
-            <returns></returns>
-        </member>
         <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.From``1">
             <summary>
             This is used to directly query a table or view.
@@ -444,6 +370,61 @@
             <param name="filterValue">The filter value is used to generate a simple AND style WHERE clause.</param>
             <returns></returns>
         </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.GetByKey``1(Tortuga.Chain.Access.AccessObjectName,``0)">
+            <summary>
+            Gets a record by its primary key.
+            </summary>
+            <typeparam name="TKey"></typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="key">The key.</param>
+            <returns>MultipleRowDbCommandBuilder&lt;OleDbCommand, OleDbParameter&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.GetByKey(Tortuga.Chain.Access.AccessObjectName,System.String)">
+            <summary>
+            Gets a record by its primary key.
+            </summary>
+            <param name="tableName">Name of the table.</param>
+            <param name="key">The key.</param>
+            <returns>MultipleRowDbCommandBuilder&lt;OleDbCommand, OleDbParameter&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.GetByKey``1(Tortuga.Chain.Access.AccessObjectName,``0[])">
+            <summary>
+            Gets a set of records by their primary key.
+            </summary>
+            <typeparam name="TKey"></typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="keys">The keys.</param>
+            <returns></returns>
+            <remarks>This only works on tables that have a scalar primary key.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.GetByKey(Tortuga.Chain.Access.AccessObjectName,System.String[])">
+            <summary>
+            Gets a set of records by their primary key.
+            </summary>
+            <param name="tableName">Name of the table.</param>
+            <param name="keys">The keys.</param>
+            <returns></returns>
+            <remarks>This only works on tables that have a scalar primary key.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.GetByKeyList``1(Tortuga.Chain.Access.AccessObjectName,System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Gets a set of records by their primary key.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="keys">The keys.</param>
+            <returns></returns>
+            <remarks>This only works on tables that have a scalar primary key.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.Insert``1(Tortuga.Chain.Access.AccessObjectName,``0,Tortuga.Chain.InsertOptions)">
+            <summary>
+            Creates a <see cref="T:Tortuga.Chain.Access.CommandBuilders.AccessInsertObject`1" /> used to perform an insert operation.
+            </summary>
+            <param name="tableName">Name of the table.</param>
+            <param name="argumentValue">The argument value.</param>
+            <param name="options">The options.</param>
+            <returns></returns>
+        </member>
         <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.Insert``1(``0,Tortuga.Chain.InsertOptions)">
             <summary>
             Inserts an object into the specified table.
@@ -451,6 +432,30 @@
             <typeparam name="TArgument"></typeparam>
             <param name="argumentValue">The argument value.</param>
             <param name="options">The options for how the insert occurs.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.Sql(System.String)">
+            <summary>
+            Creates a operation based on a raw SQL statement.
+            </summary>
+            <param name="sqlStatement">The SQL statement.</param>
+            <returns>AccessSqlCall.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.Sql(System.String,System.Object)">
+            <summary>
+            Creates a operation based on a raw SQL statement.
+            </summary>
+            <param name="sqlStatement">The SQL statement.</param>
+            <param name="argumentValue">The argument value.</param>
+            <returns>AccessSqlCall.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.Update``1(Tortuga.Chain.Access.AccessObjectName,``0,Tortuga.Chain.UpdateOptions)">
+            <summary>
+            Creates a <see cref="T:Tortuga.Chain.Access.CommandBuilders.AccessUpdateObject`1" /> used to perform an update operation.
+            </summary>
+            <param name="tableName"></param>
+            <param name="argumentValue"></param>
+            <param name="options"></param>
             <returns></returns>
         </member>
         <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.Update``1(``0,Tortuga.Chain.UpdateOptions)">
@@ -467,6 +472,114 @@
             Called when Database.DatabaseMetadata is invoked.
             </summary>
             <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.UpdateByKey``2(Tortuga.Chain.Access.AccessObjectName,``0,``1,Tortuga.Chain.UpdateOptions)">
+            <summary>
+            Delete a record by its primary key.
+            </summary>
+            <typeparam name="TArgument">The type of the t argument.</typeparam>
+            <typeparam name="TKey"></typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="newValues">The new values to use.</param>
+            <param name="key">The key.</param>
+            <param name="options">The options.</param>
+            <returns>MultipleRowDbCommandBuilder&lt;OleDbCommand, OleDbParameter&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.UpdateByKey``1(Tortuga.Chain.Access.AccessObjectName,``0,System.String,Tortuga.Chain.UpdateOptions)">
+            <summary>
+            Delete a record by its primary key.
+            </summary>
+            <typeparam name="TArgument">The type of the t argument.</typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="newValues">The new values to use.</param>
+            <param name="key">The key.</param>
+            <param name="options">The options.</param>
+            <returns>MultipleRowDbCommandBuilder&lt;OleDbCommand, OleDbParameter&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.UpdateByKey``2(Tortuga.Chain.Access.AccessObjectName,``0,``1[])">
+            <summary>
+            Delete multiple rows by key.
+            </summary>
+            <typeparam name="TArgument">The type of the t argument.</typeparam>
+            <typeparam name="TKey"></typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="newValues">The new values to use.</param>
+            <param name="keys">The keys.</param>
+            <returns></returns>
+            <remarks>This only works on tables that have a scalar primary key.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.UpdateByKey``1(Tortuga.Chain.Access.AccessObjectName,``0,System.String[])">
+            <summary>
+            Delete multiple rows by key.
+            </summary>
+            <typeparam name="TArgument">The type of the t argument.</typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="newValues">The new values to use.</param>
+            <param name="keys">The keys.</param>
+            <returns></returns>
+            <remarks>This only works on tables that have a scalar primary key.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.UpdateByKeyList``2(Tortuga.Chain.Access.AccessObjectName,``0,System.Collections.Generic.IEnumerable{``1},Tortuga.Chain.UpdateOptions)">
+            <summary>
+            Updates multiple rows by key.
+            </summary>
+            <typeparam name="TArgument">The type of the t argument.</typeparam>
+            <typeparam name="TKey">The type of the t key.</typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="newValues">The new values to use.</param>
+            <param name="keys">The keys.</param>
+            <param name="options">Update options.</param>
+            <returns>MultipleRowDbCommandBuilder&lt;OleDbCommand, OleDbParameter&gt;.</returns>
+            <exception cref="T:Tortuga.Chain.MappingException"></exception>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.DeleteByKey``1(Tortuga.Chain.Access.AccessObjectName,``0,Tortuga.Chain.DeleteOptions)">
+            <summary>
+            Delete a record by its primary key.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="key">The key.</param>
+            <param name="options">The options.</param>
+            <returns>MultipleRowDbCommandBuilder&lt;OleDbCommand, OleDbParameter&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.DeleteByKey(Tortuga.Chain.Access.AccessObjectName,System.String,Tortuga.Chain.DeleteOptions)">
+            <summary>
+            Delete a record by its primary key.
+            </summary>
+            <param name="tableName">Name of the table.</param>
+            <param name="key">The key.</param>
+            <param name="options">The options.</param>
+            <returns>MultipleRowDbCommandBuilder&lt;OleDbCommand, OleDbParameter&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.DeleteByKey``1(Tortuga.Chain.Access.AccessObjectName,``0[])">
+            <summary>
+            Delete multiple rows by key.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="keys">The keys.</param>
+            <returns></returns>
+            <remarks>This only works on tables that have a scalar primary key.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.DeleteByKey(Tortuga.Chain.Access.AccessObjectName,System.String[])">
+            <summary>
+            Delete multiple rows by key.
+            </summary>
+            <param name="tableName">Name of the table.</param>
+            <param name="keys">The keys.</param>
+            <returns></returns>
+            <remarks>This only works on tables that have a scalar primary key.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.DeleteByKeyList``1(Tortuga.Chain.Access.AccessObjectName,System.Collections.Generic.IEnumerable{``0},Tortuga.Chain.DeleteOptions)">
+            <summary>
+            Delete multiple rows by key.
+            </summary>
+            <typeparam name="TKey">The type of the t key.</typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="keys">The keys.</param>
+            <param name="options">Update options.</param>
+            <returns>MultipleRowDbCommandBuilder&lt;OleDbCommand, OleDbParameter&gt;.</returns>
+            <exception cref="T:Tortuga.Chain.MappingException"></exception>
         </member>
         <member name="T:Tortuga.Chain.Access.AccessDataSourceSettings">
             <summary>
@@ -890,6 +1003,31 @@
             <param name="state">The state.</param>
             <returns>Task.</returns>
         </member>
+        <member name="T:Tortuga.Chain.Access.CommandBuilders.AccessDeleteMany">
+            <summary>
+            Class AccessDeleteMany.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.Access.CommandBuilders.AccessDeleteMany.#ctor(Tortuga.Chain.Access.AccessDataSourceBase,Tortuga.Chain.Access.AccessObjectName,System.String,System.Collections.Generic.IEnumerable{System.Data.OleDb.OleDbParameter},Tortuga.Chain.DeleteOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Access.CommandBuilders.AccessDeleteMany" /> class.
+            </summary>
+            <param name="dataSource">The data source.</param>
+            <param name="tableName">Name of the table.</param>
+            <param name="whereClause">The where clause.</param>
+            <param name="parameters">The parameters.</param>
+            <param name="options">The options.</param>
+        </member>
+        <member name="M:Tortuga.Chain.Access.CommandBuilders.AccessDeleteMany.TryGetColumn(System.String)">
+            <summary>
+            Returns the column associated with the column name.
+            </summary>
+            <param name="columnName">Name of the column.</param>
+            <returns></returns>
+            <remarks>
+            If the column name was not found, this will return null
+            </remarks>
+        </member>
         <member name="T:Tortuga.Chain.Access.CommandBuilders.AccessDeleteObject`1">
             <summary>
             Command object that represents a delete operation.
@@ -1102,6 +1240,40 @@
             </value>
             <remarks>
             For most data sources, this will be LimitOptions.Rows.
+            </remarks>
+        </member>
+        <member name="T:Tortuga.Chain.Access.CommandBuilders.AccessUpdateMany">
+            <summary>
+            Class AccessUpdateMany.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.Access.CommandBuilders.AccessUpdateMany.#ctor(Tortuga.Chain.Access.AccessDataSourceBase,Tortuga.Chain.Access.AccessObjectName,System.Object,System.String,System.Collections.Generic.IEnumerable{System.Data.OleDb.OleDbParameter},System.Nullable{System.Int32},Tortuga.Chain.UpdateOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Access.CommandBuilders.AccessUpdateMany" /> class.
+            </summary>
+            <param name="dataSource">The data source.</param>
+            <param name="tableName">Name of the table.</param>
+            <param name="newValues">The new values.</param>
+            <param name="whereClause">The where clause.</param>
+            <param name="parameters">The parameters.</param>
+            <param name="expectedRowCount">The expected row count.</param>
+            <param name="options">The options.</param>
+        </member>
+        <member name="M:Tortuga.Chain.Access.CommandBuilders.AccessUpdateMany.Prepare(Tortuga.Chain.Materializers.Materializer{System.Data.OleDb.OleDbCommand,System.Data.OleDb.OleDbParameter})">
+            <summary>
+            Prepares the command for execution by generating any necessary SQL.
+            </summary>
+            <param name="materializer"></param>
+            <returns><see cref="T:Tortuga.Chain.Access.AccessCommandExecutionToken" /></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Access.CommandBuilders.AccessUpdateMany.TryGetColumn(System.String)">
+            <summary>
+            Returns the column associated with the column name.
+            </summary>
+            <param name="columnName">Name of the column.</param>
+            <returns></returns>
+            <remarks>
+            If the column name was not found, this will return null
             </remarks>
         </member>
         <member name="T:Tortuga.Chain.Access.CommandBuilders.AccessUpdateObject`1">

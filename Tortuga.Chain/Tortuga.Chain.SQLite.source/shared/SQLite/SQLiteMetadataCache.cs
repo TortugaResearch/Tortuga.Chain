@@ -64,7 +64,7 @@ namespace Tortuga.Chain.SQLite
                 con.Open();
                 using (var cmd = new SQLiteCommand(tableSql, con))
                 {
-                    cmd.Parameters.AddWithValue("@Name", tableName);
+                    cmd.Parameters.AddWithValue("@Name", tableName.Name);
                     using (var reader = cmd.ExecuteReader())
                     {
                         if (!reader.Read())

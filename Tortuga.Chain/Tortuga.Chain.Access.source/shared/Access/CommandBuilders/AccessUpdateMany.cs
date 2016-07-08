@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.OleDb;
+using System.Linq;
+using System.Text;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
@@ -43,11 +45,67 @@ namespace Tortuga.Chain.Access.CommandBuilders
             m_Parameters = parameters;
         }
 
+        /// <summary>
+        /// Prepares the command for execution by generating any necessary SQL.
+        /// </summary>
+        /// <param name="materializer"></param>
+        /// <returns><see cref="AccessCommandExecutionToken" /></returns>
         public override CommandExecutionToken<OleDbCommand, OleDbParameter> Prepare(Materializer<OleDbCommand, OleDbParameter> materializer)
         {
-            throw new NotImplementedException();
+            if (materializer == null)
+                throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
+
+            var sqlBuilder = m_Table.CreateSqlBuilder(StrictMode);
+            sqlBuilder.ApplyArgumentValue(DataSource, m_NewValues, m_Options);
+            sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
+
+            var sql = new StringBuilder($"UPDATE {m_Table.Name.ToQuotedString()}");
+            sqlBuilder.BuildSetClause(sql, " SET ", null, null);
+            sql.Append(" WHERE " + m_WhereClause);
+            sql.Append(";");
+
+            var parameters = sqlBuilder.GetParameters();
+            if (m_Parameters != null)
+                parameters.AddRange(m_Parameters);
+
+            var updateCommand = new AccessCommandExecutionToken(DataSource, "Update " + m_Table.Name, sql.ToString(), parameters).CheckUpdateRowCount(m_Options, m_ExpectedRowCount);
+            updateCommand.ExecutionMode = AccessCommandExecutionMode.NonQuery;
+
+            var desiredColumns = materializer.DesiredColumns();
+            if (desiredColumns == Materializer.NoColumns)
+                return updateCommand;
+
+            if (m_Options.HasFlag(UpdateOptions.ReturnOldValues))
+            {
+                var result = PrepareRead(desiredColumns);
+                result.NextCommand = updateCommand;
+                return result;
+            }
+            else
+            {
+                updateCommand.NextCommand = PrepareRead(desiredColumns);
+                return updateCommand;
+            }
         }
 
+
+        private AccessCommandExecutionToken PrepareRead(IReadOnlyList<string> desiredColumns)
+        {
+            var sqlBuilder = m_Table.CreateSqlBuilder(StrictMode);
+            sqlBuilder.ApplyDesiredColumns(desiredColumns);
+
+            var sql = new StringBuilder();
+            sqlBuilder.BuildSelectClause(sql, "SELECT ", null, null);
+            sql.Append(" FROM " + m_Table.Name.ToQuotedString());
+            sql.AppendLine(" WHERE " + m_WhereClause + ";");
+
+            var parameters = sqlBuilder.GetParameters();
+            if (m_Parameters != null)
+                parameters.AddRange(m_Parameters.Select(p => p.Clone()));
+
+
+            return new AccessCommandExecutionToken(DataSource, "Query after updating " + m_Table.Name, sql.ToString(), parameters);
+        }
 
 
         /// <summary>
