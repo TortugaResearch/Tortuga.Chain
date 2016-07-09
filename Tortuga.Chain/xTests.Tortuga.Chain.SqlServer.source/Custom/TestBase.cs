@@ -7,6 +7,9 @@ using Tortuga.Chain;
 using Tortuga.Chain.AuditRules;
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.SqlServer;
+using Xunit;
+
+[assembly: CollectionBehavior(DisableTestParallelization = true)]
 
 namespace Tests
 {

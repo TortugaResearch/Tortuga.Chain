@@ -4,8 +4,9 @@ using System.Configuration;
 using System.Diagnostics;
 using Tortuga.Chain;
 using Tortuga.Chain.Core;
+using Xunit;
 
-
+[assembly: CollectionBehavior(DisableTestParallelization = true)]
 
 namespace Tests
 {
@@ -24,6 +25,7 @@ namespace Tests
 
                 string sql = @"
 DROP VIEW IF EXISTS hr.EmployeeWithManager;
+DROP TABLE IF EXISTS sales.order;
 DROP TABLE IF EXISTS hr.employee;
 DROP SCHEMA IF EXISTS hr;
 CREATE SCHEMA hr;
