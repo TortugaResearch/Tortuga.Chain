@@ -87,6 +87,16 @@ SELECT  e.EmployeeKey ,
 FROM    HR.Employee e
         LEFT JOIN HR.Employee m ON m.EmployeeKey = e.ManagerKey;";
 
+                var orderSql = @"CREATE TABLE sales.order
+(
+	OrderKey SERIAL PRIMARY KEY,
+	CustomerKey INT NOT NULL References Sales.Customer(CustomerKey),
+	OrderDate TIMESTAMP NOT NULL
+);";
+
+
+                //string proc1 = @"";
+
                 using (NpgsqlCommand cmd = new NpgsqlCommand(sql, con))
                     cmd.ExecuteNonQuery();
 
@@ -95,6 +105,11 @@ FROM    HR.Employee e
 
                 using (NpgsqlCommand cmd = new NpgsqlCommand(viewSql, con))
                     cmd.ExecuteNonQuery();
+
+                using (NpgsqlCommand cmd = new NpgsqlCommand(orderSql, con))
+                    cmd.ExecuteNonQuery();
+
+
             }
 
         }
