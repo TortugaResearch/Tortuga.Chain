@@ -18,7 +18,6 @@ namespace Tests.Class2Databases
         public void TableFunction1_Object_Limit()
         {
             var result = DataSource.TableFunction(TableFunction1Name, new { @State = "CA" }).WithLimits(1).ToTable().Execute();
-            //Assert.AreEqual(1, result.Rows.Count);
         }
 
         [TestMethod]
