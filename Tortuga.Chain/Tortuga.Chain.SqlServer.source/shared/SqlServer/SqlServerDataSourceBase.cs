@@ -608,6 +608,7 @@ namespace Tortuga.Chain.SqlServer
         {
             return new SqlServerTableFunction(this, tableFunctionName, functionArgumentValue);
         }
+
         /// <summary>
         /// Updates an object in the specified table.
         /// </summary>

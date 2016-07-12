@@ -553,5 +553,26 @@ namespace Tortuga.Chain.PostgreSql
         }
 
 
+        /// <summary>
+        /// This is used to query a table valued function.
+        /// </summary>
+        /// <param name="tableFunctionName">Name of the table function.</param>
+        /// <returns></returns>
+        public TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption> TableFunction(PostgreSqlObjectName tableFunctionName)
+        {
+            return new PostgreSqlTableFunction(this, tableFunctionName, null);
+        }
+
+        /// <summary>
+        /// This is used to query a table valued function.
+        /// </summary>
+        /// <param name="tableFunctionName">Name of the table function.</param>
+        /// <param name="functionArgumentValue">The function argument.</param>
+        /// <returns></returns>
+        public TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption> TableFunction(PostgreSqlObjectName tableFunctionName, object functionArgumentValue)
+        {
+            return new PostgreSqlTableFunction(this, tableFunctionName, functionArgumentValue);
+        }
+
     }
 }

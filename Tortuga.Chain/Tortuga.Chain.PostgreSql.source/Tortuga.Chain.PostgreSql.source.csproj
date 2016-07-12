@@ -87,6 +87,7 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="shared\PostgreSqlDataSource.cs" />
     <Compile Include="shared\PostgreSql\CommandBuilders\PostgreSqlDeleteMany.cs" />
+    <Compile Include="shared\PostgreSql\CommandBuilders\PostgreSqlTableFunction.cs" />
     <Compile Include="shared\PostgreSql\CommandBuilders\PostgreSqlUpdateMany.cs" />
     <Compile Include="shared\PostgreSql\PostgreSqlDataSourceBase.Interfaces.cs" />
     <Compile Include="shared\PostgreSql\PostgreSqlTransactionalDataSource.cs" />

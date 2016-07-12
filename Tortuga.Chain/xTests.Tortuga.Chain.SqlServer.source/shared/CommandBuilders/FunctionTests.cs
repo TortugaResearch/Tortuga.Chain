@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 
-#if SQL_SERVER //|| POSTGRESQL
+#if SQL_SERVER || POSTGRESQL
 
 namespace Tests.CommandBuilders
 {
@@ -16,6 +16,9 @@ namespace Tests.CommandBuilders
         {
         }
 
+
+#if SQL_SERVER
+        //Only SQL Server has inline functions.
 
         [Theory, MemberData("Prime")]
         public void TableFunction2_Object(string assemblyName, string dataSourceName, DataSourceType mode)
@@ -30,7 +33,7 @@ namespace Tests.CommandBuilders
                 Release(dataSource);
             }
         }
-
+#endif
 
         [Theory, MemberData("Prime")]
         public void TableFunction1_Object_Limit(string assemblyName, string dataSourceName, DataSourceType mode)
