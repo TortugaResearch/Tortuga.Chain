@@ -40,7 +40,7 @@
       <group targetFramework="uap10">
         <dependency id="Tortuga.Anchor" version="0.8.5985.31190" />
         <dependency id="System.Data.Common" version="4.1.0" />
-        <dependency id="Microsoft.NETCore.UniversalWindowsPlatform" version="5.1.0" />
+        <dependency id="Microsoft.NETCore.UniversalWindowsPlatform" version="5.2.2" />
       </group>
     </dependencies>
 
