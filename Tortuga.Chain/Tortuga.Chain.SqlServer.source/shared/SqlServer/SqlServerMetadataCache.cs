@@ -104,7 +104,7 @@ namespace Tortuga.Chain.SqlServer
         /// <returns>Null if the object could not be found.</returns>
         public override TableFunctionMetadata<SqlServerObjectName, SqlDbType> GetTableFunction(SqlServerObjectName tableFunctionName)
         {
-            return m_TableFunctions.GetOrAdd(tableFunctionName, GetFunctionInternal);
+            return m_TableFunctions.GetOrAdd(tableFunctionName, GetTableFunctionInternal);
         }
 
         /// <summary>
@@ -510,7 +510,7 @@ namespace Tortuga.Chain.SqlServer
             }
         }
 
-        private TableFunctionMetadata<SqlServerObjectName, SqlDbType> GetFunctionInternal(SqlServerObjectName tableFunctionName)
+        private TableFunctionMetadata<SqlServerObjectName, SqlDbType> GetTableFunctionInternal(SqlServerObjectName tableFunctionName)
         {
             const string TvfSql =
                 @"SELECT 
@@ -589,7 +589,7 @@ namespace Tortuga.Chain.SqlServer
                             {
                                 var name = reader.GetString(reader.GetOrdinal("ParameterName"));
                                 var typeName = reader.GetString(reader.GetOrdinal("TypeName"));
-                                parameters.Add(new ParameterMetadata<SqlDbType>(name, typeName, TypeNameToSqlDbType(typeName)));
+                                parameters.Add(new ParameterMetadata<SqlDbType>(name, name, typeName, TypeNameToSqlDbType(typeName)));
                             }
                         }
                     }

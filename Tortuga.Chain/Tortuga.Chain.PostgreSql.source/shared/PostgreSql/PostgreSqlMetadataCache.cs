@@ -16,8 +16,9 @@ namespace Tortuga.Chain.PostgreSql
     {
         readonly NpgsqlConnectionStringBuilder m_ConnectionBuilder;
         readonly ConcurrentDictionary<PostgreSqlObjectName, TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType>> m_Tables = new ConcurrentDictionary<PostgreSqlObjectName, TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType>>();
-        readonly ConcurrentDictionary<PostgreSqlObjectName, StoredProcedureMetadata<PostgreSqlObjectName, NpgsqlDbType>> m_StoredProcedures = new ConcurrentDictionary<PostgreSqlObjectName, StoredProcedureMetadata<PostgreSqlObjectName, NpgsqlDbType>>();
+        //readonly ConcurrentDictionary<PostgreSqlObjectName, StoredProcedureMetadata<PostgreSqlObjectName, NpgsqlDbType>> m_StoredProcedures = new ConcurrentDictionary<PostgreSqlObjectName, StoredProcedureMetadata<PostgreSqlObjectName, NpgsqlDbType>>();
         readonly ConcurrentDictionary<Type, TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType>> m_TypeTableMap = new ConcurrentDictionary<Type, TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType>>();
+        readonly ConcurrentDictionary<PostgreSqlObjectName, TableFunctionMetadata<PostgreSqlObjectName, NpgsqlDbType>> m_TableFunctions = new ConcurrentDictionary<PostgreSqlObjectName, TableFunctionMetadata<PostgreSqlObjectName, NpgsqlDbType>>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PostgreSqlMetadataCache"/> class.
@@ -28,16 +29,16 @@ namespace Tortuga.Chain.PostgreSql
             m_ConnectionBuilder = connectionBuilder;
         }
 
-        /// <summary>
-        /// Gets the stored procedure's metadata.
-        /// </summary>
-        /// <param name="procedureName">Name of the procedure.</param>
-        /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
-        public override StoredProcedureMetadata<PostgreSqlObjectName, NpgsqlDbType> GetStoredProcedure(PostgreSqlObjectName procedureName)
-        {
-            return m_StoredProcedures.GetOrAdd(procedureName, GetStoredProcedureInteral);
-        }
+        ///// <summary>
+        ///// Gets the stored procedure's metadata.
+        ///// </summary>
+        ///// <param name="procedureName">Name of the procedure.</param>
+        ///// <returns></returns>
+        ///// <exception cref="NotImplementedException"></exception>
+        //public override StoredProcedureMetadata<PostgreSqlObjectName, NpgsqlDbType> GetStoredProcedure(PostgreSqlObjectName procedureName)
+        //{
+        //    return m_StoredProcedures.GetOrAdd(procedureName, GetStoredProcedureInteral);
+        //}
 
         /// <summary>
         /// Gets the metadata for a table function.
@@ -47,7 +48,7 @@ namespace Tortuga.Chain.PostgreSql
         /// <exception cref="NotImplementedException"></exception>
         public override TableFunctionMetadata<PostgreSqlObjectName, NpgsqlDbType> GetTableFunction(PostgreSqlObjectName tableFunctionName)
         {
-            throw new NotImplementedException();
+            return m_TableFunctions.GetOrAdd(tableFunctionName, GetTableFunctionInternal);
         }
 
         /// <summary>
@@ -187,41 +188,124 @@ namespace Tortuga.Chain.PostgreSql
             return new TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType>(new PostgreSqlObjectName(actualSchema, actualName), isTable, columns);
         }
 
-        private StoredProcedureMetadata<PostgreSqlObjectName, NpgsqlDbType> GetStoredProcedureInteral(PostgreSqlObjectName storedProcedureName)
+        private TableFunctionMetadata<PostgreSqlObjectName, NpgsqlDbType> GetTableFunctionInternal(PostgreSqlObjectName tableFunctionName)
         {
-            const string StoredProcSql =
-                @"
-                SELECT 
-                sp.proname AS procname,
-                ns.nspname AS schema
-                FROM pg_proc AS sp
-                INNER JOIN pg_namespace AS ns ON ns.oid=sp.pronamespace
-                WHERE sp.proname ILIKE @ProcName AND
-                      ns.nspname ILIKE @Schema;";
+            const string functionSql = @"SELECT routine_schema, routine_name, specific_name FROM information_schema.routines WHERE routine_schema ILIKE @Schema AND routine_name ILIKE @Name;";
 
             string actualSchema;
             string actualName;
+            string specificName;
 
             using (var con = new NpgsqlConnection(m_ConnectionBuilder.ConnectionString))
             {
                 con.Open();
-                using (var cmd = new NpgsqlCommand(StoredProcSql, con))
+                using (var cmd = new NpgsqlCommand(functionSql, con))
                 {
-                    cmd.Parameters.AddWithValue("@Schema", storedProcedureName.Schema);
-                    cmd.Parameters.AddWithValue("@Name", storedProcedureName.Name);
+                    cmd.Parameters.AddWithValue("@Schema", tableFunctionName.Schema);
+                    cmd.Parameters.AddWithValue("@Name", tableFunctionName.Name);
                     using (var reader = cmd.ExecuteReader())
                     {
                         if (!reader.Read())
-                            throw new MissingObjectException($"Could not find function {storedProcedureName}");
-                        actualSchema = reader.GetString(reader.GetOrdinal("procname"));
-                        actualName = reader.GetString(reader.GetOrdinal("schema"));
+                            throw new MissingObjectException($"Could not find function {functionSql}");
+                        actualSchema = reader.GetString(reader.GetOrdinal("routine_schema"));
+                        actualName = reader.GetString(reader.GetOrdinal("routine_name"));
+                        specificName = reader.GetString(reader.GetOrdinal("specific_name"));
                     }
                 }
             }
 
-            var parameters = GetParameters(actualSchema, actualName);
-            return new StoredProcedureMetadata<PostgreSqlObjectName, NpgsqlDbType>(new PostgreSqlObjectName(actualSchema, actualName), parameters);
+            var objectName = new PostgreSqlObjectName(actualSchema, actualName);
+
+            var pAndC = GetParametersAndColumns(specificName);
+
+            return new TableFunctionMetadata<PostgreSqlObjectName, NpgsqlDbType>(objectName, pAndC.Item1, pAndC.Item2);
+
+
         }
+
+        private Tuple<List<ParameterMetadata<NpgsqlDbType>>, List<ColumnMetadata<NpgsqlDbType>>> GetParametersAndColumns(string specificName)
+        {
+            //private List<ParameterMetadata<NpgsqlDbType>> GetParameters(string schema, string procedureName)
+            const string parameterSql =
+                @"SELECT * FROM information_schema.parameters WHERE specific_name = @SpecificName ORDER BY ordinal_position";
+
+            var parameters = new List<ParameterMetadata<NpgsqlDbType>>();
+            var columns = new List<ColumnMetadata<NpgsqlDbType>>();
+            using (var con = new NpgsqlConnection(m_ConnectionBuilder.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = new NpgsqlCommand(parameterSql, con))
+                {
+                    cmd.Parameters.AddWithValue("@SpecificName", specificName);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            if (reader.GetString(reader.GetOrdinal("parameter_mode")) == "IN")
+                            {
+                                var parameterNameOrd = reader.GetOrdinal("parameter_name");
+                                var parameterName = !reader.IsDBNull(parameterNameOrd) ? reader.GetString(parameterNameOrd) : "Parameter" + reader.GetInt32(reader.GetOrdinal("ordinal_position"));
+
+                                var typeName = reader.GetString(reader.GetOrdinal("udt_name"));
+                                parameters.Add(new ParameterMetadata<NpgsqlDbType>(parameterName, "@" + parameterName, typeName, TypeNameToNpgSqlDbType(typeName)));
+                            }
+                            else
+                            {
+                                var name = reader.GetString(reader.GetOrdinal("parameter_name"));
+                                var typeName = reader.GetString(reader.GetOrdinal("udt_name"));
+                                bool isPrimary = false;
+                                bool isIdentity = false;
+                                bool isNullable = true;
+                                int? maxLength = null;
+                                int? precision = null;
+                                int? scale = null;
+                                string fullTypeName = null;
+
+                                columns.Add(new ColumnMetadata<NpgsqlDbType>(name, false, isPrimary, isIdentity, typeName, TypeNameToNpgSqlDbType(typeName), "\"" + name + "\"", isNullable, maxLength, precision, scale, fullTypeName));
+
+                            }
+                        }
+                    }
+                }
+            }
+            return Tuple.Create(parameters, columns);
+        }
+
+        //private StoredProcedureMetadata<PostgreSqlObjectName, NpgsqlDbType> GetStoredProcedureInteral(PostgreSqlObjectName storedProcedureName)
+        //{
+        //    const string StoredProcSql =
+        //        @"
+        //        SELECT 
+        //        sp.proname AS procname,
+        //        ns.nspname AS schema
+        //        FROM pg_proc AS sp
+        //        INNER JOIN pg_namespace AS ns ON ns.oid=sp.pronamespace
+        //        WHERE sp.proname ILIKE @ProcName AND
+        //              ns.nspname ILIKE @Schema;";
+
+        //    string actualSchema;
+        //    string actualName;
+
+        //    using (var con = new NpgsqlConnection(m_ConnectionBuilder.ConnectionString))
+        //    {
+        //        con.Open();
+        //        using (var cmd = new NpgsqlCommand(StoredProcSql, con))
+        //        {
+        //            cmd.Parameters.AddWithValue("@Schema", storedProcedureName.Schema);
+        //            cmd.Parameters.AddWithValue("@Name", storedProcedureName.Name);
+        //            using (var reader = cmd.ExecuteReader())
+        //            {
+        //                if (!reader.Read())
+        //                    throw new MissingObjectException($"Could not find function {storedProcedureName}");
+        //                actualSchema = reader.GetString(reader.GetOrdinal("procname"));
+        //                actualName = reader.GetString(reader.GetOrdinal("schema"));
+        //            }
+        //        }
+        //    }
+
+        //    var parameters = GetParameters(actualSchema, actualName);
+        //    return new StoredProcedureMetadata<PostgreSqlObjectName, NpgsqlDbType>(new PostgreSqlObjectName(actualSchema, actualName), parameters);
+        //}
 
 
         private List<ColumnMetadata<NpgsqlDbType>> GetColumns(PostgreSqlObjectName tableName)
@@ -283,38 +367,38 @@ WHERE c.relname ILIKE @Name AND
             return columns;
         }
 
-        private List<ParameterMetadata<NpgsqlDbType>> GetParameters(string schema, string procedureName)
-        {
-            const string parameterSql =
-                @"
-                SELECT
-                data_type,
-                parameter_name
-                FROM information_schema.parameters
-                WHERE specific_schema ILIKE @Schema AND
-                      specific_name ~* @Name;";
+        //private List<ParameterMetadata<NpgsqlDbType>> GetParameters(string schema, string procedureName)
+        //{
+        //    const string parameterSql =
+        //        @"
+        //        SELECT
+        //        data_type,
+        //        parameter_name
+        //        FROM information_schema.parameters
+        //        WHERE specific_schema ILIKE @Schema AND
+        //              specific_name ~* @Name;";
 
-            var parameters = new List<ParameterMetadata<NpgsqlDbType>>();
-            using (var con = new NpgsqlConnection(m_ConnectionBuilder.ConnectionString))
-            {
-                con.Open();
-                using (var cmd = new NpgsqlCommand(parameterSql, con))
-                {
-                    cmd.Parameters.AddWithValue("@Schema", schema);
-                    cmd.Parameters.AddWithValue("@Name", procedureName);
-                    using (var reader = cmd.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            var parameterName = reader.GetString(reader.GetOrdinal("parameter_name"));
-                            var typeName = reader.GetString(reader.GetOrdinal("data_type"));
-                            parameters.Add(new ParameterMetadata<NpgsqlDbType>(parameterName, typeName, TypeNameToNpgSqlDbType(typeName)));
-                        }
-                    }
-                }
-            }
-            return parameters;
-        }
+        //    var parameters = new List<ParameterMetadata<NpgsqlDbType>>();
+        //    using (var con = new NpgsqlConnection(m_ConnectionBuilder.ConnectionString))
+        //    {
+        //        con.Open();
+        //        using (var cmd = new NpgsqlCommand(parameterSql, con))
+        //        {
+        //            cmd.Parameters.AddWithValue("@Schema", schema);
+        //            cmd.Parameters.AddWithValue("@Name", procedureName);
+        //            using (var reader = cmd.ExecuteReader())
+        //            {
+        //                while (reader.Read())
+        //                {
+        //                    var parameterName = reader.GetString(reader.GetOrdinal("parameter_name"));
+        //                    var typeName = reader.GetString(reader.GetOrdinal("data_type"));
+        //                    parameters.Add(new ParameterMetadata<NpgsqlDbType>(parameterName, typeName, TypeNameToNpgSqlDbType(typeName)));
+        //                }
+        //            }
+        //        }
+        //    }
+        //    return parameters;
+        //}
 
         /// <summary>
         /// Parse a string and return the database specific representation of the object name.
@@ -406,9 +490,37 @@ WHERE c.relname ILIKE @Name AND
         /// </summary>
         public override void Reset()
         {
-            m_StoredProcedures.Clear();
+            //m_StoredProcedures.Clear();
+            m_TableFunctions.Clear();
             m_Tables.Clear();
             m_TypeTableMap.Clear();
+        }
+
+        /// <summary>
+        /// Preloads the table value functions.
+        /// </summary>
+        public void PreloadTableValueFunctions()
+        {
+            const string TvfSql = @"SELECT routine_schema, routine_name FROM information_schema.routines where routine_type = 'FUNCTION' AND data_type='record';";
+
+
+            using (var con = new NpgsqlConnection(m_ConnectionBuilder.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = new NpgsqlCommand(TvfSql, con))
+                {
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var schema = reader.GetString(reader.GetOrdinal("routine_schema"));
+                            var name = reader.GetString(reader.GetOrdinal("routine_name"));
+                            GetTableFunction(new PostgreSqlObjectName(schema, name));
+                        }
+                    }
+                }
+            }
+
         }
     }
 }

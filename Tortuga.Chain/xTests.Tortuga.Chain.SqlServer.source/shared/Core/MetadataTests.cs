@@ -84,14 +84,14 @@ namespace Tests.Core
         }
 
         [Theory, MemberData("Views")]
-        public void GetView(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
+        public void GetView(string assemblyName, string dataSourceName, DataSourceType mode, string viewName)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
             {
                 dataSource.DatabaseMetadata.Reset();
-                var view = dataSource.DatabaseMetadata.GetTableOrView(tableName);
-                Assert.Equal(tableName, view.Name.ToString());
+                var view = dataSource.DatabaseMetadata.GetTableOrView(viewName);
+                Assert.Equal(viewName, view.Name.ToString());
                 Assert.NotEmpty(view.Columns);
             }
             finally
@@ -100,6 +100,47 @@ namespace Tests.Core
             }
 
         }
+
+#if SQL_SERVER || POSTGRESQL
+        [Theory, MemberData("Basic")]
+        public void VerifyFunction1(string assemblyName, string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+                dataSource.DatabaseMetadata.PreloadTableValueFunctions();
+                var function = dataSource.DatabaseMetadata.GetTableFunction(TableFunction1Name);
+                Assert.IsNotNull(function, $"Error reading function {TableFunction1Name}");
+
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+#endif
+
+#if SQL_SERVER 
+        [Theory, MemberData("Basic")]
+        public void VerifyFunction2(string assemblyName, string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+                dataSource.DatabaseMetadata.PreloadTableValueFunctions();
+                var function = dataSource.DatabaseMetadata.GetTableFunction(TableFunction2Name);
+                Assert.IsNotNull(function, $"Error reading function {TableFunction2Name}");
+
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+#endif
+
     }
 }
+
+
 

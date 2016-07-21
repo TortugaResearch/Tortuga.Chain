@@ -39,7 +39,7 @@ namespace Tests
 
         public static string EmployeeTableName { get { return "HR.Employee"; } }
 
-        public string Proc1Name { get { return "Sales.CustomerWithOrdersByState"; } }
+        public string MultiResultsetProc1Name { get { return "Sales.CustomerWithOrdersByState"; } }
 
         public string TableFunction1Name { get { return "Sales.CustomersByState"; } }
 

@@ -55,7 +55,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
             var parameters = sqlBuilder.GetParameters();
             parameters.AddRange(m_Parameters);
 
-            return new PostgreSqlExecutionToken(DataSource, "Delete from " + m_Table.Name, sql.ToString(), parameters);
+            return new PostgreSqlCommandExecutionToken(DataSource, "Delete from " + m_Table.Name, sql.ToString(), parameters);
         }
 
 

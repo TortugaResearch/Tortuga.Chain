@@ -10,6 +10,15 @@ namespace Tests.CommandBuilders
     public class FunctionTests : TestBase
     {
         public static BasicData Prime = new BasicData(s_PrimaryDataSource);
+#if SQL_SERVER
+        static object Parameter1 = new { @State = "CA" };
+        static object DictParameter1a = new Dictionary<string, object>() { { "State", "CA" } };
+        static object DictParameter1b = new Dictionary<string, object>() { { "@State", "CA" } };
+#elif POSTGRESQL
+        static object Parameter1 = new { @param_state = "CA" };
+        static object DictParameter1a = new Dictionary<string, object>() { { "param_state", "CA" } };
+        static object DictParameter1b = new Dictionary<string, object>() { { "@param_state", "CA" } };
+#endif
 
 
         public FunctionTests(ITestOutputHelper output) : base(output)
@@ -26,7 +35,7 @@ namespace Tests.CommandBuilders
             var dataSource = DataSource(dataSourceName, mode);
             try
             {
-                var result = dataSource.TableFunction(TableFunction2Name, new { @State = "CA" }).ToTable().Execute();
+                var result = dataSource.TableFunction(TableFunction2Name, Parameter1).ToTable().Execute();
             }
             finally
             {
@@ -41,7 +50,7 @@ namespace Tests.CommandBuilders
             var dataSource = DataSource(dataSourceName, mode);
             try
             {
-                var result = dataSource.TableFunction(TableFunction1Name, new { @State = "CA" }).WithLimits(1).ToTable().Execute();
+                var result = dataSource.TableFunction(TableFunction1Name, Parameter1).WithLimits(1).ToTable().Execute();
             }
             finally
             {
@@ -55,7 +64,7 @@ namespace Tests.CommandBuilders
             var dataSource = DataSource(dataSourceName, mode);
             try
             {
-                var result = dataSource.TableFunction(TableFunction1Name, new { @State = "CA" }).WithFilter(new { @FullName = "Tom Jones" }).ToTable().Execute();
+                var result = dataSource.TableFunction(TableFunction1Name, Parameter1).WithFilter(new { @FullName = "Tom Jones" }).ToTable().Execute();
             }
             finally
             {
@@ -69,7 +78,7 @@ namespace Tests.CommandBuilders
             var dataSource = DataSource(dataSourceName, mode);
             try
             {
-                var result = dataSource.TableFunction(TableFunction1Name, new { @State = "CA" }).WithSorting("FullName").ToTable().Execute();
+                var result = dataSource.TableFunction(TableFunction1Name, Parameter1).WithSorting("FullName").ToTable().Execute();
             }
             finally
             {
@@ -83,7 +92,7 @@ namespace Tests.CommandBuilders
             var dataSource = DataSource(dataSourceName, mode);
             try
             {
-                var result = dataSource.TableFunction(TableFunction1Name, new { @State = "CA" }).ToTable().Execute();
+                var result = dataSource.TableFunction(TableFunction1Name, Parameter1).ToTable().Execute();
             }
             finally
             {
@@ -97,7 +106,7 @@ namespace Tests.CommandBuilders
             var dataSource = DataSource(dataSourceName, mode);
             try
             {
-                var result = await dataSource.TableFunction(TableFunction1Name, new { @State = "CA" }).ToTable().ExecuteAsync();
+                var result = await dataSource.TableFunction(TableFunction1Name, Parameter1).ToTable().ExecuteAsync();
             }
             finally
             {
@@ -112,7 +121,7 @@ namespace Tests.CommandBuilders
             var dataSource = DataSource(dataSourceName, mode);
             try
             {
-                var result = dataSource.TableFunction(TableFunction1Name, new Dictionary<string, object>() { { "State", "CA" } }).ToTable().Execute();
+                var result = dataSource.TableFunction(TableFunction1Name, DictParameter1a).ToTable().Execute();
             }
             finally
             {
@@ -126,7 +135,7 @@ namespace Tests.CommandBuilders
             var dataSource = DataSource(dataSourceName, mode);
             try
             {
-                var result = await dataSource.TableFunction(TableFunction1Name, new Dictionary<string, object>() { { "State", "CA" } }).ToTable().ExecuteAsync();
+                var result = await dataSource.TableFunction(TableFunction1Name, DictParameter1a).ToTable().ExecuteAsync();
             }
             finally
             {
@@ -140,7 +149,7 @@ namespace Tests.CommandBuilders
             var dataSource = DataSource(dataSourceName, mode);
             try
             {
-                var result = dataSource.TableFunction(TableFunction1Name, new Dictionary<string, object>() { { "@State", "CA" } }).ToTable().Execute();
+                var result = dataSource.TableFunction(TableFunction1Name, DictParameter1b).ToTable().Execute();
             }
             finally
             {
@@ -154,7 +163,7 @@ namespace Tests.CommandBuilders
             var dataSource = DataSource(dataSourceName, mode);
             try
             {
-                var result = await dataSource.TableFunction(TableFunction1Name, new Dictionary<string, object>() { { "@State", "CA" } }).ToTable().ExecuteAsync();
+                var result = await dataSource.TableFunction(TableFunction1Name, DictParameter1b).ToTable().ExecuteAsync();
             }
             finally
             {

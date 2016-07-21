@@ -90,13 +90,13 @@ namespace Tests
 
         void WriteDetails(ExecutionEventArgs e)
         {
-            if (e.ExecutionDetails is PostgreSqlExecutionToken)
+            if (e.ExecutionDetails is PostgreSqlCommandExecutionToken)
             {
                 WriteLine("");
                 WriteLine("Command text: ");
                 WriteLine(e.ExecutionDetails.CommandText);
                 //Indent();
-                foreach (var item in ((PostgreSqlExecutionToken)e.ExecutionDetails).Parameters)
+                foreach (var item in ((PostgreSqlCommandExecutionToken)e.ExecutionDetails).Parameters)
                     WriteLine(item.ParameterName + ": " + (item.Value == null || item.Value == DBNull.Value ? "<NULL>" : item.Value));
                 //Unindent();
                 WriteLine("******");

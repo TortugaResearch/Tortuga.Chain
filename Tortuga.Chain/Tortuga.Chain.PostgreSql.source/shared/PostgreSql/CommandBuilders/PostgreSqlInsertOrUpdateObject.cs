@@ -34,7 +34,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         /// Prepares the command for execution by generating any necessary SQL.
         /// </summary>
         /// <param name="materializer"></param>
-        /// <returns><see cref="PostgreSqlExecutionToken" /></returns>
+        /// <returns><see cref="PostgreSqlCommandExecutionToken" /></returns>
         public override CommandExecutionToken<NpgsqlCommand, NpgsqlParameter> Prepare(Materializer<NpgsqlCommand, NpgsqlParameter> materializer)
         {
             if (materializer == null)
@@ -70,7 +70,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
             //Looks like ON CONFLICT is useful here http://www.postgresql.org/docs/current/static/sql-insert.html
             //Use RETURNING in place of SQL Servers OUTPUT clause http://www.postgresql.org/docs/current/static/sql-insert.html
 
-            return new PostgreSqlExecutionToken(DataSource, "Insert or update " + Table.Name, sql.ToString(), sqlBuilder.GetParameters());
+            return new PostgreSqlCommandExecutionToken(DataSource, "Insert or update " + Table.Name, sql.ToString(), sqlBuilder.GetParameters());
         }
     }
 }

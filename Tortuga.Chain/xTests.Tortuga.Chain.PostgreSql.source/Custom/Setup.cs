@@ -24,6 +24,7 @@ namespace Tests
                 con.Open();
 
                 string sql = @"
+DROP FUNCTION IF EXISTS Sales.CustomersByState(char(2));
 DROP VIEW IF EXISTS hr.EmployeeWithManager;
 DROP TABLE IF EXISTS sales.order;
 DROP TABLE IF EXISTS hr.employee;
@@ -37,10 +38,10 @@ CREATE TABLE hr.employee
 	LastName VARCHAR(50) NOT NULL,
 	Title VARCHAR(100) null,
 	ManagerKey INTEGER NULL REFERENCES HR.Employee(EmployeeKey),
-    OfficePhone VARCHAR(15) NULL ,
-    CellPhone VARCHAR(15) NULL ,
-    CreatedDate TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    UpdatedDate TIMESTAMP NULL
+	OfficePhone VARCHAR(15) NULL ,
+	CellPhone VARCHAR(15) NULL ,
+	CreatedDate TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	UpdatedDate TIMESTAMP NULL
 )";
 
                 string sql2 = @"
@@ -50,14 +51,14 @@ CREATE SCHEMA sales;
 CREATE TABLE sales.customer
 (
 	CustomerKey SERIAL PRIMARY KEY, 
-    FullName VARCHAR(150) NULL,
+	FullName VARCHAR(150) NULL,
 	State CHAR(2) NOT NULL,
 
-    CreatedByKey INTEGER NULL,
-    UpdatedByKey INTEGER NULL,
+	CreatedByKey INTEGER NULL,
+	UpdatedByKey INTEGER NULL,
 
 	CreatedDate TIMESTAMP NULL,
-    UpdatedDate TIMESTAMP NULL,
+	UpdatedDate TIMESTAMP NULL,
 
 	DeletedFlag boolean NOT NULL DEFAULT FALSE,
 	DeletedDate TIMESTAMP NULL,
@@ -67,27 +68,27 @@ CREATE TABLE sales.customer
                 string viewSql = @"CREATE VIEW HR.EmployeeWithManager
 AS
 SELECT  e.EmployeeKey ,
-        e.FirstName ,
-        e.MiddleName ,
-        e.LastName ,
-        e.Title ,
-        e.ManagerKey ,
-        e.OfficePhone ,
-        e.CellPhone ,
-        e.CreatedDate ,
-        e.UpdatedDate ,
-        m.EmployeeKey AS ManagerEmployeeKey ,
-        m.FirstName AS ManagerFirstName ,
-        m.MiddleName AS ManagerMiddleName ,
-        m.LastName AS ManagerLastName ,
-        m.Title AS ManagerTitle ,
-        m.ManagerKey AS ManagerManagerKey ,
-        m.OfficePhone AS ManagerOfficePhone ,
-        m.CellPhone AS ManagerCellPhone ,
-        m.CreatedDate AS ManagerCreatedDate ,
-        m.UpdatedDate AS ManagerUpdatedDate
+		e.FirstName ,
+		e.MiddleName ,
+		e.LastName ,
+		e.Title ,
+		e.ManagerKey ,
+		e.OfficePhone ,
+		e.CellPhone ,
+		e.CreatedDate ,
+		e.UpdatedDate ,
+		m.EmployeeKey AS ManagerEmployeeKey ,
+		m.FirstName AS ManagerFirstName ,
+		m.MiddleName AS ManagerMiddleName ,
+		m.LastName AS ManagerLastName ,
+		m.Title AS ManagerTitle ,
+		m.ManagerKey AS ManagerManagerKey ,
+		m.OfficePhone AS ManagerOfficePhone ,
+		m.CellPhone AS ManagerCellPhone ,
+		m.CreatedDate AS ManagerCreatedDate ,
+		m.UpdatedDate AS ManagerUpdatedDate
 FROM    HR.Employee e
-        LEFT JOIN HR.Employee m ON m.EmployeeKey = e.ManagerKey;";
+		LEFT JOIN HR.Employee m ON m.EmployeeKey = e.ManagerKey;";
 
                 var orderSql = @"CREATE TABLE sales.order
 (
@@ -95,6 +96,39 @@ FROM    HR.Employee e
 	CustomerKey INT NOT NULL References Sales.Customer(CustomerKey),
 	OrderDate TIMESTAMP NOT NULL
 );";
+
+                var function1 = @"CREATE FUNCTION Sales.CustomersByState ( param_state CHAR(2) ) RETURNS TABLE
+    (
+      CustomerKey INT,
+      FullName VARCHAR(150) ,
+      State CHAR(2)  ,
+      CreatedByKey INT ,
+      UpdatedByKey INT ,
+      CreatedDate TIMESTAMP ,
+      UpdatedDate TIMESTAMP ,
+      DeletedFlag BOOLEAN,
+      DeletedDate TIMESTAMP ,
+      DeletedByKey INT 
+    )
+    AS $$
+    BEGIN
+	  RETURN QUERY SELECT    
+	        c.CustomerKey ,
+                c.FullName ,
+                c.State ,
+                c.CreatedByKey ,
+                c.UpdatedByKey ,
+                c.CreatedDate ,
+                c.UpdatedDate ,
+                c.DeletedFlag ,
+                c.DeletedDate ,
+                c.DeletedByKey
+      FROM      Sales.Customer c
+      WHERE     c.State = param_state;
+    END;
+    $$ LANGUAGE plpgsql;
+";
+
 
 
                 //string proc1 = @"";
@@ -111,6 +145,8 @@ FROM    HR.Employee e
                 using (NpgsqlCommand cmd = new NpgsqlCommand(orderSql, con))
                     cmd.ExecuteNonQuery();
 
+                using (NpgsqlCommand cmd = new NpgsqlCommand(function1, con))
+                    cmd.ExecuteNonQuery();
 
             }
 
@@ -119,24 +155,24 @@ FROM    HR.Employee e
         public static void AssemblyCleanup()
         {
             /*
-            using (var con = new NpgsqlConnection(@"User ID = postgres;
-                                             Password = toor; 
-                                             Host = localhost; 
-                                             Port = 5432;
-                                             Database = tortugachaintestdb;
-                                             Pooling = true;"))
-            {
-                con.Open();
+			using (var con = new NpgsqlConnection(@"User ID = postgres;
+											 Password = toor; 
+											 Host = localhost; 
+											 Port = 5432;
+											 Database = tortugachaintestdb;
+											 Pooling = true;"))
+			{
+				con.Open();
 
-                string sql = "DROP TABLE HR.Employee; DROP SCHEMA HR;";
-                string sql2 = "DROP TABLE Sales.Customer; DROP SCHEMA Sales;"; 
-                using (NpgsqlCommand cmd = new NpgsqlCommand(sql, con))
-                    cmd.ExecuteNonQuery();
+				string sql = "DROP TABLE HR.Employee; DROP SCHEMA HR;";
+				string sql2 = "DROP TABLE Sales.Customer; DROP SCHEMA Sales;"; 
+				using (NpgsqlCommand cmd = new NpgsqlCommand(sql, con))
+					cmd.ExecuteNonQuery();
 
-                using (NpgsqlCommand cmd = new NpgsqlCommand(sql2, con))
-                    cmd.ExecuteNonQuery();
+				using (NpgsqlCommand cmd = new NpgsqlCommand(sql2, con))
+					cmd.ExecuteNonQuery();
 
-            }*/
+			}*/
         }
 
 

@@ -31,7 +31,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         /// Prepares the command for execution by generating any necessary SQL.
         /// </summary>
         /// <param name="materializer"></param>
-        /// <returns><see cref="PostgreSqlExecutionToken" /></returns>
+        /// <returns><see cref="PostgreSqlCommandExecutionToken" /></returns>
         public override CommandExecutionToken<NpgsqlCommand, NpgsqlParameter> Prepare(Materializer<NpgsqlCommand, NpgsqlParameter> materializer)
         {
             if (materializer == null)
@@ -45,7 +45,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
             sqlBuilder.BuildDeleteStatement(sql, Table.Name.ToString(), null);
             sqlBuilder.BuildSelectClause(sql, " RETURNING ", null, ";");
 
-            return new PostgreSqlExecutionToken(DataSource, "Delete from " + Table.Name, sql.ToString(), sqlBuilder.GetParameters());
+            return new PostgreSqlCommandExecutionToken(DataSource, "Delete from " + Table.Name, sql.ToString(), sqlBuilder.GetParameters());
         }
     }
 }
