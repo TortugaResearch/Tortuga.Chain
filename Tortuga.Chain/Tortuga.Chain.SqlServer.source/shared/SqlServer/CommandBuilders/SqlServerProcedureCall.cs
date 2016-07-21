@@ -22,7 +22,6 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 
         readonly object m_ArgumentValue;
         readonly StoredProcedureMetadata<SqlServerObjectName, SqlDbType> m_Procedure;
-        readonly SqlServerObjectName m_ProcedureName;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlServerProcedureCall"/> class.
@@ -36,7 +35,6 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
                 throw new ArgumentException($"{nameof(procedureName)} is empty", nameof(procedureName));
 
             m_ArgumentValue = argumentValue;
-            m_ProcedureName = procedureName;
             m_Procedure = DataSource.DatabaseMetadata.GetStoredProcedure(procedureName);
         }
 
@@ -63,7 +61,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
                 parameters = sqlBuilder.GetParameters();
             }
 
-            return new SqlServerCommandExecutionToken(DataSource, m_ProcedureName.ToString(), m_ProcedureName.ToQuotedString(), parameters, CommandType.StoredProcedure);
+            return new SqlServerCommandExecutionToken(DataSource, m_Procedure.Name.ToString(), m_Procedure.Name.ToQuotedString(), parameters, CommandType.StoredProcedure);
 
         }
 

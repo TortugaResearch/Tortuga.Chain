@@ -1,4 +1,5 @@
 using Tortuga.Chain.CommandBuilders;
+using Tortuga.Chain.DataSources;
 
 namespace Tortuga.Chain
 {
@@ -6,7 +7,7 @@ namespace Tortuga.Chain
     /// This indicates that the data source provides minimal functionality.
     /// </summary>
     /// <remarks>Warning: This interface is meant to simulate multiple inheritance and work-around some issues with exposing generic types. Do not implement it in client code, as new method will be added over time.</remarks>
-    public interface IClass0DataSource
+    public interface IClass0DataSource : IDataSource
     {
 
         ///// <summary>

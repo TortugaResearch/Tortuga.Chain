@@ -55,6 +55,10 @@
       "path": "Page/CommandBuilders/SQL.md"
     },
     {
+      "title": "Table Function Command Builder",
+      "path": "Page/CommandBuilders/TableFunction.md"
+    },
+    {
       "title": "Procedure Command Builder",
       "path": "Page/CommandBuilders/Procedure.md"
     },

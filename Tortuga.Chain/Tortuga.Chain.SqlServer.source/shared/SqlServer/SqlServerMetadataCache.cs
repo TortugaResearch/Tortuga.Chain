@@ -163,7 +163,7 @@ namespace Tortuga.Chain.SqlServer
             PreloadTables();
             PreloadViews();
             PreloadStoredProcedures();
-            PreloadTableValueFunctions();
+            PreloadTableFunctions();
             PreloadUserDefinedTypes();
         }
 
@@ -255,7 +255,7 @@ namespace Tortuga.Chain.SqlServer
         /// <summary>
         /// Preloads the table value functions.
         /// </summary>
-        public void PreloadTableValueFunctions()
+        public void PreloadTableFunctions()
         {
             const string TvfSql =
                 @"SELECT 

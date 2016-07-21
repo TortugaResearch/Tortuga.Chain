@@ -74,7 +74,7 @@ namespace Tests.Metadata
         [TestMethod]
         public void PreloadTableValueFunctions()
         {
-            DataSource.DatabaseMetadata.PreloadTableValueFunctions();
+            DataSource.DatabaseMetadata.PreloadTableFunctions();
             foreach (var item in DataSource.DatabaseMetadata.GetStoredProcedures())
             {
                 Assert.IsFalse(string.IsNullOrWhiteSpace(item.Name.ToString()), "Name");

@@ -89,6 +89,7 @@
     <Compile Include="shared\PostgreSql\CommandBuilders\PostgreSqlDeleteMany.cs" />
     <Compile Include="shared\PostgreSql\CommandBuilders\PostgreSqlTableFunction.cs" />
     <Compile Include="shared\PostgreSql\CommandBuilders\PostgreSqlUpdateMany.cs" />
+    <Compile Include="shared\PostgreSql\CommandBuilders\PostgreSqlProcedureCall.cs" />
     <Compile Include="shared\PostgreSql\PostgreSqlDataSourceBase.Interfaces.cs" />
     <Compile Include="shared\PostgreSql\PostgreSqlTransactionalDataSource.cs" />
     <Compile Include="shared\PostgreSql\PostgreSqlDataSourceSettings.cs" />
@@ -99,7 +100,7 @@
     <Compile Include="shared\PostgreSql\CommandBuilders\PostgreSqlInsertOrUpdateObject.cs" />
     <Compile Include="shared\PostgreSql\CommandBuilders\PostgreSqlObjectCommand.cs" />
     <Compile Include="shared\PostgreSql\CommandBuilders\PostgreSqlUpdateObject.cs" />
-    <Compile Include="shared\PostgreSql\PostgreSqlExecutionToken.cs" />
+    <Compile Include="shared\PostgreSql\PostgreSqlCommandExecutionToken.cs" />
     <Compile Include="shared\PostgreSql\PostgreSqlDataSourceBase.cs" />
     <Compile Include="shared\PostgreSql\PostgreSqlMetadataCache.cs" />
     <Compile Include="shared\PostgreSql\PostgreSqlObjectName.cs" />

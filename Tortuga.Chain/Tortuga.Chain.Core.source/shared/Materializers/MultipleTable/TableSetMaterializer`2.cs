@@ -39,7 +39,7 @@ namespace Tortuga.Chain.Materializers
             var executionToken = Prepare();
             executionToken.Execute(cmd =>
                         {
-                            using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess))
+                            using (var reader = cmd.ExecuteReader())
                             {
                                 result = new TableSet(reader, m_TableNames);
                                 return result.Sum(t => t.Rows.Count);

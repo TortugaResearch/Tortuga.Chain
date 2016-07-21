@@ -38,7 +38,7 @@ namespace Tortuga.Chain.Access
         public abstract new AccessMetadataCache DatabaseMetadata { get; }
 
 
-        IDatabaseMetadataCache IClass1DataSource.DatabaseMetadata
+        IDatabaseMetadataCache IDataSource.DatabaseMetadata
         {
             get { return DatabaseMetadata; }
         }

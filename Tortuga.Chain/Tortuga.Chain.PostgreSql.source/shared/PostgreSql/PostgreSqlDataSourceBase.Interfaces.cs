@@ -1,13 +1,14 @@
 ﻿using System.Collections.Generic;
 using Tortuga.Chain.CommandBuilders;
+using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.PostgreSql
 {
 
-    partial class PostgreSqlDataSourceBase : IClass1DataSource
+    partial class PostgreSqlDataSourceBase : IClass2DataSource
     {
-        IDatabaseMetadataCache IClass1DataSource.DatabaseMetadata
+        IDatabaseMetadataCache IDataSource.DatabaseMetadata
         {
             get { return DatabaseMetadata; }
         }
@@ -167,6 +168,26 @@ namespace Tortuga.Chain.PostgreSql
         IMultipleRowDbCommandBuilder IClass1DataSource.UpdateByKeyList<TArgument, TKey>(string tableName, TArgument newValues, IEnumerable<TKey> keys, UpdateOptions options)
         {
             return UpdateByKeyList(tableName, newValues, keys, options);
+        }
+
+        IMultipleTableDbCommandBuilder IClass2DataSource.Procedure(string procedureName)
+        {
+            return Procedure(procedureName);
+        }
+
+        IMultipleTableDbCommandBuilder IClass2DataSource.Procedure(string procedureName, object argumentValue)
+        {
+            return Procedure(procedureName, argumentValue);
+        }
+
+        ITableDbCommandBuilder IClass2DataSource.TableFunction(string functionName)
+        {
+            return TableFunction(functionName);
+        }
+
+        ITableDbCommandBuilder IClass2DataSource.TableFunction(string functionName, object functionArgumentValue)
+        {
+            return TableFunction(functionName, functionArgumentValue);
         }
 
     }

@@ -27,7 +27,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         private PostgreSqlLimitOption m_LimitOptions;
         private int? m_Skip;
         private int? m_Take;
-        private int? m_Seed;
+        //private int? m_Seed;
         private string m_SelectClause;
 
         /// <summary>
@@ -38,6 +38,9 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         /// <param name="functionArgumentValue">The function argument.</param>
         public PostgreSqlTableFunction(PostgreSqlDataSourceBase dataSource, PostgreSqlObjectName tableFunctionName, object functionArgumentValue) : base(dataSource)
         {
+            if (dataSource == null)
+                throw new ArgumentNullException("dataSource", "dataSource is null.");
+
             m_Table = dataSource.DatabaseMetadata.GetTableFunction(tableFunctionName);
             m_FunctionArgumentValue = functionArgumentValue;
         }
@@ -67,7 +70,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         /// <returns></returns>
         protected override TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption> OnWithLimits(int? skip, int? take, PostgreSqlLimitOption limitOptions, int? seed)
         {
-            m_Seed = seed;
+            //m_Seed = seed;
             m_Skip = skip;
             m_Take = take;
             m_LimitOptions = limitOptions;
@@ -84,7 +87,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         /// <returns></returns>
         protected override TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption> OnWithLimits(int? skip, int? take, LimitOptions limitOptions, int? seed)
         {
-            m_Seed = seed;
+            //m_Seed = seed;
             m_Skip = skip;
             m_Take = take;
             m_LimitOptions = (PostgreSqlLimitOption)limitOptions;

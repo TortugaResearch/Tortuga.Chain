@@ -15,8 +15,15 @@ namespace Tortuga.Chain.PostgreSql
         /// <summary>
         /// Initializes a new instance of the <see cref="PostgreSqlCommandExecutionToken" /> class.
         /// </summary>
-        public PostgreSqlCommandExecutionToken(ICommandDataSource<NpgsqlCommand, NpgsqlParameter> dataSource, string operationName, string commandText, IReadOnlyList<NpgsqlParameter> parameters, CommandType commandType = CommandType.Text) : base(dataSource, operationName, commandText, parameters, commandType)
+        public PostgreSqlCommandExecutionToken(ICommandDataSource<NpgsqlCommand, NpgsqlParameter> dataSource, string operationName, string commandText, IReadOnlyList<NpgsqlParameter> parameters, CommandType commandType = CommandType.Text, bool dereferenceCursors = false) : base(dataSource, operationName, commandText, parameters, commandType)
         {
+            DereferenceCursors = dereferenceCursors;
         }
+
+
+        /// <summary>
+        /// Gets a value indicating whether cursors should be dereferenced.
+        /// </summary>
+        public bool DereferenceCursors { get; }
     }
 }

@@ -166,7 +166,7 @@ namespace Tortuga.Chain.CommandBuilders
         }
 
         /// <summary>
-        /// Applies an argument dictionary, overriding any perviously applied values.
+        /// Applies an argument dictionary, overriding any previously applied values.
         /// </summary>
         /// <param name="value">The value.</param>
         /// <exception cref="MappingException">This is thrown is no keys could be matched to a column. If strict mode, all keys must match columns.</exception>
@@ -200,7 +200,7 @@ namespace Tortuga.Chain.CommandBuilders
             }
 
             if (!found)
-                throw new MappingException($"None of the keys could be matched to columns in {m_Name}.");
+                throw new MappingException($"None of the keys could be matched to columns or parameters in {m_Name}.");
         }
 
 

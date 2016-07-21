@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Tortuga.Chain.CommandBuilders;
+using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.SqlServer
@@ -7,7 +8,7 @@ namespace Tortuga.Chain.SqlServer
     partial class SqlServerDataSourceBase : IClass2DataSource
     {
 
-        IDatabaseMetadataCache IClass1DataSource.DatabaseMetadata
+        IDatabaseMetadataCache IDataSource.DatabaseMetadata
         {
             get { return DatabaseMetadata; }
         }

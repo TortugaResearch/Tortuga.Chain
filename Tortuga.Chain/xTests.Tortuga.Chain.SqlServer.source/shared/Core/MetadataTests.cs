@@ -108,7 +108,7 @@ namespace Tests.Core
             var dataSource = DataSource(dataSourceName, mode);
             try
             {
-                dataSource.DatabaseMetadata.PreloadTableValueFunctions();
+                dataSource.DatabaseMetadata.PreloadTableFunctions();
                 var function = dataSource.DatabaseMetadata.GetTableFunction(TableFunction1Name);
                 Assert.IsNotNull(function, $"Error reading function {TableFunction1Name}");
 
@@ -127,7 +127,7 @@ namespace Tests.Core
             var dataSource = DataSource(dataSourceName, mode);
             try
             {
-                dataSource.DatabaseMetadata.PreloadTableValueFunctions();
+                dataSource.DatabaseMetadata.PreloadTableFunctions();
                 var function = dataSource.DatabaseMetadata.GetTableFunction(TableFunction2Name);
                 Assert.IsNotNull(function, $"Error reading function {TableFunction2Name}");
 

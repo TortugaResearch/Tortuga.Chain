@@ -32,11 +32,11 @@ namespace Tests
 
         public static string EmployeeTableName { get { return "HR.Employee"; } }
 
-        public string Proc1Name { get { return "Sales.CustomerWithOrdersByState"; } }
+        public string MultiResultSetProc1Name { get { return "Sales.CustomerWithOrdersByState"; } }
 
         public string TableFunction1Name { get { return "Sales.CustomersByState"; } }
 
-        public string TableFunction2Name { get { return "Sales.CustomersByStateInline"; } }
+        //public string TableFunction2Name { get { return "Sales.CustomersByStateInline"; } }
 
         public PostgreSqlDataSource AttachRules(PostgreSqlDataSource source)
         {
@@ -95,6 +95,7 @@ namespace Tests
                 WriteLine("");
                 WriteLine("Command text: ");
                 WriteLine(e.ExecutionDetails.CommandText);
+                WriteLine("CommandType: " + e.ExecutionDetails.CommandType);
                 //Indent();
                 foreach (var item in ((PostgreSqlCommandExecutionToken)e.ExecutionDetails).Parameters)
                     WriteLine(item.ParameterName + ": " + (item.Value == null || item.Value == DBNull.Value ? "<NULL>" : item.Value));

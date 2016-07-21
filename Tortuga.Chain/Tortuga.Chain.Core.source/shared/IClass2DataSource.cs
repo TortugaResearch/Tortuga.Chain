@@ -7,7 +7,7 @@ using Tortuga.Chain.CommandBuilders;
 namespace Tortuga.Chain
 {
     /// <summary>
-    /// A class 2 datasource includes stored procedures, table-value functions, and bulk insert.
+    /// A class 2 datasource includes stored procedures and table functions.
     /// </summary>
     /// <seealso cref="IClass1DataSource" />
     /// <remarks>Warning: This interface is meant to simulate multiple inheritance and work-around some issues with exposing generic types. Do not implement it in client code, as new method will be added over time.</remarks>

@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using Tortuga.Chain;
 using Tortuga.Chain.DataSources;
@@ -32,7 +33,12 @@ namespace Tests
             return dataSource;
         }
 
-        public void Release(DataSource dataSource)
+        public IClass2DataSource DataSource2(string name, DataSourceType mode, [CallerMemberName] string caller = null)
+        {
+            return (IClass2DataSource)DataSource(name, mode, caller);
+        }
+
+        public void Release(IDataSource dataSource)
         {
             WriteLine($"Releasing data source {dataSource.Name} ({dataSource.GetType().Name})");
 

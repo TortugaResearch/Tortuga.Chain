@@ -16,7 +16,7 @@ namespace Tortuga.Chain.PostgreSql
     {
         readonly NpgsqlConnectionStringBuilder m_ConnectionBuilder;
         readonly ConcurrentDictionary<PostgreSqlObjectName, TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType>> m_Tables = new ConcurrentDictionary<PostgreSqlObjectName, TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType>>();
-        //readonly ConcurrentDictionary<PostgreSqlObjectName, StoredProcedureMetadata<PostgreSqlObjectName, NpgsqlDbType>> m_StoredProcedures = new ConcurrentDictionary<PostgreSqlObjectName, StoredProcedureMetadata<PostgreSqlObjectName, NpgsqlDbType>>();
+        readonly ConcurrentDictionary<PostgreSqlObjectName, StoredProcedureMetadata<PostgreSqlObjectName, NpgsqlDbType>> m_StoredProcedures = new ConcurrentDictionary<PostgreSqlObjectName, StoredProcedureMetadata<PostgreSqlObjectName, NpgsqlDbType>>();
         readonly ConcurrentDictionary<Type, TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType>> m_TypeTableMap = new ConcurrentDictionary<Type, TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType>>();
         readonly ConcurrentDictionary<PostgreSqlObjectName, TableFunctionMetadata<PostgreSqlObjectName, NpgsqlDbType>> m_TableFunctions = new ConcurrentDictionary<PostgreSqlObjectName, TableFunctionMetadata<PostgreSqlObjectName, NpgsqlDbType>>();
 
@@ -29,16 +29,16 @@ namespace Tortuga.Chain.PostgreSql
             m_ConnectionBuilder = connectionBuilder;
         }
 
-        ///// <summary>
-        ///// Gets the stored procedure's metadata.
-        ///// </summary>
-        ///// <param name="procedureName">Name of the procedure.</param>
-        ///// <returns></returns>
-        ///// <exception cref="NotImplementedException"></exception>
-        //public override StoredProcedureMetadata<PostgreSqlObjectName, NpgsqlDbType> GetStoredProcedure(PostgreSqlObjectName procedureName)
-        //{
-        //    return m_StoredProcedures.GetOrAdd(procedureName, GetStoredProcedureInteral);
-        //}
+        /// <summary>
+        /// Gets the stored procedure's metadata.
+        /// </summary>
+        /// <param name="procedureName">Name of the procedure.</param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public override StoredProcedureMetadata<PostgreSqlObjectName, NpgsqlDbType> GetStoredProcedure(PostgreSqlObjectName procedureName)
+        {
+            return m_StoredProcedures.GetOrAdd(procedureName, GetStoredProcedureInteral);
+        }
 
         /// <summary>
         /// Gets the metadata for a table function.
@@ -80,6 +80,8 @@ namespace Tortuga.Chain.PostgreSql
         {
             PreloadTables();
             PreloadViews();
+            PreloadTableFunctions();
+            PreloadStoredProcedures();
         }
 
         /// <summary>
@@ -190,7 +192,7 @@ namespace Tortuga.Chain.PostgreSql
 
         private TableFunctionMetadata<PostgreSqlObjectName, NpgsqlDbType> GetTableFunctionInternal(PostgreSqlObjectName tableFunctionName)
         {
-            const string functionSql = @"SELECT routine_schema, routine_name, specific_name FROM information_schema.routines WHERE routine_schema ILIKE @Schema AND routine_name ILIKE @Name;";
+            const string functionSql = @"SELECT routine_schema, routine_name, specific_name FROM information_schema.routines WHERE routine_type = 'FUNCTION' AND data_type='record' AND routine_schema ILIKE @Schema AND routine_name ILIKE @Name;";
 
             string actualSchema;
             string actualName;
@@ -206,7 +208,7 @@ namespace Tortuga.Chain.PostgreSql
                     using (var reader = cmd.ExecuteReader())
                     {
                         if (!reader.Read())
-                            throw new MissingObjectException($"Could not find function {functionSql}");
+                            throw new MissingObjectException($"Could not find function {tableFunctionName}");
                         actualSchema = reader.GetString(reader.GetOrdinal("routine_schema"));
                         actualName = reader.GetString(reader.GetOrdinal("routine_name"));
                         specificName = reader.GetString(reader.GetOrdinal("specific_name"));
@@ -226,8 +228,7 @@ namespace Tortuga.Chain.PostgreSql
         private Tuple<List<ParameterMetadata<NpgsqlDbType>>, List<ColumnMetadata<NpgsqlDbType>>> GetParametersAndColumns(string specificName)
         {
             //private List<ParameterMetadata<NpgsqlDbType>> GetParameters(string schema, string procedureName)
-            const string parameterSql =
-                @"SELECT * FROM information_schema.parameters WHERE specific_name = @SpecificName ORDER BY ordinal_position";
+            const string parameterSql = @"SELECT * FROM information_schema.parameters WHERE specific_name = @SpecificName ORDER BY ordinal_position";
 
             var parameters = new List<ParameterMetadata<NpgsqlDbType>>();
             var columns = new List<ColumnMetadata<NpgsqlDbType>>();
@@ -269,6 +270,39 @@ namespace Tortuga.Chain.PostgreSql
                 }
             }
             return Tuple.Create(parameters, columns);
+        }
+
+        private StoredProcedureMetadata<PostgreSqlObjectName, NpgsqlDbType> GetStoredProcedureInteral(PostgreSqlObjectName storedProcedureName)
+        {
+            const string functionSql = @"SELECT routine_schema, routine_name, specific_name FROM information_schema.routines WHERE routine_type = 'FUNCTION' AND data_type='refcursor' AND routine_schema ILIKE @Schema AND routine_name ILIKE @Name;";
+
+            string actualSchema;
+            string actualName;
+            string specificName;
+
+            using (var con = new NpgsqlConnection(m_ConnectionBuilder.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = new NpgsqlCommand(functionSql, con))
+                {
+                    cmd.Parameters.AddWithValue("@Schema", storedProcedureName.Schema);
+                    cmd.Parameters.AddWithValue("@Name", storedProcedureName.Name);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        if (!reader.Read())
+                            throw new MissingObjectException($"Could not find function {storedProcedureName}");
+                        actualSchema = reader.GetString(reader.GetOrdinal("routine_schema"));
+                        actualName = reader.GetString(reader.GetOrdinal("routine_name"));
+                        specificName = reader.GetString(reader.GetOrdinal("specific_name"));
+                    }
+                }
+            }
+
+            var objectName = new PostgreSqlObjectName(actualSchema, actualName);
+
+            var pAndC = GetParametersAndColumns(specificName);
+
+            return new StoredProcedureMetadata<PostgreSqlObjectName, NpgsqlDbType>(objectName, pAndC.Item1);
         }
 
         //private StoredProcedureMetadata<PostgreSqlObjectName, NpgsqlDbType> GetStoredProcedureInteral(PostgreSqlObjectName storedProcedureName)
@@ -490,7 +524,7 @@ WHERE c.relname ILIKE @Name AND
         /// </summary>
         public override void Reset()
         {
-            //m_StoredProcedures.Clear();
+            m_StoredProcedures.Clear();
             m_TableFunctions.Clear();
             m_Tables.Clear();
             m_TypeTableMap.Clear();
@@ -499,7 +533,34 @@ WHERE c.relname ILIKE @Name AND
         /// <summary>
         /// Preloads the table value functions.
         /// </summary>
-        public void PreloadTableValueFunctions()
+        public void PreloadStoredProcedures()
+        {
+            const string procSql = @"SELECT routine_schema, routine_name FROM information_schema.routines where routine_type = 'FUNCTION' AND data_type='refcursor';";
+
+
+            using (var con = new NpgsqlConnection(m_ConnectionBuilder.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = new NpgsqlCommand(procSql, con))
+                {
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var schema = reader.GetString(reader.GetOrdinal("routine_schema"));
+                            var name = reader.GetString(reader.GetOrdinal("routine_name"));
+                            GetStoredProcedure(new PostgreSqlObjectName(schema, name));
+                        }
+                    }
+                }
+            }
+
+        }
+
+        /// <summary>
+        /// Preloads the table value functions.
+        /// </summary>
+        public void PreloadTableFunctions()
         {
             const string TvfSql = @"SELECT routine_schema, routine_name FROM information_schema.routines where routine_type = 'FUNCTION' AND data_type='record';";
 

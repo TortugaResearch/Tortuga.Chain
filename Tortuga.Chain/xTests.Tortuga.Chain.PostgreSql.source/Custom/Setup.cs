@@ -25,6 +25,7 @@ namespace Tests
 
                 string sql = @"
 DROP FUNCTION IF EXISTS Sales.CustomersByState(char(2));
+DROP FUNCTION IF EXISTS Sales.CustomerWithOrdersByState(char(2));
 DROP VIEW IF EXISTS hr.EmployeeWithManager;
 DROP TABLE IF EXISTS sales.order;
 DROP TABLE IF EXISTS hr.employee;
@@ -129,7 +130,36 @@ FROM    HR.Employee e
     $$ LANGUAGE plpgsql;
 ";
 
+                var proc1 = @"CREATE FUNCTION Sales.CustomerWithOrdersByState(param_state CHAR(2)) RETURNS SETOF refcursor AS $$
+    DECLARE
+      ref1 refcursor;           -- Declare cursor variables
+      ref2 refcursor;                             
+    BEGIN
+      OPEN ref1 FOR  SELECT  c.CustomerKey ,
+            c.FullName ,
+            c.State ,
+            c.CreatedByKey ,
+            c.UpdatedByKey ,
+            c.CreatedDate ,
+            c.UpdatedDate ,
+            c.DeletedFlag ,
+            c.DeletedDate ,
+            c.DeletedByKey
+    FROM    Sales.Customer c
+    WHERE   c.State = param_state;
+    RETURN NEXT ref1;                                                                              
+ 
+    OPEN ref2 FOR   SELECT  o.OrderKey ,
+            o.CustomerKey ,
+            o.OrderDate
+    FROM    Sales.Order o
+            INNER JOIN Sales.Customer c ON o.CustomerKey = c.CustomerKey
+    WHERE   c.State = param_state;
+    RETURN NEXT ref2; 
 
+    END;
+    $$ LANGUAGE plpgsql;
+";
 
                 //string proc1 = @"";
 
@@ -148,6 +178,8 @@ FROM    HR.Employee e
                 using (NpgsqlCommand cmd = new NpgsqlCommand(function1, con))
                     cmd.ExecuteNonQuery();
 
+                using (NpgsqlCommand cmd = new NpgsqlCommand(proc1, con))
+                    cmd.ExecuteNonQuery();
             }
 
         }

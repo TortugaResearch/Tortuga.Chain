@@ -6,8 +6,10 @@ using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
 using Tortuga.Chain.AuditRules;
+using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.DataSources;
+using Tortuga.Chain.PostgreSql.CommandBuilders;
 
 namespace Tortuga.Chain.PostgreSql
 {
@@ -131,7 +133,13 @@ namespace Tortuga.Chain.PostgreSql
                     foreach (var param in executionToken.Parameters)
                         cmd.Parameters.Add(param);
 
-                    var rows = implementation(cmd);
+                    int? rows;
+
+                    if (((PostgreSqlCommandExecutionToken)executionToken).DereferenceCursors)
+                        rows = DereferenceCursors(cmd, implementation);
+                    else
+                        rows = implementation(cmd);
+
                     executionToken.RaiseCommandExecuted(cmd, rows);
                     OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
                     return rows;
@@ -176,7 +184,13 @@ namespace Tortuga.Chain.PostgreSql
                     cmd.CommandType = executionToken.CommandType;
                     foreach (var param in executionToken.Parameters)
                         cmd.Parameters.Add(param);
-                    var rows = await implementation(cmd).ConfigureAwait(false);
+
+                    int? rows;
+                    if (((PostgreSqlCommandExecutionToken)executionToken).DereferenceCursors)
+                        rows = await DereferenceCursorsAsync(cmd, implementation).ConfigureAwait(false);
+                    else
+                        rows = await implementation(cmd).ConfigureAwait(false);
+
                     executionToken.RaiseCommandExecuted(cmd, rows);
                     OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
                     return rows;
@@ -321,6 +335,7 @@ namespace Tortuga.Chain.PostgreSql
         {
             get { return m_BaseDataSource.m_ExtensionCache; }
         }
+
 
     }
 }

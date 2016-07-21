@@ -310,7 +310,13 @@ namespace Tortuga.Chain
 
                         executionToken.ApplyCommandOverrides(cmd);
 
-                        var rows = implementation(cmd);
+                        int? rows;
+
+                        if (((PostgreSqlCommandExecutionToken)executionToken).DereferenceCursors)
+                            rows = DereferenceCursors(cmd, implementation);
+                        else
+                            rows = implementation(cmd);
+
                         executionToken.RaiseCommandExecuted(cmd, rows);
                         OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
                         return rows;
@@ -363,7 +369,12 @@ namespace Tortuga.Chain
 
                         executionToken.ApplyCommandOverrides(cmd);
 
-                        var rows = await implementation(cmd).ConfigureAwait(false);
+                        int? rows;
+                        if (((PostgreSqlCommandExecutionToken)executionToken).DereferenceCursors)
+                            rows = await DereferenceCursorsAsync(cmd, implementation).ConfigureAwait(false);
+                        else
+                            rows = await implementation(cmd).ConfigureAwait(false);
+
                         executionToken.RaiseCommandExecuted(cmd, rows);
                         OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
                         return rows;

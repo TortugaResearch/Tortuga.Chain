@@ -14,10 +14,10 @@ namespace Tortuga.Chain
     public interface IClass1DataSource : IClass0DataSource
     {
 
-        /// <summary>
-        /// Returns an abstract metadata cache.
-        /// </summary>
-        IDatabaseMetadataCache DatabaseMetadata { get; }
+        ///// <summary>
+        ///// Returns an abstract metadata cache.
+        ///// </summary>
+        //IDatabaseMetadataCache DatabaseMetadata { get; }
 
         /// <summary>
         /// Deletes an object model from the specified table.
@@ -276,7 +276,7 @@ namespace Tortuga.Chain
         /// <param name="key">The key.</param>
         /// <param name="options">The options.</param>
         /// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
-        ISingleRowDbCommandBuilder UpdateByKey<TArgument, TKey>(string  tableName, TArgument newValues, TKey key, UpdateOptions options = UpdateOptions.None)
+        ISingleRowDbCommandBuilder UpdateByKey<TArgument, TKey>(string tableName, TArgument newValues, TKey key, UpdateOptions options = UpdateOptions.None)
             where TKey : struct;
 
         /// <summary>

@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Tortuga.Chain.AuditRules;
 using Tortuga.Chain.Core;
@@ -73,5 +74,28 @@ namespace Tortuga.Chain.DataSources
         /// Gets or sets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
         /// </summary>
         ICacheAdapter Cache { get; }
+
+
+        /// <summary>
+        /// Raised when a executionDetails is canceled.
+        /// </summary>
+        /// <remarks>This is not used for timeouts.</remarks>
+        event EventHandler<ExecutionEventArgs> ExecutionCanceled;
+
+        /// <summary>
+        /// Raised when a procedure call fails.
+        /// </summary>
+        event EventHandler<ExecutionEventArgs> ExecutionError;
+
+        /// <summary>
+        /// Raised when a procedure call is successfully completed
+        /// </summary>
+        event EventHandler<ExecutionEventArgs> ExecutionFinished;
+
+        /// <summary>
+        /// Raised when a procedure call is started
+        /// </summary>
+        event EventHandler<ExecutionEventArgs> ExecutionStarted;
+
     }
 }
