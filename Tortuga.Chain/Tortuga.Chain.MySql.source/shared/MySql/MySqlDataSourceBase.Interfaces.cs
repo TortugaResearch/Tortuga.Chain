@@ -1,0 +1,194 @@
+﻿using System.Collections.Generic;
+using Tortuga.Chain.CommandBuilders;
+using Tortuga.Chain.DataSources;
+using Tortuga.Chain.Metadata;
+
+namespace Tortuga.Chain.MySql
+{
+
+    partial class MySqlDataSourceBase : IClass2DataSource
+    {
+        IDatabaseMetadataCache IDataSource.DatabaseMetadata
+        {
+            get { return DatabaseMetadata; }
+        }
+
+        IMultipleTableDbCommandBuilder IClass0DataSource.Sql(string sqlStatement, object argumentValue)
+        {
+            return Sql(sqlStatement, argumentValue);
+        }
+        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Delete<TArgument>(string tableName, TArgument argumentValue, DeleteOptions options)
+        {
+            return Delete(tableName, argumentValue, options);
+        }
+
+        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Delete<TArgument>(TArgument argumentValue, DeleteOptions options)
+        {
+            return Delete(argumentValue, options);
+        }
+
+        ITableDbCommandBuilder IClass1DataSource.From(string tableOrViewName)
+        {
+            return From(tableOrViewName);
+        }
+
+        ITableDbCommandBuilder IClass1DataSource.From(string tableOrViewName, object filterValue)
+        {
+            return From(tableOrViewName, filterValue);
+        }
+
+        ITableDbCommandBuilder IClass1DataSource.From(string tableOrViewName, string whereClause)
+        {
+            return From(tableOrViewName, whereClause);
+        }
+
+        ITableDbCommandBuilder IClass1DataSource.From(string tableOrViewName, string whereClause, object argumentValue)
+        {
+            return From(tableOrViewName, whereClause, argumentValue);
+        }
+
+        ITableDbCommandBuilder IClass1DataSource.From<TObject>()
+        {
+            return From<TObject>();
+        }
+
+        ITableDbCommandBuilder IClass1DataSource.From<TObject>(string whereClause)
+        {
+            return From<TObject>(whereClause);
+        }
+
+        ITableDbCommandBuilder IClass1DataSource.From<TObject>(string whereClause, object argumentValue)
+        {
+            return From<TObject>(whereClause, argumentValue);
+        }
+
+        ITableDbCommandBuilder IClass1DataSource.From<TObject>(object filterValue)
+        {
+            return From<TObject>(filterValue);
+        }
+
+        ISingleRowDbCommandBuilder IClass1DataSource.GetByKey<TKey>(string tableName, TKey key)
+        {
+            return GetByKey(tableName, key);
+        }
+
+        ISingleRowDbCommandBuilder IClass1DataSource.GetByKey(string tableName, string key)
+        {
+            return GetByKey(tableName, key);
+        }
+
+        IMultipleRowDbCommandBuilder IClass1DataSource.GetByKey<TKey>(string tableName, params TKey[] keys)
+        {
+            return GetByKeyList(tableName, keys);
+        }
+
+        IMultipleRowDbCommandBuilder IClass1DataSource.GetByKey(string tableName, params string[] keys)
+        {
+            return GetByKeyList(tableName, keys);
+        }
+
+        IMultipleRowDbCommandBuilder IClass1DataSource.GetByKeyList<T>(string tableName, IEnumerable<T> keys)
+        {
+            return GetByKeyList(tableName, keys);
+        }
+
+        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Insert<TArgument>(TArgument argumentValue, InsertOptions options)
+        {
+            return Insert(argumentValue, options);
+        }
+
+        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Insert<TArgument>(string tableName, TArgument argumentValue, InsertOptions options)
+        {
+            return Insert(tableName, argumentValue, options);
+        }
+
+        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Update<TArgument>(TArgument argumentValue, UpdateOptions options)
+        {
+            return Update(argumentValue, options);
+        }
+        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Update<TArgument>(string tableName, TArgument argumentValue, UpdateOptions options)
+        {
+            return Update(tableName, argumentValue, options);
+        }
+        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Upsert<TArgument>(string tableName, TArgument argumentValue, UpsertOptions options)
+        {
+            return Upsert(tableName, argumentValue, options);
+        }
+
+        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Upsert<TArgument>(TArgument argumentValue, UpsertOptions options)
+        {
+            return Upsert(argumentValue, options);
+        }
+
+        ISingleRowDbCommandBuilder IClass1DataSource.DeleteByKey<TKey>(string tableName, TKey key, DeleteOptions options)
+        {
+            return DeleteByKey(tableName, key, options);
+        }
+
+        ISingleRowDbCommandBuilder IClass1DataSource.DeleteByKey(string tableName, string key, DeleteOptions options)
+        {
+            return DeleteByKey(tableName, key, options);
+        }
+
+        IMultipleRowDbCommandBuilder IClass1DataSource.DeleteByKey<TKey>(string tableName, params TKey[] keys)
+        {
+            return DeleteByKey(tableName, keys);
+        }
+
+        IMultipleRowDbCommandBuilder IClass1DataSource.DeleteByKey(string tableName, params string[] keys)
+        {
+            return DeleteByKey(tableName, keys);
+        }
+
+        IMultipleRowDbCommandBuilder IClass1DataSource.DeleteByKeyList<TKey>(string tableName, IEnumerable<TKey> keys, DeleteOptions options)
+        {
+            return DeleteByKeyList(tableName, keys, options);
+        }
+
+        ISingleRowDbCommandBuilder IClass1DataSource.UpdateByKey<TArgument, TKey>(string tableName, TArgument newValues, TKey key, UpdateOptions options)
+        {
+            return UpdateByKey(tableName, newValues, key, options);
+        }
+
+        ISingleRowDbCommandBuilder IClass1DataSource.UpdateByKey<TArgument>(string tableName, TArgument newValues, string key, UpdateOptions options)
+        {
+            return UpdateByKey(tableName, newValues, key, options);
+        }
+
+        IMultipleRowDbCommandBuilder IClass1DataSource.UpdateByKey<TArgument, TKey>(string tableName, TArgument newValues, params TKey[] keys)
+        {
+            return UpdateByKey(tableName, newValues, keys);
+        }
+
+        IMultipleRowDbCommandBuilder IClass1DataSource.UpdateByKey<TArgument>(string tableName, TArgument newValues, params string[] keys)
+        {
+            return UpdateByKey(tableName, newValues, keys);
+        }
+
+        IMultipleRowDbCommandBuilder IClass1DataSource.UpdateByKeyList<TArgument, TKey>(string tableName, TArgument newValues, IEnumerable<TKey> keys, UpdateOptions options)
+        {
+            return UpdateByKeyList(tableName, newValues, keys, options);
+        }
+
+        IMultipleTableDbCommandBuilder IClass2DataSource.Procedure(string procedureName)
+        {
+            return Procedure(procedureName);
+        }
+
+        IMultipleTableDbCommandBuilder IClass2DataSource.Procedure(string procedureName, object argumentValue)
+        {
+            return Procedure(procedureName, argumentValue);
+        }
+
+        ITableDbCommandBuilder IClass2DataSource.TableFunction(string functionName)
+        {
+            return TableFunction(functionName);
+        }
+
+        ITableDbCommandBuilder IClass2DataSource.TableFunction(string functionName, object functionArgumentValue)
+        {
+            return TableFunction(functionName, functionArgumentValue);
+        }
+
+    }
+}

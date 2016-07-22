@@ -1,0 +1,29 @@
+﻿namespace Tortuga.Chain
+{
+    /// <summary>
+    /// Limit options supported by PostgreSQL.
+    /// </summary>
+    /// <remarks>This is a strict subset of LimitOptions</remarks>
+    public enum MySqlLimitOption
+    {
+        /// <summary>
+        /// No limits were applied.
+        /// </summary>
+        None = LimitOptions.None,
+
+        ///// <summary>
+        ///// Returns the indicated number of rows with optional offset
+        ///// </summary>
+        //Rows = LimitOptions.Rows,
+
+        ///// <summary>
+        ///// Randomly sample N percentage of rows using the Table Sample System algorithm.
+        ///// </summary>
+        //TableSampleSystemPercentage = LimitOptions.TableSampleSystemPercentage,
+
+        ///// <summary>
+        ///// Randomly sample N percentage of rows using the Table Sample Bernoulli algorithm.
+        ///// </summary>
+        //TableSampleBernoulliPercentage = LimitOptions.TableSampleBernoulliPercentage,
+    }
+}
