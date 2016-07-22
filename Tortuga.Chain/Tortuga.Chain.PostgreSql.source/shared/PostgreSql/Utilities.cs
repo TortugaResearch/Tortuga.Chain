@@ -25,7 +25,7 @@ namespace Tortuga.Chain.PostgreSql
             });
         }
 
-        public static bool PrimaryKeyisIdentity(this SqlBuilder<NpgsqlDbType> sqlBuilder, out List<NpgsqlParameter> keyParameters)
+        public static bool PrimaryKeyIsIdentity(this SqlBuilder<NpgsqlDbType> sqlBuilder, out List<NpgsqlParameter> keyParameters)
         {
             return sqlBuilder.PrimaryKeyIsIdentity((NpgsqlDbType? type) => 
             {
