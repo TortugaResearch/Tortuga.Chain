@@ -29,6 +29,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         private int? m_Take;
         private int? m_Seed;
         private string m_SelectClause;
+        private FilterOptions m_FilterOptions;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlServerTableFunction" /> class.
@@ -96,11 +97,12 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// </summary>
         /// <param name="filterValue">The filter value.</param>
         /// <returns></returns>
-        public override TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption> WithFilter(object filterValue)
+        public override TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption> WithFilter(object filterValue, FilterOptions filterOptions = FilterOptions.None)
         {
             m_FilterValue = filterValue;
             m_WhereClause = null;
             m_ArgumentValue = null;
+            m_FilterOptions = filterOptions;
             return this;
         }
 
@@ -208,7 +210,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 
             if (m_FilterValue != null)
             {
-                sql.Append(" WHERE " + sqlBuilder.ApplyFilterValue(m_FilterValue));
+                sql.Append(" WHERE " + sqlBuilder.ApplyFilterValue(m_FilterValue, m_FilterOptions));
                 sqlBuilder.BuildSoftDeleteClause(sql, " AND ", DataSource, null);
 
                 parameters = sqlBuilder.GetParameters();

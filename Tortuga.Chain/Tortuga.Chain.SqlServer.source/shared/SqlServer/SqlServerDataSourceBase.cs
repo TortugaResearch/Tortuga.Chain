@@ -210,10 +210,11 @@ namespace Tortuga.Chain.SqlServer
         /// </summary>
         /// <param name="tableOrViewName">Name of the table or view.</param>
         /// <param name="filterValue">The filter value is used to generate a simple AND style WHERE clause.</param>
+        /// <param name="filterOptions">The filter options.</param>
         /// <returns>SqlServerTableOrView.</returns>
-        public TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption> From(SqlServerObjectName tableOrViewName, object filterValue)
+        public TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption> From(SqlServerObjectName tableOrViewName, object filterValue, FilterOptions filterOptions = FilterOptions.None)
         {
-            return new SqlServerTableOrView(this, tableOrViewName, filterValue);
+            return new SqlServerTableOrView(this, tableOrViewName, filterValue, filterOptions );
         }
 
         /// <summary>

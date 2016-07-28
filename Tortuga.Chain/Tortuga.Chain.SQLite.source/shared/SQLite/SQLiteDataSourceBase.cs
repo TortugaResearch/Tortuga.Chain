@@ -141,9 +141,9 @@ namespace Tortuga.Chain.SQLite
         /// <param name="tableOrViewName"></param>
         /// <param name="filterValue"></param>
         /// <returns></returns>
-        public TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> From(SQLiteObjectName tableOrViewName, object filterValue)
+        public TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> From(SQLiteObjectName tableOrViewName, object filterValue, FilterOptions filterOptions = FilterOptions.None)
         {
-            return new SQLiteTableOrView(this, tableOrViewName, filterValue);
+            return new SQLiteTableOrView(this, tableOrViewName, filterValue, filterOptions );
         }
 
         /// <summary>

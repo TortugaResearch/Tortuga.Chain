@@ -51,8 +51,9 @@ namespace Tortuga.Chain.CommandBuilders
         /// Adds (or replaces) the filter on this command builder.
         /// </summary>
         /// <param name="filterValue">The filter value.</param>
+        /// <param name="filterOptions">The filter options.</param>
         /// <returns></returns>
-        ITableDbCommandBuilder WithFilter(object filterValue);
+        ITableDbCommandBuilder WithFilter(object filterValue, FilterOptions filterOptions = FilterOptions.None);
 
         /// <summary>
         /// Adds (or replaces) the filter on this command builder.
