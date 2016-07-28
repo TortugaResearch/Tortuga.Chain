@@ -2,10 +2,12 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using Tortuga.Anchor.Metadata;
 
@@ -237,8 +239,8 @@ namespace Tortuga.Chain.Csv
         /// <param name="source">The source.</param>
         /// <param name="outputStream">The output stream.</param>
         /// <param name="includeHeaders">if set to <c>true</c> [include headers].</param>
-        /// <returns>Task.</returns>
-        public async Task SerializeAsync(Table source, StreamWriter outputStream, bool includeHeaders)
+        /// <returns>Number of rows serialized.</returns>
+        public async Task SerializeAsync(Table source, TextWriter outputStream, bool includeHeaders)
         {
             var converters = new List<Tuple<string, ICsvValueConverter>>(source.ColumnNames.Count);
 
@@ -263,12 +265,95 @@ namespace Tortuga.Chain.Csv
         /// <summary>
         /// Serialize into a CSV file asynchronously.
         /// </summary>
+        /// <param name="source">The source data reader.</param>
+        /// <param name="outputStream">The output stream.</param>
+        /// <param name="includeHeaders">if set to <c>true</c> [include headers].</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Task.</returns>
+        public async Task<int> SerializeAsync(DbDataReader source, TextWriter outputStream, bool includeHeaders, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var nameConverter = (CsvValueConverter<string>)m_Converters[typeof(string)];
+
+            var converters = new List<Tuple<int, ICsvValueConverter>>(source.FieldCount);
+            var columnNames = new List<string>(source.FieldCount);
+
+            for (var i = 0; i < source.FieldCount; i++)
+            {
+                var type = source.GetFieldType(i);
+                var converter = m_Converters[typeof(object)];
+                m_Converters.TryGetValue(type, out converter);
+                converters.Add(Tuple.Create(i, converter));
+
+                if (includeHeaders)
+                    columnNames.Add(nameConverter.ConvertToString(source.GetName(i), Locale));
+            }
+
+            if (includeHeaders)
+                await outputStream.WriteLineAsync(string.Join(",", columnNames)).ConfigureAwait(false);
+
+            var result = 0;
+            while (await source.ReadAsync(cancellationToken).ConfigureAwait(false))
+            {
+                result += 1;
+                await outputStream.WriteLineAsync(string.Join(",", converters.Select(c =>
+                    source.IsDBNull(c.Item1) ? "" : c.Item2.ConvertToString(source.GetValue(c.Item1), Locale))));
+
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Serialize into a CSV file.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <param name="outputStream">The output stream.</param>
+        /// <param name="includeHeaders">if set to <c>true</c> [include headers].</param>
+        /// <returns>System.Int32.</returns>
+        public int Serialize(DbDataReader source, TextWriter outputStream, bool includeHeaders)
+        {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source), $"{nameof(source)} is null.");
+            if (outputStream == null)
+                throw new ArgumentNullException(nameof(outputStream), $"{nameof(outputStream)} is null.");
+
+            var nameConverter = (CsvValueConverter<string>)m_Converters[typeof(string)];
+
+            var converters = new List<Tuple<int, ICsvValueConverter>>(source.FieldCount);
+            var columnNames = new List<string>(source.FieldCount);
+
+            for (var i = 0; i < source.FieldCount; i++)
+            {
+                var type = source.GetFieldType(i);
+                var converter = m_Converters[typeof(object)];
+                m_Converters.TryGetValue(type, out converter);
+                converters.Add(Tuple.Create(i, converter));
+
+                if (includeHeaders)
+                    columnNames.Add(nameConverter.ConvertToString(source.GetName(i), Locale));
+            }
+
+            if (includeHeaders)
+                outputStream.WriteLine(string.Join(",", columnNames));
+
+            var result = 0;
+            while (source.Read())
+            {
+                result += 1;
+                outputStream.WriteLine(string.Join(",", converters.Select(c =>
+                    source.IsDBNull(c.Item1) ? "" : c.Item2.ConvertToString(source.GetValue(c.Item1), Locale))));
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Serialize into a CSV file asynchronously.
+        /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="items">The items.</param>
         /// <param name="outputStream">The output stream.</param>
         /// <param name="includeHeaders">if set to <c>true</c> [include headers].</param>
         /// <returns>Task.</returns>
-        public async Task SerializeAsync<T>(IEnumerable<T> items, StreamWriter outputStream, bool includeHeaders)
+        public async Task SerializeAsync<T>(IEnumerable<T> items, TextWriter outputStream, bool includeHeaders)
         {
             var properties = MetadataCache.GetMetadata(typeof(T)).Properties.Where(p => p.CanRead).ToList();
             var converters = new List<Tuple<PropertyMetadata, ICsvValueConverter>>(properties.Count);

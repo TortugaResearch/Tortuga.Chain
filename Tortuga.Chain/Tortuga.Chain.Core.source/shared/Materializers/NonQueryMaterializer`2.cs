@@ -23,6 +23,7 @@ namespace Tortuga.Chain.Materializers
         /// Execute the operation synchronously.
         /// </summary>
         /// <param name="state">User defined state, usually used for logging.</param>
+        /// <returns>Number of rows affected, if available from the database.</returns>
         public override int? Execute(object state = null)
         {
             int result = 0;
@@ -39,7 +40,7 @@ namespace Tortuga.Chain.Materializers
         /// </summary>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <param name="state">User defined state, usually used for logging.</param>
-        /// <returns></returns>
+        /// <returns>Number of rows affected, if available from the database.</returns>
         public override async Task<int?> ExecuteAsync(CancellationToken cancellationToken, object state = null)
         {
             int result = 0;
