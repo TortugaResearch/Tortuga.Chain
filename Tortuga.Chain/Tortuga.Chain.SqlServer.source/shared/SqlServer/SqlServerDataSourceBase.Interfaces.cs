@@ -33,9 +33,9 @@ namespace Tortuga.Chain.SqlServer
             return From(tableOrViewName);
         }
 
-        ITableDbCommandBuilder IClass1DataSource.From(string tableOrViewName, object filterValue)
+        ITableDbCommandBuilder IClass1DataSource.From(string tableOrViewName, object filterValue, FilterOptions filterOptions )
         {
-            return From(tableOrViewName, filterValue);
+            return From(tableOrViewName, filterValue, filterOptions);
         }
 
         ITableDbCommandBuilder IClass1DataSource.From(string tableOrViewName, string whereClause)

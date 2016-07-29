@@ -544,15 +544,18 @@ namespace Tortuga.Chain.CommandBuilders
         /// Applies the filter value, returning a set of expressions suitable for use in a WHERE clause.
         /// </summary>
         /// <param name="filterValue">The filter value.</param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"></exception>
+        /// <param name="filterOptions">The filter options.</param>
+        /// <returns>System.String.</returns>
+        /// <exception cref="System.ArgumentNullException"></exception>
         /// <exception cref="MappingException">
         /// </exception>
-        public string ApplyFilterValue(object filterValue)
+        /// <exception cref="ArgumentNullException"></exception>
+        public string ApplyFilterValue(object filterValue, FilterOptions filterOptions)
         {
             if (filterValue == null)
                 throw new ArgumentNullException(nameof(filterValue), $"{nameof(filterValue)} is null.");
 
+            var ignoreNullProperties = filterOptions.HasFlag(FilterOptions.IgnoreNullProperties);
             var parts = new List<string>();
             bool found = false;
 
@@ -568,9 +571,10 @@ namespace Tortuga.Chain.CommandBuilders
                         {
                             var value = item.Value ?? DBNull.Value;
 
-                            if (m_Entries[i].ParameterValue == DBNull.Value)
+                            if (value == DBNull.Value)
                             {
-                                parts.Add($"{m_Entries[i].Details.QuotedSqlName} IS NULL");
+                                if (!ignoreNullProperties)
+                                    parts.Add($"{m_Entries[i].Details.QuotedSqlName} IS NULL");
                             }
                             else
                             {
@@ -599,9 +603,10 @@ namespace Tortuga.Chain.CommandBuilders
                         {
                             var value = property.InvokeGet(filterValue) ?? DBNull.Value;
 
-                            if (m_Entries[i].ParameterValue == DBNull.Value)
+                            if (value == DBNull.Value)
                             {
-                                parts.Add($"{m_Entries[i].Details.QuotedSqlName} IS NULL");
+                                if (!ignoreNullProperties)
+                                    parts.Add($"{m_Entries[i].Details.QuotedSqlName} IS NULL");
                             }
                             else
                             {
@@ -617,7 +622,6 @@ namespace Tortuga.Chain.CommandBuilders
                     }
                     if (m_StrictMode && !propertyFound)
                         throw new MappingException($"Strict mode was enabled, but property {property.Name} could be matched to a column in {m_Name}. Disable strict mode or mark the property as NotMapped.");
-
                 }
 
             }

@@ -49,7 +49,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 
             var sql = new StringBuilder();
             List<NpgsqlParameter> keyParameters;
-            var isPrimaryKeyIdentity = sqlBuilder.PrimaryKeyisIdentity(out keyParameters);
+            var isPrimaryKeyIdentity = sqlBuilder.PrimaryKeyIsIdentity(out keyParameters);
             if (isPrimaryKeyIdentity)
             {
                 var areKeysNull = keyParameters.Any(c => c.Value == DBNull.Value || c.Value == null) ? true : false;

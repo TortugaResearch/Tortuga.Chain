@@ -122,12 +122,13 @@ namespace Tortuga.Chain.Access
         /// <summary>
         /// Creates a <see cref="AccessTableOrView" /> used to directly query a table or view
         /// </summary>
-        /// <param name="tableOrViewName"></param>
-        /// <param name="filterValue"></param>
-        /// <returns></returns>
-        public TableDbCommandBuilder<OleDbCommand, OleDbParameter, AccessLimitOption> From(AccessObjectName tableOrViewName, object filterValue)
+        /// <param name="tableOrViewName">Name of the table or view.</param>
+        /// <param name="filterValue">The filter value.</param>
+        /// <param name="filterOptions">The filter options.</param>
+        /// <returns>TableDbCommandBuilder&lt;OleDbCommand, OleDbParameter, AccessLimitOption&gt;.</returns>
+        public TableDbCommandBuilder<OleDbCommand, OleDbParameter, AccessLimitOption> From(AccessObjectName tableOrViewName, object filterValue, FilterOptions filterOptions = FilterOptions.None)
         {
-            return new AccessTableOrView(this, tableOrViewName, filterValue);
+            return new AccessTableOrView(this, tableOrViewName, filterValue, filterOptions );
         }
 
         /// <summary>
