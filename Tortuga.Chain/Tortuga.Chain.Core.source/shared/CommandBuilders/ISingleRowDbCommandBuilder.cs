@@ -2,6 +2,7 @@ using System;
 
 #if !WINDOWS_UWP
 using System.Data;
+using System.Xml.Linq;
 #endif
 
 namespace Tortuga.Chain.CommandBuilders
@@ -108,7 +109,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <returns></returns>
         IConstructibleMaterializer<TObject> ToObject<TObject>(RowOptions rowOptions = RowOptions.None)
             where TObject : class;
-        
+
         /// <summary>
         /// Materializes the result as a dynamic object
         /// </summary>
@@ -307,5 +308,20 @@ namespace Tortuga.Chain.CommandBuilders
         /// </summary>
         /// <param name="columnName">Name of the desired column.</param>
         ILink<TimeSpan> ToTimeSpan(string columnName);
+
+        /// <summary>
+        /// Materializes the result as an XElement.
+        /// </summary>
+        /// <returns>ILink&lt;XElement&gt;.</returns>
+        ILink<XElement> ToXml();
+
+
+        /// <summary>
+        /// Materializes the result as an XElement.
+        /// </summary>
+        /// <param name="columnName">Name of the column.</param>
+        /// <returns>ILink&lt;XElement&gt;.</returns>
+        ILink<XElement> ToXml(string columnName);
+
     }
 }
