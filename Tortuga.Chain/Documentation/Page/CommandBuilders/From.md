@@ -34,6 +34,8 @@ When using a filter string with filter parameter object, and one of the filtered
 
 If no columns are desired by the materializer, 'SELECT 1' is returned instead.
 
+If soft deletes are enable for this table, the WHERE clause will filter out deleted rows.
+
 ## Internals
 
 All databases work the same expect for what types of limits they support.

@@ -33,8 +33,8 @@ If your object model has its own validation interface, you can subclass ` Valida
 Chain can automatically set fields such as “CreatedByKey” and “UpdatedByKey”. There are two steps necessary to do this. First, you need to create a data source with the appropriate rules. As with a normal data source, this should be cached at the application level.
 
     dataSource = dataSource.WithRules(
-        new UserDataRule("UpdatedByKey", "UserKey", OperationType.Insert),
-        new UserDataRule("CreatedByKey", "UserKey", OperationType.InsertOrUpdate));
+        new UserDataRule("CreatedByKey", "UserKey", OperationType.Insert),
+        new UserDataRule("UpdatedByKey", "UserKey", OperationType.InsertOrUpdate));
 
 When a request is initiated, you then create a contextual data source with the user object. There are no restrictions on what this object looks like, so long as it has the columns indicated by your audit rules.
 
