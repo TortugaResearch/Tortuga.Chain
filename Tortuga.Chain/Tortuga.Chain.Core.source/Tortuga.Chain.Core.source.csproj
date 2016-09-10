@@ -175,6 +175,7 @@
     <Compile Include="shared\Materializers\ConstructibleMaterializer`4.cs" />
     <Compile Include="shared\Materializers\Operation`2.cs" />
     <Compile Include="shared\Materializers\Scalar\SingleColumnMaterializer`3.cs" />
+    <Compile Include="shared\Materializers\Scalar\XElementMaterializer`2.cs" />
     <Compile Include="shared\Materializers\SingleColumn\DateTimeOffsetSetMaterializer`2.cs" />
     <Compile Include="shared\Materializers\SingleColumn\DateTimeSetMaterializer`2.cs" />
     <Compile Include="shared\Materializers\SingleColumn\DecimalSetMaterializer`2.cs" />
@@ -184,6 +185,7 @@
     <Compile Include="shared\Materializers\SingleColumn\Int32SetMaterializer`2.cs" />
     <Compile Include="shared\Materializers\SingleColumn\Int64SetMaterializer`2.cs" />
     <Compile Include="shared\Materializers\SingleColumn\SingleSetMaterializer`2.cs" />
+    <Compile Include="shared\Materializers\SingleColumn\StringListMaterializer`2 - Copy.cs" />
     <Compile Include="shared\Materializers\SingleColumn\StringSetMaterializer`2.cs" />
     <Compile Include="shared\Materializers\SingleColumn\TimeSpanSetMaterializer`2.cs" />
     <Compile Include="shared\Materializers\SingleRow\DataRowMaterializer`2.cs" />

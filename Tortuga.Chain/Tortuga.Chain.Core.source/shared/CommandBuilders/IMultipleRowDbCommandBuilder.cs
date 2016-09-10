@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Collections.Immutable;
+using System.Xml.Linq;
 
 #if !WINDOWS_UWP
 using System.Data;
@@ -508,5 +509,20 @@ namespace Tortuga.Chain.CommandBuilders
         /// <returns></returns>
         ILink<HashSet<TimeSpan>> ToTimeSpanSet(string columnName, ListOptions listOptions = ListOptions.None);
 
+
+        /// <summary>
+        /// Materializes the result as a list of XDocuments.
+        /// </summary>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;XDocument&gt;&gt;.</returns>
+        ILink<List<XElement>> ToXElement(ListOptions listOptions = ListOptions.None);
+
+        /// <summary>
+        /// Materializes the result as a list of XDocuments.
+        /// </summary>
+        /// <param name="columnName">Name of the column.</param>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;XDocument&gt;&gt;.</returns>
+        ILink<List<XElement>> ToXElement(string columnName, ListOptions listOptions = ListOptions.None);
     }
 }
