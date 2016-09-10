@@ -185,7 +185,7 @@
     <Compile Include="shared\Materializers\SingleColumn\Int32SetMaterializer`2.cs" />
     <Compile Include="shared\Materializers\SingleColumn\Int64SetMaterializer`2.cs" />
     <Compile Include="shared\Materializers\SingleColumn\SingleSetMaterializer`2.cs" />
-    <Compile Include="shared\Materializers\SingleColumn\StringListMaterializer`2 - Copy.cs" />
+    <Compile Include="shared\Materializers\SingleColumn\XElementListMaterializer`2.cs" />
     <Compile Include="shared\Materializers\SingleColumn\StringSetMaterializer`2.cs" />
     <Compile Include="shared\Materializers\SingleColumn\TimeSpanSetMaterializer`2.cs" />
     <Compile Include="shared\Materializers\SingleRow\DataRowMaterializer`2.cs" />
