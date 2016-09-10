@@ -32,11 +32,13 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         private FilterOptions m_FilterOptions;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SqlServerTableOrView"/> class.
+        /// Initializes a new instance of the <see cref="SqlServerTableOrView" /> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
         /// <param name="tableOrViewName">Name of the table or view.</param>
         /// <param name="filterValue">The filter value.</param>
+        /// <param name="filterOptions">The filter options.</param>
+        /// <exception cref="System.ArgumentException"></exception>
         public SqlServerTableOrView(SqlServerDataSourceBase dataSource, SqlServerObjectName tableOrViewName, object filterValue, FilterOptions filterOptions = FilterOptions.None) : base(dataSource)
         {
             if (tableOrViewName == SqlServerObjectName.Empty)
@@ -271,7 +273,8 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// Adds (or replaces) the filter on this command builder.
         /// </summary>
         /// <param name="filterValue">The filter value.</param>
-        /// <returns></returns>
+        /// <param name="filterOptions">The filter options.</param>
+        /// <returns>TableDbCommandBuilder&lt;SqlCommand, SqlParameter, SqlServerLimitOption&gt;.</returns>
         public override TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption> WithFilter(object filterValue, FilterOptions filterOptions = FilterOptions.None)
         {
             m_FilterValue = filterValue;

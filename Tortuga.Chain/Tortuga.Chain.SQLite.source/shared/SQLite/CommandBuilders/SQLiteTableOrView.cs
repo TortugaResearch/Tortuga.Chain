@@ -39,9 +39,10 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
         /// <summary>
         /// Initializes a new instance of the <see cref="SQLiteTableOrView" /> class.
         /// </summary>
-        /// <param name="dataSource"></param>
-        /// <param name="tableOrViewName"></param>
-        /// <param name="filterValue"></param>
+        /// <param name="dataSource">The data source.</param>
+        /// <param name="tableOrViewName">Name of the table or view.</param>
+        /// <param name="filterValue">The filter value.</param>
+        /// <param name="filterOptions">The filter options.</param>
         public SQLiteTableOrView(SQLiteDataSourceBase dataSource, SQLiteObjectName tableOrViewName, object filterValue, FilterOptions filterOptions = FilterOptions.None) :
             base(dataSource)
         {
@@ -200,7 +201,8 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
         /// Adds (or replaces) the filter on this command builder.
         /// </summary>
         /// <param name="filterValue">The filter value.</param>
-        /// <returns></returns>
+        /// <param name="filterOptions">The filter options.</param>
+        /// <returns>TableDbCommandBuilder&lt;SQLiteCommand, SQLiteParameter, SQLiteLimitOption&gt;.</returns>
         public override TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> WithFilter(object filterValue, FilterOptions filterOptions = FilterOptions.None)
         {
             m_FilterValue = filterValue;

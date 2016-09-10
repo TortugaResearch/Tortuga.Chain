@@ -490,14 +490,20 @@ namespace Tests.CommandBuilders
                 var count = dataSource.From(EmployeeTableName, new { Title = key }).AsCount().Execute();
                 var columnCount = dataSource.From(EmployeeTableName, new { Title = key }).AsCount("Title").Execute();
                 var columnCount2 = dataSource.From(EmployeeTableName, new { Title = key }).AsCount("MiddleName").Execute();
+
+#if !ACCESS
                 var distinctColumnCount = dataSource.From(EmployeeTableName, new { Title = key }).AsCount("Title", true).Execute();
                 var distinctColumnCount2 = dataSource.From(EmployeeTableName, new { Title = key }).AsCount("LastName", true).Execute();
+#endif
 
                 Assert.AreEqual(10, count, "All of the rows");
                 Assert.AreEqual(10, columnCount, "No nulls");
                 Assert.AreEqual(5, columnCount2, "Half of the rows are nul");
+
+#if !ACCESS
                 Assert.AreEqual(1, distinctColumnCount, "Only one distinct value");
                 Assert.AreEqual(10, distinctColumnCount2, "Every value is distinct");
+#endif
 
             }
             finally

@@ -11,8 +11,9 @@ namespace Tests
     [TestClass]
     public class ComparisonTests
     {
-        static int Iterations = 50;
+        static int Iterations = 1000;
         static bool Warmup = true;
+        static bool DiscardHighLow = true;
 
         static EmployeeRepositoryDapper s_DapperRepo;
         static EmployeeRepositoryChain s_ChainRepo;
@@ -35,12 +36,12 @@ namespace Tests
 
             if (Warmup)
             {
-                //CrudTestCore(s_DapperRepo);
-                //CrudTestCore(s_ChainRepo);
+                CrudTestCore(s_DapperRepo);
+                CrudTestCore(s_ChainRepo);
                 CrudTestCore(s_ChainCompiledRepo);
-                //CrudTestCore(s_EFIntermediateRepo);
-                //CrudTestCore(s_EFIntermediateNoTrackRepo);
-                //CrudTestCore(s_EFNoviceRepo);
+                CrudTestCore(s_EFIntermediateRepo);
+                CrudTestCore(s_EFIntermediateNoTrackRepo);
+                CrudTestCore(s_EFNoviceRepo);
             }
         }
 
@@ -104,11 +105,14 @@ namespace Tests
             //foreach (var span in spans)
             //    Trace.WriteLine("    " + span.ToString("N2"));
 
-            //Remove the highest and lowest two to reduce OS effects
-            spans.Remove(spans.Max());
-            spans.Remove(spans.Max());
-            spans.Remove(spans.Min());
-            spans.Remove(spans.Min());
+            if (DiscardHighLow && Iterations > 10)
+            {
+                //Remove the highest and lowest two to reduce OS effects
+                spans.Remove(spans.Max());
+                spans.Remove(spans.Max());
+                spans.Remove(spans.Min());
+                spans.Remove(spans.Min());
+            }
 
             Trace.WriteLine("Run Duration: " + spans.Average().ToString("N2") + " ms per iteration. Min: " + spans.Min().ToString("N2") + " ms. Max: " + spans.Max().ToString("N2") + " ms.");
 

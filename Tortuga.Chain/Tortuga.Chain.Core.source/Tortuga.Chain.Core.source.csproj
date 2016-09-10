@@ -102,7 +102,6 @@
     <Compile Include="shared\AuditRules\ValidateWithDataErrorInfo`1.cs" />
     <Compile Include="shared\AuditRules\ValidateWithNotifyDataErrorInfo`1.cs" />
     <Compile Include="shared\CollectionOptions.cs" />
-    <Compile Include="shared\CommandBuilders\CommandBuilderUtilities.cs" />
     <Compile Include="shared\CommandBuilders\DbCommandBuilder.cs" />
     <Compile Include="shared\CommandBuilders\DbOperationBuilder`2.cs" />
     <Compile Include="shared\CommandBuilders\IObjectDbCommandBuilder`1.cs" />

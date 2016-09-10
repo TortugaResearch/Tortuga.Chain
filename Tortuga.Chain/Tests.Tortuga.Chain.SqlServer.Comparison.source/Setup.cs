@@ -2,8 +2,12 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Diagnostics;
 using Tortuga.Chain;
-using Tortuga.Chain.DataSources;
 using Tortuga.Chain.SqlServer;
+
+#if DEBUG
+using Tortuga.Chain.DataSources;
+#endif
+
 
 namespace Tests
 {
