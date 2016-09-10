@@ -536,7 +536,10 @@ namespace Tortuga.Chain.CommandBuilders
             }
 
             if (!found)
-                throw new MappingException($"None of the desired columns were found on {m_Name}.");
+                throw new MappingException($"None of the desired columns were found on {m_Name}."
+                    + Environment.NewLine + "\t" + "Available columns: " + string.Join(", ", m_Entries.Select(c => c.Details.ClrName))
+                    + Environment.NewLine + "\t" + "Desired columns: " + string.Join(", ", desiredColumns)
+                    );
         }
 
 

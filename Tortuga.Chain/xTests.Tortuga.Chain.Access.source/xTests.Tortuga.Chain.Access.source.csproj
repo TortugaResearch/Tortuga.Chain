@@ -99,6 +99,10 @@
       <Project>{2c523692-a40b-4a7e-a95a-fbe373f263f7}</Project>
       <Name>Tortuga.Chain.Core.source</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Tortuga.Chain.Csv.source\Tortuga.Chain.Csv.source.csproj">
+      <Project>{29250dd0-9a8e-49e9-bf19-5f45c54ac9fb}</Project>
+      <Name>Tortuga.Chain.Csv.source</Name>
+    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

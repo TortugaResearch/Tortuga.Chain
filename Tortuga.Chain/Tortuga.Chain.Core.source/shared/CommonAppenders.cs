@@ -64,16 +64,6 @@ namespace Tortuga.Chain
         /// <summary>
         /// Invalidates the cache.
         /// </summary>
-        /// <param name="previousLink">The previous link.</param>
-        /// <param name="cacheKey">The cache key.</param>
-        public static ILink InvalidateCache(this ILink previousLink, string cacheKey)
-        {
-            return new InvalidateCacheAppender(previousLink, cacheKey);
-        }
-
-        /// <summary>
-        /// Invalidates the cache.
-        /// </summary>
         /// <param name="commandBuilder">The command builder.</param>
         /// <param name="cacheKey">The cache key.</param>
         /// <returns>ILink.</returns>
@@ -99,29 +89,12 @@ namespace Tortuga.Chain
         /// Adds DB Command tracing. Information is send to the Debug stream.
         /// </summary>
         /// <param name="previousLink">The previous link.</param>
-        public static ILink WithTracingToDebug(this ILink previousLink)
-        {
-            return new TraceAppender(previousLink);
-        }
-
-        /// <summary>
-        /// Adds DB Command tracing. Information is send to the Debug stream.
-        /// </summary>
-        /// <param name="previousLink">The previous link.</param>
         public static ILink<TResult> WithTracingToDebug<TResult>(this ILink<TResult> previousLink)
         {
             return new TraceAppender<TResult>(previousLink);
         }
 
 #if !WINDOWS_UWP
-        /// <summary>
-        /// Adds DB Command tracing. Information is send to the Debug stream.
-        /// </summary>
-        /// <param name="previousLink">The previous link.</param>
-        public static ILink WithTracingToConsole(this ILink previousLink)
-        {
-            return new TraceAppender(previousLink, Console.Out);
-        }
 
         /// <summary>
         /// Adds DB Command tracing. Information is send to the Debug stream.
@@ -132,18 +105,6 @@ namespace Tortuga.Chain
             return new TraceAppender<TResult>(previousLink, Console.Out);
         }
 #endif
-
-        /// <summary>
-        /// Adds DB Command tracing. Information is send to the Debug stream.
-        /// </summary>
-        /// <param name="previousLink">The previous link.</param>
-        /// <param name="stream">The stream.</param>
-        /// <returns>ILink.</returns>
-        public static ILink WithTracing(this ILink previousLink, TextWriter stream)
-        {
-            return new TraceAppender(previousLink, stream);
-        }
-
 
         /// <summary>
         /// Adds DB Command tracing. Information is send to the Debug stream.
@@ -166,28 +127,6 @@ namespace Tortuga.Chain
         public static ILink<TResult> SetTimeout<TResult>(this ILink<TResult> previousLink, TimeSpan timeout)
         {
             return new TimeoutAppender<TResult>(previousLink, timeout);
-        }
-
-        /// <summary>
-        /// Sets the command timeout, overriding the value set in the DataSource.
-        /// </summary>
-        /// <param name="previousLink">The previous link.</param>
-        /// <param name="timeout">The timeout.</param>
-        /// <returns>ILink.</returns>
-        public static ILink SetTimeout(this ILink previousLink, TimeSpan timeout)
-        {
-            return new TimeoutAppender(previousLink, timeout);
-        }
-
-        /// <summary>
-        /// Sets the strict mode, overriding the value set in the DataSource.
-        /// </summary>
-        /// <param name="previousLink">The previous link.</param>
-        /// <param name="strictMode">if set to <c>true</c> [strict mode].</param>
-        /// <returns></returns>
-        public static ILink SetStrictMode(this ILink previousLink, bool strictMode)
-        {
-            return new StrictModeAppender(previousLink, strictMode);
         }
 
         /// <summary>

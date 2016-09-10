@@ -22,5 +22,11 @@ namespace Tests.Models
         public DateTime? UpdatedDate { get; set; }
     }
 
-
+    public class EmployeeWithName
+    {
+        public int? EmployeeKey { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+      
+    }
 }

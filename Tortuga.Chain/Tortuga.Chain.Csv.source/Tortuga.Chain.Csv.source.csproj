@@ -7,7 +7,7 @@
     <ProjectGuid>{29250DD0-9A8E-49E9-BF19-5F45C54AC9FB}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Tortuga.Chain.Csv</RootNamespace>
+    <RootNamespace>Tortuga.Chain</RootNamespace>
     <AssemblyName>Tortuga.Chain.Csv</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -22,7 +22,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DocumentationFile>bin\Debug\Tortuga.Chain.Csv.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug\Tortuga.Chain.Csv.xml</DocumentationFile>
     <RunCodeAnalysis>true</RunCodeAnalysis>
     <CodeAnalysisRuleSet>..\Tortuga.Chain.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
@@ -34,7 +34,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DocumentationFile>bin\Release\Tortuga.Chain.Csv.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\Tortuga.Chain.Csv.xml</DocumentationFile>
     <RunCodeAnalysis>true</RunCodeAnalysis>
     <CodeAnalysisRuleSet>..\Tortuga.Chain.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
@@ -73,10 +73,13 @@
     <Compile Include="..\ProductSharedAssemblyInfo.cs">
       <Link>Properties\ProductSharedAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="shared\CsvSerializer.cs" />
-    <Compile Include="shared\CsvDataReader.cs" />
-    <Compile Include="shared\CsvValueConverter.cs" />
-    <Compile Include="shared\ICsvValueConverter.cs" />
+    <Compile Include="shared\CsvMaterializers.cs" />
+    <Compile Include="shared\Csv\CsvStreamMaterializer`2.cs" />
+    <Compile Include="shared\Csv\CsvStringMaterializer`2.cs" />
+    <Compile Include="shared\Csv\CsvSerializer.cs" />
+    <Compile Include="shared\Csv\CsvDataReader.cs" />
+    <Compile Include="shared\Csv\CsvValueConverter.cs" />
+    <Compile Include="shared\Csv\ICsvValueConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\LibrarySharedAssemblyInfo.cs" />
   </ItemGroup>

@@ -81,17 +81,13 @@
     <Compile Include="..\ProductSharedAssemblyInfo.cs">
       <Link>Properties\ProductSharedAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="shared\Appenders\Appender.cs" />
     <Compile Include="shared\Appenders\Appender`2.cs" />
     <Compile Include="shared\Appenders\Appender`1.cs" />
     <Compile Include="shared\Appenders\CacheAllItemsAppender.cs" />
     <Compile Include="shared\Appenders\CacheResultAppender`1.cs" />
-    <Compile Include="shared\Appenders\StrictModeAppender.cs" />
     <Compile Include="shared\Appenders\StrictModeAppender`1.cs" />
-    <Compile Include="shared\Appenders\TimeoutAppender.cs" />
     <Compile Include="shared\Appenders\TimeoutAppender`1.cs" />
     <Compile Include="shared\Appenders\TraceAppender`1.cs" />
-    <Compile Include="shared\Appenders\TraceAppender.cs" />
     <Compile Include="shared\AuditRules\ColumnRule.cs" />
     <Compile Include="shared\AuditRules\ExceptWhenPredicate.cs" />
     <Compile Include="shared\AuditRules\RestrictColumn.cs" />
@@ -157,8 +153,6 @@
     <Compile Include="shared\MappingException.cs" />
     <Compile Include="shared\Appenders\ReadOrCacheResultAppender`1.cs" />
     <Compile Include="shared\ILink`1.cs" />
-    <Compile Include="shared\ILink.cs" />
-    <Compile Include="shared\Appenders\InvalidateCacheAppender.cs" />
     <Compile Include="shared\Appenders\InvalidateCacheAppender`1.cs" />
     <Compile Include="shared\AuditRules\UserDataRule.cs" />
     <Compile Include="shared\AuditRules\ValueRule.cs" />
