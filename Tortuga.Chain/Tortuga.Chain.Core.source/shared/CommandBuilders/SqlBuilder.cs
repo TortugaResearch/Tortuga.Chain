@@ -7,7 +7,7 @@ using Tortuga.Anchor.Metadata;
 namespace Tortuga.Chain.CommandBuilders
 {
     /// <summary>
-    /// Helper functions for buildering SQL statements.
+    /// Helper functions for building SQL statements.
     /// </summary>
     public static class SqlBuilder
     {
