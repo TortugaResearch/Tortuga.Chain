@@ -1,7 +1,7 @@
 using System;
 using System.Data;
 
-#if !WINDOWS_UWP
+#if !Serialization_Missing
 using System.Runtime.Serialization;
 #endif
 
@@ -12,12 +12,12 @@ namespace Tortuga.Chain
     /// This exception indicates that unexpected data was returned from the database.
     /// </summary>
     /// <remarks>This can occur when more rows or columns than expected were returned.</remarks>
-#if !WINDOWS_UWP
+#if !Serialization_Missing
     [Serializable]
 #endif
     public class UnexpectedDataException : DataException
     {
-#if !WINDOWS_UWP
+#if !Serialization_Missing
         /// <summary>
         /// Initializes a new instance of the <see cref="UnexpectedDataException"/> class.
         /// </summary>

@@ -7,7 +7,7 @@ using Tortuga.Chain.Materializers;
 using System.Collections.Immutable;
 using System.Xml.Linq;
 
-#if !WINDOWS_UWP
+#if !DataTable_Missing
 using System.Data;
 #endif
 
@@ -110,7 +110,7 @@ namespace Tortuga.Chain.CommandBuilders
 
 
 
-#if !WINDOWS_UWP
+#if !DataTable_Missing
         /// <summary>
         /// Indicates the results should be materialized as a DataSet.
         /// </summary>

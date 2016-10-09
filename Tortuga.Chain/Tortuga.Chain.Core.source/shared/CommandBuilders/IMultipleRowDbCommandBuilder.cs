@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Collections.Immutable;
 using System.Xml.Linq;
 
-#if !WINDOWS_UWP
+#if !DataTable_Missing
 using System.Data;
 #endif
 
@@ -76,7 +76,7 @@ namespace Tortuga.Chain.CommandBuilders
             where TObject : class
             where TCollection : ICollection<TObject>, new();
 
-#if !WINDOWS_UWP
+#if !DataTable_Missing
         /// <summary>
         /// Indicates the results should be materialized as a DataSet.
         /// </summary>

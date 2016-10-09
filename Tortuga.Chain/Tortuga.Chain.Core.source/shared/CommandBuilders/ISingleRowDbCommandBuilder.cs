@@ -1,6 +1,7 @@
 using System;
+using System.Xml.Linq;
 
-#if !WINDOWS_UWP
+#if !DataTable_Missing
 using System.Data;
 using System.Xml.Linq;
 #endif
@@ -143,7 +144,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// </summary>
         ILink<TimeSpan?> ToTimeSpanOrNull();
 
-#if !WINDOWS_UWP
+#if !DataTable_Missing
         /// <summary>
         /// Indicates the results should be materialized as a Row.
         /// </summary>

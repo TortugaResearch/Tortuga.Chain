@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-#if !WINDOWS_UWP
+#if !DataTable_Missing
 using System.Data;
 #endif
 
@@ -13,7 +13,7 @@ namespace Tortuga.Chain.CommandBuilders
     /// <remarks>Warning: This interface is meant to simulate multiple inheritance and work-around some issues with exposing generic types. Do not implement it in client code, as new method will be added over time.</remarks>
     public interface IMultipleTableDbCommandBuilder : IMultipleRowDbCommandBuilder
     {
-#if !WINDOWS_UWP
+#if !DataTable_Missing
         /// <summary>
         /// Indicates the results should be materialized as a DataSet.
         /// </summary>
