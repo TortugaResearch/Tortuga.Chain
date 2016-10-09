@@ -228,3 +228,4 @@ ModelManifest.xml
 /Tortuga.Chain/Build.PostgreSql
 /Tortuga.Chain/Build.Csv
 /Start Services.ps1
+*.jfm
