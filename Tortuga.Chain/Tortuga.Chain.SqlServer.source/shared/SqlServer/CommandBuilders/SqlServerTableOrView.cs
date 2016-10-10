@@ -10,14 +10,17 @@ using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
 using Tortuga.Chain.Metadata;
+
+#if !SqlDependency_Missing
 using Tortuga.Chain.SqlServer.Materializers;
+#endif
 
 namespace Tortuga.Chain.SqlServer.CommandBuilders
 {
     /// <summary>
     /// SqlServerTableOrView supports queries against tables and views.
     /// </summary>
-    internal sealed class SqlServerTableOrView : TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption>, ISupportsChangeListener
+    internal sealed partial class SqlServerTableOrView : TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption>
     {
         readonly TableOrViewMetadata<SqlServerObjectName, SqlDbType> m_Table;
         private object m_FilterValue;
@@ -204,22 +207,6 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             return new SqlServerCommandExecutionToken(DataSource, "Query " + m_Table.Name, sql.ToString(), parameters);
         }
 
-        /// <summary>
-        /// Waits for change in the data that is returned by this operation.
-        /// </summary>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <param name="state">User defined state, usually used for logging.</param>
-        /// <returns>Task that can be waited for.</returns>
-        /// <remarks>This requires the use of SQL Dependency</remarks>
-        public Task WaitForChange(CancellationToken cancellationToken, object state = null)
-        {
-            return WaitForChangeMaterializer.GenerateTask(this, cancellationToken, state);
-        }
-
-        SqlServerCommandExecutionToken ISupportsChangeListener.Prepare(Materializer<SqlCommand, SqlParameter> materializer)
-        {
-            return (SqlServerCommandExecutionToken)Prepare(materializer);
-        }
 
         /// <summary>
         /// Adds sorting to the command builder.
@@ -360,5 +347,28 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             get { return (SqlServerDataSourceBase)base.DataSource; }
         }
     }
+
+#if !SqlDependency_Missing
+
+    partial class SqlServerTableOrView : ISupportsChangeListener
+    {
+        /// <summary>
+        /// Waits for change in the data that is returned by this operation.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <param name="state">User defined state, usually used for logging.</param>
+        /// <returns>Task that can be waited for.</returns>
+        /// <remarks>This requires the use of SQL Dependency</remarks>
+        public Task WaitForChange(CancellationToken cancellationToken, object state = null)
+        {
+            return WaitForChangeMaterializer.GenerateTask(this, cancellationToken, state);
+        }
+
+        SqlServerCommandExecutionToken ISupportsChangeListener.Prepare(Materializer<SqlCommand, SqlParameter> materializer)
+        {
+            return (SqlServerCommandExecutionToken)Prepare(materializer);
+        }
+    }
+#endif
 }
 

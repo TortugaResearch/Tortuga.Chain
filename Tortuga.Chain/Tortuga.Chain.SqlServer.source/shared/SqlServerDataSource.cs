@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
@@ -13,6 +12,11 @@ using Tortuga.Chain.AuditRules;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.SqlServer;
+
+#if !System_Configuration_Missing
+using System.Configuration;
+#endif
+
 namespace Tortuga.Chain
 {
 
@@ -27,7 +31,9 @@ namespace Tortuga.Chain
 
         readonly object m_SyncRoot = new object();
 
+#if !System_Configuration_Missing
         private bool m_IsSqlDependencyActive;
+#endif
 
         /// <summary>
         /// This is used to decide which option overrides to set when establishing a connection.
@@ -156,6 +162,7 @@ namespace Tortuga.Chain
             get { return m_DatabaseMetadata; }
         }
 
+#if !System_Configuration_Missing
         /// <summary>
         /// Gets a value indicating whether SQL dependency support is active for this dispatcher.
         /// </summary>
@@ -164,6 +171,7 @@ namespace Tortuga.Chain
         {
             get { return m_IsSqlDependencyActive; }
         }
+#endif
 
         /// <summary>
         /// Rolls back a transaction if a Transact-SQL statement raises a run-time error.
@@ -182,6 +190,7 @@ namespace Tortuga.Chain
             get { return m_ConnectionBuilder.ConnectionString; }
         }
 
+#if !System_Configuration_Missing
         /// <summary>
         /// Creates a new connection using the connection string settings in the app.config file.
         /// </summary>
@@ -194,6 +203,7 @@ namespace Tortuga.Chain
 
             return new SqlServerDataSource(connectionName, settings.ConnectionString);
         }
+#endif
 
         /// <summary>
         /// Creates a new transaction
@@ -253,6 +263,8 @@ namespace Tortuga.Chain
             return result;
         }
 
+#if !SqlDependency_Missing
+
         /// <summary>
         /// Starts SQL dependency.
         /// </summary>
@@ -291,6 +303,7 @@ namespace Tortuga.Chain
                 return SqlDependency.Stop(ConnectionString);
             }
         }
+#endif
 
         /// <summary>
         /// Tests the connection.
@@ -329,7 +342,9 @@ namespace Tortuga.Chain
             {
                 var temp = new SqlServerEffectiveSettings();
                 temp.Reload(con, null);
+#if !Thread_Missing
                 Thread.MemoryBarrier();
+#endif
                 m_ServerDefaultSettings = temp;
             }
 
@@ -553,7 +568,9 @@ namespace Tortuga.Chain
             {
                 var temp = new SqlServerEffectiveSettings();
                 await temp.ReloadAsync(con, null);
+#if !Thread_Missing
                 Thread.MemoryBarrier();
+#endif 
                 m_ServerDefaultSettings = temp;
             }
 

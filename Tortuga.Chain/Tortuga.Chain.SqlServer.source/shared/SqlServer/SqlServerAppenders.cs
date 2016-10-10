@@ -1,5 +1,7 @@
-﻿using System.Data.SqlClient;
+﻿#if !SqlDependency_Missing
+using System.Data.SqlClient;
 using Tortuga.Chain.SqlServer.Appenders;
+#endif
 
 namespace Tortuga.Chain.SqlServer
 {
@@ -8,6 +10,7 @@ namespace Tortuga.Chain.SqlServer
     /// </summary>
     public static class SqlServerAppenders
     {
+#if !SqlDependency_Missing
         /// <summary>
         /// Attaches a SQL Server dependency change listener to this operation.
         /// </summary>
@@ -20,5 +23,6 @@ namespace Tortuga.Chain.SqlServer
         {
             return new NotifyChangeAppender<TResult>(previousLink, eventHandler);
         }
+#endif
     }
 }

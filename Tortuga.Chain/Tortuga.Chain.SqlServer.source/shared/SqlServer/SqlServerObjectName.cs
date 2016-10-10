@@ -183,7 +183,7 @@ namespace Tortuga.Chain.SqlServer
         /// <remarks>This is a case-insensitive comparison.</remarks>
         public override int GetHashCode()
         {
-            return Name.ToUpper(CultureInfo.InvariantCulture).GetHashCode();
+            return Name.ToUpperInvariant().GetHashCode();
         }
 
         /// <summary>

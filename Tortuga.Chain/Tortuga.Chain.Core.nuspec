@@ -42,6 +42,14 @@
         <dependency id="System.Data.Common" version="4.1.0" />
         <dependency id="Microsoft.NETCore.UniversalWindowsPlatform" version="5.2.2" />
       </group>
+      <group targetFramework="netstandard1.3">
+        <dependency id="Tortuga.Anchor" version="0.9.6126.5816" />
+        <dependency id="System.ComponentModel.Annotations" version="4.1.0" />
+        <dependency id="System.Data.Common" version="4.1.0" />
+        <dependency id="System.Dynamic.Runtime" version="4.0.11" />
+        <dependency id="System.Xml.XDocument" version="4.0.11" />
+      </group>
+
     </dependencies>
 
   </metadata>

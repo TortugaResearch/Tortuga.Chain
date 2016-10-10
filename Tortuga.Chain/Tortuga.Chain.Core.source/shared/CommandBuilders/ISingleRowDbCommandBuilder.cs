@@ -3,7 +3,6 @@ using System.Xml.Linq;
 
 #if !DataTable_Missing
 using System.Data;
-using System.Xml.Linq;
 #endif
 
 namespace Tortuga.Chain.CommandBuilders

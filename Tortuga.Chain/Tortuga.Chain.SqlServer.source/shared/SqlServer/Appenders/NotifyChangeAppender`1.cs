@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !SqlDependency_Missing
+using System;
 using System.Data.SqlClient;
 using System.Diagnostics.CodeAnalysis;
 using Tortuga.Chain.Appenders;
@@ -40,3 +41,4 @@ namespace Tortuga.Chain.SqlServer.Appenders
 
     }
 }
+#endif

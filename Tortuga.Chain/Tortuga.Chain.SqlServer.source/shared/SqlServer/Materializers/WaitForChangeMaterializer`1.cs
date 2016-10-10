@@ -1,3 +1,4 @@
+#if !SqlDependency_Missing
 using System.Data.SqlClient;
 using System.Threading;
 using System.Threading.Tasks;
@@ -37,3 +38,4 @@ namespace Tortuga.Chain.SqlServer.Materializers
 
 
 }
+#endif
