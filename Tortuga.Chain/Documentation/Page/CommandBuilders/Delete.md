@@ -12,6 +12,8 @@ Alternately, a parameter dictionary of type IReadonlyDictionary<string, object> 
 
 If the materializer desires columns, this will return the row as it looked before it was deleted.
 
+If soft delete is enabled for this table, an update operation will be generated to set the deleted flag. 
+
 ## Limitations
 
 This command is meant to operate on one row at a time. Set-based operations need to be performed using a SQL or Procedure command.

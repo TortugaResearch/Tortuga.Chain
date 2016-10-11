@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Tortuga.Chain;
 using Tortuga.Chain.Materializers;
 
@@ -26,6 +27,10 @@ namespace Tests.Materializers
                 var result1Cast = (byte[])(object)result1;
                 var result1aCast = (byte[])(object)result1a;
                 Assert.AreEqual(result1Cast.Length, result1aCast.Length);
+            }
+            else if (result1 is XElement)
+            {
+                Assert.AreEqual(result1.ToString(), result1a.ToString(), "Results don't match");
             }
             else
             {
@@ -206,376 +211,389 @@ namespace Tests.Materializers
 
 
         [TestMethod]
-        public async Task CharNull_String_ScalarTestTest()
+        public async Task XmlNull_XElement_ScalarTest()
+        {
+            await ScalarTest<XElement>("XmlNull", typeof(XElementMaterializer<SqlCommand, SqlParameter>));
+        }
+
+        [TestMethod]
+        public async Task XmlNotNull_XElement_ScalarTest()
+        {
+            await ScalarTest<XElement>("XmlNotNull", typeof(XElementMaterializer<SqlCommand, SqlParameter>));
+        }
+
+
+        [TestMethod]
+        public async Task CharNull_String_ScalarTest()
         {
             await ScalarTest<string>("CharNull", typeof(StringMaterializer<SqlCommand, SqlParameter>));
         }
 
 
         [TestMethod]
-        public async Task CharNotNull_String_ScalarTestTest()
+        public async Task CharNotNull_String_ScalarTest()
         {
             await ScalarTest<string>("CharNotNull", typeof(StringMaterializer<SqlCommand, SqlParameter>));
         }
 
 
         [TestMethod]
-        public async Task VarCharNull_String_ScalarTestTest()
+        public async Task VarCharNull_String_ScalarTest()
         {
             await ScalarTest<string>("VarCharNull", typeof(StringMaterializer<SqlCommand, SqlParameter>));
         }
 
 
         [TestMethod]
-        public async Task VarCharNotNull_String_ScalarTestTest()
+        public async Task VarCharNotNull_String_ScalarTest()
         {
             await ScalarTest<string>("VarCharNotNull", typeof(StringMaterializer<SqlCommand, SqlParameter>));
         }
 
 
         [TestMethod]
-        public async Task NCharNull_String_ScalarTestTest()
+        public async Task NCharNull_String_ScalarTest()
         {
             await ScalarTest<string>("NCharNull", typeof(StringMaterializer<SqlCommand, SqlParameter>));
         }
 
 
         [TestMethod]
-        public async Task NCharNotNull_String_ScalarTestTest()
+        public async Task NCharNotNull_String_ScalarTest()
         {
             await ScalarTest<string>("NCharNotNull", typeof(StringMaterializer<SqlCommand, SqlParameter>));
         }
 
 
         [TestMethod]
-        public async Task NVarCharNull_String_ScalarTestTest()
+        public async Task NVarCharNull_String_ScalarTest()
         {
             await ScalarTest<string>("NVarCharNull", typeof(StringMaterializer<SqlCommand, SqlParameter>));
         }
 
 
         [TestMethod]
-        public async Task NVarCharNotNull_String_ScalarTestTest()
+        public async Task NVarCharNotNull_String_ScalarTest()
         {
             await ScalarTest<string>("NVarCharNotNull", typeof(StringMaterializer<SqlCommand, SqlParameter>));
         }
 
 
         [TestMethod]
-        public async Task BitNull_Boolean_ScalarTestTest()
+        public async Task BitNull_Boolean_ScalarTest()
         {
             await ScalarTest<bool>("BitNull", typeof(BooleanMaterializer<SqlCommand, SqlParameter>));
         }
 
 
         [TestMethod]
-        public async Task BitNotNull_Boolean_ScalarTestTest()
+        public async Task BitNotNull_Boolean_ScalarTest()
         {
             await ScalarTest<bool>("BitNotNull", typeof(BooleanMaterializer<SqlCommand, SqlParameter>));
         }
 
 
         [TestMethod]
-        public async Task TinyIntNull_Byte_ScalarTestTest()
+        public async Task TinyIntNull_Byte_ScalarTest()
         {
             await ScalarTest<byte>("TinyIntNull", typeof(ByteMaterializer<SqlCommand, SqlParameter>));
         }
 
 
         [TestMethod]
-        public async Task TinyIntNotNull_Byte_ScalarTestTest()
+        public async Task TinyIntNotNull_Byte_ScalarTest()
         {
             await ScalarTest<byte>("TinyIntNotNull", typeof(ByteMaterializer<SqlCommand, SqlParameter>));
         }
 
 
         [TestMethod]
-        public async Task IntNull_Int32_ScalarTestTest()
+        public async Task IntNull_Int32_ScalarTest()
         {
             await ScalarTest<int>("IntNull", typeof(Int32Materializer<SqlCommand, SqlParameter>));
         }
 
 
         [TestMethod]
-        public async Task IntNotNull_Int32_ScalarTestTest()
+        public async Task IntNotNull_Int32_ScalarTest()
         {
             await ScalarTest<int>("IntNotNull", typeof(Int32Materializer<SqlCommand, SqlParameter>));
         }
 
 
         [TestMethod]
-        public async Task BigIntNull_Int64_ScalarTestTest()
+        public async Task BigIntNull_Int64_ScalarTest()
         {
             await ScalarTest<long>("BigIntNull", typeof(Int64Materializer<SqlCommand, SqlParameter>));
         }
 
 
         [TestMethod]
-        public async Task BigIntNotNull_Int64_ScalarTestTest()
+        public async Task BigIntNotNull_Int64_ScalarTest()
         {
             await ScalarTest<long>("BigIntNotNull", typeof(Int64Materializer<SqlCommand, SqlParameter>));
         }
 
 
         [TestMethod]
-        public async Task NumericNull_Decimal_ScalarTestTest()
+        public async Task NumericNull_Decimal_ScalarTest()
         {
             await ScalarTest<decimal>("NumericNull", typeof(DecimalMaterializer<SqlCommand, SqlParameter>));
         }
 
 
         [TestMethod]
-        public async Task NumericNotNull_Decimal_ScalarTestTest()
+        public async Task NumericNotNull_Decimal_ScalarTest()
         {
             await ScalarTest<decimal>("NumericNotNull", typeof(DecimalMaterializer<SqlCommand, SqlParameter>));
         }
 
 
         [TestMethod]
-        public async Task SmallIntNull_Int16_ScalarTestTest()
+        public async Task SmallIntNull_Int16_ScalarTest()
         {
             await ScalarTest<short>("SmallIntNull", typeof(Int16Materializer<SqlCommand, SqlParameter>));
         }
 
 
         [TestMethod]
-        public async Task SmallIntNotNull_Int16_ScalarTestTest()
+        public async Task SmallIntNotNull_Int16_ScalarTest()
         {
             await ScalarTest<short>("SmallIntNotNull", typeof(Int16Materializer<SqlCommand, SqlParameter>));
         }
 
 
         [TestMethod]
-        public async Task DecimalNull_Decimal_ScalarTestTest()
+        public async Task DecimalNull_Decimal_ScalarTest()
         {
             await ScalarTest<decimal>("DecimalNull", typeof(DecimalMaterializer<SqlCommand, SqlParameter>));
         }
 
 
         [TestMethod]
-        public async Task DecimalNotNull_Decimal_ScalarTestTest()
+        public async Task DecimalNotNull_Decimal_ScalarTest()
         {
             await ScalarTest<decimal>("DecimalNotNull", typeof(DecimalMaterializer<SqlCommand, SqlParameter>));
         }
 
 
         [TestMethod]
-        public async Task SmallMoneyNull_Decimal_ScalarTestTest()
+        public async Task SmallMoneyNull_Decimal_ScalarTest()
         {
             await ScalarTest<decimal>("SmallMoneyNull", typeof(DecimalMaterializer<SqlCommand, SqlParameter>));
         }
 
 
         [TestMethod]
-        public async Task SmallMoneyNotNull_Decimal_ScalarTestTest()
+        public async Task SmallMoneyNotNull_Decimal_ScalarTest()
         {
             await ScalarTest<decimal>("SmallMoneyNotNull", typeof(DecimalMaterializer<SqlCommand, SqlParameter>));
         }
 
 
         [TestMethod]
-        public async Task MoneyNull_Decimal_ScalarTestTest()
+        public async Task MoneyNull_Decimal_ScalarTest()
         {
             await ScalarTest<decimal>("MoneyNull", typeof(DecimalMaterializer<SqlCommand, SqlParameter>));
         }
 
 
         [TestMethod]
-        public async Task MoneyNotNull_Decimal_ScalarTestTest()
+        public async Task MoneyNotNull_Decimal_ScalarTest()
         {
             await ScalarTest<decimal>("MoneyNotNull", typeof(DecimalMaterializer<SqlCommand, SqlParameter>));
         }
 
 
         [TestMethod]
-        public async Task FloatNull_Double_ScalarTestTest()
+        public async Task FloatNull_Double_ScalarTest()
         {
             await ScalarTest<double>("FloatNull", typeof(DoubleMaterializer<SqlCommand, SqlParameter>));
         }
 
 
         [TestMethod]
-        public async Task FloatNotNull_Double_ScalarTestTest()
+        public async Task FloatNotNull_Double_ScalarTest()
         {
             await ScalarTest<double>("FloatNotNull", typeof(DoubleMaterializer<SqlCommand, SqlParameter>));
         }
 
 
         [TestMethod]
-        public async Task RealNull_Single_ScalarTestTest()
+        public async Task RealNull_Single_ScalarTest()
         {
             await ScalarTest<float>("RealNull", typeof(SingleMaterializer<SqlCommand, SqlParameter>));
         }
 
 
         [TestMethod]
-        public async Task RealNotNull_Single_ScalarTestTest()
+        public async Task RealNotNull_Single_ScalarTest()
         {
             await ScalarTest<float>("RealNotNull", typeof(SingleMaterializer<SqlCommand, SqlParameter>));
         }
 
 
         [TestMethod]
-        public async Task DateNull_DateTime_ScalarTestTest()
+        public async Task DateNull_DateTime_ScalarTest()
         {
             await ScalarTest<DateTime>("DateNull", typeof(DateTimeMaterializer<SqlCommand, SqlParameter>));
         }
 
 
         [TestMethod]
-        public async Task DateNotNull_DateTime_ScalarTestTest()
+        public async Task DateNotNull_DateTime_ScalarTest()
         {
             await ScalarTest<DateTime>("DateNotNull", typeof(DateTimeMaterializer<SqlCommand, SqlParameter>));
         }
 
 
         [TestMethod]
-        public async Task DatetimeoffsetNull_DateTimeOffset_ScalarTestTest()
+        public async Task DatetimeoffsetNull_DateTimeOffset_ScalarTest()
         {
             await ScalarTest<DateTimeOffset>("DatetimeoffsetNull", typeof(DateTimeOffsetMaterializer<SqlCommand, SqlParameter>));
         }
 
 
         [TestMethod]
-        public async Task DatetimeoffsetNotNull_DateTimeOffset_ScalarTestTest()
+        public async Task DatetimeoffsetNotNull_DateTimeOffset_ScalarTest()
         {
             await ScalarTest<DateTimeOffset>("DatetimeoffsetNotNull", typeof(DateTimeOffsetMaterializer<SqlCommand, SqlParameter>));
         }
         [TestMethod]
-        public async Task Datetime2Null_DateTime_ScalarTestTest()
+        public async Task Datetime2Null_DateTime_ScalarTest()
         {
             await ScalarTest<DateTime>("Datetime2Null", typeof(DateTimeMaterializer<SqlCommand, SqlParameter>));
         }
 
 
         [TestMethod]
-        public async Task Datetime2NotNull_DateTime_ScalarTestTest()
+        public async Task Datetime2NotNull_DateTime_ScalarTest()
         {
             await ScalarTest<DateTime>("Datetime2NotNull", typeof(DateTimeMaterializer<SqlCommand, SqlParameter>));
         }
 
 
         [TestMethod]
-        public async Task SmalldatetimeNull_DateTime_ScalarTestTest()
+        public async Task SmalldatetimeNull_DateTime_ScalarTest()
         {
             await ScalarTest<DateTime>("SmalldatetimeNull", typeof(DateTimeMaterializer<SqlCommand, SqlParameter>));
         }
 
 
         [TestMethod]
-        public async Task SmalldatetimeNotNull_DateTime_ScalarTestTest()
+        public async Task SmalldatetimeNotNull_DateTime_ScalarTest()
         {
             await ScalarTest<DateTime>("SmalldatetimeNotNull", typeof(DateTimeMaterializer<SqlCommand, SqlParameter>));
         }
 
 
         [TestMethod]
-        public async Task DatetimeNull_DateTime_ScalarTestTest()
+        public async Task DatetimeNull_DateTime_ScalarTest()
         {
             await ScalarTest<DateTime>("DatetimeNull", typeof(DateTimeMaterializer<SqlCommand, SqlParameter>));
         }
 
 
         [TestMethod]
-        public async Task DatetimeNotNull_DateTime_ScalarTestTest()
+        public async Task DatetimeNotNull_DateTime_ScalarTest()
         {
             await ScalarTest<DateTime>("DatetimeNotNull", typeof(DateTimeMaterializer<SqlCommand, SqlParameter>));
         }
 
 
         [TestMethod]
-        public async Task TimeNull_TimeSpan_ScalarTestTest()
+        public async Task TimeNull_TimeSpan_ScalarTest()
         {
             await ScalarTest<TimeSpan>("TimeNull", typeof(TimeSpanMaterializer<SqlCommand, SqlParameter>));
         }
 
 
         [TestMethod]
-        public async Task TimeNotNull_TimeSpan_ScalarTestTest()
+        public async Task TimeNotNull_TimeSpan_ScalarTest()
         {
             await ScalarTest<TimeSpan>("TimeNotNull", typeof(TimeSpanMaterializer<SqlCommand, SqlParameter>));
         }
 
 
         [TestMethod]
-        public async Task TextNull_String_ScalarTestTest()
+        public async Task TextNull_String_ScalarTest()
         {
             await ScalarTest<string>("TextNull", typeof(StringMaterializer<SqlCommand, SqlParameter>));
         }
 
 
         [TestMethod]
-        public async Task TextNotNull_String_ScalarTestTest()
+        public async Task TextNotNull_String_ScalarTest()
         {
             await ScalarTest<string>("TextNotNull", typeof(StringMaterializer<SqlCommand, SqlParameter>));
         }
 
 
         [TestMethod]
-        public async Task NTextNull_String_ScalarTestTest()
+        public async Task NTextNull_String_ScalarTest()
         {
             await ScalarTest<string>("NTextNull", typeof(StringMaterializer<SqlCommand, SqlParameter>));
         }
 
 
         [TestMethod]
-        public async Task NTextNotNull_String_ScalarTestTest()
+        public async Task NTextNotNull_String_ScalarTest()
         {
             await ScalarTest<string>("NTextNotNull", typeof(StringMaterializer<SqlCommand, SqlParameter>));
         }
 
 
         [TestMethod]
-        public async Task BinaryNull_ByteArray_ScalarTestTest()
+        public async Task BinaryNull_ByteArray_ScalarTest()
         {
             await ScalarTest<byte[]>("BinaryNull", typeof(ByteArrayMaterializer<SqlCommand, SqlParameter>));
         }
 
 
         [TestMethod]
-        public async Task BinaryNotNull_ByteArray_ScalarTestTest()
+        public async Task BinaryNotNull_ByteArray_ScalarTest()
         {
             await ScalarTest<byte[]>("BinaryNotNull", typeof(ByteArrayMaterializer<SqlCommand, SqlParameter>));
         }
 
 
         [TestMethod]
-        public async Task VarBinaryNull_ByteArray_ScalarTestTest()
+        public async Task VarBinaryNull_ByteArray_ScalarTest()
         {
             await ScalarTest<byte[]>("VarBinaryNull", typeof(ByteArrayMaterializer<SqlCommand, SqlParameter>));
         }
 
 
         [TestMethod]
-        public async Task VarBinaryNotNull_ByteArray_ScalarTestTest()
+        public async Task VarBinaryNotNull_ByteArray_ScalarTest()
         {
             await ScalarTest<byte[]>("VarBinaryNotNull", typeof(ByteArrayMaterializer<SqlCommand, SqlParameter>));
         }
 
 
         [TestMethod]
-        public async Task UniqueidentifierNull_Guid_ScalarTestTest()
+        public async Task UniqueidentifierNull_Guid_ScalarTest()
         {
             await ScalarTest<Guid>("UniqueidentifierNull", typeof(GuidMaterializer<SqlCommand, SqlParameter>));
         }
 
 
         [TestMethod]
-        public async Task UniqueidentifierNotNull_Guid_ScalarTestTest()
+        public async Task UniqueidentifierNotNull_Guid_ScalarTest()
         {
             await ScalarTest<Guid>("UniqueidentifierNotNull", typeof(GuidMaterializer<SqlCommand, SqlParameter>));
         }
 
 
         [TestMethod]
-        public async Task XmlNull_String_ScalarTestTest()
+        public async Task XmlNull_String_ScalarTest()
         {
             await ScalarTest<string>("XmlNull", typeof(StringMaterializer<SqlCommand, SqlParameter>));
         }
 
 
         [TestMethod]
-        public async Task XmlNotNull_String_ScalarTestTest()
+        public async Task XmlNotNull_String_ScalarTest()
         {
             await ScalarTest<string>("XmlNotNull", typeof(StringMaterializer<SqlCommand, SqlParameter>));
         }
@@ -774,6 +792,18 @@ namespace Tests.Materializers
 
 
         //*****************************
+
+        [TestMethod]
+        public async Task XmlNull_XElement_ListTest()
+        {
+            await ListTest<XElement>("XmlNull", typeof(XElementListMaterializer<SqlCommand, SqlParameter>));
+        }
+
+        [TestMethod]
+        public async Task XmlNotNull_XElement_ListTest()
+        {
+            await ListTest<XElement>("XmlNotNull", typeof(XElementListMaterializer<SqlCommand, SqlParameter>));
+        }
 
 
         [TestMethod]
@@ -2293,7 +2323,7 @@ namespace Tests.Materializers
         }
 
 
-              
+
 
 
         [TestMethod]

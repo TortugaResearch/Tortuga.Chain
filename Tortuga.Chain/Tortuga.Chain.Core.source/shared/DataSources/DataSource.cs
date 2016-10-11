@@ -6,7 +6,7 @@ using Tortuga.Chain.AuditRules;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Metadata;
 
-#if !WINDOWS_UWP
+#if !RUNTIME_CACHE_MISSING
 using System.Runtime.Caching;
 #endif
 

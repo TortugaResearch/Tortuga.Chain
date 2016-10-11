@@ -210,10 +210,11 @@ namespace Tortuga.Chain.SqlServer
         /// </summary>
         /// <param name="tableOrViewName">Name of the table or view.</param>
         /// <param name="filterValue">The filter value is used to generate a simple AND style WHERE clause.</param>
+        /// <param name="filterOptions">The filter options.</param>
         /// <returns>SqlServerTableOrView.</returns>
-        public TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption> From(SqlServerObjectName tableOrViewName, object filterValue)
+        public TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption> From(SqlServerObjectName tableOrViewName, object filterValue, FilterOptions filterOptions = FilterOptions.None)
         {
-            return new SqlServerTableOrView(this, tableOrViewName, filterValue);
+            return new SqlServerTableOrView(this, tableOrViewName, filterValue, filterOptions);
         }
 
         /// <summary>
@@ -429,6 +430,7 @@ namespace Tortuga.Chain.SqlServer
             return InsertBatch(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, tableTypeName, dataReader, options);
         }
 
+#if !DataTable_Missing
         /// <summary>
         /// Inserts the batch of records as one operation..
         /// </summary>
@@ -444,7 +446,9 @@ namespace Tortuga.Chain.SqlServer
             var tableType = DatabaseMetadata.GetUserDefinedType(tableTypeName);
             return new SqlServerInsertBatch(this, tableName, tableTypeName, new ObjectDataReader<TObject>(tableType, objects), options);
         }
+#endif
 
+#if !DataTable_Missing
         /// <summary>
         /// Inserts the batch of records as one operation..
         /// </summary>
@@ -459,7 +463,9 @@ namespace Tortuga.Chain.SqlServer
         {
             return InsertBatch(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, tableTypeName, objects, options);
         }
+#endif
 
+#if !DataTable_Missing
         /// <summary>
         /// Inserts the batch of records using bulk insert.
         /// </summary>
@@ -471,7 +477,21 @@ namespace Tortuga.Chain.SqlServer
         {
             return new SqlServerInsertBulk(this, tableName, dataTable, options);
         }
+#endif
 
+#if NetStandard13
+        /// <summary>
+        /// Inserts the batch of records using bulk insert.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="dataReader">The data reader.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>SqlServerInsertBulk.</returns>
+        public SqlServerInsertBulk InsertBulk(SqlServerObjectName tableName, DbDataReader dataReader, SqlBulkCopyOptions options = SqlBulkCopyOptions.Default)
+        {
+            return new SqlServerInsertBulk(this, tableName, dataReader, options);
+        }
+#else
         /// <summary>
         /// Inserts the batch of records using bulk insert.
         /// </summary>
@@ -483,7 +503,9 @@ namespace Tortuga.Chain.SqlServer
         {
             return new SqlServerInsertBulk(this, tableName, dataReader, options);
         }
+#endif
 
+#if !DataTable_Missing
         /// <summary>
         /// Inserts the batch of records using bulk insert.
         /// </summary>
@@ -498,7 +520,9 @@ namespace Tortuga.Chain.SqlServer
             var tableType = DatabaseMetadata.GetTableOrView(tableName);
             return new SqlServerInsertBulk(this, tableName, new ObjectDataReader<TObject>(tableType, objects, OperationTypes.Insert), options);
         }
+#endif
 
+#if !DataTable_Missing
         /// <summary>
         /// Inserts the batch of records using bulk insert.
         /// </summary>
@@ -513,7 +537,24 @@ namespace Tortuga.Chain.SqlServer
         {
             return InsertBulk(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, dataTable, options);
         }
+#endif
 
+#if NetStandard13
+        /// <summary>
+        /// Inserts the batch of records using bulk insert.
+        /// </summary>
+        /// <typeparam name="TObject">The type of the object.</typeparam>
+        /// <param name="dataReader">The data reader.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>
+        /// SqlServerInsertBulk.
+        /// </returns>
+        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
+        public SqlServerInsertBulk InsertBulk<TObject>(DbDataReader dataReader, SqlBulkCopyOptions options = SqlBulkCopyOptions.Default) where TObject : class
+        {
+            return InsertBulk(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, dataReader, options);
+        }
+#else
         /// <summary>
         /// Inserts the batch of records using bulk insert.
         /// </summary>
@@ -528,7 +569,9 @@ namespace Tortuga.Chain.SqlServer
         {
             return InsertBulk(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, dataReader, options);
         }
+#endif
 
+#if !DataTable_Missing
         /// <summary>
         /// Inserts the batch of records using bulk insert.
         /// </summary>
@@ -542,6 +585,7 @@ namespace Tortuga.Chain.SqlServer
         {
             return InsertBulk(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, objects, options);
         }
+#endif
 
         /// <summary>
         /// Loads a procedure definition

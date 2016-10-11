@@ -92,10 +92,11 @@ namespace Tortuga.Chain.PostgreSql
         /// </summary>
         /// <param name="tableOrViewName">Name of the table or view.</param>
         /// <param name="filterValue">The filter value.</param>
+        /// <param name="filterOptions">The filter options.</param>
         /// <returns>TableDbCommandBuilder&lt;NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption&gt;.</returns>
-        public TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption> From(PostgreSqlObjectName tableOrViewName, object filterValue)
+        public TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption> From(PostgreSqlObjectName tableOrViewName, object filterValue, FilterOptions filterOptions = FilterOptions.None)
         {
-            return new PostgreSqlTableOrView(this, tableOrViewName, filterValue);
+            return new PostgreSqlTableOrView(this, tableOrViewName, filterValue, filterOptions );
         }
 
         /// <summary>

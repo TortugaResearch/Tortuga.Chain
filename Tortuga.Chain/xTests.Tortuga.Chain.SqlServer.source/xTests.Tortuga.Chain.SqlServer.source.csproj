@@ -86,8 +86,8 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="Tortuga.Anchor, Version=0.8.5985.31190, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
-      <HintPath>..\packages\Tortuga.Anchor.0.8.5985.31190\lib\net46\Tortuga.Anchor.dll</HintPath>
+    <Reference Include="Tortuga.Anchor, Version=0.9.6126.5816, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tortuga.Anchor.0.9.6126.5816\lib\net46\Tortuga.Anchor.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="xunit.abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
@@ -170,6 +170,7 @@
     <Compile Include="shared\CommandBuilders\UpdateTests.cs" />
     <Compile Include="shared\CommandBuilders\DeleteTests.cs" />
     <Compile Include="shared\Core\AuditRulesTests.cs" />
+    <Compile Include="shared\Materializers\CsvTests.cs" />
     <Compile Include="shared\Models\AuditInfo.cs" />
     <Compile Include="shared\Models\ChangeTrackingEmployee.cs" />
     <Compile Include="shared\Models\Customer.cs" />
@@ -206,6 +207,10 @@
     <ProjectReference Include="..\Tortuga.Chain.Core.source\Tortuga.Chain.Core.source.csproj">
       <Project>{2c523692-a40b-4a7e-a95a-fbe373f263f7}</Project>
       <Name>Tortuga.Chain.Core.source</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Tortuga.Chain.Csv.source\Tortuga.Chain.Csv.source.csproj">
+      <Project>{29250dd0-9a8e-49e9-bf19-5f45c54ac9fb}</Project>
+      <Name>Tortuga.Chain.Csv.source</Name>
     </ProjectReference>
     <ProjectReference Include="..\Tortuga.Chain.SqlServer.source\Tortuga.Chain.SqlServer.source.csproj">
       <Project>{5d3159ad-141c-4853-9ecc-a1fd603bd8c4}</Project>

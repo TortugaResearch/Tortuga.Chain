@@ -23,19 +23,22 @@ namespace Tortuga.Chain.Access.CommandBuilders
         private AccessLimitOption m_LimitOptions;
         private int? m_Take;
         private string m_SelectClause;
+        private FilterOptions m_FilterOptions;
 
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AccessTableOrView" /> class.
         /// </summary>
-        /// <param name="dataSource"></param>
-        /// <param name="tableOrViewName"></param>
-        /// <param name="filterValue"></param>
-        public AccessTableOrView(AccessDataSourceBase dataSource, AccessObjectName tableOrViewName, object filterValue) :
+        /// <param name="dataSource">The data source.</param>
+        /// <param name="tableOrViewName">Name of the table or view.</param>
+        /// <param name="filterValue">The filter value.</param>
+        /// <param name="filterOptions">The filter options.</param>
+        public AccessTableOrView(AccessDataSourceBase dataSource, AccessObjectName tableOrViewName, object filterValue, FilterOptions filterOptions) :
             base(dataSource)
         {
             m_FilterValue = filterValue;
             m_Table = ((AccessDataSourceBase)DataSource).DatabaseMetadata.GetTableOrView(tableOrViewName);
+            m_FilterOptions = filterOptions;
         }
 
         /// <summary>
@@ -97,7 +100,7 @@ namespace Tortuga.Chain.Access.CommandBuilders
 
             if (m_FilterValue != null)
             {
-                sql.Append(" WHERE " + sqlBuilder.ApplyFilterValue(m_FilterValue));
+                sql.Append(" WHERE " + sqlBuilder.ApplyFilterValue(m_FilterValue, m_FilterOptions));
                 sqlBuilder.BuildSoftDeleteClause(sql, " AND ", DataSource, null);
 
                 parameters = sqlBuilder.GetParameters();
@@ -183,12 +186,14 @@ namespace Tortuga.Chain.Access.CommandBuilders
         /// Adds (or replaces) the filter on this command builder.
         /// </summary>
         /// <param name="filterValue">The filter value.</param>
-        /// <returns></returns>
-        public override TableDbCommandBuilder<OleDbCommand, OleDbParameter, AccessLimitOption> WithFilter(object filterValue)
+        /// <param name="filterOptions">The filter options.</param>
+        /// <returns>TableDbCommandBuilder&lt;OleDbCommand, OleDbParameter, AccessLimitOption&gt;.</returns>
+        public override TableDbCommandBuilder<OleDbCommand, OleDbParameter, AccessLimitOption> WithFilter(object filterValue, FilterOptions filterOptions = FilterOptions.None)
         {
             m_FilterValue = filterValue;
             m_WhereClause = null;
             m_ArgumentValue = null;
+            m_FilterOptions = filterOptions;
             return this;
         }
 

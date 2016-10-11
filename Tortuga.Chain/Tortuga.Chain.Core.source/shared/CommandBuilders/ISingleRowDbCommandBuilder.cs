@@ -1,6 +1,7 @@
 using System;
+using System.Xml.Linq;
 
-#if !WINDOWS_UWP
+#if !DataTable_Missing
 using System.Data;
 #endif
 
@@ -108,7 +109,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <returns></returns>
         IConstructibleMaterializer<TObject> ToObject<TObject>(RowOptions rowOptions = RowOptions.None)
             where TObject : class;
-        
+
         /// <summary>
         /// Materializes the result as a dynamic object
         /// </summary>
@@ -142,7 +143,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// </summary>
         ILink<TimeSpan?> ToTimeSpanOrNull();
 
-#if !WINDOWS_UWP
+#if !DataTable_Missing
         /// <summary>
         /// Indicates the results should be materialized as a Row.
         /// </summary>
@@ -307,5 +308,20 @@ namespace Tortuga.Chain.CommandBuilders
         /// </summary>
         /// <param name="columnName">Name of the desired column.</param>
         ILink<TimeSpan> ToTimeSpan(string columnName);
+
+        /// <summary>
+        /// Materializes the result as an XElement.
+        /// </summary>
+        /// <returns>ILink&lt;XElement&gt;.</returns>
+        ILink<XElement> ToXml();
+
+
+        /// <summary>
+        /// Materializes the result as an XElement.
+        /// </summary>
+        /// <param name="columnName">Name of the column.</param>
+        /// <returns>ILink&lt;XElement&gt;.</returns>
+        ILink<XElement> ToXml(string columnName);
+
     }
 }

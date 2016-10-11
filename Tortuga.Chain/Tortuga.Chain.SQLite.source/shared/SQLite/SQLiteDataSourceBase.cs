@@ -138,12 +138,13 @@ namespace Tortuga.Chain.SQLite
         /// <summary>
         /// Creates a <see cref="SQLiteTableOrView" /> used to directly query a table or view
         /// </summary>
-        /// <param name="tableOrViewName"></param>
-        /// <param name="filterValue"></param>
-        /// <returns></returns>
-        public TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> From(SQLiteObjectName tableOrViewName, object filterValue)
+        /// <param name="tableOrViewName">Name of the table or view.</param>
+        /// <param name="filterValue">The filter value.</param>
+        /// <param name="filterOptions">The filter options.</param>
+        /// <returns>TableDbCommandBuilder&lt;SQLiteCommand, SQLiteParameter, SQLiteLimitOption&gt;.</returns>
+        public TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> From(SQLiteObjectName tableOrViewName, object filterValue, FilterOptions filterOptions = FilterOptions.None)
         {
-            return new SQLiteTableOrView(this, tableOrViewName, filterValue);
+            return new SQLiteTableOrView(this, tableOrViewName, filterValue, filterOptions );
         }
 
         /// <summary>

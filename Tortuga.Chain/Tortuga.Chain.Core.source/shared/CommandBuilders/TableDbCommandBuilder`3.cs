@@ -134,8 +134,8 @@ namespace Tortuga.Chain.CommandBuilders
         /// Adds (or replaces) the filter on this command builder.
         /// </summary>
         /// <param name="filterValue">The filter value.</param>
-        /// <returns></returns>
-        public abstract TableDbCommandBuilder<TCommand, TParameter, TLimit> WithFilter(object filterValue);
+        /// <param name="filterOptions">The filter options.</param>
+        public abstract TableDbCommandBuilder<TCommand, TParameter, TLimit> WithFilter(object filterValue, FilterOptions filterOptions = FilterOptions.None);
 
         /// <summary>
         /// Adds (or replaces) the filter on this command builder.
@@ -152,9 +152,9 @@ namespace Tortuga.Chain.CommandBuilders
         /// <returns></returns>
         public abstract TableDbCommandBuilder<TCommand, TParameter, TLimit> WithFilter(string whereClause, object argumentValue);
 
-        ITableDbCommandBuilder ITableDbCommandBuilder.WithFilter(object filterValue)
+        ITableDbCommandBuilder ITableDbCommandBuilder.WithFilter(object filterValue, FilterOptions filterOptions )
         {
-            return WithFilter(filterValue);
+            return WithFilter(filterValue, filterOptions);
         }
 
         ITableDbCommandBuilder ITableDbCommandBuilder.WithFilter(string whereClause)

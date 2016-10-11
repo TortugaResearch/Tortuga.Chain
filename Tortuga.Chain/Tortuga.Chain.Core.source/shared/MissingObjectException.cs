@@ -5,7 +5,7 @@ namespace Tortuga.Chain
     /// <summary>
     /// This exception is thrown when the requested database object (e.g. table, view, etc.) could not be found.
     /// </summary>
-#if !WINDOWS_UWP
+#if !Serialization_Missing
     [Serializable]
 #endif
     public class MissingObjectException : Exception
@@ -37,7 +37,7 @@ namespace Tortuga.Chain
 
         }
 
-#if !WINDOWS_UWP
+#if !Serialization_Missing
         /// <summary>
         /// Initializes a new instance of the <see cref="MissingObjectException"/> class.
         /// </summary>

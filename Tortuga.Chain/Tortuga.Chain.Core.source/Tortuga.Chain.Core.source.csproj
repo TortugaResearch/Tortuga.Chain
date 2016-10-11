@@ -72,8 +72,8 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Tortuga.Anchor, Version=0.8.5985.31190, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
-      <HintPath>..\packages\Tortuga.Anchor.0.8.5985.31190\lib\net46\Tortuga.Anchor.dll</HintPath>
+    <Reference Include="Tortuga.Anchor, Version=0.9.6126.5816, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tortuga.Anchor.0.9.6126.5816\lib\net46\Tortuga.Anchor.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
@@ -81,17 +81,13 @@
     <Compile Include="..\ProductSharedAssemblyInfo.cs">
       <Link>Properties\ProductSharedAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="shared\Appenders\Appender.cs" />
     <Compile Include="shared\Appenders\Appender`2.cs" />
     <Compile Include="shared\Appenders\Appender`1.cs" />
     <Compile Include="shared\Appenders\CacheAllItemsAppender.cs" />
     <Compile Include="shared\Appenders\CacheResultAppender`1.cs" />
-    <Compile Include="shared\Appenders\StrictModeAppender.cs" />
     <Compile Include="shared\Appenders\StrictModeAppender`1.cs" />
-    <Compile Include="shared\Appenders\TimeoutAppender.cs" />
     <Compile Include="shared\Appenders\TimeoutAppender`1.cs" />
     <Compile Include="shared\Appenders\TraceAppender`1.cs" />
-    <Compile Include="shared\Appenders\TraceAppender.cs" />
     <Compile Include="shared\AuditRules\ColumnRule.cs" />
     <Compile Include="shared\AuditRules\ExceptWhenPredicate.cs" />
     <Compile Include="shared\AuditRules\RestrictColumn.cs" />
@@ -102,7 +98,6 @@
     <Compile Include="shared\AuditRules\ValidateWithDataErrorInfo`1.cs" />
     <Compile Include="shared\AuditRules\ValidateWithNotifyDataErrorInfo`1.cs" />
     <Compile Include="shared\CollectionOptions.cs" />
-    <Compile Include="shared\CommandBuilders\CommandBuilderUtilities.cs" />
     <Compile Include="shared\CommandBuilders\DbCommandBuilder.cs" />
     <Compile Include="shared\CommandBuilders\DbOperationBuilder`2.cs" />
     <Compile Include="shared\CommandBuilders\IObjectDbCommandBuilder`1.cs" />
@@ -126,6 +121,7 @@
     <Compile Include="shared\DataSources\IRootDataSource.cs" />
     <Compile Include="shared\DataSources\ITransactionalDataSource.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="shared\FilterOptions.cs" />
     <Compile Include="shared\IConstructibleMaterializer`1.cs" />
     <Compile Include="shared\DictionaryOptions.cs" />
     <Compile Include="shared\CommandBuilders\GenericDbSqlCall.cs" />
@@ -157,8 +153,6 @@
     <Compile Include="shared\MappingException.cs" />
     <Compile Include="shared\Appenders\ReadOrCacheResultAppender`1.cs" />
     <Compile Include="shared\ILink`1.cs" />
-    <Compile Include="shared\ILink.cs" />
-    <Compile Include="shared\Appenders\InvalidateCacheAppender.cs" />
     <Compile Include="shared\Appenders\InvalidateCacheAppender`1.cs" />
     <Compile Include="shared\AuditRules\UserDataRule.cs" />
     <Compile Include="shared\AuditRules\ValueRule.cs" />
@@ -181,6 +175,7 @@
     <Compile Include="shared\Materializers\ConstructibleMaterializer`4.cs" />
     <Compile Include="shared\Materializers\Operation`2.cs" />
     <Compile Include="shared\Materializers\Scalar\SingleColumnMaterializer`3.cs" />
+    <Compile Include="shared\Materializers\Scalar\XElementMaterializer`2.cs" />
     <Compile Include="shared\Materializers\SingleColumn\DateTimeOffsetSetMaterializer`2.cs" />
     <Compile Include="shared\Materializers\SingleColumn\DateTimeSetMaterializer`2.cs" />
     <Compile Include="shared\Materializers\SingleColumn\DecimalSetMaterializer`2.cs" />
@@ -190,6 +185,7 @@
     <Compile Include="shared\Materializers\SingleColumn\Int32SetMaterializer`2.cs" />
     <Compile Include="shared\Materializers\SingleColumn\Int64SetMaterializer`2.cs" />
     <Compile Include="shared\Materializers\SingleColumn\SingleSetMaterializer`2.cs" />
+    <Compile Include="shared\Materializers\SingleColumn\XElementListMaterializer`2.cs" />
     <Compile Include="shared\Materializers\SingleColumn\StringSetMaterializer`2.cs" />
     <Compile Include="shared\Materializers\SingleColumn\TimeSpanSetMaterializer`2.cs" />
     <Compile Include="shared\Materializers\SingleRow\DataRowMaterializer`2.cs" />

@@ -1,4 +1,5 @@
-#if !WINDOWS_UWP
+#if !DataTable_Missing
+
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;

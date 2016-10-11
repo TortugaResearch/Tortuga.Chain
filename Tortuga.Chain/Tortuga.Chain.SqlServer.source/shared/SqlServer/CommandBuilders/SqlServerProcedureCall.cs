@@ -10,14 +10,18 @@ using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
 using Tortuga.Chain.Metadata;
+
+#if !SqlDependency_Missing
 using Tortuga.Chain.SqlServer.Materializers;
+#endif
+
 namespace Tortuga.Chain.SqlServer.CommandBuilders
 {
 
     /// <summary>
     /// Class SqlServerProcedureCall.
     /// </summary>
-    internal sealed class SqlServerProcedureCall : MultipleTableDbCommandBuilder<SqlCommand, SqlParameter>, ISupportsChangeListener
+    internal sealed partial class SqlServerProcedureCall : MultipleTableDbCommandBuilder<SqlCommand, SqlParameter>
     {
 
         readonly object m_ArgumentValue;
@@ -65,22 +69,6 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 
         }
 
-        /// <summary>
-        /// Waits for change in the data that is returned by this operation.
-        /// </summary>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <param name="state">User defined state, usually used for logging.</param>
-        /// <returns>Task that can be waited for.</returns>
-        /// <remarks>This requires the use of SQL Dependency</remarks>
-        public Task WaitForChange(CancellationToken cancellationToken, object state = null)
-        {
-            return WaitForChangeMaterializer.GenerateTask(this, cancellationToken, state);
-        }
-
-        SqlServerCommandExecutionToken ISupportsChangeListener.Prepare(Materializer<SqlCommand, SqlParameter> materializer)
-        {
-            return (SqlServerCommandExecutionToken)Prepare(materializer);
-        }
 
         /// <summary>
         /// Gets the data source.
@@ -105,6 +93,31 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         }
     }
 
+#if !SqlDependency_Missing
+
+    partial class SqlServerProcedureCall : ISupportsChangeListener
+    {
+
+        /// <summary>
+        /// Waits for change in the data that is returned by this operation.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <param name="state">User defined state, usually used for logging.</param>
+        /// <returns>Task that can be waited for.</returns>
+        /// <remarks>This requires the use of SQL Dependency</remarks>
+        public Task WaitForChange(CancellationToken cancellationToken, object state = null)
+        {
+            return WaitForChangeMaterializer.GenerateTask(this, cancellationToken, state);
+        }
+
+
+        SqlServerCommandExecutionToken ISupportsChangeListener.Prepare(Materializer<SqlCommand, SqlParameter> materializer)
+        {
+            return (SqlServerCommandExecutionToken)Prepare(materializer);
+        }
+
+    }
+#endif
 }
 
 

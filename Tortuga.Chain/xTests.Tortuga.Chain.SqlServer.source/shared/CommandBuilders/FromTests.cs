@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Tests.Models;
 using Tortuga.Chain;
 using Xunit;
 using Xunit.Abstractions;
@@ -9,6 +11,7 @@ namespace Tests.CommandBuilders
 {
     public class FromTests : TestBase
     {
+        public static BasicData Prime = new BasicData(s_PrimaryDataSource);
         public static TablesAndViewData TablesAndViews = new TablesAndViewData(s_DataSources.Values);
         public static TablesAndViewColumnsData TablesAndViewsWithColumns = new TablesAndViewColumnsData(s_DataSources.Values);
 
@@ -471,6 +474,71 @@ namespace Tests.CommandBuilders
             }
         }
 #endif
+
+        [Theory, MemberData("Prime")]
+        public void AsCount(string assemblyName, string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+                var key = Guid.NewGuid().ToString();
+
+                for (var i = 0; i < 10; i++)
+                    dataSource.Insert(EmployeeTableName, new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = key, MiddleName = i % 2 == 0 ? "A" + i : null }).ToObject<Employee>().Execute();
+
+
+                var count = dataSource.From(EmployeeTableName, new { Title = key }).AsCount().Execute();
+                var columnCount = dataSource.From(EmployeeTableName, new { Title = key }).AsCount("Title").Execute();
+                var columnCount2 = dataSource.From(EmployeeTableName, new { Title = key }).AsCount("MiddleName").Execute();
+
+#if !ACCESS
+                var distinctColumnCount = dataSource.From(EmployeeTableName, new { Title = key }).AsCount("Title", true).Execute();
+                var distinctColumnCount2 = dataSource.From(EmployeeTableName, new { Title = key }).AsCount("LastName", true).Execute();
+#endif
+
+                Assert.AreEqual(10, count, "All of the rows");
+                Assert.AreEqual(10, columnCount, "No nulls");
+                Assert.AreEqual(5, columnCount2, "Half of the rows are nul");
+
+#if !ACCESS
+                Assert.AreEqual(1, distinctColumnCount, "Only one distinct value");
+                Assert.AreEqual(10, distinctColumnCount2, "Every value is distinct");
+#endif
+
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+        [Theory, MemberData("Prime")]
+        public void FilterByObject(string assemblyName, string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+                var key = Guid.NewGuid().ToString();
+
+                for (var i = 0; i < 10; i++)
+                    dataSource.Insert(EmployeeTableName, new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = key, MiddleName = i % 2 == 0 ? "A" + i : null }).ToObject<Employee>().Execute();
+
+
+                var all = dataSource.From(EmployeeTableName, new { Title = key }).ToCollection<Employee>().Execute();
+                var middleNameIsNull = dataSource.From(EmployeeTableName, new { Title = key, MiddleName = (string)null }).ToCollection<Employee>().Execute();
+                var ignoreNulls = dataSource.From(EmployeeTableName, new { Title = key, MiddleName = (string)null }, FilterOptions.IgnoreNullProperties).ToCollection<Employee>().Execute();
+
+                Assert.AreEqual(10, all.Count, "All of the rows");
+                Assert.AreEqual(5, middleNameIsNull.Count, "Middle name is null");
+                Assert.AreEqual(10, ignoreNulls.Count, "Ignore nulls should return all of the rows");
+
+
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
     }
 }
 

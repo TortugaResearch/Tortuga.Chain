@@ -2,8 +2,9 @@ using System;
 using System.Data.Common;
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Materializers;
+using System.Xml.Linq;
 
-#if !WINDOWS_UWP
+#if !DataTable_Missing
 using System.Data;
 #endif
 
@@ -164,7 +165,7 @@ namespace Tortuga.Chain.CommandBuilders
             return new DynamicObjectMaterializer<TCommand, TParameter>(this, rowOptions);
         }
 
-#if !WINDOWS_UWP
+#if !DataTable_Missing
         /// <summary>
         /// Indicates the results should be materialized as a Row.
         /// </summary>
@@ -364,5 +365,23 @@ namespace Tortuga.Chain.CommandBuilders
         /// </summary>
         /// <param name="columnName">Name of the desired column.</param>
         public ILink<TimeSpan> ToTimeSpan(string columnName) { return new TimeSpanMaterializer<TCommand, TParameter>(this, columnName); }
+
+
+        /// <summary>
+        /// Materializes the result as an XElement.
+        /// </summary>
+        /// <returns>ILink&lt;XElement&gt;.</returns>
+        public ILink<XElement> ToXml() { return new XElementMaterializer<TCommand, TParameter>(this, null); }
+
+
+        /// <summary>
+        /// Materializes the result as an XElement.
+        /// </summary>
+        /// <param name="columnName">Name of the column.</param>
+        /// <returns>ILink&lt;XElement&gt;.</returns>
+        public ILink<XElement> ToXml(string columnName) { return new XElementMaterializer<TCommand, TParameter>(this, columnName); }
+
+
+
     }
 }

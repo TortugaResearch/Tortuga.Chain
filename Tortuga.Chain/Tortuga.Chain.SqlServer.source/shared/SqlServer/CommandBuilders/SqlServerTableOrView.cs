@@ -10,14 +10,17 @@ using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
 using Tortuga.Chain.Metadata;
+
+#if !SqlDependency_Missing
 using Tortuga.Chain.SqlServer.Materializers;
+#endif
 
 namespace Tortuga.Chain.SqlServer.CommandBuilders
 {
     /// <summary>
     /// SqlServerTableOrView supports queries against tables and views.
     /// </summary>
-    internal sealed class SqlServerTableOrView : TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption>, ISupportsChangeListener
+    internal sealed partial class SqlServerTableOrView : TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption>
     {
         readonly TableOrViewMetadata<SqlServerObjectName, SqlDbType> m_Table;
         private object m_FilterValue;
@@ -29,19 +32,23 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         private int? m_Take;
         private int? m_Seed;
         private string m_SelectClause;
+        private FilterOptions m_FilterOptions;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SqlServerTableOrView"/> class.
+        /// Initializes a new instance of the <see cref="SqlServerTableOrView" /> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
         /// <param name="tableOrViewName">Name of the table or view.</param>
         /// <param name="filterValue">The filter value.</param>
-        public SqlServerTableOrView(SqlServerDataSourceBase dataSource, SqlServerObjectName tableOrViewName, object filterValue) : base(dataSource)
+        /// <param name="filterOptions">The filter options.</param>
+        /// <exception cref="System.ArgumentException"></exception>
+        public SqlServerTableOrView(SqlServerDataSourceBase dataSource, SqlServerObjectName tableOrViewName, object filterValue, FilterOptions filterOptions = FilterOptions.None) : base(dataSource)
         {
             if (tableOrViewName == SqlServerObjectName.Empty)
                 throw new ArgumentException($"{nameof(tableOrViewName)} is empty", nameof(tableOrViewName));
 
             m_FilterValue = filterValue;
+            m_FilterOptions = filterOptions;
             m_Table = DataSource.DatabaseMetadata.GetTableOrView(tableOrViewName);
         }
 
@@ -146,7 +153,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 
             if (m_FilterValue != null)
             {
-                sql.Append(" WHERE " + sqlBuilder.ApplyFilterValue(m_FilterValue));
+                sql.Append(" WHERE " + sqlBuilder.ApplyFilterValue(m_FilterValue, m_FilterOptions));
                 sqlBuilder.BuildSoftDeleteClause(sql, " AND ", DataSource, null);
 
                 parameters = sqlBuilder.GetParameters();
@@ -200,22 +207,6 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             return new SqlServerCommandExecutionToken(DataSource, "Query " + m_Table.Name, sql.ToString(), parameters);
         }
 
-        /// <summary>
-        /// Waits for change in the data that is returned by this operation.
-        /// </summary>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <param name="state">User defined state, usually used for logging.</param>
-        /// <returns>Task that can be waited for.</returns>
-        /// <remarks>This requires the use of SQL Dependency</remarks>
-        public Task WaitForChange(CancellationToken cancellationToken, object state = null)
-        {
-            return WaitForChangeMaterializer.GenerateTask(this, cancellationToken, state);
-        }
-
-        SqlServerCommandExecutionToken ISupportsChangeListener.Prepare(Materializer<SqlCommand, SqlParameter> materializer)
-        {
-            return (SqlServerCommandExecutionToken)Prepare(materializer);
-        }
 
         /// <summary>
         /// Adds sorting to the command builder.
@@ -269,12 +260,14 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// Adds (or replaces) the filter on this command builder.
         /// </summary>
         /// <param name="filterValue">The filter value.</param>
-        /// <returns></returns>
-        public override TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption> WithFilter(object filterValue)
+        /// <param name="filterOptions">The filter options.</param>
+        /// <returns>TableDbCommandBuilder&lt;SqlCommand, SqlParameter, SqlServerLimitOption&gt;.</returns>
+        public override TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption> WithFilter(object filterValue, FilterOptions filterOptions = FilterOptions.None)
         {
             m_FilterValue = filterValue;
             m_WhereClause = null;
             m_ArgumentValue = null;
+            m_FilterOptions = filterOptions;
             return this;
         }
 
@@ -354,5 +347,28 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             get { return (SqlServerDataSourceBase)base.DataSource; }
         }
     }
+
+#if !SqlDependency_Missing
+
+    partial class SqlServerTableOrView : ISupportsChangeListener
+    {
+        /// <summary>
+        /// Waits for change in the data that is returned by this operation.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <param name="state">User defined state, usually used for logging.</param>
+        /// <returns>Task that can be waited for.</returns>
+        /// <remarks>This requires the use of SQL Dependency</remarks>
+        public Task WaitForChange(CancellationToken cancellationToken, object state = null)
+        {
+            return WaitForChangeMaterializer.GenerateTask(this, cancellationToken, state);
+        }
+
+        SqlServerCommandExecutionToken ISupportsChangeListener.Prepare(Materializer<SqlCommand, SqlParameter> materializer)
+        {
+            return (SqlServerCommandExecutionToken)Prepare(materializer);
+        }
+    }
+#endif
 }
 

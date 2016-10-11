@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Tortuga.Chain.Metadata;
 
@@ -14,11 +15,12 @@ namespace Tortuga.Chain.AuditRules
     public class AuditRuleCollection : IReadOnlyList<AuditRule>
     {
         readonly ImmutableArray<AuditRule> m_List;
+        readonly ImmutableArray<ValidationRule> m_Validation;
 
         /// <summary>
         /// Returns an empty RulesCollection.
         /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes")]
+        [SuppressMessage("Microsoft.Security", "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes")]
         public static readonly AuditRuleCollection Empty = new AuditRuleCollection();
 
         /// <summary>
@@ -27,6 +29,7 @@ namespace Tortuga.Chain.AuditRules
         private AuditRuleCollection()
         {
             m_List = ImmutableArray.Create<AuditRule>();
+            m_Validation = ImmutableArray.Create<ValidationRule>();
 
             SoftDeleteForSelect = ImmutableArray.Create<SoftDeleteRule>();
         }
@@ -38,6 +41,7 @@ namespace Tortuga.Chain.AuditRules
         public AuditRuleCollection(IEnumerable<AuditRule> rules)
         {
             m_List = ImmutableArray.CreateRange(rules);
+            m_Validation = ImmutableArray.CreateRange(m_List.OfType<ValidationRule>());
 
             SoftDeleteForSelect = this.Where(r => r.AppliesWhen.HasFlag(OperationTypes.Select)).OfType<SoftDeleteRule>().ToImmutableArray();
         }
@@ -55,6 +59,7 @@ namespace Tortuga.Chain.AuditRules
                 throw new ArgumentNullException(nameof(additionalRules), $"{nameof(additionalRules)} is null.");
 
             m_List = baseRules.m_List.AddRange(additionalRules);
+            m_Validation = ImmutableArray.CreateRange(m_List.OfType<ValidationRule>());
 
             SoftDeleteForSelect = this.Where(r => r.AppliesWhen.HasFlag(OperationTypes.Select)).OfType<SoftDeleteRule>().ToImmutableArray();
         }
@@ -115,8 +120,8 @@ namespace Tortuga.Chain.AuditRules
 
         internal void CheckValidation(object argumentValue)
         {
-            foreach (var item in m_List.OfType<ValidationRule>())
-                item.CheckValue(argumentValue);
+            for (int i = 0; i < m_Validation.Length; i++)
+                m_Validation[i].CheckValue(argumentValue);
         }
 
         internal IEnumerable<ColumnRule> GetRulesForColumn(string sqlName, string clrName, OperationTypes appliesWhen)

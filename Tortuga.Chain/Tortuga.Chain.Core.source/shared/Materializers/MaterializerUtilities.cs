@@ -130,7 +130,7 @@ namespace Tortuga.Chain.Materializers
             if (populateComplexObject.Value)
                 PopulateComplexObject(source, result, null);
 
-            //Change tracking objects shouldn't be materialized as unchanged.
+            //Change tracking objects should be materialized as unchanged.
             (result as IChangeTracking)?.AcceptChanges();
 
             return result;

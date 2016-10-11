@@ -32,19 +32,22 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
         private int? m_Skip;
         private int? m_Take;
         private string m_SelectClause;
+        private FilterOptions m_FilterOptions;
 
         //public object MetadataCache { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SQLiteTableOrView" /> class.
         /// </summary>
-        /// <param name="dataSource"></param>
-        /// <param name="tableOrViewName"></param>
-        /// <param name="filterValue"></param>
-        public SQLiteTableOrView(SQLiteDataSourceBase dataSource, SQLiteObjectName tableOrViewName, object filterValue) :
+        /// <param name="dataSource">The data source.</param>
+        /// <param name="tableOrViewName">Name of the table or view.</param>
+        /// <param name="filterValue">The filter value.</param>
+        /// <param name="filterOptions">The filter options.</param>
+        public SQLiteTableOrView(SQLiteDataSourceBase dataSource, SQLiteObjectName tableOrViewName, object filterValue, FilterOptions filterOptions = FilterOptions.None) :
             base(dataSource)
         {
             m_FilterValue = filterValue;
+            m_FilterOptions = filterOptions;
             m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableOrViewName);
         }
 
@@ -107,7 +110,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
 
             if (m_FilterValue != null)
             {
-                sql.Append(" WHERE " + sqlBuilder.ApplyFilterValue(m_FilterValue));
+                sql.Append(" WHERE " + sqlBuilder.ApplyFilterValue(m_FilterValue, m_FilterOptions));
                 sqlBuilder.BuildSoftDeleteClause(sql, " AND ", DataSource, null);
 
                 parameters = sqlBuilder.GetParameters();
@@ -198,12 +201,14 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
         /// Adds (or replaces) the filter on this command builder.
         /// </summary>
         /// <param name="filterValue">The filter value.</param>
-        /// <returns></returns>
-        public override TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> WithFilter(object filterValue)
+        /// <param name="filterOptions">The filter options.</param>
+        /// <returns>TableDbCommandBuilder&lt;SQLiteCommand, SQLiteParameter, SQLiteLimitOption&gt;.</returns>
+        public override TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> WithFilter(object filterValue, FilterOptions filterOptions = FilterOptions.None)
         {
             m_FilterValue = filterValue;
             m_WhereClause = null;
             m_ArgumentValue = null;
+            m_FilterOptions = filterOptions;
             return this;
         }
 

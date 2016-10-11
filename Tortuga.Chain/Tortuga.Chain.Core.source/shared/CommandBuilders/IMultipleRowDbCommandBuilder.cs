@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Collections.Immutable;
+using System.Xml.Linq;
 
-#if !WINDOWS_UWP
+#if !DataTable_Missing
 using System.Data;
 #endif
 
@@ -75,7 +76,7 @@ namespace Tortuga.Chain.CommandBuilders
             where TObject : class
             where TCollection : ICollection<TObject>, new();
 
-#if !WINDOWS_UWP
+#if !DataTable_Missing
         /// <summary>
         /// Indicates the results should be materialized as a DataSet.
         /// </summary>
@@ -508,5 +509,20 @@ namespace Tortuga.Chain.CommandBuilders
         /// <returns></returns>
         ILink<HashSet<TimeSpan>> ToTimeSpanSet(string columnName, ListOptions listOptions = ListOptions.None);
 
+
+        /// <summary>
+        /// Materializes the result as a list of XDocuments.
+        /// </summary>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;XDocument&gt;&gt;.</returns>
+        ILink<List<XElement>> ToXElement(ListOptions listOptions = ListOptions.None);
+
+        /// <summary>
+        /// Materializes the result as a list of XDocuments.
+        /// </summary>
+        /// <param name="columnName">Name of the column.</param>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;XDocument&gt;&gt;.</returns>
+        ILink<List<XElement>> ToXElement(string columnName, ListOptions listOptions = ListOptions.None);
     }
 }

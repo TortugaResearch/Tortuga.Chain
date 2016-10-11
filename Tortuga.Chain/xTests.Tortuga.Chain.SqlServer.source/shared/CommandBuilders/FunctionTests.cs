@@ -7,7 +7,7 @@ using Xunit.Abstractions;
 
 namespace Tests.CommandBuilders
 {
-    public class FunctionTests : TestBase
+    public class TableFunctionTests : TestBase
     {
         public static BasicData Prime = new BasicData(s_PrimaryDataSource);
 #if SQL_SERVER
@@ -21,7 +21,7 @@ namespace Tests.CommandBuilders
 #endif
 
 
-        public FunctionTests(ITestOutputHelper output) : base(output)
+        public TableFunctionTests(ITestOutputHelper output) : base(output)
         {
         }
 

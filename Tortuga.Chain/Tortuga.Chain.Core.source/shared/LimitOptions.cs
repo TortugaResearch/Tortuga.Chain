@@ -87,5 +87,7 @@ namespace Tortuga.Chain
         TableSampleBernoulliPercentage = RandomSample | TableSampleBernoulli | Percentage,
 
     }
+
+    
 }
 

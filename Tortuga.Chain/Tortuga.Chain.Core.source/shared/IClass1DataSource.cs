@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Tortuga.Chain.CommandBuilders;
-using Tortuga.Chain.Metadata;
 
 
 namespace Tortuga.Chain
@@ -70,8 +69,10 @@ namespace Tortuga.Chain
         /// </summary>
         /// <param name="tableOrViewName">Name of the table or view.</param>
         /// <param name="filterValue">The filter value is used to generate a simple AND style WHERE clause.</param>
+        /// <param name="filterOptions">The filter options.</param>
+        /// <returns>ITableDbCommandBuilder.</returns>
         /// <exception cref="ArgumentException">tableOrViewName is empty.;tableOrViewName</exception>
-        ITableDbCommandBuilder From(string tableOrViewName, object filterValue);
+        ITableDbCommandBuilder From(string tableOrViewName, object filterValue, FilterOptions filterOptions = FilterOptions.None);
 
 
         /// <summary>
