@@ -26,6 +26,7 @@ namespace Tortuga.Chain.MySql.CommandBuilders
         private int? m_Take;
         private int? m_Seed;
         private string m_SelectClause;
+        private FilterOptions m_FilterOptions;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MySqlTableOrView" /> class.
@@ -49,7 +50,7 @@ namespace Tortuga.Chain.MySql.CommandBuilders
         /// <param name="tableOrViewName">Name of the table or view.</param>
         /// <param name="filterValue">The filter value.</param>
         /// <exception cref="ArgumentException"></exception>
-        public MySqlTableOrView(MySqlDataSourceBase dataSource, MySqlObjectName tableOrViewName, object filterValue) :
+        public MySqlTableOrView(MySqlDataSourceBase dataSource, MySqlObjectName tableOrViewName, object filterValue, FilterOptions filterOptions = FilterOptions.None) :
             base(dataSource)
         {
             if (tableOrViewName == MySqlObjectName.Empty)
@@ -57,6 +58,7 @@ namespace Tortuga.Chain.MySql.CommandBuilders
 
             m_FilterValue = filterValue;
             m_Table = DataSource.DatabaseMetadata.GetTableOrView(tableOrViewName);
+            m_FilterOptions = filterOptions;
         }
 
         /// <summary>
@@ -143,12 +145,14 @@ namespace Tortuga.Chain.MySql.CommandBuilders
         /// Adds (or replaces) the filter on this command builder.
         /// </summary>
         /// <param name="filterValue">The filter value.</param>
+        /// <param name="filterOptions">The filter options.</param>
         /// <returns>TableDbCommandBuilder&lt;MySqlCommand, MySqlParameter, MySqlLimitOption&gt;.</returns>
-        public override TableDbCommandBuilder<MySqlCommand, MySqlParameter, MySqlLimitOption> WithFilter(object filterValue)
+        public override TableDbCommandBuilder<MySqlCommand, MySqlParameter, MySqlLimitOption> WithFilter(object filterValue, FilterOptions filterOptions = FilterOptions.None)
         {
             m_FilterValue = filterValue;
             m_WhereClause = null;
             m_ArgumentValue = null;
+            m_FilterOptions = filterOptions;
             return this;
         }
 

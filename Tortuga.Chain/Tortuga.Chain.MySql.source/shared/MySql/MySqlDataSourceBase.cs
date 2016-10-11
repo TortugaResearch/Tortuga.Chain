@@ -88,10 +88,11 @@ namespace Tortuga.Chain.MySql
         /// </summary>
         /// <param name="tableOrViewName">Name of the table or view.</param>
         /// <param name="filterValue">The filter value.</param>
+        /// <param name="filterOptions">The filter options.</param>
         /// <returns>TableDbCommandBuilder&lt;MySqlCommand, MySqlParameter, MySqlLimitOption&gt;.</returns>
-        public TableDbCommandBuilder<MySqlCommand, MySqlParameter, MySqlLimitOption> From(MySqlObjectName tableOrViewName, object filterValue)
+        public TableDbCommandBuilder<MySqlCommand, MySqlParameter, MySqlLimitOption> From(MySqlObjectName tableOrViewName, object filterValue, FilterOptions filterOptions = FilterOptions.None)
         {
-            return new MySqlTableOrView(this, tableOrViewName, filterValue);
+            return new MySqlTableOrView(this, tableOrViewName, filterValue, filterOptions);
         }
 
         /// <summary>

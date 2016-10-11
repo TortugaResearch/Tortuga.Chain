@@ -26,6 +26,7 @@ namespace Tortuga.Chain.MySql.CommandBuilders
         private int? m_Take;
         //private int? m_Seed;
         private string m_SelectClause;
+        private FilterOptions m_FilterOptions;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MySqlTableFunction" /> class.
@@ -96,11 +97,12 @@ namespace Tortuga.Chain.MySql.CommandBuilders
         /// </summary>
         /// <param name="filterValue">The filter value.</param>
         /// <returns></returns>
-        public override TableDbCommandBuilder<MySqlCommand, MySqlParameter, MySqlLimitOption> WithFilter(object filterValue)
+        public override TableDbCommandBuilder<MySqlCommand, MySqlParameter, MySqlLimitOption> WithFilter(object filterValue, FilterOptions filterOptions = FilterOptions.None)
         {
             m_FilterValue = filterValue;
             m_WhereClause = null;
             m_ArgumentValue = null;
+            m_FilterOptions = filterOptions;
             return this;
         }
 
