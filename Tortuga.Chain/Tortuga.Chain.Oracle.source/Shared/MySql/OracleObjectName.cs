@@ -13,16 +13,55 @@ namespace Tortuga.Chain.Oracle
         /// </summary>
         public static readonly OracleObjectName Empty;
 
+        readonly string m_Schema;
         readonly string m_Name;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OracleObjectName"/> struct.
+        /// </summary>
+        /// <param name="schemaAndName">The name.</param>
+        public OracleObjectName(string schemaAndName)
+        {
+            if (string.IsNullOrEmpty(schemaAndName))
+                throw new ArgumentException("schemaAndName is null or emtpy.", "schemaAndName");
+
+            var parts = schemaAndName.Split(new[] { '.' });
+            if(parts.Length == 1)
+            {
+                m_Schema = null;
+                m_Name = Normalize(parts[0]);
+            }
+            else if (parts.Length == 2)
+            {
+                m_Schema = Normalize(parts[0]);
+                m_Name = Normalize(parts[1]);
+            }
+            else
+            {
+                throw new ArgumentException("Three-part identifiers are not supported.");
+            }
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="OracleObjectName" /> struct.
         /// </summary>
+        /// <param name="schema">The schema.</param>
         /// <param name="name">The name.</param>
-        public OracleObjectName(string name)
+        public OracleObjectName(string schema, string name)
         {
+            m_Schema = Normalize(schema);
             m_Name = Normalize(name);
+        }
+
+        /// <summary>
+        /// Gets the schema.
+        /// </summary>
+        /// <value>
+        /// The schema.
+        /// </value>
+        public string Schema
+        {
+            get { return m_Schema; }
         }
 
         /// <summary>
@@ -134,6 +173,12 @@ namespace Tortuga.Chain.Oracle
         {
             return Name;
         }
+
+        /// <summary>
+        /// Normalizes the specified value.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <returns></returns>
         static string Normalize(string value)
         {
             if (string.IsNullOrWhiteSpace(value))

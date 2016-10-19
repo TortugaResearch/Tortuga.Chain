@@ -95,6 +95,14 @@ namespace Tortuga.Chain.Oracle
         /// </summary>
         public void PreloadViews()
         {
+            const string TableSql =
+                @"SELECT
+                owner as schemaname,
+                table_name as tablename,
+                FROM sys.all_tables
+                WHERE
+                ";
+
             throw new NotImplementedException();
         }
 
@@ -116,13 +124,6 @@ namespace Tortuga.Chain.Oracle
         {
             throw new NotImplementedException();
         }
-
-
-
-
-
-
-
 
         /// <summary>
         /// Parse a string and return the database specific representation of the object name.
@@ -147,13 +148,32 @@ namespace Tortuga.Chain.Oracle
         }
 
         /// <summary>
-        /// Types the type of the name to NPG SQL database.
+        /// Types the type of the name to Oracle SQL database.
         /// </summary>
         /// <param name="typeName">Name of the type.</param>
         /// <returns></returns>
-        internal static OracleDbType? TypeNameToNpgSqlDbType(string typeName)
+        internal static OracleDbType? TypeNameToOracleDbType(string typeName)
         {
-            throw new NotImplementedException();
+            switch(typeName)
+            {
+                case "char": return OracleDbType.Char;
+                case "nchar": return OracleDbType.NChar;
+                case "nvarchar2": return OracleDbType.NVarchar2;
+                case "varchar2": return OracleDbType.Varchar2;
+                case "long": return OracleDbType.Long;
+                case "raw": return OracleDbType.Raw;
+                case "long raw": return OracleDbType.LongRaw;
+                case "number": //fall through to Decimal
+                case "numeric": //fall through to Decimal
+                case "float": //fall through to Decimal
+                case "dec": //fall through to Decimal
+                case "decimal": return OracleDbType.Decimal;
+                case "int": //fall through to integer
+                case "integer": return OracleDbType.Int32;
+                case "smallint": return OracleDbType.Int16;
+                //TODO: finish
+            }
+            return null;
         }
 
         /// <summary>

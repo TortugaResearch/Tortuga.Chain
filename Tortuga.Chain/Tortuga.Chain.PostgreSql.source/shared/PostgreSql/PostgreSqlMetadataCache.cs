@@ -514,7 +514,6 @@ WHERE c.relname ILIKE @Name AND
                 case "char": return NpgsqlDbType.Char;
                 case "citext": return NpgsqlDbType.Citext;
                 case "json": return NpgsqlDbType.Json;
-
             }
             return null;
         }
