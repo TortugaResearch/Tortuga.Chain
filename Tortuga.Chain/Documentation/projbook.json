@@ -110,6 +110,10 @@
     {
       "title": "Restricted Columns",
       "path": "Page/RestrictedColumns.md"
+    },
+    {
+      "title": "Transactions",
+      "path": "Page/Transactions.md"
     }
   ]
 }
