@@ -83,8 +83,8 @@
 //            var cust3 = ds2.Update(CustomerTableName, cust2).ToObject<CustomerWithValidation>().Execute();
 //            Assert.AreEqual(currentUser1.EmployeeKey, cust2.CreatedByKey, "CreatedBy was not set");
 //            Assert.AreEqual(currentUser2.EmployeeKey, cust3.UpdatedByKey, "UpdatedBy was not changed");
-//            Assert.AreEqual(cust2.CreatedDate, cust3.CreatedDate, "CreatedDate was not suposed to change");
-//            Assert.AreNotEqual(cust2.UpdatedDate, cust3.UpdatedDate, "UpdatedDate was suposed to change");
+//            Assert.AreEqual(cust2.CreatedDate, cust3.CreatedDate, "CreatedDate was not supposed to change");
+//            Assert.AreNotEqual(cust2.UpdatedDate, cust3.UpdatedDate, "UpdatedDate was supposed to change");
 
 //        }
 //#endif 

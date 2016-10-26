@@ -83,7 +83,7 @@ namespace Tests.shared.Core
                 var cust1 = new CustomerWithValidation() { FullName = "Test Customer " + DateTime.Now.Ticks, State = "CA" };
 
                 var cust2 = ds1.Insert(CustomerTableName, cust1).ToObject<CustomerWithValidation>().Execute();
-                Assert.AreEqual(cust1.FullName, cust2.FullName, "Fullname was not set");
+                Assert.AreEqual(cust1.FullName, cust2.FullName, "FullName was not set");
                 Assert.AreEqual(currentUser1.EmployeeKey, cust2.CreatedByKey, "CreatedBy was not set");
                 Assert.AreEqual(currentUser1.EmployeeKey, cust2.UpdatedByKey, "UpdatedBy was not set");
                 Assert.IsNotNull(cust2.CreatedDate, "CreatedDate was not set");
@@ -95,8 +95,8 @@ namespace Tests.shared.Core
                 var cust3 = ds2.Update(CustomerTableName, cust2).ToObject<CustomerWithValidation>().Execute();
                 Assert.AreEqual(currentUser1.EmployeeKey, cust2.CreatedByKey, "CreatedBy was not set");
                 Assert.AreEqual(currentUser2.EmployeeKey, cust3.UpdatedByKey, "UpdatedBy was not changed");
-                Assert.AreEqual(cust2.CreatedDate, cust3.CreatedDate, "CreatedDate was not suposed to change");
-                Assert.AreNotEqual(cust2.UpdatedDate, cust3.UpdatedDate, "UpdatedDate was suposed to change");
+                Assert.AreEqual(cust2.CreatedDate, cust3.CreatedDate, "CreatedDate was not supposed to change");
+                Assert.AreNotEqual(cust2.UpdatedDate, cust3.UpdatedDate, "UpdatedDate was supposed to change");
 
             }
             finally
@@ -147,7 +147,11 @@ namespace Tests.shared.Core
 
                 Assert.IsNull(misingRecord, "The soft delete rule should prevent this record from being returned.");
 
+#if OLE_SQL_SERVER
+                var misingRecord2 = ds1.From(CustomerTableName, "CustomerKey = ?", new { CustomerKey = customerKey }).ToObject<CustomerWithValidation>(RowOptions.AllowEmptyResults).Execute();
+#else
                 var misingRecord2 = ds1.From(CustomerTableName, "CustomerKey = @CustomerKey", new { CustomerKey = customerKey }).ToObject<CustomerWithValidation>(RowOptions.AllowEmptyResults).Execute();
+#endif 
 
                 Assert.IsNull(misingRecord2, "The soft delete rule should prevent this record from being returned.");
 

@@ -200,9 +200,9 @@ namespace Tortuga.Chain.SqlServer
                 case "binary": return OleDbType.Binary;
                 case "bit": return OleDbType.Boolean;
                 case "char": return OleDbType.Char;
-                case "date": return OleDbType.Date;
-                case "datetime": return OleDbType.Date;
-                case "datetime2": return OleDbType.Date;
+                case "date": return OleDbType.DBDate;
+                case "datetime": return OleDbType.DBTimeStamp;
+                case "datetime2": return OleDbType.DBTimeStamp;
                 //case "datetimeoffset": return OleDbType;
                 case "decimal": return OleDbType.Decimal;
                 case "float": return OleDbType.Single;
@@ -217,7 +217,7 @@ namespace Tortuga.Chain.SqlServer
                 case "numeric": return OleDbType.Numeric;
                 case "nvarchar": return OleDbType.VarWChar;
                 case "real": return OleDbType.Single;
-                case "smalldatetime": return OleDbType.Date;
+                case "smalldatetime": return OleDbType.DBTimeStamp;
                 case "smallint": return OleDbType.SmallInt;
                 case "smallmoney": return OleDbType.Currency;
                 //case "sql_variant": m_SqlDbType = OleDbType; 
@@ -378,6 +378,79 @@ namespace Tortuga.Chain.SqlServer
             return new TableOrViewMetadata<SqlServerObjectName, OleDbType>(new SqlServerObjectName(actualSchema, actualName), isTable, columns);
         }
 
+        internal override UserDefinedTypeMetadata<SqlServerObjectName, OleDbType> GetUserDefinedTypeInternal(SqlServerObjectName typeName)
+        {
+            const string sql =
+                @"SELECT	s.name AS SchemaName,
+		t.name AS Name,
+		tt.type_table_object_id AS ObjectId,
+		t.is_table_type AS IsTableType,
+		t2.name AS BaseTypeName,
+		t.is_nullable,
+		CONVERT(INT, t.max_length) AS max_length, 
+		CONVERT(INT, t.precision) AS precision,
+		CONVERT(INT, t.scale) AS scale
+FROM	sys.types t
+		INNER JOIN sys.schemas s ON t.schema_id = s.schema_id
+		LEFT JOIN sys.table_types tt ON tt.user_type_id = t.user_type_id
+		LEFT JOIN sys.types t2 ON t.system_type_id = t2.user_type_id
+WHERE	s.name = ? AND t.name = ?;";
+
+            string actualSchema;
+            string actualName;
+            string baseTypeName = null;
+            int? objectId = null;
+            bool isTableType;
+            bool isNullable;
+            int? maxLength;
+            int? precision;
+            int? scale;
+            string fullTypeName;
+
+            using (var con = new OleDbConnection(m_ConnectionBuilder.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = new OleDbCommand(sql, con))
+                {
+                    cmd.Parameters.AddWithValue("@Schema", typeName.Schema ?? DefaultSchema);
+                    cmd.Parameters.AddWithValue("@Name", typeName.Name);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        if (!reader.Read())
+                            throw new MissingObjectException($"Could not find user defined type {typeName}");
+
+                        actualSchema = reader.GetString(reader.GetOrdinal("SchemaName"));
+                        actualName = reader.GetString(reader.GetOrdinal("Name"));
+                        if (!reader.IsDBNull(reader.GetOrdinal("ObjectId")))
+                            objectId = reader.GetInt32(reader.GetOrdinal("ObjectId"));
+                        isTableType = reader.GetBoolean(reader.GetOrdinal("IsTableType"));
+                        if (!reader.IsDBNull(reader.GetOrdinal("BaseTypeName")))
+                            baseTypeName = reader.GetString(reader.GetOrdinal("BaseTypeName"));
+
+                        isNullable = reader.GetBoolean(reader.GetOrdinal("is_nullable"));
+                        maxLength = reader.GetInt32(reader.GetOrdinal("max_length"));
+                        precision = reader.GetInt32(reader.GetOrdinal("precision"));
+                        scale = reader.GetInt32(reader.GetOrdinal("scale"));
+
+                        AdjustTypeDetails(baseTypeName, ref maxLength, ref precision, ref scale, out fullTypeName);
+
+                    }
+                }
+            }
+
+            List<ColumnMetadata<OleDbType>> columns;
+
+            if (isTableType)
+                columns = GetColumns(objectId.Value);
+            else
+            {
+                columns = new List<ColumnMetadata<OleDbType>>();
+                columns.Add(new ColumnMetadata<OleDbType>(null, false, false, false, baseTypeName, TypeNameToSqlDbType(baseTypeName), null, isNullable, maxLength, precision, scale, fullTypeName));
+            }
+
+            return new UserDefinedTypeMetadata<SqlServerObjectName, OleDbType>(new SqlServerObjectName(actualSchema, actualName), isTableType, columns);
+        }
+
         List<ColumnMetadata<OleDbType>> GetColumns(int objectId)
         {
             const string ColumnSql =
@@ -486,79 +559,6 @@ namespace Tortuga.Chain.SqlServer
             {
                 throw new MetadataException($"Error getting parameters for {procedureName}", ex);
             }
-        }
-
-        internal override UserDefinedTypeMetadata<SqlServerObjectName, OleDbType> GetUserDefinedTypeInternal(SqlServerObjectName typeName)
-        {
-            const string sql =
-                @"SELECT	s.name AS SchemaName,
-		t.name AS Name,
-		tt.type_table_object_id AS ObjectId,
-		t.is_table_type AS IsTableType,
-		t2.name AS BaseTypeName,
-		t.is_nullable,
-		CONVERT(INT, t.max_length) AS max_length, 
-		CONVERT(INT, t.precision) AS precision,
-		CONVERT(INT, t.scale) AS scale
-FROM	sys.types t
-		INNER JOIN sys.schemas s ON t.schema_id = s.schema_id
-		LEFT JOIN sys.table_types tt ON tt.user_type_id = t.user_type_id
-		LEFT JOIN sys.types t2 ON t.system_type_id = t2.user_type_id
-WHERE	s.name = ? AND t.name = ?;";
-
-            string actualSchema;
-            string actualName;
-            string baseTypeName = null;
-            int? objectId = null;
-            bool isTableType;
-            bool isNullable;
-            int? maxLength;
-            int? precision;
-            int? scale;
-            string fullTypeName;
-
-            using (var con = new OleDbConnection(m_ConnectionBuilder.ConnectionString))
-            {
-                con.Open();
-                using (var cmd = new OleDbCommand(sql, con))
-                {
-                    cmd.Parameters.AddWithValue("@Schema", typeName.Schema ?? DefaultSchema);
-                    cmd.Parameters.AddWithValue("@Name", typeName.Name);
-                    using (var reader = cmd.ExecuteReader())
-                    {
-                        if (!reader.Read())
-                            throw new MissingObjectException($"Could not find user defined type {typeName}");
-
-                        actualSchema = reader.GetString(reader.GetOrdinal("SchemaName"));
-                        actualName = reader.GetString(reader.GetOrdinal("Name"));
-                        if (!reader.IsDBNull(reader.GetOrdinal("ObjectId")))
-                            objectId = reader.GetInt32(reader.GetOrdinal("ObjectId"));
-                        isTableType = reader.GetBoolean(reader.GetOrdinal("IsTableType"));
-                        if (!reader.IsDBNull(reader.GetOrdinal("BaseTypeName")))
-                            baseTypeName = reader.GetString(reader.GetOrdinal("BaseTypeName"));
-
-                        isNullable = reader.GetBoolean(reader.GetOrdinal("is_nullable"));
-                        maxLength = reader.GetInt32(reader.GetOrdinal("max_length"));
-                        precision = reader.GetInt32(reader.GetOrdinal("precision"));
-                        scale = reader.GetInt32(reader.GetOrdinal("scale"));
-
-                        AdjustTypeDetails(baseTypeName, ref maxLength, ref precision, ref scale, out fullTypeName);
-
-                    }
-                }
-            }
-
-            List<ColumnMetadata<OleDbType>> columns;
-
-            if (isTableType)
-                columns = GetColumns(objectId.Value);
-            else
-            {
-                columns = new List<ColumnMetadata<OleDbType>>();
-                columns.Add(new ColumnMetadata<OleDbType>(null, false, false, false, baseTypeName, TypeNameToSqlDbType(baseTypeName), null, isNullable, maxLength, precision, scale, fullTypeName));
-            }
-
-            return new UserDefinedTypeMetadata<SqlServerObjectName, OleDbType>(new SqlServerObjectName(actualSchema, actualName), isTableType, columns);
         }
     }
 }
