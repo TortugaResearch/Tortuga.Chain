@@ -38,12 +38,12 @@ namespace Tests
                         Add(TestBase.AssemblyName, ds.Name, DataSourceType.Open, table.Name, column.SqlName);
                         Add(TestBase.AssemblyName, ds.Name, DataSourceType.Transactional, table.Name, column.SqlName);
 
-                        if (column.SqlName != column.ClrName)
-                        {
-                            Add(TestBase.AssemblyName, ds.Name, DataSourceType.Normal, table.Name, column.ClrName);
-                            Add(TestBase.AssemblyName, ds.Name, DataSourceType.Open, table.Name, column.ClrName);
-                            Add(TestBase.AssemblyName, ds.Name, DataSourceType.Transactional, table.Name, column.ClrName);
-                        }
+                        //if (column.SqlName != column.ClrName)
+                        //{
+                        //    Add(TestBase.AssemblyName, ds.Name, DataSourceType.Normal, table.Name, column.ClrName);
+                        //    Add(TestBase.AssemblyName, ds.Name, DataSourceType.Open, table.Name, column.ClrName);
+                        //    Add(TestBase.AssemblyName, ds.Name, DataSourceType.Transactional, table.Name, column.ClrName);
+                        //}
                     }
                 }
             }

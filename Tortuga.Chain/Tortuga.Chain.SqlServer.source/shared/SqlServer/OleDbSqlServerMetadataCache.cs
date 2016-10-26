@@ -200,9 +200,9 @@ namespace Tortuga.Chain.SqlServer
                 case "binary": return OleDbType.Binary;
                 case "bit": return OleDbType.Boolean;
                 case "char": return OleDbType.Char;
-                case "date": return OleDbType.Date;
-                case "datetime": return OleDbType.Date;
-                case "datetime2": return OleDbType.Date;
+                case "date": return OleDbType.DBDate;
+                case "datetime": return OleDbType.DBTimeStamp;
+                case "datetime2": return OleDbType.DBTimeStamp;
                 //case "datetimeoffset": return OleDbType;
                 case "decimal": return OleDbType.Decimal;
                 case "float": return OleDbType.Single;
@@ -217,7 +217,7 @@ namespace Tortuga.Chain.SqlServer
                 case "numeric": return OleDbType.Numeric;
                 case "nvarchar": return OleDbType.VarWChar;
                 case "real": return OleDbType.Single;
-                case "smalldatetime": return OleDbType.Date;
+                case "smalldatetime": return OleDbType.DBTimeStamp;
                 case "smallint": return OleDbType.SmallInt;
                 case "smallmoney": return OleDbType.Currency;
                 //case "sql_variant": m_SqlDbType = OleDbType; 
@@ -378,116 +378,6 @@ namespace Tortuga.Chain.SqlServer
             return new TableOrViewMetadata<SqlServerObjectName, OleDbType>(new SqlServerObjectName(actualSchema, actualName), isTable, columns);
         }
 
-        List<ColumnMetadata<OleDbType>> GetColumns(int objectId)
-        {
-            const string ColumnSql =
-                @"WITH    PKS
-						  AS ( SELECT   c.name ,
-										1 AS is_primary_key
-							   FROM     sys.indexes i
-										INNER JOIN sys.index_columns ic ON i.index_id = ic.index_id
-																		   AND ic.object_id = ?
-										INNER JOIN sys.columns c ON ic.column_id = c.column_id
-																	AND c.object_id = ?
-							   WHERE    i.is_primary_key = 1
-										AND ic.is_included_column = 0
-										AND i.object_id = ?
-							 )
-					SELECT  c.name AS ColumnName ,
-							c.is_computed ,
-							c.is_identity ,
-							c.column_id ,
-							Convert(bit, ISNULL(PKS.is_primary_key, 0)) AS is_primary_key,
-							COALESCE(t.name, t2.name) AS TypeName,
-							c.is_nullable,
-		                    CONVERT(INT, t.max_length) AS max_length, 
-		                    CONVERT(INT, t.precision) AS precision,
-		                    CONVERT(INT, t.scale) AS scale
-					FROM    sys.columns c
-							LEFT JOIN PKS ON c.name = PKS.name
-							LEFT JOIN sys.types t on c.system_type_id = t.user_type_id
-							LEFT JOIN sys.types t2 ON c.user_type_id = t2.user_type_id
-                            WHERE   object_id = ?;";
-
-            var columns = new List<ColumnMetadata<OleDbType>>();
-            using (var con = new OleDbConnection(m_ConnectionBuilder.ConnectionString))
-            {
-                con.Open();
-                using (var cmd = new OleDbCommand(ColumnSql, con))
-                {
-                    cmd.Parameters.AddWithValue("@ObjectId1", objectId);
-                    cmd.Parameters.AddWithValue("@ObjectId2", objectId);
-                    cmd.Parameters.AddWithValue("@ObjectId3", objectId);
-                    cmd.Parameters.AddWithValue("@ObjectId4", objectId);
-                    using (var reader = cmd.ExecuteReader(/*CommandBehavior.SequentialAccess*/))
-                    {
-                        while (reader.Read())
-                        {
-                            var name = reader.GetString(reader.GetOrdinal("ColumnName"));
-                            var computed = reader.GetBoolean(reader.GetOrdinal("is_computed"));
-                            var primary = reader.GetBoolean(reader.GetOrdinal("is_primary_key"));
-                            var isIdentity = reader.GetBoolean(reader.GetOrdinal("is_identity"));
-                            var typeName = reader.IsDBNull(reader.GetOrdinal("TypeName")) ? null : reader.GetString(reader.GetOrdinal("TypeName"));
-                            var isNullable = reader.GetBoolean(reader.GetOrdinal("is_nullable"));
-                            int? maxLength = reader.GetInt32(reader.GetOrdinal("max_length"));
-                            int? precision = reader.GetInt32(reader.GetOrdinal("precision"));
-                            int? scale = reader.GetInt32(reader.GetOrdinal("scale"));
-                            string fullTypeName;
-                            AdjustTypeDetails(typeName, ref maxLength, ref precision, ref scale, out fullTypeName);
-
-                            columns.Add(new ColumnMetadata<OleDbType>(name, computed, primary, isIdentity, typeName, TypeNameToSqlDbType(typeName), "[" + name + "]", isNullable, maxLength, precision, scale, fullTypeName));
-                        }
-                    }
-                }
-            }
-            return columns;
-        }
-
-        List<ParameterMetadata<OleDbType>> GetParameters(string procedureName, int objectId)
-        {
-            try
-            {
-                const string ParameterSql =
-                    @"SELECT  p.name AS ParameterName ,
-            COALESCE(t.name, t2.name) AS TypeName,
-			COALESCE(t.is_nullable, t2.is_nullable)  as is_nullable,
-		    CONVERT(INT, t.max_length) AS max_length, 
-		    CONVERT(INT, t.precision) AS precision,
-		    CONVERT(INT, t.scale) AS scale
-            FROM    sys.parameters p
-                    LEFT JOIN sys.types t ON p.system_type_id = t.user_type_id
-                    LEFT JOIN sys.types t2 ON p.user_type_id = t2.user_type_id
-            WHERE   p.object_id = ?
-            ORDER BY p.parameter_id;";
-
-                var parameters = new List<ParameterMetadata<OleDbType>>();
-
-                using (var con = new OleDbConnection(m_ConnectionBuilder.ConnectionString))
-                {
-                    con.Open();
-
-                    using (var cmd = new OleDbCommand(ParameterSql, con))
-                    {
-                        cmd.Parameters.AddWithValue("@ObjectId", objectId);
-                        using (var reader = cmd.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                var name = reader.GetString(reader.GetOrdinal("ParameterName"));
-                                var typeName = reader.GetString(reader.GetOrdinal("TypeName"));
-                                parameters.Add(new ParameterMetadata<OleDbType>(name, name, typeName, TypeNameToSqlDbType(typeName)));
-                            }
-                        }
-                    }
-                }
-                return parameters;
-            }
-            catch (Exception ex)
-            {
-                throw new MetadataException($"Error getting parameters for {procedureName}", ex);
-            }
-        }
-
         internal override UserDefinedTypeMetadata<SqlServerObjectName, OleDbType> GetUserDefinedTypeInternal(SqlServerObjectName typeName)
         {
             const string sql =
@@ -559,6 +449,116 @@ WHERE	s.name = ? AND t.name = ?;";
             }
 
             return new UserDefinedTypeMetadata<SqlServerObjectName, OleDbType>(new SqlServerObjectName(actualSchema, actualName), isTableType, columns);
+        }
+
+        List<ColumnMetadata<OleDbType>> GetColumns(int objectId)
+        {
+            const string ColumnSql =
+                @"WITH    PKS
+						  AS ( SELECT   c.name ,
+										1 AS is_primary_key
+							   FROM     sys.indexes i
+										INNER JOIN sys.index_columns ic ON i.index_id = ic.index_id
+																		   AND ic.object_id = ?
+										INNER JOIN sys.columns c ON ic.column_id = c.column_id
+																	AND c.object_id = ?
+							   WHERE    i.is_primary_key = 1
+										AND ic.is_included_column = 0
+										AND i.object_id = ?
+							 )
+					SELECT  c.name AS ColumnName ,
+							c.is_computed ,
+							c.is_identity ,
+							c.column_id ,
+							Convert(bit, ISNULL(PKS.is_primary_key, 0)) AS is_primary_key,
+							COALESCE(t.name, t2.name) AS TypeName,
+							c.is_nullable,
+		                    CONVERT(INT, COALESCE(t.max_length, t2.max_length)) AS max_length, 
+		                    CONVERT(INT, COALESCE(t.precision, t2.precision)) AS precision,
+		                    CONVERT(INT, COALESCE(t.scale, t2.scale)) AS scale
+					FROM    sys.columns c
+							LEFT JOIN PKS ON c.name = PKS.name
+							LEFT JOIN sys.types t on c.system_type_id = t.user_type_id
+							LEFT JOIN sys.types t2 ON c.user_type_id = t2.user_type_id
+                            WHERE   object_id = ?;";
+
+            var columns = new List<ColumnMetadata<OleDbType>>();
+            using (var con = new OleDbConnection(m_ConnectionBuilder.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = new OleDbCommand(ColumnSql, con))
+                {
+                    cmd.Parameters.AddWithValue("@ObjectId1", objectId);
+                    cmd.Parameters.AddWithValue("@ObjectId2", objectId);
+                    cmd.Parameters.AddWithValue("@ObjectId3", objectId);
+                    cmd.Parameters.AddWithValue("@ObjectId4", objectId);
+                    using (var reader = cmd.ExecuteReader(/*CommandBehavior.SequentialAccess*/))
+                    {
+                        while (reader.Read())
+                        {
+                            var name = reader.GetString(reader.GetOrdinal("ColumnName"));
+                            var computed = reader.GetBoolean(reader.GetOrdinal("is_computed"));
+                            var primary = reader.GetBoolean(reader.GetOrdinal("is_primary_key"));
+                            var isIdentity = reader.GetBoolean(reader.GetOrdinal("is_identity"));
+                            var typeName = reader.IsDBNull(reader.GetOrdinal("TypeName")) ? null : reader.GetString(reader.GetOrdinal("TypeName"));
+                            var isNullable = reader.GetBoolean(reader.GetOrdinal("is_nullable"));
+                            int? maxLength = reader.IsDBNull(reader.GetOrdinal("max_length")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("max_length"));
+                            int? precision = reader.IsDBNull(reader.GetOrdinal("precision")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("precision"));
+                            int? scale = reader.IsDBNull(reader.GetOrdinal("scale")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("scale"));
+                            string fullTypeName;
+                            AdjustTypeDetails(typeName, ref maxLength, ref precision, ref scale, out fullTypeName);
+
+                            columns.Add(new ColumnMetadata<OleDbType>(name, computed, primary, isIdentity, typeName, TypeNameToSqlDbType(typeName), "[" + name + "]", isNullable, maxLength, precision, scale, fullTypeName));
+                        }
+                    }
+                }
+            }
+            return columns;
+        }
+
+        List<ParameterMetadata<OleDbType>> GetParameters(string procedureName, int objectId)
+        {
+            try
+            {
+                const string ParameterSql =
+                    @"SELECT  p.name AS ParameterName ,
+            COALESCE(t.name, t2.name) AS TypeName,
+			COALESCE(t.is_nullable, t2.is_nullable)  as is_nullable,
+		    CONVERT(INT, t.max_length) AS max_length, 
+		    CONVERT(INT, t.precision) AS precision,
+		    CONVERT(INT, t.scale) AS scale
+            FROM    sys.parameters p
+                    LEFT JOIN sys.types t ON p.system_type_id = t.user_type_id
+                    LEFT JOIN sys.types t2 ON p.user_type_id = t2.user_type_id
+            WHERE   p.object_id = ?
+            ORDER BY p.parameter_id;";
+
+                var parameters = new List<ParameterMetadata<OleDbType>>();
+
+                using (var con = new OleDbConnection(m_ConnectionBuilder.ConnectionString))
+                {
+                    con.Open();
+
+                    using (var cmd = new OleDbCommand(ParameterSql, con))
+                    {
+                        cmd.Parameters.AddWithValue("@ObjectId", objectId);
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                var name = reader.GetString(reader.GetOrdinal("ParameterName"));
+                                var typeName = reader.GetString(reader.GetOrdinal("TypeName"));
+                                parameters.Add(new ParameterMetadata<OleDbType>(name, name, typeName, TypeNameToSqlDbType(typeName)));
+                            }
+                        }
+                    }
+                }
+                return parameters;
+            }
+            catch (Exception ex)
+            {
+                throw new MetadataException($"Error getting parameters for {procedureName}", ex);
+            }
         }
     }
 }

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics.CodeAnalysis;
-using Tortuga.Anchor;
 using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.SqlServer
@@ -267,9 +266,9 @@ namespace Tortuga.Chain.SqlServer
 							Convert(bit, ISNULL(PKS.is_primary_key, 0)) AS is_primary_key,
 							COALESCE(t.name, t2.name) AS TypeName,
 							c.is_nullable,
-		                    CONVERT(INT, t.max_length) AS max_length, 
-		                    CONVERT(INT, t.precision) AS precision,
-		                    CONVERT(INT, t.scale) AS scale
+		                    CONVERT(INT, COALESCE(t.max_length, t2.max_length)) AS max_length, 
+		                    CONVERT(INT, COALESCE(t.precision, t2.precision)) AS precision,
+		                    CONVERT(INT, COALESCE(t.scale, t2.scale)) AS scale
 					FROM    sys.columns c
 							LEFT JOIN PKS ON c.name = PKS.name
 							LEFT JOIN sys.types t on c.system_type_id = t.user_type_id
@@ -293,9 +292,9 @@ namespace Tortuga.Chain.SqlServer
                             var isIdentity = reader.GetBoolean(reader.GetOrdinal("is_identity"));
                             var typeName = reader.IsDBNull(reader.GetOrdinal("TypeName")) ? null : reader.GetString(reader.GetOrdinal("TypeName"));
                             var isNullable = reader.GetBoolean(reader.GetOrdinal("is_nullable"));
-                            int? maxLength = reader.GetInt32(reader.GetOrdinal("max_length"));
-                            int? precision = reader.GetInt32(reader.GetOrdinal("precision"));
-                            int? scale = reader.GetInt32(reader.GetOrdinal("scale"));
+                            int? maxLength = reader.IsDBNull(reader.GetOrdinal("max_length")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("max_length"));
+                            int? precision = reader.IsDBNull(reader.GetOrdinal("precision")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("precision"));
+                            int? scale = reader.IsDBNull(reader.GetOrdinal("scale")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("scale"));
                             string fullTypeName;
                             AdjustTypeDetails(typeName, ref maxLength, ref precision, ref scale, out fullTypeName);
 

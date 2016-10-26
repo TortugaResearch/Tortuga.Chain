@@ -46,8 +46,12 @@ namespace Tortuga.Chain.SqlServer
                 result.Value = entry.ParameterValue;
 
                 if (entry.Details.DbType.HasValue)
+                {
                     result.OleDbType = entry.Details.DbType.Value;
 
+                    if (entry.Details.TypeName == "datetime2" && entry.Details.Scale.HasValue)
+                        result.Scale = (byte)entry.Details.Scale.Value;
+                }
                 return result;
             });
         }

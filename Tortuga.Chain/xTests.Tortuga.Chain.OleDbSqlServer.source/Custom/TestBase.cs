@@ -105,7 +105,7 @@ namespace Tests
                 WriteLine(e.ExecutionDetails.CommandText);
                 //Indent();
                 foreach (var item in ((OleDbCommandExecutionToken)e.ExecutionDetails).Parameters)
-                    WriteLine(item.ParameterName + ": " + (item.Value == null || item.Value == DBNull.Value ? "<NULL>" : item.Value));
+                    WriteLine(item.ParameterName + ": " + (item.Value == null || item.Value == DBNull.Value ? "<NULL>" : item.Value) + " [" + item.OleDbType + "]");
                 //Unindent();
                 WriteLine("******");
                 WriteLine("");

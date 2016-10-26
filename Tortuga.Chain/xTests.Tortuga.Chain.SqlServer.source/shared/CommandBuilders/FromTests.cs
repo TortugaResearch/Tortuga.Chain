@@ -395,7 +395,7 @@ namespace Tests.CommandBuilders
             try
             {
                 var columnType = dataSource.DatabaseMetadata.GetTableOrView(tableName).Columns[columnName].TypeName;
-                if (columnType == "xml" || columnType == "ntext" || columnType == "text" || columnType == "image")
+                if (columnType == "xml" || columnType == "ntext" || columnType == "text" || columnType == "image" || columnType == "geography" || columnType == "geometry")
                     return; //SQL Server limitation
 
                 var count = dataSource.From(tableName).AsCount(columnName).Execute();
@@ -415,7 +415,7 @@ namespace Tests.CommandBuilders
             try
             {
                 var columnType = dataSource.DatabaseMetadata.GetTableOrView(tableName).Columns[columnName].TypeName;
-                if (columnType == "xml" || columnType == "ntext" || columnType == "text" || columnType == "image")
+                if (columnType == "xml" || columnType == "ntext" || columnType == "text" || columnType == "image" || columnType == "geography" || columnType == "geometry")
                     return; //SQL Server limitation
 
                 var count = dataSource.From(tableName).AsCount(columnName).Execute();
@@ -440,7 +440,7 @@ namespace Tests.CommandBuilders
             try
             {
                 var columnType = dataSource.DatabaseMetadata.GetTableOrView(tableName).Columns[columnName].TypeName;
-                if (columnType == "xml" || columnType == "ntext" || columnType == "text" || columnType == "image")
+                if (columnType == "xml" || columnType == "ntext" || columnType == "text" || columnType == "image" || columnType == "geography" || columnType == "geometry")
                     return; //SQL Server limitation
 
                 var count = await dataSource.From(tableName).AsCount(columnName).ExecuteAsync();
@@ -460,7 +460,7 @@ namespace Tests.CommandBuilders
             try
             {
                 var columnType = dataSource.DatabaseMetadata.GetTableOrView(tableName).Columns[columnName].TypeName;
-                if (columnType == "xml" || columnType == "ntext" || columnType == "text" || columnType == "image")
+                if (columnType == "xml" || columnType == "ntext" || columnType == "text" || columnType == "image" || columnType == "geography" || columnType == "geometry")
                     return; //SQL Server limitation
 
                 var count = await dataSource.From(tableName).AsCount(columnName).ExecuteAsync();
