@@ -101,7 +101,7 @@ namespace Tests.Core
 
         }
 
-#if SQL_SERVER || POSTGRESQL
+#if SQL_SERVER || POSTGRESQL || OLE_SQL_SERVER
         [Theory, MemberData("Basic")]
         public void VerifyFunction1(string assemblyName, string dataSourceName, DataSourceType mode)
         {
@@ -120,7 +120,7 @@ namespace Tests.Core
         }
 #endif
 
-#if SQL_SERVER 
+#if SQL_SERVER  || OLE_SQL_SERVER
         [Theory, MemberData("Basic")]
         public void VerifyFunction2(string assemblyName, string dataSourceName, DataSourceType mode)
         {

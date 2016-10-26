@@ -19,7 +19,7 @@
       "include": "..\\Tortuga.Chain.SqlServer.source\\shared\\**\\*.cs"
     },
     "xmlDoc": true,
-    "define": [ "SqlDependency_Missing", "System_Configuration_Missing", "Serialization_Missing", "TypeInfo_Is_Not_Type", "RUNTIME_CACHE_MISSING", "IDataErrorInfo_Missing", "INotifyDataErrorInfo_Missing", "NetStandard13", "DataTable_Missing", "Thread_Missing" ],
+    "define": [ "SqlDependency_Missing", "System_Configuration_Missing", "Serialization_Missing", "TypeInfo_Is_Not_Type", "RUNTIME_CACHE_MISSING", "IDataErrorInfo_Missing", "INotifyDataErrorInfo_Missing", "NetStandard13", "DataTable_Missing", "Thread_Missing", "OleDb_Missing" ],
     "outputName": "Tortuga.Chain.SqlServer"
   }
 

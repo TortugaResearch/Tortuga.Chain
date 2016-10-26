@@ -15,7 +15,7 @@ namespace Tests.CommandBuilders
     {
         public static BasicData Prime = new BasicData(s_PrimaryDataSource);
 
-#if SQL_SERVER
+#if SQL_SERVER || OLE_SQL_SERVER
         const string CheckA = @"SELECT Count(*) FROM Sales.Customer c WHERE c.State = @State;";
         const string CheckB = @"SELECT Count(*) FROM Sales.[Order] o INNER JOIN Sales.Customer c ON o.CustomerKey = c.CustomerKey WHERE c.State = @State;";
         static object Parameter1 = new { @State = "CA" };

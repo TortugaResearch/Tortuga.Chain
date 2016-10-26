@@ -212,7 +212,7 @@ namespace Tests.shared.Core
             }
         }
 
-#if SQL_SERVER
+#if SQL_SERVER || OLE_SQL_SERVER
 
         [Theory, MemberData("Prime")]
         public void SoftDeleteByKey(string assemblyName, string dataSourceName)

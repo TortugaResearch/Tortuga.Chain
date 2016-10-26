@@ -10,7 +10,7 @@ namespace Tests.CommandBuilders
     public class TableFunctionTests : TestBase
     {
         public static BasicData Prime = new BasicData(s_PrimaryDataSource);
-#if SQL_SERVER
+#if SQL_SERVER || OLE_SQL_SERVER
         static object Parameter1 = new { @State = "CA" };
         static object DictParameter1a = new Dictionary<string, object>() { { "State", "CA" } };
         static object DictParameter1b = new Dictionary<string, object>() { { "@State", "CA" } };
@@ -26,7 +26,7 @@ namespace Tests.CommandBuilders
         }
 
 
-#if SQL_SERVER
+#if SQL_SERVER || OLE_SQL_SERVER
         //Only SQL Server has inline functions.
 
         [Theory, MemberData("Prime")]

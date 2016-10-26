@@ -15,7 +15,7 @@ namespace Tests.CommandBuilders
         public static TablesAndViewData TablesAndViews = new TablesAndViewData(s_DataSources.Values);
         public static TablesAndViewColumnsData TablesAndViewsWithColumns = new TablesAndViewColumnsData(s_DataSources.Values);
 
-#if SQL_SERVER
+#if SQL_SERVER || OLE_SQL_SERVER
         public static TablesAndViewLimitData<SqlServerLimitOption> TablesAndViewLimit = new TablesAndViewLimitData<SqlServerLimitOption>(s_DataSources.Values);
 #elif SQLITE
         public static TablesAndViewLimitData<SQLiteLimitOption> TablesAndViewLimit = new TablesAndViewLimitData<SQLiteLimitOption>(s_DataSources.Values);

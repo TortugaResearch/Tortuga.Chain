@@ -72,8 +72,8 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Tortuga.Anchor, Version=0.9.6126.5816, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
-      <HintPath>..\packages\Tortuga.Anchor.0.9.6126.5816\lib\net46\Tortuga.Anchor.dll</HintPath>
+    <Reference Include="Tortuga.Anchor, Version=0.9.6126.35980, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tortuga.Anchor.0.9.6126.35980\lib\net46\Tortuga.Anchor.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
@@ -110,10 +110,12 @@
     <Compile Include="shared\Core\CommandImplementationAsync.cs" />
     <Compile Include="shared\Core\ICacheAdapter.cs" />
     <Compile Include="shared\Core\ObjectCacheAdapter.cs" />
+    <Compile Include="shared\Core\OleDbCommandExecutionToken.cs" />
     <Compile Include="shared\Core\OperationExecutionToken`2.cs" />
     <Compile Include="shared\Core\OperationImplementation.cs" />
     <Compile Include="shared\Core\OperationImplementationAsync.cs" />
     <Compile Include="shared\Core\SimpleCache.cs" />
+    <Compile Include="shared\Core\OleDbOperationExecutionToken.cs" />
     <Compile Include="shared\DataSources\ICommandDataSource`2.cs" />
     <Compile Include="shared\DataSources\IDataSource.cs" />
     <Compile Include="shared\DataSources\IOpenDataSource.cs" />
