@@ -1,3 +1,5 @@
+using System;
+
 namespace Tortuga.Chain.Metadata
 {
 
@@ -52,5 +54,12 @@ namespace Tortuga.Chain.Metadata
         /// <value>The name of the SQL variable.</value>
         public string SqlVariableName { get; }
 
+
+        int? ISqlBuilderEntryDetails.Scale
+        {
+            get { return null; }
+        }
+
+   
     }
 }

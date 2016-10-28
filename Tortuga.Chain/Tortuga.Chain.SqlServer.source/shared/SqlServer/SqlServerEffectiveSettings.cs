@@ -1,4 +1,6 @@
+using System.Data.OleDb;
 using System.Data.SqlClient;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
 namespace Tortuga.Chain.SqlServer
@@ -12,7 +14,7 @@ namespace Tortuga.Chain.SqlServer
 
         internal SqlServerEffectiveSettings() { }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         internal void Reload(SqlConnection connection, SqlTransaction transaction)
         {
             using (var cmd = new SqlCommand("SELECT @@Options") { Connection = connection, Transaction = transaction })
@@ -22,6 +24,19 @@ namespace Tortuga.Chain.SqlServer
         internal async Task ReloadAsync(SqlConnection connection, SqlTransaction transaction)
         {
             using (var cmd = new SqlCommand("SELECT @@Options") { Connection = connection, Transaction = transaction })
+                m_Options = (int)(await cmd.ExecuteScalarAsync());
+        }
+
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
+        internal void Reload(OleDbConnection connection, OleDbTransaction transaction)
+        {
+            using (var cmd = new OleDbCommand("SELECT @@Options") { Connection = connection, Transaction = transaction })
+                m_Options = (int)cmd.ExecuteScalar();
+        }
+
+        internal async Task ReloadAsync(OleDbConnection connection, OleDbTransaction transaction)
+        {
+            using (var cmd = new OleDbCommand("SELECT @@Options") { Connection = connection, Transaction = transaction })
                 m_Options = (int)(await cmd.ExecuteScalarAsync());
         }
 
@@ -53,13 +68,13 @@ namespace Tortuga.Chain.SqlServer
         /// <summary>
         /// ARITHABORT. Terminates a query when an overflow or divide-by-zero error occurs during query execution.
         /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Arith")]
+        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Arith")]
         public bool ArithAbort { get { return (m_Options & 64) > 0; } }
 
         /// <summary>
         /// ARITHIGNORE. Returns NULL when an overflow or divide-by-zero error occurs during a query.
         /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Arith")]
+        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Arith")]
         public bool ArithIgnore { get { return (m_Options & 128) > 0; } }
 
         /// <summary>
@@ -96,7 +111,7 @@ namespace Tortuga.Chain.SqlServer
         /// <summary>
         /// XACT_ABORT. Rolls back a transaction if a Transact-SQL statement raises a run-time error.
         /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Xact")]
+        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Xact")]
         public bool XactAbort { get { return (m_Options & 16384) > 0; } }
     }
 }
