@@ -1,7 +1,10 @@
-using System.Data.OleDb;
 using System.Data.SqlClient;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+
+#if !OleDb_Missing
+using System.Data.OleDb;
+#endif
 
 namespace Tortuga.Chain.SqlServer
 {
@@ -27,6 +30,7 @@ namespace Tortuga.Chain.SqlServer
                 m_Options = (int)(await cmd.ExecuteScalarAsync());
         }
 
+#if !OleDb_Missing
         [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         internal void Reload(OleDbConnection connection, OleDbTransaction transaction)
         {
@@ -39,6 +43,7 @@ namespace Tortuga.Chain.SqlServer
             using (var cmd = new OleDbCommand("SELECT @@Options") { Connection = connection, Transaction = transaction })
                 m_Options = (int)(await cmd.ExecuteScalarAsync());
         }
+#endif
 
         /// <summary>
         /// DISABLE_DEF_CNST_CHK. Controls interim or deferred constraint checking.

@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-using System.Data.OleDb;
 using System.Data.SqlClient;
 using Tortuga.Chain.CommandBuilders;
+
+#if !OleDb_Missing
+using System.Data.OleDb;
+#endif
 
 namespace Tortuga.Chain.SqlServer
 {
@@ -32,6 +35,7 @@ namespace Tortuga.Chain.SqlServer
             });
         }
 
+#if !OleDb_Missing
         /// <summary>
         /// Gets the parameters from a SQL Builder.
         /// </summary>
@@ -55,7 +59,7 @@ namespace Tortuga.Chain.SqlServer
                 return result;
             });
         }
-
+#endif 
 
 
     }

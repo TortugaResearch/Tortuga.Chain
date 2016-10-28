@@ -31,7 +31,7 @@ namespace Tortuga.Chain.SqlServer
         internal string m_DefaultSchema;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="OleDbSqlServerMetadataCache"/> class.
+        /// Initializes a new instance of the <see cref="AbstractSqlServerMetadataCache{TDbType}"/> class.
         /// </summary>
         /// <param name="connectionBuilder">The connection builder.</param>
         internal AbstractSqlServerMetadataCache(DbConnectionStringBuilder connectionBuilder)

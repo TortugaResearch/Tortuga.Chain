@@ -1,3 +1,4 @@
+#if !OleDb_Missing
 using System;
 using System.Collections.Generic;
 using System.Data.OleDb;
@@ -562,3 +563,4 @@ WHERE	s.name = ? AND t.name = ?;";
         }
     }
 }
+#endif
