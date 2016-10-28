@@ -1,0 +1,1311 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Tortuga.Chain.Access</name>
+    </assembly>
+    <members>
+        <member name="T:Tortuga.Chain.AccessDataSource">
+            <summary>
+            Class that represents a Access Data Source.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.AccessDataSource.#ctor(System.String,System.String,Tortuga.Chain.Access.AccessDataSourceSettings)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.AccessDataSource" /> class.
+            </summary>
+            <param name="name">The name of the data source.</param>
+            <param name="connectionString">The connection string.</param>
+            <param name="settings">Optional settings object.</param>
+            <exception cref="T:System.ArgumentException">Connection string is null or emtpy.;connectionString</exception>
+        </member>
+        <member name="M:Tortuga.Chain.AccessDataSource.#ctor(System.String,Tortuga.Chain.Access.AccessDataSourceSettings)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.AccessDataSource" /> class.
+            </summary>
+            <param name="connectionString"></param>
+            <param name="settings">Optional settings object.</param>
+        </member>
+        <member name="M:Tortuga.Chain.AccessDataSource.#ctor(System.String,System.Data.OleDb.OleDbConnectionStringBuilder,Tortuga.Chain.Access.AccessDataSourceSettings)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.AccessDataSource" /> class.
+            </summary>
+            <param name="name">The name of the data source.</param>
+            <param name="connectionStringBuilder">The connection string builder.</param>
+            <param name="settings">Optional settings object.</param>
+            <exception cref="T:System.ArgumentNullException">connectionStringBuilder;connectionStringBuilder is null.</exception>
+        </member>
+        <member name="M:Tortuga.Chain.AccessDataSource.#ctor(System.Data.OleDb.OleDbConnectionStringBuilder,Tortuga.Chain.Access.AccessDataSourceSettings)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.AccessDataSource" /> class.
+            </summary>
+            <param name="connectionStringBuilder"></param>
+            <param name="settings">Optional settings object.</param>
+        </member>
+        <member name="P:Tortuga.Chain.AccessDataSource.DatabaseMetadata">
+            <summary>
+            This object can be used to lookup database information.
+            </summary>
+        </member>
+        <member name="P:Tortuga.Chain.AccessDataSource.ConnectionString">
+            <summary>
+            This object can be used to access the database connection string.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.AccessDataSource.CreateFromConfig(System.String)">
+            <summary>
+            Creates a new connection using the connection string in the app.config file.
+            </summary>
+            <param name="connectionName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.AccessDataSource.CreateConnection">
+            <summary>
+            Creates and opens a new Access connection
+            </summary>
+            <returns></returns>
+            <remarks>The caller of this method is responsible for closing the connection.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.AccessDataSource.BeginTransaction(System.Nullable{System.Data.IsolationLevel},System.Boolean)">
+            <summary>
+            Creates a new transaction.
+            </summary>
+            <param name="isolationLevel"></param>
+            <param name="forwardEvents"></param>
+            <returns></returns>
+            <remarks>The caller of this method is responsible for closing the transaction.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.AccessDataSource.BeginTransactionAsync(System.Nullable{System.Data.IsolationLevel},System.Boolean)">
+            <summary>
+            Creates a new transaction.
+            </summary>
+            <param name="isolationLevel"></param>
+            <param name="forwardEvents"></param>
+            <returns></returns>
+            <remarks>The caller of this method is responsible for closing the transaction.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.AccessDataSource.WithSettings(Tortuga.Chain.Access.AccessDataSourceSettings)">
+            <summary>
+            Creates a new data source with the indicated changes to the settings.
+            </summary>
+            <param name="settings">The new settings to use.</param>
+            <returns></returns>
+            <remarks>The new data source will share the same database metadata cache.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.AccessDataSource.WithRules(Tortuga.Chain.AuditRules.AuditRule[])">
+            <summary>
+            Creates a new data source with additional audit rules.
+            </summary>
+            <param name="additionalRules">The additional rules.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.AccessDataSource.WithRules(System.Collections.Generic.IEnumerable{Tortuga.Chain.AuditRules.AuditRule})">
+            <summary>
+            Creates a new data source with additional audit rules.
+            </summary>
+            <param name="additionalRules">The additional rules.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.AccessDataSource.WithUser(System.Object)">
+            <summary>
+            Creates a new data source with the indicated user.
+            </summary>
+            <param name="userValue">The user value.</param>
+            <returns></returns>
+            <remarks>
+            This is used in conjunction with audit rules.
+            </remarks>
+        </member>
+        <member name="M:Tortuga.Chain.AccessDataSource.TestConnection">
+            <summary>
+            Tests the connection.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.AccessDataSource.TestConnectionAsync">
+            <summary>
+            Tests the connection asynchronously.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.AccessDataSource.WithCache(Tortuga.Chain.Core.ICacheAdapter)">
+            <summary>
+            Craetes a new data source with the provided cache.
+            </summary>
+            <param name="cache">The cache.</param>
+            <returns></returns>
+        </member>
+        <member name="P:Tortuga.Chain.AccessDataSource.Cache">
+            <summary>
+            Gets or sets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
+            </summary>
+        </member>
+        <member name="P:Tortuga.Chain.AccessDataSource.ExtensionCache">
+            <summary>
+            The extension cache is used by extensions to store data source specific information.
+            </summary>
+            <value>
+            The extension cache.
+            </value>
+        </member>
+        <member name="M:Tortuga.Chain.AccessDataSource.Execute(Tortuga.Chain.Core.CommandExecutionToken{System.Data.OleDb.OleDbCommand,System.Data.OleDb.OleDbParameter},Tortuga.Chain.Core.CommandImplementation{System.Data.OleDb.OleDbCommand},System.Object)">
+            <summary>
+            Executes the specified operation.
+            </summary>
+            <param name="executionToken"></param>
+            <param name="implementation"></param>
+            <param name="state"></param>
+        </member>
+        <member name="M:Tortuga.Chain.AccessDataSource.Execute(Tortuga.Chain.Core.OperationExecutionToken{System.Data.OleDb.OleDbConnection,System.Data.OleDb.OleDbTransaction},Tortuga.Chain.Core.OperationImplementation{System.Data.OleDb.OleDbConnection,System.Data.OleDb.OleDbTransaction},System.Object)">
+            <summary>
+            Executes the specified operation.
+            </summary>
+            <param name="executionToken">The execution token.</param>
+            <param name="implementation">The implementation.</param>
+            <param name="state">The state.</param>
+            <returns>System.Nullable&lt;System.Int32&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.AccessDataSource.ExecuteAsync(Tortuga.Chain.Core.CommandExecutionToken{System.Data.OleDb.OleDbCommand,System.Data.OleDb.OleDbParameter},Tortuga.Chain.Core.CommandImplementationAsync{System.Data.OleDb.OleDbCommand},System.Threading.CancellationToken,System.Object)">
+            <summary>
+            Executes the specified operation asynchronously.
+            </summary>
+            <param name="executionToken"></param>
+            <param name="implementation"></param>
+            <param name="cancellationToken"></param>
+            <param name="state"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.AccessDataSource.ExecuteAsync(Tortuga.Chain.Core.OperationExecutionToken{System.Data.OleDb.OleDbConnection,System.Data.OleDb.OleDbTransaction},Tortuga.Chain.Core.OperationImplementationAsync{System.Data.OleDb.OleDbConnection,System.Data.OleDb.OleDbTransaction},System.Threading.CancellationToken,System.Object)">
+            <summary>
+            execute as an asynchronous operation.
+            </summary>
+            <param name="executionToken">The execution token.</param>
+            <param name="implementation">The implementation.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name="state">The state.</param>
+            <returns>Task.</returns>
+        </member>
+        <member name="T:Tortuga.Chain.AccessExtensions">
+            <summary>
+            Class SqlServerExtensions.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.AccessExtensions.AsDataSource(System.Data.OleDb.OleDbConnection)">
+            <summary>
+            Returns a data source wrapped around the connection.
+            </summary>
+            <param name="connection">The connection.</param>
+            <returns>SqlServerOpenDataSource.</returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="M:Tortuga.Chain.AccessExtensions.AsDataSource(System.Data.OleDb.OleDbConnection,System.Data.OleDb.OleDbTransaction)">
+            <summary>
+            Returns a data source wrapped around the transaction.
+            </summary>
+            <param name="connection">The connection.</param>
+            <param name="transaction">The transaction.</param>
+            <returns>SqlServerOpenDataSource.</returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="T:Tortuga.Chain.AccessLimitOption">
+            <summary>
+            Limit options supported by Access.
+            </summary>
+            <remarks>This is a strict subset of LimitOptions</remarks>
+        </member>
+        <member name="F:Tortuga.Chain.AccessLimitOption.None">
+            <summary>
+            No limits were applied.
+            </summary>
+        </member>
+        <member name="F:Tortuga.Chain.AccessLimitOption.RowsWithTies">
+            <summary>
+            Uses TOP
+            </summary>
+        </member>
+        <member name="T:Tortuga.Chain.Access.AccessCommandExecutionMode">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Tortuga.Chain.Access.AccessCommandExecutionMode.Materializer">
+            <summary>
+            Pass the prepared command to the materializer for execution.
+            </summary>
+        </member>
+        <member name="F:Tortuga.Chain.Access.AccessCommandExecutionMode.NonQuery">
+            <summary>
+            Run the prepared command directly, bypassing the materializer.
+            </summary>
+            <remarks>This is usually used when chaining commands.</remarks>
+        </member>
+        <member name="F:Tortuga.Chain.Access.AccessCommandExecutionMode.ExecuteScalarAndForward">
+            <summary>
+            Reads a value using ExecuteScalar and passes the result to the next execution token
+            </summary>
+        </member>
+        <member name="T:Tortuga.Chain.Access.AccessCommandExecutionToken">
+            <summary>
+            Class AccessExecutionToken.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessCommandExecutionToken.#ctor(Tortuga.Chain.DataSources.ICommandDataSource{System.Data.OleDb.OleDbCommand,System.Data.OleDb.OleDbParameter},System.String,System.String,System.Collections.Generic.IReadOnlyList{System.Data.OleDb.OleDbParameter},System.Data.CommandType)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Core.CommandExecutionToken`2" /> class.
+            </summary>
+            <param name="dataSource">The data source.</param>
+            <param name="operationName">Name of the operation. This is used for logging.</param>
+            <param name="commandText">The SQL to be executed.</param>
+            <param name="parameters">The parameters.</param>
+            <param name="commandType">Type of the command.</param>
+        </member>
+        <member name="P:Tortuga.Chain.Access.AccessCommandExecutionToken.ForwardResult">
+            <summary>
+            This function is executed with the value returned by this execution token. 
+            It is used to create the next execution token in the chain.
+            </summary>
+        </member>
+        <member name="P:Tortuga.Chain.Access.AccessCommandExecutionToken.NextCommand">
+            <summary>
+            Gets or sets the command to be executed after the current execution token.
+            </summary>
+            <value>
+            The chained command.
+            </value>
+        </member>
+        <member name="T:Tortuga.Chain.Access.AccessDataSourceBase">
+            <summary>
+            Base class that represents a Access Data Source.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.#ctor(Tortuga.Chain.Access.AccessDataSourceSettings)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Access.AccessDataSourceBase"/> class.
+            </summary>
+            <param name="settings">Optional settings object.</param>
+        </member>
+        <member name="P:Tortuga.Chain.Access.AccessDataSourceBase.DatabaseMetadata">
+            <summary>
+            Gets the database metadata.
+            </summary>
+            <value>The database metadata.</value>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.Delete``1(Tortuga.Chain.Access.AccessObjectName,``0,Tortuga.Chain.DeleteOptions)">
+            <summary>
+            Creates a <see cref="T:Tortuga.Chain.Access.CommandBuilders.AccessDeleteObject`1" /> used to perform a delete operation.
+            </summary>
+            <param name="tableName"></param>
+            <param name="argumentValue"></param>
+            <param name="options"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.Delete``1(``0,Tortuga.Chain.DeleteOptions)">
+            <summary>
+            Deletes an object model from the table indicated by the class's Table attribute.
+            </summary>
+            <typeparam name="TArgument"></typeparam>
+            <param name="argumentValue">The argument value.</param>
+            <param name="options">The delete options.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.From(Tortuga.Chain.Access.AccessObjectName)">
+            <summary>
+            Creates a <see cref="T:Tortuga.Chain.Access.CommandBuilders.AccessTableOrView" /> used to directly query a table or view
+            </summary>
+            <param name="tableOrViewName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.From(Tortuga.Chain.Access.AccessObjectName,System.String)">
+            <summary>
+            Creates a <see cref="T:Tortuga.Chain.Access.CommandBuilders.AccessTableOrView" /> used to directly query a table or view
+            </summary>
+            <param name="tableOrViewName"></param>
+            <param name="whereClause"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.From(Tortuga.Chain.Access.AccessObjectName,System.String,System.Object)">
+            <summary>
+            Creates a <see cref="T:Tortuga.Chain.Access.CommandBuilders.AccessTableOrView" /> used to directly query a table or view
+            </summary>
+            <param name="tableOrViewName"></param>
+            <param name="whereClause"></param>
+            <param name="argumentValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.From(Tortuga.Chain.Access.AccessObjectName,System.Object,Tortuga.Chain.FilterOptions)">
+            <summary>
+            Creates a <see cref="T:Tortuga.Chain.Access.CommandBuilders.AccessTableOrView" /> used to directly query a table or view
+            </summary>
+            <param name="tableOrViewName">Name of the table or view.</param>
+            <param name="filterValue">The filter value.</param>
+            <param name="filterOptions">The filter options.</param>
+            <returns>TableDbCommandBuilder&lt;OleDbCommand, OleDbParameter, AccessLimitOption&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.From``1">
+            <summary>
+            This is used to directly query a table or view.
+            </summary>
+            <typeparam name="TObject"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.From``1(System.String)">
+            <summary>
+            This is used to directly query a table or view.
+            </summary>
+            <typeparam name="TObject">The type of the object.</typeparam>
+            <param name="whereClause">The where clause. Do not prefix this clause with "WHERE".</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.From``1(System.String,System.Object)">
+            <summary>
+            This is used to directly query a table or view.
+            </summary>
+            <typeparam name="TObject">The type of the object.</typeparam>
+            <param name="whereClause">The where clause. Do not prefix this clause with "WHERE".</param>
+            <param name="argumentValue">Optional argument value. Every property in the argument value must have a matching parameter in the WHERE clause</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.From``1(System.Object)">
+            <summary>
+            This is used to directly query a table or view.
+            </summary>
+            <typeparam name="TObject">The type of the object.</typeparam>
+            <param name="filterValue">The filter value is used to generate a simple AND style WHERE clause.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.GetByKey``1(Tortuga.Chain.Access.AccessObjectName,``0)">
+            <summary>
+            Gets a record by its primary key.
+            </summary>
+            <typeparam name="TKey"></typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="key">The key.</param>
+            <returns>MultipleRowDbCommandBuilder&lt;OleDbCommand, OleDbParameter&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.GetByKey(Tortuga.Chain.Access.AccessObjectName,System.String)">
+            <summary>
+            Gets a record by its primary key.
+            </summary>
+            <param name="tableName">Name of the table.</param>
+            <param name="key">The key.</param>
+            <returns>MultipleRowDbCommandBuilder&lt;OleDbCommand, OleDbParameter&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.GetByKey``1(Tortuga.Chain.Access.AccessObjectName,``0[])">
+            <summary>
+            Gets a set of records by their primary key.
+            </summary>
+            <typeparam name="TKey"></typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="keys">The keys.</param>
+            <returns></returns>
+            <remarks>This only works on tables that have a scalar primary key.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.GetByKey(Tortuga.Chain.Access.AccessObjectName,System.String[])">
+            <summary>
+            Gets a set of records by their primary key.
+            </summary>
+            <param name="tableName">Name of the table.</param>
+            <param name="keys">The keys.</param>
+            <returns></returns>
+            <remarks>This only works on tables that have a scalar primary key.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.GetByKeyList``1(Tortuga.Chain.Access.AccessObjectName,System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Gets a set of records by their primary key.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="keys">The keys.</param>
+            <returns></returns>
+            <remarks>This only works on tables that have a scalar primary key.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.Insert``1(Tortuga.Chain.Access.AccessObjectName,``0,Tortuga.Chain.InsertOptions)">
+            <summary>
+            Creates a <see cref="T:Tortuga.Chain.Access.CommandBuilders.AccessInsertObject`1" /> used to perform an insert operation.
+            </summary>
+            <param name="tableName">Name of the table.</param>
+            <param name="argumentValue">The argument value.</param>
+            <param name="options">The options.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.Insert``1(``0,Tortuga.Chain.InsertOptions)">
+            <summary>
+            Inserts an object into the specified table.
+            </summary>
+            <typeparam name="TArgument"></typeparam>
+            <param name="argumentValue">The argument value.</param>
+            <param name="options">The options for how the insert occurs.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.Sql(System.String)">
+            <summary>
+            Creates a operation based on a raw SQL statement.
+            </summary>
+            <param name="sqlStatement">The SQL statement.</param>
+            <returns>AccessSqlCall.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.Sql(System.String,System.Object)">
+            <summary>
+            Creates a operation based on a raw SQL statement.
+            </summary>
+            <param name="sqlStatement">The SQL statement.</param>
+            <param name="argumentValue">The argument value.</param>
+            <returns>AccessSqlCall.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.Update``1(Tortuga.Chain.Access.AccessObjectName,``0,Tortuga.Chain.UpdateOptions)">
+            <summary>
+            Creates a <see cref="T:Tortuga.Chain.Access.CommandBuilders.AccessUpdateObject`1" /> used to perform an update operation.
+            </summary>
+            <param name="tableName"></param>
+            <param name="argumentValue"></param>
+            <param name="options"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.Update``1(``0,Tortuga.Chain.UpdateOptions)">
+            <summary>
+            Updates an object in the specified table.
+            </summary>
+            <typeparam name="TArgument"></typeparam>
+            <param name="argumentValue">The argument value.</param>
+            <param name="options">The update options.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.OnGetDatabaseMetadata">
+            <summary>
+            Called when Database.DatabaseMetadata is invoked.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.UpdateByKey``2(Tortuga.Chain.Access.AccessObjectName,``0,``1,Tortuga.Chain.UpdateOptions)">
+            <summary>
+            Delete a record by its primary key.
+            </summary>
+            <typeparam name="TArgument">The type of the t argument.</typeparam>
+            <typeparam name="TKey"></typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="newValues">The new values to use.</param>
+            <param name="key">The key.</param>
+            <param name="options">The options.</param>
+            <returns>MultipleRowDbCommandBuilder&lt;OleDbCommand, OleDbParameter&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.UpdateByKey``1(Tortuga.Chain.Access.AccessObjectName,``0,System.String,Tortuga.Chain.UpdateOptions)">
+            <summary>
+            Delete a record by its primary key.
+            </summary>
+            <typeparam name="TArgument">The type of the t argument.</typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="newValues">The new values to use.</param>
+            <param name="key">The key.</param>
+            <param name="options">The options.</param>
+            <returns>MultipleRowDbCommandBuilder&lt;OleDbCommand, OleDbParameter&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.UpdateByKey``2(Tortuga.Chain.Access.AccessObjectName,``0,``1[])">
+            <summary>
+            Delete multiple rows by key.
+            </summary>
+            <typeparam name="TArgument">The type of the t argument.</typeparam>
+            <typeparam name="TKey"></typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="newValues">The new values to use.</param>
+            <param name="keys">The keys.</param>
+            <returns></returns>
+            <remarks>This only works on tables that have a scalar primary key.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.UpdateByKey``1(Tortuga.Chain.Access.AccessObjectName,``0,System.String[])">
+            <summary>
+            Delete multiple rows by key.
+            </summary>
+            <typeparam name="TArgument">The type of the t argument.</typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="newValues">The new values to use.</param>
+            <param name="keys">The keys.</param>
+            <returns></returns>
+            <remarks>This only works on tables that have a scalar primary key.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.UpdateByKeyList``2(Tortuga.Chain.Access.AccessObjectName,``0,System.Collections.Generic.IEnumerable{``1},Tortuga.Chain.UpdateOptions)">
+            <summary>
+            Updates multiple rows by key.
+            </summary>
+            <typeparam name="TArgument">The type of the t argument.</typeparam>
+            <typeparam name="TKey">The type of the t key.</typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="newValues">The new values to use.</param>
+            <param name="keys">The keys.</param>
+            <param name="options">Update options.</param>
+            <returns>MultipleRowDbCommandBuilder&lt;OleDbCommand, OleDbParameter&gt;.</returns>
+            <exception cref="T:Tortuga.Chain.MappingException"></exception>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.DeleteByKey``1(Tortuga.Chain.Access.AccessObjectName,``0,Tortuga.Chain.DeleteOptions)">
+            <summary>
+            Delete a record by its primary key.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="key">The key.</param>
+            <param name="options">The options.</param>
+            <returns>MultipleRowDbCommandBuilder&lt;OleDbCommand, OleDbParameter&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.DeleteByKey(Tortuga.Chain.Access.AccessObjectName,System.String,Tortuga.Chain.DeleteOptions)">
+            <summary>
+            Delete a record by its primary key.
+            </summary>
+            <param name="tableName">Name of the table.</param>
+            <param name="key">The key.</param>
+            <param name="options">The options.</param>
+            <returns>MultipleRowDbCommandBuilder&lt;OleDbCommand, OleDbParameter&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.DeleteByKey``1(Tortuga.Chain.Access.AccessObjectName,``0[])">
+            <summary>
+            Delete multiple rows by key.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="keys">The keys.</param>
+            <returns></returns>
+            <remarks>This only works on tables that have a scalar primary key.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.DeleteByKey(Tortuga.Chain.Access.AccessObjectName,System.String[])">
+            <summary>
+            Delete multiple rows by key.
+            </summary>
+            <param name="tableName">Name of the table.</param>
+            <param name="keys">The keys.</param>
+            <returns></returns>
+            <remarks>This only works on tables that have a scalar primary key.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.DeleteByKeyList``1(Tortuga.Chain.Access.AccessObjectName,System.Collections.Generic.IEnumerable{``0},Tortuga.Chain.DeleteOptions)">
+            <summary>
+            Delete multiple rows by key.
+            </summary>
+            <typeparam name="TKey">The type of the t key.</typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="keys">The keys.</param>
+            <param name="options">Update options.</param>
+            <returns>MultipleRowDbCommandBuilder&lt;OleDbCommand, OleDbParameter&gt;.</returns>
+            <exception cref="T:Tortuga.Chain.MappingException"></exception>
+        </member>
+        <member name="T:Tortuga.Chain.Access.AccessDataSourceSettings">
+            <summary>
+            This class is used to modify settings that are not represented by the connection string. 
+            </summary>
+            <seealso cref="T:Tortuga.Chain.DataSources.DataSourceSettings" />
+        </member>
+        <member name="T:Tortuga.Chain.Access.AccessMetadataCache">
+            <summary>
+            Handles caching of metadata for various Access tables and views.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessMetadataCache.#ctor(System.Data.OleDb.OleDbConnectionStringBuilder)">
+            <summary>
+            Creates a new instance of <see cref="T:Tortuga.Chain.Access.AccessMetadataCache"/>
+            </summary>
+            <param name="connectionBuilder">The connection builder.</param>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessMetadataCache.GetTableOrView(Tortuga.Chain.Access.AccessObjectName)">
+            <summary>
+            Gets the metadata for a table or view.
+            </summary>
+            <param name="tableName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessMetadataCache.PreloadTables">
+            <summary>
+            Preloads metadata for all database tables.
+            </summary>
+            <remarks>This is normally used only for testing. By default, metadata is loaded as needed.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessMetadataCache.PreloadViews">
+            <summary>
+            Preloads metadata for all database views.
+            </summary>
+            <remarks>This is normally used only for testing. By default, metadata is loaded as needed.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessMetadataCache.ParseObjectName(System.String)">
+            <summary>
+            Parses the name of the database object.
+            </summary>
+            <param name="name">The name.</param>
+            <returns>System.String.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessMetadataCache.Preload">
+            <summary>
+            Preloads all of the metadata for this data source.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessMetadataCache.GetTablesAndViews">
+            <summary>
+            Gets the tables and views that were loaded by this cache.
+            </summary>
+            <returns></returns>
+            <remarks>
+            Call Preload before invoking this method to ensure that all tables and views were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.
+            </remarks>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessMetadataCache.Reset">
+            <summary>
+            Resets the metadata cache, clearing out all cached metadata.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessMetadataCache.GetTableOrViewFromClass``1">
+            <summary>
+            Returns the table or view derived from the class's name and/or Table attribute.
+            </summary>
+            <typeparam name="TObject">The type of the object.</typeparam>
+            <returns>TableOrViewMetadata&lt;AccessObjectName, OleDbType&gt;.</returns>
+        </member>
+        <member name="T:Tortuga.Chain.Access.AccessObjectName">
+            <summary>
+            Represents an object in Acces (e.g. table, view, procedure)
+            </summary>
+        </member>
+        <member name="F:Tortuga.Chain.Access.AccessObjectName.Empty">
+            <summary>
+            An empty schema/name pair
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessObjectName.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Access.AccessObjectName" /> struct.
+            </summary>
+            <param name="name">The name.</param>
+        </member>
+        <member name="P:Tortuga.Chain.Access.AccessObjectName.Name">
+            <summary>
+            Gets the name.
+            </summary>
+            <value>
+            The name.
+            </value>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessObjectName.op_Implicit(System.String)~Tortuga.Chain.Access.AccessObjectName">
+            <summary>
+            Performs an implicit conversion from <see cref="T:System.String"/> to <see cref="T:Tortuga.Chain.Access.AccessObjectName"/>.
+            </summary>
+            <param name="value">The value.</param>
+            <returns>
+            The result of the conversion.
+            </returns>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessObjectName.op_Inequality(Tortuga.Chain.Access.AccessObjectName,Tortuga.Chain.Access.AccessObjectName)">
+            <summary>
+            Implements the operator !=.
+            </summary>
+            <param name="left">The left value.</param>
+            <param name="right">The right value.</param>
+            <returns>
+            The result of the operator.
+            </returns>
+            <remarks>This is a case-insensitive comparison.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessObjectName.op_Equality(Tortuga.Chain.Access.AccessObjectName,Tortuga.Chain.Access.AccessObjectName)">
+            <summary>
+            Implements the operator ==.
+            </summary>
+            <param name="left">The left value.</param>
+            <param name="right">The right value.</param>
+            <returns>
+            The result of the operator.
+            </returns>
+            <remarks>This is a case-insensitive comparison.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessObjectName.Equals(System.Object)">
+            <summary>
+            Determines whether the specified <see cref="T:System.Object" />, is equal to this instance.
+            </summary>
+            <param name="obj">The <see cref="T:System.Object" /> to compare with this instance.</param>
+            <returns>
+              <c>true</c> if the specified <see cref="T:System.Object" /> is equal to this instance; otherwise, <c>false</c>.
+            </returns>
+            <remarks>This is a case-insensitive comparison.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessObjectName.Equals(Tortuga.Chain.Access.AccessObjectName)">
+            <summary>
+            Returns true if the two objects are equal.
+            </summary>
+            <param name="other"></param>
+            <returns></returns>
+            <remarks>This is a case-insensitive comparison.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessObjectName.GetHashCode">
+            <summary>
+            Returns a hash code for this instance.
+            </summary>
+            <returns>
+            A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+            </returns>
+            <remarks>This is a case-insensitive comparison.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessObjectName.ToQuotedString">
+            <summary>
+            To the quoted string.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessObjectName.ToString">
+            <summary>
+            Returns a <see cref="T:System.String" /> that represents this instance.
+            </summary>
+            <returns>
+            A <see cref="T:System.String" /> that represents this instance.
+            </returns>
+        </member>
+        <member name="T:Tortuga.Chain.Access.AccessOpenDataSource">
+            <summary>
+            Class AccessOpenDataSource.
+            </summary>
+            <seealso cref="T:Tortuga.Chain.Access.AccessDataSourceBase" />
+        </member>
+        <member name="P:Tortuga.Chain.Access.AccessOpenDataSource.DatabaseMetadata">
+            <summary>
+            Gets the database metadata.
+            </summary>
+            <value>The database metadata.</value>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessOpenDataSource.GetExtensionData``1">
+            <summary>
+            Gets the extension data.
+            </summary>
+            <typeparam name="TTKey">The type of extension data desired.</typeparam>
+            <returns>T.</returns>
+            <remarks>Chain extensions can use this to store data source specific data. The key should be a data type defined by the extension.
+            Transactional data sources should override this method and return the value held by their parent data source.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessOpenDataSource.WithUser(System.Object)">
+            <summary>
+            Modifies this data source to include the indicated user.
+            </summary>
+            <param name="userValue">The user value.</param>
+            <returns></returns>
+            <remarks>
+            This is used in conjunction with audit rules.
+            </remarks>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessOpenDataSource.WithRules(Tortuga.Chain.AuditRules.AuditRule[])">
+            <summary>
+            Modifies this data source with additional audit rules.
+            </summary>
+            <param name="additionalRules">The additional rules.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessOpenDataSource.WithRules(System.Collections.Generic.IEnumerable{Tortuga.Chain.AuditRules.AuditRule})">
+            <summary>
+            Modifies this data source with additional audit rules.
+            </summary>
+            <param name="additionalRules">The additional rules.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessOpenDataSource.TestConnection">
+            <summary>
+            Tests the connection.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessOpenDataSource.TestConnectionAsync">
+            <summary>
+            Tests the connection asynchronously.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Tortuga.Chain.Access.AccessOpenDataSource.Cache">
+            <summary>
+            Gets or sets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
+            </summary>
+        </member>
+        <member name="P:Tortuga.Chain.Access.AccessOpenDataSource.ExtensionCache">
+            <summary>
+            The extension cache is used by extensions to store data source specific information.
+            </summary>
+            <value>
+            The extension cache.
+            </value>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessOpenDataSource.Execute(Tortuga.Chain.Core.CommandExecutionToken{System.Data.OleDb.OleDbCommand,System.Data.OleDb.OleDbParameter},Tortuga.Chain.Core.CommandImplementation{System.Data.OleDb.OleDbCommand},System.Object)">
+            <summary>
+            Executes the specified operation.
+            </summary>
+            <param name="executionToken">The execution token.</param>
+            <param name="implementation">The implementation that handles processing the result of the command.</param>
+            <param name="state">User supplied state.</param>
+            <exception cref="T:System.ArgumentNullException">
+            executionToken;executionToken is null.
+            or
+            implementation;implementation is null.
+            </exception>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessOpenDataSource.Execute(Tortuga.Chain.Core.OperationExecutionToken{System.Data.OleDb.OleDbConnection,System.Data.OleDb.OleDbTransaction},Tortuga.Chain.Core.OperationImplementation{System.Data.OleDb.OleDbConnection,System.Data.OleDb.OleDbTransaction},System.Object)">
+            <summary>
+            Executes the specified operation.
+            </summary>
+            <param name="executionToken">The execution token.</param>
+            <param name="implementation">The implementation.</param>
+            <param name="state">The state.</param>
+            <returns>System.Nullable&lt;System.Int32&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessOpenDataSource.ExecuteAsync(Tortuga.Chain.Core.CommandExecutionToken{System.Data.OleDb.OleDbCommand,System.Data.OleDb.OleDbParameter},Tortuga.Chain.Core.CommandImplementationAsync{System.Data.OleDb.OleDbCommand},System.Threading.CancellationToken,System.Object)">
+            <summary>
+            Executes the operation asynchronously.
+            </summary>
+            <param name="executionToken">The execution token.</param>
+            <param name="implementation">The implementation that handles processing the result of the command.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name="state">User supplied state.</param>
+            <returns>Task.</returns>
+            <exception cref="T:System.NotImplementedException"></exception>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessOpenDataSource.ExecuteAsync(Tortuga.Chain.Core.OperationExecutionToken{System.Data.OleDb.OleDbConnection,System.Data.OleDb.OleDbTransaction},Tortuga.Chain.Core.OperationImplementationAsync{System.Data.OleDb.OleDbConnection,System.Data.OleDb.OleDbTransaction},System.Threading.CancellationToken,System.Object)">
+            <summary>
+            execute as an asynchronous operation.
+            </summary>
+            <param name="executionToken">The execution token.</param>
+            <param name="implementation">The implementation.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name="state">The state.</param>
+            <returns>Task.</returns>
+        </member>
+        <member name="T:Tortuga.Chain.Access.AccessOperationExecutionToken">
+            <summary>
+            Class AccessExecutionToken.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessOperationExecutionToken.#ctor(Tortuga.Chain.DataSources.IOperationDataSource{System.Data.OleDb.OleDbConnection,System.Data.OleDb.OleDbTransaction},System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Access.AccessOperationExecutionToken" /> class.
+            </summary>
+            <param name="dataSource">The data source.</param>
+            <param name="operationName">Name of the operation. This is used for logging.</param>
+        </member>
+        <member name="T:Tortuga.Chain.Access.AccessTransactionalDataSource">
+            <summary>
+            Class AccessTransactionalDataSource
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessTransactionalDataSource.#ctor(Tortuga.Chain.AccessDataSource,System.Boolean,System.Data.OleDb.OleDbConnection,System.Data.OleDb.OleDbTransaction)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Access.AccessTransactionalDataSource" /> class.
+            </summary>
+            <param name="dataSource">The data source.</param>
+            <param name="forwardEvents">if set to <c>true</c> [forward events].</param>
+            <param name="connection">The connection.</param>
+            <param name="transaction">The transaction.</param>
+            <exception cref="T:System.ArgumentNullException">
+            </exception>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessTransactionalDataSource.#ctor(Tortuga.Chain.AccessDataSource,System.Nullable{System.Data.IsolationLevel},System.Boolean)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Access.AccessTransactionalDataSource"/> class.
+            </summary>
+            <param name="dataSource">The data source.</param>
+            <param name="isolationLevel">The isolation level.</param>
+            <param name="forwardEvents">if set to <c>true</c> [forward events].</param>
+        </member>
+        <member name="P:Tortuga.Chain.Access.AccessTransactionalDataSource.DatabaseMetadata">
+            <summary>
+            Gets the database metadata.
+            </summary>
+            <value>The database metadata.</value>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessTransactionalDataSource.Commit">
+            <summary>
+            Commits this instance.
+            </summary>
+            <exception cref="T:System.ObjectDisposedException">Transaction is disposed.</exception>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessTransactionalDataSource.Dispose">
+            <summary>
+            Disposes this instance.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessTransactionalDataSource.Rollback">
+            <summary>
+            Rolls the back.
+            </summary>
+            <exception cref="T:System.ObjectDisposedException">Transaction is disposed.</exception>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessTransactionalDataSource.Dispose(System.Boolean)">
+            <summary>
+            Releases unmanaged and - optionally - managed resources.
+            </summary>
+            <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessTransactionalDataSource.GetExtensionData``1">
+            <summary>
+            Gets the extension data.
+            </summary>
+            <typeparam name="TTKey">The type of extension data desired.</typeparam>
+            <returns>T.</returns>
+            <remarks>Chain extensions can use this to store data source specific data. The key should be a data type defined by the extension.
+            Transactional data sources should override this method and return the value held by their parent data source.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessTransactionalDataSource.TestConnection">
+            <summary>
+            Tests the connection.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessTransactionalDataSource.TestConnectionAsync">
+            <summary>
+            Tests the connection asynchronously.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Tortuga.Chain.Access.AccessTransactionalDataSource.Cache">
+            <summary>
+            Gets or sets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
+            </summary>
+        </member>
+        <member name="P:Tortuga.Chain.Access.AccessTransactionalDataSource.ExtensionCache">
+            <summary>
+            The extension cache is used by extensions to store data source specific information.
+            </summary>
+            <value>
+            The extension cache.
+            </value>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessTransactionalDataSource.Execute(Tortuga.Chain.Core.CommandExecutionToken{System.Data.OleDb.OleDbCommand,System.Data.OleDb.OleDbParameter},Tortuga.Chain.Core.CommandImplementation{System.Data.OleDb.OleDbCommand},System.Object)">
+            <summary>
+            Executes the specified execution token.
+            </summary>
+            <param name="executionToken">The execution token.</param>
+            <param name="implementation">The implementation.</param>
+            <param name="state">The state.</param>
+            <exception cref="T:System.ArgumentNullException">
+            executionToken;executionToken is null.
+            or
+            implementation;implementation is null.
+            </exception>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessTransactionalDataSource.Execute(Tortuga.Chain.Core.OperationExecutionToken{System.Data.OleDb.OleDbConnection,System.Data.OleDb.OleDbTransaction},Tortuga.Chain.Core.OperationImplementation{System.Data.OleDb.OleDbConnection,System.Data.OleDb.OleDbTransaction},System.Object)">
+            <summary>
+            Executes the specified operation.
+            </summary>
+            <param name="executionToken">The execution token.</param>
+            <param name="implementation">The implementation.</param>
+            <param name="state">The state.</param>
+            <returns>System.Nullable&lt;System.Int32&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessTransactionalDataSource.ExecuteAsync(Tortuga.Chain.Core.CommandExecutionToken{System.Data.OleDb.OleDbCommand,System.Data.OleDb.OleDbParameter},Tortuga.Chain.Core.CommandImplementationAsync{System.Data.OleDb.OleDbCommand},System.Threading.CancellationToken,System.Object)">
+            <summary>
+            execute as an asynchronous operation.
+            </summary>
+            <param name="executionToken">The execution token.</param>
+            <param name="implementation">The implementation.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name="state">The state.</param>
+            <returns>Task.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            executionToken;executionToken is null.
+            or
+            implementation;implementation is null.
+            </exception>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessTransactionalDataSource.ExecuteAsync(Tortuga.Chain.Core.OperationExecutionToken{System.Data.OleDb.OleDbConnection,System.Data.OleDb.OleDbTransaction},Tortuga.Chain.Core.OperationImplementationAsync{System.Data.OleDb.OleDbConnection,System.Data.OleDb.OleDbTransaction},System.Threading.CancellationToken,System.Object)">
+            <summary>
+            execute as an asynchronous operation.
+            </summary>
+            <param name="executionToken">The execution token.</param>
+            <param name="implementation">The implementation.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name="state">The state.</param>
+            <returns>Task.</returns>
+        </member>
+        <member name="T:Tortuga.Chain.Access.CommandBuilders.AccessDeleteMany">
+            <summary>
+            Class AccessDeleteMany.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.Access.CommandBuilders.AccessDeleteMany.#ctor(Tortuga.Chain.Access.AccessDataSourceBase,Tortuga.Chain.Access.AccessObjectName,System.String,System.Collections.Generic.IEnumerable{System.Data.OleDb.OleDbParameter},Tortuga.Chain.DeleteOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Access.CommandBuilders.AccessDeleteMany" /> class.
+            </summary>
+            <param name="dataSource">The data source.</param>
+            <param name="tableName">Name of the table.</param>
+            <param name="whereClause">The where clause.</param>
+            <param name="parameters">The parameters.</param>
+            <param name="options">The options.</param>
+        </member>
+        <member name="M:Tortuga.Chain.Access.CommandBuilders.AccessDeleteMany.TryGetColumn(System.String)">
+            <summary>
+            Returns the column associated with the column name.
+            </summary>
+            <param name="columnName">Name of the column.</param>
+            <returns></returns>
+            <remarks>
+            If the column name was not found, this will return null
+            </remarks>
+        </member>
+        <member name="T:Tortuga.Chain.Access.CommandBuilders.AccessDeleteObject`1">
+            <summary>
+            Command object that represents a delete operation.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.Access.CommandBuilders.AccessDeleteObject`1.#ctor(Tortuga.Chain.Access.AccessDataSourceBase,Tortuga.Chain.Access.AccessObjectName,`0,Tortuga.Chain.DeleteOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Access.CommandBuilders.AccessDeleteObject`1"/> class.
+            </summary>
+            <param name="dataSource">The data source.</param>
+            <param name="tableName">The table.</param>
+            <param name="argumentValue">The argument value.</param>
+            <param name="options">The options.</param>
+        </member>
+        <member name="M:Tortuga.Chain.Access.CommandBuilders.AccessDeleteObject`1.Prepare(Tortuga.Chain.Materializers.Materializer{System.Data.OleDb.OleDbCommand,System.Data.OleDb.OleDbParameter})">
+            <summary>
+            Prepares the command for execution by generating any necessary SQL.
+            </summary>
+            <param name="materializer"></param>
+            <returns><see cref="T:Tortuga.Chain.Access.AccessCommandExecutionToken" /></returns>
+        </member>
+        <member name="T:Tortuga.Chain.Access.CommandBuilders.AccessInsertObject`1">
+            <summary>
+            Class that represents a Access Insert.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.Access.CommandBuilders.AccessInsertObject`1.#ctor(Tortuga.Chain.Access.AccessDataSourceBase,Tortuga.Chain.Access.AccessObjectName,`0,Tortuga.Chain.InsertOptions)">
+            <summary>
+            Initializes a new instance of <see cref="T:Tortuga.Chain.Access.CommandBuilders.AccessInsertObject`1" /> class.
+            </summary>
+            <param name="dataSource">The data source.</param>
+            <param name="tableName">Name of the table.</param>
+            <param name="argumentValue">The argument value.</param>
+            <param name="options">The options.</param>
+        </member>
+        <member name="M:Tortuga.Chain.Access.CommandBuilders.AccessInsertObject`1.Prepare(Tortuga.Chain.Materializers.Materializer{System.Data.OleDb.OleDbCommand,System.Data.OleDb.OleDbParameter})">
+            <summary>
+            Prepares the command for execution by generating any necessary SQL.
+            </summary>
+            <param name="materializer"></param>
+            <returns><see cref="T:Tortuga.Chain.Access.AccessCommandExecutionToken" /></returns>
+        </member>
+        <member name="T:Tortuga.Chain.Access.CommandBuilders.AccessObjectCommand`1">
+            <summary>
+            Base class that describes a Access database command.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.Access.CommandBuilders.AccessObjectCommand`1.#ctor(Tortuga.Chain.Access.AccessDataSourceBase,Tortuga.Chain.Access.AccessObjectName,`0)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Access.CommandBuilders.AccessObjectCommand`1" /> class
+            </summary>
+            <param name="dataSource">The data source.</param>
+            <param name="tableName">Name of the table.</param>
+            <param name="argumentValue">The argument value.</param>
+        </member>
+        <member name="P:Tortuga.Chain.Access.CommandBuilders.AccessObjectCommand`1.Table">
+            <summary>
+            Gets the table metadata.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.Access.CommandBuilders.AccessObjectCommand`1.TryGetColumn(System.String)">
+            <summary>
+            Returns the column associated with the column name.
+            </summary>
+            <param name="columnName">Name of the column.</param>
+            <returns></returns>
+            <remarks>
+            If the column name was not found, this will return null
+            </remarks>
+        </member>
+        <member name="T:Tortuga.Chain.Access.CommandBuilders.AccessSqlCall">
+            <summary>
+            Class that represents an operation based on a raw SQL statement.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.Access.CommandBuilders.AccessSqlCall.#ctor(Tortuga.Chain.Access.AccessDataSourceBase,System.String,System.Object)">
+            <summary>
+            Creates a new instance of <see cref="T:Tortuga.Chain.Access.CommandBuilders.AccessSqlCall" />
+            </summary>
+            <param name="dataSource">The data source.</param>
+            <param name="sqlStatement">The SQL statement.</param>
+            <param name="argumentValue">The argument value.</param>
+            <exception cref="T:System.ArgumentException">SQL statement is null or empty.;sqlStatement</exception>
+        </member>
+        <member name="M:Tortuga.Chain.Access.CommandBuilders.AccessSqlCall.Prepare(Tortuga.Chain.Materializers.Materializer{System.Data.OleDb.OleDbCommand,System.Data.OleDb.OleDbParameter})">
+            <summary>
+            Prepares the command for execution by generating any necessary SQL.
+            </summary>
+            <param name="materializer"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Access.CommandBuilders.AccessSqlCall.TryGetColumn(System.String)">
+            <summary>
+            Returns the column associated with the column name.
+            </summary>
+            <param name="columnName">Name of the column.</param>
+            <returns></returns>
+            <remarks>
+            If the column name was not found, this will return null
+            </remarks>
+        </member>
+        <member name="T:Tortuga.Chain.Access.CommandBuilders.AccessTableOrView">
+            <summary>
+            SQliteTableOrView supports queries against tables and views.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.Access.CommandBuilders.AccessTableOrView.#ctor(Tortuga.Chain.Access.AccessDataSourceBase,Tortuga.Chain.Access.AccessObjectName,System.Object,Tortuga.Chain.FilterOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Access.CommandBuilders.AccessTableOrView" /> class.
+            </summary>
+            <param name="dataSource">The data source.</param>
+            <param name="tableOrViewName">Name of the table or view.</param>
+            <param name="filterValue">The filter value.</param>
+            <param name="filterOptions">The filter options.</param>
+        </member>
+        <member name="M:Tortuga.Chain.Access.CommandBuilders.AccessTableOrView.#ctor(Tortuga.Chain.Access.AccessDataSourceBase,Tortuga.Chain.Access.AccessObjectName,System.String,System.Object)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Access.CommandBuilders.AccessTableOrView" /> class.
+            </summary>
+            <param name="dataSource"></param>
+            <param name="tableOrViewName"></param>
+            <param name="whereClause"></param>
+            <param name="argumentValue"></param>
+        </member>
+        <member name="M:Tortuga.Chain.Access.CommandBuilders.AccessTableOrView.Prepare(Tortuga.Chain.Materializers.Materializer{System.Data.OleDb.OleDbCommand,System.Data.OleDb.OleDbParameter})">
+            <summary>
+            Prepares the command for execution by generating any necessary SQL.
+            </summary>
+            <param name="materializer"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Access.CommandBuilders.AccessTableOrView.WithSorting(System.Collections.Generic.IEnumerable{Tortuga.Chain.SortExpression})">
+            <summary>
+            Adds sorting to the command builder.
+            </summary>
+            <param name="sortExpressions">The sort expressions.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Access.CommandBuilders.AccessTableOrView.OnWithLimits(System.Nullable{System.Int32},System.Nullable{System.Int32},Tortuga.Chain.AccessLimitOption,System.Nullable{System.Int32})">
+            <summary>
+            Adds limits to the command builder.
+            </summary>
+            <param name="skip">The number of rows to skip.</param>
+            <param name="take">Number of rows to take.</param>
+            <param name="limitOptions">The limit options.</param>
+            <param name="seed">The seed for repeatable reads. Only applies to random sampling</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Access.CommandBuilders.AccessTableOrView.OnWithLimits(System.Nullable{System.Int32},System.Nullable{System.Int32},Tortuga.Chain.LimitOptions,System.Nullable{System.Int32})">
+            <summary>
+            Adds limits to the command builder.
+            </summary>
+            <param name="skip">The number of rows to skip.</param>
+            <param name="take">Number of rows to take.</param>
+            <param name="limitOptions">The limit options.</param>
+            <param name="seed">The seed for repeatable reads. Only applies to random sampling</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Access.CommandBuilders.AccessTableOrView.WithFilter(System.Object,Tortuga.Chain.FilterOptions)">
+            <summary>
+            Adds (or replaces) the filter on this command builder.
+            </summary>
+            <param name="filterValue">The filter value.</param>
+            <param name="filterOptions">The filter options.</param>
+            <returns>TableDbCommandBuilder&lt;OleDbCommand, OleDbParameter, AccessLimitOption&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.Access.CommandBuilders.AccessTableOrView.WithFilter(System.String)">
+            <summary>
+            Adds (or replaces) the filter on this command builder.
+            </summary>
+            <param name="whereClause">The where clause.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Access.CommandBuilders.AccessTableOrView.WithFilter(System.String,System.Object)">
+            <summary>
+            Adds (or replaces) the filter on this command builder.
+            </summary>
+            <param name="whereClause">The where clause.</param>
+            <param name="argumentValue">The argument value.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Access.CommandBuilders.AccessTableOrView.AsCount">
+            <summary>
+            Returns the row count using a <c>SELECT COUNT_BIG(*)</c> style query.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Access.CommandBuilders.AccessTableOrView.AsCount(System.String,System.Boolean)">
+            <summary>
+            Returns the row count for a given column. <c>SELECT COUNT_BIG(columnName)</c>
+            </summary>
+            <param name="columnName">Name of the column.</param>
+            <param name="distinct">if set to <c>true</c> use <c>SELECT COUNT_BIG(DISTINCT columnName)</c>.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Access.CommandBuilders.AccessTableOrView.TryGetColumn(System.String)">
+            <summary>
+            Returns the column associated with the column name.
+            </summary>
+            <param name="columnName">Name of the column.</param>
+            <returns></returns>
+            <remarks>
+            If the column name was not found, this will return null
+            </remarks>
+        </member>
+        <member name="P:Tortuga.Chain.Access.CommandBuilders.AccessTableOrView.DefaultLimitOption">
+            <summary>
+            Gets the default limit option.
+            </summary>
+            <value>
+            The default limit options.
+            </value>
+            <remarks>
+            For most data sources, this will be LimitOptions.Rows.
+            </remarks>
+        </member>
+        <member name="T:Tortuga.Chain.Access.CommandBuilders.AccessUpdateMany">
+            <summary>
+            Class AccessUpdateMany.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.Access.CommandBuilders.AccessUpdateMany.#ctor(Tortuga.Chain.Access.AccessDataSourceBase,Tortuga.Chain.Access.AccessObjectName,System.Object,System.String,System.Collections.Generic.IEnumerable{System.Data.OleDb.OleDbParameter},System.Nullable{System.Int32},Tortuga.Chain.UpdateOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Access.CommandBuilders.AccessUpdateMany" /> class.
+            </summary>
+            <param name="dataSource">The data source.</param>
+            <param name="tableName">Name of the table.</param>
+            <param name="newValues">The new values.</param>
+            <param name="whereClause">The where clause.</param>
+            <param name="parameters">The parameters.</param>
+            <param name="expectedRowCount">The expected row count.</param>
+            <param name="options">The options.</param>
+        </member>
+        <member name="M:Tortuga.Chain.Access.CommandBuilders.AccessUpdateMany.Prepare(Tortuga.Chain.Materializers.Materializer{System.Data.OleDb.OleDbCommand,System.Data.OleDb.OleDbParameter})">
+            <summary>
+            Prepares the command for execution by generating any necessary SQL.
+            </summary>
+            <param name="materializer"></param>
+            <returns><see cref="T:Tortuga.Chain.Access.AccessCommandExecutionToken" /></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Access.CommandBuilders.AccessUpdateMany.TryGetColumn(System.String)">
+            <summary>
+            Returns the column associated with the column name.
+            </summary>
+            <param name="columnName">Name of the column.</param>
+            <returns></returns>
+            <remarks>
+            If the column name was not found, this will return null
+            </remarks>
+        </member>
+        <member name="T:Tortuga.Chain.Access.CommandBuilders.AccessUpdateObject`1">
+            <summary>
+            Command object that represents an update operation.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.Access.CommandBuilders.AccessUpdateObject`1.#ctor(Tortuga.Chain.Access.AccessDataSourceBase,Tortuga.Chain.Access.AccessObjectName,`0,Tortuga.Chain.UpdateOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Access.CommandBuilders.AccessUpdateObject`1"/> class.
+            </summary>
+            <param name="dataSource">The data source.</param>
+            <param name="tableName">Name of the table.</param>
+            <param name="argumentValue">The argument value.</param>
+            <param name="options">The options.</param>
+        </member>
+        <member name="M:Tortuga.Chain.Access.CommandBuilders.AccessUpdateObject`1.Prepare(Tortuga.Chain.Materializers.Materializer{System.Data.OleDb.OleDbCommand,System.Data.OleDb.OleDbParameter})">
+            <summary>
+            Prepares the command for execution by generating any necessary SQL.
+            </summary>
+            <param name="materializer"></param>
+            <returns><see cref="T:Tortuga.Chain.Access.AccessCommandExecutionToken" /></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Access.Utilities.GetParameters(Tortuga.Chain.CommandBuilders.SqlBuilder{System.Data.OleDb.OleDbType})">
+            <summary>
+            Gets the parameters from a SQL Builder.
+            </summary>
+            <param name="sqlBuilder">The SQL builder.</param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
