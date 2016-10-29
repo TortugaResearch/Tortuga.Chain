@@ -1,3 +1,4 @@
+using System.Data;
 using System.Data.Common;
 using System.Threading.Tasks;
 
@@ -28,12 +29,20 @@ namespace Tortuga.Chain.DataSources
 
 
         /// <summary>
-        /// Creates an open data source.
+        /// Creates an open data source using the supplied connection and optional transaction.
         /// </summary>
         /// <param name="connection">The connection to wrap.</param>
         /// <param name="transaction">The transaction to wrap.</param>
         /// <returns></returns>
-        IOpenDataSource CreateOpenDataSource(DbConnection connection, DbTransaction transaction);
+        IOpenDataSource CreateOpenDataSource(DbConnection connection, DbTransaction transaction = null);
+
+        /// <summary>
+        /// Creates an open data source using the supplied connection and optional transaction.
+        /// </summary>
+        /// <param name="connection">The connection to wrap.</param>
+        /// <param name="transaction">The transaction to wrap.</param>
+        /// <returns></returns>
+        IOpenDataSource CreateOpenDataSource(IDbConnection connection, IDbTransaction transaction = null);
 
         /// <summary>
         /// Begin a transaction using the default settings
