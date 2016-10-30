@@ -143,6 +143,23 @@ namespace Tortuga.Chain.CommandBuilders
         }
 
         /// <summary>
+        /// Gets or sets a value indicating whether this <see cref="SqlBuilderEntry{TDbType}" /> participates in the second pass of parameter generation.
+        /// </summary>
+        /// <value><c>true</c> if [use parameter2]; otherwise, <c>false</c>.</value>
+        /// <remarks>This is needed when referencing anonymous parameters.</remarks>
+        public bool UseParameter2
+        {
+            get { return (m_Flags & Flags.UseParameter2) > 0; }
+            internal set
+            {
+                if (value)
+                    m_Flags = m_Flags | Flags.UseParameter2;
+                else
+                    m_Flags = m_Flags & ~Flags.UseParameter2;
+            }
+        }
+
+        /// <summary>
         /// When non-null, this indicates that we want to use a table value parameter instead of a normal parameter.
         /// </summary>
         public ISqlBuilderEntryDetails<TDbType> ParameterColumn { get; set; }
@@ -203,7 +220,12 @@ namespace Tortuga.Chain.CommandBuilders
             UseParameter = 32,
             RestrictedRead = 64,
             RestrictedInsert = 128,
-            RestrictedUpdate = 256
+            RestrictedUpdate = 256,
+
+            /// <summary>
+            /// This allows the parameter to be used a second time. It is needed when using anonymous parameters.
+            /// </summary>
+            UseParameter2 = 512,
         }
 
     }

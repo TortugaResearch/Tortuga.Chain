@@ -29,12 +29,12 @@
 
     <dependencies>
       <group targetFramework="net45">
-        <dependency id="Tortuga.Chain.Core" version="0.22.6046.30035" />
-        <dependency id="CS-Script.bin" version="3.13.2.0" />
+        <dependency id="Tortuga.Chain.Core" version="1.0.6144.43048" />
+        <dependency id="CS-Script.bin" version="3.16.0.0" />
       </group>
       <group targetFramework="net46">
-        <dependency id="Tortuga.Chain.Core" version="0.22.6046.30035" />
-        <dependency id="CS-Script.bin" version="3.13.2.0" />
+        <dependency id="Tortuga.Chain.Core" version="1.0.6144.43048" />
+        <dependency id="CS-Script.bin" version="3.16.0.0" />
       </group>
     </dependencies>
 

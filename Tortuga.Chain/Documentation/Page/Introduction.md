@@ -26,7 +26,7 @@ A major difference between Chain and other ORMs is that you don't need to manage
 
 ## Transactions
 
-Transactions still need to contained within a `using` statement and explicitly committed. You can create one by calling `dataSource.BeginTransaction`.
+Transactions still need to contained within a `using` statement and explicitly committed. You can create one by calling `dataSource.BeginTransaction()`.
 
 ## Command Chains
 

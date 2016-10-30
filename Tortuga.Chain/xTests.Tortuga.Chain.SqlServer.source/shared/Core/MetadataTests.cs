@@ -5,6 +5,7 @@ namespace Tests.Core
 {
     public class MetadataTests : TestBase
     {
+        public static BasicData Prime = new BasicData(s_PrimaryDataSource);
         public static BasicData Basic = new BasicData(s_DataSources.Values);
         public static TableData Tables = new TableData(s_DataSources.Values);
         public static ViewData Views = new ViewData(s_DataSources.Values);
@@ -101,8 +102,8 @@ namespace Tests.Core
 
         }
 
-#if SQL_SERVER || POSTGRESQL
-        [Theory, MemberData("Basic")]
+#if SQL_SERVER || POSTGRESQL || OLE_SQL_SERVER
+        [Theory, MemberData("Prime")]
         public void VerifyFunction1(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -120,8 +121,8 @@ namespace Tests.Core
         }
 #endif
 
-#if SQL_SERVER 
-        [Theory, MemberData("Basic")]
+#if SQL_SERVER  || OLE_SQL_SERVER
+        [Theory, MemberData("Prime")]
         public void VerifyFunction2(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);

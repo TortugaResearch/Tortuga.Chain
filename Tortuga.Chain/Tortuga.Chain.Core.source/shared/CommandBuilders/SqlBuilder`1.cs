@@ -542,6 +542,98 @@ namespace Tortuga.Chain.CommandBuilders
                     );
         }
 
+        /// <summary>
+        /// Applies the filter value, returning a set of expressions suitable for use in a WHERE clause.
+        /// </summary>
+        /// <param name="filterValue">The filter value.</param>
+        /// <param name="filterOptions">The filter options.</param>
+        /// <returns>System.String.</returns>
+        /// <exception cref="System.ArgumentNullException"></exception>
+        /// <exception cref="MappingException">
+        /// </exception>
+        /// <exception cref="ArgumentNullException"></exception>
+        public string ApplyAnonymousFilterValue(object filterValue, FilterOptions filterOptions)
+        {
+            if (filterValue == null)
+                throw new ArgumentNullException(nameof(filterValue), $"{nameof(filterValue)} is null.");
+
+            var ignoreNullProperties = filterOptions.HasFlag(FilterOptions.IgnoreNullProperties);
+            var parts = new List<string>();
+            bool found = false;
+
+            if (filterValue is IReadOnlyDictionary<string, object>)
+            {
+                foreach (var item in (IReadOnlyDictionary<string, object>)filterValue)
+                {
+                    var keyFound = false;
+                    for (var i = 0; i < m_Entries.Length; i++)
+                    {
+                        if (string.Equals(m_Entries[i].Details.ClrName, item.Key, StringComparison.OrdinalIgnoreCase)
+                            || string.Equals(m_Entries[i].Details.SqlName, item.Key, StringComparison.OrdinalIgnoreCase))
+                        {
+                            var value = item.Value ?? DBNull.Value;
+
+                            if (value == DBNull.Value)
+                            {
+                                if (!ignoreNullProperties)
+                                    parts.Add($"{m_Entries[i].Details.QuotedSqlName} IS NULL");
+                            }
+                            else
+                            {
+                                m_Entries[i].ParameterValue = value;
+                                m_Entries[i].UseParameter = true;
+                                parts.Add($"{m_Entries[i].Details.QuotedSqlName} = ?");
+                            }
+
+                            found = true;
+                            keyFound = true;
+                            break;
+                        }
+                    }
+                    if (m_StrictMode && !keyFound)
+                        throw new MappingException($"Strict mode was enabled, but property {item.Key} could be matched to a column in {m_Name}. Disable strict mode or remove the item from the dictionary.");
+                }
+            }
+            else
+            {
+                foreach (var property in MetadataCache.GetMetadata(filterValue.GetType()).Properties.Where(p => p.MappedColumnName != null))
+                {
+                    var propertyFound = false;
+                    for (var i = 0; i < m_Entries.Length; i++)
+                    {
+                        if (m_Entries[i].Details.ClrName.Equals(property.MappedColumnName, StringComparison.OrdinalIgnoreCase))
+                        {
+                            var value = property.InvokeGet(filterValue) ?? DBNull.Value;
+
+                            if (value == DBNull.Value)
+                            {
+                                if (!ignoreNullProperties)
+                                    parts.Add($"{m_Entries[i].Details.QuotedSqlName} IS NULL");
+                            }
+                            else
+                            {
+                                m_Entries[i].ParameterValue = value;
+                                m_Entries[i].UseParameter = true;
+                                parts.Add($"{m_Entries[i].Details.QuotedSqlName} = ?");
+                            }
+
+                            found = true;
+                            propertyFound = true;
+                            break;
+                        }
+                    }
+                    if (m_StrictMode && !propertyFound)
+                        throw new MappingException($"Strict mode was enabled, but property {property.Name} could be matched to a column in {m_Name}. Disable strict mode or mark the property as NotMapped.");
+                }
+
+            }
+
+            if (!found)
+                throw new MappingException($"None of the properties on {filterValue.GetType().Name} could be matched to columns in {m_Name}.");
+
+            return string.Join(" AND ", parts);
+        }
+
 
         /// <summary>
         /// Applies the filter value, returning a set of expressions suitable for use in a WHERE clause.
@@ -828,6 +920,25 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="header">The optional header. Usually not used.</param>
         /// <param name="prefix">An optional prefix for each column name.</param>
         /// <param name="footer">The optional footer. Usually not used.</param>
+        public void BuildAnonymousSetClause(StringBuilder sql, string header, string prefix, string footer)
+        {
+            if (sql == null)
+                throw new ArgumentNullException(nameof(sql), $"{nameof(sql)} was null.");
+
+            sql.Append(header);
+            sql.Append(string.Join(", ", GetUpdateColumns().Select(x => $"{prefix}{x.QuotedSqlName} = ?")));
+            sql.Append(footer);
+        }
+
+
+        /// <summary>
+        /// Builds a list of assignments suitable for using in the SET clause of UPDATE statement. This does not include the actual SET keyword.
+        /// This will mark key columns for use in parameter building.
+        /// </summary>
+        /// <param name="sql">The SQL being generated.</param>
+        /// <param name="header">The optional header. Usually not used.</param>
+        /// <param name="prefix">An optional prefix for each column name.</param>
+        /// <param name="footer">The optional footer. Usually not used.</param>
         public void BuildSetClause(StringBuilder sql, string header, string prefix, string footer)
         {
             if (sql == null)
@@ -869,6 +980,23 @@ namespace Tortuga.Chain.CommandBuilders
         }
 
         /// <summary>
+        /// Builds a list of columns suitable for using in the VALUES clause of INSERT statement. This does not include the actual VALUES keyword.
+        /// This will mark key columns for use in parameter building.
+        /// </summary>
+        /// <param name="sql">The SQL being generated.</param>
+        /// <param name="header">The optional header. Usually "VALUES  (".</param>
+        /// <param name="footer">The optional footer. Usually just ")".</param>
+        public void BuildAnonymousValuesClause(StringBuilder sql, string header, string footer)
+        {
+            if (sql == null)
+                throw new ArgumentNullException(nameof(sql), $"{nameof(sql)} was null.");
+
+            sql.Append(header);
+            sql.Append(string.Join(", ", GetInsertColumns().Select(x => "?")));
+            sql.Append(footer);
+        }
+
+        /// <summary>
         /// Builds the standard WHERE clause from Key columns.
         /// This will mark key columns for use in parameter building.
         /// </summary>
@@ -883,6 +1011,72 @@ namespace Tortuga.Chain.CommandBuilders
             sql.Append(header);
             sql.Append(string.Join(" AND ", GetKeyColumns().Select(x => x.QuotedSqlName + " = " + x.SqlVariableName)));
             sql.Append(footer);
+        }
+
+        /// <summary>
+        /// Builds the standard WHERE clause from Key columns.
+        /// This will mark key columns for use in parameter building.
+        /// </summary>
+        /// <param name="sql">The SQL being generated.</param>
+        /// <param name="header">The optional header Usually "WHERE".</param>
+        /// <param name="footer">The optional footer. Usually not used.</param>
+        /// <param name="firstPassParameter">if set to true if this is a first pass parameter.</param>
+        /// <exception cref="System.ArgumentNullException">sql - sql</exception>
+        public void BuildAnonymousWhereClause(StringBuilder sql, string header, string footer, bool firstPassParameter)
+        {
+            if (sql == null)
+                throw new ArgumentNullException(nameof(sql), $"{nameof(sql)} was null.");
+
+            sql.Append(header);
+            if (firstPassParameter)
+                sql.Append(string.Join(" AND ", GetKeyColumns().Select(x => x.QuotedSqlName + " = ?")));
+            else
+                sql.Append(string.Join(" AND ", GetKeyColumns2().Select(x => x.QuotedSqlName + " = ?")));
+            sql.Append(footer);
+        }
+
+        /// <summary>
+        /// Builds the soft delete clause.
+        /// </summary>
+        /// <param name="sql">The SQL.</param>
+        /// <param name="header">The header.</param>
+        /// <param name="dataSource">The data source.</param>
+        /// <param name="footer">The footer.</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public void BuildAnonymousSoftDeleteClause(StringBuilder sql, string header, IDataSource dataSource, string footer)
+        {
+            if (dataSource == null)
+                throw new ArgumentNullException(nameof(dataSource), $"{nameof(dataSource)} is null.");
+            if (sql == null)
+                throw new ArgumentNullException(nameof(sql), $"{nameof(sql)} was null.");
+
+            var softDeletes = dataSource.AuditRules.SoftDeleteForSelect;
+
+            if (softDeletes.Length == 0)
+                return;
+
+            var applicableColumns = new HashSet<SqlBuilderEntry<TDbType>>();
+
+            for (var i = 0; i < m_Entries.Length; i++)
+            {
+                foreach (var rule in softDeletes)
+                {
+                    if (m_Entries[i].Details.SqlName.Equals(rule.ColumnName, StringComparison.OrdinalIgnoreCase) || m_Entries[i].Details.ClrName.Equals(rule.ColumnName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        m_Entries[i].ParameterValue = rule.DeletedValue;
+                        m_Entries[i].UseParameter2 = true;
+                        applicableColumns.Add(m_Entries[i]);
+                    }
+                }
+            }
+
+            if (applicableColumns.Count > 0)
+            {
+                sql.Append(header);
+                sql.Append(string.Join(" AND ", applicableColumns.Select(x => x.Details.QuotedSqlName + " <> ?")));
+                sql.Append(footer);
+            }
+
         }
 
         /// <summary>
@@ -975,6 +1169,24 @@ namespace Tortuga.Chain.CommandBuilders
         }
 
         /// <summary>
+        /// Gets the key columns.
+        /// </summary>
+        /// <returns>Each pair has the column's QuotedSqlName and SqlVariableName</returns>
+        /// <remarks>This will mark the returned columns as participating in the second pass of parameter generation.</remarks>
+        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
+        public IEnumerable<ColumnNamePair> GetKeyColumns2()
+        {
+            for (var i = 0; i < m_Entries.Length; i++)
+            {
+                if (m_Entries[i].IsKey)
+                {
+                    m_Entries[i].UseParameter2 = true;
+                    yield return new ColumnNamePair(m_Entries[i].Details.QuotedSqlName, m_Entries[i].Details.SqlVariableName);
+                }
+            }
+        }
+
+        /// <summary>
         /// Gets every column with a ParameterValue.
         /// </summary>
         /// <returns>Each pair has the column's QuotedSqlName and SqlVariableName</returns>
@@ -1020,12 +1232,21 @@ namespace Tortuga.Chain.CommandBuilders
 
             var result = new List<TParameter>();
 
+            //first pass
             for (var i = 0; i < m_Entries.Length; i++)
                 if (m_Entries[i].UseParameter && m_Entries[i].ParameterValue != null)
                     result.Add(parameterBuilder(m_Entries[i]));
 
+            //second pass
+            for (var i = 0; i < m_Entries.Length; i++)
+                if (m_Entries[i].UseParameter2 && m_Entries[i].ParameterValue != null)
+                    result.Add(parameterBuilder(m_Entries[i]));
+
+
             return result;
         }
+
+
 
 
         /// <summary>

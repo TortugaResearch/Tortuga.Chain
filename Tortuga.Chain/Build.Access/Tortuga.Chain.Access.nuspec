@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>Tortuga.Chain.Access</id>
-    <version>0.3.6046.30609</version>
+    <version>1.0.6145.2231</version>
     <authors>David Tomcik, Jonathan Allen</authors>
     <copyright>Copyright David Tomcik, Jonathan Allen 2016</copyright>
     <description>Fluent ORM for .NET and Access.</description>
@@ -29,10 +29,10 @@
     </frameworkAssemblies>
     <dependencies>
       <group targetFramework="net45">
-        <dependency id="Tortuga.Chain.Core" version="0.22.6046.30035" />
+        <dependency id="Tortuga.Chain.Core" version="1.0.6144.43048" />
       </group>
       <group targetFramework="net46">
-        <dependency id="Tortuga.Chain.Core" version="0.22.6046.30035" />
+        <dependency id="Tortuga.Chain.Core" version="1.0.6144.43048" />
       </group>
     </dependencies>
   </metadata>
