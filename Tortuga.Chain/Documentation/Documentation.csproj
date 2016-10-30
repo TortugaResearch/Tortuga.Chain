@@ -91,6 +91,8 @@
     <None Include="Page\Appenders\Tracing.md" />
     <None Include="Page\Appenders\Caching.md" />
     <None Include="Page\CommandBuilders\ByKey.md" />
+    <None Include="Page\Other\EntityFramework.md" />
+    <None Include="Page\Other\NHibernate.md" />
     <None Include="Page\Transactions.md" />
     <None Include="Page\RestrictedColumns.md" />
     <None Include="Page\AuditRules.md" />
