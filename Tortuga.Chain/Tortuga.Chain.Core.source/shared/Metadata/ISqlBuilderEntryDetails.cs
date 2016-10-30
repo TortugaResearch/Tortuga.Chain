@@ -46,5 +46,19 @@
         /// </summary>
         /// <value>The name of the SQL variable.</value>
         string SqlVariableName { get; }
+
+        /// <summary>
+        /// Gets or sets the scale.
+        /// </summary>
+        /// <value>
+        /// The scale.
+        /// </value>
+        int? Scale { get; }
+
+        /// <summary>
+        /// Gets the name of the type.
+        /// </summary>
+        /// <value>The name of the type.</value>
+        string TypeName { get; }
     }
 }

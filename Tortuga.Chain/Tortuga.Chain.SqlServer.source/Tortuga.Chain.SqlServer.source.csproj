@@ -78,8 +78,8 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="Tortuga.Anchor, Version=0.9.6126.5816, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
-      <HintPath>..\packages\Tortuga.Anchor.0.9.6126.5816\lib\net46\Tortuga.Anchor.dll</HintPath>
+    <Reference Include="Tortuga.Anchor, Version=1.0.6144.42409, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tortuga.Anchor.1.0.6144.42409\lib\net46\Tortuga.Anchor.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
@@ -89,14 +89,27 @@
     </Compile>
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Properties\LibrarySharedAssemblyInfo.cs" />
+    <Compile Include="shared\OleDbSqlServerDataSource.cs" />
     <Compile Include="shared\SqlServerExtensions.cs" />
     <Compile Include="shared\SqlServerLimitOption.cs" />
+    <Compile Include="shared\SqlServer\AbstractSqlServerMetadataCache.cs" />
     <Compile Include="shared\SqlServer\Appenders\NotifyChangeAppender`1.cs" />
+    <Compile Include="shared\SqlServer\CommandBuilders\OleDbSqlServerDeleteMany.cs" />
     <Compile Include="shared\SqlServer\CommandBuilders\SqlServerDeleteMany.cs" />
+    <Compile Include="shared\SqlServer\CommandBuilders\OleDbSqlServerDeleteObject.cs" />
     <Compile Include="shared\SqlServer\CommandBuilders\SqlServerInsertBulk.cs" />
     <Compile Include="shared\SqlServer\CommandBuilders\SqlServerInsertBatch.cs" />
+    <Compile Include="shared\SqlServer\CommandBuilders\OleDbSqlServerInsertObject .cs" />
+    <Compile Include="shared\SqlServer\CommandBuilders\OleDbSqlServerInsertOrUpdateObject.cs" />
+    <Compile Include="shared\SqlServer\CommandBuilders\OleDbSqlServerObjectCommand.cs" />
+    <Compile Include="shared\SqlServer\CommandBuilders\OleDbSqlServerProcedureCall.cs" />
+    <Compile Include="shared\SqlServer\CommandBuilders\OleDbSqlServerSqlCall.cs" />
+    <Compile Include="shared\SqlServer\CommandBuilders\OleDbSqlServerTableFunction.cs" />
     <Compile Include="shared\SqlServer\CommandBuilders\SqlServerTableFunction.cs" />
+    <Compile Include="shared\SqlServer\CommandBuilders\OleDbSqlServerTableOrView.cs" />
+    <Compile Include="shared\SqlServer\CommandBuilders\OleDbSqlServerUpdateMany.cs" />
     <Compile Include="shared\SqlServer\CommandBuilders\SqlServerUpdateMany.cs" />
+    <Compile Include="shared\SqlServer\CommandBuilders\OleDbSqlServerUpdateObject.cs" />
     <Compile Include="shared\SqlServer\Materializers\WaitForChangeMaterializer`1.cs" />
     <Compile Include="shared\SqlServer\Materializers\WaitForChangeMaterializer.cs" />
     <Compile Include="shared\SqlServer\CommandBuilders\ISupportsChangeListener.cs" />
@@ -106,13 +119,18 @@
     <Compile Include="shared\SqlServer\CommandBuilders\SqlServerObjectCommand.cs" />
     <Compile Include="shared\SqlServer\CommandBuilders\SqlServerSqlCall.cs" />
     <Compile Include="shared\SqlServer\CommandBuilders\SqlServerTableOrView.cs" />
+    <Compile Include="shared\SqlServer\OleDbSqlServerMetadataCache.cs" />
     <Compile Include="shared\SqlServer\SqlServerAppenders.cs" />
+    <Compile Include="shared\SqlServer\OleDbSqlServerDataSourceBase.cs" />
+    <Compile Include="shared\SqlServer\OleDbSqlServerDataSourceBase.Interfaces.cs" />
     <Compile Include="shared\SqlServer\SqlServerDataSourceBase.Interfaces.cs" />
     <Compile Include="shared\SqlServer\SqlServerEffectiveSettings.cs" />
     <Compile Include="shared\SqlServer\SqlServerCommandExecutionToken.cs" />
     <Compile Include="shared\SqlServer\SqlServerDataSourceSettings.cs" />
+    <Compile Include="shared\SqlServer\OleDbSqlServerOpenDataSource.cs" />
     <Compile Include="shared\SqlServer\SqlServerOpenDataSource.cs" />
     <Compile Include="shared\SqlServer\SqlServerOperationExecutionToken.cs" />
+    <Compile Include="shared\SqlServer\OleDbSqlServerTransactionalDataSource..cs" />
     <Compile Include="shared\SqlServer\SqlServerTransactionalDataSource.cs" />
     <Compile Include="shared\SqlServer\SqlServerDataSourceBase.cs" />
     <Compile Include="shared\SqlServer\SqlServerMetadataCache.cs" />

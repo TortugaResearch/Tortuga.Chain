@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{AAE3DA8A-65B5-4A2E-BB48-002C3C8D045B}"
 	ProjectSection(SolutionItems) = preProject
@@ -12,7 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Tortuga.Chain.ruleset = Tortuga.Chain.ruleset
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{6FB40F3D-E4CC-4E11-952C-BBD437AD2BF8}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dependencies", "Dependencies", "{6FB40F3D-E4CC-4E11-952C-BBD437AD2BF8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PostgreSQL", "PostgreSQL", "{9DF4F809-0286-45B9-A736-813F8039ECEA}"
 EndProject
@@ -21,8 +21,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.Tortuga.Chain.Core.source", "Tests.Tortuga.Chain.Core.source\Tests.Tortuga.Chain.Core.source.csproj", "{62634749-A18D-4882-917E-FB6E8B6EE3D1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tortuga.Chain.CompiledMaterializers.source", "Tortuga.Chain.CompiledMaterializers.source\Tortuga.Chain.CompiledMaterializers.source.csproj", "{42D213CA-8584-4B1B-8928-A54C5D937E86}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CompiledMaterializers", "CompiledMaterializers", "{45AB3491-1D3C-472B-A4DA-3D9E70E3210A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.Tortuga.Chain.PostgreSql.source", "Tests.Tortuga.Chain.PostgreSql.source\Tests.Tortuga.Chain.PostgreSql.source.csproj", "{FD09730B-90E3-491B-AFA8-0D17AE6C841D}"
 EndProject
@@ -33,6 +31,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tortuga.Chain.PostgreSql.net46", "Tortuga.Chain.PostgreSql.net46\Tortuga.Chain.PostgreSql.net46.csproj", "{56523CE7-3C55-4B0B-9FA7-55FF4BFB6E33}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xTests.Tortuga.Chain.PostgreSql.source", "xTests.Tortuga.Chain.PostgreSql.source\xTests.Tortuga.Chain.PostgreSql.source.csproj", "{FC1C5D74-093D-4153-BEC2-A82EFD21655D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tortuga.Chain.Csv.source", "Tortuga.Chain.Csv.source\Tortuga.Chain.Csv.source.csproj", "{29250DD0-9A8E-49E9-BF19-5F45C54AC9FB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -242,6 +242,30 @@ Global
 		{FC1C5D74-093D-4153-BEC2-A82EFD21655D}.Release|x64.Build.0 = Release|Any CPU
 		{FC1C5D74-093D-4153-BEC2-A82EFD21655D}.Release|x86.ActiveCfg = Release|Any CPU
 		{FC1C5D74-093D-4153-BEC2-A82EFD21655D}.Release|x86.Build.0 = Release|Any CPU
+		{29250DD0-9A8E-49E9-BF19-5F45C54AC9FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29250DD0-9A8E-49E9-BF19-5F45C54AC9FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29250DD0-9A8E-49E9-BF19-5F45C54AC9FB}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{29250DD0-9A8E-49E9-BF19-5F45C54AC9FB}.Debug|ARM.Build.0 = Debug|Any CPU
+		{29250DD0-9A8E-49E9-BF19-5F45C54AC9FB}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{29250DD0-9A8E-49E9-BF19-5F45C54AC9FB}.Debug|x64.Build.0 = Debug|Any CPU
+		{29250DD0-9A8E-49E9-BF19-5F45C54AC9FB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{29250DD0-9A8E-49E9-BF19-5F45C54AC9FB}.Debug|x86.Build.0 = Debug|Any CPU
+		{29250DD0-9A8E-49E9-BF19-5F45C54AC9FB}.Debug-Unchecked|Any CPU.ActiveCfg = Debug-Unchecked|Any CPU
+		{29250DD0-9A8E-49E9-BF19-5F45C54AC9FB}.Debug-Unchecked|Any CPU.Build.0 = Debug-Unchecked|Any CPU
+		{29250DD0-9A8E-49E9-BF19-5F45C54AC9FB}.Debug-Unchecked|ARM.ActiveCfg = Debug-Unchecked|Any CPU
+		{29250DD0-9A8E-49E9-BF19-5F45C54AC9FB}.Debug-Unchecked|ARM.Build.0 = Debug-Unchecked|Any CPU
+		{29250DD0-9A8E-49E9-BF19-5F45C54AC9FB}.Debug-Unchecked|x64.ActiveCfg = Debug-Unchecked|Any CPU
+		{29250DD0-9A8E-49E9-BF19-5F45C54AC9FB}.Debug-Unchecked|x64.Build.0 = Debug-Unchecked|Any CPU
+		{29250DD0-9A8E-49E9-BF19-5F45C54AC9FB}.Debug-Unchecked|x86.ActiveCfg = Debug-Unchecked|Any CPU
+		{29250DD0-9A8E-49E9-BF19-5F45C54AC9FB}.Debug-Unchecked|x86.Build.0 = Debug-Unchecked|Any CPU
+		{29250DD0-9A8E-49E9-BF19-5F45C54AC9FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29250DD0-9A8E-49E9-BF19-5F45C54AC9FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{29250DD0-9A8E-49E9-BF19-5F45C54AC9FB}.Release|ARM.ActiveCfg = Release|Any CPU
+		{29250DD0-9A8E-49E9-BF19-5F45C54AC9FB}.Release|ARM.Build.0 = Release|Any CPU
+		{29250DD0-9A8E-49E9-BF19-5F45C54AC9FB}.Release|x64.ActiveCfg = Release|Any CPU
+		{29250DD0-9A8E-49E9-BF19-5F45C54AC9FB}.Release|x64.Build.0 = Release|Any CPU
+		{29250DD0-9A8E-49E9-BF19-5F45C54AC9FB}.Release|x86.ActiveCfg = Release|Any CPU
+		{29250DD0-9A8E-49E9-BF19-5F45C54AC9FB}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -249,11 +273,12 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{2C523692-A40B-4A7E-A95A-FBE373F263F7} = {6FB40F3D-E4CC-4E11-952C-BBD437AD2BF8}
 		{62634749-A18D-4882-917E-FB6E8B6EE3D1} = {6FB40F3D-E4CC-4E11-952C-BBD437AD2BF8}
-		{42D213CA-8584-4B1B-8928-A54C5D937E86} = {45AB3491-1D3C-472B-A4DA-3D9E70E3210A}
+		{42D213CA-8584-4B1B-8928-A54C5D937E86} = {6FB40F3D-E4CC-4E11-952C-BBD437AD2BF8}
 		{FD09730B-90E3-491B-AFA8-0D17AE6C841D} = {9DF4F809-0286-45B9-A736-813F8039ECEA}
 		{98F3B971-7741-43F0-9BE8-2A53F2A4F611} = {9DF4F809-0286-45B9-A736-813F8039ECEA}
 		{214DE755-4553-42AE-9F66-C62F0EAB7D90} = {9DF4F809-0286-45B9-A736-813F8039ECEA}
 		{56523CE7-3C55-4B0B-9FA7-55FF4BFB6E33} = {9DF4F809-0286-45B9-A736-813F8039ECEA}
 		{FC1C5D74-093D-4153-BEC2-A82EFD21655D} = {9DF4F809-0286-45B9-A736-813F8039ECEA}
+		{29250DD0-9A8E-49E9-BF19-5F45C54AC9FB} = {6FB40F3D-E4CC-4E11-952C-BBD437AD2BF8}
 	EndGlobalSection
 EndGlobal

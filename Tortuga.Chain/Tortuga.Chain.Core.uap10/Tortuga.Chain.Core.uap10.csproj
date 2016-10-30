@@ -23,7 +23,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;CODE_ANALYSIS;CODE_ANALYSIS;NETFX_CORE;WINDOWS_UWP;IDataErrorInfo_Missing;RUNTIME_CACHE_MISSING;Serialization_Missing;DataTable_Missing</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;CODE_ANALYSIS;CODE_ANALYSIS;CODE_ANALYSIS;NETFX_CORE;WINDOWS_UWP;IDataErrorInfo_Missing;RUNTIME_CACHE_MISSING;Serialization_Missing;DataTable_Missing;OleDb_Missing</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <RunCodeAnalysis>true</RunCodeAnalysis>
@@ -36,7 +36,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;CODE_ANALYSIS;CODE_ANALYSIS;NETFX_CORE;WINDOWS_UWP;IDataErrorInfo_Missing;RUNTIME_CACHE_MISSING;Serialization_Missing;DataTable_Missing</DefineConstants>
+    <DefineConstants>TRACE;CODE_ANALYSIS;CODE_ANALYSIS;CODE_ANALYSIS;NETFX_CORE;WINDOWS_UWP;IDataErrorInfo_Missing;RUNTIME_CACHE_MISSING;Serialization_Missing;DataTable_Missing;OleDb_Missing</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <RunCodeAnalysis>true</RunCodeAnalysis>
@@ -142,7 +142,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug-Unchecked|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\Debug-Unchecked\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;NETFX_CORE;WINDOWS_UWP;IDataErrorInfo_Missing;RUNTIME_CACHE_MISSING</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NETFX_CORE;WINDOWS_UWP;IDataErrorInfo_Missing;RUNTIME_CACHE_MISSING;OleDb_Missing</DefineConstants>
     <NoStdLib>true</NoStdLib>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>

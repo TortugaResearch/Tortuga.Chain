@@ -330,13 +330,14 @@
             <param name="argumentValue"></param>
             <returns></returns>
         </member>
-        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.From(Tortuga.Chain.Access.AccessObjectName,System.Object)">
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.From(Tortuga.Chain.Access.AccessObjectName,System.Object,Tortuga.Chain.FilterOptions)">
             <summary>
             Creates a <see cref="T:Tortuga.Chain.Access.CommandBuilders.AccessTableOrView" /> used to directly query a table or view
             </summary>
-            <param name="tableOrViewName"></param>
-            <param name="filterValue"></param>
-            <returns></returns>
+            <param name="tableOrViewName">Name of the table or view.</param>
+            <param name="filterValue">The filter value.</param>
+            <param name="filterOptions">The filter options.</param>
+            <returns>TableDbCommandBuilder&lt;OleDbCommand, OleDbParameter, AccessLimitOption&gt;.</returns>
         </member>
         <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.From``1">
             <summary>
@@ -1134,13 +1135,14 @@
             SQliteTableOrView supports queries against tables and views.
             </summary>
         </member>
-        <member name="M:Tortuga.Chain.Access.CommandBuilders.AccessTableOrView.#ctor(Tortuga.Chain.Access.AccessDataSourceBase,Tortuga.Chain.Access.AccessObjectName,System.Object)">
+        <member name="M:Tortuga.Chain.Access.CommandBuilders.AccessTableOrView.#ctor(Tortuga.Chain.Access.AccessDataSourceBase,Tortuga.Chain.Access.AccessObjectName,System.Object,Tortuga.Chain.FilterOptions)">
             <summary>
             Initializes a new instance of the <see cref="T:Tortuga.Chain.Access.CommandBuilders.AccessTableOrView" /> class.
             </summary>
-            <param name="dataSource"></param>
-            <param name="tableOrViewName"></param>
-            <param name="filterValue"></param>
+            <param name="dataSource">The data source.</param>
+            <param name="tableOrViewName">Name of the table or view.</param>
+            <param name="filterValue">The filter value.</param>
+            <param name="filterOptions">The filter options.</param>
         </member>
         <member name="M:Tortuga.Chain.Access.CommandBuilders.AccessTableOrView.#ctor(Tortuga.Chain.Access.AccessDataSourceBase,Tortuga.Chain.Access.AccessObjectName,System.String,System.Object)">
             <summary>
@@ -1185,12 +1187,13 @@
             <param name="seed">The seed for repeatable reads. Only applies to random sampling</param>
             <returns></returns>
         </member>
-        <member name="M:Tortuga.Chain.Access.CommandBuilders.AccessTableOrView.WithFilter(System.Object)">
+        <member name="M:Tortuga.Chain.Access.CommandBuilders.AccessTableOrView.WithFilter(System.Object,Tortuga.Chain.FilterOptions)">
             <summary>
             Adds (or replaces) the filter on this command builder.
             </summary>
             <param name="filterValue">The filter value.</param>
-            <returns></returns>
+            <param name="filterOptions">The filter options.</param>
+            <returns>TableDbCommandBuilder&lt;OleDbCommand, OleDbParameter, AccessLimitOption&gt;.</returns>
         </member>
         <member name="M:Tortuga.Chain.Access.CommandBuilders.AccessTableOrView.WithFilter(System.String)">
             <summary>

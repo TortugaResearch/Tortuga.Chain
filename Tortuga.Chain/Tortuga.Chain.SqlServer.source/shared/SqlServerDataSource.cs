@@ -31,7 +31,7 @@ namespace Tortuga.Chain
 
         readonly object m_SyncRoot = new object();
 
-#if !System_Configuration_Missing
+#if !SqlDependency_Missing
         private bool m_IsSqlDependencyActive;
 #endif
 
@@ -162,7 +162,7 @@ namespace Tortuga.Chain
             get { return m_DatabaseMetadata; }
         }
 
-#if !System_Configuration_Missing
+#if !SqlDependency_Missing
         /// <summary>
         /// Gets a value indicating whether SQL dependency support is active for this dispatcher.
         /// </summary>

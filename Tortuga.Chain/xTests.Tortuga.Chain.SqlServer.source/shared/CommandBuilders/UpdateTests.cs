@@ -34,7 +34,7 @@ namespace Tests.CommandBuilders
                 };
 
                 var inserted = dataSource.Insert(EmployeeTableName, original).ToObject<ChangeTrackingEmployee>().Execute();
-                Assert.IsFalse(inserted.IsChanged, "Accept chnages wasn't called by the materializer");
+                Assert.IsFalse(inserted.IsChanged, "Accept changes wasn't called by the materializer");
 
                 inserted.FirstName = "Changed";
                 inserted.AcceptChanges(); //only properties changed AFTER this line should actually be updated in the database
@@ -68,7 +68,7 @@ namespace Tests.CommandBuilders
                 };
 
                 var inserted = dataSource.Insert(EmployeeTableName, original).ToObject<ChangeTrackingEmployee>().Execute();
-                Assert.IsFalse(inserted.IsChanged, "Accept chnages wasn't called by the materializer");
+                Assert.IsFalse(inserted.IsChanged, "Accept changes wasn't called by the materializer");
 
                 try
                 {

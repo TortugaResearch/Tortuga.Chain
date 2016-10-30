@@ -1,43 +1,25 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics.CodeAnalysis;
-using Tortuga.Anchor;
-using Tortuga.Anchor.Metadata;
 using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.SqlServer
 {
+
     /// <summary>
     /// Class SqlServerMetadataCache.
     /// </summary>
-    public sealed class SqlServerMetadataCache : DatabaseMetadataCache<SqlServerObjectName, SqlDbType>
+    public sealed class SqlServerMetadataCache : AbstractSqlServerMetadataCache<SqlDbType>
     {
-        readonly SqlConnectionStringBuilder m_ConnectionBuilder;
-
-        readonly ConcurrentDictionary<SqlServerObjectName, StoredProcedureMetadata<SqlServerObjectName, SqlDbType>> m_StoredProcedures = new ConcurrentDictionary<SqlServerObjectName, StoredProcedureMetadata<SqlServerObjectName, SqlDbType>>();
-
-        readonly ConcurrentDictionary<SqlServerObjectName, TableFunctionMetadata<SqlServerObjectName, SqlDbType>> m_TableFunctions = new ConcurrentDictionary<SqlServerObjectName, TableFunctionMetadata<SqlServerObjectName, SqlDbType>>();
-
-        readonly ConcurrentDictionary<SqlServerObjectName, TableOrViewMetadata<SqlServerObjectName, SqlDbType>> m_Tables = new ConcurrentDictionary<SqlServerObjectName, TableOrViewMetadata<SqlServerObjectName, SqlDbType>>();
-
-        readonly ConcurrentDictionary<Type, TableOrViewMetadata<SqlServerObjectName, SqlDbType>> m_TypeTableMap = new ConcurrentDictionary<Type, TableOrViewMetadata<SqlServerObjectName, SqlDbType>>();
-
-        readonly ConcurrentDictionary<SqlServerObjectName, UserDefinedTypeMetadata<SqlServerObjectName, SqlDbType>> m_UserDefinedTypes = new ConcurrentDictionary<SqlServerObjectName, UserDefinedTypeMetadata<SqlServerObjectName, SqlDbType>>();
-
-        readonly ConcurrentDictionary<Type, string> m_UdtTypeMap = new ConcurrentDictionary<Type, string>();
-
-        private string m_DefaultSchema;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlServerMetadataCache"/> class.
         /// </summary>
         /// <param name="connectionBuilder">The connection builder.</param>
-        public SqlServerMetadataCache(SqlConnectionStringBuilder connectionBuilder)
+        public SqlServerMetadataCache(SqlConnectionStringBuilder connectionBuilder) : base(connectionBuilder)
         {
-            m_ConnectionBuilder = connectionBuilder;
         }
 
 
@@ -64,113 +46,16 @@ namespace Tortuga.Chain.SqlServer
             }
         }
 
-        /// <summary>
-        /// It is necessary to map some types to their corresponding UDT Names in Sql Server.
-        /// </summary>
-        /// <param name="type">The type to be mapped</param>
-        /// <param name="udtName">The name that SQL server sees</param>
-        /// <remarks>The types SqlGeometry and SqlGeography are automatically included in the map.</remarks>
-        public void AddUdtTypeName(Type type, string udtName)
-        {
-            m_UdtTypeMap[type] = udtName;
-        }
-
-        /// <summary>
-        /// Gets the stored procedure's metadata.
-        /// </summary>
-        /// <param name="procedureName">Name of the procedure.</param>
-        /// <returns>Null if the object could not be found.</returns>
-        public override StoredProcedureMetadata<SqlServerObjectName, SqlDbType> GetStoredProcedure(SqlServerObjectName procedureName)
-        {
-            return m_StoredProcedures.GetOrAdd(procedureName, GetStoredProcedureInternal);
-        }
-
-        /// <summary>
-        /// Gets the stored procedures that were loaded by this cache.
-        /// </summary>
-        /// <returns></returns>
-        /// <remarks>
-        /// Call Preload before invoking this method to ensure that all stored procedures were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.
-        /// </remarks>
-        public override IReadOnlyCollection<StoredProcedureMetadata<SqlServerObjectName, SqlDbType>> GetStoredProcedures()
-        {
-            return m_StoredProcedures.GetValues();
-        }
-
-        /// <summary>
-        /// Gets the metadata for a table function.
-        /// </summary>
-        /// <param name="tableFunctionName">Name of the table function.</param>
-        /// <returns>Null if the object could not be found.</returns>
-        public override TableFunctionMetadata<SqlServerObjectName, SqlDbType> GetTableFunction(SqlServerObjectName tableFunctionName)
-        {
-            return m_TableFunctions.GetOrAdd(tableFunctionName, GetTableFunctionInternal);
-        }
-
-        /// <summary>
-        /// Gets the table-valued functions that were loaded by this cache.
-        /// </summary>
-        /// <returns></returns>
-        /// <remarks>
-        /// Call Preload before invoking this method to ensure that all table-valued functions were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.
-        /// </remarks>
-        public override IReadOnlyCollection<TableFunctionMetadata<SqlServerObjectName, SqlDbType>> GetTableFunctions()
-        {
-            return m_TableFunctions.GetValues();
-        }
-
-        /// <summary>
-        /// Gets the metadata for a table.
-        /// </summary>
-        /// <param name="tableName">Name of the table.</param>
-        /// <returns>Null if the object could not be found.</returns>
-        public override TableOrViewMetadata<SqlServerObjectName, SqlDbType> GetTableOrView(SqlServerObjectName tableName)
-        {
-            return m_Tables.GetOrAdd(tableName, GetTableOrViewInternal);
-        }
 
 
-        ///// <summary>
-        ///// Gets the UDT name of the indicated type.
-        ///// </summary>
-        ///// <param name="type">The type.</param>
-        ///// <returns></returns>
-        ///// <remarks>You may add custom UDTs to this list using AddUdtTypeName</remarks>
-        //internal string GetUdtName(Type type)
-        //{
-        //    string result;
-        //    m_UdtTypeMap.TryGetValue(type, out result);
-        //    return result;
-        //}
 
-        /// <summary>
-        /// Gets the tables and views that were loaded by this cache.
-        /// </summary>
-        /// <returns></returns>
-        /// <remarks>
-        /// Call Preload before invoking this method to ensure that all tables and views were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.
-        /// </remarks>
-        public override IReadOnlyCollection<TableOrViewMetadata<SqlServerObjectName, SqlDbType>> GetTablesAndViews()
-        {
-            return m_Tables.GetValues();
-        }
 
-        /// <summary>
-        /// Preloads all of the metadata for this data source.
-        /// </summary>
-        public override void Preload()
-        {
-            PreloadTables();
-            PreloadViews();
-            PreloadStoredProcedures();
-            PreloadTableFunctions();
-            PreloadUserDefinedTypes();
-        }
+
 
         /// <summary>
         /// Preloads the stored procedures.
         /// </summary>
-        public void PreloadStoredProcedures()
+        public override void PreloadStoredProcedures()
         {
             const string StoredProcedureSql =
             @"SELECT 
@@ -203,7 +88,7 @@ namespace Tortuga.Chain.SqlServer
         /// Preloads metadata for all tables.
         /// </summary>
         /// <remarks>This is normally used only for testing. By default, metadata is loaded as needed.</remarks>
-        public void PreloadTables()
+        public override void PreloadTables()
         {
             const string tableList = "SELECT t.name AS Name, s.name AS SchemaName FROM sys.tables t INNER JOIN sys.schemas s ON t.schema_id=s.schema_id ORDER BY s.name, t.name";
 
@@ -229,7 +114,7 @@ namespace Tortuga.Chain.SqlServer
         /// Preloads the user defined types.
         /// </summary>
         /// <remarks>This is normally used only for testing. By default, metadata is loaded as needed.</remarks>
-        public void PreloadUserDefinedTypes()
+        public override void PreloadUserDefinedTypes()
         {
             const string tableList = @"SELECT s.name AS SchemaName, t.name AS Name FROM sys.types t INNER JOIN sys.schemas s ON t.schema_id = s.schema_id WHERE	t.is_user_defined = 1;";
 
@@ -255,7 +140,7 @@ namespace Tortuga.Chain.SqlServer
         /// <summary>
         /// Preloads the table value functions.
         /// </summary>
-        public void PreloadTableFunctions()
+        public override void PreloadTableFunctions()
         {
             const string TvfSql =
                 @"SELECT 
@@ -290,7 +175,7 @@ namespace Tortuga.Chain.SqlServer
         /// Preloads metadata for all views.
         /// </summary>
         /// <remarks>This is normally used only for testing. By default, metadata is loaded as needed.</remarks>
-        public void PreloadViews()
+        public override void PreloadViews()
         {
             const string tableList = "SELECT t.name AS Name, s.name AS SchemaName FROM sys.views t INNER JOIN sys.schemas s ON t.schema_id=s.schema_id ORDER BY s.name, t.name";
 
@@ -313,7 +198,7 @@ namespace Tortuga.Chain.SqlServer
 
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
+        [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
         internal static SqlDbType? TypeNameToSqlDbType(string typeName)
         {
             switch (typeName)
@@ -357,15 +242,7 @@ namespace Tortuga.Chain.SqlServer
             return null;
         }
 
-        /// <summary>
-        /// Parse a string and return the database specific representation of the object name.
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        protected override SqlServerObjectName ParseObjectName(string name)
-        {
-            return new SqlServerObjectName(name);
-        }
+
 
         List<ColumnMetadata<SqlDbType>> GetColumns(int objectId)
         {
@@ -389,9 +266,9 @@ namespace Tortuga.Chain.SqlServer
 							Convert(bit, ISNULL(PKS.is_primary_key, 0)) AS is_primary_key,
 							COALESCE(t.name, t2.name) AS TypeName,
 							c.is_nullable,
-		                    CONVERT(INT, t.max_length) AS max_length, 
-		                    CONVERT(INT, t.precision) AS precision,
-		                    CONVERT(INT, t.scale) AS scale
+		                    CONVERT(INT, COALESCE(t.max_length, t2.max_length)) AS max_length, 
+		                    CONVERT(INT, COALESCE(t.precision, t2.precision)) AS precision,
+		                    CONVERT(INT, COALESCE(t.scale, t2.scale)) AS scale
 					FROM    sys.columns c
 							LEFT JOIN PKS ON c.name = PKS.name
 							LEFT JOIN sys.types t on c.system_type_id = t.user_type_id
@@ -415,9 +292,9 @@ namespace Tortuga.Chain.SqlServer
                             var isIdentity = reader.GetBoolean(reader.GetOrdinal("is_identity"));
                             var typeName = reader.IsDBNull(reader.GetOrdinal("TypeName")) ? null : reader.GetString(reader.GetOrdinal("TypeName"));
                             var isNullable = reader.GetBoolean(reader.GetOrdinal("is_nullable"));
-                            int? maxLength = reader.GetInt32(reader.GetOrdinal("max_length"));
-                            int? precision = reader.GetInt32(reader.GetOrdinal("precision"));
-                            int? scale = reader.GetInt32(reader.GetOrdinal("scale"));
+                            int? maxLength = reader.IsDBNull(reader.GetOrdinal("max_length")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("max_length"));
+                            int? precision = reader.IsDBNull(reader.GetOrdinal("precision")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("precision"));
+                            int? scale = reader.IsDBNull(reader.GetOrdinal("scale")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("scale"));
                             string fullTypeName;
                             AdjustTypeDetails(typeName, ref maxLength, ref precision, ref scale, out fullTypeName);
 
@@ -429,88 +306,7 @@ namespace Tortuga.Chain.SqlServer
             return columns;
         }
 
-        [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
-        private static void AdjustTypeDetails(string typeName, ref int? maxLength, ref int? precision, ref int? scale, out string fullTypeName)
-        {
-            switch (typeName)
-            {
-                case "bigint":
-                case "bit":
-                case "date":
-                case "datetime":
-                case "timestamp":
-                case "tinyint":
-                case "uniqueidentifier":
-                case "smallint":
-                case "sql_variant":
-                case "float":
-                case "int":
-                    maxLength = null;
-                    precision = null;
-                    scale = null;
-                    fullTypeName = typeName;
-                    break;
-
-                case "binary":
-                case "char":
-                    precision = null;
-                    scale = null;
-                    fullTypeName = $"{typeName}({maxLength})";
-                    break;
-
-                case "datetime2":
-                case "datetimeoffset":
-                case "time":
-                    maxLength = null;
-                    precision = null;
-                    fullTypeName = $"{typeName}({scale})";
-                    break;
-
-                case "numeric":
-                case "decimal":
-                    fullTypeName = $"{typeName}({precision},{scale})";
-                    break;
-
-                case "nchar":
-                    maxLength = maxLength / 2;
-                    precision = null;
-                    scale = null;
-                    fullTypeName = $"nchar({maxLength})";
-                    break;
-
-                case "nvarchar":
-                    maxLength = maxLength / 2;
-                    precision = null;
-                    scale = null;
-                    if (maxLength > 0)
-                        fullTypeName = $"nvarchar({maxLength})";
-                    else
-                        fullTypeName = $"nvarchar(max)";
-                    break;
-
-                case "varbinary":
-                case "varchar":
-                    precision = null;
-                    scale = null;
-                    if (maxLength > 0)
-                        fullTypeName = $"{typeName}({maxLength})";
-                    else
-                        fullTypeName = $"{typeName}(max)";
-                    break;
-
-                default:
-                    if (maxLength <= 0)
-                        maxLength = 0;
-                    if (precision <= 0)
-                        precision = 0;
-                    if (scale <= 0)
-                        scale = 0;
-                    fullTypeName = typeName;
-                    break;
-            }
-        }
-
-        private TableFunctionMetadata<SqlServerObjectName, SqlDbType> GetTableFunctionInternal(SqlServerObjectName tableFunctionName)
+        internal override TableFunctionMetadata<SqlServerObjectName, SqlDbType> GetTableFunctionInternal(SqlServerObjectName tableFunctionName)
         {
             const string TvfSql =
                 @"SELECT 
@@ -602,7 +398,7 @@ namespace Tortuga.Chain.SqlServer
             }
         }
 
-        private StoredProcedureMetadata<SqlServerObjectName, SqlDbType> GetStoredProcedureInternal(SqlServerObjectName procedureName)
+        internal override StoredProcedureMetadata<SqlServerObjectName, SqlDbType> GetStoredProcedureInternal(SqlServerObjectName procedureName)
         {
             const string StoredProcedureSql =
                 @"SELECT 
@@ -641,7 +437,7 @@ namespace Tortuga.Chain.SqlServer
 
             return new StoredProcedureMetadata<SqlServerObjectName, SqlDbType>(objectName, parameters);
         }
-        TableOrViewMetadata<SqlServerObjectName, SqlDbType> GetTableOrViewInternal(SqlServerObjectName tableName)
+        internal override TableOrViewMetadata<SqlServerObjectName, SqlDbType> GetTableOrViewInternal(SqlServerObjectName tableName)
         {
             const string TableSql =
                 @"SELECT 
@@ -696,28 +492,9 @@ namespace Tortuga.Chain.SqlServer
         }
 
 
-        /// <summary>
-        /// Gets the table-valued functions that were loaded by this cache.
-        /// </summary>
-        /// <returns>ICollection&lt;UserDefinedTypeMetadata&lt;SqlServerObjectName, SqlDbType&gt;&gt;.</returns>
-        /// <remarks>Call Preload before invoking this method to ensure that all table-valued functions were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.</remarks>
-        public override IReadOnlyCollection<UserDefinedTypeMetadata<SqlServerObjectName, SqlDbType>> GetUserDefinedTypes()
-        {
-            return m_UserDefinedTypes.GetValues();
-        }
 
 
-        /// <summary>
-        /// Gets the metadata for a user defined type.
-        /// </summary>
-        /// <param name="typeName">Name of the type.</param>
-        /// <returns>UserDefinedTypeMetadata&lt;SqlServerObjectName, SqlDbType&gt;.</returns>
-        public override UserDefinedTypeMetadata<SqlServerObjectName, SqlDbType> GetUserDefinedType(SqlServerObjectName typeName)
-        {
-            return m_UserDefinedTypes.GetOrAdd(typeName, GetUserDefinedTypeInternal);
-        }
-
-        UserDefinedTypeMetadata<SqlServerObjectName, SqlDbType> GetUserDefinedTypeInternal(SqlServerObjectName typeName)
+        internal override UserDefinedTypeMetadata<SqlServerObjectName, SqlDbType> GetUserDefinedTypeInternal(SqlServerObjectName typeName)
         {
             const string sql =
                 @"SELECT	s.name AS SchemaName,
@@ -790,64 +567,8 @@ WHERE	s.name = @Schema AND t.name = @Name;";
             return new UserDefinedTypeMetadata<SqlServerObjectName, SqlDbType>(new SqlServerObjectName(actualSchema, actualName), isTableType, columns);
         }
 
-        /// <summary>
-        /// Returns the table or view derived from the class's name and/or Table attribute.
-        /// </summary>
-        /// <typeparam name="TObject"></typeparam>
-        /// <returns></returns>
-        public override TableOrViewMetadata<SqlServerObjectName, SqlDbType> GetTableOrViewFromClass<TObject>()
-        {
-
-            var type = typeof(TObject);
-            TableOrViewMetadata<SqlServerObjectName, SqlDbType> result;
-            if (m_TypeTableMap.TryGetValue(type, out result))
-                return result;
-
-            var typeInfo = MetadataCache.GetMetadata(type);
-            if (!string.IsNullOrEmpty(typeInfo.MappedTableName))
-            {
-                if (string.IsNullOrEmpty(typeInfo.MappedSchemaName))
-                    result = GetTableOrView(new SqlServerObjectName(typeInfo.MappedTableName));
-                else
-                    result = GetTableOrView(new SqlServerObjectName(typeInfo.MappedSchemaName, typeInfo.MappedTableName));
-                m_TypeTableMap[type] = result;
-                return result;
-            }
-
-            //infer schema from namespace
-            var schema = type.Namespace;
-            if (schema?.Contains(".") ?? false)
-                schema = schema.Substring(schema.LastIndexOf(".", StringComparison.OrdinalIgnoreCase) + 1);
-            var name = type.Name;
-
-            try
-            {
-                result = GetTableOrView(new SqlServerObjectName(schema, name));
-                m_TypeTableMap[type] = result;
-                return result;
-            }
-            catch (MissingObjectException) { }
 
 
-            //that didn't work, so try the default schema
-            result = GetTableOrView(new SqlServerObjectName(null, name));
-            m_TypeTableMap[type] = result;
-            return result;
-
-        }
-
-        /// <summary>
-        /// Resets the metadata cache, clearing out all cached metadata.
-        /// </summary>
-        public override void Reset()
-        {
-            m_StoredProcedures.Clear();
-            m_TableFunctions.Clear();
-            m_Tables.Clear();
-            m_TypeTableMap.Clear();
-            m_UdtTypeMap.Clear();
-            m_UserDefinedTypes.Clear();
-        }
     }
 
 }
