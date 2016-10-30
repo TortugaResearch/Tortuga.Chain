@@ -114,6 +114,14 @@
     {
       "title": "Transactions",
       "path": "Page/Transactions.md"
+    },
+    {
+      "title": "Entity Framework Integration",
+      "path": "Page/Other/EntityFramework.md"
+    },
+    {
+      "title": "NHibernate Integration",
+      "path": "Page/Other/NHibernate.md"
     }
   ]
 }
