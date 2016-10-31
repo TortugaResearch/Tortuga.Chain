@@ -4,7 +4,8 @@ A Fluent ORM for .NET
 
 ## Documentation
 
-* [Documentation PDF](https://github.com/docevaad/Chain/raw/master/Chain.pdf)
+* [Documentation Website](https://docevaad.github.io/Chain)
+* [Documentation PDF](https://github.com/docevaad/Chain/raw/master/docs/Chain.pdf)
 * [Documentation Wiki](https://github.com/docevaad/Chain/wiki)
 
 ## Getting Started
