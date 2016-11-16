@@ -16,18 +16,19 @@
     <OutputPath>.\Help</OutputPath>
     <CleanupOutputPath>true</CleanupOutputPath>
     <HelpFileName>Tortuga.Chain Source</HelpFileName>
+    <HelpFileNamingMethod>MemberName</HelpFileNamingMethod>
     <ImageFolderPath />
-    <Theme />
+    <Theme>FlatGray</Theme>
     <HtmlFormats>
       <HtmlHelp>true</HtmlHelp>
       <MSHelpViewer>false</MSHelpViewer>
       <MSHelp2>false</MSHelp2>
-      <Website>false</Website>
+      <Website>true</Website>
     </HtmlFormats>
     <IncludeScopes>
       <Public>true</Public>
       <Internal>false</Internal>
-      <Protected>false</Protected>
+      <Protected>true</Protected>
       <Private>false</Private>
       <Inherited>true</Inherited>
       <InheritedFromReferences>true</InheritedFromReferences>
@@ -44,7 +45,15 @@
     <ResolveCrefLinks>true</ResolveCrefLinks>
     <HeaderText />
     <FooterText />
-    <SelectedProjects />
+    <SelectedProjects>
+      <SelectedProject>Tortuga.Chain.Core.source</SelectedProject>
+      <SelectedProject>Tortuga.Chain.CompiledMaterializers.source</SelectedProject>
+      <SelectedProject>Tortuga.Chain.SqlServer.source</SelectedProject>
+      <SelectedProject>Tortuga.Chain.SQLite.source</SelectedProject>
+      <SelectedProject>Tortuga.Chain.PostgreSql.source</SelectedProject>
+      <SelectedProject>Tortuga.Chain.Csv.source</SelectedProject>
+      <SelectedProject>Tortuga.Chain.Access.source</SelectedProject>
+    </SelectedProjects>
   </HelpConfiguration>
 </HelpConfigurations>
 <GeneralProperties>
