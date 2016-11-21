@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Linq;
 using System.Threading.Tasks;
 using Tests.Models;
 using Tortuga.Chain;
@@ -84,6 +85,43 @@ namespace Tests.Materializers
             Assert.AreEqual(emp2.Title, echo.Title, "Title");
         }
 
+        [TestMethod]
+        public void TestWithBinary()
+        {
+            var ds = DataSource;
+
+            var list = ds.From("dbo.AllTypes").ToCollection<BinaryModel>().Execute();
+            Assert.IsTrue(list.All(x => x.BinaryNotNull != null));
+        }
+
+        [TestMethod]
+        public void CompiledTestWithBinary()
+        {
+            var ds = DataSource;
+
+            var list = ds.From("dbo.AllTypes").Compile().ToCollection<BinaryModel>().Execute();
+            Assert.IsTrue(list.All(x => x.BinaryNotNull != null));
+        }
+
+        [TestMethod]
+        public void TestWithBinary_Single()
+        {
+            var ds = DataSource;
+
+            var result = ds.From("dbo.AllTypes").ToObject<BinaryModel>(RowOptions.DiscardExtraRows).Execute();
+            Assert.IsTrue(result.BinaryNotNull != null);
+        }
+
+        [TestMethod]
+        public void CompiledTestWithBinary_Single()
+        {
+            var ds = DataSource;
+
+            var result = ds.From("dbo.AllTypes").Compile().ToObject<BinaryModel>(RowOptions.DiscardExtraRows).Execute();
+            Assert.IsTrue(result.BinaryNotNull != null);
+        }
+
+
 
         [TestMethod]
         public async Task DecomposeTest_Async()
@@ -160,5 +198,13 @@ namespace Tests.Materializers
             Assert.AreEqual(emp2.LastName, echo.LastName, "LastName");
             Assert.AreEqual(emp2.Title, echo.Title, "Title");
         }
+    }
+
+    public class BinaryModel
+    {
+        public int Id { get; set; }
+        public string RowName { get; set; }
+        public byte[] BinaryNotNull { get; set; }
+
     }
 }
