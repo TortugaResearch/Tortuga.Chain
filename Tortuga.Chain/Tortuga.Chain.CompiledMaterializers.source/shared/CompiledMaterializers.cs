@@ -104,6 +104,7 @@ namespace Tortuga.Chain
                 else if (columnType == typeof(int)) getter = "reader.GetInt32";
                 else if (columnType == typeof(long)) getter = "reader.GetInt64";
                 else if (columnType == typeof(string)) getter = "reader.GetString";
+                else if (columnType == typeof(byte[])) getter = "(byte[])reader.GetValue";
                 else getter = "reader.GetValue";
 
                 columns.Add(columnName, Tuple.Create(i, columnType, getter));
