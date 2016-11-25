@@ -24,6 +24,7 @@ namespace Tests
                 con.Open();
 
                 string sql = @"
+DROP FUNCTION IF EXISTS hr.EmployeeCount(INTEGER);
 DROP FUNCTION IF EXISTS Sales.CustomersByState(char(2));
 DROP FUNCTION IF EXISTS Sales.CustomerWithOrdersByState(char(2));
 DROP VIEW IF EXISTS hr.EmployeeWithManager;
@@ -161,7 +162,22 @@ FROM    HR.Employee e
     $$ LANGUAGE plpgsql;
 ";
 
-                //string proc1 = @"";
+                var scalarFunc = @"CREATE OR REPLACE FUNCTION hr.EmployeeCount(p_managerKey integer) RETURNS integer AS $$
+        DECLARE
+		result INTEGER;
+        BEGIN
+		IF (p_managerKey IS NOT NULL) THEN
+			result := COUNT(*) 	
+			FROM HR.Employee e
+			WHERE	e.ManagerKey = p_managerKey;
+		ELSE
+			result := COUNT(*) 	
+			FROM	HR.Employee e;
+		END IF;
+		RETURN result;
+
+        END;
+$$ LANGUAGE plpgsql;";
 
                 using (NpgsqlCommand cmd = new NpgsqlCommand(sql, con))
                     cmd.ExecuteNonQuery();
@@ -179,6 +195,9 @@ FROM    HR.Employee e
                     cmd.ExecuteNonQuery();
 
                 using (NpgsqlCommand cmd = new NpgsqlCommand(proc1, con))
+                    cmd.ExecuteNonQuery();
+
+                using (NpgsqlCommand cmd = new NpgsqlCommand(scalarFunc, con))
                     cmd.ExecuteNonQuery();
             }
 
