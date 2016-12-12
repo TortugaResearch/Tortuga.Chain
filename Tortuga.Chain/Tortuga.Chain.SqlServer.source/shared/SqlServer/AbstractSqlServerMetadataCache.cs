@@ -259,6 +259,7 @@ namespace Tortuga.Chain.SqlServer
             m_TypeTableMap.Clear();
             m_UdtTypeMap.Clear();
             m_UserDefinedTypes.Clear();
+            m_ScalarFunctions.Clear();
         }
 
         [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
