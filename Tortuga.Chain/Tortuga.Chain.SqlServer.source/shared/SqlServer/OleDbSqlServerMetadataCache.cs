@@ -323,14 +323,15 @@ namespace Tortuga.Chain.SqlServer
             return new TableFunctionMetadata<SqlServerObjectName, OleDbType>(objectName, parameters, columns);
         }
 
-        internal override TableOrViewMetadata<SqlServerObjectName, OleDbType> GetTableOrViewInternal(SqlServerObjectName tableName)
+        internal override SqlServerTableOrViewMetadata<OleDbType> GetTableOrViewInternal(SqlServerObjectName tableName)
         {
             const string TableSql =
                 @"SELECT 
 				s.name AS SchemaName,
 				t.name AS Name,
 				t.object_id AS ObjectId,
-				CONVERT(BIT, 1) AS IsTable 
+				CONVERT(BIT, 1) AS IsTable,
+		        (SELECT	COUNT(*) FROM sys.triggers t2 WHERE	t2.parent_id = t.object_id) AS Triggers  
 				FROM SYS.tables t
 				INNER JOIN sys.schemas s ON t.schema_id = s.schema_id
 				WHERE s.name = ? AND t.Name = ?
@@ -341,7 +342,8 @@ namespace Tortuga.Chain.SqlServer
 				s.name AS SchemaName,
 				t.name AS Name,
 				t.object_id AS ObjectId,
-				CONVERT(BIT, 0) AS IsTable 
+				CONVERT(BIT, 0) AS IsTable,
+		        (SELECT	COUNT(*) FROM sys.triggers t2 WHERE	t2.parent_id = t.object_id) AS Triggers  
 				FROM SYS.views t
 				INNER JOIN sys.schemas s ON t.schema_id = s.schema_id
 				WHERE s.name = ? AND t.Name = ?";
@@ -351,6 +353,7 @@ namespace Tortuga.Chain.SqlServer
             string actualName;
             int objectId;
             bool isTable;
+            bool hasTriggers;
 
             using (var con = new OleDbConnection(m_ConnectionBuilder.ConnectionString))
             {
@@ -369,6 +372,7 @@ namespace Tortuga.Chain.SqlServer
                         actualName = reader.GetString(reader.GetOrdinal("Name"));
                         objectId = reader.GetInt32(reader.GetOrdinal("ObjectId"));
                         isTable = reader.GetBoolean(reader.GetOrdinal("IsTable"));
+                        hasTriggers = reader.GetInt32(reader.GetOrdinal("Triggers")) > 0;
                     }
                 }
             }
@@ -376,7 +380,7 @@ namespace Tortuga.Chain.SqlServer
 
             var columns = GetColumns(objectId);
 
-            return new TableOrViewMetadata<SqlServerObjectName, OleDbType>(new SqlServerObjectName(actualSchema, actualName), isTable, columns);
+            return new SqlServerTableOrViewMetadata<OleDbType>(new SqlServerObjectName(actualSchema, actualName), isTable, columns, hasTriggers);
         }
 
         internal override UserDefinedTypeMetadata<SqlServerObjectName, OleDbType> GetUserDefinedTypeInternal(SqlServerObjectName typeName)
@@ -560,6 +564,16 @@ WHERE	s.name = ? AND t.name = ?;";
             {
                 throw new MetadataException($"Error getting parameters for {procedureName}", ex);
             }
+        }
+
+        /// <summary>
+        /// Gets the detailed metadata for a table or view.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <returns>SqlServerTableOrViewMetadata&lt;TDbType&gt;.</returns>
+        public new SqlServerTableOrViewMetadata<OleDbType> GetTableOrView(SqlServerObjectName tableName)
+        {
+            return m_Tables.GetOrAdd(tableName, GetTableOrViewInternal);
         }
     }
 }

@@ -9,7 +9,7 @@ namespace Tortuga.Chain.Metadata
     /// </summary>
     /// <typeparam name="TName">The type used to represent database object names.</typeparam>
     /// <typeparam name="TDbType">The variant of DbType used by this data source.</typeparam>
-    public sealed class TableOrViewMetadata<TName, TDbType> : TableOrViewMetadata
+    public class TableOrViewMetadata<TName, TDbType> : TableOrViewMetadata
         where TDbType : struct
     {
         readonly SqlBuilder<TDbType> m_Builder;

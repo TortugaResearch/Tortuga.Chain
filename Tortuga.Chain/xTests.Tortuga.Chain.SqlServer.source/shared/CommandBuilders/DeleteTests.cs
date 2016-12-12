@@ -94,7 +94,7 @@ namespace Tests.CommandBuilders
                 try
                 {
                     dataSource.GetByKey(EmployeeTableName, key).ToObject<Employee>().Execute();
-                    Assert.Fail("Excpected a missing data exception");
+                    Assert.Fail("Expected a missing data exception");
                 }
                 catch (MissingDataException) { }
             }

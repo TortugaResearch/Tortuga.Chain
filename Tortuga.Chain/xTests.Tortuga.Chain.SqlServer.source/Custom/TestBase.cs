@@ -38,6 +38,7 @@ namespace Tests
         public static string CustomerTableName { get { return "Sales.Customer"; } }
 
         public static string EmployeeTableName { get { return "HR.Employee"; } }
+        public static string EmployeeTableName_Trigger { get { return "HR.EmployeeWithTrigger"; } }
 
         public string MultiResultSetProc1Name { get { return "Sales.CustomerWithOrdersByState"; } }
 

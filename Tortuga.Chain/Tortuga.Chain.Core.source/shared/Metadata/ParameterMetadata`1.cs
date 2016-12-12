@@ -18,8 +18,10 @@ namespace Tortuga.Chain.Metadata
         /// <param name="sqlVariableName">Name of the SQL variable.</param>
         /// <param name="typeName">Name of the type.</param>
         /// <param name="dbType">Type of the database.</param>
-        public ParameterMetadata(string sqlParameterName, string sqlVariableName, string typeName, TDbType? dbType)
+        /// <param name="fullTypeName">Full name of the type.</param>
+        public ParameterMetadata(string sqlParameterName, string sqlVariableName, string typeName, TDbType? dbType, string fullTypeName)
         {
+            FullTypeName = fullTypeName;
             TypeName = typeName;
             SqlParameterName = sqlParameterName;
             ClrName = Utilities.ToClrName(sqlParameterName);
@@ -60,6 +62,14 @@ namespace Tortuga.Chain.Metadata
             get { return null; }
         }
 
-   
+        /// <summary>
+        /// Gets or sets the full name of the type including max length, precision, and/or scale.
+        /// </summary>
+        /// <value>
+        /// The full name of the type.
+        /// </value>
+        public string FullTypeName { get; }
+
+
     }
 }

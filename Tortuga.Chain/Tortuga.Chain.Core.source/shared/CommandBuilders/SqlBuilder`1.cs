@@ -76,6 +76,8 @@ namespace Tortuga.Chain.CommandBuilders
         }
 
 
+
+
         /// <summary>
         /// Applies a user defined table type as the argument.
         /// </summary>
@@ -1260,6 +1262,20 @@ namespace Tortuga.Chain.CommandBuilders
             {
                 if (!m_Entries[i].RestrictedRead && m_Entries[i].UseForRead)
                     yield return m_Entries[i].Details.QuotedSqlName;
+            }
+        }
+
+        /// <summary>
+        /// Gets the select columns with metadata details.
+        /// </summary>
+        /// <returns>Each entry has the column's metadata</returns>
+        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
+        public IEnumerable<ISqlBuilderEntryDetails<TDbType>> GetSelectColumnDetails()
+        {
+            for (var i = 0; i < m_Entries.Length; i++)
+            {
+                if (!m_Entries[i].RestrictedRead && m_Entries[i].UseForRead)
+                    yield return m_Entries[i].Details;
             }
         }
 

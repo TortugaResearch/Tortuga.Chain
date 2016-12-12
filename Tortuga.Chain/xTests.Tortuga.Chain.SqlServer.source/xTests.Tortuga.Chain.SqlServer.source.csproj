@@ -167,6 +167,7 @@
     <Compile Include="shared\Asserts\TypeAsserts.cs" />
     <Compile Include="shared\CommandBuilders\FunctionTests.cs" />
     <Compile Include="shared\CommandBuilders\ProcedureTests.cs" />
+    <Compile Include="shared\CommandBuilders\InsertTests.cs" />
     <Compile Include="shared\CommandBuilders\UpsertTests.cs" />
     <Compile Include="shared\CommandBuilders\UpdateTests.cs" />
     <Compile Include="shared\CommandBuilders\DeleteTests.cs" />

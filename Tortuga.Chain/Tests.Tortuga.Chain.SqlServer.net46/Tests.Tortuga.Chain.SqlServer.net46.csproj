@@ -88,8 +88,8 @@
       <HintPath>..\packages\Tortuga.Anchor.1.0.6144.42409\lib\net46\Tortuga.Anchor.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Tortuga.Chain.CompiledMaterializers, Version=1.0.6145.198, Culture=neutral, PublicKeyToken=8769fd32a2872cf0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Tortuga.Chain.CompiledMaterializers.1.0.6145.188\lib\net46\Tortuga.Chain.CompiledMaterializers.dll</HintPath>
+    <Reference Include="Tortuga.Chain.CompiledMaterializers, Version=1.0.6168.34570, Culture=neutral, PublicKeyToken=8769fd32a2872cf0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tortuga.Chain.CompiledMaterializers.1.0.6168.34560\lib\net46\Tortuga.Chain.CompiledMaterializers.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Tortuga.Chain.Core, Version=1.0.6144.43080, Culture=neutral, PublicKeyToken=8769fd32a2872cf0, processorArchitecture=MSIL">
