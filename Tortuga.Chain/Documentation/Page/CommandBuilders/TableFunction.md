@@ -42,7 +42,7 @@ If no columns are desired by the materializer, 'SELECT 1' is returned instead.
 
 ## Internals
 
-All databases work the same expect for what types of limits they support.
+All databases work the same except for what types of limits they support.
 
 ## Roadmap
 

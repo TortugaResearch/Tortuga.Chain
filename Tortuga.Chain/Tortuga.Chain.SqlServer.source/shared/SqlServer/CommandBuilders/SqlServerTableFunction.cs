@@ -141,7 +141,6 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// <returns>
         /// ExecutionToken&lt;TCommand&gt;.
         /// </returns>
-        /// <exception cref="NotImplementedException"></exception>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
         public override CommandExecutionToken<SqlCommand, SqlParameter> Prepare(Materializer<SqlCommand, SqlParameter> materializer)
         {

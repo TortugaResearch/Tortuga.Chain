@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 
-#if SQL_SERVER || POSTGRESQL
+#if SQL_SERVER || POSTGRESQL || OLE_SQL_SERVER
 
 namespace Tests.CommandBuilders
 {

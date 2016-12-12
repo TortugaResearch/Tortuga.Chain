@@ -33,6 +33,16 @@ namespace Tortuga.Chain.Metadata
         }
 
         /// <summary>
+        /// Gets the metadata for a scalar function.
+        /// </summary>
+        /// <param name="scalarFunctionName">Name of the scalar function.</param>
+        /// <returns>Null if the object could not be found.</returns>
+        public virtual ScalarFunctionMetadata<TName, TDbType> GetScalarFunction(TName scalarFunctionName)
+        {
+            throw new NotSupportedException("Table value functions are not supported by this data source");
+        }
+
+        /// <summary>
         /// Gets the metadata for a table.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
@@ -82,6 +92,21 @@ namespace Tortuga.Chain.Metadata
         /// <remarks>Call Preload before invoking this method to ensure that all table-valued functions were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.</remarks>
         [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
         public virtual IReadOnlyCollection<TableFunctionMetadata<TName, TDbType>> GetTableFunctions()
+        {
+            throw new NotSupportedException("Table value functions are not supported by this data source");
+        }
+
+
+
+        /// <summary>
+        /// Gets the scalar functions that were loaded by this cache.
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>
+        /// Call Preload before invoking this method to ensure that all scalar functions were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.
+        /// </remarks>
+        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
+        public virtual IReadOnlyCollection<ScalarFunctionMetadata<TName, TDbType>> GetScalarFunctions()
         {
             throw new NotSupportedException("Table value functions are not supported by this data source");
         }
