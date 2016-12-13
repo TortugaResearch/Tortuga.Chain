@@ -43,11 +43,20 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 
             var prefix = m_Options.HasFlag(UpdateOptions.ReturnOldValues) ? "Deleted." : "Inserted.";
 
-            var sql = new StringBuilder($"UPDATE {Table.Name.ToQuotedString()}");
+            var sql = new StringBuilder();
+            string header;
+            string intoClause;
+            string footer;
+
+            sqlBuilder.UseTableVariable(Table, out header, out intoClause, out footer);
+
+            sql.Append(header);
+            sql.Append($"UPDATE {Table.Name.ToQuotedString()}");
             sqlBuilder.BuildSetClause(sql, " SET ", null, null);
-            sqlBuilder.BuildSelectClause(sql, " OUTPUT ", prefix, null);
+            sqlBuilder.BuildSelectClause(sql, " OUTPUT ", prefix, intoClause);
             sqlBuilder.BuildWhereClause(sql, " WHERE ", null);
             sql.Append(";");
+            sql.Append(footer);
 
             return new SqlServerCommandExecutionToken(DataSource, "Update " + Table.Name, sql.ToString(), sqlBuilder.GetParameters()).CheckUpdateRowCount(m_Options);
         }

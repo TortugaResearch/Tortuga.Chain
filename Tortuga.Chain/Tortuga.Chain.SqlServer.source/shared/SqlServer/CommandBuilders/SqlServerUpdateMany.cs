@@ -19,7 +19,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         readonly object m_NewValues;
         readonly UpdateOptions m_Options;
         readonly IEnumerable<SqlParameter> m_Parameters;
-        readonly TableOrViewMetadata<SqlServerObjectName, SqlDbType> m_Table;
+        readonly SqlServerTableOrViewMetadata<SqlDbType> m_Table;
         readonly string m_WhereClause;
 
         /// <summary>
@@ -62,11 +62,20 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 
             var prefix = m_Options.HasFlag(UpdateOptions.ReturnOldValues) ? "Deleted." : "Inserted.";
 
-            var sql = new StringBuilder($"UPDATE {m_Table.Name.ToQuotedString()}");
+            var sql = new StringBuilder();
+            string header;
+            string intoClause;
+            string footer;
+
+            sqlBuilder.UseTableVariable(m_Table, out header, out intoClause, out footer);
+
+            sql.Append(header);
+            sql.Append($"UPDATE {m_Table.Name.ToQuotedString()}");
             sqlBuilder.BuildSetClause(sql, " SET ", null, null);
-            sqlBuilder.BuildSelectClause(sql, " OUTPUT ", prefix, null);
+            sqlBuilder.BuildSelectClause(sql, " OUTPUT ", prefix, intoClause);
             sql.Append(" WHERE " + m_WhereClause);
             sql.Append(";");
+            sql.Append(footer);
 
             var parameters = sqlBuilder.GetParameters();
             parameters.AddRange(m_Parameters);

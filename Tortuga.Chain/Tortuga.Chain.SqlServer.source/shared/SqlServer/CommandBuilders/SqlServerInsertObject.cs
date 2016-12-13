@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Data.SqlClient;
-using System.Linq;
 using System.Text;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
@@ -45,28 +44,21 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
             var sql = new StringBuilder();
+            string header;
+            string intoClause;
+            string footer;
 
-            if (!sqlBuilder.HasReadFields || !Table.HasTriggers)
-            {
-                sqlBuilder.BuildInsertClause(sql, $"INSERT INTO {Table.Name.ToQuotedString()} (", null, ")");
-                sqlBuilder.BuildSelectClause(sql, " OUTPUT ", "Inserted.", null);
-                sqlBuilder.BuildValuesClause(sql, " VALUES (", ")");
-                sql.Append(";");
-            }
-            else
-            {
-                sql.Append("DECLARE @ResultTable TABLE( ");
-                sql.Append(string.Join(", ", sqlBuilder.GetSelectColumnDetails().Select(c => c.QuotedSqlName + " " + c.FullTypeName + " NULL")));
-                sql.AppendLine(");");
+            sqlBuilder.UseTableVariable(Table, out header, out intoClause, out footer);
+            sql.Append(header);
 
-                sqlBuilder.BuildInsertClause(sql, $"INSERT INTO {Table.Name.ToQuotedString()} (", null, ")");
-                sqlBuilder.BuildSelectClause(sql, " OUTPUT ", "Inserted.", " INTO @ResultTable ");
-                sqlBuilder.BuildValuesClause(sql, " VALUES (", ")");
-                sql.AppendLine(";");
+            sqlBuilder.BuildInsertClause(sql, $"INSERT INTO {Table.Name.ToQuotedString()} (", null, ")");
+            sqlBuilder.BuildSelectClause(sql, " OUTPUT ", "Inserted.", intoClause);
+            sqlBuilder.BuildValuesClause(sql, " VALUES (", ")");
+            sql.Append(";");
 
-                sql.AppendLine("SELECT * FROM @ResultTable");
+            sql.Append(footer);
 
-            }
+
             return new SqlServerCommandExecutionToken(DataSource, "Insert into " + Table.Name, sql.ToString(), sqlBuilder.GetParameters());
 
         }

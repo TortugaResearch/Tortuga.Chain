@@ -86,7 +86,8 @@ namespace Tests.CommandBuilders
         }
 
 
-#if SQL_SERVER || OLE_SQL_SERVER
+#if SQL_SERVER || OLE_SQL_SERVER //SQL Server has problems with CRUD operations that return values on tables with triggers.
+
         [Theory, MemberData("Prime")]
         public void Insert_Trigger(string assemblyName, string dataSourceName, DataSourceType mode)
         {

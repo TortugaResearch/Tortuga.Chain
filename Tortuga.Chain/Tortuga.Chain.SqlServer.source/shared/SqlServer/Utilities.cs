@@ -3,6 +3,9 @@ using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
 using Tortuga.Chain.CommandBuilders;
+using System.Text;
+using System.Linq;
+using System;
 
 #if !OleDb_Missing
 using System.Data.OleDb;
@@ -59,7 +62,34 @@ namespace Tortuga.Chain.SqlServer
                 return result;
             });
         }
-#endif 
+#endif
+
+        //public static void BuildTableVariable<TDbType>(this SqlBuilder<TDbType> sqlBuilder, StringBuilder sql) where TDbType : struct
+        //{
+        //    sql.Append("DECLARE @ResultTable TABLE( ");
+        //    sql.Append(string.Join(", ", sqlBuilder.GetSelectColumnDetails().Select(c => c.QuotedSqlName + " " + c.FullTypeName + " NULL")));
+        //    sql.AppendLine(");");
+        //}
+
+        /// <summary>
+        /// Triggers need special handling for OUTPUT clauses. 
+        /// </summary>
+        public static void UseTableVariable<TDbType>(this SqlBuilder<TDbType> sqlBuilder, SqlServerTableOrViewMetadata<TDbType> Table, out string header, out string intoCaluse, out string footer) where TDbType : struct
+        {
+            if (sqlBuilder.HasReadFields && Table.HasTriggers)
+            {
+                header = "DECLARE @ResultTable TABLE( " + string.Join(", ", sqlBuilder.GetSelectColumnDetails().Select(c => c.QuotedSqlName + " " + c.FullTypeName + " NULL")) + ");" + Environment.NewLine;
+                intoCaluse = " INTO @ResultTable ";
+                footer = Environment.NewLine +"SELECT * FROM @ResultTable";
+            }
+            else
+            {
+                header = null;
+                intoCaluse = null;
+                footer = null;
+            }
+        }
+
 
 
     }

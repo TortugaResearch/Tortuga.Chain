@@ -17,7 +17,7 @@ namespace Tortuga.Chain.CommandBuilders
     /// 
     /// </summary>
     /// <typeparam name="TDbType">The type of the database type.</typeparam>
-    public class SqlBuilder<TDbType>
+    public sealed class SqlBuilder<TDbType>
         where TDbType : struct
     {
         readonly SqlBuilderEntry<TDbType>[] m_Entries;
