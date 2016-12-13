@@ -413,25 +413,25 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="options">The options.</param>
         /// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
         [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-        [Obsolete("Use InsertBatch(DataTable, SqlServerObjectName, InsertOptions) instead. This overload will be removed in a future version.")]
+        [Obsolete("Use InsertBatch(SqlServerObjectName, DataTable, SqlServerObjectName, InsertOptions) instead. This overload will be removed in a future version.")]
         public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> InsertBatch<TObject>(SqlServerObjectName tableTypeName, DataTable dataTable, InsertOptions options = InsertOptions.None) where TObject : class
         {
             return InsertBatch(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, tableTypeName, dataTable, options);
         }
 
-        /// <summary>
-        /// Inserts the batch of records as one operation.
-        /// </summary>
-        /// <typeparam name="TObject">The type of the t object.</typeparam>
-        /// <param name="tableTypeName">Name of the table type.</param>
-        /// <param name="dataTable">The data table.</param>
-        /// <param name="options">The options.</param>
-        /// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
-        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> InsertBatch<TObject>(DataTable dataTable, SqlServerObjectName tableTypeName, InsertOptions options = InsertOptions.None) where TObject : class
-        {
-            return InsertBatch(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, tableTypeName, dataTable, options);
-        }
+        ///// <summary>
+        ///// Inserts the batch of records as one operation.
+        ///// </summary>
+        ///// <typeparam name="TObject">The type of the t object.</typeparam>
+        ///// <param name="tableTypeName">Name of the table type.</param>
+        ///// <param name="dataTable">The data table.</param>
+        ///// <param name="options">The options.</param>
+        ///// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
+        //[SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
+        //public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> InsertBatch<TObject>(DataTable dataTable, SqlServerObjectName tableTypeName, InsertOptions options = InsertOptions.None) where TObject : class
+        //{
+        //    return InsertBatch(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, tableTypeName, dataTable, options);
+        //}
 
         /// <summary>
         /// Inserts the batch of records as one operation.
@@ -469,25 +469,25 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="options">The options.</param>
         /// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
         [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-        [Obsolete("Use InsertBatch(DbDataReader, SqlServerObjectName, InsertOptions) instead. This overload will be removed in a future version.")]
+        [Obsolete("Use InsertBatch(SqlServerObjectName, DbDataReader, SqlServerObjectName, InsertOptions) instead. This overload will be removed in a future version.")]
         public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> InsertBatch<TObject>(SqlServerObjectName tableTypeName, DbDataReader dataReader, InsertOptions options = InsertOptions.None) where TObject : class
         {
             return InsertBatch(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, tableTypeName, dataReader, options);
         }
 
-        /// <summary>
-        /// Inserts the batch of records as one operation.
-        /// </summary>
-        /// <typeparam name="TObject">The type of the t object.</typeparam>
-        /// <param name="tableTypeName">Name of the table type.</param>
-        /// <param name="dataReader">The data reader.</param>
-        /// <param name="options">The options.</param>
-        /// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
-        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> InsertBatch<TObject>(DbDataReader dataReader, SqlServerObjectName tableTypeName, InsertOptions options = InsertOptions.None) where TObject : class
-        {
-            return InsertBatch(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, tableTypeName, dataReader, options);
-        }
+        ///// <summary>
+        ///// Inserts the batch of records as one operation.
+        ///// </summary>
+        ///// <typeparam name="TObject">The type of the t object.</typeparam>
+        ///// <param name="tableTypeName">Name of the table type.</param>
+        ///// <param name="dataReader">The data reader.</param>
+        ///// <param name="options">The options.</param>
+        ///// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
+        //[SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
+        //public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> InsertBatch<TObject>(DbDataReader dataReader, SqlServerObjectName tableTypeName, InsertOptions options = InsertOptions.None) where TObject : class
+        //{
+        //    return InsertBatch(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, tableTypeName, dataReader, options);
+        //}
 
 #if !DataTable_Missing
         /// <summary>
