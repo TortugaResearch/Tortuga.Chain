@@ -117,7 +117,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 
             if (m_FilterValue != null)
             {
-                sql.Append(" WHERE " + sqlBuilder.ApplyAnonymousFilterValue(m_FilterValue, m_FilterOptions));
+                sql.Append(" WHERE " + sqlBuilder.ApplyAnonymousFilterValue(m_FilterValue, m_FilterOptions, true));
 
                 parameters = sqlBuilder.GetParameters();
             }
@@ -125,8 +125,8 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             {
                 sql.Append(" WHERE " + m_WhereClause);
 
-                parameters = SqlBuilder.GetParameters<OleDbParameter>(m_ArgumentValue);
-                parameters.AddRange(sqlBuilder.GetParameters());
+                parameters = sqlBuilder.GetParameters();
+                parameters.AddRange(SqlBuilder.GetParameters<OleDbParameter>(m_ArgumentValue));
             }
             else
             {

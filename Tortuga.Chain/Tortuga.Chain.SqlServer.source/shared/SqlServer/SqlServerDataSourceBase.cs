@@ -816,12 +816,11 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="whereClause">The where clause.</param>
         public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> DeleteMany(string tableName, string whereClause)
         {
-            throw new NotImplementedException("See #171");
-            //var table = DatabaseMetadata.GetTableOrView(tableName);
-            //if (!AuditRules.UseSoftDelete(table))
-            //    return new SqlServerDeleteMany(this, tableName, whereClause, null);
+            var table = DatabaseMetadata.GetTableOrView(tableName);
+            if (!AuditRules.UseSoftDelete(table))
+                return new SqlServerDeleteMany(this, tableName, whereClause, null);
 
-            //return new SqlServerUpdateMany(this, tableName, null, whereClause, null, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected);
+            return new SqlServerUpdateMany(this, tableName, null, whereClause, null, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected);
         }
 
         /// <summary>
@@ -832,12 +831,11 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="argumentValue">The argument value for the where clause.</param>
         public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> DeleteMany(string tableName, string whereClause, object argumentValue)
         {
-            throw new NotImplementedException("See #171");
-            //var table = DatabaseMetadata.GetTableOrView(tableName);
-            //if (!AuditRules.UseSoftDelete(table))
-            //    return new SqlServerDeleteMany(this, tableName, whereClause, argumentValue);
+            var table = DatabaseMetadata.GetTableOrView(tableName);
+            if (!AuditRules.UseSoftDelete(table))
+                return new SqlServerDeleteMany(this, tableName, whereClause, argumentValue);
 
-            //return new SqlServerUpdateMany(this, tableName, null, whereClause, argumentValue, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected);
+            return new SqlServerUpdateMany(this, tableName, null, whereClause, argumentValue, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected);
         }
 
         /// <summary>
@@ -848,12 +846,11 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="options">The options.</param>
         public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> DeleteMany(string tableName, object filterValue, FilterOptions options = FilterOptions.None)
         {
-            throw new NotImplementedException("See #171");
-            //var table = DatabaseMetadata.GetTableOrView(tableName);
-            //if (!AuditRules.UseSoftDelete(table))
-            //    return new SqlServerDeleteMany(this, tableName, filterValue, options);
+            var table = DatabaseMetadata.GetTableOrView(tableName);
+            if (!AuditRules.UseSoftDelete(table))
+                return new SqlServerDeleteMany(this, tableName, filterValue, options);
 
-            //return new SqlServerUpdateMany(this, tableName, null, filterValue, options, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected);
+            return new SqlServerUpdateMany(this, tableName, null, filterValue, options, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected);
         }
 
     }

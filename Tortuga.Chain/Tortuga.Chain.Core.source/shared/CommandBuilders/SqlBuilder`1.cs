@@ -547,12 +547,13 @@ namespace Tortuga.Chain.CommandBuilders
         /// </summary>
         /// <param name="filterValue">The filter value.</param>
         /// <param name="filterOptions">The filter options.</param>
+        /// <param name="useSecondSlot">if set to <c>true</c> uses the second parameter slot.</param>
         /// <returns>System.String.</returns>
-        /// <exception cref="System.ArgumentNullException"></exception>
+        /// <exception cref="System.ArgumentNullException">filterValue - filterValue</exception>
         /// <exception cref="MappingException">
         /// </exception>
         /// <exception cref="ArgumentNullException"></exception>
-        public string ApplyAnonymousFilterValue(object filterValue, FilterOptions filterOptions)
+        public string ApplyAnonymousFilterValue(object filterValue, FilterOptions filterOptions, bool useSecondSlot = false)
         {
             if (filterValue == null)
                 throw new ArgumentNullException(nameof(filterValue), $"{nameof(filterValue)} is null.");
@@ -581,7 +582,10 @@ namespace Tortuga.Chain.CommandBuilders
                             else
                             {
                                 m_Entries[i].ParameterValue = value;
-                                m_Entries[i].UseParameter = true;
+                                if (!useSecondSlot)
+                                    m_Entries[i].UseParameter = true;
+                                else
+                                    m_Entries[i].UseParameter2 = true;
                                 parts.Add($"{m_Entries[i].Details.QuotedSqlName} = ?");
                             }
 
@@ -613,7 +617,10 @@ namespace Tortuga.Chain.CommandBuilders
                             else
                             {
                                 m_Entries[i].ParameterValue = value;
-                                m_Entries[i].UseParameter = true;
+                                if (!useSecondSlot)
+                                    m_Entries[i].UseParameter = true;
+                                else
+                                    m_Entries[i].UseParameter2 = true;
                                 parts.Add($"{m_Entries[i].Details.QuotedSqlName} = ?");
                             }
 

@@ -45,7 +45,7 @@ namespace Tortuga.Chain.SQLite
             return From(tableOrViewName, whereClause, argumentValue);
         }
 
-        ITableDbCommandBuilder IClass1DataSource.From(string tableOrViewName, object filterValue, FilterOptions filterOptions )
+        ITableDbCommandBuilder IClass1DataSource.From(string tableOrViewName, object filterValue, FilterOptions filterOptions)
         {
             return From(tableOrViewName, filterValue, filterOptions);
         }
@@ -171,6 +171,22 @@ namespace Tortuga.Chain.SQLite
             return UpdateByKeyList(tableName, newValues, keys, options);
         }
 
+        IMultipleRowDbCommandBuilder IClass1DataSource.DeleteMany(string tableName, string whereClause)
+        {
+            return DeleteMany(tableName, whereClause);
+        }
+
+
+        IMultipleRowDbCommandBuilder IClass1DataSource.DeleteMany(string tableName, string whereClause, object argumentValue)
+        {
+            return DeleteMany(tableName, whereClause, argumentValue);
+        }
+
+
+        IMultipleRowDbCommandBuilder IClass1DataSource.DeleteMany(string tableName, object filterValue, FilterOptions options)
+        {
+            return DeleteMany(tableName, filterValue, options);
+        }
     }
 
 

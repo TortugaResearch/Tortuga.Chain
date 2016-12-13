@@ -165,6 +165,22 @@ namespace Tortuga.Chain.Access
             return UpdateByKeyList(tableName, newValues, keys, options);
         }
 
+        IMultipleRowDbCommandBuilder IClass1DataSource.DeleteMany(string tableName, string whereClause)
+        {
+            return DeleteMany(tableName, whereClause);
+        }
+
+
+        IMultipleRowDbCommandBuilder IClass1DataSource.DeleteMany(string tableName, string whereClause, object argumentValue)
+        {
+            return DeleteMany(tableName, whereClause, argumentValue);
+        }
+
+
+        IMultipleRowDbCommandBuilder IClass1DataSource.DeleteMany(string tableName, object filterValue, FilterOptions options)
+        {
+            return DeleteMany(tableName, filterValue, options);
+        }
     }
 
 

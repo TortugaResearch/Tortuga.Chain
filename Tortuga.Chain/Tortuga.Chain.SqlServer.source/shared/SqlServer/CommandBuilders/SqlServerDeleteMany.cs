@@ -19,6 +19,9 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         readonly IEnumerable<SqlParameter> m_Parameters;
         readonly TableOrViewMetadata<SqlServerObjectName, SqlDbType> m_Table;
         readonly string m_WhereClause;
+        readonly object m_ArgumentValue;
+        readonly object m_FilterValue;
+        readonly FilterOptions m_FilterOptions;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlServerDeleteMany" /> class.
@@ -28,7 +31,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// <param name="whereClause">The where clause.</param>
         /// <param name="parameters">The parameters.</param>
         /// <param name="options">The options.</param>
-        public SqlServerDeleteMany(SqlServerDataSourceBase dataSource, SqlServerObjectName tableName, string whereClause, IEnumerable<SqlParameter> parameters,  DeleteOptions options) : base(dataSource)
+        public SqlServerDeleteMany(SqlServerDataSourceBase dataSource, SqlServerObjectName tableName, string whereClause, IEnumerable<SqlParameter> parameters, DeleteOptions options) : base(dataSource)
         {
             if (options.HasFlag(DeleteOptions.UseKeyAttribute))
                 throw new NotSupportedException("Cannot use Key attributes with this operation.");
@@ -37,6 +40,33 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             m_WhereClause = whereClause;
             //m_Options = options;
             m_Parameters = parameters;
+        }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SqlServerDeleteMany"/> class.
+        /// </summary>
+        /// <param name="dataSource">The data source.</param>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="whereClause">The where clause.</param>
+        /// <param name="argumentValue">The argument value.</param>
+        public SqlServerDeleteMany(SqlServerDataSourceBase dataSource, SqlServerObjectName tableName, string whereClause, object argumentValue) : base(dataSource)
+        {
+            m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
+            m_WhereClause = whereClause;
+            m_ArgumentValue = argumentValue;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SqlServerDeleteMany"/> class.
+        /// </summary>
+        /// <param name="dataSource">The data source.</param>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="filterValue">The filter value.</param>
+        /// <param name="options">The options.</param>
+        public SqlServerDeleteMany(SqlServerDataSourceBase dataSource, string tableName, object filterValue, FilterOptions options) : base(dataSource)
+        {
+            m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
+            m_FilterValue = filterValue;
+            m_FilterOptions = options;
         }
 
         /// <summary>
@@ -53,14 +83,31 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             var sqlBuilder = m_Table.CreateSqlBuilder(StrictMode);
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
+            List<SqlParameter> parameters;
             var sql = new StringBuilder();
             sql.Append("DELETE FROM " + m_Table.Name.ToQuotedString());
             sqlBuilder.BuildSelectClause(sql, " OUTPUT ", "Deleted.", null);
-            sql.Append(" WHERE " + m_WhereClause);
+            if (m_FilterValue != null)
+            {
+                sql.Append(" WHERE " + sqlBuilder.ApplyFilterValue(m_FilterValue, m_FilterOptions));
+
+                parameters = sqlBuilder.GetParameters();
+            }
+            else if (!string.IsNullOrWhiteSpace(m_WhereClause))
+            {
+                sql.Append(" WHERE " + m_WhereClause);
+
+                parameters = SqlBuilder.GetParameters<SqlParameter>(m_ArgumentValue);
+                parameters.AddRange(sqlBuilder.GetParameters());
+            }
+            else
+            {
+                parameters = sqlBuilder.GetParameters();
+            }
             sql.Append(";");
 
-            var parameters = sqlBuilder.GetParameters();
-            parameters.AddRange(m_Parameters);
+            if (m_Parameters != null)
+                parameters.AddRange(m_Parameters);
 
             return new SqlServerCommandExecutionToken(DataSource, "Delete from " + m_Table.Name, sql.ToString(), parameters);
         }

@@ -194,6 +194,13 @@ namespace Tests.CommandBuilders
         [Theory, MemberData("Prime")]
         public void DeleteMany_WhereArg(string assemblyName, string dataSourceName, DataSourceType mode)
         {
+
+#if OLE_SQL_SERVER
+            var whereClause = "Title = ? AND MiddleName Is Null";
+#else
+            var whereClause = "Title = @LookupKey AND MiddleName Is Null";
+#endif
+
             var dataSource = DataSource(dataSourceName, mode);
             try
             {
@@ -204,7 +211,7 @@ namespace Tests.CommandBuilders
                 var allKeys = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToInt32List("EmployeeKey").Execute();
                 var keysToUpdate = allKeys.Take(5).ToList();
 
-                var updatedRows = dataSource.DeleteMany(EmployeeTableName, $"Title = ? AND MiddleName Is Null", new { @LookupKey = lookupKey }).ToCollection<Employee>().Execute();
+                var updatedRows = dataSource.DeleteMany(EmployeeTableName, whereClause, new { @LookupKey = lookupKey }).ToCollection<Employee>().Execute();
 
                 Assert.Equal(5, updatedRows.Count, "The wrong number of rows were deleted");
 
@@ -295,7 +302,13 @@ namespace Tests.CommandBuilders
                 var allKeys = dataSourceRules.From(CustomerTableName, new { FullName = lookupKey }).ToInt32List("CustomerKey").Execute();
                 var keysToUpdate = allKeys.Take(5).ToList();
 
-                var updatedRows = dataSourceRules.DeleteMany(CustomerTableName, $"FullName = ? AND State = ?", new { @FullName = lookupKey, State = "BB" }).ToCollection<Customer>().Execute();
+#if OLE_SQL_SERVER
+            var whereClause = "FullName = ? AND State = ?";
+#else
+                var whereClause = "FullName = @Lookup AND State = @State";
+#endif
+
+                var updatedRows = dataSourceRules.DeleteMany(CustomerTableName, whereClause, new { @Lookup = lookupKey, State = "BB" }).ToCollection<Customer>().Execute();
 
                 Assert.Equal(5, updatedRows.Count, "The wrong number of rows were deleted");
 
