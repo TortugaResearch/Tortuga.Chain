@@ -27,6 +27,9 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
         readonly IEnumerable<SQLiteParameter> m_Parameters;
         readonly TableOrViewMetadata<SQLiteObjectName, DbType> m_Table;
         readonly string m_WhereClause;
+        readonly object m_ArgumentValue;
+        readonly object m_FilterValue;
+        readonly FilterOptions m_FilterOptions;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SQLiteUpdateMany" /> class.
@@ -53,6 +56,50 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
 
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="SQLiteUpdateMany" /> class.
+        /// </summary>
+        /// <param name="dataSource">The data source.</param>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="newValues">The new values.</param>
+        /// <param name="whereClause">The where clause.</param>
+        /// <param name="argumentValue">The argument value for the where clause.</param>
+        /// <param name="options">The options.</param>
+        /// <exception cref="System.NotSupportedException">Cannot use Key attributes with this operation.</exception>
+        public SQLiteUpdateMany(SQLiteDataSourceBase dataSource, SQLiteObjectName tableName, object newValues, string whereClause, object argumentValue, UpdateOptions options) : base(dataSource)
+        {
+            if (options.HasFlag(UpdateOptions.UseKeyAttribute))
+                throw new NotSupportedException("Cannot use Key attributes with this operation.");
+
+            m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
+            m_NewValues = newValues;
+            m_WhereClause = whereClause;
+            m_Options = options;
+            m_ArgumentValue = argumentValue;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SQLiteUpdateMany" /> class.
+        /// </summary>
+        /// <param name="dataSource">The data source.</param>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="newValues">The new values.</param>
+        /// <param name="filterValue">The filter value.</param>
+        /// <param name="filterOptions">The filter options.</param>
+        /// <param name="options">The update options.</param>
+        /// <exception cref="System.NotSupportedException">Cannot use Key attributes with this operation.</exception>
+        public SQLiteUpdateMany(SQLiteDataSourceBase dataSource, SQLiteObjectName tableName, object newValues, object filterValue, FilterOptions filterOptions, UpdateOptions options) : base(dataSource)
+        {
+            if (options.HasFlag(UpdateOptions.UseKeyAttribute))
+                throw new NotSupportedException("Cannot use Key attributes with this operation.");
+
+            m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
+            m_NewValues = newValues;
+            m_FilterValue = filterValue;
+            m_FilterOptions = filterOptions;
+            m_Options = options;
+        }
+
+        /// <summary>
         /// Prepares the command for execution by generating any necessary SQL.
         /// </summary>
         /// <param name="materializer"></param>
@@ -66,31 +113,54 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
             sqlBuilder.ApplyArgumentValue(DataSource, m_NewValues, m_Options);
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
+            List<SQLiteParameter> parameters;
             var sql = new StringBuilder();
             if (sqlBuilder.HasReadFields && m_Options.HasFlag(UpdateOptions.ReturnOldValues))
             {
                 sqlBuilder.BuildSelectClause(sql, "SELECT ", null, " FROM " + m_Table.Name.ToQuotedString());
-                sql.AppendLine(" WHERE " + m_WhereClause + ";");
+                if (m_FilterValue != null)
+                    sql.Append(" WHERE " + sqlBuilder.ApplyFilterValue(m_FilterValue, m_FilterOptions));
+                else if (!string.IsNullOrWhiteSpace(m_WhereClause))
+                    sql.Append(" WHERE " + m_WhereClause);
+                sql.AppendLine(";");
             }
 
             sql.Append($"UPDATE {m_Table.Name.ToQuotedString()}");
             sqlBuilder.BuildSetClause(sql, " SET ", null, null);
-            sql.Append(" WHERE " + m_WhereClause);
+            if (m_FilterValue != null)
+            {
+                sql.Append(" WHERE " + sqlBuilder.ApplyFilterValue(m_FilterValue, m_FilterOptions));
+                parameters = sqlBuilder.GetParameters();
+            }
+            else if (!string.IsNullOrWhiteSpace(m_WhereClause))
+            {
+                sql.Append(" WHERE " + m_WhereClause);
+                parameters = SqlBuilder.GetParameters<SQLiteParameter>(m_ArgumentValue);
+                parameters.AddRange(sqlBuilder.GetParameters());
+            }
+            else
+            {
+                parameters = sqlBuilder.GetParameters();
+            }
             sql.AppendLine(";");
 
 
             if (sqlBuilder.HasReadFields && !m_Options.HasFlag(UpdateOptions.ReturnOldValues))
             {
                 sqlBuilder.BuildSelectClause(sql, "SELECT ", null, " FROM " + m_Table.Name.ToQuotedString());
-                sql.AppendLine(" WHERE " + m_WhereClause + ";");
+                if (m_FilterValue != null)
+                    sql.Append(" WHERE " + sqlBuilder.ApplyFilterValue(m_FilterValue, m_FilterOptions));
+                else if (!string.IsNullOrWhiteSpace(m_WhereClause))
+                    sql.Append(" WHERE " + m_WhereClause);
+                sql.AppendLine(";");
             }
 
-            var parameters = sqlBuilder.GetParameters();
             if (m_Parameters != null)
                 parameters.AddRange(m_Parameters);
 
             return new SQLiteCommandExecutionToken(DataSource, "Update " + m_Table.Name, sql.ToString(), parameters, lockType: LockType.Write).CheckUpdateRowCount(m_Options, m_ExpectedRowCount);
         }
+
 
         /// <summary>
         /// Returns the column associated with the column name.
