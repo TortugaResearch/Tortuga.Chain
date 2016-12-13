@@ -57,7 +57,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// <param name="tableName">Name of the table.</param>
         /// <param name="filterValue">The filter value.</param>
         /// <param name="options">The options.</param>
-        public OleDbSqlServerDeleteMany(OleDbSqlServerDataSourceBase dataSource, string tableName, object filterValue, FilterOptions options) : base(dataSource)
+        public OleDbSqlServerDeleteMany(OleDbSqlServerDataSourceBase dataSource, SqlServerObjectName tableName, object filterValue, FilterOptions options) : base(dataSource)
         {
             m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
             m_FilterValue = filterValue;

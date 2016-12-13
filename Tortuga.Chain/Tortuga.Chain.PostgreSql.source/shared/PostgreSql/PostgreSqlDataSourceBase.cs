@@ -1,4 +1,5 @@
 ﻿using Npgsql;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
@@ -11,7 +12,6 @@ using Tortuga.Chain.Core;
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Metadata;
 using Tortuga.Chain.PostgreSql.CommandBuilders;
-using System;
 
 namespace Tortuga.Chain.PostgreSql
 {
@@ -96,7 +96,7 @@ namespace Tortuga.Chain.PostgreSql
         /// <returns>TableDbCommandBuilder&lt;NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption&gt;.</returns>
         public TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption> From(PostgreSqlObjectName tableOrViewName, object filterValue, FilterOptions filterOptions = FilterOptions.None)
         {
-            return new PostgreSqlTableOrView(this, tableOrViewName, filterValue, filterOptions );
+            return new PostgreSqlTableOrView(this, tableOrViewName, filterValue, filterOptions);
         }
 
         /// <summary>
@@ -687,6 +687,50 @@ namespace Tortuga.Chain.PostgreSql
                 if (closeTransaction)
                     await cmd.Transaction.CommitAsync().ConfigureAwait(false);
             }
+        }
+
+        /// <summary>
+        /// Deletes multiple records using a where expression.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="whereClause">The where clause.</param>
+        public MultipleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> DeleteMany(PostgreSqlObjectName tableName, string whereClause)
+        {
+            var table = DatabaseMetadata.GetTableOrView(tableName);
+            if (!AuditRules.UseSoftDelete(table))
+                return new PostgreSqlDeleteMany(this, tableName, whereClause, null);
+
+            return new PostgreSqlUpdateMany(this, tableName, null, whereClause, null, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected);
+        }
+
+        /// <summary>
+        /// Deletes multiple records using a where expression.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="whereClause">The where clause.</param>
+        /// <param name="argumentValue">The argument value for the where clause.</param>
+        public MultipleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> DeleteMany(PostgreSqlObjectName tableName, string whereClause, object argumentValue)
+        {
+            var table = DatabaseMetadata.GetTableOrView(tableName);
+            if (!AuditRules.UseSoftDelete(table))
+                return new PostgreSqlDeleteMany(this, tableName, whereClause, argumentValue);
+
+            return new PostgreSqlUpdateMany(this, tableName, null, whereClause, argumentValue, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected);
+        }
+
+        /// <summary>
+        /// Deletes multiple records using a filter object.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="filterValue">The filter value.</param>
+        /// <param name="options">The options.</param>
+        public MultipleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> DeleteMany(PostgreSqlObjectName tableName, object filterValue, FilterOptions options = FilterOptions.None)
+        {
+            var table = DatabaseMetadata.GetTableOrView(tableName);
+            if (!AuditRules.UseSoftDelete(table))
+                return new PostgreSqlDeleteMany(this, tableName, filterValue, options);
+
+            return new PostgreSqlUpdateMany(this, tableName, null, filterValue, options, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected);
         }
     }
 }

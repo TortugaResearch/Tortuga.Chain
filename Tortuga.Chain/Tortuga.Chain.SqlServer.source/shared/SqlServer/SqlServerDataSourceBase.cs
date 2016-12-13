@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
@@ -814,7 +813,7 @@ namespace Tortuga.Chain.SqlServer
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="whereClause">The where clause.</param>
-        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> DeleteMany(string tableName, string whereClause)
+        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> DeleteMany(SqlServerObjectName tableName, string whereClause)
         {
             var table = DatabaseMetadata.GetTableOrView(tableName);
             if (!AuditRules.UseSoftDelete(table))
@@ -829,7 +828,7 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="tableName">Name of the table.</param>
         /// <param name="whereClause">The where clause.</param>
         /// <param name="argumentValue">The argument value for the where clause.</param>
-        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> DeleteMany(string tableName, string whereClause, object argumentValue)
+        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> DeleteMany(SqlServerObjectName tableName, string whereClause, object argumentValue)
         {
             var table = DatabaseMetadata.GetTableOrView(tableName);
             if (!AuditRules.UseSoftDelete(table))
@@ -844,7 +843,7 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="tableName">Name of the table.</param>
         /// <param name="filterValue">The filter value.</param>
         /// <param name="options">The options.</param>
-        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> DeleteMany(string tableName, object filterValue, FilterOptions options = FilterOptions.None)
+        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> DeleteMany(SqlServerObjectName tableName, object filterValue, FilterOptions options = FilterOptions.None)
         {
             var table = DatabaseMetadata.GetTableOrView(tableName);
             if (!AuditRules.UseSoftDelete(table))

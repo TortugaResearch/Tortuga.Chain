@@ -41,6 +41,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             //m_Options = options;
             m_Parameters = parameters;
         }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlServerDeleteMany"/> class.
         /// </summary>
@@ -62,7 +63,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// <param name="tableName">Name of the table.</param>
         /// <param name="filterValue">The filter value.</param>
         /// <param name="options">The options.</param>
-        public SqlServerDeleteMany(SqlServerDataSourceBase dataSource, string tableName, object filterValue, FilterOptions options) : base(dataSource)
+        public SqlServerDeleteMany(SqlServerDataSourceBase dataSource, SqlServerObjectName tableName, object filterValue, FilterOptions options) : base(dataSource)
         {
             m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
             m_FilterValue = filterValue;
