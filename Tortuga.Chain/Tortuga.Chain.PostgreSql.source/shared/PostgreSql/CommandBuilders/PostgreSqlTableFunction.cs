@@ -157,7 +157,12 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
             if (m_FunctionArgumentValue != null)
                 sqlBuilder.ApplyArgumentValue(DataSource, OperationTypes.None, m_FunctionArgumentValue);
             if (m_SelectClause == null)
-                sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
+            {
+                var desired = materializer.DesiredColumns();
+                if (desired == Materializer.AutoSelectDesiredColumns)
+                    desired = Materializer.AllColumns;
+                sqlBuilder.ApplyDesiredColumns(desired);
+            }
 
             //Support check
             if (!Enum.IsDefined(typeof(PostgreSqlLimitOption), m_LimitOptions))

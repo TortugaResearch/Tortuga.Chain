@@ -259,6 +259,21 @@ namespace Tortuga.Chain.CommandBuilders
             sql.Append(footer);
         }
 
+        /// <summary>
+        /// Builds FROM clause for a function.
+        /// </summary>
+        /// <param name="sql">The SQL.</param>
+        /// <param name="header">The header.</param>
+        /// <param name="footer">The footer.</param>
+        public void BuildAnonymousFromFunctionClause(StringBuilder sql, string header, string footer)
+        {
+            if (sql == null)
+                throw new ArgumentNullException(nameof(sql), $"{nameof(sql)} is null.");
+
+            sql.Append(header);
+            sql.Append(string.Join(", ", GetFormalParameters().Select(s => "?")));
+            sql.Append(footer);
+        }
 
         /// <summary>
         /// Applies the argument value.

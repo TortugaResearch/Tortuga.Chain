@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 
-#if SQL_SERVER || POSTGRESQL
+#if SQL_SERVER || POSTGRESQL || OLE_SQL_SERVER
 
 namespace Tests.CommandBuilders
 {
@@ -43,6 +43,19 @@ namespace Tests.CommandBuilders
             }
         }
 #endif
+        [Theory, MemberData("Prime")]
+        public void TableFunction1_Scalar(string assemblyName, string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+                var result = dataSource.TableFunction(TableFunction1Name, Parameter1).ToInt32().Execute();
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
 
         [Theory, MemberData("Prime")]
         public void TableFunction1_Object_Limit(string assemblyName, string dataSourceName, DataSourceType mode)
