@@ -15,12 +15,10 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
     /// </summary>
     internal sealed class OleDbSqlServerDeleteMany : MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter>
     {
+        //readonly DeleteOptions m_Options;
         readonly IEnumerable<OleDbParameter> m_Parameters;
         readonly TableOrViewMetadata<SqlServerObjectName, OleDbType> m_Table;
         readonly string m_WhereClause;
-        readonly object m_ArgumentValue;
-        readonly object m_FilterValue;
-        readonly FilterOptions m_FilterOptions;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlServerDeleteMany" /> class.
@@ -29,39 +27,16 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// <param name="tableName">Name of the table.</param>
         /// <param name="whereClause">The where clause.</param>
         /// <param name="parameters">The parameters.</param>
-        public OleDbSqlServerDeleteMany(OleDbSqlServerDataSourceBase dataSource, SqlServerObjectName tableName, string whereClause, IEnumerable<OleDbParameter> parameters) : base(dataSource)
-        {
-
-            m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
-            m_WhereClause = whereClause;
-            m_Parameters = parameters;
-        }
-        /// <summary>
-        /// Initializes a new instance of the <see cref="OleDbSqlServerDeleteMany"/> class.
-        /// </summary>
-        /// <param name="dataSource">The data source.</param>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="whereClause">The where clause.</param>
-        /// <param name="argumentValue">The argument value.</param>
-        public OleDbSqlServerDeleteMany(OleDbSqlServerDataSourceBase dataSource, SqlServerObjectName tableName, string whereClause, object argumentValue) : base(dataSource)
-        {
-            m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
-            m_WhereClause = whereClause;
-            m_ArgumentValue = argumentValue;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="OleDbSqlServerDeleteMany"/> class.
-        /// </summary>
-        /// <param name="dataSource">The data source.</param>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="filterValue">The filter value.</param>
         /// <param name="options">The options.</param>
-        public OleDbSqlServerDeleteMany(OleDbSqlServerDataSourceBase dataSource, string tableName, object filterValue, FilterOptions options) : base(dataSource)
+        public OleDbSqlServerDeleteMany(OleDbSqlServerDataSourceBase dataSource, SqlServerObjectName tableName, string whereClause, IEnumerable<OleDbParameter> parameters, DeleteOptions options) : base(dataSource)
         {
+            if (options.HasFlag(DeleteOptions.UseKeyAttribute))
+                throw new NotSupportedException("Cannot use Key attributes with this operation.");
+
             m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
-            m_FilterValue = filterValue;
-            m_FilterOptions = options;
+            m_WhereClause = whereClause;
+            //m_Options = options;
+            m_Parameters = parameters;
         }
 
         /// <summary>
@@ -78,32 +53,14 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             var sqlBuilder = m_Table.CreateSqlBuilder(StrictMode);
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
-            List<OleDbParameter> parameters;
             var sql = new StringBuilder();
             sql.Append("DELETE FROM " + m_Table.Name.ToQuotedString());
             sqlBuilder.BuildSelectClause(sql, " OUTPUT ", "Deleted.", null);
-
-            if (m_FilterValue != null)
-            {
-                sql.Append(" WHERE " + sqlBuilder.ApplyAnonymousFilterValue(m_FilterValue, m_FilterOptions));
-
-                parameters = sqlBuilder.GetParameters();
-            }
-            else if (!string.IsNullOrWhiteSpace(m_WhereClause))
-            {
-                sql.Append(" WHERE " + m_WhereClause);
-
-                parameters = SqlBuilder.GetParameters<OleDbParameter>(m_ArgumentValue);
-                parameters.AddRange(sqlBuilder.GetParameters());
-            }
-            else
-            {
-                parameters = sqlBuilder.GetParameters();
-            }
+            sql.Append(" WHERE " + m_WhereClause);
             sql.Append(";");
 
-            if (m_Parameters != null)
-                parameters.AddRange(m_Parameters);
+            var parameters = sqlBuilder.GetParameters();
+            parameters.AddRange(m_Parameters);
 
             return new OleDbCommandExecutionToken(DataSource, "Delete from " + m_Table.Name, sql.ToString(), parameters);
         }
