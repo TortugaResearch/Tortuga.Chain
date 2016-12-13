@@ -1,6 +1,7 @@
 ﻿#if !OleDb_Missing
 using System;
 using System.Data.OleDb;
+using System.Linq;
 using System.Text;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
@@ -45,10 +46,27 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
             var sql = new StringBuilder();
-            sqlBuilder.BuildInsertClause(sql, $"INSERT INTO {Table.Name.ToQuotedString()} (", null, ")");
-            sqlBuilder.BuildSelectClause(sql, " OUTPUT ", "Inserted.", null);
-            sqlBuilder.BuildAnonymousValuesClause(sql, " VALUES (", ")");
-            sql.Append(";");
+
+            if (!sqlBuilder.HasReadFields || !Table.HasTriggers)
+            {
+                sqlBuilder.BuildInsertClause(sql, $"INSERT INTO {Table.Name.ToQuotedString()} (", null, ")");
+                sqlBuilder.BuildSelectClause(sql, " OUTPUT ", "Inserted.", null);
+                sqlBuilder.BuildAnonymousValuesClause(sql, " VALUES (", ")");
+                sql.Append(";");
+            }
+            else
+            {
+                sql.Append("DECLARE @ResultTable TABLE( ");
+                sql.Append(string.Join(", ", sqlBuilder.GetSelectColumnDetails().Select(c => c.QuotedSqlName + " " + c.FullTypeName + " NULL")));
+                sql.AppendLine(");");
+
+                sqlBuilder.BuildInsertClause(sql, $"INSERT INTO {Table.Name.ToQuotedString()} (", null, ")");
+                sqlBuilder.BuildSelectClause(sql, " OUTPUT ", "Inserted.", " INTO @ResultTable ");
+                sqlBuilder.BuildAnonymousValuesClause(sql, " VALUES (", ")");
+                sql.AppendLine(";");
+
+                sql.AppendLine("SELECT * FROM @ResultTable");
+            }
 
             return new OleDbCommandExecutionToken(DataSource, "Insert into " + Table.Name, sql.ToString(), sqlBuilder.GetParameters());
 

@@ -487,7 +487,14 @@ namespace Tortuga.Chain.SqlServer
                             {
                                 var name = reader.GetString(reader.GetOrdinal("ParameterName"));
                                 var typeName = reader.GetString(reader.GetOrdinal("TypeName"));
-                                parameters.Add(new ParameterMetadata<SqlDbType>(name, name, typeName, TypeNameToSqlDbType(typeName)));
+                                bool isNullable = true;
+                                int? maxLength = reader.IsDBNull(reader.GetOrdinal("max_length")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("max_length"));
+                                int? precision = reader.IsDBNull(reader.GetOrdinal("precision")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("precision"));
+                                int? scale = reader.IsDBNull(reader.GetOrdinal("scale")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("scale"));
+                                string fullTypeName;
+                                AdjustTypeDetails(typeName, ref maxLength, ref precision, ref scale, out fullTypeName);
+
+                                parameters.Add(new ParameterMetadata<SqlDbType>(name, name, typeName, TypeNameToSqlDbType(typeName), isNullable, maxLength, precision, scale, fullTypeName));
                             }
                         }
                     }
