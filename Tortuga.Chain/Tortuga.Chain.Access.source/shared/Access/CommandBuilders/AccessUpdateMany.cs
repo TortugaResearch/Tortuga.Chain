@@ -21,6 +21,9 @@ namespace Tortuga.Chain.Access.CommandBuilders
         readonly IEnumerable<OleDbParameter> m_Parameters;
         readonly TableOrViewMetadata<AccessObjectName, OleDbType> m_Table;
         readonly string m_WhereClause;
+        readonly object m_ArgumentValue;
+        readonly object m_FilterValue;
+        readonly FilterOptions m_FilterOptions;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AccessUpdateMany" /> class.
@@ -46,6 +49,50 @@ namespace Tortuga.Chain.Access.CommandBuilders
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="AccessUpdateMany" /> class.
+        /// </summary>
+        /// <param name="dataSource">The data source.</param>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="newValues">The new values.</param>
+        /// <param name="whereClause">The where clause.</param>
+        /// <param name="argumentValue">The argument value for the where clause.</param>
+        /// <param name="options">The options.</param>
+        /// <exception cref="System.NotSupportedException">Cannot use Key attributes with this operation.</exception>
+        public AccessUpdateMany(AccessDataSourceBase dataSource, AccessObjectName tableName, object newValues, string whereClause, object argumentValue, UpdateOptions options) : base(dataSource)
+        {
+            if (options.HasFlag(UpdateOptions.UseKeyAttribute))
+                throw new NotSupportedException("Cannot use Key attributes with this operation.");
+
+            m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
+            m_NewValues = newValues;
+            m_WhereClause = whereClause;
+            m_Options = options;
+            m_ArgumentValue = argumentValue;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AccessUpdateMany" /> class.
+        /// </summary>
+        /// <param name="dataSource">The data source.</param>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="newValues">The new values.</param>
+        /// <param name="filterValue">The filter value.</param>
+        /// <param name="filterOptions">The filter options.</param>
+        /// <param name="options">The update options.</param>
+        /// <exception cref="System.NotSupportedException">Cannot use Key attributes with this operation.</exception>
+        public AccessUpdateMany(AccessDataSourceBase dataSource, AccessObjectName tableName, object newValues, object filterValue, FilterOptions filterOptions, UpdateOptions options) : base(dataSource)
+        {
+            if (options.HasFlag(UpdateOptions.UseKeyAttribute))
+                throw new NotSupportedException("Cannot use Key attributes with this operation.");
+
+            m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
+            m_NewValues = newValues;
+            m_FilterValue = filterValue;
+            m_FilterOptions = filterOptions;
+            m_Options = options;
+        }
+
+        /// <summary>
         /// Prepares the command for execution by generating any necessary SQL.
         /// </summary>
         /// <param name="materializer"></param>
@@ -59,12 +106,26 @@ namespace Tortuga.Chain.Access.CommandBuilders
             sqlBuilder.ApplyArgumentValue(DataSource, m_NewValues, m_Options);
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
+            List<OleDbParameter> parameters;
             var sql = new StringBuilder($"UPDATE {m_Table.Name.ToQuotedString()}");
             sqlBuilder.BuildSetClause(sql, " SET ", null, null);
-            sql.Append(" WHERE " + m_WhereClause);
+            if (m_FilterValue != null)
+            {
+                sql.Append(" WHERE " + sqlBuilder.ApplyAnonymousFilterValue(m_FilterValue, m_FilterOptions, true));
+                parameters = sqlBuilder.GetParameters();
+            }
+            else if (!string.IsNullOrWhiteSpace(m_WhereClause))
+            {
+                sql.Append(" WHERE " + m_WhereClause);
+                parameters = sqlBuilder.GetParameters();
+                parameters.AddRange(SqlBuilder.GetParameters<OleDbParameter>(m_ArgumentValue));
+            }
+            else
+            {
+                parameters = sqlBuilder.GetParameters();
+            }
             sql.Append(";");
 
-            var parameters = sqlBuilder.GetParameters();
             if (m_Parameters != null)
                 parameters.AddRange(m_Parameters);
 
@@ -94,12 +155,27 @@ namespace Tortuga.Chain.Access.CommandBuilders
             var sqlBuilder = m_Table.CreateSqlBuilder(StrictMode);
             sqlBuilder.ApplyDesiredColumns(desiredColumns);
 
+            List<OleDbParameter> parameters;
             var sql = new StringBuilder();
             sqlBuilder.BuildSelectClause(sql, "SELECT ", null, null);
             sql.Append(" FROM " + m_Table.Name.ToQuotedString());
-            sql.AppendLine(" WHERE " + m_WhereClause + ";");
+            if (m_FilterValue != null)
+            {
+                sql.Append(" WHERE " + sqlBuilder.ApplyFilterValue(m_FilterValue, m_FilterOptions));
+                parameters = sqlBuilder.GetParameters();
+            }
+            else if (!string.IsNullOrWhiteSpace(m_WhereClause))
+            {
+                sql.Append(" WHERE " + m_WhereClause);
+                parameters = SqlBuilder.GetParameters<OleDbParameter>(m_ArgumentValue);
+                parameters.AddRange(sqlBuilder.GetParameters());
+            }
+            else
+            {
+                parameters = sqlBuilder.GetParameters();
+            }
+            sql.Append(";");
 
-            var parameters = sqlBuilder.GetParameters();
             if (m_Parameters != null)
                 parameters.AddRange(m_Parameters.Select(p => p.Clone()));
 
