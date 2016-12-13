@@ -161,7 +161,7 @@ namespace Tortuga.Chain.SqlServer
 
             var table = DatabaseMetadata.GetTableOrView(tableName);
             if (!AuditRules.UseSoftDelete(table))
-                return new OleDbSqlServerDeleteMany(this, tableName, where, parameters, options);
+                return new OleDbSqlServerDeleteMany(this, tableName, where, parameters);
 
             UpdateOptions effectiveOptions = UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected;
             if (options.HasFlag(DeleteOptions.UseKeyAttribute))
@@ -600,6 +600,49 @@ namespace Tortuga.Chain.SqlServer
             return DatabaseMetadata;
         }
 
+        /// <summary>
+        /// Deletes multiple records using a where expression.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="whereClause">The where clause.</param>
+        public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> DeleteMany(string tableName, string whereClause)
+        {
+            var table = DatabaseMetadata.GetTableOrView(tableName);
+            if (!AuditRules.UseSoftDelete(table))
+                return new OleDbSqlServerDeleteMany(this, tableName, whereClause, null);
+
+            return new OleDbSqlServerUpdateMany(this, tableName, null, whereClause, null, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected);
+        }
+
+        /// <summary>
+        /// Deletes multiple records using a where expression.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="whereClause">The where clause.</param>
+        /// <param name="argumentValue">The argument value for the where clause.</param>
+        public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> DeleteMany(string tableName, string whereClause, object argumentValue)
+        {
+            var table = DatabaseMetadata.GetTableOrView(tableName);
+            if (!AuditRules.UseSoftDelete(table))
+                return new OleDbSqlServerDeleteMany(this, tableName, whereClause, argumentValue);
+
+            return new OleDbSqlServerUpdateMany(this, tableName, null, whereClause, argumentValue, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected);
+        }
+
+        /// <summary>
+        /// Deletes multiple records using a filter object.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="filterValue">The filter value.</param>
+        /// <param name="options">The options.</param>
+        public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> DeleteMany(string tableName, object filterValue, FilterOptions options = FilterOptions.None)
+        {
+            var table = DatabaseMetadata.GetTableOrView(tableName);
+            if (!AuditRules.UseSoftDelete(table))
+                return new OleDbSqlServerDeleteMany(this, tableName, filterValue, options);
+
+            return new OleDbSqlServerUpdateMany(this, tableName, null, filterValue, options, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected);
+        }
     }
 }
 

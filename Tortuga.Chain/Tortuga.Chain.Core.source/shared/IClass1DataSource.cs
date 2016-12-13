@@ -329,5 +329,34 @@ namespace Tortuga.Chain
         /// <exception cref="MappingException"></exception>
         IMultipleRowDbCommandBuilder UpdateByKeyList<TArgument, TKey>(string tableName, TArgument newValues, IEnumerable<TKey> keys, UpdateOptions options = UpdateOptions.None);
 
+
+
+        /// <summary>
+        /// Deletes multiple records using a where expression.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="whereClause">The where clause.</param>
+        /// <returns>IMultipleRowDbCommandBuilder.</returns>
+        IMultipleRowDbCommandBuilder DeleteMany(string tableName, string whereClause);
+
+        /// <summary>
+        /// Deletes multiple records using a where expression.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="whereClause">The where clause.</param>
+        /// <param name="argumentValue">The argument value for the where clause.</param>
+        /// <returns>IMultipleRowDbCommandBuilder.</returns>
+        IMultipleRowDbCommandBuilder DeleteMany(string tableName, string whereClause, object argumentValue);
+
+
+        /// <summary>
+        /// Deletes multiple records using a filter object.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="filterValue">The filter value.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>IMultipleRowDbCommandBuilder.</returns>
+        IMultipleRowDbCommandBuilder DeleteMany(string tableName, object filterValue, FilterOptions options = FilterOptions.None);
+
     }
 }
