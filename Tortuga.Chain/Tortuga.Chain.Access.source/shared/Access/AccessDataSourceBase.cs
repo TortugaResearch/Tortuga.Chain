@@ -556,7 +556,7 @@ namespace Tortuga.Chain.Access
 
             var table = DatabaseMetadata.GetTableOrView(tableName);
             if (!AuditRules.UseSoftDelete(table))
-                return new AccessDeleteSet(this, tableName, where, parameters, options);
+                return new AccessDeleteWhere(this, tableName, where, parameters, options);
 
             UpdateOptions effectiveOptions = UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected;
             if (options.HasFlag(DeleteOptions.UseKeyAttribute))
@@ -571,11 +571,11 @@ namespace Tortuga.Chain.Access
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="whereClause">The where clause.</param>
-        public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> DeleteSet(AccessObjectName tableName, string whereClause)
+        public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> DeleteWhere(AccessObjectName tableName, string whereClause)
         {
             var table = DatabaseMetadata.GetTableOrView(tableName);
             if (!AuditRules.UseSoftDelete(table))
-                return new AccessDeleteSet(this, tableName, whereClause, null);
+                return new AccessDeleteWhere(this, tableName, whereClause, null);
 
             return new AccessUpdateSet(this, tableName, null, whereClause, null, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected);
         }
@@ -586,11 +586,11 @@ namespace Tortuga.Chain.Access
         /// <param name="tableName">Name of the table.</param>
         /// <param name="whereClause">The where clause.</param>
         /// <param name="argumentValue">The argument value for the where clause.</param>
-        public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> DeleteSet(AccessObjectName tableName, string whereClause, object argumentValue)
+        public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> DeleteWhere(AccessObjectName tableName, string whereClause, object argumentValue)
         {
             var table = DatabaseMetadata.GetTableOrView(tableName);
             if (!AuditRules.UseSoftDelete(table))
-                return new AccessDeleteSet(this, tableName, whereClause, argumentValue);
+                return new AccessDeleteWhere(this, tableName, whereClause, argumentValue);
 
             return new AccessUpdateSet(this, tableName, null, whereClause, argumentValue, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected);
         }
@@ -601,11 +601,11 @@ namespace Tortuga.Chain.Access
         /// <param name="tableName">Name of the table.</param>
         /// <param name="filterValue">The filter value.</param>
         /// <param name="filterOptions">The options.</param>
-        public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> DeleteSet(AccessObjectName tableName, object filterValue, FilterOptions filterOptions = FilterOptions.None)
+        public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> DeleteWhere(AccessObjectName tableName, object filterValue, FilterOptions filterOptions = FilterOptions.None)
         {
             var table = DatabaseMetadata.GetTableOrView(tableName);
             if (!AuditRules.UseSoftDelete(table))
-                return new AccessDeleteSet(this, tableName, filterValue, filterOptions);
+                return new AccessDeleteWhere(this, tableName, filterValue, filterOptions);
 
             return new AccessUpdateSet(this, tableName, null, filterValue, filterOptions, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected);
         }

@@ -337,7 +337,7 @@ namespace Tortuga.Chain
         /// <param name="tableName">Name of the table.</param>
         /// <param name="whereClause">The where clause.</param>
         /// <returns>IMultipleRowDbCommandBuilder.</returns>
-        IMultipleRowDbCommandBuilder DeleteSet(string tableName, string whereClause);
+        IMultipleRowDbCommandBuilder DeleteWhere(string tableName, string whereClause);
 
         /// <summary>
         /// Deletes multiple records using a where expression.
@@ -346,7 +346,7 @@ namespace Tortuga.Chain
         /// <param name="whereClause">The where clause.</param>
         /// <param name="argumentValue">The argument value for the where clause.</param>
         /// <returns>IMultipleRowDbCommandBuilder.</returns>
-        IMultipleRowDbCommandBuilder DeleteSet(string tableName, string whereClause, object argumentValue);
+        IMultipleRowDbCommandBuilder DeleteWhere(string tableName, string whereClause, object argumentValue);
 
 
         /// <summary>
@@ -356,7 +356,7 @@ namespace Tortuga.Chain
         /// <param name="filterValue">The filter value.</param>
         /// <param name="filterOptions">The filter options.</param>
         /// <returns>IMultipleRowDbCommandBuilder.</returns>
-        IMultipleRowDbCommandBuilder DeleteSet(string tableName, object filterValue, FilterOptions filterOptions = FilterOptions.None);
+        IMultipleRowDbCommandBuilder DeleteWhere(string tableName, object filterValue, FilterOptions filterOptions = FilterOptions.None);
 
 
         /// <summary>

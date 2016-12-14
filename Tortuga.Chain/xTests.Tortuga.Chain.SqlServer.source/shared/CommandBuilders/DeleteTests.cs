@@ -163,7 +163,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData("Prime")]
-        public void DeleteSet_Where(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void DeleteWhere_Where(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -175,7 +175,7 @@ namespace Tests.CommandBuilders
                 var allKeys = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToInt32List("EmployeeKey").Execute();
                 var keysToUpdate = allKeys.Take(5).ToList();
 
-                var updatedRows = dataSource.DeleteSet(EmployeeTableName, $"Title = '{lookupKey}' AND MiddleName Is Null").ToCollection<Employee>().Execute();
+                var updatedRows = dataSource.DeleteWhere(EmployeeTableName, $"Title = '{lookupKey}' AND MiddleName Is Null").ToCollection<Employee>().Execute();
 
                 Assert.Equal(5, updatedRows.Count, "The wrong number of rows were deleted");
 
@@ -192,7 +192,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData("Prime")]
-        public void DeleteSet_WhereArg(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void DeleteWhere_WhereArg(string assemblyName, string dataSourceName, DataSourceType mode)
         {
 
 #if OLE_SQL_SERVER
@@ -211,7 +211,7 @@ namespace Tests.CommandBuilders
                 var allKeys = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToInt32List("EmployeeKey").Execute();
                 var keysToUpdate = allKeys.Take(5).ToList();
 
-                var updatedRows = dataSource.DeleteSet(EmployeeTableName, whereClause, new { @LookupKey = lookupKey }).ToCollection<Employee>().Execute();
+                var updatedRows = dataSource.DeleteWhere(EmployeeTableName, whereClause, new { @LookupKey = lookupKey }).ToCollection<Employee>().Execute();
 
                 Assert.Equal(5, updatedRows.Count, "The wrong number of rows were deleted");
 
@@ -228,7 +228,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData("Prime")]
-        public void DeleteSet_Filter(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void DeleteWhere_Filter(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -240,7 +240,7 @@ namespace Tests.CommandBuilders
                 var allKeys = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToInt32List("EmployeeKey").Execute();
                 var keysToUpdate = allKeys.Take(5).ToList();
 
-                var updatedRows = dataSource.DeleteSet(EmployeeTableName, new { Title = lookupKey, MiddleName = (string)null }).ToCollection<Employee>().Execute();
+                var updatedRows = dataSource.DeleteWhere(EmployeeTableName, new { Title = lookupKey, MiddleName = (string)null }).ToCollection<Employee>().Execute();
 
                 Assert.Equal(5, updatedRows.Count, "The wrong number of rows were deleted");
 
@@ -257,7 +257,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData("Root")]
-        public void DeleteSet_Where_SoftDelete(string assemblyName, string dataSourceName)
+        public void DeleteWhere_Where_SoftDelete(string assemblyName, string dataSourceName)
         {
             var dataSource = DataSource(dataSourceName);
             try
@@ -271,7 +271,7 @@ namespace Tests.CommandBuilders
                 var allKeys = dataSourceRules.From(CustomerTableName, new { FullName = lookupKey }).ToInt32List("CustomerKey").Execute();
                 var keysToUpdate = allKeys.Take(5).ToList();
 
-                var updatedRows = dataSourceRules.DeleteSet(CustomerTableName, $"FullName = '{lookupKey}' AND State = 'BB'").ToCollection<Customer>().Execute();
+                var updatedRows = dataSourceRules.DeleteWhere(CustomerTableName, $"FullName = '{lookupKey}' AND State = 'BB'").ToCollection<Customer>().Execute();
 
                 Assert.Equal(5, updatedRows.Count, "The wrong number of rows were deleted");
 
@@ -288,7 +288,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData("Root")]
-        public void DeleteSet_WhereArg_SoftDelete(string assemblyName, string dataSourceName)
+        public void DeleteWhere_WhereArg_SoftDelete(string assemblyName, string dataSourceName)
         {
             var dataSource = DataSource(dataSourceName);
             try
@@ -308,7 +308,7 @@ namespace Tests.CommandBuilders
                 var whereClause = "FullName = @Lookup AND State = @State";
 #endif
 
-                var updatedRows = dataSourceRules.DeleteSet(CustomerTableName, whereClause, new { @Lookup = lookupKey, State = "BB" }).ToCollection<Customer>().Execute();
+                var updatedRows = dataSourceRules.DeleteWhere(CustomerTableName, whereClause, new { @Lookup = lookupKey, State = "BB" }).ToCollection<Customer>().Execute();
 
                 Assert.Equal(5, updatedRows.Count, "The wrong number of rows were deleted");
 
@@ -326,7 +326,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData("Root")]
-        public void DeleteSet_Filter_SoftDelete(string assemblyName, string dataSourceName)
+        public void DeleteWhere_Filter_SoftDelete(string assemblyName, string dataSourceName)
         {
             var dataSource = DataSource(dataSourceName);
             try
@@ -340,7 +340,7 @@ namespace Tests.CommandBuilders
                 var allKeys = dataSourceRules.From(CustomerTableName, new { FullName = lookupKey }).ToInt32List("CustomerKey").Execute();
                 var keysToUpdate = allKeys.Take(5).ToList();
 
-                var updatedRows = dataSourceRules.DeleteSet(CustomerTableName, new { @FullName = lookupKey, State = "BB" }).ToCollection<Customer>().Execute();
+                var updatedRows = dataSourceRules.DeleteWhere(CustomerTableName, new { @FullName = lookupKey, State = "BB" }).ToCollection<Customer>().Execute();
 
                 Assert.Equal(5, updatedRows.Count, "The wrong number of rows were deleted");
 

@@ -11,9 +11,9 @@ using Tortuga.Chain.Metadata;
 namespace Tortuga.Chain.Access.CommandBuilders
 {
     /// <summary>
-    /// Class AccessDeleteSet.
+    /// Class AccessDeleteWhere.
     /// </summary>
-    internal sealed class AccessDeleteSet : MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter>
+    internal sealed class AccessDeleteWhere : MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter>
     {
         //readonly DeleteOptions m_Options;
         readonly IEnumerable<OleDbParameter> m_Parameters;
@@ -24,14 +24,14 @@ namespace Tortuga.Chain.Access.CommandBuilders
         readonly FilterOptions m_FilterOptions;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AccessDeleteSet" /> class.
+        /// Initializes a new instance of the <see cref="AccessDeleteWhere" /> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="whereClause">The where clause.</param>
         /// <param name="parameters">The parameters.</param>
         /// <param name="options">The options.</param>
-        public AccessDeleteSet(AccessDataSourceBase dataSource, AccessObjectName tableName, string whereClause, IEnumerable<OleDbParameter> parameters, DeleteOptions options) : base(dataSource)
+        public AccessDeleteWhere(AccessDataSourceBase dataSource, AccessObjectName tableName, string whereClause, IEnumerable<OleDbParameter> parameters, DeleteOptions options) : base(dataSource)
         {
             if (options.HasFlag(DeleteOptions.UseKeyAttribute))
                 throw new NotSupportedException("Cannot use Key attributes with this operation.");
@@ -44,13 +44,13 @@ namespace Tortuga.Chain.Access.CommandBuilders
 
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AccessDeleteSet"/> class.
+        /// Initializes a new instance of the <see cref="AccessDeleteWhere"/> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="whereClause">The where clause.</param>
         /// <param name="argumentValue">The argument value.</param>
-        public AccessDeleteSet(AccessDataSourceBase dataSource, AccessObjectName tableName, string whereClause, object argumentValue) : base(dataSource)
+        public AccessDeleteWhere(AccessDataSourceBase dataSource, AccessObjectName tableName, string whereClause, object argumentValue) : base(dataSource)
         {
             m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
             m_WhereClause = whereClause;
@@ -58,13 +58,13 @@ namespace Tortuga.Chain.Access.CommandBuilders
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AccessDeleteSet"/> class.
+        /// Initializes a new instance of the <see cref="AccessDeleteWhere"/> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="filterValue">The filter value.</param>
         /// <param name="filterOptions">The options.</param>
-        public AccessDeleteSet(AccessDataSourceBase dataSource, AccessObjectName tableName, object filterValue, FilterOptions filterOptions) : base(dataSource)
+        public AccessDeleteWhere(AccessDataSourceBase dataSource, AccessObjectName tableName, object filterValue, FilterOptions filterOptions) : base(dataSource)
         {
             m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
             m_FilterValue = filterValue;

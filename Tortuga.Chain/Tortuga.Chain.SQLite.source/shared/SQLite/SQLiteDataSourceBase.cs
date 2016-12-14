@@ -573,7 +573,7 @@ namespace Tortuga.Chain.SQLite
 
             var table = DatabaseMetadata.GetTableOrView(tableName);
             if (!AuditRules.UseSoftDelete(table))
-                return new SQLiteDeleteSet(this, tableName, where, parameters, options);
+                return new SQLiteDeleteWhere(this, tableName, where, parameters, options);
 
             UpdateOptions effectiveOptions = UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected;
             if (options.HasFlag(DeleteOptions.UseKeyAttribute))
@@ -588,11 +588,11 @@ namespace Tortuga.Chain.SQLite
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="whereClause">The where clause.</param>
-        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> DeleteSet(SQLiteObjectName tableName, string whereClause)
+        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> DeleteWhere(SQLiteObjectName tableName, string whereClause)
         {
             var table = DatabaseMetadata.GetTableOrView(tableName);
             if (!AuditRules.UseSoftDelete(table))
-                return new SQLiteDeleteSet(this, tableName, whereClause, null);
+                return new SQLiteDeleteWhere(this, tableName, whereClause, null);
 
             return new SQLiteUpdateSet(this, tableName, null, whereClause, null, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected);
         }
@@ -603,11 +603,11 @@ namespace Tortuga.Chain.SQLite
         /// <param name="tableName">Name of the table.</param>
         /// <param name="whereClause">The where clause.</param>
         /// <param name="argumentValue">The argument value for the where clause.</param>
-        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> DeleteSet(SQLiteObjectName tableName, string whereClause, object argumentValue)
+        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> DeleteWhere(SQLiteObjectName tableName, string whereClause, object argumentValue)
         {
             var table = DatabaseMetadata.GetTableOrView(tableName);
             if (!AuditRules.UseSoftDelete(table))
-                return new SQLiteDeleteSet(this, tableName, whereClause, argumentValue);
+                return new SQLiteDeleteWhere(this, tableName, whereClause, argumentValue);
 
             return new SQLiteUpdateSet(this, tableName, null, whereClause, argumentValue, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected);
         }
@@ -618,11 +618,11 @@ namespace Tortuga.Chain.SQLite
         /// <param name="tableName">Name of the table.</param>
         /// <param name="filterValue">The filter value.</param>
         /// <param name="filterOptions">The options.</param>
-        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> DeleteSet(SQLiteObjectName tableName, object filterValue, FilterOptions filterOptions = FilterOptions.None)
+        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> DeleteWhere(SQLiteObjectName tableName, object filterValue, FilterOptions filterOptions = FilterOptions.None)
         {
             var table = DatabaseMetadata.GetTableOrView(tableName);
             if (!AuditRules.UseSoftDelete(table))
-                return new SQLiteDeleteSet(this, tableName, filterValue, filterOptions);
+                return new SQLiteDeleteWhere(this, tableName, filterValue, filterOptions);
 
             return new SQLiteUpdateSet(this, tableName, null, filterValue, filterOptions, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected);
         }
@@ -636,7 +636,7 @@ namespace Tortuga.Chain.SQLite
         /// <param name="whereClause">The where clause.</param>
         /// <param name="argumentValue">The argument value.</param>
         /// <param name="options">The update options.</param>
-        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> DeleteSet(SQLiteObjectName tableName, string updateExpression, string whereClause, object argumentValue, UpdateOptions options = UpdateOptions.None)
+        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> DeleteWhere(SQLiteObjectName tableName, string updateExpression, string whereClause, object argumentValue, UpdateOptions options = UpdateOptions.None)
         {
             return new SQLiteUpdateSet(this, tableName, updateExpression, whereClause, argumentValue, options);
         }
@@ -648,7 +648,7 @@ namespace Tortuga.Chain.SQLite
         /// <param name="updateExpression">The update expression.</param>
         /// <param name="whereClause">The where clause.</param>
         /// <param name="options">The options.</param>
-        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> DeleteSet(SQLiteObjectName tableName, string updateExpression, string whereClause, UpdateOptions options = UpdateOptions.None)
+        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> DeleteWhere(SQLiteObjectName tableName, string updateExpression, string whereClause, UpdateOptions options = UpdateOptions.None)
         {
             return new SQLiteUpdateSet(this, tableName, updateExpression, whereClause, null, options);
         }
@@ -661,7 +661,7 @@ namespace Tortuga.Chain.SQLite
         /// <param name="filterValue">The filter value.</param>
         /// <param name="filterOptions">The filter options.</param>
         /// <param name="options">The update options.</param>
-        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> DeleteSet(SQLiteObjectName tableName, string updateExpression, object filterValue, FilterOptions filterOptions = FilterOptions.None, UpdateOptions options = UpdateOptions.None)
+        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> DeleteWhere(SQLiteObjectName tableName, string updateExpression, object filterValue, FilterOptions filterOptions = FilterOptions.None, UpdateOptions options = UpdateOptions.None)
         {
             return new SQLiteUpdateSet(this, tableName, updateExpression, filterValue, filterOptions, options);
         }
@@ -675,7 +675,7 @@ namespace Tortuga.Chain.SQLite
         /// <param name="whereClause">The where clause.</param>
         /// <param name="argumentValue">The argument value.</param>
         /// <param name="options">The options.</param>
-        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> DeleteSet(SQLiteObjectName tableName, object newValues, string whereClause, object argumentValue, UpdateOptions options = UpdateOptions.None)
+        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> DeleteWhere(SQLiteObjectName tableName, object newValues, string whereClause, object argumentValue, UpdateOptions options = UpdateOptions.None)
         {
             return new SQLiteUpdateSet(this, tableName, newValues, whereClause, argumentValue, options);
         }
@@ -688,7 +688,7 @@ namespace Tortuga.Chain.SQLite
         /// <param name="newValues">The new values to use.</param>
         /// <param name="whereClause">The where clause.</param>
         /// <param name="options">The update options.</param>
-        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> DeleteSet(SQLiteObjectName tableName, object newValues, string whereClause, UpdateOptions options = UpdateOptions.None)
+        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> DeleteWhere(SQLiteObjectName tableName, object newValues, string whereClause, UpdateOptions options = UpdateOptions.None)
         {
             return new SQLiteUpdateSet(this, tableName, newValues, whereClause, null, options);
         }
@@ -702,7 +702,7 @@ namespace Tortuga.Chain.SQLite
         /// <param name="filterValue">The filter value.</param>
         /// <param name="filterOptions">The filter options.</param>
         /// <param name="options">The update options.</param>
-        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> DeleteSet(SQLiteObjectName tableName, object newValues, object filterValue, FilterOptions filterOptions = FilterOptions.None, UpdateOptions options = UpdateOptions.None)
+        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> DeleteWhere(SQLiteObjectName tableName, object newValues, object filterValue, FilterOptions filterOptions = FilterOptions.None, UpdateOptions options = UpdateOptions.None)
         {
             return new SQLiteUpdateSet(this, tableName, newValues, filterValue, filterOptions, options);
         }

@@ -11,9 +11,9 @@ using Tortuga.Chain.Metadata;
 namespace Tortuga.Chain.PostgreSql.CommandBuilders
 {
     /// <summary>
-    /// Class PostgreSqlDeleteSet.
+    /// Class PostgreSqlDeleteWhere.
     /// </summary>
-    internal sealed class PostgreSqlDeleteSet : MultipleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter>
+    internal sealed class PostgreSqlDeleteWhere : MultipleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter>
     {
         //readonly DeleteOptions m_Options;
         readonly IEnumerable<NpgsqlParameter> m_Parameters;
@@ -24,14 +24,14 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         readonly FilterOptions m_FilterOptions;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PostgreSqlDeleteSet" /> class.
+        /// Initializes a new instance of the <see cref="PostgreSqlDeleteWhere" /> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="whereClause">The where clause.</param>
         /// <param name="parameters">The parameters.</param>
         /// <param name="options">The options.</param>
-        public PostgreSqlDeleteSet(PostgreSqlDataSourceBase dataSource, PostgreSqlObjectName tableName, string whereClause, IEnumerable<NpgsqlParameter> parameters, DeleteOptions options) : base(dataSource)
+        public PostgreSqlDeleteWhere(PostgreSqlDataSourceBase dataSource, PostgreSqlObjectName tableName, string whereClause, IEnumerable<NpgsqlParameter> parameters, DeleteOptions options) : base(dataSource)
         {
             if (options.HasFlag(DeleteOptions.UseKeyAttribute))
                 throw new NotSupportedException("Cannot use Key attributes with this operation.");
@@ -43,13 +43,13 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PostgreSqlDeleteSet"/> class.
+        /// Initializes a new instance of the <see cref="PostgreSqlDeleteWhere"/> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="whereClause">The where clause.</param>
         /// <param name="argumentValue">The argument value.</param>
-        public PostgreSqlDeleteSet(PostgreSqlDataSourceBase dataSource, PostgreSqlObjectName tableName, string whereClause, object argumentValue) : base(dataSource)
+        public PostgreSqlDeleteWhere(PostgreSqlDataSourceBase dataSource, PostgreSqlObjectName tableName, string whereClause, object argumentValue) : base(dataSource)
         {
             m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
             m_WhereClause = whereClause;
@@ -57,13 +57,13 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PostgreSqlDeleteSet"/> class.
+        /// Initializes a new instance of the <see cref="PostgreSqlDeleteWhere"/> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="filterValue">The filter value.</param>
         /// <param name="filterOptions">The options.</param>
-        public PostgreSqlDeleteSet(PostgreSqlDataSourceBase dataSource, PostgreSqlObjectName tableName, object filterValue, FilterOptions filterOptions) : base(dataSource)
+        public PostgreSqlDeleteWhere(PostgreSqlDataSourceBase dataSource, PostgreSqlObjectName tableName, object filterValue, FilterOptions filterOptions) : base(dataSource)
         {
             m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
             m_FilterValue = filterValue;

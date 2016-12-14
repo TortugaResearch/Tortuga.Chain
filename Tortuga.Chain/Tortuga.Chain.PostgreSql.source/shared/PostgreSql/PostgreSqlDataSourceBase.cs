@@ -548,7 +548,7 @@ namespace Tortuga.Chain.PostgreSql
 
             var table = DatabaseMetadata.GetTableOrView(tableName);
             if (!AuditRules.UseSoftDelete(table))
-                return new PostgreSqlDeleteSet(this, tableName, where, parameters, options);
+                return new PostgreSqlDeleteWhere(this, tableName, where, parameters, options);
 
             UpdateOptions effectiveOptions = UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected;
             if (options.HasFlag(DeleteOptions.UseKeyAttribute))
@@ -694,11 +694,11 @@ namespace Tortuga.Chain.PostgreSql
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="whereClause">The where clause.</param>
-        public MultipleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> DeleteSet(PostgreSqlObjectName tableName, string whereClause)
+        public MultipleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> DeleteWhere(PostgreSqlObjectName tableName, string whereClause)
         {
             var table = DatabaseMetadata.GetTableOrView(tableName);
             if (!AuditRules.UseSoftDelete(table))
-                return new PostgreSqlDeleteSet(this, tableName, whereClause, null);
+                return new PostgreSqlDeleteWhere(this, tableName, whereClause, null);
 
             return new PostgreSqlUpdateSet(this, tableName, null, whereClause, null, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected);
         }
@@ -709,11 +709,11 @@ namespace Tortuga.Chain.PostgreSql
         /// <param name="tableName">Name of the table.</param>
         /// <param name="whereClause">The where clause.</param>
         /// <param name="argumentValue">The argument value for the where clause.</param>
-        public MultipleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> DeleteSet(PostgreSqlObjectName tableName, string whereClause, object argumentValue)
+        public MultipleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> DeleteWhere(PostgreSqlObjectName tableName, string whereClause, object argumentValue)
         {
             var table = DatabaseMetadata.GetTableOrView(tableName);
             if (!AuditRules.UseSoftDelete(table))
-                return new PostgreSqlDeleteSet(this, tableName, whereClause, argumentValue);
+                return new PostgreSqlDeleteWhere(this, tableName, whereClause, argumentValue);
 
             return new PostgreSqlUpdateSet(this, tableName, null, whereClause, argumentValue, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected);
         }
@@ -724,11 +724,11 @@ namespace Tortuga.Chain.PostgreSql
         /// <param name="tableName">Name of the table.</param>
         /// <param name="filterValue">The filter value.</param>
         /// <param name="filterOptions">The options.</param>
-        public MultipleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> DeleteSet(PostgreSqlObjectName tableName, object filterValue, FilterOptions filterOptions = FilterOptions.None)
+        public MultipleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> DeleteWhere(PostgreSqlObjectName tableName, object filterValue, FilterOptions filterOptions = FilterOptions.None)
         {
             var table = DatabaseMetadata.GetTableOrView(tableName);
             if (!AuditRules.UseSoftDelete(table))
-                return new PostgreSqlDeleteSet(this, tableName, filterValue, filterOptions);
+                return new PostgreSqlDeleteWhere(this, tableName, filterValue, filterOptions);
 
             return new PostgreSqlUpdateSet(this, tableName, null, filterValue, filterOptions, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected);
         }

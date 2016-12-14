@@ -194,21 +194,21 @@ namespace Tortuga.Chain.SqlServer
             return UpdateByKeyList(tableName, newValues, keys, options);
         }
 
-        IMultipleRowDbCommandBuilder IClass1DataSource.DeleteSet(string tableName, string whereClause)
+        IMultipleRowDbCommandBuilder IClass1DataSource.DeleteWhere(string tableName, string whereClause)
         {
-            return DeleteSet(tableName, whereClause);
+            return DeleteWhere(tableName, whereClause);
         }
 
 
-        IMultipleRowDbCommandBuilder IClass1DataSource.DeleteSet(string tableName, string whereClause, object argumentValue)
+        IMultipleRowDbCommandBuilder IClass1DataSource.DeleteWhere(string tableName, string whereClause, object argumentValue)
         {
-            return DeleteSet(tableName, whereClause, argumentValue);
+            return DeleteWhere(tableName, whereClause, argumentValue);
         }
 
 
-        IMultipleRowDbCommandBuilder IClass1DataSource.DeleteSet(string tableName, object filterValue, FilterOptions filterOptions)
+        IMultipleRowDbCommandBuilder IClass1DataSource.DeleteWhere(string tableName, object filterValue, FilterOptions filterOptions)
         {
-            return DeleteSet(tableName, filterValue, filterOptions);
+            return DeleteWhere(tableName, filterValue, filterOptions);
         }
 
         IMultipleRowDbCommandBuilder IClass1DataSource.UpdateSet(string tableName, string updateExpression, string whereClause, object argumentValue, UpdateOptions options)

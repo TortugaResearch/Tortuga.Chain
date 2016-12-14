@@ -161,7 +161,7 @@ namespace Tortuga.Chain.SqlServer
 
             var table = DatabaseMetadata.GetTableOrView(tableName);
             if (!AuditRules.UseSoftDelete(table))
-                return new OleDbSqlServerDeleteSet(this, tableName, where, parameters);
+                return new OleDbSqlServerDeleteWhere(this, tableName, where, parameters);
 
             UpdateOptions effectiveOptions = UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected;
             if (options.HasFlag(DeleteOptions.UseKeyAttribute))
@@ -605,11 +605,11 @@ namespace Tortuga.Chain.SqlServer
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="whereClause">The where clause.</param>
-        public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> DeleteSet(SqlServerObjectName tableName, string whereClause)
+        public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> DeleteWhere(SqlServerObjectName tableName, string whereClause)
         {
             var table = DatabaseMetadata.GetTableOrView(tableName);
             if (!AuditRules.UseSoftDelete(table))
-                return new OleDbSqlServerDeleteSet(this, tableName, whereClause, null);
+                return new OleDbSqlServerDeleteWhere(this, tableName, whereClause, null);
 
             return new OleDbSqlServerUpdateSet(this, tableName, null, whereClause, null, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected);
         }
@@ -620,11 +620,11 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="tableName">Name of the table.</param>
         /// <param name="whereClause">The where clause.</param>
         /// <param name="argumentValue">The argument value for the where clause.</param>
-        public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> DeleteSet(SqlServerObjectName tableName, string whereClause, object argumentValue)
+        public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> DeleteWhere(SqlServerObjectName tableName, string whereClause, object argumentValue)
         {
             var table = DatabaseMetadata.GetTableOrView(tableName);
             if (!AuditRules.UseSoftDelete(table))
-                return new OleDbSqlServerDeleteSet(this, tableName, whereClause, argumentValue);
+                return new OleDbSqlServerDeleteWhere(this, tableName, whereClause, argumentValue);
 
             return new OleDbSqlServerUpdateSet(this, tableName, null, whereClause, argumentValue, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected);
         }
@@ -635,11 +635,11 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="tableName">Name of the table.</param>
         /// <param name="filterValue">The filter value.</param>
         /// <param name="filterOptions">The options.</param>
-        public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> DeleteSet(SqlServerObjectName tableName, object filterValue, FilterOptions filterOptions = FilterOptions.None)
+        public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> DeleteWhere(SqlServerObjectName tableName, object filterValue, FilterOptions filterOptions = FilterOptions.None)
         {
             var table = DatabaseMetadata.GetTableOrView(tableName);
             if (!AuditRules.UseSoftDelete(table))
-                return new OleDbSqlServerDeleteSet(this, tableName, filterValue, filterOptions);
+                return new OleDbSqlServerDeleteWhere(this, tableName, filterValue, filterOptions);
 
             return new OleDbSqlServerUpdateSet(this, tableName, null, filterValue, filterOptions, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected);
         }

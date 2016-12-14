@@ -18,9 +18,9 @@ using SQLiteParameter = Microsoft.Data.Sqlite.SqliteParameter;
 namespace Tortuga.Chain.SQLite.CommandBuilders
 {
     /// <summary>
-    /// Class SQLiteDeleteSet.
+    /// Class SQLiteDeleteWhere.
     /// </summary>
-    internal sealed class SQLiteDeleteSet : MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter>
+    internal sealed class SQLiteDeleteWhere : MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter>
     {
         //readonly DeleteOptions m_Options;
         readonly IEnumerable<SQLiteParameter> m_Parameters;
@@ -31,14 +31,14 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
         readonly FilterOptions m_FilterOptions;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SQLiteDeleteSet" /> class.
+        /// Initializes a new instance of the <see cref="SQLiteDeleteWhere" /> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="whereClause">The where clause.</param>
         /// <param name="parameters">The parameters.</param>
         /// <param name="options">The options.</param>
-        public SQLiteDeleteSet(SQLiteDataSourceBase dataSource, SQLiteObjectName tableName, string whereClause, IEnumerable<SQLiteParameter> parameters, DeleteOptions options) : base(dataSource)
+        public SQLiteDeleteWhere(SQLiteDataSourceBase dataSource, SQLiteObjectName tableName, string whereClause, IEnumerable<SQLiteParameter> parameters, DeleteOptions options) : base(dataSource)
         {
             if (options.HasFlag(DeleteOptions.UseKeyAttribute))
                 throw new NotSupportedException("Cannot use Key attributes with this operation.");
@@ -51,13 +51,13 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
 
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SQLiteDeleteSet"/> class.
+        /// Initializes a new instance of the <see cref="SQLiteDeleteWhere"/> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="whereClause">The where clause.</param>
         /// <param name="argumentValue">The argument value.</param>
-        public SQLiteDeleteSet(SQLiteDataSourceBase dataSource, SQLiteObjectName tableName, string whereClause, object argumentValue) : base(dataSource)
+        public SQLiteDeleteWhere(SQLiteDataSourceBase dataSource, SQLiteObjectName tableName, string whereClause, object argumentValue) : base(dataSource)
         {
             m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
             m_WhereClause = whereClause;
@@ -65,13 +65,13 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SQLiteDeleteSet"/> class.
+        /// Initializes a new instance of the <see cref="SQLiteDeleteWhere"/> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="filterValue">The filter value.</param>
         /// <param name="filterOptions">The options.</param>
-        public SQLiteDeleteSet(SQLiteDataSourceBase dataSource, SQLiteObjectName tableName, object filterValue, FilterOptions filterOptions) : base(dataSource)
+        public SQLiteDeleteWhere(SQLiteDataSourceBase dataSource, SQLiteObjectName tableName, object filterValue, FilterOptions filterOptions) : base(dataSource)
         {
             m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
             m_FilterValue = filterValue;
