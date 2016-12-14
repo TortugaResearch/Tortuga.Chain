@@ -11,9 +11,9 @@ using Tortuga.Chain.Metadata;
 namespace Tortuga.Chain.SqlServer.CommandBuilders
 {
     /// <summary>
-    /// Class SqlServerDeleteMany.
+    /// Class SqlServerDeleteSet.
     /// </summary>
-    internal sealed class OleDbSqlServerDeleteMany : MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter>
+    internal sealed class OleDbSqlServerDeleteSet : MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter>
     {
         readonly IEnumerable<OleDbParameter> m_Parameters;
         readonly TableOrViewMetadata<SqlServerObjectName, OleDbType> m_Table;
@@ -23,13 +23,13 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         readonly FilterOptions m_FilterOptions;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SqlServerDeleteMany" /> class.
+        /// Initializes a new instance of the <see cref="SqlServerDeleteSet" /> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="whereClause">The where clause.</param>
         /// <param name="parameters">The parameters.</param>
-        public OleDbSqlServerDeleteMany(OleDbSqlServerDataSourceBase dataSource, SqlServerObjectName tableName, string whereClause, IEnumerable<OleDbParameter> parameters) : base(dataSource)
+        public OleDbSqlServerDeleteSet(OleDbSqlServerDataSourceBase dataSource, SqlServerObjectName tableName, string whereClause, IEnumerable<OleDbParameter> parameters) : base(dataSource)
         {
 
             m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
@@ -37,13 +37,13 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             m_Parameters = parameters;
         }
         /// <summary>
-        /// Initializes a new instance of the <see cref="OleDbSqlServerDeleteMany"/> class.
+        /// Initializes a new instance of the <see cref="OleDbSqlServerDeleteSet"/> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="whereClause">The where clause.</param>
         /// <param name="argumentValue">The argument value.</param>
-        public OleDbSqlServerDeleteMany(OleDbSqlServerDataSourceBase dataSource, SqlServerObjectName tableName, string whereClause, object argumentValue) : base(dataSource)
+        public OleDbSqlServerDeleteSet(OleDbSqlServerDataSourceBase dataSource, SqlServerObjectName tableName, string whereClause, object argumentValue) : base(dataSource)
         {
             m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
             m_WhereClause = whereClause;
@@ -51,17 +51,17 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="OleDbSqlServerDeleteMany"/> class.
+        /// Initializes a new instance of the <see cref="OleDbSqlServerDeleteSet"/> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="filterValue">The filter value.</param>
-        /// <param name="options">The options.</param>
-        public OleDbSqlServerDeleteMany(OleDbSqlServerDataSourceBase dataSource, SqlServerObjectName tableName, object filterValue, FilterOptions options) : base(dataSource)
+        /// <param name="filterOptions">The options.</param>
+        public OleDbSqlServerDeleteSet(OleDbSqlServerDataSourceBase dataSource, SqlServerObjectName tableName, object filterValue, FilterOptions filterOptions) : base(dataSource)
         {
             m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
             m_FilterValue = filterValue;
-            m_FilterOptions = options;
+            m_FilterOptions = filterOptions;
         }
 
         /// <summary>

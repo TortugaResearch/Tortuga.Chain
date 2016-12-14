@@ -337,7 +337,7 @@ namespace Tortuga.Chain
         /// <param name="tableName">Name of the table.</param>
         /// <param name="whereClause">The where clause.</param>
         /// <returns>IMultipleRowDbCommandBuilder.</returns>
-        IMultipleRowDbCommandBuilder DeleteMany(string tableName, string whereClause);
+        IMultipleRowDbCommandBuilder DeleteSet(string tableName, string whereClause);
 
         /// <summary>
         /// Deletes multiple records using a where expression.
@@ -346,7 +346,7 @@ namespace Tortuga.Chain
         /// <param name="whereClause">The where clause.</param>
         /// <param name="argumentValue">The argument value for the where clause.</param>
         /// <returns>IMultipleRowDbCommandBuilder.</returns>
-        IMultipleRowDbCommandBuilder DeleteMany(string tableName, string whereClause, object argumentValue);
+        IMultipleRowDbCommandBuilder DeleteSet(string tableName, string whereClause, object argumentValue);
 
 
         /// <summary>
@@ -354,9 +354,77 @@ namespace Tortuga.Chain
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="filterValue">The filter value.</param>
+        /// <param name="filterOptions">The filter options.</param>
+        /// <returns>IMultipleRowDbCommandBuilder.</returns>
+        IMultipleRowDbCommandBuilder DeleteSet(string tableName, object filterValue, FilterOptions filterOptions = FilterOptions.None);
+
+
+        /// <summary>
+        /// Updates multiple records using an update expression and a where expression.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="updateExpression">The update expression.</param>
+        /// <param name="whereClause">The where clause.</param>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="options">The update options.</param>
+        /// <returns>IMultipleRowDbCommandBuilder.</returns>
+        IMultipleRowDbCommandBuilder UpdateSet(string tableName, string updateExpression, string whereClause, object argumentValue, UpdateOptions options = UpdateOptions.None);
+
+        /// <summary>
+        /// Updates multiple records using an update expression and a where expression.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="updateExpression">The update expression.</param>
+        /// <param name="whereClause">The where clause.</param>
+        /// <param name="options">The update options.</param>
+        /// <returns>IMultipleRowDbCommandBuilder.</returns>
+        IMultipleRowDbCommandBuilder UpdateSet(string tableName, string updateExpression, string whereClause, UpdateOptions options = UpdateOptions.None);
+
+        /// <summary>
+        /// Updates multiple records using an update expression and a filter object.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="updateExpression">The update expression.</param>
+        /// <param name="filterValue">The filter value.</param>
+        /// <param name="filterOptions">The filter options.</param>
+        /// <param name="options">The update options.</param>
+        /// <returns>IMultipleRowDbCommandBuilder.</returns>
+        IMultipleRowDbCommandBuilder UpdateSet(string tableName, string updateExpression, object filterValue, FilterOptions filterOptions = FilterOptions.None, UpdateOptions options = UpdateOptions.None);
+
+
+        /// <summary>
+        /// Updates multiple records using an update value and a where expression.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="newValues">The new values to use.</param>
+        /// <param name="whereClause">The where clause.</param>
+        /// <param name="argumentValue">The argument value.</param>
         /// <param name="options">The options.</param>
         /// <returns>IMultipleRowDbCommandBuilder.</returns>
-        IMultipleRowDbCommandBuilder DeleteMany(string tableName, object filterValue, FilterOptions options = FilterOptions.None);
+        IMultipleRowDbCommandBuilder UpdateSet(string tableName, object newValues, string whereClause, object argumentValue, UpdateOptions options = UpdateOptions.None);
+
+
+        /// <summary>
+        /// Updates multiple records using an update value and a where expression.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="newValues">The new values to use.</param>
+        /// <param name="whereClause">The where clause.</param>
+        /// <param name="options">The update options.</param>
+        /// <returns>IMultipleRowDbCommandBuilder.</returns>
+        IMultipleRowDbCommandBuilder UpdateSet(string tableName, object newValues, string whereClause, UpdateOptions options = UpdateOptions.None);
+
+
+        /// <summary>
+        /// Updates multiple records using an update value and a filter object.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="newValues">The new values to use.</param>
+        /// <param name="filterValue">The filter value.</param>
+        /// <param name="filterOptions">The filter options.</param>
+        /// <param name="options">The update options.</param>
+        /// <returns>IMultipleRowDbCommandBuilder.</returns>
+        IMultipleRowDbCommandBuilder UpdateSet(string tableName, object newValues, object filterValue, FilterOptions filterOptions = FilterOptions.None, UpdateOptions options = UpdateOptions.None);
 
     }
 }

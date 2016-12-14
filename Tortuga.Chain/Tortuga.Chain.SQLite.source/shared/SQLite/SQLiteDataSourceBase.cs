@@ -144,7 +144,7 @@ namespace Tortuga.Chain.SQLite
         /// <returns>TableDbCommandBuilder&lt;SQLiteCommand, SQLiteParameter, SQLiteLimitOption&gt;.</returns>
         public TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> From(SQLiteObjectName tableOrViewName, object filterValue, FilterOptions filterOptions = FilterOptions.None)
         {
-            return new SQLiteTableOrView(this, tableOrViewName, filterValue, filterOptions );
+            return new SQLiteTableOrView(this, tableOrViewName, filterValue, filterOptions);
         }
 
         /// <summary>
@@ -481,7 +481,7 @@ namespace Tortuga.Chain.SQLite
                 parameters.Add(param);
             }
 
-            return new SQLiteUpdateMany(this, tableName, newValues, where, parameters, parameters.Count, options);
+            return new SQLiteUpdateSet(this, tableName, newValues, where, parameters, parameters.Count, options);
         }
 
 
@@ -573,13 +573,13 @@ namespace Tortuga.Chain.SQLite
 
             var table = DatabaseMetadata.GetTableOrView(tableName);
             if (!AuditRules.UseSoftDelete(table))
-                return new SQLiteDeleteMany(this, tableName, where, parameters, options);
+                return new SQLiteDeleteSet(this, tableName, where, parameters, options);
 
             UpdateOptions effectiveOptions = UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected;
             if (options.HasFlag(DeleteOptions.UseKeyAttribute))
                 effectiveOptions = effectiveOptions | UpdateOptions.UseKeyAttribute;
 
-            return new SQLiteUpdateMany(this, tableName, null, where, parameters, parameters.Count, effectiveOptions);
+            return new SQLiteUpdateSet(this, tableName, null, where, parameters, parameters.Count, effectiveOptions);
 
         }
 
@@ -588,13 +588,13 @@ namespace Tortuga.Chain.SQLite
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="whereClause">The where clause.</param>
-        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> DeleteMany(SQLiteObjectName tableName, string whereClause)
+        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> DeleteSet(SQLiteObjectName tableName, string whereClause)
         {
             var table = DatabaseMetadata.GetTableOrView(tableName);
             if (!AuditRules.UseSoftDelete(table))
-                return new SQLiteDeleteMany(this, tableName, whereClause, null);
+                return new SQLiteDeleteSet(this, tableName, whereClause, null);
 
-            return new SQLiteUpdateMany(this, tableName, null, whereClause, null, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected);
+            return new SQLiteUpdateSet(this, tableName, null, whereClause, null, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected);
         }
 
         /// <summary>
@@ -603,13 +603,13 @@ namespace Tortuga.Chain.SQLite
         /// <param name="tableName">Name of the table.</param>
         /// <param name="whereClause">The where clause.</param>
         /// <param name="argumentValue">The argument value for the where clause.</param>
-        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> DeleteMany(SQLiteObjectName tableName, string whereClause, object argumentValue)
+        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> DeleteSet(SQLiteObjectName tableName, string whereClause, object argumentValue)
         {
             var table = DatabaseMetadata.GetTableOrView(tableName);
             if (!AuditRules.UseSoftDelete(table))
-                return new SQLiteDeleteMany(this, tableName, whereClause, argumentValue);
+                return new SQLiteDeleteSet(this, tableName, whereClause, argumentValue);
 
-            return new SQLiteUpdateMany(this, tableName, null, whereClause, argumentValue, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected);
+            return new SQLiteUpdateSet(this, tableName, null, whereClause, argumentValue, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected);
         }
 
         /// <summary>
@@ -617,16 +617,174 @@ namespace Tortuga.Chain.SQLite
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="filterValue">The filter value.</param>
-        /// <param name="options">The options.</param>
-        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> DeleteMany(SQLiteObjectName tableName, object filterValue, FilterOptions options = FilterOptions.None)
+        /// <param name="filterOptions">The options.</param>
+        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> DeleteSet(SQLiteObjectName tableName, object filterValue, FilterOptions filterOptions = FilterOptions.None)
         {
             var table = DatabaseMetadata.GetTableOrView(tableName);
             if (!AuditRules.UseSoftDelete(table))
-                return new SQLiteDeleteMany(this, tableName, filterValue, options);
+                return new SQLiteDeleteSet(this, tableName, filterValue, filterOptions);
 
-            return new SQLiteUpdateMany(this, tableName, null, filterValue, options, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected);
+            return new SQLiteUpdateSet(this, tableName, null, filterValue, filterOptions, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected);
         }
 
+
+        /// <summary>
+        /// Updates multiple records using an update expression and a where expression.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="updateExpression">The update expression.</param>
+        /// <param name="whereClause">The where clause.</param>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="options">The update options.</param>
+        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> DeleteSet(SQLiteObjectName tableName, string updateExpression, string whereClause, object argumentValue, UpdateOptions options = UpdateOptions.None)
+        {
+            return new SQLiteUpdateSet(this, tableName, updateExpression, whereClause, argumentValue, options);
+        }
+
+        /// <summary>
+        /// Updates multiple records using an update expression and a where expression.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="updateExpression">The update expression.</param>
+        /// <param name="whereClause">The where clause.</param>
+        /// <param name="options">The options.</param>
+        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> DeleteSet(SQLiteObjectName tableName, string updateExpression, string whereClause, UpdateOptions options = UpdateOptions.None)
+        {
+            return new SQLiteUpdateSet(this, tableName, updateExpression, whereClause, null, options);
+        }
+
+        /// <summary>
+        /// Updates multiple records using an update expression and a filter object.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="updateExpression">The update expression.</param>
+        /// <param name="filterValue">The filter value.</param>
+        /// <param name="filterOptions">The filter options.</param>
+        /// <param name="options">The update options.</param>
+        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> DeleteSet(SQLiteObjectName tableName, string updateExpression, object filterValue, FilterOptions filterOptions = FilterOptions.None, UpdateOptions options = UpdateOptions.None)
+        {
+            return new SQLiteUpdateSet(this, tableName, updateExpression, filterValue, filterOptions, options);
+        }
+
+
+        /// <summary>
+        /// Updates multiple records using an update value and a where expression.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="newValues">The new values to use.</param>
+        /// <param name="whereClause">The where clause.</param>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="options">The options.</param>
+        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> DeleteSet(SQLiteObjectName tableName, object newValues, string whereClause, object argumentValue, UpdateOptions options = UpdateOptions.None)
+        {
+            return new SQLiteUpdateSet(this, tableName, newValues, whereClause, argumentValue, options);
+        }
+
+
+        /// <summary>
+        /// Updates multiple records using an update value and a where expression.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="newValues">The new values to use.</param>
+        /// <param name="whereClause">The where clause.</param>
+        /// <param name="options">The update options.</param>
+        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> DeleteSet(SQLiteObjectName tableName, object newValues, string whereClause, UpdateOptions options = UpdateOptions.None)
+        {
+            return new SQLiteUpdateSet(this, tableName, newValues, whereClause, null, options);
+        }
+
+
+        /// <summary>
+        /// Updates multiple records using an update value and a filter object.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="newValues">The new values to use.</param>
+        /// <param name="filterValue">The filter value.</param>
+        /// <param name="filterOptions">The filter options.</param>
+        /// <param name="options">The update options.</param>
+        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> DeleteSet(SQLiteObjectName tableName, object newValues, object filterValue, FilterOptions filterOptions = FilterOptions.None, UpdateOptions options = UpdateOptions.None)
+        {
+            return new SQLiteUpdateSet(this, tableName, newValues, filterValue, filterOptions, options);
+        }
+
+        /// <summary>
+        /// Updates multiple records using an update expression and a where expression.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="updateExpression">The update expression.</param>
+        /// <param name="whereClause">The where clause.</param>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="options">The update options.</param>
+        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> UpdateSet(SQLiteObjectName tableName, string updateExpression, string whereClause, object argumentValue, UpdateOptions options = UpdateOptions.None)
+        {
+            return new SQLiteUpdateSet(this, tableName, updateExpression, whereClause, argumentValue, options);
+        }
+
+        /// <summary>
+        /// Updates multiple records using an update expression and a where expression.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="updateExpression">The update expression.</param>
+        /// <param name="whereClause">The where clause.</param>
+        /// <param name="options">The options.</param>
+        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> UpdateSet(SQLiteObjectName tableName, string updateExpression, string whereClause, UpdateOptions options = UpdateOptions.None)
+        {
+            return new SQLiteUpdateSet(this, tableName, updateExpression, whereClause, null, options);
+        }
+
+        /// <summary>
+        /// Updates multiple records using an update expression and a filter object.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="updateExpression">The update expression.</param>
+        /// <param name="filterValue">The filter value.</param>
+        /// <param name="filterOptions">The filter options.</param>
+        /// <param name="options">The update options.</param>
+        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> UpdateSet(SQLiteObjectName tableName, string updateExpression, object filterValue, FilterOptions filterOptions = FilterOptions.None, UpdateOptions options = UpdateOptions.None)
+        {
+            return new SQLiteUpdateSet(this, tableName, updateExpression, filterValue, filterOptions, options);
+        }
+
+
+        /// <summary>
+        /// Updates multiple records using an update value and a where expression.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="newValues">The new values to use.</param>
+        /// <param name="whereClause">The where clause.</param>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="options">The options.</param>
+        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> UpdateSet(SQLiteObjectName tableName, object newValues, string whereClause, object argumentValue, UpdateOptions options = UpdateOptions.None)
+        {
+            return new SQLiteUpdateSet(this, tableName, newValues, whereClause, argumentValue, options);
+        }
+
+
+        /// <summary>
+        /// Updates multiple records using an update value and a where expression.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="newValues">The new values to use.</param>
+        /// <param name="whereClause">The where clause.</param>
+        /// <param name="options">The update options.</param>
+        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> UpdateSet(SQLiteObjectName tableName, object newValues, string whereClause, UpdateOptions options = UpdateOptions.None)
+        {
+            return new SQLiteUpdateSet(this, tableName, newValues, whereClause, null, options);
+        }
+
+
+        /// <summary>
+        /// Updates multiple records using an update value and a filter object.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="newValues">The new values to use.</param>
+        /// <param name="filterValue">The filter value.</param>
+        /// <param name="filterOptions">The filter options.</param>
+        /// <param name="options">The update options.</param>
+        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> UpdateSet(SQLiteObjectName tableName, object newValues, object filterValue, FilterOptions filterOptions = FilterOptions.None, UpdateOptions options = UpdateOptions.None)
+        {
+            return new SQLiteUpdateSet(this, tableName, newValues, filterValue, filterOptions, options);
+        }
     }
 
 

@@ -162,13 +162,13 @@ namespace Tortuga.Chain.SqlServer
 
             var table = DatabaseMetadata.GetTableOrView(tableName);
             if (!AuditRules.UseSoftDelete(table))
-                return new SqlServerDeleteMany(this, tableName, where, parameters, options);
+                return new SqlServerDeleteSet(this, tableName, where, parameters, options);
 
             UpdateOptions effectiveOptions = UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected;
             if (options.HasFlag(DeleteOptions.UseKeyAttribute))
                 effectiveOptions = effectiveOptions | UpdateOptions.UseKeyAttribute;
 
-            return new SqlServerUpdateMany(this, tableName, null, where, parameters, parameters.Count, effectiveOptions);
+            return new SqlServerUpdateSet(this, tableName, null, where, parameters, parameters.Count, effectiveOptions);
 
         }
 
@@ -774,7 +774,7 @@ namespace Tortuga.Chain.SqlServer
                 parameters.Add(param);
             }
 
-            return new SqlServerUpdateMany(this, tableName, newValues, where, parameters, parameters.Count, options);
+            return new SqlServerUpdateSet(this, tableName, newValues, where, parameters, parameters.Count, options);
         }
         /// <summary>
         /// Performs an insert or update operation as appropriate.
@@ -813,13 +813,13 @@ namespace Tortuga.Chain.SqlServer
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="whereClause">The where clause.</param>
-        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> DeleteMany(SqlServerObjectName tableName, string whereClause)
+        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> DeleteSet(SqlServerObjectName tableName, string whereClause)
         {
             var table = DatabaseMetadata.GetTableOrView(tableName);
             if (!AuditRules.UseSoftDelete(table))
-                return new SqlServerDeleteMany(this, tableName, whereClause, null);
+                return new SqlServerDeleteSet(this, tableName, whereClause, null);
 
-            return new SqlServerUpdateMany(this, tableName, null, whereClause, null, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected);
+            return new SqlServerUpdateSet(this, tableName, null, whereClause, null, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected);
         }
 
         /// <summary>
@@ -828,13 +828,13 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="tableName">Name of the table.</param>
         /// <param name="whereClause">The where clause.</param>
         /// <param name="argumentValue">The argument value for the where clause.</param>
-        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> DeleteMany(SqlServerObjectName tableName, string whereClause, object argumentValue)
+        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> DeleteSet(SqlServerObjectName tableName, string whereClause, object argumentValue)
         {
             var table = DatabaseMetadata.GetTableOrView(tableName);
             if (!AuditRules.UseSoftDelete(table))
-                return new SqlServerDeleteMany(this, tableName, whereClause, argumentValue);
+                return new SqlServerDeleteSet(this, tableName, whereClause, argumentValue);
 
-            return new SqlServerUpdateMany(this, tableName, null, whereClause, argumentValue, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected);
+            return new SqlServerUpdateSet(this, tableName, null, whereClause, argumentValue, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected);
         }
 
         /// <summary>
@@ -842,16 +842,94 @@ namespace Tortuga.Chain.SqlServer
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="filterValue">The filter value.</param>
-        /// <param name="options">The options.</param>
-        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> DeleteMany(SqlServerObjectName tableName, object filterValue, FilterOptions options = FilterOptions.None)
+        /// <param name="filterOptions">The options.</param>
+        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> DeleteSet(SqlServerObjectName tableName, object filterValue, FilterOptions filterOptions = FilterOptions.None)
         {
             var table = DatabaseMetadata.GetTableOrView(tableName);
             if (!AuditRules.UseSoftDelete(table))
-                return new SqlServerDeleteMany(this, tableName, filterValue, options);
+                return new SqlServerDeleteSet(this, tableName, filterValue, filterOptions);
 
-            return new SqlServerUpdateMany(this, tableName, null, filterValue, options, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected);
+            return new SqlServerUpdateSet(this, tableName, null, filterValue, filterOptions, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected);
         }
 
+        /// <summary>
+        /// Updates multiple records using an update expression and a where expression.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="updateExpression">The update expression.</param>
+        /// <param name="whereClause">The where clause.</param>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="options">The update options.</param>
+        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> UpdateSet(SqlServerObjectName tableName, string updateExpression, string whereClause, object argumentValue, UpdateOptions options = UpdateOptions.None)
+        {
+            return new SqlServerUpdateSet(this, tableName, updateExpression, whereClause, argumentValue, options);
+        }
+
+        /// <summary>
+        /// Updates multiple records using an update expression and a where expression.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="updateExpression">The update expression.</param>
+        /// <param name="whereClause">The where clause.</param>
+        /// <param name="options">The options.</param>
+        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> UpdateSet(SqlServerObjectName tableName, string updateExpression, string whereClause, UpdateOptions options = UpdateOptions.None)
+        {
+            return new SqlServerUpdateSet(this, tableName, updateExpression, whereClause, null, options);
+        }
+
+        /// <summary>
+        /// Updates multiple records using an update expression and a filter object.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="updateExpression">The update expression.</param>
+        /// <param name="filterValue">The filter value.</param>
+        /// <param name="filterOptions">The filter options.</param>
+        /// <param name="options">The update options.</param>
+        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> UpdateSet(SqlServerObjectName tableName, string updateExpression, object filterValue, FilterOptions filterOptions = FilterOptions.None, UpdateOptions options = UpdateOptions.None)
+        {
+            return new SqlServerUpdateSet(this, tableName, updateExpression, filterValue, filterOptions, options);
+        }
+
+
+        /// <summary>
+        /// Updates multiple records using an update value and a where expression.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="newValues">The new values to use.</param>
+        /// <param name="whereClause">The where clause.</param>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="options">The options.</param>
+        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> UpdateSet(SqlServerObjectName tableName, object newValues, string whereClause, object argumentValue, UpdateOptions options = UpdateOptions.None)
+        {
+            return new SqlServerUpdateSet(this, tableName, newValues, whereClause, argumentValue, options);
+        }
+
+
+        /// <summary>
+        /// Updates multiple records using an update value and a where expression.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="newValues">The new values to use.</param>
+        /// <param name="whereClause">The where clause.</param>
+        /// <param name="options">The update options.</param>
+        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> UpdateSet(SqlServerObjectName tableName, object newValues, string whereClause, UpdateOptions options = UpdateOptions.None)
+        {
+            return new SqlServerUpdateSet(this, tableName, newValues, whereClause, null, options);
+        }
+
+
+        /// <summary>
+        /// Updates multiple records using an update value and a filter object.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="newValues">The new values to use.</param>
+        /// <param name="filterValue">The filter value.</param>
+        /// <param name="filterOptions">The filter options.</param>
+        /// <param name="options">The update options.</param>
+        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> UpdateSet(SqlServerObjectName tableName, object newValues, object filterValue, FilterOptions filterOptions = FilterOptions.None, UpdateOptions options = UpdateOptions.None)
+        {
+            return new SqlServerUpdateSet(this, tableName, newValues, filterValue, filterOptions, options);
+        }
     }
 }
 

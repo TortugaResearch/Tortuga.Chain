@@ -171,21 +171,51 @@ namespace Tortuga.Chain.SQLite
             return UpdateByKeyList(tableName, newValues, keys, options);
         }
 
-        IMultipleRowDbCommandBuilder IClass1DataSource.DeleteMany(string tableName, string whereClause)
+        IMultipleRowDbCommandBuilder IClass1DataSource.DeleteSet(string tableName, string whereClause)
         {
-            return DeleteMany(tableName, whereClause);
+            return DeleteSet(tableName, whereClause);
         }
 
 
-        IMultipleRowDbCommandBuilder IClass1DataSource.DeleteMany(string tableName, string whereClause, object argumentValue)
+        IMultipleRowDbCommandBuilder IClass1DataSource.DeleteSet(string tableName, string whereClause, object argumentValue)
         {
-            return DeleteMany(tableName, whereClause, argumentValue);
+            return DeleteSet(tableName, whereClause, argumentValue);
         }
 
 
-        IMultipleRowDbCommandBuilder IClass1DataSource.DeleteMany(string tableName, object filterValue, FilterOptions options)
+        IMultipleRowDbCommandBuilder IClass1DataSource.DeleteSet(string tableName, object filterValue, FilterOptions filterOptions)
         {
-            return DeleteMany(tableName, filterValue, options);
+            return DeleteSet(tableName, filterValue, filterOptions);
+        }
+
+        IMultipleRowDbCommandBuilder IClass1DataSource.UpdateSet(string tableName, string updateExpression, string whereClause, object argumentValue, UpdateOptions options)
+        {
+            return UpdateSet(tableName, updateExpression, whereClause, argumentValue, options);
+        }
+
+        IMultipleRowDbCommandBuilder IClass1DataSource.UpdateSet(string tableName, string updateExpression, string whereClause, UpdateOptions options)
+        {
+            return UpdateSet(tableName, updateExpression, whereClause, options);
+        }
+
+        IMultipleRowDbCommandBuilder IClass1DataSource.UpdateSet(string tableName, string updateExpression, object filterValue, FilterOptions filterOptions, UpdateOptions options)
+        {
+            return UpdateSet(tableName, updateExpression, filterValue, filterOptions, options);
+        }
+
+        IMultipleRowDbCommandBuilder IClass1DataSource.UpdateSet(string tableName, object newValues, string whereClause, object argumentValue, UpdateOptions options)
+        {
+            return UpdateSet(tableName, newValues, whereClause, argumentValue, options);
+        }
+
+        IMultipleRowDbCommandBuilder IClass1DataSource.UpdateSet(string tableName, object newValues, string whereClause, UpdateOptions options)
+        {
+            return UpdateSet(tableName, newValues, whereClause, options);
+        }
+
+        IMultipleRowDbCommandBuilder IClass1DataSource.UpdateSet(string tableName, object newValues, object filterValue, FilterOptions filterOptions, UpdateOptions options)
+        {
+            return UpdateSet(tableName, newValues, filterValue, filterOptions, options);
         }
     }
 

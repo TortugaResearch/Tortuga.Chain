@@ -266,7 +266,267 @@ namespace Tests.CommandBuilders
 
         }
 
+        [Theory, MemberData("Prime")]
+        public void UpdateSet_Expression_Where(string assemblyName, string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
 
+                var lookupKey = Guid.NewGuid().ToString();
+                for (var i = 0; i < 10; i++)
+                    dataSource.Insert(EmployeeTableName, new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = lookupKey, MiddleName = i % 2 == 0 ? "A" : "B" }).ToObject<Employee>().Execute();
+
+                var updatedRows = dataSource.UpdateSet(EmployeeTableName, "FirstName = 'Redacted'", $"Title = '{lookupKey}' AND MiddleName = 'B'").ToCollection<Employee>().Execute();
+                var allRows = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToCollection<Employee>().Execute();
+
+
+                Assert.Equal(5, updatedRows.Count, "The wrong number of rows were returned.");
+                Assert.Equal(5, allRows.Where(e => e.FirstName == "Redacted").Count(), "The wrong number of rows were updated.");
+
+                var updatedRows2 = dataSource.UpdateSet(EmployeeTableName, "FirstName = 'Withheld'", $"Title = '{lookupKey}' AND MiddleName = 'A'", UpdateOptions.ReturnOldValues).ToCollection<Employee>().Execute();
+                Assert.Equal(5, updatedRows2.Where(e => e.FirstName != "Withheld").Count(), "The old values were not as expected.");
+
+                var allRows2 = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToCollection<Employee>().Execute();
+                Assert.Equal(5, allRows2.Where(e => e.FirstName == "Withheld").Count(), "The wrong number of rows were updated in the second pass.");
+
+
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+        [Theory, MemberData("Prime")]
+        public void UpdateSet_Expression_WhereArg(string assemblyName, string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+
+                var lookupKey = Guid.NewGuid().ToString();
+                for (var i = 0; i < 10; i++)
+                    dataSource.Insert(EmployeeTableName, new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = lookupKey, MiddleName = i % 2 == 0 ? "A" : "B" }).ToObject<Employee>().Execute();
+
+                var updatedRows = dataSource.UpdateSet(EmployeeTableName, "FirstName = 'Redacted'", $"Title = @LookupKey AND MiddleName = @MiddleName", new
+                {
+                    LookupKey = lookupKey,
+                    MiddleName = "B"
+                }).ToCollection<Employee>().Execute();
+                var allRows = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToCollection<Employee>().Execute();
+
+
+                Assert.Equal(5, updatedRows.Count, "The wrong number of rows were returned.");
+                Assert.Equal(5, allRows.Where(e => e.FirstName == "Redacted").Count(), "The wrong number of rows were updated.");
+
+                var updatedRows2 = dataSource.UpdateSet(EmployeeTableName, "FirstName = 'Withheld'", $"Title = @LookupKey AND MiddleName = @MiddleName", new
+                {
+                    LookupKey = lookupKey,
+                    MiddleName = "B"
+                }, UpdateOptions.ReturnOldValues).ToCollection<Employee>().Execute();
+                Assert.Equal(5, updatedRows2.Where(e => e.FirstName != "Withheld").Count(), "The old values were not as expected.");
+
+                var allRows2 = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToCollection<Employee>().Execute();
+                Assert.Equal(5, allRows2.Where(e => e.FirstName == "Withheld").Count(), "The wrong number of rows were updated in the second pass.");
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+        [Theory, MemberData("Prime")]
+        public void UpdateSet_Expression_Filter(string assemblyName, string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+
+                var lookupKey = Guid.NewGuid().ToString();
+                for (var i = 0; i < 10; i++)
+                    dataSource.Insert(EmployeeTableName, new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = lookupKey, MiddleName = i % 2 == 0 ? "A" : "B" }).ToObject<Employee>().Execute();
+
+
+                var updatedRows = dataSource.UpdateSet(EmployeeTableName, "FirstName = 'Redacted'", new
+                {
+                    Title = lookupKey,
+                    MiddleName = "B"
+                }).ToCollection<Employee>().Execute();
+                var allRows = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToCollection<Employee>().Execute();
+
+
+                Assert.Equal(5, updatedRows.Count, "The wrong number of rows were returned.");
+                Assert.Equal(5, allRows.Where(e => e.FirstName == "Redacted").Count(), "The wrong number of rows were updated.");
+
+                var updatedRows2 = dataSource.UpdateSet(EmployeeTableName, "FirstName = 'Withheld'", new
+                {
+                    Title = lookupKey,
+                    MiddleName = "B"
+                }, FilterOptions.None, UpdateOptions.ReturnOldValues).ToCollection<Employee>().Execute();
+                Assert.Equal(5, updatedRows2.Where(e => e.FirstName != "Withheld").Count(), "The old values were not as expected.");
+
+                var allRows2 = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToCollection<Employee>().Execute();
+                Assert.Equal(5, allRows2.Where(e => e.FirstName == "Withheld").Count(), "The wrong number of rows were updated in the second pass.");
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+        [Theory, MemberData("Prime")]
+        public void UpdateSet_Value_Where(string assemblyName, string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+
+                var lookupKey = Guid.NewGuid().ToString();
+                for (var i = 0; i < 10; i++)
+                    dataSource.Insert(EmployeeTableName, new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = lookupKey, MiddleName = i % 2 == 0 ? "A" : "B" }).ToObject<Employee>().Execute();
+
+
+                var updatedRows = dataSource.UpdateSet(EmployeeTableName, new { FirstName = "Redacted" }, $"Title = '{lookupKey}' AND MiddleName = 'B'").ToCollection<Employee>().Execute();
+                var allRows = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToCollection<Employee>().Execute();
+
+
+                Assert.Equal(5, updatedRows.Count, "The wrong number of rows were returned.");
+                Assert.Equal(5, allRows.Where(e => e.FirstName == "Redacted").Count(), "The wrong number of rows were updated.");
+
+                var updatedRows2 = dataSource.UpdateSet(EmployeeTableName, new { FirstName = "Withheld" }, $"Title = '{lookupKey}' AND MiddleName = 'A'", UpdateOptions.ReturnOldValues).ToCollection<Employee>().Execute();
+                Assert.Equal(5, updatedRows2.Where(e => e.FirstName != "Withheld").Count(), "The old values were not as expected.");
+
+                var allRows2 = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToCollection<Employee>().Execute();
+                Assert.Equal(5, allRows2.Where(e => e.FirstName == "Withheld").Count(), "The wrong number of rows were updated in the second pass.");
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+        [Theory, MemberData("Prime")]
+        public void UpdateSet_Value_WhereArg(string assemblyName, string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+
+                var lookupKey = Guid.NewGuid().ToString();
+                for (var i = 0; i < 10; i++)
+                    dataSource.Insert(EmployeeTableName, new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = lookupKey, MiddleName = i % 2 == 0 ? "A" : "B" }).ToObject<Employee>().Execute();
+
+                var updatedRows = dataSource.UpdateSet(EmployeeTableName, new { FirstName = "Redacted" }, $"Title = @LookupKey AND MiddleName = @MiddleName", new
+                {
+                    LookupKey = lookupKey,
+                    MiddleName = "B"
+                }).ToCollection<Employee>().Execute();
+                var allRows = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToCollection<Employee>().Execute();
+
+
+                Assert.Equal(5, updatedRows.Count, "The wrong number of rows were returned.");
+                Assert.Equal(5, allRows.Where(e => e.FirstName == "Redacted").Count(), "The wrong number of rows were updated.");
+
+                var updatedRows2 = dataSource.UpdateSet(EmployeeTableName, new { FirstName = "Withheld" }, $"Title = @LookupKey AND MiddleName = @MiddleName", new
+                {
+                    LookupKey = lookupKey,
+                    MiddleName = "B"
+                }, UpdateOptions.ReturnOldValues).ToCollection<Employee>().Execute();
+                Assert.Equal(5, updatedRows2.Where(e => e.FirstName != "Withheld").Count(), "The old values were not as expected.");
+
+                var allRows2 = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToCollection<Employee>().Execute();
+                Assert.Equal(5, allRows2.Where(e => e.FirstName == "Withheld").Count(), "The wrong number of rows were updated in the second pass.");
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+        [Theory, MemberData("Prime")]
+        public void UpdateSet_Value_Filter(string assemblyName, string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+
+                var lookupKey = Guid.NewGuid().ToString();
+                for (var i = 0; i < 10; i++)
+                    dataSource.Insert(EmployeeTableName, new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = lookupKey, MiddleName = i % 2 == 0 ? "A" : "B" }).ToObject<Employee>().Execute();
+
+                var updatedRows = dataSource.UpdateSet(EmployeeTableName, new { FirstName = "Redacted" }, new { Title = lookupKey, MiddleName = "B" }).ToCollection<Employee>().Execute();
+                var allRows = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToCollection<Employee>().Execute();
+
+
+                Assert.Equal(5, updatedRows.Count, "The wrong number of rows were returned.");
+                Assert.Equal(5, allRows.Where(e => e.FirstName == "Redacted").Count(), "The wrong number of rows were updated.");
+
+                var updatedRows2 = dataSource.UpdateSet(EmployeeTableName, new { FirstName = "Withheld" }, new { Title = lookupKey, MiddleName = "B" }, FilterOptions.None, UpdateOptions.ReturnOldValues).ToCollection<Employee>().Execute();
+                Assert.Equal(5, updatedRows2.Where(e => e.FirstName != "Withheld").Count(), "The old values were not as expected.");
+
+                var allRows2 = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToCollection<Employee>().Execute();
+                Assert.Equal(5, allRows2.Where(e => e.FirstName == "Withheld").Count(), "The wrong number of rows were updated in the second pass.");
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+        [Theory, MemberData("Prime")]
+        public void UpdateSet_Disallowed_1(string assemblyName, string dataSourceName, DataSourceType mode) 
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+
+                var lookupKey = Guid.NewGuid().ToString();
+                for (var i = 0; i < 10; i++)
+                    dataSource.Insert(EmployeeTableName, new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = lookupKey, MiddleName = i % 2 == 0 ? "A" : "B" }).ToObject<Employee>().Execute();
+
+                try
+                {
+                    dataSource.UpdateSet(EmployeeTableName, new { MiddleName = "C" }, new { Title = lookupKey, MiddleName = "B" }).Execute();
+                    Assert.Fail("Expected an exception");
+                }
+                catch (InvalidOperationException)
+                {
+                    //expected;
+                }
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+        [Theory, MemberData("Prime")]
+        public void UpdateSet_Disallowed_2(string assemblyName, string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+
+                var lookupKey = Guid.NewGuid().ToString();
+                for (var i = 0; i < 10; i++)
+                    dataSource.Insert(EmployeeTableName, new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = lookupKey, MiddleName = i % 2 == 0 ? "A" : "B" }).ToObject<Employee>().Execute();
+
+                try
+                {
+                    dataSource.UpdateSet(EmployeeTableName, new { MiddleName = "C" }, $"Title = @LookupKey AND MiddleName = @MiddleName", new { LookupKey = lookupKey, MiddleName = "B" }).Execute();
+                    Assert.Fail("Expected an exception");
+                }
+                catch (InvalidOperationException)
+                {
+                    //expected;
+                }
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
 
     }
 }

@@ -128,7 +128,7 @@ namespace Tortuga.Chain.Access
         /// <returns>TableDbCommandBuilder&lt;OleDbCommand, OleDbParameter, AccessLimitOption&gt;.</returns>
         public TableDbCommandBuilder<OleDbCommand, OleDbParameter, AccessLimitOption> From(AccessObjectName tableOrViewName, object filterValue, FilterOptions filterOptions = FilterOptions.None)
         {
-            return new AccessTableOrView(this, tableOrViewName, filterValue, filterOptions );
+            return new AccessTableOrView(this, tableOrViewName, filterValue, filterOptions);
         }
 
         /// <summary>
@@ -464,7 +464,7 @@ namespace Tortuga.Chain.Access
                 parameters.Add(param);
             }
 
-            return new AccessUpdateMany(this, tableName, newValues, where, parameters, parameters.Count, options);
+            return new AccessUpdateSet(this, tableName, newValues, where, parameters, parameters.Count, options);
         }
 
 
@@ -556,13 +556,13 @@ namespace Tortuga.Chain.Access
 
             var table = DatabaseMetadata.GetTableOrView(tableName);
             if (!AuditRules.UseSoftDelete(table))
-                return new AccessDeleteMany(this, tableName, where, parameters, options);
+                return new AccessDeleteSet(this, tableName, where, parameters, options);
 
             UpdateOptions effectiveOptions = UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected;
             if (options.HasFlag(DeleteOptions.UseKeyAttribute))
                 effectiveOptions = effectiveOptions | UpdateOptions.UseKeyAttribute;
 
-            return new AccessUpdateMany(this, tableName, null, where, parameters, parameters.Count, effectiveOptions);
+            return new AccessUpdateSet(this, tableName, null, where, parameters, parameters.Count, effectiveOptions);
 
         }
 
@@ -571,13 +571,13 @@ namespace Tortuga.Chain.Access
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="whereClause">The where clause.</param>
-        public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> DeleteMany(AccessObjectName tableName, string whereClause)
+        public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> DeleteSet(AccessObjectName tableName, string whereClause)
         {
             var table = DatabaseMetadata.GetTableOrView(tableName);
             if (!AuditRules.UseSoftDelete(table))
-                return new AccessDeleteMany(this, tableName, whereClause, null);
+                return new AccessDeleteSet(this, tableName, whereClause, null);
 
-            return new AccessUpdateMany(this, tableName, null, whereClause, null, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected);
+            return new AccessUpdateSet(this, tableName, null, whereClause, null, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected);
         }
 
         /// <summary>
@@ -586,13 +586,13 @@ namespace Tortuga.Chain.Access
         /// <param name="tableName">Name of the table.</param>
         /// <param name="whereClause">The where clause.</param>
         /// <param name="argumentValue">The argument value for the where clause.</param>
-        public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> DeleteMany(AccessObjectName tableName, string whereClause, object argumentValue)
+        public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> DeleteSet(AccessObjectName tableName, string whereClause, object argumentValue)
         {
             var table = DatabaseMetadata.GetTableOrView(tableName);
             if (!AuditRules.UseSoftDelete(table))
-                return new AccessDeleteMany(this, tableName, whereClause, argumentValue);
+                return new AccessDeleteSet(this, tableName, whereClause, argumentValue);
 
-            return new AccessUpdateMany(this, tableName, null, whereClause, argumentValue, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected);
+            return new AccessUpdateSet(this, tableName, null, whereClause, argumentValue, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected);
         }
 
         /// <summary>
@@ -600,16 +600,95 @@ namespace Tortuga.Chain.Access
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="filterValue">The filter value.</param>
-        /// <param name="options">The options.</param>
-        public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> DeleteMany(AccessObjectName tableName, object filterValue, FilterOptions options = FilterOptions.None)
+        /// <param name="filterOptions">The options.</param>
+        public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> DeleteSet(AccessObjectName tableName, object filterValue, FilterOptions filterOptions = FilterOptions.None)
         {
             var table = DatabaseMetadata.GetTableOrView(tableName);
             if (!AuditRules.UseSoftDelete(table))
-                return new AccessDeleteMany(this, tableName, filterValue, options);
+                return new AccessDeleteSet(this, tableName, filterValue, filterOptions);
 
-            return new AccessUpdateMany(this, tableName, null, filterValue, options, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected);
+            return new AccessUpdateSet(this, tableName, null, filterValue, filterOptions, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected);
         }
 
+
+        /// <summary>
+        /// Updates multiple records using an update expression and a where expression.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="updateExpression">The update expression.</param>
+        /// <param name="whereClause">The where clause.</param>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="options">The update options.</param>
+        public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> UpdateSet(AccessObjectName tableName, string updateExpression, string whereClause, object argumentValue, UpdateOptions options = UpdateOptions.None)
+        {
+            return new AccessUpdateSet(this, tableName, updateExpression, whereClause, argumentValue, options);
+        }
+
+        /// <summary>
+        /// Updates multiple records using an update expression and a where expression.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="updateExpression">The update expression.</param>
+        /// <param name="whereClause">The where clause.</param>
+        /// <param name="options">The options.</param>
+        public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> UpdateSet(AccessObjectName tableName, string updateExpression, string whereClause, UpdateOptions options = UpdateOptions.None)
+        {
+            return new AccessUpdateSet(this, tableName, updateExpression, whereClause, null, options);
+        }
+
+        /// <summary>
+        /// Updates multiple records using an update expression and a filter object.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="updateExpression">The update expression.</param>
+        /// <param name="filterValue">The filter value.</param>
+        /// <param name="filterOptions">The filter options.</param>
+        /// <param name="options">The update options.</param>
+        public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> UpdateSet(AccessObjectName tableName, string updateExpression, object filterValue, FilterOptions filterOptions = FilterOptions.None, UpdateOptions options = UpdateOptions.None)
+        {
+            return new AccessUpdateSet(this, tableName, updateExpression, filterValue, filterOptions, options);
+        }
+
+
+        /// <summary>
+        /// Updates multiple records using an update value and a where expression.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="newValues">The new values to use.</param>
+        /// <param name="whereClause">The where clause.</param>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="options">The options.</param>
+        public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> UpdateSet(AccessObjectName tableName, object newValues, string whereClause, object argumentValue, UpdateOptions options = UpdateOptions.None)
+        {
+            return new AccessUpdateSet(this, tableName, newValues, whereClause, argumentValue, options);
+        }
+
+
+        /// <summary>
+        /// Updates multiple records using an update value and a where expression.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="newValues">The new values to use.</param>
+        /// <param name="whereClause">The where clause.</param>
+        /// <param name="options">The update options.</param>
+        public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> UpdateSet(AccessObjectName tableName, object newValues, string whereClause, UpdateOptions options = UpdateOptions.None)
+        {
+            return new AccessUpdateSet(this, tableName, newValues, whereClause, null, options);
+        }
+
+
+        /// <summary>
+        /// Updates multiple records using an update value and a filter object.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="newValues">The new values to use.</param>
+        /// <param name="filterValue">The filter value.</param>
+        /// <param name="filterOptions">The filter options.</param>
+        /// <param name="options">The update options.</param>
+        public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> UpdateSet(AccessObjectName tableName, object newValues, object filterValue, FilterOptions filterOptions = FilterOptions.None, UpdateOptions options = UpdateOptions.None)
+        {
+            return new AccessUpdateSet(this, tableName, newValues, filterValue, filterOptions, options);
+        }
 
     }
 

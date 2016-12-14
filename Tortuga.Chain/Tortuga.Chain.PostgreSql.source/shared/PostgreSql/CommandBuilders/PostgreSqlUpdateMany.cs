@@ -11,9 +11,9 @@ using Tortuga.Chain.Metadata;
 namespace Tortuga.Chain.PostgreSql.CommandBuilders
 {
     /// <summary>
-    /// Class PostgreSqlUpdateMany.
+    /// Class PostgreSqlUpdateSet.
     /// </summary>
-    internal sealed class PostgreSqlUpdateMany : MultipleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter>
+    internal sealed class PostgreSqlUpdateSet : MultipleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter>
     {
         readonly int? m_ExpectedRowCount;
         readonly object m_NewValues;
@@ -24,9 +24,10 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         readonly object m_ArgumentValue;
         readonly object m_FilterValue;
         readonly FilterOptions m_FilterOptions;
+        readonly string m_UpdateExpression;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PostgreSqlUpdateMany" /> class.
+        /// Initializes a new instance of the <see cref="PostgreSqlUpdateSet" /> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
         /// <param name="tableName">Name of the table.</param>
@@ -35,7 +36,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         /// <param name="parameters">The parameters.</param>
         /// <param name="expectedRowCount">The expected row count.</param>
         /// <param name="options">The options.</param>
-        public PostgreSqlUpdateMany(PostgreSqlDataSourceBase dataSource, PostgreSqlObjectName tableName, object newValues, string whereClause, IEnumerable<NpgsqlParameter> parameters, int? expectedRowCount, UpdateOptions options) : base(dataSource)
+        public PostgreSqlUpdateSet(PostgreSqlDataSourceBase dataSource, PostgreSqlObjectName tableName, object newValues, string whereClause, IEnumerable<NpgsqlParameter> parameters, int? expectedRowCount, UpdateOptions options) : base(dataSource)
         {
             if (options.HasFlag(UpdateOptions.UseKeyAttribute))
                 throw new NotSupportedException("Cannot use Key attributes with this operation.");
@@ -50,7 +51,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PostgreSqlUpdateMany" /> class.
+        /// Initializes a new instance of the <see cref="PostgreSqlUpdateSet" /> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
         /// <param name="tableName">Name of the table.</param>
@@ -59,7 +60,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         /// <param name="argumentValue">The argument value for the where clause.</param>
         /// <param name="options">The options.</param>
         /// <exception cref="System.NotSupportedException">Cannot use Key attributes with this operation.</exception>
-        public PostgreSqlUpdateMany(PostgreSqlDataSourceBase dataSource, PostgreSqlObjectName tableName, object newValues, string whereClause, object argumentValue, UpdateOptions options) : base(dataSource)
+        public PostgreSqlUpdateSet(PostgreSqlDataSourceBase dataSource, PostgreSqlObjectName tableName, object newValues, string whereClause, object argumentValue, UpdateOptions options) : base(dataSource)
         {
             if (options.HasFlag(UpdateOptions.UseKeyAttribute))
                 throw new NotSupportedException("Cannot use Key attributes with this operation.");
@@ -72,7 +73,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PostgreSqlUpdateMany" /> class.
+        /// Initializes a new instance of the <see cref="PostgreSqlUpdateSet" /> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
         /// <param name="tableName">Name of the table.</param>
@@ -81,13 +82,57 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         /// <param name="filterOptions">The filter options.</param>
         /// <param name="options">The update options.</param>
         /// <exception cref="System.NotSupportedException">Cannot use Key attributes with this operation.</exception>
-        public PostgreSqlUpdateMany(PostgreSqlDataSourceBase dataSource, PostgreSqlObjectName tableName, object newValues, object filterValue, FilterOptions filterOptions, UpdateOptions options) : base(dataSource)
+        public PostgreSqlUpdateSet(PostgreSqlDataSourceBase dataSource, PostgreSqlObjectName tableName, object newValues, object filterValue, FilterOptions filterOptions, UpdateOptions options) : base(dataSource)
         {
             if (options.HasFlag(UpdateOptions.UseKeyAttribute))
                 throw new NotSupportedException("Cannot use Key attributes with this operation.");
 
             m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
             m_NewValues = newValues;
+            m_FilterValue = filterValue;
+            m_FilterOptions = filterOptions;
+            m_Options = options;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PostgreSqlUpdateSet" /> class.
+        /// </summary>
+        /// <param name="dataSource">The data source.</param>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="updateExpression">The update expression.</param>
+        /// <param name="whereClause">The where clause.</param>
+        /// <param name="argumentValue">The argument value for the where clause.</param>
+        /// <param name="options">The options.</param>
+        /// <exception cref="System.NotSupportedException">Cannot use Key attributes with this operation.</exception>
+        public PostgreSqlUpdateSet(PostgreSqlDataSourceBase dataSource, PostgreSqlObjectName tableName, string updateExpression, string whereClause, object argumentValue, UpdateOptions options) : base(dataSource)
+        {
+            if (options.HasFlag(UpdateOptions.UseKeyAttribute))
+                throw new NotSupportedException("Cannot use Key attributes with this operation.");
+
+            m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
+            m_UpdateExpression = updateExpression;
+            m_WhereClause = whereClause;
+            m_Options = options;
+            m_ArgumentValue = argumentValue;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PostgreSqlUpdateSet" /> class.
+        /// </summary>
+        /// <param name="dataSource">The data source.</param>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="updateExpression">The update expression.</param>
+        /// <param name="filterValue">The filter value.</param>
+        /// <param name="filterOptions">The filter options.</param>
+        /// <param name="options">The update options.</param>
+        /// <exception cref="System.NotSupportedException">Cannot use Key attributes with this operation.</exception>
+        public PostgreSqlUpdateSet(PostgreSqlDataSourceBase dataSource, PostgreSqlObjectName tableName, string updateExpression, object filterValue, FilterOptions filterOptions, UpdateOptions options) : base(dataSource)
+        {
+            if (options.HasFlag(UpdateOptions.UseKeyAttribute))
+                throw new NotSupportedException("Cannot use Key attributes with this operation.");
+
+            m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
+            m_UpdateExpression = updateExpression;
             m_FilterValue = filterValue;
             m_FilterOptions = filterOptions;
             m_Options = options;
@@ -118,7 +163,13 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
                 sql.AppendLine(";");
             }
 
-            sqlBuilder.BuildSetClause(sql, "UPDATE " + m_Table.Name.ToQuotedString() + " SET ", null, null);
+            sql.Append("UPDATE " + m_Table.Name.ToQuotedString());
+            if (m_UpdateExpression == null)
+                sqlBuilder.BuildSetClause(sql, " SET ", null, null);
+            else
+                sql.Append(" SET " + m_UpdateExpression);
+
+
             if (m_FilterValue != null)
             {
                 sql.Append(" WHERE " + sqlBuilder.ApplyFilterValue(m_FilterValue, m_FilterOptions));
