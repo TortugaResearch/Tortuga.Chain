@@ -456,7 +456,7 @@ namespace Tortuga.Chain.PostgreSql
                 parameters.Add(param);
             }
 
-            return new PostgreSqlUpdateSet(this, tableName, newValues, where, parameters, parameters.Count, options);
+            return new PostgreSqlUpdateMany(this, tableName, newValues, where, parameters, parameters.Count, options);
         }
 
 
@@ -548,13 +548,13 @@ namespace Tortuga.Chain.PostgreSql
 
             var table = DatabaseMetadata.GetTableOrView(tableName);
             if (!AuditRules.UseSoftDelete(table))
-                return new PostgreSqlDeleteWhere(this, tableName, where, parameters, options);
+                return new PostgreSqlDeleteMany(this, tableName, where, parameters, options);
 
             UpdateOptions effectiveOptions = UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected;
             if (options.HasFlag(DeleteOptions.UseKeyAttribute))
                 effectiveOptions = effectiveOptions | UpdateOptions.UseKeyAttribute;
 
-            return new PostgreSqlUpdateSet(this, tableName, null, where, parameters, parameters.Count, effectiveOptions);
+            return new PostgreSqlUpdateMany(this, tableName, null, where, parameters, parameters.Count, effectiveOptions);
 
         }
 
@@ -694,13 +694,13 @@ namespace Tortuga.Chain.PostgreSql
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="whereClause">The where clause.</param>
-        public MultipleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> DeleteWhere(PostgreSqlObjectName tableName, string whereClause)
+        public MultipleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> DeleteWithFilter(PostgreSqlObjectName tableName, string whereClause)
         {
             var table = DatabaseMetadata.GetTableOrView(tableName);
             if (!AuditRules.UseSoftDelete(table))
-                return new PostgreSqlDeleteWhere(this, tableName, whereClause, null);
+                return new PostgreSqlDeleteMany(this, tableName, whereClause, null);
 
-            return new PostgreSqlUpdateSet(this, tableName, null, whereClause, null, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected);
+            return new PostgreSqlUpdateMany(this, tableName, null, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected).WithFilter(whereClause, null);
         }
 
         /// <summary>
@@ -709,13 +709,13 @@ namespace Tortuga.Chain.PostgreSql
         /// <param name="tableName">Name of the table.</param>
         /// <param name="whereClause">The where clause.</param>
         /// <param name="argumentValue">The argument value for the where clause.</param>
-        public MultipleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> DeleteWhere(PostgreSqlObjectName tableName, string whereClause, object argumentValue)
+        public MultipleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> DeleteWithFilter(PostgreSqlObjectName tableName, string whereClause, object argumentValue)
         {
             var table = DatabaseMetadata.GetTableOrView(tableName);
             if (!AuditRules.UseSoftDelete(table))
-                return new PostgreSqlDeleteWhere(this, tableName, whereClause, argumentValue);
+                return new PostgreSqlDeleteMany(this, tableName, whereClause, argumentValue);
 
-            return new PostgreSqlUpdateSet(this, tableName, null, whereClause, argumentValue, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected);
+            return new PostgreSqlUpdateMany(this, tableName, null, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected).WithFilter(whereClause, argumentValue);
         }
 
         /// <summary>
@@ -724,92 +724,49 @@ namespace Tortuga.Chain.PostgreSql
         /// <param name="tableName">Name of the table.</param>
         /// <param name="filterValue">The filter value.</param>
         /// <param name="filterOptions">The options.</param>
-        public MultipleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> DeleteWhere(PostgreSqlObjectName tableName, object filterValue, FilterOptions filterOptions = FilterOptions.None)
+        public MultipleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> DeleteWithFilter(PostgreSqlObjectName tableName, object filterValue, FilterOptions filterOptions = FilterOptions.None)
         {
             var table = DatabaseMetadata.GetTableOrView(tableName);
             if (!AuditRules.UseSoftDelete(table))
-                return new PostgreSqlDeleteWhere(this, tableName, filterValue, filterOptions);
+                return new PostgreSqlDeleteMany(this, tableName, filterValue, filterOptions);
 
-            return new PostgreSqlUpdateSet(this, tableName, null, filterValue, filterOptions, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected);
+            return new PostgreSqlUpdateMany(this, tableName, null, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected).WithFilter(filterValue, filterOptions);
         }
 
+
         /// <summary>
-        /// Updates multiple records using an update expression and a where expression.
+        /// Updates multiple records using an update expression.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="updateExpression">The update expression.</param>
-        /// <param name="whereClause">The where clause.</param>
+        /// <param name="options">The update options.</param>
+        public IUpdateManyCommandBuilder<NpgsqlCommand, NpgsqlParameter> UpdateSet(PostgreSqlObjectName tableName, string updateExpression, UpdateOptions options = UpdateOptions.None)
+        {
+            return new PostgreSqlUpdateMany(this, tableName, updateExpression, null, options);
+        }
+
+        /// <summary>
+        /// Updates multiple records using an update expression.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="updateExpression">The update expression.</param>
         /// <param name="argumentValue">The argument value.</param>
         /// <param name="options">The update options.</param>
-        public MultipleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> UpdateSet(PostgreSqlObjectName tableName, string updateExpression, string whereClause, object argumentValue, UpdateOptions options = UpdateOptions.None)
+        public IUpdateManyCommandBuilder<NpgsqlCommand, NpgsqlParameter> UpdateSet(PostgreSqlObjectName tableName, string updateExpression, object argumentValue, UpdateOptions options = UpdateOptions.None)
         {
-            return new PostgreSqlUpdateSet(this, tableName, updateExpression, whereClause, argumentValue, options);
+            return new PostgreSqlUpdateMany(this, tableName, updateExpression, argumentValue, options);
         }
 
+
         /// <summary>
-        /// Updates multiple records using an update expression and a where expression.
+        /// Updates multiple records using an update value.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
-        /// <param name="updateExpression">The update expression.</param>
-        /// <param name="whereClause">The where clause.</param>
+        /// <param name="newValues">The new values to use.</param>
         /// <param name="options">The options.</param>
-        public MultipleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> UpdateSet(PostgreSqlObjectName tableName, string updateExpression, string whereClause, UpdateOptions options = UpdateOptions.None)
+        public IUpdateManyCommandBuilder<NpgsqlCommand, NpgsqlParameter> UpdateSet(PostgreSqlObjectName tableName, object newValues, UpdateOptions options = UpdateOptions.None)
         {
-            return new PostgreSqlUpdateSet(this, tableName, updateExpression, whereClause, null, options);
-        }
-
-        /// <summary>
-        /// Updates multiple records using an update expression and a filter object.
-        /// </summary>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="updateExpression">The update expression.</param>
-        /// <param name="filterValue">The filter value.</param>
-        /// <param name="filterOptions">The filter options.</param>
-        /// <param name="options">The update options.</param>
-        public MultipleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> UpdateSet(PostgreSqlObjectName tableName, string updateExpression, object filterValue, FilterOptions filterOptions = FilterOptions.None, UpdateOptions options = UpdateOptions.None)
-        {
-            return new PostgreSqlUpdateSet(this, tableName, updateExpression, filterValue, filterOptions, options);
-        }
-
-
-        /// <summary>
-        /// Updates multiple records using an update value and a where expression.
-        /// </summary>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="newValues">The new values to use.</param>
-        /// <param name="whereClause">The where clause.</param>
-        /// <param name="argumentValue">The argument value.</param>
-        /// <param name="options">The options.</param>
-        public MultipleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> UpdateSet(PostgreSqlObjectName tableName, object newValues, string whereClause, object argumentValue, UpdateOptions options = UpdateOptions.None)
-        {
-            return new PostgreSqlUpdateSet(this, tableName, newValues, whereClause, argumentValue, options);
-        }
-
-
-        /// <summary>
-        /// Updates multiple records using an update value and a where expression.
-        /// </summary>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="newValues">The new values to use.</param>
-        /// <param name="whereClause">The where clause.</param>
-        /// <param name="options">The update options.</param>
-        public MultipleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> UpdateSet(PostgreSqlObjectName tableName, object newValues, string whereClause, UpdateOptions options = UpdateOptions.None)
-        {
-            return new PostgreSqlUpdateSet(this, tableName, newValues, whereClause, null, options);
-        }
-
-
-        /// <summary>
-        /// Updates multiple records using an update value and a filter object.
-        /// </summary>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="newValues">The new values to use.</param>
-        /// <param name="filterValue">The filter value.</param>
-        /// <param name="filterOptions">The filter options.</param>
-        /// <param name="options">The update options.</param>
-        public MultipleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> UpdateSet(PostgreSqlObjectName tableName, object newValues, object filterValue, FilterOptions filterOptions = FilterOptions.None, UpdateOptions options = UpdateOptions.None)
-        {
-            return new PostgreSqlUpdateSet(this, tableName, newValues, filterValue, filterOptions, options);
+            return new PostgreSqlUpdateMany(this, tableName, newValues, options);
         }
     }
 }

@@ -559,7 +559,7 @@ namespace Tortuga.Chain.CommandBuilders
                 throw new ArgumentNullException(nameof(filterValue), $"{nameof(filterValue)} is null.");
 
             var ignoreNullProperties = filterOptions.HasFlag(FilterOptions.IgnoreNullProperties);
-            var parts = new List<string>();
+            var parts = new string[m_Entries.Length]; ;
             bool found = false;
 
             if (filterValue is IReadOnlyDictionary<string, object>)
@@ -577,7 +577,7 @@ namespace Tortuga.Chain.CommandBuilders
                             if (value == DBNull.Value)
                             {
                                 if (!ignoreNullProperties)
-                                    parts.Add($"{m_Entries[i].Details.QuotedSqlName} IS NULL");
+                                    parts[i] = ($"{m_Entries[i].Details.QuotedSqlName} IS NULL");
                             }
                             else
                             {
@@ -586,7 +586,7 @@ namespace Tortuga.Chain.CommandBuilders
                                     m_Entries[i].UseParameter = true;
                                 else
                                     m_Entries[i].UseParameter2 = true;
-                                parts.Add($"{m_Entries[i].Details.QuotedSqlName} = ?");
+                                parts[i] = ($"{m_Entries[i].Details.QuotedSqlName} = ?");
                             }
 
                             found = true;
@@ -612,7 +612,7 @@ namespace Tortuga.Chain.CommandBuilders
                             if (value == DBNull.Value)
                             {
                                 if (!ignoreNullProperties)
-                                    parts.Add($"{m_Entries[i].Details.QuotedSqlName} IS NULL");
+                                    parts[i] = ($"{m_Entries[i].Details.QuotedSqlName} IS NULL");
                             }
                             else
                             {
@@ -621,7 +621,7 @@ namespace Tortuga.Chain.CommandBuilders
                                     m_Entries[i].UseParameter = true;
                                 else
                                     m_Entries[i].UseParameter2 = true;
-                                parts.Add($"{m_Entries[i].Details.QuotedSqlName} = ?");
+                                parts[i] = ($"{m_Entries[i].Details.QuotedSqlName} = ?");
                             }
 
                             found = true;
@@ -638,7 +638,7 @@ namespace Tortuga.Chain.CommandBuilders
             if (!found)
                 throw new MappingException($"None of the properties on {filterValue.GetType().Name} could be matched to columns in {m_Name}.");
 
-            return string.Join(" AND ", parts);
+            return string.Join(" AND ", parts.Where(s => s != null));
         }
 
 
