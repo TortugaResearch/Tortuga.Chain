@@ -85,6 +85,8 @@
     <Compile Include="shared\Appenders\Appender`1.cs" />
     <Compile Include="shared\Appenders\CacheAllItemsAppender.cs" />
     <Compile Include="shared\Appenders\CacheResultAppender`1.cs" />
+    <Compile Include="shared\Appenders\ExpressionJoinAppender`2.cs" />
+    <Compile Include="shared\Appenders\KeyJoinAppender`2.cs" />
     <Compile Include="shared\Appenders\StrictModeAppender`1.cs" />
     <Compile Include="shared\Appenders\TimeoutAppender`1.cs" />
     <Compile Include="shared\Appenders\TraceAppender`1.cs" />
@@ -153,6 +155,7 @@
     <Compile Include="shared\IClass0DataSource.cs" />
     <Compile Include="shared\IClass1DataSource.cs" />
     <Compile Include="shared\IClass2DataSource.cs" />
+    <Compile Include="shared\JoinOptions.cs" />
     <Compile Include="shared\LimitOptions.cs" />
     <Compile Include="shared\MappingException.cs" />
     <Compile Include="shared\Appenders\ReadOrCacheResultAppender`1.cs" />
