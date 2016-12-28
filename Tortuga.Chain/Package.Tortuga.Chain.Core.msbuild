@@ -7,7 +7,7 @@
   <PropertyGroup>
     <MainSolution>Tortuga.Chain.Core.sln</MainSolution>
     <MSBuildCommunityTasksPath>$(MSBuildProjectDirectory)\.build</MSBuildCommunityTasksPath>
-    <PdfPath>$(MSBuildProjectDirectory)\Documentation\bin\Release\chain-pdf.pdf</PdfPath>
+    <!--<PdfPath>$(MSBuildProjectDirectory)\Documentation\bin\Release\chain-pdf.pdf</PdfPath>-->
   </PropertyGroup>
 
   <PropertyGroup>
@@ -92,7 +92,7 @@
   </Target>
 
   <Target Name="PackageHelp">
-    <Copy SourceFiles="$(PdfPath)" DestinationFolder="$(BuildOutputPath)\docs" />
+    <!--<Copy SourceFiles="$(PdfPath)" DestinationFolder="$(BuildOutputPath)\docs" />-->
   </Target>
 
   <Target Name="BuildNugetFile">

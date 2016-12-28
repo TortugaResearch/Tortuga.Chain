@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="en">
+<!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Appenders - Tortuga Chain</title>
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="stylesheet" href="css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="css/theme_colors.css" type="text/css" />
+    <link rel="stylesheet" href="css/styles/vs.css">
+    <link rel="stylesheet" href="css/font-awesome.4.5.0.min.css">
+</head>
+<body role="document">
+    <div class="grid-for-nav">
+        <nav data-toggle="nav-shift" class="nav-side stickynav">
+            <div class="side-nav-search">
+                <a href="index.htm"><i class="fa fa-home"></i> Tortuga Chain</a>
+                <div role="search">
+                    <form id="search-form" class="form" action="Docnet_search.htm" method="get">
+                        <input type="text" name="q" placeholder="Search docs" />
+                    </form>
+                </div>
+            </div>
+            <div class="menu menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+<ul>
+<li class="tocentry"><a href="index.htm">Home</a>
+</li>
+
+<li class="tocentry"><a href="Introduction.htm">Quick Start</a>
+</li>
+<li class="tocentry"><a href="DataSources.htm">Data Sources</a>
+</li>
+<li class="tocentry">
+<span class="navigationgroup"><i class="fa fa-caret-right"></i> <a href="CommandBuilders.htm">Command Builders</a></span>
+</li>
+<li class="tocentry">
+<span class="navigationgroup"><i class="fa fa-caret-right"></i> <a href="Materializers.htm">Materializers</a></span>
+</li>
+<li class="tocentry">
+<ul class="current">
+<li><span class="navigationgroup"><i class="fa fa-caret-down"></i> <a href="Appenders.htm">Appenders</a></span></li>
+
+<li class="tocentry"><a href="Caching.htm">Caching Appenders</a>
+</li>
+<li class="tocentry"><a href="Tracing.htm">Tracing Appenders</a>
+</li>
+<li class="tocentry"><a href="SqlDependency.htm">Change Notification Appenders</a>
+</li>
+</ul>
+</li>
+<li class="tocentry"><a href="AuditRules.htm">Audit Rules</a>
+</li>
+<li class="tocentry"><a href="RestrictedColumns.htm">Restricted Columns</a>
+</li>
+<li class="tocentry"><a href="Transactions.htm">Transactions</a>
+</li>
+<li class="tocentry"><a href="EntityFramework.htm">Entity Framework Integration</a>
+</li>
+<li class="tocentry"><a href="NHibernate.htm">NHibernate Integration</a>
+</li>
+</ul>
+				<div class="toc-footer">
+					<span class="text-small">
+						<hr/>
+						<a href="https://github.com/FransBouma/DocNet" target="_blank">Made with <i class="fa fa-github"></i> DocNet</a>
+					</span>
+				</div>	
+			</div>
+            &nbsp;
+        </nav>
+        <section data-toggle="nav-shift" class="nav-content-wrap">
+            <nav class="nav-top" role="navigation" aria-label="top navigation">
+                <i data-toggle="nav-top" class="fa fa-bars"></i>
+                <a href="index.htm">Tortuga Chain</a>
+            </nav>
+            <div class="nav-content">
+                <div role="navigation" aria-label="breadcrumbs navigation">
+                    <div class="breadcrumbs">
+<ul><li><a href="index.htm">Home</a></li> / <li><a href="Appenders.htm">Appenders</a></li></ul>
+					
+                    </div>
+                    <hr />
+                </div>
+                <div role="main">
+                    <div class="section">
+<h1 id="appenders">Appenders<a class="headerlink" href="#appenders" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h1>
+<p>In the API, appenders are exposed as <code>ILink</code> or <code>ILink&lt;T&gt;</code> just like materializers. The difference is that while a materializer hooks onto a command builder, an appender hooks onto other links. This means you can string together as many appenders as you need to get the desired effect.</p>
+<p>The mostly commonly used appenders deal with caching. You can also find appenders for tracing SQL calls, modifying command timeouts, and listening to change notification from the database (see SQL Dependency Appenders).</p>
+<h2 id="internals">Internals<a class="headerlink" href="#internals" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h2>
+<p>Appends can be loosely grouped into these categories:</p>
+<ul>
+<li>Before execution</li>
+<li>After execution</li>
+<li>Instead of execution</li>
+</ul>
+<p>Appenders can fit into more than one category.</p>
+<h3 id="before-execution">Before execution<a class="headerlink" href="#before-execution" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h3>
+<p>A before execution appender is usually involved with the command building process in some way. Here we see one that alters the connection timeout:</p>
+<pre><code>    protected override void OnCommandBuilt(CommandBuiltEventArgs e)
+    {
+        if (e == null)
+            throw new ArgumentNullException(&quot;e&quot;, &quot;e is null.&quot;);
+        e.Command.CommandTimeout = (int)m_Timeout.TotalSeconds;
+    }
+</code></pre>
+
+<p>The tracing appenders also respond to this event, but they merely read the command text instead of modifying it. </p>
+<p>Another type of before execution appender is InvalidateCache, which you can see here:</p>
+<pre><code>    public override void Execute(object state = null)
+    {
+        DataSource.InvalidateCache(m_CacheKey);
+
+        PreviousLink.Execute(state);
+    }
+</code></pre>
+
+<p>Note that the ExecuteAsync method will also have to be overridden with nearly identical logic.</p>
+<h3 id="after-execution">After execution<a class="headerlink" href="#after-execution" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h3>
+<p>After execution appenders tend to work on the cache. Here is one that caches the result of an operation.</p>
+<pre><code>    public override TResult Execute(object state = null)
+    {
+        var result = PreviousLink.Execute(state);
+        DataSource.WriteToCache(new CacheItem(m_CacheKey ?? m_CacheKeyFunction(result), result, null), m_Policy);
+        return result;
+    }
+</code></pre>
+
+<h3 id="instead-of-execution">Instead of execution<a class="headerlink" href="#instead-of-execution" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h3>
+<p>The quintessential instead of appender is <code>ReadOrCache</code>. As the name implies, this will read a value from the cache, and if not found executes the query and caches the resulting value. Here is an example:</p>
+<pre><code>    public override TResult Execute(object state = null)
+    {
+        TResult result;
+        if (PreviousLink.DataSource.TryReadFromCache(m_CacheKey, out result))
+            return result;
+
+        result = PreviousLink.Execute(state);
+
+        DataSource.WriteToCache(new CacheItem(m_CacheKey, result, null), m_Policy);
+
+        return result;
+    }
+</code></pre>
+
+<p>As you can see, this appender has an effect that occurs both before and optionally after execution.</p>
+<h3 id="creating-an-appender">Creating an Appender<a class="headerlink" href="#creating-an-appender" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h3>
+<p>Using the example above and the <code>Appender</code>, <code>Appender&lt;TResult&gt;</code>, or <code>Appender&lt;Tin, TOut&gt;</code> base class, you can implement your own appender. If your appender is database specific, you may need to cast the execution into the correct subtype.</p>
+
+                    </div>
+                </div>
+                <footer>
+                    <hr />
+                    <div role="contentinfo">
+Tortuga Chain. <a href='https://github.com/docevaad/Chain/' target='_blank'>Visit us at GitHub</a>.
+                    </div>
+                </footer>
+            </div>
+        </section>
+    </div>
+    <script src="js/jquery-2.1.1.min.js"></script>
+    <script src="js/modernizr-2.8.3.min.js"></script>
+    <script src="js/highlight.pack.js"></script>
+    <script src="js/theme.js"></script>
+
+</body>
+</html>
