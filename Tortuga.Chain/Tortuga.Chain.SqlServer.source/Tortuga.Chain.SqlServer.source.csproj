@@ -105,6 +105,8 @@
     <Compile Include="shared\SqlServer\CommandBuilders\OleDbSqlServerProcedureCall.cs" />
     <Compile Include="shared\SqlServer\CommandBuilders\OleDbSqlServerSqlCall.cs" />
     <Compile Include="shared\SqlServer\CommandBuilders\OleDbSqlServerTableFunction.cs" />
+    <Compile Include="shared\SqlServer\CommandBuilders\OleDbSqlServerScalarFunction.cs" />
+    <Compile Include="shared\SqlServer\CommandBuilders\SqlServerScalarFunction.cs" />
     <Compile Include="shared\SqlServer\CommandBuilders\SqlServerTableFunction.cs" />
     <Compile Include="shared\SqlServer\CommandBuilders\OleDbSqlServerTableOrView.cs" />
     <Compile Include="shared\SqlServer\CommandBuilders\OleDbSqlServerUpdateMany.cs" />
