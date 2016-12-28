@@ -75,7 +75,6 @@ namespace Tortuga.Chain.CommandBuilders
             }
         }
 
-
         /// <summary>
         /// Applies a user defined table type as the argument.
         /// </summary>

@@ -1,0 +1,47 @@
+﻿{
+  "Name": "Tortuga Chain",
+  "Source": ".",
+  "Destination": "..\\..\\docs",
+  "IncludeSource": "Includes",
+  "Theme": "Light",
+  "Footer": "Tortuga Chain. <a href='https://github.com/docevaad/Chain/' target='_blank'>Visit us at GitHub</a>.",
+  "Pages": {
+    "__index": "index.md",
+    "Quick Start": "Introduction.md",
+    "Data Sources": "DataSources.md",
+    "Command Builders": {
+      "__index": "CommandBuilders.md",
+      "From Command Builder": "From.md",
+      "By Key Command Builder": "ByKey.md",
+      "Insert Command Builder": "Insert.md",
+      "Update Command Builder": "Update.md",
+      "Upsert Command Builder": "Upsert.md",
+      "Delete Command Builder": "Delete.md",
+      "SQL Command Builder": "SQL.md",
+      "Table Function Command Builder": "TableFunction.md",
+      "Scalar Function Command Builder": "ScalarFunction.md",
+      "Procedure Command Builder": "Procedure.md"
+    },
+    "Materializers": {
+      "__index": "Materializers.md",
+      "Non-Query Materializers": "NonQuery.md",
+      "Scalar Materializers": "Scalar.md",
+      "List Materializers": "List.md",
+      "Object/Collection Materializers": "Object.md",
+      "Compiled Object/Collection Materializers": "Compiled.md",
+      "DataRow/Table/Set Materializers": "DataTable.md",
+      "Row, Table, and TableSet Materializers": "Table.md"
+    },
+    "Appenders": {
+      "__index": "Appenders.md",
+      "Caching Appenders": "Caching.md",
+      "Tracing Appenders": "Tracing.md",
+      "Change Notification Appenders": "SqlDependency.md"
+    },
+    "Audit Rules": "AuditRules.md",
+    "Restricted Columns": "RestrictedColumns.md",
+    "Transactions": "Transactions.md",
+    "Entity Framework Integration": "EntityFramework.md",
+    "NHibernate Integration": "NHibernate.md"
+  }
+}

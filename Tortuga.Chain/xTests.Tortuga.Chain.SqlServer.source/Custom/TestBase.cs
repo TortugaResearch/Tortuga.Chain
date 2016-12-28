@@ -45,6 +45,10 @@ namespace Tests
 
         public string TableFunction2Name { get { return "Sales.CustomersByStateInline"; } }
 
+
+        public string ScalarFunction1Name { get { return "HR.EmployeeCount"; } }
+
+
         public SqlServerDataSource AttachRules(SqlServerDataSource source)
         {
             return source.WithRules(

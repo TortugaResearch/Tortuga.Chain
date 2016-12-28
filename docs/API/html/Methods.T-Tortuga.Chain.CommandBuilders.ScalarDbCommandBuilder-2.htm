@@ -1,0 +1,918 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"[]>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="save" content="history" />
+    <title>ScalarDbCommandBuilder(TCommand, TParameter) Methods</title>
+    <link rel="stylesheet" type="text/css" href="../styles/lightweight.css" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:msxsl="urn:schemas-microsoft-com:xslt" />
+    <link rel="stylesheet" type="text/css" href="../styles/lw-code.css" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:msxsl="urn:schemas-microsoft-com:xslt" />
+    <script type="text/javascript" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:msxsl="urn:schemas-microsoft-com:xslt" src="../scripts/languageSelector.js"> </script>
+    <meta name="container" content="Tortuga.Chain.CommandBuilders" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:msxsl="urn:schemas-microsoft-com:xslt" />
+    <meta name="file" content="Methods.T-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:msxsl="urn:schemas-microsoft-com:xslt" />
+    <meta name="guid" content="Methods.T-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:msxsl="urn:schemas-microsoft-com:xslt" />
+    <xml xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:msxsl="urn:schemas-microsoft-com:xslt">
+      <MSHelp:Attr Name="AssetID" Value="Methods.T:Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder`2" />
+      <MSHelp:TOCTitle Title="ScalarDbCommandBuilder(TCommand, TParameter) Methods" />
+      <MSHelp:RLTitle Title="ScalarDbCommandBuilder(TCommand, TParameter) Methods (Tortuga.Chain.CommandBuilders)" />
+      <MSHelp:Keyword Index="A" Term="Methods.T:Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder`2" />
+      <MSHelp:Keyword Index="A" Term="frlrfTortugaChainCommandBuildersScalarDbCommandBuilder2MethodsTopic" />
+      <MSHelp:Keyword Index="K" Term="ScalarDbCommandBuilder%3CTCommand%2C TParameter%3E class, methods" />
+      <MSHelp:Keyword Index="K" Term="ScalarDbCommandBuilder(Of TCommand%2C TParameter) class, methods" />
+      <MSHelp:Attr Name="DevLang" Value="CSharp" />
+      <MSHelp:Attr Name="DevLang" Value="VB" />
+      <MSHelp:Attr Name="Locale" Value="en-us" />
+      <MSHelp:Attr Name="TopicType" Value="kbSyntax" />
+      <MSHelp:Attr Name="TopicType" Value="apiref" />
+      <MSHelp:Attr Name="AssemblyVersion" Value="" />
+    </xml>
+  </head>
+  <body>
+    <div class="contentPlaceHolder" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:msxsl="urn:schemas-microsoft-com:xslt">
+      <div class="content">
+        <div class="topicContainer">
+          <div class="topic">
+            <p class="majorTitle" />
+            <h1 class="title">ScalarDbCommandBuilder<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span><span class="typeparameter">TCommand</span>, <span class="typeparameter">TParameter</span><span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span> Methods</h1>
+            <div id="mainSection">
+              <div id="mainBody">
+                <p>The <a href="T-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.htm">ScalarDbCommandBuilder<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span>TCommand, TParameter<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span></a> type exposes the following members.</p>
+                <div class="LW_CollapsibleArea_Container">
+                  <div class="LW_CollapsibleArea_TitleDiv">
+                    <h2 class="LW_CollapsibleArea_Title">Methods</h2>
+                    <div class="LW_CollapsibleArea_HrDiv">
+                      <hr class="LW_CollapsibleArea_Hr" />
+                    </div>
+                  </div>
+                  <a id="methodTableSection">
+                    <!---->
+                  </a>
+                  <table class="members">
+                    <tr>
+                      <th class="iconColumn">
+               
+            </th>
+                      <th class="nameColumn">Name</th>
+                      <th class="descriptionColumn">Description</th>
+                    </tr>
+                    <tr data="public;inherited;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.DbCommandBuilder-2.AsNonQuery.htm">AsNonQuery</a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Indicates this operation has no result set.
+   </div> (Inherited from <a href="T-Tortuga.Chain.CommandBuilders.DbCommandBuilder-2.htm">DbCommandBuilder<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span>TCommand, TParameter<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span></a>.)</td>
+                    </tr>
+                    <tr data="public;inherited;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="http://msdn.microsoft.com/en-us/library/bsc2ak47.aspx" target="_blank">Equals(System.Object)</a>
+                      </td>
+                      <td>
+                        <div class="summary">Determines whether the specified object is equal to the current object.</div> (Inherited from <a href="http://msdn.microsoft.com/en-us/library/system.object.aspx" target="_blank">Object</a>.)</td>
+                    </tr>
+                    <tr data="public;inherited;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.DbCommandBuilder.Execute.htm">Execute</a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Execute the operation synchronously.
+   </div> (Inherited from <a href="T-Tortuga.Chain.CommandBuilders.DbCommandBuilder.htm">DbCommandBuilder</a>.)</td>
+                    </tr>
+                    <tr data="public;inherited;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.DbCommandBuilder.ExecuteAsync.htm">ExecuteAsync(Object)</a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Execute the operation asynchronously.
+   </div> (Inherited from <a href="T-Tortuga.Chain.CommandBuilders.DbCommandBuilder.htm">DbCommandBuilder</a>.)</td>
+                    </tr>
+                    <tr data="public;inherited;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.DbCommandBuilder.ExecuteAsync_1.htm">ExecuteAsync(CancellationToken, Object)</a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Execute the operation asynchronously.
+   </div> (Inherited from <a href="T-Tortuga.Chain.CommandBuilders.DbCommandBuilder.htm">DbCommandBuilder</a>.)</td>
+                    </tr>
+                    <tr data="protected;inherited;notNetfw;">
+                      <td>
+                        <img src="../icons/protmethod.gif" alt="Protected method" title="Protected method" />
+                      </td>
+                      <td>
+                        <a href="http://msdn.microsoft.com/en-us/library/system.object.finalize.aspx" target="_blank">Finalize</a>
+                      </td>
+                      <td>
+                        <div class="summary">Allows an object to try to free resources and perform other cleanup operations before it is reclaimed by garbage collection.</div> (Inherited from <a href="http://msdn.microsoft.com/en-us/library/system.object.aspx" target="_blank">Object</a>.)</td>
+                    </tr>
+                    <tr data="public;inherited;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="http://msdn.microsoft.com/en-us/library/system.object.gethashcode.aspx" target="_blank">GetHashCode</a>
+                      </td>
+                      <td>
+                        <div class="summary">Serves as the default hash function. </div> (Inherited from <a href="http://msdn.microsoft.com/en-us/library/system.object.aspx" target="_blank">Object</a>.)</td>
+                    </tr>
+                    <tr data="public;inherited;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="http://msdn.microsoft.com/en-us/library/system.object.gettype.aspx" target="_blank">GetType</a>
+                      </td>
+                      <td>
+                        <div class="summary">Gets the <a href="http://msdn.microsoft.com/en-us/library/system.type.aspx" target="_blank">Type</a> of the current instance.</div> (Inherited from <a href="http://msdn.microsoft.com/en-us/library/system.object.aspx" target="_blank">Object</a>.)</td>
+                    </tr>
+                    <tr data="protected;inherited;notNetfw;">
+                      <td>
+                        <img src="../icons/protmethod.gif" alt="Protected method" title="Protected method" />
+                      </td>
+                      <td>
+                        <a href="http://msdn.microsoft.com/en-us/library/system.object.memberwiseclone.aspx" target="_blank">MemberwiseClone</a>
+                      </td>
+                      <td>
+                        <div class="summary">Creates a shallow copy of the current <a href="http://msdn.microsoft.com/en-us/library/system.object.aspx" target="_blank">Object</a>.</div> (Inherited from <a href="http://msdn.microsoft.com/en-us/library/system.object.aspx" target="_blank">Object</a>.)</td>
+                    </tr>
+                    <tr data="public;inherited;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.DbCommandBuilder-2.Prepare.htm">Prepare</a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Prepares the command for execution by generating any necessary SQL.
+   </div> (Inherited from <a href="T-Tortuga.Chain.CommandBuilders.DbCommandBuilder-2.htm">DbCommandBuilder<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span>TCommand, TParameter<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span></a>.)</td>
+                    </tr>
+                    <tr data="public;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToBoolean.htm">ToBoolean<span class="languageSpecificText"><span class="cs">()</span><span class="cpp">()</span><span class="nu">()</span><span class="fs">()</span></span></a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Indicates the results should be materialized as a Boolean.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToBoolean_1.htm">ToBoolean(String)</a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Indicates the results should be materialized as a Boolean.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToBooleanOrNull.htm">ToBooleanOrNull<span class="languageSpecificText"><span class="cs">()</span><span class="cpp">()</span><span class="nu">()</span><span class="fs">()</span></span></a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Indicates the results should be materialized as a nullable Boolean.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToBooleanOrNull_1.htm">ToBooleanOrNull(String)</a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Indicates the results should be materialized as a nullable Boolean.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToByte.htm">ToByte<span class="languageSpecificText"><span class="cs">()</span><span class="cpp">()</span><span class="nu">()</span><span class="fs">()</span></span></a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Indicates the results should be materialized as a byte.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToByte_1.htm">ToByte(String)</a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Indicates the results should be materialized as a byte.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToByteArray.htm">ToByteArray<span class="languageSpecificText"><span class="cs">()</span><span class="cpp">()</span><span class="nu">()</span><span class="fs">()</span></span></a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Indicates the results should be materialized as a byte array.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToByteArray_1.htm">ToByteArray(String)</a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Indicates the results should be materialized as a byte array.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToByteOrNull.htm">ToByteOrNull<span class="languageSpecificText"><span class="cs">()</span><span class="cpp">()</span><span class="nu">()</span><span class="fs">()</span></span></a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Indicates the results should be materialized as a nullable byte.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToByteOrNull_1.htm">ToByteOrNull(String)</a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Indicates the results should be materialized as a nullable byte.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToDateTime.htm">ToDateTime<span class="languageSpecificText"><span class="cs">()</span><span class="cpp">()</span><span class="nu">()</span><span class="fs">()</span></span></a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Indicates the results should be materialized as a DateTime.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToDateTime_1.htm">ToDateTime(String)</a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Indicates the results should be materialized as a DateTime.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToDateTimeOffset.htm">ToDateTimeOffset<span class="languageSpecificText"><span class="cs">()</span><span class="cpp">()</span><span class="nu">()</span><span class="fs">()</span></span></a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Indicates the results should be materialized as a DateTimeOffset.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToDateTimeOffset_1.htm">ToDateTimeOffset(String)</a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Indicates the results should be materialized as a DateTimeOffset.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToDateTimeOffsetOrNull.htm">ToDateTimeOffsetOrNull<span class="languageSpecificText"><span class="cs">()</span><span class="cpp">()</span><span class="nu">()</span><span class="fs">()</span></span></a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Indicates the results should be materialized as a nullable DateTimeOffset.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToDateTimeOffsetOrNull_1.htm">ToDateTimeOffsetOrNull(String)</a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Indicates the results should be materialized as a nullable DateTimeOffset.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToDateTimeOrNull.htm">ToDateTimeOrNull<span class="languageSpecificText"><span class="cs">()</span><span class="cpp">()</span><span class="nu">()</span><span class="fs">()</span></span></a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Indicates the results should be materialized as a nullable DateTime.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToDateTimeOrNull_1.htm">ToDateTimeOrNull(String)</a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Indicates the results should be materialized as a nullable DateTime.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToDecimal.htm">ToDecimal<span class="languageSpecificText"><span class="cs">()</span><span class="cpp">()</span><span class="nu">()</span><span class="fs">()</span></span></a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Indicates the results should be materialized as a Decimal.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToDecimal_1.htm">ToDecimal(String)</a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Indicates the results should be materialized as a Decimal.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToDecimalOrNull.htm">ToDecimalOrNull<span class="languageSpecificText"><span class="cs">()</span><span class="cpp">()</span><span class="nu">()</span><span class="fs">()</span></span></a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Indicates the results should be materialized as a nullable Decimal.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToDecimalOrNull_1.htm">ToDecimalOrNull(String)</a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Indicates the results should be materialized as a nullable Decimal.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToDouble.htm">ToDouble<span class="languageSpecificText"><span class="cs">()</span><span class="cpp">()</span><span class="nu">()</span><span class="fs">()</span></span></a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Indicates the results should be materialized as a Double.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToDouble_1.htm">ToDouble(String)</a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Indicates the results should be materialized as a Double.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToDoubleOrNull.htm">ToDoubleOrNull<span class="languageSpecificText"><span class="cs">()</span><span class="cpp">()</span><span class="nu">()</span><span class="fs">()</span></span></a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Indicates the results should be materialized as a nullable Double.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToDoubleOrNull_1.htm">ToDoubleOrNull(String)</a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Indicates the results should be materialized as a nullable Double.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToGuid.htm">ToGuid<span class="languageSpecificText"><span class="cs">()</span><span class="cpp">()</span><span class="nu">()</span><span class="fs">()</span></span></a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Indicates the results should be materialized as a Guid.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToGuid_1.htm">ToGuid(String)</a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Indicates the results should be materialized as a Guid.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToGuidOrNull.htm">ToGuidOrNull<span class="languageSpecificText"><span class="cs">()</span><span class="cpp">()</span><span class="nu">()</span><span class="fs">()</span></span></a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Indicates the results should be materialized as a nullable Guid.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToGuidOrNull_1.htm">ToGuidOrNull(String)</a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Indicates the results should be materialized as a nullable Guid.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToInt16.htm">ToInt16<span class="languageSpecificText"><span class="cs">()</span><span class="cpp">()</span><span class="nu">()</span><span class="fs">()</span></span></a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Indicates the results should be materialized as a Int16.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToInt16_1.htm">ToInt16(String)</a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Indicates the results should be materialized as a Int16.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToInt16OrNull.htm">ToInt16OrNull<span class="languageSpecificText"><span class="cs">()</span><span class="cpp">()</span><span class="nu">()</span><span class="fs">()</span></span></a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Indicates the results should be materialized as a nullable Int16.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToInt16OrNull_1.htm">ToInt16OrNull(String)</a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Indicates the results should be materialized as a nullable Int16.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToInt32.htm">ToInt32<span class="languageSpecificText"><span class="cs">()</span><span class="cpp">()</span><span class="nu">()</span><span class="fs">()</span></span></a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Indicates the results should be materialized as a Int32.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToInt32_1.htm">ToInt32(String)</a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Indicates the results should be materialized as a Int32.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToInt32OrNull.htm">ToInt32OrNull<span class="languageSpecificText"><span class="cs">()</span><span class="cpp">()</span><span class="nu">()</span><span class="fs">()</span></span></a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Indicates the results should be materialized as a nullable Int32.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToInt32OrNull_1.htm">ToInt32OrNull(String)</a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Indicates the results should be materialized as a nullable Int32.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToInt64.htm">ToInt64<span class="languageSpecificText"><span class="cs">()</span><span class="cpp">()</span><span class="nu">()</span><span class="fs">()</span></span></a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Indicates the results should be materialized as a Int64.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToInt64_1.htm">ToInt64(String)</a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Indicates the results should be materialized as a Int64.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToInt64OrNull.htm">ToInt64OrNull<span class="languageSpecificText"><span class="cs">()</span><span class="cpp">()</span><span class="nu">()</span><span class="fs">()</span></span></a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Indicates the results should be materialized as a nullable Int64.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToInt64OrNull_1.htm">ToInt64OrNull(String)</a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Indicates the results should be materialized as a nullable Int64.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToSingle.htm">ToSingle<span class="languageSpecificText"><span class="cs">()</span><span class="cpp">()</span><span class="nu">()</span><span class="fs">()</span></span></a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Indicates the results should be materialized as a Single.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToSingle_1.htm">ToSingle(String)</a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Indicates the results should be materialized as a Single.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToSingleOrNull.htm">ToSingleOrNull<span class="languageSpecificText"><span class="cs">()</span><span class="cpp">()</span><span class="nu">()</span><span class="fs">()</span></span></a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Indicates the results should be materialized as a nullable Single.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToSingleOrNull_1.htm">ToSingleOrNull(String)</a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Indicates the results should be materialized as a nullable Single.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToString.htm">ToString<span class="languageSpecificText"><span class="cs">()</span><span class="cpp">()</span><span class="nu">()</span><span class="fs">()</span></span></a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Indicates the results should be materialized as a nullable string.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToString_1.htm">ToString(String)</a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Indicates the results should be materialized as a nullable string.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToTimeSpan.htm">ToTimeSpan<span class="languageSpecificText"><span class="cs">()</span><span class="cpp">()</span><span class="nu">()</span><span class="fs">()</span></span></a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Indicates the results should be materialized as a TimeSpan.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToTimeSpan_1.htm">ToTimeSpan(String)</a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Indicates the results should be materialized as a TimeSpan.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToTimeSpanOrNull.htm">ToTimeSpanOrNull<span class="languageSpecificText"><span class="cs">()</span><span class="cpp">()</span><span class="nu">()</span><span class="fs">()</span></span></a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Indicates the results should be materialized as a nullable TimeSpan.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToTimeSpanOrNull_1.htm">ToTimeSpanOrNull(String)</a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Indicates the results should be materialized as a nullable TimeSpan.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToXml.htm">ToXml<span class="languageSpecificText"><span class="cs">()</span><span class="cpp">()</span><span class="nu">()</span><span class="fs">()</span></span></a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Materializes the result as an XElement.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;declared;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToXml_1.htm">ToXml(String)</a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Materializes the result as an XElement.
+   </div>
+                      </td>
+                    </tr>
+                    <tr data="public;inherited;notNetfw;">
+                      <td>
+                        <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                      </td>
+                      <td>
+                        <a href="M-Tortuga.Chain.CommandBuilders.DbCommandBuilder.TryGetColumn.htm">TryGetColumn</a>
+                      </td>
+                      <td>
+                        <div class="summary">
+   Returns the column associated with the column name.
+   </div> (Inherited from <a href="T-Tortuga.Chain.CommandBuilders.DbCommandBuilder.htm">DbCommandBuilder</a>.)</td>
+                    </tr>
+                  </table>
+                </div>
+                <div class="LW_CollapsibleArea_Container">
+                  <div class="LW_CollapsibleArea_TitleDiv">
+                    <h2 class="LW_CollapsibleArea_Title">See Also</h2>
+                    <div class="LW_CollapsibleArea_HrDiv">
+                      <hr class="LW_CollapsibleArea_Hr" />
+                    </div>
+                  </div>
+                  <a id="seeAlsoSection">
+                    <!---->
+                  </a>
+                  <div class="seeAlsoStyle">
+                    <a href="T-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.htm">ScalarDbCommandBuilder<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span>TCommand, TParameter<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span> Class</a>
+                  </div>
+                  <div class="seeAlsoStyle">
+                    <a href="N-Tortuga.Chain.CommandBuilders.htm">Tortuga.Chain.CommandBuilders Namespace</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="footer">
+        <div id="footer" class="footerContainer">
+          <div class="footerLogoContainer">
+            <div style="margin-top:5px">
+              <span class="customCopyrightFooter" />
+            </div>
+            <div style="margin-top:5px" class="copyrightFooter">Help File generated with GhostDoc</div>
+            <div> </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

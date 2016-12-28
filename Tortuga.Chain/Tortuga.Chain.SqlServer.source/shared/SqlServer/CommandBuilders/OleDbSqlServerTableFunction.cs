@@ -194,16 +194,16 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             {
                 case SqlServerLimitOption.Rows:
                     if (!m_SortExpressions.Any())
-                        topClause = $"TOP (@fetch_row_count_expression) ";
+                        topClause = $"TOP ({m_Take}) ";
                     break;
                 case SqlServerLimitOption.Percentage:
-                    topClause = $"TOP (@fetch_row_count_expression) PERCENT ";
+                    topClause = $"TOP ({m_Take}) PERCENT ";
                     break;
                 case SqlServerLimitOption.PercentageWithTies:
-                    topClause = $"TOP (@fetch_row_count_expression) PERCENT WITH TIES ";
+                    topClause = $"TOP ({m_Take}) PERCENT WITH TIES ";
                     break;
                 case SqlServerLimitOption.RowsWithTies:
-                    topClause = $"TOP (@fetch_row_count_expression) WITH TIES ";
+                    topClause = $"TOP ({m_Take}) WITH TIES ";
                     break;
             }
 
@@ -239,6 +239,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             switch (m_LimitOptions)
             {
                 case SqlServerLimitOption.Rows:
+
                     if (m_SortExpressions.Any())
                     {
                         sql.Append(" OFFSET @offset_row_count_expression ROWS ");
@@ -250,17 +251,15 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
                             parameters.Add(new OleDbParameter("@fetch_row_count_expression", m_Take));
                         }
                     }
-                    else
-                    {
-                        parameters.Add(new OleDbParameter("@fetch_row_count_expression", m_Take));
-                    }
+                    //else
+                    //{
+                    //    parameters.Add(new OleDbParameter("@fetch_row_count_expression", m_Take));
+                    //}
                     break;
 
                 case SqlServerLimitOption.Percentage:
                 case SqlServerLimitOption.PercentageWithTies:
                 case SqlServerLimitOption.RowsWithTies:
-                    parameters.Add(new OleDbParameter("@fetch_row_count_expression", m_Take));
-
                     break;
             }
 

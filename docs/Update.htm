@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="en">
+<!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Update Command Builder - Tortuga Chain</title>
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="stylesheet" href="css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="css/theme_colors.css" type="text/css" />
+    <link rel="stylesheet" href="css/styles/vs.css">
+    <link rel="stylesheet" href="css/font-awesome.4.5.0.min.css">
+</head>
+<body role="document">
+    <div class="grid-for-nav">
+        <nav data-toggle="nav-shift" class="nav-side stickynav">
+            <div class="side-nav-search">
+                <a href="index.htm"><i class="fa fa-home"></i> Tortuga Chain</a>
+                <div role="search">
+                    <form id="search-form" class="form" action="Docnet_search.htm" method="get">
+                        <input type="text" name="q" placeholder="Search docs" />
+                    </form>
+                </div>
+            </div>
+            <div class="menu menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+<ul>
+<li class="tocentry"><a href="index.htm">Home</a>
+</li>
+
+<li class="tocentry"><a href="Introduction.htm">Quick Start</a>
+</li>
+<li class="tocentry"><a href="DataSources.htm">Data Sources</a>
+</li>
+<li class="tocentry">
+<ul>
+<li><span class="navigationgroup"><i class="fa fa-caret-down"></i> <a href="CommandBuilders.htm">Command Builders</a></span></li>
+
+<li class="tocentry"><a href="From.htm">From Command Builder</a>
+</li>
+<li class="tocentry"><a href="ByKey.htm">By Key Command Builder</a>
+</li>
+<li class="tocentry"><a href="Insert.htm">Insert Command Builder</a>
+</li>
+<li class="tocentry current"><a class="current" href="Update.htm">Update Command Builder</a>
+<ul class="currentrelative">
+<li class="tocentry"><a href="#arguments">Arguments</a></li>
+<li class="tocentry"><a href="#sql-generation">SQL Generation</a></li>
+<li class="tocentry"><a href="#limitations">Limitations</a></li>
+<li class="tocentry"><a href="#internals">Internals</a></li>
+<li class="tocentry"><a href="#roadmap">Roadmap</a></li>
+</ul>
+<li class="tocentry"><a href="Upsert.htm">Upsert Command Builder</a>
+</li>
+<li class="tocentry"><a href="Delete.htm">Delete Command Builder</a>
+</li>
+<li class="tocentry"><a href="SQL.htm">SQL Command Builder</a>
+</li>
+<li class="tocentry"><a href="TableFunction.htm">Table Function Command Builder</a>
+</li>
+<li class="tocentry"><a href="ScalarFunction.htm">Scalar Function Command Builder</a>
+</li>
+<li class="tocentry"><a href="Procedure.htm">Procedure Command Builder</a>
+</li>
+</ul>
+</li>
+<li class="tocentry">
+<span class="navigationgroup"><i class="fa fa-caret-right"></i> <a href="Materializers.htm">Materializers</a></span>
+</li>
+<li class="tocentry">
+<span class="navigationgroup"><i class="fa fa-caret-right"></i> <a href="Appenders.htm">Appenders</a></span>
+</li>
+<li class="tocentry"><a href="AuditRules.htm">Audit Rules</a>
+</li>
+<li class="tocentry"><a href="RestrictedColumns.htm">Restricted Columns</a>
+</li>
+<li class="tocentry"><a href="Transactions.htm">Transactions</a>
+</li>
+<li class="tocentry"><a href="EntityFramework.htm">Entity Framework Integration</a>
+</li>
+<li class="tocentry"><a href="NHibernate.htm">NHibernate Integration</a>
+</li>
+</ul>
+				<div class="toc-footer">
+					<span class="text-small">
+						<hr/>
+						<a href="https://github.com/FransBouma/DocNet" target="_blank">Made with <i class="fa fa-github"></i> DocNet</a>
+					</span>
+				</div>	
+			</div>
+            &nbsp;
+        </nav>
+        <section data-toggle="nav-shift" class="nav-content-wrap">
+            <nav class="nav-top" role="navigation" aria-label="top navigation">
+                <i data-toggle="nav-top" class="fa fa-bars"></i>
+                <a href="index.htm">Tortuga Chain</a>
+            </nav>
+            <div class="nav-content">
+                <div role="navigation" aria-label="breadcrumbs navigation">
+                    <div class="breadcrumbs">
+<ul><li><a href="index.htm">Home</a></li> / <li><a href="CommandBuilders.htm">Command Builders</a></li> / <li><a href="Update.htm">Update Command Builder</a></li></ul>
+					
+                    </div>
+                    <hr />
+                </div>
+                <div role="main">
+                    <div class="section">
+<h1 id="update-command-builder">Update Command Builder<a class="headerlink" href="#update-command-builder" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h1>
+<p>The command performs an update using the provided model. </p>
+<h2 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h2>
+<p>The parameter object must contain the primary key(s) necessary to locate the record. The keys are normally read from the database, but you can override this behavior to use properties on the object that use the Key attribute.</p>
+<p>The remaining properties on the parameter object are used to construct the UPDATE statment. If a property is marked with the IgnoreOnUpdate attribute, it will not participate in this step. This attribute is usually applied to columns that should never be changed such as CretedBy/CreatedDate.</p>
+<p>If you use the ChangedPropertiesOnly option, only properties marked as changed by <code>IPropertyChangeTracking.ChangedProperties()</code> will be used. This interface is found in the <code>Tortuga.Anchor.ComponentModel</code> namespace.</p>
+<p>Alternately, a parameter dictionary of type <code>IReadonlyDictionary&lt;string, object&gt;</code> may be used. Again, the primary keys will be read from database metadata.</p>
+<h2 id="sql-generation">SQL Generation<a class="headerlink" href="#sql-generation" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h2>
+<p>If the materializer desires columns, this echos back the inserted/updated row. </p>
+<h2 id="limitations">Limitations<a class="headerlink" href="#limitations" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h2>
+<p>This command is meant to operate on one row at a time. Set-based operations need to be performed using a SQL or Procedure command.</p>
+<h2 id="internals">Internals<a class="headerlink" href="#internals" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h2>
+<p>Implementation of the delete varies by database.</p>
+<h3 id="sql-server">SQL Server<a class="headerlink" href="#sql-server" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h3>
+<p>SQL Server uses an UPDATE statement with an optional OUTPUT clause.</p>
+<h3 id="sqlite">SQLite<a class="headerlink" href="#sqlite" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h3>
+<p>SQLite uses a separate UPDATE and optional SELECT statement.</p>
+<h2 id="roadmap">Roadmap<a class="headerlink" href="#roadmap" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h2>
+
+                    </div>
+                </div>
+                <footer>
+                    <hr />
+                    <div role="contentinfo">
+Tortuga Chain. <a href='https://github.com/docevaad/Chain/' target='_blank'>Visit us at GitHub</a>.
+                    </div>
+                </footer>
+            </div>
+        </section>
+    </div>
+    <script src="js/jquery-2.1.1.min.js"></script>
+    <script src="js/modernizr-2.8.3.min.js"></script>
+    <script src="js/highlight.pack.js"></script>
+    <script src="js/theme.js"></script>
+
+</body>
+</html>
