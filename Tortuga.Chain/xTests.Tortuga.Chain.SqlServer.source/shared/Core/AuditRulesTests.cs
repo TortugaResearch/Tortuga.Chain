@@ -165,6 +165,66 @@ namespace Tests.shared.Core
             }
         }
 
+        [Theory, MemberData("Prime")]
+        public void AuditRulesTests_SoftDelete_2(string assemblyName, string dataSourceName)
+        {
+            var dataSource = DataSource(dataSourceName);
+            try
+            {
+                var key = Guid.NewGuid().ToString();
+                for (var i = 0; i < 2; i++)
+                    dataSource.Insert(EmployeeTableName, new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = key, MiddleName = i % 2 == 0 ? "A" + i : null }).ToObject<Employee>().Execute();
+
+                var users = dataSource.From(EmployeeTableName).ToCollection<Employee>().Execute();
+                var currentUser1 = users.First();
+                var currentUser2 = users.Skip(1).First();
+
+                var dsWithRules = dataSource.WithRules(
+                    new SoftDeleteRule("DeletedFlag", true, OperationTypes.SelectOrDelete),
+                    new UserDataRule("DeletedByKey", "EmployeeKey", OperationTypes.Delete),
+                    new DateTimeRule("DeletedDate", DateTimeKind.Local, OperationTypes.Delete)
+                    );
+
+                var ds1 = dsWithRules.WithUser(currentUser1);
+
+                var cust1 = new Customer() { FullName = "Test Customer " + DateTime.Now.Ticks, State = "CA" }; //Note the difference in class name from the original test. 
+
+                var cust2 = ds1.Insert(CustomerTableName, cust1).ToObject<CustomerWithValidation>().Execute();
+                var customerKey = cust2.CustomerKey;
+                Assert.False(cust2.DeletedFlag, "Deleted flag should be is clear");
+                Assert.IsNull(cust2.DeletedDate, "Deleted date should be null");
+                Assert.IsNull(cust2.DeletedByKey, "Deleted by key should be null");
+
+                ds1.Delete(CustomerTableName, new { CustomerKey = customerKey }).Execute();
+
+                var deletedRecord = dataSource.From(CustomerTableName, new { CustomerKey = customerKey }).ToObject<CustomerWithValidation>().Execute();
+
+                Assert.True(deletedRecord.DeletedFlag, "Deleted flag should be set");
+                Assert.IsNotNull(deletedRecord.DeletedDate, "Deleted date should be set");
+                Assert.AreEqual(currentUser1.EmployeeKey, deletedRecord.DeletedByKey, "Deleted by key should be set");
+
+                var misingRecord = ds1.From(CustomerTableName, new { CustomerKey = customerKey }).ToObject<CustomerWithValidation>(RowOptions.AllowEmptyResults).Execute();
+
+                Assert.IsNull(misingRecord, "The soft delete rule should prevent this record from being returned.");
+
+#if OLE_SQL_SERVER
+                var misingRecord2 = ds1.From(CustomerTableName, "CustomerKey = ?", new { CustomerKey = customerKey }).ToObject<CustomerWithValidation>(RowOptions.AllowEmptyResults).Execute();
+#else
+                var misingRecord2 = ds1.From(CustomerTableName, "CustomerKey = @CustomerKey", new { CustomerKey = customerKey }).ToObject<CustomerWithValidation>(RowOptions.AllowEmptyResults).Execute();
+#endif 
+
+                Assert.IsNull(misingRecord2, "The soft delete rule should prevent this record from being returned.");
+
+                var misingRecords = ds1.From(CustomerTableName).ToCollection<CustomerWithValidation>().Execute();
+
+                Assert.False(misingRecords.Any(r => r.CustomerKey == customerKey), "The soft delete rule should prevent this record from being returned.");
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
 
         [Theory, MemberData("Prime")]
         public void AuditRulesTests_RestrictedColumn(string assemblyName, string dataSourceName)
