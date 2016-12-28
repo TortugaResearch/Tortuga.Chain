@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Data.Common;
 using Tortuga.Chain.DataSources;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Tortuga.Chain.CommandBuilders
 {
@@ -12,6 +13,7 @@ namespace Tortuga.Chain.CommandBuilders
     /// <typeparam name="TLimit">The type of the limit option.</typeparam>
     /// <seealso cref="CommandBuilders.MultipleRowDbCommandBuilder{TCommand, TParameter}" />
     /// <seealso cref="ITableDbCommandBuilder" />
+    [SuppressMessage("Microsoft.Maintainability", "CA1501:AvoidExcessiveInheritance")]
     public abstract class TableDbCommandBuilder<TCommand, TParameter, TLimit> : MultipleRowDbCommandBuilder<TCommand, TParameter>, ITableDbCommandBuilder
         where TCommand : DbCommand
         where TParameter : DbParameter

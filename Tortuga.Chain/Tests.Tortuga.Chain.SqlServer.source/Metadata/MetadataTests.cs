@@ -81,6 +81,16 @@ namespace Tests.Metadata
             }
         }
 
+        [TestMethod]
+        public void PreloadScalarFunctions()
+        {
+            DataSource.DatabaseMetadata.PreloadScalarFunctions();
+            foreach (var item in DataSource.DatabaseMetadata.GetScalarFunctions())
+            {
+                Assert.IsFalse(string.IsNullOrWhiteSpace(item.Name.ToString()), "Name");
+            }
+        }
+
 
         [TestMethod]
         public void PreloadAll()

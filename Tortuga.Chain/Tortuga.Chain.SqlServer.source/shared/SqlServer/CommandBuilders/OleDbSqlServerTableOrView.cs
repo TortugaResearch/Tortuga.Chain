@@ -183,10 +183,10 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
                             parameters.Add(new OleDbParameter("@fetch_row_count_expression", m_Take));
                         }
                     }
-                    else
-                    {
-                        parameters.Add(new OleDbParameter("@fetch_row_count_expression", m_Take));
-                    }
+                    //else
+                    //{
+                    //    parameters.Add(new OleDbParameter("@fetch_row_count_expression", m_Take));
+                    //}
                     break;
 
                 case SqlServerLimitOption.Percentage:
