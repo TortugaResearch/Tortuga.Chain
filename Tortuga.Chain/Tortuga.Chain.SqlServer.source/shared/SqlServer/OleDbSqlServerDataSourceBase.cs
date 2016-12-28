@@ -446,6 +446,27 @@ namespace Tortuga.Chain.SqlServer
         }
 
         /// <summary>
+        /// This is used to query a scalar function.
+        /// </summary>
+        /// <param name="scalarFunctionName">Name of the scalar function.</param>
+        /// <returns></returns>
+        public ScalarDbCommandBuilder<OleDbCommand, OleDbParameter> ScalarFunction(SqlServerObjectName scalarFunctionName)
+        {
+            return new OleDbSqlServerScalarFunction(this, scalarFunctionName, null);
+        }
+
+        /// <summary>
+        /// This is used to query a scalar function.
+        /// </summary>
+        /// <param name="scalarFunctionName">Name of the scalar function.</param>
+        /// <param name="functionArgumentValue">The function argument.</param>
+        /// <returns></returns>
+        public ScalarDbCommandBuilder<OleDbCommand, OleDbParameter> ScalarFunction(SqlServerObjectName scalarFunctionName, object functionArgumentValue)
+        {
+            return new OleDbSqlServerScalarFunction(this, scalarFunctionName, functionArgumentValue);
+        }
+
+        /// <summary>
         /// Updates an object in the specified table.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>

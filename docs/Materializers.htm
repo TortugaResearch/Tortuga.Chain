@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="en">
+<!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Materializers - Tortuga Chain</title>
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="stylesheet" href="css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="css/theme_colors.css" type="text/css" />
+    <link rel="stylesheet" href="css/styles/vs.css">
+    <link rel="stylesheet" href="css/font-awesome.4.5.0.min.css">
+</head>
+<body role="document">
+    <div class="grid-for-nav">
+        <nav data-toggle="nav-shift" class="nav-side stickynav">
+            <div class="side-nav-search">
+                <a href="index.htm"><i class="fa fa-home"></i> Tortuga Chain</a>
+                <div role="search">
+                    <form id="search-form" class="form" action="Docnet_search.htm" method="get">
+                        <input type="text" name="q" placeholder="Search docs" />
+                    </form>
+                </div>
+            </div>
+            <div class="menu menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+<ul>
+<li class="tocentry"><a href="index.htm">Home</a>
+</li>
+
+<li class="tocentry"><a href="Introduction.htm">Quick Start</a>
+</li>
+<li class="tocentry"><a href="DataSources.htm">Data Sources</a>
+</li>
+<li class="tocentry">
+<span class="navigationgroup"><i class="fa fa-caret-right"></i> <a href="CommandBuilders.htm">Command Builders</a></span>
+</li>
+<li class="tocentry">
+<ul class="current">
+<li><span class="navigationgroup"><i class="fa fa-caret-down"></i> <a href="Materializers.htm">Materializers</a></span></li>
+
+<li class="tocentry"><a href="NonQuery.htm">Non-Query Materializers</a>
+</li>
+<li class="tocentry"><a href="Scalar.htm">Scalar Materializers</a>
+</li>
+<li class="tocentry"><a href="List.htm">List Materializers</a>
+</li>
+<li class="tocentry"><a href="Object.htm">Object/Collection Materializers</a>
+</li>
+<li class="tocentry"><a href="Compiled.htm">Compiled Object/Collection Materializers</a>
+</li>
+<li class="tocentry"><a href="DataTable.htm">DataRow/Table/Set Materializers</a>
+</li>
+<li class="tocentry"><a href="Table.htm">Row, Table, and TableSet Materializers</a>
+</li>
+</ul>
+</li>
+<li class="tocentry">
+<span class="navigationgroup"><i class="fa fa-caret-right"></i> <a href="Appenders.htm">Appenders</a></span>
+</li>
+<li class="tocentry"><a href="AuditRules.htm">Audit Rules</a>
+</li>
+<li class="tocentry"><a href="RestrictedColumns.htm">Restricted Columns</a>
+</li>
+<li class="tocentry"><a href="Transactions.htm">Transactions</a>
+</li>
+<li class="tocentry"><a href="EntityFramework.htm">Entity Framework Integration</a>
+</li>
+<li class="tocentry"><a href="NHibernate.htm">NHibernate Integration</a>
+</li>
+</ul>
+				<div class="toc-footer">
+					<span class="text-small">
+						<hr/>
+						<a href="https://github.com/FransBouma/DocNet" target="_blank">Made with <i class="fa fa-github"></i> DocNet</a>
+					</span>
+				</div>	
+			</div>
+            &nbsp;
+        </nav>
+        <section data-toggle="nav-shift" class="nav-content-wrap">
+            <nav class="nav-top" role="navigation" aria-label="top navigation">
+                <i data-toggle="nav-top" class="fa fa-bars"></i>
+                <a href="index.htm">Tortuga Chain</a>
+            </nav>
+            <div class="nav-content">
+                <div role="navigation" aria-label="breadcrumbs navigation">
+                    <div class="breadcrumbs">
+<ul><li><a href="index.htm">Home</a></li> / <li><a href="Materializers.htm">Materializers</a></li></ul>
+					
+                    </div>
+                    <hr />
+                </div>
+                <div role="main">
+                    <div class="section">
+<h1 id="materializers">Materializers<a class="headerlink" href="#materializers" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h1>
+<p>Materializers represent the <code>SELECT</code> part of the SQL generation process. They can be used to request the result of an operation be formatted as a scalar value, a list, an object, a collection, or a traditional <code>DataTable</code>. The base classes are public so that additional materializers can be created in the same fashion as the built-in ones.</p>
+<p>Materializers are always linked directly to command builders. They are usually expressed as <code>.ToXxx</code> where Xxx is the type of result desired. There is also a special <code>AsNonQuery()</code> command builder for when you don't need anything back (e.g. insert/update operations). Many materializers allow you to set options that further refine their behavior.</p>
+<p>Generally speaking, the classes that implement materializers are non-public. Instead you get back an <code>ILink</code> or <code>ILink&lt;T&gt;</code> wrapper. This is necessary as the concrete implementation of the materializer may change depending on the options you select. It is best to think of an <code>ILink</code> in the same way you think of an <code>IEnumerable</code> in a LINQ expression.</p>
+<h2 id="sql">Sql<a class="headerlink" href="#sql" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h2>
+<p>All materializers offer a <code>Sql</code> method. This returns the SQL that would have been executed.</p>
+<p>Note that this is not the only way to access the SQL being generated and is primarily meant to be used when debugging. For other situations, it is typical to access the SQL via the logging events and with a Trace appender. </p>
+<h2 id="internals">Internals<a class="headerlink" href="#internals" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h2>
+<p>When a materializer is executed, it first calls <code>Prepare</code> on the command builder it is linked to in order to generate an execution token. Immediately afterwards, it fires an ExecutionTokenPrepared event that appenders can listen for. (If you request the SQL from a materializer, only this step is performed.)</p>
+<p>Next, the materializer calls Execute (or ExecuteAsync) on the execution token, passing in a callback. This callback is given a <code>DBCommand</code> object on which the materializer can call <code>ExecuteNonQuery</code>, <code>ExecuteScalar</code>, or <code>ExecuteReader</code> as appropriate.</p>
+<p>The callback is expected to return an integer which is either null or the number of rows affected by the operation. Here is an example <code>Execute</code> method with callback:</p>
+<pre><code>    public override DataTable Execute(object state = null)
+    {
+        DataTable dt = new DataTable();
+        ExecuteCore(cmd =&gt;
+        {
+            using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess))
+            {
+                dt.Load(reader);
+                return dt.Rows.Count;
+            }
+        }, state);
+
+        return dt;
+    } 
+</code></pre>
+
+<h3 id="limitations">Limitations<a class="headerlink" href="#limitations" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h3>
+<p>A strict limitation on materializers is that if they open an <code>IDataReader</code> they must close it inside their callback routine. There is no facility for holding open the connection associated with the data reader.</p>
+
+                    </div>
+                </div>
+                <footer>
+                    <hr />
+                    <div role="contentinfo">
+Tortuga Chain. <a href='https://github.com/docevaad/Chain/' target='_blank'>Visit us at GitHub</a>.
+                    </div>
+                </footer>
+            </div>
+        </section>
+    </div>
+    <script src="js/jquery-2.1.1.min.js"></script>
+    <script src="js/modernizr-2.8.3.min.js"></script>
+    <script src="js/highlight.pack.js"></script>
+    <script src="js/theme.js"></script>
+
+</body>
+</html>
