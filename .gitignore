@@ -233,3 +233,4 @@ ModelManifest.xml
 /Start Services.ps1
 *.jfm
 /Tortuga.Chain/Help
+/Stop Services.ps1
