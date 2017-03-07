@@ -176,6 +176,7 @@
     <Compile Include="shared\PostgreSql\CommandBuilders\PostgreSqlTableFunction.cs" />
     <Compile Include="shared\PostgreSql\CommandBuilders\PostgreSqlUpdateMany.cs" />
     <Compile Include="shared\PostgreSql\CommandBuilders\PostgreSqlProcedureCall.cs" />
+    <Compile Include="shared\PostgreSql\CommandBuilders\PostgreSqlScalarFunction.cs" />
     <Compile Include="shared\PostgreSql\PostgreSqlDataSourceBase.Interfaces.cs" />
     <Compile Include="shared\PostgreSql\PostgreSqlTransactionalDataSource.cs" />
     <Compile Include="shared\PostgreSql\PostgreSqlDataSourceSettings.cs" />

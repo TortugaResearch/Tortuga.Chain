@@ -39,7 +39,8 @@ namespace Tortuga.Chain.Materializers
         [SuppressMessage("Microsoft.Globalization", "CA1306:SetLocaleForDataTypes")]
         public override DataSet Execute(object state = null)
         {
-            DataSet ds = new DataSet();
+            var ds = new DataSet();
+            ds.EnforceConstraints = false; //needed for PostgreSql
             Prepare().Execute(cmd =>
              {
                  using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess))
@@ -62,6 +63,7 @@ namespace Tortuga.Chain.Materializers
         public override async Task<DataSet> ExecuteAsync(CancellationToken cancellationToken, object state = null)
         {
             DataSet ds = new DataSet();
+            ds.EnforceConstraints = false; //needed for PostgreSql
             await Prepare().ExecuteAsync(async cmd =>
             {
                 using (var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SequentialAccess, cancellationToken).ConfigureAwait(false))
