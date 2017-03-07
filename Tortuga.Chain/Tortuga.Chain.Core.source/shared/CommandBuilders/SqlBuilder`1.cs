@@ -17,7 +17,7 @@ namespace Tortuga.Chain.CommandBuilders
     /// 
     /// </summary>
     /// <typeparam name="TDbType">The type of the database type.</typeparam>
-    public class SqlBuilder<TDbType>
+    public sealed class SqlBuilder<TDbType>
         where TDbType : struct
     {
         readonly SqlBuilderEntry<TDbType>[] m_Entries;
@@ -74,7 +74,6 @@ namespace Tortuga.Chain.CommandBuilders
                 };
             }
         }
-
 
         /// <summary>
         /// Applies a user defined table type as the argument.
@@ -259,6 +258,21 @@ namespace Tortuga.Chain.CommandBuilders
             sql.Append(footer);
         }
 
+        /// <summary>
+        /// Builds FROM clause for a function.
+        /// </summary>
+        /// <param name="sql">The SQL.</param>
+        /// <param name="header">The header.</param>
+        /// <param name="footer">The footer.</param>
+        public void BuildAnonymousFromFunctionClause(StringBuilder sql, string header, string footer)
+        {
+            if (sql == null)
+                throw new ArgumentNullException(nameof(sql), $"{nameof(sql)} is null.");
+
+            sql.Append(header);
+            sql.Append(string.Join(", ", GetFormalParameters().Select(s => "?")));
+            sql.Append(footer);
+        }
 
         /// <summary>
         /// Applies the argument value.
@@ -547,18 +561,19 @@ namespace Tortuga.Chain.CommandBuilders
         /// </summary>
         /// <param name="filterValue">The filter value.</param>
         /// <param name="filterOptions">The filter options.</param>
+        /// <param name="useSecondSlot">if set to <c>true</c> uses the second parameter slot.</param>
         /// <returns>System.String.</returns>
-        /// <exception cref="System.ArgumentNullException"></exception>
+        /// <exception cref="System.ArgumentNullException">filterValue - filterValue</exception>
         /// <exception cref="MappingException">
         /// </exception>
         /// <exception cref="ArgumentNullException"></exception>
-        public string ApplyAnonymousFilterValue(object filterValue, FilterOptions filterOptions)
+        public string ApplyAnonymousFilterValue(object filterValue, FilterOptions filterOptions, bool useSecondSlot = false)
         {
             if (filterValue == null)
                 throw new ArgumentNullException(nameof(filterValue), $"{nameof(filterValue)} is null.");
 
             var ignoreNullProperties = filterOptions.HasFlag(FilterOptions.IgnoreNullProperties);
-            var parts = new List<string>();
+            var parts = new string[m_Entries.Length]; ;
             bool found = false;
 
             if (filterValue is IReadOnlyDictionary<string, object>)
@@ -576,13 +591,16 @@ namespace Tortuga.Chain.CommandBuilders
                             if (value == DBNull.Value)
                             {
                                 if (!ignoreNullProperties)
-                                    parts.Add($"{m_Entries[i].Details.QuotedSqlName} IS NULL");
+                                    parts[i] = ($"{m_Entries[i].Details.QuotedSqlName} IS NULL");
                             }
                             else
                             {
                                 m_Entries[i].ParameterValue = value;
-                                m_Entries[i].UseParameter = true;
-                                parts.Add($"{m_Entries[i].Details.QuotedSqlName} = ?");
+                                if (!useSecondSlot)
+                                    m_Entries[i].UseParameter = true;
+                                else
+                                    m_Entries[i].UseParameter2 = true;
+                                parts[i] = ($"{m_Entries[i].Details.QuotedSqlName} = ?");
                             }
 
                             found = true;
@@ -608,13 +626,16 @@ namespace Tortuga.Chain.CommandBuilders
                             if (value == DBNull.Value)
                             {
                                 if (!ignoreNullProperties)
-                                    parts.Add($"{m_Entries[i].Details.QuotedSqlName} IS NULL");
+                                    parts[i] = ($"{m_Entries[i].Details.QuotedSqlName} IS NULL");
                             }
                             else
                             {
                                 m_Entries[i].ParameterValue = value;
-                                m_Entries[i].UseParameter = true;
-                                parts.Add($"{m_Entries[i].Details.QuotedSqlName} = ?");
+                                if (!useSecondSlot)
+                                    m_Entries[i].UseParameter = true;
+                                else
+                                    m_Entries[i].UseParameter2 = true;
+                                parts[i] = ($"{m_Entries[i].Details.QuotedSqlName} = ?");
                             }
 
                             found = true;
@@ -631,7 +652,7 @@ namespace Tortuga.Chain.CommandBuilders
             if (!found)
                 throw new MappingException($"None of the properties on {filterValue.GetType().Name} could be matched to columns in {m_Name}.");
 
-            return string.Join(" AND ", parts);
+            return string.Join(" AND ", parts.Where(s => s != null));
         }
 
 
@@ -1260,6 +1281,20 @@ namespace Tortuga.Chain.CommandBuilders
             {
                 if (!m_Entries[i].RestrictedRead && m_Entries[i].UseForRead)
                     yield return m_Entries[i].Details.QuotedSqlName;
+            }
+        }
+
+        /// <summary>
+        /// Gets the select columns with metadata details.
+        /// </summary>
+        /// <returns>Each entry has the column's metadata</returns>
+        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
+        public IEnumerable<ISqlBuilderEntryDetails<TDbType>> GetSelectColumnDetails()
+        {
+            for (var i = 0; i < m_Entries.Length; i++)
+            {
+                if (!m_Entries[i].RestrictedRead && m_Entries[i].UseForRead)
+                    yield return m_Entries[i].Details;
             }
         }
 

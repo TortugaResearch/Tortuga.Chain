@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="en">
+<!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Compiled Object/Collection Materializers - Tortuga Chain</title>
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="stylesheet" href="css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="css/theme_colors.css" type="text/css" />
+    <link rel="stylesheet" href="css/styles/vs.css">
+    <link rel="stylesheet" href="css/font-awesome.4.5.0.min.css">
+</head>
+<body role="document">
+    <div class="grid-for-nav">
+        <nav data-toggle="nav-shift" class="nav-side stickynav">
+            <div class="side-nav-search">
+                <a href="index.htm"><i class="fa fa-home"></i> Tortuga Chain</a>
+                <div role="search">
+                    <form id="search-form" class="form" action="Docnet_search.htm" method="get">
+                        <input type="text" name="q" placeholder="Search docs" />
+                    </form>
+                </div>
+            </div>
+            <div class="menu menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+<ul>
+<li class="tocentry"><a href="Introduction.htm">Home</a>
+</li>
+
+<li class="tocentry"><a href="DataSources.htm">Data Sources</a>
+</li>
+<li class="tocentry">
+<span class="navigationgroup"><i class="fa fa-caret-right"></i> <a href="CommandBuilders.htm">Command Builders</a></span>
+</li>
+<li class="tocentry">
+<ul>
+<li><span class="navigationgroup"><i class="fa fa-caret-down"></i> <a href="Materializers.htm">Materializers</a></span></li>
+
+<li class="tocentry"><a href="NonQuery.htm">Non-Query Materializers</a>
+</li>
+<li class="tocentry"><a href="Scalar.htm">Scalar Materializers</a>
+</li>
+<li class="tocentry"><a href="List.htm">List Materializers</a>
+</li>
+<li class="tocentry"><a href="Object.htm">Object/Collection Materializers</a>
+</li>
+<li class="tocentry current"><a class="current" href="Compiled.htm">Compiled Object/Collection Materializers</a>
+<ul class="currentrelative">
+<li class="tocentry"><a href="#options">Options</a></li>
+<li class="tocentry"><a href="#capabilities">Capabilities</a></li>
+<li class="tocentry"><a href="#sql-generation">SQL Generation</a></li>
+<li class="tocentry"><a href="#limitations">Limitations</a></li>
+<li class="tocentry"><a href="#internals">Internals</a></li>
+<li class="tocentry"><a href="#roadmap">Roadmap</a></li>
+</ul>
+<li class="tocentry"><a href="DataTable.htm">DataRow/Table/Set Materializers</a>
+</li>
+<li class="tocentry"><a href="Table.htm">Row, Table, and TableSet Materializers</a>
+</li>
+<li class="tocentry"><a href="MasterDetail.htm">Master/Detail</a>
+</li>
+</ul>
+</li>
+<li class="tocentry">
+<span class="navigationgroup"><i class="fa fa-caret-right"></i> <a href="Appenders.htm">Appenders</a></span>
+</li>
+<li class="tocentry"><a href="AuditRules.htm">Audit Rules</a>
+</li>
+<li class="tocentry"><a href="RestrictedColumns.htm">Restricted Columns</a>
+</li>
+<li class="tocentry"><a href="Transactions.htm">Transactions</a>
+</li>
+<li class="tocentry"><a href="EntityFramework.htm">Entity Framework Integration</a>
+</li>
+<li class="tocentry"><a href="NHibernate.htm">NHibernate Integration</a>
+</li>
+</ul>
+				<div class="toc-footer">
+					<span class="text-small">
+						<hr/>
+						<a href="https://github.com/FransBouma/DocNet" target="_blank">Made with <i class="fa fa-github"></i> DocNet</a>
+					</span>
+				</div>	
+			</div>
+            &nbsp;
+        </nav>
+        <section data-toggle="nav-shift" class="nav-content-wrap">
+            <nav class="nav-top" role="navigation" aria-label="top navigation">
+                <i data-toggle="nav-top" class="fa fa-bars"></i>
+                <a href="index.htm">Tortuga Chain</a>
+            </nav>
+            <div class="nav-content">
+                <div role="navigation" aria-label="breadcrumbs navigation">
+                    <div class="breadcrumbs">
+<ul><li><a href="Introduction.htm">Home</a></li> / <li><a href="Materializers.htm">Materializers</a></li> / <li><a href="Compiled.htm">Compiled Object/Collection Materializers</a></li></ul>
+					
+                    </div>
+                    <hr />
+                </div>
+                <div role="main">
+                    <div class="section">
+<h1 id="compiled-objectcollection-materializers">Compiled Object/Collection Materializers<a class="headerlink" href="#compiled-objectcollection-materializers" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h1>
+<p>Compiled materializers require the <code>Tortuga.Chain.CompiledMaterializers</code> package. </p>
+<ul>
+<li><code>.Compiled.ToObect&lt;TObject&gt;</code></li>
+<li><code>.Compiled.ToCollection&lt;TObject&gt;</code></li>
+<li><code>.Compiled.ToCollection&lt;TCollection, TObject&gt;</code></li>
+</ul>
+<h2 id="options">Options<a class="headerlink" href="#options" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h2>
+<p>The <code>ToObject</code> materializer supports the <code>RowOptions</code> enumeration.</p>
+<p>The <code>ToCollection</code> materializer returns a <code>List&lt;TCollection&gt;</code> by default. You can override the collection type with any <code>ICollection&lt;TObject&gt;</code> so long as it isn’t read-only.</p>
+<h2 id="capabilities">Capabilities<a class="headerlink" href="#capabilities" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h2>
+<p>Object/Collection materializers honor the Column attribute, which changes which query result set column the property is mapped to.</p>
+<p>Object/Collection materializers honor the <code>NotMapped</code> attribute, which prevent the property from being mapped.</p>
+<p>Object/Collection materializers honor the <code>Decompose</code> attribute. This allows properties on the child object when they match columns in the query result set.</p>
+<p>If the desried object implementes <code>IChangeTracking</code>, then <code>AcceptChanges()</code> will be called automatically.</p>
+<h2 id="sql-generation">SQL Generation<a class="headerlink" href="#sql-generation" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h2>
+<p>See Object/Collection materializers.</p>
+<h2 id="limitations">Limitations<a class="headerlink" href="#limitations" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h2>
+<p>Object/Collection materializers require that the <code>Decompose</code> attribute be applied correctly. The materializer needs to walk the entire object graph, and if there are any cycles represented by decomposed properties then a stack overflow exception will occur.</p>
+<p>Object/Collection materializers can only populate public properties. It cannot set fields or non-public properties.</p>
+<p>Compiled Object/Collection materializers only support public types. Because it does not use reflection, it cannot sidestep the visibility restrictions like the non-compiled versions can.</p>
+<p>Compiled Object/Collection materializers do not support generic types (other than Nullable<T>). This is not a design limitation and will be fixed in a later version. https://github.com/docevaad/Chain/issues/64</p>
+<p>Compiled Object/Collection materializers do not support nested types. This is not a design limitation and will be fixed in a later version. https://github.com/docevaad/Chain/issues/63</p>
+<p>Compiled Object/Collection materializers are less tolerant of column/property type mis-matches. For example, if you database column is a <code>Long</code>, you can't use a property of type <code>Nullable&lt;int&gt;</code>.</p>
+<h2 id="internals">Internals<a class="headerlink" href="#internals" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h2>
+<p>Compiled Object/Collection materializers use CS Script to generate the population methods.</p>
+<h2 id="roadmap">Roadmap<a class="headerlink" href="#roadmap" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h2>
+<p>Eventually we would like to support non-default constructors so that we can populate immutable objects.</p>
+
+                    </div>
+                </div>
+                <footer>
+                    <hr />
+                    <div role="contentinfo">
+Tortuga Chain. <a href='https://github.com/docevaad/Chain/' target='_blank'>Visit us at GitHub</a>.
+                    </div>
+                </footer>
+            </div>
+        </section>
+    </div>
+    <script src="js/jquery-2.1.1.min.js"></script>
+    <script src="js/modernizr-2.8.3.min.js"></script>
+    <script src="js/highlight.pack.js"></script>
+    <script src="js/theme.js"></script>
+
+</body>
+</html>

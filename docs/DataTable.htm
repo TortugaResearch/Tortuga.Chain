@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="en">
+<!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>DataRow/Table/Set Materializers - Tortuga Chain</title>
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="stylesheet" href="css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="css/theme_colors.css" type="text/css" />
+    <link rel="stylesheet" href="css/styles/vs.css">
+    <link rel="stylesheet" href="css/font-awesome.4.5.0.min.css">
+</head>
+<body role="document">
+    <div class="grid-for-nav">
+        <nav data-toggle="nav-shift" class="nav-side stickynav">
+            <div class="side-nav-search">
+                <a href="index.htm"><i class="fa fa-home"></i> Tortuga Chain</a>
+                <div role="search">
+                    <form id="search-form" class="form" action="Docnet_search.htm" method="get">
+                        <input type="text" name="q" placeholder="Search docs" />
+                    </form>
+                </div>
+            </div>
+            <div class="menu menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+<ul>
+<li class="tocentry"><a href="Introduction.htm">Home</a>
+</li>
+
+<li class="tocentry"><a href="DataSources.htm">Data Sources</a>
+</li>
+<li class="tocentry">
+<span class="navigationgroup"><i class="fa fa-caret-right"></i> <a href="CommandBuilders.htm">Command Builders</a></span>
+</li>
+<li class="tocentry">
+<ul>
+<li><span class="navigationgroup"><i class="fa fa-caret-down"></i> <a href="Materializers.htm">Materializers</a></span></li>
+
+<li class="tocentry"><a href="NonQuery.htm">Non-Query Materializers</a>
+</li>
+<li class="tocentry"><a href="Scalar.htm">Scalar Materializers</a>
+</li>
+<li class="tocentry"><a href="List.htm">List Materializers</a>
+</li>
+<li class="tocentry"><a href="Object.htm">Object/Collection Materializers</a>
+</li>
+<li class="tocentry"><a href="Compiled.htm">Compiled Object/Collection Materializers</a>
+</li>
+<li class="tocentry current"><a class="current" href="DataTable.htm">DataRow/Table/Set Materializers</a>
+<ul class="currentrelative">
+<li class="tocentry"><a href="#options">Options</a></li>
+<li class="tocentry"><a href="#sql-generation">SQL Generation</a></li>
+</ul>
+<li class="tocentry"><a href="Table.htm">Row, Table, and TableSet Materializers</a>
+</li>
+<li class="tocentry"><a href="MasterDetail.htm">Master/Detail</a>
+</li>
+</ul>
+</li>
+<li class="tocentry">
+<span class="navigationgroup"><i class="fa fa-caret-right"></i> <a href="Appenders.htm">Appenders</a></span>
+</li>
+<li class="tocentry"><a href="AuditRules.htm">Audit Rules</a>
+</li>
+<li class="tocentry"><a href="RestrictedColumns.htm">Restricted Columns</a>
+</li>
+<li class="tocentry"><a href="Transactions.htm">Transactions</a>
+</li>
+<li class="tocentry"><a href="EntityFramework.htm">Entity Framework Integration</a>
+</li>
+<li class="tocentry"><a href="NHibernate.htm">NHibernate Integration</a>
+</li>
+</ul>
+				<div class="toc-footer">
+					<span class="text-small">
+						<hr/>
+						<a href="https://github.com/FransBouma/DocNet" target="_blank">Made with <i class="fa fa-github"></i> DocNet</a>
+					</span>
+				</div>	
+			</div>
+            &nbsp;
+        </nav>
+        <section data-toggle="nav-shift" class="nav-content-wrap">
+            <nav class="nav-top" role="navigation" aria-label="top navigation">
+                <i data-toggle="nav-top" class="fa fa-bars"></i>
+                <a href="index.htm">Tortuga Chain</a>
+            </nav>
+            <div class="nav-content">
+                <div role="navigation" aria-label="breadcrumbs navigation">
+                    <div class="breadcrumbs">
+<ul><li><a href="Introduction.htm">Home</a></li> / <li><a href="Materializers.htm">Materializers</a></li> / <li><a href="DataTable.htm">DataRow/Table/Set Materializers</a></li></ul>
+					
+                    </div>
+                    <hr />
+                </div>
+                <div role="main">
+                    <div class="section">
+<h1 id="datarow-datatable-and-dataset-materializers">DataRow, DataTable, and DataSet Materializers<a class="headerlink" href="#datarow-datatable-and-dataset-materializers" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h1>
+<p>These materializers support the legacy DataRow, DataTable, and DataSet types. They are slower than the Row, Table, and TableSet equivalents, but have the advantage of being bindable to data grids in Windows Forms and WebForms.</p>
+<h2 id="options">Options<a class="headerlink" href="#options" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h2>
+<ul>
+<li><code>.ToDataRow</code> supports the <code>RowOptions</code> enumeration.</li>
+<li><code>.ToDataSet</code> expects a list of table names.</li>
+</ul>
+<h2 id="sql-generation">SQL Generation<a class="headerlink" href="#sql-generation" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h2>
+<p>These materializers do not request any columns. See the associated command builder for the behavior.</p>
+
+                    </div>
+                </div>
+                <footer>
+                    <hr />
+                    <div role="contentinfo">
+Tortuga Chain. <a href='https://github.com/docevaad/Chain/' target='_blank'>Visit us at GitHub</a>.
+                    </div>
+                </footer>
+            </div>
+        </section>
+    </div>
+    <script src="js/jquery-2.1.1.min.js"></script>
+    <script src="js/modernizr-2.8.3.min.js"></script>
+    <script src="js/highlight.pack.js"></script>
+    <script src="js/theme.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="en">
+<!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Restricted Columns - Tortuga Chain</title>
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="stylesheet" href="css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="css/theme_colors.css" type="text/css" />
+    <link rel="stylesheet" href="css/styles/vs.css">
+    <link rel="stylesheet" href="css/font-awesome.4.5.0.min.css">
+</head>
+<body role="document">
+    <div class="grid-for-nav">
+        <nav data-toggle="nav-shift" class="nav-side stickynav">
+            <div class="side-nav-search">
+                <a href="index.htm"><i class="fa fa-home"></i> Tortuga Chain</a>
+                <div role="search">
+                    <form id="search-form" class="form" action="Docnet_search.htm" method="get">
+                        <input type="text" name="q" placeholder="Search docs" />
+                    </form>
+                </div>
+            </div>
+            <div class="menu menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+<ul>
+<li class="tocentry"><a href="Introduction.htm">Home</a>
+</li>
+
+<li class="tocentry"><a href="DataSources.htm">Data Sources</a>
+</li>
+<li class="tocentry">
+<span class="navigationgroup"><i class="fa fa-caret-right"></i> <a href="CommandBuilders.htm">Command Builders</a></span>
+</li>
+<li class="tocentry">
+<span class="navigationgroup"><i class="fa fa-caret-right"></i> <a href="Materializers.htm">Materializers</a></span>
+</li>
+<li class="tocentry">
+<span class="navigationgroup"><i class="fa fa-caret-right"></i> <a href="Appenders.htm">Appenders</a></span>
+</li>
+<li class="tocentry"><a href="AuditRules.htm">Audit Rules</a>
+</li>
+<li class="tocentry current"><a class="current" href="RestrictedColumns.htm">Restricted Columns</a>
+<ul class="currentrelativeroot">
+<li class="tocentry"><a href="#usage-notes">Usage Notes</a></li>
+<li class="tocentry"><a href="#implementation">Implementation</a></li>
+</ul>
+<li class="tocentry"><a href="Transactions.htm">Transactions</a>
+</li>
+<li class="tocentry"><a href="EntityFramework.htm">Entity Framework Integration</a>
+</li>
+<li class="tocentry"><a href="NHibernate.htm">NHibernate Integration</a>
+</li>
+</ul>
+				<div class="toc-footer">
+					<span class="text-small">
+						<hr/>
+						<a href="https://github.com/FransBouma/DocNet" target="_blank">Made with <i class="fa fa-github"></i> DocNet</a>
+					</span>
+				</div>	
+			</div>
+            &nbsp;
+        </nav>
+        <section data-toggle="nav-shift" class="nav-content-wrap">
+            <nav class="nav-top" role="navigation" aria-label="top navigation">
+                <i data-toggle="nav-top" class="fa fa-bars"></i>
+                <a href="index.htm">Tortuga Chain</a>
+            </nav>
+            <div class="nav-content">
+                <div role="navigation" aria-label="breadcrumbs navigation">
+                    <div class="breadcrumbs">
+<ul><li><a href="Introduction.htm">Home</a></li> / <li><a href="RestrictedColumns.htm">Restricted Columns</a></li></ul>
+					
+                    </div>
+                    <hr />
+                </div>
+                <div role="main">
+                    <div class="section">
+<h1 id="restricted-columns">Restricted Columns<a class="headerlink" href="#restricted-columns" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h1>
+<p>Chain’s restricted column support allows you to limit read/write access to particular columns based on the user. These restrictions can be applied globally or to specific tables. </p>
+<p>You setup a restricted column the same way you would any other audit rule. Here is an example that prevents users from granting themselves admin privileges:</p>
+<pre><code class="csharp">ExceptWhenPredicate IsAdminCheck = user =&gt; ((UserToken)user).IsAdmin;
+
+DataSource = DataSource.WithRules(new RestrictColumn(&quot;Users&quot;, &quot;IsAdmin&quot;, OperationTypes.Insert |  OperationTypes.Update, IsAdminCheck));
+</code></pre>
+
+<p>Whenever an operation is performed against the <code>Users</code> table, the <code>IsAdminCheck</code> function will be executed. If the check fails, the SQL generator will skip the IsAdmin column while performing insert/update operations.</p>
+<p>There are cases where you may need to universally block access to a column. For example, say you find that the CreditCardNumber is being exposed via multiple tables and views. While you still want your payment resolution managers to have access to it, most users shouldn’t see it. We can enable using this syntax:</p>
+<pre><code class="csharp">ExceptWhenPredicate IsManger = user =&gt; ((UserToken)user).HasRoles(&quot;PaymentResolutionManager&quot;);
+
+DataSource = DataSource.WithRules(new RestrictColumn(&quot;CreditCardNumber&quot;, OperationTypes.Select, IsManger));
+</code></pre>
+
+<p>An interesting effect of this rule is that it only blocks reads, not writes. So non-managers can update a customer’s credit card number even though they can’t actually see it themselves after pressing the save button.</p>
+<h2 id="usage-notes">Usage Notes<a class="headerlink" href="#usage-notes" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h2>
+<p>Once you setup a restricted column rule, you need to ensure that all data access is performed within the context of a user. For example:</p>
+<pre><code class="csharp">var ds = DataSource.WithUser(currentUser);
+//perform operations with ds    
+</code></pre>
+
+<p>This can be combined with a transaction:</p>
+<pre><code class="csharp">using (var ds = DataSource.WithUser(currentUser).BeginTransaction())
+{
+    //perform operations with ds    
+    ds.Commit();
+}
+</code></pre>
+
+<h2 id="implementation">Implementation<a class="headerlink" href="#implementation" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h2>
+<p>Restricted columns are built on top of the Audit Rules functionality and participate in the SQL generation process. This means that it is possible to bypass the restriction using stored procedures.</p>
+<p>Audit rules and restricted columns are not intended to be mixed. For example, if you have an audit rule for setting the UpdatedBy/LastUpdatedDate columns, do not put a restricted column rule on the same columns.</p>
+
+                    </div>
+                </div>
+                <footer>
+                    <hr />
+                    <div role="contentinfo">
+Tortuga Chain. <a href='https://github.com/docevaad/Chain/' target='_blank'>Visit us at GitHub</a>.
+                    </div>
+                </footer>
+            </div>
+        </section>
+    </div>
+    <script src="js/jquery-2.1.1.min.js"></script>
+    <script src="js/modernizr-2.8.3.min.js"></script>
+    <script src="js/highlight.pack.js"></script>
+    <script src="js/theme.js"></script>
+
+</body>
+</html>

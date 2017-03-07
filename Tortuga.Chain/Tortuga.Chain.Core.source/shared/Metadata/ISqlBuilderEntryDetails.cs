@@ -60,5 +60,13 @@
         /// </summary>
         /// <value>The name of the type.</value>
         string TypeName { get; }
+
+        /// <summary>
+        /// Gets or sets the full name of the type including max length, precision, and/or scale.
+        /// </summary>
+        /// <value>
+        /// The full name of the type.
+        /// </value>
+        string FullTypeName { get; }
     }
 }

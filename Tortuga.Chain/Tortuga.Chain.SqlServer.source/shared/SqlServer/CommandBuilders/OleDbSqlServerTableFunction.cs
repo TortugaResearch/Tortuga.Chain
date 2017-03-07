@@ -154,7 +154,12 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             if (m_FunctionArgumentValue != null)
                 sqlBuilder.ApplyArgumentValue(DataSource, OperationTypes.None, m_FunctionArgumentValue);
             if (m_SelectClause == null)
-                sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
+            {
+                var desired = materializer.DesiredColumns();
+                if (desired == Materializer.AutoSelectDesiredColumns)
+                    desired = Materializer.AllColumns;
+                sqlBuilder.ApplyDesiredColumns(desired);
+            }
 
             //Support check
             if (!Enum.IsDefined(typeof(SqlServerLimitOption), m_LimitOptions))
@@ -189,16 +194,16 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             {
                 case SqlServerLimitOption.Rows:
                     if (!m_SortExpressions.Any())
-                        topClause = $"TOP (@fetch_row_count_expression) ";
+                        topClause = $"TOP ({m_Take}) ";
                     break;
                 case SqlServerLimitOption.Percentage:
-                    topClause = $"TOP (@fetch_row_count_expression) PERCENT ";
+                    topClause = $"TOP ({m_Take}) PERCENT ";
                     break;
                 case SqlServerLimitOption.PercentageWithTies:
-                    topClause = $"TOP (@fetch_row_count_expression) PERCENT WITH TIES ";
+                    topClause = $"TOP ({m_Take}) PERCENT WITH TIES ";
                     break;
                 case SqlServerLimitOption.RowsWithTies:
-                    topClause = $"TOP (@fetch_row_count_expression) WITH TIES ";
+                    topClause = $"TOP ({m_Take}) WITH TIES ";
                     break;
             }
 
@@ -207,26 +212,26 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             else
                 sqlBuilder.BuildSelectClause(sql, "SELECT " + topClause, null, null);
 
-            sqlBuilder.BuildFromFunctionClause(sql, $" FROM {m_Table.Name.ToQuotedString()} (", " ) ");
+            sqlBuilder.BuildAnonymousFromFunctionClause(sql, $" FROM {m_Table.Name.ToQuotedString()} (", " ) ");
 
             if (m_FilterValue != null)
             {
-                sql.Append(" WHERE " + sqlBuilder.ApplyFilterValue(m_FilterValue, m_FilterOptions));
-                sqlBuilder.BuildSoftDeleteClause(sql, " AND ", DataSource, null);
+                sql.Append(" WHERE " + sqlBuilder.ApplyAnonymousFilterValue(m_FilterValue, m_FilterOptions));
+                sqlBuilder.BuildAnonymousSoftDeleteClause(sql, " AND (", DataSource, ") ");
 
                 parameters = sqlBuilder.GetParameters();
             }
             else if (!string.IsNullOrWhiteSpace(m_WhereClause))
             {
                 sql.Append(" WHERE " + m_WhereClause);
-                sqlBuilder.BuildSoftDeleteClause(sql, " AND ", DataSource, null);
+                sqlBuilder.BuildAnonymousSoftDeleteClause(sql, " AND (", DataSource, ") ");
 
                 parameters = SqlBuilder.GetParameters<OleDbParameter>(m_ArgumentValue);
                 parameters.AddRange(sqlBuilder.GetParameters());
             }
             else
             {
-                sqlBuilder.BuildSoftDeleteClause(sql, " WHERE ", DataSource, null);
+                sqlBuilder.BuildAnonymousSoftDeleteClause(sql, " WHERE ", DataSource, null);
                 parameters = sqlBuilder.GetParameters();
             }
             sqlBuilder.BuildOrderByClause(sql, " ORDER BY ", m_SortExpressions, null);
@@ -234,6 +239,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             switch (m_LimitOptions)
             {
                 case SqlServerLimitOption.Rows:
+
                     if (m_SortExpressions.Any())
                     {
                         sql.Append(" OFFSET @offset_row_count_expression ROWS ");
@@ -245,17 +251,15 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
                             parameters.Add(new OleDbParameter("@fetch_row_count_expression", m_Take));
                         }
                     }
-                    else
-                    {
-                        parameters.Add(new OleDbParameter("@fetch_row_count_expression", m_Take));
-                    }
+                    //else
+                    //{
+                    //    parameters.Add(new OleDbParameter("@fetch_row_count_expression", m_Take));
+                    //}
                     break;
 
                 case SqlServerLimitOption.Percentage:
                 case SqlServerLimitOption.PercentageWithTies:
                 case SqlServerLimitOption.RowsWithTies:
-                    parameters.Add(new OleDbParameter("@fetch_row_count_expression", m_Take));
-
                     break;
             }
 

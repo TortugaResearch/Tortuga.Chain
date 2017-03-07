@@ -22,12 +22,15 @@ namespace Tortuga.Chain.SqlServer
 
         internal readonly ConcurrentDictionary<SqlServerObjectName, TableFunctionMetadata<SqlServerObjectName, TDbType>> m_TableFunctions = new ConcurrentDictionary<SqlServerObjectName, TableFunctionMetadata<SqlServerObjectName, TDbType>>();
 
-        internal readonly ConcurrentDictionary<SqlServerObjectName, TableOrViewMetadata<SqlServerObjectName, TDbType>> m_Tables = new ConcurrentDictionary<SqlServerObjectName, TableOrViewMetadata<SqlServerObjectName, TDbType>>();
+        internal readonly ConcurrentDictionary<SqlServerObjectName, SqlServerTableOrViewMetadata<TDbType>> m_Tables = new ConcurrentDictionary<SqlServerObjectName, SqlServerTableOrViewMetadata<TDbType>>();
 
         internal readonly ConcurrentDictionary<Type, TableOrViewMetadata<SqlServerObjectName, TDbType>> m_TypeTableMap = new ConcurrentDictionary<Type, TableOrViewMetadata<SqlServerObjectName, TDbType>>();
 
         internal readonly ConcurrentDictionary<Type, string> m_UdtTypeMap = new ConcurrentDictionary<Type, string>();
         internal readonly ConcurrentDictionary<SqlServerObjectName, UserDefinedTypeMetadata<SqlServerObjectName, TDbType>> m_UserDefinedTypes = new ConcurrentDictionary<SqlServerObjectName, UserDefinedTypeMetadata<SqlServerObjectName, TDbType>>();
+
+        internal readonly ConcurrentDictionary<SqlServerObjectName, ScalarFunctionMetadata<SqlServerObjectName, TDbType>> m_ScalarFunctions = new ConcurrentDictionary<SqlServerObjectName, ScalarFunctionMetadata<SqlServerObjectName, TDbType>>();
+
         internal string m_DefaultSchema;
 
         /// <summary>
@@ -83,6 +86,16 @@ namespace Tortuga.Chain.SqlServer
         }
 
         /// <summary>
+        /// Gets the metadata for a scalar function.
+        /// </summary>
+        /// <param name="scalarFunctionName">Name of the scalar function.</param>
+        /// <returns>Null if the object could not be found.</returns>
+        public override ScalarFunctionMetadata<SqlServerObjectName, TDbType> GetScalarFunction(SqlServerObjectName scalarFunctionName)
+        {
+            return m_ScalarFunctions.GetOrAdd(scalarFunctionName, GetScalarFunctionInternal);
+        }
+
+        /// <summary>
         /// Gets the table-valued functions that were loaded by this cache.
         /// </summary>
         /// <returns></returns>
@@ -95,6 +108,18 @@ namespace Tortuga.Chain.SqlServer
         }
 
         /// <summary>
+        /// Gets the scalar functions that were loaded by this cache.
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>
+        /// Call Preload before invoking this method to ensure that all scalar functions were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.
+        /// </remarks>
+        public override IReadOnlyCollection<ScalarFunctionMetadata<SqlServerObjectName, TDbType>> GetScalarFunctions()
+        {
+            return m_ScalarFunctions.GetValues();
+        }
+
+        /// <summary>
         /// Gets the metadata for a table.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
@@ -103,7 +128,6 @@ namespace Tortuga.Chain.SqlServer
         {
             return m_Tables.GetOrAdd(tableName, GetTableOrViewInternal);
         }
-
 
         ///// <summary>
         ///// Gets the UDT name of the indicated type.
@@ -186,6 +210,7 @@ namespace Tortuga.Chain.SqlServer
             PreloadStoredProcedures();
             PreloadTableFunctions();
             PreloadUserDefinedTypes();
+            PreloadScalarFunctions();
         }
 
         /// <summary>
@@ -197,6 +222,12 @@ namespace Tortuga.Chain.SqlServer
         /// Preloads the table value functions.
         /// </summary>
         public abstract void PreloadTableFunctions();
+
+
+        /// <summary>
+        /// Preloads the scalar functions.
+        /// </summary>
+        public abstract void PreloadScalarFunctions();
 
         /// <summary>
         /// Preloads metadata for all tables.
@@ -227,6 +258,7 @@ namespace Tortuga.Chain.SqlServer
             m_TypeTableMap.Clear();
             m_UdtTypeMap.Clear();
             m_UserDefinedTypes.Clear();
+            m_ScalarFunctions.Clear();
         }
 
         [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
@@ -305,8 +337,9 @@ namespace Tortuga.Chain.SqlServer
 
         internal abstract StoredProcedureMetadata<SqlServerObjectName, TDbType> GetStoredProcedureInternal(SqlServerObjectName procedureName);
         internal abstract TableFunctionMetadata<SqlServerObjectName, TDbType> GetTableFunctionInternal(SqlServerObjectName tableFunctionName);
+        internal abstract ScalarFunctionMetadata<SqlServerObjectName, TDbType> GetScalarFunctionInternal(SqlServerObjectName tableFunctionName);
 
-        internal abstract TableOrViewMetadata<SqlServerObjectName, TDbType> GetTableOrViewInternal(SqlServerObjectName tableName);
+        internal abstract SqlServerTableOrViewMetadata<TDbType> GetTableOrViewInternal(SqlServerObjectName tableName);
         /// <summary>
         /// Parse a string and return the database specific representation of the object name.
         /// </summary>

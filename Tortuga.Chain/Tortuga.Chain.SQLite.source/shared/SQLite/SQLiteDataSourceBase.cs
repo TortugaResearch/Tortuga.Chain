@@ -144,7 +144,7 @@ namespace Tortuga.Chain.SQLite
         /// <returns>TableDbCommandBuilder&lt;SQLiteCommand, SQLiteParameter, SQLiteLimitOption&gt;.</returns>
         public TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> From(SQLiteObjectName tableOrViewName, object filterValue, FilterOptions filterOptions = FilterOptions.None)
         {
-            return new SQLiteTableOrView(this, tableOrViewName, filterValue, filterOptions );
+            return new SQLiteTableOrView(this, tableOrViewName, filterValue, filterOptions);
         }
 
         /// <summary>
@@ -583,7 +583,85 @@ namespace Tortuga.Chain.SQLite
 
         }
 
+        /// <summary>
+        /// Deletes multiple records using a where expression.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="whereClause">The where clause.</param>
+        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> DeleteWithFilter(SQLiteObjectName tableName, string whereClause)
+        {
+            var table = DatabaseMetadata.GetTableOrView(tableName);
+            if (!AuditRules.UseSoftDelete(table))
+                return new SQLiteDeleteMany(this, tableName, whereClause, null);
 
+            return new SQLiteUpdateMany(this, tableName, null, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected).WithFilter(whereClause, null);
+        }
+
+        /// <summary>
+        /// Deletes multiple records using a where expression.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="whereClause">The where clause.</param>
+        /// <param name="argumentValue">The argument value for the where clause.</param>
+        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> DeleteWithFilter(SQLiteObjectName tableName, string whereClause, object argumentValue)
+        {
+            var table = DatabaseMetadata.GetTableOrView(tableName);
+            if (!AuditRules.UseSoftDelete(table))
+                return new SQLiteDeleteMany(this, tableName, whereClause, argumentValue);
+
+            return new SQLiteUpdateMany(this, tableName, null, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected).WithFilter(whereClause, argumentValue);
+        }
+
+        /// <summary>
+        /// Deletes multiple records using a filter object.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="filterValue">The filter value.</param>
+        /// <param name="filterOptions">The options.</param>
+        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> DeleteWithFilter(SQLiteObjectName tableName, object filterValue, FilterOptions filterOptions = FilterOptions.None)
+        {
+            var table = DatabaseMetadata.GetTableOrView(tableName);
+            if (!AuditRules.UseSoftDelete(table))
+                return new SQLiteDeleteMany(this, tableName, filterValue, filterOptions);
+
+            return new SQLiteUpdateMany(this, tableName, null, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected).WithFilter(filterValue, filterOptions);
+        }
+
+
+        /// <summary>
+        /// Updates multiple records using an update expression.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="updateExpression">The update expression.</param>
+        /// <param name="options">The update options.</param>
+        public IUpdateManyCommandBuilder<SQLiteCommand, SQLiteParameter> UpdateSet(SQLiteObjectName tableName, string updateExpression, UpdateOptions options = UpdateOptions.None)
+        {
+            return new SQLiteUpdateMany(this, tableName, updateExpression, null, options);
+        }
+
+        /// <summary>
+        /// Updates multiple records using an update expression.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="updateExpression">The update expression.</param>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="options">The update options.</param>
+        public IUpdateManyCommandBuilder<SQLiteCommand, SQLiteParameter> UpdateSet(SQLiteObjectName tableName, string updateExpression, object argumentValue, UpdateOptions options = UpdateOptions.None)
+        {
+            return new SQLiteUpdateMany(this, tableName, updateExpression, argumentValue, options);
+        }
+
+
+        /// <summary>
+        /// Updates multiple records using an update value.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="newValues">The new values to use.</param>
+        /// <param name="options">The options.</param>
+        public IUpdateManyCommandBuilder<SQLiteCommand, SQLiteParameter> UpdateSet(SQLiteObjectName tableName, object newValues, UpdateOptions options = UpdateOptions.None)
+        {
+            return new SQLiteUpdateMany(this, tableName, newValues, options);
+        }
     }
 
 

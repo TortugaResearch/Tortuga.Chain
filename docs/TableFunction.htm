@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="en">
+<!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Table Function Command Builder - Tortuga Chain</title>
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="stylesheet" href="css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="css/theme_colors.css" type="text/css" />
+    <link rel="stylesheet" href="css/styles/vs.css">
+    <link rel="stylesheet" href="css/font-awesome.4.5.0.min.css">
+</head>
+<body role="document">
+    <div class="grid-for-nav">
+        <nav data-toggle="nav-shift" class="nav-side stickynav">
+            <div class="side-nav-search">
+                <a href="index.htm"><i class="fa fa-home"></i> Tortuga Chain</a>
+                <div role="search">
+                    <form id="search-form" class="form" action="Docnet_search.htm" method="get">
+                        <input type="text" name="q" placeholder="Search docs" />
+                    </form>
+                </div>
+            </div>
+            <div class="menu menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+<ul>
+<li class="tocentry"><a href="Introduction.htm">Home</a>
+</li>
+
+<li class="tocentry"><a href="DataSources.htm">Data Sources</a>
+</li>
+<li class="tocentry">
+<ul>
+<li><span class="navigationgroup"><i class="fa fa-caret-down"></i> <a href="CommandBuilders.htm">Command Builders</a></span></li>
+
+<li class="tocentry"><a href="From.htm">From Command Builder</a>
+</li>
+<li class="tocentry"><a href="ByKey.htm">By Key Command Builder</a>
+</li>
+<li class="tocentry"><a href="Insert.htm">Insert Command Builder</a>
+</li>
+<li class="tocentry"><a href="Update.htm">Update Command Builder</a>
+</li>
+<li class="tocentry"><a href="Upsert.htm">Upsert Command Builder</a>
+</li>
+<li class="tocentry"><a href="Delete.htm">Delete Command Builder</a>
+</li>
+<li class="tocentry"><a href="SQL.htm">SQL Command Builder</a>
+</li>
+<li class="tocentry current"><a class="current" href="TableFunction.htm">Table Function Command Builder</a>
+<ul class="currentrelative">
+<li class="tocentry"><a href="#function-arguments">Function Arguments</a></li>
+<li class="tocentry"><a href="#sorting">Sorting</a></li>
+<li class="tocentry"><a href="#limits">Limits</a></li>
+<li class="tocentry"><a href="#filters">Filters</a></li>
+<li class="tocentry"><a href="#limitations">Limitations</a></li>
+<li class="tocentry"><a href="#sql-generation">SQL Generation</a></li>
+<li class="tocentry"><a href="#internals">Internals</a></li>
+<li class="tocentry"><a href="#roadmap">Roadmap</a></li>
+</ul>
+<li class="tocentry"><a href="ScalarFunction.htm">Scalar Function Command Builder</a>
+</li>
+<li class="tocentry"><a href="Procedure.htm">Procedure Command Builder</a>
+</li>
+</ul>
+</li>
+<li class="tocentry">
+<span class="navigationgroup"><i class="fa fa-caret-right"></i> <a href="Materializers.htm">Materializers</a></span>
+</li>
+<li class="tocentry">
+<span class="navigationgroup"><i class="fa fa-caret-right"></i> <a href="Appenders.htm">Appenders</a></span>
+</li>
+<li class="tocentry"><a href="AuditRules.htm">Audit Rules</a>
+</li>
+<li class="tocentry"><a href="RestrictedColumns.htm">Restricted Columns</a>
+</li>
+<li class="tocentry"><a href="Transactions.htm">Transactions</a>
+</li>
+<li class="tocentry"><a href="EntityFramework.htm">Entity Framework Integration</a>
+</li>
+<li class="tocentry"><a href="NHibernate.htm">NHibernate Integration</a>
+</li>
+</ul>
+				<div class="toc-footer">
+					<span class="text-small">
+						<hr/>
+						<a href="https://github.com/FransBouma/DocNet" target="_blank">Made with <i class="fa fa-github"></i> DocNet</a>
+					</span>
+				</div>	
+			</div>
+            &nbsp;
+        </nav>
+        <section data-toggle="nav-shift" class="nav-content-wrap">
+            <nav class="nav-top" role="navigation" aria-label="top navigation">
+                <i data-toggle="nav-top" class="fa fa-bars"></i>
+                <a href="index.htm">Tortuga Chain</a>
+            </nav>
+            <div class="nav-content">
+                <div role="navigation" aria-label="breadcrumbs navigation">
+                    <div class="breadcrumbs">
+<ul><li><a href="Introduction.htm">Home</a></li> / <li><a href="CommandBuilders.htm">Command Builders</a></li> / <li><a href="TableFunction.htm">Table Function Command Builder</a></li></ul>
+					
+                    </div>
+                    <hr />
+                </div>
+                <div role="main">
+                    <div class="section">
+<h1 id="table-function-command-builder">Table Function Command Builder<a class="headerlink" href="#table-function-command-builder" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h1>
+<p>This generates a SELECT statement against a table-valued function.</p>
+<h2 id="function-arguments">Function Arguments<a class="headerlink" href="#function-arguments" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h2>
+<p>Function arguments are provided as part of the <code>dataSource.TableFunction(...)</code> method. All parameters must be accounted for.</p>
+<h2 id="sorting">Sorting<a class="headerlink" href="#sorting" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h2>
+<p>To add sorting, use the <code>.WithSorting(...)</code> method. This accepts a list of strings or SortExpressions (the latter is only needed for descending sorts). To prevent SQL injection attacks, column names are validated against the database. </p>
+<h2 id="limits">Limits<a class="headerlink" href="#limits" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h2>
+<p>To add limits, use the <code>.WithLimits(...)</code> method. The type of limits avaialble vary from database to database. Most provide Top, Offset/Fetch, and one or more forms of random sampling.</p>
+<p>Sorting is often required when using Offset/Fetch. It is not allowed when using random sampling.</p>
+<h2 id="filters">Filters<a class="headerlink" href="#filters" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h2>
+<p>Filters can be added (or replaced) using the <code>.WithFilter(...)</code> method. This uses the same filters (WHERE clause or filter object) that are available when calling <code>.From(...)</code>.</p>
+<p>If just the table name is provided, all rows are returned.</p>
+<p>If an object (model or Dictionary&lt;string, object&gt;) is provided, a WHERE clause is generated in the form of &quot;Column1 = @Value1 AND Column2 = @Value2 [...]&quot;.</p>
+<p>If a filter string is provided, it is used as the where clause. Optionally, an object can be provided as parameters for the query.</p>
+<p>Do not use the same arguments for the filter expression as you use for the table parameters, as this may caused unintended behavior.</p>
+<h2 id="limitations">Limitations<a class="headerlink" href="#limitations" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h2>
+<p>When using a filter string with filter parameter object, the SQL generator won't be able to determine which properties/keys are applicable. Instead, all of them will be sent to the database.</p>
+<p>When using a filter string with filter parameter object, and one of the filtered columns is an ANSI string (<code>char</code>/<code>varchar</code>), you may experience performance degradation. To avoid this, pass in an array of <code>DbParameter</code> objects with the correct <code>DbParameter.DbType</code> value. (Normally DbType is inferred by checking against the column’s type.) </p>
+<p>Some types of random sampling are not available with table-valued functions.</p>
+<h2 id="sql-generation">SQL Generation<a class="headerlink" href="#sql-generation" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h2>
+<p>If no columns are desired by the materializer, 'SELECT 1' is returned instead.</p>
+<h2 id="internals">Internals<a class="headerlink" href="#internals" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h2>
+<p>All databases work the same except for what types of limits they support.</p>
+<h2 id="roadmap">Roadmap<a class="headerlink" href="#roadmap" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h2>
+
+                    </div>
+                </div>
+                <footer>
+                    <hr />
+                    <div role="contentinfo">
+Tortuga Chain. <a href='https://github.com/docevaad/Chain/' target='_blank'>Visit us at GitHub</a>.
+                    </div>
+                </footer>
+            </div>
+        </section>
+    </div>
+    <script src="js/jquery-2.1.1.min.js"></script>
+    <script src="js/modernizr-2.8.3.min.js"></script>
+    <script src="js/highlight.pack.js"></script>
+    <script src="js/theme.js"></script>
+
+</body>
+</html>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using Tests.Models;
 using Tortuga.Chain;
 using Tortuga.Chain.AuditRules;
 using Tortuga.Chain.DataSources;
@@ -42,6 +43,17 @@ namespace Tests
                 new UserDataRule("UpdatedByKey", "EmployeeKey", OperationTypes.InsertOrUpdate),
                 new ValidateWithValidatable(OperationTypes.InsertOrUpdate)
                 );
+        }
+
+        public SQLiteDataSource AttachSoftDeleteRulesWithUser(SQLiteDataSource source)
+        {
+            var currentUser1 = source.From(EmployeeTableName).WithLimits(1).ToObject<Employee>().Execute();
+
+            return source.WithRules(
+                new SoftDeleteRule("DeletedFlag", true, OperationTypes.SelectOrDelete),
+                new UserDataRule("DeletedByKey", "EmployeeKey", OperationTypes.Delete),
+                new DateTimeRule("DeletedDate", DateTimeKind.Local, OperationTypes.Delete)
+                ).WithUser(currentUser1);
         }
 
         public SQLiteDataSource DataSource(string name, [CallerMemberName] string caller = null)

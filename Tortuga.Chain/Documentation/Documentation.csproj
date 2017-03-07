@@ -91,6 +91,7 @@
     <None Include="Page\Appenders\Tracing.md" />
     <None Include="Page\Appenders\Caching.md" />
     <None Include="Page\CommandBuilders\ByKey.md" />
+    <None Include="Page\CommandBuilders\ScalarFunction.md" />
     <None Include="Page\Other\EntityFramework.md" />
     <None Include="Page\Other\NHibernate.md" />
     <None Include="Page\Transactions.md" />
@@ -192,9 +193,12 @@
     <Error Condition="!Exists('..\packages\Projbook.1.0.6\build\Projbook.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Projbook.1.0.6\build\Projbook.targets'))" />
   </Target>
   <Import Project="..\packages\Projbook.1.0.6\build\Projbook.targets" Condition="Exists('..\packages\Projbook.1.0.6\build\Projbook.targets')" />
-  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-    <PostBuildEvent>copy $(TargetDir)Chain-pdf.pdf $(SolutionDir)..\Chain.pdf</PostBuildEvent>
+  <!--<PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <PostBuildEvent>copy $(TargetDir)Chain.pdf $(SolutionDir)..\docs\Chain.pdf</PostBuildEvent>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <PostBuildEvent>copy $(TargetDir)index.html $(SolutionDir)..\docs\index.html</PostBuildEvent>
+  </PropertyGroup>-->
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

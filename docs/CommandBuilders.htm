@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="en">
+<!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Command Builders - Tortuga Chain</title>
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="stylesheet" href="css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="css/theme_colors.css" type="text/css" />
+    <link rel="stylesheet" href="css/styles/vs.css">
+    <link rel="stylesheet" href="css/font-awesome.4.5.0.min.css">
+</head>
+<body role="document">
+    <div class="grid-for-nav">
+        <nav data-toggle="nav-shift" class="nav-side stickynav">
+            <div class="side-nav-search">
+                <a href="index.htm"><i class="fa fa-home"></i> Tortuga Chain</a>
+                <div role="search">
+                    <form id="search-form" class="form" action="Docnet_search.htm" method="get">
+                        <input type="text" name="q" placeholder="Search docs" />
+                    </form>
+                </div>
+            </div>
+            <div class="menu menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+<ul>
+<li class="tocentry"><a href="Introduction.htm">Home</a>
+</li>
+
+<li class="tocentry"><a href="DataSources.htm">Data Sources</a>
+</li>
+<li class="tocentry">
+<ul class="current">
+<li><span class="navigationgroup"><i class="fa fa-caret-down"></i> <a href="CommandBuilders.htm">Command Builders</a></span></li>
+
+<li class="tocentry"><a href="From.htm">From Command Builder</a>
+</li>
+<li class="tocentry"><a href="ByKey.htm">By Key Command Builder</a>
+</li>
+<li class="tocentry"><a href="Insert.htm">Insert Command Builder</a>
+</li>
+<li class="tocentry"><a href="Update.htm">Update Command Builder</a>
+</li>
+<li class="tocentry"><a href="Upsert.htm">Upsert Command Builder</a>
+</li>
+<li class="tocentry"><a href="Delete.htm">Delete Command Builder</a>
+</li>
+<li class="tocentry"><a href="SQL.htm">SQL Command Builder</a>
+</li>
+<li class="tocentry"><a href="TableFunction.htm">Table Function Command Builder</a>
+</li>
+<li class="tocentry"><a href="ScalarFunction.htm">Scalar Function Command Builder</a>
+</li>
+<li class="tocentry"><a href="Procedure.htm">Procedure Command Builder</a>
+</li>
+</ul>
+</li>
+<li class="tocentry">
+<span class="navigationgroup"><i class="fa fa-caret-right"></i> <a href="Materializers.htm">Materializers</a></span>
+</li>
+<li class="tocentry">
+<span class="navigationgroup"><i class="fa fa-caret-right"></i> <a href="Appenders.htm">Appenders</a></span>
+</li>
+<li class="tocentry"><a href="AuditRules.htm">Audit Rules</a>
+</li>
+<li class="tocentry"><a href="RestrictedColumns.htm">Restricted Columns</a>
+</li>
+<li class="tocentry"><a href="Transactions.htm">Transactions</a>
+</li>
+<li class="tocentry"><a href="EntityFramework.htm">Entity Framework Integration</a>
+</li>
+<li class="tocentry"><a href="NHibernate.htm">NHibernate Integration</a>
+</li>
+</ul>
+				<div class="toc-footer">
+					<span class="text-small">
+						<hr/>
+						<a href="https://github.com/FransBouma/DocNet" target="_blank">Made with <i class="fa fa-github"></i> DocNet</a>
+					</span>
+				</div>	
+			</div>
+            &nbsp;
+        </nav>
+        <section data-toggle="nav-shift" class="nav-content-wrap">
+            <nav class="nav-top" role="navigation" aria-label="top navigation">
+                <i data-toggle="nav-top" class="fa fa-bars"></i>
+                <a href="index.htm">Tortuga Chain</a>
+            </nav>
+            <div class="nav-content">
+                <div role="navigation" aria-label="breadcrumbs navigation">
+                    <div class="breadcrumbs">
+<ul><li><a href="Introduction.htm">Home</a></li> / <li><a href="CommandBuilders.htm">Command Builders</a></li></ul>
+					
+                    </div>
+                    <hr />
+                </div>
+                <div role="main">
+                    <div class="section">
+<h1 id="command-builders">Command Builders<a class="headerlink" href="#command-builders" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h1>
+<p>A command builder is used to generate SQL for a specific type of operation. SQL generation does not occur immediately, but rather waits until you've selected a materializer and, optionally, appenders.</p>
+<p>The reason for the delay is that materializers often change the way the SQL is generated. For example, when performing an Insert operation you have the option of getting back nothing, just the newly inserted primary key, or an entire object with any defaulted/calculated columns.</p>
+<p>Since each command builder works differently, we can't really go into details here.</p>
+<h2 id="internals">Internals<a class="headerlink" href="#internals" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h2>
+<h3 id="metadata-consumption">Metadata Consumption<a class="headerlink" href="#metadata-consumption" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h3>
+<p>When a command builder is created, it may immediately fetch metadata from the data source. This means that you could potentially see blocking operation and/or database error before you actually try to execute a Chain. </p>
+<p>In practice this shouldn't be a problem, as it should only occur the first time a given table/view is referenced. But if you are concerned, you can call <code>dataSource.Metadata.PreloadTables</code> and <code>PreloadViews</code> during startup. The time it takes to run these operations varies with the size of the database schema, so it may negatively impact performance.</p>
+<h3 id="execution">Execution<a class="headerlink" href="#execution" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h3>
+<p>When a chain is executed, the materializer calls <code>Prepare</code> on the command builder, which in turn creates an execution token. This token contains the SQL statement and parameters needed to build and execute a <code>System.Data.Common.DBCommand</code> object. The materializer and appenders can further modify the execution token from here, but the command builder is no longer in the process.</p>
+
+                    </div>
+                </div>
+                <footer>
+                    <hr />
+                    <div role="contentinfo">
+Tortuga Chain. <a href='https://github.com/docevaad/Chain/' target='_blank'>Visit us at GitHub</a>.
+                    </div>
+                </footer>
+            </div>
+        </section>
+    </div>
+    <script src="js/jquery-2.1.1.min.js"></script>
+    <script src="js/modernizr-2.8.3.min.js"></script>
+    <script src="js/highlight.pack.js"></script>
+    <script src="js/theme.js"></script>
+
+</body>
+</html>

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 
 #if !DataTable_Missing
 using System.Data;
+using System.Diagnostics.CodeAnalysis;
 #endif
 
 namespace Tortuga.Chain.CommandBuilders
@@ -16,6 +17,7 @@ namespace Tortuga.Chain.CommandBuilders
     /// </summary>
     /// <typeparam name="TCommand">The type of the t command type.</typeparam>
     /// <typeparam name="TParameter">The type of the t parameter type.</typeparam>
+    [SuppressMessage("Microsoft.Maintainability", "CA1501:AvoidExcessiveInheritance")]
     public abstract class MultipleTableDbCommandBuilder<TCommand, TParameter> : MultipleRowDbCommandBuilder<TCommand, TParameter>, IMultipleTableDbCommandBuilder
         where TCommand : DbCommand
         where TParameter : DbParameter

@@ -79,9 +79,9 @@ namespace Tortuga.Chain
             m_PropertyLookup = metadata.PropertyLookup;
         }
 
-        private class ObjectDataReaderMetatData
+        private class ObjectDataReaderMetadata
         {
-            public ObjectDataReaderMetatData(DataTable schema, ImmutableArray<PropertyMetadata> properties, ImmutableDictionary<string, int> propertyLookup)
+            public ObjectDataReaderMetadata(DataTable schema, ImmutableArray<PropertyMetadata> properties, ImmutableDictionary<string, int> propertyLookup)
             {
                 Schema = schema;
                 Properties = properties;
@@ -96,7 +96,7 @@ namespace Tortuga.Chain
         [SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling")]
         [SuppressMessage("Microsoft.Globalization", "CA1306:SetLocaleForDataTypes")]
         [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-        private static ObjectDataReaderMetatData BuildStructure(string targetName, IReadOnlyList<ColumnMetadata> columns, bool allColumnsRequired, OperationTypes operationType)
+        private static ObjectDataReaderMetadata BuildStructure(string targetName, IReadOnlyList<ColumnMetadata> columns, bool allColumnsRequired, OperationTypes operationType)
         {
 
             var propertyList = MetadataCache.GetMetadata(typeof(TObject)).Properties.Where(p => p.CanRead && p.MappedColumnName != null).ToList();
@@ -104,32 +104,32 @@ namespace Tortuga.Chain
             bool checkIgnoreOnUpdate = operationType == OperationTypes.Update;
 
 
-            var dt = new DataTable();
-            dt.Columns.Add("ColumnName", typeof(string));
-            dt.Columns.Add("ColumnOrdinal", typeof(int));
-            dt.Columns.Add("ColumnSize", typeof(int));
-            dt.Columns.Add("NumericPrecision", typeof(short));
-            dt.Columns.Add("NumericScale", typeof(short));
-            dt.Columns.Add("DataType", typeof(Type));
-            dt.Columns.Add("ProviderType", typeof(int));
-            dt.Columns.Add("IsLong", typeof(bool));
-            dt.Columns.Add("AllowDBNull", typeof(bool));
-            dt.Columns.Add("IsReadOnly", typeof(bool));
-            dt.Columns.Add("IsRowVersion", typeof(bool));
-            dt.Columns.Add("IsUnique", typeof(bool));
-            dt.Columns.Add("IsKey", typeof(bool));
-            dt.Columns.Add("IsAutoIncrement", typeof(bool));
-            dt.Columns.Add("BaseCatalogName", typeof(string));
-            dt.Columns.Add("BaseSchemaName", typeof(string));
-            dt.Columns.Add("BaseTableName", typeof(string));
-            dt.Columns.Add("BaseColumnName", typeof(string));
-            dt.Columns.Add("AutoIncrementSeed", typeof(long));
-            dt.Columns.Add("AutoIncrementStep", typeof(long));
-            dt.Columns.Add("DefaultValue", typeof(object));
-            dt.Columns.Add("Expression", typeof(string));
-            dt.Columns.Add("ColumnMapping", typeof(MappingType));
-            dt.Columns.Add("BaseTableNamespace", typeof(string));
-            dt.Columns.Add("BaseColumnNamespace", typeof(string));
+            var dtSchema = new DataTable();
+            dtSchema.Columns.Add("ColumnName", typeof(string));
+            dtSchema.Columns.Add("ColumnOrdinal", typeof(int));
+            dtSchema.Columns.Add("ColumnSize", typeof(int));
+            dtSchema.Columns.Add("NumericPrecision", typeof(short));
+            dtSchema.Columns.Add("NumericScale", typeof(short));
+            dtSchema.Columns.Add("DataType", typeof(Type));
+            dtSchema.Columns.Add("ProviderType", typeof(int));
+            dtSchema.Columns.Add("IsLong", typeof(bool));
+            dtSchema.Columns.Add("AllowDBNull", typeof(bool));
+            dtSchema.Columns.Add("IsReadOnly", typeof(bool));
+            dtSchema.Columns.Add("IsRowVersion", typeof(bool));
+            dtSchema.Columns.Add("IsUnique", typeof(bool));
+            dtSchema.Columns.Add("IsKey", typeof(bool));
+            dtSchema.Columns.Add("IsAutoIncrement", typeof(bool));
+            dtSchema.Columns.Add("BaseCatalogName", typeof(string));
+            dtSchema.Columns.Add("BaseSchemaName", typeof(string));
+            dtSchema.Columns.Add("BaseTableName", typeof(string));
+            dtSchema.Columns.Add("BaseColumnName", typeof(string));
+            dtSchema.Columns.Add("AutoIncrementSeed", typeof(long));
+            dtSchema.Columns.Add("AutoIncrementStep", typeof(long));
+            dtSchema.Columns.Add("DefaultValue", typeof(object));
+            dtSchema.Columns.Add("Expression", typeof(string));
+            dtSchema.Columns.Add("ColumnMapping", typeof(MappingType));
+            dtSchema.Columns.Add("BaseTableNamespace", typeof(string));
+            dtSchema.Columns.Add("BaseColumnNamespace", typeof(string));
 
             var ordinal = 0;
             var realPropertyList = new List<PropertyMetadata>(columns.Count);
@@ -162,7 +162,7 @@ namespace Tortuga.Chain
 
                 realPropertyList.Add(property);
 
-                var row = dt.NewRow();
+                var row = dtSchema.NewRow();
                 row["ColumnName"] = column.SqlName;
                 row["ColumnOrdinal"] = ordinal++;
                 row["ColumnSize"] = -1;
@@ -190,11 +190,11 @@ namespace Tortuga.Chain
                 row["ColumnMapping"] = 1;
                 row["BaseTableNamespace"] = null;
                 row["BaseColumnNamespace"] = null;
-                dt.Rows.Add(row);
+                dtSchema.Rows.Add(row);
             }
 
 
-            return new ObjectDataReaderMetatData(dt, realPropertyList.ToImmutableArray(), realPropertyList.Select((p, x) => new { Index = x, Property = p }).ToImmutableDictionary(px => px.Property.Name, px => px.Index, StringComparer.OrdinalIgnoreCase));
+            return new ObjectDataReaderMetadata(dtSchema, realPropertyList.ToImmutableArray(), realPropertyList.Select((p, x) => new { Index = x, Property = p }).ToImmutableDictionary(px => px.Property.Name, px => px.Index, StringComparer.OrdinalIgnoreCase));
 
         }
 

@@ -329,5 +329,62 @@ namespace Tortuga.Chain
         /// <exception cref="MappingException"></exception>
         IMultipleRowDbCommandBuilder UpdateByKeyList<TArgument, TKey>(string tableName, TArgument newValues, IEnumerable<TKey> keys, UpdateOptions options = UpdateOptions.None);
 
+
+
+        /// <summary>
+        /// Deletes multiple records using a where expression.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="whereClause">The where clause.</param>
+        /// <returns>IMultipleRowDbCommandBuilder.</returns>
+        IMultipleRowDbCommandBuilder DeleteWithFilter(string tableName, string whereClause);
+
+        /// <summary>
+        /// Deletes multiple records using a where expression.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="whereClause">The where clause.</param>
+        /// <param name="argumentValue">The argument value for the where clause.</param>
+        /// <returns>IMultipleRowDbCommandBuilder.</returns>
+        IMultipleRowDbCommandBuilder DeleteWithFilter(string tableName, string whereClause, object argumentValue);
+
+
+        /// <summary>
+        /// Deletes multiple records using a filter object.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="filterValue">The filter value.</param>
+        /// <param name="filterOptions">The filter options.</param>
+        IMultipleRowDbCommandBuilder DeleteWithFilter(string tableName, object filterValue, FilterOptions filterOptions = FilterOptions.None);
+
+
+        /// <summary>
+        /// Updates multiple records using an update expression.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="updateExpression">The update expression.</param>
+        /// <param name="options">The update options.</param>
+        IUpdateManyCommandBuilder UpdateSet(string tableName, string updateExpression, UpdateOptions options = UpdateOptions.None);
+
+        /// <summary>
+        /// Updates multiple records using an update expression.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="updateExpression">The update expression.</param>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="options">The update options.</param>
+        IUpdateManyCommandBuilder UpdateSet(string tableName, string updateExpression, object argumentValue, UpdateOptions options = UpdateOptions.None);
+
+
+        /// <summary>
+        /// Updates multiple records using an update value.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="newValues">The new values to use.</param>
+        /// <param name="options">The options.</param>
+        IUpdateManyCommandBuilder UpdateSet(string tableName, object newValues, UpdateOptions options = UpdateOptions.None);
+
     }
+
+
 }
