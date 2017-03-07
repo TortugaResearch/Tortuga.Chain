@@ -95,8 +95,6 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             sql.Append(header);
             sql.Append("DELETE FROM " + m_Table.Name.ToQuotedString());
             sqlBuilder.BuildSelectClause(sql, " OUTPUT ", "Deleted.", intoClause);
-            sql.Append(" WHERE " + m_WhereClause);
-            sqlBuilder.BuildSelectClause(sql, " OUTPUT ", "Deleted.", null);
             if (m_FilterValue != null)
             {
                 sql.Append(" WHERE " + sqlBuilder.ApplyFilterValue(m_FilterValue, m_FilterOptions));

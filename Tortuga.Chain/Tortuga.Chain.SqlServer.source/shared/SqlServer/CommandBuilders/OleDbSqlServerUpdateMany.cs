@@ -18,7 +18,6 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         readonly int? m_ExpectedRowCount;
         readonly IEnumerable<OleDbParameter> m_Parameters;
         readonly SqlServerTableOrViewMetadata<OleDbType> m_Table;
-        readonly string m_WhereClause;
 
         readonly object m_NewValues;
         readonly string m_UpdateExpression;
@@ -122,11 +121,8 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 
             sql.Append(header);
             sql.Append($"UPDATE {m_Table.Name.ToQuotedString()}");
-            sqlBuilder.BuildAnonymousSetClause(sql, " SET ", null, null);
-            sqlBuilder.BuildSelectClause(sql, " OUTPUT ", prefix, intoClause);
-            sql.Append(" WHERE " + m_WhereClause);
             var parameters = new List<OleDbParameter>();
-            var sql = new StringBuilder("UPDATE " + m_Table.Name.ToQuotedString());
+
             if (m_UpdateExpression == null)
             {
                 sqlBuilder.BuildAnonymousSetClause(sql, " SET ", null, null);
@@ -137,7 +133,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
                 parameters.AddRange(SqlBuilder.GetParameters<OleDbParameter>(m_UpdateArgumentValue));
             }
 
-            sqlBuilder.BuildSelectClause(sql, " OUTPUT ", prefix, null);
+            sqlBuilder.BuildSelectClause(sql, " OUTPUT ", prefix, intoClause);
 
 
             if (m_FilterValue != null)
