@@ -2,8 +2,8 @@
   "title": "Tortuga Chain",
   "template-html": "template.html",
   "template-pdf": "template-pdf.html",
-  "output-html": "chain.html",
-  "output-pdf": "chain-pdf.html",
+  "output-html": "index.html",
+  "output-pdf": "chain.html",
   "section-title-base": 1,
   "pages": [
     {
@@ -57,6 +57,10 @@
     {
       "title": "Table Function Command Builder",
       "path": "Page/CommandBuilders/TableFunction.md"
+    },
+    {
+      "title": "Scalar Function Command Builder",
+      "path": "Page/CommandBuilders/ScalarFunction.md"
     },
     {
       "title": "Procedure Command Builder",

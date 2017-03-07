@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="en">
+<!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Home - Tortuga Chain</title>
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="stylesheet" href="css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="css/theme_colors.css" type="text/css" />
+    <link rel="stylesheet" href="css/styles/vs.css">
+    <link rel="stylesheet" href="css/font-awesome.4.5.0.min.css">
+</head>
+<body role="document">
+    <div class="grid-for-nav">
+        <nav data-toggle="nav-shift" class="nav-side stickynav">
+            <div class="side-nav-search">
+                <a href="index.htm"><i class="fa fa-home"></i> Tortuga Chain</a>
+                <div role="search">
+                    <form id="search-form" class="form" action="Docnet_search.htm" method="get">
+                        <input type="text" name="q" placeholder="Search docs" />
+                    </form>
+                </div>
+            </div>
+            <div class="menu menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+<ul>
+<li class="tocentry"><a href="Introduction.htm">Home</a>
+</li>
+
+<li class="tocentry"><a href="DataSources.htm">Data Sources</a>
+</li>
+<li class="tocentry">
+<span class="navigationgroup"><i class="fa fa-caret-right"></i> <a href="CommandBuilders.htm">Command Builders</a></span>
+</li>
+<li class="tocentry">
+<span class="navigationgroup"><i class="fa fa-caret-right"></i> <a href="Materializers.htm">Materializers</a></span>
+</li>
+<li class="tocentry">
+<span class="navigationgroup"><i class="fa fa-caret-right"></i> <a href="Appenders.htm">Appenders</a></span>
+</li>
+<li class="tocentry"><a href="AuditRules.htm">Audit Rules</a>
+</li>
+<li class="tocentry"><a href="RestrictedColumns.htm">Restricted Columns</a>
+</li>
+<li class="tocentry"><a href="Transactions.htm">Transactions</a>
+</li>
+<li class="tocentry"><a href="EntityFramework.htm">Entity Framework Integration</a>
+</li>
+<li class="tocentry"><a href="NHibernate.htm">NHibernate Integration</a>
+</li>
+</ul>
+				<div class="toc-footer">
+					<span class="text-small">
+						<hr/>
+						<a href="https://github.com/FransBouma/DocNet" target="_blank">Made with <i class="fa fa-github"></i> DocNet</a>
+					</span>
+				</div>	
+			</div>
+            &nbsp;
+        </nav>
+        <section data-toggle="nav-shift" class="nav-content-wrap">
+            <nav class="nav-top" role="navigation" aria-label="top navigation">
+                <i data-toggle="nav-top" class="fa fa-bars"></i>
+                <a href="index.htm">Tortuga Chain</a>
+            </nav>
+            <div class="nav-content">
+                <div role="navigation" aria-label="breadcrumbs navigation">
+                    <div class="breadcrumbs">
+<ul><li><a href="Introduction.htm">Home</a></li></ul>
+					
+                    </div>
+                    <hr />
+                </div>
+                <div role="main">
+                    <div class="section">
+<h1 id="tortuga-chain">Tortuga Chain<a class="headerlink" href="#tortuga-chain" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h1>
+<p>A Fluent ORM for .NET</p>
+<p><a href="API/Index.html">API Documentation</a></p>
+<h2 id="getting-started">Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h2>
+<p>To get started with Chain, you need to create a data source. This can be done using a connection string or a <code>SqlConnectionStringBuilder</code>. Optionally, you can also name your data source. (This has no functional effect, but does assist in logging.)</p>
+<pre><code class="csharp">dataSource = new Tortuga.Chain.SqlServerDataSource(&quot;Adventure DB&quot;, &quot;Server=.;Database=AdventureWorks2014;Trusted_Connection=True;&quot;);
+</code></pre>
+
+<p>Or from your app.config file:</p>
+<pre><code class="csharp">dataSource = Tortuga.Chain.SqlServerDataSource.CreateFromConfig(&quot;AdventureDB&quot;);
+</code></pre>
+
+<p>Your data source should be treated as a singleton object; you only need one per unique connection string. This is important because your data source will cache information about your database.</p>
+<p>We recommend calling dataSource.Test() when your application starts up. This verifies that you can actually connect to the database.</p>
+<h2 id="connection-management">Connection Management<a class="headerlink" href="#connection-management" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h2>
+<p>A major difference between Chain and other ORMs is that you don't need to manage connections or data contexts. A Chain data source is designed to be completely thread safe and will handle connection lifetime for you automatically.</p>
+<h2 id="transactions">Transactions<a class="headerlink" href="#transactions" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h2>
+<p>Transactions still need to contained within a <code>using</code> statement and explicitly committed. You can create one by calling <code>dataSource.BeginTransaction()</code>.</p>
+<h2 id="command-chains">Command Chains<a class="headerlink" href="#command-chains" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h2>
+<p>Command chains are the primary way of working with Tortuga. Each link in the chain is used to inform the previous link about what actions are desired. Here is a basic example:</p>
+<pre><code class="csharp">dataSource.Procedure(&quot;uspGetEmployeeManagers&quot;, new {@BusinessEntityID = 100}).ToCollection&lt;Manager&gt;().Execute();
+</code></pre>
+
+<p>Breaking this down, we have:</p>
+<ul>
+<li>The data source</li>
+<li>The command being performed</li>
+<li>How the results of the command should be returned</li>
+<li>If the operation should be executed synchronously or asynchronously</li>
+</ul>
+<h3 id="commands">Commands<a class="headerlink" href="#commands" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h3>
+<p>The list of available commands depends on the data source. Most data sources support </p>
+<ul>
+<li>Raw sql</li>
+<li>Table/View queries</li>
+<li>Insert, Update, and Delete operations (some also include 'upserts')</li>
+</ul>
+<p>Advanced ones may also include</p>
+<ul>
+<li>Stored procedures and/or Table Value Functions</li>
+<li>Batch insert, a.k.a. bulk copy</li>
+</ul>
+<p>Most commands accept a parameter object. The parameter object can be a normal class, a dictionary of type <code>IDictionary&lt;string, object&gt;</code>, or a list of appropriate DbParameter objects.</p>
+<p>Chain command builders honor .NET's <code>NotMapped</code> and <code>Column</code> attributes.</p>
+<h3 id="materializers">Materializers<a class="headerlink" href="#materializers" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h3>
+<p>Materializers are an optional link, you only need them if you want something back from the database.</p>
+<p>An interesting feature of the materializer is that it participates in SQL generation. For example, if you use the <code>ToObject&lt;T&gt;</code> or <code>ToCollection&lt;T&gt;</code> materializer, then it will read the list of properties on class T. That list of properties will be used to generate the SELECT clause, ensuring that you don't pull back more information than you actually need. This in turn means that indexes are used more efficiently and performance is improved.</p>
+<p>Materializers call into several categories:</p>
+<ul>
+<li>Scalar: <code>ToInt</code>, <code>ToIntOrNull</code>, <code>ToString</code></li>
+<li>Row: <code>ToRow</code>, <code>ToDataRow</code>, <code>ToObject</code></li>
+<li>Table: <code>ToTable</code>, <code>ToDataTable</code>, <code>ToCollection</code></li>
+<li>Multiple Tables: <code>ToTableSet</code>, <code>ToDataSet</code></li>
+</ul>
+<p>For better performance, you can use the compiled materializer extension:</p>
+<ul>
+<li>Row: <code>.Compile().ToObject&lt;TObject&gt;()</code></li>
+<li>Table: <code>.Compile().ToCollection&lt;TObject&gt;()</code>, <code>.Compile().ToCollection&lt;TList, TObject&gt;()</code></li>
+</ul>
+<p>This requires the <code>Tortuga.Chain.CompiledMaterializers</code> package, which includes CS-Script as a dependency. </p>
+<h3 id="crud-operations">CRUD Operations<a class="headerlink" href="#crud-operations" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h3>
+<p>By combining commands and materializers, you can perform all of the basic CRUD operations. Here are some examples.</p>
+<h4 id="create">Create<a class="headerlink" href="#create" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h4>
+<pre><code class="csharp">var vehicleKey = dataSource.Insert(&quot;Vehicle&quot;, new { VehicleID = &quot;65476XC54E&quot;, Make = &quot;Cadillac&quot;, Model = &quot;Fleetwood Series 60&quot;, Year = 1955 }).ToInt32().Execute();
+</code></pre>
+
+<h4 id="read">Read<a class="headerlink" href="#read" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h4>
+<pre><code class="csharp">var car = dataSource.GetById(&quot;Vehicle&quot;, vehicleKey).ToObject&lt;Vehicle&gt;().Execute();
+var cars = dataSource.From(&quot;Vehicle&quot;, new {Make = &quot;Cadillac&quot;).ToCollection&lt;Vehicle&gt;().Execute();
+</code></pre>
+
+<h4 id="update">Update<a class="headerlink" href="#update" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h4>
+<pre><code class="csharp">dataSource.Update(&quot;Vehicle&quot;, new { VehicleKey = vehicleKey, Year = 1957 }).Execute();
+</code></pre>
+
+<h4 id="delete">Delete<a class="headerlink" href="#delete" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h4>
+<pre><code class="csharp">dataSource.Delete(&quot;Vehicle&quot;, new { VehicleKey = vehicleKey }).Execute();
+</code></pre>
+
+<h3 id="appenders">Appenders<a class="headerlink" href="#appenders" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h3>
+<p>Appenders are links that can change the rules before, during, or after execution.  An appender can be added after a materializer or another appender.</p>
+<p>Caching appenders include:</p>
+<ul>
+<li><code>Cache</code>: Writes to the cache, overwriting any previous value. (Use with Update and Procedure operations.)</li>
+<li><code>ReadOrCache</code>: If it can read from the cache, the database operation is aborted. Otherwise the value is cached. </li>
+<li><code>CacheAllItems</code>: Cache each item in the result list individually. Useful when using a GetAll style operation.</li>
+<li><code>InvalidateCache</code>: Removes a cache entry. Use with any operation that modifies a record.</li>
+</ul>
+<p>Here is an example of CRUD operations using caching.</p>
+<pre><code class="csharp">var car = dataSource.GetById(&quot;Vehicle&quot;, vehicleKey).ToObject&lt;Vehicle&gt;().ReadOrCache(&quot;Vehicle &quot; + vehicleKey).Execute();
+car = dataSource.Update(&quot;Vehicle&quot;, new { VehicleKey = vehicleKey, Year = 1957 }).ToObject&lt;Vehicle&gt;().Cache(&quot;Vehicle &quot; + vehicleKey).Execute();
+dataSource.Delete(&quot;Vehicle&quot;, new { VehicleKey = vehicleKey }).InvalidateCache(&quot;Vehicle &quot; + vehicleKey.Execute();
+</code></pre>
+
+<p>If using SQL Server, you can also use <code>WithChangeNotification</code>. This uses SQL Dependency to listen for changes to the table(s) you queried.</p>
+<p>When debugging applications, it is often nice to dump the SQL somewhere. This is where the tracing appenders come into play.</p>
+<ul>
+<li><code>WithTracing</code>: Writes to an arbitrary TextWriter style stream.</li>
+<li><code>WithTracingToConsole</code>: Writes to the Console window</li>
+<li><code>WithTracingToDebug</code>: Writes to the Debug window</li>
+</ul>
+<p>You can also override DBCommand settings such as the command timeout. For example:</p>
+<pre><code class="csharp">ds.Procedure(&quot;ExpensiveReport&quot;).ToDataSet().SetTimeout(TimeSpan.FromHours(3)).Execute()
+</code></pre>
+
+<h3 id="execution-modes">Execution Modes<a class="headerlink" href="#execution-modes" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h3>
+<p>The final link in any chain is the execution mode. There are two basic options:</p>
+<ul>
+<li><code>Execute()</code></li>
+<li><code>ExecuteAsync()</code></li>
+</ul>
+<p>Both options accept a <code>state</code> parameter. This has no direct effect, but can be used to facilitate logging. <code>ExecuteAsync</code> also accepts an optional cancellation token.</p>
+
+                    </div>
+                </div>
+                <footer>
+                    <hr />
+                    <div role="contentinfo">
+Tortuga Chain. <a href='https://github.com/docevaad/Chain/' target='_blank'>Visit us at GitHub</a>.
+                    </div>
+                </footer>
+            </div>
+        </section>
+    </div>
+    <script src="js/jquery-2.1.1.min.js"></script>
+    <script src="js/modernizr-2.8.3.min.js"></script>
+    <script src="js/highlight.pack.js"></script>
+    <script src="js/theme.js"></script>
+
+</body>
+</html>

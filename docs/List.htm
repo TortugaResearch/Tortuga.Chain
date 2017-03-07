@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="en">
+<!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>List Materializers - Tortuga Chain</title>
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="stylesheet" href="css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="css/theme_colors.css" type="text/css" />
+    <link rel="stylesheet" href="css/styles/vs.css">
+    <link rel="stylesheet" href="css/font-awesome.4.5.0.min.css">
+</head>
+<body role="document">
+    <div class="grid-for-nav">
+        <nav data-toggle="nav-shift" class="nav-side stickynav">
+            <div class="side-nav-search">
+                <a href="index.htm"><i class="fa fa-home"></i> Tortuga Chain</a>
+                <div role="search">
+                    <form id="search-form" class="form" action="Docnet_search.htm" method="get">
+                        <input type="text" name="q" placeholder="Search docs" />
+                    </form>
+                </div>
+            </div>
+            <div class="menu menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+<ul>
+<li class="tocentry"><a href="Introduction.htm">Home</a>
+</li>
+
+<li class="tocentry"><a href="DataSources.htm">Data Sources</a>
+</li>
+<li class="tocentry">
+<span class="navigationgroup"><i class="fa fa-caret-right"></i> <a href="CommandBuilders.htm">Command Builders</a></span>
+</li>
+<li class="tocentry">
+<ul>
+<li><span class="navigationgroup"><i class="fa fa-caret-down"></i> <a href="Materializers.htm">Materializers</a></span></li>
+
+<li class="tocentry"><a href="NonQuery.htm">Non-Query Materializers</a>
+</li>
+<li class="tocentry"><a href="Scalar.htm">Scalar Materializers</a>
+</li>
+<li class="tocentry current"><a class="current" href="List.htm">List Materializers</a>
+<ul class="currentrelative">
+<li class="tocentry"><a href="#options">Options</a></li>
+<li class="tocentry"><a href="#sql-generation">SQL Generation</a></li>
+<li class="tocentry"><a href="#internals">Internals</a></li>
+<li class="tocentry"><a href="#roadmap">Roadmap</a></li>
+</ul>
+<li class="tocentry"><a href="Object.htm">Object/Collection Materializers</a>
+</li>
+<li class="tocentry"><a href="Compiled.htm">Compiled Object/Collection Materializers</a>
+</li>
+<li class="tocentry"><a href="DataTable.htm">DataRow/Table/Set Materializers</a>
+</li>
+<li class="tocentry"><a href="Table.htm">Row, Table, and TableSet Materializers</a>
+</li>
+<li class="tocentry"><a href="MasterDetail.htm">Master/Detail</a>
+</li>
+</ul>
+</li>
+<li class="tocentry">
+<span class="navigationgroup"><i class="fa fa-caret-right"></i> <a href="Appenders.htm">Appenders</a></span>
+</li>
+<li class="tocentry"><a href="AuditRules.htm">Audit Rules</a>
+</li>
+<li class="tocentry"><a href="RestrictedColumns.htm">Restricted Columns</a>
+</li>
+<li class="tocentry"><a href="Transactions.htm">Transactions</a>
+</li>
+<li class="tocentry"><a href="EntityFramework.htm">Entity Framework Integration</a>
+</li>
+<li class="tocentry"><a href="NHibernate.htm">NHibernate Integration</a>
+</li>
+</ul>
+				<div class="toc-footer">
+					<span class="text-small">
+						<hr/>
+						<a href="https://github.com/FransBouma/DocNet" target="_blank">Made with <i class="fa fa-github"></i> DocNet</a>
+					</span>
+				</div>	
+			</div>
+            &nbsp;
+        </nav>
+        <section data-toggle="nav-shift" class="nav-content-wrap">
+            <nav class="nav-top" role="navigation" aria-label="top navigation">
+                <i data-toggle="nav-top" class="fa fa-bars"></i>
+                <a href="index.htm">Tortuga Chain</a>
+            </nav>
+            <div class="nav-content">
+                <div role="navigation" aria-label="breadcrumbs navigation">
+                    <div class="breadcrumbs">
+<ul><li><a href="Introduction.htm">Home</a></li> / <li><a href="Materializers.htm">Materializers</a></li> / <li><a href="List.htm">List Materializers</a></li></ul>
+					
+                    </div>
+                    <hr />
+                </div>
+                <div role="main">
+                    <div class="section">
+<h1 id="list-materializers">List Materializers<a class="headerlink" href="#list-materializers" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h1>
+<p>List materializers are avaialble for common .NET types such as string, numerics, date/time, etc. </p>
+<h2 id="options">Options<a class="headerlink" href="#options" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h2>
+<p>The list materializers accepts an optional column name. This may be used by the command builder when generating a SELECT clause.</p>
+<ul>
+<li>DiscardNulls: This flag will discard null values when populating the list. </li>
+<li>IgnoreExtraColumns: Normally an error is raised if multiple columns are returned. This flag will ignore them instead.</li>
+<li>FlattenExtraColumns: If multiple columns are returned, this flag will cause all columns to be included in the resulting list. </li>
+</ul>
+<p>FlattenExtraColumns operates left to right, then top to bottom. For example:</p>
+<pre><code>Resultset: 
+    [1, 2, 3]
+    [4, 5, 6]
+List:
+    1, 2, 3, 4, 5, 6
+</code></pre>
+
+<h2 id="sql-generation">SQL Generation<a class="headerlink" href="#sql-generation" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h2>
+<p>As mentioned above, this materailizer may request a specific column. If no column in indicated, then AutoSelectDesiredColumns is returned to the command builder.</p>
+<h2 id="internals">Internals<a class="headerlink" href="#internals" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h2>
+<h2 id="roadmap">Roadmap<a class="headerlink" href="#roadmap" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h2>
+<p>You can pass a  columnName  parameter to list based materializers. This parameter can be used for SQL generation, but is ignored when parsing the result set. As a result, we can't do interesting things like only read one column from a stored procedure that returns 3 columns. Task #24.</p>
+
+                    </div>
+                </div>
+                <footer>
+                    <hr />
+                    <div role="contentinfo">
+Tortuga Chain. <a href='https://github.com/docevaad/Chain/' target='_blank'>Visit us at GitHub</a>.
+                    </div>
+                </footer>
+            </div>
+        </section>
+    </div>
+    <script src="js/jquery-2.1.1.min.js"></script>
+    <script src="js/modernizr-2.8.3.min.js"></script>
+    <script src="js/highlight.pack.js"></script>
+    <script src="js/theme.js"></script>
+
+</body>
+</html>

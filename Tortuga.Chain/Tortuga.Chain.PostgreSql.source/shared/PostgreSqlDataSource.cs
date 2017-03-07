@@ -274,6 +274,8 @@ namespace Tortuga.Chain
             return new PostgreSqlDataSource(connectionName, settings.ConnectionString);
         }
 
+#endif
+
         /// <summary>
         /// Executes the specified operation.
         /// </summary>
@@ -493,7 +495,23 @@ namespace Tortuga.Chain
             return await CreateConnectionAsync();
         }
 
+        /// <summary>
+        /// Creates an open data source using the supplied connection and optional transaction.
+        /// </summary>
+        /// <param name="connection">The connection to wrap.</param>
+        /// <param name="transaction">The transaction to wrap.</param>
+        /// <returns>IOpenDataSource.</returns>
+        public PostgreSqlOpenDataSource CreateOpenDataSource(NpgsqlConnection connection, NpgsqlTransaction transaction = null)
+        {
+            return new PostgreSqlOpenDataSource(this, connection, transaction);
+        }
+
         IOpenDataSource IRootDataSource.CreateOpenDataSource(DbConnection connection, DbTransaction transaction)
+        {
+            return new PostgreSqlOpenDataSource(this, (NpgsqlConnection)connection, (NpgsqlTransaction)transaction);
+        }
+
+        IOpenDataSource IRootDataSource.CreateOpenDataSource(IDbConnection connection, IDbTransaction transaction)
         {
             return new PostgreSqlOpenDataSource(this, (NpgsqlConnection)connection, (NpgsqlTransaction)transaction);
         }
@@ -507,7 +525,6 @@ namespace Tortuga.Chain
         {
             return await BeginTransactionAsync();
         }
-#endif
 
         /// <summary>
         /// Craetes a new data source with the provided cache.

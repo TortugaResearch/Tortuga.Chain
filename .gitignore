@@ -220,6 +220,7 @@ ModelManifest.xml
 !SqlServerTestDatabase.publish.xml
 !localhost.publish.xml
 
+/Tortuga.Chain/Build.Access
 /Tortuga.Chain/Build.Core
 /Tortuga.Chain/Build.SqlServer
 /Tortuga.Chain/Build.SQLite
@@ -227,5 +228,9 @@ ModelManifest.xml
 /Tortuga.Chain/Build.CompiledMaterializers
 /Tortuga.Chain/Build.PostgreSql
 /Tortuga.Chain/Build.Csv
+/Tortuga.Chain/Build.MySQL
+/Tortuga.Chain/Build.Oracle
 /Start Services.ps1
 *.jfm
+/Tortuga.Chain/Help
+/Stop Services.ps1

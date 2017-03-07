@@ -43,10 +43,17 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
             var sql = new StringBuilder();
+            string header;
+            string intoClause;
+            string footer;
+
+            sqlBuilder.UseTableVariable(Table, out header, out intoClause, out footer);
+            sql.Append(header);
             sql.Append("DELETE FROM " + Table.Name.ToQuotedString());
-            sqlBuilder.BuildSelectClause(sql, " OUTPUT ", "Deleted.", null);
+            sqlBuilder.BuildSelectClause(sql, " OUTPUT ", "Deleted.", intoClause);
             sqlBuilder.BuildAnonymousWhereClause(sql, " WHERE ", null, true);
             sql.Append(";");
+            sql.Append(footer);
 
             return new OleDbCommandExecutionToken(DataSource, "Delete from " + Table.Name, sql.ToString(), sqlBuilder.GetParameters());
         }

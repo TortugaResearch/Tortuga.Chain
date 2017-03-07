@@ -9,6 +9,7 @@ namespace Tests.Class2Databases
     [TestClass]
     public class InsertBatchTests : TestBase
     {
+        const string TableType = "HR.EmployeeTable";
         [TestMethod]
         public void InsertBatch()
         {
@@ -19,7 +20,7 @@ namespace Tests.Class2Databases
             for (var i = 0; i < 1000; i++)
                 employeeList.Add(new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = key1000 });
 
-            DataSource.InsertBatch(EmployeeTableName, "HR.EmployeeTable", employeeList).Execute();
+            DataSource.InsertBatch(EmployeeTableName, employeeList, TableType).Execute();
         }
 
         [TestMethod]
@@ -32,7 +33,7 @@ namespace Tests.Class2Databases
             //for (var i = 0; i < 1000; i++)
             //    employeeList.Add(new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = key1000 });
 
-            DataSource.InsertBatch(EmployeeTableName, "HR.EmployeeTable", StreamRecords(key1000, 1000)).Execute();
+            DataSource.InsertBatch(EmployeeTableName, StreamRecords(key1000, 1000), TableType).Execute();
         }
 
         IEnumerable<Employee> StreamRecords(string key, int maxRecords)
@@ -55,7 +56,7 @@ namespace Tests.Class2Databases
             for (var i = 0; i < 1000; i++)
                 employeeList.Add(new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = key1000 });
 
-            var employeeList2 = DataSource.InsertBatch(EmployeeTableName, "HR.EmployeeTable", employeeList).ToCollection<EmployeeLookup>(CollectionOptions.InferConstructor).Execute();
+            var employeeList2 = DataSource.InsertBatch(EmployeeTableName, employeeList, TableType).ToCollection<EmployeeLookup>(CollectionOptions.InferConstructor).Execute();
 
             Assert.AreEqual(employeeList.Count, employeeList2.Count);
         }
@@ -70,7 +71,7 @@ namespace Tests.Class2Databases
             for (var i = 0; i < 1000; i++)
                 employeeList.Add(new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = key1000 });
 
-            var employeeList2 = DataSource.InsertBatch(EmployeeTableName, "HR.EmployeeTable", employeeList).ToInt32List().Execute();
+            var employeeList2 = DataSource.InsertBatch(EmployeeTableName, employeeList, TableType).ToInt32List().Execute();
 
             Assert.AreEqual(employeeList.Count, employeeList2.Count);
         }
@@ -85,7 +86,7 @@ namespace Tests.Class2Databases
             for (var i = 0; i < 1000; i++)
                 employeeList.Add(new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = key1000 });
 
-            var employeeList2 = DataSourceWithAuditRules().InsertBatch(EmployeeTableName, "HR.EmployeeTable", employeeList).ToCollection<Employee>().Execute();
+            var employeeList2 = DataSourceWithAuditRules().InsertBatch(EmployeeTableName, employeeList, TableType).ToCollection<Employee>().Execute();
             Assert.AreEqual(employeeList.Count, employeeList2.Count);
             Assert.IsNotNull(employeeList2[0].UpdatedDate);
 

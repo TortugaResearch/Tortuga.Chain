@@ -673,7 +673,23 @@ namespace Tortuga.Chain
             return await CreateConnectionAsync();
         }
 
+        /// <summary>
+        /// Creates an open data source using the supplied connection and optional transaction.
+        /// </summary>
+        /// <param name="connection">The connection.</param>
+        /// <param name="transaction">The transaction.</param>
+        /// <returns>SqlServerOpenDataSource.</returns>
+        public SqlServerOpenDataSource CreateOpenDataSource(SqlConnection connection, SqlTransaction transaction = null)
+        {
+            return new SqlServerOpenDataSource(this, connection, transaction);
+        }
+
         IOpenDataSource IRootDataSource.CreateOpenDataSource(DbConnection connection, DbTransaction transaction)
+        {
+            return new SqlServerOpenDataSource(this, (SqlConnection)connection, (SqlTransaction)transaction);
+        }
+
+        IOpenDataSource IRootDataSource.CreateOpenDataSource(IDbConnection connection, IDbTransaction transaction)
         {
             return new SqlServerOpenDataSource(this, (SqlConnection)connection, (SqlTransaction)transaction);
         }

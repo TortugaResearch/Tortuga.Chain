@@ -20,7 +20,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         readonly TableOrViewMetadata<SqlServerObjectName, SqlDbType> m_Table;
         readonly UserDefinedTypeMetadata<SqlServerObjectName, SqlDbType> m_TableType;
 
-        public SqlServerInsertBatch(SqlServerDataSourceBase dataSource, SqlServerObjectName tableName, SqlServerObjectName tableTypeName, DataTable dataTable, InsertOptions options) : base(dataSource)
+        public SqlServerInsertBatch(SqlServerDataSourceBase dataSource, SqlServerObjectName tableName, DataTable dataTable, SqlServerObjectName tableTypeName, InsertOptions options) : base(dataSource)
         {
             m_Source = dataTable;
             m_Options = options;
@@ -30,7 +30,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
                 throw new MappingException($"{m_TableType.Name} is not a user defined table type");
         }
 
-        public SqlServerInsertBatch(SqlServerDataSourceBase dataSource, SqlServerObjectName tableName, SqlServerObjectName tableTypeName, DbDataReader dataReader, InsertOptions options) : base(dataSource)
+        public SqlServerInsertBatch(SqlServerDataSourceBase dataSource, SqlServerObjectName tableName, DbDataReader dataReader, SqlServerObjectName tableTypeName, InsertOptions options) : base(dataSource)
         {
             m_Source = dataReader;
             m_Options = options;
