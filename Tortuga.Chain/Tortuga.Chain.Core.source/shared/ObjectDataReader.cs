@@ -79,9 +79,9 @@ namespace Tortuga.Chain
             m_PropertyLookup = metadata.PropertyLookup;
         }
 
-        private class ObjectDataReaderMetatData
+        private class ObjectDataReaderMetadata
         {
-            public ObjectDataReaderMetatData(DataTable schema, ImmutableArray<PropertyMetadata> properties, ImmutableDictionary<string, int> propertyLookup)
+            public ObjectDataReaderMetadata(DataTable schema, ImmutableArray<PropertyMetadata> properties, ImmutableDictionary<string, int> propertyLookup)
             {
                 Schema = schema;
                 Properties = properties;
@@ -96,7 +96,7 @@ namespace Tortuga.Chain
         [SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling")]
         [SuppressMessage("Microsoft.Globalization", "CA1306:SetLocaleForDataTypes")]
         [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-        private static ObjectDataReaderMetatData BuildStructure(string targetName, IReadOnlyList<ColumnMetadata> columns, bool allColumnsRequired, OperationTypes operationType)
+        private static ObjectDataReaderMetadata BuildStructure(string targetName, IReadOnlyList<ColumnMetadata> columns, bool allColumnsRequired, OperationTypes operationType)
         {
 
             var propertyList = MetadataCache.GetMetadata(typeof(TObject)).Properties.Where(p => p.CanRead && p.MappedColumnName != null).ToList();
@@ -194,7 +194,7 @@ namespace Tortuga.Chain
             }
 
 
-            return new ObjectDataReaderMetatData(dtSchema, realPropertyList.ToImmutableArray(), realPropertyList.Select((p, x) => new { Index = x, Property = p }).ToImmutableDictionary(px => px.Property.Name, px => px.Index, StringComparer.OrdinalIgnoreCase));
+            return new ObjectDataReaderMetadata(dtSchema, realPropertyList.ToImmutableArray(), realPropertyList.Select((p, x) => new { Index = x, Property = p }).ToImmutableDictionary(px => px.Property.Name, px => px.Index, StringComparer.OrdinalIgnoreCase));
 
         }
 

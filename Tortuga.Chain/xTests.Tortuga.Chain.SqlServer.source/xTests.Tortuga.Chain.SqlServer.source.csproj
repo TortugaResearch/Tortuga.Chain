@@ -165,7 +165,8 @@
     <Compile Include="shared\Asserts\SetAsserts.cs" />
     <Compile Include="shared\Asserts\StringAsserts.cs" />
     <Compile Include="shared\Asserts\TypeAsserts.cs" />
-    <Compile Include="shared\CommandBuilders\FunctionTests.cs" />
+    <Compile Include="shared\CommandBuilders\ScalarFunctionTests.cs" />
+    <Compile Include="shared\CommandBuilders\TableFunctionTests.cs" />
     <Compile Include="shared\CommandBuilders\ProcedureTests.cs" />
     <Compile Include="shared\CommandBuilders\UpsertTests.cs" />
     <Compile Include="shared\CommandBuilders\UpdateTests.cs" />

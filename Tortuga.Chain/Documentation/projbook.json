@@ -59,6 +59,10 @@
       "path": "Page/CommandBuilders/TableFunction.md"
     },
     {
+      "title": "Scalar Function Command Builder",
+      "path": "Page/CommandBuilders/ScalarFunction.md"
+    },
+    {
       "title": "Procedure Command Builder",
       "path": "Page/CommandBuilders/Procedure.md"
     },
