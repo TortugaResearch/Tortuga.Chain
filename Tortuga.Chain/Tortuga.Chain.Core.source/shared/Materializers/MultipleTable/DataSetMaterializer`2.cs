@@ -40,7 +40,7 @@ namespace Tortuga.Chain.Materializers
         public override DataSet Execute(object state = null)
         {
             var ds = new DataSet();
-            ds.EnforceConstraints = false;
+            ds.EnforceConstraints = false; //needed for PostgreSql
             Prepare().Execute(cmd =>
              {
                  using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess))
@@ -63,7 +63,7 @@ namespace Tortuga.Chain.Materializers
         public override async Task<DataSet> ExecuteAsync(CancellationToken cancellationToken, object state = null)
         {
             DataSet ds = new DataSet();
-            ds.EnforceConstraints = false;
+            ds.EnforceConstraints = false; //needed for PostgreSql
             await Prepare().ExecuteAsync(async cmd =>
             {
                 using (var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SequentialAccess, cancellationToken).ConfigureAwait(false))

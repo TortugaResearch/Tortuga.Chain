@@ -39,7 +39,11 @@ namespace Tortuga.Chain.Materializers
         {
             var executionToken = Prepare();
 
+            var ds = new DataSet();
+            ds.EnforceConstraints = false; //needed for PostgreSql
             var table = new DataTable();
+            ds.Tables.Add(table);
+
             executionToken.Execute(cmd =>
             {
                 using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess))
@@ -76,7 +80,11 @@ namespace Tortuga.Chain.Materializers
         {
             var executionToken = Prepare();
 
+            var ds = new DataSet();
+            ds.EnforceConstraints = false; //needed for PostgreSql
             var table = new DataTable();
+            ds.Tables.Add(table);
+
             await executionToken.ExecuteAsync(async cmd =>
             {
                 using (var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SequentialAccess, cancellationToken).ConfigureAwait(false))
