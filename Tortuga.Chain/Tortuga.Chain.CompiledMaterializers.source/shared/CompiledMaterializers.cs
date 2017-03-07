@@ -62,6 +62,23 @@ namespace Tortuga.Chain
             return new CompiledMultipleTable<TCommand, TParameter>(commandBuilder);
         }
 
+
+        class ColumnData
+        {
+
+            public ColumnData(int index, Type columnType, string getter)
+            {
+                ColumnType = columnType;
+                Getter = getter;
+
+                Index = index;
+            }
+            public int Index { get; }
+            public string Getter { get; }
+            public Type ColumnType { get; }
+        }
+
+
         /// <summary>
         /// Creates the builder.
         /// </summary>
@@ -80,12 +97,12 @@ namespace Tortuga.Chain
 
             var code = new StringBuilder();
 
-            var typeName = typeof(TObject).FullName; //TODO: Add support for generic types and inner classes
+            var typeName = MetadataCache.GetMetadata(typeof(TObject)).CSharpFullName;
 
             var changeTracker = typeof(TObject).GetInterfaces().Any(x => x == typeof(IChangeTracking));
 
 
-            var columns = new Dictionary<string, Tuple<int, Type, string>>(StringComparer.OrdinalIgnoreCase);
+            var columns = new Dictionary<string, ColumnData>(StringComparer.OrdinalIgnoreCase);
             for (var i = 0; i < reader.FieldCount; i++)
             {
                 var columnName = reader.GetName(i);
@@ -107,7 +124,7 @@ namespace Tortuga.Chain
                 else if (columnType == typeof(byte[])) getter = "(byte[])reader.GetValue";
                 else getter = "reader.GetValue";
 
-                columns.Add(columnName, Tuple.Create(i, columnType, getter));
+                columns.Add(columnName, new ColumnData(i, columnType, getter));
             }
 
 
@@ -213,11 +230,11 @@ namespace Tortuga.Chain
         /// </summary>
         /// <param name="code">The code being generated.</param>
         /// <param name="columns">The columns in the data reader.</param>
-        /// <param name="properties">The properties for the curent object.</param>
+        /// <param name="properties">The properties for the current object.</param>
         /// <param name="columnIndex">Index of the column being read.</param>
         /// <param name="path">The path to the object whose properties are being set.</param>
         /// <param name="decompositionPrefix">The decomposition prefix used when reading the column data.</param>
-        private static void SetProperties(StringBuilder code, Dictionary<string, Tuple<int, Type, string>> columns, PropertyMetadataCollection properties, int columnIndex, string path, string decompositionPrefix)
+        private static void SetProperties(StringBuilder code, Dictionary<string, ColumnData> columns, PropertyMetadataCollection properties, int columnIndex, string path, string decompositionPrefix)
         {
             foreach (var property in properties)
             {
@@ -229,44 +246,46 @@ namespace Tortuga.Chain
                 if (property.MappedColumnName == null)
                     continue;
 
-                Tuple<int, Type, string> column;
+                ColumnData column;
                 if (!columns.TryGetValue(decompositionPrefix + property.MappedColumnName, out column))
                     continue; //not a valid column
 
-                if (column.Item1 != columnIndex)
+                if (column.Index != columnIndex)
                     continue; //we'll get it on another iteration
 
-                if (property.PropertyType == column.Item2 || (property.PropertyType.Name == "Nullable`1" && property.PropertyType.IsGenericType && property.PropertyType.GenericTypeArguments[0] == column.Item2))
+                if (property.PropertyType == column.ColumnType || (property.PropertyType.Name == "Nullable`1" && property.PropertyType.IsGenericType && property.PropertyType.GenericTypeArguments[0] == column.ColumnType))
                 {
                     if (property.PropertyType.IsClass || (property.PropertyType.Name == "Nullable`1" && property.PropertyType.IsGenericType))
                     {
                         //null handler
-                        code.AppendLine($"    if (reader.IsDBNull({column.Item1}))");
+                        code.AppendLine($"    if (reader.IsDBNull({column.Index}))");
                         code.AppendLine($"        {path}.{property.Name} = null;");
                         code.AppendLine($"    else");
-                        code.AppendLine($"        {path}.{property.Name} = {column.Item3}({column.Item1});");
+                        code.AppendLine($"        {path}.{property.Name} = {column.Getter}({column.Index});");
                     }
                     else
                     {
                         //non-null handler
-                        code.AppendLine($"    {path}.{property.Name} = {column.Item3}({column.Item1});");
+                        code.AppendLine($"    {path}.{property.Name} = {column.Getter}({column.Index});");
                     }
                 }
                 else //type casting is required
                 {
 
+                    var propertyTypeName = MetadataCache.GetMetadata(property.PropertyType).CSharpFullName;
+
                     if (property.PropertyType.IsClass || (property.PropertyType.Name == "Nullable`1" && property.PropertyType.IsGenericType))
                     {
                         //null handler
-                        code.AppendLine($"    if (reader.IsDBNull({column.Item1}))");
+                        code.AppendLine($"    if (reader.IsDBNull({column.Index}))");
                         code.AppendLine($"        {path}.{property.Name} = null;");
                         code.AppendLine($"    else");
-                        code.AppendLine($"        {path}.{property.Name} = ({column.Item2.FullName}){column.Item3}({column.Item1});");
+                        code.AppendLine($"        {path}.{property.Name} = ({propertyTypeName}){column.Getter}({column.Index});");
                     }
                     else
                     {
                         //non-null handler
-                        code.AppendLine($"    {path}.{property.Name} = ({column.Item2.FullName}){column.Item3}({column.Item1});");
+                        code.AppendLine($"    {path}.{property.Name} = ({propertyTypeName}){column.Getter}({column.Index});");
                     }
                 }
             }
@@ -278,7 +297,7 @@ namespace Tortuga.Chain
         public static event EventHandler<MaterializerCompilerEventArgs> MaterializerCompiled;
 
         /// <summary>
-        /// Occurs when materializer failes to compile.
+        /// Occurs when materializer fails to compile.
         /// </summary>
         public static event EventHandler<MaterializerCompilerEventArgs> MaterializerCompilerFailed;
 

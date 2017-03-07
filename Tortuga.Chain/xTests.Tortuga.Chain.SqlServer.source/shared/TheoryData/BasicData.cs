@@ -4,7 +4,7 @@ using Xunit;
 
 namespace Tests
 {
-    
+
 
 
     public class BasicData : TheoryData<string, string, DataSourceType>
@@ -29,5 +29,4 @@ namespace Tests
             }
         }
     }
-
 }

@@ -2,6 +2,7 @@
 #if SQL_SERVER || POSTGRESQL
 
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Tests.Models;
 using Tortuga.Chain;
@@ -14,6 +15,7 @@ namespace Tests.CommandBuilders
     public class ProcedureTests : TestBase
     {
         public static BasicData Prime = new BasicData(s_PrimaryDataSource);
+        public static BasicDataWithJoinOptions PrimeWithJoinOptions = new BasicDataWithJoinOptions(s_PrimaryDataSource);
 
 #if SQL_SERVER || OLE_SQL_SERVER
         const string CheckA = @"SELECT Count(*) FROM Sales.Customer c WHERE c.State = @State;";
@@ -33,7 +35,7 @@ namespace Tests.CommandBuilders
         {
         }
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void Proc1_Object(string assemblyName, string dataSourceName, DataSourceType mode)
         {
 
@@ -57,7 +59,7 @@ namespace Tests.CommandBuilders
 
         }
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public async Task Proc1_Object_Async(string assemblyName, string dataSourceName, DataSourceType mode)
         {
 
@@ -81,7 +83,7 @@ namespace Tests.CommandBuilders
 
         }
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void Proc1_Dictionary(string assemblyName, string dataSourceName, DataSourceType mode)
         {
 
@@ -104,7 +106,7 @@ namespace Tests.CommandBuilders
             }
         }
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public async Task Proc1_Dictionary_Async(string assemblyName, string dataSourceName, DataSourceType mode)
         {
 
@@ -126,7 +128,7 @@ namespace Tests.CommandBuilders
             }
         }
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void Proc1_Dictionary2(string assemblyName, string dataSourceName, DataSourceType mode)
         {
 
@@ -148,7 +150,7 @@ namespace Tests.CommandBuilders
             }
         }
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public async Task Proc1_Dictionary2_Async(string assemblyName, string dataSourceName, DataSourceType mode)
         {
 
@@ -170,7 +172,7 @@ namespace Tests.CommandBuilders
             }
         }
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public async Task Proc1_ToCollectionSet(string assemblyName, string dataSourceName, DataSourceType mode)
         {
 
@@ -191,8 +193,129 @@ namespace Tests.CommandBuilders
             }
         }
 
+        [Theory, MemberData(nameof(PrimeWithJoinOptions))]
+        public async Task Proc1_ToCollectionSet_Join_Expression_1(string assemblyName, string dataSourceName, DataSourceType mode, JoinOptions options)
+        {
+            var dataSource = DataSource2(dataSourceName, mode);
+            try
+            {
+                var countA = await dataSource.Sql(CheckA, Parameter1).ToInt32().ExecuteAsync();
+                var countB = await dataSource.Sql(CheckB, Parameter1).ToInt32().ExecuteAsync();
 
-        [Theory, MemberData("Prime")]
+                var result = await dataSource.Procedure(MultiResultSetProc1Name, Parameter1).ToCollectionSet<Customer, Order>().Join((c, o) => c.CustomerKey == o.CustomerKey, c => c.Orders, options).ExecuteAsync();
+                Assert.Equal(countA, result.Count);
+                Assert.Equal(countB, result.Sum(c => c.Orders.Count));
+
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+        [Theory, MemberData(nameof(PrimeWithJoinOptions))]
+        public async Task Proc1_ToCollectionSet_Join_Expression_2(string assemblyName, string dataSourceName, DataSourceType mode, JoinOptions options)
+        {
+            var dataSource = DataSource2(dataSourceName, mode);
+            try
+            {
+                var countA = await dataSource.Sql(CheckA, Parameter1).ToInt32().ExecuteAsync();
+                var countB = await dataSource.Sql(CheckB, Parameter1).ToInt32().ExecuteAsync();
+
+                var result = await dataSource.Procedure(MultiResultSetProc1Name, Parameter1).ToCollectionSet<Customer, Order>().Join((c, o) => c.CustomerKey == o.CustomerKey, nameof(Customer.Orders), options).ExecuteAsync();
+                Assert.Equal(countA, result.Count);
+                Assert.Equal(countB, result.Sum(c => c.Orders.Count));
+
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+        [Theory, MemberData(nameof(PrimeWithJoinOptions))]
+        public async Task Proc1_ToCollectionSet_Join_Keys_1(string assemblyName, string dataSourceName, DataSourceType mode, JoinOptions options)
+        {
+            var dataSource = DataSource2(dataSourceName, mode);
+            try
+            {
+                var countA = await dataSource.Sql(CheckA, Parameter1).ToInt32().ExecuteAsync();
+                var countB = await dataSource.Sql(CheckB, Parameter1).ToInt32().ExecuteAsync();
+
+                var result = await dataSource.Procedure(MultiResultSetProc1Name, Parameter1).ToCollectionSet<Customer, Order>().Join(c => c.CustomerKey, o => o.CustomerKey, c => c.Orders, options).ExecuteAsync();
+                Assert.Equal(countA, result.Count);
+                Assert.Equal(countB, result.Sum(c => c.Orders.Count));
+
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+        [Theory, MemberData(nameof(PrimeWithJoinOptions))]
+        public async Task Proc1_ToCollectionSet_Join_Keys_2(string assemblyName, string dataSourceName, DataSourceType mode, JoinOptions options)
+        {
+            var dataSource = DataSource2(dataSourceName, mode);
+            try
+            {
+                var countA = await dataSource.Sql(CheckA, Parameter1).ToInt32().ExecuteAsync();
+                var countB = await dataSource.Sql(CheckB, Parameter1).ToInt32().ExecuteAsync();
+
+                var result = await dataSource.Procedure(MultiResultSetProc1Name, Parameter1).ToCollectionSet<Customer, Order>().Join(c => c.CustomerKey, o => o.CustomerKey, nameof(Customer.Orders), options).ExecuteAsync();
+                Assert.Equal(countA, result.Count);
+                Assert.Equal(countB, result.Sum(c => c.Orders.Count));
+
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+        [Theory, MemberData(nameof(PrimeWithJoinOptions))]
+        public async Task Proc1_ToCollectionSet_Join_Keys_3(string assemblyName, string dataSourceName, DataSourceType mode, JoinOptions options)
+        {
+            var dataSource = DataSource2(dataSourceName, mode);
+            try
+            {
+                var countA = await dataSource.Sql(CheckA, Parameter1).ToInt32().ExecuteAsync();
+                var countB = await dataSource.Sql(CheckB, Parameter1).ToInt32().ExecuteAsync();
+
+                var result = await dataSource.Procedure(MultiResultSetProc1Name, Parameter1).ToCollectionSet<Customer, Order>().Join(nameof(Customer.CustomerKey), nameof(Order.CustomerKey), nameof(Customer.Orders), options).ExecuteAsync();
+                Assert.Equal(countA, result.Count);
+                Assert.Equal(countB, result.Sum(c => c.Orders.Count));
+
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+        [Theory, MemberData(nameof(PrimeWithJoinOptions))]
+        public async Task Proc1_ToCollectionSet_Join_Keys_4(string assemblyName, string dataSourceName, DataSourceType mode, JoinOptions options)
+        {
+            var dataSource = DataSource2(dataSourceName, mode);
+            try
+            {
+                var countA = await dataSource.Sql(CheckA, Parameter1).ToInt32().ExecuteAsync();
+                var countB = await dataSource.Sql(CheckB, Parameter1).ToInt32().ExecuteAsync();
+
+                var result = await dataSource.Procedure(MultiResultSetProc1Name, Parameter1).ToCollectionSet<Customer, Order>().Join(nameof(Customer.CustomerKey), nameof(Customer.Orders), options).ExecuteAsync();
+                Assert.Equal(countA, result.Count);
+                Assert.Equal(countB, result.Sum(c => c.Orders.Count));
+
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+
+
+        [Theory, MemberData(nameof(Prime))]
         public void Proc1_Object_DataSet(string assemblyName, string dataSourceName, DataSourceType mode)
         {
 
@@ -214,7 +337,7 @@ namespace Tests.CommandBuilders
             }
         }
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public async Task Proc1_Object_Async_DataSet(string assemblyName, string dataSourceName, DataSourceType mode)
         {
 
@@ -237,7 +360,7 @@ namespace Tests.CommandBuilders
         }
 
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void Proc1_Dictionary_DataSet(string assemblyName, string dataSourceName, DataSourceType mode)
         {
 
@@ -259,7 +382,7 @@ namespace Tests.CommandBuilders
             }
         }
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public async Task Proc1_Dictionary_Async_DataSet(string assemblyName, string dataSourceName, DataSourceType mode)
         {
 
@@ -281,7 +404,7 @@ namespace Tests.CommandBuilders
             }
         }
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void Proc1_Dictionary2_DataSet(string assemblyName, string dataSourceName, DataSourceType mode)
         {
 
@@ -303,7 +426,7 @@ namespace Tests.CommandBuilders
             }
         }
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public async Task Proc1_Dictionary2_Async_DataSet(string assemblyName, string dataSourceName, DataSourceType mode)
         {
 
