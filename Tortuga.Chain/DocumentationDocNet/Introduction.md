@@ -2,6 +2,8 @@
 
 A Fluent ORM for .NET
 
+[API Documentation](API/Index.html)
+
 ## Getting Started
 
 To get started with Chain, you need to create a data source. This can be done using a connection string or a `SqlConnectionStringBuilder`. Optionally, you can also name your data source. (This has no functional effect, but does assist in logging.)

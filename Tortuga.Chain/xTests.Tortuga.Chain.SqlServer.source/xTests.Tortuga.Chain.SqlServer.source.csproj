@@ -185,6 +185,7 @@
     <Compile Include="shared\DataSourceType.cs" />
     <Compile Include="shared\CommandBuilders\FromTests.cs" />
     <Compile Include="shared\Core\MetadataTests.cs" />
+    <Compile Include="shared\TheoryData\BasicDataWithJoinOptions.cs" />
     <Compile Include="shared\TheoryData\RootData.cs" />
     <Compile Include="shared\TheoryData\TableOrViewData.cs" />
     <Compile Include="shared\TheoryData\TableData.cs" />

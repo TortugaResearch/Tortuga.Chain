@@ -76,6 +76,9 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="..\xTests.Tortuga.Chain.SqlServer.source\shared\TheoryData\BasicDataWithJoinOptions.cs">
+      <Link>BasicDataWithJoinOptions.cs</Link>
+    </Compile>
     <Compile Include="custom\Setup.cs" />
     <Compile Include="custom\TestBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
