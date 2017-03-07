@@ -121,7 +121,41 @@ namespace Tests.Materializers
             Assert.IsTrue(result.BinaryNotNull != null);
         }
 
+        [TestMethod]
+        public void Enum_Byte()
+        {
+            var ds = DataSource;
 
+            var result = ds.From("dbo.AllTypes").ToCollection<EnumByteModel>().Execute();
+        }
+
+
+        [TestMethod]
+        public void Enum_Byte_Compiled()
+        {
+            var ds = DataSource;
+
+            var result = ds.From("dbo.AllTypes").Compile().ToCollection<EnumByteModel>().Execute();
+
+        }
+
+        [TestMethod]
+        public void Enum_Byte_Null()
+        {
+            var ds = DataSource;
+
+            var result = ds.From("dbo.AllTypes").ToCollection<EnumByteModel>().Execute();
+        }
+
+
+        [TestMethod]
+        public void Enum_Byte_Null_Compiled()
+        {
+            var ds = DataSource;
+
+            var result = ds.From("dbo.AllTypes").Compile().ToCollection<EnumByteNullModel>().Execute();
+
+        }
 
         [TestMethod]
         public async Task DecomposeTest_Async()
@@ -207,4 +241,22 @@ namespace Tests.Materializers
         public byte[] BinaryNotNull { get; set; }
 
     }
+
+    public class EnumByteModel
+    {
+        public Gender TinyIntNotNull { get; set; }
+    }
+
+    public class EnumByteNullModel
+    {
+        public Gender? TinyIntNull { get; set; }
+    }
+
+    public enum Gender
+    {
+        Male = 1,
+        Female = 2
+    }
+
+
 }
