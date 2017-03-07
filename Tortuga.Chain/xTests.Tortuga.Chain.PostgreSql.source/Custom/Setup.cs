@@ -22,14 +22,9 @@ namespace Tests
             using (var con = new NpgsqlConnection(ConfigurationManager.ConnectionStrings["PostgreSqlTestDatabase"].ConnectionString))
             {
                 con.Open();
+                string sql1 = @"DROP SCHEMA IF Exists Sales Cascade; DROP SCHEMA IF Exists hr Cascade";
 
-                string sql = @"
-DROP FUNCTION IF EXISTS Sales.CustomersByState(char(2));
-DROP FUNCTION IF EXISTS Sales.CustomerWithOrdersByState(char(2));
-DROP VIEW IF EXISTS hr.EmployeeWithManager;
-DROP TABLE IF EXISTS sales.order;
-DROP TABLE IF EXISTS hr.employee;
-DROP SCHEMA IF EXISTS hr;
+                string sql2 = @"
 CREATE SCHEMA hr;
 CREATE TABLE hr.employee
 (
@@ -45,9 +40,7 @@ CREATE TABLE hr.employee
 	UpdatedDate TIMESTAMP NULL
 )";
 
-                string sql2 = @"
-DROP TABLE IF EXISTS sales.customer;
-DROP SCHEMA IF EXISTS sales;
+                string sql3 = @"
 CREATE SCHEMA sales;
 CREATE TABLE sales.customer
 (
@@ -163,10 +156,13 @@ FROM    HR.Employee e
 
                 //string proc1 = @"";
 
-                using (NpgsqlCommand cmd = new NpgsqlCommand(sql, con))
+                using (NpgsqlCommand cmd = new NpgsqlCommand(sql1, con))
                     cmd.ExecuteNonQuery();
 
                 using (NpgsqlCommand cmd = new NpgsqlCommand(sql2, con))
+                    cmd.ExecuteNonQuery();
+
+                using (NpgsqlCommand cmd = new NpgsqlCommand(sql3, con))
                     cmd.ExecuteNonQuery();
 
                 using (NpgsqlCommand cmd = new NpgsqlCommand(viewSql, con))

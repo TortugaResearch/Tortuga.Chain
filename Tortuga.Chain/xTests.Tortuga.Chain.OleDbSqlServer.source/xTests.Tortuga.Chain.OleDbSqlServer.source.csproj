@@ -51,8 +51,8 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="Tortuga.Anchor, Version=1.0.6144.42409, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
-      <HintPath>..\packages\Tortuga.Anchor.1.0.6144.42409\lib\net46\Tortuga.Anchor.dll</HintPath>
+    <Reference Include="Tortuga.Anchor, Version=1.1.6213.3222, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tortuga.Anchor.1.1.6213.3222\lib\net46\Tortuga.Anchor.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="xunit.abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
@@ -77,6 +77,9 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="..\xTests.Tortuga.Chain.SqlServer.source\shared\TheoryData\BasicDataWithJoinOptions.cs">
+      <Link>BasicDataWithJoinOptions.cs</Link>
+    </Compile>
     <Compile Include="Custom\TestBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

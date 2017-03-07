@@ -31,6 +31,4 @@ namespace Tortuga.Chain
         FlattenExtraColumns = 2 + 4,
 
     }
-
-
 }
