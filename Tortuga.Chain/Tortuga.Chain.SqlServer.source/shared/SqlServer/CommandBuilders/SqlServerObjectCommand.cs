@@ -28,7 +28,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// Gets the table metadata.
         /// </summary>
         /// <value>The metadata.</value>
-        public TableOrViewMetadata<SqlServerObjectName, SqlDbType> Table { get; }
+        public SqlServerTableOrViewMetadata<SqlDbType> Table { get; }
 
         /// <summary>
         /// Gets the data source.

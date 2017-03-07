@@ -6,8 +6,7 @@
   "Theme": "Light",
   "Footer": "Tortuga Chain. <a href='https://github.com/docevaad/Chain/' target='_blank'>Visit us at GitHub</a>.",
   "Pages": {
-    "__index": "index.md",
-    "Quick Start": "Introduction.md",
+    "__index": "Introduction.md",
     "Data Sources": "DataSources.md",
     "Command Builders": {
       "__index": "CommandBuilders.md",
@@ -30,7 +29,8 @@
       "Object/Collection Materializers": "Object.md",
       "Compiled Object/Collection Materializers": "Compiled.md",
       "DataRow/Table/Set Materializers": "DataTable.md",
-      "Row, Table, and TableSet Materializers": "Table.md"
+      "Row, Table, and TableSet Materializers": "Table.md",
+      "Master/Detail": "MasterDetail.md"
     },
     "Appenders": {
       "__index": "Appenders.md",

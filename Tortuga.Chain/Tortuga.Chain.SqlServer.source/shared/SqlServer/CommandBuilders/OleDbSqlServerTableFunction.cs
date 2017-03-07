@@ -154,7 +154,12 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             if (m_FunctionArgumentValue != null)
                 sqlBuilder.ApplyArgumentValue(DataSource, OperationTypes.None, m_FunctionArgumentValue);
             if (m_SelectClause == null)
-                sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
+            {
+                var desired = materializer.DesiredColumns();
+                if (desired == Materializer.AutoSelectDesiredColumns)
+                    desired = Materializer.AllColumns;
+                sqlBuilder.ApplyDesiredColumns(desired);
+            }
 
             //Support check
             if (!Enum.IsDefined(typeof(SqlServerLimitOption), m_LimitOptions))
@@ -212,14 +217,14 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             if (m_FilterValue != null)
             {
                 sql.Append(" WHERE " + sqlBuilder.ApplyAnonymousFilterValue(m_FilterValue, m_FilterOptions));
-                sqlBuilder.BuildAnonymousSoftDeleteClause(sql, " AND ", DataSource, null);
+                sqlBuilder.BuildAnonymousSoftDeleteClause(sql, " AND (", DataSource, ") ");
 
                 parameters = sqlBuilder.GetParameters();
             }
             else if (!string.IsNullOrWhiteSpace(m_WhereClause))
             {
                 sql.Append(" WHERE " + m_WhereClause);
-                sqlBuilder.BuildAnonymousSoftDeleteClause(sql, " AND ", DataSource, null);
+                sqlBuilder.BuildAnonymousSoftDeleteClause(sql, " AND (", DataSource, ") ");
 
                 parameters = SqlBuilder.GetParameters<OleDbParameter>(m_ArgumentValue);
                 parameters.AddRange(sqlBuilder.GetParameters());

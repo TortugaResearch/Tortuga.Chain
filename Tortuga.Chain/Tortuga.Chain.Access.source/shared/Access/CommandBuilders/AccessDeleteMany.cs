@@ -11,7 +11,7 @@ using Tortuga.Chain.Metadata;
 namespace Tortuga.Chain.Access.CommandBuilders
 {
     /// <summary>
-    /// Class AccessDeleteMany.
+    /// Class AccessDeleteWithFilter.
     /// </summary>
     internal sealed class AccessDeleteMany : MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter>
     {
@@ -19,6 +19,9 @@ namespace Tortuga.Chain.Access.CommandBuilders
         readonly IEnumerable<OleDbParameter> m_Parameters;
         readonly TableOrViewMetadata<AccessObjectName, OleDbType> m_Table;
         readonly string m_WhereClause;
+        readonly object m_ArgumentValue;
+        readonly object m_FilterValue;
+        readonly FilterOptions m_FilterOptions;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AccessDeleteMany" /> class.
@@ -39,6 +42,35 @@ namespace Tortuga.Chain.Access.CommandBuilders
             m_Parameters = parameters;
         }
 
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AccessDeleteMany"/> class.
+        /// </summary>
+        /// <param name="dataSource">The data source.</param>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="whereClause">The where clause.</param>
+        /// <param name="argumentValue">The argument value.</param>
+        public AccessDeleteMany(AccessDataSourceBase dataSource, AccessObjectName tableName, string whereClause, object argumentValue) : base(dataSource)
+        {
+            m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
+            m_WhereClause = whereClause;
+            m_ArgumentValue = argumentValue;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AccessDeleteMany"/> class.
+        /// </summary>
+        /// <param name="dataSource">The data source.</param>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="filterValue">The filter value.</param>
+        /// <param name="filterOptions">The options.</param>
+        public AccessDeleteMany(AccessDataSourceBase dataSource, AccessObjectName tableName, object filterValue, FilterOptions filterOptions) : base(dataSource)
+        {
+            m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
+            m_FilterValue = filterValue;
+            m_FilterOptions = filterOptions;
+        }
+
         public override CommandExecutionToken<OleDbCommand, OleDbParameter> Prepare(Materializer<OleDbCommand, OleDbParameter> materializer)
         {
             if (materializer == null)
@@ -47,14 +79,26 @@ namespace Tortuga.Chain.Access.CommandBuilders
             var sqlBuilder = m_Table.CreateSqlBuilder(StrictMode);
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
+            List<OleDbParameter> parameters;
             var sql = new StringBuilder();
 
-
-
             sql.Append("DELETE FROM " + m_Table.Name.ToQuotedString());
-            sql.AppendLine(" WHERE " + m_WhereClause + ";");
-
-            var parameters = sqlBuilder.GetParameters();
+            if (m_FilterValue != null)
+            {
+                sql.Append(" WHERE " + sqlBuilder.ApplyFilterValue(m_FilterValue, m_FilterOptions));
+                parameters = sqlBuilder.GetParameters();
+            }
+            else if (!string.IsNullOrWhiteSpace(m_WhereClause))
+            {
+                sql.Append(" WHERE " + m_WhereClause);
+                parameters = SqlBuilder.GetParameters<OleDbParameter>(m_ArgumentValue);
+                parameters.AddRange(sqlBuilder.GetParameters());
+            }
+            else
+            {
+                parameters = sqlBuilder.GetParameters();
+            }
+            sql.Append(";");
             if (m_Parameters != null)
                 parameters.AddRange(m_Parameters);
 
@@ -79,12 +123,27 @@ namespace Tortuga.Chain.Access.CommandBuilders
             var sqlBuilder = m_Table.CreateSqlBuilder(StrictMode);
             sqlBuilder.ApplyDesiredColumns(desiredColumns);
 
+            List<OleDbParameter> parameters;
             var sql = new StringBuilder();
             sqlBuilder.BuildSelectClause(sql, "SELECT ", null, null);
             sql.Append(" FROM " + m_Table.Name.ToQuotedString());
-            sql.AppendLine(" WHERE " + m_WhereClause + ";");
+            if (m_FilterValue != null)
+            {
+                sql.Append(" WHERE " + sqlBuilder.ApplyFilterValue(m_FilterValue, m_FilterOptions));
+                parameters = sqlBuilder.GetParameters();
+            }
+            else if (!string.IsNullOrWhiteSpace(m_WhereClause))
+            {
+                sql.Append(" WHERE " + m_WhereClause);
+                parameters = SqlBuilder.GetParameters<OleDbParameter>(m_ArgumentValue);
+                parameters.AddRange(sqlBuilder.GetParameters());
+            }
+            else
+            {
+                parameters = sqlBuilder.GetParameters();
+            }
+            sql.Append(";");
 
-            var parameters = sqlBuilder.GetParameters();
             if (m_Parameters != null)
                 parameters.AddRange(m_Parameters.Select(p => p.Clone()));
 

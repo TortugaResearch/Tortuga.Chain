@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using Tests.Models;
 using Tortuga.Chain;
 using Tortuga.Chain.AuditRules;
 using Tortuga.Chain.DataSources;
@@ -38,6 +39,7 @@ namespace Tests
         public static string CustomerTableName { get { return "Sales.Customer"; } }
 
         public static string EmployeeTableName { get { return "HR.Employee"; } }
+        public static string EmployeeTableName_Trigger { get { return "HR.EmployeeWithTrigger"; } }
 
         public string MultiResultSetProc1Name { get { return "Sales.CustomerWithOrdersByState"; } }
 
@@ -58,6 +60,17 @@ namespace Tests
                 new UserDataRule("UpdatedByKey", "EmployeeKey", OperationTypes.InsertOrUpdate),
                 new ValidateWithValidatable(OperationTypes.InsertOrUpdate)
                 );
+        }
+
+        public SqlServerDataSource AttachSoftDeleteRulesWithUser(SqlServerDataSource source)
+        {
+            var currentUser1 = source.From(EmployeeTableName).WithLimits(1).ToObject<Employee>().Execute();
+
+            return source.WithRules(
+                new SoftDeleteRule("DeletedFlag", true, OperationTypes.SelectOrDelete),
+                new UserDataRule("DeletedByKey", "EmployeeKey", OperationTypes.Delete),
+                new DateTimeRule("DeletedDate", DateTimeKind.Local, OperationTypes.Delete)
+                ).WithUser(currentUser1);
         }
 
         public SqlServerDataSource DataSource(string name, [CallerMemberName] string caller = null)

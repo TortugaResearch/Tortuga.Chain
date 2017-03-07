@@ -31,19 +31,19 @@
     <dependencies>
       <group targetFramework="net45">
         <dependency id="System.Collections.Immutable" version="1.2.0" />
-        <dependency id="Tortuga.Anchor" version="1.0.6144.42409" />
+        <dependency id="Tortuga.Anchor" version="1.1.6213.3222" />
       </group>
       <group targetFramework="net46">
         <dependency id="System.Collections.Immutable" version="1.2.0" />
-        <dependency id="Tortuga.Anchor" version="1.0.6144.42409" />
+        <dependency id="Tortuga.Anchor" version="1.1.6213.3222" />
       </group>
       <group targetFramework="uap10">
-        <dependency id="Tortuga.Anchor" version="1.0.6144.42409" />
+        <dependency id="Tortuga.Anchor" version="1.1.6213.3222" />
         <dependency id="System.Data.Common" version="4.1.0" />
         <dependency id="Microsoft.NETCore.UniversalWindowsPlatform" version="5.2.2" />
       </group>
       <group targetFramework="netstandard1.3">
-        <dependency id="Tortuga.Anchor" version="1.0.6144.42409" />
+        <dependency id="Tortuga.Anchor" version="1.1.6213.3222" />
         <dependency id="System.ComponentModel.Annotations" version="4.1.0" />
         <dependency id="System.Data.Common" version="4.1.0" />
         <dependency id="System.Dynamic.Runtime" version="4.0.11" />

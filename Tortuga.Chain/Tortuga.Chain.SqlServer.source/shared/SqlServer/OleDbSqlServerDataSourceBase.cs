@@ -161,7 +161,7 @@ namespace Tortuga.Chain.SqlServer
 
             var table = DatabaseMetadata.GetTableOrView(tableName);
             if (!AuditRules.UseSoftDelete(table))
-                return new OleDbSqlServerDeleteMany(this, tableName, where, parameters, options);
+                return new OleDbSqlServerDeleteMany(this, tableName, where, parameters);
 
             UpdateOptions effectiveOptions = UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected;
             if (options.HasFlag(DeleteOptions.UseKeyAttribute))
@@ -621,6 +621,85 @@ namespace Tortuga.Chain.SqlServer
             return DatabaseMetadata;
         }
 
+        /// <summary>
+        /// Deletes multiple records using a where expression.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="whereClause">The where clause.</param>
+        public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> DeleteWithFilter(SqlServerObjectName tableName, string whereClause)
+        {
+            var table = DatabaseMetadata.GetTableOrView(tableName);
+            if (!AuditRules.UseSoftDelete(table))
+                return new OleDbSqlServerDeleteMany(this, tableName, whereClause, null);
+
+            return new OleDbSqlServerUpdateMany(this, tableName, null, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected).WithFilter(whereClause, null);
+        }
+
+        /// <summary>
+        /// Deletes multiple records using a where expression.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="whereClause">The where clause.</param>
+        /// <param name="argumentValue">The argument value for the where clause.</param>
+        public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> DeleteWithFilter(SqlServerObjectName tableName, string whereClause, object argumentValue)
+        {
+            var table = DatabaseMetadata.GetTableOrView(tableName);
+            if (!AuditRules.UseSoftDelete(table))
+                return new OleDbSqlServerDeleteMany(this, tableName, whereClause, argumentValue);
+
+            return new OleDbSqlServerUpdateMany(this, tableName, null, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected).WithFilter(whereClause, argumentValue);
+        }
+
+        /// <summary>
+        /// Deletes multiple records using a filter object.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="filterValue">The filter value.</param>
+        /// <param name="filterOptions">The options.</param>
+        public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> DeleteWithFilter(SqlServerObjectName tableName, object filterValue, FilterOptions filterOptions = FilterOptions.None)
+        {
+            var table = DatabaseMetadata.GetTableOrView(tableName);
+            if (!AuditRules.UseSoftDelete(table))
+                return new OleDbSqlServerDeleteMany(this, tableName, filterValue, filterOptions);
+
+            return new OleDbSqlServerUpdateMany(this, tableName, null, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected).WithFilter(filterValue, filterOptions);
+        }
+
+
+        /// <summary>
+        /// Updates multiple records using an update expression.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="updateExpression">The update expression.</param>
+        /// <param name="options">The update options.</param>
+        public IUpdateManyCommandBuilder<OleDbCommand, OleDbParameter> UpdateSet(SqlServerObjectName tableName, string updateExpression, UpdateOptions options = UpdateOptions.None)
+        {
+            return new OleDbSqlServerUpdateMany(this, tableName, updateExpression, null, options);
+        }
+
+        /// <summary>
+        /// Updates multiple records using an update expression.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="updateExpression">The update expression.</param>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="options">The update options.</param>
+        public IUpdateManyCommandBuilder<OleDbCommand, OleDbParameter> UpdateSet(SqlServerObjectName tableName, string updateExpression, object argumentValue, UpdateOptions options = UpdateOptions.None)
+        {
+            return new OleDbSqlServerUpdateMany(this, tableName, updateExpression, argumentValue, options);
+        }
+
+
+        /// <summary>
+        /// Updates multiple records using an update value.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="newValues">The new values to use.</param>
+        /// <param name="options">The options.</param>
+        public IUpdateManyCommandBuilder<OleDbCommand, OleDbParameter> UpdateSet(SqlServerObjectName tableName, object newValues, UpdateOptions options = UpdateOptions.None)
+        {
+            return new OleDbSqlServerUpdateMany(this, tableName, newValues, options);
+        }
     }
 }
 

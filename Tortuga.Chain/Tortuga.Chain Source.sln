@@ -49,8 +49,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.Tortuga.Chain.Postgre
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tortuga.Chain.PostgreSql.source", "Tortuga.Chain.PostgreSql.source\Tortuga.Chain.PostgreSql.source.csproj", "{98F3B971-7741-43F0-9BE8-2A53F2A4F611}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PerformanceTest", "PerformanceTest\PerformanceTest.csproj", "{41F65B2A-97C9-41EE-981B-1D1082144F99}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xTests.Tortuga.Chain.SqlServer.source", "xTests.Tortuga.Chain.SqlServer.source\xTests.Tortuga.Chain.SqlServer.source.csproj", "{2E3DF5C2-8A38-4A03-86D7-8D463C917E47}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xTests.Tortuga.Chain.PostgreSql.source", "xTests.Tortuga.Chain.PostgreSql.source\xTests.Tortuga.Chain.PostgreSql.source.csproj", "{FC1C5D74-093D-4153-BEC2-A82EFD21655D}"
@@ -363,30 +361,6 @@ Global
 		{98F3B971-7741-43F0-9BE8-2A53F2A4F611}.Release|x64.Build.0 = Release|Any CPU
 		{98F3B971-7741-43F0-9BE8-2A53F2A4F611}.Release|x86.ActiveCfg = Release|Any CPU
 		{98F3B971-7741-43F0-9BE8-2A53F2A4F611}.Release|x86.Build.0 = Release|Any CPU
-		{41F65B2A-97C9-41EE-981B-1D1082144F99}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{41F65B2A-97C9-41EE-981B-1D1082144F99}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{41F65B2A-97C9-41EE-981B-1D1082144F99}.Debug|ARM.ActiveCfg = Debug|Any CPU
-		{41F65B2A-97C9-41EE-981B-1D1082144F99}.Debug|ARM.Build.0 = Debug|Any CPU
-		{41F65B2A-97C9-41EE-981B-1D1082144F99}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{41F65B2A-97C9-41EE-981B-1D1082144F99}.Debug|x64.Build.0 = Debug|Any CPU
-		{41F65B2A-97C9-41EE-981B-1D1082144F99}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{41F65B2A-97C9-41EE-981B-1D1082144F99}.Debug|x86.Build.0 = Debug|Any CPU
-		{41F65B2A-97C9-41EE-981B-1D1082144F99}.Debug-Unchecked|Any CPU.ActiveCfg = Debug|Any CPU
-		{41F65B2A-97C9-41EE-981B-1D1082144F99}.Debug-Unchecked|Any CPU.Build.0 = Debug|Any CPU
-		{41F65B2A-97C9-41EE-981B-1D1082144F99}.Debug-Unchecked|ARM.ActiveCfg = Debug|Any CPU
-		{41F65B2A-97C9-41EE-981B-1D1082144F99}.Debug-Unchecked|ARM.Build.0 = Debug|Any CPU
-		{41F65B2A-97C9-41EE-981B-1D1082144F99}.Debug-Unchecked|x64.ActiveCfg = Debug|Any CPU
-		{41F65B2A-97C9-41EE-981B-1D1082144F99}.Debug-Unchecked|x64.Build.0 = Debug|Any CPU
-		{41F65B2A-97C9-41EE-981B-1D1082144F99}.Debug-Unchecked|x86.ActiveCfg = Debug|Any CPU
-		{41F65B2A-97C9-41EE-981B-1D1082144F99}.Debug-Unchecked|x86.Build.0 = Debug|Any CPU
-		{41F65B2A-97C9-41EE-981B-1D1082144F99}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{41F65B2A-97C9-41EE-981B-1D1082144F99}.Release|Any CPU.Build.0 = Release|Any CPU
-		{41F65B2A-97C9-41EE-981B-1D1082144F99}.Release|ARM.ActiveCfg = Release|Any CPU
-		{41F65B2A-97C9-41EE-981B-1D1082144F99}.Release|ARM.Build.0 = Release|Any CPU
-		{41F65B2A-97C9-41EE-981B-1D1082144F99}.Release|x64.ActiveCfg = Release|Any CPU
-		{41F65B2A-97C9-41EE-981B-1D1082144F99}.Release|x64.Build.0 = Release|Any CPU
-		{41F65B2A-97C9-41EE-981B-1D1082144F99}.Release|x86.ActiveCfg = Release|Any CPU
-		{41F65B2A-97C9-41EE-981B-1D1082144F99}.Release|x86.Build.0 = Release|Any CPU
 		{2E3DF5C2-8A38-4A03-86D7-8D463C917E47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2E3DF5C2-8A38-4A03-86D7-8D463C917E47}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2E3DF5C2-8A38-4A03-86D7-8D463C917E47}.Debug|ARM.ActiveCfg = Debug|Any CPU

@@ -39,7 +39,7 @@ namespace Tests
 
                 string sql = @"
 DROP TABLE IF EXISTS hr.employee;
-DROP SCHEMA IF EXISTS hr;
+DROP SCHEMA IF EXISTS hr Cascade;
 CREATE SCHEMA hr;
 CREATE TABLE hr.employee
 (
@@ -55,7 +55,7 @@ CREATE TABLE hr.employee
 
                 string sql2 = @"
 DROP TABLE IF EXISTS sales.customer;
-DROP SCHEMA IF EXISTS sales;
+DROP SCHEMA IF EXISTS sales Cascade;
 CREATE SCHEMA sales;
 CREATE TABLE sales.customer
 (

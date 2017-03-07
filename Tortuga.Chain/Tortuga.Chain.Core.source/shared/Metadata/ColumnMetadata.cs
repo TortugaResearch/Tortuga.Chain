@@ -78,7 +78,7 @@ namespace Tortuga.Chain.Metadata
         public int? Scale { get; protected set; }
 
         /// <summary>
-        /// Gets or sets the full name of the type including max length, precsision, and/or scale.
+        /// Gets or sets the full name of the type including max length, precision, and/or scale.
         /// </summary>
         /// <value>
         /// The full name of the type.
