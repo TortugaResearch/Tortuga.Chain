@@ -22,7 +22,7 @@ namespace Tortuga.Chain.SqlServer
 
         internal readonly ConcurrentDictionary<SqlServerObjectName, TableFunctionMetadata<SqlServerObjectName, TDbType>> m_TableFunctions = new ConcurrentDictionary<SqlServerObjectName, TableFunctionMetadata<SqlServerObjectName, TDbType>>();
 
-        internal readonly ConcurrentDictionary<SqlServerObjectName, TableOrViewMetadata<SqlServerObjectName, TDbType>> m_Tables = new ConcurrentDictionary<SqlServerObjectName, TableOrViewMetadata<SqlServerObjectName, TDbType>>();
+        internal readonly ConcurrentDictionary<SqlServerObjectName, SqlServerTableOrViewMetadata<TDbType>> m_Tables = new ConcurrentDictionary<SqlServerObjectName, SqlServerTableOrViewMetadata<TDbType>>();
 
         internal readonly ConcurrentDictionary<Type, TableOrViewMetadata<SqlServerObjectName, TDbType>> m_TypeTableMap = new ConcurrentDictionary<Type, TableOrViewMetadata<SqlServerObjectName, TDbType>>();
 
@@ -128,7 +128,6 @@ namespace Tortuga.Chain.SqlServer
         {
             return m_Tables.GetOrAdd(tableName, GetTableOrViewInternal);
         }
-
 
         ///// <summary>
         ///// Gets the UDT name of the indicated type.
@@ -340,7 +339,7 @@ namespace Tortuga.Chain.SqlServer
         internal abstract TableFunctionMetadata<SqlServerObjectName, TDbType> GetTableFunctionInternal(SqlServerObjectName tableFunctionName);
         internal abstract ScalarFunctionMetadata<SqlServerObjectName, TDbType> GetScalarFunctionInternal(SqlServerObjectName tableFunctionName);
 
-        internal abstract TableOrViewMetadata<SqlServerObjectName, TDbType> GetTableOrViewInternal(SqlServerObjectName tableName);
+        internal abstract SqlServerTableOrViewMetadata<TDbType> GetTableOrViewInternal(SqlServerObjectName tableName);
         /// <summary>
         /// Parse a string and return the database specific representation of the object name.
         /// </summary>

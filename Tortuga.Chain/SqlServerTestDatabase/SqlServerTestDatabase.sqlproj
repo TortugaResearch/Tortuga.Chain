@@ -96,6 +96,7 @@
     <Build Include="Sales\CustomersByState.sql" />
     <Build Include="Sales\CustomersByStateInline.sql" />
     <Build Include="HR\EmployeeTable.sql" />
+    <Build Include="HR\EmployeeWithTrigger.sql" />
     <Build Include="HR\EmployeeCount.sql" />
   </ItemGroup>
   <ItemGroup>

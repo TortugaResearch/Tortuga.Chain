@@ -168,6 +168,7 @@
     <Compile Include="shared\CommandBuilders\ScalarFunctionTests.cs" />
     <Compile Include="shared\CommandBuilders\TableFunctionTests.cs" />
     <Compile Include="shared\CommandBuilders\ProcedureTests.cs" />
+    <Compile Include="shared\CommandBuilders\InsertTests.cs" />
     <Compile Include="shared\CommandBuilders\UpsertTests.cs" />
     <Compile Include="shared\CommandBuilders\UpdateTests.cs" />
     <Compile Include="shared\CommandBuilders\DeleteTests.cs" />

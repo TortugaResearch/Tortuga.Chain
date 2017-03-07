@@ -133,6 +133,7 @@
     <Compile Include="shared\SqlServer\SqlServerOpenDataSource.cs" />
     <Compile Include="shared\SqlServer\SqlServerOperationExecutionToken.cs" />
     <Compile Include="shared\SqlServer\OleDbSqlServerTransactionalDataSource..cs" />
+    <Compile Include="shared\SqlServer\SqlServerTableOrViewMetadata.cs" />
     <Compile Include="shared\SqlServer\SqlServerTransactionalDataSource.cs" />
     <Compile Include="shared\SqlServer\SqlServerDataSourceBase.cs" />
     <Compile Include="shared\SqlServer\SqlServerMetadataCache.cs" />

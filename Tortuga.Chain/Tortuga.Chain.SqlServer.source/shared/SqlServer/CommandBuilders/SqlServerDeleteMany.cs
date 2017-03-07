@@ -17,7 +17,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
     {
         //readonly DeleteOptions m_Options;
         readonly IEnumerable<SqlParameter> m_Parameters;
-        readonly TableOrViewMetadata<SqlServerObjectName, SqlDbType> m_Table;
+        readonly SqlServerTableOrViewMetadata<SqlDbType> m_Table;
         readonly string m_WhereClause;
         readonly object m_ArgumentValue;
         readonly object m_FilterValue;
@@ -86,8 +86,15 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 
             List<SqlParameter> parameters;
             var sql = new StringBuilder();
+            string header;
+            string intoClause;
+            string footer;
+
+            sqlBuilder.UseTableVariable(m_Table, out header, out intoClause, out footer);
+
+            sql.Append(header);
             sql.Append("DELETE FROM " + m_Table.Name.ToQuotedString());
-            sqlBuilder.BuildSelectClause(sql, " OUTPUT ", "Deleted.", null);
+            sqlBuilder.BuildSelectClause(sql, " OUTPUT ", "Deleted.", intoClause);
             if (m_FilterValue != null)
             {
                 sql.Append(" WHERE " + sqlBuilder.ApplyFilterValue(m_FilterValue, m_FilterOptions));
@@ -106,6 +113,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
                 parameters = sqlBuilder.GetParameters();
             }
             sql.Append(";");
+            sql.Append(footer);
 
             if (m_Parameters != null)
                 parameters.AddRange(m_Parameters);

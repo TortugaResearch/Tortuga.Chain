@@ -46,7 +46,15 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 
             var availableColumns = sqlBuilder.GetParameterizedColumns().ToList();
 
-            var sql = new StringBuilder($"MERGE INTO {Table.Name.ToQuotedString()} target USING ");
+            var sql = new StringBuilder();
+            string header;
+            string intoClause;
+            string footer;
+
+            sqlBuilder.UseTableVariable(Table, out header, out intoClause, out footer);
+
+            sql.Append(header);
+            sql.Append($"MERGE INTO {Table.Name.ToQuotedString()} target USING ");
             sql.Append("(VALUES (" + string.Join(", ", availableColumns.Select(c => "?")) + ")) AS source (" + string.Join(", ", availableColumns.Select(c => c.QuotedSqlName)) + ")");
             sql.Append(" ON ");
             sql.Append(string.Join(" AND ", sqlBuilder.GetKeyColumns().ToList().Select(c => $"target.{c.QuotedSqlName} = source.{c.QuotedSqlName}")));
@@ -60,8 +68,9 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             sql.Append(") VALUES (");
             sql.Append(string.Join(", ", insertColumns.Select(x => "source." + x.QuotedSqlName)));
             sql.Append(" )");
-            sqlBuilder.BuildSelectClause(sql, " OUTPUT ", "Inserted.", null);
+            sqlBuilder.BuildSelectClause(sql, " OUTPUT ", "Inserted.", intoClause);
             sql.Append(";");
+            sql.Append(footer);
 
             return new OleDbCommandExecutionToken(DataSource, "Insert or update " + Table.Name, sql.ToString(), sqlBuilder.GetParameters());
         }

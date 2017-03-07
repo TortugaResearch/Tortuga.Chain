@@ -16,7 +16,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
     internal sealed class OleDbSqlServerDeleteMany : MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter>
     {
         readonly IEnumerable<OleDbParameter> m_Parameters;
-        readonly TableOrViewMetadata<SqlServerObjectName, OleDbType> m_Table;
+        readonly SqlServerTableOrViewMetadata<OleDbType> m_Table;
         readonly string m_WhereClause;
         readonly object m_ArgumentValue;
         readonly object m_FilterValue;
@@ -80,8 +80,15 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 
             List<OleDbParameter> parameters;
             var sql = new StringBuilder();
+            string header;
+            string intoClause;
+            string footer;
+
+            sqlBuilder.UseTableVariable(m_Table, out header, out intoClause, out footer);
+
+            sql.Append(header);
             sql.Append("DELETE FROM " + m_Table.Name.ToQuotedString());
-            sqlBuilder.BuildSelectClause(sql, " OUTPUT ", "Deleted.", null);
+            sqlBuilder.BuildSelectClause(sql, " OUTPUT ", "Deleted.", intoClause);
 
             if (m_FilterValue != null)
             {
@@ -101,6 +108,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
                 parameters = sqlBuilder.GetParameters();
             }
             sql.Append(";");
+            sql.Append(footer);
 
             if (m_Parameters != null)
                 parameters.AddRange(m_Parameters);

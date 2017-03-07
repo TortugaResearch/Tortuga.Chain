@@ -17,7 +17,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
     {
         readonly int? m_ExpectedRowCount;
         readonly IEnumerable<OleDbParameter> m_Parameters;
-        readonly TableOrViewMetadata<SqlServerObjectName, OleDbType> m_Table;
+        readonly SqlServerTableOrViewMetadata<OleDbType> m_Table;
 
         readonly object m_NewValues;
         readonly string m_UpdateExpression;
@@ -112,8 +112,17 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 
             var prefix = m_Options.HasFlag(UpdateOptions.ReturnOldValues) ? "Deleted." : "Inserted.";
 
+            var sql = new StringBuilder();
+            string header;
+            string intoClause;
+            string footer;
+
+            sqlBuilder.UseTableVariable(m_Table, out header, out intoClause, out footer);
+
+            sql.Append(header);
+            sql.Append($"UPDATE {m_Table.Name.ToQuotedString()}");
             var parameters = new List<OleDbParameter>();
-            var sql = new StringBuilder("UPDATE " + m_Table.Name.ToQuotedString());
+
             if (m_UpdateExpression == null)
             {
                 sqlBuilder.BuildAnonymousSetClause(sql, " SET ", null, null);
@@ -124,7 +133,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
                 parameters.AddRange(SqlBuilder.GetParameters<OleDbParameter>(m_UpdateArgumentValue));
             }
 
-            sqlBuilder.BuildSelectClause(sql, " OUTPUT ", prefix, null);
+            sqlBuilder.BuildSelectClause(sql, " OUTPUT ", prefix, intoClause);
 
 
             if (m_FilterValue != null)
@@ -145,6 +154,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
                 parameters.AddRange(sqlBuilder.GetParameters());
             }
             sql.Append(";");
+            sql.Append(footer);
 
             if (m_Parameters != null)
                 parameters.AddRange(m_Parameters);

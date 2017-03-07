@@ -44,10 +44,20 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
             var sql = new StringBuilder();
+            string header;
+            string intoClause;
+            string footer;
+
+            sqlBuilder.UseTableVariable(Table, out header, out intoClause, out footer);
+            sql.Append(header);
+
             sqlBuilder.BuildInsertClause(sql, $"INSERT INTO {Table.Name.ToQuotedString()} (", null, ")");
-            sqlBuilder.BuildSelectClause(sql, " OUTPUT ", "Inserted.", null);
+            sqlBuilder.BuildSelectClause(sql, " OUTPUT ", "Inserted.", intoClause);
             sqlBuilder.BuildValuesClause(sql, " VALUES (", ")");
             sql.Append(";");
+
+            sql.Append(footer);
+
 
             return new SqlServerCommandExecutionToken(DataSource, "Insert into " + Table.Name, sql.ToString(), sqlBuilder.GetParameters());
 
