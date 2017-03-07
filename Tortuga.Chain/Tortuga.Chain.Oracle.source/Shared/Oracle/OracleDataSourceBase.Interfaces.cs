@@ -190,5 +190,34 @@ namespace Tortuga.Chain.Oracle
             return TableFunction(functionName, functionArgumentValue);
         }
 
+        IMultipleRowDbCommandBuilder IClass1DataSource.DeleteWithFilter(string tableName, string whereClause)
+        {
+            return DeleteWithFilter(tableName, whereClause);
+        }
+
+        IMultipleRowDbCommandBuilder IClass1DataSource.DeleteWithFilter(string tableName, string whereClause, object argumentValue)
+        {
+            return DeleteWithFilter(tableName, whereClause, argumentValue);
+        }
+
+        IMultipleRowDbCommandBuilder IClass1DataSource.DeleteWithFilter(string tableName, object filterValue, FilterOptions filterOptions)
+        {
+            return DeleteWithFilter(tableName, filterValue, filterOptions);
+        }
+
+        IUpdateManyCommandBuilder IClass1DataSource.UpdateSet(string tableName, string updateExpression, UpdateOptions options)
+        {
+            return UpdateSet(tableName, updateExpression, options);
+        }
+
+        IUpdateManyCommandBuilder IClass1DataSource.UpdateSet(string tableName, string updateExpression, object argumentValue, UpdateOptions options)
+        {
+            return UpdateSet(tableName, updateExpression, argumentValue, options);
+        }
+
+        IUpdateManyCommandBuilder IClass1DataSource.UpdateSet(string tableName, object newValues, UpdateOptions options)
+        {
+            return UpdateSet(tableName, newValues, options);
+        }
     }
 }

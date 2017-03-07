@@ -599,6 +599,85 @@ namespace Tortuga.Chain.Oracle
 
 
 
+        /// <summary>
+        /// Deletes multiple records using a where expression.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="whereClause">The where clause.</param>
+        public MultipleRowDbCommandBuilder<OracleCommand, OracleParameter> DeleteWithFilter(OracleObjectName tableName, string whereClause)
+        {
+            var table = DatabaseMetadata.GetTableOrView(tableName);
+            if (!AuditRules.UseSoftDelete(table))
+                return new OracleDeleteMany(this, tableName, whereClause, null);
+
+            return new OracleUpdateMany(this, tableName, null, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected).WithFilter(whereClause, null);
+        }
+
+        /// <summary>
+        /// Deletes multiple records using a where expression.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="whereClause">The where clause.</param>
+        /// <param name="argumentValue">The argument value for the where clause.</param>
+        public MultipleRowDbCommandBuilder<OracleCommand, OracleParameter> DeleteWithFilter(OracleObjectName tableName, string whereClause, object argumentValue)
+        {
+            var table = DatabaseMetadata.GetTableOrView(tableName);
+            if (!AuditRules.UseSoftDelete(table))
+                return new OracleDeleteMany(this, tableName, whereClause, argumentValue);
+
+            return new OracleUpdateMany(this, tableName, null, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected).WithFilter(whereClause, argumentValue);
+        }
+
+        /// <summary>
+        /// Deletes multiple records using a filter object.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="filterValue">The filter value.</param>
+        /// <param name="filterOptions">The options.</param>
+        public MultipleRowDbCommandBuilder<OracleCommand, OracleParameter> DeleteWithFilter(OracleObjectName tableName, object filterValue, FilterOptions filterOptions = FilterOptions.None)
+        {
+            var table = DatabaseMetadata.GetTableOrView(tableName);
+            if (!AuditRules.UseSoftDelete(table))
+                return new OracleDeleteMany(this, tableName, filterValue, filterOptions);
+
+            return new OracleUpdateMany(this, tableName, null, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected).WithFilter(filterValue, filterOptions);
+        }
+
+
+        /// <summary>
+        /// Updates multiple records using an update expression.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="updateExpression">The update expression.</param>
+        /// <param name="options">The update options.</param>
+        public IUpdateManyCommandBuilder<OracleCommand, OracleParameter> UpdateSet(OracleObjectName tableName, string updateExpression, UpdateOptions options = UpdateOptions.None)
+        {
+            return new OracleUpdateMany(this, tableName, updateExpression, null, options);
+        }
+
+        /// <summary>
+        /// Updates multiple records using an update expression.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="updateExpression">The update expression.</param>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="options">The update options.</param>
+        public IUpdateManyCommandBuilder<OracleCommand, OracleParameter> UpdateSet(OracleObjectName tableName, string updateExpression, object argumentValue, UpdateOptions options = UpdateOptions.None)
+        {
+            return new OracleUpdateMany(this, tableName, updateExpression, argumentValue, options);
+        }
+
+
+        /// <summary>
+        /// Updates multiple records using an update value.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="newValues">The new values to use.</param>
+        /// <param name="options">The options.</param>
+        public IUpdateManyCommandBuilder<OracleCommand, OracleParameter> UpdateSet(OracleObjectName tableName, object newValues, UpdateOptions options = UpdateOptions.None)
+        {
+            return new OracleUpdateMany(this, tableName, newValues, options);
+        }
 
     }
 }

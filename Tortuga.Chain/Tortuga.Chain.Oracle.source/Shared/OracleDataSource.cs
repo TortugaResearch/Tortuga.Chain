@@ -403,5 +403,20 @@ namespace Tortuga.Chain
             get { return m_ExtensionCache; }
         }
 
+        /// <summary>
+        /// Creates an open data source using the supplied connection and optional transaction.
+        /// </summary>
+        /// <param name="connection">The connection to wrap.</param>
+        /// <param name="transaction">The transaction to wrap.</param>
+        /// <returns>IOpenDataSource.</returns>
+        public OracleOpenDataSource CreateOpenDataSource(OracleConnection connection, OracleTransaction transaction = null)
+        {
+            return new OracleOpenDataSource(this, connection, transaction);
+        }
+
+        IOpenDataSource IRootDataSource.CreateOpenDataSource(IDbConnection connection, IDbTransaction transaction)
+        {
+            return new OracleOpenDataSource(this, (OracleConnection)connection, (OracleTransaction)transaction);
+        }
     }
 }

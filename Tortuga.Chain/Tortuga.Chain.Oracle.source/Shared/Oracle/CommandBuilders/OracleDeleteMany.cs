@@ -17,6 +17,9 @@ namespace Tortuga.Chain.Oracle.CommandBuilders
         readonly IEnumerable<OracleParameter> m_Parameters;
         readonly TableOrViewMetadata<OracleObjectName, OracleDbType> m_Table;
         readonly string m_WhereClause;
+        readonly object m_ArgumentValue;
+        readonly object m_FilterValue;
+        readonly FilterOptions m_FilterOptions;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="OracleDeleteMany" /> class.
@@ -35,6 +38,34 @@ namespace Tortuga.Chain.Oracle.CommandBuilders
             m_WhereClause = whereClause;
             //m_Options = options;
             m_Parameters = parameters;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OracleDeleteMany"/> class.
+        /// </summary>
+        /// <param name="dataSource">The data source.</param>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="whereClause">The where clause.</param>
+        /// <param name="argumentValue">The argument value.</param>
+        public OracleDeleteMany(OracleDataSourceBase dataSource, OracleObjectName tableName, string whereClause, object argumentValue) : base(dataSource)
+        {
+            m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
+            m_WhereClause = whereClause;
+            m_ArgumentValue = argumentValue;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OracleDeleteMany"/> class.
+        /// </summary>
+        /// <param name="dataSource">The data source.</param>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="filterValue">The filter value.</param>
+        /// <param name="filterOptions">The options.</param>
+        public OracleDeleteMany(OracleDataSourceBase dataSource, OracleObjectName tableName, object filterValue, FilterOptions filterOptions) : base(dataSource)
+        {
+            m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
+            m_FilterValue = filterValue;
+            m_FilterOptions = filterOptions;
         }
 
         public override CommandExecutionToken<OracleCommand, OracleParameter> Prepare(Materializer<OracleCommand, OracleParameter> materializer)
