@@ -180,6 +180,9 @@ FROM    HR.Employee e
         END;
 $$ LANGUAGE plpgsql;";
 
+                using (NpgsqlCommand cmd = new NpgsqlCommand(sql, con))
+                    cmd.ExecuteNonQuery();
+
                 using (NpgsqlCommand cmd = new NpgsqlCommand(sql1, con))
                     cmd.ExecuteNonQuery();
 
