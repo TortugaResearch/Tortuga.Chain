@@ -560,6 +560,27 @@ namespace Tortuga.Chain.PostgreSql
 
 
         /// <summary>
+        /// This is used to query a scalar function.
+        /// </summary>
+        /// <param name="scalarFunctionName">Name of the scalar function.</param>
+        /// <param name="functionArgumentValue">The function argument.</param>
+        /// <returns></returns>
+        public ScalarDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> ScalarFunction(PostgreSqlObjectName scalarFunctionName, object functionArgumentValue)
+        {
+            return new PostgreSqlScalarFunction(this, scalarFunctionName, functionArgumentValue);
+        }
+
+        /// <summary>
+        /// This is used to query a scalar function.
+        /// </summary>
+        /// <param name="scalarFunctionName">Name of the scalar function.</param>
+        /// <returns></returns>
+        public ScalarDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> ScalarFunction(PostgreSqlObjectName scalarFunctionName)
+        {
+            return new PostgreSqlScalarFunction(this, scalarFunctionName, null);
+        }
+
+        /// <summary>
         /// This is used to query a table valued function.
         /// </summary>
         /// <param name="tableFunctionName">Name of the table function.</param>
