@@ -31,6 +31,12 @@
       "title": "Update Command Builder"
     },
     {
+      "location": "UpdateSet.htm",
+      "breadcrumbs": "Home / Command Builders / Update Set Command Builder",
+      "keywords": "a actually add all All Alternately an applied Arguments be being builder Builder case clause command Command do don each Each every expression Filters Generation If in In Internals match may Most object of operation optional parameter pass performs records Roadmap row rows set Set SQL the The this This time to update Update updated UpdateSet use values want WHERE will with WithFilter you You",
+      "title": "Update Set Command Builder"
+    },
+    {
       "location": "Upsert.htm",
       "breadcrumbs": "Home / Command Builders / Upsert Command Builder",
       "keywords": "3 a Again already Alternately an Anchor and application are Arguments as at atomic attribute attributes back based be behavior Builder but by can changed ChangedProperties ChangedPropertiesOnly columns command Command ComponentModel condition contain correct database decide desires determines dictionary echos exception existing exists failing flag for found from Generation honor if If IgnoreOnInsert IgnoreOnUpdate Implementation in inheritently insert Insert inserted interface Internals IPropertyChangeTracking IReadonlyDictionary is it key Key keys Limitations locate marked materializer may meant MERGE metadata model must namespace necessary need needs new non normally not object occurs of on one only operate operation operations option or original override parameter part performed performs primary Procedure process properties provided race read recently record requires retry returned Roadmap row s Select selected Server Set silently SQL SQLite step string that the The there this This throw time to Tortuga type update Update updated Upsert UpsertOptions Upserts upset use used using values varies via was whether will you",
@@ -109,12 +115,6 @@
       "title": "Row, Table, and TableSet Materializers"
     },
     {
-      "location": "MasterDetail.htm",
-      "breadcrumbs": "Home / Materializers / Master/Detail",
-      "keywords": "a A accept also and appender as be by c can child collection collections Customer CustomerId CustomerKey dataSource detail Detail done e entirely Execute expression following for foreign from function g GetCustomersWithOrders have Id If in Internals into it join Join key lambda Loading mapping maps master Master match memory multi Multiple must name nameof object objects occurs of on one options or Order Orders pair parent predicate primary procedure Procedure property provide records Records recordsets Recordsets relationships result returns Roadmap SearchParameter set specifier split stored Take takes that the The their This to ToCollectionSet two use useful will x you You",
-      "title": "Master/Detail"
-    },
-    {
       "location": "Caching.htm",
       "breadcrumbs": "Home / Appenders / Caching Appenders",
       "keywords": "a accepts access ALL AllCacheKey allow and appenders Appenders as be between built cache Cache CacheAllItems CacheKey CachePolicy caching Caching can case chain class coded collections const current Currently data Delete DeleteByKey each Employee EmployeeCachingRepository EmployeeKey entity example Example Execute for framework From function generates get Get GetAll GetByKey hard HR IClass1DataSource id IList in In individual Insert int Internals interplay InvalidateCache is It key keys Keys latter lists MemoryCache NET null object objects of on only operates or out plan policy Policy private protected provided public ReadOrCache records Repository result return returns Roadmap see seperately set source Source special string swapped TableName that the The this to ToCollection ToObject Update use using Value void x you",
@@ -149,6 +149,12 @@
       "breadcrumbs": "Home / Transactions",
       "keywords": "a Active activeConnection activeTransaction address also an An and another any are AsInt32 associated attach Attaching Basic be BeginTransaction by call calling can cannot Chain close commit Commit connection Connections contain created CreateOpenDataSource creates csharp customer Customer CustomerAddress CustomerKey data database dataSource do does Execute existing happens in include Insert it itself just like limited managed may means mixing need newKey normal not object on open openDataSource Optionally or ORM other own pass resource should simply so source sources statement that the then There they this This times to To trans transaction transactional Transactional transactions Transactions used using usually var when which with you",
       "title": "Transactions"
+    },
+    {
+      "location": "MasterDetail.htm",
+      "breadcrumbs": "Home / Master/Detail",
+      "keywords": "a A accept also an and appender as be by By c can child collection collections Customer CustomerId CustomerKey dataSource default detail Detail discard done e each Each entirely error Execute expression following for foreign from function g GetCustomersWithOrders have Id If IgnoreUnmatchedChildren in include Internals into is it join Join key lambda Loading mapping maps master Master match matched memory multi multiple Multiple MultipleParents must name nameof object objects occurs of on one only options Options or Order Orders Other pair parallel Parallel parent perform PLINQ predicate primary procedure Procedure property provide record records Records recordsets Recordsets relationships result returns Roadmap SearchParameter set Silently specifier split stored Take takes that the The their This to ToCollectionSet two unmatched use Use useful will x you You",
+      "title": "Master/Detail"
     },
     {
       "location": "EntityFramework.htm",

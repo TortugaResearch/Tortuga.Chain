@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,13 +17,13 @@ namespace Tortuga.Chain.Appenders
         public KeyJoinAppender(ILink<Tuple<List<T1>, List<T2>>> previousLink, Func<T1, TKey> primaryKeyExpression, Func<T2, TKey> foreignKeyExpression, Func<T1, ICollection<T2>> targetCollectionExpression, JoinOptions joinOptions) : base(previousLink)
         {
             if (previousLink == null)
-                throw new ArgumentNullException("previousLink", "previousLink is null.");
+                throw new ArgumentNullException(nameof(previousLink), $"{nameof(previousLink)} is null.");
             if (primaryKeyExpression == null)
-                throw new ArgumentNullException("primaryKeyExpression", "primaryKeyExpression is null.");
+                throw new ArgumentNullException(nameof(primaryKeyExpression), $"{nameof(primaryKeyExpression)} is null.");
             if (foreignKeyExpression == null)
-                throw new ArgumentNullException("foreignKeyExpression", "foreignKeyExpression is null.");
+                throw new ArgumentNullException(nameof(foreignKeyExpression), $"{nameof(foreignKeyExpression)} is null.");
             if (targetCollectionExpression == null)
-                throw new ArgumentNullException("targetCollectionExpression", "targetCollectionExpression is null.");
+                throw new ArgumentNullException(nameof(targetCollectionExpression), $"{nameof(targetCollectionExpression)} is null.");
 
             m_ForeignKeyExpression = foreignKeyExpression;
             m_PrimaryKeyExpression = primaryKeyExpression;
@@ -111,6 +112,7 @@ namespace Tortuga.Chain.Appenders
             }
         }
 
+        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "ChildObject")]
         void MatchParallel(Tuple<List<T1>, List<T2>> result, bool ignoreUnmatchedChildren)
         {
             //build the dictionary
@@ -119,8 +121,7 @@ namespace Tortuga.Chain.Appenders
             Parallel.ForEach(result.Item2, child =>
                 {
                     var fk = m_ForeignKeyExpression(child);
-                    ICollection<T2> targetCollection;
-                    if (parents.TryGetValue(fk, out targetCollection))
+                    if (parents.TryGetValue(fk, out var targetCollection))
                     {
                         lock (targetCollection)
                             targetCollection.Add(child);
@@ -135,6 +136,7 @@ namespace Tortuga.Chain.Appenders
                 });
         }
 
+        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "ChildObject")]
         void MatchSerial(Tuple<List<T1>, List<T2>> result, bool ignoreUnmatchedChildren)
         {
             //build the dictionary
@@ -143,8 +145,7 @@ namespace Tortuga.Chain.Appenders
             foreach (var child in result.Item2)
             {
                 var fk = m_ForeignKeyExpression(child);
-                ICollection<T2> targetCollection;
-                if (parents.TryGetValue(fk, out targetCollection))
+                if (parents.TryGetValue(fk, out var targetCollection))
                 {
                     targetCollection.Add(child);
                 }
@@ -158,6 +159,7 @@ namespace Tortuga.Chain.Appenders
             }
         }
 
+        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "ChildObject")]
         void MultiMatchSerial(Tuple<List<T1>, List<T2>> result, bool ignoreUnmatchedChildren)
         {
             //build the dictionary
@@ -167,8 +169,7 @@ namespace Tortuga.Chain.Appenders
             foreach (var child in result.Item2)
             {
                 var fk = m_ForeignKeyExpression(child);
-                IGrouping<TKey, ICollection<T2>> targetCollections;
-                if (parents2.TryGetValue(fk, out targetCollections))
+                if (parents2.TryGetValue(fk, out var targetCollections))
                 {
                     foreach (var targetCollection in targetCollections)
                         targetCollection.Add(child);
@@ -183,6 +184,7 @@ namespace Tortuga.Chain.Appenders
             }
         }
 
+        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "ChildObject")]
         void MultiMatchParallel(Tuple<List<T1>, List<T2>> result, bool ignoreUnmatchedChildren)
         {
             //build the dictionary
@@ -192,15 +194,14 @@ namespace Tortuga.Chain.Appenders
             Parallel.ForEach(result.Item2, child =>
                 {
                     var fk = m_ForeignKeyExpression(child);
-                    IGrouping<TKey, ICollection<T2>> targetCollections;
-                    if (parents2.TryGetValue(fk, out targetCollections))
+                    if (parents2.TryGetValue(fk, out var targetCollections))
                     {
                         foreach (var targetCollection in targetCollections)
                             lock (targetCollection)
                                 targetCollection.Add(child);
                     }
                     else
-                        if (!ignoreUnmatchedChildren)
+    if (!ignoreUnmatchedChildren)
                     {
                         var ex = new UnexpectedDataException($"Found child object with the foreign key \"{ fk }\" that couldn't be matched to a parent. See Exception.Data[\"ChildObject\"] for details.");
                         ex.Data["ForeignKey"] = fk;

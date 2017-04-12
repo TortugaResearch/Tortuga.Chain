@@ -34,13 +34,13 @@ namespace Tortuga.Chain.Materializers
         /// Execute the operation synchronously.
         /// </summary>
         /// <returns></returns>
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         [SuppressMessage("Microsoft.Globalization", "CA1306:SetLocaleForDataTypes")]
         public override DataRow Execute(object state = null)
         {
             var executionToken = Prepare();
 
-            var ds = new DataSet();
-            ds.EnforceConstraints = false; //needed for PostgreSql
+            var ds = new DataSet() { EnforceConstraints = false /*needed for PostgreSql*/};
             var table = new DataTable();
             ds.Tables.Add(table);
 
@@ -80,8 +80,7 @@ namespace Tortuga.Chain.Materializers
         {
             var executionToken = Prepare();
 
-            var ds = new DataSet();
-            ds.EnforceConstraints = false; //needed for PostgreSql
+            var ds = new DataSet() { EnforceConstraints = false /*needed for PostgreSql*/};
             var table = new DataTable();
             ds.Tables.Add(table);
 

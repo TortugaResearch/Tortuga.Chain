@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Tortuga.Anchor.Metadata;
 
@@ -18,7 +19,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <typeparam name="TParameter">The type of the parameter.</typeparam>
         /// <param name="argumentValue">The argument value .</param>
         /// <returns></returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists")]
+        [SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists")]
         public static List<TParameter> GetParameters<TParameter>(object argumentValue)
             where TParameter : DbParameter, new()
         {
@@ -32,7 +33,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="argumentValue">The argument value .</param>
         /// <param name="parameterBuilder">The parameter builder. This should set the parameter's database specific DbType property.</param>
         /// <returns></returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists")]
+        [SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists")]
         public static List<TParameter> GetParameters<TParameter>(object argumentValue, Func<TParameter> parameterBuilder)
             where TParameter : DbParameter
         {
@@ -74,6 +75,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="errorFormat">The error format. Slot 0 is the matching property.</param>
         /// <returns>System.String.</returns>
         /// <remarks>If either object is null, this check is skipped.</remarks>
+        [SuppressMessage("Microsoft.Naming", "CA1720:IdentifiersShouldNotContainTypeNames", MessageId = "object")]
         public static void CheckForOverlaps(object firstObject, object secondObject, string errorFormat)
         {
             if (firstObject == null)

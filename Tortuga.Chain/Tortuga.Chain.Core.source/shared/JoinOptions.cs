@@ -1,5 +1,11 @@
+using System;
+
 namespace Tortuga.Chain
 {
+    /// <summary>
+    /// Enum JoinOptions
+    /// </summary>
+    [Flags]
     public enum JoinOptions
     {
         /// <summary>

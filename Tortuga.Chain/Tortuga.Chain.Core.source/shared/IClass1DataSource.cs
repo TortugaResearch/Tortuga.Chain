@@ -371,9 +371,9 @@ namespace Tortuga.Chain
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="updateExpression">The update expression.</param>
-        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="updateArgumentValue">The argument for the update expression.</param>
         /// <param name="options">The update options.</param>
-        IUpdateManyCommandBuilder UpdateSet(string tableName, string updateExpression, object argumentValue, UpdateOptions options = UpdateOptions.None);
+        IUpdateManyCommandBuilder UpdateSet(string tableName, string updateExpression, object updateArgumentValue, UpdateOptions options = UpdateOptions.None);
 
 
         /// <summary>

@@ -29,11 +29,11 @@ namespace Tortuga.Chain.Materializers
         /// Execute the operation synchronously.
         /// </summary>
         /// <returns></returns>
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         [SuppressMessage("Microsoft.Globalization", "CA1306:SetLocaleForDataTypes")]
         public override DataTable Execute(object state = null)
         {
-            var ds = new DataSet();
-            ds.EnforceConstraints = false; //needed for PostgreSql
+            var ds = new DataSet() { EnforceConstraints = false /*needed for PostgreSql*/};
             var dt = new DataTable();
             ds.Tables.Add(dt);
             Prepare().Execute(cmd =>
@@ -58,8 +58,7 @@ namespace Tortuga.Chain.Materializers
         /// <returns></returns>
         public override async Task<DataTable> ExecuteAsync(CancellationToken cancellationToken, object state = null)
         {
-            var ds = new DataSet();
-            ds.EnforceConstraints = false; //needed for PostgreSql
+            var ds = new DataSet() { EnforceConstraints = false /*needed for PostgreSql*/};
             var dt = new DataTable();
             ds.Tables.Add(dt);
             await Prepare().ExecuteAsync(async cmd =>

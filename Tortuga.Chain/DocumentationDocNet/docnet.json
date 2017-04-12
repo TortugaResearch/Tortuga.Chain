@@ -8,19 +8,20 @@
   "Pages": {
     "__index": "Introduction.md",
     "Data Sources": "DataSources.md",
-    "Command Builders": {
-      "__index": "CommandBuilders.md",
-      "From Command Builder": "From.md",
-      "By Key Command Builder": "ByKey.md",
-      "Insert Command Builder": "Insert.md",
-      "Update Command Builder": "Update.md",
-      "Upsert Command Builder": "Upsert.md",
-      "Delete Command Builder": "Delete.md",
-      "SQL Command Builder": "SQL.md",
-      "Table Function Command Builder": "TableFunction.md",
-      "Scalar Function Command Builder": "ScalarFunction.md",
-      "Procedure Command Builder": "Procedure.md"
-    },
+			"Command Builders": {
+				"__index": "CommandBuilders.md",
+				"From Command Builder": "From.md",
+				"By Key Command Builder": "ByKey.md",
+				"Insert Command Builder": "Insert.md",
+				"Update Command Builder": "Update.md",
+				"Update Set Command Builder": "UpdateSet.md",
+				"Upsert Command Builder": "Upsert.md",
+				"Delete Command Builder": "Delete.md",
+				"SQL Command Builder": "SQL.md",
+				"Table Function Command Builder": "TableFunction.md",
+				"Scalar Function Command Builder": "ScalarFunction.md",
+				"Procedure Command Builder": "Procedure.md"
+			},
     "Materializers": {
       "__index": "Materializers.md",
       "Non-Query Materializers": "NonQuery.md",
@@ -29,8 +30,7 @@
       "Object/Collection Materializers": "Object.md",
       "Compiled Object/Collection Materializers": "Compiled.md",
       "DataRow/Table/Set Materializers": "DataTable.md",
-      "Row, Table, and TableSet Materializers": "Table.md",
-      "Master/Detail": "MasterDetail.md"
+      "Row, Table, and TableSet Materializers": "Table.md"
     },
     "Appenders": {
       "__index": "Appenders.md",
@@ -41,6 +41,7 @@
     "Audit Rules": "AuditRules.md",
     "Restricted Columns": "RestrictedColumns.md",
     "Transactions": "Transactions.md",
+    "Master/Detail": "MasterDetail.md",
     "Entity Framework Integration": "EntityFramework.md",
     "NHibernate Integration": "NHibernate.md"
   }

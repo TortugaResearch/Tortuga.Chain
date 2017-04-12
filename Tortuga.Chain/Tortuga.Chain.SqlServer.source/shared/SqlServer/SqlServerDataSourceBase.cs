@@ -982,11 +982,11 @@ namespace Tortuga.Chain.SqlServer
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="updateExpression">The update expression.</param>
-        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="updateArgumentValue">The argument value.</param>
         /// <param name="options">The update options.</param>
-        public IUpdateManyCommandBuilder<SqlCommand, SqlParameter> UpdateSet(SqlServerObjectName tableName, string updateExpression, object argumentValue, UpdateOptions options = UpdateOptions.None)
+        public IUpdateManyCommandBuilder<SqlCommand, SqlParameter> UpdateSet(SqlServerObjectName tableName, string updateExpression, object updateArgumentValue, UpdateOptions options = UpdateOptions.None)
         {
-            return new SqlServerUpdateMany(this, tableName, updateExpression, argumentValue, options);
+            return new SqlServerUpdateMany(this, tableName, updateExpression, updateArgumentValue, options);
         }
 
 
