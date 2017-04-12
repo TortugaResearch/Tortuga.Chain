@@ -33,7 +33,7 @@
     {
       "location": "UpdateSet.htm",
       "breadcrumbs": "Home / Command Builders / Update Set Command Builder",
-      "keywords": "a actually add all All Alternately an applied Arguments be being builder Builder case clause command Command do don each Each every expression Filters Generation If in In Internals match may Most object of operation optional parameter pass performs records Roadmap row rows set Set SQL the The this This time to update Update updated UpdateSet use values want WHERE will with WithFilter you You",
+      "keywords": "a accepts actually add all All Alternately an applied Arguments be being builder Builder case clause command Command do don each Each every expression filter Filters Generation If in In Internals match may Most object of operation optional or parameter pass performs records Roadmap row rows set Set SQL the The this This time to update Update updated UpdateSet use values want WHERE will with WithFilter you You",
       "title": "Update Set Command Builder"
     },
     {
@@ -47,6 +47,12 @@
       "breadcrumbs": "Home / Command Builders / Delete Command Builder",
       "keywords": "a Again Alternately an and are Arguments as at attribute based be before behavior Builder but by can clause columns command Command contain database delete Delete DELETE deleted desires dictionary enabled flag for from generated Generation If Implementation Internals IReadonlyDictionary is it key Key keys Limitations locate looked materializer may meant metadata model must necessary need normally object of on one operate operation operations optional or OUTPUT override parameter performed performs primary Procedure properties provided read record return Roadmap row s SELECT separate Server set Set soft SQL SQLite statement string table that the The this This time to type update UPDATE use used uses using varies was will with you",
       "title": "Delete Command Builder"
+    },
+    {
+      "location": "DeleteWithFilter.htm",
+      "breadcrumbs": "Home / Command Builders / Delete with Filter Command Builder",
+      "keywords": "a accepts an and Arguments based be Builder by clause command Command database delete Delete DELETE deleted deletes DeleteWithFilter enabled expression filter Filter flag for generated Generation If Implementation Internals is object of operation optional or OUTPUT parameter performs Roadmap SELECT separate Server set soft SQL SQLite statement table the The this This to update UPDATE uses using varies where will with",
+      "title": "Delete with Filter Command Builder"
     },
     {
       "location": "SQL.htm",

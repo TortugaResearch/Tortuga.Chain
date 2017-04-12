@@ -57,6 +57,7 @@
     <None Include="Compiled.md" />
     <None Include="DataSources.md" />
     <None Include="DataTable.md" />
+    <None Include="DeleteWithFilter.md" />
     <None Include="Delete.md" />
     <None Include="Dictionary.md" />
     <None Include="EntityFramework.md" />

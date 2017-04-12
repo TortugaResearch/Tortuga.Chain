@@ -8,7 +8,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Delete Command Builder - Tortuga Chain</title>
+    <title>Delete with Filter Command Builder - Tortuga Chain</title>
     <link rel="shortcut icon" href="favicon.ico">
     <link rel="stylesheet" href="css/theme.css" type="text/css" />
     <link rel="stylesheet" href="css/theme_colors.css" type="text/css" />
@@ -49,16 +49,15 @@
 </li>
 <li class="tocentry"><a href="Upsert.htm">Upsert Command Builder</a>
 </li>
-<li class="tocentry current"><a class="current" href="Delete.htm">Delete Command Builder</a>
+<li class="tocentry"><a href="Delete.htm">Delete Command Builder</a>
+</li>
+<li class="tocentry current"><a class="current" href="DeleteWithFilter.htm">Delete with Filter Command Builder</a>
 <ul class="currentrelative">
 <li class="tocentry"><a href="#arguments">Arguments</a></li>
 <li class="tocentry"><a href="#sql-generation">SQL Generation</a></li>
-<li class="tocentry"><a href="#limitations">Limitations</a></li>
 <li class="tocentry"><a href="#internals">Internals</a></li>
 <li class="tocentry"><a href="#roadmap">Roadmap</a></li>
 </ul>
-<li class="tocentry"><a href="DeleteWithFilter.htm">Delete with Filter Command Builder</a>
-</li>
 <li class="tocentry"><a href="SQL.htm">SQL Command Builder</a>
 </li>
 <li class="tocentry"><a href="TableFunction.htm">Table Function Command Builder</a>
@@ -105,23 +104,19 @@
             <div class="nav-content">
                 <div role="navigation" aria-label="breadcrumbs navigation">
                     <div class="breadcrumbs">
-<ul><li><a href="Introduction.htm">Home</a></li> / <li><a href="CommandBuilders.htm">Command Builders</a></li> / <li><a href="Delete.htm">Delete Command Builder</a></li></ul>
+<ul><li><a href="Introduction.htm">Home</a></li> / <li><a href="CommandBuilders.htm">Command Builders</a></li> / <li><a href="DeleteWithFilter.htm">Delete with Filter Command Builder</a></li></ul>
 					
                     </div>
                     <hr />
                 </div>
                 <div role="main">
                     <div class="section">
-<h1 id="delete-command-builder">Delete Command Builder<a class="headerlink" href="#delete-command-builder" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h1>
-<p>The command performs a delete using the provided model. </p>
+<h1 id="delete-with-filter-command-builder">Delete with Filter Command Builder<a class="headerlink" href="#delete-with-filter-command-builder" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h1>
+<p>The <code>DeleteWithFilter</code> command performs set-based deletes using a where expression or filter object. </p>
 <h2 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h2>
-<p>The parameter object must contain the primary key(s) necessary to locate the record. The keys are normally read from the database, but you can override this behavior to use properties on the object that use the Key attribute.</p>
-<p>Alternately, a parameter dictionary of type IReadonlyDictionary&lt;string, object&gt; may be used. Again, the primary keys will be read from database metadata.</p>
+<p>This accepts a SQL expression, with optional parameter object, or a filter object.</p>
 <h2 id="sql-generation">SQL Generation<a class="headerlink" href="#sql-generation" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h2>
-<p>If the materializer desires columns, this will return the row as it looked before it was deleted.</p>
 <p>If soft delete is enabled for this table, an update operation will be generated to set the deleted flag. </p>
-<h2 id="limitations">Limitations<a class="headerlink" href="#limitations" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h2>
-<p>This command is meant to operate on one row at a time. Set-based operations need to be performed using a SQL or Procedure command.</p>
 <h2 id="internals">Internals<a class="headerlink" href="#internals" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h2>
 <p>Implementation of the delete varies by database.</p>
 <h3 id="sql-server">SQL Server<a class="headerlink" href="#sql-server" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h3>

@@ -221,5 +221,15 @@ namespace Tortuga.Chain.PostgreSql
         {
             return UpdateSet(tableName, newValues, options);
         }
+
+        IScalarDbCommandBuilder IClass2DataSource.ScalarFunction(string scalarFunctionName)
+        {
+            return ScalarFunction(scalarFunctionName);
+        }
+
+        IScalarDbCommandBuilder IClass2DataSource.ScalarFunction(string scalarFunctionName, object functionArgumentValue)
+        {
+            return ScalarFunction(scalarFunctionName, functionArgumentValue);
+        }
     }
 }

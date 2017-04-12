@@ -17,6 +17,7 @@
 				"Update Set Command Builder": "UpdateSet.md",
 				"Upsert Command Builder": "Upsert.md",
 				"Delete Command Builder": "Delete.md",
+				"Delete with Filter Command Builder": "DeleteWithFilter.md",
 				"SQL Command Builder": "SQL.md",
 				"Table Function Command Builder": "TableFunction.md",
 				"Scalar Function Command Builder": "ScalarFunction.md",

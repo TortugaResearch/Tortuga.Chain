@@ -10,7 +10,7 @@ Alternately you may pass in an "update object". Each row will be updated to matc
 
 ## Filters
 
-Most of the time you don't want to update every row. In this case, use `.WithFilter(...)` to add a WHERE clause to the update operation.
+Most of the time you don't want to update every row. In this case, use `.WithFilter(...)` to add a WHERE clause to the update operation. This accepts a SQL expression, with optional parameter object, or a filter object.
 
 If you actually do want to update all rows, use `.All()`.
 
