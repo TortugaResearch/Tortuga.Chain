@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
@@ -385,6 +386,7 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="dataTable">The data table.</param>
         /// <param name="options">The options.</param>
         /// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [Obsolete("Use InsertBatch(SqlServerObjectName, DataTable, SqlServerObjectName, InsertOptions) instead. This overload will be removed in a future version.")]
         public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> InsertBatch(SqlServerObjectName tableName, SqlServerObjectName tableTypeName, DataTable dataTable, InsertOptions options = InsertOptions.None)
         {
@@ -413,6 +415,7 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="options">The options.</param>
         /// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
         [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [Obsolete("Use InsertBatch(SqlServerObjectName, DataTable, SqlServerObjectName, InsertOptions) instead. This overload will be removed in a future version.")]
         public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> InsertBatch<TObject>(SqlServerObjectName tableTypeName, DataTable dataTable, InsertOptions options = InsertOptions.None) where TObject : class
         {
@@ -441,6 +444,7 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="dataReader">The data reader.</param>
         /// <param name="options">The options.</param>
         /// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [Obsolete("Use InsertBatch(SqlServerObjectName, DbDataReader, SqlServerObjectName, InsertOptions) instead. This overload will be removed in a future version.")]
         public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> InsertBatch(SqlServerObjectName tableName, SqlServerObjectName tableTypeName, DbDataReader dataReader, InsertOptions options = InsertOptions.None)
         {
@@ -469,6 +473,7 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="options">The options.</param>
         /// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
         [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [Obsolete("Use InsertBatch(SqlServerObjectName, DbDataReader, SqlServerObjectName, InsertOptions) instead. This overload will be removed in a future version.")]
         public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> InsertBatch<TObject>(SqlServerObjectName tableTypeName, DbDataReader dataReader, InsertOptions options = InsertOptions.None) where TObject : class
         {
@@ -500,6 +505,7 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="options">The options.</param>
         /// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
         [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [Obsolete("Use InsertBatch(SqlServerObjectName, IEnumerable<TObject>, SqlServerObjectName, InsertOptions) instead. This overload will be removed in a future version.")]
         public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> InsertBatch<TObject>(SqlServerObjectName tableName, SqlServerObjectName tableTypeName, IEnumerable<TObject> objects, InsertOptions options = InsertOptions.None)
         {
@@ -535,6 +541,7 @@ namespace Tortuga.Chain.SqlServer
         /// <returns>
         /// MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.
         /// </returns>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [Obsolete("Use InsertBatch(IEnumerable<TObject>, SqlServerObjectName, InsertOptions) instead. This overload will be removed in a future version.")]
         public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> InsertBatch<TObject>(SqlServerObjectName tableTypeName, IEnumerable<TObject> objects, InsertOptions options = InsertOptions.None) where TObject : class
         {

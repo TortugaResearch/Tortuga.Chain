@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26228.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{AAE3DA8A-65B5-4A2E-BB48-002C3C8D045B}"
 	ProjectSection(SolutionItems) = preProject
@@ -30,7 +30,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tortuga.Chain.SqlServer.sou
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tortuga.Chain.CompiledMaterializers.source", "Tortuga.Chain.CompiledMaterializers.source\Tortuga.Chain.CompiledMaterializers.source.csproj", "{42D213CA-8584-4B1B-8928-A54C5D937E86}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Tortuga.Chain.Core.netstandard1.3", "Tortuga.Chain.Core.netstandard1.3\Tortuga.Chain.Core.netstandard1.3.xproj", "{5A7F6078-E994-4643-8D72-634D13BBD810}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tortuga.Chain.Core.netstandard1.3", "Tortuga.Chain.Core.netstandard1.3\Tortuga.Chain.Core.netstandard1.3.csproj", "{5A7F6078-E994-4643-8D72-634D13BBD810}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocumentationDocNet", "DocumentationDocNet\DocumentationDocNet.csproj", "{64697C8B-60FD-4EE7-8560-37C4BD58580A}"
 EndProject

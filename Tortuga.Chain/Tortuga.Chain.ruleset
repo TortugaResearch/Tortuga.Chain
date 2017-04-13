@@ -775,8 +775,6 @@
     <Rule Id="IDE0003" Action="Info" />
     <Rule Id="IDE0004" Action="Info" />
     <Rule Id="IDE0005" Action="Info" />
-    <Rule Id="IDE0016" Action="None" />
-    <Rule Id="IDE0016WithoutSuggestion" Action="None" />
     <Rule Id="IDE1005" Action="Info" />
   </Rules>
 </RuleSet>

@@ -90,10 +90,23 @@ namespace Tortuga.Chain.Appenders
             return result.Item1;
         }
 
+#if Parallel_Missing
         void Match(Tuple<List<T1>, List<T2>> result)
         {
             var ignoreUnmatchedChildren = m_JoinOptions.HasFlag(JoinOptions.IgnoreUnmatchedChildren);
             var multipleParents = m_JoinOptions.HasFlag(JoinOptions.MultipleParents);
+
+            if (multipleParents)
+                MultiMatchSerial(result, ignoreUnmatchedChildren);
+            else
+                MatchSerial(result, ignoreUnmatchedChildren);
+        }
+#else
+        void Match(Tuple<List<T1>, List<T2>> result)
+        {
+            var ignoreUnmatchedChildren = m_JoinOptions.HasFlag(JoinOptions.IgnoreUnmatchedChildren);
+            var multipleParents = m_JoinOptions.HasFlag(JoinOptions.MultipleParents);
+
             var parallel = m_JoinOptions.HasFlag(JoinOptions.Parallel);
 
             if (multipleParents)
@@ -135,6 +148,7 @@ namespace Tortuga.Chain.Appenders
                     }
                 });
         }
+#endif
 
         [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "ChildObject")]
         void MatchSerial(Tuple<List<T1>, List<T2>> result, bool ignoreUnmatchedChildren)
@@ -184,6 +198,7 @@ namespace Tortuga.Chain.Appenders
             }
         }
 
+#if !Parallel_Missing
         [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "ChildObject")]
         void MultiMatchParallel(Tuple<List<T1>, List<T2>> result, bool ignoreUnmatchedChildren)
         {
@@ -210,5 +225,7 @@ namespace Tortuga.Chain.Appenders
                     }
                 });
         }
+#endif
+
     }
 }
