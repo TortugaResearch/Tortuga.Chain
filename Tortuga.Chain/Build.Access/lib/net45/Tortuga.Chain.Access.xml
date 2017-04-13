@@ -126,6 +126,14 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:Tortuga.Chain.AccessDataSource.CreateOpenDataSource(System.Data.OleDb.OleDbConnection,System.Data.OleDb.OleDbTransaction)">
+            <summary>
+            Creates an open data source using the supplied connection and optional transaction.
+            </summary>
+            <param name="connection">The connection to wrap.</param>
+            <param name="transaction">The transaction to wrap.</param>
+            <returns>IOpenDataSource.</returns>
+        </member>
         <member name="M:Tortuga.Chain.AccessDataSource.WithCache(Tortuga.Chain.Core.ICacheAdapter)">
             <summary>
             Craetes a new data source with the provided cache.
@@ -582,6 +590,54 @@
             <returns>MultipleRowDbCommandBuilder&lt;OleDbCommand, OleDbParameter&gt;.</returns>
             <exception cref="T:Tortuga.Chain.MappingException"></exception>
         </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.DeleteWithFilter(Tortuga.Chain.Access.AccessObjectName,System.String)">
+            <summary>
+            Deletes multiple records using a where expression.
+            </summary>
+            <param name="tableName">Name of the table.</param>
+            <param name="whereClause">The where clause.</param>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.DeleteWithFilter(Tortuga.Chain.Access.AccessObjectName,System.String,System.Object)">
+            <summary>
+            Deletes multiple records using a where expression.
+            </summary>
+            <param name="tableName">Name of the table.</param>
+            <param name="whereClause">The where clause.</param>
+            <param name="argumentValue">The argument value for the where clause.</param>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.DeleteWithFilter(Tortuga.Chain.Access.AccessObjectName,System.Object,Tortuga.Chain.FilterOptions)">
+            <summary>
+            Deletes multiple records using a filter object.
+            </summary>
+            <param name="tableName">Name of the table.</param>
+            <param name="filterValue">The filter value.</param>
+            <param name="filterOptions">The options.</param>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.UpdateSet(Tortuga.Chain.Access.AccessObjectName,System.String,Tortuga.Chain.UpdateOptions)">
+            <summary>
+            Updates multiple records using an update expression.
+            </summary>
+            <param name="tableName">Name of the table.</param>
+            <param name="updateExpression">The update expression.</param>
+            <param name="options">The update options.</param>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.UpdateSet(Tortuga.Chain.Access.AccessObjectName,System.String,System.Object,Tortuga.Chain.UpdateOptions)">
+            <summary>
+            Updates multiple records using an update expression.
+            </summary>
+            <param name="tableName">Name of the table.</param>
+            <param name="updateExpression">The update expression.</param>
+            <param name="updateArgumentValue">The argument value.</param>
+            <param name="options">The update options.</param>
+        </member>
+        <member name="M:Tortuga.Chain.Access.AccessDataSourceBase.UpdateSet(Tortuga.Chain.Access.AccessObjectName,System.Object,Tortuga.Chain.UpdateOptions)">
+            <summary>
+            Updates multiple records using an update value.
+            </summary>
+            <param name="tableName">Name of the table.</param>
+            <param name="newValues">The new values to use.</param>
+            <param name="options">The options.</param>
+        </member>
         <member name="T:Tortuga.Chain.Access.AccessDataSourceSettings">
             <summary>
             This class is used to modify settings that are not represented by the connection string. 
@@ -1006,7 +1062,7 @@
         </member>
         <member name="T:Tortuga.Chain.Access.CommandBuilders.AccessDeleteMany">
             <summary>
-            Class AccessDeleteMany.
+            Class AccessDeleteWithFilter.
             </summary>
         </member>
         <member name="M:Tortuga.Chain.Access.CommandBuilders.AccessDeleteMany.#ctor(Tortuga.Chain.Access.AccessDataSourceBase,Tortuga.Chain.Access.AccessObjectName,System.String,System.Collections.Generic.IEnumerable{System.Data.OleDb.OleDbParameter},Tortuga.Chain.DeleteOptions)">
@@ -1018,6 +1074,24 @@
             <param name="whereClause">The where clause.</param>
             <param name="parameters">The parameters.</param>
             <param name="options">The options.</param>
+        </member>
+        <member name="M:Tortuga.Chain.Access.CommandBuilders.AccessDeleteMany.#ctor(Tortuga.Chain.Access.AccessDataSourceBase,Tortuga.Chain.Access.AccessObjectName,System.String,System.Object)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Access.CommandBuilders.AccessDeleteMany"/> class.
+            </summary>
+            <param name="dataSource">The data source.</param>
+            <param name="tableName">Name of the table.</param>
+            <param name="whereClause">The where clause.</param>
+            <param name="argumentValue">The argument value.</param>
+        </member>
+        <member name="M:Tortuga.Chain.Access.CommandBuilders.AccessDeleteMany.#ctor(Tortuga.Chain.Access.AccessDataSourceBase,Tortuga.Chain.Access.AccessObjectName,System.Object,Tortuga.Chain.FilterOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Access.CommandBuilders.AccessDeleteMany"/> class.
+            </summary>
+            <param name="dataSource">The data source.</param>
+            <param name="tableName">Name of the table.</param>
+            <param name="filterValue">The filter value.</param>
+            <param name="filterOptions">The options.</param>
         </member>
         <member name="M:Tortuga.Chain.Access.CommandBuilders.AccessDeleteMany.TryGetColumn(System.String)">
             <summary>
@@ -1247,7 +1321,7 @@
         </member>
         <member name="T:Tortuga.Chain.Access.CommandBuilders.AccessUpdateMany">
             <summary>
-            Class AccessUpdateMany.
+            Class AccessUpdateSet.
             </summary>
         </member>
         <member name="M:Tortuga.Chain.Access.CommandBuilders.AccessUpdateMany.#ctor(Tortuga.Chain.Access.AccessDataSourceBase,Tortuga.Chain.Access.AccessObjectName,System.Object,System.String,System.Collections.Generic.IEnumerable{System.Data.OleDb.OleDbParameter},System.Nullable{System.Int32},Tortuga.Chain.UpdateOptions)">
@@ -1261,6 +1335,27 @@
             <param name="parameters">The parameters.</param>
             <param name="expectedRowCount">The expected row count.</param>
             <param name="options">The options.</param>
+        </member>
+        <member name="M:Tortuga.Chain.Access.CommandBuilders.AccessUpdateMany.#ctor(Tortuga.Chain.Access.AccessDataSourceBase,Tortuga.Chain.Access.AccessObjectName,System.Object,Tortuga.Chain.UpdateOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Access.CommandBuilders.AccessUpdateMany" /> class.
+            </summary>
+            <param name="dataSource">The data source.</param>
+            <param name="tableName">Name of the table.</param>
+            <param name="newValues">The new values.</param>
+            <param name="options">The options.</param>
+            <exception cref="T:System.NotSupportedException">Cannot use Key attributes with this operation.</exception>
+        </member>
+        <member name="M:Tortuga.Chain.Access.CommandBuilders.AccessUpdateMany.#ctor(Tortuga.Chain.Access.AccessDataSourceBase,Tortuga.Chain.Access.AccessObjectName,System.String,System.Object,Tortuga.Chain.UpdateOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Access.CommandBuilders.AccessUpdateMany" /> class.
+            </summary>
+            <param name="dataSource">The data source.</param>
+            <param name="tableName">Name of the table.</param>
+            <param name="updateExpression">The update expression.</param>
+            <param name="updateArgumentValue">The update argument value.</param>
+            <param name="options">The options.</param>
+            <exception cref="T:System.NotSupportedException">Cannot use Key attributes with this operation.</exception>
         </member>
         <member name="M:Tortuga.Chain.Access.CommandBuilders.AccessUpdateMany.Prepare(Tortuga.Chain.Materializers.Materializer{System.Data.OleDb.OleDbCommand,System.Data.OleDb.OleDbParameter})">
             <summary>
@@ -1278,6 +1373,34 @@
             <remarks>
             If the column name was not found, this will return null
             </remarks>
+        </member>
+        <member name="M:Tortuga.Chain.Access.CommandBuilders.AccessUpdateMany.WithFilter(System.Object,Tortuga.Chain.FilterOptions)">
+            <summary>
+            Adds (or replaces) the filter on this command builder.
+            </summary>
+            <param name="filterValue">The filter value.</param>
+            <param name="filterOptions">The filter options.</param>
+        </member>
+        <member name="M:Tortuga.Chain.Access.CommandBuilders.AccessUpdateMany.WithFilter(System.String)">
+            <summary>
+            Adds (or replaces) the filter on this command builder.
+            </summary>
+            <param name="whereClause">The where clause.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Access.CommandBuilders.AccessUpdateMany.WithFilter(System.String,System.Object)">
+            <summary>
+            Adds (or replaces) the filter on this command builder.
+            </summary>
+            <param name="whereClause">The where clause.</param>
+            <param name="argumentValue">The argument value.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Access.CommandBuilders.AccessUpdateMany.All">
+            <summary>
+            Applies this command to all rows.
+            </summary>
+            <returns></returns>
         </member>
         <member name="T:Tortuga.Chain.Access.CommandBuilders.AccessUpdateObject`1">
             <summary>

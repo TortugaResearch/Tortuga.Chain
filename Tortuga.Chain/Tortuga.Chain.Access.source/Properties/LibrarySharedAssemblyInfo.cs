@@ -4,4 +4,9 @@
 [assembly: AssemblyDescription("Fluent ORM for .NET and Access.")]
 
 [assembly: AssemblyCulture("")]
-[assembly: AssemblyVersion("1.0.*")]
+
+#if NETSTANDARD1_3
+[assembly: AssemblyVersion("1.1")]
+#else
+[assembly: AssemblyVersion("1.1.*")]
+#endif
