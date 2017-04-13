@@ -18,7 +18,7 @@
 
   <ItemGroup>
     <Compile Include="..\Tortuga.Chain.SqlServer.source\Properties\LibrarySharedAssemblyInfo.cs;..\ProductSharedAssemblyInfo.cs" />
-    <Compile Include="..\Tortuga.Chain.SqlServer.source\shared\**\*.cs" Exclude="bin\**;obj\**;**\*.xproj;packages\**" />
+    <Compile Include="..\Tortuga.Chain.SqlServer.source\shared\**\*.cs" />
   </ItemGroup>
 
   <ItemGroup>
