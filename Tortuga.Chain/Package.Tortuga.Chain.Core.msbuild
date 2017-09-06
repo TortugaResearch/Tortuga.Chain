@@ -24,6 +24,7 @@
     <Net46Path>$(MSBuildProjectDirectory)\Tortuga.Chain.Core.net46</Net46Path>
     <Uap10Path>$(MSBuildProjectDirectory)\Tortuga.Chain.Core.uap10</Uap10Path>
     <NetStandard13Path>$(MSBuildProjectDirectory)\Tortuga.Chain.Core.netstandard1.3</NetStandard13Path>
+    <NetStandard20Path>$(MSBuildProjectDirectory)\Tortuga.Chain.Core.netstandard2.0</NetStandard20Path>
 
     <VersionSource>$(SourcePath)\bin\Release\$(ResultDll)</VersionSource>
     <NuspecName>Tortuga.Chain.Core.nuspec</NuspecName>
@@ -88,7 +89,14 @@
       <NetStandard13Output Include="$(NetStandard13Path)\bin\Release\netstandard1.3\$(ResultDepsJson)" />
     </ItemGroup>
     <Copy SourceFiles="@(NetStandard13Output)" DestinationFolder="$(BuildOutputPath)\lib\netstandard1.3" />
-
+    
+    <ItemGroup>
+      <NetStandard20Output Include="$(NetStandard20Path)\bin\Release\netstandard2.0\$(ResultDll)" />
+      <NetStandard20Output Include="$(NetStandard20Path)\bin\Release\netstandard2.0\$(ResultPdb)" />
+      <NetStandard20Output Include="$(NetStandard20Path)\bin\Release\netstandard2.0\$(ResultXml)" />
+      <NetStandard20Output Include="$(NetStandard20Path)\bin\Release\netstandard2.0\$(ResultDepsJson)" />
+    </ItemGroup>
+    <Copy SourceFiles="@(NetStandard20Output)" DestinationFolder="$(BuildOutputPath)\lib\netstandard2.0" />
   </Target>
 
   <Target Name="PackageHelp">
