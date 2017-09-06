@@ -16,10 +16,12 @@
     <ResultDll>Tortuga.Chain.SqlServer.dll</ResultDll>
     <ResultPdb>Tortuga.Chain.SqlServer.pdb</ResultPdb>
     <ResultXml>Tortuga.Chain.SqlServer.xml</ResultXml>
+    <ResultDepsJson>Tortuga.Chain.SqlServer.deps.json</ResultDepsJson>
 
     <SourcePath>$(MSBuildProjectDirectory)\Tortuga.Chain.SqlServer.source</SourcePath>
     <Net45Path>$(MSBuildProjectDirectory)\Tortuga.Chain.SqlServer.net45</Net45Path>
     <Net46Path>$(MSBuildProjectDirectory)\Tortuga.Chain.SqlServer.net46</Net46Path>
+    <NetStandard13Path>$(MSBuildProjectDirectory)\Tortuga.Chain.SqlServer.netstandard1.3</NetStandard13Path>
 
     <VersionSource>$(SourcePath)\bin\Release\$(ResultDll)</VersionSource>
     <NuspecName>Tortuga.Chain.SqlServer.nuspec</NuspecName>
@@ -69,6 +71,14 @@
       <Net46Output Include="$(Net46Path)\bin\Release\$(ResultXml)" />
     </ItemGroup>
     <Copy SourceFiles="@(Net46Output)" DestinationFolder="$(BuildOutputPath)\lib\net46" />
+    
+    <ItemGroup>
+      <NetStandard13Output Include="$(NetStandard13Path)\bin\Release\netstandard1.3\$(ResultDll)" />
+      <NetStandard13Output Include="$(NetStandard13Path)\bin\Release\netstandard1.3\$(ResultPdb)" />
+      <NetStandard13Output Include="$(NetStandard13Path)\bin\Release\netstandard1.3\$(ResultXml)" />
+      <NetStandard13Output Include="$(NetStandard13Path)\bin\Release\netstandard1.3\$(ResultDepsJson)" />
+    </ItemGroup>
+    <Copy SourceFiles="@(NetStandard13Output)" DestinationFolder="$(BuildOutputPath)\lib\netstandard1.3" />
 
   </Target>
 
