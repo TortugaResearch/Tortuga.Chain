@@ -31,22 +31,23 @@
     </frameworkAssemblies>
 
     <dependencies>
-      <group targetFramework="net45">
-        <dependency id="Microsoft.Data.Sqlite.Core" version="2.0.0" />
+
+      <group targetFramework="net461">
         <dependency id="Tortuga.Chain.Core" version="1.1.6458.19749" />
-        <dependency id="Nito.AsyncEx" version="5.0.0-pre-04" />
-      </group>
-      <group targetFramework="net46">
+        <dependency id="Nito.AsyncEx.Coordination" version="1.0.2" />
         <dependency id="Microsoft.Data.Sqlite.Core" version="2.0.0" />
-        <dependency id="Tortuga.Chain.Core" version="1.1.6458.19749" />
-        <dependency id="Nito.AsyncEx" version="5.0.0-pre-04" />
       </group>
 
+
+      <group targetFramework="netstandard2.0">
+        <dependency id="Tortuga.Chain.Core" version="1.1.6458.19749" />
+        <dependency id="Nito.AsyncEx.Coordination" version="1.0.2" />
+        <dependency id="Microsoft.Data.Sqlite.Core" version="2.0.0" />
+      </group>
+      
     </dependencies>
 
 
- 
-    
   </metadata>
 
 </package>

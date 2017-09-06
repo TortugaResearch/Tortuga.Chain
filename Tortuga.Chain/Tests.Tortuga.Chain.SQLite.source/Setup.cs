@@ -47,6 +47,15 @@ namespace Tests
 
 #if SDS
             SQLiteConnection.CreateFile(databaseFileName);
+#else
+            void CreateFile(string databaseFileName)
+            {
+                FileStream fs = File.Create(databaseFileName);
+                fs.Close();
+            }
+            CreateFile(databaseFileName);
+
+            SQLitePCL.Batteries.Init();
 #endif
             var dbConnection = new SQLiteConnection("Data Source=SQLiteTestDatabase.sqlite;");
             using (dbConnection)

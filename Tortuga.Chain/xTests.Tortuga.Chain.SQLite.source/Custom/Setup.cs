@@ -1,9 +1,15 @@
 using System;
-using System.Data.SQLite;
 using System.IO;
 using Xunit;
 
-//SQLite is not thread-safe, expecially when using translations. While we try to use locks to reduce the pain, it is still fundementally a bad idea, especially when combined with xUnits unknown threading model.
+#if SDS
+using System.Data.SQLite;
+#else
+using SQLiteCommand = Microsoft.Data.Sqlite.SqliteCommand;
+using SQLiteConnection = Microsoft.Data.Sqlite.SqliteConnection;
+#endif
+
+//SQLite is not thread-safe, especially when using translations. While we try to use locks to reduce the pain, it is still fundamentally a bad idea, especially when combined with xUnits unknown threading model.
 [assembly: CollectionBehavior(DisableTestParallelization = true)]
 
 namespace Tests
@@ -21,7 +27,19 @@ namespace Tests
 
             File.Delete(databaseFileName);
 
+#if SDS
             SQLiteConnection.CreateFile(databaseFileName);
+#else
+            void CreateFile(string databaseFileName)
+            {
+                FileStream fs = File.Create(databaseFileName);
+                fs.Close();
+            }
+            CreateFile(databaseFileName);
+
+            SQLitePCL.Batteries.Init();
+
+#endif
 
             var dbConnection = new SQLiteConnection("Data Source=SQLiteTestDatabaseX.sqlite;");
             using (dbConnection)
