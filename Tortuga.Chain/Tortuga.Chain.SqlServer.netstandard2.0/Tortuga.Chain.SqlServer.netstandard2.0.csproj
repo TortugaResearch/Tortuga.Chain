@@ -1,12 +1,13 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard1.3</TargetFramework>
-    <DefineConstants>$(DefineConstants);SqlDependency_Missing;System_Configuration_Missing;Serialization_Missing;TypeInfo_Is_Not_Type;RUNTIME_CACHE_MISSING;IDataErrorInfo_Missing;INotifyDataErrorInfo_Missing;DataTable_Missing;Thread_Missing;OleDb_Missing</DefineConstants>
+    <TargetFramework>netstandard2.0</TargetFramework>
+
+    <DefineConstants>$(DefineConstants);OleDb_Missing;SqlDependency_Missing;System_Configuration_Missing</DefineConstants>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>Tortuga.Chain.SqlServer</AssemblyName>
     <PackageId>Tortuga.Chain.SqlServer.netstandard1.3</PackageId>
-    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
+    <NetStandardImplicitPackageVersion>2.0.0</NetStandardImplicitPackageVersion>
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
     <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
@@ -14,7 +15,9 @@
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
+    
   </PropertyGroup>
+
 
   <ItemGroup>
     <Compile Include="..\Tortuga.Chain.SqlServer.source\Properties\LibrarySharedAssemblyInfo.cs;..\ProductSharedAssemblyInfo.cs" />
@@ -26,4 +29,6 @@
     <PackageReference Include="Tortuga.Chain.Core" Version="1.1.6458.19749" />
   </ItemGroup>
 
+  
+  
 </Project>
