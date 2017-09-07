@@ -37,7 +37,7 @@ namespace Tests
             }
             CreateFile(databaseFileName);
 
-            SQLitePCL.Batteries.Init();
+            //SQLitePCL.Batteries.Init();
 
 #endif
 
