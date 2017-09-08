@@ -190,5 +190,44 @@ namespace Tortuga.Chain.MySql
             return TableFunction(functionName, functionArgumentValue);
         }
 
+        IScalarDbCommandBuilder IClass2DataSource.ScalarFunction(string scalarFunctionName)
+        {
+            return ScalarFunction(scalarFunctionName);
+        }
+
+        IScalarDbCommandBuilder IClass2DataSource.ScalarFunction(string scalarFunctionName, object functionArgumentValue)
+        {
+            return ScalarFunction(scalarFunctionName, functionArgumentValue);
+        }
+
+        IMultipleRowDbCommandBuilder IClass1DataSource.DeleteWithFilter(string tableName, string whereClause)
+        {
+            return DeleteWithFilter(tableName, whereClause);
+        }
+
+        IMultipleRowDbCommandBuilder IClass1DataSource.DeleteWithFilter(string tableName, string whereClause, object argumentValue)
+        {
+            return DeleteWithFilter(tableName, whereClause, argumentValue);
+        }
+
+        IMultipleRowDbCommandBuilder IClass1DataSource.DeleteWithFilter(string tableName, object filterValue, FilterOptions filterOptions)
+        {
+            return DeleteWithFilter(tableName, filterValue, filterOptions);
+        }
+
+        IUpdateManyCommandBuilder IClass1DataSource.UpdateSet(string tableName, string updateExpression, UpdateOptions options)
+        {
+            return UpdateSet(tableName, updateExpression, options);
+        }
+
+        IUpdateManyCommandBuilder IClass1DataSource.UpdateSet(string tableName, string updateExpression, object updateArgumentValue, UpdateOptions options)
+        {
+            return UpdateSet(tableName, updateExpression, updateArgumentValue, options);
+        }
+
+        IUpdateManyCommandBuilder IClass1DataSource.UpdateSet(string tableName, object newValues, UpdateOptions options)
+        {
+            return UpdateSet(tableName, newValues, options);
+        }
     }
 }

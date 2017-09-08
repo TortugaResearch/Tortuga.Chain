@@ -380,6 +380,22 @@ namespace Tortuga.Chain
             return result;
         }
 
+        IOpenDataSource IRootDataSource.CreateOpenDataSource(IDbConnection connection, IDbTransaction transaction)
+        {
+            return new MySqlOpenDataSource(this, (MySqlConnection)connection, (MySqlTransaction)transaction);
+        }
+
+        /// <summary>
+        /// Creates an open data source using the supplied connection and optional transaction.
+        /// </summary>
+        /// <param name="connection">The connection.</param>
+        /// <param name="transaction">The transaction.</param>
+        public MySqlOpenDataSource CreateOpenDataSource(MySqlConnection connection, MySqlTransaction transaction = null)
+        {
+            return new MySqlOpenDataSource(this, connection, transaction);
+        }
+
+
         internal ICacheAdapter m_Cache;
 
         /// <summary>

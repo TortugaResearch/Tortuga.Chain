@@ -7,39 +7,51 @@ using Tests.Models;
 using Tortuga.Chain;
 using Tortuga.Chain.AuditRules;
 using Tortuga.Chain.DataSources;
-using Tortuga.Chain.MySql;
+using Tortuga.Chain.SqlServer;
+using Xunit;
+
+[assembly: CollectionBehavior(DisableTestParallelization = true)]
 
 namespace Tests
 {
     public abstract partial class TestBase
     {
 
-        static public readonly string AssemblyName = "MySql";
-        static protected readonly Dictionary<string, MySqlDataSource> s_DataSources = new Dictionary<string, MySqlDataSource>();
-        protected static readonly MySqlDataSource s_PrimaryDataSource;
+
+        static public readonly string AssemblyName = "SQL Server";
+        static protected readonly Dictionary<string, SqlServerDataSource> s_DataSources = new Dictionary<string, SqlServerDataSource>();
+        protected static readonly SqlServerDataSource s_PrimaryDataSource;
 
         static TestBase()
         {
-            Setup.AssemblyInit();
+
             foreach (ConnectionStringSettings con in ConfigurationManager.ConnectionStrings)
             {
-                var ds = new MySqlDataSource(con.Name, con.ConnectionString);
-                if (s_PrimaryDataSource == null) s_PrimaryDataSource = ds;
+                var ds = new SqlServerDataSource(con.Name, con.ConnectionString);
                 s_DataSources.Add(con.Name, ds);
+                if (s_PrimaryDataSource == null) s_PrimaryDataSource = ds;
             }
+
+
+
         }
 
         public static string CustomerTableName { get { return "Sales.Customer"; } }
 
         public static string EmployeeTableName { get { return "HR.Employee"; } }
+        public static string EmployeeTableName_Trigger { get { return "HR.EmployeeWithTrigger"; } }
 
         public string MultiResultSetProc1Name { get { return "Sales.CustomerWithOrdersByState"; } }
 
         public string TableFunction1Name { get { return "Sales.CustomersByState"; } }
 
-        //public string TableFunction2Name { get { return "Sales.CustomersByStateInline"; } }
+        public string TableFunction2Name { get { return "Sales.CustomersByStateInline"; } }
 
-        public MySqlDataSource AttachRules(MySqlDataSource source)
+
+        public string ScalarFunction1Name { get { return "HR.EmployeeCount"; } }
+
+
+        public SqlServerDataSource AttachRules(SqlServerDataSource source)
         {
             return source.WithRules(
                 new DateTimeRule("CreatedDate", DateTimeKind.Local, OperationTypes.Insert),
@@ -50,7 +62,7 @@ namespace Tests
                 );
         }
 
-        public MySqlDataSource AttachSoftDeleteRulesWithUser(MySqlDataSource source)
+        public SqlServerDataSource AttachSoftDeleteRulesWithUser(SqlServerDataSource source)
         {
             var currentUser1 = source.From(EmployeeTableName).WithLimits(1).ToObject<Employee>().Execute();
 
@@ -61,14 +73,14 @@ namespace Tests
                 ).WithUser(currentUser1);
         }
 
-        public MySqlDataSource DataSource(string name, [CallerMemberName] string caller = null)
+        public SqlServerDataSource DataSource(string name, [CallerMemberName] string caller = null)
         {
             WriteLine($"{caller} requested Data Source {name}");
 
             return AttachTracers(s_DataSources[name]);
         }
 
-        public MySqlDataSourceBase DataSource(string name, DataSourceType mode, [CallerMemberName] string caller = null)
+        public SqlServerDataSourceBase DataSource(string name, DataSourceType mode, [CallerMemberName] string caller = null)
         {
             WriteLine($"{caller} requested Data Source {name} with mode {mode}");
 
@@ -79,12 +91,12 @@ namespace Tests
                 case DataSourceType.Transactional: return AttachTracers(ds.BeginTransaction());
                 case DataSourceType.Open:
                     var root = (IRootDataSource)ds;
-                    return AttachTracers((MySqlDataSourceBase)root.CreateOpenDataSource(root.CreateConnection(), null));
+                    return AttachTracers((SqlServerDataSourceBase)root.CreateOpenDataSource(root.CreateConnection(), null));
             }
             throw new ArgumentException($"Unkown mode {mode}");
         }
 
-        public async Task<MySqlDataSourceBase> DataSourceAsync(string name, DataSourceType mode, [CallerMemberName] string caller = null)
+        public async Task<SqlServerDataSourceBase> DataSourceAsync(string name, DataSourceType mode, [CallerMemberName] string caller = null)
         {
             WriteLine($"{caller} requested Data Source {name} with mode {mode}");
 
@@ -95,22 +107,21 @@ namespace Tests
                 case DataSourceType.Transactional: return AttachTracers(await ds.BeginTransactionAsync());
                 case DataSourceType.Open:
                     var root = (IRootDataSource)ds;
-                    return AttachTracers((MySqlDataSourceBase)root.CreateOpenDataSource(await root.CreateConnectionAsync(), null));
+                    return AttachTracers((SqlServerDataSourceBase)root.CreateOpenDataSource(await root.CreateConnectionAsync(), null));
             }
             throw new ArgumentException($"Unkown mode {mode}");
         }
 
         void WriteDetails(ExecutionEventArgs e)
         {
-            if (e.ExecutionDetails is MySqlCommandExecutionToken)
+            if (e.ExecutionDetails is SqlServerCommandExecutionToken)
             {
                 WriteLine("");
                 WriteLine("Command text: ");
                 WriteLine(e.ExecutionDetails.CommandText);
-                WriteLine("CommandType: " + e.ExecutionDetails.CommandType);
                 //Indent();
-                foreach (var item in ((MySqlCommandExecutionToken)e.ExecutionDetails).Parameters)
-                    WriteLine(item.ParameterName + ": " + (item.Value == null || item.Value == DBNull.Value ? "<NULL>" : item.Value));
+                foreach (var item in ((SqlServerCommandExecutionToken)e.ExecutionDetails).Parameters)
+                    WriteLine(item.ParameterName + ": " + (item.Value == null || item.Value == DBNull.Value ? "<NULL>" : item.Value) + " [" + item.SqlDbType + "]");
                 //Unindent();
                 WriteLine("******");
                 WriteLine("");
@@ -118,4 +129,3 @@ namespace Tests
         }
     }
 }
-

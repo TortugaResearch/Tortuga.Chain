@@ -581,7 +581,7 @@ namespace Tortuga.Chain.MySql
         /// </summary>
         /// <param name="procedureName">Name of the procedure.</param>
         /// <returns></returns>
-        public MultipleTableDbCommandBuilder<MySqlCommand, MySqlParameter> Procedure(string procedureName)
+        public MultipleTableDbCommandBuilder<MySqlCommand, MySqlParameter> Procedure(MySqlObjectName procedureName)
         {
             return new MySqlProcedureCall(this, procedureName);
         }
@@ -598,6 +598,94 @@ namespace Tortuga.Chain.MySql
         }
 
 
+
+        /// <summary>
+        /// This is used to query a scalar function.
+        /// </summary>
+        /// <param name="scalarFunctionName">Name of the scalar function.</param>
+        /// <returns></returns>
+        public ScalarDbCommandBuilder<MySqlCommand, MySqlParameter>  ScalarFunction(MySqlObjectName scalarFunctionName)
+        {
+            return ScalarFunction(scalarFunctionName);
+        }
+
+        /// <summary>
+        /// This is used to query a scalar function.
+        /// </summary>
+        /// <param name="scalarFunctionName">Name of the scalar function.</param>
+        /// <param name="functionArgumentValue">The function arguments.</param>
+        /// <returns></returns>
+        public ScalarDbCommandBuilder<MySqlCommand, MySqlParameter> ScalarFunction(MySqlObjectName scalarFunctionName, object functionArgumentValue)
+        {
+            return ScalarFunction(scalarFunctionName, functionArgumentValue);
+        }
+
+        /// <summary>
+        /// This is used to query a scalar function.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="whereClause">The where clause.</param>
+
+        public MultipleRowDbCommandBuilder<MySqlCommand, MySqlParameter> DeleteWithFilter(MySqlObjectName tableName, string whereClause)
+        {
+            return DeleteWithFilter(tableName, whereClause);
+        }
+
+        /// <summary>
+        /// This is used to query a scalar function.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="whereClause">The where clause.</param>
+        /// <param name="argumentValue">The argument value.</param>
+        public MultipleRowDbCommandBuilder<MySqlCommand, MySqlParameter> DeleteWithFilter(MySqlObjectName tableName, string whereClause, object argumentValue)
+        {
+            return DeleteWithFilter(tableName, whereClause, argumentValue);
+        }
+
+        /// <summary>
+        /// Deletes multiple records using a filter object.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="filterValue">The filter value.</param>
+        /// <param name="filterOptions">The filter options.</param>
+        public MultipleRowDbCommandBuilder<MySqlCommand, MySqlParameter> DeleteWithFilter(MySqlObjectName tableName, object filterValue, FilterOptions filterOptions = FilterOptions.None)
+        {
+            return DeleteWithFilter(tableName, filterValue, filterOptions);
+        }
+
+        /// <summary>
+        /// Updates multiple records using an update expression.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="updateExpression">The update expression.</param>
+        /// <param name="options">The update options.</param>
+        public UpdateManyCommandBuilder<MySqlCommand, MySqlParameter> UpdateSet(MySqlObjectName tableName, string updateExpression, UpdateOptions options = UpdateOptions.None)
+        {
+            return UpdateSet(tableName, updateExpression, options);
+        }
+
+        /// <summary>
+        /// Updates multiple records using an update expression.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="updateExpression">The update expression.</param>
+        /// <param name="updateArgumentValue">The update argument value.</param>
+        /// <param name="options">The update options.</param>
+        public UpdateManyCommandBuilder<MySqlCommand, MySqlParameter> UpdateSet(MySqlObjectName tableName, string updateExpression, object updateArgumentValue, UpdateOptions options = UpdateOptions.None)
+        {
+            return UpdateSet(tableName, updateExpression, updateArgumentValue, options);
+        }
+
+        /// <summary>
+        /// Updates multiple records using an update value.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="newValues">The new values to use.</param>
+        /// <param name="options">The options.</param>
+        public UpdateManyCommandBuilder<MySqlCommand, MySqlParameter> UpdateSet(MySqlObjectName tableName, object newValues, UpdateOptions options = UpdateOptions.None)
+        {
+            return UpdateSet(tableName, newValues, options);
+        }
 
 
     }
