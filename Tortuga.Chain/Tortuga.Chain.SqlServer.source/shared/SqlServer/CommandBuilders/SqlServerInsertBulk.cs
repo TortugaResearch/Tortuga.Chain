@@ -17,7 +17,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
     public sealed class SqlServerInsertBulk : DbOperationBuilder<SqlConnection, SqlTransaction>
     {
 
-#if NetStandard13
+#if NETSTANDARD1_3
         readonly DbDataReader m_Source;
 #else
         readonly IDataReader m_Source;
@@ -48,7 +48,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         }
 #endif
 
-#if NetStandard13
+#if NETSTANDARD1_3
         internal SqlServerInsertBulk(SqlServerDataSourceBase dataSource, SqlServerObjectName tableName, DbDataReader dataReader, SqlBulkCopyOptions options) : base(dataSource)
         {
             if (dataSource == null)
