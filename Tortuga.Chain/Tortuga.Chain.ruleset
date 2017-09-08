@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<RuleSet Name="CA rules for Chain" ToolsVersion="14.0">
+<RuleSet Name="CA rules for Chain" ToolsVersion="15.0">
   <IncludeAll Action="Warning" />
   <Rules AnalyzerId="DevExpress.CodeAnalysis.CSharp.Diagnostics" RuleNamespace="DevExpress.CodeAnalysis.CSharp.Diagnostics">
     <Rule Id="CRR0013" Action="Info" />

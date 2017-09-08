@@ -3,10 +3,10 @@ using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Materializers;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 #if !DataTable_Missing
 using System.Data;
-using System.Diagnostics.CodeAnalysis;
 #endif
 
 namespace Tortuga.Chain.CommandBuilders

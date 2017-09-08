@@ -2,6 +2,12 @@ using System.Data.Common;
 
 namespace Tortuga.Chain.CommandBuilders
 {
+    /// <summary>
+    /// Interface IUpdateManyCommandBuilder
+    /// </summary>
+    /// <typeparam name="TCommand">The type of the t command.</typeparam>
+    /// <typeparam name="TParameter">The type of the t parameter.</typeparam>
+    /// <seealso cref="Tortuga.Chain.CommandBuilders.IUpdateManyCommandBuilder" />
     public interface IUpdateManyCommandBuilder<TCommand, TParameter> : IUpdateManyCommandBuilder
                     where TCommand : DbCommand
             where TParameter : DbParameter
@@ -25,9 +31,9 @@ namespace Tortuga.Chain.CommandBuilders
         /// Adds (or replaces) the filter on this command builder.
         /// </summary>
         /// <param name="whereClause">The where clause.</param>
-        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="whereArgumentValue">The where clause argument value.</param>
         /// <returns></returns>
-        new MultipleRowDbCommandBuilder<TCommand, TParameter> WithFilter(string whereClause, object argumentValue);
+        new MultipleRowDbCommandBuilder<TCommand, TParameter> WithFilter(string whereClause, object whereArgumentValue);
 
         /// <summary>
         /// Applies this command to all rows.

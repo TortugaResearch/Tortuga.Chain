@@ -72,9 +72,8 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Tortuga.Anchor, Version=1.1.6213.3222, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
-      <HintPath>..\packages\Tortuga.Anchor.1.1.6213.3222\lib\net46\Tortuga.Anchor.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Tortuga.Anchor, Version=1.2.6283.989, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tortuga.Anchor.1.2.6283.989\lib\net46\Tortuga.Anchor.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

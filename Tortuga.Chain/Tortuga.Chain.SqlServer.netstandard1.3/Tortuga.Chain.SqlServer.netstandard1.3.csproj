@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard1.3</TargetFramework>
+    <DefineConstants>$(DefineConstants);SqlDependency_Missing;System_Configuration_Missing;Serialization_Missing;TypeInfo_Is_Not_Type;RUNTIME_CACHE_MISSING;IDataErrorInfo_Missing;INotifyDataErrorInfo_Missing;NetStandard13;DataTable_Missing;Thread_Missing;OleDb_Missing</DefineConstants>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <AssemblyName>Tortuga.Chain.SqlServer</AssemblyName>
+    <PackageId>Tortuga.Chain.SqlServer.netstandard1.3</PackageId>
+    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
+    <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
+    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Tortuga.Chain.SqlServer.source\Properties\LibrarySharedAssemblyInfo.cs;..\ProductSharedAssemblyInfo.cs" />
+    <Compile Include="..\Tortuga.Chain.SqlServer.source\shared\**\*.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Data.SqlClient" Version="4.3.0" />
+    <PackageReference Include="Tortuga.Chain.Core" Version="1.1.6311.36259" />
+  </ItemGroup>
+
+</Project>

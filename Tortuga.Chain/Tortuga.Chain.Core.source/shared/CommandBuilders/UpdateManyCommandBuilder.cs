@@ -1,4 +1,5 @@
 using System.Data.Common;
+using System.Diagnostics.CodeAnalysis;
 using Tortuga.Chain.DataSources;
 
 namespace Tortuga.Chain.CommandBuilders
@@ -10,6 +11,7 @@ namespace Tortuga.Chain.CommandBuilders
     /// <typeparam name="TParameter">The type of the t parameter.</typeparam>
     /// <seealso cref="MultipleRowDbCommandBuilder{TCommand, TParameter}" />
     /// <seealso cref="IUpdateManyCommandBuilder" />
+    [SuppressMessage("Microsoft.Maintainability", "CA1501:AvoidExcessiveInheritance")]
     public abstract class UpdateManyCommandBuilder<TCommand, TParameter> : MultipleRowDbCommandBuilder<TCommand, TParameter>, IUpdateManyCommandBuilder<TCommand, TParameter>
         where TCommand : DbCommand
         where TParameter : DbParameter

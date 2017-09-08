@@ -1,8 +1,8 @@
 ﻿# Batch Insert
 
-* `ds.InsertBatch(tableName, tableTypeName, DataTable, InsertOptions)`
-* `ds.InsertBatch(tableName, tableTypeName, DbDataReader, InsertOptions)`
-* `ds.InsertBatch(tableName, tableTypeName, IEnumerable<TObject>, InsertOptions)`
+* `ds.InsertBatch(tableName, DataTable, tableTypeName, InsertOptions)`
+* `ds.InsertBatch(tableName, DbDataReader, tableTypeName, InsertOptions)`
+* `ds.InsertBatch(tableName, IEnumerable<TObject>, tableTypeName, InsertOptions)`
 
 Batch inserts fill the gap between individual inserts and bulk inserts. Like bulk inserts, a batch insert allows multiple rows to inserted at one time, which should improve performance. But like individual inserts, you can read back the results to get things such as primary keys.
 
@@ -15,7 +15,7 @@ Audit rules are in effect, so you can still override values such as CreatedDate/
 In this example, we are using a list of `Employee` objects to populate the `Employee` table. Our table type variable is named ` EmployeeType`.
 
 ```csharp
-DataSource.InsertBatch("dbo.Employee", "dbo.EmployeeType", employeeList).Execute();
+DataSource.InsertBatch("dbo.Employee", employeeList, "dbo.EmployeeType").Execute();
 ```
 
 ### Fetching back the results as objects
@@ -23,7 +23,7 @@ DataSource.InsertBatch("dbo.Employee", "dbo.EmployeeType", employeeList).Execute
 This modification of the previous example returns a new list of objects containing the populated employee keys. 
 
 ```csharp
-var newList = DataSource.InsertBatch("dbo.Employee", "dbo.EmployeeType", employeeList) ToCollection<Employee>().Execute();
+var newList = DataSource.InsertBatch("dbo.Employee", employeeList, "dbo.EmployeeType") ToCollection<Employee>().Execute();
 ```
 
 ### Fetching back just the primary keys
@@ -31,7 +31,7 @@ var newList = DataSource.InsertBatch("dbo.Employee", "dbo.EmployeeType", employe
 If you just want the newly inserted primary keys, you can use this syntax:
 
 ```csharp
-var keyList = DataSource.InsertBatch("dbo.Employee", "dbo.EmployeeType", employeeList) ToInt32List().Execute();
+var keyList = DataSource.InsertBatch("dbo.Employee", employeeList, "dbo.EmployeeType") ToInt32List().Execute();
 ```
 Warning:
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 using Tortuga.Anchor.Metadata;
@@ -56,6 +57,7 @@ namespace Tortuga.Chain.Appenders
             return result.Item1;
         }
 
+        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "ChildObject")]
         void Match(Tuple<List<T1>, List<T2>> result)
         {
             foreach (var child in result.Item2)
