@@ -130,8 +130,8 @@
     <Reference Include="Tortuga.Chain.CompiledMaterializers, Version=1.1.6311.38020, Culture=neutral, PublicKeyToken=8769fd32a2872cf0, processorArchitecture=MSIL">
       <HintPath>..\packages\Tortuga.Chain.CompiledMaterializers.1.1.6311.38009\lib\net46\Tortuga.Chain.CompiledMaterializers.dll</HintPath>
     </Reference>
-    <Reference Include="Tortuga.Chain.Core, Version=1.1.6311.36277, Culture=neutral, PublicKeyToken=8769fd32a2872cf0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Tortuga.Chain.Core.1.1.6311.36259\lib\net46\Tortuga.Chain.Core.dll</HintPath>
+    <Reference Include="Tortuga.Chain.Core, Version=1.1.6458.19723, Culture=neutral, PublicKeyToken=8769fd32a2872cf0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tortuga.Chain.Core.1.1.6458.19749\lib\net46\Tortuga.Chain.Core.dll</HintPath>
     </Reference>
   </ItemGroup>
   <Choose>
