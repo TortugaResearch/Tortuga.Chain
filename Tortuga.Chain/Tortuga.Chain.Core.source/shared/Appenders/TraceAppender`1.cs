@@ -52,7 +52,7 @@ namespace Tortuga.Chain.Appenders
             {
 
                 Debug.WriteLine("Command Text: " + e.Command.CommandText);
-#if !WINDOWS_UWP && !NetStandard13
+#if !WINDOWS_UWP && !NETSTANDARD1_3
                 Debug.Indent();
 #endif
                 foreach (DbParameter parameter in e.Command.Parameters)
@@ -60,7 +60,7 @@ namespace Tortuga.Chain.Appenders
                     var valueText = (parameter.Value == null || parameter.Value == DBNull.Value) ? "<NULL>" : parameter.Value.ToString();
                     Debug.WriteLine($"Parameter: {parameter.ParameterName} = {valueText}");
                 }
-#if !WINDOWS_UWP && !NetStandard13
+#if !WINDOWS_UWP && !NETSTANDARD1_3
                 Debug.Unindent();
 #endif
             }

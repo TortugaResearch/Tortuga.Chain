@@ -29,10 +29,13 @@ namespace Tortuga.Chain.Materializers
         /// Execute the operation synchronously.
         /// </summary>
         /// <returns></returns>
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         [SuppressMessage("Microsoft.Globalization", "CA1306:SetLocaleForDataTypes")]
         public override DataTable Execute(object state = null)
         {
-            DataTable dt = new DataTable();
+            var ds = new DataSet() { EnforceConstraints = false /*needed for PostgreSql*/};
+            var dt = new DataTable();
+            ds.Tables.Add(dt);
             Prepare().Execute(cmd =>
             {
                 using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess))
@@ -55,7 +58,9 @@ namespace Tortuga.Chain.Materializers
         /// <returns></returns>
         public override async Task<DataTable> ExecuteAsync(CancellationToken cancellationToken, object state = null)
         {
-            DataTable dt = new DataTable();
+            var ds = new DataSet() { EnforceConstraints = false /*needed for PostgreSql*/};
+            var dt = new DataTable();
+            ds.Tables.Add(dt);
             await Prepare().ExecuteAsync(async cmd =>
             {
                 using (var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SequentialAccess, cancellationToken).ConfigureAwait(false))

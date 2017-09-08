@@ -32,10 +32,10 @@
 
     <dependencies>
       <group targetFramework="net45">
-        <dependency id="Tortuga.Chain.Core" version="1.0.6144.43048" />
+        <dependency id="Tortuga.Chain.Core" version="1.1.6311.36259" />
       </group>
       <group targetFramework="net46">
-        <dependency id="Tortuga.Chain.Core" version="1.0.6144.43048" />
+        <dependency id="Tortuga.Chain.Core" version="1.1.6311.36259" />
       </group>
     </dependencies>
 

@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <AssemblyName>Tortuga.Chain.PostgreSql</AssemblyName>
+
+    <PackageId>Tortuga.Chain.PostgreSql.netstandard2.0</PackageId>
+    <DefineConstants>$(DefineConstants);OleDb_Missing;SqlDependency_Missing;System_Configuration_Missing</DefineConstants>
+    <NetStandardImplicitPackageVersion>2.0.0</NetStandardImplicitPackageVersion>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
+    <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
+    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
+    
+  </PropertyGroup>
+
+
+  <ItemGroup>
+    <Compile Include="..\Tortuga.Chain.PostgreSql.source\Properties\LibrarySharedAssemblyInfo.cs;..\ProductSharedAssemblyInfo.cs" />
+    <Compile Include="..\Tortuga.Chain.PostgreSql.source\shared\**\*.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Npgsql" Version="3.2.5" />
+    <PackageReference Include="Tortuga.Chain.Core" Version="1.1.6458.19749" />
+  </ItemGroup>
+
+</Project>

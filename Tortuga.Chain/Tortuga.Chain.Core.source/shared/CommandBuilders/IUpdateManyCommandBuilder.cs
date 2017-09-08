@@ -27,9 +27,9 @@ namespace Tortuga.Chain.CommandBuilders
         /// Adds (or replaces) the filter on this command builder.
         /// </summary>
         /// <param name="whereClause">The where clause.</param>
-        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="whereArgumentValue">The argument value.</param>
         /// <returns></returns>
-        IMultipleRowDbCommandBuilder WithFilter(string whereClause, object argumentValue);
+        IMultipleRowDbCommandBuilder WithFilter(string whereClause, object whereArgumentValue);
 
         /// <summary>
         /// Applies this command to all rows.

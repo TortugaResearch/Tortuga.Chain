@@ -4,4 +4,9 @@
 [assembly: AssemblyDescription("Fluent ORM for .NET and PostgreSQL.")]
 
 [assembly: AssemblyCulture("")]
-[assembly: AssemblyVersion("1.0.*")]
+
+#if NETSTANDARD2_0
+[assembly: AssemblyVersion("1.1")]
+#else
+[assembly: AssemblyVersion("1.1.*")]
+#endif

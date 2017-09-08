@@ -560,6 +560,27 @@ namespace Tortuga.Chain.PostgreSql
 
 
         /// <summary>
+        /// This is used to query a scalar function.
+        /// </summary>
+        /// <param name="scalarFunctionName">Name of the scalar function.</param>
+        /// <param name="functionArgumentValue">The function argument.</param>
+        /// <returns></returns>
+        public ScalarDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> ScalarFunction(PostgreSqlObjectName scalarFunctionName, object functionArgumentValue)
+        {
+            return new PostgreSqlScalarFunction(this, scalarFunctionName, functionArgumentValue);
+        }
+
+        /// <summary>
+        /// This is used to query a scalar function.
+        /// </summary>
+        /// <param name="scalarFunctionName">Name of the scalar function.</param>
+        /// <returns></returns>
+        public ScalarDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> ScalarFunction(PostgreSqlObjectName scalarFunctionName)
+        {
+            return new PostgreSqlScalarFunction(this, scalarFunctionName, null);
+        }
+
+        /// <summary>
         /// This is used to query a table valued function.
         /// </summary>
         /// <param name="tableFunctionName">Name of the table function.</param>
@@ -750,11 +771,11 @@ namespace Tortuga.Chain.PostgreSql
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="updateExpression">The update expression.</param>
-        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="updateArgumentValue">The argument value.</param>
         /// <param name="options">The update options.</param>
-        public IUpdateManyCommandBuilder<NpgsqlCommand, NpgsqlParameter> UpdateSet(PostgreSqlObjectName tableName, string updateExpression, object argumentValue, UpdateOptions options = UpdateOptions.None)
+        public IUpdateManyCommandBuilder<NpgsqlCommand, NpgsqlParameter> UpdateSet(PostgreSqlObjectName tableName, string updateExpression, object updateArgumentValue, UpdateOptions options = UpdateOptions.None)
         {
-            return new PostgreSqlUpdateMany(this, tableName, updateExpression, argumentValue, options);
+            return new PostgreSqlUpdateMany(this, tableName, updateExpression, updateArgumentValue, options);
         }
 
 

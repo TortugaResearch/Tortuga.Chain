@@ -1,5 +1,11 @@
+using System;
+
 namespace Tortuga.Chain
 {
+    /// <summary>
+    /// Enum JoinOptions
+    /// </summary>
+    [Flags]
     public enum JoinOptions
     {
         /// <summary>
@@ -19,11 +25,13 @@ namespace Tortuga.Chain
         IgnoreUnmatchedChildren = 2,
 
 
+#if !Parallel_Missing
         /// <summary>
         /// Perform the join in parallel.
         /// </summary>
         /// <remarks>Lock overhead may make this slower than the normal mode. This relies on PLINQ, which may decide to not go parallel for small collections.</remarks>
         Parallel = 4,
+#endif
 
     }
 }

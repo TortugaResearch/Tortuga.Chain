@@ -563,10 +563,11 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="filterOptions">The filter options.</param>
         /// <param name="useSecondSlot">if set to <c>true</c> uses the second parameter slot.</param>
         /// <returns>System.String.</returns>
-        /// <exception cref="System.ArgumentNullException">filterValue - filterValue</exception>
+        /// <exception cref="ArgumentNullException">filterValue - filterValue</exception>
         /// <exception cref="MappingException">
         /// </exception>
         /// <exception cref="ArgumentNullException"></exception>
+        [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
         public string ApplyAnonymousFilterValue(object filterValue, FilterOptions filterOptions, bool useSecondSlot = false)
         {
             if (filterValue == null)

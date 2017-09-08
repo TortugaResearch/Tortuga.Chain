@@ -187,9 +187,9 @@ namespace Tortuga.Chain.Access
             return UpdateSet(tableName, updateExpression, options);
         }
 
-        IUpdateManyCommandBuilder IClass1DataSource.UpdateSet(string tableName, string updateExpression, object argumentValue, UpdateOptions options)
+        IUpdateManyCommandBuilder IClass1DataSource.UpdateSet(string tableName, string updateExpression, object updateArgumentValue, UpdateOptions options)
         {
-            return UpdateSet(tableName, updateExpression, argumentValue, options);
+            return UpdateSet(tableName, updateExpression, updateArgumentValue, options);
         }
 
         IUpdateManyCommandBuilder IClass1DataSource.UpdateSet(string tableName, object newValues, UpdateOptions options)

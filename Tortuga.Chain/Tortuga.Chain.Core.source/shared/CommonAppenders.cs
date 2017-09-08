@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -254,6 +255,7 @@ namespace Tortuga.Chain
         /// <param name="foreignKeyName">The name of the property used to get the foreign key from the child object.</param>
         /// <param name="targetCollectionName">The name of the collection property on the parent to add the child to.</param>
         /// <param name="joinOptions">The join options.</param>
+        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         public static ILink<List<T1>> Join<T1, T2, TKey>(this ILink<Tuple<List<T1>, List<T2>>> previousLink, string primaryKeyName, string foreignKeyName, string targetCollectionName, JoinOptions joinOptions = JoinOptions.None)
         {
             return new KeyJoinAppender<T1, T2, TKey>(previousLink, primaryKeyName, foreignKeyName, targetCollectionName, joinOptions);
@@ -269,6 +271,7 @@ namespace Tortuga.Chain
         /// <param name="keyName">The name of the property used to get the primary key from the parent object and the foreign key from the child object.</param>
         /// <param name="targetCollectionName">The name of the collection property on the parent to add the child to.</param>
         /// <param name="joinOptions">The join options.</param>
+        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         public static ILink<List<T1>> Join<T1, T2, TKey>(this ILink<Tuple<List<T1>, List<T2>>> previousLink, string keyName, string targetCollectionName, JoinOptions joinOptions = JoinOptions.None)
         {
             if (string.IsNullOrEmpty(keyName))

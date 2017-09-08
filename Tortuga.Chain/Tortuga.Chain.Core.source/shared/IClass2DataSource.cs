@@ -7,7 +7,7 @@ using Tortuga.Chain.CommandBuilders;
 namespace Tortuga.Chain
 {
     /// <summary>
-    /// A class 2 datasource includes stored procedures and table functions.
+    /// A class 2 data source that includes stored procedures and functions.
     /// </summary>
     /// <seealso cref="IClass1DataSource" />
     /// <remarks>Warning: This interface is meant to simulate multiple inheritance and work-around some issues with exposing generic types. Do not implement it in client code, as new method will be added over time.</remarks>
@@ -42,6 +42,21 @@ namespace Tortuga.Chain
         /// <param name="functionArgumentValue">The function argument value.</param>
         /// <returns></returns>
         ITableDbCommandBuilder TableFunction(string functionName, object functionArgumentValue);
+
+        /// <summary>
+        /// This is used to query a scalar function.
+        /// </summary>
+        /// <param name="scalarFunctionName">Name of the scalar function.</param>
+        /// <returns></returns>
+        IScalarDbCommandBuilder ScalarFunction(string scalarFunctionName);
+
+        /// <summary>
+        /// This is used to query a scalar function.
+        /// </summary>
+        /// <param name="scalarFunctionName">Name of the scalar function.</param>
+        /// <param name="functionArgumentValue">The function arguments.</param>
+        /// <returns></returns>
+        IScalarDbCommandBuilder ScalarFunction(string scalarFunctionName, object functionArgumentValue);
 
         //        /// <summary>
         //        /// Performs a bulk insert.

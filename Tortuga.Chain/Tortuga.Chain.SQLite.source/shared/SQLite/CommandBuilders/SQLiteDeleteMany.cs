@@ -31,7 +31,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
         readonly FilterOptions m_FilterOptions;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SQLiteDeleteWithFilter" /> class.
+        /// Initializes a new instance of the <see cref="SQLiteDeleteMany" /> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
         /// <param name="tableName">Name of the table.</param>
@@ -51,7 +51,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
 
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SQLiteDeleteWithFilter"/> class.
+        /// Initializes a new instance of the <see cref="SQLiteDeleteMany"/> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
         /// <param name="tableName">Name of the table.</param>
@@ -65,7 +65,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SQLiteDeleteWithFilter"/> class.
+        /// Initializes a new instance of the <see cref="SQLiteDeleteMany"/> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
         /// <param name="tableName">Name of the table.</param>
