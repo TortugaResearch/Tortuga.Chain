@@ -679,5 +679,25 @@ namespace Tortuga.Chain.Oracle
             return new OracleUpdateMany(this, tableName, newValues, options);
         }
 
+        /// <summary>
+        /// Executes the indicated scalar function.
+        /// </summary>
+        /// <param name="scalarFunctionName">Name of the scalar function.</param>
+        /// <returns>ScalarDbCommandBuilder&lt;OracleCommand, OracleParameter&gt;.</returns>
+        public ScalarDbCommandBuilder<OracleCommand, OracleParameter> ScalarFunction(OracleObjectName scalarFunctionName)
+        {
+            return new OracleScalarFunction(this, scalarFunctionName, null);
+        }
+
+        /// <summary>
+        /// Executes the indicated scalar function.
+        /// </summary>
+        /// <param name="scalarFunctionName">Name of the scalar function.</param>
+        /// <param name="functionArgumentValue">The function argument value.</param>
+        /// <returns>ScalarDbCommandBuilder&lt;OracleCommand, OracleParameter&gt;.</returns>
+        public ScalarDbCommandBuilder<OracleCommand, OracleParameter> ScalarFunction(OracleObjectName scalarFunctionName, object functionArgumentValue)
+        {
+            return new OracleScalarFunction(this, scalarFunctionName, functionArgumentValue);
+        }
     }
 }

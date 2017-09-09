@@ -96,6 +96,7 @@
     <Compile Include="Shared\Oracle\CommandBuilders\OracleTableOrView.cs" />
     <Compile Include="Shared\Oracle\CommandBuilders\OracleUpdateMany.cs" />
     <Compile Include="Shared\Oracle\CommandBuilders\OracleUpdateObject`1.cs" />
+    <Compile Include="Shared\Oracle\CommandBuilders\OracleScalarFunction.cs" />
     <Compile Include="Shared\Oracle\OracleCommandExecutionToken.cs" />
     <Compile Include="Shared\Oracle\OracleDataSourceBase.cs" />
     <Compile Include="Shared\Oracle\OracleDataSourceBase.Interfaces.cs" />
