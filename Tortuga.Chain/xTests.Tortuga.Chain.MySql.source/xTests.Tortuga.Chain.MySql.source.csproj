@@ -59,6 +59,9 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.4.0\lib\net461\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="Tortuga.Anchor, Version=1.0.6144.42409, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
       <HintPath>..\packages\Tortuga.Anchor.1.0.6144.42409\lib\net46\Tortuga.Anchor.dll</HintPath>
       <Private>True</Private>
