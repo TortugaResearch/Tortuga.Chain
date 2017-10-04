@@ -578,7 +578,7 @@ namespace Tortuga.Chain.SqlServer
         }
 #endif
 
-#if NetStandard13
+#if NETSTANDARD1_3
         /// <summary>
         /// Inserts the batch of records using bulk insert.
         /// </summary>
@@ -638,7 +638,7 @@ namespace Tortuga.Chain.SqlServer
         }
 #endif
 
-#if NetStandard13
+#if NETSTANDARD1_3
         /// <summary>
         /// Inserts the batch of records using bulk insert.
         /// </summary>

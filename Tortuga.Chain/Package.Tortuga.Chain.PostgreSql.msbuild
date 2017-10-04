@@ -16,10 +16,12 @@
     <ResultDll>Tortuga.Chain.PostgreSql.dll</ResultDll>
     <ResultPdb>Tortuga.Chain.PostgreSql.pdb</ResultPdb>
     <ResultXml>Tortuga.Chain.PostgreSql.xml</ResultXml>
+    <ResultDepsJson>Tortuga.Chain.PostgreSql.deps.json</ResultDepsJson>
 
     <SourcePath>$(MSBuildProjectDirectory)\Tortuga.Chain.PostgreSql.source</SourcePath>
     <Net45Path>$(MSBuildProjectDirectory)\Tortuga.Chain.PostgreSql.net45</Net45Path>
     <Net46Path>$(MSBuildProjectDirectory)\Tortuga.Chain.PostgreSql.net46</Net46Path>
+    <NetStandard20Path>$(MSBuildProjectDirectory)\Tortuga.Chain.PostgreSql.netstandard2.0</NetStandard20Path>
 
     <VersionSource>$(SourcePath)\bin\Release\$(ResultDll)</VersionSource>
     <NuspecName>Tortuga.Chain.PostgreSql.nuspec</NuspecName>
@@ -70,6 +72,14 @@
     </ItemGroup>
     <Copy SourceFiles="@(Net46Output)" DestinationFolder="$(BuildOutputPath)\lib\net46" />
 
+    <ItemGroup>
+      <NetStandard20Output Include="$(NetStandard20Path)\bin\Release\netstandard2.0\$(ResultDll)" />
+      <NetStandard20Output Include="$(NetStandard20Path)\bin\Release\netstandard2.0\$(ResultPdb)" />
+      <NetStandard20Output Include="$(NetStandard20Path)\bin\Release\netstandard2.0\$(ResultXml)" />
+      <NetStandard20Output Include="$(NetStandard20Path)\bin\Release\netstandard2.0\$(ResultDepsJson)" />
+    </ItemGroup>
+    <Copy SourceFiles="@(NetStandard20Output)" DestinationFolder="$(BuildOutputPath)\lib\netstandard2.0" />
+    
   </Target>
 
   <Target Name="PackageHelp">
