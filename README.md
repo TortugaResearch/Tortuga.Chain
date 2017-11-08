@@ -100,7 +100,7 @@ var vehicleKey = dataSource.Insert("Vehicle", new { VehicleID = "65476XC54E", Ma
 
 ```csharp
 var car = dataSource.GetById("Vehicle", vehicleKey).ToObject<Vehicle>().Execute();
-var cars = dataSource.From("Vehicle", new {Make = "Cadillac").ToCollection<Vehicle>().Execute();
+var cars = dataSource.From("Vehicle", new { Make = "Cadillac" }).ToCollection<Vehicle>().Execute();
 ```
 
 #### Update
