@@ -157,4 +157,3 @@ The final link in any chain is the execution mode. There are two basic options:
 
 Both options accept a `state` parameter. This has no direct effect, but can be used to facilitate logging. `ExecuteAsync` also accepts an optional cancellation token.
 
-
