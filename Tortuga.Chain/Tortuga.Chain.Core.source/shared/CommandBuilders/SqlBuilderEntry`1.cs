@@ -57,6 +57,18 @@ namespace Tortuga.Chain.CommandBuilders
             }
         }
 
+        public bool UseClrNameAsAlias
+        {
+            get { return (m_Flags & Flags.UseClrNameAsAlias) > 0; }
+            internal set
+            {
+                if (value)
+                    m_Flags = m_Flags | Flags.UseClrNameAsAlias;
+                else
+                    m_Flags = m_Flags & ~Flags.UseClrNameAsAlias;
+            }
+        }
+
         /// <summary>
         /// Gets or sets a value indicating whether this column should be treated as primary key.
         /// </summary>
@@ -226,6 +238,11 @@ namespace Tortuga.Chain.CommandBuilders
             /// This allows the parameter to be used a second time. It is needed when using anonymous parameters.
             /// </summary>
             UseParameter2 = 512,
+
+            /// <summary>
+            /// The use Clr name as alias when reading. Used for object materialization purposes.
+            /// </summary>
+            UseClrNameAsAlias = 1024
         }
 
     }
