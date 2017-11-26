@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.12
+VisualStudioVersion = 15.0.27004.2009
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{AAE3DA8A-65B5-4A2E-BB48-002C3C8D045B}"
 	ProjectSection(SolutionItems) = preProject
@@ -46,7 +46,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xTests.Tortuga.Chain.OleDbS
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tortuga.Chain.SqlServer.netstandard1.3", "Tortuga.Chain.SqlServer.netstandard1.3\Tortuga.Chain.SqlServer.netstandard1.3.csproj", "{BF5F7724-0C2C-487C-AEA9-6841EE6756B3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tortuga.Chain.SqlServer.netstandard2.0", "Tortuga.Chain.SqlServer.netstandard2.0\Tortuga.Chain.SqlServer.netstandard2.0.csproj", "{E6D25DEE-6E9B-4AC2-A9E7-F73627BFB72D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tortuga.Chain.SqlServer.netstandard2.0", "Tortuga.Chain.SqlServer.netstandard2.0\Tortuga.Chain.SqlServer.netstandard2.0.csproj", "{E6D25DEE-6E9B-4AC2-A9E7-F73627BFB72D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

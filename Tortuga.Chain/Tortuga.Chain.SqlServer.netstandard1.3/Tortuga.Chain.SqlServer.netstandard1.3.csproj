@@ -23,7 +23,7 @@
 
   <ItemGroup>
     <PackageReference Include="System.Data.SqlClient" Version="4.4.0" />
-    <PackageReference Include="Tortuga.Chain.Core" Version="1.1.6458.19749" />
+    <PackageReference Include="Tortuga.Chain.Core" Version="1.2.6536.42693" />
   </ItemGroup>
 
 </Project>
