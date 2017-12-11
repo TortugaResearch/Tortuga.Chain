@@ -39,7 +39,7 @@ namespace Tortuga.Chain.Metadata
             if (!string.IsNullOrWhiteSpace(name))
             {
                 ClrName = Utilities.ToClrName(name);
-                SqlVariableName = "@" + name;
+                SqlVariableName = "@" + ClrName;
             }
 
             IsNullable = isNullable;

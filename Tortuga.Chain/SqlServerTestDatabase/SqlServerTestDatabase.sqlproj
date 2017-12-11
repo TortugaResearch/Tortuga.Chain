@@ -98,6 +98,7 @@
     <Build Include="HR\EmployeeTable.sql" />
     <Build Include="HR\EmployeeWithTrigger.sql" />
     <Build Include="HR\EmployeeCount.sql" />
+    <Build Include="dbo\ColumnWithSpace.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="SqlServerTestDatabase.refactorlog" />
