@@ -7,6 +7,7 @@ A Fluent ORM for .NET
 * [Documentation Website](https://docevaad.github.io/Chain)
 * [API Reference](http://docevaad.github.io/Chain/API/Index.html)
 * [Chain Wiki](https://github.com/docevaad/Chain/wiki)
+* [Chain vs Dapper](https://github.com/docevaad/Chain/wiki/A-Chain-comparison-to-Dapper)
 
 ## Getting Started
 
