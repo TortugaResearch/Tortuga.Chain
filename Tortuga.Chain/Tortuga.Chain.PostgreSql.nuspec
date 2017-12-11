@@ -32,18 +32,18 @@
 
     <dependencies>
       <group targetFramework="net45">
-        <dependency id="Tortuga.Chain.Core" version="1.1.6458.19749" />
-        <dependency id="Npgsql" version="3.2.5" />
+        <dependency id="Tortuga.Chain.Core" version="1.2.6553.38983" />
+        <dependency id="Npgsql" version="3.2.6" />
       </group>
       <group targetFramework="net46">
-        <dependency id="Tortuga.Chain.Core" version="1.1.6458.19749" />
-        <dependency id="Npgsql" version="3.2.5" />
+        <dependency id="Tortuga.Chain.Core" version="1.2.6553.38983" />
+        <dependency id="Npgsql" version="3.2.6" />
       </group>
 
 
       <group targetFramework="netstandard2.0">
-        <dependency id="Tortuga.Chain.Core" version="1.1.6458.19749" />
-        <dependency id="Npgsql" version="3.2.5" />
+        <dependency id="Tortuga.Chain.Core" version="1.2.6553.38983" />
+        <dependency id="Npgsql" version="3.2.6" />
       </group>
     </dependencies>
   </metadata>
