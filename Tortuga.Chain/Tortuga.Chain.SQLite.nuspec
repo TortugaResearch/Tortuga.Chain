@@ -33,13 +33,13 @@
     <dependencies>
       <group targetFramework="net45">
         <dependency id="Microsoft.Data.Sqlite.Core" version="2.0.0" />
-        <dependency id="Tortuga.Chain.Core" version="1.1.6458.19749" />
-        <dependency id="Nito.AsyncEx" version="5.0.0-pre-04" />
+        <dependency id="Tortuga.Chain.Core" version="1.2.6553.38983" />
+        <dependency id="Nito.AsyncEx" version="4.0.1" />
       </group>
       <group targetFramework="net46">
         <dependency id="Microsoft.Data.Sqlite.Core" version="2.0.0" />
-        <dependency id="Tortuga.Chain.Core" version="1.1.6458.19749" />
-        <dependency id="Nito.AsyncEx" version="5.0.0-pre-04" />
+        <dependency id="Tortuga.Chain.Core" version="1.2.6553.38983" />
+        <dependency id="Nito.AsyncEx" version="4.0.1" />
       </group>
 
     </dependencies>

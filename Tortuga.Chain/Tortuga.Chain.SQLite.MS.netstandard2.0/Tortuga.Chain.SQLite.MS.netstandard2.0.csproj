@@ -20,7 +20,8 @@
 
 
   <ItemGroup>
-    <Compile Include="..\Tortuga.Chain.SQLite.source\Properties\LibrarySharedAssemblyInfo.cs;..\ProductSharedAssemblyInfo.cs" />
+    <Compile Include="..\Tortuga.Chain.SQLite.MS.source\Properties\LibrarySharedAssemblyInfo-MS.cs;" />
+    <Compile Include="..\ProductSharedAssemblyInfo.cs" />
     <Compile Include="..\Tortuga.Chain.SQLite.source\shared\**\*.cs" />
   </ItemGroup>
 

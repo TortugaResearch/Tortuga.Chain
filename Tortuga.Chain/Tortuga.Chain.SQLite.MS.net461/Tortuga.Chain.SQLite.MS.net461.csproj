@@ -92,8 +92,8 @@
     <Compile Include="..\ProductSharedAssemblyInfo.cs">
       <Link>Properties\ProductSharedAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.SQLite.source\Properties\LibrarySharedAssemblyInfo.cs">
-      <Link>Properties\LibrarySharedAssemblyInfo.cs</Link>
+    <Compile Include="..\Tortuga.Chain.SQLite.MS.source\Properties\LibrarySharedAssemblyInfo-MS.cs">
+      <Link>Properties\LibrarySharedAssemblyInfo-MS.cs</Link>
     </Compile>
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
