@@ -39,6 +39,7 @@ namespace Tests.shared.Core
             var dataSource = DataSource(dataSourceName);
             try
             {
+                dataSource.Insert(EmployeeTableName, new Employee() { FirstName = "X", LastName = "Z", Title = Guid.NewGuid().ToString(), MiddleName = "A" }).Execute();
                 var currentUser = dataSource.From(EmployeeTableName).ToObject<Employee>(RowOptions.DiscardExtraRows).Execute();
 
                 var ds = AttachRules(dataSource).WithUser(currentUser);

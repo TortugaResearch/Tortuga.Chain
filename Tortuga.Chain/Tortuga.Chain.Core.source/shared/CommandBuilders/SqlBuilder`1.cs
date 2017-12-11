@@ -97,7 +97,7 @@ namespace Tortuga.Chain.CommandBuilders
 
                 for (var i = 0; i < m_Entries.Length; i++)
                 {
-                    if (m_Entries[i].Details.SqlName.Equals(column.SqlName, StringComparison.OrdinalIgnoreCase))
+                    if (string.Equals(m_Entries[i].Details.SqlName, column.SqlName, StringComparison.OrdinalIgnoreCase))
                     {
                         found = true;
                         //propertyFound = true;
@@ -225,7 +225,7 @@ namespace Tortuga.Chain.CommandBuilders
                 for (var i = 0; i < m_Entries.Length; i++)
                 {
                     var details = m_Entries[i].Details;
-                    if (details.SqlName.Equals(expression.ColumnName, StringComparison.OrdinalIgnoreCase) || details.ClrName.Equals(expression.ColumnName, StringComparison.OrdinalIgnoreCase))
+                    if (string.Equals(details.SqlName, expression.ColumnName, StringComparison.OrdinalIgnoreCase) || details.ClrName.Equals(expression.ColumnName, StringComparison.OrdinalIgnoreCase))
                     {
                         expression.Column = details;
                         break;
@@ -410,12 +410,12 @@ namespace Tortuga.Chain.CommandBuilders
                     for (var i = 0; i < m_Entries.Length; i++)
                         m_Entries[i].IsKey = false;
 
-                var found = false;
+                var found = false; //Any matching properties were found in m_Entries
 
                 var metadata = MetadataCache.GetMetadata(argumentValue.GetType());
                 foreach (var property in metadata.Properties)
                 {
-                    var propertyFound = false;
+                    var propertyFound = false; //Property exists at all in m_Entries
 
                     var mappedColumnName = property.MappedColumnName;
 
@@ -424,11 +424,13 @@ namespace Tortuga.Chain.CommandBuilders
 
                     for (var i = 0; i < m_Entries.Length; i++)
                     {
-                        if (m_Entries[i].Details.SqlName.Equals(mappedColumnName, StringComparison.OrdinalIgnoreCase))
-                            propertyFound = true;
+                        var isMatch = false; //property is match for m_Entries[i]
+
+                        if (string.Equals(m_Entries[i].Details.SqlName, mappedColumnName, StringComparison.OrdinalIgnoreCase))
+                            isMatch = true;
                         else if (m_Entries[i].Details.ClrName.Equals(mappedColumnName, StringComparison.OrdinalIgnoreCase))
                         {
-                            propertyFound = true;
+                            isMatch = true;
                             m_Entries[i].UseClrNameAsAlias = true;
                         }
                         else if (string.Equals(m_Entries[i].Details.QuotedSqlName, mappedColumnName, StringComparison.OrdinalIgnoreCase))
@@ -436,8 +438,9 @@ namespace Tortuga.Chain.CommandBuilders
                             throw new MappingException($"Modify the ColumnAttribute for the desired column \"{mappedColumnName}\" to be \"{m_Entries[i].Details.SqlName}\". SQL Quoted column names are not supported.");
                         }
 
-                        if (propertyFound)
+                        if (isMatch)
                         {
+                            propertyFound = true;
                             found = true;
 
                             if (useObjectDefinedKeys && property.IsKey)
@@ -1107,7 +1110,7 @@ namespace Tortuga.Chain.CommandBuilders
             {
                 foreach (var rule in softDeletes)
                 {
-                    if (m_Entries[i].Details.SqlName.Equals(rule.ColumnName, StringComparison.OrdinalIgnoreCase) || m_Entries[i].Details.ClrName.Equals(rule.ColumnName, StringComparison.OrdinalIgnoreCase))
+                    if (string.Equals(m_Entries[i].Details.SqlName, rule.ColumnName, StringComparison.OrdinalIgnoreCase) || m_Entries[i].Details.ClrName.Equals(rule.ColumnName, StringComparison.OrdinalIgnoreCase))
                     {
                         m_Entries[i].ParameterValue = rule.DeletedValue;
                         m_Entries[i].UseParameter2 = true;
@@ -1151,7 +1154,7 @@ namespace Tortuga.Chain.CommandBuilders
             {
                 foreach (var rule in softDeletes)
                 {
-                    if (m_Entries[i].Details.SqlName.Equals(rule.ColumnName, StringComparison.OrdinalIgnoreCase) || m_Entries[i].Details.ClrName.Equals(rule.ColumnName, StringComparison.OrdinalIgnoreCase))
+                    if (string.Equals(m_Entries[i].Details.SqlName, rule.ColumnName, StringComparison.OrdinalIgnoreCase) || m_Entries[i].Details.ClrName.Equals(rule.ColumnName, StringComparison.OrdinalIgnoreCase))
                     {
                         m_Entries[i].ParameterValue = rule.DeletedValue;
                         m_Entries[i].UseParameter = true;
