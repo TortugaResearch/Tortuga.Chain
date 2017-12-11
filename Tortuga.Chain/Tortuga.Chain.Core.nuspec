@@ -4,7 +4,7 @@
     <id>Tortuga.Chain.Core</id>
     <version></version>
     <authors>David Tomcik, Jonathan Allen</authors>
-    <copyright>Copyright David Tomcik, Jonathan Allen 2016</copyright>
+    <copyright>Copyright David Tomcik, Jonathan Allen 2016,2017</copyright>
     <description>A fluent ORM for .NET.</description>
     <tags>ORM, Fluent</tags>
     <language>en-US</language>

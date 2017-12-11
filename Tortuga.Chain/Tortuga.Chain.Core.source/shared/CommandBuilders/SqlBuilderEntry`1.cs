@@ -57,6 +57,10 @@ namespace Tortuga.Chain.CommandBuilders
             }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the SQL generator should produce an AS clause for this column.
+        /// </summary>
+        /// <remarks>This is used when the actual column name doesn't match the CLR-compatible version of the column name. This could happen when the real column name has spaces.</remarks>
         public bool UseClrNameAsAlias
         {
             get { return (m_Flags & Flags.UseClrNameAsAlias) > 0; }
