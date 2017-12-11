@@ -635,11 +635,11 @@ namespace Tests.Class1Databases
         [TestMethod]
         public void FromTests_TakeRandom()
         {
-            var result = DataSource.From(EmployeeTableName, new { Title = Key1000 }).WithLimits(100, SQLiteLimitOption.RandomSampleRows).ToCollection<Employee>().Execute();
+            var result = DataSource.From(EmployeeTableName, new { Title = s_Key1000 }).WithLimits(100, SQLiteLimitOption.RandomSampleRows).ToCollection<Employee>().Execute();
             Assert.AreEqual(100, result.Count, "Count");
             foreach (var item in result)
             {
-                Assert.AreEqual(Key1000, item.Title, "Filter");
+                Assert.AreEqual(s_Key1000, item.Title, "Filter");
             }
         }
 #endif
