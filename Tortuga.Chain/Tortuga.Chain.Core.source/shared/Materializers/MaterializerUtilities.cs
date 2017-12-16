@@ -191,10 +191,12 @@ namespace Tortuga.Chain.Materializers
             if (value != null && targetType != value.GetType())
             {
                 var targetTypeInfo = targetType.GetTypeInfo();
+                //var isNullable = !targetTypeInfo.IsValueType;
 
                 //For Nullable<T>, we only care about the type parameter
                 if (targetType.Name == "Nullable`1" && targetTypeInfo.IsGenericType)
                 {
+                    //isNullable = true;
                     targetType = targetType.GenericTypeArguments[0];
                     targetTypeInfo = targetType.GetTypeInfo();
                 }
@@ -249,7 +251,7 @@ namespace Tortuga.Chain.Materializers
                 }
             }
 
-            if (mapper == null)
+            if (mapper == null || value == null)
                 property.InvokeSet(target, value);
             else
                 mapper.InvokeSet(target, value);

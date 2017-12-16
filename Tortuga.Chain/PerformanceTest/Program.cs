@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using Tortuga.Chain;
@@ -8,13 +10,59 @@ namespace PerformanceTest
 {
     class Program
     {
+
+        [Table("Items", Schema = "dbo")]
+        public class Item
+        {
+            public string ItemNbr { get; set; } = "";
+            public string CategoryID { get; set; } = "";
+            public string ItemDesc { get; set; } = "";
+            public string ItemContents { get; set; } = "";
+            public decimal? Price { get; set; } = 0.0M;
+        }
+
         static SqlServerDataSource DataSource;
+
+        static void Issue213()
+        {
+            DataSource = new SqlServerDataSource("data source=.;initial catalog=Test;integrated security=True");
+
+            //DataSource.Sql("Truncate Table dbo.Items").Execute();
+
+            //var list = new List<Item>();
+            //for (var i = 0; i < 100; i++)
+            //    for (var j = 0; j < 100; j++)
+            //    {
+            //        list.Add(new Item()
+            //        {
+            //            ItemNbr = "G" + i.ToString("000"),
+            //            CategoryID = "J" + j.ToString("000"),
+            //            ItemDesc = "G" + i.ToString("000") + "-" + "J" + j.ToString("000"),
+            //            Price = i + j * 0.01M
+            //        });
+
+            //    }
+            //var sw = Stopwatch.StartNew();
+            //DataSource.InsertBulk("dbo.Items", list).Execute();
+            //sw.Stop();
+            //Console.WriteLine(sw.ElapsedMilliseconds.ToString("N0"));
+
+            var single2 = DataSource.From<Item>(new { ItemDesc = "G000-J064" }).ToObject<Item>(RowOptions.DiscardExtraRows).Execute();
+            var list2 = DataSource.From<Item>(new { ItemDesc = "G000-J064" }).ToCollection<Item>().Execute();
+
+            var searchFilter = DataSource.From<Item>().ToString("CategoryID").Execute(); //grab any value
+
+            var single1 = DataSource.From<Item>(new { CategoryID = searchFilter }).ToObject<Item>(RowOptions.DiscardExtraRows).Execute();
+            var list1 = DataSource.From<Item>(new { CategoryID = searchFilter }).ToCollection<Item>().Execute();
+
+        }
         static void Main()
         {
             //ReflectionTest();
 
-             DatabaseTest();
+            //DatabaseTest();
 
+            Issue213();
         }
 
         private static void ReflectionTest()
