@@ -17,6 +17,7 @@ namespace Tests
                     Add(TestBase.AssemblyName, ds.Name, DataSourceType.Normal, view.Name);
                     Add(TestBase.AssemblyName, ds.Name, DataSourceType.Open, view.Name);
                     Add(TestBase.AssemblyName, ds.Name, DataSourceType.Transactional, view.Name);
+                    Add(TestBase.AssemblyName, ds.Name, DataSourceType.Strict, view.Name);
                 }
             }
         }

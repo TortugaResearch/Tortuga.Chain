@@ -29,17 +29,20 @@ namespace Tortuga.Chain.Materializers
 
             foreach (var property in MetadataCache.GetMetadata(typeof(T)).Properties)
             {
-                if (property.CanWrite)
+                if (property.MappedColumnName != null)
                 {
-                    var genericMethod = methodType.MakeGenericMethod(property.PropertyType);
-                    var mapper = (MappedProperty<T>)genericMethod.Invoke(null, new object[] { property.MappedColumnName, property });
+                    if (property.CanWrite)
+                    {
+                        var genericMethod = methodType.MakeGenericMethod(property.PropertyType);
+                        var mapper = (MappedProperty<T>)genericMethod.Invoke(null, new object[] { property.MappedColumnName, property });
 
-                    mappedProperties.Add(mapper);
-                }
+                        mappedProperties.Add(mapper);
+                    }
 
-                if (property.Decompose)
-                {
-                    decomposedProperties.Add(new MappedProperty<T>(property.MappedColumnName, property));
+                    if (property.Decompose)
+                    {
+                        decomposedProperties.Add(new MappedProperty<T>(property.MappedColumnName, property));
+                    }
                 }
             }
 

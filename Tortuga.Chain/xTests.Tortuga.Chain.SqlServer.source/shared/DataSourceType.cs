@@ -6,7 +6,8 @@ namespace Tests
     {
         Normal,
         Transactional,
-        Open
+        Open,
+        Strict
     }
 
 }
