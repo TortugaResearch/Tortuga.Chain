@@ -78,6 +78,7 @@
     <Compile Include="shared\MySql\MySqlDataSourceSettings.cs" />
     <Compile Include="shared\MySql\MySqlMetadataCache.cs" />
     <Compile Include="shared\MySql\MySqlOpenDataSource.cs" />
+    <Compile Include="shared\MySql\MySqlTableOrViewMetadata`1.cs" />
     <Compile Include="shared\MySql\MySqlTransactionalDataSource.cs" />
     <Compile Include="shared\MySql\MySqlObjectName.cs" />
     <Compile Include="shared\MySql\Utilities.cs" />

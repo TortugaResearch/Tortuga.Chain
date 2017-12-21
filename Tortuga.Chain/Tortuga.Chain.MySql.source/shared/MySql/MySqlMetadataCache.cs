@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Data;
 using Tortuga.Anchor;
 using Tortuga.Chain.Metadata;
 
@@ -85,22 +86,133 @@ namespace Tortuga.Chain.MySql
         /// <summary>
         /// Preloads the metadata for all tables.
         /// </summary>
+        /// <remarks>This will also load all views.</remarks>
         public void PreloadTables()
         {
-            throw new NotImplementedException();
+            const string tableList = "SHOW FULL TABLES";
+
+            using (var con = new MySqlConnection(m_ConnectionBuilder.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = new MySqlCommand(tableList, con))
+                {
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var name = reader.GetString(0);
+                            var tableType = reader.GetString(1);
+                            GetTableOrView(new MySqlObjectName(name));
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>
         /// Preloads the metadata for all views.
         /// </summary>
+        /// <remarks>In MySQL this has the same effect as calling PreloadTables.</remarks>
         public void PreloadViews()
         {
-            throw new NotImplementedException();
+            PreloadTables();
         }
 
         private TableOrViewMetadata<MySqlObjectName, MySqlDbType> GetTableOrViewInternal(MySqlObjectName tableName)
         {
-            throw new NotImplementedException();
+            const string TableSql =
+                @"SHOW FULL TABLES LIKE @TableName";
+
+
+            string actualName;
+            string tableType;
+
+            using (var con = new MySqlConnection(m_ConnectionBuilder.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = new MySqlCommand(TableSql, con))
+                {
+                    cmd.Parameters.AddWithValue("@TableName", tableName.Name);
+                    using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess))
+                    {
+                        if (!reader.Read())
+                            throw new MissingObjectException($"Could not find table or view {tableName}");
+                        actualName = reader.GetString(0);
+                        tableType = reader.GetString(1);
+                    }
+                }
+            }
+
+            var isTable = tableType == "BASE TABLE";
+            var columns = GetColumns(actualName);
+
+            return new MySqlTableOrViewMetadata<MySqlDbType>(new MySqlObjectName(actualName), isTable, columns);
+        }
+
+        /// <summary>
+        /// Gets the columns.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <returns></returns>
+        /// <remarks>WARNING: Only call this with verified table names. Otherwise a SQL injection attack can occur.</remarks>
+        List<ColumnMetadata<MySqlDbType>> GetColumns(string tableName)
+        {
+            var columnSql = "SHOW FULL COLUMNS FROM " + tableName;
+
+            var columns = new List<ColumnMetadata<MySqlDbType>>();
+            using (var con = new MySqlConnection(m_ConnectionBuilder.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = new MySqlCommand(columnSql, con))
+                {
+                    using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess))
+                    {
+                        while (reader.Read())
+                        {
+                            var name = reader.GetString(reader.GetOrdinal("Field"));
+                            var rawType = reader.GetString(reader.GetOrdinal("Type"));
+                            var collation = reader.IsDBNull(reader.GetOrdinal("Collation")) ? null : reader.GetString(reader.GetOrdinal("Collation"));
+                            var isNullable = reader.GetString("Null") == "YES";
+                            var key = reader.GetString("Key");
+                            var @default = reader.IsDBNull(reader.GetOrdinal("Default")) ? null : reader.GetString("Default");
+                            var extra = reader.GetString("Extra");
+                            var comment = reader.GetString("Comment");
+
+
+                            var computed = extra.Contains("VIRTUAL");
+                            var primary = key.Contains("PRI");
+                            var isIdentity = extra.Contains("auto_increment");
+                            MySqlDbType dbType;
+
+                            string typeName;
+                            int? maxLength;
+                            int? precision;
+                            int? scale;
+
+                            AdjustTypeDetails(rawType, out typeName, out maxLength, out precision, out scale, out dbType);
+
+                            columns.Add(new ColumnMetadata<MySqlDbType>(name, computed, primary, isIdentity, typeName, dbType, "`" + name + "`", isNullable, maxLength, precision, scale, rawType));
+                        }
+                    }
+                }
+            }
+            return columns;
+        }
+
+        void AdjustTypeDetails(string rawType, out string typeName, out int? maxLength, out int? precision, out int? scale, out MySqlDbType dbType)
+        {
+            typeName = rawType;
+            if (typeName.Contains("("))
+                typeName = typeName.Substring(typeName.IndexOf("("));
+            if (typeName.Contains(" "))
+                typeName = typeName.Substring(typeName.IndexOf(" "));
+
+            maxLength = null;
+            precision = null;
+            scale = null;
+            dbType = MySqlDbType.Binary;
+
+            throw new NotImplementedException("Finish me!");
         }
 
         private TableFunctionMetadata<MySqlObjectName, MySqlDbType> GetTableFunctionInternal(MySqlObjectName tableFunctionName)

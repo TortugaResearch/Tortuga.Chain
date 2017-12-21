@@ -1,6 +1,6 @@
 namespace Tortuga.Chain.Metadata
 {
-    
+
 
 
     /// <summary>
@@ -36,8 +36,9 @@ namespace Tortuga.Chain.Metadata
         /// <summary>
         /// Gets the name used by SQL Server.
         /// </summary>
-        public string 
-            SqlName { get; protected set; }
+        public string
+            SqlName
+        { get; protected set; }
         /// <summary>
         /// Gets the column, formatted as a SQL variable.
         /// </summary>
@@ -85,6 +86,14 @@ namespace Tortuga.Chain.Metadata
         /// The full name of the type.
         /// </value>
         public string FullTypeName { get; protected set; }
+
+        /// <summary>
+        /// Gets or sets  a value indicating whether this column is an unsigned integer.
+        /// </summary>
+        /// <value>
+        /// The unsigned.
+        /// </value>
+        public bool? Unsigned { get; protected set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether this column is nullable.
