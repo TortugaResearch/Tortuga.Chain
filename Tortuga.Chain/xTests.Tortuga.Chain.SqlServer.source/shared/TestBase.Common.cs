@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using System.Threading;
 using Tortuga.Chain;
 using Tortuga.Chain.DataSources;
@@ -10,7 +9,7 @@ namespace Tests
     partial class TestBase
     {
 
-        protected readonly ITestOutputHelper m_Output;
+        private readonly ITestOutputHelper m_Output;
 
         static int s_DataSourceCount;
 
@@ -62,6 +61,7 @@ namespace Tests
         }
         protected void WriteLine(string message)
         {
+#if Debug
             try
             {
                 m_Output.WriteLine(message);
@@ -71,6 +71,7 @@ namespace Tests
                 Debug.WriteLine("Error writing to xUnit log");
             }
             Debug.WriteLine(message);
+#endif
         }
 
         void CompiledMaterializers_MaterializerCompiled(object sender, MaterializerCompilerEventArgs e)

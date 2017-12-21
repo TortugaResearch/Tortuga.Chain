@@ -142,7 +142,7 @@ namespace Tortuga.Chain
             get { return m_SyncLock; }
         }
 
-#if !WINDOWS_UWP
+#if !System_Configuration_Missing
         /// <summary>
         /// Creates a new connection using the connection string in the app.config file.
         /// </summary>

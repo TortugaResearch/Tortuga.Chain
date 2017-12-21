@@ -16,6 +16,7 @@ namespace Tests
                 Add(TestBase.AssemblyName, ds.Name, DataSourceType.Normal);
                 Add(TestBase.AssemblyName, ds.Name, DataSourceType.Open);
                 Add(TestBase.AssemblyName, ds.Name, DataSourceType.Transactional);
+                Add(TestBase.AssemblyName, ds.Name, DataSourceType.Strict);
             }
         }
 
@@ -26,6 +27,7 @@ namespace Tests
                 Add(TestBase.AssemblyName, ds.Name, DataSourceType.Normal);
                 Add(TestBase.AssemblyName, ds.Name, DataSourceType.Open);
                 Add(TestBase.AssemblyName, ds.Name, DataSourceType.Transactional);
+                Add(TestBase.AssemblyName, ds.Name, DataSourceType.Strict);
             }
         }
     }

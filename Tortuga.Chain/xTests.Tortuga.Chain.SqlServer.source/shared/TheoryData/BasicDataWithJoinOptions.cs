@@ -20,6 +20,7 @@ namespace Tests
                     Add(TestBase.AssemblyName, ds.Name, DataSourceType.Normal, option);
                     Add(TestBase.AssemblyName, ds.Name, DataSourceType.Open, option);
                     Add(TestBase.AssemblyName, ds.Name, DataSourceType.Transactional, option);
+                    Add(TestBase.AssemblyName, ds.Name, DataSourceType.Strict, option);
                 }
         }
     }

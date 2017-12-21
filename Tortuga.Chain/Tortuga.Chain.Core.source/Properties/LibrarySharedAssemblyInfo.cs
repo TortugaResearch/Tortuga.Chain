@@ -6,7 +6,7 @@
 [assembly: AssemblyCulture("")]
 
 #if NETSTANDARD1_3 || NETSTANDARD2_0
-[assembly: AssemblyVersion("1.1")]
+[assembly: AssemblyVersion("1.2")]
 #else
-[assembly: AssemblyVersion("1.1.*")]
+[assembly: AssemblyVersion("1.2.*")]
 #endif

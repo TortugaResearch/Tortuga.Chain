@@ -17,6 +17,7 @@
       <Word>Tvp</Word>
       <Word>Postgre</Word>
       <Word>PostgreSql</Word>
+      <Word>ColumnAttribute</Word>
       <Word>MySql</Word>
     </Recognized>
     <Deprecated>
@@ -28,6 +29,7 @@
       <Term CompoundAlternate="">DiscardDuplicates</Term>
       <Term CompoundAlternate="">WithConstructor</Term>
       <Term CompoundAlternate="">PostgreSql</Term>
+      <Term CompoundAlternate="">ColumnAttribute</Term>
       <Term CompoundAlternate="">MySql</Term>
     </Compound>
     <DiscreteExceptions>

@@ -22,7 +22,6 @@
     <SourcePath>$(MSBuildProjectDirectory)\Tortuga.Chain.Core.source</SourcePath>
     <Net45Path>$(MSBuildProjectDirectory)\Tortuga.Chain.Core.net45</Net45Path>
     <Net46Path>$(MSBuildProjectDirectory)\Tortuga.Chain.Core.net46</Net46Path>
-    <Uap10Path>$(MSBuildProjectDirectory)\Tortuga.Chain.Core.uap10</Uap10Path>
     <NetStandard13Path>$(MSBuildProjectDirectory)\Tortuga.Chain.Core.netstandard1.3</NetStandard13Path>
     <NetStandard20Path>$(MSBuildProjectDirectory)\Tortuga.Chain.Core.netstandard2.0</NetStandard20Path>
 
@@ -74,14 +73,7 @@
       <Net46Output Include="$(Net46Path)\bin\Release\$(ResultXml)" />
     </ItemGroup>
     <Copy SourceFiles="@(Net46Output)" DestinationFolder="$(BuildOutputPath)\lib\net46" />
-
-    <ItemGroup>
-      <Uap10Output Include="$(Uap10Path)\bin\Release\$(ResultDll)" />
-      <Uap10Output Include="$(Uap10Path)\bin\Release\$(ResultPdb)" />
-      <Uap10Output Include="$(Uap10Path)\bin\Release\$(ResultXml)" />
-    </ItemGroup>
-    <Copy SourceFiles="@(Uap10Output)" DestinationFolder="$(BuildOutputPath)\lib\uap10" />
-   
+ 
     <ItemGroup>
       <NetStandard13Output Include="$(NetStandard13Path)\bin\Release\netstandard1.3\$(ResultDll)" />
       <NetStandard13Output Include="$(NetStandard13Path)\bin\Release\netstandard1.3\$(ResultPdb)" />

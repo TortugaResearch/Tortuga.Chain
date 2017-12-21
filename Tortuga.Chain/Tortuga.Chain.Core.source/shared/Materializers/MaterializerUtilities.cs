@@ -144,7 +144,7 @@ namespace Tortuga.Chain.Materializers
         /// <param name="decompositionPrefix">The decomposition prefix.</param>
         /// <remarks>This honors the Column and Decompose attributes.</remarks>
         [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
-        static internal void PopulateComplexObject(IReadOnlyDictionary<string, object> source, object target, string decompositionPrefix)
+        static internal void PopulateComplexObject<T>(IReadOnlyDictionary<string, object> source, T target, string decompositionPrefix)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source), $"{nameof(source)} is null.");
@@ -158,86 +158,189 @@ namespace Tortuga.Chain.Materializers
                 {
                     var value = source[mappedColumnName];
 
-                    if (value != null && property.PropertyType != value.GetType())
-                    {
-                        var targetType = property.PropertyType;
-                        var targetTypeInfo = targetType.GetTypeInfo();
-
-                        //For Nullable<T>, we only care about the type parameter
-                        if (targetType.Name == "Nullable`1" && targetTypeInfo.IsGenericType)
-                        {
-                            targetType = targetType.GenericTypeArguments[0];
-                            targetTypeInfo = targetType.GetTypeInfo();
-                        }
-
-                        //some database return strings when we want strong types
-                        if (value is string)
-                        {
-                            if (targetType == typeof(XElement))
-                                value = XElement.Parse((string)value);
-                            else if (targetType == typeof(XDocument))
-                                value = XDocument.Parse((string)value);
-                            else if (targetTypeInfo.IsEnum)
-                                value = Enum.Parse(targetType, (string)value);
-
-                            else if (targetType == typeof(bool))
-                                value = bool.Parse((string)value);
-                            else if (targetType == typeof(short))
-                                value = short.Parse((string)value);
-                            else if (targetType == typeof(int))
-                                value = int.Parse((string)value);
-                            else if (targetType == typeof(long))
-                                value = long.Parse((string)value);
-                            else if (targetType == typeof(float))
-                                value = float.Parse((string)value);
-                            else if (targetType == typeof(double))
-                                value = double.Parse((string)value);
-                            else if (targetType == typeof(decimal))
-                                value = decimal.Parse((string)value);
-
-                            else if (targetType == typeof(DateTime))
-                                value = DateTime.Parse((string)value);
-                            else if (targetType == typeof(DateTimeOffset))
-                                value = DateTimeOffset.Parse((string)value);
-                        }
-                        else
-                        {
-                            if (targetTypeInfo.IsEnum)
-                                value = Enum.ToObject(targetType, value);
-                        }
-
-                        //this will handle numeric conversions
-                        if (value != null && targetType != value.GetType())
-                        {
-                            try
-                            {
-                                value = Convert.ChangeType(value, targetType);
-                            }
-                            catch (Exception ex)
-                            {
-                                throw new MappingException($"Cannot map value of type {value.GetType().FullName} to property {property.Name} of type {targetType.Name}.", ex);
-                            }
-                        }
-                    }
-
-                    property.InvokeSet(target, value);
+                    value = SetProperty(target, property, value, null);
                 }
                 else if (property.Decompose)
                 {
-                    object child = null;
-
-                    if (property.CanRead)
-                        child = property.InvokeGet(target);
-
-                    if (child == null && property.CanWrite && property.PropertyType.GetConstructor(new Type[0]) != null)
-                    {
-                        child = Activator.CreateInstance(property.PropertyType);
-                        property.InvokeSet(target, child);
-                    }
-
-                    if (child != null)
-                        PopulateComplexObject(source, child, decompositionPrefix + property.DecompositionPrefix);
+                    SetDecomposedProperty(source, target, decompositionPrefix, property);
                 }
+            }
+        }
+
+        private static void SetDecomposedProperty(IReadOnlyDictionary<string, object> source, object target, string decompositionPrefix, PropertyMetadata property)
+        {
+            object child = null;
+
+            if (property.CanRead)
+                child = property.InvokeGet(target);
+
+            if (child == null && property.CanWrite && property.PropertyType.GetConstructor(new Type[0]) != null)
+            {
+                child = Activator.CreateInstance(property.PropertyType);
+                property.InvokeSet(target, child);
+            }
+
+            if (child != null)
+                PopulateComplexObject(source, child, decompositionPrefix + property.DecompositionPrefix);
+        }
+
+        private static object SetProperty<T>(T target, PropertyMetadata property, object value, OrdinalMappedProperty<T> mapper)
+        {
+            var targetType = property.PropertyType;
+
+            if (value != null && targetType != value.GetType())
+            {
+                var targetTypeInfo = targetType.GetTypeInfo();
+                //var isNullable = !targetTypeInfo.IsValueType;
+
+                //For Nullable<T>, we only care about the type parameter
+                if (targetType.Name == "Nullable`1" && targetTypeInfo.IsGenericType)
+                {
+                    //isNullable = true;
+                    targetType = targetType.GenericTypeArguments[0];
+                    targetTypeInfo = targetType.GetTypeInfo();
+                }
+
+                //some database return strings when we want strong types
+                if (value is string)
+                {
+                    if (targetType == typeof(XElement))
+                        value = XElement.Parse((string)value);
+                    else if (targetType == typeof(XDocument))
+                        value = XDocument.Parse((string)value);
+                    else if (targetTypeInfo.IsEnum)
+                        value = Enum.Parse(targetType, (string)value);
+
+                    else if (targetType == typeof(bool))
+                        value = bool.Parse((string)value);
+                    else if (targetType == typeof(short))
+                        value = short.Parse((string)value);
+                    else if (targetType == typeof(int))
+                        value = int.Parse((string)value);
+                    else if (targetType == typeof(long))
+                        value = long.Parse((string)value);
+                    else if (targetType == typeof(float))
+                        value = float.Parse((string)value);
+                    else if (targetType == typeof(double))
+                        value = double.Parse((string)value);
+                    else if (targetType == typeof(decimal))
+                        value = decimal.Parse((string)value);
+
+                    else if (targetType == typeof(DateTime))
+                        value = DateTime.Parse((string)value);
+                    else if (targetType == typeof(DateTimeOffset))
+                        value = DateTimeOffset.Parse((string)value);
+                }
+                else
+                {
+                    if (targetTypeInfo.IsEnum)
+                        value = Enum.ToObject(targetType, value);
+                }
+
+                //this will handle numeric conversions
+                if (value != null && targetType != value.GetType())
+                {
+                    try
+                    {
+                        value = Convert.ChangeType(value, targetType);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new MappingException($"Cannot map value of type {value.GetType().FullName} to property {property.Name} of type {targetType.Name}.", ex);
+                    }
+                }
+            }
+
+            if (mapper == null || value == null)
+                property.InvokeSet(target, value);
+            else
+                mapper.InvokeSet(target, value);
+
+            return value;
+        }
+
+
+        internal class OrdinalMappedProperty<TTarget>
+        {
+            private readonly MappedProperty<TTarget> m_MappedProperty;
+
+            public OrdinalMappedProperty(MappedProperty<TTarget> mappedProperty, int ordinal)
+            {
+                m_MappedProperty = mappedProperty;
+                Ordinal = ordinal;
+            }
+
+            public void InvokeSet(TTarget target, object value) => m_MappedProperty.InvokeSet(target, value);
+            public string MappedColumnName => m_MappedProperty.MappedColumnName;
+            public PropertyMetadata PropertyMetadata => m_MappedProperty.PropertyMetadata;
+            public int Ordinal { get; }
+
+        }
+
+        internal class MappedProperty<TTarget>
+        {
+            public MappedProperty(string mappedColumnName, PropertyMetadata propertyMetadata)
+            {
+                MappedColumnName = mappedColumnName;
+                PropertyMetadata = propertyMetadata;
+            }
+
+            public virtual void InvokeSet(TTarget target, object value)
+            {
+                PropertyMetadata.InvokeSet(target, value);
+            }
+            public string MappedColumnName { get; }
+            public PropertyMetadata PropertyMetadata { get; }
+
+        }
+
+
+        /// <summary>
+        /// The purpose of this class 
+        /// </summary>
+        /// <typeparam name="TTarget">The type of the target.</typeparam>
+        /// <typeparam name="TProperty">The type of the property.</typeparam>
+        internal class MappedProperty<TTarget, TProperty> : MappedProperty<TTarget>
+        {
+
+
+            public MappedProperty(string mappedColumnName, PropertyMetadata propertyMetadata) : base(mappedColumnName, propertyMetadata)
+            {
+#if !NETSTANDARD1_3
+                //TODO: Change Anchor so that it can build these strongly typed delegates
+                var propertyInfo = typeof(TTarget).GetProperty(propertyMetadata.Name);
+                var reflectionSetter = propertyInfo.GetSetMethod();
+
+                m_DelegateSetter = (Action<TTarget, TProperty>)Delegate.CreateDelegate(typeof(Action<TTarget, TProperty>), reflectionSetter);
+#endif
+            }
+
+#if !NETSTANDARD1_3
+            Action<TTarget, TProperty> m_DelegateSetter;
+
+            public override void InvokeSet(TTarget target, object value) => m_DelegateSetter(target, (TProperty)value);
+#endif
+        }
+
+
+
+        static internal void PopulateComplexObject<T>(IReadOnlyDictionary<int, object> source, T target, string decompositionPrefix, IList<OrdinalMappedProperty<T>> mappedProperties, IList<MappedProperty<T>> decomposedProperties)
+        {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source), $"{nameof(source)} is null.");
+            if (target == null)
+                throw new ArgumentNullException(nameof(target), $"{nameof(target)} is null.");
+
+            foreach (var property in mappedProperties)
+            {
+                var value = source[property.Ordinal];
+
+                value = SetProperty(target, property.PropertyMetadata, value, property);
+            }
+
+            foreach (var property in decomposedProperties)
+            {
+                SetDecomposedProperty((IReadOnlyDictionary<string, object>)source, target, decompositionPrefix, property.PropertyMetadata);
             }
         }
 

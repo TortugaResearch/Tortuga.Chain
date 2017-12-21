@@ -25,8 +25,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Npgsql" Version="3.2.5" />
-    <PackageReference Include="Tortuga.Chain.Core" Version="1.1.6458.19749" />
+    <PackageReference Include="Npgsql" Version="3.2.6" />
+    <PackageReference Include="Tortuga.Chain.Core" Version="1.2.6553.38983" />
   </ItemGroup>
 
 </Project>

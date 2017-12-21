@@ -36,7 +36,8 @@ namespace Tortuga.Chain.Metadata
         /// <summary>
         /// Gets the name used by SQL Server.
         /// </summary>
-        public string SqlName { get; protected set; }
+        public string 
+            SqlName { get; protected set; }
         /// <summary>
         /// Gets the column, formatted as a SQL variable.
         /// </summary>

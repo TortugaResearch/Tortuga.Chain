@@ -1,0 +1,43 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <AssemblyName>Tortuga.Chain.SQLite.MS</AssemblyName>
+
+    <PackageId>Tortuga.Chain.SQLite.MS.netstandard2.0</PackageId>
+    <DefineConstants>$(DefineConstants);OleDb_Missing;System_Configuration_Missing</DefineConstants>
+    <NetStandardImplicitPackageVersion>2.0.0</NetStandardImplicitPackageVersion>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
+    <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
+    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
+  </PropertyGroup>
+
+
+  <ItemGroup>
+    <Compile Include="..\Tortuga.Chain.SQLite.MS.source\Properties\LibrarySharedAssemblyInfo-MS.cs;" />
+    <Compile Include="..\ProductSharedAssemblyInfo.cs" />
+    <Compile Include="..\Tortuga.Chain.SQLite.source\shared\**\*.cs" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <None Include="..\CustomDictionary.xml" Link="CustomDictionary.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="2.0.0" />
+    <PackageReference Include="Nito.AsyncEx.Coordination" Version="1.0.2" />
+    <PackageReference Include="Tortuga.Chain.Core" Version="1.2.6553.38983" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="NETStandard.Library" Version="2.0.1" />
+  </ItemGroup>
+  
+</Project>
