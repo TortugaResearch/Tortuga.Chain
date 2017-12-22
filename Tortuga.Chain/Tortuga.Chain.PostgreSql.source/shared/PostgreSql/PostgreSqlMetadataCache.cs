@@ -292,7 +292,7 @@ namespace Tortuga.Chain.PostgreSql
                     using (var reader = cmd.ExecuteReader())
                     {
                         if (!reader.Read())
-                            throw new MissingObjectException($"Could not find function {tableFunctionName}");
+                            throw new MissingObjectException($"Could not find scalar function {tableFunctionName}");
                         actualSchema = reader.GetString(reader.GetOrdinal("routine_schema"));
                         actualName = reader.GetString(reader.GetOrdinal("routine_name"));
                         specificName = reader.GetString(reader.GetOrdinal("specific_name"));
