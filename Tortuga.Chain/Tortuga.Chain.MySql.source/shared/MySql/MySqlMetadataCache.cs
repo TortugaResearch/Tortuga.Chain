@@ -6,6 +6,7 @@ using System.Data;
 using Tortuga.Anchor;
 using Tortuga.Anchor.Metadata;
 using Tortuga.Chain.Metadata;
+using Tortuga.Chain.SqlServer;
 
 namespace Tortuga.Chain.MySql
 {
@@ -15,11 +16,10 @@ namespace Tortuga.Chain.MySql
     public class MySqlMetadataCache : DatabaseMetadataCache<MySqlObjectName, MySqlDbType>
     {
         readonly MySqlConnectionStringBuilder m_ConnectionBuilder;
-        readonly ConcurrentDictionary<MySqlObjectName, TableOrViewMetadata<MySqlObjectName, MySqlDbType>> m_Tables = new ConcurrentDictionary<MySqlObjectName, TableOrViewMetadata<MySqlObjectName, MySqlDbType>>();
-        readonly ConcurrentDictionary<MySqlObjectName, StoredProcedureMetadata<MySqlObjectName, MySqlDbType>> m_StoredProcedures = new ConcurrentDictionary<MySqlObjectName, StoredProcedureMetadata<MySqlObjectName, MySqlDbType>>();
-        readonly ConcurrentDictionary<Type, TableOrViewMetadata<MySqlObjectName, MySqlDbType>> m_TypeTableMap = new ConcurrentDictionary<Type, TableOrViewMetadata<MySqlObjectName, MySqlDbType>>();
         readonly ConcurrentDictionary<MySqlObjectName, ScalarFunctionMetadata<MySqlObjectName, MySqlDbType>> m_ScalarFunctions = new ConcurrentDictionary<MySqlObjectName, ScalarFunctionMetadata<MySqlObjectName, MySqlDbType>>();
-
+        readonly ConcurrentDictionary<MySqlObjectName, StoredProcedureMetadata<MySqlObjectName, MySqlDbType>> m_StoredProcedures = new ConcurrentDictionary<MySqlObjectName, StoredProcedureMetadata<MySqlObjectName, MySqlDbType>>();
+        readonly ConcurrentDictionary<MySqlObjectName, TableOrViewMetadata<MySqlObjectName, MySqlDbType>> m_Tables = new ConcurrentDictionary<MySqlObjectName, TableOrViewMetadata<MySqlObjectName, MySqlDbType>>();
+        readonly ConcurrentDictionary<Type, TableOrViewMetadata<MySqlObjectName, MySqlDbType>> m_TypeTableMap = new ConcurrentDictionary<Type, TableOrViewMetadata<MySqlObjectName, MySqlDbType>>();
         string m_DefaultSchema;
 
         /// <summary>
@@ -29,6 +29,51 @@ namespace Tortuga.Chain.MySql
         public MySqlMetadataCache(MySqlConnectionStringBuilder connectionBuilder)
         {
             m_ConnectionBuilder = connectionBuilder;
+        }
+
+        /// <summary>
+        /// Returns the user's default schema.
+        /// </summary>
+        /// <returns></returns>
+        public string DefaultSchema
+        {
+            get
+            {
+                if (m_DefaultSchema == null)
+                {
+                    using (var con = new MySqlConnection(m_ConnectionBuilder.ConnectionString))
+                    {
+                        con.Open();
+                        using (var cmd = new MySqlCommand("SELECT Database()", con))
+                        {
+                            m_DefaultSchema = (string)cmd.ExecuteScalar();
+                        }
+                    }
+                }
+                return m_DefaultSchema;
+            }
+        }
+
+        /// <summary>
+        /// Gets the metadata for a scalar function.
+        /// </summary>
+        /// <param name="scalarFunctionName">Name of the scalar function.</param>
+        /// <returns>Null if the object could not be found.</returns>
+        public override ScalarFunctionMetadata<MySqlObjectName, MySqlDbType> GetScalarFunction(MySqlObjectName scalarFunctionName)
+        {
+            return m_ScalarFunctions.GetOrAdd(scalarFunctionName, GetScalarFunctionInternal);
+        }
+
+        /// <summary>
+        /// Gets the scalar functions that were loaded by this cache.
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>
+        /// Call Preload before invoking this method to ensure that all scalar functions were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.
+        /// </remarks>
+        public override IReadOnlyCollection<ScalarFunctionMetadata<MySqlObjectName, MySqlDbType>> GetScalarFunctions()
+        {
+            return m_ScalarFunctions.GetValues();
         }
 
         /// <summary>
@@ -43,6 +88,18 @@ namespace Tortuga.Chain.MySql
         }
 
         /// <summary>
+        /// Gets the stored procedures that were loaded by this cache.
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>
+        /// Call Preload before invoking this method to ensure that all stored procedures were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.
+        /// </remarks>
+        public override IReadOnlyCollection<StoredProcedureMetadata<MySqlObjectName, MySqlDbType>> GetStoredProcedures()
+        {
+            return m_StoredProcedures.GetValues();
+        }
+
+        /// <summary>
         /// Gets the metadata for a table.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
@@ -50,6 +107,51 @@ namespace Tortuga.Chain.MySql
         public override TableOrViewMetadata<MySqlObjectName, MySqlDbType> GetTableOrView(MySqlObjectName tableName)
         {
             return m_Tables.GetOrAdd(tableName, GetTableOrViewInternal);
+        }
+
+        /// <summary>
+        /// Returns the table or view derived from the class's name and/or Table attribute.
+        /// </summary>
+        /// <typeparam name="TObject"></typeparam>
+        /// <returns></returns>
+        public override TableOrViewMetadata<MySqlObjectName, MySqlDbType> GetTableOrViewFromClass<TObject>()
+        {
+
+            var type = typeof(TObject);
+            TableOrViewMetadata<MySqlObjectName, MySqlDbType> result;
+            if (m_TypeTableMap.TryGetValue(type, out result))
+                return result;
+
+            var typeInfo = MetadataCache.GetMetadata(type);
+            if (!string.IsNullOrEmpty(typeInfo.MappedTableName))
+            {
+                if (string.IsNullOrEmpty(typeInfo.MappedSchemaName))
+                    result = GetTableOrView(new MySqlObjectName(typeInfo.MappedTableName));
+                else
+                    result = GetTableOrView(new MySqlObjectName(typeInfo.MappedSchemaName, typeInfo.MappedTableName));
+                m_TypeTableMap[type] = result;
+                return result;
+            }
+
+            //infer schema from namespace
+            var schema = type.Namespace;
+            if (schema?.Contains(".") ?? false)
+                schema = schema.Substring(schema.LastIndexOf(".", StringComparison.OrdinalIgnoreCase) + 1);
+            var name = type.Name;
+
+            try
+            {
+                result = GetTableOrView(new MySqlObjectName(schema, name));
+                m_TypeTableMap[type] = result;
+                return result;
+            }
+            catch (MissingObjectException) { }
+
+
+            //that didn't work, so try the default schema
+            result = GetTableOrView(new MySqlObjectName(null, name));
+            m_TypeTableMap[type] = result;
+            return result;
         }
 
         /// <summary>
@@ -81,23 +183,65 @@ namespace Tortuga.Chain.MySql
         /// </summary>
         public void PreloadScalarFunctions()
         {
-            throw new NotImplementedException();
+            const string sql = "SELECT ROUTINE_SCHEMA, ROUTINE_NAME FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_TYPE = 'FUNCTION'";
+
+            using (var con = new MySqlConnection(m_ConnectionBuilder.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = new MySqlCommand(sql, con))
+                {
+                    using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess))
+                    {
+                        while (reader.Read())
+                        {
+                            var schema = reader.GetString(0);
+                            var name = reader.GetString(1);
+                            GetScalarFunction(new MySqlObjectName(schema, name));
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Preloads the table value functions.
+        /// </summary>
+        public void PreloadStoredProcedures()
+        {
+            const string sql = "SELECT ROUTINE_SCHEMA, ROUTINE_NAME FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_TYPE = 'PROCEDURE'";
+
+            using (var con = new MySqlConnection(m_ConnectionBuilder.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = new MySqlCommand(sql, con))
+                {
+                    using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess))
+                    {
+                        while (reader.Read())
+                        {
+                            var schema = reader.GetString(0);
+                            var name = reader.GetString(1);
+                            GetStoredProcedure(new MySqlObjectName(schema, name));
+                        }
+                    }
+                }
+            }
+
         }
 
         /// <summary>
         /// Preloads the metadata for all tables.
         /// </summary>
-        /// <remarks>This will also load all views.</remarks>
         public void PreloadTables()
         {
-            const string tableList = "SELECT TABLE_SCHEMA, TABLE_NAME FROM INFORMATION_SCHEMA.Tables";
+            const string tableList = "SELECT TABLE_SCHEMA, TABLE_NAME FROM INFORMATION_SCHEMA.Tables WHERE TABLE_TYPE = 'BASE TABLE'";
 
             using (var con = new MySqlConnection(m_ConnectionBuilder.ConnectionString))
             {
                 con.Open();
                 using (var cmd = new MySqlCommand(tableList, con))
                 {
-                    using (var reader = cmd.ExecuteReader())
+                    using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess))
                     {
                         while (reader.Read())
                         {
@@ -113,43 +257,47 @@ namespace Tortuga.Chain.MySql
         /// <summary>
         /// Preloads the metadata for all views.
         /// </summary>
-        /// <remarks>In MySQL this has the same effect as calling PreloadTables.</remarks>
         public void PreloadViews()
         {
-            PreloadTables();
-        }
-
-        private TableOrViewMetadata<MySqlObjectName, MySqlDbType> GetTableOrViewInternal(MySqlObjectName tableName)
-        {
-            const string TableSql = @"SELECT TABLE_SCHEMA, TABLE_NAME, ENGINE FROM INFORMATION_SCHEMA.Tables WHERE TABLE_SCHEMA = @Schema AND TABLE_NAME = @Name";
-
-
-            string actualSchemaName;
-            string actualTableName;
-            string engine;
+            const string tableList = "SELECT TABLE_SCHEMA, TABLE_NAME FROM INFORMATION_SCHEMA.VIEWS";
 
             using (var con = new MySqlConnection(m_ConnectionBuilder.ConnectionString))
             {
                 con.Open();
-                using (var cmd = new MySqlCommand(TableSql, con))
+                using (var cmd = new MySqlCommand(tableList, con))
                 {
-                    cmd.Parameters.AddWithValue("@Schema", tableName.Schema ?? DefaultSchema);
-                    cmd.Parameters.AddWithValue("@Name", tableName.Name);
                     using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess))
                     {
-                        if (!reader.Read())
-                            throw new MissingObjectException($"Could not find table or view {tableName}");
-                        actualSchemaName = reader.GetString("TABLE_SCHEMA");
-                        actualTableName = reader.GetString("TABLE_NAME");
-                        engine = reader.IsDBNull(reader.GetOrdinal("ENGINE")) ? null : reader.GetString("ENGINE");
+                        while (reader.Read())
+                        {
+                            var schema = reader.GetString(0);
+                            var name = reader.GetString(1);
+                            GetTableOrView(new MySqlObjectName(schema, name));
+                        }
                     }
                 }
             }
+        }
 
-            var isTable = actualTableName == "BASE TABLE";
-            var columns = GetColumns(actualSchemaName, actualTableName);
+        /// <summary>
+        /// Resets the metadata cache, clearing out all cached metadata.
+        /// </summary>
+        public override void Reset()
+        {
+            m_StoredProcedures.Clear();
+            m_ScalarFunctions.Clear();
+            m_Tables.Clear();
+            m_TypeTableMap.Clear();
+        }
 
-            return new MySqlTableOrViewMetadata<MySqlDbType>(new MySqlObjectName(actualSchemaName, actualTableName), isTable, columns, engine);
+        /// <summary>
+        /// Parse a string and return the database specific representation of the object name.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <returns>MySqlObjectName.</returns>
+        protected override MySqlObjectName ParseObjectName(string name)
+        {
+            return new MySqlObjectName(name);
         }
 
         /// <summary>
@@ -206,6 +354,173 @@ namespace Tortuga.Chain.MySql
             return columns;
         }
 
+        IList<ParameterMetadata<MySqlDbType>> GetParameters(string schemaName, string specificName)
+        {
+            try
+            {
+                const string ParameterSql = "SELECT PARAMETER_NAME, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH, NUMERIC_PRECISION, NUMERIC_SCALE, DATETIME_PRECISION, DTD_IDENTIFIER FROM INFORMATION_SCHEMA.PARAMETERS WHERE SPECIFIC_SCHEMA = @Schema AND SPECIFIC_NAME = @SpecificName AND PARAMETER_NAME IS NOT NULL";
+
+                //we exclude parameter_id 0 because it is the return type of scalar functions.
+
+                var parameters = new List<ParameterMetadata<MySqlDbType>>();
+
+                using (var con = new MySqlConnection(m_ConnectionBuilder.ConnectionString))
+                {
+                    con.Open();
+
+                    using (var cmd = new MySqlCommand(ParameterSql, con))
+                    {
+                        cmd.Parameters.AddWithValue("@Schema", schemaName);
+                        cmd.Parameters.AddWithValue("@SpecificName", specificName);
+
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                var name = reader.GetString(reader.GetOrdinal("PARAMETER_NAME"));
+                                var typeName = reader.GetString(reader.GetOrdinal("DATA_TYPE"));
+                                bool isNullable = true;
+                                var maxLength = reader.IsDBNull(reader.GetOrdinal("CHARACTER_MAXIMUM_LENGTH")) ? (UInt64?)null : reader.GetUInt64("CHARACTER_MAXIMUM_LENGTH");
+                                var precisionA = reader.IsDBNull(reader.GetOrdinal("NUMERIC_PRECISION")) ? (int?)null : reader.GetInt32("NUMERIC_PRECISION");
+                                var scale = reader.IsDBNull(reader.GetOrdinal("NUMERIC_SCALE")) ? (int?)null : reader.GetInt32("NUMERIC_SCALE");
+                                var precisionB = reader.IsDBNull(reader.GetOrdinal("DATETIME_PRECISION")) ? (int?)null : reader.GetInt32("DATETIME_PRECISION");
+                                var precision = precisionA ?? precisionB;
+                                var fullTypeName = reader.GetString("DTD_IDENTIFIER");
+
+                                var isUnsigned = fullTypeName.Contains("unsigned");
+                                var dbType = TypeNameToMySqlDbType(typeName, isUnsigned);
+
+                                parameters.Add(new ParameterMetadata<MySqlDbType>(name, name, typeName, dbType, isNullable, (int?)maxLength, precision, scale, fullTypeName));
+                            }
+                        }
+                    }
+                }
+                return parameters;
+            }
+            catch (Exception ex)
+            {
+                throw new MetadataException($"Error getting parameters for {schemaName}.{specificName}", ex);
+            }
+
+        }
+
+        ScalarFunctionMetadata<MySqlObjectName, MySqlDbType> GetScalarFunctionInternal(MySqlObjectName tableFunctionName)
+        {
+            const string sql = "SELECT ROUTINE_SCHEMA, ROUTINE_NAME, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH, NUMERIC_PRECISION, NUMERIC_SCALE, DATETIME_PRECISION, DTD_IDENTIFIER, SPECIFIC_NAME FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_TYPE = 'FUNCTION' AND ROUTINE_SCHEMA = @Schema AND ROUTINE_NAME = @Name;";
+
+            string actualSchema;
+            string actualName;
+
+            string fullTypeName;
+            string typeName;
+            UInt64? maxLength;
+            int? precision;
+            int? scale;
+            MySqlDbType? dbType;
+            string specificName;
+
+            using (var con = new MySqlConnection(m_ConnectionBuilder.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = new MySqlCommand(sql, con))
+                {
+                    cmd.Parameters.AddWithValue("@Schema", tableFunctionName.Schema ?? DefaultSchema);
+                    cmd.Parameters.AddWithValue("@Name", tableFunctionName.Name);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        if (!reader.Read())
+                            throw new MissingObjectException($"Could not find scalar function {tableFunctionName}");
+                        actualSchema = reader.GetString(reader.GetOrdinal("ROUTINE_SCHEMA"));
+                        actualName = reader.GetString(reader.GetOrdinal("ROUTINE_NAME"));
+
+                        typeName = reader.GetString("DATA_TYPE");
+                        maxLength = reader.IsDBNull(reader.GetOrdinal("CHARACTER_MAXIMUM_LENGTH")) ? (UInt64?)null : reader.GetUInt64("CHARACTER_MAXIMUM_LENGTH");
+                        var precisionA = reader.IsDBNull(reader.GetOrdinal("NUMERIC_PRECISION")) ? (int?)null : reader.GetInt32("NUMERIC_PRECISION");
+                        scale = reader.IsDBNull(reader.GetOrdinal("NUMERIC_SCALE")) ? (int?)null : reader.GetInt32("NUMERIC_SCALE");
+                        var precisionB = reader.IsDBNull(reader.GetOrdinal("DATETIME_PRECISION")) ? (int?)null : reader.GetInt32("DATETIME_PRECISION");
+                        precision = precisionA ?? precisionB;
+                        fullTypeName = reader.GetString("DTD_IDENTIFIER");
+                        specificName = reader.GetString("SPECIFIC_NAME");
+
+                        var isUnsigned = fullTypeName.Contains("unsigned");
+                        dbType = TypeNameToMySqlDbType(typeName, isUnsigned);
+
+                    }
+                }
+            }
+
+            var objectName = new MySqlObjectName(actualSchema, actualName);
+
+            var parameters = GetParameters(actualSchema, specificName);
+
+            return new ScalarFunctionMetadata<MySqlObjectName, MySqlDbType>(objectName, parameters, typeName, dbType, true, (int?)maxLength, precision, scale, fullTypeName);
+        }
+
+        StoredProcedureMetadata<MySqlObjectName, MySqlDbType> GetStoredProcedureInteral(MySqlObjectName storedProcedureName)
+        {
+            const string sql = "SELECT ROUTINE_SCHEMA, ROUTINE_NAME, SPECIFIC_NAME FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_TYPE = 'PROCEDURE' AND ROUTINE_SCHEMA = @Schema AND ROUTINE_NAME = @Name;";
+
+            string actualSchema;
+            string actualName;
+            string specificName;
+
+            using (var con = new MySqlConnection(m_ConnectionBuilder.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = new MySqlCommand(sql, con))
+                {
+                    cmd.Parameters.AddWithValue("@Schema", storedProcedureName.Schema ?? DefaultSchema);
+                    cmd.Parameters.AddWithValue("@Name", storedProcedureName.Name);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        if (!reader.Read())
+                            throw new MissingObjectException($"Could not find stored procedure {storedProcedureName}");
+                        actualSchema = reader.GetString(reader.GetOrdinal("ROUTINE_SCHEMA"));
+                        actualName = reader.GetString(reader.GetOrdinal("ROUTINE_NAME"));
+                        specificName = reader.GetString("SPECIFIC_NAME");
+                    }
+                }
+            }
+
+            var objectName = new MySqlObjectName(actualSchema, actualName);
+
+            var parameters = GetParameters(actualSchema, actualName);
+
+            return new StoredProcedureMetadata<MySqlObjectName, MySqlDbType>(objectName, parameters);
+        }
+
+        TableOrViewMetadata<MySqlObjectName, MySqlDbType> GetTableOrViewInternal(MySqlObjectName tableName)
+        {
+            const string TableSql = @"SELECT TABLE_SCHEMA, TABLE_NAME, ENGINE FROM INFORMATION_SCHEMA.Tables WHERE TABLE_SCHEMA = @Schema AND TABLE_NAME = @Name";
+
+
+            string actualSchemaName;
+            string actualTableName;
+            string engine;
+
+            using (var con = new MySqlConnection(m_ConnectionBuilder.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = new MySqlCommand(TableSql, con))
+                {
+                    cmd.Parameters.AddWithValue("@Schema", tableName.Schema ?? DefaultSchema);
+                    cmd.Parameters.AddWithValue("@Name", tableName.Name);
+                    using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess))
+                    {
+                        if (!reader.Read())
+                            throw new MissingObjectException($"Could not find table or view {tableName}");
+                        actualSchemaName = reader.GetString("TABLE_SCHEMA");
+                        actualTableName = reader.GetString("TABLE_NAME");
+                        engine = reader.IsDBNull(reader.GetOrdinal("ENGINE")) ? null : reader.GetString("ENGINE");
+                    }
+                }
+            }
+
+            var isTable = actualTableName == "BASE TABLE";
+            var columns = GetColumns(actualSchemaName, actualTableName);
+
+            return new MySqlTableOrViewMetadata<MySqlDbType>(new MySqlObjectName(actualSchemaName, actualTableName), isTable, columns, engine);
+        }
         MySqlDbType? TypeNameToMySqlDbType(string typeName, bool isUnsigned)
         {
             switch (typeName.ToUpperInvariant())
@@ -270,142 +585,5 @@ namespace Tortuga.Chain.MySql
                     return null;
             }
         }
-
-
-
-
-
-
-
-
-        private StoredProcedureMetadata<MySqlObjectName, MySqlDbType> GetStoredProcedureInteral(MySqlObjectName storedProcedureName)
-        {
-            throw new NotImplementedException();
-        }
-
-
-
-
-
-
-
-
-        /// <summary>
-        /// Parse a string and return the database specific representation of the object name.
-        /// </summary>
-        /// <param name="name">The name.</param>
-        /// <returns>MySqlObjectName.</returns>
-        protected override MySqlObjectName ParseObjectName(string name)
-        {
-            return new MySqlObjectName(name);
-        }
-
-        /// <summary>
-        /// Returns the table or view derived from the class's name and/or Table attribute.
-        /// </summary>
-        /// <typeparam name="TObject"></typeparam>
-        /// <returns></returns>
-        public override TableOrViewMetadata<MySqlObjectName, MySqlDbType> GetTableOrViewFromClass<TObject>()
-        {
-
-            var type = typeof(TObject);
-            TableOrViewMetadata<MySqlObjectName, MySqlDbType> result;
-            if (m_TypeTableMap.TryGetValue(type, out result))
-                return result;
-
-            var typeInfo = MetadataCache.GetMetadata(type);
-            if (!string.IsNullOrEmpty(typeInfo.MappedTableName))
-            {
-                if (string.IsNullOrEmpty(typeInfo.MappedSchemaName))
-                    result = GetTableOrView(new MySqlObjectName(typeInfo.MappedTableName));
-                else
-                    result = GetTableOrView(new MySqlObjectName(typeInfo.MappedSchemaName, typeInfo.MappedTableName));
-                m_TypeTableMap[type] = result;
-                return result;
-            }
-
-            //infer schema from namespace
-            var schema = type.Namespace;
-            if (schema?.Contains(".") ?? false)
-                schema = schema.Substring(schema.LastIndexOf(".", StringComparison.OrdinalIgnoreCase) + 1);
-            var name = type.Name;
-
-            try
-            {
-                result = GetTableOrView(new MySqlObjectName(schema, name));
-                m_TypeTableMap[type] = result;
-                return result;
-            }
-            catch (MissingObjectException) { }
-
-
-            //that didn't work, so try the default schema
-            result = GetTableOrView(new MySqlObjectName(null, name));
-            m_TypeTableMap[type] = result;
-            return result;
-        }
-
-
-
-        /// <summary>
-        /// Resets the metadata cache, clearing out all cached metadata.
-        /// </summary>
-        public override void Reset()
-        {
-            m_StoredProcedures.Clear();
-            m_ScalarFunctions.Clear();
-            m_Tables.Clear();
-            m_TypeTableMap.Clear();
-        }
-
-        /// <summary>
-        /// Preloads the table value functions.
-        /// </summary>
-        public void PreloadStoredProcedures()
-        {
-            throw new NotImplementedException();
-
-        }
-
-        /// <summary>
-        /// Returns the user's default schema.
-        /// </summary>
-        /// <returns></returns>
-        public string DefaultSchema
-        {
-            get
-            {
-                if (m_DefaultSchema == null)
-                {
-                    using (var con = new MySqlConnection(m_ConnectionBuilder.ConnectionString))
-                    {
-                        con.Open();
-                        using (var cmd = new MySqlCommand("SELECT Database()", con))
-                        {
-                            m_DefaultSchema = (string)cmd.ExecuteScalar();
-                        }
-                    }
-                }
-                return m_DefaultSchema;
-            }
-        }
-
-
-        ScalarFunctionMetadata<MySqlObjectName, MySqlDbType> GetScalarFunctionInternal(MySqlObjectName tableFunctionName)
-        {
-            throw new NotImplementedException();
-
-        }
-
-        /// <summary>
-        /// Gets the metadata for a scalar function.
-        /// </summary>
-        /// <param name="scalarFunctionName">Name of the scalar function.</param>
-        /// <returns>Null if the object could not be found.</returns>
-        public override ScalarFunctionMetadata<MySqlObjectName, MySqlDbType> GetScalarFunction(MySqlObjectName scalarFunctionName)
-        {
-            return m_ScalarFunctions.GetOrAdd(scalarFunctionName, GetScalarFunctionInternal);
-        }
-
     }
 }

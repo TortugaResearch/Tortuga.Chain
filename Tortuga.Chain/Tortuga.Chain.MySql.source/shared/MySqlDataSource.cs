@@ -21,7 +21,7 @@ namespace Tortuga.Chain
     public class MySqlDataSource : MySqlDataSourceBase, IRootDataSource
     {
         readonly MySqlConnectionStringBuilder m_ConnectionBuilder;
-        private MySqlMetadataCache m_DatabaseMetadata;
+        MySqlMetadataCache m_DatabaseMetadata;
 
         /// <summary>
         /// Begins the transaction.
@@ -85,7 +85,7 @@ namespace Tortuga.Chain
         {
         }
 
-        private MySqlDataSource(string name, MySqlConnectionStringBuilder connectionBuilder, MySqlDataSourceSettings settings, MySqlMetadataCache databaseMetadata, ICacheAdapter cache, ConcurrentDictionary<Type, object> extensionCache)
+        MySqlDataSource(string name, MySqlConnectionStringBuilder connectionBuilder, MySqlDataSourceSettings settings, MySqlMetadataCache databaseMetadata, ICacheAdapter cache, ConcurrentDictionary<Type, object> extensionCache)
             : base(settings)
         {
             if (connectionBuilder == null)
@@ -177,7 +177,7 @@ namespace Tortuga.Chain
             return con;
         }
 
-        private async Task<MySqlConnection> CreateConnectionAsync(CancellationToken cancellationToken = default(CancellationToken))
+        async Task<MySqlConnection> CreateConnectionAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             var con = new MySqlConnection(ConnectionString);
             await con.OpenAsync(cancellationToken).ConfigureAwait(false);

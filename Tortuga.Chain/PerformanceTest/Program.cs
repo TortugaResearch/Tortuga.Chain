@@ -11,18 +11,37 @@ namespace PerformanceTest
         static void MySqlMetadata()
         {
             var dataSource = MySqlDataSource.CreateFromConfig("MySqlTestDatabase");
+
+            var table1 = dataSource.DatabaseMetadata.GetTableOrView("Film");
+            Console.WriteLine($"{table1.Name} Columns {table1.Columns.Count}");
+            Console.WriteLine();
+
             dataSource.TestConnection();
             dataSource.DatabaseMetadata.PreloadTables();
 
-            foreach (var table in dataSource.DatabaseMetadata.GetTablesAndViews())
+            foreach (var item in dataSource.DatabaseMetadata.GetTablesAndViews())
             {
-                var x = table.IsTable ? "TABLE" : "VIEW";
-                Console.WriteLine($"{table.Name} {x} Columns {table.Columns.Count}");
+                var x = item.IsTable ? "TABLE" : "VIEW";
+                Console.WriteLine($"{item.Name} {x} Columns {item.Columns.Count}");
             }
 
-            //dataSource.DatabaseMetadata.PreloadStoredProcedures();
+            Console.WriteLine();
 
-            //dataSource.DatabaseMetadata.PreloadScalarFunctions();
+            dataSource.DatabaseMetadata.PreloadStoredProcedures();
+
+            foreach (var item in dataSource.DatabaseMetadata.GetStoredProcedures())
+            {
+                Console.WriteLine($"{item.Name} Parameters {item.Parameters.Count}");
+            }
+            Console.WriteLine();
+
+            dataSource.DatabaseMetadata.PreloadScalarFunctions();
+
+            foreach (var item in dataSource.DatabaseMetadata.GetScalarFunctions())
+            {
+                Console.WriteLine($"{item.Name} Parameters {item.Parameters.Count}");
+            }
+            Console.WriteLine();
 
         }
 

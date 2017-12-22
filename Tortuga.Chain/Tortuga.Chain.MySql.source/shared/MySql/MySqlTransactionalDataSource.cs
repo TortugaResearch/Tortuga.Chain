@@ -16,10 +16,10 @@ namespace Tortuga.Chain.MySql
     /// <seealso cref="IDisposable" />
     public class MySqlTransactionalDataSource : MySqlDataSourceBase, IDisposable, ITransactionalDataSource
     {
-        private readonly MySqlConnection m_Connection;
-        private readonly MySqlDataSource m_BaseDataSource;
-        private readonly MySqlTransaction m_Transaction;
-        private bool m_Disposed;
+        readonly MySqlConnection m_Connection;
+        readonly MySqlDataSource m_BaseDataSource;
+        readonly MySqlTransaction m_Transaction;
+        bool m_Disposed;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MySqlTransactionalDataSource"/> class.
@@ -95,7 +95,7 @@ namespace Tortuga.Chain.MySql
             GC.SuppressFinalize(this);
         }
 
-        private void Dispose(bool disposing)
+        void Dispose(bool disposing)
         {
             if (m_Disposed)
                 return;

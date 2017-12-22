@@ -16,17 +16,17 @@ namespace Tortuga.Chain.MySql.CommandBuilders
     public class MySqlTableOrView : TableDbCommandBuilder<MySqlCommand, MySqlParameter, MySqlLimitOption>
     {
         readonly TableOrViewMetadata<MySqlObjectName, MySqlDbType> m_Table;
-        private object m_FilterValue;
-        private string m_WhereClause;
-        private object m_ArgumentValue;
+        object m_FilterValue;
+        string m_WhereClause;
+        object m_ArgumentValue;
 
-        private IEnumerable<SortExpression> m_SortExpressions = Enumerable.Empty<SortExpression>();
-        private MySqlLimitOption m_LimitOptions;
-        private int? m_Skip;
-        private int? m_Take;
-        private int? m_Seed;
-        private string m_SelectClause;
-        private FilterOptions m_FilterOptions;
+        IEnumerable<SortExpression> m_SortExpressions = Enumerable.Empty<SortExpression>();
+        MySqlLimitOption m_LimitOptions;
+        int? m_Skip;
+        int? m_Take;
+        int? m_Seed;
+        string m_SelectClause;
+        FilterOptions m_FilterOptions;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MySqlTableOrView" /> class.
