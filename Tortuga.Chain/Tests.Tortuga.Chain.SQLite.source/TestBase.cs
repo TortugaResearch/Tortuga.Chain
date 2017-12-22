@@ -7,8 +7,8 @@ namespace Tests
 {
     public abstract class TestBase
     {
-        private static SQLiteDataSource s_DataSource;
-        private static readonly SQLiteDataSource s_StrictDataSource;
+        static SQLiteDataSource s_DataSource;
+        static readonly SQLiteDataSource s_StrictDataSource;
 
         static TestBase()
         {

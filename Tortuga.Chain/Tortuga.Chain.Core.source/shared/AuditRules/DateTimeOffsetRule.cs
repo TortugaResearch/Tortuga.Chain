@@ -22,7 +22,6 @@ namespace Tortuga.Chain.AuditRules
         {
             if (appliesWhen.HasFlag(OperationTypes.Select))
                 throw new ArgumentOutOfRangeException("appliesWhen", appliesWhen, "appliesWhen may only be a combination of Insert, Update, or Delete");
-
         }
 
 
@@ -33,10 +32,7 @@ namespace Tortuga.Chain.AuditRules
         /// <param name="userValue">The user value.</param>
         /// <param name="currentValue">The current value. Used when the rule is conditionally applied.</param>
         /// <returns></returns>
-        public override object GenerateValue(object argumentValue, object userValue, object currentValue)
-        {
-            return DateTimeOffset.Now;
-        }
+        public override object GenerateValue(object argumentValue, object userValue, object currentValue) => DateTimeOffset.Now;
     }
 
 

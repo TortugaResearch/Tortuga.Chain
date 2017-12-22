@@ -24,10 +24,9 @@ namespace Tortuga.Chain.Materializers
         where TParameter : DbParameter
     {
 
-        readonly Func<TObject, TKey> m_KeyFunction;
-        readonly string m_KeyColumn;
         readonly DictionaryOptions m_DictionaryOptions;
-
+        readonly string m_KeyColumn;
+        readonly Func<TObject, TKey> m_KeyFunction;
         public ImmutableDictionaryMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, Func<TObject, TKey> keyFunction, DictionaryOptions dictionaryOptions) : base(commandBuilder)
         {
             if (dictionaryOptions.HasFlag(DictionaryOptions.DiscardDuplicates))
@@ -66,6 +65,27 @@ namespace Tortuga.Chain.Materializers
             }
         }
 
+        /// <summary>
+        /// Returns the list of columns the materializer would like to have.
+        /// </summary>
+        /// <returns></returns>
+        public override IReadOnlyList<string> DesiredColumns()
+        {
+            if (ConstructorSignature == null)
+                return ObjectMetadata.ColumnsFor;
+
+            var desiredType = typeof(TObject);
+            var constructor = ObjectMetadata.Constructors.Find(ConstructorSignature);
+
+            if (constructor == null)
+            {
+                var types = string.Join(", ", ConstructorSignature.Select(t => t.Name));
+                throw new MappingException($"Cannot find a constructor on {desiredType.Name} with the types [{types}]");
+            }
+
+            return constructor.ParameterNames;
+        }
+
         public override ImmutableDictionary<TKey, TObject> Execute(object state = null)
         {
             Table table = null;
@@ -98,7 +118,7 @@ namespace Tortuga.Chain.Materializers
             return ToDictionary(table);
         }
 
-        private ImmutableDictionary<TKey, TObject> ToDictionary(Table table)
+        ImmutableDictionary<TKey, TObject> ToDictionary(Table table)
         {
             if (m_KeyFunction != null)
                 return ImmutableDictionary.CreateRange(table.ToObjects<TObject>(ConstructorSignature).Select(x => new KeyValuePair<TKey, TObject>(m_KeyFunction(x), x)));
@@ -108,27 +128,5 @@ namespace Tortuga.Chain.Materializers
 
             return ImmutableDictionary.CreateRange(table.ToObjectsWithEcho<TObject>(ConstructorSignature).Select(x => new KeyValuePair<TKey, TObject>((TKey)x.Key[m_KeyColumn], x.Value)));
         }
-
-        /// <summary>
-        /// Returns the list of columns the materializer would like to have.
-        /// </summary>
-        /// <returns></returns>
-        public override IReadOnlyList<string> DesiredColumns()
-        {
-            if (ConstructorSignature == null)
-                return ObjectMetadata.ColumnsFor;
-
-            var desiredType = typeof(TObject);
-            var constructor = ObjectMetadata.Constructors.Find(ConstructorSignature);
-
-            if (constructor == null)
-            {
-                var types = string.Join(", ", ConstructorSignature.Select(t => t.Name));
-                throw new MappingException($"Cannot find a constructor on {desiredType.Name} with the types [{types}]");
-            }
-
-            return constructor.ParameterNames;
-        }
-
     }
 }

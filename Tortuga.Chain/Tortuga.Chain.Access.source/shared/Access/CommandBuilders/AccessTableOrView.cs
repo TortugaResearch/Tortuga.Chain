@@ -16,14 +16,14 @@ namespace Tortuga.Chain.Access.CommandBuilders
     internal sealed class AccessTableOrView : TableDbCommandBuilder<OleDbCommand, OleDbParameter, AccessLimitOption>
     {
         readonly TableOrViewMetadata<AccessObjectName, OleDbType> m_Table;
-        private object m_FilterValue;
-        private string m_WhereClause;
-        private object m_ArgumentValue;
-        private IEnumerable<SortExpression> m_SortExpressions = Enumerable.Empty<SortExpression>();
-        private AccessLimitOption m_LimitOptions;
-        private int? m_Take;
-        private string m_SelectClause;
-        private FilterOptions m_FilterOptions;
+        object m_FilterValue;
+        string m_WhereClause;
+        object m_ArgumentValue;
+        IEnumerable<SortExpression> m_SortExpressions = Enumerable.Empty<SortExpression>();
+        AccessLimitOption m_LimitOptions;
+        int? m_Take;
+        string m_SelectClause;
+        FilterOptions m_FilterOptions;
 
 
         /// <summary>
@@ -132,10 +132,7 @@ namespace Tortuga.Chain.Access.CommandBuilders
         /// <returns></returns>
         public override TableDbCommandBuilder<OleDbCommand, OleDbParameter, AccessLimitOption> WithSorting(IEnumerable<SortExpression> sortExpressions)
         {
-            if (sortExpressions == null)
-                throw new ArgumentNullException(nameof(sortExpressions), $"{nameof(sortExpressions)} is null.");
-
-            m_SortExpressions = sortExpressions;
+            m_SortExpressions = sortExpressions ?? throw new ArgumentNullException(nameof(sortExpressions), $"{nameof(sortExpressions)} is null.");
             return this;
         }
 
@@ -153,8 +150,7 @@ namespace Tortuga.Chain.Access.CommandBuilders
                 throw new NotSupportedException("Row skipping isn't supported by Access");
             if (seed.HasValue)
                 throw new NotSupportedException("Seed values are not supported by Access");
-            //m_Seed = seed;
-            //m_Skip = skip;
+
             m_Take = take;
             m_LimitOptions = limitOptions;
             return this;
@@ -175,8 +171,6 @@ namespace Tortuga.Chain.Access.CommandBuilders
             if (seed.HasValue)
                 throw new NotSupportedException("Seed values are not supported by Access");
 
-            //m_Seed = seed;
-            //m_Skip = skip;
             m_Take = take;
             m_LimitOptions = (AccessLimitOption)limitOptions;
             return this;
@@ -259,10 +253,7 @@ namespace Tortuga.Chain.Access.CommandBuilders
         /// <remarks>
         /// If the column name was not found, this will return null
         /// </remarks>
-        public override ColumnMetadata TryGetColumn(string columnName)
-        {
-            return m_Table.Columns.TryGetColumn(columnName);
-        }
+        public override ColumnMetadata TryGetColumn(string columnName) => m_Table.Columns.TryGetColumn(columnName);
 
         /// <summary>
         /// Gets the default limit option.
@@ -273,10 +264,7 @@ namespace Tortuga.Chain.Access.CommandBuilders
         /// <remarks>
         /// For most data sources, this will be LimitOptions.Rows.
         /// </remarks>
-        protected override LimitOptions DefaultLimitOption
-        {
-            get { return LimitOptions.RowsWithTies; }
-        }
+        protected override LimitOptions DefaultLimitOption => LimitOptions.RowsWithTies;
     }
 }
 

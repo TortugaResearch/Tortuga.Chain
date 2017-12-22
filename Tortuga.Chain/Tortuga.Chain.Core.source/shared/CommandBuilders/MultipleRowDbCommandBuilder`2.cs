@@ -42,6 +42,37 @@ namespace Tortuga.Chain.CommandBuilders
         }
 
         /// <summary>
+        /// Indicates the results should be materialized as a list of booleans.
+        /// </summary>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns></returns>
+        public ILink<List<bool>> ToBooleanList(ListOptions listOptions = ListOptions.None)
+        {
+            return new BooleanListMaterializer<TCommand, TParameter>(this, null, listOptions);
+        }
+
+        /// <summary>
+        /// Indicates the results should be materialized as a list of byte arrays.
+        /// </summary>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns></returns>
+        public ILink<List<byte[]>> ToByteArrayList(ListOptions listOptions = ListOptions.None)
+        {
+            return new ByteArrayListMaterializer<TCommand, TParameter>(this, null, listOptions);
+        }
+
+        /// <summary>
+        /// Indicates the results should be materialized as a list of byte arrays.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns></returns>
+        public ILink<List<byte[]>> ToByteArrayList(string columnName, ListOptions listOptions = ListOptions.None)
+        {
+            return new ByteArrayListMaterializer<TCommand, TParameter>(this, columnName, listOptions);
+        }
+
+        /// <summary>
         /// Materializes the result as a list of objects.
         /// </summary>
         /// <typeparam name="TObject">The type of the model.</typeparam>
@@ -70,46 +101,6 @@ namespace Tortuga.Chain.CommandBuilders
             return new CollectionMaterializer<TCommand, TParameter, TObject, TCollection>(this, collectionOptions);
         }
 
-        /// <summary>
-        /// Materializes the result as an immutable array of objects.
-        /// </summary>
-        /// <typeparam name="TObject">The type of the model.</typeparam>
-        /// <param name="collectionOptions">The collection options.</param>
-        /// <returns>Tortuga.Chain.IConstructibleMaterializer&lt;System.Collections.Immutable.ImmutableArray&lt;TObject&gt;&gt;.</returns>
-        /// <exception cref="MappingException"></exception>
-        /// <remarks>In theory this will offer better performance than ToImmutableList if you only intend to read the result.</remarks>
-        public IConstructibleMaterializer<ImmutableArray<TObject>> ToImmutableArray<TObject>(CollectionOptions collectionOptions = CollectionOptions.None)
-    where TObject : class
-        {
-            return new ImmutableArrayMaterializer<TCommand, TParameter, TObject>(this, collectionOptions);
-        }
-
-        /// <summary>
-        /// Materializes the result as an immutable list of objects.
-        /// </summary>
-        /// <typeparam name="TObject">The type of the model.</typeparam>
-        /// <param name="collectionOptions">The collection options.</param>
-        /// <returns>Tortuga.Chain.IConstructibleMaterializer&lt;System.Collections.Immutable.ImmutableList&lt;TObject&gt;&gt;.</returns>
-        /// <exception cref="MappingException"></exception>
-        /// <remarks>In theory this will offer better performance than ToImmutableArray if you intend to further modify the result.</remarks>
-        public IConstructibleMaterializer<ImmutableList<TObject>> ToImmutableList<TObject>(CollectionOptions collectionOptions = CollectionOptions.None)
-        where TObject : class
-        {
-            return new ImmutableListMaterializer<TCommand, TParameter, TObject>(this, collectionOptions);
-        }
-
-
-        /// <summary>
-        /// Materializes the result as a list of dynamically typed objects.
-        /// </summary>
-        /// <returns></returns>
-        public ILink<List<dynamic>> ToDynamicCollection()
-        {
-            return new DynamicCollectionMaterializer<TCommand, TParameter>(this);
-        }
-
-
-
 #if !DataTable_Missing
         /// <summary>
         /// Indicates the results should be materialized as a DataSet.
@@ -132,6 +123,16 @@ namespace Tortuga.Chain.CommandBuilders
         }
 
         /// <summary>
+        /// Indicates the results should be materialized as a list of DateTime.
+        /// </summary>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns></returns>
+        public ILink<List<DateTime>> ToDateTimeList(ListOptions listOptions = ListOptions.None)
+        {
+            return new DateTimeListMaterializer<TCommand, TParameter>(this, null, listOptions);
+        }
+
+        /// <summary>
         /// Indicates the results should be materialized as a list of DateTimeOffset.
         /// </summary>
         /// <param name="columnName">Name of the desired column.</param>
@@ -142,6 +143,101 @@ namespace Tortuga.Chain.CommandBuilders
             return new DateTimeOffsetListMaterializer<TCommand, TParameter>(this, columnName, listOptions);
         }
 
+        /// <summary>
+        /// Indicates the results should be materialized as a list of DateTimeOffset.
+        /// </summary>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns></returns>
+        public ILink<List<DateTimeOffset>> ToDateTimeOffsetList(ListOptions listOptions = ListOptions.None)
+        {
+            return new DateTimeOffsetListMaterializer<TCommand, TParameter>(this, null, listOptions);
+        }
+
+        /// <summary>
+        /// Indicates the results should be materialized as a set of DateTimeOffset.
+        /// </summary>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns>ILink&lt;HashSet&lt;DateTimeOffset&gt;&gt;.</returns>
+        public ILink<HashSet<DateTimeOffset>> ToDateTimeOffsetSet(ListOptions listOptions = ListOptions.None)
+        {
+            return new DateTimeOffsetSetMaterializer<TCommand, TParameter>(this, null, listOptions);
+
+        }
+
+        /// <summary>
+        /// Indicates the results should be materialized as a set of DateTimeOffset.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns>ILink&lt;HashSet&lt;DateTimeOffset&gt;&gt;.</returns>
+        public ILink<HashSet<DateTimeOffset>> ToDateTimeOffsetSet(string columnName, ListOptions listOptions = ListOptions.None)
+        {
+            return new DateTimeOffsetSetMaterializer<TCommand, TParameter>(this, columnName, listOptions);
+        }
+
+        /// <summary>
+        /// Indicates the results should be materialized as a set of DateTime.
+        /// </summary>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns>ILink&lt;HashSet&lt;DateTime&gt;&gt;.</returns>
+        public ILink<HashSet<DateTime>> ToDateTimeSet(ListOptions listOptions = ListOptions.None)
+        {
+            return new DateTimeSetMaterializer<TCommand, TParameter>(this, null, listOptions);
+        }
+
+        /// <summary>
+        /// Indicates the results should be materialized as a set of DateTime.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns>ILink&lt;HashSet&lt;DateTime&gt;&gt;.</returns>
+        public ILink<HashSet<DateTime>> ToDateTimeSet(string columnName, ListOptions listOptions = ListOptions.None)
+        {
+            return new DateTimeSetMaterializer<TCommand, TParameter>(this, columnName, listOptions);
+        }
+
+        /// <summary>
+        /// Indicates the results should be materialized as a list of numbers.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns></returns>
+        public ILink<List<decimal>> ToDecimalList(string columnName, ListOptions listOptions = ListOptions.None)
+        {
+            return new DecimalListMaterializer<TCommand, TParameter>(this, columnName, listOptions);
+        }
+
+        /// <summary>
+        /// Indicates the results should be materialized as a list of numbers.
+        /// </summary>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns></returns>
+        public ILink<List<decimal>> ToDecimalList(ListOptions listOptions = ListOptions.None)
+        {
+            return new DecimalListMaterializer<TCommand, TParameter>(this, null, listOptions);
+        }
+
+        /// <summary>
+        /// Indicates the results should be materialized as a set of numbers.
+        /// </summary>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns>ILink&lt;HashSet&lt;System.Decimal&gt;&gt;.</returns>
+        public ILink<HashSet<decimal>> ToDecimalSet(ListOptions listOptions = ListOptions.None)
+        {
+            return new DecimalSetMaterializer<TCommand, TParameter>(this, null, listOptions);
+        }
+
+        /// <summary>
+        /// Indicates the results should be materialized as a set of numbers.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns>ILink&lt;HashSet&lt;System.Decimal&gt;&gt;.</returns>
+        public ILink<HashSet<decimal>> ToDecimalSet(string columnName, ListOptions listOptions = ListOptions.None)
+        {
+            return new DecimalSetMaterializer<TCommand, TParameter>(this, columnName, listOptions);
+
+        }
 
         /// <summary>
         /// Materializes the result as a dictionary of objects.
@@ -204,6 +300,113 @@ namespace Tortuga.Chain.CommandBuilders
         }
 
         /// <summary>
+        /// Indicates the results should be materialized as a list of numbers.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns></returns>
+        public ILink<List<double>> ToDoubleList(string columnName, ListOptions listOptions = ListOptions.None)
+        {
+            return new DoubleListMaterializer<TCommand, TParameter>(this, columnName, listOptions);
+        }
+
+        /// <summary>
+        /// Indicates the results should be materialized as a list of numbers.
+        /// </summary>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns></returns>
+        public ILink<List<double>> ToDoubleList(ListOptions listOptions = ListOptions.None)
+        {
+            return new DoubleListMaterializer<TCommand, TParameter>(this, null, listOptions);
+        }
+
+        /// <summary>
+        /// Indicates the results should be materialized as a set of numbers.
+        /// </summary>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns>ILink&lt;HashSet&lt;System.Double&gt;&gt;.</returns>
+        public ILink<HashSet<double>> ToDoubleSet(ListOptions listOptions = ListOptions.None)
+        {
+            return new DoubleSetMaterializer<TCommand, TParameter>(this, null, listOptions);
+        }
+
+        /// <summary>
+        /// Indicates the results should be materialized as a set of numbers.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns>ILink&lt;HashSet&lt;System.Double&gt;&gt;.</returns>
+        public ILink<HashSet<double>> ToDoubleSet(string columnName, ListOptions listOptions = ListOptions.None)
+        {
+            return new DoubleSetMaterializer<TCommand, TParameter>(this, columnName, listOptions);
+        }
+
+        /// <summary>
+        /// Materializes the result as a list of dynamically typed objects.
+        /// </summary>
+        /// <returns></returns>
+        public ILink<List<dynamic>> ToDynamicCollection()
+        {
+            return new DynamicCollectionMaterializer<TCommand, TParameter>(this);
+        }
+
+        /// <summary>
+        /// Indicates the results should be materialized as a list of Guids.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns></returns>
+        public ILink<List<Guid>> ToGuidList(string columnName, ListOptions listOptions = ListOptions.None)
+        {
+            return new GuidListMaterializer<TCommand, TParameter>(this, columnName, listOptions);
+        }
+
+        /// <summary>
+        /// Indicates the results should be materialized as a list of Guids.
+        /// </summary>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns></returns>
+        public ILink<List<Guid>> ToGuidList(ListOptions listOptions = ListOptions.None)
+        {
+            return new GuidListMaterializer<TCommand, TParameter>(this, null, listOptions);
+        }
+
+        /// <summary>
+        /// Indicates the results should be materialized as a set of Guids.
+        /// </summary>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns>ILink&lt;HashSet&lt;Guid&gt;&gt;.</returns>
+        public ILink<HashSet<Guid>> ToGuidSet(ListOptions listOptions = ListOptions.None)
+        {
+            return new GuidSetMaterializer<TCommand, TParameter>(this, null, listOptions);
+        }
+
+        /// <summary>
+        /// Indicates the results should be materialized as a set of Guids.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns>ILink&lt;HashSet&lt;Guid&gt;&gt;.</returns>
+        public ILink<HashSet<Guid>> ToGuidSet(string columnName, ListOptions listOptions = ListOptions.None)
+        {
+            return new GuidSetMaterializer<TCommand, TParameter>(this, columnName, listOptions);
+        }
+
+        /// <summary>
+        /// Materializes the result as an immutable array of objects.
+        /// </summary>
+        /// <typeparam name="TObject">The type of the model.</typeparam>
+        /// <param name="collectionOptions">The collection options.</param>
+        /// <returns>Tortuga.Chain.IConstructibleMaterializer&lt;System.Collections.Immutable.ImmutableArray&lt;TObject&gt;&gt;.</returns>
+        /// <exception cref="MappingException"></exception>
+        /// <remarks>In theory this will offer better performance than ToImmutableList if you only intend to read the result.</remarks>
+        public IConstructibleMaterializer<ImmutableArray<TObject>> ToImmutableArray<TObject>(CollectionOptions collectionOptions = CollectionOptions.None)
+    where TObject : class
+        {
+            return new ImmutableArrayMaterializer<TCommand, TParameter, TObject>(this, collectionOptions);
+        }
+
+        /// <summary>
         /// Materializes the result as a immutable dictionary of objects.
         /// </summary>
         /// <typeparam name="TKey">The type of the key.</typeparam>
@@ -233,37 +436,18 @@ namespace Tortuga.Chain.CommandBuilders
         }
 
         /// <summary>
-        /// Indicates the results should be materialized as a list of numbers.
+        /// Materializes the result as an immutable list of objects.
         /// </summary>
-        /// <param name="columnName">Name of the desired column.</param>
-        /// <param name="listOptions">The list options.</param>
-        /// <returns></returns>
-        public ILink<List<decimal>> ToDecimalList(string columnName, ListOptions listOptions = ListOptions.None)
+        /// <typeparam name="TObject">The type of the model.</typeparam>
+        /// <param name="collectionOptions">The collection options.</param>
+        /// <returns>Tortuga.Chain.IConstructibleMaterializer&lt;System.Collections.Immutable.ImmutableList&lt;TObject&gt;&gt;.</returns>
+        /// <exception cref="MappingException"></exception>
+        /// <remarks>In theory this will offer better performance than ToImmutableArray if you intend to further modify the result.</remarks>
+        public IConstructibleMaterializer<ImmutableList<TObject>> ToImmutableList<TObject>(CollectionOptions collectionOptions = CollectionOptions.None)
+        where TObject : class
         {
-            return new DecimalListMaterializer<TCommand, TParameter>(this, columnName, listOptions);
+            return new ImmutableListMaterializer<TCommand, TParameter, TObject>(this, collectionOptions);
         }
-
-        /// <summary>
-        /// Indicates the results should be materialized as a list of numbers.
-        /// </summary>
-        /// <param name="columnName">Name of the desired column.</param>
-        /// <param name="listOptions">The list options.</param>
-        /// <returns></returns>
-        public ILink<List<double>> ToDoubleList(string columnName, ListOptions listOptions = ListOptions.None)
-        {
-            return new DoubleListMaterializer<TCommand, TParameter>(this, columnName, listOptions);
-        }
-        /// <summary>
-        /// Indicates the results should be materialized as a list of Guids.
-        /// </summary>
-        /// <param name="columnName">Name of the desired column.</param>
-        /// <param name="listOptions">The list options.</param>
-        /// <returns></returns>
-        public ILink<List<Guid>> ToGuidList(string columnName, ListOptions listOptions = ListOptions.None)
-        {
-            return new GuidListMaterializer<TCommand, TParameter>(this, columnName, listOptions);
-        }
-
         /// <summary>
         /// Indicates the results should be materialized as a list of integers.
         /// </summary>
@@ -278,315 +462,11 @@ namespace Tortuga.Chain.CommandBuilders
         /// <summary>
         /// Indicates the results should be materialized as a list of integers.
         /// </summary>
-        /// <param name="columnName">Name of the desired column.</param>
-        /// <param name="listOptions">The list options.</param>
-        /// <returns></returns>
-        public ILink<List<int>> ToInt32List(string columnName, ListOptions listOptions = ListOptions.None)
-        {
-            return new Int32ListMaterializer<TCommand, TParameter>(this, columnName, listOptions);
-        }
-
-        /// <summary>
-        /// Indicates the results should be materialized as a list of integers.
-        /// </summary>
-        /// <param name="columnName">Name of the desired column.</param>
-        /// <param name="listOptions">The list options.</param>
-        /// <returns></returns>
-        public ILink<List<long>> ToInt64List(string columnName, ListOptions listOptions = ListOptions.None)
-        {
-            return new Int64ListMaterializer<TCommand, TParameter>(this, columnName, listOptions);
-        }
-
-        /// <summary>
-        /// Indicates the results should be materialized as a list of numbers.
-        /// </summary>
-        /// <param name="columnName">Name of the desired column.</param>
-        /// <param name="listOptions">The list options.</param>
-        /// <returns></returns>
-        public ILink<List<float>> ToSingleList(string columnName, ListOptions listOptions = ListOptions.None)
-        {
-            return new SingleListMaterializer<TCommand, TParameter>(this, columnName, listOptions);
-        }
-
-        /// <summary>
-        /// Indicates the results should be materialized as a list of strings.
-        /// </summary>
-        /// <param name="columnName">Name of the desired column.</param>
-        /// <param name="listOptions">The list options.</param>
-        /// <returns></returns>
-        public ILink<List<string>> ToStringList(string columnName, ListOptions listOptions = ListOptions.None)
-        {
-            return new StringListMaterializer<TCommand, TParameter>(this, columnName, listOptions);
-        }
-
-        /// <summary>
-        /// Indicates the results should be materialized as a Table.
-        /// </summary>
-        public ILink<Table> ToTable()
-        {
-            return new TableMaterializer<TCommand, TParameter>(this);
-        }
-
-        /// <summary>
-        /// Indicates the results should be materialized as a list of TimeSpan.
-        /// </summary>
-        /// <param name="columnName">Name of the desired column.</param>
-        /// <param name="listOptions">The list options.</param>
-        /// <returns></returns>
-        public ILink<List<TimeSpan>> ToTimeSpanList(string columnName, ListOptions listOptions = ListOptions.None)
-        {
-            return new TimeSpanListMaterializer<TCommand, TParameter>(this, columnName, listOptions);
-        }
-
-
-
-        /// <summary>
-        /// Indicates the results should be materialized as a list of booleans.
-        /// </summary>
-        /// <param name="listOptions">The list options.</param>
-        /// <returns></returns>
-        public ILink<List<bool>> ToBooleanList(ListOptions listOptions = ListOptions.None)
-        {
-            return new BooleanListMaterializer<TCommand, TParameter>(this, null, listOptions);
-        }
-
-
-        /// <summary>
-        /// Indicates the results should be materialized as a list of DateTime.
-        /// </summary>
-        /// <param name="listOptions">The list options.</param>
-        /// <returns></returns>
-        public ILink<List<DateTime>> ToDateTimeList(ListOptions listOptions = ListOptions.None)
-        {
-            return new DateTimeListMaterializer<TCommand, TParameter>(this, null, listOptions);
-        }
-
-        /// <summary>
-        /// Indicates the results should be materialized as a list of DateTimeOffset.
-        /// </summary>
-        /// <param name="listOptions">The list options.</param>
-        /// <returns></returns>
-        public ILink<List<DateTimeOffset>> ToDateTimeOffsetList(ListOptions listOptions = ListOptions.None)
-        {
-            return new DateTimeOffsetListMaterializer<TCommand, TParameter>(this, null, listOptions);
-        }
-
-        /// <summary>
-        /// Indicates the results should be materialized as a list of numbers.
-        /// </summary>
-        /// <param name="listOptions">The list options.</param>
-        /// <returns></returns>
-        public ILink<List<decimal>> ToDecimalList(ListOptions listOptions = ListOptions.None)
-        {
-            return new DecimalListMaterializer<TCommand, TParameter>(this, null, listOptions);
-        }
-
-        /// <summary>
-        /// Indicates the results should be materialized as a list of numbers.
-        /// </summary>
-        /// <param name="listOptions">The list options.</param>
-        /// <returns></returns>
-        public ILink<List<double>> ToDoubleList(ListOptions listOptions = ListOptions.None)
-        {
-            return new DoubleListMaterializer<TCommand, TParameter>(this, null, listOptions);
-        }
-        /// <summary>
-        /// Indicates the results should be materialized as a list of Guids.
-        /// </summary>
-        /// <param name="listOptions">The list options.</param>
-        /// <returns></returns>
-        public ILink<List<Guid>> ToGuidList(ListOptions listOptions = ListOptions.None)
-        {
-            return new GuidListMaterializer<TCommand, TParameter>(this, null, listOptions);
-        }
-
-        /// <summary>
-        /// Indicates the results should be materialized as a list of integers.
-        /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
         public ILink<List<short>> ToInt16List(ListOptions listOptions = ListOptions.None)
         {
             return new Int16ListMaterializer<TCommand, TParameter>(this, null, listOptions);
-        }
-
-        /// <summary>
-        /// Indicates the results should be materialized as a list of integers.
-        /// </summary>
-        /// <param name="listOptions">The list options.</param>
-        /// <returns></returns>
-        public ILink<List<int>> ToInt32List(ListOptions listOptions = ListOptions.None)
-        {
-            return new Int32ListMaterializer<TCommand, TParameter>(this, null, listOptions);
-        }
-
-        /// <summary>
-        /// Indicates the results should be materialized as a list of integers.
-        /// </summary>
-        /// <param name="listOptions">The list options.</param>
-        /// <returns></returns>
-        public ILink<List<long>> ToInt64List(ListOptions listOptions = ListOptions.None)
-        {
-            return new Int64ListMaterializer<TCommand, TParameter>(this, null, listOptions);
-        }
-
-        /// <summary>
-        /// Indicates the results should be materialized as a list of numbers.
-        /// </summary>
-        /// <param name="listOptions">The list options.</param>
-        /// <returns></returns>
-        public ILink<List<float>> ToSingleList(ListOptions listOptions = ListOptions.None)
-        {
-            return new SingleListMaterializer<TCommand, TParameter>(this, null, listOptions);
-        }
-
-        /// <summary>
-        /// Indicates the results should be materialized as a list of strings.
-        /// </summary>
-        /// <param name="listOptions">The list options.</param>
-        /// <returns></returns>
-        public ILink<List<string>> ToStringList(ListOptions listOptions = ListOptions.None)
-        {
-            return new StringListMaterializer<TCommand, TParameter>(this, null, listOptions);
-        }
-
-        /// <summary>
-        /// Indicates the results should be materialized as a list of TimeSpan.
-        /// </summary>
-        /// <param name="listOptions">The list options.</param>
-        /// <returns></returns>
-        public ILink<List<TimeSpan>> ToTimeSpanList(ListOptions listOptions = ListOptions.None)
-        {
-            return new TimeSpanListMaterializer<TCommand, TParameter>(this, null, listOptions);
-        }
-
-        /// <summary>
-        /// Indicates the results should be materialized as a list of byte arrays.
-        /// </summary>
-        /// <param name="listOptions">The list options.</param>
-        /// <returns></returns>
-        public ILink<List<byte[]>> ToByteArrayList(ListOptions listOptions = ListOptions.None)
-        {
-            return new ByteArrayListMaterializer<TCommand, TParameter>(this, null, listOptions);
-        }
-
-
-        /// <summary>
-        /// Indicates the results should be materialized as a list of byte arrays.
-        /// </summary>
-        /// <param name="columnName">Name of the desired column.</param>
-        /// <param name="listOptions">The list options.</param>
-        /// <returns></returns>
-        public ILink<List<byte[]>> ToByteArrayList(string columnName, ListOptions listOptions = ListOptions.None)
-        {
-            return new ByteArrayListMaterializer<TCommand, TParameter>(this, columnName, listOptions);
-        }
-
-        /// <summary>
-        /// Indicates the results should be materialized as a set of DateTime.
-        /// </summary>
-        /// <param name="listOptions">The list options.</param>
-        /// <returns>ILink&lt;HashSet&lt;DateTime&gt;&gt;.</returns>
-        public ILink<HashSet<DateTime>> ToDateTimeSet(ListOptions listOptions = ListOptions.None)
-        {
-            return new DateTimeSetMaterializer<TCommand, TParameter>(this, null, listOptions);
-        }
-
-        /// <summary>
-        /// Indicates the results should be materialized as a set of DateTime.
-        /// </summary>
-        /// <param name="columnName">Name of the desired column.</param>
-        /// <param name="listOptions">The list options.</param>
-        /// <returns>ILink&lt;HashSet&lt;DateTime&gt;&gt;.</returns>
-        public ILink<HashSet<DateTime>> ToDateTimeSet(string columnName, ListOptions listOptions = ListOptions.None)
-        {
-            return new DateTimeSetMaterializer<TCommand, TParameter>(this, columnName, listOptions);
-        }
-
-        /// <summary>
-        /// Indicates the results should be materialized as a set of DateTimeOffset.
-        /// </summary>
-        /// <param name="listOptions">The list options.</param>
-        /// <returns>ILink&lt;HashSet&lt;DateTimeOffset&gt;&gt;.</returns>
-        public ILink<HashSet<DateTimeOffset>> ToDateTimeOffsetSet(ListOptions listOptions = ListOptions.None)
-        {
-            return new DateTimeOffsetSetMaterializer<TCommand, TParameter>(this, null, listOptions);
-
-        }
-
-        /// <summary>
-        /// Indicates the results should be materialized as a set of DateTimeOffset.
-        /// </summary>
-        /// <param name="columnName">Name of the desired column.</param>
-        /// <param name="listOptions">The list options.</param>
-        /// <returns>ILink&lt;HashSet&lt;DateTimeOffset&gt;&gt;.</returns>
-        public ILink<HashSet<DateTimeOffset>> ToDateTimeOffsetSet(string columnName, ListOptions listOptions = ListOptions.None)
-        {
-            return new DateTimeOffsetSetMaterializer<TCommand, TParameter>(this, columnName, listOptions);
-        }
-
-        /// <summary>
-        /// Indicates the results should be materialized as a set of numbers.
-        /// </summary>
-        /// <param name="listOptions">The list options.</param>
-        /// <returns>ILink&lt;HashSet&lt;System.Decimal&gt;&gt;.</returns>
-        public ILink<HashSet<decimal>> ToDecimalSet(ListOptions listOptions = ListOptions.None)
-        {
-            return new DecimalSetMaterializer<TCommand, TParameter>(this, null, listOptions);
-        }
-
-        /// <summary>
-        /// Indicates the results should be materialized as a set of numbers.
-        /// </summary>
-        /// <param name="columnName">Name of the desired column.</param>
-        /// <param name="listOptions">The list options.</param>
-        /// <returns>ILink&lt;HashSet&lt;System.Decimal&gt;&gt;.</returns>
-        public ILink<HashSet<decimal>> ToDecimalSet(string columnName, ListOptions listOptions = ListOptions.None)
-        {
-            return new DecimalSetMaterializer<TCommand, TParameter>(this, columnName, listOptions);
-
-        }
-
-        /// <summary>
-        /// Indicates the results should be materialized as a set of numbers.
-        /// </summary>
-        /// <param name="listOptions">The list options.</param>
-        /// <returns>ILink&lt;HashSet&lt;System.Double&gt;&gt;.</returns>
-        public ILink<HashSet<double>> ToDoubleSet(ListOptions listOptions = ListOptions.None)
-        {
-            return new DoubleSetMaterializer<TCommand, TParameter>(this, null, listOptions);
-        }
-
-        /// <summary>
-        /// Indicates the results should be materialized as a set of numbers.
-        /// </summary>
-        /// <param name="columnName">Name of the desired column.</param>
-        /// <param name="listOptions">The list options.</param>
-        /// <returns>ILink&lt;HashSet&lt;System.Double&gt;&gt;.</returns>
-        public ILink<HashSet<double>> ToDoubleSet(string columnName, ListOptions listOptions = ListOptions.None)
-        {
-            return new DoubleSetMaterializer<TCommand, TParameter>(this, columnName, listOptions);
-        }
-
-        /// <summary>
-        /// Indicates the results should be materialized as a set of Guids.
-        /// </summary>
-        /// <param name="listOptions">The list options.</param>
-        /// <returns>ILink&lt;HashSet&lt;Guid&gt;&gt;.</returns>
-        public ILink<HashSet<Guid>> ToGuidSet(ListOptions listOptions = ListOptions.None)
-        {
-            return new GuidSetMaterializer<TCommand, TParameter>(this, null, listOptions);
-        }
-
-        /// <summary>
-        /// Indicates the results should be materialized as a set of Guids.
-        /// </summary>
-        /// <param name="columnName">Name of the desired column.</param>
-        /// <param name="listOptions">The list options.</param>
-        /// <returns>ILink&lt;HashSet&lt;Guid&gt;&gt;.</returns>
-        public ILink<HashSet<Guid>> ToGuidSet(string columnName, ListOptions listOptions = ListOptions.None)
-        {
-            return new GuidSetMaterializer<TCommand, TParameter>(this, columnName, listOptions);
         }
 
         /// <summary>
@@ -611,6 +491,27 @@ namespace Tortuga.Chain.CommandBuilders
         }
 
         /// <summary>
+        /// Indicates the results should be materialized as a list of integers.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns></returns>
+        public ILink<List<int>> ToInt32List(string columnName, ListOptions listOptions = ListOptions.None)
+        {
+            return new Int32ListMaterializer<TCommand, TParameter>(this, columnName, listOptions);
+        }
+
+        /// <summary>
+        /// Indicates the results should be materialized as a list of integers.
+        /// </summary>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns></returns>
+        public ILink<List<int>> ToInt32List(ListOptions listOptions = ListOptions.None)
+        {
+            return new Int32ListMaterializer<TCommand, TParameter>(this, null, listOptions);
+        }
+
+        /// <summary>
         /// Indicates the results should be materialized as a set of integers.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
@@ -629,6 +530,27 @@ namespace Tortuga.Chain.CommandBuilders
         public ILink<HashSet<int>> ToInt32Set(string columnName, ListOptions listOptions = ListOptions.None)
         {
             return new Int32SetMaterializer<TCommand, TParameter>(this, columnName, listOptions);
+        }
+
+        /// <summary>
+        /// Indicates the results should be materialized as a list of integers.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns></returns>
+        public ILink<List<long>> ToInt64List(string columnName, ListOptions listOptions = ListOptions.None)
+        {
+            return new Int64ListMaterializer<TCommand, TParameter>(this, columnName, listOptions);
+        }
+
+        /// <summary>
+        /// Indicates the results should be materialized as a list of integers.
+        /// </summary>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns></returns>
+        public ILink<List<long>> ToInt64List(ListOptions listOptions = ListOptions.None)
+        {
+            return new Int64ListMaterializer<TCommand, TParameter>(this, null, listOptions);
         }
 
         /// <summary>
@@ -653,6 +575,27 @@ namespace Tortuga.Chain.CommandBuilders
         }
 
         /// <summary>
+        /// Indicates the results should be materialized as a list of numbers.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns></returns>
+        public ILink<List<float>> ToSingleList(string columnName, ListOptions listOptions = ListOptions.None)
+        {
+            return new SingleListMaterializer<TCommand, TParameter>(this, columnName, listOptions);
+        }
+
+        /// <summary>
+        /// Indicates the results should be materialized as a list of numbers.
+        /// </summary>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns></returns>
+        public ILink<List<float>> ToSingleList(ListOptions listOptions = ListOptions.None)
+        {
+            return new SingleListMaterializer<TCommand, TParameter>(this, null, listOptions);
+        }
+
+        /// <summary>
         /// Indicates the results should be materialized as a set of numbers.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
@@ -671,6 +614,27 @@ namespace Tortuga.Chain.CommandBuilders
         public ILink<HashSet<float>> ToSingleSet(string columnName, ListOptions listOptions = ListOptions.None)
         {
             return new SingleSetMaterializer<TCommand, TParameter>(this, columnName, listOptions);
+        }
+
+        /// <summary>
+        /// Indicates the results should be materialized as a list of strings.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns></returns>
+        public ILink<List<string>> ToStringList(string columnName, ListOptions listOptions = ListOptions.None)
+        {
+            return new StringListMaterializer<TCommand, TParameter>(this, columnName, listOptions);
+        }
+
+        /// <summary>
+        /// Indicates the results should be materialized as a list of strings.
+        /// </summary>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns></returns>
+        public ILink<List<string>> ToStringList(ListOptions listOptions = ListOptions.None)
+        {
+            return new StringListMaterializer<TCommand, TParameter>(this, null, listOptions);
         }
 
         /// <summary>
@@ -694,6 +658,33 @@ namespace Tortuga.Chain.CommandBuilders
             return new StringSetMaterializer<TCommand, TParameter>(this, columnName, listOptions);
         }
 
+        /// <summary>
+        /// Indicates the results should be materialized as a Table.
+        /// </summary>
+        public ILink<Table> ToTable()
+        {
+            return new TableMaterializer<TCommand, TParameter>(this);
+        }
+
+        /// <summary>
+        /// Indicates the results should be materialized as a list of TimeSpan.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns></returns>
+        public ILink<List<TimeSpan>> ToTimeSpanList(string columnName, ListOptions listOptions = ListOptions.None)
+        {
+            return new TimeSpanListMaterializer<TCommand, TParameter>(this, columnName, listOptions);
+        }
+        /// <summary>
+        /// Indicates the results should be materialized as a list of TimeSpan.
+        /// </summary>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns></returns>
+        public ILink<List<TimeSpan>> ToTimeSpanList(ListOptions listOptions = ListOptions.None)
+        {
+            return new TimeSpanListMaterializer<TCommand, TParameter>(this, null, listOptions);
+        }
         /// <summary>
         /// Indicates the results should be materialized as a set of TimeSpan.
         /// </summary>

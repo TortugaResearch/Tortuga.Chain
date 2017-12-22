@@ -21,7 +21,6 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 
         readonly object m_ArgumentValue;
         readonly StoredProcedureMetadata<PostgreSqlObjectName, NpgsqlDbType> m_Procedure;
-        //readonly PostgreSqlObjectName m_ProcedureName;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PostgreSqlProcedureCall"/> class.
@@ -35,7 +34,6 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
                 throw new ArgumentException($"{nameof(procedureName)} is empty", nameof(procedureName));
 
             m_ArgumentValue = argumentValue;
-            //m_ProcedureName = procedureName;
             m_Procedure = DataSource.DatabaseMetadata.GetStoredProcedure(procedureName);
         }
 
@@ -70,10 +68,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         /// Gets the data source.
         /// </summary>
         /// <value>The data source.</value>
-        public new PostgreSqlDataSourceBase DataSource
-        {
-            get { return (PostgreSqlDataSourceBase)base.DataSource; }
-        }
+        public new PostgreSqlDataSourceBase DataSource => (PostgreSqlDataSourceBase)base.DataSource;
 
         /// <summary>
         /// Returns the column associated with the column name.
@@ -83,10 +78,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         /// <remarks>
         /// If the column name was not found, this will return null
         /// </remarks>
-        public override ColumnMetadata TryGetColumn(string columnName)
-        {
-            return null;
-        }
+        public override ColumnMetadata TryGetColumn(string columnName) => null;
     }
 
 }

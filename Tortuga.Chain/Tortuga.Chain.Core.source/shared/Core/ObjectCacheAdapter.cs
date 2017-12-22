@@ -124,8 +124,7 @@ namespace Tortuga.Chain.Core
         /// <returns>Task&lt;Tuple&lt;System.Boolean, System.Object&gt;&gt;.</returns>
         public async Task<CacheReadResult<T>> TryReadAsync<T>(string cacheKey)
         {
-            T result;
-            bool result2 = TryRead(cacheKey, out result);
+            bool result2 = TryRead(cacheKey, out T result);
             return new CacheReadResult<T>(result2, result);
         }
 #pragma warning restore CS1998
@@ -177,11 +176,11 @@ namespace Tortuga.Chain.Core
 #endif
         }
 
-        private class NullObject
+        class NullObject
         {
             public static readonly NullObject Default = new NullObject();
 
-            private NullObject() { }
+            NullObject() { }
         }
     }
 }

@@ -27,18 +27,18 @@ namespace Tortuga.Chain
     public class SqlServerDataSource : SqlServerDataSourceBase, IRootDataSource
     {
         readonly SqlConnectionStringBuilder m_ConnectionBuilder;
-        private SqlServerMetadataCache m_DatabaseMetadata;
+        SqlServerMetadataCache m_DatabaseMetadata;
 
         readonly object m_SyncRoot = new object();
 
 #if !SqlDependency_Missing
-        private bool m_IsSqlDependencyActive;
+        bool m_IsSqlDependencyActive;
 #endif
 
         /// <summary>
         /// This is used to decide which option overrides to set when establishing a connection.
         /// </summary>
-        private SqlServerEffectiveSettings m_ServerDefaultSettings;
+        SqlServerEffectiveSettings m_ServerDefaultSettings;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlServerDataSource" /> class.
@@ -112,7 +112,7 @@ namespace Tortuga.Chain
             m_Cache = DefaultCache;
         }
 
-        private SqlServerDataSource(string name, SqlConnectionStringBuilder connectionStringBuilder, SqlServerDataSourceSettings settings, SqlServerMetadataCache databaseMetadata, ICacheAdapter cache, ConcurrentDictionary<Type, object> extensionCache) : base(settings)
+        SqlServerDataSource(string name, SqlConnectionStringBuilder connectionStringBuilder, SqlServerDataSourceSettings settings, SqlServerMetadataCache databaseMetadata, ICacheAdapter cache, ConcurrentDictionary<Type, object> extensionCache) : base(settings)
         {
             if (connectionStringBuilder == null)
                 throw new ArgumentNullException("connectionStringBuilder", "connectionStringBuilder is null.");
@@ -539,7 +539,7 @@ namespace Tortuga.Chain
         }
 
 
-        private string BuildConnectionSettingsOverride()
+        string BuildConnectionSettingsOverride()
         {
             var sql = new StringBuilder();
 
@@ -559,7 +559,7 @@ namespace Tortuga.Chain
         /// <remarks>
         /// The caller of this method is responsible for closing the connection.
         /// </remarks>
-        private async Task<SqlConnection> CreateConnectionAsync(CancellationToken cancellationToken = default(CancellationToken))
+        async Task<SqlConnection> CreateConnectionAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             var con = new SqlConnection(ConnectionString);
             await con.OpenAsync(cancellationToken).ConfigureAwait(false);

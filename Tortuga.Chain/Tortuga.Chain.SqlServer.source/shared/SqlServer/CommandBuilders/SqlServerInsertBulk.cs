@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Data;
-using System.Data.Common;
 using System.Data.SqlClient;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,10 +25,10 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         readonly SqlServerDataSourceBase m_DataSource;
         readonly SqlBulkCopyOptions m_Options;
         readonly TableOrViewMetadata<SqlServerObjectName, SqlDbType> m_Table;
-        private int? m_BatchSize;
-        private bool m_EnableStreaming;
-        private int? m_NotifyAfter;
-        private SqlRowsCopiedEventHandler m_EventHandler;
+        int? m_BatchSize;
+        bool m_EnableStreaming;
+        int? m_NotifyAfter;
+        SqlRowsCopiedEventHandler m_EventHandler;
 
 #if !DataTable_Missing
         internal SqlServerInsertBulk(SqlServerDataSourceBase dataSource, SqlServerObjectName tableName, DataTable dataTable, SqlBulkCopyOptions options) : base(dataSource)
@@ -118,7 +117,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             }
         }
 
-        private void SetupBulkCopy(SqlBulkCopy bcp)
+        void SetupBulkCopy(SqlBulkCopy bcp)
         {
             bcp.DestinationTableName = m_Table.Name.ToQuotedString();
             if (m_BatchSize.HasValue)

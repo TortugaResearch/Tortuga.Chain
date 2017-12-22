@@ -30,16 +30,6 @@ namespace Tortuga.Chain.Materializers
         }
 
         /// <summary>
-        /// Gets the data source that is associated with this materializer or appender.
-        /// </summary>
-        /// <value>The data source.</value>
-        /// <remarks>This is only used for</remarks>
-        public IDataSource DataSource
-        {
-            get { return m_OperationBuilder.DataSource; }
-        }
-
-        /// <summary>
         /// Occurs when an execution token has been prepared.
         /// </summary>
         /// <remarks>This is mostly used by appenders to override command behavior.</remarks>
@@ -51,11 +41,13 @@ namespace Tortuga.Chain.Materializers
         /// <remarks>This is mostly used by appenders to override SQL generation.</remarks>
         public event EventHandler<ExecutionTokenPreparingEventArgs> ExecutionTokenPreparing;
 
-
-        string ILink<int?>.CommandText()
-        {
-            return null;
-        }
+        /// <summary>
+        /// Gets the data source that is associated with this materializer or appender.
+        /// </summary>
+        /// <value>The data source.</value>
+        /// <remarks>This is only used for</remarks>
+        public IDataSource DataSource => m_OperationBuilder.DataSource;
+        string ILink<int?>.CommandText() => null;
 
 
         /// <summary>

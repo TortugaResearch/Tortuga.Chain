@@ -11,7 +11,31 @@ namespace Tortuga.Chain.CommandBuilders
     public struct SqlBuilderEntry<TDbType>
         where TDbType : struct
     {
-        private Flags m_Flags;
+        Flags m_Flags;
+
+        [Flags]
+        internal enum Flags : ushort //this is internal, so we can make it larger if needed
+        {
+            IsFormalParameter = 1,
+            UseForInsert = 2,
+            IsKey = 4,
+            UseForRead = 8,
+            UseForUpdate = 16,
+            UseParameter = 32,
+            RestrictedRead = 64,
+            RestrictedInsert = 128,
+            RestrictedUpdate = 256,
+
+            /// <summary>
+            /// This allows the parameter to be used a second time. It is needed when using anonymous parameters.
+            /// </summary>
+            UseParameter2 = 512,
+
+            /// <summary>
+            /// The use Clr name as alias when reading. Used for object materialization purposes.
+            /// </summary>
+            UseClrNameAsAlias = 1024
+        }
 
         /// <summary>
         /// Gets or sets the immutable column metadata.
@@ -40,40 +64,6 @@ namespace Tortuga.Chain.CommandBuilders
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether this <see cref="SqlBuilderEntry{TDbType}"/> participates in insert operations.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if insert; otherwise, <c>false</c>.
-        /// </value>
-        public bool UseForInsert
-        {
-            get { return (m_Flags & Flags.UseForInsert) > 0; }
-            internal set
-            {
-                if (value)
-                    m_Flags = m_Flags | Flags.UseForInsert;
-                else
-                    m_Flags = m_Flags & ~Flags.UseForInsert;
-            }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether the SQL generator should produce an AS clause for this column.
-        /// </summary>
-        /// <remarks>This is used when the actual column name doesn't match the CLR-compatible version of the column name. This could happen when the real column name has spaces.</remarks>
-        public bool UseClrNameAsAlias
-        {
-            get { return (m_Flags & Flags.UseClrNameAsAlias) > 0; }
-            internal set
-            {
-                if (value)
-                    m_Flags = m_Flags | Flags.UseClrNameAsAlias;
-                else
-                    m_Flags = m_Flags & ~Flags.UseClrNameAsAlias;
-            }
-        }
-
-        /// <summary>
         /// Gets or sets a value indicating whether this column should be treated as primary key.
         /// </summary>
         /// <value>
@@ -94,6 +84,10 @@ namespace Tortuga.Chain.CommandBuilders
             }
         }
 
+        /// <summary>
+        /// When non-null, this indicates that we want to use a table value parameter instead of a normal parameter.
+        /// </summary>
+        public ISqlBuilderEntryDetails<TDbType> ParameterColumn { get; set; }
 
         /// <summary>
         /// Gets or sets the value to be used when constructing parameters.
@@ -104,6 +98,84 @@ namespace Tortuga.Chain.CommandBuilders
         /// <remarks>A null means this parameter's value was not set. A DBNull.Value means it is passed to the database as a null.</remarks>
         public object ParameterValue { get; set; }
 
+        /// <summary>
+        /// Gets a value indicating whether restricted from inserting.
+        /// </summary>
+        public bool RestrictedInsert
+        {
+            get { return (m_Flags & Flags.RestrictedInsert) > 0; }
+            internal set
+            {
+                if (value)
+                    m_Flags = m_Flags | Flags.RestrictedInsert;
+                else
+                    m_Flags = m_Flags & ~Flags.RestrictedInsert;
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether restricted from reading.
+        /// </summary>
+        public bool RestrictedRead
+        {
+            get { return (m_Flags & Flags.RestrictedRead) > 0; }
+            internal set
+            {
+                if (value)
+                    m_Flags = m_Flags | Flags.RestrictedRead;
+                else
+                    m_Flags = m_Flags & ~Flags.RestrictedRead;
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether restricted from updating.
+        /// </summary>
+        public bool RestrictedUpdate
+        {
+            get { return (m_Flags & Flags.RestrictedUpdate) > 0; }
+            internal set
+            {
+                if (value)
+                    m_Flags = m_Flags | Flags.RestrictedUpdate;
+                else
+                    m_Flags = m_Flags & ~Flags.RestrictedUpdate;
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the SQL generator should produce an AS clause for this column.
+        /// </summary>
+        /// <remarks>This is used when the actual column name doesn't match the CLR-compatible version of the column name. This could happen when the real column name has spaces.</remarks>
+        public bool UseClrNameAsAlias
+        {
+            get { return (m_Flags & Flags.UseClrNameAsAlias) > 0; }
+            internal set
+            {
+                if (value)
+                    m_Flags = m_Flags | Flags.UseClrNameAsAlias;
+                else
+                    m_Flags = m_Flags & ~Flags.UseClrNameAsAlias;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this <see cref="SqlBuilderEntry{TDbType}"/> participates in insert operations.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if insert; otherwise, <c>false</c>.
+        /// </value>
+        public bool UseForInsert
+        {
+            get { return (m_Flags & Flags.UseForInsert) > 0; }
+            internal set
+            {
+                if (value)
+                    m_Flags = m_Flags | Flags.UseForInsert;
+                else
+                    m_Flags = m_Flags & ~Flags.UseForInsert;
+            }
+        }
         /// <summary>
         /// Gets or sets a value indicating whether this <see cref="SqlBuilderEntry{TDbType}"/> participates in read operations.
         /// </summary>
@@ -174,80 +246,5 @@ namespace Tortuga.Chain.CommandBuilders
                     m_Flags = m_Flags & ~Flags.UseParameter2;
             }
         }
-
-        /// <summary>
-        /// When non-null, this indicates that we want to use a table value parameter instead of a normal parameter.
-        /// </summary>
-        public ISqlBuilderEntryDetails<TDbType> ParameterColumn { get; set; }
-
-        /// <summary>
-        /// Gets a value indicating whether restricted from reading.
-        /// </summary>
-        public bool RestrictedRead
-        {
-            get { return (m_Flags & Flags.RestrictedRead) > 0; }
-            internal set
-            {
-                if (value)
-                    m_Flags = m_Flags | Flags.RestrictedRead;
-                else
-                    m_Flags = m_Flags & ~Flags.RestrictedRead;
-            }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether restricted from inserting.
-        /// </summary>
-        public bool RestrictedInsert
-        {
-            get { return (m_Flags & Flags.RestrictedInsert) > 0; }
-            internal set
-            {
-                if (value)
-                    m_Flags = m_Flags | Flags.RestrictedInsert;
-                else
-                    m_Flags = m_Flags & ~Flags.RestrictedInsert;
-            }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether restricted from updating.
-        /// </summary>
-        public bool RestrictedUpdate
-        {
-            get { return (m_Flags & Flags.RestrictedUpdate) > 0; }
-            internal set
-            {
-                if (value)
-                    m_Flags = m_Flags | Flags.RestrictedUpdate;
-                else
-                    m_Flags = m_Flags & ~Flags.RestrictedUpdate;
-            }
-        }
-
-        [Flags]
-        internal enum Flags : ushort //this is internal, so we can make it larger if needed
-        {
-            IsFormalParameter = 1,
-            UseForInsert = 2,
-            IsKey = 4,
-            UseForRead = 8,
-            UseForUpdate = 16,
-            UseParameter = 32,
-            RestrictedRead = 64,
-            RestrictedInsert = 128,
-            RestrictedUpdate = 256,
-
-            /// <summary>
-            /// This allows the parameter to be used a second time. It is needed when using anonymous parameters.
-            /// </summary>
-            UseParameter2 = 512,
-
-            /// <summary>
-            /// The use Clr name as alias when reading. Used for object materialization purposes.
-            /// </summary>
-            UseClrNameAsAlias = 1024
-        }
-
     }
 }

@@ -26,6 +26,18 @@ namespace Tortuga.Chain.Core
         }
 
         /// <summary>
+        /// Occurs when a command has been built.
+        /// </summary>
+        /// <remarks>This is mostly used by appenders to override command behavior.</remarks>
+        public event EventHandler<CommandBuiltEventArgs> CommandBuilt;
+
+        /// <summary>
+        /// Occurs when a command has been built.
+        /// </summary>
+        /// <remarks>This is mostly used by appenders to override command behavior.</remarks>
+        public event EventHandler<CommandExecutedEventArgs> CommandExecuted;
+
+        /// <summary>
         /// Gets the command text, which is usually SQL.
         /// </summary>
         /// <value>The command text.</value>
@@ -38,33 +50,15 @@ namespace Tortuga.Chain.Core
         public CommandType CommandType { get; }
 
         /// <summary>
-        /// Gets the name of the operation being performed.
-        /// </summary>
-        public string OperationName { get; }
-
-        /// <summary>
         /// Gets the data source.
         /// </summary>
         /// <value>The data source.</value>
         public IDataSource DataSource { get; }
 
         /// <summary>
-        /// Occurs when a command has been built.
+        /// Gets the name of the operation being performed.
         /// </summary>
-        /// <remarks>This is mostly used by appenders to override command behavior.</remarks>
-        public event EventHandler<CommandBuiltEventArgs> CommandBuilt;
-
-        internal void RaiseCommandBuild(DbCommand command)
-        {
-            CommandBuilt?.Invoke(this, new CommandBuiltEventArgs(command));
-        }
-
-        /// <summary>
-        /// Occurs when a command has been built.
-        /// </summary>
-        /// <remarks>This is mostly used by appenders to override command behavior.</remarks>
-        public event EventHandler<CommandExecutedEventArgs> CommandExecuted;
-
+        public string OperationName { get; }
         /// <summary>
         /// Raises the command executed event.
         /// </summary>
@@ -74,6 +68,11 @@ namespace Tortuga.Chain.Core
         public void RaiseCommandExecuted(DbCommand command, int? rowsAffected)
         {
             CommandExecuted?.Invoke(this, new CommandExecutedEventArgs(command, rowsAffected));
+        }
+
+        internal void RaiseCommandBuild(DbCommand command)
+        {
+            CommandBuilt?.Invoke(this, new CommandBuiltEventArgs(command));
         }
     }
 }

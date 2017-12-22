@@ -32,27 +32,6 @@ namespace Tortuga.Chain.DataSources
         }
 
         /// <summary>
-        /// Raised when a executionDetails is canceled.
-        /// </summary>
-        /// <remarks>This is not used for timeouts.</remarks>
-        public event EventHandler<ExecutionEventArgs> ExecutionCanceled;
-
-        /// <summary>
-        /// Raised when a procedure call fails.
-        /// </summary>
-        public event EventHandler<ExecutionEventArgs> ExecutionError;
-
-        /// <summary>
-        /// Raised when a procedure call is successfully completed
-        /// </summary>
-        public event EventHandler<ExecutionEventArgs> ExecutionFinished;
-
-        /// <summary>
-        /// Raised when a procedure call is started
-        /// </summary>
-        public event EventHandler<ExecutionEventArgs> ExecutionStarted;
-
-        /// <summary>
         /// Raised when a executionDetails is canceled in any dispatcher.
         /// </summary>
         /// <remarks>This is not used for timeouts.</remarks>
@@ -74,78 +53,99 @@ namespace Tortuga.Chain.DataSources
         public static event EventHandler<ExecutionEventArgs> GlobalExecutionStarted;
 
         /// <summary>
-        /// Data sources can use this to indicate an executionDetails was canceled.
+        /// Raised when a executionDetails is canceled.
         /// </summary>
-        /// <param name="executionDetails">The executionDetails.</param>
-        /// <param name="startTime">The start time.</param>
-        /// <param name="endTime">The end time.</param>
-        /// <param name="state">User defined state, usually used for logging.</param>
         /// <remarks>This is not used for timeouts.</remarks>
-        protected void OnExecutionCanceled(ExecutionToken executionDetails, DateTimeOffset startTime, DateTimeOffset endTime, object state)
-        {
-            if (executionDetails == null)
-                throw new ArgumentNullException(nameof(executionDetails), "executionDetails is null.");
-
-            ExecutionCanceled?.Invoke(this, new ExecutionEventArgs(executionDetails, startTime, endTime, state));
-            if (!SuppressGlobalEvents)
-                GlobalExecutionCanceled?.Invoke(this, new ExecutionEventArgs(executionDetails, startTime, endTime, state));
-        }
+        public event EventHandler<ExecutionEventArgs> ExecutionCanceled;
 
         /// <summary>
-        /// Data sources can use this to indicate an error has occurred.
+        /// Raised when a procedure call fails.
         /// </summary>
-        /// <param name="executionDetails">The executionDetails.</param>
-        /// <param name="startTime">The start time.</param>
-        /// <param name="endTime">The end time.</param>
-        /// <param name="error">The error.</param>
-        /// <param name="state">User defined state, usually used for logging.</param>
-        protected void OnExecutionError(ExecutionToken executionDetails, DateTimeOffset startTime, DateTimeOffset endTime, Exception error, object state)
-        {
-            if (executionDetails == null)
-                throw new ArgumentNullException(nameof(executionDetails), "executionDetails is null.");
-            if (error == null)
-                throw new ArgumentNullException(nameof(error), "error is null.");
-
-
-            ExecutionError?.Invoke(this, new ExecutionEventArgs(executionDetails, startTime, endTime, error, state));
-            if (!SuppressGlobalEvents)
-                GlobalExecutionError?.Invoke(this, new ExecutionEventArgs(executionDetails, startTime, endTime, error, state));
-        }
+        public event EventHandler<ExecutionEventArgs> ExecutionError;
 
         /// <summary>
-        /// Data sources can use this to indicate an executionDetails has finished.
+        /// Raised when a procedure call is successfully completed
         /// </summary>
-        /// <param name="executionDetails">The executionDetails.</param>
-        /// <param name="startTime">The start time.</param>
-        /// <param name="endTime">The end time.</param>
-        /// <param name="rowsAffected">The number of rows affected.</param>
-        /// <param name="state">User defined state, usually used for logging.</param>
-        protected void OnExecutionFinished(ExecutionToken executionDetails, DateTimeOffset startTime, DateTimeOffset endTime, int? rowsAffected, object state)
-        {
-            if (executionDetails == null)
-                throw new ArgumentNullException(nameof(executionDetails), "executionDetails is null.");
-
-            ExecutionFinished?.Invoke(this, new ExecutionEventArgs(executionDetails, startTime, endTime, rowsAffected, state));
-            if (!SuppressGlobalEvents)
-                GlobalExecutionFinished?.Invoke(this, new ExecutionEventArgs(executionDetails, startTime, endTime, rowsAffected, state));
-        }
+        public event EventHandler<ExecutionEventArgs> ExecutionFinished;
 
         /// <summary>
-        /// Data sources can use this to indicate an executionDetails has begun.
+        /// Raised when a procedure call is started
         /// </summary>
-        /// <param name="executionDetails">The executionDetails.</param>
-        /// <param name="startTime">The start time.</param>
-        /// <param name="state">User defined state, usually used for logging.</param>
-        protected void OnExecutionStarted(ExecutionToken executionDetails, DateTimeOffset startTime, object state)
-        {
-            if (executionDetails == null)
-                throw new ArgumentNullException(nameof(executionDetails), "executionDetails is null.");
+        public event EventHandler<ExecutionEventArgs> ExecutionStarted;
+        /// <summary>
+        /// Gets or sets the audit rules.
+        /// </summary>
+        /// <value>
+        /// The audit rules.
+        /// </value>
+        public AuditRuleCollection AuditRules { get; protected set; } = AuditRuleCollection.Empty;
+
+        /// <summary>
+        /// Gets or sets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
+        /// </summary>
+        public abstract ICacheAdapter Cache { get; }
+
+        /// <summary>
+        /// Gets the database metadata.
+        /// </summary>
+        /// <value>
+        /// The database metadata.
+        /// </value>
+        /// <remarks>Data sources are expected to shadow this with their specific version.</remarks>
+        public IDatabaseMetadataCache DatabaseMetadata { get { return OnGetDatabaseMetadata(); } }
 
 
-            ExecutionStarted?.Invoke(this, new ExecutionEventArgs(executionDetails, startTime, state));
-            if (!SuppressGlobalEvents)
-                GlobalExecutionStarted?.Invoke(this, new ExecutionEventArgs(executionDetails, startTime, state));
-        }
+        /// <summary>
+        /// Gets the default cache.
+        /// </summary>
+        /// <value>
+        /// The default cache.
+        /// </value>
+#if RUNTIME_CACHE_MISSING
+        protected static ICacheAdapter DefaultCache { get; } = new SimpleCache();
+#else
+        protected static ICacheAdapter DefaultCache { get; } = new ObjectCacheAdapter(MemoryCache.Default);
+#endif
+
+        /// <summary>
+        /// Gets or sets the default command timeout.
+        /// </summary>
+        /// <value>The default command timeout.</value>
+        public TimeSpan? DefaultCommandTimeout { get; }
+
+        /// <summary>
+        /// Gets the name of the data source.
+        /// </summary>
+        /// <value>
+        /// The name of the data source.
+        /// </value>
+        public string Name { get; protected set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether strict mode is enabled.
+        /// </summary>
+        /// <remarks>Strict mode requires all properties that don't represent columns to be marked with the NotMapped attribute.</remarks>
+        public bool StrictMode { get; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to suppress global events.
+        /// </summary>
+        /// <value>If <c>true</c>, this data source will not honor global event handlers.</value>
+        public bool SuppressGlobalEvents { get; }
+
+        /// <summary>
+        /// Gets or sets the user value to use with audit rules.
+        /// </summary>
+        /// <value>
+        /// The user value.
+        /// </value>
+        public object UserValue { get; protected set; }
+
+        /// <summary>
+        /// The extension cache is used by extensions to store data source specific information.
+        /// </summary>
+        /// <value>The extension cache.</value>
+        protected abstract ConcurrentDictionary<Type, object> ExtensionCache { get; }
 
         /// <summary>
         /// Gets the extension data.
@@ -222,61 +222,6 @@ namespace Tortuga.Chain.DataSources
         }
 
         /// <summary>
-        /// Gets or sets the default command timeout.
-        /// </summary>
-        /// <value>The default command timeout.</value>
-        public TimeSpan? DefaultCommandTimeout { get; }
-
-        /// <summary>
-        /// Gets the name of the data source.
-        /// </summary>
-        /// <value>
-        /// The name of the data source.
-        /// </value>
-        public string Name { get; protected set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether strict mode is enabled.
-        /// </summary>
-        /// <remarks>Strict mode requires all properties that don't represent columns to be marked with the NotMapped attribute.</remarks>
-        public bool StrictMode { get; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether to suppress global events.
-        /// </summary>
-        /// <value>If <c>true</c>, this data source will not honor global event handlers.</value>
-        public bool SuppressGlobalEvents { get; }
-
-
-        /// <summary>
-        /// Gets or sets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
-        /// </summary>
-        public abstract ICacheAdapter Cache { get; }
-
-
-        /// <summary>
-        /// The extension cache is used by extensions to store data source specific information.
-        /// </summary>
-        /// <value>The extension cache.</value>
-        protected abstract ConcurrentDictionary<Type, object> ExtensionCache { get; }
-
-        /// <summary>
-        /// Gets or sets the user value to use with audit rules.
-        /// </summary>
-        /// <value>
-        /// The user value.
-        /// </value>
-        public object UserValue { get; protected set; }
-
-        /// <summary>
-        /// Gets or sets the audit rules.
-        /// </summary>
-        /// <value>
-        /// The audit rules.
-        /// </value>
-        public AuditRuleCollection AuditRules { get; protected set; } = AuditRuleCollection.Empty;
-
-        /// <summary>
         /// Tests the connection.
         /// </summary>
         public abstract void TestConnection();
@@ -288,30 +233,82 @@ namespace Tortuga.Chain.DataSources
         public abstract Task TestConnectionAsync();
 
         /// <summary>
-        /// Gets the database metadata.
+        /// Data sources can use this to indicate an executionDetails was canceled.
         /// </summary>
-        /// <value>
-        /// The database metadata.
-        /// </value>
-        /// <remarks>Data sources are expected to shadow this with their specific version.</remarks>
-        public IDatabaseMetadataCache DatabaseMetadata { get { return OnGetDatabaseMetadata(); } }
+        /// <param name="executionDetails">The executionDetails.</param>
+        /// <param name="startTime">The start time.</param>
+        /// <param name="endTime">The end time.</param>
+        /// <param name="state">User defined state, usually used for logging.</param>
+        /// <remarks>This is not used for timeouts.</remarks>
+        protected void OnExecutionCanceled(ExecutionToken executionDetails, DateTimeOffset startTime, DateTimeOffset endTime, object state)
+        {
+            if (executionDetails == null)
+                throw new ArgumentNullException(nameof(executionDetails), "executionDetails is null.");
 
+            ExecutionCanceled?.Invoke(this, new ExecutionEventArgs(executionDetails, startTime, endTime, state));
+            if (!SuppressGlobalEvents)
+                GlobalExecutionCanceled?.Invoke(this, new ExecutionEventArgs(executionDetails, startTime, endTime, state));
+        }
+
+        /// <summary>
+        /// Data sources can use this to indicate an error has occurred.
+        /// </summary>
+        /// <param name="executionDetails">The executionDetails.</param>
+        /// <param name="startTime">The start time.</param>
+        /// <param name="endTime">The end time.</param>
+        /// <param name="error">The error.</param>
+        /// <param name="state">User defined state, usually used for logging.</param>
+        protected void OnExecutionError(ExecutionToken executionDetails, DateTimeOffset startTime, DateTimeOffset endTime, Exception error, object state)
+        {
+            if (executionDetails == null)
+                throw new ArgumentNullException(nameof(executionDetails), "executionDetails is null.");
+            if (error == null)
+                throw new ArgumentNullException(nameof(error), "error is null.");
+
+
+            ExecutionError?.Invoke(this, new ExecutionEventArgs(executionDetails, startTime, endTime, error, state));
+            if (!SuppressGlobalEvents)
+                GlobalExecutionError?.Invoke(this, new ExecutionEventArgs(executionDetails, startTime, endTime, error, state));
+        }
+
+        /// <summary>
+        /// Data sources can use this to indicate an executionDetails has finished.
+        /// </summary>
+        /// <param name="executionDetails">The executionDetails.</param>
+        /// <param name="startTime">The start time.</param>
+        /// <param name="endTime">The end time.</param>
+        /// <param name="rowsAffected">The number of rows affected.</param>
+        /// <param name="state">User defined state, usually used for logging.</param>
+        protected void OnExecutionFinished(ExecutionToken executionDetails, DateTimeOffset startTime, DateTimeOffset endTime, int? rowsAffected, object state)
+        {
+            if (executionDetails == null)
+                throw new ArgumentNullException(nameof(executionDetails), "executionDetails is null.");
+
+            ExecutionFinished?.Invoke(this, new ExecutionEventArgs(executionDetails, startTime, endTime, rowsAffected, state));
+            if (!SuppressGlobalEvents)
+                GlobalExecutionFinished?.Invoke(this, new ExecutionEventArgs(executionDetails, startTime, endTime, rowsAffected, state));
+        }
+
+        /// <summary>
+        /// Data sources can use this to indicate an executionDetails has begun.
+        /// </summary>
+        /// <param name="executionDetails">The executionDetails.</param>
+        /// <param name="startTime">The start time.</param>
+        /// <param name="state">User defined state, usually used for logging.</param>
+        protected void OnExecutionStarted(ExecutionToken executionDetails, DateTimeOffset startTime, object state)
+        {
+            if (executionDetails == null)
+                throw new ArgumentNullException(nameof(executionDetails), "executionDetails is null.");
+
+
+            ExecutionStarted?.Invoke(this, new ExecutionEventArgs(executionDetails, startTime, state));
+            if (!SuppressGlobalEvents)
+                GlobalExecutionStarted?.Invoke(this, new ExecutionEventArgs(executionDetails, startTime, state));
+        }
         /// <summary>
         /// Called when Database.DatabaseMetadata is invoked.
         /// </summary>
         /// <returns></returns>
         protected abstract IDatabaseMetadataCache OnGetDatabaseMetadata();
-
-        /// <summary>
-        /// Gets the default cache.
-        /// </summary>
-        /// <value>
-        /// The default cache.
-        /// </value>
-#if RUNTIME_CACHE_MISSING
-        protected static ICacheAdapter DefaultCache { get; } = new SimpleCache();
-#else
-        protected static ICacheAdapter DefaultCache { get; } = new ObjectCacheAdapter(MemoryCache.Default);
-#endif
     }
 }

@@ -92,10 +92,7 @@ namespace Tortuga.Chain.Csv
         /// <remarks>
         /// If AutoSelectDesiredColumns is returned, the command builder is allowed to choose which columns to return. If NoColumns is returned, the command builder should omit the SELECT/OUTPUT clause.
         /// </remarks>
-        public override IReadOnlyList<string> DesiredColumns()
-        {
-            return m_DesiredColumns;
-        }
+        public override IReadOnlyList<string> DesiredColumns() => m_DesiredColumns;
 
     }
 }

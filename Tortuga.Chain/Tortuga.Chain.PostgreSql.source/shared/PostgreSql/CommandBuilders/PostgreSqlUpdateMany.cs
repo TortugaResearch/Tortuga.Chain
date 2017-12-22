@@ -16,18 +16,16 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
     internal sealed class PostgreSqlUpdateMany : UpdateManyCommandBuilder<NpgsqlCommand, NpgsqlParameter>
     {
         readonly int? m_ExpectedRowCount;
+        readonly object m_NewValues;
+        readonly UpdateOptions m_Options;
         readonly IEnumerable<NpgsqlParameter> m_Parameters;
         readonly TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType> m_Table;
-
-        readonly object m_NewValues;
-        readonly string m_UpdateExpression;
         readonly object m_UpdateArgumentValue;
-        readonly UpdateOptions m_Options;
-
-        string m_WhereClause;
-        object m_WhereArgumentValue;
-        object m_FilterValue;
+        readonly string m_UpdateExpression;
         FilterOptions m_FilterOptions;
+        object m_FilterValue;
+        object m_WhereArgumentValue;
+        string m_WhereClause;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PostgreSqlUpdateMany" /> class.
@@ -89,6 +87,19 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
             m_UpdateExpression = updateExpression;
             m_Options = options;
             m_UpdateArgumentValue = updateArgumentValue;
+        }
+
+        /// <summary>
+        /// Applies this command to all rows.
+        /// </summary>
+        /// <returns></returns>
+        public override UpdateManyCommandBuilder<NpgsqlCommand, NpgsqlParameter> All()
+        {
+            m_WhereClause = null;
+            m_WhereArgumentValue = null;
+            m_FilterValue = null;
+            m_FilterOptions = FilterOptions.None;
+            return this;
         }
 
         public override CommandExecutionToken<NpgsqlCommand, NpgsqlParameter> Prepare(Materializer<NpgsqlCommand, NpgsqlParameter> materializer)
@@ -173,10 +184,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         /// <remarks>
         /// If the column name was not found, this will return null
         /// </remarks>
-        public override ColumnMetadata TryGetColumn(string columnName)
-        {
-            return m_Table.Columns.TryGetColumn(columnName);
-        }
+        public override ColumnMetadata TryGetColumn(string columnName) => m_Table.Columns.TryGetColumn(columnName);
 
         /// <summary>
         /// Adds (or replaces) the filter on this command builder.
@@ -216,19 +224,6 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         {
             m_WhereClause = whereClause;
             m_WhereArgumentValue = argumentValue;
-            m_FilterValue = null;
-            m_FilterOptions = FilterOptions.None;
-            return this;
-        }
-
-        /// <summary>
-        /// Applies this command to all rows.
-        /// </summary>
-        /// <returns></returns>
-        public override UpdateManyCommandBuilder<NpgsqlCommand, NpgsqlParameter> All()
-        {
-            m_WhereClause = null;
-            m_WhereArgumentValue = null;
             m_FilterValue = null;
             m_FilterOptions = FilterOptions.None;
             return this;

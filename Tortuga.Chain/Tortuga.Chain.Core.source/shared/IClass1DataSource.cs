@@ -9,15 +9,9 @@ namespace Tortuga.Chain
     /// <summary>
     /// A class 1 data source supports basic CRUD operations. This is the bare minimum needed to implement the repostiory pattern.
     /// </summary>
-    /// <remarks>Warning: This interface is meant to simulate multiple inheritance and work-around some issues with exposing generic types. Do not implement it in client code, as new method will be added over time.</remarks>
+    /// <remarks>Warning: This interface is meant to simulate multiple inheritance and work-around some issues with exposing generic types. Do not implement it in client code, as new methods will be added over time.</remarks>
     public interface IClass1DataSource : IClass0DataSource
     {
-
-        ///// <summary>
-        ///// Returns an abstract metadata cache.
-        ///// </summary>
-        //IDatabaseMetadataCache DatabaseMetadata { get; }
-
         /// <summary>
         /// Deletes an object model from the specified table.
         /// </summary>
@@ -34,6 +28,77 @@ namespace Tortuga.Chain
         /// <param name="options">The delete options.</param>
         /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
         IObjectDbCommandBuilder<TArgument> Delete<TArgument>(TArgument argumentValue, DeleteOptions options = DeleteOptions.None) where TArgument : class;
+
+        /// <summary>
+        /// Deletes by key.
+        /// </summary>
+        /// <typeparam name="TKey">The type of the t key.</typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="key">The key.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>ISingleRowDbCommandBuilder.</returns>
+        ISingleRowDbCommandBuilder DeleteByKey<TKey>(string tableName, TKey key, DeleteOptions options = DeleteOptions.None) where TKey : struct;
+
+        /// <summary>
+        /// Deletes by key.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="key">The key.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>ISingleRowDbCommandBuilder.</returns>
+        ISingleRowDbCommandBuilder DeleteByKey(string tableName, string key, DeleteOptions options = DeleteOptions.None);
+
+        /// <summary>
+        /// Deletes by key.
+        /// </summary>
+        /// <typeparam name="TKey">The type of the t key.</typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="keys">The keys.</param>
+        /// <returns>IMultipleRowDbCommandBuilder.</returns>
+        IMultipleRowDbCommandBuilder DeleteByKey<TKey>(string tableName, params TKey[] keys) where TKey : struct;
+
+        /// <summary>
+        /// Deletes by key.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="keys">The keys.</param>
+        /// <returns>IMultipleRowDbCommandBuilder.</returns>
+        IMultipleRowDbCommandBuilder DeleteByKey(string tableName, params string[] keys);
+
+        /// <summary>
+        /// Deletes by key.
+        /// </summary>
+        /// <typeparam name="TKey">The type of the t key.</typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="keys">The keys.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>IMultipleRowDbCommandBuilder.</returns>
+        IMultipleRowDbCommandBuilder DeleteByKeyList<TKey>(string tableName, IEnumerable<TKey> keys, DeleteOptions options = DeleteOptions.None);
+
+        /// <summary>
+        /// Deletes multiple records using a where expression.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="whereClause">The where clause.</param>
+        /// <returns>IMultipleRowDbCommandBuilder.</returns>
+        IMultipleRowDbCommandBuilder DeleteWithFilter(string tableName, string whereClause);
+
+        /// <summary>
+        /// Deletes multiple records using a where expression.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="whereClause">The where clause.</param>
+        /// <param name="argumentValue">The argument value for the where clause.</param>
+        /// <returns>IMultipleRowDbCommandBuilder.</returns>
+        IMultipleRowDbCommandBuilder DeleteWithFilter(string tableName, string whereClause, object argumentValue);
+
+        /// <summary>
+        /// Deletes multiple records using a filter object.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="filterValue">The filter value.</param>
+        /// <param name="filterOptions">The filter options.</param>
+        IMultipleRowDbCommandBuilder DeleteWithFilter(string tableName, object filterValue, FilterOptions filterOptions = FilterOptions.None);
 
         /// <summary>
         /// This is used to directly query a table or view.
@@ -112,62 +177,6 @@ namespace Tortuga.Chain
 
 
         /// <summary>
-        /// Inserts an object into the specified table.
-        /// </summary>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="argumentValue">The argument value.</param>
-        /// <param name="options">The options for how the insert occurs.</param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
-        IObjectDbCommandBuilder<TArgument> Insert<TArgument>(string tableName, TArgument argumentValue, InsertOptions options = InsertOptions.None) where TArgument : class;
-
-
-        /// <summary>
-        /// Inserts an object into the specified table.
-        /// </summary>
-        /// <param name="argumentValue">The argument value.</param>
-        /// <param name="options">The options for how the insert occurs.</param>
-        /// <returns></returns>
-        IObjectDbCommandBuilder<TArgument> Insert<TArgument>(TArgument argumentValue, InsertOptions options = InsertOptions.None) where TArgument : class;
-
-
-        /// <summary>
-        /// Performs an insert or update operation as appropriate.
-        /// </summary>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="argumentValue">The argument value.</param>
-        /// <param name="options">The options for how the insert/update occurs.</param>
-        /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
-        IObjectDbCommandBuilder<TArgument> Upsert<TArgument>(string tableName, TArgument argumentValue, UpsertOptions options = UpsertOptions.None) where TArgument : class;
-
-        /// <summary>
-        /// Performs an insert or update operation as appropriate.
-        /// </summary>
-        /// <param name="argumentValue">The argument value.</param>
-        /// <param name="options">The options for how the insert/update occurs.</param>
-        /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
-        IObjectDbCommandBuilder<TArgument> Upsert<TArgument>(TArgument argumentValue, UpsertOptions options = UpsertOptions.None) where TArgument : class;
-
-
-        /// <summary>
-        /// Updates an object in the specified table.
-        /// </summary>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="argumentValue">The argument value.</param>
-        /// <param name="options">The update options.</param>
-        /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
-        IObjectDbCommandBuilder<TArgument> Update<TArgument>(string tableName, TArgument argumentValue, UpdateOptions options = UpdateOptions.None) where TArgument : class;
-
-        /// <summary>
-        /// Updates an object in the specified table.
-        /// </summary>
-        /// <param name="argumentValue">The argument value.</param>
-        /// <param name="options">The update options.</param>
-        /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
-        IObjectDbCommandBuilder<TArgument> Update<TArgument>(TArgument argumentValue, UpdateOptions options = UpdateOptions.None) where TArgument : class;
-
-
-        /// <summary>
         /// Gets a record by its primary key.
         /// </summary>
         /// <typeparam name="TKey"></typeparam>
@@ -176,7 +185,6 @@ namespace Tortuga.Chain
         /// <returns></returns>
         /// <remarks>This only works on tables that have a scalar primary key.</remarks>
         ISingleRowDbCommandBuilder GetByKey<TKey>(string tableName, TKey key) where TKey : struct;
-
 
         /// <summary>
         /// Gets a record by its primary key.
@@ -206,7 +214,6 @@ namespace Tortuga.Chain
         /// <remarks>This only works on tables that have a scalar primary key.</remarks>
         IMultipleRowDbCommandBuilder GetByKey(string tableName, params string[] keys);
 
-
         /// <summary>
         /// Gets a set of records by their primary key.
         /// </summary>
@@ -217,55 +224,42 @@ namespace Tortuga.Chain
         /// <remarks>This only works on tables that have a scalar primary key.</remarks>
         IMultipleRowDbCommandBuilder GetByKeyList<TKey>(string tableName, IEnumerable<TKey> keys);
 
+        /// <summary>
+        /// Inserts an object into the specified table.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="options">The options for how the insert occurs.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
+        IObjectDbCommandBuilder<TArgument> Insert<TArgument>(string tableName, TArgument argumentValue, InsertOptions options = InsertOptions.None) where TArgument : class;
 
 
         /// <summary>
-        /// Deletes by key.
+        /// Inserts an object into the specified table.
         /// </summary>
-        /// <typeparam name="TKey">The type of the t key.</typeparam>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="key">The key.</param>
-        /// <param name="options">The options.</param>
-        /// <returns>ISingleRowDbCommandBuilder.</returns>
-        ISingleRowDbCommandBuilder DeleteByKey<TKey>(string tableName, TKey key, DeleteOptions options = DeleteOptions.None) where TKey : struct;
+        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="options">The options for how the insert occurs.</param>
+        /// <returns></returns>
+        IObjectDbCommandBuilder<TArgument> Insert<TArgument>(TArgument argumentValue, InsertOptions options = InsertOptions.None) where TArgument : class;
+
 
         /// <summary>
-        /// Deletes by key.
+        /// Updates an object in the specified table.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
-        /// <param name="key">The key.</param>
-        /// <param name="options">The options.</param>
-        /// <returns>ISingleRowDbCommandBuilder.</returns>
-        ISingleRowDbCommandBuilder DeleteByKey(string tableName, string key, DeleteOptions options = DeleteOptions.None);
+        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="options">The update options.</param>
+        /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
+        IObjectDbCommandBuilder<TArgument> Update<TArgument>(string tableName, TArgument argumentValue, UpdateOptions options = UpdateOptions.None) where TArgument : class;
 
         /// <summary>
-        /// Deletes by key.
+        /// Updates an object in the specified table.
         /// </summary>
-        /// <typeparam name="TKey">The type of the t key.</typeparam>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="keys">The keys.</param>
-        /// <returns>IMultipleRowDbCommandBuilder.</returns>
-        IMultipleRowDbCommandBuilder DeleteByKey<TKey>(string tableName, params TKey[] keys) where TKey : struct;
-
-        /// <summary>
-        /// Deletes by key.
-        /// </summary>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="keys">The keys.</param>
-        /// <returns>IMultipleRowDbCommandBuilder.</returns>
-        IMultipleRowDbCommandBuilder DeleteByKey(string tableName, params string[] keys);
-
-        /// <summary>
-        /// Deletes by key.
-        /// </summary>
-        /// <typeparam name="TKey">The type of the t key.</typeparam>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="keys">The keys.</param>
-        /// <param name="options">The options.</param>
-        /// <returns>IMultipleRowDbCommandBuilder.</returns>
-        IMultipleRowDbCommandBuilder DeleteByKeyList<TKey>(string tableName, IEnumerable<TKey> keys, DeleteOptions options = DeleteOptions.None);
-
-
+        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="options">The update options.</param>
+        /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
+        IObjectDbCommandBuilder<TArgument> Update<TArgument>(TArgument argumentValue, UpdateOptions options = UpdateOptions.None) where TArgument : class;
 
         /// <summary>
         /// Delete a record by its primary key.
@@ -315,7 +309,6 @@ namespace Tortuga.Chain
         /// <remarks>This only works on tables that have a scalar primary key.</remarks>
         IMultipleRowDbCommandBuilder UpdateByKey<TArgument>(string tableName, TArgument newValues, params string[] keys);
 
-
         /// <summary>
         /// Updates multiple rows by key.
         /// </summary>
@@ -328,35 +321,6 @@ namespace Tortuga.Chain
         /// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
         /// <exception cref="MappingException"></exception>
         IMultipleRowDbCommandBuilder UpdateByKeyList<TArgument, TKey>(string tableName, TArgument newValues, IEnumerable<TKey> keys, UpdateOptions options = UpdateOptions.None);
-
-
-
-        /// <summary>
-        /// Deletes multiple records using a where expression.
-        /// </summary>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="whereClause">The where clause.</param>
-        /// <returns>IMultipleRowDbCommandBuilder.</returns>
-        IMultipleRowDbCommandBuilder DeleteWithFilter(string tableName, string whereClause);
-
-        /// <summary>
-        /// Deletes multiple records using a where expression.
-        /// </summary>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="whereClause">The where clause.</param>
-        /// <param name="argumentValue">The argument value for the where clause.</param>
-        /// <returns>IMultipleRowDbCommandBuilder.</returns>
-        IMultipleRowDbCommandBuilder DeleteWithFilter(string tableName, string whereClause, object argumentValue);
-
-
-        /// <summary>
-        /// Deletes multiple records using a filter object.
-        /// </summary>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="filterValue">The filter value.</param>
-        /// <param name="filterOptions">The filter options.</param>
-        IMultipleRowDbCommandBuilder DeleteWithFilter(string tableName, object filterValue, FilterOptions filterOptions = FilterOptions.None);
-
 
         /// <summary>
         /// Updates multiple records using an update expression.
@@ -375,7 +339,6 @@ namespace Tortuga.Chain
         /// <param name="options">The update options.</param>
         IUpdateManyCommandBuilder UpdateSet(string tableName, string updateExpression, object updateArgumentValue, UpdateOptions options = UpdateOptions.None);
 
-
         /// <summary>
         /// Updates multiple records using an update value.
         /// </summary>
@@ -384,6 +347,22 @@ namespace Tortuga.Chain
         /// <param name="options">The options.</param>
         IUpdateManyCommandBuilder UpdateSet(string tableName, object newValues, UpdateOptions options = UpdateOptions.None);
 
+        /// <summary>
+        /// Performs an insert or update operation as appropriate.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="options">The options for how the insert/update occurs.</param>
+        /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
+        IObjectDbCommandBuilder<TArgument> Upsert<TArgument>(string tableName, TArgument argumentValue, UpsertOptions options = UpsertOptions.None) where TArgument : class;
+
+        /// <summary>
+        /// Performs an insert or update operation as appropriate.
+        /// </summary>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="options">The options for how the insert/update occurs.</param>
+        /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
+        IObjectDbCommandBuilder<TArgument> Upsert<TArgument>(TArgument argumentValue, UpsertOptions options = UpsertOptions.None) where TArgument : class;
     }
 
 

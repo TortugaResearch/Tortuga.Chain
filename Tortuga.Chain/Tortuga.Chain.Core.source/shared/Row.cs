@@ -29,6 +29,21 @@ namespace Tortuga.Chain
         }
 
         /// <summary>
+        /// Gets the number of elements in the collection.
+        /// </summary>
+        public int Count => m_Contents.Count;
+
+        /// <summary>
+        /// Gets an enumerable collection that contains the keys in the read-only dictionary.
+        /// </summary>
+        public IEnumerable<string> Keys => m_Contents.Keys;
+
+        /// <summary>
+        /// Gets an enumerable collection that contains the values in the read-only dictionary.
+        /// </summary>
+        public IEnumerable<object> Values => m_Contents.Values;
+
+        /// <summary>
         /// Gets the <see cref="object"/> with the specified key.
         /// </summary>
         /// <value>
@@ -36,35 +51,7 @@ namespace Tortuga.Chain
         /// </value>
         /// <param name="key">The key.</param>
         /// <returns></returns>
-        public object this[string key]
-        {
-            get { return m_Contents[key]; }
-        }
-
-        /// <summary>
-        /// Gets the number of elements in the collection.
-        /// </summary>
-        public int Count
-        {
-            get { return m_Contents.Count; }
-        }
-
-        /// <summary>
-        /// Gets an enumerable collection that contains the keys in the read-only dictionary.
-        /// </summary>
-        public IEnumerable<string> Keys
-        {
-            get { return m_Contents.Keys; }
-        }
-
-        /// <summary>
-        /// Gets an enumerable collection that contains the values in the read-only dictionary.
-        /// </summary>
-        public IEnumerable<object> Values
-        {
-            get { return m_Contents.Values; }
-        }
-
+        public object this[string key] => m_Contents[key];
         /// <summary>
         /// Determines whether the read-only dictionary contains an element that has the specified key.
         /// </summary>
@@ -72,10 +59,7 @@ namespace Tortuga.Chain
         /// <returns>
         /// true if the read-only dictionary contains an element that has the specified key; otherwise, false.
         /// </returns>
-        public bool ContainsKey(string key)
-        {
-            return m_Contents.ContainsKey(key);
-        }
+        public bool ContainsKey(string key) => m_Contents.ContainsKey(key);
 
         /// <summary>
         /// Returns an enumerator that iterates through the collection.
@@ -83,10 +67,9 @@ namespace Tortuga.Chain
         /// <returns>
         /// An enumerator that can be used to iterate through the collection.
         /// </returns>
-        public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
-        {
-            return m_Contents.GetEnumerator();
-        }
+        public IEnumerator<KeyValuePair<string, object>> GetEnumerator() => m_Contents.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)m_Contents).GetEnumerator();
 
         /// <summary>
         /// Gets the value that is associated with the specified key.
@@ -96,14 +79,6 @@ namespace Tortuga.Chain
         /// <returns>
         /// true if the object that implements the <see cref="T:System.Collections.Generic.IReadOnlyDictionary`2" /> interface contains an element that has the specified key; otherwise, false.
         /// </returns>
-        public bool TryGetValue(string key, out object value)
-        {
-            return m_Contents.TryGetValue(key, out value);
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return ((IEnumerable)m_Contents).GetEnumerator();
-        }
+        public bool TryGetValue(string key, out object value) => m_Contents.TryGetValue(key, out value);
     }
 }

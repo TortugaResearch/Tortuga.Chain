@@ -23,12 +23,10 @@ namespace Tortuga.Chain.Appenders
         /// <param name="policy">Optional cache policy.</param>
         public CacheResultAppender(ILink<TResult> previousLink, Func<TResult, string> cacheKeyFunction, CachePolicy policy = null) : base(previousLink)
         {
-            if (cacheKeyFunction == null)
-                throw new ArgumentNullException("cacheKeyFunction", "cacheKeyFunction is null.");
             if (previousLink == null)
-                throw new ArgumentNullException("previousLink", "previousLink is null.");
+                throw new ArgumentNullException(nameof(previousLink), $"{nameof(previousLink)} is null.");
 
-            m_CacheKeyFunction = cacheKeyFunction;
+            m_CacheKeyFunction = cacheKeyFunction ?? throw new ArgumentNullException("cacheKeyFunction", "cacheKeyFunction is null.");
             m_Policy = policy;
         }
 
@@ -41,9 +39,10 @@ namespace Tortuga.Chain.Appenders
         public CacheResultAppender(ILink<TResult> previousLink, string cacheKey, CachePolicy policy) : base(previousLink)
         {
             if (previousLink == null)
-                throw new ArgumentNullException("previousLink", "previousLink is null.");
+                throw new ArgumentNullException(nameof(previousLink), $"{nameof(previousLink)} is null.");
             if (string.IsNullOrEmpty(cacheKey))
-                throw new ArgumentException("cacheKey is null or empty.", "cacheKey");
+                throw new ArgumentException($"{nameof(cacheKey)} is null or empty.", nameof(cacheKey));
+
 
             m_Policy = policy;
             m_CacheKey = cacheKey;

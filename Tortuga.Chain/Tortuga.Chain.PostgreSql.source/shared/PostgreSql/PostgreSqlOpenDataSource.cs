@@ -32,26 +32,34 @@ namespace Tortuga.Chain.PostgreSql
             m_Transaction = transaction;
         }
 
+        DbConnection IOpenDataSource.AssociatedConnection => m_Connection;
+
+        DbTransaction IOpenDataSource.AssociatedTransaction => m_Transaction;
+
+        /// <summary>
+        /// Gets or sets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
+        /// </summary>
+        public override ICacheAdapter Cache => m_BaseDataSource.Cache;
+
         /// <summary>
         /// Gets the database metadata.
         /// </summary>
         /// <value>The database metadata.</value>
-        public override PostgreSqlMetadataCache DatabaseMetadata
+        public override PostgreSqlMetadataCache DatabaseMetadata => m_BaseDataSource.DatabaseMetadata;
+        /// <summary>
+        /// The extension cache is used by extensions to store data source specific information.
+        /// </summary>
+        /// <value>
+        /// The extension cache.
+        /// </value>
+        protected override ConcurrentDictionary<Type, object> ExtensionCache => m_BaseDataSource.m_ExtensionCache;
+
+        void IOpenDataSource.Close()
         {
-            get { return m_BaseDataSource.DatabaseMetadata; }
+            if (m_Transaction != null)
+                m_Transaction.Dispose();
+            m_Connection.Dispose();
         }
-
-        DbConnection IOpenDataSource.AssociatedConnection
-        {
-            get { return m_Connection; }
-        }
-
-        DbTransaction IOpenDataSource.AssociatedTransaction
-        {
-            get { return m_Transaction; }
-        }
-
-
 
         /// <summary>
         /// Gets the extension data.
@@ -60,23 +68,33 @@ namespace Tortuga.Chain.PostgreSql
         /// <returns>T.</returns>
         /// <remarks>Chain extensions can use this to store data source specific data. The key should be a data type defined by the extension.
         /// Transactional data sources should override this method and return the value held by their parent data source.</remarks>
-        public override TTKey GetExtensionData<TTKey>()
+        public override TTKey GetExtensionData<TTKey>() => m_BaseDataSource.GetExtensionData<TTKey>();
+
+        /// <summary>
+        /// Tests the connection.
+        /// </summary>
+        public override void TestConnection()
         {
-            return m_BaseDataSource.GetExtensionData<TTKey>();
+            using (var cmd = new NpgsqlCommand("SELECT 1", m_Connection))
+                cmd.ExecuteScalar();
         }
 
         /// <summary>
-        /// Modifies this data source to include the indicated user.
+        /// Tests the connection asynchronously.
         /// </summary>
-        /// <param name="userValue">The user value.</param>
         /// <returns></returns>
-        /// <remarks>
-        /// This is used in conjunction with audit rules.
-        /// </remarks>
-        public PostgreSqlOpenDataSource WithUser(object userValue)
+        public override async Task TestConnectionAsync()
         {
-            UserValue = userValue;
-            return this;
+            using (var cmd = new NpgsqlCommand("SELECT 1", m_Connection))
+                await cmd.ExecuteScalarAsync();
+        }
+
+        bool IOpenDataSource.TryCommit()
+        {
+            if (m_Transaction == null)
+                return false;
+            m_Transaction.Commit();
+            return true;
         }
 
         /// <summary>
@@ -101,6 +119,19 @@ namespace Tortuga.Chain.PostgreSql
             return this;
         }
 
+        /// <summary>
+        /// Modifies this data source to include the indicated user.
+        /// </summary>
+        /// <param name="userValue">The user value.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// This is used in conjunction with audit rules.
+        /// </remarks>
+        public PostgreSqlOpenDataSource WithUser(object userValue)
+        {
+            UserValue = userValue;
+            return this;
+        }
         /// <summary>
         /// Executes the specified operation.
         /// </summary>
@@ -148,6 +179,36 @@ namespace Tortuga.Chain.PostgreSql
                 OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
                 throw;
 
+            }
+        }
+
+        /// <summary>
+        /// Executes the specified operation.
+        /// </summary>
+        /// <param name="executionToken">The execution token.</param>
+        /// <param name="implementation">The implementation.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>System.Nullable&lt;System.Int32&gt;.</returns>
+        protected override int? Execute(OperationExecutionToken<NpgsqlConnection, NpgsqlTransaction> executionToken, OperationImplementation<NpgsqlConnection, NpgsqlTransaction> implementation, object state)
+        {
+            if (executionToken == null)
+                throw new ArgumentNullException("executionToken", "executionToken is null.");
+            if (implementation == null)
+                throw new ArgumentNullException("implementation", "implementation is null.");
+
+            var startTime = DateTimeOffset.Now;
+            OnExecutionStarted(executionToken, startTime, state);
+
+            try
+            {
+                var rows = implementation(m_Connection, m_Transaction);
+                OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
+                return rows;
+            }
+            catch (Exception ex)
+            {
+                OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
+                throw;
             }
         }
 
@@ -210,37 +271,6 @@ namespace Tortuga.Chain.PostgreSql
                 }
             }
         }
-
-        /// <summary>
-        /// Executes the specified operation.
-        /// </summary>
-        /// <param name="executionToken">The execution token.</param>
-        /// <param name="implementation">The implementation.</param>
-        /// <param name="state">The state.</param>
-        /// <returns>System.Nullable&lt;System.Int32&gt;.</returns>
-        protected override int? Execute(OperationExecutionToken<NpgsqlConnection, NpgsqlTransaction> executionToken, OperationImplementation<NpgsqlConnection, NpgsqlTransaction> implementation, object state)
-        {
-            if (executionToken == null)
-                throw new ArgumentNullException("executionToken", "executionToken is null.");
-            if (implementation == null)
-                throw new ArgumentNullException("implementation", "implementation is null.");
-
-            var startTime = DateTimeOffset.Now;
-            OnExecutionStarted(executionToken, startTime, state);
-
-            try
-            {
-                var rows = implementation(m_Connection, m_Transaction);
-                OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
-                return rows;
-            }
-            catch (Exception ex)
-            {
-                OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
-                throw;
-            }
-        }
-
         /// <summary>
         /// Execute the operation asynchronously.
         /// </summary>
@@ -280,60 +310,5 @@ namespace Tortuga.Chain.PostgreSql
                 }
             }
         }
-
-        /// <summary>
-        /// Tests the connection.
-        /// </summary>
-        public override void TestConnection()
-        {
-            using (var cmd = new NpgsqlCommand("SELECT 1", m_Connection))
-                cmd.ExecuteScalar();
-        }
-
-        /// <summary>
-        /// Tests the connection asynchronously.
-        /// </summary>
-        /// <returns></returns>
-        public override async Task TestConnectionAsync()
-        {
-            using (var cmd = new NpgsqlCommand("SELECT 1", m_Connection))
-                await cmd.ExecuteScalarAsync();
-        }
-
-        bool IOpenDataSource.TryCommit()
-        {
-            if (m_Transaction == null)
-                return false;
-            m_Transaction.Commit();
-            return true;
-        }
-
-        void IOpenDataSource.Close()
-        {
-            if (m_Transaction != null)
-                m_Transaction.Dispose();
-            m_Connection.Dispose();
-        }
-
-        /// <summary>
-        /// Gets or sets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
-        /// </summary>
-        public override ICacheAdapter Cache
-        {
-            get { return m_BaseDataSource.Cache; }
-        }
-
-        /// <summary>
-        /// The extension cache is used by extensions to store data source specific information.
-        /// </summary>
-        /// <value>
-        /// The extension cache.
-        /// </value>
-        protected override ConcurrentDictionary<Type, object> ExtensionCache
-        {
-            get { return m_BaseDataSource.m_ExtensionCache; }
-        }
-
-
     }
 }

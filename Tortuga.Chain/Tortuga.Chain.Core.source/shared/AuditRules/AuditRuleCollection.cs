@@ -14,26 +14,14 @@ namespace Tortuga.Chain.AuditRules
     /// <seealso cref="IReadOnlyList{Rule}" />
     public class AuditRuleCollection : IReadOnlyList<AuditRule>
     {
-        readonly ImmutableArray<AuditRule> m_List;
-        readonly ImmutableArray<ValidationRule> m_Validation;
-
         /// <summary>
         /// Returns an empty RulesCollection.
         /// </summary>
         [SuppressMessage("Microsoft.Security", "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes")]
         public static readonly AuditRuleCollection Empty = new AuditRuleCollection();
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AuditRuleCollection"/> class.
-        /// </summary>
-        private AuditRuleCollection()
-        {
-            m_List = ImmutableArray.Create<AuditRule>();
-            m_Validation = ImmutableArray.Create<ValidationRule>();
-
-            SoftDeleteForSelect = ImmutableArray.Create<SoftDeleteRule>();
-        }
-
+        readonly ImmutableArray<AuditRule> m_List;
+        readonly ImmutableArray<ValidationRule> m_Validation;
         /// <summary>
         /// Initializes a new instance of the <see cref="AuditRuleCollection"/> class.
         /// </summary>
@@ -65,12 +53,19 @@ namespace Tortuga.Chain.AuditRules
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="AuditRuleCollection"/> class.
+        /// </summary>
+        AuditRuleCollection()
+        {
+            m_List = ImmutableArray.Create<AuditRule>();
+            m_Validation = ImmutableArray.Create<ValidationRule>();
+
+            SoftDeleteForSelect = ImmutableArray.Create<SoftDeleteRule>();
+        }
+        /// <summary>
         /// Gets the number of elements in the collection.
         /// </summary>
-        public int Count
-        {
-            get { return m_List.Length; }
-        }
+        public int Count => m_List.Length;
 
         /// <summary>
         /// Gets the soft delete rules for select.
@@ -88,25 +83,18 @@ namespace Tortuga.Chain.AuditRules
         /// </value>
         /// <param name="index">The index.</param>
         /// <returns></returns>
-        public AuditRule this[int index]
-        {
-            get { return m_List[index]; }
-        }
+        public AuditRule this[int index] => m_List[index];
+
         /// <summary>
         /// Returns an enumerator that iterates through the collection.
         /// </summary>
         /// <returns>
         /// An enumerator that can be used to iterate through the collection.
         /// </returns>
-        public IEnumerator<AuditRule> GetEnumerator()
-        {
-            return ((IEnumerable<AuditRule>)m_List).GetEnumerator();
-        }
+        public IEnumerator<AuditRule> GetEnumerator() => ((IEnumerable<AuditRule>)m_List).GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return ((IEnumerable)m_List).GetEnumerator();
-        }
+
+        IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)m_List).GetEnumerator();
 
         /// <summary>
         /// Indicates whether or not a soft delete should be performed.
@@ -124,11 +112,6 @@ namespace Tortuga.Chain.AuditRules
                 m_Validation[i].CheckValue(argumentValue);
         }
 
-        internal IEnumerable<ColumnRule> GetRulesForColumn(string sqlName, string clrName, OperationTypes appliesWhen)
-        {
-            return m_List.OfType<ColumnRule>().Where(c => (c.AppliesWhen & appliesWhen) > 0 && (c.ColumnName.Equals(sqlName, StringComparison.OrdinalIgnoreCase) || c.ColumnName.Equals(clrName, StringComparison.OrdinalIgnoreCase)));
-        }
-
         internal IEnumerable<RestrictColumn> GetRestrictionsForColumn(string objectName, string sqlName, string clrName)
         {
             return m_List.OfType<RestrictColumn>().Where(c =>
@@ -137,6 +120,10 @@ namespace Tortuga.Chain.AuditRules
                 (c.ColumnName.Equals(sqlName, StringComparison.OrdinalIgnoreCase) || c.ColumnName.Equals(clrName, StringComparison.OrdinalIgnoreCase)));
         }
 
+        internal IEnumerable<ColumnRule> GetRulesForColumn(string sqlName, string clrName, OperationTypes appliesWhen)
+        {
+            return m_List.OfType<ColumnRule>().Where(c => (c.AppliesWhen & appliesWhen) > 0 && (c.ColumnName.Equals(sqlName, StringComparison.OrdinalIgnoreCase) || c.ColumnName.Equals(clrName, StringComparison.OrdinalIgnoreCase)));
+        }
     }
 }
 

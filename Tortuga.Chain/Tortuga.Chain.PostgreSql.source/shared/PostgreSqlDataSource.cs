@@ -21,7 +21,7 @@ namespace Tortuga.Chain
     public class PostgreSqlDataSource : PostgreSqlDataSourceBase, IRootDataSource
     {
         readonly NpgsqlConnectionStringBuilder m_ConnectionBuilder;
-        private PostgreSqlMetadataCache m_DatabaseMetadata;
+        PostgreSqlMetadataCache m_DatabaseMetadata;
 
         /// <summary>
         /// Begins the transaction.
@@ -85,13 +85,10 @@ namespace Tortuga.Chain
         {
         }
 
-        private PostgreSqlDataSource(string name, NpgsqlConnectionStringBuilder connectionBuilder, PostgreSqlDataSourceSettings settings, PostgreSqlMetadataCache databaseMetadata, ICacheAdapter cache, ConcurrentDictionary<Type, object> extensionCache)
+        PostgreSqlDataSource(string name, NpgsqlConnectionStringBuilder connectionBuilder, PostgreSqlDataSourceSettings settings, PostgreSqlMetadataCache databaseMetadata, ICacheAdapter cache, ConcurrentDictionary<Type, object> extensionCache)
             : base(settings)
         {
-            if (connectionBuilder == null)
-                throw new ArgumentNullException(nameof(connectionBuilder), $"{nameof(connectionBuilder)} is null.");
-
-            m_ConnectionBuilder = connectionBuilder;
+            m_ConnectionBuilder = connectionBuilder ?? throw new ArgumentNullException(nameof(connectionBuilder), $"{nameof(connectionBuilder)} is null.");
             if (string.IsNullOrEmpty(name))
                 Name = m_ConnectionBuilder.Database;
             else
@@ -112,10 +109,7 @@ namespace Tortuga.Chain
         public PostgreSqlDataSource(string name, NpgsqlConnectionStringBuilder connectionBuilder, PostgreSqlDataSourceSettings settings = null)
             : base(settings)
         {
-            if (connectionBuilder == null)
-                throw new ArgumentNullException(nameof(connectionBuilder), $"{nameof(connectionBuilder)} is null.");
-
-            m_ConnectionBuilder = connectionBuilder;
+            m_ConnectionBuilder = connectionBuilder ?? throw new ArgumentNullException(nameof(connectionBuilder), $"{nameof(connectionBuilder)} is null.");
             if (string.IsNullOrEmpty(name))
                 Name = m_ConnectionBuilder.Database;
             else
@@ -140,10 +134,7 @@ namespace Tortuga.Chain
         /// Gets the database metadata.
         /// </summary>
         /// <value>The database metadata.</value>
-        public override PostgreSqlMetadataCache DatabaseMetadata
-        {
-            get { return m_DatabaseMetadata; }
-        }
+        public override PostgreSqlMetadataCache DatabaseMetadata => m_DatabaseMetadata;
 
         /// <summary>
         /// Tests the connection.
@@ -177,7 +168,7 @@ namespace Tortuga.Chain
             return con;
         }
 
-        private async Task<NpgsqlConnection> CreateConnectionAsync(CancellationToken cancellationToken = default(CancellationToken))
+        async Task<NpgsqlConnection> CreateConnectionAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             var con = new NpgsqlConnection(ConnectionString);
             await con.OpenAsync(cancellationToken).ConfigureAwait(false);
@@ -486,15 +477,9 @@ namespace Tortuga.Chain
             }
         }
 
-        DbConnection IRootDataSource.CreateConnection()
-        {
-            return CreateConnection();
-        }
+        DbConnection IRootDataSource.CreateConnection() => CreateConnection();
 
-        async Task<DbConnection> IRootDataSource.CreateConnectionAsync()
-        {
-            return await CreateConnectionAsync();
-        }
+        async Task<DbConnection> IRootDataSource.CreateConnectionAsync() => await CreateConnectionAsync();
 
         /// <summary>
         /// Creates an open data source using the supplied connection and optional transaction.
@@ -517,15 +502,9 @@ namespace Tortuga.Chain
             return new PostgreSqlOpenDataSource(this, (NpgsqlConnection)connection, (NpgsqlTransaction)transaction);
         }
 
-        ITransactionalDataSource IRootDataSource.BeginTransaction()
-        {
-            return BeginTransaction();
-        }
+        ITransactionalDataSource IRootDataSource.BeginTransaction() => BeginTransaction();
 
-        async Task<ITransactionalDataSource> IRootDataSource.BeginTransactionAsync()
-        {
-            return await BeginTransactionAsync();
-        }
+        async Task<ITransactionalDataSource> IRootDataSource.BeginTransactionAsync() => await BeginTransactionAsync();
 
         /// <summary>
         /// Craetes a new data source with the provided cache.
@@ -544,10 +523,7 @@ namespace Tortuga.Chain
         /// <summary>
         /// Gets or sets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
         /// </summary>
-        public override ICacheAdapter Cache
-        {
-            get { return m_Cache; }
-        }
+        public override ICacheAdapter Cache => m_Cache;
 
         internal ConcurrentDictionary<Type, object> m_ExtensionCache;
 
@@ -557,10 +533,7 @@ namespace Tortuga.Chain
         /// <value>
         /// The extension cache.
         /// </value>
-        protected override ConcurrentDictionary<Type, object> ExtensionCache
-        {
-            get { return m_ExtensionCache; }
-        }
+        protected override ConcurrentDictionary<Type, object> ExtensionCache => m_ExtensionCache;
 
     }
 }

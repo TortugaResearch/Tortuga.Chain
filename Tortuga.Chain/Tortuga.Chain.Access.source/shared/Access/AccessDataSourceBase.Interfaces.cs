@@ -6,11 +6,6 @@ namespace Tortuga.Chain.Access
 {
     partial class AccessDataSourceBase : IClass1DataSource
     {
-        IMultipleTableDbCommandBuilder IClass0DataSource.Sql(string sqlStatement, object argumentValue)
-        {
-            return Sql(sqlStatement, argumentValue);
-        }
-
         IObjectDbCommandBuilder<TArgument> IClass1DataSource.Delete<TArgument>(string tableName, TArgument argumentValue, DeleteOptions options)
         {
             return Delete(tableName, argumentValue, options);
@@ -19,6 +14,46 @@ namespace Tortuga.Chain.Access
         IObjectDbCommandBuilder<TArgument> IClass1DataSource.Delete<TArgument>(TArgument argumentValue, DeleteOptions options)
         {
             return Delete(argumentValue, options);
+        }
+
+        ISingleRowDbCommandBuilder IClass1DataSource.DeleteByKey<TKey>(string tableName, TKey key, DeleteOptions options)
+        {
+            return DeleteByKey(tableName, key, options);
+        }
+
+        ISingleRowDbCommandBuilder IClass1DataSource.DeleteByKey(string tableName, string key, DeleteOptions options)
+        {
+            return DeleteByKey(tableName, key, options);
+        }
+
+        IMultipleRowDbCommandBuilder IClass1DataSource.DeleteByKey<TKey>(string tableName, params TKey[] keys)
+        {
+            return DeleteByKey(tableName, keys);
+        }
+
+        IMultipleRowDbCommandBuilder IClass1DataSource.DeleteByKey(string tableName, params string[] keys)
+        {
+            return DeleteByKey(tableName, keys);
+        }
+
+        IMultipleRowDbCommandBuilder IClass1DataSource.DeleteByKeyList<TKey>(string tableName, IEnumerable<TKey> keys, DeleteOptions options)
+        {
+            return DeleteByKeyList(tableName, keys, options);
+        }
+
+        IMultipleRowDbCommandBuilder IClass1DataSource.DeleteWithFilter(string tableName, string whereClause)
+        {
+            return DeleteWithFilter(tableName, whereClause);
+        }
+
+        IMultipleRowDbCommandBuilder IClass1DataSource.DeleteWithFilter(string tableName, string whereClause, object argumentValue)
+        {
+            return DeleteWithFilter(tableName, whereClause, argumentValue);
+        }
+
+        IMultipleRowDbCommandBuilder IClass1DataSource.DeleteWithFilter(string tableName, object filterValue, FilterOptions filterOptions)
+        {
+            return DeleteWithFilter(tableName, filterValue, filterOptions);
         }
 
         ITableDbCommandBuilder IClass1DataSource.From(string tableOrViewName)
@@ -40,6 +75,7 @@ namespace Tortuga.Chain.Access
         {
             return From(tableOrViewName, filterValue, filterOptions);
         }
+
         ITableDbCommandBuilder IClass1DataSource.From<TObject>()
         {
             return From<TObject>();
@@ -89,11 +125,16 @@ namespace Tortuga.Chain.Access
         {
             return Insert(tableName, argumentValue, options);
         }
+
         IObjectDbCommandBuilder<TArgument> IClass1DataSource.Insert<TArgument>(TArgument argumentValue, InsertOptions options)
         {
             return Insert(argumentValue, options);
         }
 
+        IMultipleTableDbCommandBuilder IClass0DataSource.Sql(string sqlStatement, object argumentValue)
+        {
+            return Sql(sqlStatement, argumentValue);
+        }
         IObjectDbCommandBuilder<TArgument> IClass1DataSource.Update<TArgument>(string tableName, TArgument argumentValue, UpdateOptions options)
         {
             return Update(tableName, argumentValue, options);
@@ -102,42 +143,6 @@ namespace Tortuga.Chain.Access
         IObjectDbCommandBuilder<TArgument> IClass1DataSource.Update<TArgument>(TArgument argumentValue, UpdateOptions options)
         {
             return Update(argumentValue, options);
-        }
-
-        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Upsert<TArgument>(string tableName, TArgument argumentValue, UpsertOptions options)
-        {
-            throw new NotImplementedException("See issue #122");
-            //return Upsert(tableName, argumentValue, options);
-        }
-        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Upsert<TArgument>(TArgument argumentValue, UpsertOptions options)
-        {
-            throw new NotImplementedException("See issue #122");
-            //return Upsert(argumentValue, options);
-        }
-
-        ISingleRowDbCommandBuilder IClass1DataSource.DeleteByKey<TKey>(string tableName, TKey key, DeleteOptions options)
-        {
-            return DeleteByKey(tableName, key, options);
-        }
-
-        ISingleRowDbCommandBuilder IClass1DataSource.DeleteByKey(string tableName, string key, DeleteOptions options)
-        {
-            return DeleteByKey(tableName, key, options);
-        }
-
-        IMultipleRowDbCommandBuilder IClass1DataSource.DeleteByKey<TKey>(string tableName, params TKey[] keys)
-        {
-            return DeleteByKey(tableName, keys);
-        }
-
-        IMultipleRowDbCommandBuilder IClass1DataSource.DeleteByKey(string tableName, params string[] keys)
-        {
-            return DeleteByKey(tableName, keys);
-        }
-
-        IMultipleRowDbCommandBuilder IClass1DataSource.DeleteByKeyList<TKey>(string tableName, IEnumerable<TKey> keys, DeleteOptions options)
-        {
-            return DeleteByKeyList(tableName, keys, options);
         }
 
         ISingleRowDbCommandBuilder IClass1DataSource.UpdateByKey<TArgument, TKey>(string tableName, TArgument newValues, TKey key, UpdateOptions options)
@@ -165,23 +170,6 @@ namespace Tortuga.Chain.Access
             return UpdateByKeyList(tableName, newValues, keys, options);
         }
 
-        IMultipleRowDbCommandBuilder IClass1DataSource.DeleteWithFilter(string tableName, string whereClause)
-        {
-            return DeleteWithFilter(tableName, whereClause);
-        }
-
-
-        IMultipleRowDbCommandBuilder IClass1DataSource.DeleteWithFilter(string tableName, string whereClause, object argumentValue)
-        {
-            return DeleteWithFilter(tableName, whereClause, argumentValue);
-        }
-
-
-        IMultipleRowDbCommandBuilder IClass1DataSource.DeleteWithFilter(string tableName, object filterValue, FilterOptions filterOptions)
-        {
-            return DeleteWithFilter(tableName, filterValue, filterOptions);
-        }
-
         IUpdateManyCommandBuilder IClass1DataSource.UpdateSet(string tableName, string updateExpression, UpdateOptions options)
         {
             return UpdateSet(tableName, updateExpression, options);
@@ -195,6 +183,17 @@ namespace Tortuga.Chain.Access
         IUpdateManyCommandBuilder IClass1DataSource.UpdateSet(string tableName, object newValues, UpdateOptions options)
         {
             return UpdateSet(tableName, newValues, options);
+        }
+
+        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Upsert<TArgument>(string tableName, TArgument argumentValue, UpsertOptions options)
+        {
+            throw new NotImplementedException("See issue #122");
+            //return Upsert(tableName, argumentValue, options);
+        }
+        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Upsert<TArgument>(TArgument argumentValue, UpsertOptions options)
+        {
+            throw new NotImplementedException("See issue #122");
+            //return Upsert(argumentValue, options);
         }
     }
 

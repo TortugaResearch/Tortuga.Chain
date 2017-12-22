@@ -33,6 +33,17 @@ namespace Tortuga.Chain.Materializers
         }
 
         /// <summary>
+        /// Returns the list of columns the materializer would like to have.
+        /// </summary>
+        /// <returns>
+        /// IReadOnlyList&lt;System.String&gt;.
+        /// </returns>
+        /// <remarks>
+        /// If AutoSelectDesiredColumns is returned, the command builder is allowed to choose which columns to return. If NoColumns is returned, the command builder should omit the SELECT/OUTPUT clause.
+        /// </remarks>
+        public override IReadOnlyList<string> DesiredColumns() => AllColumns;
+
+        /// <summary>
         /// Execute the operation synchronously.
         /// </summary>
         /// <returns></returns>
@@ -63,7 +74,7 @@ namespace Tortuga.Chain.Materializers
         public override async Task<DataSet> ExecuteAsync(CancellationToken cancellationToken, object state = null)
         {
             var ds = new DataSet();
-            ds.EnforceConstraints = false; //needed for PostgreSql 
+            ds.EnforceConstraints = false;            /*needed for PostgreSql */
             await Prepare().ExecuteAsync(async cmd =>
             {
                 using (var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SequentialAccess, cancellationToken).ConfigureAwait(false))
@@ -75,21 +86,6 @@ namespace Tortuga.Chain.Materializers
 
             return ds;
         }
-
-        /// <summary>
-        /// Returns the list of columns the materializer would like to have.
-        /// </summary>
-        /// <returns>
-        /// IReadOnlyList&lt;System.String&gt;.
-        /// </returns>
-        /// <remarks>
-        /// If AutoSelectDesiredColumns is returned, the command builder is allowed to choose which columns to return. If NoColumns is returned, the command builder should omit the SELECT/OUTPUT clause.
-        /// </remarks>
-        public override IReadOnlyList<string> DesiredColumns()
-        {
-            return AllColumns;
-        }
-
     }
 }
 #endif

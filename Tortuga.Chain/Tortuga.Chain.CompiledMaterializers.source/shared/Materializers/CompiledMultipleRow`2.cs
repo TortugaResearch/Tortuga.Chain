@@ -28,18 +28,6 @@ namespace Tortuga.Chain.Materializers
         }
 
         /// <summary>
-        /// Materializes the result as an instance of the indicated type
-        /// </summary>
-        /// <typeparam name="TObject">The type of the object returned.</typeparam>
-        /// <param name="rowOptions">The row options.</param>
-        /// <returns>ILink&lt;TObject&gt;.</returns>
-        public ILink<TObject> ToObject<TObject>(RowOptions rowOptions = RowOptions.None)
-            where TObject : class, new()
-        {
-            return new CompiledObjectMaterializer<TCommand, TParameter, TObject>(m_CommandBuilder, rowOptions);
-        }
-
-        /// <summary>
         /// Materializes the result as a list of objects.
         /// </summary>
         /// <typeparam name="TObject">The type of the model.</typeparam>
@@ -64,6 +52,18 @@ namespace Tortuga.Chain.Materializers
             where TCollection : ICollection<TObject>, new()
         {
             return new CompiledCollectionMaterializer<TCommand, TParameter, TObject, TCollection>(m_CommandBuilder, collectionOptions);
+        }
+
+        /// <summary>
+        /// Materializes the result as an instance of the indicated type
+        /// </summary>
+        /// <typeparam name="TObject">The type of the object returned.</typeparam>
+        /// <param name="rowOptions">The row options.</param>
+        /// <returns>ILink&lt;TObject&gt;.</returns>
+        public ILink<TObject> ToObject<TObject>(RowOptions rowOptions = RowOptions.None)
+            where TObject : class, new()
+        {
+            return new CompiledObjectMaterializer<TCommand, TParameter, TObject>(m_CommandBuilder, rowOptions);
         }
     }
 

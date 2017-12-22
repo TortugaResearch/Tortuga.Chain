@@ -16,7 +16,7 @@ namespace Tortuga.Chain.SqlServer
     public sealed class SqlServerCommandExecutionToken : CommandExecutionToken<SqlCommand, SqlParameter>
     {
 #if !SqlDependency_Missing
-        private OnChangeEventHandler m_OnChangeEventHandler;
+        OnChangeEventHandler m_OnChangeEventHandler;
 #endif
 
         /// <summary>

@@ -27,15 +27,13 @@ namespace Tortuga.Chain.Access
 
         }
 
+        internal AccessCommandExecutionMode ExecutionMode { get; set; } = AccessCommandExecutionMode.Materializer;
+
         /// <summary>
         /// This function is executed with the value returned by this execution token. 
         /// It is used to create the next execution token in the chain.
         /// </summary>
         internal Action<object> ForwardResult { get; set; }
-
-
-        internal AccessCommandExecutionMode ExecutionMode { get; set; } = AccessCommandExecutionMode.Materializer;
-
         /// <summary>
         /// Gets or sets the command to be executed after the current execution token.
         /// </summary>

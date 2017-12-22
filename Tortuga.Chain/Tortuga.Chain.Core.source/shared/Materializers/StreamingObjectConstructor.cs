@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.ComponentModel;
 using System.Data.Common;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -19,7 +20,27 @@ namespace Tortuga.Chain.Materializers
         static readonly ImmutableArray<MappedProperty<T>> s_AllMappedProperties;
         static readonly ImmutableArray<MappedProperty<T>> s_DecomposedProperties;
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1810:InitializeReferenceTypeStaticFieldsInline")]
+        static readonly Type[] s_DefaultConstructor = new Type[0];
+
+        readonly ConstructorMetadata m_Constructor;
+
+        readonly StreamingObjectConstructorDictionary m_Dictionary;
+
+        readonly Dictionary<string, int> m_Ordinals;
+
+        readonly bool m_PopulateComplexObject;
+
+        T m_Current;
+
+        bool m_Disposed;
+
+        List<OrdinalMappedProperty<T>> m_MappedProperties;
+
+        int m_RowsRead;
+
+        DbDataReader m_Source;
+
+        [SuppressMessage("Microsoft.Performance", "CA1810:InitializeReferenceTypeStaticFieldsInline")]
         static StreamingObjectConstructor()
         {
             var methodType = typeof(StreamingObjectConstructor<T>).GetMethods(BindingFlags.NonPublic | BindingFlags.Static).Where(m => m.Name == "CreateMappedProperty_Helper").Single();
@@ -49,20 +70,6 @@ namespace Tortuga.Chain.Materializers
             s_AllMappedProperties = mappedProperties.ToImmutableArray();
             s_DecomposedProperties = decomposedProperties.ToImmutableArray();
         }
-
-
-
-        static readonly Type[] s_DefaultConstructor = new Type[0];
-
-        readonly ConstructorMetadata m_Constructor;
-        readonly StreamingObjectConstructorDictionary m_Dictionary;
-        readonly Dictionary<string, int> m_Ordinals;
-        readonly bool m_PopulateComplexObject;
-        private T m_Current;
-        private bool m_Disposed;
-        private DbDataReader m_Source;
-        private int m_RowsRead;
-
         public StreamingObjectConstructor(DbDataReader source, IReadOnlyList<Type> constructorSignature)
         {
             m_Source = source;
@@ -104,28 +111,11 @@ namespace Tortuga.Chain.Materializers
             }
         }
 
-        internal static MappedProperty<T> CreateMappedProperty_Helper<T2>(string mappedColumnName, PropertyMetadata propertyMetadata)
-        {
-            return new MappedProperty<T, T2>(mappedColumnName, propertyMetadata);
-        }
+        public T Current => m_Current;
 
+        public IReadOnlyDictionary<string, object> CurrentDictionary => m_Dictionary;
 
-        List<OrdinalMappedProperty<T>> m_MappedProperties;
-
-        public T Current
-        {
-            get { return m_Current; }
-        }
-
-        public IReadOnlyDictionary<string, object> CurrentDictionary
-        {
-            get { return m_Dictionary; }
-        }
-
-        public int RowsRead
-        {
-            get { return m_RowsRead; }
-        }
+        public int RowsRead => m_RowsRead;
 
         public void Dispose()
         {
@@ -148,12 +138,6 @@ namespace Tortuga.Chain.Materializers
             else
                 m_Current = null;
             return result;
-        }
-
-        internal IEnumerable<T> ToObjects()
-        {
-            while (Read())
-                yield return Current;
         }
 
         public async Task<bool> ReadAsync()
@@ -185,7 +169,17 @@ namespace Tortuga.Chain.Materializers
             return result;
         }
 
-        private T ConstructObject()
+        internal static MappedProperty<T> CreateMappedProperty_Helper<T2>(string mappedColumnName, PropertyMetadata propertyMetadata)
+        {
+            return new MappedProperty<T, T2>(mappedColumnName, propertyMetadata);
+        }
+        internal IEnumerable<T> ToObjects()
+        {
+            while (Read())
+                yield return Current;
+        }
+
+        T ConstructObject()
         {
             var constructorParameters = m_Constructor.ParameterNames;
             var parameters = new object[constructorParameters.Length];
@@ -196,7 +190,7 @@ namespace Tortuga.Chain.Materializers
             var result = (T)m_Constructor.ConstructorInfo.Invoke(parameters);
 
             if (m_PopulateComplexObject)
-                MaterializerUtilities.PopulateComplexObject<T>(m_Dictionary, result, null, m_MappedProperties, s_DecomposedProperties);
+                PopulateComplexObject(m_Dictionary, result, null, m_MappedProperties, s_DecomposedProperties);
 
             //Change tracking objects shouldn't be materialized as unchanged.
             (result as IChangeTracking)?.AcceptChanges();
@@ -204,7 +198,7 @@ namespace Tortuga.Chain.Materializers
             return result;
         }
 
-        private class StreamingObjectConstructorDictionary : IReadOnlyDictionary<string, object>, IReadOnlyDictionary<int, object>
+        class StreamingObjectConstructorDictionary : IReadOnlyDictionary<string, object>, IReadOnlyDictionary<int, object>
         {
             readonly StreamingObjectConstructor<T> m_Parent;
 
@@ -217,6 +211,8 @@ namespace Tortuga.Chain.Materializers
 
             IEnumerable<string> IReadOnlyDictionary<string, object>.Keys => m_Parent.m_Ordinals.Keys;
 
+            IEnumerable<int> IReadOnlyDictionary<int, object>.Keys => m_Parent.m_Ordinals.Values;
+
             public IEnumerable<object> Values
             {
                 get
@@ -226,11 +222,6 @@ namespace Tortuga.Chain.Materializers
                     return result;
                 }
             }
-
-            IEnumerable<int> IReadOnlyDictionary<int, object>.Keys => m_Parent.m_Ordinals.Values;
-
-
-
             public object this[int key]
             {
                 get
@@ -243,21 +234,23 @@ namespace Tortuga.Chain.Materializers
 
             public object this[string key] => this[m_Parent.m_Ordinals[key]];
 
+            public bool ContainsKey(string key) => m_Parent.m_Ordinals.ContainsKey(key);
+
+            bool IReadOnlyDictionary<int, object>.ContainsKey(int key) => key < m_Parent.m_Ordinals.Count;
+
             public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
             {
                 for (var i = 0; i < m_Parent.m_Source.FieldCount; i++)
                     yield return new KeyValuePair<string, object>(m_Parent.m_Source.GetName(i), m_Parent.m_Source.IsDBNull(i) ? null : m_Parent.m_Source.GetValue(i));
             }
+            IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-            public bool ContainsKey(string key)
+            IEnumerator<KeyValuePair<int, object>> IEnumerable<KeyValuePair<int, object>>.GetEnumerator()
             {
-                return m_Parent.m_Ordinals.ContainsKey(key);
+                for (var i = 0; i < m_Parent.m_Source.FieldCount; i++)
+                    yield return new KeyValuePair<int, object>(i, m_Parent.m_Source.IsDBNull(i) ? null : m_Parent.m_Source.GetValue(i));
             }
 
-            IEnumerator IEnumerable.GetEnumerator()
-            {
-                return GetEnumerator();
-            }
             bool IReadOnlyDictionary<string, object>.TryGetValue(string key, out object value)
             {
                 if (m_Parent.m_Ordinals.ContainsKey(key))
@@ -268,12 +261,6 @@ namespace Tortuga.Chain.Materializers
                 value = null;
                 return false;
             }
-
-            bool IReadOnlyDictionary<int, object>.ContainsKey(int key)
-            {
-                return key < m_Parent.m_Ordinals.Count;
-            }
-
             bool IReadOnlyDictionary<int, object>.TryGetValue(int key, out object value)
             {
                 if (key < m_Parent.m_Ordinals.Count)
@@ -283,12 +270,6 @@ namespace Tortuga.Chain.Materializers
                 }
                 value = null;
                 return false;
-            }
-
-            IEnumerator<KeyValuePair<int, object>> IEnumerable<KeyValuePair<int, object>>.GetEnumerator()
-            {
-                for (var i = 0; i < m_Parent.m_Source.FieldCount; i++)
-                    yield return new KeyValuePair<int, object>(i, m_Parent.m_Source.IsDBNull(i) ? null : m_Parent.m_Source.GetValue(i));
             }
         }
 

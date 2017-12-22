@@ -27,10 +27,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="dataSource">The data source.</param>
         protected DbOperationBuilder(IOperationDataSource<TConnection, TTransaction> dataSource)
         {
-            if (dataSource == null)
-                throw new ArgumentNullException(nameof(dataSource), $"{nameof(dataSource)} is null.");
-
-            m_DataSource = dataSource;
+            m_DataSource = dataSource ?? throw new ArgumentNullException(nameof(dataSource), $"{nameof(dataSource)} is null.");
             StrictMode = dataSource.StrictMode;
         }
 
@@ -39,19 +36,13 @@ namespace Tortuga.Chain.CommandBuilders
         /// </summary>
         /// <value>The data source.</value>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public IOperationDataSource<TConnection, TTransaction> DataSource
-        {
-            get { return m_DataSource; }
-        }
+        public IOperationDataSource<TConnection, TTransaction> DataSource => m_DataSource;
 
         /// <summary>
         /// Indicates this operation has no result set.
         /// </summary>
         /// <returns>ILink&lt;System.Nullable&lt;System.Int32&gt;&gt;.</returns>
-        public override ILink<int?> AsNonQuery()
-        {
-            return new Operation<TConnection, TTransaction>(this);
-        }
+        public override ILink<int?> AsNonQuery() => new Operation<TConnection, TTransaction>(this);
 
         /// <summary>
         /// Prepares the command for execution by generating any necessary SQL.
@@ -86,9 +77,6 @@ namespace Tortuga.Chain.CommandBuilders
         /// <remarks>
         /// If the column name was not found, this will return null
         /// </remarks>
-        public override ColumnMetadata TryGetColumn(string columnName)
-        {
-            return null;
-        }
+        public override ColumnMetadata TryGetColumn(string columnName) => null;
     }
 }

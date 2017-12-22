@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Tortuga.Chain.Metadata
 {
 
@@ -6,6 +8,15 @@ namespace Tortuga.Chain.Metadata
     /// </summary>
     public abstract class UserDefinedTypeMetadata
     {
+
+        /// <summary>
+        /// Gets the columns.
+        /// </summary>
+        /// <value>
+        /// The columns.
+        /// </value>
+        [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public ColumnMetadataCollection Columns { get; protected set; }
 
         /// <summary>
         /// Gets a value indicating whether this instance is table type or a normal UDF.
@@ -22,16 +33,6 @@ namespace Tortuga.Chain.Metadata
         /// The name.
         /// </value>
         public string Name { get; protected set; }
-
-        /// <summary>
-        /// Gets the columns.
-        /// </summary>
-        /// <value>
-        /// The columns.
-        /// </value>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public ColumnMetadataCollection Columns { get; protected set; }
-
     }
 
 }

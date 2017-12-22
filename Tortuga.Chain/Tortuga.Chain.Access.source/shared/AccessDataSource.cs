@@ -23,7 +23,7 @@ namespace Tortuga.Chain
     public class AccessDataSource : AccessDataSourceBase, IRootDataSource
     {
         readonly OleDbConnectionStringBuilder m_ConnectionBuilder;
-        private AccessMetadataCache m_DatabaseMetadata;
+        AccessMetadataCache m_DatabaseMetadata;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AccessDataSource" /> class.
@@ -58,7 +58,7 @@ namespace Tortuga.Chain
         {
         }
 
-        private AccessDataSource(string name, OleDbConnectionStringBuilder connectionStringBuilder, AccessDataSourceSettings settings, AccessMetadataCache databaseMetadata, ICacheAdapter cache, ConcurrentDictionary<Type, object> extensionCache) : base(settings)
+        AccessDataSource(string name, OleDbConnectionStringBuilder connectionStringBuilder, AccessDataSourceSettings settings, AccessMetadataCache databaseMetadata, ICacheAdapter cache, ConcurrentDictionary<Type, object> extensionCache) : base(settings)
         {
             if (connectionStringBuilder == null)
                 throw new ArgumentNullException("connectionStringBuilder", "connectionStringBuilder is null.");
@@ -83,10 +83,8 @@ namespace Tortuga.Chain
         /// <exception cref="ArgumentNullException">connectionStringBuilder;connectionStringBuilder is null.</exception>
         public AccessDataSource(string name, OleDbConnectionStringBuilder connectionStringBuilder, AccessDataSourceSettings settings = null) : base(settings)
         {
-            if (connectionStringBuilder == null)
-                throw new ArgumentNullException("connectionStringBuilder", "connectionStringBuilder is null.");
+            m_ConnectionBuilder = connectionStringBuilder ?? throw new ArgumentNullException("connectionStringBuilder", "connectionStringBuilder is null.");
 
-            m_ConnectionBuilder = connectionStringBuilder;
             if (string.IsNullOrEmpty(name))
                 Name = m_ConnectionBuilder.DataSource;
             else
@@ -110,18 +108,12 @@ namespace Tortuga.Chain
         /// <summary>
         /// This object can be used to lookup database information.
         /// </summary>
-        public override AccessMetadataCache DatabaseMetadata
-        {
-            get { return m_DatabaseMetadata; }
-        }
+        public override AccessMetadataCache DatabaseMetadata => m_DatabaseMetadata;
 
         /// <summary>
         /// This object can be used to access the database connection string.
         /// </summary>
-        internal string ConnectionString
-        {
-            get { return m_ConnectionBuilder.ConnectionString; }
-        }
+        internal string ConnectionString => m_ConnectionBuilder.ConnectionString;
 
 
 
@@ -195,17 +187,10 @@ namespace Tortuga.Chain
             return new AccessTransactionalDataSource(this, forwardEvents, connection, transaction);
         }
 
-
-
-
-
-        private async Task<OleDbConnection> CreateConnectionAsync(CancellationToken cancellationToken = default(CancellationToken))
+        async Task<OleDbConnection> CreateConnectionAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             var con = new OleDbConnection(ConnectionString);
             await con.OpenAsync(cancellationToken).ConfigureAwait(false);
-
-            //TODO: Add in needed PRAGMA statements
-
             return con;
         }
 
@@ -276,10 +261,6 @@ namespace Tortuga.Chain
             return result;
         }
 
-
-
-
-
         /// <summary>
         /// Tests the connection.
         /// </summary>
@@ -301,15 +282,9 @@ namespace Tortuga.Chain
                 await cmd.ExecuteScalarAsync();
         }
 
-        DbConnection IRootDataSource.CreateConnection()
-        {
-            return CreateConnection();
-        }
+        DbConnection IRootDataSource.CreateConnection() => CreateConnection();
 
-        async Task<DbConnection> IRootDataSource.CreateConnectionAsync()
-        {
-            return await CreateConnectionAsync();
-        }
+        async Task<DbConnection> IRootDataSource.CreateConnectionAsync() => await CreateConnectionAsync();
 
         /// <summary>
         /// Creates an open data source using the supplied connection and optional transaction.
@@ -332,15 +307,9 @@ namespace Tortuga.Chain
             return new AccessOpenDataSource(this, (OleDbConnection)connection, (OleDbTransaction)transaction);
         }
 
-        ITransactionalDataSource IRootDataSource.BeginTransaction()
-        {
-            return BeginTransaction();
-        }
+        ITransactionalDataSource IRootDataSource.BeginTransaction() => BeginTransaction();
 
-        async Task<ITransactionalDataSource> IRootDataSource.BeginTransactionAsync()
-        {
-            return await BeginTransactionAsync();
-        }
+        async Task<ITransactionalDataSource> IRootDataSource.BeginTransactionAsync() => await BeginTransactionAsync();
 
         /// <summary>
         /// Craetes a new data source with the provided cache.
@@ -359,10 +328,7 @@ namespace Tortuga.Chain
         /// <summary>
         /// Gets or sets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
         /// </summary>
-        public override ICacheAdapter Cache
-        {
-            get { return m_Cache; }
-        }
+        public override ICacheAdapter Cache => m_Cache;
 
         internal ConcurrentDictionary<Type, object> m_ExtensionCache;
 
@@ -372,10 +338,7 @@ namespace Tortuga.Chain
         /// <value>
         /// The extension cache.
         /// </value>
-        protected override ConcurrentDictionary<Type, object> ExtensionCache
-        {
-            get { return m_ExtensionCache; }
-        }
+        protected override ConcurrentDictionary<Type, object> ExtensionCache => m_ExtensionCache;
 
         /// <summary>
         /// Executes the specified operation.

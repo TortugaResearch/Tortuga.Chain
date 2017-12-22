@@ -30,18 +30,6 @@ namespace Tortuga.Chain.CommandBuilders
         { }
 
 
-#if !DataTable_Missing
-        /// <summary>
-        /// Indicates the results should be materialized as a DataSet.
-        /// </summary>
-        /// <param name="tableNames">The table names.</param>
-        public ILink<DataSet> ToDataSet(params string[] tableNames) { return new DataSetMaterializer<TCommand, TParameter>(this, tableNames); }
-#endif
-
-        /// <summary>
-        /// Indicates the results should be materialized as a set of tables.
-        /// </summary>
-        public ILink<TableSet> ToTableSet(params string[] tableNames) { return new TableSetMaterializer<TCommand, TParameter>(this, tableNames); }
 
         /// <summary>
         /// To the collection set.
@@ -107,5 +95,18 @@ namespace Tortuga.Chain.CommandBuilders
             return new CollectionSetMaterializer<TCommand, TParameter, T1, T2, T3, T4, T5>(this);
         }
 
+#if !DataTable_Missing
+        /// <summary>
+        /// Indicates the results should be materialized as a DataSet.
+        /// </summary>
+        /// <param name="tableNames">The table names.</param>
+        public ILink<DataSet> ToDataSet(params string[] tableNames) { return new DataSetMaterializer<TCommand, TParameter>(this, tableNames); }
+#endif
+
+
+        /// <summary>
+        /// Indicates the results should be materialized as a set of tables.
+        /// </summary>
+        public ILink<TableSet> ToTableSet(params string[] tableNames) { return new TableSetMaterializer<TCommand, TParameter>(this, tableNames); }
     }
 }

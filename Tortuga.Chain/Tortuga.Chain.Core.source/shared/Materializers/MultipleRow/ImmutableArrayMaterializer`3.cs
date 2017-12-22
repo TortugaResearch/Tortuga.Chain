@@ -48,6 +48,27 @@ namespace Tortuga.Chain.Materializers
         }
 
         /// <summary>
+        /// Returns the list of columns the materializer would like to have.
+        /// </summary>
+        /// <returns></returns>
+        public override IReadOnlyList<string> DesiredColumns()
+        {
+            if (ConstructorSignature == null)
+                return ObjectMetadata.ColumnsFor;
+
+            var desiredType = typeof(TObject);
+            var constructor = ObjectMetadata.Constructors.Find(ConstructorSignature);
+
+            if (constructor == null)
+            {
+                var types = string.Join(", ", ConstructorSignature.Select(t => t.Name));
+                throw new MappingException($"Cannot find a constructor on {desiredType.Name} with the types [{types}]");
+            }
+
+            return constructor.ParameterNames;
+        }
+
+        /// <summary>
         /// Execute the operation synchronously.
         /// </summary>
         /// <returns></returns>
@@ -88,27 +109,6 @@ namespace Tortuga.Chain.Materializers
             }, cancellationToken, state).ConfigureAwait(false);
 
             return result;
-        }
-
-        /// <summary>
-        /// Returns the list of columns the materializer would like to have.
-        /// </summary>
-        /// <returns></returns>
-        public override IReadOnlyList<string> DesiredColumns()
-        {
-            if (ConstructorSignature == null)
-                return ObjectMetadata.ColumnsFor;
-
-            var desiredType = typeof(TObject);
-            var constructor = ObjectMetadata.Constructors.Find(ConstructorSignature);
-
-            if (constructor == null)
-            {
-                var types = string.Join(", ", ConstructorSignature.Select(t => t.Name));
-                throw new MappingException($"Cannot find a constructor on {desiredType.Name} with the types [{types}]");
-            }
-
-            return constructor.ParameterNames;
         }
     }
 }

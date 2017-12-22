@@ -37,10 +37,7 @@ namespace Tortuga.Chain.Access.CommandBuilders
         /// <remarks>
         /// If the column name was not found, this will return null
         /// </remarks>
-        public override ColumnMetadata TryGetColumn(string columnName)
-        {
-            return Table.Columns.TryGetColumn(columnName);
-        }
+        public override ColumnMetadata TryGetColumn(string columnName) => Table.Columns.TryGetColumn(columnName);
 
     }
 }

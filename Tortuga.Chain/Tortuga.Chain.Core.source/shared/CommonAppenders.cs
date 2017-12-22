@@ -76,72 +76,6 @@ namespace Tortuga.Chain
         }
 
         /// <summary>
-        /// Reads the cache. If the value isn't found, the execute the previous link and cache the result.
-        /// </summary>
-        /// <param name="previousLink">The previous link.</param>
-        /// <param name="cacheKey">The cache key.</param>
-        /// <param name="policy">Optional cache policy.</param>
-        public static ILink<TResult> ReadOrCache<TResult>(this ILink<TResult> previousLink, string cacheKey, CachePolicy policy = null)
-        {
-            return new ReadOrCacheResultAppender<TResult>(previousLink, cacheKey, policy);
-        }
-
-        /// <summary>
-        /// Adds DB Command tracing. Information is send to the Debug stream.
-        /// </summary>
-        /// <param name="previousLink">The previous link.</param>
-        public static ILink<TResult> WithTracingToDebug<TResult>(this ILink<TResult> previousLink)
-        {
-            return new TraceAppender<TResult>(previousLink);
-        }
-
-#if !WINDOWS_UWP
-
-        /// <summary>
-        /// Adds DB Command tracing. Information is send to the Debug stream.
-        /// </summary>
-        /// <param name="previousLink">The previous link.</param>
-        public static ILink<TResult> WithTracingToConsole<TResult>(this ILink<TResult> previousLink)
-        {
-            return new TraceAppender<TResult>(previousLink, Console.Out);
-        }
-#endif
-
-        /// <summary>
-        /// Adds DB Command tracing. Information is send to the Debug stream.
-        /// </summary>
-        /// <param name="previousLink">The previous link.</param>
-        /// <param name="stream">The stream.</param>
-        /// <returns>ILink&lt;TResult&gt;.</returns>
-        public static ILink<TResult> WithTracing<TResult>(this ILink<TResult> previousLink, TextWriter stream)
-        {
-            return new TraceAppender<TResult>(previousLink, stream);
-        }
-
-        /// <summary>
-        /// Sets the command timeout, overriding the value set in the DataSource.
-        /// </summary>
-        /// <typeparam name="TResult">The type of the t result.</typeparam>
-        /// <param name="previousLink">The previous link.</param>
-        /// <param name="timeout">The timeout.</param>
-        /// <returns>ILink&lt;TResult&gt;.</returns>
-        public static ILink<TResult> SetTimeout<TResult>(this ILink<TResult> previousLink, TimeSpan timeout)
-        {
-            return new TimeoutAppender<TResult>(previousLink, timeout);
-        }
-
-        /// <summary>
-        /// Sets the strict mode, overriding the value set in the DataSource.
-        /// </summary>
-        /// <param name="previousLink">The previous link.</param>
-        /// <param name="strictMode">if set to <c>true</c> [strict mode].</param>
-        /// <returns></returns>
-        public static ILink<TResult> SetStrictMode<TResult>(this ILink<TResult> previousLink, bool strictMode)
-        {
-            return new StrictModeAppender<TResult>(previousLink, strictMode);
-        }
-
-        /// <summary>
         /// Joins a set of child objects to their parent objects.
         /// </summary>
         /// <typeparam name="T1">The type of the parent object.</typeparam>
@@ -168,7 +102,6 @@ namespace Tortuga.Chain
         {
             return new ExpressionJoinAppender<T1, T2>(previousLink, joinExpression, targetCollectionName, joinOptions);
         }
-
 
         /// <summary>
         /// Joins a set of child objects to their parent objects.
@@ -239,11 +172,6 @@ namespace Tortuga.Chain
             return (ILink<List<T1>>)genericMethod.Invoke(null, new object[] { previousLink, keyName, keyName, targetCollectionName, joinOptions });
         }
 
-        internal static ILink<List<T1>> Join_Helper<T1, T2, TKey>(ILink<Tuple<List<T1>, List<T2>>> previousLink, string primaryKeyName, string foreignKeyName, string targetCollectionName, JoinOptions joinOptions)
-        {
-            return new KeyJoinAppender<T1, T2, TKey>(previousLink, primaryKeyName, foreignKeyName, targetCollectionName, joinOptions);
-        }
-
         /// <summary>
         /// Joins a set of child objects to their parent objects.
         /// </summary>
@@ -279,6 +207,73 @@ namespace Tortuga.Chain
             //other parameters are checked by the constructor.
 
             return new KeyJoinAppender<T1, T2, TKey>(previousLink, keyName, keyName, targetCollectionName, joinOptions);
+        }
+
+        /// <summary>
+        /// Reads the cache. If the value isn't found, the execute the previous link and cache the result.
+        /// </summary>
+        /// <param name="previousLink">The previous link.</param>
+        /// <param name="cacheKey">The cache key.</param>
+        /// <param name="policy">Optional cache policy.</param>
+        public static ILink<TResult> ReadOrCache<TResult>(this ILink<TResult> previousLink, string cacheKey, CachePolicy policy = null)
+        {
+            return new ReadOrCacheResultAppender<TResult>(previousLink, cacheKey, policy);
+        }
+
+        /// <summary>
+        /// Sets the strict mode, overriding the value set in the DataSource.
+        /// </summary>
+        /// <param name="previousLink">The previous link.</param>
+        /// <param name="strictMode">if set to <c>true</c> [strict mode].</param>
+        /// <returns></returns>
+        public static ILink<TResult> SetStrictMode<TResult>(this ILink<TResult> previousLink, bool strictMode)
+        {
+            return new StrictModeAppender<TResult>(previousLink, strictMode);
+        }
+
+        /// <summary>
+        /// Sets the command timeout, overriding the value set in the DataSource.
+        /// </summary>
+        /// <typeparam name="TResult">The type of the t result.</typeparam>
+        /// <param name="previousLink">The previous link.</param>
+        /// <param name="timeout">The timeout.</param>
+        /// <returns>ILink&lt;TResult&gt;.</returns>
+        public static ILink<TResult> SetTimeout<TResult>(this ILink<TResult> previousLink, TimeSpan timeout)
+        {
+            return new TimeoutAppender<TResult>(previousLink, timeout);
+        }
+
+        /// <summary>
+        /// Adds DB Command tracing. Information is send to the Debug stream.
+        /// </summary>
+        /// <param name="previousLink">The previous link.</param>
+        /// <param name="stream">The stream.</param>
+        /// <returns>ILink&lt;TResult&gt;.</returns>
+        public static ILink<TResult> WithTracing<TResult>(this ILink<TResult> previousLink, TextWriter stream)
+        {
+            return new TraceAppender<TResult>(previousLink, stream);
+        }
+
+        /// <summary>
+        /// Adds DB Command tracing. Information is send to the Debug stream.
+        /// </summary>
+        /// <param name="previousLink">The previous link.</param>
+        public static ILink<TResult> WithTracingToConsole<TResult>(this ILink<TResult> previousLink)
+        {
+            return new TraceAppender<TResult>(previousLink, Console.Out);
+        }
+
+        /// <summary>
+        /// Adds DB Command tracing. Information is send to the Debug stream.
+        /// </summary>
+        /// <param name="previousLink">The previous link.</param>
+        public static ILink<TResult> WithTracingToDebug<TResult>(this ILink<TResult> previousLink)
+        {
+            return new TraceAppender<TResult>(previousLink);
+        }
+        internal static ILink<List<T1>> Join_Helper<T1, T2, TKey>(ILink<Tuple<List<T1>, List<T2>>> previousLink, string primaryKeyName, string foreignKeyName, string targetCollectionName, JoinOptions joinOptions)
+        {
+            return new KeyJoinAppender<T1, T2, TKey>(previousLink, primaryKeyName, foreignKeyName, targetCollectionName, joinOptions);
         }
     }
 }

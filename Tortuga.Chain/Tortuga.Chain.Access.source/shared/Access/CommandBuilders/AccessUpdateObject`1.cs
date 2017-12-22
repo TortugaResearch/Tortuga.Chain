@@ -59,18 +59,18 @@ namespace Tortuga.Chain.Access.CommandBuilders
 
             if (m_Options.HasFlag(UpdateOptions.ReturnOldValues))
             {
-                var result = PrepareRead(desiredColumns);
+                var result = PrepareRead(desiredColumns, "before");
                 result.NextCommand = updateCommand;
                 return result;
             }
             else
             {
-                updateCommand.NextCommand = PrepareRead(desiredColumns);
+                updateCommand.NextCommand = PrepareRead(desiredColumns, "after");
                 return updateCommand;
             }
         }
 
-        private AccessCommandExecutionToken PrepareRead(IReadOnlyList<string> desiredColumns)
+        AccessCommandExecutionToken PrepareRead(IReadOnlyList<string> desiredColumns, string label)
         {
             var sqlBuilder = Table.CreateSqlBuilder(StrictMode);
             sqlBuilder.ApplyDesiredColumns(desiredColumns);
@@ -82,7 +82,7 @@ namespace Tortuga.Chain.Access.CommandBuilders
             sqlBuilder.BuildWhereClause(sql, " WHERE ", null);
             sql.Append(";");
 
-            return new AccessCommandExecutionToken(DataSource, "Query after updateing " + Table.Name, sql.ToString(), sqlBuilder.GetParameters());
+            return new AccessCommandExecutionToken(DataSource, $"Query {label} updating " + Table.Name, sql.ToString(), sqlBuilder.GetParameters());
         }
     }
 }

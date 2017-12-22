@@ -13,18 +13,6 @@ namespace Tortuga.Chain.CommandBuilders
     /// <remarks>Warning: This interface is meant to simulate multiple inheritance and work-around some issues with exposing generic types. Do not implement it in client code, as new method will be added over time.</remarks>
     public interface IMultipleTableDbCommandBuilder : IMultipleRowDbCommandBuilder
     {
-#if !DataTable_Missing
-        /// <summary>
-        /// Indicates the results should be materialized as a DataSet.
-        /// </summary>
-        /// <param name="tableNames">The table names.</param>
-        ILink<DataSet> ToDataSet(params string[] tableNames);
-#endif
-        /// <summary>
-        /// Indicates the results should be materialized as a set of tables.
-        /// </summary>
-        ILink<TableSet> ToTableSet(params string[] tableNames);
-
         /// <summary>
         /// To the collection set.
         /// </summary>
@@ -61,6 +49,14 @@ namespace Tortuga.Chain.CommandBuilders
             where T3 : class, new()
             where T4 : class, new();
 
+#if !DataTable_Missing
+        /// <summary>
+        /// Indicates the results should be materialized as a DataSet.
+        /// </summary>
+        /// <param name="tableNames">The table names.</param>
+        ILink<DataSet> ToDataSet(params string[] tableNames);
+#endif
+
         /// <summary>
         /// To the collection set.
         /// </summary>
@@ -77,6 +73,10 @@ namespace Tortuga.Chain.CommandBuilders
             where T4 : class, new()
             where T5 : class, new();
 
+        /// <summary>
+        /// Indicates the results should be materialized as a set of tables.
+        /// </summary>
+        ILink<TableSet> ToTableSet(params string[] tableNames);
     }
 }
 

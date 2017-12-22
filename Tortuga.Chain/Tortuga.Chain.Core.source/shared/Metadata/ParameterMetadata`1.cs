@@ -1,5 +1,3 @@
-using System;
-
 namespace Tortuga.Chain.Metadata
 {
 
@@ -60,33 +58,6 @@ namespace Tortuga.Chain.Metadata
         /// </summary>
         public new TDbType? DbType { get; }
 
-        bool ISqlBuilderEntryDetails.IsIdentity
-        {
-            get { return false; }
-        }
-
-        string ISqlBuilderEntryDetails.QuotedSqlName
-        {
-            get { return null; }
-        }
-
-        string ISqlBuilderEntryDetails.SqlName
-        {
-            get { return null; }
-        }
-
-        /// <summary>
-        /// Gets the name of the SQL variable.
-        /// </summary>
-        /// <value>The name of the SQL variable.</value>
-        public string SqlVariableName { get; }
-
-
-        int? ISqlBuilderEntryDetails.Scale
-        {
-            get { return null; }
-        }
-
         /// <summary>
         /// Gets or sets the full name of the type including max length, precision, and/or scale.
         /// </summary>
@@ -95,6 +66,8 @@ namespace Tortuga.Chain.Metadata
         /// </value>
         /// <remarks>This will be null if the data source doesn't support detailed parameter metadata.</remarks>
         public string FullTypeName { get; }
+
+        bool ISqlBuilderEntryDetails.IsIdentity => false;
 
         /// <summary>
         /// Gets a value indicating whether this instance is nullable.
@@ -116,6 +89,10 @@ namespace Tortuga.Chain.Metadata
         /// <remarks>This will be null if the data source doesn't support detailed parameter metadata or if this value isn't applicable to the data type.</remarks>
         public int? Precision { get; private set; }
 
+        string ISqlBuilderEntryDetails.QuotedSqlName => null;
+
+        int? ISqlBuilderEntryDetails.Scale => null;
+
         /// <summary>
         /// Gets or sets the scale.
         /// </summary>
@@ -123,6 +100,12 @@ namespace Tortuga.Chain.Metadata
         /// <remarks>This will be null if the data source doesn't support detailed parameter metadata or if this value isn't applicable to the data type.</remarks>
         public int? Scale { get; private set; }
 
+        string ISqlBuilderEntryDetails.SqlName => null;
 
+        /// <summary>
+        /// Gets the name of the SQL variable.
+        /// </summary>
+        /// <value>The name of the SQL variable.</value>
+        public string SqlVariableName { get; }
     }
 }

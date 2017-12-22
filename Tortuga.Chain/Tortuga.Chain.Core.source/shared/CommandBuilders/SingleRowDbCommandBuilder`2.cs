@@ -48,22 +48,19 @@ namespace Tortuga.Chain.CommandBuilders
         /// </summary>
         /// <param name="rowOptions">The row options.</param>
         /// <returns></returns>
-        public ILink<dynamic> ToDynamicObject(RowOptions rowOptions = RowOptions.None)
-        {
-            return new DynamicObjectMaterializer<TCommand, TParameter>(this, rowOptions);
-        }
+        public ILink<dynamic> ToDynamicObject(RowOptions rowOptions = RowOptions.None) => new DynamicObjectMaterializer<TCommand, TParameter>(this, rowOptions);
 
 #if !DataTable_Missing
         /// <summary>
         /// Indicates the results should be materialized as a Row.
         /// </summary>
-        public ILink<DataRow> ToDataRow(RowOptions rowOptions = RowOptions.None) { return new DataRowMaterializer<TCommand, TParameter>(this, rowOptions); }
+        public ILink<DataRow> ToDataRow(RowOptions rowOptions = RowOptions.None) => new DataRowMaterializer<TCommand, TParameter>(this, rowOptions);
 #endif
 
         /// <summary>
         /// Indicates the results should be materialized as a Row.
         /// </summary>
-        public ILink<Row> ToRow(RowOptions rowOptions = RowOptions.None) { return new RowMaterializer<TCommand, TParameter>(this, rowOptions); }
+        public ILink<Row> ToRow(RowOptions rowOptions = RowOptions.None) => new RowMaterializer<TCommand, TParameter>(this, rowOptions);
 
 
 

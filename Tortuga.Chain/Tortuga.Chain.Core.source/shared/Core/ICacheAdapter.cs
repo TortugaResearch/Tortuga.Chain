@@ -10,23 +10,28 @@ namespace Tortuga.Chain.Core
     public interface ICacheAdapter
     {
         /// <summary>
-        /// Writes to cache.
+        /// Clears the cache.
         /// </summary>
-        /// <param name="cacheKey">The cache key.</param>
-        /// <param name="value">The value.</param>
-        /// <param name="policy">The policy.</param>
-        void Write(string cacheKey, object value, CachePolicy policy);
+        void Clear();
 
         /// <summary>
-        /// Writes to cache asynchronously.
+        /// Clears the cache asynchronously.
+        /// </summary>
+        /// <returns>Task.</returns>
+        Task ClearAsync();
+
+        /// <summary>
+        /// Invalidates the cache.
         /// </summary>
         /// <param name="cacheKey">The cache key.</param>
-        /// <param name="value">The value.</param>
-        /// <param name="policy">The policy.</param>
-        /// <returns>
-        /// Task.
-        /// </returns>
-        Task WriteAsync(string cacheKey, object value, CachePolicy policy);
+        void Invalidate(string cacheKey);
+
+        /// <summary>
+        /// Invalidates the cache asynchronously.
+        /// </summary>
+        /// <param name="cacheKey">The cache key.</param>
+        /// <returns>Task.</returns>
+        Task InvalidateAsync(string cacheKey);
 
         /// <summary>
         /// Tries the read from cache.
@@ -46,28 +51,23 @@ namespace Tortuga.Chain.Core
         Task<CacheReadResult<T>> TryReadAsync<T>(string cacheKey);
 
         /// <summary>
-        /// Invalidates the cache.
+        /// Writes to cache.
         /// </summary>
         /// <param name="cacheKey">The cache key.</param>
-        void Invalidate(string cacheKey);
+        /// <param name="value">The value.</param>
+        /// <param name="policy">The policy.</param>
+        void Write(string cacheKey, object value, CachePolicy policy);
 
         /// <summary>
-        /// Invalidates the cache asynchronously.
+        /// Writes to cache asynchronously.
         /// </summary>
         /// <param name="cacheKey">The cache key.</param>
-        /// <returns>Task.</returns>
-        Task InvalidateAsync(string cacheKey);
-
-        /// <summary>
-        /// Clears the cache.
-        /// </summary>
-        void Clear();
-
-        /// <summary>
-        /// Clears the cache asynchronously.
-        /// </summary>
-        /// <returns>Task.</returns>
-        Task ClearAsync();
+        /// <param name="value">The value.</param>
+        /// <param name="policy">The policy.</param>
+        /// <returns>
+        /// Task.
+        /// </returns>
+        Task WriteAsync(string cacheKey, object value, CachePolicy policy);
     }
 
 

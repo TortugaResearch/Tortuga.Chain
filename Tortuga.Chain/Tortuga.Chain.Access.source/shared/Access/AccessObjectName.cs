@@ -13,19 +13,14 @@ namespace Tortuga.Chain.Access
         /// </summary>
         public static readonly AccessObjectName Empty;
 
-        readonly string m_Name;
-
-
         /// <summary>
         /// Initializes a new instance of the <see cref="AccessObjectName" /> struct.
         /// </summary>
         /// <param name="name">The name.</param>
         public AccessObjectName(string name)
         {
-            m_Name = Normalize(name);
+            Name = Normalize(name);
         }
-
-
 
         /// <summary>
         /// Gets the name.
@@ -33,10 +28,7 @@ namespace Tortuga.Chain.Access
         /// <value>
         /// The name.
         /// </value>
-        public string Name
-        {
-            get { return m_Name; }
-        }
+        public string Name { get; }
 
         /// <summary>
         /// Performs an implicit conversion from <see cref="string"/> to <see cref="AccessObjectName"/>.
@@ -45,10 +37,7 @@ namespace Tortuga.Chain.Access
         /// <returns>
         /// The result of the conversion.
         /// </returns>
-        public static implicit operator AccessObjectName(string value)
-        {
-            return new AccessObjectName(value);
-        }
+        public static implicit operator AccessObjectName(string value) => new AccessObjectName(value);
 
         /// <summary>
         /// Implements the operator !=.
@@ -59,10 +48,7 @@ namespace Tortuga.Chain.Access
         /// The result of the operator.
         /// </returns>
         /// <remarks>This is a case-insensitive comparison.</remarks>
-        public static bool operator !=(AccessObjectName left, AccessObjectName right)
-        {
-            return !(left == right);
-        }
+        public static bool operator !=(AccessObjectName left, AccessObjectName right) => !(left == right);
 
         /// <summary>
         /// Implements the operator ==.
@@ -100,10 +86,7 @@ namespace Tortuga.Chain.Access
         /// <param name="other"></param>
         /// <returns></returns>
         /// <remarks>This is a case-insensitive comparison.</remarks>
-        public bool Equals(AccessObjectName other)
-        {
-            return this == other;
-        }
+        public bool Equals(AccessObjectName other) => this == other;
 
         /// <summary>
         /// Returns a hash code for this instance.
@@ -112,19 +95,13 @@ namespace Tortuga.Chain.Access
         /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
         /// </returns>
         /// <remarks>This is a case-insensitive comparison.</remarks>
-        public override int GetHashCode()
-        {
-            return Name.ToUpper(CultureInfo.InvariantCulture).GetHashCode();
-        }
+        public override int GetHashCode() => Name.ToUpper(CultureInfo.InvariantCulture).GetHashCode();
 
         /// <summary>
         /// To the quoted string.
         /// </summary>
         /// <returns></returns>
-        public string ToQuotedString()
-        {
-            return $"[{Name}]";
-        }
+        public string ToQuotedString() => $"[{Name}]";
 
         /// <summary>
         /// Returns a <see cref="string" /> that represents this instance.
@@ -132,10 +109,8 @@ namespace Tortuga.Chain.Access
         /// <returns>
         /// A <see cref="string" /> that represents this instance.
         /// </returns>
-        public override string ToString()
-        {
-            return Name;
-        }
+        public override string ToString() => Name;
+
         static string Normalize(string value)
         {
             if (string.IsNullOrWhiteSpace(value))

@@ -7,8 +7,8 @@ namespace Tests
 {
     public abstract class TestBase
     {
-        private static PostgreSqlDataSource s_DataSource;
-        private static readonly PostgreSqlDataSource s_StrictDataSource;
+        static PostgreSqlDataSource s_DataSource;
+        static readonly PostgreSqlDataSource s_StrictDataSource;
 
         static TestBase()
         {

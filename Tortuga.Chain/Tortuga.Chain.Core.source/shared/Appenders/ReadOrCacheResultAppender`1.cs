@@ -38,8 +38,7 @@ namespace Tortuga.Chain.Appenders
         /// <param name="state">User defined state, usually used for logging.</param>
         public override TResult Execute(object state = null)
         {
-            TResult result;
-            if (DataSource.Cache.TryRead(m_CacheKey, out result))
+            if (DataSource.Cache.TryRead(m_CacheKey, out TResult result))
                 return result;
 
             result = PreviousLink.Execute(state);

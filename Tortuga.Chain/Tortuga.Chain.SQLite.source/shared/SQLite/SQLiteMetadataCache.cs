@@ -140,7 +140,7 @@ namespace Tortuga.Chain.SQLite
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
-        private List<ColumnMetadata<DbType>> GetColumns(SQLiteObjectName tableName, bool isTable)
+        List<ColumnMetadata<DbType>> GetColumns(SQLiteObjectName tableName, bool isTable)
         {
             /*  NOTE: Should be safe since GetTableOrViewInternal returns null after querying the table name with a 
             **  prepared statement, thus proving that the table name exists. 

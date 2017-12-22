@@ -14,8 +14,8 @@ namespace Tortuga.Chain.PostgreSql
         public static readonly PostgreSqlObjectName Empty;
 
         readonly string m_Database;
-        readonly string m_Schema;
         readonly string m_Name;
+        readonly string m_Schema;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PostgreSqlObjectName"/> struct.
@@ -85,21 +85,7 @@ namespace Tortuga.Chain.PostgreSql
         /// <value>
         /// The database.
         /// </value>
-        public string Database
-        {
-            get { return m_Database; }
-        }
-
-        /// <summary>
-        /// Gets the schema.
-        /// </summary>
-        /// <value>
-        /// The schema.
-        /// </value>
-        public string Schema
-        {
-            get { return m_Schema; }
-        }
+        public string Database => m_Database;
 
         /// <summary>
         /// Gets the name.
@@ -107,11 +93,15 @@ namespace Tortuga.Chain.PostgreSql
         /// <value>
         /// The name.
         /// </value>
-        public string Name
-        {
-            get { return m_Name; }
-        }
+        public string Name => m_Name;
 
+        /// <summary>
+        /// Gets the schema.
+        /// </summary>
+        /// <value>
+        /// The schema.
+        /// </value>
+        public string Schema => m_Schema;
         /// <summary>
         /// Performs an implicit conversion from <see cref="string"/> to <see cref="PostgreSqlObjectName"/>.
         /// </summary>
@@ -119,10 +109,7 @@ namespace Tortuga.Chain.PostgreSql
         /// <returns>
         /// The result of the conversion.
         /// </returns>
-        public static implicit operator PostgreSqlObjectName(string value)
-        {
-            return new PostgreSqlObjectName(value);
-        }
+        public static implicit operator PostgreSqlObjectName(string value) => new PostgreSqlObjectName(value);
 
         /// <summary>
         /// Implements the operator !=.
@@ -132,10 +119,7 @@ namespace Tortuga.Chain.PostgreSql
         /// <returns>
         /// The result of the operator.
         /// </returns>
-        public static bool operator !=(PostgreSqlObjectName left, PostgreSqlObjectName right)
-        {
-            return !(left == right);
-        }
+        public static bool operator !=(PostgreSqlObjectName left, PostgreSqlObjectName right) => !(left == right);
 
         /// <summary>
         /// Implements the operator ==.
@@ -172,10 +156,7 @@ namespace Tortuga.Chain.PostgreSql
         /// </summary>
         /// <param name="other">The other.</param>
         /// <returns></returns>
-        public bool Equals(PostgreSqlObjectName other)
-        {
-            return this == other;
-        }
+        public bool Equals(PostgreSqlObjectName other) => this == other;
 
         /// <summary>
         /// Returns a hash code for this instance.
@@ -183,9 +164,20 @@ namespace Tortuga.Chain.PostgreSql
         /// <returns>
         /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
         /// </returns>
-        public override int GetHashCode()
+        public override int GetHashCode() => Name.ToUpper(CultureInfo.InvariantCulture).GetHashCode();
+
+        /// <summary>
+        /// To the quoted string.
+        /// </summary>
+        /// <returns>System.String.</returns>
+        public string ToQuotedString()
         {
-            return Name.ToUpper(CultureInfo.InvariantCulture).GetHashCode();
+            if (Schema == null)
+                return $"\"{Name}\"";
+            else if (Database == null)
+                return $"\"{Schema}\".\"{Name}\"";
+            else
+                return $"\"{Database}\".\"{Schema}\".\"{Name}\"";
         }
 
         /// <summary>
@@ -202,20 +194,6 @@ namespace Tortuga.Chain.PostgreSql
                 return $"{Schema}.{Name}";
             else
                 return $"{Database}.{Schema}.{Name}";
-        }
-
-        /// <summary>
-        /// To the quoted string.
-        /// </summary>
-        /// <returns>System.String.</returns>
-        public string ToQuotedString()
-        {
-            if (Schema == null)
-                return $"\"{Name}\"";
-            else if (Database == null)
-                return $"\"{Schema}\".\"{Name}\"";
-            else
-                return $"\"{Database}\".\"{Schema}\".\"{Name}\"";
         }
     }
 }

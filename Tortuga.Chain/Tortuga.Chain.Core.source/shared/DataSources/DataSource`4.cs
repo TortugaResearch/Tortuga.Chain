@@ -26,6 +26,25 @@ namespace Tortuga.Chain.DataSources
         /// </summary>
         /// <param name="settings">Optional settings object.</param>
         protected DataSource(DataSourceSettings settings) : base(settings) { }
+        int? IOperationDataSource<TConnection, TTransaction>.Execute(OperationExecutionToken<TConnection, TTransaction> executionToken, OperationImplementation<TConnection, TTransaction> implementation, object state)
+        {
+            return Execute(executionToken, implementation, state);
+        }
+
+        Task<int?> ICommandDataSource<TCommand, TParameter>.ExecuteAsync(CommandExecutionToken<TCommand, TParameter> executionToken, CommandImplementationAsync<TCommand> implementation, CancellationToken cancellationToken, object state)
+        {
+            return ExecuteAsync(executionToken, implementation, cancellationToken, state);
+        }
+
+        Task<int?> IOperationDataSource<TConnection, TTransaction>.ExecuteAsync(OperationExecutionToken<TConnection, TTransaction> executionToken, OperationImplementationAsync<TConnection, TTransaction> implementation, CancellationToken cancellationToken, object state)
+        {
+            return ExecuteAsync(executionToken, implementation, cancellationToken, state);
+        }
+
+        int? ICommandDataSource<TCommand, TParameter>.Execute(CommandExecutionToken<TCommand, TParameter> executionToken, CommandImplementation<TCommand> implementation, object state)
+        {
+            return Execute(executionToken, implementation, state);
+        }
 
         /// <summary>
         /// Executes the specified operation.
@@ -62,26 +81,5 @@ namespace Tortuga.Chain.DataSources
         /// <param name="state">The state.</param>
         /// <returns>Task.</returns>
         protected internal abstract Task<int?> ExecuteAsync(OperationExecutionToken<TConnection, TTransaction> executionToken, OperationImplementationAsync<TConnection, TTransaction> implementation, CancellationToken cancellationToken, object state);
-
-        int? ICommandDataSource<TCommand, TParameter>.Execute(CommandExecutionToken<TCommand, TParameter> executionToken, CommandImplementation<TCommand> implementation, object state)
-        {
-            return Execute(executionToken, implementation, state);
-        }
-
-        Task<int?> ICommandDataSource<TCommand, TParameter>.ExecuteAsync(CommandExecutionToken<TCommand, TParameter> executionToken, CommandImplementationAsync<TCommand> implementation, CancellationToken cancellationToken, object state)
-        {
-            return ExecuteAsync(executionToken, implementation, cancellationToken, state);
-        }
-
-        int? IOperationDataSource<TConnection, TTransaction>.Execute(OperationExecutionToken<TConnection, TTransaction> executionToken, OperationImplementation<TConnection, TTransaction> implementation, object state)
-        {
-            return Execute(executionToken, implementation, state);
-        }
-
-        Task<int?> IOperationDataSource<TConnection, TTransaction>.ExecuteAsync(OperationExecutionToken<TConnection, TTransaction> executionToken, OperationImplementationAsync<TConnection, TTransaction> implementation, CancellationToken cancellationToken, object state)
-        {
-            return ExecuteAsync(executionToken, implementation, cancellationToken, state);
-        }
-
     }
 }

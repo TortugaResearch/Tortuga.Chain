@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 
 namespace Tortuga.Chain.Metadata
 {
-        
+
 
     /// <summary>
     /// 
@@ -12,7 +12,7 @@ namespace Tortuga.Chain.Metadata
     public class ColumnMetadataCollection<TDbType> : ReadOnlyCollection<ColumnMetadata<TDbType>>
         where TDbType : struct
     {
-        private readonly string m_Name;
+        readonly string m_Name;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ColumnMetadataCollection{TDbType}" /> class.

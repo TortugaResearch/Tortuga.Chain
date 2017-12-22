@@ -48,6 +48,11 @@ namespace Tortuga.Chain.Metadata
         }
 
         /// <summary>
+        /// Gets the return type used by the database.
+        /// </summary>
+        public new TDbType? DbType { get; }
+
+        /// <summary>
         /// Gets the name.
         /// </summary>
         /// <value>
@@ -68,14 +73,6 @@ namespace Tortuga.Chain.Metadata
         /// </summary>
         /// <param name="strictMode">if set to <c>true</c> [strict mode].</param>
         /// <returns></returns>
-        public SqlBuilder<TDbType> CreateSqlBuilder(bool strictMode)
-        {
-            return m_Builder.Clone(strictMode);
-        }
-
-        /// <summary>
-        /// Gets the return type used by the database.
-        /// </summary>
-        public new TDbType? DbType { get; }
+        public SqlBuilder<TDbType> CreateSqlBuilder(bool strictMode) => m_Builder.Clone(strictMode);
     }
 }

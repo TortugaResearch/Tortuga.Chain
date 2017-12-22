@@ -164,7 +164,7 @@ namespace Tortuga.Chain.Access.CommandBuilders
         }
 
 
-        private AccessCommandExecutionToken PrepareRead(IReadOnlyList<string> desiredColumns)
+        AccessCommandExecutionToken PrepareRead(IReadOnlyList<string> desiredColumns)
         {
             var sqlBuilder = m_Table.CreateSqlBuilder(StrictMode);
             sqlBuilder.ApplyDesiredColumns(desiredColumns);
@@ -206,10 +206,7 @@ namespace Tortuga.Chain.Access.CommandBuilders
         /// <remarks>
         /// If the column name was not found, this will return null
         /// </remarks>
-        public override ColumnMetadata TryGetColumn(string columnName)
-        {
-            return m_Table.Columns.TryGetColumn(columnName);
-        }
+        public override ColumnMetadata TryGetColumn(string columnName) => m_Table.Columns.TryGetColumn(columnName);
 
         /// <summary>
         /// Adds (or replaces) the filter on this command builder.

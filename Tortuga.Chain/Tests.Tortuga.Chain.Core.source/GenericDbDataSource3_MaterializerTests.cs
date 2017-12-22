@@ -15,7 +15,7 @@ namespace Tests.Materializers
     [TestClass]
     public class GenericDbDataSource3_MaterializerTests
     {
-        private static readonly GenericDbDataSource s_DataSource;
+        static readonly GenericDbDataSource s_DataSource;
 
         static GenericDbDataSource3_MaterializerTests()
         {
