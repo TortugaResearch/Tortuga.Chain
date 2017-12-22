@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.MySql
@@ -18,11 +17,17 @@ namespace Tortuga.Chain.MySql
         /// <param name="isTable">if set to <c>true</c> is a table.</param>
         /// <param name="columns">The columns.</param>
         /// <param name="hasTriggers">if set to <c>true</c> has triggers.</param>
-        public MySqlTableOrViewMetadata(MySqlObjectName name, bool isTable, IList<ColumnMetadata<TDbType>> columns) : base(name, isTable, columns)
+        public MySqlTableOrViewMetadata(MySqlObjectName name, bool isTable, IList<ColumnMetadata<TDbType>> columns, string engine) : base(name, isTable, columns)
         {
-
+            Engine = engine;
         }
 
-
+        /// <summary>
+        /// Gets the engine.
+        /// </summary>
+        /// <value>
+        /// The engine.
+        /// </value>
+        public string Engine { get; }
     }
 }

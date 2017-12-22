@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 
 namespace Tortuga.Chain.MySql
 {
@@ -8,22 +7,53 @@ namespace Tortuga.Chain.MySql
     /// </summary>
     public struct MySqlObjectName
     {
+
         /// <summary>
         /// An empty schema/name pair
         /// </summary>
         public static readonly MySqlObjectName Empty;
 
         readonly string m_Name;
-
+        readonly string m_Schema;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MySqlObjectName" /> struct.
         /// </summary>
+        /// <param name="database">The database.</param>
+        /// <param name="schema">The schema.</param>
         /// <param name="name">The name.</param>
-        public MySqlObjectName(string name)
+        public MySqlObjectName(string schema, string name)
         {
+            m_Schema = Normalize(schema);
             m_Name = Normalize(name);
         }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MySqlObjectName"/> struct.
+        /// </summary>
+        /// <param name="schemaAndName">Name of the schema and.</param>
+        public MySqlObjectName(string schemaAndName)
+        {
+            if (string.IsNullOrEmpty(schemaAndName))
+                throw new ArgumentException("schemaAndName is null or empty.", "schemaAndName");
+
+            var parts = schemaAndName.Split(new[] { '.' }, 2);
+            if (parts.Length == 1)
+            {
+                m_Schema = null;
+                m_Name = Normalize(parts[0]);
+            }
+            else if (parts.Length == 2)
+            {
+                m_Schema = Normalize(parts[0]);
+                m_Name = Normalize(parts[1]);
+            }
+            else
+            {
+                throw new ArgumentException("Four-part identifiers are not supported.");
+            }
+        }
+
 
         /// <summary>
         /// Gets the name.
@@ -34,6 +64,17 @@ namespace Tortuga.Chain.MySql
         public string Name
         {
             get { return m_Name; }
+        }
+
+        /// <summary>
+        /// Gets the schema.
+        /// </summary>
+        /// <value>
+        /// The schema.
+        /// </value>
+        public string Schema
+        {
+            get { return m_Schema; }
         }
 
         /// <summary>
@@ -73,7 +114,8 @@ namespace Tortuga.Chain.MySql
         /// <remarks>This is a case-insensitive comparison.</remarks>
         public static bool operator ==(MySqlObjectName left, MySqlObjectName right)
         {
-            return string.Equals(left.Name, right.Name, StringComparison.OrdinalIgnoreCase);
+            return string.Equals(left.Schema, right.Schema, StringComparison.OrdinalIgnoreCase)
+                && string.Equals(left.Name, right.Name, StringComparison.OrdinalIgnoreCase);
         }
 
         /// <summary>
@@ -112,7 +154,7 @@ namespace Tortuga.Chain.MySql
         /// <remarks>This is a case-insensitive comparison.</remarks>
         public override int GetHashCode()
         {
-            return Name.ToUpper(CultureInfo.InvariantCulture).GetHashCode();
+            return Name.ToUpperInvariant().GetHashCode();
         }
 
         /// <summary>
@@ -121,7 +163,10 @@ namespace Tortuga.Chain.MySql
         /// <returns></returns>
         public string ToQuotedString()
         {
-            return $"`{Name}`";
+            if (Schema == null)
+                return $"`{Name}`";
+            else
+                return $"`{Schema}`.`{Name}`";
         }
 
         /// <summary>
@@ -132,14 +177,18 @@ namespace Tortuga.Chain.MySql
         /// </returns>
         public override string ToString()
         {
-            return Name;
+            if (Schema == null)
+                return $"{Name}";
+            return $"{Schema}.{Name}";
         }
+
         static string Normalize(string value)
         {
             if (string.IsNullOrWhiteSpace(value))
                 return null;
 
-            return value.Replace("`", "").Replace("`", "");
+            return value.Replace("`", "");
         }
+
     }
 }

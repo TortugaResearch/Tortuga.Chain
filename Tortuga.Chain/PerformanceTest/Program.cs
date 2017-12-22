@@ -20,6 +20,10 @@ namespace PerformanceTest
                 Console.WriteLine($"{table.Name} {x} Columns {table.Columns.Count}");
             }
 
+            //dataSource.DatabaseMetadata.PreloadStoredProcedures();
+
+            //dataSource.DatabaseMetadata.PreloadScalarFunctions();
+
         }
 
         static void Main()
