@@ -59,20 +59,11 @@ namespace Tortuga.Chain
         {
         }
 
-        internal override DbCommand CreateCommand()
-        {
-            return new TCommand();
-        }
+        internal override DbCommand CreateCommand() => new TCommand();
 
-        internal override DbParameter CreateParameter()
-        {
-            return new TParameter();
-        }
+        internal override DbParameter CreateParameter() => new TParameter();
 
-        internal override DbConnection OnCreateConnection()
-        {
-            return new TConnection();
-        }
+        internal override DbConnection OnCreateConnection() => new TConnection();
 
     }
 }

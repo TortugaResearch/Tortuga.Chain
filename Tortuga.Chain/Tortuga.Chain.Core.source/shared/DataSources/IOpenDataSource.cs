@@ -22,14 +22,14 @@ namespace Tortuga.Chain.DataSources
         DbTransaction AssociatedTransaction { get; }
 
         /// <summary>
+        /// Closes the connection and transaction associated with this data source.
+        /// </summary>
+        void Close();
+
+        /// <summary>
         /// Tries the commit the transaction associated with this data source.
         /// </summary>
         /// <returns>True if there was an open transaction associated with this data source, otherwise false.</returns>
         bool TryCommit();
-
-        /// <summary>
-        /// Closes the connection and transaction associated with this data source.
-        /// </summary>
-        void Close();
     }
 }

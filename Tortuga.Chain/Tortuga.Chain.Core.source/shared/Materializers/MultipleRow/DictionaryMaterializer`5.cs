@@ -24,10 +24,9 @@ namespace Tortuga.Chain.Materializers
         where TParameter : DbParameter
     {
 
-        readonly Func<TObject, TKey> m_KeyFunction;
-        readonly string m_KeyColumn;
         readonly DictionaryOptions m_DictionaryOptions;
-
+        readonly string m_KeyColumn;
+        readonly Func<TObject, TKey> m_KeyFunction;
         public DictionaryMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, Func<TObject, TKey> keyFunction, DictionaryOptions dictionaryOptions) : base(commandBuilder)
         {
             m_KeyFunction = keyFunction;
@@ -46,7 +45,7 @@ namespace Tortuga.Chain.Materializers
 
         public DictionaryMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, string keyColumn, DictionaryOptions dictionaryOptions) : base(commandBuilder)
         {
-            m_KeyColumn = commandBuilder.TryGetColumn( keyColumn)?.SqlName ?? keyColumn;
+            m_KeyColumn = commandBuilder.TryGetColumn(keyColumn)?.SqlName ?? keyColumn;
             m_DictionaryOptions = dictionaryOptions;
 
             if (m_DictionaryOptions.HasFlag(DictionaryOptions.InferConstructor))
@@ -58,6 +57,27 @@ namespace Tortuga.Chain.Materializers
                     throw new MappingException($"Type {typeof(TObject).Name} has more than one non-default constructor. Please use the WithConstructor method to specify which one to use.");
                 ConstructorSignature = constructors[0].Signature;
             }
+        }
+
+        /// <summary>
+        /// Returns the list of columns the materializer would like to have.
+        /// </summary>
+        /// <returns></returns>
+        public override IReadOnlyList<string> DesiredColumns()
+        {
+            if (ConstructorSignature == null)
+                return ObjectMetadata.ColumnsFor;
+
+            var desiredType = typeof(TObject);
+            var constructor = ObjectMetadata.Constructors.Find(ConstructorSignature);
+
+            if (constructor == null)
+            {
+                var types = string.Join(", ", ConstructorSignature.Select(t => t.Name));
+                throw new MappingException($"Cannot find a constructor on {desiredType.Name} with the types [{types}]");
+            }
+
+            return constructor.ParameterNames;
         }
 
         public override TDictionary Execute(object state = null)
@@ -96,7 +116,7 @@ namespace Tortuga.Chain.Materializers
             return result;
         }
 
-        private void AddToDictionary(TDictionary result, StreamingObjectConstructor<TObject> source)
+        void AddToDictionary(TDictionary result, StreamingObjectConstructor<TObject> source)
         {
             if (m_KeyFunction != null)
             {
@@ -117,27 +137,5 @@ namespace Tortuga.Chain.Materializers
             }
 
         }
-
-        /// <summary>
-        /// Returns the list of columns the materializer would like to have.
-        /// </summary>
-        /// <returns></returns>
-        public override IReadOnlyList<string> DesiredColumns()
-        {
-            if (ConstructorSignature == null)
-                return ObjectMetadata.ColumnsFor;
-
-            var desiredType = typeof(TObject);
-            var constructor = ObjectMetadata.Constructors.Find(ConstructorSignature);
-
-            if (constructor == null)
-            {
-                var types = string.Join(", ", ConstructorSignature.Select(t => t.Name));
-                throw new MappingException($"Cannot find a constructor on {desiredType.Name} with the types [{types}]");
-            }
-
-            return constructor.ParameterNames;
-        }
-
     }
 }

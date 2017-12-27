@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Tortuga.Anchor.ComponentModel;
 
@@ -10,7 +11,7 @@ namespace Tortuga.Chain.AuditRules
     /// When this rule is in effect, objects that implement IValidatable will be checked.
     /// </summary>
     /// <seealso cref="AuditRule" />
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Validatable")]
+    [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Validatable")]
     public class ValidateWithValidatable : ValidationRule
     {
         /// <summary>

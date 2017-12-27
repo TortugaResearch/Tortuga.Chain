@@ -27,20 +27,14 @@ namespace Tortuga.Chain.CommandBuilders
         /// Execute the operation synchronously.
         /// </summary>
         /// <param name="state">User defined state, usually used for logging.</param>
-        public int? Execute(object state = null)
-        {
-            return AsNonQuery().Execute(state);
-        }
+        public int? Execute(object state = null) => AsNonQuery().Execute(state);
 
         /// <summary>
         /// Execute the operation asynchronously.
         /// </summary>
         /// <param name="state">User defined state, usually used for logging.</param>
         /// <returns>Task.</returns>
-        public Task<int?> ExecuteAsync(object state = null)
-        {
-            return AsNonQuery().ExecuteAsync(state);
-        }
+        public Task<int?> ExecuteAsync(object state = null) => AsNonQuery().ExecuteAsync(state);
 
         /// <summary>
         /// Execute the operation asynchronously.

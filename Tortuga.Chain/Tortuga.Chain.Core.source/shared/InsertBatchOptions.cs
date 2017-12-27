@@ -25,12 +25,5 @@ namespace Tortuga.Chain
         IdentityOverride = 2
         */
 
-        /*
-         * Task-48: Add support for bulk insert
-        /// <summary>
-        /// Use the database's bulk copy option instead of using SQL
-        /// </summary>
-        BulkCopy = 4
-        */
     }
 }

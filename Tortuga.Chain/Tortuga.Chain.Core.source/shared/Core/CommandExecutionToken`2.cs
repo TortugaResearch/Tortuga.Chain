@@ -36,6 +36,22 @@ namespace Tortuga.Chain.Core
 
 
         /// <summary>
+        /// Gets the parameters.
+        /// </summary>
+        /// <value>The parameters.</value>
+        public IReadOnlyList<TParameter> Parameters { get; }
+
+        /// <summary>
+        /// Applies the command overrides by calling OnBuildCommand, then firing the CommandBuilt event.
+        /// </summary>
+        /// <param name="command">The command.</param>
+        public virtual void ApplyCommandOverrides(TCommand command)
+        {
+            OnBuildCommand(command);
+            RaiseCommandBuild(command);
+        }
+
+        /// <summary>
         /// Executes the specified implementation.
         /// </summary>
         /// <param name="implementation">The implementation.</param>
@@ -56,23 +72,6 @@ namespace Tortuga.Chain.Core
         {
             return m_DataSource.ExecuteAsync(this, implementation, cancellationToken, state);
         }
-
-        /// <summary>
-        /// Gets the parameters.
-        /// </summary>
-        /// <value>The parameters.</value>
-        public IReadOnlyList<TParameter> Parameters { get; }
-
-        /// <summary>
-        /// Applies the command overrides by calling OnBuildCommand, then firing the CommandBuilt event.
-        /// </summary>
-        /// <param name="command">The command.</param>
-        public virtual void ApplyCommandOverrides(TCommand command)
-        {
-            OnBuildCommand(command);
-            RaiseCommandBuild(command);
-        }
-
         /// <summary>
         /// Subclasses can override this method to change the command object after the command text and parameters are loaded.
         /// </summary>
@@ -81,8 +80,8 @@ namespace Tortuga.Chain.Core
 
     }
 
-        
 
-        
+
+
 
 }

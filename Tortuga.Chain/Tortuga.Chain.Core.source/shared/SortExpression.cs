@@ -49,10 +49,7 @@ namespace Tortuga.Chain
         /// <value>
         /// The name of the column.
         /// </value>
-        public string ColumnName
-        {
-            get { return m_ColumnName; }
-        }
+        public string ColumnName => m_ColumnName;
 
         /// <summary>
         /// Gets a value indicating whether this <see cref="SortExpression"/> is descending.
@@ -60,10 +57,7 @@ namespace Tortuga.Chain
         /// <value>
         ///   <c>true</c> if descending; otherwise, <c>false</c>.
         /// </value>
-        public SortDirection Direction
-        {
-            get { return m_Direction; }
-        }
+        public SortDirection Direction => m_Direction;
         internal ISqlBuilderEntryDetails Column { get; set; }
 
         /// <summary>
@@ -74,10 +68,7 @@ namespace Tortuga.Chain
         /// The result of the conversion.
         /// </returns>
         [SuppressMessage("Microsoft.Usage", "CA2225:OperatorOverloadsHaveNamedAlternates")]
-        public static implicit operator SortExpression(string columnName)
-        {
-            return new SortExpression(columnName);
-        }
+        public static implicit operator SortExpression(string columnName) => new SortExpression(columnName);
     }
 }
 

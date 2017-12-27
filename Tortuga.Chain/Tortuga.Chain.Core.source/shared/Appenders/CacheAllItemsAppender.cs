@@ -26,12 +26,10 @@ namespace Tortuga.Chain.Appenders
         /// <exception cref="ArgumentException">cacheKey is null or empty.;cacheKey</exception>
         public CacheAllItemsAppender(ILink<TCollection> previousLink, Func<TItem, string> cacheKeyFunction, CachePolicy policy = null) : base(previousLink)
         {
-            if (cacheKeyFunction == null)
-                throw new ArgumentNullException("cacheKeyFunction", "cacheKeyFunction is null.");
             if (previousLink == null)
                 throw new ArgumentNullException("previousLink", "previousLink is null.");
 
-            m_CacheKeyFunction = cacheKeyFunction;
+            m_CacheKeyFunction = cacheKeyFunction ?? throw new ArgumentNullException("cacheKeyFunction", "cacheKeyFunction is null.");
             m_Policy = policy;
         }
 

@@ -29,6 +29,12 @@ namespace Tortuga.Chain.Materializers
                 throw new NotSupportedException("Compiled materializers do not support non-default constructors");
         }
 
+        /// <summary>
+        /// Returns the list of columns the materializer would like to have.
+        /// </summary>
+        /// <returns></returns>
+        public override IReadOnlyList<string> DesiredColumns() => MetadataCache.GetMetadata(typeof(TObject)).ColumnsFor;
+
         public override TCollection Execute(object state = null)
         {
             var result = new TCollection();
@@ -62,15 +68,6 @@ namespace Tortuga.Chain.Materializers
             }, cancellationToken, state).ConfigureAwait(false);
 
             return result;
-        }
-
-        /// <summary>
-        /// Returns the list of columns the materializer would like to have.
-        /// </summary>
-        /// <returns></returns>
-        public override IReadOnlyList<string> DesiredColumns()
-        {
-            return MetadataCache.GetMetadata(typeof(TObject)).ColumnsFor;
         }
     }
 }

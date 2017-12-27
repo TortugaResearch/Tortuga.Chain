@@ -17,11 +17,44 @@ namespace Tortuga.Chain.Access
     /// </summary>
     public class AccessTransactionalDataSource : AccessDataSourceBase, IDisposable, ITransactionalDataSource
     {
-        readonly OleDbConnection m_Connection;
         readonly AccessDataSource m_BaseDataSource;
+        readonly OleDbConnection m_Connection;
         readonly OleDbTransaction m_Transaction;
 
-        private bool m_Disposed;
+        bool m_Disposed;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AccessTransactionalDataSource"/> class.
+        /// </summary>
+        /// <param name="dataSource">The data source.</param>
+        /// <param name="isolationLevel">The isolation level.</param>
+        /// <param name="forwardEvents">if set to <c>true</c> [forward events].</param>
+        public AccessTransactionalDataSource(AccessDataSource dataSource, IsolationLevel? isolationLevel, bool forwardEvents) : base(new AccessDataSourceSettings() { DefaultCommandTimeout = dataSource.DefaultCommandTimeout, StrictMode = dataSource.StrictMode, SuppressGlobalEvents = dataSource.SuppressGlobalEvents || forwardEvents })
+        {
+            if (dataSource == null)
+                throw new ArgumentNullException(nameof(dataSource), $"{nameof(dataSource)} is null.");
+
+            Name = dataSource.Name;
+
+            m_BaseDataSource = dataSource;
+            m_Connection = dataSource.CreateConnection();
+
+            if (isolationLevel == null)
+                m_Transaction = m_Connection.BeginTransaction();
+            else
+                m_Transaction = m_Connection.BeginTransaction(isolationLevel.Value);
+
+            if (forwardEvents)
+            {
+                ExecutionStarted += (sender, e) => dataSource.OnExecutionStarted(e);
+                ExecutionFinished += (sender, e) => dataSource.OnExecutionFinished(e);
+                ExecutionError += (sender, e) => dataSource.OnExecutionError(e);
+                ExecutionCanceled += (sender, e) => dataSource.OnExecutionCanceled(e);
+            }
+
+            AuditRules = dataSource.AuditRules;
+            UserValue = dataSource.UserValue;
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AccessTransactionalDataSource" /> class.
@@ -58,48 +91,24 @@ namespace Tortuga.Chain.Access
             AuditRules = dataSource.AuditRules;
             UserValue = dataSource.UserValue;
         }
-
         /// <summary>
-        /// Initializes a new instance of the <see cref="AccessTransactionalDataSource"/> class.
+        /// Gets or sets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
         /// </summary>
-        /// <param name="dataSource">The data source.</param>
-        /// <param name="isolationLevel">The isolation level.</param>
-        /// <param name="forwardEvents">if set to <c>true</c> [forward events].</param>
-        public AccessTransactionalDataSource(AccessDataSource dataSource, IsolationLevel? isolationLevel, bool forwardEvents) : base(new AccessDataSourceSettings() { DefaultCommandTimeout = dataSource.DefaultCommandTimeout, StrictMode = dataSource.StrictMode, SuppressGlobalEvents = dataSource.SuppressGlobalEvents || forwardEvents })
-        {
-            if (dataSource == null)
-                throw new ArgumentNullException(nameof(dataSource), $"{nameof(dataSource)} is null.");
-
-            Name = dataSource.Name;
-
-            m_BaseDataSource = dataSource;
-            m_Connection = dataSource.CreateConnection();
-
-            if (isolationLevel == null)
-                m_Transaction = m_Connection.BeginTransaction();
-            else
-                m_Transaction = m_Connection.BeginTransaction(isolationLevel.Value);
-
-            if (forwardEvents)
-            {
-                ExecutionStarted += (sender, e) => dataSource.OnExecutionStarted(e);
-                ExecutionFinished += (sender, e) => dataSource.OnExecutionFinished(e);
-                ExecutionError += (sender, e) => dataSource.OnExecutionError(e);
-                ExecutionCanceled += (sender, e) => dataSource.OnExecutionCanceled(e);
-            }
-
-            AuditRules = dataSource.AuditRules;
-            UserValue = dataSource.UserValue;
-        }
+        public override ICacheAdapter Cache => m_BaseDataSource.Cache;
 
         /// <summary>
         /// Gets the database metadata.
         /// </summary>
         /// <value>The database metadata.</value>
-        public override AccessMetadataCache DatabaseMetadata
-        {
-            get { return m_BaseDataSource.DatabaseMetadata; }
-        }
+        public override AccessMetadataCache DatabaseMetadata => m_BaseDataSource.DatabaseMetadata;
+
+        /// <summary>
+        /// The extension cache is used by extensions to store data source specific information.
+        /// </summary>
+        /// <value>
+        /// The extension cache.
+        /// </value>
+        protected override ConcurrentDictionary<Type, object> ExtensionCache => m_BaseDataSource.m_ExtensionCache;
 
         /// <summary>
         /// Commits this instance.
@@ -124,6 +133,15 @@ namespace Tortuga.Chain.Access
         }
 
         /// <summary>
+        /// Gets the extension data.
+        /// </summary>
+        /// <typeparam name="TTKey">The type of extension data desired.</typeparam>
+        /// <returns>T.</returns>
+        /// <remarks>Chain extensions can use this to store data source specific data. The key should be a data type defined by the extension.
+        /// Transactional data sources should override this method and return the value held by their parent data source.</remarks>
+        public override TTKey GetExtensionData<TTKey>() => m_BaseDataSource.GetExtensionData<TTKey>();
+
+        /// <summary>
         /// Rolls the back.
         /// </summary>
         /// <exception cref="ObjectDisposedException">Transaction is disposed.</exception>
@@ -135,43 +153,6 @@ namespace Tortuga.Chain.Access
             m_Transaction.Rollback();
             Dispose(true);
         }
-
-        /// <summary>
-        /// Releases unmanaged and - optionally - managed resources.
-        /// </summary>
-        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
-        private void Dispose(bool disposing)
-        {
-            if (m_Disposed)
-                return;
-
-            if (disposing)
-            {
-                m_Transaction.Dispose();
-                m_Connection.Dispose();
-                m_Disposed = true;
-            }
-        }
-
-
-
-
-
-        /// <summary>
-        /// Gets the extension data.
-        /// </summary>
-        /// <typeparam name="TTKey">The type of extension data desired.</typeparam>
-        /// <returns>T.</returns>
-        /// <remarks>Chain extensions can use this to store data source specific data. The key should be a data type defined by the extension.
-        /// Transactional data sources should override this method and return the value held by their parent data source.</remarks>
-        public override TTKey GetExtensionData<TTKey>()
-        {
-            return m_BaseDataSource.GetExtensionData<TTKey>();
-        }
-
-
-
-
 
         /// <summary>
         /// Tests the connection.
@@ -194,26 +175,6 @@ namespace Tortuga.Chain.Access
             using (var cmd = new OleDbCommand("SELECT 1", m_Connection) { Transaction = m_Transaction })
                 await cmd.ExecuteScalarAsync();
         }
-
-        /// <summary>
-        /// Gets or sets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
-        /// </summary>
-        public override ICacheAdapter Cache
-        {
-            get { return m_BaseDataSource.Cache; }
-        }
-
-        /// <summary>
-        /// The extension cache is used by extensions to store data source specific information.
-        /// </summary>
-        /// <value>
-        /// The extension cache.
-        /// </value>
-        protected override ConcurrentDictionary<Type, object> ExtensionCache
-        {
-            get { return m_BaseDataSource.m_ExtensionCache; }
-        }
-
 
         /// <summary>
         /// Executes the specified execution token.
@@ -428,6 +389,23 @@ namespace Tortuga.Chain.Access
                 }
             }
 
+        }
+
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        void Dispose(bool disposing)
+        {
+            if (m_Disposed)
+                return;
+
+            if (disposing)
+            {
+                m_Transaction.Dispose();
+                m_Connection.Dispose();
+                m_Disposed = true;
+            }
         }
     }
 }

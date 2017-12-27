@@ -10,7 +10,7 @@ namespace Tortuga.Chain
     /// A class 2 data source that includes stored procedures and functions.
     /// </summary>
     /// <seealso cref="IClass1DataSource" />
-    /// <remarks>Warning: This interface is meant to simulate multiple inheritance and work-around some issues with exposing generic types. Do not implement it in client code, as new method will be added over time.</remarks>
+    /// <remarks>Warning: This interface is meant to simulate multiple inheritance and work-around some issues with exposing generic types. Do not implement it in client code, as new methods will be added over time.</remarks>
     public interface IClass2DataSource : IClass1DataSource
     {
         /// <summary>
@@ -67,7 +67,6 @@ namespace Tortuga.Chain
         //        /// <returns></returns>
         //        ILink BulkInsert<T>(string tableName, IEnumerable<T> values);
 
-        //#if !WINDOWS_UWP
         //        /// <summary>
         //        /// Performs a bulk insert.
         //        /// </summary>
@@ -83,7 +82,6 @@ namespace Tortuga.Chain
         //        /// <param name="values">The values to be inserted.</param>
         //        /// <returns></returns>
         //        ILink InsertBulk(string tableName, IDataReader values);
-        //#endif
 
     }
 }

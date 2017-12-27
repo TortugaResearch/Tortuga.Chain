@@ -15,13 +15,12 @@ namespace Tortuga.Chain.Access.CommandBuilders
     /// </summary>
     internal sealed class AccessDeleteMany : MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter>
     {
-        //readonly DeleteOptions m_Options;
+        readonly object m_ArgumentValue;
+        readonly FilterOptions m_FilterOptions;
+        readonly object m_FilterValue;
         readonly IEnumerable<OleDbParameter> m_Parameters;
         readonly TableOrViewMetadata<AccessObjectName, OleDbType> m_Table;
         readonly string m_WhereClause;
-        readonly object m_ArgumentValue;
-        readonly object m_FilterValue;
-        readonly FilterOptions m_FilterOptions;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AccessDeleteMany" /> class.
@@ -38,7 +37,6 @@ namespace Tortuga.Chain.Access.CommandBuilders
 
             m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
             m_WhereClause = whereClause;
-            //m_Options = options;
             m_Parameters = parameters;
         }
 
@@ -111,14 +109,18 @@ namespace Tortuga.Chain.Access.CommandBuilders
             var result = PrepareRead(desiredColumns);
             result.NextCommand = deleteCommand;
             return result;
-
-            //var sqlBuilder2 
-
-            //    sqlBuilder.BuildSelectClause(sql, "SELECT ", null, " FROM " + m_Table.Name.ToQuotedString());
-            //    sql.AppendLine(" WHERE " + m_WhereClause + ";");
-
         }
-        private AccessCommandExecutionToken PrepareRead(IReadOnlyList<string> desiredColumns)
+        /// <summary>
+        /// Returns the column associated with the column name.
+        /// </summary>
+        /// <param name="columnName">Name of the column.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// If the column name was not found, this will return null
+        /// </remarks>
+        public override ColumnMetadata TryGetColumn(string columnName) => m_Table.Columns.TryGetColumn(columnName);
+
+        AccessCommandExecutionToken PrepareRead(IReadOnlyList<string> desiredColumns)
         {
             var sqlBuilder = m_Table.CreateSqlBuilder(StrictMode);
             sqlBuilder.ApplyDesiredColumns(desiredColumns);
@@ -150,21 +152,6 @@ namespace Tortuga.Chain.Access.CommandBuilders
 
             return new AccessCommandExecutionToken(DataSource, "Query after deleting " + m_Table.Name, sql.ToString(), parameters);
         }
-
-
-        /// <summary>
-        /// Returns the column associated with the column name.
-        /// </summary>
-        /// <param name="columnName">Name of the column.</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// If the column name was not found, this will return null
-        /// </remarks>
-        public override ColumnMetadata TryGetColumn(string columnName)
-        {
-            return m_Table.Columns.TryGetColumn(columnName);
-        }
-
     }
 }
 

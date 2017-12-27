@@ -67,7 +67,7 @@ namespace Tortuga.Chain.Access.CommandBuilders
             return result;
         }
 
-        private AccessCommandExecutionToken PrepareNext(IReadOnlyList<string> desiredColumns, object previousValue)
+        AccessCommandExecutionToken PrepareNext(IReadOnlyList<string> desiredColumns, object previousValue)
         {
             var primaryKeys = Table.Columns.Where(c => c.IsPrimaryKey).ToList();
             if (primaryKeys.Count != 1)

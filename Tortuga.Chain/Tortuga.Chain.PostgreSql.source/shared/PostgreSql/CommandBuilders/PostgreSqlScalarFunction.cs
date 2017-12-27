@@ -34,6 +34,12 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         }
 
         /// <summary>
+        /// Gets the data source.
+        /// </summary>
+        /// <value>The data source.</value>
+        public new PostgreSqlDataSourceBase DataSource => (PostgreSqlDataSourceBase)base.DataSource;
+
+        /// <summary>
         /// Prepares the command for execution by generating any necessary SQL.
         /// </summary>
         /// <param name="materializer">The materializer.</param>
@@ -61,26 +67,13 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 
             return new PostgreSqlCommandExecutionToken(DataSource, "Query Function " + m_Function.Name, sql.ToString(), parameters);
         }
-
-        /// <summary>
-        /// Gets the data source.
-        /// </summary>
-        /// <value>The data source.</value>
-        public new PostgreSqlDataSourceBase DataSource
-        {
-            get { return (PostgreSqlDataSourceBase)base.DataSource; }
-        }
-
         /// <summary>
         /// Returns the column associated with the column name.
         /// </summary>
         /// <param name="columnName">Name of the column.</param>
         /// <returns>ColumnMetadata.</returns>
         /// <remarks>Always returns null since this command builder has no columns</remarks>
-        public override ColumnMetadata TryGetColumn(string columnName)
-        {
-            return null;
-        }
+        public override ColumnMetadata TryGetColumn(string columnName) => null;
 
 
     }

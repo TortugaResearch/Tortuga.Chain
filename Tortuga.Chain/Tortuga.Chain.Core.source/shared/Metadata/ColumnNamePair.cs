@@ -66,10 +66,7 @@ namespace Tortuga.Chain.Metadata
         /// <returns>
         /// The result of the operator.
         /// </returns>
-        public static bool operator !=(ColumnNamePair first, ColumnNamePair second)
-        {
-            return !(first == second);
-        }
+        public static bool operator !=(ColumnNamePair first, ColumnNamePair second) => !(first == second);
 
         /// <summary>
         /// Indicates whether the current object is equal to another object of the same type.
@@ -78,10 +75,7 @@ namespace Tortuga.Chain.Metadata
         /// <returns>
         /// true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.
         /// </returns>
-        public bool Equals(ColumnNamePair other)
-        {
-            return QuotedSqlName == other.QuotedSqlName && SqlVariableName == other.SqlVariableName;
-        }
+        public bool Equals(ColumnNamePair other) => QuotedSqlName == other.QuotedSqlName && SqlVariableName == other.SqlVariableName;
 
         /// <summary>
         /// Returns a hash code for this instance.

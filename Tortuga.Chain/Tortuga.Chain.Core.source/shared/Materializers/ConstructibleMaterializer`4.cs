@@ -20,6 +20,15 @@ namespace Tortuga.Chain.Materializers
         where TParameter : DbParameter
     {
         /// <summary>
+        /// Initializes a new instance of the <see cref="ConstructibleMaterializer{TCommand, TParameter, TResult, TObject}" /> class.
+        /// </summary>
+        /// <param name="commandBuilder">The associated operation.</param>
+        protected ConstructibleMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder) : base(commandBuilder)
+        {
+            ObjectMetadata = MetadataCache.GetMetadata(typeof(TObject));
+        }
+
+        /// <summary>
         /// Gets or sets the constructor signature to use when materializing an object.
         /// </summary>
         /// <value>The constructor signature.</value>
@@ -30,18 +39,6 @@ namespace Tortuga.Chain.Materializers
         /// </summary>
         /// <value>The object metadata.</value>
         protected ClassMetadata ObjectMetadata { get; set; }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ConstructibleMaterializer{TCommand, TParameter, TResult, TObject}" /> class.
-        /// </summary>
-        /// <param name="commandBuilder">The associated operation.</param>
-        protected ConstructibleMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder) : base(commandBuilder)
-        {
-            ObjectMetadata = MetadataCache.GetMetadata(typeof(TObject));
-        }
-
-
-
         /// <summary>
         /// Appends the indicated constructor onto the materializer.
         /// </summary>

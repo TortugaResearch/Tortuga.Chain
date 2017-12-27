@@ -24,15 +24,15 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
     internal sealed class SQLiteTableOrView : TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption>
     {
         readonly TableOrViewMetadata<SQLiteObjectName, DbType> m_Table;
-        private object m_FilterValue;
-        private string m_WhereClause;
-        private object m_ArgumentValue;
-        private IEnumerable<SortExpression> m_SortExpressions = Enumerable.Empty<SortExpression>();
-        private SQLiteLimitOption m_LimitOptions;
-        private int? m_Skip;
-        private int? m_Take;
-        private string m_SelectClause;
-        private FilterOptions m_FilterOptions;
+        object m_FilterValue;
+        string m_WhereClause;
+        object m_ArgumentValue;
+        IEnumerable<SortExpression> m_SortExpressions = Enumerable.Empty<SortExpression>();
+        SQLiteLimitOption m_LimitOptions;
+        int? m_Skip;
+        int? m_Take;
+        string m_SelectClause;
+        FilterOptions m_FilterOptions;
 
         //public object MetadataCache { get; private set; }
 

@@ -354,7 +354,7 @@ namespace Tortuga.Chain.SqlServer
                     using (var reader = cmd.ExecuteReader())
                     {
                         if (!reader.Read())
-                            throw new MissingObjectException($"Could not find table valued function {tableFunctionName}");
+                            throw new MissingObjectException($"Could not find scalar function {tableFunctionName}");
                         actualSchema = reader.GetString(reader.GetOrdinal("SchemaName"));
                         actualName = reader.GetString(reader.GetOrdinal("Name"));
                         objectId = reader.GetInt32(reader.GetOrdinal("ObjectId"));

@@ -13,7 +13,7 @@ namespace Tortuga.Chain.SqlServer
     /// </summary>
     public class SqlServerEffectiveSettings
     {
-        private int m_Options;
+        int m_Options;
 
         internal SqlServerEffectiveSettings() { }
 

@@ -25,16 +25,6 @@ namespace Tortuga.Chain.Metadata
         /// </summary>
         NonPrimaryKey = 2,
 
-        ///// <summary>
-        ///// Return key columns as defined by the Key attribute on object properties
-        ///// </summary>
-        //ObjectDefinedKey = 4,
-
-        ///// <summary>
-        ///// Return non-key columns as defined by the Key attribute on object properties
-        ///// </summary>
-        //ObjectDefinedNonKey = 8,
-
         /// <summary>
         /// Throw an exception if there are no matches
         /// </summary>
@@ -55,21 +45,6 @@ namespace Tortuga.Chain.Metadata
         /// Only return columns that can be updated. This means no identity or computed columns
         /// </summary>
         MutableColumns = 128,
-
-        ///// <summary>
-        ///// An insert operation is being performed, so honor the IgnoreOnInsert attribute on properties.
-        ///// </summary>
-        ///// <remarks>Only applies to non-key columns.</remarks>
-        //ForInsert = 256,
-
-        ///// <summary>
-        ///// An update operation is being performed, so honor the IgnoreOnUpdate attribute on properties.
-        ///// </summary>
-        ///// <remarks>Only applies to non-key columns.</remarks>
-        //ForUpdate = 512
-
-
-
 
     }
 }

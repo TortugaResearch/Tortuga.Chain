@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.OleDb;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using Tortuga.Anchor;
 using Tortuga.Anchor.Metadata;
@@ -48,65 +49,92 @@ namespace Tortuga.Chain.Access
         }
 
         /// <summary>
+        /// Returns the table or view derived from the class's name and/or Table attribute.
+        /// </summary>
+        /// <typeparam name="TObject">The type of the object.</typeparam>
+        /// <returns>TableOrViewMetadata&lt;AccessObjectName, OleDbType&gt;.</returns>
+        public override TableOrViewMetadata<AccessObjectName, OleDbType> GetTableOrViewFromClass<TObject>()
+        {
+            var type = typeof(TObject);
+            TableOrViewMetadata<AccessObjectName, OleDbType> result;
+            if (m_TypeTableMap.TryGetValue(type, out result))
+                return result;
+
+            var typeInfo = MetadataCache.GetMetadata(type);
+            if (!string.IsNullOrEmpty(typeInfo.MappedTableName))
+            {
+                result = GetTableOrView(typeInfo.MappedTableName);
+                m_TypeTableMap[type] = result;
+                return result;
+            }
+
+            //infer table from class name
+            result = GetTableOrView(type.Name);
+            m_TypeTableMap[type] = result;
+            return result;
+        }
+
+        /// <summary>
+        /// Gets the tables and views that were loaded by this cache.
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>
+        /// Call Preload before invoking this method to ensure that all tables and views were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.
+        /// </remarks>
+        public override IReadOnlyCollection<TableOrViewMetadata<AccessObjectName, OleDbType>> GetTablesAndViews() => m_Tables.GetValues();
+
+        /// <summary>
+        /// Preloads all of the metadata for this data source.
+        /// </summary>
+        public override void Preload()
+        {
+            var columns = GetColumnsDataTable();
+            var primaryKeys = GetPrimaryKeysDataTable();
+
+            PreloadTables(columns, primaryKeys);
+            PreloadViews(columns);
+
+            m_SchemaLoaded = true;
+        }
+
+        /// <summary>
         /// Preloads metadata for all database tables.
         /// </summary>
         /// <remarks>This is normally used only for testing. By default, metadata is loaded as needed.</remarks>
-        public void PreloadTables()
-        {
-            PreloadTables(GetColumnsDataTable(), GetPrimaryKeysDataTable());
-        }
-
-        void PreloadTables(DataTable columnsDataTable, DataTable primaryKeys)
-        {
-            using (var connection = new OleDbConnection(m_ConnectionBuilder.ConnectionString))
-            {
-                connection.Open();
-                var dtTables = connection.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, null);
-                foreach (DataRow row in dtTables.Rows)
-                {
-                    if (row["TABLE_TYPE"].ToString() != "TABLE")
-                        continue;
-
-                    var name = row["TABLE_NAME"].ToString();
-                    var columns = GetColumns(name, columnsDataTable, primaryKeys);
-                    m_Tables[name] = new TableOrViewMetadata<AccessObjectName, OleDbType>(name, true, columns);
-                }
-            }
-        }
+        public void PreloadTables() => PreloadTables(GetColumnsDataTable(), GetPrimaryKeysDataTable());
 
         /// <summary>
         /// Preloads metadata for all database views.
         /// </summary>
         /// <remarks>This is normally used only for testing. By default, metadata is loaded as needed.</remarks>
-        public void PreloadViews()
+        public void PreloadViews() => PreloadViews(GetColumnsDataTable());
+
+        /// <summary>
+        /// Resets the metadata cache, clearing out all cached metadata.
+        /// </summary>
+        public override void Reset()
         {
-            PreloadViews(GetColumnsDataTable());
+            m_Tables.Clear();
+            m_TypeTableMap.Clear();
+            m_SchemaLoaded = false;
         }
 
-        private void PreloadViews(DataTable columnsDataTable)
-        {
-            using (var connection = new OleDbConnection(m_ConnectionBuilder.ConnectionString))
-            {
-                connection.Open();
-                var dtViews = connection.GetOleDbSchemaTable(OleDbSchemaGuid.Views, null);
-                foreach (DataRow row in dtViews.Rows)
-                {
-                    var name = row["TABLE_NAME"].ToString();
-                    var columns = GetColumns(name, columnsDataTable, null);
-                    m_Tables[name] = new TableOrViewMetadata<AccessObjectName, OleDbType>(name, false, columns);
-                }
-            }
-        }
+        /// <summary>
+        /// Parses the name of the database object.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <returns>System.String.</returns>
+        protected override AccessObjectName ParseObjectName(string name) => name;
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-        private List<ColumnMetadata<OleDbType>> GetColumns(string tableName, DataTable columns, DataTable primaryKeys)
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
+        List<ColumnMetadata<OleDbType>> GetColumns(string tableName, DataTable columns, DataTable primaryKeys)
         {
             var result = new List<ColumnMetadata<OleDbType>>();
             DataTable tableSchema;
             using (var con = new OleDbConnection(m_ConnectionBuilder.ConnectionString))
             {
                 using (var adapter = new OleDbDataAdapter($"SELECT * FROM [{tableName}] WHERE 1=0", con))
-                    tableSchema = adapter.FillSchema(new DataTable() {Locale = CultureInfo.InvariantCulture }, SchemaType.Source);
+                    tableSchema = adapter.FillSchema(new DataTable() { Locale = CultureInfo.InvariantCulture }, SchemaType.Source);
             }
 
 
@@ -149,31 +177,7 @@ namespace Tortuga.Chain.Access
             return result;
         }
 
-        /// <summary>
-        /// Parses the name of the database object.
-        /// </summary>
-        /// <param name="name">The name.</param>
-        /// <returns>System.String.</returns>
-        protected override AccessObjectName ParseObjectName(string name)
-        {
-            return name;
-        }
-
-        /// <summary>
-        /// Preloads all of the metadata for this data source.
-        /// </summary>
-        public override void Preload()
-        {
-            var columns = GetColumnsDataTable();
-            var primaryKeys = GetPrimaryKeysDataTable();
-
-            PreloadTables(columns, primaryKeys);
-            PreloadViews(columns);
-
-            m_SchemaLoaded = true;
-        }
-
-        private DataTable GetColumnsDataTable()
+        DataTable GetColumnsDataTable()
         {
             using (var connection = new OleDbConnection(m_ConnectionBuilder.ConnectionString))
             {
@@ -182,7 +186,7 @@ namespace Tortuga.Chain.Access
             }
         }
 
-        private DataTable GetPrimaryKeysDataTable()
+        DataTable GetPrimaryKeysDataTable()
         {
             using (var connection = new OleDbConnection(m_ConnectionBuilder.ConnectionString))
             {
@@ -190,52 +194,37 @@ namespace Tortuga.Chain.Access
                 return connection.GetOleDbSchemaTable(OleDbSchemaGuid.Primary_Keys, null);
             }
         }
-        /// <summary>
-        /// Gets the tables and views that were loaded by this cache.
-        /// </summary>
-        /// <returns></returns>
-        /// <remarks>
-        /// Call Preload before invoking this method to ensure that all tables and views were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.
-        /// </remarks>
-        public override IReadOnlyCollection<TableOrViewMetadata<AccessObjectName, OleDbType>> GetTablesAndViews()
-        {
-            return m_Tables.GetValues();
-        }
 
-        /// <summary>
-        /// Resets the metadata cache, clearing out all cached metadata.
-        /// </summary>
-        public override void Reset()
+        void PreloadTables(DataTable columnsDataTable, DataTable primaryKeys)
         {
-            m_Tables.Clear();
-            m_TypeTableMap.Clear();
-            m_SchemaLoaded = false;
-        }
-
-        /// <summary>
-        /// Returns the table or view derived from the class's name and/or Table attribute.
-        /// </summary>
-        /// <typeparam name="TObject">The type of the object.</typeparam>
-        /// <returns>TableOrViewMetadata&lt;AccessObjectName, OleDbType&gt;.</returns>
-        public override TableOrViewMetadata<AccessObjectName, OleDbType> GetTableOrViewFromClass<TObject>()
-        {
-            var type = typeof(TObject);
-            TableOrViewMetadata<AccessObjectName, OleDbType> result;
-            if (m_TypeTableMap.TryGetValue(type, out result))
-                return result;
-
-            var typeInfo = MetadataCache.GetMetadata(type);
-            if (!string.IsNullOrEmpty(typeInfo.MappedTableName))
+            using (var connection = new OleDbConnection(m_ConnectionBuilder.ConnectionString))
             {
-                result = GetTableOrView(typeInfo.MappedTableName);
-                m_TypeTableMap[type] = result;
-                return result;
-            }
+                connection.Open();
+                var dtTables = connection.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, null);
+                foreach (DataRow row in dtTables.Rows)
+                {
+                    if (row["TABLE_TYPE"].ToString() != "TABLE")
+                        continue;
 
-            //infer table from class name
-            result = GetTableOrView(type.Name);
-            m_TypeTableMap[type] = result;
-            return result;
+                    var name = row["TABLE_NAME"].ToString();
+                    var columns = GetColumns(name, columnsDataTable, primaryKeys);
+                    m_Tables[name] = new TableOrViewMetadata<AccessObjectName, OleDbType>(name, true, columns);
+                }
+            }
+        }
+        void PreloadViews(DataTable columnsDataTable)
+        {
+            using (var connection = new OleDbConnection(m_ConnectionBuilder.ConnectionString))
+            {
+                connection.Open();
+                var dtViews = connection.GetOleDbSchemaTable(OleDbSchemaGuid.Views, null);
+                foreach (DataRow row in dtViews.Rows)
+                {
+                    var name = row["TABLE_NAME"].ToString();
+                    var columns = GetColumns(name, columnsDataTable, null);
+                    m_Tables[name] = new TableOrViewMetadata<AccessObjectName, OleDbType>(name, false, columns);
+                }
+            }
         }
     }
 }

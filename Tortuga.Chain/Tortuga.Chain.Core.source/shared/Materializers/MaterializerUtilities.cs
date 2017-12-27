@@ -20,6 +20,8 @@ namespace Tortuga.Chain.Materializers
     /// <remarks>For internal use only.</remarks>
     public static class MaterializerUtilities
     {
+        static readonly Type[] s_EmptyTypeList = new Type[0];
+
         /// <summary>
         /// Checks the update row count.
         /// </summary>
@@ -49,41 +51,11 @@ namespace Tortuga.Chain.Materializers
             return executionToken;
         }
 
-        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "UpdateOptions")]
-        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "IgnoreRowsAffected")]
-        private static void CheckUpdateRowCount(object sender, CommandExecutedEventArgs e)
-        {
-            var token = (ExecutionToken)sender;
-
-            if (e.RowsAffected == null)
-                throw new InvalidOperationException($"The database did not report how many rows were affected by operation {token.OperationName}. Either use the  UpdateOptions.IgnoreRowsAffected flag or report this as an bug in {token.GetType().FullName}.");
-            else if (e.RowsAffected == 0)
-                throw new MissingDataException($"Expected one row to be affected by the operation {token.OperationName} but none were.");
-            else if (e.RowsAffected > 1)
-                throw new UnexpectedDataException($"Expected one row to be affected by the operation {token.OperationName} but {e.RowsAffected} were affected instead.");
-        }
-
-        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "IgnoreRowsAffected")]
-        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "UpdateOptions")]
-        private static void CheckUpdateRowCount(object sender, CommandExecutedEventArgs e, int expectedRowCount)
-        {
-            var token = (ExecutionToken)sender;
-
-            if (e.RowsAffected == null)
-                throw new InvalidOperationException($"The database did not report how many rows were affected by operation {token.OperationName}. Either use the UpdateOptions.IgnoreRowsAffected flag or report this as an bug in {token.GetType().FullName}.");
-            else if (e.RowsAffected != expectedRowCount)
-                throw new UnexpectedDataException($"Expected {expectedRowCount} rows to be affected by the operation {token.OperationName} but {e.RowsAffected} were affected instead.");
-        }
-
         internal static StreamingObjectConstructor<T> AsObjectConstructor<T>(this DbDataReader reader, IReadOnlyList<Type> constructorSignature)
             where T : class
         {
             return new StreamingObjectConstructor<T>(reader, constructorSignature);
         }
-
-
-
-        static readonly Type[] s_EmptyTypeList = new Type[0];
 
         static internal T ConstructObject<T>(IReadOnlyDictionary<string, object> source, IReadOnlyList<Type> constructorSignature, bool? populateComplexObject = null)
         {
@@ -167,7 +139,98 @@ namespace Tortuga.Chain.Materializers
             }
         }
 
-        private static void SetDecomposedProperty(IReadOnlyDictionary<string, object> source, object target, string decompositionPrefix, PropertyMetadata property)
+        static internal void PopulateComplexObject<T>(IReadOnlyDictionary<int, object> source, T target, string decompositionPrefix, IList<OrdinalMappedProperty<T>> mappedProperties, IList<MappedProperty<T>> decomposedProperties)
+        {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source), $"{nameof(source)} is null.");
+            if (target == null)
+                throw new ArgumentNullException(nameof(target), $"{nameof(target)} is null.");
+
+            foreach (var property in mappedProperties)
+            {
+                var value = source[property.Ordinal];
+
+                value = SetProperty(target, property.PropertyMetadata, value, property);
+            }
+
+            foreach (var property in decomposedProperties)
+            {
+                SetDecomposedProperty((IReadOnlyDictionary<string, object>)source, target, decompositionPrefix, property.PropertyMetadata);
+            }
+        }
+
+        static internal Dictionary<string, object> ReadDictionary(this DbDataReader source)
+        {
+            if (!source.Read())
+                return null;
+
+            return ToDictionary(source);
+        }
+
+        static internal async Task<Dictionary<string, object>> ReadDictionaryAsync(this DbDataReader source)
+        {
+            if (!(await source.ReadAsync()))
+                return null;
+
+            return ToDictionary(source);
+        }
+
+        static internal int RemainingRowCount(this DbDataReader source)
+        {
+            var count = 0;
+            while (source.Read())
+                count += 1;
+            return count;
+        }
+
+        static internal async Task<int> RemainingRowCountAsync(this DbDataReader source)
+        {
+            var count = 0;
+            while (await source.ReadAsync())
+                count += 1;
+            return count;
+        }
+
+        internal static Dictionary<string, object> ToDictionary(this DbDataReader source)
+        {
+            var result = new Dictionary<string, object>(source.FieldCount, StringComparer.OrdinalIgnoreCase);
+            for (var i = 0; i < source.FieldCount; i++)
+            {
+                var temp = source[i];
+                if (temp == DBNull.Value)
+                    temp = null;
+
+                result.Add(source.GetName(i), temp);
+            }
+            return result;
+        }
+
+        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "UpdateOptions")]
+        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "IgnoreRowsAffected")]
+        static void CheckUpdateRowCount(object sender, CommandExecutedEventArgs e)
+        {
+            var token = (ExecutionToken)sender;
+
+            if (e.RowsAffected == null)
+                throw new InvalidOperationException($"The database did not report how many rows were affected by operation {token.OperationName}. Either use the  UpdateOptions.IgnoreRowsAffected flag or report this as an bug in {token.GetType().FullName}.");
+            else if (e.RowsAffected == 0)
+                throw new MissingDataException($"Expected one row to be affected by the operation {token.OperationName} but none were.");
+            else if (e.RowsAffected > 1)
+                throw new UnexpectedDataException($"Expected one row to be affected by the operation {token.OperationName} but {e.RowsAffected} were affected instead.");
+        }
+
+        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "IgnoreRowsAffected")]
+        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "UpdateOptions")]
+        static void CheckUpdateRowCount(object sender, CommandExecutedEventArgs e, int expectedRowCount)
+        {
+            var token = (ExecutionToken)sender;
+
+            if (e.RowsAffected == null)
+                throw new InvalidOperationException($"The database did not report how many rows were affected by operation {token.OperationName}. Either use the UpdateOptions.IgnoreRowsAffected flag or report this as an bug in {token.GetType().FullName}.");
+            else if (e.RowsAffected != expectedRowCount)
+                throw new UnexpectedDataException($"Expected {expectedRowCount} rows to be affected by the operation {token.OperationName} but {e.RowsAffected} were affected instead.");
+        }
+        static void SetDecomposedProperty(IReadOnlyDictionary<string, object> source, object target, string decompositionPrefix, PropertyMetadata property)
         {
             object child = null;
 
@@ -184,7 +247,7 @@ namespace Tortuga.Chain.Materializers
                 PopulateComplexObject(source, child, decompositionPrefix + property.DecompositionPrefix);
         }
 
-        private static object SetProperty<T>(T target, PropertyMetadata property, object value, OrdinalMappedProperty<T> mapper)
+        static object SetProperty<T>(T target, PropertyMetadata property, object value, OrdinalMappedProperty<T> mapper)
         {
             var targetType = property.PropertyType;
 
@@ -259,134 +322,5 @@ namespace Tortuga.Chain.Materializers
             return value;
         }
 
-
-        internal class OrdinalMappedProperty<TTarget>
-        {
-            private readonly MappedProperty<TTarget> m_MappedProperty;
-
-            public OrdinalMappedProperty(MappedProperty<TTarget> mappedProperty, int ordinal)
-            {
-                m_MappedProperty = mappedProperty;
-                Ordinal = ordinal;
-            }
-
-            public void InvokeSet(TTarget target, object value) => m_MappedProperty.InvokeSet(target, value);
-            public string MappedColumnName => m_MappedProperty.MappedColumnName;
-            public PropertyMetadata PropertyMetadata => m_MappedProperty.PropertyMetadata;
-            public int Ordinal { get; }
-
-        }
-
-        internal class MappedProperty<TTarget>
-        {
-            public MappedProperty(string mappedColumnName, PropertyMetadata propertyMetadata)
-            {
-                MappedColumnName = mappedColumnName;
-                PropertyMetadata = propertyMetadata;
-            }
-
-            public virtual void InvokeSet(TTarget target, object value)
-            {
-                PropertyMetadata.InvokeSet(target, value);
-            }
-            public string MappedColumnName { get; }
-            public PropertyMetadata PropertyMetadata { get; }
-
-        }
-
-
-        /// <summary>
-        /// The purpose of this class 
-        /// </summary>
-        /// <typeparam name="TTarget">The type of the target.</typeparam>
-        /// <typeparam name="TProperty">The type of the property.</typeparam>
-        internal class MappedProperty<TTarget, TProperty> : MappedProperty<TTarget>
-        {
-
-
-            public MappedProperty(string mappedColumnName, PropertyMetadata propertyMetadata) : base(mappedColumnName, propertyMetadata)
-            {
-#if !NETSTANDARD1_3
-                //TODO: Change Anchor so that it can build these strongly typed delegates
-                var propertyInfo = typeof(TTarget).GetProperty(propertyMetadata.Name);
-                var reflectionSetter = propertyInfo.GetSetMethod();
-
-                m_DelegateSetter = (Action<TTarget, TProperty>)Delegate.CreateDelegate(typeof(Action<TTarget, TProperty>), reflectionSetter);
-#endif
-            }
-
-#if !NETSTANDARD1_3
-            Action<TTarget, TProperty> m_DelegateSetter;
-
-            public override void InvokeSet(TTarget target, object value) => m_DelegateSetter(target, (TProperty)value);
-#endif
-        }
-
-
-
-        static internal void PopulateComplexObject<T>(IReadOnlyDictionary<int, object> source, T target, string decompositionPrefix, IList<OrdinalMappedProperty<T>> mappedProperties, IList<MappedProperty<T>> decomposedProperties)
-        {
-            if (source == null)
-                throw new ArgumentNullException(nameof(source), $"{nameof(source)} is null.");
-            if (target == null)
-                throw new ArgumentNullException(nameof(target), $"{nameof(target)} is null.");
-
-            foreach (var property in mappedProperties)
-            {
-                var value = source[property.Ordinal];
-
-                value = SetProperty(target, property.PropertyMetadata, value, property);
-            }
-
-            foreach (var property in decomposedProperties)
-            {
-                SetDecomposedProperty((IReadOnlyDictionary<string, object>)source, target, decompositionPrefix, property.PropertyMetadata);
-            }
-        }
-
-        static internal Dictionary<string, object> ReadDictionary(this DbDataReader source)
-        {
-            if (!source.Read())
-                return null;
-
-            return ToDictionary(source);
-        }
-
-        static internal async Task<Dictionary<string, object>> ReadDictionaryAsync(this DbDataReader source)
-        {
-            if (!(await source.ReadAsync()))
-                return null;
-
-            return ToDictionary(source);
-        }
-
-        static internal int RemainingRowCount(this DbDataReader source)
-        {
-            var count = 0;
-            while (source.Read())
-                count += 1;
-            return count;
-        }
-
-        static internal async Task<int> RemainingRowCountAsync(this DbDataReader source)
-        {
-            var count = 0;
-            while (await source.ReadAsync())
-                count += 1;
-            return count;
-        }
-        internal static Dictionary<string, object> ToDictionary(this DbDataReader source)
-        {
-            var result = new Dictionary<string, object>(source.FieldCount, StringComparer.OrdinalIgnoreCase);
-            for (var i = 0; i < source.FieldCount; i++)
-            {
-                var temp = source[i];
-                if (temp == DBNull.Value)
-                    temp = null;
-
-                result.Add(source.GetName(i), temp);
-            }
-            return result;
-        }
     }
 }

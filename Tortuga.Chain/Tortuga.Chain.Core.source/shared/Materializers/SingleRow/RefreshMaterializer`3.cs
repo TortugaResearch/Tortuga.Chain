@@ -13,9 +13,8 @@ namespace Tortuga.Chain.Materializers
         where TParameter : DbParameter
         where TArgument : class
     {
-        readonly ClassMetadata m_ObjectMetadata;
         readonly ObjectDbCommandBuilder<TCommand, TParameter, TArgument> m_CommandBuilder;
-
+        readonly ClassMetadata m_ObjectMetadata;
         /// <summary>
         /// Initializes a new instance of the <see cref="RefreshMaterializer{TCommand, TParameter, TArgument}"/> class.
         /// </summary>
@@ -26,6 +25,12 @@ namespace Tortuga.Chain.Materializers
             m_ObjectMetadata = MetadataCache.GetMetadata(typeof(TArgument));
             m_CommandBuilder = commandBuilder;
         }
+
+        /// <summary>
+        /// Returns the list of columns the result materializer would like to have.
+        /// </summary>
+        /// <returns></returns>
+        public override IReadOnlyList<string> DesiredColumns() => m_ObjectMetadata.ColumnsFor;
 
         /// <summary>
         /// Execute the operation synchronously.
@@ -89,15 +94,5 @@ namespace Tortuga.Chain.Materializers
 
             return m_CommandBuilder.ArgumentValue;
         }
-
-        /// <summary>
-        /// Returns the list of columns the result materializer would like to have.
-        /// </summary>
-        /// <returns></returns>
-        public override IReadOnlyList<string> DesiredColumns()
-        {
-            return m_ObjectMetadata.ColumnsFor;
-        }
-
     }
 }

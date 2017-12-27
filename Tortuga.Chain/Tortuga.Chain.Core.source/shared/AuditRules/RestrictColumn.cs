@@ -7,30 +7,6 @@ namespace Tortuga.Chain.AuditRules
     public class RestrictColumn : AuditRule
     {
         /// <summary>
-        /// Gets the name of the object (e.g. table, view). 
-        /// </summary>
-        /// <value>
-        /// The name of the object.
-        /// </value>
-        public string ObjectName { get; }
-        /// <summary>
-        /// Gets the except when.
-        /// </summary>
-        /// <value>
-        /// The except when.
-        /// </value>
-        public ExceptWhenPredicate ExceptWhen { get; }
-
-        /// <summary>
-        /// Gets the name of the column.
-        /// </summary>
-        /// <value>
-        /// The name of the column.
-        /// </value>
-        public string ColumnName { get; }
-
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="RestrictColumn"/> class.
         /// </summary>
         /// <param name="objectName">Name of the database object this rule applies to.</param>
@@ -56,6 +32,29 @@ namespace Tortuga.Chain.AuditRules
             ExceptWhen = exceptWhen;
         }
 
+        /// <summary>
+        /// Gets the name of the column.
+        /// </summary>
+        /// <value>
+        /// The name of the column.
+        /// </value>
+        public string ColumnName { get; }
+
+        /// <summary>
+        /// Gets the except when.
+        /// </summary>
+        /// <value>
+        /// The except when.
+        /// </value>
+        public ExceptWhenPredicate ExceptWhen { get; }
+
+        /// <summary>
+        /// Gets the name of the object (e.g. table, view). 
+        /// </summary>
+        /// <value>
+        /// The name of the object.
+        /// </value>
+        public string ObjectName { get; }
     }
 
 

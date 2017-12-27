@@ -18,17 +18,16 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
     public class PostgreSqlTableOrView : TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption>
     {
         readonly TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType> m_Table;
-        private object m_FilterValue;
-        private string m_WhereClause;
-        private object m_ArgumentValue;
-
-        private IEnumerable<SortExpression> m_SortExpressions = Enumerable.Empty<SortExpression>();
-        private PostgreSqlLimitOption m_LimitOptions;
-        private int? m_Skip;
-        private int? m_Take;
-        private int? m_Seed;
-        private string m_SelectClause;
-        private FilterOptions m_FilterOptions;
+        object m_ArgumentValue;
+        FilterOptions m_FilterOptions;
+        object m_FilterValue;
+        PostgreSqlLimitOption m_LimitOptions;
+        int? m_Seed;
+        string m_SelectClause;
+        int? m_Skip;
+        IEnumerable<SortExpression> m_SortExpressions = Enumerable.Empty<SortExpression>();
+        int? m_Take;
+        string m_WhereClause;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PostgreSqlTableOrView" /> class.
@@ -82,6 +81,42 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
             m_WhereClause = whereClause;
             m_ArgumentValue = argumentValue;
             m_Table = DataSource.DatabaseMetadata.GetTableOrView(tableOrViewName);
+        }
+
+        /// <summary>
+        /// Gets the data source.
+        /// </summary>
+        /// <value>The data source.</value>
+        public new PostgreSqlDataSourceBase DataSource
+        {
+            get { return (PostgreSqlDataSourceBase)base.DataSource; }
+        }
+
+        /// <summary>
+        /// Returns the row count using a <c>SELECT COUNT_BIG(*)</c> style query.
+        /// </summary>
+        /// <returns></returns>
+        public override ILink<long> AsCount()
+        {
+            m_SelectClause = "COUNT(*)";
+            return ToInt64();
+        }
+
+        /// <summary>
+        /// Returns the row count for a given column. <c>SELECT COUNT_BIG(columnName)</c>
+        /// </summary>
+        /// <param name="columnName">Name of the column.</param>
+        /// <param name="distinct">if set to <c>true</c> use <c>SELECT COUNT_BIG(DISTINCT columnName)</c>.</param>
+        /// <returns></returns>
+        public override ILink<long> AsCount(string columnName, bool distinct = false)
+        {
+            var column = m_Table.Columns[columnName];
+            if (distinct)
+                m_SelectClause = $"COUNT(DISTINCT {column.QuotedSqlName})";
+            else
+                m_SelectClause = $"COUNT({column.QuotedSqlName})";
+
+            return ToInt64();
         }
 
         /// <summary>
@@ -191,52 +226,14 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 
 
         /// <summary>
-        /// Adds sorting to the command builder.
+        /// Returns the column associated with the column name.
         /// </summary>
-        /// <param name="sortExpressions">The sort expressions.</param>
+        /// <param name="columnName">Name of the column.</param>
         /// <returns></returns>
-        public override TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption> WithSorting(IEnumerable<SortExpression> sortExpressions)
-        {
-            if (sortExpressions == null)
-                throw new ArgumentNullException(nameof(sortExpressions), $"{nameof(sortExpressions)} is null.");
-
-            m_SortExpressions = sortExpressions;
-            return this;
-        }
-
-        /// <summary>
-        /// Adds limits to the command builder.
-        /// </summary>
-        /// <param name="skip">The number of rows to skip.</param>
-        /// <param name="take">Number of rows to take.</param>
-        /// <param name="limitOptions">The limit options.</param>
-        /// <param name="seed">The seed for repeatable reads. Only applies to random sampling</param>
-        /// <returns>TableDbCommandBuilder&lt;NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption&gt;.</returns>
-        protected override TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption> OnWithLimits(int? skip, int? take, PostgreSqlLimitOption limitOptions, int? seed)
-        {
-            m_Seed = seed;
-            m_Skip = skip;
-            m_Take = take;
-            m_LimitOptions = limitOptions;
-            return this;
-        }
-
-        /// <summary>
-        /// Adds limits to the command builder.
-        /// </summary>
-        /// <param name="skip">The number of rows to skip.</param>
-        /// <param name="take">Number of rows to take.</param>
-        /// <param name="limitOptions">The limit options.</param>
-        /// <param name="seed">The seed for repeatable reads. Only applies to random sampling</param>
-        /// <returns>TableDbCommandBuilder&lt;NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption&gt;.</returns>
-        protected override TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption> OnWithLimits(int? skip, int? take, LimitOptions limitOptions, int? seed)
-        {
-            m_Seed = seed;
-            m_Skip = skip;
-            m_Take = take;
-            m_LimitOptions = (PostgreSqlLimitOption)limitOptions;
-            return this;
-        }
+        /// <remarks>
+        /// If the column name was not found, this will return null
+        /// </remarks>
+        public override ColumnMetadata TryGetColumn(string columnName) => m_Table.Columns.TryGetColumn(columnName);
 
         /// <summary>
         /// Adds (or replaces) the filter on this command builder.
@@ -281,52 +278,48 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         }
 
         /// <summary>
-        /// Returns the row count using a <c>SELECT COUNT_BIG(*)</c> style query.
+        /// Adds sorting to the command builder.
         /// </summary>
+        /// <param name="sortExpressions">The sort expressions.</param>
         /// <returns></returns>
-        public override ILink<long> AsCount()
+        public override TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption> WithSorting(IEnumerable<SortExpression> sortExpressions)
         {
-            m_SelectClause = "COUNT(*)";
-            return ToInt64();
+            m_SortExpressions = sortExpressions ?? throw new ArgumentNullException(nameof(sortExpressions), $"{nameof(sortExpressions)} is null.");
+            return this;
         }
 
         /// <summary>
-        /// Returns the row count for a given column. <c>SELECT COUNT_BIG(columnName)</c>
+        /// Adds limits to the command builder.
         /// </summary>
-        /// <param name="columnName">Name of the column.</param>
-        /// <param name="distinct">if set to <c>true</c> use <c>SELECT COUNT_BIG(DISTINCT columnName)</c>.</param>
-        /// <returns></returns>
-        public override ILink<long> AsCount(string columnName, bool distinct = false)
+        /// <param name="skip">The number of rows to skip.</param>
+        /// <param name="take">Number of rows to take.</param>
+        /// <param name="limitOptions">The limit options.</param>
+        /// <param name="seed">The seed for repeatable reads. Only applies to random sampling</param>
+        /// <returns>TableDbCommandBuilder&lt;NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption&gt;.</returns>
+        protected override TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption> OnWithLimits(int? skip, int? take, PostgreSqlLimitOption limitOptions, int? seed)
         {
-            var column = m_Table.Columns[columnName];
-            if (distinct)
-                m_SelectClause = $"COUNT(DISTINCT {column.QuotedSqlName})";
-            else
-                m_SelectClause = $"COUNT({column.QuotedSqlName})";
-
-            return ToInt64();
+            m_Seed = seed;
+            m_Skip = skip;
+            m_Take = take;
+            m_LimitOptions = limitOptions;
+            return this;
         }
 
         /// <summary>
-        /// Gets the data source.
+        /// Adds limits to the command builder.
         /// </summary>
-        /// <value>The data source.</value>
-        public new PostgreSqlDataSourceBase DataSource
+        /// <param name="skip">The number of rows to skip.</param>
+        /// <param name="take">Number of rows to take.</param>
+        /// <param name="limitOptions">The limit options.</param>
+        /// <param name="seed">The seed for repeatable reads. Only applies to random sampling</param>
+        /// <returns>TableDbCommandBuilder&lt;NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption&gt;.</returns>
+        protected override TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption> OnWithLimits(int? skip, int? take, LimitOptions limitOptions, int? seed)
         {
-            get { return (PostgreSqlDataSourceBase)base.DataSource; }
-        }
-
-        /// <summary>
-        /// Returns the column associated with the column name.
-        /// </summary>
-        /// <param name="columnName">Name of the column.</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// If the column name was not found, this will return null
-        /// </remarks>
-        public override ColumnMetadata TryGetColumn(string columnName)
-        {
-            return m_Table.Columns.TryGetColumn(columnName);
+            m_Seed = seed;
+            m_Skip = skip;
+            m_Take = take;
+            m_LimitOptions = (PostgreSqlLimitOption)limitOptions;
+            return this;
         }
     }
 }

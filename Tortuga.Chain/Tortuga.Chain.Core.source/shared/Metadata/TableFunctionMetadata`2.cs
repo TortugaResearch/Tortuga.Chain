@@ -62,9 +62,6 @@ namespace Tortuga.Chain.Metadata
         /// </summary>
         /// <param name="strictMode">if set to <c>true</c> [strict mode].</param>
         /// <returns></returns>
-        public SqlBuilder<TDbType> CreateSqlBuilder(bool strictMode)
-        {
-            return m_Builder.Clone(strictMode);
-        }
+        public SqlBuilder<TDbType> CreateSqlBuilder(bool strictMode) => m_Builder.Clone(strictMode);
     }
 }

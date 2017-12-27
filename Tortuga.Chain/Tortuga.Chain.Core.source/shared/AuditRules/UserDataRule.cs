@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using Tortuga.Anchor.Metadata;
 
 namespace Tortuga.Chain.AuditRules
@@ -44,9 +45,9 @@ namespace Tortuga.Chain.AuditRules
         /// <param name="currentValue">The current value. Used when the rule is conditionally applied.</param>
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "userValue")]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "DataSource")]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "WithUser")]
+        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "userValue")]
+        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "DataSource")]
+        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "WithUser")]
         public override object GenerateValue(object argumentValue, object userValue, object currentValue)
         {
             if (userValue == null)

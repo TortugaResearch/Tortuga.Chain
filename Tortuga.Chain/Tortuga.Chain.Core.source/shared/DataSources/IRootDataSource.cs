@@ -14,6 +14,16 @@ namespace Tortuga.Chain.DataSources
     public interface IRootDataSource
     {
         /// <summary>
+        /// Begin a transaction using the default settings
+        /// </summary>
+        ITransactionalDataSource BeginTransaction();
+
+        /// <summary>
+        /// Begin a transaction using the default settings
+        /// </summary>
+        Task<ITransactionalDataSource> BeginTransactionAsync();
+
+        /// <summary>
         /// Creates and opens a connection.
         /// </summary>
         /// <returns></returns>
@@ -43,15 +53,5 @@ namespace Tortuga.Chain.DataSources
         /// <param name="transaction">The transaction to wrap.</param>
         /// <returns></returns>
         IOpenDataSource CreateOpenDataSource(IDbConnection connection, IDbTransaction transaction = null);
-
-        /// <summary>
-        /// Begin a transaction using the default settings
-        /// </summary>
-        ITransactionalDataSource BeginTransaction();
-
-        /// <summary>
-        /// Begin a transaction using the default settings
-        /// </summary>
-        Task<ITransactionalDataSource> BeginTransactionAsync();
     }
 }

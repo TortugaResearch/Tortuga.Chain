@@ -340,7 +340,7 @@ namespace Tortuga.Chain.SqlServer
             }
             return columns;
         }
-        internal override ScalarFunctionMetadata<SqlServerObjectName, SqlDbType> GetScalarFunctionInternal(SqlServerObjectName tableFunctionName)
+        internal override ScalarFunctionMetadata<SqlServerObjectName, SqlDbType> GetScalarFunctionInternal(SqlServerObjectName scalarFunctionName)
         {
             const string sql =
         @"SELECT	s.name AS SchemaName,
@@ -379,12 +379,12 @@ namespace Tortuga.Chain.SqlServer
                 con.Open();
                 using (var cmd = new SqlCommand(sql, con))
                 {
-                    cmd.Parameters.AddWithValue("@Schema", tableFunctionName.Schema ?? DefaultSchema);
-                    cmd.Parameters.AddWithValue("@Name", tableFunctionName.Name);
+                    cmd.Parameters.AddWithValue("@Schema", scalarFunctionName.Schema ?? DefaultSchema);
+                    cmd.Parameters.AddWithValue("@Name", scalarFunctionName.Name);
                     using (var reader = cmd.ExecuteReader())
                     {
                         if (!reader.Read())
-                            throw new MissingObjectException($"Could not find table valued function {tableFunctionName}");
+                            throw new MissingObjectException($"Could not find scalar function {scalarFunctionName}");
                         actualSchema = reader.GetString(reader.GetOrdinal("SchemaName"));
                         actualName = reader.GetString(reader.GetOrdinal("Name"));
                         objectId = reader.GetInt32(reader.GetOrdinal("ObjectId"));

@@ -30,6 +30,8 @@ namespace Tortuga.Chain.Materializers
             m_RowOptions = rowOptions;
         }
 
+        public override IReadOnlyList<string> DesiredColumns() => AllColumns;
+
         /// <summary>
         /// Execute the operation synchronously.
         /// </summary>
@@ -106,11 +108,6 @@ namespace Tortuga.Chain.Materializers
                 throw new UnexpectedDataException("Expected 1 row but received " + table.Rows.Count + " rows");
             }
             return table.Rows[0];
-        }
-
-        public override IReadOnlyList<string> DesiredColumns()
-        {
-            return AllColumns;
         }
     }
 }

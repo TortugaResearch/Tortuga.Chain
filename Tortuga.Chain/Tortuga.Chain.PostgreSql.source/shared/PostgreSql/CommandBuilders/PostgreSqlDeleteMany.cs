@@ -15,13 +15,12 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
     /// </summary>
     internal sealed class PostgreSqlDeleteMany : MultipleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter>
     {
-        //readonly DeleteOptions m_Options;
+        readonly object m_ArgumentValue;
+        readonly FilterOptions m_FilterOptions;
+        readonly object m_FilterValue;
         readonly IEnumerable<NpgsqlParameter> m_Parameters;
         readonly TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType> m_Table;
         readonly string m_WhereClause;
-        readonly object m_ArgumentValue;
-        readonly object m_FilterValue;
-        readonly FilterOptions m_FilterOptions;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PostgreSqlDeleteMany" /> class.
@@ -38,7 +37,6 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 
             m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
             m_WhereClause = whereClause;
-            //m_Options = options;
             m_Parameters = parameters;
         }
 
@@ -119,10 +117,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         /// <remarks>
         /// If the column name was not found, this will return null
         /// </remarks>
-        public override ColumnMetadata TryGetColumn(string columnName)
-        {
-            return m_Table.Columns.TryGetColumn(columnName);
-        }
+        public override ColumnMetadata TryGetColumn(string columnName) => m_Table.Columns.TryGetColumn(columnName);
 
     }
 }

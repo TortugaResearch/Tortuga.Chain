@@ -4,7 +4,7 @@ namespace Tortuga.Chain.Access
 {
 
     /// <summary>
-    /// 
+    /// Used to chain together multiple statements.
     /// </summary>
     internal enum AccessCommandExecutionMode
     {

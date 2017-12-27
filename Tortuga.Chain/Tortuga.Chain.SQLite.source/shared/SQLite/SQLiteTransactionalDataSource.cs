@@ -30,9 +30,9 @@ namespace Tortuga.Chain.SQLite
         readonly SQLiteConnection m_Connection;
         readonly SQLiteDataSource m_BaseDataSource;
         readonly SQLiteTransaction m_Transaction;
-        private IDisposable m_LockToken;
+        IDisposable m_LockToken;
 
-        private bool m_Disposed;
+        bool m_Disposed;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SQLiteTransactionalDataSource" /> class.
@@ -162,7 +162,7 @@ namespace Tortuga.Chain.SQLite
         /// Releases unmanaged and - optionally - managed resources.
         /// </summary>
         /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
-        private void Dispose(bool disposing)
+        void Dispose(bool disposing)
         {
             if (m_Disposed)
                 return;

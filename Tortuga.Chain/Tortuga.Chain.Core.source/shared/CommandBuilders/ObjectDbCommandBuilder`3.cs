@@ -16,12 +16,6 @@ namespace Tortuga.Chain.CommandBuilders
         where TArgument : class
     {
         /// <summary>
-        /// Gets the argument value passed to the command builder.
-        /// </summary>
-        /// <value>The argument value.</value>
-        public TArgument ArgumentValue { get; }
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="ObjectDbCommandBuilder{TCommand, TParameter, TArgument}"/> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
@@ -32,23 +26,23 @@ namespace Tortuga.Chain.CommandBuilders
         }
 
         /// <summary>
+        /// Gets the argument value passed to the command builder.
+        /// </summary>
+        /// <value>The argument value.</value>
+        public TArgument ArgumentValue { get; }
+
+        /// <summary>
         /// Materializes the result as a new instance of the same type as the argumentValue
         /// </summary>
         /// <param name="rowOptions">The row options.</param>
         /// <returns></returns>
         /// <remarks>To update the argumentValue itselt, use WithRefresh() instead.</remarks>
-        public ILink<TArgument> ToObject(RowOptions rowOptions = RowOptions.None)
-        {
-            return new ObjectMaterializer<TCommand, TParameter, TArgument>(this, rowOptions);
-        }
+        public ILink<TArgument> ToObject(RowOptions rowOptions = RowOptions.None) => new ObjectMaterializer<TCommand, TParameter, TArgument>(this, rowOptions);
 
         /// <summary>
         /// After executing the operation, refreshes the properties on the argumentValue by reading the updated values from the database.
         /// </summary>
         /// <returns></returns>
-        public ILink<TArgument> WithRefresh()
-        {
-            return new RefreshMaterializer<TCommand, TParameter, TArgument>(this);
-        }
+        public ILink<TArgument> WithRefresh() => new RefreshMaterializer<TCommand, TParameter, TArgument>(this);
     }
 }

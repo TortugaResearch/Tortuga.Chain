@@ -18,50 +18,42 @@ namespace Tortuga.Chain.Appenders
         {
             if (previousLink == null)
                 throw new ArgumentNullException(nameof(previousLink), $"{nameof(previousLink)} is null.");
-            if (primaryKeyExpression == null)
-                throw new ArgumentNullException(nameof(primaryKeyExpression), $"{nameof(primaryKeyExpression)} is null.");
-            if (foreignKeyExpression == null)
-                throw new ArgumentNullException(nameof(foreignKeyExpression), $"{nameof(foreignKeyExpression)} is null.");
-            if (targetCollectionExpression == null)
-                throw new ArgumentNullException(nameof(targetCollectionExpression), $"{nameof(targetCollectionExpression)} is null.");
 
-            m_ForeignKeyExpression = foreignKeyExpression;
-            m_PrimaryKeyExpression = primaryKeyExpression;
-            m_TargetCollectionExpression = targetCollectionExpression;
+            m_ForeignKeyExpression = foreignKeyExpression ?? throw new ArgumentNullException(nameof(foreignKeyExpression), $"{nameof(foreignKeyExpression)} is null.");
+            m_PrimaryKeyExpression = primaryKeyExpression ?? throw new ArgumentNullException(nameof(primaryKeyExpression), $"{nameof(primaryKeyExpression)} is null.");
+            m_TargetCollectionExpression = targetCollectionExpression ?? throw new ArgumentNullException(nameof(targetCollectionExpression), $"{nameof(targetCollectionExpression)} is null.");
             m_JoinOptions = joinOptions;
         }
 
         public KeyJoinAppender(ILink<Tuple<List<T1>, List<T2>>> previousLink, Func<T1, TKey> primaryKeyExpression, Func<T2, TKey> foreignKeyExpression, string targetCollectionName, JoinOptions joinOptions) : base(previousLink)
         {
             if (previousLink == null)
-                throw new ArgumentNullException("previousLink", "previousLink is null.");
-            if (primaryKeyExpression == null)
-                throw new ArgumentNullException("primaryKeyExpression", "primaryKeyExpression is null.");
-            if (foreignKeyExpression == null)
-                throw new ArgumentNullException("foreignKeyExpression", "foreignKeyExpression is null.");
+                throw new ArgumentNullException(nameof(previousLink), $"{nameof(previousLink)} is null.");
             if (string.IsNullOrEmpty(targetCollectionName))
-                throw new ArgumentException("targetCollectionName is null or empty.", "targetCollectionName");
+                throw new ArgumentException($"{nameof(targetCollectionName)} is null or empty.", nameof(targetCollectionName));
 
             var targetPropertyStub = MetadataCache.GetMetadata(typeof(T1)).Properties[targetCollectionName]; //don't inline this variable.
             m_TargetCollectionExpression = (p) => (ICollection<T2>)targetPropertyStub.InvokeGet(p);
 
 
-            m_ForeignKeyExpression = foreignKeyExpression;
-            m_PrimaryKeyExpression = primaryKeyExpression;
+            m_ForeignKeyExpression = foreignKeyExpression ?? throw new ArgumentNullException(nameof(foreignKeyExpression), $"{nameof(foreignKeyExpression)} is null.");
+            m_PrimaryKeyExpression = primaryKeyExpression ?? throw new ArgumentNullException(nameof(primaryKeyExpression), $"{nameof(primaryKeyExpression)} is null.");
             m_JoinOptions = joinOptions;
         }
 
         public KeyJoinAppender(ILink<Tuple<List<T1>, List<T2>>> previousLink, string primaryKeyName, string foreignKeyName, string targetCollectionName, JoinOptions joinOptions) : base(previousLink)
         {
             if (previousLink == null)
-                throw new ArgumentNullException("previousLink", "previousLink is null.");
-            if (string.IsNullOrEmpty(primaryKeyName))
-                throw new ArgumentException("primaryKeyName is null or empty.", "primaryKeyName");
-            if (string.IsNullOrEmpty(foreignKeyName))
-                throw new ArgumentException("foreignKeyName is null or empty.", "foreignKeyName");
-            if (string.IsNullOrEmpty(targetCollectionName))
-                throw new ArgumentException("targetCollectionName is null or empty.", "targetCollectionName");
+                throw new ArgumentNullException(nameof(previousLink), $"{nameof(previousLink)} is null.");
 
+            if (string.IsNullOrEmpty(primaryKeyName))
+                throw new ArgumentException($"{nameof(primaryKeyName)} is null or empty.", nameof(primaryKeyName));
+
+            if (string.IsNullOrEmpty(foreignKeyName))
+                throw new ArgumentException($"{nameof(foreignKeyName)} is null or empty.", nameof(foreignKeyName));
+
+            if (string.IsNullOrEmpty(targetCollectionName))
+                throw new ArgumentException($"{nameof(targetCollectionName)} is null or empty.", nameof(targetCollectionName));
 
             var primaryKeyStub = MetadataCache.GetMetadata(typeof(T1)).Properties[primaryKeyName]; //don't inline this variable.
             m_PrimaryKeyExpression = (p) => (TKey)primaryKeyStub.InvokeGet(p);

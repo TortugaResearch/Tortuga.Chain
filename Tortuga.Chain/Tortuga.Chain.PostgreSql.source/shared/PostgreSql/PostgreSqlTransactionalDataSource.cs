@@ -16,10 +16,10 @@ namespace Tortuga.Chain.PostgreSql
     /// <seealso cref="IDisposable" />
     public class PostgreSqlTransactionalDataSource : PostgreSqlDataSourceBase, IDisposable, ITransactionalDataSource
     {
-        private readonly NpgsqlConnection m_Connection;
-        private readonly PostgreSqlDataSource m_BaseDataSource;
-        private readonly NpgsqlTransaction m_Transaction;
-        private bool m_Disposed;
+        readonly NpgsqlConnection m_Connection;
+        readonly PostgreSqlDataSource m_BaseDataSource;
+        readonly NpgsqlTransaction m_Transaction;
+        bool m_Disposed;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PostgreSqlTransactionalDataSource"/> class.
@@ -95,7 +95,7 @@ namespace Tortuga.Chain.PostgreSql
             GC.SuppressFinalize(this);
         }
 
-        private void Dispose(bool disposing)
+        void Dispose(bool disposing)
         {
             if (m_Disposed)
                 return;
@@ -349,10 +349,7 @@ namespace Tortuga.Chain.PostgreSql
         /// Chain extensions can use this to store data source specific data. The key should be a data type defined by the extension.
         /// Transactional data sources should override this method and return the value held by their parent data source.
         /// </remarks>
-        public override TTKey GetExtensionData<TTKey>()
-        {
-            return m_BaseDataSource.GetExtensionData<TTKey>();
-        }
+        public override TTKey GetExtensionData<TTKey>() => m_BaseDataSource.GetExtensionData<TTKey>();
 
         /// <summary>
         /// Tests the connection.
@@ -376,10 +373,7 @@ namespace Tortuga.Chain.PostgreSql
         /// <summary>
         /// Gets or sets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
         /// </summary>
-        public override ICacheAdapter Cache
-        {
-            get { return m_BaseDataSource.Cache; }
-        }
+        public override ICacheAdapter Cache => m_BaseDataSource.Cache;
 
         /// <summary>
         /// The extension cache is used by extensions to store data source specific information.
@@ -387,10 +381,7 @@ namespace Tortuga.Chain.PostgreSql
         /// <value>
         /// The extension cache.
         /// </value>
-        protected override ConcurrentDictionary<Type, object> ExtensionCache
-        {
-            get { return m_BaseDataSource.m_ExtensionCache; }
-        }
+        protected override ConcurrentDictionary<Type, object> ExtensionCache => m_BaseDataSource.m_ExtensionCache;
 
 
 

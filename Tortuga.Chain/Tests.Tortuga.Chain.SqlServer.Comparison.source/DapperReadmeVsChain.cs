@@ -17,8 +17,8 @@ namespace Tests
     public class DapperReadmeVsChain
 
     {
-        private static readonly SqlServerDataSource s_DataSource;
-        private static readonly string s_ConnectionString;
+        static readonly SqlServerDataSource s_DataSource;
+        static readonly string s_ConnectionString;
 
         static DapperReadmeVsChain()
         {

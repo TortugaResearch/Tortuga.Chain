@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Data.Common;
-using Tortuga.Chain.DataSources;
 using System.Diagnostics.CodeAnalysis;
+using Tortuga.Chain.DataSources;
 
 namespace Tortuga.Chain.CommandBuilders
 {
@@ -29,108 +29,27 @@ namespace Tortuga.Chain.CommandBuilders
         }
 
         /// <summary>
-        /// Adds sorting to the command builder.
+        /// Gets the default limit option.
         /// </summary>
-        /// <param name="sortExpressions">The sort expressions.</param>
-        /// <returns></returns>
-        public abstract TableDbCommandBuilder<TCommand, TParameter, TLimit> WithSorting(IEnumerable<SortExpression> sortExpressions);
+        /// <value>
+        /// The default limit options.
+        /// </value>
+        /// <remarks>For most data sources, this will be LimitOptions.Rows. </remarks>
+        protected virtual LimitOptions DefaultLimitOption => LimitOptions.Rows;
 
         /// <summary>
-        /// Adds sorting to the command builder
+        /// Returns the row count using a <c>SELECT Count(*)</c> style query.
         /// </summary>
-        /// <param name="sortExpressions">The sort expressions.</param>
         /// <returns></returns>
-        public TableDbCommandBuilder<TCommand, TParameter, TLimit> WithSorting(params SortExpression[] sortExpressions)
-        {
-            return WithSorting((IEnumerable<SortExpression>)sortExpressions);
-        }
-
-        ITableDbCommandBuilder ITableDbCommandBuilder.WithSorting(IEnumerable<SortExpression> sortExpressions)
-        {
-            return WithSorting(sortExpressions);
-        }
-
-        ITableDbCommandBuilder ITableDbCommandBuilder.WithSorting(params SortExpression[] sortExpressions)
-        {
-            return WithSorting((IEnumerable<SortExpression>)sortExpressions);
-        }
+        public abstract ILink<long> AsCount();
 
         /// <summary>
-        /// Adds limits to the command builder.
+        /// Returns the row count for a given column. <c>SELECT Count(columnName)</c>
         /// </summary>
-        /// <param name="skip">The number of rows to skip.</param>
-        /// <param name="take">Number of rows to take.</param>
+        /// <param name="columnName">Name of the column.</param>
+        /// <param name="distinct">if set to <c>true</c> use <c>SELECT COUNT(DISTINCT columnName)</c>.</param>
         /// <returns></returns>
-        public TableDbCommandBuilder<TCommand, TParameter, TLimit> WithLimits(int? skip, int? take)
-        {
-            return OnWithLimits(skip, take, DefaultLimitOption, null);
-        }
-
-        /// <summary>
-        /// Adds limits to the command builder.
-        /// </summary>
-        /// <param name="take">Number of rows to take.</param>
-        /// <returns></returns>
-        public TableDbCommandBuilder<TCommand, TParameter, TLimit> WithLimits(int? take)
-        {
-            return OnWithLimits(null, take, DefaultLimitOption, null);
-        }
-
-        /// <summary>
-        /// Adds limits to the command builder.
-        /// </summary>
-        /// <param name="take">Number of rows to take.</param>
-        /// <param name="limitOptions">The limit options.</param>
-        /// <returns></returns>
-        public TableDbCommandBuilder<TCommand, TParameter, TLimit> WithLimits(int? take, TLimit limitOptions)
-        {
-            return OnWithLimits(null, take, limitOptions, null);
-        }
-
-        /// <summary>
-        /// Adds limits to the command builder.
-        /// </summary>
-        /// <param name="take">Number of rows to take.</param>
-        /// <param name="limitOptions">The limit options.</param>
-        /// <param name="seed">The seed for repeatable reads. Only applies to random sampling</param>
-        /// <returns></returns>
-        public TableDbCommandBuilder<TCommand, TParameter, TLimit> WithLimits(int? take, TLimit limitOptions, int seed)
-        {
-            return OnWithLimits(null, take, limitOptions, seed);
-        }
-
-        /// <summary>
-        /// Adds limits to the command builder.
-        /// </summary>
-        /// <param name="skip">The number of rows to skip.</param>
-        /// <param name="take">Number of rows to take.</param>
-        /// <param name="limitOptions">The limit options.</param>
-        /// <param name="seed">The seed for repeatable reads. Only applies to random sampling</param>
-        /// <returns></returns>
-        protected abstract TableDbCommandBuilder<TCommand, TParameter, TLimit> OnWithLimits(int? skip, int? take, TLimit limitOptions, int? seed);
-
-        /// <summary>
-        /// Adds limits to the command builder.
-        /// </summary>
-        /// <param name="skip">The number of rows to skip.</param>
-        /// <param name="take">Number of rows to take.</param>
-        /// <param name="limitOptions">The limit options.</param>
-        /// <param name="seed">The seed for repeatable reads. Only applies to random sampling</param>
-        /// <returns></returns>
-        protected abstract TableDbCommandBuilder<TCommand, TParameter, TLimit> OnWithLimits(int? skip, int? take, LimitOptions limitOptions, int? seed);
-
-
-        ITableDbCommandBuilder ITableDbCommandBuilder.WithLimits(int take, LimitOptions limitOptions, int? seed)
-        {
-            return OnWithLimits(null, take, limitOptions, seed);
-        }
-
-
-        ITableDbCommandBuilder ITableDbCommandBuilder.WithLimits(int skip, int take)
-        {
-            return OnWithLimits(skip, take, DefaultLimitOption, null);
-        }
-
+        public abstract ILink<long> AsCount(string columnName, bool distinct = false);
 
         /// <summary>
         /// Adds (or replaces) the filter on this command builder.
@@ -154,45 +73,84 @@ namespace Tortuga.Chain.CommandBuilders
         /// <returns></returns>
         public abstract TableDbCommandBuilder<TCommand, TParameter, TLimit> WithFilter(string whereClause, object argumentValue);
 
-        ITableDbCommandBuilder ITableDbCommandBuilder.WithFilter(object filterValue, FilterOptions filterOptions )
-        {
-            return WithFilter(filterValue, filterOptions);
-        }
+        ITableDbCommandBuilder ITableDbCommandBuilder.WithFilter(object filterValue, FilterOptions filterOptions) => WithFilter(filterValue, filterOptions);
 
-        ITableDbCommandBuilder ITableDbCommandBuilder.WithFilter(string whereClause)
-        {
-            return WithFilter(whereClause);
-        }
+        ITableDbCommandBuilder ITableDbCommandBuilder.WithFilter(string whereClause) => WithFilter(whereClause);
 
-        ITableDbCommandBuilder ITableDbCommandBuilder.WithFilter(string whereClause, object argumentValue)
-        {
-            return WithFilter(whereClause, argumentValue);
-        }
+        ITableDbCommandBuilder ITableDbCommandBuilder.WithFilter(string whereClause, object argumentValue) => WithFilter(whereClause, argumentValue);
 
         /// <summary>
-        /// Returns the row count using a <c>SELECT Count(*)</c> style query.
+        /// Adds limits to the command builder.
         /// </summary>
+        /// <param name="skip">The number of rows to skip.</param>
+        /// <param name="take">Number of rows to take.</param>
         /// <returns></returns>
-        public abstract ILink<long> AsCount();
+        public TableDbCommandBuilder<TCommand, TParameter, TLimit> WithLimits(int? skip, int? take) => OnWithLimits(skip, take, DefaultLimitOption, null);
 
         /// <summary>
-        /// Returns the row count for a given column. <c>SELECT Count(columnName)</c>
+        /// Adds limits to the command builder.
         /// </summary>
-        /// <param name="columnName">Name of the column.</param>
-        /// <param name="distinct">if set to <c>true</c> use <c>SELECT COUNT(DISTINCT columnName)</c>.</param>
+        /// <param name="take">Number of rows to take.</param>
         /// <returns></returns>
-        public abstract ILink<long> AsCount(string columnName, bool distinct = false);
+        public TableDbCommandBuilder<TCommand, TParameter, TLimit> WithLimits(int? take) => OnWithLimits(null, take, DefaultLimitOption, null);
 
         /// <summary>
-        /// Gets the default limit option.
+        /// Adds limits to the command builder.
         /// </summary>
-        /// <value>
-        /// The default limit options.
-        /// </value>
-        /// <remarks>For most data sources, this will be LimitOptions.Rows. </remarks>
-        protected virtual LimitOptions DefaultLimitOption
-        {
-            get { return LimitOptions.Rows; }
-        }
+        /// <param name="take">Number of rows to take.</param>
+        /// <param name="limitOptions">The limit options.</param>
+        /// <returns></returns>
+        public TableDbCommandBuilder<TCommand, TParameter, TLimit> WithLimits(int? take, TLimit limitOptions) => OnWithLimits(null, take, limitOptions, null);
+
+        /// <summary>
+        /// Adds limits to the command builder.
+        /// </summary>
+        /// <param name="take">Number of rows to take.</param>
+        /// <param name="limitOptions">The limit options.</param>
+        /// <param name="seed">The seed for repeatable reads. Only applies to random sampling</param>
+        /// <returns></returns>
+        public TableDbCommandBuilder<TCommand, TParameter, TLimit> WithLimits(int? take, TLimit limitOptions, int seed) => OnWithLimits(null, take, limitOptions, seed);
+
+        ITableDbCommandBuilder ITableDbCommandBuilder.WithLimits(int take, LimitOptions limitOptions, int? seed) => OnWithLimits(null, take, limitOptions, seed);
+
+        ITableDbCommandBuilder ITableDbCommandBuilder.WithLimits(int skip, int take) => OnWithLimits(skip, take, DefaultLimitOption, null);
+
+        /// <summary>
+        /// Adds sorting to the command builder.
+        /// </summary>
+        /// <param name="sortExpressions">The sort expressions.</param>
+        /// <returns></returns>
+        public abstract TableDbCommandBuilder<TCommand, TParameter, TLimit> WithSorting(IEnumerable<SortExpression> sortExpressions);
+
+        /// <summary>
+        /// Adds sorting to the command builder
+        /// </summary>
+        /// <param name="sortExpressions">The sort expressions.</param>
+        /// <returns></returns>
+        public TableDbCommandBuilder<TCommand, TParameter, TLimit> WithSorting(params SortExpression[] sortExpressions) => WithSorting((IEnumerable<SortExpression>)sortExpressions);
+
+        ITableDbCommandBuilder ITableDbCommandBuilder.WithSorting(IEnumerable<SortExpression> sortExpressions) => WithSorting(sortExpressions);
+
+        ITableDbCommandBuilder ITableDbCommandBuilder.WithSorting(params SortExpression[] sortExpressions) => WithSorting((IEnumerable<SortExpression>)sortExpressions);
+
+        /// <summary>
+        /// Adds limits to the command builder.
+        /// </summary>
+        /// <param name="skip">The number of rows to skip.</param>
+        /// <param name="take">Number of rows to take.</param>
+        /// <param name="limitOptions">The limit options.</param>
+        /// <param name="seed">The seed for repeatable reads. Only applies to random sampling</param>
+        /// <returns></returns>
+        protected abstract TableDbCommandBuilder<TCommand, TParameter, TLimit> OnWithLimits(int? skip, int? take, TLimit limitOptions, int? seed);
+
+        /// <summary>
+        /// Adds limits to the command builder.
+        /// </summary>
+        /// <param name="skip">The number of rows to skip.</param>
+        /// <param name="take">Number of rows to take.</param>
+        /// <param name="limitOptions">The limit options.</param>
+        /// <param name="seed">The seed for repeatable reads. Only applies to random sampling</param>
+        /// <returns></returns>
+        protected abstract TableDbCommandBuilder<TCommand, TParameter, TLimit> OnWithLimits(int? skip, int? take, LimitOptions limitOptions, int? seed);
     }
 }

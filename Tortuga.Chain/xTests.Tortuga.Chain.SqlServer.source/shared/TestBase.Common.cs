@@ -9,7 +9,7 @@ namespace Tests
     partial class TestBase
     {
 
-        private readonly ITestOutputHelper m_Output;
+        readonly ITestOutputHelper m_Output;
 
         static int s_DataSourceCount;
 

@@ -23,16 +23,16 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
     internal sealed partial class SqlServerTableOrView : TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption>
     {
         readonly TableOrViewMetadata<SqlServerObjectName, SqlDbType> m_Table;
-        private object m_FilterValue;
-        private string m_WhereClause;
-        private object m_ArgumentValue;
-        private IEnumerable<SortExpression> m_SortExpressions = Enumerable.Empty<SortExpression>();
-        private SqlServerLimitOption m_LimitOptions;
-        private int? m_Skip;
-        private int? m_Take;
-        private int? m_Seed;
-        private string m_SelectClause;
-        private FilterOptions m_FilterOptions;
+        object m_FilterValue;
+        string m_WhereClause;
+        object m_ArgumentValue;
+        IEnumerable<SortExpression> m_SortExpressions = Enumerable.Empty<SortExpression>();
+        SqlServerLimitOption m_LimitOptions;
+        int? m_Skip;
+        int? m_Take;
+        int? m_Seed;
+        string m_SelectClause;
+        FilterOptions m_FilterOptions;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlServerTableOrView" /> class.

@@ -24,13 +24,13 @@ namespace Tortuga.Chain.Core
         /// <summary>
         /// Gets a value indicating whether the key was found.
         /// </summary>
-        public bool KeyFound { get; private set; }
+        public bool KeyFound { get; }
 
         /// <summary>
         /// Gets the value.
         /// </summary>
         /// <value>The value.</value>
         /// <remarks>Will be Default(T) is the key wasn't found.</remarks>
-        public T Value { get; private set; }
+        public T Value { get; }
     }
 }
