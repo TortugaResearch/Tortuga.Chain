@@ -1,5 +1,6 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
+using System.Text;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
 
@@ -12,7 +13,6 @@ namespace Tortuga.Chain.MySql.CommandBuilders
         where TArgument : class
     {
         readonly UpdateOptions m_Options;
-
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MySqlUpdateObject{TArgument}"/> class.
@@ -34,7 +34,27 @@ namespace Tortuga.Chain.MySql.CommandBuilders
         /// <returns><see cref="MySqlCommandExecutionToken" /></returns>
         public override CommandExecutionToken<MySqlCommand, MySqlParameter> Prepare(Materializer<MySqlCommand, MySqlParameter> materializer)
         {
-            throw new NotImplementedException();
+            if (materializer == null)
+                throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
+
+            var sqlBuilder = Table.CreateSqlBuilder(StrictMode);
+            sqlBuilder.ApplyArgumentValue(DataSource, ArgumentValue, m_Options);
+            sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
+
+            var sql = new StringBuilder();
+            if (m_Options.HasFlag(UpdateOptions.ReturnOldValues))
+            {
+                sqlBuilder.BuildSelectByKeyStatement(sql, Table.Name.ToQuotedString(), ";");
+                sql.AppendLine();
+            }
+            sqlBuilder.BuildUpdateByKeyStatement(sql, Table.Name.ToQuotedString(), ";");
+            if (!m_Options.HasFlag(UpdateOptions.ReturnOldValues))
+            {
+                sql.AppendLine();
+                sqlBuilder.BuildSelectByKeyStatement(sql, Table.Name.ToQuotedString(), ";");
+            }
+
+            return new MySqlCommandExecutionToken(DataSource, "Update " + Table.Name, sql.ToString(), sqlBuilder.GetParameters()).CheckUpdateRowCount(m_Options);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
+using System.Text;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
 
@@ -33,7 +34,19 @@ namespace Tortuga.Chain.MySql.CommandBuilders
         /// <returns><see cref="MySqlCommandExecutionToken" /></returns>
         public override CommandExecutionToken<MySqlCommand, MySqlParameter> Prepare(Materializer<MySqlCommand, MySqlParameter> materializer)
         {
-            throw new NotImplementedException();
+            if (materializer == null)
+                throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
+
+            var sqlBuilder = Table.CreateSqlBuilder(StrictMode);
+            sqlBuilder.ApplyArgumentValue(DataSource, ArgumentValue, m_Options);
+            sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
+
+            var sql = new StringBuilder();
+            sqlBuilder.BuildSelectByKeyStatement(sql, Table.Name.ToQuotedString(), ";");
+            sql.AppendLine();
+            sqlBuilder.BuildDeleteStatement(sql, Table.Name.ToQuotedString(), ";");
+
+            return new MySqlCommandExecutionToken(DataSource, "Delete from " + Table.Name, sql.ToString(), sqlBuilder.GetParameters());
         }
     }
 }

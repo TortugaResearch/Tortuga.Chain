@@ -23,6 +23,8 @@ namespace Tests.CommandBuilders
         public static TablesAndViewLimitData<PostgreSqlLimitOption> TablesAndViewLimit = new TablesAndViewLimitData<PostgreSqlLimitOption>(s_DataSources.Values);
 #elif ACCESS
         public static TablesAndViewLimitData<AccessLimitOption> TablesAndViewLimit = new TablesAndViewLimitData<AccessLimitOption>(s_DataSources.Values);
+#elif MYSQL
+        public static TablesAndViewLimitData<MySqlLimitOption> TablesAndViewLimit = new TablesAndViewLimitData<MySqlLimitOption>(s_DataSources.Values);
 #endif
 
         public FromTests(ITestOutputHelper output) : base(output)

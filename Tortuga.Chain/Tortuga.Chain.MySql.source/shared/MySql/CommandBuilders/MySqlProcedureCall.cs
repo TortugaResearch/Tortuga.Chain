@@ -1,5 +1,9 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using Tortuga.Chain.AuditRules;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
@@ -16,7 +20,7 @@ namespace Tortuga.Chain.MySql.CommandBuilders
 
         readonly object m_ArgumentValue;
         readonly StoredProcedureMetadata<MySqlObjectName, MySqlDbType> m_Procedure;
-        //readonly MySqlObjectName m_ProcedureName;
+        readonly MySqlObjectName m_ProcedureName;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MySqlProcedureCall"/> class.
@@ -30,18 +34,8 @@ namespace Tortuga.Chain.MySql.CommandBuilders
                 throw new ArgumentException($"{nameof(procedureName)} is empty", nameof(procedureName));
 
             m_ArgumentValue = argumentValue;
-            //m_ProcedureName = procedureName;
+            m_ProcedureName = procedureName;
             m_Procedure = DataSource.DatabaseMetadata.GetStoredProcedure(procedureName);
-        }
-
-        /// <summary>
-        /// Prepares the command for execution by generating any necessary SQL.
-        /// </summary>
-        /// <param name="materializer">The materializer.</param>
-        /// <returns>ExecutionToken&lt;TCommand&gt;.</returns>
-        public override CommandExecutionToken<MySqlCommand, MySqlParameter> Prepare(Materializer<MySqlCommand, MySqlParameter> materializer)
-        {
-            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -51,6 +45,32 @@ namespace Tortuga.Chain.MySql.CommandBuilders
         public new MySqlDataSourceBase DataSource
         {
             get { return (MySqlDataSourceBase)base.DataSource; }
+        }
+
+        /// <summary>
+        /// Prepares the command for execution by generating any necessary SQL.
+        /// </summary>
+        /// <param name="materializer">The materializer.</param>
+        /// <returns>ExecutionToken&lt;TCommand&gt;.</returns>
+        public override CommandExecutionToken<MySqlCommand, MySqlParameter> Prepare(Materializer<MySqlCommand, MySqlParameter> materializer)
+        {
+            if (materializer == null)
+                throw new ArgumentNullException("materializer", "materializer is null.");
+
+            List<MySqlParameter> parameters;
+
+            if (m_ArgumentValue is IEnumerable<MySqlParameter>)
+            {
+                parameters = ((IEnumerable<MySqlParameter>)m_ArgumentValue).ToList();
+            }
+            else
+            {
+                var sqlBuilder = m_Procedure.CreateSqlBuilder(StrictMode);
+                sqlBuilder.ApplyArgumentValue(DataSource, OperationTypes.None, m_ArgumentValue);
+                parameters = sqlBuilder.GetParameters();
+            }
+
+            return new MySqlCommandExecutionToken(DataSource, m_Procedure.Name.ToString(), m_Procedure.Name.ToQuotedString(), parameters, CommandType.StoredProcedure);
         }
 
         /// <summary>

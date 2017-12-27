@@ -1,5 +1,7 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
+using System.Linq;
+using System.Text;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
 
@@ -34,8 +36,43 @@ namespace Tortuga.Chain.MySql.CommandBuilders
         /// <returns><see cref="MySqlCommandExecutionToken" /></returns>
         public override CommandExecutionToken<MySqlCommand, MySqlParameter> Prepare(Materializer<MySqlCommand, MySqlParameter> materializer)
         {
-            throw new NotImplementedException();
+            if (materializer == null)
+                throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
+
+            var sqlBuilder = Table.CreateSqlBuilder(StrictMode);
+            sqlBuilder.ApplyArgumentValue(DataSource, ArgumentValue, m_Options);
+            sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
+
+            var sql = new StringBuilder();
+            sqlBuilder.BuildInsertClause(sql, $"INSERT INTO {Table.Name.ToString()} (", null, ")");
+            sqlBuilder.BuildValuesClause(sql, " VALUES (", ");");
+
+            if (sqlBuilder.HasReadFields)
+            {
+                var identityColumn = Table.Columns.Where(c => c.IsIdentity).SingleOrDefault();
+                if (identityColumn != null)
+                {
+                    sqlBuilder.BuildSelectClause(sql, "SELECT ", null, null);
+                    sql.Append(" FROM " + Table.Name.ToQuotedString());
+                    sql.Append(" WHERE " + identityColumn.QuotedSqlName + " = LAST_INSERT_ID()");
+                    sql.Append(";");
+                }
+                else
+                {
+                    var primaryKeys = Table.Columns.Where(c => c.IsPrimaryKey).ToList();
+                    if (primaryKeys.Count == 0)
+                        throw new MappingException($"Insert operation cannot return any values for { Table.Name} because it doesn't have a primary key.");
+
+                    sqlBuilder.BuildSelectClause(sql, "SELECT ", null, null);
+                    sql.Append(" FROM " + Table.Name.ToQuotedString());
+                    sqlBuilder.BuildWhereClause(sql, null, null);
+                    sql.Append(";");
+                }
+            }
+
+            return new MySqlCommandExecutionToken(DataSource, "Insert into " + Table.Name, sql.ToString(), sqlBuilder.GetParameters());
         }
+
 
     }
 }

@@ -74,6 +74,148 @@ namespace Tortuga.Chain.MySql
         }
 
         /// <summary>
+        /// Delete a record by its primary key.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="key">The key.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>MultipleRowDbCommandBuilder&lt;MySqlCommand, MySqlParameter&gt;.</returns>
+        public SingleRowDbCommandBuilder<MySqlCommand, MySqlParameter> DeleteByKey<T>(MySqlObjectName tableName, T key, DeleteOptions options = DeleteOptions.None)
+            where T : struct
+        {
+            return DeleteByKeyList(tableName, new List<T> { key }, options);
+        }
+
+        /// <summary>
+        /// Delete a record by its primary key.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="key">The key.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>MultipleRowDbCommandBuilder&lt;MySqlCommand, MySqlParameter&gt;.</returns>
+        public SingleRowDbCommandBuilder<MySqlCommand, MySqlParameter> DeleteByKey(MySqlObjectName tableName, string key, DeleteOptions options = DeleteOptions.None)
+        {
+            return DeleteByKeyList(tableName, new List<string> { key }, options);
+        }
+
+        /// <summary>
+        /// Delete multiple rows by key.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="keys">The keys.</param>
+        /// <returns></returns>
+        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
+        public MultipleRowDbCommandBuilder<MySqlCommand, MySqlParameter> DeleteByKey<T>(MySqlObjectName tableName, params T[] keys)
+            where T : struct
+        {
+            return DeleteByKeyList(tableName, keys);
+        }
+
+        /// <summary>
+        /// Delete multiple rows by key.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="keys">The keys.</param>
+        /// <returns></returns>
+        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
+        public MultipleRowDbCommandBuilder<MySqlCommand, MySqlParameter> DeleteByKey(MySqlObjectName tableName, params string[] keys)
+        {
+            return DeleteByKeyList(tableName, keys);
+        }
+
+        /// <summary>
+        /// Delete multiple rows by key.
+        /// </summary>
+        /// <typeparam name="TKey">The type of the t key.</typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="keys">The keys.</param>
+        /// <param name="options">Update options.</param>
+        /// <returns>MultipleRowDbCommandBuilder&lt;MySqlCommand, MySqlParameter&gt;.</returns>
+        /// <exception cref="MappingException"></exception>
+        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "DeleteByKey")]
+        public MultipleRowDbCommandBuilder<MySqlCommand, MySqlParameter> DeleteByKeyList<TKey>(MySqlObjectName tableName, IEnumerable<TKey> keys, DeleteOptions options = DeleteOptions.None)
+        {
+            var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).Columns.Where(c => c.IsPrimaryKey).ToList();
+            if (primaryKeys.Count != 1)
+                throw new MappingException($"DeleteByKey operation isn't allowed on {tableName} because it doesn't have a single primary key.");
+
+            var keyList = keys.AsList();
+            var columnMetadata = primaryKeys.Single();
+            string where;
+            if (keys.Count() > 1)
+                where = columnMetadata.SqlName + " IN (" + string.Join(", ", keyList.Select((s, i) => "@Param" + i)) + ")";
+            else
+                where = columnMetadata.SqlName + " = @Param0";
+
+            var parameters = new List<MySqlParameter>();
+            for (var i = 0; i < keyList.Count; i++)
+            {
+                var param = new MySqlParameter("@Param" + i, keyList[i]);
+                if (columnMetadata.DbType.HasValue)
+                    param.MySqlDbType = columnMetadata.DbType.Value;
+                parameters.Add(param);
+            }
+
+            var table = DatabaseMetadata.GetTableOrView(tableName);
+            if (!AuditRules.UseSoftDelete(table))
+                return new MySqlDeleteMany(this, tableName, where, parameters, options);
+
+            UpdateOptions effectiveOptions = UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected;
+            if (options.HasFlag(DeleteOptions.UseKeyAttribute))
+                effectiveOptions = effectiveOptions | UpdateOptions.UseKeyAttribute;
+
+            return new MySqlUpdateMany(this, tableName, null, where, parameters, parameters.Count, effectiveOptions);
+
+        }
+
+        /// <summary>
+        /// Deletes multiple records using a where expression.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="whereClause">The where clause.</param>
+        public MultipleRowDbCommandBuilder<MySqlCommand, MySqlParameter> DeleteWithFilter(MySqlObjectName tableName, string whereClause)
+        {
+            var table = DatabaseMetadata.GetTableOrView(tableName);
+            if (!AuditRules.UseSoftDelete(table))
+                return new MySqlDeleteMany(this, tableName, whereClause, null);
+
+            return new MySqlUpdateMany(this, tableName, null, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected).WithFilter(whereClause, null);
+        }
+
+
+        /// <summary>
+        /// Deletes multiple records using a where expression.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="whereClause">The where clause.</param>
+        /// <param name="argumentValue">The argument value for the where clause.</param>
+        public MultipleRowDbCommandBuilder<MySqlCommand, MySqlParameter> DeleteWithFilter(MySqlObjectName tableName, string whereClause, object argumentValue)
+        {
+            var table = DatabaseMetadata.GetTableOrView(tableName);
+            if (!AuditRules.UseSoftDelete(table))
+                return new MySqlDeleteMany(this, tableName, whereClause, argumentValue);
+
+            return new MySqlUpdateMany(this, tableName, null, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected).WithFilter(whereClause, argumentValue);
+        }
+
+        /// <summary>
+        /// Deletes multiple records using a filter object.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="filterValue">The filter value.</param>
+        /// <param name="filterOptions">The filter options.</param>
+        public MultipleRowDbCommandBuilder<MySqlCommand, MySqlParameter> DeleteWithFilter(MySqlObjectName tableName, object filterValue, FilterOptions filterOptions = FilterOptions.None)
+        {
+            var table = DatabaseMetadata.GetTableOrView(tableName);
+            if (!AuditRules.UseSoftDelete(table))
+                return new MySqlDeleteMany(this, tableName, filterValue, filterOptions);
+
+            return new MySqlUpdateMany(this, tableName, null, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected).WithFilter(filterValue, filterOptions);
+        }
+
+        /// <summary>
         /// Froms the specified table or view name.
         /// </summary>
         /// <param name="tableOrViewName">Name of the table or view.</param>
@@ -278,6 +420,48 @@ namespace Tortuga.Chain.MySql
         }
 
         /// <summary>
+        /// Executes the indicated procedure.
+        /// </summary>
+        /// <param name="procedureName">Name of the procedure.</param>
+        /// <returns></returns>
+        public MultipleTableDbCommandBuilder<MySqlCommand, MySqlParameter> Procedure(MySqlObjectName procedureName)
+        {
+            return new MySqlProcedureCall(this, procedureName);
+        }
+
+        /// <summary>
+        /// Executes the indicated procedure.
+        /// </summary>
+        /// <param name="procedureName">Name of the procedure.</param>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <returns></returns>
+        public MultipleTableDbCommandBuilder<MySqlCommand, MySqlParameter> Procedure(string procedureName, object argumentValue)
+        {
+            return new MySqlProcedureCall(this, procedureName, argumentValue);
+        }
+
+        /// <summary>
+        /// This is used to query a scalar function.
+        /// </summary>
+        /// <param name="scalarFunctionName">Name of the scalar function.</param>
+        /// <returns></returns>
+        public ScalarDbCommandBuilder<MySqlCommand, MySqlParameter> ScalarFunction(MySqlObjectName scalarFunctionName)
+        {
+            return ScalarFunction(scalarFunctionName);
+        }
+
+        /// <summary>
+        /// This is used to query a scalar function.
+        /// </summary>
+        /// <param name="scalarFunctionName">Name of the scalar function.</param>
+        /// <param name="functionArgumentValue">The function arguments.</param>
+        /// <returns></returns>
+        public ScalarDbCommandBuilder<MySqlCommand, MySqlParameter> ScalarFunction(MySqlObjectName scalarFunctionName, object functionArgumentValue)
+        {
+            return ScalarFunction(scalarFunctionName, functionArgumentValue);
+        }
+
+        /// <summary>
         /// SQLs the specified SQL statement.
         /// </summary>
         /// <param name="sqlStatement">The SQL statement.</param>
@@ -321,39 +505,6 @@ namespace Tortuga.Chain.MySql
         public ObjectDbCommandBuilder<MySqlCommand, MySqlParameter, TArgument> Update<TArgument>(TArgument argumentValue, UpdateOptions options = UpdateOptions.None) where TArgument : class
         {
             return Update(DatabaseMetadata.GetTableOrViewFromClass<TArgument>().Name, argumentValue, options);
-        }
-
-        /// <summary>
-        /// Upserts the specified table name.
-        /// </summary>
-        /// <typeparam name="TArgument">The type of the t argument.</typeparam>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="argumentValue">The argument value.</param>
-        /// <param name="options">The options.</param>
-        /// <returns>ObjectDbCommandBuilder&lt;MySqlCommand, MySqlParameter, TArgument&gt;.</returns>
-        public ObjectDbCommandBuilder<MySqlCommand, MySqlParameter, TArgument> Upsert<TArgument>(MySqlObjectName tableName, TArgument argumentValue, UpsertOptions options = UpsertOptions.None)
-        where TArgument : class
-        {
-            return new MySqlInsertOrUpdateObject<TArgument>(this, tableName, argumentValue, options);
-        }
-        /// <summary>
-        /// Performs an insert or update operation as appropriate.
-        /// </summary>
-        /// <typeparam name="TArgument"></typeparam>
-        /// <param name="argumentValue">The argument value.</param>
-        /// <param name="options">The options for how the insert/update occurs.</param>
-        /// <returns></returns>
-        public ObjectDbCommandBuilder<MySqlCommand, MySqlParameter, TArgument> Upsert<TArgument>(TArgument argumentValue, UpsertOptions options = UpsertOptions.None) where TArgument : class
-        {
-            return Upsert(DatabaseMetadata.GetTableOrViewFromClass<TArgument>().Name, argumentValue, options);
-        }
-        /// <summary>
-        /// Called when Database.DatabaseMetadata is invoked.
-        /// </summary>
-        /// <returns></returns>
-        protected override IDatabaseMetadataCache OnGetDatabaseMetadata()
-        {
-            return DatabaseMetadata;
         }
 
         /// <summary>
@@ -416,7 +567,6 @@ namespace Tortuga.Chain.MySql
             return UpdateByKeyList(tableName, newValues, keys);
         }
 
-
         /// <summary>
         /// Updates multiple rows by key.
         /// </summary>
@@ -455,182 +605,6 @@ namespace Tortuga.Chain.MySql
             return new MySqlUpdateMany(this, tableName, newValues, where, parameters, parameters.Count, options);
         }
 
-
-
-        /// <summary>
-        /// Delete a record by its primary key.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="key">The key.</param>
-        /// <param name="options">The options.</param>
-        /// <returns>MultipleRowDbCommandBuilder&lt;MySqlCommand, MySqlParameter&gt;.</returns>
-        public SingleRowDbCommandBuilder<MySqlCommand, MySqlParameter> DeleteByKey<T>(MySqlObjectName tableName, T key, DeleteOptions options = DeleteOptions.None)
-            where T : struct
-        {
-            return DeleteByKeyList(tableName, new List<T> { key }, options);
-        }
-
-        /// <summary>
-        /// Delete a record by its primary key.
-        /// </summary>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="key">The key.</param>
-        /// <param name="options">The options.</param>
-        /// <returns>MultipleRowDbCommandBuilder&lt;MySqlCommand, MySqlParameter&gt;.</returns>
-        public SingleRowDbCommandBuilder<MySqlCommand, MySqlParameter> DeleteByKey(MySqlObjectName tableName, string key, DeleteOptions options = DeleteOptions.None)
-        {
-            return DeleteByKeyList(tableName, new List<string> { key }, options);
-        }
-
-        /// <summary>
-        /// Delete multiple rows by key.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="keys">The keys.</param>
-        /// <returns></returns>
-        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
-        public MultipleRowDbCommandBuilder<MySqlCommand, MySqlParameter> DeleteByKey<T>(MySqlObjectName tableName, params T[] keys)
-            where T : struct
-        {
-            return DeleteByKeyList(tableName, keys);
-        }
-
-        /// <summary>
-        /// Delete multiple rows by key.
-        /// </summary>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="keys">The keys.</param>
-        /// <returns></returns>
-        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
-        public MultipleRowDbCommandBuilder<MySqlCommand, MySqlParameter> DeleteByKey(MySqlObjectName tableName, params string[] keys)
-        {
-            return DeleteByKeyList(tableName, keys);
-        }
-
-        /// <summary>
-        /// Delete multiple rows by key.
-        /// </summary>
-        /// <typeparam name="TKey">The type of the t key.</typeparam>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="keys">The keys.</param>
-        /// <param name="options">Update options.</param>
-        /// <returns>MultipleRowDbCommandBuilder&lt;MySqlCommand, MySqlParameter&gt;.</returns>
-        /// <exception cref="MappingException"></exception>
-        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "DeleteByKey")]
-        public MultipleRowDbCommandBuilder<MySqlCommand, MySqlParameter> DeleteByKeyList<TKey>(MySqlObjectName tableName, IEnumerable<TKey> keys, DeleteOptions options = DeleteOptions.None)
-        {
-            var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).Columns.Where(c => c.IsPrimaryKey).ToList();
-            if (primaryKeys.Count != 1)
-                throw new MappingException($"DeleteByKey operation isn't allowed on {tableName} because it doesn't have a single primary key.");
-
-            var keyList = keys.AsList();
-            var columnMetadata = primaryKeys.Single();
-            string where;
-            if (keys.Count() > 1)
-                where = columnMetadata.SqlName + " IN (" + string.Join(", ", keyList.Select((s, i) => "@Param" + i)) + ")";
-            else
-                where = columnMetadata.SqlName + " = @Param0";
-
-            var parameters = new List<MySqlParameter>();
-            for (var i = 0; i < keyList.Count; i++)
-            {
-                var param = new MySqlParameter("@Param" + i, keyList[i]);
-                if (columnMetadata.DbType.HasValue)
-                    param.MySqlDbType = columnMetadata.DbType.Value;
-                parameters.Add(param);
-            }
-
-            var table = DatabaseMetadata.GetTableOrView(tableName);
-            if (!AuditRules.UseSoftDelete(table))
-                return new MySqlDeleteMany(this, tableName, where, parameters, options);
-
-            UpdateOptions effectiveOptions = UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected;
-            if (options.HasFlag(DeleteOptions.UseKeyAttribute))
-                effectiveOptions = effectiveOptions | UpdateOptions.UseKeyAttribute;
-
-            return new MySqlUpdateMany(this, tableName, null, where, parameters, parameters.Count, effectiveOptions);
-
-        }
-
-        /// <summary>
-        /// Executes the indicated procedure.
-        /// </summary>
-        /// <param name="procedureName">Name of the procedure.</param>
-        /// <returns></returns>
-        public MultipleTableDbCommandBuilder<MySqlCommand, MySqlParameter> Procedure(MySqlObjectName procedureName)
-        {
-            return new MySqlProcedureCall(this, procedureName);
-        }
-
-        /// <summary>
-        /// Executes the indicated procedure.
-        /// </summary>
-        /// <param name="procedureName">Name of the procedure.</param>
-        /// <param name="argumentValue">The argument value.</param>
-        /// <returns></returns>
-        public MultipleTableDbCommandBuilder<MySqlCommand, MySqlParameter> Procedure(string procedureName, object argumentValue)
-        {
-            return new MySqlProcedureCall(this, procedureName, argumentValue);
-        }
-
-
-
-        /// <summary>
-        /// This is used to query a scalar function.
-        /// </summary>
-        /// <param name="scalarFunctionName">Name of the scalar function.</param>
-        /// <returns></returns>
-        public ScalarDbCommandBuilder<MySqlCommand, MySqlParameter>  ScalarFunction(MySqlObjectName scalarFunctionName)
-        {
-            return ScalarFunction(scalarFunctionName);
-        }
-
-        /// <summary>
-        /// This is used to query a scalar function.
-        /// </summary>
-        /// <param name="scalarFunctionName">Name of the scalar function.</param>
-        /// <param name="functionArgumentValue">The function arguments.</param>
-        /// <returns></returns>
-        public ScalarDbCommandBuilder<MySqlCommand, MySqlParameter> ScalarFunction(MySqlObjectName scalarFunctionName, object functionArgumentValue)
-        {
-            return ScalarFunction(scalarFunctionName, functionArgumentValue);
-        }
-
-        /// <summary>
-        /// This is used to query a scalar function.
-        /// </summary>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="whereClause">The where clause.</param>
-
-        public MultipleRowDbCommandBuilder<MySqlCommand, MySqlParameter> DeleteWithFilter(MySqlObjectName tableName, string whereClause)
-        {
-            return DeleteWithFilter(tableName, whereClause);
-        }
-
-        /// <summary>
-        /// This is used to query a scalar function.
-        /// </summary>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="whereClause">The where clause.</param>
-        /// <param name="argumentValue">The argument value.</param>
-        public MultipleRowDbCommandBuilder<MySqlCommand, MySqlParameter> DeleteWithFilter(MySqlObjectName tableName, string whereClause, object argumentValue)
-        {
-            return DeleteWithFilter(tableName, whereClause, argumentValue);
-        }
-
-        /// <summary>
-        /// Deletes multiple records using a filter object.
-        /// </summary>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="filterValue">The filter value.</param>
-        /// <param name="filterOptions">The filter options.</param>
-        public MultipleRowDbCommandBuilder<MySqlCommand, MySqlParameter> DeleteWithFilter(MySqlObjectName tableName, object filterValue, FilterOptions filterOptions = FilterOptions.None)
-        {
-            return DeleteWithFilter(tableName, filterValue, filterOptions);
-        }
-
         /// <summary>
         /// Updates multiple records using an update expression.
         /// </summary>
@@ -639,7 +613,7 @@ namespace Tortuga.Chain.MySql
         /// <param name="options">The update options.</param>
         public UpdateManyCommandBuilder<MySqlCommand, MySqlParameter> UpdateSet(MySqlObjectName tableName, string updateExpression, UpdateOptions options = UpdateOptions.None)
         {
-            return UpdateSet(tableName, updateExpression, options);
+            return new MySqlUpdateMany(this, tableName, updateExpression, null, options);
         }
 
         /// <summary>
@@ -651,7 +625,7 @@ namespace Tortuga.Chain.MySql
         /// <param name="options">The update options.</param>
         public UpdateManyCommandBuilder<MySqlCommand, MySqlParameter> UpdateSet(MySqlObjectName tableName, string updateExpression, object updateArgumentValue, UpdateOptions options = UpdateOptions.None)
         {
-            return UpdateSet(tableName, updateExpression, updateArgumentValue, options);
+            return new MySqlUpdateMany(this, tableName, updateExpression, updateArgumentValue, options);
         }
 
         /// <summary>
@@ -662,9 +636,40 @@ namespace Tortuga.Chain.MySql
         /// <param name="options">The options.</param>
         public UpdateManyCommandBuilder<MySqlCommand, MySqlParameter> UpdateSet(MySqlObjectName tableName, object newValues, UpdateOptions options = UpdateOptions.None)
         {
-            return UpdateSet(tableName, newValues, options);
+            return new MySqlUpdateMany(this, tableName, newValues, options);
         }
 
-
+        /// <summary>
+        /// Upserts the specified table name.
+        /// </summary>
+        /// <typeparam name="TArgument">The type of the t argument.</typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>ObjectDbCommandBuilder&lt;MySqlCommand, MySqlParameter, TArgument&gt;.</returns>
+        public ObjectDbCommandBuilder<MySqlCommand, MySqlParameter, TArgument> Upsert<TArgument>(MySqlObjectName tableName, TArgument argumentValue, UpsertOptions options = UpsertOptions.None)
+        where TArgument : class
+        {
+            return new MySqlInsertOrUpdateObject<TArgument>(this, tableName, argumentValue, options);
+        }
+        /// <summary>
+        /// Performs an insert or update operation as appropriate.
+        /// </summary>
+        /// <typeparam name="TArgument"></typeparam>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="options">The options for how the insert/update occurs.</param>
+        /// <returns></returns>
+        public ObjectDbCommandBuilder<MySqlCommand, MySqlParameter, TArgument> Upsert<TArgument>(TArgument argumentValue, UpsertOptions options = UpsertOptions.None) where TArgument : class
+        {
+            return Upsert(DatabaseMetadata.GetTableOrViewFromClass<TArgument>().Name, argumentValue, options);
+        }
+        /// <summary>
+        /// Called when Database.DatabaseMetadata is invoked.
+        /// </summary>
+        /// <returns></returns>
+        protected override IDatabaseMetadataCache OnGetDatabaseMetadata()
+        {
+            return DatabaseMetadata;
+        }
     }
 }

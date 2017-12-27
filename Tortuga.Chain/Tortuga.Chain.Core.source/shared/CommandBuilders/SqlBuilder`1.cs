@@ -1233,7 +1233,7 @@ namespace Tortuga.Chain.CommandBuilders
         }
 
         /// <summary>
-        /// Primaries the keyis identity.
+        /// Returns true is the primary key includes an identity column.
         /// </summary>
         /// <typeparam name="TParameter">The type of the parameter.</typeparam>
         /// <param name="parameterBuilder">The parameter builder.</param>

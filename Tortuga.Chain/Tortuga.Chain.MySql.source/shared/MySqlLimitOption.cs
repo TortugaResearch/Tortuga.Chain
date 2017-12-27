@@ -11,19 +11,16 @@
         /// </summary>
         None = LimitOptions.None,
 
-        ///// <summary>
-        ///// Returns the indicated number of rows with optional offset
-        ///// </summary>
-        //Rows = LimitOptions.Rows,
+        /// <summary>
+        /// Returns the indicated number of rows with optional offset
+        /// </summary>
+        Rows = LimitOptions.Rows,
 
-        ///// <summary>
-        ///// Randomly sample N percentage of rows using the Table Sample System algorithm.
-        ///// </summary>
-        //TableSampleSystemPercentage = LimitOptions.TableSampleSystemPercentage,
+        /// <summary>
+        /// Randomly sample the indicated number of rows
+        /// </summary>
+        /// <remarks>WARNING: This uses "ORDER BY RAND()", which is inappropriate for large tables.</remarks>
+        RandomSampleRows = LimitOptions.RandomSampleRows,
 
-        ///// <summary>
-        ///// Randomly sample N percentage of rows using the Table Sample Bernoulli algorithm.
-        ///// </summary>
-        //TableSampleBernoulliPercentage = LimitOptions.TableSampleBernoulliPercentage,
     }
 }

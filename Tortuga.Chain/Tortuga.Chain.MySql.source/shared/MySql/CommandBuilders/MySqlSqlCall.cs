@@ -40,7 +40,7 @@ namespace Tortuga.Chain.MySql.CommandBuilders
         /// </returns>
         public override CommandExecutionToken<MySqlCommand, MySqlParameter> Prepare(Materializer<MySqlCommand, MySqlParameter> materializer)
         {
-            throw new NotImplementedException();
+            return new MySqlCommandExecutionToken(DataSource, "Raw SQL call", m_SqlStatement, SqlBuilder.GetParameters<MySqlParameter>(m_ArgumentValue));
         }
 
         /// <summary>
