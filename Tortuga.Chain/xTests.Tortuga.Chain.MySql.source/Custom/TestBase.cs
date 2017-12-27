@@ -76,6 +76,7 @@ namespace Tests
             switch (mode)
             {
                 case DataSourceType.Normal: return AttachTracers(ds);
+                case DataSourceType.Strict: return AttachTracers(ds).WithSettings(new MySqlDataSourceSettings() { StrictMode = true });
                 case DataSourceType.Transactional: return AttachTracers(ds.BeginTransaction());
                 case DataSourceType.Open:
                     var root = (IRootDataSource)ds;
@@ -92,6 +93,7 @@ namespace Tests
             switch (mode)
             {
                 case DataSourceType.Normal: return AttachTracers(ds);
+                case DataSourceType.Strict: return AttachTracers(ds).WithSettings(new MySqlDataSourceSettings() { StrictMode = true });
                 case DataSourceType.Transactional: return AttachTracers(await ds.BeginTransactionAsync());
                 case DataSourceType.Open:
                     var root = (IRootDataSource)ds;

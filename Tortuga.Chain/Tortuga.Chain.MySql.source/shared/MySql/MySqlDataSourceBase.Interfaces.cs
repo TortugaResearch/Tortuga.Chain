@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Metadata;
@@ -182,12 +183,12 @@ namespace Tortuga.Chain.MySql
 
         ITableDbCommandBuilder IClass2DataSource.TableFunction(string functionName)
         {
-            return TableFunction(functionName);
+            throw new NotSupportedException();
         }
 
         ITableDbCommandBuilder IClass2DataSource.TableFunction(string functionName, object functionArgumentValue)
         {
-            return TableFunction(functionName, functionArgumentValue);
+            throw new NotSupportedException();
         }
 
         IScalarDbCommandBuilder IClass2DataSource.ScalarFunction(string scalarFunctionName)

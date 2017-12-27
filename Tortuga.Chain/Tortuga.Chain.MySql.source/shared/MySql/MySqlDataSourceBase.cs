@@ -123,7 +123,7 @@ namespace Tortuga.Chain.MySql
         /// </summary>
         /// <typeparam name="TObject"></typeparam>
         /// <returns></returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
+        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         public TableDbCommandBuilder<MySqlCommand, MySqlParameter, MySqlLimitOption> From<TObject>() where TObject : class
         {
             return From(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name);
@@ -135,7 +135,7 @@ namespace Tortuga.Chain.MySql
         /// <typeparam name="TObject">The type of the object.</typeparam>
         /// <param name="whereClause">The where clause. Do not prefix this clause with "WHERE".</param>
         /// <returns></returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
+        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         public TableDbCommandBuilder<MySqlCommand, MySqlParameter, MySqlLimitOption> From<TObject>(string whereClause) where TObject : class
         {
             return From(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, whereClause);
@@ -148,7 +148,7 @@ namespace Tortuga.Chain.MySql
         /// <param name="whereClause">The where clause. Do not prefix this clause with "WHERE".</param>
         /// <param name="argumentValue">Optional argument value. Every property in the argument value must have a matching parameter in the WHERE clause</param>
         /// <returns></returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
+        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         public TableDbCommandBuilder<MySqlCommand, MySqlParameter, MySqlLimitOption> From<TObject>(string whereClause, object argumentValue) where TObject : class
         {
             return From(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, whereClause, argumentValue);
@@ -160,7 +160,7 @@ namespace Tortuga.Chain.MySql
         /// <typeparam name="TObject">The type of the object.</typeparam>
         /// <param name="filterValue">The filter value is used to generate a simple AND style WHERE clause.</param>
         /// <returns></returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
+        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         public TableDbCommandBuilder<MySqlCommand, MySqlParameter, MySqlLimitOption> From<TObject>(object filterValue) where TObject : class
         {
             return From(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, filterValue);
@@ -552,28 +552,6 @@ namespace Tortuga.Chain.MySql
 
             return new MySqlUpdateMany(this, tableName, null, where, parameters, parameters.Count, effectiveOptions);
 
-        }
-
-
-        /// <summary>
-        /// This is used to query a table valued function.
-        /// </summary>
-        /// <param name="tableFunctionName">Name of the table function.</param>
-        /// <returns></returns>
-        public TableDbCommandBuilder<MySqlCommand, MySqlParameter, MySqlLimitOption> TableFunction(MySqlObjectName tableFunctionName)
-        {
-            return new MySqlTableFunction(this, tableFunctionName, null);
-        }
-
-        /// <summary>
-        /// This is used to query a table valued function.
-        /// </summary>
-        /// <param name="tableFunctionName">Name of the table function.</param>
-        /// <param name="functionArgumentValue">The function argument.</param>
-        /// <returns></returns>
-        public TableDbCommandBuilder<MySqlCommand, MySqlParameter, MySqlLimitOption> TableFunction(MySqlObjectName tableFunctionName, object functionArgumentValue)
-        {
-            return new MySqlTableFunction(this, tableFunctionName, functionArgumentValue);
         }
 
         /// <summary>

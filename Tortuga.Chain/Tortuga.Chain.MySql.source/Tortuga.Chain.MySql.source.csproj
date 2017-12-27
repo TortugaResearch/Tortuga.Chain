@@ -30,29 +30,33 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MySql.Data, Version=6.9.9.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
-      <HintPath>..\packages\MySql.Data.6.9.9\lib\net45\MySql.Data.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="MySql.Data, Version=6.10.5.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.6.10.5\lib\net452\MySql.Data.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Collections.Immutable, Version=1.2.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Collections.Immutable.1.2.0\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="System.Collections.Immutable, Version=1.2.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Collections.Immutable.1.4.0\lib\netstandard2.0\System.Collections.Immutable.dll</HintPath>
     </Reference>
+    <Reference Include="System.ComponentModel" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
+    <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Drawing.Design" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Runtime" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="Tortuga.Anchor, Version=1.0.6144.42409, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
-      <HintPath>..\packages\Tortuga.Anchor.1.0.6144.42409\lib\net46\Tortuga.Anchor.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Tortuga.Anchor, Version=1.2.6283.989, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tortuga.Anchor.1.2.6283.989\lib\net46\Tortuga.Anchor.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -68,10 +72,10 @@
     <Compile Include="shared\MySql\CommandBuilders\MySqlObjectCommand`1.cs" />
     <Compile Include="shared\MySql\CommandBuilders\MySqlProcedureCall.cs" />
     <Compile Include="shared\MySql\CommandBuilders\MySqlSqlCall.cs" />
-    <Compile Include="shared\MySql\CommandBuilders\MySqlTableFunction.cs" />
     <Compile Include="shared\MySql\CommandBuilders\MySqlTableOrView.cs" />
     <Compile Include="shared\MySql\CommandBuilders\MySqlUpdateMany.cs" />
     <Compile Include="shared\MySql\CommandBuilders\MySqlUpdateObject`1.cs" />
+    <Compile Include="shared\MySql\CommandBuilders\MySqlScalarFunction.cs" />
     <Compile Include="shared\MySql\MySqlCommandExecutionToken.cs" />
     <Compile Include="shared\MySql\MySqlDataSourceBase.cs" />
     <Compile Include="shared\MySql\MySqlDataSourceBase.Interfaces.cs" />
