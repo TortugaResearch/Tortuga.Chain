@@ -4,10 +4,10 @@
     <TargetFramework>netstandard2.0</TargetFramework>
 
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <AssemblyName>Tortuga.Chain.SQLite.MS</AssemblyName>
+    <AssemblyName>Tortuga.Chain.SQLite</AssemblyName>
 
-    <PackageId>Tortuga.Chain.SQLite.MS.netstandard2.0</PackageId>
-    <DefineConstants>$(DefineConstants);OleDb_Missing;System_Configuration_Missing</DefineConstants>
+    <PackageId>Tortuga.Chain.SQLite.netstandard2.0</PackageId>
+    <DefineConstants>$(DefineConstants);OleDb_Missing;System_Configuration_Missing;SDS</DefineConstants>
     <NetStandardImplicitPackageVersion>2.0.0</NetStandardImplicitPackageVersion>
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
@@ -21,9 +21,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\Tortuga.Chain.SQLite.MS.source\Properties\LibrarySharedAssemblyInfo-MS.cs;" />
-    <Compile Include="..\ProductSharedAssemblyInfo.cs" />
-    <Compile Include="..\Tortuga.Chain.SQLite.source\shared\**\*.cs" />
+    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.109.2" />
+    <PackageReference Include="Nito.AsyncEx.Coordination" Version="1.0.2" />
+    <PackageReference Include="Tortuga.Chain.Core" Version="1.3.6847.41792" />
   </ItemGroup>
 
   <ItemGroup>
@@ -31,9 +31,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Data.Sqlite" Version="2.1.0" />
-    <PackageReference Include="Nito.AsyncEx.Coordination" Version="1.0.2" />
-    <PackageReference Include="Tortuga.Chain.Core" Version="1.3.6847.41792" />
+    <Compile Include="..\Tortuga.Chain.SQLite.MS.source\Properties\LibrarySharedAssemblyInfo-MS.cs;" />
+    <Compile Include="..\ProductSharedAssemblyInfo.cs" />
+    <Compile Include="..\Tortuga.Chain.SQLite.source\shared\**\*.cs" />
   </ItemGroup>
 
   <ItemGroup>
