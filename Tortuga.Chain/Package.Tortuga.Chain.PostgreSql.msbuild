@@ -25,13 +25,11 @@
 
     <VersionSource>$(SourcePath)\bin\Release\$(ResultDll)</VersionSource>
     <NuspecName>Tortuga.Chain.PostgreSql.nuspec</NuspecName>
-
   </PropertyGroup>
-
 
   <Import Project=".build\MSBuild.Community.Tasks.Targets" />
 
-  <UsingTask TaskName="UpdateNuspecVersionFromAssembly" AssemblyFile="$(MSBuildProjectDirectory)\MSBuild.Task.AssemblyVersion.dll"/>
+  <UsingTask TaskName="UpdateNuspecVersionFromAssembly" AssemblyFile="$(MSBuildProjectDirectory)\MSBuild.Task.AssemblyVersion.dll" />
 
   <Target Name="Build">
     <CallTarget Targets="Clean" />
@@ -41,18 +39,18 @@
     <CallTarget Targets="BuildNugetFile" />
   </Target>
 
-  <Target Name="Clean" >
+  <Target Name="Clean">
     <Message Text="Cleaning..." />
     <Deletetree Directories="$(BuildOutputPath)" />
 
     <MSBuild Projects="$(MainSolution)" Properties="Configuration=Debug-Unchecked" Targets="Clean" StopOnFirstFailure="true" />
     <MSBuild Projects="$(MainSolution)" Properties="Configuration=Debug" Targets="Clean" StopOnFirstFailure="true" />
-    <MSBuild Projects="$(MainSolution)" Properties="Configuration=Release" Targets="Clean" StopOnFirstFailure="true"/>
+    <MSBuild Projects="$(MainSolution)" Properties="Configuration=Release" Targets="Clean" StopOnFirstFailure="true" />
   </Target>
 
   <Target Name="Compile">
     <Message Text="Building..." />
-    <MSBuild Projects="$(MainSolution)" Properties="Configuration=Release" Targets="Rebuild" StopOnFirstFailure="true"/>
+    <MSBuild Projects="$(MainSolution)" Properties="Configuration=Release" Targets="Rebuild" StopOnFirstFailure="true" />
   </Target>
 
   <Target Name="PackageBinaries">
@@ -79,11 +77,9 @@
       <NetStandard20Output Include="$(NetStandard20Path)\bin\Release\netstandard2.0\$(ResultDepsJson)" />
     </ItemGroup>
     <Copy SourceFiles="@(NetStandard20Output)" DestinationFolder="$(BuildOutputPath)\lib\netstandard2.0" />
-    
   </Target>
 
   <Target Name="PackageHelp">
-    
   </Target>
 
   <Target Name="BuildNugetFile">
@@ -99,7 +95,5 @@
 			 XPath="/package/metadata/version"
 			 Value="%(AssemblyIdentity.Version)" />
     <Exec Command='"$(MSBuildProjectDirectory)\.nuget\NuGet.exe" pack $(NuspecName)"' WorkingDirectory="$(BuildOutputPath)" />
-
   </Target>
-
 </Project>

@@ -16,8 +16,6 @@
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
   </PropertyGroup>
 
   <ItemGroup>
@@ -31,8 +29,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="..\Tortuga.Chain.SQLite.MS.source\Properties\LibrarySharedAssemblyInfo-MS.cs;" />
     <Compile Include="..\ProductSharedAssemblyInfo.cs" />
+    <Compile Include="..\Tortuga.Chain.SQLite.source\Properties\LibrarySharedAssemblyInfo.cs" Link="LibrarySharedAssemblyInfo.cs" />
     <Compile Include="..\Tortuga.Chain.SQLite.source\shared\**\*.cs" />
   </ItemGroup>
 
