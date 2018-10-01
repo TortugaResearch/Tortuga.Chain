@@ -45,6 +45,10 @@
     <ResolveCrefLinks>true</ResolveCrefLinks>
     <HeaderText />
     <FooterText />
+    <ConceptualContent>
+      <ContentLayout />
+      <MediaContent />
+    </ConceptualContent>
     <SelectedProjects>
       <SelectedProject>Tortuga.Chain.Core.source</SelectedProject>
       <SelectedProject>Tortuga.Chain.CompiledMaterializers.source</SelectedProject>

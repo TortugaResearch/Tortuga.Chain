@@ -21,7 +21,6 @@
       <frameworkAssembly assemblyName="System.Runtime.Caching" targetFramework="net45" />
       <frameworkAssembly assemblyName="System.Configuration" targetFramework="net45" />
 
-
       <frameworkAssembly assemblyName="System.Data" targetFramework="net46" />
       <frameworkAssembly assemblyName="System.ComponentModel.DataAnnotations" targetFramework="net46" />
       <frameworkAssembly assemblyName="System.Xml" targetFramework="net46" />
@@ -33,21 +32,16 @@
     <dependencies>
 
       <group targetFramework="net461">
-        <dependency id="Tortuga.Chain.Core" version="1.2.6553.38983" />
+        <dependency id="Tortuga.Chain.Core" version="1.3.6847.41792" />
         <dependency id="Nito.AsyncEx" version="4.0.1" />
-        <dependency id="Microsoft.Data.Sqlite.Core" version="2.0.0" />
+        <dependency id="Microsoft.Data.Sqlite" version="2.1.0" />
       </group>
-
 
       <group targetFramework="netstandard2.0">
-        <dependency id="Tortuga.Chain.Core" version="1.2.6553.38983" />
+        <dependency id="Tortuga.Chain.Core" version="1.3.6847.41792" />
         <dependency id="Nito.AsyncEx" version="4.0.1" />
-        <dependency id="Microsoft.Data.Sqlite.Core" version="2.0.0" />
+        <dependency id="Microsoft.Data.Sqlite" version="2.1.0" />
       </group>
-      
     </dependencies>
-
-
   </metadata>
-
 </package>

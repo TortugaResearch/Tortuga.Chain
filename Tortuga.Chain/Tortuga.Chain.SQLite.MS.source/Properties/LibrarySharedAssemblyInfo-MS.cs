@@ -2,10 +2,9 @@
 
 [assembly: AssemblyTitle("Tortuga.Chain.SQLite.MS")]
 [assembly: AssemblyDescription("Fluent ORM for .NET and SQLite. This version uses the Microsoft SQLite drivers.")]
-
 [assembly: AssemblyCulture("")]
 #if NETSTANDARD2_0
-[assembly: AssemblyVersion("1.2")]
+[assembly: AssemblyVersion("1.3")]
 #else
-[assembly: AssemblyVersion("1.2.*")]
+[assembly: AssemblyVersion("1.3.*")]
 #endif

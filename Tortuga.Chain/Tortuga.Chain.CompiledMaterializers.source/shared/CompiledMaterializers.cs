@@ -18,17 +18,6 @@ namespace Tortuga.Chain
     /// </summary>
     public static class CompiledMaterializers
     {
-
-        /// <summary>
-        /// Occurs when a materializer is compiled.
-        /// </summary>
-        public static event EventHandler<MaterializerCompilerEventArgs> MaterializerCompiled;
-
-        /// <summary>
-        /// Occurs when materializer fails to compile.
-        /// </summary>
-        public static event EventHandler<MaterializerCompilerEventArgs> MaterializerCompilerFailed;
-
         /// <summary>
         /// Allows compilation of the ToObject materializer.
         /// </summary>
@@ -42,7 +31,6 @@ namespace Tortuga.Chain
         {
             return new CompiledSingleRow<TCommand, TParameter>(commandBuilder);
         }
-
 
         /// <summary>
         /// Allows compilation of the ToObject and ToCollection materializer.
@@ -72,6 +60,20 @@ namespace Tortuga.Chain
             return new CompiledMultipleTable<TCommand, TParameter>(commandBuilder);
         }
 
+        private class ColumnData
+        {
+            public ColumnData(int index, Type columnType, string getter)
+            {
+                ColumnType = columnType;
+                Getter = getter;
+
+                Index = index;
+            }
+
+            public int Index { get; }
+            public string Getter { get; }
+            public Type ColumnType { get; }
+        }
 
         /// <summary>
         /// Creates the builder.
@@ -94,7 +96,6 @@ namespace Tortuga.Chain
             var typeName = MetadataCache.GetMetadata(typeof(TObject)).CSharpFullName;
 
             var changeTracker = typeof(TObject).GetInterfaces().Any(x => x == typeof(IChangeTracking));
-
 
             var columns = new Dictionary<string, ColumnData>(StringComparer.OrdinalIgnoreCase);
             for (var i = 0; i < reader.FieldCount; i++)
@@ -121,7 +122,6 @@ namespace Tortuga.Chain
                 columns.Add(columnName, new ColumnData(i, columnType, getter));
             }
 
-
             var evaluator = CSScript.RoslynEvaluator.Reset(false);
             //evaluator = evaluator.ReferenceAssemblyOf<string>();
             //evaluator = evaluator.ReferenceAssemblyOf<IDataReader>();
@@ -129,8 +129,15 @@ namespace Tortuga.Chain
             evaluator = evaluator.ReferenceAssemblyOf(reader);
             evaluator = AugmentScriptEvaluator(evaluator, typeof(TObject));
 
+            //We need a public version of the DataReader class.
+            //If we can't find one, default to the slower IDataReader interface.
+            var readerType = reader.GetType();
+            while (!readerType.IsPublic)
+                readerType = readerType.BaseType;
+            if (readerType.GetInterface("IDataReader") == null)
+                readerType = typeof(IDataReader);
 
-            code.AppendLine($"{typeName} Load({reader.GetType().FullName} reader)");
+            code.AppendLine($"{typeName} Load({readerType.FullName} reader)");
             code.AppendLine("{");
             code.AppendLine($"    var result = new {typeName}();");
 
@@ -150,7 +157,6 @@ namespace Tortuga.Chain
 
             code.AppendLine("    return result;");
             code.AppendLine("}");
-
 
             var codeToString = code.ToString();
             try
@@ -174,7 +180,6 @@ namespace Tortuga.Chain
                 //ex.Data["Evaluator"] = evaluator;
                 throw;
             }
-
         }
 
         /// <summary>
@@ -183,7 +188,7 @@ namespace Tortuga.Chain
         /// <param name="evaluator">The evaluator.</param>
         /// <param name="type">The type.</param>
         /// <returns></returns>
-        static IEvaluator AugmentScriptEvaluator(IEvaluator evaluator, Type type)
+        private static IEvaluator AugmentScriptEvaluator(IEvaluator evaluator, Type type)
         {
             evaluator = evaluator.ReferenceAssembly(type.Assembly);
 
@@ -202,7 +207,7 @@ namespace Tortuga.Chain
         /// <param name="code">The code.</param>
         /// <param name="path">The path.</param>
         /// <param name="properties">The properties.</param>
-        static void ConstructDecomposedObjects(StringBuilder code, string path, PropertyMetadataCollection properties)
+        private static void ConstructDecomposedObjects(StringBuilder code, string path, PropertyMetadataCollection properties)
         {
             foreach (var property in properties)
             {
@@ -228,7 +233,7 @@ namespace Tortuga.Chain
         /// <param name="columnIndex">Index of the column being read.</param>
         /// <param name="path">The path to the object whose properties are being set.</param>
         /// <param name="decompositionPrefix">The decomposition prefix used when reading the column data.</param>
-        static void SetProperties(StringBuilder code, Dictionary<string, ColumnData> columns, PropertyMetadataCollection properties, int columnIndex, string path, string decompositionPrefix)
+        private static void SetProperties(StringBuilder code, Dictionary<string, ColumnData> columns, PropertyMetadataCollection properties, int columnIndex, string path, string decompositionPrefix)
         {
             foreach (var property in properties)
             {
@@ -265,7 +270,6 @@ namespace Tortuga.Chain
                 }
                 else //type casting is required
                 {
-
                     var propertyTypeName = MetadataCache.GetMetadata(property.PropertyType).CSharpFullName;
 
                     if (property.PropertyType.IsClass || (property.PropertyType.Name == "Nullable`1" && property.PropertyType.IsGenericType))
@@ -285,21 +289,14 @@ namespace Tortuga.Chain
             }
         }
 
-        class ColumnData
-        {
+        /// <summary>
+        /// Occurs when a materializer is compiled.
+        /// </summary>
+        public static event EventHandler<MaterializerCompilerEventArgs> MaterializerCompiled;
 
-            public ColumnData(int index, Type columnType, string getter)
-            {
-                ColumnType = columnType;
-                Getter = getter;
-                Index = index;
-            }
-            public Type ColumnType { get; }
-            public string Getter { get; }
-            public int Index { get; }
-        }
+        /// <summary>
+        /// Occurs when materializer fails to compile.
+        /// </summary>
+        public static event EventHandler<MaterializerCompilerEventArgs> MaterializerCompilerFailed;
     }
-
 }
-
-
