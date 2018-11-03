@@ -7,14 +7,13 @@ namespace Tortuga.Chain.MySql
     /// </summary>
     public struct MySqlObjectName
     {
-
         /// <summary>
         /// An empty schema/name pair
         /// </summary>
         public static readonly MySqlObjectName Empty;
 
-        readonly string m_Name;
-        readonly string m_Schema;
+        private readonly string m_Name;
+        private readonly string m_Schema;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MySqlObjectName" /> struct.
@@ -54,7 +53,6 @@ namespace Tortuga.Chain.MySql
             }
         }
 
-
         /// <summary>
         /// Gets the name.
         /// </summary>
@@ -78,7 +76,7 @@ namespace Tortuga.Chain.MySql
         }
 
         /// <summary>
-        /// Performs an implicit conversion from <see cref="string"/> to <see cref="MySqlObjectName"/>.
+        /// Perform an implicit conversion from <see cref="string"/> to <see cref="MySqlObjectName"/>.
         /// </summary>
         /// <param name="value">The value.</param>
         /// <returns>
@@ -149,7 +147,7 @@ namespace Tortuga.Chain.MySql
         /// Returns a hash code for this instance.
         /// </summary>
         /// <returns>
-        /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+        /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
         /// </returns>
         /// <remarks>This is a case-insensitive comparison.</remarks>
         public override int GetHashCode()
@@ -182,13 +180,12 @@ namespace Tortuga.Chain.MySql
             return $"{Schema}.{Name}";
         }
 
-        static string Normalize(string value)
+        private static string Normalize(string value)
         {
             if (string.IsNullOrWhiteSpace(value))
                 return null;
 
             return value.Replace("`", "");
         }
-
     }
 }

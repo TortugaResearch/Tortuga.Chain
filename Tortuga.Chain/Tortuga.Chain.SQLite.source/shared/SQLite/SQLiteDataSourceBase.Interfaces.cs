@@ -3,17 +3,14 @@ using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Metadata;
 
-
 namespace Tortuga.Chain.SQLite
 {
     partial class SQLiteDataSourceBase : IClass1DataSource
     {
-
         IDatabaseMetadataCache IDataSource.DatabaseMetadata
         {
             get { return DatabaseMetadata; }
         }
-
 
         IMultipleTableDbCommandBuilder IClass0DataSource.Sql(string sqlStatement, object argumentValue)
         {
@@ -49,6 +46,7 @@ namespace Tortuga.Chain.SQLite
         {
             return From(tableOrViewName, filterValue, filterOptions);
         }
+
         ITableDbCommandBuilder IClass1DataSource.From<TObject>()
         {
             return From<TObject>();
@@ -98,6 +96,7 @@ namespace Tortuga.Chain.SQLite
         {
             return Insert(tableName, argumentValue, options);
         }
+
         IObjectDbCommandBuilder<TArgument> IClass1DataSource.Insert<TArgument>(TArgument argumentValue, InsertOptions options)
         {
             return Insert(argumentValue, options);
@@ -107,6 +106,7 @@ namespace Tortuga.Chain.SQLite
         {
             return Update(tableName, argumentValue, options);
         }
+
         IObjectDbCommandBuilder<TArgument> IClass1DataSource.Update<TArgument>(TArgument argumentValue, UpdateOptions options)
         {
             return Update(argumentValue, options);
@@ -116,6 +116,7 @@ namespace Tortuga.Chain.SQLite
         {
             return Upsert(tableName, argumentValue, options);
         }
+
         IObjectDbCommandBuilder<TArgument> IClass1DataSource.Upsert<TArgument>(TArgument argumentValue, UpsertOptions options)
         {
             return Upsert(argumentValue, options);
@@ -156,14 +157,14 @@ namespace Tortuga.Chain.SQLite
             return UpdateByKey(tableName, newValues, key, options);
         }
 
-        IMultipleRowDbCommandBuilder IClass1DataSource.UpdateByKey<TArgument, TKey>(string tableName, TArgument newValues, params TKey[] keys)
+        IMultipleRowDbCommandBuilder IClass1DataSource.UpdateByKeyList<TArgument, TKey>(string tableName, TArgument newValues, params TKey[] keys)
         {
-            return UpdateByKey(tableName, newValues, keys);
+            return UpdateByKeyList(tableName, newValues, keys);
         }
 
-        IMultipleRowDbCommandBuilder IClass1DataSource.UpdateByKey<TArgument>(string tableName, TArgument newValues, params string[] keys)
+        IMultipleRowDbCommandBuilder IClass1DataSource.UpdateByKeyList<TArgument>(string tableName, TArgument newValues, params string[] keys)
         {
-            return UpdateByKey(tableName, newValues, keys);
+            return UpdateByKeyList(tableName, newValues, keys);
         }
 
         IMultipleRowDbCommandBuilder IClass1DataSource.UpdateByKeyList<TArgument, TKey>(string tableName, TArgument newValues, IEnumerable<TKey> keys, UpdateOptions options)
@@ -176,12 +177,10 @@ namespace Tortuga.Chain.SQLite
             return DeleteWithFilter(tableName, whereClause);
         }
 
-
         IMultipleRowDbCommandBuilder IClass1DataSource.DeleteWithFilter(string tableName, string whereClause, object argumentValue)
         {
             return DeleteWithFilter(tableName, whereClause, argumentValue);
         }
-
 
         IMultipleRowDbCommandBuilder IClass1DataSource.DeleteWithFilter(string tableName, object filterValue, FilterOptions filterOptions)
         {
@@ -203,6 +202,4 @@ namespace Tortuga.Chain.SQLite
             return UpdateSet(tableName, newValues, options);
         }
     }
-
-
 }

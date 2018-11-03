@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using Tortuga.Chain.CommandBuilders;
 
-
 namespace Tortuga.Chain
 {
-
     /// <summary>
     /// A class 1 data source supports basic CRUD operations. This is the bare minimum needed to implement the repostiory pattern.
     /// </summary>
@@ -13,7 +11,7 @@ namespace Tortuga.Chain
     public interface IClass1DataSource : IClass0DataSource
     {
         /// <summary>
-        /// Deletes an object model from the specified table.
+        /// Delete an object model from the specified table.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="argumentValue">The argument value.</param>
@@ -22,7 +20,7 @@ namespace Tortuga.Chain
         IObjectDbCommandBuilder<TArgument> Delete<TArgument>(string tableName, TArgument argumentValue, DeleteOptions options = DeleteOptions.None) where TArgument : class;
 
         /// <summary>
-        /// Deletes an object model from the table indicated by the class's Table attribute.
+        /// Delete an object model from the table indicated by the class's Table attribute.
         /// </summary>
         /// <param name="argumentValue">The argument value.</param>
         /// <param name="options">The delete options.</param>
@@ -30,7 +28,7 @@ namespace Tortuga.Chain
         IObjectDbCommandBuilder<TArgument> Delete<TArgument>(TArgument argumentValue, DeleteOptions options = DeleteOptions.None) where TArgument : class;
 
         /// <summary>
-        /// Deletes by key.
+        /// Delete by key.
         /// </summary>
         /// <typeparam name="TKey">The type of the t key.</typeparam>
         /// <param name="tableName">Name of the table.</param>
@@ -40,7 +38,7 @@ namespace Tortuga.Chain
         ISingleRowDbCommandBuilder DeleteByKey<TKey>(string tableName, TKey key, DeleteOptions options = DeleteOptions.None) where TKey : struct;
 
         /// <summary>
-        /// Deletes by key.
+        /// Delete by key.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="key">The key.</param>
@@ -49,7 +47,7 @@ namespace Tortuga.Chain
         ISingleRowDbCommandBuilder DeleteByKey(string tableName, string key, DeleteOptions options = DeleteOptions.None);
 
         /// <summary>
-        /// Deletes by key.
+        /// Delete by key.
         /// </summary>
         /// <typeparam name="TKey">The type of the t key.</typeparam>
         /// <param name="tableName">Name of the table.</param>
@@ -58,7 +56,7 @@ namespace Tortuga.Chain
         IMultipleRowDbCommandBuilder DeleteByKey<TKey>(string tableName, params TKey[] keys) where TKey : struct;
 
         /// <summary>
-        /// Deletes by key.
+        /// Delete by key.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="keys">The keys.</param>
@@ -66,7 +64,7 @@ namespace Tortuga.Chain
         IMultipleRowDbCommandBuilder DeleteByKey(string tableName, params string[] keys);
 
         /// <summary>
-        /// Deletes by key.
+        /// Delete by key.
         /// </summary>
         /// <typeparam name="TKey">The type of the t key.</typeparam>
         /// <param name="tableName">Name of the table.</param>
@@ -76,7 +74,7 @@ namespace Tortuga.Chain
         IMultipleRowDbCommandBuilder DeleteByKeyList<TKey>(string tableName, IEnumerable<TKey> keys, DeleteOptions options = DeleteOptions.None);
 
         /// <summary>
-        /// Deletes multiple records using a where expression.
+        /// Delete multiple records using a where expression.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="whereClause">The where clause.</param>
@@ -84,7 +82,7 @@ namespace Tortuga.Chain
         IMultipleRowDbCommandBuilder DeleteWithFilter(string tableName, string whereClause);
 
         /// <summary>
-        /// Deletes multiple records using a where expression.
+        /// Delete multiple records using a where expression.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="whereClause">The where clause.</param>
@@ -93,7 +91,7 @@ namespace Tortuga.Chain
         IMultipleRowDbCommandBuilder DeleteWithFilter(string tableName, string whereClause, object argumentValue);
 
         /// <summary>
-        /// Deletes multiple records using a filter object.
+        /// Delete multiple records using a filter object.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="filterValue">The filter value.</param>
@@ -128,7 +126,6 @@ namespace Tortuga.Chain
         /// <exception cref="ArgumentException">tableOrViewName is empty.;tableOrViewName</exception>
         ITableDbCommandBuilder From(string tableOrViewName, string whereClause, object argumentValue);
 
-
         /// <summary>
         /// This is used to directly query a table or view.
         /// </summary>
@@ -138,7 +135,6 @@ namespace Tortuga.Chain
         /// <returns>ITableDbCommandBuilder.</returns>
         /// <exception cref="ArgumentException">tableOrViewName is empty.;tableOrViewName</exception>
         ITableDbCommandBuilder From(string tableOrViewName, object filterValue, FilterOptions filterOptions = FilterOptions.None);
-
 
         /// <summary>
         /// This is used to directly query a table or view.
@@ -165,7 +161,6 @@ namespace Tortuga.Chain
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         ITableDbCommandBuilder From<TObject>(string whereClause, object argumentValue) where TObject : class;
 
-
         /// <summary>
         /// This is used to directly query a table or view.
         /// </summary>
@@ -174,7 +169,6 @@ namespace Tortuga.Chain
         /// <returns></returns>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         ITableDbCommandBuilder From<TObject>(object filterValue) where TObject : class;
-
 
         /// <summary>
         /// Gets a record by its primary key.
@@ -234,7 +228,6 @@ namespace Tortuga.Chain
         /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
         IObjectDbCommandBuilder<TArgument> Insert<TArgument>(string tableName, TArgument argumentValue, InsertOptions options = InsertOptions.None) where TArgument : class;
 
-
         /// <summary>
         /// Inserts an object into the specified table.
         /// </summary>
@@ -243,9 +236,8 @@ namespace Tortuga.Chain
         /// <returns></returns>
         IObjectDbCommandBuilder<TArgument> Insert<TArgument>(TArgument argumentValue, InsertOptions options = InsertOptions.None) where TArgument : class;
 
-
         /// <summary>
-        /// Updates an object in the specified table.
+        /// Update an object in the specified table.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="argumentValue">The argument value.</param>
@@ -254,7 +246,7 @@ namespace Tortuga.Chain
         IObjectDbCommandBuilder<TArgument> Update<TArgument>(string tableName, TArgument argumentValue, UpdateOptions options = UpdateOptions.None) where TArgument : class;
 
         /// <summary>
-        /// Updates an object in the specified table.
+        /// Update an object in the specified table.
         /// </summary>
         /// <param name="argumentValue">The argument value.</param>
         /// <param name="options">The update options.</param>
@@ -262,7 +254,7 @@ namespace Tortuga.Chain
         IObjectDbCommandBuilder<TArgument> Update<TArgument>(TArgument argumentValue, UpdateOptions options = UpdateOptions.None) where TArgument : class;
 
         /// <summary>
-        /// Delete a record by its primary key.
+        /// Update a record by its primary key.
         /// </summary>
         /// <typeparam name="TArgument">The type of the t argument.</typeparam>
         /// <typeparam name="TKey"></typeparam>
@@ -275,7 +267,7 @@ namespace Tortuga.Chain
             where TKey : struct;
 
         /// <summary>
-        /// Delete a record by its primary key.
+        /// Update a record by its primary key.
         /// </summary>
         /// <typeparam name="TArgument">The type of the t argument.</typeparam>
         /// <param name="tableName">Name of the table.</param>
@@ -286,7 +278,7 @@ namespace Tortuga.Chain
         ISingleRowDbCommandBuilder UpdateByKey<TArgument>(string tableName, TArgument newValues, string key, UpdateOptions options = UpdateOptions.None);
 
         /// <summary>
-        /// Delete multiple rows by key.
+        /// Update multiple rows by key.
         /// </summary>
         /// <typeparam name="TArgument">The type of the t argument.</typeparam>
         /// <typeparam name="TKey"></typeparam>
@@ -295,11 +287,11 @@ namespace Tortuga.Chain
         /// <param name="keys">The keys.</param>
         /// <returns></returns>
         /// <remarks>This only works on tables that have a scalar primary key.</remarks>
-        IMultipleRowDbCommandBuilder UpdateByKey<TArgument, TKey>(string tableName, TArgument newValues, params TKey[] keys)
+        IMultipleRowDbCommandBuilder UpdateByKeyList<TArgument, TKey>(string tableName, TArgument newValues, params TKey[] keys)
             where TKey : struct;
 
         /// <summary>
-        /// Delete multiple rows by key.
+        /// Update multiple rows by key.
         /// </summary>
         /// <typeparam name="TArgument">The type of the t argument.</typeparam>
         /// <param name="tableName">Name of the table.</param>
@@ -307,10 +299,10 @@ namespace Tortuga.Chain
         /// <param name="keys">The keys.</param>
         /// <returns></returns>
         /// <remarks>This only works on tables that have a scalar primary key.</remarks>
-        IMultipleRowDbCommandBuilder UpdateByKey<TArgument>(string tableName, TArgument newValues, params string[] keys);
+        IMultipleRowDbCommandBuilder UpdateByKeyList<TArgument>(string tableName, TArgument newValues, params string[] keys);
 
         /// <summary>
-        /// Updates multiple rows by key.
+        /// Update multiple rows by key.
         /// </summary>
         /// <typeparam name="TArgument">The type of the t argument.</typeparam>
         /// <typeparam name="TKey">The type of the t key.</typeparam>
@@ -323,32 +315,35 @@ namespace Tortuga.Chain
         IMultipleRowDbCommandBuilder UpdateByKeyList<TArgument, TKey>(string tableName, TArgument newValues, IEnumerable<TKey> keys, UpdateOptions options = UpdateOptions.None);
 
         /// <summary>
-        /// Updates multiple records using an update expression.
+        /// Update multiple records using an update expression.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="updateExpression">The update expression.</param>
         /// <param name="options">The update options.</param>
+        /// <remarks>Use .WithFilter to apply a WHERE clause.</remarks>
         IUpdateManyCommandBuilder UpdateSet(string tableName, string updateExpression, UpdateOptions options = UpdateOptions.None);
 
         /// <summary>
-        /// Updates multiple records using an update expression.
+        /// Update multiple records using an update expression.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="updateExpression">The update expression.</param>
         /// <param name="updateArgumentValue">The argument for the update expression.</param>
         /// <param name="options">The update options.</param>
+        /// <remarks>Use .WithFilter to apply a WHERE clause.</remarks>
         IUpdateManyCommandBuilder UpdateSet(string tableName, string updateExpression, object updateArgumentValue, UpdateOptions options = UpdateOptions.None);
 
         /// <summary>
-        /// Updates multiple records using an update value.
+        /// Update multiple records using an update value.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="newValues">The new values to use.</param>
         /// <param name="options">The options.</param>
+        /// <remarks>Use .WithFilter to apply a WHERE clause.</remarks>
         IUpdateManyCommandBuilder UpdateSet(string tableName, object newValues, UpdateOptions options = UpdateOptions.None);
 
         /// <summary>
-        /// Performs an insert or update operation as appropriate.
+        /// Perform an insert or update operation as appropriate.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="argumentValue">The argument value.</param>
@@ -357,13 +352,11 @@ namespace Tortuga.Chain
         IObjectDbCommandBuilder<TArgument> Upsert<TArgument>(string tableName, TArgument argumentValue, UpsertOptions options = UpsertOptions.None) where TArgument : class;
 
         /// <summary>
-        /// Performs an insert or update operation as appropriate.
+        /// Perform an insert or update operation as appropriate.
         /// </summary>
         /// <param name="argumentValue">The argument value.</param>
         /// <param name="options">The options for how the insert/update occurs.</param>
         /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
         IObjectDbCommandBuilder<TArgument> Upsert<TArgument>(TArgument argumentValue, UpsertOptions options = UpsertOptions.None) where TArgument : class;
     }
-
-
 }

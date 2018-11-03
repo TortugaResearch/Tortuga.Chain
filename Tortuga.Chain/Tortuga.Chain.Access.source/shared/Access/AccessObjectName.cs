@@ -30,14 +30,18 @@ namespace Tortuga.Chain.Access
         /// </value>
         public string Name { get; }
 
+#pragma warning disable CA2225 // Operator overloads have named alternates
+
         /// <summary>
-        /// Performs an implicit conversion from <see cref="string"/> to <see cref="AccessObjectName"/>.
+        /// Perform an implicit conversion from <see cref="string"/> to <see cref="AccessObjectName"/>.
         /// </summary>
         /// <param name="value">The value.</param>
         /// <returns>
         /// The result of the conversion.
         /// </returns>
         public static implicit operator AccessObjectName(string value) => new AccessObjectName(value);
+
+#pragma warning restore CA2225 // Operator overloads have named alternates
 
         /// <summary>
         /// Implements the operator !=.
@@ -92,7 +96,7 @@ namespace Tortuga.Chain.Access
         /// Returns a hash code for this instance.
         /// </summary>
         /// <returns>
-        /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+        /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
         /// </returns>
         /// <remarks>This is a case-insensitive comparison.</remarks>
         public override int GetHashCode() => Name.ToUpper(CultureInfo.InvariantCulture).GetHashCode();
@@ -111,7 +115,7 @@ namespace Tortuga.Chain.Access
         /// </returns>
         public override string ToString() => Name;
 
-        static string Normalize(string value)
+        private static string Normalize(string value)
         {
             if (string.IsNullOrWhiteSpace(value))
                 return null;

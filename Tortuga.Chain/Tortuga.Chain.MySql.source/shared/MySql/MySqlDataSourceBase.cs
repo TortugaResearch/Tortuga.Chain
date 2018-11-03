@@ -29,9 +29,8 @@ namespace Tortuga.Chain.MySql
         /// </summary>
         public abstract new MySqlMetadataCache DatabaseMetadata { get; }
 
-
         /// <summary>
-        /// Deletes the specified table name.
+        /// Delete the specified table name.
         /// </summary>
         /// <typeparam name="TArgument">The type of the t argument.</typeparam>
         /// <param name="tableName">Name of the table.</param>
@@ -53,7 +52,7 @@ namespace Tortuga.Chain.MySql
         }
 
         /// <summary>
-        /// Deletes an object model from the table indicated by the class's Table attribute.
+        /// Delete an object model from the table indicated by the class's Table attribute.
         /// </summary>
         /// <typeparam name="TArgument"></typeparam>
         /// <param name="argumentValue">The argument value.</param>
@@ -167,11 +166,10 @@ namespace Tortuga.Chain.MySql
                 effectiveOptions = effectiveOptions | UpdateOptions.UseKeyAttribute;
 
             return new MySqlUpdateMany(this, tableName, null, where, parameters, parameters.Count, effectiveOptions);
-
         }
 
         /// <summary>
-        /// Deletes multiple records using a where expression.
+        /// Delete multiple records using a where expression.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="whereClause">The where clause.</param>
@@ -184,9 +182,8 @@ namespace Tortuga.Chain.MySql
             return new MySqlUpdateMany(this, tableName, null, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected).WithFilter(whereClause, null);
         }
 
-
         /// <summary>
-        /// Deletes multiple records using a where expression.
+        /// Delete multiple records using a where expression.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="whereClause">The where clause.</param>
@@ -201,7 +198,7 @@ namespace Tortuga.Chain.MySql
         }
 
         /// <summary>
-        /// Deletes multiple records using a filter object.
+        /// Delete multiple records using a filter object.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="filterValue">The filter value.</param>
@@ -392,8 +389,6 @@ namespace Tortuga.Chain.MySql
             return new MySqlTableOrView(this, tableName, where, parameters);
         }
 
-
-
         /// <summary>
         /// Inserts the specified table name.
         /// </summary>
@@ -407,6 +402,7 @@ namespace Tortuga.Chain.MySql
         {
             return new MySqlInsertObject<TArgument>(this, tableName, argumentValue, options);
         }
+
         /// <summary>
         /// Inserts an object into the specified table.
         /// </summary>
@@ -483,7 +479,7 @@ namespace Tortuga.Chain.MySql
         }
 
         /// <summary>
-        /// Updates the specified table name.
+        /// Update the specified table name.
         /// </summary>
         /// <typeparam name="TArgument">The type of the t argument.</typeparam>
         /// <param name="tableName">Name of the table.</param>
@@ -495,8 +491,9 @@ namespace Tortuga.Chain.MySql
         {
             return new MySqlUpdateObject<TArgument>(this, tableName, argumentValue, options);
         }
+
         /// <summary>
-        /// Updates an object in the specified table.
+        /// Update an object in the specified table.
         /// </summary>
         /// <typeparam name="TArgument"></typeparam>
         /// <param name="argumentValue">The argument value.</param>
@@ -547,10 +544,10 @@ namespace Tortuga.Chain.MySql
         /// <param name="keys">The keys.</param>
         /// <returns></returns>
         /// <remarks>This only works on tables that have a scalar primary key.</remarks>
-        public MultipleRowDbCommandBuilder<MySqlCommand, MySqlParameter> UpdateByKey<TArgument, TKey>(MySqlObjectName tableName, TArgument newValues, params TKey[] keys)
+        public MultipleRowDbCommandBuilder<MySqlCommand, MySqlParameter> UpdateByKeyList<TArgument, TKey>(MySqlObjectName tableName, TArgument newValues, params TKey[] keys)
             where TKey : struct
         {
-            return UpdateByKeyList(tableName, newValues, keys);
+            return UpdateByKeyList(tableName, newValues, (IEnumerable<TKey>)keys);
         }
 
         /// <summary>
@@ -562,13 +559,13 @@ namespace Tortuga.Chain.MySql
         /// <param name="keys">The keys.</param>
         /// <returns></returns>
         /// <remarks>This only works on tables that have a scalar primary key.</remarks>
-        public MultipleRowDbCommandBuilder<MySqlCommand, MySqlParameter> UpdateByKey<TArgument>(MySqlObjectName tableName, TArgument newValues, params string[] keys)
+        public MultipleRowDbCommandBuilder<MySqlCommand, MySqlParameter> UpdateByKeyList<TArgument>(MySqlObjectName tableName, TArgument newValues, params string[] keys)
         {
-            return UpdateByKeyList(tableName, newValues, keys);
+            return UpdateByKeyList(tableName, newValues, (IEnumerable<string>)keys);
         }
 
         /// <summary>
-        /// Updates multiple rows by key.
+        /// Update multiple rows by key.
         /// </summary>
         /// <typeparam name="TArgument">The type of the t argument.</typeparam>
         /// <typeparam name="TKey">The type of the t key.</typeparam>
@@ -578,12 +575,12 @@ namespace Tortuga.Chain.MySql
         /// <param name="options">Update options.</param>
         /// <returns>MultipleRowDbCommandBuilder&lt;MySqlCommand, MySqlParameter&gt;.</returns>
         /// <exception cref="MappingException"></exception>
-        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "UpdateByKey")]
+        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "UpdateByKeyList")]
         public MultipleRowDbCommandBuilder<MySqlCommand, MySqlParameter> UpdateByKeyList<TArgument, TKey>(MySqlObjectName tableName, TArgument newValues, IEnumerable<TKey> keys, UpdateOptions options = UpdateOptions.None)
         {
             var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).Columns.Where(c => c.IsPrimaryKey).ToList();
             if (primaryKeys.Count != 1)
-                throw new MappingException($"UpdateByKey operation isn't allowed on {tableName} because it doesn't have a single primary key.");
+                throw new MappingException($"{nameof(UpdateByKeyList)} operation isn't allowed on {tableName} because it doesn't have a single primary key.");
 
             var keyList = keys.AsList();
             var columnMetadata = primaryKeys.Single();
@@ -606,7 +603,7 @@ namespace Tortuga.Chain.MySql
         }
 
         /// <summary>
-        /// Updates multiple records using an update expression.
+        /// Update multiple records using an update expression.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="updateExpression">The update expression.</param>
@@ -617,7 +614,7 @@ namespace Tortuga.Chain.MySql
         }
 
         /// <summary>
-        /// Updates multiple records using an update expression.
+        /// Update multiple records using an update expression.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="updateExpression">The update expression.</param>
@@ -629,7 +626,7 @@ namespace Tortuga.Chain.MySql
         }
 
         /// <summary>
-        /// Updates multiple records using an update value.
+        /// Update multiple records using an update value.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="newValues">The new values to use.</param>
@@ -652,8 +649,9 @@ namespace Tortuga.Chain.MySql
         {
             return new MySqlInsertOrUpdateObject<TArgument>(this, tableName, argumentValue, options);
         }
+
         /// <summary>
-        /// Performs an insert or update operation as appropriate.
+        /// Perform an insert or update operation as appropriate.
         /// </summary>
         /// <typeparam name="TArgument"></typeparam>
         /// <param name="argumentValue">The argument value.</param>
@@ -663,6 +661,7 @@ namespace Tortuga.Chain.MySql
         {
             return Upsert(DatabaseMetadata.GetTableOrViewFromClass<TArgument>().Name, argumentValue, options);
         }
+
         /// <summary>
         /// Called when Database.DatabaseMetadata is invoked.
         /// </summary>

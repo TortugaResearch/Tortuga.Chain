@@ -10,16 +10,16 @@ using Tortuga.Chain.DataSources;
 namespace Tortuga.Chain.MySql
 {
     /// <summary>
-    /// Class MySqlTransactionalDataSource 
+    /// Class MySqlTransactionalDataSource
     /// </summary>
     /// <seealso cref="MySqlDataSourceBase" />
     /// <seealso cref="IDisposable" />
     public class MySqlTransactionalDataSource : MySqlDataSourceBase, IDisposable, ITransactionalDataSource
     {
-        readonly MySqlDataSource m_BaseDataSource;
-        readonly MySqlConnection m_Connection;
-        readonly MySqlTransaction m_Transaction;
-        bool m_Disposed;
+        private readonly MySqlDataSource m_BaseDataSource;
+        private readonly MySqlConnection m_Connection;
+        private readonly MySqlTransaction m_Transaction;
+        private bool m_Disposed;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MySqlTransactionalDataSource"/> class.
@@ -67,7 +67,6 @@ namespace Tortuga.Chain.MySql
             m_Connection = connection;
             m_Transaction = transaction;
 
-
             if (forwardEvents)
             {
                 ExecutionStarted += (sender, e) => dataSource.OnExecutionStarted(e);
@@ -78,6 +77,7 @@ namespace Tortuga.Chain.MySql
             AuditRules = dataSource.AuditRules;
             UserValue = dataSource.UserValue;
         }
+
         /// <summary>
         /// Gets or sets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
         /// </summary>
@@ -119,7 +119,7 @@ namespace Tortuga.Chain.MySql
         }
 
         /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// Perform application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
         public void Dispose()
         {
@@ -221,7 +221,6 @@ namespace Tortuga.Chain.MySql
             {
                 OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
                 throw;
-
             }
         }
 
@@ -304,11 +303,10 @@ namespace Tortuga.Chain.MySql
                     OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
                     return rows;
                 }
-
             }
             catch (Exception ex)
             {
-                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException 
+                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException
                 {
                     var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);
                     OnExecutionCanceled(executionToken, startTime, DateTimeOffset.Now, state);
@@ -355,7 +353,7 @@ namespace Tortuga.Chain.MySql
             }
             catch (Exception ex)
             {
-                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException 
+                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException
                 {
                     var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);
                     OnExecutionCanceled(executionToken, startTime, DateTimeOffset.Now, state);
@@ -369,7 +367,7 @@ namespace Tortuga.Chain.MySql
             }
         }
 
-        void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (m_Disposed)
                 return;

@@ -19,6 +19,16 @@ namespace Tortuga.Chain
     public static class CompiledMaterializers
     {
         /// <summary>
+        /// Occurs when a materializer is compiled.
+        /// </summary>
+        public static event EventHandler<MaterializerCompilerEventArgs> MaterializerCompiled;
+
+        /// <summary>
+        /// Occurs when materializer fails to compile.
+        /// </summary>
+        public static event EventHandler<MaterializerCompilerEventArgs> MaterializerCompilerFailed;
+
+        /// <summary>
         /// Allows compilation of the ToObject materializer.
         /// </summary>
         /// <typeparam name="TCommand">The type of the command.</typeparam>
@@ -58,21 +68,6 @@ namespace Tortuga.Chain
             where TParameter : DbParameter
         {
             return new CompiledMultipleTable<TCommand, TParameter>(commandBuilder);
-        }
-
-        private class ColumnData
-        {
-            public ColumnData(int index, Type columnType, string getter)
-            {
-                ColumnType = columnType;
-                Getter = getter;
-
-                Index = index;
-            }
-
-            public int Index { get; }
-            public string Getter { get; }
-            public Type ColumnType { get; }
         }
 
         /// <summary>
@@ -188,7 +183,7 @@ namespace Tortuga.Chain
         /// <param name="evaluator">The evaluator.</param>
         /// <param name="type">The type.</param>
         /// <returns></returns>
-        private static IEvaluator AugmentScriptEvaluator(IEvaluator evaluator, Type type)
+        static IEvaluator AugmentScriptEvaluator(IEvaluator evaluator, Type type)
         {
             evaluator = evaluator.ReferenceAssembly(type.Assembly);
 
@@ -207,7 +202,7 @@ namespace Tortuga.Chain
         /// <param name="code">The code.</param>
         /// <param name="path">The path.</param>
         /// <param name="properties">The properties.</param>
-        private static void ConstructDecomposedObjects(StringBuilder code, string path, PropertyMetadataCollection properties)
+        static void ConstructDecomposedObjects(StringBuilder code, string path, PropertyMetadataCollection properties)
         {
             foreach (var property in properties)
             {
@@ -233,7 +228,7 @@ namespace Tortuga.Chain
         /// <param name="columnIndex">Index of the column being read.</param>
         /// <param name="path">The path to the object whose properties are being set.</param>
         /// <param name="decompositionPrefix">The decomposition prefix used when reading the column data.</param>
-        private static void SetProperties(StringBuilder code, Dictionary<string, ColumnData> columns, PropertyMetadataCollection properties, int columnIndex, string path, string decompositionPrefix)
+        static void SetProperties(StringBuilder code, Dictionary<string, ColumnData> columns, PropertyMetadataCollection properties, int columnIndex, string path, string decompositionPrefix)
         {
             foreach (var property in properties)
             {
@@ -289,14 +284,17 @@ namespace Tortuga.Chain
             }
         }
 
-        /// <summary>
-        /// Occurs when a materializer is compiled.
-        /// </summary>
-        public static event EventHandler<MaterializerCompilerEventArgs> MaterializerCompiled;
-
-        /// <summary>
-        /// Occurs when materializer fails to compile.
-        /// </summary>
-        public static event EventHandler<MaterializerCompilerEventArgs> MaterializerCompilerFailed;
+        class ColumnData
+        {
+            public ColumnData(int index, Type columnType, string getter)
+            {
+                ColumnType = columnType;
+                Getter = getter;
+                Index = index;
+            }
+            public Type ColumnType { get; }
+            public string Getter { get; }
+            public int Index { get; }
+        }
     }
 }

@@ -10,16 +10,16 @@ using Tortuga.Chain.DataSources;
 namespace Tortuga.Chain.PostgreSql
 {
     /// <summary>
-    /// Class PostgreSqlTransactionalDataSource 
+    /// Class PostgreSqlTransactionalDataSource
     /// </summary>
     /// <seealso cref="PostgreSqlDataSourceBase" />
     /// <seealso cref="IDisposable" />
     public class PostgreSqlTransactionalDataSource : PostgreSqlDataSourceBase, IDisposable, ITransactionalDataSource
     {
-        readonly NpgsqlConnection m_Connection;
-        readonly PostgreSqlDataSource m_BaseDataSource;
-        readonly NpgsqlTransaction m_Transaction;
-        bool m_Disposed;
+        private readonly NpgsqlConnection m_Connection;
+        private readonly PostgreSqlDataSource m_BaseDataSource;
+        private readonly NpgsqlTransaction m_Transaction;
+        private bool m_Disposed;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PostgreSqlTransactionalDataSource"/> class.
@@ -67,7 +67,6 @@ namespace Tortuga.Chain.PostgreSql
             m_Connection = connection;
             m_Transaction = transaction;
 
-
             if (forwardEvents)
             {
                 ExecutionStarted += (sender, e) => dataSource.OnExecutionStarted(e);
@@ -78,6 +77,7 @@ namespace Tortuga.Chain.PostgreSql
             AuditRules = dataSource.AuditRules;
             UserValue = dataSource.UserValue;
         }
+
         /// <summary>
         /// Gets the database metadata.
         /// </summary>
@@ -87,7 +87,7 @@ namespace Tortuga.Chain.PostgreSql
         }
 
         /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// Perform application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
         public void Dispose()
         {
@@ -95,7 +95,11 @@ namespace Tortuga.Chain.PostgreSql
             GC.SuppressFinalize(this);
         }
 
-        void Dispose(bool disposing)
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        protected virtual void Dispose(bool disposing)
         {
             if (m_Disposed)
                 return;
@@ -185,10 +189,8 @@ namespace Tortuga.Chain.PostgreSql
             {
                 OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
                 throw;
-
             }
         }
-
 
         /// <summary>
         /// Executes the operation asynchronously.
@@ -238,11 +240,10 @@ namespace Tortuga.Chain.PostgreSql
                     OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
                     return rows;
                 }
-
             }
             catch (Exception ex)
             {
-                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException 
+                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException
                 {
                     var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);
                     OnExecutionCanceled(executionToken, startTime, DateTimeOffset.Now, state);
@@ -324,7 +325,7 @@ namespace Tortuga.Chain.PostgreSql
             }
             catch (Exception ex)
             {
-                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException 
+                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException
                 {
                     var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);
                     OnExecutionCanceled(executionToken, startTime, DateTimeOffset.Now, state);
@@ -382,9 +383,5 @@ namespace Tortuga.Chain.PostgreSql
         /// The extension cache.
         /// </value>
         protected override ConcurrentDictionary<Type, object> ExtensionCache => m_BaseDataSource.m_ExtensionCache;
-
-
-
-
     }
 }
