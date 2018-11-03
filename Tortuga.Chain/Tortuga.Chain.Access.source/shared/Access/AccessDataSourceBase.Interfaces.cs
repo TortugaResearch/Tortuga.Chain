@@ -135,6 +135,7 @@ namespace Tortuga.Chain.Access
         {
             return Sql(sqlStatement, argumentValue);
         }
+
         IObjectDbCommandBuilder<TArgument> IClass1DataSource.Update<TArgument>(string tableName, TArgument argumentValue, UpdateOptions options)
         {
             return Update(tableName, argumentValue, options);
@@ -155,14 +156,14 @@ namespace Tortuga.Chain.Access
             return UpdateByKey(tableName, newValues, key, options);
         }
 
-        IMultipleRowDbCommandBuilder IClass1DataSource.UpdateByKey<TArgument, TKey>(string tableName, TArgument newValues, params TKey[] keys)
+        IMultipleRowDbCommandBuilder IClass1DataSource.UpdateByKeyList<TArgument, TKey>(string tableName, TArgument newValues, params TKey[] keys)
         {
-            return UpdateByKey(tableName, newValues, keys);
+            return UpdateByKeyList(tableName, newValues, keys);
         }
 
-        IMultipleRowDbCommandBuilder IClass1DataSource.UpdateByKey<TArgument>(string tableName, TArgument newValues, params string[] keys)
+        IMultipleRowDbCommandBuilder IClass1DataSource.UpdateByKeyList<TArgument>(string tableName, TArgument newValues, params string[] keys)
         {
-            return UpdateByKey(tableName, newValues, keys);
+            return UpdateByKeyList(tableName, newValues, keys);
         }
 
         IMultipleRowDbCommandBuilder IClass1DataSource.UpdateByKeyList<TArgument, TKey>(string tableName, TArgument newValues, IEnumerable<TKey> keys, UpdateOptions options)
@@ -190,12 +191,11 @@ namespace Tortuga.Chain.Access
             throw new NotImplementedException("See issue #122");
             //return Upsert(tableName, argumentValue, options);
         }
+
         IObjectDbCommandBuilder<TArgument> IClass1DataSource.Upsert<TArgument>(TArgument argumentValue, UpsertOptions options)
         {
             throw new NotImplementedException("See issue #122");
             //return Upsert(argumentValue, options);
         }
     }
-
-
 }

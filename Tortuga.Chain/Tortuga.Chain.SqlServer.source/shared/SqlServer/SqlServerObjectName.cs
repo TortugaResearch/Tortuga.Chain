@@ -13,9 +13,9 @@ namespace Tortuga.Chain.SqlServer
         /// </summary>
         public static readonly SqlServerObjectName Empty;
 
-        readonly string m_Database;
-        readonly string m_Name;
-        readonly string m_Schema;
+        private readonly string m_Database;
+        private readonly string m_Name;
+        private readonly string m_Schema;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlServerObjectName"/> struct.
@@ -106,7 +106,7 @@ namespace Tortuga.Chain.SqlServer
         }
 
         /// <summary>
-        /// Performs an implicit conversion from <see cref="string"/> to <see cref="SqlServerObjectName"/>.
+        /// Perform an implicit conversion from <see cref="string"/> to <see cref="SqlServerObjectName"/>.
         /// </summary>
         /// <param name="value">The value.</param>
         /// <returns>
@@ -178,7 +178,7 @@ namespace Tortuga.Chain.SqlServer
         /// Returns a hash code for this instance.
         /// </summary>
         /// <returns>
-        /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+        /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
         /// </returns>
         /// <remarks>This is a case-insensitive comparison.</remarks>
         public override int GetHashCode()
@@ -216,7 +216,7 @@ namespace Tortuga.Chain.SqlServer
                 return $"{Database}.{Schema}.{Name}";
         }
 
-        static string Normalize(string value)
+        private static string Normalize(string value)
         {
             if (string.IsNullOrWhiteSpace(value))
                 return null;

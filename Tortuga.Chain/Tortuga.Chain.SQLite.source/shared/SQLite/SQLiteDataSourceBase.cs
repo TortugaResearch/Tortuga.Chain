@@ -9,14 +9,15 @@ using System.Diagnostics.CodeAnalysis;
 using Nito.AsyncEx;
 
 #if SDS
+
 using System.Data.SQLite;
+
 #else
 using SQLiteCommand = Microsoft.Data.Sqlite.SqliteCommand;
 using SQLiteParameter = Microsoft.Data.Sqlite.SqliteParameter;
 using SQLiteConnection = Microsoft.Data.Sqlite.SqliteConnection;
 using SQLiteTransaction = Microsoft.Data.Sqlite.SqliteTransaction;
 #endif
-
 
 namespace Tortuga.Chain.SQLite
 {
@@ -26,7 +27,6 @@ namespace Tortuga.Chain.SQLite
     [SuppressMessage("Microsoft.Design", "CA1001:TypesThatOwnDisposableFieldsShouldBeDisposable")]
     public abstract partial class SQLiteDataSourceBase : DataSource<SQLiteConnection, SQLiteTransaction, SQLiteCommand, SQLiteParameter>
     {
-
         /// <summary>
         /// Initializes a new instance of the <see cref="SQLiteDataSourceBase"/> class.
         /// </summary>
@@ -39,20 +39,16 @@ namespace Tortuga.Chain.SQLite
             }
         }
 
-
         /// <summary>
         /// Gets the database metadata.
         /// </summary>
         /// <value>The database metadata.</value>
         public abstract new SQLiteMetadataCache DatabaseMetadata { get; }
 
-
         /// <summary>
         /// Normally we use a reader/writer lock to avoid simultaneous writes to a SQlite database. If you disable this locking, you may see extra noise in your tracing output or unexpected exceptions.
         /// </summary>
         public bool DisableLocks { get; }
-
-
 
         /// <summary>
         /// Gets the synchronize lock used during execution of database operations.
@@ -82,7 +78,7 @@ namespace Tortuga.Chain.SQLite
         }
 
         /// <summary>
-        /// Deletes an object model from the table indicated by the class's Table attribute.
+        /// Delete an object model from the table indicated by the class's Table attribute.
         /// </summary>
         /// <typeparam name="TArgument"></typeparam>
         /// <param name="argumentValue">The argument value.</param>
@@ -253,11 +249,12 @@ namespace Tortuga.Chain.SQLite
         /// <param name="keys">The keys.</param>
         /// <returns></returns>
         /// <remarks>This only works on tables that have a scalar primary key.</remarks>
+        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "GetByKeyList")]
         public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> GetByKeyList<T>(SQLiteObjectName tableName, IEnumerable<T> keys)
         {
             var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).Columns.Where(c => c.IsPrimaryKey).ToList();
             if (primaryKeys.Count != 1)
-                throw new MappingException($"GetByKey operation isn't allowed on {tableName} because it doesn't have a single primary key. Use DataSource.From instead.");
+                throw new MappingException($"{nameof(GetByKeyList)} operation isn't allowed on {tableName} because it doesn't have a single primary key. Use DataSource.From instead.");
 
             var keyList = keys.AsList();
             var columnMetadata = primaryKeys.Single();
@@ -327,6 +324,7 @@ namespace Tortuga.Chain.SQLite
         {
             return new SQLiteSqlCall(this, sqlStatement, argumentValue, lockType);
         }
+
         /// <summary>
         /// Creates a <see cref="SQLiteUpdateObject{TArgument}" /> used to perform an update operation.
         /// </summary>
@@ -341,7 +339,7 @@ namespace Tortuga.Chain.SQLite
         }
 
         /// <summary>
-        /// Updates an object in the specified table.
+        /// Update an object in the specified table.
         /// </summary>
         /// <typeparam name="TArgument"></typeparam>
         /// <param name="argumentValue">The argument value.</param>
@@ -364,8 +362,9 @@ namespace Tortuga.Chain.SQLite
         {
             return new SQLiteInsertOrUpdateObject<TArgument>(this, tableName, argumentValue, options);
         }
+
         /// <summary>
-        /// Performs an insert or update operation as appropriate.
+        /// Perform an insert or update operation as appropriate.
         /// </summary>
         /// <typeparam name="TArgument"></typeparam>
         /// <param name="argumentValue">The argument value.</param>
@@ -375,6 +374,7 @@ namespace Tortuga.Chain.SQLite
         {
             return Upsert(DatabaseMetadata.GetTableOrViewFromClass<TArgument>().Name, argumentValue, options);
         }
+
         /// <summary>
         /// Called when Database.DatabaseMetadata is invoked.
         /// </summary>
@@ -384,9 +384,8 @@ namespace Tortuga.Chain.SQLite
             return DatabaseMetadata;
         }
 
-
         /// <summary>
-        /// Delete a record by its primary key.
+        /// Update a record by its primary key.
         /// </summary>
         /// <typeparam name="TArgument">The type of the t argument.</typeparam>
         /// <typeparam name="TKey"></typeparam>
@@ -402,7 +401,7 @@ namespace Tortuga.Chain.SQLite
         }
 
         /// <summary>
-        /// Delete a record by its primary key.
+        /// Update a record by its primary key.
         /// </summary>
         /// <typeparam name="TArgument">The type of the t argument.</typeparam>
         /// <param name="tableName">Name of the table.</param>
@@ -416,7 +415,7 @@ namespace Tortuga.Chain.SQLite
         }
 
         /// <summary>
-        /// Delete multiple rows by key.
+        /// Update multiple rows by key.
         /// </summary>
         /// <typeparam name="TArgument">The type of the t argument.</typeparam>
         /// <typeparam name="TKey"></typeparam>
@@ -425,14 +424,14 @@ namespace Tortuga.Chain.SQLite
         /// <param name="keys">The keys.</param>
         /// <returns></returns>
         /// <remarks>This only works on tables that have a scalar primary key.</remarks>
-        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> UpdateByKey<TArgument, TKey>(SQLiteObjectName tableName, TArgument newValues, params TKey[] keys)
+        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> UpdateByKeyList<TArgument, TKey>(SQLiteObjectName tableName, TArgument newValues, params TKey[] keys)
             where TKey : struct
         {
-            return UpdateByKeyList(tableName, newValues, keys);
+            return UpdateByKeyList(tableName, newValues, (IEnumerable<TKey>)keys);
         }
 
         /// <summary>
-        /// Delete multiple rows by key.
+        /// Update multiple rows by key.
         /// </summary>
         /// <typeparam name="TArgument">The type of the t argument.</typeparam>
         /// <param name="tableName">Name of the table.</param>
@@ -440,14 +439,13 @@ namespace Tortuga.Chain.SQLite
         /// <param name="keys">The keys.</param>
         /// <returns></returns>
         /// <remarks>This only works on tables that have a scalar primary key.</remarks>
-        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> UpdateByKey<TArgument>(SQLiteObjectName tableName, TArgument newValues, params string[] keys)
+        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> UpdateByKeyList<TArgument>(SQLiteObjectName tableName, TArgument newValues, params string[] keys)
         {
-            return UpdateByKeyList(tableName, newValues, keys);
+            return UpdateByKeyList(tableName, newValues, (IEnumerable<string>)keys);
         }
 
-
         /// <summary>
-        /// Updates multiple rows by key.
+        /// Update multiple rows by key.
         /// </summary>
         /// <typeparam name="TArgument">The type of the t argument.</typeparam>
         /// <typeparam name="TKey">The type of the t key.</typeparam>
@@ -457,12 +455,12 @@ namespace Tortuga.Chain.SQLite
         /// <param name="options">Update options.</param>
         /// <returns>MultipleRowDbCommandBuilder&lt;SQLiteCommand, SQLiteParameter&gt;.</returns>
         /// <exception cref="MappingException"></exception>
-        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "UpdateByKey")]
+        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "UpdateByKeyList")]
         public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> UpdateByKeyList<TArgument, TKey>(SQLiteObjectName tableName, TArgument newValues, IEnumerable<TKey> keys, UpdateOptions options = UpdateOptions.None)
         {
             var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).Columns.Where(c => c.IsPrimaryKey).ToList();
             if (primaryKeys.Count != 1)
-                throw new MappingException($"UpdateByKey operation isn't allowed on {tableName} because it doesn't have a single primary key.");
+                throw new MappingException($"{nameof(UpdateByKeyList)} operation isn't allowed on {tableName} because it doesn't have a single primary key.");
 
             var keyList = keys.AsList();
             var columnMetadata = primaryKeys.Single();
@@ -483,8 +481,6 @@ namespace Tortuga.Chain.SQLite
 
             return new SQLiteUpdateMany(this, tableName, newValues, where, parameters, parameters.Count, options);
         }
-
-
 
         /// <summary>
         /// Delete a record by its primary key.
@@ -547,12 +543,12 @@ namespace Tortuga.Chain.SQLite
         /// <param name="options">Update options.</param>
         /// <returns>MultipleRowDbCommandBuilder&lt;SQLiteCommand, SQLiteParameter&gt;.</returns>
         /// <exception cref="MappingException"></exception>
-        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "DeleteByKey")]
+        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "DeleteByKeyList")]
         public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> DeleteByKeyList<TKey>(SQLiteObjectName tableName, IEnumerable<TKey> keys, DeleteOptions options = DeleteOptions.None)
         {
             var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).Columns.Where(c => c.IsPrimaryKey).ToList();
             if (primaryKeys.Count != 1)
-                throw new MappingException($"DeleteByKey operation isn't allowed on {tableName} because it doesn't have a single primary key.");
+                throw new MappingException($"{nameof(DeleteByKeyList)} operation isn't allowed on {tableName} because it doesn't have a single primary key.");
 
             var keyList = keys.AsList();
             var columnMetadata = primaryKeys.Single();
@@ -580,11 +576,10 @@ namespace Tortuga.Chain.SQLite
                 effectiveOptions = effectiveOptions | UpdateOptions.UseKeyAttribute;
 
             return new SQLiteUpdateMany(this, tableName, null, where, parameters, parameters.Count, effectiveOptions);
-
         }
 
         /// <summary>
-        /// Deletes multiple records using a where expression.
+        /// Delete multiple records using a where expression.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="whereClause">The where clause.</param>
@@ -598,7 +593,7 @@ namespace Tortuga.Chain.SQLite
         }
 
         /// <summary>
-        /// Deletes multiple records using a where expression.
+        /// Delete multiple records using a where expression.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="whereClause">The where clause.</param>
@@ -613,7 +608,7 @@ namespace Tortuga.Chain.SQLite
         }
 
         /// <summary>
-        /// Deletes multiple records using a filter object.
+        /// Delete multiple records using a filter object.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="filterValue">The filter value.</param>
@@ -627,42 +622,41 @@ namespace Tortuga.Chain.SQLite
             return new SQLiteUpdateMany(this, tableName, null, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected).WithFilter(filterValue, filterOptions);
         }
 
-
         /// <summary>
-        /// Updates multiple records using an update expression.
+        /// Update multiple records using an update expression.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="updateExpression">The update expression.</param>
         /// <param name="options">The update options.</param>
+        /// <remarks>Use .WithFilter to apply a WHERE clause.</remarks>
         public IUpdateManyCommandBuilder<SQLiteCommand, SQLiteParameter> UpdateSet(SQLiteObjectName tableName, string updateExpression, UpdateOptions options = UpdateOptions.None)
         {
             return new SQLiteUpdateMany(this, tableName, updateExpression, null, options);
         }
 
         /// <summary>
-        /// Updates multiple records using an update expression.
+        /// Update multiple records using an update expression.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="updateExpression">The update expression.</param>
         /// <param name="updateArgumentValue">The argument value.</param>
         /// <param name="options">The update options.</param>
+        /// <remarks>Use .WithFilter to apply a WHERE clause.</remarks>
         public IUpdateManyCommandBuilder<SQLiteCommand, SQLiteParameter> UpdateSet(SQLiteObjectName tableName, string updateExpression, object updateArgumentValue, UpdateOptions options = UpdateOptions.None)
         {
             return new SQLiteUpdateMany(this, tableName, updateExpression, updateArgumentValue, options);
         }
 
-
         /// <summary>
-        /// Updates multiple records using an update value.
+        /// Update multiple records using an update value.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="newValues">The new values to use.</param>
         /// <param name="options">The options.</param>
+        /// <remarks>Use .WithFilter to apply a WHERE clause.</remarks>
         public IUpdateManyCommandBuilder<SQLiteCommand, SQLiteParameter> UpdateSet(SQLiteObjectName tableName, object newValues, UpdateOptions options = UpdateOptions.None)
         {
             return new SQLiteUpdateMany(this, tableName, newValues, options);
         }
     }
-
-
 }

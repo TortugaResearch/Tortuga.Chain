@@ -13,9 +13,9 @@ namespace Tortuga.Chain.PostgreSql
         /// </summary>
         public static readonly PostgreSqlObjectName Empty;
 
-        readonly string m_Database;
-        readonly string m_Name;
-        readonly string m_Schema;
+        private readonly string m_Database;
+        private readonly string m_Name;
+        private readonly string m_Schema;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PostgreSqlObjectName"/> struct.
@@ -102,14 +102,19 @@ namespace Tortuga.Chain.PostgreSql
         /// The schema.
         /// </value>
         public string Schema => m_Schema;
+
+#pragma warning disable CA2225 // Operator overloads have named alternates
+
         /// <summary>
-        /// Performs an implicit conversion from <see cref="string"/> to <see cref="PostgreSqlObjectName"/>.
+        /// Perform an implicit conversion from <see cref="string"/> to <see cref="PostgreSqlObjectName"/>.
         /// </summary>
         /// <param name="value">The value.</param>
         /// <returns>
         /// The result of the conversion.
         /// </returns>
         public static implicit operator PostgreSqlObjectName(string value) => new PostgreSqlObjectName(value);
+
+#pragma warning restore CA2225 // Operator overloads have named alternates
 
         /// <summary>
         /// Implements the operator !=.
@@ -162,7 +167,7 @@ namespace Tortuga.Chain.PostgreSql
         /// Returns a hash code for this instance.
         /// </summary>
         /// <returns>
-        /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+        /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
         /// </returns>
         public override int GetHashCode() => Name.ToUpper(CultureInfo.InvariantCulture).GetHashCode();
 

@@ -7,7 +7,6 @@ namespace Tortuga.Chain.SqlServer
 {
     partial class SqlServerDataSourceBase : IClass2DataSource
     {
-
         IDatabaseMetadataCache IDataSource.DatabaseMetadata
         {
             get { return DatabaseMetadata; }
@@ -97,6 +96,7 @@ namespace Tortuga.Chain.SqlServer
         {
             return Insert(tableName, argumentValue, options);
         }
+
         IObjectDbCommandBuilder<TArgument> IClass1DataSource.Insert<TArgument>(TArgument argumentValue, InsertOptions options)
         {
             return Insert(argumentValue, options);
@@ -142,7 +142,6 @@ namespace Tortuga.Chain.SqlServer
             return TableFunction(functionName, functionArgumentValue);
         }
 
-
         ISingleRowDbCommandBuilder IClass1DataSource.DeleteByKey<TKey>(string tableName, TKey key, DeleteOptions options)
         {
             return DeleteByKey(tableName, key, options);
@@ -178,14 +177,14 @@ namespace Tortuga.Chain.SqlServer
             return UpdateByKey(tableName, newValues, key, options);
         }
 
-        IMultipleRowDbCommandBuilder IClass1DataSource.UpdateByKey<TArgument, TKey>(string tableName, TArgument newValues, params TKey[] keys)
+        IMultipleRowDbCommandBuilder IClass1DataSource.UpdateByKeyList<TArgument, TKey>(string tableName, TArgument newValues, params TKey[] keys)
         {
-            return UpdateByKey(tableName, newValues, keys);
+            return UpdateByKeyList(tableName, newValues, keys);
         }
 
-        IMultipleRowDbCommandBuilder IClass1DataSource.UpdateByKey<TArgument>(string tableName, TArgument newValues, params string[] keys)
+        IMultipleRowDbCommandBuilder IClass1DataSource.UpdateByKeyList<TArgument>(string tableName, TArgument newValues, params string[] keys)
         {
-            return UpdateByKey(tableName, newValues, keys);
+            return UpdateByKeyList(tableName, newValues, keys);
         }
 
         IMultipleRowDbCommandBuilder IClass1DataSource.UpdateByKeyList<TArgument, TKey>(string tableName, TArgument newValues, IEnumerable<TKey> keys, UpdateOptions options)
@@ -197,7 +196,6 @@ namespace Tortuga.Chain.SqlServer
         {
             return DeleteWithFilter(tableName, whereClause);
         }
-
 
         IMultipleRowDbCommandBuilder IClass1DataSource.DeleteWithFilter(string tableName, string whereClause, object argumentValue)
         {
@@ -235,4 +233,3 @@ namespace Tortuga.Chain.SqlServer
         }
     }
 }
-

@@ -5,7 +5,6 @@ using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.PostgreSql
 {
-
     partial class PostgreSqlDataSourceBase : IClass2DataSource
     {
         IDatabaseMetadataCache IDataSource.DatabaseMetadata
@@ -162,6 +161,7 @@ namespace Tortuga.Chain.PostgreSql
         {
             return Sql(sqlStatement, argumentValue);
         }
+
         ITableDbCommandBuilder IClass2DataSource.TableFunction(string functionName)
         {
             return TableFunction(functionName);
@@ -176,10 +176,12 @@ namespace Tortuga.Chain.PostgreSql
         {
             return Update(argumentValue, options);
         }
+
         IObjectDbCommandBuilder<TArgument> IClass1DataSource.Update<TArgument>(string tableName, TArgument argumentValue, UpdateOptions options)
         {
             return Update(tableName, argumentValue, options);
         }
+
         ISingleRowDbCommandBuilder IClass1DataSource.UpdateByKey<TArgument, TKey>(string tableName, TArgument newValues, TKey key, UpdateOptions options)
         {
             return UpdateByKey(tableName, newValues, key, options);
@@ -190,14 +192,14 @@ namespace Tortuga.Chain.PostgreSql
             return UpdateByKey(tableName, newValues, key, options);
         }
 
-        IMultipleRowDbCommandBuilder IClass1DataSource.UpdateByKey<TArgument, TKey>(string tableName, TArgument newValues, params TKey[] keys)
+        IMultipleRowDbCommandBuilder IClass1DataSource.UpdateByKeyList<TArgument, TKey>(string tableName, TArgument newValues, params TKey[] keys)
         {
-            return UpdateByKey(tableName, newValues, keys);
+            return UpdateByKeyList(tableName, newValues, keys);
         }
 
-        IMultipleRowDbCommandBuilder IClass1DataSource.UpdateByKey<TArgument>(string tableName, TArgument newValues, params string[] keys)
+        IMultipleRowDbCommandBuilder IClass1DataSource.UpdateByKeyList<TArgument>(string tableName, TArgument newValues, params string[] keys)
         {
-            return UpdateByKey(tableName, newValues, keys);
+            return UpdateByKeyList(tableName, newValues, keys);
         }
 
         IMultipleRowDbCommandBuilder IClass1DataSource.UpdateByKeyList<TArgument, TKey>(string tableName, TArgument newValues, IEnumerable<TKey> keys, UpdateOptions options)

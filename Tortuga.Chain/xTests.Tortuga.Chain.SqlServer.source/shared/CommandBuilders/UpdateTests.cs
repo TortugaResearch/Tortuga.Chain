@@ -242,7 +242,7 @@ namespace Tests.CommandBuilders
                 var keysToUpdate = allKeys.Take(5).ToList();
 
                 var newValues = new { FirstName = "Bob" };
-                var updatedRows = dataSource.UpdateByKeyList(EmployeeTableName, newValues, keysToUpdate).ToCollection<Employee>().Execute();
+                var updatedRows = dataSource.UpdateByKeyList(EmployeeTableName, newValues, (System.Collections.Generic.IEnumerable<int>)keysToUpdate).ToCollection<Employee>().Execute();
 
                 Assert.Equal(5, updatedRows.Count);
                 foreach (var row in updatedRows)

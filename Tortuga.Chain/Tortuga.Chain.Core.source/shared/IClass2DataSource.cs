@@ -3,7 +3,6 @@ using Tortuga.Chain.CommandBuilders;
 #if !WINDOWS_UWP
 #endif
 
-
 namespace Tortuga.Chain
 {
     /// <summary>
@@ -59,7 +58,7 @@ namespace Tortuga.Chain
         IScalarDbCommandBuilder ScalarFunction(string scalarFunctionName, object functionArgumentValue);
 
         //        /// <summary>
-        //        /// Performs a bulk insert.
+        //        /// Perform a bulk insert.
         //        /// </summary>
         //        /// <typeparam name="T"></typeparam>
         //        /// <param name="tableName">Name of the target table.</param>
@@ -68,7 +67,7 @@ namespace Tortuga.Chain
         //        ILink BulkInsert<T>(string tableName, IEnumerable<T> values);
 
         //        /// <summary>
-        //        /// Performs a bulk insert.
+        //        /// Perform a bulk insert.
         //        /// </summary>
         //        /// <param name="tableName">Name of the target table.</param>
         //        /// <param name="values">The values to be inserted.</param>
@@ -76,12 +75,11 @@ namespace Tortuga.Chain
         //        ILink InsertBulk(string tableName, DataTable values);
 
         //        /// <summary>
-        //        /// Performs a bulk insert.
+        //        /// Perform a bulk insert.
         //        /// </summary>
         //        /// <param name="tableName">Name of the target table.</param>
         //        /// <param name="values">The values to be inserted.</param>
         //        /// <returns></returns>
         //        ILink InsertBulk(string tableName, IDataReader values);
-
     }
 }

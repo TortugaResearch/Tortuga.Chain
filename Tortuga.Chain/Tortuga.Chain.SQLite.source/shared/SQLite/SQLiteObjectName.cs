@@ -13,8 +13,7 @@ namespace Tortuga.Chain.SQLite
         /// </summary>
         public static readonly SQLiteObjectName Empty;
 
-        readonly string m_Name;
-
+        private readonly string m_Name;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SQLiteObjectName" /> struct.
@@ -24,8 +23,6 @@ namespace Tortuga.Chain.SQLite
         {
             m_Name = Normalize(name);
         }
-
-
 
         /// <summary>
         /// Gets the name.
@@ -39,7 +36,7 @@ namespace Tortuga.Chain.SQLite
         }
 
         /// <summary>
-        /// Performs an implicit conversion from <see cref="string"/> to <see cref="SQLiteObjectName"/>.
+        /// Perform an implicit conversion from <see cref="string"/> to <see cref="SQLiteObjectName"/>.
         /// </summary>
         /// <param name="value">The value.</param>
         /// <returns>
@@ -109,7 +106,7 @@ namespace Tortuga.Chain.SQLite
         /// Returns a hash code for this instance.
         /// </summary>
         /// <returns>
-        /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+        /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
         /// </returns>
         /// <remarks>This is a case-insensitive comparison.</remarks>
         public override int GetHashCode()
@@ -137,7 +134,8 @@ namespace Tortuga.Chain.SQLite
         {
             return Name;
         }
-        static string Normalize(string value)
+
+        private static string Normalize(string value)
         {
             if (string.IsNullOrWhiteSpace(value))
                 return null;
