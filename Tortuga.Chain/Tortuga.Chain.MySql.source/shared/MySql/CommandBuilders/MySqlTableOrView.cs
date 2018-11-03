@@ -135,7 +135,7 @@ namespace Tortuga.Chain.MySql.CommandBuilders
 
             //Support check
             if (!Enum.IsDefined(typeof(MySqlLimitOption), m_LimitOptions))
-                throw new NotSupportedException($"PostgreSQL does not support limit option {(LimitOptions)m_LimitOptions}");
+                throw new NotSupportedException($"MySQL does not support limit option {(LimitOptions)m_LimitOptions}");
 
             //Validation
             if (m_Skip < 0)
@@ -185,7 +185,10 @@ namespace Tortuga.Chain.MySql.CommandBuilders
             switch (m_LimitOptions)
             {
                 case MySqlLimitOption.RandomSampleRows:
-                    sql.Append(" ORDER BY RAND() ");
+                    if (m_Seed.HasValue)
+                        sql.Append($" ORDER BY RAND({m_Seed}) ");
+                    else
+                        sql.Append(" ORDER BY RAND() ");
                     break;
 
                 default:

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics.CodeAnalysis;
 using Tortuga.Anchor;
 using Tortuga.Anchor.Metadata;
 using Tortuga.Chain.Metadata;
@@ -320,8 +321,8 @@ namespace Tortuga.Chain.MySql
                         while (reader.Read())
                         {
                             var name = reader.GetString(reader.GetOrdinal("COLUMN_NAME"));
-                            var @default = reader.IsDBNull(reader.GetOrdinal("COLUMN_DEFAULT")) ? null : reader.GetString("COLUMN_DEFAULT");
-                            var isNullable = reader.GetString("IS_NULLABLE") == "YES";
+                            //var @default = reader.IsDBNull(reader.GetOrdinal("COLUMN_DEFAULT")) ? null : reader.GetString("COLUMN_DEFAULT"); #226
+                            var isNullable = string.Equals(reader.GetString("IS_NULLABLE"), "YES", StringComparison.Ordinal);
                             var typeName = reader.GetString("DATA_TYPE");
                             var maxLength = reader.IsDBNull(reader.GetOrdinal("CHARACTER_MAXIMUM_LENGTH")) ? (UInt64?)null : reader.GetUInt64("CHARACTER_MAXIMUM_LENGTH");
                             var precisionA = reader.IsDBNull(reader.GetOrdinal("NUMERIC_PRECISION")) ? (int?)null : reader.GetInt32("NUMERIC_PRECISION");
@@ -331,8 +332,8 @@ namespace Tortuga.Chain.MySql
                             var fullTypeName = reader.GetString("COLUMN_TYPE");
                             var key = reader.GetString("COLUMN_KEY");
                             var extra = reader.GetString("EXTRA");
-                            var comment = reader.GetString("COLUMN_COMMENT");
-                            var collation = reader.IsDBNull(reader.GetOrdinal("COLLATION_NAME")) ? null : reader.GetString(reader.GetOrdinal("COLLATION_NAME"));
+                            //var comment = reader.GetString("COLUMN_COMMENT"); #224
+                            //var collation = reader.IsDBNull(reader.GetOrdinal("COLLATION_NAME")) ? null : reader.GetString(reader.GetOrdinal("COLLATION_NAME")); #225
 
                             var computed = extra.Contains("VIRTUAL");
                             var primary = key.Contains("PRI");
@@ -451,11 +452,10 @@ namespace Tortuga.Chain.MySql
 
         private StoredProcedureMetadata<MySqlObjectName, MySqlDbType> GetStoredProcedureInteral(MySqlObjectName storedProcedureName)
         {
-            const string sql = "SELECT ROUTINE_SCHEMA, ROUTINE_NAME, SPECIFIC_NAME FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_TYPE = 'PROCEDURE' AND ROUTINE_SCHEMA = @Schema AND ROUTINE_NAME = @Name;";
+            const string sql = "SELECT ROUTINE_SCHEMA, ROUTINE_NAME FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_TYPE = 'PROCEDURE' AND ROUTINE_SCHEMA = @Schema AND ROUTINE_NAME = @Name;";
 
             string actualSchema;
             string actualName;
-            string specificName;
 
             using (var con = new MySqlConnection(m_ConnectionBuilder.ConnectionString))
             {
@@ -470,7 +470,6 @@ namespace Tortuga.Chain.MySql
                             throw new MissingObjectException($"Could not find stored procedure {storedProcedureName}");
                         actualSchema = reader.GetString(reader.GetOrdinal("ROUTINE_SCHEMA"));
                         actualName = reader.GetString(reader.GetOrdinal("ROUTINE_NAME"));
-                        specificName = reader.GetString("SPECIFIC_NAME");
                     }
                 }
             }
@@ -504,7 +503,7 @@ namespace Tortuga.Chain.MySql
                             throw new MissingObjectException($"Could not find table or view {tableName}");
                         actualSchemaName = reader.GetString("TABLE_SCHEMA");
                         actualTableName = reader.GetString("TABLE_NAME");
-                        isTable = reader.GetString("TABLE_TYPE") == "BASE TABLE";
+                        isTable = string.Equals(reader.GetString("TABLE_TYPE"), "BASE TABLE", StringComparison.Ordinal);
                         engine = reader.IsDBNull(reader.GetOrdinal("ENGINE")) ? null : reader.GetString("ENGINE");
                     }
                 }
@@ -515,7 +514,8 @@ namespace Tortuga.Chain.MySql
             return new MySqlTableOrViewMetadata<MySqlDbType>(new MySqlObjectName(actualSchemaName, actualTableName), isTable, columns, engine);
         }
 
-        private MySqlDbType? TypeNameToMySqlDbType(string typeName, bool isUnsigned)
+        [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
+        private static MySqlDbType? TypeNameToMySqlDbType(string typeName, bool isUnsigned)
         {
             switch (typeName.ToUpperInvariant())
             {

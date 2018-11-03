@@ -11,16 +11,13 @@ using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.MySql.CommandBuilders
 {
-
     /// <summary>
     /// Class MySqlProcedureCall.
     /// </summary>
     internal sealed class MySqlProcedureCall : MultipleTableDbCommandBuilder<MySqlCommand, MySqlParameter>
     {
-
-        readonly object m_ArgumentValue;
-        readonly StoredProcedureMetadata<MySqlObjectName, MySqlDbType> m_Procedure;
-        readonly MySqlObjectName m_ProcedureName;
+        private readonly object m_ArgumentValue;
+        private readonly StoredProcedureMetadata<MySqlObjectName, MySqlDbType> m_Procedure;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MySqlProcedureCall"/> class.
@@ -34,7 +31,6 @@ namespace Tortuga.Chain.MySql.CommandBuilders
                 throw new ArgumentException($"{nameof(procedureName)} is empty", nameof(procedureName));
 
             m_ArgumentValue = argumentValue;
-            m_ProcedureName = procedureName;
             m_Procedure = DataSource.DatabaseMetadata.GetStoredProcedure(procedureName);
         }
 
@@ -86,9 +82,4 @@ namespace Tortuga.Chain.MySql.CommandBuilders
             return null;
         }
     }
-
 }
-
-
-
-

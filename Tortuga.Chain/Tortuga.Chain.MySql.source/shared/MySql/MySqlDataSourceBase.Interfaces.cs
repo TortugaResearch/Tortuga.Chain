@@ -165,12 +165,12 @@ namespace Tortuga.Chain.MySql
 
         ITableDbCommandBuilder IClass2DataSource.TableFunction(string functionName)
         {
-            throw new NotSupportedException();
+            throw new NotSupportedException("MySQL does not support table-valued functions.");
         }
 
         ITableDbCommandBuilder IClass2DataSource.TableFunction(string functionName, object functionArgumentValue)
         {
-            throw new NotSupportedException();
+            throw new NotSupportedException("MySQL does not support table-valued functions.");
         }
 
         IObjectDbCommandBuilder<TArgument> IClass1DataSource.Update<TArgument>(TArgument argumentValue, UpdateOptions options)

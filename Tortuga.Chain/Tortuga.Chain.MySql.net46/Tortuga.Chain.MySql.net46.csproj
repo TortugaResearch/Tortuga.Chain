@@ -1,16 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{A1B8E8E3-9FDA-4063-A77F-1F0DDA4897AE}</ProjectGuid>
+    <ProjectGuid>{C995F967-259B-43C4-84D7-609502FA9827}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Tortuga.Chain</RootNamespace>
-    <AssemblyName>Tortuga.Chain.MySql</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <RootNamespace>Tortuga.Chain.MySql.net46</RootNamespace>
+    <AssemblyName>Tortuga.Chain.MySql.net46</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -20,8 +21,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <RunCodeAnalysis>true</RunCodeAnalysis>
-    <CodeAnalysisRuleSet>..\Tortuga.Chain.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,8 +29,6 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <RunCodeAnalysis>true</RunCodeAnalysis>
-    <CodeAnalysisRuleSet>..\Tortuga.Chain.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Google.Protobuf, Version=3.5.1.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
@@ -42,10 +39,9 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Collections.Immutable, Version=1.2.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Collections.Immutable.1.5.0\lib\netstandard2.0\System.Collections.Immutable.dll</HintPath>
+      <HintPath>..\packages\System.Collections.Immutable.1.5.0\lib\netstandard1.3\System.Collections.Immutable.dll</HintPath>
     </Reference>
     <Reference Include="System.ComponentModel" />
-    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Configuration.Install" />
@@ -53,7 +49,7 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Drawing.Design" />
     <Reference Include="System.Management" />
-    <Reference Include="System.Runtime" />
+    <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Transactions" />
     <Reference Include="System.Xml.Linq" />
@@ -65,38 +61,26 @@
     <Reference Include="Tortuga.Anchor, Version=1.2.6283.989, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
       <HintPath>..\packages\Tortuga.Anchor.1.2.6283.989\lib\net46\Tortuga.Anchor.dll</HintPath>
     </Reference>
+    <Reference Include="Tortuga.Chain.Core, Version=1.3.6847.41799, Culture=neutral, PublicKeyToken=8769fd32a2872cf0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tortuga.Chain.Core.1.3.6847.41792\lib\net46\Tortuga.Chain.Core.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\ProductSharedAssemblyInfo.cs">
       <Link>Properties\ProductSharedAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="..\Tortuga.Chain.MySql.source\GlobalSuppressions.cs">
+      <Link>GlobalSuppressions.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.MySql.source\Properties\LibrarySharedAssemblyInfo.cs">
+      <Link>Properties\LibrarySharedAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\LibrarySharedAssemblyInfo.cs" />
-    <Compile Include="shared\MySql\CommandBuilders\MySqlDeleteMany.cs" />
-    <Compile Include="shared\MySql\CommandBuilders\MySqlDeleteObject`1.cs" />
-    <Compile Include="shared\MySql\CommandBuilders\MySqlInsertObject`1.cs" />
-    <Compile Include="shared\MySql\CommandBuilders\MySqlInsertOrUpdateObject`1.cs" />
-    <Compile Include="shared\MySql\CommandBuilders\MySqlObjectCommand`1.cs" />
-    <Compile Include="shared\MySql\CommandBuilders\MySqlProcedureCall.cs" />
-    <Compile Include="shared\MySql\CommandBuilders\MySqlSqlCall.cs" />
-    <Compile Include="shared\MySql\CommandBuilders\MySqlTableOrView.cs" />
-    <Compile Include="shared\MySql\CommandBuilders\MySqlUpdateMany.cs" />
-    <Compile Include="shared\MySql\CommandBuilders\MySqlUpdateObject`1.cs" />
-    <Compile Include="shared\MySql\CommandBuilders\MySqlScalarFunction.cs" />
-    <Compile Include="shared\MySql\MySqlCommandExecutionToken.cs" />
-    <Compile Include="shared\MySql\MySqlDataSourceBase.cs" />
-    <Compile Include="shared\MySql\MySqlDataSourceBase.Interfaces.cs" />
-    <Compile Include="shared\MySql\MySqlDataSourceSettings.cs" />
-    <Compile Include="shared\MySql\MySqlMetadataCache.cs" />
-    <Compile Include="shared\MySql\MySqlOpenDataSource.cs" />
-    <Compile Include="shared\MySql\MySqlTableOrViewMetadata`1.cs" />
-    <Compile Include="shared\MySql\MySqlTransactionalDataSource.cs" />
-    <Compile Include="shared\MySql\MySqlObjectName.cs" />
-    <Compile Include="shared\MySql\Utilities.cs" />
-    <Compile Include="shared\MySqlDataSource.cs" />
-    <Compile Include="shared\MySqlExtensions.cs" />
-    <Compile Include="shared\MySqlLimitOption.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\Tortuga.Chain.MySql.source\shared\**\*.cs">
+      <Link>shared\%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <CodeAnalysisDictionary Include="..\CustomDictionary.xml">
@@ -110,18 +94,5 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Tortuga.Chain.Core.source\Tortuga.Chain.Core.source.csproj">
-      <Project>{2c523692-a40b-4a7e-a95a-fbe373f263f7}</Project>
-      <Name>Tortuga.Chain.Core.source</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

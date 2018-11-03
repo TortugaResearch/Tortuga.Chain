@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.Common;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using Tortuga.Anchor.Metadata;
@@ -78,6 +79,7 @@ namespace Tortuga.Chain
         /// <param name="sql">The SQL.</param>
         /// <param name="reader">The reader.</param>
         /// <returns></returns>
+        [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
         internal static MethodDelegate<TObject> CreateBuilder<TObject>(IDataSource dataSource, string sql, IDataReader reader)
             where TObject : new()
         {
@@ -250,9 +252,9 @@ namespace Tortuga.Chain
                 if (column.Index != columnIndex)
                     continue; //we'll get it on another iteration
 
-                if (property.PropertyType == column.ColumnType || (property.PropertyType.Name == "Nullable`1" && property.PropertyType.IsGenericType && property.PropertyType.GenericTypeArguments[0] == column.ColumnType))
+                if (property.PropertyType == column.ColumnType || (string.Equals(property.PropertyType.Name, "Nullable`1", StringComparison.Ordinal) && property.PropertyType.IsGenericType && property.PropertyType.GenericTypeArguments[0] == column.ColumnType))
                 {
-                    if (property.PropertyType.IsClass || (property.PropertyType.Name == "Nullable`1" && property.PropertyType.IsGenericType))
+                    if (property.PropertyType.IsClass || (string.Equals(property.PropertyType.Name, "Nullable`1", StringComparison.Ordinal) && property.PropertyType.IsGenericType))
                     {
                         //null handler
                         code.AppendLine($"    if (reader.IsDBNull({column.Index}))");
@@ -270,7 +272,7 @@ namespace Tortuga.Chain
                 {
                     var propertyTypeName = MetadataCache.GetMetadata(property.PropertyType).CSharpFullName;
 
-                    if (property.PropertyType.IsClass || (property.PropertyType.Name == "Nullable`1" && property.PropertyType.IsGenericType))
+                    if (property.PropertyType.IsClass || (string.Equals(property.PropertyType.Name, "Nullable`1", StringComparison.Ordinal) && property.PropertyType.IsGenericType))
                     {
                         //null handler
                         code.AppendLine($"    if (reader.IsDBNull({column.Index}))");

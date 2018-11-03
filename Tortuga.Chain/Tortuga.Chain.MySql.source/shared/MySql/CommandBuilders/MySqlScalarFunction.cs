@@ -11,14 +11,16 @@ using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.MySql.CommandBuilders
 {
+    //TODO-223: Finish implementation and test this
+    /*
     /// <summary>
     /// Use for scalar functions.
     /// </summary>
     /// <seealso cref="ScalarDbCommandBuilder{MySqlCommand, MySqlParameter}" />
     internal class MySqlScalarFunction : ScalarDbCommandBuilder<MySqlCommand, MySqlParameter>
     {
-        readonly ScalarFunctionMetadata<MySqlObjectName, MySqlDbType> m_Function;
-        readonly object m_FunctionArgumentValue;
+        private readonly ScalarFunctionMetadata<MySqlObjectName, MySqlDbType> m_Function;
+        private readonly object m_FunctionArgumentValue;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MySqlScalarFunction" /> class.
@@ -66,6 +68,7 @@ namespace Tortuga.Chain.MySql.CommandBuilders
 
             return new MySqlCommandExecutionToken(DataSource, "Query Function " + m_Function.Name, sql.ToString(), parameters);
         }
+
         /// <summary>
         /// Returns the column associated with the column name.
         /// </summary>
@@ -73,7 +76,6 @@ namespace Tortuga.Chain.MySql.CommandBuilders
         /// <returns>ColumnMetadata.</returns>
         /// <remarks>Always returns null since this command builder has no columns</remarks>
         public override ColumnMetadata TryGetColumn(string columnName) => null;
-
-
     }
+    */
 }

@@ -14,8 +14,7 @@ namespace Tortuga.Chain.MySql.CommandBuilders
     internal sealed class MySqlInsertOrUpdateObject<TArgument> : MySqlObjectCommand<TArgument>
         where TArgument : class
     {
-        readonly UpsertOptions m_Options;
-
+        private readonly UpsertOptions m_Options;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MySqlInsertOrUpdateObject{TArgument}"/> class.
@@ -39,9 +38,6 @@ namespace Tortuga.Chain.MySql.CommandBuilders
         {
             if (materializer == null)
                 throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
-
-            var primaryKeyNames = Table.Columns.Where(x => x.IsPrimaryKey).Select(x => x.QuotedSqlName);
-            string conflictNames = string.Join(", ", primaryKeyNames);
 
             var sqlBuilder = Table.CreateSqlBuilder(StrictMode);
             sqlBuilder.ApplyArgumentValue(DataSource, ArgumentValue, m_Options);
