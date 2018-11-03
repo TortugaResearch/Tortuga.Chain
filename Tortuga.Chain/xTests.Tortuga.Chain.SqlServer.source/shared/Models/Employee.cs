@@ -1,4 +1,3 @@
-
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using Tortuga.Anchor.Modeling;
@@ -27,6 +26,5 @@ namespace Tests.Models
         public int? EmployeeKey { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-      
     }
 }

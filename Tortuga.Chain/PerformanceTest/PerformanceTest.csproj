@@ -93,6 +93,10 @@
       <Project>{5D3159AD-141C-4853-9ECC-A1FD603BD8C4}</Project>
       <Name>Tortuga.Chain.SqlServer.source</Name>
     </ProjectReference>
+    <ProjectReference Include="..\xTests.Tortuga.Chain.MySql.source\xTests.Tortuga.Chain.MySql.source.csproj">
+      <Project>{afb7acc5-b080-40d9-981f-0dcc7b0ed0a9}</Project>
+      <Name>xTests.Tortuga.Chain.MySql.source</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

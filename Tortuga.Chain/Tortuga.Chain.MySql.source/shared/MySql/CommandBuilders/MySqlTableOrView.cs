@@ -10,23 +10,23 @@ using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.MySql.CommandBuilders
 {
-
     /// <summary>
     /// Class MySqlTableOrView
     /// </summary>
     public class MySqlTableOrView : TableDbCommandBuilder<MySqlCommand, MySqlParameter, MySqlLimitOption>
     {
-        readonly TableOrViewMetadata<MySqlObjectName, MySqlDbType> m_Table;
-        object m_ArgumentValue;
-        FilterOptions m_FilterOptions;
-        object m_FilterValue;
-        MySqlLimitOption m_LimitOptions;
-        int? m_Seed;
-        string m_SelectClause;
-        int? m_Skip;
-        IEnumerable<SortExpression> m_SortExpressions = Enumerable.Empty<SortExpression>();
-        int? m_Take;
-        string m_WhereClause;
+        private readonly TableOrViewMetadata<MySqlObjectName, MySqlDbType> m_Table;
+        private object m_ArgumentValue;
+        private FilterOptions m_FilterOptions;
+        private object m_FilterValue;
+        private MySqlLimitOption m_LimitOptions;
+        private int? m_Seed;
+        private string m_SelectClause;
+        private int? m_Skip;
+        private IEnumerable<SortExpression> m_SortExpressions = Enumerable.Empty<SortExpression>();
+        private int? m_Take;
+        private string m_WhereClause;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="MySqlTableOrView" /> class.
         /// </summary>
@@ -94,7 +94,8 @@ namespace Tortuga.Chain.MySql.CommandBuilders
         /// <returns></returns>
         public override ILink<long> AsCount()
         {
-            throw new NotImplementedException("AsCount");
+            m_SelectClause = "COUNT(*)";
+            return ToInt64();
         }
 
         /// <summary>
@@ -105,7 +106,13 @@ namespace Tortuga.Chain.MySql.CommandBuilders
         /// <returns></returns>
         public override ILink<long> AsCount(string columnName, bool distinct = false)
         {
-            throw new NotImplementedException("AsCount(string, bool)");
+            var column = m_Table.Columns[columnName];
+            if (distinct)
+                m_SelectClause = $"COUNT(DISTINCT {column.QuotedSqlName})";
+            else
+                m_SelectClause = $"COUNT({column.QuotedSqlName})";
+
+            return ToInt64();
         }
 
         /// <summary>
@@ -143,7 +150,6 @@ namespace Tortuga.Chain.MySql.CommandBuilders
             if (m_LimitOptions == MySqlLimitOption.RandomSampleRows && m_SortExpressions.Any())
                 throw new InvalidOperationException($"Cannot perform random sampling when sorting.");
 
-
             //SQL Generation
             List<MySqlParameter> parameters;
             var sql = new StringBuilder();
@@ -154,7 +160,6 @@ namespace Tortuga.Chain.MySql.CommandBuilders
                 sqlBuilder.BuildSelectClause(sql, "SELECT ", null, null);
 
             sql.Append(" FROM " + m_Table.Name);
-
 
             if (m_FilterValue != null)
             {
@@ -211,7 +216,6 @@ namespace Tortuga.Chain.MySql.CommandBuilders
 
             return new MySqlCommandExecutionToken(DataSource, "Query " + m_Table.Name, sql.ToString(), parameters);
         }
-
 
         /// <summary>
         /// Returns the column associated with the column name.
@@ -317,4 +321,3 @@ namespace Tortuga.Chain.MySql.CommandBuilders
         }
     }
 }
-

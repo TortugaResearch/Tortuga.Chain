@@ -8,7 +8,6 @@ namespace Tests
 {
     public class Setup
     {
-
         public static void AssemblyInit()
         {
             //TODO - setup database objects
@@ -42,7 +41,7 @@ namespace Tests
                 CREATE SCHEMA sales;
                 CREATE TABLE sales.customer
                 (
-                	CustomerKey SERIAL PRIMARY KEY, 
+                	CustomerKey SERIAL PRIMARY KEY,
                 	FullName VARCHAR(150) NULL,
                 	State CHAR(2) NOT NULL,
 
@@ -100,11 +99,11 @@ namespace Tests
                 //      UpdatedDate TIMESTAMP ,
                 //      DeletedFlag BOOLEAN,
                 //      DeletedDate TIMESTAMP ,
-                //      DeletedByKey INT 
+                //      DeletedByKey INT
                 //    )
                 //    AS $$
                 //    BEGIN
-                //	  RETURN QUERY SELECT    
+                //	  RETURN QUERY SELECT
                 //	        c.CustomerKey ,
                 //                c.FullName ,
                 //                c.State ,
@@ -124,7 +123,7 @@ namespace Tests
                 //                var proc1 = @"CREATE FUNCTION Sales.CustomerWithOrdersByState(param_state CHAR(2)) RETURNS SETOF refcursor AS $$
                 //    DECLARE
                 //      ref1 refcursor;           -- Declare cursor variables
-                //      ref2 refcursor;                             
+                //      ref2 refcursor;
                 //    BEGIN
                 //      OPEN ref1 FOR  SELECT  c.CustomerKey ,
                 //            c.FullName ,
@@ -138,7 +137,7 @@ namespace Tests
                 //            c.DeletedByKey
                 //    FROM    Sales.Customer c
                 //    WHERE   c.State = param_state;
-                //    RETURN NEXT ref1;                                                                              
+                //    RETURN NEXT ref1;
 
                 //    OPEN ref2 FOR   SELECT  o.OrderKey ,
                 //            o.CustomerKey ,
@@ -146,7 +145,7 @@ namespace Tests
                 //    FROM    Sales.Order o
                 //            INNER JOIN Sales.Customer c ON o.CustomerKey = c.CustomerKey
                 //    WHERE   c.State = param_state;
-                //    RETURN NEXT ref2; 
+                //    RETURN NEXT ref2;
 
                 //    END;
                 //    $$ LANGUAGE plpgsql;
@@ -172,14 +171,10 @@ namespace Tests
                 //using (MySqlCommand cmd = new MySqlCommand(proc1, con))
                 //    cmd.ExecuteNonQuery();
             }
-
         }
 
         public static void AssemblyCleanup()
         {
-
         }
-
-
     }
 }

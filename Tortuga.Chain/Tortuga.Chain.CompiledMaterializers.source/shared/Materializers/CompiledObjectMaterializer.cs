@@ -15,7 +15,7 @@ namespace Tortuga.Chain.Materializers
         where TObject : class, new()
         where TParameter : DbParameter
     {
-        RowOptions m_RowOptions;
+        private RowOptions m_RowOptions;
 
         public CompiledObjectMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, RowOptions rowOptions) : base(commandBuilder)
         {
@@ -76,7 +76,6 @@ namespace Tortuga.Chain.Materializers
                     return result.Count;
                 }
             }, cancellationToken, state).ConfigureAwait(false);
-
 
             if (result.Count == 0)
             {

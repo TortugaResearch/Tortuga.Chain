@@ -12,19 +12,15 @@ namespace Tortuga.Chain.MySql
         /// </summary>
         public static readonly MySqlObjectName Empty;
 
-        private readonly string m_Name;
-        private readonly string m_Schema;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="MySqlObjectName" /> struct.
         /// </summary>
-        /// <param name="database">The database.</param>
         /// <param name="schema">The schema.</param>
         /// <param name="name">The name.</param>
         public MySqlObjectName(string schema, string name)
         {
-            m_Schema = Normalize(schema);
-            m_Name = Normalize(name);
+            Schema = Normalize(schema);
+            Name = Normalize(name);
         }
 
         /// <summary>
@@ -39,17 +35,17 @@ namespace Tortuga.Chain.MySql
             var parts = schemaAndName.Split(new[] { '.' }, 2);
             if (parts.Length == 1)
             {
-                m_Schema = null;
-                m_Name = Normalize(parts[0]);
+                Schema = null;
+                Name = Normalize(parts[0]);
             }
             else if (parts.Length == 2)
             {
-                m_Schema = Normalize(parts[0]);
-                m_Name = Normalize(parts[1]);
+                Schema = Normalize(parts[0]);
+                Name = Normalize(parts[1]);
             }
             else
             {
-                throw new ArgumentException("Four-part identifiers are not supported.");
+                throw new ArgumentException("Three-part identifiers are not supported.");
             }
         }
 
@@ -59,10 +55,7 @@ namespace Tortuga.Chain.MySql
         /// <value>
         /// The name.
         /// </value>
-        public string Name
-        {
-            get { return m_Name; }
-        }
+        public string Name { get; }
 
         /// <summary>
         /// Gets the schema.
@@ -70,10 +63,7 @@ namespace Tortuga.Chain.MySql
         /// <value>
         /// The schema.
         /// </value>
-        public string Schema
-        {
-            get { return m_Schema; }
-        }
+        public string Schema { get; }
 
         /// <summary>
         /// Perform an implicit conversion from <see cref="string"/> to <see cref="MySqlObjectName"/>.

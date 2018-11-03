@@ -15,12 +15,12 @@ namespace Tortuga.Chain.MySql
     /// </summary>
     public class MySqlMetadataCache : DatabaseMetadataCache<MySqlObjectName, MySqlDbType>
     {
-        readonly MySqlConnectionStringBuilder m_ConnectionBuilder;
-        readonly ConcurrentDictionary<MySqlObjectName, ScalarFunctionMetadata<MySqlObjectName, MySqlDbType>> m_ScalarFunctions = new ConcurrentDictionary<MySqlObjectName, ScalarFunctionMetadata<MySqlObjectName, MySqlDbType>>();
-        readonly ConcurrentDictionary<MySqlObjectName, StoredProcedureMetadata<MySqlObjectName, MySqlDbType>> m_StoredProcedures = new ConcurrentDictionary<MySqlObjectName, StoredProcedureMetadata<MySqlObjectName, MySqlDbType>>();
-        readonly ConcurrentDictionary<MySqlObjectName, TableOrViewMetadata<MySqlObjectName, MySqlDbType>> m_Tables = new ConcurrentDictionary<MySqlObjectName, TableOrViewMetadata<MySqlObjectName, MySqlDbType>>();
-        readonly ConcurrentDictionary<Type, TableOrViewMetadata<MySqlObjectName, MySqlDbType>> m_TypeTableMap = new ConcurrentDictionary<Type, TableOrViewMetadata<MySqlObjectName, MySqlDbType>>();
-        string m_DefaultSchema;
+        private readonly MySqlConnectionStringBuilder m_ConnectionBuilder;
+        private readonly ConcurrentDictionary<MySqlObjectName, ScalarFunctionMetadata<MySqlObjectName, MySqlDbType>> m_ScalarFunctions = new ConcurrentDictionary<MySqlObjectName, ScalarFunctionMetadata<MySqlObjectName, MySqlDbType>>();
+        private readonly ConcurrentDictionary<MySqlObjectName, StoredProcedureMetadata<MySqlObjectName, MySqlDbType>> m_StoredProcedures = new ConcurrentDictionary<MySqlObjectName, StoredProcedureMetadata<MySqlObjectName, MySqlDbType>>();
+        private readonly ConcurrentDictionary<MySqlObjectName, TableOrViewMetadata<MySqlObjectName, MySqlDbType>> m_Tables = new ConcurrentDictionary<MySqlObjectName, TableOrViewMetadata<MySqlObjectName, MySqlDbType>>();
+        private readonly ConcurrentDictionary<Type, TableOrViewMetadata<MySqlObjectName, MySqlDbType>> m_TypeTableMap = new ConcurrentDictionary<Type, TableOrViewMetadata<MySqlObjectName, MySqlDbType>>();
+        private string m_DefaultSchema;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MySqlMetadataCache"/> class.
@@ -116,7 +116,6 @@ namespace Tortuga.Chain.MySql
         /// <returns></returns>
         public override TableOrViewMetadata<MySqlObjectName, MySqlDbType> GetTableOrViewFromClass<TObject>()
         {
-
             var type = typeof(TObject);
             TableOrViewMetadata<MySqlObjectName, MySqlDbType> result;
             if (m_TypeTableMap.TryGetValue(type, out result))
@@ -147,7 +146,6 @@ namespace Tortuga.Chain.MySql
             }
             catch (MissingObjectException) { }
 
-
             //that didn't work, so try the default schema
             result = GetTableOrView(new MySqlObjectName(null, name));
             m_TypeTableMap[type] = result;
@@ -176,7 +174,6 @@ namespace Tortuga.Chain.MySql
             PreloadScalarFunctions();
             PreloadStoredProcedures();
         }
-
 
         /// <summary>
         /// Preloads the scalar functions.
@@ -226,7 +223,6 @@ namespace Tortuga.Chain.MySql
                     }
                 }
             }
-
         }
 
         /// <summary>
@@ -234,7 +230,7 @@ namespace Tortuga.Chain.MySql
         /// </summary>
         public void PreloadTables()
         {
-            const string tableList = "SELECT TABLE_SCHEMA, TABLE_NAME FROM INFORMATION_SCHEMA.Tables WHERE TABLE_TYPE = 'BASE TABLE'";
+            const string tableList = "SELECT TABLE_SCHEMA, TABLE_NAME FROM INFORMATION_SCHEMA.Tables WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_SCHEMA <> 'mysql' AND TABLE_SCHEMA <> 'mysql' AND TABLE_SCHEMA <> 'performance_schema' AND TABLE_SCHEMA <> 'sys'";
 
             using (var con = new MySqlConnection(m_ConnectionBuilder.ConnectionString))
             {
@@ -259,7 +255,7 @@ namespace Tortuga.Chain.MySql
         /// </summary>
         public void PreloadViews()
         {
-            const string tableList = "SELECT TABLE_SCHEMA, TABLE_NAME FROM INFORMATION_SCHEMA.VIEWS";
+            const string tableList = "SELECT TABLE_SCHEMA, TABLE_NAME FROM INFORMATION_SCHEMA.Tables WHERE TABLE_TYPE = 'VIEW' AND TABLE_SCHEMA <> 'sys';";
 
             using (var con = new MySqlConnection(m_ConnectionBuilder.ConnectionString))
             {
@@ -306,7 +302,7 @@ namespace Tortuga.Chain.MySql
         /// <param name="tableName">Name of the table.</param>
         /// <returns></returns>
         /// <remarks>WARNING: Only call this with verified table names. Otherwise a SQL injection attack can occur.</remarks>
-        List<ColumnMetadata<MySqlDbType>> GetColumns(string schema, string tableName)
+        private List<ColumnMetadata<MySqlDbType>> GetColumns(string schema, string tableName)
         {
             const string ColumnSql = @"SELECT COLUMN_NAME, COLUMN_DEFAULT, IS_NULLABLE, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH, NUMERIC_PRECISION, NUMERIC_SCALE, DATETIME_PRECISION, COLUMN_TYPE, COLUMN_KEY, EXTRA, COLUMN_COMMENT, COLLATION_NAME FROM INFORMATION_SCHEMA.Columns WHERE TABLE_SCHEMA = @Schema AND TABLE_NAME = @Name";
 
@@ -338,7 +334,6 @@ namespace Tortuga.Chain.MySql
                             var comment = reader.GetString("COLUMN_COMMENT");
                             var collation = reader.IsDBNull(reader.GetOrdinal("COLLATION_NAME")) ? null : reader.GetString(reader.GetOrdinal("COLLATION_NAME"));
 
-
                             var computed = extra.Contains("VIRTUAL");
                             var primary = key.Contains("PRI");
                             var isIdentity = extra.Contains("auto_increment");
@@ -354,7 +349,7 @@ namespace Tortuga.Chain.MySql
             return columns;
         }
 
-        IList<ParameterMetadata<MySqlDbType>> GetParameters(string schemaName, string specificName)
+        private IList<ParameterMetadata<MySqlDbType>> GetParameters(string schemaName, string specificName)
         {
             try
             {
@@ -401,10 +396,9 @@ namespace Tortuga.Chain.MySql
             {
                 throw new MetadataException($"Error getting parameters for {schemaName}.{specificName}", ex);
             }
-
         }
 
-        ScalarFunctionMetadata<MySqlObjectName, MySqlDbType> GetScalarFunctionInternal(MySqlObjectName tableFunctionName)
+        private ScalarFunctionMetadata<MySqlObjectName, MySqlDbType> GetScalarFunctionInternal(MySqlObjectName tableFunctionName)
         {
             const string sql = "SELECT ROUTINE_SCHEMA, ROUTINE_NAME, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH, NUMERIC_PRECISION, NUMERIC_SCALE, DATETIME_PRECISION, DTD_IDENTIFIER, SPECIFIC_NAME FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_TYPE = 'FUNCTION' AND ROUTINE_SCHEMA = @Schema AND ROUTINE_NAME = @Name;";
 
@@ -444,7 +438,6 @@ namespace Tortuga.Chain.MySql
 
                         var isUnsigned = fullTypeName.Contains("unsigned");
                         dbType = TypeNameToMySqlDbType(typeName, isUnsigned);
-
                     }
                 }
             }
@@ -456,7 +449,7 @@ namespace Tortuga.Chain.MySql
             return new ScalarFunctionMetadata<MySqlObjectName, MySqlDbType>(objectName, parameters, typeName, dbType, true, (int?)maxLength, precision, scale, fullTypeName);
         }
 
-        StoredProcedureMetadata<MySqlObjectName, MySqlDbType> GetStoredProcedureInteral(MySqlObjectName storedProcedureName)
+        private StoredProcedureMetadata<MySqlObjectName, MySqlDbType> GetStoredProcedureInteral(MySqlObjectName storedProcedureName)
         {
             const string sql = "SELECT ROUTINE_SCHEMA, ROUTINE_NAME, SPECIFIC_NAME FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_TYPE = 'PROCEDURE' AND ROUTINE_SCHEMA = @Schema AND ROUTINE_NAME = @Name;";
 
@@ -489,14 +482,14 @@ namespace Tortuga.Chain.MySql
             return new StoredProcedureMetadata<MySqlObjectName, MySqlDbType>(objectName, parameters);
         }
 
-        TableOrViewMetadata<MySqlObjectName, MySqlDbType> GetTableOrViewInternal(MySqlObjectName tableName)
+        private TableOrViewMetadata<MySqlObjectName, MySqlDbType> GetTableOrViewInternal(MySqlObjectName tableName)
         {
-            const string TableSql = @"SELECT TABLE_SCHEMA, TABLE_NAME, ENGINE FROM INFORMATION_SCHEMA.Tables WHERE TABLE_SCHEMA = @Schema AND TABLE_NAME = @Name";
-
+            const string TableSql = @"SELECT TABLE_SCHEMA, TABLE_NAME, TABLE_TYPE, ENGINE FROM INFORMATION_SCHEMA.Tables WHERE TABLE_SCHEMA = @Schema AND TABLE_NAME = @Name";
 
             string actualSchemaName;
             string actualTableName;
             string engine;
+            bool isTable;
 
             using (var con = new MySqlConnection(m_ConnectionBuilder.ConnectionString))
             {
@@ -511,17 +504,18 @@ namespace Tortuga.Chain.MySql
                             throw new MissingObjectException($"Could not find table or view {tableName}");
                         actualSchemaName = reader.GetString("TABLE_SCHEMA");
                         actualTableName = reader.GetString("TABLE_NAME");
+                        isTable = reader.GetString("TABLE_TYPE") == "BASE TABLE";
                         engine = reader.IsDBNull(reader.GetOrdinal("ENGINE")) ? null : reader.GetString("ENGINE");
                     }
                 }
             }
 
-            var isTable = actualTableName == "BASE TABLE";
             var columns = GetColumns(actualSchemaName, actualTableName);
 
             return new MySqlTableOrViewMetadata<MySqlDbType>(new MySqlObjectName(actualSchemaName, actualTableName), isTable, columns, engine);
         }
-        MySqlDbType? TypeNameToMySqlDbType(string typeName, bool isUnsigned)
+
+        private MySqlDbType? TypeNameToMySqlDbType(string typeName, bool isUnsigned)
         {
             switch (typeName.ToUpperInvariant())
             {

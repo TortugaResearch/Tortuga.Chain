@@ -13,7 +13,6 @@ namespace Tests
 {
     public abstract partial class TestBase
     {
-
         static public readonly string AssemblyName = "MySql";
         static protected readonly Dictionary<string, MySqlDataSource> s_DataSources = new Dictionary<string, MySqlDataSource>();
         protected static readonly MySqlDataSource s_PrimaryDataSource;
@@ -102,7 +101,7 @@ namespace Tests
             throw new ArgumentException($"Unkown mode {mode}");
         }
 
-        void WriteDetails(ExecutionEventArgs e)
+        private void WriteDetails(ExecutionEventArgs e)
         {
             if (e.ExecutionDetails is MySqlCommandExecutionToken)
             {
@@ -120,4 +119,3 @@ namespace Tests
         }
     }
 }
-

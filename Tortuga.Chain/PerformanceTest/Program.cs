@@ -1,17 +1,97 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
+using System.Configuration;
 using Tortuga.Chain;
 
 namespace PerformanceTest
 {
-    class Program
+    internal class Program
     {
+        public static void Main()
+        {
+            //ReflectionTest();
 
+            //DatabaseTest();
 
+            //Issue213();
 
-        static void MySqlMetadata()
+            //MySqlMetadata();
+
+            MyCompiledTestFailure();
+        }
+
+        private static void MyCompiledTestFailure()
         {
             var dataSource = MySqlDataSource.CreateFromConfig("MySqlTestDatabase");
 
+            dataSource.TestConnection();
+
+            var sql = "INSERT INTO hr.employee (`FirstName`, `LastName`, `ManagerKey`, `MiddleName`, `Title`, `UpdatedDate`) VALUES (@FirstName, @LastName, @ManagerKey, @MiddleName, @Title, @UpdatedDate);SELECT `CreatedDate`, `EmployeeKey`, `FirstName`, `LastName`, `ManagerKey`, `MiddleName`, `Title`, `UpdatedDate` FROM `hr`.`employee` WHERE `EmployeeKey` = LAST_INSERT_ID();";
+
+            var con = new MySqlConnection(ConfigurationManager.ConnectionStrings["MySqlTestDatabase"].ConnectionString);
+            con.Open();
+
+            var cmd = new MySqlCommand(sql, con);
+            cmd.Parameters.AddWithValue("@FirstName", "Test");
+            cmd.Parameters.AddWithValue("@LastName", "Employee636768087033711525");
+            cmd.Parameters.AddWithValue("@ManagerKey", DBNull.Value);
+            cmd.Parameters.AddWithValue("@MiddleName", DBNull.Value);
+            cmd.Parameters.AddWithValue("@Title", "Mail Room");
+            cmd.Parameters.AddWithValue("@UpdatedDate", DBNull.Value);
+
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                var result = Load(reader);
+            }
+        }
+
+        private static Tests.Models.ChangeTrackingEmployee Load(MySql.Data.MySqlClient.MySqlDataReader reader)
+        {
+            var result = new Tests.Models.ChangeTrackingEmployee();
+            if (reader.IsDBNull(0))
+                result.CreatedDate = null;
+            else
+                result.CreatedDate = reader.GetDateTime(0);
+            if (reader.IsDBNull(1))
+                result.EmployeeKey = null;
+            else
+                result.EmployeeKey = (System.Nullable<System.Int64>)reader.GetValue(1);
+            if (reader.IsDBNull(2))
+                result.FirstName = null;
+            else
+                result.FirstName = reader.GetString(2);
+            if (reader.IsDBNull(3))
+                result.LastName = null;
+            else
+                result.LastName = reader.GetString(3);
+            if (reader.IsDBNull(4))
+                result.ManagerKey = null;
+            else
+                result.ManagerKey = reader.GetInt32(4);
+            if (reader.IsDBNull(5))
+                result.MiddleName = null;
+            else
+                result.MiddleName = reader.GetString(5);
+            if (reader.IsDBNull(6))
+                result.Title = null;
+            else
+                result.Title = reader.GetString(6);
+            if (reader.IsDBNull(7))
+                result.UpdatedDate = null;
+            else
+                result.UpdatedDate = reader.GetDateTime(7);
+            ((System.ComponentModel.IChangeTracking)result).AcceptChanges();
+            return result;
+        }
+
+        private static void MySqlMetadata()
+        {
+            var dataSource = MySqlDataSource.CreateFromConfig("MySqlTestDatabase");
+
+            dataSource.TestConnection();
+
+            /*
             var table1 = dataSource.DatabaseMetadata.GetTableOrView("Film");
             Console.WriteLine($"{table1.Name} Columns {table1.Columns.Count}");
             Console.WriteLine();
@@ -42,24 +122,12 @@ namespace PerformanceTest
                 Console.WriteLine($"{item.Name} Parameters {item.Parameters.Count}");
             }
             Console.WriteLine();
-
-        }
-
-        static void Main()
-        {
-            //ReflectionTest();
-
-            //DatabaseTest();
-
-            //Issue213();
-
-            MySqlMetadata();
+            */
         }
 
         //private static void ReflectionTest()
         //{
         //    const int runCount = 1000 * 1000;// * 1000;
-
 
         //    var propertyInfo = typeof(SalesOrderHeader).GetProperty("SalesOrderId");
         //    var reflectionSetter = propertyInfo.GetSetMethod();
@@ -177,7 +245,6 @@ namespace PerformanceTest
         //    Console.WriteLine("Average run time: " + ((totalRunTime.TotalMilliseconds / runCount) / 1000.00).ToString("#,##0.000 sec"));
         //}
 
-
         ///// <summary>
         ///// Fetches the individual element
         ///// </summary>
@@ -188,7 +255,6 @@ namespace PerformanceTest
         //    return DataSource.From("[Sales].[SalesOrderHeader]", new { SalesOrderId = key }).ToObject<SalesOrderHeader>().Execute();
         //}
 
-
         ///// <summary>
         ///// Fetches the complete set of elements and returns this set as an IEnumerable.
         ///// </summary>
@@ -197,7 +263,6 @@ namespace PerformanceTest
         //{
         //    return DataSource.From("[Sales].[SalesOrderHeader]").ToCollection<SalesOrderHeader>().Execute();
         //}
-
 
         //static SqlServerDataSource DataSource;
 
@@ -234,6 +299,5 @@ namespace PerformanceTest
         //    var list1 = DataSource.From<Item>(new { CategoryID = searchFilter }).ToCollection<Item>().Execute();
 
         //}
-
     }
 }

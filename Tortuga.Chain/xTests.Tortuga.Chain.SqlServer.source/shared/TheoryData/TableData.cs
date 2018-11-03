@@ -5,8 +5,6 @@ using Xunit;
 
 namespace Tests
 {
-
-
     public class TableData : TheoryData<string, string, DataSourceType, string>
     {
         public TableData(IEnumerable<DataSource> dataSources)
