@@ -18,8 +18,8 @@ namespace Tortuga.Chain.Access
     /// <seealso cref="AccessDataSourceBase" />
     public class AccessOpenDataSource : AccessDataSourceBase, IOpenDataSource
     {
-        readonly OleDbConnection m_Connection;
         readonly AccessDataSource m_BaseDataSource;
+        readonly OleDbConnection m_Connection;
         readonly OleDbTransaction m_Transaction;
 
 
@@ -33,23 +33,33 @@ namespace Tortuga.Chain.Access
             m_Transaction = transaction;
         }
 
+        DbConnection IOpenDataSource.AssociatedConnection => m_Connection;
+
+        DbTransaction IOpenDataSource.AssociatedTransaction => m_Transaction;
+
+        /// <summary>
+        /// Gets or sets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
+        /// </summary>
+        public override ICacheAdapter Cache => m_BaseDataSource.Cache;
+
         /// <summary>
         /// Gets the database metadata.
         /// </summary>
         /// <value>The database metadata.</value>
-        public override AccessMetadataCache DatabaseMetadata
-        {
-            get { return m_BaseDataSource.DatabaseMetadata; }
-        }
+        public override AccessMetadataCache DatabaseMetadata => m_BaseDataSource.DatabaseMetadata;
+        /// <summary>
+        /// The extension cache is used by extensions to store data source specific information.
+        /// </summary>
+        /// <value>
+        /// The extension cache.
+        /// </value>
+        protected override ConcurrentDictionary<Type, object> ExtensionCache => m_BaseDataSource.m_ExtensionCache;
 
-        DbConnection IOpenDataSource.AssociatedConnection
+        void IOpenDataSource.Close()
         {
-            get { return m_Connection; }
-        }
-
-        DbTransaction IOpenDataSource.AssociatedTransaction
-        {
-            get { return m_Transaction; }
+            if (m_Transaction != null)
+                m_Transaction.Dispose();
+            m_Connection.Dispose();
         }
 
         /// <summary>
@@ -59,51 +69,7 @@ namespace Tortuga.Chain.Access
         /// <returns>T.</returns>
         /// <remarks>Chain extensions can use this to store data source specific data. The key should be a data type defined by the extension.
         /// Transactional data sources should override this method and return the value held by their parent data source.</remarks>
-        public override TTKey GetExtensionData<TTKey>()
-        {
-            return m_BaseDataSource.GetExtensionData<TTKey>();
-        }
-
-        /// <summary>
-        /// Modifies this data source to include the indicated user.
-        /// </summary>
-        /// <param name="userValue">The user value.</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// This is used in conjunction with audit rules.
-        /// </remarks>
-        public AccessOpenDataSource WithUser(object userValue)
-        {
-            UserValue = userValue;
-            return this;
-        }
-
-        /// <summary>
-        /// Modifies this data source with additional audit rules.
-        /// </summary>
-        /// <param name="additionalRules">The additional rules.</param>
-        /// <returns></returns>
-        public AccessOpenDataSource WithRules(params AuditRule[] additionalRules)
-        {
-            AuditRules = new AuditRuleCollection(AuditRules, additionalRules);
-            return this;
-        }
-
-        /// <summary>
-        /// Modifies this data source with additional audit rules.
-        /// </summary>
-        /// <param name="additionalRules">The additional rules.</param>
-        /// <returns></returns>
-        public AccessOpenDataSource WithRules(IEnumerable<AuditRule> additionalRules)
-        {
-            AuditRules = new AuditRuleCollection(AuditRules, additionalRules);
-            return this;
-        }
-
-
-
-
-
+        public override TTKey GetExtensionData<TTKey>() => m_BaseDataSource.GetExtensionData<TTKey>();
 
         /// <summary>
         /// Tests the connection.
@@ -140,32 +106,41 @@ namespace Tortuga.Chain.Access
             return true;
         }
 
-        void IOpenDataSource.Close()
+        /// <summary>
+        /// Modifies this data source with additional audit rules.
+        /// </summary>
+        /// <param name="additionalRules">The additional rules.</param>
+        /// <returns></returns>
+        public AccessOpenDataSource WithRules(params AuditRule[] additionalRules)
         {
-            if (m_Transaction != null)
-                m_Transaction.Dispose();
-            m_Connection.Dispose();
+            AuditRules = new AuditRuleCollection(AuditRules, additionalRules);
+            return this;
         }
 
         /// <summary>
-        /// Gets or sets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
+        /// Modifies this data source with additional audit rules.
         /// </summary>
-        public override ICacheAdapter Cache
+        /// <param name="additionalRules">The additional rules.</param>
+        /// <returns></returns>
+        public AccessOpenDataSource WithRules(IEnumerable<AuditRule> additionalRules)
         {
-            get { return m_BaseDataSource.Cache; }
+            AuditRules = new AuditRuleCollection(AuditRules, additionalRules);
+            return this;
         }
 
         /// <summary>
-        /// The extension cache is used by extensions to store data source specific information.
+        /// Modifies this data source to include the indicated user.
         /// </summary>
-        /// <value>
-        /// The extension cache.
-        /// </value>
-        protected override ConcurrentDictionary<Type, object> ExtensionCache
+        /// <param name="userValue">The user value.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// This is used in conjunction with audit rules.
+        /// </remarks>
+        public AccessOpenDataSource WithUser(object userValue)
         {
-            get { return m_BaseDataSource.m_ExtensionCache; }
+            UserValue = userValue;
+            return this;
         }
-
         /// <summary>
         /// Executes the specified operation.
         /// </summary>

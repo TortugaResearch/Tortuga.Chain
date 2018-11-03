@@ -20,7 +20,7 @@ namespace Tests
     {
         //TODO: Redesign this to adhere to xUnit conventions.
 
-        private const string databaseFileName = "SQLiteTestDatabaseX.sqlite";
+        const string databaseFileName = "SQLiteTestDatabaseX.sqlite";
 
         public static void AssemblyInit()
         {

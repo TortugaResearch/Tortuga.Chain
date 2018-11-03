@@ -26,6 +26,12 @@ namespace Tortuga.Chain.Materializers
         protected Materializer(DbCommandBuilder<TCommand, TParameter> commandBuilder) : base(commandBuilder) { }
 
         /// <summary>
+        /// Gets the data source that is associated with this materializer or appender.
+        /// </summary>
+        /// <value>The data source.</value>
+        public IDataSource DataSource => CommandBuilder.DataSource;
+
+        /// <summary>
         /// Execute the operation synchronously.
         /// </summary>
         /// <returns></returns>
@@ -36,10 +42,7 @@ namespace Tortuga.Chain.Materializers
         /// </summary>
         /// <param name="state">User defined state, usually used for logging.</param>
         /// <returns></returns>
-        public async Task<TResult> ExecuteAsync(object state = null)
-        {
-            return await ExecuteAsync(CancellationToken.None, state);
-        }
+        public async Task<TResult> ExecuteAsync(object state = null) => await ExecuteAsync(CancellationToken.None, state);
 
         /// <summary>
         /// Execute the operation asynchronously.
@@ -48,16 +51,6 @@ namespace Tortuga.Chain.Materializers
         /// <param name="state">User defined state, usually used for logging.</param>
         /// <returns></returns>
         public abstract Task<TResult> ExecuteAsync(CancellationToken cancellationToken, object state = null);
-
-        /// <summary>
-        /// Gets the data source that is associated with this materializer or appender.
-        /// </summary>
-        /// <value>The data source.</value>
-        public IDataSource DataSource
-        {
-            get { return CommandBuilder.DataSource; }
-        }
-
     }
 }
 

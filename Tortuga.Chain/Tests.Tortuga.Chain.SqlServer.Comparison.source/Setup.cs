@@ -28,7 +28,7 @@ namespace Tests
 #endif
         }
 
-        private static void CompiledMaterializers_MaterializerCompiled(object sender, MaterializerCompilerEventArgs e)
+        static void CompiledMaterializers_MaterializerCompiled(object sender, MaterializerCompilerEventArgs e)
         {
             Debug.WriteLine("******");
             Debug.WriteLine("Compiled Materializer");

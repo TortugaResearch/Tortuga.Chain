@@ -24,10 +24,7 @@ namespace Tortuga.Chain.Access
         /// <param name="settings">Optional settings object.</param>
         protected AccessDataSourceBase(AccessDataSourceSettings settings) : base(settings)
         {
-            if (settings != null)
-            {
 
-            }
         }
 
 
@@ -38,10 +35,7 @@ namespace Tortuga.Chain.Access
         public abstract new AccessMetadataCache DatabaseMetadata { get; }
 
 
-        IDatabaseMetadataCache IDataSource.DatabaseMetadata
-        {
-            get { return DatabaseMetadata; }
-        }
+        IDatabaseMetadataCache IDataSource.DatabaseMetadata => DatabaseMetadata;
 
 
         /// <summary>
@@ -84,6 +78,147 @@ namespace Tortuga.Chain.Access
                 effectiveOptions = effectiveOptions | UpdateOptions.UseKeyAttribute;
 
             return new AccessUpdateObject<TArgument>(this, table.Name, argumentValue, effectiveOptions);
+        }
+
+        /// <summary>
+        /// Delete a record by its primary key.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="key">The key.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>MultipleRowDbCommandBuilder&lt;OleDbCommand, OleDbParameter&gt;.</returns>
+        public SingleRowDbCommandBuilder<OleDbCommand, OleDbParameter> DeleteByKey<T>(AccessObjectName tableName, T key, DeleteOptions options = DeleteOptions.None)
+            where T : struct
+        {
+            return DeleteByKeyList(tableName, new List<T> { key }, options);
+        }
+
+        /// <summary>
+        /// Delete a record by its primary key.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="key">The key.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>MultipleRowDbCommandBuilder&lt;OleDbCommand, OleDbParameter&gt;.</returns>
+        public SingleRowDbCommandBuilder<OleDbCommand, OleDbParameter> DeleteByKey(AccessObjectName tableName, string key, DeleteOptions options = DeleteOptions.None)
+        {
+            return DeleteByKeyList(tableName, new List<string> { key }, options);
+        }
+
+        /// <summary>
+        /// Delete multiple rows by key.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="keys">The keys.</param>
+        /// <returns></returns>
+        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
+        public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> DeleteByKey<T>(AccessObjectName tableName, params T[] keys)
+            where T : struct
+        {
+            return DeleteByKeyList(tableName, keys);
+        }
+
+        /// <summary>
+        /// Delete multiple rows by key.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="keys">The keys.</param>
+        /// <returns></returns>
+        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
+        public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> DeleteByKey(AccessObjectName tableName, params string[] keys)
+        {
+            return DeleteByKeyList(tableName, keys);
+        }
+
+        /// <summary>
+        /// Delete multiple rows by key.
+        /// </summary>
+        /// <typeparam name="TKey">The type of the t key.</typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="keys">The keys.</param>
+        /// <param name="options">Update options.</param>
+        /// <returns>MultipleRowDbCommandBuilder&lt;OleDbCommand, OleDbParameter&gt;.</returns>
+        /// <exception cref="MappingException"></exception>
+        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "DeleteByKey")]
+        public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> DeleteByKeyList<TKey>(AccessObjectName tableName, IEnumerable<TKey> keys, DeleteOptions options = DeleteOptions.None)
+        {
+            var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).Columns.Where(c => c.IsPrimaryKey).ToList();
+            if (primaryKeys.Count != 1)
+                throw new MappingException($"DeleteByKey operation isn't allowed on {tableName} because it doesn't have a single primary key.");
+
+            var keyList = keys.AsList();
+            var columnMetadata = primaryKeys.Single();
+            string where;
+            if (keys.Count() > 1)
+                where = columnMetadata.SqlName + " IN (" + string.Join(", ", keyList.Select((s, i) => "@Param" + i)) + ")";
+            else
+                where = columnMetadata.SqlName + " = @Param0";
+
+            var parameters = new List<OleDbParameter>();
+            for (var i = 0; i < keyList.Count; i++)
+            {
+                var param = new OleDbParameter("@Param" + i, keyList[i]);
+                if (columnMetadata.DbType.HasValue)
+                    param.OleDbType = columnMetadata.DbType.Value;
+                parameters.Add(param);
+            }
+
+            var table = DatabaseMetadata.GetTableOrView(tableName);
+            if (!AuditRules.UseSoftDelete(table))
+                return new AccessDeleteMany(this, tableName, where, parameters, options);
+
+            UpdateOptions effectiveOptions = UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected;
+            if (options.HasFlag(DeleteOptions.UseKeyAttribute))
+                effectiveOptions = effectiveOptions | UpdateOptions.UseKeyAttribute;
+
+            return new AccessUpdateMany(this, tableName, null, where, parameters, parameters.Count, effectiveOptions);
+
+        }
+
+        /// <summary>
+        /// Deletes multiple records using a where expression.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="whereClause">The where clause.</param>
+        public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> DeleteWithFilter(AccessObjectName tableName, string whereClause)
+        {
+            var table = DatabaseMetadata.GetTableOrView(tableName);
+            if (!AuditRules.UseSoftDelete(table))
+                return new AccessDeleteMany(this, tableName, whereClause, null);
+
+            return new AccessUpdateMany(this, tableName, null, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected).WithFilter(whereClause, null);
+        }
+
+        /// <summary>
+        /// Deletes multiple records using a where expression.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="whereClause">The where clause.</param>
+        /// <param name="argumentValue">The argument value for the where clause.</param>
+        public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> DeleteWithFilter(AccessObjectName tableName, string whereClause, object argumentValue)
+        {
+            var table = DatabaseMetadata.GetTableOrView(tableName);
+            if (!AuditRules.UseSoftDelete(table))
+                return new AccessDeleteMany(this, tableName, whereClause, argumentValue);
+
+            return new AccessUpdateMany(this, tableName, null, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected).WithFilter(whereClause, argumentValue);
+        }
+
+        /// <summary>
+        /// Deletes multiple records using a filter object.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="filterValue">The filter value.</param>
+        /// <param name="filterOptions">The options.</param>
+        public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> DeleteWithFilter(AccessObjectName tableName, object filterValue, FilterOptions filterOptions = FilterOptions.None)
+        {
+            var table = DatabaseMetadata.GetTableOrView(tableName);
+            if (!AuditRules.UseSoftDelete(table))
+                return new AccessDeleteMany(this, tableName, filterValue, filterOptions);
+
+            return new AccessUpdateMany(this, tableName, null, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected).WithFilter(filterValue, filterOptions);
         }
 
         /// <summary>
@@ -359,16 +494,6 @@ namespace Tortuga.Chain.Access
             return Update(DatabaseMetadata.GetTableOrViewFromClass<TArgument>().Name, argumentValue, options);
         }
         /// <summary>
-        /// Called when Database.DatabaseMetadata is invoked.
-        /// </summary>
-        /// <returns></returns>
-        protected override IDatabaseMetadataCache OnGetDatabaseMetadata()
-        {
-            return DatabaseMetadata;
-        }
-
-
-        /// <summary>
         /// Delete a record by its primary key.
         /// </summary>
         /// <typeparam name="TArgument">The type of the t argument.</typeparam>
@@ -428,7 +553,6 @@ namespace Tortuga.Chain.Access
             return UpdateByKeyList(tableName, newValues, keys);
         }
 
-
         /// <summary>
         /// Updates multiple rows by key.
         /// </summary>
@@ -467,150 +591,6 @@ namespace Tortuga.Chain.Access
             return new AccessUpdateMany(this, tableName, newValues, where, parameters, parameters.Count, options);
         }
 
-
-
-        /// <summary>
-        /// Delete a record by its primary key.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="key">The key.</param>
-        /// <param name="options">The options.</param>
-        /// <returns>MultipleRowDbCommandBuilder&lt;OleDbCommand, OleDbParameter&gt;.</returns>
-        public SingleRowDbCommandBuilder<OleDbCommand, OleDbParameter> DeleteByKey<T>(AccessObjectName tableName, T key, DeleteOptions options = DeleteOptions.None)
-            where T : struct
-        {
-            return DeleteByKeyList(tableName, new List<T> { key }, options);
-        }
-
-        /// <summary>
-        /// Delete a record by its primary key.
-        /// </summary>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="key">The key.</param>
-        /// <param name="options">The options.</param>
-        /// <returns>MultipleRowDbCommandBuilder&lt;OleDbCommand, OleDbParameter&gt;.</returns>
-        public SingleRowDbCommandBuilder<OleDbCommand, OleDbParameter> DeleteByKey(AccessObjectName tableName, string key, DeleteOptions options = DeleteOptions.None)
-        {
-            return DeleteByKeyList(tableName, new List<string> { key }, options);
-        }
-
-        /// <summary>
-        /// Delete multiple rows by key.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="keys">The keys.</param>
-        /// <returns></returns>
-        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
-        public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> DeleteByKey<T>(AccessObjectName tableName, params T[] keys)
-            where T : struct
-        {
-            return DeleteByKeyList(tableName, keys);
-        }
-
-        /// <summary>
-        /// Delete multiple rows by key.
-        /// </summary>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="keys">The keys.</param>
-        /// <returns></returns>
-        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
-        public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> DeleteByKey(AccessObjectName tableName, params string[] keys)
-        {
-            return DeleteByKeyList(tableName, keys);
-        }
-
-        /// <summary>
-        /// Delete multiple rows by key.
-        /// </summary>
-        /// <typeparam name="TKey">The type of the t key.</typeparam>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="keys">The keys.</param>
-        /// <param name="options">Update options.</param>
-        /// <returns>MultipleRowDbCommandBuilder&lt;OleDbCommand, OleDbParameter&gt;.</returns>
-        /// <exception cref="MappingException"></exception>
-        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "DeleteByKey")]
-        public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> DeleteByKeyList<TKey>(AccessObjectName tableName, IEnumerable<TKey> keys, DeleteOptions options = DeleteOptions.None)
-        {
-            var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).Columns.Where(c => c.IsPrimaryKey).ToList();
-            if (primaryKeys.Count != 1)
-                throw new MappingException($"DeleteByKey operation isn't allowed on {tableName} because it doesn't have a single primary key.");
-
-            var keyList = keys.AsList();
-            var columnMetadata = primaryKeys.Single();
-            string where;
-            if (keys.Count() > 1)
-                where = columnMetadata.SqlName + " IN (" + string.Join(", ", keyList.Select((s, i) => "@Param" + i)) + ")";
-            else
-                where = columnMetadata.SqlName + " = @Param0";
-
-            var parameters = new List<OleDbParameter>();
-            for (var i = 0; i < keyList.Count; i++)
-            {
-                var param = new OleDbParameter("@Param" + i, keyList[i]);
-                if (columnMetadata.DbType.HasValue)
-                    param.OleDbType = columnMetadata.DbType.Value;
-                parameters.Add(param);
-            }
-
-            var table = DatabaseMetadata.GetTableOrView(tableName);
-            if (!AuditRules.UseSoftDelete(table))
-                return new AccessDeleteMany(this, tableName, where, parameters, options);
-
-            UpdateOptions effectiveOptions = UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected;
-            if (options.HasFlag(DeleteOptions.UseKeyAttribute))
-                effectiveOptions = effectiveOptions | UpdateOptions.UseKeyAttribute;
-
-            return new AccessUpdateMany(this, tableName, null, where, parameters, parameters.Count, effectiveOptions);
-
-        }
-
-        /// <summary>
-        /// Deletes multiple records using a where expression.
-        /// </summary>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="whereClause">The where clause.</param>
-        public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> DeleteWithFilter(AccessObjectName tableName, string whereClause)
-        {
-            var table = DatabaseMetadata.GetTableOrView(tableName);
-            if (!AuditRules.UseSoftDelete(table))
-                return new AccessDeleteMany(this, tableName, whereClause, null);
-
-            return new AccessUpdateMany(this, tableName, null, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected).WithFilter(whereClause, null);
-        }
-
-        /// <summary>
-        /// Deletes multiple records using a where expression.
-        /// </summary>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="whereClause">The where clause.</param>
-        /// <param name="argumentValue">The argument value for the where clause.</param>
-        public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> DeleteWithFilter(AccessObjectName tableName, string whereClause, object argumentValue)
-        {
-            var table = DatabaseMetadata.GetTableOrView(tableName);
-            if (!AuditRules.UseSoftDelete(table))
-                return new AccessDeleteMany(this, tableName, whereClause, argumentValue);
-
-            return new AccessUpdateMany(this, tableName, null, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected).WithFilter(whereClause, argumentValue);
-        }
-
-        /// <summary>
-        /// Deletes multiple records using a filter object.
-        /// </summary>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="filterValue">The filter value.</param>
-        /// <param name="filterOptions">The options.</param>
-        public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> DeleteWithFilter(AccessObjectName tableName, object filterValue, FilterOptions filterOptions = FilterOptions.None)
-        {
-            var table = DatabaseMetadata.GetTableOrView(tableName);
-            if (!AuditRules.UseSoftDelete(table))
-                return new AccessDeleteMany(this, tableName, filterValue, filterOptions);
-
-            return new AccessUpdateMany(this, tableName, null, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected).WithFilter(filterValue, filterOptions);
-        }
-
-
         /// <summary>
         /// Updates multiple records using an update expression.
         /// </summary>
@@ -634,7 +614,6 @@ namespace Tortuga.Chain.Access
             return new AccessUpdateMany(this, tableName, updateExpression, updateArgumentValue, options);
         }
 
-
         /// <summary>
         /// Updates multiple records using an update value.
         /// </summary>
@@ -646,6 +625,11 @@ namespace Tortuga.Chain.Access
             return new AccessUpdateMany(this, tableName, newValues, options);
         }
 
+        /// <summary>
+        /// Called when Database.DatabaseMetadata is invoked.
+        /// </summary>
+        /// <returns></returns>
+        protected override IDatabaseMetadataCache OnGetDatabaseMetadata() => DatabaseMetadata;
     }
 
 

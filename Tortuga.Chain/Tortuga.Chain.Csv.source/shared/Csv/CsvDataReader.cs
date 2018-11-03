@@ -15,8 +15,8 @@ namespace Tortuga.Chain.Csv
         readonly Dictionary<string, Type> m_ColumnTypeMap = new Dictionary<string, Type>();
         readonly IReadOnlyDictionary<Type, ICsvValueConverter> m_Converters;
         readonly List<ICsvValueConverter> m_IndexConverterMap = new List<ICsvValueConverter>();
-        readonly TextFieldParser m_Parser;
         readonly CultureInfo m_Locale;
+        readonly TextFieldParser m_Parser;
         string[] m_ColumnNames;
         string[] m_CurrentRow;
         bool m_IsDisposed;
@@ -61,35 +61,18 @@ namespace Tortuga.Chain.Csv
             ParseHeader();
         }
 
-        public int FieldCount
-        {
-            get { return m_ColumnNames.Length; }
-        }
+        int IDataReader.Depth => 0;
 
-        int IDataReader.Depth
-        {
-            get { return 0; }
-        }
+        public int FieldCount => m_ColumnNames.Length;
+        bool IDataReader.IsClosed => m_IsDisposed;
 
-        bool IDataReader.IsClosed
-        {
-            get { return m_IsDisposed; }
-        }
+        int IDataReader.RecordsAffected => -1;
 
-        int IDataReader.RecordsAffected
-        {
-            get { return -1; }
-        }
+        public object this[string name] => GetValue(GetOrdinal(name));
 
-        public object this[string name]
-        {
-            get { return GetValue(GetOrdinal(name)); }
-        }
+        public object this[int i] => GetValue(i);
 
-        public object this[int i]
-        {
-            get { return GetValue(i); }
-        }
+        void IDataReader.Close() => Dispose();
 
         public void Dispose()
         {
@@ -110,9 +93,24 @@ namespace Tortuga.Chain.Csv
             return (byte)m_Converters[typeof(byte)].ConvertFromString(m_CurrentRow[i], m_Locale);
         }
 
+        long IDataRecord.GetBytes(int i, long fieldOffset, byte[] buffer, int bufferoffset, int length)
+        {
+            throw new NotSupportedException();
+        }
+
         public char GetChar(int i)
         {
             return (char)m_Converters[typeof(char)].ConvertFromString(m_CurrentRow[i], m_Locale);
+        }
+
+        long IDataRecord.GetChars(int i, long fieldoffset, char[] buffer, int bufferoffset, int length)
+        {
+            throw new NotSupportedException();
+        }
+
+        IDataReader IDataRecord.GetData(int i)
+        {
+            throw new NotSupportedException();
         }
 
         public string GetDataTypeName(int i)
@@ -135,10 +133,7 @@ namespace Tortuga.Chain.Csv
             return (double)m_Converters[typeof(double)].ConvertFromString(m_CurrentRow[i], m_Locale);
         }
 
-        public Type GetFieldType(int i)
-        {
-            return m_ColumnTypeMap[GetName(i)];
-        }
+        public Type GetFieldType(int i) => m_ColumnTypeMap[GetName(i)];
 
         public float GetFloat(int i)
         {
@@ -165,10 +160,7 @@ namespace Tortuga.Chain.Csv
             return (long)m_Converters[typeof(long)].ConvertFromString(m_CurrentRow[i], m_Locale);
         }
 
-        public string GetName(int i)
-        {
-            return m_ColumnNames[i];
-        }
+        public string GetName(int i) => m_ColumnNames[i];
 
         [SuppressMessage("Microsoft.Usage", "CA2201:DoNotRaiseReservedExceptionTypes", Justification = "Required by the interface.")]
         public int GetOrdinal(string name)
@@ -185,10 +177,14 @@ namespace Tortuga.Chain.Csv
             throw new IndexOutOfRangeException("Cannot find key " + name);
         }
 
-        public object GetValue(int i)
+        DataTable IDataReader.GetSchemaTable()
         {
-            return m_IndexConverterMap[i].ConvertFromString(m_CurrentRow[i], m_Locale);
+            return null; //We'll need to support this if we want to use Table-Valued Parameters in SQL Serever
         }
+
+        string IDataRecord.GetString(int i) => m_CurrentRow[i];
+
+        public object GetValue(int i) => m_IndexConverterMap[i].ConvertFromString(m_CurrentRow[i], m_Locale);
 
         public int GetValues(object[] values)
         {
@@ -202,47 +198,9 @@ namespace Tortuga.Chain.Csv
 
             return length;
         }
+        public bool IsDBNull(int i) => GetValue(i) == null;
 
-        void IDataReader.Close()
-        {
-            Dispose();
-        }
-
-        DataTable IDataReader.GetSchemaTable()
-        {
-            return null; //We'll need to support this if we want to use Table-Valued Parameters in SQL Serever
-        }
-
-        bool IDataReader.NextResult()
-        {
-            return false;
-        }
-
-        long IDataRecord.GetBytes(int i, long fieldOffset, byte[] buffer, int bufferoffset, int length)
-        {
-            throw new NotSupportedException();
-        }
-
-        long IDataRecord.GetChars(int i, long fieldoffset, char[] buffer, int bufferoffset, int length)
-        {
-            throw new NotSupportedException();
-        }
-
-        IDataReader IDataRecord.GetData(int i)
-        {
-            throw new NotSupportedException();
-        }
-
-        string IDataRecord.GetString(int i)
-        {
-            return m_CurrentRow[i];
-        }
-
-        public bool IsDBNull(int i)
-        {
-            return GetValue(i) == null;
-        }
-
+        bool IDataReader.NextResult() => false;
         public bool Read()
         {
             if (m_Parser.EndOfData)

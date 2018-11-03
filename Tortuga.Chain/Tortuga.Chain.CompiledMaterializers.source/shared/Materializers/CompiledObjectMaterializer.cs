@@ -15,7 +15,7 @@ namespace Tortuga.Chain.Materializers
         where TObject : class, new()
         where TParameter : DbParameter
     {
-        private RowOptions m_RowOptions;
+        RowOptions m_RowOptions;
 
         public CompiledObjectMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, RowOptions rowOptions) : base(commandBuilder)
         {
@@ -24,6 +24,12 @@ namespace Tortuga.Chain.Materializers
             if (rowOptions.HasFlag(RowOptions.InferConstructor))
                 throw new NotSupportedException("Compiled materializers do not support non-default constructors");
         }
+
+        /// <summary>
+        /// Returns the list of columns the materializer would like to have.
+        /// </summary>
+        /// <returns></returns>
+        public override IReadOnlyList<string> DesiredColumns() => MetadataCache.GetMetadata(typeof(TObject)).ColumnsFor;
 
         public override TObject Execute(object state = null)
         {
@@ -84,15 +90,6 @@ namespace Tortuga.Chain.Materializers
                 throw new DataException("Expected 1 row but received " + result.Count + " rows");
             }
             return result.First();
-        }
-
-        /// <summary>
-        /// Returns the list of columns the materializer would like to have.
-        /// </summary>
-        /// <returns></returns>
-        public override IReadOnlyList<string> DesiredColumns()
-        {
-            return MetadataCache.GetMetadata(typeof(TObject)).ColumnsFor;
         }
     }
 }

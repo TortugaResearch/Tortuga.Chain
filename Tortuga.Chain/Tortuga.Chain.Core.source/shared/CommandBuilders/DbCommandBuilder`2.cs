@@ -23,10 +23,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="dataSource">The data source.</param>
         protected DbCommandBuilder(ICommandDataSource<TCommand, TParameter> dataSource)
         {
-            if (dataSource == null)
-                throw new ArgumentNullException(nameof(dataSource), $"{nameof(dataSource)} is null.");
-
-            m_DataSource = dataSource;
+            m_DataSource = dataSource ?? throw new ArgumentNullException(nameof(dataSource), $"{nameof(dataSource)} is null.");
             StrictMode = dataSource.StrictMode;
         }
 
@@ -35,10 +32,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// </summary>
         /// <value>The data source.</value>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public ICommandDataSource<TCommand, TParameter> DataSource
-        {
-            get { return m_DataSource; }
-        }
+        public ICommandDataSource<TCommand, TParameter> DataSource => m_DataSource;
 
 
         /// <summary>

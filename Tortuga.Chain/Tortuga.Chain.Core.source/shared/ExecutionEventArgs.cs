@@ -18,10 +18,8 @@ namespace Tortuga.Chain
         /// <exception cref="ArgumentNullException">executionDetails;executionDetails is null.</exception>
         public ExecutionEventArgs(ExecutionToken executionDetails, DateTimeOffset startTime, object state)
         {
-            if (executionDetails == null)
-                throw new ArgumentNullException("executionDetails", "executionDetails is null.");
 
-            ExecutionDetails = executionDetails;
+            ExecutionDetails = executionDetails ?? throw new ArgumentNullException(nameof(executionDetails));
             StartTime = startTime;
             State = state;
         }
@@ -36,13 +34,11 @@ namespace Tortuga.Chain
         /// <exception cref="ArgumentNullException">executionDetails;executionDetails is null.</exception>
         public ExecutionEventArgs(ExecutionToken executionDetails, DateTimeOffset startTime, DateTimeOffset endTime, object state)
         {
-            if (executionDetails == null)
-                throw new ArgumentNullException("executionDetails", "executionDetails is null.");
 
             StartTime = startTime;
             EndTime = endTime;
             State = state;
-            ExecutionDetails = executionDetails;
+            ExecutionDetails = executionDetails ?? throw new ArgumentNullException(nameof(executionDetails));
         }
 
         /// <summary>
@@ -56,14 +52,12 @@ namespace Tortuga.Chain
         /// <exception cref="ArgumentNullException">executionDetails;executionDetails is null.</exception>
         public ExecutionEventArgs(ExecutionToken executionDetails, DateTimeOffset startTime, DateTimeOffset endTime, int? rowsAffected, object state)
         {
-            if (executionDetails == null)
-                throw new ArgumentNullException("executionDetails", "executionDetails is null.");
 
             StartTime = startTime;
             EndTime = endTime;
             RowsAffected = rowsAffected;
             State = state;
-            ExecutionDetails = executionDetails;
+            ExecutionDetails = executionDetails ?? throw new ArgumentNullException(nameof(executionDetails));
         }
 
         /// <summary>
@@ -77,15 +71,18 @@ namespace Tortuga.Chain
         /// <exception cref="ArgumentNullException">executionDetails;executionDetails is null.</exception>
         public ExecutionEventArgs(ExecutionToken executionDetails, DateTimeOffset startTime, DateTimeOffset endTime, Exception error, object state)
         {
-            if (executionDetails == null)
-                throw new ArgumentNullException("executionDetails", "executionDetails is null.");
 
             StartTime = startTime;
             EndTime = endTime;
             Error = error;
             State = state;
-            ExecutionDetails = executionDetails;
+            ExecutionDetails = executionDetails ?? throw new ArgumentNullException(nameof(executionDetails));
         }
+
+        /// <summary>
+        /// Gets the duration of the request, if available.
+        /// </summary>
+        public TimeSpan? Duration => (EndTime - StartTime);
 
         /// <summary>
         /// Gets the end time.
@@ -104,6 +101,13 @@ namespace Tortuga.Chain
         public Exception Error { get; }
 
         /// <summary>
+        /// Gets the details of the execution.
+        /// </summary>
+        /// <value>Returns null or details of the execution.</value>
+        /// <remarks>You can cast this to a concrete type for more information.</remarks>
+        public ExecutionToken ExecutionDetails { get; }
+
+        /// <summary>
         /// If available, this shows the number of rows affected by the execution.
         /// </summary>
         public int? RowsAffected { get; }
@@ -115,27 +119,10 @@ namespace Tortuga.Chain
         /// The start time.
         /// </value>
         public DateTimeOffset StartTime { get; }
-
-        /// <summary>
-        /// Gets the duration of the request, if available.
-        /// </summary>
-        public TimeSpan? Duration
-        {
-            get { return (EndTime - StartTime); }
-        }
-
         /// <summary>
         /// Gets the user-defined state.
         /// </summary>
         public object State { get; }
-
-        /// <summary>
-        /// Gets the details of the execution.
-        /// </summary>
-        /// <value>Returns null or details of the execution.</value>
-        /// <remarks>You can cast this to a concrete type for more information.</remarks>
-        public ExecutionToken ExecutionDetails { get; }
-
     }
 
 }

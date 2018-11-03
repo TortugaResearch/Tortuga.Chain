@@ -13,6 +13,12 @@ namespace Tortuga.Chain.CommandBuilders
             where TParameter : DbParameter
     {
         /// <summary>
+        /// Applies this command to all rows.
+        /// </summary>
+        /// <returns></returns>
+        new MultipleRowDbCommandBuilder<TCommand, TParameter> All();
+
+        /// <summary>
         /// Adds (or replaces) the filter on this command builder.
         /// </summary>
         /// <param name="filterValue">The filter value.</param>
@@ -34,11 +40,5 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="whereArgumentValue">The where clause argument value.</param>
         /// <returns></returns>
         new MultipleRowDbCommandBuilder<TCommand, TParameter> WithFilter(string whereClause, object whereArgumentValue);
-
-        /// <summary>
-        /// Applies this command to all rows.
-        /// </summary>
-        /// <returns></returns>
-        new MultipleRowDbCommandBuilder<TCommand, TParameter> All();
     }
 }

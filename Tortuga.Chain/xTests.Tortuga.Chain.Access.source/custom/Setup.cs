@@ -13,7 +13,7 @@ namespace Tests
 
     public class Setup
     {
-        private const string databaseFileName = "AccessTestDatabase.mdb";
+        const string databaseFileName = "AccessTestDatabase.mdb";
 
 
 

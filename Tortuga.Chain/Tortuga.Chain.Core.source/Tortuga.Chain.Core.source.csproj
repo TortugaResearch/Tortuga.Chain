@@ -171,6 +171,8 @@
     <Compile Include="shared\AuditRules\SoftDeleteRule.cs" />
     <Compile Include="shared\AuditRules\DateTimeOffsetRule.cs" />
     <Compile Include="shared\AuditRules\DateTimeRule.cs" />
+    <Compile Include="shared\Materializers\MappedProperty`1.cs" />
+    <Compile Include="shared\Materializers\MappedProperty`2.cs" />
     <Compile Include="shared\Materializers\MaterializerUtilities.cs" />
     <Compile Include="shared\Materializers\MultipleRow\StreamMaterializer`3.cs" />
     <Compile Include="shared\Materializers\MultipleRow\ImmutableListMaterializer`3.cs" />
@@ -182,6 +184,7 @@
     <Compile Include="shared\Materializers\MultipleTable\CollectionSetMaterializer`7.cs" />
     <Compile Include="shared\Materializers\ConstructibleMaterializer`4.cs" />
     <Compile Include="shared\Materializers\Operation`2.cs" />
+    <Compile Include="shared\Materializers\OrdinalMappedProperty`1.cs" />
     <Compile Include="shared\Materializers\Scalar\SingleColumnMaterializer`3.cs" />
     <Compile Include="shared\Materializers\Scalar\XElementMaterializer`2.cs" />
     <Compile Include="shared\Materializers\SingleColumn\DateTimeOffsetSetMaterializer`2.cs" />
@@ -210,7 +213,6 @@
     <Compile Include="shared\Materializers\SingleRow\ObjectMaterializer`3.cs" />
     <Compile Include="shared\Materializers\SingleRow\RefreshMaterializer`3.cs" />
     <Compile Include="shared\Materializers\SingleRow\RowMaterializer`2.cs" />
-    <Compile Include="shared\Materializers\RowsAffectedMaterializer`2.cs" />
     <Compile Include="shared\Materializers\Scalar\BooleanMaterializer`2.cs" />
     <Compile Include="shared\Materializers\Scalar\BooleanOrNullMaterializer`2.cs" />
     <Compile Include="shared\Materializers\Scalar\ByteArrayMaterializer`2.cs" />
@@ -258,6 +260,7 @@
     <Compile Include="shared\MetadataException.cs" />
     <Compile Include="shared\Metadata\ColumnMetadataCollection.cs" />
     <Compile Include="shared\Metadata\ColumnMetadataCollection`1.cs" />
+    <Compile Include="shared\Metadata\ISqlBuilderEntryDetails`1.cs" />
     <Compile Include="shared\Metadata\ScalarFunctionMetadata.cs" />
     <Compile Include="shared\Metadata\TableFunctionMetadata.cs" />
     <Compile Include="shared\Metadata\ScalarFunctionMetadata`2.cs" />

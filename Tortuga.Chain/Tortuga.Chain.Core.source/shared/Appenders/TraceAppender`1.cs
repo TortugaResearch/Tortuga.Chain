@@ -39,10 +39,7 @@ namespace Tortuga.Chain.Appenders
         /// Override this if you want to examine or modify the DBCommand before it is executed.
         /// </summary>
         /// <param name="e">The <see cref="CommandBuiltEventArgs" /> instance containing the event data.</param>
-        protected override void OnCommandBuilt(CommandBuiltEventArgs e)
-        {
-            Write(m_Stream, e);
-        }
+        protected override void OnCommandBuilt(CommandBuiltEventArgs e) => Write(m_Stream, e);
 
 
 

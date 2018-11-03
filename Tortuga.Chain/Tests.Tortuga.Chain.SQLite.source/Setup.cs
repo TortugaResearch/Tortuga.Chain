@@ -28,7 +28,7 @@ namespace Tests
     [TestClass]
     public class Setup
     {
-        private const string databaseFileName = "SQLiteTestDatabase.sqlite";
+        const string databaseFileName = "SQLiteTestDatabase.sqlite";
 
         [AssemblyInitialize]
         public static void AssemblyInit(TestContext context)
@@ -132,7 +132,7 @@ CREATE TABLE Employee
 
 #if !Roslyn_Missing
 
-        private static void CompiledMaterializers_MaterializerCompiled(object sender, MaterializerCompilerEventArgs e)
+        static void CompiledMaterializers_MaterializerCompiled(object sender, MaterializerCompilerEventArgs e)
         {
             Debug.WriteLine("******");
             Debug.WriteLine("Compiled Materializer");

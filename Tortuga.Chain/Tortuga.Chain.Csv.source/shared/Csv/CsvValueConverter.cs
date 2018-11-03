@@ -62,21 +62,7 @@ namespace Tortuga.Chain.Csv
         /// <param name="value">The value.</param>
         /// <param name="locale">The locale.</param>
         /// <returns>T.</returns>
-        public T ConvertFromString(string value, CultureInfo locale)
-        {
-            return m_FromString(value, locale);
-        }
-
-        /// <summary>
-        /// Converts to string.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <param name="locale">The locale.</param>
-        /// <returns>System.String.</returns>
-        public string ConvertToString(T value, CultureInfo locale)
-        {
-            return m_ToString(value, locale);
-        }
+        public T ConvertFromString(string value, CultureInfo locale) => m_FromString(value, locale);
 
         /// <summary>
         /// Converts from string.
@@ -84,10 +70,7 @@ namespace Tortuga.Chain.Csv
         /// <param name="value">The value.</param>
         /// <param name="locale">The locale.</param>
         /// <returns>System.Object.</returns>
-        object ICsvValueConverter.ConvertFromString(string value, CultureInfo locale)
-        {
-            return m_FromString(value, locale);
-        }
+        object ICsvValueConverter.ConvertFromString(string value, CultureInfo locale) => m_FromString(value, locale);
 
         /// <summary>
         /// Converts to string.
@@ -95,10 +78,14 @@ namespace Tortuga.Chain.Csv
         /// <param name="value">The value.</param>
         /// <param name="locale">The locale.</param>
         /// <returns>System.String.</returns>
-        string ICsvValueConverter.ConvertToString(object value, CultureInfo locale)
-        {
-            return m_ToString((T)value, locale);
-        }
+        public string ConvertToString(T value, CultureInfo locale) => m_ToString(value, locale);
+        /// <summary>
+        /// Converts to string.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <param name="locale">The locale.</param>
+        /// <returns>System.String.</returns>
+        string ICsvValueConverter.ConvertToString(object value, CultureInfo locale) => m_ToString((T)value, locale);
     }
 
 

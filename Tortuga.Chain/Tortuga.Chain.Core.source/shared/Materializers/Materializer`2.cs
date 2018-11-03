@@ -24,20 +24,14 @@ namespace Tortuga.Chain.Materializers
         /// <exception cref="ArgumentNullException">operation;operation is null.</exception>
         protected Materializer(DbCommandBuilder<TCommand, TParameter> commandBuilder)
         {
-            if (commandBuilder == null)
-                throw new ArgumentNullException(nameof(commandBuilder), $"{nameof(commandBuilder)} is null.");
-
-            m_CommandBuilder = commandBuilder;
+            m_CommandBuilder = commandBuilder ?? throw new ArgumentNullException(nameof(commandBuilder), $"{nameof(commandBuilder)} is null.");
         }
 
         /// <summary>
         /// Gets the associated operation.
         /// </summary>
         /// <value>The command builder.</value>
-        protected DbCommandBuilder<TCommand, TParameter> CommandBuilder
-        {
-            get { return m_CommandBuilder; }
-        }
+        protected DbCommandBuilder<TCommand, TParameter> CommandBuilder => m_CommandBuilder;
 
         /// <summary>
         /// Returns the command text (usually SQL) without executing it. 
@@ -45,58 +39,6 @@ namespace Tortuga.Chain.Materializers
         /// <returns>System.String.</returns>
         public string CommandText() => CommandBuilder.Prepare(this).CommandText;
 
-
-        ///// <summary>
-        ///// Helper method for executing the operation.
-        ///// </summary>
-        ///// <param name="implementation">The implementation.</param>
-        ///// <param name="state">The state.</param>
-        //protected void ExecuteCore(CommandImplementation<TCommand> implementation, object state)
-        //{
-        //    Prepare().Execute(implementation, state);
-        //}
-
-        ///// <summary>
-        ///// Helper method for executing the operation.
-        ///// </summary>
-        ///// <param name="implementation">The implementation.</param>
-        ///// <param name="state">The state.</param>
-        //protected void ExecuteCore(Action<TCommand> implementation, object state)
-        //{
-        //    Prepare().Execute(cmd =>
-        //    {
-        //        implementation(cmd);
-        //        return null;
-        //    }, state);
-        //}
-
-        ///// <summary>
-        ///// Helper method for executing the operation.
-        ///// </summary>
-        ///// <param name="implementation">The implementation.</param>
-        ///// <param name="cancellationToken">The cancellation token.</param>
-        ///// <param name="state">The state.</param>
-        ///// <returns>Task.</returns>
-        //protected Task ExecuteCoreAsync(CommandImplementationAsync<TCommand> implementation, CancellationToken cancellationToken, object state)
-        //{
-        //    return Prepare().ExecuteAsync(implementation, cancellationToken, state);
-        //}
-
-        ///// <summary>
-        ///// Helper method for executing the operation.
-        ///// </summary>
-        ///// <param name="implementation">The implementation.</param>
-        ///// <param name="cancellationToken">The cancellation token.</param>
-        ///// <param name="state">The state.</param>
-        ///// <returns>Task.</returns>
-        //protected Task ExecuteCoreAsync(Func<TCommand, Task> implementation, CancellationToken cancellationToken, object state)
-        //{
-        //    return Prepare().ExecuteAsync(async cmd =>
-        //    {
-        //        await implementation(cmd);
-        //        return null;
-        //    }, cancellationToken, state);
-        //}
 
         /// <summary>
         /// Prepares this operation for execution.

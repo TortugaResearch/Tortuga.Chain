@@ -50,10 +50,7 @@ namespace Tortuga.Chain.Metadata
         /// Creates the SQL builder
         /// </summary>
         /// <returns></returns>
-        public SqlBuilder<TDbType> CreateSqlBuilder(bool strictMode)
-        {
-            return m_Builder.Clone(strictMode);
-        }
+        public SqlBuilder<TDbType> CreateSqlBuilder(bool strictMode) => m_Builder.Clone(strictMode);
 
 
     }

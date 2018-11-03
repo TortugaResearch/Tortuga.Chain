@@ -14,6 +14,30 @@ namespace Tortuga.Chain.CommandBuilders
     {
 
         /// <summary>
+        /// Checks to see of the same property appears in both object. If it does, an InvalidOperationException is thrown with the provided error message.
+        /// </summary>
+        /// <param name="firstObject">The first object.</param>
+        /// <param name="secondObject">The second object.</param>
+        /// <param name="errorFormat">The error format. Slot 0 is the matching property.</param>
+        /// <returns>System.String.</returns>
+        /// <remarks>If either object is null, this check is skipped.</remarks>
+        [SuppressMessage("Microsoft.Naming", "CA1720:IdentifiersShouldNotContainTypeNames", MessageId = "object")]
+        public static void CheckForOverlaps(object firstObject, object secondObject, string errorFormat)
+        {
+            if (firstObject == null)
+                return;
+            if (secondObject == null)
+                return;
+
+            var leftList = MetadataCache.GetMetadata(firstObject.GetType()).Properties;
+            var rightList = MetadataCache.GetMetadata(secondObject.GetType()).Properties;
+            foreach (var property1 in leftList)
+                foreach (var property2 in rightList)
+                    if (property1.Name.Equals(property2.Name, StringComparison.OrdinalIgnoreCase))
+                        throw new InvalidOperationException(string.Format(errorFormat, property1.Name));
+        }
+
+        /// <summary>
         /// Gets parameters from an argument value.
         /// </summary>
         /// <typeparam name="TParameter">The type of the parameter.</typeparam>
@@ -66,31 +90,6 @@ namespace Tortuga.Chain.CommandBuilders
 
             return result;
         }
-
-        /// <summary>
-        /// Checks to see of the same property appears in both object. If it does, an InvalidOperationException is thrown with the provided error message.
-        /// </summary>
-        /// <param name="firstObject">The first object.</param>
-        /// <param name="secondObject">The second object.</param>
-        /// <param name="errorFormat">The error format. Slot 0 is the matching property.</param>
-        /// <returns>System.String.</returns>
-        /// <remarks>If either object is null, this check is skipped.</remarks>
-        [SuppressMessage("Microsoft.Naming", "CA1720:IdentifiersShouldNotContainTypeNames", MessageId = "object")]
-        public static void CheckForOverlaps(object firstObject, object secondObject, string errorFormat)
-        {
-            if (firstObject == null)
-                return;
-            if (secondObject == null)
-                return;
-
-            var leftList = MetadataCache.GetMetadata(firstObject.GetType()).Properties;
-            var rightList = MetadataCache.GetMetadata(secondObject.GetType()).Properties;
-            foreach (var property1 in leftList)
-                foreach (var property2 in rightList)
-                    if (property1.Name.Equals(property2.Name, StringComparison.OrdinalIgnoreCase))
-                        throw new InvalidOperationException(string.Format(errorFormat, property1.Name));
-        }
-
     }
 
 

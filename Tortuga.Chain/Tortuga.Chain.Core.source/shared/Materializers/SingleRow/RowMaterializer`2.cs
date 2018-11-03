@@ -28,6 +28,17 @@ namespace Tortuga.Chain.Materializers
         }
 
         /// <summary>
+        /// Returns the list of columns the materializer would like to have.
+        /// </summary>
+        /// <returns>
+        /// IReadOnlyList&lt;System.String&gt;.
+        /// </returns>
+        /// <remarks>
+        /// If AutoSelectDesiredColumns is returned, the command builder is allowed to choose which columns to return. If NoColumns is returned, the command builder should omit the SELECT/OUTPUT clause.
+        /// </remarks>
+        public override IReadOnlyList<string> DesiredColumns() => AllColumns;
+
+        /// <summary>
         /// Execute the operation synchronously.
         /// </summary>
         /// <returns></returns>
@@ -98,20 +109,6 @@ namespace Tortuga.Chain.Materializers
                 throw new UnexpectedDataException("Expected 1 row but received " + table.Rows.Count + " rows");
             }
             return table.Rows[0];
-        }
-
-        /// <summary>
-        /// Returns the list of columns the materializer would like to have.
-        /// </summary>
-        /// <returns>
-        /// IReadOnlyList&lt;System.String&gt;.
-        /// </returns>
-        /// <remarks>
-        /// If AutoSelectDesiredColumns is returned, the command builder is allowed to choose which columns to return. If NoColumns is returned, the command builder should omit the SELECT/OUTPUT clause.
-        /// </remarks>
-        public override IReadOnlyList<string> DesiredColumns()
-        {
-            return AllColumns;
         }
     }
 }

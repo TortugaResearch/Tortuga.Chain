@@ -1,13 +1,17 @@
-using System.Collections.Generic;
-
 namespace Tortuga.Chain.CommandBuilders
 {
     /// <summary>
     /// This is a specialization of IMultipleRowDbCommandBuilder that includes support for sorting. It is only used for set-based update operations.
     /// </summary>
     /// <seealso cref="IMultipleRowDbCommandBuilder" />
-    public interface IUpdateManyCommandBuilder 
+    public interface IUpdateManyCommandBuilder
     {
+        /// <summary>
+        /// Applies this command to all rows.
+        /// </summary>
+        /// <returns></returns>
+        IMultipleRowDbCommandBuilder All();
+
         /// <summary>
         /// Adds (or replaces) the filter on this command builder.
         /// </summary>
@@ -30,11 +34,5 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="whereArgumentValue">The argument value.</param>
         /// <returns></returns>
         IMultipleRowDbCommandBuilder WithFilter(string whereClause, object whereArgumentValue);
-
-        /// <summary>
-        /// Applies this command to all rows.
-        /// </summary>
-        /// <returns></returns>
-        IMultipleRowDbCommandBuilder All();
     }
 }

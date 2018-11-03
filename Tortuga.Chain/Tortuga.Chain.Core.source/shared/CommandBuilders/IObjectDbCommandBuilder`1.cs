@@ -13,19 +13,17 @@ namespace Tortuga.Chain.CommandBuilders
         TArgument ArgumentValue { get; }
 
         /// <summary>
-        /// After executing the operation, refreshes the properties on the argumentValue by reading the updated values from the database.
-        /// </summary>
-        /// <returns></returns>
-        ILink<TArgument> WithRefresh();
-
-
-
-        /// <summary>
         /// Materializes the result as a new instance of the same type as the argumentValue
         /// </summary>
         /// <param name="rowOptions">The row options.</param>
         /// <returns></returns>
         /// <remarks>To update the argumentValue itselt, use WithRefresh() instead.</remarks>
         ILink<TArgument> ToObject(RowOptions rowOptions = RowOptions.None);
+
+        /// <summary>
+        /// After executing the operation, refreshes the properties on the argumentValue by reading the updated values from the database.
+        /// </summary>
+        /// <returns></returns>
+        ILink<TArgument> WithRefresh();
     }
 }

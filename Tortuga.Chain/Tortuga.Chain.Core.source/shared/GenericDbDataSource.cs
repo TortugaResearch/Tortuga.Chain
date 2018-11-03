@@ -17,29 +17,10 @@ namespace Tortuga.Chain
     /// </summary>
     public class GenericDbDataSource : DataSource<DbConnection, DbTransaction, DbCommand, DbParameter>, IClass0DataSource
     {
+        ICacheAdapter m_Cache;
+        ConcurrentDictionary<Type, object> m_ExtensionCache;
         readonly DbConnectionStringBuilder m_ConnectionBuilder;
         readonly DbProviderFactory m_Factory;
-
-        /// <summary>
-        /// Creates a operation based on a raw SQL statement.
-        /// </summary>
-        /// <param name="sqlStatement">The SQL statement.</param>
-        /// <returns></returns>
-        public MultipleTableDbCommandBuilder<DbCommand, DbParameter> Sql(string sqlStatement)
-        {
-            return new GenericDbSqlCall(this, sqlStatement, null);
-        }
-
-        /// <summary>
-        /// Creates a operation based on a raw SQL statement.
-        /// </summary>
-        /// <param name="sqlStatement">The SQL statement.</param>
-        /// <param name="argumentValue">The argument value.</param>
-        /// <returns>SqlServerSqlCall.</returns>
-        public MultipleTableDbCommandBuilder<DbCommand, DbParameter> Sql(string sqlStatement, object argumentValue)
-        {
-            return new GenericDbSqlCall(this, sqlStatement, argumentValue);
-        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GenericDbDataSource{TConnection, TCommand, TParameter}" /> class.
@@ -52,12 +33,10 @@ namespace Tortuga.Chain
         /// <exception cref="ArgumentException">connectionString is null or empty.;connectionString</exception>
         public GenericDbDataSource(DbProviderFactory factory, string name, string connectionString, DataSourceSettings settings = null) : base(settings)
         {
-            if (factory == null)
-                throw new ArgumentNullException("factory", "factory is null.");
             if (string.IsNullOrEmpty(connectionString))
-                throw new ArgumentException("connectionString is null or empty.", "connectionString");
+                throw new ArgumentException($"{nameof(connectionString)} is null or empty.", nameof(connectionString));
 
-            m_Factory = factory;
+            m_Factory = factory ?? throw new ArgumentNullException(nameof(factory), $"{nameof(factory)} is null.");
             m_ConnectionBuilder = factory.CreateConnectionStringBuilder();
             m_ConnectionBuilder.ConnectionString = connectionString;
             Name = name;
@@ -77,13 +56,9 @@ namespace Tortuga.Chain
         /// connectionStringBuilder;connectionStringBuilder is null.</exception>
         public GenericDbDataSource(DbProviderFactory factory, string name, DbConnectionStringBuilder connectionStringBuilder, DataSourceSettings settings = null) : base(settings)
         {
-            if (factory == null)
-                throw new ArgumentNullException("factory", "factory is null.");
-            if (connectionStringBuilder == null)
-                throw new ArgumentNullException("connectionStringBuilder", "connectionStringBuilder is null.");
 
-            m_Factory = factory;
-            m_ConnectionBuilder = connectionStringBuilder;
+            m_Factory = factory ?? throw new ArgumentNullException(nameof(factory));
+            m_ConnectionBuilder = connectionStringBuilder ?? throw new ArgumentNullException(nameof(connectionStringBuilder)); ;
             Name = name;
             m_ExtensionCache = new ConcurrentDictionary<Type, object>();
             m_Cache = DefaultCache;
@@ -92,10 +67,9 @@ namespace Tortuga.Chain
         internal GenericDbDataSource(string name, string connectionString, DataSourceSettings settings = null) : base(settings)
         {
             if (string.IsNullOrEmpty(connectionString))
-                throw new ArgumentException("connectionString is null or empty.", "connectionString");
+                throw new ArgumentException($"{nameof(connectionString)} is null or empty.", nameof(connectionString));
 
-            m_ConnectionBuilder = new DbConnectionStringBuilder();
-            m_ConnectionBuilder.ConnectionString = connectionString;
+            m_ConnectionBuilder = new DbConnectionStringBuilder() { ConnectionString = connectionString };
             Name = name;
             m_ExtensionCache = new ConcurrentDictionary<Type, object>();
             m_Cache = DefaultCache;
@@ -103,13 +77,93 @@ namespace Tortuga.Chain
 
         internal GenericDbDataSource(string name, DbConnectionStringBuilder connectionStringBuilder, DataSourceSettings settings = null) : base(settings)
         {
-            if (connectionStringBuilder == null)
-                throw new ArgumentNullException("connectionStringBuilder", "connectionStringBuilder is null.");
 
-            m_ConnectionBuilder = connectionStringBuilder;
+            m_ConnectionBuilder = connectionStringBuilder ?? throw new ArgumentNullException(nameof(connectionStringBuilder));
             Name = name;
             m_ExtensionCache = new ConcurrentDictionary<Type, object>();
             m_Cache = DefaultCache;
+        }
+
+        /// <summary>
+        /// Gets or sets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
+        /// </summary>
+        public override ICacheAdapter Cache => m_Cache;
+
+        /// <summary>
+        /// Gets the connection string.
+        /// </summary>
+        /// <value>
+        /// The connection string.
+        /// </value>
+        internal string ConnectionString => m_ConnectionBuilder.ConnectionString;
+
+        /// <summary>
+        /// The extension cache is used by extensions to store data source specific information.
+        /// </summary>
+        /// <value>
+        /// The extension cache.
+        /// </value>
+        protected override ConcurrentDictionary<Type, object> ExtensionCache => m_ExtensionCache;
+
+        /// <summary>
+        /// Creates and opens a SQL connection.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// The caller of this method is responsible for closing the connection.
+        /// </remarks>
+        public async Task<DbConnection> CreateConnectionAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var con = OnCreateConnection();
+            con.ConnectionString = ConnectionString;
+            await con.OpenAsync(cancellationToken).ConfigureAwait(false);
+            return con;
+        }
+
+        /// <summary>
+        /// Creates a operation based on a raw SQL statement.
+        /// </summary>
+        /// <param name="sqlStatement">The SQL statement.</param>
+        /// <returns></returns>
+        public MultipleTableDbCommandBuilder<DbCommand, DbParameter> Sql(string sqlStatement) => new GenericDbSqlCall(this, sqlStatement, null);
+
+        /// <summary>
+        /// Creates a operation based on a raw SQL statement.
+        /// </summary>
+        /// <param name="sqlStatement">The SQL statement.</param>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <returns>SqlServerSqlCall.</returns>
+        public MultipleTableDbCommandBuilder<DbCommand, DbParameter> Sql(string sqlStatement, object argumentValue) => new GenericDbSqlCall(this, sqlStatement, argumentValue);
+        IMultipleTableDbCommandBuilder IClass0DataSource.Sql(string sqlStatement, object argumentValue) => Sql(sqlStatement, argumentValue);
+
+        /// <summary>
+        /// Tests the connection.
+        /// </summary>
+        public override void TestConnection()
+        {
+            using (var con = CreateConnection())
+            using (var cmd = CreateCommand())
+            {
+                cmd.Connection = con;
+                cmd.CommandText = "SELECT 1";
+                cmd.ExecuteScalar();
+            }
+        }
+
+        /// <summary>
+        /// Tests the connection asynchronously.
+        /// </summary>
+        /// <returns></returns>
+        public override async Task TestConnectionAsync()
+        {
+            using (var con = await CreateConnectionAsync())
+            using (var cmd = CreateCommand())
+            {
+                cmd.Connection = con;
+                cmd.CommandText = "SELECT 1";
+                await cmd.ExecuteScalarAsync();
+            }
         }
 
         [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "GenericDbDataSource")]
@@ -122,6 +176,21 @@ namespace Tortuga.Chain
             return m_Factory.CreateCommand();
         }
 
+        /// <summary>
+        /// Creates and opens a SQL connection.
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>The caller of this method is responsible for closing the connection.</remarks>
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
+        internal DbConnection CreateConnection()
+        {
+            var con = OnCreateConnection();
+            con.ConnectionString = ConnectionString;
+            con.Open();
+
+            return con;
+        }
+
         [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "GenericDbDataSource")]
         [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "DbProviderFactory")]
         [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "CreateParameter")]
@@ -130,6 +199,20 @@ namespace Tortuga.Chain
             if (m_Factory == null)
                 throw new InvalidOperationException("Subclasses of GenericDbDataSource that do not provide a DbProviderFactory need to override CreateParameter");
             return m_Factory.CreateParameter();
+        }
+
+        /// <summary>
+        /// Creates an empty connection to be populated by CreateConnection.
+        /// </summary>
+        /// <returns>DbConnection.</returns>
+        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "OnCreateConnection")]
+        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "GenericDbDataSource")]
+        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "DbProviderFactory")]
+        internal virtual DbConnection OnCreateConnection()
+        {
+            if (m_Factory == null)
+                throw new InvalidOperationException("Subclasses of GenericDbDataSource that do not provide a DbProviderFactory need to override OnCreateConnection");
+            return m_Factory.CreateConnection();
         }
 
         /// <summary>
@@ -174,6 +257,43 @@ namespace Tortuga.Chain
                         OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
                         return rows;
                     }
+                }
+            }
+            catch (Exception ex)
+            {
+                OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Executes the specified operation.
+        /// </summary>
+        /// <param name="executionToken">The execution token.</param>
+        /// <param name="implementation">The implementation.</param>
+        /// <param name="state">The state.</param>
+        /// <exception cref="ArgumentNullException">
+        /// executionToken;executionToken is null.
+        /// or
+        /// implementation;implementation is null.
+        /// </exception>
+        protected internal override int? Execute(OperationExecutionToken<DbConnection, DbTransaction> executionToken, OperationImplementation<DbConnection, DbTransaction> implementation, object state)
+        {
+            if (executionToken == null)
+                throw new ArgumentNullException("executionToken", "executionToken is null.");
+            if (implementation == null)
+                throw new ArgumentNullException("implementation", "implementation is null.");
+
+            var startTime = DateTimeOffset.Now;
+            OnExecutionStarted(executionToken, startTime, state);
+
+            try
+            {
+                using (var con = CreateConnection())
+                {
+                    var rows = implementation(con, null);
+                    OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
+                    return rows;
                 }
             }
             catch (Exception ex)
@@ -239,128 +359,6 @@ namespace Tortuga.Chain
                 }
             }
         }
-
-        /// <summary>
-        /// Creates an empty connection to be populated by CreateConnection.
-        /// </summary>
-        /// <returns>DbConnection.</returns>
-        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "OnCreateConnection")]
-        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "GenericDbDataSource")]
-        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "DbProviderFactory")]
-        internal virtual DbConnection OnCreateConnection()
-        {
-            if (m_Factory == null)
-                throw new InvalidOperationException("Subclasses of GenericDbDataSource that do not provide a DbProviderFactory need to override OnCreateConnection");
-            return m_Factory.CreateConnection();
-        }
-
-        /// <summary>
-        /// Creates and opens a SQL connection.
-        /// </summary>
-        /// <returns></returns>
-        /// <remarks>The caller of this method is responsible for closing the connection.</remarks>
-        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-        internal DbConnection CreateConnection()
-        {
-            var con = OnCreateConnection();
-            con.ConnectionString = ConnectionString;
-            con.Open();
-
-            return con;
-        }
-
-        /// <summary>
-        /// Gets the connection string.
-        /// </summary>
-        /// <value>
-        /// The connection string.
-        /// </value>
-        internal string ConnectionString
-        {
-            get { return m_ConnectionBuilder.ConnectionString; }
-        }
-
-        internal ICacheAdapter m_Cache;
-
-        /// <summary>
-        /// Gets or sets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
-        /// </summary>
-        public override ICacheAdapter Cache
-        {
-            get { return m_Cache; }
-        }
-
-        internal ConcurrentDictionary<Type, object> m_ExtensionCache;
-
-        /// <summary>
-        /// The extension cache is used by extensions to store data source specific information.
-        /// </summary>
-        /// <value>
-        /// The extension cache.
-        /// </value>
-        protected override ConcurrentDictionary<Type, object> ExtensionCache
-        {
-            get { return m_ExtensionCache; }
-        }
-
-        /// <summary>
-        /// Creates and opens a SQL connection.
-        /// </summary>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// The caller of this method is responsible for closing the connection.
-        /// </remarks>
-        public async Task<DbConnection> CreateConnectionAsync(CancellationToken cancellationToken = default(CancellationToken))
-        {
-            var con = OnCreateConnection();
-            con.ConnectionString = ConnectionString;
-            await con.OpenAsync(cancellationToken).ConfigureAwait(false);
-            return con;
-        }
-
-        IMultipleTableDbCommandBuilder IClass0DataSource.Sql(string sqlStatement, object argumentValue)
-        {
-            return Sql(sqlStatement, argumentValue);
-        }
-
-        /// <summary>
-        /// Executes the specified operation.
-        /// </summary>
-        /// <param name="executionToken">The execution token.</param>
-        /// <param name="implementation">The implementation.</param>
-        /// <param name="state">The state.</param>
-        /// <exception cref="ArgumentNullException">
-        /// executionToken;executionToken is null.
-        /// or
-        /// implementation;implementation is null.
-        /// </exception>
-        protected internal override int? Execute(OperationExecutionToken<DbConnection, DbTransaction> executionToken, OperationImplementation<DbConnection, DbTransaction> implementation, object state)
-        {
-            if (executionToken == null)
-                throw new ArgumentNullException("executionToken", "executionToken is null.");
-            if (implementation == null)
-                throw new ArgumentNullException("implementation", "implementation is null.");
-
-            var startTime = DateTimeOffset.Now;
-            OnExecutionStarted(executionToken, startTime, state);
-
-            try
-            {
-                using (var con = CreateConnection())
-                {
-                    var rows = implementation(con, null);
-                    OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
-                    return rows;
-                }
-            }
-            catch (Exception ex)
-            {
-                OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
-                throw;
-            }
-        }
-
         /// <summary>
         /// execute as an asynchronous operation.
         /// </summary>
@@ -403,37 +401,6 @@ namespace Tortuga.Chain
                 }
             }
         }
-
-        /// <summary>
-        /// Tests the connection.
-        /// </summary>
-        public override void TestConnection()
-        {
-            using (var con = CreateConnection())
-            using (var cmd = CreateCommand())
-            {
-                cmd.Connection = con;
-                cmd.CommandText = "SELECT 1";
-                cmd.ExecuteScalar();
-            }
-        }
-
-        /// <summary>
-        /// Tests the connection asynchronously.
-        /// </summary>
-        /// <returns></returns>
-        public override async Task TestConnectionAsync()
-        {
-            using (var con = await CreateConnectionAsync())
-            using (var cmd = CreateCommand())
-            {
-                cmd.Connection = con;
-                cmd.CommandText = "SELECT 1";
-                await cmd.ExecuteScalarAsync();
-            }
-        }
-
-
         /// <summary>
         /// Called when Database.DatabaseMetadata is invoked.
         /// </summary>

@@ -21,28 +21,25 @@ namespace Tortuga.Chain.Appenders
         /// <exception cref="ArgumentNullException">previousLink;previousLink is null.</exception>
         protected Appender(ILink<TIn> previousLink)
         {
-            if (previousLink == null)
-                throw new ArgumentNullException("previousLink", "previousLink is null.");
-
-            PreviousLink = previousLink;
+            PreviousLink = previousLink ?? throw new ArgumentNullException("previousLink", "previousLink is null.");
             PreviousLink.ExecutionTokenPrepared += PreviousLink_ExecutionTokenPrepared;
             PreviousLink.ExecutionTokenPreparing += PreviousLink_ExecutionTokenPreparing;
         }
 
-        private void PreviousLink_ExecutionTokenPrepared(object sender, ExecutionTokenPreparedEventArgs e)
+        void PreviousLink_ExecutionTokenPrepared(object sender, ExecutionTokenPreparedEventArgs e)
         {
             OnExecutionTokenPrepared(e); //left first
             ExecutionTokenPrepared?.Invoke(this, e); //then right
             e.ExecutionToken.CommandBuilt += ExecutionToken_CommandBuilt;
         }
 
-        private void PreviousLink_ExecutionTokenPreparing(object sender, ExecutionTokenPreparingEventArgs e)
+        void PreviousLink_ExecutionTokenPreparing(object sender, ExecutionTokenPreparingEventArgs e)
         {
             OnExecutionTokenPreparing(e); //left first
             ExecutionTokenPreparing?.Invoke(this, e); //then right
         }
 
-        private void ExecutionToken_CommandBuilt(object sender, CommandBuiltEventArgs e)
+        void ExecutionToken_CommandBuilt(object sender, CommandBuiltEventArgs e)
         {
             OnCommandBuilt(e);
         }
@@ -77,10 +74,7 @@ namespace Tortuga.Chain.Appenders
         /// Gets the data source that is associated with this materializer or appender.
         /// </summary>
         /// <value>The data source.</value>
-        public IDataSource DataSource
-        {
-            get { return PreviousLink.DataSource; }
-        }
+        public IDataSource DataSource => PreviousLink.DataSource;
 
         /// <summary>
         /// Gets the previous link in the operation chain.
@@ -131,9 +125,6 @@ namespace Tortuga.Chain.Appenders
         /// Returns the generated SQL statement of the previous link.
         /// </summary>
         /// <returns></returns>
-        public string CommandText()
-        {
-            return PreviousLink.CommandText();
-        }
+        public string CommandText() => PreviousLink.CommandText();
     }
 }

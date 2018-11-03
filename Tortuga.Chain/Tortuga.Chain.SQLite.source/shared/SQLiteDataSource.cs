@@ -37,7 +37,7 @@ namespace Tortuga.Chain
         readonly AsyncReaderWriterLock m_SyncLock = new AsyncReaderWriterLock(); //Sqlite is single-threaded for writes. It says otherwise, but it spams the trace window with exceptions.
 
         readonly SQLiteConnectionStringBuilder m_ConnectionBuilder;
-        private SQLiteMetadataCache m_DatabaseMetadata;
+        SQLiteMetadataCache m_DatabaseMetadata;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SQLiteDataSource" /> class.
@@ -72,7 +72,7 @@ namespace Tortuga.Chain
         {
         }
 
-        private SQLiteDataSource(string name, SQLiteConnectionStringBuilder connectionStringBuilder, SQLiteDataSourceSettings settings, SQLiteMetadataCache databaseMetadata, ICacheAdapter cache, ConcurrentDictionary<Type, object> extensionCache) : base(settings)
+        SQLiteDataSource(string name, SQLiteConnectionStringBuilder connectionStringBuilder, SQLiteDataSourceSettings settings, SQLiteMetadataCache databaseMetadata, ICacheAdapter cache, ConcurrentDictionary<Type, object> extensionCache) : base(settings)
         {
             if (connectionStringBuilder == null)
                 throw new ArgumentNullException("connectionStringBuilder", "connectionStringBuilder is null.");
@@ -353,7 +353,7 @@ namespace Tortuga.Chain
             }
         }
 
-        private async Task<SQLiteConnection> CreateConnectionAsync(CancellationToken cancellationToken = default(CancellationToken))
+        async Task<SQLiteConnection> CreateConnectionAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             var con = new SQLiteConnection(ConnectionString);
             await con.OpenAsync(cancellationToken).ConfigureAwait(false);

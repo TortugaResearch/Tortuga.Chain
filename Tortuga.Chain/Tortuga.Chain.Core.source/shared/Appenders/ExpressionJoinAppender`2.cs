@@ -9,38 +9,33 @@ namespace Tortuga.Chain.Appenders
 {
     internal sealed class ExpressionJoinAppender<T1, T2> : Appender<Tuple<List<T1>, List<T2>>, List<T1>>
     {
-        readonly JoinOptions m_JoinOptions;
         readonly Func<T1, T2, bool> m_JoinExpression;
+        readonly JoinOptions m_JoinOptions;
         readonly Func<T1, ICollection<T2>> m_TargetCollectionExpression;
 
         public ExpressionJoinAppender(ILink<Tuple<List<T1>, List<T2>>> previousLink, Func<T1, T2, bool> joinExpression, Func<T1, ICollection<T2>> targetCollectionExpression, JoinOptions joinOptions) : base(previousLink)
         {
             if (previousLink == null)
-                throw new ArgumentNullException("previousLink", "previousLink is null.");
-            if (joinExpression == null)
-                throw new ArgumentNullException("joinExpression", "joinExpression is null.");
-            if (targetCollectionExpression == null)
-                throw new ArgumentNullException("targetCollectionExpression", "targetCollectionExpression is null.");
+                throw new ArgumentNullException(nameof(previousLink), $"{nameof(previousLink)} is null.");
 
-            m_TargetCollectionExpression = targetCollectionExpression;
+            m_TargetCollectionExpression = targetCollectionExpression ?? throw new ArgumentNullException(nameof(targetCollectionExpression), $"{nameof(targetCollectionExpression)} is null.");
             m_JoinOptions = joinOptions;
-            m_JoinExpression = joinExpression;
+            m_JoinExpression = joinExpression ?? throw new ArgumentNullException(nameof(joinExpression), $"{nameof(joinExpression)} is null.");
         }
 
         public ExpressionJoinAppender(ILink<Tuple<List<T1>, List<T2>>> previousLink, Func<T1, T2, bool> joinExpression, string targetCollectionName, JoinOptions joinOptions) : base(previousLink)
         {
             if (previousLink == null)
-                throw new ArgumentNullException("previousLink", "previousLink is null.");
-            if (joinExpression == null)
-                throw new ArgumentNullException("joinExpression", "joinExpression is null.");
+                throw new ArgumentNullException(nameof(previousLink), $"{nameof(previousLink)} is null.");
+
             if (string.IsNullOrEmpty(targetCollectionName))
-                throw new ArgumentException("targetCollectionName is null or empty.", "targetCollectionName");
+                throw new ArgumentException($"{nameof(targetCollectionName)} is null or empty.", nameof(targetCollectionName));
 
             var targetPropertyStub = MetadataCache.GetMetadata(typeof(T1)).Properties[targetCollectionName]; //don't inline this variable.
             m_TargetCollectionExpression = (p) => (ICollection<T2>)targetPropertyStub.InvokeGet(p);
 
             m_JoinOptions = joinOptions;
-            m_JoinExpression = joinExpression;
+            m_JoinExpression = joinExpression ?? throw new ArgumentNullException(nameof(joinExpression), $"{nameof(joinExpression)} is null.");
         }
 
         public override List<T1> Execute(object state = null)

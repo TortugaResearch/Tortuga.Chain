@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 
 namespace Tortuga.Chain.Metadata
 {
@@ -12,7 +13,7 @@ namespace Tortuga.Chain.Metadata
         /// <value>
         /// The columns.
         /// </value>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public ColumnMetadataCollection Columns { get; protected set; }
 
         /// <summary>
@@ -29,7 +30,7 @@ namespace Tortuga.Chain.Metadata
         /// <value>
         /// The parameters.
         /// </value>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public ParameterMetadataCollection Parameters { get; protected set; }
 
 

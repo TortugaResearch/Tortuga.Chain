@@ -61,9 +61,6 @@ namespace Tortuga.Chain.Metadata
         /// <returns>
         /// A <see cref="string" /> that represents this instance.
         /// </returns>
-        public override string ToString()
-        {
-            return SqlName + " (" + TypeName + ")";
-        }
+        public override string ToString() => SqlName + " (" + TypeName + ")";
     }
 }

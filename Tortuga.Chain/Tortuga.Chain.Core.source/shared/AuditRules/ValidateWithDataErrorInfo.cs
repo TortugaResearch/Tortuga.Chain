@@ -29,8 +29,7 @@ namespace Tortuga.Chain.AuditRules
         /// <param name="argumentValue">The argument value.</param>
         public override void CheckValue(object argumentValue)
         {
-            var validation = argumentValue as IDataErrorInfo;
-            if (validation != null)
+            if (argumentValue is IDataErrorInfo validation)
                 CheckValueCore(validation);
         }
 

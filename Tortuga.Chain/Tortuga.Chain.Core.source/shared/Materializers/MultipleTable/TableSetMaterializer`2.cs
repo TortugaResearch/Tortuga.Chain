@@ -29,6 +29,17 @@ namespace Tortuga.Chain.Materializers
         }
 
         /// <summary>
+        /// Returns the list of columns the materializer would like to have.
+        /// </summary>
+        /// <returns>
+        /// IReadOnlyList&lt;System.String&gt;.
+        /// </returns>
+        /// <remarks>
+        /// If AutoSelectDesiredColumns is returned, the command builder is allowed to choose which columns to return. If NoColumns is returned, the command builder should omit the SELECT/OUTPUT clause.
+        /// </remarks>
+        public override IReadOnlyList<string> DesiredColumns() => AllColumns;
+
+        /// <summary>
         /// Execute the operation synchronously.
         /// </summary>
         /// <returns></returns>
@@ -78,20 +89,5 @@ namespace Tortuga.Chain.Materializers
 
             return result;
         }
-
-        /// <summary>
-        /// Returns the list of columns the materializer would like to have.
-        /// </summary>
-        /// <returns>
-        /// IReadOnlyList&lt;System.String&gt;.
-        /// </returns>
-        /// <remarks>
-        /// If AutoSelectDesiredColumns is returned, the command builder is allowed to choose which columns to return. If NoColumns is returned, the command builder should omit the SELECT/OUTPUT clause.
-        /// </remarks>
-        public override IReadOnlyList<string> DesiredColumns()
-        {
-            return AllColumns;
-        }
-
     }
 }

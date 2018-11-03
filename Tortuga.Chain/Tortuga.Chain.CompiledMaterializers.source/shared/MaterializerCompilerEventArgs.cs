@@ -38,6 +38,14 @@ namespace Tortuga.Chain
         public IDataSource DataSource { get; }
 
         /// <summary>
+        /// Gets the exception.
+        /// </summary>
+        /// <value>
+        /// The exception.
+        /// </value>
+        public Exception Exception { get; }
+
+        /// <summary>
         /// Gets the SQL.
         /// </summary>
         /// <value>The SQL.</value>
@@ -48,14 +56,6 @@ namespace Tortuga.Chain
         /// </summary>
         /// <value>The type of the target.</value>
         public Type TargetType { get; }
-
-        /// <summary>
-        /// Gets the exception.
-        /// </summary>
-        /// <value>
-        /// The exception.
-        /// </value>
-        public Exception Exception { get; }
     }
 
 }

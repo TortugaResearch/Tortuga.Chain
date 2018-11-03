@@ -9,6 +9,35 @@ namespace Tortuga.Chain.Metadata
     public interface IDatabaseMetadataCache
     {
         /// <summary>
+        /// Gets the stored procedure's metadata.
+        /// </summary>
+        /// <param name="procedureName">Name of the procedure.</param>
+        /// <returns></returns>
+        StoredProcedureMetadata GetStoredProcedure(string procedureName);
+
+        /// <summary>
+        /// Gets the stored procedures that were loaded by this cache.
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>Call Preload before invoking this method to ensure that all stored procedures were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.</remarks>
+        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
+        IReadOnlyCollection<StoredProcedureMetadata> GetStoredProcedures();
+
+        /// <summary>
+        /// Gets the metadata for a table function.
+        /// </summary>
+        /// <param name="tableFunctionName">Name of the table function.</param>
+        TableFunctionMetadata GetTableFunction(string tableFunctionName);
+
+        /// <summary>
+        /// Gets the table-valued functions that were loaded by this cache.
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>Call Preload before invoking this method to ensure that all table-valued functions were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.</remarks>
+        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
+        IReadOnlyCollection<TableFunctionMetadata> GetTableFunctions();
+
+        /// <summary>
         /// Gets the metadata for a table.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
@@ -24,29 +53,6 @@ namespace Tortuga.Chain.Metadata
         TableOrViewMetadata GetTableOrViewFromClass<TObject>() where TObject : class;
 
         /// <summary>
-        /// Resets the metadata cache, clearing out all cached metadata.
-        /// </summary>
-        void Reset();
-
-        /// <summary>
-        /// Preloads all of the metadata for this data source.
-        /// </summary>
-        void Preload();
-
-        /// <summary>
-        /// Gets the stored procedure's metadata.
-        /// </summary>
-        /// <param name="procedureName">Name of the procedure.</param>
-        /// <returns></returns>
-        StoredProcedureMetadata GetStoredProcedure(string procedureName);
-
-        /// <summary>
-        /// Gets the metadata for a table function.
-        /// </summary>
-        /// <param name="tableFunctionName">Name of the table function.</param>
-        TableFunctionMetadata GetTableFunction(string tableFunctionName);
-
-        /// <summary>
         /// Gets the tables and views that were loaded by this cache.
         /// </summary>
         /// <returns></returns>
@@ -55,20 +61,11 @@ namespace Tortuga.Chain.Metadata
         IReadOnlyCollection<TableOrViewMetadata> GetTablesAndViews();
 
         /// <summary>
-        /// Gets the stored procedures that were loaded by this cache.
+        /// Gets the metadata for a user defined type.
         /// </summary>
-        /// <returns></returns>
-        /// <remarks>Call Preload before invoking this method to ensure that all stored procedures were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.</remarks>
+        /// <param name="typeName">Name of the type.</param>
         [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
-        IReadOnlyCollection<StoredProcedureMetadata> GetStoredProcedures();
-
-        /// <summary>
-        /// Gets the table-valued functions that were loaded by this cache.
-        /// </summary>
-        /// <returns></returns>
-        /// <remarks>Call Preload before invoking this method to ensure that all table-valued functions were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.</remarks>
-        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
-        IReadOnlyCollection<TableFunctionMetadata> GetTableFunctions();
+        UserDefinedTypeMetadata GetUserDefinedType(string typeName);
 
         /// <summary>
         /// Gets the table-valued functions that were loaded by this cache.
@@ -79,11 +76,13 @@ namespace Tortuga.Chain.Metadata
         IReadOnlyCollection<UserDefinedTypeMetadata> GetUserDefinedTypes();
 
         /// <summary>
-        /// Gets the metadata for a user defined type.
+        /// Preloads all of the metadata for this data source.
         /// </summary>
-        /// <param name="typeName">Name of the type.</param>
-        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
-        UserDefinedTypeMetadata GetUserDefinedType(string typeName);
+        void Preload();
 
+        /// <summary>
+        /// Resets the metadata cache, clearing out all cached metadata.
+        /// </summary>
+        void Reset();
     }
 }

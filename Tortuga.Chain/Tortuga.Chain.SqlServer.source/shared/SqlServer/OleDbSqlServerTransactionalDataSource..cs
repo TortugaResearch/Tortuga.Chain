@@ -20,7 +20,7 @@ namespace Tortuga.Chain.SqlServer
         readonly OleDbSqlServerDataSource m_BaseDataSource;
         readonly OleDbTransaction m_Transaction;
         readonly string m_TransactionName;
-        private bool m_Disposed;
+        bool m_Disposed;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="OleDbSqlServerTransactionalDataSource"/> class.
@@ -129,7 +129,7 @@ namespace Tortuga.Chain.SqlServer
         /// Closes the current transaction and connection. If not committed, the transaction is rolled back.
         /// </summary>
         /// <param name="disposing"></param>
-        private void Dispose(bool disposing)
+        void Dispose(bool disposing)
         {
             if (m_Disposed)
                 return;

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Tortuga.Chain.AuditRules
 {
@@ -39,7 +40,7 @@ namespace Tortuga.Chain.AuditRules
         /// Applies the rule when performing a select or delete operation.
         /// </summary>
         /// <remarks>Usually used for soft delete support</remarks>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "SelectOr")]
+        [SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "SelectOr")]
         SelectOrDelete = Delete | Select
     }
 }

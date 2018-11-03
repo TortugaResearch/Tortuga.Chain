@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -25,9 +26,9 @@ namespace Tortuga.Chain.Csv
         /// <summary>
         /// Initializes the default converters
         /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1810:InitializeReferenceTypeStaticFieldsInline")]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1505:AvoidUnmaintainableCode")]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
+        [SuppressMessage("Microsoft.Performance", "CA1810:InitializeReferenceTypeStaticFieldsInline")]
+        [SuppressMessage("Microsoft.Maintainability", "CA1505:AvoidUnmaintainableCode")]
+        [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
         static CsvSerializer()
         {
 #pragma warning disable IDE0001 // Simplify Names
@@ -104,6 +105,30 @@ namespace Tortuga.Chain.Csv
         public CultureInfo Locale { get; set; }
 
         /// <summary>
+        /// Adds the indicated conversion function to the list of global converters.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="toString">To string function.</param>
+        /// <param name="fromString">From string function.</param>
+        /// <remarks>This only applies to converters created after this function is called.</remarks>
+        public static void AddGlobalConverter<T>(Func<T, string> toString, Func<string, T> fromString)
+        {
+            s_GlobalConverters[typeof(T)] = new CsvValueConverter<T>(toString, fromString);
+        }
+
+        /// <summary>
+        /// Adds the indicated conversion function to the list of global converters.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="toString">To string function.</param>
+        /// <param name="fromString">From string function.</param>
+        /// <remarks>This only applies to converters created after this function is called.</remarks>
+        public static void AddGlobalConverter<T>(Func<T, CultureInfo, string> toString, Func<string, CultureInfo, T> fromString)
+        {
+            s_GlobalConverters[typeof(T)] = new CsvValueConverter<T>(toString, fromString);
+        }
+
+        /// <summary>
         /// Adds the converter.
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -153,7 +178,7 @@ namespace Tortuga.Chain.Csv
         /// <param name="inputStream">The input stream.</param>
         /// <param name="columnTypeMap">The column type map.</param>
         /// <returns>DataTable.</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         public DataTable DeserializeToDataTable(Stream inputStream, IReadOnlyDictionary<string, Type> columnTypeMap)
         {
             using (var reader = DeserializeToDataReader(inputStream, columnTypeMap))
@@ -170,7 +195,7 @@ namespace Tortuga.Chain.Csv
         /// <param name="inputStream">The input stream.</param>
         /// <param name="columnTypeMap">The column type map.</param>
         /// <returns>DataTable.</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         public DataTable DeserializeToDataTable(TextReader inputStream, IReadOnlyDictionary<string, Type> columnTypeMap)
         {
             using (var reader = DeserializeToDataReader(inputStream, columnTypeMap))
@@ -231,6 +256,49 @@ namespace Tortuga.Chain.Csv
         {
             using (var reader = DeserializeToDataReader(inputStream, columnTypeMap))
                 return new Table(reader);
+        }
+
+        /// <summary>
+        /// Serialize into a CSV file.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <param name="outputStream">The output stream.</param>
+        /// <param name="includeHeaders">if set to <c>true</c> [include headers].</param>
+        /// <returns>System.Int32.</returns>
+        public int Serialize(DbDataReader source, TextWriter outputStream, bool includeHeaders)
+        {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source), $"{nameof(source)} is null.");
+            if (outputStream == null)
+                throw new ArgumentNullException(nameof(outputStream), $"{nameof(outputStream)} is null.");
+
+            var nameConverter = (CsvValueConverter<string>)m_Converters[typeof(string)];
+
+            var converters = new List<Tuple<int, ICsvValueConverter>>(source.FieldCount);
+            var columnNames = new List<string>(source.FieldCount);
+
+            for (var i = 0; i < source.FieldCount; i++)
+            {
+                var type = source.GetFieldType(i);
+                var converter = m_Converters[typeof(object)];
+                m_Converters.TryGetValue(type, out converter);
+                converters.Add(Tuple.Create(i, converter));
+
+                if (includeHeaders)
+                    columnNames.Add(nameConverter.ConvertToString(source.GetName(i), Locale));
+            }
+
+            if (includeHeaders)
+                outputStream.WriteLine(string.Join(",", columnNames));
+
+            var result = 0;
+            while (source.Read())
+            {
+                result += 1;
+                outputStream.WriteLine(string.Join(",", converters.Select(c =>
+                    source.IsDBNull(c.Item1) ? "" : c.Item2.ConvertToString(source.GetValue(c.Item1), Locale))));
+            }
+            return result;
         }
 
         /// <summary>
@@ -301,50 +369,6 @@ namespace Tortuga.Chain.Csv
             }
             return result;
         }
-
-        /// <summary>
-        /// Serialize into a CSV file.
-        /// </summary>
-        /// <param name="source">The source.</param>
-        /// <param name="outputStream">The output stream.</param>
-        /// <param name="includeHeaders">if set to <c>true</c> [include headers].</param>
-        /// <returns>System.Int32.</returns>
-        public int Serialize(DbDataReader source, TextWriter outputStream, bool includeHeaders)
-        {
-            if (source == null)
-                throw new ArgumentNullException(nameof(source), $"{nameof(source)} is null.");
-            if (outputStream == null)
-                throw new ArgumentNullException(nameof(outputStream), $"{nameof(outputStream)} is null.");
-
-            var nameConverter = (CsvValueConverter<string>)m_Converters[typeof(string)];
-
-            var converters = new List<Tuple<int, ICsvValueConverter>>(source.FieldCount);
-            var columnNames = new List<string>(source.FieldCount);
-
-            for (var i = 0; i < source.FieldCount; i++)
-            {
-                var type = source.GetFieldType(i);
-                var converter = m_Converters[typeof(object)];
-                m_Converters.TryGetValue(type, out converter);
-                converters.Add(Tuple.Create(i, converter));
-
-                if (includeHeaders)
-                    columnNames.Add(nameConverter.ConvertToString(source.GetName(i), Locale));
-            }
-
-            if (includeHeaders)
-                outputStream.WriteLine(string.Join(",", columnNames));
-
-            var result = 0;
-            while (source.Read())
-            {
-                result += 1;
-                outputStream.WriteLine(string.Join(",", converters.Select(c =>
-                    source.IsDBNull(c.Item1) ? "" : c.Item2.ConvertToString(source.GetValue(c.Item1), Locale))));
-            }
-            return result;
-        }
-
         /// <summary>
         /// Serialize into a CSV file asynchronously.
         /// </summary>
@@ -374,30 +398,6 @@ namespace Tortuga.Chain.Csv
 
             foreach (var row in items)
                 await outputStream.WriteLineAsync(string.Join(",", converters.Select(c => c.Item2.ConvertToString(c.Item1.InvokeGet(row), Locale))));
-        }
-
-        /// <summary>
-        /// Adds the indicated conversion function to the list of global converters.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="toString">To string function.</param>
-        /// <param name="fromString">From string function.</param>
-        /// <remarks>This only applies to converters created after this function is called.</remarks>
-        public static void AddGlobalConverter<T>(Func<T, string> toString, Func<string, T> fromString)
-        {
-            s_GlobalConverters[typeof(T)] = new CsvValueConverter<T>(toString, fromString);
-        }
-
-        /// <summary>
-        /// Adds the indicated conversion function to the list of global converters.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="toString">To string function.</param>
-        /// <param name="fromString">From string function.</param>
-        /// <remarks>This only applies to converters created after this function is called.</remarks>
-        public static void AddGlobalConverter<T>(Func<T, CultureInfo, string> toString, Func<string, CultureInfo, T> fromString)
-        {
-            s_GlobalConverters[typeof(T)] = new CsvValueConverter<T>(toString, fromString);
         }
     }
 
