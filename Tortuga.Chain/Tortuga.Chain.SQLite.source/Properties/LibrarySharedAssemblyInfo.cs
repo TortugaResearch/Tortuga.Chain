@@ -4,7 +4,7 @@
 [assembly: AssemblyDescription("Fluent ORM for .NET and SQLite.")]
 [assembly: AssemblyCulture("")]
 #if NETSTANDARD2_0
-[assembly: AssemblyVersion("1.3")]
+[assembly: AssemblyVersion("2.0")]
 #else
-[assembly: AssemblyVersion("1.3.*")]
+[assembly: AssemblyVersion("2.0.*")]
 #endif

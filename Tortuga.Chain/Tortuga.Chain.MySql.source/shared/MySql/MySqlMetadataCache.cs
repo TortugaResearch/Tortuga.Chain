@@ -300,8 +300,8 @@ namespace Tortuga.Chain.MySql
         /// <summary>
         /// Gets the columns.
         /// </summary>
+        /// <param name="schema">The schema.</param>
         /// <param name="tableName">Name of the table.</param>
-        /// <returns></returns>
         /// <remarks>WARNING: Only call this with verified table names. Otherwise a SQL injection attack can occur.</remarks>
         private List<ColumnMetadata<MySqlDbType>> GetColumns(string schema, string tableName)
         {

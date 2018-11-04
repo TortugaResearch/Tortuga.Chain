@@ -4,7 +4,7 @@
 [assembly: AssemblyDescription("Fluent ORM for .NET and Access.")]
 [assembly: AssemblyCulture("")]
 #if NETSTANDARD1_3
-[assembly: AssemblyVersion("1.3")]
+[assembly: AssemblyVersion("2.0")]
 #else
-[assembly: AssemblyVersion("1.3.*")]
+[assembly: AssemblyVersion("2.0.*")]
 #endif

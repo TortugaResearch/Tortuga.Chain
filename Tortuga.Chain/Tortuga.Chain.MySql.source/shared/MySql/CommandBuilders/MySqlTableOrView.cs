@@ -48,6 +48,8 @@ namespace Tortuga.Chain.MySql.CommandBuilders
         /// <param name="dataSource">The data source.</param>
         /// <param name="tableOrViewName">Name of the table or view.</param>
         /// <param name="filterValue">The filter value.</param>
+        /// <param name="filterOptions">The filter options.</param>
+        /// <exception cref="System.ArgumentException">tableOrViewName - tableOrViewName</exception>
         /// <exception cref="ArgumentException"></exception>
         public MySqlTableOrView(MySqlDataSourceBase dataSource, MySqlObjectName tableOrViewName, object filterValue, FilterOptions filterOptions = FilterOptions.None) :
             base(dataSource)
