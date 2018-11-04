@@ -25,7 +25,7 @@ namespace Tortuga.Chain.Metadata
         /// <param name="precision">The precision.</param>
         /// <param name="scale">The scale.</param>
         /// <param name="fullTypeName">Full name of the type.</param>
-        public ColumnMetadata(string name, bool isComputed, bool isPrimaryKey, bool isIdentity, string typeName, TDbType? dbType, string quotedSqlName, bool isNullable, int? maxLength, int? precision, int? scale, string fullTypeName)
+        public ColumnMetadata(string name, bool isComputed, bool isPrimaryKey, bool isIdentity, string typeName, TDbType? dbType, string quotedSqlName, bool? isNullable, int? maxLength, int? precision, int? scale, string fullTypeName)
         {
             TypeName = typeName;
             SqlName = name;

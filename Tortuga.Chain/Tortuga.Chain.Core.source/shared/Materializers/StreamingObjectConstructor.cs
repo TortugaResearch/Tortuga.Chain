@@ -9,6 +9,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Tortuga.Anchor.Metadata;
+using Tortuga.Chain.Metadata;
 using static Tortuga.Chain.Materializers.MaterializerUtilities;
 
 namespace Tortuga.Chain.Materializers
@@ -39,6 +40,7 @@ namespace Tortuga.Chain.Materializers
         int m_RowsRead;
 
         DbDataReader m_Source;
+        readonly Dictionary<int, bool> m_NullableColumns;
 
         [SuppressMessage("Microsoft.Performance", "CA1810:InitializeReferenceTypeStaticFieldsInline")]
         static StreamingObjectConstructor()
@@ -70,13 +72,17 @@ namespace Tortuga.Chain.Materializers
             s_AllMappedProperties = mappedProperties.ToImmutableArray();
             s_DecomposedProperties = decomposedProperties.ToImmutableArray();
         }
-        public StreamingObjectConstructor(DbDataReader source, IReadOnlyList<Type> constructorSignature)
+        public StreamingObjectConstructor(DbDataReader source, IReadOnlyList<Type> constructorSignature, IReadOnlyList<ColumnMetadata> nonNullableColumns)
         {
             m_Source = source;
             m_Ordinals = new Dictionary<string, int>(source.FieldCount, StringComparer.OrdinalIgnoreCase);
+            m_NullableColumns = new Dictionary<int, bool>(source.FieldCount);
             for (var i = 0; i < source.FieldCount; i++)
-                m_Ordinals.Add(source.GetName(i), i);
-
+            {
+                var columnName = source.GetName(i);
+                m_Ordinals.Add(columnName, i);
+                m_NullableColumns.Add(i, !nonNullableColumns.Any(c => c.SqlName == columnName)); //assume nullable unless proven otherwise
+            }
             constructorSignature = constructorSignature ?? s_DefaultConstructor;
 
             var desiredType = typeof(T);
@@ -226,7 +232,7 @@ namespace Tortuga.Chain.Materializers
             {
                 get
                 {
-                    if (m_Parent.m_Source.IsDBNull(key))
+                    if (m_Parent.m_NullableColumns[key] && m_Parent.m_Source.IsDBNull(key)) //we skip the IsDbNull check when possible
                         return null;
                     return m_Parent.m_Source.GetValue(key);
                 }

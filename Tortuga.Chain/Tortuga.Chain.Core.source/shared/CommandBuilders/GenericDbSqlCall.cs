@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
 using Tortuga.Chain.Core;
@@ -52,5 +54,19 @@ namespace Tortuga.Chain.CommandBuilders
         /// If the column name was not found, this will return null
         /// </remarks>
         public override ColumnMetadata TryGetColumn(string columnName) => null;
+
+        /// <summary>
+        /// Returns a list of columns known to be non-nullable.
+        /// </summary>
+        /// <returns>
+        /// If the command builder doesn't know which columns are non-nullable, an empty list will be returned.
+        /// </returns>
+        /// <remarks>
+        /// This is used by materializers to skip IsNull checks.
+        /// </remarks>
+        public override IReadOnlyList<ColumnMetadata> TryGetNonNullableColumns()
+        {
+            return ImmutableList<ColumnMetadata>.Empty;
+        }
     }
 }

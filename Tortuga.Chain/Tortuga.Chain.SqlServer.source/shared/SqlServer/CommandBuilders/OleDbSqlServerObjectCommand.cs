@@ -1,4 +1,5 @@
 #if !OleDb_Missing
+using System.Collections.Generic;
 using System.Data.OleDb;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.DataSources;
@@ -56,6 +57,17 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         {
             return Table.Columns.TryGetColumn(columnName);
         }
+
+        /// <summary>
+        /// Returns a list of columns known to be non-nullable.
+        /// </summary>
+        /// <returns>
+        /// If the command builder doesn't know which columns are non-nullable, an empty list will be returned.
+        /// </returns>
+        /// <remarks>
+        /// This is used by materializers to skip IsNull checks.
+        /// </remarks>
+        public override IReadOnlyList<ColumnMetadata> TryGetNonNullableColumns() => Table.NullableColumns;
     }
 }
 #endif

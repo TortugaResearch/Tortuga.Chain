@@ -278,6 +278,17 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
         {
             return m_Table.Columns.TryGetColumn(columnName);
         }
+
+        /// <summary>
+        /// Returns a list of columns known to be non-nullable.
+        /// </summary>
+        /// <returns>
+        /// If the command builder doesn't know which columns are non-nullable, an empty list will be returned.
+        /// </returns>
+        /// <remarks>
+        /// This is used by materializers to skip IsNull checks.
+        /// </remarks>
+        public override IReadOnlyList<ColumnMetadata> TryGetNonNullableColumns() => m_Table.NullableColumns;
     }
 }
 
