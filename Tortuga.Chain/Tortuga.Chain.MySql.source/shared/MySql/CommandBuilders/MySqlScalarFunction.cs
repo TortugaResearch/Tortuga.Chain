@@ -11,8 +11,6 @@ using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.MySql.CommandBuilders
 {
-    //TODO-223: Finish implementation and test this
-    /*
     /// <summary>
     /// Use for scalar functions.
     /// </summary>
@@ -76,6 +74,6 @@ namespace Tortuga.Chain.MySql.CommandBuilders
         /// <returns>ColumnMetadata.</returns>
         /// <remarks>Always returns null since this command builder has no columns</remarks>
         public override ColumnMetadata TryGetColumn(string columnName) => null;
+
     }
-    */
 }

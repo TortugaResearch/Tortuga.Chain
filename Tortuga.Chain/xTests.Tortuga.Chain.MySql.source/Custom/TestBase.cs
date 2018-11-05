@@ -34,9 +34,12 @@ namespace Tests
 
         public string MultiResultSetProc1Name { get { return "Sales.CustomerWithOrdersByState"; } }
 
-        public string TableFunction1Name { get { return "Sales.CustomersByState"; } }
+        //public string TableFunction1Name { get { return "Sales.CustomersByState"; } }
 
         //public string TableFunction2Name { get { return "Sales.CustomersByStateInline"; } }
+
+        public string ScalarFunction1Name { get { return "HR.EmployeeCount"; } }
+
 
         public MySqlDataSource AttachRules(MySqlDataSource source)
         {
