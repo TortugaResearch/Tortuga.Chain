@@ -3,8 +3,6 @@ using System.Collections.ObjectModel;
 
 namespace Tortuga.Chain.Metadata
 {
-
-
     /// <summary>
     /// 
     /// </summary>

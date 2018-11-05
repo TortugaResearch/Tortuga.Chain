@@ -480,7 +480,7 @@ namespace Tortuga.Chain.SqlServer
 
             var columns = GetColumns(objectId);
 
-            return new SqlServerTableOrViewMetadata<OleDbType>(new SqlServerObjectName(actualSchema, actualName), isTable, columns, hasTriggers);
+            return new SqlServerTableOrViewMetadata<OleDbType>(this, new SqlServerObjectName(actualSchema, actualName), isTable, columns, hasTriggers);
         }
 
         internal override UserDefinedTypeMetadata<SqlServerObjectName, OleDbType> GetUserDefinedTypeInternal(SqlServerObjectName typeName)

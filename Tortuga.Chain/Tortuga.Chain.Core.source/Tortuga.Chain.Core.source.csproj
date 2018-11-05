@@ -260,6 +260,8 @@
     <Compile Include="shared\MetadataException.cs" />
     <Compile Include="shared\Metadata\ColumnMetadataCollection.cs" />
     <Compile Include="shared\Metadata\ColumnMetadataCollection`1.cs" />
+    <Compile Include="shared\Metadata\IndexMetadataCollection`2.cs" />
+    <Compile Include="shared\Metadata\IndexMetadata`2.cs" />
     <Compile Include="shared\Metadata\ISqlBuilderEntryDetails`1.cs" />
     <Compile Include="shared\Metadata\ScalarFunctionMetadata.cs" />
     <Compile Include="shared\Metadata\TableFunctionMetadata.cs" />

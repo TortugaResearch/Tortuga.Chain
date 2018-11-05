@@ -208,7 +208,7 @@ namespace Tortuga.Chain.Access
 
                     var name = row["TABLE_NAME"].ToString();
                     var columns = GetColumns(name, columnsDataTable, primaryKeys);
-                    m_Tables[name] = new TableOrViewMetadata<AccessObjectName, OleDbType>(name, true, columns);
+                    m_Tables[name] = new TableOrViewMetadata<AccessObjectName, OleDbType>(this, name, true, columns);
                 }
             }
         }
@@ -222,7 +222,7 @@ namespace Tortuga.Chain.Access
                 {
                     var name = row["TABLE_NAME"].ToString();
                     var columns = GetColumns(name, columnsDataTable, null);
-                    m_Tables[name] = new TableOrViewMetadata<AccessObjectName, OleDbType>(name, false, columns);
+                    m_Tables[name] = new TableOrViewMetadata<AccessObjectName, OleDbType>(this, name, false, columns);
                 }
             }
         }

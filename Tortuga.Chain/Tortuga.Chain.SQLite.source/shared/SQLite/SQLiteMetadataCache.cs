@@ -78,7 +78,7 @@ namespace Tortuga.Chain.SQLite
             }
 
             var columns = GetColumns(tableName, isTable);
-            return new TableOrViewMetadata<SQLiteObjectName, DbType>(actualName, isTable, columns);
+            return new TableOrViewMetadata<SQLiteObjectName, DbType>(this, actualName, isTable, columns);
         }
 
         /// <summary>

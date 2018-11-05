@@ -511,7 +511,7 @@ namespace Tortuga.Chain.MySql
 
             var columns = GetColumns(actualSchemaName, actualTableName);
 
-            return new MySqlTableOrViewMetadata<MySqlDbType>(new MySqlObjectName(actualSchemaName, actualTableName), isTable, columns, engine);
+            return new MySqlTableOrViewMetadata(this, new MySqlObjectName(actualSchemaName, actualTableName), isTable, columns, engine);
         }
 
         [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]

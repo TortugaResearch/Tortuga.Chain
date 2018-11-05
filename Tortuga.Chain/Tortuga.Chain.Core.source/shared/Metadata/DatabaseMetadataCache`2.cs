@@ -24,6 +24,20 @@ namespace Tortuga.Chain.Metadata
         }
 
         /// <summary>
+        /// Gets the indexes for a table.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <returns></returns>
+        /// <exception cref="NotSupportedException">Indexes are not supported by this data source</exception>
+        /// <remarks>
+        /// This should be cached on a TableOrViewMetadata object.
+        /// </remarks>
+        public virtual IndexMetadataCollection<TName, TDbType> GetIndexesForTable(TName tableName)
+        {
+            throw new NotSupportedException("Indexes are not supported by this data source");
+        }
+
+        /// <summary>
         /// Gets the scalar functions that were loaded by this cache.
         /// </summary>
         /// <returns></returns>

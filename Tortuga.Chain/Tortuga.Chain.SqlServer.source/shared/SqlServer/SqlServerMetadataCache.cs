@@ -601,7 +601,7 @@ namespace Tortuga.Chain.SqlServer
 
             var columns = GetColumns(objectId);
 
-            return new SqlServerTableOrViewMetadata<SqlDbType>(new SqlServerObjectName(actualSchema, actualName), isTable, columns, hasTriggers);
+            return new SqlServerTableOrViewMetadata<SqlDbType>(this, new SqlServerObjectName(actualSchema, actualName), isTable, columns, hasTriggers);
         }
 
 

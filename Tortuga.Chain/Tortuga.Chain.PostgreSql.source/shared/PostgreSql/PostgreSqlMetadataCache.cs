@@ -613,7 +613,7 @@ WHERE c.relname ILIKE @Name AND
             }
 
             var columns = GetColumns(tableName);
-            return new TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType>(new PostgreSqlObjectName(actualSchema, actualName), isTable, columns);
+            return new TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType>(this, new PostgreSqlObjectName(actualSchema, actualName), isTable, columns);
         }
     }
 }
