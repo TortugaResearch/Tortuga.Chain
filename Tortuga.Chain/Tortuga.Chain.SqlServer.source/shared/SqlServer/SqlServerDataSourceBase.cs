@@ -102,31 +102,9 @@ namespace Tortuga.Chain.SqlServer
             return DeleteByKeyList(tableName, new List<string> { key }, options);
         }
 
-        /// <summary>
-        /// Delete multiple rows by key.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="keys">The keys.</param>
-        /// <returns></returns>
-        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
-        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> DeleteByKey<T>(SqlServerObjectName tableName, params T[] keys)
-            where T : struct
-        {
-            return DeleteByKeyList(tableName, keys);
-        }
 
-        /// <summary>
-        /// Delete multiple rows by key.
-        /// </summary>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="keys">The keys.</param>
-        /// <returns></returns>
-        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
-        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> DeleteByKey(SqlServerObjectName tableName, params string[] keys)
-        {
-            return DeleteByKeyList(tableName, keys);
-        }
+
+
 
         /// <summary>
         /// Delete multiple rows by key.
@@ -289,31 +267,9 @@ namespace Tortuga.Chain.SqlServer
             return GetByKeyList(tableName, new List<string> { key });
         }
 
-        /// <summary>
-        /// Gets a set of records by their primary key.
-        /// </summary>
-        /// <typeparam name="TKey"></typeparam>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="keys">The keys.</param>
-        /// <returns></returns>
-        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
-        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> GetByKey<TKey>(SqlServerObjectName tableName, params TKey[] keys)
-            where TKey : struct
-        {
-            return GetByKeyList(tableName, keys);
-        }
 
-        /// <summary>
-        /// Gets a set of records by their primary key.
-        /// </summary>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="keys">The keys.</param>
-        /// <returns></returns>
-        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
-        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> GetByKey(SqlServerObjectName tableName, params string[] keys)
-        {
-            return GetByKeyList(tableName, keys);
-        }
+
+
 
         /// <summary>
         /// Gets a set of records by their primary key.
@@ -843,35 +799,9 @@ namespace Tortuga.Chain.SqlServer
             return UpdateByKeyList(tableName, newValues, new List<string> { key }, options);
         }
 
-        /// <summary>
-        /// Update multiple rows by key.
-        /// </summary>
-        /// <typeparam name="TArgument">The type of the t argument.</typeparam>
-        /// <typeparam name="TKey"></typeparam>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="newValues">The new values to use.</param>
-        /// <param name="keys">The keys.</param>
-        /// <returns></returns>
-        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
-        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> UpdateByKeyList<TArgument, TKey>(SqlServerObjectName tableName, TArgument newValues, params TKey[] keys)
-            where TKey : struct
-        {
-            return UpdateByKeyList(tableName, newValues, (IEnumerable<TKey>)keys);
-        }
 
-        /// <summary>
-        /// Update multiple rows by key.
-        /// </summary>
-        /// <typeparam name="TArgument">The type of the t argument.</typeparam>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="newValues">The new values to use.</param>
-        /// <param name="keys">The keys.</param>
-        /// <returns></returns>
-        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
-        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> UpdateByKeyList<TArgument>(SqlServerObjectName tableName, TArgument newValues, params string[] keys)
-        {
-            return UpdateByKeyList(tableName, newValues, (IEnumerable<string>)keys);
-        }
+
+
 
         /// <summary>
         /// Update multiple rows by key.

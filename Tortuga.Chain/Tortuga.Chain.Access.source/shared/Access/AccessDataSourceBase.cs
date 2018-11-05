@@ -100,31 +100,6 @@ namespace Tortuga.Chain.Access
             return DeleteByKeyList(tableName, new List<string> { key }, options);
         }
 
-        /// <summary>
-        /// Delete multiple rows by key.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="keys">The keys.</param>
-        /// <returns></returns>
-        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
-        public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> DeleteByKey<T>(AccessObjectName tableName, params T[] keys)
-            where T : struct
-        {
-            return DeleteByKeyList(tableName, keys);
-        }
-
-        /// <summary>
-        /// Delete multiple rows by key.
-        /// </summary>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="keys">The keys.</param>
-        /// <returns></returns>
-        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
-        public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> DeleteByKey(AccessObjectName tableName, params string[] keys)
-        {
-            return DeleteByKeyList(tableName, keys);
-        }
 
         /// <summary>
         /// Delete multiple rows by key.
@@ -317,7 +292,7 @@ namespace Tortuga.Chain.Access
         public SingleRowDbCommandBuilder<OleDbCommand, OleDbParameter> GetByKey<TKey>(AccessObjectName tableName, TKey key)
             where TKey : struct
         {
-            return GetByKeyList(tableName, new List<TKey> { key });
+            return GetByKeyList(tableName, (IEnumerable<TKey>)new List<TKey> { key });
         }
 
         /// <summary>
@@ -328,34 +303,9 @@ namespace Tortuga.Chain.Access
         /// <returns>MultipleRowDbCommandBuilder&lt;OleDbCommand, OleDbParameter&gt;.</returns>
         public SingleRowDbCommandBuilder<OleDbCommand, OleDbParameter> GetByKey(AccessObjectName tableName, string key)
         {
-            return GetByKeyList(tableName, new List<string> { key });
+            return GetByKeyList(tableName, (IEnumerable<string>)new List<string> { key });
         }
 
-        /// <summary>
-        /// Gets a set of records by their primary key.
-        /// </summary>
-        /// <typeparam name="TKey"></typeparam>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="keys">The keys.</param>
-        /// <returns></returns>
-        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
-        public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> GetByKey<TKey>(AccessObjectName tableName, params TKey[] keys)
-            where TKey : struct
-        {
-            return GetByKeyList(tableName, keys);
-        }
-
-        /// <summary>
-        /// Gets a set of records by their primary key.
-        /// </summary>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="keys">The keys.</param>
-        /// <returns></returns>
-        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
-        public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> GetByKey(AccessObjectName tableName, params string[] keys)
-        {
-            return GetByKeyList(tableName, keys);
-        }
 
         /// <summary>
         /// Gets a set of records by their primary key.
@@ -518,35 +468,6 @@ namespace Tortuga.Chain.Access
             return UpdateByKeyList(tableName, newValues, new List<string> { key }, options);
         }
 
-        /// <summary>
-        /// Update multiple rows by key.
-        /// </summary>
-        /// <typeparam name="TArgument">The type of the t argument.</typeparam>
-        /// <typeparam name="TKey"></typeparam>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="newValues">The new values to use.</param>
-        /// <param name="keys">The keys.</param>
-        /// <returns></returns>
-        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
-        public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> UpdateByKeyList<TArgument, TKey>(AccessObjectName tableName, TArgument newValues, params TKey[] keys)
-            where TKey : struct
-        {
-            return UpdateByKeyList(tableName, newValues, (IEnumerable<TKey>)keys);
-        }
-
-        /// <summary>
-        /// Update multiple rows by key.
-        /// </summary>
-        /// <typeparam name="TArgument">The type of the t argument.</typeparam>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="newValues">The new values to use.</param>
-        /// <param name="keys">The keys.</param>
-        /// <returns></returns>
-        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
-        public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> UpdateByKeyList<TArgument>(AccessObjectName tableName, TArgument newValues, params string[] keys)
-        {
-            return UpdateByKeyList(tableName, newValues, (IEnumerable<string>)keys);
-        }
 
         /// <summary>
         /// Update multiple rows by key.

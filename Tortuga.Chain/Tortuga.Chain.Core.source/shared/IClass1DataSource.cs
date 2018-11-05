@@ -52,23 +52,6 @@ namespace Tortuga.Chain
         /// <typeparam name="TKey">The type of the t key.</typeparam>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="keys">The keys.</param>
-        /// <returns>IMultipleRowDbCommandBuilder.</returns>
-        IMultipleRowDbCommandBuilder DeleteByKey<TKey>(string tableName, params TKey[] keys) where TKey : struct;
-
-        /// <summary>
-        /// Delete by key.
-        /// </summary>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="keys">The keys.</param>
-        /// <returns>IMultipleRowDbCommandBuilder.</returns>
-        IMultipleRowDbCommandBuilder DeleteByKey(string tableName, params string[] keys);
-
-        /// <summary>
-        /// Delete by key.
-        /// </summary>
-        /// <typeparam name="TKey">The type of the t key.</typeparam>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="keys">The keys.</param>
         /// <param name="options">The options.</param>
         /// <returns>IMultipleRowDbCommandBuilder.</returns>
         IMultipleRowDbCommandBuilder DeleteByKeyList<TKey>(string tableName, IEnumerable<TKey> keys, DeleteOptions options = DeleteOptions.None);
@@ -189,24 +172,6 @@ namespace Tortuga.Chain
         /// <remarks>This only works on tables that have a scalar primary key.</remarks>
         ISingleRowDbCommandBuilder GetByKey(string tableName, string key);
 
-        /// <summary>
-        /// Gets a set of records by their primary key.
-        /// </summary>
-        /// <typeparam name="TKey"></typeparam>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="keys">The keys.</param>
-        /// <returns></returns>
-        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
-        IMultipleRowDbCommandBuilder GetByKey<TKey>(string tableName, params TKey[] keys);
-
-        /// <summary>
-        /// Gets a set of records by their primary key.
-        /// </summary>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="keys">The keys.</param>
-        /// <returns></returns>
-        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
-        IMultipleRowDbCommandBuilder GetByKey(string tableName, params string[] keys);
 
         /// <summary>
         /// Gets a set of records by their primary key.
@@ -277,29 +242,6 @@ namespace Tortuga.Chain
         /// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
         ISingleRowDbCommandBuilder UpdateByKey<TArgument>(string tableName, TArgument newValues, string key, UpdateOptions options = UpdateOptions.None);
 
-        /// <summary>
-        /// Update multiple rows by key.
-        /// </summary>
-        /// <typeparam name="TArgument">The type of the t argument.</typeparam>
-        /// <typeparam name="TKey"></typeparam>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="newValues">The new values to use.</param>
-        /// <param name="keys">The keys.</param>
-        /// <returns></returns>
-        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
-        IMultipleRowDbCommandBuilder UpdateByKeyList<TArgument, TKey>(string tableName, TArgument newValues, params TKey[] keys)
-            where TKey : struct;
-
-        /// <summary>
-        /// Update multiple rows by key.
-        /// </summary>
-        /// <typeparam name="TArgument">The type of the t argument.</typeparam>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="newValues">The new values to use.</param>
-        /// <param name="keys">The keys.</param>
-        /// <returns></returns>
-        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
-        IMultipleRowDbCommandBuilder UpdateByKeyList<TArgument>(string tableName, TArgument newValues, params string[] keys);
 
         /// <summary>
         /// Update multiple rows by key.

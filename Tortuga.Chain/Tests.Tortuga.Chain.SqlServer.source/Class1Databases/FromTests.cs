@@ -489,7 +489,7 @@ namespace Tests.Class1Databases
             var find2 = DataSource.GetByKey(EmployeeTableName, emp2.EmployeeKey.Value).ToObject<Employee>().Execute();
             Assert.AreEqual(emp2.EmployeeKey, find2.EmployeeKey, "The wrong employee was returned");
 
-            var list = DataSource.GetByKey(EmployeeTableName, emp2.EmployeeKey.Value, emp3.EmployeeKey.Value, emp4.EmployeeKey.Value).ToCollection<Employee>().Execute();
+            var list = DataSource.GetByKeyList(EmployeeTableName, new[] { emp2.EmployeeKey.Value, emp3.EmployeeKey.Value, emp4.EmployeeKey.Value }).ToCollection<Employee>().Execute();
             Assert.AreEqual(3, list.Count, "GetByKey returned the wrong number of rows");
             Assert.IsTrue(list.Any(e => e.EmployeeKey == emp2.EmployeeKey));
             Assert.IsTrue(list.Any(e => e.EmployeeKey == emp3.EmployeeKey));

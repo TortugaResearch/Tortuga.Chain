@@ -278,7 +278,7 @@ namespace Tests
         public void Example5_Chain()
         {
             //List support is only available for primary keys.
-            var posts = s_DataSource.GetByKey("Posts", 1, 2, 3).ToCollection<Post>().Execute();
+            var posts = s_DataSource.GetByKeyList("Posts", new[] { 1, 2, 3 }).ToCollection<Post>().Execute();
         }
 
         /// <summary>

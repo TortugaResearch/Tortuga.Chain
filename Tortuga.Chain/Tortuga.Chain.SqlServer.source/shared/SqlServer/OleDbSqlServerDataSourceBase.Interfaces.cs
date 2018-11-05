@@ -79,15 +79,9 @@ namespace Tortuga.Chain.SqlServer
             return GetByKey(tableName, key);
         }
 
-        IMultipleRowDbCommandBuilder IClass1DataSource.GetByKey<TKey>(string tableName, params TKey[] keys)
-        {
-            return GetByKeyList(tableName, keys);
-        }
 
-        IMultipleRowDbCommandBuilder IClass1DataSource.GetByKey(string tableName, params string[] keys)
-        {
-            return GetByKeyList(tableName, keys);
-        }
+
+
 
         IMultipleRowDbCommandBuilder IClass1DataSource.GetByKeyList<T>(string tableName, IEnumerable<T> keys)
         {
@@ -154,15 +148,9 @@ namespace Tortuga.Chain.SqlServer
             return DeleteByKey(tableName, key, options);
         }
 
-        IMultipleRowDbCommandBuilder IClass1DataSource.DeleteByKey<TKey>(string tableName, params TKey[] keys)
-        {
-            return DeleteByKey(tableName, keys);
-        }
 
-        IMultipleRowDbCommandBuilder IClass1DataSource.DeleteByKey(string tableName, params string[] keys)
-        {
-            return DeleteByKey(tableName, keys);
-        }
+
+
 
         IMultipleRowDbCommandBuilder IClass1DataSource.DeleteByKeyList<TKey>(string tableName, IEnumerable<TKey> keys, DeleteOptions options)
         {
@@ -179,15 +167,9 @@ namespace Tortuga.Chain.SqlServer
             return UpdateByKey(tableName, newValues, key, options);
         }
 
-        IMultipleRowDbCommandBuilder IClass1DataSource.UpdateByKeyList<TArgument, TKey>(string tableName, TArgument newValues, params TKey[] keys)
-        {
-            return UpdateByKeyList(tableName, newValues, keys);
-        }
 
-        IMultipleRowDbCommandBuilder IClass1DataSource.UpdateByKeyList<TArgument>(string tableName, TArgument newValues, params string[] keys)
-        {
-            return UpdateByKeyList(tableName, newValues, keys);
-        }
+
+
 
         IMultipleRowDbCommandBuilder IClass1DataSource.UpdateByKeyList<TArgument, TKey>(string tableName, TArgument newValues, IEnumerable<TKey> keys, UpdateOptions options)
         {

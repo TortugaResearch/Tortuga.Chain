@@ -98,31 +98,6 @@ namespace Tortuga.Chain.MySql
             return DeleteByKeyList(tableName, new List<string> { key }, options);
         }
 
-        /// <summary>
-        /// Delete multiple rows by key.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="keys">The keys.</param>
-        /// <returns></returns>
-        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
-        public MultipleRowDbCommandBuilder<MySqlCommand, MySqlParameter> DeleteByKey<T>(MySqlObjectName tableName, params T[] keys)
-            where T : struct
-        {
-            return DeleteByKeyList(tableName, keys);
-        }
-
-        /// <summary>
-        /// Delete multiple rows by key.
-        /// </summary>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="keys">The keys.</param>
-        /// <returns></returns>
-        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
-        public MultipleRowDbCommandBuilder<MySqlCommand, MySqlParameter> DeleteByKey(MySqlObjectName tableName, params string[] keys)
-        {
-            return DeleteByKeyList(tableName, keys);
-        }
 
         /// <summary>
         /// Delete multiple rows by key.
@@ -305,31 +280,6 @@ namespace Tortuga.Chain.MySql
             return From(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, filterValue);
         }
 
-        /// <summary>
-        /// Gets a set of records by their primary key.
-        /// </summary>
-        /// <typeparam name="TKey"></typeparam>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="keys">The keys.</param>
-        /// <returns></returns>
-        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
-        public MultipleRowDbCommandBuilder<MySqlCommand, MySqlParameter> GetByKey<TKey>(MySqlObjectName tableName, params TKey[] keys)
-            where TKey : struct
-        {
-            return GetByKeyList(tableName, keys);
-        }
-
-        /// <summary>
-        /// Gets a set of records by their primary key.
-        /// </summary>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="keys">The keys.</param>
-        /// <returns></returns>
-        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
-        public MultipleRowDbCommandBuilder<MySqlCommand, MySqlParameter> GetByKey(MySqlObjectName tableName, params string[] keys)
-        {
-            return GetByKeyList(tableName, keys);
-        }
 
         /// <summary>
         /// Gets a record by its key.
@@ -534,35 +484,7 @@ namespace Tortuga.Chain.MySql
             return UpdateByKeyList(tableName, newValues, new List<string> { key }, options);
         }
 
-        /// <summary>
-        /// Delete multiple rows by key.
-        /// </summary>
-        /// <typeparam name="TArgument">The type of the t argument.</typeparam>
-        /// <typeparam name="TKey"></typeparam>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="newValues">The new values to use.</param>
-        /// <param name="keys">The keys.</param>
-        /// <returns></returns>
-        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
-        public MultipleRowDbCommandBuilder<MySqlCommand, MySqlParameter> UpdateByKeyList<TArgument, TKey>(MySqlObjectName tableName, TArgument newValues, params TKey[] keys)
-            where TKey : struct
-        {
-            return UpdateByKeyList(tableName, newValues, (IEnumerable<TKey>)keys);
-        }
 
-        /// <summary>
-        /// Delete multiple rows by key.
-        /// </summary>
-        /// <typeparam name="TArgument">The type of the t argument.</typeparam>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="newValues">The new values to use.</param>
-        /// <param name="keys">The keys.</param>
-        /// <returns></returns>
-        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
-        public MultipleRowDbCommandBuilder<MySqlCommand, MySqlParameter> UpdateByKeyList<TArgument>(MySqlObjectName tableName, TArgument newValues, params string[] keys)
-        {
-            return UpdateByKeyList(tableName, newValues, (IEnumerable<string>)keys);
-        }
 
         /// <summary>
         /// Update multiple rows by key.
