@@ -129,6 +129,7 @@
     <Compile Include="shared\DataSources\ITransactionalDataSource.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="shared\FilterOptions.cs" />
+    <Compile Include="shared\ICacheLink`1.cs" />
     <Compile Include="shared\IConstructibleMaterializer`1.cs" />
     <Compile Include="shared\DictionaryOptions.cs" />
     <Compile Include="shared\CommandBuilders\GenericDbSqlCall.cs" />

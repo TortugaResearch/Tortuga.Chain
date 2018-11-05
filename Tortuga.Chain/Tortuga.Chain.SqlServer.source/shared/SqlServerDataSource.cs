@@ -266,7 +266,7 @@ namespace Tortuga.Chain
 #if !SqlDependency_Missing
 
         /// <summary>
-        /// Starts SQL dependency.
+        /// Starts SQL dependency on this connection string.
         /// </summary>
         /// <remarks>
         /// true if the listener initialized successfully; false if a compatible listener
@@ -285,7 +285,7 @@ namespace Tortuga.Chain
         }
 
         /// <summary>
-        /// Stops SQL dependency.
+        /// Stops SQL dependency on this connection string.
         /// </summary>
         /// <remarks>
         /// true if the listener was completely stopped; false if the System.AppDomain
