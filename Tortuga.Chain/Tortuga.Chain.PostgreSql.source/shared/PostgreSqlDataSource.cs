@@ -157,8 +157,15 @@ namespace Tortuga.Chain
                 await cmd.ExecuteScalarAsync();
         }
 
+        /// <summary>
+        /// Creates the connection.
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>
+        /// The caller of this method is responsible for closing the connection.
+        /// </remarks>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-        internal NpgsqlConnection CreateConnection()
+        public NpgsqlConnection CreateConnection()
         {
             var con = new NpgsqlConnection(ConnectionString);
             con.Open();
@@ -168,7 +175,16 @@ namespace Tortuga.Chain
             return con;
         }
 
-        async Task<NpgsqlConnection> CreateConnectionAsync(CancellationToken cancellationToken = default(CancellationToken))
+
+        /// <summary>
+        /// Creates the connection asynchronous.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// The caller of this method is responsible for closing the connection.
+        /// </remarks>
+        public async Task<NpgsqlConnection> CreateConnectionAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             var con = new NpgsqlConnection(ConnectionString);
             await con.OpenAsync(cancellationToken).ConfigureAwait(false);
