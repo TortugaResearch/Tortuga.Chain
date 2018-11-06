@@ -26,7 +26,7 @@ namespace Tortuga.Chain.SqlServer
 
         internal readonly ConcurrentDictionary<Type, TableOrViewMetadata<SqlServerObjectName, TDbType>> m_TypeTableMap = new ConcurrentDictionary<Type, TableOrViewMetadata<SqlServerObjectName, TDbType>>();
 
-        internal readonly ConcurrentDictionary<Type, string> m_UdtTypeMap = new ConcurrentDictionary<Type, string>();
+        //internal readonly ConcurrentDictionary<Type, string> m_UdtTypeMap = new ConcurrentDictionary<Type, string>();
         internal readonly ConcurrentDictionary<SqlServerObjectName, UserDefinedTypeMetadata<SqlServerObjectName, TDbType>> m_UserDefinedTypes = new ConcurrentDictionary<SqlServerObjectName, UserDefinedTypeMetadata<SqlServerObjectName, TDbType>>();
 
         internal readonly ConcurrentDictionary<SqlServerObjectName, ScalarFunctionMetadata<SqlServerObjectName, TDbType>> m_ScalarFunctions = new ConcurrentDictionary<SqlServerObjectName, ScalarFunctionMetadata<SqlServerObjectName, TDbType>>();
@@ -42,16 +42,17 @@ namespace Tortuga.Chain.SqlServer
             m_ConnectionBuilder = connectionBuilder;
         }
 
+        /*
         /// <summary>
-        /// It is necessary to map some types to their corresponding UDT Names in Sql Server.
+        /// It is necessary to map some types to their corresponding UDT Names in Sql Server. For example, SqlGeometry and SqlGeography.
         /// </summary>
         /// <param name="type">The type to be mapped</param>
         /// <param name="udtName">The name that SQL server sees</param>
-        /// <remarks>The types SqlGeometry and SqlGeography are automatically included in the map.</remarks>
         public void AddUdtTypeName(Type type, string udtName)
         {
             m_UdtTypeMap[type] = udtName;
         }
+        */
 
         /// <summary>
         /// Gets the stored procedure's metadata.
@@ -256,7 +257,7 @@ namespace Tortuga.Chain.SqlServer
             m_TableFunctions.Clear();
             m_Tables.Clear();
             m_TypeTableMap.Clear();
-            m_UdtTypeMap.Clear();
+            //m_UdtTypeMap.Clear();
             m_UserDefinedTypes.Clear();
             m_ScalarFunctions.Clear();
         }
