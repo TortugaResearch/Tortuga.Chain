@@ -6,7 +6,6 @@ using System.Data.Common;
 using System.Data.SqlClient;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Threading.Tasks;
 using Tortuga.Anchor;
 using Tortuga.Chain.AuditRules;
 using Tortuga.Chain.CommandBuilders;
@@ -957,24 +956,6 @@ namespace Tortuga.Chain.SqlServer
             return new SqlServerUpdateMany(this, tableName, newValues, options);
         }
 
-        /// <summary>
-        /// Gets the name of the database.
-        /// </summary>
-        /// <returns></returns>
-        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
-        public string GetDatabaseName()
-        {
-            return Sql("SELECT DB_NAME()").ToString().Execute();
-        }
 
-        /// <summary>
-        /// Gets the database name asynchronously.
-        /// </summary>
-        /// <returns></returns>
-        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
-        public Task<string> GetDatabaseNameAsync()
-        {
-            return Sql("SELECT DB_NAME()").ToString().ExecuteAsync();
-        }
     }
 }

@@ -32,6 +32,7 @@ namespace Tortuga.Chain.SqlServer
         internal readonly ConcurrentDictionary<SqlServerObjectName, ScalarFunctionMetadata<SqlServerObjectName, TDbType>> m_ScalarFunctions = new ConcurrentDictionary<SqlServerObjectName, ScalarFunctionMetadata<SqlServerObjectName, TDbType>>();
 
         internal string m_DefaultSchema;
+        internal string m_DatabaseName;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AbstractSqlServerMetadataCache{TDbType}"/> class.
