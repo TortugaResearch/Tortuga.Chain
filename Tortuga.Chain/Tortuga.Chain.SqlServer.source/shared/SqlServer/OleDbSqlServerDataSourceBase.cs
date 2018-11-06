@@ -5,6 +5,7 @@ using System.Data;
 using System.Data.OleDb;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Threading.Tasks;
 using Tortuga.Anchor;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.DataSources;
@@ -628,6 +629,26 @@ namespace Tortuga.Chain.SqlServer
         public IUpdateManyCommandBuilder<OleDbCommand, OleDbParameter> UpdateSet(SqlServerObjectName tableName, object newValues, UpdateOptions options = UpdateOptions.None)
         {
             return new OleDbSqlServerUpdateMany(this, tableName, newValues, options);
+        }
+
+        /// <summary>
+        /// Gets the name of the database.
+        /// </summary>
+        /// <returns></returns>
+        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
+        public string GetDatabaseName()
+        {
+            return Sql("SELECT DB_NAME()").ToString().Execute();
+        }
+
+        /// <summary>
+        /// Gets the database name asynchronously.
+        /// </summary>
+        /// <returns></returns>
+        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
+        public Task<string> GetDatabaseNameAsync()
+        {
+            return Sql("SELECT DB_NAME()").ToString().ExecuteAsync();
         }
     }
 }
