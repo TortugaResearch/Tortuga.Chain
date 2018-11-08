@@ -137,7 +137,6 @@ namespace Tortuga.Chain.Access
                     tableSchema = adapter.FillSchema(new DataTable() { Locale = CultureInfo.InvariantCulture }, SchemaType.Source);
             }
 
-
             foreach (DataColumn col in tableSchema.Columns)
             {
                 var name = col.ColumnName;
@@ -155,23 +154,26 @@ namespace Tortuga.Chain.Access
                         }
                     }
 
-                foreach (DataRow row in columns.Rows)
-                {
-                    if (row["TABLE_NAME"].ToString() == tableName && row["COLUMN_NAME"].ToString() == name)
-                    {
-                        type = (OleDbType)row["DATA_TYPE"];
-                        break;
-                    }
-                }
-
-                bool isNullable = false;
-                int? maxLength = null;
+                bool? isNullable = null;
+                long? maxLength = null;
                 int? precision = null;
                 int? scale = null;
                 string fullTypeName = null;
 
-                result.Add(new ColumnMetadata<OleDbType>(name, false, isPrimaryKey, isIdentity, type.Value.ToString(), type.Value, $"[{name}]", isNullable, maxLength, precision, scale, fullTypeName));
+                foreach (DataRow row in columns.Rows)
+                {
+                    if (string.Equals(row["TABLE_NAME"].ToString(), tableName, StringComparison.Ordinal) && string.Equals(row["COLUMN_NAME"].ToString(), name, StringComparison.Ordinal))
+                    {
+                        type = (OleDbType)row["DATA_TYPE"];
+                        isNullable = (bool)row["IS_NULLABLE"];
+                        precision = row["NUMERIC_PRECISION"] != DBNull.Value ? (int?)row["NUMERIC_PRECISION"] : null;
+                        scale = row["NUMERIC_SCALE"] != DBNull.Value ? (int?)row["NUMERIC_SCALE"] : null;
+                        maxLength = row["CHARACTER_MAXIMUM_LENGTH"] != DBNull.Value ? (long?)row["CHARACTER_MAXIMUM_LENGTH"] : null;
+                        break;
+                    }
+                }
 
+                result.Add(new ColumnMetadata<OleDbType>(name, false, isPrimaryKey, isIdentity, type.Value.ToString(), type.Value, $"[{name}]", isNullable, (int?)maxLength, precision, scale, fullTypeName));
             }
 
             return result;
@@ -212,6 +214,7 @@ namespace Tortuga.Chain.Access
                 }
             }
         }
+
         void PreloadViews(DataTable columnsDataTable)
         {
             using (var connection = new OleDbConnection(m_ConnectionBuilder.ConnectionString))

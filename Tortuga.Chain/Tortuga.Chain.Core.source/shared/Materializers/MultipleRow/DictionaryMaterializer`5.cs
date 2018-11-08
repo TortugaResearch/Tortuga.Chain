@@ -85,7 +85,7 @@ namespace Tortuga.Chain.Materializers
             var result = new TDictionary();
             Prepare().Execute(cmd =>
             {
-                using (var reader = cmd.ExecuteReader().AsObjectConstructor<TObject>(ConstructorSignature))
+                using (var reader = cmd.ExecuteReader().AsObjectConstructor<TObject>(ConstructorSignature, CommandBuilder.TryGetNonNullableColumns()))
                 {
                     while (reader.Read())
                         AddToDictionary(result, reader);
@@ -103,7 +103,7 @@ namespace Tortuga.Chain.Materializers
             var result = new TDictionary();
             await Prepare().ExecuteAsync(async cmd =>
             {
-                using (var reader = (await cmd.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false)).AsObjectConstructor<TObject>(ConstructorSignature))
+                using (var reader = (await cmd.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false)).AsObjectConstructor<TObject>(ConstructorSignature, CommandBuilder.TryGetNonNullableColumns()))
                 {
                     while (await reader.ReadAsync())
                         AddToDictionary(result, reader);

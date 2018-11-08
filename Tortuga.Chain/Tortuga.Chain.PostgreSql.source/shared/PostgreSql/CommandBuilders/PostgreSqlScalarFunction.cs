@@ -2,6 +2,7 @@
 using NpgsqlTypes;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Tortuga.Chain.AuditRules;
@@ -75,6 +76,15 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         /// <remarks>Always returns null since this command builder has no columns</remarks>
         public override ColumnMetadata TryGetColumn(string columnName) => null;
 
-
+        /// <summary>
+        /// Returns a list of columns known to be non-nullable.
+        /// </summary>
+        /// <returns>
+        /// If the command builder doesn't know which columns are non-nullable, an empty list will be returned.
+        /// </returns>
+        /// <remarks>
+        /// This is used by materializers to skip IsNull checks.
+        /// </remarks>
+        public override IReadOnlyList<ColumnMetadata> TryGetNonNullableColumns() => ImmutableList<ColumnMetadata>.Empty;
     }
 }

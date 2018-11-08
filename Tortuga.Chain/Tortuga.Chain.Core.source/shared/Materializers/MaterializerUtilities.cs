@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using Tortuga.Anchor.Metadata;
 using Tortuga.Chain.Core;
+using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.Materializers
 {
@@ -51,10 +52,10 @@ namespace Tortuga.Chain.Materializers
             return executionToken;
         }
 
-        internal static StreamingObjectConstructor<T> AsObjectConstructor<T>(this DbDataReader reader, IReadOnlyList<Type> constructorSignature)
+        internal static StreamingObjectConstructor<T> AsObjectConstructor<T>(this DbDataReader reader, IReadOnlyList<Type> constructorSignature, IReadOnlyList<ColumnMetadata> nonNullableColumns)
             where T : class
         {
-            return new StreamingObjectConstructor<T>(reader, constructorSignature);
+            return new StreamingObjectConstructor<T>(reader, constructorSignature, nonNullableColumns);
         }
 
         static internal T ConstructObject<T>(IReadOnlyDictionary<string, object> source, IReadOnlyList<Type> constructorSignature, bool? populateComplexObject = null)
