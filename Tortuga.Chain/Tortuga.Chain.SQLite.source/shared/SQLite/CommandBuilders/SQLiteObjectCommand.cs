@@ -58,6 +58,6 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
         /// <remarks>
         /// This is used by materializers to skip IsNull checks.
         /// </remarks>
-        public override IReadOnlyList<ColumnMetadata> TryGetNonNullableColumns() => Table.NullableColumns;
+        public override IReadOnlyList<ColumnMetadata> TryGetNonNullableColumns() => Table.NonNullableColumns;
     }
 }

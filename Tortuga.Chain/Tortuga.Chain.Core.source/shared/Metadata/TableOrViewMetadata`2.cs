@@ -4,7 +4,6 @@ using Tortuga.Chain.CommandBuilders;
 
 namespace Tortuga.Chain.Metadata
 {
-
     /// <summary>
     /// Metadata for a database table or view.
     /// </summary>
@@ -27,10 +26,9 @@ namespace Tortuga.Chain.Metadata
             base.Name = name.ToString();
             Columns = new ColumnMetadataCollection<TDbType>(name.ToString(), columns);
             base.Columns = Columns.GenericCollection;
-            NullableColumns = new ColumnMetadataCollection(columns.Where(c => c.IsNullable == true));
+            NonNullableColumns = new ColumnMetadataCollection(columns.Where(c => c.IsNullable == false));
             m_Builder = new SqlBuilder<TDbType>(Name.ToString(), Columns);
         }
-
 
         /// <summary>
         /// Gets the columns.
@@ -53,8 +51,5 @@ namespace Tortuga.Chain.Metadata
         /// </summary>
         /// <returns></returns>
         public SqlBuilder<TDbType> CreateSqlBuilder(bool strictMode) => m_Builder.Clone(strictMode);
-
-
     }
-
 }

@@ -162,7 +162,7 @@ namespace Tortuga.Chain.Access.CommandBuilders
         /// <remarks>
         /// This is used by materializers to skip IsNull checks.
         /// </remarks>
-        public override IReadOnlyList<ColumnMetadata> TryGetNonNullableColumns() => m_Table.NullableColumns;
+        public override IReadOnlyList<ColumnMetadata> TryGetNonNullableColumns() => m_Table.NonNullableColumns;
     }
 }
 
