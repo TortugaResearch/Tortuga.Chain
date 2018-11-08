@@ -14,7 +14,8 @@ namespace Tests.Core
         {
         }
 
-#if SQL_SERVER
+#if SQL_SERVER || OLE_SQL_SERVER
+
         [Theory, MemberData("Basic")]
         public void DatabaseName(string assemblyName, string dataSourceName, DataSourceType mode)
         {
@@ -28,11 +29,11 @@ namespace Tests.Core
             {
                 Release(dataSource);
             }
-
         }
+
 #endif
 
-#if SQL_SERVER || MySQL
+#if SQL_SERVER || MySQL || OLE_SQL_SERVER
 
         [Theory, MemberData("Basic")]
         public void DefaultSchema(string assemblyName, string dataSourceName, DataSourceType mode)
@@ -47,7 +48,6 @@ namespace Tests.Core
             {
                 Release(dataSource);
             }
-
         }
 
 #endif
@@ -64,7 +64,6 @@ namespace Tests.Core
             {
                 Release(dataSource);
             }
-
         }
 
         [Theory, MemberData("Tables")]
@@ -82,9 +81,7 @@ namespace Tests.Core
             {
                 Release(dataSource);
             }
-
         }
-
 
         [Theory, MemberData("Tables")]
         public void GetTable_LowerCase(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
@@ -101,7 +98,6 @@ namespace Tests.Core
             {
                 Release(dataSource);
             }
-
         }
 
         [Theory, MemberData("Tables")]
@@ -119,7 +115,6 @@ namespace Tests.Core
             {
                 Release(dataSource);
             }
-
         }
 
         [Theory, MemberData("Views")]
@@ -137,10 +132,10 @@ namespace Tests.Core
             {
                 Release(dataSource);
             }
-
         }
 
 #if SQL_SERVER || POSTGRESQL || OLE_SQL_SERVER
+
         [Theory, MemberData("Prime")]
         public void VerifyFunction1(string assemblyName, string dataSourceName, DataSourceType mode)
         {
@@ -150,16 +145,17 @@ namespace Tests.Core
                 dataSource.DatabaseMetadata.PreloadTableFunctions();
                 var function = dataSource.DatabaseMetadata.GetTableFunction(TableFunction1Name);
                 Assert.IsNotNull(function, $"Error reading function {TableFunction1Name}");
-
             }
             finally
             {
                 Release(dataSource);
             }
         }
+
 #endif
 
 #if SQL_SERVER  || OLE_SQL_SERVER
+
         [Theory, MemberData("Prime")]
         public void VerifyFunction2(string assemblyName, string dataSourceName, DataSourceType mode)
         {
@@ -169,17 +165,13 @@ namespace Tests.Core
                 dataSource.DatabaseMetadata.PreloadTableFunctions();
                 var function = dataSource.DatabaseMetadata.GetTableFunction(TableFunction2Name);
                 Assert.IsNotNull(function, $"Error reading function {TableFunction2Name}");
-
             }
             finally
             {
                 Release(dataSource);
             }
         }
-#endif
 
+#endif
     }
 }
-
-
-
