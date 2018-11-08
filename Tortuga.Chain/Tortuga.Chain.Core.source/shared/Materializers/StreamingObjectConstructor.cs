@@ -17,7 +17,6 @@ namespace Tortuga.Chain.Materializers
     internal class StreamingObjectConstructor<T> : IDisposable
         where T : class
     {
-
         static readonly ImmutableArray<MappedProperty<T>> s_AllMappedProperties;
         static readonly ImmutableArray<MappedProperty<T>> s_DecomposedProperties;
 
@@ -72,6 +71,7 @@ namespace Tortuga.Chain.Materializers
             s_AllMappedProperties = mappedProperties.ToImmutableArray();
             s_DecomposedProperties = decomposedProperties.ToImmutableArray();
         }
+
         public StreamingObjectConstructor(DbDataReader source, IReadOnlyList<Type> constructorSignature, IReadOnlyList<ColumnMetadata> nonNullableColumns)
         {
             m_Source = source;
@@ -103,7 +103,6 @@ namespace Tortuga.Chain.Materializers
 
             m_PopulateComplexObject = constructorSignature.Count == 0;
             m_Dictionary = new StreamingObjectConstructorDictionary(this);
-
 
             if (m_PopulateComplexObject)
             {
@@ -179,6 +178,7 @@ namespace Tortuga.Chain.Materializers
         {
             return new MappedProperty<T, T2>(mappedColumnName, propertyMetadata);
         }
+
         internal IEnumerable<T> ToObjects()
         {
             while (Read())
@@ -228,13 +228,13 @@ namespace Tortuga.Chain.Materializers
                     return result;
                 }
             }
+
             public object this[int key]
             {
                 get
                 {
-                    if (m_Parent.m_NullableColumns[key] && m_Parent.m_Source.IsDBNull(key)) //we skip the IsDbNull check when possible
-                        return null;
-                    return m_Parent.m_Source.GetValue(key);
+                    var result = m_Parent.m_Source.GetValue(key);
+                    return result == DBNull.Value ? null : result;
                 }
             }
 
@@ -249,6 +249,7 @@ namespace Tortuga.Chain.Materializers
                 for (var i = 0; i < m_Parent.m_Source.FieldCount; i++)
                     yield return new KeyValuePair<string, object>(m_Parent.m_Source.GetName(i), m_Parent.m_Source.IsDBNull(i) ? null : m_Parent.m_Source.GetValue(i));
             }
+
             IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
             IEnumerator<KeyValuePair<int, object>> IEnumerable<KeyValuePair<int, object>>.GetEnumerator()
@@ -267,6 +268,7 @@ namespace Tortuga.Chain.Materializers
                 value = null;
                 return false;
             }
+
             bool IReadOnlyDictionary<int, object>.TryGetValue(int key, out object value)
             {
                 if (key < m_Parent.m_Ordinals.Count)
@@ -278,6 +280,5 @@ namespace Tortuga.Chain.Materializers
                 return false;
             }
         }
-
     }
 }
