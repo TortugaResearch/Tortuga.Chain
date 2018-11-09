@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Tortuga.Chain.CommandBuilders;
 
 namespace Tortuga.Chain.Metadata
@@ -26,6 +27,7 @@ namespace Tortuga.Chain.Metadata
             base.Name = name.ToString();
             Columns = new ColumnMetadataCollection<TDbType>(name.ToString(), columns);
             base.Columns = Columns.GenericCollection;
+            NullableColumns = new ColumnMetadataCollection(columns.Where(c => c.IsNullable == true));
             Parameters = new ParameterMetadataCollection<TDbType>(name.ToString(), parameters);
             base.Parameters = Parameters.GenericCollection;
 

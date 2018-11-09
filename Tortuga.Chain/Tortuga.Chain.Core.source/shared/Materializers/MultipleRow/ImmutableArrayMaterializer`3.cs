@@ -78,7 +78,7 @@ namespace Tortuga.Chain.Materializers
             ImmutableArray<TObject> result = default(ImmutableArray<TObject>);
             Prepare().Execute(cmd =>
             {
-                using (var reader = cmd.ExecuteReader().AsObjectConstructor<TObject>(ConstructorSignature))
+                using (var reader = cmd.ExecuteReader().AsObjectConstructor<TObject>(ConstructorSignature, CommandBuilder.TryGetNonNullableColumns()))
                 {
                     result = reader.ToObjects().ToImmutableArray();
                     return result.Length;
@@ -101,7 +101,7 @@ namespace Tortuga.Chain.Materializers
             ImmutableArray<TObject> result = default(ImmutableArray<TObject>);
             await Prepare().ExecuteAsync(async cmd =>
             {
-                using (var reader = (await cmd.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false)).AsObjectConstructor<TObject>(ConstructorSignature))
+                using (var reader = (await cmd.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false)).AsObjectConstructor<TObject>(ConstructorSignature, CommandBuilder.TryGetNonNullableColumns()))
                 {
                     result = (await reader.ToListAsync()).ToImmutableArray();
                     return result.Length;

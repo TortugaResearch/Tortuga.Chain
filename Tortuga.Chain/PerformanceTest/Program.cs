@@ -1,23 +1,28 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
+using System.Linq;
+using System.Threading;
 using Tortuga.Chain;
 
 namespace PerformanceTest
 {
     internal class Program
     {
+        private static SqlServerDataSource DataSource;
+
         public static void Main()
         {
             //ReflectionTest();
 
-            //DatabaseTest();
+            DatabaseTest();
 
             //Issue213();
 
             //MySqlMetadata();
 
-            MyCompiledTestFailure();
+            //MyCompiledTestFailure();
         }
 
         private static void MyCompiledTestFailure()
@@ -218,32 +223,32 @@ namespace PerformanceTest
         //    //Console.WriteLine(fields.MaxValue);
         //}
 
-        //private static void DatabaseTest()
-        //{
-        //    DataSource = new SqlServerDataSource("data source=.;initial catalog=AdventureWorks;integrated security=True");
-        //    var set = FetchSet();
-        //    var record = FetchSet().First();
-        //    //Console.Write(record.AccountNumber);
-        //    //Console.Write(record.BillToAddressID);
-        //    //Console.Write(record.Comment);
-        //    //Console.Write(record.CreditCardApprovalCode);
+        private static void DatabaseTest()
+        {
+            DataSource = new SqlServerDataSource("data source=.;initial catalog=AdventureWorks2017;integrated security=True");
+            var set = FetchSet();
+            var record = FetchSet().First();
+            //Console.Write(record.AccountNumber);
+            //Console.Write(record.BillToAddressID);
+            //Console.Write(record.Comment);
+            //Console.Write(record.CreditCardApprovalCode);
 
-        //    Thread.Sleep(TimeSpan.FromSeconds(2));
+            Thread.Sleep(TimeSpan.FromSeconds(2));
 
-        //    TimeSpan totalRunTime = default;
+            TimeSpan totalRunTime = default;
 
-        //    const int runCount = 10;
-        //    for (var i = 0; i < runCount; i++)
-        //    {
-        //        var startTime = DateTime.Now;
-        //        Console.Write("Fetching set.....");
-        //        FetchSet();
-        //        var endTime = DateTime.Now;
-        //        Console.WriteLine(((endTime - startTime).TotalMilliseconds / 1000.00).ToString("#,##0.000 sec"));
-        //        totalRunTime = totalRunTime.Add(endTime - startTime);
-        //    }
-        //    Console.WriteLine("Average run time: " + ((totalRunTime.TotalMilliseconds / runCount) / 1000.00).ToString("#,##0.000 sec"));
-        //}
+            const int runCount = 25;
+            for (var i = 0; i < runCount; i++)
+            {
+                var startTime = DateTime.Now;
+                Console.Write("Fetching set.....");
+                FetchSet();
+                var endTime = DateTime.Now;
+                Console.WriteLine(((endTime - startTime).TotalMilliseconds / 1000.00).ToString("#,##0.000 sec"));
+                totalRunTime = totalRunTime.Add(endTime - startTime);
+            }
+            Console.WriteLine("Average run time: " + ((totalRunTime.TotalMilliseconds / runCount) / 1000.00).ToString("#,##0.000 sec"));
+        }
 
         ///// <summary>
         ///// Fetches the individual element
@@ -255,14 +260,14 @@ namespace PerformanceTest
         //    return DataSource.From("[Sales].[SalesOrderHeader]", new { SalesOrderId = key }).ToObject<SalesOrderHeader>().Execute();
         //}
 
-        ///// <summary>
-        ///// Fetches the complete set of elements and returns this set as an IEnumerable.
-        ///// </summary>
-        ///// <returns>the set fetched</returns>
-        //public static IEnumerable<SalesOrderHeader> FetchSet()
-        //{
-        //    return DataSource.From("[Sales].[SalesOrderHeader]").ToCollection<SalesOrderHeader>().Execute();
-        //}
+        /// <summary>
+        /// Fetches the complete set of elements and returns this set as an IEnumerable.
+        /// </summary>
+        /// <returns>the set fetched</returns>
+        public static IEnumerable<SalesOrderHeader> FetchSet()
+        {
+            return DataSource.From("[Sales].[SalesOrderHeader]").Compile().ToCollection<SalesOrderHeader>().Execute();
+        }
 
         //static SqlServerDataSource DataSource;
 
