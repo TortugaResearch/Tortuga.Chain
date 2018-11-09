@@ -8,9 +8,12 @@ namespace Tests
 {
     public class Setup
     {
+        public static void AssemblyCleanup()
+        {
+        }
+
         public static void AssemblyInit()
         {
-            //TODO - setup database objects
             using (var con = new MySqlConnection(ConfigurationManager.ConnectionStrings["MySqlTestDatabase"].ConnectionString))
             {
                 con.Open();
@@ -88,28 +91,25 @@ namespace Tests
                 	OrderDate TIMESTAMP NOT NULL
                 );";
 
-                string function1 = @"DELIMITER //
- 
+                string function1 = @"
 CREATE FUNCTION hr.EmployeeCount(p_managerKey integer) RETURNS integer
-    NOT DETERMINISTIC
+    READS SQL DATA
 BEGIN
     DECLARE emp_count integer;
- 
+
 	IF (p_managerKey IS NOT NULL) THEN
-		SELECT COUNT(*) INTO emp_count 	
+		SELECT COUNT(*) INTO emp_count
 		FROM HR.Employee e
 		WHERE	e.ManagerKey = p_managerKey;
 	ELSE
-		SELECT COUNT(*) INTO emp_count 		
+		SELECT COUNT(*) INTO emp_count
 		FROM	HR.Employee e;
 	END IF;
-	RETURN result;
+	RETURN emp_count;
 
-END";
+END; ";
 
-
-                string proc1 = @"DELIMITER //
-
+                string proc1 = @"
 CREATE PROCEDURE Sales.CustomerWithOrdersByState
 (IN p_State CHAR(2))
 BEGIN
@@ -121,8 +121,7 @@ BEGIN
     FROM    sales.order o
             INNER JOIN Sales.Customer c ON o.CustomerKey = c.CustomerKey
     WHERE   c.State = p_State;
-END //
-DELIMITER ;";
+END;";
 
                 using (MySqlCommand cmd = new MySqlCommand(sql, con))
                     cmd.ExecuteNonQuery();
@@ -142,10 +141,6 @@ DELIMITER ;";
                 using (MySqlCommand cmd = new MySqlCommand(proc1, con))
                     cmd.ExecuteNonQuery();
             }
-        }
-
-        public static void AssemblyCleanup()
-        {
         }
     }
 }
