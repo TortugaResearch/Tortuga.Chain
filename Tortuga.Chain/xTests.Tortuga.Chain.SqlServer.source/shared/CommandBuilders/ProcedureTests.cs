@@ -1,5 +1,4 @@
-﻿
-#if SQL_SERVER || POSTGRESQL || MYSQL
+﻿#if SQL_SERVER || POSTGRESQL || MYSQL
 
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +8,6 @@ using Tortuga.Chain;
 using Xunit;
 using Xunit.Abstractions;
 
-
 namespace Tests.CommandBuilders
 {
     public class ProcedureTests : TestBase
@@ -17,7 +15,7 @@ namespace Tests.CommandBuilders
         public static BasicData Prime = new BasicData(s_PrimaryDataSource);
         public static BasicDataWithJoinOptions PrimeWithJoinOptions = new BasicDataWithJoinOptions(s_PrimaryDataSource);
 
-#if SQL_SERVER || OLE_SQL_SERVER 
+#if SQL_SERVER || OLE_SQL_SERVER
         const string CheckA = @"SELECT Count(*) FROM Sales.Customer c WHERE c.State = @State;";
         const string CheckB = @"SELECT Count(*) FROM Sales.[Order] o INNER JOIN Sales.Customer c ON o.CustomerKey = c.CustomerKey WHERE c.State = @State;";
         static object CheckParameter1 = new { @State = "CA" };
@@ -26,11 +24,11 @@ namespace Tests.CommandBuilders
         static object DictParameter1b = new Dictionary<string, object>() { { "@State", "CA" } };
 #elif MYSQL
         const string CheckA = @"SELECT Count(*) FROM Sales.Customer c WHERE c.State = @State;";
-        const string CheckB = @"SELECT Count(*) FROM Sales.[Order] o INNER JOIN Sales.Customer c ON o.CustomerKey = c.CustomerKey WHERE c.State = @State;";
+        const string CheckB = @"SELECT Count(*) FROM Sales.`Order` o INNER JOIN Sales.Customer c ON o.CustomerKey = c.CustomerKey WHERE c.State = @State;";
         static object CheckParameter1 = new { @State = "CA" };
         static object ProcParameter1 = new { p_State = "CA" };
         static object DictParameter1a = new Dictionary<string, object>() { { "p_State", "CA" } };
-        static object DictParameter1b = new Dictionary<string, object>() { { "@p_State", "CA" } };
+        //static object DictParameter1b = new Dictionary<string, object>() { { "@p_State", "CA" } };
 #elif POSTGRESQL
         const string CheckA = @"SELECT Count(*) FROM Sales.Customer c WHERE c.State = @param_state;";
         const string CheckB = @"SELECT Count(*) FROM Sales.Order o INNER JOIN Sales.Customer c ON o.CustomerKey = c.CustomerKey WHERE c.State = @param_state;";
@@ -47,7 +45,6 @@ namespace Tests.CommandBuilders
         [Theory, MemberData(nameof(Prime))]
         public void Proc1_Object(string assemblyName, string dataSourceName, DataSourceType mode)
         {
-
             var dataSource = DataSource2(dataSourceName, mode);
             try
             {
@@ -59,19 +56,16 @@ namespace Tests.CommandBuilders
                 Assert.Equal(2, result.Count);
                 Assert.Equal(countA, result["cust"].Rows.Count);
                 Assert.Equal(countB, result["order"].Rows.Count);
-
             }
             finally
             {
                 Release(dataSource);
             }
-
         }
 
         [Theory, MemberData(nameof(Prime))]
         public async Task Proc1_Object_Async(string assemblyName, string dataSourceName, DataSourceType mode)
         {
-
             var dataSource = DataSource2(dataSourceName, mode);
             try
             {
@@ -83,19 +77,16 @@ namespace Tests.CommandBuilders
                 Assert.Equal(2, result.Count);
                 Assert.Equal(countA, result["cust"].Rows.Count);
                 Assert.Equal(countB, result["order"].Rows.Count);
-
             }
             finally
             {
                 Release(dataSource);
             }
-
         }
 
         [Theory, MemberData(nameof(Prime))]
         public void Proc1_Dictionary(string assemblyName, string dataSourceName, DataSourceType mode)
         {
-
             var dataSource = DataSource2(dataSourceName, mode);
             try
             {
@@ -107,7 +98,6 @@ namespace Tests.CommandBuilders
                 Assert.Equal(2, result.Count);
                 Assert.Equal(countA, result["cust"].Rows.Count);
                 Assert.Equal(countB, result["order"].Rows.Count);
-
             }
             finally
             {
@@ -118,7 +108,6 @@ namespace Tests.CommandBuilders
         [Theory, MemberData(nameof(Prime))]
         public async Task Proc1_Dictionary_Async(string assemblyName, string dataSourceName, DataSourceType mode)
         {
-
             var dataSource = DataSource2(dataSourceName, mode);
             try
             {
@@ -129,7 +118,6 @@ namespace Tests.CommandBuilders
                 Assert.Equal(2, result.Count);
                 Assert.Equal(countA, result["cust"].Rows.Count);
                 Assert.Equal(countB, result["order"].Rows.Count);
-
             }
             finally
             {
@@ -137,10 +125,11 @@ namespace Tests.CommandBuilders
             }
         }
 
+#if !MYSQL
+
         [Theory, MemberData(nameof(Prime))]
         public void Proc1_Dictionary2(string assemblyName, string dataSourceName, DataSourceType mode)
         {
-
             var dataSource = DataSource2(dataSourceName, mode);
             try
             {
@@ -151,18 +140,19 @@ namespace Tests.CommandBuilders
                 Assert.Equal(2, result.Count);
                 Assert.Equal(countA, result["cust"].Rows.Count);
                 Assert.Equal(countB, result["order"].Rows.Count);
-
             }
             finally
             {
                 Release(dataSource);
             }
         }
+#endif
+
+#if !MYSQL
 
         [Theory, MemberData(nameof(Prime))]
         public async Task Proc1_Dictionary2_Async(string assemblyName, string dataSourceName, DataSourceType mode)
         {
-
             var dataSource = DataSource2(dataSourceName, mode);
             try
             {
@@ -173,18 +163,17 @@ namespace Tests.CommandBuilders
                 Assert.Equal(2, result.Count);
                 Assert.Equal(countA, result["cust"].Rows.Count);
                 Assert.Equal(countB, result["order"].Rows.Count);
-
             }
             finally
             {
                 Release(dataSource);
             }
         }
+#endif
 
         [Theory, MemberData(nameof(Prime))]
         public async Task Proc1_ToCollectionSet(string assemblyName, string dataSourceName, DataSourceType mode)
         {
-
             var dataSource = DataSource2(dataSourceName, mode);
             try
             {
@@ -194,7 +183,6 @@ namespace Tests.CommandBuilders
                 var result = await dataSource.Procedure(MultiResultSetProc1Name, ProcParameter1).ToCollectionSet<Customer, Order>().ExecuteAsync();
                 Assert.Equal(countA, result.Item1.Count);
                 Assert.Equal(countB, result.Item2.Count);
-
             }
             finally
             {
@@ -214,7 +202,6 @@ namespace Tests.CommandBuilders
                 var result = await dataSource.Procedure(MultiResultSetProc1Name, ProcParameter1).ToCollectionSet<Customer, Order>().Join((c, o) => c.CustomerKey == o.CustomerKey, c => c.Orders, options).ExecuteAsync();
                 Assert.Equal(countA, result.Count);
                 Assert.Equal(countB, result.Sum(c => c.Orders.Count));
-
             }
             finally
             {
@@ -234,7 +221,6 @@ namespace Tests.CommandBuilders
                 var result = await dataSource.Procedure(MultiResultSetProc1Name, ProcParameter1).ToCollectionSet<Customer, Order>().Join((c, o) => c.CustomerKey == o.CustomerKey, nameof(Customer.Orders), options).ExecuteAsync();
                 Assert.Equal(countA, result.Count);
                 Assert.Equal(countB, result.Sum(c => c.Orders.Count));
-
             }
             finally
             {
@@ -254,7 +240,6 @@ namespace Tests.CommandBuilders
                 var result = await dataSource.Procedure(MultiResultSetProc1Name, ProcParameter1).ToCollectionSet<Customer, Order>().Join(c => c.CustomerKey, o => o.CustomerKey, c => c.Orders, options).ExecuteAsync();
                 Assert.Equal(countA, result.Count);
                 Assert.Equal(countB, result.Sum(c => c.Orders.Count));
-
             }
             finally
             {
@@ -274,7 +259,6 @@ namespace Tests.CommandBuilders
                 var result = await dataSource.Procedure(MultiResultSetProc1Name, ProcParameter1).ToCollectionSet<Customer, Order>().Join(c => c.CustomerKey, o => o.CustomerKey, nameof(Customer.Orders), options).ExecuteAsync();
                 Assert.Equal(countA, result.Count);
                 Assert.Equal(countB, result.Sum(c => c.Orders.Count));
-
             }
             finally
             {
@@ -294,7 +278,6 @@ namespace Tests.CommandBuilders
                 var result = await dataSource.Procedure(MultiResultSetProc1Name, ProcParameter1).ToCollectionSet<Customer, Order>().Join(nameof(Customer.CustomerKey), nameof(Order.CustomerKey), nameof(Customer.Orders), options).ExecuteAsync();
                 Assert.Equal(countA, result.Count);
                 Assert.Equal(countB, result.Sum(c => c.Orders.Count));
-
             }
             finally
             {
@@ -314,7 +297,6 @@ namespace Tests.CommandBuilders
                 var result = await dataSource.Procedure(MultiResultSetProc1Name, ProcParameter1).ToCollectionSet<Customer, Order>().Join(nameof(Customer.CustomerKey), nameof(Customer.Orders), options).ExecuteAsync();
                 Assert.Equal(countA, result.Count);
                 Assert.Equal(countB, result.Sum(c => c.Orders.Count));
-
             }
             finally
             {
@@ -322,12 +304,9 @@ namespace Tests.CommandBuilders
             }
         }
 
-
-
         [Theory, MemberData(nameof(Prime))]
         public void Proc1_Object_DataSet(string assemblyName, string dataSourceName, DataSourceType mode)
         {
-
             var dataSource = DataSource2(dataSourceName, mode);
             try
             {
@@ -338,7 +317,6 @@ namespace Tests.CommandBuilders
                 Assert.Equal(2, result.Tables.Count);
                 Assert.Equal(countA, result.Tables["cust"].Rows.Count);
                 Assert.Equal(countB, result.Tables["order"].Rows.Count);
-
             }
             finally
             {
@@ -349,7 +327,6 @@ namespace Tests.CommandBuilders
         [Theory, MemberData(nameof(Prime))]
         public async Task Proc1_Object_Async_DataSet(string assemblyName, string dataSourceName, DataSourceType mode)
         {
-
             var dataSource = DataSource2(dataSourceName, mode);
             try
             {
@@ -360,7 +337,6 @@ namespace Tests.CommandBuilders
                 Assert.Equal(2, result.Tables.Count);
                 Assert.Equal(countA, result.Tables["cust"].Rows.Count);
                 Assert.Equal(countB, result.Tables["order"].Rows.Count);
-
             }
             finally
             {
@@ -368,11 +344,9 @@ namespace Tests.CommandBuilders
             }
         }
 
-
         [Theory, MemberData(nameof(Prime))]
         public void Proc1_Dictionary_DataSet(string assemblyName, string dataSourceName, DataSourceType mode)
         {
-
             var dataSource = DataSource2(dataSourceName, mode);
             try
             {
@@ -383,7 +357,6 @@ namespace Tests.CommandBuilders
                 Assert.Equal(2, result.Tables.Count);
                 Assert.Equal(countA, result.Tables["cust"].Rows.Count);
                 Assert.Equal(countB, result.Tables["order"].Rows.Count);
-
             }
             finally
             {
@@ -394,7 +367,6 @@ namespace Tests.CommandBuilders
         [Theory, MemberData(nameof(Prime))]
         public async Task Proc1_Dictionary_Async_DataSet(string assemblyName, string dataSourceName, DataSourceType mode)
         {
-
             var dataSource = DataSource2(dataSourceName, mode);
             try
             {
@@ -405,7 +377,6 @@ namespace Tests.CommandBuilders
                 Assert.Equal(2, result.Tables.Count);
                 Assert.Equal(countA, result.Tables["cust"].Rows.Count);
                 Assert.Equal(countB, result.Tables["order"].Rows.Count);
-
             }
             finally
             {
@@ -413,10 +384,10 @@ namespace Tests.CommandBuilders
             }
         }
 
+#if !MYSQL
         [Theory, MemberData(nameof(Prime))]
         public void Proc1_Dictionary2_DataSet(string assemblyName, string dataSourceName, DataSourceType mode)
         {
-
             var dataSource = DataSource2(dataSourceName, mode);
             try
             {
@@ -427,18 +398,18 @@ namespace Tests.CommandBuilders
                 Assert.Equal(2, result.Tables.Count);
                 Assert.Equal(countA, result.Tables["cust"].Rows.Count);
                 Assert.Equal(countB, result.Tables["order"].Rows.Count);
-
             }
             finally
             {
                 Release(dataSource);
             }
         }
+#endif
 
+#if !MYSQL
         [Theory, MemberData(nameof(Prime))]
         public async Task Proc1_Dictionary2_Async_DataSet(string assemblyName, string dataSourceName, DataSourceType mode)
         {
-
             var dataSource = DataSource2(dataSourceName, mode);
             try
             {
@@ -449,15 +420,14 @@ namespace Tests.CommandBuilders
                 Assert.Equal(2, result.Tables.Count);
                 Assert.Equal(countA, result.Tables["cust"].Rows.Count);
                 Assert.Equal(countB, result.Tables["order"].Rows.Count);
-
             }
             finally
             {
                 Release(dataSource);
             }
         }
+#endif
     }
 }
 
 #endif
-

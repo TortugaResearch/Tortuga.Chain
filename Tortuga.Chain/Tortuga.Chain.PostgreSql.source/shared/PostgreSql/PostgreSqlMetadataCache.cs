@@ -20,6 +20,7 @@ namespace Tortuga.Chain.PostgreSql
         readonly ConcurrentDictionary<PostgreSqlObjectName, TableFunctionMetadata<PostgreSqlObjectName, NpgsqlDbType>> m_TableFunctions = new ConcurrentDictionary<PostgreSqlObjectName, TableFunctionMetadata<PostgreSqlObjectName, NpgsqlDbType>>();
         readonly ConcurrentDictionary<PostgreSqlObjectName, TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType>> m_Tables = new ConcurrentDictionary<PostgreSqlObjectName, TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType>>();
         readonly ConcurrentDictionary<Type, TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType>> m_TypeTableMap = new ConcurrentDictionary<Type, TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType>>();
+
         /// <summary>
         /// Initializes a new instance of the <see cref="PostgreSqlMetadataCache"/> class.
         /// </summary>
@@ -87,6 +88,7 @@ namespace Tortuga.Chain.PostgreSql
         /// Call Preload before invoking this method to ensure that all table-valued functions were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.
         /// </remarks>
         public override IReadOnlyCollection<TableFunctionMetadata<PostgreSqlObjectName, NpgsqlDbType>> GetTableFunctions() => m_TableFunctions.GetValues();
+
         /// <summary>
         /// Gets the metadata for a table.
         /// </summary>
@@ -104,7 +106,6 @@ namespace Tortuga.Chain.PostgreSql
         /// <returns></returns>
         public override TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType> GetTableOrViewFromClass<TObject>()
         {
-
             var type = typeof(TObject);
             TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType> result;
             if (m_TypeTableMap.TryGetValue(type, out result))
@@ -135,12 +136,10 @@ namespace Tortuga.Chain.PostgreSql
             }
             catch (MissingObjectException) { }
 
-
             //that didn't work, so try the default schema
             result = GetTableOrView(new PostgreSqlObjectName(null, name));
             m_TypeTableMap[type] = result;
             return result;
-
         }
 
         /// <summary>
@@ -174,7 +173,6 @@ namespace Tortuga.Chain.PostgreSql
         {
             const string TvfSql = @"SELECT routine_schema, routine_name FROM information_schema.routines where routine_type = 'FUNCTION' AND data_type<>'record';";
 
-
             using (var con = new NpgsqlConnection(m_ConnectionBuilder.ConnectionString))
             {
                 con.Open();
@@ -191,7 +189,6 @@ namespace Tortuga.Chain.PostgreSql
                     }
                 }
             }
-
         }
 
         /// <summary>
@@ -200,7 +197,6 @@ namespace Tortuga.Chain.PostgreSql
         public void PreloadStoredProcedures()
         {
             const string procSql = @"SELECT routine_schema, routine_name FROM information_schema.routines where routine_type = 'FUNCTION' AND data_type='refcursor';";
-
 
             using (var con = new NpgsqlConnection(m_ConnectionBuilder.ConnectionString))
             {
@@ -218,7 +214,6 @@ namespace Tortuga.Chain.PostgreSql
                     }
                 }
             }
-
         }
 
         /// <summary>
@@ -227,7 +222,6 @@ namespace Tortuga.Chain.PostgreSql
         public void PreloadTableFunctions()
         {
             const string TvfSql = @"SELECT routine_schema, routine_name FROM information_schema.routines where routine_type = 'FUNCTION' AND data_type='record';";
-
 
             using (var con = new NpgsqlConnection(m_ConnectionBuilder.ConnectionString))
             {
@@ -245,7 +239,6 @@ namespace Tortuga.Chain.PostgreSql
                     }
                 }
             }
-
         }
 
         /// <summary>
@@ -350,7 +343,6 @@ namespace Tortuga.Chain.PostgreSql
                 case "char": return NpgsqlDbType.Char;
                 case "citext": return NpgsqlDbType.Citext;
                 case "json": return NpgsqlDbType.Json;
-
             }
             return null;
         }
@@ -438,7 +430,7 @@ WHERE c.relname ILIKE @Name AND
                     {
                         while (reader.Read())
                         {
-                            if (reader.GetString(reader.GetOrdinal("parameter_mode")) == "IN")
+                            if (string.Equals(reader.GetString(reader.GetOrdinal("parameter_mode")), "IN", StringComparison.Ordinal))
                             {
                                 var parameterNameOrd = reader.GetOrdinal("parameter_name");
                                 var parameterName = !reader.IsDBNull(parameterNameOrd) ? reader.GetString(parameterNameOrd) : "Parameter" + reader.GetInt32(reader.GetOrdinal("ordinal_position"));
@@ -461,7 +453,6 @@ WHERE c.relname ILIKE @Name AND
                                 //Task-120: Add support for length, precision, and scale
 
                                 columns.Add(new ColumnMetadata<NpgsqlDbType>(name, false, isPrimary, isIdentity, typeName, TypeNameToNpgSqlDbType(typeName), "\"" + name + "\"", isNullable, maxLength, precision, scale, fullTypeName));
-
                             }
                         }
                     }
@@ -504,8 +495,6 @@ WHERE c.relname ILIKE @Name AND
 
             //Task-120: Add support for length, precision, and scale for return type
             return new ScalarFunctionMetadata<PostgreSqlObjectName, NpgsqlDbType>(objectName, pAndC.Item1, typeName, TypeNameToNpgSqlDbType(typeName), true, null, null, null, null);
-
-
         }
 
         StoredProcedureMetadata<PostgreSqlObjectName, NpgsqlDbType> GetStoredProcedureInternal(PostgreSqlObjectName storedProcedureName)
@@ -572,8 +561,6 @@ WHERE c.relname ILIKE @Name AND
             var pAndC = GetParametersAndColumns(specificName);
 
             return new TableFunctionMetadata<PostgreSqlObjectName, NpgsqlDbType>(objectName, pAndC.Item1, pAndC.Item2);
-
-
         }
 
         TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType> GetTableOrViewInternal(PostgreSqlObjectName tableName)
@@ -607,7 +594,7 @@ WHERE c.relname ILIKE @Name AND
                         actualSchema = reader.GetString(reader.GetOrdinal("schemaname"));
                         actualName = reader.GetString(reader.GetOrdinal("tablename"));
                         var type = reader.GetString(reader.GetOrdinal("type"));
-                        isTable = type.Equals("BASE TABLE");
+                        isTable = type.Equals("BASE TABLE", StringComparison.Ordinal);
                     }
                 }
             }

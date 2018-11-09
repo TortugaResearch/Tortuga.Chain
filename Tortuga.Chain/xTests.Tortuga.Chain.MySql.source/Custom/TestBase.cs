@@ -40,7 +40,6 @@ namespace Tests
 
         public string ScalarFunction1Name { get { return "HR.EmployeeCount"; } }
 
-
         public MySqlDataSource AttachRules(MySqlDataSource source)
         {
             return source.WithRules(
