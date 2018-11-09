@@ -218,12 +218,12 @@ namespace Xunit
         /// <param name="collection">The collection to be inspected</param>
         /// <exception cref="ArgumentNullException">Thrown when a null collection is passed</exception>
         /// <exception cref="NotEmptyException">Thrown when the collection is empty</exception>
-        public static void NotEmpty(IEnumerable collection)
+        public static void NotEmpty(IEnumerable collection, string userMessage = null)
         {
             Assert.GuardArgumentNotNull("collection", collection);
 
             if (!collection.GetEnumerator().MoveNext())
-                throw new NotEmptyException();
+                throw new NotEmptyException(userMessage);
         }
 
         /// <summary>
