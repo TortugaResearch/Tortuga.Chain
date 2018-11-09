@@ -1,7 +1,7 @@
 ﻿using Xunit;
 using Xunit.Abstractions;
 
-#if SQL_SERVER || OLE_SQL_SERVER || POSTGRESQL
+#if SQL_SERVER || OLE_SQL_SERVER || POSTGRESQL || MYSQL
 
 namespace Tests.CommandBuilders
 {
@@ -12,6 +12,9 @@ namespace Tests.CommandBuilders
 #if SQL_SERVER || OLE_SQL_SERVER
         static object Filter_Integer_WithNullParameter = new { ManagerKey = (int?)null };
         static object Filter_Integer = new { ManagerKey = 1 };
+#elif MYSQL
+        static object Filter_Integer_WithNullParameter = new { p_managerKey = (int?)null };
+        static object Filter_Integer = new { p_managerKey = 1 };
 #elif POSTGRESQL
         static object Filter_Integer_WithNullParameter = new { p_managerKey = (int?)null };
         static object Filter_Integer = new { p_managerKey = 1 };
