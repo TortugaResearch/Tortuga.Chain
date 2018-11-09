@@ -16,41 +16,23 @@ namespace Tortuga.Chain.PostgreSql
     /// </summary>
     public class PostgreSqlMetadataCache : DatabaseMetadataCache<PostgreSqlObjectName, NpgsqlDbType>
     {
-        ImmutableArray<string> m_DefaultSchemaList;
+        readonly NpgsqlConnectionStringBuilder m_ConnectionBuilder;
+        readonly ConcurrentDictionary<PostgreSqlObjectName, ScalarFunctionMetadata<PostgreSqlObjectName, NpgsqlDbType>> m_ScalarFunctions = new ConcurrentDictionary<PostgreSqlObjectName, ScalarFunctionMetadata<PostgreSqlObjectName, NpgsqlDbType>>();
+        readonly ConcurrentDictionary<PostgreSqlObjectName, StoredProcedureMetadata<PostgreSqlObjectName, NpgsqlDbType>> m_StoredProcedures = new ConcurrentDictionary<PostgreSqlObjectName, StoredProcedureMetadata<PostgreSqlObjectName, NpgsqlDbType>>();
+        readonly ConcurrentDictionary<PostgreSqlObjectName, TableFunctionMetadata<PostgreSqlObjectName, NpgsqlDbType>> m_TableFunctions = new ConcurrentDictionary<PostgreSqlObjectName, TableFunctionMetadata<PostgreSqlObjectName, NpgsqlDbType>>();
+        readonly ConcurrentDictionary<PostgreSqlObjectName, TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType>> m_Tables = new ConcurrentDictionary<PostgreSqlObjectName, TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType>>();
+        readonly ConcurrentDictionary<Type, TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType>> m_TypeTableMap = new ConcurrentDictionary<Type, TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType>>();
         string m_DatabaseName;
+        ImmutableArray<string> m_DefaultSchemaList;
+        ImmutableDictionary<PostgreSqlObjectName, ImmutableHashSet<string>> m_SequenceColumns;
 
         /// <summary>
-        /// Returns the user's default schema.
+        /// Initializes a new instance of the <see cref="PostgreSqlMetadataCache"/> class.
         /// </summary>
-        /// <returns></returns>
-        public ImmutableArray<string> DefaultSchemaList
+        /// <param name="connectionBuilder">The connection builder.</param>
+        public PostgreSqlMetadataCache(NpgsqlConnectionStringBuilder connectionBuilder)
         {
-            get
-            {
-                if (m_DefaultSchemaList == null)
-                {
-                    using (var con = new NpgsqlConnection(m_ConnectionBuilder.ConnectionString))
-                    {
-                        con.Open();
-
-                        string currentUser;
-                        string defaultSchema;
-
-                        using (var cmd = new NpgsqlCommand("select current_user;", con))
-                        {
-                            currentUser = (string)cmd.ExecuteScalar();
-                        }
-
-                        using (var cmd = new NpgsqlCommand("SHOW search_path;", con))
-                        {
-                            defaultSchema = (string)cmd.ExecuteScalar();
-                        }
-                        defaultSchema = defaultSchema.Replace("\"$user\"", currentUser);
-                        m_DefaultSchemaList = defaultSchema.Split(',').Select(s => s.Trim()).Where(s => !string.IsNullOrEmpty(s)).ToImmutableArray();
-                    }
-                }
-                return m_DefaultSchemaList;
-            }
+            m_ConnectionBuilder = connectionBuilder;
         }
 
         /// <summary>
@@ -76,20 +58,38 @@ namespace Tortuga.Chain.PostgreSql
             }
         }
 
-        readonly NpgsqlConnectionStringBuilder m_ConnectionBuilder;
-        readonly ConcurrentDictionary<PostgreSqlObjectName, ScalarFunctionMetadata<PostgreSqlObjectName, NpgsqlDbType>> m_ScalarFunctions = new ConcurrentDictionary<PostgreSqlObjectName, ScalarFunctionMetadata<PostgreSqlObjectName, NpgsqlDbType>>();
-        readonly ConcurrentDictionary<PostgreSqlObjectName, StoredProcedureMetadata<PostgreSqlObjectName, NpgsqlDbType>> m_StoredProcedures = new ConcurrentDictionary<PostgreSqlObjectName, StoredProcedureMetadata<PostgreSqlObjectName, NpgsqlDbType>>();
-        readonly ConcurrentDictionary<PostgreSqlObjectName, TableFunctionMetadata<PostgreSqlObjectName, NpgsqlDbType>> m_TableFunctions = new ConcurrentDictionary<PostgreSqlObjectName, TableFunctionMetadata<PostgreSqlObjectName, NpgsqlDbType>>();
-        readonly ConcurrentDictionary<PostgreSqlObjectName, TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType>> m_Tables = new ConcurrentDictionary<PostgreSqlObjectName, TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType>>();
-        readonly ConcurrentDictionary<Type, TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType>> m_TypeTableMap = new ConcurrentDictionary<Type, TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType>>();
-
         /// <summary>
-        /// Initializes a new instance of the <see cref="PostgreSqlMetadataCache"/> class.
+        /// Returns the user's default schema.
         /// </summary>
-        /// <param name="connectionBuilder">The connection builder.</param>
-        public PostgreSqlMetadataCache(NpgsqlConnectionStringBuilder connectionBuilder)
+        /// <returns></returns>
+        public ImmutableArray<string> DefaultSchemaList
         {
-            m_ConnectionBuilder = connectionBuilder;
+            get
+            {
+                if (m_DefaultSchemaList == default)
+                {
+                    using (var con = new NpgsqlConnection(m_ConnectionBuilder.ConnectionString))
+                    {
+                        con.Open();
+
+                        string currentUser;
+                        string defaultSchema;
+
+                        using (var cmd = new NpgsqlCommand("select current_user;", con))
+                        {
+                            currentUser = (string)cmd.ExecuteScalar();
+                        }
+
+                        using (var cmd = new NpgsqlCommand("SHOW search_path;", con))
+                        {
+                            defaultSchema = (string)cmd.ExecuteScalar();
+                        }
+                        defaultSchema = defaultSchema.Replace("\"$user\"", currentUser);
+                        m_DefaultSchemaList = defaultSchema.Split(',').Select(s => s.Trim()).Where(s => !string.IsNullOrEmpty(s)).ToImmutableArray();
+                    }
+                }
+                return m_DefaultSchemaList;
+            }
         }
 
         /// <summary>
@@ -374,6 +374,9 @@ namespace Tortuga.Chain.PostgreSql
         /// </summary>
         public override void Reset()
         {
+            m_DatabaseName = null;
+            m_DefaultSchemaList = default;
+            m_SequenceColumns = null;
             m_StoredProcedures.Clear();
             m_TableFunctions.Clear();
             m_Tables.Clear();
@@ -416,50 +419,47 @@ namespace Tortuga.Chain.PostgreSql
         /// <returns>PostgreSqlObjectName.</returns>
         protected override PostgreSqlObjectName ParseObjectName(string name) => new PostgreSqlObjectName(name);
 
-        ImmutableDictionary<PostgreSqlObjectName, ImmutableHashSet<string>> m_SequenceColumns;
-
-        ImmutableHashSet<string> GetSequenceColumns(PostgreSqlObjectName tableName)
+        static Tuple<List<ParameterMetadata<NpgsqlDbType>>, List<ColumnMetadata<NpgsqlDbType>>> GetParametersAndColumns(string specificName, NpgsqlConnection connection)
         {
-            const string sql = @"select s.relname as SequenceName, n.nspname as SchemaName, t.relname as TableName, a.attname as ColumnName
-from pg_class s
-  join pg_depend d on d.objid=s.oid and d.classid='pg_class'::regclass and d.refclassid='pg_class'::regclass
-  join pg_class t on t.oid=d.refobjid
-  join pg_namespace n on n.oid=t.relnamespace
-  join pg_attribute a on a.attrelid=t.oid and a.attnum=d.refobjsubid
-where s.relkind='S' and d.deptype='a'";
+            const string parameterSql = @"SELECT * FROM information_schema.parameters WHERE specific_name = @SpecificName ORDER BY ordinal_position";
 
-            if (m_SequenceColumns == null)
+            var parameters = new List<ParameterMetadata<NpgsqlDbType>>();
+            var columns = new List<ColumnMetadata<NpgsqlDbType>>();
+            using (var cmd = new NpgsqlCommand(parameterSql, connection))
             {
-                using (var con = new NpgsqlConnection(m_ConnectionBuilder.ConnectionString))
+                cmd.Parameters.AddWithValue("@SpecificName", specificName);
+                using (var reader = cmd.ExecuteReader())
                 {
-                    con.Open();
-
-                    using (var cmd = new NpgsqlCommand(sql, con))
+                    while (reader.Read())
                     {
-                        using (var reader = cmd.ExecuteReader())
+                        if (string.Equals(reader.GetString(reader.GetOrdinal("parameter_mode")), "IN", StringComparison.Ordinal))
                         {
-                            var result = new Dictionary<PostgreSqlObjectName, HashSet<string>>();
-                            while (reader.Read())
-                            {
-                                var schemaTableName = new PostgreSqlObjectName(reader.GetString(reader.GetOrdinal("SchemaName")), reader.GetString(reader.GetOrdinal("TableName")));
-                                var columnName = reader.GetString(reader.GetOrdinal("ColumnName"));
+                            var parameterNameOrd = reader.GetOrdinal("parameter_name");
+                            var parameterName = !reader.IsDBNull(parameterNameOrd) ? reader.GetString(parameterNameOrd) : "Parameter" + reader.GetInt32(reader.GetOrdinal("ordinal_position"));
 
-                                if (result.TryGetValue(schemaTableName, out var identityColumns))
-                                {
-                                    identityColumns.Add(columnName);
-                                }
-                                else
-                                {
-                                    identityColumns = new HashSet<string>() { columnName };
-                                    result.Add(schemaTableName, identityColumns);
-                                }
-                            }
-                            m_SequenceColumns = result.ToImmutableDictionary(x => x.Key, x => x.Value.ToImmutableHashSet(StringComparer.OrdinalIgnoreCase));
+                            var typeName = reader.GetString(reader.GetOrdinal("udt_name"));
+                            parameters.Add(new ParameterMetadata<NpgsqlDbType>(parameterName, "@" + parameterName, typeName, TypeNameToNpgSqlDbType(typeName)));
+                        }
+                        else
+                        {
+                            var name = reader.GetString(reader.GetOrdinal("parameter_name"));
+                            var typeName = reader.GetString(reader.GetOrdinal("udt_name"));
+                            bool isPrimary = false;
+                            bool isIdentity = false;
+                            bool isNullable = true;
+                            int? maxLength = null;
+                            int? precision = null;
+                            int? scale = null;
+                            string fullTypeName = null;
+
+                            //Task-120: Add support for length, precision, and scale
+
+                            columns.Add(new ColumnMetadata<NpgsqlDbType>(name, false, isPrimary, isIdentity, typeName, TypeNameToNpgSqlDbType(typeName), "\"" + name + "\"", isNullable, maxLength, precision, scale, fullTypeName));
                         }
                     }
                 }
             }
-            return m_SequenceColumns.GetValueOrDefault(tableName, ImmutableHashSet<string>.Empty);
+            return Tuple.Create(parameters, columns);
         }
 
         List<ColumnMetadata<NpgsqlDbType>> GetColumns(PostgreSqlObjectName tableName, NpgsqlConnection connection)
@@ -515,49 +515,6 @@ WHERE c.relname ILIKE @Name AND
             return columns;
         }
 
-        static Tuple<List<ParameterMetadata<NpgsqlDbType>>, List<ColumnMetadata<NpgsqlDbType>>> GetParametersAndColumns(string specificName, NpgsqlConnection connection)
-        {
-            const string parameterSql = @"SELECT * FROM information_schema.parameters WHERE specific_name = @SpecificName ORDER BY ordinal_position";
-
-            var parameters = new List<ParameterMetadata<NpgsqlDbType>>();
-            var columns = new List<ColumnMetadata<NpgsqlDbType>>();
-            using (var cmd = new NpgsqlCommand(parameterSql, connection))
-            {
-                cmd.Parameters.AddWithValue("@SpecificName", specificName);
-                using (var reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        if (string.Equals(reader.GetString(reader.GetOrdinal("parameter_mode")), "IN", StringComparison.Ordinal))
-                        {
-                            var parameterNameOrd = reader.GetOrdinal("parameter_name");
-                            var parameterName = !reader.IsDBNull(parameterNameOrd) ? reader.GetString(parameterNameOrd) : "Parameter" + reader.GetInt32(reader.GetOrdinal("ordinal_position"));
-
-                            var typeName = reader.GetString(reader.GetOrdinal("udt_name"));
-                            parameters.Add(new ParameterMetadata<NpgsqlDbType>(parameterName, "@" + parameterName, typeName, TypeNameToNpgSqlDbType(typeName)));
-                        }
-                        else
-                        {
-                            var name = reader.GetString(reader.GetOrdinal("parameter_name"));
-                            var typeName = reader.GetString(reader.GetOrdinal("udt_name"));
-                            bool isPrimary = false;
-                            bool isIdentity = false;
-                            bool isNullable = true;
-                            int? maxLength = null;
-                            int? precision = null;
-                            int? scale = null;
-                            string fullTypeName = null;
-
-                            //Task-120: Add support for length, precision, and scale
-
-                            columns.Add(new ColumnMetadata<NpgsqlDbType>(name, false, isPrimary, isIdentity, typeName, TypeNameToNpgSqlDbType(typeName), "\"" + name + "\"", isNullable, maxLength, precision, scale, fullTypeName));
-                        }
-                    }
-                }
-            }
-            return Tuple.Create(parameters, columns);
-        }
-
         ScalarFunctionMetadata<PostgreSqlObjectName, NpgsqlDbType> GetScalarFunctionInternal(PostgreSqlObjectName tableFunctionName)
         {
             const string functionSql = @"SELECT routine_schema, routine_name, specific_name, data_type FROM information_schema.routines WHERE routine_type = 'FUNCTION' AND data_type<>'record' AND routine_schema ILIKE @Schema AND routine_name ILIKE @Name;";
@@ -597,6 +554,52 @@ WHERE c.relname ILIKE @Name AND
             }
 
             throw new MissingObjectException($"Could not find scalar function {tableFunctionName}");
+        }
+
+        IEnumerable<string> GetSchemasToCheck(PostgreSqlObjectName objectName) => objectName.Schema == null ? DefaultSchemaList : ImmutableArray.Create(objectName.Schema);
+
+        ImmutableHashSet<string> GetSequenceColumns(PostgreSqlObjectName tableName)
+        {
+            const string sql = @"select s.relname as SequenceName, n.nspname as SchemaName, t.relname as TableName, a.attname as ColumnName
+from pg_class s
+  join pg_depend d on d.objid=s.oid and d.classid='pg_class'::regclass and d.refclassid='pg_class'::regclass
+  join pg_class t on t.oid=d.refobjid
+  join pg_namespace n on n.oid=t.relnamespace
+  join pg_attribute a on a.attrelid=t.oid and a.attnum=d.refobjsubid
+where s.relkind='S' and d.deptype='a'";
+
+            if (m_SequenceColumns == null)
+            {
+                using (var con = new NpgsqlConnection(m_ConnectionBuilder.ConnectionString))
+                {
+                    con.Open();
+
+                    using (var cmd = new NpgsqlCommand(sql, con))
+                    {
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            var result = new Dictionary<PostgreSqlObjectName, HashSet<string>>();
+                            while (reader.Read())
+                            {
+                                var schemaTableName = new PostgreSqlObjectName(reader.GetString(reader.GetOrdinal("SchemaName")), reader.GetString(reader.GetOrdinal("TableName")));
+                                var columnName = reader.GetString(reader.GetOrdinal("ColumnName"));
+
+                                if (result.TryGetValue(schemaTableName, out var identityColumns))
+                                {
+                                    identityColumns.Add(columnName);
+                                }
+                                else
+                                {
+                                    identityColumns = new HashSet<string>() { columnName };
+                                    result.Add(schemaTableName, identityColumns);
+                                }
+                            }
+                            m_SequenceColumns = result.ToImmutableDictionary(x => x.Key, x => x.Value.ToImmutableHashSet(StringComparer.OrdinalIgnoreCase));
+                        }
+                    }
+                }
+            }
+            return m_SequenceColumns.GetValueOrDefault(tableName, ImmutableHashSet<string>.Empty);
         }
 
         StoredProcedureMetadata<PostgreSqlObjectName, NpgsqlDbType> GetStoredProcedureInternal(PostgreSqlObjectName storedProcedureName)
@@ -672,8 +675,6 @@ WHERE c.relname ILIKE @Name AND
 
             throw new MissingObjectException($"Could not find function {tableFunctionName}");
         }
-
-        IEnumerable<string> GetSchemasToCheck(PostgreSqlObjectName objectName) => objectName.Schema == null ? DefaultSchemaList : ImmutableArray.Create(objectName.Schema);
 
         TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType> GetTableOrViewInternal(PostgreSqlObjectName tableName)
         {
