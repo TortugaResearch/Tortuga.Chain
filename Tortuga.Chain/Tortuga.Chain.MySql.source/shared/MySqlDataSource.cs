@@ -324,8 +324,11 @@ namespace Tortuga.Chain
                 await cmd.ExecuteScalarAsync();
         }
 
+        /// <remarks>
+        /// The caller of this method is responsible for closing the connection.
+        /// </remarks>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-        internal MySqlConnection CreateConnection()
+        public MySqlConnection CreateConnection()
         {
             var con = new MySqlConnection(ConnectionString);
             con.Open();
@@ -536,7 +539,10 @@ namespace Tortuga.Chain
             }
         }
 
-        async Task<MySqlConnection> CreateConnectionAsync(CancellationToken cancellationToken = default(CancellationToken))
+        /// <remarks>
+        /// The caller of this method is responsible for closing the connection.
+        /// </remarks>
+        public async Task<MySqlConnection> CreateConnectionAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             var con = new MySqlConnection(ConnectionString);
             await con.OpenAsync(cancellationToken).ConfigureAwait(false);

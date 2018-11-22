@@ -164,7 +164,7 @@ namespace Tortuga.Chain
         /// <returns></returns>
         /// <remarks>The caller of this method is responsible for closing the connection.</remarks>
         [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-        internal SQLiteConnection CreateConnection()
+        public SQLiteConnection CreateConnection()
         {
             var con = new SQLiteConnection(ConnectionString);
             con.Open();
@@ -353,7 +353,15 @@ namespace Tortuga.Chain
             }
         }
 
-        async Task<SQLiteConnection> CreateConnectionAsync(CancellationToken cancellationToken = default(CancellationToken))
+        /// <summary>
+        /// Creates the connection asynchronous.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// The caller of this method is responsible for closing the connection.
+        /// </remarks>
+        public async Task<SQLiteConnection> CreateConnectionAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             var con = new SQLiteConnection(ConnectionString);
             await con.OpenAsync(cancellationToken).ConfigureAwait(false);
