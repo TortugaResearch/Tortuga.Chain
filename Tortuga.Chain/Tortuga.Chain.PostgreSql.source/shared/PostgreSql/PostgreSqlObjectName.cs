@@ -13,18 +13,16 @@ namespace Tortuga.Chain.PostgreSql
         /// </summary>
         public static readonly PostgreSqlObjectName Empty;
 
-        private readonly string m_Database;
-        private readonly string m_Name;
-        private readonly string m_Schema;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="PostgreSqlObjectName"/> struct.
         /// </summary>
         /// <param name="schema">The schema.</param>
         /// <param name="name">The name.</param>
         public PostgreSqlObjectName(string schema, string name)
-            : this(null, schema, name)
         {
+            Database = null;
+            Schema = schema;
+            Name = name;
         }
 
         /// <summary>
@@ -33,11 +31,12 @@ namespace Tortuga.Chain.PostgreSql
         /// <param name="database">The database.</param>
         /// <param name="schema">The schema.</param>
         /// <param name="name">The name.</param>
+        [Obsolete("While technically allowed, PostgreSQL does not support cross-database calls.")]
         public PostgreSqlObjectName(string database, string schema, string name)
         {
-            m_Database = database;
-            m_Schema = schema;
-            m_Name = name;
+            Database = database;
+            Schema = schema;
+            Name = name;
         }
 
         /// <summary>
@@ -57,21 +56,21 @@ namespace Tortuga.Chain.PostgreSql
             var parts = qualifiedName.Split(new[] { '.' }, 3);
             if (parts.Length == 1)
             {
-                m_Database = null;
-                m_Schema = null;
-                m_Name = parts[0];
+                Database = null;
+                Schema = null;
+                Name = parts[0];
             }
             else if (parts.Length == 2)
             {
-                m_Database = null;
-                m_Schema = parts[0];
-                m_Name = parts[1];
+                Database = null;
+                Schema = parts[0];
+                Name = parts[1];
             }
             else if (parts.Length == 3)
             {
-                m_Database = parts[0];
-                m_Schema = parts[1];
-                m_Name = parts[2];
+                Database = parts[0];
+                Schema = parts[1];
+                Name = parts[2];
             }
             else
             {
@@ -85,7 +84,7 @@ namespace Tortuga.Chain.PostgreSql
         /// <value>
         /// The database.
         /// </value>
-        public string Database => m_Database;
+        public string Database { get; }
 
         /// <summary>
         /// Gets the name.
@@ -93,7 +92,7 @@ namespace Tortuga.Chain.PostgreSql
         /// <value>
         /// The name.
         /// </value>
-        public string Name => m_Name;
+        public string Name { get; }
 
         /// <summary>
         /// Gets the schema.
@@ -101,7 +100,7 @@ namespace Tortuga.Chain.PostgreSql
         /// <value>
         /// The schema.
         /// </value>
-        public string Schema => m_Schema;
+        public string Schema { get; }
 
 #pragma warning disable CA2225 // Operator overloads have named alternates
 

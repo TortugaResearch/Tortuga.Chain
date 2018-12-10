@@ -13,10 +13,11 @@ namespace Tests
 {
     public abstract partial class TestBase
     {
-
         static public readonly string AssemblyName = "PostgreSql";
         static protected readonly Dictionary<string, PostgreSqlDataSource> s_DataSources = new Dictionary<string, PostgreSqlDataSource>();
         protected static readonly PostgreSqlDataSource s_PrimaryDataSource;
+
+        public string DefaultSchema = "public";
 
         static TestBase()
         {
@@ -122,4 +123,3 @@ namespace Tests
         }
     }
 }
-
