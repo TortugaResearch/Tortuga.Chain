@@ -14,6 +14,44 @@ namespace Tests.Core
         {
         }
 
+#if SQL_SERVER || OLE_SQL_SERVER
+
+        [Theory, MemberData("Basic")]
+        public void DatabaseName(string assemblyName, string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+                var databaseName = dataSource.DatabaseMetadata.DatabaseName;
+                Assert.IsFalse(string.IsNullOrWhiteSpace(databaseName), "Database name wasn't returned");
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+#endif
+
+#if SQL_SERVER || MySQL || OLE_SQL_SERVER
+
+        [Theory, MemberData("Basic")]
+        public void DefaultSchema(string assemblyName, string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+                var defaultSchema = dataSource.DatabaseMetadata.DefaultSchema;
+                Assert.IsFalse(string.IsNullOrWhiteSpace(defaultSchema), "Default schema name wasn't returned");
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+#endif
+
         [Theory, MemberData("Basic")]
         public void Preload(string assemblyName, string dataSourceName, DataSourceType mode)
         {
@@ -176,6 +214,7 @@ namespace Tests.Core
                 Release(dataSource);
             }
         }
+
 #endif
     }
 }

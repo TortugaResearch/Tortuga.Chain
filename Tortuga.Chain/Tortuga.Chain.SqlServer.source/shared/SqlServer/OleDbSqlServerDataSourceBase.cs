@@ -629,6 +629,7 @@ namespace Tortuga.Chain.SqlServer
         {
             return new OleDbSqlServerUpdateMany(this, tableName, newValues, options);
         }
+
     }
 }
 

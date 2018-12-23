@@ -1,4 +1,4 @@
-﻿#if SQL_SERVER || POSTGRESQL || MYSQL
+﻿#if SQL_SERVER || POSTGRESQL || OLE_SQL_SERVER || MYSQL
 
 using System.Collections.Generic;
 using System.Linq;
@@ -15,9 +15,16 @@ namespace Tests.CommandBuilders
         public static BasicData Prime = new BasicData(s_PrimaryDataSource);
         public static BasicDataWithJoinOptions PrimeWithJoinOptions = new BasicDataWithJoinOptions(s_PrimaryDataSource);
 
-#if SQL_SERVER || OLE_SQL_SERVER
+#if SQL_SERVER
         const string CheckA = @"SELECT Count(*) FROM Sales.Customer c WHERE c.State = @State;";
         const string CheckB = @"SELECT Count(*) FROM Sales.[Order] o INNER JOIN Sales.Customer c ON o.CustomerKey = c.CustomerKey WHERE c.State = @State;";
+        static object CheckParameter1 = new { @State = "CA" };
+        static object ProcParameter1 = new { @State = "CA" };
+        static object DictParameter1a = new Dictionary<string, object>() { { "State", "CA" } };
+        static object DictParameter1b = new Dictionary<string, object>() { { "@State", "CA" } };
+#elif OLE_SQL_SERVER
+        const string CheckA = @"SELECT Count(*) FROM Sales.Customer c WHERE c.State = ?;";
+        const string CheckB = @"SELECT Count(*) FROM Sales.[Order] o INNER JOIN Sales.Customer c ON o.CustomerKey = c.CustomerKey WHERE c.State = ?;";
         static object CheckParameter1 = new { @State = "CA" };
         static object ProcParameter1 = new { @State = "CA" };
         static object DictParameter1a = new Dictionary<string, object>() { { "State", "CA" } };
