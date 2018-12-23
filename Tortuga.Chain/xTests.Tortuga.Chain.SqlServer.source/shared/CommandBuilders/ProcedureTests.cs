@@ -1,4 +1,4 @@
-﻿#if SQL_SERVER || POSTGRESQL || OLE_SQL_SERVER
+﻿#if SQL_SERVER || POSTGRESQL || OLE_SQL_SERVER || MYSQL
 
 using System.Collections.Generic;
 using System.Linq;
@@ -18,19 +18,29 @@ namespace Tests.CommandBuilders
 #if SQL_SERVER
         const string CheckA = @"SELECT Count(*) FROM Sales.Customer c WHERE c.State = @State;";
         const string CheckB = @"SELECT Count(*) FROM Sales.[Order] o INNER JOIN Sales.Customer c ON o.CustomerKey = c.CustomerKey WHERE c.State = @State;";
-        static object Parameter1 = new { @State = "CA" };
+        static object CheckParameter1 = new { @State = "CA" };
+        static object ProcParameter1 = new { @State = "CA" };
         static object DictParameter1a = new Dictionary<string, object>() { { "State", "CA" } };
         static object DictParameter1b = new Dictionary<string, object>() { { "@State", "CA" } };
 #elif OLE_SQL_SERVER
         const string CheckA = @"SELECT Count(*) FROM Sales.Customer c WHERE c.State = ?;";
         const string CheckB = @"SELECT Count(*) FROM Sales.[Order] o INNER JOIN Sales.Customer c ON o.CustomerKey = c.CustomerKey WHERE c.State = ?;";
-        static object Parameter1 = new { @State = "CA" };
+        static object CheckParameter1 = new { @State = "CA" };
+        static object ProcParameter1 = new { @State = "CA" };
         static object DictParameter1a = new Dictionary<string, object>() { { "State", "CA" } };
         static object DictParameter1b = new Dictionary<string, object>() { { "@State", "CA" } };
+#elif MYSQL
+        const string CheckA = @"SELECT Count(*) FROM Sales.Customer c WHERE c.State = @State;";
+        const string CheckB = @"SELECT Count(*) FROM Sales.`Order` o INNER JOIN Sales.Customer c ON o.CustomerKey = c.CustomerKey WHERE c.State = @State;";
+        static object CheckParameter1 = new { @State = "CA" };
+        static object ProcParameter1 = new { p_State = "CA" };
+        static object DictParameter1a = new Dictionary<string, object>() { { "p_State", "CA" } };
+        //static object DictParameter1b = new Dictionary<string, object>() { { "@p_State", "CA" } };
 #elif POSTGRESQL
         const string CheckA = @"SELECT Count(*) FROM Sales.Customer c WHERE c.State = @param_state;";
         const string CheckB = @"SELECT Count(*) FROM Sales.Order o INNER JOIN Sales.Customer c ON o.CustomerKey = c.CustomerKey WHERE c.State = @param_state;";
-        static object Parameter1 = new { @param_state = "CA" };
+        static object CheckParameter1 = new { @param_state = "CA" };
+        static object ProcParameter1 = new { @param_state = "CA" };
         static object DictParameter1a = new Dictionary<string, object>() { { "param_state", "CA" } };
         static object DictParameter1b = new Dictionary<string, object>() { { "@param_state", "CA" } };
 #endif
@@ -45,10 +55,10 @@ namespace Tests.CommandBuilders
             var dataSource = DataSource2(dataSourceName, mode);
             try
             {
-                var countA = dataSource.Sql(CheckA, Parameter1).ToInt32().Execute();
-                var countB = dataSource.Sql(CheckB, Parameter1).ToInt32().Execute();
+                var countA = dataSource.Sql(CheckA, CheckParameter1).ToInt32().Execute();
+                var countB = dataSource.Sql(CheckB, CheckParameter1).ToInt32().Execute();
 
-                var result = dataSource.Procedure(MultiResultSetProc1Name, Parameter1).ToTableSet("cust", "order").Execute();
+                var result = dataSource.Procedure(MultiResultSetProc1Name, ProcParameter1).ToTableSet("cust", "order").Execute();
 
                 Assert.Equal(2, result.Count);
                 Assert.Equal(countA, result["cust"].Rows.Count);
@@ -66,10 +76,10 @@ namespace Tests.CommandBuilders
             var dataSource = DataSource2(dataSourceName, mode);
             try
             {
-                var countA = await dataSource.Sql(CheckA, Parameter1).ToInt32().ExecuteAsync();
-                var countB = await dataSource.Sql(CheckB, Parameter1).ToInt32().ExecuteAsync();
+                var countA = await dataSource.Sql(CheckA, CheckParameter1).ToInt32().ExecuteAsync();
+                var countB = await dataSource.Sql(CheckB, CheckParameter1).ToInt32().ExecuteAsync();
 
-                var result = await dataSource.Procedure(MultiResultSetProc1Name, Parameter1).ToTableSet("cust", "order").ExecuteAsync();
+                var result = await dataSource.Procedure(MultiResultSetProc1Name, ProcParameter1).ToTableSet("cust", "order").ExecuteAsync();
 
                 Assert.Equal(2, result.Count);
                 Assert.Equal(countA, result["cust"].Rows.Count);
@@ -87,8 +97,8 @@ namespace Tests.CommandBuilders
             var dataSource = DataSource2(dataSourceName, mode);
             try
             {
-                var countA = dataSource.Sql(CheckA, Parameter1).ToInt32().Execute();
-                var countB = dataSource.Sql(CheckB, Parameter1).ToInt32().Execute();
+                var countA = dataSource.Sql(CheckA, CheckParameter1).ToInt32().Execute();
+                var countB = dataSource.Sql(CheckB, CheckParameter1).ToInt32().Execute();
 
                 var result = dataSource.Procedure(MultiResultSetProc1Name, DictParameter1a).ToTableSet("cust", "order").Execute();
 
@@ -108,8 +118,8 @@ namespace Tests.CommandBuilders
             var dataSource = DataSource2(dataSourceName, mode);
             try
             {
-                var countA = await dataSource.Sql(CheckA, Parameter1).ToInt32().ExecuteAsync();
-                var countB = await dataSource.Sql(CheckB, Parameter1).ToInt32().ExecuteAsync();
+                var countA = await dataSource.Sql(CheckA, CheckParameter1).ToInt32().ExecuteAsync();
+                var countB = await dataSource.Sql(CheckB, CheckParameter1).ToInt32().ExecuteAsync();
 
                 var result = await dataSource.Procedure(MultiResultSetProc1Name, DictParameter1a).ToTableSet("cust", "order").ExecuteAsync();
                 Assert.Equal(2, result.Count);
@@ -122,14 +132,16 @@ namespace Tests.CommandBuilders
             }
         }
 
+#if !MYSQL
+
         [Theory, MemberData(nameof(Prime))]
         public void Proc1_Dictionary2(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource2(dataSourceName, mode);
             try
             {
-                var countA = dataSource.Sql(CheckA, Parameter1).ToInt32().Execute();
-                var countB = dataSource.Sql(CheckB, Parameter1).ToInt32().Execute();
+                var countA = dataSource.Sql(CheckA, CheckParameter1).ToInt32().Execute();
+                var countB = dataSource.Sql(CheckB, CheckParameter1).ToInt32().Execute();
 
                 var result = dataSource.Procedure(MultiResultSetProc1Name, DictParameter1b).ToTableSet("cust", "order").Execute();
                 Assert.Equal(2, result.Count);
@@ -141,6 +153,9 @@ namespace Tests.CommandBuilders
                 Release(dataSource);
             }
         }
+#endif
+
+#if !MYSQL
 
         [Theory, MemberData(nameof(Prime))]
         public async Task Proc1_Dictionary2_Async(string assemblyName, string dataSourceName, DataSourceType mode)
@@ -148,8 +163,8 @@ namespace Tests.CommandBuilders
             var dataSource = DataSource2(dataSourceName, mode);
             try
             {
-                var countA = await dataSource.Sql(CheckA, Parameter1).ToInt32().ExecuteAsync();
-                var countB = await dataSource.Sql(CheckB, Parameter1).ToInt32().ExecuteAsync();
+                var countA = await dataSource.Sql(CheckA, CheckParameter1).ToInt32().ExecuteAsync();
+                var countB = await dataSource.Sql(CheckB, CheckParameter1).ToInt32().ExecuteAsync();
 
                 var result = await dataSource.Procedure(MultiResultSetProc1Name, DictParameter1b).ToTableSet("cust", "order").ExecuteAsync();
                 Assert.Equal(2, result.Count);
@@ -161,6 +176,7 @@ namespace Tests.CommandBuilders
                 Release(dataSource);
             }
         }
+#endif
 
         [Theory, MemberData(nameof(Prime))]
         public async Task Proc1_ToCollectionSet(string assemblyName, string dataSourceName, DataSourceType mode)
@@ -168,10 +184,10 @@ namespace Tests.CommandBuilders
             var dataSource = DataSource2(dataSourceName, mode);
             try
             {
-                var countA = await dataSource.Sql(CheckA, Parameter1).ToInt32().ExecuteAsync();
-                var countB = await dataSource.Sql(CheckB, Parameter1).ToInt32().ExecuteAsync();
+                var countA = await dataSource.Sql(CheckA, CheckParameter1).ToInt32().ExecuteAsync();
+                var countB = await dataSource.Sql(CheckB, CheckParameter1).ToInt32().ExecuteAsync();
 
-                var result = await dataSource.Procedure(MultiResultSetProc1Name, Parameter1).ToCollectionSet<Customer, Order>().ExecuteAsync();
+                var result = await dataSource.Procedure(MultiResultSetProc1Name, ProcParameter1).ToCollectionSet<Customer, Order>().ExecuteAsync();
                 Assert.Equal(countA, result.Item1.Count);
                 Assert.Equal(countB, result.Item2.Count);
             }
@@ -187,10 +203,10 @@ namespace Tests.CommandBuilders
             var dataSource = DataSource2(dataSourceName, mode);
             try
             {
-                var countA = await dataSource.Sql(CheckA, Parameter1).ToInt32().ExecuteAsync();
-                var countB = await dataSource.Sql(CheckB, Parameter1).ToInt32().ExecuteAsync();
+                var countA = await dataSource.Sql(CheckA, CheckParameter1).ToInt32().ExecuteAsync();
+                var countB = await dataSource.Sql(CheckB, CheckParameter1).ToInt32().ExecuteAsync();
 
-                var result = await dataSource.Procedure(MultiResultSetProc1Name, Parameter1).ToCollectionSet<Customer, Order>().Join((c, o) => c.CustomerKey == o.CustomerKey, c => c.Orders, options).ExecuteAsync();
+                var result = await dataSource.Procedure(MultiResultSetProc1Name, ProcParameter1).ToCollectionSet<Customer, Order>().Join((c, o) => c.CustomerKey == o.CustomerKey, c => c.Orders, options).ExecuteAsync();
                 Assert.Equal(countA, result.Count);
                 Assert.Equal(countB, result.Sum(c => c.Orders.Count));
             }
@@ -206,10 +222,10 @@ namespace Tests.CommandBuilders
             var dataSource = DataSource2(dataSourceName, mode);
             try
             {
-                var countA = await dataSource.Sql(CheckA, Parameter1).ToInt32().ExecuteAsync();
-                var countB = await dataSource.Sql(CheckB, Parameter1).ToInt32().ExecuteAsync();
+                var countA = await dataSource.Sql(CheckA, CheckParameter1).ToInt32().ExecuteAsync();
+                var countB = await dataSource.Sql(CheckB, CheckParameter1).ToInt32().ExecuteAsync();
 
-                var result = await dataSource.Procedure(MultiResultSetProc1Name, Parameter1).ToCollectionSet<Customer, Order>().Join((c, o) => c.CustomerKey == o.CustomerKey, nameof(Customer.Orders), options).ExecuteAsync();
+                var result = await dataSource.Procedure(MultiResultSetProc1Name, ProcParameter1).ToCollectionSet<Customer, Order>().Join((c, o) => c.CustomerKey == o.CustomerKey, nameof(Customer.Orders), options).ExecuteAsync();
                 Assert.Equal(countA, result.Count);
                 Assert.Equal(countB, result.Sum(c => c.Orders.Count));
             }
@@ -225,10 +241,10 @@ namespace Tests.CommandBuilders
             var dataSource = DataSource2(dataSourceName, mode);
             try
             {
-                var countA = await dataSource.Sql(CheckA, Parameter1).ToInt32().ExecuteAsync();
-                var countB = await dataSource.Sql(CheckB, Parameter1).ToInt32().ExecuteAsync();
+                var countA = await dataSource.Sql(CheckA, CheckParameter1).ToInt32().ExecuteAsync();
+                var countB = await dataSource.Sql(CheckB, CheckParameter1).ToInt32().ExecuteAsync();
 
-                var result = await dataSource.Procedure(MultiResultSetProc1Name, Parameter1).ToCollectionSet<Customer, Order>().Join(c => c.CustomerKey, o => o.CustomerKey, c => c.Orders, options).ExecuteAsync();
+                var result = await dataSource.Procedure(MultiResultSetProc1Name, ProcParameter1).ToCollectionSet<Customer, Order>().Join(c => c.CustomerKey, o => o.CustomerKey, c => c.Orders, options).ExecuteAsync();
                 Assert.Equal(countA, result.Count);
                 Assert.Equal(countB, result.Sum(c => c.Orders.Count));
             }
@@ -244,10 +260,10 @@ namespace Tests.CommandBuilders
             var dataSource = DataSource2(dataSourceName, mode);
             try
             {
-                var countA = await dataSource.Sql(CheckA, Parameter1).ToInt32().ExecuteAsync();
-                var countB = await dataSource.Sql(CheckB, Parameter1).ToInt32().ExecuteAsync();
+                var countA = await dataSource.Sql(CheckA, CheckParameter1).ToInt32().ExecuteAsync();
+                var countB = await dataSource.Sql(CheckB, CheckParameter1).ToInt32().ExecuteAsync();
 
-                var result = await dataSource.Procedure(MultiResultSetProc1Name, Parameter1).ToCollectionSet<Customer, Order>().Join(c => c.CustomerKey, o => o.CustomerKey, nameof(Customer.Orders), options).ExecuteAsync();
+                var result = await dataSource.Procedure(MultiResultSetProc1Name, ProcParameter1).ToCollectionSet<Customer, Order>().Join(c => c.CustomerKey, o => o.CustomerKey, nameof(Customer.Orders), options).ExecuteAsync();
                 Assert.Equal(countA, result.Count);
                 Assert.Equal(countB, result.Sum(c => c.Orders.Count));
             }
@@ -263,10 +279,10 @@ namespace Tests.CommandBuilders
             var dataSource = DataSource2(dataSourceName, mode);
             try
             {
-                var countA = await dataSource.Sql(CheckA, Parameter1).ToInt32().ExecuteAsync();
-                var countB = await dataSource.Sql(CheckB, Parameter1).ToInt32().ExecuteAsync();
+                var countA = await dataSource.Sql(CheckA, CheckParameter1).ToInt32().ExecuteAsync();
+                var countB = await dataSource.Sql(CheckB, CheckParameter1).ToInt32().ExecuteAsync();
 
-                var result = await dataSource.Procedure(MultiResultSetProc1Name, Parameter1).ToCollectionSet<Customer, Order>().Join(nameof(Customer.CustomerKey), nameof(Order.CustomerKey), nameof(Customer.Orders), options).ExecuteAsync();
+                var result = await dataSource.Procedure(MultiResultSetProc1Name, ProcParameter1).ToCollectionSet<Customer, Order>().Join(nameof(Customer.CustomerKey), nameof(Order.CustomerKey), nameof(Customer.Orders), options).ExecuteAsync();
                 Assert.Equal(countA, result.Count);
                 Assert.Equal(countB, result.Sum(c => c.Orders.Count));
             }
@@ -282,10 +298,10 @@ namespace Tests.CommandBuilders
             var dataSource = DataSource2(dataSourceName, mode);
             try
             {
-                var countA = await dataSource.Sql(CheckA, Parameter1).ToInt32().ExecuteAsync();
-                var countB = await dataSource.Sql(CheckB, Parameter1).ToInt32().ExecuteAsync();
+                var countA = await dataSource.Sql(CheckA, CheckParameter1).ToInt32().ExecuteAsync();
+                var countB = await dataSource.Sql(CheckB, CheckParameter1).ToInt32().ExecuteAsync();
 
-                var result = await dataSource.Procedure(MultiResultSetProc1Name, Parameter1).ToCollectionSet<Customer, Order>().Join(nameof(Customer.CustomerKey), nameof(Customer.Orders), options).ExecuteAsync();
+                var result = await dataSource.Procedure(MultiResultSetProc1Name, ProcParameter1).ToCollectionSet<Customer, Order>().Join(nameof(Customer.CustomerKey), nameof(Customer.Orders), options).ExecuteAsync();
                 Assert.Equal(countA, result.Count);
                 Assert.Equal(countB, result.Sum(c => c.Orders.Count));
             }
@@ -301,10 +317,10 @@ namespace Tests.CommandBuilders
             var dataSource = DataSource2(dataSourceName, mode);
             try
             {
-                var countA = dataSource.Sql(CheckA, Parameter1).ToInt32().Execute();
-                var countB = dataSource.Sql(CheckB, Parameter1).ToInt32().Execute();
+                var countA = dataSource.Sql(CheckA, CheckParameter1).ToInt32().Execute();
+                var countB = dataSource.Sql(CheckB, CheckParameter1).ToInt32().Execute();
 
-                var result = dataSource.Procedure(MultiResultSetProc1Name, Parameter1).ToDataSet("cust", "order").Execute();
+                var result = dataSource.Procedure(MultiResultSetProc1Name, ProcParameter1).ToDataSet("cust", "order").Execute();
                 Assert.Equal(2, result.Tables.Count);
                 Assert.Equal(countA, result.Tables["cust"].Rows.Count);
                 Assert.Equal(countB, result.Tables["order"].Rows.Count);
@@ -321,10 +337,10 @@ namespace Tests.CommandBuilders
             var dataSource = DataSource2(dataSourceName, mode);
             try
             {
-                var countA = await dataSource.Sql(CheckA, Parameter1).ToInt32().ExecuteAsync();
-                var countB = await dataSource.Sql(CheckB, Parameter1).ToInt32().ExecuteAsync();
+                var countA = await dataSource.Sql(CheckA, CheckParameter1).ToInt32().ExecuteAsync();
+                var countB = await dataSource.Sql(CheckB, CheckParameter1).ToInt32().ExecuteAsync();
 
-                var result = await dataSource.Procedure(MultiResultSetProc1Name, Parameter1).ToDataSet("cust", "order").ExecuteAsync();
+                var result = await dataSource.Procedure(MultiResultSetProc1Name, ProcParameter1).ToDataSet("cust", "order").ExecuteAsync();
                 Assert.Equal(2, result.Tables.Count);
                 Assert.Equal(countA, result.Tables["cust"].Rows.Count);
                 Assert.Equal(countB, result.Tables["order"].Rows.Count);
@@ -341,8 +357,8 @@ namespace Tests.CommandBuilders
             var dataSource = DataSource2(dataSourceName, mode);
             try
             {
-                var countA = dataSource.Sql(CheckA, Parameter1).ToInt32().Execute();
-                var countB = dataSource.Sql(CheckB, Parameter1).ToInt32().Execute();
+                var countA = dataSource.Sql(CheckA, CheckParameter1).ToInt32().Execute();
+                var countB = dataSource.Sql(CheckB, CheckParameter1).ToInt32().Execute();
 
                 var result = dataSource.Procedure(MultiResultSetProc1Name, DictParameter1a).ToDataSet("cust", "order").Execute();
                 Assert.Equal(2, result.Tables.Count);
@@ -361,8 +377,8 @@ namespace Tests.CommandBuilders
             var dataSource = DataSource2(dataSourceName, mode);
             try
             {
-                var countA = await dataSource.Sql(CheckA, Parameter1).ToInt32().ExecuteAsync();
-                var countB = await dataSource.Sql(CheckB, Parameter1).ToInt32().ExecuteAsync();
+                var countA = await dataSource.Sql(CheckA, CheckParameter1).ToInt32().ExecuteAsync();
+                var countB = await dataSource.Sql(CheckB, CheckParameter1).ToInt32().ExecuteAsync();
 
                 var result = await dataSource.Procedure(MultiResultSetProc1Name, DictParameter1a).ToDataSet("cust", "order").ExecuteAsync();
                 Assert.Equal(2, result.Tables.Count);
@@ -375,14 +391,15 @@ namespace Tests.CommandBuilders
             }
         }
 
+#if !MYSQL
         [Theory, MemberData(nameof(Prime))]
         public void Proc1_Dictionary2_DataSet(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource2(dataSourceName, mode);
             try
             {
-                var countA = dataSource.Sql(CheckA, Parameter1).ToInt32().Execute();
-                var countB = dataSource.Sql(CheckB, Parameter1).ToInt32().Execute();
+                var countA = dataSource.Sql(CheckA, CheckParameter1).ToInt32().Execute();
+                var countB = dataSource.Sql(CheckB, CheckParameter1).ToInt32().Execute();
 
                 var result = dataSource.Procedure(MultiResultSetProc1Name, DictParameter1b).ToDataSet("cust", "order").Execute();
                 Assert.Equal(2, result.Tables.Count);
@@ -394,15 +411,17 @@ namespace Tests.CommandBuilders
                 Release(dataSource);
             }
         }
+#endif
 
+#if !MYSQL
         [Theory, MemberData(nameof(Prime))]
         public async Task Proc1_Dictionary2_Async_DataSet(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource2(dataSourceName, mode);
             try
             {
-                var countA = await dataSource.Sql(CheckA, Parameter1).ToInt32().ExecuteAsync();
-                var countB = await dataSource.Sql(CheckB, Parameter1).ToInt32().ExecuteAsync();
+                var countA = await dataSource.Sql(CheckA, CheckParameter1).ToInt32().ExecuteAsync();
+                var countB = await dataSource.Sql(CheckB, CheckParameter1).ToInt32().ExecuteAsync();
 
                 var result = await dataSource.Procedure(MultiResultSetProc1Name, DictParameter1b).ToDataSet("cust", "order").ExecuteAsync();
                 Assert.Equal(2, result.Tables.Count);
@@ -414,6 +433,7 @@ namespace Tests.CommandBuilders
                 Release(dataSource);
             }
         }
+#endif
     }
 }
 

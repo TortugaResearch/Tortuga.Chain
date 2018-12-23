@@ -1,6 +1,7 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Tortuga.Chain.AuditRules;
@@ -11,8 +12,6 @@ using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.MySql.CommandBuilders
 {
-    //TODO-223: Finish implementation and test this
-    /*
     /// <summary>
     /// Use for scalar functions.
     /// </summary>
@@ -60,7 +59,7 @@ namespace Tortuga.Chain.MySql.CommandBuilders
                 sqlBuilder.ApplyArgumentValue(DataSource, OperationTypes.None, m_FunctionArgumentValue);
 
             var sql = new StringBuilder();
-            sqlBuilder.BuildFromFunctionClause(sql, $"SELECT {m_Function.Name.ToQuotedString()} (", " )");
+            sqlBuilder.BuildFromFunctionClause(sql, $"SELECT {m_Function.Name.ToQuotedString()} (", " )", "?");
             sql.Append(";");
 
             List<MySqlParameter> parameters;
@@ -76,6 +75,16 @@ namespace Tortuga.Chain.MySql.CommandBuilders
         /// <returns>ColumnMetadata.</returns>
         /// <remarks>Always returns null since this command builder has no columns</remarks>
         public override ColumnMetadata TryGetColumn(string columnName) => null;
+
+        /// <summary>
+        /// Returns a list of columns known to be non-nullable.
+        /// </summary>
+        /// <returns>
+        /// If the command builder doesn't know which columns are non-nullable, an empty list will be returned.
+        /// </returns>
+        /// <remarks>
+        /// This is used by materializers to skip IsNull checks.
+        /// </remarks>
+        public override IReadOnlyList<ColumnMetadata> TryGetNonNullableColumns() => ImmutableList<ColumnMetadata>.Empty;
     }
-    */
 }

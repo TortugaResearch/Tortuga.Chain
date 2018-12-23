@@ -393,7 +393,7 @@ namespace Tortuga.Chain.MySql
         /// <returns></returns>
         public ScalarDbCommandBuilder<MySqlCommand, MySqlParameter> ScalarFunction(MySqlObjectName scalarFunctionName)
         {
-            return ScalarFunction(scalarFunctionName);
+            return new MySqlScalarFunction(this, scalarFunctionName, null);
         }
 
         /// <summary>
@@ -404,7 +404,7 @@ namespace Tortuga.Chain.MySql
         /// <returns></returns>
         public ScalarDbCommandBuilder<MySqlCommand, MySqlParameter> ScalarFunction(MySqlObjectName scalarFunctionName, object functionArgumentValue)
         {
-            return ScalarFunction(scalarFunctionName, functionArgumentValue);
+            return new MySqlScalarFunction(this, scalarFunctionName, functionArgumentValue);
         }
 
         /// <summary>
