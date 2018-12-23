@@ -182,7 +182,7 @@ namespace Tortuga.Chain
         /// <returns></returns>
         /// <remarks>The caller of this method is responsible for closing the connection.</remarks>
         [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-        internal DbConnection CreateConnection()
+        public DbConnection CreateConnection()
         {
             var con = OnCreateConnection();
             con.ConnectionString = ConnectionString;
