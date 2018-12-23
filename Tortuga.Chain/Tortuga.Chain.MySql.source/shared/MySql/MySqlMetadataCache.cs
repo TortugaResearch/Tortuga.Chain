@@ -572,7 +572,6 @@ namespace Tortuga.Chain.MySql
                 case "LONGBLOB": return MySqlDbType.LongBlob;
                 case "TINYTEXT": return MySqlDbType.TinyText;
                 case "LONG VARCHAR":
-                case "LONG":
                 case "MEDIUMTEXT": return MySqlDbType.MediumText;
                 case "LONGTEXT": return MySqlDbType.LongText;
                 default:
