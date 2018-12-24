@@ -34,6 +34,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xTests.Tortuga.Chain.SqlSer
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tortuga.Chain.Csv.source", "Tortuga.Chain.Csv.source\Tortuga.Chain.Csv.source.csproj", "{29250DD0-9A8E-49E9-BF19-5F45C54AC9FB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.Tortuga.Chain.Core.netstandard2.0", "Tests.Tortuga.Chain.Core.netstandard2.0\Tests.Tortuga.Chain.Core.netstandard2.0.csproj", "{572BE452-66A5-423F-B094-7F58C5281CFD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -266,6 +268,30 @@ Global
 		{29250DD0-9A8E-49E9-BF19-5F45C54AC9FB}.Release|x64.Build.0 = Release|Any CPU
 		{29250DD0-9A8E-49E9-BF19-5F45C54AC9FB}.Release|x86.ActiveCfg = Release|Any CPU
 		{29250DD0-9A8E-49E9-BF19-5F45C54AC9FB}.Release|x86.Build.0 = Release|Any CPU
+		{572BE452-66A5-423F-B094-7F58C5281CFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{572BE452-66A5-423F-B094-7F58C5281CFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{572BE452-66A5-423F-B094-7F58C5281CFD}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{572BE452-66A5-423F-B094-7F58C5281CFD}.Debug|ARM.Build.0 = Debug|Any CPU
+		{572BE452-66A5-423F-B094-7F58C5281CFD}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{572BE452-66A5-423F-B094-7F58C5281CFD}.Debug|x64.Build.0 = Debug|Any CPU
+		{572BE452-66A5-423F-B094-7F58C5281CFD}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{572BE452-66A5-423F-B094-7F58C5281CFD}.Debug|x86.Build.0 = Debug|Any CPU
+		{572BE452-66A5-423F-B094-7F58C5281CFD}.Debug-Unchecked|Any CPU.ActiveCfg = Debug|Any CPU
+		{572BE452-66A5-423F-B094-7F58C5281CFD}.Debug-Unchecked|Any CPU.Build.0 = Debug|Any CPU
+		{572BE452-66A5-423F-B094-7F58C5281CFD}.Debug-Unchecked|ARM.ActiveCfg = Debug|Any CPU
+		{572BE452-66A5-423F-B094-7F58C5281CFD}.Debug-Unchecked|ARM.Build.0 = Debug|Any CPU
+		{572BE452-66A5-423F-B094-7F58C5281CFD}.Debug-Unchecked|x64.ActiveCfg = Debug|Any CPU
+		{572BE452-66A5-423F-B094-7F58C5281CFD}.Debug-Unchecked|x64.Build.0 = Debug|Any CPU
+		{572BE452-66A5-423F-B094-7F58C5281CFD}.Debug-Unchecked|x86.ActiveCfg = Debug|Any CPU
+		{572BE452-66A5-423F-B094-7F58C5281CFD}.Debug-Unchecked|x86.Build.0 = Debug|Any CPU
+		{572BE452-66A5-423F-B094-7F58C5281CFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{572BE452-66A5-423F-B094-7F58C5281CFD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{572BE452-66A5-423F-B094-7F58C5281CFD}.Release|ARM.ActiveCfg = Release|Any CPU
+		{572BE452-66A5-423F-B094-7F58C5281CFD}.Release|ARM.Build.0 = Release|Any CPU
+		{572BE452-66A5-423F-B094-7F58C5281CFD}.Release|x64.ActiveCfg = Release|Any CPU
+		{572BE452-66A5-423F-B094-7F58C5281CFD}.Release|x64.Build.0 = Release|Any CPU
+		{572BE452-66A5-423F-B094-7F58C5281CFD}.Release|x86.ActiveCfg = Release|Any CPU
+		{572BE452-66A5-423F-B094-7F58C5281CFD}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -275,6 +301,7 @@ Global
 		{62634749-A18D-4882-917E-FB6E8B6EE3D1} = {6FB40F3D-E4CC-4E11-952C-BBD437AD2BF8}
 		{FF9BDF11-FF04-4781-A4A6-38BDB0D0FBFD} = {6FB40F3D-E4CC-4E11-952C-BBD437AD2BF8}
 		{09F36BDB-542D-45CA-A435-4679ADEE82D7} = {6FB40F3D-E4CC-4E11-952C-BBD437AD2BF8}
+		{572BE452-66A5-423F-B094-7F58C5281CFD} = {6FB40F3D-E4CC-4E11-952C-BBD437AD2BF8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {61ED1821-70A0-4192-AE8F-C2744CBC9790}
