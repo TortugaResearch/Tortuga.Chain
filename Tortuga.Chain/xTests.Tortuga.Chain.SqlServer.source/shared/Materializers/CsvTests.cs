@@ -6,6 +6,7 @@ using Tortuga.Chain;
 using Xunit;
 using Xunit.Abstractions;
 
+#if Csv_Missing
 namespace Tests.CommandBuilders
 {
     public class CsvTests : TestBase
@@ -14,7 +15,6 @@ namespace Tests.CommandBuilders
 
         public CsvTests(ITestOutputHelper output) : base(output)
         {
-
         }
 
         [Theory, MemberData("Prime")]
@@ -27,7 +27,6 @@ namespace Tests.CommandBuilders
 
                 for (var i = 0; i < 10; i++)
                     dataSource.Insert(EmployeeTableName, new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = key, MiddleName = i % 2 == 0 ? "A" + i : null }).ToObject<Employee>().Execute();
-
 
                 var csv = dataSource.From(EmployeeTableName, new { Title = key }).ToCsv().Execute();
                 Assert.IsNotNull(csv, "Serialization didn't return any data.");
@@ -60,7 +59,6 @@ namespace Tests.CommandBuilders
                 for (var i = 0; i < 10; i++)
                     await dataSource.Insert(EmployeeTableName, new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = key, MiddleName = i % 2 == 0 ? "A" + i : null }).ToObject<Employee>().ExecuteAsync();
 
-
                 var csv = await dataSource.From(EmployeeTableName, new { Title = key }).ToCsv().ExecuteAsync();
                 Assert.IsNotNull(csv, "Serialization didn't return any data.");
 
@@ -74,7 +72,6 @@ namespace Tests.CommandBuilders
 
                 var filteredColumns2 = await dataSource.From(EmployeeTableName, new { Title = key }).ToCsv(typeof(EmployeeWithName)).ExecuteAsync();
                 Assert.AreEqual(filteredColumns, filteredColumns2, "Filtered column data should have matched.");
-
             }
             finally
             {
@@ -84,6 +81,4 @@ namespace Tests.CommandBuilders
     }
 }
 
-
-
-
+#endif
