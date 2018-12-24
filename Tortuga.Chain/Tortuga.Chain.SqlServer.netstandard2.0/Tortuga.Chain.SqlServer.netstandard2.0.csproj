@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
 
-    <DefineConstants>$(DefineConstants);OleDb_Missing;SqlDependency_Missing;System_Configuration_Missing</DefineConstants>
+    <DefineConstants>TRACE;OleDb_Missing;System_Configuration_Missing</DefineConstants>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>Tortuga.Chain.SqlServer</AssemblyName>
     <PackageId>Tortuga.Chain.SqlServer.netstandard2.0</PackageId>
