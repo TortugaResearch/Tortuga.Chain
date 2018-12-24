@@ -25,6 +25,7 @@
     <DocumentationFile>bin\Debug\Tortuga.Chain.SqlServer.XML</DocumentationFile>
     <RunCodeAnalysis>true</RunCodeAnalysis>
     <NoWarn>618</NoWarn>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -38,6 +39,7 @@
     <DocumentationFile>bin\Release\Tortuga.Chain.SqlServer.XML</DocumentationFile>
     <RunCodeAnalysis>true</RunCodeAnalysis>
     <NoWarn>618</NoWarn>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>false</SignAssembly>
@@ -59,6 +61,7 @@
     <RunCodeAnalysis>false</RunCodeAnalysis>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>..\Tortuga.Chain.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />

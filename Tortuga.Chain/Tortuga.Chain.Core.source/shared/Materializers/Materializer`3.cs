@@ -6,7 +6,6 @@ using Tortuga.Chain.DataSources;
 
 namespace Tortuga.Chain.Materializers
 {
-
     /// <summary>
     /// This is the base class for materializers that return a value. Most operation are not executed without first attaching a materializer subclass.
     /// </summary>
@@ -18,7 +17,6 @@ namespace Tortuga.Chain.Materializers
         where TCommand : DbCommand
         where TParameter : DbParameter
     {
-
         /// <summary>
         /// Initializes a new instance of the <see cref="Materializer{TCommand, TParameter, TResult}"/> class.
         /// </summary>
@@ -42,7 +40,7 @@ namespace Tortuga.Chain.Materializers
         /// </summary>
         /// <param name="state">User defined state, usually used for logging.</param>
         /// <returns></returns>
-        public async Task<TResult> ExecuteAsync(object state = null) => await ExecuteAsync(CancellationToken.None, state);
+        public async Task<TResult> ExecuteAsync(object state = null) => await ExecuteAsync(CancellationToken.None, state).ConfigureAwait(false);
 
         /// <summary>
         /// Execute the operation asynchronously.
@@ -53,4 +51,3 @@ namespace Tortuga.Chain.Materializers
         public abstract Task<TResult> ExecuteAsync(CancellationToken cancellationToken, object state = null);
     }
 }
-

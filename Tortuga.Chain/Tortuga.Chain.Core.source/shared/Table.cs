@@ -88,7 +88,6 @@ namespace Tortuga.Chain
             m_Rows = new RowCollection(rows);
         }
 
-
         /// <summary>
         /// Creates a new Table from an IDataReader
         /// </summary>
@@ -181,7 +180,7 @@ namespace Tortuga.Chain
         {
             if (constructorSignature == null)
             {
-                var methodType = GetType().GetMethod("ToObjects", new Type[0]);
+                var methodType = GetType().GetMethod("ToObjects", Array.Empty<Type>());
                 var genericMethod = methodType.MakeGenericMethod(typeof(T));
                 return (IEnumerable<T>)genericMethod.Invoke(this, null);
             }
@@ -217,7 +216,6 @@ namespace Tortuga.Chain
                 var result = constructor.ConstructorInfo.Invoke(parameters);
                 yield return (T)result;
             }
-
         }
 
         internal IEnumerable<KeyValuePair<Row, T>> ToObjectsWithEcho<T>(IReadOnlyList<Type> constructorSignature)
@@ -260,8 +258,8 @@ namespace Tortuga.Chain
                 var result = constructor.ConstructorInfo.Invoke(parameters);
                 yield return new KeyValuePair<Row, T>(item, (T)result);
             }
-
         }
+
         /// <summary>
         /// Converts the table into an enumeration of objects of the indicated type.
         /// </summary>
@@ -281,7 +279,5 @@ namespace Tortuga.Chain
                 yield return new KeyValuePair<Row, T>(row, item);
             }
         }
-
-
     }
 }

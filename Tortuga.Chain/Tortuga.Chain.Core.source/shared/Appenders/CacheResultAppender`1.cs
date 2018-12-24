@@ -1,10 +1,9 @@
-﻿
-using System;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+
 namespace Tortuga.Chain.Appenders
 {
-
     /// <summary>
     /// Executes the previous link and caches the result.
     /// </summary>
@@ -43,7 +42,6 @@ namespace Tortuga.Chain.Appenders
             if (string.IsNullOrEmpty(cacheKey))
                 throw new ArgumentException($"{nameof(cacheKey)} is null or empty.", nameof(cacheKey));
 
-
             m_Policy = policy;
             m_CacheKey = cacheKey;
         }
@@ -54,7 +52,6 @@ namespace Tortuga.Chain.Appenders
         /// <param name="state">User defined state, usually used for logging.</param>
         public override TResult Execute(object state = null)
         {
-
             var result = PreviousLink.Execute(state);
 
             DataSource.Cache.Write(m_CacheKey ?? m_CacheKeyFunction(result), result, m_Policy);
@@ -70,14 +67,11 @@ namespace Tortuga.Chain.Appenders
         /// <returns></returns>
         public override async Task<TResult> ExecuteAsync(CancellationToken cancellationToken, object state = null)
         {
-
             var result = await PreviousLink.ExecuteAsync(state).ConfigureAwait(false);
 
-            await DataSource.Cache.WriteAsync(m_CacheKey ?? m_CacheKeyFunction(result), result, m_Policy);
+            await DataSource.Cache.WriteAsync(m_CacheKey ?? m_CacheKeyFunction(result), result, m_Policy).ConfigureAwait(false);
 
             return result;
         }
-
     }
-
 }
