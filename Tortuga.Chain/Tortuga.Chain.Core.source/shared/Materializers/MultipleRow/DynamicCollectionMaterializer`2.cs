@@ -57,7 +57,6 @@ namespace Tortuga.Chain.Materializers
                                 item[reader.GetName(i)] = reader.GetValue(i);
                         }
                         result.Add(item);
-
                     }
                     return result.Count;
                 }
@@ -65,8 +64,6 @@ namespace Tortuga.Chain.Materializers
 
             return result;
         }
-
-
 
         /// <summary>
         /// Execute the operation asynchronously.
@@ -93,11 +90,10 @@ namespace Tortuga.Chain.Materializers
                                 item[reader.GetName(i)] = reader.GetValue(i);
                         }
                         result.Add(item);
-
                     }
                     return result.Count;
                 }
-            }, cancellationToken, state);
+            }, cancellationToken, state).ConfigureAwait(false);
 
             return result;
         }

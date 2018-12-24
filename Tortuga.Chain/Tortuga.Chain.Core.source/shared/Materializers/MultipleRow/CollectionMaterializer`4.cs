@@ -23,7 +23,6 @@ namespace Tortuga.Chain.Materializers
         where TCollection : ICollection<TObject>, new()
         where TParameter : DbParameter
     {
-
         readonly CollectionOptions m_CollectionOptions;
 
         /// <summary>
@@ -35,7 +34,6 @@ namespace Tortuga.Chain.Materializers
             : base(commandBuilder)
         {
             m_CollectionOptions = collectionOptions;
-
 
             if (m_CollectionOptions.HasFlag(CollectionOptions.InferConstructor))
             {
@@ -89,7 +87,6 @@ namespace Tortuga.Chain.Materializers
             return result;
         }
 
-
         /// <summary>
         /// Execute the operation asynchronously.
         /// </summary>
@@ -104,7 +101,7 @@ namespace Tortuga.Chain.Materializers
             {
                 using (var reader = (await cmd.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false)).AsObjectConstructor<TObject>(ConstructorSignature, CommandBuilder.TryGetNonNullableColumns()))
                 {
-                    while (await reader.ReadAsync())
+                    while (await reader.ReadAsync().ConfigureAwait(false))
                         result.Add(reader.Current);
                     return result.Count;
                 }

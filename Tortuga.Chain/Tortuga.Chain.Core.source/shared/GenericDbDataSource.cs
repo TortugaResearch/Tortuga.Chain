@@ -11,15 +11,14 @@ using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain
 {
-
     /// <summary>
     /// The GenericDbDataSource is the most simplistic of all of the data sources. The command builder only supports raw SQL, but you still have access to all of the materializers.
     /// </summary>
     public class GenericDbDataSource : DataSource<DbConnection, DbTransaction, DbCommand, DbParameter>, IClass0DataSource
     {
-        ICacheAdapter m_Cache;
-        ConcurrentDictionary<Type, object> m_ExtensionCache;
+        readonly ICacheAdapter m_Cache;
         readonly DbConnectionStringBuilder m_ConnectionBuilder;
+        readonly ConcurrentDictionary<Type, object> m_ExtensionCache;
         readonly DbProviderFactory m_Factory;
 
         /// <summary>
@@ -56,7 +55,6 @@ namespace Tortuga.Chain
         /// connectionStringBuilder;connectionStringBuilder is null.</exception>
         public GenericDbDataSource(DbProviderFactory factory, string name, DbConnectionStringBuilder connectionStringBuilder, DataSourceSettings settings = null) : base(settings)
         {
-
             m_Factory = factory ?? throw new ArgumentNullException(nameof(factory));
             m_ConnectionBuilder = connectionStringBuilder ?? throw new ArgumentNullException(nameof(connectionStringBuilder)); ;
             Name = name;
@@ -77,7 +75,6 @@ namespace Tortuga.Chain
 
         internal GenericDbDataSource(string name, DbConnectionStringBuilder connectionStringBuilder, DataSourceSettings settings = null) : base(settings)
         {
-
             m_ConnectionBuilder = connectionStringBuilder ?? throw new ArgumentNullException(nameof(connectionStringBuilder));
             Name = name;
             m_ExtensionCache = new ConcurrentDictionary<Type, object>();
@@ -108,12 +105,27 @@ namespace Tortuga.Chain
         /// <summary>
         /// Creates and opens a SQL connection.
         /// </summary>
+        /// <returns></returns>
+        /// <remarks>The caller of this method is responsible for closing the connection.</remarks>
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
+        public DbConnection CreateConnection()
+        {
+            var con = OnCreateConnection();
+            con.ConnectionString = ConnectionString;
+            con.Open();
+
+            return con;
+        }
+
+        /// <summary>
+        /// Creates and opens a SQL connection.
+        /// </summary>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         /// <remarks>
         /// The caller of this method is responsible for closing the connection.
         /// </remarks>
-        public async Task<DbConnection> CreateConnectionAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<DbConnection> CreateConnectionAsync(CancellationToken cancellationToken = default)
         {
             var con = OnCreateConnection();
             con.ConnectionString = ConnectionString;
@@ -135,6 +147,7 @@ namespace Tortuga.Chain
         /// <param name="argumentValue">The argument value.</param>
         /// <returns>SqlServerSqlCall.</returns>
         public MultipleTableDbCommandBuilder<DbCommand, DbParameter> Sql(string sqlStatement, object argumentValue) => new GenericDbSqlCall(this, sqlStatement, argumentValue);
+
         IMultipleTableDbCommandBuilder IClass0DataSource.Sql(string sqlStatement, object argumentValue) => Sql(sqlStatement, argumentValue);
 
         /// <summary>
@@ -157,12 +170,12 @@ namespace Tortuga.Chain
         /// <returns></returns>
         public override async Task TestConnectionAsync()
         {
-            using (var con = await CreateConnectionAsync())
+            using (var con = await CreateConnectionAsync().ConfigureAwait(false))
             using (var cmd = CreateCommand())
             {
                 cmd.Connection = con;
                 cmd.CommandText = "SELECT 1";
-                await cmd.ExecuteScalarAsync();
+                await cmd.ExecuteScalarAsync().ConfigureAwait(false);
             }
         }
 
@@ -174,21 +187,6 @@ namespace Tortuga.Chain
             if (m_Factory == null)
                 throw new InvalidOperationException("Subclasses of GenericDbDataSource that do not provide a DbProviderFactory need to override CreateCommand");
             return m_Factory.CreateCommand();
-        }
-
-        /// <summary>
-        /// Creates and opens a SQL connection.
-        /// </summary>
-        /// <returns></returns>
-        /// <remarks>The caller of this method is responsible for closing the connection.</remarks>
-        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-        public DbConnection CreateConnection()
-        {
-            var con = OnCreateConnection();
-            con.ConnectionString = ConnectionString;
-            con.Open();
-
-            return con;
         }
 
         [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "GenericDbDataSource")]
@@ -346,7 +344,7 @@ namespace Tortuga.Chain
             }
             catch (Exception ex)
             {
-                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException 
+                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException
                 {
                     var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);
                     OnExecutionCanceled(executionToken, startTime, DateTimeOffset.Now, state);
@@ -359,6 +357,7 @@ namespace Tortuga.Chain
                 }
             }
         }
+
         /// <summary>
         /// execute as an asynchronous operation.
         /// </summary>
@@ -388,7 +387,7 @@ namespace Tortuga.Chain
             }
             catch (Exception ex)
             {
-                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException 
+                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException
                 {
                     var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);
                     OnExecutionCanceled(executionToken, startTime, DateTimeOffset.Now, state);
@@ -401,6 +400,7 @@ namespace Tortuga.Chain
                 }
             }
         }
+
         /// <summary>
         /// Called when Database.DatabaseMetadata is invoked.
         /// </summary>
@@ -409,8 +409,5 @@ namespace Tortuga.Chain
         {
             throw new NotSupportedException("This data source does not expose database metadata");
         }
-
     }
-
 }
-

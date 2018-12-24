@@ -17,7 +17,6 @@ namespace Tortuga.Chain.Materializers
         where TConnection : DbConnection
         where TTransaction : DbTransaction
     {
-
         readonly DbOperationBuilder<TConnection, TTransaction> m_OperationBuilder;
 
         /// <summary>
@@ -47,8 +46,12 @@ namespace Tortuga.Chain.Materializers
         /// <value>The data source.</value>
         /// <remarks>This is only used for</remarks>
         public IDataSource DataSource => m_OperationBuilder.DataSource;
+
+#pragma warning disable CA1033 // Interface methods should be callable by child types
+
         string ILink<int?>.CommandText() => null;
 
+#pragma warning restore CA1033 // Interface methods should be callable by child types
 
         /// <summary>
         /// Execute the operation synchronously.
@@ -60,7 +63,6 @@ namespace Tortuga.Chain.Materializers
             var token = Prepare();
             OperationImplementation<TConnection, TTransaction> implementation = m_OperationBuilder.Implementation;
             return token.Execute(implementation, state);
-
         }
 
         /// <summary>

@@ -14,18 +14,19 @@ using static Tortuga.Chain.Materializers.MaterializerUtilities;
 
 namespace Tortuga.Chain.Materializers
 {
-    internal class StreamingObjectConstructor<T> : IDisposable
+    internal sealed class StreamingObjectConstructor<T> : IDisposable
         where T : class
     {
         static readonly ImmutableArray<MappedProperty<T>> s_AllMappedProperties;
         static readonly ImmutableArray<MappedProperty<T>> s_DecomposedProperties;
 
-        static readonly Type[] s_DefaultConstructor = new Type[0];
+        static readonly Type[] s_DefaultConstructor = Array.Empty<Type>();
 
         readonly ConstructorMetadata m_Constructor;
 
         readonly StreamingObjectConstructorDictionary m_Dictionary;
 
+        readonly Dictionary<int, bool> m_NullableColumns;
         readonly Dictionary<string, int> m_Ordinals;
 
         readonly bool m_PopulateComplexObject;
@@ -39,7 +40,6 @@ namespace Tortuga.Chain.Materializers
         int m_RowsRead;
 
         DbDataReader m_Source;
-        readonly Dictionary<int, bool> m_NullableColumns;
 
         [SuppressMessage("Microsoft.Performance", "CA1810:InitializeReferenceTypeStaticFieldsInline")]
         static StreamingObjectConstructor()
@@ -147,7 +147,7 @@ namespace Tortuga.Chain.Materializers
 
         public async Task<bool> ReadAsync()
         {
-            var result = await m_Source.ReadAsync();
+            var result = await m_Source.ReadAsync().ConfigureAwait(false);
             if (result)
             {
                 m_Current = ConstructObject();
@@ -169,7 +169,7 @@ namespace Tortuga.Chain.Materializers
         public async Task<List<T>> ToListAsync()
         {
             var result = new List<T>();
-            while (await ReadAsync())
+            while (await ReadAsync().ConfigureAwait(false))
                 result.Add(Current);
             return result;
         }

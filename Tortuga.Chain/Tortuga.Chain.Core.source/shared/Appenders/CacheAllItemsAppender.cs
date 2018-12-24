@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -58,7 +57,7 @@ namespace Tortuga.Chain.Appenders
             var result = await PreviousLink.ExecuteAsync(cancellationToken, state).ConfigureAwait(false);
 
             foreach (var item in result)
-                await DataSource.Cache.WriteAsync(m_CacheKeyFunction(item), item, m_Policy);
+                await DataSource.Cache.WriteAsync(m_CacheKeyFunction(item), item, m_Policy).ConfigureAwait(false);
 
             return result;
         }

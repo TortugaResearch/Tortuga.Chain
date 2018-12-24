@@ -15,12 +15,6 @@
     </references>
     <frameworkAssemblies>
 
-      <frameworkAssembly assemblyName="System.Data" targetFramework="net45" />
-      <frameworkAssembly assemblyName="System.ComponentModel.DataAnnotations" targetFramework="net45" />
-      <frameworkAssembly assemblyName="System.Xml" targetFramework="net45" />
-      <frameworkAssembly assemblyName="System.Xml.Linq" targetFramework="net45" />
-      <frameworkAssembly assemblyName="System.Runtime.Caching" targetFramework="net45" />
-
       <frameworkAssembly assemblyName="System.Data" targetFramework="net46" />
       <frameworkAssembly assemblyName="System.ComponentModel.DataAnnotations" targetFramework="net46" />
       <frameworkAssembly assemblyName="System.Xml" targetFramework="net46" />
@@ -29,27 +23,17 @@
     </frameworkAssemblies>
 
     <dependencies>
-      <group targetFramework="net45">
-        <dependency id="System.Collections.Immutable" version="1.5.0" />
-        <dependency id="Tortuga.Anchor" version="1.2.6283.989" />
-      </group>
       <group targetFramework="net46">
         <dependency id="System.Collections.Immutable" version="1.5.0" />
-        <dependency id="Tortuga.Anchor" version="1.2.6283.989" />
+        <dependency id="Tortuga.Anchor" version="2.0.6931.40035" />
       </group>
-      <group targetFramework="netstandard1.3">
-        <dependency id="System.ComponentModel.Annotations" version="4.5.0" />
-        <dependency id="System.Data.Common" version="4.3.0" />
-        <dependency id="System.Dynamic.Runtime" version="4.3.0" />
-        <dependency id="System.Xml.XDocument" version="4.3.0" />
-        <dependency id="Tortuga.Anchor" version="1.2.6283.989" />
-      </group>
+
       <group targetFramework="netstandard2.0">
         <dependency id="System.ComponentModel.Annotations" version="4.5.0" />
         <dependency id="System.Data.Common" version="4.3.0" />
         <dependency id="System.Dynamic.Runtime" version="4.3.0" />
         <dependency id="System.Xml.XDocument" version="4.3.0" />
-        <dependency id="Tortuga.Anchor" version="1.2.6283.989" />
+        <dependency id="Tortuga.Anchor" version="2.0.6931.40035" />
       </group>
     </dependencies>
   </metadata>
