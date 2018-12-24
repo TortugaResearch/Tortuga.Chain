@@ -4,9 +4,6 @@ using System.Collections.ObjectModel;
 
 namespace Tortuga.Chain.Metadata
 {
-
-
-
     /// <summary>
     /// Class ParameterMetadataCollection.
     /// </summary>
@@ -48,13 +45,11 @@ namespace Tortuga.Chain.Metadata
                     if (item.SqlParameterName.Equals(parameterName, StringComparison.OrdinalIgnoreCase))
                         return item;
 
+#pragma warning disable CA1065 // Do not raise exceptions in unexpected locations
                 throw new KeyNotFoundException($"Could not find parameter named {parameterName} in object {m_Name}");
+#pragma warning restore CA1065 // Do not raise exceptions in unexpected locations
             }
         }
-
-
-
-
 
         /// <summary>
         /// Returns the parameter associated with the parameter name.
@@ -70,7 +65,5 @@ namespace Tortuga.Chain.Metadata
 
             return null;
         }
-
-
     }
 }
