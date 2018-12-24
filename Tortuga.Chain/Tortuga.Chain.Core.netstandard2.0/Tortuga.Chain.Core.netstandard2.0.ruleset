@@ -72,4 +72,7 @@
     <Rule Id="CA1200" Action="None" />
     <Rule Id="CA1507" Action="None" />
   </Rules>
+  <Rules AnalyzerId="Microsoft.CodeQuality.Analyzers" RuleNamespace="Microsoft.CodeQuality.Analyzers">
+    <Rule Id="CA1068" Action="None" />
+  </Rules>
 </RuleSet>
