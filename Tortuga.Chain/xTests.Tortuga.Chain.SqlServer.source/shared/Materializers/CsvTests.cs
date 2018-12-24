@@ -1,12 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Threading.Tasks;
-using Tests.Models;
-using Tortuga.Chain;
-using Xunit;
-using Xunit.Abstractions;
-
-#if Csv_Missing
+﻿#if Csv_Missing
 namespace Tests.CommandBuilders
 {
     public class CsvTests : TestBase
@@ -17,7 +9,7 @@ namespace Tests.CommandBuilders
         {
         }
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void SerializeToString(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -48,7 +40,7 @@ namespace Tests.CommandBuilders
             }
         }
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public async Task SerializeToStringAsync(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = await DataSourceAsync(dataSourceName, mode);

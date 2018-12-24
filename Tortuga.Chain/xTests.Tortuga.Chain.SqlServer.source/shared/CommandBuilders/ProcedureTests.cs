@@ -18,31 +18,31 @@ namespace Tests.CommandBuilders
 #if SQL_SERVER
         const string CheckA = @"SELECT Count(*) FROM Sales.Customer c WHERE c.State = @State;";
         const string CheckB = @"SELECT Count(*) FROM Sales.[Order] o INNER JOIN Sales.Customer c ON o.CustomerKey = c.CustomerKey WHERE c.State = @State;";
-        static object CheckParameter1 = new { @State = "CA" };
-        static object ProcParameter1 = new { @State = "CA" };
-        static object DictParameter1a = new Dictionary<string, object>() { { "State", "CA" } };
-        static object DictParameter1b = new Dictionary<string, object>() { { "@State", "CA" } };
+        static readonly object CheckParameter1 = new { @State = "CA" };
+        static readonly object ProcParameter1 = new { @State = "CA" };
+        static readonly object DictParameter1a = new Dictionary<string, object>() { { "State", "CA" } };
+        static readonly object DictParameter1b = new Dictionary<string, object>() { { "@State", "CA" } };
 #elif OLE_SQL_SERVER
         const string CheckA = @"SELECT Count(*) FROM Sales.Customer c WHERE c.State = ?;";
         const string CheckB = @"SELECT Count(*) FROM Sales.[Order] o INNER JOIN Sales.Customer c ON o.CustomerKey = c.CustomerKey WHERE c.State = ?;";
-        static object CheckParameter1 = new { @State = "CA" };
-        static object ProcParameter1 = new { @State = "CA" };
-        static object DictParameter1a = new Dictionary<string, object>() { { "State", "CA" } };
-        static object DictParameter1b = new Dictionary<string, object>() { { "@State", "CA" } };
+        static readonly object CheckParameter1 = new { @State = "CA" };
+        static readonly object ProcParameter1 = new { @State = "CA" };
+        static readonly object DictParameter1a = new Dictionary<string, object>() { { "State", "CA" } };
+        static readonly object DictParameter1b = new Dictionary<string, object>() { { "@State", "CA" } };
 #elif MYSQL
         const string CheckA = @"SELECT Count(*) FROM Sales.Customer c WHERE c.State = @State;";
         const string CheckB = @"SELECT Count(*) FROM Sales.`Order` o INNER JOIN Sales.Customer c ON o.CustomerKey = c.CustomerKey WHERE c.State = @State;";
-        static object CheckParameter1 = new { @State = "CA" };
-        static object ProcParameter1 = new { p_State = "CA" };
-        static object DictParameter1a = new Dictionary<string, object>() { { "p_State", "CA" } };
-        //static object DictParameter1b = new Dictionary<string, object>() { { "@p_State", "CA" } };
+        static readonly object CheckParameter1 = new { @State = "CA" };
+        static readonly object ProcParameter1 = new { p_State = "CA" };
+        static readonly object DictParameter1a = new Dictionary<string, object>() { { "p_State", "CA" } };
+        //static readonly object  DictParameter1b = new Dictionary<string, object>() { { "@p_State", "CA" } };
 #elif POSTGRESQL
         const string CheckA = @"SELECT Count(*) FROM Sales.Customer c WHERE c.State = @param_state;";
         const string CheckB = @"SELECT Count(*) FROM Sales.Order o INNER JOIN Sales.Customer c ON o.CustomerKey = c.CustomerKey WHERE c.State = @param_state;";
-        static object CheckParameter1 = new { @param_state = "CA" };
-        static object ProcParameter1 = new { @param_state = "CA" };
-        static object DictParameter1a = new Dictionary<string, object>() { { "param_state", "CA" } };
-        static object DictParameter1b = new Dictionary<string, object>() { { "@param_state", "CA" } };
+        static readonly object CheckParameter1 = new { @param_state = "CA" };
+        static readonly object ProcParameter1 = new { @param_state = "CA" };
+        static readonly object DictParameter1a = new Dictionary<string, object>() { { "param_state", "CA" } };
+        static readonly object DictParameter1b = new Dictionary<string, object>() { { "@param_state", "CA" } };
 #endif
 
         public ProcedureTests(ITestOutputHelper output) : base(output)
@@ -153,6 +153,7 @@ namespace Tests.CommandBuilders
                 Release(dataSource);
             }
         }
+
 #endif
 
 #if !MYSQL
@@ -176,6 +177,7 @@ namespace Tests.CommandBuilders
                 Release(dataSource);
             }
         }
+
 #endif
 
         [Theory, MemberData(nameof(Prime))]
@@ -392,6 +394,7 @@ namespace Tests.CommandBuilders
         }
 
 #if !MYSQL
+
         [Theory, MemberData(nameof(Prime))]
         public void Proc1_Dictionary2_DataSet(string assemblyName, string dataSourceName, DataSourceType mode)
         {
@@ -411,9 +414,11 @@ namespace Tests.CommandBuilders
                 Release(dataSource);
             }
         }
+
 #endif
 
 #if !MYSQL
+
         [Theory, MemberData(nameof(Prime))]
         public async Task Proc1_Dictionary2_Async_DataSet(string assemblyName, string dataSourceName, DataSourceType mode)
         {
@@ -433,6 +438,7 @@ namespace Tests.CommandBuilders
                 Release(dataSource);
             }
         }
+
 #endif
     }
 }

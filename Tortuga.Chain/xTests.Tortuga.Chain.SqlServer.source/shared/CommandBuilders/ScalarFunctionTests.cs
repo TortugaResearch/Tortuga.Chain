@@ -20,13 +20,11 @@ namespace Tests.CommandBuilders
         static object Filter_Integer = new { p_managerKey = 1 };
 #endif
 
-
         public ScalarFunctionTests(ITestOutputHelper output) : base(output)
         {
         }
 
-
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void ScalarFunction1_Integer_WithNullParameter(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -42,7 +40,7 @@ namespace Tests.CommandBuilders
             }
         }
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void ScalarFunction1_Integer(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -61,4 +59,3 @@ namespace Tests.CommandBuilders
 }
 
 #endif
-

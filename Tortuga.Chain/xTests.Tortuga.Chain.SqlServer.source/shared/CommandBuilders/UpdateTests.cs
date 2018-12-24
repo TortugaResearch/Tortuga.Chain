@@ -5,7 +5,6 @@ using Tortuga.Chain;
 using Xunit;
 using Xunit.Abstractions;
 
-
 namespace Tests.CommandBuilders
 {
     public class UpdateTests : TestBase
@@ -16,13 +15,9 @@ namespace Tests.CommandBuilders
         {
         }
 
-
-
-
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void ChangeTrackingTest(string assemblyName, string dataSourceName, DataSourceType mode)
         {
-
             var dataSource = DataSource(dataSourceName, mode);
             try
             {
@@ -44,19 +39,16 @@ namespace Tests.CommandBuilders
                 Assert.AreEqual(original.FirstName, updated.FirstName, "FirstName shouldn't have changed");
                 Assert.AreEqual(original.LastName, updated.LastName, "LastName shouldn't have changed");
                 Assert.AreEqual(inserted.Title, updated.Title, "Title should have changed");
-
             }
             finally
             {
                 Release(dataSource);
             }
-
         }
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void ChangeTrackingTest_NothingChanged(string assemblyName, string dataSourceName, DataSourceType mode)
         {
-
             var dataSource = DataSource(dataSourceName, mode);
             try
             {
@@ -86,11 +78,9 @@ namespace Tests.CommandBuilders
             }
         }
 
-
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void FailedUpdateTest(string assemblyName, string dataSourceName, DataSourceType mode)
         {
-
             var dataSource = DataSource(dataSourceName, mode);
             try
             {
@@ -124,13 +114,11 @@ namespace Tests.CommandBuilders
             }
         }
 
-
 #if !Roslyn_Missing && !SQLite
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void ChangeTrackingTest_Compiled(string assemblyName, string dataSourceName, DataSourceType mode)
         {
-
             var dataSource = DataSource(dataSourceName, mode);
             try
             {
@@ -150,19 +138,16 @@ namespace Tests.CommandBuilders
                 Assert.AreEqual(original.FirstName, updated.FirstName, "FirstName shouldn't have changed");
                 Assert.AreEqual(original.LastName, updated.LastName, "LastName shouldn't have changed");
                 Assert.AreEqual(inserted.Title, updated.Title, "Title should have changed");
-
             }
             finally
             {
                 Release(dataSource);
             }
-
         }
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void ChangeTrackingTest_NothingChanged_Compiled(string assemblyName, string dataSourceName, DataSourceType mode)
         {
-
             var dataSource = DataSource(dataSourceName, mode);
             try
             {
@@ -193,8 +178,7 @@ namespace Tests.CommandBuilders
 
 #endif
 
-
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void UpdateByKey(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -218,17 +202,14 @@ namespace Tests.CommandBuilders
                     else
                         Assert.NotEqual("Bob", row.FirstName, "FirstName should not have been changed.");
                 }
-
-
             }
             finally
             {
                 Release(dataSource);
             }
-
         }
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void UpdateByKeyList(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -256,30 +237,25 @@ namespace Tests.CommandBuilders
                     else
                         Assert.NotEqual("Bob", row.FirstName, "FirstName should not have been changed.");
                 }
-
-
             }
             finally
             {
                 Release(dataSource);
             }
-
         }
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void UpdateSet_Expression_Where(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
             {
-
                 var lookupKey = Guid.NewGuid().ToString();
                 for (var i = 0; i < 10; i++)
                     dataSource.Insert(EmployeeTableName, new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = lookupKey, MiddleName = i % 2 == 0 ? "A" : "B" }).ToObject<Employee>().Execute();
 
                 var updatedRows = dataSource.UpdateSet(EmployeeTableName, "FirstName = 'Redacted'").WithFilter($"Title = '{lookupKey}' AND MiddleName = 'B'").ToCollection<Employee>().Execute();
                 var allRows = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToCollection<Employee>().Execute();
-
 
                 Assert.Equal(5, updatedRows.Count, "The wrong number of rows were returned.");
                 Assert.Equal(5, allRows.Where(e => e.FirstName == "Redacted").Count(), "The wrong number of rows were updated.");
@@ -289,8 +265,6 @@ namespace Tests.CommandBuilders
 
                 var allRows2 = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToCollection<Employee>().Execute();
                 Assert.Equal(5, allRows2.Where(e => e.FirstName == "Withheld").Count(), "The wrong number of rows were updated in the second pass.");
-
-
             }
             finally
             {
@@ -298,13 +272,12 @@ namespace Tests.CommandBuilders
             }
         }
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void UpdateSet_Expression_WhereArg(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
             {
-
 #if OLE_SQL_SERVER
                 var whereClause = "Title = ? AND MiddleName = ?";
 #else
@@ -321,7 +294,6 @@ namespace Tests.CommandBuilders
                     MiddleName = "B"
                 }).ToCollection<Employee>().Execute();
                 var allRows = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToCollection<Employee>().Execute();
-
 
                 Assert.Equal(5, updatedRows.Count, "The wrong number of rows were returned.");
                 Assert.Equal(5, allRows.Where(e => e.FirstName == "Redacted").Count(), "The wrong number of rows were updated.");
@@ -342,7 +314,7 @@ namespace Tests.CommandBuilders
             }
         }
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void UpdateSet_ExpressionArg_WhereArg(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -367,7 +339,6 @@ namespace Tests.CommandBuilders
                 }).ToCollection<Employee>().Execute();
                 var allRows = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToCollection<Employee>().Execute();
 
-
                 Assert.Equal(5, updatedRows.Count, "The wrong number of rows were returned.");
                 Assert.Equal(5, allRows.Where(e => e.FirstName == "Redacted").Count(), "The wrong number of rows were updated.");
 
@@ -387,17 +358,15 @@ namespace Tests.CommandBuilders
             }
         }
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void UpdateSet_Expression_Filter(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
             {
-
                 var lookupKey = Guid.NewGuid().ToString();
                 for (var i = 0; i < 10; i++)
                     dataSource.Insert(EmployeeTableName, new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = lookupKey, MiddleName = i % 2 == 0 ? "A" : "B" }).ToObject<Employee>().Execute();
-
 
                 var updatedRows = dataSource.UpdateSet(EmployeeTableName, "FirstName = 'Redacted'").WithFilter(new
                 {
@@ -405,7 +374,6 @@ namespace Tests.CommandBuilders
                     MiddleName = "B"
                 }).ToCollection<Employee>().Execute();
                 var allRows = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToCollection<Employee>().Execute();
-
 
                 Assert.Equal(5, updatedRows.Count, "The wrong number of rows were returned.");
                 Assert.Equal(5, allRows.Where(e => e.FirstName == "Redacted").Count(), "The wrong number of rows were updated.");
@@ -426,21 +394,18 @@ namespace Tests.CommandBuilders
             }
         }
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void UpdateSet_Value_Where(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
             {
-
                 var lookupKey = Guid.NewGuid().ToString();
                 for (var i = 0; i < 10; i++)
                     dataSource.Insert(EmployeeTableName, new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = lookupKey, MiddleName = i % 2 == 0 ? "A" : "B" }).ToObject<Employee>().Execute();
 
-
                 var updatedRows = dataSource.UpdateSet(EmployeeTableName, new { FirstName = "Redacted" }).WithFilter($"Title = '{lookupKey}' AND MiddleName = 'B'").ToCollection<Employee>().Execute();
                 var allRows = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToCollection<Employee>().Execute();
-
 
                 Assert.Equal(5, updatedRows.Count, "The wrong number of rows were returned.");
                 Assert.Equal(5, allRows.Where(e => e.FirstName == "Redacted").Count(), "The wrong number of rows were updated.");
@@ -457,13 +422,12 @@ namespace Tests.CommandBuilders
             }
         }
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void UpdateSet_Value_WhereArg(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
             {
-
 #if OLE_SQL_SERVER
                 var whereClause = "Title = ? AND MiddleName = ?";
 #else
@@ -480,7 +444,6 @@ namespace Tests.CommandBuilders
                     MiddleName = "B"
                 }).ToCollection<Employee>().Execute();
                 var allRows = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToCollection<Employee>().Execute();
-
 
                 Assert.Equal(5, updatedRows.Count, "The wrong number of rows were returned.");
                 Assert.Equal(5, allRows.Where(e => e.FirstName == "Redacted").Count(), "The wrong number of rows were updated.");
@@ -501,20 +464,18 @@ namespace Tests.CommandBuilders
             }
         }
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void UpdateSet_Value_Filter(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
             {
-
                 var lookupKey = Guid.NewGuid().ToString();
                 for (var i = 0; i < 10; i++)
                     dataSource.Insert(EmployeeTableName, new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = lookupKey, MiddleName = i % 2 == 0 ? "A" : "B" }).ToObject<Employee>().Execute();
 
                 var updatedRows = dataSource.UpdateSet(EmployeeTableName, new { FirstName = "Redacted" }).WithFilter(new { Title = lookupKey, MiddleName = "B" }).ToCollection<Employee>().Execute();
                 var allRows = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToCollection<Employee>().Execute();
-
 
                 Assert.Equal(5, updatedRows.Count, "The wrong number of rows were returned.");
                 Assert.Equal(5, allRows.Where(e => e.FirstName == "Redacted").Count(), "The wrong number of rows were updated.");
@@ -531,13 +492,12 @@ namespace Tests.CommandBuilders
             }
         }
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void UpdateSet_Disallowed_1(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
             {
-
                 var lookupKey = Guid.NewGuid().ToString();
                 for (var i = 0; i < 10; i++)
                     dataSource.Insert(EmployeeTableName, new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = lookupKey, MiddleName = i % 2 == 0 ? "A" : "B" }).ToObject<Employee>().Execute();
@@ -558,13 +518,12 @@ namespace Tests.CommandBuilders
             }
         }
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void UpdateSet_Disallowed_2(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
             {
-
                 var lookupKey = Guid.NewGuid().ToString();
                 for (var i = 0; i < 10; i++)
                     dataSource.Insert(EmployeeTableName, new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = lookupKey, MiddleName = i % 2 == 0 ? "A" : "B" }).ToObject<Employee>().Execute();
@@ -585,13 +544,11 @@ namespace Tests.CommandBuilders
             }
         }
 
-
 #if SQL_SERVER || OLE_SQL_SERVER //SQL Server has problems with CRUD operations that return values on tables with triggers.
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void ChangeTrackingTest_Trigger(string assemblyName, string dataSourceName, DataSourceType mode)
         {
-
             var dataSource = DataSource(dataSourceName, mode);
             try
             {
@@ -613,18 +570,13 @@ namespace Tests.CommandBuilders
                 Assert.AreEqual(original.FirstName, updated.FirstName, "FirstName shouldn't have changed");
                 Assert.AreEqual(original.LastName, updated.LastName, "LastName shouldn't have changed");
                 Assert.AreEqual(inserted.Title, updated.Title, "Title should have changed");
-
             }
             finally
             {
                 Release(dataSource);
             }
-
         }
-#endif
 
+#endif
     }
 }
-
-
-

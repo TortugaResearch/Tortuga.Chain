@@ -82,11 +82,6 @@ namespace Xunit
             Contains(expected, collection, GetEqualityComparer<T>());
         }
 
-        internal static void IsNotNull(object @object, string userMessage)
-        {
-            NotNull(@object, userMessage);
-        }
-
         /// <summary>
         /// Verifies that a collection contains a given object, using an equality comparer.
         /// </summary>
@@ -311,7 +306,7 @@ namespace Xunit
             Assert.GuardArgumentNotNull("predicate", predicate);
 
             int count = 0;
-            T result = default(T);
+            T result = default;
 
             foreach (T item in collection)
                 if (predicate(item))
@@ -324,6 +319,11 @@ namespace Xunit
                 throw new SingleException(count);
 
             return result;
+        }
+
+        internal static void IsNotNull(object @object, string userMessage)
+        {
+            NotNull(@object, userMessage);
         }
     }
 }

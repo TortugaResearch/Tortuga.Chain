@@ -16,7 +16,7 @@ namespace Tests.Core
 
 #if SQL_SERVER || OLE_SQL_SERVER
 
-        [Theory, MemberData("Basic")]
+        [Theory, MemberData(nameof(Basic))]
         public void DatabaseName(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -35,7 +35,7 @@ namespace Tests.Core
 
 #if SQL_SERVER || MySQL || OLE_SQL_SERVER
 
-        [Theory, MemberData("Basic")]
+        [Theory, MemberData(nameof(Basic))]
         public void DefaultSchema(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -52,7 +52,7 @@ namespace Tests.Core
 
 #endif
 
-        [Theory, MemberData("Basic")]
+        [Theory, MemberData(nameof(Basic))]
         public void Preload(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -66,7 +66,7 @@ namespace Tests.Core
             }
         }
 
-        [Theory, MemberData("Tables")]
+        [Theory, MemberData(nameof(Tables))]
         public void GetTable(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -83,7 +83,7 @@ namespace Tests.Core
             }
         }
 
-        [Theory, MemberData("Tables")]
+        [Theory, MemberData(nameof(Tables))]
         public void GetTable_LowerCase(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -100,7 +100,7 @@ namespace Tests.Core
             }
         }
 
-        [Theory, MemberData("Tables")]
+        [Theory, MemberData(nameof(Tables))]
         public void GetTable_UpperCase(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -117,7 +117,7 @@ namespace Tests.Core
             }
         }
 
-        [Theory, MemberData("Views")]
+        [Theory, MemberData(nameof(Views))]
         public void GetView(string assemblyName, string dataSourceName, DataSourceType mode, string viewName)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -136,7 +136,7 @@ namespace Tests.Core
 
 #if SQL_SERVER || POSTGRESQL || OLE_SQL_SERVER
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void VerifyFunction1(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -156,7 +156,7 @@ namespace Tests.Core
 
 #if POSTGRESQL
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void GetTableWithDefaultSchema(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -172,7 +172,7 @@ namespace Tests.Core
             }
         }
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void GetSchemaList(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -199,7 +199,8 @@ namespace Tests.Core
 #endif
 
 #if SQL_SERVER || OLE_SQL_SERVER
-        [Theory, MemberData("Prime")]
+
+        [Theory, MemberData(nameof(Prime))]
         public void VerifyFunction2(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);

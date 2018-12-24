@@ -3,7 +3,6 @@ using Tests.Models;
 using Xunit;
 using Xunit.Abstractions;
 
-
 namespace Tests.CommandBuilders
 {
     public class UpsertTests : TestBase
@@ -14,13 +13,11 @@ namespace Tests.CommandBuilders
         {
         }
 
-
 #if !ACCESS
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void BasicUpsertTest(string assemblyName, string dataSourceName, DataSourceType mode)
         {
-
             var dataSource = DataSource(dataSourceName, mode);
             try
             {
@@ -40,20 +37,18 @@ namespace Tests.CommandBuilders
                 Assert.AreEqual(inserted.FirstName, updated.FirstName, "FirstName shouldn't have changed");
                 Assert.AreEqual(original.LastName, updated.LastName, "LastName shouldn't have changed");
                 Assert.AreEqual(inserted.Title, updated.Title, "Title should have changed");
-
             }
             finally
             {
                 Release(dataSource);
             }
-
         }
 
 #if SQL_SERVER || OLE_SQL_SERVER //SQL Server has problems with CRUD operations that return values on tables with triggers.
-        [Theory, MemberData("Prime")]
+
+        [Theory, MemberData(nameof(Prime))]
         public void BasicUpsertTest_Trigger(string assemblyName, string dataSourceName, DataSourceType mode)
         {
-
             var dataSource = DataSource(dataSourceName, mode);
             try
             {
@@ -73,22 +68,15 @@ namespace Tests.CommandBuilders
                 Assert.AreEqual(inserted.FirstName, updated.FirstName, "FirstName shouldn't have changed");
                 Assert.AreEqual(original.LastName, updated.LastName, "LastName shouldn't have changed");
                 Assert.AreEqual(inserted.Title, updated.Title, "Title should have changed");
-
             }
             finally
             {
                 Release(dataSource);
             }
-
         }
 
 #endif
 
 #endif
-
-
     }
 }
-
-
-

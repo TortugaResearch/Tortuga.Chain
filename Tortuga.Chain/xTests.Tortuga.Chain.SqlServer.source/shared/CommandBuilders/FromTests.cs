@@ -29,10 +29,9 @@ namespace Tests.CommandBuilders
 
         public FromTests(ITestOutputHelper output) : base(output)
         {
-
         }
 
-        [Theory, MemberData("TablesAndViews")]
+        [Theory, MemberData(nameof(TablesAndViews))]
         public void ToDynamicCollection(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -47,16 +46,14 @@ namespace Tests.CommandBuilders
                     var first = (IDictionary<string, object>)result.First();
                     Assert.Equal(table.Columns.Count, first.Count);
                 }
-
             }
             finally
             {
                 Release(dataSource);
             }
-
         }
 
-        [Theory, MemberData("TablesAndViews")]
+        [Theory, MemberData(nameof(TablesAndViews))]
         public async Task ToDynamicCollection_Async(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
         {
             var dataSource = await DataSourceAsync(dataSourceName, mode);
@@ -71,16 +68,14 @@ namespace Tests.CommandBuilders
                     var row = (IDictionary<string, object>)result.First();
                     Assert.Equal(table.Columns.Count, row.Count);
                 }
-
             }
             finally
             {
                 Release(dataSource);
             }
-
         }
 
-        [Theory, MemberData("TablesAndViews")]
+        [Theory, MemberData(nameof(TablesAndViews))]
         public void ToDynamicObject(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -99,10 +94,9 @@ namespace Tests.CommandBuilders
             {
                 Release(dataSource);
             }
-
         }
 
-        [Theory, MemberData("TablesAndViews")]
+        [Theory, MemberData(nameof(TablesAndViews))]
         public async Task ToDynamicObject_Async(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
         {
             var dataSource = await DataSourceAsync(dataSourceName, mode);
@@ -121,12 +115,9 @@ namespace Tests.CommandBuilders
             {
                 Release(dataSource);
             }
-
         }
 
-
-
-        [Theory, MemberData("TablesAndViews")]
+        [Theory, MemberData(nameof(TablesAndViews))]
         public void ToDataTable(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -137,16 +128,14 @@ namespace Tests.CommandBuilders
                 var result = dataSource.From(tableName).WithLimits(10).ToDataTable().Execute();
                 Assert.True(result.Rows.Count <= 10);
                 Assert.Equal(table.Columns.Count, result.Columns.Count);
-
             }
             finally
             {
                 Release(dataSource);
             }
-
         }
 
-        [Theory, MemberData("TablesAndViews")]
+        [Theory, MemberData(nameof(TablesAndViews))]
         public async Task ToDataTable_Async(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
         {
             var dataSource = await DataSourceAsync(dataSourceName, mode);
@@ -157,16 +146,14 @@ namespace Tests.CommandBuilders
                 var result = await dataSource.From(tableName).WithLimits(10).ToDataTable().ExecuteAsync();
                 Assert.True(result.Rows.Count <= 10);
                 Assert.Equal(table.Columns.Count, result.Columns.Count);
-
             }
             finally
             {
                 Release(dataSource);
             }
-
         }
 
-        [Theory, MemberData("TablesAndViews")]
+        [Theory, MemberData(nameof(TablesAndViews))]
         public void ToDataRow(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -184,10 +171,9 @@ namespace Tests.CommandBuilders
             {
                 Release(dataSource);
             }
-
         }
 
-        [Theory, MemberData("TablesAndViews")]
+        [Theory, MemberData(nameof(TablesAndViews))]
         public async Task ToDataRow_Async(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
         {
             var dataSource = await DataSourceAsync(dataSourceName, mode);
@@ -200,18 +186,14 @@ namespace Tests.CommandBuilders
                 {
                     Assert.Equal(table.Columns.Count, result.Table.Columns.Count);
                 }
-
             }
             finally
             {
                 Release(dataSource);
             }
-
         }
 
-
-
-        [Theory, MemberData("TablesAndViews")]
+        [Theory, MemberData(nameof(TablesAndViews))]
         public void ToTable(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -222,16 +204,14 @@ namespace Tests.CommandBuilders
                 var result = dataSource.From(tableName).WithLimits(10).ToTable().Execute();
                 Assert.True(result.Rows.Count <= 10);
                 Assert.Equal(table.Columns.Count, result.ColumnNames.Count);
-
             }
             finally
             {
                 Release(dataSource);
             }
-
         }
 
-        [Theory, MemberData("TablesAndViews")]
+        [Theory, MemberData(nameof(TablesAndViews))]
         public async Task ToTable_Async(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
         {
             var dataSource = await DataSourceAsync(dataSourceName, mode);
@@ -242,16 +222,14 @@ namespace Tests.CommandBuilders
                 var result = await dataSource.From(tableName).WithLimits(10).ToTable().ExecuteAsync();
                 Assert.True(result.Rows.Count <= 10);
                 Assert.Equal(table.Columns.Count, result.ColumnNames.Count);
-
             }
             finally
             {
                 Release(dataSource);
             }
-
         }
 
-        [Theory, MemberData("TablesAndViews")]
+        [Theory, MemberData(nameof(TablesAndViews))]
         public void ToRow(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -271,7 +249,7 @@ namespace Tests.CommandBuilders
             }
         }
 
-        [Theory, MemberData("TablesAndViews")]
+        [Theory, MemberData(nameof(TablesAndViews))]
         public async Task ToRow_Async(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
         {
             var dataSource = await DataSourceAsync(dataSourceName, mode);
@@ -284,18 +262,14 @@ namespace Tests.CommandBuilders
                 {
                     Assert.Equal(table.Columns.Count, result.Count);
                 }
-
             }
             finally
             {
                 Release(dataSource);
             }
-
         }
 
-
-
-        [Theory, MemberData("TablesAndViewLimit")]
+        [Theory, MemberData(nameof(TablesAndViewLimit))]
         public void ToTable_WithLimit(string assemblyName, string dataSourceName, DataSourceType mode, string tableName, LimitOptions limitOptions)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -315,16 +289,14 @@ namespace Tests.CommandBuilders
                 var result = prep.ToTable().Execute();
                 //Assert.True(result.Rows.Count <= 10, $"Row count was {result.Rows.Count}");
                 Assert.Equal(table.Columns.Count, result.ColumnNames.Count);
-
             }
             finally
             {
                 Release(dataSource);
             }
-
         }
 
-        [Theory, MemberData("TablesAndViewLimit")]
+        [Theory, MemberData(nameof(TablesAndViewLimit))]
         public async Task ToTable_WithLimit_Async(string assemblyName, string dataSourceName, DataSourceType mode, string tableName, LimitOptions limitOptions)
         {
             var dataSource = await DataSourceAsync(dataSourceName, mode);
@@ -344,16 +316,14 @@ namespace Tests.CommandBuilders
                 var result = await prep.ToTable().ExecuteAsync();
                 //Assert.True(result.Rows.Count <= 10, $"Row count was {result.Rows.Count}");
                 Assert.Equal(table.Columns.Count, result.ColumnNames.Count);
-
             }
             finally
             {
                 Release(dataSource);
             }
-
         }
 
-        [Theory, MemberData("TablesAndViews")]
+        [Theory, MemberData(nameof(TablesAndViews))]
         public void Count(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -367,10 +337,9 @@ namespace Tests.CommandBuilders
             {
                 Release(dataSource);
             }
-
         }
 
-        [Theory, MemberData("TablesAndViews")]
+        [Theory, MemberData(nameof(TablesAndViews))]
         public async Task Count_Async(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
         {
             var dataSource = await DataSourceAsync(dataSourceName, mode);
@@ -384,12 +353,11 @@ namespace Tests.CommandBuilders
             {
                 Release(dataSource);
             }
-
         }
 
 #if NO_DISTINCT_COUNT
 
-        [Theory, MemberData("TablesAndViewsWithColumns")]
+        [Theory, MemberData(nameof(TablesAndViewsWithColumns))]
         public void CountByColumn(string assemblyName, string dataSourceName, DataSourceType mode, string tableName, string columnName)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -409,7 +377,8 @@ namespace Tests.CommandBuilders
             }
         }
 #else
-        [Theory, MemberData("TablesAndViewsWithColumns")]
+
+        [Theory, MemberData(nameof(TablesAndViewsWithColumns))]
         public void CountByColumn(string assemblyName, string dataSourceName, DataSourceType mode, string tableName, string columnName)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -430,11 +399,11 @@ namespace Tests.CommandBuilders
                 Release(dataSource);
             }
         }
+
 #endif
 
-
 #if NO_DISTINCT_COUNT
-        [Theory, MemberData("TablesAndViewsWithColumns")]
+        [Theory, MemberData(nameof(TablesAndViewsWithColumns))]
         public async Task CountByColumn_Async(string assemblyName, string dataSourceName, DataSourceType mode, string tableName, string columnName)
         {
             var dataSource = await DataSourceAsync(dataSourceName, mode);
@@ -454,7 +423,8 @@ namespace Tests.CommandBuilders
             }
         }
 #else
-        [Theory, MemberData("TablesAndViewsWithColumns")]
+
+        [Theory, MemberData(nameof(TablesAndViewsWithColumns))]
         public async Task CountByColumn_Async(string assemblyName, string dataSourceName, DataSourceType mode, string tableName, string columnName)
         {
             var dataSource = await DataSourceAsync(dataSourceName, mode);
@@ -475,9 +445,10 @@ namespace Tests.CommandBuilders
                 Release(dataSource);
             }
         }
+
 #endif
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void AsCount(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -487,7 +458,6 @@ namespace Tests.CommandBuilders
 
                 for (var i = 0; i < 10; i++)
                     dataSource.Insert(EmployeeTableName, new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = key, MiddleName = i % 2 == 0 ? "A" + i : null }).ToObject<Employee>().Execute();
-
 
                 var count = dataSource.From(EmployeeTableName, new { Title = key }).AsCount().Execute();
                 var columnCount = dataSource.From(EmployeeTableName, new { Title = key }).AsCount("Title").Execute();
@@ -506,7 +476,6 @@ namespace Tests.CommandBuilders
                 Assert.AreEqual(1, distinctColumnCount, "Only one distinct value");
                 Assert.AreEqual(10, distinctColumnCount2, "Every value is distinct");
 #endif
-
             }
             finally
             {
@@ -514,7 +483,7 @@ namespace Tests.CommandBuilders
             }
         }
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void FilterByObject(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -525,7 +494,6 @@ namespace Tests.CommandBuilders
                 for (var i = 0; i < 10; i++)
                     dataSource.Insert(EmployeeTableName, new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = key, MiddleName = i % 2 == 0 ? "A" + i : null }).ToObject<Employee>().Execute();
 
-
                 var all = dataSource.From(EmployeeTableName, new { Title = key }).ToCollection<Employee>().Execute();
                 var middleNameIsNull = dataSource.From(EmployeeTableName, new { Title = key, MiddleName = (string)null }).ToCollection<Employee>().Execute();
                 var ignoreNulls = dataSource.From(EmployeeTableName, new { Title = key, MiddleName = (string)null }, FilterOptions.IgnoreNullProperties).ToCollection<Employee>().Execute();
@@ -533,8 +501,6 @@ namespace Tests.CommandBuilders
                 Assert.AreEqual(10, all.Count, "All of the rows");
                 Assert.AreEqual(5, middleNameIsNull.Count, "Middle name is null");
                 Assert.AreEqual(10, ignoreNulls.Count, "Ignore nulls should return all of the rows");
-
-
             }
             finally
             {
@@ -543,7 +509,3 @@ namespace Tests.CommandBuilders
         }
     }
 }
-
-
-
-

@@ -5,14 +5,20 @@
     <RootNamespace>xTests.Tortuga.Chain.SqlServer.netstandard2._0</RootNamespace>
 
     <IsPackable>false</IsPackable>
+
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DefineConstants>TRACE;Roslyn_Missing;SQL_SERVER</DefineConstants>
+    <CodeAnalysisRuleSet>xTests.Tortuga.Chain.SqlServer.netstandard2.0.ruleset</CodeAnalysisRuleSet>
+    <NoWarn>1701;1702;0436</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>TRACE;Roslyn_Missing;SQL_SERVER</DefineConstants>
+    <CodeAnalysisRuleSet>xTests.Tortuga.Chain.SqlServer.netstandard2.0.ruleset</CodeAnalysisRuleSet>
+    <NoWarn>1701;1702;0436</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

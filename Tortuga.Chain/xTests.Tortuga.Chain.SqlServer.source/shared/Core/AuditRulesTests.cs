@@ -18,7 +18,7 @@ namespace Tests.shared.Core
         {
         }
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void AuditRulesTests_AddUser(string assemblyName, string dataSourceName)
         {
             var dataSource = DataSource(dataSourceName);
@@ -33,7 +33,7 @@ namespace Tests.shared.Core
             }
         }
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void AuditRulesTests_CheckValidation(string assemblyName, string dataSourceName)
         {
             var dataSource = DataSource(dataSourceName);
@@ -62,7 +62,7 @@ namespace Tests.shared.Core
             }
         }
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void AuditRulesTests_InsertUpdateRules(string assemblyName, string dataSourceName)
         {
             var dataSource = DataSource(dataSourceName);
@@ -104,7 +104,7 @@ namespace Tests.shared.Core
             }
         }
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void AuditRulesTests_SoftDelete(string assemblyName, string dataSourceName)
         {
             var dataSource = DataSource(dataSourceName);
@@ -164,7 +164,7 @@ namespace Tests.shared.Core
             }
         }
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void AuditRulesTests_SoftDelete_2(string assemblyName, string dataSourceName)
         {
             var dataSource = DataSource(dataSourceName);
@@ -224,7 +224,7 @@ namespace Tests.shared.Core
             }
         }
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void AuditRulesTests_RestrictedColumn(string assemblyName, string dataSourceName)
         {
             var dataSource = DataSource(dataSourceName);
@@ -273,7 +273,7 @@ namespace Tests.shared.Core
 
 #if SQL_SERVER || OLE_SQL_SERVER
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void SoftDeleteByKey(string assemblyName, string dataSourceName)
         {
             var dataSource = DataSource(dataSourceName);
