@@ -1,18 +1,34 @@
 using Npgsql;
-using System;
 using System.Configuration;
-using System.Diagnostics;
-using Tortuga.Chain;
-using Tortuga.Chain.Core;
 using Xunit;
-
-[assembly: CollectionBehavior(DisableTestParallelization = true)]
 
 namespace Tests
 {
     public class Setup
     {
         //TODO: Redesign this to adhere to xUnit conventions.
+
+        public static void AssemblyCleanup()
+        {
+            /*
+			using (var con = new NpgsqlConnection(@"User ID = postgres;
+											 Password = toor;
+											 Host = localhost;
+											 Port = 5432;
+											 Database = tortugachaintestdb;
+											 Pooling = true;"))
+			{
+				con.Open();
+
+				string sql = "DROP TABLE HR.Employee; DROP SCHEMA HR;";
+				string sql2 = "DROP TABLE Sales.Customer; DROP SCHEMA Sales;";
+				using (NpgsqlCommand cmd = new NpgsqlCommand(sql, con))
+					cmd.ExecuteNonQuery();
+
+				using (NpgsqlCommand cmd = new NpgsqlCommand(sql2, con))
+					cmd.ExecuteNonQuery();
+			}*/
+        }
 
         public static void AssemblyInit()
         {
@@ -225,81 +241,6 @@ $$ LANGUAGE plpgsql;";
                 using (NpgsqlCommand cmd = new NpgsqlCommand(scalarFunc, con))
                     cmd.ExecuteNonQuery();
             }
-        }
-
-        public static void AssemblyCleanup()
-        {
-            /*
-			using (var con = new NpgsqlConnection(@"User ID = postgres;
-											 Password = toor;
-											 Host = localhost;
-											 Port = 5432;
-											 Database = tortugachaintestdb;
-											 Pooling = true;"))
-			{
-				con.Open();
-
-				string sql = "DROP TABLE HR.Employee; DROP SCHEMA HR;";
-				string sql2 = "DROP TABLE Sales.Customer; DROP SCHEMA Sales;";
-				using (NpgsqlCommand cmd = new NpgsqlCommand(sql, con))
-					cmd.ExecuteNonQuery();
-
-				using (NpgsqlCommand cmd = new NpgsqlCommand(sql2, con))
-					cmd.ExecuteNonQuery();
-			}*/
-        }
-
-        static void DefaultDispatcher_ExecutionCanceled(object sender, ExecutionEventArgs e)
-        {
-            Debug.WriteLine("******");
-            Debug.WriteLine($"Execution canceled: {e.ExecutionDetails.OperationName}. Duration: {e.Duration.Value.TotalSeconds.ToString("N3")} sec.");
-            //WriteDetails(e);
-        }
-
-        static void CompiledMaterializers_MaterializerCompiled(object sender, MaterializerCompilerEventArgs e)
-        {
-            Debug.WriteLine("******");
-            Debug.WriteLine("Compiled Materializer");
-            Debug.Indent();
-            Debug.WriteLine("SQL");
-            Debug.WriteLine(e.Sql);
-            Debug.WriteLine("Code");
-            Debug.WriteLine(e.Code);
-            Debug.Unindent();
-        }
-
-        static void DefaultDispatcher_ExecutionError(object sender, ExecutionEventArgs e)
-        {
-            Debug.WriteLine("******");
-            Debug.WriteLine($"Execution error: {e.ExecutionDetails.OperationName}. Duration: {e.Duration.Value.TotalSeconds.ToString("N3")} sec.");
-            //WriteDetails(e);
-        }
-
-        static void DefaultDispatcher_ExecutionFinished(object sender, ExecutionEventArgs e)
-        {
-            Debug.WriteLine("******");
-            Debug.WriteLine($"Execution finished: {e.ExecutionDetails.OperationName}. Duration: {e.Duration.Value.TotalSeconds.ToString("N3")} sec. Rows affected: {(e.RowsAffected != null ? e.RowsAffected.Value.ToString("N0") : "<NULL>")}.");
-            //WriteDetails(e);
-        }
-
-        static void DefaultDispatcher_ExecutionStarted(object sender, ExecutionEventArgs e)
-        {
-            Debug.WriteLine("******");
-            Debug.WriteLine($"Execution started: {e.ExecutionDetails.OperationName}");
-            WriteDetails(e);
-        }
-
-        static void WriteDetails(ExecutionEventArgs e)
-        {
-            Debug.WriteLine("");
-            Debug.WriteLine("Command text: ");
-            Debug.WriteLine(e.ExecutionDetails.CommandText);
-            Debug.Indent();
-            foreach (var item in ((CommandExecutionToken<NpgsqlCommand, NpgsqlParameter>)e.ExecutionDetails).Parameters)
-                Debug.WriteLine(item.ParameterName + ": " + (item.Value == null || item.Value == DBNull.Value ? "<NULL>" : item.Value));
-            Debug.Unindent();
-            Debug.WriteLine("******");
-            Debug.WriteLine("");
         }
     }
 }

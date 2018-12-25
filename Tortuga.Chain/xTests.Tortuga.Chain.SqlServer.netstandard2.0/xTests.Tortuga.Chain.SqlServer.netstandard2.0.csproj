@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
     <RootNamespace>xTests.Tortuga.Chain.SqlServer.netstandard2._0</RootNamespace>
 
     <IsPackable>false</IsPackable>
@@ -16,7 +16,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>TRACE;Roslyn_Missing;SQL_SERVER</DefineConstants>
+    <DefineConstants>TRACE;SQL_SERVER</DefineConstants>
     <CodeAnalysisRuleSet>xTests.Tortuga.Chain.SqlServer.netstandard2.0.ruleset</CodeAnalysisRuleSet>
     <NoWarn>1701;1702;0436</NoWarn>
   </PropertyGroup>
@@ -33,6 +33,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Tortuga.Chain.CompiledMaterializers.netstandard2.0\Tortuga.Chain.CompiledMaterializers.netstandard2.0.csproj" />
     <ProjectReference Include="..\Tortuga.Chain.SqlServer.netstandard2.0\Tortuga.Chain.SqlServer.netstandard2.0.csproj" />
   </ItemGroup>
 
@@ -40,6 +41,12 @@
     <Compile Include="..\xTests.Tortuga.Chain.SqlServer.source\shared\**\*.cs">
       <Link>shared\%(RecursiveDir)%(Filename)%(Extension)</Link>
     </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="System.Configuration">
+      <HintPath>..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\System.Configuration.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>

@@ -26,6 +26,7 @@ namespace Tests
                 if (s_PrimaryDataSource == null) s_PrimaryDataSource = ds;
                 s_DataSources.Add(con.Name, ds);
             }
+            BuildEmployeeSearchKey1000(s_PrimaryDataSource);
         }
 
         public static string CustomerTableName { get { return "Sales.Customer"; } }

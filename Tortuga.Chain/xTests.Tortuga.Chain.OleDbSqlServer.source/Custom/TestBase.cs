@@ -9,23 +9,17 @@ using Tortuga.Chain.AuditRules;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.SqlServer;
-using Xunit;
-
-[assembly: CollectionBehavior(DisableTestParallelization = true)]
 
 namespace Tests
 {
     public abstract partial class TestBase
     {
-
-
         static public readonly string AssemblyName = "OleDb SQL Server";
         static protected readonly Dictionary<string, OleDbSqlServerDataSource> s_DataSources = new Dictionary<string, OleDbSqlServerDataSource>();
         protected static readonly OleDbSqlServerDataSource s_PrimaryDataSource;
 
         static TestBase()
         {
-
             foreach (ConnectionStringSettings con in ConfigurationManager.ConnectionStrings)
             {
                 var ds = new OleDbSqlServerDataSource(con.Name, con.ConnectionString);
@@ -33,8 +27,7 @@ namespace Tests
                 if (s_PrimaryDataSource == null) s_PrimaryDataSource = ds;
             }
 
-
-
+            BuildEmployeeSearchKey1000(s_PrimaryDataSource);
         }
 
         public static string CustomerTableName { get { return "Sales.Customer"; } }
@@ -45,11 +38,10 @@ namespace Tests
 
         public string MultiResultSetProc1Name { get { return "Sales.CustomerWithOrdersByState"; } }
 
+        public string ScalarFunction1Name { get { return "HR.EmployeeCount"; } }
         public string TableFunction1Name { get { return "Sales.CustomersByState"; } }
 
         public string TableFunction2Name { get { return "Sales.CustomersByStateInline"; } }
-
-        public string ScalarFunction1Name { get { return "HR.EmployeeCount"; } }
 
         public OleDbSqlServerDataSource AttachRules(OleDbSqlServerDataSource source)
         {

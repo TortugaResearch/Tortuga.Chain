@@ -2,8 +2,6 @@ using MySql.Data.MySqlClient;
 using System.Configuration;
 using Xunit;
 
-[assembly: CollectionBehavior(DisableTestParallelization = true)]
-
 namespace Tests
 {
     public class Setup

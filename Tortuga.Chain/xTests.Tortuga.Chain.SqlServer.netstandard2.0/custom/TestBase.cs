@@ -1,7 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Tests.Models;
@@ -9,9 +8,6 @@ using Tortuga.Chain;
 using Tortuga.Chain.AuditRules;
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.SqlServer;
-using Xunit;
-
-[assembly: CollectionBehavior(DisableTestParallelization = true)]
 
 namespace Tests
 {
@@ -31,16 +27,19 @@ namespace Tests
                 s_DataSources.Add(con.Key, ds);
                 if (s_PrimaryDataSource == null) s_PrimaryDataSource = ds;
             }
+            BuildEmployeeSearchKey1000(s_PrimaryDataSource);
         }
 
         public static string CustomerTableName { get { return "Sales.Customer"; } }
 
         public static string EmployeeTableName { get { return "HR.Employee"; } }
+
         public static string EmployeeTableName_Trigger { get { return "HR.EmployeeWithTrigger"; } }
 
         public string MultiResultSetProc1Name { get { return "Sales.CustomerWithOrdersByState"; } }
 
         public string ScalarFunction1Name { get { return "HR.EmployeeCount"; } }
+
         public string TableFunction1Name { get { return "Sales.CustomersByState"; } }
 
         public string TableFunction2Name { get { return "Sales.CustomersByStateInline"; } }

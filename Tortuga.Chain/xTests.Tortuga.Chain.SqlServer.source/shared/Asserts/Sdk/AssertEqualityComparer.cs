@@ -80,6 +80,44 @@ namespace Xunit.Sdk
             return Object.Equals(x, y);
         }
 
+        /// <inheritdoc/>
+        [SuppressMessage("Code Notifications", "RECS0083:Shows NotImplementedException throws in the quick task bar", Justification = "This class is not intended to be used in a hased container")]
+        public int GetHashCode(T obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        bool? CheckIfDictionariesAreEqual(T x, T y)
+        {
+            var dictionaryX = x as IDictionary;
+            var dictionaryY = y as IDictionary;
+
+            if (dictionaryX == null || dictionaryY == null)
+                return null;
+
+            if (dictionaryX.Count != dictionaryY.Count)
+                return false;
+
+            var equalityComparer = innerComparerFactory();
+            var dictionaryYKeys = new HashSet<object>(Enumerable.Cast<object>(dictionaryY.Keys));
+
+            foreach (var key in dictionaryX.Keys)
+            {
+                if (!dictionaryYKeys.Contains(key))
+                    return false;
+
+                var valueX = dictionaryX[key];
+                var valueY = dictionaryY[key];
+
+                if (!equalityComparer.Equals(valueX, valueY))
+                    return false;
+
+                dictionaryYKeys.Remove(key);
+            }
+
+            return dictionaryYKeys.Count == 0;
+        }
+
         bool? CheckIfEnumerablesAreEqual(T x, T y)
         {
             var enumerableX = x as IEnumerable;
@@ -116,44 +154,6 @@ namespace Xunit.Sdk
                 if (asDisposable != null)
                     asDisposable.Dispose();
             }
-        }
-
-        bool? CheckIfDictionariesAreEqual(T x, T y)
-        {
-            var dictionaryX = x as IDictionary;
-            var dictionaryY = y as IDictionary;
-
-            if (dictionaryX == null || dictionaryY == null)
-                return null;
-
-            if (dictionaryX.Count != dictionaryY.Count)
-                return false;
-
-            var equalityComparer = innerComparerFactory();
-            var dictionaryYKeys = new HashSet<object>(dictionaryY.Keys.Cast<object>());
-
-            foreach (var key in dictionaryX.Keys)
-            {
-                if (!dictionaryYKeys.Contains(key))
-                    return false;
-
-                var valueX = dictionaryX[key];
-                var valueY = dictionaryY[key];
-
-                if (!equalityComparer.Equals(valueX, valueY))
-                    return false;
-
-                dictionaryYKeys.Remove(key);
-            }
-
-            return dictionaryYKeys.Count == 0;
-        }
-
-        /// <inheritdoc/>
-        [SuppressMessage("Code Notifications", "RECS0083:Shows NotImplementedException throws in the quick task bar", Justification = "This class is not intended to be used in a hased container")]
-        public int GetHashCode(T obj)
-        {
-            throw new NotImplementedException();
         }
     }
 }

@@ -55,87 +55,6 @@ namespace Xunit
         }
 
         /// <summary>
-        /// Verifies that a string starts with a given string, using the current culture.
-        /// </summary>
-        /// <param name="expectedStartString">The string expected to be at the start of the string</param>
-        /// <param name="actualString">The string to be inspected</param>
-        /// <exception cref="ContainsException">Thrown when the string does not start with the expected string</exception>
-        public static void StartsWith(string expectedStartString, string actualString)
-        {
-            StartsWith(expectedStartString, actualString, StringComparison.CurrentCulture);
-        }
-
-        internal static void AreEqual<T>(T expected, T actual, string userMessage)
-        {
-            Equal(expected, actual, userMessage);
-        }
-
-        /// <summary>
-        /// Verifies that a string starts with a given string, using the given comparison type.
-        /// </summary>
-        /// <param name="expectedStartString">The string expected to be at the start of the string</param>
-        /// <param name="actualString">The string to be inspected</param>
-        /// <param name="comparisonType">The type of string comparison to perform</param>
-        /// <exception cref="ContainsException">Thrown when the string does not start with the expected string</exception>
-        public static void StartsWith(string expectedStartString, string actualString, StringComparison comparisonType)
-        {
-            if (expectedStartString == null || actualString == null || !actualString.StartsWith(expectedStartString, comparisonType))
-                throw new StartsWithException(expectedStartString, actualString);
-        }
-
-        /// <summary>
-        /// Verifies that a string ends with a given string, using the current culture.
-        /// </summary>
-        /// <param name="expectedEndString">The string expected to be at the end of the string</param>
-        /// <param name="actualString">The string to be inspected</param>
-        /// <exception cref="ContainsException">Thrown when the string does not end with the expected string</exception>
-        public static void EndsWith(string expectedEndString, string actualString)
-        {
-            EndsWith(expectedEndString, actualString, StringComparison.CurrentCulture);
-        }
-
-        /// <summary>
-        /// Verifies that a string ends with a given string, using the given comparison type.
-        /// </summary>
-        /// <param name="expectedEndString">The string expected to be at the end of the string</param>
-        /// <param name="actualString">The string to be inspected</param>
-        /// <param name="comparisonType">The type of string comparison to perform</param>
-        /// <exception cref="ContainsException">Thrown when the string does not end with the expected string</exception>
-        public static void EndsWith(string expectedEndString, string actualString, StringComparison comparisonType)
-        {
-            if (expectedEndString == null || actualString == null || !actualString.EndsWith(expectedEndString, comparisonType))
-                throw new EndsWithException(expectedEndString, actualString);
-        }
-
-        /// <summary>
-        /// Verifies that a string matches a regular expression.
-        /// </summary>
-        /// <param name="expectedRegexPattern">The regex pattern expected to match</param>
-        /// <param name="actualString">The string to be inspected</param>
-        /// <exception cref="MatchesException">Thrown when the string does not match the regex pattern</exception>
-        public static void Matches(string expectedRegexPattern, string actualString)
-        {
-            Assert.GuardArgumentNotNull("expectedRegexPattern", expectedRegexPattern);
-
-            if (actualString == null || !Regex.IsMatch(actualString, expectedRegexPattern))
-                throw new MatchesException(expectedRegexPattern, actualString);
-        }
-
-        /// <summary>
-        /// Verifies that a string matches a regular expression.
-        /// </summary>
-        /// <param name="expectedRegex">The regex expected to match</param>
-        /// <param name="actualString">The string to be inspected</param>
-        /// <exception cref="MatchesException">Thrown when the string does not match the regex</exception>
-        public static void Matches(Regex expectedRegex, string actualString)
-        {
-            Assert.GuardArgumentNotNull("expectedRegex", expectedRegex);
-
-            if (actualString == null || !expectedRegex.IsMatch(actualString))
-                throw new MatchesException(expectedRegex.ToString(), actualString);
-        }
-
-        /// <summary>
         /// Verifies that a string does not match a regular expression.
         /// </summary>
         /// <param name="expectedRegexPattern">The regex pattern expected not to match</param>
@@ -161,6 +80,30 @@ namespace Xunit
 
             if (actualString != null && expectedRegex.IsMatch(actualString))
                 throw new DoesNotMatchException(expectedRegex.ToString(), actualString);
+        }
+
+        /// <summary>
+        /// Verifies that a string ends with a given string, using the current culture.
+        /// </summary>
+        /// <param name="expectedEndString">The string expected to be at the end of the string</param>
+        /// <param name="actualString">The string to be inspected</param>
+        /// <exception cref="ContainsException">Thrown when the string does not end with the expected string</exception>
+        public static void EndsWith(string expectedEndString, string actualString)
+        {
+            EndsWith(expectedEndString, actualString, StringComparison.CurrentCulture);
+        }
+
+        /// <summary>
+        /// Verifies that a string ends with a given string, using the given comparison type.
+        /// </summary>
+        /// <param name="expectedEndString">The string expected to be at the end of the string</param>
+        /// <param name="actualString">The string to be inspected</param>
+        /// <param name="comparisonType">The type of string comparison to perform</param>
+        /// <exception cref="ContainsException">Thrown when the string does not end with the expected string</exception>
+        public static void EndsWith(string expectedEndString, string actualString, StringComparison comparisonType)
+        {
+            if (expectedEndString == null || actualString == null || !actualString.EndsWith(expectedEndString, comparisonType))
+                throw new EndsWithException(expectedEndString, actualString);
         }
 
         /// <summary>
@@ -243,6 +186,68 @@ namespace Xunit
             {
                 throw new EqualException(expected, actual, expectedIndex, actualIndex);
             }
+        }
+
+        /// <summary>
+        /// Verifies that a string matches a regular expression.
+        /// </summary>
+        /// <param name="expectedRegexPattern">The regex pattern expected to match</param>
+        /// <param name="actualString">The string to be inspected</param>
+        /// <exception cref="MatchesException">Thrown when the string does not match the regex pattern</exception>
+        public static void Matches(string expectedRegexPattern, string actualString)
+        {
+            Assert.GuardArgumentNotNull("expectedRegexPattern", expectedRegexPattern);
+
+            if (actualString == null || !Regex.IsMatch(actualString, expectedRegexPattern))
+                throw new MatchesException(expectedRegexPattern, actualString);
+        }
+
+        /// <summary>
+        /// Verifies that a string matches a regular expression.
+        /// </summary>
+        /// <param name="expectedRegex">The regex expected to match</param>
+        /// <param name="actualString">The string to be inspected</param>
+        /// <exception cref="MatchesException">Thrown when the string does not match the regex</exception>
+        public static void Matches(Regex expectedRegex, string actualString)
+        {
+            Assert.GuardArgumentNotNull("expectedRegex", expectedRegex);
+
+            if (actualString == null || !expectedRegex.IsMatch(actualString))
+                throw new MatchesException(expectedRegex.ToString(), actualString);
+        }
+
+        /// <summary>
+        /// Verifies that a string starts with a given string, using the current culture.
+        /// </summary>
+        /// <param name="expectedStartString">The string expected to be at the start of the string</param>
+        /// <param name="actualString">The string to be inspected</param>
+        /// <exception cref="ContainsException">Thrown when the string does not start with the expected string</exception>
+        public static void StartsWith(string expectedStartString, string actualString)
+        {
+            StartsWith(expectedStartString, actualString, StringComparison.CurrentCulture);
+        }
+
+        /// <summary>
+        /// Verifies that a string starts with a given string, using the given comparison type.
+        /// </summary>
+        /// <param name="expectedStartString">The string expected to be at the start of the string</param>
+        /// <param name="actualString">The string to be inspected</param>
+        /// <param name="comparisonType">The type of string comparison to perform</param>
+        /// <exception cref="ContainsException">Thrown when the string does not start with the expected string</exception>
+        public static void StartsWith(string expectedStartString, string actualString, StringComparison comparisonType)
+        {
+            if (expectedStartString == null || actualString == null || !actualString.StartsWith(expectedStartString, comparisonType))
+                throw new StartsWithException(expectedStartString, actualString);
+        }
+
+        internal static void AreEqual<T>(T expected, T actual, string userMessage)
+        {
+            Equal(expected, actual, userMessage);
+        }
+
+        internal static void AreEqual<T>(T expected, T actual)
+        {
+            Equal(expected, actual);
         }
 
         static bool IsLineEnding(char c)

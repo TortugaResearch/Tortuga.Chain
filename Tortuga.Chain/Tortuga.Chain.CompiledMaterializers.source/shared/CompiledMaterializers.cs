@@ -1,5 +1,4 @@
-﻿using CSScriptLibrary;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,6 +11,14 @@ using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Materializers;
 using Tortuga.Chain.Metadata;
+
+#if NETSTANDARD2_0
+
+using CSScriptLib;
+
+#else
+using CSScriptLibrary;
+#endif
 
 namespace Tortuga.Chain
 {
@@ -249,8 +256,7 @@ namespace Tortuga.Chain
                 if (property.MappedColumnName == null)
                     continue;
 
-                ColumnData column;
-                if (!columns.TryGetValue(decompositionPrefix + property.MappedColumnName, out column))
+                if (!columns.TryGetValue(decompositionPrefix + property.MappedColumnName, out var column))
                     continue; //not a valid column
 
                 if (column.Index != columnIndex)

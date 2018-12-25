@@ -47,6 +47,21 @@ namespace Xunit
                 throw new FalseException(userMessage, condition);
         }
 
+        public static void IsFalse(bool condition, string userMessage)
+        {
+            False(condition, userMessage);
+        }
+
+        public static void IsTrue(bool condition, string userMessage)
+        {
+            True(condition, userMessage);
+        }
+
+        public static void IsTrue(bool condition)
+        {
+            True(condition);
+        }
+
         /// <summary>
         /// Verifies that an expression is true.
         /// </summary>
@@ -89,16 +104,5 @@ namespace Xunit
             if (!condition.HasValue || !condition.GetValueOrDefault())
                 throw new TrueException(userMessage, condition);
         }
-
-        public static void IsFalse(bool condition, string userMessage)
-        {
-            False(condition, userMessage);
-        }
-
-        public static void IsTrue(bool condition, string userMessage)
-        {
-            True(condition, userMessage);
-        }
     }
 }
-

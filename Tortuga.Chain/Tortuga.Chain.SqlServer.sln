@@ -44,7 +44,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xTests.Tortuga.Chain.OleDbS
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tortuga.Chain.SqlServer.netstandard2.0", "Tortuga.Chain.SqlServer.netstandard2.0\Tortuga.Chain.SqlServer.netstandard2.0.csproj", "{E6D25DEE-6E9B-4AC2-A9E7-F73627BFB72D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xTests.Tortuga.Chain.SqlServer.netstandard2.0", "xTests.Tortuga.Chain.SqlServer.netstandard2.0\xTests.Tortuga.Chain.SqlServer.netstandard2.0.csproj", "{CFCA68C4-5199-4799-B7C7-8731921E45DB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "xTests.Tortuga.Chain.SqlServer.netstandard2.0", "xTests.Tortuga.Chain.SqlServer.netstandard2.0\xTests.Tortuga.Chain.SqlServer.netstandard2.0.csproj", "{CFCA68C4-5199-4799-B7C7-8731921E45DB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tortuga.Chain.CompiledMaterializers.netstandard2.0", "Tortuga.Chain.CompiledMaterializers.netstandard2.0\Tortuga.Chain.CompiledMaterializers.netstandard2.0.csproj", "{DCCA198F-1561-46A9-A5C6-5210A856F101}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -386,6 +388,30 @@ Global
 		{CFCA68C4-5199-4799-B7C7-8731921E45DB}.Release|x64.Build.0 = Release|Any CPU
 		{CFCA68C4-5199-4799-B7C7-8731921E45DB}.Release|x86.ActiveCfg = Release|Any CPU
 		{CFCA68C4-5199-4799-B7C7-8731921E45DB}.Release|x86.Build.0 = Release|Any CPU
+		{DCCA198F-1561-46A9-A5C6-5210A856F101}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DCCA198F-1561-46A9-A5C6-5210A856F101}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DCCA198F-1561-46A9-A5C6-5210A856F101}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{DCCA198F-1561-46A9-A5C6-5210A856F101}.Debug|ARM.Build.0 = Debug|Any CPU
+		{DCCA198F-1561-46A9-A5C6-5210A856F101}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{DCCA198F-1561-46A9-A5C6-5210A856F101}.Debug|x64.Build.0 = Debug|Any CPU
+		{DCCA198F-1561-46A9-A5C6-5210A856F101}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DCCA198F-1561-46A9-A5C6-5210A856F101}.Debug|x86.Build.0 = Debug|Any CPU
+		{DCCA198F-1561-46A9-A5C6-5210A856F101}.Debug-Unchecked|Any CPU.ActiveCfg = Debug|Any CPU
+		{DCCA198F-1561-46A9-A5C6-5210A856F101}.Debug-Unchecked|Any CPU.Build.0 = Debug|Any CPU
+		{DCCA198F-1561-46A9-A5C6-5210A856F101}.Debug-Unchecked|ARM.ActiveCfg = Debug|Any CPU
+		{DCCA198F-1561-46A9-A5C6-5210A856F101}.Debug-Unchecked|ARM.Build.0 = Debug|Any CPU
+		{DCCA198F-1561-46A9-A5C6-5210A856F101}.Debug-Unchecked|x64.ActiveCfg = Debug|Any CPU
+		{DCCA198F-1561-46A9-A5C6-5210A856F101}.Debug-Unchecked|x64.Build.0 = Debug|Any CPU
+		{DCCA198F-1561-46A9-A5C6-5210A856F101}.Debug-Unchecked|x86.ActiveCfg = Debug|Any CPU
+		{DCCA198F-1561-46A9-A5C6-5210A856F101}.Debug-Unchecked|x86.Build.0 = Debug|Any CPU
+		{DCCA198F-1561-46A9-A5C6-5210A856F101}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DCCA198F-1561-46A9-A5C6-5210A856F101}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DCCA198F-1561-46A9-A5C6-5210A856F101}.Release|ARM.ActiveCfg = Release|Any CPU
+		{DCCA198F-1561-46A9-A5C6-5210A856F101}.Release|ARM.Build.0 = Release|Any CPU
+		{DCCA198F-1561-46A9-A5C6-5210A856F101}.Release|x64.ActiveCfg = Release|Any CPU
+		{DCCA198F-1561-46A9-A5C6-5210A856F101}.Release|x64.Build.0 = Release|Any CPU
+		{DCCA198F-1561-46A9-A5C6-5210A856F101}.Release|x86.ActiveCfg = Release|Any CPU
+		{DCCA198F-1561-46A9-A5C6-5210A856F101}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -404,6 +430,7 @@ Global
 		{CD08AF85-57FD-42EC-B7DE-4DD2288DE17E} = {31CFE38E-12FA-43AA-91F4-D39ADC3AC95E}
 		{E6D25DEE-6E9B-4AC2-A9E7-F73627BFB72D} = {05542BBF-0A44-4F28-A504-640F319CC546}
 		{CFCA68C4-5199-4799-B7C7-8731921E45DB} = {31CFE38E-12FA-43AA-91F4-D39ADC3AC95E}
+		{DCCA198F-1561-46A9-A5C6-5210A856F101} = {6FB40F3D-E4CC-4E11-952C-BBD437AD2BF8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {744D59B0-0B18-43C1-A4F5-3D6C56BAF8D2}

@@ -8,9 +8,6 @@ using Tortuga.Chain;
 using Tortuga.Chain.AuditRules;
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.SqlServer;
-using Xunit;
-
-[assembly: CollectionBehavior(DisableTestParallelization = true)]
 
 namespace Tests
 {
@@ -28,6 +25,7 @@ namespace Tests
                 s_DataSources.Add(con.Name, ds);
                 if (s_PrimaryDataSource == null) s_PrimaryDataSource = ds;
             }
+            BuildEmployeeSearchKey1000(s_PrimaryDataSource);
         }
 
         public static string CustomerTableName { get { return "Sales.Customer"; } }
