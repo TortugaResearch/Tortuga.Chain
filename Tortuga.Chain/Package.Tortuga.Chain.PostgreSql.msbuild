@@ -19,7 +19,6 @@
     <ResultDepsJson>Tortuga.Chain.PostgreSql.deps.json</ResultDepsJson>
 
     <SourcePath>$(MSBuildProjectDirectory)\Tortuga.Chain.PostgreSql.source</SourcePath>
-    <Net45Path>$(MSBuildProjectDirectory)\Tortuga.Chain.PostgreSql.net45</Net45Path>
     <Net46Path>$(MSBuildProjectDirectory)\Tortuga.Chain.PostgreSql.net46</Net46Path>
     <NetStandard20Path>$(MSBuildProjectDirectory)\Tortuga.Chain.PostgreSql.netstandard2.0</NetStandard20Path>
 
@@ -37,6 +36,7 @@
     <CallTarget Targets="PackageBinaries" />
     <CallTarget Targets="PackageHelp" />
     <CallTarget Targets="BuildNugetFile" />
+    <CallTarget Targets="CopyPackage" />
   </Target>
 
   <Target Name="Clean">
@@ -55,13 +55,6 @@
 
   <Target Name="PackageBinaries">
     <Message Text="Copying binaries..." />
-
-    <ItemGroup>
-      <Net45Output Include="$(Net45Path)\bin\Release\$(ResultDll)" />
-      <Net45Output Include="$(Net45Path)\bin\Release\$(ResultPdb)" />
-      <Net45Output Include="$(Net45Path)\bin\Release\$(ResultXml)" />
-    </ItemGroup>
-    <Copy SourceFiles="@(Net45Output)" DestinationFolder="$(BuildOutputPath)\lib\net45" />
 
     <ItemGroup>
       <Net46Output Include="$(Net46Path)\bin\Release\$(ResultDll)" />
@@ -95,5 +88,12 @@
 			 XPath="/package/metadata/version"
 			 Value="%(AssemblyIdentity.Version)" />
     <Exec Command='"$(MSBuildProjectDirectory)\.nuget\NuGet.exe" pack $(NuspecName)"' WorkingDirectory="$(BuildOutputPath)" />
+  </Target>
+  <Target Name="CopyPackage">
+    <ItemGroup>
+      <FinalPackage Include="$(BuildOutputPath)\*.nupkg" />
+    </ItemGroup>
+
+    <Copy SourceFiles="@(FinalPackage)" DestinationFolder="$(MSBuildProjectDirectory)\..\..\Packages" />
   </Target>
 </Project>
