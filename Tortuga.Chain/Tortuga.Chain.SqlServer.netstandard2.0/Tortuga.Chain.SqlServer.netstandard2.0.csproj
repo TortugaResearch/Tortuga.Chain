@@ -19,7 +19,11 @@
 
   <ItemGroup>
     <Compile Include="..\Tortuga.Chain.SqlServer.source\Properties\LibrarySharedAssemblyInfo.cs;..\ProductSharedAssemblyInfo.cs" />
-    <Compile Include="..\Tortuga.Chain.SqlServer.source\shared\**\*.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\Tortuga.Chain.SqlServer.source\shared\**\*.cs">
+      <Link>shared\%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
