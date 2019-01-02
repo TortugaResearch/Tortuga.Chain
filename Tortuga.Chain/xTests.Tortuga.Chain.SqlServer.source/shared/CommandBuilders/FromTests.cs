@@ -492,15 +492,22 @@ namespace Tests.CommandBuilders
         {
             var dataSource = DataSource(dataSourceName, mode);
 
-            var uniqueKey = Guid.NewGuid().ToString();
+            try
+            {
+                var uniqueKey = Guid.NewGuid().ToString();
 
-            var emp1 = new Employee() { FirstName = "A", LastName = "1", Title = uniqueKey };
-            dataSource.Insert(EmployeeTableName, emp1).ToObject<Employee>().Execute();
+                var emp1 = new Employee() { FirstName = "A", LastName = "1", Title = uniqueKey };
+                dataSource.Insert(EmployeeTableName, emp1).ToObject<Employee>().Execute();
 
-            var lookup = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToObject<EmployeeLookup>(RowOptions.InferConstructor).Execute();
+                var lookup = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToObject<EmployeeLookup>(RowOptions.InferConstructor).Execute();
 
-            Assert.AreEqual("A", lookup.FirstName, "First Name");
-            Assert.AreEqual("1", lookup.LastName, "Last Name");
+                Assert.AreEqual("A", lookup.FirstName, "First Name");
+                Assert.AreEqual("1", lookup.LastName, "Last Name");
+            }
+            finally
+            {
+                Release(dataSource);
+            }
         }
 
         [Theory, MemberData(nameof(Prime))]
@@ -581,25 +588,27 @@ namespace Tests.CommandBuilders
 
 #endif
 
-#if SQLite
+#if SQLITE
 
         [Theory, MemberData(nameof(Prime))]
         public void FromTests_TakeRandom(string assemblyName, string dataSourceName, DataSourceType mode)
         {
-                      var dataSource = DataSource(dataSourceName, mode);
+            var dataSource = DataSource(dataSourceName, mode);
             try
-            {  var result = dataSource.From(EmployeeTableName, new { Title = EmployeeSearchKey1000 }).WithLimits(100, SQLiteLimitOption.RandomSampleRows).ToCollection<Employee>().Execute();
-            Assert.AreEqual(100, result.Count, "Count");
-            foreach (var item in result)
             {
-                Assert.AreEqual(EmployeeSearchKey1000, item.Title, "Filter");
+                var result = dataSource.From(EmployeeTableName, new { Title = EmployeeSearchKey1000 }).WithLimits(100, SQLiteLimitOption.RandomSampleRows).ToCollection<Employee>().Execute();
+                Assert.AreEqual(100, result.Count, "Count");
+                foreach (var item in result)
+                {
+                    Assert.AreEqual(EmployeeSearchKey1000, item.Title, "Filter");
+                }
             }
-                    }
             finally
             {
                 Release(dataSource);
             }
         }
+
 #endif
 
 #if OLE_SQL_SERVER || SQL_SERVER
@@ -945,6 +954,7 @@ namespace Tests.CommandBuilders
         }
 
 #if !NO_ROW_SKIPPING
+
         [Theory, MemberData(nameof(Prime))]
         public void FromTests_SkipTake(string assemblyName, string dataSourceName, DataSourceType mode)
         {
@@ -965,10 +975,54 @@ namespace Tests.CommandBuilders
                 Release(dataSource);
             }
         }
+
 #endif
 
-#if !SQLite
+#if SQLITE
 
+        [Theory, MemberData(nameof(Prime))]
+        public void FromTests_Sorting_ImmutableCollection(string assemblyName, string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+                var uniqueKey = Guid.NewGuid().ToString();
+
+                var emp1 = new Employee() { FirstName = "A", LastName = "2", Title = uniqueKey };
+                var emp2 = new Employee() { FirstName = "B", LastName = "2", Title = uniqueKey };
+                var emp3 = new Employee() { FirstName = "C", LastName = "1", Title = uniqueKey };
+                var emp4 = new Employee() { FirstName = "D", LastName = "1", Title = uniqueKey };
+
+                emp1 = dataSource.Insert(EmployeeTableName, emp1).ToObject<Employee>().Execute();
+                emp2 = dataSource.Insert(EmployeeTableName, emp2).ToObject<Employee>().Execute();
+                emp3 = dataSource.Insert(EmployeeTableName, emp3).ToObject<Employee>().Execute();
+                emp4 = dataSource.Insert(EmployeeTableName, emp4).ToObject<Employee>().Execute();
+
+                var test1 = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).WithSorting("FirstName").ToCollection<EmployeeLookup>().WithConstructor<long, string, string>().Execute();
+                Assert.AreEqual(emp1.EmployeeKey, test1[0].EmployeeKey);
+                Assert.AreEqual(emp2.EmployeeKey, test1[1].EmployeeKey);
+                Assert.AreEqual(emp3.EmployeeKey, test1[2].EmployeeKey);
+                Assert.AreEqual(emp4.EmployeeKey, test1[3].EmployeeKey);
+
+                var test2 = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).WithSorting(new SortExpression("FirstName", SortDirection.Descending)).ToCollection<EmployeeLookup>().WithConstructor<long, string, string>().Execute();
+                Assert.AreEqual(emp4.EmployeeKey, test2[0].EmployeeKey);
+                Assert.AreEqual(emp3.EmployeeKey, test2[1].EmployeeKey);
+                Assert.AreEqual(emp2.EmployeeKey, test2[2].EmployeeKey);
+                Assert.AreEqual(emp1.EmployeeKey, test2[3].EmployeeKey);
+
+                var test3 = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).WithSorting("LastName", "FirstName").ToCollection<EmployeeLookup>().WithConstructor<long, string, string>().Execute();
+                Assert.AreEqual(emp3.EmployeeKey, test3[0].EmployeeKey);
+                Assert.AreEqual(emp4.EmployeeKey, test3[1].EmployeeKey);
+                Assert.AreEqual(emp1.EmployeeKey, test3[2].EmployeeKey);
+                Assert.AreEqual(emp2.EmployeeKey, test3[3].EmployeeKey);
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+#else
         [Theory, MemberData(nameof(Prime))]
         public void FromTests_Sorting_ImmutableCollection(string assemblyName, string dataSourceName, DataSourceType mode)
         {
@@ -1187,22 +1241,24 @@ namespace Tests.CommandBuilders
             }
         }
 
-#if SQLite
+#if SQLITE
+
         [Theory, MemberData(nameof(Prime))]
         public void FromTests_ToImmutableObject(string assemblyName, string dataSourceName, DataSourceType mode)
         {
-                      var dataSource = DataSource(dataSourceName, mode);
+            var dataSource = DataSource(dataSourceName, mode);
             try
-            {  var uniqueKey = Guid.NewGuid().ToString();
+            {
+                var uniqueKey = Guid.NewGuid().ToString();
 
-            var emp1 = new Employee() { FirstName = "A", LastName = "1", Title = uniqueKey };
-            DataSource.Insert(EmployeeTableName, emp1).ToObject<Employee>().Execute();
+                var emp1 = new Employee() { FirstName = "A", LastName = "1", Title = uniqueKey };
+                dataSource.Insert(EmployeeTableName, emp1).ToObject<Employee>().Execute();
 
-            var lookup = DataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToObject<EmployeeLookup>().WithConstructor<long, string, string>().Execute();
+                var lookup = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToObject<EmployeeLookup>().WithConstructor<long, string, string>().Execute();
 
-            Assert.AreEqual("A", lookup.FirstName);
-            Assert.AreEqual("1", lookup.LastName);
-                  }
+                Assert.AreEqual("A", lookup.FirstName);
+                Assert.AreEqual("1", lookup.LastName);
+            }
             finally
             {
                 Release(dataSource);
@@ -1235,7 +1291,7 @@ namespace Tests.CommandBuilders
 
 #endif
 
-#if !SQLite
+#if !SQLITE
 
         [Theory, MemberData(nameof(Prime))]
         public void FromTests_ToDictionary_ImmutableObject(string assemblyName, string dataSourceName, DataSourceType mode)

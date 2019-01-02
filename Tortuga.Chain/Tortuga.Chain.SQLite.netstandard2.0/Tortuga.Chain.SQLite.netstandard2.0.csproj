@@ -21,7 +21,7 @@
   <ItemGroup>
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.109.2" />
     <PackageReference Include="Nito.AsyncEx.Coordination" Version="1.0.2" />
-    <PackageReference Include="Tortuga.Chain.Core" Version="1.3.6847.41792" />
+    <PackageReference Include="Tortuga.Chain.Core" Version="2.0.6932.69" />
   </ItemGroup>
 
   <ItemGroup>
@@ -31,10 +31,11 @@
   <ItemGroup>
     <Compile Include="..\ProductSharedAssemblyInfo.cs" />
     <Compile Include="..\Tortuga.Chain.SQLite.source\Properties\LibrarySharedAssemblyInfo.cs" Link="LibrarySharedAssemblyInfo.cs" />
-    <Compile Include="..\Tortuga.Chain.SQLite.source\shared\**\*.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Update="NETStandard.Library" Version="2.0.1" />
+    <Compile Include="..\Tortuga.Chain.SQLite.source\shared\**\*.cs">
+      <Link>shared\%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </Compile>
   </ItemGroup>
 </Project>
