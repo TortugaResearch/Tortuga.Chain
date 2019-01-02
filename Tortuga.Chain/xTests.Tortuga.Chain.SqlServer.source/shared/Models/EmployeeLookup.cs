@@ -14,6 +14,15 @@
             LastName = lastName;
         }
 
+#elif MYSQL
+
+        public EmployeeLookup(ulong employeeKey, string firstName, string lastName)
+        {
+            EmployeeKey = (int)employeeKey;
+            FirstName = firstName;
+            LastName = lastName;
+        }
+
 #else
         public EmployeeLookup(int employeeKey, string firstName, string lastName)
         {

@@ -6,7 +6,7 @@
     <AssemblyName>Tortuga.Chain.MySql</AssemblyName>
 
     <PackageId>Tortuga.Chain.MySql.netstandard2.0</PackageId>
-    <DefineConstants>$(DefineConstants);OleDb_Missing;SqlDependency_Missing;System_Configuration_Missing</DefineConstants>
+    <DefineConstants>TRACE;NETSTANDARD2_0;System_Configuration_Missing</DefineConstants>
     <NetStandardImplicitPackageVersion>2.0.0</NetStandardImplicitPackageVersion>
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
@@ -19,11 +19,16 @@
 
   <ItemGroup>
     <Compile Include="..\Tortuga.Chain.MySql.source\Properties\LibrarySharedAssemblyInfo.cs;..\ProductSharedAssemblyInfo.cs" />
-    <Compile Include="..\Tortuga.Chain.MySql.source\shared\**\*.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Tortuga.Chain.MySql.source\shared\**\*.cs">
+      <Link>shared\%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="MySql.Data" Version="8.0.13" />
-    <PackageReference Include="Tortuga.Chain.Core" Version="1.3.6847.41792" />
+    <PackageReference Include="Tortuga.Chain.Core" Version="2.0.6932.69" />
   </ItemGroup>
 </Project>

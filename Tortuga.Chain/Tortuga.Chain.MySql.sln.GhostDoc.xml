@@ -24,6 +24,7 @@
       <MSHelpViewer>false</MSHelpViewer>
       <MSHelp2>false</MSHelp2>
       <Website>true</Website>
+      <VSIntelliSenseFile>false</VSIntelliSenseFile>
     </HtmlFormats>
     <IncludeScopes>
       <Public>true</Public>
