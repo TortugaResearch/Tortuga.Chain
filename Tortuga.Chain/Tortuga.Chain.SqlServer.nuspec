@@ -4,7 +4,7 @@
     <id>Tortuga.Chain.SqlServer</id>
     <version></version>
     <authors>David Tomcik, Jonathan Allen</authors>
-    <copyright>Copyright David Tomcik, Jonathan Allen 2016,2017</copyright>
+    <copyright>Copyright David Tomcik, Jonathan Allen 2016,2017,2019</copyright>
     <description>Fluent ORM for .NET and SQL Server.</description>
     <tags>ORM, Fluent, SQL Server</tags>
     <language>en-US</language>

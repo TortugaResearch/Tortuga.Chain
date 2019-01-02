@@ -8,6 +8,8 @@ using Tortuga.Chain.DataSources;
 using Xunit;
 using Xunit.Abstractions;
 
+[assembly: CollectionBehavior(DisableTestParallelization = true)]
+
 namespace Tests
 {
     partial class TestBase

@@ -550,6 +550,8 @@ namespace Tests.CommandBuilders
             }
         }
 
+#if !NO_DISTINCT_COUNT
+
         [Theory, MemberData(nameof(Prime))]
         public void FromTests_Counts(string assemblyName, string dataSourceName, DataSourceType mode)
         {
@@ -573,6 +575,8 @@ namespace Tests.CommandBuilders
                 Release(dataSource);
             }
         }
+
+#endif
 
 #if SQLite
 
@@ -937,6 +941,7 @@ namespace Tests.CommandBuilders
             }
         }
 
+#if NO_ROW_SKIPPING
         [Theory, MemberData(nameof(Prime))]
         public void FromTests_SkipTake(string assemblyName, string dataSourceName, DataSourceType mode)
         {
@@ -957,6 +962,7 @@ namespace Tests.CommandBuilders
                 Release(dataSource);
             }
         }
+#endif
 
 #if !SQLite
 
