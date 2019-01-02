@@ -377,6 +377,7 @@ namespace Tests.CommandBuilders
                 Release(dataSource);
             }
         }
+
 #else
 
         [Theory, MemberData(nameof(TablesAndViewsWithColumns))]
@@ -404,6 +405,7 @@ namespace Tests.CommandBuilders
 #endif
 
 #if NO_DISTINCT_COUNT
+
         [Theory, MemberData(nameof(TablesAndViewsWithColumns))]
         public async Task CountByColumn_Async(string assemblyName, string dataSourceName, DataSourceType mode, string tableName, string columnName)
         {
@@ -423,6 +425,7 @@ namespace Tests.CommandBuilders
                 Release(dataSource);
             }
         }
+
 #else
 
         [Theory, MemberData(nameof(TablesAndViewsWithColumns))]
@@ -941,7 +944,7 @@ namespace Tests.CommandBuilders
             }
         }
 
-#if NO_ROW_SKIPPING
+#if !NO_ROW_SKIPPING
         [Theory, MemberData(nameof(Prime))]
         public void FromTests_SkipTake(string assemblyName, string dataSourceName, DataSourceType mode)
         {
