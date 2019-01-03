@@ -11,6 +11,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MySql", "MySql", "{05542BBF-0A44-4F28-A504-640F319CC546}"
+	ProjectSection(SolutionItems) = preProject
+		Package.Tortuga.Chain.MySql.msbuild = Package.Tortuga.Chain.MySql.msbuild
+		Tortuga.Chain.MySql.nuspec = Tortuga.Chain.MySql.nuspec
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dependencies", "Dependencies", "{6FB40F3D-E4CC-4E11-952C-BBD437AD2BF8}"
 EndProject

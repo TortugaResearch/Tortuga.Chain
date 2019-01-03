@@ -92,6 +92,7 @@ namespace Tests.CommandBuilders
                 };
 
                 var inserted = dataSource.Insert(EmployeeTableName, original).ToObject<ChangeTrackingEmployee>().Execute();
+                inserted.Title = "President";
 
                 dataSource.Update(EmployeeTableName, inserted).Execute();
                 dataSource.Delete(EmployeeTableName, inserted).Execute();

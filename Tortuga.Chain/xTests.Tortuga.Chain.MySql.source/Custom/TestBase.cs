@@ -15,6 +15,7 @@ namespace Tests
     {
         static public readonly string AssemblyName = "MySql";
         static protected readonly Dictionary<string, MySqlDataSource> s_DataSources = new Dictionary<string, MySqlDataSource>();
+        protected static readonly string s_PrimaryConnectionString;
         protected static readonly MySqlDataSource s_PrimaryDataSource;
 
         static TestBase()
@@ -23,7 +24,11 @@ namespace Tests
             foreach (ConnectionStringSettings con in ConfigurationManager.ConnectionStrings)
             {
                 var ds = new MySqlDataSource(con.Name, con.ConnectionString);
-                if (s_PrimaryDataSource == null) s_PrimaryDataSource = ds;
+                if (s_PrimaryDataSource == null)
+                {
+                    s_PrimaryDataSource = ds;
+                    s_PrimaryConnectionString = con.ConnectionString;
+                }
                 s_DataSources.Add(con.Name, ds);
             }
             BuildEmployeeSearchKey1000(s_PrimaryDataSource);

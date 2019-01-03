@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package>
+  <metadata>
+    <id>Tortuga.Chain.MySql</id>
+    <version></version>
+    <authors>David Tomcik, Jonathan Allen</authors>
+    <copyright>Copyright David Tomcik, Jonathan Allen 2019</copyright>
+    <description>Fluent ORM for .NET and MySQL.</description>
+    <tags>ORM, Fluent, MySQL</tags>
+    <language>en-US</language>
+    <projectUrl>https://github.com/docevaad/Chain</projectUrl>
+    <licenseUrl>https://github.com/docevaad/Chain/blob/master/License.txt</licenseUrl>
+    <references>
+      <reference file="Tortuga.Chain.MySql.dll" />
+    </references>
+    <frameworkAssemblies>
+      <frameworkAssembly assemblyName="System.Data" targetFramework="net46" />
+      <frameworkAssembly assemblyName="System.ComponentModel.DataAnnotations" targetFramework="net46" />
+      <frameworkAssembly assemblyName="System.Xml" targetFramework="net46" />
+      <frameworkAssembly assemblyName="System.Xml.Linq" targetFramework="net46" />
+      <frameworkAssembly assemblyName="System.Runtime.Caching" targetFramework="net46" />
+      <frameworkAssembly assemblyName="System.Configuration" targetFramework="net46" />
+    </frameworkAssemblies>
+
+    <dependencies>
+
+      <group targetFramework="net46">
+        <dependency id="Tortuga.Chain.Core" version="2.0.6932.69" />
+        <dependency id="MySqlConnector" version="0.48.2" />
+      </group>
+
+      <group targetFramework="netstandard2.0">
+        <dependency id="Tortuga.Chain.Core" version="2.0.6932.69" />
+        <dependency id="MySqlConnector" version="0.48.2" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>
