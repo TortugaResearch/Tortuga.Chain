@@ -102,10 +102,6 @@ namespace Tortuga.Chain.SqlServer
             return DeleteByKeyList(tableName, new List<string> { key }, options);
         }
 
-
-
-
-
         /// <summary>
         /// Delete multiple rows by key.
         /// </summary>
@@ -148,6 +144,50 @@ namespace Tortuga.Chain.SqlServer
                 effectiveOptions = effectiveOptions | UpdateOptions.UseKeyAttribute;
 
             return new SqlServerUpdateMany(this, tableName, null, where, parameters, parameters.Count, effectiveOptions);
+        }
+
+        /// <summary>
+        /// Delete multiple records using a where expression.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="whereClause">The where clause.</param>
+        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> DeleteWithFilter(SqlServerObjectName tableName, string whereClause)
+        {
+            var table = DatabaseMetadata.GetTableOrView(tableName);
+            if (!AuditRules.UseSoftDelete(table))
+                return new SqlServerDeleteMany(this, tableName, whereClause, null);
+
+            return new SqlServerUpdateMany(this, tableName, null, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected).WithFilter(whereClause, null);
+        }
+
+        /// <summary>
+        /// Delete multiple records using a where expression.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="whereClause">The where clause.</param>
+        /// <param name="argumentValue">The argument value for the where clause.</param>
+        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> DeleteWithFilter(SqlServerObjectName tableName, string whereClause, object argumentValue)
+        {
+            var table = DatabaseMetadata.GetTableOrView(tableName);
+            if (!AuditRules.UseSoftDelete(table))
+                return new SqlServerDeleteMany(this, tableName, whereClause, argumentValue);
+
+            return new SqlServerUpdateMany(this, tableName, null, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected).WithFilter(whereClause, argumentValue);
+        }
+
+        /// <summary>
+        /// Delete multiple records using a filter object.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="filterValue">The filter value.</param>
+        /// <param name="filterOptions">The options.</param>
+        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> DeleteWithFilter(SqlServerObjectName tableName, object filterValue, FilterOptions filterOptions = FilterOptions.None)
+        {
+            var table = DatabaseMetadata.GetTableOrView(tableName);
+            if (!AuditRules.UseSoftDelete(table))
+                return new SqlServerDeleteMany(this, tableName, filterValue, filterOptions);
+
+            return new SqlServerUpdateMany(this, tableName, null, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected).WithFilter(filterValue, filterOptions);
         }
 
         /// <summary>
@@ -267,9 +307,21 @@ namespace Tortuga.Chain.SqlServer
             return GetByKeyList(tableName, new List<string> { key });
         }
 
+        /// <summary>Gets a set of records by an unique key.</summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="keyColumn">Name of the key column. This should be a primary or unique key, but that's not enforced.</param>
+        /// <param name="keys">The keys.</param>
+        /// <returns>MultipleRowDbCommandBuilder&lt;MySqlCommand, MySqlParameter&gt;.</returns>
+        /// <exception cref="MappingException"></exception>
+        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> GetByKeyList<T>(SqlServerObjectName tableName, string keyColumn, IEnumerable<T> keys)
+        {
+            var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).Columns.Where(c => c.SqlName.Equals(keyColumn, System.StringComparison.OrdinalIgnoreCase)).ToList();
+            if (primaryKeys.Count == 0)
+                throw new MappingException($"Cannot find a column named {keyColumn} on table {tableName}.");
 
-
-
+            return GetByKeyList<T>(tableName, primaryKeys.Single(), keys);
+        }
 
         /// <summary>
         /// Gets a set of records by their primary key.
@@ -277,8 +329,8 @@ namespace Tortuga.Chain.SqlServer
         /// <typeparam name="T"></typeparam>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="keys">The keys.</param>
-        /// <returns></returns>
-        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
+        /// <returns>MultipleRowDbCommandBuilder&lt;MySqlCommand, MySqlParameter&gt;.</returns>
+        /// <exception cref="MappingException"></exception>
         [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "GetByKeyList")]
         public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> GetByKeyList<T>(SqlServerObjectName tableName, IEnumerable<T> keys)
         {
@@ -286,24 +338,7 @@ namespace Tortuga.Chain.SqlServer
             if (primaryKeys.Count != 1)
                 throw new MappingException($"{nameof(GetByKeyList)} operation isn't allowed on {tableName} because it doesn't have a single primary key. Use DataSource.From instead.");
 
-            var keyList = keys.AsList();
-            var columnMetadata = primaryKeys.Single();
-            string where;
-            if (keys.Count() > 1)
-                where = columnMetadata.SqlName + " IN (" + string.Join(", ", keyList.Select((s, i) => "@Param" + i)) + ")";
-            else
-                where = columnMetadata.SqlName + " = @Param0";
-
-            var parameters = new List<SqlParameter>();
-            for (var i = 0; i < keyList.Count; i++)
-            {
-                var param = new SqlParameter("@Param" + i, keyList[i]);
-                if (columnMetadata.DbType.HasValue)
-                    param.SqlDbType = columnMetadata.DbType.Value;
-                parameters.Add(param);
-            }
-
-            return new SqlServerTableOrView(this, tableName, where, parameters);
+            return GetByKeyList<T>(tableName, primaryKeys.Single(), keys);
         }
 
         /// <summary>
@@ -377,20 +412,6 @@ namespace Tortuga.Chain.SqlServer
             return InsertBatch(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, tableTypeName, dataTable, options);
         }
 
-        ///// <summary>
-        ///// Inserts the batch of records as one operation.
-        ///// </summary>
-        ///// <typeparam name="TObject">The type of the t object.</typeparam>
-        ///// <param name="tableTypeName">Name of the table type.</param>
-        ///// <param name="dataTable">The data table.</param>
-        ///// <param name="options">The options.</param>
-        ///// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
-        //[SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-        //public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> InsertBatch<TObject>(DataTable dataTable, SqlServerObjectName tableTypeName, InsertOptions options = InsertOptions.None) where TObject : class
-        //{
-        //    return InsertBatch(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, tableTypeName, dataTable, options);
-        //}
-
         /// <summary>
         /// Inserts the batch of records as one operation.
         /// </summary>
@@ -406,6 +427,19 @@ namespace Tortuga.Chain.SqlServer
             return new SqlServerInsertBatch(this, tableName, dataReader, tableTypeName, options);
         }
 
+        ///// <summary>
+        ///// Inserts the batch of records as one operation.
+        ///// </summary>
+        ///// <typeparam name="TObject">The type of the t object.</typeparam>
+        ///// <param name="tableTypeName">Name of the table type.</param>
+        ///// <param name="dataTable">The data table.</param>
+        ///// <param name="options">The options.</param>
+        ///// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
+        //[SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
+        //public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> InsertBatch<TObject>(DataTable dataTable, SqlServerObjectName tableTypeName, InsertOptions options = InsertOptions.None) where TObject : class
+        //{
+        //    return InsertBatch(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, tableTypeName, dataTable, options);
+        //}
         /// <summary>
         /// Inserts the batch of records as one operation.
         /// </summary>
@@ -435,22 +469,6 @@ namespace Tortuga.Chain.SqlServer
             return InsertBatch(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, tableTypeName, dataReader, options);
         }
 
-        ///// <summary>
-        ///// Inserts the batch of records as one operation.
-        ///// </summary>
-        ///// <typeparam name="TObject">The type of the t object.</typeparam>
-        ///// <param name="tableTypeName">Name of the table type.</param>
-        ///// <param name="dataReader">The data reader.</param>
-        ///// <param name="options">The options.</param>
-        ///// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
-        //[SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-        //public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> InsertBatch<TObject>(DbDataReader dataReader, SqlServerObjectName tableTypeName, InsertOptions options = InsertOptions.None) where TObject : class
-        //{
-        //    return InsertBatch(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, tableTypeName, dataReader, options);
-        //}
-
-#if !DataTable_Missing
-
         /// <summary>
         /// Inserts the batch of records as one operation..
         /// </summary>
@@ -469,6 +487,19 @@ namespace Tortuga.Chain.SqlServer
             return new SqlServerInsertBatch(this, tableName, new ObjectDataReader<TObject>(tableType, objects), tableTypeName, options);
         }
 
+        ///// <summary>
+        ///// Inserts the batch of records as one operation.
+        ///// </summary>
+        ///// <typeparam name="TObject">The type of the t object.</typeparam>
+        ///// <param name="tableTypeName">Name of the table type.</param>
+        ///// <param name="dataReader">The data reader.</param>
+        ///// <param name="options">The options.</param>
+        ///// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
+        //[SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
+        //public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> InsertBatch<TObject>(DbDataReader dataReader, SqlServerObjectName tableTypeName, InsertOptions options = InsertOptions.None) where TObject : class
+        //{
+        //    return InsertBatch(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, tableTypeName, dataReader, options);
+        //}
         /// <summary>
         /// Inserts the batch of records as one operation..
         /// </summary>
@@ -484,10 +515,6 @@ namespace Tortuga.Chain.SqlServer
             var tableType = DatabaseMetadata.GetUserDefinedType(tableTypeName);
             return new SqlServerInsertBatch(this, tableName, new ObjectDataReader<TObject>(tableType, objects), tableTypeName, options);
         }
-
-#endif
-
-#if !DataTable_Missing
 
         /// <summary>
         /// Inserts the batch of records as one operation..
@@ -521,10 +548,6 @@ namespace Tortuga.Chain.SqlServer
             return InsertBatch(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, objects, tableTypeName, options);
         }
 
-#endif
-
-#if !DataTable_Missing
-
         /// <summary>
         /// Inserts the batch of records using bulk insert.
         /// </summary>
@@ -537,22 +560,6 @@ namespace Tortuga.Chain.SqlServer
             return new SqlServerInsertBulk(this, tableName, dataTable, options);
         }
 
-#endif
-
-#if NETSTANDARD1_3
-        /// <summary>
-        /// Inserts the batch of records using bulk insert.
-        /// </summary>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="dataReader">The data reader.</param>
-        /// <param name="options">The options.</param>
-        /// <returns>SqlServerInsertBulk.</returns>
-        public SqlServerInsertBulk InsertBulk(SqlServerObjectName tableName, DbDataReader dataReader, SqlBulkCopyOptions options = SqlBulkCopyOptions.Default)
-        {
-            return new SqlServerInsertBulk(this, tableName, dataReader, options);
-        }
-#else
-
         /// <summary>
         /// Inserts the batch of records using bulk insert.
         /// </summary>
@@ -564,10 +571,6 @@ namespace Tortuga.Chain.SqlServer
         {
             return new SqlServerInsertBulk(this, tableName, dataReader, options);
         }
-
-#endif
-
-#if !DataTable_Missing
 
         /// <summary>
         /// Inserts the batch of records using bulk insert.
@@ -584,10 +587,6 @@ namespace Tortuga.Chain.SqlServer
             return new SqlServerInsertBulk(this, tableName, new ObjectDataReader<TObject>(tableType, objects, OperationTypes.Insert), options);
         }
 
-#endif
-
-#if !DataTable_Missing
-
         /// <summary>
         /// Inserts the batch of records using bulk insert.
         /// </summary>
@@ -602,25 +601,6 @@ namespace Tortuga.Chain.SqlServer
         {
             return InsertBulk(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, dataTable, options);
         }
-
-#endif
-
-#if NETSTANDARD1_3
-        /// <summary>
-        /// Inserts the batch of records using bulk insert.
-        /// </summary>
-        /// <typeparam name="TObject">The type of the object.</typeparam>
-        /// <param name="dataReader">The data reader.</param>
-        /// <param name="options">The options.</param>
-        /// <returns>
-        /// SqlServerInsertBulk.
-        /// </returns>
-        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-        public SqlServerInsertBulk InsertBulk<TObject>(DbDataReader dataReader, SqlBulkCopyOptions options = SqlBulkCopyOptions.Default) where TObject : class
-        {
-            return InsertBulk(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, dataReader, options);
-        }
-#else
 
         /// <summary>
         /// Inserts the batch of records using bulk insert.
@@ -637,10 +617,6 @@ namespace Tortuga.Chain.SqlServer
             return InsertBulk(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, dataReader, options);
         }
 
-#endif
-
-#if !DataTable_Missing
-
         /// <summary>
         /// Inserts the batch of records using bulk insert.
         /// </summary>
@@ -654,8 +630,6 @@ namespace Tortuga.Chain.SqlServer
         {
             return InsertBulk(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, objects, options);
         }
-
-#endif
 
         /// <summary>
         /// Loads a procedure definition
@@ -679,6 +653,27 @@ namespace Tortuga.Chain.SqlServer
         public MultipleTableDbCommandBuilder<SqlCommand, SqlParameter> Procedure(SqlServerObjectName procedureName, object argumentValue)
         {
             return new SqlServerProcedureCall(this, procedureName, argumentValue);
+        }
+
+        /// <summary>
+        /// This is used to query a scalar function.
+        /// </summary>
+        /// <param name="scalarFunctionName">Name of the scalar function.</param>
+        /// <returns></returns>
+        public ScalarDbCommandBuilder<SqlCommand, SqlParameter> ScalarFunction(SqlServerObjectName scalarFunctionName)
+        {
+            return new SqlServerScalarFunction(this, scalarFunctionName, null);
+        }
+
+        /// <summary>
+        /// This is used to query a scalar function.
+        /// </summary>
+        /// <param name="scalarFunctionName">Name of the scalar function.</param>
+        /// <param name="functionArgumentValue">The function argument.</param>
+        /// <returns></returns>
+        public ScalarDbCommandBuilder<SqlCommand, SqlParameter> ScalarFunction(SqlServerObjectName scalarFunctionName, object functionArgumentValue)
+        {
+            return new SqlServerScalarFunction(this, scalarFunctionName, functionArgumentValue);
         }
 
         /// <summary>
@@ -721,27 +716,6 @@ namespace Tortuga.Chain.SqlServer
         public TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption> TableFunction(SqlServerObjectName tableFunctionName, object functionArgumentValue)
         {
             return new SqlServerTableFunction(this, tableFunctionName, functionArgumentValue);
-        }
-
-        /// <summary>
-        /// This is used to query a scalar function.
-        /// </summary>
-        /// <param name="scalarFunctionName">Name of the scalar function.</param>
-        /// <returns></returns>
-        public ScalarDbCommandBuilder<SqlCommand, SqlParameter> ScalarFunction(SqlServerObjectName scalarFunctionName)
-        {
-            return new SqlServerScalarFunction(this, scalarFunctionName, null);
-        }
-
-        /// <summary>
-        /// This is used to query a scalar function.
-        /// </summary>
-        /// <param name="scalarFunctionName">Name of the scalar function.</param>
-        /// <param name="functionArgumentValue">The function argument.</param>
-        /// <returns></returns>
-        public ScalarDbCommandBuilder<SqlCommand, SqlParameter> ScalarFunction(SqlServerObjectName scalarFunctionName, object functionArgumentValue)
-        {
-            return new SqlServerScalarFunction(this, scalarFunctionName, functionArgumentValue);
         }
 
         /// <summary>
@@ -799,10 +773,6 @@ namespace Tortuga.Chain.SqlServer
             return UpdateByKeyList(tableName, newValues, new List<string> { key }, options);
         }
 
-
-
-
-
         /// <summary>
         /// Update multiple rows by key.
         /// </summary>
@@ -842,84 +812,6 @@ namespace Tortuga.Chain.SqlServer
         }
 
         /// <summary>
-        /// Perform an insert or update operation as appropriate.
-        /// </summary>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="argumentValue">The argument value.</param>
-        /// <param name="options">The options for how the insert/update occurs.</param>
-        /// <returns>SqlServerUpdate.</returns>
-        public ObjectDbCommandBuilder<SqlCommand, SqlParameter, TArgument> Upsert<TArgument>(SqlServerObjectName tableName, TArgument argumentValue, UpsertOptions options = UpsertOptions.None)
-        where TArgument : class
-        {
-            return new SqlServerInsertOrUpdateObject<TArgument>(this, tableName, argumentValue, options);
-        }
-
-        /// <summary>
-        /// Perform an insert or update operation as appropriate.
-        /// </summary>
-        /// <typeparam name="TArgument"></typeparam>
-        /// <param name="argumentValue">The argument value.</param>
-        /// <param name="options">The options for how the insert/update occurs.</param>
-        /// <returns></returns>
-        public ObjectDbCommandBuilder<SqlCommand, SqlParameter, TArgument> Upsert<TArgument>(TArgument argumentValue, UpsertOptions options = UpsertOptions.None) where TArgument : class
-        {
-            return Upsert(DatabaseMetadata.GetTableOrViewFromClass<TArgument>().Name, argumentValue, options);
-        }
-
-        /// <summary>
-        /// Called when Database.DatabaseMetadata is invoked.
-        /// </summary>
-        /// <returns></returns>
-        protected override IDatabaseMetadataCache OnGetDatabaseMetadata()
-        {
-            return DatabaseMetadata;
-        }
-
-        /// <summary>
-        /// Delete multiple records using a where expression.
-        /// </summary>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="whereClause">The where clause.</param>
-        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> DeleteWithFilter(SqlServerObjectName tableName, string whereClause)
-        {
-            var table = DatabaseMetadata.GetTableOrView(tableName);
-            if (!AuditRules.UseSoftDelete(table))
-                return new SqlServerDeleteMany(this, tableName, whereClause, null);
-
-            return new SqlServerUpdateMany(this, tableName, null, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected).WithFilter(whereClause, null);
-        }
-
-        /// <summary>
-        /// Delete multiple records using a where expression.
-        /// </summary>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="whereClause">The where clause.</param>
-        /// <param name="argumentValue">The argument value for the where clause.</param>
-        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> DeleteWithFilter(SqlServerObjectName tableName, string whereClause, object argumentValue)
-        {
-            var table = DatabaseMetadata.GetTableOrView(tableName);
-            if (!AuditRules.UseSoftDelete(table))
-                return new SqlServerDeleteMany(this, tableName, whereClause, argumentValue);
-
-            return new SqlServerUpdateMany(this, tableName, null, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected).WithFilter(whereClause, argumentValue);
-        }
-
-        /// <summary>
-        /// Delete multiple records using a filter object.
-        /// </summary>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="filterValue">The filter value.</param>
-        /// <param name="filterOptions">The options.</param>
-        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> DeleteWithFilter(SqlServerObjectName tableName, object filterValue, FilterOptions filterOptions = FilterOptions.None)
-        {
-            var table = DatabaseMetadata.GetTableOrView(tableName);
-            if (!AuditRules.UseSoftDelete(table))
-                return new SqlServerDeleteMany(this, tableName, filterValue, filterOptions);
-
-            return new SqlServerUpdateMany(this, tableName, null, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected).WithFilter(filterValue, filterOptions);
-        }
-
-        /// <summary>
         /// Update multiple records using an update expression.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
@@ -956,6 +848,59 @@ namespace Tortuga.Chain.SqlServer
             return new SqlServerUpdateMany(this, tableName, newValues, options);
         }
 
+        /// <summary>
+        /// Perform an insert or update operation as appropriate.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="options">The options for how the insert/update occurs.</param>
+        /// <returns>SqlServerUpdate.</returns>
+        public ObjectDbCommandBuilder<SqlCommand, SqlParameter, TArgument> Upsert<TArgument>(SqlServerObjectName tableName, TArgument argumentValue, UpsertOptions options = UpsertOptions.None)
+        where TArgument : class
+        {
+            return new SqlServerInsertOrUpdateObject<TArgument>(this, tableName, argumentValue, options);
+        }
 
+        /// <summary>
+        /// Perform an insert or update operation as appropriate.
+        /// </summary>
+        /// <typeparam name="TArgument"></typeparam>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <param name="options">The options for how the insert/update occurs.</param>
+        /// <returns></returns>
+        public ObjectDbCommandBuilder<SqlCommand, SqlParameter, TArgument> Upsert<TArgument>(TArgument argumentValue, UpsertOptions options = UpsertOptions.None) where TArgument : class
+        {
+            return Upsert(DatabaseMetadata.GetTableOrViewFromClass<TArgument>().Name, argumentValue, options);
+        }
+
+        /// <summary>
+        /// Called when Database.DatabaseMetadata is invoked.
+        /// </summary>
+        /// <returns></returns>
+        protected override IDatabaseMetadataCache OnGetDatabaseMetadata()
+        {
+            return DatabaseMetadata;
+        }
+
+        MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> GetByKeyList<T>(SqlServerObjectName tableName, ColumnMetadata<SqlDbType> columnMetadata, IEnumerable<T> keys)
+        {
+            var keyList = keys.AsList();
+            string where;
+            if (keys.Count() > 1)
+                where = columnMetadata.SqlName + " IN (" + string.Join(", ", keyList.Select((s, i) => "@Param" + i)) + ")";
+            else
+                where = columnMetadata.SqlName + " = @Param0";
+
+            var parameters = new List<SqlParameter>();
+            for (var i = 0; i < keyList.Count; i++)
+            {
+                var param = new SqlParameter("@Param" + i, keyList[i]);
+                if (columnMetadata.DbType.HasValue)
+                    param.SqlDbType = columnMetadata.DbType.Value;
+                parameters.Add(param);
+            }
+
+            return new SqlServerTableOrView(this, tableName, where, parameters);
+        }
     }
 }

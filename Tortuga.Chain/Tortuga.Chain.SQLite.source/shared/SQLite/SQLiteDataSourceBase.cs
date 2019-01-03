@@ -7,6 +7,7 @@ using System.Linq;
 using Tortuga.Anchor;
 using System.Diagnostics.CodeAnalysis;
 using Nito.AsyncEx;
+using System.Data;
 
 #if SDS
 
@@ -215,9 +216,21 @@ namespace Tortuga.Chain.SQLite
             return GetByKeyList(tableName, new List<string> { key });
         }
 
+        /// <summary>Gets a set of records by an unique key.</summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="keyColumn">Name of the key column. This should be a primary or unique key, but that's not enforced.</param>
+        /// <param name="keys">The keys.</param>
+        /// <returns>MultipleRowDbCommandBuilder&lt;MySqlCommand, MySqlParameter&gt;.</returns>
+        /// <exception cref="MappingException"></exception>
+        public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> GetByKeyList<T>(SQLiteObjectName tableName, string keyColumn, IEnumerable<T> keys)
+        {
+            var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).Columns.Where(c => c.SqlName.Equals(keyColumn, System.StringComparison.OrdinalIgnoreCase)).ToList();
+            if (primaryKeys.Count == 0)
+                throw new MappingException($"Cannot find a column named {keyColumn} on table {tableName}.");
 
-
-
+            return GetByKeyList<T>(tableName, primaryKeys.Single(), keys);
+        }
 
         /// <summary>
         /// Gets a set of records by their primary key.
@@ -225,8 +238,8 @@ namespace Tortuga.Chain.SQLite
         /// <typeparam name="T"></typeparam>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="keys">The keys.</param>
-        /// <returns></returns>
-        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
+        /// <returns>MultipleRowDbCommandBuilder&lt;MySqlCommand, MySqlParameter&gt;.</returns>
+        /// <exception cref="MappingException"></exception>
         [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "GetByKeyList")]
         public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> GetByKeyList<T>(SQLiteObjectName tableName, IEnumerable<T> keys)
         {
@@ -234,8 +247,12 @@ namespace Tortuga.Chain.SQLite
             if (primaryKeys.Count != 1)
                 throw new MappingException($"{nameof(GetByKeyList)} operation isn't allowed on {tableName} because it doesn't have a single primary key. Use DataSource.From instead.");
 
+            return GetByKeyList<T>(tableName, primaryKeys.Single(), keys);
+        }
+
+        MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> GetByKeyList<T>(SQLiteObjectName tableName, ColumnMetadata<DbType> columnMetadata, IEnumerable<T> keys)
+        {
             var keyList = keys.AsList();
-            var columnMetadata = primaryKeys.Single();
 
             string where;
             if (keys.Count() > 1)
@@ -392,10 +409,6 @@ namespace Tortuga.Chain.SQLite
             return UpdateByKeyList(tableName, newValues, new List<string> { key }, options);
         }
 
-
-
-
-
         /// <summary>
         /// Update multiple rows by key.
         /// </summary>
@@ -459,10 +472,6 @@ namespace Tortuga.Chain.SQLite
         {
             return DeleteByKeyList(tableName, new List<string> { key }, options);
         }
-
-
-
-
 
         /// <summary>
         /// Delete multiple rows by key.

@@ -881,7 +881,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void FromTests_GetByKey(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void FromTests_GetByKeyList(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -900,6 +900,36 @@ namespace Tests.CommandBuilders
                 Assert.AreEqual(emp2.EmployeeKey, find2.EmployeeKey, "The wrong employee was returned");
 
                 var list = dataSource.GetByKeyList(EmployeeTableName, new[] { emp2.EmployeeKey.Value, emp3.EmployeeKey.Value, emp4.EmployeeKey.Value }).ToCollection<Employee>().Execute();
+                Assert.AreEqual(3, list.Count, "GetByKey returned the wrong number of rows");
+                Assert.IsTrue(list.Any(e => e.EmployeeKey == emp2.EmployeeKey));
+                Assert.IsTrue(list.Any(e => e.EmployeeKey == emp3.EmployeeKey));
+                Assert.IsTrue(list.Any(e => e.EmployeeKey == emp4.EmployeeKey));
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+        [Theory, MemberData(nameof(Prime))]
+        public void FromTests_GetByKeyList_2(string assemblyName, string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+                var emp1 = new Employee() { FirstName = "A", LastName = "1", Title = Guid.NewGuid().ToString() };
+                var emp2 = new Employee() { FirstName = "B", LastName = "2", Title = Guid.NewGuid().ToString() };
+                var emp3 = new Employee() { FirstName = "C", LastName = "3", Title = Guid.NewGuid().ToString() };
+                var emp4 = new Employee() { FirstName = "D", LastName = "4", Title = Guid.NewGuid().ToString() };
+
+                emp1 = dataSource.Insert(EmployeeTableName, emp1).ToObject<Employee>().Execute();
+                emp2 = dataSource.Insert(EmployeeTableName, emp2).ToObject<Employee>().Execute();
+                emp3 = dataSource.Insert(EmployeeTableName, emp3).ToObject<Employee>().Execute();
+                emp4 = dataSource.Insert(EmployeeTableName, emp4).ToObject<Employee>().Execute();
+
+                //Pretend that Title is a unique column.
+
+                var list = dataSource.GetByKeyList(EmployeeTableName, "Title", new[] { emp2.Title, emp3.Title, emp4.Title }).ToCollection<Employee>().Execute();
                 Assert.AreEqual(3, list.Count, "GetByKey returned the wrong number of rows");
                 Assert.IsTrue(list.Any(e => e.EmployeeKey == emp2.EmployeeKey));
                 Assert.IsTrue(list.Any(e => e.EmployeeKey == emp3.EmployeeKey));
@@ -1067,6 +1097,7 @@ namespace Tests.CommandBuilders
         }
 
 #else
+
         [Theory, MemberData(nameof(Prime))]
         public void FromTests_Sorting_ImmutableCollection(string assemblyName, string dataSourceName, DataSourceType mode)
         {
