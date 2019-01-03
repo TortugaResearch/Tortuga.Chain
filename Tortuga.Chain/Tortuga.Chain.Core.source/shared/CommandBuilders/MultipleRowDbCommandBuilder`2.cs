@@ -1,17 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Data;
 using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
+using System.Xml.Linq;
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Materializers;
-using System.Collections.Immutable;
-using System.Xml.Linq;
-
-#if !DataTable_Missing
-
-using System.Data;
-
-#endif
 
 namespace Tortuga.Chain.CommandBuilders
 {
@@ -121,8 +116,6 @@ namespace Tortuga.Chain.CommandBuilders
             return new CollectionMaterializer<TCommand, TParameter, TObject, TCollection>(this, collectionOptions);
         }
 
-#if !DataTable_Missing
-
         /// <summary>
         /// Indicates the results should be materialized as a DataSet.
         /// </summary>
@@ -130,8 +123,6 @@ namespace Tortuga.Chain.CommandBuilders
         {
             return new DataTableMaterializer<TCommand, TParameter>(this);
         }
-
-#endif
 
         /// <summary>
         /// Indicates the results should be materialized as a list of DateTime.

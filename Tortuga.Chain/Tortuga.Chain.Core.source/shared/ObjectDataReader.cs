@@ -1,5 +1,4 @@
-﻿#if !DataTable_Missing
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -52,7 +51,6 @@ namespace Tortuga.Chain
             m_PropertyLookup = metadata.PropertyLookup;
         }
 
-
         /// <summary>
         /// Initializes a new instance of the <see cref="ObjectDataReader{TObject}" /> class.
         /// </summary>
@@ -65,7 +63,6 @@ namespace Tortuga.Chain
                 throw new ArgumentNullException(nameof(tableOrView), $"{nameof(tableOrView)} is null.");
             if (source == null)
                 throw new ArgumentNullException(nameof(source), $"{nameof(source)} is null.");
-
 
             //Don't use IEnumerable<T>.Count(), as we don't want to preemptively materialize a lazy collection
             if (source is ICollection)
@@ -344,11 +341,9 @@ namespace Tortuga.Chain
         [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         static ObjectDataReaderMetadata BuildStructure(string targetName, IReadOnlyList<ColumnMetadata> columns, bool allColumnsRequired, OperationTypes operationType)
         {
-
             var propertyList = MetadataCache.GetMetadata(typeof(TObject)).Properties.Where(p => p.CanRead && p.MappedColumnName != null).ToList();
             bool checkIgnoreOnInsert = operationType == OperationTypes.Insert;
             bool checkIgnoreOnUpdate = operationType == OperationTypes.Update;
-
 
             var dtSchema = new DataTable();
             dtSchema.Columns.Add("ColumnName", typeof(string));
@@ -397,7 +392,6 @@ namespace Tortuga.Chain
                     }
                 }
 
-
                 if (property == null)
                 {
                     if (allColumnsRequired)
@@ -439,9 +433,7 @@ namespace Tortuga.Chain
                 dtSchema.Rows.Add(row);
             }
 
-
             return new ObjectDataReaderMetadata(dtSchema, realPropertyList.ToImmutableArray(), realPropertyList.Select((p, x) => new { Index = x, Property = p }).ToImmutableDictionary(px => px.Property.Name, px => px.Index, StringComparer.OrdinalIgnoreCase));
-
         }
 
         class ObjectDataReaderMetadata
@@ -452,10 +444,10 @@ namespace Tortuga.Chain
                 Properties = properties;
                 PropertyLookup = propertyLookup;
             }
+
             public ImmutableArray<PropertyMetadata> Properties { get; }
             public ImmutableDictionary<string, int> PropertyLookup { get; }
             public DataTable Schema { get; }
         }
     }
 }
-#endif

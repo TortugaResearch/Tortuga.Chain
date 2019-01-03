@@ -1,17 +1,13 @@
-using System.Data.Common;
-using Tortuga.Chain.DataSources;
-using Tortuga.Chain.Materializers;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-
-#if !DataTable_Missing
 using System.Data;
-#endif
+using System.Data.Common;
+using System.Diagnostics.CodeAnalysis;
+using Tortuga.Chain.DataSources;
+using Tortuga.Chain.Materializers;
 
 namespace Tortuga.Chain.CommandBuilders
 {
-
     /// <summary>
     /// This is the base class for command builders that can potentially return multiple result sets.
     /// </summary>
@@ -28,8 +24,6 @@ namespace Tortuga.Chain.CommandBuilders
         protected MultipleTableDbCommandBuilder(ICommandDataSource<TCommand, TParameter> dataSource)
             : base(dataSource)
         { }
-
-
 
         /// <summary>
         /// To the collection set.
@@ -95,14 +89,11 @@ namespace Tortuga.Chain.CommandBuilders
             return new CollectionSetMaterializer<TCommand, TParameter, T1, T2, T3, T4, T5>(this);
         }
 
-#if !DataTable_Missing
         /// <summary>
         /// Indicates the results should be materialized as a DataSet.
         /// </summary>
         /// <param name="tableNames">The table names.</param>
         public ILink<DataSet> ToDataSet(params string[] tableNames) { return new DataSetMaterializer<TCommand, TParameter>(this, tableNames); }
-#endif
-
 
         /// <summary>
         /// Indicates the results should be materialized as a set of tables.

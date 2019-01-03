@@ -1,5 +1,3 @@
-#if !DataTable_Missing
-
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
@@ -86,5 +84,3 @@ namespace Tortuga.Chain.Materializers
         }
     }
 }
-
-#endif
