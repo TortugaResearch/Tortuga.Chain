@@ -14,6 +14,7 @@ namespace Tortuga.Chain.Appenders
         readonly JoinOptions m_JoinOptions;
         readonly Func<T1, TKey> m_PrimaryKeyExpression;
         readonly Func<T1, ICollection<T2>> m_TargetCollectionExpression;
+
         public KeyJoinAppender(ILink<Tuple<List<T1>, List<T2>>> previousLink, Func<T1, TKey> primaryKeyExpression, Func<T2, TKey> foreignKeyExpression, Func<T1, ICollection<T2>> targetCollectionExpression, JoinOptions joinOptions) : base(previousLink)
         {
             if (previousLink == null)
@@ -34,7 +35,6 @@ namespace Tortuga.Chain.Appenders
 
             var targetPropertyStub = MetadataCache.GetMetadata(typeof(T1)).Properties[targetCollectionName]; //don't inline this variable.
             m_TargetCollectionExpression = (p) => (ICollection<T2>)targetPropertyStub.InvokeGet(p);
-
 
             m_ForeignKeyExpression = foreignKeyExpression ?? throw new ArgumentNullException(nameof(foreignKeyExpression), $"{nameof(foreignKeyExpression)} is null.");
             m_PrimaryKeyExpression = primaryKeyExpression ?? throw new ArgumentNullException(nameof(primaryKeyExpression), $"{nameof(primaryKeyExpression)} is null.");
@@ -67,7 +67,6 @@ namespace Tortuga.Chain.Appenders
             m_JoinOptions = joinOptions;
         }
 
-
         public override List<T1> Execute(object state = null)
         {
             var result = PreviousLink.Execute(state);
@@ -77,7 +76,7 @@ namespace Tortuga.Chain.Appenders
 
         public override async Task<List<T1>> ExecuteAsync(CancellationToken cancellationToken, object state = null)
         {
-            var result = await PreviousLink.ExecuteAsync(state);
+            var result = await PreviousLink.ExecuteAsync(state).ConfigureAwait(false);
             Match(result);
             return result.Item1;
         }
@@ -94,6 +93,7 @@ namespace Tortuga.Chain.Appenders
                 MatchSerial(result, ignoreUnmatchedChildren);
         }
 #else
+
         void Match(Tuple<List<T1>, List<T2>> result)
         {
             var ignoreUnmatchedChildren = m_JoinOptions.HasFlag(JoinOptions.IgnoreUnmatchedChildren);
@@ -140,6 +140,7 @@ namespace Tortuga.Chain.Appenders
                     }
                 });
         }
+
 #endif
 
         [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "ChildObject")]
@@ -191,6 +192,7 @@ namespace Tortuga.Chain.Appenders
         }
 
 #if !Parallel_Missing
+
         [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "ChildObject")]
         void MultiMatchParallel(Tuple<List<T1>, List<T2>> result, bool ignoreUnmatchedChildren)
         {
@@ -217,7 +219,7 @@ namespace Tortuga.Chain.Appenders
                     }
                 });
         }
-#endif
 
+#endif
     }
 }

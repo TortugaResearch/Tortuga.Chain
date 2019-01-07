@@ -41,12 +41,18 @@ namespace Tortuga.Chain.SqlServer
             get { return m_BaseDataSource.DatabaseMetadata; }
         }
 
-        DbConnection IOpenDataSource.AssociatedConnection
+        /// <summary>
+        /// Returns the associated connection.
+        /// </summary>
+        public DbConnection AssociatedConnection
         {
             get { return m_Connection; }
         }
 
-        DbTransaction IOpenDataSource.AssociatedTransaction
+        /// <summary>
+        /// Returns the associated transaction.
+        /// </summary>
+        public DbTransaction AssociatedTransaction
         {
             get { return m_Transaction; }
         }
@@ -317,7 +323,13 @@ namespace Tortuga.Chain.SqlServer
             }
         }
 
-        bool IOpenDataSource.TryCommit()
+        /// <summary>
+        /// Tries the commit the transaction associated with this data source.
+        /// </summary>
+        /// <returns>
+        /// True if there was an open transaction associated with this data source, otherwise false.
+        /// </returns>
+        public bool TryCommit()
         {
             if (m_Transaction == null)
                 return false;
@@ -326,7 +338,10 @@ namespace Tortuga.Chain.SqlServer
             return true;
         }
 
-        void IOpenDataSource.Close()
+        /// <summary>
+        /// Closes the connection and transaction associated with this data source.
+        /// </summary>
+        public void Close()
         {
             if (m_Transaction != null)
                 m_Transaction.Dispose();

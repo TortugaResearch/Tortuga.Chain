@@ -47,7 +47,7 @@ namespace Tortuga.Chain.Appenders
 
         public override async Task<List<T1>> ExecuteAsync(CancellationToken cancellationToken, object state = null)
         {
-            var result = await PreviousLink.ExecuteAsync(state);
+            var result = await PreviousLink.ExecuteAsync(state).ConfigureAwait(false);
             Match(result);
             return result.Item1;
         }

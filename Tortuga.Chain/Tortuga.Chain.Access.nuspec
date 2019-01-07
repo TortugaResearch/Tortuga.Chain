@@ -4,7 +4,7 @@
     <id>Tortuga.Chain.Access</id>
     <version></version>
     <authors>David Tomcik, Jonathan Allen</authors>
-    <copyright>Copyright David Tomcik, Jonathan Allen 2016</copyright>
+    <copyright>Copyright David Tomcik, Jonathan Allen 2016,2019</copyright>
     <description>Fluent ORM for .NET and Access.</description>
     <tags>ORM, Fluent, Access</tags>
     <language>en-US</language>
@@ -14,13 +14,6 @@
       <reference file="Tortuga.Chain.Access.dll" />
     </references>
     <frameworkAssemblies>
-      <frameworkAssembly assemblyName="System.Data" targetFramework="net45" />
-      <frameworkAssembly assemblyName="System.ComponentModel.DataAnnotations" targetFramework="net45" />
-      <frameworkAssembly assemblyName="System.Xml" targetFramework="net45" />
-      <frameworkAssembly assemblyName="System.Xml.Linq" targetFramework="net45" />
-      <frameworkAssembly assemblyName="System.Runtime.Caching" targetFramework="net45" />
-      <frameworkAssembly assemblyName="System.Configuration" targetFramework="net45" />
-
       <frameworkAssembly assemblyName="System.Data" targetFramework="net46" />
       <frameworkAssembly assemblyName="System.ComponentModel.DataAnnotations" targetFramework="net46" />
       <frameworkAssembly assemblyName="System.Xml" targetFramework="net46" />
@@ -30,11 +23,8 @@
     </frameworkAssemblies>
 
     <dependencies>
-      <group targetFramework="net45">
-        <dependency id="Tortuga.Chain.Core" version="1.3.6847.41792" />
-      </group>
       <group targetFramework="net46">
-        <dependency id="Tortuga.Chain.Core" version="1.3.6847.41792" />
+        <dependency id="Tortuga.Chain.Core" version="2.0.6932.69" />
       </group>
     </dependencies>
   </metadata>

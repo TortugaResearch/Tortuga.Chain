@@ -1,6 +1,13 @@
-using CSScriptLibrary;
 using System;
 using System.Collections.Concurrent;
+
+#if NETSTANDARD2_0
+
+using CSScriptLib;
+
+#else
+using CSScriptLibrary;
+#endif
 
 namespace Tortuga.Chain.Materializers
 {
@@ -12,8 +19,7 @@ namespace Tortuga.Chain.Materializers
             where TObject : new()
         {
             var cache2 = m_Cache.GetOrAdd(typeof(TObject), x => new ConcurrentDictionary<string, object>());
-            object result;
-            cache2.TryGetValue(sql, out result);
+            cache2.TryGetValue(sql, out var result);
             return (MethodDelegate<TObject>)result;
         }
 

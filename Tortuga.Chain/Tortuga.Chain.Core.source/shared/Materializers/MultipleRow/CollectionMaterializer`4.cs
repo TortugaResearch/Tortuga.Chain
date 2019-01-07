@@ -23,7 +23,6 @@ namespace Tortuga.Chain.Materializers
         where TCollection : ICollection<TObject>, new()
         where TParameter : DbParameter
     {
-
         readonly CollectionOptions m_CollectionOptions;
 
         /// <summary>
@@ -35,7 +34,6 @@ namespace Tortuga.Chain.Materializers
             : base(commandBuilder)
         {
             m_CollectionOptions = collectionOptions;
-
 
             if (m_CollectionOptions.HasFlag(CollectionOptions.InferConstructor))
             {
@@ -78,7 +76,7 @@ namespace Tortuga.Chain.Materializers
             var result = new TCollection();
             Prepare().Execute(cmd =>
             {
-                using (var reader = cmd.ExecuteReader().AsObjectConstructor<TObject>(ConstructorSignature))
+                using (var reader = cmd.ExecuteReader().AsObjectConstructor<TObject>(ConstructorSignature, CommandBuilder.TryGetNonNullableColumns()))
                 {
                     while (reader.Read())
                         result.Add(reader.Current);
@@ -88,7 +86,6 @@ namespace Tortuga.Chain.Materializers
 
             return result;
         }
-
 
         /// <summary>
         /// Execute the operation asynchronously.
@@ -102,9 +99,9 @@ namespace Tortuga.Chain.Materializers
 
             await Prepare().ExecuteAsync(async cmd =>
             {
-                using (var reader = (await cmd.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false)).AsObjectConstructor<TObject>(ConstructorSignature))
+                using (var reader = (await cmd.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false)).AsObjectConstructor<TObject>(ConstructorSignature, CommandBuilder.TryGetNonNullableColumns()))
                 {
-                    while (await reader.ReadAsync())
+                    while (await reader.ReadAsync().ConfigureAwait(false))
                         result.Add(reader.Current);
                     return result.Count;
                 }

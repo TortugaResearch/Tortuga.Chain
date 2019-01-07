@@ -26,7 +26,7 @@ namespace Tortuga.Chain
             if (reader == null)
                 throw new ArgumentNullException("reader", "reader is null.");
             if (tableNames == null)
-                tableNames = new string[0];
+                tableNames = Array.Empty<string>();
 
             var index = 0;
             do

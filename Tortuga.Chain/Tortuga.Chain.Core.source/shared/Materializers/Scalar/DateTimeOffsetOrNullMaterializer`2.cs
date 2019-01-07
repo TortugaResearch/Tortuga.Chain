@@ -38,7 +38,6 @@ namespace Tortuga.Chain.Materializers
             return (DateTimeOffset)temp;
         }
 
-
         /// <summary>
         /// Execute the operation asynchronously.
         /// </summary>
@@ -48,7 +47,7 @@ namespace Tortuga.Chain.Materializers
         public override async Task<DateTimeOffset?> ExecuteAsync(CancellationToken cancellationToken, object state = null)
         {
             object temp = null;
-            await ExecuteCoreAsync(async cmd => temp = await cmd.ExecuteScalarAsync(cancellationToken), cancellationToken, state).ConfigureAwait(false);
+            await ExecuteCoreAsync(async cmd => temp = await cmd.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false), cancellationToken, state).ConfigureAwait(false);
             if (temp == null || temp == DBNull.Value)
                 return null;
 

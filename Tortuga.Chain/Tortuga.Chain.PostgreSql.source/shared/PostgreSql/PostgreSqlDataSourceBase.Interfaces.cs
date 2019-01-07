@@ -5,7 +5,6 @@ using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.PostgreSql
 {
-
     partial class PostgreSqlDataSourceBase : IClass2DataSource
     {
         IDatabaseMetadataCache IDataSource.DatabaseMetadata
@@ -33,15 +32,9 @@ namespace Tortuga.Chain.PostgreSql
             return DeleteByKey(tableName, key, options);
         }
 
-        IMultipleRowDbCommandBuilder IClass1DataSource.DeleteByKey<TKey>(string tableName, params TKey[] keys)
-        {
-            return DeleteByKey(tableName, keys);
-        }
 
-        IMultipleRowDbCommandBuilder IClass1DataSource.DeleteByKey(string tableName, params string[] keys)
-        {
-            return DeleteByKey(tableName, keys);
-        }
+
+
 
         IMultipleRowDbCommandBuilder IClass1DataSource.DeleteByKeyList<TKey>(string tableName, IEnumerable<TKey> keys, DeleteOptions options)
         {
@@ -113,15 +106,9 @@ namespace Tortuga.Chain.PostgreSql
             return GetByKey(tableName, key);
         }
 
-        IMultipleRowDbCommandBuilder IClass1DataSource.GetByKey<TKey>(string tableName, params TKey[] keys)
-        {
-            return GetByKeyList(tableName, keys);
-        }
 
-        IMultipleRowDbCommandBuilder IClass1DataSource.GetByKey(string tableName, params string[] keys)
-        {
-            return GetByKeyList(tableName, keys);
-        }
+
+
 
         IMultipleRowDbCommandBuilder IClass1DataSource.GetByKeyList<T>(string tableName, IEnumerable<T> keys)
         {
@@ -162,6 +149,7 @@ namespace Tortuga.Chain.PostgreSql
         {
             return Sql(sqlStatement, argumentValue);
         }
+
         ITableDbCommandBuilder IClass2DataSource.TableFunction(string functionName)
         {
             return TableFunction(functionName);
@@ -176,10 +164,12 @@ namespace Tortuga.Chain.PostgreSql
         {
             return Update(argumentValue, options);
         }
+
         IObjectDbCommandBuilder<TArgument> IClass1DataSource.Update<TArgument>(string tableName, TArgument argumentValue, UpdateOptions options)
         {
             return Update(tableName, argumentValue, options);
         }
+
         ISingleRowDbCommandBuilder IClass1DataSource.UpdateByKey<TArgument, TKey>(string tableName, TArgument newValues, TKey key, UpdateOptions options)
         {
             return UpdateByKey(tableName, newValues, key, options);
@@ -190,15 +180,9 @@ namespace Tortuga.Chain.PostgreSql
             return UpdateByKey(tableName, newValues, key, options);
         }
 
-        IMultipleRowDbCommandBuilder IClass1DataSource.UpdateByKey<TArgument, TKey>(string tableName, TArgument newValues, params TKey[] keys)
-        {
-            return UpdateByKey(tableName, newValues, keys);
-        }
 
-        IMultipleRowDbCommandBuilder IClass1DataSource.UpdateByKey<TArgument>(string tableName, TArgument newValues, params string[] keys)
-        {
-            return UpdateByKey(tableName, newValues, keys);
-        }
+
+
 
         IMultipleRowDbCommandBuilder IClass1DataSource.UpdateByKeyList<TArgument, TKey>(string tableName, TArgument newValues, IEnumerable<TKey> keys, UpdateOptions options)
         {

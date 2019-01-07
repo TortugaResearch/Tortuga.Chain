@@ -46,7 +46,7 @@ namespace Tortuga.Chain.Materializers
         public override async Task<TimeSpan> ExecuteAsync(CancellationToken cancellationToken, object state = null)
         {
             object temp = null;
-            await ExecuteCoreAsync(async cmd => temp = await cmd.ExecuteScalarAsync(cancellationToken), cancellationToken, state).ConfigureAwait(false);
+            await ExecuteCoreAsync(async cmd => temp = await cmd.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false), cancellationToken, state).ConfigureAwait(false);
             if (temp == DBNull.Value)
                 throw new MissingDataException("Unexpected null result");
 

@@ -82,11 +82,6 @@ namespace Xunit
             Contains(expected, collection, GetEqualityComparer<T>());
         }
 
-        internal static void IsNotNull(object @object, string userMessage)
-        {
-            NotNull(@object, userMessage);
-        }
-
         /// <summary>
         /// Verifies that a collection contains a given object, using an equality comparer.
         /// </summary>
@@ -218,12 +213,12 @@ namespace Xunit
         /// <param name="collection">The collection to be inspected</param>
         /// <exception cref="ArgumentNullException">Thrown when a null collection is passed</exception>
         /// <exception cref="NotEmptyException">Thrown when the collection is empty</exception>
-        public static void NotEmpty(IEnumerable collection)
+        public static void NotEmpty(IEnumerable collection, string userMessage = null)
         {
             Assert.GuardArgumentNotNull("collection", collection);
 
             if (!collection.GetEnumerator().MoveNext())
-                throw new NotEmptyException();
+                throw new NotEmptyException(userMessage);
         }
 
         /// <summary>
@@ -261,7 +256,7 @@ namespace Xunit
         /// exactly one element.</exception>
         public static object Single(IEnumerable collection)
         {
-            return Single(collection.Cast<object>());
+            return Single(Enumerable.Cast<object>(collection));
         }
 
         /// <summary>
@@ -276,7 +271,7 @@ namespace Xunit
         /// exactly one element.</exception>
         public static void Single(IEnumerable collection, object expected)
         {
-            Single(collection.Cast<object>(), item => Object.Equals(item, expected));
+            Single(Enumerable.Cast<object>(collection), item => Object.Equals(item, expected));
         }
 
         /// <summary>
@@ -311,7 +306,7 @@ namespace Xunit
             Assert.GuardArgumentNotNull("predicate", predicate);
 
             int count = 0;
-            T result = default(T);
+            T result = default;
 
             foreach (T item in collection)
                 if (predicate(item))
@@ -324,6 +319,11 @@ namespace Xunit
                 throw new SingleException(count);
 
             return result;
+        }
+
+        internal static void IsNotNull(object @object, string userMessage)
+        {
+            NotNull(@object, userMessage);
         }
     }
 }

@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project
+	 xmlns="http://schemas.microsoft.com/developer/msbuild/2003"
+	 ToolsVersion="4.0"
+	 DefaultTargets="Build">
+
+  <PropertyGroup>
+    <MainSolution>Tortuga.Chain.MySql.sln</MainSolution>
+    <MSBuildCommunityTasksPath>$(MSBuildProjectDirectory)\.build</MSBuildCommunityTasksPath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+
+    <BuildOutputPath>$(MSBuildProjectDirectory)\Build.MySql</BuildOutputPath>
+
+    <ResultDll>Tortuga.Chain.MySql.dll</ResultDll>
+    <ResultPdb>Tortuga.Chain.MySql.pdb</ResultPdb>
+    <ResultXml>Tortuga.Chain.MySql.xml</ResultXml>
+    <ResultDepsJson>Tortuga.Chain.MySql.deps.json</ResultDepsJson>
+
+    <SourcePath>$(MSBuildProjectDirectory)\Tortuga.Chain.MySql.source</SourcePath>
+    <Net46Path>$(MSBuildProjectDirectory)\Tortuga.Chain.MySql.net46</Net46Path>
+    <NetStandard20Path>$(MSBuildProjectDirectory)\Tortuga.Chain.MySql.netstandard2.0</NetStandard20Path>
+
+    <VersionSource>$(SourcePath)\bin\Release\$(ResultDll)</VersionSource>
+    <NuspecName>Tortuga.Chain.MySql.nuspec</NuspecName>
+  </PropertyGroup>
+
+  <Import Project=".build\MSBuild.Community.Tasks.Targets" />
+
+  <UsingTask TaskName="UpdateNuspecVersionFromAssembly" AssemblyFile="$(MSBuildProjectDirectory)\MSBuild.Task.AssemblyVersion.dll" />
+
+  <Target Name="Build">
+    <CallTarget Targets="Clean" />
+    <CallTarget Targets="Compile" />
+    <CallTarget Targets="PackageBinaries" />
+    <CallTarget Targets="PackageHelp" />
+    <CallTarget Targets="BuildNugetFile" />
+    <CallTarget Targets="CopyPackage" />
+  </Target>
+
+  <Target Name="Clean">
+    <Message Text="Cleaning..." />
+    <Deletetree Directories="$(BuildOutputPath)" />
+
+    <MSBuild Projects="$(MainSolution)" Properties="Configuration=Debug-Unchecked" Targets="Clean" StopOnFirstFailure="true" />
+    <MSBuild Projects="$(MainSolution)" Properties="Configuration=Debug" Targets="Clean" StopOnFirstFailure="true" />
+    <MSBuild Projects="$(MainSolution)" Properties="Configuration=Release" Targets="Clean" StopOnFirstFailure="true" />
+  </Target>
+
+  <Target Name="Compile">
+    <Message Text="Building..." />
+    <MSBuild Projects="$(MainSolution)" Properties="Configuration=Release" Targets="Rebuild" StopOnFirstFailure="true" />
+  </Target>
+
+  <Target Name="PackageBinaries">
+    <Message Text="Copying binaries..." />
+
+    <ItemGroup>
+      <Net46Output Include="$(Net46Path)\bin\Release\$(ResultDll)" />
+      <Net46Output Include="$(Net46Path)\bin\Release\$(ResultPdb)" />
+      <Net46Output Include="$(Net46Path)\bin\Release\$(ResultXml)" />
+    </ItemGroup>
+    <Copy SourceFiles="@(Net46Output)" DestinationFolder="$(BuildOutputPath)\lib\net46" />
+
+    <ItemGroup>
+      <NetStandard20Output Include="$(NetStandard20Path)\bin\Release\netstandard2.0\$(ResultDll)" />
+      <NetStandard20Output Include="$(NetStandard20Path)\bin\Release\netstandard2.0\$(ResultPdb)" />
+      <NetStandard20Output Include="$(NetStandard20Path)\bin\Release\netstandard2.0\$(ResultXml)" />
+      <NetStandard20Output Include="$(NetStandard20Path)\bin\Release\netstandard2.0\$(ResultDepsJson)" />
+    </ItemGroup>
+    <Copy SourceFiles="@(NetStandard20Output)" DestinationFolder="$(BuildOutputPath)\lib\netstandard2.0" />
+  </Target>
+
+  <Target Name="PackageHelp">
+  </Target>
+
+  <Target Name="BuildNugetFile">
+
+    <Message Text="Updating Nuspec File..." />
+
+    <Copy SourceFiles="$(MSBuildProjectDirectory)\$(NuspecName)" DestinationFolder="$(BuildOutputPath)" />
+    <GetAssemblyIdentity AssemblyFiles="$(VersionSource)">
+      <Output TaskParameter="Assemblies" ItemName="AssemblyIdentity" />
+    </GetAssemblyIdentity>
+    <XmlUpdate
+			 XmlFileName="$(BuildOutputPath)\$(NuspecName)"
+			 XPath="/package/metadata/version"
+			 Value="%(AssemblyIdentity.Version)" />
+    <Exec Command='"$(MSBuildProjectDirectory)\.nuget\NuGet.exe" pack $(NuspecName)"' WorkingDirectory="$(BuildOutputPath)" />
+  </Target>
+  <Target Name="CopyPackage">
+    <ItemGroup>
+      <FinalPackage Include="$(BuildOutputPath)\*.nupkg" />
+    </ItemGroup>
+
+    <Copy SourceFiles="@(FinalPackage)" DestinationFolder="$(MSBuildProjectDirectory)\..\..\Packages" />
+  </Target>
+</Project>

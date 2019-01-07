@@ -12,7 +12,7 @@ namespace Xunit
         public static void NotNull(object @object, string userMessage)
         {
             if (@object == null)
-                throw new NotNullException(  userMessage);
+                throw new NotNullException(userMessage);
         }
 
         /// <summary>

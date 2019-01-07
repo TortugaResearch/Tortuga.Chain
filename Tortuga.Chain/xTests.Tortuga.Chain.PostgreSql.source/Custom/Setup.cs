@@ -1,20 +1,34 @@
 using Npgsql;
-using System;
 using System.Configuration;
-using System.Diagnostics;
-using Tortuga.Chain;
-using Tortuga.Chain.Core;
 using Xunit;
-
-[assembly: CollectionBehavior(DisableTestParallelization = true)]
 
 namespace Tests
 {
     public class Setup
     {
-
         //TODO: Redesign this to adhere to xUnit conventions.
 
+        public static void AssemblyCleanup()
+        {
+            /*
+			using (var con = new NpgsqlConnection(@"User ID = postgres;
+											 Password = toor;
+											 Host = localhost;
+											 Port = 5432;
+											 Database = tortugachaintestdb;
+											 Pooling = true;"))
+			{
+				con.Open();
+
+				string sql = "DROP TABLE HR.Employee; DROP SCHEMA HR;";
+				string sql2 = "DROP TABLE Sales.Customer; DROP SCHEMA Sales;";
+				using (NpgsqlCommand cmd = new NpgsqlCommand(sql, con))
+					cmd.ExecuteNonQuery();
+
+				using (NpgsqlCommand cmd = new NpgsqlCommand(sql2, con))
+					cmd.ExecuteNonQuery();
+			}*/
+        }
 
         public static void AssemblyInit()
         {
@@ -30,7 +44,9 @@ DROP FUNCTION IF EXISTS Sales.CustomersByState(char(2));
 DROP FUNCTION IF EXISTS Sales.CustomerWithOrdersByState(char(2));
 DROP VIEW IF EXISTS hr.EmployeeWithManager;
 DROP TABLE IF EXISTS sales.order;
+DROP TABLE IF EXISTS public.employee;
 DROP TABLE IF EXISTS hr.employee;
+DROP TABLE IF EXISTS public.employee;
 DROP SCHEMA IF EXISTS hr;";
 
                 string sql2 = @"
@@ -49,11 +65,26 @@ CREATE TABLE hr.employee
 	UpdatedDate TIMESTAMP NULL
 )";
 
+                string sql2b = @"
+CREATE TABLE public.employee
+(
+	EmployeeKey SERIAL PRIMARY KEY,
+	FirstName VARCHAR(50) NOT NULL,
+	MiddleName VARCHAR(50) NULL,
+	LastName VARCHAR(50) NOT NULL,
+	Title VARCHAR(100) null,
+	ManagerKey INTEGER NULL REFERENCES public.employee(EmployeeKey),
+	OfficePhone VARCHAR(15) NULL ,
+	CellPhone VARCHAR(15) NULL ,
+	CreatedDate TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	UpdatedDate TIMESTAMP NULL
+)";
+
                 string sql3 = @"
 CREATE SCHEMA sales;
 CREATE TABLE sales.customer
 (
-	CustomerKey SERIAL PRIMARY KEY, 
+	CustomerKey SERIAL PRIMARY KEY,
 	FullName VARCHAR(150) NULL,
 	State CHAR(2) NOT NULL,
 
@@ -111,11 +142,11 @@ FROM    HR.Employee e
       UpdatedDate TIMESTAMP ,
       DeletedFlag BOOLEAN,
       DeletedDate TIMESTAMP ,
-      DeletedByKey INT 
+      DeletedByKey INT
     )
     AS $$
     BEGIN
-	  RETURN QUERY SELECT    
+	  RETURN QUERY SELECT
 	        c.CustomerKey ,
                 c.FullName ,
                 c.State ,
@@ -135,7 +166,7 @@ FROM    HR.Employee e
                 var proc1 = @"CREATE FUNCTION Sales.CustomerWithOrdersByState(param_state CHAR(2)) RETURNS SETOF refcursor AS $$
     DECLARE
       ref1 refcursor;           -- Declare cursor variables
-      ref2 refcursor;                             
+      ref2 refcursor;
     BEGIN
       OPEN ref1 FOR  SELECT  c.CustomerKey ,
             c.FullName ,
@@ -149,15 +180,15 @@ FROM    HR.Employee e
             c.DeletedByKey
     FROM    Sales.Customer c
     WHERE   c.State = param_state;
-    RETURN NEXT ref1;                                                                              
- 
+    RETURN NEXT ref1;
+
     OPEN ref2 FOR   SELECT  o.OrderKey ,
             o.CustomerKey ,
             o.OrderDate
     FROM    Sales.Order o
             INNER JOIN Sales.Customer c ON o.CustomerKey = c.CustomerKey
     WHERE   c.State = param_state;
-    RETURN NEXT ref2; 
+    RETURN NEXT ref2;
 
     END;
     $$ LANGUAGE plpgsql;
@@ -168,11 +199,11 @@ FROM    HR.Employee e
 		result INTEGER;
         BEGIN
 		IF (p_managerKey IS NOT NULL) THEN
-			result := COUNT(*) 	
+			result := COUNT(*)
 			FROM HR.Employee e
 			WHERE	e.ManagerKey = p_managerKey;
 		ELSE
-			result := COUNT(*) 	
+			result := COUNT(*)
 			FROM	HR.Employee e;
 		END IF;
 		RETURN result;
@@ -187,6 +218,9 @@ $$ LANGUAGE plpgsql;";
                     cmd.ExecuteNonQuery();
 
                 using (NpgsqlCommand cmd = new NpgsqlCommand(sql2, con))
+                    cmd.ExecuteNonQuery();
+
+                using (NpgsqlCommand cmd = new NpgsqlCommand(sql2b, con))
                     cmd.ExecuteNonQuery();
 
                 using (NpgsqlCommand cmd = new NpgsqlCommand(sql3, con))
@@ -207,86 +241,6 @@ $$ LANGUAGE plpgsql;";
                 using (NpgsqlCommand cmd = new NpgsqlCommand(scalarFunc, con))
                     cmd.ExecuteNonQuery();
             }
-
-        }
-
-        public static void AssemblyCleanup()
-        {
-            /*
-			using (var con = new NpgsqlConnection(@"User ID = postgres;
-											 Password = toor; 
-											 Host = localhost; 
-											 Port = 5432;
-											 Database = tortugachaintestdb;
-											 Pooling = true;"))
-			{
-				con.Open();
-
-				string sql = "DROP TABLE HR.Employee; DROP SCHEMA HR;";
-				string sql2 = "DROP TABLE Sales.Customer; DROP SCHEMA Sales;"; 
-				using (NpgsqlCommand cmd = new NpgsqlCommand(sql, con))
-					cmd.ExecuteNonQuery();
-
-				using (NpgsqlCommand cmd = new NpgsqlCommand(sql2, con))
-					cmd.ExecuteNonQuery();
-
-			}*/
-        }
-
-
-
-        static void DefaultDispatcher_ExecutionCanceled(object sender, ExecutionEventArgs e)
-        {
-            Debug.WriteLine("******");
-            Debug.WriteLine($"Execution canceled: {e.ExecutionDetails.OperationName}. Duration: {e.Duration.Value.TotalSeconds.ToString("N3")} sec.");
-            //WriteDetails(e);
-        }
-
-
-        static void CompiledMaterializers_MaterializerCompiled(object sender, MaterializerCompilerEventArgs e)
-        {
-            Debug.WriteLine("******");
-            Debug.WriteLine("Compiled Materializer");
-            Debug.Indent();
-            Debug.WriteLine("SQL");
-            Debug.WriteLine(e.Sql);
-            Debug.WriteLine("Code");
-            Debug.WriteLine(e.Code);
-            Debug.Unindent();
-        }
-
-        static void DefaultDispatcher_ExecutionError(object sender, ExecutionEventArgs e)
-        {
-            Debug.WriteLine("******");
-            Debug.WriteLine($"Execution error: {e.ExecutionDetails.OperationName}. Duration: {e.Duration.Value.TotalSeconds.ToString("N3")} sec.");
-            //WriteDetails(e);
-        }
-
-        static void DefaultDispatcher_ExecutionFinished(object sender, ExecutionEventArgs e)
-        {
-            Debug.WriteLine("******");
-            Debug.WriteLine($"Execution finished: {e.ExecutionDetails.OperationName}. Duration: {e.Duration.Value.TotalSeconds.ToString("N3")} sec. Rows affected: {(e.RowsAffected != null ? e.RowsAffected.Value.ToString("N0") : "<NULL>")}.");
-            //WriteDetails(e);
-        }
-
-        static void DefaultDispatcher_ExecutionStarted(object sender, ExecutionEventArgs e)
-        {
-            Debug.WriteLine("******");
-            Debug.WriteLine($"Execution started: {e.ExecutionDetails.OperationName}");
-            WriteDetails(e);
-        }
-
-        static void WriteDetails(ExecutionEventArgs e)
-        {
-            Debug.WriteLine("");
-            Debug.WriteLine("Command text: ");
-            Debug.WriteLine(e.ExecutionDetails.CommandText);
-            Debug.Indent();
-            foreach (var item in ((CommandExecutionToken<NpgsqlCommand, NpgsqlParameter>)e.ExecutionDetails).Parameters)
-                Debug.WriteLine(item.ParameterName + ": " + (item.Value == null || item.Value == DBNull.Value ? "<NULL>" : item.Value));
-            Debug.Unindent();
-            Debug.WriteLine("******");
-            Debug.WriteLine("");
         }
     }
 }

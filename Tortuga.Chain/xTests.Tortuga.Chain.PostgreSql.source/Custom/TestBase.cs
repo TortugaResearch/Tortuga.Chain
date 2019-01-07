@@ -13,8 +13,8 @@ namespace Tests
 {
     public abstract partial class TestBase
     {
-
         static public readonly string AssemblyName = "PostgreSql";
+        public string DefaultSchema = "public";
         static protected readonly Dictionary<string, PostgreSqlDataSource> s_DataSources = new Dictionary<string, PostgreSqlDataSource>();
         protected static readonly PostgreSqlDataSource s_PrimaryDataSource;
 
@@ -27,6 +27,7 @@ namespace Tests
                 if (s_PrimaryDataSource == null) s_PrimaryDataSource = ds;
                 s_DataSources.Add(con.Name, ds);
             }
+            BuildEmployeeSearchKey1000(s_PrimaryDataSource);
         }
 
         public static string CustomerTableName { get { return "Sales.Customer"; } }
@@ -35,12 +36,10 @@ namespace Tests
 
         public string MultiResultSetProc1Name { get { return "Sales.CustomerWithOrdersByState"; } }
 
+        public string ScalarFunction1Name { get { return "HR.EmployeeCount"; } }
         public string TableFunction1Name { get { return "Sales.CustomersByState"; } }
 
         //public string TableFunction2Name { get { return "Sales.CustomersByStateInline"; } }
-
-        public string ScalarFunction1Name { get { return "HR.EmployeeCount"; } }
-
         public PostgreSqlDataSource AttachRules(PostgreSqlDataSource source)
         {
             return source.WithRules(
@@ -122,4 +121,3 @@ namespace Tests
         }
     }
 }
-

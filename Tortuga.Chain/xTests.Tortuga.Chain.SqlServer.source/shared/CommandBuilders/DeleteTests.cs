@@ -5,7 +5,6 @@ using Tortuga.Chain;
 using Xunit;
 using Xunit.Abstractions;
 
-
 namespace Tests.CommandBuilders
 {
     public class DeleteTests : TestBase
@@ -17,10 +16,9 @@ namespace Tests.CommandBuilders
         {
         }
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void DeleteTests_Delete(string assemblyName, string dataSourceName, DataSourceType mode)
         {
-
             var dataSource = DataSource(dataSourceName, mode);
             try
             {
@@ -42,10 +40,9 @@ namespace Tests.CommandBuilders
             }
         }
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void DeleteTests_Delete_Attribute(string assemblyName, string dataSourceName, DataSourceType mode)
         {
-
             var dataSource = DataSource(dataSourceName, mode);
             try
             {
@@ -74,13 +71,12 @@ namespace Tests.CommandBuilders
             }
         }
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void DeleteTests_Delete_Implied(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
             {
-
                 var original = new Employee()
                 {
                     FirstName = "Test",
@@ -103,11 +99,9 @@ namespace Tests.CommandBuilders
             {
                 Release(dataSource);
             }
-
         }
 
-
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void DeleteByKey(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -129,11 +123,9 @@ namespace Tests.CommandBuilders
             {
                 Release(dataSource);
             }
-
         }
 
-
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void DeleteByKeyList(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -152,22 +144,18 @@ namespace Tests.CommandBuilders
 
                 var allRows = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToCollection<Employee>().Execute();
                 Assert.Equal(5, allRows.Count, "The wrong number of rows remain");
-
-
             }
             finally
             {
                 Release(dataSource);
             }
-
         }
 
 #if SQL_SERVER || OLE_SQL_SERVER //SQL Server has problems with CRUD operations that return values on tables with triggers.
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void DeleteTests_Delete_Trigger(string assemblyName, string dataSourceName, DataSourceType mode)
         {
-
             var dataSource = DataSource(dataSourceName, mode);
             try
             {
@@ -189,7 +177,7 @@ namespace Tests.CommandBuilders
             }
         }
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void DeleteByKey_Trigger(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -211,11 +199,9 @@ namespace Tests.CommandBuilders
             {
                 Release(dataSource);
             }
-
         }
 
-
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void DeleteByKeyList_Trigger(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -234,18 +220,16 @@ namespace Tests.CommandBuilders
 
                 var allRows = dataSource.From(EmployeeTableName_Trigger, new { Title = lookupKey }).ToCollection<Employee>().Execute();
                 Assert.Equal(5, allRows.Count, "The wrong number of rows remain");
-
-
             }
             finally
             {
                 Release(dataSource);
             }
-
         }
+
 #endif
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void DeleteWithFilter_Where(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -264,20 +248,16 @@ namespace Tests.CommandBuilders
 
                 var allRows = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToCollection<Employee>().Execute();
                 Assert.Equal(5, allRows.Count, "The wrong number of rows remain");
-
-
             }
             finally
             {
                 Release(dataSource);
             }
-
         }
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void DeleteWithFilter_WhereArg(string assemblyName, string dataSourceName, DataSourceType mode)
         {
-
 #if OLE_SQL_SERVER
             var whereClause = "Title = ? AND MiddleName Is Null";
 #else
@@ -300,17 +280,14 @@ namespace Tests.CommandBuilders
 
                 var allRows = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToCollection<Employee>().Execute();
                 Assert.Equal(5, allRows.Count, "The wrong number of rows remain");
-
-
             }
             finally
             {
                 Release(dataSource);
             }
-
         }
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void DeleteWithFilter_Filter(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -329,17 +306,14 @@ namespace Tests.CommandBuilders
 
                 var allRows = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToCollection<Employee>().Execute();
                 Assert.Equal(5, allRows.Count, "The wrong number of rows remain");
-
-
             }
             finally
             {
                 Release(dataSource);
             }
-
         }
 
-        [Theory, MemberData("Root")]
+        [Theory, MemberData(nameof(Root))]
         public void DeleteWithFilter_Where_SoftDelete(string assemblyName, string dataSourceName)
         {
             var dataSource = DataSource(dataSourceName);
@@ -360,17 +334,14 @@ namespace Tests.CommandBuilders
 
                 var allRows = dataSourceRules.From(CustomerTableName, new { FullName = lookupKey }).ToCollection<Customer>().Execute();
                 Assert.Equal(5, allRows.Count, "The wrong number of rows remain");
-
-
             }
             finally
             {
                 Release(dataSource);
             }
-
         }
 
-        [Theory, MemberData("Root")]
+        [Theory, MemberData(nameof(Root))]
         public void DeleteWithFilter_WhereArg_SoftDelete(string assemblyName, string dataSourceName)
         {
             var dataSource = DataSource(dataSourceName);
@@ -397,18 +368,14 @@ namespace Tests.CommandBuilders
 
                 var allRows = dataSourceRules.From(CustomerTableName, new { FullName = lookupKey }).ToCollection<Customer>().Execute();
                 Assert.Equal(5, allRows.Count, "The wrong number of rows remain");
-
-
-
             }
             finally
             {
                 Release(dataSource);
             }
-
         }
 
-        [Theory, MemberData("Root")]
+        [Theory, MemberData(nameof(Root))]
         public void DeleteWithFilter_Filter_SoftDelete(string assemblyName, string dataSourceName)
         {
             var dataSource = DataSource(dataSourceName);
@@ -429,19 +396,13 @@ namespace Tests.CommandBuilders
 
                 var allRows = dataSourceRules.From(CustomerTableName, new { FullName = lookupKey }).ToCollection<Customer>().Execute();
                 Assert.Equal(5, allRows.Count, "The wrong number of rows remain");
-
-
-
-
             }
             finally
             {
                 Release(dataSource);
             }
-
         }
     }
-
 
     namespace HR
     {

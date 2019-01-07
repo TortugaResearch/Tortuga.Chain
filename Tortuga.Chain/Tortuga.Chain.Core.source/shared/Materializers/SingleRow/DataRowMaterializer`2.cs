@@ -1,5 +1,3 @@
-#if !DataTable_Missing
-
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
@@ -55,7 +53,6 @@ namespace Tortuga.Chain.Materializers
                 }
             }, state);
 
-
             if (table.Rows.Count == 0)
             {
                 if (m_RowOptions.HasFlag(RowOptions.AllowEmptyResults))
@@ -69,7 +66,6 @@ namespace Tortuga.Chain.Materializers
             }
             return table.Rows[0];
         }
-
 
         /// <summary>
         /// Execute the operation asynchronously.
@@ -95,7 +91,6 @@ namespace Tortuga.Chain.Materializers
                 }
             }, cancellationToken, state).ConfigureAwait(false);
 
-
             if (table.Rows.Count == 0)
             {
                 if (m_RowOptions.HasFlag(RowOptions.AllowEmptyResults))
@@ -111,4 +106,3 @@ namespace Tortuga.Chain.Materializers
         }
     }
 }
-#endif

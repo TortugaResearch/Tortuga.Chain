@@ -18,7 +18,7 @@ namespace Tests.shared.Core
         {
         }
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void AuditRulesTests_AddUser(string assemblyName, string dataSourceName)
         {
             var dataSource = DataSource(dataSourceName);
@@ -33,7 +33,7 @@ namespace Tests.shared.Core
             }
         }
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void AuditRulesTests_CheckValidation(string assemblyName, string dataSourceName)
         {
             var dataSource = DataSource(dataSourceName);
@@ -62,10 +62,9 @@ namespace Tests.shared.Core
             }
         }
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void AuditRulesTests_InsertUpdateRules(string assemblyName, string dataSourceName)
         {
-
             var dataSource = DataSource(dataSourceName);
             try
             {
@@ -90,7 +89,7 @@ namespace Tests.shared.Core
                 Assert.IsNotNull(cust2.CreatedDate, "CreatedDate was not set");
                 Assert.IsNotNull(cust2.UpdatedDate, "UpdatedDate was not set");
 
-                Thread.Sleep(100); //make sure the current time is different enough for the database to notice
+                Thread.Sleep(1000); //make sure the current time is different enough for the database to notice
 
                 cust2.State = "NV";
                 var cust3 = ds2.Update(CustomerTableName, cust2).ToObject<CustomerWithValidation>().Execute();
@@ -98,7 +97,6 @@ namespace Tests.shared.Core
                 Assert.AreEqual(currentUser2.EmployeeKey, cust3.UpdatedByKey, "UpdatedBy was not changed");
                 Assert.AreEqual(cust2.CreatedDate, cust3.CreatedDate, "CreatedDate was not supposed to change");
                 Assert.AreNotEqual(cust2.UpdatedDate, cust3.UpdatedDate, "UpdatedDate was supposed to change");
-
             }
             finally
             {
@@ -106,7 +104,7 @@ namespace Tests.shared.Core
             }
         }
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void AuditRulesTests_SoftDelete(string assemblyName, string dataSourceName)
         {
             var dataSource = DataSource(dataSourceName);
@@ -152,7 +150,7 @@ namespace Tests.shared.Core
                 var misingRecord2 = ds1.From(CustomerTableName, "CustomerKey = ?", new { CustomerKey = customerKey }).ToObject<CustomerWithValidation>(RowOptions.AllowEmptyResults).Execute();
 #else
                 var misingRecord2 = ds1.From(CustomerTableName, "CustomerKey = @CustomerKey", new { CustomerKey = customerKey }).ToObject<CustomerWithValidation>(RowOptions.AllowEmptyResults).Execute();
-#endif 
+#endif
 
                 Assert.IsNull(misingRecord2, "The soft delete rule should prevent this record from being returned.");
 
@@ -166,7 +164,7 @@ namespace Tests.shared.Core
             }
         }
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void AuditRulesTests_SoftDelete_2(string assemblyName, string dataSourceName)
         {
             var dataSource = DataSource(dataSourceName);
@@ -188,7 +186,7 @@ namespace Tests.shared.Core
 
                 var ds1 = dsWithRules.WithUser(currentUser1);
 
-                var cust1 = new Customer() { FullName = "Test Customer " + DateTime.Now.Ticks, State = "CA" }; //Note the difference in class name from the original test. 
+                var cust1 = new Customer() { FullName = "Test Customer " + DateTime.Now.Ticks, State = "CA" }; //Note the difference in class name from the original test.
 
                 var cust2 = ds1.Insert(CustomerTableName, cust1).ToObject<CustomerWithValidation>().Execute();
                 var customerKey = cust2.CustomerKey;
@@ -212,7 +210,7 @@ namespace Tests.shared.Core
                 var misingRecord2 = ds1.From(CustomerTableName, "CustomerKey = ?", new { CustomerKey = customerKey }).ToObject<CustomerWithValidation>(RowOptions.AllowEmptyResults).Execute();
 #else
                 var misingRecord2 = ds1.From(CustomerTableName, "CustomerKey = @CustomerKey", new { CustomerKey = customerKey }).ToObject<CustomerWithValidation>(RowOptions.AllowEmptyResults).Execute();
-#endif 
+#endif
 
                 Assert.IsNull(misingRecord2, "The soft delete rule should prevent this record from being returned.");
 
@@ -226,15 +224,12 @@ namespace Tests.shared.Core
             }
         }
 
-
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void AuditRulesTests_RestrictedColumn(string assemblyName, string dataSourceName)
         {
-
             var dataSource = DataSource(dataSourceName);
             try
             {
-
                 var key = dataSource.Insert(EmployeeTableName, new Employee() { FirstName = "A", MiddleName = "B", LastName = "C" }).ToInt32().Execute();
                 var goodUser = new UserToken(true);
                 var badUser = new UserToken(false);
@@ -269,7 +264,6 @@ namespace Tests.shared.Core
                     var shouldBeMissing = dsReadCheck.WithUser(badUser).Update(EmployeeTableName, new { FirstName = "BB", MiddleName = "X", EmployeeKey = key }).ToObject<Employee>().Execute();
                     Assert.IsNull(shouldBeMissing.MiddleName, "MiddleName was supposed to be clear");
                 }
-
             }
             finally
             {
@@ -279,7 +273,7 @@ namespace Tests.shared.Core
 
 #if SQL_SERVER || OLE_SQL_SERVER
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void SoftDeleteByKey(string assemblyName, string dataSourceName)
         {
             var dataSource = DataSource(dataSourceName);
@@ -296,7 +290,6 @@ namespace Tests.shared.Core
                     );
 
                 var ds1 = dsWithRules.WithUser(currentUser1);
-
 
                 var lookupKey = Guid.NewGuid().ToString();
                 for (var i = 0; i < 10; i++)
@@ -317,19 +310,16 @@ namespace Tests.shared.Core
 
                 var allRowsBypass = dataSource.From(CustomerTableName, new { FullName = lookupKey }).ToCollection<CustomerWithValidation>().Execute();
                 Assert.Equal(10, allRowsBypass.Count, "The rows were supposed to be soft-deleted only");
-
             }
             finally
             {
                 Release(dataSource);
             }
-
         }
 
 #endif
 
-
-        class UserToken
+        private class UserToken
         {
             public UserToken(bool isAdmin)
             {

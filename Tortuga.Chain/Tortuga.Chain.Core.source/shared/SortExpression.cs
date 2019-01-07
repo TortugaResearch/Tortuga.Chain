@@ -4,16 +4,14 @@ using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain
 {
-
-
     /// <summary>
     /// Sort expressions are used for From and FromFunction command builders.
     /// </summary>
     /// <remarks>You can implicitly convert strings into sort expressions.</remarks>
     public class SortExpression
     {
-        readonly string m_ColumnName;
-        readonly SortDirection m_Direction;
+        private readonly string m_ColumnName;
+        private readonly SortDirection m_Direction;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SortExpression"/> class.
@@ -58,10 +56,11 @@ namespace Tortuga.Chain
         ///   <c>true</c> if descending; otherwise, <c>false</c>.
         /// </value>
         public SortDirection Direction => m_Direction;
+
         internal ISqlBuilderEntryDetails Column { get; set; }
 
         /// <summary>
-        /// Performs an implicit conversion from <see cref="string"/> to <see cref="SortExpression"/> with Ascending as the sort direction.
+        /// Perform an implicit conversion from <see cref="string"/> to <see cref="SortExpression"/> with Ascending as the sort direction.
         /// </summary>
         /// <param name="columnName">The columnName</param>
         /// <returns>
@@ -71,4 +70,3 @@ namespace Tortuga.Chain
         public static implicit operator SortExpression(string columnName) => new SortExpression(columnName);
     }
 }
-

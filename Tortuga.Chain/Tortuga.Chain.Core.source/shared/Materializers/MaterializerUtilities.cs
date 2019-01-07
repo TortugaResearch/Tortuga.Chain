@@ -3,24 +3,24 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Tortuga.Anchor.Metadata;
 using Tortuga.Chain.Core;
+using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.Materializers
 {
-
-
     /// <summary>
-    /// Materializer utilities are used for constructing materializers. 
+    /// Materializer utilities are used for constructing materializers.
     /// </summary>
     /// <remarks>For internal use only.</remarks>
     public static class MaterializerUtilities
     {
-        static readonly Type[] s_EmptyTypeList = new Type[0];
+        static readonly Type[] s_EmptyTypeList = Array.Empty<Type>();
 
         /// <summary>
         /// Checks the update row count.
@@ -51,10 +51,10 @@ namespace Tortuga.Chain.Materializers
             return executionToken;
         }
 
-        internal static StreamingObjectConstructor<T> AsObjectConstructor<T>(this DbDataReader reader, IReadOnlyList<Type> constructorSignature)
+        internal static StreamingObjectConstructor<T> AsObjectConstructor<T>(this DbDataReader reader, IReadOnlyList<Type> constructorSignature, IReadOnlyList<ColumnMetadata> nonNullableColumns)
             where T : class
         {
-            return new StreamingObjectConstructor<T>(reader, constructorSignature);
+            return new StreamingObjectConstructor<T>(reader, constructorSignature, nonNullableColumns);
         }
 
         static internal T ConstructObject<T>(IReadOnlyDictionary<string, object> source, IReadOnlyList<Type> constructorSignature, bool? populateComplexObject = null)
@@ -169,7 +169,7 @@ namespace Tortuga.Chain.Materializers
 
         static internal async Task<Dictionary<string, object>> ReadDictionaryAsync(this DbDataReader source)
         {
-            if (!(await source.ReadAsync()))
+            if (!(await source.ReadAsync().ConfigureAwait(false)))
                 return null;
 
             return ToDictionary(source);
@@ -186,7 +186,7 @@ namespace Tortuga.Chain.Materializers
         static internal async Task<int> RemainingRowCountAsync(this DbDataReader source)
         {
             var count = 0;
-            while (await source.ReadAsync())
+            while (await source.ReadAsync().ConfigureAwait(false))
                 count += 1;
             return count;
         }
@@ -230,6 +230,7 @@ namespace Tortuga.Chain.Materializers
             else if (e.RowsAffected != expectedRowCount)
                 throw new UnexpectedDataException($"Expected {expectedRowCount} rows to be affected by the operation {token.OperationName} but {e.RowsAffected} were affected instead.");
         }
+
         static void SetDecomposedProperty(IReadOnlyDictionary<string, object> source, object target, string decompositionPrefix, PropertyMetadata property)
         {
             object child = null;
@@ -237,7 +238,7 @@ namespace Tortuga.Chain.Materializers
             if (property.CanRead)
                 child = property.InvokeGet(target);
 
-            if (child == null && property.CanWrite && property.PropertyType.GetConstructor(new Type[0]) != null)
+            if (child == null && property.CanWrite && property.PropertyType.GetConstructor(Array.Empty<Type>()) != null)
             {
                 child = Activator.CreateInstance(property.PropertyType);
                 property.InvokeSet(target, child);
@@ -273,26 +274,24 @@ namespace Tortuga.Chain.Materializers
                         value = XDocument.Parse((string)value);
                     else if (targetTypeInfo.IsEnum)
                         value = Enum.Parse(targetType, (string)value);
-
                     else if (targetType == typeof(bool))
                         value = bool.Parse((string)value);
                     else if (targetType == typeof(short))
-                        value = short.Parse((string)value);
+                        value = short.Parse((string)value, CultureInfo.InvariantCulture);
                     else if (targetType == typeof(int))
-                        value = int.Parse((string)value);
+                        value = int.Parse((string)value, CultureInfo.InvariantCulture);
                     else if (targetType == typeof(long))
-                        value = long.Parse((string)value);
+                        value = long.Parse((string)value, CultureInfo.InvariantCulture);
                     else if (targetType == typeof(float))
-                        value = float.Parse((string)value);
+                        value = float.Parse((string)value, CultureInfo.InvariantCulture);
                     else if (targetType == typeof(double))
-                        value = double.Parse((string)value);
+                        value = double.Parse((string)value, CultureInfo.InvariantCulture);
                     else if (targetType == typeof(decimal))
-                        value = decimal.Parse((string)value);
-
+                        value = decimal.Parse((string)value, CultureInfo.InvariantCulture);
                     else if (targetType == typeof(DateTime))
-                        value = DateTime.Parse((string)value);
+                        value = DateTime.Parse((string)value, CultureInfo.InvariantCulture);
                     else if (targetType == typeof(DateTimeOffset))
-                        value = DateTimeOffset.Parse((string)value);
+                        value = DateTimeOffset.Parse((string)value, CultureInfo.InvariantCulture);
                 }
                 else
                 {
@@ -305,7 +304,7 @@ namespace Tortuga.Chain.Materializers
                 {
                     try
                     {
-                        value = Convert.ChangeType(value, targetType);
+                        value = Convert.ChangeType(value, targetType, CultureInfo.InvariantCulture);
                     }
                     catch (Exception ex)
                     {
@@ -321,6 +320,5 @@ namespace Tortuga.Chain.Materializers
 
             return value;
         }
-
     }
 }

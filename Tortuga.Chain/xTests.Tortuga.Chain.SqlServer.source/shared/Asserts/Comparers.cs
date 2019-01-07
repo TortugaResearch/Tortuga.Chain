@@ -7,6 +7,11 @@ namespace Xunit
 {
     public partial class Assert
     {
+        public static void IsInstanceOfType(object value, Type type)
+        {
+            IsType(type, value);
+        }
+
         static IComparer<T> GetComparer<T>() where T : IComparable
         {
             return new AssertComparer<T>();
@@ -16,7 +21,5 @@ namespace Xunit
         {
             return new AssertEqualityComparer<T>(skipTypeCheck, innerComparer);
         }
-
-        
     }
 }

@@ -15,6 +15,7 @@ namespace Tortuga.Chain.Materializers
     {
         readonly ObjectDbCommandBuilder<TCommand, TParameter, TArgument> m_CommandBuilder;
         readonly ClassMetadata m_ObjectMetadata;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="RefreshMaterializer{TCommand, TParameter, TArgument}"/> class.
         /// </summary>
@@ -61,7 +62,6 @@ namespace Tortuga.Chain.Materializers
             return m_CommandBuilder.ArgumentValue;
         }
 
-
         /// <summary>
         /// Execute the operation asynchronously.
         /// </summary>
@@ -72,17 +72,15 @@ namespace Tortuga.Chain.Materializers
         {
             IReadOnlyDictionary<string, object> row = null;
 
-
             var executionToken = Prepare();
             var rowCount = await executionToken.ExecuteAsync(async cmd =>
              {
                  using (var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SequentialAccess, cancellationToken).ConfigureAwait(false))
                  {
-                     row = await reader.ReadDictionaryAsync();
-                     return (row != null ? 1 : 0) + await reader.RemainingRowCountAsync();
+                     row = await reader.ReadDictionaryAsync().ConfigureAwait(false);
+                     return (row != null ? 1 : 0) + await reader.RemainingRowCountAsync().ConfigureAwait(false);
                  }
              }, cancellationToken, state).ConfigureAwait(false);
-
 
             if (rowCount == 0)
                 throw new DataException("No rows were returned");

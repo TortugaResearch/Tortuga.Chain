@@ -14,7 +14,7 @@ using Tortuga.Chain.Metadata;
 namespace Tortuga.Chain.CommandBuilders
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     /// <typeparam name="TDbType">The type of the database type.</typeparam>
     public sealed class SqlBuilder<TDbType>
@@ -53,7 +53,6 @@ namespace Tortuga.Chain.CommandBuilders
                     IsFormalParameter = true
                 };
             }
-
         }
 
         internal SqlBuilder(string name, IReadOnlyList<ColumnMetadata<TDbType>> columns)
@@ -74,6 +73,7 @@ namespace Tortuga.Chain.CommandBuilders
                 };
             }
         }
+
         internal SqlBuilder(string name, IReadOnlyList<ParameterMetadata<TDbType>> parameters)
         {
             m_Name = name;
@@ -96,10 +96,6 @@ namespace Tortuga.Chain.CommandBuilders
             m_Entries = entries.ToArray(); //since this is an array of struct, this does a deep copy
             m_StrictMode = strictMode;
         }
-
-
-
-
 
         /// <summary>
         /// Gets a value indicating whether this instance has fields marked for reading.
@@ -218,7 +214,6 @@ namespace Tortuga.Chain.CommandBuilders
                     if (m_StrictMode && !propertyFound)
                         throw new MappingException($"Strict mode was enabled, but property {property.Name} could be matched to a column in {m_Name}. Disable strict mode or mark the property as NotMapped.");
                 }
-
             }
 
             if (!found)
@@ -317,7 +312,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// Uses a desired columns enumeration to indicate which columns should be set to read-mode.
         /// </summary>
         /// <param name="desiredColumns">The desired columns. This also supports Materializer.NoColumns, Materializer.AutoSelectDesiredColumns, and Materializer.AllColumns.</param>
-        /// <exception cref="MappingException">This is thrown is no desired columns were actually part of the table or view. If strict mode, all desired columns must be found.</exception>        
+        /// <exception cref="MappingException">This is thrown is no desired columns were actually part of the table or view. If strict mode, all desired columns must be found.</exception>
         /// <remarks>Calling this a second time will be additive with prior call.</remarks>
         public void ApplyDesiredColumns(IEnumerable<string> desiredColumns)
         {
@@ -404,7 +399,6 @@ namespace Tortuga.Chain.CommandBuilders
                     {
                         throw new MappingException($"Modify the ColumnAttribute for the desired column \"{column}\" to be \"{entry.Details.SqlName}\". SQL Quoted column names are not supported.");
                     }
-
                 }
 
                 if (m_StrictMode && !columnFound)
@@ -505,7 +499,6 @@ namespace Tortuga.Chain.CommandBuilders
                     if (m_StrictMode && !propertyFound)
                         throw new MappingException($"Strict mode was enabled, but property {property.Name} could be matched to a column in {m_Name}. Disable strict mode or mark the property as NotMapped.");
                 }
-
             }
 
             if (!found)
@@ -541,7 +534,6 @@ namespace Tortuga.Chain.CommandBuilders
 
             var found = false;
 
-
             foreach (var column in tableTypeColumns)
             {
                 for (var i = 0; i < m_Entries.Length; i++)
@@ -560,6 +552,7 @@ namespace Tortuga.Chain.CommandBuilders
 
             ApplyRules(dataSource.AuditRules, appliesWhen, null, dataSource.UserValue);
         }
+
         /// <summary>
         /// Overrides the previous selected values with the values in the indicated object.
         /// </summary>
@@ -689,7 +682,6 @@ namespace Tortuga.Chain.CommandBuilders
                 sql.Append(string.Join(" AND ", applicableColumns.Select(x => x.Details.QuotedSqlName + " <> ?")));
                 sql.Append(footer);
             }
-
         }
 
         /// <summary>
@@ -739,7 +731,6 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="footer">Optional footer, usually the statement terminator (;).</param>
         public void BuildDeleteStatement(StringBuilder sql, string tableName, string footer)
         {
-
             if (sql == null)
                 throw new ArgumentNullException(nameof(sql), $"{nameof(sql)} is null.");
             if (string.IsNullOrEmpty(tableName))
@@ -755,13 +746,14 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="sql">The SQL.</param>
         /// <param name="header">The header.</param>
         /// <param name="footer">The footer.</param>
-        public void BuildFromFunctionClause(StringBuilder sql, string header, string footer)
+        /// <param name="parameterPrefix">Prefix to apply to each parameter name.</param>
+        public void BuildFromFunctionClause(StringBuilder sql, string header, string footer, string parameterPrefix = null)
         {
             if (sql == null)
                 throw new ArgumentNullException(nameof(sql), $"{nameof(sql)} is null.");
 
             sql.Append(header);
-            sql.Append(string.Join(", ", GetFormalParameters().Select(s => s.SqlVariableName)));
+            sql.Append(string.Join(", ", GetFormalParameters().Select(s => parameterPrefix + s.SqlVariableName)));
             sql.Append(footer);
         }
 
@@ -828,7 +820,6 @@ namespace Tortuga.Chain.CommandBuilders
                         expression.Column = details;
                         break;
                     }
-
                 }
                 if (expression.Column == null)
                     throw new MappingException($"Cannot find a column on {m_Name} named {expression.ColumnName}");
@@ -837,7 +828,6 @@ namespace Tortuga.Chain.CommandBuilders
             sql.Append(header);
             sql.Append(string.Join(", ", sortExpressions.Select(s => s.ColumnName + (s.Direction == SortDirection.Descending ? " DESC " : null))));
             sql.Append(footer);
-
         }
 
         /// <summary>
@@ -897,7 +887,6 @@ namespace Tortuga.Chain.CommandBuilders
         {
             if (sql == null)
                 throw new ArgumentNullException(nameof(sql), $"{nameof(sql)} was null.");
-
 
             var parts = new List<string>();
 
@@ -985,7 +974,6 @@ namespace Tortuga.Chain.CommandBuilders
                 sql.Append(string.Join(" AND ", applicableColumns.Select(x => x.Details.QuotedSqlName + " <> " + x.Details.SqlVariableName)));
                 sql.Append(footer);
             }
-
         }
 
         /// <summary>
@@ -1233,7 +1221,7 @@ namespace Tortuga.Chain.CommandBuilders
         }
 
         /// <summary>
-        /// Primaries the keyis identity.
+        /// Returns true is the primary key includes an identity column.
         /// </summary>
         /// <typeparam name="TParameter">The type of the parameter.</typeparam>
         /// <param name="parameterBuilder">The parameter builder.</param>
@@ -1454,7 +1442,6 @@ namespace Tortuga.Chain.CommandBuilders
                     //Update is used for soft deletes
                     if (rule.AppliesWhen.HasFlag(OperationTypes.Update) || rule.AppliesWhen.HasFlag(OperationTypes.Delete))
                         entry.UseForUpdate = true;
-
                 }
 
                 foreach (var rule in rules.GetRestrictionsForColumn(m_Name, entry.Details.SqlName, entry.Details.ClrName))
@@ -1471,11 +1458,8 @@ namespace Tortuga.Chain.CommandBuilders
 
                     if (rule.AppliesWhen.HasFlag(OperationTypes.Select))
                         entry.RestrictedRead = true;
-
                 }
             }
         }
     }
 }
-
-

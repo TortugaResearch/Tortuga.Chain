@@ -1,4 +1,5 @@
 #if !OleDb_Missing
+
 using System.Collections.Generic;
 using System.Data;
 using System.Data.OleDb;
@@ -23,7 +24,6 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="settings">Optional settings value.</param>
         protected OleDbSqlServerDataSourceBase(SqlServerDataSourceSettings settings) : base(settings)
         {
-
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace Tortuga.Chain.SqlServer
         }
 
         /// <summary>
-        /// Deletes an object model from the table indicated by the class's Table attribute.
+        /// Delete an object model from the table indicated by the class's Table attribute.
         /// </summary>
         /// <typeparam name="TArgument"></typeparam>
         /// <param name="argumentValue">The argument value.</param>
@@ -100,31 +100,9 @@ namespace Tortuga.Chain.SqlServer
             return DeleteByKeyList(tableName, new List<string> { key }, options);
         }
 
-        /// <summary>
-        /// Delete multiple rows by key.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="keys">The keys.</param>
-        /// <returns></returns>
-        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
-        public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> DeleteByKey<T>(SqlServerObjectName tableName, params T[] keys)
-            where T : struct
-        {
-            return DeleteByKeyList(tableName, keys);
-        }
 
-        /// <summary>
-        /// Delete multiple rows by key.
-        /// </summary>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="keys">The keys.</param>
-        /// <returns></returns>
-        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
-        public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> DeleteByKey(SqlServerObjectName tableName, params string[] keys)
-        {
-            return DeleteByKeyList(tableName, keys);
-        }
+
+
 
         /// <summary>
         /// Delete multiple rows by key.
@@ -135,12 +113,12 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="options">Update options.</param>
         /// <returns>MultipleRowDbCommandBuilder&lt;OleDbCommand, OleDbParameter&gt;.</returns>
         /// <exception cref="MappingException"></exception>
-        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "DeleteByKey")]
+        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "DeleteByKeyList")]
         public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> DeleteByKeyList<TKey>(SqlServerObjectName tableName, IEnumerable<TKey> keys, DeleteOptions options = DeleteOptions.None)
         {
             var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).Columns.Where(c => c.IsPrimaryKey).ToList();
             if (primaryKeys.Count != 1)
-                throw new MappingException($"DeleteByKey operation isn't allowed on {tableName} because it doesn't have a single primary key.");
+                throw new MappingException($"{nameof(DeleteByKeyList)} operation isn't allowed on {tableName} because it doesn't have a single primary key.");
 
             var keyList = keys.AsList();
             var columnMetadata = primaryKeys.Single();
@@ -168,7 +146,6 @@ namespace Tortuga.Chain.SqlServer
                 effectiveOptions = effectiveOptions | UpdateOptions.UseKeyAttribute;
 
             return new OleDbSqlServerUpdateMany(this, tableName, null, where, parameters, parameters.Count, effectiveOptions);
-
         }
 
         /// <summary>
@@ -288,31 +265,9 @@ namespace Tortuga.Chain.SqlServer
             return GetByKeyList(tableName, new List<string> { key });
         }
 
-        /// <summary>
-        /// Gets a set of records by their primary key.
-        /// </summary>
-        /// <typeparam name="TKey"></typeparam>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="keys">The keys.</param>
-        /// <returns></returns>
-        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
-        public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> GetByKey<TKey>(SqlServerObjectName tableName, params TKey[] keys)
-            where TKey : struct
-        {
-            return GetByKeyList(tableName, keys);
-        }
 
-        /// <summary>
-        /// Gets a set of records by their primary key.
-        /// </summary>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="keys">The keys.</param>
-        /// <returns></returns>
-        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
-        public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> GetByKey(SqlServerObjectName tableName, params string[] keys)
-        {
-            return GetByKeyList(tableName, keys);
-        }
+
+
 
         /// <summary>
         /// Gets a set of records by their primary key.
@@ -322,11 +277,12 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="keys">The keys.</param>
         /// <returns></returns>
         /// <remarks>This only works on tables that have a scalar primary key.</remarks>
+        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "GetByKeyList")]
         public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> GetByKeyList<T>(SqlServerObjectName tableName, IEnumerable<T> keys)
         {
             var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).Columns.Where(c => c.IsPrimaryKey).ToList();
             if (primaryKeys.Count != 1)
-                throw new MappingException($"GetByKey operation isn't allowed on {tableName} because it doesn't have a single primary key. Use DataSource.From instead.");
+                throw new MappingException($"{nameof(GetByKeyList)} operation isn't allowed on {tableName} because it doesn't have a single primary key. Use DataSource.From instead.");
 
             var keyList = keys.AsList();
             var columnMetadata = primaryKeys.Single();
@@ -374,10 +330,6 @@ namespace Tortuga.Chain.SqlServer
         {
             return Insert(DatabaseMetadata.GetTableOrViewFromClass<TArgument>().Name, argumentValue, options);
         }
-
-
-
-
 
         /// <summary>
         /// Loads a procedure definition
@@ -467,7 +419,7 @@ namespace Tortuga.Chain.SqlServer
         }
 
         /// <summary>
-        /// Updates an object in the specified table.
+        /// Update an object in the specified table.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="argumentValue">The argument value.</param>
@@ -480,7 +432,7 @@ namespace Tortuga.Chain.SqlServer
         }
 
         /// <summary>
-        /// Updates an object in the specified table.
+        /// Update an object in the specified table.
         /// </summary>
         /// <typeparam name="TArgument"></typeparam>
         /// <param name="argumentValue">The argument value.</param>
@@ -492,7 +444,7 @@ namespace Tortuga.Chain.SqlServer
         }
 
         /// <summary>
-        /// Delete a record by its primary key.
+        /// Update a record by its primary key.
         /// </summary>
         /// <typeparam name="TArgument">The type of the t argument.</typeparam>
         /// <typeparam name="TKey"></typeparam>
@@ -508,7 +460,7 @@ namespace Tortuga.Chain.SqlServer
         }
 
         /// <summary>
-        /// Delete a record by its primary key.
+        /// Update a record by its primary key.
         /// </summary>
         /// <typeparam name="TArgument">The type of the t argument.</typeparam>
         /// <param name="tableName">Name of the table.</param>
@@ -521,39 +473,12 @@ namespace Tortuga.Chain.SqlServer
             return UpdateByKeyList(tableName, newValues, new List<string> { key }, options);
         }
 
-        /// <summary>
-        /// Delete multiple rows by key.
-        /// </summary>
-        /// <typeparam name="TArgument">The type of the t argument.</typeparam>
-        /// <typeparam name="TKey"></typeparam>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="newValues">The new values to use.</param>
-        /// <param name="keys">The keys.</param>
-        /// <returns></returns>
-        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
-        public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> UpdateByKey<TArgument, TKey>(SqlServerObjectName tableName, TArgument newValues, params TKey[] keys)
-            where TKey : struct
-        {
-            return UpdateByKeyList(tableName, newValues, keys);
-        }
 
-        /// <summary>
-        /// Delete multiple rows by key.
-        /// </summary>
-        /// <typeparam name="TArgument">The type of the t argument.</typeparam>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="newValues">The new values to use.</param>
-        /// <param name="keys">The keys.</param>
-        /// <returns></returns>
-        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
-        public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> UpdateByKey<TArgument>(SqlServerObjectName tableName, TArgument newValues, params string[] keys)
-        {
-            return UpdateByKeyList(tableName, newValues, keys);
-        }
+
 
 
         /// <summary>
-        /// Updates multiple rows by key.
+        /// Update multiple rows by key.
         /// </summary>
         /// <typeparam name="TArgument">The type of the t argument.</typeparam>
         /// <typeparam name="TKey">The type of the t key.</typeparam>
@@ -563,12 +488,12 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="options">Update options.</param>
         /// <returns>MultipleRowDbCommandBuilder&lt;OleDbCommand, OleDbParameter&gt;.</returns>
         /// <exception cref="MappingException"></exception>
-        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "UpdateByKey")]
+        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "UpdateByKeyList")]
         public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> UpdateByKeyList<TArgument, TKey>(SqlServerObjectName tableName, TArgument newValues, IEnumerable<TKey> keys, UpdateOptions options = UpdateOptions.None)
         {
             var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).Columns.Where(c => c.IsPrimaryKey).ToList();
             if (primaryKeys.Count != 1)
-                throw new MappingException($"UpdateByKey operation isn't allowed on {tableName} because it doesn't have a single primary key.");
+                throw new MappingException($"{nameof(UpdateByKeyList)} operation isn't allowed on {tableName} because it doesn't have a single primary key.");
 
             var keyList = keys.AsList();
             var columnMetadata = primaryKeys.Single();
@@ -589,8 +514,9 @@ namespace Tortuga.Chain.SqlServer
 
             return new OleDbSqlServerUpdateMany(this, tableName, newValues, where, parameters, parameters.Count, options);
         }
+
         /// <summary>
-        /// Performs an insert or update operation as appropriate.
+        /// Perform an insert or update operation as appropriate.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="argumentValue">The argument value.</param>
@@ -601,8 +527,9 @@ namespace Tortuga.Chain.SqlServer
         {
             return new OleDbSqlServerInsertOrUpdateObject<TArgument>(this, tableName, argumentValue, options);
         }
+
         /// <summary>
-        /// Performs an insert or update operation as appropriate.
+        /// Perform an insert or update operation as appropriate.
         /// </summary>
         /// <typeparam name="TArgument"></typeparam>
         /// <param name="argumentValue">The argument value.</param>
@@ -612,6 +539,7 @@ namespace Tortuga.Chain.SqlServer
         {
             return Upsert(DatabaseMetadata.GetTableOrViewFromClass<TArgument>().Name, argumentValue, options);
         }
+
         /// <summary>
         /// Called when Database.DatabaseMetadata is invoked.
         /// </summary>
@@ -622,7 +550,7 @@ namespace Tortuga.Chain.SqlServer
         }
 
         /// <summary>
-        /// Deletes multiple records using a where expression.
+        /// Delete multiple records using a where expression.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="whereClause">The where clause.</param>
@@ -636,7 +564,7 @@ namespace Tortuga.Chain.SqlServer
         }
 
         /// <summary>
-        /// Deletes multiple records using a where expression.
+        /// Delete multiple records using a where expression.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="whereClause">The where clause.</param>
@@ -651,7 +579,7 @@ namespace Tortuga.Chain.SqlServer
         }
 
         /// <summary>
-        /// Deletes multiple records using a filter object.
+        /// Delete multiple records using a filter object.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="filterValue">The filter value.</param>
@@ -665,41 +593,43 @@ namespace Tortuga.Chain.SqlServer
             return new OleDbSqlServerUpdateMany(this, tableName, null, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected).WithFilter(filterValue, filterOptions);
         }
 
-
         /// <summary>
-        /// Updates multiple records using an update expression.
+        /// Update multiple records using an update expression.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="updateExpression">The update expression.</param>
         /// <param name="options">The update options.</param>
+        /// <remarks>Use .WithFilter to apply a WHERE clause.</remarks>
         public IUpdateManyCommandBuilder<OleDbCommand, OleDbParameter> UpdateSet(SqlServerObjectName tableName, string updateExpression, UpdateOptions options = UpdateOptions.None)
         {
             return new OleDbSqlServerUpdateMany(this, tableName, updateExpression, null, options);
         }
 
         /// <summary>
-        /// Updates multiple records using an update expression.
+        /// Update multiple records using an update expression.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="updateExpression">The update expression.</param>
         /// <param name="updateArgumentValue">The argument value.</param>
         /// <param name="options">The update options.</param>
+        /// <remarks>Use .WithFilter to apply a WHERE clause.</remarks>
         public IUpdateManyCommandBuilder<OleDbCommand, OleDbParameter> UpdateSet(SqlServerObjectName tableName, string updateExpression, object updateArgumentValue, UpdateOptions options = UpdateOptions.None)
         {
             return new OleDbSqlServerUpdateMany(this, tableName, updateExpression, updateArgumentValue, options);
         }
 
-
         /// <summary>
-        /// Updates multiple records using an update value.
+        /// Update multiple records using an update value.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="newValues">The new values to use.</param>
         /// <param name="options">The options.</param>
+        /// <remarks>Use .WithFilter to apply a WHERE clause.</remarks>
         public IUpdateManyCommandBuilder<OleDbCommand, OleDbParameter> UpdateSet(SqlServerObjectName tableName, object newValues, UpdateOptions options = UpdateOptions.None)
         {
             return new OleDbSqlServerUpdateMany(this, tableName, newValues, options);
         }
+
     }
 }
 

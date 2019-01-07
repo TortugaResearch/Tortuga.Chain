@@ -83,7 +83,7 @@ namespace Xunit.Sdk
 
             var enumerable = value as IEnumerable;
             if (enumerable != null)
-                return FormatEnumerable(enumerable.Cast<object>(), depth);
+                return FormatEnumerable(Enumerable.Cast<object>(enumerable), depth);
 
             var type = value.GetType();
             var typeInfo = type.GetTypeInfo();
