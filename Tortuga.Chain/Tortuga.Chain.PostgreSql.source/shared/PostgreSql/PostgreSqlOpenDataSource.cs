@@ -32,9 +32,15 @@ namespace Tortuga.Chain.PostgreSql
             m_Transaction = transaction;
         }
 
-        DbConnection IOpenDataSource.AssociatedConnection => m_Connection;
+        /// <summary>
+        /// Returns the associated connection.
+        /// </summary>
+        public DbConnection AssociatedConnection => m_Connection;
 
-        DbTransaction IOpenDataSource.AssociatedTransaction => m_Transaction;
+        /// <summary>
+        /// Returns the associated transaction.
+        /// </summary>
+        public DbTransaction AssociatedTransaction => m_Transaction;
 
         /// <summary>
         /// Gets or sets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
@@ -54,7 +60,10 @@ namespace Tortuga.Chain.PostgreSql
         /// </value>
         protected override ConcurrentDictionary<Type, object> ExtensionCache => m_BaseDataSource.m_ExtensionCache;
 
-        void IOpenDataSource.Close()
+        /// <summary>
+        /// Closes the connection and transaction associated with this data source.
+        /// </summary>
+        public void Close()
         {
             if (m_Transaction != null)
                 m_Transaction.Dispose();
@@ -89,7 +98,13 @@ namespace Tortuga.Chain.PostgreSql
                 await cmd.ExecuteScalarAsync();
         }
 
-        bool IOpenDataSource.TryCommit()
+        /// <summary>
+        /// Tries the commit the transaction associated with this data source.
+        /// </summary>
+        /// <returns>
+        /// True if there was an open transaction associated with this data source, otherwise false.
+        /// </returns>
+        public bool TryCommit()
         {
             if (m_Transaction == null)
                 return false;

@@ -43,7 +43,7 @@ namespace Tortuga.Chain.Metadata
         /// <value>
         /// <c>true</c> if this column is nullable; otherwise, <c>false</c>.
         /// </value>
-        public bool IsNullable { get; protected set; }
+        public bool? IsNullable { get; protected set; }
 
         /// <summary>
         /// Gets a value indicating whether this column is a primary key.

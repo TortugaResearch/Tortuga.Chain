@@ -29,7 +29,7 @@ namespace Xunit
                 throw new SameException(expected, actual);
         }
 
-        internal static void AreNotEqual<T>(T expected , T actual, string userMessage)
+        internal static void AreNotEqual<T>(T expected, T actual, string userMessage)
         {
             NotEqual(expected, actual, userMessage);
         }

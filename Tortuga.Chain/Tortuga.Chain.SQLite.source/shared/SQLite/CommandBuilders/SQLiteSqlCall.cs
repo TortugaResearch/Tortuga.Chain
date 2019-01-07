@@ -3,6 +3,8 @@ using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Materializers;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Metadata;
+using System.Collections.Immutable;
+using System.Collections.Generic;
 
 #if SDS
 using System.Data.SQLite;
@@ -64,5 +66,16 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
         {
             return null;
         }
+
+        /// <summary>
+        /// Returns a list of columns known to be non-nullable.
+        /// </summary>
+        /// <returns>
+        /// If the command builder doesn't know which columns are non-nullable, an empty list will be returned.
+        /// </returns>
+        /// <remarks>
+        /// This is used by materializers to skip IsNull checks.
+        /// </remarks>
+        public override IReadOnlyList<ColumnMetadata> TryGetNonNullableColumns() => ImmutableList<ColumnMetadata>.Empty;
     }
 }

@@ -139,7 +139,7 @@ namespace Tortuga.Chain
         /// <returns></returns>
         /// <remarks>The caller of this method is responsible for closing the connection.</remarks>
         [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-        internal OleDbConnection CreateConnection()
+        public OleDbConnection CreateConnection()
         {
             var con = new OleDbConnection(ConnectionString);
             con.Open();
@@ -187,7 +187,15 @@ namespace Tortuga.Chain
             return new AccessTransactionalDataSource(this, forwardEvents, connection, transaction);
         }
 
-        async Task<OleDbConnection> CreateConnectionAsync(CancellationToken cancellationToken = default(CancellationToken))
+        /// <summary>
+        /// Creates the connection asynchronous.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// The caller of this method is responsible for closing the connection.
+        /// </remarks>
+        public async Task<OleDbConnection> CreateConnectionAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             var con = new OleDbConnection(ConnectionString);
             await con.OpenAsync(cancellationToken).ConfigureAwait(false);

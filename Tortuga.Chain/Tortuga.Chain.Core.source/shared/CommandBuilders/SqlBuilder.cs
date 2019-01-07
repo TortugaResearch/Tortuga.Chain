@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Linq;
 using Tortuga.Anchor.Metadata;
 
@@ -12,9 +13,8 @@ namespace Tortuga.Chain.CommandBuilders
     /// </summary>
     public static class SqlBuilder
     {
-
         /// <summary>
-        /// Checks to see of the same property appears in both object. If it does, an InvalidOperationException is thrown with the provided error message.
+        /// Checks to see of the same property appears in both objects. If it does, an InvalidOperationException is thrown with the provided error message.
         /// </summary>
         /// <param name="firstObject">The first object.</param>
         /// <param name="secondObject">The second object.</param>
@@ -34,7 +34,7 @@ namespace Tortuga.Chain.CommandBuilders
             foreach (var property1 in leftList)
                 foreach (var property2 in rightList)
                     if (property1.Name.Equals(property2.Name, StringComparison.OrdinalIgnoreCase))
-                        throw new InvalidOperationException(string.Format(errorFormat, property1.Name));
+                        throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, errorFormat, property1.Name));
         }
 
         /// <summary>
@@ -91,6 +91,4 @@ namespace Tortuga.Chain.CommandBuilders
             return result;
         }
     }
-
-
 }

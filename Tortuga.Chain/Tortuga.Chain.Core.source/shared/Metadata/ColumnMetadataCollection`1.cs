@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 namespace Tortuga.Chain.Metadata
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     /// <typeparam name="TDbType">The type of the database type.</typeparam>
     public class ColumnMetadataCollection<TDbType> : ReadOnlyCollection<ColumnMetadata<TDbType>>
@@ -46,7 +46,9 @@ namespace Tortuga.Chain.Metadata
                     if (item.SqlName.Equals(columnName, System.StringComparison.OrdinalIgnoreCase))
                         return item;
 
+#pragma warning disable CA1065 // Do not raise exceptions in unexpected locations
                 throw new KeyNotFoundException($"Could not find column named {columnName} in object {m_Name}");
+#pragma warning restore CA1065 // Do not raise exceptions in unexpected locations
             }
         }
 

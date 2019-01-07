@@ -1,7 +1,7 @@
 ﻿using Xunit;
 using Xunit.Abstractions;
 
-#if SQL_SERVER || OLE_SQL_SERVER || POSTGRESQL
+#if SQL_SERVER || OLE_SQL_SERVER || POSTGRESQL || MYSQL
 
 namespace Tests.CommandBuilders
 {
@@ -12,18 +12,19 @@ namespace Tests.CommandBuilders
 #if SQL_SERVER || OLE_SQL_SERVER
         static object Filter_Integer_WithNullParameter = new { ManagerKey = (int?)null };
         static object Filter_Integer = new { ManagerKey = 1 };
+#elif MYSQL
+        static object Filter_Integer_WithNullParameter = new { p_managerKey = (int?)null };
+        static object Filter_Integer = new { p_managerKey = 1 };
 #elif POSTGRESQL
         static object Filter_Integer_WithNullParameter = new { p_managerKey = (int?)null };
         static object Filter_Integer = new { p_managerKey = 1 };
 #endif
 
-
         public ScalarFunctionTests(ITestOutputHelper output) : base(output)
         {
         }
 
-
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void ScalarFunction1_Integer_WithNullParameter(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -39,7 +40,7 @@ namespace Tests.CommandBuilders
             }
         }
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void ScalarFunction1_Integer(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -58,4 +59,3 @@ namespace Tests.CommandBuilders
 }
 
 #endif
-

@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Tests.Models;
 using Xunit;
 using Xunit.Abstractions;
-
 
 namespace Tests.CommandBuilders
 {
@@ -16,8 +14,7 @@ namespace Tests.CommandBuilders
         {
         }
 
-
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void Insert(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -29,17 +26,14 @@ namespace Tests.CommandBuilders
 
                 var allKeys = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToInt32List("EmployeeKey").Execute();
                 Assert.Equal(10, allKeys.Count, "Count if inserted rows is off.");
-
-
             }
             finally
             {
                 Release(dataSource);
             }
-
         }
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void InsertEchoObject(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -52,17 +46,14 @@ namespace Tests.CommandBuilders
 
                 var allKeys = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToInt32List("EmployeeKey").Execute();
                 Assert.Equal(list.Count, allKeys.Count, "Count if inserted rows is off.");
-
-
             }
             finally
             {
                 Release(dataSource);
             }
-
         }
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void InsertEchoNewKey(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -75,20 +66,16 @@ namespace Tests.CommandBuilders
 
                 var allKeys = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToInt32List("EmployeeKey").Execute();
                 Assert.Equal(list.Count, allKeys.Count, "Count if inserted rows is off.");
-
-
             }
             finally
             {
                 Release(dataSource);
             }
-
         }
-
 
 #if SQL_SERVER || OLE_SQL_SERVER //SQL Server has problems with CRUD operations that return values on tables with triggers.
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void Insert_Trigger(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -100,17 +87,14 @@ namespace Tests.CommandBuilders
 
                 var allKeys = dataSource.From(EmployeeTableName_Trigger, new { Title = lookupKey }).ToInt32List("EmployeeKey").Execute();
                 Assert.Equal(10, allKeys.Count, "Count if inserted rows is off.");
-
-
             }
             finally
             {
                 Release(dataSource);
             }
-
         }
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void InsertEchoObject_Trigger(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -123,17 +107,14 @@ namespace Tests.CommandBuilders
 
                 var allKeys = dataSource.From(EmployeeTableName_Trigger, new { Title = lookupKey }).ToInt32List("EmployeeKey").Execute();
                 Assert.Equal(list.Count, allKeys.Count, "Count if inserted rows is off.");
-
-
             }
             finally
             {
                 Release(dataSource);
             }
-
         }
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void InsertEchoNewKey_Trigger(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -146,19 +127,13 @@ namespace Tests.CommandBuilders
 
                 var allKeys = dataSource.From(EmployeeTableName_Trigger, new { Title = lookupKey }).ToInt32List("EmployeeKey").Execute();
                 Assert.Equal(list.Count, allKeys.Count, "Count if inserted rows is off.");
-
-
             }
             finally
             {
                 Release(dataSource);
             }
-
         }
-#endif
 
+#endif
     }
 }
-
-
-

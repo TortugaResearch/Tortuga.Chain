@@ -46,6 +46,29 @@ namespace Tortuga.Chain.SqlServer
             }
         }
 
+        /// <summary>
+        /// Returns the current database.
+        /// </summary>
+        /// <returns></returns>
+        public string DatabaseName
+        {
+            get
+            {
+                if (m_DatabaseName == null)
+                {
+                    using (var con = new SqlConnection(m_ConnectionBuilder.ConnectionString))
+                    {
+                        con.Open();
+                        using (var cmd = new SqlCommand("SELECT DB_NAME () AS DatabaseName", con))
+                        {
+                            m_DatabaseName = (string)cmd.ExecuteScalar();
+                        }
+                    }
+                }
+                return m_DatabaseName;
+            }
+        }
+
 
 
 

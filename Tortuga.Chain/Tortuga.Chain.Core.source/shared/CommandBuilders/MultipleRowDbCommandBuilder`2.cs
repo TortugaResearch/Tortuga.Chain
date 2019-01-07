@@ -1,20 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Data;
 using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
+using System.Xml.Linq;
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Materializers;
-using System.Collections.Immutable;
-using System.Xml.Linq;
-
-#if !DataTable_Missing
-using System.Data;
-#endif
 
 namespace Tortuga.Chain.CommandBuilders
 {
-
-
     /// <summary>
     /// This is the base class for command builders that can potentially return multiple rows.
     /// </summary>
@@ -28,7 +23,6 @@ namespace Tortuga.Chain.CommandBuilders
         /// </summary>
         /// <param name="dataSource">The data source.</param>
         protected MultipleRowDbCommandBuilder(ICommandDataSource<TCommand, TParameter> dataSource) : base(dataSource) { }
-
 
         /// <summary>
         /// Indicates the results should be materialized as a list of booleans.
@@ -73,6 +67,27 @@ namespace Tortuga.Chain.CommandBuilders
         }
 
         /// <summary>
+        /// Indicates the results should be materialized as a list of bytes.
+        /// </summary>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns></returns>
+        public ILink<List<byte>> ToByteList(ListOptions listOptions = ListOptions.None)
+        {
+            return new ByteListMaterializer<TCommand, TParameter>(this, null, listOptions);
+        }
+
+        /// <summary>
+        /// Indicates the results should be materialized as a list of bytes.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns></returns>
+        public ILink<List<byte>> ToByteList(string columnName, ListOptions listOptions = ListOptions.None)
+        {
+            return new ByteListMaterializer<TCommand, TParameter>(this, columnName, listOptions);
+        }
+
+        /// <summary>
         /// Materializes the result as a list of objects.
         /// </summary>
         /// <typeparam name="TObject">The type of the model.</typeparam>
@@ -101,7 +116,6 @@ namespace Tortuga.Chain.CommandBuilders
             return new CollectionMaterializer<TCommand, TParameter, TObject, TCollection>(this, collectionOptions);
         }
 
-#if !DataTable_Missing
         /// <summary>
         /// Indicates the results should be materialized as a DataSet.
         /// </summary>
@@ -109,7 +123,6 @@ namespace Tortuga.Chain.CommandBuilders
         {
             return new DataTableMaterializer<TCommand, TParameter>(this);
         }
-#endif
 
         /// <summary>
         /// Indicates the results should be materialized as a list of DateTime.
@@ -161,7 +174,6 @@ namespace Tortuga.Chain.CommandBuilders
         public ILink<HashSet<DateTimeOffset>> ToDateTimeOffsetSet(ListOptions listOptions = ListOptions.None)
         {
             return new DateTimeOffsetSetMaterializer<TCommand, TParameter>(this, null, listOptions);
-
         }
 
         /// <summary>
@@ -236,7 +248,6 @@ namespace Tortuga.Chain.CommandBuilders
         public ILink<HashSet<decimal>> ToDecimalSet(string columnName, ListOptions listOptions = ListOptions.None)
         {
             return new DecimalSetMaterializer<TCommand, TParameter>(this, columnName, listOptions);
-
         }
 
         /// <summary>
@@ -448,6 +459,7 @@ namespace Tortuga.Chain.CommandBuilders
         {
             return new ImmutableListMaterializer<TCommand, TParameter, TObject>(this, collectionOptions);
         }
+
         /// <summary>
         /// Indicates the results should be materialized as a list of integers.
         /// </summary>
@@ -676,6 +688,7 @@ namespace Tortuga.Chain.CommandBuilders
         {
             return new TimeSpanListMaterializer<TCommand, TParameter>(this, columnName, listOptions);
         }
+
         /// <summary>
         /// Indicates the results should be materialized as a list of TimeSpan.
         /// </summary>
@@ -685,6 +698,7 @@ namespace Tortuga.Chain.CommandBuilders
         {
             return new TimeSpanListMaterializer<TCommand, TParameter>(this, null, listOptions);
         }
+
         /// <summary>
         /// Indicates the results should be materialized as a set of TimeSpan.
         /// </summary>
@@ -693,7 +707,6 @@ namespace Tortuga.Chain.CommandBuilders
         public ILink<HashSet<TimeSpan>> ToTimeSpanSet(ListOptions listOptions = ListOptions.None)
         {
             return new TimeSpanSetMaterializer<TCommand, TParameter>(this, null, listOptions);
-
         }
 
         /// <summary>

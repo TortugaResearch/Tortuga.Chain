@@ -13,8 +13,6 @@ namespace Tests
 {
     public abstract partial class TestBase
     {
-
-
         static public readonly string AssemblyName = "Access";
         static protected readonly Dictionary<string, AccessDataSource> s_DataSources = new Dictionary<string, AccessDataSource>();
         protected static readonly AccessDataSource s_PrimaryDataSource;
@@ -28,6 +26,7 @@ namespace Tests
                 s_DataSources.Add(con.Name, ds);
                 if (s_PrimaryDataSource == null) s_PrimaryDataSource = ds;
             }
+            BuildEmployeeSearchKey1000(s_PrimaryDataSource);
         }
 
         public static string CustomerTableName { get { return "Customer"; } }
@@ -44,6 +43,7 @@ namespace Tests
                 new ValidateWithValidatable(OperationTypes.InsertOrUpdate)
                 );
         }
+
         public AccessDataSource AttachSoftDeleteRulesWithUser(AccessDataSource source)
         {
             var currentUser1 = source.From(EmployeeTableName).WithLimits(1).ToObject<Employee>().Execute();

@@ -23,10 +23,10 @@ namespace Tortuga.Chain.Materializers
         where TDictionary : IDictionary<TKey, TObject>, new()
         where TParameter : DbParameter
     {
-
         readonly DictionaryOptions m_DictionaryOptions;
         readonly string m_KeyColumn;
         readonly Func<TObject, TKey> m_KeyFunction;
+
         public DictionaryMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, Func<TObject, TKey> keyFunction, DictionaryOptions dictionaryOptions) : base(commandBuilder)
         {
             m_KeyFunction = keyFunction;
@@ -85,7 +85,7 @@ namespace Tortuga.Chain.Materializers
             var result = new TDictionary();
             Prepare().Execute(cmd =>
             {
-                using (var reader = cmd.ExecuteReader().AsObjectConstructor<TObject>(ConstructorSignature))
+                using (var reader = cmd.ExecuteReader().AsObjectConstructor<TObject>(ConstructorSignature, CommandBuilder.TryGetNonNullableColumns()))
                 {
                     while (reader.Read())
                         AddToDictionary(result, reader);
@@ -99,19 +99,17 @@ namespace Tortuga.Chain.Materializers
 
         public override async Task<TDictionary> ExecuteAsync(CancellationToken cancellationToken, object state = null)
         {
-
             var result = new TDictionary();
             await Prepare().ExecuteAsync(async cmd =>
             {
-                using (var reader = (await cmd.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false)).AsObjectConstructor<TObject>(ConstructorSignature))
+                using (var reader = (await cmd.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false)).AsObjectConstructor<TObject>(ConstructorSignature, CommandBuilder.TryGetNonNullableColumns()))
                 {
-                    while (await reader.ReadAsync())
+                    while (await reader.ReadAsync().ConfigureAwait(false))
                         AddToDictionary(result, reader);
 
                     return reader.RowsRead;
                 }
             }, cancellationToken, state).ConfigureAwait(false);
-
 
             return result;
         }
@@ -135,7 +133,6 @@ namespace Tortuga.Chain.Materializers
                 else
                     result.Add((TKey)source.CurrentDictionary[m_KeyColumn], source.Current);
             }
-
         }
     }
 }

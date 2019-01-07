@@ -22,7 +22,6 @@ namespace Tortuga.Chain.Materializers
         where TObject : class
         where TParameter : DbParameter
     {
-
         readonly CollectionOptions m_CollectionOptions;
 
         /// <summary>
@@ -34,7 +33,6 @@ namespace Tortuga.Chain.Materializers
             : base(commandBuilder)
         {
             m_CollectionOptions = collectionOptions;
-
 
             if (m_CollectionOptions.HasFlag(CollectionOptions.InferConstructor))
             {
@@ -74,11 +72,10 @@ namespace Tortuga.Chain.Materializers
         /// <returns></returns>
         public override ImmutableArray<TObject> Execute(object state = null)
         {
-
-            ImmutableArray<TObject> result = default(ImmutableArray<TObject>);
+            ImmutableArray<TObject> result = default;
             Prepare().Execute(cmd =>
             {
-                using (var reader = cmd.ExecuteReader().AsObjectConstructor<TObject>(ConstructorSignature))
+                using (var reader = cmd.ExecuteReader().AsObjectConstructor<TObject>(ConstructorSignature, CommandBuilder.TryGetNonNullableColumns()))
                 {
                     result = reader.ToObjects().ToImmutableArray();
                     return result.Length;
@@ -88,7 +85,6 @@ namespace Tortuga.Chain.Materializers
             return result;
         }
 
-
         /// <summary>
         /// Execute the operation asynchronously.
         /// </summary>
@@ -97,13 +93,12 @@ namespace Tortuga.Chain.Materializers
         /// <returns></returns>
         public override async Task<ImmutableArray<TObject>> ExecuteAsync(CancellationToken cancellationToken, object state = null)
         {
-
-            ImmutableArray<TObject> result = default(ImmutableArray<TObject>);
+            ImmutableArray<TObject> result = default;
             await Prepare().ExecuteAsync(async cmd =>
             {
-                using (var reader = (await cmd.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false)).AsObjectConstructor<TObject>(ConstructorSignature))
+                using (var reader = (await cmd.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false)).AsObjectConstructor<TObject>(ConstructorSignature, CommandBuilder.TryGetNonNullableColumns()))
                 {
-                    result = (await reader.ToListAsync()).ToImmutableArray();
+                    result = (await reader.ToListAsync().ConfigureAwait(false)).ToImmutableArray();
                     return result.Length;
                 }
             }, cancellationToken, state).ConfigureAwait(false);

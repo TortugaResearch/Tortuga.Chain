@@ -18,18 +18,15 @@
     <ResultXml>Tortuga.Chain.Access.xml</ResultXml>
 
     <SourcePath>$(MSBuildProjectDirectory)\Tortuga.Chain.Access.source</SourcePath>
-    <Net45Path>$(MSBuildProjectDirectory)\Tortuga.Chain.Access.net45</Net45Path>
     <Net46Path>$(MSBuildProjectDirectory)\Tortuga.Chain.Access.net46</Net46Path>
 
     <VersionSource>$(SourcePath)\bin\Release\$(ResultDll)</VersionSource>
     <NuspecName>Tortuga.Chain.Access.nuspec</NuspecName>
-
   </PropertyGroup>
-
 
   <Import Project=".build\MSBuild.Community.Tasks.Targets" />
 
-  <UsingTask TaskName="UpdateNuspecVersionFromAssembly" AssemblyFile="$(MSBuildProjectDirectory)\MSBuild.Task.AssemblyVersion.dll"/>
+  <UsingTask TaskName="UpdateNuspecVersionFromAssembly" AssemblyFile="$(MSBuildProjectDirectory)\MSBuild.Task.AssemblyVersion.dll" />
 
   <Target Name="Build">
     <CallTarget Targets="Clean" />
@@ -37,31 +34,25 @@
     <CallTarget Targets="PackageBinaries" />
     <CallTarget Targets="PackageHelp" />
     <CallTarget Targets="BuildNugetFile" />
+    <CallTarget Targets="CopyPackage" />
   </Target>
 
-  <Target Name="Clean" >
+  <Target Name="Clean">
     <Message Text="Cleaning..." />
     <Deletetree Directories="$(BuildOutputPath)" />
 
     <MSBuild Projects="$(MainSolution)" Properties="Configuration=Debug-Unchecked" Targets="Clean" StopOnFirstFailure="true" />
     <MSBuild Projects="$(MainSolution)" Properties="Configuration=Debug" Targets="Clean" StopOnFirstFailure="true" />
-    <MSBuild Projects="$(MainSolution)" Properties="Configuration=Release" Targets="Clean" StopOnFirstFailure="true"/>
+    <MSBuild Projects="$(MainSolution)" Properties="Configuration=Release" Targets="Clean" StopOnFirstFailure="true" />
   </Target>
 
   <Target Name="Compile">
     <Message Text="Building..." />
-    <MSBuild Projects="$(MainSolution)" Properties="Configuration=Release" Targets="Rebuild" StopOnFirstFailure="true"/>
+    <MSBuild Projects="$(MainSolution)" Properties="Configuration=Release" Targets="Rebuild" StopOnFirstFailure="true" />
   </Target>
 
   <Target Name="PackageBinaries">
     <Message Text="Copying binaries..." />
-
-    <ItemGroup>
-      <Net45Output Include="$(Net45Path)\bin\Release\$(ResultDll)" />
-      <Net45Output Include="$(Net45Path)\bin\Release\$(ResultPdb)" />
-      <Net45Output Include="$(Net45Path)\bin\Release\$(ResultXml)" />
-    </ItemGroup>
-    <Copy SourceFiles="@(Net45Output)" DestinationFolder="$(BuildOutputPath)\lib\net45" />
 
     <ItemGroup>
       <Net46Output Include="$(Net46Path)\bin\Release\$(ResultDll)" />
@@ -69,11 +60,9 @@
       <Net46Output Include="$(Net46Path)\bin\Release\$(ResultXml)" />
     </ItemGroup>
     <Copy SourceFiles="@(Net46Output)" DestinationFolder="$(BuildOutputPath)\lib\net46" />
-
   </Target>
 
   <Target Name="PackageHelp">
-
   </Target>
 
   <Target Name="BuildNugetFile">
@@ -89,7 +78,13 @@
 			 XPath="/package/metadata/version"
 			 Value="%(AssemblyIdentity.Version)" />
     <Exec Command='"$(MSBuildProjectDirectory)\.nuget\NuGet.exe" pack $(NuspecName)"' WorkingDirectory="$(BuildOutputPath)" />
-
   </Target>
 
+  <Target Name="CopyPackage">
+    <ItemGroup>
+      <FinalPackage Include="$(BuildOutputPath)\*.nupkg" />
+    </ItemGroup>
+
+    <Copy SourceFiles="@(FinalPackage)" DestinationFolder="$(MSBuildProjectDirectory)\..\..\Packages" />
+  </Target>
 </Project>

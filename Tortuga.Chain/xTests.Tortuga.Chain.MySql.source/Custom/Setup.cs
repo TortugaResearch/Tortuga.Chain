@@ -2,15 +2,16 @@ using MySql.Data.MySqlClient;
 using System.Configuration;
 using Xunit;
 
-[assembly: CollectionBehavior(DisableTestParallelization = true)]
-
 namespace Tests
 {
     public class Setup
     {
+        public static void AssemblyCleanup()
+        {
+        }
+
         public static void AssemblyInit()
         {
-            //TODO - setup database objects
             using (var con = new MySqlConnection(ConfigurationManager.ConnectionStrings["MySqlTestDatabase"].ConnectionString))
             {
                 con.Open();
@@ -88,70 +89,37 @@ namespace Tests
                 	OrderDate TIMESTAMP NOT NULL
                 );";
 
-                //                var function1 = @"CREATE FUNCTION Sales.CustomersByState ( param_state CHAR(2) ) RETURNS TABLE
-                //    (
-                //      CustomerKey INT,
-                //      FullName VARCHAR(150) ,
-                //      State CHAR(2)  ,
-                //      CreatedByKey INT ,
-                //      UpdatedByKey INT ,
-                //      CreatedDate TIMESTAMP ,
-                //      UpdatedDate TIMESTAMP ,
-                //      DeletedFlag BOOLEAN,
-                //      DeletedDate TIMESTAMP ,
-                //      DeletedByKey INT
-                //    )
-                //    AS $$
-                //    BEGIN
-                //	  RETURN QUERY SELECT
-                //	        c.CustomerKey ,
-                //                c.FullName ,
-                //                c.State ,
-                //                c.CreatedByKey ,
-                //                c.UpdatedByKey ,
-                //                c.CreatedDate ,
-                //                c.UpdatedDate ,
-                //                c.DeletedFlag ,
-                //                c.DeletedDate ,
-                //                c.DeletedByKey
-                //      FROM      Sales.Customer c
-                //      WHERE     c.State = param_state;
-                //    END;
-                //    $$ LANGUAGE plpgsql;
-                //";
+                string function1 = @"
+CREATE FUNCTION hr.EmployeeCount(p_managerKey integer) RETURNS integer
+    READS SQL DATA
+BEGIN
+    DECLARE emp_count integer;
 
-                //                var proc1 = @"CREATE FUNCTION Sales.CustomerWithOrdersByState(param_state CHAR(2)) RETURNS SETOF refcursor AS $$
-                //    DECLARE
-                //      ref1 refcursor;           -- Declare cursor variables
-                //      ref2 refcursor;
-                //    BEGIN
-                //      OPEN ref1 FOR  SELECT  c.CustomerKey ,
-                //            c.FullName ,
-                //            c.State ,
-                //            c.CreatedByKey ,
-                //            c.UpdatedByKey ,
-                //            c.CreatedDate ,
-                //            c.UpdatedDate ,
-                //            c.DeletedFlag ,
-                //            c.DeletedDate ,
-                //            c.DeletedByKey
-                //    FROM    Sales.Customer c
-                //    WHERE   c.State = param_state;
-                //    RETURN NEXT ref1;
+	IF (p_managerKey IS NOT NULL) THEN
+		SELECT COUNT(*) INTO emp_count
+		FROM HR.Employee e
+		WHERE	e.ManagerKey = p_managerKey;
+	ELSE
+		SELECT COUNT(*) INTO emp_count
+		FROM	HR.Employee e;
+	END IF;
+	RETURN emp_count;
 
-                //    OPEN ref2 FOR   SELECT  o.OrderKey ,
-                //            o.CustomerKey ,
-                //            o.OrderDate
-                //    FROM    Sales.Order o
-                //            INNER JOIN Sales.Customer c ON o.CustomerKey = c.CustomerKey
-                //    WHERE   c.State = param_state;
-                //    RETURN NEXT ref2;
+END; ";
 
-                //    END;
-                //    $$ LANGUAGE plpgsql;
-                //";
+                string proc1 = @"
+CREATE PROCEDURE Sales.CustomerWithOrdersByState
+(IN p_State CHAR(2))
+BEGIN
+    SELECT  *
+    FROM    Sales.Customer c
+    WHERE   c.State = p_State;
 
-                //                //string proc1 = @"";
+    SELECT  o.*
+    FROM    sales.order o
+            INNER JOIN Sales.Customer c ON o.CustomerKey = c.CustomerKey
+    WHERE   c.State = p_State;
+END;";
 
                 using (MySqlCommand cmd = new MySqlCommand(sql, con))
                     cmd.ExecuteNonQuery();
@@ -165,16 +133,12 @@ namespace Tests
                 using (MySqlCommand cmd = new MySqlCommand(orderSql, con))
                     cmd.ExecuteNonQuery();
 
-                //using (MySqlCommand cmd = new MySqlCommand(function1, con))
-                //    cmd.ExecuteNonQuery();
+                using (MySqlCommand cmd = new MySqlCommand(function1, con))
+                    cmd.ExecuteNonQuery();
 
-                //using (MySqlCommand cmd = new MySqlCommand(proc1, con))
-                //    cmd.ExecuteNonQuery();
+                using (MySqlCommand cmd = new MySqlCommand(proc1, con))
+                    cmd.ExecuteNonQuery();
             }
-        }
-
-        public static void AssemblyCleanup()
-        {
         }
     }
 }

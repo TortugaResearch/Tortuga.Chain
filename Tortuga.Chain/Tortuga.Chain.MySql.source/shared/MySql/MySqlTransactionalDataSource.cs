@@ -161,7 +161,7 @@ namespace Tortuga.Chain.MySql
         /// </summary>
         public override void TestConnection()
         {
-            using (var cmd = new MySqlCommand("SELECT 1", m_Connection))
+            using (var cmd = new MySqlCommand("SELECT 1", m_Connection, m_Transaction))
                 cmd.ExecuteScalar();
         }
 
@@ -171,8 +171,25 @@ namespace Tortuga.Chain.MySql
         /// <returns></returns>
         public override async Task TestConnectionAsync()
         {
-            using (var cmd = new MySqlCommand("SELECT 1", m_Connection))
+            using (var cmd = new MySqlCommand("SELECT 1", m_Connection, m_Transaction))
                 await cmd.ExecuteScalarAsync();
+        }
+
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (m_Disposed)
+                return;
+
+            if (disposing)
+            {
+                m_Transaction.Dispose();
+                m_Connection.Dispose();
+                m_Disposed = true;
+            }
         }
 
         /// <summary>
@@ -364,23 +381,6 @@ namespace Tortuga.Chain.MySql
                     OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
                     throw;
                 }
-            }
-        }
-
-        /// <summary>
-        /// Releases unmanaged and - optionally - managed resources.
-        /// </summary>
-        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
-        protected virtual void Dispose(bool disposing)
-        {
-            if (m_Disposed)
-                return;
-
-            if (disposing)
-            {
-                m_Transaction.Dispose();
-                m_Connection.Dispose();
-                m_Disposed = true;
             }
         }
     }

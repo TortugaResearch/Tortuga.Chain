@@ -22,3 +22,6 @@ EXEC sys.sp_addextendedproperty @name = N'MS_Description',
     @value = N'Null if the record was never updated.', @level0type = N'SCHEMA',
     @level0name = N'HR', @level1type = N'TABLE', @level1name = N'Employee',
     @level2type = N'COLUMN', @level2name = N'UpdatedDate';
+GO
+
+CREATE INDEX [IX_Employee_Title] ON [HR].[Employee] (Title)

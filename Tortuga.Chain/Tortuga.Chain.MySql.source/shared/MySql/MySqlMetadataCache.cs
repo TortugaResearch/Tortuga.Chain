@@ -285,6 +285,7 @@ namespace Tortuga.Chain.MySql
             m_ScalarFunctions.Clear();
             m_Tables.Clear();
             m_TypeTableMap.Clear();
+            m_DefaultSchema = null;
         }
 
         /// <summary>
@@ -295,6 +296,71 @@ namespace Tortuga.Chain.MySql
         protected override MySqlObjectName ParseObjectName(string name)
         {
             return new MySqlObjectName(name);
+        }
+
+        [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
+        private static MySqlDbType? TypeNameToMySqlDbType(string typeName, bool isUnsigned)
+        {
+            switch (typeName.ToUpperInvariant())
+            {
+                case "INT1":
+                case "BOOL":
+                case "BOOLEAN":
+                case "TINYINT": if (isUnsigned) return MySqlDbType.UByte; else return MySqlDbType.Byte;
+                case "INT2":
+                case "SMALLINT": if (isUnsigned) return MySqlDbType.UInt16; else return MySqlDbType.Int16;
+                case "INT3":
+                case "MIDDLEINT":
+                case "MEDIUMINT": if (isUnsigned) return MySqlDbType.UInt24; else return MySqlDbType.Int24;
+                case "INT4":
+                case "INTEGER":
+                case "INT": if (isUnsigned) return MySqlDbType.UInt32; else return MySqlDbType.Int32;
+                case "INT8":
+                case "BIGINT": if (isUnsigned) return MySqlDbType.UInt64; else return MySqlDbType.Int64;
+                case "FIXED":
+                case "NUMERIC":
+                case "DECIMAL": return MySqlDbType.Decimal;
+                case "FLOAT4":
+                case "FLOAT": return MySqlDbType.Float;
+                case "DOUBLE PRECISION":
+                case "REAL":
+                case "FLOAT8":
+                case "DOUBLE": return MySqlDbType.Double;
+                case "BIT": return MySqlDbType.Bit;
+                case "DATE": return MySqlDbType.Date;
+                case "TIME": return MySqlDbType.Time;
+                case "DATETIME": return MySqlDbType.DateTime;
+                case "TIMESTAMP": return MySqlDbType.Timestamp;
+                case "YEAR": return MySqlDbType.Year;
+                case "CHAR": return MySqlDbType.VarChar;
+                case "CHARACTER VARYING":
+                case "VARCHAR": return MySqlDbType.VarChar;
+                case "BINARY": return MySqlDbType.Binary;
+                case "VARBINARY": return MySqlDbType.VarBinary;
+                case "BLOB": return MySqlDbType.Blob;
+                case "TEXT": return MySqlDbType.Text;
+                case "ENUM": return MySqlDbType.Enum;
+                case "SET": return MySqlDbType.Set;
+                case "GEOMETRY": return MySqlDbType.Geometry;
+                case "POINT": return MySqlDbType.Geometry;
+                case "LINESTRING": return MySqlDbType.Geometry;
+                case "POLYGON": return MySqlDbType.Geometry;
+                case "MULTIPOINT": return MySqlDbType.Geometry;
+                case "MULTILINESTRING": return MySqlDbType.Geometry;
+                case "MULTIPOLYGON": return MySqlDbType.Geometry;
+                case "GEOMETRYCOLLECTION": return MySqlDbType.Geometry;
+                case "JSON": return MySqlDbType.JSON;
+                case "TINYBLOB": return MySqlDbType.TinyBlob;
+                case "LONG VARBINARY":
+                case "MEDIUMBLOB": return MySqlDbType.MediumBlob;
+                case "LONGBLOB": return MySqlDbType.LongBlob;
+                case "TINYTEXT": return MySqlDbType.TinyText;
+                case "LONG VARCHAR":
+                case "MEDIUMTEXT": return MySqlDbType.MediumText;
+                case "LONGTEXT": return MySqlDbType.LongText;
+                default:
+                    return null;
+            }
         }
 
         /// <summary>
@@ -512,72 +578,6 @@ namespace Tortuga.Chain.MySql
             var columns = GetColumns(actualSchemaName, actualTableName);
 
             return new MySqlTableOrViewMetadata(this, new MySqlObjectName(actualSchemaName, actualTableName), isTable, columns, engine);
-        }
-
-        [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
-        private static MySqlDbType? TypeNameToMySqlDbType(string typeName, bool isUnsigned)
-        {
-            switch (typeName.ToUpperInvariant())
-            {
-                case "INT1":
-                case "BOOL":
-                case "BOOLEAN":
-                case "TINYINT": if (isUnsigned) return MySqlDbType.UByte; else return MySqlDbType.Byte;
-                case "INT2":
-                case "SMALLINT": if (isUnsigned) return MySqlDbType.UInt16; else return MySqlDbType.Int16;
-                case "INT3":
-                case "MIDDLEINT":
-                case "MEDIUMINT": if (isUnsigned) return MySqlDbType.UInt24; else return MySqlDbType.Int24;
-                case "INT4":
-                case "INTEGER":
-                case "INT": if (isUnsigned) return MySqlDbType.UInt32; else return MySqlDbType.Int32;
-                case "INT8":
-                case "BIGINT": if (isUnsigned) return MySqlDbType.UInt64; else return MySqlDbType.Int64;
-                case "FIXED":
-                case "NUMERIC":
-                case "DECIMAL": return MySqlDbType.Decimal;
-                case "FLOAT4":
-                case "FLOAT": return MySqlDbType.Float;
-                case "DOUBLE PRECISION":
-                case "REAL":
-                case "FLOAT8":
-                case "DOUBLE": return MySqlDbType.Double;
-                case "BIT": return MySqlDbType.Bit;
-                case "DATE": return MySqlDbType.Date;
-                case "TIME": return MySqlDbType.Time;
-                case "DATETIME": return MySqlDbType.DateTime;
-                case "TIMESTAMP": return MySqlDbType.Timestamp;
-                case "YEAR": return MySqlDbType.Year;
-                case "CHAR": return MySqlDbType.VarChar;
-                case "CHARACTER VARYING":
-                case "VARCHAR": return MySqlDbType.VarChar;
-                case "BINARY": return MySqlDbType.Binary;
-                case "VARBINARY": return MySqlDbType.VarBinary;
-                case "BLOB": return MySqlDbType.Blob;
-                case "TEXT": return MySqlDbType.Text;
-                case "ENUM": return MySqlDbType.Enum;
-                case "SET": return MySqlDbType.Set;
-                case "GEOMETRY": return MySqlDbType.Geometry;
-                case "POINT": return MySqlDbType.Geometry;
-                case "LINESTRING": return MySqlDbType.Geometry;
-                case "POLYGON": return MySqlDbType.Geometry;
-                case "MULTIPOINT": return MySqlDbType.Geometry;
-                case "MULTILINESTRING": return MySqlDbType.Geometry;
-                case "MULTIPOLYGON": return MySqlDbType.Geometry;
-                case "GEOMETRYCOLLECTION": return MySqlDbType.Geometry;
-                case "JSON": return MySqlDbType.JSON;
-                case "TINYBLOB": return MySqlDbType.TinyBlob;
-                case "LONG VARBINARY":
-                case "MEDIUMBLOB": return MySqlDbType.MediumBlob;
-                case "LONGBLOB": return MySqlDbType.LongBlob;
-                case "TINYTEXT": return MySqlDbType.TinyText;
-                case "LONG VARCHAR":
-                case "LONG":
-                case "MEDIUMTEXT": return MySqlDbType.MediumText;
-                case "LONGTEXT": return MySqlDbType.LongText;
-                default:
-                    return null;
-            }
         }
     }
 }

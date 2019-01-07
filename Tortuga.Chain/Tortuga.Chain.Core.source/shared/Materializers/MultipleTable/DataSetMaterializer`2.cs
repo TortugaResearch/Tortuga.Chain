@@ -1,5 +1,3 @@
-#if !DataTable_Missing
-
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
@@ -47,11 +45,11 @@ namespace Tortuga.Chain.Materializers
         /// Execute the operation synchronously.
         /// </summary>
         /// <returns></returns>
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         [SuppressMessage("Microsoft.Globalization", "CA1306:SetLocaleForDataTypes")]
         public override DataSet Execute(object state = null)
         {
-            var ds = new DataSet();
-            ds.EnforceConstraints = false; //needed for PostgreSql 
+            var ds = new DataSet() { EnforceConstraints = false /*needed for PostgreSql*/};
             Prepare().Execute(cmd =>
              {
                  using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess))
@@ -64,7 +62,6 @@ namespace Tortuga.Chain.Materializers
             return ds;
         }
 
-
         /// <summary>
         /// Execute the operation asynchronously.
         /// </summary>
@@ -73,8 +70,7 @@ namespace Tortuga.Chain.Materializers
         /// <returns></returns>
         public override async Task<DataSet> ExecuteAsync(CancellationToken cancellationToken, object state = null)
         {
-            var ds = new DataSet();
-            ds.EnforceConstraints = false;            /*needed for PostgreSql */
+            var ds = new DataSet() { EnforceConstraints = false /*needed for PostgreSql*/};
             await Prepare().ExecuteAsync(async cmd =>
             {
                 using (var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SequentialAccess, cancellationToken).ConfigureAwait(false))
@@ -82,10 +78,9 @@ namespace Tortuga.Chain.Materializers
                     ds.Load(reader, LoadOption.OverwriteChanges, m_TableNames);
                     return ds.Tables.Cast<DataTable>().Sum(t => t.Rows.Count);
                 }
-            }, cancellationToken, state);
+            }, cancellationToken, state).ConfigureAwait(false);
 
             return ds;
         }
     }
 }
-#endif

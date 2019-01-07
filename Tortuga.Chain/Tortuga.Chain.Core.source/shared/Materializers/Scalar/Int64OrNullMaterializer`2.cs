@@ -1,5 +1,6 @@
 using System;
 using System.Data.Common;
+using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 using Tortuga.Chain.CommandBuilders;
@@ -33,7 +34,7 @@ namespace Tortuga.Chain.Materializers
             if (temp == null || temp == DBNull.Value)
                 return null;
 
-            return Convert.ToInt64(temp);
+            return Convert.ToInt64(temp, CultureInfo.InvariantCulture);
         }
 
         /// <summary>
@@ -45,11 +46,11 @@ namespace Tortuga.Chain.Materializers
         public override async Task<long?> ExecuteAsync(CancellationToken cancellationToken, object state = null)
         {
             object temp = null;
-            await ExecuteCoreAsync(async cmd => temp = await cmd.ExecuteScalarAsync(cancellationToken), cancellationToken, state).ConfigureAwait(false);
+            await ExecuteCoreAsync(async cmd => temp = await cmd.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false), cancellationToken, state).ConfigureAwait(false);
             if (temp == null || temp == DBNull.Value)
                 return null;
 
-            return Convert.ToInt64(temp);
+            return Convert.ToInt64(temp, CultureInfo.InvariantCulture);
         }
     }
 }

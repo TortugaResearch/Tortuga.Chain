@@ -1,0 +1,1690 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Tortuga.Chain.MySql</name>
+    </assembly>
+    <members>
+        <member name="T:Tortuga.Chain.MySqlDataSource">
+            <summary>
+            Class MySqlDataSource.
+            </summary>
+            <seealso cref="T:Tortuga.Chain.MySql.MySqlDataSourceBase" />
+        </member>
+        <member name="M:Tortuga.Chain.MySqlDataSource.#ctor(System.String,System.String,Tortuga.Chain.MySql.MySqlDataSourceSettings)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.MySqlDataSource"/> class.
+            </summary>
+            <param name="name">The name.</param>
+            <param name="connectionString">The connection string.</param>
+            <param name="settings">The settings.</param>
+            <exception cref="T:System.ArgumentException">connectionString is null or empty.;connectionString</exception>
+        </member>
+        <member name="M:Tortuga.Chain.MySqlDataSource.#ctor(System.String,Tortuga.Chain.MySql.MySqlDataSourceSettings)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.MySqlDataSource"/> class.
+            </summary>
+            <param name="connectionString">The connection string.</param>
+            <param name="settings">The settings.</param>
+        </member>
+        <member name="M:Tortuga.Chain.MySqlDataSource.#ctor(System.String,MySql.Data.MySqlClient.MySqlConnectionStringBuilder,Tortuga.Chain.MySql.MySqlDataSourceSettings)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.MySqlDataSource" /> class.
+            </summary>
+            <param name="name">The name.</param>
+            <param name="connectionBuilder">The connection builder.</param>
+            <param name="settings">The settings.</param>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="M:Tortuga.Chain.MySqlDataSource.#ctor(MySql.Data.MySqlClient.MySqlConnectionStringBuilder,Tortuga.Chain.MySql.MySqlDataSourceSettings)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.MySqlDataSource" /> class.
+            </summary>
+            <param name="connectionBuilder">The connection builder.</param>
+            <param name="settings">The settings.</param>
+        </member>
+        <member name="P:Tortuga.Chain.MySqlDataSource.Cache">
+            <summary>
+            Gets or sets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
+            </summary>
+        </member>
+        <member name="P:Tortuga.Chain.MySqlDataSource.DatabaseMetadata">
+            <summary>
+            Gets the database metadata.
+            </summary>
+            <value>The database metadata.</value>
+        </member>
+        <member name="P:Tortuga.Chain.MySqlDataSource.ExtensionCache">
+            <summary>
+            The extension cache is used by extensions to store data source specific information.
+            </summary>
+            <value>
+            The extension cache.
+            </value>
+        </member>
+        <member name="M:Tortuga.Chain.MySqlDataSource.BeginTransaction(System.Nullable{System.Data.IsolationLevel},System.Boolean)">
+            <summary>
+            Begins the transaction.
+            </summary>
+            <param name="isolationLevel">The isolation level.</param>
+            <param name="forwardEvents">if set to <c>true</c> [forward events].</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySqlDataSource.BeginTransactionAsync(System.Nullable{System.Data.IsolationLevel},System.Boolean)">
+            <summary>
+            Begins the transaction.
+            </summary>
+            <param name="isolationLevel">The isolation level.</param>
+            <param name="forwardEvents">if set to <c>true</c> [forward events].</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySqlDataSource.CreateConnection">
+            <remarks>
+            The caller of this method is responsible for closing the connection.
+            </remarks>
+        </member>
+        <member name="M:Tortuga.Chain.MySqlDataSource.CreateConnectionAsync(System.Threading.CancellationToken)">
+            <remarks>
+            The caller of this method is responsible for closing the connection.
+            </remarks>
+        </member>
+        <member name="M:Tortuga.Chain.MySqlDataSource.CreateOpenDataSource(MySql.Data.MySqlClient.MySqlConnection,MySql.Data.MySqlClient.MySqlTransaction)">
+            <summary>
+            Creates an open data source using the supplied connection and optional transaction.
+            </summary>
+            <param name="connection">The connection.</param>
+            <param name="transaction">The transaction.</param>
+        </member>
+        <member name="M:Tortuga.Chain.MySqlDataSource.TestConnection">
+            <summary>
+            Tests the connection.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.MySqlDataSource.TestConnectionAsync">
+            <summary>
+            Tests the connection asynchronously.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySqlDataSource.WithCache(Tortuga.Chain.Core.ICacheAdapter)">
+            <summary>
+            Creates a new data source with the provided cache.
+            </summary>
+            <param name="cache">The cache.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySqlDataSource.WithRules(Tortuga.Chain.AuditRules.AuditRule[])">
+            <summary>
+            Creates a new data source with additional audit rules.
+            </summary>
+            <param name="additionalRules">The additional rules.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySqlDataSource.WithRules(System.Collections.Generic.IEnumerable{Tortuga.Chain.AuditRules.AuditRule})">
+            <summary>
+            Creates a new data source with additional audit rules.
+            </summary>
+            <param name="additionalRules">The additional rules.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySqlDataSource.WithSettings(Tortuga.Chain.MySql.MySqlDataSourceSettings)">
+            <summary>
+            Creates a new data source with the indicated changes to the settings.
+            </summary>
+            <param name="settings">The new settings to use.</param>
+            <returns></returns>
+            <remarks>The new data source will share the same database metadata cache.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.MySqlDataSource.WithUser(System.Object)">
+            <summary>
+            Creates a new data source with the indicated user.
+            </summary>
+            <param name="userValue">The user value.</param>
+            <returns></returns>
+            <remarks>
+            This is used in conjunction with audit rules.
+            </remarks>
+        </member>
+        <member name="M:Tortuga.Chain.MySqlDataSource.Execute(Tortuga.Chain.Core.CommandExecutionToken{MySql.Data.MySqlClient.MySqlCommand,MySql.Data.MySqlClient.MySqlParameter},Tortuga.Chain.Core.CommandImplementation{MySql.Data.MySqlClient.MySqlCommand},System.Object)">
+            <summary>
+            Executes the specified operation.
+            </summary>
+            <param name="executionToken">The execution token.</param>
+            <param name="implementation">The implementation that handles processing the result of the command.</param>
+            <param name="state">User supplied state.</param>
+            <returns>System.Nullable&lt;System.Int32&gt;.</returns>
+            <exception cref="T:System.ArgumentNullException">executionToken;executionToken is null.
+            or
+            implementation;implementation is null.</exception>
+        </member>
+        <member name="M:Tortuga.Chain.MySqlDataSource.Execute(Tortuga.Chain.Core.OperationExecutionToken{MySql.Data.MySqlClient.MySqlConnection,MySql.Data.MySqlClient.MySqlTransaction},Tortuga.Chain.Core.OperationImplementation{MySql.Data.MySqlClient.MySqlConnection,MySql.Data.MySqlClient.MySqlTransaction},System.Object)">
+            <summary>
+            Executes the specified operation.
+            </summary>
+            <param name="executionToken">The execution token.</param>
+            <param name="implementation">The implementation.</param>
+            <param name="state">The state.</param>
+            <returns>System.Nullable&lt;System.Int32&gt;.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            executionToken;executionToken is null.
+            or
+            implementation;implementation is null.
+            </exception>
+        </member>
+        <member name="M:Tortuga.Chain.MySqlDataSource.ExecuteAsync(Tortuga.Chain.Core.CommandExecutionToken{MySql.Data.MySqlClient.MySqlCommand,MySql.Data.MySqlClient.MySqlParameter},Tortuga.Chain.Core.CommandImplementationAsync{MySql.Data.MySqlClient.MySqlCommand},System.Threading.CancellationToken,System.Object)">
+            <summary>
+            execute as an asynchronous operation.
+            </summary>
+            <param name="executionToken">The execution token.</param>
+            <param name="implementation">The implementation that handles processing the result of the command.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name="state">User supplied state.</param>
+            <returns>Task.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            executionToken;executionToken is null.
+            or
+            implementation;implementation is null.
+            </exception>
+        </member>
+        <member name="M:Tortuga.Chain.MySqlDataSource.ExecuteAsync(Tortuga.Chain.Core.OperationExecutionToken{MySql.Data.MySqlClient.MySqlConnection,MySql.Data.MySqlClient.MySqlTransaction},Tortuga.Chain.Core.OperationImplementationAsync{MySql.Data.MySqlClient.MySqlConnection,MySql.Data.MySqlClient.MySqlTransaction},System.Threading.CancellationToken,System.Object)">
+            <summary>
+            execute as an asynchronous operation.
+            </summary>
+            <param name="executionToken">The execution token.</param>
+            <param name="implementation">The implementation.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name="state">The state.</param>
+            <returns>Task.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            executionToken;executionToken is null.
+            or
+            implementation;implementation is null.
+            </exception>
+        </member>
+        <member name="T:Tortuga.Chain.MySqlExtensions">
+            <summary>
+            Class SqlServerExtensions.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.MySqlExtensions.AsDataSource(MySql.Data.MySqlClient.MySqlConnection)">
+            <summary>
+            Returns a data source wrapped around the connection.
+            </summary>
+            <param name="connection">The connection.</param>
+            <returns>SqlServerOpenDataSource.</returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="M:Tortuga.Chain.MySqlExtensions.AsDataSource(MySql.Data.MySqlClient.MySqlConnection,MySql.Data.MySqlClient.MySqlTransaction)">
+            <summary>
+            Returns a data source wrapped around the transaction.
+            </summary>
+            <param name="connection">The connection.</param>
+            <param name="transaction">The transaction.</param>
+            <returns>SqlServerOpenDataSource.</returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="T:Tortuga.Chain.MySqlLimitOption">
+            <summary>
+            Limit options supported by PostgreSQL.
+            </summary>
+            <remarks>This is a strict subset of LimitOptions</remarks>
+        </member>
+        <member name="F:Tortuga.Chain.MySqlLimitOption.None">
+            <summary>
+            No limits were applied.
+            </summary>
+        </member>
+        <member name="F:Tortuga.Chain.MySqlLimitOption.Rows">
+            <summary>
+            Returns the indicated number of rows with optional offset
+            </summary>
+        </member>
+        <member name="F:Tortuga.Chain.MySqlLimitOption.RandomSampleRows">
+            <summary>
+            Randomly sample the indicated number of rows
+            </summary>
+            <remarks>WARNING: This uses "ORDER BY RAND()", which is inappropriate for large tables.</remarks>
+        </member>
+        <member name="T:Tortuga.Chain.MySql.CommandBuilders.MySqlDeleteMany">
+            <summary>
+            Class MySqlDeleteMany.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlDeleteMany.#ctor(Tortuga.Chain.MySql.MySqlDataSourceBase,Tortuga.Chain.MySql.MySqlObjectName,System.String,System.Collections.Generic.IEnumerable{MySql.Data.MySqlClient.MySqlParameter},Tortuga.Chain.DeleteOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.MySql.CommandBuilders.MySqlDeleteMany" /> class.
+            </summary>
+            <param name="dataSource">The data source.</param>
+            <param name="tableName">Name of the table.</param>
+            <param name="whereClause">The where clause.</param>
+            <param name="parameters">The parameters.</param>
+            <param name="options">The options.</param>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlDeleteMany.#ctor(Tortuga.Chain.MySql.MySqlDataSourceBase,Tortuga.Chain.MySql.MySqlObjectName,System.String,System.Object)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.MySql.CommandBuilders.MySqlDeleteMany"/> class.
+            </summary>
+            <param name="dataSource">The data source.</param>
+            <param name="tableName">Name of the table.</param>
+            <param name="whereClause">The where clause.</param>
+            <param name="argumentValue">The argument value.</param>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlDeleteMany.#ctor(Tortuga.Chain.MySql.MySqlDataSourceBase,Tortuga.Chain.MySql.MySqlObjectName,System.Object,Tortuga.Chain.FilterOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.MySql.CommandBuilders.MySqlDeleteMany"/> class.
+            </summary>
+            <param name="dataSource">The data source.</param>
+            <param name="tableName">Name of the table.</param>
+            <param name="filterValue">The filter value.</param>
+            <param name="filterOptions">The options.</param>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlDeleteMany.TryGetColumn(System.String)">
+            <summary>
+            Returns the column associated with the column name.
+            </summary>
+            <param name="columnName">Name of the column.</param>
+            <returns></returns>
+            <remarks>
+            If the column name was not found, this will return null
+            </remarks>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlDeleteMany.TryGetNonNullableColumns">
+            <summary>
+            Returns a list of columns known to be non-nullable.
+            </summary>
+            <returns>
+            If the command builder doesn't know which columns are non-nullable, an empty list will be returned.
+            </returns>
+            <remarks>
+            This is used by materializers to skip IsNull checks.
+            </remarks>
+        </member>
+        <member name="T:Tortuga.Chain.MySql.CommandBuilders.MySqlDeleteObject`1">
+            <summary>
+            Command object that represents a delete operation.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlDeleteObject`1.#ctor(Tortuga.Chain.MySql.MySqlDataSourceBase,Tortuga.Chain.MySql.MySqlObjectName,`0,Tortuga.Chain.DeleteOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.MySql.CommandBuilders.MySqlDeleteObject`1"/> class.
+            </summary>
+            <param name="dataSource">The data source.</param>
+            <param name="table">The table.</param>
+            <param name="argumentValue">The argument value.</param>
+            <param name="options">The options.</param>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlDeleteObject`1.Prepare(Tortuga.Chain.Materializers.Materializer{MySql.Data.MySqlClient.MySqlCommand,MySql.Data.MySqlClient.MySqlParameter})">
+            <summary>
+            Prepares the command for execution by generating any necessary SQL.
+            </summary>
+            <param name="materializer"></param>
+            <returns><see cref="T:Tortuga.Chain.MySql.MySqlCommandExecutionToken" /></returns>
+        </member>
+        <member name="T:Tortuga.Chain.MySql.CommandBuilders.MySqlInsertObject`1">
+            <summary>
+            Class that represents a MySql Insert.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlInsertObject`1.#ctor(Tortuga.Chain.MySql.MySqlDataSourceBase,Tortuga.Chain.MySql.MySqlObjectName,`0,Tortuga.Chain.InsertOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.MySql.CommandBuilders.MySqlInsertObject`1"/> class.
+            </summary>
+            <param name="dataSource">The data source.</param>
+            <param name="tableName">Name of the table.</param>
+            <param name="argumentValue">The argument value.</param>
+            <param name="options">The options.</param>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlInsertObject`1.Prepare(Tortuga.Chain.Materializers.Materializer{MySql.Data.MySqlClient.MySqlCommand,MySql.Data.MySqlClient.MySqlParameter})">
+            <summary>
+            Prepares the command for execution by generating any necessary SQL.
+            </summary>
+            <param name="materializer"></param>
+            <returns><see cref="T:Tortuga.Chain.MySql.MySqlCommandExecutionToken" /></returns>
+        </member>
+        <member name="T:Tortuga.Chain.MySql.CommandBuilders.MySqlInsertOrUpdateObject`1">
+            <summary>
+            Class MySqlInsertOrUpdateObject
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlInsertOrUpdateObject`1.#ctor(Tortuga.Chain.MySql.MySqlDataSourceBase,Tortuga.Chain.MySql.MySqlObjectName,`0,Tortuga.Chain.UpsertOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.MySql.CommandBuilders.MySqlInsertOrUpdateObject`1"/> class.
+            </summary>
+            <param name="dataSource">The data source.</param>
+            <param name="tableName">Name of the table.</param>
+            <param name="argumentValue">The argument value.</param>
+            <param name="options">The options.</param>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlInsertOrUpdateObject`1.Prepare(Tortuga.Chain.Materializers.Materializer{MySql.Data.MySqlClient.MySqlCommand,MySql.Data.MySqlClient.MySqlParameter})">
+            <summary>
+            Prepares the command for execution by generating any necessary SQL.
+            </summary>
+            <param name="materializer"></param>
+            <returns><see cref="T:Tortuga.Chain.MySql.MySqlCommandExecutionToken" /></returns>
+        </member>
+        <member name="T:Tortuga.Chain.MySql.CommandBuilders.MySqlObjectCommand`1">
+            <summary>
+            Base class that describes a MySql database command.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlObjectCommand`1.#ctor(Tortuga.Chain.MySql.MySqlDataSourceBase,Tortuga.Chain.MySql.MySqlObjectName,`0)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.MySql.CommandBuilders.MySqlObjectCommand`1"/> class.
+            </summary>
+            <param name="dataSource">The data source.</param>
+            <param name="tableName">Name of the table.</param>
+            <param name="argumentValue">The argument value.</param>
+        </member>
+        <member name="P:Tortuga.Chain.MySql.CommandBuilders.MySqlObjectCommand`1.Table">
+            <summary>
+            Gets the table metadata.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlObjectCommand`1.TryGetColumn(System.String)">
+            <summary>
+            Returns the column associated with the column name.
+            </summary>
+            <param name="columnName">Name of the column.</param>
+            <returns></returns>
+            <remarks>
+            If the column name was not found, this will return null
+            </remarks>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlObjectCommand`1.TryGetNonNullableColumns">
+            <summary>
+            Returns a list of columns known to be non-nullable.
+            </summary>
+            <returns>
+            If the command builder doesn't know which columns are non-nullable, an empty list will be returned.
+            </returns>
+            <remarks>
+            This is used by materializers to skip IsNull checks.
+            </remarks>
+        </member>
+        <member name="T:Tortuga.Chain.MySql.CommandBuilders.MySqlProcedureCall">
+            <summary>
+            Class MySqlProcedureCall.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlProcedureCall.#ctor(Tortuga.Chain.MySql.MySqlDataSourceBase,Tortuga.Chain.MySql.MySqlObjectName,System.Object)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.MySql.CommandBuilders.MySqlProcedureCall"/> class.
+            </summary>
+            <param name="dataSource">The data source.</param>
+            <param name="procedureName">Name of the procedure.</param>
+            <param name="argumentValue">The argument value.</param>
+        </member>
+        <member name="P:Tortuga.Chain.MySql.CommandBuilders.MySqlProcedureCall.DataSource">
+            <summary>
+            Gets the data source.
+            </summary>
+            <value>The data source.</value>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlProcedureCall.Prepare(Tortuga.Chain.Materializers.Materializer{MySql.Data.MySqlClient.MySqlCommand,MySql.Data.MySqlClient.MySqlParameter})">
+            <summary>
+            Prepares the command for execution by generating any necessary SQL.
+            </summary>
+            <param name="materializer">The materializer.</param>
+            <returns>ExecutionToken&lt;TCommand&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlProcedureCall.TryGetColumn(System.String)">
+            <summary>
+            Returns the column associated with the column name.
+            </summary>
+            <param name="columnName">Name of the column.</param>
+            <returns></returns>
+            <remarks>
+            If the column name was not found, this will return null
+            </remarks>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlProcedureCall.TryGetNonNullableColumns">
+            <summary>
+            Returns a list of columns known to be non-nullable.
+            </summary>
+            <returns>
+            If the command builder doesn't know which columns are non-nullable, an empty list will be returned.
+            </returns>
+            <remarks>
+            This is used by materializers to skip IsNull checks.
+            </remarks>
+        </member>
+        <member name="T:Tortuga.Chain.MySql.CommandBuilders.MySqlScalarFunction">
+            <summary>
+            Use for scalar functions.
+            </summary>
+            <seealso cref="T:Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder`2" />
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlScalarFunction.#ctor(Tortuga.Chain.MySql.MySqlDataSourceBase,Tortuga.Chain.MySql.MySqlObjectName,System.Object)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.MySql.CommandBuilders.MySqlScalarFunction" /> class.
+            </summary>
+            <param name="dataSource">The data source.</param>
+            <param name="scalarFunctionName">Name of the scalar function.</param>
+            <param name="functionArgumentValue">The function argument.</param>
+        </member>
+        <member name="P:Tortuga.Chain.MySql.CommandBuilders.MySqlScalarFunction.DataSource">
+            <summary>
+            Gets the data source.
+            </summary>
+            <value>The data source.</value>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlScalarFunction.Prepare(Tortuga.Chain.Materializers.Materializer{MySql.Data.MySqlClient.MySqlCommand,MySql.Data.MySqlClient.MySqlParameter})">
+            <summary>
+            Prepares the command for execution by generating any necessary SQL.
+            </summary>
+            <param name="materializer">The materializer.</param>
+            <returns>
+            ExecutionToken&lt;TCommand&gt;.
+            </returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlScalarFunction.TryGetColumn(System.String)">
+            <summary>
+            Returns the column associated with the column name.
+            </summary>
+            <param name="columnName">Name of the column.</param>
+            <returns>ColumnMetadata.</returns>
+            <remarks>Always returns null since this command builder has no columns</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlScalarFunction.TryGetNonNullableColumns">
+            <summary>
+            Returns a list of columns known to be non-nullable.
+            </summary>
+            <returns>
+            If the command builder doesn't know which columns are non-nullable, an empty list will be returned.
+            </returns>
+            <remarks>
+            This is used by materializers to skip IsNull checks.
+            </remarks>
+        </member>
+        <member name="T:Tortuga.Chain.MySql.CommandBuilders.MySqlSqlCall">
+            <summary>
+            Class MySqlSqlCall
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlSqlCall.#ctor(Tortuga.Chain.MySql.MySqlDataSourceBase,System.String,System.Object)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.MySql.CommandBuilders.MySqlSqlCall"/> class.
+            </summary>
+            <param name="dataSource">The data source.</param>
+            <param name="sqlStatement">The SQL statement.</param>
+            <param name="argumentValue">The argument value.</param>
+            <exception cref="T:System.ArgumentException">sqlStatement is null or empty.;sqlStatement</exception>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlSqlCall.Prepare(Tortuga.Chain.Materializers.Materializer{MySql.Data.MySqlClient.MySqlCommand,MySql.Data.MySqlClient.MySqlParameter})">
+            <summary>
+            Prepares the command for execution by generating any necessary SQL.
+            </summary>
+            <param name="materializer">The materializer.</param>
+            <returns>
+            ExecutionToken&lt;TCommand&gt;.
+            </returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlSqlCall.TryGetColumn(System.String)">
+            <summary>
+            Returns the column associated with the column name.
+            </summary>
+            <param name="columnName">Name of the column.</param>
+            <returns></returns>
+            <remarks>
+            If the column name was not found, this will return null
+            </remarks>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlSqlCall.TryGetNonNullableColumns">
+            <summary>
+            Returns a list of columns known to be non-nullable.
+            </summary>
+            <returns>
+            If the command builder doesn't know which columns are non-nullable, an empty list will be returned.
+            </returns>
+            <remarks>
+            This is used by materializers to skip IsNull checks.
+            </remarks>
+        </member>
+        <member name="T:Tortuga.Chain.MySql.CommandBuilders.MySqlTableOrView">
+            <summary>
+            Class MySqlTableOrView
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlTableOrView.#ctor(Tortuga.Chain.MySql.MySqlDataSourceBase,Tortuga.Chain.MySql.MySqlObjectName)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.MySql.CommandBuilders.MySqlTableOrView" /> class.
+            </summary>
+            <param name="dataSource">The data source.</param>
+            <param name="tableOrViewName">Name of the table or view.</param>
+            <exception cref="T:System.ArgumentException"></exception>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlTableOrView.#ctor(Tortuga.Chain.MySql.MySqlDataSourceBase,Tortuga.Chain.MySql.MySqlObjectName,System.Object,Tortuga.Chain.FilterOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.MySql.CommandBuilders.MySqlTableOrView" /> class.
+            </summary>
+            <param name="dataSource">The data source.</param>
+            <param name="tableOrViewName">Name of the table or view.</param>
+            <param name="filterValue">The filter value.</param>
+            <param name="filterOptions">The filter options.</param>
+            <exception cref="T:System.ArgumentException">tableOrViewName - tableOrViewName</exception>
+            <exception cref="T:System.ArgumentException"></exception>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlTableOrView.#ctor(Tortuga.Chain.MySql.MySqlDataSourceBase,Tortuga.Chain.MySql.MySqlObjectName,System.String,System.Object)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.MySql.CommandBuilders.MySqlTableOrView"/> class.
+            </summary>
+            <param name="dataSource">The data source.</param>
+            <param name="tableOrViewName">Name of the table or view.</param>
+            <param name="whereClause">The where clause.</param>
+            <param name="argumentValue">The argument value.</param>
+            <exception cref="T:System.ArgumentException"></exception>
+        </member>
+        <member name="P:Tortuga.Chain.MySql.CommandBuilders.MySqlTableOrView.DataSource">
+            <summary>
+            Gets the data source.
+            </summary>
+            <value>The data source.</value>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlTableOrView.AsCount">
+            <summary>
+            Returns the row count using a <c>SELECT COUNT_BIG(*)</c> style query.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlTableOrView.AsCount(System.String,System.Boolean)">
+            <summary>
+            Returns the row count for a given column. <c>SELECT COUNT_BIG(columnName)</c>
+            </summary>
+            <param name="columnName">Name of the column.</param>
+            <param name="distinct">if set to <c>true</c> use <c>SELECT COUNT_BIG(DISTINCT columnName)</c>.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlTableOrView.Prepare(Tortuga.Chain.Materializers.Materializer{MySql.Data.MySqlClient.MySqlCommand,MySql.Data.MySqlClient.MySqlParameter})">
+            <summary>
+            Prepares the command for execution by generating any necessary SQL.
+            </summary>
+            <param name="materializer">The materializer.</param>
+            <returns>
+            ExecutionToken&lt;TCommand&gt;.
+            </returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlTableOrView.TryGetColumn(System.String)">
+            <summary>
+            Returns the column associated with the column name.
+            </summary>
+            <param name="columnName">Name of the column.</param>
+            <returns></returns>
+            <remarks>
+            If the column name was not found, this will return null
+            </remarks>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlTableOrView.WithFilter(System.Object,Tortuga.Chain.FilterOptions)">
+            <summary>
+            Adds (or replaces) the filter on this command builder.
+            </summary>
+            <param name="filterValue">The filter value.</param>
+            <param name="filterOptions">The filter options.</param>
+            <returns>TableDbCommandBuilder&lt;MySqlCommand, MySqlParameter, MySqlLimitOption&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlTableOrView.WithFilter(System.String)">
+            <summary>
+            Adds (or replaces) the filter on this command builder.
+            </summary>
+            <param name="whereClause">The where clause.</param>
+            <returns>TableDbCommandBuilder&lt;MySqlCommand, MySqlParameter, MySqlLimitOption&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlTableOrView.WithFilter(System.String,System.Object)">
+            <summary>
+            Adds (or replaces) the filter on this command builder.
+            </summary>
+            <param name="whereClause">The where clause.</param>
+            <param name="argumentValue">The argument value.</param>
+            <returns>TableDbCommandBuilder&lt;MySqlCommand, MySqlParameter, MySqlLimitOption&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlTableOrView.WithSorting(System.Collections.Generic.IEnumerable{Tortuga.Chain.SortExpression})">
+            <summary>
+            Adds sorting to the command builder.
+            </summary>
+            <param name="sortExpressions">The sort expressions.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlTableOrView.OnWithLimits(System.Nullable{System.Int32},System.Nullable{System.Int32},Tortuga.Chain.MySqlLimitOption,System.Nullable{System.Int32})">
+            <summary>
+            Adds limits to the command builder.
+            </summary>
+            <param name="skip">The number of rows to skip.</param>
+            <param name="take">Number of rows to take.</param>
+            <param name="limitOptions">The limit options.</param>
+            <param name="seed">The seed for repeatable reads. Only applies to random sampling</param>
+            <returns>TableDbCommandBuilder&lt;MySqlCommand, MySqlParameter, MySqlLimitOption&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlTableOrView.OnWithLimits(System.Nullable{System.Int32},System.Nullable{System.Int32},Tortuga.Chain.LimitOptions,System.Nullable{System.Int32})">
+            <summary>
+            Adds limits to the command builder.
+            </summary>
+            <param name="skip">The number of rows to skip.</param>
+            <param name="take">Number of rows to take.</param>
+            <param name="limitOptions">The limit options.</param>
+            <param name="seed">The seed for repeatable reads. Only applies to random sampling</param>
+            <returns>TableDbCommandBuilder&lt;MySqlCommand, MySqlParameter, MySqlLimitOption&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlTableOrView.TryGetNonNullableColumns">
+            <summary>
+            Returns a list of columns known to be non-nullable.
+            </summary>
+            <returns>
+            If the command builder doesn't know which columns are non-nullable, an empty list will be returned.
+            </returns>
+            <remarks>
+            This is used by materializers to skip IsNull checks.
+            </remarks>
+        </member>
+        <member name="T:Tortuga.Chain.MySql.CommandBuilders.MySqlUpdateMany">
+            <summary>
+            Class MySqlUpdateMany.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlUpdateMany.#ctor(Tortuga.Chain.MySql.MySqlDataSourceBase,Tortuga.Chain.MySql.MySqlObjectName,System.Object,System.String,System.Collections.Generic.IEnumerable{MySql.Data.MySqlClient.MySqlParameter},System.Nullable{System.Int32},Tortuga.Chain.UpdateOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.MySql.CommandBuilders.MySqlUpdateMany" /> class.
+            </summary>
+            <param name="dataSource">The data source.</param>
+            <param name="tableName">Name of the table.</param>
+            <param name="newValues">The new values.</param>
+            <param name="whereClause">The where clause.</param>
+            <param name="parameters">The parameters.</param>
+            <param name="expectedRowCount">The expected row count.</param>
+            <param name="options">The options.</param>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlUpdateMany.#ctor(Tortuga.Chain.MySql.MySqlDataSourceBase,Tortuga.Chain.MySql.MySqlObjectName,System.Object,Tortuga.Chain.UpdateOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.MySql.CommandBuilders.MySqlUpdateMany" /> class.
+            </summary>
+            <param name="dataSource">The data source.</param>
+            <param name="tableName">Name of the table.</param>
+            <param name="newValues">The new values.</param>
+            <param name="options">The options.</param>
+            <exception cref="T:System.NotSupportedException">Cannot use Key attributes with this operation.</exception>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlUpdateMany.#ctor(Tortuga.Chain.MySql.MySqlDataSourceBase,Tortuga.Chain.MySql.MySqlObjectName,System.String,System.Object,Tortuga.Chain.UpdateOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.MySql.CommandBuilders.MySqlUpdateMany" /> class.
+            </summary>
+            <param name="dataSource">The data source.</param>
+            <param name="tableName">Name of the table.</param>
+            <param name="updateExpression">The update expression.</param>
+            <param name="updateArgumentValue">The update argument value.</param>
+            <param name="options">The options.</param>
+            <exception cref="T:System.NotSupportedException">Cannot use Key attributes with this operation.</exception>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlUpdateMany.All">
+            <summary>
+            Applies this command to all rows.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlUpdateMany.TryGetColumn(System.String)">
+            <summary>
+            Returns the column associated with the column name.
+            </summary>
+            <param name="columnName">Name of the column.</param>
+            <returns></returns>
+            <remarks>
+            If the column name was not found, this will return null
+            </remarks>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlUpdateMany.WithFilter(System.Object,Tortuga.Chain.FilterOptions)">
+            <summary>
+            Adds (or replaces) the filter on this command builder.
+            </summary>
+            <param name="filterValue">The filter value.</param>
+            <param name="filterOptions">The filter options.</param>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlUpdateMany.WithFilter(System.String)">
+            <summary>
+            Adds (or replaces) the filter on this command builder.
+            </summary>
+            <param name="whereClause">The where clause.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlUpdateMany.WithFilter(System.String,System.Object)">
+            <summary>
+            Adds (or replaces) the filter on this command builder.
+            </summary>
+            <param name="whereClause">The where clause.</param>
+            <param name="argumentValue">The argument value.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlUpdateMany.TryGetNonNullableColumns">
+            <summary>
+            Returns a list of columns known to be non-nullable.
+            </summary>
+            <returns>
+            If the command builder doesn't know which columns are non-nullable, an empty list will be returned.
+            </returns>
+            <remarks>
+            This is used by materializers to skip IsNull checks.
+            </remarks>
+        </member>
+        <member name="T:Tortuga.Chain.MySql.CommandBuilders.MySqlUpdateObject`1">
+            <summary>
+            Command object that represents an update operation.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlUpdateObject`1.#ctor(Tortuga.Chain.MySql.MySqlDataSourceBase,Tortuga.Chain.MySql.MySqlObjectName,`0,Tortuga.Chain.UpdateOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.MySql.CommandBuilders.MySqlUpdateObject`1"/> class.
+            </summary>
+            <param name="dataSource">The data source.</param>
+            <param name="tableName">Name of the table.</param>
+            <param name="argumentValue">The argument value.</param>
+            <param name="options">The options.</param>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlUpdateObject`1.Prepare(Tortuga.Chain.Materializers.Materializer{MySql.Data.MySqlClient.MySqlCommand,MySql.Data.MySqlClient.MySqlParameter})">
+            <summary>
+            Prepares the command for execution by generating any necessary SQL.
+            </summary>
+            <param name="materializer"></param>
+            <returns><see cref="T:Tortuga.Chain.MySql.MySqlCommandExecutionToken" /></returns>
+        </member>
+        <member name="T:Tortuga.Chain.MySql.MySqlCommandExecutionToken">
+            <summary>
+            
+            </summary>
+            <seealso cref="T:Tortuga.Chain.Core.CommandExecutionToken`2" />
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlCommandExecutionToken.#ctor(Tortuga.Chain.DataSources.ICommandDataSource{MySql.Data.MySqlClient.MySqlCommand,MySql.Data.MySqlClient.MySqlParameter},System.String,System.String,System.Collections.Generic.IReadOnlyList{MySql.Data.MySqlClient.MySqlParameter},System.Data.CommandType)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.MySql.MySqlCommandExecutionToken" /> class.
+            </summary>
+        </member>
+        <member name="T:Tortuga.Chain.MySql.MySqlDataSourceBase">
+            <summary>
+            Class MySqlDataSourceBase.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.#ctor(Tortuga.Chain.DataSources.DataSourceSettings)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.MySql.MySqlDataSourceBase"/> class.
+            </summary>
+            <param name="settings">Optional settings object.</param>
+        </member>
+        <member name="P:Tortuga.Chain.MySql.MySqlDataSourceBase.DatabaseMetadata">
+            <summary>
+            Gets the database metadata.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.Delete``1(Tortuga.Chain.MySql.MySqlObjectName,``0,Tortuga.Chain.DeleteOptions)">
+            <summary>
+            Delete the specified table name.
+            </summary>
+            <typeparam name="TArgument">The type of the t argument.</typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="argumentValue">The argument value.</param>
+            <param name="options">The options.</param>
+            <returns>ObjectDbCommandBuilder&lt;MySqlCommand, MySqlParameter, TArgument&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.Delete``1(``0,Tortuga.Chain.DeleteOptions)">
+            <summary>
+            Delete an object model from the table indicated by the class's Table attribute.
+            </summary>
+            <typeparam name="TArgument"></typeparam>
+            <param name="argumentValue">The argument value.</param>
+            <param name="options">The delete options.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.DeleteByKey``1(Tortuga.Chain.MySql.MySqlObjectName,``0,Tortuga.Chain.DeleteOptions)">
+            <summary>
+            Delete a record by its primary key.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="key">The key.</param>
+            <param name="options">The options.</param>
+            <returns>MultipleRowDbCommandBuilder&lt;MySqlCommand, MySqlParameter&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.DeleteByKey(Tortuga.Chain.MySql.MySqlObjectName,System.String,Tortuga.Chain.DeleteOptions)">
+            <summary>
+            Delete a record by its primary key.
+            </summary>
+            <param name="tableName">Name of the table.</param>
+            <param name="key">The key.</param>
+            <param name="options">The options.</param>
+            <returns>MultipleRowDbCommandBuilder&lt;MySqlCommand, MySqlParameter&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.DeleteByKeyList``1(Tortuga.Chain.MySql.MySqlObjectName,System.Collections.Generic.IEnumerable{``0},Tortuga.Chain.DeleteOptions)">
+            <summary>
+            Delete multiple rows by key.
+            </summary>
+            <typeparam name="TKey">The type of the t key.</typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="keys">The keys.</param>
+            <param name="options">Update options.</param>
+            <returns>MultipleRowDbCommandBuilder&lt;MySqlCommand, MySqlParameter&gt;.</returns>
+            <exception cref="T:Tortuga.Chain.MappingException"></exception>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.DeleteWithFilter(Tortuga.Chain.MySql.MySqlObjectName,System.String)">
+            <summary>
+            Delete multiple records using a where expression.
+            </summary>
+            <param name="tableName">Name of the table.</param>
+            <param name="whereClause">The where clause.</param>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.DeleteWithFilter(Tortuga.Chain.MySql.MySqlObjectName,System.String,System.Object)">
+            <summary>
+            Delete multiple records using a where expression.
+            </summary>
+            <param name="tableName">Name of the table.</param>
+            <param name="whereClause">The where clause.</param>
+            <param name="argumentValue">The argument value for the where clause.</param>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.DeleteWithFilter(Tortuga.Chain.MySql.MySqlObjectName,System.Object,Tortuga.Chain.FilterOptions)">
+            <summary>
+            Delete multiple records using a filter object.
+            </summary>
+            <param name="tableName">Name of the table.</param>
+            <param name="filterValue">The filter value.</param>
+            <param name="filterOptions">The filter options.</param>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.From(Tortuga.Chain.MySql.MySqlObjectName)">
+            <summary>
+            Froms the specified table or view name.
+            </summary>
+            <param name="tableOrViewName">Name of the table or view.</param>
+            <returns>TableDbCommandBuilder&lt;MySqlCommand, MySqlParameter, MySqlLimitOption&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.From(Tortuga.Chain.MySql.MySqlObjectName,System.Object,Tortuga.Chain.FilterOptions)">
+            <summary>
+            Froms the specified table or view name.
+            </summary>
+            <param name="tableOrViewName">Name of the table or view.</param>
+            <param name="filterValue">The filter value.</param>
+            <param name="filterOptions">The filter options.</param>
+            <returns>TableDbCommandBuilder&lt;MySqlCommand, MySqlParameter, MySqlLimitOption&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.From(Tortuga.Chain.MySql.MySqlObjectName,System.String)">
+            <summary>
+            Froms the specified table or view name.
+            </summary>
+            <param name="tableOrViewName">Name of the table or view.</param>
+            <param name="whereClause">The where clause.</param>
+            <returns>TableDbCommandBuilder&lt;MySqlCommand, MySqlParameter, MySqlLimitOption&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.From(Tortuga.Chain.MySql.MySqlObjectName,System.String,System.Object)">
+            <summary>
+            Froms the specified table or view name.
+            </summary>
+            <param name="tableOrViewName">Name of the table or view.</param>
+            <param name="whereClause">The where clause.</param>
+            <param name="argumentValue">The argument value.</param>
+            <returns>TableDbCommandBuilder&lt;MySqlCommand, MySqlParameter, MySqlLimitOption&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.From``1">
+            <summary>
+            This is used to directly query a table or view.
+            </summary>
+            <typeparam name="TObject"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.From``1(System.String)">
+            <summary>
+            This is used to directly query a table or view.
+            </summary>
+            <typeparam name="TObject">The type of the object.</typeparam>
+            <param name="whereClause">The where clause. Do not prefix this clause with "WHERE".</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.From``1(System.String,System.Object)">
+            <summary>
+            This is used to directly query a table or view.
+            </summary>
+            <typeparam name="TObject">The type of the object.</typeparam>
+            <param name="whereClause">The where clause. Do not prefix this clause with "WHERE".</param>
+            <param name="argumentValue">Optional argument value. Every property in the argument value must have a matching parameter in the WHERE clause</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.From``1(System.Object)">
+            <summary>
+            This is used to directly query a table or view.
+            </summary>
+            <typeparam name="TObject">The type of the object.</typeparam>
+            <param name="filterValue">The filter value is used to generate a simple AND style WHERE clause.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.GetByKey``1(Tortuga.Chain.MySql.MySqlObjectName,``0)">
+            <summary>
+            Gets a record by its key.
+            </summary>
+            <typeparam name="TKey"></typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="key">The key.</param>
+            <returns>MultipleRowDbCommandBuilder&lt;MySqlCommand, MySqlParameter&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.GetByKey(Tortuga.Chain.MySql.MySqlObjectName,System.String)">
+            <summary>
+            Gets a record by its key.
+            </summary>
+            <param name="tableName">Name of the table.</param>
+            <param name="key">The key.</param>
+            <returns>MultipleRowDbCommandBuilder&lt;MySqlCommand, MySqlParameter&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.GetByKeyList``1(Tortuga.Chain.MySql.MySqlObjectName,System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Gets the by key.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="keys">The keys.</param>
+            <returns>MultipleRowDbCommandBuilder&lt;MySqlCommand, MySqlParameter&gt;.</returns>
+            <exception cref="T:Tortuga.Chain.MappingException"></exception>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.Insert``1(Tortuga.Chain.MySql.MySqlObjectName,``0,Tortuga.Chain.InsertOptions)">
+            <summary>
+            Inserts the specified table name.
+            </summary>
+            <typeparam name="TArgument">The type of the t argument.</typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="argumentValue">The argument value.</param>
+            <param name="options">The options.</param>
+            <returns>ObjectDbCommandBuilder&lt;MySqlCommand, MySqlParameter, TArgument&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.Insert``1(``0,Tortuga.Chain.InsertOptions)">
+            <summary>
+            Inserts an object into the specified table.
+            </summary>
+            <typeparam name="TArgument"></typeparam>
+            <param name="argumentValue">The argument value.</param>
+            <param name="options">The options for how the insert occurs.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.Procedure(Tortuga.Chain.MySql.MySqlObjectName)">
+            <summary>
+            Executes the indicated procedure.
+            </summary>
+            <param name="procedureName">Name of the procedure.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.Procedure(System.String,System.Object)">
+            <summary>
+            Executes the indicated procedure.
+            </summary>
+            <param name="procedureName">Name of the procedure.</param>
+            <param name="argumentValue">The argument value.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.ScalarFunction(Tortuga.Chain.MySql.MySqlObjectName)">
+            <summary>
+            This is used to query a scalar function.
+            </summary>
+            <param name="scalarFunctionName">Name of the scalar function.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.ScalarFunction(Tortuga.Chain.MySql.MySqlObjectName,System.Object)">
+            <summary>
+            This is used to query a scalar function.
+            </summary>
+            <param name="scalarFunctionName">Name of the scalar function.</param>
+            <param name="functionArgumentValue">The function arguments.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.Sql(System.String)">
+            <summary>
+            SQLs the specified SQL statement.
+            </summary>
+            <param name="sqlStatement">The SQL statement.</param>
+            <returns>MultipleTableDbCommandBuilder&lt;MySqlCommand, MySqlParameter&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.Sql(System.String,System.Object)">
+            <summary>
+            SQLs the specified SQL statement.
+            </summary>
+            <param name="sqlStatement">The SQL statement.</param>
+            <param name="argumentValue">The argument value.</param>
+            <returns>MultipleTableDbCommandBuilder&lt;MySqlCommand, MySqlParameter&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.Update``1(Tortuga.Chain.MySql.MySqlObjectName,``0,Tortuga.Chain.UpdateOptions)">
+            <summary>
+            Update the specified table name.
+            </summary>
+            <typeparam name="TArgument">The type of the t argument.</typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="argumentValue">The argument value.</param>
+            <param name="options">The options.</param>
+            <returns>ObjectDbCommandBuilder&lt;MySqlCommand, MySqlParameter, TArgument&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.Update``1(``0,Tortuga.Chain.UpdateOptions)">
+            <summary>
+            Update an object in the specified table.
+            </summary>
+            <typeparam name="TArgument"></typeparam>
+            <param name="argumentValue">The argument value.</param>
+            <param name="options">The update options.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.UpdateByKey``2(Tortuga.Chain.MySql.MySqlObjectName,``0,``1,Tortuga.Chain.UpdateOptions)">
+            <summary>
+            Delete a record by its primary key.
+            </summary>
+            <typeparam name="TArgument">The type of the t argument.</typeparam>
+            <typeparam name="TKey"></typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="newValues">The new values to use.</param>
+            <param name="key">The key.</param>
+            <param name="options">The options.</param>
+            <returns>MultipleRowDbCommandBuilder&lt;MySqlCommand, MySqlParameter&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.UpdateByKey``1(Tortuga.Chain.MySql.MySqlObjectName,``0,System.String,Tortuga.Chain.UpdateOptions)">
+            <summary>
+            Delete a record by its primary key.
+            </summary>
+            <typeparam name="TArgument">The type of the t argument.</typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="newValues">The new values to use.</param>
+            <param name="key">The key.</param>
+            <param name="options">The options.</param>
+            <returns>MultipleRowDbCommandBuilder&lt;MySqlCommand, MySqlParameter&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.UpdateByKeyList``2(Tortuga.Chain.MySql.MySqlObjectName,``0,System.Collections.Generic.IEnumerable{``1},Tortuga.Chain.UpdateOptions)">
+            <summary>
+            Update multiple rows by key.
+            </summary>
+            <typeparam name="TArgument">The type of the t argument.</typeparam>
+            <typeparam name="TKey">The type of the t key.</typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="newValues">The new values to use.</param>
+            <param name="keys">The keys.</param>
+            <param name="options">Update options.</param>
+            <returns>MultipleRowDbCommandBuilder&lt;MySqlCommand, MySqlParameter&gt;.</returns>
+            <exception cref="T:Tortuga.Chain.MappingException"></exception>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.UpdateSet(Tortuga.Chain.MySql.MySqlObjectName,System.String,Tortuga.Chain.UpdateOptions)">
+            <summary>
+            Update multiple records using an update expression.
+            </summary>
+            <param name="tableName">Name of the table.</param>
+            <param name="updateExpression">The update expression.</param>
+            <param name="options">The update options.</param>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.UpdateSet(Tortuga.Chain.MySql.MySqlObjectName,System.String,System.Object,Tortuga.Chain.UpdateOptions)">
+            <summary>
+            Update multiple records using an update expression.
+            </summary>
+            <param name="tableName">Name of the table.</param>
+            <param name="updateExpression">The update expression.</param>
+            <param name="updateArgumentValue">The update argument value.</param>
+            <param name="options">The update options.</param>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.UpdateSet(Tortuga.Chain.MySql.MySqlObjectName,System.Object,Tortuga.Chain.UpdateOptions)">
+            <summary>
+            Update multiple records using an update value.
+            </summary>
+            <param name="tableName">Name of the table.</param>
+            <param name="newValues">The new values to use.</param>
+            <param name="options">The options.</param>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.Upsert``1(Tortuga.Chain.MySql.MySqlObjectName,``0,Tortuga.Chain.UpsertOptions)">
+            <summary>
+            Upserts the specified table name.
+            </summary>
+            <typeparam name="TArgument">The type of the t argument.</typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="argumentValue">The argument value.</param>
+            <param name="options">The options.</param>
+            <returns>ObjectDbCommandBuilder&lt;MySqlCommand, MySqlParameter, TArgument&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.Upsert``1(``0,Tortuga.Chain.UpsertOptions)">
+            <summary>
+            Perform an insert or update operation as appropriate.
+            </summary>
+            <typeparam name="TArgument"></typeparam>
+            <param name="argumentValue">The argument value.</param>
+            <param name="options">The options for how the insert/update occurs.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.OnGetDatabaseMetadata">
+            <summary>
+            Called when Database.DatabaseMetadata is invoked.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Tortuga.Chain.MySql.MySqlDataSourceSettings">
+            <summary>
+            Class MySqlDataSourceSettings.
+            </summary>
+            <seealso cref="T:Tortuga.Chain.DataSources.DataSourceSettings" />
+        </member>
+        <member name="T:Tortuga.Chain.MySql.MySqlMetadataCache">
+            <summary>
+            Class MySqlMetadataCache.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlMetadataCache.#ctor(MySql.Data.MySqlClient.MySqlConnectionStringBuilder)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.MySql.MySqlMetadataCache"/> class.
+            </summary>
+            <param name="connectionBuilder">The connection builder.</param>
+        </member>
+        <member name="P:Tortuga.Chain.MySql.MySqlMetadataCache.DefaultSchema">
+            <summary>
+            Returns the user's default schema.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlMetadataCache.GetScalarFunction(Tortuga.Chain.MySql.MySqlObjectName)">
+            <summary>
+            Gets the metadata for a scalar function.
+            </summary>
+            <param name="scalarFunctionName">Name of the scalar function.</param>
+            <returns>Null if the object could not be found.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlMetadataCache.GetScalarFunctions">
+            <summary>
+            Gets the scalar functions that were loaded by this cache.
+            </summary>
+            <returns></returns>
+            <remarks>
+            Call Preload before invoking this method to ensure that all scalar functions were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.
+            </remarks>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlMetadataCache.GetStoredProcedure(Tortuga.Chain.MySql.MySqlObjectName)">
+            <summary>
+            Gets the stored procedure's metadata.
+            </summary>
+            <param name="procedureName">Name of the procedure.</param>
+            <returns></returns>
+            <exception cref="T:System.NotImplementedException"></exception>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlMetadataCache.GetStoredProcedures">
+            <summary>
+            Gets the stored procedures that were loaded by this cache.
+            </summary>
+            <returns></returns>
+            <remarks>
+            Call Preload before invoking this method to ensure that all stored procedures were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.
+            </remarks>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlMetadataCache.GetTableOrView(Tortuga.Chain.MySql.MySqlObjectName)">
+            <summary>
+            Gets the metadata for a table.
+            </summary>
+            <param name="tableName">Name of the table.</param>
+            <returns>TableOrViewMetadata&lt;MySqlObjectName, MySqlDbType&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlMetadataCache.GetTableOrViewFromClass``1">
+            <summary>
+            Returns the table or view derived from the class's name and/or Table attribute.
+            </summary>
+            <typeparam name="TObject"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlMetadataCache.GetTablesAndViews">
+            <summary>
+            Gets the tables and views that were loaded by this cache.
+            </summary>
+            <returns></returns>
+            <remarks>
+            Call Preload before invoking this method to ensure that all tables and views were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.
+            </remarks>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlMetadataCache.Preload">
+            <summary>
+            Preloads all of the metadata for this data source.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlMetadataCache.PreloadScalarFunctions">
+            <summary>
+            Preloads the scalar functions.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlMetadataCache.PreloadStoredProcedures">
+            <summary>
+            Preloads the table value functions.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlMetadataCache.PreloadTables">
+            <summary>
+            Preloads the metadata for all tables.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlMetadataCache.PreloadViews">
+            <summary>
+            Preloads the metadata for all views.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlMetadataCache.Reset">
+            <summary>
+            Resets the metadata cache, clearing out all cached metadata.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlMetadataCache.ParseObjectName(System.String)">
+            <summary>
+            Parse a string and return the database specific representation of the object name.
+            </summary>
+            <param name="name">The name.</param>
+            <returns>MySqlObjectName.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlMetadataCache.GetColumns(System.String,System.String)">
+            <summary>
+            Gets the columns.
+            </summary>
+            <param name="schema">The schema.</param>
+            <param name="tableName">Name of the table.</param>
+            <remarks>WARNING: Only call this with verified table names. Otherwise a SQL injection attack can occur.</remarks>
+        </member>
+        <member name="T:Tortuga.Chain.MySql.MySqlObjectName">
+            <summary>
+            Represents an object in MySql (e.g. table, view, procedure)
+            </summary>
+        </member>
+        <member name="F:Tortuga.Chain.MySql.MySqlObjectName.Empty">
+            <summary>
+            An empty schema/name pair
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlObjectName.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.MySql.MySqlObjectName" /> struct.
+            </summary>
+            <param name="schema">The schema.</param>
+            <param name="name">The name.</param>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlObjectName.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.MySql.MySqlObjectName"/> struct.
+            </summary>
+            <param name="schemaAndName">Name of the schema and.</param>
+        </member>
+        <member name="P:Tortuga.Chain.MySql.MySqlObjectName.Name">
+            <summary>
+            Gets the name.
+            </summary>
+            <value>
+            The name.
+            </value>
+        </member>
+        <member name="P:Tortuga.Chain.MySql.MySqlObjectName.Schema">
+            <summary>
+            Gets the schema.
+            </summary>
+            <value>
+            The schema.
+            </value>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlObjectName.op_Implicit(System.String)~Tortuga.Chain.MySql.MySqlObjectName">
+            <summary>
+            Perform an implicit conversion from <see cref="T:System.String"/> to <see cref="T:Tortuga.Chain.MySql.MySqlObjectName"/>.
+            </summary>
+            <param name="value">The value.</param>
+            <returns>
+            The result of the conversion.
+            </returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlObjectName.op_Inequality(Tortuga.Chain.MySql.MySqlObjectName,Tortuga.Chain.MySql.MySqlObjectName)">
+            <summary>
+            Implements the operator !=.
+            </summary>
+            <param name="left">The left value.</param>
+            <param name="right">The right value.</param>
+            <returns>
+            The result of the operator.
+            </returns>
+            <remarks>This is a case-insensitive comparison.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlObjectName.op_Equality(Tortuga.Chain.MySql.MySqlObjectName,Tortuga.Chain.MySql.MySqlObjectName)">
+            <summary>
+            Implements the operator ==.
+            </summary>
+            <param name="left">The left value.</param>
+            <param name="right">The right value.</param>
+            <returns>
+            The result of the operator.
+            </returns>
+            <remarks>This is a case-insensitive comparison.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlObjectName.Equals(System.Object)">
+            <summary>
+            Determines whether the specified <see cref="T:System.Object" />, is equal to this instance.
+            </summary>
+            <param name="obj">The <see cref="T:System.Object" /> to compare with this instance.</param>
+            <returns>
+              <c>true</c> if the specified <see cref="T:System.Object" /> is equal to this instance; otherwise, <c>false</c>.
+            </returns>
+            <remarks>This is a case-insensitive comparison.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlObjectName.Equals(Tortuga.Chain.MySql.MySqlObjectName)">
+            <summary>
+            Returns true if the two objects are equal.
+            </summary>
+            <param name="other"></param>
+            <returns></returns>
+            <remarks>This is a case-insensitive comparison.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlObjectName.GetHashCode">
+            <summary>
+            Returns a hash code for this instance.
+            </summary>
+            <returns>
+            A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
+            </returns>
+            <remarks>This is a case-insensitive comparison.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlObjectName.ToQuotedString">
+            <summary>
+            To the quoted string.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlObjectName.ToString">
+            <summary>
+            Returns a <see cref="T:System.String" /> that represents this instance.
+            </summary>
+            <returns>
+            A <see cref="T:System.String" /> that represents this instance.
+            </returns>
+        </member>
+        <member name="T:Tortuga.Chain.MySql.MySqlOpenDataSource">
+            <summary>
+            Class SQLiteOpenDataSource.
+            </summary>
+        </member>
+        <member name="P:Tortuga.Chain.MySql.MySqlOpenDataSource.AssociatedConnection">
+            <summary>
+            Returns the associated connection.
+            </summary>
+        </member>
+        <member name="P:Tortuga.Chain.MySql.MySqlOpenDataSource.AssociatedTransaction">
+            <summary>
+            Returns the associated transaction.
+            </summary>
+        </member>
+        <member name="P:Tortuga.Chain.MySql.MySqlOpenDataSource.Cache">
+            <summary>
+            Gets or sets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
+            </summary>
+        </member>
+        <member name="P:Tortuga.Chain.MySql.MySqlOpenDataSource.DatabaseMetadata">
+            <summary>
+            Gets the database metadata.
+            </summary>
+            <value>The database metadata.</value>
+        </member>
+        <member name="P:Tortuga.Chain.MySql.MySqlOpenDataSource.ExtensionCache">
+            <summary>
+            The extension cache is used by extensions to store data source specific information.
+            </summary>
+            <value>
+            The extension cache.
+            </value>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlOpenDataSource.Close">
+            <summary>
+            Closes the connection and transaction associated with this data source.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlOpenDataSource.GetExtensionData``1">
+            <summary>
+            Gets the extension data.
+            </summary>
+            <typeparam name="TTKey">The type of extension data desired.</typeparam>
+            <returns>T.</returns>
+            <remarks>Chain extensions can use this to store data source specific data. The key should be a data type defined by the extension.
+            Transactional data sources should override this method and return the value held by their parent data source.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlOpenDataSource.TestConnection">
+            <summary>
+            Tests the connection.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlOpenDataSource.TestConnectionAsync">
+            <summary>
+            Tests the connection asynchronously.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlOpenDataSource.TryCommit">
+            <summary>
+            Tries the commit the transaction associated with this data source.
+            </summary>
+            <returns>
+            True if there was an open transaction associated with this data source, otherwise false.
+            </returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlOpenDataSource.WithRules(Tortuga.Chain.AuditRules.AuditRule[])">
+            <summary>
+            Modifies this data source with additional audit rules.
+            </summary>
+            <param name="additionalRules">The additional rules.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlOpenDataSource.WithRules(System.Collections.Generic.IEnumerable{Tortuga.Chain.AuditRules.AuditRule})">
+            <summary>
+            Modifies this data source with additional audit rules.
+            </summary>
+            <param name="additionalRules">The additional rules.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlOpenDataSource.WithUser(System.Object)">
+            <summary>
+            Modifies this data source to include the indicated user.
+            </summary>
+            <param name="userValue">The user value.</param>
+            <returns></returns>
+            <remarks>
+            This is used in conjunction with audit rules.
+            </remarks>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlOpenDataSource.Execute(Tortuga.Chain.Core.CommandExecutionToken{MySql.Data.MySqlClient.MySqlCommand,MySql.Data.MySqlClient.MySqlParameter},Tortuga.Chain.Core.CommandImplementation{MySql.Data.MySqlClient.MySqlCommand},System.Object)">
+            <summary>
+            Executes the specified operation.
+            </summary>
+            <param name="executionToken">The execution token.</param>
+            <param name="implementation">The implementation that handles processing the result of the command.</param>
+            <param name="state">User supplied state.</param>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlOpenDataSource.Execute(Tortuga.Chain.Core.OperationExecutionToken{MySql.Data.MySqlClient.MySqlConnection,MySql.Data.MySqlClient.MySqlTransaction},Tortuga.Chain.Core.OperationImplementation{MySql.Data.MySqlClient.MySqlConnection,MySql.Data.MySqlClient.MySqlTransaction},System.Object)">
+            <summary>
+            Executes the specified operation.
+            </summary>
+            <param name="executionToken">The execution token.</param>
+            <param name="implementation">The implementation.</param>
+            <param name="state">The state.</param>
+            <returns>System.Nullable&lt;System.Int32&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlOpenDataSource.ExecuteAsync(Tortuga.Chain.Core.CommandExecutionToken{MySql.Data.MySqlClient.MySqlCommand,MySql.Data.MySqlClient.MySqlParameter},Tortuga.Chain.Core.CommandImplementationAsync{MySql.Data.MySqlClient.MySqlCommand},System.Threading.CancellationToken,System.Object)">
+            <summary>
+            Executes the operation asynchronously.
+            </summary>
+            <param name="executionToken">The execution token.</param>
+            <param name="implementation">The implementation that handles processing the result of the command.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name="state">User supplied state.</param>
+            <returns>Task.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlOpenDataSource.ExecuteAsync(Tortuga.Chain.Core.OperationExecutionToken{MySql.Data.MySqlClient.MySqlConnection,MySql.Data.MySqlClient.MySqlTransaction},Tortuga.Chain.Core.OperationImplementationAsync{MySql.Data.MySqlClient.MySqlConnection,MySql.Data.MySqlClient.MySqlTransaction},System.Threading.CancellationToken,System.Object)">
+            <summary>
+            Execute the operation asynchronously.
+            </summary>
+            <param name="executionToken">The execution token.</param>
+            <param name="implementation">The implementation.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name="state">The state.</param>
+            <returns>Task.</returns>
+        </member>
+        <member name="T:Tortuga.Chain.MySql.MySqlTableOrViewMetadata`1">
+            <summary>
+            Class MySqlTableOrViewMetadata.
+            </summary>
+            <typeparam name="TDbType">The type of the t database type.</typeparam>
+            <seealso cref="T:Tortuga.Chain.Metadata.TableOrViewMetadata`2" />
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlTableOrViewMetadata`1.#ctor(Tortuga.Chain.MySql.MySqlObjectName,System.Boolean,System.Collections.Generic.IList{Tortuga.Chain.Metadata.ColumnMetadata{`0}},System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.MySql.MySqlTableOrViewMetadata`1" /> class.
+            </summary>
+            <param name="name">The name.</param>
+            <param name="isTable">if set to <c>true</c> is a table.</param>
+            <param name="columns">The columns.</param>
+            <param name="engine">The engine.</param>
+        </member>
+        <member name="P:Tortuga.Chain.MySql.MySqlTableOrViewMetadata`1.Engine">
+            <summary>
+            Gets the engine.
+            </summary>
+            <value>
+            The engine.
+            </value>
+        </member>
+        <member name="T:Tortuga.Chain.MySql.MySqlTransactionalDataSource">
+            <summary>
+            Class MySqlTransactionalDataSource
+            </summary>
+            <seealso cref="T:Tortuga.Chain.MySql.MySqlDataSourceBase" />
+            <seealso cref="T:System.IDisposable" />
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlTransactionalDataSource.#ctor(Tortuga.Chain.MySqlDataSource,System.Nullable{System.Data.IsolationLevel},System.Boolean)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.MySql.MySqlTransactionalDataSource"/> class.
+            </summary>
+            <param name="dataSource">The data source.</param>
+            <param name="isolationLevel">The isolation level.</param>
+            <param name="forwardEvents">if set to <c>true</c> [forward events].</param>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlTransactionalDataSource.#ctor(Tortuga.Chain.MySqlDataSource,System.Boolean,MySql.Data.MySqlClient.MySqlConnection,MySql.Data.MySqlClient.MySqlTransaction)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.MySql.MySqlTransactionalDataSource" /> class.
+            </summary>
+            <param name="dataSource">The data source.</param>
+            <param name="forwardEvents">if set to <c>true</c> [forward events].</param>
+            <param name="connection">The connection.</param>
+            <param name="transaction">The transaction.</param>
+        </member>
+        <member name="P:Tortuga.Chain.MySql.MySqlTransactionalDataSource.Cache">
+            <summary>
+            Gets or sets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
+            </summary>
+        </member>
+        <member name="P:Tortuga.Chain.MySql.MySqlTransactionalDataSource.DatabaseMetadata">
+            <summary>
+            Gets the database metadata.
+            </summary>
+        </member>
+        <member name="P:Tortuga.Chain.MySql.MySqlTransactionalDataSource.ExtensionCache">
+            <summary>
+            The extension cache is used by extensions to store data source specific information.
+            </summary>
+            <value>
+            The extension cache.
+            </value>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlTransactionalDataSource.Commit">
+            <summary>
+            Commits this transaction instance.
+            </summary>
+            <exception cref="T:System.ObjectDisposedException">Transaction is disposed.</exception>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlTransactionalDataSource.Dispose">
+            <summary>
+            Perform application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlTransactionalDataSource.GetExtensionData``1">
+            <summary>
+            Gets the extension data.
+            </summary>
+            <typeparam name="TTKey">The type of extension data desired.</typeparam>
+            <returns>
+            T.
+            </returns>
+            <remarks>
+            Chain extensions can use this to store data source specific data. The key should be a data type defined by the extension.
+            Transactional data sources should override this method and return the value held by their parent data source.
+            </remarks>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlTransactionalDataSource.Rollback">
+            <summary>
+            Rolls the transaction back.
+            </summary>
+            <exception cref="T:System.ObjectDisposedException">Transaction is disposed.</exception>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlTransactionalDataSource.TestConnection">
+            <summary>
+            Tests the connection.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlTransactionalDataSource.TestConnectionAsync">
+            <summary>
+            Tests the connection asynchronously.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlTransactionalDataSource.Dispose(System.Boolean)">
+            <summary>
+            Releases unmanaged and - optionally - managed resources.
+            </summary>
+            <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlTransactionalDataSource.Execute(Tortuga.Chain.Core.CommandExecutionToken{MySql.Data.MySqlClient.MySqlCommand,MySql.Data.MySqlClient.MySqlParameter},Tortuga.Chain.Core.CommandImplementation{MySql.Data.MySqlClient.MySqlCommand},System.Object)">
+            <summary>
+            Executes the specified operation.
+            </summary>
+            <param name="executionToken">The execution token.</param>
+            <param name="implementation">The implementation that handles processing the result of the command.</param>
+            <param name="state">User supplied state.</param>
+            <returns></returns>
+            <exception cref="T:System.ArgumentNullException">
+            executionToken;executionToken is null.
+            or
+            implementation;implementation is null.
+            </exception>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlTransactionalDataSource.Execute(Tortuga.Chain.Core.OperationExecutionToken{MySql.Data.MySqlClient.MySqlConnection,MySql.Data.MySqlClient.MySqlTransaction},Tortuga.Chain.Core.OperationImplementation{MySql.Data.MySqlClient.MySqlConnection,MySql.Data.MySqlClient.MySqlTransaction},System.Object)">
+            <summary>
+            Executes the specified operation.
+            </summary>
+            <param name="executionToken">The execution token.</param>
+            <param name="implementation">The implementation.</param>
+            <param name="state">The state.</param>
+            <returns></returns>
+            <exception cref="T:System.ArgumentNullException">
+            executionToken;executionToken is null.
+            or
+            implementation;implementation is null.
+            </exception>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlTransactionalDataSource.ExecuteAsync(Tortuga.Chain.Core.CommandExecutionToken{MySql.Data.MySqlClient.MySqlCommand,MySql.Data.MySqlClient.MySqlParameter},Tortuga.Chain.Core.CommandImplementationAsync{MySql.Data.MySqlClient.MySqlCommand},System.Threading.CancellationToken,System.Object)">
+            <summary>
+            Executes the operation asynchronously.
+            </summary>
+            <param name="executionToken">The execution token.</param>
+            <param name="implementation">The implementation that handles processing the result of the command.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name="state">User supplied state.</param>
+            <returns>
+            Task.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            executionToken;executionToken is null.
+            or
+            implementation;implementation is null.
+            </exception>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlTransactionalDataSource.ExecuteAsync(Tortuga.Chain.Core.OperationExecutionToken{MySql.Data.MySqlClient.MySqlConnection,MySql.Data.MySqlClient.MySqlTransaction},Tortuga.Chain.Core.OperationImplementationAsync{MySql.Data.MySqlClient.MySqlConnection,MySql.Data.MySqlClient.MySqlTransaction},System.Threading.CancellationToken,System.Object)">
+            <summary>
+            Execute the operation asynchronously.
+            </summary>
+            <param name="executionToken">The execution token.</param>
+            <param name="implementation">The implementation.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name="state">The state.</param>
+            <returns>
+            Task.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+            executionToken;executionToken is null.
+            or
+            implementation;implementation is null.
+            </exception>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.Utilities.GetParameters(Tortuga.Chain.CommandBuilders.SqlBuilder{MySql.Data.MySqlClient.MySqlDbType})">
+            <summary>
+            Gets the parameters from a SQL Builder.
+            </summary>
+            <param name="sqlBuilder">The SQL builder.</param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

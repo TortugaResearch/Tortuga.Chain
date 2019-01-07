@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-#if !DataTable_Missing
 using System.Data;
-#endif
 
 namespace Tortuga.Chain.CommandBuilders
 {
@@ -49,14 +47,6 @@ namespace Tortuga.Chain.CommandBuilders
             where T3 : class, new()
             where T4 : class, new();
 
-#if !DataTable_Missing
-        /// <summary>
-        /// Indicates the results should be materialized as a DataSet.
-        /// </summary>
-        /// <param name="tableNames">The table names.</param>
-        ILink<DataSet> ToDataSet(params string[] tableNames);
-#endif
-
         /// <summary>
         /// To the collection set.
         /// </summary>
@@ -74,10 +64,14 @@ namespace Tortuga.Chain.CommandBuilders
             where T5 : class, new();
 
         /// <summary>
+        /// Indicates the results should be materialized as a DataSet.
+        /// </summary>
+        /// <param name="tableNames">The table names.</param>
+        ILink<DataSet> ToDataSet(params string[] tableNames);
+
+        /// <summary>
         /// Indicates the results should be materialized as a set of tables.
         /// </summary>
         ILink<TableSet> ToTableSet(params string[] tableNames);
     }
 }
-
-
