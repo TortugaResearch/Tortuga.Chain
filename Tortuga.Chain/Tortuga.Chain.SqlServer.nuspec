@@ -4,7 +4,7 @@
     <id>Tortuga.Chain.SqlServer</id>
     <version></version>
     <authors>David Tomcik, Jonathan Allen</authors>
-    <copyright>Copyright David Tomcik, Jonathan Allen 2016,2017</copyright>
+    <copyright>Copyright David Tomcik, Jonathan Allen 2016,2017,2019</copyright>
     <description>Fluent ORM for .NET and SQL Server.</description>
     <tags>ORM, Fluent, SQL Server</tags>
     <language>en-US</language>
@@ -30,21 +30,14 @@
     </frameworkAssemblies>
 
     <dependencies>
-      <group targetFramework="net45">
-        <dependency id="Tortuga.Chain.Core" version="1.3.6847.41792" />
-      </group>
-      <group targetFramework="net46">
-        <dependency id="Tortuga.Chain.Core" version="1.3.6847.41792" />
-      </group>
 
-      <group targetFramework="netstandard1.3">
-        <dependency id="Tortuga.Chain.Core" version="1.3.6847.41792" />
-        <dependency id="System.Data.SqlClient" version="4.5.1" />
+      <group targetFramework="net46">
+        <dependency id="Tortuga.Chain.Core" version="2.0.6932.69" />
       </group>
 
       <group targetFramework="netstandard2.0">
-        <dependency id="Tortuga.Chain.Core" version="1.3.6847.41792" />
-        <dependency id="System.Data.SqlClient" version="4.5.1" />
+        <dependency id="Tortuga.Chain.Core" version="2.0.6932.69" />
+        <dependency id="System.Data.SqlClient" version="4.6.0" />
       </group>
     </dependencies>
   </metadata>

@@ -10,7 +10,7 @@ using Tortuga.Chain.Core;
 namespace Tortuga.Chain.Materializers
 {
     /// <summary>
-    /// This class represents result materializers that read a Scalar value. 
+    /// This class represents result materializers that read a Scalar value.
     /// </summary>
     public abstract class ScalarMaterializer<TCommand, TParameter, TResult> : Materializer<TCommand, TParameter, TResult>
             where TCommand : DbCommand
@@ -28,7 +28,6 @@ namespace Tortuga.Chain.Materializers
         {
             m_DesiredColumn = columnName;
         }
-
 
         /// <summary>
         /// Returns the list of columns the result materializer would like to have.
@@ -88,7 +87,7 @@ namespace Tortuga.Chain.Materializers
         {
             return Prepare().ExecuteAsync(async cmd =>
             {
-                await implementation(cmd);
+                await implementation(cmd).ConfigureAwait(false);
                 return null;
             }, cancellationToken, state);
         }

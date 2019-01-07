@@ -20,7 +20,6 @@ namespace Tortuga.Chain.Materializers
         where TObject : class
         where TParameter : DbParameter
     {
-
         readonly RowOptions m_RowOptions;
 
         /// <summary>
@@ -85,7 +84,6 @@ namespace Tortuga.Chain.Materializers
             return ConstructObject(row, rowCount);
         }
 
-
         /// <summary>
         /// Execute the operation asynchronously.
         /// </summary>
@@ -101,8 +99,8 @@ namespace Tortuga.Chain.Materializers
             {
                 using (var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SequentialAccess, cancellationToken).ConfigureAwait(false))
                 {
-                    row = await reader.ReadDictionaryAsync();
-                    return (row != null ? 1 : 0) + await reader.RemainingRowCountAsync();
+                    row = await reader.ReadDictionaryAsync().ConfigureAwait(false);
+                    return (row != null ? 1 : 0) + await reader.RemainingRowCountAsync().ConfigureAwait(false);
                 }
             }, cancellationToken, state).ConfigureAwait(false);
 

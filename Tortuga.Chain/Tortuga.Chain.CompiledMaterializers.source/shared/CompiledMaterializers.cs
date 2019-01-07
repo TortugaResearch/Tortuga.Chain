@@ -1,5 +1,4 @@
-﻿using CSScriptLibrary;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -11,6 +10,15 @@ using Tortuga.Anchor.Metadata;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Materializers;
+using Tortuga.Chain.Metadata;
+
+#if NETSTANDARD2_0
+
+using CSScriptLib;
+
+#else
+using CSScriptLibrary;
+#endif
 
 namespace Tortuga.Chain
 {
@@ -78,9 +86,11 @@ namespace Tortuga.Chain
         /// <param name="dataSource">The data source.</param>
         /// <param name="sql">The SQL.</param>
         /// <param name="reader">The reader.</param>
+        /// <param name="nonNullableColumns">A list of columns known to be non-nullable.</param>
         /// <returns></returns>
+        [SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling")]
         [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
-        internal static MethodDelegate<TObject> CreateBuilder<TObject>(IDataSource dataSource, string sql, IDataReader reader)
+        internal static MethodDelegate<TObject> CreateBuilder<TObject>(IDataSource dataSource, string sql, IDataReader reader, IReadOnlyList<ColumnMetadata> nonNullableColumns)
             where TObject : new()
         {
             var cache = dataSource.GetExtensionData<CompilerCache>();
@@ -119,7 +129,8 @@ namespace Tortuga.Chain
                 else if (columnType == typeof(UInt64)) getter = "(System.UInt64)reader.GetValue";
                 else getter = "reader.GetValue";
 
-                columns.Add(columnName, new ColumnData(i, columnType, getter));
+                var isNullable = !nonNullableColumns.Any(c => c.SqlName == columnName); //Assume column is nullable unless proven otherwise
+                columns.Add(columnName, new ColumnData(i, columnType, getter, isNullable));
             }
 
             var evaluator = CSScript.RoslynEvaluator.Reset(false);
@@ -245,8 +256,7 @@ namespace Tortuga.Chain
                 if (property.MappedColumnName == null)
                     continue;
 
-                ColumnData column;
-                if (!columns.TryGetValue(decompositionPrefix + property.MappedColumnName, out column))
+                if (!columns.TryGetValue(decompositionPrefix + property.MappedColumnName, out var column))
                     continue; //not a valid column
 
                 if (column.Index != columnIndex)
@@ -254,7 +264,7 @@ namespace Tortuga.Chain
 
                 if (property.PropertyType == column.ColumnType || (string.Equals(property.PropertyType.Name, "Nullable`1", StringComparison.Ordinal) && property.PropertyType.IsGenericType && property.PropertyType.GenericTypeArguments[0] == column.ColumnType))
                 {
-                    if (property.PropertyType.IsClass || (string.Equals(property.PropertyType.Name, "Nullable`1", StringComparison.Ordinal) && property.PropertyType.IsGenericType))
+                    if (column.IsNullable && (property.PropertyType.IsClass || (string.Equals(property.PropertyType.Name, "Nullable`1", StringComparison.Ordinal) && property.PropertyType.IsGenericType)))
                     {
                         //null handler
                         code.AppendLine($"    if (reader.IsDBNull({column.Index}))");
@@ -272,7 +282,7 @@ namespace Tortuga.Chain
                 {
                     var propertyTypeName = MetadataCache.GetMetadata(property.PropertyType).CSharpFullName;
 
-                    if (property.PropertyType.IsClass || (string.Equals(property.PropertyType.Name, "Nullable`1", StringComparison.Ordinal) && property.PropertyType.IsGenericType))
+                    if (column.IsNullable && (property.PropertyType.IsClass || (string.Equals(property.PropertyType.Name, "Nullable`1", StringComparison.Ordinal) && property.PropertyType.IsGenericType)))
                     {
                         //null handler
                         code.AppendLine($"    if (reader.IsDBNull({column.Index}))");
@@ -291,16 +301,18 @@ namespace Tortuga.Chain
 
         private class ColumnData
         {
-            public ColumnData(int index, Type columnType, string getter)
+            public ColumnData(int index, Type columnType, string getter, bool isNullable)
             {
                 ColumnType = columnType;
                 Getter = getter;
                 Index = index;
+                IsNullable = isNullable;
             }
 
             public Type ColumnType { get; }
             public string Getter { get; }
             public int Index { get; }
+            public bool IsNullable { get; }
         }
     }
 }

@@ -13,8 +13,6 @@ namespace Tests
 {
     public abstract partial class TestBase
     {
-
-
         static public readonly string AssemblyName = "SQLite";
         static protected readonly Dictionary<string, SQLiteDataSource> s_DataSources = new Dictionary<string, SQLiteDataSource>();
         protected static readonly SQLiteDataSource s_PrimaryDataSource;
@@ -28,6 +26,7 @@ namespace Tests
                 s_DataSources.Add(con.Name, ds);
                 if (s_PrimaryDataSource == null) s_PrimaryDataSource = ds;
             }
+            BuildEmployeeSearchKey1000(s_PrimaryDataSource);
         }
 
         public static string CustomerTableName { get { return "Customer"; } }

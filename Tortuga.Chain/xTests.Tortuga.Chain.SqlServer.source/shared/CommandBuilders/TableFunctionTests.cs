@@ -20,16 +20,14 @@ namespace Tests.CommandBuilders
         static object DictParameter1b = new Dictionary<string, object>() { { "@param_state", "CA" } };
 #endif
 
-
         public TableFunctionTests(ITestOutputHelper output) : base(output)
         {
         }
 
-
 #if SQL_SERVER || OLE_SQL_SERVER
         //Only SQL Server has inline functions.
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void TableFunction2_Object(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -42,9 +40,10 @@ namespace Tests.CommandBuilders
                 Release(dataSource);
             }
         }
+
 #endif
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void TableFunction1_Object_Limit(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -58,7 +57,7 @@ namespace Tests.CommandBuilders
             }
         }
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void TableFunction1_Object_Filter(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -72,7 +71,7 @@ namespace Tests.CommandBuilders
             }
         }
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void TableFunction1_Object_Sort(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -86,7 +85,7 @@ namespace Tests.CommandBuilders
             }
         }
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void TableFunction1_Object(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -100,7 +99,7 @@ namespace Tests.CommandBuilders
             }
         }
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public async Task TableFunction1_Object_Async(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -114,8 +113,7 @@ namespace Tests.CommandBuilders
             }
         }
 
-
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void TableFunction1_Dictionary(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -129,7 +127,7 @@ namespace Tests.CommandBuilders
             }
         }
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public async Task TableFunction1_Dictionary_Async(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -143,7 +141,7 @@ namespace Tests.CommandBuilders
             }
         }
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public void TableFunction1_Dictionary2(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -157,7 +155,7 @@ namespace Tests.CommandBuilders
             }
         }
 
-        [Theory, MemberData("Prime")]
+        [Theory, MemberData(nameof(Prime))]
         public async Task TableFunction1_Dictionary2_Async(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -170,9 +168,7 @@ namespace Tests.CommandBuilders
                 Release(dataSource);
             }
         }
-
     }
 }
 
 #endif
-

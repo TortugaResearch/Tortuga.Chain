@@ -17,6 +17,16 @@ namespace Tortuga.Chain.Metadata
         public ColumnMetadataCollection Columns { get; protected set; }
 
         /// <summary>
+        /// Gets the columns known to be not nullable.
+        /// </summary>
+        /// <value>
+        /// The nullable columns.
+        /// </value>
+        /// <remarks>This is used to improve the performance of materializers by avoiding is null checks.</remarks>
+        [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public ColumnMetadataCollection NonNullableColumns { get; protected set; }
+
+        /// <summary>
         /// Gets a value indicating whether this instance is table or a view.
         /// </summary>
         /// <value>

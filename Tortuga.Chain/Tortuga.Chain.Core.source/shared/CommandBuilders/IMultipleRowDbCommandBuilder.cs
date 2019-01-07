@@ -1,17 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Collections.Immutable;
-using System.Xml.Linq;
-
-#if !DataTable_Missing
 using System.Data;
-#endif
+using System.Diagnostics.CodeAnalysis;
+using System.Xml.Linq;
 
 namespace Tortuga.Chain.CommandBuilders
 {
-
-
     /// <summary>
     /// This allows the use of multi-row materializers against a command builder.
     /// </summary>
@@ -48,7 +43,6 @@ namespace Tortuga.Chain.CommandBuilders
         /// <returns></returns>
         ILink<List<byte[]>> ToByteArrayList(ListOptions listOptions = ListOptions.None);
 
-
         /// <summary>
         /// Materializes the result as a list of objects.
         /// </summary>
@@ -70,12 +64,10 @@ namespace Tortuga.Chain.CommandBuilders
             where TObject : class
             where TCollection : ICollection<TObject>, new();
 
-#if !DataTable_Missing
         /// <summary>
         /// Indicates the results should be materialized as a DataSet.
         /// </summary>
         ILink<DataTable> ToDataTable();
-#endif
 
         /// <summary>
         /// Indicates the results should be materialized as a list of DateTime.
@@ -252,12 +244,14 @@ namespace Tortuga.Chain.CommandBuilders
         /// </summary>
         /// <returns></returns>
         ILink<List<dynamic>> ToDynamicCollection();
+
         /// <summary>
         /// Indicates the results should be materialized as a list of Guids.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
         ILink<List<Guid>> ToGuidList(ListOptions listOptions = ListOptions.None);
+
         /// <summary>
         /// Indicates the results should be materialized as a list of Guids.
         /// </summary>
@@ -332,6 +326,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
         ILink<List<short>> ToInt16List(ListOptions listOptions = ListOptions.None);
+
         /// <summary>
         /// Indicates the results should be materialized as a list of integers.
         /// </summary>
@@ -361,6 +356,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
         ILink<List<int>> ToInt32List(ListOptions listOptions = ListOptions.None);
+
         /// <summary>
         /// Indicates the results should be materialized as a list of integers.
         /// </summary>
@@ -390,6 +386,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
         ILink<List<long>> ToInt64List(ListOptions listOptions = ListOptions.None);
+
         /// <summary>
         /// Indicates the results should be materialized as a list of integers.
         /// </summary>
@@ -419,6 +416,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
         ILink<List<float>> ToSingleList(ListOptions listOptions = ListOptions.None);
+
         /// <summary>
         /// Indicates the results should be materialized as a list of numbers.
         /// </summary>
@@ -448,6 +446,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
         ILink<List<string>> ToStringList(ListOptions listOptions = ListOptions.None);
+
         /// <summary>
         /// Indicates the results should be materialized as a list of strings.
         /// </summary>
@@ -475,12 +474,14 @@ namespace Tortuga.Chain.CommandBuilders
         /// Indicates the results should be materialized as a Table.
         /// </summary>
         ILink<Table> ToTable();
+
         /// <summary>
         /// Indicates the results should be materialized as a list of TimeSpan.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
         ILink<List<TimeSpan>> ToTimeSpanList(ListOptions listOptions = ListOptions.None);
+
         /// <summary>
         /// Indicates the results should be materialized as a list of TimeSpan.
         /// </summary>
@@ -488,12 +489,14 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
         ILink<List<TimeSpan>> ToTimeSpanList(string columnName, ListOptions listOptions = ListOptions.None);
+
         /// <summary>
         /// Indicates the results should be materialized as a set of TimeSpan.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
         ILink<HashSet<TimeSpan>> ToTimeSpanSet(ListOptions listOptions = ListOptions.None);
+
         /// <summary>
         /// Indicates the results should be materialized as a set of TimeSpan.
         /// </summary>
@@ -501,7 +504,6 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
         ILink<HashSet<TimeSpan>> ToTimeSpanSet(string columnName, ListOptions listOptions = ListOptions.None);
-
 
         /// <summary>
         /// Materializes the result as a list of XDocuments.

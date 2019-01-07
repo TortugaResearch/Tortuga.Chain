@@ -1,4 +1,5 @@
 ﻿#if !OleDb_Missing
+
 using System;
 using System.Collections.Generic;
 using System.Data.OleDb;
@@ -114,12 +115,15 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
                     if (!m_SortExpressions.Any())
                         topClause = $"TOP ({m_Take}) ";
                     break;
+
                 case SqlServerLimitOption.Percentage:
                     topClause = $"TOP ({m_Take}) PERCENT ";
                     break;
+
                 case SqlServerLimitOption.PercentageWithTies:
                     topClause = $"TOP ({m_Take}) PERCENT WITH TIES ";
                     break;
+
                 case SqlServerLimitOption.RowsWithTies:
                     topClause = $"TOP ({m_Take}) WITH TIES ";
                     break;
@@ -139,6 +143,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
                     if (m_Seed.HasValue)
                         sql.Append($"REPEATABLE ({m_Seed}) ");
                     break;
+
                 case SqlServerLimitOption.TableSampleSystemPercentage:
                     sql.Append($" TABLESAMPLE SYSTEM ({m_Take} PERCENT) ");
                     if (m_Seed.HasValue)
@@ -174,12 +179,12 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 
                     if (m_SortExpressions.Any())
                     {
-                        sql.Append(" OFFSET @offset_row_count_expression ROWS ");
+                        sql.Append(" OFFSET ? ROWS ");
                         parameters.Add(new OleDbParameter("@offset_row_count_expression", m_Skip ?? 0));
 
                         if (m_Take.HasValue)
                         {
-                            sql.Append(" FETCH NEXT @fetch_row_count_expression ROWS ONLY");
+                            sql.Append(" FETCH NEXT ? ROWS ONLY");
                             parameters.Add(new OleDbParameter("@fetch_row_count_expression", m_Take));
                         }
                     }
@@ -199,7 +204,6 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 
             return new OleDbCommandExecutionToken(DataSource, "Query " + m_Table.Name, sql.ToString(), parameters);
         }
-
 
         /// <summary>
         /// Adds sorting to the command builder.
@@ -339,8 +343,18 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         {
             get { return (OleDbSqlServerDataSourceBase)base.DataSource; }
         }
-    }
 
+        /// <summary>
+        /// Returns a list of columns known to be non-nullable.
+        /// </summary>
+        /// <returns>
+        /// If the command builder doesn't know which columns are non-nullable, an empty list will be returned.
+        /// </returns>
+        /// <remarks>
+        /// This is used by materializers to skip IsNull checks.
+        /// </remarks>
+        public override IReadOnlyList<ColumnMetadata> TryGetNonNullableColumns() => m_Table.NonNullableColumns;
+    }
 }
 
 #endif

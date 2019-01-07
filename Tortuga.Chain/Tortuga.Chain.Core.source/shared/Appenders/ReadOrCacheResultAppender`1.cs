@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 
 namespace Tortuga.Chain.Appenders
 {
-
     /// <summary>
     /// Reads the cache. If the value isn't found, the execute the previous link and cache the result.
     /// </summary>
@@ -56,8 +55,7 @@ namespace Tortuga.Chain.Appenders
         /// <returns></returns>
         public override async Task<TResult> ExecuteAsync(CancellationToken cancellationToken, object state = null)
         {
-
-            var temp = await DataSource.Cache.TryReadAsync<TResult>(m_CacheKey);
+            var temp = await DataSource.Cache.TryReadAsync<TResult>(m_CacheKey).ConfigureAwait(false);
             if (temp.KeyFound)
                 return temp.Value;
 
@@ -74,5 +72,4 @@ namespace Tortuga.Chain.Appenders
         }
 
     }
-
 }

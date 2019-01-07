@@ -1,9 +1,10 @@
+using System.Globalization;
+
 namespace Tortuga.Chain.Metadata
 {
     internal static class Utilities
     {
-        static readonly char[] InvalidCharacters = new char[] { ' ', '.', ',', '$', '@' };
-
+        static readonly char[] s_InvalidCharacters = new char[] { ' ', '.', ',', '$', '@' };
 
         public static string ToClrName(string name)
         {
@@ -11,9 +12,9 @@ namespace Tortuga.Chain.Metadata
                 return null;
 
             string result = name;
-            foreach (char c in InvalidCharacters)
+            foreach (char c in s_InvalidCharacters)
             {
-                result = result.Replace(c.ToString(), "");
+                result = result.Replace(c.ToString(CultureInfo.InvariantCulture), "");
             }
 
             if (!char.IsLetter(result[0]) && result[0] != '_')
@@ -21,7 +22,5 @@ namespace Tortuga.Chain.Metadata
 
             return result;
         }
-
-
     }
 }

@@ -332,7 +332,7 @@ namespace Tortuga.Chain
         /// <returns></returns>
         /// <remarks>The caller of this method is responsible for closing the connection.</remarks>
         [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-        internal SqlConnection CreateConnection()
+        public SqlConnection CreateConnection()
         {
 
             var con = new SqlConnection(ConnectionString);
@@ -559,7 +559,7 @@ namespace Tortuga.Chain
         /// <remarks>
         /// The caller of this method is responsible for closing the connection.
         /// </remarks>
-        async Task<SqlConnection> CreateConnectionAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<SqlConnection> CreateConnectionAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             var con = new SqlConnection(ConnectionString);
             await con.OpenAsync(cancellationToken).ConfigureAwait(false);

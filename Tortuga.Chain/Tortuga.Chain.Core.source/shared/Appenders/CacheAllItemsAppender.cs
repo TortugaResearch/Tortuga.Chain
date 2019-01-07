@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -72,7 +71,7 @@ namespace Tortuga.Chain.Appenders
             foreach (var item in result)
             {
                 var cacheKey = m_CacheKeyFunction(item);
-                await DataSource.Cache.WriteAsync(cacheKey, item, m_Policy);
+                await DataSource.Cache.WriteAsync(cacheKey, item, m_Policy).ConfigureAwait(false);
                 cacheKeys.Add(cacheKey);
             }
             m_ActualCacheKeys = cacheKeys.ToImmutableArray();

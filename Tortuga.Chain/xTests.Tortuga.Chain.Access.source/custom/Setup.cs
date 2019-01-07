@@ -4,23 +4,20 @@ using System.Data.OleDb;
 using System.IO;
 using Xunit;
 
-
-[assembly: CollectionBehavior(DisableTestParallelization = true)]
-
 namespace Tests
 {
-
-
     public class Setup
     {
         const string databaseFileName = "AccessTestDatabase.mdb";
 
-
+        public static void AssemblyCleanup()
+        {
+            //File.Delete(databaseFileName);
+        }
 
         public static void AssemblyInit()
         {
             File.Delete(databaseFileName);
-
 
             var connectionString = ConfigurationManager.ConnectionStrings["AccessTestDatabase"].ConnectionString;
 
@@ -32,7 +29,6 @@ namespace Tests
             using (dbConnection)
             {
                 dbConnection.Open();
-
 
                 string sql = @"
 CREATE TABLE Employee
@@ -49,7 +45,7 @@ CREATE TABLE Employee
 
                 string sql2 = @"CREATE TABLE Customer
 (
-	CustomerKey COUNTER PRIMARY KEY, 
+	CustomerKey COUNTER PRIMARY KEY,
     FullName TEXT(100) NULL,
 	State TEXT(2) NOT NULL,
     CreatedByKey INTEGER NULL,
@@ -90,7 +86,6 @@ CREATE TABLE Employee
                     command.ExecuteNonQuery();
                 }
 
-
                 using (var command = new OleDbCommand(sql2, dbConnection))
                 {
                     //command.Parameters.AddWithValue("@EmployeeKey", DBNull.Value);
@@ -102,7 +97,6 @@ CREATE TABLE Employee
                     command.Parameters.AddWithValue("@CreatedDate", DateTime.Now.ToString(DateTimeFormat));
                     command.ExecuteNonQuery();
                 }
-
 
                 using (var command = new OleDbCommand(sql2, dbConnection))
                 {
@@ -125,19 +119,9 @@ CREATE TABLE Employee
                     {
                         command2.Parameters.AddWithValue("@EmployeeKey", key);
                         var updateCount = command2.ExecuteNonQuery();
-
                     }
                 }
             }
-
         }
-
-        public static void AssemblyCleanup()
-        {
-            //File.Delete(databaseFileName);
-        }
-
-
-
     }
 }

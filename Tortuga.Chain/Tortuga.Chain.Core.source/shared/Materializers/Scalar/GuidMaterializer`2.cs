@@ -36,7 +36,6 @@ namespace Tortuga.Chain.Materializers
             return (Guid)temp;
         }
 
-
         /// <summary>
         /// Execute the operation asynchronously.
         /// </summary>
@@ -46,7 +45,7 @@ namespace Tortuga.Chain.Materializers
         public override async Task<Guid> ExecuteAsync(CancellationToken cancellationToken, object state = null)
         {
             object temp = null;
-            await ExecuteCoreAsync(async cmd => temp = await cmd.ExecuteScalarAsync(cancellationToken), cancellationToken, state).ConfigureAwait(false);
+            await ExecuteCoreAsync(async cmd => temp = await cmd.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false), cancellationToken, state).ConfigureAwait(false);
             if (temp == DBNull.Value)
                 throw new MissingDataException("Unexpected null result");
 

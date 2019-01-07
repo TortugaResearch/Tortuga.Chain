@@ -3,19 +3,16 @@ using System.IO;
 using Xunit;
 
 #if SDS
+
 using System.Data.SQLite;
+
 #else
 using SQLiteCommand = Microsoft.Data.Sqlite.SqliteCommand;
 using SQLiteConnection = Microsoft.Data.Sqlite.SqliteConnection;
 #endif
 
-//SQLite is not thread-safe, especially when using translations. While we try to use locks to reduce the pain, it is still fundamentally a bad idea, especially when combined with xUnits unknown threading model.
-[assembly: CollectionBehavior(DisableTestParallelization = true)]
-
 namespace Tests
 {
-
-
     public class Setup
     {
         //TODO: Redesign this to adhere to xUnit conventions.
@@ -24,7 +21,6 @@ namespace Tests
 
         public static void AssemblyInit()
         {
-
             File.Delete(databaseFileName);
 
 #if SDS
@@ -46,7 +42,6 @@ namespace Tests
             {
                 dbConnection.Open();
 
-
                 string sql = @"
 CREATE TABLE Employee
 (
@@ -64,7 +59,7 @@ CREATE TABLE Employee
 
                 string sql2 = @"CREATE TABLE Customer
 (
-	CustomerKey INTEGER PRIMARY KEY, 
+	CustomerKey INTEGER PRIMARY KEY,
     FullName NVARCHAR(100) NULL,
 	State Char(2) NOT NULL,
 
@@ -133,8 +128,5 @@ FROM    Employee e
         {
             File.Delete(databaseFileName);
         }
-
-
-
     }
 }

@@ -46,6 +46,30 @@ namespace Tortuga.Chain.SqlServer
         }
 
         /// <summary>
+        /// Returns the current database.
+        /// </summary>
+        /// <returns></returns>
+        public string DatabaseName
+        {
+            get
+            {
+                if (m_DatabaseName == null)
+                {
+                    using (var con = new OleDbConnection(m_ConnectionBuilder.ConnectionString))
+                    {
+                        con.Open();
+                        using (var cmd = new OleDbCommand("SELECT DB_NAME () AS DatabaseName", con))
+                        {
+                            m_DatabaseName = (string)cmd.ExecuteScalar();
+                        }
+                    }
+                }
+                return m_DatabaseName;
+            }
+        }
+
+
+        /// <summary>
         /// Preloads the stored procedures.
         /// </summary>
         public override void PreloadStoredProcedures()

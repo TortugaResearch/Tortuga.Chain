@@ -39,6 +39,8 @@ namespace Tortuga.Chain
                 throw new ArgumentException("connectionString is null or empty.", "connectionString");
 
             m_ConnectionBuilder = new MySqlConnectionStringBuilder(connectionString);
+            m_ConnectionBuilder.UseAffectedRows = false;
+
             if (string.IsNullOrEmpty(name))
                 Name = m_ConnectionBuilder.Database;
             else
@@ -73,6 +75,7 @@ namespace Tortuga.Chain
                 throw new ArgumentNullException(nameof(connectionBuilder), $"{nameof(connectionBuilder)} is null.");
 
             m_ConnectionBuilder = connectionBuilder;
+            m_ConnectionBuilder.UseAffectedRows = false;
             if (string.IsNullOrEmpty(name))
                 Name = m_ConnectionBuilder.Database;
             else
@@ -143,6 +146,8 @@ namespace Tortuga.Chain
             get { return m_ExtensionCache; }
         }
 
+#if !System_Configuration_Missing
+
         /// <summary>
         /// Creates a new connection using the connection string in the app.config file.
         /// </summary>
@@ -156,6 +161,8 @@ namespace Tortuga.Chain
 
             return new MySqlDataSource(connectionName, settings.ConnectionString);
         }
+
+#endif
 
         /// <summary>
         /// Begins the transaction.
@@ -189,9 +196,88 @@ namespace Tortuga.Chain
                 transaction = connection.BeginTransaction();
             return new MySqlTransactionalDataSource(this, forwardEvents, connection, transaction);
         }
+
         async Task<ITransactionalDataSource> IRootDataSource.BeginTransactionAsync()
         {
             return await BeginTransactionAsync();
+        }
+
+        DbConnection IRootDataSource.CreateConnection()
+        {
+            return CreateConnection();
+        }
+
+        /// <remarks>
+        /// The caller of this method is responsible for closing the connection.
+        /// </remarks>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
+        public MySqlConnection CreateConnection()
+        {
+            var con = new MySqlConnection(ConnectionString);
+            con.Open();
+
+            //TODO: Research server settings.
+
+            return con;
+        }
+
+        async Task<DbConnection> IRootDataSource.CreateConnectionAsync()
+        {
+            return await CreateConnectionAsync();
+        }
+
+        /// <remarks>
+        /// The caller of this method is responsible for closing the connection.
+        /// </remarks>
+        public async Task<MySqlConnection> CreateConnectionAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var con = new MySqlConnection(ConnectionString);
+            await con.OpenAsync(cancellationToken).ConfigureAwait(false);
+
+            //TODO: Research server settings.
+
+            return con;
+        }
+
+        IOpenDataSource IRootDataSource.CreateOpenDataSource(DbConnection connection, DbTransaction transaction)
+        {
+            return new MySqlOpenDataSource(this, (MySqlConnection)connection, (MySqlTransaction)transaction);
+        }
+
+        IOpenDataSource IRootDataSource.CreateOpenDataSource(IDbConnection connection, IDbTransaction transaction)
+        {
+            return new MySqlOpenDataSource(this, (MySqlConnection)connection, (MySqlTransaction)transaction);
+        }
+
+        /// <summary>
+        /// Creates an open data source using the supplied connection and optional transaction.
+        /// </summary>
+        /// <param name="connection">The connection.</param>
+        /// <param name="transaction">The transaction.</param>
+        public MySqlOpenDataSource CreateOpenDataSource(MySqlConnection connection, MySqlTransaction transaction = null)
+        {
+            return new MySqlOpenDataSource(this, connection, transaction);
+        }
+
+        /// <summary>
+        /// Tests the connection.
+        /// </summary>
+        public override void TestConnection()
+        {
+            using (var con = CreateConnection())
+            using (var cmd = new MySqlCommand("SELECT 1", con))
+                cmd.ExecuteScalar();
+        }
+
+        /// <summary>
+        /// Tests the connection asynchronously.
+        /// </summary>
+        /// <returns></returns>
+        public override async Task TestConnectionAsync()
+        {
+            using (var con = await CreateConnectionAsync())
+            using (var cmd = new MySqlCommand("SELECT 1", con))
+                await cmd.ExecuteScalarAsync();
         }
 
         /// <summary>
@@ -273,68 +359,6 @@ namespace Tortuga.Chain
             return result;
         }
 
-        DbConnection IRootDataSource.CreateConnection()
-        {
-            return CreateConnection();
-        }
-
-        async Task<DbConnection> IRootDataSource.CreateConnectionAsync()
-        {
-            return await CreateConnectionAsync();
-        }
-
-        IOpenDataSource IRootDataSource.CreateOpenDataSource(DbConnection connection, DbTransaction transaction)
-        {
-            return new MySqlOpenDataSource(this, (MySqlConnection)connection, (MySqlTransaction)transaction);
-        }
-
-        IOpenDataSource IRootDataSource.CreateOpenDataSource(IDbConnection connection, IDbTransaction transaction)
-        {
-            return new MySqlOpenDataSource(this, (MySqlConnection)connection, (MySqlTransaction)transaction);
-        }
-
-        /// <summary>
-        /// Creates an open data source using the supplied connection and optional transaction.
-        /// </summary>
-        /// <param name="connection">The connection.</param>
-        /// <param name="transaction">The transaction.</param>
-        public MySqlOpenDataSource CreateOpenDataSource(MySqlConnection connection, MySqlTransaction transaction = null)
-        {
-            return new MySqlOpenDataSource(this, connection, transaction);
-        }
-
-        /// <summary>
-        /// Tests the connection.
-        /// </summary>
-        public override void TestConnection()
-        {
-            using (var con = CreateConnection())
-            using (var cmd = new MySqlCommand("SELECT 1", con))
-                cmd.ExecuteScalar();
-        }
-
-        /// <summary>
-        /// Tests the connection asynchronously.
-        /// </summary>
-        /// <returns></returns>
-        public override async Task TestConnectionAsync()
-        {
-            using (var con = await CreateConnectionAsync())
-            using (var cmd = new MySqlCommand("SELECT 1", con))
-                await cmd.ExecuteScalarAsync();
-        }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-        internal MySqlConnection CreateConnection()
-        {
-            var con = new MySqlConnection(ConnectionString);
-            con.Open();
-
-            //TODO: Research server settings.
-
-            return con;
-        }
-
         /// <summary>
         /// Executes the specified operation.
         /// </summary>
@@ -384,7 +408,6 @@ namespace Tortuga.Chain
                 OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
                 throw;
             }
-
         }
 
         /// <summary>
@@ -474,7 +497,7 @@ namespace Tortuga.Chain
             }
             catch (Exception ex)
             {
-                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException 
+                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException
                 {
                     var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);
                     OnExecutionCanceled(executionToken, startTime, DateTimeOffset.Now, state);
@@ -522,7 +545,7 @@ namespace Tortuga.Chain
             }
             catch (Exception ex)
             {
-                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException 
+                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException
                 {
                     var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);
                     OnExecutionCanceled(executionToken, startTime, DateTimeOffset.Now, state);
@@ -534,16 +557,6 @@ namespace Tortuga.Chain
                     throw;
                 }
             }
-        }
-
-        async Task<MySqlConnection> CreateConnectionAsync(CancellationToken cancellationToken = default(CancellationToken))
-        {
-            var con = new MySqlConnection(ConnectionString);
-            await con.OpenAsync(cancellationToken).ConfigureAwait(false);
-
-            //TODO: Research server settings.
-
-            return con;
         }
     }
 }

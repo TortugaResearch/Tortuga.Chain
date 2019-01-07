@@ -955,5 +955,7 @@ namespace Tortuga.Chain.SqlServer
         {
             return new SqlServerUpdateMany(this, tableName, newValues, options);
         }
+
+
     }
 }

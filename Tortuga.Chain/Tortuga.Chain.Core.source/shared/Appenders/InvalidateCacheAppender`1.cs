@@ -1,4 +1,3 @@
-
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -47,7 +46,7 @@ namespace Tortuga.Chain.Appenders
         /// <returns></returns>
         public override async Task<TResult> ExecuteAsync(CancellationToken cancellationToken, object state = null)
         {
-            await DataSource.Cache.InvalidateAsync(m_CacheKey);
+            await DataSource.Cache.InvalidateAsync(m_CacheKey).ConfigureAwait(false);
 
             return await PreviousLink.ExecuteAsync(state).ConfigureAwait(false);
         }

@@ -1,4 +1,3 @@
-#if !DataTable_Missing
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
@@ -59,8 +58,6 @@ namespace Tortuga.Chain.Materializers
             return dt;
         }
 
-
-
         /// <summary>
         /// Execute the operation asynchronously.
         /// </summary>
@@ -79,10 +76,9 @@ namespace Tortuga.Chain.Materializers
                     dt.Load(reader);
                     return dt.Rows.Count;
                 }
-            }, cancellationToken, state);
+            }, cancellationToken, state).ConfigureAwait(false);
 
             return dt;
         }
     }
 }
-#endif
