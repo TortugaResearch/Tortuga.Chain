@@ -12,6 +12,8 @@ If you use the ChangedPropertiesOnly option, only properties marked as changed b
 
 Alternately, a parameter dictionary of type IReadonlyDictionary<string, object> may be used. Again, the primary keys will be read from database metadata.
 
+UpsertOptions.IdentityInsert allows for overriding an identity or auto-number column.
+
 ## SQL Generation
 
 If the materializer desires columns, this echos back the row. The UpsertOptions flag determines if the original or new values are returned.
