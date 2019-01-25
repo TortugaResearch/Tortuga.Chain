@@ -303,38 +303,38 @@ namespace Tortuga.Chain.MySql
             return GetByKeyList(tableName, new List<string> { key });
         }
 
+        /// <summary>Gets a set of records by an unique key.</summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="keyColumn">Name of the key column. This should be a primary or unique key, but that's not enforced.</param>
+        /// <param name="keys">The keys.</param>
+        /// <returns>MultipleRowDbCommandBuilder&lt;MySqlCommand, MySqlParameter&gt;.</returns>
+        /// <exception cref="MappingException"></exception>
+        public MultipleRowDbCommandBuilder<MySqlCommand, MySqlParameter> GetByKeyList<T>(MySqlObjectName tableName, string keyColumn, IEnumerable<T> keys)
+        {
+            var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).Columns.Where(c => c.SqlName.Equals(keyColumn, System.StringComparison.OrdinalIgnoreCase)).ToList();
+            if (primaryKeys.Count == 0)
+                throw new MappingException($"Cannot find a column named {keyColumn} on table {tableName}.");
+
+            return GetByKeyList<T>(tableName, primaryKeys.Single(), keys);
+        }
+
         /// <summary>
-        /// Gets the by key.
+        /// Gets a set of records by their primary key.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="keys">The keys.</param>
         /// <returns>MultipleRowDbCommandBuilder&lt;MySqlCommand, MySqlParameter&gt;.</returns>
         /// <exception cref="MappingException"></exception>
+        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "GetByKeyList")]
         public MultipleRowDbCommandBuilder<MySqlCommand, MySqlParameter> GetByKeyList<T>(MySqlObjectName tableName, IEnumerable<T> keys)
         {
             var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).Columns.Where(c => c.IsPrimaryKey).ToList();
             if (primaryKeys.Count != 1)
-                throw new MappingException($"GetByKey operation isn't allowed on {tableName} because it doesn't have a single primary key. Use DataSource.From instead.");
+                throw new MappingException($"{nameof(GetByKeyList)} operation isn't allowed on {tableName} because it doesn't have a single primary key. Use DataSource.From instead.");
 
-            var keyList = keys.AsList();
-            var columnMetadata = primaryKeys.Single();
-            string where;
-            if (keys.Count() > 1)
-                where = columnMetadata.SqlName + " IN (" + string.Join(", ", keyList.Select((s, i) => "@Param" + i)) + ")";
-            else
-                where = columnMetadata.SqlName + " = @Param0";
-
-            var parameters = new List<MySqlParameter>();
-            for (var i = 0; i < keyList.Count; i++)
-            {
-                var param = new MySqlParameter("@Param" + i, keyList[i]);
-                if (columnMetadata.DbType.HasValue)
-                    param.MySqlDbType = columnMetadata.DbType.Value;
-                parameters.Add(param);
-            }
-
-            return new MySqlTableOrView(this, tableName, where, parameters);
+            return GetByKeyList<T>(tableName, primaryKeys.Single(), keys);
         }
 
         /// <summary>
@@ -587,6 +587,28 @@ namespace Tortuga.Chain.MySql
         protected override IDatabaseMetadataCache OnGetDatabaseMetadata()
         {
             return DatabaseMetadata;
+        }
+
+        MultipleRowDbCommandBuilder<MySqlCommand, MySqlParameter> GetByKeyList<T>(MySqlObjectName tableName, ColumnMetadata<MySqlDbType> columnMetadata, IEnumerable<T> keys)
+        {
+            var keyList = keys.AsList();
+
+            string where;
+            if (keys.Count() > 1)
+                where = columnMetadata.SqlName + " IN (" + string.Join(", ", keyList.Select((s, i) => "@Param" + i)) + ")";
+            else
+                where = columnMetadata.SqlName + " = @Param0";
+
+            var parameters = new List<MySqlParameter>();
+            for (var i = 0; i < keyList.Count; i++)
+            {
+                var param = new MySqlParameter("@Param" + i, keyList[i]);
+                if (columnMetadata.DbType.HasValue)
+                    param.MySqlDbType = columnMetadata.DbType.Value;
+                parameters.Add(param);
+            }
+
+            return new MySqlTableOrView(this, tableName, where, parameters);
         }
     }
 }

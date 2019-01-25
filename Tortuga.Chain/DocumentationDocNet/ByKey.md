@@ -4,7 +4,7 @@ This generates a `SELECT`, `UPDATE`, or `DELETE` statement against a table using
 
 ## Arguments
 
-* The `…ByKey` variants accept one or more keys.
+* The `…ByKey` variants accept a single keys.
 * The `…ByKeyList` variants accept a list of keys.
 
 Keys must be scalar values (string, int guid, etc.) 
