@@ -33,10 +33,6 @@ namespace Tortuga.Chain.MySql
             return DeleteByKey(tableName, key, options);
         }
 
-
-
-
-
         IMultipleRowDbCommandBuilder IClass1DataSource.DeleteByKeyList<TKey>(string tableName, IEnumerable<TKey> keys, DeleteOptions options)
         {
             return DeleteByKeyList(tableName, keys, options);
@@ -107,9 +103,10 @@ namespace Tortuga.Chain.MySql
             return GetByKey(tableName, key);
         }
 
-
-
-
+        IMultipleRowDbCommandBuilder IClass1DataSource.GetByKeyList<T>(string tableName, string keyColumn, IEnumerable<T> keys)
+        {
+            return GetByKeyList(tableName, keyColumn, keys);
+        }
 
         IMultipleRowDbCommandBuilder IClass1DataSource.GetByKeyList<T>(string tableName, IEnumerable<T> keys)
         {
@@ -180,10 +177,6 @@ namespace Tortuga.Chain.MySql
         {
             return UpdateByKey(tableName, newValues, key, options);
         }
-
-
-
-
 
         IMultipleRowDbCommandBuilder IClass1DataSource.UpdateByKeyList<TArgument, TKey>(string tableName, TArgument newValues, IEnumerable<TKey> keys, UpdateOptions options)
         {

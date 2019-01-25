@@ -29,6 +29,11 @@ namespace Tortuga.Chain.SqlServer
             return Delete(argumentValue, options);
         }
 
+        IMultipleRowDbCommandBuilder IClass1DataSource.GetByKeyList<T>(string tableName, string keyColumn, IEnumerable<T> keys)
+        {
+            return GetByKeyList(tableName, keyColumn, keys);
+        }
+
         ITableDbCommandBuilder IClass1DataSource.From(string tableOrViewName)
         {
             return From(tableOrViewName);
@@ -78,10 +83,6 @@ namespace Tortuga.Chain.SqlServer
         {
             return GetByKey(tableName, key);
         }
-
-
-
-
 
         IMultipleRowDbCommandBuilder IClass1DataSource.GetByKeyList<T>(string tableName, IEnumerable<T> keys)
         {
@@ -148,10 +149,6 @@ namespace Tortuga.Chain.SqlServer
             return DeleteByKey(tableName, key, options);
         }
 
-
-
-
-
         IMultipleRowDbCommandBuilder IClass1DataSource.DeleteByKeyList<TKey>(string tableName, IEnumerable<TKey> keys, DeleteOptions options)
         {
             return DeleteByKeyList(tableName, keys, options);
@@ -166,10 +163,6 @@ namespace Tortuga.Chain.SqlServer
         {
             return UpdateByKey(tableName, newValues, key, options);
         }
-
-
-
-
 
         IMultipleRowDbCommandBuilder IClass1DataSource.UpdateByKeyList<TArgument, TKey>(string tableName, TArgument newValues, IEnumerable<TKey> keys, UpdateOptions options)
         {

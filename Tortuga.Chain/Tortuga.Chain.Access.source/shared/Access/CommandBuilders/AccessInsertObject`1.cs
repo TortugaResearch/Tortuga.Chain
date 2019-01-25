@@ -40,14 +40,15 @@ namespace Tortuga.Chain.Access.CommandBuilders
                 throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
 
             var desiredColumns = materializer.DesiredColumns();
+            var identityInsert = m_Options.HasFlag(InsertOptions.IdentityInsert);
 
             var sqlBuilder = Table.CreateSqlBuilder(StrictMode);
             sqlBuilder.ApplyArgumentValue(DataSource, ArgumentValue, m_Options);
             sqlBuilder.ApplyDesiredColumns(desiredColumns);
 
             var sql = new StringBuilder();
-            sqlBuilder.BuildInsertClause(sql, $"INSERT INTO {Table.Name.ToQuotedString()} (", null, ")");
-            sqlBuilder.BuildValuesClause(sql, " VALUES (", ")");
+            sqlBuilder.BuildInsertClause(sql, $"INSERT INTO {Table.Name.ToQuotedString()} (", null, ")", identityInsert);
+            sqlBuilder.BuildValuesClause(sql, " VALUES (", ")", identityInsert);
             sql.Append(";");
 
             var result = new AccessCommandExecutionToken(DataSource, "Insert into " + Table.Name, sql.ToString(), sqlBuilder.GetParameters());
@@ -83,7 +84,6 @@ namespace Tortuga.Chain.Access.CommandBuilders
                 param.OleDbType = columnMetadata.DbType.Value;
             parameters.Add(param);
 
-
             var sqlBuilder = Table.CreateSqlBuilder(StrictMode);
             sqlBuilder.ApplyArgumentValue(DataSource, ArgumentValue, m_Options);
             sqlBuilder.ApplyDesiredColumns(desiredColumns);
@@ -94,11 +94,7 @@ namespace Tortuga.Chain.Access.CommandBuilders
             sql.Append(" WHERE " + where);
             sql.Append(";");
 
-
             return new AccessCommandExecutionToken(DataSource, "Select after insert into " + Table.Name, sql.ToString(), parameters);
         }
-
-
     }
 }
-

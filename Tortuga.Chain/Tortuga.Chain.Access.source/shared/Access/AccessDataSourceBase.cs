@@ -100,7 +100,6 @@ namespace Tortuga.Chain.Access
             return DeleteByKeyList(tableName, new List<string> { key }, options);
         }
 
-
         /// <summary>
         /// Delete multiple rows by key.
         /// </summary>
@@ -292,7 +291,7 @@ namespace Tortuga.Chain.Access
         public SingleRowDbCommandBuilder<OleDbCommand, OleDbParameter> GetByKey<TKey>(AccessObjectName tableName, TKey key)
             where TKey : struct
         {
-            return GetByKeyList(tableName, (IEnumerable<TKey>)new List<TKey> { key });
+            return GetByKeyList(tableName, keys: (IEnumerable<TKey>)new List<TKey> { key });
         }
 
         /// <summary>
@@ -303,9 +302,8 @@ namespace Tortuga.Chain.Access
         /// <returns>MultipleRowDbCommandBuilder&lt;OleDbCommand, OleDbParameter&gt;.</returns>
         public SingleRowDbCommandBuilder<OleDbCommand, OleDbParameter> GetByKey(AccessObjectName tableName, string key)
         {
-            return GetByKeyList(tableName, (IEnumerable<string>)new List<string> { key });
+            return GetByKeyList(tableName, keys: (IEnumerable<string>)new List<string> { key });
         }
-
 
         /// <summary>
         /// Gets a set of records by their primary key.
@@ -322,24 +320,26 @@ namespace Tortuga.Chain.Access
             if (primaryKeys.Count != 1)
                 throw new MappingException($"{nameof(GetByKeyList)} operation isn't allowed on {tableName} because it doesn't have a single primary key. Use DataSource.From instead.");
 
-            var keyList = keys.AsList();
-            var columnMetadata = primaryKeys.Single();
-            string where;
-            if (keys.Count() > 1)
-                where = columnMetadata.SqlName + " IN (" + string.Join(", ", keyList.Select((s, i) => "@Param" + i)) + ")";
-            else
-                where = columnMetadata.SqlName + " = @Param0";
+            return GetByKeyList<T>(tableName, primaryKeys.Single(), keys);
+        }
 
-            var parameters = new List<OleDbParameter>();
-            for (var i = 0; i < keyList.Count; i++)
-            {
-                var param = new OleDbParameter("@Param" + i, keyList[i]);
-                if (columnMetadata.DbType.HasValue)
-                    param.OleDbType = columnMetadata.DbType.Value;
-                parameters.Add(param);
-            }
+        /// <summary>
+        /// Gets a set of records by an unique key.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="keyColumn">Name of the key column. This should be a primary or unique key, but that's not enforced.</param>
+        /// <param name="keys">The keys.</param>
+        /// <returns></returns>
+        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
+        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "GetByKeyList")]
+        public MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> GetByKeyList<T>(AccessObjectName tableName, string keyColumn, IEnumerable<T> keys)
+        {
+            var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).Columns.Where(c => c.SqlName.Equals(keyColumn, System.StringComparison.OrdinalIgnoreCase)).ToList();
+            if (primaryKeys.Count == 0)
+                throw new MappingException($"Cannot find a column named {keyColumn} on table {tableName}.");
 
-            return new AccessTableOrView(this, tableName, where, parameters);
+            return GetByKeyList<T>(tableName, primaryKeys.Single(), keys);
         }
 
         /// <summary>
@@ -388,19 +388,6 @@ namespace Tortuga.Chain.Access
             return new AccessSqlCall(this, sqlStatement, argumentValue);
         }
 
-        ///// <summary>
-        ///// Creates a <see cref="AccessInsertOrUpdateObject{TArgument}"/> used to perform an "upsert" operation.
-        ///// </summary>
-        ///// <param name="tableName"></param>
-        ///// <param name="argumentValue"></param>
-        ///// <param name="options"></param>
-        ///// <returns></returns>
-        //public ObjectDbCommandBuilder<OleDbCommand, OleDbParameter, TArgument> Upsert<TArgument>(AccessObjectName tableName, TArgument argumentValue, UpsertOptions options = UpsertOptions.None)
-        //where TArgument : class
-        //{
-        //    return new AccessInsertOrUpdateObject<TArgument>(this, tableName, argumentValue, options);
-        //}
-
         /// <summary>
         /// Creates a <see cref="AccessUpdateObject{TArgument}" /> used to perform an update operation.
         /// </summary>
@@ -414,18 +401,6 @@ namespace Tortuga.Chain.Access
             return new AccessUpdateObject<TArgument>(this, tableName, argumentValue, options);
         }
 
-        ///// <summary>
-        ///// Perform an insert or update operation as appropriate.
-        ///// </summary>
-        ///// <typeparam name="TArgument"></typeparam>
-        ///// <param name="argumentValue">The argument value.</param>
-        ///// <param name="options">The options for how the insert/update occurs.</param>
-        ///// <returns></returns>
-        //public ObjectDbCommandBuilder<OleDbCommand, OleDbParameter, TArgument> Upsert<TArgument>(TArgument argumentValue, UpsertOptions options = UpsertOptions.None) where TArgument : class
-        //{
-        //    return Upsert(DatabaseMetadata.GetTableOrViewFromClass<TArgument>().Name, argumentValue, options);
-        //}
-
         /// <summary>
         /// Update an object in the specified table.
         /// </summary>
@@ -438,6 +413,29 @@ namespace Tortuga.Chain.Access
             return Update(DatabaseMetadata.GetTableOrViewFromClass<TArgument>().Name, argumentValue, options);
         }
 
+        ///// <summary>
+        ///// Creates a <see cref="AccessInsertOrUpdateObject{TArgument}"/> used to perform an "upsert" operation.
+        ///// </summary>
+        ///// <param name="tableName"></param>
+        ///// <param name="argumentValue"></param>
+        ///// <param name="options"></param>
+        ///// <returns></returns>
+        //public ObjectDbCommandBuilder<OleDbCommand, OleDbParameter, TArgument> Upsert<TArgument>(AccessObjectName tableName, TArgument argumentValue, UpsertOptions options = UpsertOptions.None)
+        //where TArgument : class
+        //{
+        //    return new AccessInsertOrUpdateObject<TArgument>(this, tableName, argumentValue, options);
+        //}
+        ///// <summary>
+        ///// Perform an insert or update operation as appropriate.
+        ///// </summary>
+        ///// <typeparam name="TArgument"></typeparam>
+        ///// <param name="argumentValue">The argument value.</param>
+        ///// <param name="options">The options for how the insert/update occurs.</param>
+        ///// <returns></returns>
+        //public ObjectDbCommandBuilder<OleDbCommand, OleDbParameter, TArgument> Upsert<TArgument>(TArgument argumentValue, UpsertOptions options = UpsertOptions.None) where TArgument : class
+        //{
+        //    return Upsert(DatabaseMetadata.GetTableOrViewFromClass<TArgument>().Name, argumentValue, options);
+        //}
         /// <summary>
         /// Update a record by its primary key.
         /// </summary>
@@ -467,7 +465,6 @@ namespace Tortuga.Chain.Access
         {
             return UpdateByKeyList(tableName, newValues, new List<string> { key }, options);
         }
-
 
         /// <summary>
         /// Update multiple rows by key.
@@ -549,5 +546,26 @@ namespace Tortuga.Chain.Access
         /// </summary>
         /// <returns></returns>
         protected override IDatabaseMetadataCache OnGetDatabaseMetadata() => DatabaseMetadata;
+
+        MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> GetByKeyList<T>(AccessObjectName tableName, ColumnMetadata<OleDbType> columnMetadata, IEnumerable<T> keys)
+        {
+            var keyList = keys.AsList();
+            string where;
+            if (keys.Count() > 1)
+                where = columnMetadata.SqlName + " IN (" + string.Join(", ", keyList.Select((s, i) => "@Param" + i)) + ")";
+            else
+                where = columnMetadata.SqlName + " = @Param0";
+
+            var parameters = new List<OleDbParameter>();
+            for (var i = 0; i < keyList.Count; i++)
+            {
+                var param = new OleDbParameter("@Param" + i, keyList[i]);
+                if (columnMetadata.DbType.HasValue)
+                    param.OleDbType = columnMetadata.DbType.Value;
+                parameters.Add(param);
+            }
+
+            return new AccessTableOrView(this, tableName, where, parameters);
+        }
     }
 }

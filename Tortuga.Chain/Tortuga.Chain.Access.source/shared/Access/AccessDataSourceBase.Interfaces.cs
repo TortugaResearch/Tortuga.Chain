@@ -98,7 +98,12 @@ namespace Tortuga.Chain.Access
 
         IMultipleRowDbCommandBuilder IClass1DataSource.GetByKeyList<T>(string tableName, IEnumerable<T> keys)
         {
-            return GetByKeyList(tableName, keys);
+            return GetByKeyList(tableName, keys: keys);
+        }
+
+        IMultipleRowDbCommandBuilder IClass1DataSource.GetByKeyList<T>(string tableName, string keyColumn, IEnumerable<T> keys)
+        {
+            return GetByKeyList(tableName, keyColumn, keys);
         }
 
         IObjectDbCommandBuilder<TArgument> IClass1DataSource.Insert<TArgument>(string tableName, TArgument argumentValue, InsertOptions options)
