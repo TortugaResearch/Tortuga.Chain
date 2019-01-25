@@ -4,7 +4,9 @@ using System.Text;
 using System;
 
 #if SDS
+
 using System.Data.SQLite;
+
 #else
 using SQLiteCommand = Microsoft.Data.Sqlite.SqliteCommand;
 using SQLiteParameter = Microsoft.Data.Sqlite.SqliteParameter;
@@ -43,18 +45,18 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
             if (materializer == null)
                 throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
 
+            var identityInsert = m_Options.HasFlag(InsertOptions.IdentityInsert);
+
             var sqlBuilder = Table.CreateSqlBuilder(StrictMode);
             sqlBuilder.ApplyArgumentValue(DataSource, ArgumentValue, m_Options);
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
             var sql = new StringBuilder();
-            sqlBuilder.BuildInsertStatement(sql, Table.Name.ToQuotedString(), ";");
+            sqlBuilder.BuildInsertStatement(sql, Table.Name.ToQuotedString(), ";", identityInsert);
             sql.AppendLine();
             sqlBuilder.BuildSelectClause(sql, "SELECT ", null, $" FROM {Table.Name.ToQuotedString()} WHERE ROWID=last_insert_rowid();");
 
             return new SQLiteCommandExecutionToken(DataSource, "Insert into " + Table.Name, sql.ToString(), sqlBuilder.GetParameters(), lockType: LockType.Write);
         }
-
     }
 }
-

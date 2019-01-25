@@ -14,7 +14,6 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
     {
         readonly InsertOptions m_Options;
 
-
         /// <summary>
         /// Initializes a new instance of the <see cref="PostgreSqlInsertObject{TArgument}"/> class.
         /// </summary>
@@ -38,18 +37,20 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
             if (materializer == null)
                 throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
 
+            var identityInsert = m_Options.HasFlag(InsertOptions.IdentityInsert);
+            if (identityInsert)
+                throw new NotImplementedException("See issue 256. https://github.com/docevaad/Chain/issues/256");
+
             var sqlBuilder = Table.CreateSqlBuilder(StrictMode);
             sqlBuilder.ApplyArgumentValue(DataSource, ArgumentValue, m_Options);
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
             var sql = new StringBuilder();
-            sqlBuilder.BuildInsertClause(sql, $"INSERT INTO {Table.Name.ToString()} (", null, ")");
-            sqlBuilder.BuildValuesClause(sql, " VALUES (", ")");
+            sqlBuilder.BuildInsertClause(sql, $"INSERT INTO {Table.Name.ToString()} (", null, ")", identityInsert);
+            sqlBuilder.BuildValuesClause(sql, " VALUES (", ")", identityInsert);
             sqlBuilder.BuildSelectClause(sql, " RETURNING ", null, ";");
 
             return new PostgreSqlCommandExecutionToken(DataSource, "Insert into " + Table.Name, sql.ToString(), sqlBuilder.GetParameters());
         }
-
     }
 }
-

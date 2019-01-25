@@ -98,7 +98,6 @@ namespace Tortuga.Chain.MySql
             return DeleteByKeyList(tableName, new List<string> { key }, options);
         }
 
-
         /// <summary>
         /// Delete multiple rows by key.
         /// </summary>
@@ -279,7 +278,6 @@ namespace Tortuga.Chain.MySql
         {
             return From(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, filterValue);
         }
-
 
         /// <summary>
         /// Gets a record by its key.
@@ -483,8 +481,6 @@ namespace Tortuga.Chain.MySql
         {
             return UpdateByKeyList(tableName, newValues, new List<string> { key }, options);
         }
-
-
 
         /// <summary>
         /// Update multiple rows by key.

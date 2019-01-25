@@ -16,7 +16,6 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
     {
         readonly UpsertOptions m_Options;
 
-
         /// <summary>
         /// Initializes a new instance of the <see cref="PostgreSqlInsertOrUpdateObject{TArgument}"/> class.
         /// </summary>
@@ -39,6 +38,10 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         {
             if (materializer == null)
                 throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
+
+            var identityInsert = m_Options.HasFlag(UpsertOptions.IdentityInsert);
+            if (identityInsert)
+                throw new NotImplementedException("See issue 256. https://github.com/docevaad/Chain/issues/256");
 
             var primaryKeyNames = Table.Columns.Where(x => x.IsPrimaryKey).Select(x => x.QuotedSqlName);
             string conflictNames = string.Join(", ", primaryKeyNames);

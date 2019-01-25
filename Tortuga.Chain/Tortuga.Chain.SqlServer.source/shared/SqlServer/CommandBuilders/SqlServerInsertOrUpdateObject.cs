@@ -53,6 +53,12 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             sqlBuilder.UseTableVariable(Table, out header, out intoClause, out footer);
 
             sql.Append(header);
+
+            var identityInsert = m_Options.HasFlag(UpsertOptions.IdentityInsert);
+
+            if (identityInsert)
+                sql.AppendLine($"SET IDENTITY_INSERT {Table.Name.ToQuotedString()} ON;");
+
             sql.Append($"MERGE INTO {Table.Name.ToQuotedString()} target USING "); sql.Append("(VALUES (" + string.Join(", ", availableColumns.Select(c => c.SqlVariableName)) + ")) AS source (" + string.Join(", ", availableColumns.Select(c => c.QuotedSqlName)) + ")");
             sql.Append(" ON ");
             sql.Append(string.Join(" AND ", sqlBuilder.GetKeyColumns().ToList().Select(c => $"target.{c.QuotedSqlName} = source.{c.QuotedSqlName}")));
@@ -60,7 +66,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             sql.Append(" WHEN MATCHED THEN UPDATE SET ");
             sql.Append(string.Join(", ", sqlBuilder.GetUpdateColumns().Select(x => $"{x.QuotedSqlName} = source.{x.QuotedSqlName}")));
 
-            var insertColumns = sqlBuilder.GetInsertColumns();
+            var insertColumns = sqlBuilder.GetInsertColumns(m_Options.HasFlag(UpsertOptions.IdentityInsert));
             sql.Append(" WHEN NOT MATCHED THEN INSERT (");
             sql.Append(string.Join(", ", insertColumns.Select(x => x.QuotedSqlName)));
             sql.Append(") VALUES (");
@@ -69,6 +75,9 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             sqlBuilder.BuildSelectClause(sql, " OUTPUT ", "Inserted.", intoClause);
             sql.Append(";");
             sql.Append(footer);
+
+            if (identityInsert)
+                sql.AppendLine($"SET IDENTITY_INSERT {Table.Name.ToQuotedString()} OFF;");
 
             return new SqlServerCommandExecutionToken(DataSource, "Insert or update " + Table.Name, sql.ToString(), sqlBuilder.GetParameters());
         }
