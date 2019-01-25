@@ -15,7 +15,6 @@ namespace Tortuga.Chain.MySql.CommandBuilders
     {
         readonly InsertOptions m_Options;
 
-
         /// <summary>
         /// Initializes a new instance of the <see cref="MySqlInsertObject{TArgument}"/> class.
         /// </summary>
@@ -39,18 +38,20 @@ namespace Tortuga.Chain.MySql.CommandBuilders
             if (materializer == null)
                 throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
 
+            var identityInsert = m_Options.HasFlag(InsertOptions.IdentityInsert);
+
             var sqlBuilder = Table.CreateSqlBuilder(StrictMode);
             sqlBuilder.ApplyArgumentValue(DataSource, ArgumentValue, m_Options);
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
             var sql = new StringBuilder();
-            sqlBuilder.BuildInsertClause(sql, $"INSERT INTO {Table.Name.ToString()} (", null, ")");
-            sqlBuilder.BuildValuesClause(sql, " VALUES (", ");");
+            sqlBuilder.BuildInsertClause(sql, $"INSERT INTO {Table.Name.ToString()} (", null, ")", identityInsert);
+            sqlBuilder.BuildValuesClause(sql, " VALUES (", ");", identityInsert);
 
             if (sqlBuilder.HasReadFields)
             {
                 var identityColumn = Table.Columns.Where(c => c.IsIdentity).SingleOrDefault();
-                if (identityColumn != null)
+                if (!identityInsert && identityColumn != null)
                 {
                     sqlBuilder.BuildSelectClause(sql, "SELECT ", null, null);
                     sql.Append(" FROM " + Table.Name.ToQuotedString());
@@ -65,15 +66,12 @@ namespace Tortuga.Chain.MySql.CommandBuilders
 
                     sqlBuilder.BuildSelectClause(sql, "SELECT ", null, null);
                     sql.Append(" FROM " + Table.Name.ToQuotedString());
-                    sqlBuilder.BuildWhereClause(sql, null, null);
+                    sqlBuilder.BuildWhereClause(sql, " WHERE ", null);
                     sql.Append(";");
                 }
             }
 
             return new MySqlCommandExecutionToken(DataSource, "Insert into " + Table.Name, sql.ToString(), sqlBuilder.GetParameters());
         }
-
-
     }
 }
-
