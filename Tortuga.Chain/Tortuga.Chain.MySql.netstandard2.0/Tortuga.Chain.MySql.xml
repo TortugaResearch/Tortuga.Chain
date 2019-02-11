@@ -962,9 +962,18 @@
             <param name="key">The key.</param>
             <returns>MultipleRowDbCommandBuilder&lt;MySqlCommand, MySqlParameter&gt;.</returns>
         </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.GetByKeyList``1(Tortuga.Chain.MySql.MySqlObjectName,System.String,System.Collections.Generic.IEnumerable{``0})">
+            <summary>Gets a set of records by an unique key.</summary>
+            <typeparam name="T"></typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="keyColumn">Name of the key column. This should be a primary or unique key, but that's not enforced.</param>
+            <param name="keys">The keys.</param>
+            <returns>MultipleRowDbCommandBuilder&lt;MySqlCommand, MySqlParameter&gt;.</returns>
+            <exception cref="T:Tortuga.Chain.MappingException"></exception>
+        </member>
         <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.GetByKeyList``1(Tortuga.Chain.MySql.MySqlObjectName,System.Collections.Generic.IEnumerable{``0})">
             <summary>
-            Gets the by key.
+            Gets a set of records by their primary key.
             </summary>
             <typeparam name="T"></typeparam>
             <param name="tableName">Name of the table.</param>

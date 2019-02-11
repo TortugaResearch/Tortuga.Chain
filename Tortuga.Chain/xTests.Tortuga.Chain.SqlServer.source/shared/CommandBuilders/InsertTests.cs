@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Tests.Models;
+using Tortuga.Chain;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -32,6 +34,38 @@ namespace Tests.CommandBuilders
                 Release(dataSource);
             }
         }
+
+#if !POSTGRESQL
+
+        [Theory, MemberData(nameof(Prime))]
+        public void Identity_Insert(string assemblyName, string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+                var lookupKey = Guid.NewGuid().ToString();
+                var employeeTable = dataSource.DatabaseMetadata.GetTableOrView(EmployeeTableName);
+                var primaryColumn = employeeTable.Columns.SingleOrDefault(c => c.IsIdentity);
+                if (primaryColumn == null) //SQLite
+                    primaryColumn = employeeTable.Columns.SingleOrDefault(c => c.IsPrimaryKey);
+
+                //Skipping ahead by 5
+                var nextKey = 5 + dataSource.Sql($"SELECT Max({primaryColumn.QuotedSqlName}) FROM {employeeTable.Name.ToQuotedString()}").ToInt32().Execute();
+
+                var keyForOverriddenRow = dataSource.Insert(EmployeeTableName, new Employee() { EmployeeKey = nextKey, FirstName = "0000", LastName = "Z" + (int.MaxValue), Title = lookupKey, MiddleName = "A0" }, InsertOptions.IdentityInsert).ToInt32().Execute();
+
+                Assert.Equal(nextKey, keyForOverriddenRow, "Identity column was not correctly overridden");
+
+                var keyForNewRow = dataSource.Insert(EmployeeTableName, new Employee() { FirstName = "0001", LastName = "Z" + (int.MaxValue - 1), Title = lookupKey, MiddleName = null }).ToInt32().Execute();
+                Assert.Equal(keyForOverriddenRow + 1, keyForNewRow, "Next inserted value didn't have the correct key");
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+#endif
 
         [Theory, MemberData(nameof(Prime))]
         public void InsertEchoObject(string assemblyName, string dataSourceName, DataSourceType mode)

@@ -21,7 +21,7 @@
   <ItemGroup>
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.109.2" />
     <PackageReference Include="Nito.AsyncEx.Coordination" Version="1.0.2" />
-    <PackageReference Include="Tortuga.Chain.Core" Version="2.0.6932.69" />
+    <PackageReference Include="Tortuga.Chain.Core" Version="2.1.6963.38576" />
   </ItemGroup>
 
   <ItemGroup>
