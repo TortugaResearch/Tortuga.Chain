@@ -1,15 +1,7 @@
 using System;
-using System.IO;
-using Xunit;
-
-#if SDS
-
 using System.Data.SQLite;
+using System.IO;
 
-#else
-using SQLiteCommand = Microsoft.Data.Sqlite.SqliteCommand;
-using SQLiteConnection = Microsoft.Data.Sqlite.SqliteConnection;
-#endif
 
 namespace Tests
 {
@@ -23,19 +15,7 @@ namespace Tests
         {
             File.Delete(databaseFileName);
 
-#if SDS
             SQLiteConnection.CreateFile(databaseFileName);
-#else
-            void CreateFile(string databaseFileName)
-            {
-                FileStream fs = File.Create(databaseFileName);
-                fs.Close();
-            }
-            CreateFile(databaseFileName);
-
-            //SQLitePCL.Batteries.Init();
-
-#endif
 
             var dbConnection = new SQLiteConnection("Data Source=SQLiteTestDatabaseX.sqlite;");
             using (dbConnection)

@@ -1,18 +1,11 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
-using Tortuga.Chain.Metadata;
-using System;
-using Tortuga.Anchor.Metadata;
-using Tortuga.Anchor;
-
-#if SDS
 using System.Data.SQLite;
-#else
-using SQLiteCommand = Microsoft.Data.Sqlite.SqliteCommand;
-using SQLiteConnection = Microsoft.Data.Sqlite.SqliteConnection;
-using SQLiteConnectionStringBuilder = Microsoft.Data.Sqlite.SqliteConnectionStringBuilder;
-#endif
+using Tortuga.Anchor;
+using Tortuga.Anchor.Metadata;
+using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.SQLite
 {

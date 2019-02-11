@@ -1,24 +1,15 @@
-﻿using Tortuga.Chain.CommandBuilders;
+﻿using Nito.AsyncEx;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.SQLite;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using Tortuga.Anchor;
+using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Metadata;
 using Tortuga.Chain.SQLite.CommandBuilders;
-using System.Collections.Generic;
-using System.Linq;
-using Tortuga.Anchor;
-using System.Diagnostics.CodeAnalysis;
-using Nito.AsyncEx;
-using System.Data;
 
-#if SDS
-
-using System.Data.SQLite;
-
-#else
-using SQLiteCommand = Microsoft.Data.Sqlite.SqliteCommand;
-using SQLiteParameter = Microsoft.Data.Sqlite.SqliteParameter;
-using SQLiteConnection = Microsoft.Data.Sqlite.SqliteConnection;
-using SQLiteTransaction = Microsoft.Data.Sqlite.SqliteTransaction;
-#endif
 
 namespace Tortuga.Chain.SQLite
 {

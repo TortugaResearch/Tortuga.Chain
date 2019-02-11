@@ -1,4 +1,6 @@
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Data.SQLite;
 using System.Diagnostics;
 using System.IO;
 using Tortuga.Chain;
@@ -6,22 +8,6 @@ using Tortuga.Chain.DataSources;
 using Tortuga.Chain.SQLite;
 
 
-#if MSTest
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-#elif WINDOWS_UWP 
-using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
-#endif
-
-
-#if SDS
-using System.Data.SQLite;
-#else
-using SQLiteCommand = Microsoft.Data.Sqlite.SqliteCommand;
-using SQLiteParameter = Microsoft.Data.Sqlite.SqliteParameter;
-using SQLiteConnection = Microsoft.Data.Sqlite.SqliteConnection;
-using SQLiteTransaction = Microsoft.Data.Sqlite.SqliteTransaction;
-using SQLiteConnectionStringBuilder = Microsoft.Data.Sqlite.SqliteConnectionStringBuilder;
-#endif
 
 namespace Tests
 {
