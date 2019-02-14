@@ -124,10 +124,14 @@
     <Compile Include="shared\SqlServer\CommandBuilders\SqlServerObjectCommand.cs" />
     <Compile Include="shared\SqlServer\CommandBuilders\SqlServerSqlCall.cs" />
     <Compile Include="shared\SqlServer\CommandBuilders\SqlServerTableOrView.cs" />
+    <Compile Include="shared\SqlServer\OleDbSqlServerDataSourceBase.CommandBuilders.StringNames.cs" />
+    <Compile Include="shared\SqlServer\OleDbSqlServerDataSourceBase.CommandBuilders.cs" />
     <Compile Include="shared\SqlServer\OleDbSqlServerMetadataCache.cs" />
     <Compile Include="shared\SqlServer\SqlServerAppenders.cs" />
     <Compile Include="shared\SqlServer\OleDbSqlServerDataSourceBase.cs" />
     <Compile Include="shared\SqlServer\OleDbSqlServerDataSourceBase.Interfaces.cs" />
+    <Compile Include="shared\SqlServer\SqlServerDataSourceBase.CommandBuilders.StringNames.cs" />
+    <Compile Include="shared\SqlServer\SqlServerDataSourceBase.CommandBuilders.cs" />
     <Compile Include="shared\SqlServer\SqlServerDataSourceBase.Interfaces.cs" />
     <Compile Include="shared\SqlServer\SqlServerEffectiveSettings.cs" />
     <Compile Include="shared\SqlServer\SqlServerCommandExecutionToken.cs" />

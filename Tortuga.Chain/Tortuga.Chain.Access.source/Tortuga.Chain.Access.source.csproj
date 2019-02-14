@@ -82,6 +82,8 @@
     <Compile Include="shared\AccessExtensions.cs" />
     <Compile Include="shared\AccessLimitOption.cs" />
     <Compile Include="shared\Access\AccessCommandExecutionMode.cs" />
+    <Compile Include="shared\Access\AccessDataSourceBase.CommandBuilders.StringNames.cs" />
+    <Compile Include="shared\Access\AccessDataSourceBase.CommandBuilders.cs" />
     <Compile Include="shared\Access\AccessDataSourceBase.Interfaces.cs" />
     <Compile Include="shared\Access\AccessObjectName.cs" />
     <Compile Include="shared\Access\CommandBuilders\AccessDeleteObject`1.cs" />

@@ -115,6 +115,8 @@
     <Compile Include="shared\MySql\CommandBuilders\MySqlUpdateObject`1.cs" />
     <Compile Include="shared\MySql\CommandBuilders\MySqlScalarFunction.cs" />
     <Compile Include="shared\MySql\MySqlCommandExecutionToken.cs" />
+    <Compile Include="shared\MySql\MySqlDataSourceBase.CommandBuilders.StringNames.cs" />
+    <Compile Include="shared\MySql\MySqlDataSourceBase.CommandBuilders.cs" />
     <Compile Include="shared\MySql\MySqlDataSourceBase.cs" />
     <Compile Include="shared\MySql\MySqlDataSourceBase.Interfaces.cs" />
     <Compile Include="shared\MySql\MySqlDataSourceSettings.cs" />

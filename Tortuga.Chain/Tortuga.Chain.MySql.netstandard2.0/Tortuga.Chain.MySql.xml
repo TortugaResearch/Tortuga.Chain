@@ -797,17 +797,6 @@
             Class MySqlDataSourceBase.
             </summary>
         </member>
-        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.#ctor(Tortuga.Chain.DataSources.DataSourceSettings)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Tortuga.Chain.MySql.MySqlDataSourceBase"/> class.
-            </summary>
-            <param name="settings">Optional settings object.</param>
-        </member>
-        <member name="P:Tortuga.Chain.MySql.MySqlDataSourceBase.DatabaseMetadata">
-            <summary>
-            Gets the database metadata.
-            </summary>
-        </member>
         <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.Delete``1(Tortuga.Chain.MySql.MySqlObjectName,``0,Tortuga.Chain.DeleteOptions)">
             <summary>
             Delete the specified table name.
@@ -1007,7 +996,7 @@
             <param name="procedureName">Name of the procedure.</param>
             <returns></returns>
         </member>
-        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.Procedure(System.String,System.Object)">
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.Procedure(Tortuga.Chain.MySql.MySqlObjectName,System.Object)">
             <summary>
             Executes the indicated procedure.
             </summary>
@@ -1143,6 +1132,270 @@
             <param name="argumentValue">The argument value.</param>
             <param name="options">The options for how the insert/update occurs.</param>
             <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.Delete``1(System.String,``0,Tortuga.Chain.DeleteOptions)">
+            <summary>
+            Delete the specified table name.
+            </summary>
+            <typeparam name="TArgument">The type of the t argument.</typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="argumentValue">The argument value.</param>
+            <param name="options">The options.</param>
+            <returns>ObjectDbCommandBuilder&lt;MySqlCommand, MySqlParameter, TArgument&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.DeleteByKey``1(System.String,``0,Tortuga.Chain.DeleteOptions)">
+            <summary>
+            Delete a record by its primary key.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="key">The key.</param>
+            <param name="options">The options.</param>
+            <returns>MultipleRowDbCommandBuilder&lt;MySqlCommand, MySqlParameter&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.DeleteByKey(System.String,System.String,Tortuga.Chain.DeleteOptions)">
+            <summary>
+            Delete a record by its primary key.
+            </summary>
+            <param name="tableName">Name of the table.</param>
+            <param name="key">The key.</param>
+            <param name="options">The options.</param>
+            <returns>MultipleRowDbCommandBuilder&lt;MySqlCommand, MySqlParameter&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.DeleteByKeyList``1(System.String,System.Collections.Generic.IEnumerable{``0},Tortuga.Chain.DeleteOptions)">
+            <summary>
+            Delete multiple rows by key.
+            </summary>
+            <typeparam name="TKey">The type of the t key.</typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="keys">The keys.</param>
+            <param name="options">Update options.</param>
+            <returns>MultipleRowDbCommandBuilder&lt;MySqlCommand, MySqlParameter&gt;.</returns>
+            <exception cref="T:Tortuga.Chain.MappingException"></exception>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.DeleteWithFilter(System.String,System.String)">
+            <summary>
+            Delete multiple records using a where expression.
+            </summary>
+            <param name="tableName">Name of the table.</param>
+            <param name="whereClause">The where clause.</param>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.DeleteWithFilter(System.String,System.String,System.Object)">
+            <summary>
+            Delete multiple records using a where expression.
+            </summary>
+            <param name="tableName">Name of the table.</param>
+            <param name="whereClause">The where clause.</param>
+            <param name="argumentValue">The argument value for the where clause.</param>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.DeleteWithFilter(System.String,System.Object,Tortuga.Chain.FilterOptions)">
+            <summary>
+            Delete multiple records using a filter object.
+            </summary>
+            <param name="tableName">Name of the table.</param>
+            <param name="filterValue">The filter value.</param>
+            <param name="filterOptions">The filter options.</param>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.From(System.String)">
+            <summary>
+            Froms the specified table or view name.
+            </summary>
+            <param name="tableOrViewName">Name of the table or view.</param>
+            <returns>TableDbCommandBuilder&lt;MySqlCommand, MySqlParameter, MySqlLimitOption&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.From(System.String,System.Object,Tortuga.Chain.FilterOptions)">
+            <summary>
+            Froms the specified table or view name.
+            </summary>
+            <param name="tableOrViewName">Name of the table or view.</param>
+            <param name="filterValue">The filter value.</param>
+            <param name="filterOptions">The filter options.</param>
+            <returns>TableDbCommandBuilder&lt;MySqlCommand, MySqlParameter, MySqlLimitOption&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.From(System.String,System.String)">
+            <summary>
+            Froms the specified table or view name.
+            </summary>
+            <param name="tableOrViewName">Name of the table or view.</param>
+            <param name="whereClause">The where clause.</param>
+            <returns>TableDbCommandBuilder&lt;MySqlCommand, MySqlParameter, MySqlLimitOption&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.From(System.String,System.String,System.Object)">
+            <summary>
+            Froms the specified table or view name.
+            </summary>
+            <param name="tableOrViewName">Name of the table or view.</param>
+            <param name="whereClause">The where clause.</param>
+            <param name="argumentValue">The argument value.</param>
+            <returns>TableDbCommandBuilder&lt;MySqlCommand, MySqlParameter, MySqlLimitOption&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.GetByKey``1(System.String,``0)">
+            <summary>
+            Gets a record by its key.
+            </summary>
+            <typeparam name="TKey"></typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="key">The key.</param>
+            <returns>MultipleRowDbCommandBuilder&lt;MySqlCommand, MySqlParameter&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.GetByKey(System.String,System.String)">
+            <summary>
+            Gets a record by its key.
+            </summary>
+            <param name="tableName">Name of the table.</param>
+            <param name="key">The key.</param>
+            <returns>MultipleRowDbCommandBuilder&lt;MySqlCommand, MySqlParameter&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.GetByKeyList``1(System.String,System.String,System.Collections.Generic.IEnumerable{``0})">
+            <summary>Gets a set of records by an unique key.</summary>
+            <typeparam name="T"></typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="keyColumn">Name of the key column. This should be a primary or unique key, but that's not enforced.</param>
+            <param name="keys">The keys.</param>
+            <returns>MultipleRowDbCommandBuilder&lt;MySqlCommand, MySqlParameter&gt;.</returns>
+            <exception cref="T:Tortuga.Chain.MappingException"></exception>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.GetByKeyList``1(System.String,System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Gets a set of records by their primary key.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="keys">The keys.</param>
+            <returns>MultipleRowDbCommandBuilder&lt;MySqlCommand, MySqlParameter&gt;.</returns>
+            <exception cref="T:Tortuga.Chain.MappingException"></exception>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.Insert``1(System.String,``0,Tortuga.Chain.InsertOptions)">
+            <summary>
+            Inserts the specified table name.
+            </summary>
+            <typeparam name="TArgument">The type of the t argument.</typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="argumentValue">The argument value.</param>
+            <param name="options">The options.</param>
+            <returns>ObjectDbCommandBuilder&lt;MySqlCommand, MySqlParameter, TArgument&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.Procedure(System.String)">
+            <summary>
+            Executes the indicated procedure.
+            </summary>
+            <param name="procedureName">Name of the procedure.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.Procedure(System.String,System.Object)">
+            <summary>
+            Executes the indicated procedure.
+            </summary>
+            <param name="procedureName">Name of the procedure.</param>
+            <param name="argumentValue">The argument value.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.ScalarFunction(System.String)">
+            <summary>
+            This is used to query a scalar function.
+            </summary>
+            <param name="scalarFunctionName">Name of the scalar function.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.ScalarFunction(System.String,System.Object)">
+            <summary>
+            This is used to query a scalar function.
+            </summary>
+            <param name="scalarFunctionName">Name of the scalar function.</param>
+            <param name="functionArgumentValue">The function arguments.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.Update``1(System.String,``0,Tortuga.Chain.UpdateOptions)">
+            <summary>
+            Update the specified table name.
+            </summary>
+            <typeparam name="TArgument">The type of the t argument.</typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="argumentValue">The argument value.</param>
+            <param name="options">The options.</param>
+            <returns>ObjectDbCommandBuilder&lt;MySqlCommand, MySqlParameter, TArgument&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.UpdateByKey``2(System.String,``0,``1,Tortuga.Chain.UpdateOptions)">
+            <summary>
+            Delete a record by its primary key.
+            </summary>
+            <typeparam name="TArgument">The type of the t argument.</typeparam>
+            <typeparam name="TKey"></typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="newValues">The new values to use.</param>
+            <param name="key">The key.</param>
+            <param name="options">The options.</param>
+            <returns>MultipleRowDbCommandBuilder&lt;MySqlCommand, MySqlParameter&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.UpdateByKey``1(System.String,``0,System.String,Tortuga.Chain.UpdateOptions)">
+            <summary>
+            Delete a record by its primary key.
+            </summary>
+            <typeparam name="TArgument">The type of the t argument.</typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="newValues">The new values to use.</param>
+            <param name="key">The key.</param>
+            <param name="options">The options.</param>
+            <returns>MultipleRowDbCommandBuilder&lt;MySqlCommand, MySqlParameter&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.UpdateByKeyList``2(System.String,``0,System.Collections.Generic.IEnumerable{``1},Tortuga.Chain.UpdateOptions)">
+            <summary>
+            Update multiple rows by key.
+            </summary>
+            <typeparam name="TArgument">The type of the t argument.</typeparam>
+            <typeparam name="TKey">The type of the t key.</typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="newValues">The new values to use.</param>
+            <param name="keys">The keys.</param>
+            <param name="options">Update options.</param>
+            <returns>MultipleRowDbCommandBuilder&lt;MySqlCommand, MySqlParameter&gt;.</returns>
+            <exception cref="T:Tortuga.Chain.MappingException"></exception>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.UpdateSet(System.String,System.String,Tortuga.Chain.UpdateOptions)">
+            <summary>
+            Update multiple records using an update expression.
+            </summary>
+            <param name="tableName">Name of the table.</param>
+            <param name="updateExpression">The update expression.</param>
+            <param name="options">The update options.</param>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.UpdateSet(System.String,System.String,System.Object,Tortuga.Chain.UpdateOptions)">
+            <summary>
+            Update multiple records using an update expression.
+            </summary>
+            <param name="tableName">Name of the table.</param>
+            <param name="updateExpression">The update expression.</param>
+            <param name="updateArgumentValue">The update argument value.</param>
+            <param name="options">The update options.</param>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.UpdateSet(System.String,System.Object,Tortuga.Chain.UpdateOptions)">
+            <summary>
+            Update multiple records using an update value.
+            </summary>
+            <param name="tableName">Name of the table.</param>
+            <param name="newValues">The new values to use.</param>
+            <param name="options">The options.</param>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.Upsert``1(System.String,``0,Tortuga.Chain.UpsertOptions)">
+            <summary>
+            Upserts the specified table name.
+            </summary>
+            <typeparam name="TArgument">The type of the t argument.</typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="argumentValue">The argument value.</param>
+            <param name="options">The options.</param>
+            <returns>ObjectDbCommandBuilder&lt;MySqlCommand, MySqlParameter, TArgument&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.#ctor(Tortuga.Chain.DataSources.DataSourceSettings)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.MySql.MySqlDataSourceBase"/> class.
+            </summary>
+            <param name="settings">Optional settings object.</param>
+        </member>
+        <member name="P:Tortuga.Chain.MySql.MySqlDataSourceBase.DatabaseMetadata">
+            <summary>
+            Gets the database metadata.
+            </summary>
         </member>
         <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.OnGetDatabaseMetadata">
             <summary>
