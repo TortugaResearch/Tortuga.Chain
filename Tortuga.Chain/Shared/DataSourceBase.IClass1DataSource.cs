@@ -1,17 +1,43 @@
 ﻿using System.Collections.Generic;
 using Tortuga.Chain.CommandBuilders;
-using Tortuga.Chain.DataSources;
-using Tortuga.Chain.Metadata;
+
+#if ACCESS
+
+using System;
+
+#endif
+
+#if SQL_SERVER
+
+namespace Tortuga.Chain.SqlServer
+{
+    partial class SqlServerDataSourceBase : IClass1DataSource
+#elif SQLITE
+
+namespace Tortuga.Chain.SQLite
+{
+    partial class SQLiteDataSourceBase : IClass1DataSource
+
+#elif MYSQL
+
+namespace Tortuga.Chain.MySql
+{
+    partial class MySqlDataSourceBase : IClass1DataSource
+
+#elif POSTGRESQL
 
 namespace Tortuga.Chain.PostgreSql
 {
-    partial class PostgreSqlDataSourceBase : IClass2DataSource
-    {
-        IDatabaseMetadataCache IDataSource.DatabaseMetadata
-        {
-            get { return DatabaseMetadata; }
-        }
+    partial class PostgreSqlDataSourceBase : IClass1DataSource
 
+#elif ACCESS
+
+namespace Tortuga.Chain.Access
+{
+    partial class AccessDataSourceBase : IClass1DataSource
+
+#endif
+    {
         IObjectDbCommandBuilder<TArgument> IClass1DataSource.Delete<TArgument>(string tableName, TArgument argumentValue, DeleteOptions options)
         {
             return Delete(tableName, argumentValue, options);
@@ -112,59 +138,24 @@ namespace Tortuga.Chain.PostgreSql
             return GetByKeyList(tableName, keys);
         }
 
-        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Insert<TArgument>(TArgument argumentValue, InsertOptions options)
-        {
-            return Insert(argumentValue, options);
-        }
-
         IObjectDbCommandBuilder<TArgument> IClass1DataSource.Insert<TArgument>(string tableName, TArgument argumentValue, InsertOptions options)
         {
             return Insert(tableName, argumentValue, options);
         }
 
-        IMultipleTableDbCommandBuilder IClass2DataSource.Procedure(string procedureName)
+        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Insert<TArgument>(TArgument argumentValue, InsertOptions options)
         {
-            return Procedure(procedureName);
-        }
-
-        IMultipleTableDbCommandBuilder IClass2DataSource.Procedure(string procedureName, object argumentValue)
-        {
-            return Procedure(procedureName, argumentValue);
-        }
-
-        IScalarDbCommandBuilder IClass2DataSource.ScalarFunction(string scalarFunctionName)
-        {
-            return ScalarFunction(scalarFunctionName);
-        }
-
-        IScalarDbCommandBuilder IClass2DataSource.ScalarFunction(string scalarFunctionName, object functionArgumentValue)
-        {
-            return ScalarFunction(scalarFunctionName, functionArgumentValue);
-        }
-
-        IMultipleTableDbCommandBuilder IClass0DataSource.Sql(string sqlStatement, object argumentValue)
-        {
-            return Sql(sqlStatement, argumentValue);
-        }
-
-        ITableDbCommandBuilder IClass2DataSource.TableFunction(string functionName)
-        {
-            return TableFunction(functionName);
-        }
-
-        ITableDbCommandBuilder IClass2DataSource.TableFunction(string functionName, object functionArgumentValue)
-        {
-            return TableFunction(functionName, functionArgumentValue);
-        }
-
-        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Update<TArgument>(TArgument argumentValue, UpdateOptions options)
-        {
-            return Update(argumentValue, options);
+            return Insert(argumentValue, options);
         }
 
         IObjectDbCommandBuilder<TArgument> IClass1DataSource.Update<TArgument>(string tableName, TArgument argumentValue, UpdateOptions options)
         {
             return Update(tableName, argumentValue, options);
+        }
+
+        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Update<TArgument>(TArgument argumentValue, UpdateOptions options)
+        {
+            return Update(argumentValue, options);
         }
 
         ISingleRowDbCommandBuilder IClass1DataSource.UpdateByKey<TArgument, TKey>(string tableName, TArgument newValues, TKey key, UpdateOptions options)
@@ -199,12 +190,20 @@ namespace Tortuga.Chain.PostgreSql
 
         IObjectDbCommandBuilder<TArgument> IClass1DataSource.Upsert<TArgument>(string tableName, TArgument argumentValue, UpsertOptions options)
         {
+#if ACCESS
+            throw new NotImplementedException("See issue #122");
+#else
             return Upsert(tableName, argumentValue, options);
+#endif
         }
 
         IObjectDbCommandBuilder<TArgument> IClass1DataSource.Upsert<TArgument>(TArgument argumentValue, UpsertOptions options)
         {
+#if ACCESS
+            throw new NotImplementedException("See issue #122");
+#else
             return Upsert(argumentValue, options);
+#endif
         }
     }
 }

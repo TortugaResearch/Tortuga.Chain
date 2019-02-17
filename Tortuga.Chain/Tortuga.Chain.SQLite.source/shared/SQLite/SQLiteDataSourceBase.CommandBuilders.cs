@@ -350,7 +350,7 @@ namespace Tortuga.Chain.SQLite
         /// <param name="sqlStatement">The SQL statement.</param>
         /// <param name="lockType">Type of the lock.</param>
         /// <returns>SQLiteSqlCall.</returns>
-        public MultipleTableDbCommandBuilder<SQLiteCommand, SQLiteParameter> Sql(string sqlStatement, LockType lockType = LockType.Write)
+        public MultipleTableDbCommandBuilder<SQLiteCommand, SQLiteParameter> Sql(string sqlStatement, LockType lockType)
         {
             return new SQLiteSqlCall(this, sqlStatement, null, lockType);
         }
@@ -362,7 +362,7 @@ namespace Tortuga.Chain.SQLite
         /// <param name="argumentValue">The argument value.</param>
         /// <param name="lockType">Type of the lock.</param>
         /// <returns>SQLiteSqlCall.</returns>
-        public MultipleTableDbCommandBuilder<SQLiteCommand, SQLiteParameter> Sql(string sqlStatement, object argumentValue, LockType lockType = LockType.Write)
+        public MultipleTableDbCommandBuilder<SQLiteCommand, SQLiteParameter> Sql(string sqlStatement, object argumentValue, LockType lockType)
         {
             return new SQLiteSqlCall(this, sqlStatement, argumentValue, lockType);
         }
@@ -542,6 +542,11 @@ namespace Tortuga.Chain.SQLite
             }
 
             return new SQLiteTableOrView(this, tableName, where, parameters);
+        }
+
+        MultipleTableDbCommandBuilder<SQLiteCommand, SQLiteParameter> OnSql(string sqlStatement, object argumentValue)
+        {
+            return new SQLiteSqlCall(this, sqlStatement, argumentValue, LockType.Write);
         }
     }
 }

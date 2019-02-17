@@ -5,7 +5,6 @@ using System.Linq;
 using Tortuga.Anchor;
 using Tortuga.Chain.Access.CommandBuilders;
 using Tortuga.Chain.CommandBuilders;
-using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.Access
@@ -348,27 +347,6 @@ namespace Tortuga.Chain.Access
         }
 
         /// <summary>
-        /// Creates a operation based on a raw SQL statement.
-        /// </summary>
-        /// <param name="sqlStatement">The SQL statement.</param>
-        /// <returns>AccessSqlCall.</returns>
-        public MultipleTableDbCommandBuilder<OleDbCommand, OleDbParameter> Sql(string sqlStatement)
-        {
-            return new AccessSqlCall(this, sqlStatement, null);
-        }
-
-        /// <summary>
-        /// Creates a operation based on a raw SQL statement.
-        /// </summary>
-        /// <param name="sqlStatement">The SQL statement.</param>
-        /// <param name="argumentValue">The argument value.</param>
-        /// <returns>AccessSqlCall.</returns>
-        public MultipleTableDbCommandBuilder<OleDbCommand, OleDbParameter> Sql(string sqlStatement, object argumentValue)
-        {
-            return new AccessSqlCall(this, sqlStatement, argumentValue);
-        }
-
-        /// <summary>
         /// Creates a <see cref="AccessUpdateObject{TArgument}" /> used to perform an update operation.
         /// </summary>
         /// <param name="tableName"></param>
@@ -517,6 +495,11 @@ namespace Tortuga.Chain.Access
             }
 
             return new AccessTableOrView(this, tableName, where, parameters);
+        }
+
+        MultipleTableDbCommandBuilder<OleDbCommand, OleDbParameter> OnSql(string sqlStatement, object argumentValue)
+        {
+            return new AccessSqlCall(this, sqlStatement, argumentValue);
         }
     }
 }

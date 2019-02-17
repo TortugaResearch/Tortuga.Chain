@@ -389,27 +389,6 @@ namespace Tortuga.Chain.MySql
         }
 
         /// <summary>
-        /// SQLs the specified SQL statement.
-        /// </summary>
-        /// <param name="sqlStatement">The SQL statement.</param>
-        /// <returns>MultipleTableDbCommandBuilder&lt;MySqlCommand, MySqlParameter&gt;.</returns>
-        public MultipleTableDbCommandBuilder<MySqlCommand, MySqlParameter> Sql(string sqlStatement)
-        {
-            return new MySqlSqlCall(this, sqlStatement, null);
-        }
-
-        /// <summary>
-        /// SQLs the specified SQL statement.
-        /// </summary>
-        /// <param name="sqlStatement">The SQL statement.</param>
-        /// <param name="argumentValue">The argument value.</param>
-        /// <returns>MultipleTableDbCommandBuilder&lt;MySqlCommand, MySqlParameter&gt;.</returns>
-        public MultipleTableDbCommandBuilder<MySqlCommand, MySqlParameter> Sql(string sqlStatement, object argumentValue)
-        {
-            return new MySqlSqlCall(this, sqlStatement, argumentValue);
-        }
-
-        /// <summary>
         /// Update the specified table name.
         /// </summary>
         /// <typeparam name="TArgument">The type of the t argument.</typeparam>
@@ -583,6 +562,11 @@ namespace Tortuga.Chain.MySql
             }
 
             return new MySqlTableOrView(this, tableName, where, parameters);
+        }
+
+        MultipleTableDbCommandBuilder<MySqlCommand, MySqlParameter> OnSql(string sqlStatement, object argumentValue)
+        {
+            return new MySqlSqlCall(this, sqlStatement, argumentValue);
         }
     }
 }

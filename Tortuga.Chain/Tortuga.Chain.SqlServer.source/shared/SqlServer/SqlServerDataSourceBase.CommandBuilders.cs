@@ -633,27 +633,6 @@ namespace Tortuga.Chain.SqlServer
         }
 
         /// <summary>
-        /// Creates a operation based on a raw SQL statement.
-        /// </summary>
-        /// <param name="sqlStatement">The SQL statement.</param>
-        /// <returns></returns>
-        public MultipleTableDbCommandBuilder<SqlCommand, SqlParameter> Sql(string sqlStatement)
-        {
-            return new SqlServerSqlCall(this, sqlStatement, null);
-        }
-
-        /// <summary>
-        /// Creates a operation based on a raw SQL statement.
-        /// </summary>
-        /// <param name="sqlStatement">The SQL statement.</param>
-        /// <param name="argumentValue">The argument value.</param>
-        /// <returns>SqlServerSqlCall.</returns>
-        public MultipleTableDbCommandBuilder<SqlCommand, SqlParameter> Sql(string sqlStatement, object argumentValue)
-        {
-            return new SqlServerSqlCall(this, sqlStatement, argumentValue);
-        }
-
-        /// <summary>
         /// This is used to query a table valued function.
         /// </summary>
         /// <param name="tableFunctionName">Name of the table function.</param>
@@ -848,6 +827,11 @@ namespace Tortuga.Chain.SqlServer
             }
 
             return new SqlServerTableOrView(this, tableName, where, parameters);
+        }
+
+        MultipleTableDbCommandBuilder<SqlCommand, SqlParameter> OnSql(string sqlStatement, object argumentValue)
+        {
+            return new SqlServerSqlCall(this, sqlStatement, argumentValue);
         }
     }
 }

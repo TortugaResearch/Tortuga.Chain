@@ -389,27 +389,6 @@ namespace Tortuga.Chain.PostgreSql
         }
 
         /// <summary>
-        /// SQLs the specified SQL statement.
-        /// </summary>
-        /// <param name="sqlStatement">The SQL statement.</param>
-        /// <returns>MultipleTableDbCommandBuilder&lt;NpgsqlCommand, NpgsqlParameter&gt;.</returns>
-        public MultipleTableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> Sql(string sqlStatement)
-        {
-            return new PostgreSqlSqlCall(this, sqlStatement, null);
-        }
-
-        /// <summary>
-        /// SQLs the specified SQL statement.
-        /// </summary>
-        /// <param name="sqlStatement">The SQL statement.</param>
-        /// <param name="argumentValue">The argument value.</param>
-        /// <returns>MultipleTableDbCommandBuilder&lt;NpgsqlCommand, NpgsqlParameter&gt;.</returns>
-        public MultipleTableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> Sql(string sqlStatement, object argumentValue)
-        {
-            return new PostgreSqlSqlCall(this, sqlStatement, argumentValue);
-        }
-
-        /// <summary>
         /// This is used to query a table valued function.
         /// </summary>
         /// <param name="tableFunctionName">Name of the table function.</param>
@@ -606,6 +585,11 @@ namespace Tortuga.Chain.PostgreSql
             }
 
             return new PostgreSqlTableOrView(this, tableName, where, parameters);
+        }
+
+        MultipleTableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> OnSql(string sqlStatement, object argumentValue)
+        {
+            return new PostgreSqlSqlCall(this, sqlStatement, argumentValue);
         }
     }
 }

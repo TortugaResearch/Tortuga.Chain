@@ -25,8 +25,6 @@ namespace Tortuga.Chain.Access
         /// <value>The database metadata.</value>
         public abstract new AccessMetadataCache DatabaseMetadata { get; }
 
-        IDatabaseMetadataCache IDataSource.DatabaseMetadata => DatabaseMetadata;
-
         /// <summary>
         /// Called when Database.DatabaseMetadata is invoked.
         /// </summary>
