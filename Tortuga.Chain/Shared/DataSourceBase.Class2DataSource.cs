@@ -6,6 +6,9 @@ using AbstractCommand = System.Data.SqlClient.SqlCommand;
 using AbstractParameter = System.Data.SqlClient.SqlParameter;
 using AbstractObjectName = Tortuga.Chain.SqlServer.SqlServerObjectName;
 using AbstractLimitOption = Tortuga.Chain.SqlServerLimitOption;
+using AbstractProcedureCall = Tortuga.Chain.SqlServer.CommandBuilders.SqlServerProcedureCall;
+using AbstractScalarFunction = Tortuga.Chain.SqlServer.CommandBuilders.SqlServerScalarFunction;
+using AbstractTableFunction = Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableFunction;
 
 #elif MYSQL
 
@@ -13,6 +16,8 @@ using AbstractCommand = MySql.Data.MySqlClient.MySqlCommand;
 using AbstractParameter = MySql.Data.MySqlClient.MySqlParameter;
 using AbstractObjectName = Tortuga.Chain.MySql.MySqlObjectName;
 using AbstractLimitOption = Tortuga.Chain.MySqlLimitOption;
+using AbstractProcedureCall = Tortuga.Chain.MySql.CommandBuilders.MySqlProcedureCall;
+using AbstractScalarFunction= Tortuga.Chain.MySql.CommandBuilders.MySqlScalarFunction;
 
 #elif POSTGRESQL
 
@@ -20,6 +25,9 @@ using AbstractCommand = Npgsql.NpgsqlCommand;
 using AbstractParameter = Npgsql.NpgsqlParameter;
 using AbstractObjectName = Tortuga.Chain.PostgreSql.PostgreSqlObjectName;
 using AbstractLimitOption = Tortuga.Chain.PostgreSqlLimitOption;
+using AbstractProcedureCall = Tortuga.Chain.PostgreSql.CommandBuilders.PostgreSqlProcedureCall;
+using AbstractScalarFunction = Tortuga.Chain.PostgreSql.CommandBuilders.PostgreSqlScalarFunction;
+using AbstractTableFunction = Tortuga.Chain.PostgreSql.CommandBuilders.PostgreSqlTableFunction;
 
 #endif
 
@@ -47,9 +55,9 @@ namespace Tortuga.Chain.PostgreSql
         /// </summary>
         /// <param name="procedureName">Name of the procedure.</param>
         /// <returns></returns>
-        public MultipleTableDbCommandBuilder<AbstractCommand, AbstractParameter> Procedure(string procedureName)
+        public MultipleTableDbCommandBuilder<AbstractCommand, AbstractParameter> Procedure(AbstractObjectName procedureName)
         {
-            return Procedure(new AbstractObjectName(procedureName));
+            return new AbstractProcedureCall(this, procedureName, null);
         }
 
         /// <summary>
@@ -61,9 +69,9 @@ namespace Tortuga.Chain.PostgreSql
         /// <remarks>
         /// The procedure's definition is loaded from the database and used to determine which properties on the parameter object to use.
         /// </remarks>
-        public MultipleTableDbCommandBuilder<AbstractCommand, AbstractParameter> Procedure(string procedureName, object argumentValue)
+        public MultipleTableDbCommandBuilder<AbstractCommand, AbstractParameter> Procedure(AbstractObjectName procedureName, object argumentValue)
         {
-            return Procedure(new AbstractObjectName(procedureName), argumentValue);
+            return new AbstractProcedureCall(this, procedureName, argumentValue);
         }
 
         /// <summary>
@@ -71,9 +79,9 @@ namespace Tortuga.Chain.PostgreSql
         /// </summary>
         /// <param name="scalarFunctionName">Name of the scalar function.</param>
         /// <returns></returns>
-        public ScalarDbCommandBuilder<AbstractCommand, AbstractParameter> ScalarFunction(string scalarFunctionName)
+        public ScalarDbCommandBuilder<AbstractCommand, AbstractParameter> ScalarFunction(AbstractObjectName scalarFunctionName)
         {
-            return ScalarFunction(new AbstractObjectName(scalarFunctionName));
+            return new AbstractScalarFunction(this, scalarFunctionName, null);
         }
 
         /// <summary>
@@ -82,9 +90,9 @@ namespace Tortuga.Chain.PostgreSql
         /// <param name="scalarFunctionName">Name of the scalar function.</param>
         /// <param name="functionArgumentValue">The function argument.</param>
         /// <returns></returns>
-        public ScalarDbCommandBuilder<AbstractCommand, AbstractParameter> ScalarFunction(string scalarFunctionName, object functionArgumentValue)
+        public ScalarDbCommandBuilder<AbstractCommand, AbstractParameter> ScalarFunction(AbstractObjectName scalarFunctionName, object functionArgumentValue)
         {
-            return ScalarFunction(new AbstractObjectName(scalarFunctionName), functionArgumentValue);
+            return new AbstractScalarFunction(this, scalarFunctionName, functionArgumentValue);
         }
 
 #if !MYSQL
@@ -94,9 +102,9 @@ namespace Tortuga.Chain.PostgreSql
         /// </summary>
         /// <param name="tableFunctionName">Name of the table function.</param>
         /// <returns></returns>
-        public TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption> TableFunction(string tableFunctionName)
+        public TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption> TableFunction(AbstractObjectName tableFunctionName)
         {
-            return TableFunction(new AbstractObjectName(tableFunctionName));
+            return new AbstractTableFunction(this, tableFunctionName, null);
         }
 
         /// <summary>
@@ -105,9 +113,9 @@ namespace Tortuga.Chain.PostgreSql
         /// <param name="tableFunctionName">Name of the table function.</param>
         /// <param name="functionArgumentValue">The function argument.</param>
         /// <returns></returns>
-        public TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption> TableFunction(string tableFunctionName, object functionArgumentValue)
+        public TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption> TableFunction(AbstractObjectName tableFunctionName, object functionArgumentValue)
         {
-            return TableFunction(new AbstractObjectName(tableFunctionName), functionArgumentValue);
+            return new AbstractTableFunction(this, tableFunctionName, functionArgumentValue);
         }
 
 #endif

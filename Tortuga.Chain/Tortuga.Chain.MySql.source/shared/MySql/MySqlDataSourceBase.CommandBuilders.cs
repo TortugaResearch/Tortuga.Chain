@@ -347,48 +347,6 @@ namespace Tortuga.Chain.MySql
         }
 
         /// <summary>
-        /// Executes the indicated procedure.
-        /// </summary>
-        /// <param name="procedureName">Name of the procedure.</param>
-        /// <returns></returns>
-        public MultipleTableDbCommandBuilder<MySqlCommand, MySqlParameter> Procedure(MySqlObjectName procedureName)
-        {
-            return new MySqlProcedureCall(this, procedureName);
-        }
-
-        /// <summary>
-        /// Executes the indicated procedure.
-        /// </summary>
-        /// <param name="procedureName">Name of the procedure.</param>
-        /// <param name="argumentValue">The argument value.</param>
-        /// <returns></returns>
-        public MultipleTableDbCommandBuilder<MySqlCommand, MySqlParameter> Procedure(MySqlObjectName procedureName, object argumentValue)
-        {
-            return new MySqlProcedureCall(this, procedureName, argumentValue);
-        }
-
-        /// <summary>
-        /// This is used to query a scalar function.
-        /// </summary>
-        /// <param name="scalarFunctionName">Name of the scalar function.</param>
-        /// <returns></returns>
-        public ScalarDbCommandBuilder<MySqlCommand, MySqlParameter> ScalarFunction(MySqlObjectName scalarFunctionName)
-        {
-            return new MySqlScalarFunction(this, scalarFunctionName, null);
-        }
-
-        /// <summary>
-        /// This is used to query a scalar function.
-        /// </summary>
-        /// <param name="scalarFunctionName">Name of the scalar function.</param>
-        /// <param name="functionArgumentValue">The function arguments.</param>
-        /// <returns></returns>
-        public ScalarDbCommandBuilder<MySqlCommand, MySqlParameter> ScalarFunction(MySqlObjectName scalarFunctionName, object functionArgumentValue)
-        {
-            return new MySqlScalarFunction(this, scalarFunctionName, functionArgumentValue);
-        }
-
-        /// <summary>
         /// Update the specified table name.
         /// </summary>
         /// <typeparam name="TArgument">The type of the t argument.</typeparam>

@@ -96,6 +96,9 @@
     <Compile Include="..\Shared\DataSourceBase.Class1DataSource.StringNames.cs">
       <Link>shared\SqlServer\DataSourceBase.Class1DataSource.StringNames.cs</Link>
     </Compile>
+    <Compile Include="..\Shared\DataSourceBase.Class2DataSource.cs">
+      <Link>shared\SqlServer\DataSourceBase.Class2DataSource.cs</Link>
+    </Compile>
     <Compile Include="..\Shared\DataSourceBase.Class2DataSource.StringNames.cs">
       <Link>shared\SqlServer\DataSourceBase.Class2DataSource.StringNames.cs</Link>
     </Compile>
