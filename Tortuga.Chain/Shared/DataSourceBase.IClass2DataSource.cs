@@ -11,6 +11,12 @@ using System;
 namespace Tortuga.Chain.SqlServer
 {
     partial class SqlServerDataSourceBase : IClass2DataSource
+#elif SQL_SERVER_OLEDB
+
+namespace Tortuga.Chain.SqlServer
+{
+    partial class OleDbSqlServerDataSourceBase : IClass2DataSource
+
 #elif MYSQL
 
 namespace Tortuga.Chain.MySql

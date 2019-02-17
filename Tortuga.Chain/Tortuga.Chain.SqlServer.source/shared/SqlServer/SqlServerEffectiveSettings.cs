@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
 #if !OleDb_Missing
-using System.Data.OleDb;
+
 #endif
 
 namespace Tortuga.Chain.SqlServer
@@ -13,9 +13,11 @@ namespace Tortuga.Chain.SqlServer
     /// </summary>
     public class SqlServerEffectiveSettings
     {
-        int m_Options;
+        internal int m_Options;
 
-        internal SqlServerEffectiveSettings() { }
+        internal SqlServerEffectiveSettings()
+        {
+        }
 
         [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         internal void Reload(SqlConnection connection, SqlTransaction transaction)
@@ -29,21 +31,6 @@ namespace Tortuga.Chain.SqlServer
             using (var cmd = new SqlCommand("SELECT @@Options") { Connection = connection, Transaction = transaction })
                 m_Options = (int)(await cmd.ExecuteScalarAsync());
         }
-
-#if !OleDb_Missing
-        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-        internal void Reload(OleDbConnection connection, OleDbTransaction transaction)
-        {
-            using (var cmd = new OleDbCommand("SELECT @@Options") { Connection = connection, Transaction = transaction })
-                m_Options = (int)cmd.ExecuteScalar();
-        }
-
-        internal async Task ReloadAsync(OleDbConnection connection, OleDbTransaction transaction)
-        {
-            using (var cmd = new OleDbCommand("SELECT @@Options") { Connection = connection, Transaction = transaction })
-                m_Options = (int)(await cmd.ExecuteScalarAsync());
-        }
-#endif
 
         /// <summary>
         /// DISABLE_DEF_CNST_CHK. Controls interim or deferred constraint checking.
@@ -111,7 +98,6 @@ namespace Tortuga.Chain.SqlServer
         /// NUMERIC_ROUNDABORT. Generates an error when a loss of precision occurs in an expression.
         /// </summary>
         public bool NumericRoundAbort { get { return (m_Options & 8192) > 0; } }
-
 
         /// <summary>
         /// XACT_ABORT. Rolls back a transaction if a Transact-SQL statement raises a run-time error.

@@ -1,5 +1,3 @@
-#if !OleDb_Missing
-
 using System.Data.OleDb;
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Metadata;
@@ -35,5 +33,3 @@ namespace Tortuga.Chain.SqlServer
         }
     }
 }
-
-#endif

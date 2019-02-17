@@ -1,4 +1,3 @@
-#if !OleDb_Missing
 using System.Collections.Generic;
 using System.Data.OleDb;
 using Tortuga.Chain.CommandBuilders;
@@ -31,12 +30,6 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         }
 
         /// <summary>
-        /// Gets the table metadata.
-        /// </summary>
-        /// <value>The metadata.</value>
-        public SqlServerTableOrViewMetadata<OleDbType> Table { get; }
-
-        /// <summary>
         /// Gets the data source.
         /// </summary>
         /// <value>The data source.</value>
@@ -44,6 +37,12 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         {
             get { return (OleDbSqlServerDataSourceBase)base.DataSource; }
         }
+
+        /// <summary>
+        /// Gets the table metadata.
+        /// </summary>
+        /// <value>The metadata.</value>
+        public SqlServerTableOrViewMetadata<OleDbType> Table { get; }
 
         /// <summary>
         /// Returns the column associated with the column name.
@@ -70,4 +69,3 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         public override IReadOnlyList<ColumnMetadata> TryGetNonNullableColumns() => Table.NonNullableColumns;
     }
 }
-#endif

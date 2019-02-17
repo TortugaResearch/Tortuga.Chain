@@ -112,6 +112,9 @@
     <Compile Include="..\Shared\DataSourceBase.Class0DataSource.cs">
       <Link>shared\SQLite\DataSourceBase.Class0DataSource.cs</Link>
     </Compile>
+    <Compile Include="..\Shared\DataSourceBase.Class1DataSource.cs">
+      <Link>shared\SQLite\DataSourceBase.Class1DataSource.cs</Link>
+    </Compile>
     <Compile Include="..\Shared\DataSourceBase.Class1DataSource.StringNames.cs">
       <Link>shared\SQLite\DataSourceBase.Class1DataSource.StringNames.cs</Link>
     </Compile>

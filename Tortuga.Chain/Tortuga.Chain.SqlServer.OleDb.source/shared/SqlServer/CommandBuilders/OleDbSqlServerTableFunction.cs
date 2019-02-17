@@ -1,5 +1,4 @@
-﻿#if !OleDb_Missing
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.OleDb;
 using System.Linq;
@@ -18,18 +17,18 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
     /// <seealso cref="TableDbCommandBuilder{OleDbCommand, OleDbParameter, SqlServerLimitOption}" />
     internal class OleDbSqlServerTableFunction : TableDbCommandBuilder<OleDbCommand, OleDbParameter, SqlServerLimitOption>
     {
-        readonly TableFunctionMetadata<SqlServerObjectName, OleDbType> m_Table;
         readonly object m_FunctionArgumentValue;
-        object m_FilterValue;
-        string m_WhereClause;
+        readonly TableFunctionMetadata<SqlServerObjectName, OleDbType> m_Table;
         object m_ArgumentValue;
-        IEnumerable<SortExpression> m_SortExpressions = Enumerable.Empty<SortExpression>();
+        FilterOptions m_FilterOptions;
+        object m_FilterValue;
         SqlServerLimitOption m_LimitOptions;
-        int? m_Skip;
-        int? m_Take;
         int? m_Seed;
         string m_SelectClause;
-        FilterOptions m_FilterOptions;
+        int? m_Skip;
+        IEnumerable<SortExpression> m_SortExpressions = Enumerable.Empty<SortExpression>();
+        int? m_Take;
+        string m_WhereClause;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="OleDbSqlServerTableFunction" /> class.
@@ -44,94 +43,39 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         }
 
         /// <summary>
-        /// Adds sorting to the command builder.
+        /// Gets the data source.
         /// </summary>
-        /// <param name="sortExpressions">The sort expressions.</param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"></exception>
-        public override TableDbCommandBuilder<OleDbCommand, OleDbParameter, SqlServerLimitOption> WithSorting(IEnumerable<SortExpression> sortExpressions)
+        /// <value>The data source.</value>
+        public new OleDbSqlServerDataSourceBase DataSource
         {
-            if (sortExpressions == null)
-                throw new ArgumentNullException(nameof(sortExpressions), $"{nameof(sortExpressions)} is null.");
-
-            m_SortExpressions = sortExpressions;
-            return this;
+            get { return (OleDbSqlServerDataSourceBase)base.DataSource; }
         }
 
         /// <summary>
-        /// Adds limits to the command builder.
+        /// Returns the row count using a <c>SELECT Count(*)</c> style query.
         /// </summary>
-        /// <param name="skip">The number of rows to skip.</param>
-        /// <param name="take">Number of rows to take.</param>
-        /// <param name="limitOptions">The limit options.</param>
-        /// <param name="seed">The seed for repeatable reads. Only applies to random sampling</param>
         /// <returns></returns>
-        protected override TableDbCommandBuilder<OleDbCommand, OleDbParameter, SqlServerLimitOption> OnWithLimits(int? skip, int? take, SqlServerLimitOption limitOptions, int? seed)
+        public override ILink<long> AsCount()
         {
-            m_Seed = seed;
-            m_Skip = skip;
-            m_Take = take;
-            m_LimitOptions = limitOptions;
-            return this;
+            m_SelectClause = "COUNT_BIG(*)";
+            return ToInt64();
         }
 
         /// <summary>
-        /// Adds limits to the command builder.
+        /// Returns the row count for a given column. <c>SELECT Count(columnName)</c>
         /// </summary>
-        /// <param name="skip">The number of rows to skip.</param>
-        /// <param name="take">Number of rows to take.</param>
-        /// <param name="limitOptions">The limit options.</param>
-        /// <param name="seed">The seed for repeatable reads. Only applies to random sampling</param>
+        /// <param name="columnName">Name of the column.</param>
+        /// <param name="distinct">if set to <c>true</c> use <c>SELECT COUNT(DISTINCT columnName)</c>.</param>
         /// <returns></returns>
-        protected override TableDbCommandBuilder<OleDbCommand, OleDbParameter, SqlServerLimitOption> OnWithLimits(int? skip, int? take, LimitOptions limitOptions, int? seed)
+        public override ILink<long> AsCount(string columnName, bool distinct = false)
         {
-            m_Seed = seed;
-            m_Skip = skip;
-            m_Take = take;
-            m_LimitOptions = (SqlServerLimitOption)limitOptions;
-            return this;
-        }
+            var column = m_Table.Columns[columnName];
+            if (distinct)
+                m_SelectClause = $"COUNT_BIG(DISTINCT {column.QuotedSqlName})";
+            else
+                m_SelectClause = $"COUNT_BIG({column.QuotedSqlName})";
 
-        /// <summary>
-        /// Adds (or replaces) the filter on this command builder.
-        /// </summary>
-        /// <param name="filterValue">The filter value.</param>
-        /// <param name="filterOptions">The filter options.</param>
-        /// <returns>TableDbCommandBuilder&lt;OleDbCommand, OleDbParameter, SqlServerLimitOption&gt;.</returns>
-        public override TableDbCommandBuilder<OleDbCommand, OleDbParameter, SqlServerLimitOption> WithFilter(object filterValue, FilterOptions filterOptions = FilterOptions.None)
-        {
-            m_FilterValue = filterValue;
-            m_WhereClause = null;
-            m_ArgumentValue = null;
-            m_FilterOptions = filterOptions;
-            return this;
-        }
-
-        /// <summary>
-        /// Adds (or replaces) the filter on this command builder.
-        /// </summary>
-        /// <param name="whereClause">The where clause.</param>
-        /// <returns></returns>
-        public override TableDbCommandBuilder<OleDbCommand, OleDbParameter, SqlServerLimitOption> WithFilter(string whereClause)
-        {
-            m_FilterValue = null;
-            m_WhereClause = whereClause;
-            m_ArgumentValue = null;
-            return this;
-        }
-
-        /// <summary>
-        /// Adds (or replaces) the filter on this command builder.
-        /// </summary>
-        /// <param name="whereClause">The where clause.</param>
-        /// <param name="argumentValue">The argument value.</param>
-        /// <returns></returns>
-        public override TableDbCommandBuilder<OleDbCommand, OleDbParameter, SqlServerLimitOption> WithFilter(string whereClause, object argumentValue)
-        {
-            m_FilterValue = null;
-            m_WhereClause = whereClause;
-            m_ArgumentValue = argumentValue;
-            return this;
+            return ToInt64();
         }
 
         /// <summary>
@@ -196,12 +140,15 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
                     if (!m_SortExpressions.Any())
                         topClause = $"TOP ({m_Take}) ";
                     break;
+
                 case SqlServerLimitOption.Percentage:
                     topClause = $"TOP ({m_Take}) PERCENT ";
                     break;
+
                 case SqlServerLimitOption.PercentageWithTies:
                     topClause = $"TOP ({m_Take}) PERCENT WITH TIES ";
                     break;
+
                 case SqlServerLimitOption.RowsWithTies:
                     topClause = $"TOP ({m_Take}) WITH TIES ";
                     break;
@@ -269,43 +216,6 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         }
 
         /// <summary>
-        /// Returns the row count using a <c>SELECT Count(*)</c> style query.
-        /// </summary>
-        /// <returns></returns>
-        public override ILink<long> AsCount()
-        {
-            m_SelectClause = "COUNT_BIG(*)";
-            return ToInt64();
-        }
-
-        /// <summary>
-        /// Returns the row count for a given column. <c>SELECT Count(columnName)</c>
-        /// </summary>
-        /// <param name="columnName">Name of the column.</param>
-        /// <param name="distinct">if set to <c>true</c> use <c>SELECT COUNT(DISTINCT columnName)</c>.</param>
-        /// <returns></returns>
-        public override ILink<long> AsCount(string columnName, bool distinct = false)
-        {
-            var column = m_Table.Columns[columnName];
-            if (distinct)
-                m_SelectClause = $"COUNT_BIG(DISTINCT {column.QuotedSqlName})";
-            else
-                m_SelectClause = $"COUNT_BIG({column.QuotedSqlName})";
-
-            return ToInt64();
-        }
-
-        /// <summary>
-        /// Gets the data source.
-        /// </summary>
-        /// <value>The data source.</value>
-        public new OleDbSqlServerDataSourceBase DataSource
-        {
-            get { return (OleDbSqlServerDataSourceBase)base.DataSource; }
-        }
-
-
-        /// <summary>
         /// Returns the column associated with the column name.
         /// </summary>
         /// <param name="columnName">Name of the column.</param>
@@ -328,6 +238,96 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// This is used by materializers to skip IsNull checks.
         /// </remarks>
         public override IReadOnlyList<ColumnMetadata> TryGetNonNullableColumns() => m_Table.NullableColumns;
+
+        /// <summary>
+        /// Adds (or replaces) the filter on this command builder.
+        /// </summary>
+        /// <param name="filterValue">The filter value.</param>
+        /// <param name="filterOptions">The filter options.</param>
+        /// <returns>TableDbCommandBuilder&lt;OleDbCommand, OleDbParameter, SqlServerLimitOption&gt;.</returns>
+        public override TableDbCommandBuilder<OleDbCommand, OleDbParameter, SqlServerLimitOption> WithFilter(object filterValue, FilterOptions filterOptions = FilterOptions.None)
+        {
+            m_FilterValue = filterValue;
+            m_WhereClause = null;
+            m_ArgumentValue = null;
+            m_FilterOptions = filterOptions;
+            return this;
+        }
+
+        /// <summary>
+        /// Adds (or replaces) the filter on this command builder.
+        /// </summary>
+        /// <param name="whereClause">The where clause.</param>
+        /// <returns></returns>
+        public override TableDbCommandBuilder<OleDbCommand, OleDbParameter, SqlServerLimitOption> WithFilter(string whereClause)
+        {
+            m_FilterValue = null;
+            m_WhereClause = whereClause;
+            m_ArgumentValue = null;
+            return this;
+        }
+
+        /// <summary>
+        /// Adds (or replaces) the filter on this command builder.
+        /// </summary>
+        /// <param name="whereClause">The where clause.</param>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <returns></returns>
+        public override TableDbCommandBuilder<OleDbCommand, OleDbParameter, SqlServerLimitOption> WithFilter(string whereClause, object argumentValue)
+        {
+            m_FilterValue = null;
+            m_WhereClause = whereClause;
+            m_ArgumentValue = argumentValue;
+            return this;
+        }
+
+        /// <summary>
+        /// Adds sorting to the command builder.
+        /// </summary>
+        /// <param name="sortExpressions">The sort expressions.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public override TableDbCommandBuilder<OleDbCommand, OleDbParameter, SqlServerLimitOption> WithSorting(IEnumerable<SortExpression> sortExpressions)
+        {
+            if (sortExpressions == null)
+                throw new ArgumentNullException(nameof(sortExpressions), $"{nameof(sortExpressions)} is null.");
+
+            m_SortExpressions = sortExpressions;
+            return this;
+        }
+
+        /// <summary>
+        /// Adds limits to the command builder.
+        /// </summary>
+        /// <param name="skip">The number of rows to skip.</param>
+        /// <param name="take">Number of rows to take.</param>
+        /// <param name="limitOptions">The limit options.</param>
+        /// <param name="seed">The seed for repeatable reads. Only applies to random sampling</param>
+        /// <returns></returns>
+        protected override TableDbCommandBuilder<OleDbCommand, OleDbParameter, SqlServerLimitOption> OnWithLimits(int? skip, int? take, SqlServerLimitOption limitOptions, int? seed)
+        {
+            m_Seed = seed;
+            m_Skip = skip;
+            m_Take = take;
+            m_LimitOptions = limitOptions;
+            return this;
+        }
+
+        /// <summary>
+        /// Adds limits to the command builder.
+        /// </summary>
+        /// <param name="skip">The number of rows to skip.</param>
+        /// <param name="take">Number of rows to take.</param>
+        /// <param name="limitOptions">The limit options.</param>
+        /// <param name="seed">The seed for repeatable reads. Only applies to random sampling</param>
+        /// <returns></returns>
+        protected override TableDbCommandBuilder<OleDbCommand, OleDbParameter, SqlServerLimitOption> OnWithLimits(int? skip, int? take, LimitOptions limitOptions, int? seed)
+        {
+            m_Seed = seed;
+            m_Skip = skip;
+            m_Take = take;
+            m_LimitOptions = (SqlServerLimitOption)limitOptions;
+            return this;
+        }
     }
 }
-#endif

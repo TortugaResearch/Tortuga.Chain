@@ -1,4 +1,3 @@
-#if !OleDb_Missing
 using System;
 using System.Collections.Generic;
 using System.Data.OleDb;
@@ -13,13 +12,35 @@ namespace Tortuga.Chain.SqlServer
     /// <seealso cref="DatabaseMetadataCache{SqlServerObjectName, OleDbType}" />
     public sealed class OleDbSqlServerMetadataCache : AbstractSqlServerMetadataCache<OleDbType>
     {
-
         /// <summary>
         /// Initializes a new instance of the <see cref="OleDbSqlServerMetadataCache"/> class.
         /// </summary>
         /// <param name="connectionBuilder">The connection builder.</param>
         public OleDbSqlServerMetadataCache(OleDbConnectionStringBuilder connectionBuilder) : base(connectionBuilder)
         {
+        }
+
+        /// <summary>
+        /// Returns the current database.
+        /// </summary>
+        /// <returns></returns>
+        public string DatabaseName
+        {
+            get
+            {
+                if (m_DatabaseName == null)
+                {
+                    using (var con = new OleDbConnection(m_ConnectionBuilder.ConnectionString))
+                    {
+                        con.Open();
+                        using (var cmd = new OleDbCommand("SELECT DB_NAME () AS DatabaseName", con))
+                        {
+                            m_DatabaseName = (string)cmd.ExecuteScalar();
+                        }
+                    }
+                }
+                return m_DatabaseName;
+            }
         }
 
         /// <summary>
@@ -46,93 +67,13 @@ namespace Tortuga.Chain.SqlServer
         }
 
         /// <summary>
-        /// Returns the current database.
+        /// Gets the detailed metadata for a table or view.
         /// </summary>
-        /// <returns></returns>
-        public string DatabaseName
+        /// <param name="tableName">Name of the table.</param>
+        /// <returns>SqlServerTableOrViewMetadata&lt;TDbType&gt;.</returns>
+        public new SqlServerTableOrViewMetadata<OleDbType> GetTableOrView(SqlServerObjectName tableName)
         {
-            get
-            {
-                if (m_DatabaseName == null)
-                {
-                    using (var con = new OleDbConnection(m_ConnectionBuilder.ConnectionString))
-                    {
-                        con.Open();
-                        using (var cmd = new OleDbCommand("SELECT DB_NAME () AS DatabaseName", con))
-                        {
-                            m_DatabaseName = (string)cmd.ExecuteScalar();
-                        }
-                    }
-                }
-                return m_DatabaseName;
-            }
-        }
-
-
-        /// <summary>
-        /// Preloads the stored procedures.
-        /// </summary>
-        public override void PreloadStoredProcedures()
-        {
-            const string StoredProcedureSql =
-            @"SELECT 
-				s.name AS SchemaName,
-				sp.name AS Name
-				FROM SYS.procedures sp
-				INNER JOIN sys.schemas s ON sp.schema_id = s.schema_id;";
-
-
-            using (var con = new OleDbConnection(m_ConnectionBuilder.ConnectionString))
-            {
-                con.Open();
-                using (var cmd = new OleDbCommand(StoredProcedureSql, con))
-                {
-                    using (var reader = cmd.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            var schema = reader.GetString(reader.GetOrdinal("SchemaName"));
-                            var name = reader.GetString(reader.GetOrdinal("Name"));
-                            GetStoredProcedure(new SqlServerObjectName(schema, name));
-                        }
-                    }
-                }
-            }
-
-        }
-
-        /// <summary>
-        /// Preloads the table value functions.
-        /// </summary>
-        public override void PreloadTableFunctions()
-        {
-            const string TvfSql =
-                @"SELECT 
-				s.name AS SchemaName,
-				o.name AS Name,
-				o.object_id AS ObjectId
-				FROM sys.objects o
-				INNER JOIN sys.schemas s ON o.schema_id = s.schema_id
-				WHERE o.type in ('TF', 'IF', 'FT')";
-
-
-            using (var con = new OleDbConnection(m_ConnectionBuilder.ConnectionString))
-            {
-                con.Open();
-                using (var cmd = new OleDbCommand(TvfSql, con))
-                {
-                    using (var reader = cmd.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            var schema = reader.GetString(reader.GetOrdinal("SchemaName"));
-                            var name = reader.GetString(reader.GetOrdinal("Name"));
-                            GetTableFunction(new SqlServerObjectName(schema, name));
-                        }
-                    }
-                }
-            }
-
+            return m_Tables.GetOrAdd(tableName, GetTableOrViewInternal);
         }
 
         /// <summary>
@@ -141,14 +82,13 @@ namespace Tortuga.Chain.SqlServer
         public override void PreloadScalarFunctions()
         {
             const string TvfSql =
-                @"SELECT 
+                @"SELECT
 				s.name AS SchemaName,
 				o.name AS Name,
 				o.object_id AS ObjectId
 				FROM sys.objects o
 				INNER JOIN sys.schemas s ON o.schema_id = s.schema_id
 				WHERE o.type in ('FN')";
-
 
             using (var con = new OleDbConnection(m_ConnectionBuilder.ConnectionString))
             {
@@ -166,7 +106,68 @@ namespace Tortuga.Chain.SqlServer
                     }
                 }
             }
+        }
 
+        /// <summary>
+        /// Preloads the stored procedures.
+        /// </summary>
+        public override void PreloadStoredProcedures()
+        {
+            const string StoredProcedureSql =
+            @"SELECT
+				s.name AS SchemaName,
+				sp.name AS Name
+				FROM SYS.procedures sp
+				INNER JOIN sys.schemas s ON sp.schema_id = s.schema_id;";
+
+            using (var con = new OleDbConnection(m_ConnectionBuilder.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = new OleDbCommand(StoredProcedureSql, con))
+                {
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var schema = reader.GetString(reader.GetOrdinal("SchemaName"));
+                            var name = reader.GetString(reader.GetOrdinal("Name"));
+                            GetStoredProcedure(new SqlServerObjectName(schema, name));
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Preloads the table value functions.
+        /// </summary>
+        public override void PreloadTableFunctions()
+        {
+            const string TvfSql =
+                @"SELECT
+				s.name AS SchemaName,
+				o.name AS Name,
+				o.object_id AS ObjectId
+				FROM sys.objects o
+				INNER JOIN sys.schemas s ON o.schema_id = s.schema_id
+				WHERE o.type in ('TF', 'IF', 'FT')";
+
+            using (var con = new OleDbConnection(m_ConnectionBuilder.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = new OleDbCommand(TvfSql, con))
+                {
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var schema = reader.GetString(reader.GetOrdinal("SchemaName"));
+                            var name = reader.GetString(reader.GetOrdinal("Name"));
+                            GetTableFunction(new SqlServerObjectName(schema, name));
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -193,7 +194,6 @@ namespace Tortuga.Chain.SqlServer
                     }
                 }
             }
-
         }
 
         /// <summary>
@@ -220,7 +220,6 @@ namespace Tortuga.Chain.SqlServer
                     }
                 }
             }
-
         }
 
         /// <summary>
@@ -247,7 +246,6 @@ namespace Tortuga.Chain.SqlServer
                     }
                 }
             }
-
         }
 
         [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
@@ -265,9 +263,9 @@ namespace Tortuga.Chain.SqlServer
                 //case "datetimeoffset": return OleDbType;
                 case "decimal": return OleDbType.Decimal;
                 case "float": return OleDbType.Single;
-                //case "geography": m_SqlDbType = OleDbType.; 
-                //case "geometry": m_SqlDbType = OleDbType; 
-                //case "hierarchyid": m_SqlDbType = OleDbType.; 
+                //case "geography": m_SqlDbType = OleDbType.;
+                //case "geometry": m_SqlDbType = OleDbType;
+                //case "hierarchyid": m_SqlDbType = OleDbType.;
                 //case "image": return OleDbType.Image;
                 case "int": return OleDbType.Integer;
                 case "money": return OleDbType.Currency;
@@ -279,8 +277,8 @@ namespace Tortuga.Chain.SqlServer
                 case "smalldatetime": return OleDbType.DBTimeStamp;
                 case "smallint": return OleDbType.SmallInt;
                 case "smallmoney": return OleDbType.Currency;
-                //case "sql_variant": m_SqlDbType = OleDbType; 
-                //case "sysname": m_SqlDbType = OleDbType; 
+                //case "sql_variant": m_SqlDbType = OleDbType;
+                //case "sysname": m_SqlDbType = OleDbType;
                 case "text": return OleDbType.LongVarWChar;
                 case "time": return OleDbType.DBTime;
                 case "timestamp": return OleDbType.DBTimeStamp;
@@ -294,17 +292,79 @@ namespace Tortuga.Chain.SqlServer
             return null;
         }
 
+        internal override ScalarFunctionMetadata<SqlServerObjectName, OleDbType> GetScalarFunctionInternal(SqlServerObjectName tableFunctionName)
+        {
+            const string sql =
+        @"SELECT	s.name AS SchemaName,
+		o.name AS Name,
+		o.object_id AS ObjectId,
+		COALESCE(t.name, t2.name) AS TypeName,
+		p.is_nullable,
+		CONVERT(INT, COALESCE(p.max_length, t.max_length, t2.max_length)) AS max_length,
+		CONVERT(INT, COALESCE(p.precision, t.precision, t2.precision)) AS precision,
+		CONVERT(INT, COALESCE(p.scale, t.scale, t2.scale)) AS scale
+
+        FROM	sys.objects o
+        INNER JOIN sys.schemas s ON o.schema_id = s.schema_id
+        INNER JOIN sys.parameters p ON p.object_id = o.object_id AND p.parameter_id = 0
+		LEFT JOIN sys.types t on p.system_type_id = t.user_type_id
+		LEFT JOIN sys.types t2 ON p.user_type_id = t2.user_type_id
+        WHERE	o.type IN ('FN')
+		AND s.name = ?
+		AND o.name = ?;";
+
+            string actualSchema;
+            string actualName;
+            int objectId;
+
+            string fullTypeName;
+            string typeName;
+            bool isNullable;
+            int? maxLength;
+            int? precision;
+            int? scale;
+
+            using (var con = new OleDbConnection(m_ConnectionBuilder.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = new OleDbCommand(sql, con))
+                {
+                    cmd.Parameters.AddWithValue("@Schema", tableFunctionName.Schema ?? DefaultSchema);
+                    cmd.Parameters.AddWithValue("@Name", tableFunctionName.Name);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        if (!reader.Read())
+                            throw new MissingObjectException($"Could not find scalar function {tableFunctionName}");
+                        actualSchema = reader.GetString(reader.GetOrdinal("SchemaName"));
+                        actualName = reader.GetString(reader.GetOrdinal("Name"));
+                        objectId = reader.GetInt32(reader.GetOrdinal("ObjectId"));
+
+                        typeName = reader.IsDBNull(reader.GetOrdinal("TypeName")) ? null : reader.GetString(reader.GetOrdinal("TypeName"));
+                        isNullable = reader.GetBoolean(reader.GetOrdinal("is_nullable"));
+                        maxLength = reader.IsDBNull(reader.GetOrdinal("max_length")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("max_length"));
+                        precision = reader.IsDBNull(reader.GetOrdinal("precision")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("precision"));
+                        scale = reader.IsDBNull(reader.GetOrdinal("scale")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("scale"));
+                        AdjustTypeDetails(typeName, ref maxLength, ref precision, ref scale, out fullTypeName);
+                    }
+                }
+            }
+            var objectName = new SqlServerObjectName(actualSchema, actualName);
+
+            var parameters = GetParameters(objectName.ToString(), objectId);
+
+            return new ScalarFunctionMetadata<SqlServerObjectName, OleDbType>(objectName, parameters, typeName, TypeNameToSqlDbType(typeName), isNullable, maxLength, precision, scale, fullTypeName);
+        }
+
         internal override StoredProcedureMetadata<SqlServerObjectName, OleDbType> GetStoredProcedureInternal(SqlServerObjectName procedureName)
         {
             const string StoredProcedureSql =
-                @"SELECT 
+                @"SELECT
 				s.name AS SchemaName,
 				sp.name AS Name,
 				sp.object_id AS ObjectId
 				FROM SYS.procedures sp
 				INNER JOIN sys.schemas s ON sp.schema_id = s.schema_id
 				WHERE s.name = ? AND sp.Name = ?";
-
 
             string actualSchema;
             string actualName;
@@ -334,76 +394,10 @@ namespace Tortuga.Chain.SqlServer
             return new StoredProcedureMetadata<SqlServerObjectName, OleDbType>(objectName, parameters);
         }
 
-        internal override ScalarFunctionMetadata<SqlServerObjectName, OleDbType> GetScalarFunctionInternal(SqlServerObjectName tableFunctionName)
-        {
-            const string sql =
-        @"SELECT	s.name AS SchemaName,
-		o.name AS Name,
-		o.object_id AS ObjectId,
-		COALESCE(t.name, t2.name) AS TypeName,
-		p.is_nullable,
-		CONVERT(INT, COALESCE(p.max_length, t.max_length, t2.max_length)) AS max_length, 
-		CONVERT(INT, COALESCE(p.precision, t.precision, t2.precision)) AS precision,
-		CONVERT(INT, COALESCE(p.scale, t.scale, t2.scale)) AS scale
-
-        FROM	sys.objects o
-        INNER JOIN sys.schemas s ON o.schema_id = s.schema_id
-        INNER JOIN sys.parameters p ON p.object_id = o.object_id AND p.parameter_id = 0
-		LEFT JOIN sys.types t on p.system_type_id = t.user_type_id
-		LEFT JOIN sys.types t2 ON p.user_type_id = t2.user_type_id
-        WHERE	o.type IN ('FN')
-		AND s.name = ?
-		AND o.name = ?;";
-
-
-
-            string actualSchema;
-            string actualName;
-            int objectId;
-
-            string fullTypeName;
-            string typeName;
-            bool isNullable;
-            int? maxLength;
-            int? precision;
-            int? scale;
-
-            using (var con = new OleDbConnection(m_ConnectionBuilder.ConnectionString))
-            {
-                con.Open();
-                using (var cmd = new OleDbCommand(sql, con))
-                {
-                    cmd.Parameters.AddWithValue("@Schema", tableFunctionName.Schema ?? DefaultSchema);
-                    cmd.Parameters.AddWithValue("@Name", tableFunctionName.Name);
-                    using (var reader = cmd.ExecuteReader())
-                    {
-                        if (!reader.Read())
-                            throw new MissingObjectException($"Could not find scalar function {tableFunctionName}");
-                        actualSchema = reader.GetString(reader.GetOrdinal("SchemaName"));
-                        actualName = reader.GetString(reader.GetOrdinal("Name"));
-                        objectId = reader.GetInt32(reader.GetOrdinal("ObjectId"));
-
-
-                        typeName = reader.IsDBNull(reader.GetOrdinal("TypeName")) ? null : reader.GetString(reader.GetOrdinal("TypeName"));
-                        isNullable = reader.GetBoolean(reader.GetOrdinal("is_nullable"));
-                        maxLength = reader.IsDBNull(reader.GetOrdinal("max_length")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("max_length"));
-                        precision = reader.IsDBNull(reader.GetOrdinal("precision")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("precision"));
-                        scale = reader.IsDBNull(reader.GetOrdinal("scale")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("scale"));
-                        AdjustTypeDetails(typeName, ref maxLength, ref precision, ref scale, out fullTypeName);
-                    }
-                }
-            }
-            var objectName = new SqlServerObjectName(actualSchema, actualName);
-
-            var parameters = GetParameters(objectName.ToString(), objectId);
-
-            return new ScalarFunctionMetadata<SqlServerObjectName, OleDbType>(objectName, parameters, typeName, TypeNameToSqlDbType(typeName), isNullable, maxLength, precision, scale, fullTypeName);
-        }
-
         internal override TableFunctionMetadata<SqlServerObjectName, OleDbType> GetTableFunctionInternal(SqlServerObjectName tableFunctionName)
         {
             const string TvfSql =
-                @"SELECT 
+                @"SELECT
 				s.name AS SchemaName,
 				o.name AS Name,
 				o.object_id AS ObjectId
@@ -416,7 +410,6 @@ namespace Tortuga.Chain.SqlServer
              * IF = SQL inline table-valued function
              * FT = Assembly (CLR) table-valued function
              */
-
 
             string actualSchema;
             string actualName;
@@ -450,28 +443,27 @@ namespace Tortuga.Chain.SqlServer
         internal override SqlServerTableOrViewMetadata<OleDbType> GetTableOrViewInternal(SqlServerObjectName tableName)
         {
             const string TableSql =
-                @"SELECT 
+                @"SELECT
 				s.name AS SchemaName,
 				t.name AS Name,
 				t.object_id AS ObjectId,
 				CONVERT(BIT, 1) AS IsTable,
-		        (SELECT	COUNT(*) FROM sys.triggers t2 WHERE	t2.parent_id = t.object_id) AS Triggers  
+		        (SELECT	COUNT(*) FROM sys.triggers t2 WHERE	t2.parent_id = t.object_id) AS Triggers
 				FROM SYS.tables t
 				INNER JOIN sys.schemas s ON t.schema_id = s.schema_id
 				WHERE s.name = ? AND t.Name = ?
 
 				UNION ALL
 
-				SELECT 
+				SELECT
 				s.name AS SchemaName,
 				t.name AS Name,
 				t.object_id AS ObjectId,
 				CONVERT(BIT, 0) AS IsTable,
-		        (SELECT	COUNT(*) FROM sys.triggers t2 WHERE	t2.parent_id = t.object_id) AS Triggers  
+		        (SELECT	COUNT(*) FROM sys.triggers t2 WHERE	t2.parent_id = t.object_id) AS Triggers
 				FROM SYS.views t
 				INNER JOIN sys.schemas s ON t.schema_id = s.schema_id
 				WHERE s.name = ? AND t.Name = ?";
-
 
             string actualSchema;
             string actualName;
@@ -501,7 +493,6 @@ namespace Tortuga.Chain.SqlServer
                 }
             }
 
-
             var columns = GetColumns(objectId);
 
             return new SqlServerTableOrViewMetadata<OleDbType>(new SqlServerObjectName(actualSchema, actualName), isTable, columns, hasTriggers);
@@ -516,7 +507,7 @@ namespace Tortuga.Chain.SqlServer
 		t.is_table_type AS IsTableType,
 		t2.name AS BaseTypeName,
 		t.is_nullable,
-		CONVERT(INT, t.max_length) AS max_length, 
+		CONVERT(INT, t.max_length) AS max_length,
 		CONVERT(INT, t.precision) AS precision,
 		CONVERT(INT, t.scale) AS scale
 FROM	sys.types t
@@ -562,7 +553,6 @@ WHERE	s.name = ? AND t.name = ?;";
                         scale = reader.GetInt32(reader.GetOrdinal("scale"));
 
                         AdjustTypeDetails(baseTypeName, ref maxLength, ref precision, ref scale, out fullTypeName);
-
                     }
                 }
             }
@@ -602,7 +592,7 @@ WHERE	s.name = ? AND t.name = ?;";
 							Convert(bit, ISNULL(PKS.is_primary_key, 0)) AS is_primary_key,
 							COALESCE(t.name, t2.name) AS TypeName,
 							c.is_nullable,
-		                    CONVERT(INT, COALESCE(c.max_length, t.max_length, t2.max_length)) AS max_length, 
+		                    CONVERT(INT, COALESCE(c.max_length, t.max_length, t2.max_length)) AS max_length,
 		                    CONVERT(INT, COALESCE(c.precision, t.precision, t2.precision)) AS precision,
 		                    CONVERT(INT, COALESCE(c.scale, t.scale, t2.scale)) AS scale
 					FROM    sys.columns c
@@ -653,7 +643,7 @@ WHERE	s.name = ? AND t.name = ?;";
                     @"SELECT  p.name AS ParameterName ,
             COALESCE(t.name, t2.name) AS TypeName,
 			COALESCE(t.is_nullable, t2.is_nullable)  as is_nullable,
-		    CONVERT(INT, t.max_length) AS max_length, 
+		    CONVERT(INT, t.max_length) AS max_length,
 		    CONVERT(INT, t.precision) AS precision,
 		    CONVERT(INT, t.scale) AS scale
             FROM    sys.parameters p
@@ -680,7 +670,6 @@ WHERE	s.name = ? AND t.name = ?;";
                                 var name = reader.GetString(reader.GetOrdinal("ParameterName"));
                                 var typeName = reader.GetString(reader.GetOrdinal("TypeName"));
 
-
                                 typeName = reader.IsDBNull(reader.GetOrdinal("TypeName")) ? null : reader.GetString(reader.GetOrdinal("TypeName"));
                                 bool isNullable = true;
                                 int? maxLength = reader.IsDBNull(reader.GetOrdinal("max_length")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("max_length"));
@@ -701,16 +690,5 @@ WHERE	s.name = ? AND t.name = ?;";
                 throw new MetadataException($"Error getting parameters for {procedureName}", ex);
             }
         }
-
-        /// <summary>
-        /// Gets the detailed metadata for a table or view.
-        /// </summary>
-        /// <param name="tableName">Name of the table.</param>
-        /// <returns>SqlServerTableOrViewMetadata&lt;TDbType&gt;.</returns>
-        public new SqlServerTableOrViewMetadata<OleDbType> GetTableOrView(SqlServerObjectName tableName)
-        {
-            return m_Tables.GetOrAdd(tableName, GetTableOrViewInternal);
-        }
     }
 }
-#endif

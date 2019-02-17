@@ -20,7 +20,7 @@ using AbstractParameter = MySql.Data.MySqlClient.MySqlParameter;
 using AbstractCommand = Npgsql.NpgsqlCommand;
 using AbstractParameter = Npgsql.NpgsqlParameter;
 
-#elif ACCESS
+#elif ACCESS || SQL_SERVER_OLEDB
 
 using AbstractCommand = System.Data.OleDb.OleDbCommand;
 using AbstractParameter = System.Data.OleDb.OleDbParameter;
@@ -31,7 +31,13 @@ using AbstractParameter = System.Data.OleDb.OleDbParameter;
 
 namespace Tortuga.Chain.SqlServer
 {
-    partial class SqlServerDataSourceBase : IClass0DataSource
+    partial class SqlServerDataSourceBase
+
+#elif SQL_SERVER_OLEDB
+
+namespace Tortuga.Chain.SqlServer
+{
+    partial class OleDbSqlServerDataSourceBase
 
 #elif SQLITE
 

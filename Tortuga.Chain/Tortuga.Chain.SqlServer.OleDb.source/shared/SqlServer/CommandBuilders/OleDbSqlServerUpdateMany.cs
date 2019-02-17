@@ -1,5 +1,4 @@
-﻿#if !OleDb_Missing
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.OleDb;
 using System.Text;
@@ -16,18 +15,16 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
     internal sealed class OleDbSqlServerUpdateMany : UpdateManyCommandBuilder<OleDbCommand, OleDbParameter>
     {
         readonly int? m_ExpectedRowCount;
+        readonly object m_NewValues;
+        readonly UpdateOptions m_Options;
         readonly IEnumerable<OleDbParameter> m_Parameters;
         readonly SqlServerTableOrViewMetadata<OleDbType> m_Table;
-
-        readonly object m_NewValues;
-        readonly string m_UpdateExpression;
         readonly object m_UpdateArgumentValue;
-        readonly UpdateOptions m_Options;
-
-        string m_WhereClause;
-        object m_WhereArgumentValue;
-        object m_FilterValue;
+        readonly string m_UpdateExpression;
         FilterOptions m_FilterOptions;
+        object m_FilterValue;
+        object m_WhereArgumentValue;
+        string m_WhereClause;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="OleDbSqlServerUpdateMany" /> class.
@@ -91,10 +88,17 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         }
 
         /// <summary>
-        /// Prepares the command for execution by generating any necessary SQL.
+        /// Applies this command to all rows.
         /// </summary>
-        /// <param name="materializer">The materializer.</param>
-        /// <returns>ExecutionToken&lt;TCommand&gt;.</returns>
+        /// <returns></returns>
+        public override UpdateManyCommandBuilder<OleDbCommand, OleDbParameter> All()
+        {
+            m_WhereClause = null;
+            m_WhereArgumentValue = null;
+            m_FilterValue = null;
+            m_FilterOptions = FilterOptions.None;
+            return this;
+        }
 
         public override CommandExecutionToken<OleDbCommand, OleDbParameter> Prepare(Materializer<OleDbCommand, OleDbParameter> materializer)
         {
@@ -135,7 +139,6 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 
             sqlBuilder.BuildSelectClause(sql, " OUTPUT ", prefix, intoClause);
 
-
             if (m_FilterValue != null)
             {
                 sql.Append(" WHERE " + sqlBuilder.ApplyAnonymousFilterValue(m_FilterValue, m_FilterOptions, true));
@@ -174,6 +177,17 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         {
             return m_Table.Columns.TryGetColumn(columnName);
         }
+
+        /// <summary>
+        /// Returns a list of columns known to be non-nullable.
+        /// </summary>
+        /// <returns>
+        /// If the command builder doesn't know which columns are non-nullable, an empty list will be returned.
+        /// </returns>
+        /// <remarks>
+        /// This is used by materializers to skip IsNull checks.
+        /// </remarks>
+        public override IReadOnlyList<ColumnMetadata> TryGetNonNullableColumns() => m_Table.NonNullableColumns;
 
         /// <summary>
         /// Adds (or replaces) the filter on this command builder.
@@ -217,32 +231,5 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             m_FilterOptions = FilterOptions.None;
             return this;
         }
-
-        /// <summary>
-        /// Applies this command to all rows.
-        /// </summary>
-        /// <returns></returns>
-        public override UpdateManyCommandBuilder<OleDbCommand, OleDbParameter> All()
-        {
-            m_WhereClause = null;
-            m_WhereArgumentValue = null;
-            m_FilterValue = null;
-            m_FilterOptions = FilterOptions.None;
-            return this;
-        }
-
-        /// <summary>
-        /// Returns a list of columns known to be non-nullable.
-        /// </summary>
-        /// <returns>
-        /// If the command builder doesn't know which columns are non-nullable, an empty list will be returned.
-        /// </returns>
-        /// <remarks>
-        /// This is used by materializers to skip IsNull checks.
-        /// </remarks>
-        public override IReadOnlyList<ColumnMetadata> TryGetNonNullableColumns() => m_Table.NonNullableColumns;
     }
 }
-
-
-#endif

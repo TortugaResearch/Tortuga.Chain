@@ -10,6 +10,16 @@ using AbstractProcedureCall = Tortuga.Chain.SqlServer.CommandBuilders.SqlServerP
 using AbstractScalarFunction = Tortuga.Chain.SqlServer.CommandBuilders.SqlServerScalarFunction;
 using AbstractTableFunction = Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableFunction;
 
+#elif SQL_SERVER_OLEDB
+
+using AbstractCommand = System.Data.OleDb.OleDbCommand;
+using AbstractLimitOption = Tortuga.Chain.SqlServerLimitOption;
+using AbstractObjectName = Tortuga.Chain.SqlServer.SqlServerObjectName;
+using AbstractParameter = System.Data.OleDb.OleDbParameter;
+using AbstractProcedureCall = Tortuga.Chain.SqlServer.CommandBuilders.OleDbSqlServerProcedureCall;
+using AbstractScalarFunction = Tortuga.Chain.SqlServer.CommandBuilders.OleDbSqlServerScalarFunction;
+using AbstractTableFunction = Tortuga.Chain.SqlServer.CommandBuilders.OleDbSqlServerTableFunction;
+
 #elif MYSQL
 
 using AbstractCommand = MySql.Data.MySqlClient.MySqlCommand;
@@ -36,6 +46,12 @@ using AbstractTableFunction = Tortuga.Chain.PostgreSql.CommandBuilders.PostgreSq
 namespace Tortuga.Chain.SqlServer
 {
     partial class SqlServerDataSourceBase
+#elif SQL_SERVER_OLEDB
+
+namespace Tortuga.Chain.SqlServer
+{
+    partial class OleDbSqlServerDataSourceBase
+
 #elif MYSQL
 
 namespace Tortuga.Chain.MySql

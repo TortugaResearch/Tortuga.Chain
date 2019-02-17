@@ -1,6 +1,4 @@
-﻿#if !OleDb_Missing
-
-using System;
+﻿using System;
 using System.Data.OleDb;
 using System.Text;
 using Tortuga.Chain.Core;
@@ -9,22 +7,21 @@ using Tortuga.Chain.Materializers;
 namespace Tortuga.Chain.SqlServer.CommandBuilders
 {
     /// <summary>
-    /// Class OleDbSqlServerInsertObject.
+    /// Class SqlServerDeleteObject.
     /// </summary>
-    internal sealed class OleDbSqlServerInsertObject<TArgument> : OleDbSqlServerObjectCommand<TArgument>
+    internal sealed class OleDbSqlServerDeleteObject<TArgument> : OleDbSqlServerObjectCommand<TArgument>
         where TArgument : class
     {
-        readonly InsertOptions m_Options;
+        readonly DeleteOptions m_Options;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="OleDbSqlServerInsertObject{TArgument}" /> class.
+        /// Initializes a new instance of the <see cref="SqlServerDeleteObject{TArgument}"/> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="argumentValue">The argument value.</param>
         /// <param name="options">The options.</param>
-        public OleDbSqlServerInsertObject(OleDbSqlServerDataSourceBase dataSource, SqlServerObjectName tableName, TArgument argumentValue, InsertOptions options)
-            : base(dataSource, tableName, argumentValue)
+        public OleDbSqlServerDeleteObject(OleDbSqlServerDataSourceBase dataSource, SqlServerObjectName tableName, TArgument argumentValue, DeleteOptions options) : base(dataSource, tableName, argumentValue)
         {
             m_Options = options;
         }
@@ -51,24 +48,13 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 
             sqlBuilder.UseTableVariable(Table, out header, out intoClause, out footer);
             sql.Append(header);
-
-            bool identityInsert = m_Options.HasFlag(InsertOptions.IdentityInsert);
-            if (identityInsert)
-                sql.AppendLine($"SET IDENTITY_INSERT {Table.Name.ToQuotedString()} ON;");
-
-            sqlBuilder.BuildInsertClause(sql, $"INSERT INTO {Table.Name.ToQuotedString()} (", null, ")", identityInsert);
-            sqlBuilder.BuildSelectClause(sql, " OUTPUT ", "Inserted.", intoClause);
-            sqlBuilder.BuildAnonymousValuesClause(sql, " VALUES (", ")", identityInsert);
+            sql.Append("DELETE FROM " + Table.Name.ToQuotedString());
+            sqlBuilder.BuildSelectClause(sql, " OUTPUT ", "Deleted.", intoClause);
+            sqlBuilder.BuildAnonymousWhereClause(sql, " WHERE ", null, true);
             sql.Append(";");
-
             sql.Append(footer);
 
-            if (identityInsert)
-                sql.AppendLine($"SET IDENTITY_INSERT {Table.Name.ToQuotedString()} OFF;");
-
-            return new OleDbCommandExecutionToken(DataSource, "Insert into " + Table.Name, sql.ToString(), sqlBuilder.GetParameters());
+            return new OleDbCommandExecutionToken(DataSource, "Delete from " + Table.Name, sql.ToString(), sqlBuilder.GetParameters());
         }
     }
 }
-
-#endif

@@ -1,4 +1,3 @@
-#if !OleDb_Missing
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -17,7 +16,6 @@ namespace Tortuga.Chain.SqlServer
     /// </summary>
     public class OleDbSqlServerOpenDataSource : OleDbSqlServerDataSourceBase, IOpenDataSource
     {
-
         readonly OleDbSqlServerDataSource m_BaseDataSource;
         readonly OleDbConnection m_Connection;
         readonly OleDbTransaction m_Transaction;
@@ -30,15 +28,6 @@ namespace Tortuga.Chain.SqlServer
             m_BaseDataSource = dataSource;
             m_Connection = connection;
             m_Transaction = transaction;
-        }
-
-        /// <summary>
-        /// Gets the database metadata.
-        /// </summary>
-        /// <value>The database metadata.</value>
-        public override OleDbSqlServerMetadataCache DatabaseMetadata
-        {
-            get { return m_BaseDataSource.DatabaseMetadata; }
         }
 
         /// <summary>
@@ -66,6 +55,15 @@ namespace Tortuga.Chain.SqlServer
         }
 
         /// <summary>
+        /// Gets the database metadata.
+        /// </summary>
+        /// <value>The database metadata.</value>
+        public override OleDbSqlServerMetadataCache DatabaseMetadata
+        {
+            get { return m_BaseDataSource.DatabaseMetadata; }
+        }
+
+        /// <summary>
         /// The extension cache is used by extensions to store data source specific information.
         /// </summary>
         /// <value>
@@ -74,6 +72,106 @@ namespace Tortuga.Chain.SqlServer
         protected override ConcurrentDictionary<Type, object> ExtensionCache
         {
             get { return m_BaseDataSource.m_ExtensionCache; }
+        }
+
+        /// <summary>
+        /// Closes the connection and transaction associated with this data source.
+        /// </summary>
+        public void Close()
+        {
+            if (m_Transaction != null)
+                m_Transaction.Dispose();
+            m_Connection.Dispose();
+        }
+
+        /// <summary>
+        /// Gets the extension data.
+        /// </summary>
+        /// <typeparam name="TTKey">The type of extension data desired.</typeparam>
+        /// <returns>T.</returns>
+        /// <remarks>Chain extensions can use this to store data source specific data. The key should be a data type defined by the extension.
+        /// Transactional data sources should override this method and return the value held by their parent data source.</remarks>
+        public override TTKey GetExtensionData<TTKey>()
+        {
+            return m_BaseDataSource.GetExtensionData<TTKey>();
+        }
+
+        /// <summary>
+        /// Tests the connection.
+        /// </summary>
+        public override void TestConnection()
+        {
+            using (var cmd = new OleDbCommand("SELECT 1", m_Connection))
+            {
+                if (m_Transaction != null)
+                    cmd.Transaction = m_Transaction;
+                cmd.ExecuteScalar();
+            }
+        }
+
+        /// <summary>
+        /// Tests the connection asynchronously.
+        /// </summary>
+        /// <returns></returns>
+        public override async Task TestConnectionAsync()
+        {
+            using (var cmd = new OleDbCommand("SELECT 1", m_Connection))
+            {
+                if (m_Transaction != null)
+                    cmd.Transaction = m_Transaction;
+                await cmd.ExecuteScalarAsync();
+            }
+        }
+
+        /// <summary>
+        /// Tries the commit the transaction associated with this data source.
+        /// </summary>
+        /// <returns>
+        /// True if there was an open transaction associated with this data source, otherwise false.
+        /// </returns>
+        public bool TryCommit()
+        {
+            if (m_Transaction == null)
+                return false;
+
+            m_Transaction.Commit();
+            return true;
+        }
+
+        /// <summary>
+        /// Modifies this data source with additional audit rules.
+        /// </summary>
+        /// <param name="additionalRules">The additional rules.</param>
+        /// <returns></returns>
+        public OleDbSqlServerOpenDataSource WithRules(params AuditRule[] additionalRules)
+        {
+            AuditRules = new AuditRuleCollection(AuditRules, additionalRules);
+            return this;
+        }
+
+        /// <summary>
+        /// Modifies this data source with additional audit rules.
+        /// </summary>
+        /// <param name="additionalRules">The additional rules.</param>
+        /// <returns></returns>
+        public OleDbSqlServerOpenDataSource WithRules(IEnumerable<AuditRule> additionalRules)
+        {
+            AuditRules = new AuditRuleCollection(AuditRules, additionalRules);
+            return this;
+        }
+
+        /// <summary>
+        /// Modifies this data source to include the indicated user.
+        /// </summary>
+        /// <param name="userValue">The user value.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// This is used in conjunction with audit rules.
+        /// </remarks>
+        public OleDbSqlServerOpenDataSource WithUser(object userValue)
+        {
+            UserValue = userValue;
+            return this;
         }
 
         /// <summary>
@@ -125,6 +223,35 @@ namespace Tortuga.Chain.SqlServer
         }
 
         /// <summary>
+        /// Executes the specified operation.
+        /// </summary>
+        /// <param name="executionToken">The execution token.</param>
+        /// <param name="implementation">The implementation.</param>
+        /// <param name="state">The state.</param>
+        protected override int? Execute(OperationExecutionToken<OleDbConnection, OleDbTransaction> executionToken, OperationImplementation<OleDbConnection, OleDbTransaction> implementation, object state)
+        {
+            if (executionToken == null)
+                throw new ArgumentNullException("executionToken", "executionToken is null.");
+            if (implementation == null)
+                throw new ArgumentNullException("implementation", "implementation is null.");
+
+            var startTime = DateTimeOffset.Now;
+            OnExecutionStarted(executionToken, startTime, state);
+
+            try
+            {
+                var rows = implementation(m_Connection, m_Transaction);
+                OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
+                return rows;
+            }
+            catch (Exception ex)
+            {
+                OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
+                throw;
+            }
+        }
+
+        /// <summary>
         /// Executes the operation asynchronously.
         /// </summary>
         /// <param name="executionToken">The execution token.</param>
@@ -161,11 +288,10 @@ namespace Tortuga.Chain.SqlServer
                     OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
                     return rows;
                 }
-
             }
             catch (Exception ex)
             {
-                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException 
+                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException
                 {
                     var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);
                     OnExecutionCanceled(executionToken, startTime, DateTimeOffset.Now, state);
@@ -176,35 +302,6 @@ namespace Tortuga.Chain.SqlServer
                     OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
                     throw;
                 }
-            }
-        }
-
-        /// <summary>
-        /// Executes the specified operation.
-        /// </summary>
-        /// <param name="executionToken">The execution token.</param>
-        /// <param name="implementation">The implementation.</param>
-        /// <param name="state">The state.</param>
-        protected override int? Execute(OperationExecutionToken<OleDbConnection, OleDbTransaction> executionToken, OperationImplementation<OleDbConnection, OleDbTransaction> implementation, object state)
-        {
-            if (executionToken == null)
-                throw new ArgumentNullException("executionToken", "executionToken is null.");
-            if (implementation == null)
-                throw new ArgumentNullException("implementation", "implementation is null.");
-
-            var startTime = DateTimeOffset.Now;
-            OnExecutionStarted(executionToken, startTime, state);
-
-            try
-            {
-                var rows = implementation(m_Connection, m_Transaction);
-                OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
-                return rows;
-            }
-            catch (Exception ex)
-            {
-                OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
-                throw;
             }
         }
 
@@ -234,7 +331,7 @@ namespace Tortuga.Chain.SqlServer
             }
             catch (Exception ex)
             {
-                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException 
+                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException
                 {
                     var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);
                     OnExecutionCanceled(executionToken, startTime, DateTimeOffset.Now, state);
@@ -247,108 +344,5 @@ namespace Tortuga.Chain.SqlServer
                 }
             }
         }
-
-        /// <summary>
-        /// Gets the extension data.
-        /// </summary>
-        /// <typeparam name="TTKey">The type of extension data desired.</typeparam>
-        /// <returns>T.</returns>
-        /// <remarks>Chain extensions can use this to store data source specific data. The key should be a data type defined by the extension.
-        /// Transactional data sources should override this method and return the value held by their parent data source.</remarks>
-        public override TTKey GetExtensionData<TTKey>()
-        {
-            return m_BaseDataSource.GetExtensionData<TTKey>();
-        }
-
-        /// <summary>
-        /// Modifies this data source to include the indicated user.
-        /// </summary>
-        /// <param name="userValue">The user value.</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// This is used in conjunction with audit rules.
-        /// </remarks>
-        public OleDbSqlServerOpenDataSource WithUser(object userValue)
-        {
-            UserValue = userValue;
-            return this;
-        }
-
-        /// <summary>
-        /// Modifies this data source with additional audit rules.
-        /// </summary>
-        /// <param name="additionalRules">The additional rules.</param>
-        /// <returns></returns>
-        public OleDbSqlServerOpenDataSource WithRules(params AuditRule[] additionalRules)
-        {
-            AuditRules = new AuditRuleCollection(AuditRules, additionalRules);
-            return this;
-        }
-
-        /// <summary>
-        /// Modifies this data source with additional audit rules.
-        /// </summary>
-        /// <param name="additionalRules">The additional rules.</param>
-        /// <returns></returns>
-        public OleDbSqlServerOpenDataSource WithRules(IEnumerable<AuditRule> additionalRules)
-        {
-            AuditRules = new AuditRuleCollection(AuditRules, additionalRules);
-            return this;
-        }
-
-        /// <summary>
-        /// Tests the connection.
-        /// </summary>
-        public override void TestConnection()
-        {
-            using (var cmd = new OleDbCommand("SELECT 1", m_Connection))
-            {
-                if (m_Transaction != null)
-                    cmd.Transaction = m_Transaction;
-                cmd.ExecuteScalar();
-            }
-        }
-
-        /// <summary>
-        /// Tests the connection asynchronously.
-        /// </summary>
-        /// <returns></returns>
-        public override async Task TestConnectionAsync()
-        {
-            using (var cmd = new OleDbCommand("SELECT 1", m_Connection))
-            {
-                if (m_Transaction != null)
-                    cmd.Transaction = m_Transaction;
-                await cmd.ExecuteScalarAsync();
-            }
-        }
-
-        /// <summary>
-        /// Tries the commit the transaction associated with this data source.
-        /// </summary>
-        /// <returns>
-        /// True if there was an open transaction associated with this data source, otherwise false.
-        /// </returns>
-        public bool TryCommit()
-        {
-            if (m_Transaction == null)
-                return false;
-
-            m_Transaction.Commit();
-            return true;
-        }
-
-        /// <summary>
-        /// Closes the connection and transaction associated with this data source.
-        /// </summary>
-        public void Close()
-        {
-            if (m_Transaction != null)
-                m_Transaction.Dispose();
-            m_Connection.Dispose();
-        }
     }
 }
-
-
-#endif

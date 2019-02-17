@@ -1,5 +1,4 @@
-﻿#if !OleDb_Missing
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Data.OleDb;
@@ -34,6 +33,15 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         }
 
         /// <summary>
+        /// Gets the data source.
+        /// </summary>
+        /// <value>The data source.</value>
+        public new OleDbSqlServerDataSourceBase DataSource
+        {
+            get { return (OleDbSqlServerDataSourceBase)base.DataSource; }
+        }
+
+        /// <summary>
         /// Prepares the command for execution by generating any necessary SQL.
         /// </summary>
         /// <param name="materializer">The materializer.</param>
@@ -63,15 +71,6 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         }
 
         /// <summary>
-        /// Gets the data source.
-        /// </summary>
-        /// <value>The data source.</value>
-        public new OleDbSqlServerDataSourceBase DataSource
-        {
-            get { return (OleDbSqlServerDataSourceBase)base.DataSource; }
-        }
-
-        /// <summary>
         /// Returns the column associated with the column name.
         /// </summary>
         /// <param name="columnName">Name of the column.</param>
@@ -94,4 +93,3 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         public override IReadOnlyList<ColumnMetadata> TryGetNonNullableColumns() => ImmutableList<ColumnMetadata>.Empty;
     }
 }
-#endif

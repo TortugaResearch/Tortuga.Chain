@@ -1,4 +1,3 @@
-#if !OleDb_Missing
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -8,10 +7,8 @@ using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
 using Tortuga.Chain.Metadata;
 
-
 namespace Tortuga.Chain.SqlServer.CommandBuilders
 {
-
     /// <summary>
     /// Class OleDbSqlServerSqlCall.
     /// </summary>
@@ -34,7 +31,6 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 
             m_SqlStatement = sqlStatement;
             m_ArgumentValue = argumentValue;
-
         }
 
         /// <summary>
@@ -46,7 +42,6 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         {
             return new OleDbCommandExecutionToken(DataSource, "Raw SQL call", m_SqlStatement, SqlBuilder.GetParameters<OleDbParameter>(m_ArgumentValue));
         }
-
 
         /// <summary>
         /// Returns the column associated with the column name.
@@ -71,10 +66,5 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// This is used by materializers to skip IsNull checks.
         /// </remarks>
         public override IReadOnlyList<ColumnMetadata> TryGetNonNullableColumns() => ImmutableList<ColumnMetadata>.Empty;
-
     }
-
-
 }
-
-#endif

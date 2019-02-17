@@ -6,6 +6,13 @@ using Tortuga.Chain.Metadata;
 namespace Tortuga.Chain.SqlServer
 {
     partial class SqlServerDataSourceBase : IDataSource
+#elif SQL_SERVER_OLEDB
+
+namespace Tortuga.Chain.SqlServer
+{
+    partial class OleDbSqlServerDataSourceBase : IDataSource
+#elif SQL_SERVER_OLEDB
+
 #elif SQLITE
 
 namespace Tortuga.Chain.SQLite

@@ -1,5 +1,4 @@
-﻿#if !OleDb_Missing
-using System;
+﻿using System;
 using System.Data;
 using System.Data.OleDb;
 using System.Linq;
@@ -76,4 +75,3 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         }
     }
 }
-#endif

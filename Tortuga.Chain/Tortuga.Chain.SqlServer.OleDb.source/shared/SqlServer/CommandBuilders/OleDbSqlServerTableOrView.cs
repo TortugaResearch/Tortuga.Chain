@@ -1,6 +1,4 @@
-﻿#if !OleDb_Missing
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.OleDb;
 using System.Diagnostics.CodeAnalysis;
@@ -19,16 +17,16 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
     internal sealed partial class OleDbSqlServerTableOrView : TableDbCommandBuilder<OleDbCommand, OleDbParameter, SqlServerLimitOption>
     {
         readonly TableOrViewMetadata<SqlServerObjectName, OleDbType> m_Table;
-        object m_FilterValue;
-        string m_WhereClause;
         object m_ArgumentValue;
-        IEnumerable<SortExpression> m_SortExpressions = Enumerable.Empty<SortExpression>();
+        FilterOptions m_FilterOptions;
+        object m_FilterValue;
         SqlServerLimitOption m_LimitOptions;
-        int? m_Skip;
-        int? m_Take;
         int? m_Seed;
         string m_SelectClause;
-        FilterOptions m_FilterOptions;
+        int? m_Skip;
+        IEnumerable<SortExpression> m_SortExpressions = Enumerable.Empty<SortExpression>();
+        int? m_Take;
+        string m_WhereClause;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="OleDbSqlServerTableOrView" /> class.
@@ -63,6 +61,42 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             m_ArgumentValue = argumentValue;
             m_WhereClause = whereClause;
             m_Table = DataSource.DatabaseMetadata.GetTableOrView(tableOrViewName);
+        }
+
+        /// <summary>
+        /// Gets the data source.
+        /// </summary>
+        /// <value>The data source.</value>
+        public new OleDbSqlServerDataSourceBase DataSource
+        {
+            get { return (OleDbSqlServerDataSourceBase)base.DataSource; }
+        }
+
+        /// <summary>
+        /// Returns the row count using a <c>SELECT COUNT_BIG(*)</c> style query.
+        /// </summary>
+        /// <returns></returns>
+        public override ILink<long> AsCount()
+        {
+            m_SelectClause = "COUNT_BIG(*)";
+            return ToInt64();
+        }
+
+        /// <summary>
+        /// Returns the row count for a given column. <c>SELECT COUNT_BIG(columnName)</c>
+        /// </summary>
+        /// <param name="columnName">Name of the column.</param>
+        /// <param name="distinct">if set to <c>true</c> use <c>SELECT COUNT_BIG(DISTINCT columnName)</c>.</param>
+        /// <returns></returns>
+        public override ILink<long> AsCount(string columnName, bool distinct = false)
+        {
+            var column = m_Table.Columns[columnName];
+            if (distinct)
+                m_SelectClause = $"COUNT_BIG(DISTINCT {column.QuotedSqlName})";
+            else
+                m_SelectClause = $"COUNT_BIG({column.QuotedSqlName})";
+
+            return ToInt64();
         }
 
         /// <summary>
@@ -206,6 +240,72 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         }
 
         /// <summary>
+        /// Returns the column associated with the column name.
+        /// </summary>
+        /// <param name="columnName">Name of the column.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// If the column name was not found, this will return null
+        /// </remarks>
+        public override ColumnMetadata TryGetColumn(string columnName)
+        {
+            return m_Table.Columns.TryGetColumn(columnName);
+        }
+
+        /// <summary>
+        /// Returns a list of columns known to be non-nullable.
+        /// </summary>
+        /// <returns>
+        /// If the command builder doesn't know which columns are non-nullable, an empty list will be returned.
+        /// </returns>
+        /// <remarks>
+        /// This is used by materializers to skip IsNull checks.
+        /// </remarks>
+        public override IReadOnlyList<ColumnMetadata> TryGetNonNullableColumns() => m_Table.NonNullableColumns;
+
+        /// <summary>
+        /// Adds (or replaces) the filter on this command builder.
+        /// </summary>
+        /// <param name="filterValue">The filter value.</param>
+        /// <param name="filterOptions">The filter options.</param>
+        /// <returns>TableDbCommandBuilder&lt;OleDbCommand, OleDbParameter, SqlServerLimitOption&gt;.</returns>
+        public override TableDbCommandBuilder<OleDbCommand, OleDbParameter, SqlServerLimitOption> WithFilter(object filterValue, FilterOptions filterOptions = FilterOptions.None)
+        {
+            m_FilterValue = filterValue;
+            m_WhereClause = null;
+            m_ArgumentValue = null;
+            m_FilterOptions = filterOptions;
+            return this;
+        }
+
+        /// <summary>
+        /// Adds (or replaces) the filter on this command builder.
+        /// </summary>
+        /// <param name="whereClause">The where clause.</param>
+        /// <returns></returns>
+        public override TableDbCommandBuilder<OleDbCommand, OleDbParameter, SqlServerLimitOption> WithFilter(string whereClause)
+        {
+            m_FilterValue = null;
+            m_WhereClause = whereClause;
+            m_ArgumentValue = null;
+            return this;
+        }
+
+        /// <summary>
+        /// Adds (or replaces) the filter on this command builder.
+        /// </summary>
+        /// <param name="whereClause">The where clause.</param>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <returns></returns>
+        public override TableDbCommandBuilder<OleDbCommand, OleDbParameter, SqlServerLimitOption> WithFilter(string whereClause, object argumentValue)
+        {
+            m_FilterValue = null;
+            m_WhereClause = whereClause;
+            m_ArgumentValue = argumentValue;
+            return this;
+        }
+
+        /// <summary>
         /// Adds sorting to the command builder.
         /// </summary>
         /// <param name="sortExpressions">The sort expressions.</param>
@@ -252,109 +352,5 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             m_LimitOptions = (SqlServerLimitOption)limitOptions;
             return this;
         }
-
-        /// <summary>
-        /// Adds (or replaces) the filter on this command builder.
-        /// </summary>
-        /// <param name="filterValue">The filter value.</param>
-        /// <param name="filterOptions">The filter options.</param>
-        /// <returns>TableDbCommandBuilder&lt;OleDbCommand, OleDbParameter, SqlServerLimitOption&gt;.</returns>
-        public override TableDbCommandBuilder<OleDbCommand, OleDbParameter, SqlServerLimitOption> WithFilter(object filterValue, FilterOptions filterOptions = FilterOptions.None)
-        {
-            m_FilterValue = filterValue;
-            m_WhereClause = null;
-            m_ArgumentValue = null;
-            m_FilterOptions = filterOptions;
-            return this;
-        }
-
-        /// <summary>
-        /// Adds (or replaces) the filter on this command builder.
-        /// </summary>
-        /// <param name="whereClause">The where clause.</param>
-        /// <returns></returns>
-        public override TableDbCommandBuilder<OleDbCommand, OleDbParameter, SqlServerLimitOption> WithFilter(string whereClause)
-        {
-            m_FilterValue = null;
-            m_WhereClause = whereClause;
-            m_ArgumentValue = null;
-            return this;
-        }
-
-        /// <summary>
-        /// Adds (or replaces) the filter on this command builder.
-        /// </summary>
-        /// <param name="whereClause">The where clause.</param>
-        /// <param name="argumentValue">The argument value.</param>
-        /// <returns></returns>
-        public override TableDbCommandBuilder<OleDbCommand, OleDbParameter, SqlServerLimitOption> WithFilter(string whereClause, object argumentValue)
-        {
-            m_FilterValue = null;
-            m_WhereClause = whereClause;
-            m_ArgumentValue = argumentValue;
-            return this;
-        }
-
-        /// <summary>
-        /// Returns the row count using a <c>SELECT COUNT_BIG(*)</c> style query.
-        /// </summary>
-        /// <returns></returns>
-        public override ILink<long> AsCount()
-        {
-            m_SelectClause = "COUNT_BIG(*)";
-            return ToInt64();
-        }
-
-        /// <summary>
-        /// Returns the row count for a given column. <c>SELECT COUNT_BIG(columnName)</c>
-        /// </summary>
-        /// <param name="columnName">Name of the column.</param>
-        /// <param name="distinct">if set to <c>true</c> use <c>SELECT COUNT_BIG(DISTINCT columnName)</c>.</param>
-        /// <returns></returns>
-        public override ILink<long> AsCount(string columnName, bool distinct = false)
-        {
-            var column = m_Table.Columns[columnName];
-            if (distinct)
-                m_SelectClause = $"COUNT_BIG(DISTINCT {column.QuotedSqlName})";
-            else
-                m_SelectClause = $"COUNT_BIG({column.QuotedSqlName})";
-
-            return ToInt64();
-        }
-
-        /// <summary>
-        /// Returns the column associated with the column name.
-        /// </summary>
-        /// <param name="columnName">Name of the column.</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// If the column name was not found, this will return null
-        /// </remarks>
-        public override ColumnMetadata TryGetColumn(string columnName)
-        {
-            return m_Table.Columns.TryGetColumn(columnName);
-        }
-
-        /// <summary>
-        /// Gets the data source.
-        /// </summary>
-        /// <value>The data source.</value>
-        public new OleDbSqlServerDataSourceBase DataSource
-        {
-            get { return (OleDbSqlServerDataSourceBase)base.DataSource; }
-        }
-
-        /// <summary>
-        /// Returns a list of columns known to be non-nullable.
-        /// </summary>
-        /// <returns>
-        /// If the command builder doesn't know which columns are non-nullable, an empty list will be returned.
-        /// </returns>
-        /// <remarks>
-        /// This is used by materializers to skip IsNull checks.
-        /// </remarks>
-        public override IReadOnlyList<ColumnMetadata> TryGetNonNullableColumns() => m_Table.NonNullableColumns;
     }
 }
-
-#endif

@@ -1,5 +1,4 @@
-﻿#if !OleDb_Missing
-using System;
+﻿using System;
 using System.Data.OleDb;
 using System.Text;
 using Tortuga.Chain.Core;
@@ -61,9 +60,5 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 
             return new OleDbCommandExecutionToken(DataSource, "Update " + Table.Name, sql.ToString(), sqlBuilder.GetParameters()).CheckUpdateRowCount(m_Options);
         }
-
-
     }
 }
-
-#endif

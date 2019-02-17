@@ -7,6 +7,13 @@ using AbstractParameter = System.Data.SqlClient.SqlParameter;
 using AbstractObjectName = Tortuga.Chain.SqlServer.SqlServerObjectName;
 using AbstractLimitOption = Tortuga.Chain.SqlServerLimitOption;
 
+#elif SQL_SERVER_OLEDB
+
+using AbstractCommand = System.Data.OleDb.OleDbCommand;
+using AbstractLimitOption = Tortuga.Chain.SqlServerLimitOption;
+using AbstractObjectName = Tortuga.Chain.SqlServer.SqlServerObjectName;
+using AbstractParameter = System.Data.OleDb.OleDbParameter;
+
 #elif MYSQL
 
 using AbstractCommand = MySql.Data.MySqlClient.MySqlCommand;
@@ -28,6 +35,12 @@ using AbstractLimitOption = Tortuga.Chain.PostgreSqlLimitOption;
 namespace Tortuga.Chain.SqlServer
 {
     partial class SqlServerDataSourceBase
+#elif SQL_SERVER_OLEDB
+
+namespace Tortuga.Chain.SqlServer
+{
+    partial class OleDbSqlServerDataSourceBase
+
 #elif MYSQL
 
 namespace Tortuga.Chain.MySql

@@ -1,5 +1,4 @@
-﻿#if !OleDb_Missing
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Data;
@@ -13,13 +12,11 @@ using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.SqlServer.CommandBuilders
 {
-
     /// <summary>
     /// Class OleDbSqlServerProcedureCall.
     /// </summary>
     internal sealed partial class OleDbSqlServerProcedureCall : MultipleTableDbCommandBuilder<OleDbCommand, OleDbParameter>
     {
-
         readonly object m_ArgumentValue;
         readonly StoredProcedureMetadata<SqlServerObjectName, OleDbType> m_Procedure;
 
@@ -36,6 +33,15 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 
             m_ArgumentValue = argumentValue;
             m_Procedure = DataSource.DatabaseMetadata.GetStoredProcedure(procedureName);
+        }
+
+        /// <summary>
+        /// Gets the data source.
+        /// </summary>
+        /// <value>The data source.</value>
+        public new OleDbSqlServerDataSourceBase DataSource
+        {
+            get { return (OleDbSqlServerDataSourceBase)base.DataSource; }
         }
 
         /// <summary>
@@ -62,17 +68,6 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             }
 
             return new OleDbCommandExecutionToken(DataSource, m_Procedure.Name.ToString(), m_Procedure.Name.ToQuotedString(), parameters, CommandType.StoredProcedure);
-
-        }
-
-
-        /// <summary>
-        /// Gets the data source.
-        /// </summary>
-        /// <value>The data source.</value>
-        public new OleDbSqlServerDataSourceBase DataSource
-        {
-            get { return (OleDbSqlServerDataSourceBase)base.DataSource; }
         }
 
         /// <summary>
@@ -99,11 +94,4 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// </remarks>
         public override IReadOnlyList<ColumnMetadata> TryGetNonNullableColumns() => ImmutableList<ColumnMetadata>.Empty;
     }
-
-
 }
-
-
-
-
-#endif

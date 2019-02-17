@@ -12,6 +12,12 @@ using System;
 namespace Tortuga.Chain.SqlServer
 {
     partial class SqlServerDataSourceBase : IClass1DataSource
+#elif SQL_SERVER_OLEDB
+
+namespace Tortuga.Chain.SqlServer
+{
+    partial class OleDbSqlServerDataSourceBase : IClass1DataSource
+
 #elif SQLITE
 
 namespace Tortuga.Chain.SQLite

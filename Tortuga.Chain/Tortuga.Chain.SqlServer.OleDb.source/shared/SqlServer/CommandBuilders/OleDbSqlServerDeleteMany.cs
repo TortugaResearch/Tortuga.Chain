@@ -1,5 +1,4 @@
-﻿#if !OleDb_Missing
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.OleDb;
 using System.Text;
@@ -15,12 +14,12 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
     /// </summary>
     internal sealed class OleDbSqlServerDeleteMany : MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter>
     {
+        readonly object m_ArgumentValue;
+        readonly FilterOptions m_FilterOptions;
+        readonly object m_FilterValue;
         readonly IEnumerable<OleDbParameter> m_Parameters;
         readonly SqlServerTableOrViewMetadata<OleDbType> m_Table;
         readonly string m_WhereClause;
-        readonly object m_ArgumentValue;
-        readonly object m_FilterValue;
-        readonly FilterOptions m_FilterOptions;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="OleDbSqlServerDeleteMany" /> class.
@@ -31,11 +30,11 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// <param name="parameters">The parameters.</param>
         public OleDbSqlServerDeleteMany(OleDbSqlServerDataSourceBase dataSource, SqlServerObjectName tableName, string whereClause, IEnumerable<OleDbParameter> parameters) : base(dataSource)
         {
-
             m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
             m_WhereClause = whereClause;
             m_Parameters = parameters;
         }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="OleDbSqlServerDeleteMany"/> class.
         /// </summary>
@@ -138,5 +137,3 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         public override IReadOnlyList<ColumnMetadata> TryGetNonNullableColumns() => m_Table.NonNullableColumns;
     }
 }
-
-#endif

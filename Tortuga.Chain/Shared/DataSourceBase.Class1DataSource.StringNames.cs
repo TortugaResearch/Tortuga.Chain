@@ -7,35 +7,42 @@ using Tortuga.Chain.CommandBuilders;
 using AbstractCommand = System.Data.SqlClient.SqlCommand;
 using AbstractObjectName = Tortuga.Chain.SqlServer.SqlServerObjectName;
 using AbstractParameter = System.Data.SqlClient.SqlParameter;
-using AbstractSqlServerLimitOption = Tortuga.Chain.SqlServerLimitOption;
+using AbstractLimitOption = Tortuga.Chain.SqlServerLimitOption;
+
+#elif SQL_SERVER_OLEDB
+
+using AbstractCommand = System.Data.OleDb.OleDbCommand;
+using AbstractLimitOption = Tortuga.Chain.SqlServerLimitOption;
+using AbstractObjectName = Tortuga.Chain.SqlServer.SqlServerObjectName;
+using AbstractParameter = System.Data.OleDb.OleDbParameter;
 
 #elif SQLITE
 
 using AbstractCommand = System.Data.SQLite.SQLiteCommand;
 using AbstractParameter = System.Data.SQLite.SQLiteParameter;
 using AbstractObjectName = Tortuga.Chain.SQLite.SQLiteObjectName;
-using AbstractSqlServerLimitOption = Tortuga.Chain.SQLiteLimitOption;
+using AbstractLimitOption = Tortuga.Chain.SQLiteLimitOption;
 
 #elif MYSQL
 
 using AbstractCommand = MySql.Data.MySqlClient.MySqlCommand;
 using AbstractParameter = MySql.Data.MySqlClient.MySqlParameter;
 using AbstractObjectName = Tortuga.Chain.MySql.MySqlObjectName;
-using AbstractSqlServerLimitOption = Tortuga.Chain.MySqlLimitOption;
+using AbstractLimitOption = Tortuga.Chain.MySqlLimitOption;
 
 #elif POSTGRESQL
 
 using AbstractCommand = Npgsql.NpgsqlCommand;
 using AbstractParameter = Npgsql.NpgsqlParameter;
 using AbstractObjectName = Tortuga.Chain.PostgreSql.PostgreSqlObjectName;
-using AbstractSqlServerLimitOption = Tortuga.Chain.PostgreSqlLimitOption;
+using AbstractLimitOption = Tortuga.Chain.PostgreSqlLimitOption;
 
 #elif ACCESS
 
 using AbstractCommand = System.Data.OleDb.OleDbCommand;
 using AbstractParameter = System.Data.OleDb.OleDbParameter;
 using AbstractObjectName = Tortuga.Chain.Access.AccessObjectName;
-using AbstractSqlServerLimitOption = Tortuga.Chain.AccessLimitOption;
+using AbstractLimitOption = Tortuga.Chain.AccessLimitOption;
 
 #endif
 
@@ -44,6 +51,12 @@ using AbstractSqlServerLimitOption = Tortuga.Chain.AccessLimitOption;
 namespace Tortuga.Chain.SqlServer
 {
     partial class SqlServerDataSourceBase
+
+#elif SQL_SERVER_OLEDB
+
+namespace Tortuga.Chain.SqlServer
+{
+    partial class OleDbSqlServerDataSourceBase
 
 #elif SQLITE
 
@@ -222,7 +235,7 @@ namespace Tortuga.Chain.Access
         /// </summary>
         /// <param name="tableOrViewName">Name of the table or view.</param>
         /// <returns></returns>
-        public TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractSqlServerLimitOption> From(string tableOrViewName)
+        public TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption> From(string tableOrViewName)
         {
             return From(new AbstractObjectName(tableOrViewName));
         }
@@ -233,7 +246,7 @@ namespace Tortuga.Chain.Access
         /// <param name="tableOrViewName">Name of the table or view.</param>
         /// <param name="whereClause">The where clause. Do not prefix this clause with "WHERE".</param>
         /// <returns>SqlServerTableOrView.</returns>
-        public TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractSqlServerLimitOption> From(string tableOrViewName, string whereClause)
+        public TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption> From(string tableOrViewName, string whereClause)
         {
             return From(new AbstractObjectName(tableOrViewName), whereClause);
         }
@@ -245,7 +258,7 @@ namespace Tortuga.Chain.Access
         /// <param name="whereClause">The where clause. Do not prefix this clause with "WHERE".</param>
         /// <param name="argumentValue">Optional argument value. Every property in the argument value must have a matching parameter in the WHERE clause</param>
         /// <returns>SqlServerTableOrView.</returns>
-        public TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractSqlServerLimitOption> From(string tableOrViewName, string whereClause, object argumentValue)
+        public TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption> From(string tableOrViewName, string whereClause, object argumentValue)
         {
             return From(new AbstractObjectName(tableOrViewName), whereClause, argumentValue);
         }
@@ -257,7 +270,7 @@ namespace Tortuga.Chain.Access
         /// <param name="filterValue">The filter value is used to generate a simple AND style WHERE clause.</param>
         /// <param name="filterOptions">The filter options.</param>
         /// <returns>SqlServerTableOrView.</returns>
-        public TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractSqlServerLimitOption> From(string tableOrViewName, object filterValue, FilterOptions filterOptions)
+        public TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption> From(string tableOrViewName, object filterValue, FilterOptions filterOptions)
         {
             return From(new AbstractObjectName(tableOrViewName), filterValue, filterOptions);
         }
@@ -268,7 +281,7 @@ namespace Tortuga.Chain.Access
         /// <param name="tableOrViewName">Name of the table or view.</param>
         /// <param name="filterValue">The filter value is used to generate a simple AND style WHERE clause.</param>
         /// <returns>SqlServerTableOrView.</returns>
-        public TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractSqlServerLimitOption> From(string tableOrViewName, object filterValue)
+        public TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption> From(string tableOrViewName, object filterValue)
         {
             return From(new AbstractObjectName(tableOrViewName), filterValue, FilterOptions.None);
         }
@@ -540,6 +553,7 @@ namespace Tortuga.Chain.Access
         }
 
 #if !ACCESS
+
         /// <summary>
         /// Perform an insert or update operation as appropriate.
         /// </summary>
@@ -564,6 +578,7 @@ namespace Tortuga.Chain.Access
         {
             return Upsert<TArgument>(new AbstractObjectName(tableName), argumentValue, UpsertOptions.None);
         }
+
 #endif
     }
 }

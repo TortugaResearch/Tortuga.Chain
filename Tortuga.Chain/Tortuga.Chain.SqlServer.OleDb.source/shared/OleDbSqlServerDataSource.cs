@@ -1,6 +1,4 @@
-﻿#if !OleDb_Missing
-
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
@@ -16,12 +14,13 @@ using Tortuga.Chain.SqlServer;
 using System.Data.OleDb;
 
 #if !System_Configuration_Missing
+
 using System.Configuration;
+
 #endif
 
 namespace Tortuga.Chain
 {
-
     /// <summary>
     /// Class OleDbSqlServerDataSource.
     /// </summary>
@@ -34,7 +33,7 @@ namespace Tortuga.Chain
         /// <summary>
         /// This is used to decide which option overrides to set when establishing a connection.
         /// </summary>
-        SqlServerEffectiveSettings m_ServerDefaultSettings;
+        OleDbSqlServerEffectiveSettings m_ServerDefaultSettings;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="OleDbSqlServerDataSource" /> class.
@@ -65,8 +64,6 @@ namespace Tortuga.Chain
             m_ExtensionCache = new ConcurrentDictionary<Type, object>();
             m_Cache = DefaultCache;
         }
-
-
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlServerDataSource" /> class.
@@ -130,7 +127,6 @@ namespace Tortuga.Chain
             m_Cache = cache;
         }
 
-
         /// <summary>
         /// Initializes a new instance of the <see cref="OleDbSqlServerDataSource"/> class.
         /// </summary>
@@ -140,8 +136,6 @@ namespace Tortuga.Chain
             : this(null, connectionStringBuilder, settings)
         {
         }
-
-
 
         /// <summary>
         /// Terminates a query when an overflow or divide-by-zero error occurs during query execution.
@@ -176,6 +170,7 @@ namespace Tortuga.Chain
         }
 
 #if !System_Configuration_Missing
+
         /// <summary>
         /// Creates a new connection using the connection string settings in the app.config file.
         /// </summary>
@@ -188,6 +183,7 @@ namespace Tortuga.Chain
 
             return new SqlServerDataSource(connectionName, settings.ConnectionString);
         }
+
 #endif
 
         /// <summary>
@@ -230,7 +226,7 @@ namespace Tortuga.Chain
         [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
         public SqlServerEffectiveSettings GetEffectiveSettings()
         {
-            var result = new SqlServerEffectiveSettings();
+            var result = new OleDbSqlServerEffectiveSettings();
             using (var con = CreateConnection())
                 result.Reload(con, null);
             return result;
@@ -242,7 +238,7 @@ namespace Tortuga.Chain
         [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
         public async Task<SqlServerEffectiveSettings> GetEffectiveSettingsAsync()
         {
-            var result = new SqlServerEffectiveSettings();
+            var result = new OleDbSqlServerEffectiveSettings();
             using (var con = await CreateConnectionAsync())
                 await result.ReloadAsync(con, null);
             return result;
@@ -277,13 +273,12 @@ namespace Tortuga.Chain
         [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         internal OleDbConnection CreateConnection()
         {
-
             var con = new OleDbConnection(ConnectionString);
             con.Open();
 
             if (m_ServerDefaultSettings == null)
             {
-                var temp = new SqlServerEffectiveSettings();
+                var temp = new OleDbSqlServerEffectiveSettings();
                 temp.Reload(con, null);
 #if !Thread_Missing
                 Thread.MemoryBarrier();
@@ -345,7 +340,6 @@ namespace Tortuga.Chain
                 OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
                 throw;
             }
-
         }
 
         /// <summary>
@@ -409,7 +403,7 @@ namespace Tortuga.Chain
             }
             catch (Exception ex)
             {
-                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException 
+                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException
                 {
                     var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);
                     OnExecutionCanceled(executionToken, startTime, DateTimeOffset.Now, state);
@@ -466,7 +460,7 @@ namespace Tortuga.Chain
             }
             catch (Exception ex)
             {
-                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException 
+                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException
                 {
                     var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);
                     OnExecutionCanceled(executionToken, startTime, DateTimeOffset.Now, state);
@@ -478,9 +472,7 @@ namespace Tortuga.Chain
                     throw;
                 }
             }
-
         }
-
 
         string BuildConnectionSettingsOverride()
         {
@@ -509,11 +501,11 @@ namespace Tortuga.Chain
 
             if (m_ServerDefaultSettings == null)
             {
-                var temp = new SqlServerEffectiveSettings();
+                var temp = new OleDbSqlServerEffectiveSettings();
                 await temp.ReloadAsync(con, null);
 #if !Thread_Missing
                 Thread.MemoryBarrier();
-#endif 
+#endif
                 m_ServerDefaultSettings = temp;
             }
 
@@ -631,6 +623,7 @@ namespace Tortuga.Chain
         {
             return new OleDbSqlServerOpenDataSource(this, (OleDbConnection)connection, (OleDbTransaction)transaction);
         }
+
         IOpenDataSource IRootDataSource.CreateOpenDataSource(IDbConnection connection, IDbTransaction transaction)
         {
             return new OleDbSqlServerOpenDataSource(this, (OleDbConnection)connection, (OleDbTransaction)transaction);
@@ -668,9 +661,5 @@ namespace Tortuga.Chain
         {
             get { return m_ExtensionCache; }
         }
-
     }
-
-
 }
-#endif
