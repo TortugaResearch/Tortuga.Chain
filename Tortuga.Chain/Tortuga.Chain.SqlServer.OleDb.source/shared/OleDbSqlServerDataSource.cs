@@ -224,7 +224,7 @@ namespace Tortuga.Chain
         /// Gets the options that are currently in effect. This takes into account server-defined defaults.
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
-        public SqlServerEffectiveSettings GetEffectiveSettings()
+        public OleDbSqlServerEffectiveSettings GetEffectiveSettings()
         {
             var result = new OleDbSqlServerEffectiveSettings();
             using (var con = CreateConnection())
@@ -236,7 +236,7 @@ namespace Tortuga.Chain
         /// Gets the options that are currently in effect. This takes into account server-defined defaults.
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
-        public async Task<SqlServerEffectiveSettings> GetEffectiveSettingsAsync()
+        public async Task<OleDbSqlServerEffectiveSettings> GetEffectiveSettingsAsync()
         {
             var result = new OleDbSqlServerEffectiveSettings();
             using (var con = await CreateConnectionAsync())

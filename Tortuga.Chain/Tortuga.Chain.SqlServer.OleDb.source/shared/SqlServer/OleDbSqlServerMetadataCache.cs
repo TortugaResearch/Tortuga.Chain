@@ -10,14 +10,15 @@ namespace Tortuga.Chain.SqlServer
     /// Class OleDbSqlServerMetadataCache.
     /// </summary>
     /// <seealso cref="DatabaseMetadataCache{SqlServerObjectName, OleDbType}" />
-    public sealed class OleDbSqlServerMetadataCache : AbstractSqlServerMetadataCache<OleDbType>
+    public sealed partial class OleDbSqlServerMetadataCache
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="OleDbSqlServerMetadataCache"/> class.
         /// </summary>
         /// <param name="connectionBuilder">The connection builder.</param>
-        public OleDbSqlServerMetadataCache(OleDbConnectionStringBuilder connectionBuilder) : base(connectionBuilder)
+        public OleDbSqlServerMetadataCache(OleDbConnectionStringBuilder connectionBuilder)
         {
+            m_ConnectionBuilder = connectionBuilder;
         }
 
         /// <summary>
@@ -79,7 +80,7 @@ namespace Tortuga.Chain.SqlServer
         /// <summary>
         /// Preloads the scalar functions.
         /// </summary>
-        public override void PreloadScalarFunctions()
+        public void PreloadScalarFunctions()
         {
             const string TvfSql =
                 @"SELECT
@@ -111,7 +112,7 @@ namespace Tortuga.Chain.SqlServer
         /// <summary>
         /// Preloads the stored procedures.
         /// </summary>
-        public override void PreloadStoredProcedures()
+        public void PreloadStoredProcedures()
         {
             const string StoredProcedureSql =
             @"SELECT
@@ -141,7 +142,7 @@ namespace Tortuga.Chain.SqlServer
         /// <summary>
         /// Preloads the table value functions.
         /// </summary>
-        public override void PreloadTableFunctions()
+        public void PreloadTableFunctions()
         {
             const string TvfSql =
                 @"SELECT
@@ -174,7 +175,7 @@ namespace Tortuga.Chain.SqlServer
         /// Preloads metadata for all tables.
         /// </summary>
         /// <remarks>This is normally used only for testing. By default, metadata is loaded as needed.</remarks>
-        public override void PreloadTables()
+        public void PreloadTables()
         {
             const string tableList = "SELECT t.name AS Name, s.name AS SchemaName FROM sys.tables t INNER JOIN sys.schemas s ON t.schema_id=s.schema_id ORDER BY s.name, t.name";
 
@@ -200,7 +201,7 @@ namespace Tortuga.Chain.SqlServer
         /// Preloads the user defined types.
         /// </summary>
         /// <remarks>This is normally used only for testing. By default, metadata is loaded as needed.</remarks>
-        public override void PreloadUserDefinedTypes()
+        public void PreloadUserDefinedTypes()
         {
             const string tableList = @"SELECT s.name AS SchemaName, t.name AS Name FROM sys.types t INNER JOIN sys.schemas s ON t.schema_id = s.schema_id WHERE	t.is_user_defined = 1;";
 
@@ -226,7 +227,7 @@ namespace Tortuga.Chain.SqlServer
         /// Preloads metadata for all views.
         /// </summary>
         /// <remarks>This is normally used only for testing. By default, metadata is loaded as needed.</remarks>
-        public override void PreloadViews()
+        public void PreloadViews()
         {
             const string tableList = "SELECT t.name AS Name, s.name AS SchemaName FROM sys.views t INNER JOIN sys.schemas s ON t.schema_id=s.schema_id ORDER BY s.name, t.name";
 
@@ -292,7 +293,7 @@ namespace Tortuga.Chain.SqlServer
             return null;
         }
 
-        internal override ScalarFunctionMetadata<SqlServerObjectName, OleDbType> GetScalarFunctionInternal(SqlServerObjectName tableFunctionName)
+        internal ScalarFunctionMetadata<SqlServerObjectName, OleDbType> GetScalarFunctionInternal(SqlServerObjectName tableFunctionName)
         {
             const string sql =
         @"SELECT	s.name AS SchemaName,
@@ -355,7 +356,7 @@ namespace Tortuga.Chain.SqlServer
             return new ScalarFunctionMetadata<SqlServerObjectName, OleDbType>(objectName, parameters, typeName, TypeNameToSqlDbType(typeName), isNullable, maxLength, precision, scale, fullTypeName);
         }
 
-        internal override StoredProcedureMetadata<SqlServerObjectName, OleDbType> GetStoredProcedureInternal(SqlServerObjectName procedureName)
+        internal StoredProcedureMetadata<SqlServerObjectName, OleDbType> GetStoredProcedureInternal(SqlServerObjectName procedureName)
         {
             const string StoredProcedureSql =
                 @"SELECT
@@ -394,7 +395,7 @@ namespace Tortuga.Chain.SqlServer
             return new StoredProcedureMetadata<SqlServerObjectName, OleDbType>(objectName, parameters);
         }
 
-        internal override TableFunctionMetadata<SqlServerObjectName, OleDbType> GetTableFunctionInternal(SqlServerObjectName tableFunctionName)
+        internal TableFunctionMetadata<SqlServerObjectName, OleDbType> GetTableFunctionInternal(SqlServerObjectName tableFunctionName)
         {
             const string TvfSql =
                 @"SELECT
@@ -440,7 +441,7 @@ namespace Tortuga.Chain.SqlServer
             return new TableFunctionMetadata<SqlServerObjectName, OleDbType>(objectName, parameters, columns);
         }
 
-        internal override SqlServerTableOrViewMetadata<OleDbType> GetTableOrViewInternal(SqlServerObjectName tableName)
+        internal SqlServerTableOrViewMetadata<OleDbType> GetTableOrViewInternal(SqlServerObjectName tableName)
         {
             const string TableSql =
                 @"SELECT
@@ -498,7 +499,7 @@ namespace Tortuga.Chain.SqlServer
             return new SqlServerTableOrViewMetadata<OleDbType>(new SqlServerObjectName(actualSchema, actualName), isTable, columns, hasTriggers);
         }
 
-        internal override UserDefinedTypeMetadata<SqlServerObjectName, OleDbType> GetUserDefinedTypeInternal(SqlServerObjectName typeName)
+        internal UserDefinedTypeMetadata<SqlServerObjectName, OleDbType> GetUserDefinedTypeInternal(SqlServerObjectName typeName)
         {
             const string sql =
                 @"SELECT	s.name AS SchemaName,

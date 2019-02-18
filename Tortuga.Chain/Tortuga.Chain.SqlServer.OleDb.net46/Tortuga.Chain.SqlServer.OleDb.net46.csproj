@@ -4,14 +4,13 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{89F7E384-1377-44A1-89A9-F0F019E10DDC}</ProjectGuid>
+    <ProjectGuid>{964184DC-F608-4F2D-8045-E7A0EFE866DA}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Tortuga.Chain</RootNamespace>
+    <RootNamespace>Tortuga.Chain.SqlServer.OleDb.net46</RootNamespace>
     <AssemblyName>Tortuga.Chain.SqlServer.OleDb</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -21,12 +20,8 @@
     <DefineConstants>TRACE;DEBUG;SQL_SERVER_OLEDB</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <DocumentationFile>bin\Debug\Tortuga.Chain.SqlServer.OleDb.xml</DocumentationFile>
     <NoWarn>618</NoWarn>
-    <LangVersion>latest</LangVersion>
-    <RunCodeAnalysis>true</RunCodeAnalysis>
-    <CodeAnalysisRuleSet>..\Tortuga.Chain.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -35,24 +30,27 @@
     <DefineConstants>TRACE;SQL_SERVER_OLEDB</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <DocumentationFile>bin\Release\Tortuga.Chain.SqlServer.OleDb.xml</DocumentationFile>
     <NoWarn>618</NoWarn>
-    <LangVersion>latest</LangVersion>
-    <RunCodeAnalysis>true</RunCodeAnalysis>
-    <CodeAnalysisRuleSet>..\Tortuga.Chain.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>..\Tortuga Chain.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Collections.Immutable, Version=1.2.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Collections.Immutable.1.5.0\lib\netstandard2.0\System.Collections.Immutable.dll</HintPath>
+      <HintPath>..\packages\System.Collections.Immutable.1.5.0\lib\netstandard1.3\System.Collections.Immutable.dll</HintPath>
     </Reference>
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net461\System.ValueTuple.dll</HintPath>
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -63,6 +61,21 @@
     <Reference Include="Tortuga.Anchor, Version=2.0.6931.40035, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
       <HintPath>..\packages\Tortuga.Anchor.2.0.6931.40035\lib\net46\Tortuga.Anchor.dll</HintPath>
     </Reference>
+    <Reference Include="Tortuga.Chain.Core, Version=2.1.6963.38581, Culture=neutral, PublicKeyToken=8769fd32a2872cf0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tortuga.Chain.Core.2.1.6963.38576\lib\net46\Tortuga.Chain.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Tortuga.Chain.SqlServer, Version=2.1.6988.28255, Culture=neutral, PublicKeyToken=8769fd32a2872cf0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tortuga.Chain.SqlServer.2.1.6988.28249\lib\net46\Tortuga.Chain.SqlServer.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\Tortuga.Chain.SqlServer.OleDb.source\Properties\LibrarySharedAssemblyInfo.cs">
+      <Link>Properties\LibrarySharedAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\Tortuga.Chain.SqlServer.source\shared\SqlServer\AbstractSqlServerMetadataCache.cs">
+      <Link>shared\SqlServer\AbstractSqlServerMetadataCache.cs</Link>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\ProductSharedAssemblyInfo.cs">
@@ -95,50 +108,25 @@
     <Compile Include="..\Shared\DataSourceBase.IDataSource.cs">
       <Link>shared\SqlServer\DataSourceBase.IDataSource.cs</Link>
     </Compile>
-    <Compile Include="..\Tortuga.Chain.SqlServer.source\shared\SqlServer\AbstractSqlServerMetadataCache.cs">
-      <Link>shared\SqlServer\AbstractSqlServerMetadataCache.cs</Link>
+    <Compile Include="..\Tortuga.Chain.SqlServer.source\GlobalSuppressions.cs">
+      <Link>GlobalSuppressions.cs</Link>
     </Compile>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\LibrarySharedAssemblyInfo.cs" />
-    <Compile Include="shared\GlobalSuppressions.cs" />
-    <Compile Include="shared\OleDbSqlServerDataSource.cs" />
-    <Compile Include="shared\SqlServer\CommandBuilders\OleDbSqlServerDeleteMany.cs" />
-    <Compile Include="shared\SqlServer\CommandBuilders\OleDbSqlServerDeleteObject.cs" />
-    <Compile Include="shared\SqlServer\CommandBuilders\OleDbSqlServerInsertObject .cs" />
-    <Compile Include="shared\SqlServer\CommandBuilders\OleDbSqlServerInsertOrUpdateObject.cs" />
-    <Compile Include="shared\SqlServer\CommandBuilders\OleDbSqlServerObjectCommand.cs" />
-    <Compile Include="shared\SqlServer\CommandBuilders\OleDbSqlServerProcedureCall.cs" />
-    <Compile Include="shared\SqlServer\CommandBuilders\OleDbSqlServerScalarFunction.cs" />
-    <Compile Include="shared\SqlServer\CommandBuilders\OleDbSqlServerSqlCall.cs" />
-    <Compile Include="shared\SqlServer\CommandBuilders\OleDbSqlServerTableFunction.cs" />
-    <Compile Include="shared\SqlServer\CommandBuilders\OleDbSqlServerTableOrView.cs" />
-    <Compile Include="shared\SqlServer\CommandBuilders\OleDbSqlServerUpdateMany.cs" />
-    <Compile Include="shared\SqlServer\CommandBuilders\OleDbSqlServerUpdateObject.cs" />
-    <Compile Include="shared\SqlServer\OleDbSqlServerDataSourceBase.CommandBuilders.cs" />
-    <Compile Include="shared\SqlServer\OleDbSqlServerDataSourceBase.cs" />
-    <Compile Include="shared\SqlServer\OleDbSqlServerMetadataCache.cs" />
-    <Compile Include="shared\SqlServer\OleDbSqlServerOpenDataSource.cs" />
-    <Compile Include="shared\SqlServer\OleDbSqlServerTransactionalDataSource..cs" />
-    <Compile Include="shared\SqlServer\OleDbSqlServerEffectiveSettings.cs" />
-    <Compile Include="shared\SqlServer\Utilities.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\Tortuga Chain.snk">
+      <Link>Tortuga Chain.snk</Link>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Tortuga.Chain.Core.source\Tortuga.Chain.Core.source.csproj">
-      <Project>{2c523692-a40b-4a7e-a95a-fbe373f263f7}</Project>
-      <Name>Tortuga.Chain.Core.source</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Tortuga.Chain.SqlServer.source\Tortuga.Chain.SqlServer.source.csproj">
-      <Project>{5d3159ad-141c-4853-9ecc-a1fd603bd8c4}</Project>
-      <Name>Tortuga.Chain.SqlServer.source</Name>
-    </ProjectReference>
+    <CodeAnalysisDictionary Include="..\CustomDictionary.xml">
+      <Link>CustomDictionary.xml</Link>
+    </CodeAnalysisDictionary>
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="..\CustomDictionary.xml">
-      <Link>shared\CustomDictionary.xml</Link>
-    </CodeAnalysisDictionary>
+    <Compile Include="..\Tortuga.Chain.SqlServer.OleDb.source\shared\**\*.cs">
+      <Link>shared\%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

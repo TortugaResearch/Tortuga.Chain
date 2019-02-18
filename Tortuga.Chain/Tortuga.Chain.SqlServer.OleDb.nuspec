@@ -1,17 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package>
   <metadata>
-    <id>Tortuga.Chain.SqlServer</id>
+    <id>Tortuga.Chain.SqlServer.OleDb</id>
     <version></version>
     <authors>David Tomcik, Jonathan Allen</authors>
     <copyright>Copyright David Tomcik, Jonathan Allen 2016,2017,2019</copyright>
-    <description>Fluent ORM for .NET and SQL Server.</description>
+    <description>Fluent ORM for .NET and SQL Server using OleDb.</description>
     <tags>ORM, Fluent, SQL Server</tags>
     <language>en-US</language>
     <projectUrl>https://github.com/docevaad/Chain</projectUrl>
     <licenseUrl>https://github.com/docevaad/Chain/blob/master/License.txt</licenseUrl>
     <references>
-      <reference file="Tortuga.Chain.SqlServer.dll" />
+      <reference file="Tortuga.Chain.SqlServer.OleDb.dll" />
     </references>
     <frameworkAssemblies>
       <frameworkAssembly assemblyName="System.Data" targetFramework="net46" />
@@ -25,12 +25,7 @@
     <dependencies>
 
       <group targetFramework="net46">
-        <dependency id="Tortuga.Chain.Core" version="2.1.6963.38576" />
-      </group>
-
-      <group targetFramework="netstandard2.0">
-        <dependency id="Tortuga.Chain.Core" version="2.1.6963.38576" />
-        <dependency id="System.Data.SqlClient" version="4.6.0" />
+        <dependency id="Tortuga.Chain.SqlServer" version="2.1.6988.28249" />
       </group>
     </dependencies>
   </metadata>
