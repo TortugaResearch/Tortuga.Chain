@@ -21,7 +21,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;CODE_ANALYSIS;SDS</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;SQLITE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>..\Tortuga.Chain.ruleset</CodeAnalysisRuleSet>
@@ -33,7 +33,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;CODE_ANALYSIS;SDS</DefineConstants>
+    <DefineConstants>TRACE;SQLITE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>..\Tortuga.Chain.ruleset</CodeAnalysisRuleSet>
@@ -51,7 +51,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug-Unchecked|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\Debug-Unchecked\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;SDS</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;SQLITE</DefineConstants>
     <DocumentationFile>
     </DocumentationFile>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
@@ -109,15 +109,31 @@
     <Compile Include="..\ProductSharedAssemblyInfo.cs">
       <Link>Properties\ProductSharedAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="..\Shared\DataSourceBase.Class0DataSource.cs">
+      <Link>shared\SQLite\DataSourceBase.Class0DataSource.cs</Link>
+    </Compile>
+    <Compile Include="..\Shared\DataSourceBase.Class1DataSource.cs">
+      <Link>shared\SQLite\DataSourceBase.Class1DataSource.cs</Link>
+    </Compile>
+    <Compile Include="..\Shared\DataSourceBase.Class1DataSource.StringNames.cs">
+      <Link>shared\SQLite\DataSourceBase.Class1DataSource.StringNames.cs</Link>
+    </Compile>
+    <Compile Include="..\Shared\DataSourceBase.IClass0DataSource.cs">
+      <Link>shared\SQLite\DataSourceBase.IClass0DataSource.cs</Link>
+    </Compile>
+    <Compile Include="..\Shared\DataSourceBase.IClass1DataSource.cs">
+      <Link>shared\SQLite\DataSourceBase.IClass1DataSource.cs</Link>
+    </Compile>
+    <Compile Include="..\Shared\DataSourceBase.IDataSource.cs">
+      <Link>shared\SQLite\DataSourceBase.IDataSource.cs</Link>
+    </Compile>
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\LibrarySharedAssemblyInfo.cs" />
     <Compile Include="shared\SQLiteDataSource.cs" />
     <Compile Include="shared\SQLite\CommandBuilders\SQLiteDeleteMany.cs" />
     <Compile Include="shared\SQLite\CommandBuilders\SQLiteUpdateMany.cs" />
-    <Compile Include="shared\SQLite\SQLiteDataSourceBase.CommandBuilders.StringNames.cs" />
     <Compile Include="shared\SQLite\SQLiteDataSourceBase.CommandBuilders.cs" />
-    <Compile Include="shared\SQLite\SQLiteDataSourceBase.Interfaces.cs" />
     <Compile Include="shared\SQLite\SQLiteObjectName.cs" />
     <Compile Include="shared\SQLite\CommandBuilders\SQLiteDeleteObject.cs" />
     <Compile Include="shared\SQLite\CommandBuilders\SQLiteInsertObject.cs" />

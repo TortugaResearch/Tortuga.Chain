@@ -24,7 +24,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;CODE_ANALYSIS;SDS</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;CODE_ANALYSIS;CODE_ANALYSIS;SQLITE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -36,7 +36,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;CODE_ANALYSIS;SDS</DefineConstants>
+    <DefineConstants>TRACE;CODE_ANALYSIS;CODE_ANALYSIS;SQLITE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -94,6 +94,24 @@
   <ItemGroup>
     <Compile Include="..\ProductSharedAssemblyInfo.cs">
       <Link>Properties\ProductSharedAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\Shared\DataSourceBase.Class0DataSource.cs">
+      <Link>shared\SQLite\DataSourceBase.Class0DataSource.cs</Link>
+    </Compile>
+    <Compile Include="..\Shared\DataSourceBase.Class1DataSource.cs">
+      <Link>shared\SQLite\DataSourceBase.Class1DataSource.cs</Link>
+    </Compile>
+    <Compile Include="..\Shared\DataSourceBase.Class1DataSource.StringNames.cs">
+      <Link>shared\SQLite\DataSourceBase.Class1DataSource.StringNames.cs</Link>
+    </Compile>
+    <Compile Include="..\Shared\DataSourceBase.IClass0DataSource.cs">
+      <Link>shared\SQLite\DataSourceBase.IClass0DataSource.cs</Link>
+    </Compile>
+    <Compile Include="..\Shared\DataSourceBase.IClass1DataSource.cs">
+      <Link>shared\SQLite\DataSourceBase.IClass1DataSource.cs</Link>
+    </Compile>
+    <Compile Include="..\Shared\DataSourceBase.IDataSource.cs">
+      <Link>shared\SQLite\DataSourceBase.IDataSource.cs</Link>
     </Compile>
     <Compile Include="..\Tortuga.Chain.SQLite.source\GlobalSuppressions.cs">
       <Link>GlobalSuppressions.cs</Link>

@@ -14,13 +14,6 @@
       <reference file="Tortuga.Chain.SqlServer.dll" />
     </references>
     <frameworkAssemblies>
-      <frameworkAssembly assemblyName="System.Data" targetFramework="net45" />
-      <frameworkAssembly assemblyName="System.ComponentModel.DataAnnotations" targetFramework="net45" />
-      <frameworkAssembly assemblyName="System.Xml" targetFramework="net45" />
-      <frameworkAssembly assemblyName="System.Xml.Linq" targetFramework="net45" />
-      <frameworkAssembly assemblyName="System.Runtime.Caching" targetFramework="net45" />
-      <frameworkAssembly assemblyName="System.Configuration" targetFramework="net45" />
-
       <frameworkAssembly assemblyName="System.Data" targetFramework="net46" />
       <frameworkAssembly assemblyName="System.ComponentModel.DataAnnotations" targetFramework="net46" />
       <frameworkAssembly assemblyName="System.Xml" targetFramework="net46" />

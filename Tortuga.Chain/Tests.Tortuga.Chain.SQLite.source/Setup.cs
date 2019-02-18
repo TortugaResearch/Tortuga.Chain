@@ -7,8 +7,6 @@ using Tortuga.Chain;
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.SQLite;
 
-
-
 namespace Tests
 {
     [TestClass]
@@ -31,23 +29,11 @@ namespace Tests
 
             File.Delete(databaseFileName);
 
-#if SDS
             SQLiteConnection.CreateFile(databaseFileName);
-#else
-            void CreateFile(string databaseFileName)
-            {
-                FileStream fs = File.Create(databaseFileName);
-                fs.Close();
-            }
-            CreateFile(databaseFileName);
-
-            //SQLitePCL.Batteries.Init();
-#endif
             var dbConnection = new SQLiteConnection("Data Source=SQLiteTestDatabase.sqlite;");
             using (dbConnection)
             {
                 dbConnection.Open();
-
 
                 string sql = @"
 CREATE TABLE Employee
@@ -64,7 +50,7 @@ CREATE TABLE Employee
 
                 string sql2 = @"CREATE TABLE Customer
 (
-	CustomerKey INTEGER PRIMARY KEY, 
+	CustomerKey INTEGER PRIMARY KEY,
     FullName NVARCHAR(100) NULL,
 	State Char(2) NOT NULL,
 
@@ -107,8 +93,6 @@ CREATE TABLE Employee
             File.Delete(databaseFileName);
         }
 
-
-
         static void DefaultDispatcher_ExecutionCanceled(object sender, ExecutionEventArgs e)
         {
             Debug.WriteLine("******");
@@ -129,6 +113,7 @@ CREATE TABLE Employee
             Debug.WriteLine(e.Code);
             Debug.Unindent();
         }
+
 #endif
 
         static void DefaultDispatcher_ExecutionError(object sender, ExecutionEventArgs e)
