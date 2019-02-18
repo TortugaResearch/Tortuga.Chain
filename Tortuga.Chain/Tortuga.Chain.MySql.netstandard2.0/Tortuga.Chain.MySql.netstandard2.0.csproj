@@ -6,7 +6,7 @@
     <AssemblyName>Tortuga.Chain.MySql</AssemblyName>
 
     <PackageId>Tortuga.Chain.MySql.netstandard2.0</PackageId>
-    <DefineConstants>TRACE;NETSTANDARD2_0;System_Configuration_Missing</DefineConstants>
+    <DefineConstants>TRACE;NETSTANDARD2_0;System_Configuration_Missing;MYSQL</DefineConstants>
     <NetStandardImplicitPackageVersion>2.0.0</NetStandardImplicitPackageVersion>
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
@@ -27,6 +27,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="..\Shared\DataSourceBase.Class0DataSource.cs" Link="DataSourceBase.Class0DataSource.cs" />
+    <Compile Include="..\Shared\DataSourceBase.Class1DataSource.cs" Link="DataSourceBase.Class1DataSource.cs" />
+    <Compile Include="..\Shared\DataSourceBase.Class1DataSource.StringNames.cs" Link="DataSourceBase.Class1DataSource.StringNames.cs" />
+    <Compile Include="..\Shared\DataSourceBase.Class2DataSource.cs" Link="DataSourceBase.Class2DataSource.cs" />
+    <Compile Include="..\Shared\DataSourceBase.Class2DataSource.StringNames.cs" Link="DataSourceBase.Class2DataSource.StringNames.cs" />
+    <Compile Include="..\Shared\DataSourceBase.IClass0DataSource.cs" Link="DataSourceBase.IClass0DataSource.cs" />
+    <Compile Include="..\Shared\DataSourceBase.IClass1DataSource.cs" Link="DataSourceBase.IClass1DataSource.cs" />
+    <Compile Include="..\Shared\DataSourceBase.IClass2DataSource.cs" Link="DataSourceBase.IClass2DataSource.cs" />
+    <Compile Include="..\Shared\DataSourceBase.IDataSource.cs" Link="DataSourceBase.IDataSource.cs" />
     <Compile Include="..\Tortuga.Chain.MySql.source\Properties\LibrarySharedAssemblyInfo.cs;..\ProductSharedAssemblyInfo.cs" />
   </ItemGroup>
 
