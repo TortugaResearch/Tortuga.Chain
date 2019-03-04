@@ -83,8 +83,8 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Tortuga.Anchor, Version=2.0.6931.40035, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
-      <HintPath>..\packages\Tortuga.Anchor.2.0.6931.40035\lib\net46\Tortuga.Anchor.dll</HintPath>
+    <Reference Include="Tortuga.Anchor, Version=2.1.7001.31418, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tortuga.Anchor.2.1.7001.31418\lib\net46\Tortuga.Anchor.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -272,10 +272,14 @@
     <Compile Include="shared\MetadataException.cs" />
     <Compile Include="shared\Metadata\ColumnMetadataCollection.cs" />
     <Compile Include="shared\Metadata\ColumnMetadataCollection`1.cs" />
+    <Compile Include="shared\Metadata\DbDatabaseMetadataCache`1.cs" />
     <Compile Include="shared\Metadata\ISqlBuilderEntryDetails`1.cs" />
+    <Compile Include="shared\Metadata\OdbcDatabaseMetadataCache`1.cs" />
+    <Compile Include="shared\Metadata\OleDbDatabaseMetadataCache`1.cs" />
     <Compile Include="shared\Metadata\ScalarFunctionMetadata.cs" />
     <Compile Include="shared\Metadata\TableFunctionMetadata.cs" />
     <Compile Include="shared\Metadata\ScalarFunctionMetadata`2.cs" />
+    <Compile Include="shared\Metadata\TypeRegistration`1.cs" />
     <Compile Include="shared\Metadata\UserDefinedTypeMetadata.cs" />
     <Compile Include="shared\Metadata\ParameterMetadata.cs" />
     <Compile Include="shared\Metadata\ParameterMetadataCollection.cs" />

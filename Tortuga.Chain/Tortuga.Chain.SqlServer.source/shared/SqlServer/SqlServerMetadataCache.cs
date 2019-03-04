@@ -249,48 +249,38 @@ namespace Tortuga.Chain.SqlServer
             }
         }
 
-        [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
-        internal static SqlDbType? TypeNameToSqlDbType(string typeName)
+        /// <summary>
+        /// Converts a value to a string suitable for use in a SQL statement.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <param name="dbType">Optional database column type.</param>
+        /// <returns></returns>
+        public override string ValueToSqlValue(object value, SqlDbType? dbType)
         {
-            switch (typeName)
+            switch (value)
             {
-                case "bigint": return SqlDbType.BigInt;
-                case "binary": return SqlDbType.Binary;
-                case "bit": return SqlDbType.Bit;
-                case "char": return SqlDbType.Char;
-                case "date": return SqlDbType.Date;
-                case "datetime": return SqlDbType.DateTime;
-                case "datetime2": return SqlDbType.DateTime2;
-                case "datetimeoffset": return SqlDbType.DateTimeOffset;
-                case "decimal": return SqlDbType.Decimal;
-                case "float": return SqlDbType.Float;
-                //case "geography": m_SqlDbType = SqlDbType.;
-                //case "geometry": m_SqlDbType = SqlDbType;
-                //case "hierarchyid": m_SqlDbType = SqlDbType.;
-                case "image": return SqlDbType.Image;
-                case "int": return SqlDbType.Int;
-                case "money": return SqlDbType.Money;
-                case "nchar": return SqlDbType.NChar;
-                case "ntext": return SqlDbType.NText;
-                case "numeric": return SqlDbType.Decimal;
-                case "nvarchar": return SqlDbType.NVarChar;
-                case "real": return SqlDbType.Real;
-                case "smalldatetime": return SqlDbType.SmallDateTime;
-                case "smallint": return SqlDbType.SmallInt;
-                case "smallmoney": return SqlDbType.SmallMoney;
-                //case "sql_variant": m_SqlDbType = SqlDbType;
-                //case "sysname": m_SqlDbType = SqlDbType;
-                case "text": return SqlDbType.Text;
-                case "time": return SqlDbType.Time;
-                case "timestamp": return SqlDbType.Timestamp;
-                case "tinyint": return SqlDbType.TinyInt;
-                case "uniqueidentifier": return SqlDbType.UniqueIdentifier;
-                case "varbinary": return SqlDbType.VarBinary;
-                case "varchar": return SqlDbType.VarChar;
-                case "xml": return SqlDbType.Xml;
-            }
+                case string s:
+                    {
+                        switch (dbType)
+                        {
+                            case SqlDbType.Char:
+                            case SqlDbType.VarChar:
+                            case SqlDbType.Text:
+                                return "'" + s.Replace("'", "''") + "'";
 
-            return null;
+                            case SqlDbType.NChar:
+                            case SqlDbType.NVarChar:
+                            case SqlDbType.NText:
+                                return "N'" + s.Replace("'", "''") + "'";
+
+                            default: //Assume Unicode
+                                return "N'" + s.Replace("'", "''") + "'";
+                        }
+                    }
+
+                default:
+                    return base.ValueToSqlValue(value, dbType);
+            }
         }
 
         internal ScalarFunctionMetadata<SqlServerObjectName, SqlDbType> GetScalarFunctionInternal(SqlServerObjectName scalarFunctionName)
@@ -353,7 +343,7 @@ namespace Tortuga.Chain.SqlServer
 
             var parameters = GetParameters(objectName.ToString(), objectId);
 
-            return new ScalarFunctionMetadata<SqlServerObjectName, SqlDbType>(objectName, parameters, typeName, TypeNameToSqlDbType(typeName), isNullable, maxLength, precision, scale, fullTypeName);
+            return new ScalarFunctionMetadata<SqlServerObjectName, SqlDbType>(objectName, parameters, typeName, TypeNameToDbType(typeName), isNullable, maxLength, precision, scale, fullTypeName);
         }
 
         internal StoredProcedureMetadata<SqlServerObjectName, SqlDbType> GetStoredProcedureInternal(SqlServerObjectName procedureName)
@@ -563,10 +553,147 @@ WHERE	s.name = @Schema AND t.name = @Name;";
             else
             {
                 columns = new List<ColumnMetadata<SqlDbType>>();
-                columns.Add(new ColumnMetadata<SqlDbType>(null, false, false, false, baseTypeName, TypeNameToSqlDbType(baseTypeName), null, isNullable, maxLength, precision, scale, fullTypeName));
+                columns.Add(new ColumnMetadata<SqlDbType>(null, false, false, false, baseTypeName, TypeNameToDbType(baseTypeName), null, isNullable, maxLength, precision, scale, fullTypeName, ToClrType(baseTypeName, isNullable, maxLength)));
             }
 
             return new UserDefinedTypeMetadata<SqlServerObjectName, SqlDbType>(new SqlServerObjectName(actualSchema, actualName), isTableType, columns);
+        }
+
+        /// <summary>
+        /// Returns the CLR type that matches the indicated database column type.
+        /// </summary>
+        /// <param name="dbType">Type of the database column.</param>
+        /// <param name="isNullable">If nullable, Nullable versions of primitive types are returned.</param>
+        /// <param name="maxLength">Optional length. Used to distinguish between a char and string. Defaults to string.</param>
+        /// <returns>
+        /// A CLR type or NULL if the type is unknown.
+        /// </returns>
+        /// <remarks>This does not take into consideration registered types.</remarks>
+        [SuppressMessage("Microsoft.Maintainability", "CA1502")]
+        protected override Type ToClrType(SqlDbType dbType, bool isNullable, int? maxLength)
+        {
+            switch (dbType)
+            {
+                case SqlDbType.BigInt:
+                    return isNullable ? typeof(long?) : typeof(long);
+
+                case SqlDbType.Binary:
+                case SqlDbType.Image:
+                case SqlDbType.Timestamp:
+                case SqlDbType.VarBinary:
+                    return typeof(byte[]);
+
+                case SqlDbType.Bit:
+                    return isNullable ? typeof(bool?) : typeof(bool);
+
+                case SqlDbType.Char:
+                case SqlDbType.NChar:
+                case SqlDbType.NVarChar:
+                case SqlDbType.VarChar:
+                    return (maxLength == 1) ?
+                        (isNullable ? typeof(char?) : typeof(char))
+                        : typeof(string);
+
+                case SqlDbType.DateTime:
+                case SqlDbType.Date:
+                case SqlDbType.DateTime2:
+                case SqlDbType.SmallDateTime:
+                    return isNullable ? typeof(DateTime?) : typeof(DateTime);
+
+                case SqlDbType.Decimal:
+                case SqlDbType.Money:
+                case SqlDbType.SmallMoney:
+                    return isNullable ? typeof(decimal?) : typeof(decimal);
+
+                case SqlDbType.Float:
+                    return isNullable ? typeof(double?) : typeof(double);
+
+                case SqlDbType.Int:
+                    return isNullable ? typeof(int?) : typeof(int);
+
+                case SqlDbType.NText:
+                case SqlDbType.Text:
+                case SqlDbType.Xml:
+                    return typeof(string);
+
+                case SqlDbType.Real:
+                    return isNullable ? typeof(float?) : typeof(float);
+
+                case SqlDbType.UniqueIdentifier:
+                    return isNullable ? typeof(Guid?) : typeof(Guid);
+
+                case SqlDbType.SmallInt:
+                    return isNullable ? typeof(short?) : typeof(short);
+
+                case SqlDbType.TinyInt:
+                    return isNullable ? typeof(byte?) : typeof(byte);
+
+                case SqlDbType.Variant:
+                    return typeof(object);
+
+                case SqlDbType.Time:
+                    return isNullable ? typeof(TimeSpan?) : typeof(TimeSpan);
+
+                case SqlDbType.DateTimeOffset:
+                    return isNullable ? typeof(DateTimeOffset?) : typeof(DateTimeOffset);
+
+                case SqlDbType.Udt:
+                case SqlDbType.Structured:
+                    return null;
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Determines the database column type from the column type name.
+        /// </summary>
+        /// <param name="typeName">Name of the database column type.</param>
+        /// <param name="isUnsigned">NOT USED</param>
+        /// <returns></returns>
+        /// <remarks>This does not honor registered types. This is only used for the database's hard-coded list of native types.</remarks>
+        [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
+        protected override SqlDbType? TypeNameToDbType(string typeName, bool? isUnsigned = null)
+        {
+            switch (typeName)
+            {
+                case "bigint": return SqlDbType.BigInt;
+                case "binary": return SqlDbType.Binary;
+                case "bit": return SqlDbType.Bit;
+                case "char": return SqlDbType.Char;
+                case "date": return SqlDbType.Date;
+                case "datetime": return SqlDbType.DateTime;
+                case "datetime2": return SqlDbType.DateTime2;
+                case "datetimeoffset": return SqlDbType.DateTimeOffset;
+                case "decimal": return SqlDbType.Decimal;
+                case "float": return SqlDbType.Float;
+                //case "geography": m_SqlDbType = SqlDbType.;
+                //case "geometry": m_SqlDbType = SqlDbType;
+                //case "hierarchyid": m_SqlDbType = SqlDbType.;
+                case "image": return SqlDbType.Image;
+                case "int": return SqlDbType.Int;
+                case "money": return SqlDbType.Money;
+                case "nchar": return SqlDbType.NChar;
+                case "ntext": return SqlDbType.NText;
+                case "numeric": return SqlDbType.Decimal;
+                case "nvarchar": return SqlDbType.NVarChar;
+                case "real": return SqlDbType.Real;
+                case "smalldatetime": return SqlDbType.SmallDateTime;
+                case "smallint": return SqlDbType.SmallInt;
+                case "smallmoney": return SqlDbType.SmallMoney;
+                //case "sql_variant": m_SqlDbType = SqlDbType;
+                //case "sysname": m_SqlDbType = SqlDbType;
+                case "text": return SqlDbType.Text;
+                case "time": return SqlDbType.Time;
+                case "timestamp": return SqlDbType.Timestamp;
+                case "tinyint": return SqlDbType.TinyInt;
+                case "uniqueidentifier": return SqlDbType.UniqueIdentifier;
+                case "varbinary": return SqlDbType.VarBinary;
+                case "varchar": return SqlDbType.VarChar;
+                case "xml": return SqlDbType.Xml;
+            }
+
+            return null;
         }
 
         List<ColumnMetadata<SqlDbType>> GetColumns(int objectId)
@@ -623,7 +750,7 @@ WHERE	s.name = @Schema AND t.name = @Name;";
                             string fullTypeName;
                             AdjustTypeDetails(typeName, ref maxLength, ref precision, ref scale, out fullTypeName);
 
-                            columns.Add(new ColumnMetadata<SqlDbType>(name, computed, primary, isIdentity, typeName, TypeNameToSqlDbType(typeName), "[" + name + "]", isNullable, maxLength, precision, scale, fullTypeName));
+                            columns.Add(new ColumnMetadata<SqlDbType>(name, computed, primary, isIdentity, typeName, TypeNameToDbType(typeName), "[" + name + "]", isNullable, maxLength, precision, scale, fullTypeName, ToClrType(typeName, isNullable, maxLength)));
                         }
                     }
                 }
@@ -672,7 +799,7 @@ WHERE	s.name = @Schema AND t.name = @Name;";
                                 string fullTypeName;
                                 AdjustTypeDetails(typeName, ref maxLength, ref precision, ref scale, out fullTypeName);
 
-                                parameters.Add(new ParameterMetadata<SqlDbType>(name, name, typeName, TypeNameToSqlDbType(typeName), isNullable, maxLength, precision, scale, fullTypeName));
+                                parameters.Add(new ParameterMetadata<SqlDbType>(name, name, typeName, TypeNameToDbType(typeName), isNullable, maxLength, precision, scale, fullTypeName));
                             }
                         }
                     }

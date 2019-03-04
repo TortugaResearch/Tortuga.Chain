@@ -249,48 +249,39 @@ namespace Tortuga.Chain.SqlServer
             }
         }
 
-        [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
-        internal static OleDbType? TypeNameToSqlDbType(string typeName)
+        /// <summary>
+        /// Converts a value to a string suitable for use in a SQL statement.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <param name="dbType">Optional database column type.</param>
+        /// <returns></returns>
+        public override string ValueToSqlValue(object value, OleDbType? dbType)
         {
-            switch (typeName)
+            switch (value)
             {
-                case "bigint": return OleDbType.BigInt;
-                case "binary": return OleDbType.Binary;
-                case "bit": return OleDbType.Boolean;
-                case "char": return OleDbType.Char;
-                case "date": return OleDbType.DBDate;
-                case "datetime": return OleDbType.DBTimeStamp;
-                case "datetime2": return OleDbType.DBTimeStamp;
-                //case "datetimeoffset": return OleDbType;
-                case "decimal": return OleDbType.Decimal;
-                case "float": return OleDbType.Single;
-                //case "geography": m_SqlDbType = OleDbType.;
-                //case "geometry": m_SqlDbType = OleDbType;
-                //case "hierarchyid": m_SqlDbType = OleDbType.;
-                //case "image": return OleDbType.Image;
-                case "int": return OleDbType.Integer;
-                case "money": return OleDbType.Currency;
-                case "nchar": return OleDbType.WChar;
-                case "ntext": return OleDbType.LongVarWChar;
-                case "numeric": return OleDbType.Numeric;
-                case "nvarchar": return OleDbType.VarWChar;
-                case "real": return OleDbType.Single;
-                case "smalldatetime": return OleDbType.DBTimeStamp;
-                case "smallint": return OleDbType.SmallInt;
-                case "smallmoney": return OleDbType.Currency;
-                //case "sql_variant": m_SqlDbType = OleDbType;
-                //case "sysname": m_SqlDbType = OleDbType;
-                case "text": return OleDbType.LongVarWChar;
-                case "time": return OleDbType.DBTime;
-                case "timestamp": return OleDbType.DBTimeStamp;
-                case "tinyint": return OleDbType.TinyInt;
-                case "uniqueidentifier": return OleDbType.Guid;
-                case "varbinary": return OleDbType.VarBinary;
-                case "varchar": return OleDbType.VarChar;
-                    //case "xml": return OleDbType;
-            }
+                case string s:
+                    {
+                        switch (dbType)
+                        {
+                            case OleDbType.Char:
+                            case OleDbType.LongVarChar:
+                            case OleDbType.VarChar:
+                                return "'" + s.Replace("'", "''") + "'";
 
-            return null;
+                            case OleDbType.WChar:
+                            case OleDbType.BSTR:
+                            case OleDbType.VarWChar:
+                            case OleDbType.LongVarWChar:
+                                return "N'" + s.Replace("'", "''") + "'";
+
+                            default: //Assume Unicode
+                                return "N'" + s.Replace("'", "''") + "'";
+                        }
+                    }
+
+                default:
+                    return base.ValueToSqlValue(value, dbType);
+            }
         }
 
         internal ScalarFunctionMetadata<SqlServerObjectName, OleDbType> GetScalarFunctionInternal(SqlServerObjectName tableFunctionName)
@@ -353,7 +344,7 @@ namespace Tortuga.Chain.SqlServer
 
             var parameters = GetParameters(objectName.ToString(), objectId);
 
-            return new ScalarFunctionMetadata<SqlServerObjectName, OleDbType>(objectName, parameters, typeName, TypeNameToSqlDbType(typeName), isNullable, maxLength, precision, scale, fullTypeName);
+            return new ScalarFunctionMetadata<SqlServerObjectName, OleDbType>(objectName, parameters, typeName, TypeNameToDbType(typeName), isNullable, maxLength, precision, scale, fullTypeName);
         }
 
         internal StoredProcedureMetadata<SqlServerObjectName, OleDbType> GetStoredProcedureInternal(SqlServerObjectName procedureName)
@@ -565,10 +556,61 @@ WHERE	s.name = ? AND t.name = ?;";
             else
             {
                 columns = new List<ColumnMetadata<OleDbType>>();
-                columns.Add(new ColumnMetadata<OleDbType>(null, false, false, false, baseTypeName, TypeNameToSqlDbType(baseTypeName), null, isNullable, maxLength, precision, scale, fullTypeName));
+                columns.Add(new ColumnMetadata<OleDbType>(null, false, false, false, baseTypeName, TypeNameToDbType(baseTypeName), null, isNullable, maxLength, precision, scale, fullTypeName, ToClrType(baseTypeName, isNullable, maxLength)));
             }
 
             return new UserDefinedTypeMetadata<SqlServerObjectName, OleDbType>(new SqlServerObjectName(actualSchema, actualName), isTableType, columns);
+        }
+
+        /// <summary>
+        /// Determines the database column type from the column type name.
+        /// </summary>
+        /// <param name="typeName">Name of the database column type.</param>
+        /// <param name="isUnsigned">NOT USED</param>
+        /// <returns></returns>
+        /// <remarks>This does not honor registered types. This is only used for the database's hard-coded list of native types.</remarks>
+        [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
+        protected override OleDbType? TypeNameToDbType(string typeName, bool? isUnsigned = null)
+        {
+            switch (typeName)
+            {
+                case "bigint": return OleDbType.BigInt;
+                case "binary": return OleDbType.Binary;
+                case "bit": return OleDbType.Boolean;
+                case "char": return OleDbType.Char;
+                case "date": return OleDbType.DBDate;
+                case "datetime": return OleDbType.DBTimeStamp;
+                case "datetime2": return OleDbType.DBTimeStamp;
+                //case "datetimeoffset": return OleDbType;
+                case "decimal": return OleDbType.Decimal;
+                case "float": return OleDbType.Single;
+                //case "geography": m_SqlDbType = OleDbType.;
+                //case "geometry": m_SqlDbType = OleDbType;
+                //case "hierarchyid": m_SqlDbType = OleDbType.;
+                //case "image": return OleDbType.Image;
+                case "int": return OleDbType.Integer;
+                case "money": return OleDbType.Currency;
+                case "nchar": return OleDbType.WChar;
+                case "ntext": return OleDbType.LongVarWChar;
+                case "numeric": return OleDbType.Numeric;
+                case "nvarchar": return OleDbType.VarWChar;
+                case "real": return OleDbType.Single;
+                case "smalldatetime": return OleDbType.DBTimeStamp;
+                case "smallint": return OleDbType.SmallInt;
+                case "smallmoney": return OleDbType.Currency;
+                //case "sql_variant": m_SqlDbType = OleDbType;
+                //case "sysname": m_SqlDbType = OleDbType;
+                case "text": return OleDbType.LongVarWChar;
+                case "time": return OleDbType.DBTime;
+                case "timestamp": return OleDbType.DBTimeStamp;
+                case "tinyint": return OleDbType.TinyInt;
+                case "uniqueidentifier": return OleDbType.Guid;
+                case "varbinary": return OleDbType.VarBinary;
+                case "varchar": return OleDbType.VarChar;
+                    //case "xml": return OleDbType;
+            }
+
+            return null;
         }
 
         List<ColumnMetadata<OleDbType>> GetColumns(int objectId)
@@ -628,7 +670,7 @@ WHERE	s.name = ? AND t.name = ?;";
                             string fullTypeName;
                             AdjustTypeDetails(typeName, ref maxLength, ref precision, ref scale, out fullTypeName);
 
-                            columns.Add(new ColumnMetadata<OleDbType>(name, computed, primary, isIdentity, typeName, TypeNameToSqlDbType(typeName), "[" + name + "]", isNullable, maxLength, precision, scale, fullTypeName));
+                            columns.Add(new ColumnMetadata<OleDbType>(name, computed, primary, isIdentity, typeName, TypeNameToDbType(typeName), "[" + name + "]", isNullable, maxLength, precision, scale, fullTypeName, ToClrType(typeName, isNullable, maxLength)));
                         }
                     }
                 }
@@ -679,7 +721,7 @@ WHERE	s.name = ? AND t.name = ?;";
                                 string fullTypeName;
                                 AdjustTypeDetails(typeName, ref maxLength, ref precision, ref scale, out fullTypeName);
 
-                                parameters.Add(new ParameterMetadata<OleDbType>(name, name, typeName, TypeNameToSqlDbType(typeName), isNullable, maxLength, precision, scale, fullTypeName));
+                                parameters.Add(new ParameterMetadata<OleDbType>(name, name, typeName, TypeNameToDbType(typeName), isNullable, maxLength, precision, scale, fullTypeName));
                             }
                         }
                     }

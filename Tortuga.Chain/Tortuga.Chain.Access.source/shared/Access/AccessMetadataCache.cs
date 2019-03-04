@@ -14,7 +14,7 @@ namespace Tortuga.Chain.Access
     /// <summary>
     /// Handles caching of metadata for various Access tables and views.
     /// </summary>
-    public sealed class AccessMetadataCache : DatabaseMetadataCache<AccessObjectName, OleDbType>
+    public sealed class AccessMetadataCache : OleDbDatabaseMetadataCache<AccessObjectName>
     {
         readonly OleDbConnectionStringBuilder m_ConnectionBuilder;
         readonly ConcurrentDictionary<AccessObjectName, TableOrViewMetadata<AccessObjectName, OleDbType>> m_Tables = new ConcurrentDictionary<AccessObjectName, TableOrViewMetadata<AccessObjectName, OleDbType>>();
@@ -126,6 +126,21 @@ namespace Tortuga.Chain.Access
         /// <returns>System.String.</returns>
         protected override AccessObjectName ParseObjectName(string name) => name;
 
+        /// <summary>
+        /// Determines the database column type from the column type name.
+        /// </summary>
+        /// <param name="typeName">Name of the database column type.</param>
+        /// <param name="isUnsigned">NOT USED</param>
+        /// <returns></returns>
+        /// <remarks>This does not honor registered types. This is only used for the database's hard-coded list of native types.</remarks>
+        protected override OleDbType? TypeNameToDbType(string typeName, bool? isUnsigned = null)
+        {
+            if (Enum.TryParse<OleDbType>(typeName, out var result))
+                return result;
+
+            return null;
+        }
+
         [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         List<ColumnMetadata<OleDbType>> GetColumns(string tableName, DataTable columns, DataTable primaryKeys)
         {
@@ -147,7 +162,7 @@ namespace Tortuga.Chain.Access
                 if (primaryKeys != null)
                     foreach (DataRow row in primaryKeys.Rows)
                     {
-                        if (row["TABLE_NAME"].ToString() == tableName && row["COLUMN_NAME"].ToString() == name)
+                        if (string.Equals(row["TABLE_NAME"].ToString(), tableName, StringComparison.Ordinal) && string.Equals(row["COLUMN_NAME"].ToString(), name, StringComparison.Ordinal))
                         {
                             isPrimaryKey = true;
                             break;
@@ -173,7 +188,11 @@ namespace Tortuga.Chain.Access
                     }
                 }
 
-                result.Add(new ColumnMetadata<OleDbType>(name, false, isPrimaryKey, isIdentity, type.Value.ToString(), type.Value, $"[{name}]", isNullable, (int?)maxLength, precision, scale, fullTypeName));
+                Type clrType = null;
+                if (type.HasValue)
+                    clrType = ToClrType(type.Value, isNullable ?? true, (int?)maxLength);
+
+                result.Add(new ColumnMetadata<OleDbType>(name, false, isPrimaryKey, isIdentity, type.Value.ToString(), type.Value, $"[{name}]", isNullable, (int?)maxLength, precision, scale, fullTypeName, clrType));
             }
 
             return result;

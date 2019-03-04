@@ -12,13 +12,12 @@ namespace Tortuga.Chain.SQLite
     /// <summary>
     /// Handles caching of metadata for various SQLite tables and views.
     /// </summary>
-    public sealed class SQLiteMetadataCache : DatabaseMetadataCache<SQLiteObjectName, DbType>
+    public sealed class SQLiteMetadataCache : DbDatabaseMetadataCache<SQLiteObjectName>
     {
         readonly SQLiteConnectionStringBuilder m_ConnectionBuilder;
         readonly ConcurrentDictionary<SQLiteObjectName, TableOrViewMetadata<SQLiteObjectName, DbType>> m_Tables = new ConcurrentDictionary<SQLiteObjectName, TableOrViewMetadata<SQLiteObjectName, DbType>>();
 
         readonly ConcurrentDictionary<Type, TableOrViewMetadata<SQLiteObjectName, DbType>> m_TypeTableMap = new ConcurrentDictionary<Type, TableOrViewMetadata<SQLiteObjectName, DbType>>();
-
 
         /// <summary>
         /// Creates a new instance of <see cref="SQLiteMetadataCache"/>
@@ -39,39 +38,51 @@ namespace Tortuga.Chain.SQLite
             return m_Tables.GetOrAdd(tableName, GetTableOrViewInternal);
         }
 
-        private TableOrViewMetadata<SQLiteObjectName, DbType> GetTableOrViewInternal(SQLiteObjectName tableName)
+        /// <summary>
+        /// Returns the table or view derived from the class's name and/or Table attribute.
+        /// </summary>
+        /// <typeparam name="TObject">The type of the object.</typeparam>
+        /// <returns>TableOrViewMetadata&lt;System.String, DbType&gt;.</returns>
+        public override TableOrViewMetadata<SQLiteObjectName, DbType> GetTableOrViewFromClass<TObject>()
         {
-            const string tableSql =
-                @"SELECT 
-                type AS ObjectType,
-                tbl_name AS ObjectName
-                FROM sqlite_master
-                WHERE UPPER(tbl_name) = UPPER(@Name) AND
-                      (type='table' OR type='view')";
+            var type = typeof(TObject);
+            TableOrViewMetadata<SQLiteObjectName, DbType> result;
+            if (m_TypeTableMap.TryGetValue(type, out result))
+                return result;
 
-            string actualName;
-            bool isTable;
-
-            using (var con = new SQLiteConnection(m_ConnectionBuilder.ConnectionString))
+            var typeInfo = MetadataCache.GetMetadata(type);
+            if (!string.IsNullOrEmpty(typeInfo.MappedTableName))
             {
-                con.Open();
-                using (var cmd = new SQLiteCommand(tableSql, con))
-                {
-                    cmd.Parameters.AddWithValue("@Name", tableName.Name);
-                    using (var reader = cmd.ExecuteReader())
-                    {
-                        if (!reader.Read())
-                            throw new MissingObjectException($"Could not find table or view {tableName}");
-
-                        actualName = reader.GetString(reader.GetOrdinal("ObjectName"));
-                        var objectType = reader.GetString(reader.GetOrdinal("ObjectType"));
-                        isTable = objectType.Equals("table");
-                    }
-                }
+                result = GetTableOrView(typeInfo.MappedTableName);
+                m_TypeTableMap[type] = result;
+                return result;
             }
 
-            var columns = GetColumns(tableName, isTable);
-            return new TableOrViewMetadata<SQLiteObjectName, DbType>(actualName, isTable, columns);
+            //infer table from class name
+            result = GetTableOrView(type.Name);
+            m_TypeTableMap[type] = result;
+            return result;
+        }
+
+        /// <summary>
+        /// Gets the tables and views that were loaded by this cache.
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>
+        /// Call Preload before invoking this method to ensure that all tables and views were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.
+        /// </remarks>
+        public override IReadOnlyCollection<TableOrViewMetadata<SQLiteObjectName, DbType>> GetTablesAndViews()
+        {
+            return m_Tables.GetValues();
+        }
+
+        /// <summary>
+        /// Preloads all of the metadata for this data source.
+        /// </summary>
+        public override void Preload()
+        {
+            PreloadTables();
+            PreloadViews();
         }
 
         /// <summary>
@@ -132,11 +143,43 @@ namespace Tortuga.Chain.SQLite
             }
         }
 
+        /// <summary>
+        /// Resets the metadata cache, clearing out all cached metadata.
+        /// </summary>
+        public override void Reset()
+        {
+            m_Tables.Clear();
+            m_TypeTableMap.Clear();
+        }
+
+        /// <summary>
+        /// Parses the name of the database object.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <returns>System.String.</returns>
+        protected override SQLiteObjectName ParseObjectName(string name)
+        {
+            return new SQLiteObjectName(name);
+        }
+
+        /// <summary>
+        /// Determines the database column type from the column type name.
+        /// </summary>
+        /// <param name="typeName">Name of the database column type.</param>
+        /// <param name="isUnsigned">NOT USED</param>
+        /// <returns></returns>
+        /// <remarks>This does not honor registered types. This is only used for the database's hard-coded list of native types.</remarks>
+        protected override DbType? TypeNameToDbType(string typeName, bool? isUnsigned = null)
+        {
+            //Not implemented. See https://github.com/docevaad/Chain/issues/266
+            return null;
+        }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
         List<ColumnMetadata<DbType>> GetColumns(SQLiteObjectName tableName, bool isTable)
         {
-            /*  NOTE: Should be safe since GetTableOrViewInternal returns null after querying the table name with a 
-            **  prepared statement, thus proving that the table name exists. 
+            /*  NOTE: Should be safe since GetTableOrViewInternal returns null after querying the table name with a
+            **  prepared statement, thus proving that the table name exists.
             */
             var hasPrimarykey = false;
             var columnSql = $"PRAGMA table_info('{tableName.Name}')";
@@ -157,7 +200,7 @@ namespace Tortuga.Chain.SQLite
                             var isnNullable = !reader.GetBoolean(reader.GetOrdinal("notnull"));
                             hasPrimarykey = hasPrimarykey || isPrimaryKey;
 
-                            columns.Add(new ColumnMetadata<DbType>(name, false, isPrimaryKey, false, typeName, null, "[" + name + "]", isnNullable, null, null, null, null));
+                            columns.Add(new ColumnMetadata<DbType>(name, false, isPrimaryKey, false, typeName, TypeNameToDbType(typeName), "[" + name + "]", isnNullable, null, null, null, null, ToClrType(typeName, isnNullable, null)));
                         }
                     }
                 }
@@ -166,75 +209,44 @@ namespace Tortuga.Chain.SQLite
             //Tables wihtout a primary key always have a ROWID.
             //We can't tell if other tables have one or not.
             if (isTable && !hasPrimarykey)
-                columns.Add(new ColumnMetadata<DbType>("ROWID", true, false, true, "INTEGER", null, "[ROWID]", false, null, null, null, null));
+                columns.Add(new ColumnMetadata<DbType>("ROWID", true, false, true, "INTEGER", DbType.Int64, "[ROWID]", false, null, null, null, null, typeof(long)));
 
             return columns;
         }
 
-        /// <summary>
-        /// Parses the name of the database object.
-        /// </summary>
-        /// <param name="name">The name.</param>
-        /// <returns>System.String.</returns>
-        protected override SQLiteObjectName ParseObjectName(string name)
+        private TableOrViewMetadata<SQLiteObjectName, DbType> GetTableOrViewInternal(SQLiteObjectName tableName)
         {
-            return new SQLiteObjectName(name);
-        }
+            const string tableSql =
+                @"SELECT
+                type AS ObjectType,
+                tbl_name AS ObjectName
+                FROM sqlite_master
+                WHERE UPPER(tbl_name) = UPPER(@Name) AND
+                      (type='table' OR type='view')";
 
-        /// <summary>
-        /// Preloads all of the metadata for this data source.
-        /// </summary>
-        public override void Preload()
-        {
-            PreloadTables();
-            PreloadViews();
-        }
+            string actualName;
+            bool isTable;
 
-        /// <summary>
-        /// Gets the tables and views that were loaded by this cache.
-        /// </summary>
-        /// <returns></returns>
-        /// <remarks>
-        /// Call Preload before invoking this method to ensure that all tables and views were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.
-        /// </remarks>
-        public override IReadOnlyCollection<TableOrViewMetadata<SQLiteObjectName, DbType>> GetTablesAndViews()
-        {
-            return m_Tables.GetValues();
-        }
-
-        /// <summary>
-        /// Returns the table or view derived from the class's name and/or Table attribute.
-        /// </summary>
-        /// <typeparam name="TObject">The type of the object.</typeparam>
-        /// <returns>TableOrViewMetadata&lt;System.String, DbType&gt;.</returns>
-        public override TableOrViewMetadata<SQLiteObjectName, DbType> GetTableOrViewFromClass<TObject>()
-        {
-            var type = typeof(TObject);
-            TableOrViewMetadata<SQLiteObjectName, DbType> result;
-            if (m_TypeTableMap.TryGetValue(type, out result))
-                return result;
-
-            var typeInfo = MetadataCache.GetMetadata(type);
-            if (!string.IsNullOrEmpty(typeInfo.MappedTableName))
+            using (var con = new SQLiteConnection(m_ConnectionBuilder.ConnectionString))
             {
-                result = GetTableOrView(typeInfo.MappedTableName);
-                m_TypeTableMap[type] = result;
-                return result;
+                con.Open();
+                using (var cmd = new SQLiteCommand(tableSql, con))
+                {
+                    cmd.Parameters.AddWithValue("@Name", tableName.Name);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        if (!reader.Read())
+                            throw new MissingObjectException($"Could not find table or view {tableName}");
+
+                        actualName = reader.GetString(reader.GetOrdinal("ObjectName"));
+                        var objectType = reader.GetString(reader.GetOrdinal("ObjectType"));
+                        isTable = objectType.Equals("table", StringComparison.OrdinalIgnoreCase);
+                    }
+                }
             }
 
-            //infer table from class name
-            result = GetTableOrView(type.Name);
-            m_TypeTableMap[type] = result;
-            return result;
-        }
-
-        /// <summary>
-        /// Resets the metadata cache, clearing out all cached metadata.
-        /// </summary>
-        public override void Reset()
-        {
-            m_Tables.Clear();
-            m_TypeTableMap.Clear();
+            var columns = GetColumns(tableName, isTable);
+            return new TableOrViewMetadata<SQLiteObjectName, DbType>(actualName, isTable, columns);
         }
     }
 }

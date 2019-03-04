@@ -289,6 +289,66 @@ namespace Tortuga.Chain.MySql
         }
 
         /// <summary>
+        /// Converts a value to a string suitable for use in a SQL statement.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <param name="dbType">Optional database column type.</param>
+        /// <returns></returns>
+        public override string ValueToSqlValue(object value, MySqlDbType? dbType)
+        {
+            switch (value)
+            {
+                case string s:
+                    {
+                        var result = new System.Text.StringBuilder((int)(s.Length * 1.1));
+
+                        foreach (var c in s)
+                        {
+                            switch (c)
+                            {
+                                case '\'':
+                                    result.Append(@"\'");
+                                    break;
+
+                                case '\"':
+                                    result.Append(@"\""");
+                                    break;
+
+                                case '\b':
+                                    result.Append(@"\b");
+                                    break;
+
+                                case '\n':
+                                    result.Append(@"\n");
+                                    break;
+
+                                case '\r':
+                                    result.Append(@"\r");
+                                    break;
+
+                                case '\t':
+                                    result.Append(@"\t");
+                                    break;
+
+                                case '\\':
+                                    result.Append(@"\\");
+                                    break;
+
+                                default:
+                                    result.Append(c);
+                                    break;
+                            }
+                        }
+
+                        return "'" + result + "'";
+                    }
+
+                default:
+                    return base.ValueToSqlValue(value, dbType);
+            }
+        }
+
+        /// <summary>
         /// Parse a string and return the database specific representation of the object name.
         /// </summary>
         /// <param name="name">The name.</param>
@@ -298,25 +358,137 @@ namespace Tortuga.Chain.MySql
             return new MySqlObjectName(name);
         }
 
+        /// <summary>
+        /// Returns the CLR type that matches the indicated database column type.
+        /// </summary>
+        /// <param name="dbType">Type of the database column.</param>
+        /// <param name="isNullable">If nullable, Nullable versions of primitive types are returned.</param>
+        /// <param name="maxLength">Optional length. Used to distinguish between a char and string. Defaults to string.</param>
+        /// <returns>
+        /// A CLR type or NULL if the type is unknown.
+        /// </returns>
+        /// <remarks>This does not take into consideration registered types.</remarks>
         [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
-        private static MySqlDbType? TypeNameToMySqlDbType(string typeName, bool isUnsigned)
+        protected override Type ToClrType(MySqlDbType dbType, bool isNullable, int? maxLength)
         {
+            switch (dbType)
+            {
+                case MySqlDbType.Bit:
+                case MySqlDbType.Bool:
+                    return isNullable ? typeof(bool?) : typeof(bool);
+
+                case MySqlDbType.Decimal:
+                case MySqlDbType.NewDecimal:
+                    return isNullable ? typeof(decimal?) : typeof(decimal);
+
+                case MySqlDbType.Byte:
+                    return isNullable ? typeof(sbyte?) : typeof(sbyte);
+
+                case MySqlDbType.Int16:
+                    return isNullable ? typeof(short?) : typeof(short);
+
+                case MySqlDbType.Int32:
+                    return isNullable ? typeof(int?) : typeof(int);
+
+                case MySqlDbType.Float:
+                    return isNullable ? typeof(float?) : typeof(float);
+
+                case MySqlDbType.Double:
+                    return isNullable ? typeof(double?) : typeof(double);
+
+                case MySqlDbType.Timestamp:
+                case MySqlDbType.Date:
+                case MySqlDbType.DateTime:
+                case MySqlDbType.Newdate:
+                    return isNullable ? typeof(DateTime?) : typeof(DateTime);
+
+                case MySqlDbType.Int64:
+                    return isNullable ? typeof(long?) : typeof(long);
+
+                case MySqlDbType.Int24:
+                    return isNullable ? typeof(int?) : typeof(int);
+
+                case MySqlDbType.Time:
+                    return isNullable ? typeof(TimeSpan?) : typeof(TimeSpan);
+
+                case MySqlDbType.Year:
+                    return isNullable ? typeof(sbyte?) : typeof(sbyte);
+
+                case MySqlDbType.VarString:
+                case MySqlDbType.JSON:
+                case MySqlDbType.VarChar:
+                case MySqlDbType.TinyText:
+                case MySqlDbType.MediumText:
+                case MySqlDbType.LongText:
+                case MySqlDbType.Text:
+                case MySqlDbType.String:
+                    return (maxLength == 1) ? (isNullable ? typeof(char?) : typeof(char)) : typeof(string);
+
+                case MySqlDbType.UByte:
+                    return isNullable ? typeof(byte?) : typeof(byte);
+
+                case MySqlDbType.UInt16:
+                    return isNullable ? typeof(ushort?) : typeof(ushort);
+
+                case MySqlDbType.UInt32:
+                    return isNullable ? typeof(uint?) : typeof(uint);
+
+                case MySqlDbType.UInt64:
+                    return isNullable ? typeof(ulong?) : typeof(ulong);
+
+                case MySqlDbType.UInt24:
+                    return isNullable ? typeof(uint?) : typeof(uint);
+
+                case MySqlDbType.Binary:
+                case MySqlDbType.VarBinary:
+                    return typeof(byte[]);
+
+                case MySqlDbType.Guid:
+                    return isNullable ? typeof(Guid?) : typeof(Guid);
+
+                case MySqlDbType.Enum:
+                case MySqlDbType.Set:
+                case MySqlDbType.TinyBlob:
+                case MySqlDbType.MediumBlob:
+                case MySqlDbType.LongBlob:
+                case MySqlDbType.Blob:
+                case MySqlDbType.Geometry:
+                case MySqlDbType.Null:
+                    return null;
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Determines the database column type from the column type name.
+        /// </summary>
+        /// <param name="typeName">Name of the database column type.</param>
+        /// <param name="isUnsigned">Indicates whether or not the column is unsigned. Only applicable to some databases.</param>
+        /// <returns></returns>
+        /// <remarks>This does not honor registered types. This is only used for the database's hard-coded list of native types.</remarks>
+        [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
+        protected override MySqlDbType? TypeNameToDbType(string typeName, bool? isUnsigned)
+        {
+            if (string.IsNullOrEmpty(typeName))
+                return null;
+
             switch (typeName.ToUpperInvariant())
             {
                 case "INT1":
                 case "BOOL":
                 case "BOOLEAN":
-                case "TINYINT": if (isUnsigned) return MySqlDbType.UByte; else return MySqlDbType.Byte;
+                case "TINYINT": if (isUnsigned == true) return MySqlDbType.UByte; else return MySqlDbType.Byte;
                 case "INT2":
-                case "SMALLINT": if (isUnsigned) return MySqlDbType.UInt16; else return MySqlDbType.Int16;
+                case "SMALLINT": if (isUnsigned == true) return MySqlDbType.UInt16; else return MySqlDbType.Int16;
                 case "INT3":
                 case "MIDDLEINT":
-                case "MEDIUMINT": if (isUnsigned) return MySqlDbType.UInt24; else return MySqlDbType.Int24;
+                case "MEDIUMINT": if (isUnsigned == true) return MySqlDbType.UInt24; else return MySqlDbType.Int24;
                 case "INT4":
                 case "INTEGER":
-                case "INT": if (isUnsigned) return MySqlDbType.UInt32; else return MySqlDbType.Int32;
+                case "INT": if (isUnsigned == true) return MySqlDbType.UInt32; else return MySqlDbType.Int32;
                 case "INT8":
-                case "BIGINT": if (isUnsigned) return MySqlDbType.UInt64; else return MySqlDbType.Int64;
+                case "BIGINT": if (isUnsigned == true) return MySqlDbType.UInt64; else return MySqlDbType.Int64;
                 case "FIXED":
                 case "NUMERIC":
                 case "DECIMAL": return MySqlDbType.Decimal;
@@ -406,9 +578,9 @@ namespace Tortuga.Chain.MySql
                             var isIdentity = extra.Contains("auto_increment");
                             var isUnsigned = fullTypeName.Contains("unsigned");
 
-                            var dbType = TypeNameToMySqlDbType(typeName, isUnsigned);
+                            var dbType = TypeNameToDbType(typeName, isUnsigned);
 
-                            columns.Add(new ColumnMetadata<MySqlDbType>(name, computed, primary, isIdentity, typeName, dbType, "`" + name + "`", isNullable, (int?)maxLength, precision, scale, fullTypeName));
+                            columns.Add(new ColumnMetadata<MySqlDbType>(name, computed, primary, isIdentity, typeName, dbType, "`" + name + "`", isNullable, (int?)maxLength, precision, scale, fullTypeName, ToClrType(typeName, isNullable, (int?)maxLength, isUnsigned)));
                         }
                     }
                 }
@@ -450,7 +622,7 @@ namespace Tortuga.Chain.MySql
                                 var fullTypeName = reader.GetString("DTD_IDENTIFIER");
 
                                 var isUnsigned = fullTypeName.Contains("unsigned");
-                                var dbType = TypeNameToMySqlDbType(typeName, isUnsigned);
+                                var dbType = TypeNameToDbType(typeName, isUnsigned);
 
                                 parameters.Add(new ParameterMetadata<MySqlDbType>(name, name, typeName, dbType, isNullable, (int?)maxLength, precision, scale, fullTypeName));
                             }
@@ -504,7 +676,7 @@ namespace Tortuga.Chain.MySql
                         specificName = reader.GetString("SPECIFIC_NAME");
 
                         var isUnsigned = fullTypeName.Contains("unsigned");
-                        dbType = TypeNameToMySqlDbType(typeName, isUnsigned);
+                        dbType = TypeNameToDbType(typeName, isUnsigned);
                     }
                 }
             }

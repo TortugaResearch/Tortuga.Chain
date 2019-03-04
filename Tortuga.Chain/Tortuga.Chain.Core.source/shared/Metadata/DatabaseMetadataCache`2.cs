@@ -1,10 +1,10 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Tortuga.Chain.Metadata
 {
-
     /// <summary>
     /// An abstract database metadata cache
     /// </summary>
@@ -13,6 +13,12 @@ namespace Tortuga.Chain.Metadata
     public abstract class DatabaseMetadataCache<TName, TDbType> : IDatabaseMetadataCache
         where TDbType : struct
     {
+        /// <summary>
+        /// This dictionary is used to register customer database types. It is used by the ToClrType method and possibly parameter generation.
+        /// </summary>
+        /// <remarks>This is populated by the RegisterType method.</remarks>
+        ConcurrentDictionary<string, TypeRegistration<TDbType>> m_RegisteredTypes = new ConcurrentDictionary<string, TypeRegistration<TDbType>>(StringComparer.OrdinalIgnoreCase);
+
         /// <summary>
         /// Gets the metadata for a scalar function.
         /// </summary>
@@ -75,6 +81,7 @@ namespace Tortuga.Chain.Metadata
         {
             throw new NotSupportedException("Table value functions are not supported by this data source");
         }
+
         TableFunctionMetadata IDatabaseMetadataCache.GetTableFunction(string tableFunctionName)
         {
             return GetTableFunction(ParseObjectName(tableFunctionName));
@@ -158,15 +165,144 @@ namespace Tortuga.Chain.Metadata
         public abstract void Preload();
 
         /// <summary>
+        /// Registers a database type and its CLR equivalent.
+        /// </summary>
+        /// <param name="databaseTypeName">Name of the database type.</param>
+        /// <param name="databaseType">Type of the database.</param>
+        /// <param name="clrType">Type of the color.</param>
+        public void RegisterType(string databaseTypeName, TDbType databaseType, Type clrType)
+        {
+            m_RegisteredTypes[databaseTypeName] = new TypeRegistration<TDbType>(databaseTypeName, databaseType, clrType);
+        }
+
+        /// <summary>
         /// Resets the metadata cache, clearing out all cached metadata.
         /// </summary>
         public abstract void Reset();
 
         /// <summary>
+        /// Returns the CLR type that matches the indicated database column type.
+        /// </summary>
+        /// <param name="databaseTypeName">Name of the database column type.</param>
+        /// <param name="isNullable">If nullable, Nullable versions of primitive types are returned.</param>
+        /// <param name="maxLength">Optional length. Used to distinguish between a char and string.</param>
+        /// <param name="isUnsigned">Indicates whether or not the column is unsigned. Only applicable to some databases.</param>
+        /// <returns>
+        /// A CLR type or NULL if the type is unknown.
+        /// </returns>
+        /// <remarks>Use RegisterType to add a missing mapping or override an existing one.</remarks>
+        [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
+        public Type ToClrType(string databaseTypeName, bool isNullable, int? maxLength, bool? isUnsigned = null)
+        {
+            if (TryGetRegisteredType(databaseTypeName, out var registeredType))
+            {
+                return registeredType.ClrType;
+            }
+
+            var dbType = TypeNameToDbType(databaseTypeName, isUnsigned);
+
+            if (!dbType.HasValue)
+                return ToClrType(dbType.Value, isNullable, maxLength);
+
+            return null;
+        }
+
+        /// <summary>
+        /// Removes a database type registration and its CLR equivalent. If a builtin type, this restores it to its default behavior.
+        /// </summary>
+        /// <param name="databaseTypeName">Name of the database type.</param>
+        /// <remarks>True if the type was successfully unregistered. False if the type was not found.</remarks>
+        public bool UnregisterType(string databaseTypeName)
+        {
+            return m_RegisteredTypes.TryRemove(databaseTypeName, out var _);
+        }
+
+        /// <summary>
+        /// Converts a value to a string suitable for use in a SQL statement.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <param name="dbType">Optional database column type.</param>
+        /// <returns></returns>
+        /// <remarks>Override this to support custom escaping logic.</remarks>
+        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "dbType")]
+        public virtual string ValueToSqlValue(object value, TDbType? dbType)
+        {
+            switch (value)
+            {
+                case DBNull _:
+                case System.Reflection.Missing _:
+                case null:
+                    return "NULL";
+
+                case byte _:
+                case sbyte _:
+                case short _:
+                case ushort _:
+                case int _:
+                case uint _:
+                case long _:
+                case ulong _:
+                case decimal _:
+                case float _:
+                case double _:
+                    return value.ToString();
+
+                case string s:
+                    return "'" + s.Replace("'", "''") + "'";
+
+                case DateTime d:
+                    return "'" + d.ToString("O") + "'"; //ISO 8601
+
+                case DateTimeOffset d:
+                    return "'" + d.ToString("O") + "'"; //ISO 8601
+
+                case TimeSpan ts:
+                    return "'" + ts.ToString("hh:mm:ss.fffffff") + "'"; //ISO 8601
+
+                default:
+                    if (dbType.HasValue)
+                        throw new NotSupportedException($"Converting a value of type {value.GetType().Name} into a string of type {dbType.ToString()} is not supported. Try filing a bug report.");
+                    else
+                        throw new NotSupportedException($"Converting a value of type {value.GetType().Name} is not supported. Try supplying a dbType or filing a bug report.");
+            }
+        }
+
+        /// <summary>
         /// Parse a string and return the database specific representation of the object name.
         /// </summary>
         /// <param name="name"></param>
-        /// <returns></returns>
         protected abstract TName ParseObjectName(string name);
+
+        /// <summary>
+        /// Returns the CLR type that matches the indicated database column type.
+        /// </summary>
+        /// <param name="dbType">Type of the database column.</param>
+        /// <param name="isNullable">If nullable, Nullable versions of primitive types are returned.</param>
+        /// <param name="maxLength">Optional length. Used to distinguish between a char and string. Defaults to string.</param>
+        /// <returns>
+        /// A CLR type or NULL if the type is unknown.
+        /// </returns>
+        /// <remarks>This does not take into consideration registered types.</remarks>
+        protected abstract Type ToClrType(TDbType dbType, bool isNullable, int? maxLength);
+
+        /// <summary>
+        /// Tries the registered column type from a database column type name.
+        /// </summary>
+        /// <param name="databaseTypeName">Name of the database type.</param>
+        /// <param name="registeredType">Type of the registered.</param>
+        /// <returns></returns>
+        protected bool TryGetRegisteredType(string databaseTypeName, out TypeRegistration<TDbType> registeredType)
+        {
+            return m_RegisteredTypes.TryGetValue(databaseTypeName, out registeredType);
+        }
+
+        /// <summary>
+        /// Determines the database column type from the column type name.
+        /// </summary>
+        /// <param name="typeName">Name of the database column type.</param>
+        /// <param name="isUnsigned">Indicates whether or not the column is unsigned. Only applicable to some databases.</param>
+        /// <returns></returns>
+        /// <remarks>This does not honor registered types. This is only used for the database's hard-coded list of native types.</remarks>
+        protected abstract TDbType? TypeNameToDbType(string typeName, bool? isUnsigned);
     }
 }

@@ -1,9 +1,11 @@
 ﻿using Npgsql;
 using NpgsqlTypes;
 using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Tortuga.Anchor;
 using Tortuga.Anchor.Metadata;
@@ -385,12 +387,14 @@ namespace Tortuga.Chain.PostgreSql
         }
 
         /// <summary>
-        /// Types the type of the name to NPG SQL database.
+        /// Determines the database column type from the column type name.
         /// </summary>
-        /// <param name="typeName">Name of the type.</param>
+        /// <param name="typeName">Name of the database column type.</param>
+        /// <param name="isUnsigned">NOT USED</param>
         /// <returns></returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
-        internal static NpgsqlDbType? TypeNameToNpgSqlDbType(string typeName)
+        /// <remarks>This does not honor registered types. This is only used for the database's hard-coded list of native types.</remarks>
+        [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
+        protected override NpgsqlDbType? TypeNameToDbType(string typeName, bool? isUnsigned = null)
         {
             switch (typeName)
             {
@@ -419,7 +423,7 @@ namespace Tortuga.Chain.PostgreSql
         /// <returns>PostgreSqlObjectName.</returns>
         protected override PostgreSqlObjectName ParseObjectName(string name) => new PostgreSqlObjectName(name);
 
-        static Tuple<List<ParameterMetadata<NpgsqlDbType>>, List<ColumnMetadata<NpgsqlDbType>>> GetParametersAndColumns(string specificName, NpgsqlConnection connection)
+        Tuple<List<ParameterMetadata<NpgsqlDbType>>, List<ColumnMetadata<NpgsqlDbType>>> GetParametersAndColumns(string specificName, NpgsqlConnection connection)
         {
             const string parameterSql = @"SELECT * FROM information_schema.parameters WHERE specific_name = @SpecificName ORDER BY ordinal_position";
 
@@ -438,7 +442,7 @@ namespace Tortuga.Chain.PostgreSql
                             var parameterName = !reader.IsDBNull(parameterNameOrd) ? reader.GetString(parameterNameOrd) : "Parameter" + reader.GetInt32(reader.GetOrdinal("ordinal_position"));
 
                             var typeName = reader.GetString(reader.GetOrdinal("udt_name"));
-                            parameters.Add(new ParameterMetadata<NpgsqlDbType>(parameterName, "@" + parameterName, typeName, TypeNameToNpgSqlDbType(typeName)));
+                            parameters.Add(new ParameterMetadata<NpgsqlDbType>(parameterName, "@" + parameterName, typeName, TypeNameToDbType(typeName)));
                         }
                         else
                         {
@@ -454,7 +458,7 @@ namespace Tortuga.Chain.PostgreSql
 
                             //Task-120: Add support for length, precision, and scale
 
-                            columns.Add(new ColumnMetadata<NpgsqlDbType>(name, false, isPrimary, isIdentity, typeName, TypeNameToNpgSqlDbType(typeName), "\"" + name + "\"", isNullable, maxLength, precision, scale, fullTypeName));
+                            columns.Add(new ColumnMetadata<NpgsqlDbType>(name, false, isPrimary, isIdentity, typeName, TypeNameToDbType(typeName), "\"" + name + "\"", isNullable, maxLength, precision, scale, fullTypeName, ToClrType(typeName, isNullable, maxLength)));
                         }
                     }
                 }
@@ -507,12 +511,129 @@ WHERE c.relname ILIKE @Name AND
                         int? scale = null;
                         string fullTypeName = null;
 
-                        columns.Add(new ColumnMetadata<NpgsqlDbType>(name, false, isPrimary, isIdentity, typeName, TypeNameToNpgSqlDbType(typeName), "\"" + name + "\"", isNullable, maxLength, precision, scale, fullTypeName));
+                        columns.Add(new ColumnMetadata<NpgsqlDbType>(name, false, isPrimary, isIdentity, typeName, TypeNameToDbType(typeName), "\"" + name + "\"", isNullable, maxLength, precision, scale, fullTypeName, ToClrType(typeName, isNullable, maxLength)));
                     }
                 }
             }
 
             return columns;
+        }
+
+        /// <summary>
+        /// Returns the CLR type that matches the indicated database column type.
+        /// </summary>
+        /// <param name="dbType">Type of the database column.</param>
+        /// <param name="isNullable">If nullable, Nullable versions of primitive types are returned.</param>
+        /// <param name="maxLength">Optional length. Used to distinguish between a char and string. Defaults to string.</param>
+        /// <returns>
+        /// A CLR type or NULL if the type is unknown.
+        /// </returns>
+        /// <remarks>This does not take into consideration registered types.</remarks>
+        [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
+        protected override Type ToClrType(NpgsqlDbType dbType, bool isNullable, int? maxLength)
+        {
+            switch (dbType)
+            {
+                case NpgsqlDbType.Bigint:
+                    return isNullable ? typeof(long?) : typeof(long);
+
+                case NpgsqlDbType.Double:
+                    return isNullable ? typeof(double?) : typeof(double);
+
+                case NpgsqlDbType.Integer:
+                    return isNullable ? typeof(int?) : typeof(int);
+
+                case NpgsqlDbType.Numeric:
+                case NpgsqlDbType.Money:
+                    return isNullable ? typeof(decimal?) : typeof(decimal);
+
+                case NpgsqlDbType.Real:
+                    return isNullable ? typeof(float?) : typeof(float);
+
+                case NpgsqlDbType.Smallint:
+                    return isNullable ? typeof(short?) : typeof(short);
+
+                case NpgsqlDbType.Boolean:
+                    return isNullable ? typeof(bool?) : typeof(bool);
+
+                case NpgsqlDbType.Char:
+                case NpgsqlDbType.Varchar:
+                    return (maxLength == 1) ? (isNullable ? typeof(char?) : typeof(char)) : typeof(string);
+
+                case NpgsqlDbType.Text:
+                    return typeof(string);
+
+                case NpgsqlDbType.Bytea:
+                    return typeof(byte[]);
+
+                case NpgsqlDbType.Date:
+                case NpgsqlDbType.Timestamp:
+                    return isNullable ? typeof(DateTime?) : typeof(DateTime);
+
+                case NpgsqlDbType.Time:
+                    return isNullable ? typeof(TimeSpan?) : typeof(TimeSpan);
+
+                case NpgsqlDbType.Interval:
+                    return isNullable ? typeof(TimeSpan?) : typeof(TimeSpan);
+
+                case NpgsqlDbType.Bit:
+                    return typeof(BitArray);
+
+                case NpgsqlDbType.Uuid:
+                    return isNullable ? typeof(Guid?) : typeof(Guid);
+
+                case NpgsqlDbType.Xml:
+                case NpgsqlDbType.Json:
+                case NpgsqlDbType.Jsonb:
+                    return typeof(string);
+
+                case NpgsqlDbType.Inet:
+                case NpgsqlDbType.Cidr:
+                case NpgsqlDbType.MacAddr:
+                case NpgsqlDbType.MacAddr8:
+                case NpgsqlDbType.Varbit:
+                case NpgsqlDbType.TsVector:
+                case NpgsqlDbType.TsQuery:
+                case NpgsqlDbType.Regconfig:
+                case NpgsqlDbType.Hstore:
+                case NpgsqlDbType.Array:
+                case NpgsqlDbType.Range:
+                case NpgsqlDbType.Refcursor:
+                case NpgsqlDbType.Oidvector:
+                case NpgsqlDbType.Int2Vector:
+                case NpgsqlDbType.Oid:
+                case NpgsqlDbType.Xid:
+                case NpgsqlDbType.Cid:
+                case NpgsqlDbType.Regtype:
+                case NpgsqlDbType.Tid:
+                case NpgsqlDbType.Unknown:
+                case NpgsqlDbType.Geometry:
+                case NpgsqlDbType.Geography:
+                case NpgsqlDbType.Box:
+                case NpgsqlDbType.Circle:
+                case NpgsqlDbType.Line:
+                case NpgsqlDbType.LSeg:
+                case NpgsqlDbType.Path:
+                case NpgsqlDbType.Point:
+                case NpgsqlDbType.Polygon:
+                case NpgsqlDbType.Name:
+                case NpgsqlDbType.Citext:
+                case NpgsqlDbType.InternalChar:
+                    return null;
+
+#pragma warning disable CS0618 // Type or member is obsolete
+                case NpgsqlDbType.TimestampTZ:
+                    return isNullable ? typeof(DateTimeOffset?) : typeof(DateTimeOffset);
+
+                case NpgsqlDbType.TimeTZ:
+                    return isNullable ? typeof(DateTimeOffset?) : typeof(DateTimeOffset);
+
+                case NpgsqlDbType.Abstime:
+                    return null;
+
+#pragma warning restore CS0618 // Type or member is obsolete
+            }
+            return null;
         }
 
         ScalarFunctionMetadata<PostgreSqlObjectName, NpgsqlDbType> GetScalarFunctionInternal(PostgreSqlObjectName tableFunctionName)
@@ -549,7 +670,7 @@ WHERE c.relname ILIKE @Name AND
                     var pAndC = GetParametersAndColumns(specificName, con);
 
                     //Task-120: Add support for length, precision, and scale for return type
-                    return new ScalarFunctionMetadata<PostgreSqlObjectName, NpgsqlDbType>(new PostgreSqlObjectName(actualSchema, actualName), pAndC.Item1, typeName, TypeNameToNpgSqlDbType(typeName), true, null, null, null, null);
+                    return new ScalarFunctionMetadata<PostgreSqlObjectName, NpgsqlDbType>(new PostgreSqlObjectName(actualSchema, actualName), pAndC.Item1, typeName, TypeNameToDbType(typeName), true, null, null, null, null);
                 }
             }
 

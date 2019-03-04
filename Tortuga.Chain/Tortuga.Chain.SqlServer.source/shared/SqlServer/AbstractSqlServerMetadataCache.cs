@@ -26,7 +26,7 @@ namespace Tortuga.Chain.SqlServer
 #elif SQL_SERVER_OLEDB
 
     /// <summary>Class AbstractSqlServerMetadataCache.</summary>
-    public abstract class AbstractOleDbSqlServerMetadataCache : DatabaseMetadataCache<SqlServerObjectName, AbstractDbType>
+    public abstract class AbstractOleDbSqlServerMetadataCache : OleDbDatabaseMetadataCache<SqlServerObjectName>
 #endif
 
     {
@@ -62,23 +62,10 @@ namespace Tortuga.Chain.SqlServer
 
         internal readonly ConcurrentDictionary<Type, TableOrViewMetadata<SqlServerObjectName, AbstractDbType>> m_TypeTableMap = new ConcurrentDictionary<Type, TableOrViewMetadata<SqlServerObjectName, AbstractDbType>>();
 
-        //internal readonly ConcurrentDictionary<Type, string> m_UdtTypeMap = new ConcurrentDictionary<Type, string>();
         internal readonly ConcurrentDictionary<SqlServerObjectName, UserDefinedTypeMetadata<SqlServerObjectName, AbstractDbType>> m_UserDefinedTypes = new ConcurrentDictionary<SqlServerObjectName, UserDefinedTypeMetadata<SqlServerObjectName, AbstractDbType>>();
 
         internal string m_DatabaseName;
         internal string m_DefaultSchema;
-
-        /*
-        /// <summary>
-        /// It is necessary to map some types to their corresponding UDT Names in Sql Server. For example, SqlGeometry and SqlGeography.
-        /// </summary>
-        /// <param name="type">The type to be mapped</param>
-        /// <param name="udtName">The name that SQL server sees</param>
-        public void AddUdtTypeName(Type type, string udtName)
-        {
-            m_UdtTypeMap[type] = udtName;
-        }
-        */
 
         /// <summary>
         /// Gets the metadata for a scalar function.
@@ -145,19 +132,6 @@ namespace Tortuga.Chain.SqlServer
         {
             return m_TableFunctions.GetValues();
         }
-
-        ///// <summary>
-        ///// Gets the UDT name of the indicated type.
-        ///// </summary>
-        ///// <param name="type">The type.</param>
-        ///// <returns></returns>
-        ///// <remarks>You may add custom UDTs to this list using AddUdtTypeName</remarks>
-        //internal string GetUdtName(Type type)
-        //{
-        //    string result;
-        //    m_UdtTypeMap.TryGetValue(type, out result);
-        //    return result;
-        //}
 
         /// <summary>
         /// Returns the table or view derived from the class's name and/or Table attribute.
@@ -256,7 +230,6 @@ namespace Tortuga.Chain.SqlServer
             m_TableFunctions.Clear();
             m_Tables.Clear();
             m_TypeTableMap.Clear();
-            //m_UdtTypeMap.Clear();
             m_UserDefinedTypes.Clear();
             m_ScalarFunctions.Clear();
             m_ScalarFunctions.Clear();

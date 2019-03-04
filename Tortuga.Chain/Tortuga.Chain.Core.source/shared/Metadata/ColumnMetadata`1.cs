@@ -1,7 +1,7 @@
+using System;
+
 namespace Tortuga.Chain.Metadata
 {
-
-
     /// <summary>
     /// Metadata for a table or view column
     /// </summary>
@@ -9,7 +9,6 @@ namespace Tortuga.Chain.Metadata
     public sealed class ColumnMetadata<TDbType> : ColumnMetadata, ISqlBuilderEntryDetails<TDbType>
         where TDbType : struct
     {
-
         /// <summary>
         /// Initializes a new instance of the <see cref="ColumnMetadata{TDbType}" /> class.
         /// </summary>
@@ -25,7 +24,8 @@ namespace Tortuga.Chain.Metadata
         /// <param name="precision">The precision.</param>
         /// <param name="scale">The scale.</param>
         /// <param name="fullTypeName">Full name of the type.</param>
-        public ColumnMetadata(string name, bool isComputed, bool isPrimaryKey, bool isIdentity, string typeName, TDbType? dbType, string quotedSqlName, bool? isNullable, int? maxLength, int? precision, int? scale, string fullTypeName)
+        /// <param name="clrType">The CLR type that matches this column's database type.</param>
+        public ColumnMetadata(string name, bool isComputed, bool isPrimaryKey, bool isIdentity, string typeName, TDbType? dbType, string quotedSqlName, bool? isNullable, int? maxLength, int? precision, int? scale, string fullTypeName, Type clrType)
         {
             TypeName = typeName;
             SqlName = name;
@@ -47,13 +47,13 @@ namespace Tortuga.Chain.Metadata
             MaxLength = maxLength;
             Scale = scale;
             FullTypeName = fullTypeName;
+            ClrType = clrType;
         }
 
         /// <summary>
         /// Gets the type used by the database.
         /// </summary>
         public new TDbType? DbType { get; }
-
 
         /// <summary>
         /// Returns a <see cref="string" /> that represents this instance.
