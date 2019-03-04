@@ -194,7 +194,7 @@ namespace Tortuga.Chain.Access
             return UpdateSet(tableName, newValues, options);
         }
 
-        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Upsert<TArgument>(string tableName, TArgument argumentValue, UpsertOptions options)
+        IUpsertCommandBuilder<TArgument> IClass1DataSource.Upsert<TArgument>(string tableName, TArgument argumentValue, UpsertOptions options)
         {
 #if ACCESS
             throw new NotImplementedException("See issue #122");
@@ -203,7 +203,7 @@ namespace Tortuga.Chain.Access
 #endif
         }
 
-        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Upsert<TArgument>(TArgument argumentValue, UpsertOptions options)
+        IUpsertCommandBuilder<TArgument> IClass1DataSource.Upsert<TArgument>(TArgument argumentValue, UpsertOptions options)
         {
 #if ACCESS
             throw new NotImplementedException("See issue #122");

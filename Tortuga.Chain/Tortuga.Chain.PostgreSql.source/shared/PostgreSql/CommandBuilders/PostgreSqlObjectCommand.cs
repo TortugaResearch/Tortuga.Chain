@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Metadata;
 
-
-
 namespace Tortuga.Chain.PostgreSql.CommandBuilders
 {
     /// <summary>
@@ -14,8 +12,6 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
     internal abstract class PostgreSqlObjectCommand<TArgument> : ObjectDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, TArgument>
         where TArgument : class
     {
-
-
         /// <summary>
         /// Initializes a new instance of the <see cref="PostgreSqlObjectCommand{TArgument}"/> class.
         /// </summary>
@@ -25,14 +21,13 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         protected PostgreSqlObjectCommand(PostgreSqlDataSourceBase dataSource, PostgreSqlObjectName tableName, TArgument argumentValue)
             : base(dataSource, argumentValue)
         {
-            Table = ((PostgreSqlDataSourceBase)DataSource).DatabaseMetadata.GetTableOrView(tableName);
+            Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
         }
 
         /// <summary>
         /// Gets the table metadata.
         /// </summary>
         public TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType> Table { get; }
-
 
         /// <summary>
         /// Returns the column associated with the column name.
@@ -43,7 +38,6 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         /// If the column name was not found, this will return null
         /// </remarks>
         public override ColumnMetadata TryGetColumn(string columnName) => Table.Columns.TryGetColumn(columnName);
-
 
         /// <summary>
         /// Returns a list of columns known to be non-nullable.

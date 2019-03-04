@@ -147,7 +147,7 @@ namespace Tortuga.Chain.MySql
             return new MySqlInsertObject<TArgument>(this, tableName, argumentValue, options);
         }
 
-        ObjectDbCommandBuilder<MySqlCommand, MySqlParameter, TArgument> OnInsertOrUpdateObject<TArgument>(MySqlObjectName tableName, TArgument argumentValue, UpsertOptions options) where TArgument : class
+        UpsertDbCommandBuilder<MySqlCommand, MySqlParameter, TArgument> OnInsertOrUpdateObject<TArgument>(MySqlObjectName tableName, TArgument argumentValue, UpsertOptions options) where TArgument : class
         {
             return new MySqlInsertOrUpdateObject<TArgument>(this, tableName, argumentValue, options);
         }

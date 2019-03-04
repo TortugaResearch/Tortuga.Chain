@@ -561,7 +561,7 @@ namespace Tortuga.Chain.Access
         /// <param name="argumentValue">The argument value.</param>
         /// <param name="options">The options for how the insert/update occurs.</param>
         /// <returns>SqlServerUpdate.</returns>
-        public ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> Upsert<TArgument>(string tableName, TArgument argumentValue, UpsertOptions options)
+        public UpsertDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> Upsert<TArgument>(string tableName, TArgument argumentValue, UpsertOptions options)
         where TArgument : class
         {
             return Upsert<TArgument>(new AbstractObjectName(tableName), argumentValue, options);
@@ -573,7 +573,7 @@ namespace Tortuga.Chain.Access
         /// <param name="tableName">Name of the table.</param>
         /// <param name="argumentValue">The argument value.</param>
         /// <returns>SqlServerUpdate.</returns>
-        public ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> Upsert<TArgument>(string tableName, TArgument argumentValue)
+        public UpsertDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> Upsert<TArgument>(string tableName, TArgument argumentValue)
         where TArgument : class
         {
             return Upsert<TArgument>(new AbstractObjectName(tableName), argumentValue, UpsertOptions.None);

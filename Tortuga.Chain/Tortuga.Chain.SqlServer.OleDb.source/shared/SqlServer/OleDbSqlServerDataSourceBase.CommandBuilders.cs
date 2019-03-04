@@ -146,7 +146,7 @@ namespace Tortuga.Chain.SqlServer
             return new OleDbSqlServerInsertObject<TArgument>(this, tableName, argumentValue, options);
         }
 
-        ObjectDbCommandBuilder<OleDbCommand, OleDbParameter, TArgument> OnInsertOrUpdateObject<TArgument>(SqlServerObjectName tableName, TArgument argumentValue, UpsertOptions options) where TArgument : class
+        UpsertDbCommandBuilder<OleDbCommand, OleDbParameter, TArgument> OnInsertOrUpdateObject<TArgument>(SqlServerObjectName tableName, TArgument argumentValue, UpsertOptions options) where TArgument : class
         {
             return new OleDbSqlServerInsertOrUpdateObject<TArgument>(this, tableName, argumentValue, options);
         }

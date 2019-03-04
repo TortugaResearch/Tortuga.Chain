@@ -298,7 +298,7 @@ namespace Tortuga.Chain
         /// <param name="argumentValue">The argument value.</param>
         /// <param name="options">The options for how the insert/update occurs.</param>
         /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
-        IObjectDbCommandBuilder<TArgument> Upsert<TArgument>(string tableName, TArgument argumentValue, UpsertOptions options = UpsertOptions.None) where TArgument : class;
+        IUpsertCommandBuilder<TArgument> Upsert<TArgument>(string tableName, TArgument argumentValue, UpsertOptions options = UpsertOptions.None) where TArgument : class;
 
         /// <summary>
         /// Perform an insert or update operation as appropriate.
@@ -306,6 +306,6 @@ namespace Tortuga.Chain
         /// <param name="argumentValue">The argument value.</param>
         /// <param name="options">The options for how the insert/update occurs.</param>
         /// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
-        IObjectDbCommandBuilder<TArgument> Upsert<TArgument>(TArgument argumentValue, UpsertOptions options = UpsertOptions.None) where TArgument : class;
+        IUpsertCommandBuilder<TArgument> Upsert<TArgument>(TArgument argumentValue, UpsertOptions options = UpsertOptions.None) where TArgument : class;
     }
 }

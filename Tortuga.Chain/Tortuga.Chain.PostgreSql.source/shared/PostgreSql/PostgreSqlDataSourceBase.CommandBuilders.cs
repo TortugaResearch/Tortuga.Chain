@@ -146,7 +146,7 @@ namespace Tortuga.Chain.PostgreSql
             return new PostgreSqlInsertObject<TArgument>(this, tableName, argumentValue, options);
         }
 
-        ObjectDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, TArgument> OnInsertOrUpdateObject<TArgument>(PostgreSqlObjectName tableName, TArgument argumentValue, UpsertOptions options) where TArgument : class
+        UpsertDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, TArgument> OnInsertOrUpdateObject<TArgument>(PostgreSqlObjectName tableName, TArgument argumentValue, UpsertOptions options) where TArgument : class
         {
             return new PostgreSqlInsertOrUpdateObject<TArgument>(this, tableName, argumentValue, options);
         }

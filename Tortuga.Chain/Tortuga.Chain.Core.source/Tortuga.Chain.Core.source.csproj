@@ -115,12 +115,14 @@
     <Compile Include="shared\CommandBuilders\IObjectDbCommandBuilder`1.cs" />
     <Compile Include="shared\CommandBuilders\IScalarDbCommandBuilder.cs" />
     <Compile Include="shared\CommandBuilders\IUpdateManyCommandBuilder.cs" />
+    <Compile Include="shared\CommandBuilders\IUpsertCommandBuilder`1.cs" />
     <Compile Include="shared\CommandBuilders\ObjectDbCommandBuilder`3.cs" />
     <Compile Include="shared\CommandBuilders\ParameterBuilderCallback.cs" />
     <Compile Include="shared\CachePolicy.cs" />
     <Compile Include="shared\CommandBuilders\ScalarDbCommandBuilder`2.cs" />
-    <Compile Include="shared\CommandBuilders\UpdateManyCommandBuilder.cs" />
+    <Compile Include="shared\CommandBuilders\UpdateManyDbCommandBuilder`2.cs" />
     <Compile Include="shared\CommandBuilders\IUpdateManyCommandBuilder`2.cs" />
+    <Compile Include="shared\CommandBuilders\UpsertDbCommandBuilder`3.cs" />
     <Compile Include="shared\Core\CacheReadResult.cs" />
     <Compile Include="shared\Core\CommandExecutedEventArgs.cs" />
     <Compile Include="shared\Core\CommandImplementation.cs" />

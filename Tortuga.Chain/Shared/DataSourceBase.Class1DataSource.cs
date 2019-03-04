@@ -477,7 +477,7 @@ namespace Tortuga.Chain.Access
         /// <param name="argumentValue"></param>
         /// <param name="options"></param>
         /// <returns></returns>
-        public ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> Upsert<TArgument>(AbstractObjectName tableName, TArgument argumentValue, UpsertOptions options = UpsertOptions.None)
+        public UpsertDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> Upsert<TArgument>(AbstractObjectName tableName, TArgument argumentValue, UpsertOptions options = UpsertOptions.None)
         where TArgument : class
         {
             return OnInsertOrUpdateObject<TArgument>(tableName, argumentValue, options);
@@ -490,7 +490,7 @@ namespace Tortuga.Chain.Access
         /// <param name="argumentValue">The argument value.</param>
         /// <param name="options">The options for how the insert/update occurs.</param>
         /// <returns></returns>
-        public ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> Upsert<TArgument>(TArgument argumentValue, UpsertOptions options = UpsertOptions.None) where TArgument : class
+        public UpsertDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> Upsert<TArgument>(TArgument argumentValue, UpsertOptions options = UpsertOptions.None) where TArgument : class
         {
             return OnInsertOrUpdateObject<TArgument>(DatabaseMetadata.GetTableOrViewFromClass<TArgument>().Name, argumentValue, options);
         }

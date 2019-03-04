@@ -45,6 +45,38 @@ namespace Tests.CommandBuilders
             }
         }
 
+        [Theory, MemberData(nameof(Prime))]
+        public void AlternateKeyUpsertTest(string assemblyName, string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+                var original = new Employee()
+                {
+                    FirstName = "Test",
+                    LastName = "Employee" + Guid.NewGuid().ToString(),
+                    Title = "Mail Room"
+                };
+
+                var inserted = dataSource.Upsert(EmployeeTableName, original).ToObject<Employee>().Execute();
+                var employeeKey = inserted.EmployeeKey;
+
+                inserted.EmployeeKey = null; //we're not matching on this anyways.
+                inserted.FirstName = "Changed";
+                inserted.Title = "Also Changed";
+
+                var updated = dataSource.Upsert(EmployeeTableName, inserted).MatchOn("LastName").ToObject<Employee>().Execute();
+                Assert.AreEqual(employeeKey, updated.EmployeeKey, "EmployeeKey should have been read.");
+                Assert.AreEqual(inserted.FirstName, updated.FirstName, "FirstName shouldn't have changed");
+                Assert.AreEqual(original.LastName, updated.LastName, "LastName shouldn't have changed");
+                Assert.AreEqual(inserted.Title, updated.Title, "Title should have changed");
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
 #if !POSTGRESQL
 
         [Theory, MemberData(nameof(Prime))]

@@ -1,12 +1,6 @@
 ﻿using MySql.Data.MySqlClient;
-using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
-using System.Text;
 using Tortuga.Chain.CommandBuilders;
-using Tortuga.Chain.Core;
-using Tortuga.Chain.Materializers;
 using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.MySql.CommandBuilders
@@ -26,7 +20,7 @@ namespace Tortuga.Chain.MySql.CommandBuilders
         protected MySqlObjectCommand(MySqlDataSourceBase dataSource, MySqlObjectName tableName, TArgument argumentValue)
             : base(dataSource, argumentValue)
         {
-            Table = ((MySqlDataSourceBase)DataSource).DatabaseMetadata.GetTableOrView(tableName);
+            Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
         }
 
         /// <summary>

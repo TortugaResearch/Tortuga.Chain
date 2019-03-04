@@ -1,4 +1,6 @@
+using System.Collections.Immutable;
 using System.Data.Common;
+using System.Linq;
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Materializers;
 

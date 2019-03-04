@@ -170,7 +170,7 @@ namespace Tortuga.Chain.SQLite
             return new SQLiteInsertObject<TArgument>(this, tableName, argumentValue, options);
         }
 
-        ObjectDbCommandBuilder<SQLiteCommand, SQLiteParameter, TArgument> OnInsertOrUpdateObject<TArgument>(SQLiteObjectName tableName, TArgument argumentValue, UpsertOptions options) where TArgument : class
+        UpsertDbCommandBuilder<SQLiteCommand, SQLiteParameter, TArgument> OnInsertOrUpdateObject<TArgument>(SQLiteObjectName tableName, TArgument argumentValue, UpsertOptions options) where TArgument : class
         {
             return new SQLiteInsertOrUpdateObject<TArgument>(this, tableName, argumentValue, options);
         }
