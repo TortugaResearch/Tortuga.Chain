@@ -267,20 +267,11 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="..\tests.tortuga.chain.sqlserver.source\auditrules\AuditRulesTests.cs">
-      <Link>AuditRules\AuditRulesTests.cs</Link>
-    </Compile>
     <Compile Include="..\tests.tortuga.chain.sqlserver.source\class1databases\FromTests.cs">
       <Link>Class1Databases\FromTests.cs</Link>
     </Compile>
-    <Compile Include="..\tests.tortuga.chain.sqlserver.source\class1databases\InsertTests.cs">
-      <Link>Class1Databases\InsertTests.cs</Link>
-    </Compile>
     <Compile Include="..\tests.tortuga.chain.sqlserver.source\class1databases\SqlTests.cs">
       <Link>Class1Databases\SqlTests.cs</Link>
-    </Compile>
-    <Compile Include="..\tests.tortuga.chain.sqlserver.source\class1databases\UpdateTests.cs">
-      <Link>Class1Databases\UpdateTests.cs</Link>
     </Compile>
     <Compile Include="..\tests.tortuga.chain.sqlserver.source\class1databases\UpsertTests.cs">
       <Link>Class1Databases\UpsertTests.cs</Link>

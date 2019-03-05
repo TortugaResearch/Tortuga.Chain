@@ -121,16 +121,10 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="AuditRules\AuditRulesTests.cs" />
     <Compile Include="Class1Databases\EdgeCases.cs" />
     <Compile Include="Class1Databases\FromTests.cs" />
-    <Compile Include="Class1Databases\InsertTests.cs" />
     <Compile Include="Class1Databases\SqlTests.cs" />
-    <Compile Include="Class1Databases\DeleteTests.cs" />
-    <Compile Include="Class1Databases\UpdateTests.cs" />
     <Compile Include="Class1Databases\UpsertTests.cs" />
-    <Compile Include="Class2Databases\InsertBulkTests.cs" />
-    <Compile Include="Class2Databases\InsertBatchTests.cs" />
     <Compile Include="Class2Databases\TableFunctionTests.cs" />
     <Compile Include="Class2Databases\ProcedureTests.cs" />
     <Compile Include="Materializers\MaterializerTests.cs" />
@@ -153,7 +147,6 @@
     <Compile Include="Repository\Repository`2.cs" />
     <Compile Include="Repository\RepositoryTests.cs" />
     <Compile Include="Setup.cs" />
-    <Compile Include="SqlDependencyTest.cs" />
     <Compile Include="SqlServerDataSourceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestBase.cs" />

@@ -200,6 +200,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="shared\Appenders\SqlDependencyTests.cs" />
     <Compile Include="shared\Asserts\Assert.cs" />
     <Compile Include="shared\Asserts\BooleanAsserts.cs" />
     <Compile Include="shared\Asserts\CollectionAsserts.cs" />
