@@ -12,13 +12,13 @@ namespace Tests.shared.Core
 {
     public class AuditRulesTests : TestBase
     {
-        public static RootData Prime = new RootData(s_PrimaryDataSource);
+        public static RootData Root = new RootData(s_PrimaryDataSource);
 
         public AuditRulesTests(ITestOutputHelper output) : base(output)
         {
         }
 
-        [Theory, MemberData(nameof(Prime))]
+        [Theory, MemberData(nameof(Root))]
         public void AuditRulesTests_AddUser(string assemblyName, string dataSourceName)
         {
             var dataSource = DataSource(dataSourceName);
@@ -33,7 +33,7 @@ namespace Tests.shared.Core
             }
         }
 
-        [Theory, MemberData(nameof(Prime))]
+        [Theory, MemberData(nameof(Root))]
         public void AuditRulesTests_CheckValidation(string assemblyName, string dataSourceName)
         {
             var dataSource = DataSource(dataSourceName);
@@ -62,7 +62,7 @@ namespace Tests.shared.Core
             }
         }
 
-        [Theory, MemberData(nameof(Prime))]
+        [Theory, MemberData(nameof(Root))]
         public void AuditRulesTests_InsertUpdateRules(string assemblyName, string dataSourceName)
         {
             var dataSource = DataSource(dataSourceName);
@@ -104,7 +104,7 @@ namespace Tests.shared.Core
             }
         }
 
-        [Theory, MemberData(nameof(Prime))]
+        [Theory, MemberData(nameof(Root))]
         public void AuditRulesTests_SoftDelete(string assemblyName, string dataSourceName)
         {
             var dataSource = DataSource(dataSourceName);
@@ -164,7 +164,7 @@ namespace Tests.shared.Core
             }
         }
 
-        [Theory, MemberData(nameof(Prime))]
+        [Theory, MemberData(nameof(Root))]
         public void AuditRulesTests_SoftDelete_2(string assemblyName, string dataSourceName)
         {
             var dataSource = DataSource(dataSourceName);
@@ -224,7 +224,7 @@ namespace Tests.shared.Core
             }
         }
 
-        [Theory, MemberData(nameof(Prime))]
+        [Theory, MemberData(nameof(Root))]
         public void AuditRulesTests_RestrictedColumn(string assemblyName, string dataSourceName)
         {
             var dataSource = DataSource(dataSourceName);
@@ -273,7 +273,7 @@ namespace Tests.shared.Core
 
 #if SQL_SERVER || OLE_SQL_SERVER
 
-        [Theory, MemberData(nameof(Prime))]
+        [Theory, MemberData(nameof(Root))]
         public void SoftDeleteByKey(string assemblyName, string dataSourceName)
         {
             var dataSource = DataSource(dataSourceName);

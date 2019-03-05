@@ -883,10 +883,11 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="header">The optional header (e.g. "SELECT, OUTPUT).</param>
         /// <param name="prefix">An optional prefix for each column name.</param>
         /// <param name="footer">The optional footer.</param>
+        /// <param name="includeIdentityColumn">Include the identity column. Used when performing an identity insert operation.</param>
         /// <remarks>
         /// If no columns are marked for reading, the header and footer won't be emitted.
         /// </remarks>
-        public void BuildSelectTvpForInsertClause(StringBuilder sql, string header, string prefix, string footer)
+        public void BuildSelectTvpForInsertClause(StringBuilder sql, string header, string prefix, string footer, bool includeIdentityColumn = false)
         {
             if (sql == null)
                 throw new ArgumentNullException(nameof(sql), $"{nameof(sql)} was null.");
@@ -897,7 +898,7 @@ namespace Tortuga.Chain.CommandBuilders
             {
                 ref var entry = ref m_Entries[i];
 
-                if (!entry.RestrictedInsert && entry.UseForInsert)
+                if (!entry.RestrictedInsert && (entry.UseForInsert || (includeIdentityColumn && entry.Details.IsIdentity)))
                 {
                     if (entry.ParameterValue != null)
                     {
