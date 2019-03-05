@@ -176,6 +176,7 @@ namespace Tortuga.Chain.CommandBuilders
                     m_Flags = m_Flags & ~Flags.UseForInsert;
             }
         }
+
         /// <summary>
         /// Gets or sets a value indicating whether this <see cref="SqlBuilderEntry{TDbType}"/> participates in read operations.
         /// </summary>

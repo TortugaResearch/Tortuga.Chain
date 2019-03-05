@@ -24,7 +24,7 @@
 
     <dependencies>
       <group targetFramework="net46">
-        <dependency id="Tortuga.Chain.Core" version="2.0.6932.69" />
+        <dependency id="Tortuga.Chain.Core" version="2.1.6963.38576" />
       </group>
     </dependencies>
   </metadata>

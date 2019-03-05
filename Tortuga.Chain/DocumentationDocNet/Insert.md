@@ -8,6 +8,8 @@ A parameter object is used to construct the INSERT statment. If a property is ma
 
 Alternately, a parameter dictionary of type IReadonlyDictionary<string, object> may be used. Again, the primary keys will be read from database metadata.
 
+InsertOptions.IdentityInsert allows for overriding an identity or auto-number column.
+
 ## SQL Generation
 
 If the materializer desires columns, this echos back the newly inserted row.

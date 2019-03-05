@@ -27,7 +27,6 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             m_Options = options;
         }
 
-
         /// <summary>
         /// Prepares the command for execution by generating any necessary SQL.
         /// </summary>
@@ -51,20 +50,21 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             sqlBuilder.UseTableVariable(Table, out header, out intoClause, out footer);
             sql.Append(header);
 
-            sqlBuilder.BuildInsertClause(sql, $"INSERT INTO {Table.Name.ToQuotedString()} (", null, ")");
+            bool identityInsert = m_Options.HasFlag(InsertOptions.IdentityInsert);
+            if (identityInsert)
+                sql.AppendLine($"SET IDENTITY_INSERT {Table.Name.ToQuotedString()} ON;");
+
+            sqlBuilder.BuildInsertClause(sql, $"INSERT INTO {Table.Name.ToQuotedString()} (", null, ")", identityInsert);
             sqlBuilder.BuildSelectClause(sql, " OUTPUT ", "Inserted.", intoClause);
-            sqlBuilder.BuildValuesClause(sql, " VALUES (", ")");
+            sqlBuilder.BuildValuesClause(sql, " VALUES (", ")", identityInsert);
             sql.Append(";");
 
             sql.Append(footer);
 
+            if (identityInsert)
+                sql.AppendLine($"SET IDENTITY_INSERT {Table.Name.ToQuotedString()} OFF;");
 
             return new SqlServerCommandExecutionToken(DataSource, "Insert into " + Table.Name, sql.ToString(), sqlBuilder.GetParameters());
-
         }
-
     }
 }
-
-
-

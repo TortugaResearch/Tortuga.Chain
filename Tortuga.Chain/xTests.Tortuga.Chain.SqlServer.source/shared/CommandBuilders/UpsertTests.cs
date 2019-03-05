@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Tests.Models;
 using Xunit;
 using Xunit.Abstractions;
@@ -43,6 +44,48 @@ namespace Tests.CommandBuilders
                 Release(dataSource);
             }
         }
+
+#if !POSTGRESQL
+
+        [Theory, MemberData(nameof(Prime))]
+        public void UpsertTest_Identity_Insert(string assemblyName, string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+                var employeeTable = dataSource.DatabaseMetadata.GetTableOrView(EmployeeTableName);
+                var primaryColumn = employeeTable.Columns.SingleOrDefault(c => c.IsIdentity);
+                if (primaryColumn == null) //SQLite
+                    primaryColumn = employeeTable.Columns.SingleOrDefault(c => c.IsPrimaryKey);
+
+                //Skipping ahead by 5
+                var nextKey = 5 + dataSource.Sql($"SELECT Max({primaryColumn.QuotedSqlName}) FROM {employeeTable.Name.ToQuotedString()}").ToInt32().Execute();
+
+                var original = new Employee()
+                {
+                    FirstName = "Test",
+                    LastName = "Employee" + DateTime.Now.Ticks,
+                    Title = "Mail Room",
+                    EmployeeKey = nextKey
+                };
+
+                var inserted = dataSource.Upsert(EmployeeTableName, original, Tortuga.Chain.UpsertOptions.IdentityInsert).ToObject<Employee>().Execute();
+
+                inserted.FirstName = "Changed";
+                inserted.Title = "Also Changed";
+
+                var updated = dataSource.Upsert(EmployeeTableName, inserted, Tortuga.Chain.UpsertOptions.IdentityInsert).ToObject<Employee>().Execute();
+                Assert.AreEqual(inserted.FirstName, updated.FirstName, "FirstName shouldn't have changed");
+                Assert.AreEqual(original.LastName, updated.LastName, "LastName shouldn't have changed");
+                Assert.AreEqual(inserted.Title, updated.Title, "Title should have changed");
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+#endif
 
 #if SQL_SERVER || OLE_SQL_SERVER //SQL Server has problems with CRUD operations that return values on tables with triggers.
 

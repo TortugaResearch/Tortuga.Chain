@@ -1,14 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Data;
+using System.Data.SQLite;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.DataSources;
-
-#if SDS
-using System.Data.SQLite;
-#else
-using SQLiteCommand = Microsoft.Data.Sqlite.SqliteCommand;
-using SQLiteParameter = Microsoft.Data.Sqlite.SqliteParameter;
-#endif
 
 namespace Tortuga.Chain.SQLite
 {

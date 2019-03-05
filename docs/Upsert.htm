@@ -119,6 +119,7 @@
 <p>Upsert will honor the IgnoreOnInsert and IgnoreOnUpdate attributes.</p>
 <p>If you use the ChangedPropertiesOnly option, only properties marked as changed by <code>IPropertyChangeTracking.ChangedProperties()</code> will be used for the insert part of the operation. This interface is found in the <code>Tortuga.Anchor.ComponentModel</code> namespace.</p>
 <p>Alternately, a parameter dictionary of type IReadonlyDictionary&lt;string, object&gt; may be used. Again, the primary keys will be read from database metadata.</p>
+<p>UpsertOptions.IdentityInsert allows for overriding an identity or auto-number column.</p>
 <h2 id="sql-generation">SQL Generation<a class="headerlink" href="#sql-generation" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h2>
 <p>If the materializer desires columns, this echos back the row. The UpsertOptions flag determines if the original or new values are returned.</p>
 <h2 id="limitations">Limitations<a class="headerlink" href="#limitations" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h2>

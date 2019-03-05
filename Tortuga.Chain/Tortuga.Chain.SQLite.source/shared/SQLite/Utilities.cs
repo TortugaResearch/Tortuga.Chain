@@ -1,12 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Data;
-using Tortuga.Chain.CommandBuilders;
-
-#if SDS
 using System.Data.SQLite;
-#else
-using SQLiteParameter = Microsoft.Data.Sqlite.SqliteParameter;
-#endif
+using Tortuga.Chain.CommandBuilders;
 
 namespace Tortuga.Chain.SQLite
 {

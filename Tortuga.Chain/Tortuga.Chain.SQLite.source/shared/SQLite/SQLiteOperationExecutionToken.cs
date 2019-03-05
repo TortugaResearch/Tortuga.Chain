@@ -1,12 +1,6 @@
+using System.Data.SQLite;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.DataSources;
-
-#if SDS
-using System.Data.SQLite;
-#else
-using SQLiteConnection = Microsoft.Data.Sqlite.SqliteConnection;
-using SQLiteTransaction = Microsoft.Data.Sqlite.SqliteTransaction;
-#endif
 
 namespace Tortuga.Chain.SQLite
 {
