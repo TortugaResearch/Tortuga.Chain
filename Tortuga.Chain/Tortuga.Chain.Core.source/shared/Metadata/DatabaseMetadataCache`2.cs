@@ -4,7 +4,6 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Tortuga.Chain.Metadata
 {
-
     /// <summary>
     /// An abstract database metadata cache
     /// </summary>
@@ -75,6 +74,7 @@ namespace Tortuga.Chain.Metadata
         {
             throw new NotSupportedException("Table value functions are not supported by this data source");
         }
+
         TableFunctionMetadata IDatabaseMetadataCache.GetTableFunction(string tableFunctionName)
         {
             return GetTableFunction(ParseObjectName(tableFunctionName));
@@ -161,6 +161,124 @@ namespace Tortuga.Chain.Metadata
         /// Resets the metadata cache, clearing out all cached metadata.
         /// </summary>
         public abstract void Reset();
+
+        /// <summary>
+        /// Tries to get the stored procedure's metadata.
+        /// </summary>
+        /// <param name="procedureName">Name of the procedure.</param>
+        /// <param name="storedProcedure">The stored procedure.</param>
+        /// <returns></returns>
+        public bool TryGetStoredProcedure(string procedureName, out StoredProcedureMetadata storedProcedure) =>
+            TryGetStoredProcedure(ParseObjectName(procedureName), out storedProcedure);
+
+        /// <summary>
+        /// Tries to get the stored procedure's metadata.
+        /// </summary>
+        /// <param name="procedureName">Name of the procedure.</param>
+        /// <param name="storedProcedure">The stored procedure.</param>
+        /// <returns></returns>
+        public bool TryGetStoredProcedure(TName procedureName, out StoredProcedureMetadata storedProcedure)
+        {
+            try
+            {
+                storedProcedure = GetStoredProcedure(procedureName);
+                return true;
+            }
+            catch (MissingObjectException)
+            {
+                storedProcedure = null;
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Tries to get the metadata for a table function.
+        /// </summary>
+        /// <param name="tableFunctionName">Name of the table function.</param>
+        /// <param name="tableFunction">The table function.</param>
+        /// <returns></returns>
+        public bool TryGetTableFunction(string tableFunctionName, out TableFunctionMetadata tableFunction) =>
+            TryGetTableFunction(ParseObjectName(tableFunctionName), out tableFunction);
+
+        /// <summary>
+        /// Tries to get the metadata for a table function.
+        /// </summary>
+        /// <param name="tableFunctionName">Name of the table function.</param>
+        /// <param name="tableFunction">The table function.</param>
+        /// <returns></returns>
+        public bool TryGetTableFunction(TName tableFunctionName, out TableFunctionMetadata tableFunction)
+        {
+            try
+            {
+                tableFunction = GetTableFunction(tableFunctionName);
+                return true;
+            }
+            catch (MissingObjectException)
+            {
+                tableFunction = null;
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Tries to get the metadata for a table or view.
+        /// </summary>
+        /// <param name="tableName">Name of the table or view.</param>
+        /// <param name="tableOrView">The table or view.</param>
+        /// <returns></returns>
+        public bool TryGetTableOrView(string tableName, out TableOrViewMetadata tableOrView) =>
+            TryGetTableOrView(ParseObjectName(tableName), out tableOrView);
+
+        /// <summary>
+        /// Tries to get the metadata for a table or view.
+        /// </summary>
+        /// <param name="tableName">Name of the table or view.</param>
+        /// <param name="tableOrView">The table or view.</param>
+        /// <returns></returns>
+        public bool TryGetTableOrView(TName tableName, out TableOrViewMetadata tableOrView)
+        {
+            try
+            {
+                tableOrView = GetTableOrView(tableName);
+                return true;
+            }
+            catch (MissingObjectException)
+            {
+                tableOrView = null;
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Try to get the metadata for a user defined type.
+        /// </summary>
+        /// <param name="typeName">Name of the type.</param>
+        /// <param name="userDefinedType">Type of the user defined.</param>
+        /// <returns></returns>
+        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
+        public bool TryGetUserDefinedType(string typeName, out UserDefinedTypeMetadata userDefinedType) =>
+            TryGetUserDefinedType(ParseObjectName(typeName), out userDefinedType);
+
+        /// <summary>
+        /// Try to get the metadata for a user defined type.
+        /// </summary>
+        /// <param name="typeName">Name of the type.</param>
+        /// <param name="userDefinedType">Type of the user defined.</param>
+        /// <returns></returns>
+        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
+        public bool TryGetUserDefinedType(TName typeName, out UserDefinedTypeMetadata userDefinedType)
+        {
+            try
+            {
+                userDefinedType = GetUserDefinedType(typeName);
+                return true;
+            }
+            catch (MissingObjectException)
+            {
+                userDefinedType = null;
+                return false;
+            }
+        }
 
         /// <summary>
         /// Parse a string and return the database specific representation of the object name.

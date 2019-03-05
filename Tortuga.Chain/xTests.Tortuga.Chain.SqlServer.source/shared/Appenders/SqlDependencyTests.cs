@@ -61,11 +61,10 @@ namespace Tests.Appenders
                 dataSource.Insert("Sales.Customer", new Customer() { FullName = "Wrong State Test" + DateTime.Now.Ticks, State = "TX" }).Execute();
                 Thread.Sleep(500); //give the event time to fire
                 Assert.AreEqual(2, eventCount);
-
-                dataSource.StopSqlDependency();
             }
             finally
             {
+                dataSource.StopSqlDependency();
                 Release(dataSource);
             }
         }
@@ -97,11 +96,10 @@ namespace Tests.Appenders
                 await dataSource.Insert("Sales.Customer", new Customer() { FullName = "Wrong State Test" + DateTime.Now.Ticks, State = "TX" }).ExecuteAsync();
                 await Task.Delay(500); //give the event time to fire
                 Assert.AreEqual(2, eventCount);
-
-                dataSource.StopSqlDependency();
             }
             finally
             {
+                dataSource.StopSqlDependency();
                 Release(dataSource);
             }
         }
@@ -127,11 +125,10 @@ namespace Tests.Appenders
                 Thread.Sleep(500); //give the event time to fire
 
                 Assert.IsFalse(dataSource.Cache.TryRead<object>(CacheKey, out var _), "Cache was not cleared");
-
-                dataSource.StopSqlDependency();
             }
             finally
             {
+                dataSource.StopSqlDependency();
                 Release(dataSource);
             }
         }
