@@ -253,6 +253,8 @@
     <Compile Include="shared\Asserts\SetAsserts.cs" />
     <Compile Include="shared\Asserts\StringAsserts.cs" />
     <Compile Include="shared\Asserts\TypeAsserts.cs" />
+    <Compile Include="shared\CommandBuilders\InsertBatchTests.cs" />
+    <Compile Include="shared\CommandBuilders\InsertBulkTests.cs" />
     <Compile Include="shared\CommandBuilders\ScalarFunctionTests.cs" />
     <Compile Include="shared\CommandBuilders\TableFunctionTests.cs" />
     <Compile Include="shared\CommandBuilders\ProcedureTests.cs" />
