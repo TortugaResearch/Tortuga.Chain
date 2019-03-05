@@ -68,6 +68,62 @@ namespace Tortuga.Chain.SqlServer
         }
 
         /// <summary>
+        /// Gets the indexes for a table.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <returns></returns>
+        /// <exception cref="NotSupportedException">Indexes are not supported by this data source</exception>
+        /// <remarks>
+        /// This should be cached on a TableOrViewMetadata object.
+        /// </remarks>
+        public override IndexMetadataCollection<SqlServerObjectName> GetIndexesForTable(SqlServerObjectName tableName)
+        {
+            const string indexSql = @"SELECT i.name,
+       i.is_primary_key,
+       i.is_unique,
+       i.is_unique_constraint,
+	   i.index_id
+FROM sys.indexes i
+    INNER JOIN sys.objects o
+        ON i.object_id = o.object_id
+    INNER JOIN sys.schemas s
+        ON o.schema_id = s.schema_id
+WHERE o.name = @Name
+      AND s.name = @Schema;";
+
+            using (var con = new SqlConnection(m_ConnectionBuilder.ConnectionString))
+            {
+                con.Open();
+
+                using (var cmd = new SqlCommand(indexSql, con))
+                {
+                    cmd.Parameters.AddWithValue("@Schema", tableName.Schema);
+                    cmd.Parameters.AddWithValue("@Name", tableName.Name);
+
+                    var results = new List<IndexMetadata<SqlServerObjectName>>();
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var is_primary_key = reader.GetBoolean(reader.GetOrdinal("is_primary_key"));
+                            var is_unique = reader.GetBoolean(reader.GetOrdinal("is_unique"));
+                            //var is_unique_constraint = reader.GetBoolean(reader.GetOrdinal("is_unique_constraint"));
+                            var index_id = reader.GetInt32(reader.GetOrdinal("index_id"));
+                            var name = reader.GetString(reader.GetOrdinal("Name"));
+
+                            var columns = GetColumnsForIndex(tableName, index_id);
+
+                            results.Add(new IndexMetadata<SqlServerObjectName>(tableName, name, is_primary_key, is_unique, columns));
+                        }
+
+                        return new IndexMetadataCollection<SqlServerObjectName>(results);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Gets the detailed metadata for a table or view.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
@@ -629,6 +685,55 @@ WHERE	s.name = @Schema AND t.name = @Name;";
                 }
             }
             return columns;
+        }
+
+        IndexColumnMetadataCollection GetColumnsForIndex(SqlServerObjectName tableName, int indexId)
+        {
+            const string columnSql = @"SELECT c.name,
+       ic.is_descending_key,
+       ic.is_included_column
+FROM sys.index_columns ic
+    INNER JOIN sys.objects o
+        ON ic.object_id = o.object_id
+    INNER JOIN sys.schemas s
+        ON o.schema_id = s.schema_id
+    INNER JOIN sys.columns c
+        ON ic.object_id = c.object_id
+           AND ic.column_id = c.column_id
+WHERE o.name = @Name
+      AND s.name = @Schema
+	  AND ic.index_id = @IndexId
+ORDER BY ic.key_ordinal;";
+
+            var tableColumns = GetTableOrView(tableName).Columns;
+
+            using (var con = new SqlConnection(m_ConnectionBuilder.ConnectionString))
+            {
+                con.Open();
+
+                using (var cmd = new SqlCommand(columnSql, con))
+                {
+                    cmd.Parameters.AddWithValue("@Schema", tableName.Schema);
+                    cmd.Parameters.AddWithValue("@Name", tableName.Name);
+                    cmd.Parameters.AddWithValue("@IndexId", indexId);
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        var results = new List<IndexColumnMetadata>();
+
+                        while (reader.Read())
+                        {
+                            var is_descending_key = reader.GetBoolean(reader.GetOrdinal("is_descending_key"));
+                            var is_included_column = reader.GetBoolean(reader.GetOrdinal("is_included_column"));
+                            var name = reader.GetString(reader.GetOrdinal("Name"));
+                            var column = tableColumns[name];
+
+                            results.Add(new IndexColumnMetadata(column, is_descending_key, is_included_column));
+                        }
+                        return new IndexColumnMetadataCollection(results);
+                    }
+                }
+            }
         }
 
         List<ParameterMetadata<SqlDbType>> GetParameters(string procedureName, int objectId)

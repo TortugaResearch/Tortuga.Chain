@@ -4,7 +4,6 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Tortuga.Chain.Metadata
 {
-
     /// <summary>
     /// An abstract database metadata cache
     /// </summary>
@@ -14,16 +13,6 @@ namespace Tortuga.Chain.Metadata
         where TDbType : struct
     {
         /// <summary>
-        /// Gets the metadata for a scalar function.
-        /// </summary>
-        /// <param name="scalarFunctionName">Name of the scalar function.</param>
-        /// <returns>Null if the object could not be found.</returns>
-        public virtual ScalarFunctionMetadata<TName, TDbType> GetScalarFunction(TName scalarFunctionName)
-        {
-            throw new NotSupportedException("Table value functions are not supported by this data source");
-        }
-
-        /// <summary>
         /// Gets the indexes for a table.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
@@ -32,9 +21,19 @@ namespace Tortuga.Chain.Metadata
         /// <remarks>
         /// This should be cached on a TableOrViewMetadata object.
         /// </remarks>
-        public virtual IndexMetadataCollection<TName, TDbType> GetIndexesForTable(TName tableName)
+        public virtual IndexMetadataCollection<TName> GetIndexesForTable(TName tableName)
         {
             throw new NotSupportedException("Indexes are not supported by this data source");
+        }
+
+        /// <summary>
+        /// Gets the metadata for a scalar function.
+        /// </summary>
+        /// <param name="scalarFunctionName">Name of the scalar function.</param>
+        /// <returns>Null if the object could not be found.</returns>
+        public virtual ScalarFunctionMetadata<TName, TDbType> GetScalarFunction(TName scalarFunctionName)
+        {
+            throw new NotSupportedException("Table value functions are not supported by this data source");
         }
 
         /// <summary>
@@ -89,6 +88,7 @@ namespace Tortuga.Chain.Metadata
         {
             throw new NotSupportedException("Table value functions are not supported by this data source");
         }
+
         TableFunctionMetadata IDatabaseMetadataCache.GetTableFunction(string tableFunctionName)
         {
             return GetTableFunction(ParseObjectName(tableFunctionName));

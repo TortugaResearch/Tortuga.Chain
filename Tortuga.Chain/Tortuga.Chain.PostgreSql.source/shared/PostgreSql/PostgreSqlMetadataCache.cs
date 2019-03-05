@@ -716,7 +716,7 @@ where s.relkind='S' and d.deptype='a'";
 
                     var actualName = new PostgreSqlObjectName(actualSchema, actualTableName);
                     var columns = GetColumns(actualName, con);
-                    return new TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType>(actualName, isTable, columns);
+                    return new TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType>(this, actualName, isTable, columns);
                 }
             }
 

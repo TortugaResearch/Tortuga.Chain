@@ -4,23 +4,29 @@ namespace Tortuga.Chain.Metadata
     /// Metadata for an index.
     /// </summary>
     /// <typeparam name="TName">The type of the name.</typeparam>
-    /// <typeparam name="TDbType">The type of the database type.</typeparam>
-    public class IndexMetadata<TName, TDbType>
+    public class IndexMetadata<TName>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="IndexMetadata{TName, TDbType}"/> class.
+        /// Initializes a new instance of the <see cref="IndexMetadata{TName}" /> class.
         /// </summary>
         /// <param name="tableName">Name of the table (or view).</param>
         /// <param name="name">The name.</param>
         /// <param name="isPrimaryKey">if set to <c>true</c> is a primary key.</param>
         /// <param name="isUnique">if set to <c>true</c> is a unique index.</param>
-        public IndexMetadata(TName tableName, string name, bool isPrimaryKey, bool isUnique)
+        /// <param name="columns">The columns.</param>
+        public IndexMetadata(TName tableName, string name, bool isPrimaryKey, bool isUnique, IndexColumnMetadataCollection columns)
         {
             TableName = tableName;
             Name = name;
             IsUnique = isUnique;
             IsPrimaryKey = isPrimaryKey;
+            Columns = columns;
         }
+
+        /// <summary>
+        /// Gets the columns.
+        /// </summary>
+        public IndexColumnMetadataCollection Columns { get; }
 
         /// <summary>
         /// Gets a value indicating whether this nidex is a primary key.
@@ -55,4 +61,3 @@ namespace Tortuga.Chain.Metadata
         public TName TableName { get; }
     }
 }
-

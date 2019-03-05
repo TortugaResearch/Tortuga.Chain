@@ -15,7 +15,7 @@ namespace Tortuga.Chain.Metadata
     {
         readonly SqlBuilder<TDbType> m_Builder;
         readonly DatabaseMetadataCache<TName, TDbType> m_MetadataCache;
-        IndexMetadataCollection<TName, TDbType> m_Indexes;
+        IndexMetadataCollection<TName> m_Indexes;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TableOrViewMetadata{TName, TDbType}"/> class.
@@ -34,18 +34,6 @@ namespace Tortuga.Chain.Metadata
             base.Columns = Columns.GenericCollection;
             NonNullableColumns = new ColumnMetadataCollection(columns.Where(c => c.IsNullable == false));
             m_Builder = new SqlBuilder<TDbType>(Name.ToString(), Columns);
-        }
-
-        /// <summary>
-        /// Gets the indexes for this table or view.
-        /// </summary>
-        /// <returns></returns>
-        /// <exception cref="NotSupportedException">Indexes are not supported by this data source</exception>
-        public IndexMetadataCollection<TName, TDbType> GetIndexes()
-        {
-            if (m_Indexes == null)
-                m_Indexes = m_MetadataCache.GetIndexesForTable(Name);
-            return m_Indexes;
         }
 
         /// <summary>
@@ -69,5 +57,17 @@ namespace Tortuga.Chain.Metadata
         /// </summary>
         /// <returns></returns>
         public SqlBuilder<TDbType> CreateSqlBuilder(bool strictMode) => m_Builder.Clone(strictMode);
+
+        /// <summary>
+        /// Gets the indexes for this table or view.
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="NotSupportedException">Indexes are not supported by this data source</exception>
+        public IndexMetadataCollection<TName> GetIndexes()
+        {
+            if (m_Indexes == null)
+                m_Indexes = m_MetadataCache.GetIndexesForTable(Name);
+            return m_Indexes;
+        }
     }
 }
