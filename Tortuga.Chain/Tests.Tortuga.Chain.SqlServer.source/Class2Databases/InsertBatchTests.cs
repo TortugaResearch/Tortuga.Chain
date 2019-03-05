@@ -1,96 +1,90 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
-using Tests.Models;
-using Tortuga.Chain;
+﻿//using Microsoft.VisualStudio.TestTools.UnitTesting;
+//using System;
+//using System.Collections.Generic;
+//using Tests.Models;
+//using Tortuga.Chain;
 
-namespace Tests.Class2Databases
-{
-    [TestClass]
-    public class InsertBatchTests : TestBase
-    {
-        const string TableType = "HR.EmployeeTable";
-        [TestMethod]
-        public void InsertBatch()
-        {
+//namespace Tests.Class2Databases
+//{
+//    [TestClass]
+//    public class InsertBatchTests : TestBase
+//    {
+//        const string TableType = "HR.EmployeeTable";
+//        [TestMethod]
+//        public void InsertBatch()
+//        {
+//            var key1000 = Guid.NewGuid().ToString();
+//            var employeeList = new List<Employee>();
 
-            var key1000 = Guid.NewGuid().ToString();
-            var employeeList = new List<Employee>();
+//            for (var i = 0; i < 1000; i++)
+//                employeeList.Add(new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = key1000 });
 
-            for (var i = 0; i < 1000; i++)
-                employeeList.Add(new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = key1000 });
+//            DataSource.InsertBatch(EmployeeTableName, employeeList, TableType).Execute();
+//        }
 
-            DataSource.InsertBatch(EmployeeTableName, employeeList, TableType).Execute();
-        }
+//        [TestMethod]
+//        public void InsertBatch_Streaming()
+//        {
+//            var key1000 = Guid.NewGuid().ToString();
+//            //var employeeList = new List<Employee>();
 
-        [TestMethod]
-        public void InsertBatch_Streaming()
-        {
+//            //for (var i = 0; i < 1000; i++)
+//            //    employeeList.Add(new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = key1000 });
 
-            var key1000 = Guid.NewGuid().ToString();
-            //var employeeList = new List<Employee>();
+//            DataSource.InsertBatch(EmployeeTableName, StreamRecords(key1000, 1000), TableType).Execute();
+//        }
 
-            //for (var i = 0; i < 1000; i++)
-            //    employeeList.Add(new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = key1000 });
+//        IEnumerable<Employee> StreamRecords(string key, int maxRecords)
+//        {
+//            var i = 0;
+//            while (i < maxRecords)
+//            {
+//                yield return new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = key };
+//                i++;
+//            }
+//        }
 
-            DataSource.InsertBatch(EmployeeTableName, StreamRecords(key1000, 1000), TableType).Execute();
-        }
+//        [TestMethod]
+//        public void InsertBatch_SelectBack()
+//        {
+//            var key1000 = Guid.NewGuid().ToString();
+//            var employeeList = new List<Employee>();
 
-        IEnumerable<Employee> StreamRecords(string key, int maxRecords)
-        {
-            var i = 0;
-            while (i < maxRecords)
-            {
-                yield return new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = key };
-                i++;
-            }
-        }
+//            for (var i = 0; i < 1000; i++)
+//                employeeList.Add(new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = key1000 });
 
-        [TestMethod]
-        public void InsertBatch_SelectBack()
-        {
+//            var employeeList2 = DataSource.InsertBatch(EmployeeTableName, employeeList, TableType).ToCollection<EmployeeLookup>(CollectionOptions.InferConstructor).Execute();
 
-            var key1000 = Guid.NewGuid().ToString();
-            var employeeList = new List<Employee>();
+//            Assert.AreEqual(employeeList.Count, employeeList2.Count);
+//        }
 
-            for (var i = 0; i < 1000; i++)
-                employeeList.Add(new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = key1000 });
+//        [TestMethod]
+//        public void InsertBatch_SelectKeys()
+//        {
+//            var key1000 = Guid.NewGuid().ToString();
+//            var employeeList = new List<Employee>();
 
-            var employeeList2 = DataSource.InsertBatch(EmployeeTableName, employeeList, TableType).ToCollection<EmployeeLookup>(CollectionOptions.InferConstructor).Execute();
+//            for (var i = 0; i < 1000; i++)
+//                employeeList.Add(new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = key1000 });
 
-            Assert.AreEqual(employeeList.Count, employeeList2.Count);
-        }
+//            var employeeList2 = DataSource.InsertBatch(EmployeeTableName, employeeList, TableType).ToInt32List().Execute();
 
-        [TestMethod]
-        public void InsertBatch_SelectKeys()
-        {
+//            Assert.AreEqual(employeeList.Count, employeeList2.Count);
+//        }
 
-            var key1000 = Guid.NewGuid().ToString();
-            var employeeList = new List<Employee>();
+//        [TestMethod]
+//        public void InsertBatch_AuditRules()
+//        {
+//            var key1000 = Guid.NewGuid().ToString();
+//            var employeeList = new List<Employee>();
 
-            for (var i = 0; i < 1000; i++)
-                employeeList.Add(new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = key1000 });
+//            for (var i = 0; i < 1000; i++)
+//                employeeList.Add(new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = key1000 });
 
-            var employeeList2 = DataSource.InsertBatch(EmployeeTableName, employeeList, TableType).ToInt32List().Execute();
+//            var employeeList2 = DataSourceWithAuditRules().InsertBatch(EmployeeTableName, employeeList, TableType).ToCollection<Employee>().Execute();
+//            Assert.AreEqual(employeeList.Count, employeeList2.Count);
+//            Assert.IsNotNull(employeeList2[0].UpdatedDate);
 
-            Assert.AreEqual(employeeList.Count, employeeList2.Count);
-        }
-
-        [TestMethod]
-        public void InsertBatch_AuditRules()
-        {
-
-            var key1000 = Guid.NewGuid().ToString();
-            var employeeList = new List<Employee>();
-
-            for (var i = 0; i < 1000; i++)
-                employeeList.Add(new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = key1000 });
-
-            var employeeList2 = DataSourceWithAuditRules().InsertBatch(EmployeeTableName, employeeList, TableType).ToCollection<Employee>().Execute();
-            Assert.AreEqual(employeeList.Count, employeeList2.Count);
-            Assert.IsNotNull(employeeList2[0].UpdatedDate);
-
-        }
-    }
-}
-
+//        }
+//    }
+//}
