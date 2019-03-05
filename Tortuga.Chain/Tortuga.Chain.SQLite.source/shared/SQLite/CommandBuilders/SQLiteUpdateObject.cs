@@ -1,14 +1,8 @@
-﻿using Tortuga.Chain.Core;
-using Tortuga.Chain.Materializers;
-using System.Text;
-using System;
-
-#if SDS
+﻿using System;
 using System.Data.SQLite;
-#else
-using SQLiteCommand = Microsoft.Data.Sqlite.SqliteCommand;
-using SQLiteParameter = Microsoft.Data.Sqlite.SqliteParameter;
-#endif
+using System.Text;
+using Tortuga.Chain.Core;
+using Tortuga.Chain.Materializers;
 
 
 namespace Tortuga.Chain.SQLite.CommandBuilders

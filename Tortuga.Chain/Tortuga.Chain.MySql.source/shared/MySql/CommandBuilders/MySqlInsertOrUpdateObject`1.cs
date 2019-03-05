@@ -43,10 +43,12 @@ namespace Tortuga.Chain.MySql.CommandBuilders
             sqlBuilder.ApplyArgumentValue(DataSource, ArgumentValue, m_Options);
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
+            var identityInsert = m_Options.HasFlag(UpsertOptions.IdentityInsert);
+
             var sql = new StringBuilder();
             List<MySqlParameter> keyParameters;
             var isPrimaryKeyIdentity = sqlBuilder.PrimaryKeyIsIdentity(out keyParameters);
-            if (isPrimaryKeyIdentity)
+            if (isPrimaryKeyIdentity && !identityInsert)
             {
                 var areKeysNull = keyParameters.Any(c => c.Value == DBNull.Value || c.Value == null) ? true : false;
                 if (areKeysNull)
@@ -57,8 +59,8 @@ namespace Tortuga.Chain.MySql.CommandBuilders
             }
             else
             {
-                sqlBuilder.BuildInsertClause(sql, $"INSERT INTO {Table.Name.ToString()} (", null, ")");
-                sqlBuilder.BuildValuesClause(sql, " VALUES (", ")");
+                sqlBuilder.BuildInsertClause(sql, $"INSERT INTO {Table.Name.ToString()} (", null, ")", identityInsert);
+                sqlBuilder.BuildValuesClause(sql, " VALUES (", ")", identityInsert);
                 sqlBuilder.BuildSetClause(sql, $" ON DUPLICATE KEY UPDATE ", null, null);
                 sql.Append(";");
             }

@@ -117,6 +117,7 @@
 <h2 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h2>
 <p>A parameter object is used to construct the INSERT statment. If a property is marked with the IgnoreOnInsert attribute, it will not participate in this step. This attribute is usually applied to defaulted columns such as CreatedDate.</p>
 <p>Alternately, a parameter dictionary of type IReadonlyDictionary&lt;string, object&gt; may be used. Again, the primary keys will be read from database metadata.</p>
+<p>InsertOptions.IdentityInsert allows for overriding an identity or auto-number column.</p>
 <h2 id="sql-generation">SQL Generation<a class="headerlink" href="#sql-generation" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h2>
 <p>If the materializer desires columns, this echos back the newly inserted row.</p>
 <h2 id="limitations">Limitations<a class="headerlink" href="#limitations" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h2>

@@ -15,9 +15,10 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 {
     internal class SqlServerInsertBatch : MultipleRowDbCommandBuilder<SqlCommand, SqlParameter>
     {
-        readonly object m_Source;
         [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields", Justification = "For future use")]
         readonly InsertOptions m_Options;
+
+        readonly object m_Source;
         readonly TableOrViewMetadata<SqlServerObjectName, SqlDbType> m_Table;
         readonly UserDefinedTypeMetadata<SqlServerObjectName, SqlDbType> m_TableType;
 
@@ -51,10 +52,18 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
             var sql = new StringBuilder();
-            sqlBuilder.BuildInsertClause(sql, $"INSERT INTO {m_Table.Name.ToQuotedString()} (", null, ")");
+
+            bool identityInsert = m_Options.HasFlag(InsertOptions.IdentityInsert);
+            if (identityInsert)
+                sql.AppendLine($"SET IDENTITY_INSERT {m_Table.Name.ToQuotedString()} ON;");
+
+            sqlBuilder.BuildInsertClause(sql, $"INSERT INTO {m_Table.Name.ToQuotedString()} (", null, ")", identityInsert);
             sqlBuilder.BuildSelectClause(sql, " OUTPUT ", "Inserted.", null);
-            sqlBuilder.BuildSelectTvpForInsertClause(sql, " SELECT ", null, " FROM @ValuesParameter ");
+            sqlBuilder.BuildSelectTvpForInsertClause(sql, " SELECT ", null, " FROM @ValuesParameter ", identityInsert);
             sql.Append(";");
+
+            if (identityInsert)
+                sql.AppendLine($"SET IDENTITY_INSERT {m_Table.Name.ToQuotedString()} OFF;");
 
             var parameters = sqlBuilder.GetParameters();
             parameters.Add(new SqlParameter()

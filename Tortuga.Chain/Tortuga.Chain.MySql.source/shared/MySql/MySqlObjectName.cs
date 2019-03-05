@@ -65,6 +65,8 @@ namespace Tortuga.Chain.MySql
         /// </value>
         public string Schema { get; }
 
+#pragma warning disable CA2225 // Operator overloads have named alternates
+
         /// <summary>
         /// Perform an implicit conversion from <see cref="string"/> to <see cref="MySqlObjectName"/>.
         /// </summary>
@@ -76,6 +78,7 @@ namespace Tortuga.Chain.MySql
         {
             return new MySqlObjectName(value);
         }
+#pragma warning restore CA2225 // Operator overloads have named alternates
 
         /// <summary>
         /// Implements the operator !=.

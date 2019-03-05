@@ -226,6 +226,10 @@
       <Project>{29250dd0-9a8e-49e9-bf19-5f45c54ac9fb}</Project>
       <Name>Tortuga.Chain.Csv.source</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Tortuga.Chain.SqlServer.OleDB.source\Tortuga.Chain.SqlServer.OleDb.source.csproj">
+      <Project>{89f7e384-1377-44a1-89a9-f0f019e10ddc}</Project>
+      <Name>Tortuga.Chain.SqlServer.OleDb.source</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Tortuga.Chain.SqlServer.source\Tortuga.Chain.SqlServer.source.csproj">
       <Project>{5d3159ad-141c-4853-9ecc-a1fd603bd8c4}</Project>
       <Name>Tortuga.Chain.SqlServer.source</Name>

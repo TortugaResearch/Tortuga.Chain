@@ -1,15 +1,9 @@
-﻿using System.Linq;
+﻿using System;
+using System.Data.SQLite;
+using System.Linq;
+using System.Text;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
-using System.Text;
-using System;
-
-#if SDS
-using System.Data.SQLite;
-#else
-using SQLiteCommand = Microsoft.Data.Sqlite.SqliteCommand;
-using SQLiteParameter = Microsoft.Data.Sqlite.SqliteParameter;
-#endif
 
 
 namespace Tortuga.Chain.SQLite.CommandBuilders
@@ -45,6 +39,8 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
             if (materializer == null)
                 throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
 
+            var identityInsert = m_Options.HasFlag(UpsertOptions.IdentityInsert);
+
             var sqlBuilder = Table.CreateSqlBuilder(StrictMode);
             sqlBuilder.ApplyArgumentValue(DataSource, ArgumentValue, m_Options);
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
@@ -53,8 +49,8 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
             sqlBuilder.BuildUpdateByKeyStatement(sql, Table.Name.ToQuotedString(), ";");
             sql.AppendLine();
 
-            sqlBuilder.BuildInsertClause(sql, $"INSERT OR IGNORE INTO {Table.Name.ToQuotedString()} (", null, ")");
-            sqlBuilder.BuildValuesClause(sql, " VALUES (", ");");
+            sqlBuilder.BuildInsertClause(sql, $"INSERT OR IGNORE INTO {Table.Name.ToQuotedString()} (", null, ")", identityInsert);
+            sqlBuilder.BuildValuesClause(sql, " VALUES (", ");", identityInsert);
             sql.AppendLine();
 
             if (sqlBuilder.HasReadFields)
@@ -65,12 +61,9 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
                 var key = keys[0];
 
                 sqlBuilder.BuildSelectClause(sql, "SELECT ", null, $" FROM {Table.Name.ToQuotedString()} WHERE {key.QuotedSqlName} = CASE WHEN {key.SqlVariableName} IS NULL OR {key.SqlVariableName} = 0 THEN last_insert_rowid() ELSE {key.SqlVariableName} END;");
-
             }
 
             return new SQLiteCommandExecutionToken(DataSource, "Insert or update " + Table.Name, sql.ToString(), sqlBuilder.GetParameters(), lockType: LockType.Write);
-
         }
-
     }
 }

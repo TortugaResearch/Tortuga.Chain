@@ -7,7 +7,7 @@
     <AssemblyName>Tortuga.Chain.SQLite</AssemblyName>
 
     <PackageId>Tortuga.Chain.SQLite.netstandard2.0</PackageId>
-    <DefineConstants>$(DefineConstants);OleDb_Missing;System_Configuration_Missing;SDS</DefineConstants>
+    <DefineConstants>TRACE;OleDb_Missing;System_Configuration_Missing;SQLITE</DefineConstants>
     <NetStandardImplicitPackageVersion>2.0.0</NetStandardImplicitPackageVersion>
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
@@ -21,7 +21,7 @@
   <ItemGroup>
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.109.2" />
     <PackageReference Include="Nito.AsyncEx.Coordination" Version="1.0.2" />
-    <PackageReference Include="Tortuga.Chain.Core" Version="2.0.6932.69" />
+    <PackageReference Include="Tortuga.Chain.Core" Version="2.1.6963.38576" />
   </ItemGroup>
 
   <ItemGroup>
@@ -30,6 +30,12 @@
 
   <ItemGroup>
     <Compile Include="..\ProductSharedAssemblyInfo.cs" />
+    <Compile Include="..\Shared\DataSourceBase.Class0DataSource.cs" Link="DataSourceBase.Class0DataSource.cs" />
+    <Compile Include="..\Shared\DataSourceBase.Class1DataSource.cs" Link="DataSourceBase.Class1DataSource.cs" />
+    <Compile Include="..\Shared\DataSourceBase.Class1DataSource.StringNames.cs" Link="DataSourceBase.Class1DataSource.StringNames.cs" />
+    <Compile Include="..\Shared\DataSourceBase.IClass0DataSource.cs" Link="DataSourceBase.IClass0DataSource.cs" />
+    <Compile Include="..\Shared\DataSourceBase.IClass1DataSource.cs" Link="DataSourceBase.IClass1DataSource.cs" />
+    <Compile Include="..\Shared\DataSourceBase.IDataSource.cs" Link="DataSourceBase.IDataSource.cs" />
     <Compile Include="..\Tortuga.Chain.SQLite.source\Properties\LibrarySharedAssemblyInfo.cs" Link="LibrarySharedAssemblyInfo.cs" />
   </ItemGroup>
 

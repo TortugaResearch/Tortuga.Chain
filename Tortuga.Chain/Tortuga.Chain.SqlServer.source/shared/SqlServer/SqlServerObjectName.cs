@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 
 namespace Tortuga.Chain.SqlServer
 {
@@ -12,10 +11,6 @@ namespace Tortuga.Chain.SqlServer
         /// An empty schema/name pair
         /// </summary>
         public static readonly SqlServerObjectName Empty;
-
-        private readonly string m_Database;
-        private readonly string m_Name;
-        private readonly string m_Schema;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlServerObjectName"/> struct.
@@ -35,9 +30,9 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="name">The name.</param>
         public SqlServerObjectName(string database, string schema, string name)
         {
-            m_Database = Normalize(database);
-            m_Schema = Normalize(schema);
-            m_Name = Normalize(name);
+            Database = Normalize(database);
+            Schema = Normalize(schema);
+            Name = Normalize(name);
         }
 
         /// <summary>
@@ -52,21 +47,21 @@ namespace Tortuga.Chain.SqlServer
             var parts = schemaAndName.Split(new[] { '.' }, 2);
             if (parts.Length == 1)
             {
-                m_Database = null;
-                m_Schema = null;
-                m_Name = Normalize(parts[0]);
+                Database = null;
+                Schema = null;
+                Name = Normalize(parts[0]);
             }
             else if (parts.Length == 2)
             {
-                m_Database = null;
-                m_Schema = Normalize(parts[0]);
-                m_Name = Normalize(parts[1]);
+                Database = null;
+                Schema = Normalize(parts[0]);
+                Name = Normalize(parts[1]);
             }
             else if (parts.Length == 3)
             {
-                m_Database = Normalize(parts[1]);
-                m_Schema = Normalize(parts[1]);
-                m_Name = Normalize(parts[2]);
+                Database = Normalize(parts[1]);
+                Schema = Normalize(parts[1]);
+                Name = Normalize(parts[2]);
             }
             else
             {
@@ -78,10 +73,7 @@ namespace Tortuga.Chain.SqlServer
         /// Gets the database.
         /// </summary>
         /// <value>The database.</value>
-        public string Database
-        {
-            get { return m_Database; }
-        }
+        public string Database { get; }
 
         /// <summary>
         /// Gets the name.
@@ -89,10 +81,7 @@ namespace Tortuga.Chain.SqlServer
         /// <value>
         /// The name.
         /// </value>
-        public string Name
-        {
-            get { return m_Name; }
-        }
+        public string Name { get; }
 
         /// <summary>
         /// Gets the schema.
@@ -100,10 +89,7 @@ namespace Tortuga.Chain.SqlServer
         /// <value>
         /// The schema.
         /// </value>
-        public string Schema
-        {
-            get { return m_Schema; }
-        }
+        public string Schema { get; }
 
         /// <summary>
         /// Perform an implicit conversion from <see cref="string"/> to <see cref="SqlServerObjectName"/>.

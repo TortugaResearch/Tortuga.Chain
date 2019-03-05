@@ -691,13 +691,14 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="sql">The SQL being generated.</param>
         /// <param name="header">The optional header. Usually "VALUES  (".</param>
         /// <param name="footer">The optional footer. Usually just ")".</param>
-        public void BuildAnonymousValuesClause(StringBuilder sql, string header, string footer)
+        /// <param name="includeIdentityColumn">Include the identity column. Used when performing an identity insert operation.</param>
+        public void BuildAnonymousValuesClause(StringBuilder sql, string header, string footer, bool includeIdentityColumn = false)
         {
             if (sql == null)
                 throw new ArgumentNullException(nameof(sql), $"{nameof(sql)} was null.");
 
             sql.Append(header);
-            sql.Append(string.Join(", ", GetInsertColumns().Select(x => "?")));
+            sql.Append(string.Join(", ", GetInsertColumns(includeIdentityColumn).Select(x => "?")));
             sql.Append(footer);
         }
 
@@ -765,13 +766,14 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="header">The optional header. e.g. "INSERT tableName (".</param>
         /// <param name="prefix">An optional prefix for each column name.</param>
         /// <param name="footer">The optional footer. Usually just ")".</param>
-        public void BuildInsertClause(StringBuilder sql, string header, string prefix, string footer)
+        /// <param name="includeIdentityColumn">Include the identity column. Used when performing an identity insert operation.</param>
+        public void BuildInsertClause(StringBuilder sql, string header, string prefix, string footer, bool includeIdentityColumn = false)
         {
             if (sql == null)
                 throw new ArgumentNullException(nameof(sql), $"{nameof(sql)} was null.");
 
             sql.Append(header);
-            sql.Append(string.Join(", ", GetInsertColumns().Select(x => prefix + x.QuotedSqlName)));
+            sql.Append(string.Join(", ", GetInsertColumns(includeIdentityColumn).Select(x => prefix + x.QuotedSqlName)));
             sql.Append(footer);
         }
 
@@ -781,15 +783,16 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="sql">The SQL.</param>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="footer">The footer.</param>
-        public void BuildInsertStatement(StringBuilder sql, string tableName, string footer)
+        /// <param name="includeIdentityColumn">Include the identity column. Used when performing an identity insert operation.</param>
+        public void BuildInsertStatement(StringBuilder sql, string tableName, string footer, bool includeIdentityColumn = false)
         {
             if (sql == null)
                 throw new ArgumentNullException(nameof(sql), $"{nameof(sql)} is null.");
             if (string.IsNullOrEmpty(tableName))
                 throw new ArgumentException($"{nameof(tableName)} is null or empty.", nameof(tableName));
 
-            BuildInsertClause(sql, "INSERT INTO " + tableName + " (", null, ")");
-            BuildValuesClause(sql, " VALUES (", ")");
+            BuildInsertClause(sql, "INSERT INTO " + tableName + " (", null, ")", includeIdentityColumn);
+            BuildValuesClause(sql, " VALUES (", ")", includeIdentityColumn);
             sql.Append(footer);
         }
 
@@ -880,10 +883,11 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="header">The optional header (e.g. "SELECT, OUTPUT).</param>
         /// <param name="prefix">An optional prefix for each column name.</param>
         /// <param name="footer">The optional footer.</param>
+        /// <param name="includeIdentityColumn">Include the identity column. Used when performing an identity insert operation.</param>
         /// <remarks>
         /// If no columns are marked for reading, the header and footer won't be emitted.
         /// </remarks>
-        public void BuildSelectTvpForInsertClause(StringBuilder sql, string header, string prefix, string footer)
+        public void BuildSelectTvpForInsertClause(StringBuilder sql, string header, string prefix, string footer, bool includeIdentityColumn = false)
         {
             if (sql == null)
                 throw new ArgumentNullException(nameof(sql), $"{nameof(sql)} was null.");
@@ -894,7 +898,7 @@ namespace Tortuga.Chain.CommandBuilders
             {
                 ref var entry = ref m_Entries[i];
 
-                if (!entry.RestrictedInsert && entry.UseForInsert)
+                if (!entry.RestrictedInsert && (entry.UseForInsert || (includeIdentityColumn && entry.Details.IsIdentity)))
                 {
                     if (entry.ParameterValue != null)
                     {
@@ -996,13 +1000,14 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="sql">The SQL being generated.</param>
         /// <param name="header">The optional header. Usually "VALUES  (".</param>
         /// <param name="footer">The optional footer. Usually just ")".</param>
-        public void BuildValuesClause(StringBuilder sql, string header, string footer)
+        /// <param name="includeIdentityColumn">Include the identity column. Used when performing an identity insert operation.</param>
+        public void BuildValuesClause(StringBuilder sql, string header, string footer, bool includeIdentityColumn = false)
         {
             if (sql == null)
                 throw new ArgumentNullException(nameof(sql), $"{nameof(sql)} was null.");
 
             sql.Append(header);
-            sql.Append(string.Join(", ", GetInsertColumns().Select(x => x.SqlVariableName)));
+            sql.Append(string.Join(", ", GetInsertColumns(includeIdentityColumn).Select(x => x.SqlVariableName)));
             sql.Append(footer);
         }
 
@@ -1039,14 +1044,15 @@ namespace Tortuga.Chain.CommandBuilders
         /// <summary>
         /// Gets the insert columns.
         /// </summary>
+        /// <param name="includeIdentityColumn">Include the identity column. Used when performing an identity insert operation.</param>
         /// <returns>Each pair has the column's QuotedSqlName and SqlVariableName</returns>
         /// <remarks>This will mark the returned columns as participating in the parameter generation.</remarks>
         [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
-        public IEnumerable<ColumnNamePair> GetInsertColumns()
+        public IEnumerable<ColumnNamePair> GetInsertColumns(bool includeIdentityColumn = false)
         {
             for (var i = 0; i < m_Entries.Length; i++)
             {
-                if (!m_Entries[i].RestrictedInsert && m_Entries[i].UseForInsert && (m_Entries[i].ParameterValue != null || m_Entries[i].ParameterColumn != null))
+                if (!m_Entries[i].RestrictedInsert && (m_Entries[i].UseForInsert || (includeIdentityColumn && m_Entries[i].Details.IsIdentity)) && (m_Entries[i].ParameterValue != null || m_Entries[i].ParameterColumn != null))
                 {
                     m_Entries[i].UseParameter = true;
                     yield return new ColumnNamePair(m_Entries[i].Details.QuotedSqlName, m_Entries[i].Details.SqlVariableName);

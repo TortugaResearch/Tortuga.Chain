@@ -1,30 +1,18 @@
-﻿using System;
+﻿using Nito.AsyncEx;
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
+using System.Data.Common;
+using System.Data.SQLite;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
-using Tortuga.Chain.SQLite;
-using Tortuga.Chain.Core;
-using System.Diagnostics.CodeAnalysis;
-using System.Collections.Generic;
 using Tortuga.Chain.AuditRules;
+using Tortuga.Chain.Core;
 using Tortuga.Chain.DataSources;
-using System.Data.Common;
-using System.Collections.Concurrent;
-using Nito.AsyncEx;
-
-#if !WINDOWS_UWP
-using System.Configuration;
-#endif
-
-#if SDS
-using System.Data.SQLite;
-#else
-using SQLiteCommand = Microsoft.Data.Sqlite.SqliteCommand;
-using SQLiteTransaction = Microsoft.Data.Sqlite.SqliteTransaction;
-using SQLiteParameter = Microsoft.Data.Sqlite.SqliteParameter;
-using SQLiteConnection = Microsoft.Data.Sqlite.SqliteConnection;
-using SQLiteConnectionStringBuilder = Microsoft.Data.Sqlite.SqliteConnectionStringBuilder;
-#endif
+using Tortuga.Chain.SQLite;
 
 
 namespace Tortuga.Chain

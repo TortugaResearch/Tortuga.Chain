@@ -230,8 +230,6 @@ ModelManifest.xml
 /Tortuga.Chain/Build.Csv
 /Tortuga.Chain/Build.MySQL
 /Tortuga.Chain/Build.Oracle
-/Start Services.ps1
 *.jfm
 /Tortuga.Chain/Help
-/Stop Services.ps1
 /Tortuga.Chain/.cr

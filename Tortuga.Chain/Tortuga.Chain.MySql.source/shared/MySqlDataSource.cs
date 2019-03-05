@@ -39,7 +39,6 @@ namespace Tortuga.Chain
                 throw new ArgumentException("connectionString is null or empty.", "connectionString");
 
             m_ConnectionBuilder = new MySqlConnectionStringBuilder(connectionString);
-            m_ConnectionBuilder.UseAffectedRows = false;
 
             if (string.IsNullOrEmpty(name))
                 Name = m_ConnectionBuilder.Database;
@@ -75,7 +74,6 @@ namespace Tortuga.Chain
                 throw new ArgumentNullException(nameof(connectionBuilder), $"{nameof(connectionBuilder)} is null.");
 
             m_ConnectionBuilder = connectionBuilder;
-            m_ConnectionBuilder.UseAffectedRows = false;
             if (string.IsNullOrEmpty(name))
                 Name = m_ConnectionBuilder.Database;
             else

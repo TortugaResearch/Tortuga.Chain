@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
 
-    <DefineConstants>TRACE;OleDb_Missing;System_Configuration_Missing</DefineConstants>
+    <DefineConstants>TRACE;OleDb_Missing;System_Configuration_Missing;SQL_SERVER</DefineConstants>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>Tortuga.Chain.SqlServer</AssemblyName>
     <PackageId>Tortuga.Chain.SqlServer.netstandard2.0</PackageId>
@@ -18,6 +18,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="..\Shared\DataSourceBase.Class0DataSource.cs" Link="DataSourceBase.Class0DataSource.cs" />
+    <Compile Include="..\Shared\DataSourceBase.Class1DataSource.cs" Link="DataSourceBase.Class1DataSource.cs" />
+    <Compile Include="..\Shared\DataSourceBase.Class1DataSource.StringNames.cs" Link="DataSourceBase.Class1DataSource.StringNames.cs" />
+    <Compile Include="..\Shared\DataSourceBase.Class2DataSource.cs" Link="DataSourceBase.Class2DataSource.cs" />
+    <Compile Include="..\Shared\DataSourceBase.Class2DataSource.StringNames.cs" Link="DataSourceBase.Class2DataSource.StringNames.cs" />
+    <Compile Include="..\Shared\DataSourceBase.IClass0DataSource.cs" Link="DataSourceBase.IClass0DataSource.cs" />
+    <Compile Include="..\Shared\DataSourceBase.IClass1DataSource.cs" Link="DataSourceBase.IClass1DataSource.cs" />
+    <Compile Include="..\Shared\DataSourceBase.IClass2DataSource.cs" Link="DataSourceBase.IClass2DataSource.cs" />
+    <Compile Include="..\Shared\DataSourceBase.IDataSource.cs" Link="DataSourceBase.IDataSource.cs" />
     <Compile Include="..\Tortuga.Chain.SqlServer.source\Properties\LibrarySharedAssemblyInfo.cs;..\ProductSharedAssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -28,6 +37,6 @@
 
   <ItemGroup>
     <PackageReference Include="System.Data.SqlClient" Version="4.6.0" />
-    <PackageReference Include="Tortuga.Chain.Core" Version="2.0.6932.69" />
+    <PackageReference Include="Tortuga.Chain.Core" Version="2.1.6963.38576" />
   </ItemGroup>
 </Project>
