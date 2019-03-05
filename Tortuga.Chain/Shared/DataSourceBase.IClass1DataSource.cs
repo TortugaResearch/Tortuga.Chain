@@ -179,22 +179,22 @@ namespace Tortuga.Chain.Access
             return UpdateByKeyList(tableName, newValues, keys, options);
         }
 
-        IUpdateManyCommandBuilder IClass1DataSource.UpdateSet(string tableName, string updateExpression, UpdateOptions options)
+        IUpdateManyDbCommandBuilder IClass1DataSource.UpdateSet(string tableName, string updateExpression, UpdateOptions options)
         {
             return UpdateSet(tableName, updateExpression, options);
         }
 
-        IUpdateManyCommandBuilder IClass1DataSource.UpdateSet(string tableName, string updateExpression, object updateArgumentValue, UpdateOptions options)
+        IUpdateManyDbCommandBuilder IClass1DataSource.UpdateSet(string tableName, string updateExpression, object updateArgumentValue, UpdateOptions options)
         {
             return UpdateSet(tableName, updateExpression, updateArgumentValue, options);
         }
 
-        IUpdateManyCommandBuilder IClass1DataSource.UpdateSet(string tableName, object newValues, UpdateOptions options)
+        IUpdateManyDbCommandBuilder IClass1DataSource.UpdateSet(string tableName, object newValues, UpdateOptions options)
         {
             return UpdateSet(tableName, newValues, options);
         }
 
-        IUpsertCommandBuilder<TArgument> IClass1DataSource.Upsert<TArgument>(string tableName, TArgument argumentValue, UpsertOptions options)
+        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Upsert<TArgument>(string tableName, TArgument argumentValue, UpsertOptions options)
         {
 #if ACCESS
             throw new NotImplementedException("See issue #122");
@@ -203,7 +203,7 @@ namespace Tortuga.Chain.Access
 #endif
         }
 
-        IUpsertCommandBuilder<TArgument> IClass1DataSource.Upsert<TArgument>(TArgument argumentValue, UpsertOptions options)
+        IObjectDbCommandBuilder<TArgument> IClass1DataSource.Upsert<TArgument>(TArgument argumentValue, UpsertOptions options)
         {
 #if ACCESS
             throw new NotImplementedException("See issue #122");

@@ -16,6 +16,70 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
+        public void FailedUpdate_ViewNeedsKeys(string assemblyName, string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+                var original = new Employee()
+                {
+                    FirstName = "Test",
+                    LastName = "Employee" + DateTime.Now.Ticks,
+                    Title = "Mail Room"
+                };
+
+                var inserted = dataSource.Insert(EmployeeTableName, original).ToObject<Employee>().Execute();
+
+                inserted.FirstName = "Changed";
+                inserted.Title = "Also Changed";
+
+                try
+                {
+                    dataSource.Update(EmployeeViewName, inserted).ToObject<ChangeTrackingEmployee>().Execute();
+                    Assert.Fail("Expected a mapping exception.");
+                }
+                catch (MappingException)
+                {
+                    //OK
+                }
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+#if !SQLITE && !ACCESS
+        [Theory, MemberData(nameof(Prime))]
+        public void UpdateViaView(string assemblyName, string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+                var original = new Employee()
+                {
+                    FirstName = "Test",
+                    LastName = "Employee" + DateTime.Now.Ticks,
+                    Title = "Mail Room"
+                };
+
+                var inserted = dataSource.Insert(EmployeeTableName, original).ToObject<ChangeTrackingEmployee>().Execute();
+
+                inserted.FirstName = "Changed";
+                inserted.Title = "Also Changed";
+
+                var updated = dataSource.Update(EmployeeViewName, inserted).WithKeys("EmployeeKey").ToObject<ChangeTrackingEmployee>().Execute();
+                Assert.AreEqual(inserted.FirstName, updated.FirstName, "FirstName should have changed");
+                Assert.AreEqual(inserted.Title, updated.Title, "Title should have changed");
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+#endif
+
+        [Theory, MemberData(nameof(Prime))]
         public void ChangeTrackingTest(string assemblyName, string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -25,7 +89,8 @@ namespace Tests.CommandBuilders
                 {
                     FirstName = "Test",
                     LastName = "Employee" + DateTime.Now.Ticks,
-                    Title = "Mail Room"
+                    Title = "Mail Room",
+                    EmployeeId = Guid.NewGuid().ToString()
                 };
 
                 var inserted = dataSource.Insert(EmployeeTableName, original).ToObject<ChangeTrackingEmployee>().Execute();
@@ -56,7 +121,8 @@ namespace Tests.CommandBuilders
                 {
                     FirstName = "Test",
                     LastName = "Employee" + DateTime.Now.Ticks,
-                    Title = "Mail Room"
+                    Title = "Mail Room",
+                    EmployeeId = Guid.NewGuid().ToString()
                 };
 
                 var inserted = dataSource.Insert(EmployeeTableName, original).ToObject<ChangeTrackingEmployee>().Execute();
@@ -88,7 +154,8 @@ namespace Tests.CommandBuilders
                 {
                     FirstName = "Test",
                     LastName = "Employee" + DateTime.Now.Ticks,
-                    Title = "Mail Room"
+                    Title = "Mail Room",
+                    EmployeeId = Guid.NewGuid().ToString()
                 };
 
                 var inserted = dataSource.Insert(EmployeeTableName, original).ToObject<ChangeTrackingEmployee>().Execute();
@@ -127,7 +194,8 @@ namespace Tests.CommandBuilders
                 {
                     FirstName = "Test",
                     LastName = "Employee" + DateTime.Now.Ticks,
-                    Title = "Mail Room"
+                    Title = "Mail Room",
+                    EmployeeId = Guid.NewGuid().ToString()
                 };
 
                 var inserted = dataSource.Insert(EmployeeTableName, original).Compile().ToObject<ChangeTrackingEmployee>().Execute();
@@ -156,7 +224,8 @@ namespace Tests.CommandBuilders
                 {
                     FirstName = "Test",
                     LastName = "Employee" + DateTime.Now.Ticks,
-                    Title = "Mail Room"
+                    Title = "Mail Room",
+                    EmployeeId = Guid.NewGuid().ToString()
                 };
 
                 var inserted = dataSource.Insert(EmployeeTableName, original).Compile().ToObject<ChangeTrackingEmployee>().Execute();
@@ -557,7 +626,8 @@ namespace Tests.CommandBuilders
                 {
                     FirstName = "Test",
                     LastName = "Employee" + DateTime.Now.Ticks,
-                    Title = "Mail Room"
+                    Title = "Mail Room",
+                    EmployeeId = Guid.NewGuid().ToString()
                 };
 
                 var inserted = dataSource.Insert(EmployeeTableName_Trigger, original).ToObject<ChangeTrackingEmployee>().Execute();

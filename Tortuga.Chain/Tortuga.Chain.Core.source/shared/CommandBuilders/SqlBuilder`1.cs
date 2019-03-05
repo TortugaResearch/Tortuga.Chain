@@ -1239,6 +1239,7 @@ namespace Tortuga.Chain.CommandBuilders
             {
                 ref var entry = ref m_Entries[i];
                 entry.IsKey = keyColumns.Contains(entry.Details.SqlName);
+                entry.UseForUpdate = entry.UseForUpdate && !entry.IsKey; //If are using the column as a key, we shouldn't update it
             }
         }
 

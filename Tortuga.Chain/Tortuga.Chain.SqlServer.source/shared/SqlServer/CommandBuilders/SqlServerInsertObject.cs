@@ -42,6 +42,9 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             sqlBuilder.ApplyArgumentValue(DataSource, ArgumentValue, m_Options);
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
+            if (KeyColumns.Count > 0)
+                sqlBuilder.OverrideKeys(KeyColumns);
+
             var sql = new StringBuilder();
             string header;
             string intoClause;

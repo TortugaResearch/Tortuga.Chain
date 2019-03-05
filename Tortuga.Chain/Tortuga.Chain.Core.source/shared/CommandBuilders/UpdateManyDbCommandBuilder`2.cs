@@ -10,9 +10,9 @@ namespace Tortuga.Chain.CommandBuilders
     /// <typeparam name="TCommand">The type of the t command.</typeparam>
     /// <typeparam name="TParameter">The type of the t parameter.</typeparam>
     /// <seealso cref="MultipleRowDbCommandBuilder{TCommand, TParameter}" />
-    /// <seealso cref="IUpdateManyCommandBuilder" />
+    /// <seealso cref="IUpdateManyDbCommandBuilder" />
     [SuppressMessage("Microsoft.Maintainability", "CA1501:AvoidExcessiveInheritance")]
-    public abstract class UpdateManyDbCommandBuilder<TCommand, TParameter> : MultipleRowDbCommandBuilder<TCommand, TParameter>, IUpdateManyCommandBuilder<TCommand, TParameter>
+    public abstract class UpdateManyDbCommandBuilder<TCommand, TParameter> : MultipleRowDbCommandBuilder<TCommand, TParameter>, IUpdateManyDbCommandBuilder<TCommand, TParameter>
         where TCommand : DbCommand
         where TParameter : DbParameter
     {
@@ -30,9 +30,9 @@ namespace Tortuga.Chain.CommandBuilders
         /// <returns></returns>
         public abstract UpdateManyDbCommandBuilder<TCommand, TParameter> All();
 
-        MultipleRowDbCommandBuilder<TCommand, TParameter> IUpdateManyCommandBuilder<TCommand, TParameter>.All() => All();
+        MultipleRowDbCommandBuilder<TCommand, TParameter> IUpdateManyDbCommandBuilder<TCommand, TParameter>.All() => All();
 
-        IMultipleRowDbCommandBuilder IUpdateManyCommandBuilder.All() => All();
+        IMultipleRowDbCommandBuilder IUpdateManyDbCommandBuilder.All() => All();
 
         /// <summary>
         /// Adds (or replaces) the filter on this command builder.
@@ -56,16 +56,16 @@ namespace Tortuga.Chain.CommandBuilders
         /// <returns></returns>
         public abstract UpdateManyDbCommandBuilder<TCommand, TParameter> WithFilter(string whereClause, object argumentValue);
 
-        IMultipleRowDbCommandBuilder IUpdateManyCommandBuilder.WithFilter(object filterValue, FilterOptions filterOptions) => WithFilter(filterValue, filterOptions);
+        IMultipleRowDbCommandBuilder IUpdateManyDbCommandBuilder.WithFilter(object filterValue, FilterOptions filterOptions) => WithFilter(filterValue, filterOptions);
 
-        IMultipleRowDbCommandBuilder IUpdateManyCommandBuilder.WithFilter(string whereClause) => WithFilter(whereClause);
+        IMultipleRowDbCommandBuilder IUpdateManyDbCommandBuilder.WithFilter(string whereClause) => WithFilter(whereClause);
 
-        IMultipleRowDbCommandBuilder IUpdateManyCommandBuilder.WithFilter(string whereClause, object argumentValue) => WithFilter(whereClause, argumentValue);
+        IMultipleRowDbCommandBuilder IUpdateManyDbCommandBuilder.WithFilter(string whereClause, object argumentValue) => WithFilter(whereClause, argumentValue);
 
-        MultipleRowDbCommandBuilder<TCommand, TParameter> IUpdateManyCommandBuilder<TCommand, TParameter>.WithFilter(object filterValue, FilterOptions filterOptions) => WithFilter(filterValue, filterOptions);
+        MultipleRowDbCommandBuilder<TCommand, TParameter> IUpdateManyDbCommandBuilder<TCommand, TParameter>.WithFilter(object filterValue, FilterOptions filterOptions) => WithFilter(filterValue, filterOptions);
 
-        MultipleRowDbCommandBuilder<TCommand, TParameter> IUpdateManyCommandBuilder<TCommand, TParameter>.WithFilter(string whereClause) => WithFilter(whereClause);
+        MultipleRowDbCommandBuilder<TCommand, TParameter> IUpdateManyDbCommandBuilder<TCommand, TParameter>.WithFilter(string whereClause) => WithFilter(whereClause);
 
-        MultipleRowDbCommandBuilder<TCommand, TParameter> IUpdateManyCommandBuilder<TCommand, TParameter>.WithFilter(string whereClause, object argumentValue) => WithFilter(whereClause, argumentValue);
+        MultipleRowDbCommandBuilder<TCommand, TParameter> IUpdateManyDbCommandBuilder<TCommand, TParameter>.WithFilter(string whereClause, object argumentValue) => WithFilter(whereClause, argumentValue);
     }
 }

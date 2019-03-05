@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 
 namespace Tortuga.Chain.Metadata
 {
@@ -17,14 +18,12 @@ namespace Tortuga.Chain.Metadata
         public ColumnMetadataCollection Columns { get; protected set; }
 
         /// <summary>
-        /// Gets the columns known to be not nullable.
+        /// Gets a value indicating whether this table or view has primary key.
         /// </summary>
         /// <value>
-        /// The nullable columns.
+        ///   <c>true</c> if this instance has a primary key; otherwise, <c>false</c>.
         /// </value>
-        /// <remarks>This is used to improve the performance of materializers by avoiding is null checks.</remarks>
-        [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public ColumnMetadataCollection NonNullableColumns { get; protected set; }
+        public bool HasPrimaryKey => Columns.Any(c => c.IsPrimaryKey);
 
         /// <summary>
         /// Gets a value indicating whether this instance is table or a view.
@@ -41,5 +40,15 @@ namespace Tortuga.Chain.Metadata
         /// The name.
         /// </value>
         public string Name { get; protected set; }
+
+        /// <summary>
+        /// Gets the columns known to be not nullable.
+        /// </summary>
+        /// <value>
+        /// The nullable columns.
+        /// </value>
+        /// <remarks>This is used to improve the performance of materializers by avoiding is null checks.</remarks>
+        [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public ColumnMetadataCollection NonNullableColumns { get; protected set; }
     }
 }

@@ -16,7 +16,6 @@ namespace Tortuga.Chain.Access.CommandBuilders
     {
         readonly DeleteOptions m_Options;
 
-
         /// <summary>
         /// Initializes a new instance of the <see cref="AccessDeleteObject{TArgument}"/> class.
         /// </summary>
@@ -44,6 +43,9 @@ namespace Tortuga.Chain.Access.CommandBuilders
             sqlBuilder.ApplyArgumentValue(DataSource, ArgumentValue, m_Options);
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
+            if (KeyColumns.Count > 0)
+                sqlBuilder.OverrideKeys(KeyColumns);
+
             var sql = new StringBuilder();
             sql.Append("DELETE FROM " + Table.Name.ToQuotedString());
             sqlBuilder.BuildWhereClause(sql, " WHERE ", null);
@@ -51,7 +53,5 @@ namespace Tortuga.Chain.Access.CommandBuilders
 
             return new AccessCommandExecutionToken(DataSource, "Delete from " + Table.Name, sql.ToString(), sqlBuilder.GetParameters());
         }
-
-
     }
 }

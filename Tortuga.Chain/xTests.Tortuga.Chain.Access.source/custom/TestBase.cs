@@ -32,6 +32,7 @@ namespace Tests
         public static string CustomerTableName { get { return "Customer"; } }
 
         public static string EmployeeTableName { get { return "Employee"; } }
+        public static string EmployeeViewName { get { return "EmployeeLookup"; } }
 
         public AccessDataSource AttachRules(AccessDataSource source)
         {

@@ -44,6 +44,9 @@ namespace Tortuga.Chain.MySql.CommandBuilders
             sqlBuilder.ApplyArgumentValue(DataSource, ArgumentValue, m_Options);
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
+            if (KeyColumns.Count > 0)
+                sqlBuilder.OverrideKeys(KeyColumns);
+
             var sql = new StringBuilder();
             sqlBuilder.BuildInsertClause(sql, $"INSERT INTO {Table.Name.ToString()} (", null, ")", identityInsert);
             sqlBuilder.BuildValuesClause(sql, " VALUES (", ");", identityInsert);
@@ -60,7 +63,7 @@ namespace Tortuga.Chain.MySql.CommandBuilders
                 }
                 else
                 {
-                    var primaryKeys = Table.Columns.Where(c => c.IsPrimaryKey).ToList();
+                    var primaryKeys = Table.PrimaryKeyColumns;
                     if (primaryKeys.Count == 0)
                         throw new MappingException($"Insert operation cannot return any values for { Table.Name} because it doesn't have a primary key.");
 

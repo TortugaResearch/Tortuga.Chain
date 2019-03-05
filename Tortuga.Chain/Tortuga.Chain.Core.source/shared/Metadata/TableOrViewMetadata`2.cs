@@ -26,7 +26,8 @@ namespace Tortuga.Chain.Metadata
             base.Name = name.ToString();
             Columns = new ColumnMetadataCollection<TDbType>(name.ToString(), columns);
             base.Columns = Columns.GenericCollection;
-            NonNullableColumns = new ColumnMetadataCollection(columns.Where(c => c.IsNullable == false));
+            NonNullableColumns = new ColumnMetadataCollection(name.ToString(), columns.Where(c => c.IsNullable == false));
+            PrimaryKeyColumns = new ColumnMetadataCollection<TDbType>(name.ToString(), columns.Where(c => c.IsPrimaryKey).ToList());
             m_Builder = new SqlBuilder<TDbType>(Name.ToString(), Columns);
         }
 
@@ -45,6 +46,14 @@ namespace Tortuga.Chain.Metadata
         /// The name.
         /// </value>
         public new TName Name { get; }
+
+        /// <summary>
+        /// Gets the columns that make up the primary key.
+        /// </summary>
+        /// <value>
+        /// The columns.
+        /// </value>
+        public ColumnMetadataCollection<TDbType> PrimaryKeyColumns { get; }
 
         /// <summary>
         /// Creates the SQL builder

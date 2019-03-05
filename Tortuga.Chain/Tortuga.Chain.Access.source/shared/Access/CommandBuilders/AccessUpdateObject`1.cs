@@ -5,8 +5,6 @@ using System.Text;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
 
-
-
 namespace Tortuga.Chain.Access.CommandBuilders
 {
     /// <summary>
@@ -40,15 +38,23 @@ namespace Tortuga.Chain.Access.CommandBuilders
             if (materializer == null)
                 throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
 
+            if (!Table.IsTable)
+                throw new MappingException($"Cannot perform an update operation on the view {Table.Name}.");
+
+            if (!Table.HasPrimaryKey && !m_Options.HasFlag(UpdateOptions.UseKeyAttribute) && KeyColumns.Count == 0)
+                throw new MappingException($"Cannot perform an update operation on {Table.Name} unless UpdateOptions.UseKeyAttribute or .WithKeys() is specified.");
+
             var sqlBuilder = Table.CreateSqlBuilder(StrictMode);
             sqlBuilder.ApplyArgumentValue(DataSource, ArgumentValue, m_Options);
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
+
+            if (KeyColumns.Count > 0)
+                sqlBuilder.OverrideKeys(KeyColumns);
 
             var sql = new StringBuilder($"UPDATE {Table.Name.ToQuotedString()}");
             sqlBuilder.BuildSetClause(sql, " SET ", null, null);
             sqlBuilder.BuildWhereClause(sql, " WHERE ", null);
             sql.Append(";");
-
 
             var updateCommand = new AccessCommandExecutionToken(DataSource, "Update " + Table.Name, sql.ToString(), sqlBuilder.GetParametersKeysLast()).CheckUpdateRowCount(m_Options);
             updateCommand.ExecutionMode = AccessCommandExecutionMode.NonQuery;

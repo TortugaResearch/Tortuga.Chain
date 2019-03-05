@@ -488,7 +488,7 @@ namespace Tortuga.Chain.Access
         /// <param name="updateExpression">The update expression.</param>
         /// <param name="options">The update options.</param>
         /// <remarks>Use .WithFilter to apply a WHERE clause.</remarks>
-        public IUpdateManyCommandBuilder<AbstractCommand, AbstractParameter> UpdateSet(string tableName, string updateExpression, UpdateOptions options)
+        public IUpdateManyDbCommandBuilder<AbstractCommand, AbstractParameter> UpdateSet(string tableName, string updateExpression, UpdateOptions options)
         {
             return UpdateSet(new AbstractObjectName(tableName), updateExpression, options);
         }
@@ -501,7 +501,7 @@ namespace Tortuga.Chain.Access
         /// <param name="updateArgumentValue">The argument value.</param>
         /// <param name="options">The update options.</param>
         /// <remarks>Use .WithFilter to apply a WHERE clause.</remarks>
-        public IUpdateManyCommandBuilder<AbstractCommand, AbstractParameter> UpdateSet(string tableName, string updateExpression, object updateArgumentValue, UpdateOptions options)
+        public IUpdateManyDbCommandBuilder<AbstractCommand, AbstractParameter> UpdateSet(string tableName, string updateExpression, object updateArgumentValue, UpdateOptions options)
         {
             return UpdateSet(new AbstractObjectName(tableName), updateExpression, updateArgumentValue, options);
         }
@@ -513,7 +513,7 @@ namespace Tortuga.Chain.Access
         /// <param name="newValues">The new values to use.</param>
         /// <param name="options">The options.</param>
         /// <remarks>Use .WithFilter to apply a WHERE clause.</remarks>
-        public IUpdateManyCommandBuilder<AbstractCommand, AbstractParameter> UpdateSet(string tableName, object newValues, UpdateOptions options)
+        public IUpdateManyDbCommandBuilder<AbstractCommand, AbstractParameter> UpdateSet(string tableName, object newValues, UpdateOptions options)
         {
             return UpdateSet(new AbstractObjectName(tableName), newValues, options);
         }
@@ -524,7 +524,7 @@ namespace Tortuga.Chain.Access
         /// <param name="tableName">Name of the table.</param>
         /// <param name="updateExpression">The update expression.</param>
         /// <remarks>Use .WithFilter to apply a WHERE clause.</remarks>
-        public IUpdateManyCommandBuilder<AbstractCommand, AbstractParameter> UpdateSet(string tableName, string updateExpression)
+        public IUpdateManyDbCommandBuilder<AbstractCommand, AbstractParameter> UpdateSet(string tableName, string updateExpression)
         {
             return UpdateSet(new AbstractObjectName(tableName), updateExpression, UpdateOptions.None);
         }
@@ -536,7 +536,7 @@ namespace Tortuga.Chain.Access
         /// <param name="updateExpression">The update expression.</param>
         /// <param name="updateArgumentValue">The argument value.</param>
         /// <remarks>Use .WithFilter to apply a WHERE clause.</remarks>
-        public IUpdateManyCommandBuilder<AbstractCommand, AbstractParameter> UpdateSet(string tableName, string updateExpression, object updateArgumentValue)
+        public IUpdateManyDbCommandBuilder<AbstractCommand, AbstractParameter> UpdateSet(string tableName, string updateExpression, object updateArgumentValue)
         {
             return UpdateSet(new AbstractObjectName(tableName), updateExpression, updateArgumentValue, UpdateOptions.None);
         }
@@ -547,7 +547,7 @@ namespace Tortuga.Chain.Access
         /// <param name="tableName">Name of the table.</param>
         /// <param name="newValues">The new values to use.</param>
         /// <remarks>Use .WithFilter to apply a WHERE clause.</remarks>
-        public IUpdateManyCommandBuilder<AbstractCommand, AbstractParameter> UpdateSet(string tableName, object newValues)
+        public IUpdateManyDbCommandBuilder<AbstractCommand, AbstractParameter> UpdateSet(string tableName, object newValues)
         {
             return UpdateSet(new AbstractObjectName(tableName), newValues, UpdateOptions.None);
         }
@@ -561,7 +561,7 @@ namespace Tortuga.Chain.Access
         /// <param name="argumentValue">The argument value.</param>
         /// <param name="options">The options for how the insert/update occurs.</param>
         /// <returns>SqlServerUpdate.</returns>
-        public UpsertDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> Upsert<TArgument>(string tableName, TArgument argumentValue, UpsertOptions options)
+        public ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> Upsert<TArgument>(string tableName, TArgument argumentValue, UpsertOptions options)
         where TArgument : class
         {
             return Upsert<TArgument>(new AbstractObjectName(tableName), argumentValue, options);
@@ -573,7 +573,7 @@ namespace Tortuga.Chain.Access
         /// <param name="tableName">Name of the table.</param>
         /// <param name="argumentValue">The argument value.</param>
         /// <returns>SqlServerUpdate.</returns>
-        public UpsertDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> Upsert<TArgument>(string tableName, TArgument argumentValue)
+        public ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> Upsert<TArgument>(string tableName, TArgument argumentValue)
         where TArgument : class
         {
             return Upsert<TArgument>(new AbstractObjectName(tableName), argumentValue, UpsertOptions.None);

@@ -24,7 +24,7 @@ namespace Tortuga.Chain.MySql
         [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "DeleteByKey")]
         public MultipleRowDbCommandBuilder<MySqlCommand, MySqlParameter> DeleteByKeyList<TKey>(MySqlObjectName tableName, IEnumerable<TKey> keys, DeleteOptions options = DeleteOptions.None)
         {
-            var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).Columns.Where(c => c.IsPrimaryKey).ToList();
+            var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).PrimaryKeyColumns;
             if (primaryKeys.Count != 1)
                 throw new MappingException($"DeleteByKey operation isn't allowed on {tableName} because it doesn't have a single primary key.");
 
@@ -70,7 +70,7 @@ namespace Tortuga.Chain.MySql
         [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "UpdateByKeyList")]
         public MultipleRowDbCommandBuilder<MySqlCommand, MySqlParameter> UpdateByKeyList<TArgument, TKey>(MySqlObjectName tableName, TArgument newValues, IEnumerable<TKey> keys, UpdateOptions options = UpdateOptions.None)
         {
-            var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).Columns.Where(c => c.IsPrimaryKey).ToList();
+            var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).PrimaryKeyColumns;
             if (primaryKeys.Count != 1)
                 throw new MappingException($"{nameof(UpdateByKeyList)} operation isn't allowed on {tableName} because it doesn't have a single primary key.");
 
@@ -147,7 +147,7 @@ namespace Tortuga.Chain.MySql
             return new MySqlInsertObject<TArgument>(this, tableName, argumentValue, options);
         }
 
-        UpsertDbCommandBuilder<MySqlCommand, MySqlParameter, TArgument> OnInsertOrUpdateObject<TArgument>(MySqlObjectName tableName, TArgument argumentValue, UpsertOptions options) where TArgument : class
+        ObjectDbCommandBuilder<MySqlCommand, MySqlParameter, TArgument> OnInsertOrUpdateObject<TArgument>(MySqlObjectName tableName, TArgument argumentValue, UpsertOptions options) where TArgument : class
         {
             return new MySqlInsertOrUpdateObject<TArgument>(this, tableName, argumentValue, options);
         }
@@ -157,12 +157,12 @@ namespace Tortuga.Chain.MySql
             return new MySqlSqlCall(this, sqlStatement, argumentValue);
         }
 
-        IUpdateManyCommandBuilder<MySqlCommand, MySqlParameter> OnUpdateMany(MySqlObjectName tableName, string updateExpression, object updateArgumentValue, UpdateOptions options)
+        IUpdateManyDbCommandBuilder<MySqlCommand, MySqlParameter> OnUpdateMany(MySqlObjectName tableName, string updateExpression, object updateArgumentValue, UpdateOptions options)
         {
             return new MySqlUpdateMany(this, tableName, updateExpression, updateArgumentValue, options);
         }
 
-        IUpdateManyCommandBuilder<MySqlCommand, MySqlParameter> OnUpdateMany(MySqlObjectName tableName, object newValues, UpdateOptions options)
+        IUpdateManyDbCommandBuilder<MySqlCommand, MySqlParameter> OnUpdateMany(MySqlObjectName tableName, object newValues, UpdateOptions options)
         {
             return new MySqlUpdateMany(this, tableName, newValues, options);
         }

@@ -4,7 +4,7 @@ namespace Tortuga.Chain.CommandBuilders
     /// This is a specialization of IMultipleRowDbCommandBuilder that includes support for sorting. It is only used for set-based update operations.
     /// </summary>
     /// <seealso cref="IMultipleRowDbCommandBuilder" />
-    public interface IUpdateManyCommandBuilder
+    public interface IUpdateManyDbCommandBuilder
     {
         /// <summary>
         /// Applies this command to all rows.

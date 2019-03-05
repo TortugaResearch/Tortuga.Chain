@@ -1,5 +1,4 @@
 ﻿using MySql.Data.MySqlClient;
-using System.Collections.Generic;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Metadata;
 
@@ -29,27 +28,9 @@ namespace Tortuga.Chain.MySql.CommandBuilders
         public TableOrViewMetadata<MySqlObjectName, MySqlDbType> Table { get; }
 
         /// <summary>
-        /// Returns the column associated with the column name.
+        /// Called when ObjectDbCommandBuilder needs a reference to the associated table or view.
         /// </summary>
-        /// <param name="columnName">Name of the column.</param>
         /// <returns></returns>
-        /// <remarks>
-        /// If the column name was not found, this will return null
-        /// </remarks>
-        public override ColumnMetadata TryGetColumn(string columnName)
-        {
-            return Table.Columns.TryGetColumn(columnName);
-        }
-
-        /// <summary>
-        /// Returns a list of columns known to be non-nullable.
-        /// </summary>
-        /// <returns>
-        /// If the command builder doesn't know which columns are non-nullable, an empty list will be returned.
-        /// </returns>
-        /// <remarks>
-        /// This is used by materializers to skip IsNull checks.
-        /// </remarks>
-        public override IReadOnlyList<ColumnMetadata> TryGetNonNullableColumns() => Table.NonNullableColumns;
+        protected override TableOrViewMetadata OnGetTable() => Table;
     }
 }

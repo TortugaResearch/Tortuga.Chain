@@ -37,9 +37,15 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             if (materializer == null)
                 throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
 
+            if (!Table.HasPrimaryKey && !m_Options.HasFlag(UpdateOptions.UseKeyAttribute) && KeyColumns.Count == 0)
+                throw new MappingException($"Cannot perform an update operation on {Table.Name} unless UpdateOptions.UseKeyAttribute or .WithKeys() is specified.");
+
             var sqlBuilder = Table.CreateSqlBuilder(StrictMode);
             sqlBuilder.ApplyArgumentValue(DataSource, ArgumentValue, m_Options);
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
+
+            if (KeyColumns.Count > 0)
+                sqlBuilder.OverrideKeys(KeyColumns);
 
             var prefix = m_Options.HasFlag(UpdateOptions.ReturnOldValues) ? "Deleted." : "Inserted.";
 

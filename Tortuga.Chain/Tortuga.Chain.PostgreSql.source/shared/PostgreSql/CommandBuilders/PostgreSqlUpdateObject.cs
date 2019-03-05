@@ -14,7 +14,6 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
     {
         readonly UpdateOptions m_Options;
 
-
         /// <summary>
         /// Initializes a new instance of the <see cref="PostgreSqlUpdateObject{TArgument}"/> class.
         /// </summary>
@@ -38,9 +37,15 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
             if (materializer == null)
                 throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
 
+            if (!Table.HasPrimaryKey && !m_Options.HasFlag(UpdateOptions.UseKeyAttribute) && KeyColumns.Count == 0)
+                throw new MappingException($"Cannot perform an update operation on {Table.Name} unless UpdateOptions.UseKeyAttribute or .WithKeys() is specified.");
+
             var sqlBuilder = Table.CreateSqlBuilder(StrictMode);
             sqlBuilder.ApplyArgumentValue(DataSource, ArgumentValue, m_Options);
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
+
+            if (KeyColumns.Count > 0)
+                sqlBuilder.OverrideKeys(KeyColumns);
 
             var sql = new StringBuilder();
             if (m_Options.HasFlag(UpdateOptions.ReturnOldValues))
@@ -49,7 +54,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
                 sql.AppendLine();
             }
             sqlBuilder.BuildUpdateByKeyStatement(sql, Table.Name.ToQuotedString(), null);
-            if(!m_Options.HasFlag(UpdateOptions.ReturnOldValues))
+            if (!m_Options.HasFlag(UpdateOptions.ReturnOldValues))
             {
                 sqlBuilder.BuildSelectClause(sql, " RETURNING ", null, null);
             }

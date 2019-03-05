@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using Tortuga.Chain.CommandBuilders;
@@ -26,12 +25,6 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         }
 
         /// <summary>
-        /// Gets the table metadata.
-        /// </summary>
-        /// <value>The metadata.</value>
-        public SqlServerTableOrViewMetadata<SqlDbType> Table { get; }
-
-        /// <summary>
         /// Gets the data source.
         /// </summary>
         /// <value>The data source.</value>
@@ -41,24 +34,15 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         }
 
         /// <summary>
-        /// Returns the column associated with the column name.
+        /// Gets the table metadata.
         /// </summary>
-        /// <param name="columnName">Name of the column.</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// If the column name was not found, this will return null
-        /// </remarks>
-        public override ColumnMetadata TryGetColumn(string columnName) => Table.Columns.TryGetColumn(columnName);
+        /// <value>The metadata.</value>
+        public SqlServerTableOrViewMetadata<SqlDbType> Table { get; }
 
         /// <summary>
-        /// Returns a list of columns known to be non-nullable.
+        /// Called when ObjectDbCommandBuilder needs a reference to the associated table or view.
         /// </summary>
-        /// <returns>
-        /// If the command builder doesn't know which columns are non-nullable, an empty list will be returned.
-        /// </returns>
-        /// <remarks>
-        /// This is used by materializers to skip IsNull checks.
-        /// </remarks>
-        public override IReadOnlyList<ColumnMetadata> TryGetNonNullableColumns() => Table.NonNullableColumns;
+        /// <returns></returns>
+        protected override TableOrViewMetadata OnGetTable() => Table;
     }
 }

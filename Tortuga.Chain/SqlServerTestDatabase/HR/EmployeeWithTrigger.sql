@@ -13,7 +13,8 @@
       CellPhone VARCHAR(15) NULL ,
       CreatedDate DATETIME2 NOT NULL
                             DEFAULT GETDATE() ,
-      UpdatedDate DATETIME2 NULL
+      UpdatedDate DATETIME2 NULL,
+      EmployeeId NVARCHAR(50) NOT NULL CONSTRAINT UX_EmployeeWithTrigger_EmployeeId UNIQUE
     );
 
 GO

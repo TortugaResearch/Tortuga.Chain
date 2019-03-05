@@ -2,7 +2,6 @@ using System;
 using System.Data.SQLite;
 using System.IO;
 
-
 namespace Tests
 {
     public class Setup
@@ -10,6 +9,11 @@ namespace Tests
         //TODO: Redesign this to adhere to xUnit conventions.
 
         const string databaseFileName = "SQLiteTestDatabaseX.sqlite";
+
+        public static void AssemblyCleanup()
+        {
+            File.Delete(databaseFileName);
+        }
 
         public static void AssemblyInit()
         {
@@ -30,12 +34,15 @@ CREATE TABLE Employee
 	MiddleName nvarChar(25) NULL,
 	LastName nVarChar(25) NOT NULL,
 	Title nVarChar(100) null,
+    EmployeeId nvarChar(50) NOT NULL,
 	ManagerKey INT NULL REferences Employee(EmployeeKey),
     OfficePhone VARCHAR(15) NULL ,
     CellPhone VARCHAR(15) NULL ,
     CreatedDate DateTime NOT NULL DEFAULT CURRENT_TIME,
     UpdatedDate DateTime NULL
 )";
+
+                string index = @"CREATE UNIQUE INDEX index_name ON Employee(EmployeeId);";
 
                 string sql2 = @"CREATE TABLE Customer
 (
@@ -82,13 +89,16 @@ FROM    Employee e
                 using (SQLiteCommand command = new SQLiteCommand(sql, dbConnection))
                     command.ExecuteNonQuery();
 
+                using (SQLiteCommand command = new SQLiteCommand(index, dbConnection))
+                    command.ExecuteNonQuery();
+
                 using (SQLiteCommand command = new SQLiteCommand(sql2, dbConnection))
                     command.ExecuteNonQuery();
 
                 using (SQLiteCommand command = new SQLiteCommand(viewSql, dbConnection))
                     command.ExecuteNonQuery();
 
-                sql = @"INSERT INTO Employee ([EmployeeKey], [FirstName], [MiddleName], [LastName], [Title], [ManagerKey]) VALUES (@EmployeeKey, @FirstName, @MiddleName, @LastName, @Title, @ManagerKey); SELECT [EmployeeKey], [FirstName], [MiddleName], [LastName], [Title], [ManagerKey] FROM Employee WHERE ROWID = last_insert_rowid();";
+                sql = @"INSERT INTO Employee ([EmployeeKey], [FirstName], [MiddleName], [LastName], [Title], [ManagerKey], [EmployeeId]) VALUES (@EmployeeKey, @FirstName, @MiddleName, @LastName, @Title, @ManagerKey, @EmployeeId); SELECT [EmployeeKey], [FirstName], [MiddleName], [LastName], [Title], [ManagerKey] FROM Employee WHERE ROWID = last_insert_rowid();";
 
                 for (var i = 0; i < 10; i++)
                     using (SQLiteCommand command = new SQLiteCommand(sql, dbConnection))
@@ -99,14 +109,10 @@ FROM    Employee e
                         command.Parameters.AddWithValue("@LastName", "Jones");
                         command.Parameters.AddWithValue("@Title", "CEO");
                         command.Parameters.AddWithValue("@ManagerKey", DBNull.Value);
+                        command.Parameters.AddWithValue("@EmployeeId", Guid.NewGuid().ToString());
                         var key = command.ExecuteScalar();
                     }
             }
-        }
-
-        public static void AssemblyCleanup()
-        {
-            File.Delete(databaseFileName);
         }
     }
 }

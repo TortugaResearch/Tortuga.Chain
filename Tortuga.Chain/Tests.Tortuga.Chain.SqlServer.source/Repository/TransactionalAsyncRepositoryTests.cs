@@ -2,13 +2,15 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Tests.Models;
+using System;
 
 #if MSTest
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-#elif WINDOWS_UWP 
+
+#elif WINDOWS_UWP
 using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
 #endif
-
 
 namespace Tests.Repository
 {
@@ -48,8 +50,6 @@ namespace Tests.Repository
                 var get1 = await repo.GetAsync(echo1.EmployeeKey.Value);
                 Assert.AreEqual(echo1.EmployeeKey, get1.EmployeeKey);
 
-
-
                 var whereSearch1 = await repo.QueryAsync("FirstName = @FN", new { FN = "Tom" });
                 Assert.IsTrue(whereSearch1.Any(x => x.EmployeeKey == echo1.EmployeeKey), "Emp1 should have been returned");
                 Assert.IsTrue(whereSearch1.All(x => x.FirstName == "Tom"), "Checking for incorrect return values");
@@ -58,13 +58,11 @@ namespace Tests.Repository
                 Assert.IsTrue(whereSearch2.Any(x => x.EmployeeKey == echo1.EmployeeKey), "Emp1 should have been returned");
                 Assert.IsTrue(whereSearch2.All(x => x.FirstName == "Tom"), "Checking for incorrect return values");
 
-
                 await repo.DeleteAsync(echo2.EmployeeKey.Value);
                 await repo.DeleteAsync(echo1.EmployeeKey.Value);
 
                 var list2 = await repo.GetAllAsync();
                 Assert.AreEqual(list.Count - 2, list2.Count);
-
             }
         }
 
@@ -75,7 +73,7 @@ namespace Tests.Repository
             {
                 var repo = new AsyncRepository<Employee, int>(trans, EmployeeTableName);
 
-                var emp1 = new Dictionary<string, object>() { { "FirstName", "Tom" }, { "LastName", "Jones" }, { "Title", "President" } };
+                var emp1 = new Dictionary<string, object>() { { "FirstName", "Tom" }, { "LastName", "Jones" }, { "Title", "President" }, { "EmployeeId", Guid.NewGuid().ToString() } };
                 var echo1 = await repo.InsertAsync(emp1);
 
                 Assert.AreNotEqual(0, echo1.EmployeeKey, "EmployeeKey was not set");
@@ -84,7 +82,6 @@ namespace Tests.Repository
                 Assert.AreEqual(emp1["Title"], echo1.Title, "Title");
 
                 await repo.DeleteAsync(echo1.EmployeeKey.Value);
-
             }
         }
 
@@ -95,7 +92,7 @@ namespace Tests.Repository
             {
                 var repo = new AsyncRepository<Employee, int>(trans, EmployeeTableName);
 
-                var emp1 = new Dictionary<string, object>() { { "FirstName", "Tom" }, { "LastName", "Jones" }, { "Title", "President" } };
+                var emp1 = new Dictionary<string, object>() { { "FirstName", "Tom" }, { "LastName", "Jones" }, { "Title", "President" }, { "EmployeeId", Guid.NewGuid().ToString() } };
                 var echo1 = await repo.InsertAsync(emp1);
 
                 Assert.AreNotEqual(0, echo1.EmployeeKey, "EmployeeKey was not set");
@@ -115,9 +112,7 @@ namespace Tests.Repository
                 Assert.AreEqual(emp1["FirstName"], echo2.FirstName, "FirstName");
                 Assert.AreEqual(emp1["Title"], echo2.Title, "Title");
 
-
                 await repo.DeleteAsync(echo1.EmployeeKey.Value);
-
             }
         }
     }

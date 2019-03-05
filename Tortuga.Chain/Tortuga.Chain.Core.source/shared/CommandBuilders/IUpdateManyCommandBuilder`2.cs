@@ -7,8 +7,8 @@ namespace Tortuga.Chain.CommandBuilders
     /// </summary>
     /// <typeparam name="TCommand">The type of the t command.</typeparam>
     /// <typeparam name="TParameter">The type of the t parameter.</typeparam>
-    /// <seealso cref="Tortuga.Chain.CommandBuilders.IUpdateManyCommandBuilder" />
-    public interface IUpdateManyCommandBuilder<TCommand, TParameter> : IUpdateManyCommandBuilder
+    /// <seealso cref="Tortuga.Chain.CommandBuilders.IUpdateManyDbCommandBuilder" />
+    public interface IUpdateManyDbCommandBuilder<TCommand, TParameter> : IUpdateManyDbCommandBuilder
                     where TCommand : DbCommand
             where TParameter : DbParameter
     {

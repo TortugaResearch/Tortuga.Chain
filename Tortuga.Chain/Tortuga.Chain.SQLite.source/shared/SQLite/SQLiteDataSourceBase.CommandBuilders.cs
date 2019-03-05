@@ -24,7 +24,7 @@ namespace Tortuga.Chain.SQLite
         [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "DeleteByKeyList")]
         public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> DeleteByKeyList<TKey>(SQLiteObjectName tableName, IEnumerable<TKey> keys, DeleteOptions options = DeleteOptions.None)
         {
-            var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).Columns.Where(c => c.IsPrimaryKey).ToList();
+            var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).PrimaryKeyColumns;
             if (primaryKeys.Count != 1)
                 throw new MappingException($"{nameof(DeleteByKeyList)} operation isn't allowed on {tableName} because it doesn't have a single primary key.");
 
@@ -93,7 +93,7 @@ namespace Tortuga.Chain.SQLite
         [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "UpdateByKeyList")]
         public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> UpdateByKeyList<TArgument, TKey>(SQLiteObjectName tableName, TArgument newValues, IEnumerable<TKey> keys, UpdateOptions options = UpdateOptions.None)
         {
-            var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).Columns.Where(c => c.IsPrimaryKey).ToList();
+            var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).PrimaryKeyColumns;
             if (primaryKeys.Count != 1)
                 throw new MappingException($"{nameof(UpdateByKeyList)} operation isn't allowed on {tableName} because it doesn't have a single primary key.");
 
@@ -170,7 +170,7 @@ namespace Tortuga.Chain.SQLite
             return new SQLiteInsertObject<TArgument>(this, tableName, argumentValue, options);
         }
 
-        UpsertDbCommandBuilder<SQLiteCommand, SQLiteParameter, TArgument> OnInsertOrUpdateObject<TArgument>(SQLiteObjectName tableName, TArgument argumentValue, UpsertOptions options) where TArgument : class
+        ObjectDbCommandBuilder<SQLiteCommand, SQLiteParameter, TArgument> OnInsertOrUpdateObject<TArgument>(SQLiteObjectName tableName, TArgument argumentValue, UpsertOptions options) where TArgument : class
         {
             return new SQLiteInsertOrUpdateObject<TArgument>(this, tableName, argumentValue, options);
         }
@@ -180,12 +180,12 @@ namespace Tortuga.Chain.SQLite
             return new SQLiteSqlCall(this, sqlStatement, argumentValue, LockType.Write);
         }
 
-        IUpdateManyCommandBuilder<SQLiteCommand, SQLiteParameter> OnUpdateMany(SQLiteObjectName tableName, string updateExpression, object updateArgumentValue, UpdateOptions options)
+        IUpdateManyDbCommandBuilder<SQLiteCommand, SQLiteParameter> OnUpdateMany(SQLiteObjectName tableName, string updateExpression, object updateArgumentValue, UpdateOptions options)
         {
             return new SQLiteUpdateMany(this, tableName, updateExpression, updateArgumentValue, options);
         }
 
-        IUpdateManyCommandBuilder<SQLiteCommand, SQLiteParameter> OnUpdateMany(SQLiteObjectName tableName, object newValues, UpdateOptions options)
+        IUpdateManyDbCommandBuilder<SQLiteCommand, SQLiteParameter> OnUpdateMany(SQLiteObjectName tableName, object newValues, UpdateOptions options)
         {
             return new SQLiteUpdateMany(this, tableName, newValues, options);
         }
