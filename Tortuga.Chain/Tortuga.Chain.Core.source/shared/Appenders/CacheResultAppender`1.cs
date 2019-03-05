@@ -71,7 +71,7 @@ namespace Tortuga.Chain.Appenders
         {
             var result = await PreviousLink.ExecuteAsync(state).ConfigureAwait(false);
 
-            m_ActualCacheKey = m_CacheKey ?? m_CacheKeyFunction(result)
+            m_ActualCacheKey = m_CacheKey ?? m_CacheKeyFunction(result);
             await DataSource.Cache.WriteAsync(m_ActualCacheKey, result, m_Policy).ConfigureAwait(false);
 
             return result;

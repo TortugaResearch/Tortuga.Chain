@@ -91,23 +91,11 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="..\Tests.Tortuga.Chain.SqlServer.source\AuditRules\AuditRulesTests.cs">
-      <Link>AuditRules\AuditRulesTests.cs</Link>
-    </Compile>
-    <Compile Include="..\Tests.Tortuga.Chain.SqlServer.source\Class1Databases\DeleteTests.cs">
-      <Link>Class1Databases\DeleteTests.cs</Link>
-    </Compile>
     <Compile Include="..\Tests.Tortuga.Chain.SqlServer.source\Class1Databases\FromTests.cs">
       <Link>Class1Databases\FromTests.cs</Link>
     </Compile>
-    <Compile Include="..\Tests.Tortuga.Chain.SqlServer.source\Class1Databases\InsertTests.cs">
-      <Link>Class1Databases\InsertTests.cs</Link>
-    </Compile>
     <Compile Include="..\Tests.Tortuga.Chain.SqlServer.source\Class1Databases\SqlTests.cs">
       <Link>Class1Databases\SqlTests.cs</Link>
-    </Compile>
-    <Compile Include="..\Tests.Tortuga.Chain.SqlServer.source\Class1Databases\UpdateTests.cs">
-      <Link>Class1Databases\UpdateTests.cs</Link>
     </Compile>
     <Compile Include="..\Tests.Tortuga.Chain.SqlServer.source\Class1Databases\UpsertTests.cs">
       <Link>Class1Databases\UpsertTests.cs</Link>
