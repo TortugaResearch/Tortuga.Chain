@@ -5,6 +5,7 @@ using System.Data;
 using System.Data.OleDb;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Linq;
 using Tortuga.Anchor;
 using Tortuga.Anchor.Metadata;
 using Tortuga.Chain.Metadata;
@@ -20,6 +21,7 @@ namespace Tortuga.Chain.Access
         readonly ConcurrentDictionary<AccessObjectName, TableOrViewMetadata<AccessObjectName, OleDbType>> m_Tables = new ConcurrentDictionary<AccessObjectName, TableOrViewMetadata<AccessObjectName, OleDbType>>();
         readonly ConcurrentDictionary<Type, TableOrViewMetadata<AccessObjectName, OleDbType>> m_TypeTableMap = new ConcurrentDictionary<Type, TableOrViewMetadata<AccessObjectName, OleDbType>>();
 
+        ConcurrentDictionary<Guid, DataTable> m_DataTableCache = new ConcurrentDictionary<Guid, DataTable>();
         bool m_SchemaLoaded;
 
         /// <summary>
@@ -29,6 +31,42 @@ namespace Tortuga.Chain.Access
         public AccessMetadataCache(OleDbConnectionStringBuilder connectionBuilder)
         {
             m_ConnectionBuilder = connectionBuilder;
+        }
+
+        /// <summary>
+        /// Gets the indexes for a table.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <returns></returns>
+        /// <exception cref="NotSupportedException">Indexes are not supported by this data source</exception>
+        /// <remarks>
+        /// This should be cached on a TableOrViewMetadata object.
+        /// </remarks>
+        public override IndexMetadataCollection<AccessObjectName> GetIndexesForTable(AccessObjectName tableName)
+        {
+            var result = new List<IndexMetadata<AccessObjectName>>();
+            var indexDT = GetSchemaTable(OleDbSchemaGuid.Indexes);
+
+            var allColumns = GetTableOrView(tableName).Columns;
+            var indexes = indexDT.AsEnumerable().Where(r => string.Equals(r["TABLE_NAME"].ToString(), tableName.Name, StringComparison.Ordinal)).GroupBy(r => r["INDEX_NAME"].ToString()).ToList();
+
+            foreach (var index in indexes)
+            {
+                var name = index.Key;
+                var unique = (bool)index.First()["UNIQUE"];
+                var isPrimary = (bool)index.First()["PRIMARY_KEY"];
+
+                var columns = new IndexColumnMetadata[index.Count()];
+                foreach (var column in index)
+                {
+                    var details = allColumns[(string)column["COLUMN_NAME"]];
+                    columns[(int)(long)column["ORDINAL_POSITION"] - 1] = new IndexColumnMetadata(details, false, false);
+                }
+
+                result.Add(new IndexMetadata<AccessObjectName>(tableName, name, isPrimary, unique, false, new IndexColumnMetadataCollection(columns), null, null));
+            }
+
+            return new IndexMetadataCollection<AccessObjectName>(result);
         }
 
         /// <summary>
@@ -114,6 +152,7 @@ namespace Tortuga.Chain.Access
         /// </summary>
         public override void Reset()
         {
+            m_DataTableCache.Clear();
             m_Tables.Clear();
             m_TypeTableMap.Clear();
             m_SchemaLoaded = false;
@@ -179,22 +218,20 @@ namespace Tortuga.Chain.Access
             return result;
         }
 
-        DataTable GetColumnsDataTable()
-        {
-            using (var connection = new OleDbConnection(m_ConnectionBuilder.ConnectionString))
-            {
-                connection.Open();
-                return connection.GetOleDbSchemaTable(OleDbSchemaGuid.Columns, null);
-            }
-        }
+        DataTable GetColumnsDataTable() => GetSchemaTable(OleDbSchemaGuid.Columns);
 
-        DataTable GetPrimaryKeysDataTable()
+        DataTable GetPrimaryKeysDataTable() => GetSchemaTable(OleDbSchemaGuid.Primary_Keys);
+
+        DataTable GetSchemaTable(Guid oleDbSchemaGuid)
         {
-            using (var connection = new OleDbConnection(m_ConnectionBuilder.ConnectionString))
+            return m_DataTableCache.GetOrAdd(oleDbSchemaGuid, sg =>
             {
-                connection.Open();
-                return connection.GetOleDbSchemaTable(OleDbSchemaGuid.Primary_Keys, null);
-            }
+                using (var connection = new OleDbConnection(m_ConnectionBuilder.ConnectionString))
+                {
+                    connection.Open();
+                    return connection.GetOleDbSchemaTable(sg, null);
+                }
+            });
         }
 
         void PreloadTables(DataTable columnsDataTable, DataTable primaryKeys)
@@ -210,7 +247,7 @@ namespace Tortuga.Chain.Access
 
                     var name = row["TABLE_NAME"].ToString();
                     var columns = GetColumns(name, columnsDataTable, primaryKeys);
-                    m_Tables[name] = new TableOrViewMetadata<AccessObjectName, OleDbType>(name, true, columns);
+                    m_Tables[name] = new TableOrViewMetadata<AccessObjectName, OleDbType>(this, name, true, columns);
                 }
             }
         }
@@ -225,7 +262,7 @@ namespace Tortuga.Chain.Access
                 {
                     var name = row["TABLE_NAME"].ToString();
                     var columns = GetColumns(name, columnsDataTable, null);
-                    m_Tables[name] = new TableOrViewMetadata<AccessObjectName, OleDbType>(name, false, columns);
+                    m_Tables[name] = new TableOrViewMetadata<AccessObjectName, OleDbType>(this, name, false, columns);
                 }
             }
         }

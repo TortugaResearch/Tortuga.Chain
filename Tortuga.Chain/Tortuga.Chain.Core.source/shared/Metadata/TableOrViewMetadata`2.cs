@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Tortuga.Chain.CommandBuilders;
 
@@ -13,14 +14,19 @@ namespace Tortuga.Chain.Metadata
         where TDbType : struct
     {
         readonly SqlBuilder<TDbType> m_Builder;
+        readonly DatabaseMetadataCache<TName, TDbType> m_MetadataCache;
+        IndexMetadataCollection<TName> m_Indexes;
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="TableOrViewMetadata{TName, TDbType}"/> class.
         /// </summary>
+        /// <param name="metadataCache">The metadata cache.</param>
         /// <param name="name">The name.</param>
         /// <param name="isTable">if set to <c>true</c> [is table].</param>
         /// <param name="columns">The columns.</param>
-        public TableOrViewMetadata(TName name, bool isTable, IList<ColumnMetadata<TDbType>> columns)
+        public TableOrViewMetadata(DatabaseMetadataCache<TName, TDbType> metadataCache, TName name, bool isTable, IList<ColumnMetadata<TDbType>> columns)
         {
+            m_MetadataCache = metadataCache ?? throw new ArgumentNullException(nameof(metadataCache), $"{nameof(metadataCache)} is null.");
             IsTable = isTable;
             Name = name;
             base.Name = name.ToString();
@@ -51,5 +57,17 @@ namespace Tortuga.Chain.Metadata
         /// </summary>
         /// <returns></returns>
         public SqlBuilder<TDbType> CreateSqlBuilder(bool strictMode) => m_Builder.Clone(strictMode);
+
+        /// <summary>
+        /// Gets the indexes for this table or view.
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="NotSupportedException">Indexes are not supported by this data source</exception>
+        public IndexMetadataCollection<TName> GetIndexes()
+        {
+            if (m_Indexes == null)
+                m_Indexes = m_MetadataCache.GetIndexesForTable(Name);
+            return m_Indexes;
+        }
     }
 }

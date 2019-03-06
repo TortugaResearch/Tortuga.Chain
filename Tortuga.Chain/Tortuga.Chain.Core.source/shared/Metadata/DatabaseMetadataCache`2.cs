@@ -4,7 +4,6 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Tortuga.Chain.Metadata
 {
-
     /// <summary>
     /// An abstract database metadata cache
     /// </summary>
@@ -13,6 +12,20 @@ namespace Tortuga.Chain.Metadata
     public abstract class DatabaseMetadataCache<TName, TDbType> : IDatabaseMetadataCache
         where TDbType : struct
     {
+        /// <summary>
+        /// Gets the indexes for a table.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <returns></returns>
+        /// <exception cref="NotSupportedException">Indexes are not supported by this data source</exception>
+        /// <remarks>
+        /// This should be cached on a TableOrViewMetadata object.
+        /// </remarks>
+        public virtual IndexMetadataCollection<TName> GetIndexesForTable(TName tableName)
+        {
+            throw new NotSupportedException("Indexes are not supported by this data source");
+        }
+
         /// <summary>
         /// Gets the metadata for a scalar function.
         /// </summary>
@@ -75,6 +88,7 @@ namespace Tortuga.Chain.Metadata
         {
             throw new NotSupportedException("Table value functions are not supported by this data source");
         }
+
         TableFunctionMetadata IDatabaseMetadataCache.GetTableFunction(string tableFunctionName)
         {
             return GetTableFunction(ParseObjectName(tableFunctionName));
