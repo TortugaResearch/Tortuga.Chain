@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.SqlServer
@@ -81,8 +82,10 @@ namespace Tortuga.Chain.SqlServer
             const string indexSql = @"SELECT i.name,
        i.is_primary_key,
        i.is_unique,
-       i.is_unique_constraint,
-	   i.index_id
+       --i.is_unique_constraint,
+	   i.index_id,
+       (SELECT SUM(used_page_count) * 8 FROM sys.dm_db_partition_stats ddps WHERE ddps.object_id=i.object_id AND ddps.index_id = i.index_id) AS IndexSizeKB,
+       (SELECT SUM(row_count) FROM sys.dm_db_partition_stats ddps WHERE ddps.object_id=i.object_id AND ddps.index_id = i.index_id) AS [RowCount]
 FROM sys.indexes i
     INNER JOIN sys.objects o
         ON i.object_id = o.object_id
@@ -90,6 +93,8 @@ FROM sys.indexes i
         ON o.schema_id = s.schema_id
 WHERE o.name = @Name
       AND s.name = @Schema;";
+
+            var allColumns = GetColumnsForIndex(tableName);
 
             using (var con = new SqlConnection(m_ConnectionBuilder.ConnectionString))
             {
@@ -110,11 +115,16 @@ WHERE o.name = @Name
                             var is_unique = reader.GetBoolean(reader.GetOrdinal("is_unique"));
                             //var is_unique_constraint = reader.GetBoolean(reader.GetOrdinal("is_unique_constraint"));
                             var index_id = reader.GetInt32(reader.GetOrdinal("index_id"));
-                            var name = reader.GetString(reader.GetOrdinal("Name"));
+                            var name = reader.IsDBNull(reader.GetOrdinal("Name")) ? null :
+                                reader.GetString(reader.GetOrdinal("Name"));
+                            var columns = new IndexColumnMetadataCollection(allColumns.Where(c => c.IndexId == index_id));
+                            var indexSize = reader.GetInt64(reader.GetOrdinal("IndexSizeKB"));
+                            var rowCount = reader.GetInt64(reader.GetOrdinal("RowCount"));
 
-                            var columns = GetColumnsForIndex(tableName, index_id);
+                            if (name == null && columns.Count == 0) //this is a heap
+                                name = "(heap)";
 
-                            results.Add(new IndexMetadata<SqlServerObjectName>(tableName, name, is_primary_key, is_unique, columns));
+                            results.Add(new IndexMetadata<SqlServerObjectName>(tableName, name, is_primary_key, is_unique, columns, indexSize, rowCount));
                         }
 
                         return new IndexMetadataCollection<SqlServerObjectName>(results);
@@ -687,11 +697,12 @@ WHERE	s.name = @Schema AND t.name = @Name;";
             return columns;
         }
 
-        IndexColumnMetadataCollection GetColumnsForIndex(SqlServerObjectName tableName, int indexId)
+        List<SqlServerIndexColumnMetadata> GetColumnsForIndex(SqlServerObjectName tableName)
         {
             const string columnSql = @"SELECT c.name,
        ic.is_descending_key,
-       ic.is_included_column
+       ic.is_included_column,
+       ic.index_id
 FROM sys.index_columns ic
     INNER JOIN sys.objects o
         ON ic.object_id = o.object_id
@@ -702,7 +713,6 @@ FROM sys.index_columns ic
            AND ic.column_id = c.column_id
 WHERE o.name = @Name
       AND s.name = @Schema
-	  AND ic.index_id = @IndexId
 ORDER BY ic.key_ordinal;";
 
             var tableColumns = GetTableOrView(tableName).Columns;
@@ -715,22 +725,22 @@ ORDER BY ic.key_ordinal;";
                 {
                     cmd.Parameters.AddWithValue("@Schema", tableName.Schema);
                     cmd.Parameters.AddWithValue("@Name", tableName.Name);
-                    cmd.Parameters.AddWithValue("@IndexId", indexId);
 
                     using (var reader = cmd.ExecuteReader())
                     {
-                        var results = new List<IndexColumnMetadata>();
+                        var results = new List<SqlServerIndexColumnMetadata>();
 
                         while (reader.Read())
                         {
                             var is_descending_key = reader.GetBoolean(reader.GetOrdinal("is_descending_key"));
                             var is_included_column = reader.GetBoolean(reader.GetOrdinal("is_included_column"));
                             var name = reader.GetString(reader.GetOrdinal("Name"));
+                            var index_id = reader.GetInt32(reader.GetOrdinal("index_id"));
                             var column = tableColumns[name];
 
-                            results.Add(new IndexColumnMetadata(column, is_descending_key, is_included_column));
+                            results.Add(new SqlServerIndexColumnMetadata(column, is_descending_key, is_included_column, index_id));
                         }
-                        return new IndexColumnMetadataCollection(results);
+                        return results;
                     }
                 }
             }
@@ -788,6 +798,23 @@ ORDER BY ic.key_ordinal;";
             {
                 throw new MetadataException($"Error getting parameters for {procedureName}", ex);
             }
+        }
+
+        class SqlServerIndexColumnMetadata : IndexColumnMetadata
+        {
+            /// <summary>
+            /// Initializes a new instance of the IndexColumnMetadata class.
+            /// </summary>
+            /// <param name="column">The underlying column details.</param>
+            /// <param name="isDescending">Indicates the column is indexed in descending order.</param>
+            /// <param name="isIncluded">Indicates the column is an unindexed, included column.</param>
+            /// <param name="indexId"></param>
+            internal SqlServerIndexColumnMetadata(ColumnMetadata column, bool isDescending, bool isIncluded, int indexId) : base(column, isDescending, isIncluded)
+            {
+                IndexId = indexId;
+            }
+
+            internal int IndexId { get; }
         }
     }
 }

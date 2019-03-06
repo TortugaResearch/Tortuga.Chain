@@ -1,3 +1,4 @@
+using System.Linq;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -13,6 +14,35 @@ namespace Tests.Core
         public MetadataTests(ITestOutputHelper output) : base(output)
         {
         }
+
+#if SQL_SERVER
+
+        [Theory, MemberData(nameof(Tables))]
+        public void TableIndexes(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+                var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
+                var indexes = table.GetIndexes();
+                Assert.IsTrue(indexes.Where(i => i.IsPrimaryKey).Count() <= 1, "No more than one primary key");
+
+                if (table.Columns.Any(c => c.IsPrimaryKey))
+                    Assert.IsTrue(indexes.Where(i => i.IsPrimaryKey).Count() <= 1, "A column is marked as primary, so there should be a primary index.");
+
+                foreach (var index in indexes)
+                {
+                    //Assert.IsTrue(index.Columns.Count > 0, "Indexes should have columns");
+                    Assert.IsFalse(string.IsNullOrWhiteSpace(index.Name), "indexes should have names");
+                }
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+#endif
 
 #if SQL_SERVER || OLE_SQL_SERVER
 

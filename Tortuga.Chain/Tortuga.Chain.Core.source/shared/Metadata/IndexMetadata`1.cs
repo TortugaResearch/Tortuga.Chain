@@ -14,19 +14,28 @@ namespace Tortuga.Chain.Metadata
         /// <param name="isPrimaryKey">if set to <c>true</c> is a primary key.</param>
         /// <param name="isUnique">if set to <c>true</c> is a unique index.</param>
         /// <param name="columns">The columns.</param>
-        public IndexMetadata(TName tableName, string name, bool isPrimaryKey, bool isUnique, IndexColumnMetadataCollection columns)
+        /// <param name="indexSizeKB">Approximate index size in KB</param>
+        /// <param name="rowCount">Approximate row count</param>
+        public IndexMetadata(TName tableName, string name, bool isPrimaryKey, bool isUnique, IndexColumnMetadataCollection columns, long? indexSizeKB, long? rowCount)
         {
             TableName = tableName;
             Name = name;
             IsUnique = isUnique;
             IsPrimaryKey = isPrimaryKey;
             Columns = columns;
+            IndexSizeKB = indexSizeKB;
+            RowCount = rowCount;
         }
 
         /// <summary>
         /// Gets the columns.
         /// </summary>
         public IndexColumnMetadataCollection Columns { get; }
+
+        /// <summary>
+        /// Gets the approximate index size in kilobytes.
+        /// </summary>
+        public long? IndexSizeKB { get; }
 
         /// <summary>
         /// Gets a value indicating whether this nidex is a primary key.
@@ -51,6 +60,11 @@ namespace Tortuga.Chain.Metadata
         /// The name.
         /// </value>
         public string Name { get; }
+
+        /// <summary>
+        /// Gets the approximate row count.
+        /// </summary>
+        public long? RowCount { get; }
 
         /// <summary>
         /// Gets the name of the table (or view) the index applies to.
