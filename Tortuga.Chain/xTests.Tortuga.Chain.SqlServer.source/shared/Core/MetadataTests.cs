@@ -47,7 +47,7 @@ namespace Tests.Core
 #if SQL_SERVER
 
         [Theory, MemberData(nameof(Views))]
-        public void TableIndexes(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
+        public void ViewIndexes(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try

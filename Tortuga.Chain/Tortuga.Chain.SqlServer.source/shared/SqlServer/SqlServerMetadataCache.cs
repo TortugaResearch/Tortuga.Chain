@@ -82,7 +82,7 @@ namespace Tortuga.Chain.SqlServer
             const string indexSql = @"SELECT i.name,
        i.is_primary_key,
        i.is_unique,
-       --i.is_unique_constraint,
+       i.is_unique_constraint,
 	   i.index_id,
        (SELECT SUM(used_page_count) * 8 FROM sys.dm_db_partition_stats ddps WHERE ddps.object_id=i.object_id AND ddps.index_id = i.index_id) AS IndexSizeKB,
        (SELECT SUM(row_count) FROM sys.dm_db_partition_stats ddps WHERE ddps.object_id=i.object_id AND ddps.index_id = i.index_id) AS [RowCount]
@@ -113,7 +113,7 @@ WHERE o.name = @Name
                         {
                             var is_primary_key = reader.GetBoolean(reader.GetOrdinal("is_primary_key"));
                             var is_unique = reader.GetBoolean(reader.GetOrdinal("is_unique"));
-                            //var is_unique_constraint = reader.GetBoolean(reader.GetOrdinal("is_unique_constraint"));
+                            var is_unique_constraint = reader.GetBoolean(reader.GetOrdinal("is_unique_constraint"));
                             var index_id = reader.GetInt32(reader.GetOrdinal("index_id"));
                             var name = reader.IsDBNull(reader.GetOrdinal("Name")) ? null :
                                 reader.GetString(reader.GetOrdinal("Name"));
@@ -124,7 +124,7 @@ WHERE o.name = @Name
                             if (name == null && columns.Count == 0) //this is a heap
                                 name = "(heap)";
 
-                            results.Add(new IndexMetadata<SqlServerObjectName>(tableName, name, is_primary_key, is_unique, columns, indexSize, rowCount));
+                            results.Add(new IndexMetadata<SqlServerObjectName>(tableName, name, is_primary_key, is_unique, is_unique_constraint, columns, indexSize, rowCount));
                         }
 
                         return new IndexMetadataCollection<SqlServerObjectName>(results);

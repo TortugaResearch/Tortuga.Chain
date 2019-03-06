@@ -13,14 +13,16 @@ namespace Tortuga.Chain.Metadata
         /// <param name="name">The name.</param>
         /// <param name="isPrimaryKey">if set to <c>true</c> is a primary key.</param>
         /// <param name="isUnique">if set to <c>true</c> is a unique index.</param>
+        /// <param name="isUniqueConstraint">if set to <c>true</c> is a unique constraint.</param>
         /// <param name="columns">The columns.</param>
         /// <param name="indexSizeKB">Approximate index size in KB</param>
         /// <param name="rowCount">Approximate row count</param>
-        public IndexMetadata(TName tableName, string name, bool isPrimaryKey, bool isUnique, IndexColumnMetadataCollection columns, long? indexSizeKB, long? rowCount)
+        public IndexMetadata(TName tableName, string name, bool isPrimaryKey, bool isUnique, bool isUniqueConstraint, IndexColumnMetadataCollection columns, long? indexSizeKB, long? rowCount)
         {
             TableName = tableName;
             Name = name;
             IsUnique = isUnique;
+            IsUniqueConstraint = isUniqueConstraint;
             IsPrimaryKey = isPrimaryKey;
             Columns = columns;
             IndexSizeKB = indexSizeKB;
@@ -52,6 +54,15 @@ namespace Tortuga.Chain.Metadata
         ///   <c>true</c> if this instance is unique; otherwise, <c>false</c>.
         /// </value>
         public bool IsUnique { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether this is a unique constraint.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance is unique; otherwise, <c>false</c>.
+        /// </value>
+        /// <remarks>In some databaes, a unique index is not necessary a unique constraint.</remarks>
+        public bool IsUniqueConstraint { get; }
 
         /// <summary>
         /// Gets the name of the index.

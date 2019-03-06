@@ -63,7 +63,7 @@ namespace Tortuga.Chain.Access
                     columns[(int)(long)column["ORDINAL_POSITION"] - 1] = new IndexColumnMetadata(details, false, false);
                 }
 
-                result.Add(new IndexMetadata<AccessObjectName>(tableName, name, isPrimary, unique, new IndexColumnMetadataCollection(columns), null, null));
+                result.Add(new IndexMetadata<AccessObjectName>(tableName, name, isPrimary, unique, false, new IndexColumnMetadataCollection(columns), null, null));
             }
 
             return new IndexMetadataCollection<AccessObjectName>(result);
