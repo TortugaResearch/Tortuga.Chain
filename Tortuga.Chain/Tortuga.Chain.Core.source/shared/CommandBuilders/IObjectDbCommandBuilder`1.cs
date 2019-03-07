@@ -21,6 +21,13 @@ namespace Tortuga.Chain.CommandBuilders
         ILink<TArgument> ToObject(RowOptions rowOptions = RowOptions.None);
 
         /// <summary>
+        /// Uses an explicitly specified set of key column(s). This overrides the UseKeyAttribute option.
+        /// </summary>
+        /// <param name="columnNames">The column names that form a unique key.</param>
+        /// <returns></returns>
+        IObjectDbCommandBuilder<TArgument> WithKeys(params string[] columnNames);
+
+        /// <summary>
         /// After executing the operation, refreshes the properties on the argumentValue by reading the updated values from the database.
         /// </summary>
         /// <returns></returns>

@@ -45,6 +45,41 @@ namespace Tests.CommandBuilders
             }
         }
 
+        [Theory, MemberData(nameof(Prime))]
+        public void AlternateKeyUpsertTest(string assemblyName, string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+                var original = new Employee()
+                {
+                    FirstName = "Test",
+                    LastName = "Employee" + Guid.NewGuid().ToString(),
+                    Title = "Mail Room"
+                };
+
+                var employeeKey = dataSource.Upsert(EmployeeTableName, original).ToObject<Employee>().Execute().EmployeeKey;
+
+                var updater = new EmployeeWithoutKey()
+                {
+                    EmployeeId = original.EmployeeId,
+                    FirstName = "Changed",
+                    Title = "Also Changed",
+                    LastName = original.LastName
+                };
+
+                var updated = dataSource.Upsert(EmployeeTableName, updater).WithKeys("EmployeeId").ToObject<Employee>().Execute();
+                Assert.AreEqual(employeeKey, updated.EmployeeKey, "EmployeeKey should have been read.");
+                Assert.AreEqual(updater.FirstName, updated.FirstName, "FirstName should have changed");
+                Assert.AreEqual(original.LastName, updated.LastName, "LastName shouldn't have changed");
+                Assert.AreEqual(updater.Title, updated.Title, "Title should have changed");
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
 #if !POSTGRESQL
 
         [Theory, MemberData(nameof(Prime))]
@@ -56,7 +91,7 @@ namespace Tests.CommandBuilders
                 var employeeTable = dataSource.DatabaseMetadata.GetTableOrView(EmployeeTableName);
                 var primaryColumn = employeeTable.Columns.SingleOrDefault(c => c.IsIdentity);
                 if (primaryColumn == null) //SQLite
-                    primaryColumn = employeeTable.Columns.SingleOrDefault(c => c.IsPrimaryKey);
+                    primaryColumn = employeeTable.PrimaryKeyColumns.SingleOrDefault();
 
                 //Skipping ahead by 5
                 var nextKey = 5 + dataSource.Sql($"SELECT Max({primaryColumn.QuotedSqlName}) FROM {employeeTable.Name.ToQuotedString()}").ToInt32().Execute();

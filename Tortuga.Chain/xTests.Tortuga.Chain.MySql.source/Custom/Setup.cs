@@ -33,8 +33,11 @@ namespace Tests
                 	OfficePhone VARCHAR(15) NULL ,
                 	CellPhone VARCHAR(15) NULL ,
                 	CreatedDate TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                	UpdatedDate TIMESTAMP NULL
+                	UpdatedDate TIMESTAMP NULL,
+                    EmployeeId VARCHAR(50) NOT NULL
                 )";
+
+                string index = @"CREATE UNIQUE INDEX index_name ON hr.employee(EmployeeId);";
 
                 string sql2 = @"
                 DROP TABLE IF EXISTS sales.customer;
@@ -122,6 +125,9 @@ BEGIN
 END;";
 
                 using (MySqlCommand cmd = new MySqlCommand(sql, con))
+                    cmd.ExecuteNonQuery();
+
+                using (MySqlCommand cmd = new MySqlCommand(index, con))
                     cmd.ExecuteNonQuery();
 
                 using (MySqlCommand cmd = new MySqlCommand(sql2, con))

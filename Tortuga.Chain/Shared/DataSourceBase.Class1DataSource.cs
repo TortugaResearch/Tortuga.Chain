@@ -326,7 +326,7 @@ namespace Tortuga.Chain.Access
         /// <param name="updateArgumentValue">The argument value.</param>
         /// <param name="options">The update options.</param>
         /// <remarks>Use .WithFilter to apply a WHERE clause.</remarks>
-        public IUpdateManyCommandBuilder<AbstractCommand, AbstractParameter> UpdateSet(AbstractObjectName tableName, string updateExpression, object updateArgumentValue, UpdateOptions options = UpdateOptions.None)
+        public IUpdateManyDbCommandBuilder<AbstractCommand, AbstractParameter> UpdateSet(AbstractObjectName tableName, string updateExpression, object updateArgumentValue, UpdateOptions options = UpdateOptions.None)
         {
             return OnUpdateMany(tableName, updateExpression, updateArgumentValue, options);
         }
@@ -338,7 +338,7 @@ namespace Tortuga.Chain.Access
         /// <param name="newValues">The new values to use.</param>
         /// <param name="options">The options.</param>
         /// <remarks>Use .WithFilter to apply a WHERE clause.</remarks>
-        public IUpdateManyCommandBuilder<AbstractCommand, AbstractParameter> UpdateSet(AbstractObjectName tableName, object newValues, UpdateOptions options = UpdateOptions.None)
+        public IUpdateManyDbCommandBuilder<AbstractCommand, AbstractParameter> UpdateSet(AbstractObjectName tableName, object newValues, UpdateOptions options = UpdateOptions.None)
         {
             return OnUpdateMany(tableName, newValues, options);
         }
@@ -426,7 +426,7 @@ namespace Tortuga.Chain.Access
         /// <param name="updateExpression">The update expression.</param>
         /// <param name="options">The update options.</param>
         /// <remarks>Use .WithFilter to apply a WHERE clause.</remarks>
-        public IUpdateManyCommandBuilder<AbstractCommand, AbstractParameter> UpdateSet(AbstractObjectName tableName, string updateExpression, UpdateOptions options = UpdateOptions.None)
+        public IUpdateManyDbCommandBuilder<AbstractCommand, AbstractParameter> UpdateSet(AbstractObjectName tableName, string updateExpression, UpdateOptions options = UpdateOptions.None)
         {
             return OnUpdateMany(tableName, updateExpression, null, options);
         }
@@ -442,7 +442,7 @@ namespace Tortuga.Chain.Access
         [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "GetByKeyList")]
         public MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> GetByKeyList<T>(AbstractObjectName tableName, IEnumerable<T> keys)
         {
-            var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).Columns.Where(c => c.IsPrimaryKey).ToList();
+            var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).PrimaryKeyColumns;
             if (primaryKeys.Count != 1)
                 throw new MappingException($"{nameof(GetByKeyList)} operation isn't allowed on {tableName} because it doesn't have a single primary key. Use DataSource.From instead.");
 

@@ -43,6 +43,9 @@ namespace Tortuga.Chain.MySql.CommandBuilders
             sqlBuilder.ApplyArgumentValue(DataSource, ArgumentValue, m_Options);
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
+            if (KeyColumns.Count > 0)
+                sqlBuilder.OverrideKeys(KeyColumns);
+
             var identityInsert = m_Options.HasFlag(UpsertOptions.IdentityInsert);
 
             var sql = new StringBuilder();

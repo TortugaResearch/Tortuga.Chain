@@ -21,6 +21,9 @@
       <Word>MySql</Word>
       <Word>github</Word>
       <Word>docevaad</Word>
+      <Word>UpdateOptions</Word>
+      <Word>UseKeyAttribute</Word>
+      <Word>WithKeys</Word>
     </Recognized>
     <Deprecated>
       <Term PreferredAlternate=""></Term>
@@ -33,6 +36,9 @@
       <Term CompoundAlternate="">PostgreSql</Term>
       <Term CompoundAlternate="">ColumnAttribute</Term>
       <Term CompoundAlternate="">MySql</Term>
+      <Term CompoundAlternate="">UpdateOptions</Term>
+      <Term CompoundAlternate="">UseKeyAttribute</Term>
+      <Term CompoundAlternate="">WithKeys</Term>
     </Compound>
     <DiscreteExceptions>
       <Term></Term>

@@ -13,7 +13,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
     /// <summary>
     /// Class SQLiteUpdateSet.
     /// </summary>
-    internal sealed class SQLiteUpdateMany : UpdateManyCommandBuilder<SQLiteCommand, SQLiteParameter>
+    internal sealed class SQLiteUpdateMany : UpdateManyDbCommandBuilder<SQLiteCommand, SQLiteParameter>
     {
         readonly int? m_ExpectedRowCount;
         readonly IEnumerable<SQLiteParameter> m_Parameters;
@@ -187,7 +187,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
         /// </summary>
         /// <param name="filterValue">The filter value.</param>
         /// <param name="filterOptions">The filter options.</param>
-        public override UpdateManyCommandBuilder<SQLiteCommand, SQLiteParameter> WithFilter(object filterValue, FilterOptions filterOptions = FilterOptions.None)
+        public override UpdateManyDbCommandBuilder<SQLiteCommand, SQLiteParameter> WithFilter(object filterValue, FilterOptions filterOptions = FilterOptions.None)
         {
             m_WhereClause = null;
             m_WhereArgumentValue = null;
@@ -201,7 +201,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
         /// </summary>
         /// <param name="whereClause">The where clause.</param>
         /// <returns></returns>
-        public override UpdateManyCommandBuilder<SQLiteCommand, SQLiteParameter> WithFilter(string whereClause)
+        public override UpdateManyDbCommandBuilder<SQLiteCommand, SQLiteParameter> WithFilter(string whereClause)
         {
             m_WhereClause = whereClause;
             m_WhereArgumentValue = null;
@@ -216,7 +216,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
         /// <param name="whereClause">The where clause.</param>
         /// <param name="argumentValue">The argument value.</param>
         /// <returns></returns>
-        public override UpdateManyCommandBuilder<SQLiteCommand, SQLiteParameter> WithFilter(string whereClause, object argumentValue)
+        public override UpdateManyDbCommandBuilder<SQLiteCommand, SQLiteParameter> WithFilter(string whereClause, object argumentValue)
         {
             m_WhereClause = whereClause;
             m_WhereArgumentValue = argumentValue;
@@ -229,7 +229,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
         /// Applies this command to all rows.
         /// </summary>
         /// <returns></returns>
-        public override UpdateManyCommandBuilder<SQLiteCommand, SQLiteParameter> All()
+        public override UpdateManyDbCommandBuilder<SQLiteCommand, SQLiteParameter> All()
         {
             m_WhereClause = null;
             m_WhereArgumentValue = null;

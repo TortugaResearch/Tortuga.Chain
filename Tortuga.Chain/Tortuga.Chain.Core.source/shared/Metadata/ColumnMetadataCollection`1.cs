@@ -20,7 +20,7 @@ namespace Tortuga.Chain.Metadata
         public ColumnMetadataCollection(string name, IList<ColumnMetadata<TDbType>> list) : base(list)
         {
             m_Name = name;
-            GenericCollection = new ColumnMetadataCollection(list);
+            GenericCollection = new ColumnMetadataCollection(name, list);
         }
 
         /// <summary>

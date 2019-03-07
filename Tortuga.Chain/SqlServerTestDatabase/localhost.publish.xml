@@ -8,5 +8,6 @@
     <BlockOnPossibleDataLoss>True</BlockOnPossibleDataLoss>
     <CreateNewDatabase>True</CreateNewDatabase>
     <ProfileVersionNumber>1</ProfileVersionNumber>
+    <GenerateSmartDefaults>False</GenerateSmartDefaults>
   </PropertyGroup>
 </Project>

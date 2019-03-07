@@ -33,7 +33,6 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// </summary>
         /// <param name="materializer">The materializer.</param>
         /// <returns>ExecutionToken&lt;TCommand&gt;.</returns>
-
         public override CommandExecutionToken<SqlCommand, SqlParameter> Prepare(Materializer<SqlCommand, SqlParameter> materializer)
         {
             if (materializer == null)
@@ -42,6 +41,9 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             var sqlBuilder = Table.CreateSqlBuilder(StrictMode);
             sqlBuilder.ApplyArgumentValue(DataSource, ArgumentValue, m_Options);
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
+
+            if (KeyColumns.Count > 0)
+                sqlBuilder.OverrideKeys(KeyColumns);
 
             var availableColumns = sqlBuilder.GetParameterizedColumns().ToList();
 

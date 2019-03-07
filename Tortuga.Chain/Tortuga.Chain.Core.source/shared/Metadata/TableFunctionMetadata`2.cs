@@ -4,8 +4,6 @@ using Tortuga.Chain.CommandBuilders;
 
 namespace Tortuga.Chain.Metadata
 {
-        
-
     /// <summary>
     /// Metadata for a database table value function.
     /// </summary>
@@ -15,7 +13,7 @@ namespace Tortuga.Chain.Metadata
         where TDbType : struct
     {
         readonly SqlBuilder<TDbType> m_Builder;
-         
+
         /// <summary>
         /// </summary>
         /// <param name="name">The name.</param>
@@ -27,13 +25,12 @@ namespace Tortuga.Chain.Metadata
             base.Name = name.ToString();
             Columns = new ColumnMetadataCollection<TDbType>(name.ToString(), columns);
             base.Columns = Columns.GenericCollection;
-            NullableColumns = new ColumnMetadataCollection(columns.Where(c => c.IsNullable == true));
+            NullableColumns = new ColumnMetadataCollection(name.ToString(), columns.Where(c => c.IsNullable == true));
             Parameters = new ParameterMetadataCollection<TDbType>(name.ToString(), parameters);
             base.Parameters = Parameters.GenericCollection;
 
             m_Builder = new SqlBuilder<TDbType>(Name.ToString(), Columns, Parameters);
         }
-
 
         /// <summary>
         /// Gets the columns.

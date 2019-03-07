@@ -270,7 +270,7 @@ namespace Tortuga.Chain
         /// <param name="updateExpression">The update expression.</param>
         /// <param name="options">The update options.</param>
         /// <remarks>Use .WithFilter to apply a WHERE clause.</remarks>
-        IUpdateManyCommandBuilder UpdateSet(string tableName, string updateExpression, UpdateOptions options = UpdateOptions.None);
+        IUpdateManyDbCommandBuilder UpdateSet(string tableName, string updateExpression, UpdateOptions options = UpdateOptions.None);
 
         /// <summary>
         /// Update multiple records using an update expression.
@@ -280,7 +280,7 @@ namespace Tortuga.Chain
         /// <param name="updateArgumentValue">The argument for the update expression.</param>
         /// <param name="options">The update options.</param>
         /// <remarks>Use .WithFilter to apply a WHERE clause.</remarks>
-        IUpdateManyCommandBuilder UpdateSet(string tableName, string updateExpression, object updateArgumentValue, UpdateOptions options = UpdateOptions.None);
+        IUpdateManyDbCommandBuilder UpdateSet(string tableName, string updateExpression, object updateArgumentValue, UpdateOptions options = UpdateOptions.None);
 
         /// <summary>
         /// Update multiple records using an update value.
@@ -289,7 +289,7 @@ namespace Tortuga.Chain
         /// <param name="newValues">The new values to use.</param>
         /// <param name="options">The options.</param>
         /// <remarks>Use .WithFilter to apply a WHERE clause.</remarks>
-        IUpdateManyCommandBuilder UpdateSet(string tableName, object newValues, UpdateOptions options = UpdateOptions.None);
+        IUpdateManyDbCommandBuilder UpdateSet(string tableName, object newValues, UpdateOptions options = UpdateOptions.None);
 
         /// <summary>
         /// Perform an insert or update operation as appropriate.

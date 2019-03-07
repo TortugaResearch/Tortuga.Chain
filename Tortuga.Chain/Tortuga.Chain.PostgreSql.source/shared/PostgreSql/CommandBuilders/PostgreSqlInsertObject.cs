@@ -45,6 +45,9 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
             sqlBuilder.ApplyArgumentValue(DataSource, ArgumentValue, m_Options);
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
+            if (KeyColumns.Count > 0)
+                sqlBuilder.OverrideKeys(KeyColumns);
+
             var sql = new StringBuilder();
             sqlBuilder.BuildInsertClause(sql, $"INSERT INTO {Table.Name.ToString()} (", null, ")", identityInsert);
             sqlBuilder.BuildValuesClause(sql, " VALUES (", ")", identityInsert);

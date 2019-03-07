@@ -43,12 +43,15 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
             if (identityInsert)
                 throw new NotImplementedException("See issue 256. https://github.com/docevaad/Chain/issues/256");
 
-            var primaryKeyNames = Table.Columns.Where(x => x.IsPrimaryKey).Select(x => x.QuotedSqlName);
+            var primaryKeyNames = Table.PrimaryKeyColumns.Select(x => x.QuotedSqlName);
             string conflictNames = string.Join(", ", primaryKeyNames);
 
             var sqlBuilder = Table.CreateSqlBuilder(StrictMode);
             sqlBuilder.ApplyArgumentValue(DataSource, ArgumentValue, m_Options);
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
+
+            if (KeyColumns.Count > 0)
+                sqlBuilder.OverrideKeys(KeyColumns);
 
             var sql = new StringBuilder();
             List<NpgsqlParameter> keyParameters;

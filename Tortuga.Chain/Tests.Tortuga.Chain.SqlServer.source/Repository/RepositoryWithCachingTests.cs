@@ -4,8 +4,10 @@ using Tests.Models;
 using System;
 
 #if MSTest
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-#elif WINDOWS_UWP 
+
+#elif WINDOWS_UWP
 using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
 #endif
 
@@ -52,7 +54,6 @@ namespace Tests.Repository
             Assert.AreNotSame(echo1, cached1b, "Cached item was replaced");
             Assert.IsTrue(list.Contains(cached1b), "Single item should have been contained in the list we previously cached.");
 
-
             var get1 = repo.Get(echo1.EmployeeKey.Value);
             Assert.AreEqual(echo1.EmployeeKey, get1.EmployeeKey);
 
@@ -61,7 +62,6 @@ namespace Tests.Repository
 
             var list3 = repo.GetAll();
             Assert.AreEqual(list.Count - 2, list3.Count);
-
         }
 
         [TestMethod]
@@ -69,7 +69,7 @@ namespace Tests.Repository
         {
             var repo = new RepositoryWithCaching<Employee, int>(DataSource, EmployeeTableName);
 
-            var emp1 = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase) { { "FirstName", "Tom" }, { "LastName", "Jones" }, { "Title", "President" } };
+            var emp1 = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase) { { "FirstName", "Tom" }, { "LastName", "Jones" }, { "Title", "President" }, { "EmployeeId", Guid.NewGuid().ToString() } };
             var echo1 = repo.Insert(emp1);
 
             Assert.AreNotEqual(0, echo1.EmployeeKey, "EmployeeKey was not set");
@@ -78,7 +78,6 @@ namespace Tests.Repository
             Assert.AreEqual(emp1["Title"], echo1.Title, "Title");
 
             repo.Delete(echo1.EmployeeKey.Value);
-
         }
 
         [TestMethod]
@@ -86,7 +85,7 @@ namespace Tests.Repository
         {
             var repo = new RepositoryWithCaching<Employee, int>(DataSource, EmployeeTableName);
 
-            var emp1 = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase) { { "FirstName", "Tom" }, { "LastName", "Jones" }, { "Title", "President" } };
+            var emp1 = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase) { { "FirstName", "Tom" }, { "LastName", "Jones" }, { "Title", "President" }, { "EmployeeId", Guid.NewGuid().ToString() } };
             var echo1 = repo.Insert(emp1);
 
             Assert.AreNotEqual(0, echo1.EmployeeKey, "EmployeeKey was not set");
@@ -106,9 +105,7 @@ namespace Tests.Repository
             Assert.AreEqual(emp1["FirstName"], echo2.FirstName, "FirstName");
             Assert.AreEqual(emp1["Title"], echo2.Title, "Title");
 
-
             repo.Delete(echo1.EmployeeKey.Value);
-
         }
     }
 }

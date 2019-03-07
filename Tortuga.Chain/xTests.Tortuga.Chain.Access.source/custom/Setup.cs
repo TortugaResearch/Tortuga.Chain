@@ -2,7 +2,6 @@ using System;
 using System.Configuration;
 using System.Data.OleDb;
 using System.IO;
-using Xunit;
 
 namespace Tests
 {
@@ -37,6 +36,7 @@ CREATE TABLE Employee
 	FirstName TEXT(30) NOT NULL,
 	MiddleName TEXT(30) NULL,
 	LastName TEXT(30) NOT NULL,
+	EmployeeId TEXT(50) NOT NULL,
 	Title TEXT(100) null,
 	ManagerKey LONG NULL REFERENCES Employee(EmployeeKey),
     CreatedDate DateTime NOT NULL DEFAULT NOW(),
@@ -68,9 +68,9 @@ CREATE TABLE Employee
                 using (var command = new OleDbCommand(sql3, dbConnection))
                     command.ExecuteNonQuery();
 
-                sql = @"INSERT INTO Employee ([FirstName], [MiddleName], [LastName], [Title], [ManagerKey]) VALUES (@FirstName, @MiddleName, @LastName, @Title, @ManagerKey)";
+                sql = @"INSERT INTO Employee ([FirstName], [MiddleName], [LastName], [Title], [ManagerKey], [EmployeeId]) VALUES (@FirstName, @MiddleName, @LastName, @Title, @ManagerKey, @EmployeeId)";
 
-                sql2 = @"INSERT INTO Employee ([FirstName], [MiddleName], [LastName], [Title], [ManagerKey], [CreatedDate]) VALUES (@FirstName, @MiddleName, @LastName, @Title, @ManagerKey, @CreatedDate)";
+                sql2 = @"INSERT INTO Employee ([FirstName], [MiddleName], [LastName], [Title], [ManagerKey], [CreatedDate], [EmployeeId]) VALUES (@FirstName, @MiddleName, @LastName, @Title, @ManagerKey, @CreatedDate, @EmployeeId)";
 
                 //Date/Time format - 4/30/2016 5:25:17 PM
                 const string DateTimeFormat = "M/d/yyyy h:mm:ss tt";
@@ -83,6 +83,7 @@ CREATE TABLE Employee
                     command.Parameters.AddWithValue("@LastName", "Jones");
                     command.Parameters.AddWithValue("@Title", "CEO");
                     command.Parameters.AddWithValue("@ManagerKey", DBNull.Value);
+                    command.Parameters.AddWithValue("@EmployeeId", Guid.NewGuid().ToString());
                     command.ExecuteNonQuery();
                 }
 
@@ -95,6 +96,7 @@ CREATE TABLE Employee
                     command.Parameters.AddWithValue("@Title", "CEO");
                     command.Parameters.AddWithValue("@ManagerKey", DBNull.Value);
                     command.Parameters.AddWithValue("@CreatedDate", DateTime.Now.ToString(DateTimeFormat));
+                    command.Parameters.AddWithValue("@EmployeeId", Guid.NewGuid().ToString());
                     command.ExecuteNonQuery();
                 }
 
@@ -108,6 +110,7 @@ CREATE TABLE Employee
                     command.Parameters.AddWithValue("@ManagerKey", DBNull.Value);
                     var param = command.Parameters.AddWithValue("@CreatedDate", DateTime.Now);
                     param.OleDbType = OleDbType.Date;
+                    command.Parameters.AddWithValue("@EmployeeId", Guid.NewGuid().ToString());
                     command.ExecuteNonQuery();
                 }
 

@@ -24,7 +24,7 @@ namespace Tortuga.Chain.PostgreSql
         [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "DeleteByKeyList")]
         public MultipleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> DeleteByKeyList<TKey>(PostgreSqlObjectName tableName, IEnumerable<TKey> keys, DeleteOptions options = DeleteOptions.None)
         {
-            var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).Columns.Where(c => c.IsPrimaryKey).ToList();
+            var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).PrimaryKeyColumns;
             if (primaryKeys.Count != 1)
                 throw new MappingException($"{nameof(DeleteByKeyList)} operation isn't allowed on {tableName} because it doesn't have a single primary key.");
 
@@ -70,7 +70,7 @@ namespace Tortuga.Chain.PostgreSql
         [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "UpdateByKeyList")]
         public MultipleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> UpdateByKeyList<TArgument, TKey>(PostgreSqlObjectName tableName, TArgument newValues, IEnumerable<TKey> keys, UpdateOptions options = UpdateOptions.None)
         {
-            var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).Columns.Where(c => c.IsPrimaryKey).ToList();
+            var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).PrimaryKeyColumns;
             if (primaryKeys.Count != 1)
                 throw new MappingException($"{nameof(UpdateByKeyList)} operation isn't allowed on {tableName} because it doesn't have a single primary key.");
 
@@ -156,12 +156,12 @@ namespace Tortuga.Chain.PostgreSql
             return new PostgreSqlSqlCall(this, sqlStatement, argumentValue);
         }
 
-        IUpdateManyCommandBuilder<NpgsqlCommand, NpgsqlParameter> OnUpdateMany(PostgreSqlObjectName tableName, string updateExpression, object updateArgumentValue, UpdateOptions options)
+        IUpdateManyDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> OnUpdateMany(PostgreSqlObjectName tableName, string updateExpression, object updateArgumentValue, UpdateOptions options)
         {
             return new PostgreSqlUpdateMany(this, tableName, updateExpression, updateArgumentValue, options);
         }
 
-        IUpdateManyCommandBuilder<NpgsqlCommand, NpgsqlParameter> OnUpdateMany(PostgreSqlObjectName tableName, object newValues, UpdateOptions options)
+        IUpdateManyDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> OnUpdateMany(PostgreSqlObjectName tableName, object newValues, UpdateOptions options)
         {
             return new PostgreSqlUpdateMany(this, tableName, newValues, options);
         }

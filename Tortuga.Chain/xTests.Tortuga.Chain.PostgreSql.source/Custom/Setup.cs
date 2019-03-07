@@ -62,8 +62,11 @@ CREATE TABLE hr.employee
 	OfficePhone VARCHAR(15) NULL ,
 	CellPhone VARCHAR(15) NULL ,
 	CreatedDate TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	UpdatedDate TIMESTAMP NULL
+	UpdatedDate TIMESTAMP NULL,
+    EmployeeId VARCHAR(50) NOT NULL
 )";
+
+                string index = @"CREATE UNIQUE INDEX index_name ON hr.employee(EmployeeId);";
 
                 string sql2b = @"
 CREATE TABLE public.employee
@@ -218,6 +221,9 @@ $$ LANGUAGE plpgsql;";
                     cmd.ExecuteNonQuery();
 
                 using (NpgsqlCommand cmd = new NpgsqlCommand(sql2, con))
+                    cmd.ExecuteNonQuery();
+
+                using (NpgsqlCommand cmd = new NpgsqlCommand(index, con))
                     cmd.ExecuteNonQuery();
 
                 using (NpgsqlCommand cmd = new NpgsqlCommand(sql2b, con))
