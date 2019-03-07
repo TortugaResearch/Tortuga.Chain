@@ -15,7 +15,7 @@ namespace Tests.Core
         {
         }
 
-#if SQL_SERVER || ACCESS
+#if SQL_SERVER || ACCESS || SQLITE
 
         [Theory, MemberData(nameof(Tables))]
         public void TableIndexes(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
@@ -28,7 +28,7 @@ namespace Tests.Core
                 Assert.IsTrue(indexes.Where(i => i.IsPrimaryKey).Count() <= 1, "No more than one primary key");
 
                 if (table.Columns.Any(c => c.IsPrimaryKey))
-                    Assert.IsTrue(indexes.Where(i => i.IsPrimaryKey).Count() <= 1, "A column is marked as primary, so there should be a primary index.");
+                    Assert.IsTrue(indexes.Where(i => i.IsPrimaryKey).Count() == 1, "A column is marked as primary, so there should be a primary index.");
 
                 foreach (var index in indexes)
                 {
