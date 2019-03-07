@@ -31,7 +31,7 @@ CREATE TABLE Employee
 	LastName nVarChar(25) NOT NULL,
 	Title nVarChar(100) null,
 	ManagerKey INT NULL REferences Employee(EmployeeKey),
-    OfficePhone VARCHAR(15) NULL ,
+    OfficePhone VARCHAR(15) NULL UNIQUE ,
     CellPhone VARCHAR(15) NULL ,
     CreatedDate DateTime NOT NULL DEFAULT CURRENT_TIME,
     UpdatedDate DateTime NULL
