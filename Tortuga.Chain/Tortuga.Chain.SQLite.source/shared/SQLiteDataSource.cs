@@ -14,7 +14,6 @@ using Tortuga.Chain.Core;
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.SQLite;
 
-
 namespace Tortuga.Chain
 {
     /// <summary>
@@ -48,7 +47,16 @@ namespace Tortuga.Chain
             m_DatabaseMetadata = new SQLiteMetadataCache(m_ConnectionBuilder);
             m_ExtensionCache = new ConcurrentDictionary<Type, object>();
             m_Cache = DefaultCache;
+
+            if (settings != null)
+                EnforceForeignKeys = settings.EnforceForeignKeys;
         }
+
+        /// <summary>
+        /// If set, foreign keys will be enabled/disabled as per 'PRAGMA foreign_keys = ON|OFF'. When null, SQLite's default is used.
+        /// </summary>
+        /// <remarks>Currently the SQLite default is off, but this may change in a future version. The SQLite documentation recommends always explicitly setting this value.</remarks>
+        public bool? EnforceForeignKeys { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SQLiteDataSource" /> class.
@@ -74,6 +82,9 @@ namespace Tortuga.Chain
             m_DatabaseMetadata = databaseMetadata;
             m_ExtensionCache = extensionCache;
             m_Cache = cache;
+
+            if (settings != null)
+                EnforceForeignKeys = settings.EnforceForeignKeys;
         }
 
         /// <summary>
@@ -131,6 +142,7 @@ namespace Tortuga.Chain
         }
 
 #if !System_Configuration_Missing
+
         /// <summary>
         /// Creates a new connection using the connection string in the app.config file.
         /// </summary>
@@ -144,6 +156,7 @@ namespace Tortuga.Chain
 
             return new SQLiteDataSource(connectionName, settings.ConnectionString);
         }
+
 #endif
 
         /// <summary>
@@ -158,6 +171,12 @@ namespace Tortuga.Chain
             con.Open();
 
             //TODO: Research any potential PRAGMA/Rollback options
+            if (EnforceForeignKeys.HasValue)
+            {
+                var mode = EnforceForeignKeys == true ? "ON" : "OFF";
+                using (var cmd = new SQLiteCommand($"PRAGMA foreign_keys = {mode};", con))
+                    cmd.ExecuteNonQuery();
+            }
 
             return con;
         }
@@ -322,7 +341,7 @@ namespace Tortuga.Chain
             }
             catch (Exception ex)
             {
-                if (cancellationToken.IsCancellationRequested) //convert SQLiteException into a OperationCanceledException 
+                if (cancellationToken.IsCancellationRequested) //convert SQLiteException into a OperationCanceledException
                 {
                     var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);
                     OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex2, state);
@@ -426,7 +445,6 @@ namespace Tortuga.Chain
             return result;
         }
 
-
         /// <summary>
         /// Executes the specified operation.
         /// </summary>
@@ -512,7 +530,7 @@ namespace Tortuga.Chain
             }
             catch (Exception ex)
             {
-                if (cancellationToken.IsCancellationRequested) //convert SQLiteException into a OperationCanceledException 
+                if (cancellationToken.IsCancellationRequested) //convert SQLiteException into a OperationCanceledException
                 {
                     var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);
                     OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex2, state);
