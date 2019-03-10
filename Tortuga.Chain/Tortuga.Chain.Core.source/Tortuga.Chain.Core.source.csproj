@@ -273,6 +273,8 @@
     <Compile Include="shared\MetadataException.cs" />
     <Compile Include="shared\Metadata\ColumnMetadataCollection.cs" />
     <Compile Include="shared\Metadata\ColumnMetadataCollection`1.cs" />
+    <Compile Include="shared\Metadata\ForeignKeyConstraint`2.cs" />
+    <Compile Include="shared\Metadata\ForeignKeyConstraint.cs" />
     <Compile Include="shared\Metadata\IndexColumnMetadata.cs" />
     <Compile Include="shared\Metadata\IndexColumnMetadataCollection.cs" />
     <Compile Include="shared\Metadata\IndexMetadataCollection`2.cs" />
