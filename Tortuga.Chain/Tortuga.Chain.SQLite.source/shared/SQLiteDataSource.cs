@@ -392,6 +392,7 @@ namespace Tortuga.Chain
                 SuppressGlobalEvents = settings?.SuppressGlobalEvents ?? SuppressGlobalEvents,
                 StrictMode = settings?.StrictMode ?? StrictMode,
                 DisableLocks = settings?.DisableLocks ?? DisableLocks,
+                EnforceForeignKeys = settings?.EnforceForeignKeys ?? EnforceForeignKeys
             };
             var result = new SQLiteDataSource(Name, m_ConnectionBuilder, mergedSettings, m_DatabaseMetadata, m_Cache, m_ExtensionCache);
             result.m_DatabaseMetadata = m_DatabaseMetadata;

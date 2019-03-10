@@ -217,6 +217,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="custom\SQLiteDataSourceTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="custom\Setup.cs" />
     <Compile Include="custom\TestBase.cs" />
