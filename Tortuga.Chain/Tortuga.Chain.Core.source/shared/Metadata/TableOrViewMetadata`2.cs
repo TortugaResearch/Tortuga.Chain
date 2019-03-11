@@ -53,6 +53,14 @@ namespace Tortuga.Chain.Metadata
         public new TName Name { get; }
 
         /// <summary>
+        /// Gets the columns that make up the primary key.
+        /// </summary>
+        /// <value>
+        /// The columns.
+        /// </value>
+        public ColumnMetadataCollection<TDbType> PrimaryKeyColumns { get; }
+
+        /// <summary>
         /// Creates the SQL builder
         /// </summary>
         /// <returns></returns>
