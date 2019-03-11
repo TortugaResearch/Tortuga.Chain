@@ -30,6 +30,15 @@ namespace Tortuga.Chain.SQLite
             m_ConnectionBuilder = connectionBuilder;
         }
 
+        /// <summary>
+        /// Gets the indexes for a table.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <returns></returns>
+        /// <exception cref="NotSupportedException">Indexes are not supported by this data source</exception>
+        /// <remarks>
+        /// This should be cached on a TableOrViewMetadata object.
+        /// </remarks>
         public override IndexMetadataCollection<SQLiteObjectName> GetIndexesForTable(SQLiteObjectName tableName)
         {
             var table = GetTableOrView(tableName);
