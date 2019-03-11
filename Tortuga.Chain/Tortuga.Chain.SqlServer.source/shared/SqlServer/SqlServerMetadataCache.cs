@@ -77,7 +77,7 @@ namespace Tortuga.Chain.SqlServer
         /// <remarks>
         /// This should be cached on a TableOrViewMetadata object.
         /// </remarks>
-        public override IndexMetadataCollection<SqlServerObjectName> GetIndexesForTable(SqlServerObjectName tableName)
+        public override IndexMetadataCollection<SqlServerObjectName, SqlDbType> GetIndexesForTable(SqlServerObjectName tableName)
         {
             const string indexSql = @"SELECT i.name,
        i.is_primary_key,
@@ -105,7 +105,7 @@ WHERE o.name = @Name
                     cmd.Parameters.AddWithValue("@Schema", tableName.Schema);
                     cmd.Parameters.AddWithValue("@Name", tableName.Name);
 
-                    var results = new List<IndexMetadata<SqlServerObjectName>>();
+                    var results = new List<IndexMetadata<SqlServerObjectName, SqlDbType>>();
 
                     using (var reader = cmd.ExecuteReader())
                     {
@@ -117,17 +117,17 @@ WHERE o.name = @Name
                             var index_id = reader.GetInt32(reader.GetOrdinal("index_id"));
                             var name = reader.IsDBNull(reader.GetOrdinal("Name")) ? null :
                                 reader.GetString(reader.GetOrdinal("Name"));
-                            var columns = new IndexColumnMetadataCollection(allColumns.Where(c => c.IndexId == index_id));
+                            var columns = new IndexColumnMetadataCollection<SqlDbType>(allColumns.Where(c => c.IndexId == index_id));
                             var indexSize = reader.GetInt64(reader.GetOrdinal("IndexSizeKB"));
                             var rowCount = reader.GetInt64(reader.GetOrdinal("RowCount"));
 
                             if (name == null && columns.Count == 0) //this is a heap
                                 name = "(heap)";
 
-                            results.Add(new IndexMetadata<SqlServerObjectName>(tableName, name, is_primary_key, is_unique, is_unique_constraint, columns, indexSize, rowCount));
+                            results.Add(new IndexMetadata<SqlServerObjectName, SqlDbType>(tableName, name, is_primary_key, is_unique, is_unique_constraint, columns, indexSize, rowCount));
                         }
 
-                        return new IndexMetadataCollection<SqlServerObjectName>(results);
+                        return new IndexMetadataCollection<SqlServerObjectName, SqlDbType>(results);
                     }
                 }
             }
@@ -800,7 +800,7 @@ ORDER BY ic.key_ordinal;";
             }
         }
 
-        class SqlServerIndexColumnMetadata : IndexColumnMetadata
+        class SqlServerIndexColumnMetadata : IndexColumnMetadata<SqlDbType>
         {
             /// <summary>
             /// Initializes a new instance of the IndexColumnMetadata class.
@@ -809,7 +809,7 @@ ORDER BY ic.key_ordinal;";
             /// <param name="isDescending">Indicates the column is indexed in descending order.</param>
             /// <param name="isIncluded">Indicates the column is an unindexed, included column.</param>
             /// <param name="indexId"></param>
-            internal SqlServerIndexColumnMetadata(ColumnMetadata column, bool isDescending, bool isIncluded, int indexId) : base(column, isDescending, isIncluded)
+            internal SqlServerIndexColumnMetadata(ColumnMetadata<SqlDbType> column, bool isDescending, bool isIncluded, int indexId) : base(column, isDescending, isIncluded)
             {
                 IndexId = indexId;
             }

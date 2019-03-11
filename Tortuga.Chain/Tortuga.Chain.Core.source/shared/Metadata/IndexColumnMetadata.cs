@@ -3,7 +3,7 @@ namespace Tortuga.Chain.Metadata
     /// <summary>
     ///
     /// </summary>
-    public class IndexColumnMetadata
+    public abstract class IndexColumnMetadata
     {
         /// <summary>
         /// Initializes a new instance of the IndexColumnMetadata class.
@@ -11,7 +11,7 @@ namespace Tortuga.Chain.Metadata
         /// <param name="column">The underlying column details.</param>
         /// <param name="isDescending">Indicates the column is indexed in descending order.</param>
         /// <param name="isIncluded">Indicates the column is an unindexed, included column.</param>
-        public IndexColumnMetadata(ColumnMetadata column, bool isDescending, bool isIncluded)
+        protected IndexColumnMetadata(ColumnMetadata column, bool isDescending, bool isIncluded)
         {
             Details = column;
             IsDescending = isDescending;

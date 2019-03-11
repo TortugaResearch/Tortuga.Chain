@@ -10,8 +10,23 @@ namespace Tortuga.Chain.Metadata
     /// <typeparam name="TName">The type used to represent database object names.</typeparam>
     /// <typeparam name="TDbType">The variant of DbType used by this data source.</typeparam>
     public abstract class DatabaseMetadataCache<TName, TDbType> : IDatabaseMetadataCache
+        where TName : struct
         where TDbType : struct
     {
+        /// <summary>
+        /// Gets the foerign keys for a table.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <returns></returns>
+        /// <exception cref="NotSupportedException">Foreign keys are not supported by this data source</exception>
+        /// <remarks>
+        /// This should be cached on a TableOrViewMetadata object.
+        /// </remarks>
+        public virtual ForeignKeyConstraintCollection<TName, TDbType> GetForeignKeysForTable(TName tableName)
+        {
+            throw new NotSupportedException("Indexes are not supported by this data source");
+        }
+
         /// <summary>
         /// Gets the indexes for a table.
         /// </summary>
@@ -21,7 +36,7 @@ namespace Tortuga.Chain.Metadata
         /// <remarks>
         /// This should be cached on a TableOrViewMetadata object.
         /// </remarks>
-        public virtual IndexMetadataCollection<TName> GetIndexesForTable(TName tableName)
+        public virtual IndexMetadataCollection<TName, TDbType> GetIndexesForTable(TName tableName)
         {
             throw new NotSupportedException("Indexes are not supported by this data source");
         }

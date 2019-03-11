@@ -11,11 +11,13 @@ namespace Tortuga.Chain.Metadata
     /// <typeparam name="TName">The type used to represent database object names.</typeparam>
     /// <typeparam name="TDbType">The variant of DbType used by this data source.</typeparam>
     public class TableOrViewMetadata<TName, TDbType> : TableOrViewMetadata
+        where TName : struct
         where TDbType : struct
     {
         readonly SqlBuilder<TDbType> m_Builder;
         readonly DatabaseMetadataCache<TName, TDbType> m_MetadataCache;
-        IndexMetadataCollection<TName> m_Indexes;
+        ForeignKeyConstraintCollection<TName, TDbType> m_ForeignKeys;
+        IndexMetadataCollection<TName, TDbType> m_Indexes;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TableOrViewMetadata{TName, TDbType}"/> class.
@@ -32,7 +34,7 @@ namespace Tortuga.Chain.Metadata
             base.Name = name.ToString();
             Columns = new ColumnMetadataCollection<TDbType>(name.ToString(), columns);
             base.Columns = Columns.GenericCollection;
-            NonNullableColumns = new ColumnMetadataCollection(columns.Where(c => c.IsNullable == false));
+            NonNullableColumns = new ColumnMetadataCollection<TDbType>(name.ToString(), columns.Where(c => c.IsNullable == false).ToList()).GenericCollection;
             m_Builder = new SqlBuilder<TDbType>(Name.ToString(), Columns);
         }
 
@@ -71,7 +73,19 @@ namespace Tortuga.Chain.Metadata
         /// </summary>
         /// <returns></returns>
         /// <exception cref="NotSupportedException">Indexes are not supported by this data source</exception>
-        public IndexMetadataCollection<TName> GetIndexes()
+        public ForeignKeyConstraintCollection<TName, TDbType> GetForeignKeys()
+        {
+            if (m_ForeignKeys == null)
+                m_ForeignKeys = m_MetadataCache.GetForeignKeysForTable(Name);
+            return m_ForeignKeys;
+        }
+
+        /// <summary>
+        /// Gets the indexes for this table or view.
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="NotSupportedException">Indexes are not supported by this data source</exception>
+        public IndexMetadataCollection<TName, TDbType> GetIndexes()
         {
             if (m_Indexes == null)
                 m_Indexes = m_MetadataCache.GetIndexesForTable(Name);

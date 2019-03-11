@@ -39,12 +39,12 @@ namespace Tortuga.Chain.SQLite
         /// <remarks>
         /// This should be cached on a TableOrViewMetadata object.
         /// </remarks>
-        public override IndexMetadataCollection<SQLiteObjectName> GetIndexesForTable(SQLiteObjectName tableName)
+        public override IndexMetadataCollection<SQLiteObjectName, DbType> GetIndexesForTable(SQLiteObjectName tableName)
         {
             var table = GetTableOrView(tableName);
 
             var indexSql = $"PRAGMA index_list('{tableName.Name}')";
-            var results = new List<IndexMetadata<SQLiteObjectName>>();
+            var results = new List<IndexMetadata<SQLiteObjectName, DbType>>();
             using (var con = new SQLiteConnection(m_ConnectionBuilder.ConnectionString))
             using (var con2 = new SQLiteConnection(m_ConnectionBuilder.ConnectionString))
             {
@@ -58,10 +58,10 @@ namespace Tortuga.Chain.SQLite
                         var name = reader.GetString(reader.GetOrdinal("name"));
                         var isUnique = reader.GetInt64(reader.GetOrdinal("unique")) != 0;
                         var origin = reader.GetString(reader.GetOrdinal("origin"));
-                        var isPrimaryKey = origin == "pk";
-                        var isUniqueConstraint = origin == "u";
+                        var isPrimaryKey = string.Equals(origin, "pk", StringComparison.Ordinal);
+                        var isUniqueConstraint = string.Equals(origin, "u", StringComparison.Ordinal);
 
-                        var columns = new List<IndexColumnMetadata>();
+                        var columns = new List<IndexColumnMetadata<DbType>>();
 
                         using (var cmd2 = new SQLiteCommand($"PRAGMA index_xinfo('{name}')", con2))
                         using (var reader2 = cmd2.ExecuteReader())
@@ -74,20 +74,20 @@ namespace Tortuga.Chain.SQLite
 
                                 ColumnMetadata<DbType> column;
                                 if (colName != null)
-                                    column = table.Columns.SingleOrDefault(c => c.SqlName == colName);
+                                    column = table.Columns.SingleOrDefault(c => string.Equals(c.SqlName, colName, StringComparison.Ordinal));
                                 else //a null column name is really the ROWID
                                 {
-                                    column = table.Columns.SingleOrDefault(c => c.SqlName == "ROWID");
+                                    column = table.Columns.SingleOrDefault(c => string.Equals(c.SqlName, "ROWID", StringComparison.Ordinal));
 
                                     //The ROWID may be aliased as the primary key
                                     column = table.PrimaryKeyColumns.Single();
                                 }
 
-                                columns.Add(new IndexColumnMetadata(column, isDescending, isIncluded));
+                                columns.Add(new IndexColumnMetadata<DbType>(column, isDescending, isIncluded));
                             }
                         }
 
-                        results.Add(new IndexMetadata<SQLiteObjectName>(tableName, name, isPrimaryKey, isUnique, isUniqueConstraint, new IndexColumnMetadataCollection(columns), null, null));
+                        results.Add(new IndexMetadata<SQLiteObjectName, DbType>(tableName, name, isPrimaryKey, isUnique, isUniqueConstraint, new IndexColumnMetadataCollection<DbType>(columns), null, null));
                     }
                 }
             }
@@ -96,11 +96,11 @@ namespace Tortuga.Chain.SQLite
 
             if (pkColumns.Count == 1 && !results.Any(i => i.IsPrimaryKey)) //need to infer a PK
             {
-                results.Add(new IndexMetadata<SQLiteObjectName>(tableName, "(primary key)", true, false, false,
-                    new IndexColumnMetadataCollection(new[] { new IndexColumnMetadata(pkColumns.Single(), false, false) }), null, null));
+                results.Add(new IndexMetadata<SQLiteObjectName, DbType>(tableName, "(primary key)", true, false, false,
+                    new IndexColumnMetadataCollection<DbType>(new[] { new IndexColumnMetadata<DbType>(pkColumns.Single(), false, false) }), null, null));
             }
 
-            return new IndexMetadataCollection<SQLiteObjectName>(results);
+            return new IndexMetadataCollection<SQLiteObjectName, DbType>(results);
         }
 
         /// <summary>
@@ -300,7 +300,7 @@ namespace Tortuga.Chain.SQLite
 
                         actualName = reader.GetString(reader.GetOrdinal("ObjectName"));
                         var objectType = reader.GetString(reader.GetOrdinal("ObjectType"));
-                        isTable = objectType.Equals("table");
+                        isTable = objectType.Equals("table", StringComparison.Ordinal);
                     }
                 }
             }

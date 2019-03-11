@@ -42,9 +42,9 @@ namespace Tortuga.Chain.Access
         /// <remarks>
         /// This should be cached on a TableOrViewMetadata object.
         /// </remarks>
-        public override IndexMetadataCollection<AccessObjectName> GetIndexesForTable(AccessObjectName tableName)
+        public override IndexMetadataCollection<AccessObjectName, OleDbType> GetIndexesForTable(AccessObjectName tableName)
         {
-            var result = new List<IndexMetadata<AccessObjectName>>();
+            var result = new List<IndexMetadata<AccessObjectName, OleDbType>>();
             var indexDT = GetSchemaTable(OleDbSchemaGuid.Indexes);
 
             var allColumns = GetTableOrView(tableName).Columns;
@@ -56,17 +56,17 @@ namespace Tortuga.Chain.Access
                 var unique = (bool)index.First()["UNIQUE"];
                 var isPrimary = (bool)index.First()["PRIMARY_KEY"];
 
-                var columns = new IndexColumnMetadata[index.Count()];
+                var columns = new IndexColumnMetadata<OleDbType>[index.Count()];
                 foreach (var column in index)
                 {
                     var details = allColumns[(string)column["COLUMN_NAME"]];
-                    columns[(int)(long)column["ORDINAL_POSITION"] - 1] = new IndexColumnMetadata(details, false, false);
+                    columns[(int)(long)column["ORDINAL_POSITION"] - 1] = new IndexColumnMetadata<OleDbType>(details, false, false);
                 }
 
-                result.Add(new IndexMetadata<AccessObjectName>(tableName, name, isPrimary, unique, false, new IndexColumnMetadataCollection(columns), null, null));
+                result.Add(new IndexMetadata<AccessObjectName, OleDbType>(tableName, name, isPrimary, unique, false, new IndexColumnMetadataCollection<OleDbType>(columns), null, null));
             }
 
-            return new IndexMetadataCollection<AccessObjectName>(result);
+            return new IndexMetadataCollection<AccessObjectName, OleDbType>(result);
         }
 
         /// <summary>

@@ -6,10 +6,10 @@ namespace Tortuga.Chain.Metadata
     /// This represents a foreign key relationship between two tables.
     /// </summary>
     /// <typeparam name="TName">The type of the name.</typeparam>
-    /// <typeparam name="TDbType">The type of the database type.</typeparam>
+    /// <typeparam name="TDbType">The database column type.</typeparam>
     public class ForeignKeyConstraint<TName, TDbType> : ForeignKeyConstraint
-        where TDbType : struct
         where TName : struct
+        where TDbType : struct
     {
         /// <summary>
         ///
@@ -18,7 +18,7 @@ namespace Tortuga.Chain.Metadata
         /// <param name="parentColumns">The parent columns.</param>
         /// <param name="childTableName">Name of the child table.</param>
         /// <param name="childColumns">The child columns.</param>
-        public ForeignKeyConstraint(TName parentTableName, ColumnMetadataCollection<TDbType> parentColumns, TName childTableName, ColumnMetadataCollection<TDbType> childColumns)
+        public ForeignKeyConstraint(TName parentTableName, ColumnMetadataCollection<TDbType> parentColumns, TName childTableName, ColumnMetadataCollection<TDbType> childColumns) : base(parentTableName.ToString(), parentColumns.GenericCollection, childTableName.ToString(), childColumns.GenericCollection)
         {
             if (parentColumns == null || parentColumns.Count == 0)
                 throw new ArgumentException($"{nameof(parentColumns)} is null or empty.", nameof(parentColumns));
@@ -27,13 +27,9 @@ namespace Tortuga.Chain.Metadata
                 throw new ArgumentException($"{nameof(childColumns)} is null or empty.", nameof(childColumns));
 
             ParentTableName = parentTableName;
-            base.ParentTableName = parentTableName.ToString();
             ParentColumns = parentColumns;
-            base.ParentColumns = parentColumns.GenericCollection;
             ChildTableName = childTableName;
-            base.ChildTableName = childTableName.ToString();
             ChildColumns = childColumns;
-            base.ChildColumns = childColumns.GenericCollection;
         }
 
         /// <summary>
