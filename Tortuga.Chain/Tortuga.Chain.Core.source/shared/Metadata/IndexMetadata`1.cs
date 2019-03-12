@@ -1,3 +1,5 @@
+using System;
+
 namespace Tortuga.Chain.Metadata
 {
     /// <summary>
@@ -20,10 +22,19 @@ namespace Tortuga.Chain.Metadata
         /// <param name="columns">The columns.</param>
         /// <param name="indexSizeKB">Approximate index size in KB</param>
         /// <param name="rowCount">Approximate row count</param>
-        public IndexMetadata(TName tableName, string name, bool isPrimaryKey, bool isUnique, bool isUniqueConstraint, IndexColumnMetadataCollection<TDbType> columns, long? indexSizeKB, long? rowCount) : base(tableName.ToString(), name, isPrimaryKey, isUnique, isUniqueConstraint, columns.GenericCollection, indexSizeKB, rowCount)
+        public IndexMetadata(TName tableName, string name, bool isPrimaryKey, bool isUnique, bool isUniqueConstraint, IndexColumnMetadataCollection<TDbType> columns, long? indexSizeKB, long? rowCount) : base(tableName.ToString(), name, isPrimaryKey, isUnique, isUniqueConstraint, columns?.GenericCollection, indexSizeKB, rowCount)
         {
+            if (columns == null || columns.Count == 0)
+                throw new ArgumentException($"{nameof(columns)} is null or empty.", nameof(columns));
+
             TableName = tableName;
+            Columns = columns;
         }
+
+        /// <summary>
+        /// Gets the columns.
+        /// </summary>
+        public new IndexColumnMetadataCollection<TDbType> Columns { get; }
 
         /// <summary>
         /// Gets the name of the table (or view) the index applies to.

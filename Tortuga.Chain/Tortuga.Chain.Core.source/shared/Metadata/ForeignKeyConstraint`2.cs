@@ -18,7 +18,7 @@ namespace Tortuga.Chain.Metadata
         /// <param name="parentColumns">The parent columns.</param>
         /// <param name="childTableName">Name of the child table.</param>
         /// <param name="childColumns">The child columns.</param>
-        public ForeignKeyConstraint(TName parentTableName, ColumnMetadataCollection<TDbType> parentColumns, TName childTableName, ColumnMetadataCollection<TDbType> childColumns) : base(parentTableName.ToString(), parentColumns.GenericCollection, childTableName.ToString(), childColumns.GenericCollection)
+        public ForeignKeyConstraint(TName parentTableName, ColumnMetadataCollection<TDbType> parentColumns, TName childTableName, ColumnMetadataCollection<TDbType> childColumns) : base(parentTableName.ToString(), parentColumns?.GenericCollection, childTableName.ToString(), childColumns?.GenericCollection)
         {
             if (parentColumns == null || parentColumns.Count == 0)
                 throw new ArgumentException($"{nameof(parentColumns)} is null or empty.", nameof(parentColumns));
