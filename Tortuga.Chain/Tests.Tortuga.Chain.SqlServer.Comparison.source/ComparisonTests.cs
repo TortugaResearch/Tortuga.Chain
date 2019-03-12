@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
@@ -11,17 +12,16 @@ namespace Tests
     [TestClass]
     public class ComparisonTests
     {
-        static int Iterations = 1000;
-        static bool Warmup = true;
         static bool DiscardHighLow = true;
-
-        static EmployeeRepositoryDapper s_DapperRepo;
-        static EmployeeRepositoryChain s_ChainRepo;
+        static int Iterations = 1000;
         static EmployeeRepositoryChainCompiled s_ChainCompiledRepo;
-        static EmployeeRepositoryEF_Intermediate s_EFIntermediateRepo;
-        static EmployeeRepositoryEF_Intermediate_NoTrack s_EFIntermediateNoTrackRepo;
-        static EmployeeRepositoryEF_Novice s_EFNoviceRepo;
+        static EmployeeRepositoryChain s_ChainRepo;
+        static EmployeeRepositoryDapper s_DapperRepo;
         static SqlServerDataSource s_DataSource;
+        static EmployeeRepositoryEF_Intermediate_NoTrack s_EFIntermediateNoTrackRepo;
+        static EmployeeRepositoryEF_Intermediate s_EFIntermediateRepo;
+        static EmployeeRepositoryEF_Novice s_EFNoviceRepo;
+        static bool Warmup = true;
 
         [ClassInitialize()]
         public static void AssemblyInit(TestContext context)
@@ -45,14 +45,6 @@ namespace Tests
             }
         }
 
-
-        [TestMethod]
-        public void Dapper_CrudTest()
-        {
-            var repo = new EmployeeRepositoryDapper(ConfigurationManager.ConnectionStrings["CodeFirstModels"].ConnectionString);
-            CrudTest(s_DapperRepo);
-        }
-
         [TestMethod]
         public void Chain_CrudTest()
         {
@@ -66,23 +58,28 @@ namespace Tests
         }
 
         [TestMethod]
-        public void EF_Novice_CrudTest()
+        public void Dapper_CrudTest()
         {
-            CrudTest(s_EFNoviceRepo);
+            var repo = new EmployeeRepositoryDapper(ConfigurationManager.ConnectionStrings["CodeFirstModels"].ConnectionString);
+            CrudTest(s_DapperRepo);
         }
 
         [TestMethod]
         public void EF_Intermediate_CrudTest()
         {
             CrudTest(s_EFIntermediateRepo);
-
         }
 
         [TestMethod]
         public void EF_Intermediate_NoTrack_CrudTest()
         {
             CrudTest(s_EFIntermediateNoTrackRepo);
+        }
 
+        [TestMethod]
+        public void EF_Novice_CrudTest()
+        {
+            CrudTest(s_EFNoviceRepo);
         }
 
         static void CrudTest(ISimpleEmployeeRepository repo)
@@ -124,7 +121,7 @@ namespace Tests
 
         static void CrudTestCore(ISimpleEmployeeRepository repo)
         {
-            var emp1 = new Employee() { FirstName = "Tom", LastName = "Jones", Title = "President" };
+            var emp1 = new Employee() { FirstName = "Tom", LastName = "Jones", Title = "President", EmployeeId = Guid.NewGuid().ToString() };
             var employeeKey1 = repo.Insert(emp1);
             var echo1 = repo.Get(employeeKey1);
 
@@ -132,14 +129,14 @@ namespace Tests
             Assert.AreEqual(emp1.FirstName, echo1.FirstName, "FirstName");
             Assert.AreEqual(emp1.LastName, echo1.LastName, "LastName");
             Assert.AreEqual(emp1.Title, echo1.Title, "Title");
+            Assert.AreEqual(emp1.EmployeeId, echo1.EmployeeId, "EmployeeId");
 
             echo1.MiddleName = "G";
             repo.Update(echo1);
             var echo1b = repo.Get(employeeKey1);
             Assert.AreEqual("G", echo1b.MiddleName);
 
-
-            var emp2 = new Employee() { FirstName = "Lisa", LastName = "Green", Title = "VP Transportation", ManagerKey = echo1.EmployeeKey };
+            var emp2 = new Employee() { FirstName = "Lisa", LastName = "Green", Title = "VP Transportation", ManagerKey = echo1.EmployeeKey, EmployeeId = Guid.NewGuid().ToString() };
             var echo2 = repo.InsertAndReturn(emp2);
 
             Assert.AreNotEqual(0, echo2.EmployeeKey, "EmployeeKey was not set");
@@ -148,6 +145,7 @@ namespace Tests
             Assert.AreEqual(emp2.Title, echo2.Title, "Title");
             Assert.AreEqual(emp2.ManagerKey, echo2.ManagerKey, "ManagerKey");
             Assert.IsNotNull(echo2.CreatedDate);
+            Assert.AreEqual(emp2.EmployeeId, echo2.EmployeeId, "EmployeeId");
 
             var list = repo.GetAll();
             Assert.IsTrue(list.Any(e => e.EmployeeKey == echo1.EmployeeKey), "Employee 1 is missing");
@@ -174,7 +172,5 @@ namespace Tests
             var list2 = repo.GetAll();
             Assert.AreEqual(list.Count - 2, list2.Count);
         }
-
-
     }
 }

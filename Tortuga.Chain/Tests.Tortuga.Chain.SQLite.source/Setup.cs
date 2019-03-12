@@ -45,8 +45,11 @@ CREATE TABLE Employee
 	Title nVarChar(100) null,
 	ManagerKey INT NULL REferences Employee(EmployeeKey),
     CreatedDate DateTime NOT NULL DEFAULT CURRENT_TIME,
-    UpdatedDate DateTime NULL
+    UpdatedDate DateTime NULL,
+    EmployeeId nvarChar(50) NOT NULL
 )";
+
+                string index = @"CREATE UNIQUE INDEX index_name ON Employee(EmployeeId);";
 
                 string sql2 = @"CREATE TABLE Customer
 (
@@ -68,10 +71,13 @@ CREATE TABLE Employee
                 using (SQLiteCommand command = new SQLiteCommand(sql, dbConnection))
                     command.ExecuteNonQuery();
 
+                using (SQLiteCommand command = new SQLiteCommand(index, dbConnection))
+                    command.ExecuteNonQuery();
+
                 using (SQLiteCommand command = new SQLiteCommand(sql2, dbConnection))
                     command.ExecuteNonQuery();
 
-                sql = @"INSERT INTO Employee ([EmployeeKey], [FirstName], [MiddleName], [LastName], [Title], [ManagerKey]) VALUES (@EmployeeKey, @FirstName, @MiddleName, @LastName, @Title, @ManagerKey); SELECT [EmployeeKey], [FirstName], [MiddleName], [LastName], [Title], [ManagerKey] FROM Employee WHERE ROWID = last_insert_rowid();";
+                sql = @"INSERT INTO Employee ([EmployeeKey], [FirstName], [MiddleName], [LastName], [Title], [ManagerKey], [EmployeeId]) VALUES (@EmployeeKey, @FirstName, @MiddleName, @LastName, @Title, @ManagerKey, @EmployeeId); SELECT [EmployeeKey], [FirstName], [MiddleName], [LastName], [Title], [ManagerKey] FROM Employee WHERE ROWID = last_insert_rowid();";
 
                 for (var i = 0; i < 10; i++)
                     using (SQLiteCommand command = new SQLiteCommand(sql, dbConnection))
@@ -82,6 +88,7 @@ CREATE TABLE Employee
                         command.Parameters.AddWithValue("@LastName", "Jones");
                         command.Parameters.AddWithValue("@Title", "CEO");
                         command.Parameters.AddWithValue("@ManagerKey", DBNull.Value);
+                        command.Parameters.AddWithValue("@EmployeeId", Guid.NewGuid().ToString());
                         var key = command.ExecuteScalar();
                     }
             }

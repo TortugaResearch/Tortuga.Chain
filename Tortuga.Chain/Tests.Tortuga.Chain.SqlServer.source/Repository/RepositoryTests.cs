@@ -1,13 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Tests.Models;
+using System;
 
 #if MSTest
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-#elif WINDOWS_UWP 
+
+#elif WINDOWS_UWP
 using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
 #endif
-
 
 namespace Tests.Repository
 {
@@ -45,8 +47,6 @@ namespace Tests.Repository
             var get1 = repo.Get(echo1.EmployeeKey.Value);
             Assert.AreEqual(echo1.EmployeeKey, get1.EmployeeKey);
 
-
-
             var whereSearch1 = repo.Query("FirstName = @FN", new { FN = "Tom" });
             Assert.IsTrue(whereSearch1.Any(x => x.EmployeeKey == echo1.EmployeeKey), "Emp1 should have been returned");
             Assert.IsTrue(whereSearch1.All(x => x.FirstName == "Tom"), "Checking for incorrect return values");
@@ -55,13 +55,11 @@ namespace Tests.Repository
             Assert.IsTrue(whereSearch2.Any(x => x.EmployeeKey == echo1.EmployeeKey), "Emp1 should have been returned");
             Assert.IsTrue(whereSearch2.All(x => x.FirstName == "Tom"), "Checking for incorrect return values");
 
-
             repo.Delete(echo2.EmployeeKey.Value);
             repo.Delete(echo1.EmployeeKey.Value);
 
             var list2 = repo.GetAll();
             Assert.AreEqual(list.Count - 2, list2.Count);
-
         }
 
         [TestMethod]
@@ -69,7 +67,7 @@ namespace Tests.Repository
         {
             var repo = new Repository<Employee, int>(DataSource, EmployeeTableName);
 
-            var emp1 = new Dictionary<string, object>() { { "FirstName", "Tom" }, { "LastName", "Jones" }, { "Title", "President" } };
+            var emp1 = new Dictionary<string, object>() { { "FirstName", "Tom" }, { "LastName", "Jones" }, { "Title", "President" }, { "EmployeeId", Guid.NewGuid().ToString() } };
             var echo1 = repo.Insert(emp1);
 
             Assert.AreNotEqual(0, echo1.EmployeeKey, "EmployeeKey was not set");
@@ -78,7 +76,6 @@ namespace Tests.Repository
             Assert.AreEqual(emp1["Title"], echo1.Title, "Title");
 
             repo.Delete(echo1.EmployeeKey.Value);
-
         }
 
         [TestMethod]
@@ -86,7 +83,7 @@ namespace Tests.Repository
         {
             var repo = new Repository<Employee, int>(DataSource, EmployeeTableName);
 
-            var emp1 = new Dictionary<string, object>() { { "FirstName", "Tom" }, { "LastName", "Jones" }, { "Title", "President" } };
+            var emp1 = new Dictionary<string, object>() { { "FirstName", "Tom" }, { "LastName", "Jones" }, { "Title", "President" }, { "EmployeeId", Guid.NewGuid().ToString() } };
             var echo1 = repo.Insert(emp1);
 
             Assert.AreNotEqual(0, echo1.EmployeeKey, "EmployeeKey was not set");
@@ -107,9 +104,7 @@ namespace Tests.Repository
             Assert.AreEqual(emp1["FirstName"], echo2.FirstName, "FirstName");
             Assert.AreEqual(emp1["Title"], echo2.Title, "Title");
 
-
             repo.Delete(echo1.EmployeeKey.Value);
-
         }
 
         [TestMethod]
@@ -140,7 +135,7 @@ namespace Tests.Repository
         {
             var repo = new Repository<Employee, int>(DataSource, EmployeeTableName);
 
-            var emp1 = new Dictionary<string, object>() { { "FirstName", "Tom" }, { "LastName", "Jones" }, { "Title", "President" }, { "EmployeeKey", null } };
+            var emp1 = new Dictionary<string, object>() { { "FirstName", "Tom" }, { "LastName", "Jones" }, { "Title", "President" }, { "EmployeeKey", null }, { "EmployeeId", Guid.NewGuid().ToString() } };
             var echo1 = repo.Upsert(emp1);
 
             Assert.AreNotEqual(0, echo1.EmployeeKey, "EmployeeKey was not set");
@@ -155,6 +150,5 @@ namespace Tests.Repository
 
             repo.Delete(echo1.EmployeeKey.Value);
         }
-
     }
 }

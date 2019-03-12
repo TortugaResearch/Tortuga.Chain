@@ -105,7 +105,7 @@
     <Rule Id="CA1414" Action="Error" />
     <Rule Id="CA1415" Action="Error" />
     <Rule Id="CA1500" Action="Error" />
-    <Rule Id="CA1501" Action="Error" />
+    <Rule Id="CA1501" Action="None" />
     <Rule Id="CA1502" Action="Error" />
     <Rule Id="CA1504" Action="Error" />
     <Rule Id="CA1505" Action="Error" />
@@ -777,12 +777,11 @@
     <Rule Id="IDE0005" Action="Info" />
     <Rule Id="IDE1005" Action="Info" />
   </Rules>
+  <Rules AnalyzerId="Microsoft.CodeQuality.Analyzers" RuleNamespace="Microsoft.CodeQuality.Analyzers">
+    <Rule Id="CA1068" Action="None" />
+  </Rules>
   <Rules AnalyzerId="Microsoft.CodeQuality.CSharp.Analyzers" RuleNamespace="Microsoft.CodeQuality.CSharp.Analyzers">
     <Rule Id="CA1200" Action="None" />
     <Rule Id="CA1507" Action="Info" />
-  </Rules>
-  <Rules AnalyzerId="Microsoft.CodeQuality.Analyzers" RuleNamespace="Microsoft.CodeQuality.Analyzers">
-    <Rule Id="CA1068" Action="None" />
-    <Rule Id="CA1506" Action="None" />
   </Rules>
 </RuleSet>

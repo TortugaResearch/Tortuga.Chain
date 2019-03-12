@@ -11,23 +11,21 @@ using Tortuga.Chain.Metadata;
 namespace Tortuga.Chain.SqlServer.CommandBuilders
 {
     /// <summary>
-    /// Class SqlServerUpdateSet.
+    /// Class SqlServerUpdateMany.
     /// </summary>
-    internal sealed class SqlServerUpdateMany : UpdateManyCommandBuilder<SqlCommand, SqlParameter>
+    internal sealed class SqlServerUpdateMany : UpdateManyDbCommandBuilder<SqlCommand, SqlParameter>
     {
         readonly int? m_ExpectedRowCount;
+        readonly object m_NewValues;
+        readonly UpdateOptions m_Options;
         readonly IEnumerable<SqlParameter> m_Parameters;
         readonly SqlServerTableOrViewMetadata<SqlDbType> m_Table;
-
-        readonly object m_NewValues;
-        readonly string m_UpdateExpression;
         readonly object m_UpdateArgumentValue;
-        readonly UpdateOptions m_Options;
-
-        string m_WhereClause;
-        object m_WhereArgumentValue;
-        object m_FilterValue;
+        readonly string m_UpdateExpression;
         FilterOptions m_FilterOptions;
+        object m_FilterValue;
+        object m_WhereArgumentValue;
+        string m_WhereClause;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlServerUpdateMany" /> class.
@@ -91,11 +89,23 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         }
 
         /// <summary>
+        /// Applies this command to all rows.
+        /// </summary>
+        /// <returns></returns>
+        public override UpdateManyDbCommandBuilder<SqlCommand, SqlParameter> All()
+        {
+            m_WhereClause = null;
+            m_WhereArgumentValue = null;
+            m_FilterValue = null;
+            m_FilterOptions = FilterOptions.None;
+            return this;
+        }
+
+        /// <summary>
         /// Prepares the command for execution by generating any necessary SQL.
         /// </summary>
         /// <param name="materializer">The materializer.</param>
         /// <returns>ExecutionToken&lt;TCommand&gt;.</returns>
-
         public override CommandExecutionToken<SqlCommand, SqlParameter> Prepare(Materializer<SqlCommand, SqlParameter> materializer)
         {
             if (materializer == null)
@@ -175,11 +185,22 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         }
 
         /// <summary>
+        /// Returns a list of columns known to be non-nullable.
+        /// </summary>
+        /// <returns>
+        /// If the command builder doesn't know which columns are non-nullable, an empty list will be returned.
+        /// </returns>
+        /// <remarks>
+        /// This is used by materializers to skip IsNull checks.
+        /// </remarks>
+        public override IReadOnlyList<ColumnMetadata> TryGetNonNullableColumns() => m_Table.NonNullableColumns;
+
+        /// <summary>
         /// Adds (or replaces) the filter on this command builder.
         /// </summary>
         /// <param name="filterValue">The filter value.</param>
         /// <param name="filterOptions">The filter options.</param>
-        public override UpdateManyCommandBuilder<SqlCommand, SqlParameter> WithFilter(object filterValue, FilterOptions filterOptions = FilterOptions.None)
+        public override UpdateManyDbCommandBuilder<SqlCommand, SqlParameter> WithFilter(object filterValue, FilterOptions filterOptions = FilterOptions.None)
         {
             m_WhereClause = null;
             m_WhereArgumentValue = null;
@@ -193,7 +214,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// </summary>
         /// <param name="whereClause">The where clause.</param>
         /// <returns></returns>
-        public override UpdateManyCommandBuilder<SqlCommand, SqlParameter> WithFilter(string whereClause)
+        public override UpdateManyDbCommandBuilder<SqlCommand, SqlParameter> WithFilter(string whereClause)
         {
             m_WhereClause = whereClause;
             m_WhereArgumentValue = null;
@@ -208,7 +229,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// <param name="whereClause">The where clause.</param>
         /// <param name="argumentValue">The argument value.</param>
         /// <returns></returns>
-        public override UpdateManyCommandBuilder<SqlCommand, SqlParameter> WithFilter(string whereClause, object argumentValue)
+        public override UpdateManyDbCommandBuilder<SqlCommand, SqlParameter> WithFilter(string whereClause, object argumentValue)
         {
             m_WhereClause = whereClause;
             m_WhereArgumentValue = argumentValue;
@@ -216,31 +237,5 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             m_FilterOptions = FilterOptions.None;
             return this;
         }
-
-        /// <summary>
-        /// Applies this command to all rows.
-        /// </summary>
-        /// <returns></returns>
-        public override UpdateManyCommandBuilder<SqlCommand, SqlParameter> All()
-        {
-            m_WhereClause = null;
-            m_WhereArgumentValue = null;
-            m_FilterValue = null;
-            m_FilterOptions = FilterOptions.None;
-            return this;
-        }
-
-        /// <summary>
-        /// Returns a list of columns known to be non-nullable.
-        /// </summary>
-        /// <returns>
-        /// If the command builder doesn't know which columns are non-nullable, an empty list will be returned.
-        /// </returns>
-        /// <remarks>
-        /// This is used by materializers to skip IsNull checks.
-        /// </remarks>
-        public override IReadOnlyList<ColumnMetadata> TryGetNonNullableColumns() => m_Table.NonNullableColumns;
     }
 }
-
-

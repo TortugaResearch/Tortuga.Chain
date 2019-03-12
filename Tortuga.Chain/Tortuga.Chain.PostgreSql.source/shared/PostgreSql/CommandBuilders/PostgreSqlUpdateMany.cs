@@ -13,7 +13,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
     /// <summary>
     /// Class PostgreSqlUpdateSet.
     /// </summary>
-    internal sealed class PostgreSqlUpdateMany : UpdateManyCommandBuilder<NpgsqlCommand, NpgsqlParameter>
+    internal sealed class PostgreSqlUpdateMany : UpdateManyDbCommandBuilder<NpgsqlCommand, NpgsqlParameter>
     {
         readonly int? m_ExpectedRowCount;
         readonly object m_NewValues;
@@ -93,7 +93,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         /// Applies this command to all rows.
         /// </summary>
         /// <returns></returns>
-        public override UpdateManyCommandBuilder<NpgsqlCommand, NpgsqlParameter> All()
+        public override UpdateManyDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> All()
         {
             m_WhereClause = null;
             m_WhereArgumentValue = null;
@@ -191,7 +191,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         /// </summary>
         /// <param name="filterValue">The filter value.</param>
         /// <param name="filterOptions">The filter options.</param>
-        public override UpdateManyCommandBuilder<NpgsqlCommand, NpgsqlParameter> WithFilter(object filterValue, FilterOptions filterOptions = FilterOptions.None)
+        public override UpdateManyDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> WithFilter(object filterValue, FilterOptions filterOptions = FilterOptions.None)
         {
             m_WhereClause = null;
             m_WhereArgumentValue = null;
@@ -205,7 +205,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         /// </summary>
         /// <param name="whereClause">The where clause.</param>
         /// <returns></returns>
-        public override UpdateManyCommandBuilder<NpgsqlCommand, NpgsqlParameter> WithFilter(string whereClause)
+        public override UpdateManyDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> WithFilter(string whereClause)
         {
             m_WhereClause = whereClause;
             m_WhereArgumentValue = null;
@@ -220,7 +220,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         /// <param name="whereClause">The where clause.</param>
         /// <param name="argumentValue">The argument value.</param>
         /// <returns></returns>
-        public override UpdateManyCommandBuilder<NpgsqlCommand, NpgsqlParameter> WithFilter(string whereClause, object argumentValue)
+        public override UpdateManyDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> WithFilter(string whereClause, object argumentValue)
         {
             m_WhereClause = whereClause;
             m_WhereArgumentValue = argumentValue;

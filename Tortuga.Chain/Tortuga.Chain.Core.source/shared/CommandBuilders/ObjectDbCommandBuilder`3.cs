@@ -1,6 +1,10 @@
+using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Data.Common;
+using System.Linq;
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Materializers;
+using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.CommandBuilders
 {
@@ -32,6 +36,11 @@ namespace Tortuga.Chain.CommandBuilders
         public TArgument ArgumentValue { get; }
 
         /// <summary>
+        /// Gets the set of key column(s) to use instead of the primary key(s).
+        /// </summary>
+        protected ImmutableHashSet<string> KeyColumns { get; private set; } = ImmutableHashSet<string>.Empty;
+
+        /// <summary>
         /// Materializes the result as a new instance of the same type as the argumentValue
         /// </summary>
         /// <param name="rowOptions">The row options.</param>
@@ -40,9 +49,58 @@ namespace Tortuga.Chain.CommandBuilders
         public ILink<TArgument> ToObject(RowOptions rowOptions = RowOptions.None) => new ObjectMaterializer<TCommand, TParameter, TArgument>(this, rowOptions);
 
         /// <summary>
+        /// Returns the column associated with the column name.
+        /// </summary>
+        /// <param name="columnName">Name of the column.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// If the column name was not found, this will return null
+        /// </remarks>
+        public override sealed ColumnMetadata TryGetColumn(string columnName)
+        {
+            return OnGetTable().Columns.TryGetColumn(columnName);
+        }
+
+        /// <summary>
+        /// Returns a list of columns known to be non-nullable.
+        /// </summary>
+        /// <returns>
+        /// If the command builder doesn't know which columns are non-nullable, an empty list will be returned.
+        /// </returns>
+        /// <remarks>
+        /// This is used by materializers to skip IsNull checks.
+        /// </remarks>
+        public override sealed IReadOnlyList<ColumnMetadata> TryGetNonNullableColumns() => OnGetTable().NonNullableColumns;
+
+        /// <summary>
+        /// Uses an explicitly specified set of key column(s). This overrides the UseKeyAttribute option.
+        /// </summary>
+        /// <param name="columnNames">The column names that form a unique key.</param>
+        /// <returns></returns>
+        public ObjectDbCommandBuilder<TCommand, TParameter, TArgument> WithKeys(params string[] columnNames)
+        {
+            var table = OnGetTable();
+
+            //normalize the column names.
+            KeyColumns = columnNames.Select(c => table.Columns[c].SqlName).ToImmutableHashSet();
+            return this;
+        }
+
+        IObjectDbCommandBuilder<TArgument> IObjectDbCommandBuilder<TArgument>.WithKeys(params string[] columnNames)
+        {
+            return WithKeys(columnNames);
+        }
+
+        /// <summary>
         /// After executing the operation, refreshes the properties on the argumentValue by reading the updated values from the database.
         /// </summary>
         /// <returns></returns>
         public ILink<TArgument> WithRefresh() => new RefreshMaterializer<TCommand, TParameter, TArgument>(this);
+
+        /// <summary>
+        /// Called when ObjectDbCommandBuilder needs a reference to the associated table or view.
+        /// </summary>
+        /// <returns></returns>
+        protected abstract TableOrViewMetadata OnGetTable();
     }
 }

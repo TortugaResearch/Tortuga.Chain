@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 
 namespace Tortuga.Chain.Metadata
 {
@@ -15,6 +16,14 @@ namespace Tortuga.Chain.Metadata
         /// </value>
         [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public ColumnMetadataCollection Columns { get; protected set; }
+
+        /// <summary>
+        /// Gets a value indicating whether this table or view has primary key.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance has a primary key; otherwise, <c>false</c>.
+        /// </value>
+        public bool HasPrimaryKey => Columns.Any(c => c.IsPrimaryKey);
 
         /// <summary>
         /// Gets a value indicating whether this instance is table or a view.

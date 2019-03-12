@@ -12,7 +12,7 @@ namespace Tortuga.Chain.MySql.CommandBuilders
     /// <summary>
     /// Class MySqlUpdateMany.
     /// </summary>
-    internal sealed class MySqlUpdateMany : UpdateManyCommandBuilder<MySqlCommand, MySqlParameter>
+    internal sealed class MySqlUpdateMany : UpdateManyDbCommandBuilder<MySqlCommand, MySqlParameter>
     {
         readonly int? m_ExpectedRowCount;
         readonly object m_NewValues;
@@ -92,7 +92,7 @@ namespace Tortuga.Chain.MySql.CommandBuilders
         /// Applies this command to all rows.
         /// </summary>
         /// <returns></returns>
-        public override UpdateManyCommandBuilder<MySqlCommand, MySqlParameter> All()
+        public override UpdateManyDbCommandBuilder<MySqlCommand, MySqlParameter> All()
         {
             m_WhereClause = null;
             m_WhereArgumentValue = null;
@@ -189,7 +189,7 @@ namespace Tortuga.Chain.MySql.CommandBuilders
         /// </summary>
         /// <param name="filterValue">The filter value.</param>
         /// <param name="filterOptions">The filter options.</param>
-        public override UpdateManyCommandBuilder<MySqlCommand, MySqlParameter> WithFilter(object filterValue, FilterOptions filterOptions = FilterOptions.None)
+        public override UpdateManyDbCommandBuilder<MySqlCommand, MySqlParameter> WithFilter(object filterValue, FilterOptions filterOptions = FilterOptions.None)
         {
             m_WhereClause = null;
             m_WhereArgumentValue = null;
@@ -203,7 +203,7 @@ namespace Tortuga.Chain.MySql.CommandBuilders
         /// </summary>
         /// <param name="whereClause">The where clause.</param>
         /// <returns></returns>
-        public override UpdateManyCommandBuilder<MySqlCommand, MySqlParameter> WithFilter(string whereClause)
+        public override UpdateManyDbCommandBuilder<MySqlCommand, MySqlParameter> WithFilter(string whereClause)
         {
             m_WhereClause = whereClause;
             m_WhereArgumentValue = null;
@@ -218,7 +218,7 @@ namespace Tortuga.Chain.MySql.CommandBuilders
         /// <param name="whereClause">The where clause.</param>
         /// <param name="argumentValue">The argument value.</param>
         /// <returns></returns>
-        public override UpdateManyCommandBuilder<MySqlCommand, MySqlParameter> WithFilter(string whereClause, object argumentValue)
+        public override UpdateManyDbCommandBuilder<MySqlCommand, MySqlParameter> WithFilter(string whereClause, object argumentValue)
         {
             m_WhereClause = whereClause;
             m_WhereArgumentValue = argumentValue;

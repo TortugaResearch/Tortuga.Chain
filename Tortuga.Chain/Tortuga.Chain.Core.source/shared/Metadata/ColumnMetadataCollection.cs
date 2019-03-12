@@ -10,12 +10,16 @@ namespace Tortuga.Chain.Metadata
     {
         IReadOnlyList<ColumnMetadata> m_Source;
 
+        readonly string m_Name;
+
         /// <summary>
         /// Initializes a new instance of the IndexColumnMetadataCollection class that is a read-only wrapper around the specified list.
         /// </summary>
+        /// <param name="name">The name of the parent object.</param>
         /// <param name="source">The source.</param>
-        internal ColumnMetadataCollection(IReadOnlyList<ColumnMetadata> source)
+        internal ColumnMetadataCollection(string name, IReadOnlyList<ColumnMetadata> source)
         {
+            m_Name = name;
             m_Source = source;
         }
 
@@ -53,6 +57,28 @@ namespace Tortuga.Chain.Metadata
                     return item;
 
             return null;
+        }
+
+        /// <summary>
+        /// Gets the <see cref="ColumnMetadata"/> with the specified column name.
+        /// </summary>
+        /// <value>
+        /// The <see cref="ColumnMetadata"/>.
+        /// </value>
+        /// <param name="columnName">Name of the column.</param>
+        /// <returns></returns>
+        public ColumnMetadata this[string columnName]
+        {
+            get
+            {
+                foreach (var item in this)
+                    if (item.SqlName.Equals(columnName, System.StringComparison.OrdinalIgnoreCase))
+                        return item;
+
+#pragma warning disable CA1065 // Do not raise exceptions in unexpected locations
+                throw new KeyNotFoundException($"Could not find column named {columnName} in object {m_Name}");
+#pragma warning restore CA1065 // Do not raise exceptions in unexpected locations
+            }
         }
     }
 }
