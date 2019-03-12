@@ -24,11 +24,8 @@ namespace Tortuga.Chain.Metadata
         /// <param name="rowCount">Approximate row count</param>
         public IndexMetadata(TName tableName, string name, bool isPrimaryKey, bool isUnique, bool isUniqueConstraint, IndexColumnMetadataCollection<TDbType> columns, long? indexSizeKB, long? rowCount) : base(tableName.ToString(), name, isPrimaryKey, isUnique, isUniqueConstraint, columns?.GenericCollection, indexSizeKB, rowCount)
         {
-            if (columns == null || columns.Count == 0)
-                throw new ArgumentException($"{nameof(columns)} is null or empty.", nameof(columns));
-
             TableName = tableName;
-            Columns = columns;
+            Columns = columns ?? throw new ArgumentNullException(nameof(columns), $"{nameof(columns)} is null.");
         }
 
         /// <summary>
