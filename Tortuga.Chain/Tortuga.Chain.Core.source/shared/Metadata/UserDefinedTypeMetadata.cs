@@ -2,13 +2,11 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Tortuga.Chain.Metadata
 {
-
     /// <summary>
     /// This interface represents user defined types.
     /// </summary>
     public abstract class UserDefinedTypeMetadata
     {
-
         /// <summary>
         /// Gets the columns.
         /// </summary>
@@ -34,5 +32,4 @@ namespace Tortuga.Chain.Metadata
         /// </value>
         public string Name { get; protected set; }
     }
-
 }

@@ -1,7 +1,5 @@
 namespace Tortuga.Chain.Metadata
 {
-
-
     /// <summary>
     /// Metadata for a table or view column
     /// </summary>
@@ -9,7 +7,6 @@ namespace Tortuga.Chain.Metadata
     public sealed class ColumnMetadata<TDbType> : ColumnMetadata, ISqlBuilderEntryDetails<TDbType>
         where TDbType : struct
     {
-
         /// <summary>
         /// Initializes a new instance of the <see cref="ColumnMetadata{TDbType}" /> class.
         /// </summary>
@@ -25,35 +22,15 @@ namespace Tortuga.Chain.Metadata
         /// <param name="precision">The precision.</param>
         /// <param name="scale">The scale.</param>
         /// <param name="fullTypeName">Full name of the type.</param>
-        public ColumnMetadata(string name, bool isComputed, bool isPrimaryKey, bool isIdentity, string typeName, TDbType? dbType, string quotedSqlName, bool? isNullable, int? maxLength, int? precision, int? scale, string fullTypeName)
+        public ColumnMetadata(string name, bool isComputed, bool isPrimaryKey, bool isIdentity, string typeName, TDbType? dbType, string quotedSqlName, bool? isNullable, int? maxLength, int? precision, int? scale, string fullTypeName) : base(name, isComputed, isPrimaryKey, isIdentity, typeName, dbType, quotedSqlName, isNullable, maxLength, precision, scale, fullTypeName)
         {
-            TypeName = typeName;
-            SqlName = name;
-            IsComputed = isComputed;
-            IsPrimaryKey = isPrimaryKey;
-            IsIdentity = isIdentity;
             DbType = dbType;
-            base.DbType = dbType;
-            QuotedSqlName = quotedSqlName;
-
-            if (!string.IsNullOrWhiteSpace(name))
-            {
-                ClrName = Utilities.ToClrName(name);
-                SqlVariableName = "@" + ClrName;
-            }
-
-            IsNullable = isNullable;
-            Precision = precision;
-            MaxLength = maxLength;
-            Scale = scale;
-            FullTypeName = fullTypeName;
         }
 
         /// <summary>
         /// Gets the type used by the database.
         /// </summary>
         public new TDbType? DbType { get; }
-
 
         /// <summary>
         /// Returns a <see cref="string" /> that represents this instance.

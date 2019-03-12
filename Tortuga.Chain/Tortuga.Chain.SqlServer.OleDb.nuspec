@@ -25,7 +25,7 @@
     <dependencies>
 
       <group targetFramework="net46">
-        <dependency id="Tortuga.Chain.SqlServer" version="2.1.6988.28249" />
+        <dependency id="Tortuga.Chain.SqlServer" version="2.1.7009.33175" />
       </group>
     </dependencies>
   </metadata>

@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 namespace Tortuga.Chain.Metadata
 {
     /// <summary>
-    ///
+    /// Collection of Column Metadata
     /// </summary>
     /// <typeparam name="TDbType">The type of the database type.</typeparam>
     public class ColumnMetadataCollection<TDbType> : ReadOnlyCollection<ColumnMetadata<TDbType>>
@@ -20,15 +20,8 @@ namespace Tortuga.Chain.Metadata
         public ColumnMetadataCollection(string name, IList<ColumnMetadata<TDbType>> list) : base(list)
         {
             m_Name = name;
-            GenericCollection = new ColumnMetadataCollection(list);
+            GenericCollection = new ColumnMetadataCollection(this);
         }
-
-        /// <summary>
-        /// Gets the generic version of this collection.
-        /// </summary>
-        /// <value>The generic collection.</value>
-        /// <remarks>This is used in generic repository scenarios</remarks>
-        public ColumnMetadataCollection GenericCollection { get; }
 
         /// <summary>
         /// Gets the <see cref="ColumnMetadata{TDbType}"/> with the specified column name.
@@ -66,5 +59,11 @@ namespace Tortuga.Chain.Metadata
 
             return null;
         }
+
+        /// <summary>
+        /// Gets the generic version of this collection.
+        /// </summary>
+        /// <remarks>We can't make this implement IReadOnlyList because it breaks LINQ.</remarks>
+        public ColumnMetadataCollection GenericCollection { get; }
     }
 }

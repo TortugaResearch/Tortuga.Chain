@@ -2,9 +2,6 @@ using System.Collections.Generic;
 
 namespace Tortuga.Chain.Metadata
 {
-
-
-
     /// <summary>
     /// This class represents user defined types.
     /// </summary>
@@ -44,5 +41,4 @@ namespace Tortuga.Chain.Metadata
         /// </value>
         public new TName Name { get; }
     }
-
 }
