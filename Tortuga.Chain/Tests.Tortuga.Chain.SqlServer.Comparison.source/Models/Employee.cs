@@ -15,6 +15,20 @@ namespace Tests.Models
             Employee1 = new HashSet<Employee>();
         }
 
+        [StringLength(15)]
+        public string CellPhone { get; set; }
+
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)] //Needed by EF
+        [IgnoreOnInsert, IgnoreOnUpdate] //Needed by Chain
+        public DateTime? CreatedDate { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Employee> Employee1 { get; set; }
+
+        public virtual Employee Employee2 { get; set; }
+
+        public string EmployeeId { get; set; }
+
         [Key]
         public int EmployeeKey { get; set; }
 
@@ -22,33 +36,19 @@ namespace Tests.Models
         [StringLength(25)]
         public string FirstName { get; set; }
 
-        [StringLength(25)]
-        public string MiddleName { get; set; }
-
         [Required]
         [StringLength(25)]
         public string LastName { get; set; }
 
-        [StringLength(100)]
-        public string Title { get; set; }
-
         public int? ManagerKey { get; set; }
+
+        [StringLength(25)]
+        public string MiddleName { get; set; }
 
         [StringLength(15)]
         public string OfficePhone { get; set; }
 
-        [StringLength(15)]
-        public string CellPhone { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Employee> Employee1 { get; set; }
-
-        public virtual Employee Employee2 { get; set; }
-
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)] //Needed by EF
-        [IgnoreOnInsert, IgnoreOnUpdate] //Needed by Chain
-        public DateTime? CreatedDate { get; set; }
-
-
+        [StringLength(100)]
+        public string Title { get; set; }
     }
 }

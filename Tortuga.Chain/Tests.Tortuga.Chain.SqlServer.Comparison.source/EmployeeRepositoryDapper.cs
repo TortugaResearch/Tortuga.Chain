@@ -30,7 +30,7 @@ namespace Tests
             using (var con = new SqlConnection(m_ConnectionString))
             {
                 con.Open();
-                return con.Query<Employee>("SELECT e.EmployeeKey, e.FirstName, e.MiddleName, e.LastName, e.Title, e.ManagerKey, e.OfficePhone, e.CellPhone, e.CreatedDate FROM HR.Employee e WHERE e.EmployeeKey = @EmployeeKey", new { @EmployeeKey = employeeKey }).First();
+                return con.Query<Employee>("SELECT e.EmployeeKey, e.FirstName, e.MiddleName, e.LastName, e.Title, e.ManagerKey, e.OfficePhone, e.CellPhone, e.CreatedDate, e.EmployeeId FROM HR.Employee e WHERE e.EmployeeKey = @EmployeeKey", new { @EmployeeKey = employeeKey }).First();
             }
         }
 
@@ -39,7 +39,7 @@ namespace Tests
             using (var con = new SqlConnection(m_ConnectionString))
             {
                 con.Open();
-                return con.Query<Employee>("SELECT e.EmployeeKey, e.FirstName, e.MiddleName, e.LastName, e.Title, e.ManagerKey, e.OfficePhone, e.CellPhone, e.CreatedDate FROM HR.Employee e").AsList();
+                return con.Query<Employee>("SELECT e.EmployeeKey, e.FirstName, e.MiddleName, e.LastName, e.Title, e.ManagerKey, e.OfficePhone, e.CellPhone, e.CreatedDate, e.EmployeeId FROM HR.Employee e").AsList();
             }
         }
 
@@ -70,7 +70,8 @@ namespace Tests
 		 Title,
 		 ManagerKey,
 		 OfficePhone,
-		 CellPhone
+		 CellPhone,
+         EmployeeId
 		)
 VALUES	(@FirstName,
 		 @MiddleName,
@@ -78,7 +79,8 @@ VALUES	(@FirstName,
 		 @Title,
 		 @ManagerKey,
 		 @OfficePhone,
-		 @CellPhone
+		 @CellPhone,
+         @EmployeeId
 		);
 
 SELECT SCOPE_IDENTITY()
@@ -99,9 +101,10 @@ SELECT SCOPE_IDENTITY()
 		 Title,
 		 ManagerKey,
 		 OfficePhone,
-		 CellPhone
+		 CellPhone,
+         EmployeeId
 		)
-    OUTPUT 
+    OUTPUT
         Inserted.EmployeeKey,
         Inserted.FirstName,
         Inserted.MiddleName,
@@ -110,14 +113,16 @@ SELECT SCOPE_IDENTITY()
         Inserted.ManagerKey,
         Inserted.OfficePhone,
         Inserted.CellPhone,
-        Inserted.CreatedDate
+        Inserted.CreatedDate,
+         Inserted.EmployeeId
 VALUES	(@FirstName,
 		 @MiddleName,
 		 @LastName,
 		 @Title,
 		 @ManagerKey,
 		 @OfficePhone,
-		 @CellPhone
+		 @CellPhone,
+         @EmployeeId
 		);
 ";
             using (var con = new SqlConnection(m_ConnectionString))
@@ -151,7 +156,8 @@ SET		FirstName = @FirstName,
 		Title = @Title,
 		ManagerKey = @ManagerKey,
 		OfficePhone = @OfficePhone,
-		CellPhone = @CellPhone
+		CellPhone = @CellPhone,
+        EmployeeId = @EmployeeId
 WHERE	EmployeeKey = @EmployeeKey
 ";
             using (var con = new SqlConnection(m_ConnectionString))

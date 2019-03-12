@@ -49,7 +49,8 @@ namespace Tests.CommandBuilders
             }
         }
 
-#if !SQLITE && !ACCESS
+#if SQL_SERVER || SQL_SERVER_OLEDB
+
         [Theory, MemberData(nameof(Prime))]
         public void UpdateViaView(string assemblyName, string dataSourceName, DataSourceType mode)
         {
@@ -77,6 +78,7 @@ namespace Tests.CommandBuilders
                 Release(dataSource);
             }
         }
+
 #endif
 
         [Theory, MemberData(nameof(Prime))]

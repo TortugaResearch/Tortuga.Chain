@@ -1,6 +1,5 @@
 using Npgsql;
 using System.Configuration;
-using Xunit;
 
 namespace Tests
 {
@@ -66,7 +65,7 @@ CREATE TABLE hr.employee
     EmployeeId VARCHAR(50) NOT NULL
 )";
 
-                string index = @"CREATE UNIQUE INDEX index_name ON hr.employee(EmployeeId);";
+                string index = @"CREATE UNIQUE INDEX UX_Employee_EmployeeId ON hr.employee(EmployeeId);";
 
                 string sql2b = @"
 CREATE TABLE public.employee
@@ -123,7 +122,8 @@ SELECT  e.EmployeeKey ,
 		m.OfficePhone AS ManagerOfficePhone ,
 		m.CellPhone AS ManagerCellPhone ,
 		m.CreatedDate AS ManagerCreatedDate ,
-		m.UpdatedDate AS ManagerUpdatedDate
+		m.UpdatedDate AS ManagerUpdatedDate,
+        e.EmployeeId
 FROM    HR.Employee e
 		LEFT JOIN HR.Employee m ON m.EmployeeKey = e.ManagerKey;";
 
