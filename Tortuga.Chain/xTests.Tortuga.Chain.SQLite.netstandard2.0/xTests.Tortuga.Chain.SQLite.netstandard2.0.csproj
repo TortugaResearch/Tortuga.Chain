@@ -5,24 +5,33 @@
     <RootNamespace>xTests.Tortuga.Chain.SQLite.netstandard2._0</RootNamespace>
 
     <IsPackable>false</IsPackable>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
 
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DefineConstants>TRACE;SQLITE;SDS</DefineConstants>
+    <NoWarn>1701;1702;0436</NoWarn>
+    <CodeAnalysisRuleSet>xTests.Tortuga.Chain.SQLite.netstandard2.0.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>TRACE;SQLITE;SDS</DefineConstants>
+    <NoWarn>1701;1702;0436</NoWarn>
+    <CodeAnalysisRuleSet>xTests.Tortuga.Chain.SQLite.netstandard2.0.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.0.1" />
     <PackageReference Include="Tortuga.Chain.CompiledMaterializers" Version="2.0.6941.20438" />
-    <PackageReference Include="Tortuga.Chain.Core" Version="2.1.6963.38576" />
-    <PackageReference Include="xunit" Version="2.4.0" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" />
+    <PackageReference Include="Tortuga.Chain.Core" Version="2.1.7009.31212" />
+    <PackageReference Include="xunit" Version="2.4.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.2.0" />
   </ItemGroup>

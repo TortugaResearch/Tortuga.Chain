@@ -25,14 +25,14 @@
     <dependencies>
 
       <group targetFramework="net46">
-        <dependency id="System.Data.SQLite.Core" version="1.0.109.2" />
-        <dependency id="Tortuga.Chain.Core" version="2.1.6963.38576" />
+        <dependency id="System.Data.SQLite.Core" version="1.0.110.0" />
+        <dependency id="Tortuga.Chain.Core" version="2.1.7009.31212" />
         <dependency id="Nito.AsyncEx" version="4.0.1" />
       </group>
 
       <group targetFramework="netstandard2.0">
-        <dependency id="System.Data.SQLite.Core" version="1.0.109.2" />
-        <dependency id="Tortuga.Chain.Core" version="2.1.6963.38576" />
+        <dependency id="System.Data.SQLite.Core" version="1.0.110.0" />
+        <dependency id="Tortuga.Chain.Core" version="2.1.7009.31212" />
         <dependency id="Nito.AsyncEx.Coordination" version="1.0.2" />
       </group>
     </dependencies>
