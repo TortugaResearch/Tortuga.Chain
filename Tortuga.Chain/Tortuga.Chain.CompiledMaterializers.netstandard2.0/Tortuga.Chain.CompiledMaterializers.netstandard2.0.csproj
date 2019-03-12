@@ -35,7 +35,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CS-Script.Core" Version="1.0.5" />
-    <PackageReference Include="Tortuga.Chain.Core" Version="2.1.6963.38576" />
+    <PackageReference Include="CS-Script.Core" Version="1.0.6" />
+    <PackageReference Include="Tortuga.Chain.Core" Version="2.1.7009.31212" />
   </ItemGroup>
 </Project>

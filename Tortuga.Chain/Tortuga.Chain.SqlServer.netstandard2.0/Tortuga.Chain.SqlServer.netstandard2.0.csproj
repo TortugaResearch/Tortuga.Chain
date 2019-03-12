@@ -37,6 +37,6 @@
 
   <ItemGroup>
     <PackageReference Include="System.Data.SqlClient" Version="4.6.0" />
-    <PackageReference Include="Tortuga.Chain.Core" Version="2.1.6963.38576" />
+    <PackageReference Include="Tortuga.Chain.Core" Version="2.1.7009.31212" />
   </ItemGroup>
 </Project>

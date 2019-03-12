@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>Tortuga.Chain.SqlServer.OleDb</id>
-    <version>2.1.6988.28346</version>
+    <version>2.1.7009.33345</version>
     <authors>David Tomcik, Jonathan Allen</authors>
     <copyright>Copyright David Tomcik, Jonathan Allen 2016,2017,2019</copyright>
     <description>Fluent ORM for .NET and SQL Server using OleDb.</description>
@@ -23,7 +23,7 @@
     </frameworkAssemblies>
     <dependencies>
       <group targetFramework="net46">
-        <dependency id="Tortuga.Chain.SqlServer" version="2.1.6988.28249" />
+        <dependency id="Tortuga.Chain.SqlServer" version="2.1.7009.33175" />
       </group>
     </dependencies>
   </metadata>

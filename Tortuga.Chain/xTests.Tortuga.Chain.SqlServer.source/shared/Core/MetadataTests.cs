@@ -1,3 +1,4 @@
+using System.Linq;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -14,7 +15,65 @@ namespace Tests.Core
         {
         }
 
-#if SQL_SERVER || OLE_SQL_SERVER
+#if SQL_SERVER || ACCESS || SQLITE
+
+        [Theory, MemberData(nameof(Tables))]
+        public void TableIndexes(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+                var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
+                var indexes = table.GetIndexes();
+                Assert.IsTrue(indexes.Where(i => i.IsPrimaryKey).Count() <= 1, "No more than one primary key");
+
+                if (table.Columns.Any(c => c.IsPrimaryKey))
+                    Assert.IsTrue(indexes.Where(i => i.IsPrimaryKey).Count() == 1, "A column is marked as primary, so there should be a primary index.");
+
+                foreach (var index in indexes)
+                {
+                    //Assert.IsTrue(index.Columns.Count > 0, "Indexes should have columns");
+                    Assert.IsFalse(string.IsNullOrWhiteSpace(index.Name), "indexes should have names");
+                }
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+#endif
+
+#if SQL_SERVER
+
+        [Theory, MemberData(nameof(Views))]
+        public void ViewIndexes(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+                var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
+                var indexes = table.GetIndexes();
+                Assert.IsTrue(indexes.Where(i => i.IsPrimaryKey).Count() <= 1, "No more than one primary key");
+
+                if (table.Columns.Any(c => c.IsPrimaryKey))
+                    Assert.IsTrue(indexes.Where(i => i.IsPrimaryKey).Count() <= 1, "A column is marked as primary, so there should be a primary index.");
+
+                foreach (var index in indexes)
+                {
+                    //Assert.IsTrue(index.Columns.Count > 0, "Indexes should have columns");
+                    Assert.IsFalse(string.IsNullOrWhiteSpace(index.Name), "indexes should have names");
+                }
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+#endif
+
+#if SQL_SERVER || OLE_SQL_SERVER || POSTGRESQL
 
         [Theory, MemberData(nameof(Basic))]
         public void DatabaseName(string assemblyName, string dataSourceName, DataSourceType mode)
@@ -59,6 +118,41 @@ namespace Tests.Core
             try
             {
                 dataSource.DatabaseMetadata.Preload();
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+        [Theory, MemberData(nameof(Tables))]
+        public void TryGetTable(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+                dataSource.DatabaseMetadata.Reset();
+                var result = dataSource.DatabaseMetadata.TryGetTableOrView(tableName, out var table);
+                Assert.IsTrue(result);
+                Assert.Equal(tableName, table.Name.ToString());
+                Assert.NotEmpty(table.Columns);
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+        [Theory, MemberData(nameof(Prime))]
+        public void TryGetTable_Failed(string assemblyName, string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+                dataSource.DatabaseMetadata.Reset();
+                var result = dataSource.DatabaseMetadata.TryGetTableOrView("XXXX", out var table);
+                Assert.IsFalse(result, "No object should have been found");
+                Assert.IsNull(table, "No object should have been found");
             }
             finally
             {

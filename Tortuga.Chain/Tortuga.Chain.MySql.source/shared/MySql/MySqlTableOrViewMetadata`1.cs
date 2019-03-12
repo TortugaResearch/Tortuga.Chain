@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using MySql.Data.MySqlClient;
+using System.Collections.Generic;
 using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.MySql
@@ -6,18 +7,18 @@ namespace Tortuga.Chain.MySql
     /// <summary>
     /// Class MySqlTableOrViewMetadata.
     /// </summary>
-    /// <typeparam name="TDbType">The type of the t database type.</typeparam>
-    /// <seealso cref="TableOrViewMetadata{MySqlObjectName, TDbType}" />
-    public class MySqlTableOrViewMetadata<TDbType> : TableOrViewMetadata<MySqlObjectName, TDbType> where TDbType : struct
+    /// <seealso cref="TableOrViewMetadata{MySqlObjectName, MySqlDbType}" />
+    public class MySqlTableOrViewMetadata : TableOrViewMetadata<MySqlObjectName, MySqlDbType>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="MySqlTableOrViewMetadata{TDbType}" /> class.
+        /// Initializes a new instance of the <see cref="MySqlTableOrViewMetadata" /> class.
         /// </summary>
+        /// <param name="metadataCache">The metadata cache.</param>
         /// <param name="name">The name.</param>
         /// <param name="isTable">if set to <c>true</c> is a table.</param>
         /// <param name="columns">The columns.</param>
         /// <param name="engine">The engine.</param>
-        internal MySqlTableOrViewMetadata(MySqlObjectName name, bool isTable, IList<ColumnMetadata<TDbType>> columns, string engine) : base(name, isTable, columns)
+        internal MySqlTableOrViewMetadata(DatabaseMetadataCache<MySqlObjectName, MySqlDbType> metadataCache, MySqlObjectName name, bool isTable, IList<ColumnMetadata<MySqlDbType>> columns, string engine) : base(metadataCache, name, isTable, columns)
         {
             Engine = engine;
         }

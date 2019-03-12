@@ -50,5 +50,13 @@ namespace Tortuga.Chain.Metadata
         /// <remarks>This is used to improve the performance of materializers by avoiding is null checks.</remarks>
         [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public ColumnMetadataCollection NonNullableColumns { get; protected set; }
+
+        /// <summary>
+        /// Gets the columns that make up the primary key.
+        /// </summary>
+        /// <value>
+        /// The columns.
+        /// </value>
+        public ColumnMetadataCollection PrimaryKeyColumns { get; protected set; }
     }
 }
