@@ -24,7 +24,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;CODE_ANALYSIS;SDS</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;CODE_ANALYSIS;CODE_ANALYSIS;SQLITE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -36,7 +36,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;CODE_ANALYSIS;SDS</DefineConstants>
+    <DefineConstants>TRACE;CODE_ANALYSIS;CODE_ANALYSIS;SQLITE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -71,8 +71,8 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Data.SQLite, Version=1.0.109.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Data.SQLite.Core.1.0.109.2\lib\net46\System.Data.SQLite.dll</HintPath>
+    <Reference Include="System.Data.SQLite, Version=1.0.110.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Data.SQLite.Core.1.0.110.0\lib\net46\System.Data.SQLite.dll</HintPath>
     </Reference>
     <Reference Include="System.Net" />
     <Reference Include="System.Runtime.Caching" />
@@ -84,16 +84,34 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Tortuga.Anchor, Version=2.0.6931.40035, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
-      <HintPath>..\packages\Tortuga.Anchor.2.0.6931.40035\lib\net46\Tortuga.Anchor.dll</HintPath>
+    <Reference Include="Tortuga.Anchor, Version=2.1.7001.32222, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tortuga.Anchor.2.1.7001.32222\lib\net46\Tortuga.Anchor.dll</HintPath>
     </Reference>
-    <Reference Include="Tortuga.Chain.Core, Version=2.0.6932.73, Culture=neutral, PublicKeyToken=8769fd32a2872cf0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Tortuga.Chain.Core.2.0.6932.69\lib\net46\Tortuga.Chain.Core.dll</HintPath>
+    <Reference Include="Tortuga.Chain.Core, Version=2.1.7009.31216, Culture=neutral, PublicKeyToken=8769fd32a2872cf0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tortuga.Chain.Core.2.1.7009.31212\lib\net46\Tortuga.Chain.Core.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\ProductSharedAssemblyInfo.cs">
       <Link>Properties\ProductSharedAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\Shared\DataSourceBase.Class0DataSource.cs">
+      <Link>shared\SQLite\DataSourceBase.Class0DataSource.cs</Link>
+    </Compile>
+    <Compile Include="..\Shared\DataSourceBase.Class1DataSource.cs">
+      <Link>shared\SQLite\DataSourceBase.Class1DataSource.cs</Link>
+    </Compile>
+    <Compile Include="..\Shared\DataSourceBase.Class1DataSource.StringNames.cs">
+      <Link>shared\SQLite\DataSourceBase.Class1DataSource.StringNames.cs</Link>
+    </Compile>
+    <Compile Include="..\Shared\DataSourceBase.IClass0DataSource.cs">
+      <Link>shared\SQLite\DataSourceBase.IClass0DataSource.cs</Link>
+    </Compile>
+    <Compile Include="..\Shared\DataSourceBase.IClass1DataSource.cs">
+      <Link>shared\SQLite\DataSourceBase.IClass1DataSource.cs</Link>
+    </Compile>
+    <Compile Include="..\Shared\DataSourceBase.IDataSource.cs">
+      <Link>shared\SQLite\DataSourceBase.IDataSource.cs</Link>
     </Compile>
     <Compile Include="..\Tortuga.Chain.SQLite.source\GlobalSuppressions.cs">
       <Link>GlobalSuppressions.cs</Link>
@@ -127,9 +145,9 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets'))" />
-    <Error Condition="!Exists('..\packages\System.Data.SQLite.Core.1.0.109.2\build\net46\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.Data.SQLite.Core.1.0.109.2\build\net46\System.Data.SQLite.Core.targets'))" />
+    <Error Condition="!Exists('..\packages\System.Data.SQLite.Core.1.0.110.0\build\net46\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.Data.SQLite.Core.1.0.110.0\build\net46\System.Data.SQLite.Core.targets'))" />
   </Target>
-  <Import Project="..\packages\System.Data.SQLite.Core.1.0.109.2\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.109.2\build\net46\System.Data.SQLite.Core.targets')" />
+  <Import Project="..\packages\System.Data.SQLite.Core.1.0.110.0\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.110.0\build\net46\System.Data.SQLite.Core.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

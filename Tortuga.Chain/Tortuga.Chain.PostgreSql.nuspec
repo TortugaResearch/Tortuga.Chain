@@ -25,13 +25,13 @@
     <dependencies>
 
       <group targetFramework="net46">
-        <dependency id="Tortuga.Chain.Core" version="2.0.6932.69" />
-        <dependency id="Npgsql" version="4.0.4" />
+        <dependency id="Tortuga.Chain.Core" version="2.1.7009.31212" />
+        <dependency id="Npgsql" version="4.0.5" />
       </group>
 
       <group targetFramework="netstandard2.0">
-        <dependency id="Tortuga.Chain.Core" version="2.0.6932.69" />
-        <dependency id="Npgsql" version="4.0.4" />
+        <dependency id="Tortuga.Chain.Core" version="2.1.7009.31212" />
+        <dependency id="Npgsql" version="4.0.5" />
       </group>
     </dependencies>
   </metadata>

@@ -63,8 +63,8 @@
     </Reference>
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Data.SQLite, Version=1.0.109.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Data.SQLite.Core.1.0.109.2\lib\net46\System.Data.SQLite.dll</HintPath>
+    <Reference Include="System.Data.SQLite, Version=1.0.110.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Data.SQLite.Core.1.0.110.0\lib\net46\System.Data.SQLite.dll</HintPath>
     </Reference>
     <Reference Include="System.Net" />
     <Reference Include="System.Runtime.Caching" />
@@ -74,8 +74,8 @@
     <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net461\System.ValueTuple.dll</HintPath>
     </Reference>
-    <Reference Include="Tortuga.Anchor, Version=2.0.6931.40035, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
-      <HintPath>..\packages\Tortuga.Anchor.2.0.6931.40035\lib\net46\Tortuga.Anchor.dll</HintPath>
+    <Reference Include="Tortuga.Anchor, Version=2.1.7001.32222, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tortuga.Anchor.2.1.7001.32222\lib\net46\Tortuga.Anchor.dll</HintPath>
     </Reference>
   </ItemGroup>
   <Choose>
@@ -91,23 +91,11 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="..\Tests.Tortuga.Chain.SqlServer.source\AuditRules\AuditRulesTests.cs">
-      <Link>AuditRules\AuditRulesTests.cs</Link>
-    </Compile>
-    <Compile Include="..\Tests.Tortuga.Chain.SqlServer.source\Class1Databases\DeleteTests.cs">
-      <Link>Class1Databases\DeleteTests.cs</Link>
-    </Compile>
     <Compile Include="..\Tests.Tortuga.Chain.SqlServer.source\Class1Databases\FromTests.cs">
       <Link>Class1Databases\FromTests.cs</Link>
     </Compile>
-    <Compile Include="..\Tests.Tortuga.Chain.SqlServer.source\Class1Databases\InsertTests.cs">
-      <Link>Class1Databases\InsertTests.cs</Link>
-    </Compile>
     <Compile Include="..\Tests.Tortuga.Chain.SqlServer.source\Class1Databases\SqlTests.cs">
       <Link>Class1Databases\SqlTests.cs</Link>
-    </Compile>
-    <Compile Include="..\Tests.Tortuga.Chain.SqlServer.source\Class1Databases\UpdateTests.cs">
-      <Link>Class1Databases\UpdateTests.cs</Link>
     </Compile>
     <Compile Include="..\Tests.Tortuga.Chain.SqlServer.source\Class1Databases\UpsertTests.cs">
       <Link>Class1Databases\UpsertTests.cs</Link>
@@ -208,9 +196,9 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets'))" />
-    <Error Condition="!Exists('..\packages\System.Data.SQLite.Core.1.0.109.2\build\net46\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.Data.SQLite.Core.1.0.109.2\build\net46\System.Data.SQLite.Core.targets'))" />
+    <Error Condition="!Exists('..\packages\System.Data.SQLite.Core.1.0.110.0\build\net46\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.Data.SQLite.Core.1.0.110.0\build\net46\System.Data.SQLite.Core.targets'))" />
   </Target>
-  <Import Project="..\packages\System.Data.SQLite.Core.1.0.109.2\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.109.2\build\net46\System.Data.SQLite.Core.targets')" />
+  <Import Project="..\packages\System.Data.SQLite.Core.1.0.110.0\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.110.0\build\net46\System.Data.SQLite.Core.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

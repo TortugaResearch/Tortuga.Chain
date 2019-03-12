@@ -1,22 +1,13 @@
-﻿using System;
+﻿using Nito.AsyncEx;
+using System;
+using System.Collections.Concurrent;
 using System.Data;
+using System.Data.SQLite;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 using Tortuga.Chain.Core;
-using System.Diagnostics.CodeAnalysis;
 using Tortuga.Chain.DataSources;
-using Nito.AsyncEx;
-using System.Collections.Concurrent;
-
-
-#if SDS
-using System.Data.SQLite;
-#else
-using SQLiteCommand = Microsoft.Data.Sqlite.SqliteCommand;
-using SQLiteParameter = Microsoft.Data.Sqlite.SqliteParameter;
-using SQLiteConnection = Microsoft.Data.Sqlite.SqliteConnection;
-using SQLiteTransaction = Microsoft.Data.Sqlite.SqliteTransaction;
-#endif
 
 
 

@@ -13,15 +13,13 @@ namespace Tortuga.Chain.SQLite
         /// </summary>
         public static readonly SQLiteObjectName Empty;
 
-        private readonly string m_Name;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="SQLiteObjectName" /> struct.
         /// </summary>
         /// <param name="name">The name.</param>
         public SQLiteObjectName(string name)
         {
-            m_Name = Normalize(name);
+            Name = Normalize(name);
         }
 
         /// <summary>
@@ -30,10 +28,7 @@ namespace Tortuga.Chain.SQLite
         /// <value>
         /// The name.
         /// </value>
-        public string Name
-        {
-            get { return m_Name; }
-        }
+        public string Name { get; }
 
         /// <summary>
         /// Perform an implicit conversion from <see cref="string"/> to <see cref="SQLiteObjectName"/>.
@@ -120,8 +115,7 @@ namespace Tortuga.Chain.SQLite
         /// <returns></returns>
         public string ToQuotedString()
         {
-            return Name;
-            //return $"[{Name}]";
+            return $"\"{Name}\"";
         }
 
         /// <summary>
@@ -140,7 +134,17 @@ namespace Tortuga.Chain.SQLite
             if (string.IsNullOrWhiteSpace(value))
                 return null;
 
-            return value.Replace("[", "").Replace("]", "");
+            //SQLite supports many escaping options
+            if (value.StartsWith("\"", StringComparison.OrdinalIgnoreCase) && value.EndsWith("\"", StringComparison.OrdinalIgnoreCase))
+                return value.Substring(1, value.Length - 2);
+
+            if (value.StartsWith("[", StringComparison.OrdinalIgnoreCase) && value.EndsWith("]", StringComparison.OrdinalIgnoreCase))
+                return value.Substring(1, value.Length - 2);
+
+            if (value.StartsWith("`", StringComparison.OrdinalIgnoreCase) && value.EndsWith("`", StringComparison.OrdinalIgnoreCase))
+                return value.Substring(1, value.Length - 2);
+
+            return value;
         }
     }
 }

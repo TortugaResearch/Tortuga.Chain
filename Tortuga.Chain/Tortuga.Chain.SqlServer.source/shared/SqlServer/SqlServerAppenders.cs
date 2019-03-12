@@ -23,6 +23,18 @@ namespace Tortuga.Chain.SqlServer
         {
             return new NotifyChangeAppender<TResult>(previousLink, eventHandler);
         }
+
+
+        /// <summary>
+        /// Attaches a SQL Server dependency change listener to this operation that will automatically invalidate the cache.
+        /// </summary>
+        /// <typeparam name="TResult">The type of the result.</typeparam>
+        /// <param name="previousLink">The previous link.</param>
+        /// <returns></returns>
+        public static ILink<TResult> AutoInvalidate<TResult>(this ICacheLink<TResult> previousLink)
+        {
+            return new NotifyChangeAppender<TResult>(previousLink, (s, e) => previousLink.Invalidate());
+        }
 #endif
     }
 }

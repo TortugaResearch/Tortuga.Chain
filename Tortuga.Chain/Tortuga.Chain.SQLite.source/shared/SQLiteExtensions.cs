@@ -1,14 +1,8 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Data;
-using Tortuga.Chain.SQLite;
-
-#if SDS
 using System.Data.SQLite;
-#else
-using SQLiteConnection = Microsoft.Data.Sqlite.SqliteConnection;
-using SQLiteTransaction = Microsoft.Data.Sqlite.SqliteTransaction;
-#endif
+using Tortuga.Chain.SQLite;
 
 namespace Tortuga.Chain
 {
