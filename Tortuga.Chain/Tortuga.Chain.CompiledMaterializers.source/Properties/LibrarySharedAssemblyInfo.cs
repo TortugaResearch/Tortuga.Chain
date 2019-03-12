@@ -4,7 +4,7 @@
 [assembly: AssemblyDescription("This library adds compiled versions of the ToObject and ToCollection materializers.")]
 [assembly: AssemblyCulture("")]
 #if NETSTANDARD2_0
-[assembly: AssemblyVersion("2.0")]
+[assembly: AssemblyVersion("2.1")]
 #else
-[assembly: AssemblyVersion("2.0.*")]
+[assembly: AssemblyVersion("2.1.*")]
 #endif
