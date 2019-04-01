@@ -41,6 +41,9 @@ namespace Tortuga.Chain.MySql.CommandBuilders
             sqlBuilder.ApplyArgumentValue(DataSource, ArgumentValue, m_Options);
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
+            if (KeyColumns.Count > 0)
+                sqlBuilder.OverrideKeys(KeyColumns);
+
             var sql = new StringBuilder();
             sqlBuilder.BuildSelectByKeyStatement(sql, Table.Name.ToQuotedString(), ";");
             sql.AppendLine();

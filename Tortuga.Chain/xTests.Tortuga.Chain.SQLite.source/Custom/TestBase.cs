@@ -33,6 +33,8 @@ namespace Tests
 
         public static string EmployeeTableName { get { return "Employee"; } }
 
+        public static string EmployeeViewName { get { return "EmployeeWithManager"; } }
+
         public SQLiteDataSource AttachRules(SQLiteDataSource source)
         {
             return source.WithRules(

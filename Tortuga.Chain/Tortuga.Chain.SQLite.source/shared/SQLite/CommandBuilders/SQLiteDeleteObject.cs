@@ -14,7 +14,6 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
     {
         readonly DeleteOptions m_Options;
 
-
         /// <summary>
         /// Initializes a new instance of the <see cref="SQLiteDeleteObject{TArgument}"/> class.
         /// </summary>
@@ -41,6 +40,9 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
             var sqlBuilder = Table.CreateSqlBuilder(StrictMode);
             sqlBuilder.ApplyArgumentValue(DataSource, ArgumentValue, m_Options);
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
+
+            if (KeyColumns.Count > 0)
+                sqlBuilder.OverrideKeys(KeyColumns);
 
             var sql = new StringBuilder();
             sqlBuilder.BuildSelectByKeyStatement(sql, Table.Name.ToQuotedString(), ";");

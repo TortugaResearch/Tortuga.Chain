@@ -6,14 +6,33 @@ using Tortuga.Chain;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.DataSources;
 
-
-
 namespace Tests
 {
     [TestClass]
     public class Setup
     {
+        [AssemblyCleanup]
+        public static void AssemblyCleanup()
+        {
+            /*
+            using (var con = new NpgsqlConnection(@"User ID = postgres;
+                                             Password = toor;
+                                             Host = localhost;
+                                             Port = 5432;
+                                             Database = tortugachaintestdb;
+                                             Pooling = true;"))
+            {
+                con.Open();
 
+                string sql = "DROP TABLE HR.Employee; DROP SCHEMA HR;";
+                string sql2 = "DROP TABLE Sales.Customer; DROP SCHEMA Sales;";
+                using (NpgsqlCommand cmd = new NpgsqlCommand(sql, con))
+                    cmd.ExecuteNonQuery();
+
+                using (NpgsqlCommand cmd = new NpgsqlCommand(sql2, con))
+                    cmd.ExecuteNonQuery();
+            }*/
+        }
 
         [AssemblyInitialize]
         public static void AssemblyInit(TestContext context)
@@ -26,11 +45,10 @@ namespace Tests
             CompiledMaterializers.MaterializerCompiled += CompiledMaterializers_MaterializerCompiled;
             CompiledMaterializers.MaterializerCompilerFailed += CompiledMaterializers_MaterializerCompiled;
 
-
             //TODO - setup database?
             using (var con = new NpgsqlConnection(@"User ID = postgres;
-                                             Password = toor; 
-                                             Host = localhost; 
+                                             Password = toor;
+                                             Host = localhost;
                                              Port = 5432;
                                              Database = tortugachaintestdb;
                                              Pooling = true;"))
@@ -47,6 +65,7 @@ CREATE TABLE hr.employee
 	FirstName VARCHAR(50) NOT NULL,
 	MiddleName VARCHAR(50) NULL,
 	LastName VARCHAR(50) NOT NULL,
+	EmployeeId VARCHAR(50) NOT NULL,
 	Title VARCHAR(100) null,
 	ManagerKey INTEGER NULL REFERENCES HR.Employee(EmployeeKey),
     CreatedDate TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -59,7 +78,7 @@ DROP SCHEMA IF EXISTS sales Cascade;
 CREATE SCHEMA sales;
 CREATE TABLE sales.customer
 (
-	CustomerKey SERIAL PRIMARY KEY, 
+	CustomerKey SERIAL PRIMARY KEY,
     FullName VARCHAR(150) NULL,
 	State CHAR(2) NOT NULL,
 
@@ -79,44 +98,8 @@ CREATE TABLE sales.customer
 
                 using (NpgsqlCommand cmd = new NpgsqlCommand(sql2, con))
                     cmd.ExecuteNonQuery();
-
             }
-
         }
-
-        [AssemblyCleanup]
-        public static void AssemblyCleanup()
-        {
-            /*
-            using (var con = new NpgsqlConnection(@"User ID = postgres;
-                                             Password = toor; 
-                                             Host = localhost; 
-                                             Port = 5432;
-                                             Database = tortugachaintestdb;
-                                             Pooling = true;"))
-            {
-                con.Open();
-
-                string sql = "DROP TABLE HR.Employee; DROP SCHEMA HR;";
-                string sql2 = "DROP TABLE Sales.Customer; DROP SCHEMA Sales;"; 
-                using (NpgsqlCommand cmd = new NpgsqlCommand(sql, con))
-                    cmd.ExecuteNonQuery();
-
-                using (NpgsqlCommand cmd = new NpgsqlCommand(sql2, con))
-                    cmd.ExecuteNonQuery();
-
-            }*/
-        }
-
-
-
-        static void DefaultDispatcher_ExecutionCanceled(object sender, ExecutionEventArgs e)
-        {
-            Debug.WriteLine("******");
-            Debug.WriteLine($"Execution canceled: {e.ExecutionDetails.OperationName}. Duration: {e.Duration.Value.TotalSeconds.ToString("N3")} sec.");
-            //WriteDetails(e);
-        }
-
 
         static void CompiledMaterializers_MaterializerCompiled(object sender, MaterializerCompilerEventArgs e)
         {
@@ -128,6 +111,13 @@ CREATE TABLE sales.customer
             Debug.WriteLine("Code");
             Debug.WriteLine(e.Code);
             Debug.Unindent();
+        }
+
+        static void DefaultDispatcher_ExecutionCanceled(object sender, ExecutionEventArgs e)
+        {
+            Debug.WriteLine("******");
+            Debug.WriteLine($"Execution canceled: {e.ExecutionDetails.OperationName}. Duration: {e.Duration.Value.TotalSeconds.ToString("N3")} sec.");
+            //WriteDetails(e);
         }
 
         static void DefaultDispatcher_ExecutionError(object sender, ExecutionEventArgs e)

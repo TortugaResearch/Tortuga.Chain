@@ -33,7 +33,7 @@ namespace Tests
         public static string CustomerTableName { get { return "Sales.Customer"; } }
 
         public static string EmployeeTableName { get { return "HR.Employee"; } }
-
+        public static string EmployeeViewName { get { return "HR.EmployeeWithManager"; } }
         public string MultiResultSetProc1Name { get { return "Sales.CustomerWithOrdersByState"; } }
 
         public string ScalarFunction1Name { get { return "HR.EmployeeCount"; } }

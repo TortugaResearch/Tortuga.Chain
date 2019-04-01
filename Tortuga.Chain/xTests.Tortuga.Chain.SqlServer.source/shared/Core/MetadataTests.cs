@@ -73,7 +73,7 @@ namespace Tests.Core
 
 #endif
 
-#if SQL_SERVER || OLE_SQL_SERVER
+#if SQL_SERVER || OLE_SQL_SERVER || POSTGRESQL
 
         [Theory, MemberData(nameof(Basic))]
         public void DatabaseName(string assemblyName, string dataSourceName, DataSourceType mode)
@@ -118,6 +118,41 @@ namespace Tests.Core
             try
             {
                 dataSource.DatabaseMetadata.Preload();
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+        [Theory, MemberData(nameof(Tables))]
+        public void TryGetTable(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+                dataSource.DatabaseMetadata.Reset();
+                var result = dataSource.DatabaseMetadata.TryGetTableOrView(tableName, out var table);
+                Assert.IsTrue(result);
+                Assert.Equal(tableName, table.Name.ToString());
+                Assert.NotEmpty(table.Columns);
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+        [Theory, MemberData(nameof(Prime))]
+        public void TryGetTable_Failed(string assemblyName, string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+                dataSource.DatabaseMetadata.Reset();
+                var result = dataSource.DatabaseMetadata.TryGetTableOrView("XXXX", out var table);
+                Assert.IsFalse(result, "No object should have been found");
+                Assert.IsNull(table, "No object should have been found");
             }
             finally
             {

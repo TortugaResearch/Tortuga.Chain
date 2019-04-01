@@ -43,6 +43,9 @@ namespace Tortuga.Chain.MySql.CommandBuilders
             sqlBuilder.ApplyArgumentValue(DataSource, ArgumentValue, m_Options);
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
+            if (KeyColumns.Count > 0)
+                sqlBuilder.OverrideKeys(KeyColumns);
+
             var identityInsert = m_Options.HasFlag(UpsertOptions.IdentityInsert);
 
             var sql = new StringBuilder();
@@ -72,7 +75,10 @@ namespace Tortuga.Chain.MySql.CommandBuilders
                     throw new NotSupportedException("Cannot return data from a MySQL Upsert unless there is a single primary key.");
                 var key = keys[0];
 
-                sqlBuilder.BuildSelectClause(sql, "SELECT ", null, $" FROM {Table.Name.ToQuotedString()} WHERE {key.QuotedSqlName} = CASE WHEN {key.SqlVariableName} IS NULL OR {key.SqlVariableName} = 0 THEN LAST_INSERT_ID() ELSE {key.SqlVariableName} END;");
+                if (KeyColumns.Count == 0)
+                    sqlBuilder.BuildSelectClause(sql, "SELECT ", null, $" FROM {Table.Name.ToQuotedString()} WHERE {key.QuotedSqlName} = CASE WHEN {key.SqlVariableName} IS NULL OR {key.SqlVariableName} = 0 THEN LAST_INSERT_ID() ELSE {key.SqlVariableName} END;");
+                else
+                    sqlBuilder.BuildSelectByKeyStatement(sql, Table.Name.ToQuotedString(), ";");
             }
 
             return new MySqlCommandExecutionToken(DataSource, "Insert or update " + Table.Name, sql.ToString(), sqlBuilder.GetParameters());
