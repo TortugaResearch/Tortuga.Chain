@@ -93,6 +93,81 @@ namespace Tortuga.Chain.PostgreSql
         }
 
         /// <summary>
+        /// Gets the indexes for a table.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <returns></returns>
+        /// <exception cref="NotSupportedException">Indexes are not supported by this data source</exception>
+        /// <remarks>
+        /// This should be cached on a TableOrViewMetadata object.
+        /// </remarks>
+        public override IndexMetadataCollection<PostgreSqlObjectName, NpgsqlDbType> GetIndexesForTable(PostgreSqlObjectName tableName)
+        {
+            const string indexSql =
+@"SELECT
+	ns.nspname as schema_name,
+	tab.relname as table_name,
+    cls.relname as index_name,
+    am.amname as index_type,
+	idx.indisprimary as is_primary,
+	idx.indisunique as is_unique
+FROM
+	pg_index idx
+INNER JOIN pg_class cls ON cls.oid=idx.indexrelid
+INNER JOIN pg_class tab ON tab.oid=idx.indrelid
+INNER JOIN pg_am am ON am.oid=cls.relam
+INNER JOIN pg_namespace ns on ns.oid=tab.relnamespace
+WHERE ns.nspname = @Schema AND tab.relname = @Name";
+
+            var table = GetTableOrView(tableName);
+
+            var results = new List<IndexMetadata<PostgreSqlObjectName, NpgsqlDbType>>();
+            using (var con = new NpgsqlConnection(m_ConnectionBuilder.ConnectionString))
+            using (var con2 = new NpgsqlConnection(m_ConnectionBuilder.ConnectionString))
+            {
+                con.Open();
+                con2.Open();
+                using (var cmd = new NpgsqlCommand(indexSql, con))
+                {
+                    cmd.Parameters.AddWithValue("@Schema", tableName.Schema);
+                    cmd.Parameters.AddWithValue("@Name", tableName.Name);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var name = reader.GetString(reader.GetOrdinal("index_name"));
+                            var isUnique = reader.GetBoolean(reader.GetOrdinal("is_unique"));
+
+                            var isPrimaryKey = reader.GetBoolean(reader.GetOrdinal("is_primary"));
+                            var isUniqueConstraint = false; // string.Equals(origin, "u", StringComparison.Ordinal);
+
+                            var columns = new List<IndexColumnMetadata<NpgsqlDbType>>();
+
+                            throw new NotImplementedException("Need columns SQL.");
+                            //using (var cmd2 = new NpgsqlCommand($"PRAGMA index_xinfo('{name}')", con2))
+                            //using (var reader2 = cmd2.ExecuteReader())
+                            //{
+                            //    while (reader2.Read())
+                            //    {
+                            //        var colName = (reader2.IsDBNull(reader2.GetOrdinal("name"))) ? null : reader2.GetString(reader2.GetOrdinal("name"));
+                            //        var isDescending = reader2.GetInt64(reader2.GetOrdinal("desc")) != 0;
+                            //        var isIncluded = reader2.GetInt64(reader2.GetOrdinal("key")) == 0;
+
+                            //        var column = table.Columns.SingleOrDefault(c => string.Equals(c.SqlName, colName, StringComparison.Ordinal));
+
+                            //        columns.Add(new IndexColumnMetadata<NpgsqlDbType>(column, isDescending, isIncluded));
+                            //    }
+                            //}
+
+                            results.Add(new IndexMetadata<PostgreSqlObjectName, NpgsqlDbType>(tableName, name, isPrimaryKey, isUnique, isUniqueConstraint, new IndexColumnMetadataCollection<NpgsqlDbType>(columns), null, null));
+                        }
+                    }
+                }
+            }
+            return new IndexMetadataCollection<PostgreSqlObjectName, NpgsqlDbType>(results);
+        }
+
+        /// <summary>
         /// Gets the metadata for a scalar function.
         /// </summary>
         /// <param name="scalarFunctionName">Name of the scalar function.</param>

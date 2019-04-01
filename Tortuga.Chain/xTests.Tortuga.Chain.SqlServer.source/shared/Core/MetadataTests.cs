@@ -15,7 +15,7 @@ namespace Tests.Core
         {
         }
 
-#if SQL_SERVER || ACCESS || SQLITE
+#if SQL_SERVER || ACCESS || SQLITE || POSTGRESQL || MYSQL
 
         [Theory, MemberData(nameof(Tables))]
         public void TableIndexes(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
