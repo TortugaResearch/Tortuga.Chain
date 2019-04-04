@@ -16,8 +16,8 @@ namespace Tortuga.Chain.PostgreSql
     /// <seealso cref="IDisposable" />
     public class PostgreSqlTransactionalDataSource : PostgreSqlDataSourceBase, IDisposable, ITransactionalDataSource
     {
-        private readonly NpgsqlConnection m_Connection;
         private readonly PostgreSqlDataSource m_BaseDataSource;
+        private readonly NpgsqlConnection m_Connection;
         private readonly NpgsqlTransaction m_Transaction;
         private bool m_Disposed;
 
@@ -79,11 +79,37 @@ namespace Tortuga.Chain.PostgreSql
         }
 
         /// <summary>
+        /// Gets or sets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
+        /// </summary>
+        public override ICacheAdapter Cache => m_BaseDataSource.Cache;
+
+        /// <summary>
         /// Gets the database metadata.
         /// </summary>
         public override PostgreSqlMetadataCache DatabaseMetadata
         {
             get { return m_BaseDataSource.DatabaseMetadata; }
+        }
+
+        /// <summary>
+        /// The extension cache is used by extensions to store data source specific information.
+        /// </summary>
+        /// <value>
+        /// The extension cache.
+        /// </value>
+        protected override ConcurrentDictionary<Type, object> ExtensionCache => m_BaseDataSource.m_ExtensionCache;
+
+        /// <summary>
+        /// Commits this transaction instance.
+        /// </summary>
+        /// <exception cref="ObjectDisposedException">Transaction is disposed.</exception>
+        public void Commit()
+        {
+            if (m_Disposed)
+                throw new ObjectDisposedException("Transaction is disposed.");
+
+            m_Transaction.Commit();
+            Dispose(true);
         }
 
         /// <summary>
@@ -93,6 +119,51 @@ namespace Tortuga.Chain.PostgreSql
         {
             Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Gets the extension data.
+        /// </summary>
+        /// <typeparam name="TTKey">The type of extension data desired.</typeparam>
+        /// <returns>
+        /// T.
+        /// </returns>
+        /// <remarks>
+        /// Chain extensions can use this to store data source specific data. The key should be a data type defined by the extension.
+        /// Transactional data sources should override this method and return the value held by their parent data source.
+        /// </remarks>
+        public override TTKey GetExtensionData<TTKey>() => m_BaseDataSource.GetExtensionData<TTKey>();
+
+        /// <summary>
+        /// Rolls the transaction back.
+        /// </summary>
+        /// <exception cref="ObjectDisposedException">Transaction is disposed.</exception>
+        public void Rollback()
+        {
+            if (m_Disposed)
+                throw new ObjectDisposedException("Transaction is disposed.");
+
+            m_Transaction.Rollback();
+            Dispose(true);
+        }
+
+        /// <summary>
+        /// Tests the connection.
+        /// </summary>
+        public override void TestConnection()
+        {
+            using (var cmd = new NpgsqlCommand("SELECT 1", m_Connection))
+                cmd.ExecuteScalar();
+        }
+
+        /// <summary>
+        /// Tests the connection asynchronously.
+        /// </summary>
+        /// <returns></returns>
+        public override async Task TestConnectionAsync()
+        {
+            using (var cmd = new NpgsqlCommand("SELECT 1", m_Connection))
+                await cmd.ExecuteScalarAsync().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -110,32 +181,6 @@ namespace Tortuga.Chain.PostgreSql
                 m_Connection.Dispose();
                 m_Disposed = true;
             }
-        }
-
-        /// <summary>
-        /// Commits this transaction instance.
-        /// </summary>
-        /// <exception cref="ObjectDisposedException">Transaction is disposed.</exception>
-        public void Commit()
-        {
-            if (m_Disposed)
-                throw new ObjectDisposedException("Transaction is disposed.");
-
-            m_Transaction.Commit();
-            Dispose(true);
-        }
-
-        /// <summary>
-        /// Rolls the transaction back.
-        /// </summary>
-        /// <exception cref="ObjectDisposedException">Transaction is disposed.</exception>
-        public void Rollback()
-        {
-            if (m_Disposed)
-                throw new ObjectDisposedException("Transaction is disposed.");
-
-            m_Transaction.Rollback();
-            Dispose(true);
         }
 
         /// <summary>
@@ -184,6 +229,41 @@ namespace Tortuga.Chain.PostgreSql
                     OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
                     return rows;
                 }
+            }
+            catch (Exception ex)
+            {
+                OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Executes the specified operation.
+        /// </summary>
+        /// <param name="executionToken">The execution token.</param>
+        /// <param name="implementation">The implementation.</param>
+        /// <param name="state">The state.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException">
+        /// executionToken;executionToken is null.
+        /// or
+        /// implementation;implementation is null.
+        /// </exception>
+        protected override int? Execute(OperationExecutionToken<NpgsqlConnection, NpgsqlTransaction> executionToken, OperationImplementation<NpgsqlConnection, NpgsqlTransaction> implementation, object state)
+        {
+            if (executionToken == null)
+                throw new ArgumentNullException("executionToken", "executionToken is null.");
+            if (implementation == null)
+                throw new ArgumentNullException("implementation", "implementation is null.");
+
+            var startTime = DateTimeOffset.Now;
+            OnExecutionStarted(executionToken, startTime, state);
+
+            try
+            {
+                var rows = implementation(m_Connection, m_Transaction);
+                OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
+                return rows;
             }
             catch (Exception ex)
             {
@@ -258,41 +338,6 @@ namespace Tortuga.Chain.PostgreSql
         }
 
         /// <summary>
-        /// Executes the specified operation.
-        /// </summary>
-        /// <param name="executionToken">The execution token.</param>
-        /// <param name="implementation">The implementation.</param>
-        /// <param name="state">The state.</param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException">
-        /// executionToken;executionToken is null.
-        /// or
-        /// implementation;implementation is null.
-        /// </exception>
-        protected override int? Execute(OperationExecutionToken<NpgsqlConnection, NpgsqlTransaction> executionToken, OperationImplementation<NpgsqlConnection, NpgsqlTransaction> implementation, object state)
-        {
-            if (executionToken == null)
-                throw new ArgumentNullException("executionToken", "executionToken is null.");
-            if (implementation == null)
-                throw new ArgumentNullException("implementation", "implementation is null.");
-
-            var startTime = DateTimeOffset.Now;
-            OnExecutionStarted(executionToken, startTime, state);
-
-            try
-            {
-                var rows = implementation(m_Connection, m_Transaction);
-                OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
-                return rows;
-            }
-            catch (Exception ex)
-            {
-                OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
-                throw;
-            }
-        }
-
-        /// <summary>
         /// Execute the operation asynchronously.
         /// </summary>
         /// <param name="executionToken">The execution token.</param>
@@ -338,50 +383,5 @@ namespace Tortuga.Chain.PostgreSql
                 }
             }
         }
-
-        /// <summary>
-        /// Gets the extension data.
-        /// </summary>
-        /// <typeparam name="TTKey">The type of extension data desired.</typeparam>
-        /// <returns>
-        /// T.
-        /// </returns>
-        /// <remarks>
-        /// Chain extensions can use this to store data source specific data. The key should be a data type defined by the extension.
-        /// Transactional data sources should override this method and return the value held by their parent data source.
-        /// </remarks>
-        public override TTKey GetExtensionData<TTKey>() => m_BaseDataSource.GetExtensionData<TTKey>();
-
-        /// <summary>
-        /// Tests the connection.
-        /// </summary>
-        public override void TestConnection()
-        {
-            using (var cmd = new NpgsqlCommand("SELECT 1", m_Connection))
-                cmd.ExecuteScalar();
-        }
-
-        /// <summary>
-        /// Tests the connection asynchronously.
-        /// </summary>
-        /// <returns></returns>
-        public override async Task TestConnectionAsync()
-        {
-            using (var cmd = new NpgsqlCommand("SELECT 1", m_Connection))
-                await cmd.ExecuteScalarAsync();
-        }
-
-        /// <summary>
-        /// Gets or sets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
-        /// </summary>
-        public override ICacheAdapter Cache => m_BaseDataSource.Cache;
-
-        /// <summary>
-        /// The extension cache is used by extensions to store data source specific information.
-        /// </summary>
-        /// <value>
-        /// The extension cache.
-        /// </value>
-        protected override ConcurrentDictionary<Type, object> ExtensionCache => m_BaseDataSource.m_ExtensionCache;
     }
 }

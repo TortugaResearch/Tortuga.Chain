@@ -217,7 +217,7 @@ namespace Tortuga.Chain
             if (!DisableLocks)
                 lockToken = await SyncLock.WriterLockAsync();
 
-            var connection = await CreateConnectionAsync();
+            var connection = await CreateConnectionAsync().ConfigureAwait(false);
             SQLiteTransaction transaction;
             if (isolationLevel == null)
                 transaction = connection.BeginTransaction();
@@ -566,9 +566,9 @@ namespace Tortuga.Chain
         /// <returns></returns>
         public override async Task TestConnectionAsync()
         {
-            using (var con = await CreateConnectionAsync())
+            using (var con = await CreateConnectionAsync().ConfigureAwait(false))
             using (var cmd = new SQLiteCommand("SELECT 1", con))
-                await cmd.ExecuteScalarAsync();
+                await cmd.ExecuteScalarAsync().ConfigureAwait(false);
         }
 
         DbConnection IRootDataSource.CreateConnection()
@@ -578,7 +578,7 @@ namespace Tortuga.Chain
 
         async Task<DbConnection> IRootDataSource.CreateConnectionAsync()
         {
-            return await CreateConnectionAsync();
+            return await CreateConnectionAsync().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -609,7 +609,7 @@ namespace Tortuga.Chain
 
         async Task<ITransactionalDataSource> IRootDataSource.BeginTransactionAsync()
         {
-            return await BeginTransactionAsync();
+            return await BeginTransactionAsync().ConfigureAwait(false);
         }
 
         /// <summary>

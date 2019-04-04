@@ -186,7 +186,7 @@ namespace Tortuga.Chain
         /// <returns></returns>
         public async Task<MySqlTransactionalDataSource> BeginTransactionAsync(IsolationLevel? isolationLevel = null, bool forwardEvents = true)
         {
-            var connection = await CreateConnectionAsync();
+            var connection = await CreateConnectionAsync().ConfigureAwait(false);
             MySqlTransaction transaction;
             if (isolationLevel.HasValue)
                 transaction = connection.BeginTransaction(isolationLevel.Value);
@@ -197,7 +197,7 @@ namespace Tortuga.Chain
 
         async Task<ITransactionalDataSource> IRootDataSource.BeginTransactionAsync()
         {
-            return await BeginTransactionAsync();
+            return await BeginTransactionAsync().ConfigureAwait(false);
         }
 
         DbConnection IRootDataSource.CreateConnection()
@@ -221,7 +221,7 @@ namespace Tortuga.Chain
 
         async Task<DbConnection> IRootDataSource.CreateConnectionAsync()
         {
-            return await CreateConnectionAsync();
+            return await CreateConnectionAsync().ConfigureAwait(false);
         }
 
         /// <remarks>
@@ -273,9 +273,9 @@ namespace Tortuga.Chain
         /// <returns></returns>
         public override async Task TestConnectionAsync()
         {
-            using (var con = await CreateConnectionAsync())
+            using (var con = await CreateConnectionAsync().ConfigureAwait(false))
             using (var cmd = new MySqlCommand("SELECT 1", con))
-                await cmd.ExecuteScalarAsync();
+                await cmd.ExecuteScalarAsync().ConfigureAwait(false);
         }
 
         /// <summary>

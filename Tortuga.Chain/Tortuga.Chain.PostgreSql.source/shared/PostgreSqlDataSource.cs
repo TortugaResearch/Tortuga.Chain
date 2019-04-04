@@ -42,7 +42,7 @@ namespace Tortuga.Chain
         /// <returns></returns>
         public async Task<PostgreSqlTransactionalDataSource> BeginTransactionAsync(IsolationLevel? isolationLevel = null, bool forwardEvents = true)
         {
-            var connection = await CreateConnectionAsync();
+            var connection = await CreateConnectionAsync().ConfigureAwait(false);
             NpgsqlTransaction transaction;
             if (isolationLevel.HasValue)
                 transaction = connection.BeginTransaction(isolationLevel.Value);
@@ -152,9 +152,9 @@ namespace Tortuga.Chain
         /// <returns></returns>
         public override async Task TestConnectionAsync()
         {
-            using (var con = await CreateConnectionAsync())
+            using (var con = await CreateConnectionAsync().ConfigureAwait(false))
             using (var cmd = new NpgsqlCommand("SELECT 1", con))
-                await cmd.ExecuteScalarAsync();
+                await cmd.ExecuteScalarAsync().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -174,7 +174,6 @@ namespace Tortuga.Chain
 
             return con;
         }
-
 
         /// <summary>
         /// Creates the connection asynchronous.
@@ -393,7 +392,7 @@ namespace Tortuga.Chain
             }
             catch (Exception ex)
             {
-                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException 
+                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException
                 {
                     var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);
                     OnExecutionCanceled(executionToken, startTime, DateTimeOffset.Now, state);
@@ -479,7 +478,7 @@ namespace Tortuga.Chain
             }
             catch (Exception ex)
             {
-                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException 
+                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException
                 {
                     var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);
                     OnExecutionCanceled(executionToken, startTime, DateTimeOffset.Now, state);
@@ -495,7 +494,7 @@ namespace Tortuga.Chain
 
         DbConnection IRootDataSource.CreateConnection() => CreateConnection();
 
-        async Task<DbConnection> IRootDataSource.CreateConnectionAsync() => await CreateConnectionAsync();
+        async Task<DbConnection> IRootDataSource.CreateConnectionAsync() => await CreateConnectionAsync().ConfigureAwait(false);
 
         /// <summary>
         /// Creates an open data source using the supplied connection and optional transaction.
@@ -520,7 +519,7 @@ namespace Tortuga.Chain
 
         ITransactionalDataSource IRootDataSource.BeginTransaction() => BeginTransaction();
 
-        async Task<ITransactionalDataSource> IRootDataSource.BeginTransactionAsync() => await BeginTransactionAsync();
+        async Task<ITransactionalDataSource> IRootDataSource.BeginTransactionAsync() => await BeginTransactionAsync().ConfigureAwait(false);
 
         /// <summary>
         /// Craetes a new data source with the provided cache.
@@ -550,6 +549,5 @@ namespace Tortuga.Chain
         /// The extension cache.
         /// </value>
         protected override ConcurrentDictionary<Type, object> ExtensionCache => m_ExtensionCache;
-
     }
 }

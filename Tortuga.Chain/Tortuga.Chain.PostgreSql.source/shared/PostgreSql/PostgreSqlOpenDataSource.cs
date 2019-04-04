@@ -20,8 +20,6 @@ namespace Tortuga.Chain.PostgreSql
         readonly NpgsqlConnection m_Connection;
         readonly NpgsqlTransaction m_Transaction;
 
-
-
         internal PostgreSqlOpenDataSource(PostgreSqlDataSource dataSource, NpgsqlConnection connection, NpgsqlTransaction transaction) : base(new PostgreSqlDataSourceSettings() { DefaultCommandTimeout = dataSource.DefaultCommandTimeout, StrictMode = dataSource.StrictMode, SuppressGlobalEvents = dataSource.SuppressGlobalEvents })
         {
             if (connection == null)
@@ -52,6 +50,7 @@ namespace Tortuga.Chain.PostgreSql
         /// </summary>
         /// <value>The database metadata.</value>
         public override PostgreSqlMetadataCache DatabaseMetadata => m_BaseDataSource.DatabaseMetadata;
+
         /// <summary>
         /// The extension cache is used by extensions to store data source specific information.
         /// </summary>
@@ -95,7 +94,7 @@ namespace Tortuga.Chain.PostgreSql
         public override async Task TestConnectionAsync()
         {
             using (var cmd = new NpgsqlCommand("SELECT 1", m_Connection))
-                await cmd.ExecuteScalarAsync();
+                await cmd.ExecuteScalarAsync().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -147,6 +146,7 @@ namespace Tortuga.Chain.PostgreSql
             UserValue = userValue;
             return this;
         }
+
         /// <summary>
         /// Executes the specified operation.
         /// </summary>
@@ -193,7 +193,6 @@ namespace Tortuga.Chain.PostgreSql
             {
                 OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
                 throw;
-
             }
         }
 
@@ -269,11 +268,10 @@ namespace Tortuga.Chain.PostgreSql
                     OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
                     return rows;
                 }
-
             }
             catch (Exception ex)
             {
-                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException 
+                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException
                 {
                     var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);
                     OnExecutionCanceled(executionToken, startTime, DateTimeOffset.Now, state);
@@ -286,6 +284,7 @@ namespace Tortuga.Chain.PostgreSql
                 }
             }
         }
+
         /// <summary>
         /// Execute the operation asynchronously.
         /// </summary>
@@ -312,7 +311,7 @@ namespace Tortuga.Chain.PostgreSql
             }
             catch (Exception ex)
             {
-                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException 
+                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException
                 {
                     var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);
                     OnExecutionCanceled(executionToken, startTime, DateTimeOffset.Now, state);

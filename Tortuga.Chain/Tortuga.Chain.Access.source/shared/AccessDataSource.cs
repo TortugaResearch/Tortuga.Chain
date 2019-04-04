@@ -13,8 +13,6 @@ using Tortuga.Chain.AuditRules;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.DataSources;
 
-
-
 namespace Tortuga.Chain
 {
     /// <summary>
@@ -115,9 +113,8 @@ namespace Tortuga.Chain
         /// </summary>
         internal string ConnectionString => m_ConnectionBuilder.ConnectionString;
 
-
-
 #if !WINDOWS_UWP
+
         /// <summary>
         /// Creates a new connection using the connection string in the app.config file.
         /// </summary>
@@ -131,6 +128,7 @@ namespace Tortuga.Chain
 
             return new AccessDataSource(connectionName, settings.ConnectionString);
         }
+
 #endif
 
         /// <summary>
@@ -177,7 +175,7 @@ namespace Tortuga.Chain
         /// <remarks>The caller of this method is responsible for closing the transaction.</remarks>
         public async Task<AccessTransactionalDataSource> BeginTransactionAsync(IsolationLevel? isolationLevel = null, bool forwardEvents = true)
         {
-            var connection = await CreateConnectionAsync();
+            var connection = await CreateConnectionAsync().ConfigureAwait(false);
             OleDbTransaction transaction;
             if (isolationLevel == null)
                 transaction = connection.BeginTransaction();
@@ -285,14 +283,14 @@ namespace Tortuga.Chain
         /// <returns></returns>
         public override async Task TestConnectionAsync()
         {
-            using (var con = await CreateConnectionAsync())
+            using (var con = await CreateConnectionAsync().ConfigureAwait(false))
             using (var cmd = new OleDbCommand("SELECT 1", con))
-                await cmd.ExecuteScalarAsync();
+                await cmd.ExecuteScalarAsync().ConfigureAwait(false);
         }
 
         DbConnection IRootDataSource.CreateConnection() => CreateConnection();
 
-        async Task<DbConnection> IRootDataSource.CreateConnectionAsync() => await CreateConnectionAsync();
+        async Task<DbConnection> IRootDataSource.CreateConnectionAsync() => await CreateConnectionAsync().ConfigureAwait(false);
 
         /// <summary>
         /// Creates an open data source using the supplied connection and optional transaction.
@@ -317,7 +315,7 @@ namespace Tortuga.Chain
 
         ITransactionalDataSource IRootDataSource.BeginTransaction() => BeginTransaction();
 
-        async Task<ITransactionalDataSource> IRootDataSource.BeginTransactionAsync() => await BeginTransactionAsync();
+        async Task<ITransactionalDataSource> IRootDataSource.BeginTransactionAsync() => await BeginTransactionAsync().ConfigureAwait(false);
 
         /// <summary>
         /// Craetes a new data source with the provided cache.
@@ -439,7 +437,6 @@ namespace Tortuga.Chain
                 OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
                 throw;
             }
-
         }
 
         /// <summary>
@@ -483,11 +480,11 @@ namespace Tortuga.Chain
                             currentToken.ApplyCommandOverrides(cmd);
 
                             if (currentToken.ExecutionMode == AccessCommandExecutionMode.Materializer)
-                                rows = await implementation(cmd);
+                                rows = await implementation(cmd).ConfigureAwait(false);
                             else if (currentToken.ExecutionMode == AccessCommandExecutionMode.ExecuteScalarAndForward)
-                                currentToken.ForwardResult(await cmd.ExecuteScalarAsync());
+                                currentToken.ForwardResult(await cmd.ExecuteScalarAsync().ConfigureAwait(false));
                             else
-                                rows = await cmd.ExecuteNonQueryAsync();
+                                rows = await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
                             executionToken.RaiseCommandExecuted(cmd, rows);
                             OnExecutionFinished(currentToken, startTime, DateTimeOffset.Now, rows, state);
                         }
@@ -498,7 +495,7 @@ namespace Tortuga.Chain
             }
             catch (Exception ex)
             {
-                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException 
+                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException
                 {
                     var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);
                     OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex2, state);
@@ -541,7 +538,7 @@ namespace Tortuga.Chain
             }
             catch (Exception ex)
             {
-                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException 
+                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException
                 {
                     var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);
                     OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex2, state);
@@ -553,7 +550,6 @@ namespace Tortuga.Chain
                     throw;
                 }
             }
-
         }
     }
 }

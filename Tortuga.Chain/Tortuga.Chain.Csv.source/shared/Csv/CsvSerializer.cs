@@ -14,7 +14,6 @@ using Tortuga.Anchor.Metadata;
 
 namespace Tortuga.Chain.Csv
 {
-
     /// <summary>
     /// A lightweight CSV Serializer/Deserializer based on TextFieldParser.
     /// </summary>
@@ -80,13 +79,13 @@ namespace Tortuga.Chain.Csv
             AddGlobalConverter<Guid>(v => v.ToString(), s => Guid.Parse(s));
             AddGlobalConverter<Guid?>(v => v.HasValue ? v.ToString() : "", s => string.IsNullOrEmpty(s) ? (Guid?)null : Guid.Parse(s));
 
-
             AddGlobalConverter<string>(v => v == null ? "" : "\"" + v.Replace("\"", "\"\"") + "\"", s => s);
 
+#pragma warning disable CA1065 // Do not raise exceptions in unexpected locations
             AddGlobalConverter<object>(v => v == null ? "" : "\"" + v.ToString().Replace("\"", "\"\"") + "\"", s => { throw new NotSupportedException(); });
+#pragma warning restore CA1065 // Do not raise exceptions in unexpected locations
 #pragma warning restore IDE0001 // Simplify Names
         }
-
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CsvSerializer"/> class.
@@ -323,11 +322,11 @@ namespace Tortuga.Chain.Csv
             if (includeHeaders)
             {
                 var converter = (CsvValueConverter<string>)m_Converters[typeof(string)];
-                await outputStream.WriteLineAsync(string.Join(",", source.ColumnNames.Select(c => converter.ConvertToString(c, Locale))));
+                await outputStream.WriteLineAsync(string.Join(",", source.ColumnNames.Select(c => converter.ConvertToString(c, Locale)))).ConfigureAwait(false);
             }
 
             foreach (var row in source.Rows)
-                await outputStream.WriteLineAsync(string.Join(",", converters.Select(c => c.Item2.ConvertToString(row[c.Item1], Locale))));
+                await outputStream.WriteLineAsync(string.Join(",", converters.Select(c => c.Item2.ConvertToString(row[c.Item1], Locale)))).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -364,11 +363,11 @@ namespace Tortuga.Chain.Csv
             {
                 result += 1;
                 await outputStream.WriteLineAsync(string.Join(",", converters.Select(c =>
-                    source.IsDBNull(c.Item1) ? "" : c.Item2.ConvertToString(source.GetValue(c.Item1), Locale))));
-
+                    source.IsDBNull(c.Item1) ? "" : c.Item2.ConvertToString(source.GetValue(c.Item1), Locale)))).ConfigureAwait(false);
             }
             return result;
         }
+
         /// <summary>
         /// Serialize into a CSV file asynchronously.
         /// </summary>
@@ -393,15 +392,11 @@ namespace Tortuga.Chain.Csv
             if (includeHeaders)
             {
                 var headerConverter = (CsvValueConverter<string>)m_Converters[typeof(string)];
-                await outputStream.WriteLineAsync(string.Join(",", properties.Select(p => headerConverter.ConvertToString(p.MappedColumnName, Locale))));
+                await outputStream.WriteLineAsync(string.Join(",", properties.Select(p => headerConverter.ConvertToString(p.MappedColumnName, Locale)))).ConfigureAwait(false);
             }
 
             foreach (var row in items)
-                await outputStream.WriteLineAsync(string.Join(",", converters.Select(c => c.Item2.ConvertToString(c.Item1.InvokeGet(row), Locale))));
+                await outputStream.WriteLineAsync(string.Join(",", converters.Select(c => c.Item2.ConvertToString(c.Item1.InvokeGet(row), Locale)))).ConfigureAwait(false);
         }
     }
-
-
-
-
 }

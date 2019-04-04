@@ -5,7 +5,7 @@ namespace Tortuga.Chain.SqlServer
     /// <summary>
     /// Represents an object in SQL Server (e.g. table, view, procedure)
     /// </summary>
-    public struct SqlServerObjectName
+    public struct SqlServerObjectName : IEquatable<SqlServerObjectName>
     {
         /// <summary>
         /// An empty schema/name pair
