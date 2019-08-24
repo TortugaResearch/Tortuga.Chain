@@ -6,7 +6,7 @@ namespace Tortuga.Chain.Access
     /// <summary>
     /// Represents an object in Acces (e.g. table, view, procedure)
     /// </summary>
-    public struct AccessObjectName
+    public struct AccessObjectName : IEquatable<AccessObjectName>
     {
         /// <summary>
         /// An empty schema/name pair

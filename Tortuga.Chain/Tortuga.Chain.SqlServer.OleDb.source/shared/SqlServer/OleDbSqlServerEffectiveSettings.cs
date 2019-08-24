@@ -98,7 +98,7 @@ namespace Tortuga.Chain.SqlServer
         internal async Task ReloadAsync(OleDbConnection connection, OleDbTransaction transaction)
         {
             using (var cmd = new OleDbCommand("SELECT @@Options") { Connection = connection, Transaction = transaction })
-                m_Options = (int)(await cmd.ExecuteScalarAsync());
+                m_Options = (int)(await cmd.ExecuteScalarAsync().ConfigureAwait(false));
         }
     }
 }

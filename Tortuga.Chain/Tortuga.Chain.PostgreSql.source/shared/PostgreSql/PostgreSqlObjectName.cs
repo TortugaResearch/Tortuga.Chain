@@ -6,7 +6,7 @@ namespace Tortuga.Chain.PostgreSql
     /// <summary>
     /// Represents an object in PostgreSql (e.g. table, view, procedure)
     /// </summary>
-    public struct PostgreSqlObjectName
+    public struct PostgreSqlObjectName : IEquatable<PostgreSqlObjectName>
     {
         /// <summary>
         /// An empty schema/name pair

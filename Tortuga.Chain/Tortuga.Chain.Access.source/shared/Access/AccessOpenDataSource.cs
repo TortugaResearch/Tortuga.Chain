@@ -9,7 +9,6 @@ using Tortuga.Chain.AuditRules;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.DataSources;
 
-
 namespace Tortuga.Chain.Access
 {
     /// <summary>
@@ -21,7 +20,6 @@ namespace Tortuga.Chain.Access
         readonly AccessDataSource m_BaseDataSource;
         readonly OleDbConnection m_Connection;
         readonly OleDbTransaction m_Transaction;
-
 
         internal AccessOpenDataSource(AccessDataSource dataSource, OleDbConnection connection, OleDbTransaction transaction) : base(new AccessDataSourceSettings() { DefaultCommandTimeout = dataSource.DefaultCommandTimeout, StrictMode = dataSource.StrictMode, SuppressGlobalEvents = dataSource.SuppressGlobalEvents })
         {
@@ -53,6 +51,7 @@ namespace Tortuga.Chain.Access
         /// </summary>
         /// <value>The database metadata.</value>
         public override AccessMetadataCache DatabaseMetadata => m_BaseDataSource.DatabaseMetadata;
+
         /// <summary>
         /// The extension cache is used by extensions to store data source specific information.
         /// </summary>
@@ -103,7 +102,7 @@ namespace Tortuga.Chain.Access
             {
                 if (m_Transaction != null)
                     cmd.Transaction = m_Transaction;
-                await cmd.ExecuteScalarAsync();
+                await cmd.ExecuteScalarAsync().ConfigureAwait(false);
             }
         }
 
@@ -156,6 +155,7 @@ namespace Tortuga.Chain.Access
             UserValue = userValue;
             return this;
         }
+
         /// <summary>
         /// Executes the specified operation.
         /// </summary>
@@ -219,7 +219,6 @@ namespace Tortuga.Chain.Access
                 OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
                 throw;
             }
-
         }
 
         /// <summary>
@@ -244,14 +243,12 @@ namespace Tortuga.Chain.Access
                 var rows = implementation(m_Connection, m_Transaction);
                 OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
                 return rows;
-
             }
             catch (Exception ex)
             {
                 OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
                 throw;
             }
-
         }
 
         /// <summary>
@@ -297,11 +294,11 @@ namespace Tortuga.Chain.Access
                         currentToken.ApplyCommandOverrides(cmd);
 
                         if (currentToken.ExecutionMode == AccessCommandExecutionMode.Materializer)
-                            rows = await implementation(cmd);
+                            rows = await implementation(cmd).ConfigureAwait(false);
                         else if (currentToken.ExecutionMode == AccessCommandExecutionMode.ExecuteScalarAndForward)
-                            currentToken.ForwardResult(await cmd.ExecuteScalarAsync());
+                            currentToken.ForwardResult(await cmd.ExecuteScalarAsync().ConfigureAwait(false));
                         else
-                            rows = await cmd.ExecuteNonQueryAsync();
+                            rows = await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
                         executionToken.RaiseCommandExecuted(cmd, rows);
                         OnExecutionFinished(currentToken, startTime, DateTimeOffset.Now, rows, state);
                     }
@@ -311,7 +308,7 @@ namespace Tortuga.Chain.Access
             }
             catch (Exception ex)
             {
-                if (cancellationToken.IsCancellationRequested) //convert AccessException into a OperationCanceledException 
+                if (cancellationToken.IsCancellationRequested) //convert AccessException into a OperationCanceledException
                 {
                     var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);
                     OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex2, state);
@@ -323,7 +320,6 @@ namespace Tortuga.Chain.Access
                     throw;
                 }
             }
-
         }
 
         /// <summary>
@@ -349,11 +345,10 @@ namespace Tortuga.Chain.Access
                 var rows = await implementation(m_Connection, m_Transaction, cancellationToken).ConfigureAwait(false);
                 OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
                 return rows;
-
             }
             catch (Exception ex)
             {
-                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException 
+                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException
                 {
                     var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);
                     OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex2, state);
@@ -365,7 +360,6 @@ namespace Tortuga.Chain.Access
                     throw;
                 }
             }
-
         }
     }
 }

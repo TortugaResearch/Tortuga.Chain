@@ -1,0 +1,189 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{5D3159AD-141C-4853-9ECC-A1FD603BD8C4}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Tortuga.Chain</RootNamespace>
+    <AssemblyName>Tortuga.Chain.SqlServer</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;CODE_ANALYSIS;SQL_SERVER</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>..\Tortuga.Chain.ruleset</CodeAnalysisRuleSet>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <DocumentationFile>bin\Debug\Tortuga.Chain.SqlServer.XML</DocumentationFile>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <NoWarn>618</NoWarn>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;CODE_ANALYSIS;SQL_SERVER</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>..\Tortuga.Chain.ruleset</CodeAnalysisRuleSet>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <DocumentationFile>bin\Release\Tortuga.Chain.SqlServer.XML</DocumentationFile>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <NoWarn>618</NoWarn>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug-Unchecked|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug-Unchecked\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;CODE_ANALYSIS;SQL_SERVER</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <NoWarn>618</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>..\Tortuga.Chain.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Collections.Immutable, Version=1.2.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Collections.Immutable.1.5.0\lib\netstandard2.0\System.Collections.Immutable.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Caching" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net461\System.ValueTuple.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Tortuga.Anchor, Version=2.1.7001.32222, Culture=neutral, PublicKeyToken=f554488cb4f278bd, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tortuga.Anchor.2.1.7001.32222\lib\net46\Tortuga.Anchor.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\ProductSharedAssemblyInfo.cs">
+      <Link>Properties\ProductSharedAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\Shared\DataSourceBase.Class0DataSource.cs">
+      <Link>shared\SqlServer\DataSourceBase.Class0DataSource.cs</Link>
+    </Compile>
+    <Compile Include="..\Shared\DataSourceBase.Class1DataSource.cs">
+      <Link>shared\SqlServer\DataSourceBase.Class1DataSource.cs</Link>
+    </Compile>
+    <Compile Include="..\Shared\DataSourceBase.Class1DataSource.StringNames.cs">
+      <Link>shared\SqlServer\DataSourceBase.Class1DataSource.StringNames.cs</Link>
+    </Compile>
+    <Compile Include="..\Shared\DataSourceBase.Class2DataSource.cs">
+      <Link>shared\SqlServer\DataSourceBase.Class2DataSource.cs</Link>
+    </Compile>
+    <Compile Include="..\Shared\DataSourceBase.Class2DataSource.StringNames.cs">
+      <Link>shared\SqlServer\DataSourceBase.Class2DataSource.StringNames.cs</Link>
+    </Compile>
+    <Compile Include="..\Shared\DataSourceBase.IClass0DataSource.cs">
+      <Link>shared\SqlServer\DataSourceBase.IClass0DataSource.cs</Link>
+    </Compile>
+    <Compile Include="..\Shared\DataSourceBase.IClass1DataSource.cs">
+      <Link>shared\SqlServer\DataSourceBase.IClass1DataSource.cs</Link>
+    </Compile>
+    <Compile Include="..\Shared\DataSourceBase.IClass2DataSource.cs">
+      <Link>shared\SqlServer\DataSourceBase.IClass2DataSource.cs</Link>
+    </Compile>
+    <Compile Include="..\Shared\DataSourceBase.IDataSource.cs">
+      <Link>shared\SqlServer\DataSourceBase.IDataSource.cs</Link>
+    </Compile>
+    <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Properties\LibrarySharedAssemblyInfo.cs" />
+    <Compile Include="shared\SqlServerExtensions.cs" />
+    <Compile Include="shared\SqlServerLimitOption.cs" />
+    <Compile Include="shared\SqlServer\AbstractSqlServerMetadataCache.cs" />
+    <Compile Include="shared\SqlServer\Appenders\NotifyChangeAppender`1.cs" />
+    <Compile Include="shared\SqlServer\CommandBuilders\SqlServerDeleteMany.cs" />
+    <Compile Include="shared\SqlServer\CommandBuilders\SqlServerInsertBulk.cs" />
+    <Compile Include="shared\SqlServer\CommandBuilders\SqlServerInsertBatch.cs" />
+    <Compile Include="shared\SqlServer\CommandBuilders\SqlServerScalarFunction.cs" />
+    <Compile Include="shared\SqlServer\CommandBuilders\SqlServerTableFunction.cs" />
+    <Compile Include="shared\SqlServer\CommandBuilders\SqlServerUpdateMany.cs" />
+    <Compile Include="shared\SqlServer\Materializers\WaitForChangeMaterializer`1.cs" />
+    <Compile Include="shared\SqlServer\Materializers\WaitForChangeMaterializer.cs" />
+    <Compile Include="shared\SqlServer\CommandBuilders\ISupportsChangeListener.cs" />
+    <Compile Include="shared\SqlServer\CommandBuilders\SqlServerDeleteObject.cs" />
+    <Compile Include="shared\SqlServer\CommandBuilders\SqlServerInsertObject.cs" />
+    <Compile Include="shared\SqlServer\CommandBuilders\SqlServerInsertOrUpdateObject.cs" />
+    <Compile Include="shared\SqlServer\CommandBuilders\SqlServerObjectCommand.cs" />
+    <Compile Include="shared\SqlServer\CommandBuilders\SqlServerSqlCall.cs" />
+    <Compile Include="shared\SqlServer\CommandBuilders\SqlServerTableOrView.cs" />
+    <Compile Include="shared\SqlServer\SqlServerAppenders.cs" />
+    <Compile Include="shared\SqlServer\SqlServerDataSourceBase.CommandBuilders.StringNames.cs" />
+    <Compile Include="shared\SqlServer\SqlServerDataSourceBase.CommandBuilders.cs" />
+    <Compile Include="shared\SqlServer\SqlServerEffectiveSettings.cs" />
+    <Compile Include="shared\SqlServer\SqlServerCommandExecutionToken.cs" />
+    <Compile Include="shared\SqlServer\SqlServerDataSourceSettings.cs" />
+    <Compile Include="shared\SqlServer\SqlServerOpenDataSource.cs" />
+    <Compile Include="shared\SqlServer\SqlServerOperationExecutionToken.cs" />
+    <Compile Include="shared\SqlServer\SqlServerTableOrViewMetadata.cs" />
+    <Compile Include="shared\SqlServer\SqlServerTransactionalDataSource.cs" />
+    <Compile Include="shared\SqlServer\SqlServerDataSourceBase.cs" />
+    <Compile Include="shared\SqlServer\SqlServerMetadataCache.cs" />
+    <Compile Include="shared\SqlServer\SqlServerObjectName.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="shared\SqlServerDataSource.cs" />
+    <Compile Include="shared\SqlServer\CommandBuilders\SqlServerProcedureCall.cs" />
+    <Compile Include="shared\SqlServer\CommandBuilders\SqlServerUpdateObject.cs" />
+    <Compile Include="shared\SqlServer\Utilities.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Tortuga Chain.snk">
+      <Link>Tortuga Chain.snk</Link>
+    </None>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+    <None Include="readme.md" />
+    <None Include="shared\SqlServer\CommandBuilders\readme.md" />
+    <None Include="shared\SqlServer\readme.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="..\CustomDictionary.xml">
+      <Link>CustomDictionary.xml</Link>
+    </CodeAnalysisDictionary>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Tortuga.Chain.Core.source\Tortuga.Chain.Core.source.csproj">
+      <Project>{2c523692-a40b-4a7e-a95a-fbe373f263f7}</Project>
+      <Name>Tortuga.Chain.Core.source</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

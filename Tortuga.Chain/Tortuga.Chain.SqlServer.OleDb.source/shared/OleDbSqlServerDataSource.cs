@@ -210,7 +210,7 @@ namespace Tortuga.Chain
         /// <returns></returns>
         public async Task<OleDbSqlServerTransactionalDataSource> BeginTransactionAsync(string transactionName = null, IsolationLevel? isolationLevel = null, bool forwardEvents = true)
         {
-            var connection = await CreateConnectionAsync();
+            var connection = await CreateConnectionAsync().ConfigureAwait(false);
 
             OleDbTransaction transaction;
             if (isolationLevel.HasValue)
@@ -239,8 +239,8 @@ namespace Tortuga.Chain
         public async Task<OleDbSqlServerEffectiveSettings> GetEffectiveSettingsAsync()
         {
             var result = new OleDbSqlServerEffectiveSettings();
-            using (var con = await CreateConnectionAsync())
-                await result.ReloadAsync(con, null);
+            using (var con = await CreateConnectionAsync().ConfigureAwait(false))
+                await result.ReloadAsync(con, null).ConfigureAwait(false);
             return result;
         }
 
@@ -260,9 +260,9 @@ namespace Tortuga.Chain
         /// <returns></returns>
         public override async Task TestConnectionAsync()
         {
-            using (var con = await CreateConnectionAsync())
+            using (var con = await CreateConnectionAsync().ConfigureAwait(false))
             using (var cmd = new OleDbCommand("SELECT 1", con))
-                await cmd.ExecuteScalarAsync();
+                await cmd.ExecuteScalarAsync().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -502,7 +502,7 @@ namespace Tortuga.Chain
             if (m_ServerDefaultSettings == null)
             {
                 var temp = new OleDbSqlServerEffectiveSettings();
-                await temp.ReloadAsync(con, null);
+                await temp.ReloadAsync(con, null).ConfigureAwait(false);
 #if !Thread_Missing
                 Thread.MemoryBarrier();
 #endif
@@ -513,7 +513,7 @@ namespace Tortuga.Chain
 
             if (sql.Length > 0)
                 using (var cmd = new OleDbCommand(sql.ToString(), con))
-                    await cmd.ExecuteNonQueryAsync();
+                    await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
 
             return con;
         }
@@ -598,14 +598,20 @@ namespace Tortuga.Chain
             return result;
         }
 
+#pragma warning disable CA1033 // Interface methods should be callable by child types
+
         DbConnection IRootDataSource.CreateConnection()
+#pragma warning restore CA1033 // Interface methods should be callable by child types
         {
             return CreateConnection();
         }
 
+#pragma warning disable CA1033 // Interface methods should be callable by child types
+
         async Task<DbConnection> IRootDataSource.CreateConnectionAsync()
+#pragma warning restore CA1033 // Interface methods should be callable by child types
         {
-            return await CreateConnectionAsync();
+            return await CreateConnectionAsync().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -636,7 +642,7 @@ namespace Tortuga.Chain
 
         async Task<ITransactionalDataSource> IRootDataSource.BeginTransactionAsync()
         {
-            return await BeginTransactionAsync();
+            return await BeginTransactionAsync().ConfigureAwait(false);
         }
 
         internal ICacheAdapter m_Cache;

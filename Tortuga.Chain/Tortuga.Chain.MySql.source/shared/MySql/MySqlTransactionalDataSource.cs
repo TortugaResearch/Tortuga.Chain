@@ -172,7 +172,7 @@ namespace Tortuga.Chain.MySql
         public override async Task TestConnectionAsync()
         {
             using (var cmd = new MySqlCommand("SELECT 1", m_Connection, m_Transaction))
-                await cmd.ExecuteScalarAsync();
+                await cmd.ExecuteScalarAsync().ConfigureAwait(false);
         }
 
         /// <summary>

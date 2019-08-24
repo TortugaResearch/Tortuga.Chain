@@ -14,9 +14,8 @@ namespace Tortuga.Chain.SqlServer
     /// </summary>
     public class SqlServerTransactionalDataSource : SqlServerDataSourceBase, IDisposable, ITransactionalDataSource
     {
-
-        readonly SqlConnection m_Connection;
         readonly SqlServerDataSource m_BaseDataSource;
+        readonly SqlConnection m_Connection;
         readonly SqlTransaction m_Transaction;
         readonly string m_TransactionName;
         bool m_Disposed;
@@ -69,7 +68,6 @@ namespace Tortuga.Chain.SqlServer
             m_TransactionName = transactionName;
             m_Transaction = transaction;
 
-
             if (forwardEvents)
             {
                 ExecutionStarted += (sender, e) => dataSource.OnExecutionStarted(e);
@@ -81,7 +79,13 @@ namespace Tortuga.Chain.SqlServer
             UserValue = dataSource.UserValue;
         }
 
-
+        /// <summary>
+        /// Gets or sets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
+        /// </summary>
+        public override ICacheAdapter Cache
+        {
+            get { return m_BaseDataSource.Cache; }
+        }
 
         /// <summary>
         /// This object can be used to lookup database information.
@@ -89,6 +93,26 @@ namespace Tortuga.Chain.SqlServer
         public override SqlServerMetadataCache DatabaseMetadata
         {
             get { return m_BaseDataSource.DatabaseMetadata; }
+        }
+
+        /// <summary>
+        /// Gets the name of the transaction.
+        /// </summary>
+        /// <value>The name of the transaction.</value>
+        public string TransactionName
+        {
+            get { return m_TransactionName; }
+        }
+
+        /// <summary>
+        /// The extension cache is used by extensions to store data source specific information.
+        /// </summary>
+        /// <value>
+        /// The extension cache.
+        /// </value>
+        protected override ConcurrentDictionary<Type, object> ExtensionCache
+        {
+            get { return m_BaseDataSource.m_ExtensionCache; }
         }
 
         /// <summary>
@@ -101,7 +125,6 @@ namespace Tortuga.Chain.SqlServer
 
             m_Transaction.Commit();
             Dispose(true);
-
         }
 
         /// <summary>
@@ -111,6 +134,18 @@ namespace Tortuga.Chain.SqlServer
         {
             Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Gets the extension data.
+        /// </summary>
+        /// <typeparam name="TTKey">The type of extension data desired.</typeparam>
+        /// <returns>T.</returns>
+        /// <remarks>Chain extensions can use this to store data source specific data. The key should be a data type defined by the extension.
+        /// Transactional data sources should override this method and return the value held by their parent data source.</remarks>
+        public override TTKey GetExtensionData<TTKey>()
+        {
+            return m_BaseDataSource.GetExtensionData<TTKey>();
         }
 
         /// <summary>
@@ -124,11 +159,37 @@ namespace Tortuga.Chain.SqlServer
             m_Transaction.Rollback();
             Dispose(true);
         }
+
+        /// <summary>
+        /// Tests the connection.
+        /// </summary>
+        public override void TestConnection()
+        {
+            using (var cmd = new SqlCommand("SELECT 1", m_Connection))
+            {
+                cmd.Transaction = m_Transaction;
+                cmd.ExecuteScalar();
+            }
+        }
+
+        /// <summary>
+        /// Tests the connection asynchronously.
+        /// </summary>
+        /// <returns></returns>
+        public override async Task TestConnectionAsync()
+        {
+            using (var cmd = new SqlCommand("SELECT 1", m_Connection))
+            {
+                cmd.Transaction = m_Transaction;
+                await cmd.ExecuteScalarAsync().ConfigureAwait(false);
+            }
+        }
+
         /// <summary>
         /// Closes the current transaction and connection. If not committed, the transaction is rolled back.
         /// </summary>
         /// <param name="disposing"></param>
-        void Dispose(bool disposing)
+        protected virtual void Dispose(bool disposing)
         {
             if (m_Disposed)
                 return;
@@ -140,6 +201,7 @@ namespace Tortuga.Chain.SqlServer
                 m_Disposed = true;
             }
         }
+
         /// <summary>
         /// Executes the specified operation.
         /// </summary>
@@ -180,7 +242,35 @@ namespace Tortuga.Chain.SqlServer
                 OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
                 throw;
             }
+        }
 
+        /// <summary>
+        /// Executes the specified operation.
+        /// </summary>
+        /// <param name="executionToken">The execution token.</param>
+        /// <param name="implementation">The implementation.</param>
+        /// <param name="state">The state.</param>
+        protected override int? Execute(OperationExecutionToken<SqlConnection, SqlTransaction> executionToken, OperationImplementation<SqlConnection, SqlTransaction> implementation, object state)
+        {
+            if (executionToken == null)
+                throw new ArgumentNullException("executionToken", "executionToken is null.");
+            if (implementation == null)
+                throw new ArgumentNullException("implementation", "implementation is null.");
+
+            var startTime = DateTimeOffset.Now;
+            OnExecutionStarted(executionToken, startTime, state);
+
+            try
+            {
+                var rows = implementation(m_Connection, m_Transaction);
+                OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
+                return rows;
+            }
+            catch (Exception ex)
+            {
+                OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
+                throw;
+            }
         }
 
         /// <summary>
@@ -218,11 +308,10 @@ namespace Tortuga.Chain.SqlServer
                     OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
                     return rows;
                 }
-
             }
             catch (Exception ex)
             {
-                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException 
+                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException
                 {
                     var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);
                     OnExecutionCanceled(executionToken, startTime, DateTimeOffset.Now, state);
@@ -233,35 +322,6 @@ namespace Tortuga.Chain.SqlServer
                     OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
                     throw;
                 }
-            }
-        }
-
-        /// <summary>
-        /// Executes the specified operation.
-        /// </summary>
-        /// <param name="executionToken">The execution token.</param>
-        /// <param name="implementation">The implementation.</param>
-        /// <param name="state">The state.</param>
-        protected override int? Execute(OperationExecutionToken<SqlConnection, SqlTransaction> executionToken, OperationImplementation<SqlConnection, SqlTransaction> implementation, object state)
-        {
-            if (executionToken == null)
-                throw new ArgumentNullException("executionToken", "executionToken is null.");
-            if (implementation == null)
-                throw new ArgumentNullException("implementation", "implementation is null.");
-
-            var startTime = DateTimeOffset.Now;
-            OnExecutionStarted(executionToken, startTime, state);
-
-            try
-            {
-                var rows = implementation(m_Connection, m_Transaction);
-                OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
-                return rows;
-            }
-            catch (Exception ex)
-            {
-                OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
-                throw;
             }
         }
 
@@ -291,7 +351,7 @@ namespace Tortuga.Chain.SqlServer
             }
             catch (Exception ex)
             {
-                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException 
+                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException
                 {
                     var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);
                     OnExecutionCanceled(executionToken, startTime, DateTimeOffset.Now, state);
@@ -304,73 +364,5 @@ namespace Tortuga.Chain.SqlServer
                 }
             }
         }
-
-        /// <summary>
-        /// Gets the name of the transaction.
-        /// </summary>
-        /// <value>The name of the transaction.</value>
-        public string TransactionName
-        {
-            get { return m_TransactionName; }
-        }
-
-        /// <summary>
-        /// Gets or sets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
-        /// </summary>
-        public override ICacheAdapter Cache
-        {
-            get { return m_BaseDataSource.Cache; }
-        }
-
-        /// <summary>
-        /// The extension cache is used by extensions to store data source specific information.
-        /// </summary>
-        /// <value>
-        /// The extension cache.
-        /// </value>
-        protected override ConcurrentDictionary<Type, object> ExtensionCache
-        {
-            get { return m_BaseDataSource.m_ExtensionCache; }
-        }
-
-        /// <summary>
-        /// Gets the extension data.
-        /// </summary>
-        /// <typeparam name="TTKey">The type of extension data desired.</typeparam>
-        /// <returns>T.</returns>
-        /// <remarks>Chain extensions can use this to store data source specific data. The key should be a data type defined by the extension.
-        /// Transactional data sources should override this method and return the value held by their parent data source.</remarks>
-        public override TTKey GetExtensionData<TTKey>()
-        {
-            return m_BaseDataSource.GetExtensionData<TTKey>();
-        }
-
-        /// <summary>
-        /// Tests the connection.
-        /// </summary>
-        public override void TestConnection()
-        {
-            using (var cmd = new SqlCommand("SELECT 1", m_Connection))
-            {
-                cmd.Transaction = m_Transaction;
-                cmd.ExecuteScalar();
-            }
-        }
-
-        /// <summary>
-        /// Tests the connection asynchronously.
-        /// </summary>
-        /// <returns></returns>
-        public override async Task TestConnectionAsync()
-        {
-            using (var cmd = new SqlCommand("SELECT 1", m_Connection))
-            {
-                cmd.Transaction = m_Transaction;
-                await cmd.ExecuteScalarAsync();
-            }
-        }
-
     }
 }
-
-
