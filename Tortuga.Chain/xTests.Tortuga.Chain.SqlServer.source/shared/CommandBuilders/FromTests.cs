@@ -365,7 +365,7 @@ namespace Tests.CommandBuilders
             WriteLine($"Table {tableName}");
             try
             {
-                var columnType = dataSource.DatabaseMetadata.GetTableOrView(tableName).Columns[columnName].TypeName;
+                var columnType = dataSource.DatabaseMetadata.GetTableOrView(tableName).Columns[columnName].SqlTypeName;
                 if (columnType == "xml" || columnType == "ntext" || columnType == "text" || columnType == "image" || columnType == "geography" || columnType == "geometry")
                     return; //SQL Server limitation
 
@@ -387,7 +387,7 @@ namespace Tests.CommandBuilders
             WriteLine($"Table {tableName}");
             try
             {
-                var columnType = dataSource.DatabaseMetadata.GetTableOrView(tableName).Columns[columnName].TypeName;
+                var columnType = dataSource.DatabaseMetadata.GetTableOrView(tableName).Columns[columnName].SqlTypeName;
                 if (columnType == "xml" || columnType == "ntext" || columnType == "text" || columnType == "image" || columnType == "geography" || columnType == "geometry")
                     return; //SQL Server limitation
 
@@ -413,7 +413,7 @@ namespace Tests.CommandBuilders
             WriteLine($"Table {tableName}");
             try
             {
-                var columnType = dataSource.DatabaseMetadata.GetTableOrView(tableName).Columns[columnName].TypeName;
+                var columnType = dataSource.DatabaseMetadata.GetTableOrView(tableName).Columns[columnName].SqlTypeName;
                 if (columnType == "xml" || columnType == "ntext" || columnType == "text" || columnType == "image" || columnType == "geography" || columnType == "geometry")
                     return; //SQL Server limitation
 
@@ -435,7 +435,7 @@ namespace Tests.CommandBuilders
             WriteLine($"Table {tableName}");
             try
             {
-                var columnType = dataSource.DatabaseMetadata.GetTableOrView(tableName).Columns[columnName].TypeName;
+                var columnType = dataSource.DatabaseMetadata.GetTableOrView(tableName).Columns[columnName].SqlTypeName;
                 if (columnType == "xml" || columnType == "ntext" || columnType == "text" || columnType == "image" || columnType == "geography" || columnType == "geometry")
                     return; //SQL Server limitation
 

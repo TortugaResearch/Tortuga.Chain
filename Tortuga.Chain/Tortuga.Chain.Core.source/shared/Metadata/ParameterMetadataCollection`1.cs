@@ -21,7 +21,7 @@ namespace Tortuga.Chain.Metadata
         public ParameterMetadataCollection(string name, IList<ParameterMetadata<TDbType>> list) : base(list)
         {
             m_Name = name;
-            GenericCollection = new ParameterMetadataCollection(list);
+            GenericCollection = new ParameterMetadataCollection(this);
         }
 
         /// <summary>

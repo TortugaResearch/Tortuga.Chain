@@ -3,6 +3,8 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using Tortuga.Anchor;
 using Tortuga.Anchor.Metadata;
 using Tortuga.Chain.Metadata;
@@ -26,6 +28,79 @@ namespace Tortuga.Chain.SQLite
         public SQLiteMetadataCache(SQLiteConnectionStringBuilder connectionBuilder)
         {
             m_ConnectionBuilder = connectionBuilder;
+        }
+
+        /// <summary>
+        /// Gets the indexes for a table.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <returns></returns>
+        /// <exception cref="NotSupportedException">Indexes are not supported by this data source</exception>
+        /// <remarks>
+        /// This should be cached on a TableOrViewMetadata object.
+        /// </remarks>
+        public override IndexMetadataCollection<SQLiteObjectName, DbType> GetIndexesForTable(SQLiteObjectName tableName)
+        {
+            var table = GetTableOrView(tableName);
+
+            var indexSql = $"PRAGMA index_list('{tableName.Name}')";
+            var results = new List<IndexMetadata<SQLiteObjectName, DbType>>();
+            using (var con = new SQLiteConnection(m_ConnectionBuilder.ConnectionString))
+            using (var con2 = new SQLiteConnection(m_ConnectionBuilder.ConnectionString))
+            {
+                con.Open();
+                con2.Open();
+                using (var cmd = new SQLiteCommand(indexSql, con))
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var name = reader.GetString(reader.GetOrdinal("name"));
+                        var isUnique = reader.GetInt64(reader.GetOrdinal("unique")) != 0;
+                        var origin = reader.GetString(reader.GetOrdinal("origin"));
+                        var isPrimaryKey = string.Equals(origin, "pk", StringComparison.Ordinal);
+                        var isUniqueConstraint = string.Equals(origin, "u", StringComparison.Ordinal);
+
+                        var columns = new List<IndexColumnMetadata<DbType>>();
+
+                        using (var cmd2 = new SQLiteCommand($"PRAGMA index_xinfo('{name}')", con2))
+                        using (var reader2 = cmd2.ExecuteReader())
+                        {
+                            while (reader2.Read())
+                            {
+                                var colName = (reader2.IsDBNull(reader2.GetOrdinal("name"))) ? null : reader2.GetString(reader2.GetOrdinal("name"));
+                                var isDescending = reader2.GetInt64(reader2.GetOrdinal("desc")) != 0;
+                                var isIncluded = reader2.GetInt64(reader2.GetOrdinal("key")) == 0;
+
+                                ColumnMetadata<DbType> column;
+                                if (colName != null)
+                                    column = table.Columns.SingleOrDefault(c => string.Equals(c.SqlName, colName, StringComparison.Ordinal));
+                                else //a null column name is really the ROWID
+                                {
+                                    column = table.Columns.SingleOrDefault(c => string.Equals(c.SqlName, "ROWID", StringComparison.Ordinal));
+
+                                    //The ROWID may be aliased as the primary key
+                                    column = table.PrimaryKeyColumns.Single();
+                                }
+
+                                columns.Add(new IndexColumnMetadata<DbType>(column, isDescending, isIncluded));
+                            }
+                        }
+
+                        results.Add(new IndexMetadata<SQLiteObjectName, DbType>(tableName, name, isPrimaryKey, isUnique, isUniqueConstraint, new IndexColumnMetadataCollection<DbType>(columns), null, null));
+                    }
+                }
+            }
+
+            var pkColumns = table.PrimaryKeyColumns;
+
+            if (pkColumns.Count == 1 && !results.Any(i => i.IsPrimaryKey)) //need to infer a PK
+            {
+                results.Add(new IndexMetadata<SQLiteObjectName, DbType>(tableName, "(primary key)", true, false, false,
+                    new IndexColumnMetadataCollection<DbType>(new[] { new IndexColumnMetadata<DbType>(pkColumns.Single(), false, false) }), null, null));
+            }
+
+            return new IndexMetadataCollection<SQLiteObjectName, DbType>(results);
         }
 
         /// <summary>
@@ -165,17 +240,55 @@ namespace Tortuga.Chain.SQLite
         /// <summary>
         /// Determines the database column type from the column type name.
         /// </summary>
-        /// <param name="typeName">Name of the database column type.</param>
+        /// <param name="sqlTypeName">Name of the database column type.</param>
         /// <param name="isUnsigned">NOT USED</param>
         /// <returns></returns>
         /// <remarks>This does not honor registered types. This is only used for the database's hard-coded list of native types.</remarks>
-        protected override DbType? TypeNameToDbType(string typeName, bool? isUnsigned = null)
+        [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
+        protected override DbType? SqlTypeNameToDbType(string sqlTypeName, bool? isUnsigned = null)
         {
-            //Not implemented. See https://github.com/docevaad/Chain/issues/266
-            return null;
+            var cleanTypeName = sqlTypeName.ToUpperInvariant();
+            if (cleanTypeName.IndexOf("(", StringComparison.OrdinalIgnoreCase) >= 0)
+                cleanTypeName = cleanTypeName.Substring(0, cleanTypeName.IndexOf("(", StringComparison.OrdinalIgnoreCase));
+
+            switch (cleanTypeName)
+            {
+                case "BIGINT": return DbType.Int64;
+                case "BIT": return DbType.Boolean;
+                case "BLOB": return DbType.Binary;
+                case "BOOLEAN": return DbType.Boolean;
+                case "CHAR": return DbType.AnsiString;
+                case "CHARACTER": return DbType.AnsiString;
+                case "CLOB": return DbType.String;
+                case "DATE": return DbType.Date;
+                case "DATETIME": return DbType.DateTime;
+                case "DATETIME2": return DbType.DateTime2;
+                case "DATETIMEOFFSET": return DbType.DateTimeOffset;
+                case "DECIMAL": return DbType.Decimal;
+                case "DOUBLE PRECISION": return DbType.Double;
+                case "DOUBLE": return DbType.Double;
+                case "FLOAT": return DbType.Single;
+                case "INT": return DbType.Int64;
+                case "INT2": return DbType.Int16;
+                case "INT8": return DbType.Int64;
+                case "INTEGER": return DbType.Int64;
+                case "MEDIUMINT": return DbType.Int32;
+                case "NATIVE CHARACTER": return DbType.String;
+                case "NCHAR": return DbType.String;
+                case "NUMERIC": return DbType.Decimal;
+                case "NVARCHAR": return DbType.String;
+                case "REAL": return DbType.Single;
+                case "SMALLINT": return DbType.Int16;
+                case "TEXT": return DbType.AnsiString;
+                case "TINYINT": return DbType.SByte;
+                case "UNSIGNED BIG INT": return DbType.UInt64;
+                case "VARCHAR": return DbType.AnsiString;
+                case "VARYING CHARACTER": return DbType.AnsiString;
+                default: return null;
+            }
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
+        [SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
         List<ColumnMetadata<DbType>> GetColumns(SQLiteObjectName tableName, bool isTable)
         {
             /*  NOTE: Should be safe since GetTableOrViewInternal returns null after querying the table name with a
@@ -195,12 +308,12 @@ namespace Tortuga.Chain.SQLite
                         while (reader.Read())
                         {
                             var name = reader.GetString(reader.GetOrdinal("name"));
-                            var typeName = reader.GetString(reader.GetOrdinal("type"));
+                            var sqlTypeName = reader.GetString(reader.GetOrdinal("type"));
                             var isPrimaryKey = reader.GetInt32(reader.GetOrdinal("pk")) != 0 ? true : false;
                             var isnNullable = !reader.GetBoolean(reader.GetOrdinal("notnull"));
                             hasPrimarykey = hasPrimarykey || isPrimaryKey;
 
-                            columns.Add(new ColumnMetadata<DbType>(name, false, isPrimaryKey, false, typeName, TypeNameToDbType(typeName), "[" + name + "]", isnNullable, null, null, null, null, ToClrType(typeName, isnNullable, null)));
+                            columns.Add(new ColumnMetadata<DbType>(name, false, isPrimaryKey, false, sqlTypeName, SqlTypeNameToDbType(sqlTypeName), "[" + name + "]", isnNullable, null, null, null, null, ToClrType(sqlTypeName, isnNullable, null)));
                         }
                     }
                 }
@@ -246,7 +359,7 @@ namespace Tortuga.Chain.SQLite
             }
 
             var columns = GetColumns(tableName, isTable);
-            return new TableOrViewMetadata<SQLiteObjectName, DbType>(actualName, isTable, columns);
+            return new TableOrViewMetadata<SQLiteObjectName, DbType>(this, actualName, isTable, columns);
         }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -1224,6 +1225,23 @@ namespace Tortuga.Chain.CommandBuilders
                     m_Entries[i].UseParameter = true;
                     yield return new ColumnNamePair(m_Entries[i].Details.QuotedSqlName, m_Entries[i].Details.SqlVariableName);
                 }
+        }
+
+        /// <summary>
+        /// Overrides the list of keys.
+        /// </summary>
+        /// <param name="keyColumns">The key columns in SqlName format. The column names should be normalized before calling this method.</param>
+        public void OverrideKeys(ICollection<string> keyColumns)
+        {
+            if (keyColumns == null || keyColumns.Count == 0)
+                throw new ArgumentException($"{nameof(keyColumns)} is null or empty.", nameof(keyColumns));
+
+            for (var i = 0; i < m_Entries.Length; i++)
+            {
+                ref var entry = ref m_Entries[i];
+                entry.IsKey = keyColumns.Contains(entry.Details.SqlName);
+                entry.UseForUpdate = entry.UseForUpdate && !entry.IsKey; //If are using the column as a key, we shouldn't update it
+            }
         }
 
         /// <summary>

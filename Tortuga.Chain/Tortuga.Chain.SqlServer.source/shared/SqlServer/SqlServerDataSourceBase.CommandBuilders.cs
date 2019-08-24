@@ -28,7 +28,7 @@ namespace Tortuga.Chain.SqlServer
         [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "DeleteByKeyList")]
         public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> DeleteByKeyList<TKey>(SqlServerObjectName tableName, IEnumerable<TKey> keys, DeleteOptions options = DeleteOptions.None)
         {
-            var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).Columns.Where(c => c.IsPrimaryKey).ToList();
+            var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).PrimaryKeyColumns;
             if (primaryKeys.Count != 1)
                 throw new MappingException($"{nameof(DeleteByKeyList)} operation isn't allowed on {tableName} because it doesn't have a single primary key.");
 
@@ -311,7 +311,7 @@ namespace Tortuga.Chain.SqlServer
         [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "UpdateByKeyList")]
         public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> UpdateByKeyList<TArgument, TKey>(SqlServerObjectName tableName, TArgument newValues, IEnumerable<TKey> keys, UpdateOptions options = UpdateOptions.None)
         {
-            var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).Columns.Where(c => c.IsPrimaryKey).ToList();
+            var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).PrimaryKeyColumns;
             if (primaryKeys.Count != 1)
                 throw new MappingException($"{nameof(UpdateByKeyList)} operation isn't allowed on {tableName} because it doesn't have a single primary key.");
 
@@ -397,12 +397,12 @@ namespace Tortuga.Chain.SqlServer
             return new SqlServerSqlCall(this, sqlStatement, argumentValue);
         }
 
-        IUpdateManyCommandBuilder<SqlCommand, SqlParameter> OnUpdateMany(SqlServerObjectName tableName, string updateExpression, object updateArgumentValue, UpdateOptions options)
+        IUpdateManyDbCommandBuilder<SqlCommand, SqlParameter> OnUpdateMany(SqlServerObjectName tableName, string updateExpression, object updateArgumentValue, UpdateOptions options)
         {
             return new SqlServerUpdateMany(this, tableName, updateExpression, updateArgumentValue, options);
         }
 
-        IUpdateManyCommandBuilder<SqlCommand, SqlParameter> OnUpdateMany(SqlServerObjectName tableName, object newValues, UpdateOptions options)
+        IUpdateManyDbCommandBuilder<SqlCommand, SqlParameter> OnUpdateMany(SqlServerObjectName tableName, object newValues, UpdateOptions options)
         {
             return new SqlServerUpdateMany(this, tableName, newValues, options);
         }

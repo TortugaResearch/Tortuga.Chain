@@ -1,4 +1,5 @@
 using System;
+using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.Metadata
 {
@@ -7,7 +8,7 @@ namespace Tortuga.Chain.Metadata
     /// </summary>
     /// <typeparam name="TDbType">The variant of DbType used by this data source.</typeparam>
     public sealed class ColumnMetadata<TDbType> : ColumnMetadata, ISqlBuilderEntryDetails<TDbType>
-        where TDbType : struct
+    where TDbType : struct
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ColumnMetadata{TDbType}" /> class.
@@ -16,7 +17,7 @@ namespace Tortuga.Chain.Metadata
         /// <param name="isComputed">if set to <c>true</c> is a computed column.</param>
         /// <param name="isPrimaryKey">if set to <c>true</c> is a primary key.</param>
         /// <param name="isIdentity">if set to <c>true</c> [is identity].</param>
-        /// <param name="typeName">Name of the type.</param>
+        /// <param name="sqlTypeName">Name of the type.</param>
         /// <param name="dbType">Type used by the database.</param>
         /// <param name="quotedSqlName">Name of the quoted SQL.</param>
         /// <param name="isNullable">Indicates if the column is nullable.</param>
@@ -25,29 +26,9 @@ namespace Tortuga.Chain.Metadata
         /// <param name="scale">The scale.</param>
         /// <param name="fullTypeName">Full name of the type.</param>
         /// <param name="clrType">The CLR type that matches this column's database type.</param>
-        public ColumnMetadata(string name, bool isComputed, bool isPrimaryKey, bool isIdentity, string typeName, TDbType? dbType, string quotedSqlName, bool? isNullable, int? maxLength, int? precision, int? scale, string fullTypeName, Type clrType)
+        public ColumnMetadata(string name, bool isComputed, bool isPrimaryKey, bool isIdentity, string sqlTypeName, TDbType? dbType, string quotedSqlName, bool? isNullable, int? maxLength, int? precision, int? scale, string fullTypeName, Type clrType) : base(name, isComputed, isPrimaryKey, isIdentity, sqlTypeName, dbType, quotedSqlName, isNullable, maxLength, precision, scale, fullTypeName, clrType)
         {
-            TypeName = typeName;
-            SqlName = name;
-            IsComputed = isComputed;
-            IsPrimaryKey = isPrimaryKey;
-            IsIdentity = isIdentity;
             DbType = dbType;
-            base.DbType = dbType;
-            QuotedSqlName = quotedSqlName;
-
-            if (!string.IsNullOrWhiteSpace(name))
-            {
-                ClrName = Utilities.ToClrName(name);
-                SqlVariableName = "@" + ClrName;
-            }
-
-            IsNullable = isNullable;
-            Precision = precision;
-            MaxLength = maxLength;
-            Scale = scale;
-            FullTypeName = fullTypeName;
-            ClrType = clrType;
         }
 
         /// <summary>
@@ -61,6 +42,6 @@ namespace Tortuga.Chain.Metadata
         /// <returns>
         /// A <see cref="string" /> that represents this instance.
         /// </returns>
-        public override string ToString() => SqlName + " (" + TypeName + ")";
+        public override string ToString() => SqlName + " (" + SqlTypeName + ")";
     }
 }

@@ -2,7 +2,6 @@
 
 namespace Tortuga.Chain.Metadata
 {
-
     /// <summary>
     /// This is used to read out column names during SQL generation.
     /// </summary>
@@ -30,18 +29,14 @@ namespace Tortuga.Chain.Metadata
         public string SqlVariableName { get; }
 
         /// <summary>
-        /// Determines whether the specified <see cref="object" />, is equal to this instance.
+        /// Implements the operator !=.
         /// </summary>
-        /// <param name="obj">The <see cref="object" /> to compare with this instance.</param>
+        /// <param name="first">The first.</param>
+        /// <param name="second">The second.</param>
         /// <returns>
-        ///   <c>true</c> if the specified <see cref="object" /> is equal to this instance; otherwise, <c>false</c>.
+        /// The result of the operator.
         /// </returns>
-        public override bool Equals(object obj)
-        {
-            if (obj is ColumnNamePair)
-                return Equals((ColumnNamePair)obj);
-            return base.Equals(obj);
-        }
+        public static bool operator !=(ColumnNamePair first, ColumnNamePair second) => !(first == second);
 
         /// <summary>
         /// Implements the operator ==.
@@ -59,14 +54,18 @@ namespace Tortuga.Chain.Metadata
         }
 
         /// <summary>
-        /// Implements the operator !=.
+        /// Determines whether the specified <see cref="object" />, is equal to this instance.
         /// </summary>
-        /// <param name="first">The first.</param>
-        /// <param name="second">The second.</param>
+        /// <param name="obj">The <see cref="object" /> to compare with this instance.</param>
         /// <returns>
-        /// The result of the operator.
+        ///   <c>true</c> if the specified <see cref="object" /> is equal to this instance; otherwise, <c>false</c>.
         /// </returns>
-        public static bool operator !=(ColumnNamePair first, ColumnNamePair second) => !(first == second);
+        public override bool Equals(object obj)
+        {
+            if (obj is ColumnNamePair)
+                return Equals((ColumnNamePair)obj);
+            return base.Equals(obj);
+        }
 
         /// <summary>
         /// Indicates whether the current object is equal to another object of the same type.
@@ -75,13 +74,13 @@ namespace Tortuga.Chain.Metadata
         /// <returns>
         /// true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.
         /// </returns>
-        public bool Equals(ColumnNamePair other) => QuotedSqlName == other.QuotedSqlName && SqlVariableName == other.SqlVariableName;
+        public bool Equals(ColumnNamePair other) => string.Equals(QuotedSqlName, other.QuotedSqlName, StringComparison.Ordinal) && string.Equals(SqlVariableName, other.SqlVariableName, StringComparison.Ordinal);
 
         /// <summary>
         /// Returns a hash code for this instance.
         /// </summary>
         /// <returns>
-        /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+        /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
         /// </returns>
         public override int GetHashCode()
         {

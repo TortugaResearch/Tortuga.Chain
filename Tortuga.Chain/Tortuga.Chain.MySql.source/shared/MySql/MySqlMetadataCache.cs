@@ -359,6 +359,81 @@ namespace Tortuga.Chain.MySql
         }
 
         /// <summary>
+        /// Determines the database column type from the column type name.
+        /// </summary>
+        /// <param name="sqlTypeName">Name of the database column type.</param>
+        /// <param name="isUnsigned">Indicates whether or not the column is unsigned. Only applicable to some databases.</param>
+        /// <returns></returns>
+        /// <remarks>This does not honor registered types. This is only used for the database's hard-coded list of native types.</remarks>
+        [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
+        protected override MySqlDbType? SqlTypeNameToDbType(string sqlTypeName, bool? isUnsigned)
+        {
+            if (string.IsNullOrEmpty(sqlTypeName))
+                return null;
+
+            switch (sqlTypeName.ToUpperInvariant())
+            {
+                case "INT1":
+                case "BOOL":
+                case "BOOLEAN":
+                case "TINYINT": if (isUnsigned == true) return MySqlDbType.UByte; else return MySqlDbType.Byte;
+                case "INT2":
+                case "SMALLINT": if (isUnsigned == true) return MySqlDbType.UInt16; else return MySqlDbType.Int16;
+                case "INT3":
+                case "MIDDLEINT":
+                case "MEDIUMINT": if (isUnsigned == true) return MySqlDbType.UInt24; else return MySqlDbType.Int24;
+                case "INT4":
+                case "INTEGER":
+                case "INT": if (isUnsigned == true) return MySqlDbType.UInt32; else return MySqlDbType.Int32;
+                case "INT8":
+                case "BIGINT": if (isUnsigned == true) return MySqlDbType.UInt64; else return MySqlDbType.Int64;
+                case "FIXED":
+                case "NUMERIC":
+                case "DECIMAL": return MySqlDbType.Decimal;
+                case "FLOAT4":
+                case "FLOAT": return MySqlDbType.Float;
+                case "DOUBLE PRECISION":
+                case "REAL":
+                case "FLOAT8":
+                case "DOUBLE": return MySqlDbType.Double;
+                case "BIT": return MySqlDbType.Bit;
+                case "DATE": return MySqlDbType.Date;
+                case "TIME": return MySqlDbType.Time;
+                case "DATETIME": return MySqlDbType.DateTime;
+                case "TIMESTAMP": return MySqlDbType.Timestamp;
+                case "YEAR": return MySqlDbType.Year;
+                case "CHAR": return MySqlDbType.VarChar;
+                case "CHARACTER VARYING":
+                case "VARCHAR": return MySqlDbType.VarChar;
+                case "BINARY": return MySqlDbType.Binary;
+                case "VARBINARY": return MySqlDbType.VarBinary;
+                case "BLOB": return MySqlDbType.Blob;
+                case "TEXT": return MySqlDbType.Text;
+                case "ENUM": return MySqlDbType.Enum;
+                case "SET": return MySqlDbType.Set;
+                case "GEOMETRY": return MySqlDbType.Geometry;
+                case "POINT": return MySqlDbType.Geometry;
+                case "LINESTRING": return MySqlDbType.Geometry;
+                case "POLYGON": return MySqlDbType.Geometry;
+                case "MULTIPOINT": return MySqlDbType.Geometry;
+                case "MULTILINESTRING": return MySqlDbType.Geometry;
+                case "MULTIPOLYGON": return MySqlDbType.Geometry;
+                case "GEOMETRYCOLLECTION": return MySqlDbType.Geometry;
+                case "JSON": return MySqlDbType.JSON;
+                case "TINYBLOB": return MySqlDbType.TinyBlob;
+                case "LONG VARBINARY":
+                case "MEDIUMBLOB": return MySqlDbType.MediumBlob;
+                case "LONGBLOB": return MySqlDbType.LongBlob;
+                case "TINYTEXT": return MySqlDbType.TinyText;
+                case "LONG VARCHAR":
+                case "MEDIUMTEXT": return MySqlDbType.MediumText;
+                case "LONGTEXT": return MySqlDbType.LongText;
+                default:
+                    return null;
+            }
+        }
+
+        /// <summary>
         /// Returns the CLR type that matches the indicated database column type.
         /// </summary>
         /// <param name="dbType">Type of the database column.</param>
@@ -461,81 +536,6 @@ namespace Tortuga.Chain.MySql
         }
 
         /// <summary>
-        /// Determines the database column type from the column type name.
-        /// </summary>
-        /// <param name="typeName">Name of the database column type.</param>
-        /// <param name="isUnsigned">Indicates whether or not the column is unsigned. Only applicable to some databases.</param>
-        /// <returns></returns>
-        /// <remarks>This does not honor registered types. This is only used for the database's hard-coded list of native types.</remarks>
-        [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
-        protected override MySqlDbType? TypeNameToDbType(string typeName, bool? isUnsigned)
-        {
-            if (string.IsNullOrEmpty(typeName))
-                return null;
-
-            switch (typeName.ToUpperInvariant())
-            {
-                case "INT1":
-                case "BOOL":
-                case "BOOLEAN":
-                case "TINYINT": if (isUnsigned == true) return MySqlDbType.UByte; else return MySqlDbType.Byte;
-                case "INT2":
-                case "SMALLINT": if (isUnsigned == true) return MySqlDbType.UInt16; else return MySqlDbType.Int16;
-                case "INT3":
-                case "MIDDLEINT":
-                case "MEDIUMINT": if (isUnsigned == true) return MySqlDbType.UInt24; else return MySqlDbType.Int24;
-                case "INT4":
-                case "INTEGER":
-                case "INT": if (isUnsigned == true) return MySqlDbType.UInt32; else return MySqlDbType.Int32;
-                case "INT8":
-                case "BIGINT": if (isUnsigned == true) return MySqlDbType.UInt64; else return MySqlDbType.Int64;
-                case "FIXED":
-                case "NUMERIC":
-                case "DECIMAL": return MySqlDbType.Decimal;
-                case "FLOAT4":
-                case "FLOAT": return MySqlDbType.Float;
-                case "DOUBLE PRECISION":
-                case "REAL":
-                case "FLOAT8":
-                case "DOUBLE": return MySqlDbType.Double;
-                case "BIT": return MySqlDbType.Bit;
-                case "DATE": return MySqlDbType.Date;
-                case "TIME": return MySqlDbType.Time;
-                case "DATETIME": return MySqlDbType.DateTime;
-                case "TIMESTAMP": return MySqlDbType.Timestamp;
-                case "YEAR": return MySqlDbType.Year;
-                case "CHAR": return MySqlDbType.VarChar;
-                case "CHARACTER VARYING":
-                case "VARCHAR": return MySqlDbType.VarChar;
-                case "BINARY": return MySqlDbType.Binary;
-                case "VARBINARY": return MySqlDbType.VarBinary;
-                case "BLOB": return MySqlDbType.Blob;
-                case "TEXT": return MySqlDbType.Text;
-                case "ENUM": return MySqlDbType.Enum;
-                case "SET": return MySqlDbType.Set;
-                case "GEOMETRY": return MySqlDbType.Geometry;
-                case "POINT": return MySqlDbType.Geometry;
-                case "LINESTRING": return MySqlDbType.Geometry;
-                case "POLYGON": return MySqlDbType.Geometry;
-                case "MULTIPOINT": return MySqlDbType.Geometry;
-                case "MULTILINESTRING": return MySqlDbType.Geometry;
-                case "MULTIPOLYGON": return MySqlDbType.Geometry;
-                case "GEOMETRYCOLLECTION": return MySqlDbType.Geometry;
-                case "JSON": return MySqlDbType.JSON;
-                case "TINYBLOB": return MySqlDbType.TinyBlob;
-                case "LONG VARBINARY":
-                case "MEDIUMBLOB": return MySqlDbType.MediumBlob;
-                case "LONGBLOB": return MySqlDbType.LongBlob;
-                case "TINYTEXT": return MySqlDbType.TinyText;
-                case "LONG VARCHAR":
-                case "MEDIUMTEXT": return MySqlDbType.MediumText;
-                case "LONGTEXT": return MySqlDbType.LongText;
-                default:
-                    return null;
-            }
-        }
-
-        /// <summary>
         /// Gets the columns.
         /// </summary>
         /// <param name="schema">The schema.</param>
@@ -561,7 +561,7 @@ namespace Tortuga.Chain.MySql
                             var name = reader.GetString(reader.GetOrdinal("COLUMN_NAME"));
                             //var @default = reader.IsDBNull(reader.GetOrdinal("COLUMN_DEFAULT")) ? null : reader.GetString("COLUMN_DEFAULT"); #226
                             var isNullable = string.Equals(reader.GetString("IS_NULLABLE"), "YES", StringComparison.Ordinal);
-                            var typeName = reader.GetString("DATA_TYPE");
+                            var sqlTypeName = reader.GetString("DATA_TYPE");
                             var maxLength = reader.IsDBNull(reader.GetOrdinal("CHARACTER_MAXIMUM_LENGTH")) ? (UInt64?)null : reader.GetUInt64("CHARACTER_MAXIMUM_LENGTH");
                             var precisionA = reader.IsDBNull(reader.GetOrdinal("NUMERIC_PRECISION")) ? (int?)null : reader.GetInt32("NUMERIC_PRECISION");
                             var scale = reader.IsDBNull(reader.GetOrdinal("NUMERIC_SCALE")) ? (int?)null : reader.GetInt32("NUMERIC_SCALE");
@@ -578,9 +578,9 @@ namespace Tortuga.Chain.MySql
                             var isIdentity = extra.Contains("auto_increment");
                             var isUnsigned = fullTypeName.Contains("unsigned");
 
-                            var dbType = TypeNameToDbType(typeName, isUnsigned);
+                            var dbType = SqlTypeNameToDbType(sqlTypeName, isUnsigned);
 
-                            columns.Add(new ColumnMetadata<MySqlDbType>(name, computed, primary, isIdentity, typeName, dbType, "`" + name + "`", isNullable, (int?)maxLength, precision, scale, fullTypeName, ToClrType(typeName, isNullable, (int?)maxLength, isUnsigned)));
+                            columns.Add(new ColumnMetadata<MySqlDbType>(name, computed, primary, isIdentity, sqlTypeName, dbType, "`" + name + "`", isNullable, (int?)maxLength, precision, scale, fullTypeName, ToClrType(sqlTypeName, isNullable, (int?)maxLength, isUnsigned)));
                         }
                     }
                 }
@@ -612,7 +612,7 @@ namespace Tortuga.Chain.MySql
                             while (reader.Read())
                             {
                                 var name = reader.GetString(reader.GetOrdinal("PARAMETER_NAME"));
-                                var typeName = reader.GetString(reader.GetOrdinal("DATA_TYPE"));
+                                var sqlTypeName = reader.GetString(reader.GetOrdinal("DATA_TYPE"));
                                 bool isNullable = true;
                                 var maxLength = reader.IsDBNull(reader.GetOrdinal("CHARACTER_MAXIMUM_LENGTH")) ? (UInt64?)null : reader.GetUInt64("CHARACTER_MAXIMUM_LENGTH");
                                 var precisionA = reader.IsDBNull(reader.GetOrdinal("NUMERIC_PRECISION")) ? (int?)null : reader.GetInt32("NUMERIC_PRECISION");
@@ -622,9 +622,9 @@ namespace Tortuga.Chain.MySql
                                 var fullTypeName = reader.GetString("DTD_IDENTIFIER");
 
                                 var isUnsigned = fullTypeName.Contains("unsigned");
-                                var dbType = TypeNameToDbType(typeName, isUnsigned);
+                                var dbType = SqlTypeNameToDbType(sqlTypeName, isUnsigned);
 
-                                parameters.Add(new ParameterMetadata<MySqlDbType>(name, name, typeName, dbType, isNullable, (int?)maxLength, precision, scale, fullTypeName));
+                                parameters.Add(new ParameterMetadata<MySqlDbType>(name, name, sqlTypeName, dbType, isNullable, (int?)maxLength, precision, scale, fullTypeName));
                             }
                         }
                     }
@@ -645,7 +645,7 @@ namespace Tortuga.Chain.MySql
             string actualName;
 
             string fullTypeName;
-            string typeName;
+            string sqlTypeName;
             UInt64? maxLength;
             int? precision;
             int? scale;
@@ -666,7 +666,7 @@ namespace Tortuga.Chain.MySql
                         actualSchema = reader.GetString(reader.GetOrdinal("ROUTINE_SCHEMA"));
                         actualName = reader.GetString(reader.GetOrdinal("ROUTINE_NAME"));
 
-                        typeName = reader.GetString("DATA_TYPE");
+                        sqlTypeName = reader.GetString("DATA_TYPE");
                         maxLength = reader.IsDBNull(reader.GetOrdinal("CHARACTER_MAXIMUM_LENGTH")) ? (UInt64?)null : reader.GetUInt64("CHARACTER_MAXIMUM_LENGTH");
                         var precisionA = reader.IsDBNull(reader.GetOrdinal("NUMERIC_PRECISION")) ? (int?)null : reader.GetInt32("NUMERIC_PRECISION");
                         scale = reader.IsDBNull(reader.GetOrdinal("NUMERIC_SCALE")) ? (int?)null : reader.GetInt32("NUMERIC_SCALE");
@@ -676,7 +676,7 @@ namespace Tortuga.Chain.MySql
                         specificName = reader.GetString("SPECIFIC_NAME");
 
                         var isUnsigned = fullTypeName.Contains("unsigned");
-                        dbType = TypeNameToDbType(typeName, isUnsigned);
+                        dbType = SqlTypeNameToDbType(sqlTypeName, isUnsigned);
                     }
                 }
             }
@@ -685,7 +685,7 @@ namespace Tortuga.Chain.MySql
 
             var parameters = GetParameters(actualSchema, specificName);
 
-            return new ScalarFunctionMetadata<MySqlObjectName, MySqlDbType>(objectName, parameters, typeName, dbType, true, (int?)maxLength, precision, scale, fullTypeName);
+            return new ScalarFunctionMetadata<MySqlObjectName, MySqlDbType>(objectName, parameters, sqlTypeName, dbType, true, (int?)maxLength, precision, scale, fullTypeName);
         }
 
         private StoredProcedureMetadata<MySqlObjectName, MySqlDbType> GetStoredProcedureInteral(MySqlObjectName storedProcedureName)
@@ -749,7 +749,7 @@ namespace Tortuga.Chain.MySql
 
             var columns = GetColumns(actualSchemaName, actualTableName);
 
-            return new MySqlTableOrViewMetadata<MySqlDbType>(new MySqlObjectName(actualSchemaName, actualTableName), isTable, columns, engine);
+            return new MySqlTableOrViewMetadata(this, new MySqlObjectName(actualSchemaName, actualTableName), isTable, columns, engine);
         }
     }
 }

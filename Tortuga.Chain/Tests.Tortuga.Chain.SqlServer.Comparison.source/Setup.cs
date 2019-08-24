@@ -5,9 +5,10 @@ using Tortuga.Chain;
 using Tortuga.Chain.SqlServer;
 
 #if DEBUG
-using Tortuga.Chain.DataSources;
-#endif
 
+using Tortuga.Chain.DataSources;
+
+#endif
 
 namespace Tests
 {
@@ -19,12 +20,12 @@ namespace Tests
 
         {
 #if DEBUG
-            DataSource.GlobalExecutionCanceled += DefaultDispatcher_ExecutionCanceled;
-            DataSource.GlobalExecutionError += DefaultDispatcher_ExecutionError;
-            DataSource.GlobalExecutionFinished += DefaultDispatcher_ExecutionFinished;
-            DataSource.GlobalExecutionStarted += DefaultDispatcher_ExecutionStarted;
+            //DataSource.GlobalExecutionCanceled += DefaultDispatcher_ExecutionCanceled;
+            //DataSource.GlobalExecutionError += DefaultDispatcher_ExecutionError;
+            //DataSource.GlobalExecutionFinished += DefaultDispatcher_ExecutionFinished;
+            //DataSource.GlobalExecutionStarted += DefaultDispatcher_ExecutionStarted;
 
-            CompiledMaterializers.MaterializerCompiled += CompiledMaterializers_MaterializerCompiled;
+            //CompiledMaterializers.MaterializerCompiled += CompiledMaterializers_MaterializerCompiled;
 #endif
         }
 

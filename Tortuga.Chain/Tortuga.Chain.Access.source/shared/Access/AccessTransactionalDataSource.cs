@@ -8,8 +8,6 @@ using System.Threading.Tasks;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.DataSources;
 
-
-
 namespace Tortuga.Chain.Access
 {
     /// <summary>
@@ -91,6 +89,7 @@ namespace Tortuga.Chain.Access
             AuditRules = dataSource.AuditRules;
             UserValue = dataSource.UserValue;
         }
+
         /// <summary>
         /// Gets or sets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
         /// </summary>
@@ -173,7 +172,24 @@ namespace Tortuga.Chain.Access
         public override async Task TestConnectionAsync()
         {
             using (var cmd = new OleDbCommand("SELECT 1", m_Connection) { Transaction = m_Transaction })
-                await cmd.ExecuteScalarAsync();
+                await cmd.ExecuteScalarAsync().ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (m_Disposed)
+                return;
+
+            if (disposing)
+            {
+                m_Transaction.Dispose();
+                m_Connection.Dispose();
+                m_Disposed = true;
+            }
         }
 
         /// <summary>
@@ -239,7 +255,6 @@ namespace Tortuga.Chain.Access
                 OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
                 throw;
             }
-
         }
 
         /// <summary>
@@ -264,14 +279,12 @@ namespace Tortuga.Chain.Access
                 var rows = implementation(m_Connection, m_Transaction);
                 OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
                 return rows;
-
             }
             catch (Exception ex)
             {
                 OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
                 throw;
             }
-
         }
 
         /// <summary>
@@ -320,11 +333,11 @@ namespace Tortuga.Chain.Access
                         currentToken.ApplyCommandOverrides(cmd);
 
                         if (currentToken.ExecutionMode == AccessCommandExecutionMode.Materializer)
-                            rows = await implementation(cmd);
+                            rows = await implementation(cmd).ConfigureAwait(false);
                         else if (currentToken.ExecutionMode == AccessCommandExecutionMode.ExecuteScalarAndForward)
-                            currentToken.ForwardResult(await cmd.ExecuteScalarAsync());
+                            currentToken.ForwardResult(await cmd.ExecuteScalarAsync().ConfigureAwait(false));
                         else
-                            rows = await cmd.ExecuteNonQueryAsync();
+                            rows = await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
                         executionToken.RaiseCommandExecuted(cmd, rows);
                         OnExecutionFinished(currentToken, startTime, DateTimeOffset.Now, rows, state);
                     }
@@ -334,7 +347,7 @@ namespace Tortuga.Chain.Access
             }
             catch (Exception ex)
             {
-                if (cancellationToken.IsCancellationRequested) //convert AccessException into a OperationCanceledException 
+                if (cancellationToken.IsCancellationRequested) //convert AccessException into a OperationCanceledException
                 {
                     var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);
                     OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex2, state);
@@ -346,7 +359,6 @@ namespace Tortuga.Chain.Access
                     throw;
                 }
             }
-
         }
 
         /// <summary>
@@ -372,11 +384,10 @@ namespace Tortuga.Chain.Access
                 var rows = await implementation(m_Connection, m_Transaction, cancellationToken).ConfigureAwait(false);
                 OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
                 return rows;
-
             }
             catch (Exception ex)
             {
-                if (cancellationToken.IsCancellationRequested) //convert AccessException into a OperationCanceledException 
+                if (cancellationToken.IsCancellationRequested) //convert AccessException into a OperationCanceledException
                 {
                     var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);
                     OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex2, state);
@@ -387,24 +398,6 @@ namespace Tortuga.Chain.Access
                     OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
                     throw;
                 }
-            }
-
-        }
-
-        /// <summary>
-        /// Releases unmanaged and - optionally - managed resources.
-        /// </summary>
-        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
-        void Dispose(bool disposing)
-        {
-            if (m_Disposed)
-                return;
-
-            if (disposing)
-            {
-                m_Transaction.Dispose();
-                m_Connection.Dispose();
-                m_Disposed = true;
             }
         }
     }

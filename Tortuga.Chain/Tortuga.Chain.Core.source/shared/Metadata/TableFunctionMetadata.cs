@@ -17,6 +17,14 @@ namespace Tortuga.Chain.Metadata
         public ColumnMetadataCollection Columns { get; protected set; }
 
         /// <summary>
+        /// Gets the name.
+        /// </summary>
+        /// <value>
+        /// The name.
+        /// </value>
+        public string Name { get; protected set; }
+
+        /// <summary>
         /// Gets the columns known to be nullable.
         /// </summary>
         /// <value>
@@ -27,14 +35,6 @@ namespace Tortuga.Chain.Metadata
         public ColumnMetadataCollection NullableColumns { get; protected set; }
 
         /// <summary>
-        /// Gets the name.
-        /// </summary>
-        /// <value>
-        /// The name.
-        /// </value>
-        public string Name { get; protected set; }
-
-        /// <summary>
         /// Gets the parameters.
         /// </summary>
         /// <value>
@@ -42,7 +42,5 @@ namespace Tortuga.Chain.Metadata
         /// </value>
         [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public ParameterMetadataCollection Parameters { get; protected set; }
-
-
     }
 }

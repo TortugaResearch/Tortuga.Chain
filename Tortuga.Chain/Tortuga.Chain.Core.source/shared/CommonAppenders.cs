@@ -21,7 +21,7 @@ namespace Tortuga.Chain
         /// <param name="previousLink">The previous link.</param>
         /// <param name="cacheKey">The cache key.</param>
         /// <param name="policy">Optional cache policy.</param>
-        public static ILink<TResult> Cache<TResult>(this ILink<TResult> previousLink, string cacheKey, CachePolicy policy = null)
+        public static ICacheLink<TResult> Cache<TResult>(this ILink<TResult> previousLink, string cacheKey, CachePolicy policy = null)
         {
             return new CacheResultAppender<TResult>(previousLink, cacheKey, policy);
         }
@@ -32,7 +32,7 @@ namespace Tortuga.Chain
         /// <param name="previousLink">The previous link.</param>
         /// <param name="cacheKeyFunction">Function to generate cache keys.</param>
         /// <param name="policy">Optional cache policy.</param>
-        public static ILink<TResult> Cache<TResult>(this ILink<TResult> previousLink, Func<TResult, string> cacheKeyFunction, CachePolicy policy = null)
+        public static ICacheLink<TResult> Cache<TResult>(this ILink<TResult> previousLink, Func<TResult, string> cacheKeyFunction, CachePolicy policy = null)
         {
             return new CacheResultAppender<TResult>(previousLink, cacheKeyFunction, policy);
         }
@@ -46,7 +46,7 @@ namespace Tortuga.Chain
         /// <param name="cacheKeyFunction">Function to generate cache keys.</param>
         /// <param name="policy">Optional cache policy.</param>
         /// <returns>ILink&lt;TCollection&gt;.</returns>
-        public static ILink<TCollection> CacheAllItems<TCollection, TItem>(this ILink<TCollection> previousLink, Func<TItem, string> cacheKeyFunction, CachePolicy policy = null)
+        public static ICacheLink<TCollection> CacheAllItems<TCollection, TItem>(this ILink<TCollection> previousLink, Func<TItem, string> cacheKeyFunction, CachePolicy policy = null)
             where TCollection : IEnumerable<TItem>
         {
             return new CacheAllItemsAppender<TCollection, TItem>(previousLink, cacheKeyFunction, policy);
@@ -271,12 +271,10 @@ namespace Tortuga.Chain
         {
             return new TraceAppender<TResult>(previousLink);
         }
+
         internal static ILink<List<T1>> Join_Helper<T1, T2, TKey>(ILink<Tuple<List<T1>, List<T2>>> previousLink, string primaryKeyName, string foreignKeyName, string targetCollectionName, JoinOptions joinOptions)
         {
             return new KeyJoinAppender<T1, T2, TKey>(previousLink, primaryKeyName, foreignKeyName, targetCollectionName, joinOptions);
         }
     }
 }
-
-
-

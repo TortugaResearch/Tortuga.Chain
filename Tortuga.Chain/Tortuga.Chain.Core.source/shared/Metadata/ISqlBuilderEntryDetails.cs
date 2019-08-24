@@ -52,6 +52,6 @@
         /// Gets the name of the type.
         /// </summary>
         /// <value>The name of the type.</value>
-        string TypeName { get; }
+        string SqlTypeName { get; }
     }
 }

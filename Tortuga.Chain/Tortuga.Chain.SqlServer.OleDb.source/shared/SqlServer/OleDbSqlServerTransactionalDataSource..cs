@@ -181,7 +181,24 @@ namespace Tortuga.Chain.SqlServer
             using (var cmd = new OleDbCommand("SELECT 1", m_Connection))
             {
                 cmd.Transaction = m_Transaction;
-                await cmd.ExecuteScalarAsync();
+                await cmd.ExecuteScalarAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Closes the current transaction and connection. If not committed, the transaction is rolled back.
+        /// </summary>
+        /// <param name="disposing"></param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (m_Disposed)
+                return;
+
+            if (disposing)
+            {
+                m_Transaction.Dispose();
+                m_Connection.Dispose();
+                m_Disposed = true;
             }
         }
 
@@ -345,23 +362,6 @@ namespace Tortuga.Chain.SqlServer
                     OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
                     throw;
                 }
-            }
-        }
-
-        /// <summary>
-        /// Closes the current transaction and connection. If not committed, the transaction is rolled back.
-        /// </summary>
-        /// <param name="disposing"></param>
-        void Dispose(bool disposing)
-        {
-            if (m_Disposed)
-                return;
-
-            if (disposing)
-            {
-                m_Transaction.Dispose();
-                m_Connection.Dispose();
-                m_Disposed = true;
             }
         }
     }

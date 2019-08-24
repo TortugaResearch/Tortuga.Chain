@@ -3,8 +3,6 @@ using Tortuga.Chain.CommandBuilders;
 
 namespace Tortuga.Chain.Metadata
 {
-
-
     /// <summary>
     /// Metadata for a database table value function.
     /// </summary>
@@ -20,14 +18,14 @@ namespace Tortuga.Chain.Metadata
         /// </summary>
         /// <param name="name">The name of the scalar function.</param>
         /// <param name="parameters">The parameters.</param>
-        /// <param name="typeName">Name of the return type.</param>
+        /// <param name="sqlTypeName">Name of the return type.</param>
         /// <param name="dbType">Return type.</param>
         /// <param name="isNullable">if set to <c>true</c> if the return type is nullable.</param>
         /// <param name="maxLength">The maximum length of the return value.</param>
         /// <param name="precision">The precision of the return value.</param>
         /// <param name="scale">The scale of the return value.</param>
         /// <param name="fullTypeName">Full name of the return type.</param>
-        public ScalarFunctionMetadata(TName name, IList<ParameterMetadata<TDbType>> parameters, string typeName, TDbType? dbType, bool isNullable, int? maxLength, int? precision, int? scale, string fullTypeName)
+        public ScalarFunctionMetadata(TName name, IList<ParameterMetadata<TDbType>> parameters, string sqlTypeName, TDbType? dbType, bool isNullable, int? maxLength, int? precision, int? scale, string fullTypeName)
         {
             Name = name;
             base.Name = name.ToString();
@@ -36,8 +34,7 @@ namespace Tortuga.Chain.Metadata
 
             m_Builder = new SqlBuilder<TDbType>(Name.ToString(), Parameters);
 
-
-            TypeName = typeName;
+            SqlTypeName = sqlTypeName;
             DbType = dbType;
             base.DbType = dbType;
             IsNullable = isNullable;

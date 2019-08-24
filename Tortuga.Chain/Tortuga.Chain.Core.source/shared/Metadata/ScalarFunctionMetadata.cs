@@ -52,6 +52,7 @@ namespace Tortuga.Chain.Metadata
         /// </value>
         [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public ParameterMetadataCollection Parameters { get; protected set; }
+
         /// <summary>
         /// Gets or sets the precision.
         /// </summary>
@@ -72,6 +73,6 @@ namespace Tortuga.Chain.Metadata
         /// Gets the name of the type.
         /// </summary>
         /// <value>The name of the type.</value>
-        public string TypeName { get; protected set; }
+        public string SqlTypeName { get; protected set; }
     }
 }

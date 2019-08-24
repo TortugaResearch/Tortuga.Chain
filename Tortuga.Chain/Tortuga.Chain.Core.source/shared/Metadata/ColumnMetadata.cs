@@ -67,22 +67,60 @@ namespace Tortuga.Chain.Metadata
     public abstract class ColumnMetadata
     {
         /// <summary>
-        /// Gets the name used by CLR objects.
+        /// Initializes a new instance of the <see cref="ColumnMetadata{TDbType}" /> class.
         /// </summary>
-        public string ClrName { get; protected set; }
+        /// <param name="name">The name.</param>
+        /// <param name="isComputed">if set to <c>true</c> is a computed column.</param>
+        /// <param name="isPrimaryKey">if set to <c>true</c> is a primary key.</param>
+        /// <param name="isIdentity">if set to <c>true</c> [is identity].</param>
+        /// <param name="sqlTypeName">Name of the type.</param>
+        /// <param name="dbType">Type used by the database.</param>
+        /// <param name="quotedSqlName">Name of the quoted SQL.</param>
+        /// <param name="isNullable">Indicates if the column is nullable.</param>
+        /// <param name="maxLength">The maximum length.</param>
+        /// <param name="precision">The precision.</param>
+        /// <param name="scale">The scale.</param>
+        /// <param name="fullTypeName">Full name of the type.</param>
+        /// <param name="clrType">The CLR type that matches this column's database type.</param>
+        protected ColumnMetadata(string name, bool isComputed, bool isPrimaryKey, bool isIdentity, string sqlTypeName, object dbType, string quotedSqlName, bool? isNullable, int? maxLength, int? precision, int? scale, string fullTypeName, Type clrType)
+        {
+            SqlTypeName = sqlTypeName;
+            SqlName = name;
+            IsComputed = isComputed;
+            IsPrimaryKey = isPrimaryKey;
+            IsIdentity = isIdentity;
+            DbType = dbType;
+            QuotedSqlName = quotedSqlName;
+
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                ClrName = Utilities.ToClrName(name);
+                SqlVariableName = "@" + ClrName;
+            }
+
+            ClrType = clrType ?? typeof(object);
+
+            IsNullable = isNullable;
+            Precision = precision;
+            MaxLength = maxLength;
+            Scale = scale;
+            FullTypeName = fullTypeName;
+        }
 
         /// <summary>
-        /// Gets the CLR type that matches this column's database type.
+        /// Gets the name used by CLR objects.
         /// </summary>
-        /// <value>
+        public string ClrName { get; }
+
+        /// <summary>
         /// The CLR type of the column or NULL if the type is unkonwn.
-        /// </value>
-        public Type ClrType { get; protected set; }
+        /// </summary>
+        public Type ClrType { get; }
 
         /// <summary>
         /// Gets the type used by the database.
         /// </summary>
-        public object DbType { get; protected set; }
+        public object DbType { get; }
 
         /// <summary>
         /// Gets or sets the full name of the type including max length, precision, and/or scale.
@@ -90,7 +128,7 @@ namespace Tortuga.Chain.Metadata
         /// <value>
         /// The full name of the type.
         /// </value>
-        public string FullTypeName { get; protected set; }
+        public string FullTypeName { get; }
 
         /// <summary>
         /// Gets a value indicating whether this <see cref="ColumnMetadata{TDbType}"/> is computed.
@@ -98,13 +136,13 @@ namespace Tortuga.Chain.Metadata
         /// <value>
         /// <c>true</c> if computed; otherwise, <c>false</c>.
         /// </value>
-        public bool IsComputed { get; protected set; }
+        public bool IsComputed { get; }
 
         /// <summary>
         /// Gets a value indicating whether this column is an identity column.
         /// </summary>
         /// <value><c>true</c> if this instance is identity; otherwise, <c>false</c>.</value>
-        public bool IsIdentity { get; protected set; }
+        public bool IsIdentity { get; }
 
         /// <summary>
         /// Gets or sets a value indicating whether this column is nullable.
@@ -112,13 +150,13 @@ namespace Tortuga.Chain.Metadata
         /// <value>
         /// <c>true</c> if this column is nullable; otherwise, <c>false</c>.
         /// </value>
-        public bool? IsNullable { get; protected set; }
+        public bool? IsNullable { get; }
 
         /// <summary>
         /// Gets a value indicating whether this column is a primary key.
         /// </summary>
         /// <value><c>true</c> if this instance is primary key; otherwise, <c>false</c>.</value>
-        public bool IsPrimaryKey { get; protected set; }
+        public bool IsPrimaryKey { get; }
 
         /// <summary>
         /// Gets or sets the maximum length.
@@ -126,7 +164,7 @@ namespace Tortuga.Chain.Metadata
         /// <value>
         /// The maximum length.
         /// </value>
-        public int? MaxLength { get; protected set; }
+        public int? MaxLength { get; }
 
         /// <summary>
         /// Gets or sets the precision.
@@ -134,12 +172,12 @@ namespace Tortuga.Chain.Metadata
         /// <value>
         /// The precision.
         /// </value>
-        public int? Precision { get; protected set; }
+        public int? Precision { get; }
 
         /// <summary>
         /// Gets the name used by SQL Server, quoted.
         /// </summary>
-        public string QuotedSqlName { get; protected set; }
+        public string QuotedSqlName { get; }
 
         /// <summary>
         /// Gets or sets the scale.
@@ -147,23 +185,23 @@ namespace Tortuga.Chain.Metadata
         /// <value>
         /// The scale.
         /// </value>
-        public int? Scale { get; protected set; }
+        public int? Scale { get; }
 
         /// <summary>
-        /// Gets the name used by SQL Server.
+        /// Gets the name used by the database.
         /// </summary>
-        public string SqlName { get; protected set; }
+        public string SqlName { get; }
+
+        /// <summary>
+        /// Gets the name of the type as known to the database.
+        /// </summary>
+        /// <value>The name of the type as known to the database.</value>
+        public string SqlTypeName { get; }
 
         /// <summary>
         /// Gets the column, formatted as a SQL variable.
         /// </summary>
-        public string SqlVariableName { get; protected set; }
-
-        /// <summary>
-        /// Gets the database specific name of the type.
-        /// </summary>
-        /// <value>The name of the type.</value>
-        public string TypeName { get; protected set; }
+        public string SqlVariableName { get; }
 
         /// <summary>
         /// Returns the CLR Type name suitable for code generation scenarios.
@@ -184,9 +222,6 @@ namespace Tortuga.Chain.Metadata
                 langCount += 1;
             if (langCount != 1)
                 throw new ArgumentException("Must specify one of CSharp, FSharp, or VisualBasic");
-
-            if (ClrType == null)
-                ClrType = typeof(object);
 
             var metadata = MetadataCache.GetMetadata(ClrType);
 

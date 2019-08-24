@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -14,7 +18,65 @@ namespace Tests.Core
         {
         }
 
-#if SQL_SERVER || OLE_SQL_SERVER
+#if SQL_SERVER || ACCESS || SQLITE
+
+        [Theory, MemberData(nameof(Tables))]
+        public void TableIndexes(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+                var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
+                var indexes = table.GetIndexes();
+                Assert.IsTrue(indexes.Where(i => i.IsPrimaryKey).Count() <= 1, "No more than one primary key");
+
+                if (table.Columns.Any(c => c.IsPrimaryKey))
+                    Assert.IsTrue(indexes.Where(i => i.IsPrimaryKey).Count() == 1, "A column is marked as primary, so there should be a primary index.");
+
+                foreach (var index in indexes)
+                {
+                    //Assert.IsTrue(index.Columns.Count > 0, "Indexes should have columns");
+                    Assert.IsFalse(string.IsNullOrWhiteSpace(index.Name), "indexes should have names");
+                }
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+#endif
+
+#if SQL_SERVER
+
+        [Theory, MemberData(nameof(Views))]
+        public void ViewIndexes(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+                var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
+                var indexes = table.GetIndexes();
+                Assert.IsTrue(indexes.Where(i => i.IsPrimaryKey).Count() <= 1, "No more than one primary key");
+
+                if (table.Columns.Any(c => c.IsPrimaryKey))
+                    Assert.IsTrue(indexes.Where(i => i.IsPrimaryKey).Count() <= 1, "A column is marked as primary, so there should be a primary index.");
+
+                foreach (var index in indexes)
+                {
+                    //Assert.IsTrue(index.Columns.Count > 0, "Indexes should have columns");
+                    Assert.IsFalse(string.IsNullOrWhiteSpace(index.Name), "indexes should have names");
+                }
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+#endif
+
+#if SQL_SERVER || OLE_SQL_SERVER || POSTGRESQL
 
         [Theory, MemberData(nameof(Basic))]
         public void DatabaseName(string assemblyName, string dataSourceName, DataSourceType mode)
@@ -59,6 +121,190 @@ namespace Tests.Core
             try
             {
                 dataSource.DatabaseMetadata.Preload();
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+        [Theory, MemberData(nameof(Basic))]
+        public void SqlTypeNameToDbType_Tables(string assemblyName, string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+                dataSource.DatabaseMetadata.PreloadTables();
+
+                foreach (var table in dataSource.DatabaseMetadata.GetTablesAndViews().Where(t => t.IsTable))
+                {
+                    foreach (var column in table.Columns)
+                    {
+                        if (!string.IsNullOrEmpty(column.SqlTypeName) && !dataSource.DatabaseMetadata.UnsupportedSqlTypeNames.Contains(column.SqlTypeName))
+                        {
+                            Assert.IsTrue(column.DbType.HasValue, $"Unable to map '{column.SqlTypeName}' to a DbType in table {table.Name} column {column.SqlName}");
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+        [Theory, MemberData(nameof(Basic))]
+        public void SqlTypeNameToDbType_Views(string assemblyName, string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+                dataSource.DatabaseMetadata.PreloadViews();
+
+                foreach (var view in dataSource.DatabaseMetadata.GetTablesAndViews().Where(t => !t.IsTable))
+                {
+                    foreach (var column in view.Columns)
+                    {
+                        if (!string.IsNullOrEmpty(column.SqlTypeName) && !dataSource.DatabaseMetadata.UnsupportedSqlTypeNames.Contains(column.SqlTypeName))
+                        {
+                            Assert.IsTrue(column.DbType.HasValue, $"Unable to map '{column.SqlTypeName}' to a DbType in view {view.Name} column {column.SqlName}");
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+#if SQL_SERVER || OLE_SQL_SERVER || POSTGRESQL
+
+        [Theory, MemberData(nameof(Basic))]
+        public void SqlTypeNameToDbType_TableFunctions(string assemblyName, string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+                dataSource.DatabaseMetadata.PreloadTableFunctions();
+
+                foreach (var function in dataSource.DatabaseMetadata.GetTableFunctions())
+                {
+                    foreach (var parameter in function.Parameters)
+                    {
+                        if (!string.IsNullOrEmpty(parameter.SqlTypeName) && !dataSource.DatabaseMetadata.UnsupportedSqlTypeNames.Contains(parameter.SqlTypeName))
+                        {
+                            Assert.IsTrue(parameter.DbType.HasValue, $"Unable to map '{parameter.SqlTypeName}' to a DbType in TableFunction {function.Name} parameter {parameter.SqlParameterName}");
+                        }
+                    }
+                    foreach (var column in function.Columns)
+                    {
+                        if (!string.IsNullOrEmpty(column.SqlTypeName) && !dataSource.DatabaseMetadata.UnsupportedSqlTypeNames.Contains(column.SqlTypeName))
+                        {
+                            Assert.IsTrue(column.DbType.HasValue, $"Unable to map '{column.SqlTypeName}' to a DbType in TableFunction {function.Name} column {column.SqlName}");
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+#endif
+
+#if SQL_SERVER || OLE_SQL_SERVER || POSTGRESQL || MYSQL
+
+        [Theory, MemberData(nameof(Basic))]
+        public void SqlTypeNameToDbType_StoredProcedures(string assemblyName, string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+                dataSource.DatabaseMetadata.PreloadStoredProcedures();
+
+                foreach (var function in dataSource.DatabaseMetadata.GetStoredProcedures())
+                {
+                    foreach (var parameter in function.Parameters)
+                    {
+                        if (!string.IsNullOrEmpty(parameter.SqlTypeName) && !dataSource.DatabaseMetadata.UnsupportedSqlTypeNames.Contains(parameter.SqlTypeName))
+                        {
+                            Assert.IsTrue(parameter.DbType.HasValue, $"Unable to map '{parameter.SqlTypeName}' to a DbType in Stored Procedure {function.Name} parameter {parameter.SqlParameterName}");
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+#endif
+
+#if SQL_SERVER || OLE_SQL_SERVER || POSTGRESQL || MYSQL
+
+        [Theory, MemberData(nameof(Basic))]
+        public void SqlTypeNameToDbType_ScalarFunctions(string assemblyName, string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+                dataSource.DatabaseMetadata.PreloadScalarFunctions();
+
+                foreach (var function in dataSource.DatabaseMetadata.GetScalarFunctions())
+                {
+                    foreach (var parameter in function.Parameters)
+                    {
+                        if (!string.IsNullOrEmpty(parameter.SqlTypeName) && !dataSource.DatabaseMetadata.UnsupportedSqlTypeNames.Contains(parameter.SqlTypeName))
+                        {
+                            Assert.IsTrue(parameter.DbType.HasValue, $"Unable to map '{parameter.SqlTypeName}' to a DbType in Table Function {function.Name} parameter {parameter.SqlParameterName}");
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(function.SqlTypeName) && !dataSource.DatabaseMetadata.UnsupportedSqlTypeNames.Contains(function.SqlTypeName))
+                    {
+                        Assert.IsTrue(function.DbType.HasValue, $"Unable to map '{function.SqlTypeName}' to a DbType in Scalar Function {function.Name} return type");
+                    }
+                }
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+#endif
+
+        [Theory, MemberData(nameof(Tables))]
+        public void TryGetTable(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+                dataSource.DatabaseMetadata.Reset();
+                var result = dataSource.DatabaseMetadata.TryGetTableOrView(tableName, out var table);
+                Assert.IsTrue(result);
+                Assert.Equal(tableName, table.Name.ToString());
+                Assert.NotEmpty(table.Columns);
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+        [Theory, MemberData(nameof(Prime))]
+        public void TryGetTable_Failed(string assemblyName, string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+                dataSource.DatabaseMetadata.Reset();
+                var result = dataSource.DatabaseMetadata.TryGetTableOrView("XXXX", out var table);
+                Assert.IsFalse(result, "No object should have been found");
+                Assert.IsNull(table, "No object should have been found");
             }
             finally
             {

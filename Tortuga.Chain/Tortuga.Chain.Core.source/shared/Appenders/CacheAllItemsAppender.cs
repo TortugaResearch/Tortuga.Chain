@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -9,11 +10,13 @@ namespace Tortuga.Chain.Appenders
     /// Caches each individual item in the collection.
     /// </summary>
     /// <remarks>This operation will not read from the cache.</remarks>
-    internal sealed class CacheAllItemsAppender<TCollection, TItem> : Appender<TCollection>
+    internal sealed class CacheAllItemsAppender<TCollection, TItem> : Appender<TCollection>, ICacheLink<TCollection>
         where TCollection : IEnumerable<TItem>
     {
         readonly Func<TItem, string> m_CacheKeyFunction;
         readonly CachePolicy m_Policy;
+
+        ImmutableArray<string> m_ActualCacheKeys;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CacheAllItemsAppender{TCollection, TItem}" /> class.
@@ -40,9 +43,17 @@ namespace Tortuga.Chain.Appenders
         {
             var result = PreviousLink.Execute(state);
 
-            foreach (var item in result)
-                DataSource.Cache.Write(m_CacheKeyFunction(item), item, m_Policy);
+            var cacheKeys = new List<string>();
 
+            foreach (var item in result)
+            {
+                var cacheKey = m_CacheKeyFunction(item);
+                DataSource.Cache.Write(cacheKey, item, m_Policy);
+                cacheKeys.Add(cacheKey);
+            }
+
+
+            m_ActualCacheKeys = cacheKeys.ToImmutableArray();
             return result;
         }
 
@@ -56,10 +67,22 @@ namespace Tortuga.Chain.Appenders
         {
             var result = await PreviousLink.ExecuteAsync(cancellationToken, state).ConfigureAwait(false);
 
+            var cacheKeys = new List<string>();
             foreach (var item in result)
-                await DataSource.Cache.WriteAsync(m_CacheKeyFunction(item), item, m_Policy).ConfigureAwait(false);
-
+            {
+                var cacheKey = m_CacheKeyFunction(item);
+                await DataSource.Cache.WriteAsync(cacheKey, item, m_Policy).ConfigureAwait(false);
+                cacheKeys.Add(cacheKey);
+            }
+            m_ActualCacheKeys = cacheKeys.ToImmutableArray();
             return result;
+        }
+
+        void ICacheLink<TCollection>.Invalidate()
+        {
+            if (m_ActualCacheKeys != null)
+                foreach (var cacheKey in m_ActualCacheKeys)
+                    DataSource.Cache.Invalidate(cacheKey);
         }
     }
 }

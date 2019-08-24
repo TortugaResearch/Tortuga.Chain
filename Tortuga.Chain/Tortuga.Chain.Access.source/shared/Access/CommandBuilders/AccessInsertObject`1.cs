@@ -46,6 +46,9 @@ namespace Tortuga.Chain.Access.CommandBuilders
             sqlBuilder.ApplyArgumentValue(DataSource, ArgumentValue, m_Options);
             sqlBuilder.ApplyDesiredColumns(desiredColumns);
 
+            if (KeyColumns.Count > 0)
+                sqlBuilder.OverrideKeys(KeyColumns);
+
             var sql = new StringBuilder();
             sqlBuilder.BuildInsertClause(sql, $"INSERT INTO {Table.Name.ToQuotedString()} (", null, ")", identityInsert);
             sqlBuilder.BuildValuesClause(sql, " VALUES (", ")", identityInsert);
@@ -70,7 +73,7 @@ namespace Tortuga.Chain.Access.CommandBuilders
 
         AccessCommandExecutionToken PrepareNext(IReadOnlyList<string> desiredColumns, object previousValue)
         {
-            var primaryKeys = Table.Columns.Where(c => c.IsPrimaryKey).ToList();
+            var primaryKeys = Table.PrimaryKeyColumns;
             if (primaryKeys.Count != 1)
                 throw new MappingException($"Insert operation cannot return any values for {Table.Name} because it doesn't have a single primary key.");
 

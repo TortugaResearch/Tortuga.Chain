@@ -6,7 +6,7 @@ namespace Tortuga.Chain.SQLite
     /// <summary>
     /// Represents an object in SQLite (e.g. table, view, procedure)
     /// </summary>
-    public struct SQLiteObjectName
+    public struct SQLiteObjectName : IEquatable<SQLiteObjectName>
     {
         /// <summary>
         /// An empty schema/name pair

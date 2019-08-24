@@ -14,12 +14,13 @@ using Tortuga.Chain.DataSources;
 using Tortuga.Chain.SqlServer;
 
 #if !System_Configuration_Missing
+
 using System.Configuration;
+
 #endif
 
 namespace Tortuga.Chain
 {
-
     /// <summary>
     /// Class SqlServerDataSource.
     /// </summary>
@@ -69,8 +70,6 @@ namespace Tortuga.Chain
             m_ExtensionCache = new ConcurrentDictionary<Type, object>();
             m_Cache = DefaultCache;
         }
-
-
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlServerDataSource" /> class.
@@ -134,7 +133,6 @@ namespace Tortuga.Chain
             m_Cache = cache;
         }
 
-
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlServerDataSource"/> class.
         /// </summary>
@@ -144,8 +142,6 @@ namespace Tortuga.Chain
             : this(null, connectionStringBuilder, settings)
         {
         }
-
-
 
         /// <summary>
         /// Terminates a query when an overflow or divide-by-zero error occurs during query execution.
@@ -163,6 +159,7 @@ namespace Tortuga.Chain
         }
 
 #if !SqlDependency_Missing
+
         /// <summary>
         /// Gets a value indicating whether SQL dependency support is active for this dispatcher.
         /// </summary>
@@ -171,6 +168,7 @@ namespace Tortuga.Chain
         {
             get { return m_IsSqlDependencyActive; }
         }
+
 #endif
 
         /// <summary>
@@ -191,6 +189,7 @@ namespace Tortuga.Chain
         }
 
 #if !System_Configuration_Missing
+
         /// <summary>
         /// Creates a new connection using the connection string settings in the app.config file.
         /// </summary>
@@ -203,6 +202,7 @@ namespace Tortuga.Chain
 
             return new SqlServerDataSource(connectionName, settings.ConnectionString);
         }
+
 #endif
 
         /// <summary>
@@ -229,7 +229,7 @@ namespace Tortuga.Chain
         /// <returns></returns>
         public async Task<SqlServerTransactionalDataSource> BeginTransactionAsync(string transactionName = null, IsolationLevel? isolationLevel = null, bool forwardEvents = true)
         {
-            var connection = await CreateConnectionAsync();
+            var connection = await CreateConnectionAsync().ConfigureAwait(false);
 
             SqlTransaction transaction;
             if (isolationLevel.HasValue)
@@ -258,15 +258,15 @@ namespace Tortuga.Chain
         public async Task<SqlServerEffectiveSettings> GetEffectiveSettingsAsync()
         {
             var result = new SqlServerEffectiveSettings();
-            using (var con = await CreateConnectionAsync())
-                await result.ReloadAsync(con, null);
+            using (var con = await CreateConnectionAsync().ConfigureAwait(false))
+                await result.ReloadAsync(con, null).ConfigureAwait(false);
             return result;
         }
 
 #if !SqlDependency_Missing
 
         /// <summary>
-        /// Starts SQL dependency.
+        /// Starts SQL dependency on this connection string.
         /// </summary>
         /// <remarks>
         /// true if the listener initialized successfully; false if a compatible listener
@@ -285,7 +285,7 @@ namespace Tortuga.Chain
         }
 
         /// <summary>
-        /// Stops SQL dependency.
+        /// Stops SQL dependency on this connection string.
         /// </summary>
         /// <remarks>
         /// true if the listener was completely stopped; false if the System.AppDomain
@@ -303,6 +303,7 @@ namespace Tortuga.Chain
                 return SqlDependency.Stop(ConnectionString);
             }
         }
+
 #endif
 
         /// <summary>
@@ -321,9 +322,9 @@ namespace Tortuga.Chain
         /// <returns></returns>
         public override async Task TestConnectionAsync()
         {
-            using (var con = await CreateConnectionAsync())
+            using (var con = await CreateConnectionAsync().ConfigureAwait(false))
             using (var cmd = new SqlCommand("SELECT 1", con))
-                await cmd.ExecuteScalarAsync();
+                await cmd.ExecuteScalarAsync().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -334,7 +335,6 @@ namespace Tortuga.Chain
         [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         public SqlConnection CreateConnection()
         {
-
             var con = new SqlConnection(ConnectionString);
             con.Open();
 
@@ -402,7 +402,6 @@ namespace Tortuga.Chain
                 OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
                 throw;
             }
-
         }
 
         /// <summary>
@@ -466,7 +465,7 @@ namespace Tortuga.Chain
             }
             catch (Exception ex)
             {
-                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException 
+                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException
                 {
                     var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);
                     OnExecutionCanceled(executionToken, startTime, DateTimeOffset.Now, state);
@@ -523,7 +522,7 @@ namespace Tortuga.Chain
             }
             catch (Exception ex)
             {
-                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException 
+                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException
                 {
                     var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);
                     OnExecutionCanceled(executionToken, startTime, DateTimeOffset.Now, state);
@@ -535,9 +534,7 @@ namespace Tortuga.Chain
                     throw;
                 }
             }
-
         }
-
 
         string BuildConnectionSettingsOverride()
         {
@@ -567,10 +564,10 @@ namespace Tortuga.Chain
             if (m_ServerDefaultSettings == null)
             {
                 var temp = new SqlServerEffectiveSettings();
-                await temp.ReloadAsync(con, null);
+                await temp.ReloadAsync(con, null).ConfigureAwait(false);
 #if !Thread_Missing
                 Thread.MemoryBarrier();
-#endif 
+#endif
                 m_ServerDefaultSettings = temp;
             }
 
@@ -578,7 +575,7 @@ namespace Tortuga.Chain
 
             if (sql.Length > 0)
                 using (var cmd = new SqlCommand(sql.ToString(), con))
-                    await cmd.ExecuteNonQueryAsync();
+                    await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
 
             return con;
         }
@@ -670,7 +667,7 @@ namespace Tortuga.Chain
 
         async Task<DbConnection> IRootDataSource.CreateConnectionAsync()
         {
-            return await CreateConnectionAsync();
+            return await CreateConnectionAsync().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -701,7 +698,7 @@ namespace Tortuga.Chain
 
         async Task<ITransactionalDataSource> IRootDataSource.BeginTransactionAsync()
         {
-            return await BeginTransactionAsync();
+            return await BeginTransactionAsync().ConfigureAwait(false);
         }
 
         internal ICacheAdapter m_Cache;
@@ -726,8 +723,5 @@ namespace Tortuga.Chain
         {
             get { return m_ExtensionCache; }
         }
-
     }
-
-
 }

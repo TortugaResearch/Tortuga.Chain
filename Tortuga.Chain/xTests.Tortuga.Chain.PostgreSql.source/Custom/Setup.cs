@@ -1,6 +1,5 @@
 using Npgsql;
 using System.Configuration;
-using Xunit;
 
 namespace Tests
 {
@@ -62,8 +61,11 @@ CREATE TABLE hr.employee
 	OfficePhone VARCHAR(15) NULL ,
 	CellPhone VARCHAR(15) NULL ,
 	CreatedDate TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	UpdatedDate TIMESTAMP NULL
+	UpdatedDate TIMESTAMP NULL,
+    EmployeeId VARCHAR(50) NOT NULL
 )";
+
+                string index = @"CREATE UNIQUE INDEX UX_Employee_EmployeeId ON hr.employee(EmployeeId);";
 
                 string sql2b = @"
 CREATE TABLE public.employee
@@ -120,7 +122,8 @@ SELECT  e.EmployeeKey ,
 		m.OfficePhone AS ManagerOfficePhone ,
 		m.CellPhone AS ManagerCellPhone ,
 		m.CreatedDate AS ManagerCreatedDate ,
-		m.UpdatedDate AS ManagerUpdatedDate
+		m.UpdatedDate AS ManagerUpdatedDate,
+        e.EmployeeId
 FROM    HR.Employee e
 		LEFT JOIN HR.Employee m ON m.EmployeeKey = e.ManagerKey;";
 
@@ -218,6 +221,9 @@ $$ LANGUAGE plpgsql;";
                     cmd.ExecuteNonQuery();
 
                 using (NpgsqlCommand cmd = new NpgsqlCommand(sql2, con))
+                    cmd.ExecuteNonQuery();
+
+                using (NpgsqlCommand cmd = new NpgsqlCommand(index, con))
                     cmd.ExecuteNonQuery();
 
                 using (NpgsqlCommand cmd = new NpgsqlCommand(sql2b, con))

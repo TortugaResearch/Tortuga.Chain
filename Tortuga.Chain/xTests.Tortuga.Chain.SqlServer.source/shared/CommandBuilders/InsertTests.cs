@@ -47,7 +47,7 @@ namespace Tests.CommandBuilders
                 var employeeTable = dataSource.DatabaseMetadata.GetTableOrView(EmployeeTableName);
                 var primaryColumn = employeeTable.Columns.SingleOrDefault(c => c.IsIdentity);
                 if (primaryColumn == null) //SQLite
-                    primaryColumn = employeeTable.Columns.SingleOrDefault(c => c.IsPrimaryKey);
+                    primaryColumn = employeeTable.PrimaryKeyColumns.SingleOrDefault();
 
                 //Skipping ahead by 5
                 var nextKey = 5 + dataSource.Sql($"SELECT Max({primaryColumn.QuotedSqlName}) FROM {employeeTable.Name.ToQuotedString()}").ToInt32().Execute();

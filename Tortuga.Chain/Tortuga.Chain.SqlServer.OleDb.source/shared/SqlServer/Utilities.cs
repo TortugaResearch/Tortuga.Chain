@@ -26,7 +26,7 @@ namespace Tortuga.Chain.SqlServer
                 {
                     result.OleDbType = entry.Details.DbType.Value;
 
-                    if (entry.Details.TypeName == "datetime2" && entry.Details.Scale.HasValue)
+                    if (entry.Details.SqlTypeName == "datetime2" && entry.Details.Scale.HasValue)
                         result.Scale = (byte)entry.Details.Scale.Value;
                 }
                 return result;

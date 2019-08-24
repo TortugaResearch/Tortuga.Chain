@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Tortuga.Chain.Metadata
@@ -11,6 +12,7 @@ namespace Tortuga.Chain.Metadata
     /// <typeparam name="TName">The type used to represent database object names.</typeparam>
     /// <typeparam name="TDbType">The variant of DbType used by this data source.</typeparam>
     public abstract class DatabaseMetadataCache<TName, TDbType> : IDatabaseMetadataCache
+        where TName : struct
         where TDbType : struct
     {
         /// <summary>
@@ -18,6 +20,41 @@ namespace Tortuga.Chain.Metadata
         /// </summary>
         /// <remarks>This is populated by the RegisterType method.</remarks>
         ConcurrentDictionary<string, TypeRegistration<TDbType>> m_RegisteredTypes = new ConcurrentDictionary<string, TypeRegistration<TDbType>>(StringComparer.OrdinalIgnoreCase);
+
+        /// <summary>
+        /// Gets a list of known, unsupported SQL type names.
+        /// </summary>
+        /// <value>Case-insensitive list of database-specific type names</value>
+        /// <remarks>This list is based on driver limitations.</remarks>
+        public virtual ImmutableHashSet<string> UnsupportedSqlTypeNames => ImmutableHashSet<string>.Empty;
+
+        /// <summary>
+        /// Gets the foerign keys for a table.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <returns></returns>
+        /// <exception cref="NotSupportedException">Foreign keys are not supported by this data source</exception>
+        /// <remarks>
+        /// This should be cached on a TableOrViewMetadata object.
+        /// </remarks>
+        public virtual ForeignKeyConstraintCollection<TName, TDbType> GetForeignKeysForTable(TName tableName)
+        {
+            throw new NotSupportedException("Indexes are not supported by this data source");
+        }
+
+        /// <summary>
+        /// Gets the indexes for a table.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <returns></returns>
+        /// <exception cref="NotSupportedException">Indexes are not supported by this data source</exception>
+        /// <remarks>
+        /// This should be cached on a TableOrViewMetadata object.
+        /// </remarks>
+        public virtual IndexMetadataCollection<TName, TDbType> GetIndexesForTable(TName tableName)
+        {
+            throw new NotSupportedException("Indexes are not supported by this data source");
+        }
 
         /// <summary>
         /// Gets the metadata for a scalar function.
@@ -183,7 +220,7 @@ namespace Tortuga.Chain.Metadata
         /// <summary>
         /// Returns the CLR type that matches the indicated database column type.
         /// </summary>
-        /// <param name="databaseTypeName">Name of the database column type.</param>
+        /// <param name="sqlTypeName">Name of the database column type.</param>
         /// <param name="isNullable">If nullable, Nullable versions of primitive types are returned.</param>
         /// <param name="maxLength">Optional length. Used to distinguish between a char and string.</param>
         /// <param name="isUnsigned">Indicates whether or not the column is unsigned. Only applicable to some databases.</param>
@@ -192,19 +229,137 @@ namespace Tortuga.Chain.Metadata
         /// </returns>
         /// <remarks>Use RegisterType to add a missing mapping or override an existing one.</remarks>
         [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
-        public Type ToClrType(string databaseTypeName, bool isNullable, int? maxLength, bool? isUnsigned = null)
+        public Type ToClrType(string sqlTypeName, bool isNullable, int? maxLength, bool? isUnsigned = null)
         {
-            if (TryGetRegisteredType(databaseTypeName, out var registeredType))
+            if (TryGetRegisteredType(sqlTypeName, out var registeredType))
             {
                 return registeredType.ClrType;
             }
 
-            var dbType = TypeNameToDbType(databaseTypeName, isUnsigned);
+            var dbType = SqlTypeNameToDbType(sqlTypeName, isUnsigned);
 
-            if (!dbType.HasValue)
+            if (dbType.HasValue)
                 return ToClrType(dbType.Value, isNullable, maxLength);
 
             return null;
+        }
+
+        /// <summary>
+        /// Tries to get the stored procedure's metadata.
+        /// </summary>
+        /// <param name="procedureName">Name of the procedure.</param>
+        /// <param name="storedProcedure">The stored procedure.</param>
+        /// <returns></returns>
+        public bool TryGetStoredProcedure(string procedureName, out StoredProcedureMetadata storedProcedure) =>
+            TryGetStoredProcedure(ParseObjectName(procedureName), out storedProcedure);
+
+        /// <summary>
+        /// Tries to get the stored procedure's metadata.
+        /// </summary>
+        /// <param name="procedureName">Name of the procedure.</param>
+        /// <param name="storedProcedure">The stored procedure.</param>
+        /// <returns></returns>
+        public bool TryGetStoredProcedure(TName procedureName, out StoredProcedureMetadata storedProcedure)
+        {
+            try
+            {
+                storedProcedure = GetStoredProcedure(procedureName);
+                return true;
+            }
+            catch (MissingObjectException)
+            {
+                storedProcedure = null;
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Tries to get the metadata for a table function.
+        /// </summary>
+        /// <param name="tableFunctionName">Name of the table function.</param>
+        /// <param name="tableFunction">The table function.</param>
+        /// <returns></returns>
+        public bool TryGetTableFunction(string tableFunctionName, out TableFunctionMetadata tableFunction) =>
+            TryGetTableFunction(ParseObjectName(tableFunctionName), out tableFunction);
+
+        /// <summary>
+        /// Tries to get the metadata for a table function.
+        /// </summary>
+        /// <param name="tableFunctionName">Name of the table function.</param>
+        /// <param name="tableFunction">The table function.</param>
+        /// <returns></returns>
+        public bool TryGetTableFunction(TName tableFunctionName, out TableFunctionMetadata tableFunction)
+        {
+            try
+            {
+                tableFunction = GetTableFunction(tableFunctionName);
+                return true;
+            }
+            catch (MissingObjectException)
+            {
+                tableFunction = null;
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Tries to get the metadata for a table or view.
+        /// </summary>
+        /// <param name="tableName">Name of the table or view.</param>
+        /// <param name="tableOrView">The table or view.</param>
+        /// <returns></returns>
+        public bool TryGetTableOrView(string tableName, out TableOrViewMetadata tableOrView) =>
+            TryGetTableOrView(ParseObjectName(tableName), out tableOrView);
+
+        /// <summary>
+        /// Tries to get the metadata for a table or view.
+        /// </summary>
+        /// <param name="tableName">Name of the table or view.</param>
+        /// <param name="tableOrView">The table or view.</param>
+        /// <returns></returns>
+        public bool TryGetTableOrView(TName tableName, out TableOrViewMetadata tableOrView)
+        {
+            try
+            {
+                tableOrView = GetTableOrView(tableName);
+                return true;
+            }
+            catch (MissingObjectException)
+            {
+                tableOrView = null;
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Try to get the metadata for a user defined type.
+        /// </summary>
+        /// <param name="typeName">Name of the type.</param>
+        /// <param name="userDefinedType">Type of the user defined.</param>
+        /// <returns></returns>
+        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
+        public bool TryGetUserDefinedType(string typeName, out UserDefinedTypeMetadata userDefinedType) =>
+            TryGetUserDefinedType(ParseObjectName(typeName), out userDefinedType);
+
+        /// <summary>
+        /// Try to get the metadata for a user defined type.
+        /// </summary>
+        /// <param name="typeName">Name of the type.</param>
+        /// <param name="userDefinedType">Type of the user defined.</param>
+        /// <returns></returns>
+        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
+        public bool TryGetUserDefinedType(TName typeName, out UserDefinedTypeMetadata userDefinedType)
+        {
+            try
+            {
+                userDefinedType = GetUserDefinedType(typeName);
+                return true;
+            }
+            catch (MissingObjectException)
+            {
+                userDefinedType = null;
+                return false;
+            }
         }
 
         /// <summary>
@@ -274,6 +429,15 @@ namespace Tortuga.Chain.Metadata
         protected abstract TName ParseObjectName(string name);
 
         /// <summary>
+        /// Determines the database column type from the column type name.
+        /// </summary>
+        /// <param name="sqlTypeName">Name of the database column type.</param>
+        /// <param name="isUnsigned">Indicates whether or not the column is unsigned. Only applicable to some databases.</param>
+        /// <returns></returns>
+        /// <remarks>This does not honor registered types. This is only used for the database's hard-coded list of native types.</remarks>
+        protected abstract TDbType? SqlTypeNameToDbType(string sqlTypeName, bool? isUnsigned);
+
+        /// <summary>
         /// Returns the CLR type that matches the indicated database column type.
         /// </summary>
         /// <param name="dbType">Type of the database column.</param>
@@ -295,14 +459,5 @@ namespace Tortuga.Chain.Metadata
         {
             return m_RegisteredTypes.TryGetValue(databaseTypeName, out registeredType);
         }
-
-        /// <summary>
-        /// Determines the database column type from the column type name.
-        /// </summary>
-        /// <param name="typeName">Name of the database column type.</param>
-        /// <param name="isUnsigned">Indicates whether or not the column is unsigned. Only applicable to some databases.</param>
-        /// <returns></returns>
-        /// <remarks>This does not honor registered types. This is only used for the database's hard-coded list of native types.</remarks>
-        protected abstract TDbType? TypeNameToDbType(string typeName, bool? isUnsigned);
     }
 }
