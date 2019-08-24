@@ -32,8 +32,16 @@ namespace Tests.Core
 
                 foreach (var index in indexes)
                 {
-                    //Assert.IsTrue(index.Columns.Count > 0, "Indexes should have columns");
-                    Assert.IsFalse(string.IsNullOrWhiteSpace(index.Name), "indexes should have names");
+#if SQL_SERVER
+                    if (index.IndexType != Tortuga.Chain.SqlServer.SqlServerIndexType.Heap)
+                    {
+                        Assert.IsFalse(string.IsNullOrWhiteSpace(index.Name), $"Indexes should have names. Table name {table.Name}");
+                        Assert.IsTrue(index.Columns.Count > 0, $"Indexes should have columns. Table name {table.Name} Index name {index.Name}");
+                    }
+#else
+                    Assert.IsFalse(string.IsNullOrWhiteSpace(index.Name), $"Indexes should have names. Table name {table.Name}");
+                    Assert.IsTrue(index.Columns.Count > 0, $"Indexes should have columns. Table name {table.Name} Index name {index.Name}");
+#endif
                 }
             }
             finally

@@ -84,6 +84,7 @@ namespace Tortuga.Chain.SqlServer
        i.is_unique,
        i.is_unique_constraint,
 	   i.index_id,
+       i.type,
        (SELECT SUM(used_page_count) * 8 FROM sys.dm_db_partition_stats ddps WHERE ddps.object_id=i.object_id AND ddps.index_id = i.index_id) AS IndexSizeKB,
        (SELECT SUM(row_count) FROM sys.dm_db_partition_stats ddps WHERE ddps.object_id=i.object_id AND ddps.index_id = i.index_id) AS [RowCount]
 FROM sys.indexes i
@@ -120,11 +121,9 @@ WHERE o.name = @Name
                             var columns = new IndexColumnMetadataCollection<SqlDbType>(allColumns.Where(c => c.IndexId == index_id));
                             var indexSize = reader.GetInt64(reader.GetOrdinal("IndexSizeKB"));
                             var rowCount = reader.GetInt64(reader.GetOrdinal("RowCount"));
+                            var indexType = (SqlServerIndexType)reader.GetByte(reader.GetOrdinal("type"));
 
-                            if (name == null && columns.Count == 0) //this is a heap
-                                name = "(heap)";
-
-                            results.Add(new IndexMetadata<SqlServerObjectName, SqlDbType>(tableName, name, is_primary_key, is_unique, is_unique_constraint, columns, indexSize, rowCount));
+                            results.Add(new SqlServerIndexMetadata(tableName, name, is_primary_key, is_unique, is_unique_constraint, columns, indexSize, rowCount, indexType));
                         }
 
                         return new IndexMetadataCollection<SqlServerObjectName, SqlDbType>(results);

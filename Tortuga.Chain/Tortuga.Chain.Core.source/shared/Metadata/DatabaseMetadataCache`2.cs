@@ -14,6 +14,16 @@ namespace Tortuga.Chain.Metadata
         where TDbType : struct
     {
         /// <summary>
+        /// Gets the server version number.
+        /// </summary>
+        public virtual Version ServerVersion => null;
+
+        /// <summary>
+        /// Gets the server version name.
+        /// </summary>
+        public virtual string ServerVersionName => null;
+
+        /// <summary>
         /// Gets the foerign keys for a table.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>

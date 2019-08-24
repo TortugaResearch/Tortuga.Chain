@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.SqlServer
@@ -10,6 +11,8 @@ namespace Tortuga.Chain.SqlServer
     /// <seealso cref="TableOrViewMetadata{SqlServerObjectName, TDbType}" />
     public class SqlServerTableOrViewMetadata<TDbType> : TableOrViewMetadata<SqlServerObjectName, TDbType> where TDbType : struct
     {
+        SqlServerIndexMetadataCollection m_Indexes;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlServerTableOrViewMetadata{TDbType}" /> class.
         /// </summary>
@@ -18,7 +21,7 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="isTable">if set to <c>true</c> is a table.</param>
         /// <param name="columns">The columns.</param>
         /// <param name="hasTriggers">if set to <c>true</c> has triggers.</param>
-        public SqlServerTableOrViewMetadata(DatabaseMetadataCache<SqlServerObjectName, TDbType> metadataCache, SqlServerObjectName name, bool isTable, IList<ColumnMetadata<TDbType>> columns, bool hasTriggers) : base(metadataCache,name, isTable, columns)
+        public SqlServerTableOrViewMetadata(DatabaseMetadataCache<SqlServerObjectName, TDbType> metadataCache, SqlServerObjectName name, bool isTable, IList<ColumnMetadata<TDbType>> columns, bool hasTriggers) : base(metadataCache, name, isTable, columns)
         {
             HasTriggers = hasTriggers;
         }
@@ -29,5 +32,16 @@ namespace Tortuga.Chain.SqlServer
         /// <value><c>true</c> if this instance has triggers; otherwise, <c>false</c>.</value>
         /// <remarks>This affects SQL generation.</remarks>
         public bool HasTriggers { get; }
+
+        /// <summary>
+        /// Gets the indexes for this table or view.
+        /// </summary>
+        /// <returns></returns>
+        public new SqlServerIndexMetadataCollection GetIndexes()
+        {
+            if (m_Indexes == null)
+                m_Indexes = new SqlServerIndexMetadataCollection(base.GetIndexes().Cast<SqlServerIndexMetadata>().ToList());
+            return m_Indexes;
+        }
     }
 }

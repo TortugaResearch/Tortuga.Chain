@@ -101,12 +101,16 @@
     </Compile>
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="shared\PostgreSqlDataSource.cs" />
+    <Compile Include="shared\PostgreSql\AbstractPostgreSqlMetadataCache.cs" />
     <Compile Include="shared\PostgreSql\CommandBuilders\PostgreSqlDeleteMany.cs" />
     <Compile Include="shared\PostgreSql\CommandBuilders\PostgreSqlTableFunction.cs" />
     <Compile Include="shared\PostgreSql\CommandBuilders\PostgreSqlUpdateMany.cs" />
     <Compile Include="shared\PostgreSql\CommandBuilders\PostgreSqlProcedureCall.cs" />
     <Compile Include="shared\PostgreSql\CommandBuilders\PostgreSqlScalarFunction.cs" />
     <Compile Include="shared\PostgreSql\PostgreSqlDataSourceBase.CommandBuilders.cs" />
+    <Compile Include="shared\PostgreSql\PostgreSqlIndexMetadata.cs" />
+    <Compile Include="shared\PostgreSql\PostgreSqlIndexMetadataCollection.cs" />
+    <Compile Include="shared\PostgreSql\PostgreSqlIndexType.cs" />
     <Compile Include="shared\PostgreSql\PostgreSqlTransactionalDataSource.cs" />
     <Compile Include="shared\PostgreSql\PostgreSqlDataSourceSettings.cs" />
     <Compile Include="shared\PostgreSql\CommandBuilders\PostgreSqlSqlCall.cs" />

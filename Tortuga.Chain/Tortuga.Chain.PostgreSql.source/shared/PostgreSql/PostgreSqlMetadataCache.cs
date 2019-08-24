@@ -14,17 +14,19 @@ namespace Tortuga.Chain.PostgreSql
     /// <summary>
     /// Class PostgreSqlMetadataCache.
     /// </summary>
-    public class PostgreSqlMetadataCache : DatabaseMetadataCache<PostgreSqlObjectName, NpgsqlDbType>
+    public class PostgreSqlMetadataCache : AbstractPostgreSqlMetadataCache
     {
         readonly NpgsqlConnectionStringBuilder m_ConnectionBuilder;
         readonly ConcurrentDictionary<PostgreSqlObjectName, ScalarFunctionMetadata<PostgreSqlObjectName, NpgsqlDbType>> m_ScalarFunctions = new ConcurrentDictionary<PostgreSqlObjectName, ScalarFunctionMetadata<PostgreSqlObjectName, NpgsqlDbType>>();
         readonly ConcurrentDictionary<PostgreSqlObjectName, StoredProcedureMetadata<PostgreSqlObjectName, NpgsqlDbType>> m_StoredProcedures = new ConcurrentDictionary<PostgreSqlObjectName, StoredProcedureMetadata<PostgreSqlObjectName, NpgsqlDbType>>();
         readonly ConcurrentDictionary<PostgreSqlObjectName, TableFunctionMetadata<PostgreSqlObjectName, NpgsqlDbType>> m_TableFunctions = new ConcurrentDictionary<PostgreSqlObjectName, TableFunctionMetadata<PostgreSqlObjectName, NpgsqlDbType>>();
-        readonly ConcurrentDictionary<PostgreSqlObjectName, TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType>> m_Tables = new ConcurrentDictionary<PostgreSqlObjectName, TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType>>();
+        readonly ConcurrentDictionary<PostgreSqlObjectName, PostgreSqlTableOrViewMetadata> m_Tables = new ConcurrentDictionary<PostgreSqlObjectName, PostgreSqlTableOrViewMetadata>();
         readonly ConcurrentDictionary<Type, TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType>> m_TypeTableMap = new ConcurrentDictionary<Type, TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType>>();
         string m_DatabaseName;
         ImmutableArray<string> m_DefaultSchemaList;
         ImmutableDictionary<PostgreSqlObjectName, ImmutableHashSet<string>> m_SequenceColumns;
+        Version m_ServerVersion;
+        string m_ServerVersionName;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PostgreSqlMetadataCache"/> class.
@@ -93,6 +95,48 @@ namespace Tortuga.Chain.PostgreSql
         }
 
         /// <summary>
+        /// Gets the server version number.
+        /// </summary>
+        public override Version ServerVersion
+        {
+            get
+            {
+                if (m_ServerVersion == null)
+                {
+                    using (var con = new NpgsqlConnection(m_ConnectionBuilder.ConnectionString))
+                    {
+                        con.Open();
+
+                        using (var cmd = new NpgsqlCommand("SHOW server_version;", con))
+                            m_ServerVersion = Version.Parse((string)cmd.ExecuteScalar());
+                    }
+                }
+                return m_ServerVersion;
+            }
+        }
+
+        /// <summary>
+        /// Gets the server version name.
+        /// </summary>
+        public override string ServerVersionName
+        {
+            get
+            {
+                if (m_ServerVersionName == null)
+                {
+                    using (var con = new NpgsqlConnection(m_ConnectionBuilder.ConnectionString))
+                    {
+                        con.Open();
+
+                        using (var cmd = new NpgsqlCommand("SELECT version();", con))
+                            m_ServerVersionName = (string)cmd.ExecuteScalar();
+                    }
+                }
+                return m_ServerVersionName;
+            }
+        }
+
+        /// <summary>
         /// Gets the indexes for a table.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
@@ -103,14 +147,21 @@ namespace Tortuga.Chain.PostgreSql
         /// </remarks>
         public override IndexMetadataCollection<PostgreSqlObjectName, NpgsqlDbType> GetIndexesForTable(PostgreSqlObjectName tableName)
         {
-            const string indexSql =
+            string indexSql;
+
+            if (ServerVersion.Major < 11) //no included columns
+            {
+                indexSql =
 @"SELECT
 	ns.nspname as schema_name,
 	tab.relname as table_name,
     cls.relname as index_name,
     am.amname as index_type,
 	idx.indisprimary as is_primary,
-	idx.indisunique as is_unique
+	idx.indisunique as is_unique,
+    idx.indkey as column_indices,
+    idx.indnatts as key_column_count,
+    idx.indoption as column_options
 FROM
 	pg_index idx
 INNER JOIN pg_class cls ON cls.oid=idx.indexrelid
@@ -118,6 +169,28 @@ INNER JOIN pg_class tab ON tab.oid=idx.indrelid
 INNER JOIN pg_am am ON am.oid=cls.relam
 INNER JOIN pg_namespace ns on ns.oid=tab.relnamespace
 WHERE ns.nspname = @Schema AND tab.relname = @Name";
+            }
+            else
+            {
+                indexSql =
+@"SELECT
+	ns.nspname as schema_name,
+	tab.relname as table_name,
+    cls.relname as index_name,
+    am.amname as index_type,
+	idx.indisprimary as is_primary,
+	idx.indisunique as is_unique,
+    idx.indkey as column_indices,
+    idx.indnkeyatts as key_column_count,
+    idx.indoption as column_options
+FROM
+	pg_index idx
+INNER JOIN pg_class cls ON cls.oid=idx.indexrelid
+INNER JOIN pg_class tab ON tab.oid=idx.indrelid
+INNER JOIN pg_am am ON am.oid=cls.relam
+INNER JOIN pg_namespace ns on ns.oid=tab.relnamespace
+WHERE ns.nspname = @Schema AND tab.relname = @Name";
+            }
 
             var table = GetTableOrView(tableName);
 
@@ -140,26 +213,41 @@ WHERE ns.nspname = @Schema AND tab.relname = @Name";
 
                             var isPrimaryKey = reader.GetBoolean(reader.GetOrdinal("is_primary"));
                             var isUniqueConstraint = false; // string.Equals(origin, "u", StringComparison.Ordinal);
+                            var keyColumnCount = reader.GetInt16(reader.GetOrdinal("key_column_count"));
+
+                            PostgreSqlIndexType indexType;
+                            switch (reader.GetString(reader.GetOrdinal("index_type")))
+                            {
+                                case "btree": indexType = PostgreSqlIndexType.BTree; break;
+                                case "hash": indexType = PostgreSqlIndexType.Hash; break;
+                                case "gist": indexType = PostgreSqlIndexType.Gist; break;
+                                case "gin": indexType = PostgreSqlIndexType.Gin; break;
+                                case "spgist": indexType = PostgreSqlIndexType.Spgist; break;
+                                case "brin": indexType = PostgreSqlIndexType.Brin; break;
+                                default: indexType = PostgreSqlIndexType.Unknown; break;
+                            }
+
+                            var columnIndices = (short[])reader.GetValue(reader.GetOrdinal("column_indices"));
 
                             var columns = new List<IndexColumnMetadata<NpgsqlDbType>>();
+                            for (var i = 0; i < columnIndices.Length; i++)
+                            {
+                                //Note: The values in columnIndices is 1-based, so we need to offset it.
+                                var column = table.Columns[columnIndices[i] - 1];
+                                var isIncluded = i < keyColumnCount;
+                                var isDescending = false;
 
-                            throw new NotImplementedException("Need columns SQL.");
-                            //using (var cmd2 = new NpgsqlCommand($"PRAGMA index_xinfo('{name}')", con2))
-                            //using (var reader2 = cmd2.ExecuteReader())
-                            //{
-                            //    while (reader2.Read())
-                            //    {
-                            //        var colName = (reader2.IsDBNull(reader2.GetOrdinal("name"))) ? null : reader2.GetString(reader2.GetOrdinal("name"));
-                            //        var isDescending = reader2.GetInt64(reader2.GetOrdinal("desc")) != 0;
-                            //        var isIncluded = reader2.GetInt64(reader2.GetOrdinal("key")) == 0;
+                                if (!isIncluded)
+                                {
+                                    //TASK-128
+                                    //TODO Parse Options
+                                    //https://www.postgresql.org/docs/current/functions-info.html#FUNCTIONS-INFO-CATALOG-TABLE
+                                    //https://www.postgresql.org/docs/current/catalog-pg-am.html
+                                }
+                                columns.Add(new IndexColumnMetadata<NpgsqlDbType>(column, isDescending, isIncluded));
+                            }
 
-                            //        var column = table.Columns.SingleOrDefault(c => string.Equals(c.SqlName, colName, StringComparison.Ordinal));
-
-                            //        columns.Add(new IndexColumnMetadata<NpgsqlDbType>(column, isDescending, isIncluded));
-                            //    }
-                            //}
-
-                            results.Add(new IndexMetadata<PostgreSqlObjectName, NpgsqlDbType>(tableName, name, isPrimaryKey, isUnique, isUniqueConstraint, new IndexColumnMetadataCollection<NpgsqlDbType>(columns), null, null));
+                            results.Add(new PostgreSqlIndexMetadata(tableName, name, isPrimaryKey, isUnique, isUniqueConstraint, new IndexColumnMetadataCollection<NpgsqlDbType>(columns), null, null, indexType));
                         }
                     }
                 }
@@ -227,11 +315,11 @@ WHERE ns.nspname = @Schema AND tab.relname = @Name";
         public override IReadOnlyCollection<TableFunctionMetadata<PostgreSqlObjectName, NpgsqlDbType>> GetTableFunctions() => m_TableFunctions.GetValues();
 
         /// <summary>
-        /// Gets the metadata for a table.
+        /// Gets the detailed metadata for a table or view.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
-        /// <returns>TableOrViewMetadata&lt;PostgreSqlObjectName, NpgsqlDbType&gt;.</returns>
-        public override TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType> GetTableOrView(PostgreSqlObjectName tableName)
+        /// <returns>SqlServerTableOrViewMetadata&lt;TDbType&gt;.</returns>
+        public new PostgreSqlTableOrViewMetadata GetTableOrView(PostgreSqlObjectName tableName)
         {
             return m_Tables.GetOrAdd(tableName, GetTableOrViewInternal);
         }
@@ -485,6 +573,11 @@ WHERE ns.nspname = @Schema AND tab.relname = @Name";
                 case "json": return NpgsqlDbType.Json;
             }
             return null;
+        }
+
+        internal override TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType> OnGetTableOrView(PostgreSqlObjectName tableName)
+        {
+            return GetTableOrView(tableName);
         }
 
         /// <summary>
@@ -751,7 +844,7 @@ where s.relkind='S' and d.deptype='a'";
             throw new MissingObjectException($"Could not find function {tableFunctionName}");
         }
 
-        TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType> GetTableOrViewInternal(PostgreSqlObjectName tableName)
+        PostgreSqlTableOrViewMetadata GetTableOrViewInternal(PostgreSqlObjectName tableName)
         {
             const string TableSql =
                 @"SELECT
@@ -791,11 +884,42 @@ where s.relkind='S' and d.deptype='a'";
 
                     var actualName = new PostgreSqlObjectName(actualSchema, actualTableName);
                     var columns = GetColumns(actualName, con);
-                    return new TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType>(this, actualName, isTable, columns);
+                    return new PostgreSqlTableOrViewMetadata(this, actualName, isTable, columns);
                 }
             }
 
             throw new MissingObjectException($"Could not find table or view {tableName}");
+        }
+    }
+
+    /// <summary>
+    /// Class PostgreSqlTableOrViewMetadata.
+    /// </summary>
+    /// <seealso cref="TableOrViewMetadata{PostgreSqlObjectName, TDbType}" />
+    public class PostgreSqlTableOrViewMetadata : TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType>
+    {
+        PostgreSqlIndexMetadataCollection m_Indexes;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PostgreSqlTableOrViewMetadata" /> class.
+        /// </summary>
+        /// <param name="metadataCache">The metadata cache.</param>
+        /// <param name="name">The name.</param>
+        /// <param name="isTable">if set to <c>true</c> is a table.</param>
+        /// <param name="columns">The columns.</param>
+        public PostgreSqlTableOrViewMetadata(DatabaseMetadataCache<PostgreSqlObjectName, NpgsqlDbType> metadataCache, PostgreSqlObjectName name, bool isTable, IList<ColumnMetadata<NpgsqlDbType>> columns) : base(metadataCache, name, isTable, columns)
+        {
+        }
+
+        /// <summary>
+        /// Gets the indexes for this table or view.
+        /// </summary>
+        /// <returns></returns>
+        public new PostgreSqlIndexMetadataCollection GetIndexes()
+        {
+            if (m_Indexes == null)
+                m_Indexes = new PostgreSqlIndexMetadataCollection(base.GetIndexes().Cast<PostgreSqlIndexMetadata>().ToList());
+            return m_Indexes;
         }
     }
 }

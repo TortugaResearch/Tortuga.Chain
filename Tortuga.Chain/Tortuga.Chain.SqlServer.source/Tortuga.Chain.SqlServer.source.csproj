@@ -129,6 +129,9 @@
     <Compile Include="shared\SqlServer\SqlServerEffectiveSettings.cs" />
     <Compile Include="shared\SqlServer\SqlServerCommandExecutionToken.cs" />
     <Compile Include="shared\SqlServer\SqlServerDataSourceSettings.cs" />
+    <Compile Include="shared\SqlServer\SqlServerIndexMetadata.cs" />
+    <Compile Include="shared\SqlServer\SqlServerIndexMetadataCollection.cs" />
+    <Compile Include="shared\SqlServer\SqlServerIndexType.cs" />
     <Compile Include="shared\SqlServer\SqlServerOpenDataSource.cs" />
     <Compile Include="shared\SqlServer\SqlServerOperationExecutionToken.cs" />
     <Compile Include="shared\SqlServer\SqlServerTableOrViewMetadata.cs" />
