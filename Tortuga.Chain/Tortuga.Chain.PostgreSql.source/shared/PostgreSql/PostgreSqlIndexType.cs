@@ -37,11 +37,13 @@
         /// <summary>
         /// Space partitioned GiST (SP-GiST)
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Spgist")]
         Spgist = 5,
 
         /// <summary>
         /// Block Range Indexes (BRIN)
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Brin")]
         Brin = 6
     }
 }

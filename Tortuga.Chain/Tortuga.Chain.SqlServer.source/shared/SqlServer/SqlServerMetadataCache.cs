@@ -731,8 +731,8 @@ ORDER BY ic.key_ordinal;";
 
                         while (reader.Read())
                         {
-                            var is_descending_key = reader.GetBoolean(reader.GetOrdinal("is_descending_key"));
                             var is_included_column = reader.GetBoolean(reader.GetOrdinal("is_included_column"));
+                            var is_descending_key = is_included_column ? (bool?)null : reader.GetBoolean(reader.GetOrdinal("is_descending_key"));
                             var name = reader.GetString(reader.GetOrdinal("Name"));
                             var index_id = reader.GetInt32(reader.GetOrdinal("index_id"));
                             var column = tableColumns[name];
@@ -808,7 +808,7 @@ ORDER BY ic.key_ordinal;";
             /// <param name="isDescending">Indicates the column is indexed in descending order.</param>
             /// <param name="isIncluded">Indicates the column is an unindexed, included column.</param>
             /// <param name="indexId"></param>
-            internal SqlServerIndexColumnMetadata(ColumnMetadata<SqlDbType> column, bool isDescending, bool isIncluded, int indexId) : base(column, isDescending, isIncluded)
+            internal SqlServerIndexColumnMetadata(ColumnMetadata<SqlDbType> column, bool? isDescending, bool isIncluded, int indexId) : base(column, isDescending, isIncluded)
             {
                 IndexId = indexId;
             }

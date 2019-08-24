@@ -1,6 +1,4 @@
 ﻿using NpgsqlTypes;
-using System;
-using System.Linq;
 using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.PostgreSql

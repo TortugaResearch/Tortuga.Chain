@@ -8,6 +8,7 @@ using System.Linq;
 using Tortuga.Anchor;
 using Tortuga.Anchor.Metadata;
 using Tortuga.Chain.Metadata;
+using Tortuga.Chain.Metadata.Internal;
 
 namespace Tortuga.Chain.PostgreSql
 {
@@ -153,6 +154,7 @@ namespace Tortuga.Chain.PostgreSql
             {
                 indexSql =
 @"SELECT
+    idx.indexrelid as index_oid,
 	ns.nspname as schema_name,
 	tab.relname as table_name,
     cls.relname as index_name,
@@ -174,6 +176,7 @@ WHERE ns.nspname = @Schema AND tab.relname = @Name";
             {
                 indexSql =
 @"SELECT
+    idx.indexrelid as index_oid,
 	ns.nspname as schema_name,
 	tab.relname as table_name,
     cls.relname as index_name,
@@ -208,15 +211,18 @@ WHERE ns.nspname = @Schema AND tab.relname = @Name";
                     {
                         while (reader.Read())
                         {
-                            var name = reader.GetString(reader.GetOrdinal("index_name"));
-                            var isUnique = reader.GetBoolean(reader.GetOrdinal("is_unique"));
+                            var indexOid = reader.GetUInt32("index_oid");
+                            var name = reader.GetString("index_name");
+                            var isUnique = reader.GetBoolean("is_unique");
 
-                            var isPrimaryKey = reader.GetBoolean(reader.GetOrdinal("is_primary"));
-                            var isUniqueConstraint = false; // string.Equals(origin, "u", StringComparison.Ordinal);
-                            var keyColumnCount = reader.GetInt16(reader.GetOrdinal("key_column_count"));
+                            var isPrimaryKey = reader.GetBoolean("is_primary");
+                            var isUniqueConstraint = false; //TASk-285: Identify unique indexes that are also unique constraints
+                            var keyColumnCount = reader.GetInt16("key_column_count");
+
+                            //Task-284: Index size
 
                             PostgreSqlIndexType indexType;
-                            switch (reader.GetString(reader.GetOrdinal("index_type")))
+                            switch (reader.GetString("index_type"))
                             {
                                 case "btree": indexType = PostgreSqlIndexType.BTree; break;
                                 case "hash": indexType = PostgreSqlIndexType.Hash; break;
@@ -227,7 +233,24 @@ WHERE ns.nspname = @Schema AND tab.relname = @Name";
                                 default: indexType = PostgreSqlIndexType.Unknown; break;
                             }
 
-                            var columnIndices = (short[])reader.GetValue(reader.GetOrdinal("column_indices"));
+                            var columnIndices = reader.GetValue<short[]>("column_indices");
+                            var descendingColumns = new Dictionary<int, bool?>();
+
+                            var columnSql = @"SELECT p.colIndex, pg_index_column_has_property(@Oid,p.colIndex,'desc') AS descending from generate_series(1, @IndexCount) p(colIndex)";
+
+                            using (var cmd2 = new NpgsqlCommand(columnSql, con2))
+                            {
+                                cmd2.Parameters.AddWithValue("@Oid", NpgsqlDbType.Oid, indexOid);
+                                cmd2.Parameters.AddWithValue("@IndexCount", columnIndices.Length);
+                                using (var reader2 = cmd2.ExecuteReader())
+                                {
+                                    while (reader2.Read())
+                                    {
+                                        descendingColumns[reader2.GetInt32("colIndex")] = reader2.GetBooleanOrNull("descending");
+                                        //Other column properties can be added here
+                                    }
+                                }
+                            }
 
                             var columns = new List<IndexColumnMetadata<NpgsqlDbType>>();
                             for (var i = 0; i < columnIndices.Length; i++)
@@ -235,15 +258,8 @@ WHERE ns.nspname = @Schema AND tab.relname = @Name";
                                 //Note: The values in columnIndices is 1-based, so we need to offset it.
                                 var column = table.Columns[columnIndices[i] - 1];
                                 var isIncluded = i < keyColumnCount;
-                                var isDescending = false;
+                                var isDescending = descendingColumns[i + 1];
 
-                                if (!isIncluded)
-                                {
-                                    //TASK-128
-                                    //TODO Parse Options
-                                    //https://www.postgresql.org/docs/current/functions-info.html#FUNCTIONS-INFO-CATALOG-TABLE
-                                    //https://www.postgresql.org/docs/current/catalog-pg-am.html
-                                }
                                 columns.Add(new IndexColumnMetadata<NpgsqlDbType>(column, isDescending, isIncluded));
                             }
 
@@ -407,8 +423,8 @@ WHERE ns.nspname = @Schema AND tab.relname = @Name";
                     {
                         while (reader.Read())
                         {
-                            var schema = reader.GetString(reader.GetOrdinal("routine_schema"));
-                            var name = reader.GetString(reader.GetOrdinal("routine_name"));
+                            var schema = reader.GetString("routine_schema");
+                            var name = reader.GetString("routine_name");
                             GetScalarFunction(new PostgreSqlObjectName(schema, name));
                         }
                     }
@@ -432,8 +448,8 @@ WHERE ns.nspname = @Schema AND tab.relname = @Name";
                     {
                         while (reader.Read())
                         {
-                            var schema = reader.GetString(reader.GetOrdinal("routine_schema"));
-                            var name = reader.GetString(reader.GetOrdinal("routine_name"));
+                            var schema = reader.GetString("routine_schema");
+                            var name = reader.GetString("routine_name");
                             GetStoredProcedure(new PostgreSqlObjectName(schema, name));
                         }
                     }
@@ -457,8 +473,8 @@ WHERE ns.nspname = @Schema AND tab.relname = @Name";
                     {
                         while (reader.Read())
                         {
-                            var schema = reader.GetString(reader.GetOrdinal("routine_schema"));
-                            var name = reader.GetString(reader.GetOrdinal("routine_name"));
+                            var schema = reader.GetString("routine_schema");
+                            var name = reader.GetString("routine_name");
                             GetTableFunction(new PostgreSqlObjectName(schema, name));
                         }
                     }
@@ -490,8 +506,8 @@ WHERE ns.nspname = @Schema AND tab.relname = @Name";
                     {
                         while (reader.Read())
                         {
-                            var schema = reader.GetString(reader.GetOrdinal("schemaname"));
-                            var name = reader.GetString(reader.GetOrdinal("tablename"));
+                            var schema = reader.GetString("schemaname");
+                            var name = reader.GetString("tablename");
                             GetTableOrView(new PostgreSqlObjectName(schema, name));
                         }
                     }
@@ -523,8 +539,8 @@ WHERE ns.nspname = @Schema AND tab.relname = @Name";
                     {
                         while (reader.Read())
                         {
-                            var schema = reader.GetString(reader.GetOrdinal("schemaname"));
-                            var name = reader.GetString(reader.GetOrdinal("tablename"));
+                            var schema = reader.GetString("schemaname");
+                            var name = reader.GetString("tablename");
                             GetTableOrView(new PostgreSqlObjectName(schema, name));
                         }
                     }
@@ -602,16 +618,15 @@ WHERE ns.nspname = @Schema AND tab.relname = @Name";
                     {
                         if (string.Equals(reader.GetString(reader.GetOrdinal("parameter_mode")), "IN", StringComparison.Ordinal))
                         {
-                            var parameterNameOrd = reader.GetOrdinal("parameter_name");
-                            var parameterName = !reader.IsDBNull(parameterNameOrd) ? reader.GetString(parameterNameOrd) : "Parameter" + reader.GetInt32(reader.GetOrdinal("ordinal_position"));
+                            var parameterName = reader.GetStringOrNull("parameter_name") ?? "Parameter" + reader.GetInt32("ordinal_position");
 
-                            var typeName = reader.GetString(reader.GetOrdinal("udt_name"));
+                            var typeName = reader.GetString("udt_name");
                             parameters.Add(new ParameterMetadata<NpgsqlDbType>(parameterName, "@" + parameterName, typeName, TypeNameToNpgSqlDbType(typeName)));
                         }
                         else
                         {
-                            var name = reader.GetString(reader.GetOrdinal("parameter_name"));
-                            var typeName = reader.GetString(reader.GetOrdinal("udt_name"));
+                            var name = reader.GetString("parameter_name");
+                            var typeName = reader.GetString("udt_name");
                             bool isPrimary = false;
                             bool isIdentity = false;
                             bool isNullable = true;
@@ -663,11 +678,11 @@ WHERE c.relname ILIKE @Name AND
                 {
                     while (reader.Read())
                     {
-                        var name = reader.GetString(reader.GetOrdinal("column_name"));
-                        var typeName = reader.GetString(reader.GetOrdinal("data_type"));
-                        bool isPrimary = reader.IsDBNull(reader.GetOrdinal("is_primary_key")) ? false : true;
+                        var name = reader.GetString("column_name");
+                        var typeName = reader.GetString("data_type");
+                        bool isPrimary = !reader.IsDBNull("is_primary_key");
                         bool isIdentity = identityColumns.Contains(name);
-                        bool isNullable = !reader.GetBoolean(reader.GetOrdinal("not_null"));
+                        bool isNullable = !reader.GetBoolean("not_null");
 
                         //Task-120: Add support for length, precision, and scale
                         int? maxLength = null;
@@ -707,10 +722,10 @@ WHERE c.relname ILIKE @Name AND
                             if (!reader.Read())
                                 continue;
 
-                            actualSchema = reader.GetString(reader.GetOrdinal("routine_schema"));
-                            actualName = reader.GetString(reader.GetOrdinal("routine_name"));
-                            specificName = reader.GetString(reader.GetOrdinal("specific_name"));
-                            typeName = reader.GetString(reader.GetOrdinal("data_type"));
+                            actualSchema = reader.GetString("routine_schema");
+                            actualName = reader.GetString("routine_name");
+                            specificName = reader.GetString("specific_name");
+                            typeName = reader.GetString("data_type");
                         }
                     }
 
@@ -749,8 +764,8 @@ where s.relkind='S' and d.deptype='a'";
                             var result = new Dictionary<PostgreSqlObjectName, HashSet<string>>();
                             while (reader.Read())
                             {
-                                var schemaTableName = new PostgreSqlObjectName(reader.GetString(reader.GetOrdinal("SchemaName")), reader.GetString(reader.GetOrdinal("TableName")));
-                                var columnName = reader.GetString(reader.GetOrdinal("ColumnName"));
+                                var schemaTableName = new PostgreSqlObjectName(reader.GetString("SchemaName"), reader.GetString("TableName"));
+                                var columnName = reader.GetString("ColumnName");
 
                                 if (result.TryGetValue(schemaTableName, out var identityColumns))
                                 {
@@ -791,9 +806,9 @@ where s.relkind='S' and d.deptype='a'";
                         {
                             if (!reader.Read())
                                 continue;
-                            actualSchema = reader.GetString(reader.GetOrdinal("routine_schema"));
-                            actualName = reader.GetString(reader.GetOrdinal("routine_name"));
-                            specificName = reader.GetString(reader.GetOrdinal("specific_name"));
+                            actualSchema = reader.GetString("routine_schema");
+                            actualName = reader.GetString("routine_name");
+                            specificName = reader.GetString("specific_name");
                         }
                     }
 
@@ -829,9 +844,9 @@ where s.relkind='S' and d.deptype='a'";
                             if (!reader.Read())
                                 continue;
 
-                            actualSchema = reader.GetString(reader.GetOrdinal("routine_schema"));
-                            actualName = reader.GetString(reader.GetOrdinal("routine_name"));
-                            specificName = reader.GetString(reader.GetOrdinal("specific_name"));
+                            actualSchema = reader.GetString("routine_schema");
+                            actualName = reader.GetString("routine_name");
+                            specificName = reader.GetString("specific_name");
                         }
                     }
 
@@ -875,8 +890,8 @@ where s.relkind='S' and d.deptype='a'";
                         {
                             if (!reader.Read())
                                 continue; //try the next schema in the search path
-                            actualSchema = reader.GetString(reader.GetOrdinal("schemaname"));
-                            actualTableName = reader.GetString(reader.GetOrdinal("tablename"));
+                            actualSchema = reader.GetString("schemaname");
+                            actualTableName = reader.GetString("tablename");
                             var type = reader.GetString(reader.GetOrdinal("type"));
                             isTable = type.Equals("BASE TABLE", StringComparison.Ordinal);
                         }
@@ -915,6 +930,7 @@ where s.relkind='S' and d.deptype='a'";
         /// Gets the indexes for this table or view.
         /// </summary>
         /// <returns></returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
         public new PostgreSqlIndexMetadataCollection GetIndexes()
         {
             if (m_Indexes == null)

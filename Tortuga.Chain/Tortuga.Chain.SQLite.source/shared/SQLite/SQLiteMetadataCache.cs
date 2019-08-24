@@ -69,8 +69,8 @@ namespace Tortuga.Chain.SQLite
                             while (reader2.Read())
                             {
                                 var colName = (reader2.IsDBNull(reader2.GetOrdinal("name"))) ? null : reader2.GetString(reader2.GetOrdinal("name"));
-                                var isDescending = reader2.GetInt64(reader2.GetOrdinal("desc")) != 0;
                                 var isIncluded = reader2.GetInt64(reader2.GetOrdinal("key")) == 0;
+                                var isDescending = isIncluded ? (bool?)null : reader2.GetInt64(reader2.GetOrdinal("desc")) != 0;
 
                                 ColumnMetadata<DbType> column;
                                 if (colName != null)
