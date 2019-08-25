@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations.Schema;
 using Tortuga.Anchor.Modeling;
 
 namespace Tests.Models
@@ -49,7 +48,6 @@ namespace Tests.Models
             set { Set(value); }
         }
 
-        [Column("aaa", TypeName = "Asas")]
         public string Title
         {
             get { return Get<string>(); }
