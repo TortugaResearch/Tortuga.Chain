@@ -75,6 +75,9 @@
     <Compile Include="..\ProductSharedAssemblyInfo.cs">
       <Link>Properties\ProductSharedAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="..\Shared\DataReaderExtensions.cs">
+      <Link>shared\SqlServer\DataReaderExtensions.cs</Link>
+    </Compile>
     <Compile Include="..\Shared\DataSourceBase.Class0DataSource.cs">
       <Link>shared\SqlServer\DataSourceBase.Class0DataSource.cs</Link>
     </Compile>
@@ -129,6 +132,9 @@
     <Compile Include="shared\SqlServer\SqlServerEffectiveSettings.cs" />
     <Compile Include="shared\SqlServer\SqlServerCommandExecutionToken.cs" />
     <Compile Include="shared\SqlServer\SqlServerDataSourceSettings.cs" />
+    <Compile Include="shared\SqlServer\SqlServerIndexMetadata.cs" />
+    <Compile Include="shared\SqlServer\SqlServerIndexMetadataCollection.cs" />
+    <Compile Include="shared\SqlServer\SqlServerIndexType.cs" />
     <Compile Include="shared\SqlServer\SqlServerOpenDataSource.cs" />
     <Compile Include="shared\SqlServer\SqlServerOperationExecutionToken.cs" />
     <Compile Include="shared\SqlServer\SqlServerTableOrViewMetadata.cs" />

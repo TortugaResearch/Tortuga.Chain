@@ -89,7 +89,6 @@ namespace Tortuga.Chain.Metadata
         /// Gets the indexes for this table or view.
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="NotSupportedException">Indexes are not supported by this data source</exception>
         public IndexMetadataCollection<TName, TDbType> GetIndexes()
         {
             if (m_Indexes == null)

@@ -55,9 +55,9 @@ namespace Tortuga.Chain.SQLite
                 {
                     while (reader.Read())
                     {
-                        var name = reader.GetString(reader.GetOrdinal("name"));
-                        var isUnique = reader.GetInt64(reader.GetOrdinal("unique")) != 0;
-                        var origin = reader.GetString(reader.GetOrdinal("origin"));
+                        var name = reader.GetString("name");
+                        var isUnique = reader.GetInt64("unique") != 0;
+                        var origin = reader.GetString("origin");
                         var isPrimaryKey = string.Equals(origin, "pk", StringComparison.Ordinal);
                         var isUniqueConstraint = string.Equals(origin, "u", StringComparison.Ordinal);
 
@@ -68,9 +68,9 @@ namespace Tortuga.Chain.SQLite
                         {
                             while (reader2.Read())
                             {
-                                var colName = (reader2.IsDBNull(reader2.GetOrdinal("name"))) ? null : reader2.GetString(reader2.GetOrdinal("name"));
-                                var isDescending = reader2.GetInt64(reader2.GetOrdinal("desc")) != 0;
-                                var isIncluded = reader2.GetInt64(reader2.GetOrdinal("key")) == 0;
+                                var colName = reader2.GetStringOrNull("name");
+                                var isIncluded = reader2.GetInt64("key") == 0;
+                                var isDescending = isIncluded ? (bool?)null : reader2.GetInt64("desc") != 0;
 
                                 ColumnMetadata<DbType> column;
                                 if (colName != null)
@@ -181,7 +181,7 @@ namespace Tortuga.Chain.SQLite
                     {
                         while (reader.Read())
                         {
-                            var tableName = reader.GetString(reader.GetOrdinal("TableName"));
+                            var tableName = reader.GetString("TableName");
                             GetTableOrView(tableName);
                         }
                     }
@@ -205,14 +205,12 @@ namespace Tortuga.Chain.SQLite
             {
                 con.Open();
                 using (var cmd = new SQLiteCommand(viewSql, con))
+                using (var reader = cmd.ExecuteReader())
                 {
-                    using (var reader = cmd.ExecuteReader())
+                    while (reader.Read())
                     {
-                        while (reader.Read())
-                        {
-                            var viewName = reader.GetString(reader.GetOrdinal("ViewName"));
-                            GetTableOrView(viewName);
-                        }
+                        var viewName = reader.GetString("ViewName");
+                        GetTableOrView(viewName);
                     }
                 }
             }
@@ -307,10 +305,10 @@ namespace Tortuga.Chain.SQLite
                     {
                         while (reader.Read())
                         {
-                            var name = reader.GetString(reader.GetOrdinal("name"));
-                            var sqlTypeName = reader.GetString(reader.GetOrdinal("type"));
-                            var isPrimaryKey = reader.GetInt32(reader.GetOrdinal("pk")) != 0 ? true : false;
-                            var isnNullable = !reader.GetBoolean(reader.GetOrdinal("notnull"));
+                            var name = reader.GetString("name");
+                            var sqlTypeName = reader.GetString("type");
+                            var isPrimaryKey = reader.GetInt32("pk") != 0 ? true : false;
+                            var isnNullable = !reader.GetBoolean("notnull");
                             hasPrimarykey = hasPrimarykey || isPrimaryKey;
 
                             columns.Add(new ColumnMetadata<DbType>(name, false, isPrimaryKey, false, sqlTypeName, SqlTypeNameToDbType(sqlTypeName), "[" + name + "]", isnNullable, null, null, null, null, ToClrType(sqlTypeName, isnNullable, null)));
@@ -351,9 +349,9 @@ namespace Tortuga.Chain.SQLite
                         if (!reader.Read())
                             throw new MissingObjectException($"Could not find table or view {tableName}");
 
-                        actualName = reader.GetString(reader.GetOrdinal("ObjectName"));
-                        var objectType = reader.GetString(reader.GetOrdinal("ObjectType"));
-                        isTable = objectType.Equals("table", StringComparison.OrdinalIgnoreCase);
+                        actualName = reader.GetString("ObjectName");
+                        var objectType = reader.GetString("ObjectType");
+                        isTable = objectType.Equals("table", StringComparison.Ordinal);
                     }
                 }
             }

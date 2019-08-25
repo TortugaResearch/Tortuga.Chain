@@ -558,20 +558,20 @@ namespace Tortuga.Chain.MySql
                     {
                         while (reader.Read())
                         {
-                            var name = reader.GetString(reader.GetOrdinal("COLUMN_NAME"));
-                            //var @default = reader.IsDBNull(reader.GetOrdinal("COLUMN_DEFAULT")) ? null : reader.GetString("COLUMN_DEFAULT"); #226
+                            var name = reader.GetString("COLUMN_NAME");
+                            //var @default = reader.GetStringOrNull("COLUMN_DEFAULT"); #226
                             var isNullable = string.Equals(reader.GetString("IS_NULLABLE"), "YES", StringComparison.Ordinal);
                             var sqlTypeName = reader.GetString("DATA_TYPE");
-                            var maxLength = reader.IsDBNull(reader.GetOrdinal("CHARACTER_MAXIMUM_LENGTH")) ? (UInt64?)null : reader.GetUInt64("CHARACTER_MAXIMUM_LENGTH");
-                            var precisionA = reader.IsDBNull(reader.GetOrdinal("NUMERIC_PRECISION")) ? (int?)null : reader.GetInt32("NUMERIC_PRECISION");
-                            var scale = reader.IsDBNull(reader.GetOrdinal("NUMERIC_SCALE")) ? (int?)null : reader.GetInt32("NUMERIC_SCALE");
-                            var precisionB = reader.IsDBNull(reader.GetOrdinal("DATETIME_PRECISION")) ? (int?)null : reader.GetInt32("DATETIME_PRECISION");
+                            var maxLength = reader.GetUInt64OrNull("CHARACTER_MAXIMUM_LENGTH");
+                            var precisionA = reader.GetInt32OrNull("NUMERIC_PRECISION");
+                            var scale = reader.GetInt32OrNull("NUMERIC_SCALE");
+                            var precisionB = reader.GetInt32OrNull("DATETIME_PRECISION");
                             var precision = precisionA ?? precisionB;
                             var fullTypeName = reader.GetString("COLUMN_TYPE");
                             var key = reader.GetString("COLUMN_KEY");
                             var extra = reader.GetString("EXTRA");
                             //var comment = reader.GetString("COLUMN_COMMENT"); #224
-                            //var collation = reader.IsDBNull(reader.GetOrdinal("COLLATION_NAME")) ? null : reader.GetString(reader.GetOrdinal("COLLATION_NAME")); #225
+                            //var collation =  reader.GetStringOrNull("COLLATION_NAME"); #225
 
                             var computed = extra.Contains("VIRTUAL");
                             var primary = key.Contains("PRI");
@@ -611,13 +611,13 @@ namespace Tortuga.Chain.MySql
                         {
                             while (reader.Read())
                             {
-                                var name = reader.GetString(reader.GetOrdinal("PARAMETER_NAME"));
-                                var sqlTypeName = reader.GetString(reader.GetOrdinal("DATA_TYPE"));
+                                var name = reader.GetString("PARAMETER_NAME");
+                                var sqlTypeName = reader.GetString("DATA_TYPE");
                                 bool isNullable = true;
-                                var maxLength = reader.IsDBNull(reader.GetOrdinal("CHARACTER_MAXIMUM_LENGTH")) ? (UInt64?)null : reader.GetUInt64("CHARACTER_MAXIMUM_LENGTH");
-                                var precisionA = reader.IsDBNull(reader.GetOrdinal("NUMERIC_PRECISION")) ? (int?)null : reader.GetInt32("NUMERIC_PRECISION");
-                                var scale = reader.IsDBNull(reader.GetOrdinal("NUMERIC_SCALE")) ? (int?)null : reader.GetInt32("NUMERIC_SCALE");
-                                var precisionB = reader.IsDBNull(reader.GetOrdinal("DATETIME_PRECISION")) ? (int?)null : reader.GetInt32("DATETIME_PRECISION");
+                                var maxLength = reader.GetUInt64OrNull("CHARACTER_MAXIMUM_LENGTH");
+                                var precisionA = reader.GetInt32OrNull("NUMERIC_PRECISION");
+                                var scale = reader.GetInt32OrNull("NUMERIC_SCALE");
+                                var precisionB = reader.GetInt32OrNull("DATETIME_PRECISION");
                                 var precision = precisionA ?? precisionB;
                                 var fullTypeName = reader.GetString("DTD_IDENTIFIER");
 
@@ -663,14 +663,14 @@ namespace Tortuga.Chain.MySql
                     {
                         if (!reader.Read())
                             throw new MissingObjectException($"Could not find scalar function {tableFunctionName}");
-                        actualSchema = reader.GetString(reader.GetOrdinal("ROUTINE_SCHEMA"));
-                        actualName = reader.GetString(reader.GetOrdinal("ROUTINE_NAME"));
+                        actualSchema = reader.GetString("ROUTINE_SCHEMA");
+                        actualName = reader.GetString("ROUTINE_NAME");
 
                         sqlTypeName = reader.GetString("DATA_TYPE");
-                        maxLength = reader.IsDBNull(reader.GetOrdinal("CHARACTER_MAXIMUM_LENGTH")) ? (UInt64?)null : reader.GetUInt64("CHARACTER_MAXIMUM_LENGTH");
-                        var precisionA = reader.IsDBNull(reader.GetOrdinal("NUMERIC_PRECISION")) ? (int?)null : reader.GetInt32("NUMERIC_PRECISION");
-                        scale = reader.IsDBNull(reader.GetOrdinal("NUMERIC_SCALE")) ? (int?)null : reader.GetInt32("NUMERIC_SCALE");
-                        var precisionB = reader.IsDBNull(reader.GetOrdinal("DATETIME_PRECISION")) ? (int?)null : reader.GetInt32("DATETIME_PRECISION");
+                        maxLength = reader.GetUInt64OrNull("CHARACTER_MAXIMUM_LENGTH");
+                        var precisionA = reader.GetInt32OrNull("NUMERIC_PRECISION");
+                        scale = reader.GetInt32OrNull("NUMERIC_SCALE");
+                        var precisionB = reader.GetInt32OrNull("DATETIME_PRECISION");
                         precision = precisionA ?? precisionB;
                         fullTypeName = reader.GetString("DTD_IDENTIFIER");
                         specificName = reader.GetString("SPECIFIC_NAME");
@@ -706,8 +706,8 @@ namespace Tortuga.Chain.MySql
                     {
                         if (!reader.Read())
                             throw new MissingObjectException($"Could not find stored procedure {storedProcedureName}");
-                        actualSchema = reader.GetString(reader.GetOrdinal("ROUTINE_SCHEMA"));
-                        actualName = reader.GetString(reader.GetOrdinal("ROUTINE_NAME"));
+                        actualSchema = reader.GetString("ROUTINE_SCHEMA");
+                        actualName = reader.GetString("ROUTINE_NAME");
                     }
                 }
             }
@@ -742,7 +742,7 @@ namespace Tortuga.Chain.MySql
                         actualSchemaName = reader.GetString("TABLE_SCHEMA");
                         actualTableName = reader.GetString("TABLE_NAME");
                         isTable = string.Equals(reader.GetString("TABLE_TYPE"), "BASE TABLE", StringComparison.Ordinal);
-                        engine = reader.IsDBNull(reader.GetOrdinal("ENGINE")) ? null : reader.GetString("ENGINE");
+                        engine = reader.GetStringOrNull("ENGINE");
                     }
                 }
             }

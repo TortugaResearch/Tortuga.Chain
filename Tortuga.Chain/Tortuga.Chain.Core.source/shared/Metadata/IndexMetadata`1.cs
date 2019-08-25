@@ -11,9 +11,7 @@ namespace Tortuga.Chain.Metadata
     public class IndexMetadata<TName, TDbType> : IndexMetadata
         where TDbType : struct
     {
-        /// <summary>
-        ///
-        /// </summary>
+        /// <summary>Initializes a new instance of the <see cref="T:Tortuga.Chain.Metadata.IndexMetadata`2"/> class.</summary>
         /// <param name="tableName">Name of the table (or view).</param>
         /// <param name="name">The name.</param>
         /// <param name="isPrimaryKey">if set to <c>true</c> is a primary key.</param>
@@ -22,6 +20,7 @@ namespace Tortuga.Chain.Metadata
         /// <param name="columns">The columns.</param>
         /// <param name="indexSizeKB">Approximate index size in KB</param>
         /// <param name="rowCount">Approximate row count</param>
+        /// <exception cref="ArgumentNullException">columns</exception>
         public IndexMetadata(TName tableName, string name, bool isPrimaryKey, bool isUnique, bool isUniqueConstraint, IndexColumnMetadataCollection<TDbType> columns, long? indexSizeKB, long? rowCount) : base(tableName.ToString(), name, isPrimaryKey, isUnique, isUniqueConstraint, columns?.GenericCollection, indexSizeKB, rowCount)
         {
             TableName = tableName;

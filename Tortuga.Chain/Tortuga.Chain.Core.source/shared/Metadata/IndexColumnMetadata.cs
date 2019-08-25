@@ -1,17 +1,13 @@
 namespace Tortuga.Chain.Metadata
 {
-    /// <summary>
-    ///
-    /// </summary>
+    /// <summary>Class IndexColumnMetadata.</summary>
     public abstract class IndexColumnMetadata
     {
-        /// <summary>
-        /// Initializes a new instance of the IndexColumnMetadata class.
-        /// </summary>
+        /// <summary>Initializes a new instance of the IndexColumnMetadata class.</summary>
         /// <param name="column">The underlying column details.</param>
         /// <param name="isDescending">Indicates the column is indexed in descending order.</param>
         /// <param name="isIncluded">Indicates the column is an unindexed, included column.</param>
-        protected IndexColumnMetadata(ColumnMetadata column, bool isDescending, bool isIncluded)
+        protected IndexColumnMetadata(ColumnMetadata column, bool? isDescending, bool isIncluded)
         {
             Details = column;
             IsDescending = isDescending;
@@ -26,7 +22,8 @@ namespace Tortuga.Chain.Metadata
         /// <summary>
         /// Gets a value indicating whether this instance is descending.
         /// </summary>
-        public bool IsDescending { get; }
+        /// <remarks>This should be null for included columns.</remarks>
+        public bool? IsDescending { get; }
 
         /// <summary>
         /// Gets a value indicating whether this instance is an included column.

@@ -16,6 +16,16 @@ namespace Tortuga.Chain.Metadata
         where TDbType : struct
     {
         /// <summary>
+        /// Gets the server version number.
+        /// </summary>
+        public virtual Version ServerVersion => null;
+
+        /// <summary>
+        /// Gets the server version name.
+        /// </summary>
+        public virtual string ServerVersionName => null;
+
+        /// <summary>
         /// This dictionary is used to register customer database types. It is used by the ToClrType method and possibly parameter generation.
         /// </summary>
         /// <remarks>This is populated by the RegisterType method.</remarks>

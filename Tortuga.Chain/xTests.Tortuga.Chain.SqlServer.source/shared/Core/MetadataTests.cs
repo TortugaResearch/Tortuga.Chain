@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Xunit;
 using Xunit.Abstractions;
@@ -18,7 +15,7 @@ namespace Tests.Core
         {
         }
 
-#if SQL_SERVER || ACCESS || SQLITE
+#if SQL_SERVER || ACCESS || SQLITE || POSTGRESQL || MYSQL
 
         [Theory, MemberData(nameof(Tables))]
         public void TableIndexes(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
@@ -35,8 +32,16 @@ namespace Tests.Core
 
                 foreach (var index in indexes)
                 {
-                    //Assert.IsTrue(index.Columns.Count > 0, "Indexes should have columns");
-                    Assert.IsFalse(string.IsNullOrWhiteSpace(index.Name), "indexes should have names");
+#if SQL_SERVER
+                    if (index.IndexType != Tortuga.Chain.SqlServer.SqlServerIndexType.Heap)
+                    {
+                        Assert.IsFalse(string.IsNullOrWhiteSpace(index.Name), $"Indexes should have names. Table name {table.Name}");
+                        Assert.IsTrue(index.Columns.Count > 0, $"Indexes should have columns. Table name {table.Name} Index name {index.Name}");
+                    }
+#else
+                    Assert.IsFalse(string.IsNullOrWhiteSpace(index.Name), $"Indexes should have names. Table name {table.Name}");
+                    Assert.IsTrue(index.Columns.Count > 0, $"Indexes should have columns. Table name {table.Name} Index name {index.Name}");
+#endif
                 }
             }
             finally
@@ -321,6 +326,23 @@ namespace Tests.Core
                 dataSource.DatabaseMetadata.Reset();
                 var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
                 Assert.Equal(tableName, table.Name.ToString());
+                Assert.NotEmpty(table.Columns);
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+        [Theory, MemberData(nameof(Views))]
+        public void GetView(string assemblyName, string dataSourceName, DataSourceType mode, string viewName)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+                dataSource.DatabaseMetadata.Reset();
+                var table = dataSource.DatabaseMetadata.GetTableOrView(viewName);
+                Assert.Equal(viewName, table.Name.ToString());
                 Assert.NotEmpty(table.Columns);
             }
             finally

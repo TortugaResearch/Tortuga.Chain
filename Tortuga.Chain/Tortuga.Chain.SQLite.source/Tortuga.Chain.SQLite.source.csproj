@@ -71,6 +71,9 @@
     <Compile Include="..\ProductSharedAssemblyInfo.cs">
       <Link>Properties\ProductSharedAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="..\Shared\DataReaderExtensions.cs">
+      <Link>shared\SQLite\DataReaderExtensions.cs</Link>
+    </Compile>
     <Compile Include="..\Shared\DataSourceBase.Class0DataSource.cs">
       <Link>shared\SQLite\DataSourceBase.Class0DataSource.cs</Link>
     </Compile>

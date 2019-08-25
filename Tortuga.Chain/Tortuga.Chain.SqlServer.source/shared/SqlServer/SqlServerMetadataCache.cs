@@ -84,6 +84,7 @@ namespace Tortuga.Chain.SqlServer
        i.is_unique,
        i.is_unique_constraint,
 	   i.index_id,
+       i.type,
        (SELECT SUM(used_page_count) * 8 FROM sys.dm_db_partition_stats ddps WHERE ddps.object_id=i.object_id AND ddps.index_id = i.index_id) AS IndexSizeKB,
        (SELECT SUM(row_count) FROM sys.dm_db_partition_stats ddps WHERE ddps.object_id=i.object_id AND ddps.index_id = i.index_id) AS [RowCount]
 FROM sys.indexes i
@@ -111,20 +112,17 @@ WHERE o.name = @Name
                     {
                         while (reader.Read())
                         {
-                            var is_primary_key = reader.GetBoolean(reader.GetOrdinal("is_primary_key"));
-                            var is_unique = reader.GetBoolean(reader.GetOrdinal("is_unique"));
-                            var is_unique_constraint = reader.GetBoolean(reader.GetOrdinal("is_unique_constraint"));
-                            var index_id = reader.GetInt32(reader.GetOrdinal("index_id"));
-                            var name = reader.IsDBNull(reader.GetOrdinal("Name")) ? null :
-                                reader.GetString(reader.GetOrdinal("Name"));
+                            var is_primary_key = reader.GetBoolean("is_primary_key");
+                            var is_unique = reader.GetBoolean("is_unique");
+                            var is_unique_constraint = reader.GetBoolean("is_unique_constraint");
+                            var index_id = reader.GetInt32("index_id");
+                            var name = reader.GetStringOrNull("Name");
                             var columns = new IndexColumnMetadataCollection<SqlDbType>(allColumns.Where(c => c.IndexId == index_id));
-                            var indexSize = reader.GetInt64(reader.GetOrdinal("IndexSizeKB"));
-                            var rowCount = reader.GetInt64(reader.GetOrdinal("RowCount"));
+                            var indexSize = reader.GetInt64("IndexSizeKB");
+                            var rowCount = reader.GetInt64("RowCount");
+                            var indexType = (SqlServerIndexType)reader.GetByte("type");
 
-                            if (name == null && columns.Count == 0) //this is a heap
-                                name = "(heap)";
-
-                            results.Add(new IndexMetadata<SqlServerObjectName, SqlDbType>(tableName, name, is_primary_key, is_unique, is_unique_constraint, columns, indexSize, rowCount));
+                            results.Add(new SqlServerIndexMetadata(tableName, name, is_primary_key, is_unique, is_unique_constraint, columns, indexSize, rowCount, indexType));
                         }
 
                         return new IndexMetadataCollection<SqlServerObjectName, SqlDbType>(results);
@@ -166,8 +164,8 @@ WHERE o.name = @Name
                     {
                         while (reader.Read())
                         {
-                            var schema = reader.GetString(reader.GetOrdinal("SchemaName"));
-                            var name = reader.GetString(reader.GetOrdinal("Name"));
+                            var schema = reader.GetString("SchemaName");
+                            var name = reader.GetString("Name");
                             GetScalarFunction(new SqlServerObjectName(schema, name));
                         }
                     }
@@ -196,8 +194,8 @@ WHERE o.name = @Name
                     {
                         while (reader.Read())
                         {
-                            var schema = reader.GetString(reader.GetOrdinal("SchemaName"));
-                            var name = reader.GetString(reader.GetOrdinal("Name"));
+                            var schema = reader.GetString("SchemaName");
+                            var name = reader.GetString("Name");
                             GetStoredProcedure(new SqlServerObjectName(schema, name));
                         }
                     }
@@ -228,8 +226,8 @@ WHERE o.name = @Name
                     {
                         while (reader.Read())
                         {
-                            var schema = reader.GetString(reader.GetOrdinal("SchemaName"));
-                            var name = reader.GetString(reader.GetOrdinal("Name"));
+                            var schema = reader.GetString("SchemaName");
+                            var name = reader.GetString("Name");
                             GetTableFunction(new SqlServerObjectName(schema, name));
                         }
                     }
@@ -254,8 +252,8 @@ WHERE o.name = @Name
                     {
                         while (reader.Read())
                         {
-                            var schema = reader.GetString(reader.GetOrdinal("SchemaName"));
-                            var name = reader.GetString(reader.GetOrdinal("Name"));
+                            var schema = reader.GetString("SchemaName");
+                            var name = reader.GetString("Name");
                             GetTableOrView(new SqlServerObjectName(schema, name));
                         }
                     }
@@ -280,8 +278,8 @@ WHERE o.name = @Name
                     {
                         while (reader.Read())
                         {
-                            var schema = reader.GetString(reader.GetOrdinal("SchemaName"));
-                            var name = reader.GetString(reader.GetOrdinal("Name"));
+                            var schema = reader.GetString("SchemaName");
+                            var name = reader.GetString("Name");
                             GetUserDefinedType(new SqlServerObjectName(schema, name));
                         }
                     }
@@ -306,8 +304,8 @@ WHERE o.name = @Name
                     {
                         while (reader.Read())
                         {
-                            var schema = reader.GetString(reader.GetOrdinal("SchemaName"));
-                            var name = reader.GetString(reader.GetOrdinal("Name"));
+                            var schema = reader.GetString("SchemaName");
+                            var name = reader.GetString("Name");
                             GetTableOrView(new SqlServerObjectName(schema, name));
                         }
                     }
@@ -392,15 +390,15 @@ WHERE o.name = @Name
                     {
                         if (!reader.Read())
                             throw new MissingObjectException($"Could not find scalar function {scalarFunctionName}");
-                        actualSchema = reader.GetString(reader.GetOrdinal("SchemaName"));
-                        actualName = reader.GetString(reader.GetOrdinal("Name"));
-                        objectId = reader.GetInt32(reader.GetOrdinal("ObjectId"));
+                        actualSchema = reader.GetString("SchemaName");
+                        actualName = reader.GetString("Name");
+                        objectId = reader.GetInt32("ObjectId");
 
-                        sqlTypeName = reader.IsDBNull(reader.GetOrdinal("TypeName")) ? null : reader.GetString(reader.GetOrdinal("TypeName"));
-                        isNullable = reader.GetBoolean(reader.GetOrdinal("is_nullable"));
-                        maxLength = reader.IsDBNull(reader.GetOrdinal("max_length")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("max_length"));
-                        precision = reader.IsDBNull(reader.GetOrdinal("precision")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("precision"));
-                        scale = reader.IsDBNull(reader.GetOrdinal("scale")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("scale"));
+                        sqlTypeName = reader.GetStringOrNull("TypeName");
+                        isNullable = reader.GetBoolean("is_nullable");
+                        maxLength = reader.GetInt32OrNull("max_length");
+                        precision = reader.GetInt32OrNull("precision");
+                        scale = reader.GetInt32OrNull("scale");
                         AdjustTypeDetails(sqlTypeName, ref maxLength, ref precision, ref scale, out fullTypeName);
                     }
                 }
@@ -439,9 +437,9 @@ WHERE o.name = @Name
                         if (!reader.Read())
                             throw new MissingObjectException($"Could not find stored procedure {procedureName}");
 
-                        actualSchema = reader.GetString(reader.GetOrdinal("SchemaName"));
-                        actualName = reader.GetString(reader.GetOrdinal("Name"));
-                        objectId = reader.GetInt32(reader.GetOrdinal("ObjectId"));
+                        actualSchema = reader.GetString("SchemaName");
+                        actualName = reader.GetString("Name");
+                        objectId = reader.GetInt32("ObjectId");
                     }
                 }
             }
@@ -483,9 +481,9 @@ WHERE o.name = @Name
                     {
                         if (!reader.Read())
                             throw new MissingObjectException($"Could not find table valued function {tableFunctionName}");
-                        actualSchema = reader.GetString(reader.GetOrdinal("SchemaName"));
-                        actualName = reader.GetString(reader.GetOrdinal("Name"));
-                        objectId = reader.GetInt32(reader.GetOrdinal("ObjectId"));
+                        actualSchema = reader.GetString("SchemaName");
+                        actualName = reader.GetString("Name");
+                        objectId = reader.GetInt32("ObjectId");
                     }
                 }
             }
@@ -539,11 +537,11 @@ WHERE o.name = @Name
                     {
                         if (!reader.Read())
                             throw new MissingObjectException($"Could not find table or view {tableName}");
-                        actualSchema = reader.GetString(reader.GetOrdinal("SchemaName"));
-                        actualName = reader.GetString(reader.GetOrdinal("Name"));
-                        objectId = reader.GetInt32(reader.GetOrdinal("ObjectId"));
-                        isTable = reader.GetBoolean(reader.GetOrdinal("IsTable"));
-                        hasTriggers = reader.GetInt32(reader.GetOrdinal("Triggers")) > 0;
+                        actualSchema = reader.GetString("SchemaName");
+                        actualName = reader.GetString("Name");
+                        objectId = reader.GetInt32("ObjectId");
+                        isTable = reader.GetBoolean("IsTable");
+                        hasTriggers = reader.GetInt32("Triggers") > 0;
                     }
                 }
             }
@@ -573,8 +571,8 @@ WHERE	s.name = @Schema AND t.name = @Name;";
 
             string actualSchema;
             string actualName;
-            string baseTypeName = null;
-            int? objectId = null;
+            string baseTypeName;
+            int? objectId;
             bool isTableType;
             bool isNullable;
             int? maxLength;
@@ -594,18 +592,16 @@ WHERE	s.name = @Schema AND t.name = @Name;";
                         if (!reader.Read())
                             throw new MissingObjectException($"Could not find user defined type {typeName}");
 
-                        actualSchema = reader.GetString(reader.GetOrdinal("SchemaName"));
-                        actualName = reader.GetString(reader.GetOrdinal("Name"));
-                        if (!reader.IsDBNull(reader.GetOrdinal("ObjectId")))
-                            objectId = reader.GetInt32(reader.GetOrdinal("ObjectId"));
-                        isTableType = reader.GetBoolean(reader.GetOrdinal("IsTableType"));
-                        if (!reader.IsDBNull(reader.GetOrdinal("BaseTypeName")))
-                            baseTypeName = reader.GetString(reader.GetOrdinal("BaseTypeName"));
+                        actualSchema = reader.GetString("SchemaName");
+                        actualName = reader.GetString("Name");
+                        objectId = reader.GetInt32OrNull("ObjectId");
+                        isTableType = reader.GetBoolean("IsTableType");
+                        baseTypeName = reader.GetStringOrNull("BaseTypeName");
 
-                        isNullable = reader.GetBoolean(reader.GetOrdinal("is_nullable"));
-                        maxLength = reader.GetInt32(reader.GetOrdinal("max_length"));
-                        precision = reader.GetInt32(reader.GetOrdinal("precision"));
-                        scale = reader.GetInt32(reader.GetOrdinal("scale"));
+                        isNullable = reader.GetBoolean("is_nullable");
+                        maxLength = reader.GetInt32("max_length");
+                        precision = reader.GetInt32("precision");
+                        scale = reader.GetInt32("scale");
 
                         AdjustTypeDetails(baseTypeName, ref maxLength, ref precision, ref scale, out fullTypeName);
                     }
@@ -804,15 +800,15 @@ WHERE	s.name = @Schema AND t.name = @Name;";
                     {
                         while (reader.Read())
                         {
-                            var name = reader.GetString(reader.GetOrdinal("ColumnName"));
-                            var computed = reader.GetBoolean(reader.GetOrdinal("is_computed"));
-                            var primary = reader.GetBoolean(reader.GetOrdinal("is_primary_key"));
-                            var isIdentity = reader.GetBoolean(reader.GetOrdinal("is_identity"));
-                            var sqlTypeName = reader.IsDBNull(reader.GetOrdinal("TypeName")) ? null : reader.GetString(reader.GetOrdinal("TypeName"));
-                            var isNullable = reader.GetBoolean(reader.GetOrdinal("is_nullable"));
-                            int? maxLength = reader.IsDBNull(reader.GetOrdinal("max_length")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("max_length"));
-                            int? precision = reader.IsDBNull(reader.GetOrdinal("precision")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("precision"));
-                            int? scale = reader.IsDBNull(reader.GetOrdinal("scale")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("scale"));
+                            var name = reader.GetString("ColumnName");
+                            var computed = reader.GetBoolean("is_computed");
+                            var primary = reader.GetBoolean("is_primary_key");
+                            var isIdentity = reader.GetBoolean("is_identity");
+                            var sqlTypeName = reader.GetStringOrNull("TypeName");
+                            var isNullable = reader.GetBoolean("is_nullable");
+                            int? maxLength = reader.GetInt32OrNull("max_length");
+                            int? precision = reader.GetInt32OrNull("precision");
+                            int? scale = reader.GetInt32OrNull("scale");
                             string fullTypeName;
                             AdjustTypeDetails(sqlTypeName, ref maxLength, ref precision, ref scale, out fullTypeName);
 
@@ -859,10 +855,10 @@ ORDER BY ic.key_ordinal;";
 
                         while (reader.Read())
                         {
-                            var is_descending_key = reader.GetBoolean(reader.GetOrdinal("is_descending_key"));
-                            var is_included_column = reader.GetBoolean(reader.GetOrdinal("is_included_column"));
-                            var name = reader.GetString(reader.GetOrdinal("Name"));
-                            var index_id = reader.GetInt32(reader.GetOrdinal("index_id"));
+                            var is_included_column = reader.GetBoolean("is_included_column");
+                            var is_descending_key = reader.GetBooleanOrNull("is_descending_key");
+                            var name = reader.GetString("Name");
+                            var index_id = reader.GetInt32("index_id");
                             var column = tableColumns[name];
 
                             results.Add(new SqlServerIndexColumnMetadata(column, is_descending_key, is_included_column, index_id));
@@ -905,12 +901,12 @@ ORDER BY ic.key_ordinal;";
                         {
                             while (reader.Read())
                             {
-                                var name = reader.GetString(reader.GetOrdinal("ParameterName"));
-                                var sqlTypeName = reader.GetString(reader.GetOrdinal("TypeName"));
+                                var name = reader.GetString("ParameterName");
+                                var sqlTypeName = reader.GetString("TypeName");
                                 bool isNullable = true;
-                                int? maxLength = reader.IsDBNull(reader.GetOrdinal("max_length")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("max_length"));
-                                int? precision = reader.IsDBNull(reader.GetOrdinal("precision")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("precision"));
-                                int? scale = reader.IsDBNull(reader.GetOrdinal("scale")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("scale"));
+                                int? maxLength = reader.GetInt32OrNull("max_length");
+                                int? precision = reader.GetInt32OrNull("precision");
+                                int? scale = reader.GetInt32OrNull("scale");
                                 string fullTypeName;
                                 AdjustTypeDetails(sqlTypeName, ref maxLength, ref precision, ref scale, out fullTypeName);
 
@@ -936,7 +932,7 @@ ORDER BY ic.key_ordinal;";
             /// <param name="isDescending">Indicates the column is indexed in descending order.</param>
             /// <param name="isIncluded">Indicates the column is an unindexed, included column.</param>
             /// <param name="indexId"></param>
-            internal SqlServerIndexColumnMetadata(ColumnMetadata<SqlDbType> column, bool isDescending, bool isIncluded, int indexId) : base(column, isDescending, isIncluded)
+            internal SqlServerIndexColumnMetadata(ColumnMetadata<SqlDbType> column, bool? isDescending, bool isIncluded, int indexId) : base(column, isDescending, isIncluded)
             {
                 IndexId = indexId;
             }
