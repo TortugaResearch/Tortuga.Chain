@@ -17,7 +17,7 @@ namespace Tests.CommandBuilders
 #if !ACCESS
 
         [Theory, MemberData(nameof(Prime))]
-        public void BasicUpsertTest(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void BasicUpsertTest(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -46,7 +46,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void AlternateKeyUpsertTest(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void AlternateKeyUpsertTest(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -83,7 +83,7 @@ namespace Tests.CommandBuilders
 #if !POSTGRESQL
 
         [Theory, MemberData(nameof(Prime))]
-        public void UpsertTest_Identity_Insert(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void UpsertTest_Identity_Insert(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -125,7 +125,7 @@ namespace Tests.CommandBuilders
 #if SQL_SERVER || OLE_SQL_SERVER //SQL Server has problems with CRUD operations that return values on tables with triggers.
 
         [Theory, MemberData(nameof(Prime))]
-        public void BasicUpsertTest_Trigger(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void BasicUpsertTest_Trigger(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try

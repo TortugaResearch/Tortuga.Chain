@@ -25,7 +25,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void ScalarFunction1_Integer_WithNullParameter(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void ScalarFunction1_Integer_WithNullParameter(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -41,7 +41,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void ScalarFunction1_Integer(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void ScalarFunction1_Integer(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try

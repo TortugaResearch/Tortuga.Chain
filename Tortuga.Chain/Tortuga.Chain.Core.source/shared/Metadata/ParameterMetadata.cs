@@ -10,11 +10,11 @@ namespace Tortuga.Chain.Metadata
         /// </summary>
         /// <param name="sqlParameterName">Name of the SQL parameter.</param>
         /// <param name="sqlVariableName">Name of the SQL variable.</param>
-        /// <param name="sqlTypeName">Name of the type as known to the database.</param>
+        /// <param name="typeName">Name of the type as known to the database.</param>
         /// <param name="dbType">Type of the database column as an enum.</param>
-        protected ParameterMetadata(string sqlParameterName, string sqlVariableName, string sqlTypeName, object dbType)
+        protected ParameterMetadata(string sqlParameterName, string sqlVariableName, string typeName, object dbType)
         {
-            SqlTypeName = sqlTypeName;
+            TypeName = typeName;
             SqlParameterName = sqlParameterName;
             ClrName = Utilities.ToClrName(sqlParameterName);
             SqlVariableName = sqlVariableName;
@@ -26,18 +26,18 @@ namespace Tortuga.Chain.Metadata
         /// </summary>
         /// <param name="sqlParameterName">Name of the SQL parameter.</param>
         /// <param name="sqlVariableName">Name of the SQL variable.</param>
-        /// <param name="sqlTypeName">Name of the type as known to the database.</param>
+        /// <param name="typeName">Name of the type as known to the database.</param>
         /// <param name="dbType">Type of the database column as an enum.</param>
         /// <param name="isNullable">if set to <c>true</c> [is nullable].</param>
         /// <param name="maxLength">The maximum length.</param>
         /// <param name="precision">The precision.</param>
         /// <param name="scale">The scale.</param>
         /// <param name="fullTypeName">Full name of the type.</param>
-        protected ParameterMetadata(string sqlParameterName, string sqlVariableName, string sqlTypeName, object dbType, bool? isNullable, int? maxLength, int? precision, int? scale, string fullTypeName)
+        protected ParameterMetadata(string sqlParameterName, string sqlVariableName, string typeName, object dbType, bool? isNullable, int? maxLength, int? precision, int? scale, string fullTypeName)
         {
             SqlParameterName = sqlParameterName;
             SqlVariableName = sqlVariableName;
-            SqlTypeName = sqlTypeName;
+            TypeName = typeName;
             ClrName = Utilities.ToClrName(sqlParameterName);
             DbType = dbType;
             IsNullable = isNullable;
@@ -107,14 +107,14 @@ namespace Tortuga.Chain.Metadata
         public string SqlParameterName { get; }
 
         /// <summary>
-        /// Gets the name of the type as known to the database.
-        /// </summary>
-        public string SqlTypeName { get; }
-
-        /// <summary>
         /// Gets the name of the SQL variable.
         /// </summary>
         /// <value>The name of the SQL variable.</value>
         public string SqlVariableName { get; }
+
+        /// <summary>
+        /// Gets the name of the type as known to the database.
+        /// </summary>
+        public string TypeName { get; }
     }
 }

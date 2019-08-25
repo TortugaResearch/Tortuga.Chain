@@ -16,7 +16,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void FailedUpdate_ViewNeedsKeys(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void FailedUpdate_ViewNeedsKeys(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -52,7 +52,7 @@ namespace Tests.CommandBuilders
 #if SQL_SERVER || SQL_SERVER_OLEDB
 
         [Theory, MemberData(nameof(Prime))]
-        public void UpdateViaView(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void UpdateViaView(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -82,7 +82,7 @@ namespace Tests.CommandBuilders
 #endif
 
         [Theory, MemberData(nameof(Prime))]
-        public void ChangeTrackingTest(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void ChangeTrackingTest(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -114,7 +114,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void ChangeTrackingTest_NothingChanged(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void ChangeTrackingTest_NothingChanged(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -147,7 +147,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void FailedUpdateTest(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void FailedUpdateTest(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -187,7 +187,7 @@ namespace Tests.CommandBuilders
 #if !Roslyn_Missing && !SQLite
 
         [Theory, MemberData(nameof(Prime))]
-        public void ChangeTrackingTest_Compiled(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void ChangeTrackingTest_Compiled(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -217,7 +217,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void ChangeTrackingTest_NothingChanged_Compiled(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void ChangeTrackingTest_NothingChanged_Compiled(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -251,7 +251,7 @@ namespace Tests.CommandBuilders
 #endif
 
         [Theory, MemberData(nameof(Prime))]
-        public void UpdateByKey(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void UpdateByKey(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -282,7 +282,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void UpdateByKeyList(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void UpdateByKeyList(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -317,7 +317,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void UpdateSet_Expression_Where(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void UpdateSet_Expression_Where(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -345,7 +345,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void UpdateSet_Expression_WhereArg(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void UpdateSet_Expression_WhereArg(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -387,7 +387,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void UpdateSet_ExpressionArg_WhereArg(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void UpdateSet_ExpressionArg_WhereArg(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -431,7 +431,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void UpdateSet_Expression_Filter(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void UpdateSet_Expression_Filter(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -467,7 +467,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void UpdateSet_Value_Where(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void UpdateSet_Value_Where(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -495,7 +495,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void UpdateSet_Value_WhereArg(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void UpdateSet_Value_WhereArg(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -537,7 +537,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void UpdateSet_Value_Filter(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void UpdateSet_Value_Filter(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -565,7 +565,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void UpdateSet_Disallowed_1(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void UpdateSet_Disallowed_1(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -591,7 +591,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void UpdateSet_Disallowed_2(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void UpdateSet_Disallowed_2(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -619,7 +619,7 @@ namespace Tests.CommandBuilders
 #if SQL_SERVER || OLE_SQL_SERVER //SQL Server has problems with CRUD operations that return values on tables with triggers.
 
         [Theory, MemberData(nameof(Prime))]
-        public void ChangeTrackingTest_Trigger(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void ChangeTrackingTest_Trigger(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try

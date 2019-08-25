@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Tests.Models;
 using Tortuga.Chain;
@@ -19,7 +17,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void DeleteTests_Delete(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void DeleteTests_Delete(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -43,7 +41,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void DeleteTests_Delete_Attribute(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void DeleteTests_Delete_Attribute(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -74,7 +72,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void DeleteTests_Delete_Implied(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void DeleteTests_Delete_Implied(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -104,7 +102,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void DeleteByKey(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void DeleteByKey(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -128,7 +126,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void DeleteByKeyList(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void DeleteByKeyList(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -156,7 +154,7 @@ namespace Tests.CommandBuilders
 #if SQL_SERVER || OLE_SQL_SERVER //SQL Server has problems with CRUD operations that return values on tables with triggers.
 
         [Theory, MemberData(nameof(Prime))]
-        public void DeleteTests_Delete_Trigger(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void DeleteTests_Delete_Trigger(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -180,7 +178,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void DeleteByKey_Trigger(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void DeleteByKey_Trigger(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -204,7 +202,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void DeleteByKeyList_Trigger(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void DeleteByKeyList_Trigger(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -232,7 +230,7 @@ namespace Tests.CommandBuilders
 #endif
 
         [Theory, MemberData(nameof(Prime))]
-        public void DeleteWithFilter_Where(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void DeleteWithFilter_Where(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -258,7 +256,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void DeleteWithFilter_WhereArg(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void DeleteWithFilter_WhereArg(string dataSourceName, DataSourceType mode)
         {
 #if OLE_SQL_SERVER
             var whereClause = "Title = ? AND MiddleName Is Null";
@@ -290,7 +288,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void DeleteWithFilter_Filter(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void DeleteWithFilter_Filter(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -316,7 +314,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Root))]
-        public void DeleteWithFilter_Where_SoftDelete(string assemblyName, string dataSourceName)
+        public void DeleteWithFilter_Where_SoftDelete(string dataSourceName)
         {
             var dataSource = DataSource(dataSourceName);
             try
@@ -344,7 +342,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Root))]
-        public void DeleteWithFilter_WhereArg_SoftDelete(string assemblyName, string dataSourceName)
+        public void DeleteWithFilter_WhereArg_SoftDelete(string dataSourceName)
         {
             var dataSource = DataSource(dataSourceName);
             try
@@ -378,7 +376,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Root))]
-        public void DeleteWithFilter_Filter_SoftDelete(string assemblyName, string dataSourceName)
+        public void DeleteWithFilter_Filter_SoftDelete(string dataSourceName)
         {
             var dataSource = DataSource(dataSourceName);
             try

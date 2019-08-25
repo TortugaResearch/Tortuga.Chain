@@ -16,6 +16,12 @@ namespace Tortuga.Chain.Metadata
         where TDbType : struct
     {
         /// <summary>
+        /// This dictionary is used to register customer database types. It is used by the ToClrType method and possibly parameter generation.
+        /// </summary>
+        /// <remarks>This is populated by the RegisterType method.</remarks>
+        ConcurrentDictionary<string, TypeRegistration<TDbType>> m_RegisteredTypes = new ConcurrentDictionary<string, TypeRegistration<TDbType>>(StringComparer.OrdinalIgnoreCase);
+
+        /// <summary>
         /// Gets the server version number.
         /// </summary>
         public virtual Version ServerVersion => null;
@@ -24,12 +30,6 @@ namespace Tortuga.Chain.Metadata
         /// Gets the server version name.
         /// </summary>
         public virtual string ServerVersionName => null;
-
-        /// <summary>
-        /// This dictionary is used to register customer database types. It is used by the ToClrType method and possibly parameter generation.
-        /// </summary>
-        /// <remarks>This is populated by the RegisterType method.</remarks>
-        ConcurrentDictionary<string, TypeRegistration<TDbType>> m_RegisteredTypes = new ConcurrentDictionary<string, TypeRegistration<TDbType>>(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
         /// Gets a list of known, unsupported SQL type names.
@@ -230,7 +230,7 @@ namespace Tortuga.Chain.Metadata
         /// <summary>
         /// Returns the CLR type that matches the indicated database column type.
         /// </summary>
-        /// <param name="sqlTypeName">Name of the database column type.</param>
+        /// <param name="typeName">Name of the database column type.</param>
         /// <param name="isNullable">If nullable, Nullable versions of primitive types are returned.</param>
         /// <param name="maxLength">Optional length. Used to distinguish between a char and string.</param>
         /// <param name="isUnsigned">Indicates whether or not the column is unsigned. Only applicable to some databases.</param>
@@ -239,14 +239,14 @@ namespace Tortuga.Chain.Metadata
         /// </returns>
         /// <remarks>Use RegisterType to add a missing mapping or override an existing one.</remarks>
         [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
-        public Type ToClrType(string sqlTypeName, bool isNullable, int? maxLength, bool? isUnsigned = null)
+        public Type ToClrType(string typeName, bool isNullable, int? maxLength, bool? isUnsigned = null)
         {
-            if (TryGetRegisteredType(sqlTypeName, out var registeredType))
+            if (TryGetRegisteredType(typeName, out var registeredType))
             {
                 return registeredType.ClrType;
             }
 
-            var dbType = SqlTypeNameToDbType(sqlTypeName, isUnsigned);
+            var dbType = SqlTypeNameToDbType(typeName, isUnsigned);
 
             if (dbType.HasValue)
                 return ToClrType(dbType.Value, isNullable, maxLength);
@@ -441,11 +441,11 @@ namespace Tortuga.Chain.Metadata
         /// <summary>
         /// Determines the database column type from the column type name.
         /// </summary>
-        /// <param name="sqlTypeName">Name of the database column type.</param>
+        /// <param name="typeName">Name of the database column type.</param>
         /// <param name="isUnsigned">Indicates whether or not the column is unsigned. Only applicable to some databases.</param>
         /// <returns></returns>
         /// <remarks>This does not honor registered types. This is only used for the database's hard-coded list of native types.</remarks>
-        protected abstract TDbType? SqlTypeNameToDbType(string sqlTypeName, bool? isUnsigned);
+        protected abstract TDbType? SqlTypeNameToDbType(string typeName, bool? isUnsigned);
 
         /// <summary>
         /// Returns the CLR type that matches the indicated database column type.

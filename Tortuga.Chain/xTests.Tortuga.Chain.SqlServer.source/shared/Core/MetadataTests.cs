@@ -1,4 +1,6 @@
 using System.Linq;
+using System.Text;
+using Tortuga.Chain.Metadata;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -9,7 +11,9 @@ namespace Tests.Core
         public static BasicData Prime = new BasicData(s_PrimaryDataSource);
         public static BasicData Basic = new BasicData(s_DataSources.Values);
         public static TableData Tables = new TableData(s_DataSources.Values);
+        public static TableData TablesNormal = new TableData(s_DataSources.Values, DataSourceType.Normal);
         public static ViewData Views = new ViewData(s_DataSources.Values);
+        public static ViewData ViewsNormal = new ViewData(s_DataSources.Values, DataSourceType.Normal);
 
         public MetadataTests(ITestOutputHelper output) : base(output)
         {
@@ -18,7 +22,7 @@ namespace Tests.Core
 #if SQL_SERVER || ACCESS || SQLITE || POSTGRESQL || MYSQL
 
         [Theory, MemberData(nameof(Tables))]
-        public void TableIndexes(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
+        public void TableIndexes(string dataSourceName, DataSourceType mode, string tableName)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -55,7 +59,7 @@ namespace Tests.Core
 #if SQL_SERVER
 
         [Theory, MemberData(nameof(Views))]
-        public void ViewIndexes(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
+        public void ViewIndexes(string dataSourceName, DataSourceType mode, string tableName)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -84,7 +88,7 @@ namespace Tests.Core
 #if SQL_SERVER || OLE_SQL_SERVER || POSTGRESQL
 
         [Theory, MemberData(nameof(Basic))]
-        public void DatabaseName(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void DatabaseName(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -103,7 +107,7 @@ namespace Tests.Core
 #if SQL_SERVER || MySQL || OLE_SQL_SERVER
 
         [Theory, MemberData(nameof(Basic))]
-        public void DefaultSchema(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void DefaultSchema(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -120,7 +124,7 @@ namespace Tests.Core
 #endif
 
         [Theory, MemberData(nameof(Basic))]
-        public void Preload(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void Preload(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -134,7 +138,7 @@ namespace Tests.Core
         }
 
         [Theory, MemberData(nameof(Basic))]
-        public void SqlTypeNameToDbType_Tables(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void SqlTypeNameToDbType_Tables(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -145,9 +149,9 @@ namespace Tests.Core
                 {
                     foreach (var column in table.Columns)
                     {
-                        if (!string.IsNullOrEmpty(column.SqlTypeName) && !dataSource.DatabaseMetadata.UnsupportedSqlTypeNames.Contains(column.SqlTypeName))
+                        if (!string.IsNullOrEmpty(column.TypeName) && !dataSource.DatabaseMetadata.UnsupportedSqlTypeNames.Contains(column.TypeName))
                         {
-                            Assert.IsTrue(column.DbType.HasValue, $"Unable to map '{column.SqlTypeName}' to a DbType in table {table.Name} column {column.SqlName}");
+                            Assert.IsTrue(column.DbType.HasValue, $"Unable to map '{column.TypeName}' to a DbType in table {table.Name} column {column.SqlName}");
                         }
                     }
                 }
@@ -159,7 +163,7 @@ namespace Tests.Core
         }
 
         [Theory, MemberData(nameof(Basic))]
-        public void SqlTypeNameToDbType_Views(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void SqlTypeNameToDbType_Views(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -170,9 +174,9 @@ namespace Tests.Core
                 {
                     foreach (var column in view.Columns)
                     {
-                        if (!string.IsNullOrEmpty(column.SqlTypeName) && !dataSource.DatabaseMetadata.UnsupportedSqlTypeNames.Contains(column.SqlTypeName))
+                        if (!string.IsNullOrEmpty(column.TypeName) && !dataSource.DatabaseMetadata.UnsupportedSqlTypeNames.Contains(column.TypeName))
                         {
-                            Assert.IsTrue(column.DbType.HasValue, $"Unable to map '{column.SqlTypeName}' to a DbType in view {view.Name} column {column.SqlName}");
+                            Assert.IsTrue(column.DbType.HasValue, $"Unable to map '{column.TypeName}' to a DbType in view {view.Name} column {column.SqlName}");
                         }
                     }
                 }
@@ -186,7 +190,7 @@ namespace Tests.Core
 #if SQL_SERVER || OLE_SQL_SERVER || POSTGRESQL
 
         [Theory, MemberData(nameof(Basic))]
-        public void SqlTypeNameToDbType_TableFunctions(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void SqlTypeNameToDbType_TableFunctions(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -197,16 +201,16 @@ namespace Tests.Core
                 {
                     foreach (var parameter in function.Parameters)
                     {
-                        if (!string.IsNullOrEmpty(parameter.SqlTypeName) && !dataSource.DatabaseMetadata.UnsupportedSqlTypeNames.Contains(parameter.SqlTypeName))
+                        if (!string.IsNullOrEmpty(parameter.TypeName) && !dataSource.DatabaseMetadata.UnsupportedSqlTypeNames.Contains(parameter.TypeName))
                         {
-                            Assert.IsTrue(parameter.DbType.HasValue, $"Unable to map '{parameter.SqlTypeName}' to a DbType in TableFunction {function.Name} parameter {parameter.SqlParameterName}");
+                            Assert.IsTrue(parameter.DbType.HasValue, $"Unable to map '{parameter.TypeName}' to a DbType in TableFunction {function.Name} parameter {parameter.SqlParameterName}");
                         }
                     }
                     foreach (var column in function.Columns)
                     {
-                        if (!string.IsNullOrEmpty(column.SqlTypeName) && !dataSource.DatabaseMetadata.UnsupportedSqlTypeNames.Contains(column.SqlTypeName))
+                        if (!string.IsNullOrEmpty(column.TypeName) && !dataSource.DatabaseMetadata.UnsupportedSqlTypeNames.Contains(column.TypeName))
                         {
-                            Assert.IsTrue(column.DbType.HasValue, $"Unable to map '{column.SqlTypeName}' to a DbType in TableFunction {function.Name} column {column.SqlName}");
+                            Assert.IsTrue(column.DbType.HasValue, $"Unable to map '{column.TypeName}' to a DbType in TableFunction {function.Name} column {column.SqlName}");
                         }
                     }
                 }
@@ -222,7 +226,7 @@ namespace Tests.Core
 #if SQL_SERVER || OLE_SQL_SERVER || POSTGRESQL || MYSQL
 
         [Theory, MemberData(nameof(Basic))]
-        public void SqlTypeNameToDbType_StoredProcedures(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void SqlTypeNameToDbType_StoredProcedures(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -233,9 +237,9 @@ namespace Tests.Core
                 {
                     foreach (var parameter in function.Parameters)
                     {
-                        if (!string.IsNullOrEmpty(parameter.SqlTypeName) && !dataSource.DatabaseMetadata.UnsupportedSqlTypeNames.Contains(parameter.SqlTypeName))
+                        if (!string.IsNullOrEmpty(parameter.TypeName) && !dataSource.DatabaseMetadata.UnsupportedSqlTypeNames.Contains(parameter.TypeName))
                         {
-                            Assert.IsTrue(parameter.DbType.HasValue, $"Unable to map '{parameter.SqlTypeName}' to a DbType in Stored Procedure {function.Name} parameter {parameter.SqlParameterName}");
+                            Assert.IsTrue(parameter.DbType.HasValue, $"Unable to map '{parameter.TypeName}' to a DbType in Stored Procedure {function.Name} parameter {parameter.SqlParameterName}");
                         }
                     }
                 }
@@ -251,7 +255,7 @@ namespace Tests.Core
 #if SQL_SERVER || OLE_SQL_SERVER || POSTGRESQL || MYSQL
 
         [Theory, MemberData(nameof(Basic))]
-        public void SqlTypeNameToDbType_ScalarFunctions(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void SqlTypeNameToDbType_ScalarFunctions(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -262,15 +266,15 @@ namespace Tests.Core
                 {
                     foreach (var parameter in function.Parameters)
                     {
-                        if (!string.IsNullOrEmpty(parameter.SqlTypeName) && !dataSource.DatabaseMetadata.UnsupportedSqlTypeNames.Contains(parameter.SqlTypeName))
+                        if (!string.IsNullOrEmpty(parameter.TypeName) && !dataSource.DatabaseMetadata.UnsupportedSqlTypeNames.Contains(parameter.TypeName))
                         {
-                            Assert.IsTrue(parameter.DbType.HasValue, $"Unable to map '{parameter.SqlTypeName}' to a DbType in Table Function {function.Name} parameter {parameter.SqlParameterName}");
+                            Assert.IsTrue(parameter.DbType.HasValue, $"Unable to map '{parameter.TypeName}' to a DbType in Table Function {function.Name} parameter {parameter.SqlParameterName}");
                         }
                     }
 
-                    if (!string.IsNullOrEmpty(function.SqlTypeName) && !dataSource.DatabaseMetadata.UnsupportedSqlTypeNames.Contains(function.SqlTypeName))
+                    if (!string.IsNullOrEmpty(function.TypeName) && !dataSource.DatabaseMetadata.UnsupportedSqlTypeNames.Contains(function.TypeName))
                     {
-                        Assert.IsTrue(function.DbType.HasValue, $"Unable to map '{function.SqlTypeName}' to a DbType in Scalar Function {function.Name} return type");
+                        Assert.IsTrue(function.DbType.HasValue, $"Unable to map '{function.TypeName}' to a DbType in Scalar Function {function.Name} return type");
                     }
                 }
             }
@@ -283,7 +287,7 @@ namespace Tests.Core
 #endif
 
         [Theory, MemberData(nameof(Tables))]
-        public void TryGetTable(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
+        public void TryGetTable(string dataSourceName, DataSourceType mode, string tableName)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -301,7 +305,7 @@ namespace Tests.Core
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void TryGetTable_Failed(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void TryGetTable_Failed(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -318,7 +322,7 @@ namespace Tests.Core
         }
 
         [Theory, MemberData(nameof(Tables))]
-        public void GetTable(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
+        public void GetTable(string dataSourceName, DataSourceType mode, string tableName)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -334,16 +338,43 @@ namespace Tests.Core
             }
         }
 
-        [Theory, MemberData(nameof(Views))]
-        public void GetView(string assemblyName, string dataSourceName, DataSourceType mode, string viewName)
+        [Theory, MemberData(nameof(TablesNormal))]
+        public void BuildDto(string dataSourceName, DataSourceType mode, string tableName)
         {
+            //this isn't building a real DTO, just exercising some of the functionality
             var dataSource = DataSource(dataSourceName, mode);
             try
             {
                 dataSource.DatabaseMetadata.Reset();
-                var table = dataSource.DatabaseMetadata.GetTableOrView(viewName);
-                Assert.Equal(viewName, table.Name.ToString());
-                Assert.NotEmpty(table.Columns);
+                var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
+
+                var targetFolder = GetOutputFolder("DTO\\");
+                var output = new StringBuilder();
+                output.AppendLine("namespace Test.Dto");
+                output.AppendLine("{");
+                output.AppendLine("    public class " + table.Name);
+                output.AppendLine("    {");
+
+                foreach (var column in table.Columns)
+                {
+                    output.AppendLine();
+
+                    if (column.IsPrimaryKey)
+                        output.AppendLine("    " + "    " + "[Key]");
+
+                    output.AppendLine("    " + "    " + $"[Column(\"{column.SqlName}\", TypeName = \"{column.FullTypeName}\")]");
+                    if (column.MaxLength > 0)
+                        output.AppendLine("    " + "    " + $"[MaxLength({column.MaxLength})]");
+
+                    output.AppendLine("    " + "    " + $"public {column.ClrTypeName(NameGenerationOptions.CSharp)} {column.ClrName} " + "{ get; set; }");
+
+                    output.AppendLine();
+                }
+
+                output.AppendLine("    }");
+                output.AppendLine("}");
+
+                System.IO.File.WriteAllText(System.IO.Path.Combine(targetFolder.FullName, table.Name.ToString() + ".cs"), output.ToString());
             }
             finally
             {
@@ -352,7 +383,7 @@ namespace Tests.Core
         }
 
         [Theory, MemberData(nameof(Tables))]
-        public void GetTable_LowerCase(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
+        public void GetTable_LowerCase(string dataSourceName, DataSourceType mode, string tableName)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -369,7 +400,7 @@ namespace Tests.Core
         }
 
         [Theory, MemberData(nameof(Tables))]
-        public void GetTable_UpperCase(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
+        public void GetTable_UpperCase(string dataSourceName, DataSourceType mode, string tableName)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -386,7 +417,7 @@ namespace Tests.Core
         }
 
         [Theory, MemberData(nameof(Views))]
-        public void GetView(string assemblyName, string dataSourceName, DataSourceType mode, string viewName)
+        public void GetView(string dataSourceName, DataSourceType mode, string viewName)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -405,7 +436,7 @@ namespace Tests.Core
 #if SQL_SERVER || POSTGRESQL || OLE_SQL_SERVER
 
         [Theory, MemberData(nameof(Prime))]
-        public void VerifyFunction1(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void VerifyFunction1(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -425,7 +456,7 @@ namespace Tests.Core
 #if POSTGRESQL
 
         [Theory, MemberData(nameof(Prime))]
-        public void GetTableWithDefaultSchema(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void GetTableWithDefaultSchema(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -441,7 +472,7 @@ namespace Tests.Core
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void GetSchemaList(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void GetSchemaList(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -469,7 +500,7 @@ namespace Tests.Core
 #if SQL_SERVER || OLE_SQL_SERVER
 
         [Theory, MemberData(nameof(Prime))]
-        public void VerifyFunction2(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void VerifyFunction2(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try

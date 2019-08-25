@@ -73,7 +73,7 @@ namespace Tortuga.Chain.Metadata
         /// <param name="isComputed">if set to <c>true</c> is a computed column.</param>
         /// <param name="isPrimaryKey">if set to <c>true</c> is a primary key.</param>
         /// <param name="isIdentity">if set to <c>true</c> [is identity].</param>
-        /// <param name="sqlTypeName">Name of the type.</param>
+        /// <param name="typeName">Name of the type.</param>
         /// <param name="dbType">Type used by the database.</param>
         /// <param name="quotedSqlName">Name of the quoted SQL.</param>
         /// <param name="isNullable">Indicates if the column is nullable.</param>
@@ -82,9 +82,9 @@ namespace Tortuga.Chain.Metadata
         /// <param name="scale">The scale.</param>
         /// <param name="fullTypeName">Full name of the type.</param>
         /// <param name="clrType">The CLR type that matches this column's database type.</param>
-        protected ColumnMetadata(string name, bool isComputed, bool isPrimaryKey, bool isIdentity, string sqlTypeName, object dbType, string quotedSqlName, bool? isNullable, int? maxLength, int? precision, int? scale, string fullTypeName, Type clrType)
+        protected ColumnMetadata(string name, bool isComputed, bool isPrimaryKey, bool isIdentity, string typeName, object dbType, string quotedSqlName, bool? isNullable, int? maxLength, int? precision, int? scale, string fullTypeName, Type clrType)
         {
-            SqlTypeName = sqlTypeName;
+            TypeName = typeName;
             SqlName = name;
             IsComputed = isComputed;
             IsPrimaryKey = isPrimaryKey;
@@ -193,15 +193,15 @@ namespace Tortuga.Chain.Metadata
         public string SqlName { get; }
 
         /// <summary>
-        /// Gets the name of the type as known to the database.
-        /// </summary>
-        /// <value>The name of the type as known to the database.</value>
-        public string SqlTypeName { get; }
-
-        /// <summary>
         /// Gets the column, formatted as a SQL variable.
         /// </summary>
         public string SqlVariableName { get; }
+
+        /// <summary>
+        /// Gets the name of the type as known to the database.
+        /// </summary>
+        /// <value>The name of the type as known to the database.</value>
+        public string TypeName { get; }
 
         /// <summary>
         /// Returns the CLR Type name suitable for code generation scenarios.

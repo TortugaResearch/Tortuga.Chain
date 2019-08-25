@@ -237,9 +237,9 @@ namespace Tortuga.Chain.SqlServer
         }
 
         [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
-        internal static void AdjustTypeDetails(string sqlTypeName, ref int? maxLength, ref int? precision, ref int? scale, out string fullTypeName)
+        internal static void AdjustTypeDetails(string typeName, ref int? maxLength, ref int? precision, ref int? scale, out string fullTypeName)
         {
-            switch (sqlTypeName)
+            switch (typeName)
             {
                 case "bigint":
                 case "bit":
@@ -255,14 +255,14 @@ namespace Tortuga.Chain.SqlServer
                     maxLength = null;
                     precision = null;
                     scale = null;
-                    fullTypeName = sqlTypeName;
+                    fullTypeName = typeName;
                     break;
 
                 case "binary":
                 case "char":
                     precision = null;
                     scale = null;
-                    fullTypeName = $"{sqlTypeName}({maxLength})";
+                    fullTypeName = $"{typeName}({maxLength})";
                     break;
 
                 case "datetime2":
@@ -270,12 +270,12 @@ namespace Tortuga.Chain.SqlServer
                 case "time":
                     maxLength = null;
                     precision = null;
-                    fullTypeName = $"{sqlTypeName}({scale})";
+                    fullTypeName = $"{typeName}({scale})";
                     break;
 
                 case "numeric":
                 case "decimal":
-                    fullTypeName = $"{sqlTypeName}({precision},{scale})";
+                    fullTypeName = $"{typeName}({precision},{scale})";
                     break;
 
                 case "nchar":
@@ -300,9 +300,9 @@ namespace Tortuga.Chain.SqlServer
                     precision = null;
                     scale = null;
                     if (maxLength > 0)
-                        fullTypeName = $"{sqlTypeName}({maxLength})";
+                        fullTypeName = $"{typeName}({maxLength})";
                     else
-                        fullTypeName = $"{sqlTypeName}(max)";
+                        fullTypeName = $"{typeName}(max)";
                     break;
 
                 default:
@@ -312,7 +312,7 @@ namespace Tortuga.Chain.SqlServer
                         precision = 0;
                     if (scale <= 0)
                         scale = 0;
-                    fullTypeName = sqlTypeName;
+                    fullTypeName = typeName;
                     break;
             }
         }

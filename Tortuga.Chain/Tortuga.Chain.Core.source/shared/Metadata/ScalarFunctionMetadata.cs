@@ -73,6 +73,6 @@ namespace Tortuga.Chain.Metadata
         /// Gets the name of the type.
         /// </summary>
         /// <value>The name of the type.</value>
-        public string SqlTypeName { get; protected set; }
+        public string TypeName { get; protected set; }
     }
 }

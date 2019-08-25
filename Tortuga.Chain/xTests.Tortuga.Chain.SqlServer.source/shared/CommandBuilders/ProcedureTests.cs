@@ -50,7 +50,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void Proc1_Object(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void Proc1_Object(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource2(dataSourceName, mode);
             try
@@ -71,7 +71,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public async Task Proc1_Object_Async(string assemblyName, string dataSourceName, DataSourceType mode)
+        public async Task Proc1_Object_Async(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource2(dataSourceName, mode);
             try
@@ -92,7 +92,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void Proc1_Dictionary(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void Proc1_Dictionary(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource2(dataSourceName, mode);
             try
@@ -113,7 +113,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public async Task Proc1_Dictionary_Async(string assemblyName, string dataSourceName, DataSourceType mode)
+        public async Task Proc1_Dictionary_Async(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource2(dataSourceName, mode);
             try
@@ -135,7 +135,7 @@ namespace Tests.CommandBuilders
 #if !MYSQL
 
         [Theory, MemberData(nameof(Prime))]
-        public void Proc1_Dictionary2(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void Proc1_Dictionary2(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource2(dataSourceName, mode);
             try
@@ -159,7 +159,7 @@ namespace Tests.CommandBuilders
 #if !MYSQL
 
         [Theory, MemberData(nameof(Prime))]
-        public async Task Proc1_Dictionary2_Async(string assemblyName, string dataSourceName, DataSourceType mode)
+        public async Task Proc1_Dictionary2_Async(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource2(dataSourceName, mode);
             try
@@ -181,7 +181,7 @@ namespace Tests.CommandBuilders
 #endif
 
         [Theory, MemberData(nameof(Prime))]
-        public async Task Proc1_ToCollectionSet(string assemblyName, string dataSourceName, DataSourceType mode)
+        public async Task Proc1_ToCollectionSet(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource2(dataSourceName, mode);
             try
@@ -200,7 +200,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(PrimeWithJoinOptions))]
-        public async Task Proc1_ToCollectionSet_Join_Expression_1(string assemblyName, string dataSourceName, DataSourceType mode, JoinOptions options)
+        public async Task Proc1_ToCollectionSet_Join_Expression_1(string dataSourceName, DataSourceType mode, JoinOptions options)
         {
             var dataSource = DataSource2(dataSourceName, mode);
             try
@@ -219,7 +219,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(PrimeWithJoinOptions))]
-        public async Task Proc1_ToCollectionSet_Join_Expression_2(string assemblyName, string dataSourceName, DataSourceType mode, JoinOptions options)
+        public async Task Proc1_ToCollectionSet_Join_Expression_2(string dataSourceName, DataSourceType mode, JoinOptions options)
         {
             var dataSource = DataSource2(dataSourceName, mode);
             try
@@ -238,7 +238,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(PrimeWithJoinOptions))]
-        public async Task Proc1_ToCollectionSet_Join_Keys_1(string assemblyName, string dataSourceName, DataSourceType mode, JoinOptions options)
+        public async Task Proc1_ToCollectionSet_Join_Keys_1(string dataSourceName, DataSourceType mode, JoinOptions options)
         {
             var dataSource = DataSource2(dataSourceName, mode);
             try
@@ -257,7 +257,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(PrimeWithJoinOptions))]
-        public async Task Proc1_ToCollectionSet_Join_Keys_2(string assemblyName, string dataSourceName, DataSourceType mode, JoinOptions options)
+        public async Task Proc1_ToCollectionSet_Join_Keys_2(string dataSourceName, DataSourceType mode, JoinOptions options)
         {
             var dataSource = DataSource2(dataSourceName, mode);
             try
@@ -276,7 +276,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(PrimeWithJoinOptions))]
-        public async Task Proc1_ToCollectionSet_Join_Keys_3(string assemblyName, string dataSourceName, DataSourceType mode, JoinOptions options)
+        public async Task Proc1_ToCollectionSet_Join_Keys_3(string dataSourceName, DataSourceType mode, JoinOptions options)
         {
             var dataSource = DataSource2(dataSourceName, mode);
             try
@@ -295,7 +295,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(PrimeWithJoinOptions))]
-        public async Task Proc1_ToCollectionSet_Join_Keys_4(string assemblyName, string dataSourceName, DataSourceType mode, JoinOptions options)
+        public async Task Proc1_ToCollectionSet_Join_Keys_4(string dataSourceName, DataSourceType mode, JoinOptions options)
         {
             var dataSource = DataSource2(dataSourceName, mode);
             try
@@ -314,7 +314,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void Proc1_Object_DataSet(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void Proc1_Object_DataSet(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource2(dataSourceName, mode);
             try
@@ -334,7 +334,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public async Task Proc1_Object_Async_DataSet(string assemblyName, string dataSourceName, DataSourceType mode)
+        public async Task Proc1_Object_Async_DataSet(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource2(dataSourceName, mode);
             try
@@ -354,7 +354,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void Proc1_Dictionary_DataSet(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void Proc1_Dictionary_DataSet(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource2(dataSourceName, mode);
             try
@@ -374,7 +374,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public async Task Proc1_Dictionary_Async_DataSet(string assemblyName, string dataSourceName, DataSourceType mode)
+        public async Task Proc1_Dictionary_Async_DataSet(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource2(dataSourceName, mode);
             try
@@ -396,7 +396,7 @@ namespace Tests.CommandBuilders
 #if !MYSQL
 
         [Theory, MemberData(nameof(Prime))]
-        public void Proc1_Dictionary2_DataSet(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void Proc1_Dictionary2_DataSet(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource2(dataSourceName, mode);
             try
@@ -420,7 +420,7 @@ namespace Tests.CommandBuilders
 #if !MYSQL
 
         [Theory, MemberData(nameof(Prime))]
-        public async Task Proc1_Dictionary2_Async_DataSet(string assemblyName, string dataSourceName, DataSourceType mode)
+        public async Task Proc1_Dictionary2_Async_DataSet(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource2(dataSourceName, mode);
             try

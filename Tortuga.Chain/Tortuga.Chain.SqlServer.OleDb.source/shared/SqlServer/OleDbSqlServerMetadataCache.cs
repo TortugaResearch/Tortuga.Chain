@@ -318,7 +318,7 @@ namespace Tortuga.Chain.SqlServer
             int objectId;
 
             string fullTypeName;
-            string sqlTypeName;
+            string typeName;
             bool isNullable;
             int? maxLength;
             int? precision;
@@ -339,12 +339,12 @@ namespace Tortuga.Chain.SqlServer
                         actualName = reader.GetString("Name");
                         objectId = reader.GetInt32("ObjectId");
 
-                        sqlTypeName = reader.GetStringOrNull("TypeName");
+                        typeName = reader.GetStringOrNull("TypeName");
                         isNullable = reader.GetBoolean("is_nullable");
                         maxLength = reader.GetInt32OrNull("max_length");
                         precision = reader.GetInt32OrNull("precision");
                         scale = reader.GetInt32OrNull("scale");
-                        AdjustTypeDetails(sqlTypeName, ref maxLength, ref precision, ref scale, out fullTypeName);
+                        AdjustTypeDetails(typeName, ref maxLength, ref precision, ref scale, out fullTypeName);
                     }
                 }
             }
@@ -352,7 +352,7 @@ namespace Tortuga.Chain.SqlServer
 
             var parameters = GetParameters(objectName.ToString(), objectId);
 
-            return new ScalarFunctionMetadata<SqlServerObjectName, OleDbType>(objectName, parameters, sqlTypeName, SqlTypeNameToDbType(sqlTypeName), isNullable, maxLength, precision, scale, fullTypeName);
+            return new ScalarFunctionMetadata<SqlServerObjectName, OleDbType>(objectName, parameters, typeName, SqlTypeNameToDbType(typeName), isNullable, maxLength, precision, scale, fullTypeName);
         }
 
         internal StoredProcedureMetadata<SqlServerObjectName, OleDbType> GetStoredProcedureInternal(SqlServerObjectName procedureName)
@@ -570,14 +570,14 @@ WHERE	s.name = ? AND t.name = ?;";
         /// <summary>
         /// Determines the database column type from the column type name.
         /// </summary>
-        /// <param name="sqlTypeName">Name of the database column type.</param>
+        /// <param name="typeName">Name of the database column type.</param>
         /// <param name="isUnsigned">NOT USED</param>
         /// <returns></returns>
         /// <remarks>This does not honor registered types. This is only used for the database's hard-coded list of native types.</remarks>
         [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
-        protected override OleDbType? SqlTypeNameToDbType(string sqlTypeName, bool? isUnsigned = null)
+        protected override OleDbType? SqlTypeNameToDbType(string typeName, bool? isUnsigned = null)
         {
-            switch (sqlTypeName)
+            switch (typeName)
             {
                 case "bigint": return OleDbType.BigInt;
                 case "binary": return OleDbType.Binary;
@@ -667,15 +667,15 @@ WHERE	s.name = ? AND t.name = ?;";
                             var computed = reader.GetBoolean("is_computed");
                             var primary = reader.GetBoolean("is_primary_key");
                             var isIdentity = reader.GetBoolean("is_identity");
-                            var sqlTypeName = reader.GetStringOrNull("TypeName");
+                            var typeName = reader.GetStringOrNull("TypeName");
                             var isNullable = reader.GetBoolean("is_nullable");
                             int? maxLength = reader.GetInt32OrNull("max_length");
                             int? precision = reader.GetInt32OrNull("precision");
                             int? scale = reader.GetInt32OrNull("scale");
                             string fullTypeName;
-                            AdjustTypeDetails(sqlTypeName, ref maxLength, ref precision, ref scale, out fullTypeName);
+                            AdjustTypeDetails(typeName, ref maxLength, ref precision, ref scale, out fullTypeName);
 
-                            columns.Add(new ColumnMetadata<OleDbType>(name, computed, primary, isIdentity, sqlTypeName, SqlTypeNameToDbType(sqlTypeName), "[" + name + "]", isNullable, maxLength, precision, scale, fullTypeName, ToClrType(sqlTypeName, isNullable, maxLength)));
+                            columns.Add(new ColumnMetadata<OleDbType>(name, computed, primary, isIdentity, typeName, SqlTypeNameToDbType(typeName), "[" + name + "]", isNullable, maxLength, precision, scale, fullTypeName, ToClrType(typeName, isNullable, maxLength)));
                         }
                     }
                 }
@@ -716,15 +716,15 @@ WHERE	s.name = ? AND t.name = ?;";
                             while (reader.Read())
                             {
                                 var name = reader.GetString("ParameterName");
-                                var sqlTypeName = reader.GetString("TypeName");
+                                var typeName = reader.GetString("TypeName");
                                 bool isNullable = true;
                                 int? maxLength = reader.GetInt32OrNull("max_length");
                                 int? precision = reader.GetInt32OrNull("precision");
                                 int? scale = reader.GetInt32OrNull("scale");
                                 string fullTypeName;
-                                AdjustTypeDetails(sqlTypeName, ref maxLength, ref precision, ref scale, out fullTypeName);
+                                AdjustTypeDetails(typeName, ref maxLength, ref precision, ref scale, out fullTypeName);
 
-                                parameters.Add(new ParameterMetadata<OleDbType>(name, name, sqlTypeName, SqlTypeNameToDbType(sqlTypeName), isNullable, maxLength, precision, scale, fullTypeName));
+                                parameters.Add(new ParameterMetadata<OleDbType>(name, name, typeName, SqlTypeNameToDbType(typeName), isNullable, maxLength, precision, scale, fullTypeName));
                             }
                         }
                     }

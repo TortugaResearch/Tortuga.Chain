@@ -12,9 +12,9 @@ namespace Tortuga.Chain.Metadata
         /// </summary>
         /// <param name="sqlParameterName">Name of the SQL parameter.</param>
         /// <param name="sqlVariableName">Name of the SQL variable.</param>
-        /// <param name="sqlTypeName">Name of the type as known to the database.</param>
+        /// <param name="typeName">Name of the type as known to the database.</param>
         /// <param name="dbType">Type of the database column as an enum.</param>
-        public ParameterMetadata(string sqlParameterName, string sqlVariableName, string sqlTypeName, TDbType? dbType) : base(sqlParameterName, sqlVariableName, sqlTypeName, dbType)
+        public ParameterMetadata(string sqlParameterName, string sqlVariableName, string typeName, TDbType? dbType) : base(sqlParameterName, sqlVariableName, typeName, dbType)
         {
             DbType = dbType;
         }
@@ -24,14 +24,14 @@ namespace Tortuga.Chain.Metadata
         /// </summary>
         /// <param name="sqlParameterName">Name of the SQL parameter.</param>
         /// <param name="sqlVariableName">Name of the SQL variable.</param>
-        /// <param name="sqlTypeName">Name of the type as known to the database.</param>
+        /// <param name="typeName">Name of the type as known to the database.</param>
         /// <param name="dbType">Type of the database column as an enum.</param>
         /// <param name="isNullable">if set to <c>true</c> [is nullable].</param>
         /// <param name="maxLength">The maximum length.</param>
         /// <param name="precision">The precision.</param>
         /// <param name="scale">The scale.</param>
         /// <param name="fullTypeName">Full name of the type.</param>
-        public ParameterMetadata(string sqlParameterName, string sqlVariableName, string sqlTypeName, TDbType? dbType, bool? isNullable, int? maxLength, int? precision, int? scale, string fullTypeName) : base(sqlParameterName, sqlVariableName, sqlTypeName, dbType, isNullable, maxLength, precision, scale, fullTypeName)
+        public ParameterMetadata(string sqlParameterName, string sqlVariableName, string typeName, TDbType? dbType, bool? isNullable, int? maxLength, int? precision, int? scale, string fullTypeName) : base(sqlParameterName, sqlVariableName, typeName, dbType, isNullable, maxLength, precision, scale, fullTypeName)
         {
             DbType = dbType;
         }

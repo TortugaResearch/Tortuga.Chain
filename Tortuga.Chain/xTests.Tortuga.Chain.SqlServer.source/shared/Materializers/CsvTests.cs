@@ -10,7 +10,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void SerializeToString(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void SerializeToString(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -41,7 +41,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public async Task SerializeToStringAsync(string assemblyName, string dataSourceName, DataSourceType mode)
+        public async Task SerializeToStringAsync(string dataSourceName, DataSourceType mode)
         {
             var dataSource = await DataSourceAsync(dataSourceName, mode);
             try

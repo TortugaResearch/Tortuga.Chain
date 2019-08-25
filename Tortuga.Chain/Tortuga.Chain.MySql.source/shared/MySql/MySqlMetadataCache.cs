@@ -361,17 +361,17 @@ namespace Tortuga.Chain.MySql
         /// <summary>
         /// Determines the database column type from the column type name.
         /// </summary>
-        /// <param name="sqlTypeName">Name of the database column type.</param>
+        /// <param name="typeName">Name of the database column type.</param>
         /// <param name="isUnsigned">Indicates whether or not the column is unsigned. Only applicable to some databases.</param>
         /// <returns></returns>
         /// <remarks>This does not honor registered types. This is only used for the database's hard-coded list of native types.</remarks>
         [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
-        protected override MySqlDbType? SqlTypeNameToDbType(string sqlTypeName, bool? isUnsigned)
+        protected override MySqlDbType? SqlTypeNameToDbType(string typeName, bool? isUnsigned)
         {
-            if (string.IsNullOrEmpty(sqlTypeName))
+            if (string.IsNullOrEmpty(typeName))
                 return null;
 
-            switch (sqlTypeName.ToUpperInvariant())
+            switch (typeName.ToUpperInvariant())
             {
                 case "INT1":
                 case "BOOL":
@@ -561,7 +561,7 @@ namespace Tortuga.Chain.MySql
                             var name = reader.GetString("COLUMN_NAME");
                             //var @default = reader.GetStringOrNull("COLUMN_DEFAULT"); #226
                             var isNullable = string.Equals(reader.GetString("IS_NULLABLE"), "YES", StringComparison.Ordinal);
-                            var sqlTypeName = reader.GetString("DATA_TYPE");
+                            var typeName = reader.GetString("DATA_TYPE");
                             var maxLength = reader.GetUInt64OrNull("CHARACTER_MAXIMUM_LENGTH");
                             var precisionA = reader.GetInt32OrNull("NUMERIC_PRECISION");
                             var scale = reader.GetInt32OrNull("NUMERIC_SCALE");
@@ -578,9 +578,9 @@ namespace Tortuga.Chain.MySql
                             var isIdentity = extra.Contains("auto_increment");
                             var isUnsigned = fullTypeName.Contains("unsigned");
 
-                            var dbType = SqlTypeNameToDbType(sqlTypeName, isUnsigned);
+                            var dbType = SqlTypeNameToDbType(typeName, isUnsigned);
 
-                            columns.Add(new ColumnMetadata<MySqlDbType>(name, computed, primary, isIdentity, sqlTypeName, dbType, "`" + name + "`", isNullable, (int?)maxLength, precision, scale, fullTypeName, ToClrType(sqlTypeName, isNullable, (int?)maxLength, isUnsigned)));
+                            columns.Add(new ColumnMetadata<MySqlDbType>(name, computed, primary, isIdentity, typeName, dbType, "`" + name + "`", isNullable, (int?)maxLength, precision, scale, fullTypeName, ToClrType(typeName, isNullable, (int?)maxLength, isUnsigned)));
                         }
                     }
                 }
@@ -612,7 +612,7 @@ namespace Tortuga.Chain.MySql
                             while (reader.Read())
                             {
                                 var name = reader.GetString("PARAMETER_NAME");
-                                var sqlTypeName = reader.GetString("DATA_TYPE");
+                                var typeName = reader.GetString("DATA_TYPE");
                                 bool isNullable = true;
                                 var maxLength = reader.GetUInt64OrNull("CHARACTER_MAXIMUM_LENGTH");
                                 var precisionA = reader.GetInt32OrNull("NUMERIC_PRECISION");
@@ -622,9 +622,9 @@ namespace Tortuga.Chain.MySql
                                 var fullTypeName = reader.GetString("DTD_IDENTIFIER");
 
                                 var isUnsigned = fullTypeName.Contains("unsigned");
-                                var dbType = SqlTypeNameToDbType(sqlTypeName, isUnsigned);
+                                var dbType = SqlTypeNameToDbType(typeName, isUnsigned);
 
-                                parameters.Add(new ParameterMetadata<MySqlDbType>(name, name, sqlTypeName, dbType, isNullable, (int?)maxLength, precision, scale, fullTypeName));
+                                parameters.Add(new ParameterMetadata<MySqlDbType>(name, name, typeName, dbType, isNullable, (int?)maxLength, precision, scale, fullTypeName));
                             }
                         }
                     }
@@ -645,7 +645,7 @@ namespace Tortuga.Chain.MySql
             string actualName;
 
             string fullTypeName;
-            string sqlTypeName;
+            string typeName;
             UInt64? maxLength;
             int? precision;
             int? scale;
@@ -666,7 +666,7 @@ namespace Tortuga.Chain.MySql
                         actualSchema = reader.GetString("ROUTINE_SCHEMA");
                         actualName = reader.GetString("ROUTINE_NAME");
 
-                        sqlTypeName = reader.GetString("DATA_TYPE");
+                        typeName = reader.GetString("DATA_TYPE");
                         maxLength = reader.GetUInt64OrNull("CHARACTER_MAXIMUM_LENGTH");
                         var precisionA = reader.GetInt32OrNull("NUMERIC_PRECISION");
                         scale = reader.GetInt32OrNull("NUMERIC_SCALE");
@@ -676,7 +676,7 @@ namespace Tortuga.Chain.MySql
                         specificName = reader.GetString("SPECIFIC_NAME");
 
                         var isUnsigned = fullTypeName.Contains("unsigned");
-                        dbType = SqlTypeNameToDbType(sqlTypeName, isUnsigned);
+                        dbType = SqlTypeNameToDbType(typeName, isUnsigned);
                     }
                 }
             }
@@ -685,7 +685,7 @@ namespace Tortuga.Chain.MySql
 
             var parameters = GetParameters(actualSchema, specificName);
 
-            return new ScalarFunctionMetadata<MySqlObjectName, MySqlDbType>(objectName, parameters, sqlTypeName, dbType, true, (int?)maxLength, precision, scale, fullTypeName);
+            return new ScalarFunctionMetadata<MySqlObjectName, MySqlDbType>(objectName, parameters, typeName, dbType, true, (int?)maxLength, precision, scale, fullTypeName);
         }
 
         private StoredProcedureMetadata<MySqlObjectName, MySqlDbType> GetStoredProcedureInteral(MySqlObjectName storedProcedureName)

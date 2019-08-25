@@ -238,14 +238,14 @@ namespace Tortuga.Chain.SQLite
         /// <summary>
         /// Determines the database column type from the column type name.
         /// </summary>
-        /// <param name="sqlTypeName">Name of the database column type.</param>
+        /// <param name="typeName">Name of the database column type.</param>
         /// <param name="isUnsigned">NOT USED</param>
         /// <returns></returns>
         /// <remarks>This does not honor registered types. This is only used for the database's hard-coded list of native types.</remarks>
         [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
-        protected override DbType? SqlTypeNameToDbType(string sqlTypeName, bool? isUnsigned = null)
+        protected override DbType? SqlTypeNameToDbType(string typeName, bool? isUnsigned = null)
         {
-            var cleanTypeName = sqlTypeName.ToUpperInvariant();
+            var cleanTypeName = typeName.ToUpperInvariant();
             if (cleanTypeName.IndexOf("(", StringComparison.OrdinalIgnoreCase) >= 0)
                 cleanTypeName = cleanTypeName.Substring(0, cleanTypeName.IndexOf("(", StringComparison.OrdinalIgnoreCase));
 
@@ -306,12 +306,12 @@ namespace Tortuga.Chain.SQLite
                         while (reader.Read())
                         {
                             var name = reader.GetString("name");
-                            var sqlTypeName = reader.GetString("type");
+                            var typeName = reader.GetString("type");
                             var isPrimaryKey = reader.GetInt32("pk") != 0 ? true : false;
                             var isnNullable = !reader.GetBoolean("notnull");
                             hasPrimarykey = hasPrimarykey || isPrimaryKey;
 
-                            columns.Add(new ColumnMetadata<DbType>(name, false, isPrimaryKey, false, sqlTypeName, SqlTypeNameToDbType(sqlTypeName), "[" + name + "]", isnNullable, null, null, null, null, ToClrType(sqlTypeName, isnNullable, null)));
+                            columns.Add(new ColumnMetadata<DbType>(name, false, isPrimaryKey, false, typeName, SqlTypeNameToDbType(typeName), "[" + name + "]", isnNullable, null, null, null, null, ToClrType(typeName, isnNullable, null)));
                         }
                     }
                 }

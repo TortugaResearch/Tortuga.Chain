@@ -13,7 +13,7 @@ namespace Tests.Core
         }
 
         [Theory, MemberData(nameof(Root))]
-        public void FK_Disabled(string assemblyName, string dataSourceName)
+        public void FK_Disabled(string dataSourceName)
         {
             var dataSource = DataSource(dataSourceName).WithSettings(new SQLiteDataSourceSettings() { EnforceForeignKeys = false });
             try
@@ -27,7 +27,7 @@ namespace Tests.Core
         }
 
         [Theory, MemberData(nameof(Root))]
-        public void FK_Enabled(string assemblyName, string dataSourceName)
+        public void FK_Enabled(string dataSourceName)
         {
             var dataSource = DataSource(dataSourceName).WithSettings(new SQLiteDataSourceSettings() { EnforceForeignKeys = true });
             try

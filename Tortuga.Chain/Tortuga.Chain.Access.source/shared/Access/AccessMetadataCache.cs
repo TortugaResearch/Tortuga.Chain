@@ -168,13 +168,13 @@ namespace Tortuga.Chain.Access
         /// <summary>
         /// Determines the database column type from the column type name.
         /// </summary>
-        /// <param name="sqlTypeName">Name of the database column type.</param>
+        /// <param name="typeName">Name of the database column type.</param>
         /// <param name="isUnsigned">NOT USED</param>
         /// <returns></returns>
         /// <remarks>This does not honor registered types. This is only used for the database's hard-coded list of native types.</remarks>
-        protected override OleDbType? SqlTypeNameToDbType(string sqlTypeName, bool? isUnsigned = null)
+        protected override OleDbType? SqlTypeNameToDbType(string typeName, bool? isUnsigned = null)
         {
-            if (Enum.TryParse<OleDbType>(sqlTypeName, out var result))
+            if (Enum.TryParse<OleDbType>(typeName, out var result))
                 return result;
 
             return null;

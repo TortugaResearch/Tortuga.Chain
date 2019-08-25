@@ -20,7 +20,7 @@ namespace Tests.Appenders
         }
 
         [Theory, MemberData(nameof(Root))]
-        public void SqlServerDataSourceTests_SqlDependency(string assemblyName, string dataSourceName)
+        public void SqlServerDataSourceTests_SqlDependency(string dataSourceName)
         {
             var dataSource = DataSource(dataSourceName);
             try
@@ -36,7 +36,7 @@ namespace Tests.Appenders
         }
 
         [Theory, MemberData(nameof(Root))]
-        public void SqlServerDataSourceTests_WithChangeNotification_Fired(string assemblyName, string dataSourceName)
+        public void SqlServerDataSourceTests_WithChangeNotification_Fired(string dataSourceName)
         {
             int eventCount = 0;
             var dataSource = DataSource(dataSourceName);
@@ -70,7 +70,7 @@ namespace Tests.Appenders
         }
 
         [Theory, MemberData(nameof(Root))]
-        public async Task SqlServerDataSourceTests_WithChangeNotification_Fired_Async(string assemblyName, string dataSourceName)
+        public async Task SqlServerDataSourceTests_WithChangeNotification_Fired_Async(string dataSourceName)
         {
             int eventCount = 0;
             var dataSource = DataSource(dataSourceName);
@@ -105,7 +105,7 @@ namespace Tests.Appenders
         }
 
         [Theory, MemberData(nameof(Root))]
-        public void SqlServerDataSourceTests_WithCaching(string assemblyName, string dataSourceName)
+        public void SqlServerDataSourceTests_WithCaching(string dataSourceName)
         {
             const string CacheKey = "All_Customer";
 

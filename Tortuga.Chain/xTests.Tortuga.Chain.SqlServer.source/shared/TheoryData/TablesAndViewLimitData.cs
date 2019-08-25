@@ -7,8 +7,7 @@ using Xunit;
 
 namespace Tests
 {
-
-    public class TablesAndViewLimitData<TEnum> : TheoryData<string, string, DataSourceType, string, LimitOptions>
+    public class TablesAndViewLimitData<TEnum> : TheoryData<string, DataSourceType, string, LimitOptions>
     {
         public TablesAndViewLimitData(IEnumerable<DataSource> dataSources)
         {
@@ -20,15 +19,13 @@ namespace Tests
                     foreach (var value in Enum.GetValues(typeof(TEnum)))
                     {
                         var castValue = (LimitOptions)value;
-                        Add(TestBase.AssemblyName, ds.Name, DataSourceType.Normal, table.Name, castValue);
-                        Add(TestBase.AssemblyName, ds.Name, DataSourceType.Open, table.Name, castValue);
-                        Add(TestBase.AssemblyName, ds.Name, DataSourceType.Transactional, table.Name, castValue);
-                        Add(TestBase.AssemblyName, ds.Name, DataSourceType.Strict, table.Name, castValue);
+                        Add(ds.Name, DataSourceType.Normal, table.Name, castValue);
+                        Add(ds.Name, DataSourceType.Open, table.Name, castValue);
+                        Add(ds.Name, DataSourceType.Transactional, table.Name, castValue);
+                        Add(ds.Name, DataSourceType.Strict, table.Name, castValue);
                     }
                 }
             }
         }
     }
-
 }
-

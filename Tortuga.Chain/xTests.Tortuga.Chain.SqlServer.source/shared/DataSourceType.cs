@@ -1,5 +1,3 @@
-using System;
-
 namespace Tests
 {
     public enum DataSourceType
@@ -9,5 +7,4 @@ namespace Tests
         Open,
         Strict
     }
-
 }

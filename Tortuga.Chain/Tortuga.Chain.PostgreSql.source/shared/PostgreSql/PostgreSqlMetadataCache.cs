@@ -570,16 +570,16 @@ WHERE ns.nspname = @Schema AND tab.relname = @Name";
         /// <summary>
         /// Determines the database column type from the column type name.
         /// </summary>
-        /// <param name="sqlTypeName">Name of the database column type.</param>
+        /// <param name="typeName">Name of the database column type.</param>
         /// <param name="isUnsigned">NOT USED</param>
         /// <returns></returns>
         /// <remarks>This does not honor registered types. This is only used for the database's hard-coded list of native types.</remarks>
         [SuppressMessage("Microsoft.Maintainability", "CA1505:AvoidUnmaintainableCode")]
         [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
-        protected override NpgsqlDbType? SqlTypeNameToDbType(string sqlTypeName, bool? isUnsigned = null)
+        protected override NpgsqlDbType? SqlTypeNameToDbType(string typeName, bool? isUnsigned = null)
         {
 #pragma warning disable CS0618 // Type or member is obsolete
-            switch (sqlTypeName.ToUpperInvariant().Replace("_", "").Replace("\"", ""))
+            switch (typeName.ToUpperInvariant().Replace("_", "").Replace("\"", ""))
             {
                 case "ABSTIME": return NpgsqlDbType.Abstime;
                 case "ARRAY": return NpgsqlDbType.Array;
@@ -725,13 +725,13 @@ WHERE ns.nspname = @Schema AND tab.relname = @Name";
                         {
                             var parameterName = reader.GetStringOrNull("parameter_name") ?? "Parameter" + reader.GetInt32("ordinal_position");
 
-                            var sqlTypeName = reader.GetString("udt_name");
-                            parameters.Add(new ParameterMetadata<NpgsqlDbType>(parameterName, "@" + parameterName, sqlTypeName, SqlTypeNameToDbType(sqlTypeName)));
+                            var typeName = reader.GetString("udt_name");
+                            parameters.Add(new ParameterMetadata<NpgsqlDbType>(parameterName, "@" + parameterName, typeName, SqlTypeNameToDbType(typeName)));
                         }
                         else
                         {
                             var name = reader.GetString("parameter_name");
-                            var sqlTypeName = reader.GetString("udt_name");
+                            var typeName = reader.GetString("udt_name");
                             bool isPrimary = false;
                             bool isIdentity = false;
                             bool isNullable = true;
@@ -742,7 +742,7 @@ WHERE ns.nspname = @Schema AND tab.relname = @Name";
 
                             //Task-120: Add support for length, precision, and scale
 
-                            columns.Add(new ColumnMetadata<NpgsqlDbType>(name, false, isPrimary, isIdentity, sqlTypeName, SqlTypeNameToDbType(sqlTypeName), "\"" + name + "\"", isNullable, maxLength, precision, scale, fullTypeName, ToClrType(sqlTypeName, isNullable, maxLength)));
+                            columns.Add(new ColumnMetadata<NpgsqlDbType>(name, false, isPrimary, isIdentity, typeName, SqlTypeNameToDbType(typeName), "\"" + name + "\"", isNullable, maxLength, precision, scale, fullTypeName, ToClrType(typeName, isNullable, maxLength)));
                         }
                     }
                 }
@@ -815,7 +815,7 @@ WHERE c.relname ILIKE @Name AND
                     while (reader.Read())
                     {
                         var name = reader.GetString("column_name");
-                        var sqlTypeName = reader.GetString("data_type");
+                        var typeName = reader.GetString("data_type");
                         bool isPrimary = !reader.IsDBNull("is_primary_key");
 
                         var identity_type = char.ToUpperInvariant(reader.GetCharOrNull("is_identity") ?? ' ');
@@ -825,7 +825,7 @@ WHERE c.relname ILIKE @Name AND
 
                         bool isNullable = !reader.GetBoolean("not_null");
 
-                        var dbType = SqlTypeNameToDbType(sqlTypeName);
+                        var dbType = SqlTypeNameToDbType(typeName);
                         var fullTypeName = reader.GetString("data_type_full");
 
                         var match1 = s_DecimalMatcher.Match(fullTypeName);
@@ -861,7 +861,7 @@ WHERE c.relname ILIKE @Name AND
                                 break;
                         }
 
-                        columns.Add(new ColumnMetadata<NpgsqlDbType>(name, false, isPrimary, isIdentity, sqlTypeName, dbType, "\"" + name + "\"", isNullable, maxLength, precision, scale, fullTypeName, ToClrType(sqlTypeName, isNullable, maxLength)));
+                        columns.Add(new ColumnMetadata<NpgsqlDbType>(name, false, isPrimary, isIdentity, typeName, dbType, "\"" + name + "\"", isNullable, maxLength, precision, scale, fullTypeName, ToClrType(typeName, isNullable, maxLength)));
                     }
                 }
             }
@@ -999,7 +999,7 @@ WHERE c.relname ILIKE @Name AND
                     string actualSchema;
                     string actualName;
                     string specificName;
-                    string sqlTypeName;
+                    string typeName;
 
                     using (var cmd = new NpgsqlCommand(functionSql, con))
                     {
@@ -1013,14 +1013,14 @@ WHERE c.relname ILIKE @Name AND
                             actualSchema = reader.GetString("routine_schema");
                             actualName = reader.GetString("routine_name");
                             specificName = reader.GetString("specific_name");
-                            sqlTypeName = reader.GetString("data_type");
+                            typeName = reader.GetString("data_type");
                         }
                     }
 
                     var pAndC = GetParametersAndColumns(specificName, con);
 
                     //Task-120: Add support for length, precision, and scale for return type
-                    return new ScalarFunctionMetadata<PostgreSqlObjectName, NpgsqlDbType>(new PostgreSqlObjectName(actualSchema, actualName), pAndC.Item1, sqlTypeName, SqlTypeNameToDbType(sqlTypeName), true, null, null, null, null);
+                    return new ScalarFunctionMetadata<PostgreSqlObjectName, NpgsqlDbType>(new PostgreSqlObjectName(actualSchema, actualName), pAndC.Item1, typeName, SqlTypeNameToDbType(typeName), true, null, null, null, null);
                 }
             }
 

@@ -4,19 +4,16 @@ using Xunit;
 
 namespace Tests
 {
-
-
-
-    public class BasicData : TheoryData<string, string, DataSourceType>
+    public class BasicData : TheoryData<string, DataSourceType>
     {
         public BasicData(params DataSource[] dataSources)
         {
             foreach (var ds in dataSources)
             {
-                Add(TestBase.AssemblyName, ds.Name, DataSourceType.Normal);
-                Add(TestBase.AssemblyName, ds.Name, DataSourceType.Open);
-                Add(TestBase.AssemblyName, ds.Name, DataSourceType.Transactional);
-                Add(TestBase.AssemblyName, ds.Name, DataSourceType.Strict);
+                Add(ds.Name, DataSourceType.Normal);
+                Add(ds.Name, DataSourceType.Open);
+                Add(ds.Name, DataSourceType.Transactional);
+                Add(ds.Name, DataSourceType.Strict);
             }
         }
 
@@ -24,10 +21,10 @@ namespace Tests
         {
             foreach (var ds in dataSources)
             {
-                Add(TestBase.AssemblyName, ds.Name, DataSourceType.Normal);
-                Add(TestBase.AssemblyName, ds.Name, DataSourceType.Open);
-                Add(TestBase.AssemblyName, ds.Name, DataSourceType.Transactional);
-                Add(TestBase.AssemblyName, ds.Name, DataSourceType.Strict);
+                Add(ds.Name, DataSourceType.Normal);
+                Add(ds.Name, DataSourceType.Open);
+                Add(ds.Name, DataSourceType.Transactional);
+                Add(ds.Name, DataSourceType.Strict);
             }
         }
     }
