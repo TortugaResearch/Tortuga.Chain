@@ -75,6 +75,9 @@
     <Compile Include="..\ProductSharedAssemblyInfo.cs">
       <Link>Properties\ProductSharedAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="..\Shared\DataReaderExtensions.cs">
+      <Link>shared\SqlServer\DataReaderExtensions.cs</Link>
+    </Compile>
     <Compile Include="..\Shared\DataSourceBase.Class0DataSource.cs">
       <Link>shared\SqlServer\DataSourceBase.Class0DataSource.cs</Link>
     </Compile>

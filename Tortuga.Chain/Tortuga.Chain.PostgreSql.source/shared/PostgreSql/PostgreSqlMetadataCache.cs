@@ -8,7 +8,6 @@ using System.Linq;
 using Tortuga.Anchor;
 using Tortuga.Anchor.Metadata;
 using Tortuga.Chain.Metadata;
-using Tortuga.Chain.Metadata.Internal;
 
 namespace Tortuga.Chain.PostgreSql
 {
@@ -616,7 +615,7 @@ WHERE ns.nspname = @Schema AND tab.relname = @Name";
                 {
                     while (reader.Read())
                     {
-                        if (string.Equals(reader.GetString(reader.GetOrdinal("parameter_mode")), "IN", StringComparison.Ordinal))
+                        if (string.Equals(reader.GetString("parameter_mode"), "IN", StringComparison.Ordinal))
                         {
                             var parameterName = reader.GetStringOrNull("parameter_name") ?? "Parameter" + reader.GetInt32("ordinal_position");
 
@@ -892,7 +891,7 @@ where s.relkind='S' and d.deptype='a'";
                                 continue; //try the next schema in the search path
                             actualSchema = reader.GetString("schemaname");
                             actualTableName = reader.GetString("tablename");
-                            var type = reader.GetString(reader.GetOrdinal("type"));
+                            var type = reader.GetString("type");
                             isTable = type.Equals("BASE TABLE", StringComparison.Ordinal);
                         }
                     }

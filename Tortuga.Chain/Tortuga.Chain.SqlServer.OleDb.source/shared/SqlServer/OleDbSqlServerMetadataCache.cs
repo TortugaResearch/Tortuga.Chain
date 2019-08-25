@@ -100,8 +100,8 @@ namespace Tortuga.Chain.SqlServer
                     {
                         while (reader.Read())
                         {
-                            var schema = reader.GetString(reader.GetOrdinal("SchemaName"));
-                            var name = reader.GetString(reader.GetOrdinal("Name"));
+                            var schema = reader.GetString("SchemaName");
+                            var name = reader.GetString("Name");
                             GetScalarFunction(new SqlServerObjectName(schema, name));
                         }
                     }
@@ -130,8 +130,8 @@ namespace Tortuga.Chain.SqlServer
                     {
                         while (reader.Read())
                         {
-                            var schema = reader.GetString(reader.GetOrdinal("SchemaName"));
-                            var name = reader.GetString(reader.GetOrdinal("Name"));
+                            var schema = reader.GetString("SchemaName");
+                            var name = reader.GetString("Name");
                             GetStoredProcedure(new SqlServerObjectName(schema, name));
                         }
                     }
@@ -162,8 +162,8 @@ namespace Tortuga.Chain.SqlServer
                     {
                         while (reader.Read())
                         {
-                            var schema = reader.GetString(reader.GetOrdinal("SchemaName"));
-                            var name = reader.GetString(reader.GetOrdinal("Name"));
+                            var schema = reader.GetString("SchemaName");
+                            var name = reader.GetString("Name");
                             GetTableFunction(new SqlServerObjectName(schema, name));
                         }
                     }
@@ -188,8 +188,8 @@ namespace Tortuga.Chain.SqlServer
                     {
                         while (reader.Read())
                         {
-                            var schema = reader.GetString(reader.GetOrdinal("SchemaName"));
-                            var name = reader.GetString(reader.GetOrdinal("Name"));
+                            var schema = reader.GetString("SchemaName");
+                            var name = reader.GetString("Name");
                             GetTableOrView(new SqlServerObjectName(schema, name));
                         }
                     }
@@ -214,8 +214,8 @@ namespace Tortuga.Chain.SqlServer
                     {
                         while (reader.Read())
                         {
-                            var schema = reader.GetString(reader.GetOrdinal("SchemaName"));
-                            var name = reader.GetString(reader.GetOrdinal("Name"));
+                            var schema = reader.GetString("SchemaName");
+                            var name = reader.GetString("Name");
                             GetUserDefinedType(new SqlServerObjectName(schema, name));
                         }
                     }
@@ -240,8 +240,8 @@ namespace Tortuga.Chain.SqlServer
                     {
                         while (reader.Read())
                         {
-                            var schema = reader.GetString(reader.GetOrdinal("SchemaName"));
-                            var name = reader.GetString(reader.GetOrdinal("Name"));
+                            var schema = reader.GetString("SchemaName");
+                            var name = reader.GetString("Name");
                             GetTableOrView(new SqlServerObjectName(schema, name));
                         }
                     }
@@ -336,15 +336,15 @@ namespace Tortuga.Chain.SqlServer
                     {
                         if (!reader.Read())
                             throw new MissingObjectException($"Could not find scalar function {tableFunctionName}");
-                        actualSchema = reader.GetString(reader.GetOrdinal("SchemaName"));
-                        actualName = reader.GetString(reader.GetOrdinal("Name"));
-                        objectId = reader.GetInt32(reader.GetOrdinal("ObjectId"));
+                        actualSchema = reader.GetString("SchemaName");
+                        actualName = reader.GetString("Name");
+                        objectId = reader.GetInt32("ObjectId");
 
-                        typeName = reader.IsDBNull(reader.GetOrdinal("TypeName")) ? null : reader.GetString(reader.GetOrdinal("TypeName"));
-                        isNullable = reader.GetBoolean(reader.GetOrdinal("is_nullable"));
-                        maxLength = reader.IsDBNull(reader.GetOrdinal("max_length")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("max_length"));
-                        precision = reader.IsDBNull(reader.GetOrdinal("precision")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("precision"));
-                        scale = reader.IsDBNull(reader.GetOrdinal("scale")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("scale"));
+                        typeName = reader.GetStringOrNull("TypeName");
+                        isNullable = reader.GetBoolean("is_nullable");
+                        maxLength = reader.GetInt32OrNull("max_length");
+                        precision = reader.GetInt32OrNull("precision");
+                        scale = reader.GetInt32OrNull("scale");
                         AdjustTypeDetails(typeName, ref maxLength, ref precision, ref scale, out fullTypeName);
                     }
                 }
@@ -383,9 +383,9 @@ namespace Tortuga.Chain.SqlServer
                         if (!reader.Read())
                             throw new MissingObjectException($"Could not find stored procedure {procedureName}");
 
-                        actualSchema = reader.GetString(reader.GetOrdinal("SchemaName"));
-                        actualName = reader.GetString(reader.GetOrdinal("Name"));
-                        objectId = reader.GetInt32(reader.GetOrdinal("ObjectId"));
+                        actualSchema = reader.GetString("SchemaName");
+                        actualName = reader.GetString("Name");
+                        objectId = reader.GetInt32("ObjectId");
                     }
                 }
             }
@@ -427,9 +427,9 @@ namespace Tortuga.Chain.SqlServer
                     {
                         if (!reader.Read())
                             throw new MissingObjectException($"Could not find table valued function {tableFunctionName}");
-                        actualSchema = reader.GetString(reader.GetOrdinal("SchemaName"));
-                        actualName = reader.GetString(reader.GetOrdinal("Name"));
-                        objectId = reader.GetInt32(reader.GetOrdinal("ObjectId"));
+                        actualSchema = reader.GetString("SchemaName");
+                        actualName = reader.GetString("Name");
+                        objectId = reader.GetInt32("ObjectId");
                     }
                 }
             }
@@ -485,11 +485,11 @@ namespace Tortuga.Chain.SqlServer
                     {
                         if (!reader.Read())
                             throw new MissingObjectException($"Could not find table or view {tableName}");
-                        actualSchema = reader.GetString(reader.GetOrdinal("SchemaName"));
-                        actualName = reader.GetString(reader.GetOrdinal("Name"));
-                        objectId = reader.GetInt32(reader.GetOrdinal("ObjectId"));
-                        isTable = reader.GetBoolean(reader.GetOrdinal("IsTable"));
-                        hasTriggers = reader.GetInt32(reader.GetOrdinal("Triggers")) > 0;
+                        actualSchema = reader.GetString("SchemaName");
+                        actualName = reader.GetString("Name");
+                        objectId = reader.GetInt32("ObjectId");
+                        isTable = reader.GetBoolean("IsTable");
+                        hasTriggers = reader.GetInt32("Triggers") > 0;
                     }
                 }
             }
@@ -519,8 +519,8 @@ WHERE	s.name = ? AND t.name = ?;";
 
             string actualSchema;
             string actualName;
-            string baseTypeName = null;
-            int? objectId = null;
+            string baseTypeName;
+            int? objectId;
             bool isTableType;
             bool isNullable;
             int? maxLength;
@@ -540,18 +540,15 @@ WHERE	s.name = ? AND t.name = ?;";
                         if (!reader.Read())
                             throw new MissingObjectException($"Could not find user defined type {typeName}");
 
-                        actualSchema = reader.GetString(reader.GetOrdinal("SchemaName"));
-                        actualName = reader.GetString(reader.GetOrdinal("Name"));
-                        if (!reader.IsDBNull(reader.GetOrdinal("ObjectId")))
-                            objectId = reader.GetInt32(reader.GetOrdinal("ObjectId"));
-                        isTableType = reader.GetBoolean(reader.GetOrdinal("IsTableType"));
-                        if (!reader.IsDBNull(reader.GetOrdinal("BaseTypeName")))
-                            baseTypeName = reader.GetString(reader.GetOrdinal("BaseTypeName"));
-
-                        isNullable = reader.GetBoolean(reader.GetOrdinal("is_nullable"));
-                        maxLength = reader.GetInt32(reader.GetOrdinal("max_length"));
-                        precision = reader.GetInt32(reader.GetOrdinal("precision"));
-                        scale = reader.GetInt32(reader.GetOrdinal("scale"));
+                        actualSchema = reader.GetString("SchemaName");
+                        actualName = reader.GetString("Name");
+                        objectId = reader.GetInt32OrNull("ObjectId");
+                        isTableType = reader.GetBoolean("IsTableType");
+                        baseTypeName = reader.GetStringOrNull("BaseTypeName");
+                        isNullable = reader.GetBoolean("is_nullable");
+                        maxLength = reader.GetInt32("max_length");
+                        precision = reader.GetInt32("precision");
+                        scale = reader.GetInt32("scale");
 
                         AdjustTypeDetails(baseTypeName, ref maxLength, ref precision, ref scale, out fullTypeName);
                     }
@@ -616,15 +613,15 @@ WHERE	s.name = ? AND t.name = ?;";
                     {
                         while (reader.Read())
                         {
-                            var name = reader.GetString(reader.GetOrdinal("ColumnName"));
-                            var computed = reader.GetBoolean(reader.GetOrdinal("is_computed"));
-                            var primary = reader.GetBoolean(reader.GetOrdinal("is_primary_key"));
-                            var isIdentity = reader.GetBoolean(reader.GetOrdinal("is_identity"));
-                            var typeName = reader.IsDBNull(reader.GetOrdinal("TypeName")) ? null : reader.GetString(reader.GetOrdinal("TypeName"));
-                            var isNullable = reader.GetBoolean(reader.GetOrdinal("is_nullable"));
-                            int? maxLength = reader.IsDBNull(reader.GetOrdinal("max_length")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("max_length"));
-                            int? precision = reader.IsDBNull(reader.GetOrdinal("precision")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("precision"));
-                            int? scale = reader.IsDBNull(reader.GetOrdinal("scale")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("scale"));
+                            var name = reader.GetString("ColumnName");
+                            var computed = reader.GetBoolean("is_computed");
+                            var primary = reader.GetBoolean("is_primary_key");
+                            var isIdentity = reader.GetBoolean("is_identity");
+                            var typeName = reader.GetStringOrNull("TypeName");
+                            var isNullable = reader.GetBoolean("is_nullable");
+                            int? maxLength = reader.GetInt32OrNull("max_length");
+                            int? precision = reader.GetInt32OrNull("precision");
+                            int? scale = reader.GetInt32OrNull("scale");
                             string fullTypeName;
                             AdjustTypeDetails(typeName, ref maxLength, ref precision, ref scale, out fullTypeName);
 
@@ -668,14 +665,14 @@ WHERE	s.name = ? AND t.name = ?;";
                         {
                             while (reader.Read())
                             {
-                                var name = reader.GetString(reader.GetOrdinal("ParameterName"));
-                                var typeName = reader.GetString(reader.GetOrdinal("TypeName"));
+                                var name = reader.GetString("ParameterName");
+                                var typeName = reader.GetString("TypeName");
 
-                                typeName = reader.IsDBNull(reader.GetOrdinal("TypeName")) ? null : reader.GetString(reader.GetOrdinal("TypeName"));
+                                typeName = reader.GetStringOrNull("TypeName");
                                 bool isNullable = true;
-                                int? maxLength = reader.IsDBNull(reader.GetOrdinal("max_length")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("max_length"));
-                                int? precision = reader.IsDBNull(reader.GetOrdinal("precision")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("precision"));
-                                int? scale = reader.IsDBNull(reader.GetOrdinal("scale")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("scale"));
+                                int? maxLength = reader.GetInt32OrNull("max_length");
+                                int? precision = reader.GetInt32OrNull("precision");
+                                int? scale = reader.GetInt32OrNull("scale");
                                 string fullTypeName;
                                 AdjustTypeDetails(typeName, ref maxLength, ref precision, ref scale, out fullTypeName);
 

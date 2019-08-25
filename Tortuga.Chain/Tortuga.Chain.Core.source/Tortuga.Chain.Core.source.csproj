@@ -269,7 +269,6 @@
     <Compile Include="shared\Metadata\IndexMetadataCollection.cs" />
     <Compile Include="shared\Metadata\IndexMetadataCollection`2.cs" />
     <Compile Include="shared\Metadata\IndexMetadata`1.cs" />
-    <Compile Include="shared\Metadata\Internal\DataReaderExtensions.cs" />
     <Compile Include="shared\Metadata\ISqlBuilderEntryDetails`1.cs" />
     <Compile Include="shared\Metadata\ScalarFunctionMetadata.cs" />
     <Compile Include="shared\Metadata\TableFunctionMetadata.cs" />
@@ -374,6 +373,9 @@
     <PackageReference Include="Tortuga.Anchor">
       <Version>2.1.7001.32222</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="shared\Metadata\Internal\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
