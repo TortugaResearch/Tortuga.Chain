@@ -63,7 +63,9 @@ namespace Tortuga.Chain.Access
                     columns[(int)(long)column["ORDINAL_POSITION"] - 1] = new IndexColumnMetadata<OleDbType>(details, false, false);
                 }
 
-                result.Add(new IndexMetadata<AccessObjectName, OleDbType>(tableName, name, isPrimary, unique, false, new IndexColumnMetadataCollection<OleDbType>(columns), null, null));
+                var indexType = isPrimary ? IndexType.Clustered : IndexType.Nonclustered;
+
+                result.Add(new IndexMetadata<AccessObjectName, OleDbType>(tableName, name, isPrimary, unique, false, new IndexColumnMetadataCollection<OleDbType>(columns), null, null, indexType));
             }
 
             return new IndexMetadataCollection<AccessObjectName, OleDbType>(result);

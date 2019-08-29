@@ -270,6 +270,7 @@
     <Compile Include="shared\Metadata\IndexMetadataCollection.cs" />
     <Compile Include="shared\Metadata\IndexMetadataCollection`2.cs" />
     <Compile Include="shared\Metadata\IndexMetadata`1.cs" />
+    <Compile Include="shared\Metadata\IndexType.cs" />
     <Compile Include="shared\Metadata\ISqlBuilderEntryDetails`1.cs" />
     <Compile Include="shared\Metadata\OdbcDatabaseMetadataCache`1.cs" />
     <Compile Include="shared\Metadata\OleDbDatabaseMetadataCache`1.cs" />

@@ -40,7 +40,7 @@ namespace Tests
             foreach (var ds in dataSources)
             {
                 ds.DatabaseMetadata.Preload();
-                foreach (var table in ds.DatabaseMetadata.GetTablesAndViews().Where(t => t.IsTable))
+                foreach (var table in ds.DatabaseMetadata.GetTablesAndViews())
                 {
                     Add(ds.Name, DataSourceType.Normal, table.Name);
                     Add(ds.Name, DataSourceType.Open, table.Name);

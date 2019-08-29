@@ -120,9 +120,22 @@ WHERE o.name = @Name
                             var columns = new IndexColumnMetadataCollection<SqlDbType>(allColumns.Where(c => c.IndexId == index_id));
                             var indexSize = reader.GetInt64("IndexSizeKB");
                             var rowCount = reader.GetInt64("RowCount");
-                            var indexType = (SqlServerIndexType)reader.GetByte("type");
 
-                            results.Add(new SqlServerIndexMetadata(tableName, name, is_primary_key, is_unique, is_unique_constraint, columns, indexSize, rowCount, indexType));
+                            IndexType indexType;
+                            switch (reader.GetByte("type"))
+                            {
+                                case 0: indexType = IndexType.Heap; break;
+                                case 1: indexType = IndexType.Clustered; break;
+                                case 2: indexType = IndexType.Nonclustered; break;
+                                case 3: indexType = IndexType.Xml; break;
+                                case 4: indexType = IndexType.Spatial; break;
+                                case 5: indexType = IndexType.ClusteredColumnstoreIndex; break;
+                                case 6: indexType = IndexType.NonclusteredColumnstoreIndex; break;
+                                case 7: indexType = IndexType.NonclusteredHashIndex; break;
+                                default: indexType = IndexType.Unknown; break;
+                            }
+
+                            results.Add(new IndexMetadata<SqlServerObjectName, SqlDbType>(tableName, name, is_primary_key, is_unique, is_unique_constraint, columns, indexSize, rowCount, indexType));
                         }
 
                         return new IndexMetadataCollection<SqlServerObjectName, SqlDbType>(results);

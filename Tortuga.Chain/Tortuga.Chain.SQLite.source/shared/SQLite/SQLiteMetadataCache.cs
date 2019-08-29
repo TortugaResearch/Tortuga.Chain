@@ -87,7 +87,9 @@ namespace Tortuga.Chain.SQLite
                             }
                         }
 
-                        results.Add(new IndexMetadata<SQLiteObjectName, DbType>(tableName, name, isPrimaryKey, isUnique, isUniqueConstraint, new IndexColumnMetadataCollection<DbType>(columns), null, null));
+                        var indexType = isPrimaryKey ? IndexType.Clustered : IndexType.Nonclustered;
+
+                        results.Add(new IndexMetadata<SQLiteObjectName, DbType>(tableName, name, isPrimaryKey, isUnique, isUniqueConstraint, new IndexColumnMetadataCollection<DbType>(columns), null, null, indexType));
                     }
                 }
             }
@@ -97,7 +99,7 @@ namespace Tortuga.Chain.SQLite
             if (pkColumns.Count == 1 && !results.Any(i => i.IsPrimaryKey)) //need to infer a PK
             {
                 results.Add(new IndexMetadata<SQLiteObjectName, DbType>(tableName, "(primary key)", true, false, false,
-                    new IndexColumnMetadataCollection<DbType>(new[] { new IndexColumnMetadata<DbType>(pkColumns.Single(), false, false) }), null, null));
+                    new IndexColumnMetadataCollection<DbType>(new[] { new IndexColumnMetadata<DbType>(pkColumns.Single(), false, false) }), null, null, IndexType.Clustered));
             }
 
             return new IndexMetadataCollection<SQLiteObjectName, DbType>(results);

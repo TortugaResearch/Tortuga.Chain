@@ -5,9 +5,7 @@ namespace Tortuga.Chain.Metadata
     /// </summary>
     public abstract class IndexMetadata
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="IndexMetadata{TName, TDbType}" /> class.
-        /// </summary>
+        /// <summary>Initializes a new instance of the <see cref="IndexMetadata{TName, TDbType}"/> class.</summary>
         /// <param name="tableName">Name of the table (or view).</param>
         /// <param name="name">The name.</param>
         /// <param name="isPrimaryKey">if set to <c>true</c> is a primary key.</param>
@@ -16,7 +14,8 @@ namespace Tortuga.Chain.Metadata
         /// <param name="columns">The columns.</param>
         /// <param name="indexSizeKB">Approximate index size in KB</param>
         /// <param name="rowCount">Approximate row count</param>
-        protected IndexMetadata(string tableName, string name, bool isPrimaryKey, bool isUnique, bool isUniqueConstraint, IndexColumnMetadataCollection columns, long? indexSizeKB, long? rowCount)
+        /// <param name="indexType">Type of the index.</param>
+        protected IndexMetadata(string tableName, string name, bool isPrimaryKey, bool isUnique, bool isUniqueConstraint, IndexColumnMetadataCollection columns, long? indexSizeKB, long? rowCount, IndexType indexType)
         {
             TableName = tableName;
             Name = name;
@@ -26,6 +25,7 @@ namespace Tortuga.Chain.Metadata
             Columns = columns;
             IndexSizeKB = indexSizeKB;
             RowCount = rowCount;
+            IndexType = indexType;
         }
 
         /// <summary>
@@ -37,6 +37,9 @@ namespace Tortuga.Chain.Metadata
         /// Gets the approximate index size in kilobytes.
         /// </summary>
         public long? IndexSizeKB { get; }
+
+        /// <summary>Gets the type of the index.</summary>
+        public IndexType IndexType { get; }
 
         /// <summary>
         /// Gets a value indicating whether this nidex is a primary key.

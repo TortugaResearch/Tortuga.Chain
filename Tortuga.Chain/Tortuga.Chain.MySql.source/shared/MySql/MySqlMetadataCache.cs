@@ -4,6 +4,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using Tortuga.Anchor;
 using Tortuga.Anchor.Metadata;
 using Tortuga.Chain.Metadata;
@@ -53,6 +54,68 @@ namespace Tortuga.Chain.MySql
                 }
                 return m_DefaultSchema;
             }
+        }
+
+        /// <summary>
+        /// Gets the indexes for a table.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// This should be cached on a TableOrViewMetadata object.
+        /// </remarks>
+        public override IndexMetadataCollection<MySqlObjectName, MySqlDbType> GetIndexesForTable(MySqlObjectName tableName)
+        {
+            var table = GetTableOrView(tableName);
+            var results = new List<IndexMetadata<MySqlObjectName, MySqlDbType>>();
+
+            var scratch = new List<IndexTemp>();
+
+            using (var con = new MySqlConnection(m_ConnectionBuilder.ConnectionString))
+            using (var con2 = new MySqlConnection(m_ConnectionBuilder.ConnectionString))
+            {
+                con.Open();
+                con2.Open();
+                using (var cmd = new MySqlCommand("SHOW INDEXES FROM " + table.Name.ToQuotedString(), con))
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        scratch.Add(new IndexTemp()
+                        {
+                            IndexName = reader.GetString("Key_name"),
+                            Order = reader.GetInt32("Seq_in_index"),
+                            ColumnName = reader.GetString("Column_name"),
+                            Collation = reader.GetStringOrNull("Collation"),
+                            IndexType = reader.GetString("Index_type"),
+                            NonUnique = reader.GetBoolean("Non_unique")
+                        });
+                    }
+                }
+            }
+
+            var indexNames = scratch.Select(x => x.IndexName).Distinct();
+            foreach (var indexName in indexNames)
+            {
+                var isPrimaryKey = (indexName == "PRIMARY");
+                var indexColumns = scratch.Where(x => x.IndexName == indexName).OrderBy(x => x.Order).Select(x => new IndexColumnMetadata<MySqlDbType>(table.Columns[x.ColumnName], x.Collation == "D", x.Collation == null)).ToList();
+
+                var isUnique = scratch.First(x => x.IndexName == indexName).NonUnique;
+                var indexTypeName = scratch.First(x => x.IndexName == indexName).IndexType;
+                IndexType indexType;
+                switch (indexTypeName)
+                {
+                    case "BTREE": indexType = IndexType.BTree; break;
+                    case "HASH": indexType = IndexType.Hash; break;
+                    case "RTREE": indexType = IndexType.RTree; break;
+                    case "FULLTEXT": indexType = IndexType.Fulltext; break;
+                    default: indexType = IndexType.Unknown; break;
+                }
+
+                results.Add(new IndexMetadata<MySqlObjectName, MySqlDbType>(table.Name, indexName, isPrimaryKey, isUnique, false, new IndexColumnMetadataCollection<MySqlDbType>(indexColumns), null, null, indexType));
+            }
+
+            return new IndexMetadataCollection<MySqlObjectName, MySqlDbType>(results);
         }
 
         /// <summary>
@@ -750,6 +813,16 @@ namespace Tortuga.Chain.MySql
             var columns = GetColumns(actualSchemaName, actualTableName);
 
             return new MySqlTableOrViewMetadata(this, new MySqlObjectName(actualSchemaName, actualTableName), isTable, columns, engine);
+        }
+
+        class IndexTemp
+        {
+            public string Collation { get; set; }
+            public string ColumnName { get; set; }
+            public string IndexName { get; set; }
+            public string IndexType { get; set; }
+            public bool NonUnique { get; set; }
+            public int Order { get; set; }
         }
     }
 }

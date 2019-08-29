@@ -3,9 +3,8 @@ using System.Collections.ObjectModel;
 
 namespace Tortuga.Chain.Metadata
 {
-    /// <summary>
-    ///
-    /// </summary>
+    /// <summary>Class IndexMetadataCollection.
+    ///</summary>
     /// <typeparam name="TName">The type of the name.</typeparam>
     /// <typeparam name="TDbType">The database column type.</typeparam>
     public class IndexMetadataCollection<TName, TDbType> : ReadOnlyCollection<IndexMetadata<TName, TDbType>>
