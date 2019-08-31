@@ -14,14 +14,14 @@
       <reference file="Tortuga.Chain.Core.dll" />
     </references>
     <frameworkAssemblies>
-      <frameworkAssembly assemblyName="System.Data" targetFramework="net46" />
-      <frameworkAssembly assemblyName="System.ComponentModel.DataAnnotations" targetFramework="net46" />
-      <frameworkAssembly assemblyName="System.Xml.Linq" targetFramework="net46" />
-      <frameworkAssembly assemblyName="System.Runtime.Caching" targetFramework="net46" />
+      <frameworkAssembly assemblyName="System.Data" targetFramework="net461" />
+      <frameworkAssembly assemblyName="System.ComponentModel.DataAnnotations" targetFramework="net461" />
+      <frameworkAssembly assemblyName="System.Xml.Linq" targetFramework="net461" />
+      <frameworkAssembly assemblyName="System.Runtime.Caching" targetFramework="net461" />
     </frameworkAssemblies>
 
     <dependencies>
-      <group targetFramework="net46">
+      <group targetFramework="net461">
         <dependency id="System.Collections.Immutable" version="1.5.0" />
         <dependency id="Tortuga.Anchor" version="2.1.7001.32222" />
       </group>
