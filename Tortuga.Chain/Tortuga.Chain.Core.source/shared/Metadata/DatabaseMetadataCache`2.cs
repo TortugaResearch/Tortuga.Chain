@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -390,6 +391,7 @@ namespace Tortuga.Chain.Metadata
         /// <returns></returns>
         /// <remarks>Override this to support custom escaping logic.</remarks>
         [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "dbType")]
+        [SuppressMessage("Design", "CA1062:Validate arguments of public methods", Justification = "<Pending>")]
         public virtual string ValueToSqlValue(object value, TDbType? dbType)
         {
             switch (value)
@@ -416,13 +418,13 @@ namespace Tortuga.Chain.Metadata
                     return "'" + s.Replace("'", "''") + "'";
 
                 case DateTime d:
-                    return "'" + d.ToString("O") + "'"; //ISO 8601
+                    return "'" + d.ToString("O", CultureInfo.InvariantCulture) + "'"; //ISO 8601
 
                 case DateTimeOffset d:
-                    return "'" + d.ToString("O") + "'"; //ISO 8601
+                    return "'" + d.ToString("O", CultureInfo.InvariantCulture) + "'"; //ISO 8601
 
                 case TimeSpan ts:
-                    return "'" + ts.ToString("hh:mm:ss.fffffff") + "'"; //ISO 8601
+                    return "'" + ts.ToString("hh:mm:ss.fffffff", CultureInfo.InvariantCulture) + "'"; //ISO 8601
 
                 default:
                     if (dbType.HasValue)

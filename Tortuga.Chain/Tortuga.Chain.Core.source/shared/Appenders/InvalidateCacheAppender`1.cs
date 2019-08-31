@@ -22,7 +22,7 @@ namespace Tortuga.Chain.Appenders
         public InvalidateCacheAppender(ILink<TResult> previousLink, string cacheKey) : base(previousLink)
         {
             if (string.IsNullOrEmpty(cacheKey))
-                throw new ArgumentException("cacheKey is null or empty.", "cacheKey");
+                throw new ArgumentException($"{nameof(cacheKey)} is null or empty.", nameof(cacheKey));
 
             m_CacheKey = cacheKey;
         }

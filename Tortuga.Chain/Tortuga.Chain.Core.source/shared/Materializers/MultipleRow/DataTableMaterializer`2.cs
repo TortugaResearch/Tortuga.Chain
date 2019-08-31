@@ -64,6 +64,7 @@ namespace Tortuga.Chain.Materializers
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <param name="state">User defined state, usually used for logging.</param>
         /// <returns></returns>
+        [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
         public override async Task<DataTable> ExecuteAsync(CancellationToken cancellationToken, object state = null)
         {
             var ds = new DataSet() { EnforceConstraints = false /*needed for PostgreSql*/};

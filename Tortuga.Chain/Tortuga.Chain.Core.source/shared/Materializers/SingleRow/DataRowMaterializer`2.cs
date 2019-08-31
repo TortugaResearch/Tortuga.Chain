@@ -74,6 +74,7 @@ namespace Tortuga.Chain.Materializers
         /// <param name="state">User defined state, usually used for logging.</param>
         /// <returns></returns>
         [SuppressMessage("Microsoft.Globalization", "CA1306:SetLocaleForDataTypes")]
+        [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
         public override async Task<DataRow> ExecuteAsync(CancellationToken cancellationToken, object state = null)
         {
             var executionToken = Prepare();

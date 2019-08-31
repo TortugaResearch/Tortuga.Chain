@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !OleDb_Missing
+using System;
 using System.Data.OleDb;
 using System.Diagnostics.CodeAnalysis;
 
@@ -111,3 +112,4 @@ namespace Tortuga.Chain.Metadata
         }
     }
 }
+#endif

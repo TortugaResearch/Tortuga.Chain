@@ -24,7 +24,6 @@ namespace Tortuga.Chain.CommandBuilders
         readonly SqlBuilderEntry<TDbType>[] m_Entries;
 
         readonly string m_Name;
-        readonly bool m_StrictMode;
 
         internal SqlBuilder(string name, IReadOnlyList<ColumnMetadata<TDbType>> columns, IReadOnlyList<ParameterMetadata<TDbType>> parameters)
         {
@@ -95,7 +94,7 @@ namespace Tortuga.Chain.CommandBuilders
         {
             m_Name = name;
             m_Entries = entries.ToArray(); //since this is an array of struct, this does a deep copy
-            m_StrictMode = strictMode;
+            StrictMode = strictMode;
         }
 
         /// <summary>
@@ -118,7 +117,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <summary>
         /// Gets a value indicating whether strict mode is enabled
         /// </summary>
-        public bool StrictMode => m_StrictMode;
+        public bool StrictMode { get; }
 
         /// <summary>
         /// Applies the filter value, returning a set of expressions suitable for use in a WHERE clause.
@@ -175,7 +174,7 @@ namespace Tortuga.Chain.CommandBuilders
                             break;
                         }
                     }
-                    if (m_StrictMode && !keyFound)
+                    if (StrictMode && !keyFound)
                         throw new MappingException($"Strict mode was enabled, but property {item.Key} could be matched to a column in {m_Name}. Disable strict mode or remove the item from the dictionary.");
                 }
             }
@@ -212,7 +211,7 @@ namespace Tortuga.Chain.CommandBuilders
                             break;
                         }
                     }
-                    if (m_StrictMode && !propertyFound)
+                    if (StrictMode && !propertyFound)
                         throw new MappingException($"Strict mode was enabled, but property {property.Name} could be matched to a column in {m_Name}. Disable strict mode or mark the property as NotMapped.");
                 }
             }
@@ -402,7 +401,7 @@ namespace Tortuga.Chain.CommandBuilders
                     }
                 }
 
-                if (m_StrictMode && !columnFound)
+                if (StrictMode && !columnFound)
                     throw new MappingException($"Strict mode was enabled, but desired column {column} was not found on {m_Name}. Disable strict mode or mark the property as NotMapped.");
             }
 
@@ -463,7 +462,7 @@ namespace Tortuga.Chain.CommandBuilders
                             break;
                         }
                     }
-                    if (m_StrictMode && !keyFound)
+                    if (StrictMode && !keyFound)
                         throw new MappingException($"Strict mode was enabled, but property {item.Key} could be matched to a column in {m_Name}. Disable strict mode or remove the item from the dictionary.");
                 }
             }
@@ -497,7 +496,7 @@ namespace Tortuga.Chain.CommandBuilders
                             break;
                         }
                     }
-                    if (m_StrictMode && !propertyFound)
+                    if (StrictMode && !propertyFound)
                         throw new MappingException($"Strict mode was enabled, but property {property.Name} could be matched to a column in {m_Name}. Disable strict mode or mark the property as NotMapped.");
                 }
             }
@@ -566,7 +565,7 @@ namespace Tortuga.Chain.CommandBuilders
         public void ApplyValueOverrides(object value)
         {
             if (value == null)
-                throw new ArgumentNullException("value", "value is null.");
+                throw new ArgumentNullException(nameof(value), "value is null.");
 
             if (value is IReadOnlyDictionary<string, object>)
             {
@@ -598,7 +597,7 @@ namespace Tortuga.Chain.CommandBuilders
                         break;
                     }
                 }
-                if (m_StrictMode && !propertyFound)
+                if (StrictMode && !propertyFound)
                     throw new MappingException($"Strict mode was enabled, but property {property.Name} could be matched to a column in {m_Name}. Disable strict mode or mark the property as NotMapped.");
             }
 
@@ -811,7 +810,7 @@ namespace Tortuga.Chain.CommandBuilders
             if (sql == null)
                 throw new ArgumentNullException(nameof(sql), $"{nameof(sql)} is null.");
 
-            if (sortExpressions == null || sortExpressions.Count() == 0)
+            if (sortExpressions?.Any() != true)
                 return;
 
             foreach (var expression in sortExpressions)
@@ -1320,7 +1319,7 @@ namespace Tortuga.Chain.CommandBuilders
                         //break; In the case of TVFs, the same column may appear twice
                     }
                 }
-                if (m_StrictMode && !keyFound)
+                if (StrictMode && !keyFound)
                     throw new MappingException($"Strict mode was enabled, but property {item.Key} could be matched to a column in {m_Name}. Disable strict mode or remove the item from the dictionary.");
             }
 
@@ -1428,7 +1427,7 @@ namespace Tortuga.Chain.CommandBuilders
                             //break; In the case of TVFs, the same column may appear twice
                         }
                     }
-                    if (m_StrictMode && !propertyFound)
+                    if (StrictMode && !propertyFound)
                         throw new MappingException($"Strict mode was enabled, but property {property.Name} could be matched to a column in {m_Name}. Disable strict mode or mark the property as NotMapped.");
                 }
 

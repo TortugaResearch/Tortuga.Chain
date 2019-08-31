@@ -21,55 +21,25 @@ namespace Tortuga.Chain.Appenders
         /// <exception cref="ArgumentNullException">previousLink;previousLink is null.</exception>
         protected Appender(ILink<TIn> previousLink)
         {
-            PreviousLink = previousLink ?? throw new ArgumentNullException("previousLink", "previousLink is null.");
+            PreviousLink = previousLink ?? throw new ArgumentNullException(nameof(previousLink), $"{nameof(previousLink)} is null.");
             PreviousLink.ExecutionTokenPrepared += PreviousLink_ExecutionTokenPrepared;
             PreviousLink.ExecutionTokenPreparing += PreviousLink_ExecutionTokenPreparing;
         }
 
-        void PreviousLink_ExecutionTokenPrepared(object sender, ExecutionTokenPreparedEventArgs e)
-        {
-            OnExecutionTokenPrepared(e); //left first
-            ExecutionTokenPrepared?.Invoke(this, e); //then right
-            e.ExecutionToken.CommandBuilt += ExecutionToken_CommandBuilt;
-        }
-
-        void PreviousLink_ExecutionTokenPreparing(object sender, ExecutionTokenPreparingEventArgs e)
-        {
-            OnExecutionTokenPreparing(e); //left first
-            ExecutionTokenPreparing?.Invoke(this, e); //then right
-        }
-
-        void ExecutionToken_CommandBuilt(object sender, CommandBuiltEventArgs e)
-        {
-            OnCommandBuilt(e);
-        }
+        /// <summary>
+        /// Occurs when an execution token has been prepared.
+        /// </summary>
+        /// <remarks>This is mostly used by appenders to override command behavior.</remarks>
+        public event EventHandler<ExecutionTokenPreparedEventArgs> ExecutionTokenPrepared;
 
         /// <summary>
-        /// Override this if you want to examine or modify the DBCommand before it is executed. 
+        /// Occurs when an execution token is about to be prepared.
         /// </summary>
-        /// <param name="e">The <see cref="CommandBuiltEventArgs"/> instance containing the event data.</param>
-        protected virtual void OnCommandBuilt(CommandBuiltEventArgs e)
-        {
+        /// <remarks>
+        /// This is mostly used by appenders to override SQL generation.
+        /// </remarks>
+        public event EventHandler<ExecutionTokenPreparingEventArgs> ExecutionTokenPreparing;
 
-        }
-
-        /// <summary>
-        /// Override this if you want to examine or modify the execution token before the DBCommand object is built.
-        /// </summary>
-        /// <param name="e">The <see cref="ExecutionTokenPreparedEventArgs"/> instance containing the event data.</param>
-        protected virtual void OnExecutionTokenPrepared(ExecutionTokenPreparedEventArgs e)
-        {
-
-        }
-
-        /// <summary>
-        /// Override this if you want to examine or modify the command builder before the execution token is built.
-        /// </summary>
-        /// <param name="e">The <see cref="ExecutionTokenPreparingEventArgs"/> instance containing the event data.</param>
-        protected virtual void OnExecutionTokenPreparing(ExecutionTokenPreparingEventArgs e)
-        {
-
-        }
         /// <summary>
         /// Gets the data source that is associated with this materializer or appender.
         /// </summary>
@@ -80,6 +50,12 @@ namespace Tortuga.Chain.Appenders
         /// Gets the previous link in the operation chain.
         /// </summary>
         public ILink<TIn> PreviousLink { get; }
+
+        /// <summary>
+        /// Returns the generated SQL statement of the previous link.
+        /// </summary>
+        /// <returns></returns>
+        public string CommandText() => PreviousLink.CommandText();
 
         /// <summary>
         /// Execute the operation synchronously.
@@ -108,23 +84,45 @@ namespace Tortuga.Chain.Appenders
         public abstract Task<TOut> ExecuteAsync(CancellationToken cancellationToken, object state = null);
 
         /// <summary>
-        /// Occurs when an execution token has been prepared.
+        /// Override this if you want to examine or modify the DBCommand before it is executed.
         /// </summary>
-        /// <remarks>This is mostly used by appenders to override command behavior.</remarks>
-        public event EventHandler<ExecutionTokenPreparedEventArgs> ExecutionTokenPrepared;
+        /// <param name="e">The <see cref="CommandBuiltEventArgs"/> instance containing the event data.</param>
+        protected virtual void OnCommandBuilt(CommandBuiltEventArgs e)
+        {
+        }
 
         /// <summary>
-        /// Occurs when an execution token is about to be prepared.
+        /// Override this if you want to examine or modify the execution token before the DBCommand object is built.
         /// </summary>
-        /// <remarks>
-        /// This is mostly used by appenders to override SQL generation.
-        /// </remarks>
-        public event EventHandler<ExecutionTokenPreparingEventArgs> ExecutionTokenPreparing;
+        /// <param name="e">The <see cref="ExecutionTokenPreparedEventArgs"/> instance containing the event data.</param>
+        protected virtual void OnExecutionTokenPrepared(ExecutionTokenPreparedEventArgs e)
+        {
+        }
 
         /// <summary>
-        /// Returns the generated SQL statement of the previous link.
+        /// Override this if you want to examine or modify the command builder before the execution token is built.
         /// </summary>
-        /// <returns></returns>
-        public string CommandText() => PreviousLink.CommandText();
+        /// <param name="e">The <see cref="ExecutionTokenPreparingEventArgs"/> instance containing the event data.</param>
+        protected virtual void OnExecutionTokenPreparing(ExecutionTokenPreparingEventArgs e)
+        {
+        }
+
+        void ExecutionToken_CommandBuilt(object sender, CommandBuiltEventArgs e)
+        {
+            OnCommandBuilt(e);
+        }
+
+        void PreviousLink_ExecutionTokenPrepared(object sender, ExecutionTokenPreparedEventArgs e)
+        {
+            OnExecutionTokenPrepared(e); //left first
+            ExecutionTokenPrepared?.Invoke(this, e); //then right
+            e.ExecutionToken.CommandBuilt += ExecutionToken_CommandBuilt;
+        }
+
+        void PreviousLink_ExecutionTokenPreparing(object sender, ExecutionTokenPreparingEventArgs e)
+        {
+            OnExecutionTokenPreparing(e); //left first
+            ExecutionTokenPreparing?.Invoke(this, e); //then right
+        }
     }
 }

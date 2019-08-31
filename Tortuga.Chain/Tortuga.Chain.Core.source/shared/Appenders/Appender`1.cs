@@ -12,14 +12,13 @@ namespace Tortuga.Chain.Appenders
     /// <typeparam name="TResult">The operation's result type.</typeparam>
     public abstract class Appender<TResult> : ILink<TResult>
     {
-
         /// <summary>
         /// Initializes a new instance of the <see cref="Appender{TResult}"/> class.
         /// </summary>
         /// <param name="previousLink">The previous link.</param>
         protected Appender(ILink<TResult> previousLink)
         {
-            PreviousLink = previousLink ?? throw new ArgumentNullException("previousLink", "previousLink is null.");
+            PreviousLink = previousLink ?? throw new ArgumentNullException(nameof(previousLink), $"{nameof(previousLink)} is null.");
             PreviousLink.ExecutionTokenPrepared += PreviousLink_ExecutionTokenPrepared;
             PreviousLink.ExecutionTokenPreparing += PreviousLink_ExecutionTokenPreparing;
         }
@@ -82,7 +81,7 @@ namespace Tortuga.Chain.Appenders
         }
 
         /// <summary>
-        /// Override this if you want to examine or modify the DBCommand before it is executed. 
+        /// Override this if you want to examine or modify the DBCommand before it is executed.
         /// </summary>
         /// <param name="e">The <see cref="CommandBuiltEventArgs"/> instance containing the event data.</param>
         protected virtual void OnCommandBuilt(CommandBuiltEventArgs e) { }
