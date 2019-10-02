@@ -59,7 +59,7 @@
       <Net46Output Include="$(Net46Path)\bin\Release\$(ResultPdb)" />
       <Net46Output Include="$(Net46Path)\bin\Release\$(ResultXml)" />
     </ItemGroup>
-    <Copy SourceFiles="@(Net46Output)" DestinationFolder="$(BuildOutputPath)\lib\net46" />
+    <Copy SourceFiles="@(Net46Output)" DestinationFolder="$(BuildOutputPath)\lib\net461" />
   </Target>
 
   <Target Name="PackageHelp">
