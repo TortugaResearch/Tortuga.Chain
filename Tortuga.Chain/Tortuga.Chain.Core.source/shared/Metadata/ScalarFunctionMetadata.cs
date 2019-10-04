@@ -52,6 +52,7 @@ namespace Tortuga.Chain.Metadata
         /// </value>
         [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public ParameterMetadataCollection Parameters { get; protected set; }
+
         /// <summary>
         /// Gets or sets the precision.
         /// </summary>

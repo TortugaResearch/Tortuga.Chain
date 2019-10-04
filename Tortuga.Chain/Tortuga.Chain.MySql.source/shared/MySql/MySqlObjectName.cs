@@ -5,7 +5,7 @@ namespace Tortuga.Chain.MySql
     /// <summary>
     /// Represents an object in MySql (e.g. table, view, procedure)
     /// </summary>
-    public struct MySqlObjectName
+    public struct MySqlObjectName : IEquatable<MySqlObjectName>
     {
         /// <summary>
         /// An empty schema/name pair
@@ -78,6 +78,7 @@ namespace Tortuga.Chain.MySql
         {
             return new MySqlObjectName(value);
         }
+
 #pragma warning restore CA2225 // Operator overloads have named alternates
 
         /// <summary>

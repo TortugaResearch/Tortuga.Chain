@@ -18,6 +18,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="..\Shared\DataReaderExtensions.cs" Link="DataReaderExtensions.cs" />
     <Compile Include="..\Shared\DataSourceBase.Class0DataSource.cs" Link="DataSourceBase.Class0DataSource.cs" />
     <Compile Include="..\Shared\DataSourceBase.Class1DataSource.cs" Link="DataSourceBase.Class1DataSource.cs" />
     <Compile Include="..\Shared\DataSourceBase.Class1DataSource.StringNames.cs" Link="DataSourceBase.Class1DataSource.StringNames.cs" />
@@ -36,7 +37,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Data.SqlClient" Version="4.6.0" />
-    <PackageReference Include="Tortuga.Chain.Core" Version="2.1.7009.31212" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.7.0" />
+    <PackageReference Include="Tortuga.Chain.Core" Version="2.2.7182.611" />
   </ItemGroup>
 </Project>

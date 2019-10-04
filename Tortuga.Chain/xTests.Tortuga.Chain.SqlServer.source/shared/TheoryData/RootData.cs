@@ -4,13 +4,13 @@ using Xunit;
 
 namespace Tests
 {
-    public class RootData : TheoryData<string, string>
+    public class RootData : TheoryData<string>
     {
         public RootData(params DataSource[] dataSources)
         {
             foreach (var ds in dataSources)
             {
-                Add(TestBase.AssemblyName, ds.Name);
+                Add(ds.Name);
             }
         }
 
@@ -18,9 +18,8 @@ namespace Tests
         {
             foreach (var ds in dataSources)
             {
-                Add(TestBase.AssemblyName, ds.Name);
+                Add(ds.Name);
             }
         }
     }
-
 }

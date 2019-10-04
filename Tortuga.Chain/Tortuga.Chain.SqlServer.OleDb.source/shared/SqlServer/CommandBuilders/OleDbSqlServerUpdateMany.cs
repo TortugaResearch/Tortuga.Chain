@@ -12,7 +12,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
     /// <summary>
     /// Class OleDbSqlServerUpdateSet.
     /// </summary>
-    internal sealed class OleDbSqlServerUpdateMany : UpdateManyCommandBuilder<OleDbCommand, OleDbParameter>
+    internal sealed class OleDbSqlServerUpdateMany : UpdateManyDbCommandBuilder<OleDbCommand, OleDbParameter>
     {
         readonly int? m_ExpectedRowCount;
         readonly object m_NewValues;
@@ -91,7 +91,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// Applies this command to all rows.
         /// </summary>
         /// <returns></returns>
-        public override UpdateManyCommandBuilder<OleDbCommand, OleDbParameter> All()
+        public override UpdateManyDbCommandBuilder<OleDbCommand, OleDbParameter> All()
         {
             m_WhereClause = null;
             m_WhereArgumentValue = null;
@@ -194,7 +194,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// </summary>
         /// <param name="filterValue">The filter value.</param>
         /// <param name="filterOptions">The filter options.</param>
-        public override UpdateManyCommandBuilder<OleDbCommand, OleDbParameter> WithFilter(object filterValue, FilterOptions filterOptions = FilterOptions.None)
+        public override UpdateManyDbCommandBuilder<OleDbCommand, OleDbParameter> WithFilter(object filterValue, FilterOptions filterOptions = FilterOptions.None)
         {
             m_WhereClause = null;
             m_WhereArgumentValue = null;
@@ -208,7 +208,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// </summary>
         /// <param name="whereClause">The where clause.</param>
         /// <returns></returns>
-        public override UpdateManyCommandBuilder<OleDbCommand, OleDbParameter> WithFilter(string whereClause)
+        public override UpdateManyDbCommandBuilder<OleDbCommand, OleDbParameter> WithFilter(string whereClause)
         {
             m_WhereClause = whereClause;
             m_WhereArgumentValue = null;
@@ -223,7 +223,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// <param name="whereClause">The where clause.</param>
         /// <param name="argumentValue">The argument value.</param>
         /// <returns></returns>
-        public override UpdateManyCommandBuilder<OleDbCommand, OleDbParameter> WithFilter(string whereClause, object argumentValue)
+        public override UpdateManyDbCommandBuilder<OleDbCommand, OleDbParameter> WithFilter(string whereClause, object argumentValue)
         {
             m_WhereClause = whereClause;
             m_WhereArgumentValue = argumentValue;

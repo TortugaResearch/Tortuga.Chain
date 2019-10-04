@@ -32,6 +32,9 @@ namespace Tortuga.Chain.Materializers
         /// <returns>The execution token with an attached event handler.</returns>
         public static T CheckUpdateRowCount<T>(this T executionToken, UpdateOptions updateOptions, int? expectedRowCount) where T : ExecutionToken
         {
+            if (executionToken == null)
+                throw new ArgumentNullException(nameof(executionToken), $"{nameof(executionToken)} is null.");
+
             if (expectedRowCount.HasValue && !updateOptions.HasFlag(UpdateOptions.IgnoreRowsAffected))
                 executionToken.CommandExecuted += (s, e) => CheckUpdateRowCount(s, e, expectedRowCount.Value);
             return executionToken;
@@ -46,6 +49,9 @@ namespace Tortuga.Chain.Materializers
         /// <returns>The execution token with an attached event handler.</returns>
         public static T CheckUpdateRowCount<T>(this T executionToken, UpdateOptions updateOptions) where T : ExecutionToken
         {
+            if (executionToken == null)
+                throw new ArgumentNullException(nameof(executionToken), $"{nameof(executionToken)} is null.");
+
             if (!updateOptions.HasFlag(UpdateOptions.IgnoreRowsAffected))
                 executionToken.CommandExecuted += CheckUpdateRowCount;
             return executionToken;

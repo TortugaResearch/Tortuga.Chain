@@ -71,7 +71,7 @@ namespace Tortuga.Chain.Materializers
                 using (var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SequentialAccess, cancellationToken).ConfigureAwait(false))
                 {
                     var factory = CompiledMaterializers.CreateBuilder<TObject>(DataSource, cmd.CommandText, reader, CommandBuilder.TryGetNonNullableColumns());
-                    while (await reader.ReadAsync())
+                    while (await reader.ReadAsync().ConfigureAwait(false))
                         result.Add(factory(reader));
                     return result.Count;
                 }

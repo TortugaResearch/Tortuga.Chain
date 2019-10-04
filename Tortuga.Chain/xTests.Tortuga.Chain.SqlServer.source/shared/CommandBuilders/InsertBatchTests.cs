@@ -21,7 +21,7 @@ namespace Tests.CommandBuilders
 #if SQL_SERVER
 
         [Theory, MemberData(nameof(Prime))]
-        public void InsertBatch(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void InsertBatch(string dataSourceName, DataSourceType mode)
         {
             var key1000 = Guid.NewGuid().ToString();
             var employeeList = new List<Employee>();
@@ -42,7 +42,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void InsertBatch_Identity(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void InsertBatch_Identity(string dataSourceName, DataSourceType mode)
         {
             const string TableType = "HR.EmployeeTable";
 
@@ -77,7 +77,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void InsertBatch_Streaming(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void InsertBatch_Streaming(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -103,7 +103,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void InsertBatch_SelectBack(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void InsertBatch_SelectBack(string dataSourceName, DataSourceType mode)
         {
             var key1000 = Guid.NewGuid().ToString();
             var employeeList = new List<Employee>();
@@ -125,7 +125,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void InsertBatch_SelectKeys(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void InsertBatch_SelectKeys(string dataSourceName, DataSourceType mode)
         {
             var key1000 = Guid.NewGuid().ToString();
             var employeeList = new List<Employee>();
@@ -147,7 +147,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Root))]
-        public void InsertBatch_AuditRules(string assemblyName, string dataSourceName)
+        public void InsertBatch_AuditRules(string dataSourceName)
         {
             var key1000 = Guid.NewGuid().ToString();
             var employeeList = new List<Employee>();

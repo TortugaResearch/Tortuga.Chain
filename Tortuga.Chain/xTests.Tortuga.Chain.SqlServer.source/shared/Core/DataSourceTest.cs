@@ -13,7 +13,7 @@ namespace Tests.Core
         }
 
         [Theory, MemberData(nameof(BasicData))]
-        public void TestConnection(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void TestConnection(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -27,7 +27,7 @@ namespace Tests.Core
         }
 
         [Theory, MemberData(nameof(BasicData))]
-        public async Task TestConnectionAsync(string assemblyName, string dataSourceName, DataSourceType mode)
+        public async Task TestConnectionAsync(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try

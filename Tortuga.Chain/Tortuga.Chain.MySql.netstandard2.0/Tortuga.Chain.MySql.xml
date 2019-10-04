@@ -4,6 +4,171 @@
         <name>Tortuga.Chain.MySql</name>
     </assembly>
     <members>
+        <member name="T:Tortuga.Chain.Metadata.DataReaderExtensions">
+            <summary>
+            DataReaderExtensions is used for generating metadata.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.Metadata.DataReaderExtensions.GetBoolean(System.Data.Common.DbDataReader,System.String)">
+            <summary>
+            Gets the boolean.
+            </summary>
+            <param name="dataReader">The data reader.</param>
+            <param name="columnName">Name of the column.</param>
+            <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.Metadata.DataReaderExtensions.GetBooleanOrNull(System.Data.Common.DbDataReader,System.String)">
+            <summary>
+            Gets the boolean or null.
+            </summary>
+            <param name="dataReader">The data reader.</param>
+            <param name="columnName">Name of the column.</param>
+            <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.Metadata.DataReaderExtensions.GetInt16(System.Data.Common.DbDataReader,System.String)">
+            <summary>
+            Gets the int16.
+            </summary>
+            <param name="dataReader">The data reader.</param>
+            <param name="columnName">Name of the column.</param>
+            <returns>System.Int16.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.Metadata.DataReaderExtensions.GetInt16OrNull(System.Data.Common.DbDataReader,System.String)">
+            <summary>
+            Gets the int16 or null.
+            </summary>
+            <param name="dataReader">The data reader.</param>
+            <param name="columnName">Name of the column.</param>
+            <returns>System.Nullable&lt;System.Int16&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.Metadata.DataReaderExtensions.GetInt32(System.Data.Common.DbDataReader,System.String)">
+            <summary>
+            Gets the int32.
+            </summary>
+            <param name="dataReader">The data reader.</param>
+            <param name="columnName">Name of the column.</param>
+            <returns>System.Int32.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.Metadata.DataReaderExtensions.GetInt32OrNull(System.Data.Common.DbDataReader,System.String)">
+            <summary>
+            Gets the int32 or null.
+            </summary>
+            <param name="dataReader">The data reader.</param>
+            <param name="columnName">Name of the column.</param>
+            <returns>System.Nullable&lt;System.Int32&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.Metadata.DataReaderExtensions.GetInt64(System.Data.Common.DbDataReader,System.String)">
+            <summary>
+            Gets the int64.
+            </summary>
+            <param name="dataReader">The data reader.</param>
+            <param name="columnName">Name of the column.</param>
+            <returns>System.Int64.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.Metadata.DataReaderExtensions.GetByte(System.Data.Common.DbDataReader,System.String)">
+            <summary>Gets the byte.</summary>
+            <param name="dataReader">The data reader.</param>
+            <param name="columnName">Name of the column.</param>
+            <returns>System.Int64.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.Metadata.DataReaderExtensions.GetInt64OrNull(System.Data.Common.DbDataReader,System.String)">
+            <summary>
+            Gets the int64 or null.
+            </summary>
+            <param name="dataReader">The data reader.</param>
+            <param name="columnName">Name of the column.</param>
+            <returns>System.Nullable&lt;System.Int64&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.Metadata.DataReaderExtensions.GetString(System.Data.Common.DbDataReader,System.String)">
+            <summary>
+            Gets the string.
+            </summary>
+            <param name="dataReader">The data reader.</param>
+            <param name="columnName">Name of the column.</param>
+            <returns>System.String.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.Metadata.DataReaderExtensions.GetChar(System.Data.Common.DbDataReader,System.String)">
+            <summary>
+            Gets the char.
+            </summary>
+            <param name="dataReader">The data reader.</param>
+            <param name="columnName">Name of the column.</param>
+        </member>
+        <member name="M:Tortuga.Chain.Metadata.DataReaderExtensions.GetStringOrNull(System.Data.Common.DbDataReader,System.String)">
+            <summary>
+            Gets the string or null.
+            </summary>
+            <param name="dataReader">The data reader.</param>
+            <param name="columnName">Name of the column.</param>
+            <returns>System.String.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.Metadata.DataReaderExtensions.GetCharOrNull(System.Data.Common.DbDataReader,System.String)">
+            <summary>
+            Gets the char or null.
+            </summary>
+            <param name="dataReader">The data reader.</param>
+            <param name="columnName">Name of the column.</param>
+        </member>
+        <member name="M:Tortuga.Chain.Metadata.DataReaderExtensions.GetUInt32(System.Data.Common.DbDataReader,System.String)">
+            <summary>
+            Gets the uint32.
+            </summary>
+            <param name="dataReader">The data reader.</param>
+            <param name="columnName">Name of the column.</param>
+            <returns>System.UInt32.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.Metadata.DataReaderExtensions.GetUInt32OrNull(System.Data.Common.DbDataReader,System.String)">
+            <summary>
+            Gets the uint32 or null.
+            </summary>
+            <param name="dataReader">The data reader.</param>
+            <param name="columnName">Name of the column.</param>
+            <returns>System.Nullable&lt;System.UInt32&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.Metadata.DataReaderExtensions.GetUInt64(System.Data.Common.DbDataReader,System.String)">
+            <summary>Gets the u int64.</summary>
+            <param name="dataReader">The data reader.</param>
+            <param name="columnName">Name of the column.</param>
+            <returns>System.UInt64.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.Metadata.DataReaderExtensions.GetValue(System.Data.Common.DbDataReader,System.String)">
+            <summary>
+            Gets the value.
+            </summary>
+            <param name="dataReader">The data reader.</param>
+            <param name="columnName">Name of the column.</param>
+            <returns>System.Object.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.Metadata.DataReaderExtensions.GetValue``1(System.Data.Common.DbDataReader,System.String)">
+            <summary>
+            Gets the value.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="dataReader">The data reader.</param>
+            <param name="columnName">Name of the column.</param>
+            <returns>T.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.Metadata.DataReaderExtensions.GetValue``1(System.Data.Common.DbDataReader,System.Int32)">
+            <summary>Gets the value.</summary>
+            <typeparam name="T"></typeparam>
+            <param name="dataReader">The data reader.</param>
+            <param name="ordinal">The ordinal.</param>
+            <returns>T.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.Metadata.DataReaderExtensions.IsDBNull(System.Data.Common.DbDataReader,System.String)">
+            <summary>
+            Determines whether [is database null] [the specified column name].
+            </summary>
+            <param name="dataReader">The data reader.</param>
+            <param name="columnName">Name of the column.</param>
+            <returns><c>true</c> if [is database null] [the specified column name]; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.Metadata.DataReaderExtensions.GetUInt64OrNull(MySql.Data.MySqlClient.MySqlDataReader,System.String)">
+            <summary>Gets the u int64.</summary>
+            <param name="dataReader">The data reader.</param>
+            <param name="columnName">Name of the column.</param>
+            <returns>System.UInt64.</returns>
+        </member>
         <member name="T:Tortuga.Chain.MySql.MySqlDataSourceBase">
             <summary>
             Class MySqlDataSourceBase.
@@ -892,26 +1057,11 @@
             Gets the table metadata.
             </summary>
         </member>
-        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlObjectCommand`1.TryGetColumn(System.String)">
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlObjectCommand`1.OnGetTable">
             <summary>
-            Returns the column associated with the column name.
+            Called when ObjectDbCommandBuilder needs a reference to the associated table or view.
             </summary>
-            <param name="columnName">Name of the column.</param>
             <returns></returns>
-            <remarks>
-            If the column name was not found, this will return null
-            </remarks>
-        </member>
-        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlObjectCommand`1.TryGetNonNullableColumns">
-            <summary>
-            Returns a list of columns known to be non-nullable.
-            </summary>
-            <returns>
-            If the command builder doesn't know which columns are non-nullable, an empty list will be returned.
-            </returns>
-            <remarks>
-            This is used by materializers to skip IsNull checks.
-            </remarks>
         </member>
         <member name="T:Tortuga.Chain.MySql.CommandBuilders.MySqlProcedureCall">
             <summary>
@@ -1328,6 +1478,16 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlMetadataCache.GetIndexesForTable(Tortuga.Chain.MySql.MySqlObjectName)">
+            <summary>
+            Gets the indexes for a table.
+            </summary>
+            <param name="tableName">Name of the table.</param>
+            <returns></returns>
+            <remarks>
+            This should be cached on a TableOrViewMetadata object.
+            </remarks>
+        </member>
         <member name="M:Tortuga.Chain.MySql.MySqlMetadataCache.GetScalarFunction(Tortuga.Chain.MySql.MySqlObjectName)">
             <summary>
             Gets the metadata for a scalar function.
@@ -1414,12 +1574,41 @@
             Resets the metadata cache, clearing out all cached metadata.
             </summary>
         </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlMetadataCache.ValueToSqlValue(System.Object,System.Nullable{MySql.Data.MySqlClient.MySqlDbType})">
+            <summary>
+            Converts a value to a string suitable for use in a SQL statement.
+            </summary>
+            <param name="value">The value.</param>
+            <param name="dbType">Optional database column type.</param>
+            <returns></returns>
+        </member>
         <member name="M:Tortuga.Chain.MySql.MySqlMetadataCache.ParseObjectName(System.String)">
             <summary>
             Parse a string and return the database specific representation of the object name.
             </summary>
             <param name="name">The name.</param>
             <returns>MySqlObjectName.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlMetadataCache.SqlTypeNameToDbType(System.String,System.Nullable{System.Boolean})">
+            <summary>
+            Determines the database column type from the column type name.
+            </summary>
+            <param name="typeName">Name of the database column type.</param>
+            <param name="isUnsigned">Indicates whether or not the column is unsigned. Only applicable to some databases.</param>
+            <returns></returns>
+            <remarks>This does not honor registered types. This is only used for the database's hard-coded list of native types.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlMetadataCache.ToClrType(MySql.Data.MySqlClient.MySqlDbType,System.Boolean,System.Nullable{System.Int32})">
+            <summary>
+            Returns the CLR type that matches the indicated database column type.
+            </summary>
+            <param name="dbType">Type of the database column.</param>
+            <param name="isNullable">If nullable, Nullable versions of primitive types are returned.</param>
+            <param name="maxLength">Optional length. Used to distinguish between a char and string. Defaults to string.</param>
+            <returns>
+            A CLR type or NULL if the type is unknown.
+            </returns>
+            <remarks>This does not take into consideration registered types.</remarks>
         </member>
         <member name="M:Tortuga.Chain.MySql.MySqlMetadataCache.GetColumns(System.String,System.String)">
             <summary>
@@ -1668,23 +1857,23 @@
             <param name="state">The state.</param>
             <returns>Task.</returns>
         </member>
-        <member name="T:Tortuga.Chain.MySql.MySqlTableOrViewMetadata`1">
+        <member name="T:Tortuga.Chain.MySql.MySqlTableOrViewMetadata">
             <summary>
             Class MySqlTableOrViewMetadata.
             </summary>
-            <typeparam name="TDbType">The type of the t database type.</typeparam>
             <seealso cref="T:Tortuga.Chain.Metadata.TableOrViewMetadata`2" />
         </member>
-        <member name="M:Tortuga.Chain.MySql.MySqlTableOrViewMetadata`1.#ctor(Tortuga.Chain.MySql.MySqlObjectName,System.Boolean,System.Collections.Generic.IList{Tortuga.Chain.Metadata.ColumnMetadata{`0}},System.String)">
+        <member name="M:Tortuga.Chain.MySql.MySqlTableOrViewMetadata.#ctor(Tortuga.Chain.Metadata.DatabaseMetadataCache{Tortuga.Chain.MySql.MySqlObjectName,MySql.Data.MySqlClient.MySqlDbType},Tortuga.Chain.MySql.MySqlObjectName,System.Boolean,System.Collections.Generic.IList{Tortuga.Chain.Metadata.ColumnMetadata{MySql.Data.MySqlClient.MySqlDbType}},System.String)">
             <summary>
-            Initializes a new instance of the <see cref="T:Tortuga.Chain.MySql.MySqlTableOrViewMetadata`1" /> class.
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.MySql.MySqlTableOrViewMetadata" /> class.
             </summary>
+            <param name="metadataCache">The metadata cache.</param>
             <param name="name">The name.</param>
             <param name="isTable">if set to <c>true</c> is a table.</param>
             <param name="columns">The columns.</param>
             <param name="engine">The engine.</param>
         </member>
-        <member name="P:Tortuga.Chain.MySql.MySqlTableOrViewMetadata`1.Engine">
+        <member name="P:Tortuga.Chain.MySql.MySqlTableOrViewMetadata.Engine">
             <summary>
             Gets the engine.
             </summary>

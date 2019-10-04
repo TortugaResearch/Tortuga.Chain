@@ -5,6 +5,7 @@ using System.Data;
 using System.Data.OleDb;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Linq;
 using Tortuga.Anchor;
 using Tortuga.Anchor.Metadata;
 using Tortuga.Chain.Metadata;
@@ -14,12 +15,13 @@ namespace Tortuga.Chain.Access
     /// <summary>
     /// Handles caching of metadata for various Access tables and views.
     /// </summary>
-    public sealed class AccessMetadataCache : DatabaseMetadataCache<AccessObjectName, OleDbType>
+    public sealed class AccessMetadataCache : OleDbDatabaseMetadataCache<AccessObjectName>
     {
         readonly OleDbConnectionStringBuilder m_ConnectionBuilder;
         readonly ConcurrentDictionary<AccessObjectName, TableOrViewMetadata<AccessObjectName, OleDbType>> m_Tables = new ConcurrentDictionary<AccessObjectName, TableOrViewMetadata<AccessObjectName, OleDbType>>();
         readonly ConcurrentDictionary<Type, TableOrViewMetadata<AccessObjectName, OleDbType>> m_TypeTableMap = new ConcurrentDictionary<Type, TableOrViewMetadata<AccessObjectName, OleDbType>>();
 
+        ConcurrentDictionary<Guid, DataTable> m_DataTableCache = new ConcurrentDictionary<Guid, DataTable>();
         bool m_SchemaLoaded;
 
         /// <summary>
@@ -29,6 +31,44 @@ namespace Tortuga.Chain.Access
         public AccessMetadataCache(OleDbConnectionStringBuilder connectionBuilder)
         {
             m_ConnectionBuilder = connectionBuilder;
+        }
+
+        /// <summary>
+        /// Gets the indexes for a table.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        /// <returns></returns>
+        /// <exception cref="NotSupportedException">Indexes are not supported by this data source</exception>
+        /// <remarks>
+        /// This should be cached on a TableOrViewMetadata object.
+        /// </remarks>
+        public override IndexMetadataCollection<AccessObjectName, OleDbType> GetIndexesForTable(AccessObjectName tableName)
+        {
+            var result = new List<IndexMetadata<AccessObjectName, OleDbType>>();
+            var indexDT = GetSchemaTable(OleDbSchemaGuid.Indexes);
+
+            var allColumns = GetTableOrView(tableName).Columns;
+            var indexes = indexDT.AsEnumerable().Where(r => string.Equals(r["TABLE_NAME"].ToString(), tableName.Name, StringComparison.Ordinal)).GroupBy(r => r["INDEX_NAME"].ToString()).ToList();
+
+            foreach (var index in indexes)
+            {
+                var name = index.Key;
+                var unique = (bool)index.First()["UNIQUE"];
+                var isPrimary = (bool)index.First()["PRIMARY_KEY"];
+
+                var columns = new IndexColumnMetadata<OleDbType>[index.Count()];
+                foreach (var column in index)
+                {
+                    var details = allColumns[(string)column["COLUMN_NAME"]];
+                    columns[(int)(long)column["ORDINAL_POSITION"] - 1] = new IndexColumnMetadata<OleDbType>(details, false, false);
+                }
+
+                var indexType = isPrimary ? IndexType.Clustered : IndexType.Nonclustered;
+
+                result.Add(new IndexMetadata<AccessObjectName, OleDbType>(tableName, name, isPrimary, unique, false, new IndexColumnMetadataCollection<OleDbType>(columns), null, null, indexType));
+            }
+
+            return new IndexMetadataCollection<AccessObjectName, OleDbType>(result);
         }
 
         /// <summary>
@@ -114,6 +154,7 @@ namespace Tortuga.Chain.Access
         /// </summary>
         public override void Reset()
         {
+            m_DataTableCache.Clear();
             m_Tables.Clear();
             m_TypeTableMap.Clear();
             m_SchemaLoaded = false;
@@ -125,6 +166,21 @@ namespace Tortuga.Chain.Access
         /// <param name="name">The name.</param>
         /// <returns>System.String.</returns>
         protected override AccessObjectName ParseObjectName(string name) => name;
+
+        /// <summary>
+        /// Determines the database column type from the column type name.
+        /// </summary>
+        /// <param name="typeName">Name of the database column type.</param>
+        /// <param name="isUnsigned">NOT USED</param>
+        /// <returns></returns>
+        /// <remarks>This does not honor registered types. This is only used for the database's hard-coded list of native types.</remarks>
+        protected override OleDbType? SqlTypeNameToDbType(string typeName, bool? isUnsigned = null)
+        {
+            if (Enum.TryParse<OleDbType>(typeName, out var result))
+                return result;
+
+            return null;
+        }
 
         [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         List<ColumnMetadata<OleDbType>> GetColumns(string tableName, DataTable columns, DataTable primaryKeys)
@@ -147,7 +203,7 @@ namespace Tortuga.Chain.Access
                 if (primaryKeys != null)
                     foreach (DataRow row in primaryKeys.Rows)
                     {
-                        if (row["TABLE_NAME"].ToString() == tableName && row["COLUMN_NAME"].ToString() == name)
+                        if (string.Equals(row["TABLE_NAME"].ToString(), tableName, StringComparison.Ordinal) && string.Equals(row["COLUMN_NAME"].ToString(), name, StringComparison.Ordinal))
                         {
                             isPrimaryKey = true;
                             break;
@@ -173,28 +229,30 @@ namespace Tortuga.Chain.Access
                     }
                 }
 
-                result.Add(new ColumnMetadata<OleDbType>(name, false, isPrimaryKey, isIdentity, type.Value.ToString(), type.Value, $"[{name}]", isNullable, (int?)maxLength, precision, scale, fullTypeName));
+                Type clrType = null;
+                if (type.HasValue)
+                    clrType = ToClrType(type.Value, isNullable ?? true, (int?)maxLength);
+
+                result.Add(new ColumnMetadata<OleDbType>(name, false, isPrimaryKey, isIdentity, type.Value.ToString(), type.Value, $"[{name}]", isNullable, (int?)maxLength, precision, scale, fullTypeName, clrType));
             }
 
             return result;
         }
 
-        DataTable GetColumnsDataTable()
-        {
-            using (var connection = new OleDbConnection(m_ConnectionBuilder.ConnectionString))
-            {
-                connection.Open();
-                return connection.GetOleDbSchemaTable(OleDbSchemaGuid.Columns, null);
-            }
-        }
+        DataTable GetColumnsDataTable() => GetSchemaTable(OleDbSchemaGuid.Columns);
 
-        DataTable GetPrimaryKeysDataTable()
+        DataTable GetPrimaryKeysDataTable() => GetSchemaTable(OleDbSchemaGuid.Primary_Keys);
+
+        DataTable GetSchemaTable(Guid oleDbSchemaGuid)
         {
-            using (var connection = new OleDbConnection(m_ConnectionBuilder.ConnectionString))
+            return m_DataTableCache.GetOrAdd(oleDbSchemaGuid, sg =>
             {
-                connection.Open();
-                return connection.GetOleDbSchemaTable(OleDbSchemaGuid.Primary_Keys, null);
-            }
+                using (var connection = new OleDbConnection(m_ConnectionBuilder.ConnectionString))
+                {
+                    connection.Open();
+                    return connection.GetOleDbSchemaTable(sg, null);
+                }
+            });
         }
 
         void PreloadTables(DataTable columnsDataTable, DataTable primaryKeys)
@@ -210,7 +268,7 @@ namespace Tortuga.Chain.Access
 
                     var name = row["TABLE_NAME"].ToString();
                     var columns = GetColumns(name, columnsDataTable, primaryKeys);
-                    m_Tables[name] = new TableOrViewMetadata<AccessObjectName, OleDbType>(name, true, columns);
+                    m_Tables[name] = new TableOrViewMetadata<AccessObjectName, OleDbType>(this, name, true, columns);
                 }
             }
         }
@@ -225,7 +283,7 @@ namespace Tortuga.Chain.Access
                 {
                     var name = row["TABLE_NAME"].ToString();
                     var columns = GetColumns(name, columnsDataTable, null);
-                    m_Tables[name] = new TableOrViewMetadata<AccessObjectName, OleDbType>(name, false, columns);
+                    m_Tables[name] = new TableOrViewMetadata<AccessObjectName, OleDbType>(this, name, false, columns);
                 }
             }
         }

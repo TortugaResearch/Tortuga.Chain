@@ -1,15 +1,14 @@
+using System;
+
 namespace Tortuga.Chain.Metadata
 {
-
-
     /// <summary>
     /// Metadata for a table or view column
     /// </summary>
     /// <typeparam name="TDbType">The variant of DbType used by this data source.</typeparam>
     public sealed class ColumnMetadata<TDbType> : ColumnMetadata, ISqlBuilderEntryDetails<TDbType>
-        where TDbType : struct
+    where TDbType : struct
     {
-
         /// <summary>
         /// Initializes a new instance of the <see cref="ColumnMetadata{TDbType}" /> class.
         /// </summary>
@@ -25,35 +24,16 @@ namespace Tortuga.Chain.Metadata
         /// <param name="precision">The precision.</param>
         /// <param name="scale">The scale.</param>
         /// <param name="fullTypeName">Full name of the type.</param>
-        public ColumnMetadata(string name, bool isComputed, bool isPrimaryKey, bool isIdentity, string typeName, TDbType? dbType, string quotedSqlName, bool? isNullable, int? maxLength, int? precision, int? scale, string fullTypeName)
+        /// <param name="clrType">The CLR type that matches this column's database type.</param>
+        public ColumnMetadata(string name, bool isComputed, bool isPrimaryKey, bool isIdentity, string typeName, TDbType? dbType, string quotedSqlName, bool? isNullable, int? maxLength, int? precision, int? scale, string fullTypeName, Type clrType) : base(name, isComputed, isPrimaryKey, isIdentity, typeName, dbType, quotedSqlName, isNullable, maxLength, precision, scale, fullTypeName, clrType)
         {
-            TypeName = typeName;
-            SqlName = name;
-            IsComputed = isComputed;
-            IsPrimaryKey = isPrimaryKey;
-            IsIdentity = isIdentity;
             DbType = dbType;
-            base.DbType = dbType;
-            QuotedSqlName = quotedSqlName;
-
-            if (!string.IsNullOrWhiteSpace(name))
-            {
-                ClrName = Utilities.ToClrName(name);
-                SqlVariableName = "@" + ClrName;
-            }
-
-            IsNullable = isNullable;
-            Precision = precision;
-            MaxLength = maxLength;
-            Scale = scale;
-            FullTypeName = fullTypeName;
         }
 
         /// <summary>
         /// Gets the type used by the database.
         /// </summary>
         public new TDbType? DbType { get; }
-
 
         /// <summary>
         /// Returns a <see cref="string" /> that represents this instance.

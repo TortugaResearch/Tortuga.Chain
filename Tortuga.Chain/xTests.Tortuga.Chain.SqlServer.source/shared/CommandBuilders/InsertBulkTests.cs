@@ -21,7 +21,7 @@ namespace Tests.CommandBuilders
 #if SQL_SERVER
 
         [Theory, MemberData(nameof(Prime))]
-        public void InsertBulk(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void InsertBulk(string dataSourceName, DataSourceType mode)
         {
             var key1000 = Guid.NewGuid().ToString();
             var employeeList = new List<Employee>();
@@ -42,7 +42,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void InsertBulk_IdentityInsert(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void InsertBulk_IdentityInsert(string dataSourceName, DataSourceType mode)
         {
             var key1000 = Guid.NewGuid().ToString();
             var employeeList = new List<Employee>();
@@ -75,7 +75,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void InsertBulk_WithStreaming(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void InsertBulk_WithStreaming(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -93,7 +93,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void InsertBulk_WithEvents(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void InsertBulk_WithEvents(string dataSourceName, DataSourceType mode)
         {
             long runningCount = 0;
             var key = Guid.NewGuid().ToString();

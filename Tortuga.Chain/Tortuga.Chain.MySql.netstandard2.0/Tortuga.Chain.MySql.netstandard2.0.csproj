@@ -27,6 +27,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="..\Shared\DataReaderExtensions.cs" Link="DataReaderExtensions.cs" />
     <Compile Include="..\Shared\DataSourceBase.Class0DataSource.cs" Link="DataSourceBase.Class0DataSource.cs" />
     <Compile Include="..\Shared\DataSourceBase.Class1DataSource.cs" Link="DataSourceBase.Class1DataSource.cs" />
     <Compile Include="..\Shared\DataSourceBase.Class1DataSource.StringNames.cs" Link="DataSourceBase.Class1DataSource.StringNames.cs" />
@@ -46,7 +47,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="MySqlConnector" Version="0.49.3" />
-    <PackageReference Include="Tortuga.Chain.Core" Version="2.1.7009.31212" />
+    <PackageReference Include="MySqlConnector" Version="0.59.1" />
+    <PackageReference Include="Tortuga.Chain.Core" Version="2.2.7182.611" />
   </ItemGroup>
 </Project>

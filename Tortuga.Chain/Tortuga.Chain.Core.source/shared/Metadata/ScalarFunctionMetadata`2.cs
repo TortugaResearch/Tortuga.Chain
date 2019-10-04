@@ -3,8 +3,6 @@ using Tortuga.Chain.CommandBuilders;
 
 namespace Tortuga.Chain.Metadata
 {
-
-
     /// <summary>
     /// Metadata for a database table value function.
     /// </summary>
@@ -35,7 +33,6 @@ namespace Tortuga.Chain.Metadata
             base.Parameters = Parameters.GenericCollection;
 
             m_Builder = new SqlBuilder<TDbType>(Name.ToString(), Parameters);
-
 
             TypeName = typeName;
             DbType = dbType;

@@ -22,10 +22,8 @@ namespace Tortuga.Chain.Appenders
         /// <param name="policy">Optional cache policy.</param>
         public ReadOrCacheResultAppender(ILink<TResult> previousLink, string cacheKey, CachePolicy policy) : base(previousLink)
         {
-            if (previousLink == null)
-                throw new ArgumentNullException("previousLink", "previousLink is null.");
             if (string.IsNullOrEmpty(cacheKey))
-                throw new ArgumentException("cacheKey is null or empty.", "cacheKey");
+                throw new ArgumentException($"{nameof(cacheKey)} is null or empty.", nameof(cacheKey));
 
             m_Policy = policy;
             m_CacheKey = cacheKey;
@@ -70,6 +68,5 @@ namespace Tortuga.Chain.Appenders
         {
             DataSource.Cache.Invalidate(m_CacheKey);
         }
-
     }
 }

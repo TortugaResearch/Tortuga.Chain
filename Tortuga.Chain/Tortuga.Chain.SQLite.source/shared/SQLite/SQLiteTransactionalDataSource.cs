@@ -9,8 +9,6 @@ using System.Threading.Tasks;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.DataSources;
 
-
-
 namespace Tortuga.Chain.SQLite
 {
     /// <summary>
@@ -18,12 +16,46 @@ namespace Tortuga.Chain.SQLite
     /// </summary>
     public class SQLiteTransactionalDataSource : SQLiteDataSourceBase, IDisposable, ITransactionalDataSource
     {
-        readonly SQLiteConnection m_Connection;
         readonly SQLiteDataSource m_BaseDataSource;
+        readonly SQLiteConnection m_Connection;
         readonly SQLiteTransaction m_Transaction;
+        bool m_Disposed;
         IDisposable m_LockToken;
 
-        bool m_Disposed;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SQLiteTransactionalDataSource"/> class.
+        /// </summary>
+        /// <param name="dataSource">The data source.</param>
+        /// <param name="isolationLevel">The isolation level.</param>
+        /// <param name="forwardEvents">if set to <c>true</c> [forward events].</param>
+        [SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public SQLiteTransactionalDataSource(SQLiteDataSource dataSource, IsolationLevel? isolationLevel, bool forwardEvents) : base(new SQLiteDataSourceSettings() { DefaultCommandTimeout = dataSource.DefaultCommandTimeout, StrictMode = dataSource.StrictMode, SuppressGlobalEvents = dataSource.SuppressGlobalEvents || forwardEvents, DisableLocks = dataSource.DisableLocks })
+        {
+            if (dataSource == null)
+                throw new ArgumentNullException(nameof(dataSource), $"{nameof(dataSource)} is null.");
+
+            Name = dataSource.Name;
+
+            m_BaseDataSource = dataSource;
+            m_Connection = dataSource.CreateConnection();
+            m_LockToken = SyncLock.WriterLock();
+
+            if (isolationLevel == null)
+                m_Transaction = m_Connection.BeginTransaction();
+            else
+                m_Transaction = m_Connection.BeginTransaction(isolationLevel.Value);
+
+            if (forwardEvents)
+            {
+                ExecutionStarted += (sender, e) => dataSource.OnExecutionStarted(e);
+                ExecutionFinished += (sender, e) => dataSource.OnExecutionFinished(e);
+                ExecutionError += (sender, e) => dataSource.OnExecutionError(e);
+                ExecutionCanceled += (sender, e) => dataSource.OnExecutionCanceled(e);
+            }
+
+            AuditRules = dataSource.AuditRules;
+            UserValue = dataSource.UserValue;
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SQLiteTransactionalDataSource" /> class.
@@ -66,38 +98,11 @@ namespace Tortuga.Chain.SQLite
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SQLiteTransactionalDataSource"/> class.
+        /// Gets or sets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
         /// </summary>
-        /// <param name="dataSource">The data source.</param>
-        /// <param name="isolationLevel">The isolation level.</param>
-        /// <param name="forwardEvents">if set to <c>true</c> [forward events].</param>
-        [SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public SQLiteTransactionalDataSource(SQLiteDataSource dataSource, IsolationLevel? isolationLevel, bool forwardEvents) : base(new SQLiteDataSourceSettings() { DefaultCommandTimeout = dataSource.DefaultCommandTimeout, StrictMode = dataSource.StrictMode, SuppressGlobalEvents = dataSource.SuppressGlobalEvents || forwardEvents, DisableLocks = dataSource.DisableLocks })
+        public override ICacheAdapter Cache
         {
-            if (dataSource == null)
-                throw new ArgumentNullException(nameof(dataSource), $"{nameof(dataSource)} is null.");
-
-            Name = dataSource.Name;
-
-            m_BaseDataSource = dataSource;
-            m_Connection = dataSource.CreateConnection();
-            m_LockToken = SyncLock.WriterLock();
-
-            if (isolationLevel == null)
-                m_Transaction = m_Connection.BeginTransaction();
-            else
-                m_Transaction = m_Connection.BeginTransaction(isolationLevel.Value);
-
-            if (forwardEvents)
-            {
-                ExecutionStarted += (sender, e) => dataSource.OnExecutionStarted(e);
-                ExecutionFinished += (sender, e) => dataSource.OnExecutionFinished(e);
-                ExecutionError += (sender, e) => dataSource.OnExecutionError(e);
-                ExecutionCanceled += (sender, e) => dataSource.OnExecutionCanceled(e);
-            }
-
-            AuditRules = dataSource.AuditRules;
-            UserValue = dataSource.UserValue;
+            get { return m_BaseDataSource.Cache; }
         }
 
         /// <summary>
@@ -112,6 +117,17 @@ namespace Tortuga.Chain.SQLite
         internal override AsyncReaderWriterLock SyncLock
         {
             get { return m_BaseDataSource.SyncLock; }
+        }
+
+        /// <summary>
+        /// The extension cache is used by extensions to store data source specific information.
+        /// </summary>
+        /// <value>
+        /// The extension cache.
+        /// </value>
+        protected override ConcurrentDictionary<Type, object> ExtensionCache
+        {
+            get { return m_BaseDataSource.m_ExtensionCache; }
         }
 
         /// <summary>
@@ -137,6 +153,18 @@ namespace Tortuga.Chain.SQLite
         }
 
         /// <summary>
+        /// Gets the extension data.
+        /// </summary>
+        /// <typeparam name="TTKey">The type of extension data desired.</typeparam>
+        /// <returns>T.</returns>
+        /// <remarks>Chain extensions can use this to store data source specific data. The key should be a data type defined by the extension.
+        /// Transactional data sources should override this method and return the value held by their parent data source.</remarks>
+        public override TTKey GetExtensionData<TTKey>()
+        {
+            return m_BaseDataSource.GetExtensionData<TTKey>();
+        }
+
+        /// <summary>
         /// Rolls the back.
         /// </summary>
         /// <exception cref="ObjectDisposedException">Transaction is disposed.</exception>
@@ -150,10 +178,29 @@ namespace Tortuga.Chain.SQLite
         }
 
         /// <summary>
+        /// Tests the connection.
+        /// </summary>
+        public override void TestConnection()
+        {
+            using (var cmd = new SQLiteCommand("SELECT 1", m_Connection))
+                cmd.ExecuteScalar();
+        }
+
+        /// <summary>
+        /// Tests the connection asynchronously.
+        /// </summary>
+        /// <returns></returns>
+        public override async Task TestConnectionAsync()
+        {
+            using (var cmd = new SQLiteCommand("SELECT 1", m_Connection))
+                await cmd.ExecuteScalarAsync().ConfigureAwait(false);
+        }
+
+        /// <summary>
         /// Releases unmanaged and - optionally - managed resources.
         /// </summary>
         /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
-        void Dispose(bool disposing)
+        protected virtual void Dispose(bool disposing)
         {
             if (m_Disposed)
                 return;
@@ -192,8 +239,6 @@ namespace Tortuga.Chain.SQLite
 
             try
             {
-
-
                 using (var cmd = new SQLiteCommand())
                 {
                     cmd.Connection = m_Connection;
@@ -212,6 +257,36 @@ namespace Tortuga.Chain.SQLite
                     OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
                     return rows;
                 }
+            }
+            catch (Exception ex)
+            {
+                OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Executes the specified operation.
+        /// </summary>
+        /// <param name="executionToken">The execution token.</param>
+        /// <param name="implementation">The implementation.</param>
+        /// <param name="state">The state.</param>
+        /// <returns>System.Nullable&lt;System.Int32&gt;.</returns>
+        protected override int? Execute(OperationExecutionToken<SQLiteConnection, SQLiteTransaction> executionToken, OperationImplementation<SQLiteConnection, SQLiteTransaction> implementation, object state)
+        {
+            if (executionToken == null)
+                throw new ArgumentNullException("executionToken", "executionToken is null.");
+            if (implementation == null)
+                throw new ArgumentNullException("implementation", "implementation is null.");
+
+            var startTime = DateTimeOffset.Now;
+            OnExecutionStarted(executionToken, startTime, state);
+
+            try
+            {
+                var rows = implementation(m_Connection, m_Transaction);
+                OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
+                return rows;
             }
             catch (Exception ex)
             {
@@ -247,8 +322,6 @@ namespace Tortuga.Chain.SQLite
 
             try
             {
-
-
                 using (var cmd = new SQLiteCommand())
                 {
                     cmd.Connection = m_Connection;
@@ -270,7 +343,7 @@ namespace Tortuga.Chain.SQLite
             }
             catch (Exception ex)
             {
-                if (cancellationToken.IsCancellationRequested) //convert SQLiteException into a OperationCanceledException 
+                if (cancellationToken.IsCancellationRequested) //convert SQLiteException into a OperationCanceledException
                 {
                     var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);
                     OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex2, state);
@@ -281,49 +354,6 @@ namespace Tortuga.Chain.SQLite
                     OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
                     throw;
                 }
-            }
-        }
-
-        /// <summary>
-        /// Gets the extension data.
-        /// </summary>
-        /// <typeparam name="TTKey">The type of extension data desired.</typeparam>
-        /// <returns>T.</returns>
-        /// <remarks>Chain extensions can use this to store data source specific data. The key should be a data type defined by the extension.
-        /// Transactional data sources should override this method and return the value held by their parent data source.</remarks>
-        public override TTKey GetExtensionData<TTKey>()
-        {
-            return m_BaseDataSource.GetExtensionData<TTKey>();
-        }
-
-        /// <summary>
-        /// Executes the specified operation.
-        /// </summary>
-        /// <param name="executionToken">The execution token.</param>
-        /// <param name="implementation">The implementation.</param>
-        /// <param name="state">The state.</param>
-        /// <returns>System.Nullable&lt;System.Int32&gt;.</returns>
-        protected override int? Execute(OperationExecutionToken<SQLiteConnection, SQLiteTransaction> executionToken, OperationImplementation<SQLiteConnection, SQLiteTransaction> implementation, object state)
-        {
-            if (executionToken == null)
-                throw new ArgumentNullException("executionToken", "executionToken is null.");
-            if (implementation == null)
-                throw new ArgumentNullException("implementation", "implementation is null.");
-
-            var startTime = DateTimeOffset.Now;
-            OnExecutionStarted(executionToken, startTime, state);
-
-            try
-            {
-                var rows = implementation(m_Connection, m_Transaction);
-                OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
-                return rows;
-
-            }
-            catch (Exception ex)
-            {
-                OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
-                throw;
             }
         }
 
@@ -352,11 +382,10 @@ namespace Tortuga.Chain.SQLite
                 var rows = await implementation(m_Connection, m_Transaction, cancellationToken).ConfigureAwait(false);
                 OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
                 return rows;
-
             }
             catch (Exception ex)
             {
-                if (cancellationToken.IsCancellationRequested) //convert SQLiteException into a OperationCanceledException 
+                if (cancellationToken.IsCancellationRequested) //convert SQLiteException into a OperationCanceledException
                 {
                     var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);
                     OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex2, state);
@@ -369,44 +398,5 @@ namespace Tortuga.Chain.SQLite
                 }
             }
         }
-
-        /// <summary>
-        /// Tests the connection.
-        /// </summary>
-        public override void TestConnection()
-        {
-            using (var cmd = new SQLiteCommand("SELECT 1", m_Connection))
-                cmd.ExecuteScalar();
-        }
-
-        /// <summary>
-        /// Tests the connection asynchronously.
-        /// </summary>
-        /// <returns></returns>
-        public override async Task TestConnectionAsync()
-        {
-            using (var cmd = new SQLiteCommand("SELECT 1", m_Connection))
-                await cmd.ExecuteScalarAsync();
-        }
-
-        /// <summary>
-        /// Gets or sets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
-        /// </summary>
-        public override ICacheAdapter Cache
-        {
-            get { return m_BaseDataSource.Cache; }
-        }
-
-        /// <summary>
-        /// The extension cache is used by extensions to store data source specific information.
-        /// </summary>
-        /// <value>
-        /// The extension cache.
-        /// </value>
-        protected override ConcurrentDictionary<Type, object> ExtensionCache
-        {
-            get { return m_BaseDataSource.m_ExtensionCache; }
-        }
-
     }
 }

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Tests.Models;
@@ -141,5 +143,15 @@ namespace Tests
         }
 
         protected static string EmployeeSearchKey1000;
+
+        protected DirectoryInfo GetOutputFolder(string folderName)
+        {
+            var codeBaseUrl = new Uri(Assembly.GetExecutingAssembly().CodeBase);
+            var codeBasePath = Uri.UnescapeDataString(codeBaseUrl.AbsolutePath);
+            var dirPath = Path.GetDirectoryName(codeBasePath);
+            var result = new DirectoryInfo(Path.Combine(dirPath, "TestOutput", folderName));
+            result.Create();
+            return result;
+        }
     }
 }

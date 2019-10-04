@@ -9,31 +9,31 @@
     <tags>ORM, Fluent, SQLite</tags>
     <language>en-US</language>
     <projectUrl>https://github.com/docevaad/Chain</projectUrl>
-    <licenseUrl>https://github.com/docevaad/Chain/blob/master/License.txt</licenseUrl>
+    <license type="expression">MIT</license>
     <references>
       <reference file="Tortuga.Chain.SQLite.dll" />
     </references>
     <frameworkAssemblies>
-      <frameworkAssembly assemblyName="System.Data" targetFramework="net46" />
-      <frameworkAssembly assemblyName="System.ComponentModel.DataAnnotations" targetFramework="net46" />
-      <frameworkAssembly assemblyName="System.Xml" targetFramework="net46" />
-      <frameworkAssembly assemblyName="System.Xml.Linq" targetFramework="net46" />
-      <frameworkAssembly assemblyName="System.Runtime.Caching" targetFramework="net46" />
-      <frameworkAssembly assemblyName="System.Configuration" targetFramework="net46" />
+      <frameworkAssembly assemblyName="System.Data" targetFramework="net461" />
+      <frameworkAssembly assemblyName="System.ComponentModel.DataAnnotations" targetFramework="net461" />
+      <frameworkAssembly assemblyName="System.Xml" targetFramework="net461" />
+      <frameworkAssembly assemblyName="System.Xml.Linq" targetFramework="net461" />
+      <frameworkAssembly assemblyName="System.Runtime.Caching" targetFramework="net461" />
+      <frameworkAssembly assemblyName="System.Configuration" targetFramework="net461" />
     </frameworkAssemblies>
 
     <dependencies>
 
-      <group targetFramework="net46">
-        <dependency id="System.Data.SQLite.Core" version="1.0.110.0" />
-        <dependency id="Tortuga.Chain.Core" version="2.1.7009.31212" />
-        <dependency id="Nito.AsyncEx" version="4.0.1" />
+      <group targetFramework="net461">
+        <dependency id="System.Data.SQLite.Core" version="1.0.111" />
+        <dependency id="Tortuga.Chain.Core" version="2.2.7182.611" />
+        <dependency id="Nito.AsyncEx" version="5.0.0" />
       </group>
 
       <group targetFramework="netstandard2.0">
-        <dependency id="System.Data.SQLite.Core" version="1.0.110.0" />
-        <dependency id="Tortuga.Chain.Core" version="2.1.7009.31212" />
-        <dependency id="Nito.AsyncEx.Coordination" version="1.0.2" />
+        <dependency id="System.Data.SQLite.Core" version="1.0.111" />
+        <dependency id="Tortuga.Chain.Core" version="2.2.7182.611" />
+        <dependency id="Nito.AsyncEx.Coordination" version="5.0.0" />
       </group>
     </dependencies>
   </metadata>

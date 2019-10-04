@@ -119,7 +119,7 @@ namespace Tortuga.Chain.SqlServer
             {
                 if (m_Transaction != null)
                     cmd.Transaction = m_Transaction;
-                await cmd.ExecuteScalarAsync();
+                await cmd.ExecuteScalarAsync().ConfigureAwait(false);
             }
         }
 

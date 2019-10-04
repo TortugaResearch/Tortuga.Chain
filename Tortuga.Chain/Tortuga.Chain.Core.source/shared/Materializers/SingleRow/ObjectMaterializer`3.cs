@@ -22,10 +22,14 @@ namespace Tortuga.Chain.Materializers
     {
         readonly RowOptions m_RowOptions;
 
-        /// <summary>
-        /// </summary>
+        /// <summary>Initializes a new instance of the <see cref="T:Tortuga.Chain.Materializers.ObjectMaterializer`3"/> class.</summary>
         /// <param name="commandBuilder">The command builder.</param>
         /// <param name="rowOptions">The row options.</param>
+        /// <exception cref="MappingException">
+        /// Type {typeof(TObject).Name} has does not have any non-default constructors.
+        /// or
+        /// Type {typeof(TObject).Name} has more than one non-default constructor. Please use the WithConstructor method to specify which one to use.
+        /// </exception>
         public ObjectMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, RowOptions rowOptions)
             : base(commandBuilder)
         {

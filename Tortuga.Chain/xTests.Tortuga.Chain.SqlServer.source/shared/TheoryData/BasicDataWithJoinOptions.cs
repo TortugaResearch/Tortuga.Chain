@@ -4,7 +4,7 @@ using Xunit;
 
 namespace Tests
 {
-    public class BasicDataWithJoinOptions : TheoryData<string, string, DataSourceType, JoinOptions>
+    public class BasicDataWithJoinOptions : TheoryData<string, DataSourceType, JoinOptions>
     {
         public BasicDataWithJoinOptions(params DataSource[] dataSources)
         {
@@ -17,10 +17,10 @@ namespace Tests
             foreach (var option in options)
                 foreach (var ds in dataSources)
                 {
-                    Add(TestBase.AssemblyName, ds.Name, DataSourceType.Normal, option);
-                    Add(TestBase.AssemblyName, ds.Name, DataSourceType.Open, option);
-                    Add(TestBase.AssemblyName, ds.Name, DataSourceType.Transactional, option);
-                    Add(TestBase.AssemblyName, ds.Name, DataSourceType.Strict, option);
+                    Add(ds.Name, DataSourceType.Normal, option);
+                    Add(ds.Name, DataSourceType.Open, option);
+                    Add(ds.Name, DataSourceType.Transactional, option);
+                    Add(ds.Name, DataSourceType.Strict, option);
                 }
         }
     }

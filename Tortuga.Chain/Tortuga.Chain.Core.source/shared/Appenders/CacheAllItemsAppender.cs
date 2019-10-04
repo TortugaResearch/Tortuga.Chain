@@ -28,10 +28,7 @@ namespace Tortuga.Chain.Appenders
         /// <exception cref="ArgumentException">cacheKey is null or empty.;cacheKey</exception>
         public CacheAllItemsAppender(ILink<TCollection> previousLink, Func<TItem, string> cacheKeyFunction, CachePolicy policy = null) : base(previousLink)
         {
-            if (previousLink == null)
-                throw new ArgumentNullException("previousLink", "previousLink is null.");
-
-            m_CacheKeyFunction = cacheKeyFunction ?? throw new ArgumentNullException("cacheKeyFunction", "cacheKeyFunction is null.");
+            m_CacheKeyFunction = cacheKeyFunction ?? throw new ArgumentNullException(nameof(cacheKeyFunction), $"{nameof(cacheKeyFunction)} is null.");
             m_Policy = policy;
         }
 
@@ -51,7 +48,6 @@ namespace Tortuga.Chain.Appenders
                 DataSource.Cache.Write(cacheKey, item, m_Policy);
                 cacheKeys.Add(cacheKey);
             }
-
 
             m_ActualCacheKeys = cacheKeys.ToImmutableArray();
             return result;
@@ -80,9 +76,8 @@ namespace Tortuga.Chain.Appenders
 
         void ICacheLink<TCollection>.Invalidate()
         {
-            if (m_ActualCacheKeys != null)
-                foreach (var cacheKey in m_ActualCacheKeys)
-                    DataSource.Cache.Invalidate(cacheKey);
+            foreach (var cacheKey in m_ActualCacheKeys)
+                DataSource.Cache.Invalidate(cacheKey);
         }
     }
 }

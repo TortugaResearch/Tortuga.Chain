@@ -9,29 +9,29 @@
     <tags>ORM, Fluent, SQL Server</tags>
     <language>en-US</language>
     <projectUrl>https://github.com/docevaad/Chain</projectUrl>
-    <licenseUrl>https://github.com/docevaad/Chain/blob/master/License.txt</licenseUrl>
+    <license type="expression">MIT</license>
     <references>
       <reference file="Tortuga.Chain.PostgreSql.dll" />
     </references>
     <frameworkAssemblies>
-      <frameworkAssembly assemblyName="System.Data" targetFramework="net46" />
-      <frameworkAssembly assemblyName="System.ComponentModel.DataAnnotations" targetFramework="net46" />
-      <frameworkAssembly assemblyName="System.Xml" targetFramework="net46" />
-      <frameworkAssembly assemblyName="System.Xml.Linq" targetFramework="net46" />
-      <frameworkAssembly assemblyName="System.Runtime.Caching" targetFramework="net46" />
-      <frameworkAssembly assemblyName="System.Configuration" targetFramework="net46" />
+      <frameworkAssembly assemblyName="System.Data" targetFramework="net461" />
+      <frameworkAssembly assemblyName="System.ComponentModel.DataAnnotations" targetFramework="net461" />
+      <frameworkAssembly assemblyName="System.Xml" targetFramework="net461" />
+      <frameworkAssembly assemblyName="System.Xml.Linq" targetFramework="net461" />
+      <frameworkAssembly assemblyName="System.Runtime.Caching" targetFramework="net461" />
+      <frameworkAssembly assemblyName="System.Configuration" targetFramework="net461" />
     </frameworkAssemblies>
 
     <dependencies>
 
-      <group targetFramework="net46">
-        <dependency id="Tortuga.Chain.Core" version="2.1.7009.31212" />
-        <dependency id="Npgsql" version="4.0.5" />
+      <group targetFramework="net461">
+        <dependency id="Tortuga.Chain.Core" version="2.2.7182.611" />
+        <dependency id="Npgsql" version="4.1.1" />
       </group>
 
       <group targetFramework="netstandard2.0">
-        <dependency id="Tortuga.Chain.Core" version="2.1.7009.31212" />
-        <dependency id="Npgsql" version="4.0.5" />
+        <dependency id="Tortuga.Chain.Core" version="2.2.7182.611" />
+        <dependency id="Npgsql" version="4.1.1" />
       </group>
     </dependencies>
   </metadata>

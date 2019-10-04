@@ -9,7 +9,7 @@
     <tags>ORM, Fluent</tags>
     <language>en-US</language>
     <projectUrl>https://github.com/docevaad/Chain</projectUrl>
-    <licenseUrl>https://github.com/docevaad/Chain/blob/master/License.txt</licenseUrl>
+    <license type="expression">MIT</license>
     <references>
       <reference file="Tortuga.Chain.CompiledMaterializers.dll" />
     </references>
@@ -19,21 +19,21 @@
       <frameworkAssembly assemblyName="System.Xml" targetFramework="net45" />
       <frameworkAssembly assemblyName="System.Xml.Linq" targetFramework="net45" />
 
-      <frameworkAssembly assemblyName="System.Data" targetFramework="net46" />
-      <frameworkAssembly assemblyName="System.ComponentModel.DataAnnotations" targetFramework="net46" />
-      <frameworkAssembly assemblyName="System.Xml" targetFramework="net46" />
-      <frameworkAssembly assemblyName="System.Xml.Linq" targetFramework="net46" />
+      <frameworkAssembly assemblyName="System.Data" targetFramework="net461" />
+      <frameworkAssembly assemblyName="System.ComponentModel.DataAnnotations" targetFramework="net461" />
+      <frameworkAssembly assemblyName="System.Xml" targetFramework="net461" />
+      <frameworkAssembly assemblyName="System.Xml.Linq" targetFramework="net461" />
     </frameworkAssemblies>
 
     <dependencies>
-      <group targetFramework="net46">
-        <dependency id="Tortuga.Chain.Core" version="2.1.7009.31212" />
-        <dependency id="CS-Script.bin" version="3.28.7" />
+      <group targetFramework="net461">
+        <dependency id="Tortuga.Chain.Core" version="2.2.7182.611" />
+        <dependency id="CS-Script.bin" version="3.29.0" />
       </group>
 
       <group targetFramework="netstandard2.0">
-        <dependency id="Tortuga.Chain.Core" version="2.1.7009.31212" />
-        <dependency id="CS-Script.Core" version="1.0.6" />
+        <dependency id="Tortuga.Chain.Core" version="2.2.7182.611" />
+        <dependency id="CS-Script.Core" version="1.1.1" />
       </group>
     </dependencies>
   </metadata>

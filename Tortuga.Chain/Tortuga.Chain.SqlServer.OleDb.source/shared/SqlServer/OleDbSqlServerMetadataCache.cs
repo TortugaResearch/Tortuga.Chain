@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Data.OleDb;
 using System.Diagnostics.CodeAnalysis;
 using Tortuga.Chain.Metadata;
@@ -68,6 +69,13 @@ namespace Tortuga.Chain.SqlServer
         }
 
         /// <summary>
+        /// Gets a list of known, unsupported SQL type names that cannot be mapped to a OleDbType.
+        /// </summary>
+        /// <value>Case-insensitive list of database-specific type names</value>
+        /// <remarks>This list is based on driver limitations.</remarks>
+        public override ImmutableHashSet<string> UnsupportedSqlTypeNames { get; } = ImmutableHashSet.Create(StringComparer.OrdinalIgnoreCase, new[] { "datetimeoffset", "geography", "geometry", "hierarchyid", "image", "sql_variant", "sysname", "xml" });
+
+        /// <summary>
         /// Gets the detailed metadata for a table or view.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
@@ -100,8 +108,8 @@ namespace Tortuga.Chain.SqlServer
                     {
                         while (reader.Read())
                         {
-                            var schema = reader.GetString(reader.GetOrdinal("SchemaName"));
-                            var name = reader.GetString(reader.GetOrdinal("Name"));
+                            var schema = reader.GetString("SchemaName");
+                            var name = reader.GetString("Name");
                             GetScalarFunction(new SqlServerObjectName(schema, name));
                         }
                     }
@@ -130,8 +138,8 @@ namespace Tortuga.Chain.SqlServer
                     {
                         while (reader.Read())
                         {
-                            var schema = reader.GetString(reader.GetOrdinal("SchemaName"));
-                            var name = reader.GetString(reader.GetOrdinal("Name"));
+                            var schema = reader.GetString("SchemaName");
+                            var name = reader.GetString("Name");
                             GetStoredProcedure(new SqlServerObjectName(schema, name));
                         }
                     }
@@ -162,8 +170,8 @@ namespace Tortuga.Chain.SqlServer
                     {
                         while (reader.Read())
                         {
-                            var schema = reader.GetString(reader.GetOrdinal("SchemaName"));
-                            var name = reader.GetString(reader.GetOrdinal("Name"));
+                            var schema = reader.GetString("SchemaName");
+                            var name = reader.GetString("Name");
                             GetTableFunction(new SqlServerObjectName(schema, name));
                         }
                     }
@@ -188,8 +196,8 @@ namespace Tortuga.Chain.SqlServer
                     {
                         while (reader.Read())
                         {
-                            var schema = reader.GetString(reader.GetOrdinal("SchemaName"));
-                            var name = reader.GetString(reader.GetOrdinal("Name"));
+                            var schema = reader.GetString("SchemaName");
+                            var name = reader.GetString("Name");
                             GetTableOrView(new SqlServerObjectName(schema, name));
                         }
                     }
@@ -214,8 +222,8 @@ namespace Tortuga.Chain.SqlServer
                     {
                         while (reader.Read())
                         {
-                            var schema = reader.GetString(reader.GetOrdinal("SchemaName"));
-                            var name = reader.GetString(reader.GetOrdinal("Name"));
+                            var schema = reader.GetString("SchemaName");
+                            var name = reader.GetString("Name");
                             GetUserDefinedType(new SqlServerObjectName(schema, name));
                         }
                     }
@@ -240,8 +248,8 @@ namespace Tortuga.Chain.SqlServer
                     {
                         while (reader.Read())
                         {
-                            var schema = reader.GetString(reader.GetOrdinal("SchemaName"));
-                            var name = reader.GetString(reader.GetOrdinal("Name"));
+                            var schema = reader.GetString("SchemaName");
+                            var name = reader.GetString("Name");
                             GetTableOrView(new SqlServerObjectName(schema, name));
                         }
                     }
@@ -249,48 +257,39 @@ namespace Tortuga.Chain.SqlServer
             }
         }
 
-        [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
-        internal static OleDbType? TypeNameToSqlDbType(string typeName)
+        /// <summary>
+        /// Converts a value to a string suitable for use in a SQL statement.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <param name="dbType">Optional database column type.</param>
+        /// <returns></returns>
+        public override string ValueToSqlValue(object value, OleDbType? dbType)
         {
-            switch (typeName)
+            switch (value)
             {
-                case "bigint": return OleDbType.BigInt;
-                case "binary": return OleDbType.Binary;
-                case "bit": return OleDbType.Boolean;
-                case "char": return OleDbType.Char;
-                case "date": return OleDbType.DBDate;
-                case "datetime": return OleDbType.DBTimeStamp;
-                case "datetime2": return OleDbType.DBTimeStamp;
-                //case "datetimeoffset": return OleDbType;
-                case "decimal": return OleDbType.Decimal;
-                case "float": return OleDbType.Single;
-                //case "geography": m_SqlDbType = OleDbType.;
-                //case "geometry": m_SqlDbType = OleDbType;
-                //case "hierarchyid": m_SqlDbType = OleDbType.;
-                //case "image": return OleDbType.Image;
-                case "int": return OleDbType.Integer;
-                case "money": return OleDbType.Currency;
-                case "nchar": return OleDbType.WChar;
-                case "ntext": return OleDbType.LongVarWChar;
-                case "numeric": return OleDbType.Numeric;
-                case "nvarchar": return OleDbType.VarWChar;
-                case "real": return OleDbType.Single;
-                case "smalldatetime": return OleDbType.DBTimeStamp;
-                case "smallint": return OleDbType.SmallInt;
-                case "smallmoney": return OleDbType.Currency;
-                //case "sql_variant": m_SqlDbType = OleDbType;
-                //case "sysname": m_SqlDbType = OleDbType;
-                case "text": return OleDbType.LongVarWChar;
-                case "time": return OleDbType.DBTime;
-                case "timestamp": return OleDbType.DBTimeStamp;
-                case "tinyint": return OleDbType.TinyInt;
-                case "uniqueidentifier": return OleDbType.Guid;
-                case "varbinary": return OleDbType.VarBinary;
-                case "varchar": return OleDbType.VarChar;
-                    //case "xml": return OleDbType;
-            }
+                case string s:
+                    {
+                        switch (dbType)
+                        {
+                            case OleDbType.Char:
+                            case OleDbType.LongVarChar:
+                            case OleDbType.VarChar:
+                                return "'" + s.Replace("'", "''") + "'";
 
-            return null;
+                            case OleDbType.WChar:
+                            case OleDbType.BSTR:
+                            case OleDbType.VarWChar:
+                            case OleDbType.LongVarWChar:
+                                return "N'" + s.Replace("'", "''") + "'";
+
+                            default: //Assume Unicode
+                                return "N'" + s.Replace("'", "''") + "'";
+                        }
+                    }
+
+                default:
+                    return base.ValueToSqlValue(value, dbType);
+            }
         }
 
         internal ScalarFunctionMetadata<SqlServerObjectName, OleDbType> GetScalarFunctionInternal(SqlServerObjectName tableFunctionName)
@@ -336,15 +335,15 @@ namespace Tortuga.Chain.SqlServer
                     {
                         if (!reader.Read())
                             throw new MissingObjectException($"Could not find scalar function {tableFunctionName}");
-                        actualSchema = reader.GetString(reader.GetOrdinal("SchemaName"));
-                        actualName = reader.GetString(reader.GetOrdinal("Name"));
-                        objectId = reader.GetInt32(reader.GetOrdinal("ObjectId"));
+                        actualSchema = reader.GetString("SchemaName");
+                        actualName = reader.GetString("Name");
+                        objectId = reader.GetInt32("ObjectId");
 
-                        typeName = reader.IsDBNull(reader.GetOrdinal("TypeName")) ? null : reader.GetString(reader.GetOrdinal("TypeName"));
-                        isNullable = reader.GetBoolean(reader.GetOrdinal("is_nullable"));
-                        maxLength = reader.IsDBNull(reader.GetOrdinal("max_length")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("max_length"));
-                        precision = reader.IsDBNull(reader.GetOrdinal("precision")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("precision"));
-                        scale = reader.IsDBNull(reader.GetOrdinal("scale")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("scale"));
+                        typeName = reader.GetStringOrNull("TypeName");
+                        isNullable = reader.GetBoolean("is_nullable");
+                        maxLength = reader.GetInt32OrNull("max_length");
+                        precision = reader.GetInt32OrNull("precision");
+                        scale = reader.GetInt32OrNull("scale");
                         AdjustTypeDetails(typeName, ref maxLength, ref precision, ref scale, out fullTypeName);
                     }
                 }
@@ -353,7 +352,7 @@ namespace Tortuga.Chain.SqlServer
 
             var parameters = GetParameters(objectName.ToString(), objectId);
 
-            return new ScalarFunctionMetadata<SqlServerObjectName, OleDbType>(objectName, parameters, typeName, TypeNameToSqlDbType(typeName), isNullable, maxLength, precision, scale, fullTypeName);
+            return new ScalarFunctionMetadata<SqlServerObjectName, OleDbType>(objectName, parameters, typeName, SqlTypeNameToDbType(typeName), isNullable, maxLength, precision, scale, fullTypeName);
         }
 
         internal StoredProcedureMetadata<SqlServerObjectName, OleDbType> GetStoredProcedureInternal(SqlServerObjectName procedureName)
@@ -383,9 +382,9 @@ namespace Tortuga.Chain.SqlServer
                         if (!reader.Read())
                             throw new MissingObjectException($"Could not find stored procedure {procedureName}");
 
-                        actualSchema = reader.GetString(reader.GetOrdinal("SchemaName"));
-                        actualName = reader.GetString(reader.GetOrdinal("Name"));
-                        objectId = reader.GetInt32(reader.GetOrdinal("ObjectId"));
+                        actualSchema = reader.GetString("SchemaName");
+                        actualName = reader.GetString("Name");
+                        objectId = reader.GetInt32("ObjectId");
                     }
                 }
             }
@@ -427,9 +426,9 @@ namespace Tortuga.Chain.SqlServer
                     {
                         if (!reader.Read())
                             throw new MissingObjectException($"Could not find table valued function {tableFunctionName}");
-                        actualSchema = reader.GetString(reader.GetOrdinal("SchemaName"));
-                        actualName = reader.GetString(reader.GetOrdinal("Name"));
-                        objectId = reader.GetInt32(reader.GetOrdinal("ObjectId"));
+                        actualSchema = reader.GetString("SchemaName");
+                        actualName = reader.GetString("Name");
+                        objectId = reader.GetInt32("ObjectId");
                     }
                 }
             }
@@ -485,18 +484,18 @@ namespace Tortuga.Chain.SqlServer
                     {
                         if (!reader.Read())
                             throw new MissingObjectException($"Could not find table or view {tableName}");
-                        actualSchema = reader.GetString(reader.GetOrdinal("SchemaName"));
-                        actualName = reader.GetString(reader.GetOrdinal("Name"));
-                        objectId = reader.GetInt32(reader.GetOrdinal("ObjectId"));
-                        isTable = reader.GetBoolean(reader.GetOrdinal("IsTable"));
-                        hasTriggers = reader.GetInt32(reader.GetOrdinal("Triggers")) > 0;
+                        actualSchema = reader.GetString("SchemaName");
+                        actualName = reader.GetString("Name");
+                        objectId = reader.GetInt32("ObjectId");
+                        isTable = reader.GetBoolean("IsTable");
+                        hasTriggers = reader.GetInt32("Triggers") > 0;
                     }
                 }
             }
 
             var columns = GetColumns(objectId);
 
-            return new SqlServerTableOrViewMetadata<OleDbType>(new SqlServerObjectName(actualSchema, actualName), isTable, columns, hasTriggers);
+            return new SqlServerTableOrViewMetadata<OleDbType>(this, new SqlServerObjectName(actualSchema, actualName), isTable, columns, hasTriggers);
         }
 
         internal UserDefinedTypeMetadata<SqlServerObjectName, OleDbType> GetUserDefinedTypeInternal(SqlServerObjectName typeName)
@@ -519,8 +518,8 @@ WHERE	s.name = ? AND t.name = ?;";
 
             string actualSchema;
             string actualName;
-            string baseTypeName = null;
-            int? objectId = null;
+            string baseTypeName;
+            int? objectId;
             bool isTableType;
             bool isNullable;
             int? maxLength;
@@ -540,18 +539,15 @@ WHERE	s.name = ? AND t.name = ?;";
                         if (!reader.Read())
                             throw new MissingObjectException($"Could not find user defined type {typeName}");
 
-                        actualSchema = reader.GetString(reader.GetOrdinal("SchemaName"));
-                        actualName = reader.GetString(reader.GetOrdinal("Name"));
-                        if (!reader.IsDBNull(reader.GetOrdinal("ObjectId")))
-                            objectId = reader.GetInt32(reader.GetOrdinal("ObjectId"));
-                        isTableType = reader.GetBoolean(reader.GetOrdinal("IsTableType"));
-                        if (!reader.IsDBNull(reader.GetOrdinal("BaseTypeName")))
-                            baseTypeName = reader.GetString(reader.GetOrdinal("BaseTypeName"));
-
-                        isNullable = reader.GetBoolean(reader.GetOrdinal("is_nullable"));
-                        maxLength = reader.GetInt32(reader.GetOrdinal("max_length"));
-                        precision = reader.GetInt32(reader.GetOrdinal("precision"));
-                        scale = reader.GetInt32(reader.GetOrdinal("scale"));
+                        actualSchema = reader.GetString("SchemaName");
+                        actualName = reader.GetString("Name");
+                        objectId = reader.GetInt32OrNull("ObjectId");
+                        isTableType = reader.GetBoolean("IsTableType");
+                        baseTypeName = reader.GetStringOrNull("BaseTypeName");
+                        isNullable = reader.GetBoolean("is_nullable");
+                        maxLength = reader.GetInt32("max_length");
+                        precision = reader.GetInt32("precision");
+                        scale = reader.GetInt32("scale");
 
                         AdjustTypeDetails(baseTypeName, ref maxLength, ref precision, ref scale, out fullTypeName);
                     }
@@ -565,10 +561,61 @@ WHERE	s.name = ? AND t.name = ?;";
             else
             {
                 columns = new List<ColumnMetadata<OleDbType>>();
-                columns.Add(new ColumnMetadata<OleDbType>(null, false, false, false, baseTypeName, TypeNameToSqlDbType(baseTypeName), null, isNullable, maxLength, precision, scale, fullTypeName));
+                columns.Add(new ColumnMetadata<OleDbType>(null, false, false, false, baseTypeName, SqlTypeNameToDbType(baseTypeName), null, isNullable, maxLength, precision, scale, fullTypeName, ToClrType(baseTypeName, isNullable, maxLength)));
             }
 
             return new UserDefinedTypeMetadata<SqlServerObjectName, OleDbType>(new SqlServerObjectName(actualSchema, actualName), isTableType, columns);
+        }
+
+        /// <summary>
+        /// Determines the database column type from the column type name.
+        /// </summary>
+        /// <param name="typeName">Name of the database column type.</param>
+        /// <param name="isUnsigned">NOT USED</param>
+        /// <returns></returns>
+        /// <remarks>This does not honor registered types. This is only used for the database's hard-coded list of native types.</remarks>
+        [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
+        protected override OleDbType? SqlTypeNameToDbType(string typeName, bool? isUnsigned = null)
+        {
+            switch (typeName)
+            {
+                case "bigint": return OleDbType.BigInt;
+                case "binary": return OleDbType.Binary;
+                case "bit": return OleDbType.Boolean;
+                case "char": return OleDbType.Char;
+                case "date": return OleDbType.DBDate;
+                case "datetime": return OleDbType.DBTimeStamp;
+                case "datetime2": return OleDbType.DBTimeStamp;
+                //case "datetimeoffset": return OleDbType;
+                case "decimal": return OleDbType.Decimal;
+                case "float": return OleDbType.Single;
+                //case "geography": m_SqlDbType = OleDbType.;
+                //case "geometry": m_SqlDbType = OleDbType;
+                //case "hierarchyid": m_SqlDbType = OleDbType.;
+                //case "image": return OleDbType.Image;
+                case "int": return OleDbType.Integer;
+                case "money": return OleDbType.Currency;
+                case "nchar": return OleDbType.WChar;
+                case "ntext": return OleDbType.LongVarWChar;
+                case "numeric": return OleDbType.Numeric;
+                case "nvarchar": return OleDbType.VarWChar;
+                case "real": return OleDbType.Single;
+                case "smalldatetime": return OleDbType.DBTimeStamp;
+                case "smallint": return OleDbType.SmallInt;
+                case "smallmoney": return OleDbType.Currency;
+                //case "sql_variant": m_SqlDbType = OleDbType;
+                //case "sysname": m_SqlDbType = OleDbType;
+                case "text": return OleDbType.LongVarWChar;
+                case "time": return OleDbType.DBTime;
+                case "timestamp": return OleDbType.DBTimeStamp;
+                case "tinyint": return OleDbType.TinyInt;
+                case "uniqueidentifier": return OleDbType.Guid;
+                case "varbinary": return OleDbType.VarBinary;
+                case "varchar": return OleDbType.VarChar;
+                    //case "xml": return OleDbType;
+            }
+
+            return null;
         }
 
         List<ColumnMetadata<OleDbType>> GetColumns(int objectId)
@@ -616,19 +663,19 @@ WHERE	s.name = ? AND t.name = ?;";
                     {
                         while (reader.Read())
                         {
-                            var name = reader.GetString(reader.GetOrdinal("ColumnName"));
-                            var computed = reader.GetBoolean(reader.GetOrdinal("is_computed"));
-                            var primary = reader.GetBoolean(reader.GetOrdinal("is_primary_key"));
-                            var isIdentity = reader.GetBoolean(reader.GetOrdinal("is_identity"));
-                            var typeName = reader.IsDBNull(reader.GetOrdinal("TypeName")) ? null : reader.GetString(reader.GetOrdinal("TypeName"));
-                            var isNullable = reader.GetBoolean(reader.GetOrdinal("is_nullable"));
-                            int? maxLength = reader.IsDBNull(reader.GetOrdinal("max_length")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("max_length"));
-                            int? precision = reader.IsDBNull(reader.GetOrdinal("precision")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("precision"));
-                            int? scale = reader.IsDBNull(reader.GetOrdinal("scale")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("scale"));
+                            var name = reader.GetString("ColumnName");
+                            var computed = reader.GetBoolean("is_computed");
+                            var primary = reader.GetBoolean("is_primary_key");
+                            var isIdentity = reader.GetBoolean("is_identity");
+                            var typeName = reader.GetStringOrNull("TypeName");
+                            var isNullable = reader.GetBoolean("is_nullable");
+                            int? maxLength = reader.GetInt32OrNull("max_length");
+                            int? precision = reader.GetInt32OrNull("precision");
+                            int? scale = reader.GetInt32OrNull("scale");
                             string fullTypeName;
                             AdjustTypeDetails(typeName, ref maxLength, ref precision, ref scale, out fullTypeName);
 
-                            columns.Add(new ColumnMetadata<OleDbType>(name, computed, primary, isIdentity, typeName, TypeNameToSqlDbType(typeName), "[" + name + "]", isNullable, maxLength, precision, scale, fullTypeName));
+                            columns.Add(new ColumnMetadata<OleDbType>(name, computed, primary, isIdentity, typeName, SqlTypeNameToDbType(typeName), "[" + name + "]", isNullable, maxLength, precision, scale, fullTypeName, ToClrType(typeName, isNullable, maxLength)));
                         }
                     }
                 }
@@ -668,18 +715,16 @@ WHERE	s.name = ? AND t.name = ?;";
                         {
                             while (reader.Read())
                             {
-                                var name = reader.GetString(reader.GetOrdinal("ParameterName"));
-                                var typeName = reader.GetString(reader.GetOrdinal("TypeName"));
-
-                                typeName = reader.IsDBNull(reader.GetOrdinal("TypeName")) ? null : reader.GetString(reader.GetOrdinal("TypeName"));
+                                var name = reader.GetString("ParameterName");
+                                var typeName = reader.GetString("TypeName");
                                 bool isNullable = true;
-                                int? maxLength = reader.IsDBNull(reader.GetOrdinal("max_length")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("max_length"));
-                                int? precision = reader.IsDBNull(reader.GetOrdinal("precision")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("precision"));
-                                int? scale = reader.IsDBNull(reader.GetOrdinal("scale")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("scale"));
+                                int? maxLength = reader.GetInt32OrNull("max_length");
+                                int? precision = reader.GetInt32OrNull("precision");
+                                int? scale = reader.GetInt32OrNull("scale");
                                 string fullTypeName;
                                 AdjustTypeDetails(typeName, ref maxLength, ref precision, ref scale, out fullTypeName);
 
-                                parameters.Add(new ParameterMetadata<OleDbType>(name, name, typeName, TypeNameToSqlDbType(typeName), isNullable, maxLength, precision, scale, fullTypeName));
+                                parameters.Add(new ParameterMetadata<OleDbType>(name, name, typeName, SqlTypeNameToDbType(typeName), isNullable, maxLength, precision, scale, fullTypeName));
                             }
                         }
                     }

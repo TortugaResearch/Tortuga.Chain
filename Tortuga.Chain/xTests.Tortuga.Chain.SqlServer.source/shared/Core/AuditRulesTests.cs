@@ -19,7 +19,7 @@ namespace Tests.shared.Core
         }
 
         [Theory, MemberData(nameof(Root))]
-        public void AuditRulesTests_AddUser(string assemblyName, string dataSourceName)
+        public void AuditRulesTests_AddUser(string dataSourceName)
         {
             var dataSource = DataSource(dataSourceName);
             try
@@ -34,7 +34,7 @@ namespace Tests.shared.Core
         }
 
         [Theory, MemberData(nameof(Root))]
-        public void AuditRulesTests_CheckValidation(string assemblyName, string dataSourceName)
+        public void AuditRulesTests_CheckValidation(string dataSourceName)
         {
             var dataSource = DataSource(dataSourceName);
             try
@@ -63,7 +63,7 @@ namespace Tests.shared.Core
         }
 
         [Theory, MemberData(nameof(Root))]
-        public void AuditRulesTests_InsertUpdateRules(string assemblyName, string dataSourceName)
+        public void AuditRulesTests_InsertUpdateRules(string dataSourceName)
         {
             var dataSource = DataSource(dataSourceName);
             try
@@ -105,7 +105,7 @@ namespace Tests.shared.Core
         }
 
         [Theory, MemberData(nameof(Root))]
-        public void AuditRulesTests_SoftDelete(string assemblyName, string dataSourceName)
+        public void AuditRulesTests_SoftDelete(string dataSourceName)
         {
             var dataSource = DataSource(dataSourceName);
             try
@@ -165,7 +165,7 @@ namespace Tests.shared.Core
         }
 
         [Theory, MemberData(nameof(Root))]
-        public void AuditRulesTests_SoftDelete_2(string assemblyName, string dataSourceName)
+        public void AuditRulesTests_SoftDelete_2(string dataSourceName)
         {
             var dataSource = DataSource(dataSourceName);
             try
@@ -225,7 +225,7 @@ namespace Tests.shared.Core
         }
 
         [Theory, MemberData(nameof(Root))]
-        public void AuditRulesTests_RestrictedColumn(string assemblyName, string dataSourceName)
+        public void AuditRulesTests_RestrictedColumn(string dataSourceName)
         {
             var dataSource = DataSource(dataSourceName);
             try
@@ -274,7 +274,7 @@ namespace Tests.shared.Core
 #if SQL_SERVER || OLE_SQL_SERVER
 
         [Theory, MemberData(nameof(Root))]
-        public void SoftDeleteByKey(string assemblyName, string dataSourceName)
+        public void SoftDeleteByKey(string dataSourceName)
         {
             var dataSource = DataSource(dataSourceName);
             try

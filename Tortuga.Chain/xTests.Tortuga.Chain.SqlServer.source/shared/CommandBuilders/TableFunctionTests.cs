@@ -28,7 +28,7 @@ namespace Tests.CommandBuilders
         //Only SQL Server has inline functions.
 
         [Theory, MemberData(nameof(Prime))]
-        public void TableFunction2_Object(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void TableFunction2_Object(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -44,7 +44,7 @@ namespace Tests.CommandBuilders
 #endif
 
         [Theory, MemberData(nameof(Prime))]
-        public void TableFunction1_Object_Limit(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void TableFunction1_Object_Limit(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -58,7 +58,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void TableFunction1_Object_Filter(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void TableFunction1_Object_Filter(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -72,7 +72,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void TableFunction1_Object_Sort(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void TableFunction1_Object_Sort(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -86,7 +86,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void TableFunction1_Object(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void TableFunction1_Object(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -100,7 +100,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public async Task TableFunction1_Object_Async(string assemblyName, string dataSourceName, DataSourceType mode)
+        public async Task TableFunction1_Object_Async(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -114,7 +114,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void TableFunction1_Dictionary(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void TableFunction1_Dictionary(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -128,7 +128,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public async Task TableFunction1_Dictionary_Async(string assemblyName, string dataSourceName, DataSourceType mode)
+        public async Task TableFunction1_Dictionary_Async(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -142,7 +142,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void TableFunction1_Dictionary2(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void TableFunction1_Dictionary2(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -156,7 +156,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public async Task TableFunction1_Dictionary2_Async(string assemblyName, string dataSourceName, DataSourceType mode)
+        public async Task TableFunction1_Dictionary2_Async(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try

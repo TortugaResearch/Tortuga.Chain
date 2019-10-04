@@ -20,7 +20,7 @@ namespace Tests.Appenders
         }
 
         [Theory, MemberData(nameof(Root))]
-        public void SqlServerDataSourceTests_SqlDependency(string assemblyName, string dataSourceName)
+        public void SqlServerDataSourceTests_SqlDependency(string dataSourceName)
         {
             var dataSource = DataSource(dataSourceName);
             try
@@ -36,7 +36,7 @@ namespace Tests.Appenders
         }
 
         [Theory, MemberData(nameof(Root))]
-        public void SqlServerDataSourceTests_WithChangeNotification_Fired(string assemblyName, string dataSourceName)
+        public void SqlServerDataSourceTests_WithChangeNotification_Fired(string dataSourceName)
         {
             int eventCount = 0;
             var dataSource = DataSource(dataSourceName);
@@ -61,17 +61,16 @@ namespace Tests.Appenders
                 dataSource.Insert("Sales.Customer", new Customer() { FullName = "Wrong State Test" + DateTime.Now.Ticks, State = "TX" }).Execute();
                 Thread.Sleep(500); //give the event time to fire
                 Assert.AreEqual(2, eventCount);
-
-                dataSource.StopSqlDependency();
             }
             finally
             {
+                dataSource.StopSqlDependency();
                 Release(dataSource);
             }
         }
 
         [Theory, MemberData(nameof(Root))]
-        public async Task SqlServerDataSourceTests_WithChangeNotification_Fired_Async(string assemblyName, string dataSourceName)
+        public async Task SqlServerDataSourceTests_WithChangeNotification_Fired_Async(string dataSourceName)
         {
             int eventCount = 0;
             var dataSource = DataSource(dataSourceName);
@@ -97,17 +96,16 @@ namespace Tests.Appenders
                 await dataSource.Insert("Sales.Customer", new Customer() { FullName = "Wrong State Test" + DateTime.Now.Ticks, State = "TX" }).ExecuteAsync();
                 await Task.Delay(500); //give the event time to fire
                 Assert.AreEqual(2, eventCount);
-
-                dataSource.StopSqlDependency();
             }
             finally
             {
+                dataSource.StopSqlDependency();
                 Release(dataSource);
             }
         }
 
         [Theory, MemberData(nameof(Root))]
-        public void SqlServerDataSourceTests_WithCaching(string assemblyName, string dataSourceName)
+        public void SqlServerDataSourceTests_WithCaching(string dataSourceName)
         {
             const string CacheKey = "All_Customer";
 
@@ -127,11 +125,10 @@ namespace Tests.Appenders
                 Thread.Sleep(500); //give the event time to fire
 
                 Assert.IsFalse(dataSource.Cache.TryRead<object>(CacheKey, out var _), "Cache was not cleared");
-
-                dataSource.StopSqlDependency();
             }
             finally
             {
+                dataSource.StopSqlDependency();
                 Release(dataSource);
             }
         }

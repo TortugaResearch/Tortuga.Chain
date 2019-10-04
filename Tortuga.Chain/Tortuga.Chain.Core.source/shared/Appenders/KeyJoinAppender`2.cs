@@ -17,9 +17,6 @@ namespace Tortuga.Chain.Appenders
 
         public KeyJoinAppender(ILink<Tuple<List<T1>, List<T2>>> previousLink, Func<T1, TKey> primaryKeyExpression, Func<T2, TKey> foreignKeyExpression, Func<T1, ICollection<T2>> targetCollectionExpression, JoinOptions joinOptions) : base(previousLink)
         {
-            if (previousLink == null)
-                throw new ArgumentNullException(nameof(previousLink), $"{nameof(previousLink)} is null.");
-
             m_ForeignKeyExpression = foreignKeyExpression ?? throw new ArgumentNullException(nameof(foreignKeyExpression), $"{nameof(foreignKeyExpression)} is null.");
             m_PrimaryKeyExpression = primaryKeyExpression ?? throw new ArgumentNullException(nameof(primaryKeyExpression), $"{nameof(primaryKeyExpression)} is null.");
             m_TargetCollectionExpression = targetCollectionExpression ?? throw new ArgumentNullException(nameof(targetCollectionExpression), $"{nameof(targetCollectionExpression)} is null.");
@@ -28,8 +25,6 @@ namespace Tortuga.Chain.Appenders
 
         public KeyJoinAppender(ILink<Tuple<List<T1>, List<T2>>> previousLink, Func<T1, TKey> primaryKeyExpression, Func<T2, TKey> foreignKeyExpression, string targetCollectionName, JoinOptions joinOptions) : base(previousLink)
         {
-            if (previousLink == null)
-                throw new ArgumentNullException(nameof(previousLink), $"{nameof(previousLink)} is null.");
             if (string.IsNullOrEmpty(targetCollectionName))
                 throw new ArgumentException($"{nameof(targetCollectionName)} is null or empty.", nameof(targetCollectionName));
 
@@ -43,9 +38,6 @@ namespace Tortuga.Chain.Appenders
 
         public KeyJoinAppender(ILink<Tuple<List<T1>, List<T2>>> previousLink, string primaryKeyName, string foreignKeyName, string targetCollectionName, JoinOptions joinOptions) : base(previousLink)
         {
-            if (previousLink == null)
-                throw new ArgumentNullException(nameof(previousLink), $"{nameof(previousLink)} is null.");
-
             if (string.IsNullOrEmpty(primaryKeyName))
                 throw new ArgumentException($"{nameof(primaryKeyName)} is null or empty.", nameof(primaryKeyName));
 
@@ -80,19 +72,6 @@ namespace Tortuga.Chain.Appenders
             Match(result);
             return result.Item1;
         }
-
-#if Parallel_Missing
-        void Match(Tuple<List<T1>, List<T2>> result)
-        {
-            var ignoreUnmatchedChildren = m_JoinOptions.HasFlag(JoinOptions.IgnoreUnmatchedChildren);
-            var multipleParents = m_JoinOptions.HasFlag(JoinOptions.MultipleParents);
-
-            if (multipleParents)
-                MultiMatchSerial(result, ignoreUnmatchedChildren);
-            else
-                MatchSerial(result, ignoreUnmatchedChildren);
-        }
-#else
 
         void Match(Tuple<List<T1>, List<T2>> result)
         {
@@ -141,8 +120,6 @@ namespace Tortuga.Chain.Appenders
                 });
         }
 
-#endif
-
         [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "ChildObject")]
         void MatchSerial(Tuple<List<T1>, List<T2>> result, bool ignoreUnmatchedChildren)
         {
@@ -165,33 +142,6 @@ namespace Tortuga.Chain.Appenders
                 }
             }
         }
-
-        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "ChildObject")]
-        void MultiMatchSerial(Tuple<List<T1>, List<T2>> result, bool ignoreUnmatchedChildren)
-        {
-            //build the dictionary
-            var parents1 = from p in result.Item1 group m_TargetCollectionExpression(p) by m_PrimaryKeyExpression(p) into g select g;
-            var parents2 = parents1.ToDictionary(p => p.Key);
-
-            foreach (var child in result.Item2)
-            {
-                var fk = m_ForeignKeyExpression(child);
-                if (parents2.TryGetValue(fk, out var targetCollections))
-                {
-                    foreach (var targetCollection in targetCollections)
-                        targetCollection.Add(child);
-                }
-                else if (!ignoreUnmatchedChildren)
-                {
-                    var ex = new UnexpectedDataException($"Found child object with the foreign key \"{ fk }\" that couldn't be matched to a parent. See Exception.Data[\"ChildObject\"] for details.");
-                    ex.Data["ForeignKey"] = fk;
-                    ex.Data["ChildObject"] = child;
-                    throw ex;
-                }
-            }
-        }
-
-#if !Parallel_Missing
 
         [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "ChildObject")]
         void MultiMatchParallel(Tuple<List<T1>, List<T2>> result, bool ignoreUnmatchedChildren)
@@ -220,6 +170,29 @@ namespace Tortuga.Chain.Appenders
                 });
         }
 
-#endif
+        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "ChildObject")]
+        void MultiMatchSerial(Tuple<List<T1>, List<T2>> result, bool ignoreUnmatchedChildren)
+        {
+            //build the dictionary
+            var parents1 = from p in result.Item1 group m_TargetCollectionExpression(p) by m_PrimaryKeyExpression(p) into g select g;
+            var parents2 = parents1.ToDictionary(p => p.Key);
+
+            foreach (var child in result.Item2)
+            {
+                var fk = m_ForeignKeyExpression(child);
+                if (parents2.TryGetValue(fk, out var targetCollections))
+                {
+                    foreach (var targetCollection in targetCollections)
+                        targetCollection.Add(child);
+                }
+                else if (!ignoreUnmatchedChildren)
+                {
+                    var ex = new UnexpectedDataException($"Found child object with the foreign key \"{ fk }\" that couldn't be matched to a parent. See Exception.Data[\"ChildObject\"] for details.");
+                    ex.Data["ForeignKey"] = fk;
+                    ex.Data["ChildObject"] = child;
+                    throw ex;
+                }
+            }
+        }
     }
 }

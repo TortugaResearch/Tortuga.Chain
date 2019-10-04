@@ -20,8 +20,6 @@ namespace Tortuga.Chain.MySql
         readonly MySqlConnection m_Connection;
         readonly MySqlTransaction m_Transaction;
 
-
-
         internal MySqlOpenDataSource(MySqlDataSource dataSource, MySqlConnection connection, MySqlTransaction transaction) : base(new MySqlDataSourceSettings() { DefaultCommandTimeout = dataSource.DefaultCommandTimeout, StrictMode = dataSource.StrictMode, SuppressGlobalEvents = dataSource.SuppressGlobalEvents })
         {
             if (connection == null)
@@ -64,6 +62,7 @@ namespace Tortuga.Chain.MySql
         {
             get { return m_BaseDataSource.DatabaseMetadata; }
         }
+
         /// <summary>
         /// The extension cache is used by extensions to store data source specific information.
         /// </summary>
@@ -113,7 +112,7 @@ namespace Tortuga.Chain.MySql
         public override async Task TestConnectionAsync()
         {
             using (var cmd = new MySqlCommand("SELECT 1", m_Connection))
-                await cmd.ExecuteScalarAsync();
+                await cmd.ExecuteScalarAsync().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -165,6 +164,7 @@ namespace Tortuga.Chain.MySql
             UserValue = userValue;
             return this;
         }
+
         /// <summary>
         /// Executes the specified operation.
         /// </summary>
@@ -206,7 +206,6 @@ namespace Tortuga.Chain.MySql
             {
                 OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
                 throw;
-
             }
         }
 
@@ -278,11 +277,10 @@ namespace Tortuga.Chain.MySql
                     OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
                     return rows;
                 }
-
             }
             catch (Exception ex)
             {
-                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException 
+                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException
                 {
                     var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);
                     OnExecutionCanceled(executionToken, startTime, DateTimeOffset.Now, state);
@@ -295,6 +293,7 @@ namespace Tortuga.Chain.MySql
                 }
             }
         }
+
         /// <summary>
         /// Execute the operation asynchronously.
         /// </summary>
@@ -321,7 +320,7 @@ namespace Tortuga.Chain.MySql
             }
             catch (Exception ex)
             {
-                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException 
+                if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException
                 {
                     var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);
                     OnExecutionCanceled(executionToken, startTime, DateTimeOffset.Now, state);

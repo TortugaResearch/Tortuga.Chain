@@ -4,7 +4,6 @@ using System.Text;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
 
-
 namespace Tortuga.Chain.SQLite.CommandBuilders
 {
     /// <summary>
@@ -43,6 +42,9 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
             var sqlBuilder = Table.CreateSqlBuilder(StrictMode);
             sqlBuilder.ApplyArgumentValue(DataSource, ArgumentValue, m_Options);
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
+
+            if (KeyColumns.Count > 0)
+                sqlBuilder.OverrideKeys(KeyColumns);
 
             var sql = new StringBuilder();
             sqlBuilder.BuildInsertStatement(sql, Table.Name.ToQuotedString(), ";", identityInsert);

@@ -33,7 +33,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(TablesAndViews))]
-        public void ToDynamicCollection(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
+        public void ToDynamicCollection(string dataSourceName, DataSourceType mode, string tableName)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -55,7 +55,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(TablesAndViews))]
-        public async Task ToDynamicCollection_Async(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
+        public async Task ToDynamicCollection_Async(string dataSourceName, DataSourceType mode, string tableName)
         {
             var dataSource = await DataSourceAsync(dataSourceName, mode);
             try
@@ -77,7 +77,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(TablesAndViews))]
-        public void ToDynamicObject(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
+        public void ToDynamicObject(string dataSourceName, DataSourceType mode, string tableName)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -98,7 +98,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(TablesAndViews))]
-        public async Task ToDynamicObject_Async(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
+        public async Task ToDynamicObject_Async(string dataSourceName, DataSourceType mode, string tableName)
         {
             var dataSource = await DataSourceAsync(dataSourceName, mode);
             try
@@ -119,7 +119,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(TablesAndViews))]
-        public void ToDataTable(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
+        public void ToDataTable(string dataSourceName, DataSourceType mode, string tableName)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -137,7 +137,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(TablesAndViews))]
-        public async Task ToDataTable_Async(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
+        public async Task ToDataTable_Async(string dataSourceName, DataSourceType mode, string tableName)
         {
             var dataSource = await DataSourceAsync(dataSourceName, mode);
             try
@@ -155,7 +155,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(TablesAndViews))]
-        public void ToDataRow(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
+        public void ToDataRow(string dataSourceName, DataSourceType mode, string tableName)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -175,7 +175,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(TablesAndViews))]
-        public async Task ToDataRow_Async(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
+        public async Task ToDataRow_Async(string dataSourceName, DataSourceType mode, string tableName)
         {
             var dataSource = await DataSourceAsync(dataSourceName, mode);
             try
@@ -195,7 +195,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(TablesAndViews))]
-        public void ToTable(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
+        public void ToTable(string dataSourceName, DataSourceType mode, string tableName)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -213,7 +213,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(TablesAndViews))]
-        public async Task ToTable_Async(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
+        public async Task ToTable_Async(string dataSourceName, DataSourceType mode, string tableName)
         {
             var dataSource = await DataSourceAsync(dataSourceName, mode);
             try
@@ -231,7 +231,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(TablesAndViews))]
-        public void ToRow(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
+        public void ToRow(string dataSourceName, DataSourceType mode, string tableName)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -251,7 +251,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(TablesAndViews))]
-        public async Task ToRow_Async(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
+        public async Task ToRow_Async(string dataSourceName, DataSourceType mode, string tableName)
         {
             var dataSource = await DataSourceAsync(dataSourceName, mode);
             try
@@ -271,7 +271,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(TablesAndViewLimit))]
-        public void ToTable_WithLimit(string assemblyName, string dataSourceName, DataSourceType mode, string tableName, LimitOptions limitOptions)
+        public void ToTable_WithLimit(string dataSourceName, DataSourceType mode, string tableName, LimitOptions limitOptions)
         {
             var dataSource = DataSource(dataSourceName, mode);
             WriteLine($"Table {tableName}, Limit Option {limitOptions}");
@@ -298,7 +298,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(TablesAndViewLimit))]
-        public async Task ToTable_WithLimit_Async(string assemblyName, string dataSourceName, DataSourceType mode, string tableName, LimitOptions limitOptions)
+        public async Task ToTable_WithLimit_Async(string dataSourceName, DataSourceType mode, string tableName, LimitOptions limitOptions)
         {
             var dataSource = await DataSourceAsync(dataSourceName, mode);
             WriteLine($"Table {tableName}, Limit Option {limitOptions}");
@@ -325,7 +325,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(TablesAndViews))]
-        public void Count(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
+        public void Count(string dataSourceName, DataSourceType mode, string tableName)
         {
             var dataSource = DataSource(dataSourceName, mode);
             WriteLine($"Table {tableName}");
@@ -341,7 +341,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(TablesAndViews))]
-        public async Task Count_Async(string assemblyName, string dataSourceName, DataSourceType mode, string tableName)
+        public async Task Count_Async(string dataSourceName, DataSourceType mode, string tableName)
         {
             var dataSource = await DataSourceAsync(dataSourceName, mode);
             WriteLine($"Table {tableName}");
@@ -359,7 +359,7 @@ namespace Tests.CommandBuilders
 #if NO_DISTINCT_COUNT
 
         [Theory, MemberData(nameof(TablesAndViewsWithColumns))]
-        public void CountByColumn(string assemblyName, string dataSourceName, DataSourceType mode, string tableName, string columnName)
+        public void CountByColumn(string dataSourceName, DataSourceType mode, string tableName, string columnName)
         {
             var dataSource = DataSource(dataSourceName, mode);
             WriteLine($"Table {tableName}");
@@ -381,7 +381,7 @@ namespace Tests.CommandBuilders
 #else
 
         [Theory, MemberData(nameof(TablesAndViewsWithColumns))]
-        public void CountByColumn(string assemblyName, string dataSourceName, DataSourceType mode, string tableName, string columnName)
+        public void CountByColumn(string dataSourceName, DataSourceType mode, string tableName, string columnName)
         {
             var dataSource = DataSource(dataSourceName, mode);
             WriteLine($"Table {tableName}");
@@ -407,7 +407,7 @@ namespace Tests.CommandBuilders
 #if NO_DISTINCT_COUNT
 
         [Theory, MemberData(nameof(TablesAndViewsWithColumns))]
-        public async Task CountByColumn_Async(string assemblyName, string dataSourceName, DataSourceType mode, string tableName, string columnName)
+        public async Task CountByColumn_Async(string dataSourceName, DataSourceType mode, string tableName, string columnName)
         {
             var dataSource = await DataSourceAsync(dataSourceName, mode);
             WriteLine($"Table {tableName}");
@@ -429,7 +429,7 @@ namespace Tests.CommandBuilders
 #else
 
         [Theory, MemberData(nameof(TablesAndViewsWithColumns))]
-        public async Task CountByColumn_Async(string assemblyName, string dataSourceName, DataSourceType mode, string tableName, string columnName)
+        public async Task CountByColumn_Async(string dataSourceName, DataSourceType mode, string tableName, string columnName)
         {
             var dataSource = await DataSourceAsync(dataSourceName, mode);
             WriteLine($"Table {tableName}");
@@ -453,7 +453,7 @@ namespace Tests.CommandBuilders
 #endif
 
         [Theory, MemberData(nameof(Prime))]
-        public void AsCount(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void AsCount(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -488,7 +488,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void FromTests_ToInferredObject(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void FromTests_ToInferredObject(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
 
@@ -511,7 +511,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void FilterByObject(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void FilterByObject(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -536,7 +536,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void FilterByObject_Compiled(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void FilterByObject_Compiled(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -563,7 +563,7 @@ namespace Tests.CommandBuilders
 #if !NO_DISTINCT_COUNT
 
         [Theory, MemberData(nameof(Prime))]
-        public void FromTests_Counts(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void FromTests_Counts(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -591,7 +591,7 @@ namespace Tests.CommandBuilders
 #if SQLITE
 
         [Theory, MemberData(nameof(Prime))]
-        public void FromTests_TakeRandom(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void FromTests_TakeRandom(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -614,7 +614,7 @@ namespace Tests.CommandBuilders
 #if OLE_SQL_SERVER || SQL_SERVER
 
         [Theory, MemberData(nameof(Prime))]
-        public void FromTests_TakePercent(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void FromTests_TakePercent(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -635,7 +635,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void FromTests_TakePercentWithTies(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void FromTests_TakePercentWithTies(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -656,7 +656,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void FromTests_TakeWithTies(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void FromTests_TakeWithTies(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -677,7 +677,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void FromTests_TableSampleSystemPercentage(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void FromTests_TableSampleSystemPercentage(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -697,7 +697,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void FromTests_TableSampleSystemRows(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void FromTests_TableSampleSystemRows(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -717,7 +717,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void FromTests_TableSampleSystemPercentage_Repeatable(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void FromTests_TableSampleSystemPercentage_Repeatable(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -735,7 +735,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void FromTests_TableSampleSystemRows_Repeatable(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void FromTests_TableSampleSystemRows_Repeatable(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -755,7 +755,7 @@ namespace Tests.CommandBuilders
 #endif
 
         [Theory, MemberData(nameof(Prime))]
-        public void FromTests_Sorting(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void FromTests_Sorting(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -797,7 +797,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void FromTests_ImmutableArray(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void FromTests_ImmutableArray(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -839,7 +839,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void FromTests_ImmutableList(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void FromTests_ImmutableList(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -881,7 +881,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void FromTests_GetByKeyList(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void FromTests_GetByKeyList(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -912,7 +912,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void FromTests_GetByKeyList_2(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void FromTests_GetByKeyList_2(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -942,7 +942,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void FromTests_Take_NoSort(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void FromTests_Take_NoSort(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -963,7 +963,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void FromTests_Take(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void FromTests_Take(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -986,7 +986,7 @@ namespace Tests.CommandBuilders
 #if !NO_ROW_SKIPPING
 
         [Theory, MemberData(nameof(Prime))]
-        public void FromTests_SkipTake(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void FromTests_SkipTake(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -1011,7 +1011,7 @@ namespace Tests.CommandBuilders
 #if SQLITE
 
         [Theory, MemberData(nameof(Prime))]
-        public void FromTests_Sorting_ImmutableCollection(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void FromTests_Sorting_ImmutableCollection(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -1055,7 +1055,7 @@ namespace Tests.CommandBuilders
 #elif MYSQL
 
         [Theory, MemberData(nameof(Prime))]
-        public void FromTests_Sorting_ImmutableCollection(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void FromTests_Sorting_ImmutableCollection(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -1099,7 +1099,7 @@ namespace Tests.CommandBuilders
 #else
 
         [Theory, MemberData(nameof(Prime))]
-        public void FromTests_Sorting_ImmutableCollection(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void FromTests_Sorting_ImmutableCollection(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -1143,7 +1143,7 @@ namespace Tests.CommandBuilders
 #endif
 
         [Theory, MemberData(nameof(Prime))]
-        public void FromTests_ToDictionary_InferredObject(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void FromTests_ToDictionary_InferredObject(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -1209,7 +1209,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void FromTests_ToDictionary(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void FromTests_ToDictionary(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -1275,7 +1275,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void FromTests_Sorting_InferredCollection(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void FromTests_Sorting_InferredCollection(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -1319,7 +1319,7 @@ namespace Tests.CommandBuilders
 #if SQLITE
 
         [Theory, MemberData(nameof(Prime))]
-        public void FromTests_ToImmutableObject(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void FromTests_ToImmutableObject(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -1343,7 +1343,7 @@ namespace Tests.CommandBuilders
 #elif MYSQL
 
         [Theory, MemberData(nameof(Prime))]
-        public void FromTests_ToImmutableObject(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void FromTests_ToImmutableObject(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -1367,7 +1367,7 @@ namespace Tests.CommandBuilders
 #else
 
         [Theory, MemberData(nameof(Prime))]
-        public void FromTests_ToImmutableObject(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void FromTests_ToImmutableObject(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -1392,7 +1392,7 @@ namespace Tests.CommandBuilders
 
 #if SQLITE
    [Theory, MemberData(nameof(Prime))]
-        public void FromTests_ToDictionary_ImmutableObject(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void FromTests_ToDictionary_ImmutableObject(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -1459,7 +1459,7 @@ namespace Tests.CommandBuilders
 #elif MYSQL
 
         [Theory, MemberData(nameof(Prime))]
-        public void FromTests_ToDictionary_ImmutableObject(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void FromTests_ToDictionary_ImmutableObject(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -1527,7 +1527,7 @@ namespace Tests.CommandBuilders
 #else
 
         [Theory, MemberData(nameof(Prime))]
-        public void FromTests_ToDictionary_ImmutableObject(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void FromTests_ToDictionary_ImmutableObject(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try

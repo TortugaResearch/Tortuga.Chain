@@ -16,7 +16,73 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void ChangeTrackingTest(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void FailedUpdate_ViewNeedsKeys(string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+                var original = new Employee()
+                {
+                    FirstName = "Test",
+                    LastName = "Employee" + DateTime.Now.Ticks,
+                    Title = "Mail Room"
+                };
+
+                var inserted = dataSource.Insert(EmployeeTableName, original).ToObject<Employee>().Execute();
+
+                inserted.FirstName = "Changed";
+                inserted.Title = "Also Changed";
+
+                try
+                {
+                    dataSource.Update(EmployeeViewName, inserted).ToObject<ChangeTrackingEmployee>().Execute();
+                    Assert.Fail("Expected a mapping exception.");
+                }
+                catch (MappingException)
+                {
+                    //OK
+                }
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+#if SQL_SERVER || SQL_SERVER_OLEDB
+
+        [Theory, MemberData(nameof(Prime))]
+        public void UpdateViaView(string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+                var original = new Employee()
+                {
+                    FirstName = "Test",
+                    LastName = "Employee" + DateTime.Now.Ticks,
+                    Title = "Mail Room"
+                };
+
+                var inserted = dataSource.Insert(EmployeeTableName, original).ToObject<ChangeTrackingEmployee>().Execute();
+
+                inserted.FirstName = "Changed";
+                inserted.Title = "Also Changed";
+
+                var updated = dataSource.Update(EmployeeViewName, inserted).WithKeys("EmployeeKey").ToObject<ChangeTrackingEmployee>().Execute();
+                Assert.AreEqual(inserted.FirstName, updated.FirstName, "FirstName should have changed");
+                Assert.AreEqual(inserted.Title, updated.Title, "Title should have changed");
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+#endif
+
+        [Theory, MemberData(nameof(Prime))]
+        public void ChangeTrackingTest(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -25,7 +91,8 @@ namespace Tests.CommandBuilders
                 {
                     FirstName = "Test",
                     LastName = "Employee" + DateTime.Now.Ticks,
-                    Title = "Mail Room"
+                    Title = "Mail Room",
+                    EmployeeId = Guid.NewGuid().ToString()
                 };
 
                 var inserted = dataSource.Insert(EmployeeTableName, original).ToObject<ChangeTrackingEmployee>().Execute();
@@ -47,7 +114,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void ChangeTrackingTest_NothingChanged(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void ChangeTrackingTest_NothingChanged(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -56,7 +123,8 @@ namespace Tests.CommandBuilders
                 {
                     FirstName = "Test",
                     LastName = "Employee" + DateTime.Now.Ticks,
-                    Title = "Mail Room"
+                    Title = "Mail Room",
+                    EmployeeId = Guid.NewGuid().ToString()
                 };
 
                 var inserted = dataSource.Insert(EmployeeTableName, original).ToObject<ChangeTrackingEmployee>().Execute();
@@ -79,7 +147,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void FailedUpdateTest(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void FailedUpdateTest(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -88,7 +156,8 @@ namespace Tests.CommandBuilders
                 {
                     FirstName = "Test",
                     LastName = "Employee" + DateTime.Now.Ticks,
-                    Title = "Mail Room"
+                    Title = "Mail Room",
+                    EmployeeId = Guid.NewGuid().ToString()
                 };
 
                 var inserted = dataSource.Insert(EmployeeTableName, original).ToObject<ChangeTrackingEmployee>().Execute();
@@ -118,7 +187,7 @@ namespace Tests.CommandBuilders
 #if !Roslyn_Missing && !SQLite
 
         [Theory, MemberData(nameof(Prime))]
-        public void ChangeTrackingTest_Compiled(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void ChangeTrackingTest_Compiled(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -127,7 +196,8 @@ namespace Tests.CommandBuilders
                 {
                     FirstName = "Test",
                     LastName = "Employee" + DateTime.Now.Ticks,
-                    Title = "Mail Room"
+                    Title = "Mail Room",
+                    EmployeeId = Guid.NewGuid().ToString()
                 };
 
                 var inserted = dataSource.Insert(EmployeeTableName, original).Compile().ToObject<ChangeTrackingEmployee>().Execute();
@@ -147,7 +217,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void ChangeTrackingTest_NothingChanged_Compiled(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void ChangeTrackingTest_NothingChanged_Compiled(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -156,7 +226,8 @@ namespace Tests.CommandBuilders
                 {
                     FirstName = "Test",
                     LastName = "Employee" + DateTime.Now.Ticks,
-                    Title = "Mail Room"
+                    Title = "Mail Room",
+                    EmployeeId = Guid.NewGuid().ToString()
                 };
 
                 var inserted = dataSource.Insert(EmployeeTableName, original).Compile().ToObject<ChangeTrackingEmployee>().Execute();
@@ -180,7 +251,7 @@ namespace Tests.CommandBuilders
 #endif
 
         [Theory, MemberData(nameof(Prime))]
-        public void UpdateByKey(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void UpdateByKey(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -211,7 +282,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void UpdateByKeyList(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void UpdateByKeyList(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -246,7 +317,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void UpdateSet_Expression_Where(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void UpdateSet_Expression_Where(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -274,7 +345,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void UpdateSet_Expression_WhereArg(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void UpdateSet_Expression_WhereArg(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -316,7 +387,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void UpdateSet_ExpressionArg_WhereArg(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void UpdateSet_ExpressionArg_WhereArg(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -360,7 +431,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void UpdateSet_Expression_Filter(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void UpdateSet_Expression_Filter(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -396,7 +467,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void UpdateSet_Value_Where(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void UpdateSet_Value_Where(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -424,7 +495,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void UpdateSet_Value_WhereArg(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void UpdateSet_Value_WhereArg(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -466,7 +537,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void UpdateSet_Value_Filter(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void UpdateSet_Value_Filter(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -494,7 +565,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void UpdateSet_Disallowed_1(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void UpdateSet_Disallowed_1(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -520,7 +591,7 @@ namespace Tests.CommandBuilders
         }
 
         [Theory, MemberData(nameof(Prime))]
-        public void UpdateSet_Disallowed_2(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void UpdateSet_Disallowed_2(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -548,7 +619,7 @@ namespace Tests.CommandBuilders
 #if SQL_SERVER || OLE_SQL_SERVER //SQL Server has problems with CRUD operations that return values on tables with triggers.
 
         [Theory, MemberData(nameof(Prime))]
-        public void ChangeTrackingTest_Trigger(string assemblyName, string dataSourceName, DataSourceType mode)
+        public void ChangeTrackingTest_Trigger(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -557,7 +628,8 @@ namespace Tests.CommandBuilders
                 {
                     FirstName = "Test",
                     LastName = "Employee" + DateTime.Now.Ticks,
-                    Title = "Mail Room"
+                    Title = "Mail Room",
+                    EmployeeId = Guid.NewGuid().ToString()
                 };
 
                 var inserted = dataSource.Insert(EmployeeTableName_Trigger, original).ToObject<ChangeTrackingEmployee>().Execute();

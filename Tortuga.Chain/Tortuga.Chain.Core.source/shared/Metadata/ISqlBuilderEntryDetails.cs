@@ -12,6 +12,7 @@
         /// </summary>
         /// <value>The name of the color.</value>
         string ClrName { get; }
+
         /// <summary>
         /// Gets or sets the full name of the type including max length, precision, and/or scale.
         /// </summary>
@@ -25,11 +26,13 @@
         /// </summary>
         /// <value><c>true</c> if this instance is identity; otherwise, <c>false</c>.</value>
         bool IsIdentity { get; }
+
         /// <summary>
         /// Gets the name of the quoted SQL.
         /// </summary>
         /// <value>The name of the quoted SQL.</value>
         string QuotedSqlName { get; }
+
         /// <summary>
         /// Gets or sets the scale.
         /// </summary>
@@ -43,11 +46,13 @@
         /// </summary>
         /// <value>The name of the SQL.</value>
         string SqlName { get; }
+
         /// <summary>
         /// Gets the name of the SQL variable.
         /// </summary>
         /// <value>The name of the SQL variable.</value>
         string SqlVariableName { get; }
+
         /// <summary>
         /// Gets the name of the type.
         /// </summary>

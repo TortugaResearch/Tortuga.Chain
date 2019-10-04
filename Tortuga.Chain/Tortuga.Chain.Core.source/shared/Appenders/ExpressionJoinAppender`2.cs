@@ -15,9 +15,6 @@ namespace Tortuga.Chain.Appenders
 
         public ExpressionJoinAppender(ILink<Tuple<List<T1>, List<T2>>> previousLink, Func<T1, T2, bool> joinExpression, Func<T1, ICollection<T2>> targetCollectionExpression, JoinOptions joinOptions) : base(previousLink)
         {
-            if (previousLink == null)
-                throw new ArgumentNullException(nameof(previousLink), $"{nameof(previousLink)} is null.");
-
             m_TargetCollectionExpression = targetCollectionExpression ?? throw new ArgumentNullException(nameof(targetCollectionExpression), $"{nameof(targetCollectionExpression)} is null.");
             m_JoinOptions = joinOptions;
             m_JoinExpression = joinExpression ?? throw new ArgumentNullException(nameof(joinExpression), $"{nameof(joinExpression)} is null.");
