@@ -15,7 +15,7 @@
 
 pre.libCScode {
     font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
-	font-size: 12px;
+	font-size: 92.3%;
 	white-space:-moz-pre-wrap;
 	word-wrap:break-word;
 	overflow:hidden;
@@ -56,7 +56,7 @@ div.CodeSnippetContainerTabs {
 	vertical-align:middle;
 	font-family:'Segoe UI', Verdana, Arial;
 	font-size:10pt!important;
-	height:25px;
+	height:192.3%;
 	position:relative;
 	z-index:1
 }
@@ -80,22 +80,22 @@ div.CodeSnippetContainerTabs {
 	background-image:url(../Images/RT_tab_white.gif)
 }
 .CodeSnippetContainerTabLeftActive {
-	height:24px;
+	height:184.6%;
 	border-bottom:none;
 	background-image:url(../Images/LT_tab_white.gif)
 }
 .CodeSnippetContainerTabRightActive, .CodeSnippetContainerTabRightActiveDisabled {
-	height:24px;
+	height:184.6%;
 	border-bottom:none;
 	background-image:url(../Images/RT_tab_white.gif)
 }
 .CodeSnippetContainerTabLeftUnrecognized {
-	height:24px;
+	height:184.6%;
 	border-bottom:none;
 	background-image:url(../Images/LT_tab_white.gif)
 }
 .CodeSnippetContainerTabRightUnrecognized {
-	height:24px;
+	height:184.6%;
 	border-bottom:none;
 	background-image:url(../Images/RT_tab_white.gif)
 }
@@ -106,7 +106,7 @@ div.CodeSnippetContainerTabs {
 	background-image:url(../Images/RT_tab_white.gif)
 }
 .CodeSnippetContainerTabFirst, .CodeSnippetContainerTab, .CodeSnippetContainerTabUnrecognized, .CodeSnippetContainerTabUnrecognizedNotFirst, .CodeSnippetContainerTabActive, .CodeSnippetContainerTabActiveNotFirst, .CodeSnippetContainerTabDisabled, .CodeSnippetContainerTabDisabledNotFirst, .CodeSnippetContainerTabDisabledActive, .CodeSnippetContainerTabDisabledActiveNotFirst {
-	height:21px;
+	height:161.5%;
 	float:left;
 	width:auto;
 	border-top:solid 1px #939393;

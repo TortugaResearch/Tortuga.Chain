@@ -411,7 +411,7 @@
 }
 
 .cl_lightweight_topnav_slice {
-	background:url('../images/msdn2010branding-stripe.png') repeat-x scroll 0 0;
+	/*background:url('../images/msdn2010branding-stripe.png') repeat-x scroll 0 0;*/
 	height:29px
 }
 
@@ -437,13 +437,13 @@
 }
 
 .cl_lightweight_header_leftSection_wave {
-	background:url('../images/msdn2010branding-stripe.png') no-repeat scroll 0 -113px;
+	/*background:url('../images/msdn2010branding-stripe.png') no-repeat scroll 0 -113px;*/
 	height:29px;
 	overflow:hidden
 }
 
 .cl_lightweight_header_rightSection_wave {
-	background:url('../images/msdn2010branding-stripe.png') no-repeat scroll 0 -142px;
+	/*background:url('../images/msdn2010branding-stripe.png') no-repeat scroll 0 -142px;*/
 	height:29px;
 	overflow:hidden
 }
@@ -738,8 +738,8 @@ table td {
 }
 
 .topicContainer {
-	padding-left:13px;
-	padding-right:13px;
+	padding-left:10pt;
+	padding-right:10pt;
 	padding-bottom:96px
 }
 
@@ -2121,10 +2121,10 @@ span.mtps-th {
 	width:100%;
 	font-size:1.0em;
 	font-family:"Segoe UI", Verdana, Arial;
-	color:#fff;
+	color:#3f529c;
 	border:none;
-	border-bottom:1px #445a9d solid;
-	background-color:#362b60;
+	/*border-bottom:1px #445a9d solid;*/
+	/*background-color:#362b60;*/
 	min-width:700px
 }
 

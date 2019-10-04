@@ -8,7 +8,7 @@ body {
 	margin:0;
 	font-family:'Segoe UI',Tahoma,Helvetica,Sans-Serif;
 	font-size:0.8125em;
-    line-height: 20px;
+   line-height: 153.8%;
 	color:#000;
 	font-style:normal;
 	padding-right:0;
@@ -23,7 +23,7 @@ p {
 	margin-bottom:0;
 	padding-bottom:15px;
 */
-	line-height:18px;
+	line-height:138.5%;
 }
 
 a:link {
@@ -316,8 +316,8 @@ td p {
 }
 
 .topicContainer {
-	padding-left:13px;
-	padding-right:13px;
+	padding-left:10pt;
+	padding-right:10pt;
 	padding-bottom:96px
 }
 
@@ -610,44 +610,22 @@ td p {
 }
 
 .topicContainer .alert {
-	border-style:solid;
-	border-width:1px;
-	border-color:#ccc;
-	background-color:#fcfec5
+	color: #636363;
+	border-left:solid 2px #bbb;
+	background-color:#E0DEDE;
 }
 
-.topicContainer .alert table {
-	border-width:0
-}
-
-.topicContainer .alert th {
-	background-color:#fcfec5;
-	border-width:0;
-	border-collapse:collapse;
-	border-spacing:0;
-	border-style:hidden;
-	padding-top:10px;
-	padding-left:11px;
-	padding-right:11px;
-	padding-bottom:1px;
-	font-weight:bold
-}
-
-.topicContainer .alert td {
-	background-color:#fcfec5;
-	border-width:0;
-	padding-top:1px;
-	padding-bottom:10px;
-	padding-left:11px;
-	padding-right:11px
+.topicContainer div.alert {
+	padding:5px 10px 5px 10px;
+	margin-bottom: 5px;
 }
 
 .topicContainer .alert img {
-	padding-right:5px
+	padding-right:5px;
 }
 
 .topicContainer .alert p {
-	margin:0
+	margin:0;
 }
 
 .Error {
@@ -935,7 +913,7 @@ span.mtps-th {
 .headerBar {
 	margin:0;
 	padding:0;
-	height:40px;
+	height:176.9%;
 	width:100%;
 	font-size:1.0em;
 	font-family:'Segoe UI',Tahoma,Helvetica,Sans-Serif;
@@ -978,14 +956,14 @@ span.mtps-th {
 }
 
 .headerBar .rightSectionImageClusterOverride {
-	height:23px;
+	height:176.9%;
 	overflow:inherit
 }
 
 .headerBar .rightSection .tabContainer, .headerBar .leftSection .tabContainer {
 	overflow:hidden;
-	height:23px;
-	width:auto
+	width:auto;
+	height:auto;
 }
 
 .headerBar .leftSection .tabContainer .headerTab, .headerBar .leftSection .tabContainer .headerTabSelected {
@@ -993,7 +971,7 @@ span.mtps-th {
 	padding-right:13px;
 	float:left;
 	margin-bottom:10px;
-	height:23px
+	height:176.9%;
 }
 
 .headerBar .leftSection .tabContainer .headerTabSelected {
@@ -1059,12 +1037,12 @@ span.parameterItalic {
 	font-weight:	bold;
 	margin-bottom:	4;
 	color:#bbb;
-	font-size: 12px;
+	font-size: 92.3%;
 }
 .customCopyrightFooter
 {
 	font-weight:	normal;
 	margin-bottom:	4;
 	color: #333;
-	font-size: 14px;
+	font-size: 107.7%;
 }

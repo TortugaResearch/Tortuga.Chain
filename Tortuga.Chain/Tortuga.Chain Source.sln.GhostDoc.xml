@@ -20,7 +20,7 @@
     <ImageFolderPath />
     <Theme>FlatGray</Theme>
     <HtmlFormats>
-      <HtmlHelp>true</HtmlHelp>
+      <HtmlHelp>false</HtmlHelp>
       <MSHelpViewer>false</MSHelpViewer>
       <MSHelp2>false</MSHelp2>
       <Website>true</Website>
@@ -51,13 +51,14 @@
       <MediaContent />
     </ConceptualContent>
     <SelectedProjects>
-      <SelectedProject>Tortuga.Chain.Core.source</SelectedProject>
-      <SelectedProject>Tortuga.Chain.CompiledMaterializers.source</SelectedProject>
-      <SelectedProject>Tortuga.Chain.SqlServer.source</SelectedProject>
-      <SelectedProject>Tortuga.Chain.SQLite.source</SelectedProject>
-      <SelectedProject>Tortuga.Chain.PostgreSql.source</SelectedProject>
-      <SelectedProject>Tortuga.Chain.Csv.source</SelectedProject>
       <SelectedProject>Tortuga.Chain.Access.source</SelectedProject>
+      <SelectedProject>Tortuga.Chain.CompiledMaterializers.source</SelectedProject>
+      <SelectedProject>Tortuga.Chain.Core.source</SelectedProject>
+      <SelectedProject>Tortuga.Chain.MySql.source</SelectedProject>
+      <SelectedProject>Tortuga.Chain.PostgreSql.source</SelectedProject>
+      <SelectedProject>Tortuga.Chain.SQLite.source</SelectedProject>
+      <SelectedProject>Tortuga.Chain.SqlServer.OleDb.source</SelectedProject>
+      <SelectedProject>Tortuga.Chain.SqlServer.source</SelectedProject>
     </SelectedProjects>
   </HelpConfiguration>
 </HelpConfigurations>

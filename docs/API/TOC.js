@@ -1,4 +1,4 @@
-//=============================================================================
+﻿//=============================================================================
 // System  : Sandcastle Help File Builder
 // File    : TOC.js
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
@@ -76,8 +76,8 @@ function Initialize(extension)
         pageExtension = extension;
 
     // The sizes are bit off in FireFox
-    if(!isIE)
-        divNavOpts.style.width = divSearchOpts.style.width = divIndexOpts.style.width = 292;
+    //if(!isIE)
+    //    divNavOpts.style.width = divSearchOpts.style.width = divIndexOpts.style.width = 292;    
 
     ResizeTree();
     SyncTOC();
@@ -98,6 +98,22 @@ function Initialize(extension)
                 topicContent.src = options[idx + 1];
                 break;
             }
+    }
+
+    if (window.name != null) {
+        var pos = window.name;
+        divTOC.style.width = divSearchResults.style.width = divIndexResults.style.width = divTree.style.width = pos;
+         (!isIE)
+            pos -= 8;
+        if (pos > 250) {
+            divTOC.style.width = pos + "px";
+            divNavOpts.style.width = divSearchOpts.style.width = divIndexOpts.style.width = pos - 8 + "px";
+            divSizer.style.left = pos + "px";
+            topicContent.style.marginLeft = pos + 7 + "px";
+        }
+        ResizeContent();
+        divSizer.style.zIndex = 5000;
+        ResizeTree();
     }
 }
 
@@ -200,7 +216,7 @@ function SyncTOC()
         divTree.scrollTop += windowTop - 30;
     else
         if(windowBottom < 0)
-            divTree.scrollTop -= windowBottom - 30;
+            divTree.scrollTop -= windowBottom - 30;        
 }
 
 // Get the currently loaded URL from the IFRAME
@@ -210,7 +226,10 @@ function GetCurrentUrl()
 
     try
     {
-        url = window.frames["TopicContent"].document.URL.replace(/\\/g, "/");
+        // do not uncomment!!! Does not work in IE, Edge when URL has a space
+        //url = window.document.URL.replace(/\\/g, "/");
+        url = window.location.href.replace(/\\/g, "/");
+        //url = window.frames["TopicContent"].document.URL.replace(/\\/g, "/");
     }
     catch(e)
     {
@@ -225,7 +244,7 @@ function GetCurrentUrl()
         if(isChrome && base.substr(0, 5) == "file:")
         {
             alert("Chrome security prevents access to file-based frame URLs.  As such, the TOC will not work " +
-                "with Index.html.  Either run this website on a web server, run Chrome with the " +
+                "with index.html.  Either run this website on a web server, run Chrome with the " +
                 "'--disable-web-security' command line option, or use FireFox or Internet Explorer.");
 
             return "";
@@ -234,10 +253,10 @@ function GetCurrentUrl()
         if(base.substr(0, 5) == "file:" && base.substr(0, 8) != "file:///")
             base = base.replace("file://", "file:///");
 
-        if(base.substr(0, 5) == "file:")
-            top.location.href = base + "Index.html";
-        else
-            top.location.href = base + "index" + pageExtension; // Use lowercase on name for case-sensitive servers
+        //if(base.substr(0, 5) == "file:")
+            top.location.href = base + "index.html";
+        //else
+        //    top.location.href = base + "index" + pageExtension; // Use lowercase on name for case-sensitive servers
     }
 
     return url;
@@ -271,13 +290,13 @@ function ExpandOrCollapseAll(expandNodes)
             if(div.className == "Visible" && !expandNodes)
             {
                 div.className = "Hidden";
-                img.src = "Collapsed.png";
+                img.src = "../Collapsed.png";
             }
             else
                 if(div.className == "Hidden" && expandNodes)
                 {
                     div.className = "Visible";
-                    img.src = "Expanded.png";
+                    img.src = "../Expanded.png";
 
                     if(div.innerHTML == "")
                         FillNode(div, true)
@@ -306,12 +325,12 @@ function Toggle(node)
     if(div.className == "Visible")
     {
         div.className = "Hidden";
-        node.src = "Collapsed.png";
+        node.src = "../Collapsed.png";
     }
     else
     {
         div.className = "Visible";
-        node.src = "Expanded.png";
+        node.src = "../Expanded.png";
 
         if(div.innerHTML == "")
             FillNode(div, false)
@@ -350,7 +369,7 @@ function Expand(node)
         lastNode.className = "UnselectedNode";
 
     div.className = "Visible";
-    img.src = "Expanded.png";
+    img.src = "../Expanded.png";
 
     if(node.tagName == "A")
     {
@@ -411,7 +430,7 @@ function FillNode(div, expandChildren)
     div.innerHTML = "Loading...";
 
     // Add a unique hash to ensure it doesn't use cached results
-    xmlHttp.open("GET", "FillNode" + pageExtension + "?Id=" + div.id + "&hash=" + now.getTime(), true);
+    xmlHttp.open("GET", "../FillNode" + pageExtension + "?Id=" + div.id + "&hash=" + now.getTime(), true);
 
     xmlHttp.onreadystatechange = function()
     {
@@ -444,26 +463,27 @@ function ResizeTree()
             if(document.body)
                 y = document.body.clientHeight;
 
+    divTOC.style.height = y + "px";
     newHeight = y - parseInt(divNavOpts.style.height, 10) - 6;
 
     if(newHeight < 50)
         newHeight = 50;
 
-    divTree.style.height = newHeight;
+    divTree.style.height = newHeight + "px";
 
     newHeight = y - parseInt(divSearchOpts.style.height, 10) - 6;
 
     if(newHeight < 100)
         newHeight = 100;
 
-    divSearchResults.style.height = newHeight;
+    divSearchResults.style.height = newHeight + "px";
 
     newHeight = y - parseInt(divIndexOpts.style.height, 10) - 6;
 
     if(newHeight < 25)
         newHeight = 25;
 
-    divIndexResults.style.height = newHeight;
+    divIndexResults.style.height = newHeight + "px";
 
     // Resize the content div
     ResizeContent();
@@ -486,12 +506,11 @@ function ResizeContent()
 function OnMouseDown(event)
 {
     var x;
-
     // Make sure the splitter is at the top of the z-index
     divSizer.style.zIndex = 5000;
 
     // The content is in an IFRAME which steals mouse events so hide it while resizing
-    topicContent.style.display = "none";
+    //topicContent.style.display = "none";
 
     if(isIE)
         x = window.event.clientX + document.documentElement.scrollLeft + document.body.scrollLeft;
@@ -519,13 +538,13 @@ function OnMouseDown(event)
         document.addEventListener("mouseup", OnMouseUp, true);
         event.preventDefault();
     }
+    event.preventDefault();
 }
 
 // Resize the TOC and content divs as the sizer is dragged
 function OnMouseMove(event)
 {
     var x, pos;
-
     // Get cursor position with respect to the page
     if(isIE)
         x = window.event.clientX + document.documentElement.scrollLeft + document.body.scrollLeft;
@@ -533,17 +552,24 @@ function OnMouseMove(event)
         x = event.clientX + window.scrollX;
 
     left = offset + x;
-
+    
     // Adjusts the width of the TOC divs
-    pos = (event.clientX > maxWidth) ? maxWidth : (event.clientX < minWidth) ? minWidth : event.clientX;
+    pos = (event.clientX > maxWidth) ? maxWidth : (event.clientX < minWidth) ? minWidth : event.clientX ;
 
     divTOC.style.width = divSearchResults.style.width = divIndexResults.style.width = divTree.style.width = pos;
+    window.name = pos;
 
     if(!isIE)
         pos -= 8;
-
-    divNavOpts.style.width = divSearchOpts.style.width = divIndexOpts.style.width = pos;
-
+    
+    
+    if (pos > 250) {
+        divTOC.style.width = pos + "px";
+        divNavOpts.style.width =divSearchOpts.style.width = divIndexOpts.style.width = pos - 8 + "px";
+        divSizer.style.left = pos + "px";
+        topicContent.style.marginLeft = pos + 7 + "px";
+    }
+    
     // Resize the content div to fit in the remaining space
     ResizeContent();
 }
@@ -563,7 +589,7 @@ function OnMouseUp(event)
     }
 
     // Show the content div again
-    topicContent.style.display = "inline";
+    topicContent.style.display = "block"; // "inline";
 }
 
 //============================================================================
@@ -573,8 +599,15 @@ function ShowHideSearch(show)
 {
     if(show)
     {
+        var href = document.URL;
+        if (href.substring(0, 7) != 'http://' && href.substring(0, 8) != 'https://' && href.substring(0, 7) == 'file://') {
+            alert('The Search feature works when hosting the help documentation using ASP.NET or PHP.');
+            return;
+        }
+        
         divNavOpts.style.display = divTree.style.display = "none";
         divSearchOpts.style.display = divSearchResults.style.display = "";
+        document.getElementById("txtSearchText").focus();
     }
     else
     {
@@ -599,7 +632,7 @@ function OnSearchTextKeyPress(evt)
 function PerformSearch()
 {
     var xmlHttp = GetXmlHttpRequest(), now = new Date();
-
+    
     if(xmlHttp == null)
     {
         divSearchResults.innerHTML = "<b>XML HTTP request not supported!</b>";
@@ -607,16 +640,21 @@ function PerformSearch()
     }
 
     divSearchResults.innerHTML = "<span class=\"PaddedText\">Searching...</span>";
-
     // Add a unique hash to ensure it doesn't use cached results
-    xmlHttp.open("GET", "SearchHelp" + pageExtension + "?Keywords=" + txtSearchText.value +
+    xmlHttp.open("GET", "../SearchHelp" + pageExtension + "?Keywords=" + txtSearchText.value +
         "&SortByTitle=" + (chkSortByTitle.checked ? "true" : "false") +
         "&hash=" + now.getTime(), true);
 
     xmlHttp.onreadystatechange = function()
     {
-        if(xmlHttp.readyState == 4)
+        if (xmlHttp.readyState == 4)
         {
+            if (xmlHttp.status != 200)
+            {
+                alert('The Search feature works when hosting the help documentation using ASP.NET or PHP.');
+                return;
+            }
+            
             divSearchResults.innerHTML = xmlHttp.responseText;
 
             lastSearchNode = divSearchResults.childNodes[0].childNodes[1];
@@ -681,7 +719,7 @@ function PopulateIndex(startIndex)
     divIndexResults.innerHTML = "<span class=\"PaddedText\">Loading keyword index...</span>";
 
     // Add a unique hash to ensure it doesn't use cached results
-    xmlHttp.open("GET", "LoadIndexKeywords" + pageExtension + "?StartIndex=" + startIndex +
+    xmlHttp.open("GET", "../LoadIndexKeywords" + pageExtension + "?StartIndex=" + startIndex +
       "&hash=" + now.getTime(), true);
 
     xmlHttp.onreadystatechange = function()
