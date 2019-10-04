@@ -223,6 +223,7 @@ ModelManifest.xml
 /Tortuga.Chain/Build.Access
 /Tortuga.Chain/Build.Core
 /Tortuga.Chain/Build.SqlServer
+/Tortuga.Chain/Build.SqlServer.OleDb
 /Tortuga.Chain/Build.SQLite
 /Tortuga.Chain/Build.SQLite.MS
 /Tortuga.Chain/Build.CompiledMaterializers
