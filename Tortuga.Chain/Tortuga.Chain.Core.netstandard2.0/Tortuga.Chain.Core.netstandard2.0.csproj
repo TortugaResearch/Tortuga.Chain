@@ -15,7 +15,6 @@
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
     <Version>2.2</Version>
-    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup>

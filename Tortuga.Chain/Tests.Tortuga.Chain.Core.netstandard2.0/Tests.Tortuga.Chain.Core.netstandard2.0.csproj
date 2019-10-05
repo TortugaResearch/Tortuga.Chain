@@ -5,6 +5,7 @@
     <RootNamespace>Tests.Tortuga.Chain.Core.netstandard2._0</RootNamespace>
 
     <IsPackable>false</IsPackable>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -39,5 +40,4 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-
 </Project>
