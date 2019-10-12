@@ -19,7 +19,7 @@ namespace Tortuga.Chain.DataSources
         /// Returns the associated transaction.
         /// </summary>
         /// <returns></returns>
-        DbTransaction AssociatedTransaction { get; }
+        DbTransaction? AssociatedTransaction { get; }
 
         /// <summary>
         /// Closes the connection and transaction associated with this data source.

@@ -26,7 +26,7 @@ namespace Tortuga.Chain.Metadata
         /// <param name="precision">The precision of the return value.</param>
         /// <param name="scale">The scale of the return value.</param>
         /// <param name="fullTypeName">Full name of the return type.</param>
-        public ScalarFunctionMetadata(TName name, ParameterMetadataCollection<TDbType> parameters, string typeName, TDbType dbType, bool isNullable, int? maxLength, int? precision, int? scale, string fullTypeName) : base(name.ToString(), parameters?.GenericCollection!, typeName, dbType, isNullable, maxLength, precision, scale, fullTypeName)
+        public ScalarFunctionMetadata(TName name, ParameterMetadataCollection<TDbType> parameters, string typeName, TDbType? dbType, bool isNullable, int? maxLength, int? precision, int? scale, string fullTypeName) : base(name.ToString(), parameters?.GenericCollection!, typeName, dbType, isNullable, maxLength, precision, scale, fullTypeName)
         {
             Name = name;
             Parameters = parameters ?? throw new ArgumentNullException(nameof(parameters), $"{nameof(parameters)} is null");

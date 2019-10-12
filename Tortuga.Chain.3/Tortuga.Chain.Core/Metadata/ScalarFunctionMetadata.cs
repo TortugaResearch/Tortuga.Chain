@@ -5,7 +5,7 @@ namespace Tortuga.Chain.Metadata
     /// </summary>
     public abstract class ScalarFunctionMetadata
     {
-        protected ScalarFunctionMetadata(string name, ParameterMetadataCollection parameters, string typeName, object dbType, bool isNullable, int? maxLength, int? precision, int? scale, string fullTypeName)
+        protected ScalarFunctionMetadata(string name, ParameterMetadataCollection parameters, string typeName, object? dbType, bool isNullable, int? maxLength, int? precision, int? scale, string fullTypeName)
         {
             Name = name;
             Parameters = parameters;
@@ -21,7 +21,7 @@ namespace Tortuga.Chain.Metadata
         /// <summary>
         /// Gets the type used by the database.
         /// </summary>
-        public object DbType { get; }
+        public object? DbType { get; }
 
         /// <summary>
         /// Gets or sets the full name of the type including max length, precision, and/or scale.

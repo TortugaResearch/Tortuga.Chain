@@ -35,7 +35,7 @@ namespace Tortuga.Chain.Metadata
         /// <param name="precision">The precision.</param>
         /// <param name="scale">The scale.</param>
         /// <param name="fullTypeName">Full name of the type.</param>
-        protected ParameterMetadata(string sqlParameterName, string sqlVariableName, string typeName, object dbType, bool? isNullable, int? maxLength, int? precision, int? scale, string fullTypeName)
+        protected ParameterMetadata(string sqlParameterName, string sqlVariableName, string typeName, object? dbType, bool? isNullable, int? maxLength, int? precision, int? scale, string fullTypeName)
         {
             SqlParameterName = sqlParameterName;
             SqlVariableName = sqlVariableName;
@@ -57,7 +57,7 @@ namespace Tortuga.Chain.Metadata
         /// <summary>
         /// Gets the type of the database column as an enum.
         /// </summary>
-        public object DbType { get; }
+        public object? DbType { get; }
 
         /// <summary>
         /// Gets or sets the full name of the type including max length, precision, and/or scale.

@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 
 namespace Tortuga.Chain
 {
@@ -25,7 +24,7 @@ namespace Tortuga.Chain
         public TableSet(DbDataReader reader, params string[] tableNames)
         {
             if (reader == null)
-                throw new ArgumentNullException(nameof(reader), "reader is null.");
+                throw new ArgumentNullException(nameof(reader), $"{nameof(reader)} is null.");
             if (tableNames == null)
                 tableNames = Array.Empty<string>();
 
@@ -84,7 +83,7 @@ namespace Tortuga.Chain
             protected override string GetKeyForItem(Table item)
             {
                 if (item == null)
-                    throw new ArgumentNullException(nameof(item), "item is null.");
+                    throw new ArgumentNullException(nameof(item), $"{nameof(item)} is null.");
 
                 return item.TableName;
             }

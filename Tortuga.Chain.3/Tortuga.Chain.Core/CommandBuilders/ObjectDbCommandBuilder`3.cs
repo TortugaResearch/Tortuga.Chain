@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Data.Common;
@@ -14,7 +15,7 @@ namespace Tortuga.Chain.CommandBuilders
     /// <typeparam name="TCommand">The type of the command.</typeparam>
     /// <typeparam name="TParameter">The type of the parameter.</typeparam>
     /// <typeparam name="TArgument">The type of the argument.</typeparam>
-    public abstract class ObjectDbCommandBuilder<TCommand, TParameter, TArgument> : SingleRowDbCommandBuilder<TCommand, TParameter>, IObjectDbCommandBuilder<TArgument?>
+    public abstract class ObjectDbCommandBuilder<TCommand, TParameter, TArgument> : SingleRowDbCommandBuilder<TCommand, TParameter>, IObjectDbCommandBuilder<TArgument>
         where TCommand : DbCommand
         where TParameter : DbParameter
         where TArgument : class
@@ -86,7 +87,7 @@ namespace Tortuga.Chain.CommandBuilders
             return this;
         }
 
-        IObjectDbCommandBuilder<TArgument?> IObjectDbCommandBuilder<TArgument?>.WithKeys(params string[] columnNames)
+        IObjectDbCommandBuilder<TArgument> IObjectDbCommandBuilder<TArgument>.WithKeys(params string[] columnNames)
         {
             return WithKeys(columnNames);
         }
@@ -95,7 +96,12 @@ namespace Tortuga.Chain.CommandBuilders
         /// After executing the operation, refreshes the properties on the argumentValue by reading the updated values from the database.
         /// </summary>
         /// <returns></returns>
-        public ILink<TArgument?> WithRefresh() => new RefreshMaterializer<TCommand, TParameter, TArgument>(this);
+        public ILink<TArgument> WithRefresh()
+        {
+            if (ArgumentValue == null)
+                throw new InvalidOperationException("Cannot use .WithRefresh() if a null argument is provided.");
+            return new RefreshMaterializer<TCommand, TParameter, TArgument>(this).NeverNull();
+        }
 
         /// <summary>
         /// Called when ObjectDbCommandBuilder needs a reference to the associated table or view.

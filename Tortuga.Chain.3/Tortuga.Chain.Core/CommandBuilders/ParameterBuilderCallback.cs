@@ -6,7 +6,8 @@ namespace Tortuga.Chain.CommandBuilders
     /// Callback for the parameter builder.
     /// </summary>
     /// <typeparam name="TParameter">The type of the desired DbParameter.</typeparam>
-    /// <typeparam name="TDbType">The database specific DbType</typeparam>
+    /// <typeparam name="
+    /// TDbType">The database specific DbType</typeparam>
     /// <param name="entry">Metadata about the parameter in question.</param>
     /// <returns>TParameter.</returns>
     /// <remarks>For internal use only.</remarks>

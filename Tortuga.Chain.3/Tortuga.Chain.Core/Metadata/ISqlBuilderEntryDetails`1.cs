@@ -11,6 +11,6 @@
         /// Gets the database specific DbType
         /// </summary>
         /// <value>The type of the database.</value>
-        TDbType DbType { get; }
+        TDbType? DbType { get; }
     }
 }

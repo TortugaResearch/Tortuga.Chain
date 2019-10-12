@@ -5,6 +5,7 @@ namespace Tortuga.Chain.CommandBuilders
     /// </summary>
     /// <typeparam name="TArgument">The type of the argument.</typeparam>
     public interface IObjectDbCommandBuilder<TArgument> : ISingleRowDbCommandBuilder
+        where TArgument : class
     {
         /// <summary>
         /// Gets the argument value passed to the command builder.
@@ -18,7 +19,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="rowOptions">The row options.</param>
         /// <returns></returns>
         /// <remarks>To update the argumentValue itself, use WithRefresh() instead.</remarks>
-        ILink<TArgument> ToObject(RowOptions rowOptions = RowOptions.None);
+        ILink<TArgument?> ToObject(RowOptions rowOptions = RowOptions.None);
 
         /// <summary>
         /// Uses an explicitly specified set of key column(s). This overrides the UseKeyAttribute option.

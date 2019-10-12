@@ -231,7 +231,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <remarks>
         /// If the object implements IReadOnlyDictionary[string, object], ApplyArgumentDictionary will be implicitly called instead.
         /// </remarks>
-        public void ApplyArgumentValue(IDataSource dataSource, OperationTypes appliesWhen, object argumentValue)
+        public void ApplyArgumentValue(IDataSource dataSource, OperationTypes appliesWhen, object? argumentValue)
         {
             ApplyArgumentValue(dataSource, appliesWhen, argumentValue, false, false);
         }
@@ -298,7 +298,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// If the object implements IReadOnlyDictionary[string, object], ApplyArgumentDictionary will be implicitly called instead.
         /// If the object does not implement IPropertyChangeTracking and changedPropertiesOnly is set, an error will occur.
         /// </remarks>
-        public void ApplyArgumentValue(IDataSource dataSource, object argumentValue, UpdateOptions options)
+        public void ApplyArgumentValue(IDataSource dataSource, object? argumentValue, UpdateOptions options)
         {
             if (options.HasFlag(UpdateOptions.SoftDelete))
                 ApplyArgumentValue(dataSource, OperationTypes.Delete, argumentValue, options.HasFlag(UpdateOptions.UseKeyAttribute), options.HasFlag(UpdateOptions.ChangedPropertiesOnly));
@@ -563,7 +563,7 @@ namespace Tortuga.Chain.CommandBuilders
         public void ApplyValueOverrides(object value)
         {
             if (value == null)
-                throw new ArgumentNullException(nameof(value), "value is null.");
+                throw new ArgumentNullException(nameof(value), $"{nameof(value)} is null.");
 
             if (value is IReadOnlyDictionary<string, object> readOnlyDictionary)
             {
@@ -627,7 +627,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="header">The optional header. Usually not used.</param>
         /// <param name="prefix">An optional prefix for each column name.</param>
         /// <param name="footer">The optional footer. Usually not used.</param>
-        public void BuildAnonymousSetClause(StringBuilder sql, string header, string prefix, string footer)
+        public void BuildAnonymousSetClause(StringBuilder sql, string? header, string? prefix, string? footer)
         {
             if (sql == null)
                 throw new ArgumentNullException(nameof(sql), $"{nameof(sql)} was null.");
@@ -645,7 +645,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="dataSource">The data source.</param>
         /// <param name="footer">The footer.</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public void BuildAnonymousSoftDeleteClause(StringBuilder sql, string header, IDataSource dataSource, string footer)
+        public void BuildAnonymousSoftDeleteClause(StringBuilder sql, string header, IDataSource dataSource, string? footer)
         {
             if (dataSource == null)
                 throw new ArgumentNullException(nameof(dataSource), $"{nameof(dataSource)} is null.");
@@ -709,7 +709,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="footer">The optional footer. Usually not used.</param>
         /// <param name="firstPassParameter">if set to true if this is a first pass parameter.</param>
         /// <exception cref="System.ArgumentNullException">sql - sql</exception>
-        public void BuildAnonymousWhereClause(StringBuilder sql, string header, string footer, bool firstPassParameter)
+        public void BuildAnonymousWhereClause(StringBuilder sql, string? header, string? footer, bool firstPassParameter)
         {
             if (sql == null)
                 throw new ArgumentNullException(nameof(sql), $"{nameof(sql)} was null.");
@@ -803,7 +803,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="footer">The footer.</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="MappingException"></exception>
-        public void BuildOrderByClause(StringBuilder sql, string header, IEnumerable<SortExpression> sortExpressions, string footer)
+        public void BuildOrderByClause(StringBuilder sql, string? header, IEnumerable<SortExpression> sortExpressions, string? footer)
         {
             if (sql == null)
                 throw new ArgumentNullException(nameof(sql), $"{nameof(sql)} is null.");
@@ -885,7 +885,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <remarks>
         /// If no columns are marked for reading, the header and footer won't be emitted.
         /// </remarks>
-        public void BuildSelectTvpForInsertClause(StringBuilder sql, string header, string prefix, string footer, bool includeIdentityColumn = false)
+        public void BuildSelectTvpForInsertClause(StringBuilder sql, string? header, string? prefix, string? footer, bool includeIdentityColumn = false)
         {
             if (sql == null)
                 throw new ArgumentNullException(nameof(sql), $"{nameof(sql)} was null.");
@@ -941,7 +941,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="dataSource">The data source.</param>
         /// <param name="footer">The footer.</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public void BuildSoftDeleteClause(StringBuilder sql, string header, IDataSource dataSource, string footer)
+        public void BuildSoftDeleteClause(StringBuilder sql, string? header, IDataSource dataSource, string? footer)
         {
             if (dataSource == null)
                 throw new ArgumentNullException(nameof(dataSource), $"{nameof(dataSource)} is null.");
@@ -1341,7 +1341,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// If the object implements IReadOnlyDictionary[string, object], ApplyArgumentDictionary will be implicitly called instead.
         /// If the object does not implement IPropertyChangeTracking and changedPropertiesOnly is set, an error will occur.
         /// </remarks>
-        void ApplyArgumentValue(IDataSource dataSource, OperationTypes appliesWhen, object argumentValue, bool useObjectDefinedKeys, bool changedPropertiesOnly)
+        void ApplyArgumentValue(IDataSource dataSource, OperationTypes appliesWhen, object? argumentValue, bool useObjectDefinedKeys, bool changedPropertiesOnly)
         {
             if (dataSource == null)
                 throw new ArgumentNullException(nameof(dataSource), $"{nameof(dataSource)} is null.");

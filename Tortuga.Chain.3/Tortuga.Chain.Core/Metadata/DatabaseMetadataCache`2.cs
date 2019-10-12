@@ -187,12 +187,14 @@ namespace Tortuga.Chain.Metadata
         /// </summary>
         /// <param name="typeName">Name of the type.</param>
         [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
-        public virtual UserDefinedTypeMetadata<TName, TDbType> GetUserDefinedType(TName typeName)
+        public virtual UserDefinedTableTypeMetadata<TName, TDbType> GetUserDefinedTableType(TName typeName)
         {
             throw new NotSupportedException("User defined types are not supported by this data source");
         }
 
-        UserDefinedTypeMetadata IDatabaseMetadataCache.GetUserDefinedType(string typeName) => GetUserDefinedType(ParseObjectName(typeName));
+        UserDefinedTableTypeMetadata IDatabaseMetadataCache.GetUserDefinedTableType(string typeName) => GetUserDefinedTableType(ParseObjectName(typeName));
+
+        IReadOnlyCollection<UserDefinedTableTypeMetadata> IDatabaseMetadataCache.GetUserDefinedTableTypes() => GetUserDefinedTableTypes();
 
         /// <summary>
         /// Gets the table-valued functions that were loaded by this cache.
@@ -200,12 +202,10 @@ namespace Tortuga.Chain.Metadata
         /// <returns></returns>
         /// <remarks>Call Preload before invoking this method to ensure that all table-valued functions were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.</remarks>
         [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
-        public virtual IReadOnlyCollection<UserDefinedTypeMetadata<TName, TDbType>> GetUserDefinedTypes()
+        public virtual IReadOnlyCollection<UserDefinedTableTypeMetadata<TName, TDbType>> GetUserDefinedTableTypes()
         {
             throw new NotSupportedException("Table value functions are not supported by this data source");
         }
-
-        IReadOnlyCollection<UserDefinedTypeMetadata> IDatabaseMetadataCache.GetUserDefinedTypes() => GetUserDefinedTypes();
 
         /// <summary>
         /// Preloads all of the metadata for this data source.
@@ -346,29 +346,29 @@ namespace Tortuga.Chain.Metadata
         /// Try to get the metadata for a user defined type.
         /// </summary>
         /// <param name="typeName">Name of the type.</param>
-        /// <param name="userDefinedType">Type of the user defined.</param>
+        /// <param name="userDefinedTableType">Type of the user defined table type.</param>
         /// <returns></returns>
         [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
-        public bool TryGetUserDefinedType(string typeName, [NotNullWhen(true)] out UserDefinedTypeMetadata? userDefinedType) =>
-            TryGetUserDefinedType(ParseObjectName(typeName), out userDefinedType);
+        public bool TryGetUserDefinedTableType(string typeName, [NotNullWhen(true)] out UserDefinedTableTypeMetadata? userDefinedTableType) =>
+            TryGetUserDefinedTableType(ParseObjectName(typeName), out userDefinedTableType);
 
         /// <summary>
         /// Try to get the metadata for a user defined type.
         /// </summary>
         /// <param name="typeName">Name of the type.</param>
-        /// <param name="userDefinedType">Type of the user defined.</param>
+        /// <param name="userDefinedTableType">Type of the user defined.</param>
         /// <returns></returns>
         [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
-        public bool TryGetUserDefinedType(TName typeName, [NotNullWhen(true)] out UserDefinedTypeMetadata? userDefinedType)
+        public bool TryGetUserDefinedTableType(TName typeName, [NotNullWhen(true)] out UserDefinedTableTypeMetadata? userDefinedTableType)
         {
             try
             {
-                userDefinedType = GetUserDefinedType(typeName);
+                userDefinedTableType = GetUserDefinedTableType(typeName);
                 return true;
             }
             catch (MissingObjectException)
             {
-                userDefinedType = null;
+                userDefinedTableType = null;
                 return false;
             }
         }

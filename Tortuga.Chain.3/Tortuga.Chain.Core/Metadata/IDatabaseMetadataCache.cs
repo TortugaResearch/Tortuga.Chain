@@ -65,15 +65,15 @@ namespace Tortuga.Chain.Metadata
         /// </summary>
         /// <param name="typeName">Name of the type.</param>
         [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
-        UserDefinedTypeMetadata GetUserDefinedType(string typeName);
+        UserDefinedTableTypeMetadata GetUserDefinedTableType(string typeName);
 
         /// <summary>
-        /// Gets the table-valued functions that were loaded by this cache.
+        /// Gets the user defined table types that were loaded by this cache.
         /// </summary>
         /// <returns></returns>
         /// <remarks>Call Preload before invoking this method to ensure that all table-valued functions were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.</remarks>
         [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
-        IReadOnlyCollection<UserDefinedTypeMetadata> GetUserDefinedTypes();
+        IReadOnlyCollection<UserDefinedTableTypeMetadata> GetUserDefinedTableTypes();
 
         /// <summary>
         /// Preloads all of the metadata for this data source.
@@ -113,9 +113,9 @@ namespace Tortuga.Chain.Metadata
         /// Try to get the metadata for a user defined type.
         /// </summary>
         /// <param name="typeName">Name of the type.</param>
-        /// <param name="userDefinedType">Type of the user defined.</param>
+        /// <param name="userDefinedTableType">Type of the user defined table type.</param>
         /// <returns></returns>
         [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
-        bool TryGetUserDefinedType(string typeName, [NotNullWhen(true)] out UserDefinedTypeMetadata? userDefinedType);
+        bool TryGetUserDefinedTableType(string typeName, [NotNullWhen(true)] out UserDefinedTableTypeMetadata? userDefinedTableType);
     }
 }

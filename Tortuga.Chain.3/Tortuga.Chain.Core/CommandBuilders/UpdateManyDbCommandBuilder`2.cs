@@ -53,7 +53,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="whereClause">The where clause.</param>
         /// <param name="argumentValue">The argument value.</param>
         /// <returns></returns>
-        public abstract UpdateManyDbCommandBuilder<TCommand, TParameter> WithFilter(string whereClause, object argumentValue);
+        public abstract UpdateManyDbCommandBuilder<TCommand, TParameter> WithFilter(string whereClause, object? argumentValue);
 
         IMultipleRowDbCommandBuilder IUpdateManyDbCommandBuilder.WithFilter(object filterValue, FilterOptions filterOptions) => WithFilter(filterValue, filterOptions);
 
@@ -65,6 +65,6 @@ namespace Tortuga.Chain.CommandBuilders
 
         MultipleRowDbCommandBuilder<TCommand, TParameter> IUpdateManyDbCommandBuilder<TCommand, TParameter>.WithFilter(string whereClause) => WithFilter(whereClause);
 
-        MultipleRowDbCommandBuilder<TCommand, TParameter> IUpdateManyDbCommandBuilder<TCommand, TParameter>.WithFilter(string whereClause, object argumentValue) => WithFilter(whereClause, argumentValue);
+        MultipleRowDbCommandBuilder<TCommand, TParameter> IUpdateManyDbCommandBuilder<TCommand, TParameter>.WithFilter(string whereClause, object? argumentValue) => WithFilter(whereClause, argumentValue);
     }
 }

@@ -30,7 +30,7 @@ namespace Tortuga.Chain.Appenders
         protected override void OnCommandBuilt(CommandBuiltEventArgs e)
         {
             if (e == null)
-                throw new ArgumentNullException(nameof(e), "e is null.");
+                throw new ArgumentNullException(nameof(e), $"{nameof(e)} is null.");
             e.Command.CommandTimeout = (int)m_Timeout.TotalSeconds;
         }
     }

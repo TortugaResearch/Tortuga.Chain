@@ -33,7 +33,7 @@ namespace Tortuga.Chain
         /// <param name="tableType">Type of the table.</param>
         /// <param name="source">The source.</param>
         /// <param name="operationType">Type of the operation being performed.</param>
-        public ObjectDataReader(UserDefinedTypeMetadata tableType, IEnumerable<TObject> source, OperationTypes operationType = OperationTypes.None)
+        public ObjectDataReader(UserDefinedTableTypeMetadata tableType, IEnumerable<TObject> source, OperationTypes operationType = OperationTypes.None)
         {
             if (tableType == null)
                 throw new ArgumentNullException(nameof(tableType), $"{nameof(tableType)} is null.");

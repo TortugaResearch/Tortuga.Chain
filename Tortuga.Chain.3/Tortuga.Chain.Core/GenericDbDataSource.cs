@@ -227,9 +227,9 @@ namespace Tortuga.Chain
         protected internal override int? Execute(CommandExecutionToken<DbCommand, DbParameter> executionToken, CommandImplementation<DbCommand> implementation, object? state)
         {
             if (executionToken == null)
-                throw new ArgumentNullException(nameof(executionToken), "executionToken is null.");
+                throw new ArgumentNullException(nameof(executionToken), $"{nameof(executionToken)} is null.");
             if (implementation == null)
-                throw new ArgumentNullException(nameof(implementation), "implementation is null.");
+                throw new ArgumentNullException(nameof(implementation), $"{nameof(implementation)} is null.");
 
             var startTime = DateTimeOffset.Now;
             OnExecutionStarted(executionToken, startTime, state);
@@ -278,9 +278,9 @@ namespace Tortuga.Chain
         protected internal override int? Execute(OperationExecutionToken<DbConnection, DbTransaction> executionToken, OperationImplementation<DbConnection, DbTransaction> implementation, object? state)
         {
             if (executionToken == null)
-                throw new ArgumentNullException(nameof(executionToken), "executionToken is null.");
+                throw new ArgumentNullException(nameof(executionToken), $"{nameof(executionToken)} is null.");
             if (implementation == null)
-                throw new ArgumentNullException(nameof(implementation), "implementation is null.");
+                throw new ArgumentNullException(nameof(implementation), $"{nameof(implementation)} is null.");
 
             var startTime = DateTimeOffset.Now;
             OnExecutionStarted(executionToken, startTime, state);
@@ -312,9 +312,9 @@ namespace Tortuga.Chain
         protected internal override async Task<int?> ExecuteAsync(CommandExecutionToken<DbCommand, DbParameter> executionToken, CommandImplementationAsync<DbCommand> implementation, CancellationToken cancellationToken, object? state)
         {
             if (executionToken == null)
-                throw new ArgumentNullException(nameof(executionToken), "executionToken is null.");
+                throw new ArgumentNullException(nameof(executionToken), $"{nameof(executionToken)} is null.");
             if (implementation == null)
-                throw new ArgumentNullException(nameof(implementation), "implementation is null.");
+                throw new ArgumentNullException(nameof(implementation), $"{nameof(implementation)} is null.");
 
             var startTime = DateTimeOffset.Now;
             OnExecutionStarted(executionToken, startTime, state);
@@ -369,9 +369,9 @@ namespace Tortuga.Chain
         protected internal override async Task<int?> ExecuteAsync(OperationExecutionToken<DbConnection, DbTransaction> executionToken, OperationImplementationAsync<DbConnection, DbTransaction> implementation, CancellationToken cancellationToken, object? state)
         {
             if (executionToken == null)
-                throw new ArgumentNullException(nameof(executionToken), "executionToken is null.");
+                throw new ArgumentNullException(nameof(executionToken), $"{nameof(executionToken)} is null.");
             if (implementation == null)
-                throw new ArgumentNullException(nameof(implementation), "implementation is null.");
+                throw new ArgumentNullException(nameof(implementation), $"{nameof(implementation)} is null.");
 
             var startTime = DateTimeOffset.Now;
             OnExecutionStarted(executionToken, startTime, state);

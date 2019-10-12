@@ -1,18 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.0</TargetFrameworks>
+    <TargetFrameworks>net461;netstandard2.0;netcoreapp2.1</TargetFrameworks>
     <RootNamespace>Tortuga.Chain</RootNamespace>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>David Tomcik, Jonathan Allen</Authors>
     <Company>Tortuga Technologies</Company>
     <Description>A fluent ORM and Database Reflection Library for .NET and OleDB Databases.</Description>
-    <PackageTags>ORM,Fluent,DB,Reflection</PackageTags>
-    <AssemblyVersion>3.0.0</AssemblyVersion>
+    <PackageTags>ORM Fluent DB Reflection</PackageTags>
     <LangVersion>8.0</LangVersion>
     <ProductName>Tortuga Chain</ProductName>
-    <Version>3.0.0</Version>
+    <Deterministic>false</Deterministic>
 
+    <AssemblyVersion>3.0.*</AssemblyVersion>
+    <Version>3.0.0</Version>
     <FileVersion>3.0.0.0</FileVersion>
 
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -31,11 +31,8 @@
     <RootNamespace>Tortuga.Chain</RootNamespace>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-    <DefineConstants>NET_STD_20,OleDb_Missing</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
-    <DefineConstants>NET_STD_21</DefineConstants>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.1'">
+    <DefineConstants>ORDINAL_STRINGS</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -50,7 +47,42 @@
     <ProjectReference Include="..\Tortuga.Chain.Core\Tortuga.Chain.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(Configuration)'=='Release'">
-    <PackageReference Include="Tortuga.Anchor" Version="3.0.0" />
+  <ItemGroup>
+
+    <Compile Include="..\Shared\Legacy\**\*.cs">
+      <Link>referenced\Legacy\%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </Compile>
   </ItemGroup>
+
+  <ItemGroup Condition="'$(Configuration)'=='Release'">
+    <PackageReference Include="Tortuga.Chain.Core" Version="3.0.*" />
+  </ItemGroup>
+
+  <!-- NuGet Packaging Boilerplate-->
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GenerateNuspecDependsOn>$(GenerateNuspecDependsOn);ReadPackageVersionFromOutputAssembly</GenerateNuspecDependsOn>
+  </PropertyGroup>
+
+  <Target Name="ReadPackageVersionFromOutputAssembly" DependsOnTargets="Build" Condition="'$(IsCrossTargetingBuild)' == 'true'">
+
+    <PropertyGroup>
+      <FirstTargetFramework>$([System.String]::Copy($(TargetFrameworks)).Split(';').GetValue(0))</FirstTargetFramework>
+    </PropertyGroup>
+    <MSBuild Projects="$(MSBuildProjectFullPath)" Targets="ReadPackageVersionFromOutputAssemblySingleTfm" Properties="TargetFramework=$(FirstTargetFramework)">
+      <Output TaskParameter="TargetOutputs" ItemName="PackAssembly" />
+    </MSBuild>
+    <PropertyGroup>
+      <PackageVersion>%(PackAssembly.Version)</PackageVersion>
+    </PropertyGroup>
+  </Target>
+
+  <Target Name="ReadPackageVersionFromOutputAssemblySingleTfm" Returns="@(PackAssembly)" Condition="'$(IsCrossTargetingBuild)' != 'true'">
+    <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
+      <Output TaskParameter="Assemblies" ItemName="PackAssembly" />
+    </GetAssemblyIdentity>
+    <PropertyGroup>
+      <PackageVersion>%(PackAssembly.Version)</PackageVersion>
+    </PropertyGroup>
+  </Target>
 </Project>

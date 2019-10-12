@@ -7,6 +7,15 @@ namespace Tortuga.Chain.Metadata
     {
         static readonly char[] s_InvalidCharacters = new char[] { ' ', '.', ',', '$', '@' };
 
+        public static string QuotedSqlNameSafe(this ISqlBuilderEntryDetails details)
+        {
+            var value = details.QuotedSqlName;
+            if (string.IsNullOrEmpty(value))
+                throw new InvalidOperationException($"Using parameter {details.SqlVariableName} as a column is not allowed because QuotedSqlName is missing.");
+
+            return value!;
+        }
+
         public static string ToClrName(string name)
         {
             if (string.IsNullOrEmpty(name))
@@ -23,28 +32,5 @@ namespace Tortuga.Chain.Metadata
 
             return result;
         }
-
-        public static string QuotedSqlNameSafe(this ISqlBuilderEntryDetails details)
-        {
-            var value = details.QuotedSqlName;
-            if (string.IsNullOrEmpty(value))
-                throw new InvalidOperationException($"Using parameter {details.SqlVariableName} as a column is not allowed because QuotedSqlName is missing.");
-
-            return value!;
-        }
-
-#if !OrdinalHashCodes
-
-        public static int GetHashCode(this string source, StringComparison _)
-        {
-            return source.GetHashCode();
-        }
-
-        public static string Replace(this string source, string oldValue, string newValue, StringComparison _)
-        {
-            return source.Replace(oldValue, newValue);
-        }
-
-#endif
     }
 }

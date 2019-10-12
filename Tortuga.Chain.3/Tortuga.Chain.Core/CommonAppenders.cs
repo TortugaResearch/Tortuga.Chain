@@ -73,7 +73,7 @@ namespace Tortuga.Chain
         public static ILink<int?> InvalidateCache(this IDbCommandBuilder commandBuilder, string cacheKey)
         {
             if (commandBuilder == null)
-                throw new ArgumentNullException(nameof(commandBuilder), "commandBuilder is null.");
+                throw new ArgumentNullException(nameof(commandBuilder), $"{nameof(commandBuilder)} is null.");
             return new InvalidateCacheAppender<int?>(commandBuilder.AsNonQuery(), cacheKey);
         }
 
@@ -209,6 +209,16 @@ namespace Tortuga.Chain
             //other parameters are checked by the constructor.
 
             return new KeyJoinAppender<T1, T2, TKey>(previousLink, keyName, keyName, targetCollectionName, joinOptions);
+        }
+
+        /// <summary>
+        /// Ensures that a null will never be returned.
+        /// </summary>
+        /// <param name="previousLink">The previous link.</param>
+        /// <remarks>If the previous link returns a null, an exception is thrown instead.</remarks>
+        public static ILink<TResult> NeverNull<TResult>(this ILink<TResult?> previousLink) where TResult : class
+        {
+            return new NonNullLink<TResult>(previousLink);
         }
 
         /// <summary>

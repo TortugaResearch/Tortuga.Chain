@@ -56,7 +56,7 @@ namespace Tortuga.Chain
         public Table(DbDataReader source)
         {
             if (source == null)
-                throw new ArgumentNullException(nameof(source), "source is null.");
+                throw new ArgumentNullException(nameof(source), $"{nameof(source)} is null.");
             if (source.FieldCount == 0)
                 throw new ArgumentException("No columns were returned", nameof(source));
 
@@ -99,7 +99,7 @@ namespace Tortuga.Chain
         public Table(IDataReader source)
         {
             if (source == null)
-                throw new ArgumentNullException(nameof(source), "source is null.");
+                throw new ArgumentNullException(nameof(source), $"{nameof(source)} is null.");
             if (source.FieldCount == 0)
                 throw new ArgumentException("No columns were returned", nameof(source));
 

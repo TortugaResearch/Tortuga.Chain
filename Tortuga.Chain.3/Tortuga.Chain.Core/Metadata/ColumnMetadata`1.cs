@@ -25,7 +25,7 @@ namespace Tortuga.Chain.Metadata
         /// <param name="scale">The scale.</param>
         /// <param name="fullTypeName">Full name of the type.</param>
         /// <param name="clrType">The CLR type that matches this column's database type.</param>
-        public ColumnMetadata(string name, bool isComputed, bool isPrimaryKey, bool isIdentity, string typeName, TDbType dbType, string quotedSqlName, bool? isNullable, int? maxLength, int? precision, int? scale, string fullTypeName, Type clrType) : base(name, isComputed, isPrimaryKey, isIdentity, typeName, dbType, quotedSqlName, isNullable, maxLength, precision, scale, fullTypeName, clrType)
+        public ColumnMetadata(string name, bool isComputed, bool isPrimaryKey, bool isIdentity, string typeName, TDbType? dbType, string quotedSqlName, bool? isNullable, int? maxLength, int? precision, int? scale, string fullTypeName, Type? clrType) : base(name, isComputed, isPrimaryKey, isIdentity, typeName, dbType, quotedSqlName, isNullable, maxLength, precision, scale, fullTypeName, clrType)
         {
             DbType = dbType;
         }
@@ -33,7 +33,7 @@ namespace Tortuga.Chain.Metadata
         /// <summary>
         /// Gets the type used by the database.
         /// </summary>
-        public new TDbType DbType { get; }
+        public new TDbType? DbType { get; }
 
         /// <summary>
         /// Returns a <see cref="string" /> that represents this instance.

@@ -24,7 +24,7 @@ namespace Tortuga.Chain.Metadata
         /// <param name="scale">The scale.</param>
         /// <param name="fullTypeName">Full name of the type.</param>
         /// <param name="clrType">The CLR type that matches this column's database type.</param>
-        protected ColumnMetadata(string name, bool isComputed, bool isPrimaryKey, bool isIdentity, string typeName, object dbType, string quotedSqlName, bool? isNullable, int? maxLength, int? precision, int? scale, string fullTypeName, Type clrType)
+        protected ColumnMetadata(string name, bool isComputed, bool isPrimaryKey, bool isIdentity, string typeName, object? dbType, string quotedSqlName, bool? isNullable, int? maxLength, int? precision, int? scale, string fullTypeName, Type? clrType)
         {
             TypeName = typeName;
             SqlName = name;
@@ -59,7 +59,7 @@ namespace Tortuga.Chain.Metadata
         /// <summary>
         /// Gets the type used by the database.
         /// </summary>
-        public object DbType { get; }
+        public object? DbType { get; }
 
         /// <summary>
         /// Gets or sets the full name of the type including max length, precision, and/or scale.

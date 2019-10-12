@@ -162,7 +162,7 @@ namespace Tortuga.Chain.DataSources
         public void OnExecutionCanceled(ExecutionEventArgs e)
         {
             if (e == null)
-                throw new ArgumentNullException(nameof(e), "e is null.");
+                throw new ArgumentNullException(nameof(e), $"{nameof(e)} is null.");
 
             ExecutionCanceled?.Invoke(this, e);
             if (!SuppressGlobalEvents && GlobalExecutionCanceled != null)
@@ -178,7 +178,7 @@ namespace Tortuga.Chain.DataSources
         public void OnExecutionError(ExecutionEventArgs e)
         {
             if (e == null)
-                throw new ArgumentNullException(nameof(e), "e is null.");
+                throw new ArgumentNullException(nameof(e), $"{nameof(e)} is null.");
 
             ExecutionError?.Invoke(this, e);
             if (!SuppressGlobalEvents && GlobalExecutionError != null)
@@ -194,7 +194,7 @@ namespace Tortuga.Chain.DataSources
         public void OnExecutionFinished(ExecutionEventArgs e)
         {
             if (e == null)
-                throw new ArgumentNullException(nameof(e), "e is null.");
+                throw new ArgumentNullException(nameof(e), $"{nameof(e)} is null.");
 
             ExecutionFinished?.Invoke(this, e);
             if (!SuppressGlobalEvents && GlobalExecutionFinished != null)
@@ -210,7 +210,7 @@ namespace Tortuga.Chain.DataSources
         public void OnExecutionStarted(ExecutionEventArgs e)
         {
             if (e == null)
-                throw new ArgumentNullException(nameof(e), "e is null.");
+                throw new ArgumentNullException(nameof(e), $"{nameof(e)} is null.");
 
             ExecutionStarted?.Invoke(this, e);
             if (!SuppressGlobalEvents && GlobalExecutionStarted != null)
@@ -240,7 +240,7 @@ namespace Tortuga.Chain.DataSources
         protected void OnExecutionCanceled(ExecutionToken executionDetails, DateTimeOffset startTime, DateTimeOffset endTime, object? state)
         {
             if (executionDetails == null)
-                throw new ArgumentNullException(nameof(executionDetails), "executionDetails is null.");
+                throw new ArgumentNullException(nameof(executionDetails), $"{nameof(executionDetails)} is null.");
 
             ExecutionCanceled?.Invoke(this, new ExecutionEventArgs(executionDetails, startTime, endTime, state));
             if (!SuppressGlobalEvents)
@@ -261,9 +261,9 @@ namespace Tortuga.Chain.DataSources
         protected void OnExecutionError(ExecutionToken executionDetails, DateTimeOffset startTime, DateTimeOffset endTime, Exception error, object? state)
         {
             if (executionDetails == null)
-                throw new ArgumentNullException(nameof(executionDetails), "executionDetails is null.");
+                throw new ArgumentNullException(nameof(executionDetails), $"{nameof(executionDetails)} is null.");
             if (error == null)
-                throw new ArgumentNullException(nameof(error), "error is null.");
+                throw new ArgumentNullException(nameof(error), $"{nameof(error)} is null.");
 
             ExecutionError?.Invoke(this, new ExecutionEventArgs(executionDetails, startTime, endTime, error, state));
             if (!SuppressGlobalEvents)
@@ -282,7 +282,7 @@ namespace Tortuga.Chain.DataSources
         protected void OnExecutionFinished(ExecutionToken executionDetails, DateTimeOffset startTime, DateTimeOffset endTime, int? rowsAffected, object? state)
         {
             if (executionDetails == null)
-                throw new ArgumentNullException(nameof(executionDetails), "executionDetails is null.");
+                throw new ArgumentNullException(nameof(executionDetails), $"{nameof(executionDetails)} is null.");
 
             ExecutionFinished?.Invoke(this, new ExecutionEventArgs(executionDetails, startTime, endTime, rowsAffected, state));
             if (!SuppressGlobalEvents)
@@ -299,7 +299,7 @@ namespace Tortuga.Chain.DataSources
         protected void OnExecutionStarted(ExecutionToken executionDetails, DateTimeOffset startTime, object? state)
         {
             if (executionDetails == null)
-                throw new ArgumentNullException(nameof(executionDetails), "executionDetails is null.");
+                throw new ArgumentNullException(nameof(executionDetails), $"{nameof(executionDetails)} is null.");
 
             ExecutionStarted?.Invoke(this, new ExecutionEventArgs(executionDetails, startTime, state));
             if (!SuppressGlobalEvents)

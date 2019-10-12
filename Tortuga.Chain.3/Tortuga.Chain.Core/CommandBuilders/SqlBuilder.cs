@@ -22,7 +22,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <returns>System.String.</returns>
         /// <remarks>If either object is null, this check is skipped.</remarks>
         [SuppressMessage("Microsoft.Naming", "CA1720:IdentifiersShouldNotContainTypeNames", MessageId = "object")]
-        public static void CheckForOverlaps(object firstObject, object secondObject, string errorFormat)
+        public static void CheckForOverlaps(object? firstObject, object? secondObject, string errorFormat)
         {
             if (firstObject == null)
                 return;
@@ -44,7 +44,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="argumentValue">The argument value .</param>
         /// <returns></returns>
         [SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists")]
-        public static List<TParameter> GetParameters<TParameter>(object argumentValue)
+        public static List<TParameter> GetParameters<TParameter>(object? argumentValue)
             where TParameter : DbParameter, new()
         {
             return GetParameters(argumentValue, () => new TParameter());

@@ -39,6 +39,6 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="whereClause">The where clause.</param>
         /// <param name="whereArgumentValue">The where clause argument value.</param>
         /// <returns></returns>
-        new MultipleRowDbCommandBuilder<TCommand, TParameter> WithFilter(string whereClause, object whereArgumentValue);
+        new MultipleRowDbCommandBuilder<TCommand, TParameter> WithFilter(string whereClause, object? whereArgumentValue);
     }
 }
