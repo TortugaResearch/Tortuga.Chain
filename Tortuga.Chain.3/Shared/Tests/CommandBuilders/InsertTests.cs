@@ -101,7 +101,7 @@ namespace Tests.CommandBuilders
             }
         }
 
-#if SQL_SERVER_SDS || SQL_SERVER_MDS || OLE_SQL_SERVER //SQL Server has problems with CRUD operations that return values on tables with triggers.
+#if SQL_SERVER_SDS || SQL_SERVER_MDS || SQL_SERVER_OLEDB //SQL Server has problems with CRUD operations that return values on tables with triggers.
 
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
         public void Insert_Trigger(string dataSourceName, DataSourceType mode)

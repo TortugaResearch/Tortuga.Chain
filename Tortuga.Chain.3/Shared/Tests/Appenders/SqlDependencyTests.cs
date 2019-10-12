@@ -8,7 +8,7 @@ using Tortuga.Chain.SqlServer;
 
 namespace Tests.Appenders
 {
-#if SQL_SERVER_SDS || SQL_SERVER_MDS
+#if (SQL_SERVER_SDS || SQL_SERVER_MDS) && !SqlDependency_Missing
 
     [TestClass]
     public class SqlDependencyTests : TestBase

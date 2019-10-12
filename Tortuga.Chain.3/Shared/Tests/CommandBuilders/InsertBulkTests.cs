@@ -1,10 +1,19 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Linq;
 using Tests.Models;
+
+#if SQL_SERVER_SDS
+
+using System.Data.SqlClient;
+
+#elif SQL_SERVER_MDS
+
+using Microsoft.Data.SqlClient;
+
+#endif
 
 namespace Tests.CommandBuilders
 {

@@ -33,9 +33,8 @@ namespace Tortuga.Chain
         readonly SqlConnectionStringBuilder m_ConnectionBuilder;
         SqlServerMetadataCache m_DatabaseMetadata;
 
-        readonly object m_SyncRoot = new object();
-
 #if !SqlDependency_Missing
+        readonly object m_SyncRoot = new object();
         bool m_IsSqlDependencyActive;
 #endif
 

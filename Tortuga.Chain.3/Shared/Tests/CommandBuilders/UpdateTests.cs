@@ -344,7 +344,7 @@ namespace Tests.CommandBuilders
             var dataSource = DataSource(dataSourceName, mode);
             try
             {
-#if OLE_SQL_SERVER
+#if SQL_SERVER_OLEDB
                 var whereClause = "Title = ? AND MiddleName = ?";
 #else
                 var whereClause = "Title = @LookupKey AND MiddleName = @MiddleName";
@@ -386,7 +386,7 @@ namespace Tests.CommandBuilders
             var dataSource = DataSource(dataSourceName, mode);
             try
             {
-#if OLE_SQL_SERVER
+#if SQL_SERVER_OLEDB
                 var updateExpression = "FirstName = ?";
                 var whereClause = "Title = ? AND MiddleName = ?";
 #else
@@ -494,7 +494,7 @@ namespace Tests.CommandBuilders
             var dataSource = DataSource(dataSourceName, mode);
             try
             {
-#if OLE_SQL_SERVER
+#if SQL_SERVER_OLEDB
                 var whereClause = "Title = ? AND MiddleName = ?";
 #else
                 var whereClause = "Title = @LookupKey AND MiddleName = @MiddleName";
@@ -610,7 +610,7 @@ namespace Tests.CommandBuilders
             }
         }
 
-#if SQL_SERVER_SDS || SQL_SERVER_MDS || OLE_SQL_SERVER //SQL Server has problems with CRUD operations that return values on tables with triggers.
+#if SQL_SERVER_SDS || SQL_SERVER_MDS || SQL_SERVER_OLEDB //SQL Server has problems with CRUD operations that return values on tables with triggers.
 
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
         public void ChangeTrackingTest_Trigger(string dataSourceName, DataSourceType mode)

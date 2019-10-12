@@ -6,7 +6,7 @@ using System.Reflection;
 using Tortuga.Chain;
 using Tortuga.Chain.DataSources;
 
-#if SQL_SERVER_SDS || SQL_SERVER_MDS || OLE_SQL_SERVER
+#if SQL_SERVER_SDS || SQL_SERVER_MDS || SQL_SERVER_OLEDB
 
 using TypedLimitOption = Tortuga.Chain.SqlServerLimitOption;
 
@@ -22,12 +22,15 @@ using  TypedLimitOption = Tortuga.Chain.MySqlLimitOption;
 
 namespace Tests
 {
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
     public abstract class DataAttribute : Attribute, ITestDataSource
     {
-        protected static DataSourceType[] DataSourceTypeList = new DataSourceType[] { DataSourceType.Normal,
+        static DataSourceType[] s_DataSourceTypeList = new DataSourceType[] { DataSourceType.Normal,
                                                          DataSourceType.Open,
                                                          DataSourceType.Transactional,
                                                          DataSourceType.Strict };
+
+        protected DataSourceType[] DataSourceTypeList = s_DataSourceTypeList;
 
         protected static JoinOptions[] JoinOptionsList = new JoinOptions[]{ JoinOptions.None,
                     JoinOptions.IgnoreUnmatchedChildren,
@@ -47,9 +50,13 @@ namespace Tests
             DataSources = m_DataSourceGroup switch
             {
                 DataSourceGroup.All => TestBase.s_DataSources.Values,
+                DataSourceGroup.AllNormalOnly => TestBase.s_DataSources.Values,
                 DataSourceGroup.Primary => new[] { TestBase.s_PrimaryDataSource },
                 _ => throw new ArgumentOutOfRangeException(nameof(dataSourceGroup))
             };
+
+            if (m_DataSourceGroup == DataSourceGroup.AllNormalOnly)
+                DataSourceTypeList = new DataSourceType[] { DataSourceType.Normal };
         }
 
         public abstract IEnumerable<object[]> GetData(MethodInfo methodInfo);

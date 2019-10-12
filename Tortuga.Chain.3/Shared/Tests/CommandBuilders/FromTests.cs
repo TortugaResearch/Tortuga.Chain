@@ -250,7 +250,7 @@ namespace Tests.CommandBuilders
             }
         }
 
-        [DataTestMethod, TablesAndViewLimitData(DataSourceGroup.All)]
+        [DataTestMethod, TablesAndViewLimitData(DataSourceGroup.AllNormalOnly)]
         public void ToTable_WithLimit(string dataSourceName, DataSourceType mode, string tableName, LimitOptions limitOptions)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -276,7 +276,7 @@ namespace Tests.CommandBuilders
             }
         }
 
-        [DataTestMethod, TablesAndViewLimitData(DataSourceGroup.All)]
+        [DataTestMethod, TablesAndViewLimitData(DataSourceGroup.AllNormalOnly)]
         public async Task ToTable_WithLimit_Async(string dataSourceName, DataSourceType mode, string tableName, LimitOptions limitOptions)
         {
             var dataSource = await DataSourceAsync(dataSourceName, mode);
@@ -306,7 +306,7 @@ namespace Tests.CommandBuilders
         public void Count(string dataSourceName, DataSourceType mode, string tableName)
         {
             var dataSource = DataSource(dataSourceName, mode);
-            WriteLine($"Table {tableName}");
+            //WriteLine($"Table {tableName}");
             try
             {
                 var count = dataSource.From(tableName).AsCount().Execute();
@@ -322,7 +322,7 @@ namespace Tests.CommandBuilders
         public async Task Count_Async(string dataSourceName, DataSourceType mode, string tableName)
         {
             var dataSource = await DataSourceAsync(dataSourceName, mode);
-            WriteLine($"Table {tableName}");
+            //WriteLine($"Table {tableName}");
             try
             {
                 var count = await dataSource.From(tableName).AsCount().ExecuteAsync();
@@ -362,7 +362,7 @@ namespace Tests.CommandBuilders
         public void CountByColumn(string dataSourceName, DataSourceType mode, string tableName, string columnName)
         {
             var dataSource = DataSource(dataSourceName, mode);
-            WriteLine($"Table {tableName}");
+            //WriteLine($"Table {tableName}");
             try
             {
                 var columnType = dataSource.DatabaseMetadata.GetTableOrView(tableName).Columns[columnName].TypeName;
@@ -388,7 +388,7 @@ namespace Tests.CommandBuilders
         public async Task CountByColumn_Async(string dataSourceName, DataSourceType mode, string tableName, string columnName)
         {
             var dataSource = await DataSourceAsync(dataSourceName, mode);
-            WriteLine($"Table {tableName}");
+            //WriteLine($"Table {tableName}");
             try
             {
                 var columnType = dataSource.DatabaseMetadata.GetTableOrView(tableName).Columns[columnName].TypeName;
@@ -410,7 +410,7 @@ namespace Tests.CommandBuilders
         public async Task CountByColumn_Async(string dataSourceName, DataSourceType mode, string tableName, string columnName)
         {
             var dataSource = await DataSourceAsync(dataSourceName, mode);
-            WriteLine($"Table {tableName}");
+            //WriteLine($"Table {tableName}");
             try
             {
                 var columnType = dataSource.DatabaseMetadata.GetTableOrView(tableName).Columns[columnName].TypeName;
@@ -591,7 +591,7 @@ namespace Tests.CommandBuilders
 
 #endif
 
-#if OLE_SQL_SERVER || SQL_SERVER_SDS || SQL_SERVER_MDS
+#if SQL_SERVER_OLEDB || SQL_SERVER_SDS || SQL_SERVER_MDS
 
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
         public void FromTests_TakePercent(string dataSourceName, DataSourceType mode)

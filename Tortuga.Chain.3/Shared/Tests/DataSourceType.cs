@@ -3,7 +3,8 @@ namespace Tests
     public enum DataSourceGroup
     {
         Primary,
-        All
+        All,
+        AllNormalOnly
     }
 
     public enum DataSourceType

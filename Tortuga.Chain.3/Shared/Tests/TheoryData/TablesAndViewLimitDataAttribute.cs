@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 
-#if SQL_SERVER_SDS || SQL_SERVER_MDS || OLE_SQL_Server
+#if SQL_SERVER_SDS || SQL_SERVER_MDS || SQL_SERVER_OLEDB
 
 using Tortuga.Chain;
 
@@ -27,7 +27,7 @@ namespace Tests
                     foreach (var dst in DataSourceTypeList)
                         foreach (var limitType in LimitOptionList)
                         {
-#if SQL_SERVER_SDS || SQL_SERVER_MDS || OLE_SQL_Server
+#if SQL_SERVER_SDS || SQL_SERVER_MDS || SQL_SERVER_OLEDB
                             //Cannot use table sample with views
                             if (!table.IsTable && limitType == SqlServerLimitOption.TableSampleSystemPercentage)
                                 continue;

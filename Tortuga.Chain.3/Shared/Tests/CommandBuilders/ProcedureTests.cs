@@ -1,4 +1,4 @@
-﻿#if SQL_SERVER_SDS || SQL_SERVER_MDS || POSTGRESQL || OLE_SQL_SERVER || MYSQL
+﻿#if SQL_SERVER_SDS || SQL_SERVER_MDS || POSTGRESQL || SQL_SERVER_OLEDB || MYSQL
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
@@ -19,7 +19,7 @@ namespace Tests.CommandBuilders
         static readonly object ProcParameter1 = new { @State = "CA" };
         static readonly object DictParameter1a = new Dictionary<string, object>() { { "State", "CA" } };
         static readonly object DictParameter1b = new Dictionary<string, object>() { { "@State", "CA" } };
-#elif OLE_SQL_SERVER
+#elif SQL_SERVER_OLEDB
         const string CheckA = @"SELECT Count(*) FROM Sales.Customer c WHERE c.State = ?;";
         const string CheckB = @"SELECT Count(*) FROM Sales.[Order] o INNER JOIN Sales.Customer c ON o.CustomerKey = c.CustomerKey WHERE c.State = ?;";
         static readonly object CheckParameter1 = new { @State = "CA" };

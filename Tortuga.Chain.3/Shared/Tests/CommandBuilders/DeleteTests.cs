@@ -144,7 +144,7 @@ namespace Tests.CommandBuilders
             }
         }
 
-#if SQL_SERVER_SDS || SQL_SERVER_MDS || OLE_SQL_SERVER //SQL Server has problems with CRUD operations that return values on tables with triggers.
+#if SQL_SERVER_SDS || SQL_SERVER_MDS || SQL_SERVER_OLEDB //SQL Server has problems with CRUD operations that return values on tables with triggers.
 
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
         public void DeleteTests_Delete_Trigger(string dataSourceName, DataSourceType mode)
@@ -251,7 +251,7 @@ namespace Tests.CommandBuilders
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
         public void DeleteWithFilter_WhereArg(string dataSourceName, DataSourceType mode)
         {
-#if OLE_SQL_SERVER
+#if SQL_SERVER_OLEDB
             var whereClause = "Title = ? AND MiddleName Is Null";
 #else
             var whereClause = "Title = @LookupKey AND MiddleName Is Null";
@@ -349,7 +349,7 @@ namespace Tests.CommandBuilders
                 var allKeys = dataSourceRules.From(CustomerTableName, new { FullName = lookupKey }).ToInt32List("CustomerKey").Execute();
                 var keysToUpdate = allKeys.Take(5).ToList();
 
-#if OLE_SQL_SERVER
+#if SQL_SERVER_OLEDB
             var whereClause = "FullName = ? AND State = ?";
 #else
                 var whereClause = "FullName = @Lookup AND State = @State";

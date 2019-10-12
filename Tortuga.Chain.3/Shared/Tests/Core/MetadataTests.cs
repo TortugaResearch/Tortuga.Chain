@@ -69,7 +69,7 @@ namespace Tests.Core
 
 #endif
 
-#if SQL_SERVER_SDS || SQL_SERVER_MDS || OLE_SQL_SERVER || POSTGRESQL
+#if SQL_SERVER_SDS || SQL_SERVER_MDS || SQL_SERVER_OLEDB || POSTGRESQL
 
         [DataTestMethod, BasicData(DataSourceGroup.All)]
         public void DatabaseName(string dataSourceName, DataSourceType mode)
@@ -88,7 +88,7 @@ namespace Tests.Core
 
 #endif
 
-#if SQL_SERVER_SDS || SQL_SERVER_MDS || MySQL || OLE_SQL_SERVER
+#if SQL_SERVER_SDS || SQL_SERVER_MDS || MySQL || SQL_SERVER_OLEDB
 
         [DataTestMethod, BasicData(DataSourceGroup.All)]
         public void DefaultSchema(string dataSourceName, DataSourceType mode)
@@ -171,7 +171,7 @@ namespace Tests.Core
             }
         }
 
-#if SQL_SERVER_SDS || SQL_SERVER_MDS || OLE_SQL_SERVER || POSTGRESQL
+#if SQL_SERVER_SDS || SQL_SERVER_MDS || SQL_SERVER_OLEDB || POSTGRESQL
 
         [DataTestMethod, BasicData(DataSourceGroup.All)]
         public void SqlTypeNameToDbType_TableFunctions(string dataSourceName, DataSourceType mode)
@@ -207,7 +207,7 @@ namespace Tests.Core
 
 #endif
 
-#if SQL_SERVER_SDS || SQL_SERVER_MDS || OLE_SQL_SERVER || POSTGRESQL || MYSQL
+#if SQL_SERVER_SDS || SQL_SERVER_MDS || SQL_SERVER_OLEDB || POSTGRESQL || MYSQL
 
         [DataTestMethod, BasicData(DataSourceGroup.All)]
         public void SqlTypeNameToDbType_StoredProcedures(string dataSourceName, DataSourceType mode)
@@ -236,7 +236,7 @@ namespace Tests.Core
 
 #endif
 
-#if SQL_SERVER_SDS || SQL_SERVER_MDS || OLE_SQL_SERVER || POSTGRESQL || MYSQL
+#if SQL_SERVER_SDS || SQL_SERVER_MDS || SQL_SERVER_OLEDB || POSTGRESQL || MYSQL
 
         [DataTestMethod, BasicData(DataSourceGroup.All)]
         public void SqlTypeNameToDbType_ScalarFunctions(string dataSourceName, DataSourceType mode)
@@ -417,7 +417,7 @@ namespace Tests.Core
             }
         }
 
-#if SQL_SERVER_SDS || SQL_SERVER_MDS || POSTGRESQL || OLE_SQL_SERVER
+#if SQL_SERVER_SDS || SQL_SERVER_MDS || POSTGRESQL || SQL_SERVER_OLEDB
 
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
         public void VerifyFunction1(string dataSourceName, DataSourceType mode)
@@ -481,7 +481,7 @@ namespace Tests.Core
 
 #endif
 
-#if SQL_SERVER_SDS || SQL_SERVER_MDS || OLE_SQL_SERVER
+#if SQL_SERVER_SDS || SQL_SERVER_MDS || SQL_SERVER_OLEDB
 
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
         public void VerifyFunction2(string dataSourceName, DataSourceType mode)

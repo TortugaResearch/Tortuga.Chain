@@ -140,7 +140,7 @@ namespace Tests.shared.Core
 
                 Assert.IsNull(misingRecord, "The soft delete rule should prevent this record from being returned.");
 
-#if OLE_SQL_SERVER
+#if SQL_SERVER_OLEDB
                 var misingRecord2 = ds1.From(CustomerTableName, "CustomerKey = ?", new { CustomerKey = customerKey }).ToObject<CustomerWithValidation>(RowOptions.AllowEmptyResults).Execute();
 #else
                 var misingRecord2 = ds1.From(CustomerTableName, "CustomerKey = @CustomerKey", new { CustomerKey = customerKey }).ToObject<CustomerWithValidation>(RowOptions.AllowEmptyResults).Execute();
@@ -200,7 +200,7 @@ namespace Tests.shared.Core
 
                 Assert.IsNull(misingRecord, "The soft delete rule should prevent this record from being returned.");
 
-#if OLE_SQL_SERVER
+#if SQL_SERVER_OLEDB
                 var misingRecord2 = ds1.From(CustomerTableName, "CustomerKey = ?", new { CustomerKey = customerKey }).ToObject<CustomerWithValidation>(RowOptions.AllowEmptyResults).Execute();
 #else
                 var misingRecord2 = ds1.From(CustomerTableName, "CustomerKey = @CustomerKey", new { CustomerKey = customerKey }).ToObject<CustomerWithValidation>(RowOptions.AllowEmptyResults).Execute();
@@ -265,7 +265,7 @@ namespace Tests.shared.Core
             }
         }
 
-#if SQL_SERVER_SDS || SQL_SERVER_MDS || OLE_SQL_SERVER
+#if SQL_SERVER_SDS || SQL_SERVER_MDS || SQL_SERVER_OLEDB
 
         [DataTestMethod, RootData(DataSourceGroup.Primary)]
         public void SoftDeleteByKey(string dataSourceName)
