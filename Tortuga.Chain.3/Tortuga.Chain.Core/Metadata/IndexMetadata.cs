@@ -15,7 +15,7 @@ namespace Tortuga.Chain.Metadata
         /// <param name="indexSizeKB">Approximate index size in KB</param>
         /// <param name="rowCount">Approximate row count</param>
         /// <param name="indexType">Type of the index.</param>
-        protected IndexMetadata(string tableName, string name, bool isPrimaryKey, bool isUnique, bool isUniqueConstraint, IndexColumnMetadataCollection columns, long? indexSizeKB, long? rowCount, IndexType indexType)
+        protected IndexMetadata(string tableName, string? name, bool isPrimaryKey, bool isUnique, bool isUniqueConstraint, IndexColumnMetadataCollection columns, long? indexSizeKB, long? rowCount, IndexType indexType)
         {
             TableName = tableName;
             Name = name;
@@ -72,7 +72,7 @@ namespace Tortuga.Chain.Metadata
         /// <value>
         /// The name.
         /// </value>
-        public string Name { get; }
+        public string? Name { get; }
 
         /// <summary>
         /// Gets the approximate row count.

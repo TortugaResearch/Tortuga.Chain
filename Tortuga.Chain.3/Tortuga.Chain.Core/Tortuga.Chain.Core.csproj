@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net461;netstandard2.0;netstandard2.1</TargetFrameworks>
+    <TargetFrameworks>net461;netcoreapp2.1;netstandard2.0;netstandard2.1</TargetFrameworks>
     <Authors>David Tomcik, Jonathan Allen</Authors>
     <Company>Tortuga Technologies</Company>
     <Description>A fluent ORM and Database Reflection Library for .NET.</Description>
@@ -34,11 +34,12 @@
   <PropertyGroup Condition="'$(TargetFramework)' == 'net461'">
     <DefineConstants>NULL_MISSING</DefineConstants>
   </PropertyGroup>
-
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.1'">
+    <DefineConstants>NULL_MISSING;ORDINAL_STRINGS</DefineConstants>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     <DefineConstants>NULL_MISSING</DefineConstants>
   </PropertyGroup>
-
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
     <DefineConstants>ORDINAL_STRINGS</DefineConstants>
   </PropertyGroup>

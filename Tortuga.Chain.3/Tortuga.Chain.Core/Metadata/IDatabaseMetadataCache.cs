@@ -80,6 +80,16 @@ namespace Tortuga.Chain.Metadata
         /// </summary>
         void Preload();
 
+        ///// <summary>
+        ///// Preloads all of the tables for this data source.
+        ///// </summary>
+        //void PreloadTables();
+
+        ///// <summary>
+        ///// Preloads all of the views for this data source.
+        ///// </summary>
+        //void PreloadViews();
+
         /// <summary>
         /// Resets the metadata cache, clearing out all cached metadata.
         /// </summary>

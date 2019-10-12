@@ -119,7 +119,7 @@ namespace Tortuga.Chain.Materializers
                 if (m_Source == null)
                     throw new ObjectDisposedException(nameof(StreamingObjectConstructor<T>));
 
-                return Source;
+                return m_Source;
             }
         }
 

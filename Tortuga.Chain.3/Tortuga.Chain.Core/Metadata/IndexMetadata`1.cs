@@ -22,7 +22,7 @@ namespace Tortuga.Chain.Metadata
         /// <param name="rowCount">Approximate row count</param>
         /// <param name="indexType">Type of the index.</param>
         /// <exception cref="ArgumentNullException">columns</exception>
-        public IndexMetadata(TName tableName, string name, bool isPrimaryKey, bool isUnique, bool isUniqueConstraint, IndexColumnMetadataCollection<TDbType> columns, long? indexSizeKB, long? rowCount, IndexType indexType) : base(tableName!.ToString(), name, isPrimaryKey, isUnique, isUniqueConstraint, columns?.GenericCollection!, indexSizeKB, rowCount, indexType)
+        public IndexMetadata(TName tableName, string? name, bool isPrimaryKey, bool isUnique, bool isUniqueConstraint, IndexColumnMetadataCollection<TDbType> columns, long? indexSizeKB, long? rowCount, IndexType indexType) : base(tableName!.ToString(), name, isPrimaryKey, isUnique, isUniqueConstraint, columns?.GenericCollection!, indexSizeKB, rowCount, indexType)
         {
             TableName = tableName;
             Columns = columns ?? throw new ArgumentNullException(nameof(columns), $"{nameof(columns)} is null.");

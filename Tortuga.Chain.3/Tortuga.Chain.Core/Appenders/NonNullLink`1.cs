@@ -25,7 +25,7 @@ namespace Tortuga.Chain.Appenders
         /// <remarks>If you don't override this method, it will call execute on the previous link.</remarks>
         public override T Execute(object? state = null)
         {
-            var result = Execute(state);
+            var result = PreviousLink.Execute(state);
             if (result == null)
                 throw new MissingDataException("An unexpected null was returned.");
             return result;

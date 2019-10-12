@@ -752,7 +752,7 @@ namespace Tortuga.Chain.CommandBuilders
                 throw new ArgumentNullException(nameof(sql), $"{nameof(sql)} is null.");
 
             sql.Append(header);
-            sql.Append(string.Join(", ", GetFormalParameters().Select(s => parameterPrefix + s.SqlVariableName)));
+            sql.Append(string.Join(", ", GetFormalParameters().Select(s => parameterPrefix + s)));
             sql.Append(footer);
         }
 
@@ -1030,13 +1030,12 @@ namespace Tortuga.Chain.CommandBuilders
         /// Gets every column with a ParameterValue.
         /// </summary>
         /// <returns>Each pair has the column's QuotedSqlName and SqlVariableName</returns>
-        /// <remarks>This will mark the returned columns as participating in the parameter generation.</remarks>
         [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
-        public IEnumerable<ColumnNamePair> GetFormalParameters()
+        public IEnumerable<string> GetFormalParameters()
         {
             for (var i = 0; i < m_Entries.Length; i++)
                 if (m_Entries[i].IsFormalParameter && m_Entries[i].ParameterValue != null)
-                    yield return new ColumnNamePair(m_Entries[i].Details.QuotedSqlNameSafe(), m_Entries[i].Details.SqlVariableName);
+                    yield return m_Entries[i].Details.SqlVariableName;
         }
 
         /// <summary>

@@ -126,7 +126,7 @@ WHERE o.name = @Name
                             var is_unique = reader.GetBoolean("is_unique");
                             var is_unique_constraint = reader.GetBoolean("is_unique_constraint");
                             var index_id = reader.GetInt32("index_id");
-                            var name = reader.GetString("Name");
+                            var name = reader.GetStringOrNull("Name");
                             var columns = new IndexColumnMetadataCollection<SqlDbType>(allColumns.Where(c => c.IndexId == index_id));
                             var indexSize = reader.GetInt64("IndexSizeKB");
                             var rowCount = reader.GetInt64("RowCount");
