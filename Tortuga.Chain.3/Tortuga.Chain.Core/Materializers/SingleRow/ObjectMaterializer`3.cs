@@ -17,8 +17,8 @@ namespace Tortuga.Chain.Materializers
     /// <seealso cref="Materializer{TCommand, TParameter, TTObject}" />
     internal sealed class ObjectMaterializer<TCommand, TParameter, TObject> : ConstructibleMaterializer<TCommand, TParameter, TObject?, TObject>
         where TCommand : DbCommand
-        where TObject : class
         where TParameter : DbParameter
+        where TObject : class
     {
         readonly RowOptions m_RowOptions;
 

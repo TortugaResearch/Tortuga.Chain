@@ -1,4 +1,5 @@
-﻿using Tortuga.Chain.CommandBuilders;
+﻿#if !ACCESS
+using Tortuga.Chain.CommandBuilders;
 
 #if MYSQL
 
@@ -71,3 +72,4 @@ namespace Tortuga.Chain.PostgreSql
         }
     }
 }
+#endif

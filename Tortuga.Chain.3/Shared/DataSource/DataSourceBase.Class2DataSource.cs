@@ -1,4 +1,6 @@
-﻿using Tortuga.Chain.CommandBuilders;
+﻿#if !ACCESS
+
+using Tortuga.Chain.CommandBuilders;
 
 #if SQL_SERVER_SDS
 
@@ -147,3 +149,4 @@ namespace Tortuga.Chain.PostgreSql
 #endif
     }
 }
+#endif

@@ -1,51 +1,43 @@
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
-using System.Data.OleDb;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Tests.Models;
 using Tortuga.Chain;
+using Tortuga.Chain.Access;
 using Tortuga.Chain.AuditRules;
-using Tortuga.Chain.Core;
 using Tortuga.Chain.DataSources;
-using Tortuga.Chain.SqlServer;
 
 namespace Tests
 {
     public abstract partial class TestBase
     {
-        internal static readonly Dictionary<string, OleDbSqlServerDataSource> s_DataSources = new Dictionary<string, OleDbSqlServerDataSource>();
-        internal static readonly OleDbSqlServerDataSource s_PrimaryDataSource;
+        internal static readonly Dictionary<string, AccessDataSource> s_DataSources = new Dictionary<string, AccessDataSource>();
+        internal static readonly AccessDataSource s_PrimaryDataSource;
 
         static TestBase()
         {
+            Setup.CreateDatabase();
+
             var configuration = new ConfigurationBuilder().SetBasePath(AppContext.BaseDirectory).AddJsonFile("appsettings.json").Build();
 
             foreach (var con in configuration.GetSection("ConnectionStrings").GetChildren())
             {
-                var ds = new OleDbSqlServerDataSource(con.Key, con.Value);
+                var ds = new AccessDataSource(con.Key, con.Value);
                 s_DataSources.Add(con.Key, ds);
                 if (s_PrimaryDataSource == null) s_PrimaryDataSource = ds;
             }
+
             BuildEmployeeSearchKey1000(s_PrimaryDataSource);
         }
 
-        public static string CustomerTableName { get { return "Sales.Customer"; } }
+        public static string CustomerTableName { get { return "Customer"; } }
 
-        public static string EmployeeTableName { get { return "HR.Employee"; } }
+        public static string EmployeeTableName { get { return "Employee"; } }
+        public static string EmployeeViewName { get { return "EmployeeLookup"; } }
 
-        public static string EmployeeTableName_Trigger { get { return "HR.EmployeeWithTrigger"; } }
-
-        public static string EmployeeViewName { get { return "HR.EmployeeWithManager"; } }
-        public string MultiResultSetProc1Name { get { return "Sales.CustomerWithOrdersByState"; } }
-        public string ScalarFunction1Name { get { return "HR.EmployeeCount"; } }
-
-        public string TableFunction1Name { get { return "Sales.CustomersByState"; } }
-
-        public string TableFunction2Name { get { return "Sales.CustomersByStateInline"; } }
-
-        public OleDbSqlServerDataSource AttachRules(OleDbSqlServerDataSource source)
+        public AccessDataSource AttachRules(AccessDataSource source)
         {
             return source.WithRules(
                 new DateTimeRule("CreatedDate", DateTimeKind.Local, OperationTypes.Insert),
@@ -56,7 +48,7 @@ namespace Tests
                 );
         }
 
-        public OleDbSqlServerDataSource AttachSoftDeleteRulesWithUser(OleDbSqlServerDataSource source)
+        public AccessDataSource AttachSoftDeleteRulesWithUser(AccessDataSource source)
         {
             var currentUser1 = source.From(EmployeeTableName).WithLimits(1).ToObject<Employee>().Execute();
 
@@ -67,14 +59,14 @@ namespace Tests
                 ).WithUser(currentUser1);
         }
 
-        public OleDbSqlServerDataSource DataSource(string name, [CallerMemberName] string caller = null)
+        public AccessDataSource DataSource(string name, [CallerMemberName] string caller = null)
         {
-            //WriteLine($"{caller} requested Data Source {name}");
+            WriteLine($"{caller} requested Data Source {name}");
 
             return AttachTracers(s_DataSources[name]);
         }
 
-        public OleDbSqlServerDataSourceBase DataSource(string name, DataSourceType mode, [CallerMemberName] string caller = null)
+        public AccessDataSourceBase DataSource(string name, DataSourceType mode, [CallerMemberName] string caller = null)
         {
             //WriteLine($"{caller} requested Data Source {name} with mode {mode}");
 
@@ -82,16 +74,16 @@ namespace Tests
             switch (mode)
             {
                 case DataSourceType.Normal: return AttachTracers(ds);
-                case DataSourceType.Strict: return AttachTracers(ds).WithSettings(new SqlServerDataSourceSettings() { StrictMode = true });
+                case DataSourceType.Strict: return AttachTracers(ds).WithSettings(new AccessDataSourceSettings() { StrictMode = true });
                 case DataSourceType.Transactional: return AttachTracers(ds.BeginTransaction());
                 case DataSourceType.Open:
                     var root = (IRootDataSource)ds;
-                    return AttachTracers((OleDbSqlServerDataSourceBase)root.CreateOpenDataSource(root.CreateConnection(), null));
+                    return AttachTracers((AccessDataSourceBase)root.CreateOpenDataSource(root.CreateConnection(), null));
             }
             throw new ArgumentException($"Unknown mode {mode}");
         }
 
-        public async Task<OleDbSqlServerDataSourceBase> DataSourceAsync(string name, DataSourceType mode, [CallerMemberName] string caller = null)
+        public async Task<AccessDataSourceBase> DataSourceAsync(string name, DataSourceType mode, [CallerMemberName] string caller = null)
         {
             //WriteLine($"{caller} requested Data Source {name} with mode {mode}");
 
@@ -99,29 +91,31 @@ namespace Tests
             switch (mode)
             {
                 case DataSourceType.Normal: return AttachTracers(ds);
-                case DataSourceType.Strict: return AttachTracers(ds).WithSettings(new SqlServerDataSourceSettings() { StrictMode = true });
+                case DataSourceType.Strict: return AttachTracers(ds).WithSettings(new AccessDataSourceSettings() { StrictMode = true });
                 case DataSourceType.Transactional: return AttachTracers(await ds.BeginTransactionAsync());
                 case DataSourceType.Open:
                     var root = (IRootDataSource)ds;
-                    return AttachTracers((OleDbSqlServerDataSourceBase)root.CreateOpenDataSource(await root.CreateConnectionAsync(), null));
+                    return AttachTracers((AccessDataSourceBase)root.CreateOpenDataSource(await root.CreateConnectionAsync(), null));
             }
             throw new ArgumentException($"Unknown mode {mode}");
         }
 
         void WriteDetails(ExecutionEventArgs e)
         {
-            if (e.ExecutionDetails is CommandExecutionToken<OleDbCommand, OleDbParameter>)
-            {
-                WriteLine("");
-                WriteLine("Command text: ");
-                WriteLine(e.ExecutionDetails.CommandText);
-                //Indent();
-                foreach (var item in ((CommandExecutionToken<OleDbCommand, OleDbParameter>)e.ExecutionDetails).Parameters)
-                    WriteLine(item.ParameterName + ": " + (item.Value == null || item.Value == DBNull.Value ? "<NULL>" : item.Value) + " [" + item.DbType + "]");
-                //Unindent();
-                WriteLine("******");
-                WriteLine("");
-            }
+            var token = e.ExecutionDetails as AccessCommandExecutionToken;
+            if (token == null)
+                return;
+
+            WriteLine("");
+            WriteLine("Command text: ");
+            WriteLine(e.ExecutionDetails.CommandText);
+            //m_Output.Indent();
+            if (token.Parameters != null)
+                foreach (var item in token.Parameters)
+                    WriteLine(item.ParameterName + ": " + (item.Value == null || item.Value == DBNull.Value ? "<NULL>" : item.Value));
+            //m_Output.Unindent();
+            WriteLine("******");
+            WriteLine("");
         }
     }
 }

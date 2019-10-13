@@ -44,7 +44,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         public SqlServerSqlCall(SqlServerDataSourceBase dataSource, string sqlStatement, object? argumentValue) : base(dataSource)
         {
             if (string.IsNullOrEmpty(sqlStatement))
-                throw new ArgumentException($"nameof(sqlStatement) is null or empty.", nameof(sqlStatement));
+                throw new ArgumentException($"{nameof(sqlStatement)} is null or empty.", nameof(sqlStatement));
 
             m_SqlStatement = sqlStatement;
             m_ArgumentValue = argumentValue;

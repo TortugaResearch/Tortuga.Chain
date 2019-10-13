@@ -13,7 +13,6 @@ namespace Tests
 {
     public abstract partial class TestBase
     {
-        static public readonly string AssemblyName = "SQL Server";
         internal static readonly Dictionary<string, SqlServerDataSource> s_DataSources = new Dictionary<string, SqlServerDataSource>();
         internal static readonly SqlServerDataSource s_PrimaryDataSource;
 

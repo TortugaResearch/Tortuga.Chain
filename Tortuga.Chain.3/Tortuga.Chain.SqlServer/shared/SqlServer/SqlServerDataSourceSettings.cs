@@ -9,11 +9,15 @@ namespace Tortuga.Chain.SqlServer
     /// </summary>
     public class SqlServerDataSourceSettings : DataSourceSettings
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SqlServerDataSourceSettings"/> class.
+        /// </summary>
         public SqlServerDataSourceSettings()
         {
         }
 
 #if SQL_SERVER_SDS || SQL_SERVER_MDS
+
         internal SqlServerDataSourceSettings(SqlServerDataSource dataSource, bool forwardEvents)
         {
             if (dataSource == null)
@@ -23,6 +27,7 @@ namespace Tortuga.Chain.SqlServer
             StrictMode = dataSource.StrictMode;
             SuppressGlobalEvents = dataSource.SuppressGlobalEvents || forwardEvents;
         }
+
 #elif SQL_SERVER_OLEDB
 
         internal SqlServerDataSourceSettings(OleDbSqlServerDataSource dataSource, bool forwardEvents)

@@ -44,7 +44,7 @@ namespace Tortuga.Chain.SqlServer
         public SqlServerObjectName(string schemaAndName)
         {
             if (string.IsNullOrEmpty(schemaAndName))
-                throw new ArgumentException($"nameof(schemaAndName) is null or empty.", nameof(schemaAndName));
+                throw new ArgumentException($"{nameof(schemaAndName)} is null or empty.", nameof(schemaAndName));
 
             var parts = schemaAndName.Split(new[] { '.' }, 2);
             if (parts.Length == 1)

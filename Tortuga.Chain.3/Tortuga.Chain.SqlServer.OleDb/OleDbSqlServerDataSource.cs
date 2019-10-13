@@ -39,7 +39,7 @@ namespace Tortuga.Chain
         public OleDbSqlServerDataSource(string? name, string connectionString, SqlServerDataSourceSettings? settings = null) : base(settings)
         {
             if (string.IsNullOrEmpty(connectionString))
-                throw new ArgumentException($"nameof(connectionString) is null or empty.", nameof(connectionString));
+                throw new ArgumentException($"{nameof(connectionString)} is null or empty.", nameof(connectionString));
 
             m_ConnectionBuilder = new OleDbConnectionStringBuilder(connectionString);
             if (string.IsNullOrEmpty(name))
