@@ -61,7 +61,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="MySqlConnector" Version="0.59.2" />
     <PackageReference Include="Npgsql" Version="4.1.1" />
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.6">
       <PrivateAssets>all</PrivateAssets>
