@@ -8,3 +8,8 @@ Second Pass
 "(\w*) is null."
 $"{nameof($1)} is null."
 
+
+Object State
+------------
+, object state
+, object? state

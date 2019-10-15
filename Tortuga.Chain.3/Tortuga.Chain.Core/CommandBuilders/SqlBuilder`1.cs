@@ -782,7 +782,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="tableName">Name of the table.</param>
         /// <param name="footer">The footer.</param>
         /// <param name="includeIdentityColumn">Include the identity column. Used when performing an identity insert operation.</param>
-        public void BuildInsertStatement(StringBuilder sql, string tableName, string footer, bool includeIdentityColumn = false)
+        public void BuildInsertStatement(StringBuilder sql, string tableName, string? footer, bool includeIdentityColumn = false)
         {
             if (sql == null)
                 throw new ArgumentNullException(nameof(sql), $"{nameof(sql)} is null.");
@@ -984,7 +984,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="sql">The SQL.</param>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="footer">The footer.</param>
-        public void BuildUpdateByKeyStatement(StringBuilder sql, string tableName, string footer)
+        public void BuildUpdateByKeyStatement(StringBuilder sql, string tableName, string? footer)
         {
             BuildSetClause(sql, "UPDATE " + tableName + " SET ", null, null);
             BuildWhereClause(sql, " WHERE ", null);
