@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 
-#if SQL_SERVER_SDS || SQL_SERVER_MDS || SQL_SERVER_OLEDB
+#if SQL_SERVER_SDS || SQL_SERVER_MDS || SQL_SERVER_OLEDB ||POSTGRESQL
 
 using Tortuga.Chain;
 
@@ -32,6 +32,12 @@ namespace Tests
                             if (!table.IsTable && limitType == SqlServerLimitOption.TableSampleSystemPercentage)
                                 continue;
                             if (!table.IsTable && limitType == SqlServerLimitOption.TableSampleSystemRows)
+                                continue;
+#elif POSTGRESQL
+                            //Cannot use table sample with views
+                            if (!table.IsTable && limitType == PostgreSqlLimitOption.TableSampleBernoulliPercentage)
+                                continue;
+                            if (!table.IsTable && limitType == PostgreSqlLimitOption.TableSampleSystemPercentage)
                                 continue;
 #endif
                             yield return new object[] { ds.Name, dst, table.Name, limitType };

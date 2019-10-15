@@ -1,6 +1,7 @@
 ﻿#if !ORDINAL_STRINGS
 
 using System;
+using System.Globalization;
 
 #endif
 
@@ -25,9 +26,12 @@ namespace Tortuga.Chain
             return source.Replace(oldValue, newValue);
         }
 
-        public static bool Contains(this string source, string value, StringComparison _)
+        public static bool Contains(this string source, string value, StringComparison stringComparison)
         {
-            return source.Contains(value);
+            if (stringComparison == StringComparison.OrdinalIgnoreCase)
+                return source.ToUpper(CultureInfo.InvariantCulture).Contains(value.ToUpper(CultureInfo.InvariantCulture));
+            else
+                return source.Contains(value);
         }
 
 #endif

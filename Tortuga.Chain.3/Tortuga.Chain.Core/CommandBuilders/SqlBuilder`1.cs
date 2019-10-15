@@ -728,7 +728,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="sql">The SQL.</param>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="footer">Optional footer, usually the statement terminator (;).</param>
-        public void BuildDeleteStatement(StringBuilder sql, string tableName, string footer)
+        public void BuildDeleteStatement(StringBuilder sql, string tableName, string? footer)
         {
             if (sql == null)
                 throw new ArgumentNullException(nameof(sql), $"{nameof(sql)} is null.");
