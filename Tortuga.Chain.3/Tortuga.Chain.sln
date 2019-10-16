@@ -47,6 +47,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tortuga.Chain.SQLite", "Tor
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tortuga.Chain.SQLite.Tests", "Tortuga.Chain.SQLite.Tests\Tortuga.Chain.SQLite.Tests.csproj", "{586B8D32-223C-4344-8889-2AD0B9D1E6A3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tortuga.Chain.CompiledMaterializers", "Tortuga.Chain.CompiledMaterializers\Tortuga.Chain.CompiledMaterializers.csproj", "{BE9E7B8E-4517-44A2-8C06-137612F41AF1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -131,6 +133,10 @@ Global
 		{586B8D32-223C-4344-8889-2AD0B9D1E6A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{586B8D32-223C-4344-8889-2AD0B9D1E6A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{586B8D32-223C-4344-8889-2AD0B9D1E6A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE9E7B8E-4517-44A2-8C06-137612F41AF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE9E7B8E-4517-44A2-8C06-137612F41AF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE9E7B8E-4517-44A2-8C06-137612F41AF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE9E7B8E-4517-44A2-8C06-137612F41AF1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

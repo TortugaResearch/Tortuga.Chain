@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <DefineConstants>Roslyn_Missing;SQL_SERVER_OLEDB</DefineConstants>
+    <DefineConstants>SQL_SERVER_OLEDB</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Tortuga.Chain.SqlServer.OleDb\Tortuga.Chain.SqlServer.OleDb.csproj" />
+    <ProjectReference Include="..\Tortuga.Chain.CompiledMaterializers\Tortuga.Chain.CompiledMaterializers.csproj" />
   </ItemGroup>
 
   <ItemGroup>

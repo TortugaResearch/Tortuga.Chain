@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <DefineConstants>Roslyn_Missing;SQL_SERVER_MDS</DefineConstants>
+    <DefineConstants>SQL_SERVER_MDS</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net461'">
@@ -31,6 +31,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Tortuga.Chain.SqlServer.MDS\Tortuga.Chain.SqlServer.MDS.csproj" />
+    <ProjectReference Include="..\Tortuga.Chain.CompiledMaterializers\Tortuga.Chain.CompiledMaterializers.csproj" />
   </ItemGroup>
 
   <ItemGroup>

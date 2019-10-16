@@ -121,6 +121,13 @@ namespace Tests
             }
         }
 
+        static void BuildEmployeeSearchKey1000_NoTrans(IRootDataSource dataSource)
+        {
+            EmployeeSearchKey1000 = Guid.NewGuid().ToString();
+            for (var i = 0; i < 1000; i++)
+                ((IClass1DataSource)dataSource).Insert(EmployeeTableName, new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = EmployeeSearchKey1000, MiddleName = i % 2 == 0 ? "A" + i : null }).ToObject<Employee>().Execute();
+        }
+
         protected static string EmployeeSearchKey1000;
 
         protected DirectoryInfo GetOutputFolder(string folderName)

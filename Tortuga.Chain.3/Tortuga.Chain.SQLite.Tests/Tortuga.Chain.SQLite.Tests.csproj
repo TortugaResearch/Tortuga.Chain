@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <DefineConstants>Roslyn_Missing;SQLITE</DefineConstants>
+    <DefineConstants>SQLITE</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -31,6 +31,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Tortuga.Chain.SQLite\Tortuga.Chain.SQLite.csproj" />
+    <ProjectReference Include="..\Tortuga.Chain.CompiledMaterializers\Tortuga.Chain.CompiledMaterializers.csproj" />
   </ItemGroup>
 
   <ItemGroup>
