@@ -1,4 +1,4 @@
-﻿#if !ACCESS
+﻿#if SQL_SERVER_SDS || SQL_SERVER_MDS || SQL_SERVER_OLEDB || MYSQL || POSTGRESQL
 using Tortuga.Chain.CommandBuilders;
 
 #if MYSQL

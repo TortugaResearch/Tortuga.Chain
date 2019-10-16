@@ -215,7 +215,7 @@ namespace Tortuga.Chain.Access
                 int? precision = null;
                 int? scale = null;
                 string typeName = "";
-                string fullTypeName = ""; //Task-290: Implement this
+                string fullTypeName = ""; //Task-290: Add support for full name
 
                 foreach (DataRow row in columns.Rows)
                 {
