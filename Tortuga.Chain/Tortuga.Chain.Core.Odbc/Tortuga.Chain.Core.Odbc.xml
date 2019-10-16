@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Tortuga.Chain.Core.Odbc</name>
+    </assembly>
+    <members>
+        <member name="T:Tortuga.Chain.Metadata.OdbcDatabaseMetadataCache`1">
+            <summary>
+            Meatadata cache base class for ODBC databases
+            </summary>
+            <typeparam name="TName">The type used to represent database object names.</typeparam>
+        </member>
+        <member name="M:Tortuga.Chain.Metadata.OdbcDatabaseMetadataCache`1.ToClrType(System.Data.Odbc.OdbcType,System.Boolean,System.Nullable{System.Int32})">
+            <summary>
+            Returns the CLR type that matches the indicated database column type.
+            </summary>
+            <param name="dbType">Type of the database column.</param>
+            <param name="isNullable">If nullable, Nullable versions of primitive types are returned.</param>
+            <param name="maxLength">Optional length. Used to distinguish between a char and string. Defaults to string.</param>
+            <returns>
+            A CLR type or NULL if the type is unknown.
+            </returns>
+            <remarks>
+            This does not take into consideration registered types.
+            </remarks>
+        </member>
+    </members>
+</doc>
