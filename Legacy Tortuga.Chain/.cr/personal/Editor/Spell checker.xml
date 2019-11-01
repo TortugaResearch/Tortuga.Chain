@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Root Type="DevExpress.CodeRush.VSFeatures.SpellChecker.Options.SpellCheckerOptions">
+  <Options Language="Neutral">
+    <Enabled>False</Enabled>
+    <SupportedElements>XmlComments|Comments|Strings|VerbatimStrings|PublicIdentifiers|InternalIdentifiers|ProtectedInternalIdentifiers|ProtectedIdentifiers</SupportedElements>
+  </Options>
+</Root>

@@ -1,1 +1,0 @@
-﻿These tests assume that you have the AdventureWorks2014 database.

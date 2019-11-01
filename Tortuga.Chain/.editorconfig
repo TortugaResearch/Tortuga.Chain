@@ -1,0 +1,52 @@
+﻿[*.cs]
+
+# CA1303: Do not pass literals as localized parameters
+dotnet_diagnostic.CA1303.severity = none
+
+# IDE0040: Add accessibility modifiers
+dotnet_style_require_accessibility_modifiers = never:silent
+
+# RCS1018: Add accessibility modifiers.
+dotnet_diagnostic.RCS1018.severity = none
+
+# RCS1001: Add braces (when expression spans over multiple lines).
+dotnet_diagnostic.RCS1001.severity = none
+
+# RCS1146: Use conditional access.
+dotnet_diagnostic.RCS1146.severity = none
+
+# RCS1096: Use bitwise operation instead of calling 'HasFlag'.
+dotnet_diagnostic.RCS1096.severity = none
+
+# RCS1003: Add braces to if-else (when expression spans over multiple lines).
+dotnet_diagnostic.RCS1003.severity = none
+
+# RCS1163: Unused parameter.
+dotnet_diagnostic.RCS1163.severity = none
+
+# IDE0060: Remove unused parameter
+dotnet_code_quality_unused_parameters = all:none
+
+# CA1068: CancellationToken parameters must come last
+dotnet_diagnostic.CA1068.severity = none
+
+# IDE0058: Expression value is never used
+csharp_style_unused_value_expression_statement_preference = discard_variable:none
+
+# IDE0063: Use simple 'using' statement
+csharp_prefer_simple_using_statement = true:none
+
+# IDE0067: Dispose objects before losing scope
+dotnet_diagnostic.IDE0067.severity = none
+
+# RCS1079: Throwing of new NotImplementedException.
+dotnet_diagnostic.RCS1079.severity = none
+
+# CA2100: Review SQL queries for security vulnerabilities
+dotnet_diagnostic.CA2100.severity = none
+
+# RCS1089: Use --/++ operator instead of assignment.
+dotnet_diagnostic.RCS1089.severity = none
+
+# RCS1171: Simplify lazy initialization.
+dotnet_diagnostic.RCS1171.severity = none
