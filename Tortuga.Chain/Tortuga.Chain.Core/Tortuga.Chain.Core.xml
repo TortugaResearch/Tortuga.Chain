@@ -5932,10 +5932,25 @@
         </member>
         <member name="T:Tortuga.Chain.IConstructibleMaterializer`1">
             <summary>
-            This interface denotes an materializer that allows overriding the constructor logic.
+            This interface denotes an materializer that allows overriding the constructor logic. This
+            includes the ability to limit the list of columns being populated.
             </summary>
             <typeparam name="TResult">The type of the t result.</typeparam>
-            <seealso cref="T:Tortuga.Chain.ILink`1" />
+            <seealso cref="T:Tortuga.Chain.ILink`1"/>
+        </member>
+        <member name="M:Tortuga.Chain.IConstructibleMaterializer`1.WithProperties(System.String[])">
+            <summary>
+            Limits the list of properties to populate to just the indicated list.
+            </summary>
+            <param name="propertiesToPopulate">The properties of the object to populate.</param>
+            <returns>ILink&lt;TResult&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.IConstructibleMaterializer`1.ExceptProperties(System.String[])">
+            <summary>
+            Excludes the properties from the list of what will be populated in the object.
+            </summary>
+            <param name="propertiesToOmit">The properties to omit.</param>
+            <returns>ILink&lt;TResult&gt;.</returns>
         </member>
         <member name="M:Tortuga.Chain.IConstructibleMaterializer`1.WithConstructor(System.Type[])">
             <summary>
@@ -6294,14 +6309,14 @@
             </summary>
             <typeparam name="TCommand">The type of the t command.</typeparam>
             <typeparam name="TParameter">The type of the t parameter.</typeparam>
-            <typeparam name="TResult">The type of the t result.</typeparam>
-            <typeparam name="TObject">The type of the t object.</typeparam>
-            <seealso cref="T:Tortuga.Chain.Materializers.Materializer`3" />
-            <seealso cref="T:Tortuga.Chain.IConstructibleMaterializer`1" />
+            <typeparam name="TResult">The type of the result. This may be a collection of TObject.</typeparam>
+            <typeparam name="TObject">The type of the object that will be returned.</typeparam>
+            <seealso cref="T:Tortuga.Chain.Materializers.Materializer`3"/>
+            <seealso cref="T:Tortuga.Chain.IConstructibleMaterializer`1"/>
         </member>
         <member name="M:Tortuga.Chain.Materializers.ConstructibleMaterializer`4.#ctor(Tortuga.Chain.CommandBuilders.DbCommandBuilder{`0,`1})">
             <summary>
-            Initializes a new instance of the <see cref="T:Tortuga.Chain.Materializers.ConstructibleMaterializer`4" /> class.
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Materializers.ConstructibleMaterializer`4"/> class.
             </summary>
             <param name="commandBuilder">The associated operation.</param>
         </member>
@@ -6311,11 +6326,43 @@
             </summary>
             <value>The constructor signature.</value>
         </member>
+        <member name="P:Tortuga.Chain.Materializers.ConstructibleMaterializer`4.ExcludedColumns">
+            <summary>
+            Columns to ignore when generating the list of desired columns.
+            </summary>
+            <value>The excluded columns.</value>
+        </member>
+        <member name="P:Tortuga.Chain.Materializers.ConstructibleMaterializer`4.IncludedColumns">
+            <summary>
+            Only include the indicated columns when generating the list of desired columns.
+            </summary>
+            <value>The included columns.</value>
+        </member>
         <member name="P:Tortuga.Chain.Materializers.ConstructibleMaterializer`4.ObjectMetadata">
             <summary>
             Gets or sets the TObject metadata.
             </summary>
             <value>The object metadata.</value>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.ConstructibleMaterializer`4.DesiredColumns">
+            <summary>
+            Returns the list of columns the result materializer would like to have.
+            </summary>
+            <returns>IReadOnlyList&lt;System.String&gt;.</returns>
+            <exception cref="T:Tortuga.Chain.MappingException">
+            Cannot find a constructor on {desiredType.Name} with the types [{types}]
+            </exception>
+            <remarks>
+            If AutoSelectDesiredColumns is returned, the command builder is allowed to choose which
+            columns to return. If NoColumns is returned, the command builder should omit the
+            SELECT/OUTPUT clause.
+            </remarks>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.ConstructibleMaterializer`4.ExceptProperties(System.String[])">
+            <summary>
+            Excludes the properties from the list of what will be populated in the object.
+            </summary>
+            <param name="propertiesToOmit">The properties to omit.</param>
         </member>
         <member name="M:Tortuga.Chain.Materializers.ConstructibleMaterializer`4.WithConstructor(System.Type[])">
             <summary>
@@ -6437,6 +6484,13 @@
             <typeparam name="T8">The type of the t8.</typeparam>
             <typeparam name="T9">The type of the t9.</typeparam>
             <typeparam name="T10">The type of the T10.</typeparam>
+            <returns>ILink&lt;TResult&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.ConstructibleMaterializer`4.WithProperties(System.String[])">
+            <summary>
+            Limits the list of properties to populate to just the indicated list.
+            </summary>
+            <param name="propertiesToPopulate">The properties of the object to populate.</param>
             <returns>ILink&lt;TResult&gt;.</returns>
         </member>
         <member name="T:Tortuga.Chain.Materializers.MappedProperty`2">
@@ -6617,7 +6671,7 @@
             <typeparam name="TParameter">The type of the t parameter type.</typeparam>
             <typeparam name="TObject">The type of the object returned.</typeparam>
             <typeparam name="TCollection">The type of the collection.</typeparam>
-            <seealso cref="T:Tortuga.Chain.Materializers.Materializer`3" />
+            <seealso cref="T:Tortuga.Chain.Materializers.Materializer`3"/>
         </member>
         <member name="M:Tortuga.Chain.Materializers.CollectionMaterializer`4.#ctor(Tortuga.Chain.CommandBuilders.DbCommandBuilder{`0,`1},Tortuga.Chain.CollectionOptions)">
             <summary>
@@ -6625,12 +6679,6 @@
             </summary>
             <param name="commandBuilder">The associated operation.</param>
             <param name="collectionOptions">The collection options.</param>
-        </member>
-        <member name="M:Tortuga.Chain.Materializers.CollectionMaterializer`4.DesiredColumns">
-            <summary>
-            Returns the list of columns the materializer would like to have.
-            </summary>
-            <returns></returns>
         </member>
         <member name="M:Tortuga.Chain.Materializers.CollectionMaterializer`4.Execute(System.Object)">
             <summary>
@@ -6693,13 +6741,7 @@
             <typeparam name="TKey">The type of the key.</typeparam>
             <typeparam name="TObject">The type of the object.</typeparam>
             <typeparam name="TDictionary">The type of the dictionary.</typeparam>
-            <seealso cref="T:Tortuga.Chain.Materializers.Materializer`3" />
-        </member>
-        <member name="M:Tortuga.Chain.Materializers.DictionaryMaterializer`5.DesiredColumns">
-            <summary>
-            Returns the list of columns the materializer would like to have.
-            </summary>
-            <returns></returns>
+            <seealso cref="T:Tortuga.Chain.Materializers.Materializer`3"/>
         </member>
         <member name="T:Tortuga.Chain.Materializers.DynamicCollectionMaterializer`2">
             <summary>
@@ -6746,7 +6788,7 @@
             <typeparam name="TCommand">The type of the t command type.</typeparam>
             <typeparam name="TParameter">The type of the t parameter type.</typeparam>
             <typeparam name="TObject">The type of the object returned.</typeparam>
-            <seealso cref="T:Tortuga.Chain.Materializers.Materializer`3" />
+            <seealso cref="T:Tortuga.Chain.Materializers.Materializer`3"/>
         </member>
         <member name="M:Tortuga.Chain.Materializers.ImmutableArrayMaterializer`3.#ctor(Tortuga.Chain.CommandBuilders.DbCommandBuilder{`0,`1},Tortuga.Chain.CollectionOptions)">
             <summary>
@@ -6754,12 +6796,6 @@
             </summary>
             <param name="commandBuilder">The associated operation.</param>
             <param name="collectionOptions">The collection options.</param>
-        </member>
-        <member name="M:Tortuga.Chain.Materializers.ImmutableArrayMaterializer`3.DesiredColumns">
-            <summary>
-            Returns the list of columns the materializer would like to have.
-            </summary>
-            <returns></returns>
         </member>
         <member name="M:Tortuga.Chain.Materializers.ImmutableArrayMaterializer`3.Execute(System.Object)">
             <summary>
@@ -6798,7 +6834,7 @@
             <typeparam name="TCommand">The type of the t command type.</typeparam>
             <typeparam name="TParameter">The type of the t parameter type.</typeparam>
             <typeparam name="TObject">The type of the object returned.</typeparam>
-            <seealso cref="T:Tortuga.Chain.Materializers.Materializer`3" />
+            <seealso cref="T:Tortuga.Chain.Materializers.Materializer`3"/>
         </member>
         <member name="M:Tortuga.Chain.Materializers.ImmutableListMaterializer`3.#ctor(Tortuga.Chain.CommandBuilders.DbCommandBuilder{`0,`1},Tortuga.Chain.CollectionOptions)">
             <summary>
@@ -6806,14 +6842,6 @@
             </summary>
             <param name="commandBuilder">The associated operation.</param>
             <param name="collectionOptions">The collection options.</param>
-        </member>
-        <member name="M:Tortuga.Chain.Materializers.ImmutableListMaterializer`3.DesiredColumns">
-            <summary>
-            Returns the list of columns the materializer would like to have.
-            </summary>
-            <returns>IReadOnlyList&lt;System.String&gt;.</returns>
-            <exception cref="T:Tortuga.Chain.MappingException">Cannot find a constructor on {desiredType.Name} with the types [{types}]</exception>
-            <remarks>If AutoSelectDesiredColumns is returned, the command builder is allowed to choose which columns to return. If NoColumns is returned, the command builder should omit the SELECT/OUTPUT clause.</remarks>
         </member>
         <member name="M:Tortuga.Chain.Materializers.ImmutableListMaterializer`3.Execute(System.Object)">
             <summary>
@@ -8922,25 +8950,20 @@
             <typeparam name="TCommand">The type of the t command type.</typeparam>
             <typeparam name="TParameter">The type of the t parameter type.</typeparam>
             <typeparam name="TObject">The type of the object returned.</typeparam>
-            <seealso cref="T:Tortuga.Chain.Materializers.Materializer`3" />
+            <seealso cref="T:Tortuga.Chain.Materializers.Materializer`3"/>
         </member>
         <member name="M:Tortuga.Chain.Materializers.ObjectMaterializer`3.#ctor(Tortuga.Chain.CommandBuilders.DbCommandBuilder{`0,`1},Tortuga.Chain.RowOptions)">
-            <summary>Initializes a new instance of the <see cref="T:Tortuga.Chain.Materializers.ObjectMaterializer`3"/> class.</summary>
+            <summary>
+            Initializes a new instance of the <see
+            cref="T:Tortuga.Chain.Materializers.ObjectMaterializer`3"/> class.
+            </summary>
             <param name="commandBuilder">The command builder.</param>
             <param name="rowOptions">The row options.</param>
             <exception cref="T:Tortuga.Chain.MappingException">
-            Type {typeof(TObject).Name} has does not have any non-default constructors.
-            or
-            Type {typeof(TObject).Name} has more than one non-default constructor. Please use the WithConstructor method to specify which one to use.
+            Type {typeof(TObject).Name} has does not have any non-default constructors. or Type
+            {typeof(TObject).Name} has more than one non-default constructor. Please use the
+            WithConstructor method to specify which one to use.
             </exception>
-        </member>
-        <member name="M:Tortuga.Chain.Materializers.ObjectMaterializer`3.DesiredColumns">
-            <summary>
-            Returns the list of columns the result materializer would like to have.
-            </summary>
-            <returns>IReadOnlyList&lt;System.String&gt;.</returns>
-            <exception cref="T:Tortuga.Chain.MappingException">Cannot find a constructor on {desiredType.Name} with the types [{types}]</exception>
-            <remarks>If AutoSelectDesiredColumns is returned, the command builder is allowed to choose which columns to return. If NoColumns is returned, the command builder should omit the SELECT/OUTPUT clause.</remarks>
         </member>
         <member name="M:Tortuga.Chain.Materializers.ObjectMaterializer`3.Execute(System.Object)">
             <summary>

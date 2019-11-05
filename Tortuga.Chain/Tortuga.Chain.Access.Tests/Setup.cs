@@ -32,7 +32,7 @@ namespace Tests
                 return;
 
             File.Delete(s_DatabaseFileName);
-            File.Copy(Path.Combine(@"..\..\..\..", s_DatabaseFileName), s_DatabaseFileName);
+            File.Copy(Path.Combine(@"..\..\..", s_DatabaseFileName), s_DatabaseFileName);
 
             var configuration = new ConfigurationBuilder().SetBasePath(AppContext.BaseDirectory).AddJsonFile("appsettings.json").Build();
 
