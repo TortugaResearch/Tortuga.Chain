@@ -364,5 +364,12 @@ namespace Tortuga.Chain.SQLite
             var columns = GetColumns(tableName, isTable);
             return new TableOrViewMetadata<SQLiteObjectName, DbType>(this, actualName, isTable, columns);
         }
+
+        /// <summary>
+        /// Gets the maximum number of parameters in a single SQL batch.
+        /// </summary>
+        /// <value>The maximum number of parameters.</value>
+        /// <remarks>https://sqlite.org/limits.html</remarks>
+        public override int? MaxParameters => 999;
     }
 }

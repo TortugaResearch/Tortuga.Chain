@@ -291,5 +291,12 @@ namespace Tortuga.Chain.Access
                 }
             }
         }
+
+        /// <summary>
+        /// Gets the maximum number of parameters in a single SQL batch.
+        /// </summary>
+        /// <value>The maximum number of parameters.</value>
+        /// <remarks>https://stackoverflow.com/a/54149292/5274</remarks>
+        public override int? MaxParameters => 768;
     }
 }

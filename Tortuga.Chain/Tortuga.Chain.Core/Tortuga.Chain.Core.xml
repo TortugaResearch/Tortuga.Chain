@@ -9401,6 +9401,12 @@
             </summary>
             <remarks>This is populated by the RegisterType method.</remarks>
         </member>
+        <member name="P:Tortuga.Chain.Metadata.DatabaseMetadataCache`2.MaxParameters">
+            <summary>
+            Gets the maximum number of parameters in a single SQL batch.
+            </summary>
+            <value>The maximum number of parameters.</value>
+        </member>
         <member name="P:Tortuga.Chain.Metadata.DatabaseMetadataCache`2.ServerVersion">
             <summary>
             Gets the server version number.

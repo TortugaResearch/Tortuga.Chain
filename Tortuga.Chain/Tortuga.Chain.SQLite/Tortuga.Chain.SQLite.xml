@@ -1521,6 +1521,13 @@
             <returns></returns>
             <remarks>This does not honor registered types. This is only used for the database's hard-coded list of native types.</remarks>
         </member>
+        <member name="P:Tortuga.Chain.SQLite.SQLiteMetadataCache.MaxParameters">
+            <summary>
+            Gets the maximum number of parameters in a single SQL batch.
+            </summary>
+            <value>The maximum number of parameters.</value>
+            <remarks>https://sqlite.org/limits.html</remarks>
+        </member>
         <member name="T:Tortuga.Chain.SQLite.SQLiteObjectName">
             <summary>
             Represents an object in SQLite (e.g. table, view, procedure)

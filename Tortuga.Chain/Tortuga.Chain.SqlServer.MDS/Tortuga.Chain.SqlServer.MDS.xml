@@ -425,6 +425,13 @@
             <param name="name"></param>
             <returns></returns>
         </member>
+        <member name="P:Tortuga.Chain.SqlServer.SqlServerMetadataCache.MaxParameters">
+            <summary>
+            Gets the maximum number of parameters in a single SQL batch.
+            </summary>
+            <value>The maximum number of parameters.</value>
+            <remarks>https://docs.microsoft.com/en-us/sql/sql-server/maximum-capacity-specifications-for-sql-server?view=sql-server-ver15</remarks>
+        </member>
         <member name="M:Tortuga.Chain.SqlServer.SqlServerMetadataCache.#ctor(Microsoft.Data.SqlClient.SqlConnectionStringBuilder)">
             <summary>
             Initializes a new instance of the <see cref="T:Tortuga.Chain.SqlServer.SqlServerMetadataCache"/> class.
