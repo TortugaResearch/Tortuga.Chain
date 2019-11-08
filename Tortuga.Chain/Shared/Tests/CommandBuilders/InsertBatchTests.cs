@@ -15,7 +15,37 @@ namespace Tests.CommandBuilders
 #if SQL_SERVER_SDS || SQL_SERVER_MDS
 
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
-        public void InsertBatch(string dataSourceName, DataSourceType mode)
+        public void InsertMultipleBatch(string dataSourceName, DataSourceType mode)
+        {
+            var key = Guid.NewGuid().ToString();
+            var employeeList = new List<Employee>();
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+                var maxRows = 1000;
+
+                for (var i = 0; i < maxRows; i++)
+                    employeeList.Add(new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = key });
+
+                var count = dataSource.InsertMultipleBatch(EmployeeTableName, employeeList).SetStrictMode(true).Execute();
+                Assert.AreEqual(maxRows, count);
+
+                var count2 = dataSource.From(EmployeeTableName, new { Title = key }).ToCollection<Employee>().Execute();
+                var sql = dataSource.From(EmployeeTableName, new { Title = key }).ToCollection<Employee>().CommandText();
+                Assert.AreEqual(maxRows, count);
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+#endif
+
+#if SQL_SERVER_SDS || SQL_SERVER_MDS
+
+        [DataTestMethod, BasicData(DataSourceGroup.Primary)]
+        public void InsertBatchTable(string dataSourceName, DataSourceType mode)
         {
             var key1000 = Guid.NewGuid().ToString();
             var employeeList = new List<Employee>();
@@ -36,7 +66,7 @@ namespace Tests.CommandBuilders
         }
 
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
-        public void InsertBatch_Identity(string dataSourceName, DataSourceType mode)
+        public void InsertBatchTable_Identity(string dataSourceName, DataSourceType mode)
         {
             const string TableType = "HR.EmployeeTable";
 
@@ -71,7 +101,7 @@ namespace Tests.CommandBuilders
         }
 
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
-        public void InsertBatch_Streaming(string dataSourceName, DataSourceType mode)
+        public void InsertBatchTable_Streaming(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -97,7 +127,7 @@ namespace Tests.CommandBuilders
         }
 
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
-        public void InsertBatch_SelectBack(string dataSourceName, DataSourceType mode)
+        public void InsertBatchTable_SelectBack(string dataSourceName, DataSourceType mode)
         {
             var key1000 = Guid.NewGuid().ToString();
             var employeeList = new List<Employee>();
@@ -119,7 +149,7 @@ namespace Tests.CommandBuilders
         }
 
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
-        public void InsertBatch_SelectKeys(string dataSourceName, DataSourceType mode)
+        public void InsertBatchTable_SelectKeys(string dataSourceName, DataSourceType mode)
         {
             var key1000 = Guid.NewGuid().ToString();
             var employeeList = new List<Employee>();
@@ -141,7 +171,7 @@ namespace Tests.CommandBuilders
         }
 
         [DataTestMethod, RootData(DataSourceGroup.Primary)]
-        public void InsertBatch_AuditRules(string dataSourceName)
+        public void InsertBatchTable_AuditRules(string dataSourceName)
         {
             var key1000 = Guid.NewGuid().ToString();
             var employeeList = new List<Employee>();
