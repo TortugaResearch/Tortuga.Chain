@@ -397,6 +397,35 @@
             </summary>
             <param name="e">The <see cref="T:Tortuga.Chain.Core.CommandBuiltEventArgs" /> instance containing the event data.</param>
         </member>
+        <member name="T:Tortuga.Chain.Appenders.ValueNonNullLink`1">
+            <summary>
+            Converts an null returning ILink into a non-null returning ILink.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <remarks>If the previous link returns a null, this will throw an exception.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.Appenders.ValueNonNullLink`1.#ctor(Tortuga.Chain.ILink{System.Nullable{`0}})">
+             <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Appenders.NonNullLink`1" /> class.
+             </summary>
+             <param name="previousLink">The previous link.</param>
+        </member>
+        <member name="M:Tortuga.Chain.Appenders.ValueNonNullLink`1.Execute(System.Object)">
+            <summary>
+            Execute the operation synchronously.
+            </summary>
+            <param name="state">User defined state, usually used for logging.</param>
+            <remarks>If you don't override this method, it will call execute on the previous link.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.Appenders.ValueNonNullLink`1.ExecuteAsync(System.Threading.CancellationToken,System.Object)">
+            <summary>
+            Execute the operation asynchronously.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name="state">User defined state, usually used for logging.</param>
+            <returns></returns>
+            <remarks>If you don't override this method, it will call execute on the previous link.</remarks>
+        </member>
         <member name="T:Tortuga.Chain.AuditRules.AuditRule">
             <summary>
             Base class for all audit rules.
@@ -3495,13 +3524,11 @@
             Applies the argument value.
             </summary>
             <param name="dataSource">The data source.</param>
-            <param name="appliesWhen">The applies when.</param>
+            <param name="operationType">Type of the operation.</param>
             <param name="argumentValue">The value.</param>
             <exception cref="T:Tortuga.Chain.MappingException">This is thrown is no properties could be matched to a column. If strict mode, all properties must match columns.</exception>
             <exception cref="T:System.ArgumentNullException">value;value is null.</exception>
-            <remarks>
-            If the object implements IReadOnlyDictionary[string, object], ApplyArgumentDictionary will be implicitly called instead.
-            </remarks>
+            <remarks>If the object implements IReadOnlyDictionary[string, object], ApplyArgumentDictionary will be implicitly called instead.</remarks>
         </member>
         <member name="M:Tortuga.Chain.CommandBuilders.SqlBuilder`1.ApplyArgumentValue(Tortuga.Chain.DataSources.IDataSource,System.Object,Tortuga.Chain.InsertOptions)">
             <summary>
@@ -3588,19 +3615,26 @@
             Applies a user defined table type as the argument.
             </summary>
             <param name="dataSource">The data source.</param>
-            <param name="appliesWhen">The applies when.</param>
+            <param name="operationType">Type of the operation.</param>
             <param name="tableTypeColumns">The table type columns.</param>
+            <exception cref="T:System.ArgumentNullException">
+            dataSource
+            or
+            tableTypeColumns
+            </exception>
+            <exception cref="T:Tortuga.Chain.MappingException">None of the columns on the indicated user defined type could be matched to columns in {m_Name}.</exception>
         </member>
-        <member name="M:Tortuga.Chain.CommandBuilders.SqlBuilder`1.ApplyValueOverrides(System.Object)">
+        <member name="M:Tortuga.Chain.CommandBuilders.SqlBuilder`1.OverrideArgumentValue(Tortuga.Chain.DataSources.IDataSource,Tortuga.Chain.AuditRules.OperationTypes,System.Object)">
             <summary>
             Overrides the previous selected values with the values in the indicated object.
             </summary>
-            <param name="value">The value.</param>
+            <param name="dataSource">The data source.</param>
+            <param name="operationType">The type of operation being performed.</param>
+            <param name="argumentValue">The value.</param>
             <exception cref="T:System.ArgumentNullException">value;value is null.</exception>
             <exception cref="T:Tortuga.Chain.MappingException">This is thrown is no properties could be matched to a column. If strict mode, all properties must match columns.</exception>
             <remarks>This will not alter the IsPrimaryKey, Insert, or Update column settings.
-            If the object implements IReadOnlyDictionary[string, object], ApplyArgumentDictionary will be implicitly called instead.
-            </remarks>
+            If the object implements IReadOnlyDictionary[string, object], ApplyArgumentDictionary will be implicitly called instead.</remarks>
         </member>
         <member name="M:Tortuga.Chain.CommandBuilders.SqlBuilder`1.BuildAnonymousFromFunctionClause(System.Text.StringBuilder,System.String,System.String)">
             <summary>
@@ -3760,6 +3794,30 @@
             <param name="tableName">Name of the table.</param>
             <param name="footer">The footer.</param>
         </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.SqlBuilder`1.BuildValuesClause``1(System.Text.StringBuilder,System.String,System.String,System.Boolean,System.String,System.Collections.Generic.List{``0},Tortuga.Chain.CommandBuilders.ParameterBuilderCallback{``0,`0})">
+            <summary>
+            Builds a list of columns suitable for using in the VALUES clause of INSERT statement. This does not include the actual VALUES keyword.
+            This will add the associated parameters to the parameters collection.
+            </summary>
+            <typeparam name="TParameter">The type of the t parameter.</typeparam>
+            <param name="sql">The SQL being generated.</param>
+            <param name="header">The optional header. Usually "VALUES  (".</param>
+            <param name="footer">The optional footer. Usually just ")".</param>
+            <param name="includeIdentityColumn">Include the identity column. Used when performing an identity insert operation.</param>
+            <param name="parameterSuffix">The parameter suffix. Must be unique for each row.</param>
+            <param name="parameters">The parameter list to be updated.</param>
+            <param name="parameterBuilder">The parameter builder.</param>
+            <exception cref="T:System.ArgumentNullException">
+            sql
+            or
+            value
+            or
+            parameters
+            or
+            parameterBuilder
+            </exception>
+            <remarks>Call OverrideArgumentValue before invoking this method</remarks>
+        </member>
         <member name="M:Tortuga.Chain.CommandBuilders.SqlBuilder`1.BuildValuesClause(System.Text.StringBuilder,System.String,System.String,System.Boolean)">
             <summary>
             Builds a list of columns suitable for using in the VALUES clause of INSERT statement. This does not include the actual VALUES keyword.
@@ -3883,7 +3941,7 @@
             Applies the argument value.
             </summary>
             <param name="dataSource">The data source.</param>
-            <param name="appliesWhen">The applies when.</param>
+            <param name="operationType">The operation type.</param>
             <param name="argumentValue">The argument value.</param>
             <param name="useObjectDefinedKeys">if set to <c>true</c> use object defined keys.</param>
             <param name="changedPropertiesOnly">if set to <c>true</c> filter the update list according to IPropertyChangeTracking.ChangedProperties.</param>
@@ -3899,7 +3957,7 @@
             Applies the indicated rules.
             </summary>
             <param name="rules">The rules.</param>
-            <param name="appliesWhen">The type of.</param>
+            <param name="operationType">The type of operation.</param>
             <param name="argumentValue">The argument value.</param>
             <param name="userValue">The user value.</param>
         </member>
@@ -4071,6 +4129,11 @@
             <param name="argumentValue">The argument value.</param>
             <returns></returns>
         </member>
+        <member name="T:Tortuga.Chain.CommandBuilders.MultiBatcher`1">
+            <summary>
+            MultiBatcher is used by InsertMultipleBatch to perform a series of batch inserts.
+            </summary>
+        </member>
         <member name="T:Tortuga.Chain.CommonAppenders">
             <summary>
             Class CommonAppenders.
@@ -4217,6 +4280,13 @@
             <param name="joinOptions">The join options.</param>
         </member>
         <member name="M:Tortuga.Chain.CommonAppenders.NeverNull``1(Tortuga.Chain.ILink{``0})">
+            <summary>
+            Ensures that a null will never be returned.
+            </summary>
+            <param name="previousLink">The previous link.</param>
+            <remarks>If the previous link returns a null, an exception is thrown instead.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.CommonAppenders.NeverNull``1(Tortuga.Chain.ILink{System.Nullable{``0}})">
             <summary>
             Ensures that a null will never be returned.
             </summary>
@@ -4908,6 +4978,16 @@
             Called when Database.DatabaseMetadata is invoked.
             </summary>
             <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.DataSources.DataSource.CreateMultiBatcher``1(System.Func{System.Collections.Generic.IReadOnlyList{``0},Tortuga.Chain.ILink{System.Int32}},System.Collections.Generic.IReadOnlyList{``0},System.Int32)">
+            <summary>
+            Creates a multi-batcher. This is used by InsertMultipleBatch;
+            </summary>
+            <typeparam name="TObject">The type of the object.</typeparam>
+            <param name="callBack">The call back used to insert the batch.</param>
+            <param name="objects">The objects to insert.</param>
+            <param name="batchSize">Size of the batch.</param>
+            <returns>ILink&lt;System.Int32&gt;.</returns>
         </member>
         <member name="T:Tortuga.Chain.DataSources.DataSourceSettings">
             <summary>
@@ -6080,7 +6160,7 @@
             Gets the data source that is associated with this materializer or appender.
             </summary>
             <value>The data source.</value>
-            <remarks>This is only used for </remarks>
+            <remarks>This is only used for cache operations</remarks>
         </member>
         <member name="M:Tortuga.Chain.ILink`1.CommandText">
             <summary>
@@ -9918,6 +9998,12 @@
             <param name="typeName">Name of the type.</param>
             <param name="userDefinedTableType">Type of the user defined table type.</param>
             <returns></returns>
+        </member>
+        <member name="P:Tortuga.Chain.Metadata.IDatabaseMetadataCache.MaxParameters">
+            <summary>
+            Gets the maximum number of parameters in a single SQL batch.
+            </summary>
+            <value>The maximum number of parameters.</value>
         </member>
         <member name="T:Tortuga.Chain.Metadata.IndexColumnMetadata">
             <summary>Class IndexColumnMetadata.</summary>

@@ -224,16 +224,14 @@ namespace Tortuga.Chain.CommandBuilders
         /// Applies the argument value.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
-        /// <param name="appliesWhen">The applies when.</param>
+        /// <param name="operationType">Type of the operation.</param>
         /// <param name="argumentValue">The value.</param>
         /// <exception cref="MappingException">This is thrown is no properties could be matched to a column. If strict mode, all properties must match columns.</exception>
         /// <exception cref="ArgumentNullException">value;value is null.</exception>
-        /// <remarks>
-        /// If the object implements IReadOnlyDictionary[string, object], ApplyArgumentDictionary will be implicitly called instead.
-        /// </remarks>
-        public void ApplyArgumentValue(IDataSource dataSource, OperationTypes appliesWhen, object? argumentValue)
+        /// <remarks>If the object implements IReadOnlyDictionary[string, object], ApplyArgumentDictionary will be implicitly called instead.</remarks>
+        public void ApplyArgumentValue(IDataSource dataSource, OperationTypes operationType, object? argumentValue)
         {
-            ApplyArgumentValue(dataSource, appliesWhen, argumentValue, false, false);
+            ApplyArgumentValue(dataSource, operationType, argumentValue, false, false);
         }
 
         /// <summary>
@@ -521,9 +519,15 @@ namespace Tortuga.Chain.CommandBuilders
         /// Applies a user defined table type as the argument.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
-        /// <param name="appliesWhen">The applies when.</param>
+        /// <param name="operationType">Type of the operation.</param>
         /// <param name="tableTypeColumns">The table type columns.</param>
-        public void ApplyTableType(IDataSource dataSource, OperationTypes appliesWhen, IEnumerable<ISqlBuilderEntryDetails<TDbType>> tableTypeColumns)
+        /// <exception cref="ArgumentNullException">
+        /// dataSource
+        /// or
+        /// tableTypeColumns
+        /// </exception>
+        /// <exception cref="MappingException">None of the columns on the indicated user defined type could be matched to columns in {m_Name}.</exception>
+        public void ApplyTableType(IDataSource dataSource, OperationTypes operationType, IEnumerable<ISqlBuilderEntryDetails<TDbType>> tableTypeColumns)
         {
             if (dataSource == null)
                 throw new ArgumentNullException(nameof(dataSource), $"{nameof(dataSource)} is null.");
@@ -548,24 +552,28 @@ namespace Tortuga.Chain.CommandBuilders
             if (!found)
                 throw new MappingException($"None of the columns on the indicated user defined type could be matched to columns in {m_Name}.");
 
-            ApplyRules(dataSource.AuditRules, appliesWhen, null, dataSource.UserValue);
+            ApplyRules(dataSource.AuditRules, operationType, null, dataSource.UserValue);
         }
 
         /// <summary>
         /// Overrides the previous selected values with the values in the indicated object.
         /// </summary>
-        /// <param name="value">The value.</param>
+        /// <param name="dataSource">The data source.</param>
+        /// <param name="operationType">The type of operation being performed.</param>
+        /// <param name="argumentValue">The value.</param>
         /// <exception cref="ArgumentNullException">value;value is null.</exception>
         /// <exception cref="MappingException">This is thrown is no properties could be matched to a column. If strict mode, all properties must match columns.</exception>
         /// <remarks>This will not alter the IsPrimaryKey, Insert, or Update column settings.
-        /// If the object implements IReadOnlyDictionary[string, object], ApplyArgumentDictionary will be implicitly called instead.
-        /// </remarks>
-        public void ApplyValueOverrides(object value)
+        /// If the object implements IReadOnlyDictionary[string, object], ApplyArgumentDictionary will be implicitly called instead.</remarks>
+        public void OverrideArgumentValue(IDataSource dataSource, OperationTypes operationType, object? argumentValue)
         {
-            if (value == null)
-                throw new ArgumentNullException(nameof(value), $"{nameof(value)} is null.");
+            if (dataSource == null)
+                throw new ArgumentNullException(nameof(dataSource), $"{nameof(dataSource)} is null.");
 
-            if (value is IReadOnlyDictionary<string, object> readOnlyDictionary)
+            if (argumentValue == null)
+                throw new ArgumentNullException(nameof(argumentValue), $"{nameof(argumentValue)} is null.");
+
+            if (argumentValue is IReadOnlyDictionary<string, object> readOnlyDictionary)
             {
                 ApplyArgumentDictionary(readOnlyDictionary);
                 return;
@@ -573,7 +581,7 @@ namespace Tortuga.Chain.CommandBuilders
 
             var found = false;
 
-            var metadata = MetadataCache.GetMetadata(value.GetType());
+            var metadata = MetadataCache.GetMetadata(argumentValue.GetType());
             foreach (var property in metadata.Properties)
             {
                 var propertyFound = false;
@@ -591,7 +599,7 @@ namespace Tortuga.Chain.CommandBuilders
                         propertyFound = true;
                         if (entry.IsFormalParameter)
                             entry.UseParameter = true;
-                        entry.ParameterValue = property.InvokeGet(value) ?? DBNull.Value;
+                        entry.ParameterValue = property.InvokeGet(argumentValue) ?? DBNull.Value;
                         break;
                     }
                 }
@@ -600,7 +608,9 @@ namespace Tortuga.Chain.CommandBuilders
             }
 
             if (!found)
-                throw new MappingException($"None of the properties on {value.GetType().Name} could be matched to columns in {m_Name}.");
+                throw new MappingException($"None of the properties on {argumentValue.GetType().Name} could be matched to columns in {m_Name}.");
+
+            ApplyRules(dataSource.AuditRules, operationType, null, dataSource.UserValue);
         }
 
         /// <summary>
@@ -993,6 +1003,48 @@ namespace Tortuga.Chain.CommandBuilders
 
         /// <summary>
         /// Builds a list of columns suitable for using in the VALUES clause of INSERT statement. This does not include the actual VALUES keyword.
+        /// This will add the associated parameters to the parameters collection.
+        /// </summary>
+        /// <typeparam name="TParameter">The type of the t parameter.</typeparam>
+        /// <param name="sql">The SQL being generated.</param>
+        /// <param name="header">The optional header. Usually "VALUES  (".</param>
+        /// <param name="footer">The optional footer. Usually just ")".</param>
+        /// <param name="includeIdentityColumn">Include the identity column. Used when performing an identity insert operation.</param>
+        /// <param name="parameterSuffix">The parameter suffix. Must be unique for each row.</param>
+        /// <param name="parameters">The parameter list to be updated.</param>
+        /// <param name="parameterBuilder">The parameter builder.</param>
+        /// <exception cref="ArgumentNullException">
+        /// sql
+        /// or
+        /// value
+        /// or
+        /// parameters
+        /// or
+        /// parameterBuilder
+        /// </exception>
+        /// <remarks>Call OverrideArgumentValue before invoking this method</remarks>
+        public void BuildValuesClause<TParameter>(StringBuilder sql, string header, string footer, bool includeIdentityColumn, string parameterSuffix, List<TParameter> parameters, ParameterBuilderCallback<TParameter, TDbType> parameterBuilder)
+            where TParameter : DbParameter
+        {
+            if (sql == null)
+                throw new ArgumentNullException(nameof(sql), $"{nameof(sql)} was null.");
+            if (parameters == null)
+                throw new ArgumentNullException(nameof(parameters), $"{nameof(parameters)} was null.");
+            if (parameterBuilder == null)
+                throw new ArgumentNullException(nameof(parameterBuilder), $"{nameof(parameterBuilder)} was null.");
+
+            sql.Append(header);
+            sql.Append(string.Join(", ", GetInsertColumns(includeIdentityColumn).Select(x => x.SqlVariableName + parameterSuffix)));
+            sql.Append(footer);
+
+            var temp = GetParameters(parameterBuilder);
+            foreach (var item in temp)
+                item.ParameterName += parameterSuffix;
+            parameters.AddRange(temp);
+        }
+
+        /// <summary>
+        /// Builds a list of columns suitable for using in the VALUES clause of INSERT statement. This does not include the actual VALUES keyword.
         /// This will mark key columns for use in parameter building.
         /// </summary>
         /// <param name="sql">The SQL being generated.</param>
@@ -1330,7 +1382,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// Applies the argument value.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
-        /// <param name="appliesWhen">The applies when.</param>
+        /// <param name="operationType">The operation type.</param>
         /// <param name="argumentValue">The argument value.</param>
         /// <param name="useObjectDefinedKeys">if set to <c>true</c> use object defined keys.</param>
         /// <param name="changedPropertiesOnly">if set to <c>true</c> filter the update list according to IPropertyChangeTracking.ChangedProperties.</param>
@@ -1340,7 +1392,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// If the object implements IReadOnlyDictionary[string, object], ApplyArgumentDictionary will be implicitly called instead.
         /// If the object does not implement IPropertyChangeTracking and changedPropertiesOnly is set, an error will occur.
         /// </remarks>
-        void ApplyArgumentValue(IDataSource dataSource, OperationTypes appliesWhen, object? argumentValue, bool useObjectDefinedKeys, bool changedPropertiesOnly)
+        void ApplyArgumentValue(IDataSource dataSource, OperationTypes operationType, object? argumentValue, bool useObjectDefinedKeys, bool changedPropertiesOnly)
         {
             if (dataSource == null)
                 throw new ArgumentNullException(nameof(dataSource), $"{nameof(dataSource)} is null.");
@@ -1434,17 +1486,17 @@ namespace Tortuga.Chain.CommandBuilders
                     throw new MappingException($"None of the properties on {argumentValue.GetType().Name} could be matched to columns in {m_Name}.");
             }
 
-            ApplyRules(dataSource.AuditRules, appliesWhen, argumentValue, dataSource.UserValue);
+            ApplyRules(dataSource.AuditRules, operationType, argumentValue, dataSource.UserValue);
         }
 
         /// <summary>
         /// Applies the indicated rules.
         /// </summary>
         /// <param name="rules">The rules.</param>
-        /// <param name="appliesWhen">The type of.</param>
+        /// <param name="operationType">The type of operation.</param>
         /// <param name="argumentValue">The argument value.</param>
         /// <param name="userValue">The user value.</param>
-        void ApplyRules(AuditRuleCollection rules, OperationTypes appliesWhen, object? argumentValue, object? userValue)
+        void ApplyRules(AuditRuleCollection rules, OperationTypes operationType, object? argumentValue, object? userValue)
         {
             if (argumentValue != null)
                 rules.CheckValidation(argumentValue);
@@ -1453,7 +1505,7 @@ namespace Tortuga.Chain.CommandBuilders
             {
                 ref var entry = ref m_Entries[i];
 
-                foreach (var rule in rules.GetRulesForColumn(entry.Details.SqlName, entry.Details.ClrName, appliesWhen))
+                foreach (var rule in rules.GetRulesForColumn(entry.Details.SqlName, entry.Details.ClrName, operationType))
                 {
                     entry.ParameterValue = rule.GenerateValue(argumentValue, userValue, entry.ParameterValue);
                     entry.ParameterColumn = null; //replaces the TVP columns
