@@ -8,13 +8,13 @@ namespace Tortuga.Chain.Appenders
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <remarks>If the previous link returns a null, this will throw an exception.</remarks>
-    internal class NonNullLink<T> : Appender<T?, T> where T : class
+    internal class NonNullValueLink<T> : Appender<T?, T> where T : struct
     {
         /// <summary>
         ///Initializes a new instance of the <see cref="NonNullLink{TResult}" /> class.
         /// </summary>
         /// <param name="previousLink">The previous link.</param>
-        public NonNullLink(ILink<T?> previousLink) : base(previousLink)
+        public NonNullValueLink(ILink<T?> previousLink) : base(previousLink)
         {
         }
 
@@ -28,7 +28,7 @@ namespace Tortuga.Chain.Appenders
             var result = PreviousLink.Execute(state);
             if (result == null)
                 throw new MissingDataException("An unexpected null was returned.");
-            return result;
+            return result.Value;
         }
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace Tortuga.Chain.Appenders
             var result = await PreviousLink.ExecuteAsync(cancellationToken, state).ConfigureAwait(false);
             if (result == null)
                 throw new MissingDataException("An unexpected null was returned.");
-            return result;
+            return result.Value;
         }
     }
 }
