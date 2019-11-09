@@ -9,6 +9,7 @@ using Tortuga.Chain.AuditRules;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Metadata;
 using Tortuga.Chain.SqlServer.CommandBuilders;
+using Tortuga.Chain.Materializers;
 
 #if SQL_SERVER_SDS
 
@@ -108,68 +109,6 @@ namespace Tortuga.Chain.SqlServer
         {
             var tableType = DatabaseMetadata.GetUserDefinedTableType(tableTypeName);
             return new SqlServerInsertBatchTable(this, tableName, new ObjectDataReader<TObject>(tableType, objects), tableTypeName, options);
-        }
-
-        /// <summary>
-        /// Inserts the batch of records as one operation.
-        /// </summary>
-        /// <typeparam name="TObject"></typeparam>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="objects">The objects to insert.</param>
-        /// <param name="options">The options.</param>
-        /// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
-        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> InsertBatch<TObject>(SqlServerObjectName tableName, IReadOnlyList<TObject> objects, InsertOptions options = InsertOptions.None)
-        where TObject : class
-        {
-            return new SqlServerInsertBatch<TObject>(this, tableName, objects, options);
-        }
-
-        /// <summary>
-        /// Performs a series of batch inserts.
-        /// </summary>
-        /// <typeparam name="TObject">The type of the t object.</typeparam>
-        /// <param name="tableName">Name of the table.</param>
-        /// <param name="objects">The objects.</param>
-        /// <param name="options">The options.</param>
-        /// <returns>Tortuga.Chain.ILink&lt;System.Int32&gt;.</returns>
-        /// <remarks>This operation is not atomic. It should be wrapped in a transaction.</remarks>
-        public ILink<int> InsertMultipleBatch<TObject>(SqlServerObjectName tableName, IReadOnlyList<TObject> objects, InsertOptions options = InsertOptions.None)
-                where TObject : class
-        {
-            if (objects == null || objects.Count == 0)
-                throw new ArgumentException($"{nameof(objects)} is null or empty.", nameof(objects));
-
-            var batchSize = SqlServerInsertBatch<TObject>.MaxObjectsPerBatch(this, tableName, objects[0], options);
-
-            Func<IReadOnlyList<TObject>, ILink<int>> callBack = (o) => (new SqlServerInsertBatch<TObject>(this, tableName, o, options)).AsNonQuery().NeverNull();
-
-            return CreateMultiBatcher(callBack, objects, batchSize);
-        }
-
-        /// <summary>
-        /// Inserts the batch of records as one operation.
-        /// </summary>
-        /// <typeparam name="TObject"></typeparam>
-        /// <param name="objects">The objects to insert.</param>
-        /// <param name="options">The options.</param>
-        /// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
-        public ILink<int> InsertMultipleBatch<TObject>(IReadOnlyList<TObject> objects, InsertOptions options = InsertOptions.None)
-        where TObject : class
-        {
-            return InsertMultipleBatch(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, objects, options);
-        }
-
-        /// <summary>
-        /// Inserts the batch of records as one operation.
-        /// </summary>
-        /// <typeparam name="TObject"></typeparam>
-        /// <param name="objects">The objects to insert.</param>
-        /// <param name="options">The options.</param>
-        /// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
-        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> InsertBatch<TObject>(IReadOnlyList<TObject> objects, InsertOptions options = InsertOptions.None)
-        where TObject : class
-        {
-            return new SqlServerInsertBatch<TObject>(this, DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, objects, options);
         }
 
         /// <summary>
@@ -383,6 +322,31 @@ namespace Tortuga.Chain.SqlServer
         ObjectDbCommandBuilder<SqlCommand, SqlParameter, TArgument> OnUpdateObject<TArgument>(SqlServerObjectName tableName, TArgument argumentValue, UpdateOptions options) where TArgument : class
         {
             return new SqlServerUpdateObject<TArgument>(this, tableName, argumentValue, options);
+        }
+
+        MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> OnInsertBatch<TObject>(SqlServerObjectName tableName, IReadOnlyList<TObject> objects, InsertOptions options)
+            where TObject : class
+        {
+            return new SqlServerInsertBatch<TObject>(this, tableName, objects, options);
+        }
+
+        int MaxObjectsPerBatch<TObject>(SqlServerObjectName tableName, TObject sampleObject, InsertOptions options)
+            where TObject : class
+        {
+            var table = DatabaseMetadata.GetTableOrView(tableName);
+            var sqlBuilder = table.CreateSqlBuilder(false);
+            sqlBuilder.ApplyDesiredColumns(Materializer.NoColumns);
+            sqlBuilder.ApplyArgumentValue(this, sampleObject, options);
+            sqlBuilder.GetInsertColumns(options.HasFlag(InsertOptions.IdentityInsert)).ToList(); //Call ToList to trigger needed side-effects
+
+            var parametersPerRow = sqlBuilder.GetParameters().Count;
+
+            //Max parameter count is advertised as 2100, but really it is lower.
+            var maxParams = DatabaseMetadata.MaxParameters!.Value - 1;
+
+            //Max rows per VALUES clause is 1000.
+            var maxRows = Math.Min(1000, maxParams / parametersPerRow);
+            return maxRows;
         }
     }
 }
