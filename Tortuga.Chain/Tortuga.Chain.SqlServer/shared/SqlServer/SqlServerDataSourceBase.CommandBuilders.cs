@@ -329,24 +329,5 @@ namespace Tortuga.Chain.SqlServer
         {
             return new SqlServerInsertBatch<TObject>(this, tableName, objects, options);
         }
-
-        int MaxObjectsPerBatch<TObject>(SqlServerObjectName tableName, TObject sampleObject, InsertOptions options)
-            where TObject : class
-        {
-            var table = DatabaseMetadata.GetTableOrView(tableName);
-            var sqlBuilder = table.CreateSqlBuilder(false);
-            sqlBuilder.ApplyDesiredColumns(Materializer.NoColumns);
-            sqlBuilder.ApplyArgumentValue(this, sampleObject, options);
-            sqlBuilder.GetInsertColumns(options.HasFlag(InsertOptions.IdentityInsert)).ToList(); //Call ToList to trigger needed side-effects
-
-            var parametersPerRow = sqlBuilder.GetParameters().Count;
-
-            //Max parameter count is advertised as 2100, but really it is lower.
-            var maxParams = DatabaseMetadata.MaxParameters!.Value - 1;
-
-            //Max rows per VALUES clause is 1000.
-            var maxRows = Math.Min(1000, maxParams / parametersPerRow);
-            return maxRows;
-        }
     }
 }

@@ -318,6 +318,32 @@
             <param name="materializer"></param>
             <returns><see cref="T:Tortuga.Chain.SQLite.SQLiteCommandExecutionToken" /></returns>
         </member>
+        <member name="T:Tortuga.Chain.SQLite.CommandBuilders.SQLiteInsertBatch`1">
+            <summary>
+            Class SQLiteInsertBatchTable is when using a values clause with an array of rows.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.SQLite.CommandBuilders.SQLiteInsertBatch`1.TryGetColumn(System.String)">
+            <summary>
+            Returns the column associated with the column name.
+            </summary>
+            <param name="columnName">Name of the column.</param>
+            <returns></returns>
+            <remarks>
+            If the column name was not found, this will return null
+            </remarks>
+        </member>
+        <member name="M:Tortuga.Chain.SQLite.CommandBuilders.SQLiteInsertBatch`1.TryGetNonNullableColumns">
+            <summary>
+            Returns a list of columns known to be non-nullable.
+            </summary>
+            <returns>
+            If the command builder doesn't know which columns are non-nullable, an empty list will be returned.
+            </returns>
+            <remarks>
+            This is used by materializers to skip IsNull checks.
+            </remarks>
+        </member>
         <member name="T:Tortuga.Chain.SQLite.CommandBuilders.SQLiteInsertObject`1">
             <summary>
             Class that represents a SQLite Insert.
@@ -656,32 +682,6 @@
             </summary>
             <param name="materializer"></param>
             <returns><see cref="T:Tortuga.Chain.SQLite.SQLiteCommandExecutionToken" /></returns>
-        </member>
-        <member name="T:Tortuga.Chain.SQLite.CommandBuilders.SQLiteInsertBatch`1">
-            <summary>
-            Class SQLiteInsertBatchTable is when using a values clause with an array of rows.
-            </summary>
-        </member>
-        <member name="M:Tortuga.Chain.SQLite.CommandBuilders.SQLiteInsertBatch`1.TryGetColumn(System.String)">
-            <summary>
-            Returns the column associated with the column name.
-            </summary>
-            <param name="columnName">Name of the column.</param>
-            <returns></returns>
-            <remarks>
-            If the column name was not found, this will return null
-            </remarks>
-        </member>
-        <member name="M:Tortuga.Chain.SQLite.CommandBuilders.SQLiteInsertBatch`1.TryGetNonNullableColumns">
-            <summary>
-            Returns a list of columns known to be non-nullable.
-            </summary>
-            <returns>
-            If the command builder doesn't know which columns are non-nullable, an empty list will be returned.
-            </returns>
-            <remarks>
-            This is used by materializers to skip IsNull checks.
-            </remarks>
         </member>
         <member name="T:Tortuga.Chain.SQLite.LockType">
             <summary>
