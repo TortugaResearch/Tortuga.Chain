@@ -143,6 +143,8 @@ BEGIN
     WHERE   c.State = p_State;
 END;";
 
+                string bulkInserts = @"SET GLOBAL local_infile = 1;";
+
                 using (MySqlCommand cmd = new MySqlCommand(sql, con))
                     cmd.ExecuteNonQuery();
 
@@ -162,6 +164,9 @@ END;";
                     cmd.ExecuteNonQuery();
 
                 using (MySqlCommand cmd = new MySqlCommand(proc1, con))
+                    cmd.ExecuteNonQuery();
+
+                using (MySqlCommand cmd = new MySqlCommand(bulkInserts, con))
                     cmd.ExecuteNonQuery();
             }
         }
