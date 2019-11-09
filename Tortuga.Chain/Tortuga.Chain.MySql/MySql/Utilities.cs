@@ -13,15 +13,17 @@ namespace Tortuga.Chain.MySql
         /// <returns></returns>
         public static List<MySqlParameter> GetParameters(this SqlBuilder<MySqlDbType> sqlBuilder)
         {
-            return sqlBuilder.GetParameters((SqlBuilderEntry<MySqlDbType> entry) =>
-            {
-                var result = new MySqlParameter();
-                result.ParameterName = entry.Details.SqlVariableName;
-                result.Value = entry.ParameterValue;
-                if (entry.Details.DbType.HasValue)
-                    result.MySqlDbType = entry.Details.DbType.Value;
-                return result;
-            });
+            return sqlBuilder.GetParameters(ParameterBuilderCallback);
+        }
+
+        public static MySqlParameter ParameterBuilderCallback(SqlBuilderEntry<MySqlDbType> entry)
+        {
+            var result = new MySqlParameter();
+            result.ParameterName = entry.Details.SqlVariableName;
+            result.Value = entry.ParameterValue;
+            if (entry.Details.DbType.HasValue)
+                result.MySqlDbType = entry.Details.DbType.Value;
+            return result;
         }
 
         public static bool PrimaryKeyIsIdentity(this SqlBuilder<MySqlDbType> sqlBuilder, out List<MySqlParameter> keyParameters)

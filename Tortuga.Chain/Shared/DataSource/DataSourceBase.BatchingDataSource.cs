@@ -40,6 +40,7 @@ using AbstractCommand = MySql.Data.MySqlClient.MySqlCommand;
 using AbstractParameter = MySql.Data.MySqlClient.MySqlParameter;
 using AbstractObjectName = Tortuga.Chain.MySql.MySqlObjectName;
 using AbstractLimitOption = Tortuga.Chain.MySqlLimitOption;
+using InsertBatchResult = Tortuga.Chain.CommandBuilders.DbCommandBuilder<MySql.Data.MySqlClient.MySqlCommand, MySql.Data.MySqlClient.MySqlParameter>;
 
 #elif POSTGRESQL
 
@@ -96,7 +97,7 @@ namespace Tortuga.Chain.Access
 
 #endif
     {
-#if !SQL_SERVER_OLEDB && !ACCESS && !MYSQL
+#if !SQL_SERVER_OLEDB && !ACCESS
 
         /// <summary>
         /// Performs a series of batch inserts.
