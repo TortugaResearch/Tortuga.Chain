@@ -324,6 +324,88 @@
             <param name="materializer"></param>
             <returns><see cref="T:Tortuga.Chain.MySql.MySqlCommandExecutionToken" /></returns>
         </member>
+        <member name="T:Tortuga.Chain.MySql.CommandBuilders.MySqlInsertBatch`1">
+            <summary>
+            Class MySqlInsertBatchTable is when using a values clause with an array of rows.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlInsertBatch`1.TryGetColumn(System.String)">
+            <summary>
+            Returns the column associated with the column name.
+            </summary>
+            <param name="columnName">Name of the column.</param>
+            <returns></returns>
+            <remarks>
+            If the column name was not found, this will return null
+            </remarks>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlInsertBatch`1.TryGetNonNullableColumns">
+            <summary>
+            Returns a list of columns known to be non-nullable.
+            </summary>
+            <returns>
+            If the command builder doesn't know which columns are non-nullable, an empty list will be returned.
+            </returns>
+            <remarks>
+            This is used by materializers to skip IsNull checks.
+            </remarks>
+        </member>
+        <member name="T:Tortuga.Chain.MySql.CommandBuilders.MySqlInsertBulk">
+            <summary>
+            This class is used to perform bulk inserts
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlInsertBulk.WithBatchSize(System.Int32)">
+            <summary>
+            Modifies the batch size.
+            </summary>
+            <param name="batchSize">Size of the batch.</param>
+            <returns>SqlServerInsertBulk.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlInsertBulk.Prepare">
+            <summary>
+            Prepares the command for execution by generating any necessary SQL.
+            </summary>
+            <returns>ExecutionToken&lt;TCommand&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlInsertBulk.TryGetColumn(System.String)">
+            <summary>
+            Returns the column associated with the column name.
+            </summary>
+            <param name="columnName">Name of the column.</param>
+            <returns></returns>
+            <remarks>
+            If the column name was not found, this will return null
+            </remarks>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlInsertBulk.TryGetNonNullableColumns">
+            <summary>
+            Returns a list of columns known to be non-nullable.
+            </summary>
+            <returns>
+            If the command builder doesn't know which columns are non-nullable, an empty list will be returned.
+            </returns>
+            <remarks>
+            This is used by materializers to skip IsNull checks.
+            </remarks>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlInsertBulk.Implementation(MySql.Data.MySqlClient.MySqlConnection,MySql.Data.MySqlClient.MySqlTransaction)">
+            <summary>
+            Implementation the specified operation.
+            </summary>
+            <param name="connection">The connection.</param>
+            <param name="transaction">The transaction.</param>
+            <returns>System.Nullable&lt;System.Int32&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlInsertBulk.ImplementationAsync(MySql.Data.MySqlClient.MySqlConnection,MySql.Data.MySqlClient.MySqlTransaction,System.Threading.CancellationToken)">
+            <summary>
+            Implementation the specified operation.
+            </summary>
+            <param name="connection">The connection.</param>
+            <param name="transaction">The transaction.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>Task&lt;System.Nullable&lt;System.Int32&gt;&gt;.</returns>
+        </member>
         <member name="T:Tortuga.Chain.MySql.CommandBuilders.MySqlInsertObject`1">
             <summary>
             Class that represents a MySql Insert.
@@ -773,9 +855,8 @@
         </member>
         <member name="T:Tortuga.Chain.MySql.MySqlCommandExecutionToken">
             <summary>
-            
+            Class MySqlCommandExecutionToken.
             </summary>
-            <seealso cref="T:Tortuga.Chain.Core.CommandExecutionToken`2" />
         </member>
         <member name="M:Tortuga.Chain.MySql.MySqlCommandExecutionToken.#ctor(Tortuga.Chain.DataSources.ICommandDataSource{MySql.Data.MySqlClient.MySqlCommand,MySql.Data.MySqlClient.MySqlParameter},System.String,System.String,System.Collections.Generic.IReadOnlyList{MySql.Data.MySqlClient.MySqlParameter},System.Data.CommandType)">
             <summary>
@@ -811,6 +892,61 @@
             <returns>MultipleRowDbCommandBuilder&lt;MySqlCommand, MySqlParameter&gt;.</returns>
             <exception cref="T:Tortuga.Chain.MappingException"></exception>
         </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.InsertBulk(Tortuga.Chain.MySql.MySqlObjectName,System.Data.DataTable)">
+            <summary>
+            Inserts the batch of records using bulk insert.
+            </summary>
+            <param name="tableName">Name of the table.</param>
+            <param name="dataTable">The data table.</param>
+            <returns>MySqlInsertBulk.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.InsertBulk(Tortuga.Chain.MySql.MySqlObjectName,System.Data.IDataReader)">
+            <summary>
+            Inserts the batch of records using bulk insert.
+            </summary>
+            <param name="tableName">Name of the table.</param>
+            <param name="dataReader">The data reader.</param>
+            <returns>MySqlInsertBulk.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.InsertBulk``1(Tortuga.Chain.MySql.MySqlObjectName,System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Inserts the batch of records using bulk insert.
+            </summary>
+            <typeparam name="TObject"></typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="objects">The objects.</param>
+            <returns>MySqlInsertBulk.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.InsertBulk``1(System.Data.DataTable)">
+            <summary>
+            Inserts the batch of records using bulk insert.
+            </summary>
+            <typeparam name="TObject">The type of the object.</typeparam>
+            <param name="dataTable">The data table.</param>
+            <returns>
+            MySqlInsertBulk.
+            </returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.InsertBulk``1(System.Data.IDataReader)">
+            <summary>
+            Inserts the batch of records using bulk insert.
+            </summary>
+            <typeparam name="TObject">The type of the object.</typeparam>
+            <param name="dataReader">The data reader.</param>
+            <returns>
+            MySqlInsertBulk.
+            </returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.InsertBulk``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Inserts the batch of records using bulk insert.
+            </summary>
+            <typeparam name="TObject">The type of the object.</typeparam>
+            <param name="objects">The objects.</param>
+            <returns>
+            MySqlInsertBulk.
+            </returns>
+        </member>
         <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.#ctor(Tortuga.Chain.DataSources.DataSourceSettings)">
             <summary>
             Initializes a new instance of the <see cref="T:Tortuga.Chain.MySql.MySqlDataSourceBase"/> class.
@@ -827,6 +963,56 @@
             Called when Database.DatabaseMetadata is invoked.
             </summary>
             <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.InsertMultipleBatch``1(System.String,System.Collections.Generic.IReadOnlyList{``0},Tortuga.Chain.InsertOptions)">
+            <summary>
+            Performs a series of batch inserts.
+            </summary>
+            <typeparam name="TObject">The type of the t object.</typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="objects">The objects.</param>
+            <param name="options">The options.</param>
+            <returns>Tortuga.Chain.ILink&lt;System.Int32&gt;.</returns>
+            <remarks>This operation is not atomic. It should be wrapped in a transaction.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.InsertMultipleBatch``1(Tortuga.Chain.MySql.MySqlObjectName,System.Collections.Generic.IReadOnlyList{``0},Tortuga.Chain.InsertOptions)">
+            <summary>
+            Performs a series of batch inserts.
+            </summary>
+            <typeparam name="TObject">The type of the t object.</typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="objects">The objects.</param>
+            <param name="options">The options.</param>
+            <returns>Tortuga.Chain.ILink&lt;System.Int32&gt;.</returns>
+            <remarks>This operation is not atomic. It should be wrapped in a transaction.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.InsertMultipleBatch``1(System.Collections.Generic.IReadOnlyList{``0},Tortuga.Chain.InsertOptions)">
+            <summary>
+            Inserts the batch of records as one operation.
+            </summary>
+            <typeparam name="TObject"></typeparam>
+            <param name="objects">The objects to insert.</param>
+            <param name="options">The options.</param>
+            <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.InsertBatch``1(Tortuga.Chain.MySql.MySqlObjectName,System.Collections.Generic.IReadOnlyList{``0},Tortuga.Chain.InsertOptions)">
+            <summary>
+            Inserts the batch of records as one operation.
+            </summary>
+            <typeparam name="TObject"></typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="objects">The objects to insert.</param>
+            <param name="options">The options.</param>
+            <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.InsertBatch``1(System.Collections.Generic.IReadOnlyList{``0},Tortuga.Chain.InsertOptions)">
+            <summary>
+            Inserts the batch of records as one operation.
+            </summary>
+            <typeparam name="TObject"></typeparam>
+            <param name="objects">The objects to insert.</param>
+            <param name="options">The options.</param>
+            <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
         </member>
         <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.Sql(System.String)">
             <summary>
@@ -1702,6 +1888,13 @@
             <param name="schema">The schema.</param>
             <param name="tableName">Name of the table.</param>
             <remarks>WARNING: Only call this with verified table names. Otherwise a SQL injection attack can occur.</remarks>
+        </member>
+        <member name="P:Tortuga.Chain.MySql.MySqlMetadataCache.MaxParameters">
+            <summary>
+            Gets the maximum number of parameters in a single SQL batch.
+            </summary>
+            <value>The maximum number of parameters.</value>
+            <remarks>https://stackoverflow.com/a/6582902/5274</remarks>
         </member>
         <member name="T:Tortuga.Chain.MySql.MySqlObjectName">
             <summary>

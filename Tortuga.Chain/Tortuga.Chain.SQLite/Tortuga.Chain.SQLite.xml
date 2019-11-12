@@ -318,6 +318,32 @@
             <param name="materializer"></param>
             <returns><see cref="T:Tortuga.Chain.SQLite.SQLiteCommandExecutionToken" /></returns>
         </member>
+        <member name="T:Tortuga.Chain.SQLite.CommandBuilders.SQLiteInsertBatch`1">
+            <summary>
+            Class SQLiteInsertBatchTable is when using a values clause with an array of rows.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.SQLite.CommandBuilders.SQLiteInsertBatch`1.TryGetColumn(System.String)">
+            <summary>
+            Returns the column associated with the column name.
+            </summary>
+            <param name="columnName">Name of the column.</param>
+            <returns></returns>
+            <remarks>
+            If the column name was not found, this will return null
+            </remarks>
+        </member>
+        <member name="M:Tortuga.Chain.SQLite.CommandBuilders.SQLiteInsertBatch`1.TryGetNonNullableColumns">
+            <summary>
+            Returns a list of columns known to be non-nullable.
+            </summary>
+            <returns>
+            If the command builder doesn't know which columns are non-nullable, an empty list will be returned.
+            </returns>
+            <remarks>
+            This is used by materializers to skip IsNull checks.
+            </remarks>
+        </member>
         <member name="T:Tortuga.Chain.SQLite.CommandBuilders.SQLiteInsertObject`1">
             <summary>
             Class that represents a SQLite Insert.
@@ -774,6 +800,66 @@
             Called when Database.DatabaseMetadata is invoked.
             </summary>
             <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.SQLite.SQLiteDataSourceBase.InsertMultipleBatch``1(System.String,System.Collections.Generic.IReadOnlyList{``0},Tortuga.Chain.InsertOptions)">
+            <summary>
+            Performs a series of batch inserts.
+            </summary>
+            <typeparam name="TObject">The type of the t object.</typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="objects">The objects.</param>
+            <param name="options">The options.</param>
+            <returns>Tortuga.Chain.ILink&lt;System.Int32&gt;.</returns>
+            <remarks>This operation is not atomic. It should be wrapped in a transaction.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.SQLite.SQLiteDataSourceBase.InsertMultipleBatch``1(Tortuga.Chain.SQLite.SQLiteObjectName,System.Collections.Generic.IReadOnlyList{``0},Tortuga.Chain.InsertOptions)">
+            <summary>
+            Performs a series of batch inserts.
+            </summary>
+            <typeparam name="TObject">The type of the t object.</typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="objects">The objects.</param>
+            <param name="options">The options.</param>
+            <returns>Tortuga.Chain.ILink&lt;System.Int32&gt;.</returns>
+            <remarks>This operation is not atomic. It should be wrapped in a transaction.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.SQLite.SQLiteDataSourceBase.InsertMultipleBatch``1(System.Collections.Generic.IReadOnlyList{``0},Tortuga.Chain.InsertOptions)">
+            <summary>
+            Inserts the batch of records as one operation.
+            </summary>
+            <typeparam name="TObject"></typeparam>
+            <param name="objects">The objects to insert.</param>
+            <param name="options">The options.</param>
+            <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.SQLite.SQLiteDataSourceBase.InsertBatch``1(Tortuga.Chain.SQLite.SQLiteObjectName,System.Collections.Generic.IReadOnlyList{``0},Tortuga.Chain.InsertOptions)">
+            <summary>
+            Inserts the batch of records as one operation.
+            </summary>
+            <typeparam name="TObject"></typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="objects">The objects to insert.</param>
+            <param name="options">The options.</param>
+            <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.SQLite.SQLiteDataSourceBase.InsertBatch``1(System.Collections.Generic.IReadOnlyList{``0},Tortuga.Chain.InsertOptions)">
+            <summary>
+            Inserts the batch of records as one operation.
+            </summary>
+            <typeparam name="TObject"></typeparam>
+            <param name="objects">The objects to insert.</param>
+            <param name="options">The options.</param>
+            <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.SQLite.SQLiteDataSourceBase.InsertBatch``1(System.String,System.Collections.Generic.IReadOnlyList{``0},Tortuga.Chain.InsertOptions)">
+            <summary>
+            Inserts the batch of records as one operation..
+            </summary>
+            <typeparam name="TObject"></typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="objects">The objects.</param>
+            <param name="options">The options.</param>
+            <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
         </member>
         <member name="M:Tortuga.Chain.SQLite.SQLiteDataSourceBase.Sql(System.String)">
             <summary>
@@ -1520,6 +1606,13 @@
             <param name="isUnsigned">NOT USED</param>
             <returns></returns>
             <remarks>This does not honor registered types. This is only used for the database's hard-coded list of native types.</remarks>
+        </member>
+        <member name="P:Tortuga.Chain.SQLite.SQLiteMetadataCache.MaxParameters">
+            <summary>
+            Gets the maximum number of parameters in a single SQL batch.
+            </summary>
+            <value>The maximum number of parameters.</value>
+            <remarks>https://sqlite.org/limits.html</remarks>
         </member>
         <member name="T:Tortuga.Chain.SQLite.SQLiteObjectName">
             <summary>

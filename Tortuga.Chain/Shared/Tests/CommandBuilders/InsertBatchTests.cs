@@ -12,10 +12,111 @@ namespace Tests.CommandBuilders
     {
         const string TableType = "HR.EmployeeTable";
 
+#if SQL_SERVER_SDS || SQL_SERVER_MDS || SQLITE || POSTGRESQL || MYSQL
+
+        [DataTestMethod, BasicData(DataSourceGroup.Primary)]
+        public void InsertMultipleBatch(string dataSourceName, DataSourceType mode)
+        {
+            var key = Guid.NewGuid().ToString();
+            var employeeList = new List<Employee>();
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+                var maxRows = 1000;
+
+                for (var i = 0; i < maxRows; i++)
+                    employeeList.Add(new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = key });
+
+                var count = dataSource.InsertMultipleBatch(EmployeeTableName, employeeList).SetStrictMode(true).Execute();
+                Assert.AreEqual(maxRows, count);
+
+                var rows = dataSource.From(EmployeeTableName, new { Title = key }).ToCollection<Employee>().Execute();
+                Assert.AreEqual(maxRows, rows.Count);
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+#endif
+
+#if SQL_SERVER_SDS || SQL_SERVER_MDS || SQLITE || MYSQL
+
+        [DataTestMethod, BasicData(DataSourceGroup.Primary)]
+        public void InsertBatch_IdentityInsert(string dataSourceName, DataSourceType mode)
+        {
+            var key = Guid.NewGuid().ToString();
+            var employeeList = new List<Employee>();
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+                //Get the max key, then skip a few rows so we can prove identity insert occurred
+                var maxKey = dataSource.Sql("SELECT Max(EmployeeKey) FROM " + EmployeeTableName).ToInt32().Execute() + 10;
+
+                var maxRows = 10;
+
+                for (var i = 0; i < maxRows; i++)
+                    employeeList.Add(new Employee() { EmployeeKey = maxKey + i, FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = key });
+
+                var count = dataSource.InsertBatch(EmployeeTableName, employeeList, InsertOptions.IdentityInsert).AsNonQuery().SetStrictMode(true).Execute();
+
+                Assert.AreEqual(maxRows, count);
+
+                var rows = dataSource.From(EmployeeTableName, new { Title = key }).ToCollection<Employee>().Execute();
+                Assert.AreEqual(maxRows, rows.Count);
+
+                foreach (var item in rows)
+                {
+                    Assert.IsTrue(item.EmployeeKey.Value >= maxKey);
+                }
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+#endif
+
+#if SQL_SERVER_SDS || SQL_SERVER_MDS || POSTGRESQL
+
+        [DataTestMethod, BasicData(DataSourceGroup.Primary)]
+        public void InsertBatch_ReturnKeys(string dataSourceName, DataSourceType mode)
+        {
+            var key = Guid.NewGuid().ToString();
+            var employeeList = new List<Employee>();
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+                var maxRows = 10;
+
+                for (var i = 0; i < maxRows; i++)
+                    employeeList.Add(new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = key });
+
+                var keys = dataSource.InsertBatch(EmployeeTableName, employeeList).ToInt32List().SetStrictMode(true).Execute();
+                Assert.AreEqual(maxRows, keys.Count);
+
+                var rows = dataSource.From(EmployeeTableName, new { Title = key }).ToCollection<Employee>().Execute();
+                Assert.AreEqual(maxRows, rows.Count);
+
+                foreach (var item in rows)
+                {
+                    Assert.IsTrue(keys.Contains(item.EmployeeKey.Value));
+                }
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+#endif
+
 #if SQL_SERVER_SDS || SQL_SERVER_MDS
 
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
-        public void InsertBatch(string dataSourceName, DataSourceType mode)
+        public void InsertBatchTable(string dataSourceName, DataSourceType mode)
         {
             var key1000 = Guid.NewGuid().ToString();
             var employeeList = new List<Employee>();
@@ -36,7 +137,7 @@ namespace Tests.CommandBuilders
         }
 
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
-        public void InsertBatch_Identity(string dataSourceName, DataSourceType mode)
+        public void InsertBatchTable_Identity(string dataSourceName, DataSourceType mode)
         {
             const string TableType = "HR.EmployeeTable";
 
@@ -71,7 +172,7 @@ namespace Tests.CommandBuilders
         }
 
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
-        public void InsertBatch_Streaming(string dataSourceName, DataSourceType mode)
+        public void InsertBatchTable_Streaming(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -97,7 +198,7 @@ namespace Tests.CommandBuilders
         }
 
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
-        public void InsertBatch_SelectBack(string dataSourceName, DataSourceType mode)
+        public void InsertBatchTable_SelectBack(string dataSourceName, DataSourceType mode)
         {
             var key1000 = Guid.NewGuid().ToString();
             var employeeList = new List<Employee>();
@@ -119,7 +220,7 @@ namespace Tests.CommandBuilders
         }
 
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
-        public void InsertBatch_SelectKeys(string dataSourceName, DataSourceType mode)
+        public void InsertBatchTable_SelectKeys(string dataSourceName, DataSourceType mode)
         {
             var key1000 = Guid.NewGuid().ToString();
             var employeeList = new List<Employee>();
@@ -141,7 +242,7 @@ namespace Tests.CommandBuilders
         }
 
         [DataTestMethod, RootData(DataSourceGroup.Primary)]
-        public void InsertBatch_AuditRules(string dataSourceName)
+        public void InsertBatchTable_AuditRules(string dataSourceName)
         {
             var key1000 = Guid.NewGuid().ToString();
             var employeeList = new List<Employee>();

@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Caching;
 using System.Threading.Tasks;
 using Tortuga.Chain.AuditRules;
+using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Metadata;
 
@@ -311,5 +313,18 @@ namespace Tortuga.Chain.DataSources
         /// </summary>
         /// <returns></returns>
         protected abstract IDatabaseMetadataCache OnGetDatabaseMetadata();
+
+        /// <summary>
+        /// Creates a multi-batcher. This is used by InsertMultipleBatch;
+        /// </summary>
+        /// <typeparam name="TObject">The type of the object.</typeparam>
+        /// <param name="callBack">The call back used to insert the batch.</param>
+        /// <param name="objects">The objects to insert.</param>
+        /// <param name="batchSize">Size of the batch.</param>
+        /// <returns>ILink&lt;System.Int32&gt;.</returns>
+        protected ILink<int> CreateMultiBatcher<TObject>(Func<IReadOnlyList<TObject>, ILink<int>> callBack, IReadOnlyList<TObject> objects, int batchSize)
+        {
+            return new MultiBatcher<TObject>(this, callBack, objects, batchSize);
+        }
     }
 }

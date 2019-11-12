@@ -18,20 +18,20 @@ namespace Tortuga.Chain
         /// </summary>
         /// <remarks>This is mostly used by appenders to override command behavior.</remarks>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        event EventHandler<ExecutionTokenPreparedEventArgs> ExecutionTokenPrepared;
+        event EventHandler<ExecutionTokenPreparedEventArgs>? ExecutionTokenPrepared;
 
         /// <summary>
         /// Occurs when an execution token is about to be prepared.
         /// </summary>
         /// <remarks>This is mostly used by appenders to override SQL generation.</remarks>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        event EventHandler<ExecutionTokenPreparingEventArgs> ExecutionTokenPreparing;
+        event EventHandler<ExecutionTokenPreparingEventArgs>? ExecutionTokenPreparing;
 
         /// <summary>
         /// Gets the data source that is associated with this materializer or appender.
         /// </summary>
         /// <value>The data source.</value>
-        /// <remarks>This is only used for </remarks>
+        /// <remarks>This is only used for cache operations</remarks>
         [EditorBrowsable(EditorBrowsableState.Never)]
         IDataSource DataSource { get; }
 

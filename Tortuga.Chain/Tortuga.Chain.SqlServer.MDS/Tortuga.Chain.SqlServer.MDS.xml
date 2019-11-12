@@ -425,6 +425,13 @@
             <param name="name"></param>
             <returns></returns>
         </member>
+        <member name="P:Tortuga.Chain.SqlServer.SqlServerMetadataCache.MaxParameters">
+            <summary>
+            Gets the maximum number of parameters in a single SQL batch.
+            </summary>
+            <value>The maximum number of parameters.</value>
+            <remarks>Note that the documentation says 2100, but you need to subtract one for the SQL statement itself. https://docs.microsoft.com/en-us/sql/sql-server/maximum-capacity-specifications-for-sql-server?view=sql-server-ver15</remarks>
+        </member>
         <member name="M:Tortuga.Chain.SqlServer.SqlServerMetadataCache.#ctor(Microsoft.Data.SqlClient.SqlConnectionStringBuilder)">
             <summary>
             Initializes a new instance of the <see cref="T:Tortuga.Chain.SqlServer.SqlServerMetadataCache"/> class.
@@ -641,7 +648,12 @@
             <param name="materializer">The materializer.</param>
             <returns>ExecutionToken&lt;TCommand&gt;.</returns>
         </member>
-        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerInsertBatch.TryGetColumn(System.String)">
+        <member name="T:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerInsertBatch`1">
+            <summary>
+            Class SqlServerInsertBatchTable is when using a values clause with an array of rows.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerInsertBatch`1.TryGetColumn(System.String)">
             <summary>
             Returns the column associated with the column name.
             </summary>
@@ -651,7 +663,33 @@
             If the column name was not found, this will return null
             </remarks>
         </member>
-        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerInsertBatch.TryGetNonNullableColumns">
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerInsertBatch`1.TryGetNonNullableColumns">
+            <summary>
+            Returns a list of columns known to be non-nullable.
+            </summary>
+            <returns>
+            If the command builder doesn't know which columns are non-nullable, an empty list will be returned.
+            </returns>
+            <remarks>
+            This is used by materializers to skip IsNull checks.
+            </remarks>
+        </member>
+        <member name="T:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerInsertBatchTable">
+            <summary>
+            Class SqlServerInsertBatchTable is when a table-type parameter is provided.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerInsertBatchTable.TryGetColumn(System.String)">
+            <summary>
+            Returns the column associated with the column name.
+            </summary>
+            <param name="columnName">Name of the column.</param>
+            <returns></returns>
+            <remarks>
+            If the column name was not found, this will return null
+            </remarks>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerInsertBatchTable.TryGetNonNullableColumns">
             <summary>
             Returns a list of columns known to be non-nullable.
             </summary>
@@ -1395,16 +1433,6 @@
             <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
             <exception cref="T:Tortuga.Chain.MappingException"></exception>
         </member>
-        <member name="M:Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch(Tortuga.Chain.SqlServer.SqlServerObjectName,Tortuga.Chain.SqlServer.SqlServerObjectName,System.Data.DataTable,Tortuga.Chain.InsertOptions)">
-            <summary>
-            Inserts the batch of records as one operation.
-            </summary>
-            <param name="tableName">Name of the table.</param>
-            <param name="tableTypeName">Name of the table type.</param>
-            <param name="dataTable">The data table.</param>
-            <param name="options">The options.</param>
-            <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
-        </member>
         <member name="M:Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch(Tortuga.Chain.SqlServer.SqlServerObjectName,System.Data.DataTable,Tortuga.Chain.SqlServer.SqlServerObjectName,Tortuga.Chain.InsertOptions)">
             <summary>
             Inserts the batch of records as one operation.
@@ -1412,26 +1440,6 @@
             <param name="tableName">Name of the table.</param>
             <param name="tableTypeName">Name of the table type.</param>
             <param name="dataTable">The data table.</param>
-            <param name="options">The options.</param>
-            <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
-        </member>
-        <member name="M:Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch``1(Tortuga.Chain.SqlServer.SqlServerObjectName,System.Data.DataTable,Tortuga.Chain.InsertOptions)">
-            <summary>
-            Inserts the batch of records as one operation.
-            </summary>
-            <typeparam name="TObject">The type of the t object.</typeparam>
-            <param name="tableTypeName">Name of the table type.</param>
-            <param name="dataTable">The data table.</param>
-            <param name="options">The options.</param>
-            <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
-        </member>
-        <member name="M:Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch(Tortuga.Chain.SqlServer.SqlServerObjectName,Tortuga.Chain.SqlServer.SqlServerObjectName,System.Data.Common.DbDataReader,Tortuga.Chain.InsertOptions)">
-            <summary>
-            Inserts the batch of records as one operation.
-            </summary>
-            <param name="tableName">Name of the table.</param>
-            <param name="tableTypeName">Name of the table type.</param>
-            <param name="dataReader">The data reader.</param>
             <param name="options">The options.</param>
             <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
         </member>
@@ -1445,49 +1453,16 @@
             <param name="options">The options.</param>
             <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
         </member>
-        <member name="M:Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch``1(Tortuga.Chain.SqlServer.SqlServerObjectName,System.Data.Common.DbDataReader,Tortuga.Chain.InsertOptions)">
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch``1(Tortuga.Chain.SqlServer.SqlServerObjectName,System.Collections.Generic.IEnumerable{``0},Tortuga.Chain.SqlServer.SqlServerObjectName,Tortuga.Chain.InsertOptions)">
             <summary>
             Inserts the batch of records as one operation.
             </summary>
-            <typeparam name="TObject">The type of the t object.</typeparam>
-            <param name="tableTypeName">Name of the table type.</param>
-            <param name="dataReader">The data reader.</param>
-            <param name="options">The options.</param>
-            <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
-        </member>
-        <member name="M:Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch``1(Tortuga.Chain.SqlServer.SqlServerObjectName,Tortuga.Chain.SqlServer.SqlServerObjectName,System.Collections.Generic.IEnumerable{``0},Tortuga.Chain.InsertOptions)">
-            <summary>
-            Inserts the batch of records as one operation..
-            </summary>
             <typeparam name="TObject"></typeparam>
             <param name="tableName">Name of the table.</param>
             <param name="tableTypeName">Name of the table type.</param>
             <param name="objects">The objects.</param>
             <param name="options">The options.</param>
             <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
-        </member>
-        <member name="M:Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch``1(Tortuga.Chain.SqlServer.SqlServerObjectName,System.Collections.Generic.IEnumerable{``0},Tortuga.Chain.SqlServer.SqlServerObjectName,Tortuga.Chain.InsertOptions)">
-            <summary>
-            Inserts the batch of records as one operation..
-            </summary>
-            <typeparam name="TObject"></typeparam>
-            <param name="tableName">Name of the table.</param>
-            <param name="tableTypeName">Name of the table type.</param>
-            <param name="objects">The objects.</param>
-            <param name="options">The options.</param>
-            <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
-        </member>
-        <member name="M:Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch``1(Tortuga.Chain.SqlServer.SqlServerObjectName,System.Collections.Generic.IEnumerable{``0},Tortuga.Chain.InsertOptions)">
-            <summary>
-            Inserts the batch of records as one operation..
-            </summary>
-            <typeparam name="TObject">The type of the object.</typeparam>
-            <param name="tableTypeName">Name of the table type.</param>
-            <param name="objects">The objects.</param>
-            <param name="options">The options.</param>
-            <returns>
-            MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.
-            </returns>
         </member>
         <member name="M:Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch``1(System.Collections.Generic.IEnumerable{``0},Tortuga.Chain.SqlServer.SqlServerObjectName,Tortuga.Chain.InsertOptions)">
             <summary>
@@ -1663,6 +1638,66 @@
             Called when Database.DatabaseMetadata is invoked.
             </summary>
             <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertMultipleBatch``1(System.String,System.Collections.Generic.IReadOnlyList{``0},Tortuga.Chain.InsertOptions)">
+            <summary>
+            Performs a series of batch inserts.
+            </summary>
+            <typeparam name="TObject">The type of the t object.</typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="objects">The objects.</param>
+            <param name="options">The options.</param>
+            <returns>Tortuga.Chain.ILink&lt;System.Int32&gt;.</returns>
+            <remarks>This operation is not atomic. It should be wrapped in a transaction.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertMultipleBatch``1(Tortuga.Chain.SqlServer.SqlServerObjectName,System.Collections.Generic.IReadOnlyList{``0},Tortuga.Chain.InsertOptions)">
+            <summary>
+            Performs a series of batch inserts.
+            </summary>
+            <typeparam name="TObject">The type of the t object.</typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="objects">The objects.</param>
+            <param name="options">The options.</param>
+            <returns>Tortuga.Chain.ILink&lt;System.Int32&gt;.</returns>
+            <remarks>This operation is not atomic. It should be wrapped in a transaction.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertMultipleBatch``1(System.Collections.Generic.IReadOnlyList{``0},Tortuga.Chain.InsertOptions)">
+            <summary>
+            Inserts the batch of records as one operation.
+            </summary>
+            <typeparam name="TObject"></typeparam>
+            <param name="objects">The objects to insert.</param>
+            <param name="options">The options.</param>
+            <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch``1(Tortuga.Chain.SqlServer.SqlServerObjectName,System.Collections.Generic.IReadOnlyList{``0},Tortuga.Chain.InsertOptions)">
+            <summary>
+            Inserts the batch of records as one operation.
+            </summary>
+            <typeparam name="TObject"></typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="objects">The objects to insert.</param>
+            <param name="options">The options.</param>
+            <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch``1(System.Collections.Generic.IReadOnlyList{``0},Tortuga.Chain.InsertOptions)">
+            <summary>
+            Inserts the batch of records as one operation.
+            </summary>
+            <typeparam name="TObject"></typeparam>
+            <param name="objects">The objects to insert.</param>
+            <param name="options">The options.</param>
+            <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch``1(System.String,System.Collections.Generic.IReadOnlyList{``0},Tortuga.Chain.InsertOptions)">
+            <summary>
+            Inserts the batch of records as one operation..
+            </summary>
+            <typeparam name="TObject"></typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="objects">The objects.</param>
+            <param name="options">The options.</param>
+            <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
         </member>
         <member name="M:Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Sql(System.String)">
             <summary>

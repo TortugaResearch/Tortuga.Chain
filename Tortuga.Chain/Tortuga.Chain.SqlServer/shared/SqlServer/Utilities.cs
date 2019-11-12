@@ -27,20 +27,22 @@ namespace Tortuga.Chain.SqlServer
         /// <returns></returns>
         public static List<SqlParameter> GetParameters(this SqlBuilder<SqlDbType> sqlBuilder)
         {
-            return sqlBuilder.GetParameters((SqlBuilderEntry<SqlDbType> entry) =>
-            {
-                var result = new SqlParameter();
-                result.ParameterName = entry.Details.SqlVariableName;
-                result.Value = entry.ParameterValue;
+            return sqlBuilder.GetParameters(ParameterBuilderCallback);
+        }
 
-                if (entry.Details.DbType.HasValue)
-                    result.SqlDbType = entry.Details.DbType.Value;
+        public static SqlParameter ParameterBuilderCallback(SqlBuilderEntry<SqlDbType> entry)
+        {
+            var result = new SqlParameter();
+            result.ParameterName = entry.Details.SqlVariableName;
+            result.Value = entry.ParameterValue;
 
-                if (entry.ParameterValue is DbDataReader)
-                    result.SqlDbType = SqlDbType.Structured;
+            if (entry.Details.DbType.HasValue)
+                result.SqlDbType = entry.Details.DbType.Value;
 
-                return result;
-            });
+            if (entry.ParameterValue is DbDataReader)
+                result.SqlDbType = SqlDbType.Structured;
+
+            return result;
         }
 
         /// <summary>

@@ -58,6 +58,7 @@ namespace Tortuga.Chain.SqlServer
         /// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
         [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> InsertBatch<TObject>(string tableName, IEnumerable<TObject> objects, string tableTypeName, InsertOptions options = InsertOptions.None)
+        where TObject : class
         {
             return InsertBatch<TObject>(new SqlServerObjectName(tableName), objects, new SqlServerObjectName(tableTypeName), options);
         }
@@ -72,7 +73,8 @@ namespace Tortuga.Chain.SqlServer
         /// <returns>
         /// MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.
         /// </returns>
-        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> InsertBatch<TObject>(IEnumerable<TObject> objects, string tableTypeName, InsertOptions options = InsertOptions.None) where TObject : class
+        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> InsertBatch<TObject>(IEnumerable<TObject> objects, string tableTypeName, InsertOptions options = InsertOptions.None)
+            where TObject : class
         {
             return InsertBatch<TObject>(objects, new SqlServerObjectName(tableTypeName), options);
         }
