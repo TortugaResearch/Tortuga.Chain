@@ -3,8 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Tests.Models;
 using System.Threading.Tasks;
+using Tests.Models;
 
 #if SQL_SERVER_SDS
 
@@ -21,7 +21,7 @@ namespace Tests.CommandBuilders
     [TestClass]
     public class InsertBulkTests : TestBase
     {
-#if SQL_SERVER_SDS || SQL_SERVER_MDS || MYSQL
+#if SQL_SERVER_SDS || SQL_SERVER_MDS || MYSQL || POSTGRESQL
 
         IEnumerable<Employee> StreamRecords(string key, int maxRecords)
         {
@@ -93,7 +93,7 @@ namespace Tests.CommandBuilders
 
 #if SQL_SERVER_SDS || SQL_SERVER_MDS
                 Assert.AreEqual(-1, count); //streaming prevents returning a row count;
-#elif MYSQL
+#elif MYSQL || POSTGRESQL
                 Assert.AreEqual(1000, count);
 #endif
 
@@ -166,7 +166,7 @@ namespace Tests.CommandBuilders
 
 #if SQL_SERVER_SDS || SQL_SERVER_MDS
                 Assert.AreEqual(-1, count); //streaming prevents returning a row count;
-#elif MYSQL
+#elif MYSQL || POSTGRESQL
                 Assert.AreEqual(1000, count);
 #endif
 

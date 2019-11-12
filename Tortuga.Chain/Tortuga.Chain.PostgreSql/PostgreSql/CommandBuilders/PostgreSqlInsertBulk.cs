@@ -3,6 +3,7 @@ using NpgsqlTypes;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Tortuga.Chain.CommandBuilders;
@@ -98,7 +99,32 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         /// <returns>System.Nullable&lt;System.Int32&gt;.</returns>
         protected override int? Implementation(NpgsqlConnection connection, NpgsqlTransaction? transaction)
         {
-            throw new NotImplementedException();
+            if (connection == null)
+                throw new ArgumentNullException(nameof(connection), $"{nameof(connection)} is null.");
+
+            var rowCount = 0;
+            var columns = SetupColumns();
+            var sql = SetupSql(columns);
+
+            using (var writer = connection.BeginBinaryImport(sql))
+            {
+                while (m_Source.Read())
+                {
+                    writer.StartRow();
+
+                    foreach (var column in columns)
+                    {
+                        if (column.Column.DbType.HasValue)
+                            writer.Write(m_Source.GetValue(column.ColumnIndex), column.Column.DbType.Value);
+                        else
+                            writer.Write(m_Source.GetValue(column.ColumnIndex));
+                    }
+
+                    rowCount++;
+                }
+                writer.Complete();
+            }
+            return rowCount;
         }
 
         /// <summary>
@@ -110,8 +136,62 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         /// <returns>Task&lt;System.Nullable&lt;System.Int32&gt;&gt;.</returns>
         protected override async Task<int?> ImplementationAsync(NpgsqlConnection connection, NpgsqlTransaction? transaction, CancellationToken cancellationToken)
         {
-            await Task.Delay(0).ConfigureAwait(false);
-            throw new NotImplementedException();
+            if (connection == null)
+                throw new ArgumentNullException(nameof(connection), $"{nameof(connection)} is null.");
+
+            var rowCount = 0;
+            var columns = SetupColumns();
+            var sql = SetupSql(columns);
+
+            using (var writer = connection.BeginBinaryImport(sql))
+            {
+                while (m_Source.Read())
+                {
+                    await writer.StartRowAsync(cancellationToken).ConfigureAwait(false);
+
+                    foreach (var column in columns)
+                    {
+                        if (column.Column.DbType.HasValue)
+                            await writer.WriteAsync(m_Source.GetValue(column.ColumnIndex), column.Column.DbType.Value, cancellationToken).ConfigureAwait(false);
+                        else
+                            await writer.WriteAsync(m_Source.GetValue(column.ColumnIndex), cancellationToken).ConfigureAwait(false);
+                    }
+
+                    rowCount++;
+                }
+                await writer.CompleteAsync(cancellationToken).ConfigureAwait(false);
+            }
+            return rowCount;
+        }
+
+        string SetupSql(List<(int ColumnIndex, ColumnMetadata<NpgsqlDbType> Column)> columns)
+        {
+            var columnList = string.Join(",", columns.Select(c => c.Column.QuotedSqlName));
+            return $"copy {m_Table.Name.ToQuotedString() }({columnList}) from STDIN (FORMAT BINARY)";
+        }
+
+        List<(int ColumnIndex, ColumnMetadata<NpgsqlDbType> Column)> SetupColumns()
+        {
+            var mappedColumns = new List<(int ColumnIndex, ColumnMetadata<NpgsqlDbType> Column)>(m_Source.FieldCount);
+
+            for (var i = 0; i < m_Source.FieldCount; i++)
+            {
+                var column = m_Table.Columns.TryGetColumn(m_Source.GetName(i));
+
+                if (column != null)
+                {
+                    if (!column.IsIdentity) //implicitly skip identity columns
+                    {
+                        mappedColumns.Add((i, column));
+                    }
+                }
+                else if (StrictMode)
+                    throw new MappingException($"Could not find column on {m_Table.Name.ToString()} that matches property {m_Source.GetName(i)}");
+            }
+            if (mappedColumns.Count == 0)
+                throw new MappingException($"Could not find any properties that map to columns on the table {m_Table.Name.ToString()}");
+
+            return mappedColumns;
         }
     }
 }

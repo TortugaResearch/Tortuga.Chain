@@ -366,6 +366,62 @@
             This is used by materializers to skip IsNull checks.
             </remarks>
         </member>
+        <member name="T:Tortuga.Chain.PostgreSql.CommandBuilders.PostgreSqlInsertBulk">
+            <summary>
+            This class is used to perform bulk inserts
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.PostgreSql.CommandBuilders.PostgreSqlInsertBulk.WithBatchSize(System.Int32)">
+            <summary>
+            Modifies the batch size.
+            </summary>
+            <param name="batchSize">Size of the batch.</param>
+            <returns>SqlServerInsertBulk.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.PostgreSql.CommandBuilders.PostgreSqlInsertBulk.Prepare">
+            <summary>
+            Prepares the command for execution by generating any necessary SQL.
+            </summary>
+            <returns>ExecutionToken&lt;TCommand&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.PostgreSql.CommandBuilders.PostgreSqlInsertBulk.TryGetColumn(System.String)">
+            <summary>
+            Returns the column associated with the column name.
+            </summary>
+            <param name="columnName">Name of the column.</param>
+            <returns></returns>
+            <remarks>
+            If the column name was not found, this will return null
+            </remarks>
+        </member>
+        <member name="M:Tortuga.Chain.PostgreSql.CommandBuilders.PostgreSqlInsertBulk.TryGetNonNullableColumns">
+            <summary>
+            Returns a list of columns known to be non-nullable.
+            </summary>
+            <returns>
+            If the command builder doesn't know which columns are non-nullable, an empty list will be returned.
+            </returns>
+            <remarks>
+            This is used by materializers to skip IsNull checks.
+            </remarks>
+        </member>
+        <member name="M:Tortuga.Chain.PostgreSql.CommandBuilders.PostgreSqlInsertBulk.Implementation(Npgsql.NpgsqlConnection,Npgsql.NpgsqlTransaction)">
+            <summary>
+            Implementation the specified operation.
+            </summary>
+            <param name="connection">The connection.</param>
+            <param name="transaction">The transaction.</param>
+            <returns>System.Nullable&lt;System.Int32&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.PostgreSql.CommandBuilders.PostgreSqlInsertBulk.ImplementationAsync(Npgsql.NpgsqlConnection,Npgsql.NpgsqlTransaction,System.Threading.CancellationToken)">
+            <summary>
+            Implementation the specified operation.
+            </summary>
+            <param name="connection">The connection.</param>
+            <param name="transaction">The transaction.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>Task&lt;System.Nullable&lt;System.Int32&gt;&gt;.</returns>
+        </member>
         <member name="T:Tortuga.Chain.PostgreSql.CommandBuilders.PostgreSqlInsertObject`1">
             <summary>
             Class that represents a PostgreSql Insert.
@@ -971,6 +1027,86 @@
             <param name="options">Update options.</param>
             <returns>MultipleRowDbCommandBuilder&lt;NpgsqlCommand, NpgsqlParameter&gt;.</returns>
             <exception cref="T:Tortuga.Chain.MappingException"></exception>
+        </member>
+        <member name="M:Tortuga.Chain.PostgreSql.PostgreSqlDataSourceBase.InsertBulk(Tortuga.Chain.PostgreSql.PostgreSqlObjectName,System.Data.DataTable)">
+            <summary>
+            Inserts the batch of records using bulk insert.
+            </summary>
+            <param name="tableName">Name of the table.</param>
+            <param name="dataTable">The data table.</param>
+            <returns>PostgreSqlInsertBulk.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.PostgreSql.PostgreSqlDataSourceBase.InsertBulk(Tortuga.Chain.PostgreSql.PostgreSqlObjectName,System.Data.IDataReader)">
+            <summary>
+            Inserts the batch of records using bulk insert.
+            </summary>
+            <param name="tableName">Name of the table.</param>
+            <param name="dataReader">The data reader.</param>
+            <returns>PostgreSqlInsertBulk.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.PostgreSql.PostgreSqlDataSourceBase.InsertBulk``1(Tortuga.Chain.PostgreSql.PostgreSqlObjectName,System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Inserts the batch of records using bulk insert.
+            </summary>
+            <typeparam name="TObject"></typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="objects">The objects.</param>
+            <returns>PostgreSqlInsertBulk.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.PostgreSql.PostgreSqlDataSourceBase.InsertBulk``1(System.Data.DataTable)">
+            <summary>
+            Inserts the batch of records using bulk insert.
+            </summary>
+            <typeparam name="TObject">The type of the object.</typeparam>
+            <param name="dataTable">The data table.</param>
+            <returns>
+            PostgreSqlInsertBulk.
+            </returns>
+        </member>
+        <member name="M:Tortuga.Chain.PostgreSql.PostgreSqlDataSourceBase.InsertBulk``1(System.Data.IDataReader)">
+            <summary>
+            Inserts the batch of records using bulk insert.
+            </summary>
+            <typeparam name="TObject">The type of the object.</typeparam>
+            <param name="dataReader">The data reader.</param>
+            <returns>
+            PostgreSqlInsertBulk.
+            </returns>
+        </member>
+        <member name="M:Tortuga.Chain.PostgreSql.PostgreSqlDataSourceBase.InsertBulk``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Inserts the batch of records using bulk insert.
+            </summary>
+            <typeparam name="TObject">The type of the object.</typeparam>
+            <param name="objects">The objects.</param>
+            <returns>
+            PostgreSqlInsertBulk.
+            </returns>
+        </member>
+        <member name="M:Tortuga.Chain.PostgreSql.PostgreSqlDataSourceBase.InsertBulk(System.String,System.Data.DataTable)">
+            <summary>
+            Inserts the batch of records using bulk insert.
+            </summary>
+            <param name="tableName">Name of the table.</param>
+            <param name="dataTable">The data table.</param>
+            <returns>PostgreSqlInsertBulk.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.PostgreSql.PostgreSqlDataSourceBase.InsertBulk(System.String,System.Data.IDataReader)">
+            <summary>
+            Inserts the batch of records using bulk insert.
+            </summary>
+            <param name="tableName">Name of the table.</param>
+            <param name="dataReader">The data reader.</param>
+            <returns>PostgreSqlInsertBulk.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.PostgreSql.PostgreSqlDataSourceBase.InsertBulk``1(System.String,System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Inserts the batch of records using bulk insert.
+            </summary>
+            <typeparam name="TObject"></typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="objects">The objects.</param>
+            <returns>PostgreSqlInsertBulk.</returns>
         </member>
         <member name="M:Tortuga.Chain.PostgreSql.PostgreSqlDataSourceBase.#ctor(Tortuga.Chain.DataSources.DataSourceSettings)">
             <summary>
