@@ -318,7 +318,7 @@ namespace Tortuga.Chain
         /// <remarks>
         /// This is used in conjunction with audit rules.
         /// </remarks>
-        public AccessDataSource WithUser(object userValue)
+        public AccessDataSource WithUser(object? userValue)
         {
             var result = WithSettings(null);
             result.UserValue = userValue;
