@@ -44,6 +44,7 @@ using AbstractCommand = Npgsql.NpgsqlCommand;
 using AbstractParameter = Npgsql.NpgsqlParameter;
 using AbstractObjectName = Tortuga.Chain.PostgreSql.PostgreSqlObjectName;
 using AbstractLimitOption = Tortuga.Chain.PostgreSqlLimitOption;
+using InsertBatchResult = Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter>;
 
 #elif ACCESS
 
@@ -92,7 +93,7 @@ namespace Tortuga.Chain.Access
 
 #endif
     {
-#if !SQL_SERVER_OLEDB && !ACCESS && !POSTGRESQL && !MYSQL
+#if !SQL_SERVER_OLEDB && !ACCESS && !MYSQL
 
         /// <summary>
         /// Inserts the batch of records as one operation..
