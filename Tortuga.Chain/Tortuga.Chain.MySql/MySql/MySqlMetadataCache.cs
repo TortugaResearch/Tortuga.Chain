@@ -815,6 +815,13 @@ namespace Tortuga.Chain.MySql
             return new MySqlTableOrViewMetadata(this, new MySqlObjectName(actualSchemaName, actualTableName), isTable, columns, engine);
         }
 
+        /// <summary>
+        /// Gets the maximum number of parameters in a single SQL batch.
+        /// </summary>
+        /// <value>The maximum number of parameters.</value>
+        /// <remarks>https://stackoverflow.com/a/6582902/5274</remarks>
+        public override int? MaxParameters => 65535;
+
         class IndexTemp
         {
             public string? Collation { get; set; }

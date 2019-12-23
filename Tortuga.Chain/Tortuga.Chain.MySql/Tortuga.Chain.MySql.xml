@@ -1703,6 +1703,13 @@
             <param name="tableName">Name of the table.</param>
             <remarks>WARNING: Only call this with verified table names. Otherwise a SQL injection attack can occur.</remarks>
         </member>
+        <member name="P:Tortuga.Chain.MySql.MySqlMetadataCache.MaxParameters">
+            <summary>
+            Gets the maximum number of parameters in a single SQL batch.
+            </summary>
+            <value>The maximum number of parameters.</value>
+            <remarks>https://stackoverflow.com/a/6582902/5274</remarks>
+        </member>
         <member name="T:Tortuga.Chain.MySql.MySqlObjectName">
             <summary>
             Represents an object in MySql (e.g. table, view, procedure)

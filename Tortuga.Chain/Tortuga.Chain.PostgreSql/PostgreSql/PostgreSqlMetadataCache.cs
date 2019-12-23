@@ -1211,5 +1211,12 @@ where s.relkind='S' and d.deptype='a'";
 
             throw new MissingObjectException($"Could not find table or view {tableName}");
         }
+
+        /// <summary>
+        /// Gets the maximum number of parameters in a single SQL batch.
+        /// </summary>
+        /// <value>The maximum number of parameters.</value>
+        /// <remarks>https://stackoverflow.com/a/6582902/5274</remarks>
+        public override int? MaxParameters => 34464;
     }
 }

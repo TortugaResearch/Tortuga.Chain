@@ -1914,6 +1914,13 @@
             <param name="tableName">Name of the table.</param>
             <exception cref="T:Tortuga.Chain.MissingObjectException">Could not find table or view {tableName}</exception>
         </member>
+        <member name="P:Tortuga.Chain.PostgreSql.PostgreSqlMetadataCache.MaxParameters">
+            <summary>
+            Gets the maximum number of parameters in a single SQL batch.
+            </summary>
+            <value>The maximum number of parameters.</value>
+            <remarks>https://stackoverflow.com/a/6582902/5274</remarks>
+        </member>
         <member name="T:Tortuga.Chain.PostgreSql.PostgreSqlObjectName">
             <summary>
             Represents an object in PostgreSql (e.g. table, view, procedure)
