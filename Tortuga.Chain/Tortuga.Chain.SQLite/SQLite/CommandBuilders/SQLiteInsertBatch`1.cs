@@ -1,36 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SQLite;
+using System.Linq;
 using System.Text;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
 using Tortuga.Chain.Metadata;
-using System.Linq;
 
-#if SQL_SERVER_SDS
-
-using System.Data.SqlClient;
-
-#elif SQL_SERVER_MDS
-
-using Microsoft.Data.SqlClient;
-
-#endif
-
-namespace Tortuga.Chain.SqlServer.CommandBuilders
+namespace Tortuga.Chain.SQLite.CommandBuilders
 {
     /// <summary>
-    /// Class SqlServerInsertBatchTable is when using a values clause with an array of rows.
+    /// Class SQLiteInsertBatchTable is when using a values clause with an array of rows.
     /// </summary>
-    internal class SqlServerInsertBatch<TObject> : MultipleRowDbCommandBuilder<SqlCommand, SqlParameter>
+    internal class SQLiteInsertBatch<TObject> : DbCommandBuilder<SQLiteCommand, SQLiteParameter>
         where TObject : class
     {
         readonly InsertOptions m_Options;
         readonly IReadOnlyList<TObject> m_SourceList;
-        readonly TableOrViewMetadata<SqlServerObjectName, SqlDbType> m_Table;
+        readonly TableOrViewMetadata<SQLiteObjectName, DbType> m_Table;
 
-        public SqlServerInsertBatch(SqlServerDataSourceBase dataSource, SqlServerObjectName tableName, IReadOnlyList<TObject> objects, InsertOptions options) : base(dataSource)
+        public SQLiteInsertBatch(SQLiteDataSourceBase dataSource, SQLiteObjectName tableName, IReadOnlyList<TObject> objects, InsertOptions options) : base(dataSource)
         {
             if (dataSource == null)
                 throw new ArgumentNullException(nameof(dataSource), $"{nameof(dataSource)} is null.");
@@ -38,15 +29,12 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             if (objects == null || objects.Count == 0)
                 throw new ArgumentException($"{nameof(objects)} is null or empty.", nameof(objects));
 
-            if (objects.Count > 1000)
-                throw new ArgumentException($"{nameof(objects)}.Count exceeds SQL Server's row count limit of 1000. Supply a table type, break the call into batches of 1000, use InsertMultipleBatch, or use BulkInsert.", nameof(objects));
-
             m_SourceList = objects;
             m_Options = options;
             m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
         }
 
-        public override CommandExecutionToken<SqlCommand, SqlParameter> Prepare(Materializer<SqlCommand, SqlParameter> materializer)
+        public override CommandExecutionToken<SQLiteCommand, SQLiteParameter> Prepare(Materializer<SQLiteCommand, SQLiteParameter> materializer)
         {
             if (materializer == null)
                 throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
@@ -60,14 +48,11 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             var sql = new StringBuilder();
 
             bool identityInsert = m_Options.HasFlag(InsertOptions.IdentityInsert);
-            if (identityInsert)
-                sql.AppendLine($"SET IDENTITY_INSERT {m_Table.Name.ToQuotedString()} ON;");
 
             sqlBuilder.BuildInsertClause(sql, $"INSERT INTO {m_Table.Name.ToQuotedString()} (", null, ")", identityInsert);
-            sqlBuilder.BuildSelectClause(sql, " OUTPUT ", "Inserted.", null);
             sql.AppendLine("VALUES");
 
-            var parameters = new List<SqlParameter>();
+            var parameters = new List<SQLiteParameter>();
             for (var i = 0; i < m_SourceList.Count; i++)
             {
                 var parameterSuffix = "_" + i;
@@ -82,13 +67,10 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             {
                 var parametersPerRow = parameters.Count / m_SourceList.Count;
                 var maxRows = maxParams / parametersPerRow;
-                throw new InvalidOperationException($"Batch insert exceeds SQL Server's parameter limit of {DataSource.DatabaseMetadata.MaxParameters}. Supply a table type, break the call into batches of {maxRows}, use InsertMultipleBatch, or use BulkInsert");
+                throw new InvalidOperationException($"Batch insert exceeds SQLite's parameter limit of {DataSource.DatabaseMetadata.MaxParameters}. Break the call into batches of {maxRows} or use InsertMultipleBatch");
             }
 
-            if (identityInsert)
-                sql.AppendLine($"SET IDENTITY_INSERT {m_Table.Name.ToQuotedString()} OFF;");
-
-            return new SqlServerCommandExecutionToken(DataSource, "Insert batch into " + m_Table.Name, sql.ToString(), parameters);
+            return new SQLiteCommandExecutionToken(DataSource, "Insert batch into " + m_Table.Name, sql.ToString(), parameters);
         }
 
         /// <summary>

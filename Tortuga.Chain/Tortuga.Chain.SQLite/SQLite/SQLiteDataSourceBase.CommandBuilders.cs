@@ -194,5 +194,11 @@ namespace Tortuga.Chain.SQLite
         {
             return new SQLiteUpdateObject<TArgument>(this, tableName, argumentValue, options);
         }
+
+        DbCommandBuilder<SQLiteCommand, SQLiteParameter> OnInsertBatch<TObject>(SQLiteObjectName tableName, IReadOnlyList<TObject> objects, InsertOptions options)
+            where TObject : class
+        {
+            return new SQLiteInsertBatch<TObject>(this, tableName, objects, options);
+        }
     }
 }

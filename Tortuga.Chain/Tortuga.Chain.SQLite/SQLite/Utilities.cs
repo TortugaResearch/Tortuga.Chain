@@ -14,17 +14,19 @@ namespace Tortuga.Chain.SQLite
         /// <returns></returns>
         public static List<SQLiteParameter> GetParameters(this SqlBuilder<DbType> sqlBuilder)
         {
-            return sqlBuilder.GetParameters((SqlBuilderEntry<DbType> entry) =>
-            {
-                var result = new SQLiteParameter();
-                result.ParameterName = entry.Details.SqlVariableName;
-                result.Value = entry.ParameterValue;
+            return sqlBuilder.GetParameters(ParameterBuilderCallback);
+        }
 
-                if (entry.Details.DbType.HasValue)
-                    result.DbType = entry.Details.DbType.Value;
+        public static SQLiteParameter ParameterBuilderCallback(SqlBuilderEntry<DbType> entry)
+        {
+            var result = new SQLiteParameter();
+            result.ParameterName = entry.Details.SqlVariableName;
+            result.Value = entry.ParameterValue;
 
-                return result;
-            });
+            if (entry.Details.DbType.HasValue)
+                result.DbType = entry.Details.DbType.Value;
+
+            return result;
         }
     }
 }
