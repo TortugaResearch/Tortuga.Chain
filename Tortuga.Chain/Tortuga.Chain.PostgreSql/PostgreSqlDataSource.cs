@@ -313,7 +313,7 @@ namespace Tortuga.Chain
         /// <remarks>
         /// This is used in conjunction with audit rules.
         /// </remarks>
-        public PostgreSqlDataSource WithUser(object userValue)
+        public PostgreSqlDataSource WithUser(object? userValue)
         {
             var result = WithSettings(null);
             result.UserValue = userValue;

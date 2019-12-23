@@ -168,7 +168,7 @@ namespace Tortuga.Chain.SqlServer
         /// <remarks>
         /// This is used in conjunction with audit rules.
         /// </remarks>
-        public OleDbSqlServerOpenDataSource WithUser(object userValue)
+        public OleDbSqlServerOpenDataSource WithUser(object? userValue)
         {
             UserValue = userValue;
             return this;

@@ -381,7 +381,7 @@ namespace Tortuga.Chain
         /// <remarks>
         /// This is used in conjunction with audit rules.
         /// </remarks>
-        public SQLiteDataSource WithUser(object userValue)
+        public SQLiteDataSource WithUser(object? userValue)
         {
             var result = WithSettings(null);
             result.UserValue = userValue;
