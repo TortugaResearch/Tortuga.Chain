@@ -115,7 +115,7 @@ namespace Tortuga.Chain.Materializers
             {
                 if (meta.Properties.TryGetValue(propertyName, out var property))
                 {
-                    if (property!.MappedColumnName != null) //Note: the ! won't be needed in Anchor 3.1
+                    if (property.MappedColumnName != null)
                         result.Add(property.MappedColumnName);
                 }
             }
@@ -317,7 +317,7 @@ namespace Tortuga.Chain.Materializers
             {
                 if (meta.Properties.TryGetValue(propertyName, out var property))
                 {
-                    if (property!.MappedColumnName != null) //Note: the ! won't be needed in Anchor 3.1
+                    if (property.MappedColumnName != null)
                         result.Add(property.MappedColumnName);
                 }
             }
