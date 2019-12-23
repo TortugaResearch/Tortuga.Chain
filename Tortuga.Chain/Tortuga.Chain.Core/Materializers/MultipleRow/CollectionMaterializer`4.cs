@@ -15,7 +15,7 @@ namespace Tortuga.Chain.Materializers
     /// <typeparam name="TParameter">The type of the t parameter type.</typeparam>
     /// <typeparam name="TObject">The type of the object returned.</typeparam>
     /// <typeparam name="TCollection">The type of the collection.</typeparam>
-    /// <seealso cref="Materializer{TCommand, TParameter, TCollection}" />
+    /// <seealso cref="Materializer{TCommand, TParameter, TCollection}"/>
     [SuppressMessage("Microsoft.Design", "CA1005:AvoidExcessiveParametersOnGenericTypes")]
     internal sealed class CollectionMaterializer<TCommand, TParameter, TObject, TCollection> : ConstructibleMaterializer<TCommand, TParameter, TCollection, TObject>
         where TCommand : DbCommand
@@ -26,7 +26,8 @@ namespace Tortuga.Chain.Materializers
         readonly CollectionOptions m_CollectionOptions;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CollectionMaterializer{TCommand, TParameter, TObject, TCollection}"/> class.
+        /// Initializes a new instance of the <see cref="CollectionMaterializer{TCommand,
+        /// TParameter, TObject, TCollection}"/> class.
         /// </summary>
         /// <param name="commandBuilder">The associated operation.</param>
         /// <param name="collectionOptions">The collection options.</param>
@@ -44,27 +45,6 @@ namespace Tortuga.Chain.Materializers
                     throw new MappingException($"Type {typeof(TObject).Name} has more than one non-default constructor. Please use the WithConstructor method to specify which one to use.");
                 ConstructorSignature = constructors[0].Signature;
             }
-        }
-
-        /// <summary>
-        /// Returns the list of columns the materializer would like to have.
-        /// </summary>
-        /// <returns></returns>
-        public override IReadOnlyList<string> DesiredColumns()
-        {
-            if (ConstructorSignature == null)
-                return ObjectMetadata.ColumnsFor;
-
-            var desiredType = typeof(TObject);
-            var constructor = ObjectMetadata.Constructors.Find(ConstructorSignature);
-
-            if (constructor == null)
-            {
-                var types = string.Join(", ", ConstructorSignature.Select(t => t.Name));
-                throw new MappingException($"Cannot find a constructor on {desiredType.Name} with the types [{types}]");
-            }
-
-            return constructor.ParameterNames;
         }
 
         /// <summary>
