@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
@@ -9,7 +8,6 @@ using Tortuga.Chain.AuditRules;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Metadata;
 using Tortuga.Chain.SqlServer.CommandBuilders;
-using Tortuga.Chain.Materializers;
 
 #if SQL_SERVER_SDS
 
@@ -161,8 +159,8 @@ namespace Tortuga.Chain.SqlServer
         [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         public SqlServerInsertBulk InsertBulk<TObject>(SqlServerObjectName tableName, IEnumerable<TObject> objects, SqlBulkCopyOptions options = SqlBulkCopyOptions.Default) where TObject : class
         {
-            var tableType = DatabaseMetadata.GetTableOrView(tableName);
-            return new SqlServerInsertBulk(this, tableName, new ObjectDataReader<TObject>(tableType, objects, OperationTypes.Insert), options);
+            var table = DatabaseMetadata.GetTableOrView(tableName);
+            return new SqlServerInsertBulk(this, tableName, new ObjectDataReader<TObject>(table, objects, OperationTypes.Insert), options);
         }
 
         /// <summary>
