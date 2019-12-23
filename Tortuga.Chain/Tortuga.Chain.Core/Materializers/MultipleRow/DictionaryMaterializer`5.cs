@@ -16,7 +16,7 @@ namespace Tortuga.Chain.Materializers
     /// <typeparam name="TKey">The type of the key.</typeparam>
     /// <typeparam name="TObject">The type of the object.</typeparam>
     /// <typeparam name="TDictionary">The type of the dictionary.</typeparam>
-    /// <seealso cref="Materializer{TCommand, TParameter, TDictionary}" />
+    /// <seealso cref="Materializer{TCommand, TParameter, TDictionary}"/>
     internal class DictionaryMaterializer<TCommand, TParameter, TKey, TObject, TDictionary> : ConstructibleMaterializer<TCommand, TParameter, TDictionary, TObject>
         where TCommand : DbCommand
         where TParameter : DbParameter
@@ -57,27 +57,6 @@ namespace Tortuga.Chain.Materializers
                     throw new MappingException($"Type {typeof(TObject).Name} has more than one non-default constructor. Please use the WithConstructor method to specify which one to use.");
                 ConstructorSignature = constructors[0].Signature;
             }
-        }
-
-        /// <summary>
-        /// Returns the list of columns the materializer would like to have.
-        /// </summary>
-        /// <returns></returns>
-        public override IReadOnlyList<string> DesiredColumns()
-        {
-            if (ConstructorSignature == null)
-                return ObjectMetadata.ColumnsFor;
-
-            var desiredType = typeof(TObject);
-            var constructor = ObjectMetadata.Constructors.Find(ConstructorSignature);
-
-            if (constructor == null)
-            {
-                var types = string.Join(", ", ConstructorSignature.Select(t => t.Name));
-                throw new MappingException($"Cannot find a constructor on {desiredType.Name} with the types [{types}]");
-            }
-
-            return constructor.ParameterNames;
         }
 
         public override TDictionary Execute(object? state = null)
