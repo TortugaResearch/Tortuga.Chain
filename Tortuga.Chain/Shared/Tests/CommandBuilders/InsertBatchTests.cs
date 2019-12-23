@@ -12,7 +12,7 @@ namespace Tests.CommandBuilders
     {
         const string TableType = "HR.EmployeeTable";
 
-#if SQL_SERVER_SDS || SQL_SERVER_MDS || SQLITE || POSTGRESQL
+#if SQL_SERVER_SDS || SQL_SERVER_MDS || SQLITE || POSTGRESQL || MYSQL
 
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
         public void InsertMultipleBatch(string dataSourceName, DataSourceType mode)
@@ -41,7 +41,7 @@ namespace Tests.CommandBuilders
 
 #endif
 
-#if SQL_SERVER_SDS || SQL_SERVER_MDS || SQLITE
+#if SQL_SERVER_SDS || SQL_SERVER_MDS || SQLITE || MYSQL
 
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
         public void InsertBatch_IdentityInsert(string dataSourceName, DataSourceType mode)
