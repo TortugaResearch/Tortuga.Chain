@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Common;
-using System.Diagnostics.CodeAnalysis;
 using System.Text;
-using Tortuga.Chain.AuditRules;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
 using Tortuga.Chain.Metadata;
+using System.Linq;
 
 #if SQL_SERVER_SDS
 
@@ -22,29 +20,48 @@ using Microsoft.Data.SqlClient;
 
 namespace Tortuga.Chain.SqlServer.CommandBuilders
 {
-    internal class SqlServerInsertBatch : MultipleRowDbCommandBuilder<SqlCommand, SqlParameter>
+    /// <summary>
+    /// Class SqlServerInsertBatchTable is when using a values clause with an array of rows.
+    /// </summary>
+    internal class SqlServerInsertBatch<TObject> : MultipleRowDbCommandBuilder<SqlCommand, SqlParameter>
+        where TObject : class
     {
-        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields", Justification = "For future use")]
         readonly InsertOptions m_Options;
-
-        readonly object m_Source;
+        readonly IReadOnlyList<TObject> m_SourceList;
         readonly TableOrViewMetadata<SqlServerObjectName, SqlDbType> m_Table;
-        readonly UserDefinedTableTypeMetadata<SqlServerObjectName, SqlDbType> m_TableType;
 
-        public SqlServerInsertBatch(SqlServerDataSourceBase dataSource, SqlServerObjectName tableName, DataTable dataTable, SqlServerObjectName tableTypeName, InsertOptions options) : base(dataSource)
+        public SqlServerInsertBatch(SqlServerDataSourceBase dataSource, SqlServerObjectName tableName, IReadOnlyList<TObject> objects, InsertOptions options) : base(dataSource)
         {
-            m_Source = dataTable;
+            if (dataSource == null)
+                throw new ArgumentNullException(nameof(dataSource), $"{nameof(dataSource)} is null.");
+
+            if (objects == null || objects.Count == 0)
+                throw new ArgumentException($"{nameof(objects)} is null or empty.", nameof(objects));
+
+            if (objects.Count > 1000)
+                throw new ArgumentException($"{nameof(objects)}.Count exceeds SQL Server's row count limit of 1000. Supply a table type, break the call into batches of 1000, use InsertMultipleBatch, or use BulkInsert.", nameof(objects));
+
+            m_SourceList = objects;
             m_Options = options;
             m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
-            m_TableType = dataSource.DatabaseMetadata.GetUserDefinedTableType(tableTypeName);
         }
 
-        public SqlServerInsertBatch(SqlServerDataSourceBase dataSource, SqlServerObjectName tableName, DbDataReader dataReader, SqlServerObjectName tableTypeName, InsertOptions options) : base(dataSource)
+        public static int MaxObjectsPerBatch(SqlServerDataSourceBase dataSource, SqlServerObjectName tableName, TObject sampleObject, InsertOptions options)
         {
-            m_Source = dataReader;
-            m_Options = options;
-            m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
-            m_TableType = dataSource.DatabaseMetadata.GetUserDefinedTableType(tableTypeName);
+            var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
+            var sqlBuilder = table.CreateSqlBuilder(false);
+            sqlBuilder.ApplyDesiredColumns(Materializer.NoColumns);
+            sqlBuilder.ApplyArgumentValue(dataSource, sampleObject, options);
+            sqlBuilder.GetInsertColumns(options.HasFlag(InsertOptions.IdentityInsert)).ToList(); //Call ToList to trigger needed side-effects
+
+            var parametersPerRow = sqlBuilder.GetParameters().Count;
+
+            //Max parameter count is advertised as 2100, but really it is lower.
+            var maxParams = dataSource.DatabaseMetadata.MaxParameters!.Value - 1;
+
+            //Max rows per VALUES clause is 1000.
+            var maxRows = Math.Min(1000, maxParams / parametersPerRow);
+            return maxRows;
         }
 
         public override CommandExecutionToken<SqlCommand, SqlParameter> Prepare(Materializer<SqlCommand, SqlParameter> materializer)
@@ -53,8 +70,10 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
                 throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
 
             var sqlBuilder = m_Table.CreateSqlBuilder(StrictMode);
-            sqlBuilder.ApplyTableType(DataSource, OperationTypes.Insert, m_TableType.Columns);
             sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
+
+            //This sets up the sqlBuilder. We're not actually going to build the parameters now
+            sqlBuilder.ApplyArgumentValue(DataSource, m_SourceList[0], m_Options);
 
             var sql = new StringBuilder();
 
@@ -64,20 +83,30 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 
             sqlBuilder.BuildInsertClause(sql, $"INSERT INTO {m_Table.Name.ToQuotedString()} (", null, ")", identityInsert);
             sqlBuilder.BuildSelectClause(sql, " OUTPUT ", "Inserted.", null);
-            sqlBuilder.BuildSelectTvpForInsertClause(sql, " SELECT ", null, " FROM @ValuesParameter ", identityInsert);
-            sql.Append(";");
+            sql.AppendLine("VALUES");
+
+            var parameters = new List<SqlParameter>();
+            for (var i = 0; i < m_SourceList.Count; i++)
+            {
+                var parameterSuffix = "_" + i;
+                var footer = (i == m_SourceList.Count - 1) ? ");" : "),";
+
+                sqlBuilder.OverrideArgumentValue(DataSource, AuditRules.OperationTypes.Insert, m_SourceList[i]);
+                sqlBuilder.BuildValuesClause(sql, "(", footer, identityInsert, parameterSuffix, parameters, Utilities.ParameterBuilderCallback);
+            }
+
+            var maxParams = DataSource.DatabaseMetadata.MaxParameters!.Value - 1;
+            //Max parameter count is advertised as 2100, but really it is lower.
+            if (parameters.Count > maxParams)
+            {
+                var parametersPerRow = parameters.Count / m_SourceList.Count;
+                var maxRows = maxParams / parametersPerRow;
+                throw new InvalidOperationException($"Batch insert exceeds SQL Server's parameter limit of {DataSource.DatabaseMetadata.MaxParameters}. Supply a table type, break the call into batches of {maxRows}, use InsertMultipleBatch, or use BulkInsert");
+            }
 
             if (identityInsert)
                 sql.AppendLine($"SET IDENTITY_INSERT {m_Table.Name.ToQuotedString()} OFF;");
 
-            var parameters = sqlBuilder.GetParameters();
-            parameters.Add(new SqlParameter()
-            {
-                ParameterName = "@ValuesParameter",
-                Value = m_Source,
-                SqlDbType = SqlDbType.Structured,
-                TypeName = m_TableType.Name.ToQuotedString()
-            });
             return new SqlServerCommandExecutionToken(DataSource, "Insert batch into " + m_Table.Name, sql.ToString(), parameters);
         }
 

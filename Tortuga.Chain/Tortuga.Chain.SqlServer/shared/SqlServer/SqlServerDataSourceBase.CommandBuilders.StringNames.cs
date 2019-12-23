@@ -58,6 +58,7 @@ namespace Tortuga.Chain.SqlServer
         /// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
         [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> InsertBatch<TObject>(string tableName, IEnumerable<TObject> objects, string tableTypeName, InsertOptions options = InsertOptions.None)
+        where TObject : class
         {
             return InsertBatch<TObject>(new SqlServerObjectName(tableName), objects, new SqlServerObjectName(tableTypeName), options);
         }
@@ -72,9 +73,24 @@ namespace Tortuga.Chain.SqlServer
         /// <returns>
         /// MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.
         /// </returns>
-        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> InsertBatch<TObject>(IEnumerable<TObject> objects, string tableTypeName, InsertOptions options = InsertOptions.None) where TObject : class
+        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> InsertBatch<TObject>(IEnumerable<TObject> objects, string tableTypeName, InsertOptions options = InsertOptions.None)
+            where TObject : class
         {
             return InsertBatch<TObject>(objects, new SqlServerObjectName(tableTypeName), options);
+        }
+
+        /// <summary>
+        /// Inserts the batch of records as one operation..
+        /// </summary>
+        /// <typeparam name="TObject"></typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="objects">The objects.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
+        public MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> InsertBatch<TObject>(string tableName, IReadOnlyList<TObject> objects, InsertOptions options = InsertOptions.None)
+        where TObject : class
+        {
+            return InsertBatch<TObject>(new SqlServerObjectName(tableName), objects, options);
         }
 
         /// <summary>
@@ -113,6 +129,21 @@ namespace Tortuga.Chain.SqlServer
         public SqlServerInsertBulk InsertBulk<TObject>(string tableName, IEnumerable<TObject> objects, SqlBulkCopyOptions options = SqlBulkCopyOptions.Default) where TObject : class
         {
             return InsertBulk<TObject>(new SqlServerObjectName(tableName), objects, options);
+        }
+
+        /// <summary>
+        /// Performs a series of batch inserts.
+        /// </summary>
+        /// <typeparam name="TObject">The type of the t object.</typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="objects">The objects.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>Tortuga.Chain.ILink&lt;System.Int32&gt;.</returns>
+        /// <remarks>This operation is not atomic. It should be wrapped in a transaction.</remarks>
+        public ILink<int> InsertMultipleBatch<TObject>(string tableName, IReadOnlyList<TObject> objects, InsertOptions options = InsertOptions.None)
+                where TObject : class
+        {
+            return InsertMultipleBatch<TObject>(new SqlServerObjectName(tableName), objects, options);
         }
     }
 }

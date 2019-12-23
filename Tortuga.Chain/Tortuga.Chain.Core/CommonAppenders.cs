@@ -222,6 +222,16 @@ namespace Tortuga.Chain
         }
 
         /// <summary>
+        /// Ensures that a null will never be returned.
+        /// </summary>
+        /// <param name="previousLink">The previous link.</param>
+        /// <remarks>If the previous link returns a null, an exception is thrown instead.</remarks>
+        public static ILink<TResult> NeverNull<TResult>(this ILink<TResult?> previousLink) where TResult : struct
+        {
+            return new ValueNonNullLink<TResult>(previousLink);
+        }
+
+        /// <summary>
         /// Reads the cache. If the value isn't found, the execute the previous link and cache the result.
         /// </summary>
         /// <param name="previousLink">The previous link.</param>

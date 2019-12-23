@@ -126,9 +126,9 @@ namespace Tortuga.Chain.AuditRules
                 (c.ColumnName.Equals(sqlName, StringComparison.OrdinalIgnoreCase) || c.ColumnName.Equals(clrName, StringComparison.OrdinalIgnoreCase)));
         }
 
-        internal IEnumerable<ColumnRule> GetRulesForColumn(string? sqlName, string? clrName, OperationTypes appliesWhen)
+        internal IEnumerable<ColumnRule> GetRulesForColumn(string? sqlName, string? clrName, OperationTypes filterByOperationType)
         {
-            return m_List.OfType<ColumnRule>().Where(c => (c.AppliesWhen & appliesWhen) > 0 && (c.ColumnName.Equals(sqlName, StringComparison.OrdinalIgnoreCase) || c.ColumnName.Equals(clrName, StringComparison.OrdinalIgnoreCase)));
+            return m_List.OfType<ColumnRule>().Where(c => (c.AppliesWhen & filterByOperationType) > 0 && (c.ColumnName.Equals(sqlName, StringComparison.OrdinalIgnoreCase) || c.ColumnName.Equals(clrName, StringComparison.OrdinalIgnoreCase)));
         }
     }
 }

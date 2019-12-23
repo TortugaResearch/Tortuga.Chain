@@ -23,6 +23,12 @@ namespace Tortuga.Chain.Metadata
         readonly ConcurrentDictionary<string, TypeRegistration<TDbType>> m_RegisteredTypes = new ConcurrentDictionary<string, TypeRegistration<TDbType>>(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
+        /// Gets the maximum number of parameters in a single SQL batch.
+        /// </summary>
+        /// <value>The maximum number of parameters.</value>
+        public virtual int? MaxParameters => null;
+
+        /// <summary>
         /// Gets the server version number.
         /// </summary>
         public virtual Version? ServerVersion => null;

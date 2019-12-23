@@ -335,5 +335,12 @@ namespace Tortuga.Chain.SqlServer
         {
             return GetTableOrView(tableName);
         }
+
+        /// <summary>
+        /// Gets the maximum number of parameters in a single SQL batch.
+        /// </summary>
+        /// <value>The maximum number of parameters.</value>
+        /// <remarks>https://docs.microsoft.com/en-us/sql/sql-server/maximum-capacity-specifications-for-sql-server?view=sql-server-ver15</remarks>
+        public override int? MaxParameters => 2100;
     }
 }
