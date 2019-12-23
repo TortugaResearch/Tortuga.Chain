@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Tortuga.Anchor;
 using Tortuga.Chain.CommandBuilders;
+using Tortuga.Chain.Materializers;
 using Tortuga.Chain.Metadata;
 using Tortuga.Chain.SQLite.CommandBuilders;
 
@@ -193,6 +195,30 @@ namespace Tortuga.Chain.SQLite
         ObjectDbCommandBuilder<SQLiteCommand, SQLiteParameter, TArgument> OnUpdateObject<TArgument>(SQLiteObjectName tableName, TArgument argumentValue, UpdateOptions options) where TArgument : class
         {
             return new SQLiteUpdateObject<TArgument>(this, tableName, argumentValue, options);
+        }
+
+        DbCommandBuilder<SQLiteCommand, SQLiteParameter> OnInsertBatch<TObject>(SQLiteObjectName tableName, IReadOnlyList<TObject> objects, InsertOptions options)
+            where TObject : class
+        {
+            return new SQLiteInsertBatch<TObject>(this, tableName, objects, options);
+        }
+
+        int MaxObjectsPerBatch<TObject>(SQLiteObjectName tableName, TObject sampleObject, InsertOptions options)
+            where TObject : class
+        {
+            var table = DatabaseMetadata.GetTableOrView(tableName);
+            var sqlBuilder = table.CreateSqlBuilder(false);
+            sqlBuilder.ApplyDesiredColumns(Materializer.NoColumns);
+            sqlBuilder.ApplyArgumentValue(this, sampleObject, options);
+            sqlBuilder.GetInsertColumns(options.HasFlag(InsertOptions.IdentityInsert)).ToList(); //Call ToList to trigger needed side-effects
+
+            var parametersPerRow = sqlBuilder.GetParameters().Count;
+
+            var maxParams = DatabaseMetadata.MaxParameters!.Value;
+
+            var maxRows = maxParams / parametersPerRow;
+
+            return maxRows;
         }
     }
 }
