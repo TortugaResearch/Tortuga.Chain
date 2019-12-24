@@ -59,12 +59,6 @@
             This object can be used to lookup database information.
             </summary>
         </member>
-        <member name="P:Tortuga.Chain.SqlServerDataSource.IsSqlDependencyActive">
-            <summary>
-            Gets a value indicating whether SQL dependency support is active for this dispatcher.
-            </summary>
-            <value><c>true</c> if this SQL dependency is active; otherwise, <c>false</c>.</value>
-        </member>
         <member name="P:Tortuga.Chain.SqlServerDataSource.XactAbort">
             <summary>
             Rolls back a transaction if a Transact-SQL statement raises a run-time error.
@@ -108,25 +102,6 @@
             <summary>
             Gets the options that are currently in effect. This takes into account server-defined defaults.
             </summary>
-        </member>
-        <member name="M:Tortuga.Chain.SqlServerDataSource.StartSqlDependency">
-            <summary>
-            Starts SQL dependency on this connection string.
-            </summary>
-            <remarks>
-            true if the listener initialized successfully; false if a compatible listener
-            already exists.
-            </remarks>
-        </member>
-        <member name="M:Tortuga.Chain.SqlServerDataSource.StopSqlDependency">
-            <summary>
-            Stops SQL dependency on this connection string.
-            </summary>
-            <remarks>
-            true if the listener was completely stopped; false if the System.AppDomain
-            was unbound from the listener, but there are is at least one other System.AppDomain
-            using the same listener.
-            </remarks>
         </member>
         <member name="M:Tortuga.Chain.SqlServerDataSource.TestConnection">
             <summary>
@@ -539,33 +514,6 @@
             <param name="isIncluded">Indicates the column is an unindexed, included column.</param>
             <param name="indexId"></param>
         </member>
-        <member name="M:Tortuga.Chain.SqlServer.Appenders.NotifyChangeAppender`1.#ctor(Tortuga.Chain.ILink{`0},Microsoft.Data.SqlClient.OnChangeEventHandler)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Tortuga.Chain.Appenders.Appender`1" /> class.
-            </summary>
-            <param name="previousLink">The previous link.</param>
-            <param name="eventHandler">The event handler to fire when then associated SQL Dependency is fired..</param>
-        </member>
-        <member name="T:Tortuga.Chain.SqlServer.CommandBuilders.ISupportsChangeListener">
-            <summary>
-            This is applied to command builders that support SqlDependency operations.
-            </summary>
-        </member>
-        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.ISupportsChangeListener.WaitForChange(System.Threading.CancellationToken,System.Object)">
-            <summary>
-            Waits for change in the data that is returned by this operation.
-            </summary>
-            <param name="cancellationToken">The cancellation token.</param>
-            <param name="state">User defined state, usually used for logging.</param>
-            <returns>Task that can be waited for.</returns>
-            <remarks>This requires the use of SQL Dependency</remarks>
-        </member>
-        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.ISupportsChangeListener.Prepare(Tortuga.Chain.Materializers.Materializer{Microsoft.Data.SqlClient.SqlCommand,Microsoft.Data.SqlClient.SqlParameter})">
-            <summary>
-            Prepares the command for execution by generating any necessary SQL.
-            </summary>
-            <param name="materializer">The materializer.</param>
-        </member>
         <member name="T:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerDeleteMany">
             <summary>
             Class SqlServerDeleteWithFilter.
@@ -893,15 +841,6 @@
             This is used by materializers to skip IsNull checks.
             </remarks>
         </member>
-        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerProcedureCall.WaitForChange(System.Threading.CancellationToken,System.Object)">
-            <summary>
-            Waits for change in the data that is returned by this operation.
-            </summary>
-            <param name="cancellationToken">The cancellation token.</param>
-            <param name="state">User defined state, usually used for logging.</param>
-            <returns>Task that can be waited for.</returns>
-            <remarks>This requires the use of SQL Dependency</remarks>
-        </member>
         <member name="T:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerScalarFunction">
             <summary>
             Use for scalar functions.
@@ -991,15 +930,6 @@
             <remarks>
             This is used by materializers to skip IsNull checks.
             </remarks>
-        </member>
-        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerSqlCall.WaitForChange(System.Threading.CancellationToken,System.Object)">
-            <summary>
-            Waits for change in the data that is returned by this operation.
-            </summary>
-            <param name="cancellationToken">The cancellation token.</param>
-            <param name="state">User defined state, usually used for logging.</param>
-            <returns>Task that can be waited for.</returns>
-            <remarks>This requires the use of SQL Dependency</remarks>
         </member>
         <member name="T:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableFunction">
             <summary>
@@ -1237,15 +1167,6 @@
             This is used by materializers to skip IsNull checks.
             </remarks>
         </member>
-        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableOrView.WaitForChange(System.Threading.CancellationToken,System.Object)">
-            <summary>
-            Waits for change in the data that is returned by this operation.
-            </summary>
-            <param name="cancellationToken">The cancellation token.</param>
-            <param name="state">User defined state, usually used for logging.</param>
-            <returns>Task that can be waited for.</returns>
-            <remarks>This requires the use of SQL Dependency</remarks>
-        </member>
         <member name="T:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerUpdateMany">
             <summary>
             Class SqlServerUpdateMany.
@@ -1361,34 +1282,10 @@
             <param name="materializer">The materializer.</param>
             <returns>ExecutionToken&lt;TCommand&gt;.</returns>
         </member>
-        <member name="M:Tortuga.Chain.SqlServer.Materializers.WaitForChangeMaterializer`1.#ctor(`0)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Tortuga.Chain.Materializers.Materializer`2"/> class.
-            </summary>
-            <param name="commandBuilder">The associated command builder.</param>
-        </member>
         <member name="T:Tortuga.Chain.SqlServer.SqlServerAppenders">
             <summary>
             Class SqlServerAppenders.
             </summary>
-        </member>
-        <member name="M:Tortuga.Chain.SqlServer.SqlServerAppenders.WithChangeNotification``1(Tortuga.Chain.ILink{``0},Microsoft.Data.SqlClient.OnChangeEventHandler)">
-            <summary>
-            Attaches a SQL Server dependency change listener to this operation.
-            </summary>
-            <typeparam name="TResult">The type of the t result type.</typeparam>
-            <param name="previousLink">The previous link.</param>
-            <param name="eventHandler">The event handler to fire when the underlying data changes.</param>
-            <returns>Tortuga.Chain.Core.ILink&lt;TResult&gt;.</returns>
-            <remarks>This will only work for operations against non-transactional SQL Server data sources that also comform to the rules about using SQL Dependency.</remarks>
-        </member>
-        <member name="M:Tortuga.Chain.SqlServer.SqlServerAppenders.AutoInvalidate``1(Tortuga.Chain.ICacheLink{``0})">
-            <summary>
-            Attaches a SQL Server dependency change listener to this operation that will automatically invalidate the cache.
-            </summary>
-            <typeparam name="TResult">The type of the result.</typeparam>
-            <param name="previousLink">The previous link.</param>
-            <returns></returns>
         </member>
         <member name="T:Tortuga.Chain.SqlServer.SqlServerCommandExecutionToken">
             <summary>
@@ -1404,13 +1301,6 @@
             <param name="commandText">The SQL to be executed.</param>
             <param name="parameters">The parameters.</param>
             <param name="commandType">Type of the command.</param>
-        </member>
-        <member name="M:Tortuga.Chain.SqlServer.SqlServerCommandExecutionToken.AddChangeListener(Microsoft.Data.SqlClient.OnChangeEventHandler)">
-            <summary>
-            Adds a SQL Dependency based change listener.
-            </summary>
-            <param name="eventHandler">The event handler.</param>
-            <remarks>This requires SQL Dependency to be active.</remarks>
         </member>
         <member name="M:Tortuga.Chain.SqlServer.SqlServerCommandExecutionToken.OnBuildCommand(Microsoft.Data.SqlClient.SqlCommand)">
             <summary>
