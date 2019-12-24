@@ -8,9 +8,9 @@
     <PackageTags>ORM Fluent DB Reflection PostgreSQL</PackageTags>
     <LangVersion>8.0</LangVersion>
     <ProductName>Tortuga Chain</ProductName>
-    <Deterministic>false</Deterministic>
+    <Deterministic>true</Deterministic>
 
-    <AssemblyVersion>3.1.*</AssemblyVersion>
+    <AssemblyVersion>3.1.8000</AssemblyVersion>
     <Version>3.1.0</Version>
     <FileVersion>3.1.0.0</FileVersion>
 
@@ -58,7 +58,7 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)'=='Release'">
-    <PackageReference Include="Tortuga.Chain.Core" Version="3.1.*" />
+    <PackageReference Include="Tortuga.Chain.Core" Version="3.1.8000" />
   </ItemGroup>
 
   <ItemGroup>

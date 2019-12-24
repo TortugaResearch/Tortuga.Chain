@@ -371,13 +371,6 @@
             This class is used to perform bulk inserts
             </summary>
         </member>
-        <member name="M:Tortuga.Chain.PostgreSql.CommandBuilders.PostgreSqlInsertBulk.WithBatchSize(System.Int32)">
-            <summary>
-            Modifies the batch size.
-            </summary>
-            <param name="batchSize">Size of the batch.</param>
-            <returns>SqlServerInsertBulk.</returns>
-        </member>
         <member name="M:Tortuga.Chain.PostgreSql.CommandBuilders.PostgreSqlInsertBulk.Prepare">
             <summary>
             Prepares the command for execution by generating any necessary SQL.
