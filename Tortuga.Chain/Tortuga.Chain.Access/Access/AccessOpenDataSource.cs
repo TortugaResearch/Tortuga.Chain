@@ -150,7 +150,7 @@ namespace Tortuga.Chain.Access
         /// <remarks>
         /// This is used in conjunction with audit rules.
         /// </remarks>
-        public AccessOpenDataSource WithUser(object userValue)
+        public AccessOpenDataSource WithUser(object? userValue)
         {
             UserValue = userValue;
             return this;

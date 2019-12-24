@@ -159,7 +159,7 @@ namespace Tortuga.Chain.MySql
         /// <remarks>
         /// This is used in conjunction with audit rules.
         /// </remarks>
-        public MySqlOpenDataSource WithUser(object userValue)
+        public MySqlOpenDataSource WithUser(object? userValue)
         {
             UserValue = userValue;
             return this;

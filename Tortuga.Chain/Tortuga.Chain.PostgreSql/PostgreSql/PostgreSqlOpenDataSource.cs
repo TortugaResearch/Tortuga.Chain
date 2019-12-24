@@ -141,7 +141,7 @@ namespace Tortuga.Chain.PostgreSql
         /// <remarks>
         /// This is used in conjunction with audit rules.
         /// </remarks>
-        public PostgreSqlOpenDataSource WithUser(object userValue)
+        public PostgreSqlOpenDataSource WithUser(object? userValue)
         {
             UserValue = userValue;
             return this;

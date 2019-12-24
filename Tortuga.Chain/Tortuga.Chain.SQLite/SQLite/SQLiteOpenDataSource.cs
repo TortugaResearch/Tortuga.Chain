@@ -166,7 +166,7 @@ namespace Tortuga.Chain.SQLite
         /// <remarks>
         /// This is used in conjunction with audit rules.
         /// </remarks>
-        public SQLiteOpenDataSource WithUser(object userValue)
+        public SQLiteOpenDataSource WithUser(object? userValue)
         {
             UserValue = userValue;
             return this;

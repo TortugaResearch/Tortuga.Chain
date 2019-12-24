@@ -466,7 +466,7 @@ namespace Tests.CommandBuilders
         }
 
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
-        public void FromTests_ToInferredObject(string dataSourceName, DataSourceType mode)
+        public void ToInferredObject(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
 
@@ -481,6 +481,77 @@ namespace Tests.CommandBuilders
 
                 Assert.AreEqual("A", lookup.FirstName, "First Name");
                 Assert.AreEqual("1", lookup.LastName, "Last Name");
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+        [DataTestMethod, BasicData(DataSourceGroup.Primary)]
+        public void ToObject(string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+
+            try
+            {
+                var uniqueKey = Guid.NewGuid().ToString();
+
+                var emp1 = new Employee() { FirstName = "A", LastName = "1", Title = uniqueKey };
+                dataSource.Insert(EmployeeTableName, emp1).ToObject<Employee>().Execute();
+
+                var lookup = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToObject<Employee>().Execute();
+
+                Assert.AreEqual("A", lookup.FirstName, "First Name");
+                Assert.AreEqual("1", lookup.LastName, "Last Name");
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+        [DataTestMethod, BasicData(DataSourceGroup.Primary)]
+        public void ToObject_IncludedProperties(string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+
+            try
+            {
+                var uniqueKey = Guid.NewGuid().ToString();
+
+                var emp1 = new Employee() { FirstName = "A", LastName = "1", Title = uniqueKey };
+                dataSource.Insert(EmployeeTableName, emp1).ToObject<Employee>().Execute();
+
+                var lookup = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToObject<Employee>().WithProperties("EmployeeKey", "FirstName").Execute();
+
+                Assert.IsNotNull(lookup.EmployeeKey, "EmployeeKey");
+                Assert.AreEqual("A", lookup.FirstName, "First Name");
+                Assert.IsNull(lookup.LastName, "Last Name");
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+        [DataTestMethod, BasicData(DataSourceGroup.Primary)]
+        public void ToObject_ExcludedProperties(string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+
+            try
+            {
+                var uniqueKey = Guid.NewGuid().ToString();
+
+                var emp1 = new Employee() { FirstName = "A", LastName = "1", Title = uniqueKey };
+                dataSource.Insert(EmployeeTableName, emp1).ToObject<Employee>().Execute();
+
+                var lookup = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToObject<Employee>().ExceptProperties("LastName").Execute();
+
+                Assert.IsNotNull(lookup.EmployeeKey, "EmployeeKey");
+                Assert.AreEqual("A", lookup.FirstName, "First Name");
+                Assert.IsNull(lookup.LastName, "Last Name");
             }
             finally
             {
@@ -514,6 +585,7 @@ namespace Tests.CommandBuilders
         }
 
 #if !Roslyn_Missing
+
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
         public void FilterByObject_Compiled(string dataSourceName, DataSourceType mode)
         {
@@ -538,12 +610,13 @@ namespace Tests.CommandBuilders
                 Release(dataSource);
             }
         }
+
 #endif
 
 #if !NO_DISTINCT_COUNT
 
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
-        public void FromTests_Counts(string dataSourceName, DataSourceType mode)
+        public void Counts(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -571,7 +644,7 @@ namespace Tests.CommandBuilders
 #if SQLITE
 
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
-        public void FromTests_TakeRandom(string dataSourceName, DataSourceType mode)
+        public void TakeRandom(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -594,7 +667,7 @@ namespace Tests.CommandBuilders
 #if SQL_SERVER_OLEDB || SQL_SERVER_SDS || SQL_SERVER_MDS
 
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
-        public void FromTests_TakePercent(string dataSourceName, DataSourceType mode)
+        public void TakePercent(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -615,7 +688,7 @@ namespace Tests.CommandBuilders
         }
 
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
-        public void FromTests_TakePercentWithTies(string dataSourceName, DataSourceType mode)
+        public void TakePercentWithTies(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -636,7 +709,7 @@ namespace Tests.CommandBuilders
         }
 
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
-        public void FromTests_TakeWithTies(string dataSourceName, DataSourceType mode)
+        public void TakeWithTies(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -657,7 +730,7 @@ namespace Tests.CommandBuilders
         }
 
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
-        public void FromTests_TableSampleSystemPercentage(string dataSourceName, DataSourceType mode)
+        public void TableSampleSystemPercentage(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -677,7 +750,7 @@ namespace Tests.CommandBuilders
         }
 
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
-        public void FromTests_TableSampleSystemRows(string dataSourceName, DataSourceType mode)
+        public void TableSampleSystemRows(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -697,7 +770,7 @@ namespace Tests.CommandBuilders
         }
 
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
-        public void FromTests_TableSampleSystemPercentage_Repeatable(string dataSourceName, DataSourceType mode)
+        public void TableSampleSystemPercentage_Repeatable(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -715,7 +788,7 @@ namespace Tests.CommandBuilders
         }
 
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
-        public void FromTests_TableSampleSystemRows_Repeatable(string dataSourceName, DataSourceType mode)
+        public void TableSampleSystemRows_Repeatable(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -735,7 +808,7 @@ namespace Tests.CommandBuilders
 #endif
 
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
-        public void FromTests_Sorting(string dataSourceName, DataSourceType mode)
+        public void Sorting(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -777,7 +850,7 @@ namespace Tests.CommandBuilders
         }
 
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
-        public void FromTests_ImmutableArray(string dataSourceName, DataSourceType mode)
+        public void ImmutableArray(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -819,7 +892,7 @@ namespace Tests.CommandBuilders
         }
 
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
-        public void FromTests_ImmutableList(string dataSourceName, DataSourceType mode)
+        public void ImmutableList(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -861,7 +934,7 @@ namespace Tests.CommandBuilders
         }
 
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
-        public void FromTests_GetByKeyList(string dataSourceName, DataSourceType mode)
+        public void GetByKeyList(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -892,7 +965,7 @@ namespace Tests.CommandBuilders
         }
 
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
-        public void FromTests_GetByKeyList_2(string dataSourceName, DataSourceType mode)
+        public void GetByKeyList_2(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -922,7 +995,7 @@ namespace Tests.CommandBuilders
         }
 
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
-        public void FromTests_Take_NoSort(string dataSourceName, DataSourceType mode)
+        public void Take_NoSort(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -943,7 +1016,7 @@ namespace Tests.CommandBuilders
         }
 
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
-        public void FromTests_Take(string dataSourceName, DataSourceType mode)
+        public void Take(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -966,7 +1039,7 @@ namespace Tests.CommandBuilders
 #if !NO_ROW_SKIPPING
 
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
-        public void FromTests_SkipTake(string dataSourceName, DataSourceType mode)
+        public void SkipTake(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -991,7 +1064,7 @@ namespace Tests.CommandBuilders
 #if SQLITE
 
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
-        public void FromTests_Sorting_ImmutableCollection(string dataSourceName, DataSourceType mode)
+        public void Sorting_ImmutableCollection(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -1035,7 +1108,7 @@ namespace Tests.CommandBuilders
 #elif MYSQL
 
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
-        public void FromTests_Sorting_ImmutableCollection(string dataSourceName, DataSourceType mode)
+        public void Sorting_ImmutableCollection(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -1079,7 +1152,7 @@ namespace Tests.CommandBuilders
 #else
 
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
-        public void FromTests_Sorting_ImmutableCollection(string dataSourceName, DataSourceType mode)
+        public void Sorting_ImmutableCollection(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -1123,7 +1196,7 @@ namespace Tests.CommandBuilders
 #endif
 
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
-        public void FromTests_ToDictionary_InferredObject(string dataSourceName, DataSourceType mode)
+        public void ToDictionary_InferredObject(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -1189,7 +1262,7 @@ namespace Tests.CommandBuilders
         }
 
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
-        public void FromTests_ToDictionary(string dataSourceName, DataSourceType mode)
+        public void ToDictionary(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -1255,7 +1328,7 @@ namespace Tests.CommandBuilders
         }
 
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
-        public void FromTests_Sorting_InferredCollection(string dataSourceName, DataSourceType mode)
+        public void Sorting_InferredCollection(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -1299,7 +1372,7 @@ namespace Tests.CommandBuilders
 #if SQLITE
 
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
-        public void FromTests_ToImmutableObject(string dataSourceName, DataSourceType mode)
+        public void ToImmutableObject(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -1323,7 +1396,7 @@ namespace Tests.CommandBuilders
 #elif MYSQL
 
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
-        public void FromTests_ToImmutableObject(string dataSourceName, DataSourceType mode)
+        public void ToImmutableObject(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -1347,7 +1420,7 @@ namespace Tests.CommandBuilders
 #else
 
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
-        public void FromTests_ToImmutableObject(string dataSourceName, DataSourceType mode)
+        public void ToImmutableObject(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -1371,8 +1444,9 @@ namespace Tests.CommandBuilders
 #endif
 
 #if SQLITE
-   [DataTestMethod, BasicData(DataSourceGroup.Primary)]
-        public void FromTests_ToDictionary_ImmutableObject(string dataSourceName, DataSourceType mode)
+
+        [DataTestMethod, BasicData(DataSourceGroup.Primary)]
+        public void ToDictionary_ImmutableObject(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -1436,10 +1510,11 @@ namespace Tests.CommandBuilders
                 Release(dataSource);
             }
         }
+
 #elif MYSQL
 
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
-        public void FromTests_ToDictionary_ImmutableObject(string dataSourceName, DataSourceType mode)
+        public void ToDictionary_ImmutableObject(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try
@@ -1507,7 +1582,7 @@ namespace Tests.CommandBuilders
 #else
 
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
-        public void FromTests_ToDictionary_ImmutableObject(string dataSourceName, DataSourceType mode)
+        public void ToDictionary_ImmutableObject(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
             try

@@ -552,7 +552,7 @@ namespace Tortuga.Chain
         /// <remarks>
         /// This is used in conjunction with audit rules.
         /// </remarks>
-        public OleDbSqlServerDataSource WithUser(object userValue)
+        public OleDbSqlServerDataSource WithUser(object? userValue)
         {
             var result = WithSettings(null);
             result.UserValue = userValue;

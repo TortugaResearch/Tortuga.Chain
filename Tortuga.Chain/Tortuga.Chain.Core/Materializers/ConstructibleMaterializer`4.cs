@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.Linq;
 using Tortuga.Anchor.Metadata;
 using Tortuga.Chain.CommandBuilders;
 
@@ -11,16 +12,17 @@ namespace Tortuga.Chain.Materializers
     /// </summary>
     /// <typeparam name="TCommand">The type of the t command.</typeparam>
     /// <typeparam name="TParameter">The type of the t parameter.</typeparam>
-    /// <typeparam name="TResult">The type of the t result.</typeparam>
-    /// <typeparam name="TObject">The type of the t object.</typeparam>
-    /// <seealso cref="Materializer{TCommand, TParameter, TResult}" />
-    /// <seealso cref="IConstructibleMaterializer{TResult}" />
+    /// <typeparam name="TResult">The type of the result. This may be a collection of TObject.</typeparam>
+    /// <typeparam name="TObject">The type of the object that will be returned.</typeparam>
+    /// <seealso cref="Materializer{TCommand, TParameter, TResult}"/>
+    /// <seealso cref="IConstructibleMaterializer{TResult}"/>
     public abstract class ConstructibleMaterializer<TCommand, TParameter, TResult, TObject> : Materializer<TCommand, TParameter, TResult>, IConstructibleMaterializer<TResult>
         where TCommand : DbCommand
         where TParameter : DbParameter
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ConstructibleMaterializer{TCommand, TParameter, TResult, TObject}" /> class.
+        /// Initializes a new instance of the <see cref="ConstructibleMaterializer{TCommand,
+        /// TParameter, TResult, TObject}"/> class.
         /// </summary>
         /// <param name="commandBuilder">The associated operation.</param>
         protected ConstructibleMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder) : base(commandBuilder)
@@ -35,10 +37,92 @@ namespace Tortuga.Chain.Materializers
         protected IReadOnlyList<Type>? ConstructorSignature { get; set; }
 
         /// <summary>
+        /// Columns to ignore when generating the list of desired columns.
+        /// </summary>
+        /// <value>The excluded columns.</value>
+        protected IReadOnlyList<string>? ExcludedColumns { get; private set; }
+
+        /// <summary>
+        /// Only include the indicated columns when generating the list of desired columns.
+        /// </summary>
+        /// <value>The included columns.</value>
+        protected IReadOnlyList<string>? IncludedColumns { get; private set; }
+
+        /// <summary>
         /// Gets or sets the TObject metadata.
         /// </summary>
         /// <value>The object metadata.</value>
-        protected ClassMetadata ObjectMetadata { get; set; }
+        protected ClassMetadata ObjectMetadata { get; }
+
+        /// <summary>
+        /// Returns the list of columns the result materializer would like to have.
+        /// </summary>
+        /// <returns>IReadOnlyList&lt;System.String&gt;.</returns>
+        /// <exception cref="MappingException">
+        /// Cannot find a constructor on {desiredType.Name} with the types [{types}]
+        /// </exception>
+        /// <remarks>
+        /// If AutoSelectDesiredColumns is returned, the command builder is allowed to choose which
+        /// columns to return. If NoColumns is returned, the command builder should omit the
+        /// SELECT/OUTPUT clause.
+        /// </remarks>
+        public override IReadOnlyList<string> DesiredColumns()
+        {
+            if (ConstructorSignature == null)
+            {
+                if (IncludedColumns != null && ExcludedColumns != null)
+                    throw new InvalidOperationException("Cannot specify both included and excluded columns/properties.");
+
+                if (IncludedColumns != null)
+                    return IncludedColumns;
+
+                IReadOnlyList<string> result = ObjectMetadata.ColumnsFor;
+                if (ExcludedColumns != null)
+                    result = result.Where(x => !ExcludedColumns.Contains(x)).ToList();
+                return result;
+            }
+
+            var desiredType = typeof(TObject);
+            var constructor = ObjectMetadata.Constructors.Find(ConstructorSignature);
+
+            if (constructor == null)
+            {
+                var types = string.Join(", ", ConstructorSignature.Select(t => t.Name));
+                throw new MappingException($"Cannot find a constructor on {desiredType.Name} with the types [{types}]");
+            }
+
+            if (IncludedColumns != null)
+                throw new NotImplementedException("Cannot specify included columns/properties with constructors. See #295");
+
+            if (ExcludedColumns != null)
+                throw new InvalidOperationException("Cannot specify excluded columns/properties with constructors.");
+
+            return constructor.ParameterNames;
+        }
+
+        /// <summary>
+        /// Excludes the properties from the list of what will be populated in the object.
+        /// </summary>
+        /// <param name="propertiesToOmit">The properties to omit.</param>
+        public ILink<TResult> ExceptProperties(params string[] propertiesToOmit)
+        {
+            if (propertiesToOmit == null || propertiesToOmit.Length == 0)
+                return this;
+
+            var result = new List<string>(propertiesToOmit.Length);
+            var meta = MetadataCache.GetMetadata<TObject>();
+            foreach (var propertyName in propertiesToOmit)
+            {
+                if (meta.Properties.TryGetValue(propertyName, out var property))
+                {
+                    if (property.MappedColumnName != null)
+                        result.Add(property.MappedColumnName);
+                }
+            }
+
+            ExcludedColumns = result;
+            return this;
+        }
 
         /// <summary>
         /// Appends the indicated constructor onto the materializer.
@@ -214,6 +298,31 @@ namespace Tortuga.Chain.Materializers
         public ILink<TResult> WithConstructor<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>()
         {
             ConstructorSignature = new[] { typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(T10) };
+            return this;
+        }
+
+        /// <summary>
+        /// Limits the list of properties to populate to just the indicated list.
+        /// </summary>
+        /// <param name="propertiesToPopulate">The properties of the object to populate.</param>
+        /// <returns>ILink&lt;TResult&gt;.</returns>
+        public ILink<TResult> WithProperties(params string[] propertiesToPopulate)
+        {
+            if (propertiesToPopulate == null || propertiesToPopulate.Length == 0)
+                return this;
+
+            var result = new List<string>(propertiesToPopulate.Length);
+            var meta = MetadataCache.GetMetadata<TObject>();
+            foreach (var propertyName in propertiesToPopulate)
+            {
+                if (meta.Properties.TryGetValue(propertyName, out var property))
+                {
+                    if (property.MappedColumnName != null)
+                        result.Add(property.MappedColumnName);
+                }
+            }
+
+            IncludedColumns = result;
             return this;
         }
     }

@@ -10,9 +10,9 @@
     <ProductName>Tortuga Chain</ProductName>
     <Deterministic>false</Deterministic>
 
-    <AssemblyVersion>3.0.*</AssemblyVersion>
-    <Version>3.0.0</Version>
-    <FileVersion>3.0.0.0</FileVersion>
+    <AssemblyVersion>3.1.*</AssemblyVersion>
+    <Version>3.1.0</Version>
+    <FileVersion>3.1.0.0</FileVersion>
 
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
 
@@ -43,6 +43,7 @@
     <DefineConstants>SQL_SERVER_OLEDB;NULL_MISSING;ORDINAL_STRINGS</DefineConstants>
   </PropertyGroup>
 
+
   <ItemGroup>
 
     <Compile Include="..\Shared\Legacy\**\*.cs">
@@ -62,8 +63,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="1.0.19269.1" />
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.6">
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="1.1.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.8">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -75,21 +76,9 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)'=='Release'">
-    <PackageReference Include="Tortuga.Chain.Core" Version="3.0.*" />
-    <PackageReference Include="Tortuga.Chain.Core.OleDb" Version="3.0.*" />
+    <PackageReference Include="Tortuga.Chain.Core.OleDb" Version="3.1.*" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-    <PackageReference Include="System.Data.OleDb">
-      <Version>4.6.0</Version>
-    </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp2.1'">
-    <PackageReference Include="System.Data.OleDb">
-      <Version>4.6.0</Version>
-    </PackageReference>
-  </ItemGroup>
 
   <!-- NuGet Packaging Boilerplate-->
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
