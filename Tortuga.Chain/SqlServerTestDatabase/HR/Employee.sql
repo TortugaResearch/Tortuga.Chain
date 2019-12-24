@@ -12,7 +12,9 @@
     CreatedDate DATETIME2 NOT NULL
         DEFAULT GETDATE(),
     UpdatedDate DATETIME2 NULL,
-    EmployeeId NVARCHAR(50) NOT NULL CONSTRAINT UX_Employee_EmployeeId UNIQUE
+    EmployeeId NVARCHAR(50) NOT NULL
+        CONSTRAINT UX_Employee_EmployeeId
+        UNIQUE
 );
 
 GO
@@ -28,3 +30,11 @@ EXEC sys.sp_addextendedproperty @name = N'MS_Description',
 GO
 
 CREATE INDEX IX_Employee_Title ON HR.Employee (Title);
+
+GO
+
+CREATE NONCLUSTERED INDEX IX_Employee_MiddleName_Title
+ON HR.Employee (
+                   MiddleName,
+                   Title
+               );
