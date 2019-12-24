@@ -33,6 +33,8 @@ namespace Tests.CommandBuilders
             }
         }
 
+#if SQL_SERVER_SDS || SQL_SERVER_MDS || MYSQL
+
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
         public void InsertBulk_List_WithBatches(string dataSourceName, DataSourceType mode)
         {
@@ -56,6 +58,8 @@ namespace Tests.CommandBuilders
                 Release(dataSource);
             }
         }
+
+#endif
 
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
         public void InsertBulk_List(string dataSourceName, DataSourceType mode)
@@ -106,6 +110,7 @@ namespace Tests.CommandBuilders
             }
         }
 
+#if SQL_SERVER_SDS || SQL_SERVER_MDS || MYSQL
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
         public async Task InsertBulkAsync_List_WithBatches(string dataSourceName, DataSourceType mode)
         {
@@ -129,6 +134,7 @@ namespace Tests.CommandBuilders
                 Release(dataSource);
             }
         }
+#endif
 
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
         public async Task InsertBulkAsync_List(string dataSourceName, DataSourceType mode)

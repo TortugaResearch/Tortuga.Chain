@@ -20,7 +20,6 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         readonly PostgreSqlDataSourceBase m_DataSource;
         readonly IDataReader m_Source;
         readonly TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType> m_Table;
-        int? m_BatchSize;
 
         internal PostgreSqlInsertBulk(PostgreSqlDataSourceBase dataSource, PostgreSqlObjectName tableName, DataTable dataTable) : base(dataSource)
         {
@@ -48,17 +47,6 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
             m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
             if (!m_Table.IsTable)
                 throw new MappingException($"Cannot perform a bulk insert into the view {m_Table.Name}");
-        }
-
-        /// <summary>
-        /// Modifies the batch size.
-        /// </summary>
-        /// <param name="batchSize">Size of the batch.</param>
-        /// <returns>SqlServerInsertBulk.</returns>
-        public PostgreSqlInsertBulk WithBatchSize(int batchSize)
-        {
-            m_BatchSize = batchSize;
-            return this;
         }
 
         /// <summary>
