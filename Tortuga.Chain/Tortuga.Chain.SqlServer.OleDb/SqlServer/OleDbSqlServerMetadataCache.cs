@@ -471,7 +471,7 @@ namespace Tortuga.Chain.SqlServer
             bool isTable;
             bool hasTriggers;
 
-            using (var con = new OleDbConnection(m_ConnectionBuilder.ConnectionString))
+            using (var con = new OleDbConnection(m_ConnectionBuilder!.ConnectionString))
             {
                 con.Open();
                 using (var cmd = new OleDbCommand(TableSql, con))

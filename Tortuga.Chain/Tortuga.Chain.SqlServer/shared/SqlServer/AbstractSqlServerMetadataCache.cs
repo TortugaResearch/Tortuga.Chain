@@ -145,7 +145,7 @@ namespace Tortuga.Chain.SqlServer
         public override TableOrViewMetadata<SqlServerObjectName, AbstractDbType> GetTableOrViewFromClass<TObject>()
         {
             var type = typeof(TObject);
-            TableOrViewMetadata<SqlServerObjectName, AbstractDbType> result;
+            TableOrViewMetadata<SqlServerObjectName, AbstractDbType>? result;
             if (m_TypeTableMap.TryGetValue(type, out result))
                 return result;
 

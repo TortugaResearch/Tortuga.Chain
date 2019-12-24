@@ -947,6 +947,31 @@
             MySqlInsertBulk.
             </returns>
         </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.InsertBulk(System.String,System.Data.DataTable)">
+            <summary>
+            Inserts the batch of records using bulk insert.
+            </summary>
+            <param name="tableName">Name of the table.</param>
+            <param name="dataTable">The data table.</param>
+            <returns>MySqlInsertBulk.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.InsertBulk(System.String,System.Data.IDataReader)">
+            <summary>
+            Inserts the batch of records using bulk insert.
+            </summary>
+            <param name="tableName">Name of the table.</param>
+            <param name="dataReader">The data reader.</param>
+            <returns>MySqlInsertBulk.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.InsertBulk``1(System.String,System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Inserts the batch of records using bulk insert.
+            </summary>
+            <typeparam name="TObject"></typeparam>
+            <param name="tableName">Name of the table.</param>
+            <param name="objects">The objects.</param>
+            <returns>MySqlInsertBulk.</returns>
+        </member>
         <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.#ctor(Tortuga.Chain.DataSources.DataSourceSettings)">
             <summary>
             Initializes a new instance of the <see cref="T:Tortuga.Chain.MySql.MySqlDataSourceBase"/> class.
