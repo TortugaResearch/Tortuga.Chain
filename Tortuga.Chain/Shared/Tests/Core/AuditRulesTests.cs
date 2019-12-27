@@ -136,14 +136,14 @@ namespace Tests.shared.Core
                 Assert.IsNotNull(deletedRecord.DeletedDate, "Deleted date should be set");
                 Assert.AreEqual(currentUser1.EmployeeKey, deletedRecord.DeletedByKey, "Deleted by key should be set");
 
-                var misingRecord = ds1.From(CustomerTableName, new { CustomerKey = customerKey }).ToObject<CustomerWithValidation>(RowOptions.AllowEmptyResults).Execute();
+                var misingRecord = ds1.From(CustomerTableName, new { CustomerKey = customerKey }).ToObjectOrNull<CustomerWithValidation>().Execute();
 
                 Assert.IsNull(misingRecord, "The soft delete rule should prevent this record from being returned.");
 
 #if SQL_SERVER_OLEDB
-                var misingRecord2 = ds1.From(CustomerTableName, "CustomerKey = ?", new { CustomerKey = customerKey }).ToObject<CustomerWithValidation>(RowOptions.AllowEmptyResults).Execute();
+                var misingRecord2 = ds1.From(CustomerTableName, "CustomerKey = ?", new { CustomerKey = customerKey }).ToObjectOrNull<CustomerWithValidation>().Execute();
 #else
-                var misingRecord2 = ds1.From(CustomerTableName, "CustomerKey = @CustomerKey", new { CustomerKey = customerKey }).ToObject<CustomerWithValidation>(RowOptions.AllowEmptyResults).Execute();
+                var misingRecord2 = ds1.From(CustomerTableName, "CustomerKey = @CustomerKey", new { CustomerKey = customerKey }).ToObjectOrNull<CustomerWithValidation>().Execute();
 #endif
 
                 Assert.IsNull(misingRecord2, "The soft delete rule should prevent this record from being returned.");
@@ -196,14 +196,14 @@ namespace Tests.shared.Core
                 Assert.IsNotNull(deletedRecord.DeletedDate, "Deleted date should be set");
                 Assert.AreEqual(currentUser1.EmployeeKey, deletedRecord.DeletedByKey, "Deleted by key should be set");
 
-                var misingRecord = ds1.From(CustomerTableName, new { CustomerKey = customerKey }).ToObject<CustomerWithValidation>(RowOptions.AllowEmptyResults).Execute();
+                var misingRecord = ds1.From(CustomerTableName, new { CustomerKey = customerKey }).ToObjectOrNull<CustomerWithValidation>().Execute();
 
                 Assert.IsNull(misingRecord, "The soft delete rule should prevent this record from being returned.");
 
 #if SQL_SERVER_OLEDB
-                var misingRecord2 = ds1.From(CustomerTableName, "CustomerKey = ?", new { CustomerKey = customerKey }).ToObject<CustomerWithValidation>(RowOptions.AllowEmptyResults).Execute();
+                var misingRecord2 = ds1.From(CustomerTableName, "CustomerKey = ?", new { CustomerKey = customerKey }).ToObjectOrNull<CustomerWithValidation>().Execute();
 #else
-                var misingRecord2 = ds1.From(CustomerTableName, "CustomerKey = @CustomerKey", new { CustomerKey = customerKey }).ToObject<CustomerWithValidation>(RowOptions.AllowEmptyResults).Execute();
+                var misingRecord2 = ds1.From(CustomerTableName, "CustomerKey = @CustomerKey", new { CustomerKey = customerKey }).ToObjectOrNull<CustomerWithValidation>().Execute();
 #endif
 
                 Assert.IsNull(misingRecord2, "The soft delete rule should prevent this record from being returned.");
