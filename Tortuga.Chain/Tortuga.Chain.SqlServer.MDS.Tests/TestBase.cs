@@ -14,10 +14,13 @@ namespace Tests
     public abstract partial class TestBase
     {
         internal static readonly Dictionary<string, SqlServerDataSource> s_DataSources = new Dictionary<string, SqlServerDataSource>();
-        internal static readonly SqlServerDataSource s_PrimaryDataSource;
+        internal static SqlServerDataSource s_PrimaryDataSource;
 
-        static TestBase()
+        internal static void SetupTestBase()
         {
+            if (s_PrimaryDataSource != null)
+                return; //run once check
+
             var configuration = new ConfigurationBuilder().SetBasePath(AppContext.BaseDirectory).AddJsonFile("appsettings.json").Build();
 
             foreach (var con in configuration.GetSection("ConnectionStrings").GetChildren())

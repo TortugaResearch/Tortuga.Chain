@@ -16,10 +16,13 @@ namespace Tests
         static public readonly string AssemblyName = "PostgreSql";
         public string DefaultSchema = "public";
         internal static readonly Dictionary<string, PostgreSqlDataSource> s_DataSources = new Dictionary<string, PostgreSqlDataSource>();
-        internal static readonly PostgreSqlDataSource s_PrimaryDataSource;
+        internal static PostgreSqlDataSource s_PrimaryDataSource;
 
-        static TestBase()
+        internal static void SetupTestBase()
         {
+            if (s_PrimaryDataSource != null)
+                return; //run once check
+
             Setup.CreateDatabase();
 
             var configuration = new ConfigurationBuilder().SetBasePath(AppContext.BaseDirectory).AddJsonFile("appsettings.json").Build();

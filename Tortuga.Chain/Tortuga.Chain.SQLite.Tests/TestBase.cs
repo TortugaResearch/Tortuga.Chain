@@ -14,10 +14,13 @@ namespace Tests
     public abstract partial class TestBase
     {
         internal static readonly Dictionary<string, SQLiteDataSource> s_DataSources = new Dictionary<string, SQLiteDataSource>();
-        internal static readonly SQLiteDataSource s_PrimaryDataSource;
+        internal static SQLiteDataSource s_PrimaryDataSource;
 
-        static TestBase()
+        internal static void SetupTestBase()
         {
+            if (s_PrimaryDataSource != null)
+                return; //run once check
+
             Setup.CreateDatabase();
             var configuration = new ConfigurationBuilder().SetBasePath(AppContext.BaseDirectory).AddJsonFile("appsettings.json").Build();
 
