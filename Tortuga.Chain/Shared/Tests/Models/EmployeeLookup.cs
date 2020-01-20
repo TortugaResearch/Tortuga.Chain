@@ -1,12 +1,16 @@
-﻿namespace Tests.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Tests.Models
 {
     /// <summary>
     /// This is used to test immutable object constructors
     /// </summary>
+    [Table("Employee", Schema = "HR")]
     public class EmployeeLookup
     {
 #if SQLITE
 
+        [Table("Employee", Schema = "HR")]
         public EmployeeLookup(long employeeKey, string firstName, string lastName)
         {
             EmployeeKey = (int)employeeKey;
@@ -16,6 +20,7 @@
 
 #elif MYSQL
 
+        [Table("Employee", Schema = "HR")]
         public EmployeeLookup(ulong employeeKey, string firstName, string lastName)
         {
             EmployeeKey = (int)employeeKey;
@@ -24,12 +29,14 @@
         }
 
 #else
+
         public EmployeeLookup(int employeeKey, string firstName, string lastName)
         {
             EmployeeKey = employeeKey;
             FirstName = firstName;
             LastName = lastName;
         }
+
 #endif
 
         public int EmployeeKey { get; }

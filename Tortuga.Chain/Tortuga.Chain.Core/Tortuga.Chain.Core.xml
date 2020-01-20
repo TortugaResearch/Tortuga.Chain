@@ -1723,6 +1723,87 @@
             <param name="listOptions">The list options.</param>
             <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;XDocument&gt;&gt;.</returns>
         </member>
+        <member name="T:Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder`1">
+            <summary>
+            This allows the use of multi-row materializers against a command builder.
+            </summary>
+            <remarks>Warning: This interface is meant to simulate multiple inheritance and work-around some issues with exposing generic types. Do not implement it in client code, as new method will be added over time.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder`1.ToCollection(Tortuga.Chain.CollectionOptions)">
+            <summary>
+            Materializes the result as a list of objects.
+            </summary>
+            <param name="collectionOptions">The collection options.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder`1.ToDictionary``1(System.String,Tortuga.Chain.DictionaryOptions)">
+            <summary>
+            Materializes the result as a dictionary of objects.
+            </summary>
+            <typeparam name="TKey">The type of the key.</typeparam>
+            <param name="keyColumn">The key column.</param>
+            <param name="dictionaryOptions">The dictionary options.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder`1.ToDictionary``1(System.Func{`0,``0},Tortuga.Chain.DictionaryOptions)">
+            <summary>
+            Materializes the result as a dictionary of objects.
+            </summary>
+            <typeparam name="TKey">The type of the key.</typeparam>
+            <param name="keyFunction">The key function.</param>
+            <param name="dictionaryOptions">The dictionary options.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder`1.ToImmutableArray(Tortuga.Chain.CollectionOptions)">
+            <summary>
+            Materializes the result as an immutable array of objects.
+            </summary>
+            <param name="collectionOptions">The collection options.</param>
+            <returns>Tortuga.Chain.IConstructibleMaterializer&lt;System.Collections.Immutable.ImmutableArray&lt;TObject&gt;&gt;.</returns>
+            <exception cref="T:Tortuga.Chain.MappingException"></exception>
+            <remarks>In theory this will offer better performance than ToImmutableList if you only intend to read the result.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder`1.ToImmutableList(Tortuga.Chain.CollectionOptions)">
+            <summary>
+            Materializes the result as an immutable list of objects.
+            </summary>
+            <param name="collectionOptions">The collection options.</param>
+            <returns>Tortuga.Chain.IConstructibleMaterializer&lt;System.Collections.Immutable.ImmutableList&lt;TObject&gt;&gt;.</returns>
+            <exception cref="T:Tortuga.Chain.MappingException"></exception>
+            <remarks>In theory this will offer better performance than ToImmutableArray if you intend to further modify the result.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder`1.ToObject(Tortuga.Chain.RowOptions)">
+            <summary>
+            Materializes the result as an instance of the indicated type
+            </summary>
+            <param name="rowOptions">The row options.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder`1.ToObjectOrNull(Tortuga.Chain.RowOptions)">
+            <summary>
+            Materializes the result as an instance of the indicated type
+            </summary>
+            <param name="rowOptions">The row options.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder`1.ToImmutableDictionary``1(System.Func{`0,``0},Tortuga.Chain.DictionaryOptions)">
+            <summary>
+            Materializes the result as a immutable dictionary of objects.
+            </summary>
+            <typeparam name="TKey">The type of the key.</typeparam>
+            <param name="keyFunction">The key function.</param>
+            <param name="dictionaryOptions">The dictionary options.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder`1.ToImmutableDictionary``1(System.String,Tortuga.Chain.DictionaryOptions)">
+            <summary>
+            Materializes the result as a immutable dictionary of objects.
+            </summary>
+            <typeparam name="TKey">The type of the key.</typeparam>
+            <param name="keyColumn">The key column.</param>
+            <param name="dictionaryOptions">The dictionary options.</param>
+            <returns></returns>
+        </member>
         <member name="T:Tortuga.Chain.CommandBuilders.IMultipleTableDbCommandBuilder">
             <summary>
             This command builder may return multiple record sets
@@ -2184,11 +2265,9 @@
             <summary>
             This is a specialization of IMultipleRowDbCommandBuilder that includes support for sorting and limiting
             </summary>
-            <seealso cref="T:Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder" />
             <remarks>
             Warning: This interface is meant to simulate multiple inheritance and work-around some issues with exposing generic types. Do not implement it in client code, as new method will be added over time.
             </remarks>
-            <seealso cref="T:Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder" />
         </member>
         <member name="M:Tortuga.Chain.CommandBuilders.ITableDbCommandBuilder.AsCount">
             <summary>
@@ -2253,6 +2332,69 @@
             <returns></returns>
         </member>
         <member name="M:Tortuga.Chain.CommandBuilders.ITableDbCommandBuilder.WithSorting(System.Collections.Generic.IEnumerable{Tortuga.Chain.SortExpression})">
+            <summary>
+            Adds sorting to the command builder
+            </summary>
+            <param name="sortExpressions">The sort expressions.</param>
+            <returns></returns>
+        </member>
+        <member name="T:Tortuga.Chain.CommandBuilders.ITableDbCommandBuilder`1">
+            <summary>
+            This is a specialization of IMultipleRowDbCommandBuilder that includes support for sorting and limiting
+            </summary>
+            <remarks>
+            Warning: This interface is meant to simulate multiple inheritance and work-around some issues with exposing generic types. Do not implement it in client code, as new method will be added over time.
+            </remarks>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.ITableDbCommandBuilder`1.WithFilter(System.Object,Tortuga.Chain.FilterOptions)">
+            <summary>
+            Adds (or replaces) the filter on this command builder.
+            </summary>
+            <param name="filterValue">The filter value.</param>
+            <param name="filterOptions">The filter options.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.ITableDbCommandBuilder`1.WithFilter(System.String)">
+            <summary>
+            Adds (or replaces) the filter on this command builder.
+            </summary>
+            <param name="whereClause">The where clause.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.ITableDbCommandBuilder`1.WithFilter(System.String,System.Object)">
+            <summary>
+            Adds (or replaces) the filter on this command builder.
+            </summary>
+            <param name="whereClause">The where clause.</param>
+            <param name="argumentValue">The argument value.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.ITableDbCommandBuilder`1.WithLimits(System.Int32,Tortuga.Chain.LimitOptions,System.Nullable{System.Int32})">
+            <summary>
+            Adds limits to the command builder.
+            </summary>
+            <param name="take">Number of rows to take.</param>
+            <param name="limitOptions">The limit options.</param>
+            <param name="seed">The seed for repeatable reads. Only applies to random sampling</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.ITableDbCommandBuilder`1.WithLimits(System.Int32,System.Int32)">
+            <summary>
+            Adds limits to the command builder.
+            </summary>
+            <param name="skip">The number of rows to skip.</param>
+            <param name="take">The number of rows to take.</param>
+            <returns></returns>
+            <remarks>Warning: row skipping using this method can be significantly slower than using a WHERE clause that uses an indexed column.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.ITableDbCommandBuilder`1.WithSorting(Tortuga.Chain.SortExpression[])">
+            <summary>
+            Adds sorting to the command builder.
+            </summary>
+            <param name="sortExpressions">The sort expressions.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.ITableDbCommandBuilder`1.WithSorting(System.Collections.Generic.IEnumerable{Tortuga.Chain.SortExpression})">
             <summary>
             Adds sorting to the command builder
             </summary>
@@ -4134,6 +4276,21 @@
             <param name="sortExpressions">The sort expressions.</param>
             <returns></returns>
         </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.TableDbCommandBuilder`3.OnWithFilter(System.String,System.Object)">
+            <summary>
+            Adds (or replaces) the filter on this command builder.
+            </summary>
+            <param name="whereClause">The where clause.</param>
+            <param name="argumentValue">The argument value.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.TableDbCommandBuilder`3.OnWithFilter(System.Object,Tortuga.Chain.FilterOptions)">
+            <summary>
+            Adds (or replaces) the filter on this command builder.
+            </summary>
+            <param name="filterValue">The filter value.</param>
+            <param name="filterOptions">The filter options.</param>
+        </member>
         <member name="M:Tortuga.Chain.CommandBuilders.TableDbCommandBuilder`3.OnWithLimits(System.Nullable{System.Int32},System.Nullable{System.Int32},`2,System.Nullable{System.Int32})">
             <summary>
             Adds limits to the command builder.
@@ -4152,6 +4309,215 @@
             <param name="take">Number of rows to take.</param>
             <param name="limitOptions">The limit options.</param>
             <param name="seed">The seed for repeatable reads. Only applies to random sampling</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.TableDbCommandBuilder`3.OnWithSorting(System.Collections.Generic.IEnumerable{Tortuga.Chain.SortExpression})">
+            <summary>
+            Adds sorting to the command builder.
+            </summary>
+            <param name="sortExpressions">The sort expressions.</param>
+            <returns></returns>
+        </member>
+        <member name="T:Tortuga.Chain.CommandBuilders.TableDbCommandBuilder`4">
+            <summary>
+            This is the base class for table style command builders such as FromTableOrView and FromTableValueFunction.
+            </summary>
+            <typeparam name="TCommand">The type of the command.</typeparam>
+            <typeparam name="TParameter">The type of the parameter.</typeparam>
+            <typeparam name="TLimit">The type of the limit option.</typeparam>
+            <typeparam name="TObject">The type of the object to be constructed.</typeparam>
+            <seealso cref="T:Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder`2" />
+            <seealso cref="T:Tortuga.Chain.CommandBuilders.ITableDbCommandBuilder" />
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.TableDbCommandBuilder`4.#ctor(Tortuga.Chain.DataSources.ICommandDataSource{`0,`1})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.CommandBuilders.TableDbCommandBuilder`3"/> class.
+            </summary>
+            <param name="dataSource">The data source.</param>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.TableDbCommandBuilder`4.ToCollection(Tortuga.Chain.CollectionOptions)">
+            <summary>
+            Materializes the result as a list of objects.
+            </summary>
+            <param name="collectionOptions">The collection options.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.TableDbCommandBuilder`4.ToDictionary``1(System.String,Tortuga.Chain.DictionaryOptions)">
+            <summary>
+            Materializes the result as a dictionary of objects.
+            </summary>
+            <typeparam name="TKey">The type of the key.</typeparam>
+            <param name="keyColumn">The key column.</param>
+            <param name="dictionaryOptions">The dictionary options.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.TableDbCommandBuilder`4.ToDictionary``1(System.Func{`3,``0},Tortuga.Chain.DictionaryOptions)">
+            <summary>
+            Materializes the result as a dictionary of objects.
+            </summary>
+            <typeparam name="TKey">The type of the key.</typeparam>
+            <param name="keyFunction">The key function.</param>
+            <param name="dictionaryOptions">The dictionary options.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.TableDbCommandBuilder`4.ToImmutableArray(Tortuga.Chain.CollectionOptions)">
+            <summary>
+            Materializes the result as an immutable array of objects.
+            </summary>
+            <param name="collectionOptions">The collection options.</param>
+            <returns>Tortuga.Chain.IConstructibleMaterializer&lt;System.Collections.Immutable.ImmutableArray&lt;TObject&gt;&gt;.</returns>
+            <exception cref="T:Tortuga.Chain.MappingException"></exception>
+            <remarks>In theory this will offer better performance than ToImmutableList if you only intend to read the result.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.TableDbCommandBuilder`4.ToImmutableDictionary``1(System.Func{`3,``0},Tortuga.Chain.DictionaryOptions)">
+            <summary>
+            Materializes the result as a immutable dictionary of objects.
+            </summary>
+            <typeparam name="TKey">The type of the key.</typeparam>
+            <param name="keyFunction">The key function.</param>
+            <param name="dictionaryOptions">The dictionary options.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.TableDbCommandBuilder`4.ToImmutableDictionary``1(System.String,Tortuga.Chain.DictionaryOptions)">
+            <summary>
+            Materializes the result as a immutable dictionary of objects.
+            </summary>
+            <typeparam name="TKey">The type of the key.</typeparam>
+            <param name="keyColumn">The key column.</param>
+            <param name="dictionaryOptions">The dictionary options.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.TableDbCommandBuilder`4.ToImmutableList(Tortuga.Chain.CollectionOptions)">
+            <summary>
+            Materializes the result as an immutable list of objects.
+            </summary>
+            <param name="collectionOptions">The collection options.</param>
+            <returns>Tortuga.Chain.IConstructibleMaterializer&lt;System.Collections.Immutable.ImmutableList&lt;TObject&gt;&gt;.</returns>
+            <exception cref="T:Tortuga.Chain.MappingException"></exception>
+            <remarks>In theory this will offer better performance than ToImmutableArray if you intend to further modify the result.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.TableDbCommandBuilder`4.ToObject(Tortuga.Chain.RowOptions)">
+            <summary>
+            Materializes the result as an instance of the indicated type
+            </summary>
+            <param name="rowOptions">The row options.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.TableDbCommandBuilder`4.ToObjectOrNull(Tortuga.Chain.RowOptions)">
+            <summary>
+            Materializes the result as an instance of the indicated type
+            </summary>
+            <param name="rowOptions">The row options.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.TableDbCommandBuilder`4.WithFilter(System.Object,Tortuga.Chain.FilterOptions)">
+            <summary>
+            Adds (or replaces) the filter on this command builder.
+            </summary>
+            <param name="filterValue">The filter value.</param>
+            <param name="filterOptions">The filter options.</param>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.TableDbCommandBuilder`4.WithFilter(System.String)">
+            <summary>
+            Adds (or replaces) the filter on this command builder.
+            </summary>
+            <param name="whereClause">The where clause.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.TableDbCommandBuilder`4.WithFilter(System.String,System.Object)">
+            <summary>
+            Adds (or replaces) the filter on this command builder.
+            </summary>
+            <param name="whereClause">The where clause.</param>
+            <param name="argumentValue">The argument value.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.TableDbCommandBuilder`4.WithLimits(System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Adds limits to the command builder.
+            </summary>
+            <param name="skip">The number of rows to skip.</param>
+            <param name="take">Number of rows to take.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.TableDbCommandBuilder`4.WithLimits(System.Nullable{System.Int32})">
+            <summary>
+            Adds limits to the command builder.
+            </summary>
+            <param name="take">Number of rows to take.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.TableDbCommandBuilder`4.WithLimits(System.Nullable{System.Int32},`2)">
+            <summary>
+            Adds limits to the command builder.
+            </summary>
+            <param name="take">Number of rows to take.</param>
+            <param name="limitOptions">The limit options.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.TableDbCommandBuilder`4.WithLimits(System.Nullable{System.Int32},`2,System.Int32)">
+            <summary>
+            Adds limits to the command builder.
+            </summary>
+            <param name="take">Number of rows to take.</param>
+            <param name="limitOptions">The limit options.</param>
+            <param name="seed">The seed for repeatable reads. Only applies to random sampling</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.TableDbCommandBuilder`4.WithSorting(System.Collections.Generic.IEnumerable{Tortuga.Chain.SortExpression})">
+            <summary>
+            Adds sorting to the command builder.
+            </summary>
+            <param name="sortExpressions">The sort expressions.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.TableDbCommandBuilder`4.WithSorting(Tortuga.Chain.SortExpression[])">
+            <summary>
+            Adds sorting to the command builder
+            </summary>
+            <param name="sortExpressions">The sort expressions.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.TableDbCommandBuilder`4.OnWithFilterTyped(System.String,System.Object)">
+            <summary>
+            Adds (or replaces) the filter on this command builder.
+            </summary>
+            <param name="whereClause">The where clause.</param>
+            <param name="argumentValue">The argument value.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.TableDbCommandBuilder`4.OnWithFilterTyped(System.Object,Tortuga.Chain.FilterOptions)">
+            <summary>
+            Adds (or replaces) the filter on this command builder.
+            </summary>
+            <param name="filterValue">The filter value.</param>
+            <param name="filterOptions">The filter options.</param>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.TableDbCommandBuilder`4.OnWithLimitsTyped(System.Nullable{System.Int32},System.Nullable{System.Int32},`2,System.Nullable{System.Int32})">
+            <summary>
+            Adds limits to the command builder.
+            </summary>
+            <param name="skip">The number of rows to skip.</param>
+            <param name="take">Number of rows to take.</param>
+            <param name="limitOptions">The limit options.</param>
+            <param name="seed">The seed for repeatable reads. Only applies to random sampling</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.TableDbCommandBuilder`4.OnWithLimitsTyped(System.Nullable{System.Int32},System.Nullable{System.Int32},Tortuga.Chain.LimitOptions,System.Nullable{System.Int32})">
+            <summary>
+            Adds limits to the command builder.
+            </summary>
+            <param name="skip">The number of rows to skip.</param>
+            <param name="take">Number of rows to take.</param>
+            <param name="limitOptions">The limit options.</param>
+            <param name="seed">The seed for repeatable reads. Only applies to random sampling</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.TableDbCommandBuilder`4.OnWithSortingTyped(System.Collections.Generic.IEnumerable{Tortuga.Chain.SortExpression})">
+            <summary>
+            Adds sorting to the command builder.
+            </summary>
+            <param name="sortExpressions">The sort expressions.</param>
             <returns></returns>
         </member>
         <member name="T:Tortuga.Chain.CommandBuilders.UpdateManyDbCommandBuilder`2">
