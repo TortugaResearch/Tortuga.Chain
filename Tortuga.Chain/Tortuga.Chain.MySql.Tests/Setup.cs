@@ -20,6 +20,7 @@ namespace Tests
         [AssemblyInitialize]
         public static void AssemblyInit(TestContext context)
         {
+            TestBase.SetupTestBase();
         }
 
         public static void CreateDatabase()
