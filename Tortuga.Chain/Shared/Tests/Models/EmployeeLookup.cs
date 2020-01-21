@@ -10,7 +10,6 @@ namespace Tests.Models
     {
 #if SQLITE
 
-        [Table("Employee", Schema = "HR")]
         public EmployeeLookup(long employeeKey, string firstName, string lastName)
         {
             EmployeeKey = (int)employeeKey;
@@ -20,7 +19,6 @@ namespace Tests.Models
 
 #elif MYSQL
 
-        [Table("Employee", Schema = "HR")]
         public EmployeeLookup(ulong employeeKey, string firstName, string lastName)
         {
             EmployeeKey = (int)employeeKey;

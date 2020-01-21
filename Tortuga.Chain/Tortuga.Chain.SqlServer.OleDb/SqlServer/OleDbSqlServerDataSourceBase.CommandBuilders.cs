@@ -112,7 +112,7 @@ namespace Tortuga.Chain.SqlServer
                 parameters.Add(param);
             }
 
-            return new OleDbSqlServerTableOrView(this, tableName, where, parameters);
+            return new OleDbSqlServerTableOrView<object>(this, tableName, where, parameters);
         }
 
         MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> OnDeleteMany(SqlServerObjectName tableName, string? whereClause, object? argumentValue)
@@ -130,14 +130,16 @@ namespace Tortuga.Chain.SqlServer
             return new OleDbSqlServerDeleteObject<TArgument>(this, tableName, argumentValue, options);
         }
 
-        TableDbCommandBuilder<OleDbCommand, OleDbParameter, SqlServerLimitOption> OnFromTableOrView(SqlServerObjectName tableOrViewName, object filterValue, FilterOptions filterOptions)
+        TableDbCommandBuilder<OleDbCommand, OleDbParameter, SqlServerLimitOption, TObject> OnFromTableOrView<TObject>(SqlServerObjectName tableOrViewName, object filterValue, FilterOptions filterOptions)
+            where TObject : class
         {
-            return new OleDbSqlServerTableOrView(this, tableOrViewName, filterValue, filterOptions);
+            return new OleDbSqlServerTableOrView<TObject>(this, tableOrViewName, filterValue, filterOptions);
         }
 
-        TableDbCommandBuilder<OleDbCommand, OleDbParameter, SqlServerLimitOption> OnFromTableOrView(SqlServerObjectName tableOrViewName, string? whereClause, object? argumentValue)
+        TableDbCommandBuilder<OleDbCommand, OleDbParameter, SqlServerLimitOption, TObject> OnFromTableOrView<TObject>(SqlServerObjectName tableOrViewName, string? whereClause, object? argumentValue)
+            where TObject : class
         {
-            return new OleDbSqlServerTableOrView(this, tableOrViewName, whereClause, argumentValue);
+            return new OleDbSqlServerTableOrView<TObject>(this, tableOrViewName, whereClause, argumentValue);
         }
 
         ObjectDbCommandBuilder<OleDbCommand, OleDbParameter, TArgument> OnInsertObject<TArgument>(SqlServerObjectName tableName, TArgument argumentValue, InsertOptions options)

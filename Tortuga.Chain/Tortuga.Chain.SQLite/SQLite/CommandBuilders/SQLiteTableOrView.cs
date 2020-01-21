@@ -12,9 +12,10 @@ using Tortuga.Chain.Metadata;
 namespace Tortuga.Chain.SQLite.CommandBuilders
 {
     /// <summary>
-    /// SQliteTableOrView supports queries against tables and views.
+    /// SQLiteTableOrView supports queries against tables and views.
     /// </summary>
-    internal sealed class SQLiteTableOrView : TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption>
+    internal sealed class SQLiteTableOrView<TObject> : TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption, TObject>
+        where TObject : class
     {
         readonly TableOrViewMetadata<SQLiteObjectName, DbType> m_Table;
         object? m_ArgumentValue;
@@ -29,7 +30,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
         //public object MetadataCache { get; private set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SQLiteTableOrView" /> class.
+        /// Initializes a new instance of the <see cref="SQLiteTableOrView{TObject}" /> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
         /// <param name="tableOrViewName">Name of the table or view.</param>
@@ -44,7 +45,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SQLiteTableOrView" /> class.
+        /// Initializes a new instance of the <see cref="SQLiteTableOrView{TObject}" /> class.
         /// </summary>
         /// <param name="dataSource"></param>
         /// <param name="tableOrViewName"></param>
@@ -199,7 +200,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
         /// <param name="filterValue">The filter value.</param>
         /// <param name="filterOptions">The filter options.</param>
         /// <returns>TableDbCommandBuilder&lt;SQLiteCommand, SQLiteParameter, SQLiteLimitOption&gt;.</returns>
-        public override TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> WithFilter(object filterValue, FilterOptions filterOptions = FilterOptions.None)
+        protected override TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> OnWithFilter(object filterValue, FilterOptions filterOptions = FilterOptions.None)
         {
             m_FilterValue = filterValue;
             m_WhereClause = null;
@@ -212,22 +213,9 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
         /// Adds (or replaces) the filter on this command builder.
         /// </summary>
         /// <param name="whereClause">The where clause.</param>
-        /// <returns></returns>
-        public override TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> WithFilter(string whereClause)
-        {
-            m_FilterValue = null;
-            m_WhereClause = whereClause;
-            m_ArgumentValue = null;
-            return this;
-        }
-
-        /// <summary>
-        /// Adds (or replaces) the filter on this command builder.
-        /// </summary>
-        /// <param name="whereClause">The where clause.</param>
         /// <param name="argumentValue">The argument value.</param>
         /// <returns></returns>
-        public override TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> WithFilter(string whereClause, object argumentValue)
+        protected override TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> OnWithFilter(string whereClause, object? argumentValue)
         {
             m_FilterValue = null;
             m_WhereClause = whereClause;
@@ -240,7 +228,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
         /// </summary>
         /// <param name="sortExpressions">The sort expressions.</param>
         /// <returns></returns>
-        public override TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> WithSorting(IEnumerable<SortExpression> sortExpressions)
+        protected override TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> OnWithSorting(IEnumerable<SortExpression> sortExpressions)
         {
             if (sortExpressions == null)
                 throw new ArgumentNullException(nameof(sortExpressions), $"{nameof(sortExpressions)} is null.");

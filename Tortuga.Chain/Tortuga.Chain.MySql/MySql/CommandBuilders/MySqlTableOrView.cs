@@ -13,7 +13,8 @@ namespace Tortuga.Chain.MySql.CommandBuilders
     /// <summary>
     /// Class MySqlTableOrView
     /// </summary>
-    public class MySqlTableOrView : TableDbCommandBuilder<MySqlCommand, MySqlParameter, MySqlLimitOption>
+    public class MySqlTableOrView<TObject> : TableDbCommandBuilder<MySqlCommand, MySqlParameter, MySqlLimitOption, TObject>
+        where TObject : class
     {
         private readonly TableOrViewMetadata<MySqlObjectName, MySqlDbType> m_Table;
         private object? m_ArgumentValue;
@@ -28,7 +29,7 @@ namespace Tortuga.Chain.MySql.CommandBuilders
         private string? m_WhereClause;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MySqlTableOrView" /> class.
+        /// Initializes a new instance of the <see cref="MySqlTableOrView{TObject}" /> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
         /// <param name="tableOrViewName">Name of the table or view.</param>
@@ -43,7 +44,7 @@ namespace Tortuga.Chain.MySql.CommandBuilders
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MySqlTableOrView" /> class.
+        /// Initializes a new instance of the <see cref="MySqlTableOrView{TObject}" /> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
         /// <param name="tableOrViewName">Name of the table or view.</param>
@@ -63,7 +64,7 @@ namespace Tortuga.Chain.MySql.CommandBuilders
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MySqlTableOrView"/> class.
+        /// Initializes a new instance of the <see cref="MySqlTableOrView{TObject}"/> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
         /// <param name="tableOrViewName">Name of the table or view.</param>
@@ -252,7 +253,7 @@ namespace Tortuga.Chain.MySql.CommandBuilders
         /// <param name="filterValue">The filter value.</param>
         /// <param name="filterOptions">The filter options.</param>
         /// <returns>TableDbCommandBuilder&lt;MySqlCommand, MySqlParameter, MySqlLimitOption&gt;.</returns>
-        public override TableDbCommandBuilder<MySqlCommand, MySqlParameter, MySqlLimitOption> WithFilter(object filterValue, FilterOptions filterOptions = FilterOptions.None)
+        protected override TableDbCommandBuilder<MySqlCommand, MySqlParameter, MySqlLimitOption> OnWithFilter(object filterValue, FilterOptions filterOptions = FilterOptions.None)
         {
             m_FilterValue = filterValue;
             m_WhereClause = null;
@@ -265,22 +266,9 @@ namespace Tortuga.Chain.MySql.CommandBuilders
         /// Adds (or replaces) the filter on this command builder.
         /// </summary>
         /// <param name="whereClause">The where clause.</param>
-        /// <returns>TableDbCommandBuilder&lt;MySqlCommand, MySqlParameter, MySqlLimitOption&gt;.</returns>
-        public override TableDbCommandBuilder<MySqlCommand, MySqlParameter, MySqlLimitOption> WithFilter(string whereClause)
-        {
-            m_FilterValue = null;
-            m_WhereClause = whereClause;
-            m_ArgumentValue = null;
-            return this;
-        }
-
-        /// <summary>
-        /// Adds (or replaces) the filter on this command builder.
-        /// </summary>
-        /// <param name="whereClause">The where clause.</param>
         /// <param name="argumentValue">The argument value.</param>
         /// <returns>TableDbCommandBuilder&lt;MySqlCommand, MySqlParameter, MySqlLimitOption&gt;.</returns>
-        public override TableDbCommandBuilder<MySqlCommand, MySqlParameter, MySqlLimitOption> WithFilter(string whereClause, object argumentValue)
+        protected override TableDbCommandBuilder<MySqlCommand, MySqlParameter, MySqlLimitOption> OnWithFilter(string whereClause, object? argumentValue)
         {
             m_FilterValue = null;
             m_WhereClause = whereClause;
@@ -293,7 +281,7 @@ namespace Tortuga.Chain.MySql.CommandBuilders
         /// </summary>
         /// <param name="sortExpressions">The sort expressions.</param>
         /// <returns></returns>
-        public override TableDbCommandBuilder<MySqlCommand, MySqlParameter, MySqlLimitOption> WithSorting(IEnumerable<SortExpression> sortExpressions)
+        protected override TableDbCommandBuilder<MySqlCommand, MySqlParameter, MySqlLimitOption> OnWithSorting(IEnumerable<SortExpression> sortExpressions)
         {
             if (sortExpressions == null)
                 throw new ArgumentNullException(nameof(sortExpressions), $"{nameof(sortExpressions)} is null.");
