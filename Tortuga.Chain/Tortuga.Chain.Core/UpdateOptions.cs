@@ -40,7 +40,7 @@ namespace Tortuga.Chain
         SoftDelete = 8,
 
         /// <summary>
-        /// The ignore rows affected count. Without this flag, an error will be thrown if the rows affected by the update operation is not zero.
+        /// The ignore rows affected count. Without this flag, an error will be thrown if the rows affected by the update operation is not one.
         /// </summary>
         IgnoreRowsAffected = 16
     }
