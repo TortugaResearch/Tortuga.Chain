@@ -11673,6 +11673,42 @@
             The result of the conversion.
             </returns>
         </member>
+        <member name="M:Tortuga.Chain.SortExpression.op_Inequality(Tortuga.Chain.SortExpression,Tortuga.Chain.SortExpression)">
+            <summary>
+            Implements the != operator.
+            </summary>
+            <param name="left">The left.</param>
+            <param name="right">The right.</param>
+            <returns>The result of the operator.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.SortExpression.op_Equality(Tortuga.Chain.SortExpression,Tortuga.Chain.SortExpression)">
+            <summary>
+            Implements the == operator.
+            </summary>
+            <param name="left">The left.</param>
+            <param name="right">The right.</param>
+            <returns>The result of the operator.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.SortExpression.Equals(Tortuga.Chain.SortExpression)">
+            <summary>
+            Indicates whether the current object is equal to another object of the same type.
+            </summary>
+            <param name="other">An object to compare with this object.</param>
+            <returns><see langword="true" /> if the current object is equal to the <paramref name="other" /> parameter; otherwise, <see langword="false" />.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.SortExpression.Equals(System.Object)">
+            <summary>
+            Determines whether the specified <see cref="T:System.Object" /> is equal to this instance.
+            </summary>
+            <param name="obj">The object to compare with the current instance.</param>
+            <returns><c>true</c> if the specified <see cref="T:System.Object" /> is equal to this instance; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.SortExpression.GetHashCode">
+            <summary>
+            Returns a hash code for this instance.
+            </summary>
+            <returns>A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.</returns>
+        </member>
         <member name="T:Tortuga.Chain.Table">
             <summary>
             A light-weight object to hold tabular data
