@@ -49,7 +49,7 @@ namespace Tortuga.Chain.MySql.CommandBuilders
             sql.AppendLine();
             sqlBuilder.BuildDeleteStatement(sql, Table.Name.ToQuotedString(), ";");
 
-            return new MySqlCommandExecutionToken(DataSource, "Delete from " + Table.Name, sql.ToString(), sqlBuilder.GetParameters());
+            return new MySqlCommandExecutionToken(DataSource, "Delete from " + Table.Name, sql.ToString(), sqlBuilder.GetParameters()).CheckDeleteRowCount(m_Options);
         }
     }
 }

@@ -21,6 +21,8 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         readonly IEnumerable<NpgsqlParameter>? m_Parameters;
         readonly TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType> m_Table;
         readonly string? m_WhereClause;
+        readonly DeleteOptions m_Options;
+        readonly int? m_ExpectedRowCount;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PostgreSqlDeleteMany" /> class.
@@ -29,8 +31,9 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         /// <param name="tableName">Name of the table.</param>
         /// <param name="whereClause">The where clause.</param>
         /// <param name="parameters">The parameters.</param>
+        /// <param name="expectedRowCount">The expected row count.</param>
         /// <param name="options">The options.</param>
-        public PostgreSqlDeleteMany(PostgreSqlDataSourceBase dataSource, PostgreSqlObjectName tableName, string whereClause, IEnumerable<NpgsqlParameter> parameters, DeleteOptions options) : base(dataSource)
+        public PostgreSqlDeleteMany(PostgreSqlDataSourceBase dataSource, PostgreSqlObjectName tableName, string whereClause, IEnumerable<NpgsqlParameter> parameters, int? expectedRowCount, DeleteOptions options) : base(dataSource)
         {
             if (options.HasFlag(DeleteOptions.UseKeyAttribute))
                 throw new NotSupportedException("Cannot use Key attributes with this operation.");
@@ -38,6 +41,8 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
             m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
             m_WhereClause = whereClause;
             m_Parameters = parameters;
+            m_Options = options;
+            m_ExpectedRowCount = expectedRowCount;
         }
 
         /// <summary>
@@ -102,7 +107,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
             if (m_Parameters != null)
                 parameters.AddRange(m_Parameters);
 
-            return new PostgreSqlCommandExecutionToken(DataSource, "Delete from " + m_Table.Name, sql.ToString(), parameters);
+            return new PostgreSqlCommandExecutionToken(DataSource, "Delete from " + m_Table.Name, sql.ToString(), parameters).CheckDeleteRowCount(m_Options, m_ExpectedRowCount);
         }
 
         /// <summary>

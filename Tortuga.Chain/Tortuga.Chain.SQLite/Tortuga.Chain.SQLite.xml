@@ -248,7 +248,7 @@
             Class SQLiteDeleteWithFilter.
             </summary>
         </member>
-        <member name="M:Tortuga.Chain.SQLite.CommandBuilders.SQLiteDeleteMany.#ctor(Tortuga.Chain.SQLite.SQLiteDataSourceBase,Tortuga.Chain.SQLite.SQLiteObjectName,System.String,System.Collections.Generic.IEnumerable{System.Data.SQLite.SQLiteParameter},Tortuga.Chain.DeleteOptions)">
+        <member name="M:Tortuga.Chain.SQLite.CommandBuilders.SQLiteDeleteMany.#ctor(Tortuga.Chain.SQLite.SQLiteDataSourceBase,Tortuga.Chain.SQLite.SQLiteObjectName,System.String,System.Collections.Generic.IEnumerable{System.Data.SQLite.SQLiteParameter},System.Nullable{System.Int32},Tortuga.Chain.DeleteOptions)">
             <summary>
             Initializes a new instance of the <see cref="T:Tortuga.Chain.SQLite.CommandBuilders.SQLiteDeleteMany" /> class.
             </summary>
@@ -256,6 +256,7 @@
             <param name="tableName">Name of the table.</param>
             <param name="whereClause">The where clause.</param>
             <param name="parameters">The parameters.</param>
+            <param name="expectedRowCount">The expected row count.</param>
             <param name="options">The options.</param>
         </member>
         <member name="M:Tortuga.Chain.SQLite.CommandBuilders.SQLiteDeleteMany.#ctor(Tortuga.Chain.SQLite.SQLiteDataSourceBase,Tortuga.Chain.SQLite.SQLiteObjectName,System.String,System.Object)">

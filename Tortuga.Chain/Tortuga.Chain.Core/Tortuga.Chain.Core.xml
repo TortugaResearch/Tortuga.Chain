@@ -4497,6 +4497,12 @@
             </summary>
             <remarks>This is mostly used by appenders to override command behavior.</remarks>
         </member>
+        <member name="P:Tortuga.Chain.Core.ExecutionToken.HasCommandExecutedEvent">
+            <summary>
+            Gets a value indicating whether this instance has command executed event.
+            </summary>
+            <value><c>true</c> if this instance has command executed event; otherwise, <c>false</c>.</value>
+        </member>
         <member name="P:Tortuga.Chain.Core.ExecutionToken.CommandText">
             <summary>
             Gets the command text, which is usually SQL.
@@ -5316,6 +5322,11 @@
             Ignore the primary keys on the table and perform the delete using the Key attribute on properties to construct the where clause.
             </summary>
             <remarks>This is generally used for heap-style tables, though technically heap tables may have primary, non-clustered keys.</remarks>
+        </member>
+        <member name="F:Tortuga.Chain.DeleteOptions.CheckRowsAffected">
+            <summary>
+            Check the rows affected count. With this flag, an error will be thrown if the rows affected by the delete operation is zero.
+            </summary>
         </member>
         <member name="T:Tortuga.Chain.DictionaryOptions">
             <summary>
@@ -6654,6 +6665,25 @@
             <typeparam name="T"></typeparam>
             <param name="executionToken">The execution token.</param>
             <param name="updateOptions">The update options.</param>
+            <returns>The execution token with an attached event handler.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.MaterializerUtilities.CheckDeleteRowCount``1(``0,Tortuga.Chain.DeleteOptions,System.Nullable{System.Int32})">
+            <summary>
+            Checks the delete row count.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="executionToken">The execution token.</param>
+            <param name="deleteOptions">The delete options.</param>
+            <param name="expectedRowCount">The expected row count.</param>
+            <returns>The execution token with an attached event handler.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.MaterializerUtilities.CheckDeleteRowCount``1(``0,Tortuga.Chain.DeleteOptions)">
+            <summary>
+            Checks the delete row count.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="executionToken">The execution token.</param>
+            <param name="deleteOptions">The delete options.</param>
             <returns>The execution token with an attached event handler.</returns>
         </member>
         <member name="M:Tortuga.Chain.Materializers.MaterializerUtilities.PopulateComplexObject``1(System.Collections.Generic.IReadOnlyDictionary{System.String,System.Object},``0,System.String)">

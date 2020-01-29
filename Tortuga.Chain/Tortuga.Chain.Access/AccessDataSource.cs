@@ -375,7 +375,7 @@ namespace Tortuga.Chain
                             }
                             else
                                 rows = cmd.ExecuteNonQuery();
-                            executionToken.RaiseCommandExecuted(cmd, rows);
+                            currentToken.RaiseCommandExecuted(cmd, rows);
                             OnExecutionFinished(currentToken, startTime, DateTimeOffset.Now, rows, state);
                         }
                         currentToken = currentToken.NextCommand;

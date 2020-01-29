@@ -571,7 +571,7 @@
             Class SqlServerDeleteWithFilter.
             </summary>
         </member>
-        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerDeleteMany.#ctor(Tortuga.Chain.SqlServer.SqlServerDataSourceBase,Tortuga.Chain.SqlServer.SqlServerObjectName,System.String,System.Collections.Generic.IEnumerable{System.Data.SqlClient.SqlParameter},Tortuga.Chain.DeleteOptions)">
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerDeleteMany.#ctor(Tortuga.Chain.SqlServer.SqlServerDataSourceBase,Tortuga.Chain.SqlServer.SqlServerObjectName,System.String,System.Collections.Generic.IEnumerable{System.Data.SqlClient.SqlParameter},System.Nullable{System.Int32},Tortuga.Chain.DeleteOptions)">
             <summary>
             Initializes a new instance of the <see cref="T:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerDeleteMany" /> class.
             </summary>
@@ -579,6 +579,7 @@
             <param name="tableName">Name of the table.</param>
             <param name="whereClause">The where clause.</param>
             <param name="parameters">The parameters.</param>
+            <param name="expectedRowCount">The expected row count.</param>
             <param name="options">The options.</param>
         </member>
         <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerDeleteMany.#ctor(Tortuga.Chain.SqlServer.SqlServerDataSourceBase,Tortuga.Chain.SqlServer.SqlServerObjectName,System.String,System.Object)">
