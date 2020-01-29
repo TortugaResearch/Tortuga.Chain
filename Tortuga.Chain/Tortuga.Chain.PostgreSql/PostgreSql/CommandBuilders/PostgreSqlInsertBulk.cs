@@ -20,6 +20,8 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         readonly PostgreSqlDataSourceBase m_DataSource;
         readonly IDataReader m_Source;
         readonly TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType> m_Table;
+        EventHandler<AbortableOperationEventArgs>? m_EventHandler;
+        int? m_NotifyAfter;
 
         internal PostgreSqlInsertBulk(PostgreSqlDataSourceBase dataSource, PostgreSqlObjectName tableName, DataTable dataTable) : base(dataSource)
         {
@@ -47,6 +49,22 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
             m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
             if (!m_Table.IsTable)
                 throw new MappingException($"Cannot perform a bulk insert into the view {m_Table.Name}");
+        }
+
+        /// <summary>
+        /// After notifyAfter records, the event handler may be fired. This can be used to abort the bulk insert.
+        /// </summary>
+        /// <param name="eventHandler">The event handler.</param>
+        /// <param name="notifyAfter">The notify after. This should be a multiple of the batch size.</param>
+        public PostgreSqlInsertBulk WithNotifications(EventHandler<AbortableOperationEventArgs> eventHandler, int notifyAfter)
+        {
+            if (eventHandler == null)
+                throw new ArgumentNullException(nameof(eventHandler), $"{nameof(eventHandler)} is null.");
+            if (notifyAfter <= 0)
+                throw new ArgumentException($"{nameof(notifyAfter)} must be greater than 0.", nameof(notifyAfter));
+            m_EventHandler = eventHandler;
+            m_NotifyAfter = notifyAfter;
+            return this;
         }
 
         /// <summary>
@@ -93,8 +111,9 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
             var rowCount = 0;
             var columns = SetupColumns();
             var sql = SetupSql(columns);
+            var nextNotification = m_NotifyAfter;
 
-            using (var writer = connection.BeginBinaryImport(sql))
+            using var writer = connection.BeginBinaryImport(sql);
             {
                 while (m_Source.Read())
                 {
@@ -109,6 +128,20 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
                     }
 
                     rowCount++;
+
+                    if (rowCount == nextNotification)
+                    {
+                        var e = new AbortableOperationEventArgs(rowCount);
+                        m_EventHandler?.Invoke(this, e);
+
+                        nextNotification += m_NotifyAfter;
+
+                        if (e.Abort)
+                        {
+                            writer.Complete();
+                            throw new TaskCanceledException("Bulk insert operation aborted.");
+                        }
+                    }
                 }
                 writer.Complete();
             }
@@ -130,6 +163,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
             var rowCount = 0;
             var columns = SetupColumns();
             var sql = SetupSql(columns);
+            var nextNotification = m_NotifyAfter;
 
             using (var writer = connection.BeginBinaryImport(sql))
             {
@@ -146,6 +180,20 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
                     }
 
                     rowCount++;
+
+                    if (rowCount == nextNotification)
+                    {
+                        var e = new AbortableOperationEventArgs(rowCount);
+                        m_EventHandler?.Invoke(this, e);
+
+                        nextNotification += m_NotifyAfter;
+
+                        if (e.Abort)
+                        {
+                            writer.Complete();
+                            throw new TaskCanceledException("Bulk insert operation aborted.");
+                        }
+                    }
                 }
                 await writer.CompleteAsync(cancellationToken).ConfigureAwait(false);
             }

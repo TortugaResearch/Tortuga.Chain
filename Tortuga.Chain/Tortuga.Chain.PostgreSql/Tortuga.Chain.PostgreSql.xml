@@ -371,6 +371,13 @@
             This class is used to perform bulk inserts
             </summary>
         </member>
+        <member name="M:Tortuga.Chain.PostgreSql.CommandBuilders.PostgreSqlInsertBulk.WithNotifications(System.EventHandler{Tortuga.Chain.AbortableOperationEventArgs},System.Int32)">
+            <summary>
+            After notifyAfter records, the event handler may be fired. This can be used to abort the bulk insert.
+            </summary>
+            <param name="eventHandler">The event handler.</param>
+            <param name="notifyAfter">The notify after. This should be a multiple of the batch size.</param>
+        </member>
         <member name="M:Tortuga.Chain.PostgreSql.CommandBuilders.PostgreSqlInsertBulk.Prepare">
             <summary>
             Prepares the command for execution by generating any necessary SQL.

@@ -67,17 +67,18 @@ namespace Tests.CommandBuilders
             var key1000 = Guid.NewGuid().ToString();
             var employeeList = new List<Employee>();
 
-            for (var i = 0; i < 1000; i++)
+            const int RowCount = 1000;
+            for (var i = 0; i < RowCount; i++)
                 employeeList.Add(new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = key1000 });
 
             var dataSource = DataSource(dataSourceName, mode);
             try
             {
                 var count = dataSource.InsertBulk(EmployeeTableName, employeeList).Execute();
-                Assert.AreEqual(1000, count);
+                Assert.AreEqual(RowCount, count);
 
                 var count2 = dataSource.From(EmployeeTableName, new { Title = key1000 }).AsCount().Execute();
-                Assert.AreEqual(1000, count2);
+                Assert.AreEqual(RowCount, count2);
             }
             finally
             {
@@ -111,6 +112,7 @@ namespace Tests.CommandBuilders
         }
 
 #if SQL_SERVER_SDS || SQL_SERVER_MDS || MYSQL
+
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
         public async Task InsertBulkAsync_List_WithBatches(string dataSourceName, DataSourceType mode)
         {
@@ -134,6 +136,7 @@ namespace Tests.CommandBuilders
                 Release(dataSource);
             }
         }
+
 #endif
 
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
@@ -243,6 +246,10 @@ namespace Tests.CommandBuilders
             }
         }
 
+#endif
+
+#if SQL_SERVER_SDS || SQL_SERVER_MDS
+
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
         public void InsertBulk_WithEvents(string dataSourceName, DataSourceType mode)
         {
@@ -255,11 +262,41 @@ namespace Tests.CommandBuilders
             {
                 var count = dataSource.InsertBulk(EmployeeTableName, StreamRecords(key, 1000)).WithBatchSize(75).WithNotifications((s, e) =>
                 {
-                    Debug.WriteLine($"Copied {e.RowsCopied} rows");
-                    runningCount = e.RowsCopied;
+                    Debug.WriteLine($"Copied {e.RowsAffected} rows");
+                    runningCount = e.RowsAffected;
                 }, 90).Execute();
 
                 Assert.AreEqual(-1, count); //streaming prevents returning a row count;
+                Assert.AreNotEqual(0, runningCount, "record count is wrong"); //but we can get it another way
+
+                var count2 = dataSource.From(EmployeeTableName, new { Title = key }).AsCount().Execute();
+                Assert.AreEqual(1000, count2);
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+#elif POSTGRESQL|| MYSQL
+
+        [DataTestMethod, BasicData(DataSourceGroup.Primary)]
+        public void InsertBulk_WithEvents(string dataSourceName, DataSourceType mode)
+        {
+            long runningCount = 0;
+            var key = Guid.NewGuid().ToString();
+            var employeeList = new List<Employee>();
+
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+                var count = dataSource.InsertBulk(EmployeeTableName, StreamRecords(key, 1000)).WithNotifications((s, e) =>
+                {
+                    Debug.WriteLine($"Copied {e.RowsAffected} rows");
+                    runningCount = e.RowsAffected;
+                }, 90).Execute();
+
+                Assert.AreEqual(1000, count); //streaming prevents returning a row count;
                 Assert.AreNotEqual(0, runningCount, "record count is wrong"); //but we can get it another way
 
                 var count2 = dataSource.From(EmployeeTableName, new { Title = key }).AsCount().Execute();

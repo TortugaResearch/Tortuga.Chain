@@ -31,7 +31,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         readonly TableOrViewMetadata<SqlServerObjectName, SqlDbType> m_Table;
         int? m_BatchSize;
         bool m_EnableStreaming;
-        SqlRowsCopiedEventHandler? m_EventHandler;
+        EventHandler<AbortableOperationEventArgs>? m_EventHandler;
         int? m_NotifyAfter;
 
         internal SqlServerInsertBulk(SqlServerDataSourceBase dataSource, SqlServerObjectName tableName, DataTable dataTable, SqlBulkCopyOptions options) : base(dataSource)
@@ -106,12 +106,11 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         }
 
         /// <summary>
-        /// After every [notifyAfter] records, the event handler will be fired.
+        /// After notifyAfter records, the event handler will be fired. This can be used to abort the bulk insert.
         /// </summary>
         /// <param name="eventHandler">The event handler.</param>
         /// <param name="notifyAfter">The notify after.</param>
-        /// <returns>SqlServerInsertBulk.</returns>
-        public SqlServerInsertBulk WithNotifications(SqlRowsCopiedEventHandler eventHandler, int notifyAfter)
+        public SqlServerInsertBulk WithNotifications(EventHandler<AbortableOperationEventArgs> eventHandler, int notifyAfter)
         {
             if (eventHandler == null)
                 throw new ArgumentNullException(nameof(eventHandler), $"{nameof(eventHandler)} is null.");
@@ -176,7 +175,14 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             bcp.EnableStreaming = m_EnableStreaming;
 
             if (m_EventHandler != null)
-                bcp.SqlRowsCopied += m_EventHandler;
+                bcp.SqlRowsCopied += (s, e) =>
+                {
+                    //Copy-in/copy-out is needed to get a generic event handler.
+                    var e1 = new AbortableOperationEventArgs(e.RowsCopied);
+                    m_EventHandler.Invoke(s, e1);
+                    e.Abort = e1.Abort;
+                };
+
             if (m_NotifyAfter.HasValue)
                 bcp.NotifyAfter = m_NotifyAfter.Value;
 
