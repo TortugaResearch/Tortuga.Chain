@@ -8,22 +8,23 @@ using Tortuga.Chain.CommandBuilders;
 namespace Tortuga.Chain.Materializers
 {
     /// <summary>
-    /// Materializes the result set as a list of integers.
+    /// Materializes the result set as a list of byte arrays.
     /// </summary>
     /// <typeparam name="TCommand">The type of the t command type.</typeparam>
     /// <typeparam name="TParameter">The type of the t parameter type.</typeparam>
-    internal sealed class Int32SetMaterializer<TCommand, TParameter> : SingleColumnMaterializer<TCommand, TParameter, HashSet<int>> where TCommand : DbCommand
+    internal sealed class ByteArrayOrNullListMaterializer<TCommand, TParameter> : SingleColumnMaterializer<TCommand, TParameter, List<byte[]?>>
+        where TCommand : DbCommand
         where TParameter : DbParameter
     {
         readonly ListOptions m_ListOptions;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Int32SetMaterializer{TCommand, TParameter}"/> class.
+        /// Initializes a new instance of the <see cref="BooleanOrNullListMaterializer{TCommand, TParameter}"/> class.
         /// </summary>
         /// <param name="commandBuilder">The command builder.</param>
         /// <param name="columnName">Name of the desired column.</param>
         /// <param name="listOptions">The list options.</param>
-        public Int32SetMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, string? columnName = null, ListOptions listOptions = ListOptions.None)
+        public ByteArrayOrNullListMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, string? columnName = null, ListOptions listOptions = ListOptions.None)
             : base(commandBuilder, columnName)
         {
             m_ListOptions = listOptions;
@@ -33,16 +34,18 @@ namespace Tortuga.Chain.Materializers
         /// Execute the operation synchronously.
         /// </summary>
         /// <returns></returns>
-        public override HashSet<int> Execute(object? state = null)
+        public override List<byte[]?> Execute(object? state = null)
         {
-            var result = new HashSet<int>();
+            var result = new List<byte[]?>();
 
             Prepare().Execute(cmd =>
             {
                 using (var reader = cmd.ExecuteReader())
                 {
                     if (reader.FieldCount > 1 && !m_ListOptions.HasFlag(ListOptions.IgnoreExtraColumns))
+                    {
                         throw new UnexpectedDataException($"Expected one column but found {reader.FieldCount} columns");
+                    }
 
                     var columnCount = m_ListOptions.HasFlag(ListOptions.FlattenExtraColumns) ? reader.FieldCount : 1;
                     var discardNulls = m_ListOptions.HasFlag(ListOptions.DiscardNulls);
@@ -53,9 +56,9 @@ namespace Tortuga.Chain.Materializers
                         for (var i = 0; i < columnCount; i++)
                         {
                             if (!reader.IsDBNull(i))
-                                result.Add(reader.GetInt32(i));
+                                result.Add((byte[])reader.GetValue(i));
                             else if (!discardNulls)
-                                throw new MissingDataException("Unexpected null value");
+                                result.Add(null);
                         }
                     }
                     return rowCount;
@@ -71,16 +74,18 @@ namespace Tortuga.Chain.Materializers
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <param name="state">User defined state, usually used for logging.</param>
         /// <returns></returns>
-        public override async Task<HashSet<int>> ExecuteAsync(CancellationToken cancellationToken, object? state = null)
+        public override async Task<List<byte[]?>> ExecuteAsync(CancellationToken cancellationToken, object? state = null)
         {
-            var result = new HashSet<int>();
+            var result = new List<byte[]?>();
 
             await Prepare().ExecuteAsync(async cmd =>
             {
                 using (var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SequentialAccess, cancellationToken).ConfigureAwait(false))
                 {
                     if (reader.FieldCount > 1 && !m_ListOptions.HasFlag(ListOptions.IgnoreExtraColumns))
+                    {
                         throw new UnexpectedDataException($"Expected one column but found {reader.FieldCount} columns");
+                    }
 
                     var columnCount = m_ListOptions.HasFlag(ListOptions.FlattenExtraColumns) ? reader.FieldCount : 1;
                     var discardNulls = m_ListOptions.HasFlag(ListOptions.DiscardNulls);
@@ -92,9 +97,9 @@ namespace Tortuga.Chain.Materializers
                         for (var i = 0; i < columnCount; i++)
                         {
                             if (!reader.IsDBNull(i))
-                                result.Add(reader.GetInt32(i));
+                                result.Add((byte[])reader.GetValue(i));
                             else if (!discardNulls)
-                                throw new MissingDataException("Unexpected null value");
+                                result.Add(null);
                         }
                     }
                     return rowCount;

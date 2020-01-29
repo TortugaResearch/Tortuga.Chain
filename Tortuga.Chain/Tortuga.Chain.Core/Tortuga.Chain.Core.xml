@@ -8289,6 +8289,35 @@
             <param name="state">User defined state, usually used for logging.</param>
             <returns></returns>
         </member>
+        <member name="T:Tortuga.Chain.Materializers.BooleanOrNullListMaterializer`2">
+            <summary>
+            Materializes the result set as a list of booleans.
+            </summary>
+            <typeparam name="TCommand">The type of the t command type.</typeparam>
+            <typeparam name="TParameter">The type of the t parameter type.</typeparam>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.BooleanOrNullListMaterializer`2.#ctor(Tortuga.Chain.CommandBuilders.DbCommandBuilder{`0,`1},System.String,Tortuga.Chain.ListOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Materializers.BooleanOrNullListMaterializer`2"/> class.
+            </summary>
+            <param name="commandBuilder">The command builder.</param>
+            <param name="columnName">Name of the desired column.</param>
+            <param name="listOptions">The list options.</param>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.BooleanOrNullListMaterializer`2.Execute(System.Object)">
+            <summary>
+            Execute the operation synchronously.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.BooleanOrNullListMaterializer`2.ExecuteAsync(System.Threading.CancellationToken,System.Object)">
+            <summary>
+            Execute the operation asynchronously.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name="state">User defined state, usually used for logging.</param>
+            <returns></returns>
+        </member>
         <member name="T:Tortuga.Chain.Materializers.ByteArrayListMaterializer`2">
             <summary>
             Materializes the result set as a list of byte arrays.
@@ -8318,6 +8347,35 @@
             <param name="state">User defined state, usually used for logging.</param>
             <returns></returns>
         </member>
+        <member name="T:Tortuga.Chain.Materializers.ByteArrayOrNullListMaterializer`2">
+            <summary>
+            Materializes the result set as a list of byte arrays.
+            </summary>
+            <typeparam name="TCommand">The type of the t command type.</typeparam>
+            <typeparam name="TParameter">The type of the t parameter type.</typeparam>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.ByteArrayOrNullListMaterializer`2.#ctor(Tortuga.Chain.CommandBuilders.DbCommandBuilder{`0,`1},System.String,Tortuga.Chain.ListOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Materializers.BooleanOrNullListMaterializer`2"/> class.
+            </summary>
+            <param name="commandBuilder">The command builder.</param>
+            <param name="columnName">Name of the desired column.</param>
+            <param name="listOptions">The list options.</param>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.ByteArrayOrNullListMaterializer`2.Execute(System.Object)">
+            <summary>
+            Execute the operation synchronously.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.ByteArrayOrNullListMaterializer`2.ExecuteAsync(System.Threading.CancellationToken,System.Object)">
+            <summary>
+            Execute the operation asynchronously.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name="state">User defined state, usually used for logging.</param>
+            <returns></returns>
+        </member>
         <member name="T:Tortuga.Chain.Materializers.ByteListMaterializer`2">
             <summary>
             Materializes the result set as a list of byte.
@@ -8340,6 +8398,35 @@
             <returns></returns>
         </member>
         <member name="M:Tortuga.Chain.Materializers.ByteListMaterializer`2.ExecuteAsync(System.Threading.CancellationToken,System.Object)">
+            <summary>
+            Execute the operation asynchronously.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name="state">User defined state, usually used for logging.</param>
+            <returns></returns>
+        </member>
+        <member name="T:Tortuga.Chain.Materializers.ByteOrNullListMaterializer`2">
+            <summary>
+            Materializes the result set as a list of byte.
+            </summary>
+            <typeparam name="TCommand">The type of the t command type.</typeparam>
+            <typeparam name="TParameter">The type of the t parameter type.</typeparam>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.ByteOrNullListMaterializer`2.#ctor(Tortuga.Chain.CommandBuilders.DbCommandBuilder{`0,`1},System.String,Tortuga.Chain.ListOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Materializers.BooleanOrNullListMaterializer`2"/> class.
+            </summary>
+            <param name="commandBuilder">The command builder.</param>
+            <param name="columnName">Name of the desired column.</param>
+            <param name="listOptions">The list options.</param>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.ByteOrNullListMaterializer`2.Execute(System.Object)">
+            <summary>
+            Execute the operation synchronously.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.ByteOrNullListMaterializer`2.ExecuteAsync(System.Threading.CancellationToken,System.Object)">
             <summary>
             Execute the operation asynchronously.
             </summary>
@@ -8405,6 +8492,35 @@
             <param name="state">User defined state, usually used for logging.</param>
             <returns></returns>
         </member>
+        <member name="T:Tortuga.Chain.Materializers.DateTimeOffsetOrNullListMaterializer`2">
+            <summary>
+            Materializes the result set as a list of DateTimeOffset.
+            </summary>
+            <typeparam name="TCommand">The type of the t command type.</typeparam>
+            <typeparam name="TParameter">The type of the t parameter type.</typeparam>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.DateTimeOffsetOrNullListMaterializer`2.#ctor(Tortuga.Chain.CommandBuilders.DbCommandBuilder{`0,`1},System.String,Tortuga.Chain.ListOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Materializers.DateTimeOffsetOrNullListMaterializer`2"/> class.
+            </summary>
+            <param name="commandBuilder">The command builder.</param>
+            <param name="listOptions">The list options.</param>
+            <param name="columnName">Name of the desired column.</param>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.DateTimeOffsetOrNullListMaterializer`2.Execute(System.Object)">
+            <summary>
+            Execute the operation synchronously.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.DateTimeOffsetOrNullListMaterializer`2.ExecuteAsync(System.Threading.CancellationToken,System.Object)">
+            <summary>
+            Execute the operation asynchronously.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name="state">User defined state, usually used for logging.</param>
+            <returns></returns>
+        </member>
         <member name="T:Tortuga.Chain.Materializers.DateTimeOffsetSetMaterializer`2">
             <summary>
             Materializes the result set as a list of DateTimeOffset.
@@ -8427,6 +8543,35 @@
             <returns></returns>
         </member>
         <member name="M:Tortuga.Chain.Materializers.DateTimeOffsetSetMaterializer`2.ExecuteAsync(System.Threading.CancellationToken,System.Object)">
+            <summary>
+            Execute the operation asynchronously.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name="state">User defined state, usually used for logging.</param>
+            <returns></returns>
+        </member>
+        <member name="T:Tortuga.Chain.Materializers.DateTimeOrNullListMaterializer`2">
+            <summary>
+            Materializes the result set as a list of DateTime.
+            </summary>
+            <typeparam name="TCommand">The type of the t command type.</typeparam>
+            <typeparam name="TParameter">The type of the t parameter type.</typeparam>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.DateTimeOrNullListMaterializer`2.#ctor(Tortuga.Chain.CommandBuilders.DbCommandBuilder{`0,`1},System.String,Tortuga.Chain.ListOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Materializers.DateTimeOrNullListMaterializer`2"/> class.
+            </summary>
+            <param name="commandBuilder">The command builder.</param>
+            <param name="listOptions">The list options.</param>
+            <param name="columnName">Name of the desired column.</param>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.DateTimeOrNullListMaterializer`2.Execute(System.Object)">
+            <summary>
+            Execute the operation synchronously.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.DateTimeOrNullListMaterializer`2.ExecuteAsync(System.Threading.CancellationToken,System.Object)">
             <summary>
             Execute the operation asynchronously.
             </summary>
@@ -8492,6 +8637,35 @@
             <param name="state">User defined state, usually used for logging.</param>
             <returns></returns>
         </member>
+        <member name="T:Tortuga.Chain.Materializers.DecimalOrNullListMaterializer`2">
+            <summary>
+            Materializes the result set as a list of numbers.
+            </summary>
+            <typeparam name="TCommand">The type of the t command type.</typeparam>
+            <typeparam name="TParameter">The type of the t parameter type.</typeparam>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.DecimalOrNullListMaterializer`2.#ctor(Tortuga.Chain.CommandBuilders.DbCommandBuilder{`0,`1},System.String,Tortuga.Chain.ListOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Materializers.DecimalOrNullListMaterializer`2"/> class.
+            </summary>
+            <param name="commandBuilder">The command builder.</param>
+            <param name="listOptions">The list options.</param>
+            <param name="columnName">Name of the desired column.</param>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.DecimalOrNullListMaterializer`2.Execute(System.Object)">
+            <summary>
+            Execute the operation synchronously.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.DecimalOrNullListMaterializer`2.ExecuteAsync(System.Threading.CancellationToken,System.Object)">
+            <summary>
+            Execute the operation asynchronously.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name="state">User defined state, usually used for logging.</param>
+            <returns></returns>
+        </member>
         <member name="T:Tortuga.Chain.Materializers.DecimalSetMaterializer`2">
             <summary>
             Materializes the result set as a list of numbers.
@@ -8543,6 +8717,35 @@
             <returns></returns>
         </member>
         <member name="M:Tortuga.Chain.Materializers.DoubleListMaterializer`2.ExecuteAsync(System.Threading.CancellationToken,System.Object)">
+            <summary>
+            Execute the operation asynchronously.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name="state">User defined state, usually used for logging.</param>
+            <returns></returns>
+        </member>
+        <member name="T:Tortuga.Chain.Materializers.DoubleOrNullListMaterializer`2">
+            <summary>
+            Materializes the result set as a list of numbers.
+            </summary>
+            <typeparam name="TCommand">The type of the t command type.</typeparam>
+            <typeparam name="TParameter">The type of the t parameter type.</typeparam>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.DoubleOrNullListMaterializer`2.#ctor(Tortuga.Chain.CommandBuilders.DbCommandBuilder{`0,`1},System.String,Tortuga.Chain.ListOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Materializers.DoubleOrNullListMaterializer`2"/> class.
+            </summary>
+            <param name="commandBuilder">The command builder.</param>
+            <param name="listOptions">The list options.</param>
+            <param name="columnName">Name of the desired column.</param>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.DoubleOrNullListMaterializer`2.Execute(System.Object)">
+            <summary>
+            Execute the operation synchronously.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.DoubleOrNullListMaterializer`2.ExecuteAsync(System.Threading.CancellationToken,System.Object)">
             <summary>
             Execute the operation asynchronously.
             </summary>
@@ -8607,6 +8810,35 @@
             <param name="state">User defined state, usually used for logging.</param>
             <returns></returns>
         </member>
+        <member name="T:Tortuga.Chain.Materializers.GuidOrNullListMaterializer`2">
+            <summary>
+            Materializes the result set as a list of Guids.
+            </summary>
+            <typeparam name="TCommand">The type of the t command type.</typeparam>
+            <typeparam name="TParameter">The type of the t parameter type.</typeparam>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.GuidOrNullListMaterializer`2.#ctor(Tortuga.Chain.CommandBuilders.DbCommandBuilder{`0,`1},System.String,Tortuga.Chain.ListOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Materializers.GuidOrNullListMaterializer`2"/> class.
+            </summary>
+            <param name="commandBuilder">The command builder.</param>
+            <param name="columnName">Name of the desired column.</param>
+            <param name="listOptions">The list options.</param>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.GuidOrNullListMaterializer`2.Execute(System.Object)">
+            <summary>
+            Execute the operation synchronously.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.GuidOrNullListMaterializer`2.ExecuteAsync(System.Threading.CancellationToken,System.Object)">
+            <summary>
+            Execute the operation asynchronously.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name="state">User defined state, usually used for logging.</param>
+            <returns></returns>
+        </member>
         <member name="T:Tortuga.Chain.Materializers.GuidSetMaterializer`2">
             <summary>
             Materializes the result set as a list of Guids.
@@ -8663,6 +8895,35 @@
             <param name="state">User defined state, usually used for logging.</param>
             <returns></returns>
         </member>
+        <member name="T:Tortuga.Chain.Materializers.Int16OrNullListMaterializer`2">
+            <summary>
+            Materializes the result set as a list of integers.
+            </summary>
+            <typeparam name="TCommand">The type of the t command type.</typeparam>
+            <typeparam name="TParameter">The type of the t parameter type.</typeparam>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.Int16OrNullListMaterializer`2.#ctor(Tortuga.Chain.CommandBuilders.DbCommandBuilder{`0,`1},System.String,Tortuga.Chain.ListOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Materializers.Int16OrNullListMaterializer`2"/> class.
+            </summary>
+            <param name="commandBuilder">The command builder.</param>
+            <param name="columnName">Name of the desired column.</param>
+            <param name="listOptions">The list options.</param>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.Int16OrNullListMaterializer`2.Execute(System.Object)">
+            <summary>
+            Execute the operation synchronously.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.Int16OrNullListMaterializer`2.ExecuteAsync(System.Threading.CancellationToken,System.Object)">
+            <summary>
+            Execute the operation asynchronously.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name="state">User defined state, usually used for logging.</param>
+            <returns></returns>
+        </member>
         <member name="T:Tortuga.Chain.Materializers.Int16SetMaterializer`2">
             <summary>
             Materializes the result set as a list of integers.
@@ -8700,10 +8961,11 @@
         </member>
         <member name="M:Tortuga.Chain.Materializers.Int32ListMaterializer`2.#ctor(Tortuga.Chain.CommandBuilders.DbCommandBuilder{`0,`1},System.String,Tortuga.Chain.ListOptions)">
             <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Materializers.Int32ListMaterializer`2"/> class.
             </summary>
             <param name="commandBuilder">The command builder.</param>
-            <param name="listOptions">The list options.</param>
             <param name="columnName">Name of the desired column.</param>
+            <param name="listOptions">The list options.</param>
         </member>
         <member name="M:Tortuga.Chain.Materializers.Int32ListMaterializer`2.Execute(System.Object)">
             <summary>
@@ -8712,6 +8974,35 @@
             <returns></returns>
         </member>
         <member name="M:Tortuga.Chain.Materializers.Int32ListMaterializer`2.ExecuteAsync(System.Threading.CancellationToken,System.Object)">
+            <summary>
+            Execute the operation asynchronously.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name="state">User defined state, usually used for logging.</param>
+            <returns></returns>
+        </member>
+        <member name="T:Tortuga.Chain.Materializers.Int32OrNullListMaterializer`2">
+            <summary>
+            Materializes the result set as a list of integers.
+            </summary>
+            <typeparam name="TCommand">The type of the t command type.</typeparam>
+            <typeparam name="TParameter">The type of the t parameter type.</typeparam>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.Int32OrNullListMaterializer`2.#ctor(Tortuga.Chain.CommandBuilders.DbCommandBuilder{`0,`1},System.String,Tortuga.Chain.ListOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Materializers.Int32OrNullListMaterializer`2"/> class.
+            </summary>
+            <param name="commandBuilder">The command builder.</param>
+            <param name="columnName">Name of the desired column.</param>
+            <param name="listOptions">The list options.</param>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.Int32OrNullListMaterializer`2.Execute(System.Object)">
+            <summary>
+            Execute the operation synchronously.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.Int32OrNullListMaterializer`2.ExecuteAsync(System.Threading.CancellationToken,System.Object)">
             <summary>
             Execute the operation asynchronously.
             </summary>
@@ -8728,10 +9019,11 @@
         </member>
         <member name="M:Tortuga.Chain.Materializers.Int32SetMaterializer`2.#ctor(Tortuga.Chain.CommandBuilders.DbCommandBuilder{`0,`1},System.String,Tortuga.Chain.ListOptions)">
             <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Materializers.Int32SetMaterializer`2"/> class.
             </summary>
             <param name="commandBuilder">The command builder.</param>
-            <param name="listOptions">The list options.</param>
             <param name="columnName">Name of the desired column.</param>
+            <param name="listOptions">The list options.</param>
         </member>
         <member name="M:Tortuga.Chain.Materializers.Int32SetMaterializer`2.Execute(System.Object)">
             <summary>
@@ -8768,6 +9060,35 @@
             <returns></returns>
         </member>
         <member name="M:Tortuga.Chain.Materializers.Int64ListMaterializer`2.ExecuteAsync(System.Threading.CancellationToken,System.Object)">
+            <summary>
+            Execute the operation asynchronously.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name="state">User defined state, usually used for logging.</param>
+            <returns></returns>
+        </member>
+        <member name="T:Tortuga.Chain.Materializers.Int64OrNullListMaterializer`2">
+            <summary>
+            Materializes the result set as a list of integers.
+            </summary>
+            <typeparam name="TCommand">The type of the t command type.</typeparam>
+            <typeparam name="TParameter">The type of the t parameter type.</typeparam>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.Int64OrNullListMaterializer`2.#ctor(Tortuga.Chain.CommandBuilders.DbCommandBuilder{`0,`1},System.String,Tortuga.Chain.ListOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Materializers.Int64OrNullListMaterializer`2"/> class.
+            </summary>
+            <param name="commandBuilder">The command builder.</param>
+            <param name="columnName">Name of the desired column.</param>
+            <param name="listOptions">The list options.</param>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.Int64OrNullListMaterializer`2.Execute(System.Object)">
+            <summary>
+            Execute the operation synchronously.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.Int64OrNullListMaterializer`2.ExecuteAsync(System.Threading.CancellationToken,System.Object)">
             <summary>
             Execute the operation asynchronously.
             </summary>
@@ -8848,6 +9169,35 @@
             <param name="state">User defined state, usually used for logging.</param>
             <returns></returns>
         </member>
+        <member name="T:Tortuga.Chain.Materializers.SingleOrNullListMaterializer`2">
+            <summary>
+            Materializes the result set as a list of numbers.
+            </summary>
+            <typeparam name="TCommand">The type of the t command type.</typeparam>
+            <typeparam name="TParameter">The type of the t parameter type.</typeparam>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.SingleOrNullListMaterializer`2.#ctor(Tortuga.Chain.CommandBuilders.DbCommandBuilder{`0,`1},System.String,Tortuga.Chain.ListOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Materializers.SingleOrNullListMaterializer`2"/> class.
+            </summary>
+            <param name="commandBuilder">The command builder.</param>
+            <param name="columnName">Name of the desired column.</param>
+            <param name="listOptions">The list options.</param>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.SingleOrNullListMaterializer`2.Execute(System.Object)">
+            <summary>
+            Execute the operation synchronously.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.SingleOrNullListMaterializer`2.ExecuteAsync(System.Threading.CancellationToken,System.Object)">
+            <summary>
+            Execute the operation asynchronously.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name="state">User defined state, usually used for logging.</param>
+            <returns></returns>
+        </member>
         <member name="T:Tortuga.Chain.Materializers.SingleSetMaterializer`2">
             <summary>
             Materializes the result set as a list of numbers.
@@ -8857,10 +9207,11 @@
         </member>
         <member name="M:Tortuga.Chain.Materializers.SingleSetMaterializer`2.#ctor(Tortuga.Chain.CommandBuilders.DbCommandBuilder{`0,`1},System.String,Tortuga.Chain.ListOptions)">
             <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Materializers.SingleSetMaterializer`2"/> class.
             </summary>
             <param name="commandBuilder">The command builder.</param>
-            <param name="listOptions">The list options.</param>
             <param name="columnName">Name of the desired column.</param>
+            <param name="listOptions">The list options.</param>
         </member>
         <member name="M:Tortuga.Chain.Materializers.SingleSetMaterializer`2.Execute(System.Object)">
             <summary>
@@ -8898,6 +9249,35 @@
             <returns></returns>
         </member>
         <member name="M:Tortuga.Chain.Materializers.StringListMaterializer`2.ExecuteAsync(System.Threading.CancellationToken,System.Object)">
+            <summary>
+            Execute the operation asynchronously.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name="state">User defined state, usually used for logging.</param>
+            <returns></returns>
+        </member>
+        <member name="T:Tortuga.Chain.Materializers.StringOrNullListMaterializer`2">
+            <summary>
+            Materializes the result set as a list of strings.
+            </summary>
+            <typeparam name="TCommand">The type of the t command type.</typeparam>
+            <typeparam name="TParameter">The type of the t parameter type.</typeparam>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.StringOrNullListMaterializer`2.#ctor(Tortuga.Chain.CommandBuilders.DbCommandBuilder{`0,`1},System.String,Tortuga.Chain.ListOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Materializers.StringOrNullListMaterializer`2"/> class.
+            </summary>
+            <param name="commandBuilder">The command builder.</param>
+            <param name="columnName">Name of the desired column.</param>
+            <param name="listOptions">The list options.</param>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.StringOrNullListMaterializer`2.Execute(System.Object)">
+            <summary>
+            Execute the operation synchronously.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.StringOrNullListMaterializer`2.ExecuteAsync(System.Threading.CancellationToken,System.Object)">
             <summary>
             Execute the operation asynchronously.
             </summary>
@@ -8962,6 +9342,35 @@
             <param name="state">User defined state, usually used for logging.</param>
             <returns></returns>
         </member>
+        <member name="T:Tortuga.Chain.Materializers.TimeSpanOrNullListMaterializer`2">
+            <summary>
+            Materializes the result set as a list of TimeSpan.
+            </summary>
+            <typeparam name="TCommand">The type of the t command type.</typeparam>
+            <typeparam name="TParameter">The type of the t parameter type.</typeparam>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.TimeSpanOrNullListMaterializer`2.#ctor(Tortuga.Chain.CommandBuilders.DbCommandBuilder{`0,`1},System.String,Tortuga.Chain.ListOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Materializers.TimeSpanOrNullListMaterializer`2"/> class.
+            </summary>
+            <param name="commandBuilder">The command builder.</param>
+            <param name="columnName">Name of the desired column.</param>
+            <param name="listOptions">The list options.</param>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.TimeSpanOrNullListMaterializer`2.Execute(System.Object)">
+            <summary>
+            Execute the operation synchronously.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.TimeSpanOrNullListMaterializer`2.ExecuteAsync(System.Threading.CancellationToken,System.Object)">
+            <summary>
+            Execute the operation asynchronously.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name="state">User defined state, usually used for logging.</param>
+            <returns></returns>
+        </member>
         <member name="T:Tortuga.Chain.Materializers.TimeSpanSetMaterializer`2">
             <summary>
             Materializes the result set as a list of TimeSpan.
@@ -9012,6 +9421,35 @@
             <returns></returns>
         </member>
         <member name="M:Tortuga.Chain.Materializers.XElementListMaterializer`2.ExecuteAsync(System.Threading.CancellationToken,System.Object)">
+            <summary>
+            Execute the operation asynchronously.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name="state">User defined state, usually used for logging.</param>
+            <returns></returns>
+        </member>
+        <member name="T:Tortuga.Chain.Materializers.XElementOrNullListMaterializer`2">
+            <summary>
+            Materializes the result set as a list of strings.
+            </summary>
+            <typeparam name="TCommand">The type of the t command type.</typeparam>
+            <typeparam name="TParameter">The type of the t parameter type.</typeparam>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.XElementOrNullListMaterializer`2.#ctor(Tortuga.Chain.CommandBuilders.DbCommandBuilder{`0,`1},System.String,Tortuga.Chain.ListOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Materializers.XElementOrNullListMaterializer`2"/> class.
+            </summary>
+            <param name="commandBuilder">The command builder.</param>
+            <param name="columnName">Name of the desired column.</param>
+            <param name="listOptions">The list options.</param>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.XElementOrNullListMaterializer`2.Execute(System.Object)">
+            <summary>
+            Execute the operation synchronously.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.XElementOrNullListMaterializer`2.ExecuteAsync(System.Threading.CancellationToken,System.Object)">
             <summary>
             Execute the operation asynchronously.
             </summary>

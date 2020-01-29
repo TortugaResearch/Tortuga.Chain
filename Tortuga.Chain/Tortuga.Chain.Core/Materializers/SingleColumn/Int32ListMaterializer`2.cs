@@ -18,10 +18,11 @@ namespace Tortuga.Chain.Materializers
         readonly ListOptions m_ListOptions;
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="Int32ListMaterializer{TCommand, TParameter}"/> class.
         /// </summary>
         /// <param name="commandBuilder">The command builder.</param>
-        /// <param name="listOptions">The list options.</param>
         /// <param name="columnName">Name of the desired column.</param>
+        /// <param name="listOptions">The list options.</param>
         public Int32ListMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, string? columnName = null, ListOptions listOptions = ListOptions.None)
             : base(commandBuilder, columnName)
         {
