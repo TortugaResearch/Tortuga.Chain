@@ -585,7 +585,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        ILink<List<decimal>> ToDecimalOrNullList(ListOptions listOptions = ListOptions.None);
+        ILink<List<decimal?>> ToDecimalOrNullList(ListOptions listOptions = ListOptions.None);
 
         /// <summary>
         /// Indicates the results should be materialized as a list of numbers.
