@@ -86,6 +86,30 @@ namespace Tests.CommandBuilders
         }
 
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
+        public void InsertBulk_List_ImpliedTableName(string dataSourceName, DataSourceType mode)
+        {
+            var key1000 = Guid.NewGuid().ToString();
+            var employeeList = new List<Employee>();
+
+            for (var i = 0; i < 1000; i++)
+                employeeList.Add(new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = key1000 });
+
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+                var count = dataSource.InsertBulk(employeeList).Execute();
+                Assert.AreEqual(1000, count);
+
+                var count2 = dataSource.From(EmployeeTableName, new { Title = key1000 }).AsCount().Execute();
+                Assert.AreEqual(1000, count2);
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+        [DataTestMethod, BasicData(DataSourceGroup.Primary)]
         public void InsertBulk_Enumeration(string dataSourceName, DataSourceType mode)
         {
             var key1000 = Guid.NewGuid().ToString();
@@ -111,6 +135,7 @@ namespace Tests.CommandBuilders
         }
 
 #if SQL_SERVER_SDS || SQL_SERVER_MDS || MYSQL
+
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
         public async Task InsertBulkAsync_List_WithBatches(string dataSourceName, DataSourceType mode)
         {
@@ -134,6 +159,7 @@ namespace Tests.CommandBuilders
                 Release(dataSource);
             }
         }
+
 #endif
 
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
