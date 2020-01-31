@@ -11,9 +11,10 @@ using Tortuga.Chain.Metadata;
 namespace Tortuga.Chain.Access.CommandBuilders
 {
     /// <summary>
-    /// SQliteTableOrView supports queries against tables and views.
+    /// AccessTableOrView supports queries against tables and views.
     /// </summary>
-    internal sealed class AccessTableOrView : TableDbCommandBuilder<OleDbCommand, OleDbParameter, AccessLimitOption>
+    internal sealed class AccessTableOrView<TObject> : TableDbCommandBuilder<OleDbCommand, OleDbParameter, AccessLimitOption, TObject>
+        where TObject : class
     {
         readonly TableOrViewMetadata<AccessObjectName, OleDbType> m_Table;
         object? m_ArgumentValue;
@@ -26,7 +27,7 @@ namespace Tortuga.Chain.Access.CommandBuilders
         string? m_WhereClause;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AccessTableOrView" /> class.
+        /// Initializes a new instance of the <see cref="AccessTableOrView{TObject}" /> class.
         /// </summary>
         /// <param name="dataSource">The data source.</param>
         /// <param name="tableOrViewName">Name of the table or view.</param>
@@ -41,7 +42,7 @@ namespace Tortuga.Chain.Access.CommandBuilders
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AccessTableOrView" /> class.
+        /// Initializes a new instance of the <see cref="AccessTableOrView{TObject}" /> class.
         /// </summary>
         /// <param name="dataSource"></param>
         /// <param name="tableOrViewName"></param>
@@ -189,7 +190,7 @@ namespace Tortuga.Chain.Access.CommandBuilders
         /// <param name="filterValue">The filter value.</param>
         /// <param name="filterOptions">The filter options.</param>
         /// <returns>TableDbCommandBuilder&lt;OleDbCommand, OleDbParameter, AccessLimitOption&gt;.</returns>
-        public override TableDbCommandBuilder<OleDbCommand, OleDbParameter, AccessLimitOption> WithFilter(object filterValue, FilterOptions filterOptions = FilterOptions.None)
+        protected override TableDbCommandBuilder<OleDbCommand, OleDbParameter, AccessLimitOption> OnWithFilter(object filterValue, FilterOptions filterOptions = FilterOptions.None)
         {
             m_FilterValue = filterValue;
             m_WhereClause = null;
@@ -202,22 +203,9 @@ namespace Tortuga.Chain.Access.CommandBuilders
         /// Adds (or replaces) the filter on this command builder.
         /// </summary>
         /// <param name="whereClause">The where clause.</param>
-        /// <returns></returns>
-        public override TableDbCommandBuilder<OleDbCommand, OleDbParameter, AccessLimitOption> WithFilter(string whereClause)
-        {
-            m_FilterValue = null;
-            m_WhereClause = whereClause;
-            m_ArgumentValue = null;
-            return this;
-        }
-
-        /// <summary>
-        /// Adds (or replaces) the filter on this command builder.
-        /// </summary>
-        /// <param name="whereClause">The where clause.</param>
         /// <param name="argumentValue">The argument value.</param>
         /// <returns></returns>
-        public override TableDbCommandBuilder<OleDbCommand, OleDbParameter, AccessLimitOption> WithFilter(string whereClause, object argumentValue)
+        protected override TableDbCommandBuilder<OleDbCommand, OleDbParameter, AccessLimitOption> OnWithFilter(string whereClause, object? argumentValue)
         {
             m_FilterValue = null;
             m_WhereClause = whereClause;
@@ -230,7 +218,7 @@ namespace Tortuga.Chain.Access.CommandBuilders
         /// </summary>
         /// <param name="sortExpressions">The sort expressions.</param>
         /// <returns></returns>
-        public override TableDbCommandBuilder<OleDbCommand, OleDbParameter, AccessLimitOption> WithSorting(IEnumerable<SortExpression> sortExpressions)
+        protected override TableDbCommandBuilder<OleDbCommand, OleDbParameter, AccessLimitOption> OnWithSorting(IEnumerable<SortExpression> sortExpressions)
         {
             m_SortExpressions = sortExpressions ?? throw new ArgumentNullException(nameof(sortExpressions), $"{nameof(sortExpressions)} is null.");
             return this;

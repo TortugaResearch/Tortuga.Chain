@@ -39,6 +39,12 @@ namespace Tortuga.Chain.Core
         public event EventHandler<CommandExecutedEventArgs>? CommandExecuted;
 
         /// <summary>
+        /// Gets a value indicating whether this instance has command executed event.
+        /// </summary>
+        /// <value><c>true</c> if this instance has command executed event; otherwise, <c>false</c>.</value>
+        public bool HasCommandExecutedEvent => CommandExecuted != null;
+
+        /// <summary>
         /// Gets the command text, which is usually SQL.
         /// </summary>
         /// <value>The command text.</value>

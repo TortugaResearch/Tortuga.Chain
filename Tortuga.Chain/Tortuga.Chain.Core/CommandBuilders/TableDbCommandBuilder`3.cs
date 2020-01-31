@@ -55,14 +55,16 @@ namespace Tortuga.Chain.CommandBuilders
         /// </summary>
         /// <param name="filterValue">The filter value.</param>
         /// <param name="filterOptions">The filter options.</param>
-        public abstract TableDbCommandBuilder<TCommand, TParameter, TLimit> WithFilter(object filterValue, FilterOptions filterOptions = FilterOptions.None);
+        public TableDbCommandBuilder<TCommand, TParameter, TLimit> WithFilter(object filterValue, FilterOptions filterOptions = FilterOptions.None)
+            => OnWithFilter(filterValue, filterOptions);
 
         /// <summary>
         /// Adds (or replaces) the filter on this command builder.
         /// </summary>
         /// <param name="whereClause">The where clause.</param>
         /// <returns></returns>
-        public abstract TableDbCommandBuilder<TCommand, TParameter, TLimit> WithFilter(string whereClause);
+        public TableDbCommandBuilder<TCommand, TParameter, TLimit> WithFilter(string whereClause)
+            => OnWithFilter(whereClause, null);
 
         /// <summary>
         /// Adds (or replaces) the filter on this command builder.
@@ -70,13 +72,14 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="whereClause">The where clause.</param>
         /// <param name="argumentValue">The argument value.</param>
         /// <returns></returns>
-        public abstract TableDbCommandBuilder<TCommand, TParameter, TLimit> WithFilter(string whereClause, object argumentValue);
+        public TableDbCommandBuilder<TCommand, TParameter, TLimit> WithFilter(string whereClause, object? argumentValue)
+            => OnWithFilter(whereClause, argumentValue);
 
         ITableDbCommandBuilder ITableDbCommandBuilder.WithFilter(object filterValue, FilterOptions filterOptions) => WithFilter(filterValue, filterOptions);
 
         ITableDbCommandBuilder ITableDbCommandBuilder.WithFilter(string whereClause) => WithFilter(whereClause);
 
-        ITableDbCommandBuilder ITableDbCommandBuilder.WithFilter(string whereClause, object argumentValue) => WithFilter(whereClause, argumentValue);
+        ITableDbCommandBuilder ITableDbCommandBuilder.WithFilter(string whereClause, object? argumentValue) => WithFilter(whereClause, argumentValue);
 
         /// <summary>
         /// Adds limits to the command builder.
@@ -119,7 +122,8 @@ namespace Tortuga.Chain.CommandBuilders
         /// </summary>
         /// <param name="sortExpressions">The sort expressions.</param>
         /// <returns></returns>
-        public abstract TableDbCommandBuilder<TCommand, TParameter, TLimit> WithSorting(IEnumerable<SortExpression> sortExpressions);
+        public TableDbCommandBuilder<TCommand, TParameter, TLimit> WithSorting(IEnumerable<SortExpression> sortExpressions)
+            => OnWithSorting(sortExpressions);
 
         /// <summary>
         /// Adds sorting to the command builder
@@ -131,6 +135,21 @@ namespace Tortuga.Chain.CommandBuilders
         ITableDbCommandBuilder ITableDbCommandBuilder.WithSorting(IEnumerable<SortExpression> sortExpressions) => WithSorting(sortExpressions);
 
         ITableDbCommandBuilder ITableDbCommandBuilder.WithSorting(params SortExpression[] sortExpressions) => WithSorting((IEnumerable<SortExpression>)sortExpressions);
+
+        /// <summary>
+        /// Adds (or replaces) the filter on this command builder.
+        /// </summary>
+        /// <param name="whereClause">The where clause.</param>
+        /// <param name="argumentValue">The argument value.</param>
+        /// <returns></returns>
+        protected abstract TableDbCommandBuilder<TCommand, TParameter, TLimit> OnWithFilter(string whereClause, object? argumentValue);
+
+        /// <summary>
+        /// Adds (or replaces) the filter on this command builder.
+        /// </summary>
+        /// <param name="filterValue">The filter value.</param>
+        /// <param name="filterOptions">The filter options.</param>
+        protected abstract TableDbCommandBuilder<TCommand, TParameter, TLimit> OnWithFilter(object filterValue, FilterOptions filterOptions = FilterOptions.None);
 
         /// <summary>
         /// Adds limits to the command builder.
@@ -151,5 +170,12 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="seed">The seed for repeatable reads. Only applies to random sampling</param>
         /// <returns></returns>
         protected abstract TableDbCommandBuilder<TCommand, TParameter, TLimit> OnWithLimits(int? skip, int? take, LimitOptions limitOptions, int? seed);
+
+        /// <summary>
+        /// Adds sorting to the command builder.
+        /// </summary>
+        /// <param name="sortExpressions">The sort expressions.</param>
+        /// <returns></returns>
+        protected abstract TableDbCommandBuilder<TCommand, TParameter, TLimit> OnWithSorting(IEnumerable<SortExpression> sortExpressions);
     }
 }

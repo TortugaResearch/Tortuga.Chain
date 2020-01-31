@@ -17,10 +17,6 @@ namespace Tortuga.Chain.Materializers
     {
         readonly RowOptions m_RowOptions;
 
-        /// <summary>
-        /// </summary>
-        /// <param name="commandBuilder">The command builder.</param>
-        /// <param name="rowOptions">The row options.</param>
         public RowMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, RowOptions rowOptions)
             : base(commandBuilder)
         {

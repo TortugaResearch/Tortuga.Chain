@@ -253,9 +253,9 @@ namespace Tortuga.Chain.Access
         /// <typeparam name="TObject"></typeparam>
         /// <returns></returns>
         [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-        public TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption> From<TObject>() where TObject : class
+        public TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption, TObject> From<TObject>() where TObject : class
         {
-            return From(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name);
+            return OnFromTableOrView<TObject>(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, null, null);
         }
 
         /// <summary>
@@ -265,9 +265,9 @@ namespace Tortuga.Chain.Access
         /// <param name="whereClause">The where clause. Do not prefix this clause with "WHERE".</param>
         /// <returns></returns>
         [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-        public TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption> From<TObject>(string whereClause) where TObject : class
+        public TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption, TObject> From<TObject>(string whereClause) where TObject : class
         {
-            return From(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, whereClause);
+            return OnFromTableOrView<TObject>(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, whereClause, null);
         }
 
         /// <summary>
@@ -278,9 +278,9 @@ namespace Tortuga.Chain.Access
         /// <param name="argumentValue">Optional argument value. Every property in the argument value must have a matching parameter in the WHERE clause</param>
         /// <returns></returns>
         [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-        public TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption> From<TObject>(string whereClause, object argumentValue) where TObject : class
+        public TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption, TObject> From<TObject>(string whereClause, object argumentValue) where TObject : class
         {
-            return From(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, whereClause, argumentValue);
+            return OnFromTableOrView<TObject>(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, whereClause, argumentValue);
         }
 
         /// <summary>
@@ -290,9 +290,9 @@ namespace Tortuga.Chain.Access
         /// <param name="filterValue">The filter value is used to generate a simple AND style WHERE clause.</param>
         /// <returns></returns>
         [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-        public TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption> From<TObject>(object filterValue) where TObject : class
+        public TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption, TObject> From<TObject>(object filterValue) where TObject : class
         {
-            return From(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, filterValue);
+            return OnFromTableOrView<TObject>(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, filterValue, FilterOptions.None);
         }
 
         /// <summary>
@@ -503,5 +503,11 @@ namespace Tortuga.Chain.Access
         }
 
 #endif
+
+        TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption> OnFromTableOrView(AbstractObjectName tableOrViewName, object filterValue, FilterOptions filterOptions)
+            => OnFromTableOrView<object>(tableOrViewName, filterValue, filterOptions);
+
+        TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption> OnFromTableOrView(AbstractObjectName tableOrViewName, string? whereClause, object? argumentValue)
+            => OnFromTableOrView<object>(tableOrViewName, whereClause, argumentValue);
     }
 }

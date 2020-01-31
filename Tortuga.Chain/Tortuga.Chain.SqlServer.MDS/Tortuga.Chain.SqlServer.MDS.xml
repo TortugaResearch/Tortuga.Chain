@@ -59,6 +59,12 @@
             This object can be used to lookup database information.
             </summary>
         </member>
+        <member name="P:Tortuga.Chain.SqlServerDataSource.IsSqlDependencyActive">
+            <summary>
+            Gets a value indicating whether SQL dependency support is active for this dispatcher.
+            </summary>
+            <value><c>true</c> if this SQL dependency is active; otherwise, <c>false</c>.</value>
+        </member>
         <member name="P:Tortuga.Chain.SqlServerDataSource.XactAbort">
             <summary>
             Rolls back a transaction if a Transact-SQL statement raises a run-time error.
@@ -102,6 +108,25 @@
             <summary>
             Gets the options that are currently in effect. This takes into account server-defined defaults.
             </summary>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServerDataSource.StartSqlDependency">
+            <summary>
+            Starts SQL dependency on this connection string.
+            </summary>
+            <remarks>
+            true if the listener initialized successfully; false if a compatible listener
+            already exists.
+            </remarks>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServerDataSource.StopSqlDependency">
+            <summary>
+            Stops SQL dependency on this connection string.
+            </summary>
+            <remarks>
+            true if the listener was completely stopped; false if the System.AppDomain
+            was unbound from the listener, but there are is at least one other System.AppDomain
+            using the same listener.
+            </remarks>
         </member>
         <member name="M:Tortuga.Chain.SqlServerDataSource.TestConnection">
             <summary>
@@ -514,12 +539,39 @@
             <param name="isIncluded">Indicates the column is an unindexed, included column.</param>
             <param name="indexId"></param>
         </member>
+        <member name="M:Tortuga.Chain.SqlServer.Appenders.NotifyChangeAppender`1.#ctor(Tortuga.Chain.ILink{`0},Microsoft.Data.SqlClient.OnChangeEventHandler)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Appenders.Appender`1" /> class.
+            </summary>
+            <param name="previousLink">The previous link.</param>
+            <param name="eventHandler">The event handler to fire when then associated SQL Dependency is fired..</param>
+        </member>
+        <member name="T:Tortuga.Chain.SqlServer.CommandBuilders.ISupportsChangeListener">
+            <summary>
+            This is applied to command builders that support SqlDependency operations.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.ISupportsChangeListener.WaitForChange(System.Threading.CancellationToken,System.Object)">
+            <summary>
+            Waits for change in the data that is returned by this operation.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name="state">User defined state, usually used for logging.</param>
+            <returns>Task that can be waited for.</returns>
+            <remarks>This requires the use of SQL Dependency</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.ISupportsChangeListener.Prepare(Tortuga.Chain.Materializers.Materializer{Microsoft.Data.SqlClient.SqlCommand,Microsoft.Data.SqlClient.SqlParameter})">
+            <summary>
+            Prepares the command for execution by generating any necessary SQL.
+            </summary>
+            <param name="materializer">The materializer.</param>
+        </member>
         <member name="T:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerDeleteMany">
             <summary>
             Class SqlServerDeleteWithFilter.
             </summary>
         </member>
-        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerDeleteMany.#ctor(Tortuga.Chain.SqlServer.SqlServerDataSourceBase,Tortuga.Chain.SqlServer.SqlServerObjectName,System.String,System.Collections.Generic.IEnumerable{Microsoft.Data.SqlClient.SqlParameter},Tortuga.Chain.DeleteOptions)">
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerDeleteMany.#ctor(Tortuga.Chain.SqlServer.SqlServerDataSourceBase,Tortuga.Chain.SqlServer.SqlServerObjectName,System.String,System.Collections.Generic.IEnumerable{Microsoft.Data.SqlClient.SqlParameter},System.Nullable{System.Int32},Tortuga.Chain.DeleteOptions)">
             <summary>
             Initializes a new instance of the <see cref="T:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerDeleteMany" /> class.
             </summary>
@@ -527,6 +579,7 @@
             <param name="tableName">Name of the table.</param>
             <param name="whereClause">The where clause.</param>
             <param name="parameters">The parameters.</param>
+            <param name="expectedRowCount">The expected row count.</param>
             <param name="options">The options.</param>
         </member>
         <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerDeleteMany.#ctor(Tortuga.Chain.SqlServer.SqlServerDataSourceBase,Tortuga.Chain.SqlServer.SqlServerObjectName,System.String,System.Object)">
@@ -841,6 +894,15 @@
             This is used by materializers to skip IsNull checks.
             </remarks>
         </member>
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerProcedureCall.WaitForChange(System.Threading.CancellationToken,System.Object)">
+            <summary>
+            Waits for change in the data that is returned by this operation.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name="state">User defined state, usually used for logging.</param>
+            <returns>Task that can be waited for.</returns>
+            <remarks>This requires the use of SQL Dependency</remarks>
+        </member>
         <member name="T:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerScalarFunction">
             <summary>
             Use for scalar functions.
@@ -931,6 +993,15 @@
             This is used by materializers to skip IsNull checks.
             </remarks>
         </member>
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerSqlCall.WaitForChange(System.Threading.CancellationToken,System.Object)">
+            <summary>
+            Waits for change in the data that is returned by this operation.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name="state">User defined state, usually used for logging.</param>
+            <returns>Task that can be waited for.</returns>
+            <remarks>This requires the use of SQL Dependency</remarks>
+        </member>
         <member name="T:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableFunction">
             <summary>
             Use for table-valued functions.
@@ -945,7 +1016,7 @@
             <param name="tableFunctionName">Name of the table function.</param>
             <param name="functionArgumentValue">The function argument.</param>
         </member>
-        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableFunction.WithSorting(System.Collections.Generic.IEnumerable{Tortuga.Chain.SortExpression})">
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableFunction.OnWithSorting(System.Collections.Generic.IEnumerable{Tortuga.Chain.SortExpression})">
             <summary>
             Adds sorting to the command builder.
             </summary>
@@ -973,7 +1044,7 @@
             <param name="seed">The seed for repeatable reads. Only applies to random sampling</param>
             <returns></returns>
         </member>
-        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableFunction.WithFilter(System.Object,Tortuga.Chain.FilterOptions)">
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableFunction.OnWithFilter(System.Object,Tortuga.Chain.FilterOptions)">
             <summary>
             Adds (or replaces) the filter on this command builder.
             </summary>
@@ -981,14 +1052,7 @@
             <param name="filterOptions">The filter options.</param>
             <returns>TableDbCommandBuilder&lt;SqlCommand, SqlParameter, SqlServerLimitOption&gt;.</returns>
         </member>
-        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableFunction.WithFilter(System.String)">
-            <summary>
-            Adds (or replaces) the filter on this command builder.
-            </summary>
-            <param name="whereClause">The where clause.</param>
-            <returns></returns>
-        </member>
-        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableFunction.WithFilter(System.String,System.Object)">
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableFunction.OnWithFilter(System.String,System.Object)">
             <summary>
             Adds (or replaces) the filter on this command builder.
             </summary>
@@ -1046,14 +1110,14 @@
             This is used by materializers to skip IsNull checks.
             </remarks>
         </member>
-        <member name="T:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableOrView">
+        <member name="T:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableOrView`1">
             <summary>
             SqlServerTableOrView supports queries against tables and views.
             </summary>
         </member>
-        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableOrView.#ctor(Tortuga.Chain.SqlServer.SqlServerDataSourceBase,Tortuga.Chain.SqlServer.SqlServerObjectName,System.Object,Tortuga.Chain.FilterOptions)">
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableOrView`1.#ctor(Tortuga.Chain.SqlServer.SqlServerDataSourceBase,Tortuga.Chain.SqlServer.SqlServerObjectName,System.Object,Tortuga.Chain.FilterOptions)">
             <summary>
-            Initializes a new instance of the <see cref="T:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableOrView" /> class.
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableOrView`1" /> class.
             </summary>
             <param name="dataSource">The data source.</param>
             <param name="tableOrViewName">Name of the table or view.</param>
@@ -1061,29 +1125,29 @@
             <param name="filterOptions">The filter options.</param>
             <exception cref="T:System.ArgumentException"></exception>
         </member>
-        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableOrView.#ctor(Tortuga.Chain.SqlServer.SqlServerDataSourceBase,Tortuga.Chain.SqlServer.SqlServerObjectName,System.String,System.Object)">
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableOrView`1.#ctor(Tortuga.Chain.SqlServer.SqlServerDataSourceBase,Tortuga.Chain.SqlServer.SqlServerObjectName,System.String,System.Object)">
             <summary>
-            Initializes a new instance of the <see cref="T:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableOrView"/> class.
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableOrView`1"/> class.
             </summary>
             <param name="dataSource">The data source.</param>
             <param name="tableOrViewName">Name of the table or view.</param>
             <param name="whereClause">The where clause.</param>
             <param name="argumentValue">The argument value.</param>
         </member>
-        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableOrView.Prepare(Tortuga.Chain.Materializers.Materializer{Microsoft.Data.SqlClient.SqlCommand,Microsoft.Data.SqlClient.SqlParameter})">
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableOrView`1.Prepare(Tortuga.Chain.Materializers.Materializer{Microsoft.Data.SqlClient.SqlCommand,Microsoft.Data.SqlClient.SqlParameter})">
             <summary>
             Prepares the command for execution by generating any necessary SQL.
             </summary>
             <param name="materializer">The materializer.</param>
         </member>
-        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableOrView.WithSorting(System.Collections.Generic.IEnumerable{Tortuga.Chain.SortExpression})">
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableOrView`1.OnWithSorting(System.Collections.Generic.IEnumerable{Tortuga.Chain.SortExpression})">
             <summary>
             Adds sorting to the command builder.
             </summary>
             <param name="sortExpressions">The sort expressions.</param>
             <returns></returns>
         </member>
-        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableOrView.OnWithLimits(System.Nullable{System.Int32},System.Nullable{System.Int32},Tortuga.Chain.SqlServerLimitOption,System.Nullable{System.Int32})">
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableOrView`1.OnWithLimits(System.Nullable{System.Int32},System.Nullable{System.Int32},Tortuga.Chain.SqlServerLimitOption,System.Nullable{System.Int32})">
             <summary>
             Adds limits to the command builder.
             </summary>
@@ -1093,7 +1157,7 @@
             <param name="seed">The seed for repeatable reads. Only applies to random sampling</param>
             <returns></returns>
         </member>
-        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableOrView.OnWithLimits(System.Nullable{System.Int32},System.Nullable{System.Int32},Tortuga.Chain.LimitOptions,System.Nullable{System.Int32})">
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableOrView`1.OnWithLimits(System.Nullable{System.Int32},System.Nullable{System.Int32},Tortuga.Chain.LimitOptions,System.Nullable{System.Int32})">
             <summary>
             Adds limits to the command builder.
             </summary>
@@ -1103,7 +1167,7 @@
             <param name="seed">The seed for repeatable reads. Only applies to random sampling</param>
             <returns></returns>
         </member>
-        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableOrView.WithFilter(System.Object,Tortuga.Chain.FilterOptions)">
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableOrView`1.OnWithFilter(System.Object,Tortuga.Chain.FilterOptions)">
             <summary>
             Adds (or replaces) the filter on this command builder.
             </summary>
@@ -1111,14 +1175,7 @@
             <param name="filterOptions">The filter options.</param>
             <returns>TableDbCommandBuilder&lt;SqlCommand, SqlParameter, SqlServerLimitOption&gt;.</returns>
         </member>
-        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableOrView.WithFilter(System.String)">
-            <summary>
-            Adds (or replaces) the filter on this command builder.
-            </summary>
-            <param name="whereClause">The where clause.</param>
-            <returns></returns>
-        </member>
-        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableOrView.WithFilter(System.String,System.Object)">
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableOrView`1.OnWithFilter(System.String,System.Object)">
             <summary>
             Adds (or replaces) the filter on this command builder.
             </summary>
@@ -1126,13 +1183,13 @@
             <param name="argumentValue">The argument value.</param>
             <returns></returns>
         </member>
-        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableOrView.AsCount">
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableOrView`1.AsCount">
             <summary>
             Returns the row count using a <c>SELECT COUNT_BIG(*)</c> style query.
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableOrView.AsCount(System.String,System.Boolean)">
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableOrView`1.AsCount(System.String,System.Boolean)">
             <summary>
             Returns the row count for a given column. <c>SELECT COUNT_BIG(columnName)</c>
             </summary>
@@ -1140,7 +1197,7 @@
             <param name="distinct">if set to <c>true</c> use <c>SELECT COUNT_BIG(DISTINCT columnName)</c>.</param>
             <returns></returns>
         </member>
-        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableOrView.TryGetColumn(System.String)">
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableOrView`1.TryGetColumn(System.String)">
             <summary>
             Returns the column associated with the column name.
             </summary>
@@ -1150,13 +1207,13 @@
             If the column name was not found, this will return null
             </remarks>
         </member>
-        <member name="P:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableOrView.DataSource">
+        <member name="P:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableOrView`1.DataSource">
             <summary>
             Gets the data source.
             </summary>
             <value>The data source.</value>
         </member>
-        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableOrView.TryGetNonNullableColumns">
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableOrView`1.TryGetNonNullableColumns">
             <summary>
             Returns a list of columns known to be non-nullable.
             </summary>
@@ -1166,6 +1223,15 @@
             <remarks>
             This is used by materializers to skip IsNull checks.
             </remarks>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableOrView`1.WaitForChange(System.Threading.CancellationToken,System.Object)">
+            <summary>
+            Waits for change in the data that is returned by this operation.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name="state">User defined state, usually used for logging.</param>
+            <returns>Task that can be waited for.</returns>
+            <remarks>This requires the use of SQL Dependency</remarks>
         </member>
         <member name="T:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerUpdateMany">
             <summary>
@@ -1282,10 +1348,34 @@
             <param name="materializer">The materializer.</param>
             <returns>ExecutionToken&lt;TCommand&gt;.</returns>
         </member>
+        <member name="M:Tortuga.Chain.SqlServer.Materializers.WaitForChangeMaterializer`1.#ctor(`0)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Materializers.Materializer`2"/> class.
+            </summary>
+            <param name="commandBuilder">The associated command builder.</param>
+        </member>
         <member name="T:Tortuga.Chain.SqlServer.SqlServerAppenders">
             <summary>
             Class SqlServerAppenders.
             </summary>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerAppenders.WithChangeNotification``1(Tortuga.Chain.ILink{``0},Microsoft.Data.SqlClient.OnChangeEventHandler)">
+            <summary>
+            Attaches a SQL Server dependency change listener to this operation.
+            </summary>
+            <typeparam name="TResult">The type of the t result type.</typeparam>
+            <param name="previousLink">The previous link.</param>
+            <param name="eventHandler">The event handler to fire when the underlying data changes.</param>
+            <returns>Tortuga.Chain.Core.ILink&lt;TResult&gt;.</returns>
+            <remarks>This will only work for operations against non-transactional SQL Server data sources that also comform to the rules about using SQL Dependency.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerAppenders.AutoInvalidate``1(Tortuga.Chain.ICacheLink{``0})">
+            <summary>
+            Attaches a SQL Server dependency change listener to this operation that will automatically invalidate the cache.
+            </summary>
+            <typeparam name="TResult">The type of the result.</typeparam>
+            <param name="previousLink">The previous link.</param>
+            <returns></returns>
         </member>
         <member name="T:Tortuga.Chain.SqlServer.SqlServerCommandExecutionToken">
             <summary>
@@ -1301,6 +1391,13 @@
             <param name="commandText">The SQL to be executed.</param>
             <param name="parameters">The parameters.</param>
             <param name="commandType">Type of the command.</param>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerCommandExecutionToken.AddChangeListener(Microsoft.Data.SqlClient.OnChangeEventHandler)">
+            <summary>
+            Adds a SQL Dependency based change listener.
+            </summary>
+            <param name="eventHandler">The event handler.</param>
+            <remarks>This requires SQL Dependency to be active.</remarks>
         </member>
         <member name="M:Tortuga.Chain.SqlServer.SqlServerCommandExecutionToken.OnBuildCommand(Microsoft.Data.SqlClient.SqlCommand)">
             <summary>

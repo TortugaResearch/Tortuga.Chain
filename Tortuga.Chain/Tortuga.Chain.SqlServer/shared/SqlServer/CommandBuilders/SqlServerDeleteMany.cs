@@ -32,6 +32,8 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         readonly object? m_ArgumentValue;
         readonly object? m_FilterValue;
         readonly FilterOptions m_FilterOptions;
+        readonly DeleteOptions m_Options;
+        readonly int? m_ExpectedRowCount;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlServerDeleteMany" /> class.
@@ -40,16 +42,18 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// <param name="tableName">Name of the table.</param>
         /// <param name="whereClause">The where clause.</param>
         /// <param name="parameters">The parameters.</param>
+        /// <param name="expectedRowCount">The expected row count.</param>
         /// <param name="options">The options.</param>
-        public SqlServerDeleteMany(SqlServerDataSourceBase dataSource, SqlServerObjectName tableName, string whereClause, IEnumerable<SqlParameter> parameters, DeleteOptions options) : base(dataSource)
+        public SqlServerDeleteMany(SqlServerDataSourceBase dataSource, SqlServerObjectName tableName, string whereClause, IEnumerable<SqlParameter> parameters, int? expectedRowCount, DeleteOptions options) : base(dataSource)
         {
             if (options.HasFlag(DeleteOptions.UseKeyAttribute))
                 throw new NotSupportedException("Cannot use Key attributes with this operation.");
 
             m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
             m_WhereClause = whereClause;
-            //m_Options = options;
             m_Parameters = parameters;
+            m_Options = options;
+            m_ExpectedRowCount = expectedRowCount;
         }
 
         /// <summary>
@@ -125,7 +129,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
             if (m_Parameters != null)
                 parameters.AddRange(m_Parameters);
 
-            return new SqlServerCommandExecutionToken(DataSource, "Delete from " + m_Table.Name, sql.ToString(), parameters);
+            return new SqlServerCommandExecutionToken(DataSource, "Delete from " + m_Table.Name, sql.ToString(), parameters).CheckDeleteRowCount(m_Options, m_ExpectedRowCount);
         }
 
         /// <summary>

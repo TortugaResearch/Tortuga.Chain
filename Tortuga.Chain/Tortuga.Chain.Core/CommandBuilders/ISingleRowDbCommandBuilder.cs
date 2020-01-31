@@ -11,14 +11,26 @@ namespace Tortuga.Chain.CommandBuilders
         /// <summary>
         /// Indicates the results should be materialized as a Row.
         /// </summary>
-        ILink<DataRow?> ToDataRow(RowOptions rowOptions = RowOptions.None);
+        ILink<DataRow> ToDataRow(RowOptions rowOptions = RowOptions.None);
+
+        /// <summary>
+        /// Indicates the results should be materialized as a Row.
+        /// </summary>
+        ILink<DataRow?> ToDataRowOrNull(RowOptions rowOptions = RowOptions.AllowEmptyResults);
 
         /// <summary>
         /// Materializes the result as a dynamic object
         /// </summary>
         /// <param name="rowOptions">The row options.</param>
         /// <returns></returns>
-        ILink<dynamic?> ToDynamicObject(RowOptions rowOptions = RowOptions.None);
+        ILink<dynamic> ToDynamicObject(RowOptions rowOptions = RowOptions.None);
+
+        /// <summary>
+        /// Materializes the result as a dynamic object
+        /// </summary>
+        /// <param name="rowOptions">The row options.</param>
+        /// <returns></returns>
+        ILink<dynamic?> ToDynamicObjectOrNull(RowOptions rowOptions = RowOptions.AllowEmptyResults);
 
         /// <summary>
         /// Materializes the result as an instance of the indicated type
@@ -26,12 +38,26 @@ namespace Tortuga.Chain.CommandBuilders
         /// <typeparam name="TObject">The type of the object returned.</typeparam>
         /// <param name="rowOptions">The row options.</param>
         /// <returns></returns>
-        IConstructibleMaterializer<TObject?> ToObject<TObject>(RowOptions rowOptions = RowOptions.None)
+        IConstructibleMaterializer<TObject> ToObject<TObject>(RowOptions rowOptions = RowOptions.None)
+            where TObject : class;
+
+        /// <summary>
+        /// Materializes the result as an instance of the indicated type
+        /// </summary>
+        /// <typeparam name="TObject">The type of the object returned.</typeparam>
+        /// <param name="rowOptions">The row options.</param>
+        /// <returns></returns>
+        IConstructibleMaterializer<TObject?> ToObjectOrNull<TObject>(RowOptions rowOptions = RowOptions.AllowEmptyResults)
             where TObject : class;
 
         /// <summary>
         /// Indicates the results should be materialized as a Row.
         /// </summary>
-        ILink<Row?> ToRow(RowOptions rowOptions = RowOptions.None);
+        ILink<Row> ToRow(RowOptions rowOptions = RowOptions.None);
+
+        /// <summary>
+        /// Indicates the results should be materialized as a Row.
+        /// </summary>
+        ILink<Row?> ToRowOrNull(RowOptions rowOptions = RowOptions.AllowEmptyResults);
     }
 }

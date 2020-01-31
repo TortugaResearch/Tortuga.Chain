@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
 using Tests.Models;
@@ -64,7 +65,7 @@ namespace Tests.CommandBuilders
             {
                 var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
 
-                var result = dataSource.From(tableName).WithLimits(1).ToDynamicObject(RowOptions.AllowEmptyResults).Execute();
+                var result = dataSource.From(tableName).WithLimits(1).ToDynamicObjectOrNull().Execute();
                 if (result != null)
                 {
                     var row = (IDictionary<string, object>)result;
@@ -85,7 +86,7 @@ namespace Tests.CommandBuilders
             {
                 var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
 
-                var result = await dataSource.From(tableName).WithLimits(1).ToDynamicObject(RowOptions.AllowEmptyResults).ExecuteAsync();
+                var result = await dataSource.From(tableName).WithLimits(1).ToDynamicObjectOrNull().ExecuteAsync();
                 if (result != null)
                 {
                     var row = (IDictionary<string, object>)result;
@@ -142,7 +143,7 @@ namespace Tests.CommandBuilders
             {
                 var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
 
-                var result = dataSource.From(tableName).WithLimits(1).ToDataRow(RowOptions.AllowEmptyResults).Execute();
+                var result = dataSource.From(tableName).WithLimits(1).ToDataRowOrNull().Execute();
                 if (result != null)
                 {
                     Assert.AreEqual(table.Columns.Count, result.Table.Columns.Count);
@@ -162,7 +163,7 @@ namespace Tests.CommandBuilders
             {
                 var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
 
-                var result = await dataSource.From(tableName).WithLimits(1).ToDataRow(RowOptions.AllowEmptyResults).ExecuteAsync();
+                var result = await dataSource.From(tableName).WithLimits(1).ToDataRowOrNull().ExecuteAsync();
                 if (result != null)
                 {
                     Assert.AreEqual(table.Columns.Count, result.Table.Columns.Count);
@@ -218,7 +219,7 @@ namespace Tests.CommandBuilders
             {
                 var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
 
-                var result = dataSource.From(tableName).WithLimits(1).ToRow(RowOptions.AllowEmptyResults).Execute();
+                var result = dataSource.From(tableName).WithLimits(1).ToRowOrNull().Execute();
                 if (result != null)
                 {
                     Assert.AreEqual(table.Columns.Count, result.Count);
@@ -238,7 +239,7 @@ namespace Tests.CommandBuilders
             {
                 var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
 
-                var result = await dataSource.From(tableName).WithLimits(1).ToRow(RowOptions.AllowEmptyResults).ExecuteAsync();
+                var result = await dataSource.From(tableName).WithLimits(1).ToRowOrNull().ExecuteAsync();
                 if (result != null)
                 {
                     Assert.AreEqual(table.Columns.Count, result.Count);
@@ -512,7 +513,7 @@ namespace Tests.CommandBuilders
         }
 
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
-        public void ToObject_IncludedProperties(string dataSourceName, DataSourceType mode)
+        public void ToObject_AutoTableSelection(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
 
@@ -523,7 +524,78 @@ namespace Tests.CommandBuilders
                 var emp1 = new Employee() { FirstName = "A", LastName = "1", Title = uniqueKey };
                 dataSource.Insert(EmployeeTableName, emp1).ToObject<Employee>().Execute();
 
+                var lookup = dataSource.From<Employee>(new { Title = uniqueKey }).ToObject().Execute();
+
+                Assert.AreEqual("A", lookup.FirstName, "First Name");
+                Assert.AreEqual("1", lookup.LastName, "Last Name");
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+        [DataTestMethod, BasicData(DataSourceGroup.Primary)]
+        public void ToObject_IncludedProperties_AutoTableSelection(string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+
+            try
+            {
+                var uniqueKey = Guid.NewGuid().ToString();
+
+                var emp1 = new Employee() { FirstName = "A", LastName = "1", Title = uniqueKey };
+                dataSource.Insert(emp1).Execute();
+
+                var lookup = dataSource.From<Employee>(new { Title = uniqueKey }).ToObject().WithProperties("EmployeeKey", "FirstName").Execute();
+
+                Assert.IsNotNull(lookup.EmployeeKey, "EmployeeKey");
+                Assert.AreEqual("A", lookup.FirstName, "First Name");
+                Assert.IsNull(lookup.LastName, "Last Name");
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+        [DataTestMethod, BasicData(DataSourceGroup.Primary)]
+        public void ToObject_IncludedProperties(string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+
+            try
+            {
+                var uniqueKey = Guid.NewGuid().ToString();
+
+                var emp1 = new Employee() { FirstName = "A", LastName = "1", Title = uniqueKey };
+                dataSource.Insert(emp1).Execute();
+
                 var lookup = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToObject<Employee>().WithProperties("EmployeeKey", "FirstName").Execute();
+
+                Assert.IsNotNull(lookup.EmployeeKey, "EmployeeKey");
+                Assert.AreEqual("A", lookup.FirstName, "First Name");
+                Assert.IsNull(lookup.LastName, "Last Name");
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+        [DataTestMethod, BasicData(DataSourceGroup.Primary)]
+        public void ToObject_ExcludedProperties_AutoTableSelection(string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+
+            try
+            {
+                var uniqueKey = Guid.NewGuid().ToString();
+
+                var emp1 = new Employee() { FirstName = "A", LastName = "1", Title = uniqueKey };
+                dataSource.Insert(emp1).Execute();
+
+                var lookup = dataSource.From<Employee>(new { Title = uniqueKey }).ToObject().ExceptProperties("LastName").Execute();
 
                 Assert.IsNotNull(lookup.EmployeeKey, "EmployeeKey");
                 Assert.AreEqual("A", lookup.FirstName, "First Name");
@@ -545,7 +617,7 @@ namespace Tests.CommandBuilders
                 var uniqueKey = Guid.NewGuid().ToString();
 
                 var emp1 = new Employee() { FirstName = "A", LastName = "1", Title = uniqueKey };
-                dataSource.Insert(EmployeeTableName, emp1).ToObject<Employee>().Execute();
+                dataSource.Insert(emp1).Execute();
 
                 var lookup = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToObject<Employee>().ExceptProperties("LastName").Execute();
 
@@ -842,6 +914,18 @@ namespace Tests.CommandBuilders
                 Assert.AreEqual(emp4.EmployeeKey, test3[1].EmployeeKey);
                 Assert.AreEqual(emp1.EmployeeKey, test3[2].EmployeeKey);
                 Assert.AreEqual(emp2.EmployeeKey, test3[3].EmployeeKey);
+
+                var test5 = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).WithSorting("FirstName DESC").ToCollection<Employee>().Execute();
+                Assert.AreEqual(emp4.EmployeeKey, test5[0].EmployeeKey);
+                Assert.AreEqual(emp3.EmployeeKey, test5[1].EmployeeKey);
+                Assert.AreEqual(emp2.EmployeeKey, test5[2].EmployeeKey);
+                Assert.AreEqual(emp1.EmployeeKey, test5[3].EmployeeKey);
+
+                var test6 = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).WithSorting("FirstName ACS").ToCollection<Employee>().Execute();
+                Assert.AreEqual(emp1.EmployeeKey, test6[0].EmployeeKey);
+                Assert.AreEqual(emp2.EmployeeKey, test6[1].EmployeeKey);
+                Assert.AreEqual(emp3.EmployeeKey, test6[2].EmployeeKey);
+                Assert.AreEqual(emp4.EmployeeKey, test6[3].EmployeeKey);
             }
             finally
             {
@@ -1262,6 +1346,72 @@ namespace Tests.CommandBuilders
         }
 
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
+        public void ToDictionary_AutoTableSelection(string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+                var uniqueKey = Guid.NewGuid().ToString();
+
+                var emp1 = new Employee() { FirstName = "A", LastName = "1", Title = uniqueKey };
+                var emp2 = new Employee() { FirstName = "B", LastName = "2", Title = uniqueKey };
+                var emp3 = new Employee() { FirstName = "C", LastName = "3", Title = uniqueKey };
+                var emp4 = new Employee() { FirstName = "D", LastName = "4", Title = uniqueKey };
+
+                emp1 = dataSource.Insert(emp1).ToObject().Execute();
+                emp2 = dataSource.Insert(emp2).ToObject().Execute();
+                emp3 = dataSource.Insert(emp3).ToObject().Execute();
+                emp4 = dataSource.Insert(emp4).ToObject().Execute();
+
+                var test1 = dataSource.From<Employee>(new { Title = uniqueKey }).ToDictionary<string>("FirstName").Execute();
+
+                Assert.AreEqual("1", test1["A"].LastName);
+                Assert.AreEqual("2", test1["B"].LastName);
+                Assert.AreEqual("3", test1["C"].LastName);
+                Assert.AreEqual("4", test1["D"].LastName);
+
+                var test2 = dataSource.From<Employee>(new { Title = uniqueKey }).ToDictionary(e => int.Parse(e.LastName)).Execute();
+
+                Assert.AreEqual("A", test2[1].FirstName);
+                Assert.AreEqual("B", test2[2].FirstName);
+                Assert.AreEqual("C", test2[3].FirstName);
+                Assert.AreEqual("D", test2[4].FirstName);
+
+                var test3 = dataSource.From<Employee>(new { Title = uniqueKey }).ToDictionary<string, Employee, ConcurrentDictionary<string, Employee>>("FirstName").Execute();
+                Assert.IsInstanceOfType(test3, typeof(ConcurrentDictionary<string, Employee>));
+                Assert.AreEqual("1", test3["A"].LastName);
+                Assert.AreEqual("2", test3["B"].LastName);
+                Assert.AreEqual("3", test3["C"].LastName);
+                Assert.AreEqual("4", test3["D"].LastName);
+
+                var test4 = dataSource.From<Employee>(new { Title = uniqueKey }).ToDictionary<int, Employee, ConcurrentDictionary<int, Employee>>(e => int.Parse(e.LastName)).Execute();
+                Assert.IsInstanceOfType(test4, typeof(ConcurrentDictionary<int, Employee>));
+                Assert.AreEqual("A", test4[1].FirstName);
+                Assert.AreEqual("B", test4[2].FirstName);
+                Assert.AreEqual("C", test4[3].FirstName);
+                Assert.AreEqual("D", test4[4].FirstName);
+
+                var test5 = dataSource.From<Employee>(new { Title = uniqueKey }).ToImmutableDictionary<string>("FirstName").Execute();
+                Assert.IsInstanceOfType(test5, typeof(ImmutableDictionary<string, Employee>));
+                Assert.AreEqual("1", test5["A"].LastName);
+                Assert.AreEqual("2", test5["B"].LastName);
+                Assert.AreEqual("3", test5["C"].LastName);
+                Assert.AreEqual("4", test5["D"].LastName);
+
+                var test6 = dataSource.From<Employee>(new { Title = uniqueKey }).ToImmutableDictionary(e => int.Parse(e.LastName)).Execute();
+                Assert.IsInstanceOfType(test6, typeof(ImmutableDictionary<int, Employee>));
+                Assert.AreEqual("A", test6[1].FirstName);
+                Assert.AreEqual("B", test6[2].FirstName);
+                Assert.AreEqual("C", test6[3].FirstName);
+                Assert.AreEqual("D", test6[4].FirstName);
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+        [DataTestMethod, BasicData(DataSourceGroup.Primary)]
         public void ToDictionary(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -1308,18 +1458,60 @@ namespace Tests.CommandBuilders
                 Assert.AreEqual("D", test4[4].FirstName);
 
                 var test5 = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToImmutableDictionary<string, Employee>("FirstName").Execute();
-                Assert.IsInstanceOfType(test3, typeof(ConcurrentDictionary<string, Employee>));
+                Assert.IsInstanceOfType(test5, typeof(ImmutableDictionary<string, Employee>));
                 Assert.AreEqual("1", test5["A"].LastName);
                 Assert.AreEqual("2", test5["B"].LastName);
                 Assert.AreEqual("3", test5["C"].LastName);
                 Assert.AreEqual("4", test5["D"].LastName);
 
                 var test6 = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToImmutableDictionary<int, Employee>(e => int.Parse(e.LastName)).Execute();
-                Assert.IsInstanceOfType(test4, typeof(ConcurrentDictionary<int, Employee>));
+                Assert.IsInstanceOfType(test6, typeof(ImmutableDictionary<int, Employee>));
                 Assert.AreEqual("A", test6[1].FirstName);
                 Assert.AreEqual("B", test6[2].FirstName);
                 Assert.AreEqual("C", test6[3].FirstName);
                 Assert.AreEqual("D", test6[4].FirstName);
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+        [DataTestMethod, BasicData(DataSourceGroup.Primary)]
+        public void Sorting_InferredCollection_AutoTableSelection(string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+                var uniqueKey = Guid.NewGuid().ToString();
+
+                var emp1 = new Employee() { FirstName = "A", LastName = "2", Title = uniqueKey };
+                var emp2 = new Employee() { FirstName = "B", LastName = "2", Title = uniqueKey };
+                var emp3 = new Employee() { FirstName = "C", LastName = "1", Title = uniqueKey };
+                var emp4 = new Employee() { FirstName = "D", LastName = "1", Title = uniqueKey };
+
+                emp1 = dataSource.Insert(emp1).ToObject().Execute();
+                emp2 = dataSource.Insert(emp2).ToObject().Execute();
+                emp3 = dataSource.Insert(emp3).ToObject().Execute();
+                emp4 = dataSource.Insert(emp4).ToObject().Execute();
+
+                var test1 = dataSource.From<EmployeeLookup>(new { Title = uniqueKey }).WithSorting("FirstName").ToCollection(CollectionOptions.InferConstructor).Execute();
+                Assert.AreEqual(emp1.EmployeeKey, test1[0].EmployeeKey);
+                Assert.AreEqual(emp2.EmployeeKey, test1[1].EmployeeKey);
+                Assert.AreEqual(emp3.EmployeeKey, test1[2].EmployeeKey);
+                Assert.AreEqual(emp4.EmployeeKey, test1[3].EmployeeKey);
+
+                var test2 = dataSource.From<EmployeeLookup>(new { Title = uniqueKey }).WithSorting(new SortExpression("FirstName", SortDirection.Descending)).ToCollection(CollectionOptions.InferConstructor).Execute();
+                Assert.AreEqual(emp4.EmployeeKey, test2[0].EmployeeKey);
+                Assert.AreEqual(emp3.EmployeeKey, test2[1].EmployeeKey);
+                Assert.AreEqual(emp2.EmployeeKey, test2[2].EmployeeKey);
+                Assert.AreEqual(emp1.EmployeeKey, test2[3].EmployeeKey);
+
+                var test3 = dataSource.From<EmployeeLookup>(new { Title = uniqueKey }).WithSorting("LastName", "FirstName").ToCollection(CollectionOptions.InferConstructor).Execute();
+                Assert.AreEqual(emp3.EmployeeKey, test3[0].EmployeeKey);
+                Assert.AreEqual(emp4.EmployeeKey, test3[1].EmployeeKey);
+                Assert.AreEqual(emp1.EmployeeKey, test3[2].EmployeeKey);
+                Assert.AreEqual(emp2.EmployeeKey, test3[3].EmployeeKey);
             }
             finally
             {
@@ -1431,6 +1623,28 @@ namespace Tests.CommandBuilders
                 dataSource.Insert(EmployeeTableName, emp1).ToObject<Employee>().Execute();
 
                 var lookup = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToObject<EmployeeLookup>().WithConstructor<int, string, string>().Execute();
+
+                Assert.AreEqual("A", lookup.FirstName);
+                Assert.AreEqual("1", lookup.LastName);
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+        [DataTestMethod, BasicData(DataSourceGroup.Primary)]
+        public void ToImmutableObject_AutoTableSelection(string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+                var uniqueKey = Guid.NewGuid().ToString();
+
+                var emp1 = new Employee() { FirstName = "A", LastName = "1", Title = uniqueKey };
+                dataSource.Insert(emp1).ToObject().Execute();
+
+                var lookup = dataSource.From<EmployeeLookup>(new { Title = uniqueKey }).ToObject().WithConstructor<int, string, string>().Execute();
 
                 Assert.AreEqual("A", lookup.FirstName);
                 Assert.AreEqual("1", lookup.LastName);

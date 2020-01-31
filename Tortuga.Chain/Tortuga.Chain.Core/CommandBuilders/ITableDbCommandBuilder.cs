@@ -5,11 +5,9 @@ namespace Tortuga.Chain.CommandBuilders
     /// <summary>
     /// This is a specialization of IMultipleRowDbCommandBuilder that includes support for sorting and limiting
     /// </summary>
-    /// <seealso cref="IMultipleRowDbCommandBuilder" />
     /// <remarks>
     /// Warning: This interface is meant to simulate multiple inheritance and work-around some issues with exposing generic types. Do not implement it in client code, as new method will be added over time.
     /// </remarks>
-    /// <seealso cref="IMultipleRowDbCommandBuilder" />
     public interface ITableDbCommandBuilder : IMultipleRowDbCommandBuilder
     {
         /// <summary>
@@ -47,7 +45,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="whereClause">The where clause.</param>
         /// <param name="argumentValue">The argument value.</param>
         /// <returns></returns>
-        ITableDbCommandBuilder WithFilter(string whereClause, object argumentValue);
+        ITableDbCommandBuilder WithFilter(string whereClause, object? argumentValue);
 
         /// <summary>
         /// Adds limits to the command builder.

@@ -16,6 +16,6 @@ namespace Tortuga.Chain
         /// <summary>
         /// Descending
         /// </summary>
-        Descending = 1,
+        Descending = 1
     }
 }

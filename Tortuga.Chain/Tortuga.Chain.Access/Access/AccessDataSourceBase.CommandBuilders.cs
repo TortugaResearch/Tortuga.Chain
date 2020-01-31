@@ -46,11 +46,15 @@ namespace Tortuga.Chain.Access
 
             var table = DatabaseMetadata.GetTableOrView(tableName);
             if (!AuditRules.UseSoftDelete(table))
-                return new AccessDeleteMany(this, tableName, where, parameters, options);
+                return new AccessDeleteMany(this, tableName, where, parameters, parameters.Count, options);
 
-            UpdateOptions effectiveOptions = UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected;
+            UpdateOptions effectiveOptions = UpdateOptions.SoftDelete;
+
+            if (!options.HasFlag(DeleteOptions.CheckRowsAffected))
+                effectiveOptions |= UpdateOptions.IgnoreRowsAffected;
+
             if (options.HasFlag(DeleteOptions.UseKeyAttribute))
-                effectiveOptions = effectiveOptions | UpdateOptions.UseKeyAttribute;
+                effectiveOptions |= UpdateOptions.UseKeyAttribute;
 
             return new AccessUpdateMany(this, tableName, null, where, parameters, parameters.Count, effectiveOptions);
         }
@@ -111,7 +115,7 @@ namespace Tortuga.Chain.Access
                 parameters.Add(param);
             }
 
-            return new AccessTableOrView(this, tableName, where, parameters);
+            return new AccessTableOrView<object>(this, tableName, where, parameters);
         }
 
         MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> OnDeleteMany(AccessObjectName tableName, string whereClause, object? argumentValue)
@@ -129,14 +133,16 @@ namespace Tortuga.Chain.Access
             return new AccessDeleteObject<TArgument>(this, tableName, argumentValue, options);
         }
 
-        TableDbCommandBuilder<OleDbCommand, OleDbParameter, AccessLimitOption> OnFromTableOrView(AccessObjectName tableOrViewName, object filterValue, FilterOptions filterOptions)
+        TableDbCommandBuilder<OleDbCommand, OleDbParameter, AccessLimitOption, TObject> OnFromTableOrView<TObject>(AccessObjectName tableOrViewName, object filterValue, FilterOptions filterOptions)
+            where TObject : class
         {
-            return new AccessTableOrView(this, tableOrViewName, filterValue, filterOptions);
+            return new AccessTableOrView<TObject>(this, tableOrViewName, filterValue, filterOptions);
         }
 
-        TableDbCommandBuilder<OleDbCommand, OleDbParameter, AccessLimitOption> OnFromTableOrView(AccessObjectName tableOrViewName, string? whereClause, object? argumentValue)
+        TableDbCommandBuilder<OleDbCommand, OleDbParameter, AccessLimitOption, TObject> OnFromTableOrView<TObject>(AccessObjectName tableOrViewName, string? whereClause, object? argumentValue)
+            where TObject : class
         {
-            return new AccessTableOrView(this, tableOrViewName, whereClause, argumentValue);
+            return new AccessTableOrView<TObject>(this, tableOrViewName, whereClause, argumentValue);
         }
 
         ObjectDbCommandBuilder<OleDbCommand, OleDbParameter, TArgument> OnInsertObject<TArgument>(AccessObjectName tableName, TArgument argumentValue, InsertOptions options)
