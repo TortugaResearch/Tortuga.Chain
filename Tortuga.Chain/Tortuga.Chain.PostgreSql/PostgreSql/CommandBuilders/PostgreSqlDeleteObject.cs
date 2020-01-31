@@ -48,7 +48,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
             sqlBuilder.BuildDeleteStatement(sql, Table.Name.ToString(), null);
             sqlBuilder.BuildSelectClause(sql, " RETURNING ", null, ";");
 
-            return new PostgreSqlCommandExecutionToken(DataSource, "Delete from " + Table.Name, sql.ToString(), sqlBuilder.GetParameters());
+            return new PostgreSqlCommandExecutionToken(DataSource, "Delete from " + Table.Name, sql.ToString(), sqlBuilder.GetParameters()).CheckDeleteRowCount(m_Options);
         }
     }
 }

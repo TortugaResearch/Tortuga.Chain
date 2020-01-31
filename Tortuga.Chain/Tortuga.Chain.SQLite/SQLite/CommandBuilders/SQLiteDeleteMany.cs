@@ -20,12 +20,13 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
         readonly FilterOptions m_FilterOptions;
 
         readonly object? m_FilterValue;
+        readonly DeleteOptions m_Options;
 
-        //readonly DeleteOptions m_Options;
         readonly IEnumerable<SQLiteParameter>? m_Parameters;
 
         readonly TableOrViewMetadata<SQLiteObjectName, DbType> m_Table;
         readonly string? m_WhereClause;
+        readonly int? m_ExpectedRowCount;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SQLiteDeleteMany" /> class.
@@ -34,16 +35,18 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
         /// <param name="tableName">Name of the table.</param>
         /// <param name="whereClause">The where clause.</param>
         /// <param name="parameters">The parameters.</param>
+        /// <param name="expectedRowCount">The expected row count.</param>
         /// <param name="options">The options.</param>
-        public SQLiteDeleteMany(SQLiteDataSourceBase dataSource, SQLiteObjectName tableName, string whereClause, IEnumerable<SQLiteParameter> parameters, DeleteOptions options) : base(dataSource)
+        public SQLiteDeleteMany(SQLiteDataSourceBase dataSource, SQLiteObjectName tableName, string whereClause, IEnumerable<SQLiteParameter> parameters, int? expectedRowCount, DeleteOptions options) : base(dataSource)
         {
             if (options.HasFlag(DeleteOptions.UseKeyAttribute))
                 throw new NotSupportedException("Cannot use Key attributes with this operation.");
 
             m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
             m_WhereClause = whereClause;
-            //m_Options = options;
             m_Parameters = parameters;
+            m_Options = options;
+            m_ExpectedRowCount = expectedRowCount;
         }
 
         /// <summary>
@@ -116,7 +119,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
             if (m_Parameters != null)
                 parameters.AddRange(m_Parameters);
 
-            return new SQLiteCommandExecutionToken(DataSource, "Delete from " + m_Table.Name, sql.ToString(), parameters, lockType: LockType.Write);
+            return new SQLiteCommandExecutionToken(DataSource, "Delete from " + m_Table.Name, sql.ToString(), parameters, lockType: LockType.Write).CheckDeleteRowCount(m_Options, m_ExpectedRowCount);
         }
 
         /// <summary>

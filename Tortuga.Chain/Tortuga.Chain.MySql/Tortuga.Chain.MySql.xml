@@ -254,7 +254,7 @@
             Class MySqlDeleteMany.
             </summary>
         </member>
-        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlDeleteMany.#ctor(Tortuga.Chain.MySql.MySqlDataSourceBase,Tortuga.Chain.MySql.MySqlObjectName,System.String,System.Collections.Generic.IEnumerable{MySql.Data.MySqlClient.MySqlParameter},Tortuga.Chain.DeleteOptions)">
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlDeleteMany.#ctor(Tortuga.Chain.MySql.MySqlDataSourceBase,Tortuga.Chain.MySql.MySqlObjectName,System.String,System.Collections.Generic.IEnumerable{MySql.Data.MySqlClient.MySqlParameter},System.Nullable{System.Int32},Tortuga.Chain.DeleteOptions)">
             <summary>
             Initializes a new instance of the <see cref="T:Tortuga.Chain.MySql.CommandBuilders.MySqlDeleteMany" /> class.
             </summary>
@@ -262,6 +262,7 @@
             <param name="tableName">Name of the table.</param>
             <param name="whereClause">The where clause.</param>
             <param name="parameters">The parameters.</param>
+            <param name="expectedRowCount">The expected row count.</param>
             <param name="options">The options.</param>
         </member>
         <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlDeleteMany.#ctor(Tortuga.Chain.MySql.MySqlDataSourceBase,Tortuga.Chain.MySql.MySqlObjectName,System.String,System.Object)">

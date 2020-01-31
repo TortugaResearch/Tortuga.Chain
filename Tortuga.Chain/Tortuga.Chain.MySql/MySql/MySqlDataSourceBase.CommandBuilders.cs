@@ -48,11 +48,15 @@ namespace Tortuga.Chain.MySql
 
             var table = DatabaseMetadata.GetTableOrView(tableName);
             if (!AuditRules.UseSoftDelete(table))
-                return new MySqlDeleteMany(this, tableName, where, parameters, options);
+                return new MySqlDeleteMany(this, tableName, where, parameters, parameters.Count, options);
 
-            UpdateOptions effectiveOptions = UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected;
+            UpdateOptions effectiveOptions = UpdateOptions.SoftDelete;
+
+            if (!options.HasFlag(DeleteOptions.CheckRowsAffected))
+                effectiveOptions |= UpdateOptions.IgnoreRowsAffected;
+
             if (options.HasFlag(DeleteOptions.UseKeyAttribute))
-                effectiveOptions = effectiveOptions | UpdateOptions.UseKeyAttribute;
+                effectiveOptions |= UpdateOptions.UseKeyAttribute;
 
             return new MySqlUpdateMany(this, tableName, null, where, parameters, parameters.Count, effectiveOptions);
         }

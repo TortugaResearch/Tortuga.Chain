@@ -49,7 +49,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
             sql.AppendLine();
             sqlBuilder.BuildDeleteStatement(sql, Table.Name.ToQuotedString(), ";");
 
-            return new SQLiteCommandExecutionToken(DataSource, "Delete from " + Table.Name, sql.ToString(), sqlBuilder.GetParameters(), lockType: LockType.Write);
+            return new SQLiteCommandExecutionToken(DataSource, "Delete from " + Table.Name, sql.ToString(), sqlBuilder.GetParameters(), lockType: LockType.Write).CheckDeleteRowCount(m_Options);
         }
     }
 }

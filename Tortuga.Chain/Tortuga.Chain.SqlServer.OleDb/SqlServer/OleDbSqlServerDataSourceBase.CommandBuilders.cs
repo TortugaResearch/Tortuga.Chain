@@ -47,7 +47,7 @@ namespace Tortuga.Chain.SqlServer
 
             var table = DatabaseMetadata.GetTableOrView(tableName);
             if (!AuditRules.UseSoftDelete(table))
-                return new OleDbSqlServerDeleteMany(this, tableName, where, parameters);
+                return new OleDbSqlServerDeleteMany(this, tableName, where, parameters, parameters.Count, options);
 
             UpdateOptions effectiveOptions = UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected;
             if (options.HasFlag(DeleteOptions.UseKeyAttribute))

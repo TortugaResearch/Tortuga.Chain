@@ -58,11 +58,15 @@ namespace Tortuga.Chain.SqlServer
 
             var table = DatabaseMetadata.GetTableOrView(tableName);
             if (!AuditRules.UseSoftDelete(table))
-                return new SqlServerDeleteMany(this, tableName, where, parameters, options);
+                return new SqlServerDeleteMany(this, tableName, where, parameters, parameters.Count, options);
 
-            UpdateOptions effectiveOptions = UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected;
+            UpdateOptions effectiveOptions = UpdateOptions.SoftDelete;
+
+            if (!options.HasFlag(DeleteOptions.CheckRowsAffected))
+                effectiveOptions |= UpdateOptions.IgnoreRowsAffected;
+
             if (options.HasFlag(DeleteOptions.UseKeyAttribute))
-                effectiveOptions = effectiveOptions | UpdateOptions.UseKeyAttribute;
+                effectiveOptions |= UpdateOptions.UseKeyAttribute;
 
             return new SqlServerUpdateMany(this, tableName, null, where, parameters, parameters.Count, effectiveOptions);
         }

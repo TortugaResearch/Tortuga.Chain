@@ -57,6 +57,41 @@ namespace Tortuga.Chain.Materializers
             return executionToken;
         }
 
+        /// <summary>
+        /// Checks the delete row count.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="executionToken">The execution token.</param>
+        /// <param name="deleteOptions">The delete options.</param>
+        /// <param name="expectedRowCount">The expected row count.</param>
+        /// <returns>The execution token with an attached event handler.</returns>
+        public static T CheckDeleteRowCount<T>(this T executionToken, DeleteOptions deleteOptions, int? expectedRowCount) where T : ExecutionToken
+        {
+            if (executionToken == null)
+                throw new ArgumentNullException(nameof(executionToken), $"{nameof(executionToken)} is null.");
+
+            if (expectedRowCount.HasValue && deleteOptions.HasFlag(DeleteOptions.CheckRowsAffected))
+                executionToken.CommandExecuted += (s, e) => CheckDeleteRowCount(s, e, expectedRowCount.Value);
+            return executionToken;
+        }
+
+        /// <summary>
+        /// Checks the delete row count.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="executionToken">The execution token.</param>
+        /// <param name="deleteOptions">The delete options.</param>
+        /// <returns>The execution token with an attached event handler.</returns>
+        public static T CheckDeleteRowCount<T>(this T executionToken, DeleteOptions deleteOptions) where T : ExecutionToken
+        {
+            if (executionToken == null)
+                throw new ArgumentNullException(nameof(executionToken), $"{nameof(executionToken)} is null.");
+
+            if (deleteOptions.HasFlag(DeleteOptions.CheckRowsAffected))
+                executionToken.CommandExecuted += CheckDeleteRowCount;
+            return executionToken;
+        }
+
         internal static StreamingObjectConstructor<T> AsObjectConstructor<T>(this DbDataReader reader, IReadOnlyList<Type>? constructorSignature, IReadOnlyList<ColumnMetadata> nonNullableColumns)
             where T : class
         {
@@ -242,8 +277,38 @@ namespace Tortuga.Chain.Materializers
 
             if (e.RowsAffected == null)
                 throw new InvalidOperationException($"The database did not report how many rows were affected by operation {token.OperationName}. Either use the UpdateOptions.IgnoreRowsAffected flag or report this as an bug in {token.GetType().FullName}.");
-            else if (e.RowsAffected != expectedRowCount)
+            else if (e.RowsAffected > expectedRowCount)
                 throw new UnexpectedDataException($"Expected {expectedRowCount} rows to be affected by the operation {token.OperationName} but {e.RowsAffected} were affected instead.");
+            else if (e.RowsAffected < expectedRowCount)
+                throw new MissingDataException($"Expected {expectedRowCount} rows to be affected by the operation {token.OperationName} but {e.RowsAffected} were affected instead.");
+        }
+
+        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "DeleteOptions")]
+        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "IgnoreRowsAffected")]
+        static void CheckDeleteRowCount(object sender, CommandExecutedEventArgs e)
+        {
+            var token = (ExecutionToken)sender;
+
+            if (e.RowsAffected == null)
+                throw new InvalidOperationException($"The database did not report how many rows were affected by operation {token.OperationName}. Either remove the DeleteOptions.CheckRowsAffected flag or report this as an bug in {token.GetType().FullName}.");
+            else if (e.RowsAffected == 0)
+                throw new MissingDataException($"Expected one row to be affected by the operation {token.OperationName} but none were.");
+            else if (e.RowsAffected > 1)
+                throw new UnexpectedDataException($"Expected one row to be affected by the operation {token.OperationName} but {e.RowsAffected} were affected instead.");
+        }
+
+        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "IgnoreRowsAffected")]
+        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "DeleteOptions")]
+        static void CheckDeleteRowCount(object sender, CommandExecutedEventArgs e, int expectedRowCount)
+        {
+            var token = (ExecutionToken)sender;
+
+            if (e.RowsAffected == null)
+                throw new InvalidOperationException($"The database did not report how many rows were affected by operation {token.OperationName}. Either remove the DeleteOptions.CheckRowsAffected flag or report this as an bug in {token.GetType().FullName}.");
+            else if (e.RowsAffected > expectedRowCount)
+                throw new UnexpectedDataException($"Expected {expectedRowCount} rows to be affected by the operation {token.OperationName} but {e.RowsAffected} were affected instead.");
+            else if (e.RowsAffected < expectedRowCount)
+                throw new MissingDataException($"Expected {expectedRowCount} rows to be affected by the operation {token.OperationName} but {e.RowsAffected} were affected instead.");
         }
 
         static void SetDecomposedProperty(IReadOnlyDictionary<string, object?> source, object target, string? decompositionPrefix, PropertyMetadata property)
