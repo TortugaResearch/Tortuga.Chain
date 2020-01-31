@@ -115,7 +115,7 @@ namespace Tortuga.Chain.Access
                 parameters.Add(param);
             }
 
-            return new AccessTableOrView(this, tableName, where, parameters);
+            return new AccessTableOrView<object>(this, tableName, where, parameters);
         }
 
         MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> OnDeleteMany(AccessObjectName tableName, string whereClause, object? argumentValue)
@@ -133,14 +133,16 @@ namespace Tortuga.Chain.Access
             return new AccessDeleteObject<TArgument>(this, tableName, argumentValue, options);
         }
 
-        TableDbCommandBuilder<OleDbCommand, OleDbParameter, AccessLimitOption> OnFromTableOrView(AccessObjectName tableOrViewName, object filterValue, FilterOptions filterOptions)
+        TableDbCommandBuilder<OleDbCommand, OleDbParameter, AccessLimitOption, TObject> OnFromTableOrView<TObject>(AccessObjectName tableOrViewName, object filterValue, FilterOptions filterOptions)
+            where TObject : class
         {
-            return new AccessTableOrView(this, tableOrViewName, filterValue, filterOptions);
+            return new AccessTableOrView<TObject>(this, tableOrViewName, filterValue, filterOptions);
         }
 
-        TableDbCommandBuilder<OleDbCommand, OleDbParameter, AccessLimitOption> OnFromTableOrView(AccessObjectName tableOrViewName, string? whereClause, object? argumentValue)
+        TableDbCommandBuilder<OleDbCommand, OleDbParameter, AccessLimitOption, TObject> OnFromTableOrView<TObject>(AccessObjectName tableOrViewName, string? whereClause, object? argumentValue)
+            where TObject : class
         {
-            return new AccessTableOrView(this, tableOrViewName, whereClause, argumentValue);
+            return new AccessTableOrView<TObject>(this, tableOrViewName, whereClause, argumentValue);
         }
 
         ObjectDbCommandBuilder<OleDbCommand, OleDbParameter, TArgument> OnInsertObject<TArgument>(AccessObjectName tableName, TArgument argumentValue, InsertOptions options)

@@ -123,7 +123,7 @@ namespace Tortuga.Chain
         /// This is used to directly query a table or view.
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-        ITableDbCommandBuilder From<TObject>() where TObject : class;
+        ITableDbCommandBuilder<TObject> From<TObject>() where TObject : class;
 
         /// <summary>
         /// This is used to directly query a table or view.
@@ -132,7 +132,7 @@ namespace Tortuga.Chain
         /// <param name="whereClause">The where clause. Do not prefix this clause with "WHERE".</param>
         /// <returns></returns>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-        ITableDbCommandBuilder From<TObject>(string whereClause) where TObject : class;
+        ITableDbCommandBuilder<TObject> From<TObject>(string whereClause) where TObject : class;
 
         /// <summary>
         /// This is used to directly query a table or view.
@@ -142,7 +142,7 @@ namespace Tortuga.Chain
         /// <param name="argumentValue">Optional argument value. Every property in the argument value must have a matching parameter in the WHERE clause</param>
         /// <returns></returns>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-        ITableDbCommandBuilder From<TObject>(string whereClause, object argumentValue) where TObject : class;
+        ITableDbCommandBuilder<TObject> From<TObject>(string whereClause, object argumentValue) where TObject : class;
 
         /// <summary>
         /// This is used to directly query a table or view.
@@ -151,7 +151,7 @@ namespace Tortuga.Chain
         /// <param name="filterValue">The filter value is used to generate a simple AND style WHERE clause.</param>
         /// <returns></returns>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-        ITableDbCommandBuilder From<TObject>(object filterValue) where TObject : class;
+        ITableDbCommandBuilder<TObject> From<TObject>(object filterValue) where TObject : class;
 
         /// <summary>
         /// Gets a record by its primary key.

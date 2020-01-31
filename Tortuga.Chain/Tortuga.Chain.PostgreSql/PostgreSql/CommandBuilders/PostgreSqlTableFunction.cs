@@ -199,7 +199,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         /// <param name="filterValue">The filter value.</param>
         /// <param name="filterOptions">The filter options.</param>
         /// <returns>TableDbCommandBuilder&lt;NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption&gt;.</returns>
-        public override TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption> WithFilter(object filterValue, FilterOptions filterOptions = FilterOptions.None)
+        protected override TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption> OnWithFilter(object filterValue, FilterOptions filterOptions = FilterOptions.None)
         {
             m_FilterValue = filterValue;
             m_WhereClause = null;
@@ -212,22 +212,9 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         /// Adds (or replaces) the filter on this command builder.
         /// </summary>
         /// <param name="whereClause">The where clause.</param>
-        /// <returns></returns>
-        public override TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption> WithFilter(string whereClause)
-        {
-            m_FilterValue = null;
-            m_WhereClause = whereClause;
-            m_ArgumentValue = null;
-            return this;
-        }
-
-        /// <summary>
-        /// Adds (or replaces) the filter on this command builder.
-        /// </summary>
-        /// <param name="whereClause">The where clause.</param>
         /// <param name="argumentValue">The argument value.</param>
         /// <returns></returns>
-        public override TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption> WithFilter(string whereClause, object argumentValue)
+        protected override TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption> OnWithFilter(string whereClause, object? argumentValue)
         {
             m_FilterValue = null;
             m_WhereClause = whereClause;
@@ -241,7 +228,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
         /// <param name="sortExpressions">The sort expressions.</param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public override TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption> WithSorting(IEnumerable<SortExpression> sortExpressions)
+        protected override TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption> OnWithSorting(IEnumerable<SortExpression> sortExpressions)
         {
             if (sortExpressions == null)
                 throw new ArgumentNullException(nameof(sortExpressions), $"{nameof(sortExpressions)} is null.");

@@ -118,7 +118,7 @@ namespace Tortuga.Chain.MySql
                 parameters.Add(param);
             }
 
-            return new MySqlTableOrView(this, tableName, where, parameters);
+            return new MySqlTableOrView<object>(this, tableName, where, parameters);
         }
 
         MultipleRowDbCommandBuilder<MySqlCommand, MySqlParameter> OnDeleteMany(MySqlObjectName tableName, string whereClause, object? argumentValue)
@@ -136,14 +136,16 @@ namespace Tortuga.Chain.MySql
             return new MySqlDeleteObject<TArgument>(this, tableName, argumentValue, options);
         }
 
-        TableDbCommandBuilder<MySqlCommand, MySqlParameter, MySqlLimitOption> OnFromTableOrView(MySqlObjectName tableOrViewName, object filterValue, FilterOptions filterOptions)
+        TableDbCommandBuilder<MySqlCommand, MySqlParameter, MySqlLimitOption, TObject> OnFromTableOrView<TObject>(MySqlObjectName tableOrViewName, object filterValue, FilterOptions filterOptions)
+            where TObject : class
         {
-            return new MySqlTableOrView(this, tableOrViewName, filterValue, filterOptions);
+            return new MySqlTableOrView<TObject>(this, tableOrViewName, filterValue, filterOptions);
         }
 
-        TableDbCommandBuilder<MySqlCommand, MySqlParameter, MySqlLimitOption> OnFromTableOrView(MySqlObjectName tableOrViewName, string? whereClause, object? argumentValue)
+        TableDbCommandBuilder<MySqlCommand, MySqlParameter, MySqlLimitOption, TObject> OnFromTableOrView<TObject>(MySqlObjectName tableOrViewName, string? whereClause, object? argumentValue)
+            where TObject : class
         {
-            return new MySqlTableOrView(this, tableOrViewName, whereClause, argumentValue);
+            return new MySqlTableOrView<TObject>(this, tableOrViewName, whereClause, argumentValue);
         }
 
         ObjectDbCommandBuilder<MySqlCommand, MySqlParameter, TArgument> OnInsertObject<TArgument>(MySqlObjectName tableName, TArgument argumentValue, InsertOptions options)

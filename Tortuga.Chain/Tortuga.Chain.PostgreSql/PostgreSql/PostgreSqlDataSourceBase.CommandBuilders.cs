@@ -118,7 +118,7 @@ namespace Tortuga.Chain.PostgreSql
                 parameters.Add(param);
             }
 
-            return new PostgreSqlTableOrView(this, tableName, where, parameters);
+            return new PostgreSqlTableOrView<object>(this, tableName, where, parameters);
         }
 
         MultipleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> OnDeleteMany(PostgreSqlObjectName tableName, string whereClause, object? argumentValue)
@@ -136,14 +136,16 @@ namespace Tortuga.Chain.PostgreSql
             return new PostgreSqlDeleteObject<TArgument>(this, tableName, argumentValue, options);
         }
 
-        TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption> OnFromTableOrView(PostgreSqlObjectName tableOrViewName, object filterValue, FilterOptions filterOptions)
+        TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption, TObject> OnFromTableOrView<TObject>(PostgreSqlObjectName tableOrViewName, object filterValue, FilterOptions filterOptions)
+            where TObject : class
         {
-            return new PostgreSqlTableOrView(this, tableOrViewName, filterValue, filterOptions);
+            return new PostgreSqlTableOrView<TObject>(this, tableOrViewName, filterValue, filterOptions);
         }
 
-        TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption> OnFromTableOrView(PostgreSqlObjectName tableOrViewName, string? whereClause, object? argumentValue)
+        TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption, TObject> OnFromTableOrView<TObject>(PostgreSqlObjectName tableOrViewName, string? whereClause, object? argumentValue)
+            where TObject : class
         {
-            return new PostgreSqlTableOrView(this, tableOrViewName, whereClause, argumentValue);
+            return new PostgreSqlTableOrView<TObject>(this, tableOrViewName, whereClause, argumentValue);
         }
 
         ObjectDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, TArgument> OnInsertObject<TArgument>(PostgreSqlObjectName tableName, TArgument argumentValue, InsertOptions options)

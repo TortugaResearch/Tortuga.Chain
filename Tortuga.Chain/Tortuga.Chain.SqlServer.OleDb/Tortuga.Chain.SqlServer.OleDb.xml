@@ -586,7 +586,7 @@
             This is used by materializers to skip IsNull checks.
             </remarks>
         </member>
-        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.OleDbSqlServerTableFunction.WithFilter(System.Object,Tortuga.Chain.FilterOptions)">
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.OleDbSqlServerTableFunction.OnWithFilter(System.Object,Tortuga.Chain.FilterOptions)">
             <summary>
             Adds (or replaces) the filter on this command builder.
             </summary>
@@ -594,14 +594,7 @@
             <param name="filterOptions">The filter options.</param>
             <returns>TableDbCommandBuilder&lt;OleDbCommand, OleDbParameter, SqlServerLimitOption&gt;.</returns>
         </member>
-        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.OleDbSqlServerTableFunction.WithFilter(System.String)">
-            <summary>
-            Adds (or replaces) the filter on this command builder.
-            </summary>
-            <param name="whereClause">The where clause.</param>
-            <returns></returns>
-        </member>
-        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.OleDbSqlServerTableFunction.WithFilter(System.String,System.Object)">
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.OleDbSqlServerTableFunction.OnWithFilter(System.String,System.Object)">
             <summary>
             Adds (or replaces) the filter on this command builder.
             </summary>
@@ -609,7 +602,7 @@
             <param name="argumentValue">The argument value.</param>
             <returns></returns>
         </member>
-        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.OleDbSqlServerTableFunction.WithSorting(System.Collections.Generic.IEnumerable{Tortuga.Chain.SortExpression})">
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.OleDbSqlServerTableFunction.OnWithSorting(System.Collections.Generic.IEnumerable{Tortuga.Chain.SortExpression})">
             <summary>
             Adds sorting to the command builder.
             </summary>
@@ -637,14 +630,14 @@
             <param name="seed">The seed for repeatable reads. Only applies to random sampling</param>
             <returns></returns>
         </member>
-        <member name="T:Tortuga.Chain.SqlServer.CommandBuilders.OleDbSqlServerTableOrView">
+        <member name="T:Tortuga.Chain.SqlServer.CommandBuilders.OleDbSqlServerTableOrView`1">
             <summary>
             OleDbSqlServerTableOrView supports queries against tables and views.
             </summary>
         </member>
-        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.OleDbSqlServerTableOrView.#ctor(Tortuga.Chain.SqlServer.OleDbSqlServerDataSourceBase,Tortuga.Chain.SqlServer.SqlServerObjectName,System.Object,Tortuga.Chain.FilterOptions)">
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.OleDbSqlServerTableOrView`1.#ctor(Tortuga.Chain.SqlServer.OleDbSqlServerDataSourceBase,Tortuga.Chain.SqlServer.SqlServerObjectName,System.Object,Tortuga.Chain.FilterOptions)">
             <summary>
-            Initializes a new instance of the <see cref="T:Tortuga.Chain.SqlServer.CommandBuilders.OleDbSqlServerTableOrView" /> class.
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.SqlServer.CommandBuilders.OleDbSqlServerTableOrView`1" /> class.
             </summary>
             <param name="dataSource">The data source.</param>
             <param name="tableOrViewName">Name of the table or view.</param>
@@ -652,28 +645,28 @@
             <param name="filterOptions">The filter options.</param>
             <exception cref="T:System.ArgumentException"></exception>
         </member>
-        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.OleDbSqlServerTableOrView.#ctor(Tortuga.Chain.SqlServer.OleDbSqlServerDataSourceBase,Tortuga.Chain.SqlServer.SqlServerObjectName,System.String,System.Object)">
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.OleDbSqlServerTableOrView`1.#ctor(Tortuga.Chain.SqlServer.OleDbSqlServerDataSourceBase,Tortuga.Chain.SqlServer.SqlServerObjectName,System.String,System.Object)">
             <summary>
-            Initializes a new instance of the <see cref="T:Tortuga.Chain.SqlServer.CommandBuilders.OleDbSqlServerTableOrView"/> class.
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.SqlServer.CommandBuilders.OleDbSqlServerTableOrView`1"/> class.
             </summary>
             <param name="dataSource">The data source.</param>
             <param name="tableOrViewName">Name of the table or view.</param>
             <param name="whereClause">The where clause.</param>
             <param name="argumentValue">The argument value.</param>
         </member>
-        <member name="P:Tortuga.Chain.SqlServer.CommandBuilders.OleDbSqlServerTableOrView.DataSource">
+        <member name="P:Tortuga.Chain.SqlServer.CommandBuilders.OleDbSqlServerTableOrView`1.DataSource">
             <summary>
             Gets the data source.
             </summary>
             <value>The data source.</value>
         </member>
-        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.OleDbSqlServerTableOrView.AsCount">
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.OleDbSqlServerTableOrView`1.AsCount">
             <summary>
             Returns the row count using a <c>SELECT COUNT_BIG(*)</c> style query.
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.OleDbSqlServerTableOrView.AsCount(System.String,System.Boolean)">
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.OleDbSqlServerTableOrView`1.AsCount(System.String,System.Boolean)">
             <summary>
             Returns the row count for a given column. <c>SELECT COUNT_BIG(columnName)</c>
             </summary>
@@ -681,13 +674,13 @@
             <param name="distinct">if set to <c>true</c> use <c>SELECT COUNT_BIG(DISTINCT columnName)</c>.</param>
             <returns></returns>
         </member>
-        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.OleDbSqlServerTableOrView.Prepare(Tortuga.Chain.Materializers.Materializer{System.Data.OleDb.OleDbCommand,System.Data.OleDb.OleDbParameter})">
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.OleDbSqlServerTableOrView`1.Prepare(Tortuga.Chain.Materializers.Materializer{System.Data.OleDb.OleDbCommand,System.Data.OleDb.OleDbParameter})">
             <summary>
             Prepares the command for execution by generating any necessary SQL.
             </summary>
             <param name="materializer">The materializer.</param>
         </member>
-        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.OleDbSqlServerTableOrView.TryGetColumn(System.String)">
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.OleDbSqlServerTableOrView`1.TryGetColumn(System.String)">
             <summary>
             Returns the column associated with the column name.
             </summary>
@@ -697,7 +690,7 @@
             If the column name was not found, this will return null
             </remarks>
         </member>
-        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.OleDbSqlServerTableOrView.TryGetNonNullableColumns">
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.OleDbSqlServerTableOrView`1.TryGetNonNullableColumns">
             <summary>
             Returns a list of columns known to be non-nullable.
             </summary>
@@ -708,7 +701,7 @@
             This is used by materializers to skip IsNull checks.
             </remarks>
         </member>
-        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.OleDbSqlServerTableOrView.WithFilter(System.Object,Tortuga.Chain.FilterOptions)">
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.OleDbSqlServerTableOrView`1.OnWithFilter(System.Object,Tortuga.Chain.FilterOptions)">
             <summary>
             Adds (or replaces) the filter on this command builder.
             </summary>
@@ -716,14 +709,7 @@
             <param name="filterOptions">The filter options.</param>
             <returns>TableDbCommandBuilder&lt;OleDbCommand, OleDbParameter, SqlServerLimitOption&gt;.</returns>
         </member>
-        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.OleDbSqlServerTableOrView.WithFilter(System.String)">
-            <summary>
-            Adds (or replaces) the filter on this command builder.
-            </summary>
-            <param name="whereClause">The where clause.</param>
-            <returns></returns>
-        </member>
-        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.OleDbSqlServerTableOrView.WithFilter(System.String,System.Object)">
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.OleDbSqlServerTableOrView`1.OnWithFilter(System.String,System.Object)">
             <summary>
             Adds (or replaces) the filter on this command builder.
             </summary>
@@ -731,14 +717,14 @@
             <param name="argumentValue">The argument value.</param>
             <returns></returns>
         </member>
-        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.OleDbSqlServerTableOrView.WithSorting(System.Collections.Generic.IEnumerable{Tortuga.Chain.SortExpression})">
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.OleDbSqlServerTableOrView`1.OnWithSorting(System.Collections.Generic.IEnumerable{Tortuga.Chain.SortExpression})">
             <summary>
             Adds sorting to the command builder.
             </summary>
             <param name="sortExpressions">The sort expressions.</param>
             <returns></returns>
         </member>
-        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.OleDbSqlServerTableOrView.OnWithLimits(System.Nullable{System.Int32},System.Nullable{System.Int32},Tortuga.Chain.SqlServerLimitOption,System.Nullable{System.Int32})">
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.OleDbSqlServerTableOrView`1.OnWithLimits(System.Nullable{System.Int32},System.Nullable{System.Int32},Tortuga.Chain.SqlServerLimitOption,System.Nullable{System.Int32})">
             <summary>
             Adds limits to the command builder.
             </summary>
@@ -748,7 +734,7 @@
             <param name="seed">The seed for repeatable reads. Only applies to random sampling</param>
             <returns></returns>
         </member>
-        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.OleDbSqlServerTableOrView.OnWithLimits(System.Nullable{System.Int32},System.Nullable{System.Int32},Tortuga.Chain.LimitOptions,System.Nullable{System.Int32})">
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.OleDbSqlServerTableOrView`1.OnWithLimits(System.Nullable{System.Int32},System.Nullable{System.Int32},Tortuga.Chain.LimitOptions,System.Nullable{System.Int32})">
             <summary>
             Adds limits to the command builder.
             </summary>

@@ -140,7 +140,7 @@ namespace Tortuga.Chain.SQLite
                 parameters.Add(param);
             }
 
-            return new SQLiteTableOrView(this, tableName, where, parameters);
+            return new SQLiteTableOrView<object>(this, tableName, where, parameters);
         }
 
         MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> OnDeleteMany(SQLiteObjectName tableName, string whereClause, object? argumentValue)
@@ -158,14 +158,16 @@ namespace Tortuga.Chain.SQLite
             return new SQLiteDeleteObject<TArgument>(this, tableName, argumentValue, options);
         }
 
-        TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> OnFromTableOrView(SQLiteObjectName tableOrViewName, object filterValue, FilterOptions filterOptions)
+        TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption, TObject> OnFromTableOrView<TObject>(SQLiteObjectName tableOrViewName, object filterValue, FilterOptions filterOptions)
+            where TObject : class
         {
-            return new SQLiteTableOrView(this, tableOrViewName, filterValue, filterOptions);
+            return new SQLiteTableOrView<TObject>(this, tableOrViewName, filterValue, filterOptions);
         }
 
-        TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> OnFromTableOrView(SQLiteObjectName tableOrViewName, string? whereClause, object? argumentValue)
+        TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption, TObject> OnFromTableOrView<TObject>(SQLiteObjectName tableOrViewName, string? whereClause, object? argumentValue)
+            where TObject : class
         {
-            return new SQLiteTableOrView(this, tableOrViewName, whereClause, argumentValue);
+            return new SQLiteTableOrView<TObject>(this, tableOrViewName, whereClause, argumentValue);
         }
 
         ObjectDbCommandBuilder<SQLiteCommand, SQLiteParameter, TArgument> OnInsertObject<TArgument>(SQLiteObjectName tableName, TArgument argumentValue, InsertOptions options)
