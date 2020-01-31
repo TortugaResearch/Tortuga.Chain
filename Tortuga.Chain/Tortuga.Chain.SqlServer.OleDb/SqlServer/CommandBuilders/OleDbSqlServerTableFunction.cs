@@ -245,7 +245,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// <param name="filterValue">The filter value.</param>
         /// <param name="filterOptions">The filter options.</param>
         /// <returns>TableDbCommandBuilder&lt;OleDbCommand, OleDbParameter, SqlServerLimitOption&gt;.</returns>
-        public override TableDbCommandBuilder<OleDbCommand, OleDbParameter, SqlServerLimitOption> WithFilter(object filterValue, FilterOptions filterOptions = FilterOptions.None)
+        protected override TableDbCommandBuilder<OleDbCommand, OleDbParameter, SqlServerLimitOption> OnWithFilter(object filterValue, FilterOptions filterOptions = FilterOptions.None)
         {
             m_FilterValue = filterValue;
             m_WhereClause = null;
@@ -258,22 +258,9 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// Adds (or replaces) the filter on this command builder.
         /// </summary>
         /// <param name="whereClause">The where clause.</param>
-        /// <returns></returns>
-        public override TableDbCommandBuilder<OleDbCommand, OleDbParameter, SqlServerLimitOption> WithFilter(string whereClause)
-        {
-            m_FilterValue = null;
-            m_WhereClause = whereClause;
-            m_ArgumentValue = null;
-            return this;
-        }
-
-        /// <summary>
-        /// Adds (or replaces) the filter on this command builder.
-        /// </summary>
-        /// <param name="whereClause">The where clause.</param>
         /// <param name="argumentValue">The argument value.</param>
         /// <returns></returns>
-        public override TableDbCommandBuilder<OleDbCommand, OleDbParameter, SqlServerLimitOption> WithFilter(string whereClause, object argumentValue)
+        protected override TableDbCommandBuilder<OleDbCommand, OleDbParameter, SqlServerLimitOption> OnWithFilter(string whereClause, object? argumentValue)
         {
             m_FilterValue = null;
             m_WhereClause = whereClause;
@@ -287,7 +274,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// <param name="sortExpressions">The sort expressions.</param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public override TableDbCommandBuilder<OleDbCommand, OleDbParameter, SqlServerLimitOption> WithSorting(IEnumerable<SortExpression> sortExpressions)
+        protected override TableDbCommandBuilder<OleDbCommand, OleDbParameter, SqlServerLimitOption> OnWithSorting(IEnumerable<SortExpression> sortExpressions)
         {
             if (sortExpressions == null)
                 throw new ArgumentNullException(nameof(sortExpressions), $"{nameof(sortExpressions)} is null.");

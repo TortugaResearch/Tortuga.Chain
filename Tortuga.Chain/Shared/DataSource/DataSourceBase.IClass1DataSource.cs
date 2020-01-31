@@ -104,22 +104,22 @@ namespace Tortuga.Chain.Access
             return From(tableOrViewName, whereClause, argumentValue);
         }
 
-        ITableDbCommandBuilder IClass1DataSource.From<TObject>()
+        ITableDbCommandBuilder<TObject> IClass1DataSource.From<TObject>()
         {
             return From<TObject>();
         }
 
-        ITableDbCommandBuilder IClass1DataSource.From<TObject>(string whereClause)
+        ITableDbCommandBuilder<TObject> IClass1DataSource.From<TObject>(string whereClause)
         {
             return From<TObject>(whereClause);
         }
 
-        ITableDbCommandBuilder IClass1DataSource.From<TObject>(string whereClause, object argumentValue)
+        ITableDbCommandBuilder<TObject> IClass1DataSource.From<TObject>(string whereClause, object argumentValue)
         {
             return From<TObject>(whereClause, argumentValue);
         }
 
-        ITableDbCommandBuilder IClass1DataSource.From<TObject>(object filterValue)
+        ITableDbCommandBuilder<TObject> IClass1DataSource.From<TObject>(object filterValue)
         {
             return From<TObject>(filterValue);
         }

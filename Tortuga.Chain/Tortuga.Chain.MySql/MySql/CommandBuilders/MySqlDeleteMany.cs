@@ -20,6 +20,8 @@ namespace Tortuga.Chain.MySql.CommandBuilders
         readonly IEnumerable<MySqlParameter>? m_Parameters;
         readonly TableOrViewMetadata<MySqlObjectName, MySqlDbType> m_Table;
         readonly string? m_WhereClause;
+        readonly DeleteOptions m_Options;
+        readonly int? m_ExpectedRowCount;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MySqlDeleteMany" /> class.
@@ -28,8 +30,9 @@ namespace Tortuga.Chain.MySql.CommandBuilders
         /// <param name="tableName">Name of the table.</param>
         /// <param name="whereClause">The where clause.</param>
         /// <param name="parameters">The parameters.</param>
+        /// <param name="expectedRowCount">The expected row count.</param>
         /// <param name="options">The options.</param>
-        public MySqlDeleteMany(MySqlDataSourceBase dataSource, MySqlObjectName tableName, string whereClause, IEnumerable<MySqlParameter> parameters, DeleteOptions options) : base(dataSource)
+        public MySqlDeleteMany(MySqlDataSourceBase dataSource, MySqlObjectName tableName, string whereClause, IEnumerable<MySqlParameter> parameters, int? expectedRowCount, DeleteOptions options) : base(dataSource)
         {
             if (options.HasFlag(DeleteOptions.UseKeyAttribute))
                 throw new NotSupportedException("Cannot use Key attributes with this operation.");
@@ -37,6 +40,8 @@ namespace Tortuga.Chain.MySql.CommandBuilders
             m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
             m_WhereClause = whereClause;
             m_Parameters = parameters;
+            m_Options = options;
+            m_ExpectedRowCount = expectedRowCount;
         }
 
         /// <summary>
@@ -109,7 +114,7 @@ namespace Tortuga.Chain.MySql.CommandBuilders
             if (m_Parameters != null)
                 parameters.AddRange(m_Parameters);
 
-            return new MySqlCommandExecutionToken(DataSource, "Delete from " + m_Table.Name, sql.ToString(), parameters);
+            return new MySqlCommandExecutionToken(DataSource, "Delete from " + m_Table.Name, sql.ToString(), parameters).CheckDeleteRowCount(m_Options, m_ExpectedRowCount);
         }
 
         /// <summary>

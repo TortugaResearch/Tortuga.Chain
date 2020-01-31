@@ -21,6 +21,8 @@ namespace Tortuga.Chain.Access.CommandBuilders
         readonly IEnumerable<OleDbParameter>? m_Parameters;
         readonly TableOrViewMetadata<AccessObjectName, OleDbType> m_Table;
         readonly string? m_WhereClause;
+        readonly DeleteOptions m_Options;
+        readonly int? m_ExpectedRowCount;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AccessDeleteMany" /> class.
@@ -29,8 +31,9 @@ namespace Tortuga.Chain.Access.CommandBuilders
         /// <param name="tableName">Name of the table.</param>
         /// <param name="whereClause">The where clause.</param>
         /// <param name="parameters">The parameters.</param>
+        /// <param name="expectedRowCount">The expected row count.</param>
         /// <param name="options">The options.</param>
-        public AccessDeleteMany(AccessDataSourceBase dataSource, AccessObjectName tableName, string whereClause, IEnumerable<OleDbParameter> parameters, DeleteOptions options) : base(dataSource)
+        public AccessDeleteMany(AccessDataSourceBase dataSource, AccessObjectName tableName, string whereClause, IEnumerable<OleDbParameter> parameters, int? expectedRowCount, DeleteOptions options) : base(dataSource)
         {
             if (options.HasFlag(DeleteOptions.UseKeyAttribute))
                 throw new NotSupportedException("Cannot use Key attributes with this operation.");
@@ -38,6 +41,8 @@ namespace Tortuga.Chain.Access.CommandBuilders
             m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
             m_WhereClause = whereClause;
             m_Parameters = parameters;
+            m_Options = options;
+            m_ExpectedRowCount = expectedRowCount;
         }
 
         /// <summary>
@@ -99,7 +104,7 @@ namespace Tortuga.Chain.Access.CommandBuilders
             if (m_Parameters != null)
                 parameters.AddRange(m_Parameters);
 
-            var deleteCommand = new AccessCommandExecutionToken(DataSource, "Delete from " + m_Table.Name, sql.ToString(), parameters);
+            var deleteCommand = new AccessCommandExecutionToken(DataSource, "Delete from " + m_Table.Name, sql.ToString(), parameters).CheckDeleteRowCount(m_Options, m_ExpectedRowCount);
 
             var desiredColumns = materializer.DesiredColumns();
             if (desiredColumns == Materializer.NoColumns)

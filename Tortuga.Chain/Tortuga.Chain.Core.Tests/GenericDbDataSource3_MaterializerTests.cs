@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
@@ -6,14 +7,14 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using Tortuga.Chain;
 using Tortuga.Chain.Materializers;
-using Microsoft.Extensions.Configuration;
+
+#nullable disable
 
 namespace Tortuga.Chain.Core.Tests
 {
     [TestClass]
-    public class GenericDbDataSource3_MaterializerTests
+    public partial class GenericDbDataSource3_MaterializerTests
     {
         const string CustomerWithOrdersByState = @"SELECT  *
     FROM    Sales.Customer c
@@ -228,7 +229,7 @@ namespace Tortuga.Chain.Core.Tests
         [TestMethod]
         public async Task CharNull_String_ListWithNullsTest()
         {
-            await ListWithNullsTest<string>("CharNull", typeof(StringListMaterializer<DbCommand, DbParameter>));
+            await FailedListWithNullsTest<string>("CharNull", typeof(StringListMaterializer<DbCommand, DbParameter>));
         }
 
         [TestMethod]
@@ -740,7 +741,7 @@ namespace Tortuga.Chain.Core.Tests
         [TestMethod]
         public async Task NCharNull_String_ListWithNullsTest()
         {
-            await ListWithNullsTest<string>("NCharNull", typeof(StringListMaterializer<DbCommand, DbParameter>));
+            await FailedListWithNullsTest<string>("NCharNull", typeof(StringListMaterializer<DbCommand, DbParameter>));
         }
 
         [TestMethod]
@@ -788,7 +789,7 @@ namespace Tortuga.Chain.Core.Tests
         [TestMethod]
         public async Task NTextNull_String_ListWithNullsTest()
         {
-            await ListWithNullsTest<string>("NTextNull", typeof(StringListMaterializer<DbCommand, DbParameter>));
+            await FailedListWithNullsTest<string>("NTextNull", typeof(StringListMaterializer<DbCommand, DbParameter>));
         }
 
         [TestMethod]
@@ -890,7 +891,7 @@ namespace Tortuga.Chain.Core.Tests
         [TestMethod]
         public async Task NVarCharNull_String_ListWithNullsTest()
         {
-            await ListWithNullsTest<string>("NVarCharNull", typeof(StringListMaterializer<DbCommand, DbParameter>));
+            await FailedListWithNullsTest<string>("NVarCharNull", typeof(StringListMaterializer<DbCommand, DbParameter>));
         }
 
         [TestMethod]
@@ -1195,7 +1196,7 @@ namespace Tortuga.Chain.Core.Tests
         [TestMethod]
         public async Task TextNull_String_ListWithNullsTest()
         {
-            await ListWithNullsTest<string>("TextNull", typeof(StringListMaterializer<DbCommand, DbParameter>));
+            await FailedListWithNullsTest<string>("TextNull", typeof(StringListMaterializer<DbCommand, DbParameter>));
         }
 
         [TestMethod]
@@ -1456,7 +1457,7 @@ namespace Tortuga.Chain.Core.Tests
         [TestMethod]
         public async Task VarCharNull_String_ListWithNullsTest()
         {
-            await ListWithNullsTest<string>("VarCharNull", typeof(StringListMaterializer<DbCommand, DbParameter>));
+            await FailedListWithNullsTest<string>("VarCharNull", typeof(StringListMaterializer<DbCommand, DbParameter>));
         }
 
         //*****************************
@@ -1517,7 +1518,7 @@ namespace Tortuga.Chain.Core.Tests
         [TestMethod]
         public async Task XmlNull_String_ListWithNullsTest()
         {
-            await ListWithNullsTest<string>("XmlNull", typeof(StringListMaterializer<DbCommand, DbParameter>));
+            await FailedListWithNullsTest<string>("XmlNull", typeof(StringListMaterializer<DbCommand, DbParameter>));
         }
 
         [TestMethod]

@@ -58,11 +58,15 @@ namespace Tortuga.Chain.SqlServer
 
             var table = DatabaseMetadata.GetTableOrView(tableName);
             if (!AuditRules.UseSoftDelete(table))
-                return new SqlServerDeleteMany(this, tableName, where, parameters, options);
+                return new SqlServerDeleteMany(this, tableName, where, parameters, parameters.Count, options);
 
-            UpdateOptions effectiveOptions = UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected;
+            UpdateOptions effectiveOptions = UpdateOptions.SoftDelete;
+
+            if (!options.HasFlag(DeleteOptions.CheckRowsAffected))
+                effectiveOptions |= UpdateOptions.IgnoreRowsAffected;
+
             if (options.HasFlag(DeleteOptions.UseKeyAttribute))
-                effectiveOptions = effectiveOptions | UpdateOptions.UseKeyAttribute;
+                effectiveOptions |= UpdateOptions.UseKeyAttribute;
 
             return new SqlServerUpdateMany(this, tableName, null, where, parameters, parameters.Count, effectiveOptions);
         }
@@ -263,7 +267,7 @@ namespace Tortuga.Chain.SqlServer
                 parameters.Add(param);
             }
 
-            return new SqlServerTableOrView(this, tableName, where, parameters);
+            return new SqlServerTableOrView<object>(this, tableName, where, parameters);
         }
 
         MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> OnDeleteMany(SqlServerObjectName tableName, string whereClause, object? argumentValue)
@@ -281,14 +285,16 @@ namespace Tortuga.Chain.SqlServer
             return new SqlServerDeleteObject<TArgument>(this, tableName, argumentValue, options);
         }
 
-        TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption> OnFromTableOrView(SqlServerObjectName tableOrViewName, object filterValue, FilterOptions filterOptions)
+        TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption, TObject> OnFromTableOrView<TObject>(SqlServerObjectName tableOrViewName, object filterValue, FilterOptions filterOptions)
+            where TObject : class
         {
-            return new SqlServerTableOrView(this, tableOrViewName, filterValue, filterOptions);
+            return new SqlServerTableOrView<TObject>(this, tableOrViewName, filterValue, filterOptions);
         }
 
-        TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption> OnFromTableOrView(SqlServerObjectName tableOrViewName, string? whereClause, object? argumentValue)
+        TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption, TObject> OnFromTableOrView<TObject>(SqlServerObjectName tableOrViewName, string? whereClause, object? argumentValue)
+            where TObject : class
         {
-            return new SqlServerTableOrView(this, tableOrViewName, whereClause, argumentValue);
+            return new SqlServerTableOrView<TObject>(this, tableOrViewName, whereClause, argumentValue);
         }
 
         ObjectDbCommandBuilder<SqlCommand, SqlParameter, TArgument> OnInsertObject<TArgument>(SqlServerObjectName tableName, TArgument argumentValue, InsertOptions options)

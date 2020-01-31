@@ -17,6 +17,11 @@ namespace Tortuga.Chain
         /// Ignore the primary keys on the table and perform the delete using the Key attribute on properties to construct the where clause.
         /// </summary>
         /// <remarks>This is generally used for heap-style tables, though technically heap tables may have primary, non-clustered keys.</remarks>
-        UseKeyAttribute = 2
+        UseKeyAttribute = 2,
+
+        /// <summary>
+        /// Check the rows affected count. With this flag, an error will be thrown if the rows affected by the delete operation is zero.
+        /// </summary>
+        CheckRowsAffected = 4
     }
 }

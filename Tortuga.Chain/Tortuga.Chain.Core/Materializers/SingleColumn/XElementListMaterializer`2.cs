@@ -13,7 +13,7 @@ namespace Tortuga.Chain.Materializers
     /// </summary>
     /// <typeparam name="TCommand">The type of the t command type.</typeparam>
     /// <typeparam name="TParameter">The type of the t parameter type.</typeparam>
-    internal sealed class XElementListMaterializer<TCommand, TParameter> : SingleColumnMaterializer<TCommand, TParameter, List<XElement?>> where TCommand : DbCommand
+    internal sealed class XElementListMaterializer<TCommand, TParameter> : SingleColumnMaterializer<TCommand, TParameter, List<XElement>> where TCommand : DbCommand
         where TParameter : DbParameter
     {
         readonly ListOptions m_ListOptions;
@@ -34,9 +34,9 @@ namespace Tortuga.Chain.Materializers
         /// Execute the operation synchronously.
         /// </summary>
         /// <returns></returns>
-        public override List<XElement?> Execute(object? state = null)
+        public override List<XElement> Execute(object? state = null)
         {
-            var result = new List<XElement?>();
+            var result = new List<XElement>();
 
             Prepare().Execute(cmd =>
             {
@@ -56,7 +56,7 @@ namespace Tortuga.Chain.Materializers
                             if (!reader.IsDBNull(i))
                                 result.Add(XElement.Parse(reader.GetString(i)));
                             else if (!discardNulls)
-                                result.Add(null);
+                                throw new MissingDataException("Unexpected null value");
                         }
                     }
                     return rowCount;
@@ -72,9 +72,9 @@ namespace Tortuga.Chain.Materializers
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <param name="state">User defined state, usually used for logging.</param>
         /// <returns></returns>
-        public override async Task<List<XElement?>> ExecuteAsync(CancellationToken cancellationToken, object? state = null)
+        public override async Task<List<XElement>> ExecuteAsync(CancellationToken cancellationToken, object? state = null)
         {
-            var result = new List<XElement?>();
+            var result = new List<XElement>();
 
             await Prepare().ExecuteAsync(async cmd =>
             {
@@ -95,7 +95,7 @@ namespace Tortuga.Chain.Materializers
                             if (!reader.IsDBNull(i))
                                 result.Add(XElement.Parse(reader.GetString(i)));
                             else if (!discardNulls)
-                                result.Add(null);
+                                throw new MissingDataException("Unexpected null value");
                         }
                     }
                     return rowCount;

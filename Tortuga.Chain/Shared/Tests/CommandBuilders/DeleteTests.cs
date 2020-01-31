@@ -119,6 +119,49 @@ namespace Tests.CommandBuilders
         }
 
         [DataTestMethod, BasicData(DataSourceGroup.Primary)]
+        public void DeleteByKey_Checked(string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+                var lookupKey = Guid.NewGuid().ToString();
+                for (var i = 0; i < 10; i++)
+                    dataSource.Insert(EmployeeTableName, new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = lookupKey, MiddleName = i % 2 == 0 ? "A" + i : null }).ToObject<Employee>().Execute();
+
+                var allKeys = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToInt32List("EmployeeKey").Execute();
+                var keyToUpdate = allKeys.First();
+
+                dataSource.DeleteByKey(EmployeeTableName, keyToUpdate, DeleteOptions.CheckRowsAffected).Execute();
+
+                var allRows = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToCollection<Employee>().Execute();
+                Assert.AreEqual(9, allRows.Count, "The wrong number of rows remain");
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+        [DataTestMethod, BasicData(DataSourceGroup.Primary)]
+        public void DeleteByKey_Failed(string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+                try
+                {
+                    dataSource.DeleteByKey(EmployeeTableName, -30, DeleteOptions.CheckRowsAffected).Execute();
+                    Assert.Fail("Expected a missing data exception");
+                }
+                catch (MissingDataException) { }
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+        [DataTestMethod, BasicData(DataSourceGroup.Primary)]
         public void DeleteByKeyList(string dataSourceName, DataSourceType mode)
         {
             var dataSource = DataSource(dataSourceName, mode);
@@ -137,6 +180,62 @@ namespace Tests.CommandBuilders
 
                 var allRows = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToCollection<Employee>().Execute();
                 Assert.AreEqual(5, allRows.Count, "The wrong number of rows remain");
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+        [DataTestMethod, BasicData(DataSourceGroup.Primary)]
+        public void DeleteByKeyList_Checked(string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+                var lookupKey = Guid.NewGuid().ToString();
+                for (var i = 0; i < 10; i++)
+                    dataSource.Insert(EmployeeTableName, new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = lookupKey, MiddleName = i % 2 == 0 ? "A" + i : null }).ToObject<Employee>().Execute();
+
+                var allKeys = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToInt32List("EmployeeKey").Execute();
+                var keysToUpdate = allKeys.Take(5).ToList();
+
+                var updatedRows = dataSource.DeleteByKeyList(EmployeeTableName, keysToUpdate, DeleteOptions.CheckRowsAffected).ToCollection<Employee>().Execute();
+
+                Assert.AreEqual(5, updatedRows.Count, "The wrong number of rows were deleted");
+
+                var allRows = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToCollection<Employee>().Execute();
+                Assert.AreEqual(5, allRows.Count, "The wrong number of rows remain");
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+        [DataTestMethod, BasicData(DataSourceGroup.Primary)]
+        public void DeleteByKeyList_Fail(string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+                var lookupKey = Guid.NewGuid().ToString();
+                for (var i = 0; i < 10; i++)
+                    dataSource.Insert(EmployeeTableName, new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = lookupKey, MiddleName = i % 2 == 0 ? "A" + i : null }).ToObject<Employee>().Execute();
+
+                var allKeys = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToInt32List("EmployeeKey").Execute();
+                var keysToUpdate = allKeys.Take(5).ToList();
+
+                //Add two keys that don't exist
+                keysToUpdate.Add(-10);
+                keysToUpdate.Add(-20);
+
+                try
+                {
+                    var updatedRows = dataSource.DeleteByKeyList(EmployeeTableName, keysToUpdate, DeleteOptions.CheckRowsAffected).ToCollection<Employee>().Execute();
+                    Assert.Fail("Expected a missing data exception");
+                }
+                catch (MissingDataException) { }
             }
             finally
             {

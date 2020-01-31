@@ -556,64 +556,6 @@ namespace Tortuga.Chain.CommandBuilders
         }
 
         /// <summary>
-        /// Overrides the previous selected values with the values in the indicated object.
-        /// </summary>
-        /// <param name="dataSource">The data source.</param>
-        /// <param name="operationType">The type of operation being performed.</param>
-        /// <param name="argumentValue">The value.</param>
-        /// <exception cref="ArgumentNullException">value;value is null.</exception>
-        /// <exception cref="MappingException">This is thrown is no properties could be matched to a column. If strict mode, all properties must match columns.</exception>
-        /// <remarks>This will not alter the IsPrimaryKey, Insert, or Update column settings.
-        /// If the object implements IReadOnlyDictionary[string, object], ApplyArgumentDictionary will be implicitly called instead.</remarks>
-        public void OverrideArgumentValue(IDataSource dataSource, OperationTypes operationType, object? argumentValue)
-        {
-            if (dataSource == null)
-                throw new ArgumentNullException(nameof(dataSource), $"{nameof(dataSource)} is null.");
-
-            if (argumentValue == null)
-                throw new ArgumentNullException(nameof(argumentValue), $"{nameof(argumentValue)} is null.");
-
-            if (argumentValue is IReadOnlyDictionary<string, object> readOnlyDictionary)
-            {
-                ApplyArgumentDictionary(readOnlyDictionary);
-                return;
-            }
-
-            var found = false;
-
-            var metadata = MetadataCache.GetMetadata(argumentValue.GetType());
-            foreach (var property in metadata.Properties)
-            {
-                var propertyFound = false;
-
-                if (property.MappedColumnName == null)
-                    continue;
-
-                for (var i = 0; i < m_Entries.Length; i++)
-                {
-                    ref var entry = ref m_Entries[i];
-
-                    if (entry.Details.ClrName.Equals(property.MappedColumnName, StringComparison.OrdinalIgnoreCase))
-                    {
-                        found = true;
-                        propertyFound = true;
-                        if (entry.IsFormalParameter)
-                            entry.UseParameter = true;
-                        entry.ParameterValue = property.InvokeGet(argumentValue) ?? DBNull.Value;
-                        break;
-                    }
-                }
-                if (StrictMode && !propertyFound)
-                    throw new MappingException($"Strict mode was enabled, but property {property.Name} could be matched to a column in {m_Name}. Disable strict mode or mark the property as NotMapped.");
-            }
-
-            if (!found)
-                throw new MappingException($"None of the properties on {argumentValue.GetType().Name} could be matched to columns in {m_Name}.");
-
-            ApplyRules(dataSource.AuditRules, operationType, null, dataSource.UserValue);
-        }
-
-        /// <summary>
         /// Builds FROM clause for a function.
         /// </summary>
         /// <param name="sql">The SQL.</param>
@@ -821,23 +763,48 @@ namespace Tortuga.Chain.CommandBuilders
             if (sortExpressions?.Any() != true)
                 return;
 
+            sql.Append(header);
+
+            var isFirst = true;
+
             foreach (var expression in sortExpressions)
             {
-                for (var i = 0; i < m_Entries.Length; i++)
+                //this shouldn't happen, but if it does we'll just ignore it.
+                if (expression.ColumnName == null)
+                    continue;
+
+                if (!isFirst)
+                    sql.Append(", ");
+
+                var columnIndex = FindColumnIndexByName(expression.ColumnName);
+                if (columnIndex.HasValue)
                 {
-                    var details = m_Entries[i].Details;
-                    if (string.Equals(details.SqlName, expression.ColumnName, StringComparison.OrdinalIgnoreCase) || details.ClrName.Equals(expression.ColumnName, StringComparison.OrdinalIgnoreCase))
-                    {
-                        expression.Column = details;
-                        break;
-                    }
+                    sql.Append(m_Entries[columnIndex.Value].Details.QuotedSqlName! + (expression.Direction == SortDirection.Descending ? " DESC " : null));
                 }
-                if (expression.Column == null)
-                    throw new MappingException($"Cannot find a column on {m_Name} named {expression.ColumnName}");
+                else if (expression.ColumnName.EndsWith(" ACS", StringComparison.OrdinalIgnoreCase))
+                {
+                    var truncateedName = expression.ColumnName.Substring(0, expression.ColumnName.Length - 4);
+                    columnIndex = FindColumnIndexByName(truncateedName);
+                    if (columnIndex.HasValue)
+                        sql.Append(m_Entries[columnIndex.Value].Details.QuotedSqlName!);
+                    else
+                        throw new MappingException($"Cannot find a column on {m_Name} named '{truncateedName}' or '{expression.ColumnName}'");
+                }
+                else if (expression.ColumnName.EndsWith(" DESC", StringComparison.OrdinalIgnoreCase))
+                {
+                    var truncateedName = expression.ColumnName.Substring(0, expression.ColumnName.Length - 5);
+                    columnIndex = FindColumnIndexByName(truncateedName);
+                    if (columnIndex.HasValue)
+                        sql.Append(m_Entries[columnIndex.Value].Details.QuotedSqlName! + " DESC ");
+                    else
+                        throw new MappingException($"Cannot find a column on {m_Name} named '{truncateedName}' or '{expression.ColumnName}'");
+                }
+                else
+                    throw new MappingException($"Cannot find a column on {m_Name} named '{expression.ColumnName}'");
+
+                isFirst = false;
             }
 
-            sql.Append(header);
-            sql.Append(string.Join(", ", sortExpressions.Select(s => s.ColumnName + (s.Direction == SortDirection.Descending ? " DESC " : null))));
             sql.Append(footer);
         }
 
@@ -1278,6 +1245,64 @@ namespace Tortuga.Chain.CommandBuilders
         }
 
         /// <summary>
+        /// Overrides the previous selected values with the values in the indicated object.
+        /// </summary>
+        /// <param name="dataSource">The data source.</param>
+        /// <param name="operationType">The type of operation being performed.</param>
+        /// <param name="argumentValue">The value.</param>
+        /// <exception cref="ArgumentNullException">value;value is null.</exception>
+        /// <exception cref="MappingException">This is thrown is no properties could be matched to a column. If strict mode, all properties must match columns.</exception>
+        /// <remarks>This will not alter the IsPrimaryKey, Insert, or Update column settings.
+        /// If the object implements IReadOnlyDictionary[string, object], ApplyArgumentDictionary will be implicitly called instead.</remarks>
+        public void OverrideArgumentValue(IDataSource dataSource, OperationTypes operationType, object? argumentValue)
+        {
+            if (dataSource == null)
+                throw new ArgumentNullException(nameof(dataSource), $"{nameof(dataSource)} is null.");
+
+            if (argumentValue == null)
+                throw new ArgumentNullException(nameof(argumentValue), $"{nameof(argumentValue)} is null.");
+
+            if (argumentValue is IReadOnlyDictionary<string, object> readOnlyDictionary)
+            {
+                ApplyArgumentDictionary(readOnlyDictionary);
+                return;
+            }
+
+            var found = false;
+
+            var metadata = MetadataCache.GetMetadata(argumentValue.GetType());
+            foreach (var property in metadata.Properties)
+            {
+                var propertyFound = false;
+
+                if (property.MappedColumnName == null)
+                    continue;
+
+                for (var i = 0; i < m_Entries.Length; i++)
+                {
+                    ref var entry = ref m_Entries[i];
+
+                    if (entry.Details.ClrName.Equals(property.MappedColumnName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        found = true;
+                        propertyFound = true;
+                        if (entry.IsFormalParameter)
+                            entry.UseParameter = true;
+                        entry.ParameterValue = property.InvokeGet(argumentValue) ?? DBNull.Value;
+                        break;
+                    }
+                }
+                if (StrictMode && !propertyFound)
+                    throw new MappingException($"Strict mode was enabled, but property {property.Name} could be matched to a column in {m_Name}. Disable strict mode or mark the property as NotMapped.");
+            }
+
+            if (!found)
+                throw new MappingException($"None of the properties on {argumentValue.GetType().Name} could be matched to columns in {m_Name}.");
+
+            ApplyRules(dataSource.AuditRules, operationType, null, dataSource.UserValue);
+        }
+
+        /// <summary>
         /// Overrides the list of keys.
         /// </summary>
         /// <param name="keyColumns">The key columns in SqlName format. The column names should be normalized before calling this method.</param>
@@ -1534,6 +1559,19 @@ namespace Tortuga.Chain.CommandBuilders
                         entry.RestrictedRead = true;
                 }
             }
+        }
+
+        int? FindColumnIndexByName(string columnName)
+        {
+            for (var i = 0; i < m_Entries.Length; i++)
+            {
+                var details = m_Entries[i].Details;
+                if (string.Equals(details.SqlName, columnName, StringComparison.OrdinalIgnoreCase) || details.ClrName.Equals(columnName, StringComparison.OrdinalIgnoreCase))
+                {
+                    return i;
+                }
+            }
+            return null;
         }
     }
 }
