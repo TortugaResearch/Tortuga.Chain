@@ -64,7 +64,7 @@ namespace Tests.CommandBuilders
             {
                 var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
 
-                var result = dataSource.From(tableName).WithLimits(1).ToDynamicObject(RowOptions.AllowEmptyResults).Execute();
+                var result = dataSource.From(tableName).WithLimits(1).ToDynamicObjectOrNull().Execute();
                 if (result != null)
                 {
                     var row = (IDictionary<string, object>)result;
@@ -85,7 +85,7 @@ namespace Tests.CommandBuilders
             {
                 var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
 
-                var result = await dataSource.From(tableName).WithLimits(1).ToDynamicObject(RowOptions.AllowEmptyResults).ExecuteAsync();
+                var result = await dataSource.From(tableName).WithLimits(1).ToDynamicObjectOrNull().ExecuteAsync();
                 if (result != null)
                 {
                     var row = (IDictionary<string, object>)result;
@@ -142,7 +142,7 @@ namespace Tests.CommandBuilders
             {
                 var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
 
-                var result = dataSource.From(tableName).WithLimits(1).ToDataRow(RowOptions.AllowEmptyResults).Execute();
+                var result = dataSource.From(tableName).WithLimits(1).ToDataRowOrNull().Execute();
                 if (result != null)
                 {
                     Assert.AreEqual(table.Columns.Count, result.Table.Columns.Count);
@@ -162,7 +162,7 @@ namespace Tests.CommandBuilders
             {
                 var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
 
-                var result = await dataSource.From(tableName).WithLimits(1).ToDataRow(RowOptions.AllowEmptyResults).ExecuteAsync();
+                var result = await dataSource.From(tableName).WithLimits(1).ToDataRowOrNull().ExecuteAsync();
                 if (result != null)
                 {
                     Assert.AreEqual(table.Columns.Count, result.Table.Columns.Count);
@@ -218,7 +218,7 @@ namespace Tests.CommandBuilders
             {
                 var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
 
-                var result = dataSource.From(tableName).WithLimits(1).ToRow(RowOptions.AllowEmptyResults).Execute();
+                var result = dataSource.From(tableName).WithLimits(1).ToRowOrNull().Execute();
                 if (result != null)
                 {
                     Assert.AreEqual(table.Columns.Count, result.Count);
@@ -238,7 +238,7 @@ namespace Tests.CommandBuilders
             {
                 var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
 
-                var result = await dataSource.From(tableName).WithLimits(1).ToRow(RowOptions.AllowEmptyResults).ExecuteAsync();
+                var result = await dataSource.From(tableName).WithLimits(1).ToRowOrNull().ExecuteAsync();
                 if (result != null)
                 {
                     Assert.AreEqual(table.Columns.Count, result.Count);

@@ -15,7 +15,7 @@ namespace Tortuga.Chain.Materializers
     /// <typeparam name="TParameter">The type of the t parameter type.</typeparam>
     /// <typeparam name="TObject">The type of the object returned.</typeparam>
     /// <seealso cref="Materializer{TCommand, TParameter, TTObject}"/>
-    internal sealed class ObjectMaterializer<TCommand, TParameter, TObject> : ConstructibleMaterializer<TCommand, TParameter, TObject, TObject>
+    internal sealed class ObjectOrNullMaterializer<TCommand, TParameter, TObject> : ConstructibleMaterializer<TCommand, TParameter, TObject?, TObject>
         where TCommand : DbCommand
         where TParameter : DbParameter
         where TObject : class
@@ -33,7 +33,7 @@ namespace Tortuga.Chain.Materializers
         /// {typeof(TObject).Name} has more than one non-default constructor. Please use the
         /// WithConstructor method to specify which one to use.
         /// </exception>
-        public ObjectMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, RowOptions rowOptions)
+        public ObjectOrNullMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, RowOptions rowOptions)
             : base(commandBuilder)
         {
             m_RowOptions = rowOptions;
@@ -54,7 +54,7 @@ namespace Tortuga.Chain.Materializers
         /// </summary>
         /// <param name="state">User defined state, usually used for logging.</param>
         /// <returns>System.Nullable&lt;TObject&gt;.</returns>
-        public override TObject Execute(object? state = null)
+        public override TObject? Execute(object? state = null)
         {
             IReadOnlyDictionary<string, object?>? row = null;
 
@@ -77,7 +77,7 @@ namespace Tortuga.Chain.Materializers
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <param name="state">User defined state, usually used for logging.</param>
         /// <returns></returns>
-        public override async Task<TObject> ExecuteAsync(CancellationToken cancellationToken, object? state = null)
+        public override async Task<TObject?> ExecuteAsync(CancellationToken cancellationToken, object? state = null)
         {
             IReadOnlyDictionary<string, object?>? row = null;
 
@@ -94,11 +94,14 @@ namespace Tortuga.Chain.Materializers
             return ConstructObject(row, rowCount);
         }
 
-        TObject ConstructObject(IReadOnlyDictionary<string, object?>? row, int? rowCount)
+        TObject? ConstructObject(IReadOnlyDictionary<string, object?>? row, int? rowCount)
         {
             if (rowCount == 0 || row == null)
             {
-                throw new MissingDataException($"No rows were returned. It was this expected, use `.ToObjectOrNull` instead of `.ToObject`.");
+                if (m_RowOptions.HasFlag(RowOptions.AllowEmptyResults))
+                    return null;
+                else
+                    throw new MissingDataException($"No rows were returned and {nameof(RowOptions)}.{nameof(RowOptions.AllowEmptyResults)} was not specified.");
             }
             else if (rowCount > 1 && !m_RowOptions.HasFlag(RowOptions.DiscardExtraRows))
             {

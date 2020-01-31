@@ -12,18 +12,18 @@ namespace Tortuga.Chain.Materializers
     /// </summary>
     /// <typeparam name="TCommand">The type of the t command type.</typeparam>
     /// <typeparam name="TParameter">The type of the t parameter type.</typeparam>
-    internal sealed class Int32SetMaterializer<TCommand, TParameter> : SingleColumnMaterializer<TCommand, TParameter, HashSet<int>> where TCommand : DbCommand
+    internal sealed class Int16OrNullListMaterializer<TCommand, TParameter> : SingleColumnMaterializer<TCommand, TParameter, List<short?>> where TCommand : DbCommand
         where TParameter : DbParameter
     {
         readonly ListOptions m_ListOptions;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Int32SetMaterializer{TCommand, TParameter}"/> class.
+        /// Initializes a new instance of the <see cref="Int16OrNullListMaterializer{TCommand, TParameter}"/> class.
         /// </summary>
         /// <param name="commandBuilder">The command builder.</param>
         /// <param name="columnName">Name of the desired column.</param>
         /// <param name="listOptions">The list options.</param>
-        public Int32SetMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, string? columnName = null, ListOptions listOptions = ListOptions.None)
+        public Int16OrNullListMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, string? columnName = null, ListOptions listOptions = ListOptions.None)
             : base(commandBuilder, columnName)
         {
             m_ListOptions = listOptions;
@@ -33,9 +33,9 @@ namespace Tortuga.Chain.Materializers
         /// Execute the operation synchronously.
         /// </summary>
         /// <returns></returns>
-        public override HashSet<int> Execute(object? state = null)
+        public override List<short?> Execute(object? state = null)
         {
-            var result = new HashSet<int>();
+            var result = new List<short?>();
 
             Prepare().Execute(cmd =>
             {
@@ -53,9 +53,9 @@ namespace Tortuga.Chain.Materializers
                         for (var i = 0; i < columnCount; i++)
                         {
                             if (!reader.IsDBNull(i))
-                                result.Add(reader.GetInt32(i));
+                                result.Add(reader.GetInt16(i));
                             else if (!discardNulls)
-                                throw new MissingDataException("Unexpected null value");
+                                result.Add(null);
                         }
                     }
                     return rowCount;
@@ -71,9 +71,9 @@ namespace Tortuga.Chain.Materializers
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <param name="state">User defined state, usually used for logging.</param>
         /// <returns></returns>
-        public override async Task<HashSet<int>> ExecuteAsync(CancellationToken cancellationToken, object? state = null)
+        public override async Task<List<short?>> ExecuteAsync(CancellationToken cancellationToken, object? state = null)
         {
-            var result = new HashSet<int>();
+            var result = new List<short?>();
 
             await Prepare().ExecuteAsync(async cmd =>
             {
@@ -92,9 +92,9 @@ namespace Tortuga.Chain.Materializers
                         for (var i = 0; i < columnCount; i++)
                         {
                             if (!reader.IsDBNull(i))
-                                result.Add(reader.GetInt32(i));
+                                result.Add(reader.GetInt16(i));
                             else if (!discardNulls)
-                                throw new MissingDataException("Unexpected null value");
+                                result.Add(null);
                         }
                     }
                     return rowCount;

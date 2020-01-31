@@ -45,6 +45,27 @@ namespace Tortuga.Chain.CommandBuilders
         }
 
         /// <summary>
+        /// Indicates the results should be materialized as a list of booleans.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns>ILink&lt;List&lt;System.Nullable&lt;System.Boolean&gt;&gt;&gt;.</returns>
+        public ILink<List<bool?>> ToBooleanOrNullList(string columnName, ListOptions listOptions = ListOptions.None)
+        {
+            return new BooleanOrNullListMaterializer<TCommand, TParameter>(this, columnName, listOptions);
+        }
+
+        /// <summary>
+        /// Indicates the results should be materialized as a list of booleans.
+        /// </summary>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns>ILink&lt;List&lt;System.Nullable&lt;System.Boolean&gt;&gt;&gt;.</returns>
+        public ILink<List<bool?>> ToBooleanOrNullList(ListOptions listOptions = ListOptions.None)
+        {
+            return new BooleanOrNullListMaterializer<TCommand, TParameter>(this, null, listOptions);
+        }
+
+        /// <summary>
         /// Indicates the results should be materialized as a list of byte arrays.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
@@ -63,6 +84,27 @@ namespace Tortuga.Chain.CommandBuilders
         public ILink<List<byte[]>> ToByteArrayList(string columnName, ListOptions listOptions = ListOptions.None)
         {
             return new ByteArrayListMaterializer<TCommand, TParameter>(this, columnName, listOptions);
+        }
+
+        /// <summary>
+        /// Indicates the results should be materialized as a list of byte arrays.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;System.Byte[]&gt;&gt;.</returns>
+        public ILink<List<byte[]?>> ToByteArrayOrNullList(string columnName, ListOptions listOptions = ListOptions.None)
+        {
+            return new ByteArrayOrNullListMaterializer<TCommand, TParameter>(this, columnName, listOptions);
+        }
+
+        /// <summary>
+        /// Indicates the results should be materialized as a list of byte arrays.
+        /// </summary>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;System.Byte[]&gt;&gt;.</returns>
+        public ILink<List<byte[]?>> ToByteArrayOrNullList(ListOptions listOptions = ListOptions.None)
+        {
+            return new ByteArrayOrNullListMaterializer<TCommand, TParameter>(this, null, listOptions);
         }
 
         /// <summary>
@@ -166,6 +208,27 @@ namespace Tortuga.Chain.CommandBuilders
         }
 
         /// <summary>
+        /// Indicates the results should be materialized as a list of DateTimeOffset.
+        /// </summary>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;System.Nullable&lt;System.DateTimeOffset&gt;&gt;&gt;.</returns>
+        public ILink<List<DateTimeOffset?>> ToDateTimeOffsetOrNullList(ListOptions listOptions = ListOptions.None)
+        {
+            return new DateTimeOffsetOrNullListMaterializer<TCommand, TParameter>(this, null, listOptions);
+        }
+
+        /// <summary>
+        /// Indicates the results should be materialized as a list of DateTimeOffset.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;System.Nullable&lt;System.DateTimeOffset&gt;&gt;&gt;.</returns>
+        public ILink<List<DateTimeOffset?>> ToDateTimeOffsetOrNullList(string columnName, ListOptions listOptions = ListOptions.None)
+        {
+            return new DateTimeOffsetOrNullListMaterializer<TCommand, TParameter>(this, columnName, listOptions);
+        }
+
+        /// <summary>
         /// Indicates the results should be materialized as a set of DateTimeOffset.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
@@ -184,6 +247,27 @@ namespace Tortuga.Chain.CommandBuilders
         public ILink<HashSet<DateTimeOffset>> ToDateTimeOffsetSet(string columnName, ListOptions listOptions = ListOptions.None)
         {
             return new DateTimeOffsetSetMaterializer<TCommand, TParameter>(this, columnName, listOptions);
+        }
+
+        /// <summary>
+        /// Indicates the results should be materialized as a list of DateTime.
+        /// </summary>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;System.Nullable&lt;System.DateTime&gt;&gt;&gt;.</returns>
+        public ILink<List<DateTime?>> ToDateTimeOrNullList(ListOptions listOptions = ListOptions.None)
+        {
+            return new DateTimeOrNullListMaterializer<TCommand, TParameter>(this, null, listOptions);
+        }
+
+        /// <summary>
+        /// Indicates the results should be materialized as a list of DateTime.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;System.Nullable&lt;System.DateTime&gt;&gt;&gt;.</returns>
+        public ILink<List<DateTime?>> ToDateTimeOrNullList(string columnName, ListOptions listOptions = ListOptions.None)
+        {
+            return new DateTimeOrNullListMaterializer<TCommand, TParameter>(this, columnName, listOptions);
         }
 
         /// <summary>
@@ -226,6 +310,27 @@ namespace Tortuga.Chain.CommandBuilders
         public ILink<List<decimal>> ToDecimalList(ListOptions listOptions = ListOptions.None)
         {
             return new DecimalListMaterializer<TCommand, TParameter>(this, null, listOptions);
+        }
+
+        /// <summary>
+        /// Converts to decimalornulllist.
+        /// </summary>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;System.Nullable&lt;System.Decimal&gt;&gt;&gt;.</returns>
+        public ILink<List<decimal?>> ToDecimalOrNullList(ListOptions listOptions = ListOptions.None)
+        {
+            return new DecimalOrNullListMaterializer<TCommand, TParameter>(this, null, listOptions);
+        }
+
+        /// <summary>
+        /// Indicates the results should be materialized as a list of numbers.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;System.Nullable&lt;System.Decimal&gt;&gt;&gt;.</returns>
+        public ILink<List<decimal?>> ToDecimalOrNullList(string columnName, ListOptions listOptions = ListOptions.None)
+        {
+            return new DecimalOrNullListMaterializer<TCommand, TParameter>(this, columnName, listOptions);
         }
 
         /// <summary>
@@ -331,6 +436,27 @@ namespace Tortuga.Chain.CommandBuilders
         }
 
         /// <summary>
+        /// Indicates the results should be materialized as a list of numbers.
+        /// </summary>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;System.Nullable&lt;System.Double&gt;&gt;&gt;.</returns>
+        public ILink<List<double?>> ToDoubleOrNullList(ListOptions listOptions = ListOptions.None)
+        {
+            return new DoubleOrNullListMaterializer<TCommand, TParameter>(this, null, listOptions);
+        }
+
+        /// <summary>
+        /// Indicates the results should be materialized as a list of numbers.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;System.Nullable&lt;System.Double&gt;&gt;&gt;.</returns>
+        public ILink<List<double?>> ToDoubleOrNullList(string columnName, ListOptions listOptions = ListOptions.None)
+        {
+            return new DoubleOrNullListMaterializer<TCommand, TParameter>(this, columnName, listOptions);
+        }
+
+        /// <summary>
         /// Indicates the results should be materialized as a set of numbers.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
@@ -379,6 +505,27 @@ namespace Tortuga.Chain.CommandBuilders
         public ILink<List<Guid>> ToGuidList(ListOptions listOptions = ListOptions.None)
         {
             return new GuidListMaterializer<TCommand, TParameter>(this, null, listOptions);
+        }
+
+        /// <summary>
+        /// Indicates the results should be materialized as a list of Guids.
+        /// </summary>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;System.Nullable&lt;System.Guid&gt;&gt;&gt;.</returns>
+        public ILink<List<Guid?>> ToGuidOrNullList(ListOptions listOptions = ListOptions.None)
+        {
+            return new GuidOrNullListMaterializer<TCommand, TParameter>(this, null, listOptions);
+        }
+
+        /// <summary>
+        /// Indicates the results should be materialized as a list of Guids.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;System.Nullable&lt;System.Guid&gt;&gt;&gt;.</returns>
+        public ILink<List<Guid?>> ToGuidOrNullList(string columnName, ListOptions listOptions = ListOptions.None)
+        {
+            return new GuidOrNullListMaterializer<TCommand, TParameter>(this, columnName, listOptions);
         }
 
         /// <summary>
@@ -481,6 +628,27 @@ namespace Tortuga.Chain.CommandBuilders
         }
 
         /// <summary>
+        /// Indicates the results should be materialized as a list of integers.
+        /// </summary>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;System.Nullable&lt;System.Int16&gt;&gt;&gt;.</returns>
+        public ILink<List<short?>> ToInt16OrNullList(ListOptions listOptions = ListOptions.None)
+        {
+            return new Int16OrNullListMaterializer<TCommand, TParameter>(this, null, listOptions);
+        }
+
+        /// <summary>
+        /// Indicates the results should be materialized as a list of integers.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;System.Nullable&lt;System.Int16&gt;&gt;&gt;.</returns>
+        public ILink<List<short?>> ToInt16OrNullList(string columnName, ListOptions listOptions = ListOptions.None)
+        {
+            return new Int16OrNullListMaterializer<TCommand, TParameter>(this, columnName, listOptions);
+        }
+
+        /// <summary>
         /// Indicates the results should be materialized as a set of integers.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
@@ -520,6 +688,27 @@ namespace Tortuga.Chain.CommandBuilders
         public ILink<List<int>> ToInt32List(ListOptions listOptions = ListOptions.None)
         {
             return new Int32ListMaterializer<TCommand, TParameter>(this, null, listOptions);
+        }
+
+        /// <summary>
+        /// Indicates the results should be materialized as a list of integers.
+        /// </summary>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;System.Nullable&lt;System.Int32&gt;&gt;&gt;.</returns>
+        public ILink<List<int?>> ToInt32OrNullList(ListOptions listOptions = ListOptions.None)
+        {
+            return new Int32OrNullListMaterializer<TCommand, TParameter>(this, null, listOptions);
+        }
+
+        /// <summary>
+        /// Indicates the results should be materialized as a list of integers.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;System.Nullable&lt;System.Int32&gt;&gt;&gt;.</returns>
+        public ILink<List<int?>> ToInt32OrNullList(string columnName, ListOptions listOptions = ListOptions.None)
+        {
+            return new Int32OrNullListMaterializer<TCommand, TParameter>(this, columnName, listOptions);
         }
 
         /// <summary>
@@ -565,6 +754,27 @@ namespace Tortuga.Chain.CommandBuilders
         }
 
         /// <summary>
+        /// Indicates the results should be materialized as a list of integers.
+        /// </summary>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;System.Nullable&lt;System.Int64&gt;&gt;&gt;.</returns>
+        public ILink<List<long?>> ToInt64OrNullList(ListOptions listOptions = ListOptions.None)
+        {
+            return new Int64OrNullListMaterializer<TCommand, TParameter>(this, null, listOptions);
+        }
+
+        /// <summary>
+        /// Indicates the results should be materialized as a list of integers.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;System.Nullable&lt;System.Int64&gt;&gt;&gt;.</returns>
+        public ILink<List<long?>> ToInt64OrNullList(string columnName, ListOptions listOptions = ListOptions.None)
+        {
+            return new Int64OrNullListMaterializer<TCommand, TParameter>(this, columnName, listOptions);
+        }
+
+        /// <summary>
         /// Indicates the results should be materialized as a set of integers.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
@@ -607,6 +817,27 @@ namespace Tortuga.Chain.CommandBuilders
         }
 
         /// <summary>
+        /// Indicates the results should be materialized as a list of numbers.
+        /// </summary>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;System.Nullable&lt;System.Single&gt;&gt;&gt;.</returns>
+        public ILink<List<float?>> ToSingleOrNullList(ListOptions listOptions = ListOptions.None)
+        {
+            return new SingleOrNullListMaterializer<TCommand, TParameter>(this, null, listOptions);
+        }
+
+        /// <summary>
+        /// Indicates the results should be materialized as a list of numbers.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;System.Nullable&lt;System.Single&gt;&gt;&gt;.</returns>
+        public ILink<List<float?>> ToSingleOrNullList(string columnName, ListOptions listOptions = ListOptions.None)
+        {
+            return new SingleOrNullListMaterializer<TCommand, TParameter>(this, columnName, listOptions);
+        }
+
+        /// <summary>
         /// Indicates the results should be materialized as a set of numbers.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
@@ -633,7 +864,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="columnName">Name of the desired column.</param>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        public ILink<List<string?>> ToStringList(string columnName, ListOptions listOptions = ListOptions.None)
+        public ILink<List<string>> ToStringList(string columnName, ListOptions listOptions = ListOptions.None)
         {
             return new StringListMaterializer<TCommand, TParameter>(this, columnName, listOptions);
         }
@@ -643,9 +874,30 @@ namespace Tortuga.Chain.CommandBuilders
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns></returns>
-        public ILink<List<string?>> ToStringList(ListOptions listOptions = ListOptions.None)
+        public ILink<List<string>> ToStringList(ListOptions listOptions = ListOptions.None)
         {
             return new StringListMaterializer<TCommand, TParameter>(this, null, listOptions);
+        }
+
+        /// <summary>
+        /// Indicates the results should be materialized as a list of strings.
+        /// </summary>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;System.String&gt;&gt;.</returns>
+        public ILink<List<string?>> ToStringOrNullList(ListOptions listOptions = ListOptions.None)
+        {
+            return new StringOrNullListMaterializer<TCommand, TParameter>(this, null, listOptions);
+        }
+
+        /// <summary>
+        /// Indicates the results should be materialized as a list of strings.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;System.String&gt;&gt;.</returns>
+        public ILink<List<string?>> ToStringOrNullList(string columnName, ListOptions listOptions = ListOptions.None)
+        {
+            return new StringOrNullListMaterializer<TCommand, TParameter>(this, columnName, listOptions);
         }
 
         /// <summary>
@@ -653,7 +905,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns>ILink&lt;HashSet&lt;System.String&gt;&gt;.</returns>
-        public ILink<HashSet<string?>> ToStringSet(ListOptions listOptions = ListOptions.None)
+        public ILink<HashSet<string>> ToStringSet(ListOptions listOptions = ListOptions.None)
         {
             return new StringSetMaterializer<TCommand, TParameter>(this, null, listOptions);
         }
@@ -664,7 +916,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="columnName">Name of the desired column.</param>
         /// <param name="listOptions">The list options.</param>
         /// <returns>ILink&lt;HashSet&lt;System.String&gt;&gt;.</returns>
-        public ILink<HashSet<string?>> ToStringSet(string columnName, ListOptions listOptions = ListOptions.None)
+        public ILink<HashSet<string>> ToStringSet(string columnName, ListOptions listOptions = ListOptions.None)
         {
             return new StringSetMaterializer<TCommand, TParameter>(this, columnName, listOptions);
         }
@@ -699,6 +951,27 @@ namespace Tortuga.Chain.CommandBuilders
         }
 
         /// <summary>
+        /// Indicates the results should be materialized as a list of TimeSpan.
+        /// </summary>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;System.Nullable&lt;System.TimeSpan&gt;&gt;&gt;.</returns>
+        public ILink<List<TimeSpan?>> ToTimeSpanOrNullList(ListOptions listOptions = ListOptions.None)
+        {
+            return new TimeSpanOrNullListMaterializer<TCommand, TParameter>(this, null, listOptions);
+        }
+
+        /// <summary>
+        /// Indicates the results should be materialized as a list of TimeSpan.
+        /// </summary>
+        /// <param name="columnName">Name of the desired column.</param>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;System.Nullable&lt;System.TimeSpan&gt;&gt;&gt;.</returns>
+        public ILink<List<TimeSpan?>> ToTimeSpanOrNullList(string columnName, ListOptions listOptions = ListOptions.None)
+        {
+            return new TimeSpanOrNullListMaterializer<TCommand, TParameter>(this, columnName, listOptions);
+        }
+
+        /// <summary>
         /// Indicates the results should be materialized as a set of TimeSpan.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
@@ -720,18 +993,45 @@ namespace Tortuga.Chain.CommandBuilders
         }
 
         /// <summary>
-        /// Materializes the result as a list of XDocuments.
+        /// Materializes the result as a list of XElement.
         /// </summary>
         /// <param name="listOptions">The list options.</param>
         /// <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;XDocument&gt;&gt;.</returns>
-        public ILink<List<XElement?>> ToXElement(ListOptions listOptions = ListOptions.None) { return new XElementListMaterializer<TCommand, TParameter>(this, null, listOptions); }
+        public ILink<List<XElement>> ToXmlList(ListOptions listOptions = ListOptions.None)
+        {
+            return new XElementListMaterializer<TCommand, TParameter>(this, null, listOptions);
+        }
 
         /// <summary>
-        /// Materializes the result as a list of XDocuments.
+        /// Materializes the result as a list of XElement.
         /// </summary>
         /// <param name="columnName">Name of the column.</param>
         /// <param name="listOptions">The list options.</param>
         /// <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;XDocument&gt;&gt;.</returns>
-        public ILink<List<XElement?>> ToXElement(string columnName, ListOptions listOptions = ListOptions.None) { return new XElementListMaterializer<TCommand, TParameter>(this, columnName, listOptions); }
+        public ILink<List<XElement>> ToXmlList(string columnName, ListOptions listOptions = ListOptions.None)
+        {
+            return new XElementListMaterializer<TCommand, TParameter>(this, columnName, listOptions);
+        }
+
+        /// <summary>
+        /// Materializes the result as a list of XElement.
+        /// </summary>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;XDocument&gt;&gt;.</returns>
+        public ILink<List<XElement?>> ToXmlOrNullList(ListOptions listOptions = ListOptions.None)
+        {
+            return new XElementOrNullListMaterializer<TCommand, TParameter>(this, null, listOptions);
+        }
+
+        /// <summary>
+        /// Materializes the result as a list of XElement.
+        /// </summary>
+        /// <param name="columnName">Name of the column.</param>
+        /// <param name="listOptions">The list options.</param>
+        /// <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;XDocument&gt;&gt;.</returns>
+        public ILink<List<XElement?>> ToXmlOrNullList(string columnName, ListOptions listOptions = ListOptions.None)
+        {
+            return new XElementOrNullListMaterializer<TCommand, TParameter>(this, columnName, listOptions);
+        }
     }
 }

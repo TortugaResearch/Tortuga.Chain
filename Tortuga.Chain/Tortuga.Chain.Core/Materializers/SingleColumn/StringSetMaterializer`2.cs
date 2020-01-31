@@ -12,7 +12,7 @@ namespace Tortuga.Chain.Materializers
     /// </summary>
     /// <typeparam name="TCommand">The type of the t command type.</typeparam>
     /// <typeparam name="TParameter">The type of the t parameter type.</typeparam>
-    internal sealed class StringSetMaterializer<TCommand, TParameter> : SingleColumnMaterializer<TCommand, TParameter, HashSet<string?>> where TCommand : DbCommand
+    internal sealed class StringSetMaterializer<TCommand, TParameter> : SingleColumnMaterializer<TCommand, TParameter, HashSet<string>> where TCommand : DbCommand
         where TParameter : DbParameter
     {
         readonly ListOptions m_ListOptions;
@@ -33,9 +33,9 @@ namespace Tortuga.Chain.Materializers
         /// Execute the operation synchronously.
         /// </summary>
         /// <returns></returns>
-        public override HashSet<string?> Execute(object? state = null)
+        public override HashSet<string> Execute(object? state = null)
         {
-            var result = new HashSet<string?>();
+            var result = new HashSet<string>();
 
             Prepare().Execute(cmd =>
             {
@@ -55,7 +55,7 @@ namespace Tortuga.Chain.Materializers
                             if (!reader.IsDBNull(i))
                                 result.Add(reader.GetString(i));
                             else if (!discardNulls)
-                                result.Add(null);
+                                throw new MissingDataException("Unexpected null value");
                         }
                     }
                     return rowCount;
@@ -71,9 +71,9 @@ namespace Tortuga.Chain.Materializers
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <param name="state">User defined state, usually used for logging.</param>
         /// <returns></returns>
-        public override async Task<HashSet<string?>> ExecuteAsync(CancellationToken cancellationToken, object? state = null)
+        public override async Task<HashSet<string>> ExecuteAsync(CancellationToken cancellationToken, object? state = null)
         {
-            var result = new HashSet<string?>();
+            var result = new HashSet<string>();
 
             await Prepare().ExecuteAsync(async cmd =>
             {
@@ -94,7 +94,7 @@ namespace Tortuga.Chain.Materializers
                             if (!reader.IsDBNull(i))
                                 result.Add(reader.GetString(i));
                             else if (!discardNulls)
-                                result.Add(null);
+                                throw new MissingDataException("Unexpected null value");
                         }
                     }
                     return rowCount;

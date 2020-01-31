@@ -1708,16 +1708,226 @@
             <param name="listOptions">The list options.</param>
             <returns></returns>
         </member>
-        <member name="M:Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder.ToXElement(Tortuga.Chain.ListOptions)">
+        <member name="M:Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder.ToXmlList(Tortuga.Chain.ListOptions)">
             <summary>
-            Materializes the result as a list of XDocuments.
+            Materializes the result as a list of XElement.
             </summary>
             <param name="listOptions">The list options.</param>
             <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;XDocument&gt;&gt;.</returns>
         </member>
-        <member name="M:Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder.ToXElement(System.String,Tortuga.Chain.ListOptions)">
+        <member name="M:Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder.ToXmlList(System.String,Tortuga.Chain.ListOptions)">
             <summary>
-            Materializes the result as a list of XDocuments.
+            Materializes the result as a list of XElement.
+            </summary>
+            <param name="columnName">Name of the column.</param>
+            <param name="listOptions">The list options.</param>
+            <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;XDocument&gt;&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder.ToBooleanOrNullList(System.String,Tortuga.Chain.ListOptions)">
+            <summary>
+            Indicates the results should be materialized as a list of booleans.
+            </summary>
+            <param name="columnName">Name of the desired column.</param>
+            <param name="listOptions">The list options.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder.ToBooleanOrNullList(Tortuga.Chain.ListOptions)">
+            <summary>
+            Indicates the results should be materialized as a list of booleans.
+            </summary>
+            <param name="listOptions">The list options.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder.ToByteArrayOrNullList(System.String,Tortuga.Chain.ListOptions)">
+            <summary>
+            Indicates the results should be materialized as a list of byte arrays.
+            </summary>
+            <param name="columnName">Name of the desired column.</param>
+            <param name="listOptions">The list options.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder.ToByteArrayOrNullList(Tortuga.Chain.ListOptions)">
+            <summary>
+            Indicates the results should be materialized as a list of byte arrays.
+            </summary>
+            <param name="listOptions">The list options.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder.ToDateTimeOrNullList(Tortuga.Chain.ListOptions)">
+            <summary>
+            Indicates the results should be materialized as a list of DateTime.
+            </summary>
+            <param name="listOptions">The list options.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder.ToDateTimeOrNullList(System.String,Tortuga.Chain.ListOptions)">
+            <summary>
+            Indicates the results should be materialized as a list of DateTime.
+            </summary>
+            <param name="columnName">Name of the desired column.</param>
+            <param name="listOptions">The list options.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder.ToDateTimeOffsetOrNullList(Tortuga.Chain.ListOptions)">
+            <summary>
+            Indicates the results should be materialized as a list of DateTimeOffset.
+            </summary>
+            <param name="listOptions">The list options.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder.ToDateTimeOffsetOrNullList(System.String,Tortuga.Chain.ListOptions)">
+            <summary>
+            Indicates the results should be materialized as a list of DateTimeOffset.
+            </summary>
+            <param name="columnName">Name of the desired column.</param>
+            <param name="listOptions">The list options.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder.ToDecimalOrNullList(Tortuga.Chain.ListOptions)">
+            <summary>
+            Indicates the results should be materialized as a list of numbers.
+            </summary>
+            <param name="listOptions">The list options.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder.ToDecimalOrNullList(System.String,Tortuga.Chain.ListOptions)">
+            <summary>
+            Indicates the results should be materialized as a list of numbers.
+            </summary>
+            <param name="columnName">Name of the desired column.</param>
+            <param name="listOptions">The list options.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder.ToDoubleOrNullList(Tortuga.Chain.ListOptions)">
+            <summary>
+            Indicates the results should be materialized as a list of numbers.
+            </summary>
+            <param name="listOptions">The list options.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder.ToDoubleOrNullList(System.String,Tortuga.Chain.ListOptions)">
+            <summary>
+            Indicates the results should be materialized as a list of numbers.
+            </summary>
+            <param name="columnName">Name of the desired column.</param>
+            <param name="listOptions">The list options.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder.ToGuidOrNullList(Tortuga.Chain.ListOptions)">
+            <summary>
+            Indicates the results should be materialized as a list of Guids.
+            </summary>
+            <param name="listOptions">The list options.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder.ToGuidOrNullList(System.String,Tortuga.Chain.ListOptions)">
+            <summary>
+            Indicates the results should be materialized as a list of Guids.
+            </summary>
+            <param name="columnName">Name of the desired column.</param>
+            <param name="listOptions">The list options.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder.ToInt16OrNullList(Tortuga.Chain.ListOptions)">
+            <summary>
+            Indicates the results should be materialized as a list of integers.
+            </summary>
+            <param name="listOptions">The list options.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder.ToInt16OrNullList(System.String,Tortuga.Chain.ListOptions)">
+            <summary>
+            Indicates the results should be materialized as a list of integers.
+            </summary>
+            <param name="columnName">Name of the desired column.</param>
+            <param name="listOptions">The list options.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder.ToInt32OrNullList(Tortuga.Chain.ListOptions)">
+            <summary>
+            Indicates the results should be materialized as a list of integers.
+            </summary>
+            <param name="listOptions">The list options.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder.ToInt32OrNullList(System.String,Tortuga.Chain.ListOptions)">
+            <summary>
+            Indicates the results should be materialized as a list of integers.
+            </summary>
+            <param name="columnName">Name of the desired column.</param>
+            <param name="listOptions">The list options.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder.ToInt64OrNullList(Tortuga.Chain.ListOptions)">
+            <summary>
+            Indicates the results should be materialized as a list of integers.
+            </summary>
+            <param name="listOptions">The list options.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder.ToInt64OrNullList(System.String,Tortuga.Chain.ListOptions)">
+            <summary>
+            Indicates the results should be materialized as a list of integers.
+            </summary>
+            <param name="columnName">Name of the desired column.</param>
+            <param name="listOptions">The list options.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder.ToSingleOrNullList(Tortuga.Chain.ListOptions)">
+            <summary>
+            Indicates the results should be materialized as a list of numbers.
+            </summary>
+            <param name="listOptions">The list options.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder.ToSingleOrNullList(System.String,Tortuga.Chain.ListOptions)">
+            <summary>
+            Indicates the results should be materialized as a list of numbers.
+            </summary>
+            <param name="columnName">Name of the desired column.</param>
+            <param name="listOptions">The list options.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder.ToStringOrNullList(Tortuga.Chain.ListOptions)">
+            <summary>
+            Indicates the results should be materialized as a list of strings.
+            </summary>
+            <param name="listOptions">The list options.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder.ToStringOrNullList(System.String,Tortuga.Chain.ListOptions)">
+            <summary>
+            Indicates the results should be materialized as a list of strings.
+            </summary>
+            <param name="columnName">Name of the desired column.</param>
+            <param name="listOptions">The list options.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder.ToTimeSpanOrNullList(Tortuga.Chain.ListOptions)">
+            <summary>
+            Indicates the results should be materialized as a list of TimeSpan.
+            </summary>
+            <param name="listOptions">The list options.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder.ToTimeSpanOrNullList(System.String,Tortuga.Chain.ListOptions)">
+            <summary>
+            Indicates the results should be materialized as a list of TimeSpan.
+            </summary>
+            <param name="columnName">Name of the desired column.</param>
+            <param name="listOptions">The list options.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder.ToXmlOrNullList(Tortuga.Chain.ListOptions)">
+            <summary>
+            Materializes the result as a list of XElement.
+            </summary>
+            <param name="listOptions">The list options.</param>
+            <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;XDocument&gt;&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder.ToXmlOrNullList(System.String,Tortuga.Chain.ListOptions)">
+            <summary>
+            Materializes the result as a list of XElement.
             </summary>
             <param name="columnName">Name of the column.</param>
             <param name="listOptions">The list options.</param>
@@ -1791,6 +2001,14 @@
             <value>The argument value.</value>
         </member>
         <member name="M:Tortuga.Chain.CommandBuilders.IObjectDbCommandBuilder`1.ToObject(Tortuga.Chain.RowOptions)">
+            <summary>
+            Materializes the result as a new instance of the same type as the argumentValue
+            </summary>
+            <param name="rowOptions">The row options.</param>
+            <returns></returns>
+            <remarks>To update the argumentValue itself, use WithRefresh() instead.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.IObjectDbCommandBuilder`1.ToObjectOrNull(Tortuga.Chain.RowOptions)">
             <summary>
             Materializes the result as a new instance of the same type as the argumentValue
             </summary>
@@ -2127,7 +2345,19 @@
             Indicates the results should be materialized as a Row.
             </summary>
         </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.ISingleRowDbCommandBuilder.ToDataRowOrNull(Tortuga.Chain.RowOptions)">
+            <summary>
+            Indicates the results should be materialized as a Row.
+            </summary>
+        </member>
         <member name="M:Tortuga.Chain.CommandBuilders.ISingleRowDbCommandBuilder.ToDynamicObject(Tortuga.Chain.RowOptions)">
+            <summary>
+            Materializes the result as a dynamic object
+            </summary>
+            <param name="rowOptions">The row options.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.ISingleRowDbCommandBuilder.ToDynamicObjectOrNull(Tortuga.Chain.RowOptions)">
             <summary>
             Materializes the result as a dynamic object
             </summary>
@@ -2142,7 +2372,20 @@
             <param name="rowOptions">The row options.</param>
             <returns></returns>
         </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.ISingleRowDbCommandBuilder.ToObjectOrNull``1(Tortuga.Chain.RowOptions)">
+            <summary>
+            Materializes the result as an instance of the indicated type
+            </summary>
+            <typeparam name="TObject">The type of the object returned.</typeparam>
+            <param name="rowOptions">The row options.</param>
+            <returns></returns>
+        </member>
         <member name="M:Tortuga.Chain.CommandBuilders.ISingleRowDbCommandBuilder.ToRow(Tortuga.Chain.RowOptions)">
+            <summary>
+            Indicates the results should be materialized as a Row.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.ISingleRowDbCommandBuilder.ToRowOrNull(Tortuga.Chain.RowOptions)">
             <summary>
             Indicates the results should be materialized as a Row.
             </summary>
@@ -2324,6 +2567,21 @@
             <param name="listOptions">The list options.</param>
             <returns></returns>
         </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder`2.ToBooleanOrNullList(System.String,Tortuga.Chain.ListOptions)">
+            <summary>
+            Indicates the results should be materialized as a list of booleans.
+            </summary>
+            <param name="columnName">Name of the desired column.</param>
+            <param name="listOptions">The list options.</param>
+            <returns>ILink&lt;List&lt;System.Nullable&lt;System.Boolean&gt;&gt;&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder`2.ToBooleanOrNullList(Tortuga.Chain.ListOptions)">
+            <summary>
+            Indicates the results should be materialized as a list of booleans.
+            </summary>
+            <param name="listOptions">The list options.</param>
+            <returns>ILink&lt;List&lt;System.Nullable&lt;System.Boolean&gt;&gt;&gt;.</returns>
+        </member>
         <member name="M:Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder`2.ToByteArrayList(Tortuga.Chain.ListOptions)">
             <summary>
             Indicates the results should be materialized as a list of byte arrays.
@@ -2338,6 +2596,21 @@
             <param name="columnName">Name of the desired column.</param>
             <param name="listOptions">The list options.</param>
             <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder`2.ToByteArrayOrNullList(System.String,Tortuga.Chain.ListOptions)">
+            <summary>
+            Indicates the results should be materialized as a list of byte arrays.
+            </summary>
+            <param name="columnName">Name of the desired column.</param>
+            <param name="listOptions">The list options.</param>
+            <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;System.Byte[]&gt;&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder`2.ToByteArrayOrNullList(Tortuga.Chain.ListOptions)">
+            <summary>
+            Indicates the results should be materialized as a list of byte arrays.
+            </summary>
+            <param name="listOptions">The list options.</param>
+            <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;System.Byte[]&gt;&gt;.</returns>
         </member>
         <member name="M:Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder`2.ToByteList(Tortuga.Chain.ListOptions)">
             <summary>
@@ -2408,6 +2681,21 @@
             <param name="listOptions">The list options.</param>
             <returns></returns>
         </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder`2.ToDateTimeOffsetOrNullList(Tortuga.Chain.ListOptions)">
+            <summary>
+            Indicates the results should be materialized as a list of DateTimeOffset.
+            </summary>
+            <param name="listOptions">The list options.</param>
+            <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;System.Nullable&lt;System.DateTimeOffset&gt;&gt;&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder`2.ToDateTimeOffsetOrNullList(System.String,Tortuga.Chain.ListOptions)">
+            <summary>
+            Indicates the results should be materialized as a list of DateTimeOffset.
+            </summary>
+            <param name="columnName">Name of the desired column.</param>
+            <param name="listOptions">The list options.</param>
+            <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;System.Nullable&lt;System.DateTimeOffset&gt;&gt;&gt;.</returns>
+        </member>
         <member name="M:Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder`2.ToDateTimeOffsetSet(Tortuga.Chain.ListOptions)">
             <summary>
             Indicates the results should be materialized as a set of DateTimeOffset.
@@ -2422,6 +2710,21 @@
             <param name="columnName">Name of the desired column.</param>
             <param name="listOptions">The list options.</param>
             <returns>ILink&lt;HashSet&lt;DateTimeOffset&gt;&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder`2.ToDateTimeOrNullList(Tortuga.Chain.ListOptions)">
+            <summary>
+            Indicates the results should be materialized as a list of DateTime.
+            </summary>
+            <param name="listOptions">The list options.</param>
+            <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;System.Nullable&lt;System.DateTime&gt;&gt;&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder`2.ToDateTimeOrNullList(System.String,Tortuga.Chain.ListOptions)">
+            <summary>
+            Indicates the results should be materialized as a list of DateTime.
+            </summary>
+            <param name="columnName">Name of the desired column.</param>
+            <param name="listOptions">The list options.</param>
+            <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;System.Nullable&lt;System.DateTime&gt;&gt;&gt;.</returns>
         </member>
         <member name="M:Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder`2.ToDateTimeSet(Tortuga.Chain.ListOptions)">
             <summary>
@@ -2452,6 +2755,21 @@
             </summary>
             <param name="listOptions">The list options.</param>
             <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder`2.ToDecimalOrNullList(Tortuga.Chain.ListOptions)">
+            <summary>
+            Converts to decimalornulllist.
+            </summary>
+            <param name="listOptions">The list options.</param>
+            <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;System.Nullable&lt;System.Decimal&gt;&gt;&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder`2.ToDecimalOrNullList(System.String,Tortuga.Chain.ListOptions)">
+            <summary>
+            Indicates the results should be materialized as a list of numbers.
+            </summary>
+            <param name="columnName">Name of the desired column.</param>
+            <param name="listOptions">The list options.</param>
+            <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;System.Nullable&lt;System.Decimal&gt;&gt;&gt;.</returns>
         </member>
         <member name="M:Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder`2.ToDecimalSet(Tortuga.Chain.ListOptions)">
             <summary>
@@ -2523,6 +2841,21 @@
             <param name="listOptions">The list options.</param>
             <returns></returns>
         </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder`2.ToDoubleOrNullList(Tortuga.Chain.ListOptions)">
+            <summary>
+            Indicates the results should be materialized as a list of numbers.
+            </summary>
+            <param name="listOptions">The list options.</param>
+            <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;System.Nullable&lt;System.Double&gt;&gt;&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder`2.ToDoubleOrNullList(System.String,Tortuga.Chain.ListOptions)">
+            <summary>
+            Indicates the results should be materialized as a list of numbers.
+            </summary>
+            <param name="columnName">Name of the desired column.</param>
+            <param name="listOptions">The list options.</param>
+            <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;System.Nullable&lt;System.Double&gt;&gt;&gt;.</returns>
+        </member>
         <member name="M:Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder`2.ToDoubleSet(Tortuga.Chain.ListOptions)">
             <summary>
             Indicates the results should be materialized as a set of numbers.
@@ -2558,6 +2891,21 @@
             </summary>
             <param name="listOptions">The list options.</param>
             <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder`2.ToGuidOrNullList(Tortuga.Chain.ListOptions)">
+            <summary>
+            Indicates the results should be materialized as a list of Guids.
+            </summary>
+            <param name="listOptions">The list options.</param>
+            <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;System.Nullable&lt;System.Guid&gt;&gt;&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder`2.ToGuidOrNullList(System.String,Tortuga.Chain.ListOptions)">
+            <summary>
+            Indicates the results should be materialized as a list of Guids.
+            </summary>
+            <param name="columnName">Name of the desired column.</param>
+            <param name="listOptions">The list options.</param>
+            <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;System.Nullable&lt;System.Guid&gt;&gt;&gt;.</returns>
         </member>
         <member name="M:Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder`2.ToGuidSet(Tortuga.Chain.ListOptions)">
             <summary>
@@ -2629,6 +2977,21 @@
             <param name="listOptions">The list options.</param>
             <returns></returns>
         </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder`2.ToInt16OrNullList(Tortuga.Chain.ListOptions)">
+            <summary>
+            Indicates the results should be materialized as a list of integers.
+            </summary>
+            <param name="listOptions">The list options.</param>
+            <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;System.Nullable&lt;System.Int16&gt;&gt;&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder`2.ToInt16OrNullList(System.String,Tortuga.Chain.ListOptions)">
+            <summary>
+            Indicates the results should be materialized as a list of integers.
+            </summary>
+            <param name="columnName">Name of the desired column.</param>
+            <param name="listOptions">The list options.</param>
+            <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;System.Nullable&lt;System.Int16&gt;&gt;&gt;.</returns>
+        </member>
         <member name="M:Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder`2.ToInt16Set(Tortuga.Chain.ListOptions)">
             <summary>
             Indicates the results should be materialized as a set of integers.
@@ -2658,6 +3021,21 @@
             </summary>
             <param name="listOptions">The list options.</param>
             <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder`2.ToInt32OrNullList(Tortuga.Chain.ListOptions)">
+            <summary>
+            Indicates the results should be materialized as a list of integers.
+            </summary>
+            <param name="listOptions">The list options.</param>
+            <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;System.Nullable&lt;System.Int32&gt;&gt;&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder`2.ToInt32OrNullList(System.String,Tortuga.Chain.ListOptions)">
+            <summary>
+            Indicates the results should be materialized as a list of integers.
+            </summary>
+            <param name="columnName">Name of the desired column.</param>
+            <param name="listOptions">The list options.</param>
+            <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;System.Nullable&lt;System.Int32&gt;&gt;&gt;.</returns>
         </member>
         <member name="M:Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder`2.ToInt32Set(Tortuga.Chain.ListOptions)">
             <summary>
@@ -2689,6 +3067,21 @@
             <param name="listOptions">The list options.</param>
             <returns></returns>
         </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder`2.ToInt64OrNullList(Tortuga.Chain.ListOptions)">
+            <summary>
+            Indicates the results should be materialized as a list of integers.
+            </summary>
+            <param name="listOptions">The list options.</param>
+            <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;System.Nullable&lt;System.Int64&gt;&gt;&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder`2.ToInt64OrNullList(System.String,Tortuga.Chain.ListOptions)">
+            <summary>
+            Indicates the results should be materialized as a list of integers.
+            </summary>
+            <param name="columnName">Name of the desired column.</param>
+            <param name="listOptions">The list options.</param>
+            <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;System.Nullable&lt;System.Int64&gt;&gt;&gt;.</returns>
+        </member>
         <member name="M:Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder`2.ToInt64Set(Tortuga.Chain.ListOptions)">
             <summary>
             Indicates the results should be materialized as a set of integers.
@@ -2719,6 +3112,21 @@
             <param name="listOptions">The list options.</param>
             <returns></returns>
         </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder`2.ToSingleOrNullList(Tortuga.Chain.ListOptions)">
+            <summary>
+            Indicates the results should be materialized as a list of numbers.
+            </summary>
+            <param name="listOptions">The list options.</param>
+            <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;System.Nullable&lt;System.Single&gt;&gt;&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder`2.ToSingleOrNullList(System.String,Tortuga.Chain.ListOptions)">
+            <summary>
+            Indicates the results should be materialized as a list of numbers.
+            </summary>
+            <param name="columnName">Name of the desired column.</param>
+            <param name="listOptions">The list options.</param>
+            <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;System.Nullable&lt;System.Single&gt;&gt;&gt;.</returns>
+        </member>
         <member name="M:Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder`2.ToSingleSet(Tortuga.Chain.ListOptions)">
             <summary>
             Indicates the results should be materialized as a set of numbers.
@@ -2748,6 +3156,21 @@
             </summary>
             <param name="listOptions">The list options.</param>
             <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder`2.ToStringOrNullList(Tortuga.Chain.ListOptions)">
+            <summary>
+            Indicates the results should be materialized as a list of strings.
+            </summary>
+            <param name="listOptions">The list options.</param>
+            <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;System.String&gt;&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder`2.ToStringOrNullList(System.String,Tortuga.Chain.ListOptions)">
+            <summary>
+            Indicates the results should be materialized as a list of strings.
+            </summary>
+            <param name="columnName">Name of the desired column.</param>
+            <param name="listOptions">The list options.</param>
+            <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;System.String&gt;&gt;.</returns>
         </member>
         <member name="M:Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder`2.ToStringSet(Tortuga.Chain.ListOptions)">
             <summary>
@@ -2784,6 +3207,21 @@
             <param name="listOptions">The list options.</param>
             <returns></returns>
         </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder`2.ToTimeSpanOrNullList(Tortuga.Chain.ListOptions)">
+            <summary>
+            Indicates the results should be materialized as a list of TimeSpan.
+            </summary>
+            <param name="listOptions">The list options.</param>
+            <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;System.Nullable&lt;System.TimeSpan&gt;&gt;&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder`2.ToTimeSpanOrNullList(System.String,Tortuga.Chain.ListOptions)">
+            <summary>
+            Indicates the results should be materialized as a list of TimeSpan.
+            </summary>
+            <param name="columnName">Name of the desired column.</param>
+            <param name="listOptions">The list options.</param>
+            <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;System.Nullable&lt;System.TimeSpan&gt;&gt;&gt;.</returns>
+        </member>
         <member name="M:Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder`2.ToTimeSpanSet(Tortuga.Chain.ListOptions)">
             <summary>
             Indicates the results should be materialized as a set of TimeSpan.
@@ -2799,16 +3237,31 @@
             <param name="listOptions">The list options.</param>
             <returns>ILink&lt;HashSet&lt;TimeSpan&gt;&gt;.</returns>
         </member>
-        <member name="M:Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder`2.ToXElement(Tortuga.Chain.ListOptions)">
+        <member name="M:Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder`2.ToXmlList(Tortuga.Chain.ListOptions)">
             <summary>
-            Materializes the result as a list of XDocuments.
+            Materializes the result as a list of XElement.
             </summary>
             <param name="listOptions">The list options.</param>
             <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;XDocument&gt;&gt;.</returns>
         </member>
-        <member name="M:Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder`2.ToXElement(System.String,Tortuga.Chain.ListOptions)">
+        <member name="M:Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder`2.ToXmlList(System.String,Tortuga.Chain.ListOptions)">
             <summary>
-            Materializes the result as a list of XDocuments.
+            Materializes the result as a list of XElement.
+            </summary>
+            <param name="columnName">Name of the column.</param>
+            <param name="listOptions">The list options.</param>
+            <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;XDocument&gt;&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder`2.ToXmlOrNullList(Tortuga.Chain.ListOptions)">
+            <summary>
+            Materializes the result as a list of XElement.
+            </summary>
+            <param name="listOptions">The list options.</param>
+            <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;XDocument&gt;&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder`2.ToXmlOrNullList(System.String,Tortuga.Chain.ListOptions)">
+            <summary>
+            Materializes the result as a list of XElement.
             </summary>
             <param name="columnName">Name of the column.</param>
             <param name="listOptions">The list options.</param>
@@ -2899,6 +3352,14 @@
             <summary>
             Gets the set of key column(s) to use instead of the primary key(s).
             </summary>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.ObjectDbCommandBuilder`3.ToObjectOrNull(Tortuga.Chain.RowOptions)">
+            <summary>
+            Materializes the result as a new instance of the same type as the argumentValue
+            </summary>
+            <param name="rowOptions">The row options.</param>
+            <returns></returns>
+            <remarks>To update the argumentValue itself, use WithRefresh() instead.</remarks>
         </member>
         <member name="M:Tortuga.Chain.CommandBuilders.ObjectDbCommandBuilder`3.ToObject(Tortuga.Chain.RowOptions)">
             <summary>
@@ -3321,7 +3782,19 @@
             Indicates the results should be materialized as a Row.
             </summary>
         </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.SingleRowDbCommandBuilder`2.ToDataRowOrNull(Tortuga.Chain.RowOptions)">
+            <summary>
+            Indicates the results should be materialized as a Row.
+            </summary>
+        </member>
         <member name="M:Tortuga.Chain.CommandBuilders.SingleRowDbCommandBuilder`2.ToDynamicObject(Tortuga.Chain.RowOptions)">
+            <summary>
+            Materializes the result as a dynamic object
+            </summary>
+            <param name="rowOptions">The row options.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.SingleRowDbCommandBuilder`2.ToDynamicObjectOrNull(Tortuga.Chain.RowOptions)">
             <summary>
             Materializes the result as a dynamic object
             </summary>
@@ -3336,7 +3809,20 @@
             <param name="rowOptions">The row options.</param>
             <returns></returns>
         </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.SingleRowDbCommandBuilder`2.ToObjectOrNull``1(Tortuga.Chain.RowOptions)">
+            <summary>
+            Materializes the result as an instance of the indicated type
+            </summary>
+            <typeparam name="TObject">The type of the object returned.</typeparam>
+            <param name="rowOptions">The row options.</param>
+            <returns></returns>
+        </member>
         <member name="M:Tortuga.Chain.CommandBuilders.SingleRowDbCommandBuilder`2.ToRow(Tortuga.Chain.RowOptions)">
+            <summary>
+            Indicates the results should be materialized as a Row.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.SingleRowDbCommandBuilder`2.ToRowOrNull(Tortuga.Chain.RowOptions)">
             <summary>
             Indicates the results should be materialized as a Row.
             </summary>
@@ -8223,6 +8709,35 @@
             <param name="state">User defined state, usually used for logging.</param>
             <returns></returns>
         </member>
+        <member name="T:Tortuga.Chain.Materializers.BooleanOrNullListMaterializer`2">
+            <summary>
+            Materializes the result set as a list of booleans.
+            </summary>
+            <typeparam name="TCommand">The type of the t command type.</typeparam>
+            <typeparam name="TParameter">The type of the t parameter type.</typeparam>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.BooleanOrNullListMaterializer`2.#ctor(Tortuga.Chain.CommandBuilders.DbCommandBuilder{`0,`1},System.String,Tortuga.Chain.ListOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Materializers.BooleanOrNullListMaterializer`2"/> class.
+            </summary>
+            <param name="commandBuilder">The command builder.</param>
+            <param name="columnName">Name of the desired column.</param>
+            <param name="listOptions">The list options.</param>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.BooleanOrNullListMaterializer`2.Execute(System.Object)">
+            <summary>
+            Execute the operation synchronously.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.BooleanOrNullListMaterializer`2.ExecuteAsync(System.Threading.CancellationToken,System.Object)">
+            <summary>
+            Execute the operation asynchronously.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name="state">User defined state, usually used for logging.</param>
+            <returns></returns>
+        </member>
         <member name="T:Tortuga.Chain.Materializers.ByteArrayListMaterializer`2">
             <summary>
             Materializes the result set as a list of byte arrays.
@@ -8252,6 +8767,35 @@
             <param name="state">User defined state, usually used for logging.</param>
             <returns></returns>
         </member>
+        <member name="T:Tortuga.Chain.Materializers.ByteArrayOrNullListMaterializer`2">
+            <summary>
+            Materializes the result set as a list of byte arrays.
+            </summary>
+            <typeparam name="TCommand">The type of the t command type.</typeparam>
+            <typeparam name="TParameter">The type of the t parameter type.</typeparam>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.ByteArrayOrNullListMaterializer`2.#ctor(Tortuga.Chain.CommandBuilders.DbCommandBuilder{`0,`1},System.String,Tortuga.Chain.ListOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Materializers.BooleanOrNullListMaterializer`2"/> class.
+            </summary>
+            <param name="commandBuilder">The command builder.</param>
+            <param name="columnName">Name of the desired column.</param>
+            <param name="listOptions">The list options.</param>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.ByteArrayOrNullListMaterializer`2.Execute(System.Object)">
+            <summary>
+            Execute the operation synchronously.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.ByteArrayOrNullListMaterializer`2.ExecuteAsync(System.Threading.CancellationToken,System.Object)">
+            <summary>
+            Execute the operation asynchronously.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name="state">User defined state, usually used for logging.</param>
+            <returns></returns>
+        </member>
         <member name="T:Tortuga.Chain.Materializers.ByteListMaterializer`2">
             <summary>
             Materializes the result set as a list of byte.
@@ -8274,6 +8818,35 @@
             <returns></returns>
         </member>
         <member name="M:Tortuga.Chain.Materializers.ByteListMaterializer`2.ExecuteAsync(System.Threading.CancellationToken,System.Object)">
+            <summary>
+            Execute the operation asynchronously.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name="state">User defined state, usually used for logging.</param>
+            <returns></returns>
+        </member>
+        <member name="T:Tortuga.Chain.Materializers.ByteOrNullListMaterializer`2">
+            <summary>
+            Materializes the result set as a list of byte.
+            </summary>
+            <typeparam name="TCommand">The type of the t command type.</typeparam>
+            <typeparam name="TParameter">The type of the t parameter type.</typeparam>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.ByteOrNullListMaterializer`2.#ctor(Tortuga.Chain.CommandBuilders.DbCommandBuilder{`0,`1},System.String,Tortuga.Chain.ListOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Materializers.BooleanOrNullListMaterializer`2"/> class.
+            </summary>
+            <param name="commandBuilder">The command builder.</param>
+            <param name="columnName">Name of the desired column.</param>
+            <param name="listOptions">The list options.</param>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.ByteOrNullListMaterializer`2.Execute(System.Object)">
+            <summary>
+            Execute the operation synchronously.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.ByteOrNullListMaterializer`2.ExecuteAsync(System.Threading.CancellationToken,System.Object)">
             <summary>
             Execute the operation asynchronously.
             </summary>
@@ -8339,6 +8912,35 @@
             <param name="state">User defined state, usually used for logging.</param>
             <returns></returns>
         </member>
+        <member name="T:Tortuga.Chain.Materializers.DateTimeOffsetOrNullListMaterializer`2">
+            <summary>
+            Materializes the result set as a list of DateTimeOffset.
+            </summary>
+            <typeparam name="TCommand">The type of the t command type.</typeparam>
+            <typeparam name="TParameter">The type of the t parameter type.</typeparam>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.DateTimeOffsetOrNullListMaterializer`2.#ctor(Tortuga.Chain.CommandBuilders.DbCommandBuilder{`0,`1},System.String,Tortuga.Chain.ListOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Materializers.DateTimeOffsetOrNullListMaterializer`2"/> class.
+            </summary>
+            <param name="commandBuilder">The command builder.</param>
+            <param name="listOptions">The list options.</param>
+            <param name="columnName">Name of the desired column.</param>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.DateTimeOffsetOrNullListMaterializer`2.Execute(System.Object)">
+            <summary>
+            Execute the operation synchronously.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.DateTimeOffsetOrNullListMaterializer`2.ExecuteAsync(System.Threading.CancellationToken,System.Object)">
+            <summary>
+            Execute the operation asynchronously.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name="state">User defined state, usually used for logging.</param>
+            <returns></returns>
+        </member>
         <member name="T:Tortuga.Chain.Materializers.DateTimeOffsetSetMaterializer`2">
             <summary>
             Materializes the result set as a list of DateTimeOffset.
@@ -8361,6 +8963,35 @@
             <returns></returns>
         </member>
         <member name="M:Tortuga.Chain.Materializers.DateTimeOffsetSetMaterializer`2.ExecuteAsync(System.Threading.CancellationToken,System.Object)">
+            <summary>
+            Execute the operation asynchronously.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name="state">User defined state, usually used for logging.</param>
+            <returns></returns>
+        </member>
+        <member name="T:Tortuga.Chain.Materializers.DateTimeOrNullListMaterializer`2">
+            <summary>
+            Materializes the result set as a list of DateTime.
+            </summary>
+            <typeparam name="TCommand">The type of the t command type.</typeparam>
+            <typeparam name="TParameter">The type of the t parameter type.</typeparam>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.DateTimeOrNullListMaterializer`2.#ctor(Tortuga.Chain.CommandBuilders.DbCommandBuilder{`0,`1},System.String,Tortuga.Chain.ListOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Materializers.DateTimeOrNullListMaterializer`2"/> class.
+            </summary>
+            <param name="commandBuilder">The command builder.</param>
+            <param name="listOptions">The list options.</param>
+            <param name="columnName">Name of the desired column.</param>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.DateTimeOrNullListMaterializer`2.Execute(System.Object)">
+            <summary>
+            Execute the operation synchronously.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.DateTimeOrNullListMaterializer`2.ExecuteAsync(System.Threading.CancellationToken,System.Object)">
             <summary>
             Execute the operation asynchronously.
             </summary>
@@ -8426,6 +9057,35 @@
             <param name="state">User defined state, usually used for logging.</param>
             <returns></returns>
         </member>
+        <member name="T:Tortuga.Chain.Materializers.DecimalOrNullListMaterializer`2">
+            <summary>
+            Materializes the result set as a list of numbers.
+            </summary>
+            <typeparam name="TCommand">The type of the t command type.</typeparam>
+            <typeparam name="TParameter">The type of the t parameter type.</typeparam>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.DecimalOrNullListMaterializer`2.#ctor(Tortuga.Chain.CommandBuilders.DbCommandBuilder{`0,`1},System.String,Tortuga.Chain.ListOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Materializers.DecimalOrNullListMaterializer`2"/> class.
+            </summary>
+            <param name="commandBuilder">The command builder.</param>
+            <param name="listOptions">The list options.</param>
+            <param name="columnName">Name of the desired column.</param>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.DecimalOrNullListMaterializer`2.Execute(System.Object)">
+            <summary>
+            Execute the operation synchronously.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.DecimalOrNullListMaterializer`2.ExecuteAsync(System.Threading.CancellationToken,System.Object)">
+            <summary>
+            Execute the operation asynchronously.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name="state">User defined state, usually used for logging.</param>
+            <returns></returns>
+        </member>
         <member name="T:Tortuga.Chain.Materializers.DecimalSetMaterializer`2">
             <summary>
             Materializes the result set as a list of numbers.
@@ -8477,6 +9137,35 @@
             <returns></returns>
         </member>
         <member name="M:Tortuga.Chain.Materializers.DoubleListMaterializer`2.ExecuteAsync(System.Threading.CancellationToken,System.Object)">
+            <summary>
+            Execute the operation asynchronously.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name="state">User defined state, usually used for logging.</param>
+            <returns></returns>
+        </member>
+        <member name="T:Tortuga.Chain.Materializers.DoubleOrNullListMaterializer`2">
+            <summary>
+            Materializes the result set as a list of numbers.
+            </summary>
+            <typeparam name="TCommand">The type of the t command type.</typeparam>
+            <typeparam name="TParameter">The type of the t parameter type.</typeparam>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.DoubleOrNullListMaterializer`2.#ctor(Tortuga.Chain.CommandBuilders.DbCommandBuilder{`0,`1},System.String,Tortuga.Chain.ListOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Materializers.DoubleOrNullListMaterializer`2"/> class.
+            </summary>
+            <param name="commandBuilder">The command builder.</param>
+            <param name="listOptions">The list options.</param>
+            <param name="columnName">Name of the desired column.</param>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.DoubleOrNullListMaterializer`2.Execute(System.Object)">
+            <summary>
+            Execute the operation synchronously.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.DoubleOrNullListMaterializer`2.ExecuteAsync(System.Threading.CancellationToken,System.Object)">
             <summary>
             Execute the operation asynchronously.
             </summary>
@@ -8541,6 +9230,35 @@
             <param name="state">User defined state, usually used for logging.</param>
             <returns></returns>
         </member>
+        <member name="T:Tortuga.Chain.Materializers.GuidOrNullListMaterializer`2">
+            <summary>
+            Materializes the result set as a list of Guids.
+            </summary>
+            <typeparam name="TCommand">The type of the t command type.</typeparam>
+            <typeparam name="TParameter">The type of the t parameter type.</typeparam>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.GuidOrNullListMaterializer`2.#ctor(Tortuga.Chain.CommandBuilders.DbCommandBuilder{`0,`1},System.String,Tortuga.Chain.ListOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Materializers.GuidOrNullListMaterializer`2"/> class.
+            </summary>
+            <param name="commandBuilder">The command builder.</param>
+            <param name="columnName">Name of the desired column.</param>
+            <param name="listOptions">The list options.</param>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.GuidOrNullListMaterializer`2.Execute(System.Object)">
+            <summary>
+            Execute the operation synchronously.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.GuidOrNullListMaterializer`2.ExecuteAsync(System.Threading.CancellationToken,System.Object)">
+            <summary>
+            Execute the operation asynchronously.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name="state">User defined state, usually used for logging.</param>
+            <returns></returns>
+        </member>
         <member name="T:Tortuga.Chain.Materializers.GuidSetMaterializer`2">
             <summary>
             Materializes the result set as a list of Guids.
@@ -8597,6 +9315,35 @@
             <param name="state">User defined state, usually used for logging.</param>
             <returns></returns>
         </member>
+        <member name="T:Tortuga.Chain.Materializers.Int16OrNullListMaterializer`2">
+            <summary>
+            Materializes the result set as a list of integers.
+            </summary>
+            <typeparam name="TCommand">The type of the t command type.</typeparam>
+            <typeparam name="TParameter">The type of the t parameter type.</typeparam>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.Int16OrNullListMaterializer`2.#ctor(Tortuga.Chain.CommandBuilders.DbCommandBuilder{`0,`1},System.String,Tortuga.Chain.ListOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Materializers.Int16OrNullListMaterializer`2"/> class.
+            </summary>
+            <param name="commandBuilder">The command builder.</param>
+            <param name="columnName">Name of the desired column.</param>
+            <param name="listOptions">The list options.</param>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.Int16OrNullListMaterializer`2.Execute(System.Object)">
+            <summary>
+            Execute the operation synchronously.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.Int16OrNullListMaterializer`2.ExecuteAsync(System.Threading.CancellationToken,System.Object)">
+            <summary>
+            Execute the operation asynchronously.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name="state">User defined state, usually used for logging.</param>
+            <returns></returns>
+        </member>
         <member name="T:Tortuga.Chain.Materializers.Int16SetMaterializer`2">
             <summary>
             Materializes the result set as a list of integers.
@@ -8634,10 +9381,11 @@
         </member>
         <member name="M:Tortuga.Chain.Materializers.Int32ListMaterializer`2.#ctor(Tortuga.Chain.CommandBuilders.DbCommandBuilder{`0,`1},System.String,Tortuga.Chain.ListOptions)">
             <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Materializers.Int32ListMaterializer`2"/> class.
             </summary>
             <param name="commandBuilder">The command builder.</param>
-            <param name="listOptions">The list options.</param>
             <param name="columnName">Name of the desired column.</param>
+            <param name="listOptions">The list options.</param>
         </member>
         <member name="M:Tortuga.Chain.Materializers.Int32ListMaterializer`2.Execute(System.Object)">
             <summary>
@@ -8646,6 +9394,35 @@
             <returns></returns>
         </member>
         <member name="M:Tortuga.Chain.Materializers.Int32ListMaterializer`2.ExecuteAsync(System.Threading.CancellationToken,System.Object)">
+            <summary>
+            Execute the operation asynchronously.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name="state">User defined state, usually used for logging.</param>
+            <returns></returns>
+        </member>
+        <member name="T:Tortuga.Chain.Materializers.Int32OrNullListMaterializer`2">
+            <summary>
+            Materializes the result set as a list of integers.
+            </summary>
+            <typeparam name="TCommand">The type of the t command type.</typeparam>
+            <typeparam name="TParameter">The type of the t parameter type.</typeparam>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.Int32OrNullListMaterializer`2.#ctor(Tortuga.Chain.CommandBuilders.DbCommandBuilder{`0,`1},System.String,Tortuga.Chain.ListOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Materializers.Int32OrNullListMaterializer`2"/> class.
+            </summary>
+            <param name="commandBuilder">The command builder.</param>
+            <param name="columnName">Name of the desired column.</param>
+            <param name="listOptions">The list options.</param>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.Int32OrNullListMaterializer`2.Execute(System.Object)">
+            <summary>
+            Execute the operation synchronously.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.Int32OrNullListMaterializer`2.ExecuteAsync(System.Threading.CancellationToken,System.Object)">
             <summary>
             Execute the operation asynchronously.
             </summary>
@@ -8662,10 +9439,11 @@
         </member>
         <member name="M:Tortuga.Chain.Materializers.Int32SetMaterializer`2.#ctor(Tortuga.Chain.CommandBuilders.DbCommandBuilder{`0,`1},System.String,Tortuga.Chain.ListOptions)">
             <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Materializers.Int32SetMaterializer`2"/> class.
             </summary>
             <param name="commandBuilder">The command builder.</param>
-            <param name="listOptions">The list options.</param>
             <param name="columnName">Name of the desired column.</param>
+            <param name="listOptions">The list options.</param>
         </member>
         <member name="M:Tortuga.Chain.Materializers.Int32SetMaterializer`2.Execute(System.Object)">
             <summary>
@@ -8702,6 +9480,35 @@
             <returns></returns>
         </member>
         <member name="M:Tortuga.Chain.Materializers.Int64ListMaterializer`2.ExecuteAsync(System.Threading.CancellationToken,System.Object)">
+            <summary>
+            Execute the operation asynchronously.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name="state">User defined state, usually used for logging.</param>
+            <returns></returns>
+        </member>
+        <member name="T:Tortuga.Chain.Materializers.Int64OrNullListMaterializer`2">
+            <summary>
+            Materializes the result set as a list of integers.
+            </summary>
+            <typeparam name="TCommand">The type of the t command type.</typeparam>
+            <typeparam name="TParameter">The type of the t parameter type.</typeparam>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.Int64OrNullListMaterializer`2.#ctor(Tortuga.Chain.CommandBuilders.DbCommandBuilder{`0,`1},System.String,Tortuga.Chain.ListOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Materializers.Int64OrNullListMaterializer`2"/> class.
+            </summary>
+            <param name="commandBuilder">The command builder.</param>
+            <param name="columnName">Name of the desired column.</param>
+            <param name="listOptions">The list options.</param>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.Int64OrNullListMaterializer`2.Execute(System.Object)">
+            <summary>
+            Execute the operation synchronously.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.Int64OrNullListMaterializer`2.ExecuteAsync(System.Threading.CancellationToken,System.Object)">
             <summary>
             Execute the operation asynchronously.
             </summary>
@@ -8782,6 +9589,35 @@
             <param name="state">User defined state, usually used for logging.</param>
             <returns></returns>
         </member>
+        <member name="T:Tortuga.Chain.Materializers.SingleOrNullListMaterializer`2">
+            <summary>
+            Materializes the result set as a list of numbers.
+            </summary>
+            <typeparam name="TCommand">The type of the t command type.</typeparam>
+            <typeparam name="TParameter">The type of the t parameter type.</typeparam>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.SingleOrNullListMaterializer`2.#ctor(Tortuga.Chain.CommandBuilders.DbCommandBuilder{`0,`1},System.String,Tortuga.Chain.ListOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Materializers.SingleOrNullListMaterializer`2"/> class.
+            </summary>
+            <param name="commandBuilder">The command builder.</param>
+            <param name="columnName">Name of the desired column.</param>
+            <param name="listOptions">The list options.</param>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.SingleOrNullListMaterializer`2.Execute(System.Object)">
+            <summary>
+            Execute the operation synchronously.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.SingleOrNullListMaterializer`2.ExecuteAsync(System.Threading.CancellationToken,System.Object)">
+            <summary>
+            Execute the operation asynchronously.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name="state">User defined state, usually used for logging.</param>
+            <returns></returns>
+        </member>
         <member name="T:Tortuga.Chain.Materializers.SingleSetMaterializer`2">
             <summary>
             Materializes the result set as a list of numbers.
@@ -8791,10 +9627,11 @@
         </member>
         <member name="M:Tortuga.Chain.Materializers.SingleSetMaterializer`2.#ctor(Tortuga.Chain.CommandBuilders.DbCommandBuilder{`0,`1},System.String,Tortuga.Chain.ListOptions)">
             <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Materializers.SingleSetMaterializer`2"/> class.
             </summary>
             <param name="commandBuilder">The command builder.</param>
-            <param name="listOptions">The list options.</param>
             <param name="columnName">Name of the desired column.</param>
+            <param name="listOptions">The list options.</param>
         </member>
         <member name="M:Tortuga.Chain.Materializers.SingleSetMaterializer`2.Execute(System.Object)">
             <summary>
@@ -8832,6 +9669,35 @@
             <returns></returns>
         </member>
         <member name="M:Tortuga.Chain.Materializers.StringListMaterializer`2.ExecuteAsync(System.Threading.CancellationToken,System.Object)">
+            <summary>
+            Execute the operation asynchronously.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name="state">User defined state, usually used for logging.</param>
+            <returns></returns>
+        </member>
+        <member name="T:Tortuga.Chain.Materializers.StringOrNullListMaterializer`2">
+            <summary>
+            Materializes the result set as a list of strings.
+            </summary>
+            <typeparam name="TCommand">The type of the t command type.</typeparam>
+            <typeparam name="TParameter">The type of the t parameter type.</typeparam>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.StringOrNullListMaterializer`2.#ctor(Tortuga.Chain.CommandBuilders.DbCommandBuilder{`0,`1},System.String,Tortuga.Chain.ListOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Materializers.StringOrNullListMaterializer`2"/> class.
+            </summary>
+            <param name="commandBuilder">The command builder.</param>
+            <param name="columnName">Name of the desired column.</param>
+            <param name="listOptions">The list options.</param>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.StringOrNullListMaterializer`2.Execute(System.Object)">
+            <summary>
+            Execute the operation synchronously.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.StringOrNullListMaterializer`2.ExecuteAsync(System.Threading.CancellationToken,System.Object)">
             <summary>
             Execute the operation asynchronously.
             </summary>
@@ -8896,6 +9762,35 @@
             <param name="state">User defined state, usually used for logging.</param>
             <returns></returns>
         </member>
+        <member name="T:Tortuga.Chain.Materializers.TimeSpanOrNullListMaterializer`2">
+            <summary>
+            Materializes the result set as a list of TimeSpan.
+            </summary>
+            <typeparam name="TCommand">The type of the t command type.</typeparam>
+            <typeparam name="TParameter">The type of the t parameter type.</typeparam>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.TimeSpanOrNullListMaterializer`2.#ctor(Tortuga.Chain.CommandBuilders.DbCommandBuilder{`0,`1},System.String,Tortuga.Chain.ListOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Materializers.TimeSpanOrNullListMaterializer`2"/> class.
+            </summary>
+            <param name="commandBuilder">The command builder.</param>
+            <param name="columnName">Name of the desired column.</param>
+            <param name="listOptions">The list options.</param>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.TimeSpanOrNullListMaterializer`2.Execute(System.Object)">
+            <summary>
+            Execute the operation synchronously.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.TimeSpanOrNullListMaterializer`2.ExecuteAsync(System.Threading.CancellationToken,System.Object)">
+            <summary>
+            Execute the operation asynchronously.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name="state">User defined state, usually used for logging.</param>
+            <returns></returns>
+        </member>
         <member name="T:Tortuga.Chain.Materializers.TimeSpanSetMaterializer`2">
             <summary>
             Materializes the result set as a list of TimeSpan.
@@ -8946,6 +9841,35 @@
             <returns></returns>
         </member>
         <member name="M:Tortuga.Chain.Materializers.XElementListMaterializer`2.ExecuteAsync(System.Threading.CancellationToken,System.Object)">
+            <summary>
+            Execute the operation asynchronously.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name="state">User defined state, usually used for logging.</param>
+            <returns></returns>
+        </member>
+        <member name="T:Tortuga.Chain.Materializers.XElementOrNullListMaterializer`2">
+            <summary>
+            Materializes the result set as a list of strings.
+            </summary>
+            <typeparam name="TCommand">The type of the t command type.</typeparam>
+            <typeparam name="TParameter">The type of the t parameter type.</typeparam>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.XElementOrNullListMaterializer`2.#ctor(Tortuga.Chain.CommandBuilders.DbCommandBuilder{`0,`1},System.String,Tortuga.Chain.ListOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Materializers.XElementOrNullListMaterializer`2"/> class.
+            </summary>
+            <param name="commandBuilder">The command builder.</param>
+            <param name="columnName">Name of the desired column.</param>
+            <param name="listOptions">The list options.</param>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.XElementOrNullListMaterializer`2.Execute(System.Object)">
+            <summary>
+            Execute the operation synchronously.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.XElementOrNullListMaterializer`2.ExecuteAsync(System.Threading.CancellationToken,System.Object)">
             <summary>
             Execute the operation asynchronously.
             </summary>
@@ -9060,6 +9984,43 @@
             <param name="state">User defined state, usually used for logging.</param>
             <returns></returns>
         </member>
+        <member name="T:Tortuga.Chain.Materializers.ObjectOrNullMaterializer`3">
+            <summary>
+            Materializes the result set as an instance of the indicated type.
+            </summary>
+            <typeparam name="TCommand">The type of the t command type.</typeparam>
+            <typeparam name="TParameter">The type of the t parameter type.</typeparam>
+            <typeparam name="TObject">The type of the object returned.</typeparam>
+            <seealso cref="T:Tortuga.Chain.Materializers.Materializer`3"/>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.ObjectOrNullMaterializer`3.#ctor(Tortuga.Chain.CommandBuilders.DbCommandBuilder{`0,`1},Tortuga.Chain.RowOptions)">
+            <summary>
+            Initializes a new instance of the <see
+            cref="T:Tortuga.Chain.Materializers.ObjectMaterializer`3"/> class.
+            </summary>
+            <param name="commandBuilder">The command builder.</param>
+            <param name="rowOptions">The row options.</param>
+            <exception cref="T:Tortuga.Chain.MappingException">
+            Type {typeof(TObject).Name} has does not have any non-default constructors. or Type
+            {typeof(TObject).Name} has more than one non-default constructor. Please use the
+            WithConstructor method to specify which one to use.
+            </exception>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.ObjectOrNullMaterializer`3.Execute(System.Object)">
+            <summary>
+            Execute the operation synchronously.
+            </summary>
+            <param name="state">User defined state, usually used for logging.</param>
+            <returns>System.Nullable&lt;TObject&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.ObjectOrNullMaterializer`3.ExecuteAsync(System.Threading.CancellationToken,System.Object)">
+            <summary>
+            Execute the operation asynchronously.
+            </summary>
+            <param name="cancellationToken">The cancellation token.</param>
+            <param name="state">User defined state, usually used for logging.</param>
+            <returns></returns>
+        </member>
         <member name="M:Tortuga.Chain.Materializers.RefreshMaterializer`3.#ctor(Tortuga.Chain.CommandBuilders.ObjectDbCommandBuilder{`0,`1,`2})">
             <summary>
             Initializes a new instance of the <see cref="T:Tortuga.Chain.Materializers.RefreshMaterializer`3"/> class.
@@ -9092,12 +10053,6 @@
             </summary>
             <typeparam name="TCommand">The type of the t command type.</typeparam>
             <typeparam name="TParameter">The type of the t parameter type.</typeparam>
-        </member>
-        <member name="M:Tortuga.Chain.Materializers.RowMaterializer`2.#ctor(Tortuga.Chain.CommandBuilders.DbCommandBuilder{`0,`1},Tortuga.Chain.RowOptions)">
-            <summary>
-            </summary>
-            <param name="commandBuilder">The command builder.</param>
-            <param name="rowOptions">The row options.</param>
         </member>
         <member name="M:Tortuga.Chain.Materializers.RowMaterializer`2.DesiredColumns">
             <summary>

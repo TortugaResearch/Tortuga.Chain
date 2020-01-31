@@ -19,7 +19,15 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="rowOptions">The row options.</param>
         /// <returns></returns>
         /// <remarks>To update the argumentValue itself, use WithRefresh() instead.</remarks>
-        ILink<TArgument?> ToObject(RowOptions rowOptions = RowOptions.None);
+        ILink<TArgument> ToObject(RowOptions rowOptions = RowOptions.None);
+
+        /// <summary>
+        /// Materializes the result as a new instance of the same type as the argumentValue
+        /// </summary>
+        /// <param name="rowOptions">The row options.</param>
+        /// <returns></returns>
+        /// <remarks>To update the argumentValue itself, use WithRefresh() instead.</remarks>
+        ILink<TArgument?> ToObjectOrNull(RowOptions rowOptions = RowOptions.AllowEmptyResults);
 
         /// <summary>
         /// Uses an explicitly specified set of key column(s). This overrides the UseKeyAttribute option.
