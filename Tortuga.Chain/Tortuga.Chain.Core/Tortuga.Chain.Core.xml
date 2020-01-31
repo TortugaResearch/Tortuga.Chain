@@ -4274,18 +4274,6 @@
             </exception>
             <exception cref="T:Tortuga.Chain.MappingException">None of the columns on the indicated user defined type could be matched to columns in {m_Name}.</exception>
         </member>
-        <member name="M:Tortuga.Chain.CommandBuilders.SqlBuilder`1.OverrideArgumentValue(Tortuga.Chain.DataSources.IDataSource,Tortuga.Chain.AuditRules.OperationTypes,System.Object)">
-            <summary>
-            Overrides the previous selected values with the values in the indicated object.
-            </summary>
-            <param name="dataSource">The data source.</param>
-            <param name="operationType">The type of operation being performed.</param>
-            <param name="argumentValue">The value.</param>
-            <exception cref="T:System.ArgumentNullException">value;value is null.</exception>
-            <exception cref="T:Tortuga.Chain.MappingException">This is thrown is no properties could be matched to a column. If strict mode, all properties must match columns.</exception>
-            <remarks>This will not alter the IsPrimaryKey, Insert, or Update column settings.
-            If the object implements IReadOnlyDictionary[string, object], ApplyArgumentDictionary will be implicitly called instead.</remarks>
-        </member>
         <member name="M:Tortuga.Chain.CommandBuilders.SqlBuilder`1.BuildAnonymousFromFunctionClause(System.Text.StringBuilder,System.String,System.String)">
             <summary>
             Builds FROM clause for a function.
@@ -4557,6 +4545,18 @@
             </summary>
             <returns>Each pair has the column's QuotedSqlName and SqlVariableName</returns>
             <remarks>This will mark the returned columns as participating in the parameter generation.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.CommandBuilders.SqlBuilder`1.OverrideArgumentValue(Tortuga.Chain.DataSources.IDataSource,Tortuga.Chain.AuditRules.OperationTypes,System.Object)">
+            <summary>
+            Overrides the previous selected values with the values in the indicated object.
+            </summary>
+            <param name="dataSource">The data source.</param>
+            <param name="operationType">The type of operation being performed.</param>
+            <param name="argumentValue">The value.</param>
+            <exception cref="T:System.ArgumentNullException">value;value is null.</exception>
+            <exception cref="T:Tortuga.Chain.MappingException">This is thrown is no properties could be matched to a column. If strict mode, all properties must match columns.</exception>
+            <remarks>This will not alter the IsPrimaryKey, Insert, or Update column settings.
+            If the object implements IReadOnlyDictionary[string, object], ApplyArgumentDictionary will be implicitly called instead.</remarks>
         </member>
         <member name="M:Tortuga.Chain.CommandBuilders.SqlBuilder`1.OverrideKeys(System.Collections.Generic.ICollection{System.String})">
             <summary>
@@ -13280,7 +13280,7 @@
         </member>
         <member name="F:Tortuga.Chain.UpdateOptions.IgnoreRowsAffected">
             <summary>
-            The ignore rows affected count. Without this flag, an error will be thrown if the rows affected by the update operation is not zero.
+            The ignore rows affected count. Without this flag, an error will be thrown if the rows affected by the update operation is not one.
             </summary>
         </member>
         <member name="T:Tortuga.Chain.UpsertOptions">
