@@ -740,13 +740,12 @@
             <param name="batchSize">Size of the batch.</param>
             <returns>SqlServerInsertBulk.</returns>
         </member>
-        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerInsertBulk.WithNotifications(System.Data.SqlClient.SqlRowsCopiedEventHandler,System.Int32)">
+        <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerInsertBulk.WithNotifications(System.EventHandler{Tortuga.Chain.AbortableOperationEventArgs},System.Int32)">
             <summary>
-            After every [notifyAfter] records, the event handler will be fired.
+            After notifyAfter records, the event handler will be fired. This can be used to abort the bulk insert.
             </summary>
             <param name="eventHandler">The event handler.</param>
             <param name="notifyAfter">The notify after.</param>
-            <returns>SqlServerInsertBulk.</returns>
         </member>
         <member name="M:Tortuga.Chain.SqlServer.CommandBuilders.SqlServerInsertBulk.WithStreaming">
             <summary>

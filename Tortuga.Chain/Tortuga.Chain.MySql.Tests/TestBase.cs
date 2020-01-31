@@ -14,10 +14,13 @@ namespace Tests
     public abstract partial class TestBase
     {
         internal static readonly Dictionary<string, MySqlDataSource> s_DataSources = new Dictionary<string, MySqlDataSource>();
-        internal protected static readonly MySqlDataSource s_PrimaryDataSource;
+        internal protected static MySqlDataSource s_PrimaryDataSource;
 
-        static TestBase()
+        internal static void SetupTestBase()
         {
+            if (s_PrimaryDataSource != null)
+                return; //run once check
+
             Setup.CreateDatabase();
 
             var configuration = new ConfigurationBuilder().SetBasePath(AppContext.BaseDirectory).AddJsonFile("appsettings.json").Build();

@@ -389,6 +389,13 @@
             This is used by materializers to skip IsNull checks.
             </remarks>
         </member>
+        <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlInsertBulk.WithNotifications(System.EventHandler{Tortuga.Chain.AbortableOperationEventArgs},System.Int32)">
+            <summary>
+            After notifyAfter records, the event handler may be fired. This can be used to abort the bulk insert.
+            </summary>
+            <param name="eventHandler">The event handler.</param>
+            <param name="notifyAfter">The notify after. This should be a multiple of the batch size.</param>
+        </member>
         <member name="M:Tortuga.Chain.MySql.CommandBuilders.MySqlInsertBulk.Implementation(MySql.Data.MySqlClient.MySqlConnection,MySql.Data.MySqlClient.MySqlTransaction)">
             <summary>
             Implementation the specified operation.

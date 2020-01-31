@@ -61,7 +61,6 @@ namespace Tests
         protected void WriteLine(string message)
         {
 #if DEBUG
-            //This really slows down the tests. Only turn it on when we need it.
             Debug.WriteLine(message);
 #endif
         }
@@ -96,6 +95,8 @@ namespace Tests
 
         private void DefaultDispatcher_ExecutionFinished(object sender, ExecutionEventArgs e)
         {
+            //This really slows down the tests. Only turn it on when we need it.
+
             //WriteLine("******");
             //WriteLine($"Execution finished: {e.ExecutionDetails.OperationName}. Duration: {e.Duration.Value.TotalSeconds.ToString("N3")} sec. Rows affected: {(e.RowsAffected != null ? e.RowsAffected.Value.ToString("N0") : "<NULL>")}.");
             //WriteDetails(e);
@@ -103,6 +104,8 @@ namespace Tests
 
         private void DefaultDispatcher_ExecutionStarted(object sender, ExecutionEventArgs e)
         {
+            //This really slows down the tests. Only turn it on when we need it.
+
             //WriteLine("******");
             //WriteLine($"Execution started: {e.ExecutionDetails.OperationName}");
             //WriteDetails(e);
