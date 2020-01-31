@@ -13,10 +13,11 @@
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net461'">
     <!-- https://github.com/dotnet/SqlClient/issues/260 SqlDependency is not working against .NET 4.6.1 -->
-    <DefineConstants>Roslyn_Missing;SQL_SERVER_MDS;SqlDependency_Missing</DefineConstants>
+    <DefineConstants>Roslyn_Missing;SQL_SERVER_MDS;</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="1.1.0" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.4.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="2.0.0" />

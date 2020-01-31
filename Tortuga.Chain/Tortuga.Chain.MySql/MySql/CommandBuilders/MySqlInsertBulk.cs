@@ -22,6 +22,8 @@ namespace Tortuga.Chain.MySql.CommandBuilders
         readonly IDataReader m_Source;
         readonly TableOrViewMetadata<MySqlObjectName, MySqlDbType> m_Table;
         int? m_BatchSize;
+        EventHandler<AbortableOperationEventArgs>? m_EventHandler;
+        int? m_NotifyAfter;
 
         internal MySqlInsertBulk(MySqlDataSourceBase dataSource, MySqlObjectName tableName, DataTable dataTable) : base(dataSource)
         {
@@ -93,6 +95,22 @@ namespace Tortuga.Chain.MySql.CommandBuilders
         public override IReadOnlyList<ColumnMetadata> TryGetNonNullableColumns() => m_Table.NonNullableColumns;
 
         /// <summary>
+        /// After notifyAfter records, the event handler may be fired. This can be used to abort the bulk insert.
+        /// </summary>
+        /// <param name="eventHandler">The event handler.</param>
+        /// <param name="notifyAfter">The notify after. This should be a multiple of the batch size.</param>
+        public MySqlInsertBulk WithNotifications(EventHandler<AbortableOperationEventArgs> eventHandler, int notifyAfter)
+        {
+            if (eventHandler == null)
+                throw new ArgumentNullException(nameof(eventHandler), $"{nameof(eventHandler)} is null.");
+            if (notifyAfter <= 0)
+                throw new ArgumentException($"{nameof(notifyAfter)} must be greater than 0.", nameof(notifyAfter));
+            m_EventHandler = eventHandler;
+            m_NotifyAfter = notifyAfter;
+            return this;
+        }
+
+        /// <summary>
         /// Implementation the specified operation.
         /// </summary>
         /// <param name="connection">The connection.</param>
@@ -103,6 +121,7 @@ namespace Tortuga.Chain.MySql.CommandBuilders
             var bl = new MySqlBulkLoader(connection);
             var mappedColumns = SetupBulkCopy(bl);
 
+            var lastNotification = 0;
             var totalCount = 0;
             var rowCount = 0;
             var output = new StringBuilder();
@@ -117,7 +136,25 @@ namespace Tortuga.Chain.MySql.CommandBuilders
                         bl.FileName = null;
                         bl.SourceStream = ms;
                         totalCount += bl.Load();
+
+                        output.Clear();
                     }
+
+                    //We only notify after a batch has been posted to the server.
+                    if (m_NotifyAfter.HasValue && m_EventHandler != null)
+                    {
+                        var notificationCount = totalCount % m_NotifyAfter.Value;
+
+                        if ((totalCount % m_NotifyAfter) > notificationCount)
+                        {
+                            lastNotification = notificationCount;
+                            var e = new AbortableOperationEventArgs(totalCount);
+                            m_EventHandler?.Invoke(this, e);
+                            if (e.Abort)
+                                throw new TaskCanceledException("Bulk insert operation aborted.");
+                        }
+                    }
+
                     rowCount = 0;
                 }
             }
@@ -129,6 +166,13 @@ namespace Tortuga.Chain.MySql.CommandBuilders
                     bl.FileName = null;
                     bl.SourceStream = ms;
                     totalCount += bl.Load();
+                }
+
+                if (m_EventHandler != null)
+                {
+                    var e = new AbortableOperationEventArgs(totalCount);
+                    m_EventHandler?.Invoke(this, e);
+                    //can't abort at this point;
                 }
             }
 
@@ -161,6 +205,8 @@ namespace Tortuga.Chain.MySql.CommandBuilders
                         bl.FileName = null;
                         bl.SourceStream = ms;
                         totalCount += await bl.LoadAsync(cancellationToken).ConfigureAwait(false);
+
+                        output.Clear();
                     }
                     rowCount = 0;
                 }
@@ -192,6 +238,10 @@ namespace Tortuga.Chain.MySql.CommandBuilders
                 var value = m_Source.GetValue(i);
                 switch (value)
                 {
+                    case Guid g:
+                        output.Append("\"" + g.ToString() + "\"");
+                        break;
+
                     case string s:
                         output.Append("\"" +
                             s
@@ -233,10 +283,12 @@ namespace Tortuga.Chain.MySql.CommandBuilders
         List<int> SetupBulkCopy(MySqlBulkLoader bl)
         {
             bl.TableName = m_Table.Name.ToString();
-            bl.CharacterSet = "UTF8"; bl.NumberOfLinesToSkip = 0;
+            bl.CharacterSet = "UTF8";
+            bl.NumberOfLinesToSkip = 0;
             bl.FieldTerminator = ",";
             bl.FieldQuotationCharacter = '"';
-            bl.FieldQuotationOptional = true;
+            bl.FieldQuotationOptional = false;
+            bl.LineTerminator = Environment.NewLine;
             bl.Local = true;
 
             var mappedColumns = new List<int>(m_Source.FieldCount);

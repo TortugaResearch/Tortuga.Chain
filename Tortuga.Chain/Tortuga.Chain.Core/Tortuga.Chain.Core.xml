@@ -4,6 +4,28 @@
         <name>Tortuga.Chain.Core</name>
     </assembly>
     <members>
+        <member name="T:Tortuga.Chain.AbortableOperationEventArgs">
+            <summary>
+            Represents a notification from an abortable process such as a bulk insert.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.AbortableOperationEventArgs.#ctor(System.Int64)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.AbortableOperationEventArgs"/> class.
+            </summary>
+            <param name="rowsAffected">The number of rows affected.</param>
+        </member>
+        <member name="P:Tortuga.Chain.AbortableOperationEventArgs.Abort">
+            <summary>
+            Gets or sets a value indicating whether this <see cref="T:Tortuga.Chain.AbortableOperationEventArgs"/> is abort.
+            </summary>
+            <value>Set to True to abort the current operation.</value>
+        </member>
+        <member name="P:Tortuga.Chain.AbortableOperationEventArgs.RowsAffected">
+            <summary>
+            Gets the number of rows copied.
+            </summary>
+        </member>
         <member name="T:Tortuga.Chain.Appenders.Appender`1">
             <summary>
             An appender modifies the execution chain of an operation, usually by performing an action just before or after the database call.
