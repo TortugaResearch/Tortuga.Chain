@@ -652,6 +652,7 @@
             <summary>
             Indicates the type of operation being performed.
             </summary>
+            <remarks>Keep numbers in sync with Metadata.OperationType.</remarks>
         </member>
         <member name="F:Tortuga.Chain.AuditRules.OperationTypes.None">
             <summary>
@@ -9621,6 +9622,14 @@
             <param name="tableName">Name of the table.</param>
             <returns></returns>
         </member>
+        <member name="M:Tortuga.Chain.Metadata.DatabaseMetadataCache`2.GetDatabaseObjectFromClass``1(Tortuga.Chain.Metadata.OperationType)">
+            <summary>
+            Returns the table, view, function, or stored procedure derived from the class's name and/or Table attribute.
+            </summary>
+            <typeparam name="TObject">The type of the object.</typeparam>
+            <param name="operation">The operation.</param>
+            <returns>DatabaseObject.</returns>
+        </member>
         <member name="M:Tortuga.Chain.Metadata.DatabaseMetadataCache`2.GetTableOrViewFromClass``1">
             <summary>
             Returns the table or view derived from the class's name and/or Table attribute.
@@ -9635,8 +9644,16 @@
             <typeparam name="TObject"></typeparam>
             <returns></returns>
         </member>
-        <member name="M:Tortuga.Chain.Metadata.DatabaseMetadataCache`2.GetTablesAndViews">
+        <member name="M:Tortuga.Chain.Metadata.DatabaseMetadataCache`2.Tortuga#Chain#Metadata#IDatabaseMetadataCache#GetDatabaseObjectFromClass``1(Tortuga.Chain.Metadata.OperationType)">
             <summary>
+            Returns the table, view, function, or stored procedure derived from the class's name and/or Table attribute.
+            </summary>
+            <typeparam name="TObject"></typeparam>
+            <param name="operation">The type of operation to be performed.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Metadata.DatabaseMetadataCache`2.GetTablesAndViews">
+            <summary>DatabaseObject
             Gets the tables and views that were loaded by this cache.
             </summary>
             <returns></returns>
@@ -9718,6 +9735,22 @@
             <param name="tableFunction">The table function.</param>
             <returns></returns>
         </member>
+        <member name="M:Tortuga.Chain.Metadata.DatabaseMetadataCache`2.TryGetScalarFunction(System.String,Tortuga.Chain.Metadata.ScalarFunctionMetadata@)">
+            <summary>
+            Tries to get the metadata for a scalar function.
+            </summary>
+            <param name="tableFunctionName">Name of the scalar function.</param>
+            <param name="tableFunction">The scalar function.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Metadata.DatabaseMetadataCache`2.TryGetScalarFunction(`0,Tortuga.Chain.Metadata.ScalarFunctionMetadata@)">
+            <summary>
+            Tries to get the metadata for a scalar function.
+            </summary>
+            <param name="scalarFunctionName">Name of the scalar function.</param>
+            <param name="scalarFunction">The scalar function.</param>
+            <returns></returns>
+        </member>
         <member name="M:Tortuga.Chain.Metadata.DatabaseMetadataCache`2.TryGetTableOrView(System.String,Tortuga.Chain.Metadata.TableOrViewMetadata@)">
             <summary>
             Tries to get the metadata for a table or view.
@@ -9770,6 +9803,13 @@
             <summary>
             Parse a string and return the database specific representation of the object name.
             </summary>
+            <param name="name"></param>
+        </member>
+        <member name="M:Tortuga.Chain.Metadata.DatabaseMetadataCache`2.ParseObjectName(System.String,System.String)">
+            <summary>
+            Parse a string and return the database specific representation of the object name.
+            </summary>
+            <param name="schema"></param>
             <param name="name"></param>
         </member>
         <member name="M:Tortuga.Chain.Metadata.DatabaseMetadataCache`2.SqlTypeNameToDbType(System.String,System.Nullable{System.Boolean})">
@@ -9974,6 +10014,14 @@
             </summary>
             <param name="tableName">Name of the table or view.</param>
             <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Metadata.IDatabaseMetadataCache.GetDatabaseObjectFromClass``1(Tortuga.Chain.Metadata.OperationType)">
+            <summary>
+            Returns the table, view, function, or stored procedure derived from the class's name and/or Table attribute.
+            </summary>
+            <typeparam name="TObject">The type of the t object.</typeparam>
+            <param name="operation">The type of operation to be performed.</param>
+            <returns>TableOrViewMetadata.</returns>
         </member>
         <member name="M:Tortuga.Chain.Metadata.IDatabaseMetadataCache.GetTableOrViewFromClass``1">
             <summary>
@@ -10520,6 +10568,22 @@
             </summary>
             <remarks>This is needed for legacy serializers that don't support nullable primitives.</remarks>
         </member>
+        <member name="T:Tortuga.Chain.Metadata.OperationType">
+            <summary>
+            Indicates the type of operation being performed.
+            </summary>
+            <remarks>Keep numbers in sync with AuditRules.OperationTypes.</remarks>
+        </member>
+        <member name="F:Tortuga.Chain.Metadata.OperationType.All">
+            <summary>
+            Undefined operation, return the default table.
+            </summary>
+        </member>
+        <member name="F:Tortuga.Chain.Metadata.OperationType.Select">
+            <summary>
+            The table or view select operations.
+            </summary>
+        </member>
         <member name="T:Tortuga.Chain.Metadata.ParameterMetadata">
             <summary>
             Metadata for a stored procedure parameter
@@ -10752,14 +10816,6 @@
             The maximum length.
             </value>
         </member>
-        <member name="P:Tortuga.Chain.Metadata.ScalarFunctionMetadata.Name">
-            <summary>
-            Gets the name.
-            </summary>
-            <value>
-            The name.
-            </value>
-        </member>
         <member name="P:Tortuga.Chain.Metadata.ScalarFunctionMetadata.Parameters">
             <summary>
             Gets the parameters.
@@ -10853,14 +10909,6 @@
             <exception cref="T:System.ArgumentException">name</exception>
             <exception cref="T:System.ArgumentNullException">parameters</exception>
         </member>
-        <member name="P:Tortuga.Chain.Metadata.StoredProcedureMetadata.Name">
-            <summary>
-            Gets the name.
-            </summary>
-            <value>
-            The name.
-            </value>
-        </member>
         <member name="P:Tortuga.Chain.Metadata.StoredProcedureMetadata.Parameters">
             <summary>
             Gets the parameters.
@@ -10932,14 +10980,6 @@
             The columns.
             </value>
         </member>
-        <member name="P:Tortuga.Chain.Metadata.TableFunctionMetadata.Name">
-            <summary>
-            Gets the name.
-            </summary>
-            <value>
-            The name.
-            </value>
-        </member>
         <member name="P:Tortuga.Chain.Metadata.TableFunctionMetadata.NullableColumns">
             <summary>
             Gets the columns known to be nullable.
@@ -11001,6 +11041,22 @@
             <param name="strictMode">if set to <c>true</c> [strict mode].</param>
             <returns></returns>
         </member>
+        <member name="T:Tortuga.Chain.Metadata.DatabaseObject">
+            <summary>
+            Class DatabaseObject.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.Metadata.DatabaseObject.#ctor(System.String)">
+            <summary>Initializes a new instance of the <see cref="T:Tortuga.Chain.Metadata.DatabaseObject"/> class.</summary>
+        </member>
+        <member name="P:Tortuga.Chain.Metadata.DatabaseObject.Name">
+            <summary>
+            Gets the name.
+            </summary>
+            <value>
+            The name.
+            </value>
+        </member>
         <member name="T:Tortuga.Chain.Metadata.TableOrViewMetadata">
             <summary>
             Abstract version of TableOrViewMetadata.
@@ -11031,14 +11087,6 @@
             </summary>
             <value>
             <c>true</c> if this instance is a table; otherwise, <c>false</c>.
-            </value>
-        </member>
-        <member name="P:Tortuga.Chain.Metadata.TableOrViewMetadata.Name">
-            <summary>
-            Gets the name.
-            </summary>
-            <value>
-            The name.
             </value>
         </member>
         <member name="P:Tortuga.Chain.Metadata.TableOrViewMetadata.NonNullableColumns">

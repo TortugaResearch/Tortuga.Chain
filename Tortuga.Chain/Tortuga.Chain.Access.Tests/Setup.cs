@@ -59,6 +59,8 @@ CREATE TABLE Employee
 	LastName TEXT(30) NOT NULL,
 	EmployeeId TEXT(50) NOT NULL,
 	Title TEXT(100) null,
+    OfficePhone TEXT(15) NULL,
+    CellPhone TEXT(15) NULL,
 	ManagerKey LONG NULL REFERENCES Employee(EmployeeKey),
     CreatedDate DateTime NOT NULL DEFAULT NOW(),
     UpdatedDate DateTime NULL
@@ -78,7 +80,33 @@ CREATE TABLE Employee
 	DeletedByKey INTEGER NULL
 )";
 
-                const string sql3 = "CREATE VIEW EmployeeLookup AS SELECT FirstName, LastName, EmployeeKey FROM Employee";
+                const string sql3 = "CREATE VIEW EmployeeLookup AS SELECT FirstName, LastName, EmployeeKey, EmployeeId FROM Employee";
+
+                const string sql4 = @"CREATE VIEW EmployeeWithManager
+AS
+SELECT  Employee_1.EmployeeKey ,
+        Employee_1.FirstName ,
+        Employee_1.MiddleName ,
+        Employee_1.LastName ,
+        Employee_1.Title ,
+        Employee_1.ManagerKey ,
+        Employee_1.OfficePhone ,
+        Employee_1.CellPhone ,
+        Employee_1.CreatedDate ,
+        Employee_1.UpdatedDate ,
+		Employee_1.EmployeeId,
+        Employee_2.EmployeeKey AS ManagerEmployeeKey ,
+        Employee_2.FirstName AS ManagerFirstName ,
+        Employee_2.MiddleName AS ManagerMiddleName ,
+        Employee_2.LastName AS ManagerLastName ,
+        Employee_2.Title AS ManagerTitle ,
+        Employee_2.ManagerKey AS ManagerManagerKey ,
+        Employee_2.OfficePhone AS ManagerOfficePhone ,
+        Employee_2.CellPhone AS ManagerCellPhone ,
+        Employee_2.CreatedDate AS ManagerCreatedDate ,
+        Employee_2.UpdatedDate AS ManagerUpdatedDate
+FROM    Employee AS Employee_1
+        LEFT JOIN Employee AS Employee_2 ON Employee_2.EmployeeKey = Employee_1.ManagerKey";
 
                 using (var command = new OleDbCommand(sql, dbConnection))
                     command.ExecuteNonQuery();
@@ -87,6 +115,9 @@ CREATE TABLE Employee
                     command.ExecuteNonQuery();
 
                 using (var command = new OleDbCommand(sql3, dbConnection))
+                    command.ExecuteNonQuery();
+
+                using (var command = new OleDbCommand(sql4, dbConnection))
                     command.ExecuteNonQuery();
 
                 sql = "INSERT INTO Employee ([FirstName], [MiddleName], [LastName], [Title], [ManagerKey], [EmployeeId]) VALUES (@FirstName, @MiddleName, @LastName, @Title, @ManagerKey, @EmployeeId)";

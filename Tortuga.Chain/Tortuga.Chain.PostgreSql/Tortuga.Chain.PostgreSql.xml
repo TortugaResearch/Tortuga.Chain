@@ -2043,13 +2043,6 @@
             Call Preload before invoking this method to ensure that all table-valued functions were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.
             </remarks>
         </member>
-        <member name="M:Tortuga.Chain.PostgreSql.PostgreSqlMetadataCache.GetTableOrViewFromClass``1">
-            <summary>
-            Returns the table or view derived from the class's name and/or Table attribute.
-            </summary>
-            <typeparam name="TObject"></typeparam>
-            <returns></returns>
-        </member>
         <member name="M:Tortuga.Chain.PostgreSql.PostgreSqlMetadataCache.GetTablesAndViews">
             <summary>
             Gets the tables and views that were loaded by this cache.
@@ -2110,10 +2103,11 @@
             <value>Case-insensitive list of database-specific type names</value>
             <remarks>This list is based on driver limitations.</remarks>
         </member>
-        <member name="M:Tortuga.Chain.PostgreSql.PostgreSqlMetadataCache.ParseObjectName(System.String)">
+        <member name="M:Tortuga.Chain.PostgreSql.PostgreSqlMetadataCache.ParseObjectName(System.String,System.String)">
             <summary>
             Parse a string and return the database specific representation of the object name.
             </summary>
+            <param name="schema">The schema.</param>
             <param name="name">The name.</param>
             <returns>PostgreSqlObjectName.</returns>
         </member>

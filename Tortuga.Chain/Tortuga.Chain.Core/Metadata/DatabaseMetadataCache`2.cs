@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using Tortuga.Anchor;
+using Tortuga.Anchor.Metadata;
 
 namespace Tortuga.Chain.Metadata
 {
@@ -21,6 +23,8 @@ namespace Tortuga.Chain.Metadata
         /// </summary>
         /// <remarks>This is populated by the RegisterType method.</remarks>
         readonly ConcurrentDictionary<string, TypeRegistration<TDbType>> m_RegisteredTypes = new ConcurrentDictionary<string, TypeRegistration<TDbType>>(StringComparer.OrdinalIgnoreCase);
+
+        private readonly ConcurrentDictionary<(Type, OperationType), DatabaseObject> m_TypeTableMap = new ConcurrentDictionary<(Type, OperationType), DatabaseObject>();
 
         /// <summary>
         /// Gets the maximum number of parameters in a single SQL batch.
@@ -164,12 +168,125 @@ namespace Tortuga.Chain.Metadata
         TableOrViewMetadata IDatabaseMetadataCache.GetTableOrView(string tableName) => GetTableOrView(ParseObjectName(tableName));
 
         /// <summary>
+        /// Returns the table, view, function, or stored procedure derived from the class's name and/or Table attribute.
+        /// </summary>
+        /// <typeparam name="TObject">The type of the object.</typeparam>
+        /// <param name="operation">The operation.</param>
+        /// <returns>DatabaseObject.</returns>
+        public DatabaseObject GetDatabaseObjectFromClass<TObject>(OperationType operation)
+        {
+            var type = typeof(TObject);
+            var cacheKey = (type, operation);
+
+            if (m_TypeTableMap.TryGetValue(cacheKey, out var cachedResult))
+                return cachedResult;
+
+            //This section uses the TableAttribute or TableAndViewAttribute from the class.
+            var typeInfo = MetadataCache.GetMetadata(type);
+            var objectName = typeInfo.MappedTableName;
+            var schemaName = typeInfo.MappedSchemaName;
+            var allowFunctions = false;
+
+            switch (operation)
+            {
+                /* TASK-350: Reserved for future work
+                        case OperationType.Insert:
+                            objectName = typeInfo.MappedInsertFunctionName ?? objectName;
+                            allowFunctions = true;
+                            break;
+
+                        case OperationType.Update:
+                            objectName = typeInfo.MappedUpdateFunctionName ?? objectName;
+                            allowFunctions = true;
+                            break;
+
+                        case OperationType.Delete:
+                            objectName = typeInfo.MappedDeleteFunctionName ?? objectName;
+                            allowFunctions = true;
+                            break;
+                */
+
+                case OperationType.Select:
+                    objectName = typeInfo.MappedViewName ?? objectName;
+                    allowFunctions = false;
+                    break;
+            }
+
+            if (!objectName.IsNullOrEmpty())
+            {
+                TName name;
+                if (schemaName.IsNullOrEmpty())
+                    name = ParseObjectName(objectName);
+                else
+                    name = ParseObjectName(schemaName, objectName);
+
+                if (TryGetTableOrView(name, out var tableResult))
+                {
+                    m_TypeTableMap[cacheKey] = tableResult;
+                    return tableResult;
+                }
+
+                /* TASK-350: Reserved for future work
+                if (allowFunctions)
+                {
+                    if (TryGetStoredProcedure(name, out var procResult))
+                    {
+                        m_TypeTableMap[cacheKey] = procResult;
+                        return procResult;
+                    }
+                    if (TryGetTableFunction(name, out var tvfResult))
+                    {
+                        m_TypeTableMap[cacheKey] = tvfResult;
+                        return tvfResult;
+                    }
+                    if (TryGetScalarFunction(name, out var funcResult))
+                    {
+                        m_TypeTableMap[cacheKey] = funcResult;
+                        return funcResult;
+                    }
+                }
+                */
+
+                if (allowFunctions)
+                    throw new MissingObjectException($"Cannot find a table, function, or stored procedure with the name {name}");
+                else
+                    throw new MissingObjectException($"Cannot find a table or view with the name {name}");
+            }
+
+            //This section infers the schema from namespace
+            {
+                var schema = type.Namespace;
+                if (schema != null && schema.Contains(".", StringComparison.Ordinal))
+                    schema = schema.Substring(schema.LastIndexOf(".", StringComparison.Ordinal) + 1);
+
+                var nameA = ParseObjectName(schema, type.Name);
+                var nameB = ParseObjectName(null, type.Name);
+
+                if (TryGetTableOrView(nameA, out var tableResult))
+                {
+                    m_TypeTableMap[cacheKey] = tableResult;
+                    return tableResult;
+                }
+
+                //that didn't work, so try the default schema
+                if (TryGetTableOrView(nameB, out var tableResult2))
+                {
+                    m_TypeTableMap[cacheKey] = tableResult2;
+                    return tableResult2;
+                }
+
+                throw new MissingObjectException($"Cannot find a table or view with the name '{nameA}' or '{nameB}'");
+            }
+        }
+
+        /// <summary>
         /// Returns the table or view derived from the class's name and/or Table attribute.
         /// </summary>
         /// <typeparam name="TObject">The type of the object.</typeparam>
         /// <returns></returns>
         [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-        public abstract TableOrViewMetadata<TName, TDbType> GetTableOrViewFromClass<TObject>() where TObject : class;
+        public TableOrViewMetadata<TName, TDbType> GetTableOrViewFromClass<TObject>() where TObject : class =>
+            (TableOrViewMetadata<TName, TDbType>)GetDatabaseObjectFromClass<TObject>(OperationType.All);
 
         /// <summary>
         /// Returns the table or view derived from the class's name and/or Table attribute.
@@ -179,6 +296,14 @@ namespace Tortuga.Chain.Metadata
         TableOrViewMetadata IDatabaseMetadataCache.GetTableOrViewFromClass<TObject>() => GetTableOrViewFromClass<TObject>();
 
         /// <summary>
+        /// Returns the table, view, function, or stored procedure derived from the class's name and/or Table attribute.
+        /// </summary>
+        /// <typeparam name="TObject"></typeparam>
+        /// <param name="operation">The type of operation to be performed.</param>
+        /// <returns></returns>
+        DatabaseObject IDatabaseMetadataCache.GetDatabaseObjectFromClass<TObject>(OperationType operation) => GetDatabaseObjectFromClass<TObject>(operation);
+
+        /// <summary>DatabaseObject
         /// Gets the tables and views that were loaded by this cache.
         /// </summary>
         /// <returns></returns>
@@ -232,7 +357,10 @@ namespace Tortuga.Chain.Metadata
         /// <summary>
         /// Resets the metadata cache, clearing out all cached metadata.
         /// </summary>
-        public abstract void Reset();
+        public virtual void Reset()
+        {
+            m_TypeTableMap.Clear();
+        }
 
         /// <summary>
         /// Returns the CLR type that matches the indicated database column type.
@@ -288,6 +416,11 @@ namespace Tortuga.Chain.Metadata
                 storedProcedure = null;
                 return false;
             }
+            catch (NotSupportedException)
+            {
+                storedProcedure = null;
+                return false;
+            }
         }
 
         /// <summary>
@@ -315,6 +448,45 @@ namespace Tortuga.Chain.Metadata
             catch (MissingObjectException)
             {
                 tableFunction = null;
+                return false;
+            }
+            catch (NotSupportedException)
+            {
+                tableFunction = null;
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Tries to get the metadata for a scalar function.
+        /// </summary>
+        /// <param name="tableFunctionName">Name of the scalar function.</param>
+        /// <param name="tableFunction">The scalar function.</param>
+        /// <returns></returns>
+        public bool TryGetScalarFunction(string tableFunctionName, [NotNullWhen(true)] out ScalarFunctionMetadata? tableFunction) =>
+            TryGetScalarFunction(ParseObjectName(tableFunctionName), out tableFunction);
+
+        /// <summary>
+        /// Tries to get the metadata for a scalar function.
+        /// </summary>
+        /// <param name="scalarFunctionName">Name of the scalar function.</param>
+        /// <param name="scalarFunction">The scalar function.</param>
+        /// <returns></returns>
+        public bool TryGetScalarFunction(TName scalarFunctionName, [NotNullWhen(true)] out ScalarFunctionMetadata? scalarFunction)
+        {
+            try
+            {
+                scalarFunction = GetScalarFunction(scalarFunctionName);
+                return true;
+            }
+            catch (MissingObjectException)
+            {
+                scalarFunction = null;
+                return false;
+            }
+            catch (NotSupportedException)
+            {
+                scalarFunction = null;
                 return false;
             }
         }
@@ -346,6 +518,11 @@ namespace Tortuga.Chain.Metadata
                 tableOrView = null;
                 return false;
             }
+            catch (NotSupportedException)
+            {
+                tableOrView = null;
+                return false;
+            }
         }
 
         /// <summary>
@@ -373,6 +550,11 @@ namespace Tortuga.Chain.Metadata
                 return true;
             }
             catch (MissingObjectException)
+            {
+                userDefinedTableType = null;
+                return false;
+            }
+            catch (NotSupportedException)
             {
                 userDefinedTableType = null;
                 return false;
@@ -444,7 +626,14 @@ namespace Tortuga.Chain.Metadata
         /// Parse a string and return the database specific representation of the object name.
         /// </summary>
         /// <param name="name"></param>
-        protected abstract TName ParseObjectName(string name);
+        protected TName ParseObjectName(string name) => ParseObjectName(null, name);
+
+        /// <summary>
+        /// Parse a string and return the database specific representation of the object name.
+        /// </summary>
+        /// <param name="schema"></param>
+        /// <param name="name"></param>
+        protected abstract TName ParseObjectName(string? schema, string name);
 
         /// <summary>
         /// Determines the database column type from the column type name.
