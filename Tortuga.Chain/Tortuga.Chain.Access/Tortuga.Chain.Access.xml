@@ -975,13 +975,6 @@
             <param name="tableName"></param>
             <returns></returns>
         </member>
-        <member name="M:Tortuga.Chain.Access.AccessMetadataCache.GetTableOrViewFromClass``1">
-            <summary>
-            Returns the table or view derived from the class's name and/or Table attribute.
-            </summary>
-            <typeparam name="TObject">The type of the object.</typeparam>
-            <returns>TableOrViewMetadata&lt;AccessObjectName, OleDbType&gt;.</returns>
-        </member>
         <member name="M:Tortuga.Chain.Access.AccessMetadataCache.GetTablesAndViews">
             <summary>
             Gets the tables and views that were loaded by this cache.
@@ -1013,12 +1006,13 @@
             Resets the metadata cache, clearing out all cached metadata.
             </summary>
         </member>
-        <member name="M:Tortuga.Chain.Access.AccessMetadataCache.ParseObjectName(System.String)">
+        <member name="M:Tortuga.Chain.Access.AccessMetadataCache.ParseObjectName(System.String,System.String)">
             <summary>
-            Parses the name of the database object.
+            Parse a string and return the database specific representation of the object name.
             </summary>
+            <param name="schema">The schema.</param>
             <param name="name">The name.</param>
-            <returns>System.String.</returns>
+            <returns>AccessObjectName.</returns>
         </member>
         <member name="M:Tortuga.Chain.Access.AccessMetadataCache.SqlTypeNameToDbType(System.String,System.Nullable{System.Boolean})">
             <summary>

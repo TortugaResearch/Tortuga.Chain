@@ -1847,13 +1847,6 @@
             Call Preload before invoking this method to ensure that all table-valued functions were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.
             </remarks>
         </member>
-        <member name="M:Tortuga.Chain.SqlServer.OleDbSqlServerMetadataCache.GetTableOrViewFromClass``1">
-            <summary>
-            Returns the table or view derived from the class's name and/or Table attribute.
-            </summary>
-            <typeparam name="TObject"></typeparam>
-            <returns></returns>
-        </member>
         <member name="M:Tortuga.Chain.SqlServer.OleDbSqlServerMetadataCache.GetTablesAndViews">
             <summary>
             Gets the tables and views that were loaded by this cache.
@@ -1887,12 +1880,13 @@
             Resets the metadata cache, clearing out all cached metadata.
             </summary>
         </member>
-        <member name="M:Tortuga.Chain.SqlServer.OleDbSqlServerMetadataCache.ParseObjectName(System.String)">
+        <member name="M:Tortuga.Chain.SqlServer.OleDbSqlServerMetadataCache.ParseObjectName(System.String,System.String)">
             <summary>
             Parse a string and return the database specific representation of the object name.
             </summary>
-            <param name="name"></param>
-            <returns></returns>
+            <param name="schema">The schema.</param>
+            <param name="name">The name.</param>
+            <returns>SqlServerObjectName.</returns>
         </member>
         <member name="P:Tortuga.Chain.SqlServer.OleDbSqlServerMetadataCache.MaxParameters">
             <summary>

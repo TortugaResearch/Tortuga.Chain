@@ -1825,13 +1825,6 @@
             <param name="tableName">Name of the table.</param>
             <returns>TableOrViewMetadata&lt;MySqlObjectName, MySqlDbType&gt;.</returns>
         </member>
-        <member name="M:Tortuga.Chain.MySql.MySqlMetadataCache.GetTableOrViewFromClass``1">
-            <summary>
-            Returns the table or view derived from the class's name and/or Table attribute.
-            </summary>
-            <typeparam name="TObject"></typeparam>
-            <returns></returns>
-        </member>
         <member name="M:Tortuga.Chain.MySql.MySqlMetadataCache.GetTablesAndViews">
             <summary>
             Gets the tables and views that were loaded by this cache.
@@ -1879,10 +1872,11 @@
             <param name="dbType">Optional database column type.</param>
             <returns></returns>
         </member>
-        <member name="M:Tortuga.Chain.MySql.MySqlMetadataCache.ParseObjectName(System.String)">
+        <member name="M:Tortuga.Chain.MySql.MySqlMetadataCache.ParseObjectName(System.String,System.String)">
             <summary>
             Parse a string and return the database specific representation of the object name.
             </summary>
+            <param name="schema">The schema.</param>
             <param name="name">The name.</param>
             <returns>MySqlObjectName.</returns>
         </member>
