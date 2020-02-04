@@ -37,6 +37,16 @@
             <param name="commandBuilder">The command builder.</param>
             <returns></returns>
         </member>
+        <member name="M:Tortuga.Chain.CompiledMaterializers.Compile``4(Tortuga.Chain.CommandBuilders.TableDbCommandBuilder{``0,``1,``2,``3})">
+            <summary>
+            Allows compilation of the ToObject and ToCollection materializer.
+            </summary>
+            <typeparam name="TCommand">The type of the command.</typeparam>
+            <typeparam name="TParameter">The type of the parameter.</typeparam>
+            <typeparam name="TLimit">The type of the limit option.</typeparam>
+            <typeparam name="TObject">The type of the object to be constructed.</typeparam>
+            <param name="commandBuilder">The command builder.</param>
+        </member>
         <member name="M:Tortuga.Chain.CompiledMaterializers.Compile``2(Tortuga.Chain.CommandBuilders.MultipleTableDbCommandBuilder{``0,``1})">
             <summary>
             Allows compilation of the ToObject and ToCollection materializer.
@@ -181,7 +191,83 @@
             </summary>
             <typeparam name="TObject">The type of the object returned.</typeparam>
             <param name="rowOptions">The row options.</param>
-            <returns>ILink&lt;TObject&gt;.</returns>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.CompiledMultipleRow`2.ToObjectOrNull``1(Tortuga.Chain.RowOptions)">
+            <summary>
+            Materializes the result as an instance of the indicated type
+            </summary>
+            <typeparam name="TObject">The type of the object returned.</typeparam>
+            <param name="rowOptions">The row options.</param>
+            <returns></returns>
+        </member>
+        <member name="T:Tortuga.Chain.Materializers.CompiledMultipleRow`3">
+            <summary>
+            Extension for using compiled materializers with Tortuga Chain
+            </summary>
+            <typeparam name="TCommand">The type of the command.</typeparam>
+            <typeparam name="TParameter">The type of the parameter.</typeparam>
+            <typeparam name="TObject">The type of the result object.</typeparam>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.CompiledMultipleRow`3.#ctor(Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder{`0,`1})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Materializers.CompiledMultipleRow`2" /> struct.
+            </summary>
+            <param name="commandBuilder">The command builder.</param>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.CompiledMultipleRow`3.ToCollection(Tortuga.Chain.CollectionOptions)">
+            <summary>
+            Materializes the result as a list of objects.
+            </summary>
+            <param name="collectionOptions">The collection options.</param>
+            <returns>ILink&lt;List&lt;TObject&gt;&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.CompiledMultipleRow`3.ToCollection``1(Tortuga.Chain.CollectionOptions)">
+            <summary>
+            Materializes the result as a list of objects.
+            </summary>
+            <typeparam name="TResultObject">The type of the model.</typeparam>
+            <param name="collectionOptions">The collection options.</param>
+            <returns>ILink&lt;List&lt;TResultObject&gt;&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.CompiledMultipleRow`3.ToCollection``2(Tortuga.Chain.CollectionOptions)">
+            <summary>
+            Materializes the result as a list of objects.
+            </summary>
+            <typeparam name="TResultObject">The type of the model.</typeparam>
+            <typeparam name="TCollection">The type of the collection.</typeparam>
+            <param name="collectionOptions">The collection options.</param>
+            <returns>ILink&lt;TCollection&gt;.</returns>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.CompiledMultipleRow`3.ToObject(Tortuga.Chain.RowOptions)">
+            <summary>
+            Materializes the result as an instance of the indicated type
+            </summary>
+            <param name="rowOptions">The row options.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.CompiledMultipleRow`3.ToObject``1(Tortuga.Chain.RowOptions)">
+            <summary>
+            Materializes the result as an instance of the indicated type
+            </summary>
+            <typeparam name="TResultObject">The type of the object returned.</typeparam>
+            <param name="rowOptions">The row options.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.CompiledMultipleRow`3.ToObjectOrNull(Tortuga.Chain.RowOptions)">
+            <summary>
+            Materializes the result as an instance of the indicated type
+            </summary>
+            <param name="rowOptions">The row options.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.CompiledMultipleRow`3.ToObjectOrNull``1(Tortuga.Chain.RowOptions)">
+            <summary>
+            Materializes the result as an instance of the indicated type
+            </summary>
+            <typeparam name="TResultObject">The type of the object returned.</typeparam>
+            <param name="rowOptions">The row options.</param>
+            <returns></returns>
         </member>
         <member name="T:Tortuga.Chain.Materializers.CompiledMultipleTable`2">
             <summary>
@@ -221,7 +307,21 @@
             <param name="rowOptions">The row options.</param>
             <returns>ILink&lt;TObject&gt;.</returns>
         </member>
+        <member name="M:Tortuga.Chain.Materializers.CompiledMultipleTable`2.ToObjectOrNull``1(Tortuga.Chain.RowOptions)">
+            <summary>
+            Materializes the result as an instance of the indicated type
+            </summary>
+            <typeparam name="TObject">The type of the object returned.</typeparam>
+            <param name="rowOptions">The row options.</param>
+            <returns>ILink&lt;TObject&gt;.</returns>
+        </member>
         <member name="M:Tortuga.Chain.Materializers.CompiledObjectMaterializer`3.DesiredColumns">
+            <summary>
+            Returns the list of columns the materializer would like to have.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.CompiledObjectOrNullMaterializer`3.DesiredColumns">
             <summary>
             Returns the list of columns the materializer would like to have.
             </summary>
@@ -245,6 +345,58 @@
             Materializes the result as an instance of the indicated type
             </summary>
             <typeparam name="TObject">The type of the object returned.</typeparam>
+            <param name="rowOptions">The row options.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.CompiledSingleRow`2.ToObjectOrNull``1(Tortuga.Chain.RowOptions)">
+            <summary>
+            Materializes the result as an instance of the indicated type
+            </summary>
+            <typeparam name="TObject">The type of the object returned.</typeparam>
+            <param name="rowOptions">The row options.</param>
+            <returns></returns>
+        </member>
+        <member name="T:Tortuga.Chain.Materializers.CompiledSingleRow`3">
+            <summary>
+            Extension for using compiled materializers with Tortuga Chain
+            </summary>
+            <typeparam name="TCommand">The type of the command.</typeparam>
+            <typeparam name="TParameter">The type of the parameter.</typeparam>
+            <typeparam name="TObject">The type of the result object.</typeparam>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.CompiledSingleRow`3.#ctor(Tortuga.Chain.CommandBuilders.SingleRowDbCommandBuilder{`0,`1})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tortuga.Chain.Materializers.CompiledMultipleRow`2"/> struct.
+            </summary>
+            <param name="commandBuilder">The command builder.</param>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.CompiledSingleRow`3.ToObject(Tortuga.Chain.RowOptions)">
+            <summary>
+            Materializes the result as an instance of the indicated type
+            </summary>
+            <param name="rowOptions">The row options.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.CompiledSingleRow`3.ToObjectOrNull(Tortuga.Chain.RowOptions)">
+            <summary>
+            Materializes the result as an instance of the indicated type
+            </summary>
+            <param name="rowOptions">The row options.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.CompiledSingleRow`3.ToObject``1(Tortuga.Chain.RowOptions)">
+            <summary>
+            Materializes the result as an instance of the indicated type
+            </summary>
+            <typeparam name="TResultObject">The type of the object returned.</typeparam>
+            <param name="rowOptions">The row options.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tortuga.Chain.Materializers.CompiledSingleRow`3.ToObjectOrNull``1(Tortuga.Chain.RowOptions)">
+            <summary>
+            Materializes the result as an instance of the indicated type
+            </summary>
+            <typeparam name="TResultObject">The type of the object returned.</typeparam>
             <param name="rowOptions">The row options.</param>
             <returns></returns>
         </member>

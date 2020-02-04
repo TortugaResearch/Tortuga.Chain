@@ -288,11 +288,12 @@ namespace Tortuga.Chain.Access
         /// </summary>
         /// <typeparam name="TObject">The type of the object.</typeparam>
         /// <param name="filterValue">The filter value is used to generate a simple AND style WHERE clause.</param>
-        /// <returns></returns>
+        /// <param name="filterOptions">The filter options.</param>
+        /// <returns>TableDbCommandBuilder&lt;AbstractCommand, AbstractParameter, AbstractLimitOption, TObject&gt;.</returns>
         [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-        public TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption, TObject> From<TObject>(object filterValue) where TObject : class
+        public TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption, TObject> From<TObject>(object filterValue, FilterOptions filterOptions = FilterOptions.None) where TObject : class
         {
-            return OnFromTableOrView<TObject>(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, filterValue, FilterOptions.None);
+            return OnFromTableOrView<TObject>(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, filterValue, filterOptions);
         }
 
         /// <summary>

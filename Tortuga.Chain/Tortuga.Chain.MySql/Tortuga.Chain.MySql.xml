@@ -1177,13 +1177,14 @@
             <param name="argumentValue">Optional argument value. Every property in the argument value must have a matching parameter in the WHERE clause</param>
             <returns></returns>
         </member>
-        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.From``1(System.Object)">
+        <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.From``1(System.Object,Tortuga.Chain.FilterOptions)">
             <summary>
             This is used to directly query a table or view.
             </summary>
             <typeparam name="TObject">The type of the object.</typeparam>
             <param name="filterValue">The filter value is used to generate a simple AND style WHERE clause.</param>
-            <returns></returns>
+            <param name="filterOptions">The filter options.</param>
+            <returns>TableDbCommandBuilder&lt;AbstractCommand, AbstractParameter, AbstractLimitOption, TObject&gt;.</returns>
         </member>
         <member name="M:Tortuga.Chain.MySql.MySqlDataSourceBase.DeleteWithFilter(Tortuga.Chain.MySql.MySqlObjectName,System.Object,Tortuga.Chain.FilterOptions)">
             <summary>

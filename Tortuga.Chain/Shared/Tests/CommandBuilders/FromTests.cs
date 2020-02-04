@@ -683,6 +683,31 @@ namespace Tests.CommandBuilders
             }
         }
 
+        [DataTestMethod, BasicData(DataSourceGroup.Primary)]
+        public void FilterByObject_Compiled_AutoTableSelection(string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+                var key = Guid.NewGuid().ToString();
+
+                for (var i = 0; i < 10; i++)
+                    dataSource.Insert(EmployeeTableName, new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = key, MiddleName = i % 2 == 0 ? "A" + i : null }).Compile().ToObject<Employee>().Execute();
+
+                var all = dataSource.From<Employee>(new { Title = key }).Compile().ToCollection().Execute();
+                var middleNameIsNull = dataSource.From<Employee>(new { Title = key, MiddleName = (string)null }).Compile().ToCollection().Execute();
+                var ignoreNulls = dataSource.From<Employee>(new { Title = key, MiddleName = (string)null }, FilterOptions.IgnoreNullProperties).Compile().ToCollection().Execute();
+
+                Assert.AreEqual(10, all.Count, "All of the rows");
+                Assert.AreEqual(5, middleNameIsNull.Count, "Middle name is null");
+                Assert.AreEqual(10, ignoreNulls.Count, "Ignore nulls should return all of the rows");
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
 #endif
 
 #if !NO_DISTINCT_COUNT
