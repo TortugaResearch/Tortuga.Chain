@@ -3,22 +3,22 @@
 using System;
 using System.Globalization;
 
-#endif
-
 namespace Tortuga.Chain
 {
-#if !ORDINAL_STRINGS
-
     static class LegacyUtilities
     {
-#if !ORDINAL_STRINGS
-
         public static int GetHashCode(this string source, StringComparison stringComparison)
         {
-            if (stringComparison == StringComparison.OrdinalIgnoreCase)
-                return source.ToUpperInvariant().GetHashCode();
-            else
-                return source.GetHashCode();
+            switch (stringComparison)
+            {
+                case StringComparison.CurrentCultureIgnoreCase:
+                case StringComparison.OrdinalIgnoreCase:
+                case StringComparison.InvariantCultureIgnoreCase:
+                    return source.ToUpperInvariant().GetHashCode();
+
+                default:
+                    return source.GetHashCode();
+            }
         }
 
         public static string Replace(this string source, string oldValue, string newValue, StringComparison _)
@@ -28,14 +28,9 @@ namespace Tortuga.Chain
 
         public static bool Contains(this string source, string value, StringComparison stringComparison)
         {
-            if (stringComparison == StringComparison.OrdinalIgnoreCase)
-                return source.ToUpper(CultureInfo.InvariantCulture).Contains(value.ToUpper(CultureInfo.InvariantCulture));
-            else
-                return source.Contains(value);
+            return source.IndexOf(value, stringComparison) >= 0;
         }
-
-#endif
     }
+}
 
 #endif
-}
