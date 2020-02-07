@@ -114,7 +114,12 @@ namespace Tortuga.Chain.PostgreSql
                         con.Open();
 
                         using (var cmd = new NpgsqlCommand("SHOW server_version;", con))
-                            m_ServerVersion = Version.Parse((string)cmd.ExecuteScalar());
+                        {
+                            var versionString = (string)cmd.ExecuteScalar();
+                            if (versionString.Contains(" ", StringComparison.Ordinal))
+                                versionString = versionString.Substring(0, versionString.IndexOf(" ", StringComparison.Ordinal));
+                            m_ServerVersion = Version.Parse(versionString);
+                        }
                     }
                 }
                 return m_ServerVersion;
@@ -654,7 +659,7 @@ WHERE ns.nspname = @Schema AND tab.relname = @Name";
         /// <value>Case-insensitive list of database-specific type names</value>
         /// <remarks>This list is based on driver limitations.</remarks>
         public override ImmutableHashSet<string> UnsupportedSqlTypeNames { get; } = ImmutableHashSet.Create(StringComparer.OrdinalIgnoreCase, new[] { "trigger", "internal", "regclass", "bpchar", "pg_lsn", "void", "cstring", "reltime", "anyenum", "anyarray", "anyelement", "anyrange", "_regdictionary", "any", "regdictionary", "tstzrange" ,
-
+            "jsonpath","pg_mcv_list","table_am_handler",
 "ANYNONARRAY",
 "UNKNOWN",
 "PG_DDL_COMMAND",
