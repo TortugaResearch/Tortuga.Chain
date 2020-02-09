@@ -362,14 +362,52 @@ namespace Tortuga.Chain.Access
         /// <summary>
         /// Gets a record by its primary key.
         /// </summary>
-        /// <typeparam name="TKey"></typeparam>
-        /// <param name="tableName">Name of the table.</param>
+        /// <typeparam name="TObject">The type of the object. Used to determine which table will be read.</typeparam>
         /// <param name="key">The key.</param>
-        /// <returns>MultipleRowDbCommandBuilder&lt;OleDbCommand, OleDbParameter&gt;.</returns>
-        public SingleRowDbCommandBuilder<AbstractCommand, AbstractParameter> GetByKey<TKey>(AbstractObjectName tableName, TKey key)
-            where TKey : struct
+        /// <returns></returns>
+        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
+        public ISingleRowDbCommandBuilder<TObject> GetByKey<TObject>(Guid key)
+            where TObject : class
         {
-            return GetByKeyList(tableName, keys: (IEnumerable<TKey>)new List<TKey> { key });
+            return GetByKey<TObject, Guid>(DatabaseObjectAsTableOrView<TObject>(OperationType.Select).Name, key);
+        }
+
+        /// <summary>
+        /// Gets a record by its primary key.
+        /// </summary>
+        /// <typeparam name="TObject">The type of the object.</typeparam>
+        /// <param name="key">The key.</param>
+        /// <returns></returns>
+        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
+        public ISingleRowDbCommandBuilder<TObject> GetByKey<TObject>(long key)
+            where TObject : class
+        {
+            return GetByKey<TObject, long>(DatabaseObjectAsTableOrView<TObject>(OperationType.Select).Name, key);
+        }
+
+        /// <summary>
+        /// Gets a record by its primary key.
+        /// </summary>
+        /// <typeparam name="TObject">The type of the object.</typeparam>
+        /// <param name="key">The key.</param>
+        /// <returns></returns>
+        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
+        public ISingleRowDbCommandBuilder<TObject> GetByKey<TObject>(int key)
+            where TObject : class
+        {
+            return GetByKey<TObject, int>(DatabaseObjectAsTableOrView<TObject>(OperationType.Select).Name, key);
+        }
+
+        /// <summary>
+        /// Gets a record by its primary key.
+        /// </summary>
+        /// <typeparam name="TObject">The type of the object.</typeparam>
+        /// <param name="key">The key.</param>
+        /// <returns></returns>
+        public ISingleRowDbCommandBuilder GetByKey<TObject>(string key)
+            where TObject : class
+        {
+            return GetByKey<TObject, string>(DatabaseObjectAsTableOrView<TObject>(OperationType.Select).Name, key);
         }
 
         /// <summary>
@@ -377,10 +415,9 @@ namespace Tortuga.Chain.Access
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="key">The key.</param>
-        /// <returns>MultipleRowDbCommandBuilder&lt;OleDbCommand, OleDbParameter&gt;.</returns>
-        public SingleRowDbCommandBuilder<AbstractCommand, AbstractParameter> GetByKey(AbstractObjectName tableName, string key)
+        public ISingleRowDbCommandBuilder GetByKey(AbstractObjectName tableName, string key)
         {
-            return GetByKeyList(tableName, keys: (IEnumerable<string>)new List<string> { key });
+            return GetByKey<string>(tableName, key);
         }
 
         /// <summary>
@@ -448,21 +485,57 @@ namespace Tortuga.Chain.Access
         }
 
         /// <summary>
-        /// Gets a set of records by their primary key.
+        /// Gets a record by its primary key.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TKey"></typeparam>
+        /// <typeparam name="TObject">The type of the object. Used to determine which table will be read.</typeparam>
         /// <param name="tableName">Name of the table.</param>
-        /// <param name="keys">The keys.</param>
-        /// <returns></returns>
+        /// <param name="key">The key.</param>
         /// <remarks>This only works on tables that have a scalar primary key.</remarks>
         [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "GetByKeyList")]
-        public MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> GetByKeyList<T>(AbstractObjectName tableName, IEnumerable<T> keys)
+        public ISingleRowDbCommandBuilder<TObject> GetByKey<TObject, TKey>(AbstractObjectName tableName, TKey key)
+        where TObject : class
         {
             var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).PrimaryKeyColumns;
             if (primaryKeys.Count != 1)
                 throw new MappingException($"{nameof(GetByKeyList)} operation isn't allowed on {tableName} because it doesn't have a single primary key. Use DataSource.From instead.");
 
-            return GetByKeyList<T>(tableName, primaryKeys.Single(), keys);
+            return OnGetByKey<TObject, TKey>(tableName, primaryKeys.Single(), key);
+        }
+
+        /// <summary>
+        /// Gets a record by its primary key.
+        /// </summary>
+        /// <typeparam name="TKey"></typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="key">The key.</param>
+        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
+        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "GetByKeyList")]
+        public ISingleRowDbCommandBuilder GetByKey<TKey>(AbstractObjectName tableName, TKey key)
+        {
+            var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).PrimaryKeyColumns;
+            if (primaryKeys.Count != 1)
+                throw new MappingException($"{nameof(GetByKeyList)} operation isn't allowed on {tableName} because it doesn't have a single primary key. Use DataSource.From instead.");
+
+            return OnGetByKey<object, TKey>(tableName, primaryKeys.Single(), key);
+        }
+
+        /// <summary>
+        /// Gets a set of records by their primary key.
+        /// </summary>
+        /// <typeparam name="TKey"></typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="keys">The keys.</param>
+        /// <returns></returns>
+        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
+        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "GetByKeyList")]
+        public MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> GetByKeyList<TKey>(AbstractObjectName tableName, IEnumerable<TKey> keys)
+        {
+            var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).PrimaryKeyColumns;
+            if (primaryKeys.Count != 1)
+                throw new MappingException($"{nameof(GetByKeyList)} operation isn't allowed on {tableName} because it doesn't have a single primary key. Use DataSource.From instead.");
+
+            return OnGetByKeyList<object, TKey>(tableName, primaryKeys.Single(), keys);
         }
 
         /// <summary>
@@ -481,7 +554,7 @@ namespace Tortuga.Chain.Access
             if (primaryKeys.Count == 0)
                 throw new MappingException($"Cannot find a column named {keyColumn} on table {tableName}.");
 
-            return GetByKeyList<T>(tableName, primaryKeys.Single(), keys);
+            return OnGetByKeyList<object, T>(tableName, primaryKeys.Single(), keys);
         }
 
 #if !ACCESS
