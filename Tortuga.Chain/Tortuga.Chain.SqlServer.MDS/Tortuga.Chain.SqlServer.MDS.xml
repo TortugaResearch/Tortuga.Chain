@@ -2837,11 +2837,6 @@
             <param name="connection">The connection.</param>
             <param name="transaction">The transaction.</param>
         </member>
-        <member name="P:Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource.Cache">
-            <summary>
-            Gets or sets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
-            </summary>
-        </member>
         <member name="P:Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource.DatabaseMetadata">
             <summary>
             This object can be used to lookup database information.
@@ -2853,38 +2848,6 @@
             </summary>
             <value>The name of the transaction.</value>
         </member>
-        <member name="P:Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource.ExtensionCache">
-            <summary>
-            The extension cache is used by extensions to store data source specific information.
-            </summary>
-            <value>
-            The extension cache.
-            </value>
-        </member>
-        <member name="M:Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource.Commit">
-            <summary>
-            Commits the transaction and disposes the underlying connection.
-            </summary>
-        </member>
-        <member name="M:Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource.Dispose">
-            <summary>
-            Closes the current transaction and connection. If not committed, the transaction is rolled back.
-            </summary>
-        </member>
-        <member name="M:Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource.GetExtensionData``1">
-            <summary>
-            Gets the extension data.
-            </summary>
-            <typeparam name="TTKey">The type of extension data desired.</typeparam>
-            <returns>T.</returns>
-            <remarks>Chain extensions can use this to store data source specific data. The key should be a data type defined by the extension.
-            Transactional data sources should override this method and return the value held by their parent data source.</remarks>
-        </member>
-        <member name="M:Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource.Rollback">
-            <summary>
-            Rolls back the transaction and disposes the underlying connection.
-            </summary>
-        </member>
         <member name="M:Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource.TestConnection">
             <summary>
             Tests the connection.
@@ -2895,12 +2858,6 @@
             Tests the connection asynchronously.
             </summary>
             <returns></returns>
-        </member>
-        <member name="M:Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource.Dispose(System.Boolean)">
-            <summary>
-            Closes the current transaction and connection. If not committed, the transaction is rolled back.
-            </summary>
-            <param name="disposing"></param>
         </member>
         <member name="M:Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource.Execute(Tortuga.Chain.Core.CommandExecutionToken{Microsoft.Data.SqlClient.SqlCommand,Microsoft.Data.SqlClient.SqlParameter},Tortuga.Chain.Core.CommandImplementation{Microsoft.Data.SqlClient.SqlCommand},System.Object)">
             <summary>
@@ -2937,6 +2894,49 @@
             <param name="cancellationToken">The cancellation token.</param>
             <param name="state">The state.</param>
             <returns>Task.</returns>
+        </member>
+        <member name="P:Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource.ExtensionCache">
+            <summary>
+            The extension cache is used by extensions to store data source specific information.
+            </summary>
+            <value>
+            The extension cache.
+            </value>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource.Commit">
+            <summary>
+            Commits the transaction and disposes the underlying connection.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource.Dispose">
+            <summary>
+            Closes the current transaction and connection. If not committed, the transaction is rolled back.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource.GetExtensionData``1">
+            <summary>
+            Gets the extension data.
+            </summary>
+            <typeparam name="TTKey">The type of extension data desired.</typeparam>
+            <returns>T.</returns>
+            <remarks>Chain extensions can use this to store data source specific data. The key should be a data type defined by the extension.
+            Transactional data sources should override this method and return the value held by their parent data source.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource.Rollback">
+            <summary>
+            Rolls back the transaction and disposes the underlying connection.
+            </summary>
+        </member>
+        <member name="P:Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource.Cache">
+            <summary>
+            Gets or sets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource.Dispose(System.Boolean)">
+            <summary>
+            Closes the current transaction and connection. If not committed, the transaction is rolled back.
+            </summary>
+            <param name="disposing"></param>
         </member>
         <member name="M:Tortuga.Chain.SqlServer.Utilities.GetParameters(Tortuga.Chain.CommandBuilders.SqlBuilder{System.Data.SqlDbType})">
             <summary>

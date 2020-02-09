@@ -5,7 +5,6 @@ using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
 using Tortuga.Chain.Core;
-using Tortuga.Chain.DataSources;
 
 namespace Tortuga.Chain.PostgreSql
 {
@@ -14,7 +13,7 @@ namespace Tortuga.Chain.PostgreSql
     /// </summary>
     /// <seealso cref="PostgreSqlDataSourceBase" />
     /// <seealso cref="IDisposable" />
-    public class PostgreSqlTransactionalDataSource : PostgreSqlDataSourceBase, IDisposable, ITransactionalDataSource
+    public partial class PostgreSqlTransactionalDataSource : PostgreSqlDataSourceBase
     {
         private readonly PostgreSqlDataSource m_BaseDataSource;
         private readonly NpgsqlConnection m_Connection;
@@ -79,72 +78,11 @@ namespace Tortuga.Chain.PostgreSql
         }
 
         /// <summary>
-        /// Gets or sets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
-        /// </summary>
-        public override ICacheAdapter Cache => m_BaseDataSource.Cache;
-
-        /// <summary>
         /// Gets the database metadata.
         /// </summary>
         public override PostgreSqlMetadataCache DatabaseMetadata
         {
             get { return m_BaseDataSource.DatabaseMetadata; }
-        }
-
-        /// <summary>
-        /// The extension cache is used by extensions to store data source specific information.
-        /// </summary>
-        /// <value>
-        /// The extension cache.
-        /// </value>
-        protected override ConcurrentDictionary<Type, object> ExtensionCache => m_BaseDataSource.m_ExtensionCache;
-
-        /// <summary>
-        /// Commits this transaction instance.
-        /// </summary>
-        /// <exception cref="ObjectDisposedException">Transaction is disposed.</exception>
-        public void Commit()
-        {
-            if (m_Disposed)
-                throw new ObjectDisposedException("Transaction is disposed.");
-
-            m_Transaction.Commit();
-            Dispose(true);
-        }
-
-        /// <summary>
-        /// Perform application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-        /// </summary>
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>
-        /// Gets the extension data.
-        /// </summary>
-        /// <typeparam name="TTKey">The type of extension data desired.</typeparam>
-        /// <returns>
-        /// T.
-        /// </returns>
-        /// <remarks>
-        /// Chain extensions can use this to store data source specific data. The key should be a data type defined by the extension.
-        /// Transactional data sources should override this method and return the value held by their parent data source.
-        /// </remarks>
-        public override TTKey GetExtensionData<TTKey>() => m_BaseDataSource.GetExtensionData<TTKey>();
-
-        /// <summary>
-        /// Rolls the transaction back.
-        /// </summary>
-        /// <exception cref="ObjectDisposedException">Transaction is disposed.</exception>
-        public void Rollback()
-        {
-            if (m_Disposed)
-                throw new ObjectDisposedException("Transaction is disposed.");
-
-            m_Transaction.Rollback();
-            Dispose(true);
         }
 
         /// <summary>
@@ -164,23 +102,6 @@ namespace Tortuga.Chain.PostgreSql
         {
             using (var cmd = new NpgsqlCommand("SELECT 1", m_Connection))
                 await cmd.ExecuteScalarAsync().ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// Releases unmanaged and - optionally - managed resources.
-        /// </summary>
-        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
-        protected virtual void Dispose(bool disposing)
-        {
-            if (m_Disposed)
-                return;
-
-            if (disposing)
-            {
-                m_Transaction.Dispose();
-                m_Connection.Dispose();
-                m_Disposed = true;
-            }
         }
 
         /// <summary>

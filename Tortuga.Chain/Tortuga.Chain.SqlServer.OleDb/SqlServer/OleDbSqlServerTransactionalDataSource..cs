@@ -1,24 +1,22 @@
 using System;
-using System.Collections.Concurrent;
 using System.Data;
 using System.Data.OleDb;
 using System.Threading;
 using System.Threading.Tasks;
 using Tortuga.Chain.Core;
-using Tortuga.Chain.DataSources;
 
 namespace Tortuga.Chain.SqlServer
 {
     /// <summary>
     /// Class SqlServerTransactionalDataSource.
     /// </summary>
-    public class OleDbSqlServerTransactionalDataSource : OleDbSqlServerDataSourceBase, IDisposable, ITransactionalDataSource
+    public partial class OleDbSqlServerTransactionalDataSource : OleDbSqlServerDataSourceBase, IDisposable
     {
-        readonly OleDbSqlServerDataSource m_BaseDataSource;
-        readonly OleDbConnection m_Connection;
-        readonly OleDbTransaction m_Transaction;
-        readonly string? m_TransactionName;
-        bool m_Disposed;
+        private readonly OleDbSqlServerDataSource m_BaseDataSource;
+        private readonly OleDbConnection m_Connection;
+        private readonly OleDbTransaction m_Transaction;
+        private readonly string? m_TransactionName;
+        private bool m_Disposed;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="OleDbSqlServerTransactionalDataSource"/> class.
@@ -80,14 +78,6 @@ namespace Tortuga.Chain.SqlServer
         }
 
         /// <summary>
-        /// Gets or sets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
-        /// </summary>
-        public override ICacheAdapter Cache
-        {
-            get { return m_BaseDataSource.Cache; }
-        }
-
-        /// <summary>
         /// This object can be used to lookup database information.
         /// </summary>
         public override OleDbSqlServerMetadataCache DatabaseMetadata
@@ -102,62 +92,6 @@ namespace Tortuga.Chain.SqlServer
         public string? TransactionName
         {
             get { return m_TransactionName; }
-        }
-
-        /// <summary>
-        /// The extension cache is used by extensions to store data source specific information.
-        /// </summary>
-        /// <value>
-        /// The extension cache.
-        /// </value>
-        protected override ConcurrentDictionary<Type, object> ExtensionCache
-        {
-            get { return m_BaseDataSource.m_ExtensionCache; }
-        }
-
-        /// <summary>
-        /// Commits the transaction and disposes the underlying connection.
-        /// </summary>
-        public void Commit()
-        {
-            if (m_Disposed)
-                throw new ObjectDisposedException("Transaction is disposed");
-
-            m_Transaction.Commit();
-            Dispose(true);
-        }
-
-        /// <summary>
-        /// Closes the current transaction and connection. If not committed, the transaction is rolled back.
-        /// </summary>
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>
-        /// Gets the extension data.
-        /// </summary>
-        /// <typeparam name="TTKey">The type of extension data desired.</typeparam>
-        /// <returns>T.</returns>
-        /// <remarks>Chain extensions can use this to store data source specific data. The key should be a data type defined by the extension.
-        /// Transactional data sources should override this method and return the value held by their parent data source.</remarks>
-        public override TTKey GetExtensionData<TTKey>()
-        {
-            return m_BaseDataSource.GetExtensionData<TTKey>();
-        }
-
-        /// <summary>
-        /// Rolls back the transaction and disposes the underlying connection.
-        /// </summary>
-        public void Rollback()
-        {
-            if (m_Disposed)
-                throw new ObjectDisposedException("Transaction is disposed");
-
-            m_Transaction.Rollback();
-            Dispose(true);
         }
 
         /// <summary>
@@ -182,23 +116,6 @@ namespace Tortuga.Chain.SqlServer
             {
                 cmd.Transaction = m_Transaction;
                 await cmd.ExecuteScalarAsync().ConfigureAwait(false);
-            }
-        }
-
-        /// <summary>
-        /// Closes the current transaction and connection. If not committed, the transaction is rolled back.
-        /// </summary>
-        /// <param name="disposing"></param>
-        protected virtual void Dispose(bool disposing)
-        {
-            if (m_Disposed)
-                return;
-
-            if (disposing)
-            {
-                m_Transaction.Dispose();
-                m_Connection.Dispose();
-                m_Disposed = true;
             }
         }
 

@@ -2209,53 +2209,10 @@
             <param name="connection">The connection.</param>
             <param name="transaction">The transaction.</param>
         </member>
-        <member name="P:Tortuga.Chain.MySql.MySqlTransactionalDataSource.Cache">
-            <summary>
-            Gets or sets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
-            </summary>
-        </member>
         <member name="P:Tortuga.Chain.MySql.MySqlTransactionalDataSource.DatabaseMetadata">
             <summary>
             Gets the database metadata.
             </summary>
-        </member>
-        <member name="P:Tortuga.Chain.MySql.MySqlTransactionalDataSource.ExtensionCache">
-            <summary>
-            The extension cache is used by extensions to store data source specific information.
-            </summary>
-            <value>
-            The extension cache.
-            </value>
-        </member>
-        <member name="M:Tortuga.Chain.MySql.MySqlTransactionalDataSource.Commit">
-            <summary>
-            Commits this transaction instance.
-            </summary>
-            <exception cref="T:System.ObjectDisposedException">Transaction is disposed.</exception>
-        </member>
-        <member name="M:Tortuga.Chain.MySql.MySqlTransactionalDataSource.Dispose">
-            <summary>
-            Perform application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-            </summary>
-        </member>
-        <member name="M:Tortuga.Chain.MySql.MySqlTransactionalDataSource.GetExtensionData``1">
-            <summary>
-            Gets the extension data.
-            </summary>
-            <typeparam name="TTKey">The type of extension data desired.</typeparam>
-            <returns>
-            T.
-            </returns>
-            <remarks>
-            Chain extensions can use this to store data source specific data. The key should be a data type defined by the extension.
-            Transactional data sources should override this method and return the value held by their parent data source.
-            </remarks>
-        </member>
-        <member name="M:Tortuga.Chain.MySql.MySqlTransactionalDataSource.Rollback">
-            <summary>
-            Rolls the transaction back.
-            </summary>
-            <exception cref="T:System.ObjectDisposedException">Transaction is disposed.</exception>
         </member>
         <member name="M:Tortuga.Chain.MySql.MySqlTransactionalDataSource.TestConnection">
             <summary>
@@ -2267,12 +2224,6 @@
             Tests the connection asynchronously.
             </summary>
             <returns></returns>
-        </member>
-        <member name="M:Tortuga.Chain.MySql.MySqlTransactionalDataSource.Dispose(System.Boolean)">
-            <summary>
-            Releases unmanaged and - optionally - managed resources.
-            </summary>
-            <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         </member>
         <member name="M:Tortuga.Chain.MySql.MySqlTransactionalDataSource.Execute(Tortuga.Chain.Core.CommandExecutionToken{MySql.Data.MySqlClient.MySqlCommand,MySql.Data.MySqlClient.MySqlParameter},Tortuga.Chain.Core.CommandImplementation{MySql.Data.MySqlClient.MySqlCommand},System.Object)">
             <summary>
@@ -2335,6 +2286,49 @@
             or
             implementation;implementation is null.
             </exception>
+        </member>
+        <member name="P:Tortuga.Chain.MySql.MySqlTransactionalDataSource.ExtensionCache">
+            <summary>
+            The extension cache is used by extensions to store data source specific information.
+            </summary>
+            <value>
+            The extension cache.
+            </value>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlTransactionalDataSource.Commit">
+            <summary>
+            Commits the transaction and disposes the underlying connection.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlTransactionalDataSource.Dispose">
+            <summary>
+            Closes the current transaction and connection. If not committed, the transaction is rolled back.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlTransactionalDataSource.GetExtensionData``1">
+            <summary>
+            Gets the extension data.
+            </summary>
+            <typeparam name="TTKey">The type of extension data desired.</typeparam>
+            <returns>T.</returns>
+            <remarks>Chain extensions can use this to store data source specific data. The key should be a data type defined by the extension.
+            Transactional data sources should override this method and return the value held by their parent data source.</remarks>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlTransactionalDataSource.Rollback">
+            <summary>
+            Rolls back the transaction and disposes the underlying connection.
+            </summary>
+        </member>
+        <member name="P:Tortuga.Chain.MySql.MySqlTransactionalDataSource.Cache">
+            <summary>
+            Gets or sets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlTransactionalDataSource.Dispose(System.Boolean)">
+            <summary>
+            Closes the current transaction and connection. If not committed, the transaction is rolled back.
+            </summary>
+            <param name="disposing"></param>
         </member>
         <member name="M:Tortuga.Chain.MySql.Utilities.GetParameters(Tortuga.Chain.CommandBuilders.SqlBuilder{MySql.Data.MySqlClient.MySqlDbType})">
             <summary>
