@@ -49,10 +49,10 @@ namespace Tortuga.Chain.Materializers
 
             if (result.Count == 0)
             {
-                if (m_RowOptions.HasFlag(RowOptions.AllowEmptyResults))
+                if (!m_RowOptions.HasFlag(RowOptions.PreventEmptyResults))
                     return null;
                 else
-                    throw new MissingDataException($"No rows were returned and {nameof(RowOptions)}.{nameof(RowOptions.AllowEmptyResults)} was not specified.");
+                    throw new MissingDataException($"No rows were returned and {nameof(RowOptions)}.{nameof(RowOptions.PreventEmptyResults)} was enabled.");
             }
             else if (result.Count > 1 && !m_RowOptions.HasFlag(RowOptions.DiscardExtraRows))
             {
@@ -80,10 +80,10 @@ namespace Tortuga.Chain.Materializers
 
             if (result.Count == 0)
             {
-                if (m_RowOptions.HasFlag(RowOptions.AllowEmptyResults))
+                if (!m_RowOptions.HasFlag(RowOptions.PreventEmptyResults))
                     return null;
                 else
-                    throw new MissingDataException($"No rows were returned and {nameof(RowOptions)}.{nameof(RowOptions.AllowEmptyResults)} was not specified.");
+                    throw new MissingDataException($"No rows were returned and {nameof(RowOptions)}.{nameof(RowOptions.PreventEmptyResults)} was enabled.");
             }
             else if (result.Count > 1 && !m_RowOptions.HasFlag(RowOptions.DiscardExtraRows))
             {

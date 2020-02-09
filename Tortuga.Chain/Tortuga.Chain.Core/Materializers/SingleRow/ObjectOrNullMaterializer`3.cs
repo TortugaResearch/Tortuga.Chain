@@ -98,14 +98,14 @@ namespace Tortuga.Chain.Materializers
         {
             if (rowCount == 0 || row == null)
             {
-                if (m_RowOptions.HasFlag(RowOptions.AllowEmptyResults))
+                if (!m_RowOptions.HasFlag(RowOptions.PreventEmptyResults))
                     return null;
                 else
-                    throw new MissingDataException($"No rows were returned and {nameof(RowOptions)}.{nameof(RowOptions.AllowEmptyResults)} was not specified.");
+                    throw new MissingDataException($"No rows were returned and {nameof(RowOptions)}.{nameof(RowOptions.PreventEmptyResults)} was enabled.");
             }
             else if (rowCount > 1 && !m_RowOptions.HasFlag(RowOptions.DiscardExtraRows))
             {
-                throw new UnexpectedDataException($"Expected 1 row but received {rowCount} rows. Use {nameof(RowOptions)}.{nameof(RowOptions.DiscardExtraRows)} to suppress this error.");
+                throw new UnexpectedDataException($"Expected 1 row but received {rowCount} rows. If this was expected, use `RowOptions.DiscardExtraRows`.");
             }
             return MaterializerUtilities.ConstructObject<TObject>(row, ConstructorSignature);
         }

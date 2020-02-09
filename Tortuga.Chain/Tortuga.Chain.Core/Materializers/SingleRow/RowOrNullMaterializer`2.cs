@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 using Tortuga.Chain.CommandBuilders;
@@ -13,52 +12,56 @@ namespace Tortuga.Chain.Materializers
     /// </summary>
     /// <typeparam name="TCommand">The type of the t command type.</typeparam>
     /// <typeparam name="TParameter">The type of the t parameter type.</typeparam>
-    internal sealed class DataRowMaterializer<TCommand, TParameter> : Materializer<TCommand, TParameter, DataRow> where TCommand : DbCommand
+    internal sealed class RowOrNullMaterializer<TCommand, TParameter> : Materializer<TCommand, TParameter, Row?> where TCommand : DbCommand
         where TParameter : DbParameter
     {
         readonly RowOptions m_RowOptions;
 
-        /// <summary>Initializes a new instance of the <see cref="Tortuga.Chain.Materializers.DataRowMaterializer{TCommand, TParameter}"/> class.</summary>
-        /// <param name="commandBuilder">The command builder.</param>
-        /// <param name="rowOptions">The row options.</param>
-        public DataRowMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, RowOptions rowOptions)
+        public RowOrNullMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, RowOptions rowOptions)
             : base(commandBuilder)
         {
             m_RowOptions = rowOptions;
         }
 
+        /// <summary>
+        /// Returns the list of columns the materializer would like to have.
+        /// </summary>
+        /// <returns>
+        /// IReadOnlyList&lt;System.String&gt;.
+        /// </returns>
+        /// <remarks>
+        /// If AutoSelectDesiredColumns is returned, the command builder is allowed to choose which columns to return. If NoColumns is returned, the command builder should omit the SELECT/OUTPUT clause.
+        /// </remarks>
         public override IReadOnlyList<string> DesiredColumns() => AllColumns;
 
         /// <summary>
         /// Execute the operation synchronously.
         /// </summary>
         /// <returns></returns>
-        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-        [SuppressMessage("Microsoft.Globalization", "CA1306:SetLocaleForDataTypes")]
-        public override DataRow Execute(object? state = null)
+        public override Row? Execute(object? state = null)
         {
             var executionToken = Prepare();
 
-            var ds = new DataSet() { EnforceConstraints = false /*needed for PostgreSql*/};
-            var table = new DataTable();
-            ds.Tables.Add(table);
-
+            Table? table = null;
             executionToken.Execute(cmd =>
             {
                 using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess))
                 {
-                    table.Load(reader);
+                    table = new Table(reader);
                     return table.Rows.Count;
                 }
             }, state);
 
-            if (table.Rows.Count == 0)
+            if (table!.Rows.Count == 0)
             {
-                throw new MissingDataException("No rows were returned");
+                if (!m_RowOptions.HasFlag(RowOptions.PreventEmptyResults))
+                    return null;
+                else
+                    throw new MissingDataException($"No rows were returned and {nameof(RowOptions)}.{nameof(RowOptions.PreventEmptyResults)} was enabled.");
             }
             else if (table.Rows.Count > 1 && !m_RowOptions.HasFlag(RowOptions.DiscardExtraRows))
             {
-                throw new MissingDataException($"No rows were returned. It was this expected, use `.ToDataRowOrNull` instead of `.ToDataRow`.");
+                throw new UnexpectedDataException("Expected 1 row but received " + table.Rows.Count + " rows. If this was expected, use `RowOptions.DiscardExtraRows`.");
             }
             return table.Rows[0];
         }
@@ -69,28 +72,26 @@ namespace Tortuga.Chain.Materializers
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <param name="state">User defined state, usually used for logging.</param>
         /// <returns></returns>
-        [SuppressMessage("Microsoft.Globalization", "CA1306:SetLocaleForDataTypes")]
-        [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
-        public override async Task<DataRow> ExecuteAsync(CancellationToken cancellationToken, object? state = null)
+        public override async Task<Row?> ExecuteAsync(CancellationToken cancellationToken, object? state = null)
         {
             var executionToken = Prepare();
 
-            var ds = new DataSet() { EnforceConstraints = false /*needed for PostgreSql*/};
-            var table = new DataTable();
-            ds.Tables.Add(table);
-
+            Table? table = null;
             await executionToken.ExecuteAsync(async cmd =>
             {
                 using (var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SequentialAccess, cancellationToken).ConfigureAwait(false))
                 {
-                    table.Load(reader);
+                    table = new Table(reader);
                     return table.Rows.Count;
                 }
             }, cancellationToken, state).ConfigureAwait(false);
 
-            if (table.Rows.Count == 0)
+            if (table!.Rows.Count == 0)
             {
-                throw new MissingDataException($"No rows were returned. It was this expected, use `.ToDataRowOrNull` instead of `.ToDataRow`.");
+                if (!m_RowOptions.HasFlag(RowOptions.PreventEmptyResults))
+                    return null;
+                else
+                    throw new MissingDataException($"No rows were returned and {nameof(RowOptions)}.{nameof(RowOptions.PreventEmptyResults)} was enabled.");
             }
             else if (table.Rows.Count > 1 && !m_RowOptions.HasFlag(RowOptions.DiscardExtraRows))
             {

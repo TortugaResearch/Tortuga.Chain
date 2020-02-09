@@ -12,7 +12,7 @@ namespace Tortuga.Chain.Materializers
     /// </summary>
     /// <typeparam name="TCommand">The type of the t command type.</typeparam>
     /// <typeparam name="TParameter">The type of the t parameter type.</typeparam>
-    internal sealed class RowMaterializer<TCommand, TParameter> : Materializer<TCommand, TParameter, Row?> where TCommand : DbCommand
+    internal sealed class RowMaterializer<TCommand, TParameter> : Materializer<TCommand, TParameter, Row> where TCommand : DbCommand
         where TParameter : DbParameter
     {
         readonly RowOptions m_RowOptions;
@@ -38,7 +38,7 @@ namespace Tortuga.Chain.Materializers
         /// Execute the operation synchronously.
         /// </summary>
         /// <returns></returns>
-        public override Row? Execute(object? state = null)
+        public override Row Execute(object? state = null)
         {
             var executionToken = Prepare();
 
@@ -54,16 +54,11 @@ namespace Tortuga.Chain.Materializers
 
             if (table!.Rows.Count == 0)
             {
-                if (m_RowOptions.HasFlag(RowOptions.AllowEmptyResults))
-                    return null;
-                else
-                {
-                    throw new MissingDataException("No rows were returned");
-                }
+                throw new MissingDataException($"No rows were returned. It was this expected, use `.ToRowOrNull` instead of `.ToRow`.");
             }
             else if (table.Rows.Count > 1 && !m_RowOptions.HasFlag(RowOptions.DiscardExtraRows))
             {
-                throw new UnexpectedDataException("Expected 1 row but received " + table.Rows.Count + " rows");
+                throw new UnexpectedDataException("Expected 1 row but received " + table.Rows.Count + " rows. If this was expected, use `RowOptions.DiscardExtraRows`.");
             }
             return table.Rows[0];
         }
@@ -74,7 +69,7 @@ namespace Tortuga.Chain.Materializers
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <param name="state">User defined state, usually used for logging.</param>
         /// <returns></returns>
-        public override async Task<Row?> ExecuteAsync(CancellationToken cancellationToken, object? state = null)
+        public override async Task<Row> ExecuteAsync(CancellationToken cancellationToken, object? state = null)
         {
             var executionToken = Prepare();
 
@@ -90,16 +85,11 @@ namespace Tortuga.Chain.Materializers
 
             if (table!.Rows.Count == 0)
             {
-                if (m_RowOptions.HasFlag(RowOptions.AllowEmptyResults))
-                    return null;
-                else
-                {
-                    throw new MissingDataException("No rows were returned");
-                }
+                throw new MissingDataException($"No rows were returned. It was this expected, use `.ToRowOrNull` instead of `.ToRow`.");
             }
             else if (table.Rows.Count > 1 && !m_RowOptions.HasFlag(RowOptions.DiscardExtraRows))
             {
-                throw new UnexpectedDataException("Expected 1 row but received " + table.Rows.Count + " rows");
+                throw new UnexpectedDataException("Expected 1 row but received " + table.Rows.Count + " rows. If this was expected, use `RowOptions.DiscardExtraRows`.");
             }
             return table.Rows[0];
         }

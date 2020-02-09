@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 
 namespace Tortuga.Chain
 {
@@ -9,7 +10,7 @@ namespace Tortuga.Chain
     public enum RowOptions
     {
         /// <summary>
-        /// An error will be raised unless exactly one row is returned
+        /// Use the default behavior for the materializer.
         /// </summary>
         /// <remarks></remarks>
         None = 0,
@@ -18,6 +19,8 @@ namespace Tortuga.Chain
         /// An error will not be raised if no rows are returned.
         /// </summary>
         /// <remarks></remarks>
+        [Obsolete("This option is no longer supported. Use the XxxOrNull version of the function instead.")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         AllowEmptyResults = 1,
 
         /// <summary>
@@ -30,5 +33,11 @@ namespace Tortuga.Chain
         /// Infer which constructor to use. When this option is chosen, individual properties will not be set.
         /// </summary>
         InferConstructor = 8,
+
+        /// <summary>
+        /// An error will be raised if no rows are returned
+        /// </summary>
+        /// <remarks></remarks>
+        PreventEmptyResults = 16,
     }
 }

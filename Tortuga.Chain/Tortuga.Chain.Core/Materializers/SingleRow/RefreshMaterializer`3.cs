@@ -54,7 +54,7 @@ namespace Tortuga.Chain.Materializers
             if (rowCount == 0 || row == null)
                 throw new DataException("No rows were returned");
             else if (rowCount > 1)
-                throw new DataException($"Expected 1 row but received {rowCount} rows");
+                throw new DataException($"Expected 1 row but received {rowCount} rows.");
 
             //update the ArgumentValue with any new keys, calculated fields, etc.
             MaterializerUtilities.PopulateComplexObject(row, m_CommandBuilder.ArgumentValue, null);
@@ -85,7 +85,7 @@ namespace Tortuga.Chain.Materializers
             if (rowCount == 0 || row == null)
                 throw new DataException("No rows were returned");
             else if (rowCount > 1)
-                throw new DataException($"Expected 1 row but received {rowCount} rows");
+                throw new DataException($"Expected 1 row but received {rowCount} rows.");
 
             //update the ArgumentValue with any new keys, calculated fields, etc.
             MaterializerUtilities.PopulateComplexObject(row, m_CommandBuilder.ArgumentValue, null);

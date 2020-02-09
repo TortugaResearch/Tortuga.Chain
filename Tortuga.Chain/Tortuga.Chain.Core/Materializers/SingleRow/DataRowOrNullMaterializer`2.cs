@@ -13,7 +13,7 @@ namespace Tortuga.Chain.Materializers
     /// </summary>
     /// <typeparam name="TCommand">The type of the t command type.</typeparam>
     /// <typeparam name="TParameter">The type of the t parameter type.</typeparam>
-    internal sealed class DataRowMaterializer<TCommand, TParameter> : Materializer<TCommand, TParameter, DataRow> where TCommand : DbCommand
+    internal sealed class DataRowOrNullMaterializer<TCommand, TParameter> : Materializer<TCommand, TParameter, DataRow?> where TCommand : DbCommand
         where TParameter : DbParameter
     {
         readonly RowOptions m_RowOptions;
@@ -21,7 +21,7 @@ namespace Tortuga.Chain.Materializers
         /// <summary>Initializes a new instance of the <see cref="Tortuga.Chain.Materializers.DataRowMaterializer{TCommand, TParameter}"/> class.</summary>
         /// <param name="commandBuilder">The command builder.</param>
         /// <param name="rowOptions">The row options.</param>
-        public DataRowMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, RowOptions rowOptions)
+        public DataRowOrNullMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, RowOptions rowOptions)
             : base(commandBuilder)
         {
             m_RowOptions = rowOptions;
@@ -35,7 +35,7 @@ namespace Tortuga.Chain.Materializers
         /// <returns></returns>
         [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         [SuppressMessage("Microsoft.Globalization", "CA1306:SetLocaleForDataTypes")]
-        public override DataRow Execute(object? state = null)
+        public override DataRow? Execute(object? state = null)
         {
             var executionToken = Prepare();
 
@@ -54,11 +54,14 @@ namespace Tortuga.Chain.Materializers
 
             if (table.Rows.Count == 0)
             {
-                throw new MissingDataException("No rows were returned");
+                if (!m_RowOptions.HasFlag(RowOptions.PreventEmptyResults))
+                    return null;
+                else
+                    throw new MissingDataException($"No rows were returned and {nameof(RowOptions)}.{nameof(RowOptions.PreventEmptyResults)} was enabled.");
             }
             else if (table.Rows.Count > 1 && !m_RowOptions.HasFlag(RowOptions.DiscardExtraRows))
             {
-                throw new MissingDataException($"No rows were returned. It was this expected, use `.ToDataRowOrNull` instead of `.ToDataRow`.");
+                throw new UnexpectedDataException("Expected 1 row but received " + table.Rows.Count + " rows. If this was expected, use `RowOptions.DiscardExtraRows`.");
             }
             return table.Rows[0];
         }
@@ -71,7 +74,7 @@ namespace Tortuga.Chain.Materializers
         /// <returns></returns>
         [SuppressMessage("Microsoft.Globalization", "CA1306:SetLocaleForDataTypes")]
         [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
-        public override async Task<DataRow> ExecuteAsync(CancellationToken cancellationToken, object? state = null)
+        public override async Task<DataRow?> ExecuteAsync(CancellationToken cancellationToken, object? state = null)
         {
             var executionToken = Prepare();
 
@@ -90,7 +93,10 @@ namespace Tortuga.Chain.Materializers
 
             if (table.Rows.Count == 0)
             {
-                throw new MissingDataException($"No rows were returned. It was this expected, use `.ToDataRowOrNull` instead of `.ToDataRow`.");
+                if (!m_RowOptions.HasFlag(RowOptions.PreventEmptyResults))
+                    return null;
+                else
+                    throw new MissingDataException($"No rows were returned and {nameof(RowOptions)}.{nameof(RowOptions.PreventEmptyResults)} was enabled.");
             }
             else if (table.Rows.Count > 1 && !m_RowOptions.HasFlag(RowOptions.DiscardExtraRows))
             {
