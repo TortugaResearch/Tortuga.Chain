@@ -163,10 +163,57 @@ namespace Tortuga.Chain.Access
         /// <param name="tableName">Name of the table.</param>
         /// <param name="key">The key.</param>
         /// <param name="options">The options.</param>
-        /// <returns>MultipleRowDbCommandBuilder&lt;AbstractCommand, AbstractParameter&gt;.</returns>
         public SingleRowDbCommandBuilder<AbstractCommand, AbstractParameter> DeleteByKey(AbstractObjectName tableName, string key, DeleteOptions options = DeleteOptions.None)
         {
             return DeleteByKeyList(tableName, new List<string> { key }, options);
+        }
+
+        /// <summary>
+        /// Delete a record by its primary key.
+        /// </summary>
+        /// <typeparam name="TObject">Used to determine the table name</typeparam>
+        /// <param name="key">The key.</param>
+        /// <param name="options">The options.</param>
+        public SingleRowDbCommandBuilder<AbstractCommand, AbstractParameter> DeleteByKey<TObject>(Guid key, DeleteOptions options = DeleteOptions.None)
+            where TObject : class
+        {
+            return DeleteByKey<Guid>(DatabaseObjectAsTableOrView<TObject>(OperationType.All).Name, key, options);
+        }
+
+        /// <summary>
+        /// Delete a record by its primary key.
+        /// </summary>
+        /// <typeparam name="TObject">Used to determine the table name</typeparam>
+        /// <param name="key">The key.</param>
+        /// <param name="options">The options.</param>
+        public SingleRowDbCommandBuilder<AbstractCommand, AbstractParameter> DeleteByKey<TObject>(long key, DeleteOptions options = DeleteOptions.None)
+            where TObject : class
+        {
+            return DeleteByKey<long>(DatabaseObjectAsTableOrView<TObject>(OperationType.All).Name, key, options);
+        }
+
+        /// <summary>
+        /// Delete a record by its primary key.
+        /// </summary>
+        /// <typeparam name="TObject">Used to determine the table name</typeparam>
+        /// <param name="key">The key.</param>
+        /// <param name="options">The options.</param>
+        public SingleRowDbCommandBuilder<AbstractCommand, AbstractParameter> DeleteByKey<TObject>(int key, DeleteOptions options = DeleteOptions.None)
+          where TObject : class
+        {
+            return DeleteByKey<int>(DatabaseObjectAsTableOrView<TObject>(OperationType.All).Name, key, options);
+        }
+
+        /// <summary>
+        /// Delete a record by its primary key.
+        /// </summary>
+        /// <typeparam name="TObject">Used to determine the table name</typeparam>
+        /// <param name="key">The key.</param>
+        /// <param name="options">The options.</param>
+        public SingleRowDbCommandBuilder<AbstractCommand, AbstractParameter> DeleteByKey<TObject>(string key, DeleteOptions options = DeleteOptions.None)
+            where TObject : class
+        {
+            return DeleteByKey(DatabaseObjectAsTableOrView<TObject>(OperationType.All).Name, key, options);
         }
 
         /// <summary>
@@ -181,6 +228,16 @@ namespace Tortuga.Chain.Access
                 return OnDeleteMany(tableName, whereClause, null);
 
             return OnUpdateMany(tableName, null, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected).WithFilter(whereClause, null);
+        }
+
+        /// <summary>
+        /// Delete multiple records using a where expression.
+        /// </summary>
+        /// <param name="whereClause">The where clause.</param>
+        public MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> DeleteWithFilter<TObject>(string whereClause)
+        {
+            var tableName = DatabaseObjectAsTableOrView<TObject>(OperationType.All).Name;
+            return DeleteWithFilter(tableName, whereClause);
         }
 
         /// <summary>
@@ -320,6 +377,17 @@ namespace Tortuga.Chain.Access
         }
 
         /// <summary>
+        /// Delete multiple records using a filter object.
+        /// </summary>
+        /// <param name="filterValue">The filter value.</param>
+        /// <param name="filterOptions">The options.</param>
+        public MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> DeleteWithFilter<TObject>(object filterValue, FilterOptions filterOptions = FilterOptions.None)
+        {
+            var tableName = DatabaseObjectAsTableOrView<TObject>(OperationType.All).Name;
+            return DeleteWithFilter(tableName, filterValue, filterOptions);
+        }
+
+        /// <summary>
         /// Delete multiple records using a where expression.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
@@ -332,6 +400,17 @@ namespace Tortuga.Chain.Access
                 return OnDeleteMany(tableName, whereClause, argumentValue);
 
             return OnUpdateMany(tableName, null, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected).WithFilter(whereClause, argumentValue);
+        }
+
+        /// <summary>
+        /// Delete multiple records using a where expression.
+        /// </summary>
+        /// <param name="whereClause">The where clause.</param>
+        /// <param name="argumentValue">The argument value for the where clause.</param>
+        public MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> DeleteWithFilter<TObject>(string whereClause, object argumentValue)
+        {
+            var tableName = DatabaseObjectAsTableOrView<TObject>(OperationType.All).Name;
+            return DeleteWithFilter(tableName, whereClause, argumentValue);
         }
 
         /// <summary>
@@ -588,7 +667,7 @@ namespace Tortuga.Chain.Access
 
         TableOrViewMetadata<AbstractObjectName, AbstractDbType> DatabaseObjectAsTableOrView<TObject>(OperationType operationType)
         {
-            var databaseObject = DatabaseMetadata.GetDatabaseObjectFromClass<TObject>(OperationType.Select);
+            var databaseObject = DatabaseMetadata.GetDatabaseObjectFromClass<TObject>(operationType);
 
             if (databaseObject is TableOrViewMetadata<AbstractObjectName, AbstractDbType> table)
                 return table;

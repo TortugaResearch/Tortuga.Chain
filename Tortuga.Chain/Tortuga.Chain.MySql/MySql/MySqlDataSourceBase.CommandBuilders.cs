@@ -27,7 +27,7 @@ namespace Tortuga.Chain.MySql
         {
             var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).PrimaryKeyColumns;
             if (primaryKeys.Count != 1)
-                throw new MappingException($"DeleteByKey operation isn't allowed on {tableName} because it doesn't have a single primary key.");
+                throw new MappingException($"{nameof(DeleteByKeyList)} operation isn't allowed on {tableName} because it doesn't have a single primary key.");
 
             var keyList = keys.AsList();
             var columnMetadata = primaryKeys.Single();
