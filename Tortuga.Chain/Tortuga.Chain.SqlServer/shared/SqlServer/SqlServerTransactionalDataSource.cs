@@ -1,10 +1,8 @@
 using System;
-using System.Collections.Concurrent;
 using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
 using Tortuga.Chain.Core;
-using Tortuga.Chain.DataSources;
 
 #if SQL_SERVER_SDS
 
@@ -21,13 +19,9 @@ namespace Tortuga.Chain.SqlServer
     /// <summary>
     /// Class SqlServerTransactionalDataSource.
     /// </summary>
-    public class SqlServerTransactionalDataSource : SqlServerDataSourceBase, IDisposable, ITransactionalDataSource
+    public partial class SqlServerTransactionalDataSource : SqlServerDataSourceBase
     {
-        readonly SqlServerDataSource m_BaseDataSource;
-        readonly SqlConnection m_Connection;
-        readonly SqlTransaction m_Transaction;
-        readonly string? m_TransactionName;
-        bool m_Disposed;
+        private readonly SqlServerDataSource m_BaseDataSource;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlServerTransactionalDataSource"/> class.
@@ -42,7 +36,7 @@ namespace Tortuga.Chain.SqlServer
 
             m_BaseDataSource = dataSource ?? throw new ArgumentNullException(nameof(dataSource), $"{nameof(dataSource)} is null.");
             m_Connection = dataSource.CreateConnection();
-            m_TransactionName = transactionName;
+            TransactionName = transactionName;
 
             if (isolationLevel == null)
                 m_Transaction = m_Connection.BeginTransaction(transactionName);
@@ -74,7 +68,7 @@ namespace Tortuga.Chain.SqlServer
 
             m_BaseDataSource = dataSource;
             m_Connection = connection;
-            m_TransactionName = transactionName;
+            TransactionName = transactionName;
             m_Transaction = transaction;
 
             if (forwardEvents)
@@ -89,14 +83,6 @@ namespace Tortuga.Chain.SqlServer
         }
 
         /// <summary>
-        /// Gets or sets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
-        /// </summary>
-        public override ICacheAdapter Cache
-        {
-            get { return m_BaseDataSource.Cache; }
-        }
-
-        /// <summary>
         /// This object can be used to lookup database information.
         /// </summary>
         public override SqlServerMetadataCache DatabaseMetadata
@@ -108,108 +94,7 @@ namespace Tortuga.Chain.SqlServer
         /// Gets the name of the transaction.
         /// </summary>
         /// <value>The name of the transaction.</value>
-        public string? TransactionName
-        {
-            get { return m_TransactionName; }
-        }
-
-        /// <summary>
-        /// The extension cache is used by extensions to store data source specific information.
-        /// </summary>
-        /// <value>
-        /// The extension cache.
-        /// </value>
-        protected override ConcurrentDictionary<Type, object> ExtensionCache
-        {
-            get { return m_BaseDataSource.m_ExtensionCache; }
-        }
-
-        /// <summary>
-        /// Commits the transaction and disposes the underlying connection.
-        /// </summary>
-        public void Commit()
-        {
-            if (m_Disposed)
-                throw new ObjectDisposedException("Transaction is disposed");
-
-            m_Transaction.Commit();
-            Dispose(true);
-        }
-
-        /// <summary>
-        /// Closes the current transaction and connection. If not committed, the transaction is rolled back.
-        /// </summary>
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>
-        /// Gets the extension data.
-        /// </summary>
-        /// <typeparam name="TTKey">The type of extension data desired.</typeparam>
-        /// <returns>T.</returns>
-        /// <remarks>Chain extensions can use this to store data source specific data. The key should be a data type defined by the extension.
-        /// Transactional data sources should override this method and return the value held by their parent data source.</remarks>
-        public override TTKey GetExtensionData<TTKey>()
-        {
-            return m_BaseDataSource.GetExtensionData<TTKey>();
-        }
-
-        /// <summary>
-        /// Rolls back the transaction and disposes the underlying connection.
-        /// </summary>
-        public void Rollback()
-        {
-            if (m_Disposed)
-                throw new ObjectDisposedException("Transaction is disposed");
-
-            m_Transaction.Rollback();
-            Dispose(true);
-        }
-
-        /// <summary>
-        /// Tests the connection.
-        /// </summary>
-        public override void TestConnection()
-        {
-            using (var cmd = new SqlCommand("SELECT 1", m_Connection))
-            {
-                cmd.Transaction = m_Transaction;
-                cmd.ExecuteScalar();
-            }
-        }
-
-        /// <summary>
-        /// Tests the connection asynchronously.
-        /// </summary>
-        /// <returns></returns>
-        public override async Task TestConnectionAsync()
-        {
-            using (var cmd = new SqlCommand("SELECT 1", m_Connection))
-            {
-                cmd.Transaction = m_Transaction;
-                await cmd.ExecuteScalarAsync().ConfigureAwait(false);
-            }
-        }
-
-        /// <summary>
-        /// Closes the current transaction and connection. If not committed, the transaction is rolled back.
-        /// </summary>
-        /// <param name="disposing"></param>
-        protected virtual void Dispose(bool disposing)
-        {
-            if (m_Disposed)
-                return;
-
-            if (disposing)
-            {
-                m_Transaction.Dispose();
-                m_Connection.Dispose();
-                m_Disposed = true;
-            }
-        }
+        public string? TransactionName { get; }
 
         /// <summary>
         /// Executes the specified operation.
