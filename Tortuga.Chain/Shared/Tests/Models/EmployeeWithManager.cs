@@ -2,6 +2,7 @@ using Tortuga.Anchor.Modeling;
 
 namespace Tests.Models
 {
+    [TableAndView(TestBase.EmployeeTableName, ViewName = TestBase.EmployeeViewName)]
     public class EmployeeWithManager
     {
         public int? EmployeeKey { get; set; }
@@ -10,6 +11,7 @@ namespace Tests.Models
         public string LastName { get; set; }
         public string Title { get; set; }
 
+        public int? ManagerKey { get; set; }
 
         [Decompose("Manager")]
         public Manager Manager { get; set; }
@@ -17,6 +19,7 @@ namespace Tests.Models
         [Decompose]
         public AuditInfo AuditInfo { get; set; }
 
+        public string EmployeeId { get; set; }
     }
 
     public class Manager
@@ -27,9 +30,7 @@ namespace Tests.Models
         public string LastName { get; set; }
         public string Title { get; set; }
 
-
         [Decompose]
         public AuditInfo AuditInfo { get; set; }
-
     }
 }

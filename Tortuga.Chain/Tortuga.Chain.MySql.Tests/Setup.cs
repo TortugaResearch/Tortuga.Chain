@@ -92,6 +92,7 @@ namespace Tests
                 		e.CellPhone ,
                 		e.CreatedDate ,
                 		e.UpdatedDate ,
+                		e.EmployeeId ,
                 		m.EmployeeKey AS ManagerEmployeeKey ,
                 		m.FirstName AS ManagerFirstName ,
                 		m.MiddleName AS ManagerMiddleName ,

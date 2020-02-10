@@ -13,6 +13,37 @@ namespace Tests.CommandBuilders
     [TestClass]
     public class FromTests : TestBase
     {
+        [DataTestMethod, BasicData(DataSourceGroup.Primary)]
+        public void WriteToTableReadFromView(string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+                //Get a random manager key
+                var manager = dataSource.From<Employee>().WithLimits(1).ToObject<Employee>().Execute();
+
+                var lookupKey = Guid.NewGuid().ToString();
+                for (var i = 0; i < 10; i++)
+                    dataSource.Insert(new EmployeeWithManager() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = lookupKey, MiddleName = i % 2 == 0 ? "A" + i : null, ManagerKey = manager.EmployeeKey, EmployeeId = Guid.NewGuid().ToString() })
+                        .AsNonQuery().SetStrictMode(false).Execute();
+
+                var values = dataSource.From<EmployeeWithManager>(new { Title = lookupKey }).ToCollection<EmployeeWithManager>().Execute();
+                Assert.AreEqual(10, values.Count);
+
+                foreach (var echo in values)
+                {
+                    Assert.AreEqual(manager.EmployeeKey, echo.ManagerKey);
+                    Assert.AreEqual(manager.EmployeeKey, echo.Manager.EmployeeKey);
+                    Assert.AreEqual(manager.FirstName, echo.Manager.FirstName);
+                    Assert.AreEqual(manager.LastName, echo.Manager.LastName);
+                }
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
         [DataTestMethod, TablesAndViewData(DataSourceGroup.All)]
         public void ToDynamicCollection(string dataSourceName, DataSourceType mode, string tableName)
         {

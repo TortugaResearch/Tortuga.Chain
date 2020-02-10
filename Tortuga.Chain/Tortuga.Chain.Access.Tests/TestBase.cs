@@ -13,32 +13,12 @@ namespace Tests
 {
     public abstract partial class TestBase
     {
+        public const string EmployeeTableName = "Employee";
+        public const string EmployeeViewName = "EmployeeWithManager";
         internal static readonly Dictionary<string, AccessDataSource> s_DataSources = new Dictionary<string, AccessDataSource>();
         internal static AccessDataSource s_PrimaryDataSource;
 
-        internal static void SetupTestBase()
-        {
-            if (s_PrimaryDataSource != null)
-                return; //run once check
-
-            Setup.CreateDatabase();
-
-            var configuration = new ConfigurationBuilder().SetBasePath(AppContext.BaseDirectory).AddJsonFile("appsettings.json").Build();
-
-            foreach (var con in configuration.GetSection("ConnectionStrings").GetChildren())
-            {
-                var ds = new AccessDataSource(con.Key, con.Value);
-                s_DataSources.Add(con.Key, ds);
-                if (s_PrimaryDataSource == null) s_PrimaryDataSource = ds;
-            }
-
-            BuildEmployeeSearchKey1000(s_PrimaryDataSource);
-        }
-
         public static string CustomerTableName { get { return "Customer"; } }
-
-        public static string EmployeeTableName { get { return "Employee"; } }
-        public static string EmployeeViewName { get { return "EmployeeLookup"; } }
 
         public AccessDataSource AttachRules(AccessDataSource source)
         {
@@ -103,7 +83,26 @@ namespace Tests
             throw new ArgumentException($"Unknown mode {mode}");
         }
 
-        private void WriteDetails(ExecutionEventArgs e)
+        internal static void SetupTestBase()
+        {
+            if (s_PrimaryDataSource != null)
+                return; //run once check
+
+            Setup.CreateDatabase();
+
+            var configuration = new ConfigurationBuilder().SetBasePath(AppContext.BaseDirectory).AddJsonFile("appsettings.json").Build();
+
+            foreach (var con in configuration.GetSection("ConnectionStrings").GetChildren())
+            {
+                var ds = new AccessDataSource(con.Key, con.Value);
+                s_DataSources.Add(con.Key, ds);
+                if (s_PrimaryDataSource == null) s_PrimaryDataSource = ds;
+            }
+
+            BuildEmployeeSearchKey1000(s_PrimaryDataSource);
+        }
+
+        void WriteDetails(ExecutionEventArgs e)
         {
             var token = e.ExecutionDetails as AccessCommandExecutionToken;
             if (token == null)

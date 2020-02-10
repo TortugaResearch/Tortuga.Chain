@@ -2,10 +2,13 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Tortuga.Chain.CommandBuilders;
+using Tortuga.Chain.Metadata;
+using System;
 
 #if SQL_SERVER_SDS
 
 using AbstractCommand = System.Data.SqlClient.SqlCommand;
+using AbstractDbType = System.Data.SqlDbType;
 using AbstractParameter = System.Data.SqlClient.SqlParameter;
 using AbstractObjectName = Tortuga.Chain.SqlServer.SqlServerObjectName;
 using AbstractLimitOption = Tortuga.Chain.SqlServerLimitOption;
@@ -13,6 +16,7 @@ using AbstractLimitOption = Tortuga.Chain.SqlServerLimitOption;
 #elif SQL_SERVER_MDS
 
 using AbstractCommand = Microsoft.Data.SqlClient.SqlCommand;
+using AbstractDbType = System.Data.SqlDbType;
 using AbstractParameter = Microsoft.Data.SqlClient.SqlParameter;
 using AbstractObjectName = Tortuga.Chain.SqlServer.SqlServerObjectName;
 using AbstractLimitOption = Tortuga.Chain.SqlServerLimitOption;
@@ -20,6 +24,7 @@ using AbstractLimitOption = Tortuga.Chain.SqlServerLimitOption;
 #elif SQL_SERVER_OLEDB
 
 using AbstractCommand = System.Data.OleDb.OleDbCommand;
+using AbstractDbType = System.Data.OleDb.OleDbType;
 using AbstractLimitOption = Tortuga.Chain.SqlServerLimitOption;
 using AbstractObjectName = Tortuga.Chain.SqlServer.SqlServerObjectName;
 using AbstractParameter = System.Data.OleDb.OleDbParameter;
@@ -27,6 +32,7 @@ using AbstractParameter = System.Data.OleDb.OleDbParameter;
 #elif SQLITE
 
 using AbstractCommand = System.Data.SQLite.SQLiteCommand;
+using AbstractDbType = System.Data.DbType;
 using AbstractParameter = System.Data.SQLite.SQLiteParameter;
 using AbstractObjectName = Tortuga.Chain.SQLite.SQLiteObjectName;
 using AbstractLimitOption = Tortuga.Chain.SQLiteLimitOption;
@@ -34,6 +40,7 @@ using AbstractLimitOption = Tortuga.Chain.SQLiteLimitOption;
 #elif MYSQL
 
 using AbstractCommand = MySql.Data.MySqlClient.MySqlCommand;
+using AbstractDbType = MySql.Data.MySqlClient.MySqlDbType;
 using AbstractParameter = MySql.Data.MySqlClient.MySqlParameter;
 using AbstractObjectName = Tortuga.Chain.MySql.MySqlObjectName;
 using AbstractLimitOption = Tortuga.Chain.MySqlLimitOption;
@@ -41,6 +48,7 @@ using AbstractLimitOption = Tortuga.Chain.MySqlLimitOption;
 #elif POSTGRESQL
 
 using AbstractCommand = Npgsql.NpgsqlCommand;
+using AbstractDbType = NpgsqlTypes.NpgsqlDbType;
 using AbstractParameter = Npgsql.NpgsqlParameter;
 using AbstractObjectName = Tortuga.Chain.PostgreSql.PostgreSqlObjectName;
 using AbstractLimitOption = Tortuga.Chain.PostgreSqlLimitOption;
@@ -48,9 +56,10 @@ using AbstractLimitOption = Tortuga.Chain.PostgreSqlLimitOption;
 #elif ACCESS
 
 using AbstractCommand = System.Data.OleDb.OleDbCommand;
+using AbstractDbType = System.Data.OleDb.OleDbType;
+using AbstractParameter = System.Data.OleDb.OleDbParameter;
 using AbstractLimitOption = Tortuga.Chain.AccessLimitOption;
 using AbstractObjectName = Tortuga.Chain.Access.AccessObjectName;
-using AbstractParameter = System.Data.OleDb.OleDbParameter;
 
 #endif
 
@@ -255,7 +264,7 @@ namespace Tortuga.Chain.Access
         [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         public TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption, TObject> From<TObject>() where TObject : class
         {
-            return OnFromTableOrView<TObject>(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, null, null);
+            return OnFromTableOrView<TObject>(DatabaseObjectAsTableOrView<TObject>(OperationType.Select).Name, null, null);
         }
 
         /// <summary>
@@ -267,7 +276,7 @@ namespace Tortuga.Chain.Access
         [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         public TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption, TObject> From<TObject>(string whereClause) where TObject : class
         {
-            return OnFromTableOrView<TObject>(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, whereClause, null);
+            return OnFromTableOrView<TObject>(DatabaseObjectAsTableOrView<TObject>(OperationType.Select).Name, whereClause, null);
         }
 
         /// <summary>
@@ -280,7 +289,7 @@ namespace Tortuga.Chain.Access
         [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         public TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption, TObject> From<TObject>(string whereClause, object argumentValue) where TObject : class
         {
-            return OnFromTableOrView<TObject>(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, whereClause, argumentValue);
+            return OnFromTableOrView<TObject>(DatabaseObjectAsTableOrView<TObject>(OperationType.Select).Name, whereClause, argumentValue);
         }
 
         /// <summary>
@@ -293,7 +302,7 @@ namespace Tortuga.Chain.Access
         [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         public TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption, TObject> From<TObject>(object filterValue, FilterOptions filterOptions = FilterOptions.None) where TObject : class
         {
-            return OnFromTableOrView<TObject>(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, filterValue, filterOptions);
+            return OnFromTableOrView<TObject>(DatabaseObjectAsTableOrView<TObject>(OperationType.Select).Name, filterValue, filterOptions);
         }
 
         /// <summary>
@@ -504,6 +513,22 @@ namespace Tortuga.Chain.Access
         }
 
 #endif
+
+        TableOrViewMetadata<AbstractObjectName, AbstractDbType> DatabaseObjectAsTableOrView<TObject>(OperationType operationType)
+        {
+            var databaseObject = DatabaseMetadata.GetDatabaseObjectFromClass<TObject>(OperationType.Select);
+
+            if (databaseObject is TableOrViewMetadata<AbstractObjectName, AbstractDbType> table)
+                return table;
+            else if (databaseObject is StoredProcedureMetadata<AbstractObjectName, AbstractDbType>)
+                throw new ArgumentException($"Table or view expected. Use `Procedure<TObject>(value, OperationType.{operationType})` instead.");
+            else if (databaseObject is TableFunctionMetadata<AbstractObjectName, AbstractDbType>)
+                throw new ArgumentException($"Table or view expected. Use `TableFunction<TObject>(value, OperationType.{operationType})` instead.");
+            else if (databaseObject is ScalarFunctionMetadata<AbstractObjectName, AbstractDbType>)
+                throw new ArgumentException($"Table or view expected. Use `ScalarFunction<TObject>(value, OperationType.{operationType})` instead.");
+            else
+                throw new NotSupportedException($"Unexpected type {databaseObject.GetType()}");
+        }
 
         TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption> OnFromTableOrView(AbstractObjectName tableOrViewName, object filterValue, FilterOptions filterOptions)
             => OnFromTableOrView<object>(tableOrViewName, filterValue, filterOptions);

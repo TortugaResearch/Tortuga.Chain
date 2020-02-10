@@ -21,7 +21,7 @@ namespace Tortuga.Chain.MySql
         private readonly ConcurrentDictionary<MySqlObjectName, ScalarFunctionMetadata<MySqlObjectName, MySqlDbType>> m_ScalarFunctions = new ConcurrentDictionary<MySqlObjectName, ScalarFunctionMetadata<MySqlObjectName, MySqlDbType>>();
         private readonly ConcurrentDictionary<MySqlObjectName, StoredProcedureMetadata<MySqlObjectName, MySqlDbType>> m_StoredProcedures = new ConcurrentDictionary<MySqlObjectName, StoredProcedureMetadata<MySqlObjectName, MySqlDbType>>();
         private readonly ConcurrentDictionary<MySqlObjectName, TableOrViewMetadata<MySqlObjectName, MySqlDbType>> m_Tables = new ConcurrentDictionary<MySqlObjectName, TableOrViewMetadata<MySqlObjectName, MySqlDbType>>();
-        private readonly ConcurrentDictionary<Type, TableOrViewMetadata<MySqlObjectName, MySqlDbType>> m_TypeTableMap = new ConcurrentDictionary<Type, TableOrViewMetadata<MySqlObjectName, MySqlDbType>>();
+        private readonly ConcurrentDictionary<(Type, OperationType), DatabaseObject> m_TypeTableMap = new ConcurrentDictionary<(Type, OperationType), DatabaseObject>();
         private string? m_DefaultSchema;
 
         /// <summary>
@@ -171,49 +171,6 @@ namespace Tortuga.Chain.MySql
         public override TableOrViewMetadata<MySqlObjectName, MySqlDbType> GetTableOrView(MySqlObjectName tableName)
         {
             return m_Tables.GetOrAdd(tableName, GetTableOrViewInternal);
-        }
-
-        /// <summary>
-        /// Returns the table or view derived from the class's name and/or Table attribute.
-        /// </summary>
-        /// <typeparam name="TObject"></typeparam>
-        /// <returns></returns>
-        public override TableOrViewMetadata<MySqlObjectName, MySqlDbType> GetTableOrViewFromClass<TObject>()
-        {
-            var type = typeof(TObject);
-            TableOrViewMetadata<MySqlObjectName, MySqlDbType> result;
-            if (m_TypeTableMap.TryGetValue(type, out result))
-                return result;
-
-            var typeInfo = MetadataCache.GetMetadata(type);
-            if (!typeInfo.MappedTableName.IsNullOrEmpty())
-            {
-                if (typeInfo.MappedSchemaName.IsNullOrEmpty())
-                    result = GetTableOrView(new MySqlObjectName(typeInfo.MappedTableName));
-                else
-                    result = GetTableOrView(new MySqlObjectName(typeInfo.MappedSchemaName, typeInfo.MappedTableName));
-                m_TypeTableMap[type] = result;
-                return result;
-            }
-
-            //infer schema from namespace
-            var schema = type.Namespace;
-            if (schema != null && schema.Contains("."))
-                schema = schema.Substring(schema.LastIndexOf(".", StringComparison.OrdinalIgnoreCase) + 1);
-            var name = type.Name;
-
-            try
-            {
-                result = GetTableOrView(new MySqlObjectName(schema, name));
-                m_TypeTableMap[type] = result;
-                return result;
-            }
-            catch (MissingObjectException) { }
-
-            //that didn't work, so try the default schema
-            result = GetTableOrView(new MySqlObjectName(null, name));
-            m_TypeTableMap[type] = result;
-            return result;
         }
 
         /// <summary>
@@ -414,11 +371,14 @@ namespace Tortuga.Chain.MySql
         /// <summary>
         /// Parse a string and return the database specific representation of the object name.
         /// </summary>
+        /// <param name="schema">The schema.</param>
         /// <param name="name">The name.</param>
         /// <returns>MySqlObjectName.</returns>
-        protected override MySqlObjectName ParseObjectName(string name)
+        protected override MySqlObjectName ParseObjectName(string? schema, string name)
         {
-            return new MySqlObjectName(name);
+            if (schema == null)
+                return new MySqlObjectName(name);
+            return new MySqlObjectName(schema, name);
         }
 
         /// <summary>

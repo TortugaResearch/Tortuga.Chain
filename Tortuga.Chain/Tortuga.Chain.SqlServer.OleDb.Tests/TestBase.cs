@@ -15,34 +15,17 @@ namespace Tests
 {
     public abstract partial class TestBase
     {
+        public const string EmployeeTableName = "HR.Employee";
+        public const string EmployeeViewName = "HR.EmployeeWithManager";
         internal static readonly Dictionary<string, OleDbSqlServerDataSource> s_DataSources = new Dictionary<string, OleDbSqlServerDataSource>();
         internal static OleDbSqlServerDataSource s_PrimaryDataSource;
 
-        internal static void SetupTestBase()
-        {
-            if (s_PrimaryDataSource != null)
-                return; //run once check
-
-            var configuration = new ConfigurationBuilder().SetBasePath(AppContext.BaseDirectory).AddJsonFile("appsettings.json").Build();
-
-            foreach (var con in configuration.GetSection("ConnectionStrings").GetChildren())
-            {
-                var ds = new OleDbSqlServerDataSource(con.Key, con.Value);
-                s_DataSources.Add(con.Key, ds);
-                if (s_PrimaryDataSource == null) s_PrimaryDataSource = ds;
-            }
-            BuildEmployeeSearchKey1000_NoTrans(s_PrimaryDataSource);
-            //BuildEmployeeSearchKey1000(s_PrimaryDataSource);
-        }
-
         public static string CustomerTableName { get { return "Sales.Customer"; } }
-
-        public static string EmployeeTableName { get { return "HR.Employee"; } }
 
         public static string EmployeeTableName_Trigger { get { return "HR.EmployeeWithTrigger"; } }
 
-        public static string EmployeeViewName { get { return "HR.EmployeeWithManager"; } }
         public string MultiResultSetProc1Name { get { return "Sales.CustomerWithOrdersByState"; } }
+
         public string ScalarFunction1Name { get { return "HR.EmployeeCount"; } }
 
         public string TableFunction1Name { get { return "Sales.CustomersByState"; } }
@@ -112,7 +95,24 @@ namespace Tests
             throw new ArgumentException($"Unknown mode {mode}");
         }
 
-        private void WriteDetails(ExecutionEventArgs e)
+        internal static void SetupTestBase()
+        {
+            if (s_PrimaryDataSource != null)
+                return; //run once check
+
+            var configuration = new ConfigurationBuilder().SetBasePath(AppContext.BaseDirectory).AddJsonFile("appsettings.json").Build();
+
+            foreach (var con in configuration.GetSection("ConnectionStrings").GetChildren())
+            {
+                var ds = new OleDbSqlServerDataSource(con.Key, con.Value);
+                s_DataSources.Add(con.Key, ds);
+                if (s_PrimaryDataSource == null) s_PrimaryDataSource = ds;
+            }
+            BuildEmployeeSearchKey1000_NoTrans(s_PrimaryDataSource);
+            //BuildEmployeeSearchKey1000(s_PrimaryDataSource);
+        }
+
+        void WriteDetails(ExecutionEventArgs e)
         {
             if (e.ExecutionDetails is CommandExecutionToken<OleDbCommand, OleDbParameter>)
             {

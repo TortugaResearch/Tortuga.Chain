@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
 using Tortuga.Anchor;
-using Tortuga.Anchor.Metadata;
 using Tortuga.Chain.Metadata;
 
 #if SQL_SERVER_SDS
@@ -135,49 +134,6 @@ namespace Tortuga.Chain.SqlServer
         public override IReadOnlyCollection<TableFunctionMetadata<SqlServerObjectName, AbstractDbType>> GetTableFunctions()
         {
             return m_TableFunctions.GetValues();
-        }
-
-        /// <summary>
-        /// Returns the table or view derived from the class's name and/or Table attribute.
-        /// </summary>
-        /// <typeparam name="TObject"></typeparam>
-        /// <returns></returns>
-        public override TableOrViewMetadata<SqlServerObjectName, AbstractDbType> GetTableOrViewFromClass<TObject>()
-        {
-            var type = typeof(TObject);
-            TableOrViewMetadata<SqlServerObjectName, AbstractDbType>? result;
-            if (m_TypeTableMap.TryGetValue(type, out result))
-                return result;
-
-            var typeInfo = MetadataCache.GetMetadata(type);
-            if (!typeInfo.MappedTableName.IsNullOrEmpty())
-            {
-                if (string.IsNullOrEmpty(typeInfo.MappedSchemaName))
-                    result = GetTableOrView(new SqlServerObjectName(typeInfo.MappedTableName));
-                else
-                    result = GetTableOrView(new SqlServerObjectName(typeInfo.MappedSchemaName, typeInfo.MappedTableName));
-                m_TypeTableMap[type] = result;
-                return result;
-            }
-
-            //infer schema from namespace
-            var schema = type.Namespace ?? "";
-            if (schema.Contains(".", StringComparison.Ordinal))
-                schema = schema.Substring(schema.LastIndexOf(".", StringComparison.OrdinalIgnoreCase) + 1);
-            var name = type.Name;
-
-            try
-            {
-                result = GetTableOrView(new SqlServerObjectName(schema, name));
-                m_TypeTableMap[type] = result;
-                return result;
-            }
-            catch (MissingObjectException) { }
-
-            //that didn't work, so try the default schema
-            result = GetTableOrView(new SqlServerObjectName(null, name));
-            m_TypeTableMap[type] = result;
-            return result;
         }
 
         /// <summary>
@@ -324,11 +280,14 @@ namespace Tortuga.Chain.SqlServer
         /// <summary>
         /// Parse a string and return the database specific representation of the object name.
         /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        protected override SqlServerObjectName ParseObjectName(string name)
+        /// <param name="schema">The schema.</param>
+        /// <param name="name">The name.</param>
+        /// <returns>SqlServerObjectName.</returns>
+        protected override SqlServerObjectName ParseObjectName(string? schema, string name)
         {
-            return new SqlServerObjectName(name);
+            if (schema == null)
+                return new SqlServerObjectName(name);
+            return new SqlServerObjectName(schema, name);
         }
 
         internal override TableOrViewMetadata<SqlServerObjectName, AbstractDbType> OnGetTableOrView(SqlServerObjectName tableName)

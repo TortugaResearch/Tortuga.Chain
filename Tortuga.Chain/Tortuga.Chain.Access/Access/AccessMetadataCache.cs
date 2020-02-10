@@ -89,32 +89,6 @@ namespace Tortuga.Chain.Access
         }
 
         /// <summary>
-        /// Returns the table or view derived from the class's name and/or Table attribute.
-        /// </summary>
-        /// <typeparam name="TObject">The type of the object.</typeparam>
-        /// <returns>TableOrViewMetadata&lt;AccessObjectName, OleDbType&gt;.</returns>
-        public override TableOrViewMetadata<AccessObjectName, OleDbType> GetTableOrViewFromClass<TObject>()
-        {
-            var type = typeof(TObject);
-            TableOrViewMetadata<AccessObjectName, OleDbType> result;
-            if (m_TypeTableMap.TryGetValue(type, out result))
-                return result;
-
-            var typeInfo = MetadataCache.GetMetadata(type);
-            if (!typeInfo.MappedTableName.IsNullOrEmpty())
-            {
-                result = GetTableOrView(typeInfo.MappedTableName);
-                m_TypeTableMap[type] = result;
-                return result;
-            }
-
-            //infer table from class name
-            result = GetTableOrView(type.Name);
-            m_TypeTableMap[type] = result;
-            return result;
-        }
-
-        /// <summary>
         /// Gets the tables and views that were loaded by this cache.
         /// </summary>
         /// <returns></returns>
@@ -161,11 +135,12 @@ namespace Tortuga.Chain.Access
         }
 
         /// <summary>
-        /// Parses the name of the database object.
+        /// Parse a string and return the database specific representation of the object name.
         /// </summary>
+        /// <param name="schema">The schema.</param>
         /// <param name="name">The name.</param>
-        /// <returns>System.String.</returns>
-        protected override AccessObjectName ParseObjectName(string name) => name;
+        /// <returns>AccessObjectName.</returns>
+        protected override AccessObjectName ParseObjectName(string? schema, string name) => name;
 
         /// <summary>
         /// Determines the database column type from the column type name.
