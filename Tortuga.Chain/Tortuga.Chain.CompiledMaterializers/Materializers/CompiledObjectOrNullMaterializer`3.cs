@@ -10,14 +10,14 @@ using Tortuga.Chain.CommandBuilders;
 
 namespace Tortuga.Chain.Materializers
 {
-    internal sealed class CompiledObjectMaterializer<TCommand, TParameter, TObject> : Materializer<TCommand, TParameter, TObject?>
-        where TCommand : DbCommand
-        where TObject : class, new()
-        where TParameter : DbParameter
+    internal sealed class CompiledObjectOrNullMaterializer<TCommand, TParameter, TObject> : Materializer<TCommand, TParameter, TObject?>
+    where TCommand : DbCommand
+    where TObject : class, new()
+    where TParameter : DbParameter
     {
         private RowOptions m_RowOptions;
 
-        public CompiledObjectMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, RowOptions rowOptions) : base(commandBuilder)
+        public CompiledObjectOrNullMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, RowOptions rowOptions) : base(commandBuilder)
         {
             m_RowOptions = rowOptions;
 
@@ -52,12 +52,13 @@ namespace Tortuga.Chain.Materializers
                 if (m_RowOptions.HasFlag(RowOptions.AllowEmptyResults))
                     return null;
                 else
-                    throw new DataException("No rows were returned");
+                    throw new MissingDataException($"No rows were returned and {nameof(RowOptions)}.{nameof(RowOptions.AllowEmptyResults)} was not specified.");
             }
             else if (result.Count > 1 && !m_RowOptions.HasFlag(RowOptions.DiscardExtraRows))
             {
-                throw new DataException("Expected 1 row but received " + result.Count + " rows");
+                throw new UnexpectedDataException($"Expected 1 row but received {result.Count} rows. Use {nameof(RowOptions)}.{nameof(RowOptions.DiscardExtraRows)} to suppress this error.");
             }
+
             return result.First();
         }
 
@@ -82,12 +83,13 @@ namespace Tortuga.Chain.Materializers
                 if (m_RowOptions.HasFlag(RowOptions.AllowEmptyResults))
                     return null;
                 else
-                    throw new DataException("No rows were returned");
+                    throw new MissingDataException($"No rows were returned and {nameof(RowOptions)}.{nameof(RowOptions.AllowEmptyResults)} was not specified.");
             }
             else if (result.Count > 1 && !m_RowOptions.HasFlag(RowOptions.DiscardExtraRows))
             {
-                throw new DataException("Expected 1 row but received " + result.Count + " rows");
+                throw new UnexpectedDataException($"Expected 1 row but received {result.Count} rows. Use {nameof(RowOptions)}.{nameof(RowOptions.DiscardExtraRows)} to suppress this error.");
             }
+
             return result.First();
         }
     }
