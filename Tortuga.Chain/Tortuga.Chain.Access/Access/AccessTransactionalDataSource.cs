@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Data;
 using System.Data.OleDb;
 using System.Diagnostics.CodeAnalysis;
@@ -15,10 +14,6 @@ namespace Tortuga.Chain.Access
     public partial class AccessTransactionalDataSource : AccessDataSourceBase
     {
         private readonly AccessDataSource m_BaseDataSource;
-        private readonly OleDbConnection m_Connection;
-        private readonly OleDbTransaction m_Transaction;
-
-        private bool m_Disposed;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AccessTransactionalDataSource"/> class.
@@ -94,28 +89,6 @@ namespace Tortuga.Chain.Access
         /// </summary>
         /// <value>The database metadata.</value>
         public override AccessMetadataCache DatabaseMetadata => m_BaseDataSource.DatabaseMetadata;
-
-        /// <summary>
-        /// Tests the connection.
-        /// </summary>
-        public override void TestConnection()
-        {
-            using (var cmd = new OleDbCommand("SELECT 1", m_Connection))
-            {
-                cmd.Transaction = m_Transaction;
-                cmd.ExecuteScalar();
-            }
-        }
-
-        /// <summary>
-        /// Tests the connection asynchronously.
-        /// </summary>
-        /// <returns></returns>
-        public override async Task TestConnectionAsync()
-        {
-            using (var cmd = new OleDbCommand("SELECT 1", m_Connection) { Transaction = m_Transaction })
-                await cmd.ExecuteScalarAsync().ConfigureAwait(false);
-        }
 
         /// <summary>
         /// Executes the specified execution token.

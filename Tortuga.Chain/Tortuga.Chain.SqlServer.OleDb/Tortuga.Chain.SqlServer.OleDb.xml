@@ -2069,17 +2069,6 @@
             </summary>
             <value>The name of the transaction.</value>
         </member>
-        <member name="M:Tortuga.Chain.SqlServer.OleDbSqlServerTransactionalDataSource.TestConnection">
-            <summary>
-            Tests the connection.
-            </summary>
-        </member>
-        <member name="M:Tortuga.Chain.SqlServer.OleDbSqlServerTransactionalDataSource.TestConnectionAsync">
-            <summary>
-            Tests the connection asynchronously.
-            </summary>
-            <returns></returns>
-        </member>
         <member name="M:Tortuga.Chain.SqlServer.OleDbSqlServerTransactionalDataSource.Execute(Tortuga.Chain.Core.CommandExecutionToken{System.Data.OleDb.OleDbCommand,System.Data.OleDb.OleDbParameter},Tortuga.Chain.Core.CommandImplementation{System.Data.OleDb.OleDbCommand},System.Object)">
             <summary>
             Executes the specified operation.
@@ -2115,6 +2104,18 @@
             <param name="cancellationToken">The cancellation token.</param>
             <param name="state">The state.</param>
             <returns>Task.</returns>
+        </member>
+        <member name="P:Tortuga.Chain.SqlServer.OleDbSqlServerTransactionalDataSource.AssociatedConnection">
+            <summary>
+            Returns the associated connection.
+            </summary>
+            <value>The associated connection.</value>
+        </member>
+        <member name="P:Tortuga.Chain.SqlServer.OleDbSqlServerTransactionalDataSource.AssociatedTransaction">
+            <summary>
+            Returns the associated transaction.
+            </summary>
+            <value>The associated transaction.</value>
         </member>
         <member name="P:Tortuga.Chain.SqlServer.OleDbSqlServerTransactionalDataSource.ExtensionCache">
             <summary>
@@ -2158,6 +2159,17 @@
             Closes the current transaction and connection. If not committed, the transaction is rolled back.
             </summary>
             <param name="disposing"></param>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.OleDbSqlServerTransactionalDataSource.TestConnection">
+            <summary>
+            Tests the connection.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.OleDbSqlServerTransactionalDataSource.TestConnectionAsync">
+            <summary>
+            Tests the connection asynchronously.
+            </summary>
+            <returns></returns>
         </member>
         <member name="M:Tortuga.Chain.SqlServer.Utilities.GetParameters(Tortuga.Chain.CommandBuilders.SqlBuilder{System.Data.OleDb.OleDbType})">
             <summary>

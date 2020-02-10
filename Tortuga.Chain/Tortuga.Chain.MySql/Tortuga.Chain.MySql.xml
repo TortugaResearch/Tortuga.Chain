@@ -2214,17 +2214,6 @@
             Gets the database metadata.
             </summary>
         </member>
-        <member name="M:Tortuga.Chain.MySql.MySqlTransactionalDataSource.TestConnection">
-            <summary>
-            Tests the connection.
-            </summary>
-        </member>
-        <member name="M:Tortuga.Chain.MySql.MySqlTransactionalDataSource.TestConnectionAsync">
-            <summary>
-            Tests the connection asynchronously.
-            </summary>
-            <returns></returns>
-        </member>
         <member name="M:Tortuga.Chain.MySql.MySqlTransactionalDataSource.Execute(Tortuga.Chain.Core.CommandExecutionToken{MySql.Data.MySqlClient.MySqlCommand,MySql.Data.MySqlClient.MySqlParameter},Tortuga.Chain.Core.CommandImplementation{MySql.Data.MySqlClient.MySqlCommand},System.Object)">
             <summary>
             Executes the specified operation.
@@ -2287,6 +2276,18 @@
             implementation;implementation is null.
             </exception>
         </member>
+        <member name="P:Tortuga.Chain.MySql.MySqlTransactionalDataSource.AssociatedConnection">
+            <summary>
+            Returns the associated connection.
+            </summary>
+            <value>The associated connection.</value>
+        </member>
+        <member name="P:Tortuga.Chain.MySql.MySqlTransactionalDataSource.AssociatedTransaction">
+            <summary>
+            Returns the associated transaction.
+            </summary>
+            <value>The associated transaction.</value>
+        </member>
         <member name="P:Tortuga.Chain.MySql.MySqlTransactionalDataSource.ExtensionCache">
             <summary>
             The extension cache is used by extensions to store data source specific information.
@@ -2329,6 +2330,17 @@
             Closes the current transaction and connection. If not committed, the transaction is rolled back.
             </summary>
             <param name="disposing"></param>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlTransactionalDataSource.TestConnection">
+            <summary>
+            Tests the connection.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.MySql.MySqlTransactionalDataSource.TestConnectionAsync">
+            <summary>
+            Tests the connection asynchronously.
+            </summary>
+            <returns></returns>
         </member>
         <member name="M:Tortuga.Chain.MySql.Utilities.GetParameters(Tortuga.Chain.CommandBuilders.SqlBuilder{MySql.Data.MySqlClient.MySqlDbType})">
             <summary>

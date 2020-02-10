@@ -16,9 +16,6 @@ namespace Tortuga.Chain.PostgreSql
     public partial class PostgreSqlTransactionalDataSource : PostgreSqlDataSourceBase
     {
         private readonly PostgreSqlDataSource m_BaseDataSource;
-        private readonly NpgsqlConnection m_Connection;
-        private readonly NpgsqlTransaction m_Transaction;
-        private bool m_Disposed;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PostgreSqlTransactionalDataSource"/> class.
@@ -83,25 +80,6 @@ namespace Tortuga.Chain.PostgreSql
         public override PostgreSqlMetadataCache DatabaseMetadata
         {
             get { return m_BaseDataSource.DatabaseMetadata; }
-        }
-
-        /// <summary>
-        /// Tests the connection.
-        /// </summary>
-        public override void TestConnection()
-        {
-            using (var cmd = new NpgsqlCommand("SELECT 1", m_Connection))
-                cmd.ExecuteScalar();
-        }
-
-        /// <summary>
-        /// Tests the connection asynchronously.
-        /// </summary>
-        /// <returns></returns>
-        public override async Task TestConnectionAsync()
-        {
-            using (var cmd = new NpgsqlCommand("SELECT 1", m_Connection))
-                await cmd.ExecuteScalarAsync().ConfigureAwait(false);
         }
 
         /// <summary>

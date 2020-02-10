@@ -2848,17 +2848,6 @@
             </summary>
             <value>The name of the transaction.</value>
         </member>
-        <member name="M:Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource.TestConnection">
-            <summary>
-            Tests the connection.
-            </summary>
-        </member>
-        <member name="M:Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource.TestConnectionAsync">
-            <summary>
-            Tests the connection asynchronously.
-            </summary>
-            <returns></returns>
-        </member>
         <member name="M:Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource.Execute(Tortuga.Chain.Core.CommandExecutionToken{Microsoft.Data.SqlClient.SqlCommand,Microsoft.Data.SqlClient.SqlParameter},Tortuga.Chain.Core.CommandImplementation{Microsoft.Data.SqlClient.SqlCommand},System.Object)">
             <summary>
             Executes the specified operation.
@@ -2894,6 +2883,18 @@
             <param name="cancellationToken">The cancellation token.</param>
             <param name="state">The state.</param>
             <returns>Task.</returns>
+        </member>
+        <member name="P:Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource.AssociatedConnection">
+            <summary>
+            Returns the associated connection.
+            </summary>
+            <value>The associated connection.</value>
+        </member>
+        <member name="P:Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource.AssociatedTransaction">
+            <summary>
+            Returns the associated transaction.
+            </summary>
+            <value>The associated transaction.</value>
         </member>
         <member name="P:Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource.ExtensionCache">
             <summary>
@@ -2937,6 +2938,17 @@
             Closes the current transaction and connection. If not committed, the transaction is rolled back.
             </summary>
             <param name="disposing"></param>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource.TestConnection">
+            <summary>
+            Tests the connection.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource.TestConnectionAsync">
+            <summary>
+            Tests the connection asynchronously.
+            </summary>
+            <returns></returns>
         </member>
         <member name="M:Tortuga.Chain.SqlServer.Utilities.GetParameters(Tortuga.Chain.CommandBuilders.SqlBuilder{System.Data.SqlDbType})">
             <summary>

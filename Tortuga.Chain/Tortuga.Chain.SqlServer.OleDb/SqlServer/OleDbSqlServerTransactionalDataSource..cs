@@ -13,10 +13,6 @@ namespace Tortuga.Chain.SqlServer
     public partial class OleDbSqlServerTransactionalDataSource : OleDbSqlServerDataSourceBase, IDisposable
     {
         private readonly OleDbSqlServerDataSource m_BaseDataSource;
-        private readonly OleDbConnection m_Connection;
-        private readonly OleDbTransaction m_Transaction;
-        private readonly string? m_TransactionName;
-        private bool m_Disposed;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="OleDbSqlServerTransactionalDataSource"/> class.
@@ -31,7 +27,7 @@ namespace Tortuga.Chain.SqlServer
 
             m_BaseDataSource = dataSource;
             m_Connection = dataSource.CreateConnection();
-            m_TransactionName = transactionName;
+            TransactionName = transactionName;
 
             if (isolationLevel == null)
                 m_Transaction = m_Connection.BeginTransaction();
@@ -63,7 +59,7 @@ namespace Tortuga.Chain.SqlServer
 
             m_BaseDataSource = dataSource;
             m_Connection = connection;
-            m_TransactionName = transactionName;
+            TransactionName = transactionName;
             m_Transaction = transaction;
 
             if (forwardEvents)
@@ -89,35 +85,7 @@ namespace Tortuga.Chain.SqlServer
         /// Gets the name of the transaction.
         /// </summary>
         /// <value>The name of the transaction.</value>
-        public string? TransactionName
-        {
-            get { return m_TransactionName; }
-        }
-
-        /// <summary>
-        /// Tests the connection.
-        /// </summary>
-        public override void TestConnection()
-        {
-            using (var cmd = new OleDbCommand("SELECT 1", m_Connection))
-            {
-                cmd.Transaction = m_Transaction;
-                cmd.ExecuteScalar();
-            }
-        }
-
-        /// <summary>
-        /// Tests the connection asynchronously.
-        /// </summary>
-        /// <returns></returns>
-        public override async Task TestConnectionAsync()
-        {
-            using (var cmd = new OleDbCommand("SELECT 1", m_Connection))
-            {
-                cmd.Transaction = m_Transaction;
-                await cmd.ExecuteScalarAsync().ConfigureAwait(false);
-            }
-        }
+        public string? TransactionName { get; }
 
         /// <summary>
         /// Executes the specified operation.

@@ -16,9 +16,6 @@ namespace Tortuga.Chain.MySql
     public partial class MySqlTransactionalDataSource : MySqlDataSourceBase
     {
         private readonly MySqlDataSource m_BaseDataSource;
-        private readonly MySqlConnection m_Connection;
-        private readonly MySqlTransaction m_Transaction;
-        private bool m_Disposed;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MySqlTransactionalDataSource"/> class.
@@ -83,25 +80,6 @@ namespace Tortuga.Chain.MySql
         public override MySqlMetadataCache DatabaseMetadata
         {
             get { return m_BaseDataSource.DatabaseMetadata; }
-        }
-
-        /// <summary>
-        /// Tests the connection.
-        /// </summary>
-        public override void TestConnection()
-        {
-            using (var cmd = new MySqlCommand("SELECT 1", m_Connection, m_Transaction))
-                cmd.ExecuteScalar();
-        }
-
-        /// <summary>
-        /// Tests the connection asynchronously.
-        /// </summary>
-        /// <returns></returns>
-        public override async Task TestConnectionAsync()
-        {
-            using (var cmd = new MySqlCommand("SELECT 1", m_Connection, m_Transaction))
-                await cmd.ExecuteScalarAsync().ConfigureAwait(false);
         }
 
         /// <summary>

@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Concurrent;
 using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,10 +22,6 @@ namespace Tortuga.Chain.SqlServer
     public partial class SqlServerTransactionalDataSource : SqlServerDataSourceBase
     {
         private readonly SqlServerDataSource m_BaseDataSource;
-        private readonly SqlConnection m_Connection;
-        private readonly SqlTransaction m_Transaction;
-        private readonly string? m_TransactionName;
-        private bool m_Disposed;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlServerTransactionalDataSource"/> class.
@@ -41,7 +36,7 @@ namespace Tortuga.Chain.SqlServer
 
             m_BaseDataSource = dataSource ?? throw new ArgumentNullException(nameof(dataSource), $"{nameof(dataSource)} is null.");
             m_Connection = dataSource.CreateConnection();
-            m_TransactionName = transactionName;
+            TransactionName = transactionName;
 
             if (isolationLevel == null)
                 m_Transaction = m_Connection.BeginTransaction(transactionName);
@@ -73,7 +68,7 @@ namespace Tortuga.Chain.SqlServer
 
             m_BaseDataSource = dataSource;
             m_Connection = connection;
-            m_TransactionName = transactionName;
+            TransactionName = transactionName;
             m_Transaction = transaction;
 
             if (forwardEvents)
@@ -99,35 +94,7 @@ namespace Tortuga.Chain.SqlServer
         /// Gets the name of the transaction.
         /// </summary>
         /// <value>The name of the transaction.</value>
-        public string? TransactionName
-        {
-            get { return m_TransactionName; }
-        }
-
-        /// <summary>
-        /// Tests the connection.
-        /// </summary>
-        public override void TestConnection()
-        {
-            using (var cmd = new SqlCommand("SELECT 1", m_Connection))
-            {
-                cmd.Transaction = m_Transaction;
-                cmd.ExecuteScalar();
-            }
-        }
-
-        /// <summary>
-        /// Tests the connection asynchronously.
-        /// </summary>
-        /// <returns></returns>
-        public override async Task TestConnectionAsync()
-        {
-            using (var cmd = new SqlCommand("SELECT 1", m_Connection))
-            {
-                cmd.Transaction = m_Transaction;
-                await cmd.ExecuteScalarAsync().ConfigureAwait(false);
-            }
-        }
+        public string? TransactionName { get; }
 
         /// <summary>
         /// Executes the specified operation.

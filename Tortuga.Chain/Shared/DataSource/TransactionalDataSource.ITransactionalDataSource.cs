@@ -4,6 +4,51 @@ using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.DataSources;
+using System.Threading.Tasks;
+
+#if SQL_SERVER_SDS
+
+using AbstractConnection = System.Data.SqlClient.SqlConnection;
+using AbstractTransaction = System.Data.SqlClient.SqlTransaction;
+using AbstractCommand = System.Data.SqlClient.SqlCommand;
+using AbstractParameter = System.Data.SqlClient.SqlParameter;
+
+#elif SQL_SERVER_MDS
+
+using AbstractConnection = Microsoft.Data.SqlClient.SqlConnection;
+using AbstractTransaction = Microsoft.Data.SqlClient.SqlTransaction;
+using AbstractCommand = Microsoft.Data.SqlClient.SqlCommand;
+using AbstractParameter = Microsoft.Data.SqlClient.SqlParameter;
+
+#elif SQLITE
+
+using AbstractConnection = System.Data.SQLite.SQLiteConnection;
+using AbstractTransaction = System.Data.SQLite.SQLiteTransaction;
+using AbstractCommand = System.Data.SQLite.SQLiteCommand;
+using AbstractParameter = System.Data.SQLite.SQLiteParameter;
+
+#elif MYSQL
+
+using AbstractConnection =  MySql.Data.MySqlClient.MySqlConnection;
+using AbstractTransaction = MySql.Data.MySqlClient.MySqlTransaction;
+using AbstractCommand = MySql.Data.MySqlClient.MySqlCommand;
+using AbstractParameter = MySql.Data.MySqlClient.MySqlParameter;
+
+#elif POSTGRESQL
+
+using AbstractConnection =  Npgsql.NpgsqlConnection;
+using AbstractTransaction = Npgsql.NpgsqlTransaction;
+using AbstractCommand = Npgsql.NpgsqlCommand;
+using AbstractParameter = Npgsql.NpgsqlParameter;
+
+#elif ACCESS || SQL_SERVER_OLEDB
+
+using AbstractConnection = System.Data.OleDb.OleDbConnection;
+using AbstractTransaction = System.Data.OleDb.OleDbTransaction;
+using AbstractCommand = System.Data.OleDb.OleDbCommand;
+using AbstractParameter = System.Data.OleDb.OleDbParameter;
+
+#endif
 
 #if SQL_SERVER_SDS || SQL_SERVER_MDS
 
@@ -42,11 +87,21 @@ namespace Tortuga.Chain.Access
 
 #endif
     {
-        [SuppressMessage("Design", "CA1033")]
-        DbConnection IOpenDataSource.AssociatedConnection => m_Connection;
+        private readonly AbstractConnection m_Connection;
+        private readonly AbstractTransaction m_Transaction;
+        private bool m_Disposed;
 
-        [SuppressMessage("Design", "CA1033")]
-        DbTransaction? IOpenDataSource.AssociatedTransaction => m_Transaction;
+        /// <summary>
+        /// Returns the associated connection.
+        /// </summary>
+        /// <value>The associated connection.</value>
+        public DbConnection AssociatedConnection => m_Connection;
+
+        /// <summary>
+        /// Returns the associated transaction.
+        /// </summary>
+        /// <value>The associated transaction.</value>
+        public DbTransaction? AssociatedTransaction => m_Transaction;
 
         [SuppressMessage("Design", "CA1033")]
         void IOpenDataSource.Close()
@@ -144,5 +199,24 @@ namespace Tortuga.Chain.Access
         }
 
         partial void AdditionalDispose();
+
+        /// <summary>
+        /// Tests the connection.
+        /// </summary>
+        public override void TestConnection()
+        {
+            using (var cmd = new AbstractCommand("SELECT 1", m_Connection) { Transaction = m_Transaction })
+                cmd.ExecuteScalar();
+        }
+
+        /// <summary>
+        /// Tests the connection asynchronously.
+        /// </summary>
+        /// <returns></returns>
+        public override async Task TestConnectionAsync()
+        {
+            using (var cmd = new AbstractCommand("SELECT 1", m_Connection) { Transaction = m_Transaction })
+                await cmd.ExecuteScalarAsync().ConfigureAwait(false);
+        }
     }
 }

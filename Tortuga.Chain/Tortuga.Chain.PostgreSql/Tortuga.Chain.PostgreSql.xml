@@ -2421,17 +2421,6 @@
             Gets the database metadata.
             </summary>
         </member>
-        <member name="M:Tortuga.Chain.PostgreSql.PostgreSqlTransactionalDataSource.TestConnection">
-            <summary>
-            Tests the connection.
-            </summary>
-        </member>
-        <member name="M:Tortuga.Chain.PostgreSql.PostgreSqlTransactionalDataSource.TestConnectionAsync">
-            <summary>
-            Tests the connection asynchronously.
-            </summary>
-            <returns></returns>
-        </member>
         <member name="M:Tortuga.Chain.PostgreSql.PostgreSqlTransactionalDataSource.Execute(Tortuga.Chain.Core.CommandExecutionToken{Npgsql.NpgsqlCommand,Npgsql.NpgsqlParameter},Tortuga.Chain.Core.CommandImplementation{Npgsql.NpgsqlCommand},System.Object)">
             <summary>
             Executes the specified operation.
@@ -2494,6 +2483,18 @@
             implementation;implementation is null.
             </exception>
         </member>
+        <member name="P:Tortuga.Chain.PostgreSql.PostgreSqlTransactionalDataSource.AssociatedConnection">
+            <summary>
+            Returns the associated connection.
+            </summary>
+            <value>The associated connection.</value>
+        </member>
+        <member name="P:Tortuga.Chain.PostgreSql.PostgreSqlTransactionalDataSource.AssociatedTransaction">
+            <summary>
+            Returns the associated transaction.
+            </summary>
+            <value>The associated transaction.</value>
+        </member>
         <member name="P:Tortuga.Chain.PostgreSql.PostgreSqlTransactionalDataSource.ExtensionCache">
             <summary>
             The extension cache is used by extensions to store data source specific information.
@@ -2536,6 +2537,17 @@
             Closes the current transaction and connection. If not committed, the transaction is rolled back.
             </summary>
             <param name="disposing"></param>
+        </member>
+        <member name="M:Tortuga.Chain.PostgreSql.PostgreSqlTransactionalDataSource.TestConnection">
+            <summary>
+            Tests the connection.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.PostgreSql.PostgreSqlTransactionalDataSource.TestConnectionAsync">
+            <summary>
+            Tests the connection asynchronously.
+            </summary>
+            <returns></returns>
         </member>
         <member name="M:Tortuga.Chain.PostgreSql.Utilities.GetParameters(Tortuga.Chain.CommandBuilders.SqlBuilder{NpgsqlTypes.NpgsqlDbType})">
             <summary>

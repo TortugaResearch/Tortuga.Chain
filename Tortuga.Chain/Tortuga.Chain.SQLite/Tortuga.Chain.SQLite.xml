@@ -1889,17 +1889,6 @@
             </summary>
             <value>The database metadata.</value>
         </member>
-        <member name="M:Tortuga.Chain.SQLite.SQLiteTransactionalDataSource.TestConnection">
-            <summary>
-            Tests the connection.
-            </summary>
-        </member>
-        <member name="M:Tortuga.Chain.SQLite.SQLiteTransactionalDataSource.TestConnectionAsync">
-            <summary>
-            Tests the connection asynchronously.
-            </summary>
-            <returns></returns>
-        </member>
         <member name="M:Tortuga.Chain.SQLite.SQLiteTransactionalDataSource.Execute(Tortuga.Chain.Core.CommandExecutionToken{System.Data.SQLite.SQLiteCommand,System.Data.SQLite.SQLiteParameter},Tortuga.Chain.Core.CommandImplementation{System.Data.SQLite.SQLiteCommand},System.Object)">
             <summary>
             Executes the specified execution token.
@@ -1947,6 +1936,18 @@
             <param name="state">The state.</param>
             <returns>Task.</returns>
         </member>
+        <member name="P:Tortuga.Chain.SQLite.SQLiteTransactionalDataSource.AssociatedConnection">
+            <summary>
+            Returns the associated connection.
+            </summary>
+            <value>The associated connection.</value>
+        </member>
+        <member name="P:Tortuga.Chain.SQLite.SQLiteTransactionalDataSource.AssociatedTransaction">
+            <summary>
+            Returns the associated transaction.
+            </summary>
+            <value>The associated transaction.</value>
+        </member>
         <member name="P:Tortuga.Chain.SQLite.SQLiteTransactionalDataSource.ExtensionCache">
             <summary>
             The extension cache is used by extensions to store data source specific information.
@@ -1989,6 +1990,17 @@
             Closes the current transaction and connection. If not committed, the transaction is rolled back.
             </summary>
             <param name="disposing"></param>
+        </member>
+        <member name="M:Tortuga.Chain.SQLite.SQLiteTransactionalDataSource.TestConnection">
+            <summary>
+            Tests the connection.
+            </summary>
+        </member>
+        <member name="M:Tortuga.Chain.SQLite.SQLiteTransactionalDataSource.TestConnectionAsync">
+            <summary>
+            Tests the connection asynchronously.
+            </summary>
+            <returns></returns>
         </member>
         <member name="M:Tortuga.Chain.SQLite.Utilities.GetParameters(Tortuga.Chain.CommandBuilders.SqlBuilder{System.Data.DbType})">
             <summary>

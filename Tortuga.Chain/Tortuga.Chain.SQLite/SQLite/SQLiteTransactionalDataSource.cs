@@ -17,9 +17,6 @@ namespace Tortuga.Chain.SQLite
     public partial class SQLiteTransactionalDataSource : SQLiteDataSourceBase
     {
         private readonly SQLiteDataSource m_BaseDataSource;
-        private readonly SQLiteConnection m_Connection;
-        private readonly SQLiteTransaction m_Transaction;
-        private bool m_Disposed;
 
         [SuppressMessage("Microsoft.Usage", "CA2213")]
         private IDisposable m_LockToken;
@@ -111,25 +108,6 @@ namespace Tortuga.Chain.SQLite
         internal override AsyncReaderWriterLock SyncLock
         {
             get { return m_BaseDataSource.SyncLock; }
-        }
-
-        /// <summary>
-        /// Tests the connection.
-        /// </summary>
-        public override void TestConnection()
-        {
-            using (var cmd = new SQLiteCommand("SELECT 1", m_Connection))
-                cmd.ExecuteScalar();
-        }
-
-        /// <summary>
-        /// Tests the connection asynchronously.
-        /// </summary>
-        /// <returns></returns>
-        public override async Task TestConnectionAsync()
-        {
-            using (var cmd = new SQLiteCommand("SELECT 1", m_Connection))
-                await cmd.ExecuteScalarAsync().ConfigureAwait(false);
         }
 
         /// <summary>
