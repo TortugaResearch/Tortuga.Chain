@@ -1,16 +1,12 @@
 ﻿using Nito.AsyncEx;
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Data;
-using System.Data.Common;
 using System.Data.SQLite;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
-using Tortuga.Chain.AuditRules;
 using Tortuga.Chain.Core;
-using Tortuga.Chain.DataSources;
 using Tortuga.Chain.SQLite;
 
 namespace Tortuga.Chain
@@ -18,10 +14,8 @@ namespace Tortuga.Chain
     /// <summary>
     /// Class that represents a SQLite Data Source.
     /// </summary>
-    public class SQLiteDataSource : SQLiteDataSourceBase, IRootDataSource
+    public partial class SQLiteDataSource : SQLiteDataSourceBase
     {
-        internal ICacheAdapter m_Cache;
-        internal ConcurrentDictionary<Type, object> m_ExtensionCache;
         readonly SQLiteConnectionStringBuilder m_ConnectionBuilder;
         readonly AsyncReaderWriterLock m_SyncLock = new AsyncReaderWriterLock(); //Sqlite is single-threaded for writes. It says otherwise, but it spams the trace window with exceptions.
         SQLiteMetadataCache m_DatabaseMetadata;
@@ -115,14 +109,6 @@ namespace Tortuga.Chain
         }
 
         /// <summary>
-        /// Gets or sets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
-        /// </summary>
-        public override ICacheAdapter Cache
-        {
-            get { return m_Cache; }
-        }
-
-        /// <summary>
         /// This object can be used to lookup database information.
         /// </summary>
         public override SQLiteMetadataCache DatabaseMetadata
@@ -136,28 +122,9 @@ namespace Tortuga.Chain
         /// <remarks>Currently the SQLite default is off, but this may change in a future version. The SQLite documentation recommends always explicitly setting this value.</remarks>
         public bool? EnforceForeignKeys { get; }
 
-        /// <summary>
-        /// This object can be used to access the database connection string.
-        /// </summary>
-        internal string ConnectionString
-        {
-            get { return m_ConnectionBuilder.ConnectionString; }
-        }
-
         internal override AsyncReaderWriterLock SyncLock
         {
             get { return m_SyncLock; }
-        }
-
-        /// <summary>
-        /// The extension cache is used by extensions to store data source specific information.
-        /// </summary>
-        /// <value>
-        /// The extension cache.
-        /// </value>
-        protected override ConcurrentDictionary<Type, object> ExtensionCache
-        {
-            get { return m_ExtensionCache; }
         }
 
         /// <summary>
@@ -183,11 +150,6 @@ namespace Tortuga.Chain
             return new SQLiteTransactionalDataSource(this, forwardEvents, connection, transaction, lockToken);
         }
 
-        ITransactionalDataSource IRootDataSource.BeginTransaction()
-        {
-            return BeginTransaction();
-        }
-
         /// <summary>
         /// Creates a new transaction.
         /// </summary>
@@ -209,11 +171,6 @@ namespace Tortuga.Chain
                 transaction = connection.BeginTransaction(isolationLevel.Value);
 
             return new SQLiteTransactionalDataSource(this, forwardEvents, connection, transaction, lockToken);
-        }
-
-        async Task<ITransactionalDataSource> IRootDataSource.BeginTransactionAsync()
-        {
-            return await BeginTransactionAsync().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -238,11 +195,6 @@ namespace Tortuga.Chain
             return con;
         }
 
-        DbConnection IRootDataSource.CreateConnection()
-        {
-            return CreateConnection();
-        }
-
         /// <summary>
         /// Creates the connection asynchronous.
         /// </summary>
@@ -261,11 +213,6 @@ namespace Tortuga.Chain
             return con;
         }
 
-        async Task<DbConnection> IRootDataSource.CreateConnectionAsync()
-        {
-            return await CreateConnectionAsync().ConfigureAwait(false);
-        }
-
         /// <summary>
         /// Creates an open data source using the supplied connection and optional transaction.
         /// </summary>
@@ -277,71 +224,13 @@ namespace Tortuga.Chain
             return new SQLiteOpenDataSource(this, connection, transaction);
         }
 
-        IOpenDataSource IRootDataSource.CreateOpenDataSource(DbConnection connection, DbTransaction? transaction)
-        {
-            return new SQLiteOpenDataSource(this, (SQLiteConnection)connection, (SQLiteTransaction?)transaction);
-        }
-
-        IOpenDataSource IRootDataSource.CreateOpenDataSource(IDbConnection connection, IDbTransaction? transaction)
-        {
-            return new SQLiteOpenDataSource(this, (SQLiteConnection)connection, (SQLiteTransaction?)transaction);
-        }
-
         /// <summary>
-        /// Tests the connection.
+        /// Creates an open data source with a new connection.
         /// </summary>
-        public override void TestConnection()
+        /// <remarks>WARNING: The caller of this method is responsible for closing the connection.</remarks>
+        public SQLiteOpenDataSource CreateOpenDataSource()
         {
-            using (var con = CreateConnection())
-            using (var cmd = new SQLiteCommand("SELECT 1", con))
-                cmd.ExecuteScalar();
-        }
-
-        /// <summary>
-        /// Tests the connection asynchronously.
-        /// </summary>
-        /// <returns></returns>
-        public override async Task TestConnectionAsync()
-        {
-            using (var con = await CreateConnectionAsync().ConfigureAwait(false))
-            using (var cmd = new SQLiteCommand("SELECT 1", con))
-                await cmd.ExecuteScalarAsync().ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// Craetes a new data source with the provided cache.
-        /// </summary>
-        /// <param name="cache">The cache.</param>
-        /// <returns></returns>
-        public SQLiteDataSource WithCache(ICacheAdapter cache)
-        {
-            var result = WithSettings(null);
-            result.m_Cache = cache;
-            return result;
-        }
-
-        /// <summary>
-        /// Creates a new data source with additional audit rules.
-        /// </summary>
-        /// <param name="additionalRules">The additional rules.</param>
-        /// <returns></returns>
-        public SQLiteDataSource WithRules(params AuditRule[] additionalRules)
-        {
-            var result = WithSettings(null);
-            result.AuditRules = new AuditRuleCollection(AuditRules, additionalRules);
-            return result;
-        }
-
-        /// <summary>
-        /// Creates a new data source with additional audit rules.
-        /// </summary>
-        /// <param name="additionalRules">The additional rules.</param>
-        /// <returns></returns>
-        public SQLiteDataSource WithRules(IEnumerable<AuditRule> additionalRules)
-        {
-            var result = WithSettings(null);
-            result.AuditRules = new AuditRuleCollection(AuditRules, additionalRules);
-            return result;
+            return new SQLiteOpenDataSource(this, CreateConnection(), null);
         }
 
         /// <summary>
@@ -370,21 +259,6 @@ namespace Tortuga.Chain
             result.ExecutionError += (sender, e) => OnExecutionError(e);
             result.ExecutionCanceled += (sender, e) => OnExecutionCanceled(e);
 
-            return result;
-        }
-
-        /// <summary>
-        /// Creates a new data source with the indicated user.
-        /// </summary>
-        /// <param name="userValue">The user value.</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// This is used in conjunction with audit rules.
-        /// </remarks>
-        public SQLiteDataSource WithUser(object? userValue)
-        {
-            var result = WithSettings(null);
-            result.UserValue = userValue;
             return result;
         }
 

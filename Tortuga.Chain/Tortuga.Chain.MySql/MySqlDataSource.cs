@@ -1,14 +1,10 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Data;
-using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
-using Tortuga.Chain.AuditRules;
 using Tortuga.Chain.Core;
-using Tortuga.Chain.DataSources;
 using Tortuga.Chain.MySql;
 
 namespace Tortuga.Chain
@@ -17,10 +13,8 @@ namespace Tortuga.Chain
     /// Class MySqlDataSource.
     /// </summary>
     /// <seealso cref="MySqlDataSourceBase" />
-    public class MySqlDataSource : MySqlDataSourceBase, IRootDataSource
+    public partial class MySqlDataSource : MySqlDataSourceBase
     {
-        internal ICacheAdapter m_Cache;
-        internal ConcurrentDictionary<Type, object> m_ExtensionCache;
         readonly MySqlConnectionStringBuilder m_ConnectionBuilder;
         MySqlMetadataCache m_DatabaseMetadata;
 
@@ -111,36 +105,12 @@ namespace Tortuga.Chain
         }
 
         /// <summary>
-        /// Gets or sets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
-        /// </summary>
-        public override ICacheAdapter Cache
-        {
-            get { return m_Cache; }
-        }
-
-        /// <summary>
         /// Gets the database metadata.
         /// </summary>
         /// <value>The database metadata.</value>
         public override MySqlMetadataCache DatabaseMetadata
         {
             get { return m_DatabaseMetadata; }
-        }
-
-        internal string ConnectionString
-        {
-            get { return m_ConnectionBuilder.ConnectionString; }
-        }
-
-        /// <summary>
-        /// The extension cache is used by extensions to store data source specific information.
-        /// </summary>
-        /// <value>
-        /// The extension cache.
-        /// </value>
-        protected override ConcurrentDictionary<Type, object> ExtensionCache
-        {
-            get { return m_ExtensionCache; }
         }
 
         /// <summary>
@@ -152,11 +122,6 @@ namespace Tortuga.Chain
         public MySqlTransactionalDataSource BeginTransaction(IsolationLevel? isolationLevel = null, bool forwardEvents = true)
         {
             return new MySqlTransactionalDataSource(this, isolationLevel, forwardEvents);
-        }
-
-        ITransactionalDataSource IRootDataSource.BeginTransaction()
-        {
-            return BeginTransaction();
         }
 
         /// <summary>
@@ -176,16 +141,6 @@ namespace Tortuga.Chain
             return new MySqlTransactionalDataSource(this, forwardEvents, connection, transaction);
         }
 
-        async Task<ITransactionalDataSource> IRootDataSource.BeginTransactionAsync()
-        {
-            return await BeginTransactionAsync().ConfigureAwait(false);
-        }
-
-        DbConnection IRootDataSource.CreateConnection()
-        {
-            return CreateConnection();
-        }
-
         /// <summary>
         /// Creates the connection.
         /// </summary>
@@ -200,11 +155,6 @@ namespace Tortuga.Chain
             //TODO: Research server settings.
 
             return con;
-        }
-
-        async Task<DbConnection> IRootDataSource.CreateConnectionAsync()
-        {
-            return await CreateConnectionAsync().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -223,16 +173,6 @@ namespace Tortuga.Chain
             return con;
         }
 
-        IOpenDataSource IRootDataSource.CreateOpenDataSource(DbConnection connection, DbTransaction? transaction)
-        {
-            return new MySqlOpenDataSource(this, (MySqlConnection)connection, (MySqlTransaction?)transaction);
-        }
-
-        IOpenDataSource IRootDataSource.CreateOpenDataSource(IDbConnection connection, IDbTransaction? transaction)
-        {
-            return new MySqlOpenDataSource(this, (MySqlConnection)connection, (MySqlTransaction?)transaction);
-        }
-
         /// <summary>
         /// Creates an open data source using the supplied connection and optional transaction.
         /// </summary>
@@ -244,60 +184,12 @@ namespace Tortuga.Chain
         }
 
         /// <summary>
-        /// Tests the connection.
+        /// Creates an open data source with a new connection.
         /// </summary>
-        public override void TestConnection()
+        /// <remarks>WARNING: The caller of this method is responsible for closing the connection.</remarks>
+        public MySqlOpenDataSource CreateOpenDataSource()
         {
-            using (var con = CreateConnection())
-            using (var cmd = new MySqlCommand("SELECT 1", con))
-                cmd.ExecuteScalar();
-        }
-
-        /// <summary>
-        /// Tests the connection asynchronously.
-        /// </summary>
-        /// <returns></returns>
-        public override async Task TestConnectionAsync()
-        {
-            using (var con = await CreateConnectionAsync().ConfigureAwait(false))
-            using (var cmd = new MySqlCommand("SELECT 1", con))
-                await cmd.ExecuteScalarAsync().ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// Creates a new data source with the provided cache.
-        /// </summary>
-        /// <param name="cache">The cache.</param>
-        /// <returns></returns>
-        public MySqlDataSource WithCache(ICacheAdapter cache)
-        {
-            var result = WithSettings(null);
-            result.m_Cache = cache;
-            return result;
-        }
-
-        /// <summary>
-        /// Creates a new data source with additional audit rules.
-        /// </summary>
-        /// <param name="additionalRules">The additional rules.</param>
-        /// <returns></returns>
-        public MySqlDataSource WithRules(params AuditRule[] additionalRules)
-        {
-            var result = WithSettings(null);
-            result.AuditRules = new AuditRuleCollection(AuditRules, additionalRules);
-            return result;
-        }
-
-        /// <summary>
-        /// Creates a new data source with additional audit rules.
-        /// </summary>
-        /// <param name="additionalRules">The additional rules.</param>
-        /// <returns></returns>
-        public MySqlDataSource WithRules(IEnumerable<AuditRule> additionalRules)
-        {
-            var result = WithSettings(null);
-            result.AuditRules = new AuditRuleCollection(AuditRules, additionalRules);
-            return result;
+            return new MySqlOpenDataSource(this, CreateConnection(), null);
         }
 
         /// <summary>
@@ -325,21 +217,6 @@ namespace Tortuga.Chain
             result.ExecutionError += (sender, e) => OnExecutionError(e);
             result.ExecutionCanceled += (sender, e) => OnExecutionCanceled(e);
 
-            return result;
-        }
-
-        /// <summary>
-        /// Creates a new data source with the indicated user.
-        /// </summary>
-        /// <param name="userValue">The user value.</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// This is used in conjunction with audit rules.
-        /// </remarks>
-        public MySqlDataSource WithUser(object? userValue)
-        {
-            var result = WithSettings(null);
-            result.UserValue = userValue;
             return result;
         }
 

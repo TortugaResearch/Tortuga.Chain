@@ -1,14 +1,10 @@
 ﻿using Npgsql;
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Data;
-using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
-using Tortuga.Chain.AuditRules;
 using Tortuga.Chain.Core;
-using Tortuga.Chain.DataSources;
 using Tortuga.Chain.PostgreSql;
 
 namespace Tortuga.Chain
@@ -17,10 +13,8 @@ namespace Tortuga.Chain
     /// Class PostgreSqlDataSource.
     /// </summary>
     /// <seealso cref="PostgreSqlDataSourceBase" />
-    public class PostgreSqlDataSource : PostgreSqlDataSourceBase, IRootDataSource
+    public partial class PostgreSqlDataSource : PostgreSqlDataSourceBase
     {
-        internal ICacheAdapter m_Cache;
-        internal ConcurrentDictionary<Type, object> m_ExtensionCache;
         readonly NpgsqlConnectionStringBuilder m_ConnectionBuilder;
         PostgreSqlMetadataCache m_DatabaseMetadata;
 
@@ -104,28 +98,10 @@ namespace Tortuga.Chain
         }
 
         /// <summary>
-        /// Gets or sets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
-        /// </summary>
-        public override ICacheAdapter Cache => m_Cache;
-
-        /// <summary>
         /// Gets the database metadata.
         /// </summary>
         /// <value>The database metadata.</value>
         public override PostgreSqlMetadataCache DatabaseMetadata => m_DatabaseMetadata;
-
-        internal string ConnectionString
-        {
-            get { return m_ConnectionBuilder.ConnectionString; }
-        }
-
-        /// <summary>
-        /// The extension cache is used by extensions to store data source specific information.
-        /// </summary>
-        /// <value>
-        /// The extension cache.
-        /// </value>
-        protected override ConcurrentDictionary<Type, object> ExtensionCache => m_ExtensionCache;
 
         /// <summary>
         /// Begins the transaction.
@@ -137,8 +113,6 @@ namespace Tortuga.Chain
         {
             return new PostgreSqlTransactionalDataSource(this, isolationLevel, forwardEvents);
         }
-
-        ITransactionalDataSource IRootDataSource.BeginTransaction() => BeginTransaction();
 
         /// <summary>
         /// Begins the transaction.
@@ -156,8 +130,6 @@ namespace Tortuga.Chain
                 transaction = connection.BeginTransaction();
             return new PostgreSqlTransactionalDataSource(this, forwardEvents, connection, transaction);
         }
-
-        async Task<ITransactionalDataSource> IRootDataSource.BeginTransactionAsync() => await BeginTransactionAsync().ConfigureAwait(false);
 
         /// <summary>
         /// Creates the connection.
@@ -177,8 +149,6 @@ namespace Tortuga.Chain
             return con;
         }
 
-        DbConnection IRootDataSource.CreateConnection() => CreateConnection();
-
         /// <summary>
         /// Creates the connection asynchronous.
         /// </summary>
@@ -197,8 +167,6 @@ namespace Tortuga.Chain
             return con;
         }
 
-        async Task<DbConnection> IRootDataSource.CreateConnectionAsync() => await CreateConnectionAsync().ConfigureAwait(false);
-
         /// <summary>
         /// Creates an open data source using the supplied connection and optional transaction.
         /// </summary>
@@ -210,71 +178,13 @@ namespace Tortuga.Chain
             return new PostgreSqlOpenDataSource(this, connection, transaction);
         }
 
-        IOpenDataSource IRootDataSource.CreateOpenDataSource(DbConnection connection, DbTransaction? transaction)
-        {
-            return new PostgreSqlOpenDataSource(this, (NpgsqlConnection)connection, (NpgsqlTransaction?)transaction);
-        }
-
-        IOpenDataSource IRootDataSource.CreateOpenDataSource(IDbConnection connection, IDbTransaction? transaction)
-        {
-            return new PostgreSqlOpenDataSource(this, (NpgsqlConnection)connection, (NpgsqlTransaction?)transaction);
-        }
-
         /// <summary>
-        /// Tests the connection.
+        /// Creates an open data source with a new connection.
         /// </summary>
-        public override void TestConnection()
+        /// <remarks>WARNING: The caller of this method is responsible for closing the connection.</remarks>
+        public PostgreSqlOpenDataSource CreateOpenDataSource()
         {
-            using (var con = CreateConnection())
-            using (var cmd = new NpgsqlCommand("SELECT 1", con))
-                cmd.ExecuteScalar();
-        }
-
-        /// <summary>
-        /// Tests the connection asynchronously.
-        /// </summary>
-        /// <returns></returns>
-        public override async Task TestConnectionAsync()
-        {
-            using (var con = await CreateConnectionAsync().ConfigureAwait(false))
-            using (var cmd = new NpgsqlCommand("SELECT 1", con))
-                await cmd.ExecuteScalarAsync().ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// Craetes a new data source with the provided cache.
-        /// </summary>
-        /// <param name="cache">The cache.</param>
-        /// <returns></returns>
-        public PostgreSqlDataSource WithCache(ICacheAdapter cache)
-        {
-            var result = WithSettings(null);
-            result.m_Cache = cache;
-            return result;
-        }
-
-        /// <summary>
-        /// Creates a new data source with additional audit rules.
-        /// </summary>
-        /// <param name="additionalRules">The additional rules.</param>
-        /// <returns></returns>
-        public PostgreSqlDataSource WithRules(params AuditRule[] additionalRules)
-        {
-            var result = WithSettings(null);
-            result.AuditRules = new AuditRuleCollection(AuditRules, additionalRules);
-            return result;
-        }
-
-        /// <summary>
-        /// Creates a new data source with additional audit rules.
-        /// </summary>
-        /// <param name="additionalRules">The additional rules.</param>
-        /// <returns></returns>
-        public PostgreSqlDataSource WithRules(IEnumerable<AuditRule> additionalRules)
-        {
-            var result = WithSettings(null);
-            result.AuditRules = new AuditRuleCollection(AuditRules, additionalRules);
-            return result;
+            return new PostgreSqlOpenDataSource(this, CreateConnection(), null);
         }
 
         /// <summary>
@@ -302,21 +212,6 @@ namespace Tortuga.Chain
             result.ExecutionError += (sender, e) => OnExecutionError(e);
             result.ExecutionCanceled += (sender, e) => OnExecutionCanceled(e);
 
-            return result;
-        }
-
-        /// <summary>
-        /// Creates a new data source with the indicated user.
-        /// </summary>
-        /// <param name="userValue">The user value.</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// This is used in conjunction with audit rules.
-        /// </remarks>
-        public PostgreSqlDataSource WithUser(object? userValue)
-        {
-            var result = WithSettings(null);
-            result.UserValue = userValue;
             return result;
         }
 
