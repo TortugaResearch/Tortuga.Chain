@@ -56,7 +56,7 @@ namespace Tests
             var currentUser1 = source.From(EmployeeTableName).WithLimits(1).ToObject<Employee>().Execute();
 
             return source.WithRules(
-                new SoftDeleteRule("DeletedFlag", true, OperationTypes.SelectOrDelete),
+                new SoftDeleteRule("DeletedFlag", true),
                 new UserDataRule("DeletedByKey", "EmployeeKey", OperationTypes.Delete),
                 new DateTimeRule("DeletedDate", DateTimeKind.Local, OperationTypes.Delete)
                 ).WithUser(currentUser1);
@@ -103,7 +103,7 @@ namespace Tests
             throw new ArgumentException($"Unknown mode {mode}");
         }
 
-        void WriteDetails(ExecutionEventArgs e)
+        private void WriteDetails(ExecutionEventArgs e)
         {
             var token = e.ExecutionDetails as AccessCommandExecutionToken;
             if (token == null)

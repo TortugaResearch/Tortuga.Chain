@@ -113,7 +113,7 @@ namespace Tests.shared.Core
                 var currentUser2 = users.Skip(1).First();
 
                 var dsWithRules = dataSource.WithRules(
-                    new SoftDeleteRule("DeletedFlag", true, OperationTypes.SelectOrDelete),
+                    new SoftDeleteRule("DeletedFlag", true),
                     new UserDataRule("DeletedByKey", "EmployeeKey", OperationTypes.Delete),
                     new DateTimeRule("DeletedDate", DateTimeKind.Local, OperationTypes.Delete)
                     );
@@ -173,7 +173,7 @@ namespace Tests.shared.Core
                 var currentUser2 = users.Skip(1).First();
 
                 var dsWithRules = dataSource.WithRules(
-                    new SoftDeleteRule("DeletedFlag", true, OperationTypes.SelectOrDelete),
+                    new SoftDeleteRule("DeletedFlag", true),
                     new UserDataRule("DeletedByKey", "EmployeeKey", OperationTypes.Delete),
                     new DateTimeRule("DeletedDate", DateTimeKind.Local, OperationTypes.Delete)
                     );
@@ -278,7 +278,7 @@ namespace Tests.shared.Core
                 var currentUser2 = users.Skip(1).First();
 
                 var dsWithRules = dataSource.WithRules(
-                    new SoftDeleteRule("DeletedFlag", true, OperationTypes.SelectOrDelete),
+                    new SoftDeleteRule("DeletedFlag", true),
                     new UserDataRule("DeletedByKey", "EmployeeKey", OperationTypes.Delete),
                     new DateTimeRule("DeletedDate", DateTimeKind.Local, OperationTypes.Delete)
                     );

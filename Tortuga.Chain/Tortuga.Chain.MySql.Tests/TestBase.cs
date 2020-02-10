@@ -14,7 +14,7 @@ namespace Tests
     public abstract partial class TestBase
     {
         internal static readonly Dictionary<string, MySqlDataSource> s_DataSources = new Dictionary<string, MySqlDataSource>();
-        internal protected static MySqlDataSource s_PrimaryDataSource;
+        protected internal static MySqlDataSource s_PrimaryDataSource;
 
         internal static void SetupTestBase()
         {
@@ -65,7 +65,7 @@ namespace Tests
             var currentUser1 = source.From(EmployeeTableName).WithLimits(1).ToObject<Employee>().Execute();
 
             return source.WithRules(
-                new SoftDeleteRule("DeletedFlag", true, OperationTypes.SelectOrDelete),
+                new SoftDeleteRule("DeletedFlag", true),
                 new UserDataRule("DeletedByKey", "EmployeeKey", OperationTypes.Delete),
                 new DateTimeRule("DeletedDate", DateTimeKind.Local, OperationTypes.Delete)
                 ).WithUser(currentUser1);
