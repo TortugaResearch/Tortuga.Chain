@@ -13,7 +13,7 @@ namespace Tortuga.Chain.Materializers
     /// </summary>
     /// <typeparam name="TCommand">The type of the t command type.</typeparam>
     /// <typeparam name="TParameter">The type of the t parameter type.</typeparam>
-    internal sealed class DynamicObjectMaterializer<TCommand, TParameter> : Materializer<TCommand, TParameter, dynamic> where TCommand : DbCommand
+    internal sealed class DynamicObjectOrNullMaterializer<TCommand, TParameter> : Materializer<TCommand, TParameter, dynamic?> where TCommand : DbCommand
         where TParameter : DbParameter
     {
         readonly RowOptions m_RowOptions;
@@ -23,7 +23,7 @@ namespace Tortuga.Chain.Materializers
         /// </summary>
         /// <param name="commandBuilder">The associated operation.</param>
         /// <param name="rowOptions">The row options.</param>
-        public DynamicObjectMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, RowOptions rowOptions)
+        public DynamicObjectOrNullMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, RowOptions rowOptions)
             : base(commandBuilder)
         {
             m_RowOptions = rowOptions;
@@ -47,7 +47,7 @@ namespace Tortuga.Chain.Materializers
         /// <returns>System.Nullable&lt;dynamic&gt;.</returns>
         /// <exception cref="MissingDataException">No rows were returned</exception>
         /// <exception cref="UnexpectedDataException">Expected 1 row but received " + rowCount + " rows</exception>
-        public override dynamic Execute(object? state = null)
+        public override dynamic? Execute(object? state = null)
         {
             ExpandoObject? row = null;
             var rowCount = Prepare().Execute(cmd =>
@@ -65,7 +65,10 @@ namespace Tortuga.Chain.Materializers
 
             if (rowCount == 0 || row == null)
             {
-                throw new MissingDataException("No rows were returned. It was this expected, use `.ToDynamicObjectOrNull` instead of `.ToDynamicObject`.");
+                if (!m_RowOptions.HasFlag(RowOptions.PreventEmptyResults))
+                    return null;
+                else
+                    throw new MissingDataException($"No rows were returned and {nameof(RowOptions)}.{nameof(RowOptions.PreventEmptyResults)} was enabled.");
             }
             else if (rowCount > 1 && !m_RowOptions.HasFlag(RowOptions.DiscardExtraRows))
             {
@@ -83,7 +86,7 @@ namespace Tortuga.Chain.Materializers
         /// <returns>Task&lt;System.Nullable&lt;dynamic&gt;&gt;.</returns>
         /// <exception cref="MissingDataException">No rows were returned</exception>
         /// <exception cref="UnexpectedDataException">Expected 1 row but received " + rowCount + " rows</exception>
-        public override async Task<dynamic> ExecuteAsync(CancellationToken cancellationToken, object? state = null)
+        public override async Task<dynamic?> ExecuteAsync(CancellationToken cancellationToken, object? state = null)
         {
             ExpandoObject? row = null;
 
@@ -102,7 +105,10 @@ namespace Tortuga.Chain.Materializers
 
             if (rowCount == 0 || row == null)
             {
-                throw new MissingDataException("No rows were returned. It was this expected, use `.ToDynamicObjectOrNull` instead of `.ToDynamicObject`.");
+                if (!m_RowOptions.HasFlag(RowOptions.PreventEmptyResults))
+                    return null;
+                else
+                    throw new MissingDataException($"No rows were returned and {nameof(RowOptions)}.{nameof(RowOptions.PreventEmptyResults)} was enabled.");
             }
             else if (rowCount > 1 && !m_RowOptions.HasFlag(RowOptions.DiscardExtraRows))
             {

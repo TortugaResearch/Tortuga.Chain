@@ -102,7 +102,7 @@ namespace Tortuga.Chain.Materializers
             }
             else if (rowCount > 1 && !m_RowOptions.HasFlag(RowOptions.DiscardExtraRows))
             {
-                throw new UnexpectedDataException($"Expected 1 row but received {rowCount} rows. Use {nameof(RowOptions)}.{nameof(RowOptions.DiscardExtraRows)} to suppress this error.");
+                throw new UnexpectedDataException($"Expected 1 row but received {rowCount} rows. If this was expected, use `RowOptions.DiscardExtraRows`.");
             }
             return MaterializerUtilities.ConstructObject<TObject>(row, ConstructorSignature);
         }

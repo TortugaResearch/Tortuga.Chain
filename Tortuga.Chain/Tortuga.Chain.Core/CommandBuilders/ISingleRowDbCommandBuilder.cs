@@ -16,7 +16,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <summary>
         /// Indicates the results should be materialized as a Row.
         /// </summary>
-        ILink<DataRow?> ToDataRowOrNull(RowOptions rowOptions = RowOptions.AllowEmptyResults);
+        ILink<DataRow?> ToDataRowOrNull(RowOptions rowOptions = RowOptions.None);
 
         /// <summary>
         /// Materializes the result as a dynamic object
@@ -30,7 +30,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// </summary>
         /// <param name="rowOptions">The row options.</param>
         /// <returns></returns>
-        ILink<dynamic?> ToDynamicObjectOrNull(RowOptions rowOptions = RowOptions.AllowEmptyResults);
+        ILink<dynamic?> ToDynamicObjectOrNull(RowOptions rowOptions = RowOptions.None);
 
         /// <summary>
         /// Materializes the result as an instance of the indicated type
@@ -47,7 +47,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <typeparam name="TObject">The type of the object returned.</typeparam>
         /// <param name="rowOptions">The row options.</param>
         /// <returns></returns>
-        IConstructibleMaterializer<TObject?> ToObjectOrNull<TObject>(RowOptions rowOptions = RowOptions.AllowEmptyResults)
+        IConstructibleMaterializer<TObject?> ToObjectOrNull<TObject>(RowOptions rowOptions = RowOptions.None)
             where TObject : class;
 
         /// <summary>
@@ -58,6 +58,6 @@ namespace Tortuga.Chain.CommandBuilders
         /// <summary>
         /// Indicates the results should be materialized as a Row.
         /// </summary>
-        ILink<Row?> ToRowOrNull(RowOptions rowOptions = RowOptions.AllowEmptyResults);
+        ILink<Row?> ToRowOrNull(RowOptions rowOptions = RowOptions.None);
     }
 }
