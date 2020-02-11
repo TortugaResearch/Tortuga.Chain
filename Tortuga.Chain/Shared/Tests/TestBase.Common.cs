@@ -47,12 +47,17 @@ namespace Tests
             CompiledMaterializers.MaterializerCompiled -= CompiledMaterializers_MaterializerCompiled;
             CompiledMaterializers.MaterializerCompilerFailed -= CompiledMaterializers_MaterializerCompiled;
 #endif
-            var trans = dataSource as ITransactionalDataSource;
-            trans?.Commit();
+            switch (dataSource)
+            {
+                case ITransactionalDataSource trans:
+                    trans.Commit();
+                    break;
 
-            var open = dataSource as IOpenDataSource;
-            open?.TryCommit();
-            open?.Close();
+                case IOpenDataSource open:
+                    open.TryCommit();
+                    open.Close();
+                    break;
+            }
 
             Interlocked.Decrement(ref s_DataSourceCount);
             //WriteLine("Data source count: " + s_DataSourceCount);

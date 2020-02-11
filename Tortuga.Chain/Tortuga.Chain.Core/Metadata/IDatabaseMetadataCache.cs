@@ -45,6 +45,15 @@ namespace Tortuga.Chain.Metadata
         TableOrViewMetadata GetTableOrView(string tableName);
 
         /// <summary>
+        /// Returns the table, view, function, or stored procedure derived from the class's name and/or Table attribute.
+        /// </summary>
+        /// <typeparam name="TObject">The type of the t object.</typeparam>
+        /// <param name="operation">The type of operation to be performed.</param>
+        /// <returns>TableOrViewMetadata.</returns>
+        [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
+        DatabaseObject GetDatabaseObjectFromClass<TObject>(OperationType operation) where TObject : class;
+
+        /// <summary>
         /// Returns the table or view derived from the class's name and/or Table attribute.
         /// </summary>
         /// <typeparam name="TObject"></typeparam>

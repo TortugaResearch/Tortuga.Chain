@@ -13,33 +13,17 @@ namespace Tests
 {
     public abstract partial class TestBase
     {
+        public const string EmployeeTableName = "HR.Employee";
+        public const string EmployeeViewName = "HR.EmployeeWithManager";
         internal static readonly Dictionary<string, SqlServerDataSource> s_DataSources = new Dictionary<string, SqlServerDataSource>();
         internal static SqlServerDataSource s_PrimaryDataSource;
 
-        internal static void SetupTestBase()
-        {
-            if (s_PrimaryDataSource != null)
-                return; //run once check
-
-            var configuration = new ConfigurationBuilder().SetBasePath(AppContext.BaseDirectory).AddJsonFile("appsettings.json").Build();
-
-            foreach (var con in configuration.GetSection("ConnectionStrings").GetChildren())
-            {
-                var ds = new SqlServerDataSource(con.Key, con.Value);
-                s_DataSources.Add(con.Key, ds);
-                if (s_PrimaryDataSource == null) s_PrimaryDataSource = ds;
-            }
-            BuildEmployeeSearchKey1000(s_PrimaryDataSource);
-        }
-
         public static string CustomerTableName { get { return "Sales.Customer"; } }
-
-        public static string EmployeeTableName { get { return "HR.Employee"; } }
 
         public static string EmployeeTableName_Trigger { get { return "HR.EmployeeWithTrigger"; } }
 
-        public static string EmployeeViewName { get { return "HR.EmployeeWithManager"; } }
         public string MultiResultSetProc1Name { get { return "Sales.CustomerWithOrdersByState"; } }
+
         public string ScalarFunction1Name { get { return "HR.EmployeeCount"; } }
 
         public string TableFunction1Name { get { return "Sales.CustomersByState"; } }
@@ -62,7 +46,7 @@ namespace Tests
             var currentUser1 = source.From(EmployeeTableName).WithLimits(1).ToObject<Employee>().Execute();
 
             return source.WithRules(
-                new SoftDeleteRule("DeletedFlag", true, OperationTypes.SelectOrDelete),
+                new SoftDeleteRule("DeletedFlag", true),
                 new UserDataRule("DeletedByKey", "EmployeeKey", OperationTypes.Delete),
                 new DateTimeRule("DeletedDate", DateTimeKind.Local, OperationTypes.Delete)
                 ).WithUser(currentUser1);
@@ -107,6 +91,22 @@ namespace Tests
                     return AttachTracers((SqlServerDataSourceBase)root.CreateOpenDataSource(await root.CreateConnectionAsync(), null));
             }
             throw new ArgumentException($"Unknown mode {mode}");
+        }
+
+        internal static void SetupTestBase()
+        {
+            if (s_PrimaryDataSource != null)
+                return; //run once check
+
+            var configuration = new ConfigurationBuilder().SetBasePath(AppContext.BaseDirectory).AddJsonFile("appsettings.json").Build();
+
+            foreach (var con in configuration.GetSection("ConnectionStrings").GetChildren())
+            {
+                var ds = new SqlServerDataSource(con.Key, con.Value);
+                s_DataSources.Add(con.Key, ds);
+                if (s_PrimaryDataSource == null) s_PrimaryDataSource = ds;
+            }
+            BuildEmployeeSearchKey1000(s_PrimaryDataSource);
         }
 
         void WriteDetails(ExecutionEventArgs e)

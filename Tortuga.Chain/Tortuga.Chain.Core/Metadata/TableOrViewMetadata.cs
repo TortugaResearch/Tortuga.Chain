@@ -5,17 +5,36 @@ using System.Linq;
 namespace Tortuga.Chain.Metadata
 {
     /// <summary>
-    /// Abstract version of TableOrViewMetadata.
+    /// Class DatabaseObject.
     /// </summary>
-    public abstract class TableOrViewMetadata
+    public abstract class DatabaseObject
     {
-        /// <summary>Initializes a new instance of the <see cref="Tortuga.Chain.Metadata.TableOrViewMetadata"/> class.</summary>
-        protected TableOrViewMetadata(string name, bool isTable, ColumnMetadataCollection columns)
+        /// <summary>Initializes a new instance of the <see cref="Tortuga.Chain.Metadata.DatabaseObject"/> class.</summary>
+        protected DatabaseObject(string name)
         {
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentException($"{nameof(name)} is null or empty.", nameof(name));
 
             Name = name;
+        }
+
+        /// <summary>
+        /// Gets the name.
+        /// </summary>
+        /// <value>
+        /// The name.
+        /// </value>
+        public string Name { get; }
+    }
+
+    /// <summary>
+    /// Abstract version of TableOrViewMetadata.
+    /// </summary>
+    public abstract class TableOrViewMetadata : DatabaseObject
+    {
+        /// <summary>Initializes a new instance of the <see cref="Tortuga.Chain.Metadata.TableOrViewMetadata"/> class.</summary>
+        protected TableOrViewMetadata(string name, bool isTable, ColumnMetadataCollection columns) : base(name)
+        {
             IsTable = isTable;
             Columns = columns ?? throw new ArgumentNullException(nameof(columns), $"{nameof(columns)} is null.");
             NonNullableColumns = new ColumnMetadataCollection(name, columns.Where(c => c.IsNullable == false).ToList());
@@ -45,14 +64,6 @@ namespace Tortuga.Chain.Metadata
         /// <c>true</c> if this instance is a table; otherwise, <c>false</c>.
         /// </value>
         public bool IsTable { get; }
-
-        /// <summary>
-        /// Gets the name.
-        /// </summary>
-        /// <value>
-        /// The name.
-        /// </value>
-        public string Name { get; }
 
         /// <summary>
         /// Gets the columns known to be not nullable.

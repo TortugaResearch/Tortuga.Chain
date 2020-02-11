@@ -113,7 +113,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// </summary>
         /// <param name="rowOptions">The row options.</param>
         /// <returns></returns>
-        public IConstructibleMaterializer<TObject?> ToObjectOrNull(RowOptions rowOptions = RowOptions.AllowEmptyResults)
+        public IConstructibleMaterializer<TObject?> ToObjectOrNull(RowOptions rowOptions = RowOptions.None)
             => ToObjectOrNull<TObject>(rowOptions);
 
         /************************************************************************************************/

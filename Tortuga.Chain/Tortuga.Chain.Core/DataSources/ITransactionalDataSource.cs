@@ -6,7 +6,7 @@ namespace Tortuga.Chain.DataSources
     /// <remarks>
     /// This interface is primarily for testing purposes.
     /// </remarks>
-    public interface ITransactionalDataSource
+    public interface ITransactionalDataSource : IOpenDataSource
     {
         /// <summary>
         /// Commits this transaction.

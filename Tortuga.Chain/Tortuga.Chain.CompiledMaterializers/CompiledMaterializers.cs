@@ -45,6 +45,22 @@ namespace Tortuga.Chain
         }
 
         /// <summary>
+        /// Allows compilation of the ToObject materializer.
+        /// </summary>
+        /// <typeparam name="TCommand">The type of the command.</typeparam>
+        /// <typeparam name="TParameter">The type of the parameter.</typeparam>
+        /// <typeparam name="TObject">The type of the object to be constructed.</typeparam>
+        /// <param name="commandBuilder">The command builder.</param>
+        /// <returns></returns>
+        public static CompiledSingleRow<TCommand, TParameter, TObject> Compile<TCommand, TParameter, TObject>(this SingleRowDbCommandBuilder<TCommand, TParameter, TObject> commandBuilder)
+            where TCommand : DbCommand
+            where TParameter : DbParameter
+            where TObject : class, new()
+        {
+            return new CompiledSingleRow<TCommand, TParameter, TObject>(commandBuilder);
+        }
+
+        /// <summary>
         /// Allows compilation of the ToObject and ToCollection materializer.
         /// </summary>
         /// <typeparam name="TCommand">The type of the command.</typeparam>
@@ -56,6 +72,23 @@ namespace Tortuga.Chain
             where TParameter : DbParameter
         {
             return new CompiledMultipleRow<TCommand, TParameter>(commandBuilder);
+        }
+
+        /// <summary>
+        /// Allows compilation of the ToObject and ToCollection materializer.
+        /// </summary>
+        /// <typeparam name="TCommand">The type of the command.</typeparam>
+        /// <typeparam name="TParameter">The type of the parameter.</typeparam>
+        /// <typeparam name="TLimit">The type of the limit option.</typeparam>
+        /// <typeparam name="TObject">The type of the object to be constructed.</typeparam>
+        /// <param name="commandBuilder">The command builder.</param>
+        public static CompiledMultipleRow<TCommand, TParameter, TObject> Compile<TCommand, TParameter, TLimit, TObject>(this TableDbCommandBuilder<TCommand, TParameter, TLimit, TObject> commandBuilder)
+            where TCommand : DbCommand
+            where TParameter : DbParameter
+            where TLimit : struct //really an enum
+            where TObject : class, new()
+        {
+            return new CompiledMultipleRow<TCommand, TParameter, TObject>(commandBuilder);
         }
 
         /// <summary>

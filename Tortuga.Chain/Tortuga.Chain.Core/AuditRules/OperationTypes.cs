@@ -6,6 +6,7 @@ namespace Tortuga.Chain.AuditRules
     /// <summary>
     /// Indicates the type of operation being performed.
     /// </summary>
+    /// <remarks>Keep numbers in sync with Metadata.OperationType.</remarks>
     [Flags]
     public enum OperationTypes
     {

@@ -13,42 +13,18 @@ namespace Tests
 {
     public abstract partial class TestBase
     {
+        public const string EmployeeTableName = "HR.Employee";
+        public const string EmployeeViewName = "HR.EmployeeWithManager";
         internal static readonly Dictionary<string, MySqlDataSource> s_DataSources = new Dictionary<string, MySqlDataSource>();
-        internal protected static MySqlDataSource s_PrimaryDataSource;
-
-        internal static void SetupTestBase()
-        {
-            if (s_PrimaryDataSource != null)
-                return; //run once check
-
-            Setup.CreateDatabase();
-
-            var configuration = new ConfigurationBuilder().SetBasePath(AppContext.BaseDirectory).AddJsonFile("appsettings.json").Build();
-
-            foreach (var con in configuration.GetSection("ConnectionStrings").GetChildren())
-            {
-                var ds = new MySqlDataSource(con.Key, con.Value);
-                if (s_PrimaryDataSource == null)
-                    s_PrimaryDataSource = ds;
-
-                s_DataSources.Add(con.Key, ds);
-            }
-            BuildEmployeeSearchKey1000(s_PrimaryDataSource);
-        }
+        protected internal static MySqlDataSource s_PrimaryDataSource;
 
         public static string CustomerTableName { get { return "Sales.Customer"; } }
 
-        public static string EmployeeTableName { get { return "HR.Employee"; } }
-        public static string EmployeeViewName { get { return "HR.EmployeeWithManager"; } }
-
         public string MultiResultSetProc1Name { get { return "Sales.CustomerWithOrdersByState"; } }
-
-        //public string TableFunction1Name { get { return "Sales.CustomersByState"; } }
-
-        //public string TableFunction2Name { get { return "Sales.CustomersByStateInline"; } }
 
         public string ScalarFunction1Name { get { return "HR.EmployeeCount"; } }
 
+        //public string TableFunction2Name { get { return "Sales.CustomersByStateInline"; } }
         public MySqlDataSource AttachRules(MySqlDataSource source)
         {
             return source.WithRules(
@@ -60,12 +36,13 @@ namespace Tests
                 );
         }
 
+        //public string TableFunction1Name { get { return "Sales.CustomersByState"; } }
         public MySqlDataSource AttachSoftDeleteRulesWithUser(MySqlDataSource source)
         {
             var currentUser1 = source.From(EmployeeTableName).WithLimits(1).ToObject<Employee>().Execute();
 
             return source.WithRules(
-                new SoftDeleteRule("DeletedFlag", true, OperationTypes.SelectOrDelete),
+                new SoftDeleteRule("DeletedFlag", true),
                 new UserDataRule("DeletedByKey", "EmployeeKey", OperationTypes.Delete),
                 new DateTimeRule("DeletedDate", DateTimeKind.Local, OperationTypes.Delete)
                 ).WithUser(currentUser1);
@@ -110,6 +87,26 @@ namespace Tests
                     return AttachTracers((MySqlDataSourceBase)root.CreateOpenDataSource(await root.CreateConnectionAsync(), null));
             }
             throw new ArgumentException($"Unkown mode {mode}");
+        }
+
+        internal static void SetupTestBase()
+        {
+            if (s_PrimaryDataSource != null)
+                return; //run once check
+
+            Setup.CreateDatabase();
+
+            var configuration = new ConfigurationBuilder().SetBasePath(AppContext.BaseDirectory).AddJsonFile("appsettings.json").Build();
+
+            foreach (var con in configuration.GetSection("ConnectionStrings").GetChildren())
+            {
+                var ds = new MySqlDataSource(con.Key, con.Value);
+                if (s_PrimaryDataSource == null)
+                    s_PrimaryDataSource = ds;
+
+                s_DataSources.Add(con.Key, ds);
+            }
+            BuildEmployeeSearchKey1000(s_PrimaryDataSource);
         }
 
         private void WriteDetails(ExecutionEventArgs e)

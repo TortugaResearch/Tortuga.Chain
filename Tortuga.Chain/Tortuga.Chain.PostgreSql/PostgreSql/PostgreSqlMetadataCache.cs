@@ -341,49 +341,6 @@ WHERE ns.nspname = @Schema AND tab.relname = @Name";
         public override IReadOnlyCollection<TableFunctionMetadata<PostgreSqlObjectName, NpgsqlDbType>> GetTableFunctions() => m_TableFunctions.GetValues();
 
         /// <summary>
-        /// Returns the table or view derived from the class's name and/or Table attribute.
-        /// </summary>
-        /// <typeparam name="TObject"></typeparam>
-        /// <returns></returns>
-        public override TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType> GetTableOrViewFromClass<TObject>()
-        {
-            var type = typeof(TObject);
-            TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType> result;
-            if (m_TypeTableMap.TryGetValue(type, out result))
-                return result;
-
-            var typeInfo = MetadataCache.GetMetadata(type);
-            if (!typeInfo.MappedTableName.IsNullOrEmpty())
-            {
-                if (string.IsNullOrEmpty(typeInfo.MappedSchemaName))
-                    result = GetTableOrView(new PostgreSqlObjectName(typeInfo.MappedTableName));
-                else
-                    result = GetTableOrView(new PostgreSqlObjectName(typeInfo.MappedSchemaName, typeInfo.MappedTableName));
-                m_TypeTableMap[type] = result;
-                return result;
-            }
-
-            //infer schema from namespace
-            var schema = type.Namespace;
-            if (!schema.IsNullOrEmpty() && schema.Contains("."))
-                schema = schema.Substring(schema.LastIndexOf(".", StringComparison.OrdinalIgnoreCase) + 1);
-            var name = type.Name;
-
-            try
-            {
-                result = GetTableOrView(new PostgreSqlObjectName(schema, name));
-                m_TypeTableMap[type] = result;
-                return result;
-            }
-            catch (MissingObjectException) { }
-
-            //that didn't work, so try the default schema
-            result = GetTableOrView(new PostgreSqlObjectName(null, name));
-            m_TypeTableMap[type] = result;
-            return result;
-        }
-
-        /// <summary>
         /// Gets the tables and views that were loaded by this cache.
         /// </summary>
         /// <returns></returns>
@@ -698,9 +655,15 @@ WHERE ns.nspname = @Schema AND tab.relname = @Name";
         /// <summary>
         /// Parse a string and return the database specific representation of the object name.
         /// </summary>
+        /// <param name="schema">The schema.</param>
         /// <param name="name">The name.</param>
         /// <returns>PostgreSqlObjectName.</returns>
-        protected override PostgreSqlObjectName ParseObjectName(string name) => new PostgreSqlObjectName(name);
+        protected override PostgreSqlObjectName ParseObjectName(string? schema, string name)
+        {
+            if (schema == null)
+                return new PostgreSqlObjectName(name);
+            return new PostgreSqlObjectName(schema, name);
+        }
 
         Tuple<ParameterMetadataCollection<NpgsqlDbType>, ColumnMetadataCollection<NpgsqlDbType>> GetParametersAndColumns(string specificName, NpgsqlConnection connection)
         {

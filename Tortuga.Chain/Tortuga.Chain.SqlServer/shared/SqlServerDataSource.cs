@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Data;
-using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Tortuga.Chain.AuditRules;
 using Tortuga.Chain.Core;
-using Tortuga.Chain.DataSources;
 using Tortuga.Chain.SqlServer;
 
 #if SQL_SERVER_SDS
@@ -28,7 +24,7 @@ namespace Tortuga.Chain
     /// Class SqlServerDataSource.
     /// </summary>
     /// <seealso cref="SqlServerDataSourceBase" />
-    public class SqlServerDataSource : SqlServerDataSourceBase, IRootDataSource
+    public partial class SqlServerDataSource : SqlServerDataSourceBase
     {
         readonly SqlConnectionStringBuilder m_ConnectionBuilder;
         SqlServerMetadataCache m_DatabaseMetadata;
@@ -180,17 +176,6 @@ namespace Tortuga.Chain
         public bool? XactAbort { get; }
 
         /// <summary>
-        /// Gets the connection string.
-        /// </summary>
-        /// <value>
-        /// The connection string.
-        /// </value>
-        internal string ConnectionString
-        {
-            get { return m_ConnectionBuilder.ConnectionString; }
-        }
-
-        /// <summary>
         /// Creates a new transaction
         /// </summary>
         /// <param name="transactionName">optional name of the transaction.</param>
@@ -290,27 +275,6 @@ namespace Tortuga.Chain
         }
 
 #endif
-
-        /// <summary>
-        /// Tests the connection.
-        /// </summary>
-        public override void TestConnection()
-        {
-            using (var con = CreateConnection())
-            using (var cmd = new SqlCommand("SELECT 1", con))
-                cmd.ExecuteScalar();
-        }
-
-        /// <summary>
-        /// Tests the connection asynchronously.
-        /// </summary>
-        /// <returns></returns>
-        public override async Task TestConnectionAsync()
-        {
-            using (var con = await CreateConnectionAsync().ConfigureAwait(false))
-            using (var cmd = new SqlCommand("SELECT 1", con))
-                await cmd.ExecuteScalarAsync().ConfigureAwait(false);
-        }
 
         /// <summary>
         /// Creates and opens a SQL connection.
@@ -597,67 +561,6 @@ namespace Tortuga.Chain
         }
 
         /// <summary>
-        /// Creates a new data source with additional audit rules.
-        /// </summary>
-        /// <param name="additionalRules">The additional rules.</param>
-        /// <returns></returns>
-        public SqlServerDataSource WithRules(params AuditRule[] additionalRules)
-        {
-            var result = WithSettings(null);
-            result.AuditRules = new AuditRuleCollection(AuditRules, additionalRules);
-            return result;
-        }
-
-        /// <summary>
-        /// Creates a new data source with additional audit rules.
-        /// </summary>
-        /// <param name="additionalRules">The additional rules.</param>
-        /// <returns></returns>
-        public SqlServerDataSource WithRules(IEnumerable<AuditRule> additionalRules)
-        {
-            var result = WithSettings(null);
-            result.AuditRules = new AuditRuleCollection(AuditRules, additionalRules);
-            return result;
-        }
-
-        /// <summary>
-        /// Creates a new data source with the indicated user.
-        /// </summary>
-        /// <param name="userValue">The user value.</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// This is used in conjunction with audit rules.
-        /// </remarks>
-        public SqlServerDataSource WithUser(object? userValue)
-        {
-            var result = WithSettings(null);
-            result.UserValue = userValue;
-            return result;
-        }
-
-        /// <summary>
-        /// Craetes a new data source with the provided cache.
-        /// </summary>
-        /// <param name="cache">The cache.</param>
-        /// <returns></returns>
-        public SqlServerDataSource WithCache(ICacheAdapter cache)
-        {
-            var result = WithSettings(null);
-            result.m_Cache = cache;
-            return result;
-        }
-
-        DbConnection IRootDataSource.CreateConnection()
-        {
-            return CreateConnection();
-        }
-
-        async Task<DbConnection> IRootDataSource.CreateConnectionAsync()
-        {
-            return await CreateConnectionAsync().ConfigureAwait(false);
-        }
-
-        /// <summary>
         /// Creates an open data source using the supplied connection and optional transaction.
         /// </summary>
         /// <param name="connection">The connection.</param>
@@ -668,47 +571,13 @@ namespace Tortuga.Chain
             return new SqlServerOpenDataSource(this, connection, transaction);
         }
 
-        IOpenDataSource IRootDataSource.CreateOpenDataSource(DbConnection connection, DbTransaction? transaction)
-        {
-            return new SqlServerOpenDataSource(this, (SqlConnection)connection, (SqlTransaction?)transaction);
-        }
-
-        IOpenDataSource IRootDataSource.CreateOpenDataSource(IDbConnection connection, IDbTransaction? transaction)
-        {
-            return new SqlServerOpenDataSource(this, (SqlConnection)connection, (SqlTransaction?)transaction);
-        }
-
-        ITransactionalDataSource IRootDataSource.BeginTransaction()
-        {
-            return BeginTransaction();
-        }
-
-        async Task<ITransactionalDataSource> IRootDataSource.BeginTransactionAsync()
-        {
-            return await BeginTransactionAsync().ConfigureAwait(false);
-        }
-
-        internal ICacheAdapter m_Cache;
-
         /// <summary>
-        /// Gets or sets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
+        /// Creates an open data source with a new connection.
         /// </summary>
-        public override ICacheAdapter Cache
+        /// <remarks>WARNING: The caller of this method is responsible for closing the connection.</remarks>
+        public SqlServerOpenDataSource CreateOpenDataSource()
         {
-            get { return m_Cache; }
-        }
-
-        internal ConcurrentDictionary<Type, object> m_ExtensionCache;
-
-        /// <summary>
-        /// The extension cache is used by extensions to store data source specific information.
-        /// </summary>
-        /// <value>
-        /// The extension cache.
-        /// </value>
-        protected override ConcurrentDictionary<Type, object> ExtensionCache
-        {
-            get { return m_ExtensionCache; }
+            return new SqlServerOpenDataSource(this, CreateConnection(), null);
         }
     }
 }

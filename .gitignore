@@ -234,3 +234,14 @@ ModelManifest.xml
 *.jfm
 /Tortuga.Chain/Help
 /Tortuga.Chain/.cr
+/Tortuga.Chain/Tortuga.Chain.SqlServer.OleDb/Tortuga.Chain.SqlServer.OleDb.xml
+/Tortuga.Chain/Tortuga.Chain.SqlServer.MDS/Tortuga.Chain.SqlServer.MDS.xml
+/Tortuga.Chain/Tortuga.Chain.SqlServer/Tortuga.Chain.SqlServer.xml
+/Tortuga.Chain/Tortuga.Chain.SQLite/Tortuga.Chain.SQLite.xml
+/Tortuga.Chain/Tortuga.Chain.PostgreSql/Tortuga.Chain.PostgreSql.xml
+/Tortuga.Chain/Tortuga.Chain.MySql/Tortuga.Chain.MySql.xml
+/Tortuga.Chain/Tortuga.Chain.Core.OleDb/Tortuga.Chain.Core.OleDb.xml
+/Tortuga.Chain/Tortuga.Chain.Core.Odbc/Tortuga.Chain.Core.Odbc.xml
+/Tortuga.Chain/Tortuga.Chain.Core/Tortuga.Chain.Core.xml
+/Tortuga.Chain/Tortuga.Chain.CompiledMaterializers/Tortuga.Chain.CompiledMaterializers.xml
+/Tortuga.Chain/Tortuga.Chain.Access/Tortuga.Chain.Access.xml
