@@ -97,7 +97,7 @@ namespace Tortuga.Chain.Access
             return new AccessUpdateMany(this, tableName, newValues, where, parameters, parameters.Count, options);
         }
 
-        ISingleRowDbCommandBuilder<TObject> OnGetByKey<TObject, TKey>(AccessObjectName tableName, ColumnMetadata<OleDbType> columnMetadata, TKey key)
+        AccessTableOrView<TObject> OnGetByKey<TObject, TKey>(AccessObjectName tableName, ColumnMetadata<OleDbType> columnMetadata, TKey key)
             where TObject : class
         {
             string where = columnMetadata.SqlName + " = @Param0";
@@ -111,7 +111,8 @@ namespace Tortuga.Chain.Access
             return new AccessTableOrView<TObject>(this, tableName, where, parameters);
         }
 
-        MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> OnGetByKeyList<TObject, TKey>(AccessObjectName tableName, ColumnMetadata<OleDbType> columnMetadata, IEnumerable<TKey> keys)
+        AccessTableOrView<TObject> OnGetByKeyList<TObject, TKey>(AccessObjectName tableName, ColumnMetadata<OleDbType> columnMetadata, IEnumerable<TKey> keys)
+            where TObject : class
         {
             var keyList = keys.AsList();
             string where;
@@ -129,7 +130,7 @@ namespace Tortuga.Chain.Access
                 parameters.Add(param);
             }
 
-            return new AccessTableOrView<object>(this, tableName, where, parameters);
+            return new AccessTableOrView<TObject>(this, tableName, where, parameters);
         }
 
         MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> OnDeleteMany(AccessObjectName tableName, string whereClause, object? argumentValue)

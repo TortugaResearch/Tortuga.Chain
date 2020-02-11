@@ -121,7 +121,7 @@ namespace Tortuga.Chain.SQLite
             return new SQLiteUpdateMany(this, tableName, newValues, where, parameters, parameters.Count, options);
         }
 
-        ISingleRowDbCommandBuilder<TObject> OnGetByKey<TObject, TKey>(SQLiteObjectName tableName, ColumnMetadata<DbType> columnMetadata, TKey key)
+        SQLiteTableOrView<TObject> OnGetByKey<TObject, TKey>(SQLiteObjectName tableName, ColumnMetadata<DbType> columnMetadata, TKey key)
             where TObject : class
         {
             string where = columnMetadata.SqlName + " = @Param0";
@@ -135,7 +135,7 @@ namespace Tortuga.Chain.SQLite
             return new SQLiteTableOrView<TObject>(this, tableName, where, parameters);
         }
 
-        MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> OnGetByKeyList<TObject, TKey>(SQLiteObjectName tableName, ColumnMetadata<DbType> columnMetadata, IEnumerable<TKey> keys)
+        SQLiteTableOrView<TObject> OnGetByKeyList<TObject, TKey>(SQLiteObjectName tableName, ColumnMetadata<DbType> columnMetadata, IEnumerable<TKey> keys)
             where TObject : class
         {
             var keyList = keys.AsList();

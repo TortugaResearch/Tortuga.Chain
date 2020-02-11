@@ -19,6 +19,6 @@ namespace Tortuga.Chain.CommandBuilders
         /// </summary>
         /// <param name="rowOptions">The row options.</param>
         /// <returns></returns>
-        IConstructibleMaterializer<TObject?> ToObjectOrNull(RowOptions rowOptions = RowOptions.AllowEmptyResults);
+        IConstructibleMaterializer<TObject?> ToObjectOrNull(RowOptions rowOptions = RowOptions.None);
     }
 }

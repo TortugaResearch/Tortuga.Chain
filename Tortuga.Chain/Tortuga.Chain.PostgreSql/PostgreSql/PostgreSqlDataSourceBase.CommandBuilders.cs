@@ -100,7 +100,7 @@ namespace Tortuga.Chain.PostgreSql
             return new PostgreSqlUpdateMany(this, tableName, newValues, where, parameters, parameters.Count, options);
         }
 
-        ISingleRowDbCommandBuilder<TObject> OnGetByKey<TObject, TKey>(PostgreSqlObjectName tableName, ColumnMetadata<NpgsqlDbType> columnMetadata, TKey key)
+        PostgreSqlTableOrView<TObject> OnGetByKey<TObject, TKey>(PostgreSqlObjectName tableName, ColumnMetadata<NpgsqlDbType> columnMetadata, TKey key)
             where TObject : class
         {
             string where = columnMetadata.SqlName + " = @Param0";
@@ -114,7 +114,7 @@ namespace Tortuga.Chain.PostgreSql
             return new PostgreSqlTableOrView<TObject>(this, tableName, where, parameters);
         }
 
-        MultipleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> OnGetByKeyList<TObject, TKey>(PostgreSqlObjectName tableName, ColumnMetadata<NpgsqlDbType> columnMetadata, IEnumerable<TKey> keys)
+        PostgreSqlTableOrView<TObject> OnGetByKeyList<TObject, TKey>(PostgreSqlObjectName tableName, ColumnMetadata<NpgsqlDbType> columnMetadata, IEnumerable<TKey> keys)
             where TObject : class
         {
             var keyList = keys.AsList();

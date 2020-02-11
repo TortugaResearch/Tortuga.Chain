@@ -99,7 +99,7 @@ namespace Tortuga.Chain.MySql
             return new MySqlUpdateMany(this, tableName, newValues, where, parameters, parameters.Count, options);
         }
 
-        ISingleRowDbCommandBuilder<TObject> OnGetByKey<TObject, TKey>(MySqlObjectName tableName, ColumnMetadata<MySqlDbType> columnMetadata, TKey key)
+        MySqlTableOrView<TObject> OnGetByKey<TObject, TKey>(MySqlObjectName tableName, ColumnMetadata<MySqlDbType> columnMetadata, TKey key)
             where TObject : class
         {
             string where = columnMetadata.SqlName + " = @Param0";
@@ -113,7 +113,7 @@ namespace Tortuga.Chain.MySql
             return new MySqlTableOrView<TObject>(this, tableName, where, parameters);
         }
 
-        MultipleRowDbCommandBuilder<MySqlCommand, MySqlParameter> OnGetByKeyList<TObject, TKey>(MySqlObjectName tableName, ColumnMetadata<MySqlDbType> columnMetadata, IEnumerable<TKey> keys)
+        MySqlTableOrView<TObject> OnGetByKeyList<TObject, TKey>(MySqlObjectName tableName, ColumnMetadata<MySqlDbType> columnMetadata, IEnumerable<TKey> keys)
             where TObject : class
         {
             var keyList = keys.AsList();

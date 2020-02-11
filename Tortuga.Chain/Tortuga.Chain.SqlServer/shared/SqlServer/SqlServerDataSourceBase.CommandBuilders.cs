@@ -249,7 +249,7 @@ namespace Tortuga.Chain.SqlServer
             return new SqlServerUpdateMany(this, tableName, newValues, where, parameters, parameters.Count, options);
         }
 
-        ISingleRowDbCommandBuilder<TObject> OnGetByKey<TObject, TKey>(SqlServerObjectName tableName, ColumnMetadata<SqlDbType> columnMetadata, TKey key)
+        SqlServerTableOrView<TObject> OnGetByKey<TObject, TKey>(SqlServerObjectName tableName, ColumnMetadata<SqlDbType> columnMetadata, TKey key)
             where TObject : class
         {
             var where = columnMetadata.SqlName + " = @Param0";
@@ -263,7 +263,7 @@ namespace Tortuga.Chain.SqlServer
             return new SqlServerTableOrView<TObject>(this, tableName, where, parameters);
         }
 
-        MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> OnGetByKeyList<TObject, TKey>(SqlServerObjectName tableName, ColumnMetadata<SqlDbType> columnMetadata, IEnumerable<TKey> keys)
+        SqlServerTableOrView<TObject> OnGetByKeyList<TObject, TKey>(SqlServerObjectName tableName, ColumnMetadata<SqlDbType> columnMetadata, IEnumerable<TKey> keys)
             where TObject : class
         {
             var keyList = keys.AsList();

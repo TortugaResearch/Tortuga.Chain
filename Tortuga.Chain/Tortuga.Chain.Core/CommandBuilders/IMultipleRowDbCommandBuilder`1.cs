@@ -56,20 +56,6 @@ namespace Tortuga.Chain.CommandBuilders
         IConstructibleMaterializer<ImmutableList<TObject>> ToImmutableList(CollectionOptions collectionOptions = CollectionOptions.None);
 
         /// <summary>
-        /// Materializes the result as an instance of the indicated type
-        /// </summary>
-        /// <param name="rowOptions">The row options.</param>
-        /// <returns></returns>
-        IConstructibleMaterializer<TObject> ToObject(RowOptions rowOptions = RowOptions.None);
-
-        /// <summary>
-        /// Materializes the result as an instance of the indicated type
-        /// </summary>
-        /// <param name="rowOptions">The row options.</param>
-        /// <returns></returns>
-        IConstructibleMaterializer<TObject?> ToObjectOrNull(RowOptions rowOptions = RowOptions.None);
-
-        /// <summary>
         /// Materializes the result as a immutable dictionary of objects.
         /// </summary>
         /// <typeparam name="TKey">The type of the key.</typeparam>

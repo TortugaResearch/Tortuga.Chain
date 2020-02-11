@@ -94,7 +94,7 @@ namespace Tortuga.Chain.SqlServer
             return new OleDbSqlServerUpdateMany(this, tableName, newValues, where, parameters, parameters.Count, options);
         }
 
-        ISingleRowDbCommandBuilder<TObject> OnGetByKey<TObject, TKey>(SqlServerObjectName tableName, ColumnMetadata<OleDbType> columnMetadata, TKey key)
+        OleDbSqlServerTableOrView<TObject> OnGetByKey<TObject, TKey>(SqlServerObjectName tableName, ColumnMetadata<OleDbType> columnMetadata, TKey key)
             where TObject : class
         {
             string where = columnMetadata.SqlName + " = ?";
@@ -108,7 +108,7 @@ namespace Tortuga.Chain.SqlServer
             return new OleDbSqlServerTableOrView<TObject>(this, tableName, where, parameters);
         }
 
-        MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> OnGetByKeyList<TObject, TKey>(SqlServerObjectName tableName, ColumnMetadata<OleDbType> columnMetadata, IEnumerable<TKey> keys)
+        OleDbSqlServerTableOrView<TObject> OnGetByKeyList<TObject, TKey>(SqlServerObjectName tableName, ColumnMetadata<OleDbType> columnMetadata, IEnumerable<TKey> keys)
             where TObject : class
         {
             var keyList = keys.AsList();
