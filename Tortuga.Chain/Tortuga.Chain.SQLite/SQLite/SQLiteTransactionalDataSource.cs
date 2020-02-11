@@ -7,20 +7,19 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 using Tortuga.Chain.Core;
-using Tortuga.Chain.DataSources;
 
 namespace Tortuga.Chain.SQLite
 {
     /// <summary>
     /// Class SQLiteTransactionalDataSource
     /// </summary>
-    public class SQLiteTransactionalDataSource : SQLiteDataSourceBase, IDisposable, ITransactionalDataSource
+
+    public partial class SQLiteTransactionalDataSource : SQLiteDataSourceBase
     {
-        readonly SQLiteDataSource m_BaseDataSource;
-        readonly SQLiteConnection m_Connection;
-        readonly SQLiteTransaction m_Transaction;
-        bool m_Disposed;
-        IDisposable m_LockToken;
+        private readonly SQLiteDataSource m_BaseDataSource;
+
+        [SuppressMessage("Microsoft.Usage", "CA2213")]
+        private IDisposable m_LockToken;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SQLiteTransactionalDataSource"/> class.
@@ -98,14 +97,6 @@ namespace Tortuga.Chain.SQLite
         }
 
         /// <summary>
-        /// Gets or sets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
-        /// </summary>
-        public override ICacheAdapter Cache
-        {
-            get { return m_BaseDataSource.Cache; }
-        }
-
-        /// <summary>
         /// Gets the database metadata.
         /// </summary>
         /// <value>The database metadata.</value>
@@ -117,102 +108,6 @@ namespace Tortuga.Chain.SQLite
         internal override AsyncReaderWriterLock SyncLock
         {
             get { return m_BaseDataSource.SyncLock; }
-        }
-
-        /// <summary>
-        /// The extension cache is used by extensions to store data source specific information.
-        /// </summary>
-        /// <value>
-        /// The extension cache.
-        /// </value>
-        protected override ConcurrentDictionary<Type, object> ExtensionCache
-        {
-            get { return m_BaseDataSource.m_ExtensionCache; }
-        }
-
-        /// <summary>
-        /// Commits this instance.
-        /// </summary>
-        /// <exception cref="ObjectDisposedException">Transaction is disposed.</exception>
-        public void Commit()
-        {
-            if (m_Disposed)
-                throw new ObjectDisposedException("Transaction is disposed.");
-
-            m_Transaction.Commit();
-            Dispose(true);
-        }
-
-        /// <summary>
-        /// Disposes this instance.
-        /// </summary>
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>
-        /// Gets the extension data.
-        /// </summary>
-        /// <typeparam name="TTKey">The type of extension data desired.</typeparam>
-        /// <returns>T.</returns>
-        /// <remarks>Chain extensions can use this to store data source specific data. The key should be a data type defined by the extension.
-        /// Transactional data sources should override this method and return the value held by their parent data source.</remarks>
-        public override TTKey GetExtensionData<TTKey>()
-        {
-            return m_BaseDataSource.GetExtensionData<TTKey>();
-        }
-
-        /// <summary>
-        /// Rolls the back.
-        /// </summary>
-        /// <exception cref="ObjectDisposedException">Transaction is disposed.</exception>
-        public void Rollback()
-        {
-            if (m_Disposed)
-                throw new ObjectDisposedException("Transaction is disposed.");
-
-            m_Transaction.Rollback();
-            Dispose(true);
-        }
-
-        /// <summary>
-        /// Tests the connection.
-        /// </summary>
-        public override void TestConnection()
-        {
-            using (var cmd = new SQLiteCommand("SELECT 1", m_Connection))
-                cmd.ExecuteScalar();
-        }
-
-        /// <summary>
-        /// Tests the connection asynchronously.
-        /// </summary>
-        /// <returns></returns>
-        public override async Task TestConnectionAsync()
-        {
-            using (var cmd = new SQLiteCommand("SELECT 1", m_Connection))
-                await cmd.ExecuteScalarAsync().ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// Releases unmanaged and - optionally - managed resources.
-        /// </summary>
-        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
-        protected virtual void Dispose(bool disposing)
-        {
-            if (m_Disposed)
-                return;
-
-            if (disposing)
-            {
-                m_Transaction.Dispose();
-                m_Connection.Dispose();
-                if (m_LockToken != null)
-                    m_LockToken.Dispose();
-                m_Disposed = true;
-            }
         }
 
         /// <summary>
@@ -397,6 +292,12 @@ namespace Tortuga.Chain.SQLite
                     throw;
                 }
             }
+        }
+
+        partial void AdditionalDispose()
+        {
+            if (m_LockToken != null)
+                m_LockToken.Dispose();
         }
     }
 }

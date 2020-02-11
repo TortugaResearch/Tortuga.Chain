@@ -152,8 +152,8 @@ namespace Tests.CommandBuilders
                 if (primaryColumn == null) //SQLite
                     primaryColumn = employeeTable.Columns.SingleOrDefault(c => c.IsPrimaryKey);
 
-                //Skipping ahead by 5
-                var nextKey = 5 + dataSource.Sql($"SELECT Max({primaryColumn.QuotedSqlName}) FROM {employeeTable.Name.ToQuotedString()}").ToInt32().Execute();
+                //Skipping ahead by 500
+                var nextKey = 500 + dataSource.Sql($"SELECT Max({primaryColumn.QuotedSqlName}) FROM {employeeTable.Name.ToQuotedString()}").ToInt32().Execute();
 
                 for (var i = 0; i < 1000; i++)
                     employeeList.Add(new Employee() { EmployeeKey = nextKey + i, FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = key1000 });

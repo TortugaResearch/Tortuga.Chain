@@ -300,7 +300,7 @@ namespace Tortuga.Chain.Access
         /// <param name="tableName">Name of the table.</param>
         /// <param name="key">The key.</param>
         /// <returns>MultipleRowDbCommandBuilder&lt;AbstractCommand, AbstractParameter&gt;.</returns>
-        public SingleRowDbCommandBuilder<AbstractCommand, AbstractParameter> GetByKey<TKey>(string tableName, TKey key)
+        public ISingleRowDbCommandBuilder GetByKey<TKey>(string tableName, TKey key)
             where TKey : struct
         {
             return GetByKey<TKey>(new AbstractObjectName(tableName), key);
@@ -312,7 +312,7 @@ namespace Tortuga.Chain.Access
         /// <param name="tableName">Name of the table.</param>
         /// <param name="key">The key.</param>
         /// <returns>MultipleRowDbCommandBuilder&lt;AbstractCommand, AbstractParameter&gt;.</returns>
-        public SingleRowDbCommandBuilder<AbstractCommand, AbstractParameter> GetByKey(string tableName, string key)
+        public ISingleRowDbCommandBuilder GetByKey(string tableName, string key)
         {
             return GetByKey(new AbstractObjectName(tableName), key);
         }

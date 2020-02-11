@@ -37,6 +37,13 @@ namespace Tortuga.Chain.DataSources
         Task<DbConnection> CreateConnectionAsync();
 
         /// <summary>
+        /// Creates an open data source with a new connection.
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>WARNING: The caller of this method is responsible for closing the connection.</remarks>
+        IOpenDataSource CreateOpenDataSource();
+
+        /// <summary>
         /// Creates an open data source using the supplied connection and optional transaction.
         /// </summary>
         /// <param name="connection">The connection to wrap.</param>

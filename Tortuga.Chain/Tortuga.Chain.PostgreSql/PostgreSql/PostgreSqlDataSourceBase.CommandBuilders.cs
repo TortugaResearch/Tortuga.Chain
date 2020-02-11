@@ -100,7 +100,22 @@ namespace Tortuga.Chain.PostgreSql
             return new PostgreSqlUpdateMany(this, tableName, newValues, where, parameters, parameters.Count, options);
         }
 
-        MultipleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> GetByKeyList<T>(PostgreSqlObjectName tableName, ColumnMetadata<NpgsqlDbType> columnMetadata, IEnumerable<T> keys)
+        PostgreSqlTableOrView<TObject> OnGetByKey<TObject, TKey>(PostgreSqlObjectName tableName, ColumnMetadata<NpgsqlDbType> columnMetadata, TKey key)
+            where TObject : class
+        {
+            string where = columnMetadata.SqlName + " = @Param0";
+
+            var parameters = new List<NpgsqlParameter>();
+            var param = new NpgsqlParameter("@Param0", key);
+            if (columnMetadata.DbType.HasValue)
+                param.NpgsqlDbType = columnMetadata.DbType.Value;
+            parameters.Add(param);
+
+            return new PostgreSqlTableOrView<TObject>(this, tableName, where, parameters);
+        }
+
+        PostgreSqlTableOrView<TObject> OnGetByKeyList<TObject, TKey>(PostgreSqlObjectName tableName, ColumnMetadata<NpgsqlDbType> columnMetadata, IEnumerable<TKey> keys)
+            where TObject : class
         {
             var keyList = keys.AsList();
             string where;
@@ -118,7 +133,7 @@ namespace Tortuga.Chain.PostgreSql
                 parameters.Add(param);
             }
 
-            return new PostgreSqlTableOrView<object>(this, tableName, where, parameters);
+            return new PostgreSqlTableOrView<TObject>(this, tableName, where, parameters);
         }
 
         MultipleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> OnDeleteMany(PostgreSqlObjectName tableName, string whereClause, object? argumentValue)

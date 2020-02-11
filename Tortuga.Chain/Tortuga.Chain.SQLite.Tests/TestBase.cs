@@ -13,34 +13,12 @@ namespace Tests
 {
     public abstract partial class TestBase
     {
+        public const string EmployeeTableName = "Employee";
+        public const string EmployeeViewName = "EmployeeWithManager";
         internal static readonly Dictionary<string, SQLiteDataSource> s_DataSources = new Dictionary<string, SQLiteDataSource>();
         internal static SQLiteDataSource s_PrimaryDataSource;
 
-        internal static void SetupTestBase()
-        {
-            if (s_PrimaryDataSource != null)
-                return; //run once check
-
-            Setup.CreateDatabase();
-            var configuration = new ConfigurationBuilder().SetBasePath(AppContext.BaseDirectory).AddJsonFile("appsettings.json").Build();
-
-            foreach (var con in configuration.GetSection("ConnectionStrings").GetChildren())
-            {
-                var ds = new SQLiteDataSource(con.Key, con.Value);
-                if (s_PrimaryDataSource == null)
-                    s_PrimaryDataSource = ds;
-
-                s_DataSources.Add(con.Key, ds);
-            }
-
-            BuildEmployeeSearchKey1000(s_PrimaryDataSource);
-        }
-
         public static string CustomerTableName { get { return "Customer"; } }
-
-        public static string EmployeeTableName { get { return "Employee"; } }
-
-        public static string EmployeeViewName { get { return "EmployeeWithManager"; } }
 
         public SQLiteDataSource AttachRules(SQLiteDataSource source)
         {
@@ -58,7 +36,7 @@ namespace Tests
             var currentUser1 = source.From(EmployeeTableName).WithLimits(1).ToObject<Employee>().Execute();
 
             return source.WithRules(
-                new SoftDeleteRule("DeletedFlag", true, OperationTypes.SelectOrDelete),
+                new SoftDeleteRule("DeletedFlag", true),
                 new UserDataRule("DeletedByKey", "EmployeeKey", OperationTypes.Delete),
                 new DateTimeRule("DeletedDate", DateTimeKind.Local, OperationTypes.Delete)
                 ).WithUser(currentUser1);
@@ -103,6 +81,26 @@ namespace Tests
                     return AttachTracers((SQLiteDataSourceBase)root.CreateOpenDataSource(await root.CreateConnectionAsync(), null));
             }
             throw new ArgumentException($"Unknown mode {mode}");
+        }
+
+        internal static void SetupTestBase()
+        {
+            if (s_PrimaryDataSource != null)
+                return; //run once check
+
+            Setup.CreateDatabase();
+            var configuration = new ConfigurationBuilder().SetBasePath(AppContext.BaseDirectory).AddJsonFile("appsettings.json").Build();
+
+            foreach (var con in configuration.GetSection("ConnectionStrings").GetChildren())
+            {
+                var ds = new SQLiteDataSource(con.Key, con.Value);
+                if (s_PrimaryDataSource == null)
+                    s_PrimaryDataSource = ds;
+
+                s_DataSources.Add(con.Key, ds);
+            }
+
+            BuildEmployeeSearchKey1000(s_PrimaryDataSource);
         }
 
         void WriteDetails(ExecutionEventArgs e)

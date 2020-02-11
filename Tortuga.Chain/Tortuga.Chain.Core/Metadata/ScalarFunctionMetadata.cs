@@ -3,7 +3,7 @@ namespace Tortuga.Chain.Metadata
     /// <summary>
     /// Class TableFunctionMetadata.
     /// </summary>
-    public abstract class ScalarFunctionMetadata
+    public abstract class ScalarFunctionMetadata : DatabaseObject
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ScalarFunctionMetadata"/> class.
@@ -17,9 +17,8 @@ namespace Tortuga.Chain.Metadata
         /// <param name="precision">The precision.</param>
         /// <param name="scale">The scale.</param>
         /// <param name="fullTypeName">Full name of the type.</param>
-        protected ScalarFunctionMetadata(string name, ParameterMetadataCollection parameters, string typeName, object? dbType, bool isNullable, int? maxLength, int? precision, int? scale, string fullTypeName)
+        protected ScalarFunctionMetadata(string name, ParameterMetadataCollection parameters, string typeName, object? dbType, bool isNullable, int? maxLength, int? precision, int? scale, string fullTypeName) : base(name)
         {
-            Name = name;
             Parameters = parameters;
             TypeName = typeName;
             DbType = dbType;
@@ -58,14 +57,6 @@ namespace Tortuga.Chain.Metadata
         /// The maximum length.
         /// </value>
         public int? MaxLength { get; }
-
-        /// <summary>
-        /// Gets the name.
-        /// </summary>
-        /// <value>
-        /// The name.
-        /// </value>
-        public string Name { get; }
 
         /// <summary>
         /// Gets the parameters.

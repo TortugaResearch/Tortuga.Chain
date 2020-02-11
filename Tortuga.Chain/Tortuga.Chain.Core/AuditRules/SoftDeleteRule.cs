@@ -15,7 +15,7 @@ namespace Tortuga.Chain.AuditRules
         /// <param name="deletedValue">The value that represents a deleted row.</param>
         /// <param name="appliesWhen">The rule can be applied to delete and/or select operations.</param>
         /// <exception cref="ArgumentOutOfRangeException">appliesWhen;appliesWhen may only be Select or Delete</exception>
-        public SoftDeleteRule(string columnName, object deletedValue, OperationTypes appliesWhen) : base(columnName, appliesWhen)
+        public SoftDeleteRule(string columnName, object deletedValue, OperationTypes appliesWhen = OperationTypes.SelectOrDelete) : base(columnName, appliesWhen)
         {
             switch (appliesWhen)
             {

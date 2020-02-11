@@ -47,7 +47,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="rowOptions">The row options.</param>
         /// <returns></returns>
         /// <remarks>To update the argumentValue itself, use WithRefresh() instead.</remarks>
-        public ILink<TArgument?> ToObjectOrNull(RowOptions rowOptions = RowOptions.AllowEmptyResults) => new ObjectOrNullMaterializer<TCommand, TParameter, TArgument>(this, rowOptions);
+        public ILink<TArgument?> ToObjectOrNull(RowOptions rowOptions = RowOptions.None) => new ObjectOrNullMaterializer<TCommand, TParameter, TArgument>(this, rowOptions);
 
         /// <summary>
         /// Materializes the result as a new instance of the same type as the argumentValue
@@ -57,9 +57,6 @@ namespace Tortuga.Chain.CommandBuilders
         /// <remarks>To update the argumentValue itself, use WithRefresh() instead.</remarks>
         public ILink<TArgument> ToObject(RowOptions rowOptions = RowOptions.None)
         {
-            if (rowOptions.HasFlag(RowOptions.AllowEmptyResults))
-                throw new ArgumentException($"Cannot use {nameof(RowOptions)}.{nameof(RowOptions.AllowEmptyResults)} with {nameof(ToObject)}. Use {nameof(ToObjectOrNull)} instead.", nameof(rowOptions));
-
             return new ObjectMaterializer<TCommand, TParameter, TArgument>(this, rowOptions);
         }
 

@@ -2,10 +2,13 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Tortuga.Chain.CommandBuilders;
+using Tortuga.Chain.Metadata;
+using System;
 
 #if SQL_SERVER_SDS
 
 using AbstractCommand = System.Data.SqlClient.SqlCommand;
+using AbstractDbType = System.Data.SqlDbType;
 using AbstractParameter = System.Data.SqlClient.SqlParameter;
 using AbstractObjectName = Tortuga.Chain.SqlServer.SqlServerObjectName;
 using AbstractLimitOption = Tortuga.Chain.SqlServerLimitOption;
@@ -13,6 +16,7 @@ using AbstractLimitOption = Tortuga.Chain.SqlServerLimitOption;
 #elif SQL_SERVER_MDS
 
 using AbstractCommand = Microsoft.Data.SqlClient.SqlCommand;
+using AbstractDbType = System.Data.SqlDbType;
 using AbstractParameter = Microsoft.Data.SqlClient.SqlParameter;
 using AbstractObjectName = Tortuga.Chain.SqlServer.SqlServerObjectName;
 using AbstractLimitOption = Tortuga.Chain.SqlServerLimitOption;
@@ -20,6 +24,7 @@ using AbstractLimitOption = Tortuga.Chain.SqlServerLimitOption;
 #elif SQL_SERVER_OLEDB
 
 using AbstractCommand = System.Data.OleDb.OleDbCommand;
+using AbstractDbType = System.Data.OleDb.OleDbType;
 using AbstractLimitOption = Tortuga.Chain.SqlServerLimitOption;
 using AbstractObjectName = Tortuga.Chain.SqlServer.SqlServerObjectName;
 using AbstractParameter = System.Data.OleDb.OleDbParameter;
@@ -27,6 +32,7 @@ using AbstractParameter = System.Data.OleDb.OleDbParameter;
 #elif SQLITE
 
 using AbstractCommand = System.Data.SQLite.SQLiteCommand;
+using AbstractDbType = System.Data.DbType;
 using AbstractParameter = System.Data.SQLite.SQLiteParameter;
 using AbstractObjectName = Tortuga.Chain.SQLite.SQLiteObjectName;
 using AbstractLimitOption = Tortuga.Chain.SQLiteLimitOption;
@@ -34,6 +40,7 @@ using AbstractLimitOption = Tortuga.Chain.SQLiteLimitOption;
 #elif MYSQL
 
 using AbstractCommand = MySql.Data.MySqlClient.MySqlCommand;
+using AbstractDbType = MySql.Data.MySqlClient.MySqlDbType;
 using AbstractParameter = MySql.Data.MySqlClient.MySqlParameter;
 using AbstractObjectName = Tortuga.Chain.MySql.MySqlObjectName;
 using AbstractLimitOption = Tortuga.Chain.MySqlLimitOption;
@@ -41,6 +48,7 @@ using AbstractLimitOption = Tortuga.Chain.MySqlLimitOption;
 #elif POSTGRESQL
 
 using AbstractCommand = Npgsql.NpgsqlCommand;
+using AbstractDbType = NpgsqlTypes.NpgsqlDbType;
 using AbstractParameter = Npgsql.NpgsqlParameter;
 using AbstractObjectName = Tortuga.Chain.PostgreSql.PostgreSqlObjectName;
 using AbstractLimitOption = Tortuga.Chain.PostgreSqlLimitOption;
@@ -48,9 +56,10 @@ using AbstractLimitOption = Tortuga.Chain.PostgreSqlLimitOption;
 #elif ACCESS
 
 using AbstractCommand = System.Data.OleDb.OleDbCommand;
+using AbstractDbType = System.Data.OleDb.OleDbType;
+using AbstractParameter = System.Data.OleDb.OleDbParameter;
 using AbstractLimitOption = Tortuga.Chain.AccessLimitOption;
 using AbstractObjectName = Tortuga.Chain.Access.AccessObjectName;
-using AbstractParameter = System.Data.OleDb.OleDbParameter;
 
 #endif
 
@@ -154,10 +163,57 @@ namespace Tortuga.Chain.Access
         /// <param name="tableName">Name of the table.</param>
         /// <param name="key">The key.</param>
         /// <param name="options">The options.</param>
-        /// <returns>MultipleRowDbCommandBuilder&lt;AbstractCommand, AbstractParameter&gt;.</returns>
         public SingleRowDbCommandBuilder<AbstractCommand, AbstractParameter> DeleteByKey(AbstractObjectName tableName, string key, DeleteOptions options = DeleteOptions.None)
         {
             return DeleteByKeyList(tableName, new List<string> { key }, options);
+        }
+
+        /// <summary>
+        /// Delete a record by its primary key.
+        /// </summary>
+        /// <typeparam name="TObject">Used to determine the table name</typeparam>
+        /// <param name="key">The key.</param>
+        /// <param name="options">The options.</param>
+        public SingleRowDbCommandBuilder<AbstractCommand, AbstractParameter> DeleteByKey<TObject>(Guid key, DeleteOptions options = DeleteOptions.None)
+            where TObject : class
+        {
+            return DeleteByKey<Guid>(DatabaseObjectAsTableOrView<TObject>(OperationType.All).Name, key, options);
+        }
+
+        /// <summary>
+        /// Delete a record by its primary key.
+        /// </summary>
+        /// <typeparam name="TObject">Used to determine the table name</typeparam>
+        /// <param name="key">The key.</param>
+        /// <param name="options">The options.</param>
+        public SingleRowDbCommandBuilder<AbstractCommand, AbstractParameter> DeleteByKey<TObject>(long key, DeleteOptions options = DeleteOptions.None)
+            where TObject : class
+        {
+            return DeleteByKey<long>(DatabaseObjectAsTableOrView<TObject>(OperationType.All).Name, key, options);
+        }
+
+        /// <summary>
+        /// Delete a record by its primary key.
+        /// </summary>
+        /// <typeparam name="TObject">Used to determine the table name</typeparam>
+        /// <param name="key">The key.</param>
+        /// <param name="options">The options.</param>
+        public SingleRowDbCommandBuilder<AbstractCommand, AbstractParameter> DeleteByKey<TObject>(int key, DeleteOptions options = DeleteOptions.None)
+          where TObject : class
+        {
+            return DeleteByKey<int>(DatabaseObjectAsTableOrView<TObject>(OperationType.All).Name, key, options);
+        }
+
+        /// <summary>
+        /// Delete a record by its primary key.
+        /// </summary>
+        /// <typeparam name="TObject">Used to determine the table name</typeparam>
+        /// <param name="key">The key.</param>
+        /// <param name="options">The options.</param>
+        public SingleRowDbCommandBuilder<AbstractCommand, AbstractParameter> DeleteByKey<TObject>(string key, DeleteOptions options = DeleteOptions.None)
+            where TObject : class
+        {
+            return DeleteByKey(DatabaseObjectAsTableOrView<TObject>(OperationType.All).Name, key, options);
         }
 
         /// <summary>
@@ -172,6 +228,16 @@ namespace Tortuga.Chain.Access
                 return OnDeleteMany(tableName, whereClause, null);
 
             return OnUpdateMany(tableName, null, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected).WithFilter(whereClause, null);
+        }
+
+        /// <summary>
+        /// Delete multiple records using a where expression.
+        /// </summary>
+        /// <param name="whereClause">The where clause.</param>
+        public MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> DeleteWithFilter<TObject>(string whereClause)
+        {
+            var tableName = DatabaseObjectAsTableOrView<TObject>(OperationType.All).Name;
+            return DeleteWithFilter(tableName, whereClause);
         }
 
         /// <summary>
@@ -255,7 +321,7 @@ namespace Tortuga.Chain.Access
         [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         public TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption, TObject> From<TObject>() where TObject : class
         {
-            return OnFromTableOrView<TObject>(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, null, null);
+            return OnFromTableOrView<TObject>(DatabaseObjectAsTableOrView<TObject>(OperationType.Select).Name, null, null);
         }
 
         /// <summary>
@@ -267,7 +333,7 @@ namespace Tortuga.Chain.Access
         [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         public TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption, TObject> From<TObject>(string whereClause) where TObject : class
         {
-            return OnFromTableOrView<TObject>(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, whereClause, null);
+            return OnFromTableOrView<TObject>(DatabaseObjectAsTableOrView<TObject>(OperationType.Select).Name, whereClause, null);
         }
 
         /// <summary>
@@ -280,7 +346,7 @@ namespace Tortuga.Chain.Access
         [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         public TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption, TObject> From<TObject>(string whereClause, object argumentValue) where TObject : class
         {
-            return OnFromTableOrView<TObject>(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, whereClause, argumentValue);
+            return OnFromTableOrView<TObject>(DatabaseObjectAsTableOrView<TObject>(OperationType.Select).Name, whereClause, argumentValue);
         }
 
         /// <summary>
@@ -288,11 +354,12 @@ namespace Tortuga.Chain.Access
         /// </summary>
         /// <typeparam name="TObject">The type of the object.</typeparam>
         /// <param name="filterValue">The filter value is used to generate a simple AND style WHERE clause.</param>
-        /// <returns></returns>
+        /// <param name="filterOptions">The filter options.</param>
+        /// <returns>TableDbCommandBuilder&lt;AbstractCommand, AbstractParameter, AbstractLimitOption, TObject&gt;.</returns>
         [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-        public TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption, TObject> From<TObject>(object filterValue) where TObject : class
+        public TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption, TObject> From<TObject>(object filterValue, FilterOptions filterOptions = FilterOptions.None) where TObject : class
         {
-            return OnFromTableOrView<TObject>(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, filterValue, FilterOptions.None);
+            return OnFromTableOrView<TObject>(DatabaseObjectAsTableOrView<TObject>(OperationType.Select).Name, filterValue, filterOptions);
         }
 
         /// <summary>
@@ -311,6 +378,17 @@ namespace Tortuga.Chain.Access
         }
 
         /// <summary>
+        /// Delete multiple records using a filter object.
+        /// </summary>
+        /// <param name="filterValue">The filter value.</param>
+        /// <param name="filterOptions">The options.</param>
+        public MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> DeleteWithFilter<TObject>(object filterValue, FilterOptions filterOptions = FilterOptions.None)
+        {
+            var tableName = DatabaseObjectAsTableOrView<TObject>(OperationType.All).Name;
+            return DeleteWithFilter(tableName, filterValue, filterOptions);
+        }
+
+        /// <summary>
         /// Delete multiple records using a where expression.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
@@ -323,6 +401,17 @@ namespace Tortuga.Chain.Access
                 return OnDeleteMany(tableName, whereClause, argumentValue);
 
             return OnUpdateMany(tableName, null, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected).WithFilter(whereClause, argumentValue);
+        }
+
+        /// <summary>
+        /// Delete multiple records using a where expression.
+        /// </summary>
+        /// <param name="whereClause">The where clause.</param>
+        /// <param name="argumentValue">The argument value for the where clause.</param>
+        public MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> DeleteWithFilter<TObject>(string whereClause, object argumentValue)
+        {
+            var tableName = DatabaseObjectAsTableOrView<TObject>(OperationType.All).Name;
+            return DeleteWithFilter(tableName, whereClause, argumentValue);
         }
 
         /// <summary>
@@ -353,14 +442,52 @@ namespace Tortuga.Chain.Access
         /// <summary>
         /// Gets a record by its primary key.
         /// </summary>
-        /// <typeparam name="TKey"></typeparam>
-        /// <param name="tableName">Name of the table.</param>
+        /// <typeparam name="TObject">The type of the object. Used to determine which table will be read.</typeparam>
         /// <param name="key">The key.</param>
-        /// <returns>MultipleRowDbCommandBuilder&lt;OleDbCommand, OleDbParameter&gt;.</returns>
-        public SingleRowDbCommandBuilder<AbstractCommand, AbstractParameter> GetByKey<TKey>(AbstractObjectName tableName, TKey key)
-            where TKey : struct
+        /// <returns></returns>
+        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
+        public SingleRowDbCommandBuilder<AbstractCommand, AbstractParameter, TObject> GetByKey<TObject>(Guid key)
+            where TObject : class
         {
-            return GetByKeyList(tableName, keys: (IEnumerable<TKey>)new List<TKey> { key });
+            return GetByKey<TObject, Guid>(DatabaseObjectAsTableOrView<TObject>(OperationType.Select).Name, key);
+        }
+
+        /// <summary>
+        /// Gets a record by its primary key.
+        /// </summary>
+        /// <typeparam name="TObject">The type of the object.</typeparam>
+        /// <param name="key">The key.</param>
+        /// <returns></returns>
+        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
+        public SingleRowDbCommandBuilder<AbstractCommand, AbstractParameter, TObject> GetByKey<TObject>(long key)
+            where TObject : class
+        {
+            return GetByKey<TObject, long>(DatabaseObjectAsTableOrView<TObject>(OperationType.Select).Name, key);
+        }
+
+        /// <summary>
+        /// Gets a record by its primary key.
+        /// </summary>
+        /// <typeparam name="TObject">The type of the object.</typeparam>
+        /// <param name="key">The key.</param>
+        /// <returns></returns>
+        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
+        public SingleRowDbCommandBuilder<AbstractCommand, AbstractParameter, TObject> GetByKey<TObject>(int key)
+            where TObject : class
+        {
+            return GetByKey<TObject, int>(DatabaseObjectAsTableOrView<TObject>(OperationType.Select).Name, key);
+        }
+
+        /// <summary>
+        /// Gets a record by its primary key.
+        /// </summary>
+        /// <typeparam name="TObject">The type of the object.</typeparam>
+        /// <param name="key">The key.</param>
+        /// <returns></returns>
+        public SingleRowDbCommandBuilder<AbstractCommand, AbstractParameter, TObject> GetByKey<TObject>(string key)
+            where TObject : class
+        {
+            return GetByKey<TObject, string>(DatabaseObjectAsTableOrView<TObject>(OperationType.Select).Name, key);
         }
 
         /// <summary>
@@ -368,10 +495,9 @@ namespace Tortuga.Chain.Access
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="key">The key.</param>
-        /// <returns>MultipleRowDbCommandBuilder&lt;OleDbCommand, OleDbParameter&gt;.</returns>
         public SingleRowDbCommandBuilder<AbstractCommand, AbstractParameter> GetByKey(AbstractObjectName tableName, string key)
         {
-            return GetByKeyList(tableName, keys: (IEnumerable<string>)new List<string> { key });
+            return GetByKey<string>(tableName, key);
         }
 
         /// <summary>
@@ -439,21 +565,57 @@ namespace Tortuga.Chain.Access
         }
 
         /// <summary>
-        /// Gets a set of records by their primary key.
+        /// Gets a record by its primary key.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TKey"></typeparam>
+        /// <typeparam name="TObject">The type of the object. Used to determine which table will be read.</typeparam>
         /// <param name="tableName">Name of the table.</param>
-        /// <param name="keys">The keys.</param>
-        /// <returns></returns>
+        /// <param name="key">The key.</param>
         /// <remarks>This only works on tables that have a scalar primary key.</remarks>
         [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "GetByKeyList")]
-        public MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> GetByKeyList<T>(AbstractObjectName tableName, IEnumerable<T> keys)
+        public SingleRowDbCommandBuilder<AbstractCommand, AbstractParameter, TObject> GetByKey<TObject, TKey>(AbstractObjectName tableName, TKey key)
+        where TObject : class
         {
             var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).PrimaryKeyColumns;
             if (primaryKeys.Count != 1)
                 throw new MappingException($"{nameof(GetByKeyList)} operation isn't allowed on {tableName} because it doesn't have a single primary key. Use DataSource.From instead.");
 
-            return GetByKeyList<T>(tableName, primaryKeys.Single(), keys);
+            return new SingleRowDbCommandBuilder<AbstractCommand, AbstractParameter, TObject>(OnGetByKey<TObject, TKey>(tableName, primaryKeys.Single(), key));
+        }
+
+        /// <summary>
+        /// Gets a record by its primary key.
+        /// </summary>
+        /// <typeparam name="TKey"></typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="key">The key.</param>
+        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
+        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "GetByKeyList")]
+        public SingleRowDbCommandBuilder<AbstractCommand, AbstractParameter> GetByKey<TKey>(AbstractObjectName tableName, TKey key)
+        {
+            var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).PrimaryKeyColumns;
+            if (primaryKeys.Count != 1)
+                throw new MappingException($"{nameof(GetByKeyList)} operation isn't allowed on {tableName} because it doesn't have a single primary key. Use DataSource.From instead.");
+
+            return OnGetByKey<object, TKey>(tableName, primaryKeys.Single(), key);
+        }
+
+        /// <summary>
+        /// Gets a set of records by their primary key.
+        /// </summary>
+        /// <typeparam name="TKey"></typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="keys">The keys.</param>
+        /// <returns></returns>
+        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
+        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "GetByKeyList")]
+        public MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> GetByKeyList<TKey>(AbstractObjectName tableName, IEnumerable<TKey> keys)
+        {
+            var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).PrimaryKeyColumns;
+            if (primaryKeys.Count != 1)
+                throw new MappingException($"{nameof(GetByKeyList)} operation isn't allowed on {tableName} because it doesn't have a single primary key. Use DataSource.From instead.");
+
+            return OnGetByKeyList<object, TKey>(tableName, primaryKeys.Single(), keys);
         }
 
         /// <summary>
@@ -472,7 +634,7 @@ namespace Tortuga.Chain.Access
             if (primaryKeys.Count == 0)
                 throw new MappingException($"Cannot find a column named {keyColumn} on table {tableName}.");
 
-            return GetByKeyList<T>(tableName, primaryKeys.Single(), keys);
+            return OnGetByKeyList<object, T>(tableName, primaryKeys.Single(), keys);
         }
 
 #if !ACCESS
@@ -503,6 +665,22 @@ namespace Tortuga.Chain.Access
         }
 
 #endif
+
+        TableOrViewMetadata<AbstractObjectName, AbstractDbType> DatabaseObjectAsTableOrView<TObject>(OperationType operationType)
+        {
+            var databaseObject = DatabaseMetadata.GetDatabaseObjectFromClass<TObject>(operationType);
+
+            if (databaseObject is TableOrViewMetadata<AbstractObjectName, AbstractDbType> table)
+                return table;
+            else if (databaseObject is StoredProcedureMetadata<AbstractObjectName, AbstractDbType>)
+                throw new ArgumentException($"Table or view expected. Use `Procedure<TObject>(value, OperationType.{operationType})` instead.");
+            else if (databaseObject is TableFunctionMetadata<AbstractObjectName, AbstractDbType>)
+                throw new ArgumentException($"Table or view expected. Use `TableFunction<TObject>(value, OperationType.{operationType})` instead.");
+            else if (databaseObject is ScalarFunctionMetadata<AbstractObjectName, AbstractDbType>)
+                throw new ArgumentException($"Table or view expected. Use `ScalarFunction<TObject>(value, OperationType.{operationType})` instead.");
+            else
+                throw new NotSupportedException($"Unexpected type {databaseObject.GetType()}");
+        }
 
         TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption> OnFromTableOrView(AbstractObjectName tableOrViewName, object filterValue, FilterOptions filterOptions)
             => OnFromTableOrView<object>(tableOrViewName, filterValue, filterOptions);

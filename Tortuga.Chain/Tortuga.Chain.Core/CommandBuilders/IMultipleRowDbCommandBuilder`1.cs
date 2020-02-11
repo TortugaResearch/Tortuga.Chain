@@ -9,7 +9,7 @@ namespace Tortuga.Chain.CommandBuilders
     /// This allows the use of multi-row materializers against a command builder.
     /// </summary>
     /// <remarks>Warning: This interface is meant to simulate multiple inheritance and work-around some issues with exposing generic types. Do not implement it in client code, as new method will be added over time.</remarks>
-    public interface IMultipleRowDbCommandBuilder<TObject> : IMultipleRowDbCommandBuilder
+    public interface IMultipleRowDbCommandBuilder<TObject> : IMultipleRowDbCommandBuilder, ISingleRowDbCommandBuilder<TObject>
             where TObject : class
     {
         /// <summary>
@@ -54,20 +54,6 @@ namespace Tortuga.Chain.CommandBuilders
         /// <exception cref="MappingException"></exception>
         /// <remarks>In theory this will offer better performance than ToImmutableArray if you intend to further modify the result.</remarks>
         IConstructibleMaterializer<ImmutableList<TObject>> ToImmutableList(CollectionOptions collectionOptions = CollectionOptions.None);
-
-        /// <summary>
-        /// Materializes the result as an instance of the indicated type
-        /// </summary>
-        /// <param name="rowOptions">The row options.</param>
-        /// <returns></returns>
-        IConstructibleMaterializer<TObject> ToObject(RowOptions rowOptions = RowOptions.None);
-
-        /// <summary>
-        /// Materializes the result as an instance of the indicated type
-        /// </summary>
-        /// <param name="rowOptions">The row options.</param>
-        /// <returns></returns>
-        IConstructibleMaterializer<TObject?> ToObjectOrNull(RowOptions rowOptions = RowOptions.AllowEmptyResults);
 
         /// <summary>
         /// Materializes the result as a immutable dictionary of objects.

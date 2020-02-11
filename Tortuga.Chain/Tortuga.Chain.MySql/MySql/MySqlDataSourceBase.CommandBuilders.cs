@@ -27,7 +27,7 @@ namespace Tortuga.Chain.MySql
         {
             var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).PrimaryKeyColumns;
             if (primaryKeys.Count != 1)
-                throw new MappingException($"DeleteByKey operation isn't allowed on {tableName} because it doesn't have a single primary key.");
+                throw new MappingException($"{nameof(DeleteByKeyList)} operation isn't allowed on {tableName} because it doesn't have a single primary key.");
 
             var keyList = keys.AsList();
             var columnMetadata = primaryKeys.Single();
@@ -99,7 +99,22 @@ namespace Tortuga.Chain.MySql
             return new MySqlUpdateMany(this, tableName, newValues, where, parameters, parameters.Count, options);
         }
 
-        MultipleRowDbCommandBuilder<MySqlCommand, MySqlParameter> GetByKeyList<T>(MySqlObjectName tableName, ColumnMetadata<MySqlDbType> columnMetadata, IEnumerable<T> keys)
+        MySqlTableOrView<TObject> OnGetByKey<TObject, TKey>(MySqlObjectName tableName, ColumnMetadata<MySqlDbType> columnMetadata, TKey key)
+            where TObject : class
+        {
+            string where = columnMetadata.SqlName + " = @Param0";
+
+            var parameters = new List<MySqlParameter>();
+            var param = new MySqlParameter("@Param0", key);
+            if (columnMetadata.DbType.HasValue)
+                param.MySqlDbType = columnMetadata.DbType.Value;
+            parameters.Add(param);
+
+            return new MySqlTableOrView<TObject>(this, tableName, where, parameters);
+        }
+
+        MySqlTableOrView<TObject> OnGetByKeyList<TObject, TKey>(MySqlObjectName tableName, ColumnMetadata<MySqlDbType> columnMetadata, IEnumerable<TKey> keys)
+            where TObject : class
         {
             var keyList = keys.AsList();
 
@@ -118,7 +133,7 @@ namespace Tortuga.Chain.MySql
                 parameters.Add(param);
             }
 
-            return new MySqlTableOrView<object>(this, tableName, where, parameters);
+            return new MySqlTableOrView<TObject>(this, tableName, where, parameters);
         }
 
         MultipleRowDbCommandBuilder<MySqlCommand, MySqlParameter> OnDeleteMany(MySqlObjectName tableName, string whereClause, object? argumentValue)

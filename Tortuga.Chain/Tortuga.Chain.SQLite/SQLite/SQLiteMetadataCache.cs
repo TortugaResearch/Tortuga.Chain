@@ -116,32 +116,6 @@ namespace Tortuga.Chain.SQLite
         }
 
         /// <summary>
-        /// Returns the table or view derived from the class's name and/or Table attribute.
-        /// </summary>
-        /// <typeparam name="TObject">The type of the object.</typeparam>
-        /// <returns>TableOrViewMetadata&lt;System.String, DbType&gt;.</returns>
-        public override TableOrViewMetadata<SQLiteObjectName, DbType> GetTableOrViewFromClass<TObject>()
-        {
-            var type = typeof(TObject);
-            TableOrViewMetadata<SQLiteObjectName, DbType> result;
-            if (m_TypeTableMap.TryGetValue(type, out result))
-                return result;
-
-            var typeInfo = MetadataCache.GetMetadata(type);
-            if (!typeInfo.MappedTableName.IsNullOrEmpty())
-            {
-                result = GetTableOrView(typeInfo.MappedTableName);
-                m_TypeTableMap[type] = result;
-                return result;
-            }
-
-            //infer table from class name
-            result = GetTableOrView(type.Name);
-            m_TypeTableMap[type] = result;
-            return result;
-        }
-
-        /// <summary>
         /// Gets the tables and views that were loaded by this cache.
         /// </summary>
         /// <returns></returns>
@@ -228,14 +202,13 @@ namespace Tortuga.Chain.SQLite
         }
 
         /// <summary>
-        /// Parses the name of the database object.
+        /// Parse a string and return the database specific representation of the object name.
         /// </summary>
+        /// <param name="schema">The schema.</param>
         /// <param name="name">The name.</param>
-        /// <returns>System.String.</returns>
-        protected override SQLiteObjectName ParseObjectName(string name)
-        {
-            return new SQLiteObjectName(name);
-        }
+        /// <returns>SQLiteObjectName.</returns>
+        /// <exception cref="NotImplementedException"></exception>
+        protected override SQLiteObjectName ParseObjectName(string? schema, string name) => new SQLiteObjectName(name);
 
         /// <summary>
         /// Determines the database column type from the column type name.

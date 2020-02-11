@@ -13,38 +13,19 @@ namespace Tests
 {
     public abstract partial class TestBase
     {
+        public const string EmployeeTableName = "HR.Employee";
+        public const string EmployeeViewName = "HR.EmployeeWithManager";
         static public readonly string AssemblyName = "PostgreSql";
         public string DefaultSchema = "public";
         internal static readonly Dictionary<string, PostgreSqlDataSource> s_DataSources = new Dictionary<string, PostgreSqlDataSource>();
         internal static PostgreSqlDataSource s_PrimaryDataSource;
 
-        internal static void SetupTestBase()
-        {
-            if (s_PrimaryDataSource != null)
-                return; //run once check
-
-            Setup.CreateDatabase();
-
-            var configuration = new ConfigurationBuilder().SetBasePath(AppContext.BaseDirectory).AddJsonFile("appsettings.json").Build();
-
-            foreach (var con in configuration.GetSection("ConnectionStrings").GetChildren())
-            {
-                var ds = new PostgreSqlDataSource(con.Key, con.Value);
-                if (s_PrimaryDataSource == null)
-                    s_PrimaryDataSource = ds;
-
-                s_DataSources.Add(con.Key, ds);
-            }
-            BuildEmployeeSearchKey1000(s_PrimaryDataSource);
-        }
-
         public static string CustomerTableName { get { return "Sales.Customer"; } }
 
-        public static string EmployeeTableName { get { return "HR.Employee"; } }
-        public static string EmployeeViewName { get { return "HR.EmployeeWithManager"; } }
         public string MultiResultSetProc1Name { get { return "Sales.CustomerWithOrdersByState"; } }
 
         public string ScalarFunction1Name { get { return "HR.EmployeeCount"; } }
+
         public string TableFunction1Name { get { return "Sales.CustomersByState"; } }
 
         //public string TableFunction2Name { get { return "Sales.CustomersByStateInline"; } }
@@ -64,7 +45,7 @@ namespace Tests
             var currentUser1 = source.From(EmployeeTableName).WithLimits(1).ToObject<Employee>().Execute();
 
             return source.WithRules(
-                new SoftDeleteRule("DeletedFlag", true, OperationTypes.SelectOrDelete),
+                new SoftDeleteRule("DeletedFlag", true),
                 new UserDataRule("DeletedByKey", "EmployeeKey", OperationTypes.Delete),
                 new DateTimeRule("DeletedDate", DateTimeKind.Local, OperationTypes.Delete)
                 ).WithUser(currentUser1);
@@ -109,6 +90,26 @@ namespace Tests
                     return AttachTracers((PostgreSqlDataSourceBase)root.CreateOpenDataSource(await root.CreateConnectionAsync(), null));
             }
             throw new ArgumentException($"Unkown mode {mode}");
+        }
+
+        internal static void SetupTestBase()
+        {
+            if (s_PrimaryDataSource != null)
+                return; //run once check
+
+            Setup.CreateDatabase();
+
+            var configuration = new ConfigurationBuilder().SetBasePath(AppContext.BaseDirectory).AddJsonFile("appsettings.json").Build();
+
+            foreach (var con in configuration.GetSection("ConnectionStrings").GetChildren())
+            {
+                var ds = new PostgreSqlDataSource(con.Key, con.Value);
+                if (s_PrimaryDataSource == null)
+                    s_PrimaryDataSource = ds;
+
+                s_DataSources.Add(con.Key, ds);
+            }
+            BuildEmployeeSearchKey1000(s_PrimaryDataSource);
         }
 
         void WriteDetails(ExecutionEventArgs e)

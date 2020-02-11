@@ -10,7 +10,7 @@ using Tortuga.Chain.CommandBuilders;
 
 namespace Tortuga.Chain.Materializers
 {
-    internal sealed class CompiledObjectMaterializer<TCommand, TParameter, TObject> : Materializer<TCommand, TParameter, TObject?>
+    internal sealed class CompiledObjectMaterializer<TCommand, TParameter, TObject> : Materializer<TCommand, TParameter, TObject>
         where TCommand : DbCommand
         where TObject : class, new()
         where TParameter : DbParameter
@@ -31,7 +31,7 @@ namespace Tortuga.Chain.Materializers
         /// <returns></returns>
         public override IReadOnlyList<string> DesiredColumns() => MetadataCache.GetMetadata(typeof(TObject)).ColumnsFor;
 
-        public override TObject? Execute(object? state = null)
+        public override TObject Execute(object? state = null)
         {
             var result = new List<TObject>();
 
@@ -49,19 +49,17 @@ namespace Tortuga.Chain.Materializers
 
             if (result.Count == 0)
             {
-                if (m_RowOptions.HasFlag(RowOptions.AllowEmptyResults))
-                    return null;
-                else
-                    throw new DataException("No rows were returned");
+                throw new MissingDataException($"No rows were returned. It was this expected, use `.ToObjectOrNull` instead of `.ToObject`.");
             }
             else if (result.Count > 1 && !m_RowOptions.HasFlag(RowOptions.DiscardExtraRows))
             {
-                throw new DataException("Expected 1 row but received " + result.Count + " rows");
+                throw new UnexpectedDataException($"Expected 1 row but received {result.Count} rows. Use {nameof(RowOptions)}.{nameof(RowOptions.DiscardExtraRows)} to suppress this error.");
             }
+
             return result.First();
         }
 
-        public override async Task<TObject?> ExecuteAsync(CancellationToken cancellationToken, object? state = null)
+        public override async Task<TObject> ExecuteAsync(CancellationToken cancellationToken, object? state = null)
         {
             var result = new List<TObject>();
 
@@ -79,15 +77,13 @@ namespace Tortuga.Chain.Materializers
 
             if (result.Count == 0)
             {
-                if (m_RowOptions.HasFlag(RowOptions.AllowEmptyResults))
-                    return null;
-                else
-                    throw new DataException("No rows were returned");
+                throw new MissingDataException($"No rows were returned. It was this expected, use `.ToObjectOrNull` instead of `.ToObject`.");
             }
             else if (result.Count > 1 && !m_RowOptions.HasFlag(RowOptions.DiscardExtraRows))
             {
-                throw new DataException("Expected 1 row but received " + result.Count + " rows");
+                throw new UnexpectedDataException($"Expected 1 row but received {result.Count} rows. Use {nameof(RowOptions)}.{nameof(RowOptions.DiscardExtraRows)} to suppress this error.");
             }
+
             return result.First();
         }
     }
