@@ -9,7 +9,7 @@ namespace Tortuga.Chain.CommandBuilders
     /// This allows the use of multi-row materializers against a command builder.
     /// </summary>
     /// <remarks>Warning: This interface is meant to simulate multiple inheritance and work-around some issues with exposing generic types. Do not implement it in client code, as new method will be added over time.</remarks>
-    public interface IMultipleRowDbCommandBuilder<TObject> : IMultipleRowDbCommandBuilder
+    public interface IMultipleRowDbCommandBuilder<TObject> : IMultipleRowDbCommandBuilder, ISingleRowDbCommandBuilder<TObject>
             where TObject : class
     {
         /// <summary>

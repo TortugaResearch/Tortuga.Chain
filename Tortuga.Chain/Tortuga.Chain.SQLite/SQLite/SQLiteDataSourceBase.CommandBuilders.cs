@@ -121,7 +121,22 @@ namespace Tortuga.Chain.SQLite
             return new SQLiteUpdateMany(this, tableName, newValues, where, parameters, parameters.Count, options);
         }
 
-        MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> GetByKeyList<T>(SQLiteObjectName tableName, ColumnMetadata<DbType> columnMetadata, IEnumerable<T> keys)
+        ISingleRowDbCommandBuilder<TObject> OnGetByKey<TObject, TKey>(SQLiteObjectName tableName, ColumnMetadata<DbType> columnMetadata, TKey key)
+            where TObject : class
+        {
+            string where = columnMetadata.SqlName + " = @Param0";
+
+            var parameters = new List<SQLiteParameter>();
+            var param = new SQLiteParameter("@Param0", key);
+            if (columnMetadata.DbType.HasValue)
+                param.DbType = columnMetadata.DbType.Value;
+            parameters.Add(param);
+
+            return new SQLiteTableOrView<TObject>(this, tableName, where, parameters);
+        }
+
+        MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> OnGetByKeyList<TObject, TKey>(SQLiteObjectName tableName, ColumnMetadata<DbType> columnMetadata, IEnumerable<TKey> keys)
+            where TObject : class
         {
             var keyList = keys.AsList();
 
@@ -140,7 +155,7 @@ namespace Tortuga.Chain.SQLite
                 parameters.Add(param);
             }
 
-            return new SQLiteTableOrView<object>(this, tableName, where, parameters);
+            return new SQLiteTableOrView<TObject>(this, tableName, where, parameters);
         }
 
         MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> OnDeleteMany(SQLiteObjectName tableName, string whereClause, object? argumentValue)

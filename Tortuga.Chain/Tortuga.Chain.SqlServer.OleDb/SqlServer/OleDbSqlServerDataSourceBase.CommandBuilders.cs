@@ -94,7 +94,22 @@ namespace Tortuga.Chain.SqlServer
             return new OleDbSqlServerUpdateMany(this, tableName, newValues, where, parameters, parameters.Count, options);
         }
 
-        MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> GetByKeyList<T>(SqlServerObjectName tableName, ColumnMetadata<OleDbType> columnMetadata, IEnumerable<T> keys)
+        ISingleRowDbCommandBuilder<TObject> OnGetByKey<TObject, TKey>(SqlServerObjectName tableName, ColumnMetadata<OleDbType> columnMetadata, TKey key)
+            where TObject : class
+        {
+            string where = columnMetadata.SqlName + " = ?";
+
+            var parameters = new List<OleDbParameter>();
+            var param = new OleDbParameter("@Param0", key);
+            if (columnMetadata.DbType.HasValue)
+                param.OleDbType = columnMetadata.DbType.Value;
+            parameters.Add(param);
+
+            return new OleDbSqlServerTableOrView<TObject>(this, tableName, where, parameters);
+        }
+
+        MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> OnGetByKeyList<TObject, TKey>(SqlServerObjectName tableName, ColumnMetadata<OleDbType> columnMetadata, IEnumerable<TKey> keys)
+            where TObject : class
         {
             var keyList = keys.AsList();
             string where;
@@ -112,7 +127,7 @@ namespace Tortuga.Chain.SqlServer
                 parameters.Add(param);
             }
 
-            return new OleDbSqlServerTableOrView<object>(this, tableName, where, parameters);
+            return new OleDbSqlServerTableOrView<TObject>(this, tableName, where, parameters);
         }
 
         MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> OnDeleteMany(SqlServerObjectName tableName, string? whereClause, object? argumentValue)
