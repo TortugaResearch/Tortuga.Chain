@@ -6,7 +6,6 @@ using System.Data.SQLite;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Tortuga.Anchor;
-using Tortuga.Anchor.Metadata;
 using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.SQLite
@@ -35,7 +34,6 @@ namespace Tortuga.Chain.SQLite
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <returns></returns>
-        /// <exception cref="NotSupportedException">Indexes are not supported by this data source</exception>
         /// <remarks>
         /// This should be cached on a TableOrViewMetadata object.
         /// </remarks>

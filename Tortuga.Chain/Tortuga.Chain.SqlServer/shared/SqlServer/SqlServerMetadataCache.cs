@@ -83,7 +83,6 @@ namespace Tortuga.Chain.SqlServer
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <returns></returns>
-        /// <exception cref="NotSupportedException">Indexes are not supported by this data source</exception>
         /// <remarks>
         /// This should be cached on a TableOrViewMetadata object.
         /// </remarks>
