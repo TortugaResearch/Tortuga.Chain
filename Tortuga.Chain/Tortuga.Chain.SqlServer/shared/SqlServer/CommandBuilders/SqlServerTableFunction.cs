@@ -25,7 +25,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
     /// Use for table-valued functions.
     /// </summary>
     /// <seealso cref="TableDbCommandBuilder{SqlCommand, SqlParameter, SqlServerLimitOption}" />
-    internal class SqlServerTableFunction : TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption>
+    internal class SqlServerTableFunction : TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption>, ISupportsApproximateCount
     {
         readonly TableFunctionMetadata<SqlServerObjectName, SqlDbType> m_Table;
         readonly object? m_FunctionArgumentValue;
@@ -326,5 +326,26 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// This is used by materializers to skip IsNull checks.
         /// </remarks>
         public override IReadOnlyList<ColumnMetadata> TryGetNonNullableColumns() => m_Table.NullableColumns;
+
+        /// <summary>
+        /// Return the approximate distinct count using the APPROX_COUNT_DISTINCT function.
+        /// </summary>
+        /// <param name="columnName">Name of the column.</param>
+        public ILink<long> AsCountApproximate(string columnName)
+        {
+            var column = m_Table.Columns[columnName];
+            m_SelectClause = $"APPROX_COUNT_DISTINCT({column.QuotedSqlName})";
+
+            return ToInt64();
+        }
+
+        /// <summary>
+        /// Return the approximate row count using the APPROX_COUNT_DISTINCT function.
+        /// </summary>
+        /// <remarks>This is only available on tables with a single primary key.</remarks>
+        public ILink<long> AsCountApproximate()
+        {
+            throw new NotSupportedException($"{nameof(AsCountApproximate)}() operation isn't allowed on {m_Table.Name} because it doesn't have a single primary key. Please provide a column name.");
+        }
     }
 }

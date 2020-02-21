@@ -2,6 +2,12 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+#if SQL_SERVER_SDS || SQL_SERVER_MDS
+
+using Tortuga.Chain.SqlServer;
+
+#endif
+
 #if SQL_SERVER_SDS || SQL_SERVER_MDS || POSTGRESQL || SQL_SERVER_OLEDB
 
 namespace Tests.CommandBuilders
@@ -29,6 +35,26 @@ namespace Tests.CommandBuilders
             try
             {
                 var result = dataSource.TableFunction(TableFunction2Name, Parameter1).ToTable().Execute();
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+#endif
+
+#if SQL_SERVER_SDS || SQL_SERVER_MDS
+        //Only SQL Server has inline functions.
+
+        [DataTestMethod, BasicData(DataSourceGroup.Primary)]
+        public void TableFunction2_ApproxCount(string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            try
+            {
+                var count = dataSource.TableFunction(TableFunction2Name, Parameter1).AsCountDistinctApproximate("CustomerKey").Execute();
+                Assert.IsTrue(count >= 0);
             }
             finally
             {

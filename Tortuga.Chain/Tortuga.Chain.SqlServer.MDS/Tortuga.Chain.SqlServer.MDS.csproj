@@ -76,6 +76,10 @@
     <PackageReference Include="Tortuga.Chain.Core" Version="3.3.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="..\Tortuga.Chain.SqlServer\shared\SqlServer\CommandBuilders\ISupportsApproximateCount.cs" Link="ISupportsApproximateCount.cs" />
+  </ItemGroup>
+
   <!-- NuGet Packaging Boilerplate-->
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
