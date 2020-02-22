@@ -298,5 +298,13 @@ namespace Tortuga.Chain
         {
             return new KeyJoinAppender<T1, T2, TKey>(previousLink, primaryKeyName, foreignKeyName, targetCollectionName, joinOptions);
         }
+
+        /// <summary>
+        /// Performs a transformation on a result.
+        /// </summary>
+        public static ILink<TResult> Transform<TSource, TResult>(this ILink<TSource> previousLink, Func<TSource, TResult> transformation)
+        {
+            return new TransformLink<TSource, TResult>(previousLink, transformation);
+        }
     }
 }

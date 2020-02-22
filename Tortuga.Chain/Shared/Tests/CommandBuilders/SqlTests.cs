@@ -7,7 +7,7 @@ namespace Tests.CommandBuilders
     [TestClass]
     public class SqlTests : TestBase
     {
-#if POSTGRESQL
+#if POSTGRESQL || MYSQL
 
         [DataTestMethod, TableData(DataSourceGroup.Primary)]
         public void GetTableApproximateCount(string dataSourceName, DataSourceType mode, string tableName)
