@@ -124,5 +124,29 @@ namespace Tortuga.Chain.PostgreSql
         /// </summary>
         /// <returns></returns>
         protected override IDatabaseMetadataCache OnGetDatabaseMetadata() => DatabaseMetadata;
+
+        /// <summary>
+        /// Gets a table's row count.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        public ILink<long> GetTableApproximateCount(PostgreSqlObjectName tableName)
+        {
+            var table = DatabaseMetadata.GetTableOrView(tableName); //get the real name
+            var sql = @"SELECT tab.reltuples::BIGINT AS estimate FROM pg_class tab
+INNER JOIN pg_namespace ns on ns.oid=tab.relnamespace
+WHERE ns.nspname = @Schema AND tab.relname = @Name;";
+            return Sql(sql, new { table.Name.Schema, table.Name.Name }).ToInt64();
+        }
+
+        /// <summary>
+        /// Gets a table's row count.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        public ILink<long> GetTableApproximateCount(string tableName) => GetTableApproximateCount(new PostgreSqlObjectName(tableName));
+
+        /// <summary>
+        /// Gets a table's row count.
+        /// </summary>
+        public ILink<long> GetTableApproximateCount<TObject>() => GetTableApproximateCount(DatabaseObjectAsTableOrView<TObject>(OperationType.Select).Name);
     }
 }
