@@ -60,7 +60,7 @@ namespace Tortuga.Chain.Metadata
         /// </remarks>
         public virtual ForeignKeyConstraintCollection<TName, TDbType> GetForeignKeysForTable(TName tableName)
         {
-            throw new NotSupportedException("Indexes are not supported by this data source");
+            throw new NotSupportedException("Foreign Keys are not supported by this data source");
         }
 
         /// <summary>
