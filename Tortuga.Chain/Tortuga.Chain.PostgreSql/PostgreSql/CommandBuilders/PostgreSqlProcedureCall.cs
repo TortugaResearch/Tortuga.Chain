@@ -16,7 +16,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
     /// <summary>
     /// Class PostgreSqlProcedureCall.
     /// </summary>
-    internal sealed class PostgreSqlProcedureCall : MultipleTableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter>
+    internal sealed class PostgreSqlProcedureCall : ProcedureDbCommandBuilder<NpgsqlCommand, NpgsqlParameter>
     {
         readonly object? m_ArgumentValue;
         readonly StoredProcedureMetadata<PostgreSqlObjectName, NpgsqlDbType> m_Procedure;

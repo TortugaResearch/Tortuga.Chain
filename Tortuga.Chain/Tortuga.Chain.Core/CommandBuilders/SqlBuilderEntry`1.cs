@@ -1,4 +1,5 @@
 using System;
+using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using Tortuga.Chain.Metadata;
 
@@ -45,6 +46,12 @@ namespace Tortuga.Chain.CommandBuilders
         /// The column.
         /// </value>
         public ISqlBuilderEntryDetails<TDbType> Details { get; set; }
+
+        /// <summary>
+        /// Gets a value indicating whether this instance is an output parameter.
+        /// </summary>
+        public bool IsOutputParameter =>
+            Details.Direction == ParameterDirection.InputOutput || Details.Direction == ParameterDirection.Output;
 
         /// <summary>
         /// Gets or sets a value indicating whether this is a formal parameter for a stored procedure or table value function.

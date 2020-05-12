@@ -1,4 +1,6 @@
-﻿namespace Tortuga.Chain.Metadata
+﻿using System.Data;
+
+namespace Tortuga.Chain.Metadata
 {
     /// <summary>
     /// This interface is used to allow SqlBuilder to be used with stored procs, TVFs, and other non-table objects.
@@ -58,5 +60,10 @@
         /// </summary>
         /// <value>The name of the type.</value>
         string TypeName { get; }
+
+        /// <summary>
+        /// Indicates the direction of the parameter.
+        /// </summary>
+        ParameterDirection Direction { get; }
     }
 }

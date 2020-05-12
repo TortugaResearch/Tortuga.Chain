@@ -1,4 +1,5 @@
 ﻿#if SQL_SERVER_SDS || SQL_SERVER_MDS || SQL_SERVER_OLEDB || MYSQL || POSTGRESQL
+
 using Tortuga.Chain.CommandBuilders;
 
 #if MYSQL
@@ -33,12 +34,12 @@ namespace Tortuga.Chain.PostgreSql
 
 #endif
     {
-        IMultipleTableDbCommandBuilder IClass2DataSource.Procedure(string procedureName)
+        IProcedureDbCommandBuilder IClass2DataSource.Procedure(string procedureName)
         {
             return Procedure(procedureName);
         }
 
-        IMultipleTableDbCommandBuilder IClass2DataSource.Procedure(string procedureName, object argumentValue)
+        IProcedureDbCommandBuilder IClass2DataSource.Procedure(string procedureName, object argumentValue)
         {
             return Procedure(procedureName, argumentValue);
         }
@@ -72,4 +73,5 @@ namespace Tortuga.Chain.PostgreSql
         }
     }
 }
+
 #endif
