@@ -1,6 +1,6 @@
-﻿#if !SqlDependency_Missing
-
-using Tortuga.Chain.SqlServer.Appenders;
+﻿using System;
+using Tortuga.Chain.CommandBuilders;
+using Tortuga.Chain.SqlServer.CommandBuilders;
 
 #if SQL_SERVER_SDS
 
@@ -12,6 +12,10 @@ using Microsoft.Data.SqlClient;
 
 #endif
 
+#if !SqlDependency_Missing
+
+using Tortuga.Chain.SqlServer.Appenders;
+
 #endif
 
 namespace Tortuga.Chain.SqlServer
@@ -21,6 +25,32 @@ namespace Tortuga.Chain.SqlServer
     /// </summary>
     public static class SqlServerAppenders
     {
+        /// <summary>
+        /// Return the approximate row count using the APPROX_COUNT_DISTINCT function.
+        /// </summary>
+        /// <param name="tableDbCommand">The table database command.</param>
+        /// <remarks>This is only available on tables with a single primary key.</remarks>
+        public static ILink<long> AsCountDistinctApproximate(this TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption> tableDbCommand)
+        {
+            if (tableDbCommand == null)
+                throw new ArgumentNullException(nameof(tableDbCommand), $"{nameof(tableDbCommand)} is null.");
+
+            return ((ISupportsApproximateCount)tableDbCommand).AsCountApproximate();
+        }
+
+        /// <summary>
+        /// Return the approximate distinct count using the APPROX_COUNT_DISTINCT function.
+        /// </summary>
+        /// <param name="tableDbCommand">The table database command.</param>
+        /// <param name="columnName">Name of the column.</param>
+        public static ILink<long> AsCountDistinctApproximate(this TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption> tableDbCommand, string columnName)
+        {
+            if (tableDbCommand == null)
+                throw new ArgumentNullException(nameof(tableDbCommand), $"{nameof(tableDbCommand)} is null.");
+
+            return ((ISupportsApproximateCount)tableDbCommand).AsCountApproximate(columnName);
+        }
+
 #if !SqlDependency_Missing
 
         /// <summary>

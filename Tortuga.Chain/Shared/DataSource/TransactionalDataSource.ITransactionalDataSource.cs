@@ -29,10 +29,10 @@ using AbstractParameter = System.Data.SQLite.SQLiteParameter;
 
 #elif MYSQL
 
-using AbstractConnection =  MySql.Data.MySqlClient.MySqlConnection;
-using AbstractTransaction = MySql.Data.MySqlClient.MySqlTransaction;
-using AbstractCommand = MySql.Data.MySqlClient.MySqlCommand;
-using AbstractParameter = MySql.Data.MySqlClient.MySqlParameter;
+using AbstractConnection = MySqlConnector.MySqlConnection;
+using AbstractTransaction = MySqlConnector.MySqlTransaction;
+using AbstractCommand = MySqlConnector.MySqlCommand;
+using AbstractParameter = MySqlConnector.MySqlParameter;
 
 #elif POSTGRESQL
 

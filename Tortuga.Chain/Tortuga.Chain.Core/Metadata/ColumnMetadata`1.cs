@@ -1,4 +1,5 @@
 using System;
+using System.Data;
 
 namespace Tortuga.Chain.Metadata
 {
@@ -42,5 +43,11 @@ namespace Tortuga.Chain.Metadata
         /// A <see cref="string" /> that represents this instance.
         /// </returns>
         public override string ToString() => SqlName + " (" + TypeName + ")";
+
+        /// <summary>
+        /// Indicates the direction of the parameter.
+        /// </summary>
+        /// <remarks>Only used for input parameters (e.g. filters)</remarks>
+        ParameterDirection ISqlBuilderEntryDetails.Direction => ParameterDirection.Input;
     }
 }

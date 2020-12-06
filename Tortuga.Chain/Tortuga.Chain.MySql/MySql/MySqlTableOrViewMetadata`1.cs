@@ -1,4 +1,4 @@
-﻿using MySql.Data.MySqlClient;
+﻿using MySqlConnector;
 using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.MySql

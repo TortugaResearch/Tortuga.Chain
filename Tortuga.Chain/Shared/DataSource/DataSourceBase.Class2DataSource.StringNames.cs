@@ -1,4 +1,5 @@
 ﻿#if SQL_SERVER_SDS || SQL_SERVER_MDS || SQL_SERVER_OLEDB || MYSQL || POSTGRESQL
+
 using Tortuga.Chain.CommandBuilders;
 
 #if SQL_SERVER_SDS
@@ -24,8 +25,8 @@ using AbstractParameter = System.Data.OleDb.OleDbParameter;
 
 #elif MYSQL
 
-using AbstractCommand = MySql.Data.MySqlClient.MySqlCommand;
-using AbstractParameter = MySql.Data.MySqlClient.MySqlParameter;
+using AbstractCommand = MySqlConnector.MySqlCommand;
+using AbstractParameter = MySqlConnector.MySqlParameter;
 using AbstractObjectName = Tortuga.Chain.MySql.MySqlObjectName;
 using AbstractLimitOption = Tortuga.Chain.MySqlLimitOption;
 
@@ -68,7 +69,7 @@ namespace Tortuga.Chain.PostgreSql
         /// </summary>
         /// <param name="procedureName">Name of the procedure.</param>
         /// <returns></returns>
-        public MultipleTableDbCommandBuilder<AbstractCommand, AbstractParameter> Procedure(string procedureName)
+        public ProcedureDbCommandBuilder<AbstractCommand, AbstractParameter> Procedure(string procedureName)
         {
             return Procedure(new AbstractObjectName(procedureName));
         }
@@ -82,7 +83,7 @@ namespace Tortuga.Chain.PostgreSql
         /// <remarks>
         /// The procedure's definition is loaded from the database and used to determine which properties on the parameter object to use.
         /// </remarks>
-        public MultipleTableDbCommandBuilder<AbstractCommand, AbstractParameter> Procedure(string procedureName, object argumentValue)
+        public ProcedureDbCommandBuilder<AbstractCommand, AbstractParameter> Procedure(string procedureName, object argumentValue)
         {
             return Procedure(new AbstractObjectName(procedureName), argumentValue);
         }
@@ -134,4 +135,5 @@ namespace Tortuga.Chain.PostgreSql
 #endif
     }
 }
+
 #endif

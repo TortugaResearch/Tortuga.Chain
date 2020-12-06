@@ -71,7 +71,7 @@ namespace Tortuga.Chain.Access.CommandBuilders
             return result;
         }
 
-        AccessCommandExecutionToken PrepareNext(IReadOnlyList<string> desiredColumns, object previousValue)
+        AccessCommandExecutionToken PrepareNext(IReadOnlyList<string> desiredColumns, object? previousValue)
         {
             var primaryKeys = Table.PrimaryKeyColumns;
             if (primaryKeys.Count != 1)
@@ -82,7 +82,7 @@ namespace Tortuga.Chain.Access.CommandBuilders
 
             var parameters = new List<OleDbParameter>();
 
-            var param = new OleDbParameter(columnMetadata.SqlVariableName, (int)previousValue);
+            var param = new OleDbParameter(columnMetadata.SqlVariableName, previousValue);
             if (columnMetadata.DbType.HasValue)
                 param.OleDbType = columnMetadata.DbType.Value;
             parameters.Add(param);

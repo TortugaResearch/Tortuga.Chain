@@ -377,9 +377,7 @@ namespace Tortuga.Chain.Metadata
         public Type? ToClrType(string typeName, bool isNullable, int? maxLength, bool? isUnsigned = null)
         {
             if (TryGetRegisteredType(typeName, out var registeredType))
-            {
                 return registeredType.ClrType;
-            }
 
             var dbType = SqlTypeNameToDbType(typeName, isUnsigned);
 
@@ -404,7 +402,7 @@ namespace Tortuga.Chain.Metadata
         /// <param name="procedureName">Name of the procedure.</param>
         /// <param name="storedProcedure">The stored procedure.</param>
         /// <returns></returns>
-        public bool TryGetStoredProcedure(TName procedureName, [NotNullWhen(true)]  out StoredProcedureMetadata? storedProcedure)
+        public bool TryGetStoredProcedure(TName procedureName, [NotNullWhen(true)] out StoredProcedureMetadata? storedProcedure)
         {
             try
             {
@@ -600,7 +598,7 @@ namespace Tortuga.Chain.Metadata
                 case decimal _:
                 case float _:
                 case double _:
-                    return value.ToString();
+                    return value.ToString()!;
 
                 case string s:
                     return "'" + s.Replace("'", "''", StringComparison.Ordinal) + "'";
@@ -662,9 +660,9 @@ namespace Tortuga.Chain.Metadata
         /// <param name="databaseTypeName">Name of the database type.</param>
         /// <param name="registeredType">Type of the registered.</param>
         /// <returns></returns>
-        protected bool TryGetRegisteredType(string databaseTypeName, out TypeRegistration<TDbType> registeredType)
+        protected bool TryGetRegisteredType(string databaseTypeName, [NotNullWhen(true)] out TypeRegistration<TDbType>? registeredType)
         {
-            return m_RegisteredTypes.TryGetValue(databaseTypeName, out registeredType);
+            return m_RegisteredTypes.TryGetValue(databaseTypeName, out registeredType!);
         }
     }
 }

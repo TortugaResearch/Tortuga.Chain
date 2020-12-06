@@ -21,8 +21,8 @@ using AbstractTransaction = System.Data.SQLite.SQLiteTransaction;
 
 #elif MYSQL
 
-using AbstractConnection =  MySql.Data.MySqlClient.MySqlConnection;
-using AbstractTransaction = MySql.Data.MySqlClient.MySqlTransaction;
+using AbstractConnection = MySqlConnector.MySqlConnection;
+using AbstractTransaction = MySqlConnector.MySqlTransaction;
 
 #elif POSTGRESQL
 

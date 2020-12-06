@@ -46,7 +46,7 @@ namespace Tortuga.Chain.Materializers
                     if (property.CanWrite)
                     {
                         var genericMethod = methodType.MakeGenericMethod(property.PropertyType);
-                        var mapper = (MappedProperty<T>)genericMethod.Invoke(null, new object[] { property.MappedColumnName, property });
+                        var mapper = (MappedProperty<T>)genericMethod.Invoke(null, new object?[] { property.MappedColumnName, property })!;
 
                         mappedProperties.Add(mapper);
                     }
@@ -60,6 +60,48 @@ namespace Tortuga.Chain.Materializers
 
             s_AllMappedProperties = mappedProperties.ToImmutableArray();
             s_DecomposedProperties = decomposedProperties.ToImmutableArray();
+        }
+
+        public StreamingObjectConstructor(DbDataReader source, ConstructorMetadata? constructor, IReadOnlyList<ColumnMetadata> nonNullableColumns)
+        {
+            m_Source = source;
+            m_Ordinals = new Dictionary<string, int>(source.FieldCount, StringComparer.OrdinalIgnoreCase);
+            m_NullableColumns = new Dictionary<int, bool>(source.FieldCount);
+            for (var i = 0; i < source.FieldCount; i++)
+            {
+                var columnName = source.GetName(i);
+                m_Ordinals.Add(columnName, i);
+                m_NullableColumns.Add(i, !nonNullableColumns.Any(c => c.SqlName == columnName)); //assume nullable unless proven otherwise
+            }
+
+            if (constructor == null)
+                constructor = MetadataCache.GetMetadata(typeof(T)).Constructors.Find(s_DefaultConstructor);
+            if (constructor == null)
+                throw new MappingException($"Cannot find a default constructor for {typeof(T).Name}");
+
+            var desiredType = typeof(T);
+
+            m_Constructor = constructor;
+
+            var constructorParameters = m_Constructor.ParameterNames;
+            for (var i = 0; i < constructorParameters.Length; i++)
+            {
+                if (!m_Ordinals.ContainsKey(constructorParameters[i]))
+                    throw new MappingException($"Cannot find a column that matches the parameter {constructorParameters[i]}");
+            }
+
+            m_Dictionary = new StreamingObjectConstructorDictionary(this);
+
+            if (constructor.Signature.Length == 0)
+            {
+                m_MappedProperties = new List<OrdinalMappedProperty<T>>();
+
+                foreach (var mapper in s_AllMappedProperties)
+                {
+                    if (m_Dictionary.ContainsKey(mapper.MappedColumnName))
+                        m_MappedProperties.Add(new OrdinalMappedProperty<T>(mapper, m_Ordinals[mapper.MappedColumnName]));
+                }
+            }
         }
 
         public StreamingObjectConstructor(DbDataReader source, IReadOnlyList<Type>? constructorSignature, IReadOnlyList<ColumnMetadata> nonNullableColumns)

@@ -45,7 +45,7 @@ namespace Tortuga.Chain.Materializers
                     throw new MappingException($"Type {typeof(TObject).Name} has does not have any non-default constructors.");
                 if (constructors.Count > 1)
                     throw new MappingException($"Type {typeof(TObject).Name} has more than one non-default constructor. Please use the WithConstructor method to specify which one to use.");
-                ConstructorSignature = constructors[0].Signature;
+                Constructor = constructors[0];
             }
         }
 
@@ -107,7 +107,7 @@ namespace Tortuga.Chain.Materializers
             {
                 throw new UnexpectedDataException($"Expected 1 row but received {rowCount} rows. If this was expected, use `RowOptions.DiscardExtraRows`.");
             }
-            return MaterializerUtilities.ConstructObject<TObject>(row, ConstructorSignature);
+            return MaterializerUtilities.ConstructObject<TObject>(row, Constructor);
         }
     }
 }

@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
@@ -57,7 +58,7 @@ namespace Tortuga.Chain.PostgreSql
                         con.Open();
                         using (var cmd = new NpgsqlCommand("select current_database()", con))
                         {
-                            m_DatabaseName = (string)cmd.ExecuteScalar();
+                            m_DatabaseName = (string)cmd.ExecuteScalar()!;
                         }
                     }
                 }
@@ -84,12 +85,12 @@ namespace Tortuga.Chain.PostgreSql
 
                         using (var cmd = new NpgsqlCommand("select current_user;", con))
                         {
-                            currentUser = (string)cmd.ExecuteScalar();
+                            currentUser = (string)cmd.ExecuteScalar()!;
                         }
 
                         using (var cmd = new NpgsqlCommand("SHOW search_path;", con))
                         {
-                            defaultSchema = (string)cmd.ExecuteScalar();
+                            defaultSchema = (string)cmd.ExecuteScalar()!;
                         }
                         defaultSchema = defaultSchema.Replace("\"$user\"", currentUser);
                         m_DefaultSchemaList = defaultSchema.Split(',').Select(s => s.Trim()).Where(s => !string.IsNullOrEmpty(s)).ToImmutableArray();
@@ -114,7 +115,7 @@ namespace Tortuga.Chain.PostgreSql
 
                         using (var cmd = new NpgsqlCommand("SHOW server_version;", con))
                         {
-                            var versionString = (string)cmd.ExecuteScalar();
+                            var versionString = (string)cmd.ExecuteScalar()!;
                             if (versionString.Contains(" ", StringComparison.Ordinal))
                                 versionString = versionString.Substring(0, versionString.IndexOf(" ", StringComparison.Ordinal));
                             m_ServerVersion = Version.Parse(versionString);
@@ -139,7 +140,7 @@ namespace Tortuga.Chain.PostgreSql
                         con.Open();
 
                         using (var cmd = new NpgsqlCommand("SELECT version();", con))
-                            m_ServerVersionName = (string)cmd.ExecuteScalar();
+                            m_ServerVersionName = (string)cmd.ExecuteScalar()!;
                     }
                 }
                 return m_ServerVersionName;
@@ -688,8 +689,10 @@ WHERE ns.nspname = @Schema AND tab.relname = @Name";
                             string fullTypeName = ""; //Task-291: Add support for full name
 
                             //Task-120: Add support for length, precision, and scale
+                            //Task-384: OUTPUT Parameters for PostgreSQL
+                            var direction = ParameterDirection.Input;
 
-                            parameters.Add(new ParameterMetadata<NpgsqlDbType>(parameterName, "@" + parameterName, typeName, SqlTypeNameToDbType(typeName), isNullable, maxLength, precision, scale, fullTypeName));
+                            parameters.Add(new ParameterMetadata<NpgsqlDbType>(parameterName, "@" + parameterName, typeName, SqlTypeNameToDbType(typeName), isNullable, maxLength, precision, scale, fullTypeName, direction));
                         }
                         else
                         {

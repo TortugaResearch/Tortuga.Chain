@@ -9,6 +9,7 @@ namespace Tortuga.Chain.Metadata
     /// <typeparam name="TDbType">The database column type.</typeparam>
     /// <seealso cref="IndexMetadata" />
     public class IndexMetadata<TName, TDbType> : IndexMetadata
+        where TName : struct
         where TDbType : struct
     {
         /// <summary>Initializes a new instance of the <see cref="IndexMetadata{TName, TDbType}"/> class.</summary>
@@ -22,7 +23,7 @@ namespace Tortuga.Chain.Metadata
         /// <param name="rowCount">Approximate row count</param>
         /// <param name="indexType">Type of the index.</param>
         /// <exception cref="ArgumentNullException">columns</exception>
-        public IndexMetadata(TName tableName, string? name, bool isPrimaryKey, bool isUnique, bool isUniqueConstraint, IndexColumnMetadataCollection<TDbType> columns, long? indexSizeKB, long? rowCount, IndexType indexType) : base(tableName!.ToString(), name, isPrimaryKey, isUnique, isUniqueConstraint, columns?.GenericCollection!, indexSizeKB, rowCount, indexType)
+        public IndexMetadata(TName tableName, string? name, bool isPrimaryKey, bool isUnique, bool isUniqueConstraint, IndexColumnMetadataCollection<TDbType> columns, long? indexSizeKB, long? rowCount, IndexType indexType) : base(tableName.ToString()!, name, isPrimaryKey, isUnique, isUniqueConstraint, columns?.GenericCollection!, indexSizeKB, rowCount, indexType)
         {
             TableName = tableName;
             Columns = columns ?? throw new ArgumentNullException(nameof(columns), $"{nameof(columns)} is null.");

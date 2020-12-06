@@ -17,7 +17,7 @@ namespace Tortuga.Chain.Metadata
         /// <param name="name">The name.</param>
         /// <param name="columns">The columns.</param>
         public UserDefinedTableTypeMetadata(TName name, ColumnMetadataCollection<TDbType> columns)
-            : base(name.ToString(), columns?.GenericCollection!)
+            : base(name.ToString()!, columns?.GenericCollection!)
         {
             Name = name;
             Columns = columns ?? throw new ArgumentNullException(nameof(columns), $"{nameof(columns)} is null.");

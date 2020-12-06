@@ -43,5 +43,11 @@ namespace Tortuga.Chain.PostgreSql
             var table = DatabaseMetadata.GetTableOrView(tableName);
             return new PostgreSqlInsertBulk(this, new PostgreSqlObjectName(tableName), new ObjectDataReader<TObject>(table, objects, OperationTypes.Insert));
         }
+
+        /// <summary>
+        /// Gets a table's row count.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        public ILink<long> GetTableApproximateCount(string tableName) => GetTableApproximateCount(new PostgreSqlObjectName(tableName));
     }
 }

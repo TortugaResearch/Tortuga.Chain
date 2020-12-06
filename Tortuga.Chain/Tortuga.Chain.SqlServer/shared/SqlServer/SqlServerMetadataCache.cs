@@ -29,8 +29,15 @@ namespace Tortuga.Chain.SqlServer
         /// <param name="connectionBuilder">The connection builder.</param>
         public SqlServerMetadataCache(SqlConnectionStringBuilder connectionBuilder)
         {
+            if (connectionBuilder == null)
+                throw new ArgumentNullException(nameof(connectionBuilder), $"{nameof(connectionBuilder)} is null");
+
             m_ConnectionBuilder = connectionBuilder;
+
+            m_MasterConnectionBuilder = new SqlConnectionStringBuilder(connectionBuilder.ConnectionString) { InitialCatalog = "master" };
         }
+
+        internal readonly SqlConnectionStringBuilder m_MasterConnectionBuilder;
 
         /// <summary>
         /// Returns the current database.
@@ -424,12 +431,13 @@ WHERE o.name = @Name
                         AdjustTypeDetails(typeName, ref maxLength, ref precision, ref scale, out fullTypeName);
                     }
                 }
+
+                var objectName = new SqlServerObjectName(actualSchema, actualName);
+
+                var parameters = GetParameters(objectName.ToString(), objectId, con);
+
+                return new ScalarFunctionMetadata<SqlServerObjectName, SqlDbType>(objectName, parameters, typeName, SqlTypeNameToDbType(typeName), isNullable, maxLength, precision, scale, fullTypeName);
             }
-            var objectName = new SqlServerObjectName(actualSchema, actualName);
-
-            var parameters = GetParameters(objectName.ToString(), objectId);
-
-            return new ScalarFunctionMetadata<SqlServerObjectName, SqlDbType>(objectName, parameters, typeName, SqlTypeNameToDbType(typeName), isNullable, maxLength, precision, scale, fullTypeName);
         }
 
         internal StoredProcedureMetadata<SqlServerObjectName, SqlDbType> GetStoredProcedureInternal(SqlServerObjectName procedureName)
@@ -457,18 +465,122 @@ WHERE o.name = @Name
                     using (var reader = cmd.ExecuteReader())
                     {
                         if (!reader.Read())
+                        {
+                            var sysStoredProcedure = GetSystemStoredProcedure(procedureName);
+                            if (sysStoredProcedure != null)
+                                return sysStoredProcedure;
+
+                            var masterStoredProcedure = GetMasterStoredProcedure(procedureName);
+                            if (masterStoredProcedure != null)
+                                return masterStoredProcedure;
+
                             throw new MissingObjectException($"Could not find stored procedure {procedureName}");
+                        }
 
                         actualSchema = reader.GetString("SchemaName");
                         actualName = reader.GetString("Name");
                         objectId = reader.GetInt32("ObjectId");
                     }
                 }
-            }
-            var objectName = new SqlServerObjectName(actualSchema, actualName);
-            var parameters = GetParameters(objectName.ToString(), objectId);
+                var objectName = new SqlServerObjectName(actualSchema, actualName);
+                var parameters = GetParameters(objectName.ToString(), objectId, con);
 
-            return new StoredProcedureMetadata<SqlServerObjectName, SqlDbType>(objectName, parameters);
+                return new StoredProcedureMetadata<SqlServerObjectName, SqlDbType>(objectName, parameters);
+            }
+        }
+
+        [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "This is designed to fail silently.")]
+        internal StoredProcedureMetadata<SqlServerObjectName, SqlDbType>? GetMasterStoredProcedure(SqlServerObjectName procedureName)
+        {
+            try
+            {
+                const string StoredProcedureSql =
+                    @"SELECT
+				    s.name AS SchemaName,
+				    sp.name AS Name,
+				    sp.object_id AS ObjectId
+				    FROM SYS.procedures sp
+				    INNER JOIN sys.schemas s ON sp.schema_id = s.schema_id
+				    WHERE s.name = @Schema AND sp.Name = @Name";
+
+                string actualSchema;
+                string actualName;
+                int objectId;
+
+                using (var con = new SqlConnection(m_MasterConnectionBuilder.ConnectionString))
+                {
+                    con.Open();
+                    using (var cmd = new SqlCommand(StoredProcedureSql, con))
+                    {
+                        cmd.Parameters.AddWithValue("@Schema", procedureName.Schema ?? "dbo");
+                        cmd.Parameters.AddWithValue("@Name", procedureName.Name);
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            if (!reader.Read())
+                                return null;
+
+                            actualSchema = reader.GetString("SchemaName");
+                            actualName = reader.GetString("Name");
+                            objectId = reader.GetInt32("ObjectId");
+                        }
+                    }
+                    var objectName = new SqlServerObjectName(actualSchema, actualName);
+                    var parameters = GetParameters(objectName.ToString(), objectId, con);
+
+                    return new StoredProcedureMetadata<SqlServerObjectName, SqlDbType>(objectName, parameters);
+                }
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "This is designed to fail silently.")]
+        internal StoredProcedureMetadata<SqlServerObjectName, SqlDbType>? GetSystemStoredProcedure(SqlServerObjectName procedureName)
+        {
+            try
+            {
+                const string StoredProcedureSql =
+                    @"SELECT
+				    s.name AS SchemaName,
+				    sp.name AS Name,
+				    sp.object_id AS ObjectId
+				    FROM SYS.all_objects sp
+				    INNER JOIN sys.schemas s ON sp.schema_id = s.schema_id
+				    WHERE s.name = @Schema AND sp.Name = @Name";
+
+                string actualSchema;
+                string actualName;
+                int objectId;
+
+                using (var con = new SqlConnection(m_ConnectionBuilder.ConnectionString))
+                {
+                    con.Open();
+                    using (var cmd = new SqlCommand(StoredProcedureSql, con))
+                    {
+                        cmd.Parameters.AddWithValue("@Schema", procedureName.Schema ?? "sys");
+                        cmd.Parameters.AddWithValue("@Name", procedureName.Name);
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            if (!reader.Read())
+                                return null;
+
+                            actualSchema = reader.GetString("SchemaName");
+                            actualName = reader.GetString("Name");
+                            objectId = reader.GetInt32("ObjectId");
+                        }
+                    }
+                    var objectName = new SqlServerObjectName(actualSchema, actualName);
+                    var parameters = GetParameters(objectName.ToString(), objectId, con, useAllParameters: true);
+
+                    return new StoredProcedureMetadata<SqlServerObjectName, SqlDbType>(objectName, parameters);
+                }
+            }
+            catch
+            {
+                return null; //this will silently fail
+            }
         }
 
         internal TableFunctionMetadata<SqlServerObjectName, SqlDbType> GetTableFunctionInternal(SqlServerObjectName tableFunctionName)
@@ -508,13 +620,13 @@ WHERE o.name = @Name
                         objectId = reader.GetInt32("ObjectId");
                     }
                 }
+                var objectName = new SqlServerObjectName(actualSchema, actualName);
+
+                var columns = GetColumns(objectName.ToString(), objectId);
+                var parameters = GetParameters(objectName.ToString(), objectId, con);
+
+                return new TableFunctionMetadata<SqlServerObjectName, SqlDbType>(objectName, parameters, columns);
             }
-            var objectName = new SqlServerObjectName(actualSchema, actualName);
-
-            var columns = GetColumns(objectName.ToString(), objectId);
-            var parameters = GetParameters(objectName.ToString(), objectId);
-
-            return new TableFunctionMetadata<SqlServerObjectName, SqlDbType>(objectName, parameters, columns);
         }
 
         internal SqlServerTableOrViewMetadata<SqlDbType> GetTableOrViewInternal(SqlServerObjectName tableName)
@@ -709,7 +821,7 @@ WHERE	s.name = @Schema AND t.name = @Name AND t.is_table_type = 0;";
                 case "smalldatetime": return SqlDbType.SmallDateTime;
                 case "smallint": return SqlDbType.SmallInt;
                 case "smallmoney": return SqlDbType.SmallMoney;
-                //case "sql_variant": m_SqlDbType = SqlDbType;
+                case "sql_variant": return SqlDbType.Variant;
                 //case "sysname": m_SqlDbType = SqlDbType;
                 case "text": return SqlDbType.Text;
                 case "time": return SqlDbType.Time;
@@ -921,52 +1033,78 @@ ORDER BY ic.key_ordinal;";
             }
         }
 
-        ParameterMetadataCollection<SqlDbType> GetParameters(string procedureName, int objectId)
+        //ParameterMetadataCollection<SqlDbType> GetParameters(string procedureName, int objectId)
+        //{
+        //    using (var con = new SqlConnection(m_ConnectionBuilder.ConnectionString))
+        //    {
+        //        con.Open();
+        //        return GetParameters(procedureName, objectId, con);
+        //    }
+        //}
+
+        ParameterMetadataCollection<SqlDbType> GetParameters(string procedureName, int objectId, SqlConnection con, bool useAllParameters = false)
         {
             try
             {
-                const string ParameterSql =
+                const string ParameterSqlA =
                     @"SELECT  p.name AS ParameterName ,
             COALESCE(t.name, t2.name) AS TypeName,
 			COALESCE(t.is_nullable, t2.is_nullable)  as is_nullable,
 		    CONVERT(INT, t.max_length) AS max_length,
 		    CONVERT(INT, t.precision) AS precision,
-		    CONVERT(INT, t.scale) AS scale
+		    CONVERT(INT, t.scale) AS scale,
+		    p.is_output
             FROM    sys.parameters p
                     LEFT JOIN sys.types t ON p.system_type_id = t.user_type_id
                     LEFT JOIN sys.types t2 ON p.user_type_id = t2.user_type_id
             WHERE   p.object_id = @ObjectId AND p.parameter_id <> 0
             ORDER BY p.parameter_id;";
 
+                const string ParameterSqlB =
+                    @"SELECT  p.name AS ParameterName ,
+            COALESCE(t.name, t2.name) AS TypeName,
+			COALESCE(t.is_nullable, t2.is_nullable)  as is_nullable,
+		    CONVERT(INT, t.max_length) AS max_length,
+		    CONVERT(INT, t.precision) AS precision,
+		    CONVERT(INT, t.scale) AS scale,
+		    p.is_output
+            FROM    sys.all_parameters p
+                    LEFT JOIN sys.types t ON p.system_type_id = t.user_type_id
+                    LEFT JOIN sys.types t2 ON p.user_type_id = t2.user_type_id
+            WHERE   p.object_id = @ObjectId AND p.parameter_id <> 0
+            ORDER BY p.parameter_id;";
+
                 //we exclude parameter_id 0 because it is the return type of scalar functions.
+                //we need to use all_parameters for system stored procedures
+
+                var ParameterSql = !useAllParameters ? ParameterSqlA : ParameterSqlB;
 
                 var parameters = new List<ParameterMetadata<SqlDbType>>();
 
-                using (var con = new SqlConnection(m_ConnectionBuilder.ConnectionString))
+                using (var cmd = new SqlCommand(ParameterSql, con))
                 {
-                    con.Open();
-
-                    using (var cmd = new SqlCommand(ParameterSql, con))
+                    cmd.Parameters.AddWithValue("@ObjectId", objectId);
+                    using (var reader = cmd.ExecuteReader())
                     {
-                        cmd.Parameters.AddWithValue("@ObjectId", objectId);
-                        using (var reader = cmd.ExecuteReader())
+                        while (reader.Read())
                         {
-                            while (reader.Read())
-                            {
-                                var name = reader.GetString("ParameterName");
-                                var typeName = reader.GetString("TypeName");
-                                bool isNullable = true;
-                                int? maxLength = reader.GetInt32OrNull("max_length");
-                                int? precision = reader.GetInt32OrNull("precision");
-                                int? scale = reader.GetInt32OrNull("scale");
-                                string fullTypeName;
-                                AdjustTypeDetails(typeName, ref maxLength, ref precision, ref scale, out fullTypeName);
+                            var name = reader.GetString("ParameterName");
+                            var typeName = reader.GetString("TypeName");
+                            const bool isNullable = true;
+                            var maxLength = reader.GetInt32OrNull("max_length");
+                            var precision = reader.GetInt32OrNull("precision");
+                            var scale = reader.GetInt32OrNull("scale");
+                            var isOutput = reader.GetBoolean("is_output");
+                            string fullTypeName;
+                            AdjustTypeDetails(typeName, ref maxLength, ref precision, ref scale, out fullTypeName);
 
-                                parameters.Add(new ParameterMetadata<SqlDbType>(name, name, typeName, SqlTypeNameToDbType(typeName), isNullable, maxLength, precision, scale, fullTypeName));
-                            }
+                            var direction = isOutput ? ParameterDirection.Output : ParameterDirection.Input;
+
+                            parameters.Add(new ParameterMetadata<SqlDbType>(name, name, typeName, SqlTypeNameToDbType(typeName), isNullable, maxLength, precision, scale, fullTypeName, direction));
                         }
                     }
                 }
+
                 return new ParameterMetadataCollection<SqlDbType>(procedureName, parameters);
             }
             catch (Exception ex)

@@ -5,6 +5,7 @@ using System.Data.Common;
 
 using System.Linq;
 using Tortuga.Chain.CommandBuilders;
+using Tortuga.Chain.Metadata;
 
 #if SQL_SERVER_SDS
 
@@ -30,6 +31,29 @@ namespace Tortuga.Chain.SqlServer
             return sqlBuilder.GetParameters(ParameterBuilderCallback);
         }
 
+        //public static SqlParameter BuildOutputParameter(ParameterMetadata<SqlDbType> param)
+        //{
+        //    var result = new SqlParameter();
+
+        //    result.ParameterName = param.SqlVariableName;
+        //    result.Value = DBNull.Value;
+
+        //    if (param.MaxLength.HasValue)
+        //        result.Size = param.MaxLength.Value;
+
+        //    if (param.Scale.HasValue)
+        //        result.Scale = (byte)param.Scale.Value;
+
+        //    if (param.Precision.HasValue)
+        //        result.Precision = (byte)param.Precision.Value;
+
+        //    if (param.DbType.HasValue)
+        //        result.SqlDbType = param.DbType.Value;
+        //    result.Direction = param.Direction;
+
+        //    return result;
+        //}
+
         public static SqlParameter ParameterBuilderCallback(SqlBuilderEntry<SqlDbType> entry)
         {
             var result = new SqlParameter();
@@ -41,6 +65,8 @@ namespace Tortuga.Chain.SqlServer
 
             if (entry.ParameterValue is DbDataReader)
                 result.SqlDbType = SqlDbType.Structured;
+
+            result.Direction = entry.Details.Direction;
 
             return result;
         }

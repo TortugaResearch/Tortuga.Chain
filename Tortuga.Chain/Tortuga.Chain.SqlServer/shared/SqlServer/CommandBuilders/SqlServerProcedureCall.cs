@@ -32,7 +32,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
     /// <summary>
     /// Class SqlServerProcedureCall.
     /// </summary>
-    internal sealed partial class SqlServerProcedureCall : MultipleTableDbCommandBuilder<SqlCommand, SqlParameter>
+    internal sealed partial class SqlServerProcedureCall : ProcedureDbCommandBuilder<SqlCommand, SqlParameter>
     {
         readonly object? m_ArgumentValue;
         readonly StoredProcedureMetadata<SqlServerObjectName, SqlDbType> m_Procedure;

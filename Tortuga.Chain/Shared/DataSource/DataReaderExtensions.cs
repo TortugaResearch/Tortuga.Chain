@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 
 #if MYSQL
 
-using MySql.Data.MySqlClient;
+using MySqlConnector;
 
 #endif
 

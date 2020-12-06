@@ -166,7 +166,7 @@ namespace Tortuga.Chain
         /// <param name="length">The maximum number of characters to read.</param>
         /// <returns>The actual number of bytes read.</returns>
         /// <exception cref="NotImplementedException"></exception>
-        public override long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length)
+        public override long GetBytes(int ordinal, long dataOffset, byte[]? buffer, int bufferOffset, int length)
         {
             throw new NotImplementedException();
         }
@@ -187,7 +187,10 @@ namespace Tortuga.Chain
         /// <param name="bufferOffset">The index with the buffer to which the data will be copied.</param>
         /// <param name="length">The maximum number of characters to read.</param>
         /// <returns>The actual number of characters read.</returns>
+#pragma warning disable CS8765 // Nullability of type of parameter doesn't match overridden member (possibly because of nullability attributes).
+
         public override long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length)
+#pragma warning restore CS8765 // Nullability of type of parameter doesn't match overridden member (possibly because of nullability attributes).
         {
             var s = GetString(ordinal);
             if (length + dataOffset > s.Length)

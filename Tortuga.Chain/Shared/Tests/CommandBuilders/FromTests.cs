@@ -8,6 +8,12 @@ using System.Threading.Tasks;
 using Tests.Models;
 using Tortuga.Chain;
 
+#if SQL_SERVER_SDS || SQL_SERVER_MDS
+
+using Tortuga.Chain.SqlServer;
+
+#endif
+
 namespace Tests.CommandBuilders
 {
     [TestClass]
@@ -350,6 +356,26 @@ namespace Tests.CommandBuilders
             }
         }
 
+#if SQL_SERVER_SDS || SQL_SERVER_MDS
+
+        [DataTestMethod, BasicData(DataSourceGroup.Primary)]
+        public void AsCountDistinctApproximate_Auto(string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            //WriteLine($"Table {tableName}");
+            try
+            {
+                var count = dataSource.From<Employee>().AsCountDistinctApproximate().Execute();
+                Assert.IsTrue(count >= 0);
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+#endif
+
         [DataTestMethod, TablesAndViewData(DataSourceGroup.All)]
         public async Task Count_Async(string dataSourceName, DataSourceType mode, string tableName)
         {
@@ -405,6 +431,30 @@ namespace Tests.CommandBuilders
                 var countDistinct = dataSource.From(tableName).AsCount(columnName, true).Execute();
                 Assert.IsTrue(count >= 0, "Count cannot be less than zero");
                 Assert.IsTrue(countDistinct <= count, "Count distinct cannot be greater than count");
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+#endif
+
+#if SQL_SERVER_SDS || SQL_SERVER_MDS
+
+        [DataTestMethod, TablesAndViewColumnsData(DataSourceGroup.All)]
+        public void CountByColumn_DistinctApproximate(string dataSourceName, DataSourceType mode, string tableName, string columnName)
+        {
+            var dataSource = DataSource(dataSourceName, mode);
+            //WriteLine($"Table {tableName}");
+            try
+            {
+                var columnType = dataSource.DatabaseMetadata.GetTableOrView(tableName).Columns[columnName].TypeName;
+                if (columnType == "xml" || columnType == "ntext" || columnType == "text" || columnType == "image" || columnType == "geography" || columnType == "geometry")
+                    return; //SQL Server limitation
+
+                var countDistinct = dataSource.From(tableName).AsCountDistinctApproximate(columnName).Execute();
+                Assert.IsTrue(countDistinct >= 0, "Count cannot be less than zero");
             }
             finally
             {

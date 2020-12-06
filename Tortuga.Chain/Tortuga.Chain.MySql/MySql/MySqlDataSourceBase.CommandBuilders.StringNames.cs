@@ -43,5 +43,11 @@ namespace Tortuga.Chain.MySql
             var table = DatabaseMetadata.GetTableOrView(tableName);
             return new MySqlInsertBulk(this, new MySqlObjectName(tableName), new ObjectDataReader<TObject>(table, objects, OperationTypes.Insert));
         }
+
+        /// <summary>
+        /// Gets a table's row count.
+        /// </summary>
+        /// <param name="tableName">Name of the table.</param>
+        public ILink<long> GetTableApproximateCount(string tableName) => GetTableApproximateCount(new MySqlObjectName(tableName));
     }
 }

@@ -6,6 +6,17 @@ using System.Linq;
 using System.Threading.Tasks;
 using Tests.Models;
 using Tortuga.Chain;
+using System.Data;
+using System;
+using System.ComponentModel.DataAnnotations.Schema;
+
+#if SQL_SERVER_SDS
+
+using System.Data.SqlClient;
+
+#elif SQL_SERVER_MDS
+using Microsoft.Data.SqlClient;
+#endif
 
 namespace Tests.CommandBuilders
 {
@@ -425,6 +436,249 @@ namespace Tests.CommandBuilders
                 Assert.AreEqual(2, result.Tables.Count);
                 Assert.AreEqual(countA, result.Tables["cust"].Rows.Count);
                 Assert.AreEqual(countB, result.Tables["order"].Rows.Count);
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+#endif
+
+#if SQL_SERVER_SDS || SQL_SERVER_MDS
+
+        [DataTestMethod, BasicData(DataSourceGroup.Primary)]
+        public async Task SystemStoredProcedure_IgnoreOutputs(string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource2(dataSourceName, mode);
+            try
+            {
+                await dataSource.Procedure("sys.sp_sequence_get_range", new { @sequence_name = "dbo.TestSequence", @range_size = 10 }).ExecuteAsync();
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+        class SequenceGetRangeResult
+        {
+            public long? range_first_value { get; set; }
+
+            public long? range_last_value { get; set; }
+            public long? range_cycle_count { get; set; }
+            public long? sequence_increment { get; set; }
+            public long? sequence_min_value { get; set; }
+            public long? sequence_max_value { get; set; }
+        }
+
+        class SequenceGetRangeInputMapped
+        {
+            [Column("sequence_name")]
+            public string SequenceName { get; set; }
+
+            [Column("range_size")]
+            public long RangeSize { get; set; }
+        }
+
+        class SequenceGetRangeResultMapped
+        {
+            [Column("range_first_value")]
+            public long? RangeFirstValue { get; set; }
+
+            [Column("range_last_value")]
+            public long? RangeLastValue { get; set; }
+
+            [Column("range_cycle_count")]
+            public long? RangeCycleCount { get; set; }
+
+            [Column("sequence_increment")]
+            public long? SequenceIncrement { get; set; }
+
+            [Column("sequence_min_value")]
+            public long? SequenceMinValue { get; set; }
+
+            [Column("sequence_max_value")]
+            public long? SequenceMaxValue { get; set; }
+        }
+
+        /*
+        [DataTestMethod, BasicData(DataSourceGroup.Primary)]
+        public async Task SystemStoredProcedure_CaptureOutputsInParameter(string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource2(dataSourceName, mode);
+            try
+            {
+                var param = new SequenceGetRangeResult() { sequence_name = "dbo.TestSequence", range_size = 10 };
+                await dataSource.Procedure("sys.sp_sequence_get_range", param).AsNonQuery().CaptureOutputs().ExecuteAsync();
+
+                Assert.IsTrue(param.range_first_value > 0);
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+        */
+
+        [DataTestMethod, BasicData(DataSourceGroup.Primary)]
+        public async Task SystemStoredProcedure_CaptureOutputsAsObject(string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource2(dataSourceName, mode);
+            try
+            {
+                var result = await dataSource.Procedure("sys.sp_sequence_get_range", new { sequence_name = "dbo.TestSequence", range_size = 10 }).AsOutputs<SequenceGetRangeResult>().ExecuteAsync();
+
+                Assert.IsTrue(result.range_first_value > 0);
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+        [DataTestMethod, BasicData(DataSourceGroup.Primary)]
+        public async Task SystemStoredProcedure_CaptureOutputsAsObject_MappedInput(string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource2(dataSourceName, mode);
+            try
+            {
+                var result = await dataSource.Procedure("sys.sp_sequence_get_range", new SequenceGetRangeInputMapped { SequenceName = "dbo.TestSequence", RangeSize = 10 }).AsOutputs<SequenceGetRangeResultMapped>().ExecuteAsync();
+
+                Assert.IsTrue(result.RangeFirstValue > 0);
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+        [DataTestMethod, BasicData(DataSourceGroup.Primary)]
+        public async Task SystemStoredProcedure_CaptureOutputsAsObject_Mapped(string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource2(dataSourceName, mode);
+            try
+            {
+                var result = await dataSource.Procedure("sys.sp_sequence_get_range", new { sequence_name = "dbo.TestSequence", range_size = 10 }).AsOutputs<SequenceGetRangeResultMapped>().ExecuteAsync();
+
+                Assert.IsTrue(result.RangeFirstValue > 0);
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+        [DataTestMethod, BasicData(DataSourceGroup.Primary)]
+        public async Task SystemStoredProcedure_CaptureOutputsAsDictionary(string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource2(dataSourceName, mode);
+            try
+            {
+                var result = await dataSource.Procedure("sys.sp_sequence_get_range", new { sequence_name = "dbo.TestSequence", range_size = 10 }).AsOutputs().ExecuteAsync();
+
+                Assert.IsTrue(result.ContainsKey("range_first_value"));
+                Assert.IsTrue((long)result["range_first_value"] > 0);
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+        /*
+        [DataTestMethod, BasicData(DataSourceGroup.Primary)]
+        public async Task SystemStoredProcedure_CaptureOutputsInObject(string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource2(dataSourceName, mode);
+            try
+            {
+                var param = new SequenceGetRangeResult() { sequence_name = "dbo.TestSequence", range_size = 10 };
+                var outputs = new SequenceGetRangeResult();
+                await dataSource.Procedure("sys.sp_sequence_get_range", param).AsNonQuery().CaptureOutputs(outputs).ExecuteAsync();
+
+                Assert.AreNotSame(param, outputs);
+                Assert.IsTrue(outputs.range_first_value > 0);
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+        */
+
+        [DataTestMethod, BasicData(DataSourceGroup.Primary)]
+        public async Task SystemStoredProcedure_WorkAround(string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource2(dataSourceName, mode);
+            try
+            {
+                var parameters = new List<SqlParameter>()
+                {
+                    new SqlParameter("@sequence_name", "dbo.TestSequence"),
+                    new SqlParameter("@range_size", "10"),
+                    new SqlParameter("@range_first_value", DBNull.Value){ SqlDbType= SqlDbType.Variant, Direction=ParameterDirection.Output},
+                    new SqlParameter("@range_last_value", DBNull.Value){ SqlDbType= SqlDbType.Variant, Direction=ParameterDirection.Output},
+                    new SqlParameter("@range_cycle_count", DBNull.Value){ SqlDbType= SqlDbType.Int, Direction=ParameterDirection.Output},
+                    new SqlParameter("@sequence_increment", DBNull.Value){ SqlDbType= SqlDbType.Variant, Direction=ParameterDirection.Output},
+                    new SqlParameter("@sequence_min_value", DBNull.Value){ SqlDbType= SqlDbType.Variant, Direction=ParameterDirection.Output},
+                    new SqlParameter("@sequence_max_value", DBNull.Value){ SqlDbType= SqlDbType.Variant, Direction=ParameterDirection.Output},
+                };
+
+                await dataSource.Sql(@"EXEC sys.sp_sequence_get_range @sequence_name = @sequence_name,
+                               @range_size = @range_size,
+                               @range_first_value = @range_first_value OUTPUT,
+                               @range_last_value = @range_last_value OUTPUT,
+                               @range_cycle_count = @range_cycle_count OUTPUT,
+                               @sequence_increment = @sequence_increment OUTPUT,
+                               @sequence_min_value = @sequence_min_value OUTPUT,
+                               @sequence_max_value = @sequence_max_value OUTPUT;", parameters).ExecuteAsync();
+
+                var rangeFirstValue = parameters.Single(p => p.ParameterName == "@range_first_value").Value;
+                Assert.IsTrue((long)rangeFirstValue > 0);
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+        [DataTestMethod, BasicData(DataSourceGroup.Primary)]
+        public async Task SystemStoredProcedure_ManualOutputs(string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource2(dataSourceName, mode);
+            try
+            {
+                var parameters = new List<SqlParameter>()
+                {
+                    new SqlParameter("@sequence_name", "dbo.TestSequence"),
+                    new SqlParameter("@range_size", "10"),
+                    new SqlParameter("@range_first_value", DBNull.Value){ SqlDbType= SqlDbType.Variant, Direction=ParameterDirection.Output},
+                    new SqlParameter("@range_last_value", DBNull.Value){ SqlDbType= SqlDbType.Variant, Direction=ParameterDirection.Output},
+                    new SqlParameter("@range_cycle_count", DBNull.Value){ SqlDbType= SqlDbType.Int, Direction=ParameterDirection.Output},
+                    new SqlParameter("@sequence_increment", DBNull.Value){ SqlDbType= SqlDbType.Variant, Direction=ParameterDirection.Output},
+                    new SqlParameter("@sequence_min_value", DBNull.Value){ SqlDbType= SqlDbType.Variant, Direction=ParameterDirection.Output},
+                    new SqlParameter("@sequence_max_value", DBNull.Value){ SqlDbType= SqlDbType.Variant, Direction=ParameterDirection.Output},
+                };
+
+                await dataSource.Procedure("sys.sp_sequence_get_range", parameters).ExecuteAsync();
+
+                var rangeFirstValue = parameters.Single(p => p.ParameterName == "@range_first_value").Value;
+                Assert.IsTrue((long)rangeFirstValue > 0);
+            }
+            finally
+            {
+                Release(dataSource);
+            }
+        }
+
+        [DataTestMethod, BasicData(DataSourceGroup.Primary)]
+        public async Task MasterStoredProcedure(string dataSourceName, DataSourceType mode)
+        {
+            var dataSource = DataSource2(dataSourceName, mode);
+            try
+            {
+                await dataSource.Procedure("sp_MScleanupmergepublisher").ExecuteAsync();
             }
             finally
             {

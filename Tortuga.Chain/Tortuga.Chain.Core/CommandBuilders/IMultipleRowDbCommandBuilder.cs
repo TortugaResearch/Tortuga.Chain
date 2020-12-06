@@ -168,6 +168,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="dictionaryOptions">The dictionary options.</param>
         /// <returns>IConstructibleMaterializer&lt;Dictionary&lt;TKey, TObject&gt;&gt;.</returns>
         IConstructibleMaterializer<Dictionary<TKey, TObject>> ToDictionary<TKey, TObject>(string keyColumn, DictionaryOptions dictionaryOptions = DictionaryOptions.None)
+            where TKey : notnull
             where TObject : class;
 
         /// <summary>
@@ -181,6 +182,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <returns>IConstructibleMaterializer&lt;TDictionary&gt;.</returns>
         [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         IConstructibleMaterializer<TDictionary> ToDictionary<TKey, TObject, TDictionary>(string keyColumn, DictionaryOptions dictionaryOptions = DictionaryOptions.None)
+            where TKey : notnull
             where TObject : class
             where TDictionary : IDictionary<TKey, TObject>, new();
 
@@ -193,6 +195,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="dictionaryOptions">The dictionary options.</param>
         /// <returns>IConstructibleMaterializer&lt;Dictionary&lt;TKey, TObject&gt;&gt;.</returns>
         IConstructibleMaterializer<Dictionary<TKey, TObject>> ToDictionary<TKey, TObject>(Func<TObject, TKey> keyFunction, DictionaryOptions dictionaryOptions = DictionaryOptions.None)
+            where TKey : notnull
             where TObject : class;
 
         /// <summary>
@@ -206,6 +209,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <returns>IConstructibleMaterializer&lt;TDictionary&gt;.</returns>
         [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         IConstructibleMaterializer<TDictionary> ToDictionary<TKey, TObject, TDictionary>(Func<TObject, TKey> keyFunction, DictionaryOptions dictionaryOptions = DictionaryOptions.None)
+            where TKey : notnull
             where TObject : class
             where TDictionary : IDictionary<TKey, TObject>, new();
 
@@ -295,6 +299,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="dictionaryOptions">The dictionary options.</param>
         /// <returns></returns>
         IConstructibleMaterializer<ImmutableDictionary<TKey, TObject>> ToImmutableDictionary<TKey, TObject>(Func<TObject, TKey> keyFunction, DictionaryOptions dictionaryOptions = DictionaryOptions.None)
+            where TKey : notnull
             where TObject : class;
 
         /// <summary>
@@ -307,6 +312,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <returns></returns>
         [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         IConstructibleMaterializer<ImmutableDictionary<TKey, TObject>> ToImmutableDictionary<TKey, TObject>(string keyColumn, DictionaryOptions dictionaryOptions = DictionaryOptions.None)
+            where TKey : notnull
             where TObject : class;
 
         /// <summary>

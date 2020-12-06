@@ -14,7 +14,7 @@ namespace Tortuga.Chain
         /// </summary>
         /// <param name="procedureName">Name of the procedure.</param>
         /// <returns></returns>
-        IMultipleTableDbCommandBuilder Procedure(string procedureName);
+        IProcedureDbCommandBuilder Procedure(string procedureName);
 
         /// <summary>
         /// Executes the indicated procedure.
@@ -22,7 +22,7 @@ namespace Tortuga.Chain
         /// <param name="procedureName">Name of the procedure.</param>
         /// <param name="argumentValue">The argument value.</param>
         /// <returns></returns>
-        IMultipleTableDbCommandBuilder Procedure(string procedureName, object argumentValue);
+        IProcedureDbCommandBuilder Procedure(string procedureName, object argumentValue);
 
         /// <summary>
         /// This is used to query a scalar function.

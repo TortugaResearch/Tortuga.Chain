@@ -1,4 +1,4 @@
-﻿using MySql.Data.MySqlClient;
+﻿using MySqlConnector;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -6,7 +6,6 @@ using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Tortuga.Anchor;
-using Tortuga.Anchor.Metadata;
 using Tortuga.Chain.Metadata;
 using Tortuga.Chain.SqlServer;
 
@@ -48,7 +47,7 @@ namespace Tortuga.Chain.MySql
                         con.Open();
                         using (var cmd = new MySqlCommand("SELECT Database()", con))
                         {
-                            m_DefaultSchema = (string)cmd.ExecuteScalar();
+                            m_DefaultSchema = (string)cmd.ExecuteScalar()!;
                         }
                     }
                 }
@@ -647,7 +646,10 @@ namespace Tortuga.Chain.MySql
                                 var isUnsigned = fullTypeName.Contains("unsigned");
                                 var dbType = SqlTypeNameToDbType(typeName, isUnsigned);
 
-                                parameters.Add(new ParameterMetadata<MySqlDbType>(name, name, typeName, dbType, isNullable, (int?)maxLength, precision, scale, fullTypeName));
+                                //TASK-383: OUTPUT Parameters for MySQL
+                                var direction = ParameterDirection.Input;
+
+                                parameters.Add(new ParameterMetadata<MySqlDbType>(name, name, typeName, dbType, isNullable, (int?)maxLength, precision, scale, fullTypeName, direction));
                             }
                         }
                     }

@@ -22,7 +22,7 @@ using AbstractDataSource = Tortuga.Chain.SQLiteDataSource;
 
 #elif MYSQL
 
-using AbstractCommand = MySql.Data.MySqlClient.MySqlCommand;
+using AbstractCommand = MySqlConnector.MySqlCommand;
 using AbstractDataSource = Tortuga.Chain.MySqlDataSource;
 
 #elif POSTGRESQL

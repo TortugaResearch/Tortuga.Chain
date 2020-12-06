@@ -9,6 +9,7 @@ using Tortuga.Anchor.Metadata;
 namespace Tortuga.Chain.Appenders
 {
     internal sealed class KeyJoinAppender<T1, T2, TKey> : Appender<Tuple<List<T1>, List<T2>>, List<T1>>
+            where TKey : notnull
     {
         readonly Func<T2, TKey> m_ForeignKeyExpression;
         readonly JoinOptions m_JoinOptions;

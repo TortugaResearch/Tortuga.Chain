@@ -1,3 +1,5 @@
+using System.Data;
+
 namespace Tortuga.Chain.Metadata
 {
     /// <summary>
@@ -30,12 +32,13 @@ namespace Tortuga.Chain.Metadata
         /// <param name="sqlVariableName">Name of the SQL variable.</param>
         /// <param name="typeName">Name of the type as known to the database.</param>
         /// <param name="dbType">Type of the database column as an enum.</param>
-        /// <param name="isNullable">if set to <c>true</c> [is nullable].</param>
+        /// <param name="isNullable">if set to <c>true</c> is nullable.</param>
         /// <param name="maxLength">The maximum length.</param>
         /// <param name="precision">The precision.</param>
         /// <param name="scale">The scale.</param>
         /// <param name="fullTypeName">Full name of the type.</param>
-        protected ParameterMetadata(string sqlParameterName, string sqlVariableName, string typeName, object? dbType, bool? isNullable, int? maxLength, int? precision, int? scale, string fullTypeName)
+        /// <param name="direction">Indicates the direction of the parameter.</param>
+        protected ParameterMetadata(string sqlParameterName, string sqlVariableName, string typeName, object? dbType, bool? isNullable, int? maxLength, int? precision, int? scale, string fullTypeName, ParameterDirection direction)
         {
             SqlParameterName = sqlParameterName;
             SqlVariableName = sqlVariableName;
@@ -47,6 +50,7 @@ namespace Tortuga.Chain.Metadata
             Precision = precision;
             Scale = scale;
             FullTypeName = fullTypeName;
+            Direction = direction;
         }
 
         /// <summary>
@@ -121,5 +125,10 @@ namespace Tortuga.Chain.Metadata
         /// Gets the name of the type as known to the database.
         /// </summary>
         public string TypeName { get; }
+
+        /// <summary>
+        /// Indicates the direction of the parameter.
+        /// </summary>
+        public ParameterDirection Direction { get; }
     }
 }

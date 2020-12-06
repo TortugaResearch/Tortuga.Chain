@@ -17,8 +17,8 @@ using AbstractParameter = System.Data.SQLite.SQLiteParameter;
 
 #elif MYSQL
 
-using AbstractCommand = MySql.Data.MySqlClient.MySqlCommand;
-using AbstractParameter = MySql.Data.MySqlClient.MySqlParameter;
+using AbstractCommand = MySqlConnector.MySqlCommand;
+using AbstractParameter = MySqlConnector.MySqlParameter;
 
 #elif POSTGRESQL
 

@@ -31,7 +31,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
     /// <summary>
     /// SqlServerTableOrView supports queries against tables and views.
     /// </summary>
-    internal sealed partial class SqlServerTableOrView<TObject> : TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption, TObject>
+    internal sealed partial class SqlServerTableOrView<TObject> : TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption, TObject>, ISupportsApproximateCount
         where TObject : class
     {
         readonly TableOrViewMetadata<SqlServerObjectName, SqlDbType> m_Table;
@@ -359,6 +359,33 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         /// This is used by materializers to skip IsNull checks.
         /// </remarks>
         public override IReadOnlyList<ColumnMetadata> TryGetNonNullableColumns() => m_Table.NonNullableColumns;
+
+        /// <summary>
+        /// Return the approximate distinct count using the APPROX_COUNT_DISTINCT function.
+        /// </summary>
+        /// <param name="columnName">Name of the column.</param>
+        public ILink<long> AsCountApproximate(string columnName)
+        {
+            var column = m_Table.Columns[columnName];
+            m_SelectClause = $"APPROX_COUNT_DISTINCT({column.QuotedSqlName})";
+
+            return ToInt64();
+        }
+
+        /// <summary>
+        /// Return the approximate row count using the APPROX_COUNT_DISTINCT function.
+        /// </summary>
+        /// <remarks>This is only available on tables with a single primary key.</remarks>
+        public ILink<long> AsCountApproximate()
+        {
+            var primaryKeys = m_Table.PrimaryKeyColumns;
+            if (primaryKeys.Count != 1)
+                throw new MappingException($"{nameof(AsCountApproximate)}() operation isn't allowed on {m_Table.Name} because it doesn't have a single primary key. Please provide a column name.");
+
+            m_SelectClause = $"APPROX_COUNT_DISTINCT({primaryKeys.Single().QuotedSqlName})";
+
+            return ToInt64();
+        }
     }
 
 #if !SqlDependency_Missing

@@ -26,7 +26,8 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="keyColumn">The key column.</param>
         /// <param name="dictionaryOptions">The dictionary options.</param>
         /// <returns></returns>
-        IConstructibleMaterializer<Dictionary<TKey, TObject>> ToDictionary<TKey>(string keyColumn, DictionaryOptions dictionaryOptions = DictionaryOptions.None);
+        IConstructibleMaterializer<Dictionary<TKey, TObject>> ToDictionary<TKey>(string keyColumn, DictionaryOptions dictionaryOptions = DictionaryOptions.None)
+            where TKey : notnull;
 
         /// <summary>
         /// Materializes the result as a dictionary of objects.
@@ -35,7 +36,8 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="keyFunction">The key function.</param>
         /// <param name="dictionaryOptions">The dictionary options.</param>
         /// <returns></returns>
-        IConstructibleMaterializer<Dictionary<TKey, TObject>> ToDictionary<TKey>(Func<TObject, TKey> keyFunction, DictionaryOptions dictionaryOptions = DictionaryOptions.None);
+        IConstructibleMaterializer<Dictionary<TKey, TObject>> ToDictionary<TKey>(Func<TObject, TKey> keyFunction, DictionaryOptions dictionaryOptions = DictionaryOptions.None)
+            where TKey : notnull;
 
         /// <summary>
         /// Materializes the result as an immutable array of objects.
@@ -62,7 +64,8 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="keyFunction">The key function.</param>
         /// <param name="dictionaryOptions">The dictionary options.</param>
         /// <returns></returns>
-        IConstructibleMaterializer<ImmutableDictionary<TKey, TObject>> ToImmutableDictionary<TKey>(Func<TObject, TKey> keyFunction, DictionaryOptions dictionaryOptions = DictionaryOptions.None);
+        IConstructibleMaterializer<ImmutableDictionary<TKey, TObject>> ToImmutableDictionary<TKey>(Func<TObject, TKey> keyFunction, DictionaryOptions dictionaryOptions = DictionaryOptions.None)
+            where TKey : notnull;
 
         /// <summary>
         /// Materializes the result as a immutable dictionary of objects.
@@ -72,6 +75,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <param name="dictionaryOptions">The dictionary options.</param>
         /// <returns></returns>
         [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-        IConstructibleMaterializer<ImmutableDictionary<TKey, TObject>> ToImmutableDictionary<TKey>(string keyColumn, DictionaryOptions dictionaryOptions = DictionaryOptions.None);
+        IConstructibleMaterializer<ImmutableDictionary<TKey, TObject>> ToImmutableDictionary<TKey>(string keyColumn, DictionaryOptions dictionaryOptions = DictionaryOptions.None)
+            where TKey : notnull;
     }
 }

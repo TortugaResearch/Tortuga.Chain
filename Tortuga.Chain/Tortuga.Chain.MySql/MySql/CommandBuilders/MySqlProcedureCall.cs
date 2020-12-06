@@ -1,4 +1,4 @@
-﻿using MySql.Data.MySqlClient;
+﻿using MySqlConnector;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -15,7 +15,7 @@ namespace Tortuga.Chain.MySql.CommandBuilders
     /// <summary>
     /// Class MySqlProcedureCall.
     /// </summary>
-    internal sealed class MySqlProcedureCall : MultipleTableDbCommandBuilder<MySqlCommand, MySqlParameter>
+    internal sealed class MySqlProcedureCall : ProcedureDbCommandBuilder<MySqlCommand, MySqlParameter>
     {
         private readonly object? m_ArgumentValue;
         private readonly StoredProcedureMetadata<MySqlObjectName, MySqlDbType> m_Procedure;
