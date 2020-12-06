@@ -57,7 +57,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="System.Runtime.Caching" Version="4.7.0" />
-    <PackageReference Include="Tortuga.Anchor" Version="3.2" />
+    <PackageReference Include="Tortuga.Anchor" Version="3.3" />
   </ItemGroup>
 
   <!-- NuGet Packaging Boilerplate-->

@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.SQLite;
 using System.Linq;
 using System.Text;
+using Tortuga.Anchor;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
@@ -21,15 +22,17 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
         readonly IReadOnlyList<TObject> m_SourceList;
         readonly TableOrViewMetadata<SQLiteObjectName, DbType> m_Table;
 
-        public SQLiteInsertBatch(SQLiteDataSourceBase dataSource, SQLiteObjectName tableName, IReadOnlyList<TObject> objects, InsertOptions options) : base(dataSource)
+        public SQLiteInsertBatch(SQLiteDataSourceBase dataSource, SQLiteObjectName tableName, IEnumerable<TObject> objects, InsertOptions options) : base(dataSource)
         {
             if (dataSource == null)
                 throw new ArgumentNullException(nameof(dataSource), $"{nameof(dataSource)} is null.");
 
-            if (objects == null || objects.Count == 0)
+            var sourceList = objects.AsReadOnlyList();
+
+            if (sourceList == null || sourceList.Count == 0)
                 throw new ArgumentException($"{nameof(objects)} is null or empty.", nameof(objects));
 
-            m_SourceList = objects;
+            m_SourceList = sourceList;
             m_Options = options;
             m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
         }

@@ -123,15 +123,15 @@ namespace Tortuga.Chain.Access
         /// <param name="options">The options.</param>
         /// <returns>Tortuga.Chain.ILink&lt;System.Int32&gt;.</returns>
         /// <remarks>This operation is not atomic. It should be wrapped in a transaction.</remarks>
-        public ILink<int> InsertMultipleBatch<TObject>(AbstractObjectName tableName, IReadOnlyList<TObject> objects, InsertOptions options = InsertOptions.None)
+        public ILink<int> InsertMultipleBatch<TObject>(AbstractObjectName tableName, IEnumerable<TObject> objects, InsertOptions options = InsertOptions.None)
                 where TObject : class
         {
-            if (objects == null || objects.Count == 0)
-                throw new ArgumentException($"{nameof(objects)} is null or empty.", nameof(objects));
+            if (objects == null)
+                throw new ArgumentNullException(nameof(objects), $"{nameof(objects)} is null.");
 
-            var batchSize = MaxObjectsPerBatch(tableName, objects[0], options);
+            var batchSize = MaxObjectsPerBatch(tableName, objects.First(), options);
 
-            Func<IReadOnlyList<TObject>, ILink<int>> callBack = (o) => (OnInsertBatch<TObject>(tableName, o, options)).AsNonQuery().NeverNull();
+            Func<IEnumerable<TObject>, ILink<int>> callBack = (o) => (OnInsertBatch<TObject>(tableName, o, options)).AsNonQuery().NeverNull();
 
             return CreateMultiBatcher(callBack, objects, batchSize);
         }
@@ -157,7 +157,7 @@ namespace Tortuga.Chain.Access
         /// <param name="objects">The objects to insert.</param>
         /// <param name="options">The options.</param>
         /// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
-        public InsertBatchResult InsertBatch<TObject>(AbstractObjectName tableName, IReadOnlyList<TObject> objects, InsertOptions options = InsertOptions.None)
+        public InsertBatchResult InsertBatch<TObject>(AbstractObjectName tableName, IEnumerable<TObject> objects, InsertOptions options = InsertOptions.None)
         where TObject : class
         {
             return OnInsertBatch(tableName, objects, options);
@@ -170,7 +170,7 @@ namespace Tortuga.Chain.Access
         /// <param name="objects">The objects to insert.</param>
         /// <param name="options">The options.</param>
         /// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
-        public InsertBatchResult InsertBatch<TObject>(IReadOnlyList<TObject> objects, InsertOptions options = InsertOptions.None)
+        public InsertBatchResult InsertBatch<TObject>(IEnumerable<TObject> objects, InsertOptions options = InsertOptions.None)
         where TObject : class
         {
             return InsertBatch<TObject>(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, objects, options);
