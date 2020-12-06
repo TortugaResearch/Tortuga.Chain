@@ -257,8 +257,11 @@ namespace Tortuga.Chain.Materializers
 
         [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "UpdateOptions")]
         [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "IgnoreRowsAffected")]
-        static void CheckUpdateRowCount(object sender, CommandExecutedEventArgs e)
+        static void CheckUpdateRowCount(object? sender, CommandExecutedEventArgs e)
         {
+            if (sender == null)
+                throw new ArgumentNullException(nameof(sender), $"{nameof(sender)} is null.");
+
             var token = (ExecutionToken)sender;
 
             if (e.RowsAffected == null)
@@ -271,8 +274,11 @@ namespace Tortuga.Chain.Materializers
 
         [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "IgnoreRowsAffected")]
         [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "UpdateOptions")]
-        static void CheckUpdateRowCount(object sender, CommandExecutedEventArgs e, int expectedRowCount)
+        static void CheckUpdateRowCount(object? sender, CommandExecutedEventArgs e, int expectedRowCount)
         {
+            if (sender == null)
+                throw new ArgumentNullException(nameof(sender), $"{nameof(sender)} is null.");
+
             var token = (ExecutionToken)sender;
 
             if (e.RowsAffected == null)
@@ -285,8 +291,11 @@ namespace Tortuga.Chain.Materializers
 
         [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "DeleteOptions")]
         [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "IgnoreRowsAffected")]
-        static void CheckDeleteRowCount(object sender, CommandExecutedEventArgs e)
+        static void CheckDeleteRowCount(object? sender, CommandExecutedEventArgs e)
         {
+            if (sender == null)
+                throw new ArgumentNullException(nameof(sender), $"{nameof(sender)} is null.");
+
             var token = (ExecutionToken)sender;
 
             if (e.RowsAffected == null)
@@ -299,8 +308,11 @@ namespace Tortuga.Chain.Materializers
 
         [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "IgnoreRowsAffected")]
         [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "DeleteOptions")]
-        static void CheckDeleteRowCount(object sender, CommandExecutedEventArgs e, int expectedRowCount)
+        static void CheckDeleteRowCount(object? sender, CommandExecutedEventArgs e, int expectedRowCount)
         {
+            if (sender == null)
+                throw new ArgumentNullException(nameof(sender), $"{nameof(sender)} is null.");
+
             var token = (ExecutionToken)sender;
 
             if (e.RowsAffected == null)

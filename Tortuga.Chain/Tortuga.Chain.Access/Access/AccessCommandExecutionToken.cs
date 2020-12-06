@@ -31,7 +31,7 @@ namespace Tortuga.Chain.Access
         /// This function is executed with the value returned by this execution token.
         /// It is used to create the next execution token in the chain.
         /// </summary>
-        internal Action<object>? ForwardResult { get; set; }
+        internal Action<object?>? ForwardResult { get; set; }
 
         /// <summary>
         /// Gets or sets the command to be executed after the current execution token.

@@ -46,7 +46,7 @@ namespace Tortuga.Chain.Materializers
                     if (property.CanWrite)
                     {
                         var genericMethod = methodType.MakeGenericMethod(property.PropertyType);
-                        var mapper = (MappedProperty<T>)genericMethod.Invoke(null, new object[] { property.MappedColumnName, property });
+                        var mapper = (MappedProperty<T>)genericMethod.Invoke(null, new object?[] { property.MappedColumnName, property })!;
 
                         mappedProperties.Add(mapper);
                     }

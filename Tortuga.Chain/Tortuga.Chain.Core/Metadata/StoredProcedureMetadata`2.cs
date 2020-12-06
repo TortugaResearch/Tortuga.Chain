@@ -19,12 +19,12 @@ namespace Tortuga.Chain.Metadata
         /// </summary>
         /// <param name="name">The name.</param>
         /// <param name="parameters">The parameters.</param>
-        public StoredProcedureMetadata(TName name, ParameterMetadataCollection<TDbType> parameters) : base(name.ToString(), parameters?.GenericCollection!)
+        public StoredProcedureMetadata(TName name, ParameterMetadataCollection<TDbType> parameters) : base(name.ToString()!, parameters?.GenericCollection!)
         {
             Name = name;
             Parameters = parameters ?? throw new ArgumentNullException(nameof(parameters), $"{nameof(parameters)} is null.");
 
-            m_Builder = new SqlBuilder<TDbType>(Name.ToString(), Parameters);
+            m_Builder = new SqlBuilder<TDbType>(Name.ToString()!, Parameters);
         }
 
         /// <summary>

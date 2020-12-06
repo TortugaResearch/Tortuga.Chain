@@ -79,7 +79,7 @@ namespace Tortuga.Chain.Access
             if (!m_SchemaLoaded)
                 Preload();
 
-            TableOrViewMetadata<AccessObjectName, OleDbType> result;
+            TableOrViewMetadata<AccessObjectName, OleDbType>? result;
             if (m_Tables.TryGetValue(tableName, out result))
                 return result;
 
@@ -163,7 +163,7 @@ namespace Tortuga.Chain.Access
             using (var con = new OleDbConnection(m_ConnectionBuilder.ConnectionString))
             {
                 using (var adapter = new OleDbDataAdapter($"SELECT * FROM [{tableName}] WHERE 1=0", con))
-                    tableSchema = adapter.FillSchema(new DataTable() { Locale = CultureInfo.InvariantCulture }, SchemaType.Source);
+                    tableSchema = adapter.FillSchema(new DataTable() { Locale = CultureInfo.InvariantCulture }, SchemaType.Source)!;
             }
 
             foreach (DataColumn col in tableSchema.Columns)
@@ -243,7 +243,7 @@ namespace Tortuga.Chain.Access
                     if (row["TABLE_TYPE"].ToString() != "TABLE")
                         continue;
 
-                    var name = row["TABLE_NAME"].ToString();
+                    var name = row["TABLE_NAME"].ToString()!;
                     var columns = GetColumns(name, columnsDataTable, primaryKeys);
                     m_Tables[name] = new TableOrViewMetadata<AccessObjectName, OleDbType>(this, name, true, columns);
                 }
@@ -258,7 +258,7 @@ namespace Tortuga.Chain.Access
                 var dtViews = connection.GetOleDbSchemaTable(OleDbSchemaGuid.Views, null);
                 foreach (DataRow row in dtViews.Rows)
                 {
-                    var name = row["TABLE_NAME"].ToString();
+                    var name = row["TABLE_NAME"].ToString()!;
                     var columns = GetColumns(name, columnsDataTable, null);
                     m_Tables[name] = new TableOrViewMetadata<AccessObjectName, OleDbType>(this, name, false, columns);
                 }

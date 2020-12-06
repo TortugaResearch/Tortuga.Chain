@@ -8,6 +8,7 @@ namespace Tortuga.Chain.Metadata
     /// <typeparam name="TName">The type of the name.</typeparam>
     /// <typeparam name="TDbType">The database column type.</typeparam>
     public class IndexMetadataCollection<TName, TDbType> : ReadOnlyCollection<IndexMetadata<TName, TDbType>>
+        where TName : struct
         where TDbType : struct
     {
         /// <summary>

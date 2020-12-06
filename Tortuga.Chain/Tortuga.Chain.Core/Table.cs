@@ -186,9 +186,9 @@ namespace Tortuga.Chain
         {
             if (constructorSignature == null)
             {
-                var methodType = GetType().GetMethod("ToObjects", Array.Empty<Type>());
+                var methodType = GetType().GetMethod("ToObjects", Array.Empty<Type>())!;
                 var genericMethod = methodType.MakeGenericMethod(typeof(T));
-                return (IEnumerable<T>)genericMethod.Invoke(this, null);
+                return (IEnumerable<T>)genericMethod.Invoke(this, null)!;
             }
             else
                 return ToObjects_Core<T>(constructorSignature);
@@ -230,7 +230,7 @@ namespace Tortuga.Chain
             {
                 var methodType = GetType().GetMethods(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).Single(m => m.Name == "ToObjectsWithEcho_New");
                 var genericMethod = methodType.MakeGenericMethod(typeof(T));
-                return (IEnumerable<KeyValuePair<Row, T>>)genericMethod.Invoke(this, null);
+                return (IEnumerable<KeyValuePair<Row, T>>)genericMethod.Invoke(this, null)!;
             }
             else
                 return ToObjectsWithEcho_Core<T>(constructorSignature);

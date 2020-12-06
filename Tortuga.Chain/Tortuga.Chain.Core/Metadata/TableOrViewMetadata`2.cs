@@ -25,13 +25,13 @@ namespace Tortuga.Chain.Metadata
         /// <param name="name">The name.</param>
         /// <param name="isTable">if set to <c>true</c> [is table].</param>
         /// <param name="columns">The columns.</param>
-        public TableOrViewMetadata(DatabaseMetadataCache<TName, TDbType> metadataCache, TName name, bool isTable, ColumnMetadataCollection<TDbType> columns) : base(name.ToString(), isTable, columns?.GenericCollection!)
+        public TableOrViewMetadata(DatabaseMetadataCache<TName, TDbType> metadataCache, TName name, bool isTable, ColumnMetadataCollection<TDbType> columns) : base(name.ToString()!, isTable, columns?.GenericCollection!)
         {
             m_MetadataCache = metadataCache ?? throw new ArgumentNullException(nameof(metadataCache), $"{nameof(metadataCache)} is null.");
             Name = name;
             Columns = columns ?? throw new ArgumentNullException(nameof(columns), $"{nameof(columns)} is null.");
-            PrimaryKeyColumns = new ColumnMetadataCollection<TDbType>(name.ToString(), columns.Where(c => c.IsPrimaryKey).ToList());
-            m_Builder = new SqlBuilder<TDbType>(Name.ToString(), Columns);
+            PrimaryKeyColumns = new ColumnMetadataCollection<TDbType>(name.ToString()!, columns.Where(c => c.IsPrimaryKey).ToList());
+            m_Builder = new SqlBuilder<TDbType>(Name.ToString()!, Columns);
         }
 
         /// <summary>

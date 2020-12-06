@@ -99,16 +99,16 @@ namespace Tortuga.Chain.Appenders
         /// <param name="e">The <see cref="ExecutionTokenPreparingEventArgs"/> instance containing the event data.</param>
         protected virtual void OnExecutionTokenPreparing(ExecutionTokenPreparingEventArgs e) { }
 
-        void ExecutionToken_CommandBuilt(object sender, CommandBuiltEventArgs e) => OnCommandBuilt(e);
+        void ExecutionToken_CommandBuilt(object? sender, CommandBuiltEventArgs e) => OnCommandBuilt(e);
 
-        void PreviousLink_ExecutionTokenPrepared(object sender, ExecutionTokenPreparedEventArgs e)
+        void PreviousLink_ExecutionTokenPrepared(object? sender, ExecutionTokenPreparedEventArgs e)
         {
             OnExecutionTokenPrepared(e); //left first
             ExecutionTokenPrepared?.Invoke(this, e); //then right
             e.ExecutionToken.CommandBuilt += ExecutionToken_CommandBuilt;
         }
 
-        void PreviousLink_ExecutionTokenPreparing(object sender, ExecutionTokenPreparingEventArgs e)
+        void PreviousLink_ExecutionTokenPreparing(object? sender, ExecutionTokenPreparingEventArgs e)
         {
             OnExecutionTokenPreparing(e); //left first
             ExecutionTokenPreparing?.Invoke(this, e); //then right

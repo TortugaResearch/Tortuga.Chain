@@ -20,6 +20,7 @@ namespace Tortuga.Chain.Materializers
     internal class DictionaryMaterializer<TCommand, TParameter, TKey, TObject, TDictionary> : ConstructibleMaterializer<TCommand, TParameter, TDictionary, TObject>
         where TCommand : DbCommand
         where TParameter : DbParameter
+        where TKey : notnull
         where TObject : class
         where TDictionary : IDictionary<TKey, TObject>, new()
     {

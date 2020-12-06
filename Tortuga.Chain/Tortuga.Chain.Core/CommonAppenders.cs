@@ -116,7 +116,12 @@ namespace Tortuga.Chain
         /// <param name="foreignKeyExpression">The expression to get the foreign key from the child object.</param>
         /// <param name="targetCollectionExpression">The expression to get the collection on the parent to add the child to.</param>
         /// <param name="joinOptions">The join options.</param>
-        public static ILink<List<T1>> Join<T1, T2, TKey>(this ILink<Tuple<List<T1>, List<T2>>> previousLink, Func<T1, TKey> primaryKeyExpression, Func<T2, TKey> foreignKeyExpression, Func<T1, ICollection<T2>> targetCollectionExpression, JoinOptions joinOptions = JoinOptions.None)
+        public static ILink<List<T1>> Join<T1, T2, TKey>(this ILink<Tuple<List<T1>, List<T2>>> previousLink,
+            Func<T1, TKey> primaryKeyExpression,
+            Func<T2, TKey> foreignKeyExpression,
+            Func<T1, ICollection<T2>> targetCollectionExpression,
+            JoinOptions joinOptions = JoinOptions.None)
+            where TKey : notnull
         {
             return new KeyJoinAppender<T1, T2, TKey>(previousLink, primaryKeyExpression, foreignKeyExpression, targetCollectionExpression, joinOptions);
         }
@@ -132,7 +137,12 @@ namespace Tortuga.Chain
         /// <param name="foreignKeyExpression">The expression to get the foreign key from the child object.</param>
         /// <param name="targetCollectionName">The name of the collection property on the parent to add the child to.</param>
         /// <param name="joinOptions">The join options.</param>
-        public static ILink<List<T1>> Join<T1, T2, TKey>(this ILink<Tuple<List<T1>, List<T2>>> previousLink, Func<T1, TKey> primaryKeyExpression, Func<T2, TKey> foreignKeyExpression, string targetCollectionName, JoinOptions joinOptions = JoinOptions.None)
+        public static ILink<List<T1>> Join<T1, T2, TKey>(this ILink<Tuple<List<T1>, List<T2>>> previousLink,
+            Func<T1, TKey> primaryKeyExpression,
+            Func<T2, TKey> foreignKeyExpression,
+            string targetCollectionName,
+            JoinOptions joinOptions = JoinOptions.None)
+            where TKey : notnull
         {
             return new KeyJoinAppender<T1, T2, TKey>(previousLink, primaryKeyExpression, foreignKeyExpression, targetCollectionName, joinOptions);
         }
@@ -153,7 +163,7 @@ namespace Tortuga.Chain
             var methodType = typeof(CommonAppenders).GetMethods(BindingFlags.NonPublic | BindingFlags.Static).Single(m => m.Name == "Join_Helper");
             var genericMethod = methodType.MakeGenericMethod(typeof(T1), typeof(T2), keyType);
 
-            return (ILink<List<T1>>)genericMethod.Invoke(null, new object[] { previousLink, primaryKeyName, foreignKeyName, targetCollectionName, joinOptions });
+            return (ILink<List<T1>>)genericMethod.Invoke(null, new object[] { previousLink, primaryKeyName, foreignKeyName, targetCollectionName, joinOptions })!;
         }
 
         /// <summary>
@@ -171,7 +181,7 @@ namespace Tortuga.Chain
             var methodType = typeof(CommonAppenders).GetMethods(BindingFlags.NonPublic | BindingFlags.Static).Single(m => m.Name == "Join_Helper");
             var genericMethod = methodType.MakeGenericMethod(typeof(T1), typeof(T2), keyType);
 
-            return (ILink<List<T1>>)genericMethod.Invoke(null, new object[] { previousLink, keyName, keyName, targetCollectionName, joinOptions });
+            return (ILink<List<T1>>)genericMethod.Invoke(null, new object[] { previousLink, keyName, keyName, targetCollectionName, joinOptions })!;
         }
 
         /// <summary>
@@ -187,6 +197,7 @@ namespace Tortuga.Chain
         /// <param name="joinOptions">The join options.</param>
         [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         public static ILink<List<T1>> Join<T1, T2, TKey>(this ILink<Tuple<List<T1>, List<T2>>> previousLink, string primaryKeyName, string foreignKeyName, string targetCollectionName, JoinOptions joinOptions = JoinOptions.None)
+            where TKey : notnull
         {
             return new KeyJoinAppender<T1, T2, TKey>(previousLink, primaryKeyName, foreignKeyName, targetCollectionName, joinOptions);
         }
@@ -203,6 +214,7 @@ namespace Tortuga.Chain
         /// <param name="joinOptions">The join options.</param>
         [SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
         public static ILink<List<T1>> Join<T1, T2, TKey>(this ILink<Tuple<List<T1>, List<T2>>> previousLink, string keyName, string targetCollectionName, JoinOptions joinOptions = JoinOptions.None)
+            where TKey : notnull
         {
             if (string.IsNullOrEmpty(keyName))
                 throw new ArgumentException("keyName is null or empty.", nameof(keyName));
@@ -295,6 +307,7 @@ namespace Tortuga.Chain
         }
 
         internal static ILink<List<T1>> Join_Helper<T1, T2, TKey>(ILink<Tuple<List<T1>, List<T2>>> previousLink, string primaryKeyName, string foreignKeyName, string targetCollectionName, JoinOptions joinOptions)
+            where TKey : notnull
         {
             return new KeyJoinAppender<T1, T2, TKey>(previousLink, primaryKeyName, foreignKeyName, targetCollectionName, joinOptions);
         }

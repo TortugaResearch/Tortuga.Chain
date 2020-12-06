@@ -110,14 +110,14 @@ namespace Tortuga.Chain.CommandBuilders
             }
         }
 
-        void OnExecutionTokenPrepared(object s, ExecutionTokenPreparedEventArgs e)
+        void OnExecutionTokenPrepared(object? sender, ExecutionTokenPreparedEventArgs e)
         {
-            ExecutionTokenPrepared?.Invoke(s, e);
+            ExecutionTokenPrepared?.Invoke(sender, e);
         }
 
-        void OnExecutionTokenPreparing(object s, ExecutionTokenPreparingEventArgs e)
+        void OnExecutionTokenPreparing(object? sender, ExecutionTokenPreparingEventArgs e)
         {
-            ExecutionTokenPreparing?.Invoke(s, e);
+            ExecutionTokenPreparing?.Invoke(sender, e);
         }
     }
 }

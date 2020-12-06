@@ -36,7 +36,7 @@ namespace Tortuga.Chain
                 throw new ArgumentException($"{nameof(connectionString)} is null or empty.", nameof(connectionString));
 
             m_Factory = factory ?? throw new ArgumentNullException(nameof(factory), $"{nameof(factory)} is null.");
-            m_ConnectionBuilder = factory.CreateConnectionStringBuilder();
+            m_ConnectionBuilder = factory.CreateConnectionStringBuilder() ?? throw new ArgumentException($"{nameof(factory)}.CreateConnectionStringBuilder returned a null.", nameof(factory));
             m_ConnectionBuilder.ConnectionString = connectionString;
             Name = name;
             m_ExtensionCache = new ConcurrentDictionary<Type, object>();
@@ -186,7 +186,7 @@ namespace Tortuga.Chain
         {
             if (m_Factory == null)
                 throw new InvalidOperationException("Subclasses of GenericDbDataSource that do not provide a DbProviderFactory need to override CreateCommand");
-            return m_Factory.CreateCommand();
+            return m_Factory.CreateCommand() ?? throw new InvalidOperationException($"CreateCommand on factory of type {m_Factory.GetType().Name} returned a null.");
         }
 
         [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "GenericDbDataSource")]
@@ -196,7 +196,7 @@ namespace Tortuga.Chain
         {
             if (m_Factory == null)
                 throw new InvalidOperationException("Subclasses of GenericDbDataSource that do not provide a DbProviderFactory need to override CreateParameter");
-            return m_Factory.CreateParameter();
+            return m_Factory.CreateParameter() ?? throw new InvalidOperationException($"CreateParameter on factory of type {m_Factory.GetType().Name} returned a null.");
         }
 
         /// <summary>
@@ -210,7 +210,7 @@ namespace Tortuga.Chain
         {
             if (m_Factory == null)
                 throw new InvalidOperationException("Subclasses of GenericDbDataSource that do not provide a DbProviderFactory need to override OnCreateConnection");
-            return m_Factory.CreateConnection();
+            return m_Factory.CreateConnection() ?? throw new InvalidOperationException($"CreateConnection on factory of type {m_Factory.GetType().Name} returned a null.");
         }
 
         /// <summary>

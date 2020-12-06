@@ -20,12 +20,12 @@ namespace Tortuga.Chain.Metadata
         /// <param name="name">The name.</param>
         /// <param name="parameters">The parameters.</param>
         /// <param name="columns">The columns.</param>
-        public TableFunctionMetadata(TName name, ParameterMetadataCollection<TDbType> parameters, ColumnMetadataCollection<TDbType> columns) : base(name.ToString(), parameters?.GenericCollection!, columns?.GenericCollection!)
+        public TableFunctionMetadata(TName name, ParameterMetadataCollection<TDbType> parameters, ColumnMetadataCollection<TDbType> columns) : base(name.ToString()!, parameters?.GenericCollection!, columns?.GenericCollection!)
         {
             Name = name;
             Parameters = parameters ?? throw new ArgumentNullException(nameof(parameters), $"{nameof(parameters)} is null.");
             Columns = columns ?? throw new ArgumentNullException(nameof(columns), $"{nameof(columns)} is null.");
-            m_Builder = new SqlBuilder<TDbType>(Name.ToString(), Columns, Parameters);
+            m_Builder = new SqlBuilder<TDbType>(Name.ToString()!, Columns, Parameters);
         }
 
         /// <summary>
