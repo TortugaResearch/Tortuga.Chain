@@ -37,7 +37,7 @@ namespace Tortuga.Chain.SqlServer
                         con.Open();
                         using (var cmd = new OleDbCommand("SELECT DB_NAME () AS DatabaseName", con))
                         {
-                            m_DatabaseName = (string)cmd.ExecuteScalar();
+                            m_DatabaseName = (string)cmd.ExecuteScalar()!;
                         }
                     }
                 }
@@ -60,7 +60,7 @@ namespace Tortuga.Chain.SqlServer
                         con.Open();
                         using (var cmd = new OleDbCommand("SELECT SCHEMA_NAME () AS DefaultSchema", con))
                         {
-                            m_DefaultSchema = (string)cmd.ExecuteScalar();
+                            m_DefaultSchema = (string)cmd.ExecuteScalar()!;
                         }
                     }
                 }

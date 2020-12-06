@@ -64,12 +64,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Nito.AsyncEx" Version="5.0.0" />
-    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.112" />
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.8">
+    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="5.0.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Nito.AsyncEx" Version="5.1.0" />
+    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.113.6" />
   </ItemGroup>
 
   <!-- NuGet Packaging Boilerplate-->

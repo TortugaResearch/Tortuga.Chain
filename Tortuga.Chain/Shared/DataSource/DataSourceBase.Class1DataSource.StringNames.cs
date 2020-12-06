@@ -32,8 +32,8 @@ using AbstractLimitOption = Tortuga.Chain.SQLiteLimitOption;
 
 #elif MYSQL
 
-using AbstractCommand = MySql.Data.MySqlClient.MySqlCommand;
-using AbstractParameter = MySql.Data.MySqlClient.MySqlParameter;
+using AbstractCommand = MySqlConnector.MySqlCommand;
+using AbstractParameter = MySqlConnector.MySqlParameter;
 using AbstractObjectName = Tortuga.Chain.MySql.MySqlObjectName;
 using AbstractLimitOption = Tortuga.Chain.MySqlLimitOption;
 

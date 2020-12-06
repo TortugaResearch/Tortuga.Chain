@@ -57,7 +57,7 @@ namespace Tortuga.Chain.PostgreSql
                         con.Open();
                         using (var cmd = new NpgsqlCommand("select current_database()", con))
                         {
-                            m_DatabaseName = (string)cmd.ExecuteScalar();
+                            m_DatabaseName = (string)cmd.ExecuteScalar()!;
                         }
                     }
                 }
@@ -84,12 +84,12 @@ namespace Tortuga.Chain.PostgreSql
 
                         using (var cmd = new NpgsqlCommand("select current_user;", con))
                         {
-                            currentUser = (string)cmd.ExecuteScalar();
+                            currentUser = (string)cmd.ExecuteScalar()!;
                         }
 
                         using (var cmd = new NpgsqlCommand("SHOW search_path;", con))
                         {
-                            defaultSchema = (string)cmd.ExecuteScalar();
+                            defaultSchema = (string)cmd.ExecuteScalar()!;
                         }
                         defaultSchema = defaultSchema.Replace("\"$user\"", currentUser);
                         m_DefaultSchemaList = defaultSchema.Split(',').Select(s => s.Trim()).Where(s => !string.IsNullOrEmpty(s)).ToImmutableArray();
@@ -114,7 +114,7 @@ namespace Tortuga.Chain.PostgreSql
 
                         using (var cmd = new NpgsqlCommand("SHOW server_version;", con))
                         {
-                            var versionString = (string)cmd.ExecuteScalar();
+                            var versionString = (string)cmd.ExecuteScalar()!;
                             if (versionString.Contains(" ", StringComparison.Ordinal))
                                 versionString = versionString.Substring(0, versionString.IndexOf(" ", StringComparison.Ordinal));
                             m_ServerVersion = Version.Parse(versionString);
@@ -139,7 +139,7 @@ namespace Tortuga.Chain.PostgreSql
                         con.Open();
 
                         using (var cmd = new NpgsqlCommand("SELECT version();", con))
-                            m_ServerVersionName = (string)cmd.ExecuteScalar();
+                            m_ServerVersionName = (string)cmd.ExecuteScalar()!;
                     }
                 }
                 return m_ServerVersionName;
