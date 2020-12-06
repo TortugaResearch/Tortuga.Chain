@@ -135,7 +135,7 @@ namespace Tortuga.Chain.SQLite
             return new SQLiteTableOrView<TObject>(this, tableName, where, parameters);
         }
 
-        SQLiteTableOrView<TObject> OnGetByKeyList<TObject, TKey>(SQLiteObjectName tableName, ColumnMetadata<DbType> columnMetadata, IEnumerable<TKey> keys)
+        MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter, TObject> OnGetByKeyList<TObject, TKey>(SQLiteObjectName tableName, ColumnMetadata<DbType> columnMetadata, IEnumerable<TKey> keys)
             where TObject : class
         {
             var keyList = keys.AsList();
@@ -155,7 +155,7 @@ namespace Tortuga.Chain.SQLite
                 parameters.Add(param);
             }
 
-            return new SQLiteTableOrView<TObject>(this, tableName, where, parameters);
+            return new MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter, TObject>(new SQLiteTableOrView<TObject>(this, tableName, where, parameters));
         }
 
         MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> OnDeleteMany(SQLiteObjectName tableName, string whereClause, object? argumentValue)

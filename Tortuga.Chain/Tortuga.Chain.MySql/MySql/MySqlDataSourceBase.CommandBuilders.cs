@@ -114,7 +114,7 @@ namespace Tortuga.Chain.MySql
             return new MySqlTableOrView<TObject>(this, tableName, where, parameters);
         }
 
-        MySqlTableOrView<TObject> OnGetByKeyList<TObject, TKey>(MySqlObjectName tableName, ColumnMetadata<MySqlDbType> columnMetadata, IEnumerable<TKey> keys)
+        MultipleRowDbCommandBuilder<MySqlCommand, MySqlParameter, TObject> OnGetByKeyList<TObject, TKey>(MySqlObjectName tableName, ColumnMetadata<MySqlDbType> columnMetadata, IEnumerable<TKey> keys)
             where TObject : class
         {
             var keyList = keys.AsList();
@@ -134,7 +134,7 @@ namespace Tortuga.Chain.MySql
                 parameters.Add(param);
             }
 
-            return new MySqlTableOrView<TObject>(this, tableName, where, parameters);
+            return new MultipleRowDbCommandBuilder<MySqlCommand, MySqlParameter, TObject>(new MySqlTableOrView<TObject>(this, tableName, where, parameters));
         }
 
         MultipleRowDbCommandBuilder<MySqlCommand, MySqlParameter> OnDeleteMany(MySqlObjectName tableName, string whereClause, object? argumentValue)
