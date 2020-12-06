@@ -103,7 +103,7 @@ namespace Tortuga.Chain.Access
         /// <param name="objects">The objects.</param>
         /// <param name="options">The options.</param>
         /// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
-        public InsertBatchResult InsertBatch<TObject>(string tableName, IReadOnlyList<TObject> objects, InsertOptions options = InsertOptions.None)
+        public InsertBatchResult InsertBatch<TObject>(string tableName, IEnumerable<TObject> objects, InsertOptions options = InsertOptions.None)
         where TObject : class
         {
             return InsertBatch<TObject>(new AbstractObjectName(tableName), objects, options);

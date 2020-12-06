@@ -322,7 +322,7 @@ namespace Tortuga.Chain.DataSources
         /// <param name="objects">The objects to insert.</param>
         /// <param name="batchSize">Size of the batch.</param>
         /// <returns>ILink&lt;System.Int32&gt;.</returns>
-        protected ILink<int> CreateMultiBatcher<TObject>(Func<IReadOnlyList<TObject>, ILink<int>> callBack, IReadOnlyList<TObject> objects, int batchSize)
+        protected ILink<int> CreateMultiBatcher<TObject>(Func<IEnumerable<TObject>, ILink<int>> callBack, IEnumerable<TObject> objects, int batchSize)
         {
             return new MultiBatcher<TObject>(this, callBack, objects, batchSize);
         }

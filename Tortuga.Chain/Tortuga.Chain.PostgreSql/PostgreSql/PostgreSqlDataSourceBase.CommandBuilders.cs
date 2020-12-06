@@ -194,7 +194,7 @@ namespace Tortuga.Chain.PostgreSql
             return new PostgreSqlUpdateObject<TArgument>(this, tableName, argumentValue, options);
         }
 
-        MultipleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> OnInsertBatch<TObject>(PostgreSqlObjectName tableName, IReadOnlyList<TObject> objects, InsertOptions options)
+        MultipleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> OnInsertBatch<TObject>(PostgreSqlObjectName tableName, IEnumerable<TObject> objects, InsertOptions options)
     where TObject : class
         {
             return new PostgreSqlInsertBatch<TObject>(this, tableName, objects, options);

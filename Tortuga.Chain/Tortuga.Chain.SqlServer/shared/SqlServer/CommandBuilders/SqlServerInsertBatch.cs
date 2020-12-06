@@ -6,7 +6,7 @@ using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
 using Tortuga.Chain.Metadata;
-using System.Linq;
+using Tortuga.Anchor;
 
 #if SQL_SERVER_SDS
 
@@ -30,18 +30,20 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
         readonly IReadOnlyList<TObject> m_SourceList;
         readonly TableOrViewMetadata<SqlServerObjectName, SqlDbType> m_Table;
 
-        public SqlServerInsertBatch(SqlServerDataSourceBase dataSource, SqlServerObjectName tableName, IReadOnlyList<TObject> objects, InsertOptions options) : base(dataSource)
+        public SqlServerInsertBatch(SqlServerDataSourceBase dataSource, SqlServerObjectName tableName, IEnumerable<TObject> objects, InsertOptions options) : base(dataSource)
         {
             if (dataSource == null)
                 throw new ArgumentNullException(nameof(dataSource), $"{nameof(dataSource)} is null.");
 
-            if (objects == null || objects.Count == 0)
+            var sourceList = objects.AsReadOnlyList();
+
+            if (sourceList == null || sourceList.Count == 0)
                 throw new ArgumentException($"{nameof(objects)} is null or empty.", nameof(objects));
 
-            if (objects.Count > 1000)
+            if (sourceList.Count > 1000)
                 throw new ArgumentException($"{nameof(objects)}.Count exceeds SQL Server's row count limit of 1000. Supply a table type, break the call into batches of 1000, use InsertMultipleBatch, or use BulkInsert.", nameof(objects));
 
-            m_SourceList = objects;
+            m_SourceList = sourceList;
             m_Options = options;
             m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
         }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Tortuga.Anchor;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.DataSources;
 
@@ -16,9 +17,9 @@ namespace Tortuga.Chain.CommandBuilders
 
         Func<IReadOnlyList<TObject>, ILink<int>> m_CallBack;
 
-        IReadOnlyList<TObject> m_Objects;
+        IEnumerable<TObject> m_Objects;
 
-        internal MultiBatcher(IDataSource dataSource, Func<IReadOnlyList<TObject>, ILink<int>> callBack, IReadOnlyList<TObject> objects, int batchSize)
+        internal MultiBatcher(IDataSource dataSource, Func<IEnumerable<TObject>, ILink<int>> callBack, IEnumerable<TObject> objects, int batchSize)
         {
             DataSource = dataSource;
             m_CallBack = callBack;
@@ -35,7 +36,7 @@ namespace Tortuga.Chain.CommandBuilders
         string? ILink<int>.CommandText()
         {
             var result = new System.Text.StringBuilder();
-            foreach (var batch in Batch(m_Objects, m_BatchSize))
+            foreach (var batch in m_Objects.BatchAsLists(m_BatchSize))
             {
                 ILink<int> link = m_CallBack.Invoke(batch);
                 link.ExecutionTokenPrepared += OnExecutionTokenPrepared;
@@ -51,7 +52,7 @@ namespace Tortuga.Chain.CommandBuilders
         int ILink<int>.Execute(object? state)
         {
             var result = 0;
-            foreach (var batch in Batch(m_Objects, m_BatchSize))
+            foreach (var batch in m_Objects.BatchAsLists(m_BatchSize))
             {
                 ILink<int> link = m_CallBack.Invoke(batch);
                 link.ExecutionTokenPrepared += OnExecutionTokenPrepared;
@@ -72,7 +73,7 @@ namespace Tortuga.Chain.CommandBuilders
         async Task<int> ILink<int>.ExecuteAsync(CancellationToken cancellationToken, object? state)
         {
             var result = 0;
-            foreach (var batch in Batch(m_Objects, m_BatchSize))
+            foreach (var batch in m_Objects.BatchAsLists(m_BatchSize))
             {
                 ILink<int> link = m_CallBack.Invoke(batch);
                 link.ExecutionTokenPrepared += OnExecutionTokenPrepared;
@@ -85,30 +86,7 @@ namespace Tortuga.Chain.CommandBuilders
             return result;
         }
 
-        //Move this to Anchor
-        static IEnumerable<IReadOnlyList<T>> Batch<T>(IReadOnlyList<T> source, int size)
-        {
-            int count = 0;
-            using (var iter = source.GetEnumerator())
-            {
-                while (iter.MoveNext())
-                {
-                    var chunk = new T[size];
-                    count = 1;
-                    chunk[0] = iter.Current;
-                    for (int i = 1; i < size && iter.MoveNext(); i++)
-                    {
-                        chunk[i] = iter.Current;
-                        count++;
-                    }
-                    if (count < size)
-                    {
-                        Array.Resize(ref chunk, count);
-                    }
-                    yield return chunk;
-                }
-            }
-        }
+      
 
         void OnExecutionTokenPrepared(object? sender, ExecutionTokenPreparedEventArgs e)
         {

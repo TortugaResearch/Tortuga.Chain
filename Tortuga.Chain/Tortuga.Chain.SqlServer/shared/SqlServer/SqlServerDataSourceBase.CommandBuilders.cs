@@ -343,7 +343,7 @@ namespace Tortuga.Chain.SqlServer
             return new SqlServerUpdateObject<TArgument>(this, tableName, argumentValue, options);
         }
 
-        MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> OnInsertBatch<TObject>(SqlServerObjectName tableName, IReadOnlyList<TObject> objects, InsertOptions options)
+        MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> OnInsertBatch<TObject>(SqlServerObjectName tableName, IEnumerable<TObject> objects, InsertOptions options)
             where TObject : class
         {
             return new SqlServerInsertBatch<TObject>(this, tableName, objects, options);
