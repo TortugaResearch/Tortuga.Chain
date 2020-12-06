@@ -15,7 +15,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
     /// <summary>
     /// Class OleDbSqlServerProcedureCall.
     /// </summary>
-    internal sealed class OleDbSqlServerProcedureCall : MultipleTableDbCommandBuilder<OleDbCommand, OleDbParameter>
+    internal sealed class OleDbSqlServerProcedureCall : ProcedureDbCommandBuilder<OleDbCommand, OleDbParameter>
     {
         readonly object? m_ArgumentValue;
         readonly StoredProcedureMetadata<SqlServerObjectName, OleDbType> m_Procedure;

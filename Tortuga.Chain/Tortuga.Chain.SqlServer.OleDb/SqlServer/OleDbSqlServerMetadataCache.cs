@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Data;
 using System.Data.OleDb;
 using System.Diagnostics.CodeAnalysis;
 using Tortuga.Chain.Metadata;
@@ -666,7 +667,8 @@ WHERE	s.name = ? AND t.name = ? AND t.is_table_type = 1;";
 			COALESCE(t.is_nullable, t2.is_nullable)  as is_nullable,
 		    CONVERT(INT, t.max_length) AS max_length,
 		    CONVERT(INT, t.precision) AS precision,
-		    CONVERT(INT, t.scale) AS scale
+		    CONVERT(INT, t.scale) AS scale,
+		    p.is_output
             FROM    sys.parameters p
                     LEFT JOIN sys.types t ON p.system_type_id = t.user_type_id
                     LEFT JOIN sys.types t2 ON p.user_type_id = t2.user_type_id
@@ -694,10 +696,14 @@ WHERE	s.name = ? AND t.name = ? AND t.is_table_type = 1;";
                                 int? maxLength = reader.GetInt32OrNull("max_length");
                                 int? precision = reader.GetInt32OrNull("precision");
                                 int? scale = reader.GetInt32OrNull("scale");
+                                var isOutput = reader.GetBoolean("is_output");
+
                                 string fullTypeName;
                                 AdjustTypeDetails(typeName, ref maxLength, ref precision, ref scale, out fullTypeName);
 
-                                parameters.Add(new ParameterMetadata<OleDbType>(name, name, typeName, SqlTypeNameToDbType(typeName), isNullable, maxLength, precision, scale, fullTypeName));
+                                var direction = isOutput ? ParameterDirection.Output : ParameterDirection.Input;
+
+                                parameters.Add(new ParameterMetadata<OleDbType>(name, name, typeName, SqlTypeNameToDbType(typeName), isNullable, maxLength, precision, scale, fullTypeName, direction));
                             }
                         }
                     }

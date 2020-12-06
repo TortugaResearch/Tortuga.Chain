@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
@@ -688,8 +689,10 @@ WHERE ns.nspname = @Schema AND tab.relname = @Name";
                             string fullTypeName = ""; //Task-291: Add support for full name
 
                             //Task-120: Add support for length, precision, and scale
+                            //Task-384: OUTPUT Parameters for PostgreSQL
+                            var direction = ParameterDirection.Input;
 
-                            parameters.Add(new ParameterMetadata<NpgsqlDbType>(parameterName, "@" + parameterName, typeName, SqlTypeNameToDbType(typeName), isNullable, maxLength, precision, scale, fullTypeName));
+                            parameters.Add(new ParameterMetadata<NpgsqlDbType>(parameterName, "@" + parameterName, typeName, SqlTypeNameToDbType(typeName), isNullable, maxLength, precision, scale, fullTypeName, direction));
                         }
                         else
                         {

@@ -69,7 +69,7 @@ namespace Tortuga.Chain.PostgreSql
         /// </summary>
         /// <param name="procedureName">Name of the procedure.</param>
         /// <returns></returns>
-        public MultipleTableDbCommandBuilder<AbstractCommand, AbstractParameter> Procedure(string procedureName)
+        public ProcedureDbCommandBuilder<AbstractCommand, AbstractParameter> Procedure(string procedureName)
         {
             return Procedure(new AbstractObjectName(procedureName));
         }
@@ -83,7 +83,7 @@ namespace Tortuga.Chain.PostgreSql
         /// <remarks>
         /// The procedure's definition is loaded from the database and used to determine which properties on the parameter object to use.
         /// </remarks>
-        public MultipleTableDbCommandBuilder<AbstractCommand, AbstractParameter> Procedure(string procedureName, object argumentValue)
+        public ProcedureDbCommandBuilder<AbstractCommand, AbstractParameter> Procedure(string procedureName, object argumentValue)
         {
             return Procedure(new AbstractObjectName(procedureName), argumentValue);
         }

@@ -646,7 +646,10 @@ namespace Tortuga.Chain.MySql
                                 var isUnsigned = fullTypeName.Contains("unsigned");
                                 var dbType = SqlTypeNameToDbType(typeName, isUnsigned);
 
-                                parameters.Add(new ParameterMetadata<MySqlDbType>(name, name, typeName, dbType, isNullable, (int?)maxLength, precision, scale, fullTypeName));
+                                //TASK-383: OUTPUT Parameters for MySQL
+                                var direction = ParameterDirection.Input;
+
+                                parameters.Add(new ParameterMetadata<MySqlDbType>(name, name, typeName, dbType, isNullable, (int?)maxLength, precision, scale, fullTypeName, direction));
                             }
                         }
                     }

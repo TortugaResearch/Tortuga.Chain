@@ -56,6 +56,7 @@ namespace Tortuga.Chain.SqlServer
 #endif
     {
         internal readonly DbConnectionStringBuilder m_ConnectionBuilder;
+
         internal readonly ConcurrentDictionary<SqlServerObjectName, ScalarFunctionMetadata<SqlServerObjectName, AbstractDbType>> m_ScalarFunctions = new ConcurrentDictionary<SqlServerObjectName, ScalarFunctionMetadata<SqlServerObjectName, AbstractDbType>>();
         internal readonly ConcurrentDictionary<SqlServerObjectName, StoredProcedureMetadata<SqlServerObjectName, AbstractDbType>> m_StoredProcedures = new ConcurrentDictionary<SqlServerObjectName, StoredProcedureMetadata<SqlServerObjectName, AbstractDbType>>();
 
