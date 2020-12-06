@@ -39,7 +39,7 @@ namespace Tortuga.Chain.Materializers
                     throw new MappingException($"Type {typeof(TObject).Name} has does not have any non-default constructors.");
                 if (constructors.Count > 1)
                     throw new MappingException($"Type {typeof(TObject).Name} has more than one non-default constructor. Please use the WithConstructor method to specify which one to use.");
-                ConstructorSignature = constructors[0].Signature;
+                Constructor = constructors[0];
             }
         }
 
@@ -55,7 +55,7 @@ namespace Tortuga.Chain.Materializers
                     throw new MappingException($"Type {typeof(TObject).Name} has does not have any non-default constructors.");
                 if (constructors.Count > 1)
                     throw new MappingException($"Type {typeof(TObject).Name} has more than one non-default constructor. Please use the WithConstructor method to specify which one to use.");
-                ConstructorSignature = constructors[0].Signature;
+                Constructor = constructors[0];
             }
         }
 
@@ -64,7 +64,7 @@ namespace Tortuga.Chain.Materializers
             var result = new TDictionary();
             Prepare().Execute(cmd =>
             {
-                using (var reader = cmd.ExecuteReader().AsObjectConstructor<TObject>(ConstructorSignature, CommandBuilder.TryGetNonNullableColumns()))
+                using (var reader = cmd.ExecuteReader().AsObjectConstructor<TObject>(Constructor, CommandBuilder.TryGetNonNullableColumns()))
                 {
                     while (reader.Read(out var value))
                         AddToDictionary(result, reader, value);
@@ -81,7 +81,7 @@ namespace Tortuga.Chain.Materializers
             var result = new TDictionary();
             await Prepare().ExecuteAsync(async cmd =>
             {
-                using (var reader = (await cmd.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false)).AsObjectConstructor<TObject>(ConstructorSignature, CommandBuilder.TryGetNonNullableColumns()))
+                using (var reader = (await cmd.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false)).AsObjectConstructor<TObject>(Constructor, CommandBuilder.TryGetNonNullableColumns()))
                 {
                     while (await reader.ReadAsync().ConfigureAwait(false))
                         AddToDictionary(result, reader, reader.Current!);

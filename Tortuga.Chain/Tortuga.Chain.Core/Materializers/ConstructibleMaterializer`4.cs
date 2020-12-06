@@ -31,10 +31,33 @@ namespace Tortuga.Chain.Materializers
         }
 
         /// <summary>
-        /// Gets or sets the constructor signature to use when materializing an object.
+        /// Sets the constructor using a signature.
         /// </summary>
-        /// <value>The constructor signature.</value>
-        protected IReadOnlyList<Type>? ConstructorSignature { get; set; }
+        /// <param name="signature">The constructor signature.</param>
+        /// <exception cref="MappingException">Cannot find a matching constructor for the desired type</exception>
+        protected void SetConstructor(IReadOnlyList<Type>? signature)
+        {
+            if (signature == null)
+            {
+                Constructor = null;
+            }
+            else
+            {
+                var constructor = ObjectMetadata.Constructors.Find(signature);
+                if (constructor == null)
+                {
+                    var types = string.Join(", ", signature.Select(t => t.Name));
+                    throw new MappingException($"Cannot find a constructor on {typeof(Type).Name} with the types [{types}]");
+                }
+                Constructor = constructor;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the data reader constructor.
+        /// </summary>
+        /// <value>The data reader constructor.</value>
+        protected ConstructorMetadata? Constructor { get; set; }
 
         /// <summary>
         /// Columns to ignore when generating the list of desired columns.
@@ -68,7 +91,7 @@ namespace Tortuga.Chain.Materializers
         /// </remarks>
         public override IReadOnlyList<string> DesiredColumns()
         {
-            if (ConstructorSignature == null)
+            if (Constructor == null)
             {
                 if (IncludedColumns != null && ExcludedColumns != null)
                     throw new InvalidOperationException("Cannot specify both included and excluded columns/properties.");
@@ -82,22 +105,13 @@ namespace Tortuga.Chain.Materializers
                 return result;
             }
 
-            var desiredType = typeof(TObject);
-            var constructor = ObjectMetadata.Constructors.Find(ConstructorSignature);
-
-            if (constructor == null)
-            {
-                var types = string.Join(", ", ConstructorSignature.Select(t => t.Name));
-                throw new MappingException($"Cannot find a constructor on {desiredType.Name} with the types [{types}]");
-            }
-
             if (IncludedColumns != null)
                 throw new NotImplementedException("Cannot specify included columns/properties with constructors. See #295");
 
             if (ExcludedColumns != null)
                 throw new InvalidOperationException("Cannot specify excluded columns/properties with constructors.");
 
-            return constructor.ParameterNames;
+            return Constructor.ParameterNames;
         }
 
         /// <summary>
@@ -132,7 +146,7 @@ namespace Tortuga.Chain.Materializers
 
         public ILink<TResult> WithConstructor(params Type[] constructorSignature)
         {
-            ConstructorSignature = constructorSignature;
+            SetConstructor(constructorSignature);
             return this;
         }
 
@@ -144,7 +158,7 @@ namespace Tortuga.Chain.Materializers
 
         public ILink<TResult> WithConstructor<T1>()
         {
-            ConstructorSignature = new[] { typeof(T1) };
+            SetConstructor(new[] { typeof(T1) });
             return this;
         }
 
@@ -157,7 +171,7 @@ namespace Tortuga.Chain.Materializers
 
         public ILink<TResult> WithConstructor<T1, T2>()
         {
-            ConstructorSignature = new[] { typeof(T1), typeof(T2) };
+            SetConstructor(new[] { typeof(T1), typeof(T2) });
             return this;
         }
 
@@ -171,7 +185,7 @@ namespace Tortuga.Chain.Materializers
 
         public ILink<TResult> WithConstructor<T1, T2, T3>()
         {
-            ConstructorSignature = new[] { typeof(T1), typeof(T2), typeof(T3) };
+            SetConstructor(new[] { typeof(T1), typeof(T2), typeof(T3) });
             return this;
         }
 
@@ -186,7 +200,7 @@ namespace Tortuga.Chain.Materializers
 
         public ILink<TResult> WithConstructor<T1, T2, T3, T4>()
         {
-            ConstructorSignature = new[] { typeof(T1), typeof(T2), typeof(T3), typeof(T4) };
+            SetConstructor(new[] { typeof(T1), typeof(T2), typeof(T3), typeof(T4) });
             return this;
         }
 
@@ -202,7 +216,7 @@ namespace Tortuga.Chain.Materializers
 
         public ILink<TResult> WithConstructor<T1, T2, T3, T4, T5>()
         {
-            ConstructorSignature = new[] { typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5) };
+            SetConstructor(new[] { typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5) });
             return this;
         }
 
@@ -219,7 +233,7 @@ namespace Tortuga.Chain.Materializers
 
         public ILink<TResult> WithConstructor<T1, T2, T3, T4, T5, T6>()
         {
-            ConstructorSignature = new[] { typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6) };
+            SetConstructor(new[] { typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6) });
             return this;
         }
 
@@ -237,7 +251,7 @@ namespace Tortuga.Chain.Materializers
 
         public ILink<TResult> WithConstructor<T1, T2, T3, T4, T5, T6, T7>()
         {
-            ConstructorSignature = new[] { typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7) };
+            SetConstructor(new[] { typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7) });
             return this;
         }
 
@@ -256,7 +270,7 @@ namespace Tortuga.Chain.Materializers
 
         public ILink<TResult> WithConstructor<T1, T2, T3, T4, T5, T6, T7, T8>()
         {
-            ConstructorSignature = new[] { typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8) };
+            SetConstructor(new[] { typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8) });
             return this;
         }
 
@@ -276,7 +290,7 @@ namespace Tortuga.Chain.Materializers
 
         public ILink<TResult> WithConstructor<T1, T2, T3, T4, T5, T6, T7, T8, T9>()
         {
-            ConstructorSignature = new[] { typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9) };
+            SetConstructor(new[] { typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9) });
             return this;
         }
 
@@ -297,7 +311,7 @@ namespace Tortuga.Chain.Materializers
 
         public ILink<TResult> WithConstructor<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>()
         {
-            ConstructorSignature = new[] { typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(T10) };
+            SetConstructor(new[] { typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(T10) });
             return this;
         }
 
