@@ -63,6 +63,11 @@ namespace Tortuga.Chain.SqlServer
         }
 
         /// <summary>
+        /// This is used to decide which option overrides to set when establishing a connection.
+        /// </summary>
+        internal SqlServerEffectiveSettings? ServerDefaultSettings { get; set; }
+
+        /// <summary>
         /// Returns the user's default schema.
         /// </summary>
         /// <returns></returns>
