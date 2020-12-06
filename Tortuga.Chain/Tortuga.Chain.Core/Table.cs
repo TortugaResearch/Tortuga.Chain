@@ -194,16 +194,40 @@ namespace Tortuga.Chain
                 return ToObjects_Core<T>(constructorSignature);
         }
 
+        /// <summary>
+        /// Converts the table into an enumeration of objects of the indicated type using the indicated constructor.
+        /// </summary>
+        /// <typeparam name="T">Desired object type</typeparam>
+        /// <param name="constructor">The constructor.</param>
+        /// <returns>IEnumerable&lt;T&gt;.</returns>
+        public IEnumerable<T> ToObjects<T>(ConstructorMetadata? constructor)
+        {
+            if (constructor == null)
+            {
+                var methodType = GetType().GetMethod("ToObjects", Array.Empty<Type>());
+                var genericMethod = methodType.MakeGenericMethod(typeof(T));
+                return (IEnumerable<T>)genericMethod.Invoke(this, null);
+            }
+            else
+                return ToObjects_Core<T>(constructor);
+        }
+
         internal IEnumerable<T> ToObjects_Core<T>(IReadOnlyList<Type> constructorSignature)
         {
             var desiredType = typeof(T);
             var constructor = MetadataCache.GetMetadata(desiredType).Constructors.Find(constructorSignature);
-
             if (constructor == null)
             {
                 var types = string.Join(", ", constructorSignature.Select(t => t.Name));
                 throw new MappingException($"Cannot find a constructor on {desiredType.Name} with the types [{types}]");
             }
+            return ToObjects_Core<T>(constructor);
+        }
+
+        internal IEnumerable<T> ToObjects_Core<T>(ConstructorMetadata constructor)
+        {
+            if (constructor == null)
+                throw new ArgumentNullException(nameof(constructor), $"{nameof(constructor)} is null.");
 
             var constructorParameters = constructor.ParameterNames;
             for (var i = 0; i < constructorParameters.Length; i++)
@@ -224,28 +248,22 @@ namespace Tortuga.Chain
             }
         }
 
-        internal IEnumerable<KeyValuePair<Row, T>> ToObjectsWithEcho<T>(IReadOnlyList<Type>? constructorSignature)
+        internal IEnumerable<KeyValuePair<Row, T>> ToObjectsWithEcho<T>(ConstructorMetadata? constructor)
         {
-            if (constructorSignature == null)
+            if (constructor == null)
             {
                 var methodType = GetType().GetMethods(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).Single(m => m.Name == "ToObjectsWithEcho_New");
                 var genericMethod = methodType.MakeGenericMethod(typeof(T));
                 return (IEnumerable<KeyValuePair<Row, T>>)genericMethod.Invoke(this, null)!;
             }
             else
-                return ToObjectsWithEcho_Core<T>(constructorSignature);
+                return ToObjectsWithEcho_Core<T>(constructor);
         }
 
-        internal IEnumerable<KeyValuePair<Row, T>> ToObjectsWithEcho_Core<T>(IReadOnlyList<Type> constructorSignature)
+        internal IEnumerable<KeyValuePair<Row, T>> ToObjectsWithEcho_Core<T>(ConstructorMetadata constructor)
         {
-            var desiredType = typeof(T);
-            var constructor = MetadataCache.GetMetadata(desiredType).Constructors.Find(constructorSignature);
-
             if (constructor == null)
-            {
-                var types = string.Join(", ", constructorSignature.Select(t => t.Name));
-                throw new MappingException($"Cannot find a constructor on {desiredType.Name} with the types [{types}]");
-            }
+                throw new ArgumentNullException(nameof(constructor), $"{nameof(constructor)} is null.");
 
             var constructorParameters = constructor.ParameterNames;
             for (var i = 0; i < constructorParameters.Length; i++)

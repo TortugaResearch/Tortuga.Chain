@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -92,32 +91,32 @@ namespace Tortuga.Chain.Materializers
             return executionToken;
         }
 
-        internal static StreamingObjectConstructor<T> AsObjectConstructor<T>(this DbDataReader reader, IReadOnlyList<Type>? constructorSignature, IReadOnlyList<ColumnMetadata> nonNullableColumns)
+        internal static StreamingObjectConstructor<T> AsObjectConstructor<T>(this DbDataReader reader, ConstructorMetadata? constructor, IReadOnlyList<ColumnMetadata> nonNullableColumns)
             where T : class
+        {
+            return new StreamingObjectConstructor<T>(reader, constructor, nonNullableColumns);
+        }
+
+        internal static StreamingObjectConstructor<T> AsObjectConstructor<T>(this DbDataReader reader, IReadOnlyList<Type>? constructorSignature, IReadOnlyList<ColumnMetadata> nonNullableColumns)
+    where T : class
         {
             return new StreamingObjectConstructor<T>(reader, constructorSignature, nonNullableColumns);
         }
 
-        static internal T ConstructObject<T>(IReadOnlyDictionary<string, object?> source, IReadOnlyList<Type>? constructorSignature, bool? populateComplexObject = null)
+        static internal T ConstructObject<T>(IReadOnlyDictionary<string, object?> source, ConstructorMetadata? constructor, bool? populateComplexObject = null)
             where T : class
         {
-            if (source == null || source.Count == 0)
-                throw new ArgumentException($"{nameof(source)} is null or empty.", nameof(source));
-
-            constructorSignature ??= s_EmptyTypeList;
-
-            if (!populateComplexObject.HasValue)
-                populateComplexObject = constructorSignature.Count == 0;
-
-            var desiredType = typeof(T);
-            var constructor = MetadataCache.GetMetadata(desiredType).Constructors.Find(constructorSignature);
-
+            //If we didn't get a constructor, look for a default constructor to use.
             if (constructor == null)
-            {
-                var types = string.Join(", ", constructorSignature.Select(t => t.Name));
-                throw new MappingException($"Cannot find a constructor on {desiredType.Name} with the types [{types}]");
-            }
+                constructor = MetadataCache.GetMetadata(typeof(T)).Constructors.Find(s_EmptyTypeList);
+            if (constructor == null)
+                throw new MappingException($"Cannot find a default constructor for {typeof(T).Name}");
 
+            //populate properties when using a default constructor
+            if (!populateComplexObject.HasValue)
+                populateComplexObject = constructor.Signature.Length == 0;
+
+            //Make sure we have all of the requested parameters
             var constructorParameters = constructor.ParameterNames;
             for (var i = 0; i < constructorParameters.Length; i++)
             {
@@ -125,16 +124,7 @@ namespace Tortuga.Chain.Materializers
                     throw new MappingException($"Cannot find a column that matches the parameter {constructorParameters[i]}");
             }
 
-            return ConstructObject<T>(source, constructor);
-        }
-
-        static internal T ConstructObject<T>(IReadOnlyDictionary<string, object?> source, ConstructorMetadata constructor, bool? populateComplexObject = null)
-            where T : class
-        {
-            if (!populateComplexObject.HasValue)
-                populateComplexObject = constructor.ParameterNames.Length == 0;
-
-            var constructorParameters = constructor.ParameterNames;
+            //Build the constructor
             var parameters = new object?[constructorParameters.Length];
             for (var i = 0; i < constructorParameters.Length; i++)
             {
@@ -142,7 +132,7 @@ namespace Tortuga.Chain.Materializers
             }
             var result = (T)constructor.ConstructorInfo.Invoke(parameters);
 
-            if (populateComplexObject.Value)
+            if (populateComplexObject.Value) //Populate properties and child objects
                 PopulateComplexObject(source, result, null);
 
             //Change tracking objects should be materialized as unchanged.
