@@ -61,6 +61,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <returns>IConstructibleMaterializer&lt;Dictionary&lt;TKey, TObject&gt;&gt;.</returns>
         /// <exception cref="System.NotImplementedException"></exception>
         public IConstructibleMaterializer<Dictionary<TKey, TObject>> ToDictionary<TKey>(string keyColumn, DictionaryOptions dictionaryOptions = DictionaryOptions.None)
+            where TKey : notnull
         {
             return m_CommandBuilder.ToDictionary<TKey, TObject>(keyColumn, dictionaryOptions);
         }
@@ -74,6 +75,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <returns>IConstructibleMaterializer&lt;Dictionary&lt;TKey, TObject&gt;&gt;.</returns>
 
         public IConstructibleMaterializer<Dictionary<TKey, TObject>> ToDictionary<TKey>(Func<TObject, TKey> keyFunction, DictionaryOptions dictionaryOptions = DictionaryOptions.None)
+            where TKey : notnull
         {
             return m_CommandBuilder.ToDictionary<TKey, TObject>(keyFunction, dictionaryOptions);
         }
@@ -97,6 +99,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <returns>IConstructibleMaterializer&lt;ImmutableDictionary&lt;TKey, TObject&gt;&gt;.</returns>
 
         public IConstructibleMaterializer<ImmutableDictionary<TKey, TObject>> ToImmutableDictionary<TKey>(Func<TObject, TKey> keyFunction, DictionaryOptions dictionaryOptions = DictionaryOptions.None)
+            where TKey : notnull
         {
             return m_CommandBuilder.ToImmutableDictionary<TKey, TObject>(keyFunction, dictionaryOptions);
         }
@@ -110,6 +113,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// <returns>IConstructibleMaterializer&lt;ImmutableDictionary&lt;TKey, TObject&gt;&gt;.</returns>
 
         public IConstructibleMaterializer<ImmutableDictionary<TKey, TObject>> ToImmutableDictionary<TKey>(string keyColumn, DictionaryOptions dictionaryOptions = DictionaryOptions.None)
+            where TKey : notnull
         {
             return m_CommandBuilder.ToImmutableDictionary<TKey, TObject>(keyColumn, dictionaryOptions);
         }
