@@ -35,11 +35,6 @@ namespace Tortuga.Chain
 #endif
 
         /// <summary>
-        /// This is used to decide which option overrides to set when establishing a connection.
-        /// </summary>
-        SqlServerEffectiveSettings? m_ServerDefaultSettings;
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="SqlServerDataSource" /> class.
         /// </summary>
         /// <param name="name">Name of the data source.</param>
@@ -287,12 +282,12 @@ namespace Tortuga.Chain
             var con = new SqlConnection(ConnectionString);
             con.Open();
 
-            if (m_ServerDefaultSettings == null)
+            if (DatabaseMetadata.ServerDefaultSettings == null)
             {
                 var temp = new SqlServerEffectiveSettings();
                 temp.Reload(con, null);
                 Thread.MemoryBarrier();
-                m_ServerDefaultSettings = temp;
+                DatabaseMetadata.ServerDefaultSettings = temp;
             }
 
             var sql = BuildConnectionSettingsOverride();
@@ -485,7 +480,7 @@ namespace Tortuga.Chain
 
         string? BuildConnectionSettingsOverride()
         {
-            if (m_ServerDefaultSettings == null)
+            if (DatabaseMetadata.ServerDefaultSettings == null)
                 throw new InvalidOperationException("m_ServerDefaultSettings was not set before building connection settings.");
 
             if (ArithAbort == null && XactAbort == null)
@@ -493,9 +488,9 @@ namespace Tortuga.Chain
 
             var sql = new StringBuilder();
 
-            if (ArithAbort.HasValue && ArithAbort != m_ServerDefaultSettings.ArithAbort)
+            if (ArithAbort.HasValue && ArithAbort != DatabaseMetadata.ServerDefaultSettings.ArithAbort)
                 sql.AppendLine("SET ARITHABORT " + (ArithAbort.Value ? "ON" : "OFF"));
-            if (XactAbort.HasValue && XactAbort != m_ServerDefaultSettings.XactAbort)
+            if (XactAbort.HasValue && XactAbort != DatabaseMetadata.ServerDefaultSettings.XactAbort)
                 sql.AppendLine("SET XACT_ABORT  " + (XactAbort.Value ? "ON" : "OFF"));
 
             return sql.ToString();
@@ -514,12 +509,12 @@ namespace Tortuga.Chain
             var con = new SqlConnection(ConnectionString);
             await con.OpenAsync(cancellationToken).ConfigureAwait(false);
 
-            if (m_ServerDefaultSettings == null)
+            if (DatabaseMetadata.ServerDefaultSettings == null)
             {
                 var temp = new SqlServerEffectiveSettings();
                 await temp.ReloadAsync(con, null).ConfigureAwait(false);
                 Thread.MemoryBarrier();
-                m_ServerDefaultSettings = temp;
+                DatabaseMetadata.ServerDefaultSettings = temp;
             }
 
             var sql = BuildConnectionSettingsOverride();
