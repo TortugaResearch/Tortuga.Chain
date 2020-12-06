@@ -621,20 +621,105 @@ namespace Tortuga.Chain.Access
         /// <summary>
         /// Gets a set of records by an unique key.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TKey">The type of the keys.</typeparam>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="keyColumn">Name of the key column. This should be a primary or unique key, but that's not enforced.</param>
         /// <param name="keys">The keys.</param>
-        /// <returns></returns>
+        /// <returns>MultipleRowDbCommandBuilder&lt;AbstractCommand, AbstractParameter&gt;.</returns>
+        /// <exception cref="MappingException">Cannot find a column named {keyColumn} on table {tableName}.</exception>
         /// <remarks>This only works on tables that have a scalar primary key.</remarks>
         [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "GetByKeyList")]
-        public MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> GetByKeyList<T>(AbstractObjectName tableName, string keyColumn, IEnumerable<T> keys)
+        public MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> GetByKeyList<TKey>(AbstractObjectName tableName, string keyColumn, IEnumerable<TKey> keys)
         {
-            var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).Columns.Where(c => c.SqlName.Equals(keyColumn, System.StringComparison.OrdinalIgnoreCase)).ToList();
+            var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).Columns.Where(c => c.SqlName.Equals(keyColumn, StringComparison.OrdinalIgnoreCase)).ToList();
             if (primaryKeys.Count == 0)
                 throw new MappingException($"Cannot find a column named {keyColumn} on table {tableName}.");
 
-            return OnGetByKeyList<object, T>(tableName, primaryKeys.Single(), keys);
+            return OnGetByKeyList<object, TKey>(tableName, primaryKeys.Single(), keys);
+        }
+
+        /// <summary>
+        /// Gets a set of records by a key list.
+        /// </summary>
+        /// <typeparam name="TObject">The type of the t object.</typeparam>
+        /// <typeparam name="TKey">The type of the t key.</typeparam>
+        /// <param name="tableName">Name of the table.</param>
+        /// <param name="keyColumn">Name of the key column. This should be a primary or unique key, but that's not enforced.</param>
+        /// <param name="keys">The keys.</param>
+        /// <returns>MultipleRowDbCommandBuilder&lt;AbstractCommand, AbstractParameter, TObject&gt;.</returns>
+        /// <exception cref="MappingException">Cannot find a column named {keyColumn} on table {tableName}.</exception>
+        /// <remarks>This only works on tables that have a scalar primary key.</remarks>
+        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "GetByKeyList")]
+        public MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter, TObject> GetByKeyList<TObject, TKey>(AbstractObjectName tableName, string keyColumn, IEnumerable<TKey> keys)
+            where TObject : class
+        {
+            var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).Columns.Where(c => c.SqlName.Equals(keyColumn, StringComparison.OrdinalIgnoreCase)).ToList();
+            if (primaryKeys.Count == 0)
+                throw new MappingException($"Cannot find a column named {keyColumn} on table {tableName}.");
+
+            return OnGetByKeyList<TObject, TKey>(tableName, primaryKeys.Single(), keys);
+        }
+
+        /// <summary>
+        /// Gets a set of records by a key list.
+        /// </summary>
+        /// <typeparam name="TObject">The type of the returned object.</typeparam>
+        /// <typeparam name="TKey">The type of the key.</typeparam>
+        /// <param name="keys">The keys.</param>
+        public MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter, TObject> GetByKeyList<TObject, TKey>(IEnumerable<TKey> keys)
+            where TObject : class
+        {
+            var tableName = DatabaseObjectAsTableOrView<TObject>(OperationType.Select).Name;
+
+            var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).PrimaryKeyColumns;
+            if (primaryKeys.Count != 1)
+                throw new MappingException($"{nameof(GetByKeyList)} operation isn't allowed on {tableName} because it doesn't have a single primary key. Use DataSource.From instead.");
+
+            return OnGetByKeyList<TObject, TKey>(tableName, primaryKeys.Single(), keys);
+        }
+
+        /// <summary>
+        /// Gets a set of records by a key list.
+        /// </summary>
+        /// <typeparam name="TObject">The type of the returned object.</typeparam>
+        /// <param name="keys">The keys.</param>
+        public MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter, TObject> GetByKeyList<TObject>(IEnumerable<Guid> keys)
+            where TObject : class
+        {
+            return GetByKeyList<TObject, Guid>(keys);
+        }
+
+        /// <summary>
+        /// Gets a set of records by a key list.
+        /// </summary>
+        /// <typeparam name="TObject">The type of the returned object.</typeparam>
+        /// <param name="keys">The keys.</param>
+        public MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter, TObject> GetByKeyList<TObject>(IEnumerable<long> keys)
+            where TObject : class
+        {
+            return GetByKeyList<TObject, long>(keys);
+        }
+
+        /// <summary>
+        /// Gets a set of records by a key list.
+        /// </summary>
+        /// <typeparam name="TObject">The type of the returned object.</typeparam>
+        /// <param name="keys">The keys.</param>
+        public MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter, TObject> GetByKeyList<TObject>(IEnumerable<int> keys)
+            where TObject : class
+        {
+            return GetByKeyList<TObject, int>(keys);
+        }
+
+        /// <summary>
+        /// Gets a set of records by a key list.
+        /// </summary>
+        /// <typeparam name="TObject">The type of the returned object.</typeparam>
+        /// <param name="keys">The keys.</param>
+        public MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter, TObject> GetByKeyList<TObject>(IEnumerable<string> keys)
+            where TObject : class
+        {
+            return GetByKeyList<TObject, string>(keys);
         }
 
 #if !ACCESS

@@ -263,7 +263,7 @@ namespace Tortuga.Chain.SqlServer
             return new SqlServerTableOrView<TObject>(this, tableName, where, parameters);
         }
 
-        SqlServerTableOrView<TObject> OnGetByKeyList<TObject, TKey>(SqlServerObjectName tableName, ColumnMetadata<SqlDbType> columnMetadata, IEnumerable<TKey> keys)
+        MultipleRowDbCommandBuilder<SqlCommand, SqlParameter, TObject> OnGetByKeyList<TObject, TKey>(SqlServerObjectName tableName, ColumnMetadata<SqlDbType> columnMetadata, IEnumerable<TKey> keys)
             where TObject : class
         {
             var keyList = keys.AsList();
@@ -282,7 +282,7 @@ namespace Tortuga.Chain.SqlServer
                 parameters.Add(param);
             }
 
-            return new SqlServerTableOrView<TObject>(this, tableName, where, parameters);
+            return new MultipleRowDbCommandBuilder<SqlCommand, SqlParameter, TObject>(new SqlServerTableOrView<TObject>(this, tableName, where, parameters));
         }
 
         MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> OnDeleteMany(SqlServerObjectName tableName, string whereClause, object? argumentValue)
