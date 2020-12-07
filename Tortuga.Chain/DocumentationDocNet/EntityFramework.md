@@ -4,16 +4,16 @@ Chain can be combined with Entity Framework (EF) using the `ChainForEntityFramew
 
 To use `ChainForEntityFramework`, first include the code at the botom of this page in your project. 
 
-You'll need to register a Chain data source with a DBConext. Or more accurately, you are registering the DBConext's connection string. Normally you would do this at startup using a DBConext that you then discard.
+You'll need to register a Chain data source with a DbContext. Or more accurately, you are registering the DbContext's connection string. Normally you would do this at startup using a DbContext that you then discard.
 
-Once you have done that, you may invoke Chain methods from the DBConext as shown.
+Once you have done that, you may invoke Chain methods from the DbContext as shown.
 
-    DBConext context = [...]
+    DbContext context = [...]
     context.Chain().From(...)
 
-If your `DBConext` is currently participating in a transaction, any operations that Chain performs will also particpate in the transaction.
+If your `DbContext` is currently participating in a transaction, any operations that Chain performs will also particpate in the transaction.
 
-Do not cache the results of `DBConext.Chain`. The context will occasionally close the connection and calling `.Chain()` will reopen it if necessary. 
+Do not cache the results of `DbContext.Chain`. The context will occasionally close the connection and calling `.Chain()` will reopen it if necessary. 
 
 ## ChainForEntityFramework Class
 
