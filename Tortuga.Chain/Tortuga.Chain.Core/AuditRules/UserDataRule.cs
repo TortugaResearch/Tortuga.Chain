@@ -46,7 +46,7 @@ namespace Tortuga.Chain.AuditRules
         [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "userValue")]
         [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "DataSource")]
         [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "WithUser")]
-        public override object GenerateValue(object? argumentValue, object? userValue, object? currentValue)
+        public override object? GenerateValue(object? argumentValue, object? userValue, object? currentValue)
         {
             if (userValue == null)
                 throw new InvalidOperationException($"{nameof(userValue)} is null. Did you forget to call DataSource.WithUser?");

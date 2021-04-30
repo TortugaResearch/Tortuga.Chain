@@ -37,6 +37,6 @@ namespace Tortuga.Chain.AuditRules
         /// <param name="userValue">The user value.</param>
         /// <param name="currentValue">The current value. Used when the rule is conditionally applied.</param>
         /// <returns></returns>
-        public abstract object GenerateValue(object? argumentValue, object? userValue, object? currentValue);
+        public abstract object? GenerateValue(object? argumentValue, object? userValue, object? currentValue);
     }
 }

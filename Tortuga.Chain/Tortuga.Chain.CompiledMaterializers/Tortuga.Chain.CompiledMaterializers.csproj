@@ -6,13 +6,13 @@
     <Company>Tortuga Technologies</Company>
     <Description>This library adds compiled materializers to Tortuga Chain.</Description>
     <PackageTags>ORM Fluent DB Reflection</PackageTags>
-    <LangVersion>8.0</LangVersion>
+    <LangVersion>9.0</LangVersion>
     <ProductName>Tortuga Chain</ProductName>
     <Deterministic>true</Deterministic>
 
-    <AssemblyVersion>3.4.0</AssemblyVersion>
-    <Version>3.4.0</Version>
-    <FileVersion>3.4.0.0</FileVersion>
+    <AssemblyVersion>3.5.0</AssemblyVersion>
+    <Version>3.5.0</Version>
+    <FileVersion>3.5.0.0</FileVersion>
 
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
 
@@ -32,8 +32,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CS-Script.Core" Version="1.4.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="5.0.1">
+    <PackageReference Include="CS-Script.Core" Version="2.0.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="5.0.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -44,7 +44,7 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)'=='Release'">
-    <PackageReference Include="Tortuga.Chain.Core" Version="3.4.0" />
+    <PackageReference Include="Tortuga.Chain.Core" Version="3.5.0" />
   </ItemGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net461'">

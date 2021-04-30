@@ -104,7 +104,7 @@ namespace Tortuga.Chain.CommandBuilders
         /// The parameter value.
         /// </value>
         /// <remarks>A null means this parameter's value was not set. A DBNull.Value means it is passed to the database as a null.</remarks>
-        public object ParameterValue { get; set; }
+        public object? ParameterValue { get; set; }
 
         /// <summary>
         /// Gets a value indicating whether restricted from inserting.

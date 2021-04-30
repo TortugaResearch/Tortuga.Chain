@@ -11,9 +11,9 @@ namespace Tortuga.Chain.Appenders
     internal sealed class KeyJoinAppender<T1, T2, TKey> : Appender<Tuple<List<T1>, List<T2>>, List<T1>>
             where TKey : notnull
     {
-        readonly Func<T2, TKey> m_ForeignKeyExpression;
+        readonly Func<T2, TKey?> m_ForeignKeyExpression;
         readonly JoinOptions m_JoinOptions;
-        readonly Func<T1, TKey> m_PrimaryKeyExpression;
+        readonly Func<T1, TKey?> m_PrimaryKeyExpression;
         readonly Func<T1, ICollection<T2>> m_TargetCollectionExpression;
 
         public KeyJoinAppender(ILink<Tuple<List<T1>, List<T2>>> previousLink, Func<T1, TKey> primaryKeyExpression, Func<T2, TKey> foreignKeyExpression, Func<T1, ICollection<T2>> targetCollectionExpression, JoinOptions joinOptions) : base(previousLink)
@@ -30,7 +30,7 @@ namespace Tortuga.Chain.Appenders
                 throw new ArgumentException($"{nameof(targetCollectionName)} is null or empty.", nameof(targetCollectionName));
 
             var targetPropertyStub = MetadataCache.GetMetadata(typeof(T1)).Properties[targetCollectionName]; //don't inline this variable.
-            m_TargetCollectionExpression = (p) => (ICollection<T2>)targetPropertyStub.InvokeGet(p!);
+            m_TargetCollectionExpression = (p) => (ICollection<T2>)(targetPropertyStub.InvokeGet(p!) ?? $"{targetCollectionName} is null. Expected a non-null collection.");
 
             m_ForeignKeyExpression = foreignKeyExpression ?? throw new ArgumentNullException(nameof(foreignKeyExpression), $"{nameof(foreignKeyExpression)} is null.");
             m_PrimaryKeyExpression = primaryKeyExpression ?? throw new ArgumentNullException(nameof(primaryKeyExpression), $"{nameof(primaryKeyExpression)} is null.");
@@ -49,13 +49,13 @@ namespace Tortuga.Chain.Appenders
                 throw new ArgumentException($"{nameof(targetCollectionName)} is null or empty.", nameof(targetCollectionName));
 
             var primaryKeyStub = MetadataCache.GetMetadata(typeof(T1)).Properties[primaryKeyName]; //don't inline this variable.
-            m_PrimaryKeyExpression = (p) => (TKey)primaryKeyStub.InvokeGet(p!);
+            m_PrimaryKeyExpression = (p) => (TKey?)primaryKeyStub.InvokeGet(p!);
 
             var foreignKeyStub = MetadataCache.GetMetadata(typeof(T1)).Properties[foreignKeyName]; //don't inline this variable.
-            m_ForeignKeyExpression = (p) => (TKey)foreignKeyStub.InvokeGet(p!);
+            m_ForeignKeyExpression = (p) => (TKey?)foreignKeyStub.InvokeGet(p!);
 
             var targetPropertyStub = MetadataCache.GetMetadata(typeof(T1)).Properties[targetCollectionName]; //don't inline this variable.
-            m_TargetCollectionExpression = (p) => (ICollection<T2>)targetPropertyStub.InvokeGet(p!);
+            m_TargetCollectionExpression = (p) => (ICollection<T2>)(targetPropertyStub.InvokeGet(p!) ?? $"{targetCollectionName} is null. Expected a non-null collection.");
 
             m_JoinOptions = joinOptions;
         }
@@ -154,14 +154,23 @@ namespace Tortuga.Chain.Appenders
             Parallel.ForEach(result.Item2, child =>
                 {
                     var fk = m_ForeignKeyExpression(child);
-                    if (parents2.TryGetValue(fk, out var targetCollections))
+                    if (fk == null)
+                    {
+                        if (!ignoreUnmatchedChildren)
+                        {
+                            var ex = new UnexpectedDataException($"Found child object with a null foreign key. See Exception.Data[\"ChildObject\"] for details.");
+                            ex.Data["ForeignKey"] = fk;
+                            ex.Data["ChildObject"] = child;
+                            throw ex;
+                        }
+                    }
+                    else if (parents2.TryGetValue(fk, out var targetCollections))
                     {
                         foreach (var targetCollection in targetCollections)
                             lock (targetCollection)
                                 targetCollection.Add(child);
                     }
-                    else
-    if (!ignoreUnmatchedChildren)
+                    else if (!ignoreUnmatchedChildren)
                     {
                         var ex = new UnexpectedDataException($"Found child object with the foreign key \"{ fk }\" that couldn't be matched to a parent. See Exception.Data[\"ChildObject\"] for details.");
                         ex.Data["ForeignKey"] = fk;
@@ -181,7 +190,17 @@ namespace Tortuga.Chain.Appenders
             foreach (var child in result.Item2)
             {
                 var fk = m_ForeignKeyExpression(child);
-                if (parents2.TryGetValue(fk, out var targetCollections))
+                if (fk == null)
+                {
+                    if (!ignoreUnmatchedChildren)
+                    {
+                        var ex = new UnexpectedDataException($"Found child object with a null foreign key. See Exception.Data[\"ChildObject\"] for details.");
+                        ex.Data["ForeignKey"] = fk;
+                        ex.Data["ChildObject"] = child;
+                        throw ex;
+                    }
+                }
+                else if (parents2.TryGetValue(fk, out var targetCollections))
                 {
                     foreach (var targetCollection in targetCollections)
                         targetCollection.Add(child);
