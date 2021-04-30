@@ -307,7 +307,66 @@ function ExpandOrCollapseAll(expandNodes)
 // Toggle the state of the specified node
 function Toggle(node)
 {
+    var childDivs = node.parentNode.getElementsByTagName("div");
+
     var i, childNodes, child, div, link;
+    if (childDivs.length === 1 && childDivs[0].className === "Hidden") {
+        if (window.location.href.indexOf("file://") >= 0) {
+            //alert('This feature works when hosting the help documentation using ASP.NET or PHP.');
+            node.nextSibling.click();
+            return;
+        } else {
+            try {
+                var childA = node.parentNode.getElementsByTagName("a");
+                var href = childA[0].getAttribute('href');
+                
+                var xmlRequest = GetXmlHttpRequest(), now = new Date();
+                xmlRequest.open("GET", "../WebTOC.xml?timestamp=" + now.getTime(), true);
+                xmlRequest.onreadystatechange = function () {
+                    if (xmlRequest.readyState == 4) {
+                        if (xmlRequest.status != 200) {
+                            alert('This feature works when hosting the help documentation using ASP.NET or PHP.');
+                            return;
+                        }
+
+                        var xmlDoc = xmlRequest.responseXML;
+
+                        var nodes = xmlDoc.getElementsByTagName("HelpTOCNode");
+                        for (var i = 0; i < nodes.length; i++) {
+                            var curnode = nodes[i];
+                            if (curnode.getAttribute('Url').replace('html/', '') == href) {
+                                //alert(curnode.outerHTML);
+                                //alert(curnode.childNodes.length);
+                                for (var j = 0; j < curnode.childNodes.length; j++) {
+                                    var childNode = curnode.childNodes[j];
+                                    if (childNode && childNode.outerHTML && childNode.outerHTML.length) {
+                                        //alert('childNode ' + j + ': ' + childNode.outerHTML);
+                                        if (childNode.hasChildNodes()) {
+                                            var htmlToInsert = '<div class="TreeNode"><img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" ' +
+                                            'href="' + childNode.getAttribute('Url').replace('html/', '') + '" target="_self">' + childNode.getAttribute('Title') + '</a><div class="Hidden"></div>';
+                                            childDivs[0].innerHTML += htmlToInsert;
+                                            childDivs[0].className = "Visible";
+                                        } else {
+                                            var htmlToInsert = '<div class="TreeItem"><img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" ' +
+                                            'href="' + childNode.getAttribute('Url').replace('html/', '') + '" target="_self">' + childNode.getAttribute('Title') + '</a></div>';
+                                            childDivs[0].innerHTML += htmlToInsert;
+                                            childDivs[0].className = "Visible";
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        //document.getElementById('div1').innerHTML = titles[0].childNodes[0].nodeValue;
+                    }
+                }
+                xmlRequest.send(null);
+            } catch (ex) {
+                alert("Error: " + ex);
+            }
+        }
+
+        return;
+    }
 
     childNodes = node.parentNode.childNodes;
 
@@ -791,5 +850,5 @@ function ShowDirectLink()
     var relative = url.substr(base.length);
 
     // Using prompt lets the user copy it from the text box
-    prompt("Direct link", base + "?topic=" + relative);
+    prompt("Direct link", base + relative);
 }
