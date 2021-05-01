@@ -49,7 +49,7 @@ div.CodeSnippetContainerTab.CSharpTab {
 .CodeSnippetContainer {
 	clear:both;
 	width:100%;
-	margin-top:20px
+	margin-top:20px;
 }
 
 div.CodeSnippetContainerTabs {
@@ -219,4 +219,19 @@ div.CodeSnippetToolBarText a:hover {
 	padding:0.8em;
 	width:auto;
 	margin:0
+}
+kbd {
+	display: inline-block;
+	margin: 0 1px;
+	padding: 1px 3px;
+	font-family: 'Consolas',monospace;
+	font-size: 8pt;
+	line-height: 10pt;
+	color: #444d56;
+	vertical-align: middle;
+	background-color: #f4f4f4;
+	border: solid 1px #d0d0d0;
+	border-right-color: #a0a0a0;
+	border-bottom-color: #808080;
+	border-radius: 3px;
 }

@@ -29,7 +29,7 @@ namespace Tortuga.Chain.Appenders
                 throw new ArgumentException($"{nameof(targetCollectionName)} is null or empty.", nameof(targetCollectionName));
 
             var targetPropertyStub = MetadataCache.GetMetadata(typeof(T1)).Properties[targetCollectionName]; //don't inline this variable.
-            m_TargetCollectionExpression = (p) => (ICollection<T2>)targetPropertyStub.InvokeGet(p!);
+            m_TargetCollectionExpression = (p) => (ICollection<T2>)(targetPropertyStub.InvokeGet(p!) ?? $"{targetCollectionName} is null. Expected a non-null collection.");
 
             m_JoinOptions = joinOptions;
             m_JoinExpression = joinExpression ?? throw new ArgumentNullException(nameof(joinExpression), $"{nameof(joinExpression)} is null.");

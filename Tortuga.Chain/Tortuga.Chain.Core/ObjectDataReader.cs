@@ -110,7 +110,7 @@ namespace Tortuga.Chain
         /// </summary>
         /// <param name="name">The name.</param>
         /// <returns>System.Object.</returns>
-        public override object this[string name]
+        public override object? this[string name]
         {
             get
             {
@@ -126,7 +126,7 @@ namespace Tortuga.Chain
         /// </summary>
         /// <param name="ordinal">The ordinal.</param>
         /// <returns>System.Object.</returns>
-        public override object this[int ordinal]
+        public override object? this[int ordinal]
         {
             get
             {
@@ -147,14 +147,14 @@ namespace Tortuga.Chain
         /// </summary>
         /// <param name="ordinal">The zero-based column ordinal.</param>
         /// <returns>The value of the specified column.</returns>
-        public override bool GetBoolean(int ordinal) => (bool)this[ordinal];
+        public override bool GetBoolean(int ordinal) => (bool)(this[ordinal] ?? throw new InvalidOperationException($"Value in ordinal {ordinal} is null. Use IsDBNull before calling this method."));
 
         /// <summary>
         /// Gets the value of the specified column as a byte.
         /// </summary>
         /// <param name="ordinal">The zero-based column ordinal.</param>
         /// <returns>The value of the specified column.</returns>
-        public override byte GetByte(int ordinal) => (byte)this[ordinal];
+        public override byte GetByte(int ordinal) => (byte)(this[ordinal] ?? throw new InvalidOperationException($"Value in ordinal {ordinal} is null. Use IsDBNull before calling this method."));
 
         /// <summary>
         /// Reads a stream of bytes from the specified column, starting at location indicated by <paramref name="dataOffset" />, into the buffer, starting at the location indicated by <paramref name="bufferOffset" />.
@@ -176,7 +176,7 @@ namespace Tortuga.Chain
         /// </summary>
         /// <param name="ordinal">The zero-based column ordinal.</param>
         /// <returns>The value of the specified column.</returns>
-        public override char GetChar(int ordinal) => (char)this[ordinal];
+        public override char GetChar(int ordinal) => (char)(this[ordinal] ?? throw new InvalidOperationException($"Value in ordinal {ordinal} is null. Use IsDBNull before calling this method."));
 
         /// <summary>
         /// Reads a stream of characters from the specified column, starting at location indicated by <paramref name="dataOffset" />, into the buffer, starting at the location indicated by <paramref name="bufferOffset" />.
@@ -205,28 +205,28 @@ namespace Tortuga.Chain
         /// </summary>
         /// <param name="ordinal">The zero-based column ordinal.</param>
         /// <returns>A string representing the name of the data type.</returns>
-        public override string GetDataTypeName(int ordinal) => (string)this[ordinal];
+        public override string GetDataTypeName(int ordinal) => (string)(this[ordinal] ?? throw new InvalidOperationException($"Value in ordinal {ordinal} is null. Use IsDBNull before calling this method."));
 
         /// <summary>
         /// Gets the value of the specified column as a <see cref="System.DateTime" /> object.
         /// </summary>
         /// <param name="ordinal">The zero-based column ordinal.</param>
         /// <returns>The value of the specified column.</returns>
-        public override DateTime GetDateTime(int ordinal) => (DateTime)this[ordinal];
+        public override DateTime GetDateTime(int ordinal) => (DateTime)(this[ordinal] ?? throw new InvalidOperationException($"Value in ordinal {ordinal} is null. Use IsDBNull before calling this method."));
 
         /// <summary>
         /// Gets the value of the specified column as a <see cref="System.Decimal" /> object.
         /// </summary>
         /// <param name="ordinal">The zero-based column ordinal.</param>
         /// <returns>The value of the specified column.</returns>
-        public override decimal GetDecimal(int ordinal) => (decimal)this[ordinal];
+        public override decimal GetDecimal(int ordinal) => (decimal)(this[ordinal] ?? throw new InvalidOperationException($"Value in ordinal {ordinal} is null. Use IsDBNull before calling this method."));
 
         /// <summary>
         /// Gets the value of the specified column as a double-precision floating point number.
         /// </summary>
         /// <param name="ordinal">The zero-based column ordinal.</param>
         /// <returns>The value of the specified column.</returns>
-        public override double GetDouble(int ordinal) => (double)this[ordinal];
+        public override double GetDouble(int ordinal) => (double)(this[ordinal] ?? throw new InvalidOperationException($"Value in ordinal {ordinal} is null. Use IsDBNull before calling this method."));
 
         /// <summary>
         /// Returns an <see cref="System.Collections.IEnumerator" /> that can be used to iterate through the rows in the data reader.
@@ -252,35 +252,35 @@ namespace Tortuga.Chain
         /// </summary>
         /// <param name="ordinal">The zero-based column ordinal.</param>
         /// <returns>The value of the specified column.</returns>
-        public override float GetFloat(int ordinal) => (float)this[ordinal];
+        public override float GetFloat(int ordinal) => (float)(this[ordinal] ?? throw new InvalidOperationException($"Value in ordinal {ordinal} is null. Use IsDBNull before calling this method."));
 
         /// <summary>
         /// Gets the value of the specified column as a globally-unique identifier (GUID).
         /// </summary>
         /// <param name="ordinal">The zero-based column ordinal.</param>
         /// <returns>The value of the specified column.</returns>
-        public override Guid GetGuid(int ordinal) => (Guid)this[ordinal];
+        public override Guid GetGuid(int ordinal) => (Guid)(this[ordinal] ?? throw new InvalidOperationException($"Value in ordinal {ordinal} is null. Use IsDBNull before calling this method."));
 
         /// <summary>
         /// Gets the value of the specified column as a 16-bit signed integer.
         /// </summary>
         /// <param name="ordinal">The zero-based column ordinal.</param>
         /// <returns>The value of the specified column.</returns>
-        public override short GetInt16(int ordinal) => (short)this[ordinal];
+        public override short GetInt16(int ordinal) => (short)(this[ordinal] ?? throw new InvalidOperationException($"Value in ordinal {ordinal} is null. Use IsDBNull before calling this method."));
 
         /// <summary>
         /// Gets the value of the specified column as a 32-bit signed integer.
         /// </summary>
         /// <param name="ordinal">The zero-based column ordinal.</param>
         /// <returns>The value of the specified column.</returns>
-        public override int GetInt32(int ordinal) => (int)this[ordinal];
+        public override int GetInt32(int ordinal) => (int)(this[ordinal] ?? throw new InvalidOperationException($"Value in ordinal {ordinal} is null. Use IsDBNull before calling this method."));
 
         /// <summary>
         /// Gets the value of the specified column as a 64-bit signed integer.
         /// </summary>
         /// <param name="ordinal">The zero-based column ordinal.</param>
         /// <returns>The value of the specified column.</returns>
-        public override long GetInt64(int ordinal) => (long)this[ordinal];
+        public override long GetInt64(int ordinal) => (long)(this[ordinal] ?? throw new InvalidOperationException($"Value in ordinal {ordinal} is null. Use IsDBNull before calling this method."));
 
         /// <summary>
         /// Gets the name of the column, given the zero-based column ordinal.
@@ -307,14 +307,14 @@ namespace Tortuga.Chain
         /// </summary>
         /// <param name="ordinal">The zero-based column ordinal.</param>
         /// <returns>The value of the specified column.</returns>
-        public override string GetString(int ordinal) => (string)this[ordinal];
+        public override string GetString(int ordinal) => (string)(this[ordinal] ?? throw new InvalidOperationException($"Value in ordinal {ordinal} is null. Use IsDBNull before calling this method."));
 
         /// <summary>
         /// Gets the value of the specified column as an instance of <see cref="System.Object" />.
         /// </summary>
         /// <param name="ordinal">The zero-based column ordinal.</param>
         /// <returns>The value of the specified column.</returns>
-        public override object GetValue(int ordinal) => this[ordinal];
+        public override object? GetValue(int ordinal) => this[ordinal];
 
         /// <summary>
         /// Populates an array of objects with the column values of the current row.
@@ -323,7 +323,7 @@ namespace Tortuga.Chain
         /// <returns>The number of instances of <see cref="System.Object" /> in the array.</returns>
         public override int GetValues(object[] values)
         {
-            var result = new object[m_PropertyList.Length];
+            var result = new object?[m_PropertyList.Length];
             for (var i = 0; i < m_PropertyList.Length; i++)
                 result[i] = this[i];
             return m_PropertyList.Length;
