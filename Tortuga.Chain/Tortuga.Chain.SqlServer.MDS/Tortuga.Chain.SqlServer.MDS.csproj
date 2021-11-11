@@ -40,9 +40,12 @@
     <DefineConstants>SQL_SERVER_MDS;NULL_MISSING</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.1'">
-    <DefineConstants>SQL_SERVER_MDS;NULL_MISSING;ORDINAL_STRINGS</DefineConstants>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net5.0'">
+    <DefineConstants>SQL_SERVER_MDS;ORDINAL_STRINGS</DefineConstants>
   </PropertyGroup>
+	<PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
+		<DefineConstants>SQL_SERVER_MDS;ORDINAL_STRINGS</DefineConstants>
+	</PropertyGroup>
 
   <ItemGroup>
     <Compile Include="..\Tortuga.Chain.SqlServer\shared\**\*.cs">

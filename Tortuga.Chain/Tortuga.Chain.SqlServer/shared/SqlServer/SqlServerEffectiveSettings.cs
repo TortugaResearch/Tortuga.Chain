@@ -107,7 +107,7 @@ namespace Tortuga.Chain.SqlServer
         internal async Task ReloadAsync(SqlConnection connection, SqlTransaction? transaction)
         {
             using (var cmd = new SqlCommand("SELECT @@Options") { Connection = connection, Transaction = transaction })
-                m_Options = (int)(await cmd.ExecuteScalarAsync().ConfigureAwait(false));
+                m_Options = (int)(await cmd.ExecuteScalarAsync().ConfigureAwait(false))!;
         }
     }
 }

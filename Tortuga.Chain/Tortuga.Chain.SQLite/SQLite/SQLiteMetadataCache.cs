@@ -70,15 +70,15 @@ namespace Tortuga.Chain.SQLite
                                 var isIncluded = reader2.GetInt64("key") == 0;
                                 var isDescending = isIncluded ? (bool?)null : reader2.GetInt64("desc") != 0;
 
-                                ColumnMetadata<DbType> column;
+                                ColumnMetadata<DbType>? column;
                                 if (colName != null)
-                                    column = table.Columns.SingleOrDefault(c => string.Equals(c.SqlName, colName, StringComparison.Ordinal));
+                                    column = table.Columns.Single(c => string.Equals(c.SqlName, colName, StringComparison.Ordinal));
                                 else //a null column name is really the ROWID
                                 {
                                     column = table.Columns.SingleOrDefault(c => string.Equals(c.SqlName, "ROWID", StringComparison.Ordinal));
 
-                                    //The ROWID may be aliased as the primary key
-                                    column = table.PrimaryKeyColumns.Single();
+                                    if (column == null) //The ROWID may be aliased as the primary key
+                                        column = table.PrimaryKeyColumns.Single();
                                 }
 
                                 columns.Add(new IndexColumnMetadata<DbType>(column, isDescending, isIncluded));

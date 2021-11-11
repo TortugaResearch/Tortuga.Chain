@@ -49,9 +49,12 @@
     <DefineConstants>POSTGRESQL;NULL_MISSING</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
-    <DefineConstants>POSTGRESQL;ORDINAL_STRINGS</DefineConstants>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net5.0'">
+    <DefineConstants>POSTGRESQL;NULL_MISSING</DefineConstants>
   </PropertyGroup>
+	<PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
+		<DefineConstants>POSTGRESQL;NULL_MISSING</DefineConstants>
+	</PropertyGroup>
 
   <ItemGroup Condition="'$(Configuration)'=='Debug'">
     <ProjectReference Include="..\Tortuga.Chain.Core\Tortuga.Chain.Core.csproj" />

@@ -83,7 +83,7 @@ namespace Tortuga.Chain.SQLite
         ///   <c>true</c> if the specified <see cref="object" /> is equal to this instance; otherwise, <c>false</c>.
         /// </returns>
         /// <remarks>This is a case-insensitive comparison.</remarks>
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             var other = obj as SQLiteObjectName?;
             if (other == null)

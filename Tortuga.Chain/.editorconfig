@@ -50,3 +50,5 @@ dotnet_diagnostic.RCS1089.severity = none
 
 # RCS1171: Simplify lazy initialization.
 dotnet_diagnostic.RCS1171.severity = none
+
+

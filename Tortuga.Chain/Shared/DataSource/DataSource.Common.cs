@@ -47,11 +47,13 @@ using AbstractDataSource = Tortuga.Chain.OleDbSqlServerDataSource;
 namespace Tortuga.Chain
 {
     partial class SqlServerDataSource
+    {
 #elif SQL_SERVER_OLEDB
 
 namespace Tortuga.Chain
 {
     partial class OleDbSqlServerDataSource
+    {
 #elif SQL_SERVER_OLEDB
 
 #elif SQLITE
@@ -59,26 +61,29 @@ namespace Tortuga.Chain
 namespace Tortuga.Chain
 {
     partial class SQLiteDataSource
+    {
 #elif MYSQL
 
 namespace Tortuga.Chain
 {
     partial class MySqlDataSource
+    {
 
 #elif POSTGRESQL
 
 namespace Tortuga.Chain
 {
     partial class PostgreSqlDataSource
+    {
 
 #elif ACCESS
 
 namespace Tortuga.Chain
 {
     partial class AccessDataSource
+    {
 
 #endif
-    {
         internal ICacheAdapter m_Cache;
         internal ConcurrentDictionary<Type, object> m_ExtensionCache;
 

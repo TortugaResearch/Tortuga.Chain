@@ -64,39 +64,44 @@ using AbstractParameter = System.Data.OleDb.OleDbParameter;
 namespace Tortuga.Chain.SqlServer
 {
     partial class SqlServerDataSourceBase
+    {
 
 #elif SQL_SERVER_OLEDB
 
 namespace Tortuga.Chain.SqlServer
 {
     partial class OleDbSqlServerDataSourceBase
+    {
 
 #elif SQLITE
 
 namespace Tortuga.Chain.SQLite
 {
     partial class SQLiteDataSourceBase
+    {
 
 #elif MYSQL
 
 namespace Tortuga.Chain.MySql
 {
     partial class MySqlDataSourceBase
+    {
 
 #elif POSTGRESQL
 
 namespace Tortuga.Chain.PostgreSql
 {
     partial class PostgreSqlDataSourceBase
+    {
 
 #elif ACCESS
 
 namespace Tortuga.Chain.Access
 {
     partial class AccessDataSourceBase
+    {
 
 #endif
-    {
 #if !SQL_SERVER_OLEDB && !ACCESS
 
         /// <summary>

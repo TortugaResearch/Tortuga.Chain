@@ -39,11 +39,13 @@
     <DefineConstants>SQL_SERVER_OLEDB;NULL_MISSING</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.1'">
-    <DefineConstants>SQL_SERVER_OLEDB;NULL_MISSING;ORDINAL_STRINGS</DefineConstants>
-  </PropertyGroup>
+  	<PropertyGroup Condition="'$(TargetFramework)' == 'net5.0'">
+		<DefineConstants>SQL_SERVER_OLEDB;ORDINAL_STRINGS</DefineConstants>
+	</PropertyGroup>
 
-
+  	<PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
+		<DefineConstants>SQL_SERVER_OLEDB;ORDINAL_STRINGS</DefineConstants>
+	</PropertyGroup>
   <ItemGroup>
 
     <Compile Include="..\Shared\Legacy\**\*.cs">

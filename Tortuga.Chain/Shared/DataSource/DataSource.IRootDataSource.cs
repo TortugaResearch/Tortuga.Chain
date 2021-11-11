@@ -41,38 +41,42 @@ using AbstractTransaction = System.Data.OleDb.OleDbTransaction;
 namespace Tortuga.Chain
 {
     partial class SqlServerDataSource : IRootDataSource
+    {
 #elif SQL_SERVER_OLEDB
 
 namespace Tortuga.Chain
 {
     partial class OleDbSqlServerDataSource : IRootDataSource
-#elif SQL_SERVER_OLEDB
+    {
 
 #elif SQLITE
 
 namespace Tortuga.Chain
 {
     partial class SQLiteDataSource : IRootDataSource
+    {
 #elif MYSQL
 
 namespace Tortuga.Chain
 {
     partial class MySqlDataSource : IRootDataSource
+    {
 
 #elif POSTGRESQL
 
 namespace Tortuga.Chain
 {
     partial class PostgreSqlDataSource : IRootDataSource
+    {
 
 #elif ACCESS
 
 namespace Tortuga.Chain
 {
     partial class AccessDataSource : IRootDataSource
+    {
 
 #endif
-    {
         IOpenDataSource IRootDataSource.CreateOpenDataSource() => CreateOpenDataSource();
 
         IOpenDataSource IRootDataSource.CreateOpenDataSource(DbConnection connection, DbTransaction? transaction)

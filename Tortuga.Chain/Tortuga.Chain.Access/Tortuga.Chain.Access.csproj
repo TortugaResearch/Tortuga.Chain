@@ -1,51 +1,51 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>net462</TargetFrameworks>
-    <Authors>David Tomcik, Jonathan Allen</Authors>
-    <Company>Tortuga Technologies</Company>
-    <Description>A fluent ORM and Database Reflection Library for MS Access.</Description>
-    <PackageTags>ORM Fluent DB Reflection Access</PackageTags>
-    <LangVersion>10.0</LangVersion>
-    <ProductName>Tortuga Chain</ProductName>
-    <Deterministic>true</Deterministic>
+	<PropertyGroup>
+		<TargetFrameworks>net462</TargetFrameworks>
+		<Authors>David Tomcik, Jonathan Allen</Authors>
+		<Company>Tortuga Technologies</Company>
+		<Description>A fluent ORM and Database Reflection Library for MS Access.</Description>
+		<PackageTags>ORM Fluent DB Reflection Access</PackageTags>
+		<LangVersion>10.0</LangVersion>
+		<ProductName>Tortuga Chain</ProductName>
+		<Deterministic>true</Deterministic>
 
-    <AssemblyVersion>3.5.0</AssemblyVersion>
-    <Version>3.5.0</Version>
-    <FileVersion>3.5.0.0</FileVersion>
+		<AssemblyVersion>3.5.0</AssemblyVersion>
+		<Version>3.5.0</Version>
+		<FileVersion>3.5.0.0</FileVersion>
 
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 
-    <Copyright>David Tomcik, Jonathan Allen 2016-2019</Copyright>
+		<Copyright>David Tomcik, Jonathan Allen 2016-2019</Copyright>
 
-    <PackageProjectUrl>https://github.com/docevaad/Chain</PackageProjectUrl>
+		<PackageProjectUrl>https://github.com/docevaad/Chain</PackageProjectUrl>
 
-    <RepositoryUrl>https://github.com/docevaad/Chain.git</RepositoryUrl>
+		<RepositoryUrl>https://github.com/docevaad/Chain.git</RepositoryUrl>
 
-    <RepositoryType>git</RepositoryType>
-    <Nullable>enable</Nullable>
+		<RepositoryType>git</RepositoryType>
+		<Nullable>enable</Nullable>
 
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <WarningsAsErrors />
-    <RootNamespace>Tortuga.Chain</RootNamespace>
-    <DocumentationFile>Tortuga.Chain.Access.xml</DocumentationFile>
-  </PropertyGroup>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<WarningsAsErrors />
+		<RootNamespace>Tortuga.Chain</RootNamespace>
+		<DocumentationFile>Tortuga.Chain.Access.xml</DocumentationFile>
+	</PropertyGroup>
 
-  <ItemGroup>
+	<ItemGroup>
 
-    <Compile Include="..\Shared\Legacy\**\*.cs">
-      <Link>referenced\Legacy\%(RecursiveDir)%(Filename)%(Extension)</Link>
-    </Compile>
-    <Compile Include="..\Shared\DataSource\**\*.cs">
-      <Link>referenced\DataSource\%(RecursiveDir)%(Filename)%(Extension)</Link>
-    </Compile>
-  </ItemGroup>
+		<Compile Include="..\Shared\Legacy\**\*.cs">
+			<Link>referenced\Legacy\%(RecursiveDir)%(Filename)%(Extension)</Link>
+		</Compile>
+		<Compile Include="..\Shared\DataSource\**\*.cs">
+			<Link>referenced\DataSource\%(RecursiveDir)%(Filename)%(Extension)</Link>
+		</Compile>
+	</ItemGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net462'">
-    <DefineConstants>ACCESS;NULL_MISSING</DefineConstants>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(TargetFramework)' == 'net462'">
+		<DefineConstants>ACCESS;NULL_MISSING</DefineConstants>
+	</PropertyGroup>
 
-  <!--
+	<!--
   Unable to get this to work with .NET Core
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     <DefineConstants>ACCESS;NULL_MISSING</DefineConstants>
@@ -53,52 +53,50 @@
   <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.1'">
     <DefineConstants>ACCESS;NULL_MISSING;ORDINAL_STRINGS</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
-    <DefineConstants>ACCESS;ORDINAL_STRINGS</DefineConstants>
-  </PropertyGroup>-->
+-->
 
-  <ItemGroup Condition="'$(Configuration)'=='Debug'">
-    <ProjectReference Include="..\Tortuga.Chain.Core\Tortuga.Chain.Core.csproj" />
-    <ProjectReference Include="..\Tortuga.Chain.Core.OleDb\Tortuga.Chain.Core.OleDb.csproj" />
-  </ItemGroup>
+	<ItemGroup Condition="'$(Configuration)'=='Debug'">
+		<ProjectReference Include="..\Tortuga.Chain.Core\Tortuga.Chain.Core.csproj" />
+		<ProjectReference Include="..\Tortuga.Chain.Core.OleDb\Tortuga.Chain.Core.OleDb.csproj" />
+	</ItemGroup>
 
-  <ItemGroup Condition="'$(Configuration)'=='Release'">
-    <PackageReference Include="Tortuga.Chain.Core.OleDb" Version="3.5.0" />
-  </ItemGroup>
+	<ItemGroup Condition="'$(Configuration)'=='Release'">
+		<PackageReference Include="Tortuga.Chain.Core.OleDb" Version="3.5.0" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="5.0.3">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="5.0.3">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
+	</ItemGroup>
 
-  <!-- NuGet Packaging Boilerplate-->
-  <PropertyGroup Condition="'$(Configuration)'=='Release'">
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <GenerateNuspecDependsOn>$(GenerateNuspecDependsOn);ReadPackageVersionFromOutputAssembly</GenerateNuspecDependsOn>
-  </PropertyGroup>
+	<!-- NuGet Packaging Boilerplate-->
+	<PropertyGroup Condition="'$(Configuration)'=='Release'">
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<GenerateNuspecDependsOn>$(GenerateNuspecDependsOn);ReadPackageVersionFromOutputAssembly</GenerateNuspecDependsOn>
+	</PropertyGroup>
 
-  <Target Name="ReadPackageVersionFromOutputAssembly" DependsOnTargets="Build" Condition="'$(IsCrossTargetingBuild)' == 'true'">
+	<Target Name="ReadPackageVersionFromOutputAssembly" DependsOnTargets="Build" Condition="'$(IsCrossTargetingBuild)' == 'true'">
 
-    <PropertyGroup>
-      <FirstTargetFramework>$([System.String]::Copy($(TargetFrameworks)).Split(';').GetValue(0))</FirstTargetFramework>
-    </PropertyGroup>
-    <MSBuild Projects="$(MSBuildProjectFullPath)" Targets="ReadPackageVersionFromOutputAssemblySingleTfm" Properties="TargetFramework=$(FirstTargetFramework)">
-      <Output TaskParameter="TargetOutputs" ItemName="PackAssembly" />
-    </MSBuild>
-    <PropertyGroup>
-      <PackageVersion>%(PackAssembly.Version)</PackageVersion>
-    </PropertyGroup>
-  </Target>
+		<PropertyGroup>
+			<FirstTargetFramework>$([System.String]::Copy($(TargetFrameworks)).Split(';').GetValue(0))</FirstTargetFramework>
+		</PropertyGroup>
+		<MSBuild Projects="$(MSBuildProjectFullPath)" Targets="ReadPackageVersionFromOutputAssemblySingleTfm" Properties="TargetFramework=$(FirstTargetFramework)">
+			<Output TaskParameter="TargetOutputs" ItemName="PackAssembly" />
+		</MSBuild>
+		<PropertyGroup>
+			<PackageVersion>%(PackAssembly.Version)</PackageVersion>
+		</PropertyGroup>
+	</Target>
 
-  <Target Name="ReadPackageVersionFromOutputAssemblySingleTfm" Returns="@(PackAssembly)" Condition="'$(IsCrossTargetingBuild)' != 'true'">
-    <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
-      <Output TaskParameter="Assemblies" ItemName="PackAssembly" />
-    </GetAssemblyIdentity>
-    <PropertyGroup>
-      <PackageVersion>%(PackAssembly.Version)</PackageVersion>
-    </PropertyGroup>
-  </Target>
+	<Target Name="ReadPackageVersionFromOutputAssemblySingleTfm" Returns="@(PackAssembly)" Condition="'$(IsCrossTargetingBuild)' != 'true'">
+		<GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
+			<Output TaskParameter="Assemblies" ItemName="PackAssembly" />
+		</GetAssemblyIdentity>
+		<PropertyGroup>
+			<PackageVersion>%(PackAssembly.Version)</PackageVersion>
+		</PropertyGroup>
+	</Target>
 </Project>
