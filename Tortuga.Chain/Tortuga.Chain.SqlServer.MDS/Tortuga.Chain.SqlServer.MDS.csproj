@@ -1,12 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net461;netstandard2.0;netcoreapp2.1</TargetFrameworks>
+    <TargetFrameworks>net462;netstandard2.0;net5.0;net6.0</TargetFrameworks>
     <Authors>David Tomcik, Jonathan Allen</Authors>
     <Company>Tortuga Technologies</Company>
     <Description>A fluent ORM and Database Reflection Library for SQL Server. This is a replacement for Tortuga.Chain.SqlServer. It uses Microsoft.Data.SqlClient instead of the legacy System.Data.SqlClient.</Description>
     <PackageTags>ORM Fluent DB Reflection SQL Server</PackageTags>
-    <LangVersion>9.0</LangVersion>
+    <LangVersion>10.0</LangVersion>
     <ProductName>Tortuga Chain</ProductName>
     <Deterministic>true</Deterministic>
 
@@ -31,7 +31,7 @@
     <DocumentationFile>Tortuga.Chain.SqlServer.MDS.xml</DocumentationFile>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net461'">
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net462'">
     <!-- https://github.com/dotnet/SqlClient/issues/260 SqlDependency is not working against .NET 4.6.1 -->
     <DefineConstants>SQL_SERVER_MDS;NULL_MISSING;SqlDependency_Missing</DefineConstants>
   </PropertyGroup>

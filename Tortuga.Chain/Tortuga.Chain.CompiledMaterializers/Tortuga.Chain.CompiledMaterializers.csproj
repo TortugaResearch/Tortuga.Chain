@@ -1,12 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net461;netcoreapp2.1;netstandard2.0;netstandard2.1</TargetFrameworks>
+    <TargetFrameworks>net462;netstandard2.0;netstandard2.1;netcoreapp3.1;net5.0;net6.0</TargetFrameworks>
     <Authors>David Tomcik, Jonathan Allen</Authors>
     <Company>Tortuga Technologies</Company>
     <Description>This library adds compiled materializers to Tortuga Chain.</Description>
     <PackageTags>ORM Fluent DB Reflection</PackageTags>
-    <LangVersion>9.0</LangVersion>
+    <LangVersion>10.0</LangVersion>
     <ProductName>Tortuga Chain</ProductName>
     <Deterministic>true</Deterministic>
 
@@ -47,11 +47,8 @@
     <PackageReference Include="Tortuga.Chain.Core" Version="3.5.0" />
   </ItemGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net461'">
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net462'">
     <DefineConstants>NULL_MISSING</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.1'">
-    <DefineConstants>NULL_MISSING;ORDINAL_STRINGS</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     <DefineConstants>NULL_MISSING</DefineConstants>
@@ -59,7 +56,16 @@
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
     <DefineConstants>ORDINAL_STRINGS</DefineConstants>
   </PropertyGroup>
-
+	<PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
+		<DefineConstants>ORDINAL_STRINGS</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(TargetFramework)' == 'net5.0'">
+		<DefineConstants>ORDINAL_STRINGS</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
+		<DefineConstants>ORDINAL_STRINGS</DefineConstants>
+	</PropertyGroup>
+	
   <ItemGroup>
     <Compile Include="..\Shared\Legacy\**\*.cs">
       <Link>referenced\Legacy\%(RecursiveDir)%(Filename)%(Extension)</Link>

@@ -1,17 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net461;netcoreapp2.1</TargetFrameworks>
+    <TargetFrameworks>net462;netcoreapp3.1;net5.0;net6.0</TargetFrameworks>
     <RootNamespace>Tests</RootNamespace>
     <IsPackable>false</IsPackable>
-    <LangVersion>9.0</LangVersion>
+    <LangVersion>10.0</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup>
     <DefineConstants>SQL_SERVER_MDS</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net461'">
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net462'">
     <!-- https://github.com/dotnet/SqlClient/issues/260 SqlDependency is not working against .NET 4.6.1 -->
     <DefineConstants>Roslyn_Missing;SQL_SERVER_MDS;SqlDependency_Missing</DefineConstants>
   </PropertyGroup>

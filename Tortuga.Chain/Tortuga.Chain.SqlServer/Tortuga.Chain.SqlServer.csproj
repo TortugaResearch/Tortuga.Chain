@@ -1,12 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net462;netstandard2.0;net5.0;net6.0</TargetFrameworks>
     <Authors>David Tomcik, Jonathan Allen</Authors>
     <Company>Tortuga Technologies</Company>
     <Description>A fluent ORM and Database Reflection Library for SQL Server. This uses System.Data.SqlClient. For Microsoft.Data.SqlClient use the Tortuga.Chain.SqlServer.MDS package.</Description>
     <PackageTags>ORM Fluent DB Reflection SQL Server</PackageTags>
-    <LangVersion>9.0</LangVersion>
+    <LangVersion>10.0</LangVersion>
     <ProductName>Tortuga Chain</ProductName>
     <Deterministic>true</Deterministic>
 
@@ -41,7 +41,7 @@
     </Compile>
   </ItemGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net461'">
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net462'">
     <DefineConstants>SQL_SERVER_SDS;NULL_MISSING</DefineConstants>
   </PropertyGroup>
 

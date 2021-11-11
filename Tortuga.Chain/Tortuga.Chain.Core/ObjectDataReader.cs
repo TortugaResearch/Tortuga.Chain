@@ -112,8 +112,10 @@ namespace Tortuga.Chain
         /// <returns>System.Object.</returns>
         public override object? this[string name]
         {
-            get
-            {
+#pragma warning disable CS8764 // Nullability of return type doesn't match overridden member (possibly because of nullability attributes).
+			get
+#pragma warning restore CS8764 // Nullability of return type doesn't match overridden member (possibly because of nullability attributes).
+			{
                 if (m_Source == null)
                     throw new ObjectDisposedException(nameof(ObjectDataReader<TObject>));
 
@@ -128,8 +130,10 @@ namespace Tortuga.Chain
         /// <returns>System.Object.</returns>
         public override object? this[int ordinal]
         {
-            get
-            {
+#pragma warning disable CS8764 // Nullability of return type doesn't match overridden member (possibly because of nullability attributes).
+			get
+#pragma warning restore CS8764 // Nullability of return type doesn't match overridden member (possibly because of nullability attributes).
+			{
                 if (m_Source == null)
                     throw new ObjectDisposedException(nameof(ObjectDataReader<TObject>));
 
@@ -309,19 +313,21 @@ namespace Tortuga.Chain
         /// <returns>The value of the specified column.</returns>
         public override string GetString(int ordinal) => (string)(this[ordinal] ?? throw new InvalidOperationException($"Value in ordinal {ordinal} is null. Use IsDBNull before calling this method."));
 
-        /// <summary>
-        /// Gets the value of the specified column as an instance of <see cref="System.Object" />.
-        /// </summary>
-        /// <param name="ordinal">The zero-based column ordinal.</param>
-        /// <returns>The value of the specified column.</returns>
-        public override object? GetValue(int ordinal) => this[ordinal];
+		/// <summary>
+		/// Gets the value of the specified column as an instance of <see cref="System.Object" />.
+		/// </summary>
+		/// <param name="ordinal">The zero-based column ordinal.</param>
+		/// <returns>The value of the specified column.</returns>
+#pragma warning disable CS8764 // Nullability of return type doesn't match overridden member (possibly because of nullability attributes).
+		public override object? GetValue(int ordinal) => this[ordinal];
+#pragma warning restore CS8764 // Nullability of return type doesn't match overridden member (possibly because of nullability attributes).
 
-        /// <summary>
-        /// Populates an array of objects with the column values of the current row.
-        /// </summary>
-        /// <param name="values">An array of <see cref="System.Object" /> into which to copy the attribute columns.</param>
-        /// <returns>The number of instances of <see cref="System.Object" /> in the array.</returns>
-        public override int GetValues(object[] values)
+		/// <summary>
+		/// Populates an array of objects with the column values of the current row.
+		/// </summary>
+		/// <param name="values">An array of <see cref="System.Object" /> into which to copy the attribute columns.</param>
+		/// <returns>The number of instances of <see cref="System.Object" /> in the array.</returns>
+		public override int GetValues(object[] values)
         {
             var result = new object?[m_PropertyList.Length];
             for (var i = 0; i < m_PropertyList.Length; i++)

@@ -1,13 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net461;netstandard2.0;netcoreapp2.1</TargetFrameworks>
+    <TargetFrameworks>net462;netstandard2.0;net5.0;net6.0</TargetFrameworks>
     <RootNamespace>Tortuga.Chain</RootNamespace>
     <Authors>David Tomcik, Jonathan Allen</Authors>
     <Company>Tortuga Technologies</Company>
     <Description>A fluent ORM and Database Reflection Library for .NET and OleDB Databases.</Description>
     <PackageTags>ORM Fluent DB Reflection</PackageTags>
-    <LangVersion>9.0</LangVersion>
+    <LangVersion>10.0</LangVersion>
     <ProductName>Tortuga Chain</ProductName>
     <Deterministic>true</Deterministic>
 
