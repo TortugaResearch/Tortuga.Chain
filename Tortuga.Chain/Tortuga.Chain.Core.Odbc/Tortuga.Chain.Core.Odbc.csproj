@@ -32,9 +32,6 @@
     <DocumentationFile>Tortuga.Chain.Core.Odbc.xml</DocumentationFile>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.1'">
-    <DefineConstants>ORDINAL_STRINGS</DefineConstants>
-  </PropertyGroup>
 
   <ItemGroup>
 

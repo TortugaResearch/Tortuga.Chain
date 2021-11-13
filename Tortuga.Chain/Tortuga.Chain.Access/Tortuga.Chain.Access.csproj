@@ -50,9 +50,7 @@
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     <DefineConstants>ACCESS;NULL_MISSING</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.1'">
-    <DefineConstants>ACCESS;NULL_MISSING;ORDINAL_STRINGS</DefineConstants>
-  </PropertyGroup>
+  
 -->
 
 	<ItemGroup Condition="'$(Configuration)'=='Debug'">

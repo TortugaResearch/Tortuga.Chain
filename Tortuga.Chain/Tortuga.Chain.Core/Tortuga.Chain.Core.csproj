@@ -35,9 +35,6 @@
 	<PropertyGroup Condition="'$(TargetFramework)' == 'net462'">
 		<DefineConstants>NULL_MISSING</DefineConstants>
 	</PropertyGroup>
-	<PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.1'">
-		<DefineConstants>NULL_MISSING;ORDINAL_STRINGS</DefineConstants>
-	</PropertyGroup>
 	<PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
 		<DefineConstants>NULL_MISSING</DefineConstants>
 	</PropertyGroup>

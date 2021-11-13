@@ -24,6 +24,8 @@
     <IncludeCompositeObjects>True</IncludeCompositeObjects>
     <TargetDatabaseSet>True</TargetDatabaseSet>
     <ServiceBrokerOption>EnableBroker</ServiceBrokerOption>
+    <ReadCommittedSnapshot>True</ReadCommittedSnapshot>
+    <AllowSnapshotIsolation>True</AllowSnapshotIsolation>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>bin\Release\</OutputPath>
