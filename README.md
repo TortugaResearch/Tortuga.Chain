@@ -4,10 +4,10 @@ A Fluent ORM for .NET
 
 ## Documentation
 
-* [Documentation Website](https://docevaad.github.io/Chain)
-* [API Reference](http://docevaad.github.io/Chain/API/Index.html)
-* [Chain Wiki](https://github.com/docevaad/Chain/wiki)
-* [Chain vs Dapper](https://github.com/docevaad/Chain/wiki/A-Chain-comparison-to-Dapper)
+* [Documentation Website](https://tortugaresearch.github.io/Chain/)
+* [API Reference](http://tortugaresearch.github.io/Chain/API/Index.html)
+* [Chain Wiki](https://github.com/tortugaresearch/Chain/wiki)
+* [Chain vs Dapper](https://github.com/tortugaresearch/Chain/wiki/A-Chain-comparison-to-Dapper)
 
 ## Getting Started
 
