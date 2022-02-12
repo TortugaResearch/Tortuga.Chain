@@ -1173,6 +1173,36 @@ namespace Tests.CommandBuilders
 			}
 		}
 
+
+#if NET5_0_OR_GREATER
+		[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+		public void GetByKeyWithRecordConstructor(string dataSourceName, DataSourceType mode)
+		{
+			var dataSource = DataSource(dataSourceName, mode);
+			try
+			{
+				var emp1 = new Employee() { FirstName = "A", LastName = "1" };
+				var emp2 = new Employee() { FirstName = "B", LastName = "2" };
+				var emp3 = new Employee() { FirstName = "C", LastName = "3" };
+				var emp4 = new Employee() { FirstName = "D", LastName = "4" };
+
+				emp1 = dataSource.Insert(EmployeeTableName, emp1).ToObject<Employee>().Execute();
+				emp2 = dataSource.Insert(EmployeeTableName, emp2).ToObject<Employee>().Execute();
+				emp3 = dataSource.Insert(EmployeeTableName, emp3).ToObject<Employee>().Execute();
+				emp4 = dataSource.Insert(EmployeeTableName, emp4).ToObject<Employee>().Execute();
+
+				var find2 = dataSource.GetByKey<EmployeeRecordConstructor>(emp2.EmployeeKey.Value).ToObject(RowOptions.InferConstructorWithProperties).Execute();
+				Assert.AreEqual(emp2.EmployeeKey, find2.EmployeeKey, "The wrong employee was returned");
+				Assert.AreEqual(emp2.EmployeeId, find2.EmployeeId, "The employee id was not set on the record");
+
+			}
+			finally
+			{
+				Release(dataSource);
+			}
+		}
+#endif
+
 		[DataTestMethod, BasicData(DataSourceGroup.Primary)]
 		public void GetByKeyList(string dataSourceName, DataSourceType mode)
 		{
@@ -1234,6 +1264,7 @@ namespace Tests.CommandBuilders
 				Release(dataSource);
 			}
 		}
+
 
 		[DataTestMethod, BasicData(DataSourceGroup.Primary)]
 		public void GetByKeyList_InferredTableName(string dataSourceName, DataSourceType mode)

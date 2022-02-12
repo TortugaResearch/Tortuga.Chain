@@ -46,6 +46,24 @@ namespace Tests.Models
 		public DateTime? UpdatedDate { get; set; }
 	}
 
+#if NET5_0_OR_GREATER
+	[Table("Employee", Schema = "HR")]
+	public record EmployeeRecordConstructor(KeyType? EmployeeKey, string FirstName, string LastName)
+	{
+		[IgnoreOnInsert, IgnoreOnUpdate]
+		public DateTime? CreatedDate { get; set; }
+
+		public string? EmployeeId { get; set; }
+		public KeyType? ManagerKey { get; set; }
+		public string MiddleName { get; set; }
+		public string Title { get; set; }
+
+		[IgnoreOnUpdate]
+		public DateTime? UpdatedDate { get; set; }
+	}
+#endif
+
+
 	public class EmployeeWithName
 	{
 		public string EmployeeId { get; set; } = Guid.NewGuid().ToString();
