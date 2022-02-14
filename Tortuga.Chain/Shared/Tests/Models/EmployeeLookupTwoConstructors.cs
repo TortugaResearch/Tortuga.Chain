@@ -11,13 +11,17 @@ using Key = System.Int32;
 namespace Tests.Models
 {
 	/// <summary>
-	/// This is used to test immutable object constructors
+	/// This is used to test classes with two constructors
 	/// </summary>
 	[Table("Employee", Schema = "HR")]
-	public class EmployeeLookup
+	public class EmployeeLookupTwoConstructors
 	{
+		public EmployeeLookupTwoConstructors()
+		{
 
-		public EmployeeLookup(Key employeeKey, string firstName, string lastName)
+		}
+
+		public EmployeeLookupTwoConstructors(Key employeeKey, string firstName, string lastName)
 		{
 			EmployeeKey = employeeKey;
 			FirstName = firstName;
