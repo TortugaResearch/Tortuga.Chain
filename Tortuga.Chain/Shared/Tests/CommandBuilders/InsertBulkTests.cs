@@ -1,9 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 using Tests.Models;
 
 #if SQL_SERVER_SDS
@@ -18,199 +13,199 @@ using Microsoft.Data.SqlClient;
 
 namespace Tests.CommandBuilders
 {
-    [TestClass]
-    public class InsertBulkTests : TestBase
-    {
+	[TestClass]
+	public class InsertBulkTests : TestBase
+	{
 #if SQL_SERVER_SDS || SQL_SERVER_MDS || MYSQL || POSTGRESQL
 
-        IEnumerable<Employee> StreamRecords(string key, int maxRecords)
-        {
-            var i = 0;
-            while (i < maxRecords)
-            {
-                yield return new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = key, UpdatedDate = DateTime.Now };
-                i++;
-            }
-        }
+		IEnumerable<Employee> StreamRecords(string key, int maxRecords)
+		{
+			var i = 0;
+			while (i < maxRecords)
+			{
+				yield return new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = key, UpdatedDate = DateTime.Now };
+				i++;
+			}
+		}
 
 #if SQL_SERVER_SDS || SQL_SERVER_MDS || MYSQL
 
-        [DataTestMethod, BasicData(DataSourceGroup.Primary)]
-        public void InsertBulk_List_WithBatches(string dataSourceName, DataSourceType mode)
-        {
-            var key1000 = Guid.NewGuid().ToString();
-            var employeeList = new List<Employee>();
+		[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+		public void InsertBulk_List_WithBatches(string dataSourceName, DataSourceType mode)
+		{
+			var key1000 = Guid.NewGuid().ToString();
+			var employeeList = new List<Employee>();
 
-            for (var i = 0; i < 1000; i++)
-                employeeList.Add(new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = key1000 });
+			for (var i = 0; i < 1000; i++)
+				employeeList.Add(new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = key1000 });
 
-            var dataSource = DataSource(dataSourceName, mode);
-            try
-            {
-                var count = dataSource.InsertBulk(EmployeeTableName, employeeList).WithBatchSize(250).Execute();
-                Assert.AreEqual(1000, count);
+			var dataSource = DataSource(dataSourceName, mode);
+			try
+			{
+				var count = dataSource.InsertBulk(EmployeeTableName, employeeList).WithBatchSize(250).Execute();
+				Assert.AreEqual(1000, count);
 
-                var count2 = dataSource.From(EmployeeTableName, new { Title = key1000 }).AsCount().Execute();
-                Assert.AreEqual(1000, count2);
-            }
-            finally
-            {
-                Release(dataSource);
-            }
-        }
+				var count2 = dataSource.From(EmployeeTableName, new { Title = key1000 }).AsCount().Execute();
+				Assert.AreEqual(1000, count2);
+			}
+			finally
+			{
+				Release(dataSource);
+			}
+		}
 
 #endif
 
-        [DataTestMethod, BasicData(DataSourceGroup.Primary)]
-        public void InsertBulk_List(string dataSourceName, DataSourceType mode)
-        {
-            var key1000 = Guid.NewGuid().ToString();
-            var employeeList = new List<Employee>();
+		[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+		public void InsertBulk_List(string dataSourceName, DataSourceType mode)
+		{
+			var key1000 = Guid.NewGuid().ToString();
+			var employeeList = new List<Employee>();
 
-            const int RowCount = 1000;
-            for (var i = 0; i < RowCount; i++)
-                employeeList.Add(new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = key1000 });
+			const int RowCount = 1000;
+			for (var i = 0; i < RowCount; i++)
+				employeeList.Add(new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = key1000 });
 
-            var dataSource = DataSource(dataSourceName, mode);
-            try
-            {
-                var count = dataSource.InsertBulk(EmployeeTableName, employeeList).Execute();
-                Assert.AreEqual(RowCount, count);
+			var dataSource = DataSource(dataSourceName, mode);
+			try
+			{
+				var count = dataSource.InsertBulk(EmployeeTableName, employeeList).Execute();
+				Assert.AreEqual(RowCount, count);
 
-                var count2 = dataSource.From(EmployeeTableName, new { Title = key1000 }).AsCount().Execute();
-                Assert.AreEqual(RowCount, count2);
-            }
-            finally
-            {
-                Release(dataSource);
-            }
-        }
+				var count2 = dataSource.From(EmployeeTableName, new { Title = key1000 }).AsCount().Execute();
+				Assert.AreEqual(RowCount, count2);
+			}
+			finally
+			{
+				Release(dataSource);
+			}
+		}
 
-        [DataTestMethod, BasicData(DataSourceGroup.Primary)]
-        public void InsertBulk_List_ImpliedTableName(string dataSourceName, DataSourceType mode)
-        {
-            var key1000 = Guid.NewGuid().ToString();
-            var employeeList = new List<Employee>();
+		[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+		public void InsertBulk_List_ImpliedTableName(string dataSourceName, DataSourceType mode)
+		{
+			var key1000 = Guid.NewGuid().ToString();
+			var employeeList = new List<Employee>();
 
-            for (var i = 0; i < 1000; i++)
-                employeeList.Add(new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = key1000 });
+			for (var i = 0; i < 1000; i++)
+				employeeList.Add(new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = key1000 });
 
-            var dataSource = DataSource(dataSourceName, mode);
-            try
-            {
-                var count = dataSource.InsertBulk(employeeList).Execute();
-                Assert.AreEqual(1000, count);
+			var dataSource = DataSource(dataSourceName, mode);
+			try
+			{
+				var count = dataSource.InsertBulk(employeeList).Execute();
+				Assert.AreEqual(1000, count);
 
-                var count2 = dataSource.From(EmployeeTableName, new { Title = key1000 }).AsCount().Execute();
-                Assert.AreEqual(1000, count2);
-            }
-            finally
-            {
-                Release(dataSource);
-            }
-        }
+				var count2 = dataSource.From(EmployeeTableName, new { Title = key1000 }).AsCount().Execute();
+				Assert.AreEqual(1000, count2);
+			}
+			finally
+			{
+				Release(dataSource);
+			}
+		}
 
-        [DataTestMethod, BasicData(DataSourceGroup.Primary)]
-        public void InsertBulk_Enumeration(string dataSourceName, DataSourceType mode)
-        {
-            var key1000 = Guid.NewGuid().ToString();
+		[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+		public void InsertBulk_Enumeration(string dataSourceName, DataSourceType mode)
+		{
+			var key1000 = Guid.NewGuid().ToString();
 
-            var dataSource = DataSource(dataSourceName, mode);
-            try
-            {
-                var count = dataSource.InsertBulk(EmployeeTableName, StreamRecords(key1000, 1000)).Execute();
+			var dataSource = DataSource(dataSourceName, mode);
+			try
+			{
+				var count = dataSource.InsertBulk(EmployeeTableName, StreamRecords(key1000, 1000)).Execute();
 
 #if SQL_SERVER_SDS || SQL_SERVER_MDS
                 Assert.AreEqual(-1, count); //streaming prevents returning a row count;
 #elif MYSQL || POSTGRESQL
-                Assert.AreEqual(1000, count);
+				Assert.AreEqual(1000, count);
 #endif
 
-                var count2 = dataSource.From(EmployeeTableName, new { Title = key1000 }).AsCount().Execute();
-                Assert.AreEqual(1000, count2);
-            }
-            finally
-            {
-                Release(dataSource);
-            }
-        }
+				var count2 = dataSource.From(EmployeeTableName, new { Title = key1000 }).AsCount().Execute();
+				Assert.AreEqual(1000, count2);
+			}
+			finally
+			{
+				Release(dataSource);
+			}
+		}
 
 #if SQL_SERVER_SDS || SQL_SERVER_MDS || MYSQL
 
-        [DataTestMethod, BasicData(DataSourceGroup.Primary)]
-        public async Task InsertBulkAsync_List_WithBatches(string dataSourceName, DataSourceType mode)
-        {
-            var key1000 = Guid.NewGuid().ToString();
-            var employeeList = new List<Employee>();
+		[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+		public async Task InsertBulkAsync_List_WithBatches(string dataSourceName, DataSourceType mode)
+		{
+			var key1000 = Guid.NewGuid().ToString();
+			var employeeList = new List<Employee>();
 
-            for (var i = 0; i < 1000; i++)
-                employeeList.Add(new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = key1000 });
+			for (var i = 0; i < 1000; i++)
+				employeeList.Add(new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = key1000 });
 
-            var dataSource = DataSource(dataSourceName, mode);
-            try
-            {
-                var count = await dataSource.InsertBulk(EmployeeTableName, employeeList).WithBatchSize(250).ExecuteAsync();
-                Assert.AreEqual(1000, count);
+			var dataSource = DataSource(dataSourceName, mode);
+			try
+			{
+				var count = await dataSource.InsertBulk(EmployeeTableName, employeeList).WithBatchSize(250).ExecuteAsync();
+				Assert.AreEqual(1000, count);
 
-                var count2 = await dataSource.From(EmployeeTableName, new { Title = key1000 }).AsCount().ExecuteAsync();
-                Assert.AreEqual(1000, count2);
-            }
-            finally
-            {
-                Release(dataSource);
-            }
-        }
+				var count2 = await dataSource.From(EmployeeTableName, new { Title = key1000 }).AsCount().ExecuteAsync();
+				Assert.AreEqual(1000, count2);
+			}
+			finally
+			{
+				Release(dataSource);
+			}
+		}
 
 #endif
 
-        [DataTestMethod, BasicData(DataSourceGroup.Primary)]
-        public async Task InsertBulkAsync_List(string dataSourceName, DataSourceType mode)
-        {
-            var key1000 = Guid.NewGuid().ToString();
-            var employeeList = new List<Employee>();
+		[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+		public async Task InsertBulkAsync_List(string dataSourceName, DataSourceType mode)
+		{
+			var key1000 = Guid.NewGuid().ToString();
+			var employeeList = new List<Employee>();
 
-            for (var i = 0; i < 1000; i++)
-                employeeList.Add(new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = key1000 });
+			for (var i = 0; i < 1000; i++)
+				employeeList.Add(new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = key1000 });
 
-            var dataSource = DataSource(dataSourceName, mode);
-            try
-            {
-                var count = await dataSource.InsertBulk(EmployeeTableName, employeeList).ExecuteAsync();
-                Assert.AreEqual(1000, count);
+			var dataSource = DataSource(dataSourceName, mode);
+			try
+			{
+				var count = await dataSource.InsertBulk(EmployeeTableName, employeeList).ExecuteAsync();
+				Assert.AreEqual(1000, count);
 
-                var count2 = await dataSource.From(EmployeeTableName, new { Title = key1000 }).AsCount().ExecuteAsync();
-                Assert.AreEqual(1000, count2);
-            }
-            finally
-            {
-                Release(dataSource);
-            }
-        }
+				var count2 = await dataSource.From(EmployeeTableName, new { Title = key1000 }).AsCount().ExecuteAsync();
+				Assert.AreEqual(1000, count2);
+			}
+			finally
+			{
+				Release(dataSource);
+			}
+		}
 
-        [DataTestMethod, BasicData(DataSourceGroup.Primary)]
-        public async Task InsertBulkAsync_Enumeration(string dataSourceName, DataSourceType mode)
-        {
-            var key1000 = Guid.NewGuid().ToString();
+		[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+		public async Task InsertBulkAsync_Enumeration(string dataSourceName, DataSourceType mode)
+		{
+			var key1000 = Guid.NewGuid().ToString();
 
-            var dataSource = DataSource(dataSourceName, mode);
-            try
-            {
-                var count = await dataSource.InsertBulk(EmployeeTableName, StreamRecords(key1000, 1000)).ExecuteAsync();
+			var dataSource = DataSource(dataSourceName, mode);
+			try
+			{
+				var count = await dataSource.InsertBulk(EmployeeTableName, StreamRecords(key1000, 1000)).ExecuteAsync();
 
 #if SQL_SERVER_SDS || SQL_SERVER_MDS
                 Assert.AreEqual(-1, count); //streaming prevents returning a row count;
 #elif MYSQL || POSTGRESQL
-                Assert.AreEqual(1000, count);
+				Assert.AreEqual(1000, count);
 #endif
 
-                var count2 = await dataSource.From(EmployeeTableName, new { Title = key1000 }).AsCount().ExecuteAsync();
-                Assert.AreEqual(1000, count2);
-            }
-            finally
-            {
-                Release(dataSource);
-            }
-        }
+				var count2 = await dataSource.From(EmployeeTableName, new { Title = key1000 }).AsCount().ExecuteAsync();
+				Assert.AreEqual(1000, count2);
+			}
+			finally
+			{
+				Release(dataSource);
+			}
+		}
 
 #endif
 
@@ -302,36 +297,36 @@ namespace Tests.CommandBuilders
             }
         }
 
-#elif POSTGRESQL|| MYSQL
+#elif POSTGRESQL || MYSQL
 
-        [DataTestMethod, BasicData(DataSourceGroup.Primary)]
-        public void InsertBulk_WithEvents(string dataSourceName, DataSourceType mode)
-        {
-            long runningCount = 0;
-            var key = Guid.NewGuid().ToString();
-            var employeeList = new List<Employee>();
+		[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+		public void InsertBulk_WithEvents(string dataSourceName, DataSourceType mode)
+		{
+			long runningCount = 0;
+			var key = Guid.NewGuid().ToString();
+			var employeeList = new List<Employee>();
 
-            var dataSource = DataSource(dataSourceName, mode);
-            try
-            {
-                var count = dataSource.InsertBulk(EmployeeTableName, StreamRecords(key, 1000)).WithNotifications((s, e) =>
-                {
-                    Debug.WriteLine($"Copied {e.RowsAffected} rows");
-                    runningCount = e.RowsAffected;
-                }, 90).Execute();
+			var dataSource = DataSource(dataSourceName, mode);
+			try
+			{
+				var count = dataSource.InsertBulk(EmployeeTableName, StreamRecords(key, 1000)).WithNotifications((s, e) =>
+				{
+					Debug.WriteLine($"Copied {e.RowsAffected} rows");
+					runningCount = e.RowsAffected;
+				}, 90).Execute();
 
-                Assert.AreEqual(1000, count); //streaming prevents returning a row count;
-                Assert.AreNotEqual(0, runningCount, "record count is wrong"); //but we can get it another way
+				Assert.AreEqual(1000, count); //streaming prevents returning a row count;
+				Assert.AreNotEqual(0, runningCount, "record count is wrong"); //but we can get it another way
 
-                var count2 = dataSource.From(EmployeeTableName, new { Title = key }).AsCount().Execute();
-                Assert.AreEqual(1000, count2);
-            }
-            finally
-            {
-                Release(dataSource);
-            }
-        }
+				var count2 = dataSource.From(EmployeeTableName, new { Title = key }).AsCount().Execute();
+				Assert.AreEqual(1000, count2);
+			}
+			finally
+			{
+				Release(dataSource);
+			}
+		}
 
 #endif
-    }
+	}
 }

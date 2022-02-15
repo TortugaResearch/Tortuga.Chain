@@ -1,11 +1,10 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Tortuga.Chain.SqlServer;
 
 namespace Tests.Core
 {
-    [TestClass]
-    public class ObjectNameTests : TestBase
-    {
+	[TestClass]
+	public class ObjectNameTests : TestBase
+	{
 #if SQL_SERVER_SDS || SQL_SERVER_MDS || SQL_SERVER_OLEDB
 
         [DataTestMethod]
@@ -32,5 +31,5 @@ namespace Tests.Core
         }
 
 #endif
-    }
+	}
 }
