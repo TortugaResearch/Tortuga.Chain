@@ -1,43 +1,39 @@
 using Microsoft.Extensions.Configuration;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Npgsql;
-using System;
-using System.Linq;
-using System.Threading;
 
 namespace Tests
 {
-    [TestClass]
-    public static class Setup
-    {
-        static int s_RunOnce;
+	[TestClass]
+	public static class Setup
+	{
+		static int s_RunOnce;
 
-        [AssemblyCleanup]
-        public static void AssemblyCleanup()
-        {
-        }
+		[AssemblyCleanup]
+		public static void AssemblyCleanup()
+		{
+		}
 
-        [AssemblyInitialize]
-        public static void AssemblyInit(TestContext context)
-        {
-            TestBase.SetupTestBase();
-        }
+		[AssemblyInitialize]
+		public static void AssemblyInit(TestContext context)
+		{
+			TestBase.SetupTestBase();
+		}
 
-        public static void CreateDatabase()
-        {
-            if (Interlocked.CompareExchange(ref s_RunOnce, 1, 0) == 1)
-                return;
+		public static void CreateDatabase()
+		{
+			if (Interlocked.CompareExchange(ref s_RunOnce, 1, 0) == 1)
+				return;
 
-            var configuration = new ConfigurationBuilder().SetBasePath(AppContext.BaseDirectory).AddJsonFile("appsettings.json").Build();
+			var configuration = new ConfigurationBuilder().SetBasePath(AppContext.BaseDirectory).AddJsonFile("appsettings.json").Build();
 
-            var connectionString = configuration.GetSection("ConnectionStrings").GetChildren().First().Value;
+			var connectionString = configuration.GetSection("ConnectionStrings").GetChildren().First().Value;
 
-            using (var con = new NpgsqlConnection(connectionString))
-            {
-                con.Open();
-                string sql1 = @"DROP SCHEMA IF Exists Sales Cascade; DROP SCHEMA IF Exists hr Cascade";
+			using (var con = new NpgsqlConnection(connectionString))
+			{
+				con.Open();
+				string sql1 = @"DROP SCHEMA IF Exists Sales Cascade; DROP SCHEMA IF Exists hr Cascade";
 
-                string sql = @"
+				string sql = @"
 DROP FUNCTION IF EXISTS hr.EmployeeCount(INTEGER);
 DROP FUNCTION IF EXISTS Sales.CustomersByState(char(2));
 DROP FUNCTION IF EXISTS Sales.CustomerWithOrdersByState(char(2));
@@ -48,7 +44,7 @@ DROP TABLE IF EXISTS hr.employee;
 DROP TABLE IF EXISTS public.employee;
 DROP SCHEMA IF EXISTS hr;";
 
-                string sql2 = @"
+				string sql2 = @"
 CREATE SCHEMA hr;
 CREATE TABLE hr.employee
 (
@@ -65,9 +61,9 @@ CREATE TABLE hr.employee
     EmployeeId VARCHAR(50) NOT NULL
 )";
 
-                string index = @"CREATE UNIQUE INDEX UX_Employee_EmployeeId ON hr.employee(EmployeeId);";
+				string index = @"CREATE UNIQUE INDEX UX_Employee_EmployeeId ON hr.employee(EmployeeId);";
 
-                string sql2b = @"
+				string sql2b = @"
 CREATE TABLE public.employee
 (
 	EmployeeKey SERIAL PRIMARY KEY,
@@ -82,7 +78,7 @@ CREATE TABLE public.employee
 	UpdatedDate TIMESTAMP NULL
 )";
 
-                string sql3 = @"
+				string sql3 = @"
 CREATE SCHEMA sales;
 CREATE TABLE sales.customer
 (
@@ -101,7 +97,7 @@ CREATE TABLE sales.customer
 	DeletedByKey INTEGER NULL
 )";
 
-                string viewSql = @"CREATE VIEW HR.EmployeeWithManager
+				string viewSql = @"CREATE VIEW HR.EmployeeWithManager
 AS
 SELECT  e.EmployeeKey ,
 		e.FirstName ,
@@ -127,14 +123,14 @@ SELECT  e.EmployeeKey ,
 FROM    HR.Employee e
 		LEFT JOIN HR.Employee m ON m.EmployeeKey = e.ManagerKey;";
 
-                var orderSql = @"CREATE TABLE sales.order
+				var orderSql = @"CREATE TABLE sales.order
 (
 	OrderKey SERIAL PRIMARY KEY,
 	CustomerKey INT NOT NULL References Sales.Customer(CustomerKey),
 	OrderDate TIMESTAMP NOT NULL
 );";
 
-                var function1 = @"CREATE FUNCTION Sales.CustomersByState ( param_state CHAR(2) ) RETURNS TABLE
+				var function1 = @"CREATE FUNCTION Sales.CustomersByState ( param_state CHAR(2) ) RETURNS TABLE
     (
       CustomerKey INT,
       FullName VARCHAR(150) ,
@@ -166,7 +162,7 @@ FROM    HR.Employee e
     $$ LANGUAGE plpgsql;
 ";
 
-                var proc1 = @"CREATE FUNCTION Sales.CustomerWithOrdersByState(param_state CHAR(2)) RETURNS SETOF refcursor AS $$
+				var proc1 = @"CREATE FUNCTION Sales.CustomerWithOrdersByState(param_state CHAR(2)) RETURNS SETOF refcursor AS $$
     DECLARE
       ref1 refcursor;           -- Declare cursor variables
       ref2 refcursor;
@@ -197,7 +193,7 @@ FROM    HR.Employee e
     $$ LANGUAGE plpgsql;
 ";
 
-                var scalarFunc = @"CREATE OR REPLACE FUNCTION hr.EmployeeCount(p_managerKey integer) RETURNS integer AS $$
+				var scalarFunc = @"CREATE OR REPLACE FUNCTION hr.EmployeeCount(p_managerKey integer) RETURNS integer AS $$
         DECLARE
 		result INTEGER;
         BEGIN
@@ -214,39 +210,39 @@ FROM    HR.Employee e
         END;
 $$ LANGUAGE plpgsql;";
 
-                using (NpgsqlCommand cmd = new NpgsqlCommand(sql, con))
-                    cmd.ExecuteNonQuery();
+				using (NpgsqlCommand cmd = new NpgsqlCommand(sql, con))
+					cmd.ExecuteNonQuery();
 
-                using (NpgsqlCommand cmd = new NpgsqlCommand(sql1, con))
-                    cmd.ExecuteNonQuery();
+				using (NpgsqlCommand cmd = new NpgsqlCommand(sql1, con))
+					cmd.ExecuteNonQuery();
 
-                using (NpgsqlCommand cmd = new NpgsqlCommand(sql2, con))
-                    cmd.ExecuteNonQuery();
+				using (NpgsqlCommand cmd = new NpgsqlCommand(sql2, con))
+					cmd.ExecuteNonQuery();
 
-                using (NpgsqlCommand cmd = new NpgsqlCommand(index, con))
-                    cmd.ExecuteNonQuery();
+				using (NpgsqlCommand cmd = new NpgsqlCommand(index, con))
+					cmd.ExecuteNonQuery();
 
-                using (NpgsqlCommand cmd = new NpgsqlCommand(sql2b, con))
-                    cmd.ExecuteNonQuery();
+				using (NpgsqlCommand cmd = new NpgsqlCommand(sql2b, con))
+					cmd.ExecuteNonQuery();
 
-                using (NpgsqlCommand cmd = new NpgsqlCommand(sql3, con))
-                    cmd.ExecuteNonQuery();
+				using (NpgsqlCommand cmd = new NpgsqlCommand(sql3, con))
+					cmd.ExecuteNonQuery();
 
-                using (NpgsqlCommand cmd = new NpgsqlCommand(viewSql, con))
-                    cmd.ExecuteNonQuery();
+				using (NpgsqlCommand cmd = new NpgsqlCommand(viewSql, con))
+					cmd.ExecuteNonQuery();
 
-                using (NpgsqlCommand cmd = new NpgsqlCommand(orderSql, con))
-                    cmd.ExecuteNonQuery();
+				using (NpgsqlCommand cmd = new NpgsqlCommand(orderSql, con))
+					cmd.ExecuteNonQuery();
 
-                using (NpgsqlCommand cmd = new NpgsqlCommand(function1, con))
-                    cmd.ExecuteNonQuery();
+				using (NpgsqlCommand cmd = new NpgsqlCommand(function1, con))
+					cmd.ExecuteNonQuery();
 
-                using (NpgsqlCommand cmd = new NpgsqlCommand(proc1, con))
-                    cmd.ExecuteNonQuery();
+				using (NpgsqlCommand cmd = new NpgsqlCommand(proc1, con))
+					cmd.ExecuteNonQuery();
 
-                using (NpgsqlCommand cmd = new NpgsqlCommand(scalarFunc, con))
-                    cmd.ExecuteNonQuery();
-            }
-        }
-    }
+				using (NpgsqlCommand cmd = new NpgsqlCommand(scalarFunc, con))
+					cmd.ExecuteNonQuery();
+			}
+		}
+	}
 }

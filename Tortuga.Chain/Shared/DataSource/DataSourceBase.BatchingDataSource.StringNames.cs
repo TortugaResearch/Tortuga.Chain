@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-
+﻿
 #if SQL_SERVER_SDS
 
 using AbstractCommand = System.Data.SqlClient.SqlCommand;
@@ -34,9 +33,9 @@ using InsertBatchResult = Tortuga.Chain.CommandBuilders.DbCommandBuilder<System.
 #elif MYSQL
 
 using AbstractCommand = MySqlConnector.MySqlCommand;
-using AbstractParameter = MySqlConnector.MySqlParameter;
-using AbstractObjectName = Tortuga.Chain.MySql.MySqlObjectName;
 using AbstractLimitOption = Tortuga.Chain.MySqlLimitOption;
+using AbstractObjectName = Tortuga.Chain.MySql.MySqlObjectName;
+using AbstractParameter = MySqlConnector.MySqlParameter;
 
 #elif POSTGRESQL
 
@@ -80,8 +79,8 @@ namespace Tortuga.Chain.SQLite
 
 namespace Tortuga.Chain.MySql
 {
-    partial class MySqlDataSourceBase
-    {
+	partial class MySqlDataSourceBase
+	{
 
 #elif POSTGRESQL
 
@@ -116,5 +115,5 @@ namespace Tortuga.Chain.Access
         }
 
 #endif
-    }
+	}
 }
