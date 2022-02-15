@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Data;
+﻿using System.Collections.Immutable;
 using System.Data.Common;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Tortuga.Chain.CommandBuilders;
 
 namespace Tortuga.Chain.Materializers
@@ -54,17 +48,7 @@ namespace Tortuga.Chain.Materializers
 
 		}
 
-		///// <summary>
-		///// Returns the list of columns the materializer would like to have.
-		///// </summary>
-		///// <returns></returns>
-		//public override IReadOnlyList<string> DesiredColumns()
-		//{
-		//	if (Constructor == null)
-		//		return ObjectMetadata.ColumnsFor;
 
-		//	return Constructor.ParameterNames;
-		//}
 
 		public override ImmutableDictionary<TKey, TObject> Execute(object? state = null)
 		{

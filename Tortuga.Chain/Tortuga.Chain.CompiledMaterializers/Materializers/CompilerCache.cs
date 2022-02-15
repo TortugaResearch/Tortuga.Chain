@@ -1,5 +1,4 @@
 using CSScriptLib;
-using System;
 using System.Collections.Concurrent;
 
 namespace Tortuga.Chain.Materializers

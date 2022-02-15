@@ -2,18 +2,18 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Tests
 {
-    [TestClass]
-    public static class Setup
-    {
-        [AssemblyCleanup]
-        public static void AssemblyCleanup()
-        {
-        }
+	[TestClass]
+	public static class Setup
+	{
+		[AssemblyCleanup]
+		public static void AssemblyCleanup()
+		{
+		}
 
-        [AssemblyInitialize]
-        public static void AssemblyInit(TestContext context)
-        {
-            TestBase.SetupTestBase();
-        }
-    }
+		[AssemblyInitialize]
+		public static void AssemblyInit(TestContext context)
+		{
+			TestBase.SetupTestBase();
+		}
+	}
 }

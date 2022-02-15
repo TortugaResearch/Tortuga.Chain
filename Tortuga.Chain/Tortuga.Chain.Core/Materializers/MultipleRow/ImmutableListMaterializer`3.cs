@@ -1,8 +1,6 @@
 using System.Collections.Immutable;
 using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
-using System.Threading;
-using System.Threading.Tasks;
 using Tortuga.Chain.CommandBuilders;
 
 namespace Tortuga.Chain.Materializers

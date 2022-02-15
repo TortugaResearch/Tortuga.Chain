@@ -1,7 +1,5 @@
 ﻿using Tortuga.Chain.DataSources;
 using System.Data.Common;
-using System.Data;
-using System.Threading.Tasks;
 using System.Diagnostics.CodeAnalysis;
 
 #if SQL_SERVER_SDS
@@ -59,8 +57,8 @@ namespace Tortuga.Chain
 
 namespace Tortuga.Chain
 {
-    partial class MySqlDataSource : IRootDataSource
-    {
+	partial class MySqlDataSource : IRootDataSource
+	{
 
 #elif POSTGRESQL
 
@@ -77,32 +75,32 @@ namespace Tortuga.Chain
     {
 
 #endif
-        IOpenDataSource IRootDataSource.CreateOpenDataSource() => CreateOpenDataSource();
+		IOpenDataSource IRootDataSource.CreateOpenDataSource() => CreateOpenDataSource();
 
-        IOpenDataSource IRootDataSource.CreateOpenDataSource(DbConnection connection, DbTransaction? transaction)
-        {
-            return CreateOpenDataSource((AbstractConnection)connection, (AbstractTransaction?)transaction);
-        }
+		IOpenDataSource IRootDataSource.CreateOpenDataSource(DbConnection connection, DbTransaction? transaction)
+		{
+			return CreateOpenDataSource((AbstractConnection)connection, (AbstractTransaction?)transaction);
+		}
 
-        IOpenDataSource IRootDataSource.CreateOpenDataSource(IDbConnection connection, IDbTransaction? transaction)
-        {
-            return CreateOpenDataSource((AbstractConnection)connection, (AbstractTransaction?)transaction);
-        }
+		IOpenDataSource IRootDataSource.CreateOpenDataSource(IDbConnection connection, IDbTransaction? transaction)
+		{
+			return CreateOpenDataSource((AbstractConnection)connection, (AbstractTransaction?)transaction);
+		}
 
-        ITransactionalDataSource IRootDataSource.BeginTransaction()
-        {
-            return BeginTransaction();
-        }
+		ITransactionalDataSource IRootDataSource.BeginTransaction()
+		{
+			return BeginTransaction();
+		}
 
-        async Task<ITransactionalDataSource> IRootDataSource.BeginTransactionAsync()
-        {
-            return await BeginTransactionAsync().ConfigureAwait(false);
-        }
+		async Task<ITransactionalDataSource> IRootDataSource.BeginTransactionAsync()
+		{
+			return await BeginTransactionAsync().ConfigureAwait(false);
+		}
 
-        [SuppressMessage("Design", "CA1033")]
-        DbConnection IRootDataSource.CreateConnection() => CreateConnection();
+		[SuppressMessage("Design", "CA1033")]
+		DbConnection IRootDataSource.CreateConnection() => CreateConnection();
 
-        [SuppressMessage("Design", "CA1033")]
-        async Task<DbConnection> IRootDataSource.CreateConnectionAsync() => await CreateConnectionAsync().ConfigureAwait(false);
-    }
+		[SuppressMessage("Design", "CA1033")]
+		async Task<DbConnection> IRootDataSource.CreateConnectionAsync() => await CreateConnectionAsync().ConfigureAwait(false);
+	}
 }

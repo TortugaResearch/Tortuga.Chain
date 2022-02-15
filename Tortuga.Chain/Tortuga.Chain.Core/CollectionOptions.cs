@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Tortuga.Chain
+﻿namespace Tortuga.Chain
 {
 	/// <summary>
 	/// Indicates how the collection will be generated from a result set.
