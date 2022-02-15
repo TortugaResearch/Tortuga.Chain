@@ -2,12 +2,12 @@
 
 namespace Tests.Models
 {
-    /// <summary>
-    /// This is used to test immutable object constructors
-    /// </summary>
-    [Table("Employee", Schema = "HR")]
-    public class EmployeeLookup
-    {
+	/// <summary>
+	/// This is used to test immutable object constructors
+	/// </summary>
+	[Table("Employee", Schema = "HR")]
+	public class EmployeeLookup
+	{
 #if SQLITE
 
         public EmployeeLookup(long employeeKey, string firstName, string lastName)
@@ -19,12 +19,12 @@ namespace Tests.Models
 
 #elif MYSQL
 
-        public EmployeeLookup(ulong employeeKey, string firstName, string lastName)
-        {
-            EmployeeKey = (int)employeeKey;
-            FirstName = firstName;
-            LastName = lastName;
-        }
+		public EmployeeLookup(ulong employeeKey, string firstName, string lastName)
+		{
+			EmployeeKey = (int)employeeKey;
+			FirstName = firstName;
+			LastName = lastName;
+		}
 
 #else
 
@@ -37,8 +37,8 @@ namespace Tests.Models
 
 #endif
 
-        public int EmployeeKey { get; }
-        public string FirstName { get; }
-        public string LastName { get; }
-    }
+		public int EmployeeKey { get; }
+		public string FirstName { get; }
+		public string LastName { get; }
+	}
 }
