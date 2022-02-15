@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Tortuga.Chain
+﻿namespace Tortuga.Chain
 {
 	/// <summary>
 	/// Options for populating dictionaries.

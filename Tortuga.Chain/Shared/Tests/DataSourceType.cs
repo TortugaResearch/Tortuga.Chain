@@ -1,17 +1,17 @@
 namespace Tests
 {
-    public enum DataSourceGroup
-    {
-        Primary,
-        All,
-        AllNormalOnly
-    }
+	public enum DataSourceGroup
+	{
+		Primary,
+		All,
+		AllNormalOnly
+	}
 
-    public enum DataSourceType
-    {
-        Normal,
-        Transactional,
-        Open,
-        Strict
-    }
+	public enum DataSourceType
+	{
+		Normal,
+		Transactional,
+		Open,
+		Strict
+	}
 }
