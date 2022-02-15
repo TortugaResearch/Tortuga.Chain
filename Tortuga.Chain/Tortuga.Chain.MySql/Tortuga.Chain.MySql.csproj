@@ -56,7 +56,7 @@
 	<PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
 		<DefineConstants>MYSQL</DefineConstants>
 	</PropertyGroup>
-	
+
 	<ItemGroup Condition="'$(Configuration)'=='Debug'">
 		<ProjectReference Include="..\Tortuga.Chain.Core\Tortuga.Chain.Core.csproj" />
 	</ItemGroup>
@@ -66,14 +66,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Include="..\Shared\GlobalUsing.cs" Link="GlobalUsing.cs" />
+		<Compile Include="..\Shared\GlobalUsing.cs" Link="GlobalUsing.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="5.0.3">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
 		<PackageReference Include="MySqlConnector" Version="1.3.7" />
 	</ItemGroup>
 
