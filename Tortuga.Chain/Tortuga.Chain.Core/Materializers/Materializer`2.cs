@@ -29,6 +29,13 @@ namespace Tortuga.Chain.Materializers
 		/// <value>The command builder.</value>
 		protected DbCommandBuilder<TCommand, TParameter> CommandBuilder { get; }
 
+
+		/// <summary>
+		/// Gets the command behavior to be used by materializers.
+		/// </summary>
+		/// <remarks>This value is calculated from the CommandBuilder.</remarks>
+		protected CommandBehavior CommandBehavior => CommandBuilder.SequentialAccessMode ? CommandBehavior.SequentialAccess : CommandBehavior.Default;
+
 		/// <summary>
 		/// Returns the command text (usually SQL) without executing it.
 		/// </summary>

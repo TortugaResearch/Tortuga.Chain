@@ -23,6 +23,7 @@ namespace Tortuga.Chain.DataSources
 			{
 				DefaultCommandTimeout = settings.DefaultCommandTimeout;
 				StrictMode = settings.StrictMode ?? false;
+				SequentialAccessMode = settings.SequentialAccessMode ?? false;
 				SuppressGlobalEvents = settings.SuppressGlobalEvents ?? false;
 			}
 		}
@@ -106,10 +107,20 @@ namespace Tortuga.Chain.DataSources
 		public string? Name { get; protected set; }
 
 		/// <summary>
-		/// Gets or sets a value indicating whether strict mode is enabled.
+		/// Gets a value indicating whether strict mode is enabled.
 		/// </summary>
 		/// <remarks>Strict mode requires all properties that don't represent columns to be marked with the NotMapped attribute.</remarks>
 		public bool StrictMode { get; }
+
+		/// <summary>
+		/// Gets a value indicating whether to use CommandBehavior.SequentialAccess.
+		/// </summary>
+		/// <value>If <c>true</c>, this data source will not honor global event handlers.</value>
+		/// <remarks>
+		/// Disable for general database access. Enable when working with very large objects. 
+		/// For more information see https://docs.microsoft.com/en-us/archive/blogs/adonet/using-sqldatareaders-new-async-methods-in-net-4-5
+		/// </remarks>
+		public bool SequentialAccessMode { get; }
 
 		/// <summary>
 		/// Gets or sets a value indicating whether to suppress global events.

@@ -16,7 +16,7 @@ namespace Tortuga.Chain.PostgreSql
 		readonly NpgsqlConnection m_Connection;
 		readonly NpgsqlTransaction? m_Transaction;
 
-		internal PostgreSqlOpenDataSource(PostgreSqlDataSource dataSource, NpgsqlConnection connection, NpgsqlTransaction? transaction) : base(new PostgreSqlDataSourceSettings() { DefaultCommandTimeout = dataSource.DefaultCommandTimeout, StrictMode = dataSource.StrictMode, SuppressGlobalEvents = dataSource.SuppressGlobalEvents })
+		internal PostgreSqlOpenDataSource(PostgreSqlDataSource dataSource, NpgsqlConnection connection, NpgsqlTransaction? transaction) : base(new PostgreSqlDataSourceSettings(dataSource))
 		{
 			if (connection == null)
 				throw new ArgumentNullException(nameof(connection), $"{nameof(connection)} is null.");

@@ -14,6 +14,13 @@ namespace Tortuga.Chain.CommandBuilders
 		/// <remarks>Strict mode requires all properties that don't represent columns to be marked with the NotMapped attribute.</remarks>
 		internal protected bool StrictMode { get; internal set; }
 
+
+		/// <summary>
+		/// Gets or sets a value indicating whether or not to use CommandBehavior.SequentialAccess.
+		/// </summary>
+		internal protected bool SequentialAccessMode { get; internal set; }
+
+
 		/// <summary>
 		/// Indicates this operation has no result set.
 		/// </summary>

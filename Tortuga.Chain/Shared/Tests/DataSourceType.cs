@@ -12,6 +12,7 @@ namespace Tests
 		Normal,
 		Transactional,
 		Open,
-		Strict
+		Strict,
+		SequentialAccess
 	}
 }

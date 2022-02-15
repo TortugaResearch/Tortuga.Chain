@@ -961,7 +961,7 @@ WHERE	s.name = @Schema AND t.name = @Name AND t.is_table_type = 0;";
 				using (var cmd = new SqlCommand(ColumnSql, con))
 				{
 					cmd.Parameters.AddWithValue("@ObjectId", objectId);
-					using (var reader = cmd.ExecuteReader(/*CommandBehavior.SequentialAccess*/))
+					using (var reader = cmd.ExecuteReader())
 					{
 						while (reader.Read())
 						{

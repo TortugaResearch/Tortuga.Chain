@@ -535,6 +535,7 @@ namespace Tortuga.Chain
 				DefaultCommandTimeout = settings?.DefaultCommandTimeout ?? DefaultCommandTimeout,
 				SuppressGlobalEvents = settings?.SuppressGlobalEvents ?? SuppressGlobalEvents,
 				StrictMode = settings?.StrictMode ?? StrictMode,
+				SequentialAccessMode = settings?.SequentialAccessMode ?? SequentialAccessMode,
 				XactAbort = settings?.XactAbort ?? XactAbort,
 				ArithAbort = settings?.ArithAbort ?? ArithAbort
 			};

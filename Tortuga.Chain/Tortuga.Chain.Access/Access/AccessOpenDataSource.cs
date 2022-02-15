@@ -17,7 +17,7 @@ namespace Tortuga.Chain.Access
 		readonly OleDbConnection m_Connection;
 		readonly OleDbTransaction? m_Transaction;
 
-		internal AccessOpenDataSource(AccessDataSource dataSource, OleDbConnection connection, OleDbTransaction? transaction) : base(new AccessDataSourceSettings() { DefaultCommandTimeout = dataSource.DefaultCommandTimeout, StrictMode = dataSource.StrictMode, SuppressGlobalEvents = dataSource.SuppressGlobalEvents })
+		internal AccessOpenDataSource(AccessDataSource dataSource, OleDbConnection connection, OleDbTransaction? transaction) : base(new AccessDataSourceSettings(dataSource))
 		{
 			if (connection == null)
 				throw new ArgumentNullException(nameof(connection), $"{nameof(connection)} is null.");

@@ -25,7 +25,7 @@ namespace Tortuga.Chain.SqlServer
 		readonly SqlConnection m_Connection;
 		readonly SqlTransaction? m_Transaction;
 
-		internal SqlServerOpenDataSource(SqlServerDataSource dataSource, SqlConnection connection, SqlTransaction? transaction) : base(new SqlServerDataSourceSettings() { DefaultCommandTimeout = dataSource.DefaultCommandTimeout, StrictMode = dataSource.StrictMode, SuppressGlobalEvents = dataSource.SuppressGlobalEvents })
+		internal SqlServerOpenDataSource(SqlServerDataSource dataSource, SqlConnection connection, SqlTransaction? transaction) : base(new SqlServerDataSourceSettings(dataSource))
 		{
 			if (connection == null)
 				throw new ArgumentNullException(nameof(connection), $"{nameof(connection)} is null.");

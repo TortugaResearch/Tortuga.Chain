@@ -203,7 +203,7 @@ namespace Tortuga.Chain.MySql
 				con.Open();
 				using (var cmd = new MySqlCommand(sql, con))
 				{
-					using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess))
+					using (var reader = cmd.ExecuteReader())
 					{
 						while (reader.Read())
 						{
@@ -228,7 +228,7 @@ namespace Tortuga.Chain.MySql
 				con.Open();
 				using (var cmd = new MySqlCommand(sql, con))
 				{
-					using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess))
+					using (var reader = cmd.ExecuteReader())
 					{
 						while (reader.Read())
 						{
@@ -253,7 +253,7 @@ namespace Tortuga.Chain.MySql
 				con.Open();
 				using (var cmd = new MySqlCommand(tableList, con))
 				{
-					using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess))
+					using (var reader = cmd.ExecuteReader())
 					{
 						while (reader.Read())
 						{
@@ -278,7 +278,7 @@ namespace Tortuga.Chain.MySql
 				con.Open();
 				using (var cmd = new MySqlCommand(tableList, con))
 				{
-					using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess))
+					using (var reader = cmd.ExecuteReader())
 					{
 						while (reader.Read())
 						{
@@ -572,7 +572,7 @@ namespace Tortuga.Chain.MySql
 					cmd.Parameters.AddWithValue("@Schema", schema);
 					cmd.Parameters.AddWithValue("@Name", tableName);
 
-					using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess))
+					using (var reader = cmd.ExecuteReader())
 					{
 						while (reader.Read())
 						{
@@ -756,7 +756,7 @@ namespace Tortuga.Chain.MySql
 				{
 					cmd.Parameters.AddWithValue("@Schema", tableName.Schema ?? DefaultSchema);
 					cmd.Parameters.AddWithValue("@Name", tableName.Name);
-					using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess))
+					using (var reader = cmd.ExecuteReader())
 					{
 						if (!reader.Read())
 							throw new MissingObjectException($"Could not find table or view {tableName}");

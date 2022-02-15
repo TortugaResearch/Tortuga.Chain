@@ -53,7 +53,7 @@ namespace Tortuga.Chain.Access
 		/// <param name="transaction">The transaction.</param>
 		/// <exception cref="System.ArgumentNullException">
 		/// </exception>
-		internal AccessTransactionalDataSource(AccessDataSource dataSource, bool forwardEvents, OleDbConnection connection, OleDbTransaction transaction) : base(new AccessDataSourceSettings() { DefaultCommandTimeout = dataSource.DefaultCommandTimeout, StrictMode = dataSource.StrictMode, SuppressGlobalEvents = dataSource.SuppressGlobalEvents || forwardEvents })
+		internal AccessTransactionalDataSource(AccessDataSource dataSource, bool forwardEvents, OleDbConnection connection, OleDbTransaction transaction) : base(new AccessDataSourceSettings(dataSource, forwardEvents))
 		{
 			if (dataSource == null)
 				throw new ArgumentNullException(nameof(dataSource), $"{nameof(dataSource)} is null.");
