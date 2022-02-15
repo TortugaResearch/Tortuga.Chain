@@ -1,7 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
+﻿
 #if SQL_SERVER_SDS || SQL_SERVER_MDS
 
 using Tortuga.Chain.SqlServer;

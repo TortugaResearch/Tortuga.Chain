@@ -1,49 +1,44 @@
 using Microsoft.Extensions.Configuration;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 using System.Data.SQLite;
-using System.IO;
-using System.Linq;
-using System.Threading;
 
 namespace Tests
 {
-    [TestClass]
-    public static class Setup
-    {
-        const string databaseFileName = "SQLiteTestDatabaseX.sqlite";
-        static int s_RunOnce;
+	[TestClass]
+	public static class Setup
+	{
+		const string databaseFileName = "SQLiteTestDatabaseX.sqlite";
+		static int s_RunOnce;
 
-        [AssemblyCleanup]
-        public static void AssemblyCleanup()
-        {
-            File.Delete(databaseFileName);
-        }
+		[AssemblyCleanup]
+		public static void AssemblyCleanup()
+		{
+			File.Delete(databaseFileName);
+		}
 
-        [AssemblyInitialize]
-        public static void AssemblyInit(TestContext context)
-        {
-            TestBase.SetupTestBase();
-        }
+		[AssemblyInitialize]
+		public static void AssemblyInit(TestContext context)
+		{
+			TestBase.SetupTestBase();
+		}
 
-        public static void CreateDatabase()
-        {
-            if (Interlocked.CompareExchange(ref s_RunOnce, 1, 0) == 1)
-                return;
+		public static void CreateDatabase()
+		{
+			if (Interlocked.CompareExchange(ref s_RunOnce, 1, 0) == 1)
+				return;
 
-            var configuration = new ConfigurationBuilder().SetBasePath(AppContext.BaseDirectory).AddJsonFile("appsettings.json").Build();
+			var configuration = new ConfigurationBuilder().SetBasePath(AppContext.BaseDirectory).AddJsonFile("appsettings.json").Build();
 
-            var connectionString = configuration.GetSection("ConnectionStrings").GetChildren().First().Value;
+			var connectionString = configuration.GetSection("ConnectionStrings").GetChildren().First().Value;
 
-            File.Delete(databaseFileName);
+			File.Delete(databaseFileName);
 
-            SQLiteConnection.CreateFile(databaseFileName);
-            var dbConnection = new SQLiteConnection("Data Source=SQLiteTestDatabaseX.sqlite;");
-            using (dbConnection)
-            {
-                dbConnection.Open();
+			SQLiteConnection.CreateFile(databaseFileName);
+			var dbConnection = new SQLiteConnection("Data Source=SQLiteTestDatabaseX.sqlite;");
+			using (dbConnection)
+			{
+				dbConnection.Open();
 
-                string sql = @"
+				string sql = @"
 CREATE TABLE Employee
 (
 	EmployeeKey INTEGER PRIMARY KEY,
@@ -59,9 +54,9 @@ CREATE TABLE Employee
     UpdatedDate DateTime NULL
 )";
 
-                string index = @"CREATE UNIQUE INDEX index_name ON Employee(EmployeeId);";
+				string index = @"CREATE UNIQUE INDEX index_name ON Employee(EmployeeId);";
 
-                string sql2 = @"CREATE TABLE Customer
+				string sql2 = @"CREATE TABLE Customer
 (
 	CustomerKey INTEGER PRIMARY KEY,
     FullName NVARCHAR(100) NULL,
@@ -78,7 +73,7 @@ CREATE TABLE Employee
 	DeletedByKey INTEGER NULL
 )";
 
-                string viewSql = @"CREATE VIEW EmployeeWithManager
+				string viewSql = @"CREATE VIEW EmployeeWithManager
 AS
 SELECT  e.EmployeeKey ,
         e.FirstName ,
@@ -104,33 +99,33 @@ SELECT  e.EmployeeKey ,
 FROM    Employee e
         LEFT JOIN Employee m ON m.EmployeeKey = e.ManagerKey;";
 
-                using (SQLiteCommand command = new SQLiteCommand(sql, dbConnection))
-                    command.ExecuteNonQuery();
+				using (SQLiteCommand command = new SQLiteCommand(sql, dbConnection))
+					command.ExecuteNonQuery();
 
-                using (SQLiteCommand command = new SQLiteCommand(index, dbConnection))
-                    command.ExecuteNonQuery();
+				using (SQLiteCommand command = new SQLiteCommand(index, dbConnection))
+					command.ExecuteNonQuery();
 
-                using (SQLiteCommand command = new SQLiteCommand(sql2, dbConnection))
-                    command.ExecuteNonQuery();
+				using (SQLiteCommand command = new SQLiteCommand(sql2, dbConnection))
+					command.ExecuteNonQuery();
 
-                using (SQLiteCommand command = new SQLiteCommand(viewSql, dbConnection))
-                    command.ExecuteNonQuery();
+				using (SQLiteCommand command = new SQLiteCommand(viewSql, dbConnection))
+					command.ExecuteNonQuery();
 
-                sql = @"INSERT INTO Employee ([EmployeeKey], [FirstName], [MiddleName], [LastName], [Title], [ManagerKey], [EmployeeId]) VALUES (@EmployeeKey, @FirstName, @MiddleName, @LastName, @Title, @ManagerKey, @EmployeeId); SELECT [EmployeeKey], [FirstName], [MiddleName], [LastName], [Title], [ManagerKey] FROM Employee WHERE ROWID = last_insert_rowid();";
+				sql = @"INSERT INTO Employee ([EmployeeKey], [FirstName], [MiddleName], [LastName], [Title], [ManagerKey], [EmployeeId]) VALUES (@EmployeeKey, @FirstName, @MiddleName, @LastName, @Title, @ManagerKey, @EmployeeId); SELECT [EmployeeKey], [FirstName], [MiddleName], [LastName], [Title], [ManagerKey] FROM Employee WHERE ROWID = last_insert_rowid();";
 
-                for (var i = 0; i < 10; i++)
-                    using (SQLiteCommand command = new SQLiteCommand(sql, dbConnection))
-                    {
-                        command.Parameters.AddWithValue("@EmployeeKey", DBNull.Value);
-                        command.Parameters.AddWithValue("@FirstName", "Tom");
-                        command.Parameters.AddWithValue("@MiddleName", DBNull.Value);
-                        command.Parameters.AddWithValue("@LastName", "Jones");
-                        command.Parameters.AddWithValue("@Title", "CEO");
-                        command.Parameters.AddWithValue("@ManagerKey", DBNull.Value);
-                        command.Parameters.AddWithValue("@EmployeeId", Guid.NewGuid().ToString());
-                        var key = command.ExecuteScalar();
-                    }
-            }
-        }
-    }
+				for (var i = 0; i < 10; i++)
+					using (SQLiteCommand command = new SQLiteCommand(sql, dbConnection))
+					{
+						command.Parameters.AddWithValue("@EmployeeKey", DBNull.Value);
+						command.Parameters.AddWithValue("@FirstName", "Tom");
+						command.Parameters.AddWithValue("@MiddleName", DBNull.Value);
+						command.Parameters.AddWithValue("@LastName", "Jones");
+						command.Parameters.AddWithValue("@Title", "CEO");
+						command.Parameters.AddWithValue("@ManagerKey", DBNull.Value);
+						command.Parameters.AddWithValue("@EmployeeId", Guid.NewGuid().ToString());
+						var key = command.ExecuteScalar();
+					}
+			}
+		}
+	}
 }

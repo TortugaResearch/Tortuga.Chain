@@ -22,7 +22,7 @@ namespace Tortuga.Chain.SQLite
 
 namespace Tortuga.Chain.MySql
 {
-    partial class MySqlDataSourceBase : IDataSource
+	partial class MySqlDataSourceBase : IDataSource
 
 #elif POSTGRESQL
 
@@ -37,10 +37,10 @@ namespace Tortuga.Chain.Access
     partial class AccessDataSourceBase : IDataSource
 
 #endif
-    {
-        IDatabaseMetadataCache IDataSource.DatabaseMetadata
-        {
-            get { return DatabaseMetadata; }
-        }
-    }
+	{
+		IDatabaseMetadataCache IDataSource.DatabaseMetadata
+		{
+			get { return DatabaseMetadata; }
+		}
+	}
 }

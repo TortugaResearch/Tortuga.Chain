@@ -35,6 +35,10 @@
     </Compile>
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Include="..\Shared\GlobalUsingForTests.cs" Link="GlobalUsingForTests.cs" />
+  </ItemGroup>
+
   <!--<ItemGroup>
     <COMReference Include="ADOX.dll">
       <Guid>00000600-0000-0010-8000-00aa006d2ea4</Guid>

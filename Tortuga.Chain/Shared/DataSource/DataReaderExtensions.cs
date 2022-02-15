@@ -302,18 +302,18 @@ namespace Tortuga.Chain.Metadata
 
 #if MYSQL
 
-        /// <summary>Gets the u int64.</summary>
-        /// <param name="dataReader">The data reader.</param>
-        /// <param name="columnName">Name of the column.</param>
-        /// <returns>System.UInt64.</returns>
-        public static ulong? GetUInt64OrNull(this MySqlDataReader dataReader, string columnName)
-        {
-            var ordinal = dataReader.GetOrdinal(columnName);
-            if (dataReader.IsDBNull(ordinal))
-                return null;
-            else
-                return dataReader.GetUInt64(ordinal);
-        }
+		/// <summary>Gets the u int64.</summary>
+		/// <param name="dataReader">The data reader.</param>
+		/// <param name="columnName">Name of the column.</param>
+		/// <returns>System.UInt64.</returns>
+		public static ulong? GetUInt64OrNull(this MySqlDataReader dataReader, string columnName)
+		{
+			var ordinal = dataReader.GetOrdinal(columnName);
+			if (dataReader.IsDBNull(ordinal))
+				return null;
+			else
+				return dataReader.GetUInt64(ordinal);
+		}
 
 #endif
 	}

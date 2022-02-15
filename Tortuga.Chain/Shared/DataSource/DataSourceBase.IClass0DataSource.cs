@@ -21,7 +21,7 @@ namespace Tortuga.Chain.SQLite
 
 namespace Tortuga.Chain.MySql
 {
-    partial class MySqlDataSourceBase : IClass0DataSource
+	partial class MySqlDataSourceBase : IClass0DataSource
 
 #elif POSTGRESQL
 
@@ -36,10 +36,10 @@ namespace Tortuga.Chain.Access
     partial class AccessDataSourceBase : IClass0DataSource
 
 #endif
-    {
-        IMultipleTableDbCommandBuilder IClass0DataSource.Sql(string sqlStatement, object argumentValue)
-        {
-            return OnSql(sqlStatement, argumentValue);
-        }
-    }
+	{
+		IMultipleTableDbCommandBuilder IClass0DataSource.Sql(string sqlStatement, object argumentValue)
+		{
+			return OnSql(sqlStatement, argumentValue);
+		}
+	}
 }
