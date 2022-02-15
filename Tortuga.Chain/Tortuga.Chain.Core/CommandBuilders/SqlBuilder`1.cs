@@ -1455,14 +1455,13 @@ namespace Tortuga.Chain.CommandBuilders
 
 					var mappedColumnName = property.MappedColumnName;
 
+					//Ignore unmapped columns
 					if (mappedColumnName == null)
 						continue;
 
-					if ((operationType == OperationTypes.Select || operationType == OperationTypes.SelectOrDelete) && !property.CanWrite)
-						continue; //We don't care about properties we can't write to during select operations.
-
-					if ((operationType == OperationTypes.Insert || operationType == OperationTypes.InsertOrUpdate || operationType == OperationTypes.Update) && !property.CanRead)
-						continue; //We don't care about properties we can't read from during insert/update operations.
+					//Ignore properties we can't read. (It's probably a protected property, not meant for data binding.)
+					if (!property.CanRead)
+						continue;
 
 					for (var i = 0; i < m_Entries.Length; i++)
 					{
