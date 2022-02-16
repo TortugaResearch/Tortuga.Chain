@@ -616,7 +616,7 @@ namespace Tests.CommandBuilders
 					var deletedRecord = dataSource.Delete(inserted).ToObject().Execute();
 					Assert.Fail($"Expected a {nameof(MappingException)}");
 				}
-				catch (MappingException ex) { }
+				catch (MappingException) { }
 
 			}
 			finally
