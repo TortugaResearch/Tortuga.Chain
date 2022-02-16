@@ -14,7 +14,7 @@ namespace Tests.CommandBuilders
 			try
 			{
 				var count = dataSource.GetTableApproximateCount(tableName).Execute();
-				Assert.IsTrue(count >= 0);
+				Assert.IsTrue(count >= 0, $"The actual value was {count}");
 			}
 			finally
 			{
