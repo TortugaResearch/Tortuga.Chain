@@ -9,7 +9,7 @@
 		<LangVersion>10.0</LangVersion>
 		<ProductName>Tortuga Chain</ProductName>
 		<Deterministic>true</Deterministic>
-
+		
 		<AssemblyVersion>3.5.0</AssemblyVersion>
 		<Version>3.5.0</Version>
 		<FileVersion>3.5.0.0</FileVersion>
@@ -63,10 +63,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="5.0.3">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
+		<Compile Include="..\Shared\GlobalUsing.cs" Link="GlobalUsing.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
 	</ItemGroup>
 

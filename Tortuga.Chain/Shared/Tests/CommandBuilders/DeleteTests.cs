@@ -1,7 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Linq;
-using Tests.Models;
+﻿using Tests.Models;
 using Tortuga.Chain;
 
 namespace Tests.CommandBuilders

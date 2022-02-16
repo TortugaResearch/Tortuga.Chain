@@ -69,10 +69,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="5.0.3">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
+    <Compile Include="..\Shared\GlobalUsing.cs" Link="GlobalUsing.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Nito.AsyncEx" Version="5.1.0" />
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.113.7" />
   </ItemGroup>

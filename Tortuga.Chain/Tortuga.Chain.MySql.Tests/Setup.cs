@@ -1,42 +1,38 @@
 using Microsoft.Extensions.Configuration;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MySqlConnector;
-using System;
-using System.Linq;
-using System.Threading;
 
 namespace Tests
 {
-    [TestClass]
-    public static class Setup
-    {
-        static int s_RunOnce;
+	[TestClass]
+	public static class Setup
+	{
+		static int s_RunOnce;
 
-        [AssemblyCleanup]
-        public static void AssemblyCleanup()
-        {
-        }
+		[AssemblyCleanup]
+		public static void AssemblyCleanup()
+		{
+		}
 
-        [AssemblyInitialize]
-        public static void AssemblyInit(TestContext context)
-        {
-            TestBase.SetupTestBase();
-        }
+		[AssemblyInitialize]
+		public static void AssemblyInit(TestContext context)
+		{
+			TestBase.SetupTestBase();
+		}
 
-        public static void CreateDatabase()
-        {
-            if (Interlocked.CompareExchange(ref s_RunOnce, 1, 0) == 1)
-                return;
+		public static void CreateDatabase()
+		{
+			if (Interlocked.CompareExchange(ref s_RunOnce, 1, 0) == 1)
+				return;
 
-            var configuration = new ConfigurationBuilder().SetBasePath(AppContext.BaseDirectory).AddJsonFile("appsettings.json").Build();
+			var configuration = new ConfigurationBuilder().SetBasePath(AppContext.BaseDirectory).AddJsonFile("appsettings.json").Build();
 
-            var connectionString = configuration.GetSection("ConnectionStrings").GetChildren().First().Value;
+			var connectionString = configuration.GetSection("ConnectionStrings").GetChildren().First().Value;
 
-            using (var con = new MySqlConnection(connectionString))
-            {
-                con.Open();
+			using (var con = new MySqlConnection(connectionString))
+			{
+				con.Open();
 
-                string sql = @"
+				string sql = @"
                 DROP VIEW IF EXISTS hr.EmployeeWithManager;
                 DROP TABLE IF EXISTS sales.order;
                 DROP TABLE IF EXISTS hr.employee;
@@ -57,9 +53,9 @@ namespace Tests
                     EmployeeId VARCHAR(50) NOT NULL
                 )";
 
-                string index = @"CREATE UNIQUE INDEX index_name ON hr.employee(EmployeeId);";
+				string index = @"CREATE UNIQUE INDEX index_name ON hr.employee(EmployeeId);";
 
-                string sql2 = @"
+				string sql2 = @"
                 DROP TABLE IF EXISTS sales.customer;
                 DROP SCHEMA IF EXISTS sales;
                 CREATE SCHEMA sales;
@@ -80,7 +76,7 @@ namespace Tests
                 	DeletedByKey INTEGER NULL
                 )";
 
-                string viewSql = @"CREATE VIEW HR.EmployeeWithManager
+				string viewSql = @"CREATE VIEW HR.EmployeeWithManager
                 AS
                 SELECT  e.EmployeeKey ,
                 		e.FirstName ,
@@ -106,14 +102,14 @@ namespace Tests
                 FROM    HR.Employee e
                 		LEFT JOIN HR.Employee m ON m.EmployeeKey = e.ManagerKey;";
 
-                var orderSql = @"CREATE TABLE sales.order
+				var orderSql = @"CREATE TABLE sales.order
                 (
                 	OrderKey SERIAL PRIMARY KEY,
                 	CustomerKey INT NOT NULL References Sales.Customer(CustomerKey),
                 	OrderDate TIMESTAMP NOT NULL
                 );";
 
-                string function1 = @"
+				string function1 = @"
 CREATE FUNCTION hr.EmployeeCount(p_managerKey integer) RETURNS integer
     READS SQL DATA
 BEGIN
@@ -131,7 +127,7 @@ BEGIN
 
 END; ";
 
-                string proc1 = @"
+				string proc1 = @"
 CREATE PROCEDURE Sales.CustomerWithOrdersByState
 (IN p_State CHAR(2))
 BEGIN
@@ -145,32 +141,32 @@ BEGIN
     WHERE   c.State = p_State;
 END;";
 
-                string bulkInserts = @"SET GLOBAL local_infile = 1;";
+				string bulkInserts = @"SET GLOBAL local_infile = 1;";
 
-                using (MySqlCommand cmd = new MySqlCommand(sql, con))
-                    cmd.ExecuteNonQuery();
+				using (MySqlCommand cmd = new MySqlCommand(sql, con))
+					cmd.ExecuteNonQuery();
 
-                using (MySqlCommand cmd = new MySqlCommand(index, con))
-                    cmd.ExecuteNonQuery();
+				using (MySqlCommand cmd = new MySqlCommand(index, con))
+					cmd.ExecuteNonQuery();
 
-                using (MySqlCommand cmd = new MySqlCommand(sql2, con))
-                    cmd.ExecuteNonQuery();
+				using (MySqlCommand cmd = new MySqlCommand(sql2, con))
+					cmd.ExecuteNonQuery();
 
-                using (MySqlCommand cmd = new MySqlCommand(viewSql, con))
-                    cmd.ExecuteNonQuery();
+				using (MySqlCommand cmd = new MySqlCommand(viewSql, con))
+					cmd.ExecuteNonQuery();
 
-                using (MySqlCommand cmd = new MySqlCommand(orderSql, con))
-                    cmd.ExecuteNonQuery();
+				using (MySqlCommand cmd = new MySqlCommand(orderSql, con))
+					cmd.ExecuteNonQuery();
 
-                using (MySqlCommand cmd = new MySqlCommand(function1, con))
-                    cmd.ExecuteNonQuery();
+				using (MySqlCommand cmd = new MySqlCommand(function1, con))
+					cmd.ExecuteNonQuery();
 
-                using (MySqlCommand cmd = new MySqlCommand(proc1, con))
-                    cmd.ExecuteNonQuery();
+				using (MySqlCommand cmd = new MySqlCommand(proc1, con))
+					cmd.ExecuteNonQuery();
 
-                using (MySqlCommand cmd = new MySqlCommand(bulkInserts, con))
-                    cmd.ExecuteNonQuery();
-            }
-        }
-    }
+				using (MySqlCommand cmd = new MySqlCommand(bulkInserts, con))
+					cmd.ExecuteNonQuery();
+			}
+		}
+	}
 }

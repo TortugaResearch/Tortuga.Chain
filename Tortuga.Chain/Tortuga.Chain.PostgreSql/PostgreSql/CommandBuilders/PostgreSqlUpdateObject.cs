@@ -1,5 +1,4 @@
 ﻿using Npgsql;
-using System;
 using System.Text;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;

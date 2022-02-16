@@ -1,9 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
+﻿using System.Diagnostics.CodeAnalysis;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Metadata;
-using System;
 
 #if SQL_SERVER_SDS
 
@@ -85,7 +82,7 @@ namespace Tortuga.Chain.SQLite
 
 namespace Tortuga.Chain.MySql
 {
-    partial class MySqlDataSourceBase
+	partial class MySqlDataSourceBase
 
 #elif POSTGRESQL
 
