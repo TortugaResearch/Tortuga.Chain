@@ -73,6 +73,13 @@ CREATE TABLE Employee
 	DeletedByKey INTEGER NULL
 )";
 
+
+				string sql3 = @"CREATE TABLE Location
+(
+	LocationKey INTEGER PRIMARY KEY,
+    LocationName NVARCHAR(100) NULL
+)";
+
 				string viewSql = @"CREATE VIEW EmployeeWithManager
 AS
 SELECT  e.EmployeeKey ,
@@ -106,6 +113,9 @@ FROM    Employee e
 					command.ExecuteNonQuery();
 
 				using (SQLiteCommand command = new SQLiteCommand(sql2, dbConnection))
+					command.ExecuteNonQuery();
+
+				using (SQLiteCommand command = new SQLiteCommand(sql3, dbConnection))
 					command.ExecuteNonQuery();
 
 				using (SQLiteCommand command = new SQLiteCommand(viewSql, dbConnection))

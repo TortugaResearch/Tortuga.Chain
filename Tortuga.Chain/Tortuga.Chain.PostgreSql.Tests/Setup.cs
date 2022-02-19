@@ -97,6 +97,13 @@ CREATE TABLE sales.customer
 	DeletedByKey INTEGER NULL
 )";
 
+				string sql4 = @"
+CREATE TABLE sales.location
+(
+	LocationKey SERIAL PRIMARY KEY,
+	LocationName VARCHAR(150) NULL
+)";
+
 				string viewSql = @"CREATE VIEW HR.EmployeeWithManager
 AS
 SELECT  e.EmployeeKey ,
@@ -226,6 +233,9 @@ $$ LANGUAGE plpgsql;";
 					cmd.ExecuteNonQuery();
 
 				using (NpgsqlCommand cmd = new NpgsqlCommand(sql3, con))
+					cmd.ExecuteNonQuery();
+
+				using (NpgsqlCommand cmd = new NpgsqlCommand(sql4, con))
 					cmd.ExecuteNonQuery();
 
 				using (NpgsqlCommand cmd = new NpgsqlCommand(viewSql, con))

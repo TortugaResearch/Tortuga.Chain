@@ -291,5 +291,13 @@ WHERE ns.nspname = @Schema AND tab.relname = @Name;";
 		/// Gets a table's row count.
 		/// </summary>
 		public ILink<long> GetTableApproximateCount<TObject>() => GetTableApproximateCount(DatabaseObjectAsTableOrView<TObject>(OperationType.Select).Name);
+
+
+		public partial ILink<int?> Truncate(PostgreSqlObjectName tableName)
+		{
+			//Verify the table name actually exists.
+			var table = DatabaseMetadata.GetTableOrView(tableName);
+			return Sql("TRUNCATE " + table.Name.ToQuotedString() + ";").AsNonQuery();
+		}
 	}
 }

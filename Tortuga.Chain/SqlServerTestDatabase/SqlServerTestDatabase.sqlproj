@@ -93,6 +93,7 @@
     <Build Include="dbo\TestSequence.sql" />
     <None Include="dbo\Employee.sql" />
     <None Include="Data\Employee.sql" />
+    <Build Include="Sales\Location.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="SqlServerTestDatabase.refactorlog" />
