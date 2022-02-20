@@ -1455,7 +1455,12 @@ namespace Tortuga.Chain.CommandBuilders
 
 					var mappedColumnName = property.MappedColumnName;
 
+					//Ignore unmapped columns
 					if (mappedColumnName == null)
+						continue;
+
+					//Ignore properties we can't read. (It's probably a protected property, not meant for data binding.)
+					if (!property.CanRead)
 						continue;
 
 					for (var i = 0; i < m_Entries.Length; i++)
