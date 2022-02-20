@@ -559,6 +559,7 @@ namespace Tests.CommandBuilders
 			}
 		}
 
+#if CLASS_2
 		[DataTestMethod, BasicData(DataSourceGroup.Primary)]
 		public void Truncate(string dataSourceName, DataSourceType mode)
 		{
@@ -577,6 +578,7 @@ namespace Tests.CommandBuilders
 				Release(dataSource);
 			}
 		}
+#endif
 	}
 
 	namespace HR

@@ -42,18 +42,18 @@
 	</ItemGroup>
 
 	<PropertyGroup Condition="'$(TargetFramework)' == 'net462'">
-		<DefineConstants>POSTGRESQL;NULL_MISSING</DefineConstants>
+		<DefineConstants>POSTGRESQL;NULL_MISSING;CLASS_1;CLASS_2;CLASS_3</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-		<DefineConstants>POSTGRESQL;NULL_MISSING</DefineConstants>
+		<DefineConstants>POSTGRESQL;NULL_MISSING;CLASS_1;CLASS_2;CLASS_3</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(TargetFramework)' == 'net5.0'">
-		<DefineConstants>POSTGRESQL;NULL_MISSING</DefineConstants>
+		<DefineConstants>POSTGRESQL;CLASS_1;CLASS_2;CLASS_3</DefineConstants>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
-		<DefineConstants>POSTGRESQL;NULL_MISSING</DefineConstants>
+		<DefineConstants>POSTGRESQL;CLASS_1;CLASS_2;CLASS_3</DefineConstants>
 	</PropertyGroup>
 
 	<ItemGroup Condition="'$(Configuration)'=='Debug'">

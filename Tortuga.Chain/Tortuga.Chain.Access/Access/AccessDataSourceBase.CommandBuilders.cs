@@ -184,12 +184,12 @@ namespace Tortuga.Chain.Access
 			return new AccessUpdateObject<TArgument>(this, tableName, argumentValue, options);
 		}
 
-		public partial ILink<int?> Truncate(AccessObjectName tableName)
-		{
-			//Verify the table name actually exists.
-			var table = DatabaseMetadata.GetTableOrView(tableName);
-			//Access doesn't support truncate, so we're using this as an alternative.
-			return Sql("DELETE FROM " + table.Name.ToQuotedString() + ";").AsNonQuery();
-		}
+		//public partial ILink<int?> Truncate(AccessObjectName tableName)
+		//{
+		//	//Verify the table name actually exists.
+		//	var table = DatabaseMetadata.GetTableOrView(tableName);
+		//	//Access doesn't support truncate, so we're using this as an alternative.
+		//	return Sql("DELETE FROM " + table.Name.ToQuotedString() + ";").AsNonQuery();
+		//}
 	}
 }
