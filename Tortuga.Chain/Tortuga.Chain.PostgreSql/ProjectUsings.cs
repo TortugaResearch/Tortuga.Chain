@@ -1,0 +1,12 @@
+﻿global using AbstractCommand = Npgsql.NpgsqlCommand;
+global using AbstractConnection = Npgsql.NpgsqlConnection;
+global using AbstractParameter = Npgsql.NpgsqlParameter;
+global using AbstractTransaction = Npgsql.NpgsqlTransaction;
+global using AbstractDbType = NpgsqlTypes.NpgsqlDbType;
+global using InsertBatchResult = Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter>;
+global using AbstractProcedureCall = Tortuga.Chain.PostgreSql.CommandBuilders.PostgreSqlProcedureCall;
+global using AbstractScalarFunction = Tortuga.Chain.PostgreSql.CommandBuilders.PostgreSqlScalarFunction;
+global using AbstractTableFunction = Tortuga.Chain.PostgreSql.CommandBuilders.PostgreSqlTableFunction;
+global using AbstractObjectName = Tortuga.Chain.PostgreSql.PostgreSqlObjectName;
+global using AbstractDataSource = Tortuga.Chain.PostgreSqlDataSource;
+global using AbstractLimitOption = Tortuga.Chain.PostgreSqlLimitOption;

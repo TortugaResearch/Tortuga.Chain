@@ -2,67 +2,16 @@
 
 using Tortuga.Chain.CommandBuilders;
 
-#if SQL_SERVER_SDS
-
-using AbstractCommand = System.Data.SqlClient.SqlCommand;
-using AbstractParameter = System.Data.SqlClient.SqlParameter;
-using AbstractObjectName = Tortuga.Chain.SqlServer.SqlServerObjectName;
-using AbstractLimitOption = Tortuga.Chain.SqlServerLimitOption;
-using AbstractProcedureCall = Tortuga.Chain.SqlServer.CommandBuilders.SqlServerProcedureCall;
-using AbstractScalarFunction = Tortuga.Chain.SqlServer.CommandBuilders.SqlServerScalarFunction;
-using AbstractTableFunction = Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableFunction;
-
-#elif SQL_SERVER_MDS
-
-using AbstractCommand = Microsoft.Data.SqlClient.SqlCommand;
-using AbstractParameter = Microsoft.Data.SqlClient.SqlParameter;
-using AbstractObjectName = Tortuga.Chain.SqlServer.SqlServerObjectName;
-using AbstractLimitOption = Tortuga.Chain.SqlServerLimitOption;
-using AbstractProcedureCall = Tortuga.Chain.SqlServer.CommandBuilders.SqlServerProcedureCall;
-using AbstractScalarFunction = Tortuga.Chain.SqlServer.CommandBuilders.SqlServerScalarFunction;
-using AbstractTableFunction = Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableFunction;
-
-#elif SQL_SERVER_OLEDB
-
-using AbstractCommand = System.Data.OleDb.OleDbCommand;
-using AbstractLimitOption = Tortuga.Chain.SqlServerLimitOption;
-using AbstractObjectName = Tortuga.Chain.SqlServer.SqlServerObjectName;
-using AbstractParameter = System.Data.OleDb.OleDbParameter;
-using AbstractProcedureCall = Tortuga.Chain.SqlServer.CommandBuilders.OleDbSqlServerProcedureCall;
-using AbstractScalarFunction = Tortuga.Chain.SqlServer.CommandBuilders.OleDbSqlServerScalarFunction;
-using AbstractTableFunction = Tortuga.Chain.SqlServer.CommandBuilders.OleDbSqlServerTableFunction;
-
-#elif MYSQL
-
-using AbstractCommand = MySqlConnector.MySqlCommand;
-using AbstractParameter = MySqlConnector.MySqlParameter;
-using AbstractObjectName = Tortuga.Chain.MySql.MySqlObjectName;
-using AbstractLimitOption = Tortuga.Chain.MySqlLimitOption;
-using AbstractProcedureCall = Tortuga.Chain.MySql.CommandBuilders.MySqlProcedureCall;
-using AbstractScalarFunction = Tortuga.Chain.MySql.CommandBuilders.MySqlScalarFunction;
-
-#elif POSTGRESQL
-
-using AbstractCommand = Npgsql.NpgsqlCommand;
-using AbstractParameter = Npgsql.NpgsqlParameter;
-using AbstractObjectName = Tortuga.Chain.PostgreSql.PostgreSqlObjectName;
-using AbstractLimitOption = Tortuga.Chain.PostgreSqlLimitOption;
-using AbstractProcedureCall = Tortuga.Chain.PostgreSql.CommandBuilders.PostgreSqlProcedureCall;
-using AbstractScalarFunction = Tortuga.Chain.PostgreSql.CommandBuilders.PostgreSqlScalarFunction;
-using AbstractTableFunction = Tortuga.Chain.PostgreSql.CommandBuilders.PostgreSqlTableFunction;
-
-#endif
-
 #if SQL_SERVER_SDS || SQL_SERVER_MDS
 
 namespace Tortuga.Chain.SqlServer
 {
-    partial class SqlServerDataSourceBase
+	partial class SqlServerDataSourceBase
 #elif SQL_SERVER_OLEDB
 
 namespace Tortuga.Chain.SqlServer
 {
-    partial class OleDbSqlServerDataSourceBase
+	partial class OleDbSqlServerDataSourceBase
 
 #elif MYSQL
 
@@ -74,7 +23,7 @@ namespace Tortuga.Chain.MySql
 
 namespace Tortuga.Chain.PostgreSql
 {
-    partial class PostgreSqlDataSourceBase
+	partial class PostgreSqlDataSourceBase
 
 #endif
 	{
@@ -125,26 +74,26 @@ namespace Tortuga.Chain.PostgreSql
 
 #if !MYSQL
 
-        /// <summary>
-        /// This is used to query a table valued function.
-        /// </summary>
-        /// <param name="tableFunctionName">Name of the table function.</param>
-        /// <returns></returns>
-        public TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption> TableFunction(AbstractObjectName tableFunctionName)
-        {
-            return new AbstractTableFunction(this, tableFunctionName, null);
-        }
+		/// <summary>
+		/// This is used to query a table valued function.
+		/// </summary>
+		/// <param name="tableFunctionName">Name of the table function.</param>
+		/// <returns></returns>
+		public TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption> TableFunction(AbstractObjectName tableFunctionName)
+		{
+			return new AbstractTableFunction(this, tableFunctionName, null);
+		}
 
-        /// <summary>
-        /// This is used to query a table valued function.
-        /// </summary>
-        /// <param name="tableFunctionName">Name of the table function.</param>
-        /// <param name="functionArgumentValue">The function argument.</param>
-        /// <returns></returns>
-        public TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption> TableFunction(AbstractObjectName tableFunctionName, object functionArgumentValue)
-        {
-            return new AbstractTableFunction(this, tableFunctionName, functionArgumentValue);
-        }
+		/// <summary>
+		/// This is used to query a table valued function.
+		/// </summary>
+		/// <param name="tableFunctionName">Name of the table function.</param>
+		/// <param name="functionArgumentValue">The function argument.</param>
+		/// <returns></returns>
+		public TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption> TableFunction(AbstractObjectName tableFunctionName, object functionArgumentValue)
+		{
+			return new AbstractTableFunction(this, tableFunctionName, functionArgumentValue);
+		}
 
 #endif
 	}
