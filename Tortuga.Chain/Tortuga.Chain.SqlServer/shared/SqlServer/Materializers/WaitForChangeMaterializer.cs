@@ -1,7 +1,3 @@
-#if !SqlDependency_Missing
-
-using System.Threading;
-using System.Threading.Tasks;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.SqlServer.CommandBuilders;
 
@@ -28,4 +24,3 @@ namespace Tortuga.Chain.SqlServer.Materializers
 	}
 }
 
-#endif

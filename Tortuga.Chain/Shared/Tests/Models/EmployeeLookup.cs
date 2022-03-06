@@ -1,44 +1,30 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Tests.Models
-{
-	/// <summary>
-	/// This is used to test immutable object constructors
-	/// </summary>
-	[Table("Employee", Schema = "HR")]
-	public class EmployeeLookup
-	{
+namespace Tests.Models;
+
 #if SQLITE
-
-        public EmployeeLookup(long employeeKey, string firstName, string lastName)
-        {
-            EmployeeKey = (int)employeeKey;
-            FirstName = firstName;
-            LastName = lastName;
-        }
-
+using KeyType = System.Int64;
 #elif MYSQL
-
-		public EmployeeLookup(ulong employeeKey, string firstName, string lastName)
-		{
-			EmployeeKey = (int)employeeKey;
-			FirstName = firstName;
-			LastName = lastName;
-		}
-
+using KeyType = System.UInt64;
 #else
-
-        public EmployeeLookup(int employeeKey, string firstName, string lastName)
-        {
-            EmployeeKey = employeeKey;
-            FirstName = firstName;
-            LastName = lastName;
-        }
-
+using KeyType = System.Int32;
 #endif
 
-		public int EmployeeKey { get; }
-		public string FirstName { get; }
-		public string LastName { get; }
+/// <summary>
+/// This is used to test immutable object constructors
+/// </summary>
+[Table("Employee", Schema = "HR")]
+public class EmployeeLookup
+{
+
+	public EmployeeLookup(KeyType employeeKey, string firstName, string lastName)
+	{
+		EmployeeKey = (int)employeeKey;
+		FirstName = firstName;
+		LastName = lastName;
 	}
+
+	public int EmployeeKey { get; }
+	public string FirstName { get; }
+	public string LastName { get; }
 }
