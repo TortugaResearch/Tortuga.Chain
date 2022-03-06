@@ -74,6 +74,11 @@ namespace Tests
                 	DeletedFlag boolean NOT NULL DEFAULT FALSE,
                 	DeletedDate TIMESTAMP NULL,
                 	DeletedByKey INTEGER NULL
+                );
+                CREATE TABLE sales.location
+                (
+                	LocationKey SERIAL PRIMARY KEY,
+                	LocationName VARCHAR(150) NULL
                 )";
 
 				string viewSql = @"CREATE VIEW HR.EmployeeWithManager

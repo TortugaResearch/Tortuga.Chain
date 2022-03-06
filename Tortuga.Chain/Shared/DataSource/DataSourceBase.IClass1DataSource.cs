@@ -1,16 +1,10 @@
 ﻿using Tortuga.Chain.CommandBuilders;
 
-#if ACCESS
-
-using System;
-
-#endif
-
 #if SQL_SERVER_SDS || SQL_SERVER_MDS
 
 namespace Tortuga.Chain.SqlServer
 {
-    partial class SqlServerDataSourceBase : IClass1DataSource
+	partial class SqlServerDataSourceBase : IClass1DataSource
 #elif SQL_SERVER_OLEDB
 
 namespace Tortuga.Chain.SqlServer
@@ -39,7 +33,7 @@ namespace Tortuga.Chain.PostgreSql
 
 namespace Tortuga.Chain.Access
 {
-    partial class AccessDataSourceBase : IClass1DataSource
+	partial class AccessDataSourceBase : IClass1DataSource
 
 #endif
 	{
@@ -191,24 +185,6 @@ namespace Tortuga.Chain.Access
 		IUpdateManyDbCommandBuilder IClass1DataSource.UpdateSet(string tableName, object newValues, UpdateOptions options)
 		{
 			return UpdateSet(tableName, newValues, options);
-		}
-
-		IObjectDbCommandBuilder<TArgument> IClass1DataSource.Upsert<TArgument>(string tableName, TArgument argumentValue, UpsertOptions options)
-		{
-#if ACCESS
-            throw new NotImplementedException("See issue #122");
-#else
-			return Upsert(tableName, argumentValue, options);
-#endif
-		}
-
-		IObjectDbCommandBuilder<TArgument> IClass1DataSource.Upsert<TArgument>(TArgument argumentValue, UpsertOptions options)
-		{
-#if ACCESS
-            throw new NotImplementedException("See issue #122");
-#else
-			return Upsert(argumentValue, options);
-#endif
 		}
 	}
 }

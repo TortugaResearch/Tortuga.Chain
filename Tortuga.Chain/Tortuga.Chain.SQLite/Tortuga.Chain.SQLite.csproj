@@ -44,20 +44,20 @@
   </ItemGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net462'">
-    <DefineConstants>SQLITE;NULL_MISSING</DefineConstants>
+    <DefineConstants>SQLITE;NULL_MISSING;CLASS_1;CLASS_2</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-    <DefineConstants>SQLITE;NULL_MISSING</DefineConstants>
+    <DefineConstants>SQLITE;NULL_MISSING;CLASS_1;CLASS_2</DefineConstants>
   </PropertyGroup>
 
 
 	<PropertyGroup Condition="'$(TargetFramework)' == 'net5.0'">
-		<DefineConstants>SQLITE;ORDINAL_STRINGS</DefineConstants>
+		<DefineConstants>SQLITE;ORDINAL_STRINGS;CLASS_1;CLASS_2</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
-		<DefineConstants>SQLITE;ORDINAL_STRINGS</DefineConstants>
+		<DefineConstants>SQLITE;ORDINAL_STRINGS;CLASS_1;CLASS_2</DefineConstants>
 	</PropertyGroup>
 
   <ItemGroup Condition="'$(Configuration)'=='Debug'">
@@ -66,6 +66,11 @@
 
   <ItemGroup Condition="'$(Configuration)'=='Release'">
     <PackageReference Include="Tortuga.Chain.Core" Version="3.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="..\Shared\DataSource\DataSourceBase.Class3DataSource.cs" />
+    <Compile Remove="..\Shared\DataSource\DataSourceBase.IClass3DataSource.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -183,5 +183,6 @@ namespace Tortuga.Chain.Access
 		{
 			return new AccessUpdateObject<TArgument>(this, tableName, argumentValue, options);
 		}
+
 	}
 }
