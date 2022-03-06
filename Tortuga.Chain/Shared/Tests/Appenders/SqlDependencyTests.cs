@@ -1,132 +1,128 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Tests.Models;
+﻿using Tests.Models;
 using Tortuga.Chain;
 using Tortuga.Chain.SqlServer;
 
 namespace Tests.Appenders
 {
-#if (SQL_SERVER_SDS || SQL_SERVER_MDS) && !SqlDependency_Missing
+#if (SQL_SERVER_SDS || SQL_SERVER_MDS)
 
-    [TestClass]
-    public class SqlDependencyTests : TestBase
-    {
-        [DataTestMethod, RootData(DataSourceGroup.Primary)]
-        public void SqlServerDataSourceTests_SqlDependency(string dataSourceName)
-        {
-            var dataSource = DataSource(dataSourceName);
-            try
-            {
-                dataSource.StartSqlDependency();
-                dataSource.TestConnection();
-                dataSource.StopSqlDependency();
-            }
-            finally
-            {
-                Release(dataSource);
-            }
-        }
+	[TestClass]
+	public class SqlDependencyTests : TestBase
+	{
+		[DataTestMethod, RootData(DataSourceGroup.Primary)]
+		public void SqlServerDataSourceTests_SqlDependency(string dataSourceName)
+		{
+			var dataSource = DataSource(dataSourceName);
+			try
+			{
+				dataSource.StartSqlDependency();
+				dataSource.TestConnection();
+				dataSource.StopSqlDependency();
+			}
+			finally
+			{
+				Release(dataSource);
+			}
+		}
 
-        [DataTestMethod, RootData(DataSourceGroup.Primary)]
-        public void SqlServerDataSourceTests_WithChangeNotification_Fired(string dataSourceName)
-        {
-            int eventCount = 0;
-            var dataSource = DataSource(dataSourceName);
-            try
-            {
-                dataSource.StartSqlDependency();
+		[DataTestMethod, RootData(DataSourceGroup.Primary)]
+		public void SqlServerDataSourceTests_WithChangeNotification_Fired(string dataSourceName)
+		{
+			int eventCount = 0;
+			var dataSource = DataSource(dataSourceName);
+			try
+			{
+				dataSource.StartSqlDependency();
 
-                //Insert a matching row
-                var customerCount1 = dataSource.From("Sales.Customer", new { State = "CA" }).ToInt32List("CustomerKey").WithChangeNotification((s, e) => eventCount++).Execute();
-                dataSource.Insert("Sales.Customer", new Customer() { FullName = "Tod Test" + DateTime.Now.Ticks, State = "CA" }).Execute();
-                Thread.Sleep(500); //give the event time to fire
-                Assert.AreEqual(1, eventCount);
+				//Insert a matching row
+				var customerCount1 = dataSource.From("Sales.Customer", new { State = "CA" }).ToInt32List("CustomerKey").WithChangeNotification((s, e) => eventCount++).Execute();
+				dataSource.Insert("Sales.Customer", new Customer() { FullName = "Tod Test" + DateTime.Now.Ticks, State = "CA" }).Execute();
+				Thread.Sleep(500); //give the event time to fire
+				Assert.AreEqual(1, eventCount);
 
-                //Insert another matching row
-                var customerCount2 = dataSource.From("Sales.Customer", new { State = "CA" }).ToInt32List("CustomerKey").WithChangeNotification((s, e) => eventCount++).Execute();
-                dataSource.Insert("Sales.Customer", new Customer() { FullName = "Frank Test" + DateTime.Now.Ticks, State = "CA" }).Execute();
-                Thread.Sleep(500); //give the event time to fire
-                Assert.AreEqual(2, eventCount);
+				//Insert another matching row
+				var customerCount2 = dataSource.From("Sales.Customer", new { State = "CA" }).ToInt32List("CustomerKey").WithChangeNotification((s, e) => eventCount++).Execute();
+				dataSource.Insert("Sales.Customer", new Customer() { FullName = "Frank Test" + DateTime.Now.Ticks, State = "CA" }).Execute();
+				Thread.Sleep(500); //give the event time to fire
+				Assert.AreEqual(2, eventCount);
 
-                //Insert a non-matching row
-                var customerCount3 = dataSource.From("Sales.Customer", new { State = "CA" }).ToInt32List("CustomerKey").WithChangeNotification((s, e) => eventCount++).Execute();
-                dataSource.Insert("Sales.Customer", new Customer() { FullName = "Wrong State Test" + DateTime.Now.Ticks, State = "TX" }).Execute();
-                Thread.Sleep(500); //give the event time to fire
-                Assert.AreEqual(2, eventCount);
-            }
-            finally
-            {
-                dataSource.StopSqlDependency();
-                Release(dataSource);
-            }
-        }
+				//Insert a non-matching row
+				var customerCount3 = dataSource.From("Sales.Customer", new { State = "CA" }).ToInt32List("CustomerKey").WithChangeNotification((s, e) => eventCount++).Execute();
+				dataSource.Insert("Sales.Customer", new Customer() { FullName = "Wrong State Test" + DateTime.Now.Ticks, State = "TX" }).Execute();
+				Thread.Sleep(500); //give the event time to fire
+				Assert.AreEqual(2, eventCount);
+			}
+			finally
+			{
+				dataSource.StopSqlDependency();
+				Release(dataSource);
+			}
+		}
 
-        [DataTestMethod, RootData(DataSourceGroup.Primary)]
-        public async Task SqlServerDataSourceTests_WithChangeNotification_Fired_Async(string dataSourceName)
-        {
-            int eventCount = 0;
-            var dataSource = DataSource(dataSourceName);
-            try
-            {
-                dataSource.StartSqlDependency();
+		[DataTestMethod, RootData(DataSourceGroup.Primary)]
+		public async Task SqlServerDataSourceTests_WithChangeNotification_Fired_Async(string dataSourceName)
+		{
+			int eventCount = 0;
+			var dataSource = DataSource(dataSourceName);
+			try
+			{
+				dataSource.StartSqlDependency();
 
-                //Insert a matching row
-                var customerCount1 = await dataSource.From("Sales.Customer", new { State = "CA" }).ToInt32List("CustomerKey").WithChangeNotification((s, e) => eventCount++).ExecuteAsync();
-                await dataSource.Insert("Sales.Customer", new Customer() { FullName = "Tod Test" + DateTime.Now.Ticks, State = "CA" }).ExecuteAsync();
+				//Insert a matching row
+				var customerCount1 = await dataSource.From("Sales.Customer", new { State = "CA" }).ToInt32List("CustomerKey").WithChangeNotification((s, e) => eventCount++).ExecuteAsync();
+				await dataSource.Insert("Sales.Customer", new Customer() { FullName = "Tod Test" + DateTime.Now.Ticks, State = "CA" }).ExecuteAsync();
 
-                await Task.Delay(500); //give the event time to fire
-                Assert.AreEqual(1, eventCount);
+				await Task.Delay(500); //give the event time to fire
+				Assert.AreEqual(1, eventCount);
 
-                //Insert another matching row
-                var customerCount2 = await dataSource.From("Sales.Customer", new { State = "CA" }).ToInt32List("CustomerKey").WithChangeNotification((s, e) => eventCount++).ExecuteAsync();
-                await dataSource.Insert("Sales.Customer", new Customer() { FullName = "Frank Test" + DateTime.Now.Ticks, State = "CA" }).ExecuteAsync();
-                await Task.Delay(500); //give the event time to fire
-                Assert.AreEqual(2, eventCount);
+				//Insert another matching row
+				var customerCount2 = await dataSource.From("Sales.Customer", new { State = "CA" }).ToInt32List("CustomerKey").WithChangeNotification((s, e) => eventCount++).ExecuteAsync();
+				await dataSource.Insert("Sales.Customer", new Customer() { FullName = "Frank Test" + DateTime.Now.Ticks, State = "CA" }).ExecuteAsync();
+				await Task.Delay(500); //give the event time to fire
+				Assert.AreEqual(2, eventCount);
 
-                //Insert a non-matching row
-                var customerCount3 = await dataSource.From("Sales.Customer", new { State = "CA" }).ToInt32List("CustomerKey").WithChangeNotification((s, e) => eventCount++).ExecuteAsync();
-                await dataSource.Insert("Sales.Customer", new Customer() { FullName = "Wrong State Test" + DateTime.Now.Ticks, State = "TX" }).ExecuteAsync();
-                await Task.Delay(500); //give the event time to fire
-                Assert.AreEqual(2, eventCount);
-            }
-            finally
-            {
-                dataSource.StopSqlDependency();
-                Release(dataSource);
-            }
-        }
+				//Insert a non-matching row
+				var customerCount3 = await dataSource.From("Sales.Customer", new { State = "CA" }).ToInt32List("CustomerKey").WithChangeNotification((s, e) => eventCount++).ExecuteAsync();
+				await dataSource.Insert("Sales.Customer", new Customer() { FullName = "Wrong State Test" + DateTime.Now.Ticks, State = "TX" }).ExecuteAsync();
+				await Task.Delay(500); //give the event time to fire
+				Assert.AreEqual(2, eventCount);
+			}
+			finally
+			{
+				dataSource.StopSqlDependency();
+				Release(dataSource);
+			}
+		}
 
-        [DataTestMethod, RootData(DataSourceGroup.Primary)]
-        public void SqlServerDataSourceTests_WithCaching(string dataSourceName)
-        {
-            const string CacheKey = "All_Customer";
+		[DataTestMethod, RootData(DataSourceGroup.Primary)]
+		public void SqlServerDataSourceTests_WithCaching(string dataSourceName)
+		{
+			const string CacheKey = "All_Customer";
 
-            var dataSource = DataSource(dataSourceName);
-            try
-            {
-                dataSource.StartSqlDependency();
+			var dataSource = DataSource(dataSourceName);
+			try
+			{
+				dataSource.StartSqlDependency();
 
-                //Insert a matching row
-                var customerCount1 = dataSource.From("Sales.Customer", new { State = "CA" }).ToInt32List("CustomerKey").Cache(CacheKey).AutoInvalidate().Execute();
+				//Insert a matching row
+				var customerCount1 = dataSource.From("Sales.Customer", new { State = "CA" }).ToInt32List("CustomerKey").Cache(CacheKey).AutoInvalidate().Execute();
 
-                Assert.IsTrue(dataSource.Cache.TryRead<object>(CacheKey, out var _));
+				Assert.IsTrue(dataSource.Cache.TryRead<object>(CacheKey, out var _));
 
-                //Insert another matching row
-                dataSource.Insert("Sales.Customer", new Customer() { FullName = "Frank Test" + DateTime.Now.Ticks, State = "CA" }).Execute();
+				//Insert another matching row
+				dataSource.Insert("Sales.Customer", new Customer() { FullName = "Frank Test" + DateTime.Now.Ticks, State = "CA" }).Execute();
 
-                Thread.Sleep(500); //give the event time to fire
+				Thread.Sleep(500); //give the event time to fire
 
-                Assert.IsFalse(dataSource.Cache.TryRead<object>(CacheKey, out var _), "Cache was not cleared");
-            }
-            finally
-            {
-                dataSource.StopSqlDependency();
-                Release(dataSource);
-            }
-        }
-    }
+				Assert.IsFalse(dataSource.Cache.TryRead<object>(CacheKey, out var _), "Cache was not cleared");
+			}
+			finally
+			{
+				dataSource.StopSqlDependency();
+				Release(dataSource);
+			}
+		}
+	}
 
 #endif
 }
