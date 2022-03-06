@@ -145,7 +145,7 @@ namespace Tests
 
 		protected DirectoryInfo GetOutputFolder(string folderName)
 		{
-			var codeBaseUrl = new Uri(Assembly.GetExecutingAssembly().CodeBase);
+			var codeBaseUrl = new Uri(Assembly.GetExecutingAssembly().Location);
 			var codeBasePath = Uri.UnescapeDataString(codeBaseUrl.AbsolutePath);
 			var dirPath = Path.GetDirectoryName(codeBasePath);
 			var result = new DirectoryInfo(Path.Combine(dirPath, "TestOutput", folderName));
