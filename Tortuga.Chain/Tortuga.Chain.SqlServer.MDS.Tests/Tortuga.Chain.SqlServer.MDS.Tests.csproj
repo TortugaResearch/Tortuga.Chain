@@ -8,12 +8,12 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <DefineConstants>SQL_SERVER_MDS</DefineConstants>
+    <DefineConstants>SQL_SERVER_MDS;CLASS_1;CLASS_2;CLASS_3</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net462'">
     <!-- https://github.com/dotnet/SqlClient/issues/260 SqlDependency is not working against .NET 4.6.1 -->
-    <DefineConstants>Roslyn_Missing;SQL_SERVER_MDS;SqlDependency_Missing</DefineConstants>
+    <DefineConstants>Roslyn_Missing;SQL_SERVER_MDS;SqlDependency_Missing;CLASS_1;CLASS_2;CLASS_3</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>

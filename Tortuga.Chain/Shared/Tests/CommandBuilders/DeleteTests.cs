@@ -627,11 +627,43 @@ namespace Tests.CommandBuilders
 
 	}
 
+#if CLASS_2
+		[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+		public void Truncate(string dataSourceName, DataSourceType mode)
+		{
+			var dataSource = DataSource(dataSourceName);
+			try
+			{
+
+				dataSource.Insert(new Sales.Location() { LocationName = "Example " + DateTime.Now.Ticks }).Execute();
+				Assert.IsTrue(dataSource.From<Sales.Location>().AsCount().Execute() > 0, "Expected at least one row");
+				dataSource.Truncate<Sales.Location>().Execute();
+				Assert.IsTrue(dataSource.From<Sales.Location>().AsCount().Execute() == 0, "Expected zero rows");
+
+			}
+			finally
+			{
+				Release(dataSource);
+			}
+		}
+#endif
+	}
+
 	namespace HR
 	{
 		public class Employee
 		{
 			public int EmployeeKey { get; set; }
+		}
+	}
+
+	namespace Sales
+	{
+		public class Location
+		{
+			public int? LocationKey { get; set; }
+			public string LocationName { get; set; }
+
 		}
 	}
 }

@@ -1,54 +1,23 @@
 ﻿using Tortuga.Chain.CommandBuilders;
 
-#if SQL_SERVER_SDS
-
-using AbstractCommand = System.Data.SqlClient.SqlCommand;
-using AbstractParameter = System.Data.SqlClient.SqlParameter;
-
-#elif SQL_SERVER_MDS
-
-using AbstractCommand = Microsoft.Data.SqlClient.SqlCommand;
-using AbstractParameter = Microsoft.Data.SqlClient.SqlParameter;
-
-#elif SQLITE
-
-using AbstractCommand = System.Data.SQLite.SQLiteCommand;
-using AbstractParameter = System.Data.SQLite.SQLiteParameter;
-
-#elif MYSQL
-
-using AbstractCommand = MySqlConnector.MySqlCommand;
-using AbstractParameter = MySqlConnector.MySqlParameter;
-
-#elif POSTGRESQL
-
-using AbstractCommand = Npgsql.NpgsqlCommand;
-using AbstractParameter = Npgsql.NpgsqlParameter;
-
-#elif ACCESS || SQL_SERVER_OLEDB
-
-using AbstractCommand = System.Data.OleDb.OleDbCommand;
-using AbstractParameter = System.Data.OleDb.OleDbParameter;
-
-#endif
 
 #if SQL_SERVER_SDS || SQL_SERVER_MDS
 
 namespace Tortuga.Chain.SqlServer
 {
-    partial class SqlServerDataSourceBase
+	partial class SqlServerDataSourceBase
 
 #elif SQL_SERVER_OLEDB
 
 namespace Tortuga.Chain.SqlServer
 {
-    partial class OleDbSqlServerDataSourceBase
+	partial class OleDbSqlServerDataSourceBase
 
 #elif SQLITE
 
 namespace Tortuga.Chain.SQLite
 {
-    partial class SQLiteDataSourceBase
+	partial class SQLiteDataSourceBase
 
 #elif MYSQL
 
@@ -60,13 +29,13 @@ namespace Tortuga.Chain.MySql
 
 namespace Tortuga.Chain.PostgreSql
 {
-    partial class PostgreSqlDataSourceBase
+	partial class PostgreSqlDataSourceBase
 
 #elif ACCESS
 
 namespace Tortuga.Chain.Access
 {
-    partial class AccessDataSourceBase
+	partial class AccessDataSourceBase
 
 #endif
 	{

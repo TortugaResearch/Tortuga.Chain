@@ -1,82 +1,41 @@
-using Tortuga.Chain.CommandBuilders;
+﻿using Tortuga.Chain.CommandBuilders;
 
 namespace Tortuga.Chain
 {
 	/// <summary>
-	/// A class 2 data source that includes stored procedures and functions.
+	/// A class 2 data source supports enhanced CRUD operations.
 	/// </summary>
-	/// <seealso cref="IClass1DataSource" />
 	/// <remarks>Warning: This interface is meant to simulate multiple inheritance and work-around some issues with exposing generic types. Do not implement it in client code, as new methods will be added over time.</remarks>
 	public interface IClass2DataSource : IClass1DataSource
 	{
-		/// <summary>
-		/// Executes the indicated procedure.
-		/// </summary>
-		/// <param name="procedureName">Name of the procedure.</param>
-		/// <returns></returns>
-		IProcedureDbCommandBuilder Procedure(string procedureName);
 
 		/// <summary>
-		/// Executes the indicated procedure.
+		/// Perform an insert or update operation as appropriate.
 		/// </summary>
-		/// <param name="procedureName">Name of the procedure.</param>
+		/// <param name="tableName">Name of the table.</param>
 		/// <param name="argumentValue">The argument value.</param>
-		/// <returns></returns>
-		IProcedureDbCommandBuilder Procedure(string procedureName, object argumentValue);
+		/// <param name="options">The options for how the insert/update occurs.</param>
+		/// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
+		IObjectDbCommandBuilder<TArgument> Upsert<TArgument>(string tableName, TArgument argumentValue, UpsertOptions options = UpsertOptions.None) where TArgument : class;
 
 		/// <summary>
-		/// This is used to query a scalar function.
+		/// Perform an insert or update operation as appropriate.
 		/// </summary>
-		/// <param name="scalarFunctionName">Name of the scalar function.</param>
-		/// <returns></returns>
-		IScalarDbCommandBuilder ScalarFunction(string scalarFunctionName);
+		/// <param name="argumentValue">The argument value.</param>
+		/// <param name="options">The options for how the insert/update occurs.</param>
+		/// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
+		IObjectDbCommandBuilder<TArgument> Upsert<TArgument>(TArgument argumentValue, UpsertOptions options = UpsertOptions.None) where TArgument : class;
 
-		/// <summary>
-		/// This is used to query a scalar function.
-		/// </summary>
-		/// <param name="scalarFunctionName">Name of the scalar function.</param>
-		/// <param name="functionArgumentValue">The function arguments.</param>
-		/// <returns></returns>
-		IScalarDbCommandBuilder ScalarFunction(string scalarFunctionName, object functionArgumentValue);
 
-		/// <summary>
-		/// Selects from the indicated table-value function.
-		/// </summary>
-		/// <param name="functionName">Name of the function.</param>
-		/// <returns></returns>
-		ITableDbCommandBuilder TableFunction(string functionName);
+		/// <summary>Truncates the specified table.</summary>
+		/// <param name="tableName">Name of the table to truncate.</param>
+		/// <returns>The number of rows deleted or null if the database doesn't provide that information.</returns>
+		ILink<int?> Truncate(string tableName);
 
-		/// <summary>
-		/// Selects from the indicated table-value function.
-		/// </summary>
-		/// <param name="functionName">Name of the function.</param>
-		/// <param name="functionArgumentValue">The function argument value.</param>
-		/// <returns></returns>
-		ITableDbCommandBuilder TableFunction(string functionName, object functionArgumentValue);
+		/// <summary>Truncates the specified table.</summary>
+		/// <typeparam name="TObject">This class used to determine which table to truncate</typeparam>
+		/// <returns>The number of rows deleted or null if the database doesn't provide that information.</returns>
+		ILink<int?> Truncate<TObject>() where TObject : class;
 
-		//        /// <summary>
-		//        /// Perform a bulk insert.
-		//        /// </summary>
-		//        /// <typeparam name="T"></typeparam>
-		//        /// <param name="tableName">Name of the target table.</param>
-		//        /// <param name="values">The values to be inserted.</param>
-		//        /// <returns></returns>
-		//        ILink BulkInsert<T>(string tableName, IEnumerable<T> values);
-
-		//        /// <summary>
-		//        /// Perform a bulk insert.
-		//        /// </summary>
-		//        /// <param name="tableName">Name of the target table.</param>
-		//        /// <param name="values">The values to be inserted.</param>
-		//        /// <returns></returns>
-		//        ILink InsertBulk(string tableName, DataTable values);
-
-		//        /// <summary>
-		//        /// Perform a bulk insert.
-		//        /// </summary>
-		//        /// <param name="tableName">Name of the target table.</param>
-		//        /// <param name="values">The values to be inserted.</param>
-		//        /// <returns></returns>
-		//        ILink InsertBulk(string tableName, IDataReader values);
 	}
 }
