@@ -3,12 +3,7 @@ using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
 using Tortuga.Chain.Metadata;
-
-#if !SqlDependency_Missing
-
 using Tortuga.Chain.SqlServer.Materializers;
-
-#endif
 
 #if SQL_SERVER_SDS
 
@@ -78,8 +73,6 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 		public override IReadOnlyList<ColumnMetadata> TryGetNonNullableColumns() => ImmutableList<ColumnMetadata>.Empty;
 	}
 
-#if !SqlDependency_Missing
-
 	partial class SqlServerSqlCall : ISupportsChangeListener
 	{
 		SqlServerCommandExecutionToken ISupportsChangeListener.Prepare(Materializer<SqlCommand, SqlParameter> materializer)
@@ -100,5 +93,4 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 		}
 	}
 
-#endif
 }

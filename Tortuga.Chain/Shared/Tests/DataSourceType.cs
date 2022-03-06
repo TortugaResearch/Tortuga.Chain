@@ -1,11 +1,4 @@
-namespace Tests
-{
-	public enum DataSourceGroup
-	{
-		Primary,
-		All,
-		AllNormalOnly
-	}
+namespace Tests;
 
 	public enum DataSourceType
 	{
