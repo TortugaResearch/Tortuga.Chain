@@ -175,7 +175,7 @@ namespace Tests.CommandBuilders
 			}
 		}
 
-#if !Roslyn_Missing && !SQLite
+#if !SQLite
 
 		[DataTestMethod, BasicData(DataSourceGroup.Primary)]
 		public void ChangeTrackingTest_Compiled(string dataSourceName, DataSourceType mode)

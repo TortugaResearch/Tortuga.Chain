@@ -19,10 +19,9 @@ namespace Tests
 			dataSource.ExecutionError += DefaultDispatcher_ExecutionError;
 			dataSource.ExecutionFinished += DefaultDispatcher_ExecutionFinished;
 			dataSource.ExecutionStarted += DefaultDispatcher_ExecutionStarted;
-#if !Roslyn_Missing
 			CompiledMaterializers.MaterializerCompiled += CompiledMaterializers_MaterializerCompiled;
 			CompiledMaterializers.MaterializerCompilerFailed += CompiledMaterializers_MaterializerCompiled;
-#endif
+
 			return dataSource;
 		}
 
@@ -48,10 +47,10 @@ namespace Tests
 			dataSource.ExecutionError -= DefaultDispatcher_ExecutionError;
 			dataSource.ExecutionFinished -= DefaultDispatcher_ExecutionFinished;
 			dataSource.ExecutionStarted -= DefaultDispatcher_ExecutionStarted;
-#if !Roslyn_Missing
+
 			CompiledMaterializers.MaterializerCompiled -= CompiledMaterializers_MaterializerCompiled;
 			CompiledMaterializers.MaterializerCompilerFailed -= CompiledMaterializers_MaterializerCompiled;
-#endif
+
 			switch (dataSource)
 			{
 				case ITransactionalDataSource trans:
@@ -75,8 +74,6 @@ namespace Tests
 #endif
 		}
 
-#if !Roslyn_Missing
-
 		private void CompiledMaterializers_MaterializerCompiled(object sender, MaterializerCompilerEventArgs e)
 		{
 			WriteLine("******");
@@ -87,7 +84,6 @@ namespace Tests
 			WriteLine(e.Code);
 		}
 
-#endif
 
 		private void DefaultDispatcher_ExecutionCanceled(object sender, ExecutionEventArgs e)
 		{

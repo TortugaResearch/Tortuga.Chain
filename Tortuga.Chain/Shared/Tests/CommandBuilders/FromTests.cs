@@ -732,8 +732,6 @@ namespace Tests.CommandBuilders
 			}
 		}
 
-#if !Roslyn_Missing
-
 		[DataTestMethod, BasicData(DataSourceGroup.Primary)]
 		public void FilterByObject_Compiled(string dataSourceName, DataSourceType mode)
 		{
@@ -783,8 +781,6 @@ namespace Tests.CommandBuilders
 				Release(dataSource);
 			}
 		}
-
-#endif
 
 #if !NO_DISTINCT_COUNT
 
