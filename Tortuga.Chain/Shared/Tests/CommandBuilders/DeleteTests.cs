@@ -625,7 +625,7 @@ namespace Tests.CommandBuilders
 			}
 		}
 
-	}
+
 
 #if CLASS_2
 		[DataTestMethod, BasicData(DataSourceGroup.Primary)]
