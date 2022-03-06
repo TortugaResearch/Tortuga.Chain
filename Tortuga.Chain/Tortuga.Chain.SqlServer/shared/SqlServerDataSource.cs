@@ -25,10 +25,8 @@ namespace Tortuga.Chain
 		readonly SqlConnectionStringBuilder m_ConnectionBuilder;
 		SqlServerMetadataCache m_DatabaseMetadata;
 
-#if !SqlDependency_Missing
 		readonly object m_SyncRoot = new object();
 		bool m_IsSqlDependencyActive;
-#endif
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="SqlServerDataSource" /> class.
@@ -147,7 +145,6 @@ namespace Tortuga.Chain
 			get { return m_DatabaseMetadata; }
 		}
 
-#if !SqlDependency_Missing
 
 		/// <summary>
 		/// Gets a value indicating whether SQL dependency support is active for this dispatcher.
@@ -158,7 +155,6 @@ namespace Tortuga.Chain
 			get { return m_IsSqlDependencyActive; }
 		}
 
-#endif
 
 		/// <summary>
 		/// Rolls back a transaction if a Transact-SQL statement raises a run-time error.
@@ -224,7 +220,6 @@ namespace Tortuga.Chain
 			return result;
 		}
 
-#if !SqlDependency_Missing
 
 		/// <summary>
 		/// Starts SQL dependency on this connection string.
@@ -265,7 +260,6 @@ namespace Tortuga.Chain
 			}
 		}
 
-#endif
 
 		/// <summary>
 		/// Creates and opens a SQL connection.

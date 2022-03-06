@@ -1,5 +1,6 @@
 ﻿using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.SqlServer.CommandBuilders;
+using Tortuga.Chain.SqlServer.Appenders;
 
 #if SQL_SERVER_SDS
 
@@ -11,11 +12,7 @@ using Microsoft.Data.SqlClient;
 
 #endif
 
-#if !SqlDependency_Missing
 
-using Tortuga.Chain.SqlServer.Appenders;
-
-#endif
 
 namespace Tortuga.Chain.SqlServer
 {
@@ -50,8 +47,6 @@ namespace Tortuga.Chain.SqlServer
 			return ((ISupportsApproximateCount)tableDbCommand).AsCountApproximate(columnName);
 		}
 
-#if !SqlDependency_Missing
-
 		/// <summary>
 		/// Attaches a SQL Server dependency change listener to this operation.
 		/// </summary>
@@ -76,6 +71,5 @@ namespace Tortuga.Chain.SqlServer
 			return new NotifyChangeAppender<TResult>(previousLink, (s, e) => previousLink.Invalidate());
 		}
 
-#endif
 	}
 }

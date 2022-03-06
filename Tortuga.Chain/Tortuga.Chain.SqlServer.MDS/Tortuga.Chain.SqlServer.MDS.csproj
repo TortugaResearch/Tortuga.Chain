@@ -32,8 +32,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net462'">
-    <!-- https://github.com/dotnet/SqlClient/issues/260 SqlDependency is not working against .NET 4.6.1 -->
-    <DefineConstants>SQL_SERVER_MDS;NULL_MISSING;SqlDependency_Missing;CLASS_1;CLASS_2;CLASS_3</DefineConstants>
+    <DefineConstants>SQL_SERVER_MDS;NULL_MISSING;CLASS_1;CLASS_2;CLASS_3</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
