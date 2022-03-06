@@ -42,19 +42,19 @@
 	</ItemGroup>
 
 	<PropertyGroup Condition="'$(TargetFramework)' == 'net462'">
-		<DefineConstants>MYSQL;NULL_MISSING</DefineConstants>
+		<DefineConstants>MYSQL;NULL_MISSING;CLASS_1;CLASS_2;CLASS_3</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-		<DefineConstants>MYSQL;NULL_MISSING</DefineConstants>
+		<DefineConstants>MYSQL;NULL_MISSING;CLASS_1;CLASS_2;CLASS_3</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(TargetFramework)' == 'net5.0'">
-		<DefineConstants>MYSQL</DefineConstants>
+		<DefineConstants>MYSQL;CLASS_1;CLASS_2;CLASS_3</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
-		<DefineConstants>MYSQL</DefineConstants>
+		<DefineConstants>MYSQL;CLASS_1;CLASS_2;CLASS_3</DefineConstants>
 	</PropertyGroup>
 
 	<ItemGroup Condition="'$(Configuration)'=='Debug'">

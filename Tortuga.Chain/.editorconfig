@@ -51,8 +51,8 @@ dotnet_diagnostic.RCS1089.severity = none
 # RCS1171: Simplify lazy initialization.
 dotnet_diagnostic.RCS1171.severity = none
 csharp_style_namespace_declarations=file_scoped:silent
-csharp_style_var_for_built_in_types=true:silent
-csharp_style_var_when_type_is_apparent=false:suggestion
-csharp_style_var_elsewhere=false:suggestion
+csharp_style_var_for_built_in_types=true:suggestion
+csharp_style_var_when_type_is_apparent=true:suggestion
+csharp_style_var_elsewhere=true:suggestion
 
 

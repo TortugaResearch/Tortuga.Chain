@@ -1,8 +1,11 @@
-global using global::Microsoft.VisualStudio.TestTools.UnitTesting;
-global using global::System;
-global using global::System.Collections.Generic;
-global using global::System.Data;
-global using global::System.IO;
-global using global::System.Linq;
-global using global::System.Threading;
-global using global::System.Threading.Tasks;
+global using Microsoft.VisualStudio.TestTools.UnitTesting;
+global using System;
+global using System.Collections.Generic;
+global using System.Data;
+global using System.IO;
+global using System.Linq;
+global using System.Threading;
+global using System.Threading.Tasks;
+#if CLASS_2 || CLASS_3
+global using System.Runtime.CompilerServices;
+#endif
