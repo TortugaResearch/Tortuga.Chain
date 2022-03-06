@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <DefineConstants>MYSQL</DefineConstants>
+    <DefineConstants>MYSQL;CLASS_1;CLASS_2;CLASS_3</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>

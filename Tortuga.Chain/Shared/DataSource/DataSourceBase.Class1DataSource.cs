@@ -2,63 +2,6 @@
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Metadata;
 
-#if SQL_SERVER_SDS
-
-using AbstractCommand = System.Data.SqlClient.SqlCommand;
-using AbstractDbType = System.Data.SqlDbType;
-using AbstractParameter = System.Data.SqlClient.SqlParameter;
-using AbstractObjectName = Tortuga.Chain.SqlServer.SqlServerObjectName;
-using AbstractLimitOption = Tortuga.Chain.SqlServerLimitOption;
-
-#elif SQL_SERVER_MDS
-
-using AbstractCommand = Microsoft.Data.SqlClient.SqlCommand;
-using AbstractDbType = System.Data.SqlDbType;
-using AbstractParameter = Microsoft.Data.SqlClient.SqlParameter;
-using AbstractObjectName = Tortuga.Chain.SqlServer.SqlServerObjectName;
-using AbstractLimitOption = Tortuga.Chain.SqlServerLimitOption;
-
-#elif SQL_SERVER_OLEDB
-
-using AbstractCommand = System.Data.OleDb.OleDbCommand;
-using AbstractDbType = System.Data.OleDb.OleDbType;
-using AbstractLimitOption = Tortuga.Chain.SqlServerLimitOption;
-using AbstractObjectName = Tortuga.Chain.SqlServer.SqlServerObjectName;
-using AbstractParameter = System.Data.OleDb.OleDbParameter;
-
-#elif SQLITE
-
-using AbstractCommand = System.Data.SQLite.SQLiteCommand;
-using AbstractDbType = System.Data.DbType;
-using AbstractParameter = System.Data.SQLite.SQLiteParameter;
-using AbstractObjectName = Tortuga.Chain.SQLite.SQLiteObjectName;
-using AbstractLimitOption = Tortuga.Chain.SQLiteLimitOption;
-
-#elif MYSQL
-
-using AbstractCommand = MySqlConnector.MySqlCommand;
-using AbstractDbType = MySqlConnector.MySqlDbType;
-using AbstractParameter = MySqlConnector.MySqlParameter;
-using AbstractObjectName = Tortuga.Chain.MySql.MySqlObjectName;
-using AbstractLimitOption = Tortuga.Chain.MySqlLimitOption;
-
-#elif POSTGRESQL
-
-using AbstractCommand = Npgsql.NpgsqlCommand;
-using AbstractDbType = NpgsqlTypes.NpgsqlDbType;
-using AbstractParameter = Npgsql.NpgsqlParameter;
-using AbstractObjectName = Tortuga.Chain.PostgreSql.PostgreSqlObjectName;
-using AbstractLimitOption = Tortuga.Chain.PostgreSqlLimitOption;
-
-#elif ACCESS
-
-using AbstractCommand = System.Data.OleDb.OleDbCommand;
-using AbstractDbType = System.Data.OleDb.OleDbType;
-using AbstractParameter = System.Data.OleDb.OleDbParameter;
-using AbstractLimitOption = Tortuga.Chain.AccessLimitOption;
-using AbstractObjectName = Tortuga.Chain.Access.AccessObjectName;
-
-#endif
 
 #if SQL_SERVER_SDS || SQL_SERVER_MDS
 
@@ -70,13 +13,13 @@ namespace Tortuga.Chain.SqlServer
 
 namespace Tortuga.Chain.SqlServer
 {
-    partial class OleDbSqlServerDataSourceBase
+	partial class OleDbSqlServerDataSourceBase
 
 #elif SQLITE
 
 namespace Tortuga.Chain.SQLite
 {
-    partial class SQLiteDataSourceBase
+	partial class SQLiteDataSourceBase
 
 #elif MYSQL
 
@@ -88,13 +31,13 @@ namespace Tortuga.Chain.MySql
 
 namespace Tortuga.Chain.PostgreSql
 {
-    partial class PostgreSqlDataSourceBase
+	partial class PostgreSqlDataSourceBase
 
 #elif ACCESS
 
 namespace Tortuga.Chain.Access
 {
-    partial class AccessDataSourceBase
+	partial class AccessDataSourceBase
 
 #endif
 	{
@@ -734,34 +677,6 @@ namespace Tortuga.Chain.Access
 			return GetByKeyList<TObject, string>(keys);
 		}
 
-#if !ACCESS
-
-		/// <summary>
-		/// Creates a operation used to perform an "upsert" operation.
-		/// </summary>
-		/// <param name="tableName"></param>
-		/// <param name="argumentValue"></param>
-		/// <param name="options"></param>
-		/// <returns></returns>
-		public ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> Upsert<TArgument>(AbstractObjectName tableName, TArgument argumentValue, UpsertOptions options = UpsertOptions.None)
-		where TArgument : class
-		{
-			return OnInsertOrUpdateObject<TArgument>(tableName, argumentValue, options);
-		}
-
-		/// <summary>
-		/// Perform an insert or update operation as appropriate.
-		/// </summary>
-		/// <typeparam name="TArgument"></typeparam>
-		/// <param name="argumentValue">The argument value.</param>
-		/// <param name="options">The options for how the insert/update occurs.</param>
-		/// <returns></returns>
-		public ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> Upsert<TArgument>(TArgument argumentValue, UpsertOptions options = UpsertOptions.None) where TArgument : class
-		{
-			return OnInsertOrUpdateObject<TArgument>(DatabaseMetadata.GetTableOrViewFromClass<TArgument>().Name, argumentValue, options);
-		}
-
-#endif
 
 		TableOrViewMetadata<AbstractObjectName, AbstractDbType> DatabaseObjectAsTableOrView<TObject>(OperationType operationType)
 		{
@@ -786,17 +701,6 @@ namespace Tortuga.Chain.Access
 			=> OnFromTableOrView<object>(tableOrViewName, whereClause, argumentValue);
 
 
-		/// <summary>Truncates the specified table.</summary>
-		/// <param name="tableName">Name of the table to truncate.</param>
-		/// <returns>The number of rows deleted or null if the database doesn't provide that information.</returns>
-		public partial ILink<int?> Truncate(AbstractObjectName tableName);
 
-		/// <summary>Truncates the specified table.</summary>
-		/// <typeparam name="TObject">This class used to determine which table to truncate</typeparam>
-		/// <returns>The number of rows deleted or null if the database doesn't provide that information.</returns>
-		public ILink<int?> Truncate<TObject>() where TObject : class
-		{
-			return Truncate(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name);
-		}
 	}
 }

@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <DefineConstants>SQLITE</DefineConstants>
+    <DefineConstants>SQLITE;CLASS_1;CLASS_2</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
