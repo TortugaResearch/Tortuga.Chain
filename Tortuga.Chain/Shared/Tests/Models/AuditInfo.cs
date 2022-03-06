@@ -1,8 +1,7 @@
-namespace Tests.Models
+namespace Tests.Models;
+
+public class AuditInfo
 {
-	public class AuditInfo
-	{
-		public DateTime? CreatedDate { get; set; }
-		public DateTime? UpdatedDate { get; set; }
-	}
+	public DateTime? CreatedDate { get; set; }
+	public DateTime? UpdatedDate { get; set; }
 }

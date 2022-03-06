@@ -1,12 +1,6 @@
 using Tortuga.Chain.Core;
 using Tortuga.Chain.DataSources;
 
-#if !SqlDependency_Missing
-
-using System;
-
-#endif
-
 #if SQL_SERVER_SDS
 
 using System.Data.SqlClient;
@@ -24,9 +18,7 @@ namespace Tortuga.Chain.SqlServer
 	/// </summary>
 	public sealed class SqlServerCommandExecutionToken : CommandExecutionToken<SqlCommand, SqlParameter>
 	{
-#if !SqlDependency_Missing
 		OnChangeEventHandler? m_OnChangeEventHandler;
-#endif
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="CommandExecutionToken{TCommand, TParameter}"/> class.
@@ -41,7 +33,6 @@ namespace Tortuga.Chain.SqlServer
 		{
 		}
 
-#if !SqlDependency_Missing
 
 		/// <summary>
 		/// Adds a SQL Dependency based change listener.
@@ -64,21 +55,17 @@ namespace Tortuga.Chain.SqlServer
 			return;
 		}
 
-#endif
-
 		/// <summary>
 		/// Subclasses can override this method to change the command object after the command text and parameters are loaded.
 		/// </summary>
 		protected override void OnBuildCommand(SqlCommand command)
 		{
 			base.OnBuildCommand(command);
-#if !SqlDependency_Missing
 			if (m_OnChangeEventHandler != null)
 			{
 				var sd = new SqlDependency(command);
 				sd.OnChange += m_OnChangeEventHandler;
 			}
-#endif
 		}
 	}
 }

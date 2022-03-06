@@ -10,9 +10,9 @@
     <ProductName>Tortuga Chain</ProductName>
     <Deterministic>true</Deterministic>
 
-    <AssemblyVersion>3.5.0</AssemblyVersion>
-    <Version>3.5.0</Version>
-    <FileVersion>3.5.0.0</FileVersion>
+    <AssemblyVersion>4.0.0</AssemblyVersion>
+    <Version>4.0.0</Version>
+    <FileVersion>4.0.0.0</FileVersion>
 
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
 
@@ -42,22 +42,22 @@
   </ItemGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net462'">
-    <DefineConstants>SQL_SERVER_SDS;NULL_MISSING</DefineConstants>
+    <DefineConstants>SQL_SERVER_SDS;NULL_MISSING;CLASS_1;CLASS_2;CLASS_3</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-    <DefineConstants>SQL_SERVER_SDS;NULL_MISSING</DefineConstants>
+    <DefineConstants>SQL_SERVER_SDS;NULL_MISSING;CLASS_1;CLASS_2;CLASS_3</DefineConstants>
   </PropertyGroup>
 
   
 
 	<PropertyGroup Condition="'$(TargetFramework)' == 'net5.0'">
-		<DefineConstants>SQL_SERVER_SDS;ORDINAL_STRINGS</DefineConstants>
+		<DefineConstants>SQL_SERVER_SDS;ORDINAL_STRINGS;CLASS_1;CLASS_2;CLASS_3</DefineConstants>
 	</PropertyGroup>
 
 
 	<PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
-		<DefineConstants>SQL_SERVER_SDS;ORDINAL_STRINGS</DefineConstants>
+		<DefineConstants>SQL_SERVER_SDS;ORDINAL_STRINGS;CLASS_1;CLASS_2;CLASS_3</DefineConstants>
 	</PropertyGroup>
 
   <ItemGroup Condition="'$(Configuration)'=='Debug'">
@@ -65,7 +65,7 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)'=='Release'">
-    <PackageReference Include="Tortuga.Chain.Core" Version="3.5.0" />
+    <PackageReference Include="Tortuga.Chain.Core" Version="4.0.0" />
   </ItemGroup>
 
   <ItemGroup>

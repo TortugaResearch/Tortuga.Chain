@@ -1,17 +1,9 @@
-namespace Tests
-{
-	public enum DataSourceGroup
-	{
-		Primary,
-		All,
-		AllNormalOnly
-	}
+namespace Tests;
 
-	public enum DataSourceType
-	{
-		Normal,
-		Transactional,
-		Open,
-		Strict
-	}
+public enum DataSourceType
+{
+	Normal,
+	Transactional,
+	Open,
+	Strict
 }

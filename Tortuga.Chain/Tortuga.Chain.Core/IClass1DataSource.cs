@@ -22,7 +22,6 @@ namespace Tortuga.Chain
 		/// </summary>
 		/// <param name="argumentValue">The argument value.</param>
 		/// <param name="options">The delete options.</param>
-		/// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
 		IObjectDbCommandBuilder<TArgument> Delete<TArgument>(TArgument argumentValue, DeleteOptions options = DeleteOptions.None) where TArgument : class;
 
 		/// <summary>
@@ -289,21 +288,5 @@ namespace Tortuga.Chain
 		/// <remarks>Use .WithFilter to apply a WHERE clause.</remarks>
 		IUpdateManyDbCommandBuilder UpdateSet(string tableName, object newValues, UpdateOptions options = UpdateOptions.None);
 
-		/// <summary>
-		/// Perform an insert or update operation as appropriate.
-		/// </summary>
-		/// <param name="tableName">Name of the table.</param>
-		/// <param name="argumentValue">The argument value.</param>
-		/// <param name="options">The options for how the insert/update occurs.</param>
-		/// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
-		IObjectDbCommandBuilder<TArgument> Upsert<TArgument>(string tableName, TArgument argumentValue, UpsertOptions options = UpsertOptions.None) where TArgument : class;
-
-		/// <summary>
-		/// Perform an insert or update operation as appropriate.
-		/// </summary>
-		/// <param name="argumentValue">The argument value.</param>
-		/// <param name="options">The options for how the insert/update occurs.</param>
-		/// <exception cref="ArgumentException">tableName is empty.;tableName</exception>
-		IObjectDbCommandBuilder<TArgument> Upsert<TArgument>(TArgument argumentValue, UpsertOptions options = UpsertOptions.None) where TArgument : class;
 	}
 }
