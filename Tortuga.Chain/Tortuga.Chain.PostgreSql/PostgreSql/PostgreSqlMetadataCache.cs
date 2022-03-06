@@ -645,7 +645,26 @@ WHERE ns.nspname = @Schema AND tab.relname = @Name";
 "GTSVECTOR",
 "NUMRANGE",
 "TSRANGE",
-"PG_NDISTINCT"});
+"PG_NDISTINCT",
+"anycompatiblenonarray",
+"anymultirange",
+"pg_snapshot",
+"pg_brin_bloom_summary",
+"anycompatiblearray",
+"int8multirange",
+"regcollation",
+"anycompatiblemultirange",
+"tsmultirange",
+"anycompatible",
+"xid8",
+"datemultirange",
+"anycompatiblerange",
+"pg_brin_minmax_multi_summary",
+"int4multirange",
+"nummultirange",
+"tstzmultirange"
+
+		});
 
 		/// <summary>
 		/// Parse a string and return the database specific representation of the object name.
