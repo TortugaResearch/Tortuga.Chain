@@ -517,6 +517,13 @@ namespace Tortuga.Chain.Access
 		where TObject : class
 		{
 			var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).PrimaryKeyColumns;
+
+			if (primaryKeys.Count == 0) //we're looking at a view. Try looking at the underlying table.
+			{
+				var alternateTableName = DatabaseObjectAsTableOrView<TObject>(OperationType.All).Name;
+				primaryKeys = DatabaseMetadata.GetTableOrView(alternateTableName).PrimaryKeyColumns;
+			}
+
 			if (primaryKeys.Count != 1)
 				throw new MappingException($"{nameof(GetByKeyList)} operation isn't allowed on {tableName} because it doesn't have a single primary key. Use DataSource.From instead.");
 
@@ -534,6 +541,7 @@ namespace Tortuga.Chain.Access
 		public SingleRowDbCommandBuilder<AbstractCommand, AbstractParameter> GetByKey<TKey>(AbstractObjectName tableName, TKey key)
 		{
 			var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).PrimaryKeyColumns;
+
 			if (primaryKeys.Count != 1)
 				throw new MappingException($"{nameof(GetByKeyList)} operation isn't allowed on {tableName} because it doesn't have a single primary key. Use DataSource.From instead.");
 
@@ -594,6 +602,7 @@ namespace Tortuga.Chain.Access
 			where TObject : class
 		{
 			var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).Columns.Where(c => c.SqlName.Equals(keyColumn, StringComparison.OrdinalIgnoreCase)).ToList();
+
 			if (primaryKeys.Count == 0)
 				throw new MappingException($"Cannot find a column named {keyColumn} on table {tableName}.");
 
@@ -612,6 +621,12 @@ namespace Tortuga.Chain.Access
 			var tableName = DatabaseObjectAsTableOrView<TObject>(OperationType.Select).Name;
 
 			var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).PrimaryKeyColumns;
+			if (primaryKeys.Count == 0) //we're looking at a view. Try looking at the underlying table.
+			{
+				var alternateTableName = DatabaseObjectAsTableOrView<TObject>(OperationType.All).Name;
+				primaryKeys = DatabaseMetadata.GetTableOrView(alternateTableName).PrimaryKeyColumns;
+			}
+
 			if (primaryKeys.Count != 1)
 				throw new MappingException($"{nameof(GetByKeyList)} operation isn't allowed on {tableName} because it doesn't have a single primary key. Use DataSource.From instead.");
 
