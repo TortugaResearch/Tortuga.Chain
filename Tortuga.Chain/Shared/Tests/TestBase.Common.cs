@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using Tests.Models;
 using Tortuga.Chain;
 using Tortuga.Chain.DataSources;
@@ -27,10 +26,19 @@ namespace Tests
 			return dataSource;
 		}
 
+#if CLASS_2
 		public IClass2DataSource DataSource2(string name, DataSourceType mode, [CallerMemberName] string caller = null)
 		{
-			return (IClass2DataSource)DataSource(name, mode, caller);
+			return DataSource(name, mode, caller);
 		}
+#endif
+
+#if CLASS_3
+		public IClass3DataSource DataSource3(string name, DataSourceType mode, [CallerMemberName] string caller = null)
+		{
+			return DataSource(name, mode, caller);
+		}
+#endif
 
 		public void Release(IDataSource dataSource)
 		{

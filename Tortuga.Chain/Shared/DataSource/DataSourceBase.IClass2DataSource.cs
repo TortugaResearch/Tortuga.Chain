@@ -1,77 +1,56 @@
-﻿#if SQL_SERVER_SDS || SQL_SERVER_MDS || SQL_SERVER_OLEDB || MYSQL || POSTGRESQL
+﻿using Tortuga.Chain.CommandBuilders;
 
-using Tortuga.Chain.CommandBuilders;
-
-#if MYSQL
-
-using System;
-
-#endif
 
 #if SQL_SERVER_SDS || SQL_SERVER_MDS
 
 namespace Tortuga.Chain.SqlServer
 {
-    partial class SqlServerDataSourceBase : IClass2DataSource
-
+	partial class SqlServerDataSourceBase : IClass2DataSource
 #elif SQL_SERVER_OLEDB
 
 namespace Tortuga.Chain.SqlServer
 {
-    partial class OleDbSqlServerDataSourceBase : IClass2DataSource
+    partial class OleDbSqlServerDataSourceBase : IClass1DataSource
+
+#elif SQLITE
+
+namespace Tortuga.Chain.SQLite
+{
+	partial class SQLiteDataSourceBase : IClass2DataSource
 
 #elif MYSQL
 
 namespace Tortuga.Chain.MySql
 {
-	partial class MySqlDataSourceBase : IClass2DataSource
+	partial class MySqlDataSourceBase : IClass1DataSource
 
 #elif POSTGRESQL
 
 namespace Tortuga.Chain.PostgreSql
 {
-    partial class PostgreSqlDataSourceBase : IClass2DataSource
+    partial class PostgreSqlDataSourceBase : IClass1DataSource
 
 #endif
 	{
-		IProcedureDbCommandBuilder IClass2DataSource.Procedure(string procedureName)
+
+		IObjectDbCommandBuilder<TArgument> IClass2DataSource.Upsert<TArgument>(string tableName, TArgument argumentValue, UpsertOptions options)
 		{
-			return Procedure(procedureName);
+			return Upsert(tableName, argumentValue, options);
 		}
 
-		IProcedureDbCommandBuilder IClass2DataSource.Procedure(string procedureName, object argumentValue)
+		IObjectDbCommandBuilder<TArgument> IClass2DataSource.Upsert<TArgument>(TArgument argumentValue, UpsertOptions options)
 		{
-			return Procedure(procedureName, argumentValue);
+			return Upsert(argumentValue, options);
 		}
 
-		IScalarDbCommandBuilder IClass2DataSource.ScalarFunction(string scalarFunctionName)
+		ILink<int?> IClass2DataSource.Truncate(string tableName)
 		{
-			return ScalarFunction(scalarFunctionName);
+			return Truncate(tableName);
 		}
 
-		IScalarDbCommandBuilder IClass2DataSource.ScalarFunction(string scalarFunctionName, object functionArgumentValue)
+		ILink<int?> IClass2DataSource.Truncate<TObject>() where TObject : class
 		{
-			return ScalarFunction(scalarFunctionName, functionArgumentValue);
-		}
-
-		ITableDbCommandBuilder IClass2DataSource.TableFunction(string functionName)
-		{
-#if MYSQL
-			throw new NotSupportedException("MySQL does not support table-valued functions.");
-#else
-            return TableFunction(functionName);
-#endif
-		}
-
-		ITableDbCommandBuilder IClass2DataSource.TableFunction(string functionName, object functionArgumentValue)
-		{
-#if MYSQL
-			throw new NotSupportedException("MySQL does not support table-valued functions.");
-#else
-            return TableFunction(functionName, functionArgumentValue);
-#endif
+			return Truncate<TObject>();
 		}
 	}
 }
-
-#endif
