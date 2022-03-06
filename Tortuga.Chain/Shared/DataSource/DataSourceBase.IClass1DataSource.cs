@@ -10,7 +10,7 @@ using System;
 
 namespace Tortuga.Chain.SqlServer
 {
-    partial class SqlServerDataSourceBase : IClass1DataSource
+	partial class SqlServerDataSourceBase : IClass1DataSource
 #elif SQL_SERVER_OLEDB
 
 namespace Tortuga.Chain.SqlServer
@@ -193,6 +193,7 @@ namespace Tortuga.Chain.Access
 			return UpdateSet(tableName, newValues, options);
 		}
 
+
 		IObjectDbCommandBuilder<TArgument> IClass1DataSource.Upsert<TArgument>(string tableName, TArgument argumentValue, UpsertOptions options)
 		{
 #if ACCESS
@@ -209,6 +210,16 @@ namespace Tortuga.Chain.Access
 #else
 			return Upsert(argumentValue, options);
 #endif
+		}
+
+		ILink<int?> IClass1DataSource.Truncate(string tableName)
+		{
+			return Truncate(tableName);
+		}
+
+		ILink<int?> IClass1DataSource.Truncate<TObject>() where TObject : class
+		{
+			return Truncate<TObject>();
 		}
 	}
 }

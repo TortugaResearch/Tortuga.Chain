@@ -309,79 +309,79 @@ namespace Tests.CommandBuilders
 
 #if SQL_SERVER_SDS || SQL_SERVER_MDS || SQL_SERVER_OLEDB //SQL Server has problems with CRUD operations that return values on tables with triggers.
 
-        [DataTestMethod, BasicData(DataSourceGroup.Primary)]
-        public void DeleteTests_Delete_Trigger(string dataSourceName, DataSourceType mode)
-        {
-            var dataSource = DataSource(dataSourceName, mode);
-            try
-            {
-                var original = new Employee()
-                {
-                    FirstName = "Test",
-                    LastName = "Employee" + DateTime.Now.Ticks,
-                    Title = "Mail Room"
-                };
+		[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+		public void DeleteTests_Delete_Trigger(string dataSourceName, DataSourceType mode)
+		{
+			var dataSource = DataSource(dataSourceName, mode);
+			try
+			{
+				var original = new Employee()
+				{
+					FirstName = "Test",
+					LastName = "Employee" + DateTime.Now.Ticks,
+					Title = "Mail Room"
+				};
 
-                var key = dataSource.Insert(EmployeeTableName_Trigger, original).ToInt32().Execute();
-                var inserted = dataSource.GetByKey(EmployeeTableName_Trigger, key).ToObject<Employee>().Execute();
+				var key = dataSource.Insert(EmployeeTableName_Trigger, original).ToInt32().Execute();
+				var inserted = dataSource.GetByKey(EmployeeTableName_Trigger, key).ToObject<Employee>().Execute();
 
-                dataSource.Delete(EmployeeTableName_Trigger, inserted).Execute();
-            }
-            finally
-            {
-                Release(dataSource);
-            }
-        }
+				dataSource.Delete(EmployeeTableName_Trigger, inserted).Execute();
+			}
+			finally
+			{
+				Release(dataSource);
+			}
+		}
 
-        [DataTestMethod, BasicData(DataSourceGroup.Primary)]
-        public void DeleteByKey_Trigger(string dataSourceName, DataSourceType mode)
-        {
-            var dataSource = DataSource(dataSourceName, mode);
-            try
-            {
-                var lookupKey = Guid.NewGuid().ToString();
-                for (var i = 0; i < 10; i++)
-                    dataSource.Insert(EmployeeTableName_Trigger, new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = lookupKey, MiddleName = i % 2 == 0 ? "A" + i : null }).ToObject<Employee>().Execute();
+		[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+		public void DeleteByKey_Trigger(string dataSourceName, DataSourceType mode)
+		{
+			var dataSource = DataSource(dataSourceName, mode);
+			try
+			{
+				var lookupKey = Guid.NewGuid().ToString();
+				for (var i = 0; i < 10; i++)
+					dataSource.Insert(EmployeeTableName_Trigger, new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = lookupKey, MiddleName = i % 2 == 0 ? "A" + i : null }).ToObject<Employee>().Execute();
 
-                var allKeys = dataSource.From(EmployeeTableName_Trigger, new { Title = lookupKey }).ToInt32List("EmployeeKey").Execute();
-                var keyToUpdate = allKeys.First();
+				var allKeys = dataSource.From(EmployeeTableName_Trigger, new { Title = lookupKey }).ToInt32List("EmployeeKey").Execute();
+				var keyToUpdate = allKeys.First();
 
-                dataSource.DeleteByKey(EmployeeTableName_Trigger, keyToUpdate).Execute();
+				dataSource.DeleteByKey(EmployeeTableName_Trigger, keyToUpdate).Execute();
 
-                var allRows = dataSource.From(EmployeeTableName_Trigger, new { Title = lookupKey }).ToCollection<Employee>().Execute();
-                Assert.AreEqual(9, allRows.Count, "The wrong number of rows remain");
-            }
-            finally
-            {
-                Release(dataSource);
-            }
-        }
+				var allRows = dataSource.From(EmployeeTableName_Trigger, new { Title = lookupKey }).ToCollection<Employee>().Execute();
+				Assert.AreEqual(9, allRows.Count, "The wrong number of rows remain");
+			}
+			finally
+			{
+				Release(dataSource);
+			}
+		}
 
-        [DataTestMethod, BasicData(DataSourceGroup.Primary)]
-        public void DeleteByKeyList_Trigger(string dataSourceName, DataSourceType mode)
-        {
-            var dataSource = DataSource(dataSourceName, mode);
-            try
-            {
-                var lookupKey = Guid.NewGuid().ToString();
-                for (var i = 0; i < 10; i++)
-                    dataSource.Insert(EmployeeTableName_Trigger, new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = lookupKey, MiddleName = i % 2 == 0 ? "A" + i : null }).ToObject<Employee>().Execute();
+		[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+		public void DeleteByKeyList_Trigger(string dataSourceName, DataSourceType mode)
+		{
+			var dataSource = DataSource(dataSourceName, mode);
+			try
+			{
+				var lookupKey = Guid.NewGuid().ToString();
+				for (var i = 0; i < 10; i++)
+					dataSource.Insert(EmployeeTableName_Trigger, new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = lookupKey, MiddleName = i % 2 == 0 ? "A" + i : null }).ToObject<Employee>().Execute();
 
-                var allKeys = dataSource.From(EmployeeTableName_Trigger, new { Title = lookupKey }).ToInt32List("EmployeeKey").Execute();
-                var keysToUpdate = allKeys.Take(5).ToList();
+				var allKeys = dataSource.From(EmployeeTableName_Trigger, new { Title = lookupKey }).ToInt32List("EmployeeKey").Execute();
+				var keysToUpdate = allKeys.Take(5).ToList();
 
-                var updatedRows = dataSource.DeleteByKeyList(EmployeeTableName_Trigger, keysToUpdate).ToCollection<Employee>().Execute();
+				var updatedRows = dataSource.DeleteByKeyList(EmployeeTableName_Trigger, keysToUpdate).ToCollection<Employee>().Execute();
 
-                Assert.AreEqual(5, updatedRows.Count, "The wrong number of rows were deleted");
+				Assert.AreEqual(5, updatedRows.Count, "The wrong number of rows were deleted");
 
-                var allRows = dataSource.From(EmployeeTableName_Trigger, new { Title = lookupKey }).ToCollection<Employee>().Execute();
-                Assert.AreEqual(5, allRows.Count, "The wrong number of rows remain");
-            }
-            finally
-            {
-                Release(dataSource);
-            }
-        }
+				var allRows = dataSource.From(EmployeeTableName_Trigger, new { Title = lookupKey }).ToCollection<Employee>().Execute();
+				Assert.AreEqual(5, allRows.Count, "The wrong number of rows remain");
+			}
+			finally
+			{
+				Release(dataSource);
+			}
+		}
 
 #endif
 
@@ -558,6 +558,25 @@ namespace Tests.CommandBuilders
 				Release(dataSource);
 			}
 		}
+
+		[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+		public void Truncate(string dataSourceName, DataSourceType mode)
+		{
+			var dataSource = DataSource(dataSourceName);
+			try
+			{
+
+				dataSource.Insert(new Sales.Location() { LocationName = "Example " + DateTime.Now.Ticks }).Execute();
+				Assert.IsTrue(dataSource.From<Sales.Location>().AsCount().Execute() > 0, "Expected at least one row");
+				dataSource.Truncate<Sales.Location>().Execute();
+				Assert.IsTrue(dataSource.From<Sales.Location>().AsCount().Execute() == 0, "Expected zero rows");
+
+			}
+			finally
+			{
+				Release(dataSource);
+			}
+		}
 	}
 
 	namespace HR
@@ -565,6 +584,16 @@ namespace Tests.CommandBuilders
 		public class Employee
 		{
 			public int EmployeeKey { get; set; }
+		}
+	}
+
+	namespace Sales
+	{
+		public class Location
+		{
+			public int? LocationKey { get; set; }
+			public string LocationName { get; set; }
+
 		}
 	}
 }

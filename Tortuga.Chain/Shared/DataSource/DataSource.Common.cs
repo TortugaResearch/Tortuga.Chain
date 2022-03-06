@@ -1,64 +1,27 @@
 ﻿using System.Collections.Concurrent;
-using Tortuga.Chain.Core;
 using Tortuga.Chain.AuditRules;
-
-#if SQL_SERVER_SDS
-
-using AbstractCommand = System.Data.SqlClient.SqlCommand;
-using AbstractDataSource = Tortuga.Chain.SqlServerDataSource;
-
-#elif SQL_SERVER_MDS
-
-using AbstractCommand = Microsoft.Data.SqlClient.SqlCommand;
-using AbstractDataSource = Tortuga.Chain.SqlServerDataSource;
-
-#elif SQLITE
-
-using AbstractCommand = System.Data.SQLite.SQLiteCommand;
-using AbstractDataSource = Tortuga.Chain.SQLiteDataSource;
-
-#elif MYSQL
-
-using AbstractCommand = MySqlConnector.MySqlCommand;
-using AbstractDataSource = Tortuga.Chain.MySqlDataSource;
-
-#elif POSTGRESQL
-
-using AbstractCommand = Npgsql.NpgsqlCommand;
-using AbstractDataSource = Tortuga.Chain.PostgreSqlDataSource;
-
-#elif ACCESS
-
-using AbstractCommand = System.Data.OleDb.OleDbCommand;
-using AbstractDataSource = Tortuga.Chain.AccessDataSource;
-
-#elif SQL_SERVER_OLEDB
-
-using AbstractCommand = System.Data.OleDb.OleDbCommand;
-using AbstractDataSource = Tortuga.Chain.OleDbSqlServerDataSource;
-
-#endif
+using Tortuga.Chain.Core;
 
 #if SQL_SERVER_SDS || SQL_SERVER_MDS
 
 namespace Tortuga.Chain
 {
-    partial class SqlServerDataSource
-    {
+	partial class SqlServerDataSource
+	{
 #elif SQL_SERVER_OLEDB
 
 namespace Tortuga.Chain
 {
-    partial class OleDbSqlServerDataSource
-    {
+	partial class OleDbSqlServerDataSource
+	{
 #elif SQL_SERVER_OLEDB
 
 #elif SQLITE
 
 namespace Tortuga.Chain
 {
-    partial class SQLiteDataSource
-    {
+	partial class SQLiteDataSource
+	{
 #elif MYSQL
 
 namespace Tortuga.Chain
@@ -70,15 +33,15 @@ namespace Tortuga.Chain
 
 namespace Tortuga.Chain
 {
-    partial class PostgreSqlDataSource
-    {
+	partial class PostgreSqlDataSource
+	{
 
 #elif ACCESS
 
 namespace Tortuga.Chain
 {
-    partial class AccessDataSource
-    {
+	partial class AccessDataSource
+	{
 
 #endif
 		internal ICacheAdapter m_Cache;

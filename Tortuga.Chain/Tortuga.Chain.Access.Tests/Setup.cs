@@ -103,6 +103,12 @@ SELECT  Employee_1.EmployeeKey ,
 FROM    Employee AS Employee_1
         LEFT JOIN Employee AS Employee_2 ON Employee_2.EmployeeKey = Employee_1.ManagerKey";
 
+				string sql5 = @"CREATE TABLE Location
+(
+	LocationKey COUNTER PRIMARY KEY,
+    LocationName TEXT(100) NULL
+)";
+
 				using (var command = new OleDbCommand(sql, dbConnection))
 					command.ExecuteNonQuery();
 
@@ -113,6 +119,9 @@ FROM    Employee AS Employee_1
 					command.ExecuteNonQuery();
 
 				using (var command = new OleDbCommand(sql4, dbConnection))
+					command.ExecuteNonQuery();
+
+				using (var command = new OleDbCommand(sql5, dbConnection))
 					command.ExecuteNonQuery();
 
 				sql = "INSERT INTO Employee ([FirstName], [MiddleName], [LastName], [Title], [ManagerKey], [EmployeeId]) VALUES (@FirstName, @MiddleName, @LastName, @Title, @ManagerKey, @EmployeeId)";

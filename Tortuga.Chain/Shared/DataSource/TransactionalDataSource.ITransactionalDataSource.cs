@@ -4,66 +4,22 @@ using System.Diagnostics.CodeAnalysis;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.DataSources;
 
-#if SQL_SERVER_SDS
-
-using AbstractConnection = System.Data.SqlClient.SqlConnection;
-using AbstractTransaction = System.Data.SqlClient.SqlTransaction;
-using AbstractCommand = System.Data.SqlClient.SqlCommand;
-using AbstractParameter = System.Data.SqlClient.SqlParameter;
-
-#elif SQL_SERVER_MDS
-
-using AbstractConnection = Microsoft.Data.SqlClient.SqlConnection;
-using AbstractTransaction = Microsoft.Data.SqlClient.SqlTransaction;
-using AbstractCommand = Microsoft.Data.SqlClient.SqlCommand;
-using AbstractParameter = Microsoft.Data.SqlClient.SqlParameter;
-
-#elif SQLITE
-
-using AbstractConnection = System.Data.SQLite.SQLiteConnection;
-using AbstractTransaction = System.Data.SQLite.SQLiteTransaction;
-using AbstractCommand = System.Data.SQLite.SQLiteCommand;
-using AbstractParameter = System.Data.SQLite.SQLiteParameter;
-
-#elif MYSQL
-
-using AbstractConnection = MySqlConnector.MySqlConnection;
-using AbstractTransaction = MySqlConnector.MySqlTransaction;
-using AbstractCommand = MySqlConnector.MySqlCommand;
-using AbstractParameter = MySqlConnector.MySqlParameter;
-
-#elif POSTGRESQL
-
-using AbstractConnection =  Npgsql.NpgsqlConnection;
-using AbstractTransaction = Npgsql.NpgsqlTransaction;
-using AbstractCommand = Npgsql.NpgsqlCommand;
-using AbstractParameter = Npgsql.NpgsqlParameter;
-
-#elif ACCESS || SQL_SERVER_OLEDB
-
-using AbstractConnection = System.Data.OleDb.OleDbConnection;
-using AbstractTransaction = System.Data.OleDb.OleDbTransaction;
-using AbstractCommand = System.Data.OleDb.OleDbCommand;
-using AbstractParameter = System.Data.OleDb.OleDbParameter;
-
-#endif
-
 #if SQL_SERVER_SDS || SQL_SERVER_MDS
 
 namespace Tortuga.Chain.SqlServer
 {
-    partial class SqlServerTransactionalDataSource : IDisposable, ITransactionalDataSource
+	partial class SqlServerTransactionalDataSource : IDisposable, ITransactionalDataSource
 #elif SQL_SERVER_OLEDB
 
 namespace Tortuga.Chain.SqlServer
 {
-    partial class OleDbSqlServerTransactionalDataSource : IDisposable, ITransactionalDataSource
+	partial class OleDbSqlServerTransactionalDataSource : IDisposable, ITransactionalDataSource
 
 #elif SQLITE
 
 namespace Tortuga.Chain.SQLite
 {
-    partial class SQLiteTransactionalDataSource : IDisposable, ITransactionalDataSource
+	partial class SQLiteTransactionalDataSource : IDisposable, ITransactionalDataSource
 
 #elif MYSQL
 
@@ -75,13 +31,13 @@ namespace Tortuga.Chain.MySql
 
 namespace Tortuga.Chain.PostgreSql
 {
-    partial class PostgreSqlTransactionalDataSource : IDisposable, ITransactionalDataSource
+	partial class PostgreSqlTransactionalDataSource : IDisposable, ITransactionalDataSource
 
 #elif ACCESS
 
 namespace Tortuga.Chain.Access
 {
-    partial class AccessTransactionalDataSource : IDisposable, ITransactionalDataSource
+	partial class AccessTransactionalDataSource : IDisposable, ITransactionalDataSource
 
 #endif
 	{

@@ -345,5 +345,12 @@ namespace Tortuga.Chain.SqlServer
 		{
 			return new SqlServerInsertBatch<TObject>(this, tableName, objects, options);
 		}
+
+		public partial ILink<int?> Truncate(SqlServerObjectName tableName)
+		{
+			//Verify the table name actually exists.
+			var table = DatabaseMetadata.GetTableOrView(tableName);
+			return Sql("TRUNCATE TABLE " + table.Name.ToQuotedString() + ";").AsNonQuery();
+		}
 	}
 }
