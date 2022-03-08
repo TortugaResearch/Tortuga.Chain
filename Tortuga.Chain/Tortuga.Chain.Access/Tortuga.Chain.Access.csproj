@@ -52,10 +52,6 @@
 	<PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
 		<DefineConstants>ACCESS;CLASS_1;NULL_MISSING</DefineConstants>
 	</PropertyGroup>
-	<!--
-  Unable to get this to work with .NET Core
-  
--->
 
 	<ItemGroup Condition="'$(Configuration)'=='Debug'">
 		<ProjectReference Include="..\Tortuga.Chain.Core\Tortuga.Chain.Core.csproj" />
