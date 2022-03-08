@@ -20,9 +20,8 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0" />
-		<PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
+		<PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
 	</ItemGroup>
 
 	<ItemGroup>

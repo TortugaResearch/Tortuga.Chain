@@ -63,10 +63,6 @@
 		<Compile Include="..\Tortuga.Chain.SqlServer\shared\SqlServer\SqlServerTableOrViewMetadata.cs" Link="referenced\SqlServerTableOrViewMetadata.cs" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<PackageReference Include="Microsoft.Data.SqlClient" Version="2.1.2" />
-	</ItemGroup>
-
 	<ItemGroup Condition="'$(Configuration)'=='Debug'">
 		<ProjectReference Include="..\Tortuga.Chain.Core\Tortuga.Chain.Core.csproj" />
 		<ProjectReference Include="..\Tortuga.Chain.Core.OleDb\Tortuga.Chain.Core.OleDb.csproj" />
