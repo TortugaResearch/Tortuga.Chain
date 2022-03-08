@@ -50,7 +50,7 @@ namespace Tortuga.Chain.PostgreSql
 		/// <param name="connection">The connection.</param>
 		/// <param name="transaction">The transaction.</param>
 		internal PostgreSqlTransactionalDataSource(PostgreSqlDataSource dataSource, bool forwardEvents, NpgsqlConnection connection, NpgsqlTransaction transaction)
-			: base(new PostgreSqlDataSourceSettings { DefaultCommandTimeout = dataSource.DefaultCommandTimeout, StrictMode = dataSource.StrictMode, SuppressGlobalEvents = dataSource.SuppressGlobalEvents || forwardEvents })
+			: base(new PostgreSqlDataSourceSettings(dataSource, forwardEvents))
 		{
 			Name = dataSource.Name;
 

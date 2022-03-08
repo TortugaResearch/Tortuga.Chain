@@ -47,7 +47,7 @@ namespace Tortuga.Chain.Materializers
 			var ds = new DataSet() { EnforceConstraints = false /*needed for PostgreSql*/};
 			Prepare().Execute(cmd =>
 			 {
-				 using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess))
+				 using (var reader = cmd.ExecuteReader(CommandBehavior))
 				 {
 					 ds.Load(reader, LoadOption.OverwriteChanges, m_TableNames);
 					 return ds.Tables.Cast<DataTable>().Sum(t => t.Rows.Count);
@@ -68,7 +68,7 @@ namespace Tortuga.Chain.Materializers
 			var ds = new DataSet() { EnforceConstraints = false /*needed for PostgreSql*/};
 			await Prepare().ExecuteAsync(async cmd =>
 			{
-				using (var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SequentialAccess, cancellationToken).ConfigureAwait(false))
+				using (var reader = await cmd.ExecuteReaderAsync(CommandBehavior, cancellationToken).ConfigureAwait(false))
 				{
 					ds.Load(reader, LoadOption.OverwriteChanges, m_TableNames);
 					return ds.Tables.Cast<DataTable>().Sum(t => t.Rows.Count);

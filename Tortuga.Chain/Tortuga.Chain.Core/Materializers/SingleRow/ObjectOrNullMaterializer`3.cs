@@ -56,7 +56,7 @@ namespace Tortuga.Chain.Materializers
 			var executionToken = Prepare();
 			var rowCount = executionToken.Execute(cmd =>
 			{
-				using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess))
+				using (var reader = cmd.ExecuteReader(CommandBehavior))
 				{
 					row = reader.ReadDictionary();
 					return (row != null ? 1 : 0) + reader.RemainingRowCount();
@@ -79,7 +79,7 @@ namespace Tortuga.Chain.Materializers
 			var executionToken = Prepare();
 			var rowCount = await executionToken.ExecuteAsync(async cmd =>
 			{
-				using (var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SequentialAccess, cancellationToken).ConfigureAwait(false))
+				using (var reader = await cmd.ExecuteReaderAsync(CommandBehavior, cancellationToken).ConfigureAwait(false))
 				{
 					row = await reader.ReadDictionaryAsync().ConfigureAwait(false);
 					return (row != null ? 1 : 0) + await reader.RemainingRowCountAsync().ConfigureAwait(false);

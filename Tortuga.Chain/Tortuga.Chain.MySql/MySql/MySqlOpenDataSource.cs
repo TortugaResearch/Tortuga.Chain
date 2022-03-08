@@ -16,7 +16,8 @@ namespace Tortuga.Chain.MySql
 		readonly MySqlConnection m_Connection;
 		readonly MySqlTransaction? m_Transaction;
 
-		internal MySqlOpenDataSource(MySqlDataSource dataSource, MySqlConnection connection, MySqlTransaction? transaction) : base(new MySqlDataSourceSettings() { DefaultCommandTimeout = dataSource.DefaultCommandTimeout, StrictMode = dataSource.StrictMode, SuppressGlobalEvents = dataSource.SuppressGlobalEvents })
+		internal MySqlOpenDataSource(MySqlDataSource dataSource, MySqlConnection connection, MySqlTransaction? transaction) : base(new MySqlDataSourceSettings(dataSource)
+		)
 		{
 			if (connection == null)
 				throw new ArgumentNullException(nameof(connection), $"{nameof(connection)} is null.");

@@ -34,7 +34,7 @@ namespace Tortuga.Chain.Materializers
 			var result = new TCollection();
 			Prepare().Execute(cmd =>
 			{
-				using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess))
+				using (var reader = cmd.ExecuteReader(CommandBehavior))
 				{
 					var factory = CompiledMaterializers.CreateBuilder<TObject>(DataSource, cmd.CommandText, reader, CommandBuilder.TryGetNonNullableColumns());
 					while (reader.Read())
@@ -52,7 +52,7 @@ namespace Tortuga.Chain.Materializers
 
 			await Prepare().ExecuteAsync(async cmd =>
 			{
-				using (var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SequentialAccess, cancellationToken).ConfigureAwait(false))
+				using (var reader = await cmd.ExecuteReaderAsync(CommandBehavior, cancellationToken).ConfigureAwait(false))
 				{
 					var factory = CompiledMaterializers.CreateBuilder<TObject>(DataSource, cmd.CommandText, reader, CommandBuilder.TryGetNonNullableColumns());
 					while (await reader.ReadAsync().ConfigureAwait(false))

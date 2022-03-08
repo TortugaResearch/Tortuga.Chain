@@ -50,7 +50,7 @@ namespace Tortuga.Chain.MySql
 		/// <param name="connection">The connection.</param>
 		/// <param name="transaction">The transaction.</param>
 		internal MySqlTransactionalDataSource(MySqlDataSource dataSource, bool forwardEvents, MySqlConnection connection, MySqlTransaction transaction)
-			: base(new MySqlDataSourceSettings { DefaultCommandTimeout = dataSource.DefaultCommandTimeout, StrictMode = dataSource.StrictMode, SuppressGlobalEvents = dataSource.SuppressGlobalEvents || forwardEvents })
+			: base(new MySqlDataSourceSettings(dataSource, forwardEvents))
 		{
 			Name = dataSource.Name;
 

@@ -22,6 +22,7 @@ namespace Tortuga.Chain.CommandBuilders
 		{
 			DataSource = dataSource ?? throw new ArgumentNullException(nameof(dataSource), $"{nameof(dataSource)} is null.");
 			StrictMode = dataSource.StrictMode;
+			SequentialAccessMode = dataSource.SequentialAccessMode;
 		}
 
 		/// <summary>

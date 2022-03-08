@@ -1,8 +1,5 @@
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 using Tests.Models;
 using Tortuga.Chain;
 using Tortuga.Chain.AuditRules;
@@ -68,6 +65,7 @@ namespace Tests
 			{
 				case DataSourceType.Normal: return AttachTracers(ds);
 				case DataSourceType.Strict: return AttachTracers(ds).WithSettings(new SqlServerDataSourceSettings() { StrictMode = true });
+				case DataSourceType.SequentialAccess: return AttachTracers(ds).WithSettings(new SqlServerDataSourceSettings() { SequentialAccessMode = true });
 				case DataSourceType.Transactional: return AttachTracers(ds.BeginTransaction());
 				case DataSourceType.Open:
 					var root = (IRootDataSource)ds;
@@ -85,6 +83,7 @@ namespace Tests
 			{
 				case DataSourceType.Normal: return AttachTracers(ds);
 				case DataSourceType.Strict: return AttachTracers(ds).WithSettings(new SqlServerDataSourceSettings() { StrictMode = true });
+				case DataSourceType.SequentialAccess: return AttachTracers(ds).WithSettings(new SqlServerDataSourceSettings() { SequentialAccessMode = true });
 				case DataSourceType.Transactional: return AttachTracers(await ds.BeginTransactionAsync());
 				case DataSourceType.Open:
 					var root = (IRootDataSource)ds;
