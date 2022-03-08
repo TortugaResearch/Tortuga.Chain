@@ -1,11 +1,11 @@
 namespace Tests;
 
-	public enum DataSourceType
-	{
-		Normal,
-		Transactional,
-		Open,
-		Strict,
-		SequentialAccess
-	}
+public enum DataSourceType
+{
+	Normal,
+	Transactional,
+	Open,
+	Strict,
+	SequentialAccess
 }
+
