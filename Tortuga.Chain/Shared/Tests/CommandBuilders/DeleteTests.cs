@@ -118,4 +118,70 @@ public class DeleteTests : TestBase
 		}
 	}
 #endif
+
+	[DataTestMethod, RootData(DataSourceGroup.Primary)]
+	public void Delete_TableAndView_Strict(string dataSourceName)
+	{
+		var dataSource = DataSource(dataSourceName, DataSourceType.Strict);
+		try
+		{
+			var original = new Employee()
+			{
+				FirstName = "Test",
+				LastName = "Employee" + DateTime.Now.Ticks,
+				Title = "Mail Room"
+			};
+
+			var key = dataSource.Insert(original).ToInt32().Execute();
+			var inserted = dataSource.GetByKey<EmployeeWithView>(key).ToObject().Execute();
+
+			dataSource.Delete(inserted).Execute();
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
+
+	[DataTestMethod, RootData(DataSourceGroup.Primary)]
+	public void Delete_TableAndView_Strict_ReadDeleted(string dataSourceName)
+	{
+		var dataSource = DataSource(dataSourceName, DataSourceType.Strict);
+		try
+		{
+			var manager = new Employee()
+			{
+				FirstName = "Test",
+				LastName = "Employee" + DateTime.Now.Ticks,
+				Title = "Mail Room"
+			};
+
+			var managerKey = dataSource.Insert(manager).ToInt32().Execute();
+
+
+			var original = new Employee()
+			{
+				FirstName = "Test",
+				LastName = "Employee" + DateTime.Now.Ticks,
+				Title = "Mail Room",
+				ManagerKey = managerKey
+			};
+
+			var key = dataSource.Insert(original).ToInt32().Execute();
+			var inserted = dataSource.GetByKey<EmployeeWithView>(key).ToObject().Execute();
+
+			try
+			{
+				var deletedRecord = dataSource.Delete(inserted).ToObject().Execute();
+				Assert.Fail($"Expected a {nameof(MappingException)}");
+			}
+			catch (MappingException) { }
+
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
+
 }
