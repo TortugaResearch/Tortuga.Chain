@@ -1,112 +1,109 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>net462;netstandard2.0;net5.0;net6.0</TargetFrameworks>
-    <Authors>David Tomcik, Jonathan Allen</Authors>
-    <Company>Tortuga Technologies</Company>
-    <Description>A fluent ORM and Database Reflection Library for SQL Server. This is a replacement for Tortuga.Chain.SqlServer. It uses Microsoft.Data.SqlClient instead of the legacy System.Data.SqlClient.</Description>
-    <PackageTags>ORM Fluent DB Reflection SQL Server</PackageTags>
-    <LangVersion>10.0</LangVersion>
-    <ProductName>Tortuga Chain</ProductName>
-    <Deterministic>true</Deterministic>
+	<PropertyGroup>
+		<TargetFrameworks>net462;netstandard2.0;net6.0</TargetFrameworks>
+		<Authors>David Tomcik, Jonathan Allen</Authors>
+		<Company>Tortuga Technologies</Company>
+		<Description>A fluent ORM and Database Reflection Library for SQL Server. This is a replacement for Tortuga.Chain.SqlServer. It uses Microsoft.Data.SqlClient instead of the legacy System.Data.SqlClient.</Description>
+		<PackageTags>ORM Fluent DB Reflection SQL Server</PackageTags>
+		<LangVersion>10.0</LangVersion>
+		<ProductName>Tortuga Chain</ProductName>
+		<Deterministic>true</Deterministic>
 
-    <AssemblyVersion>4.0.0</AssemblyVersion>
-    <Version>4.0.0</Version>
-    <FileVersion>4.0.0.0</FileVersion>
+		<AssemblyVersion>4.0.0</AssemblyVersion>
+		<Version>4.0.0</Version>
+		<FileVersion>4.0.0.0</FileVersion>
 
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 
-    <Copyright>David Tomcik, Jonathan Allen 2016-2019</Copyright>
+		<Copyright>David Tomcik, Jonathan Allen 2016-2019</Copyright>
 
-    <PackageProjectUrl>https://github.com/docevaad/Chain</PackageProjectUrl>
+		<PackageProjectUrl>https://github.com/docevaad/Chain</PackageProjectUrl>
 
-    <RepositoryUrl>https://github.com/docevaad/Chain.git</RepositoryUrl>
+		<RepositoryUrl>https://github.com/docevaad/Chain.git</RepositoryUrl>
 
-    <RepositoryType>git</RepositoryType>
-    <Nullable>enable</Nullable>
+		<RepositoryType>git</RepositoryType>
+		<Nullable>enable</Nullable>
 
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <WarningsAsErrors />
-    <RootNamespace>Tortuga.Chain</RootNamespace>
-    <DocumentationFile>Tortuga.Chain.SqlServer.MDS.xml</DocumentationFile>
-  </PropertyGroup>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<WarningsAsErrors />
+		<RootNamespace>Tortuga.Chain</RootNamespace>
+		<DocumentationFile>Tortuga.Chain.SqlServer.MDS.xml</DocumentationFile>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net462'">
-    <DefineConstants>SQL_SERVER_MDS;NULL_MISSING;CLASS_1;CLASS_2;CLASS_3</DefineConstants>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(TargetFramework)' == 'net462'">
+		<DefineConstants>SQL_SERVER_MDS;NULL_MISSING;CLASS_1;CLASS_2;CLASS_3</DefineConstants>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-    <DefineConstants>SQL_SERVER_MDS;NULL_MISSING;CLASS_1;CLASS_2;CLASS_3</DefineConstants>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+		<DefineConstants>SQL_SERVER_MDS;NULL_MISSING;CLASS_1;CLASS_2;CLASS_3</DefineConstants>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net5.0'">
-    <DefineConstants>SQL_SERVER_MDS;ORDINAL_STRINGS;CLASS_1;CLASS_2;CLASS_3</DefineConstants>
-  </PropertyGroup>
 	<PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
 		<DefineConstants>SQL_SERVER_MDS;ORDINAL_STRINGS;CLASS_1;CLASS_2;CLASS_3</DefineConstants>
 	</PropertyGroup>
 
-  <ItemGroup>
-    <Compile Include="..\Tortuga.Chain.SqlServer\shared\**\*.cs">
-      <Link>referenced\%(RecursiveDir)%(Filename)%(Extension)</Link>
-    </Compile>
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Include="..\Tortuga.Chain.SqlServer\shared\**\*.cs">
+			<Link>referenced\%(RecursiveDir)%(Filename)%(Extension)</Link>
+		</Compile>
+	</ItemGroup>
 
-  <ItemGroup>
+	<ItemGroup>
 
-    <Compile Include="..\Shared\Legacy\**\*.cs">
-      <Link>referenced\Legacy\%(RecursiveDir)%(Filename)%(Extension)</Link>
-    </Compile>
-    <Compile Include="..\Shared\DataSource\**\*.cs">
-      <Link>referenced\DataSource\%(RecursiveDir)%(Filename)%(Extension)</Link>
-    </Compile>
-  </ItemGroup>
+		<Compile Include="..\Shared\Legacy\**\*.cs">
+			<Link>referenced\Legacy\%(RecursiveDir)%(Filename)%(Extension)</Link>
+		</Compile>
+		<Compile Include="..\Shared\DataSource\**\*.cs">
+			<Link>referenced\DataSource\%(RecursiveDir)%(Filename)%(Extension)</Link>
+		</Compile>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Compile Include="..\Shared\GlobalUsing.cs" Link="GlobalUsing.cs" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Include="..\Shared\GlobalUsing.cs" Link="GlobalUsing.cs" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="2.1.2" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Data.SqlClient" Version="2.1.2" />
+	</ItemGroup>
 
-  <ItemGroup Condition="'$(Configuration)'=='Debug'">
-    <ProjectReference Include="..\Tortuga.Chain.Core\Tortuga.Chain.Core.csproj" />
-  </ItemGroup>
+	<ItemGroup Condition="'$(Configuration)'=='Debug'">
+		<ProjectReference Include="..\Tortuga.Chain.Core\Tortuga.Chain.Core.csproj" />
+	</ItemGroup>
 
-  <ItemGroup Condition="'$(Configuration)'=='Release'">
-    <PackageReference Include="Tortuga.Chain.Core" Version="3.5.0" />
-  </ItemGroup>
+	<ItemGroup Condition="'$(Configuration)'=='Release'">
+		<PackageReference Include="Tortuga.Chain.Core" Version="3.5.0" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Compile Update="..\Tortuga.Chain.SqlServer\shared\SqlServer\CommandBuilders\ISupportsApproximateCount.cs" Link="ISupportsApproximateCount.cs" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Update="..\Tortuga.Chain.SqlServer\shared\SqlServer\CommandBuilders\ISupportsApproximateCount.cs" Link="ISupportsApproximateCount.cs" />
+	</ItemGroup>
 
-  <!-- NuGet Packaging Boilerplate-->
-  <PropertyGroup Condition="'$(Configuration)'=='Release'">
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <GenerateNuspecDependsOn>$(GenerateNuspecDependsOn);ReadPackageVersionFromOutputAssembly</GenerateNuspecDependsOn>
-  </PropertyGroup>
+	<!-- NuGet Packaging Boilerplate-->
+	<PropertyGroup Condition="'$(Configuration)'=='Release'">
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<GenerateNuspecDependsOn>$(GenerateNuspecDependsOn);ReadPackageVersionFromOutputAssembly</GenerateNuspecDependsOn>
+	</PropertyGroup>
 
-  <Target Name="ReadPackageVersionFromOutputAssembly" DependsOnTargets="Build" Condition="'$(IsCrossTargetingBuild)' == 'true'">
+	<Target Name="ReadPackageVersionFromOutputAssembly" DependsOnTargets="Build" Condition="'$(IsCrossTargetingBuild)' == 'true'">
 
-    <PropertyGroup>
-      <FirstTargetFramework>$([System.String]::Copy($(TargetFrameworks)).Split(';').GetValue(0))</FirstTargetFramework>
-    </PropertyGroup>
-    <MSBuild Projects="$(MSBuildProjectFullPath)" Targets="ReadPackageVersionFromOutputAssemblySingleTfm" Properties="TargetFramework=$(FirstTargetFramework)">
-      <Output TaskParameter="TargetOutputs" ItemName="PackAssembly" />
-    </MSBuild>
-    <PropertyGroup>
-      <PackageVersion>%(PackAssembly.Version)</PackageVersion>
-    </PropertyGroup>
-  </Target>
+		<PropertyGroup>
+			<FirstTargetFramework>$([System.String]::Copy($(TargetFrameworks)).Split(';').GetValue(0))</FirstTargetFramework>
+		</PropertyGroup>
+		<MSBuild Projects="$(MSBuildProjectFullPath)" Targets="ReadPackageVersionFromOutputAssemblySingleTfm" Properties="TargetFramework=$(FirstTargetFramework)">
+			<Output TaskParameter="TargetOutputs" ItemName="PackAssembly" />
+		</MSBuild>
+		<PropertyGroup>
+			<PackageVersion>%(PackAssembly.Version)</PackageVersion>
+		</PropertyGroup>
+	</Target>
 
-  <Target Name="ReadPackageVersionFromOutputAssemblySingleTfm" Returns="@(PackAssembly)" Condition="'$(IsCrossTargetingBuild)' != 'true'">
-    <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
-      <Output TaskParameter="Assemblies" ItemName="PackAssembly" />
-    </GetAssemblyIdentity>
-    <PropertyGroup>
-      <PackageVersion>%(PackAssembly.Version)</PackageVersion>
-    </PropertyGroup>
-  </Target>
+	<Target Name="ReadPackageVersionFromOutputAssemblySingleTfm" Returns="@(PackAssembly)" Condition="'$(IsCrossTargetingBuild)' != 'true'">
+		<GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
+			<Output TaskParameter="Assemblies" ItemName="PackAssembly" />
+		</GetAssemblyIdentity>
+		<PropertyGroup>
+			<PackageVersion>%(PackAssembly.Version)</PackageVersion>
+		</PropertyGroup>
+	</Target>
 </Project>

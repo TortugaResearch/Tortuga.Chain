@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net462;netstandard2.0;net5.0;net6.0</TargetFrameworks>
+		<TargetFrameworks>net462;netstandard2.0;net6.0</TargetFrameworks>
 		<Authors>David Tomcik, Jonathan Allen</Authors>
 		<Company>Tortuga Technologies</Company>
 		<Description>A fluent ORM and Database Reflection Library for MySQL. This uses MySqlConnector rather than the Oracle provided driver.</Description>
@@ -49,9 +49,6 @@
 		<DefineConstants>MYSQL;NULL_MISSING;CLASS_1;CLASS_2;CLASS_3</DefineConstants>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(TargetFramework)' == 'net5.0'">
-		<DefineConstants>MYSQL;CLASS_1;CLASS_2;CLASS_3</DefineConstants>
-	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
 		<DefineConstants>MYSQL;CLASS_1;CLASS_2;CLASS_3</DefineConstants>
