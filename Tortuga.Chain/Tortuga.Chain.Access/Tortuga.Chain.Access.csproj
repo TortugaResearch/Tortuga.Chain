@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net462</TargetFrameworks>
+		<TargetFrameworks>net462;netstandard2.0;net6.0-windows</TargetFrameworks>
 		<Authors>David Tomcik, Jonathan Allen</Authors>
 		<Company>Tortuga Technologies</Company>
 		<Description>A fluent ORM and Database Reflection Library for MS Access.</Description>
@@ -9,7 +9,7 @@
 		<LangVersion>10.0</LangVersion>
 		<ProductName>Tortuga Chain</ProductName>
 		<Deterministic>true</Deterministic>
-		
+
 		<AssemblyVersion>4.0.0</AssemblyVersion>
 		<Version>4.0.0</Version>
 		<FileVersion>4.0.0.0</FileVersion>
@@ -45,11 +45,15 @@
 		<DefineConstants>ACCESS;NULL_MISSING;CLASS_1</DefineConstants>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(TargetFramework)' == 'net6.0-windows'">
+		<DefineConstants>ACCESS;CLASS_1</DefineConstants>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+		<DefineConstants>ACCESS;CLASS_1;NULL_MISSING</DefineConstants>
+	</PropertyGroup>
 	<!--
   Unable to get this to work with .NET Core
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-    <DefineConstants>ACCESS;NULL_MISSING</DefineConstants>
-  </PropertyGroup>
   
 -->
 
@@ -63,10 +67,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Remove="..\Shared\DataSource\DataSourceBase.Class2DataSource.cs" />
-	  <Compile Remove="..\Shared\DataSource\DataSourceBase.Class3DataSource.cs" />
-	  <Compile Remove="..\Shared\DataSource\DataSourceBase.IClass2DataSource.cs" />
-	  <Compile Remove="..\Shared\DataSource\DataSourceBase.IClass3DataSource.cs" />
+		<Compile Remove="..\Shared\DataSource\DataSourceBase.Class2DataSource.cs" />
+		<Compile Remove="..\Shared\DataSource\DataSourceBase.Class3DataSource.cs" />
+		<Compile Remove="..\Shared\DataSource\DataSourceBase.IClass2DataSource.cs" />
+		<Compile Remove="..\Shared\DataSource\DataSourceBase.IClass3DataSource.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
