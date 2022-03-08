@@ -263,6 +263,17 @@ namespace Tortuga.Chain
 		}
 
 		/// <summary>
+		/// Sets the sequential access mode, overriding the value set in the DataSource.
+		/// </summary>
+		/// <param name="previousLink">The previous link.</param>
+		/// <param name="sequentialAccessMode">if set to <c>true</c> enable sequential access.</param>
+		/// <returns></returns>
+		public static ILink<TResult> SetSequentialAccessMode<TResult>(this ILink<TResult> previousLink, bool sequentialAccessMode)
+		{
+			return new SequentialAccessModeAppender<TResult>(previousLink, sequentialAccessMode);
+		}
+
+		/// <summary>
 		/// Sets the command timeout, overriding the value set in the DataSource.
 		/// </summary>
 		/// <typeparam name="TResult">The type of the t result.</typeparam>

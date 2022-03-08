@@ -242,6 +242,7 @@ namespace Tortuga.Chain
 				DefaultCommandTimeout = settings?.DefaultCommandTimeout ?? DefaultCommandTimeout,
 				SuppressGlobalEvents = settings?.SuppressGlobalEvents ?? SuppressGlobalEvents,
 				StrictMode = settings?.StrictMode ?? StrictMode,
+				SequentialAccessMode = settings?.SequentialAccessMode ?? SequentialAccessMode,
 				DisableLocks = settings?.DisableLocks ?? DisableLocks,
 				EnforceForeignKeys = settings?.EnforceForeignKeys ?? EnforceForeignKeys
 			};

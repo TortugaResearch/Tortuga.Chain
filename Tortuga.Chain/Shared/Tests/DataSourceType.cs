@@ -5,5 +5,7 @@ public enum DataSourceType
 	Normal,
 	Transactional,
 	Open,
-	Strict
+	Strict,
+	SequentialAccess
 }
+

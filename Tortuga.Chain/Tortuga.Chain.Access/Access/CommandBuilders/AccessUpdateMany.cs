@@ -114,7 +114,7 @@ namespace Tortuga.Chain.Access.CommandBuilders
 			SqlBuilder.CheckForOverlaps(m_UpdateArgumentValue, m_FilterValue, "The same parameter '{0}' appears in both the update expression argument and the filter object. Use an update expression or where expression to resolve the conflict.");
 
 			var sqlBuilder = m_Table.CreateSqlBuilder(StrictMode);
-			sqlBuilder.ApplyArgumentValue(DataSource, m_NewValues, m_Options);
+			sqlBuilder.ApplyArgumentValue(DataSource, m_NewValues, m_Options, false);
 			sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
 			var parameters = new List<OleDbParameter>();

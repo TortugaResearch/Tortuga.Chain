@@ -218,17 +218,31 @@ namespace Tortuga.Chain.CommandBuilders
 		}
 
 		/// <summary>
+		/// Applies the argument value for an undefined operation.
+		/// </summary>
+		/// <param name="dataSource">The data source.</param>
+		/// <param name="argumentValue">The value.</param>
+		/// <exception cref="MappingException">This is thrown is no properties could be matched to a column. If strict mode, all properties must match columns.</exception>
+		/// <exception cref="ArgumentNullException">value;value is null.</exception>
+		/// <remarks>If the object implements IReadOnlyDictionary[string, object], ApplyArgumentDictionary will be implicitly called instead.</remarks>
+		public void ApplyArgumentValue(IDataSource dataSource, object? argumentValue)
+		{
+			ApplyArgumentValue(dataSource, OperationTypes.None, argumentValue, false, false, false);
+		}
+
+		/// <summary>
 		/// Applies the argument value.
 		/// </summary>
 		/// <param name="dataSource">The data source.</param>
 		/// <param name="operationType">Type of the operation.</param>
 		/// <param name="argumentValue">The value.</param>
+		/// <param name="nonQueryDelete">No result will be read from this operation.</param>
 		/// <exception cref="MappingException">This is thrown is no properties could be matched to a column. If strict mode, all properties must match columns.</exception>
 		/// <exception cref="ArgumentNullException">value;value is null.</exception>
 		/// <remarks>If the object implements IReadOnlyDictionary[string, object], ApplyArgumentDictionary will be implicitly called instead.</remarks>
-		public void ApplyArgumentValue(IDataSource dataSource, OperationTypes operationType, object? argumentValue)
+		public void ApplyArgumentValue(IDataSource dataSource, OperationTypes operationType, object? argumentValue, bool nonQueryDelete)
 		{
-			ApplyArgumentValue(dataSource, operationType, argumentValue, false, false);
+			ApplyArgumentValue(dataSource, operationType, argumentValue, false, false, nonQueryDelete);
 		}
 
 		/// <summary>
@@ -245,7 +259,7 @@ namespace Tortuga.Chain.CommandBuilders
 		[SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "options")]
 		public void ApplyArgumentValue(IDataSource dataSource, object argumentValue, InsertOptions options)
 		{
-			ApplyArgumentValue(dataSource, OperationTypes.Insert, argumentValue, false, false);
+			ApplyArgumentValue(dataSource, OperationTypes.Insert, argumentValue, false, false, false);
 		}
 
 		/// <summary>
@@ -254,14 +268,15 @@ namespace Tortuga.Chain.CommandBuilders
 		/// <param name="dataSource">The data source.</param>
 		/// <param name="argumentValue">The value.</param>
 		/// <param name="options">The options.</param>
+		/// <param name="nonQuery">No result will be read from this operation.</param>
 		/// <exception cref="MappingException">This is thrown is no properties could be matched to a column. If strict mode, all properties must match columns.</exception>
 		/// <exception cref="ArgumentNullException">value;value is null.</exception>
 		/// <remarks>
 		/// If the object implements IReadOnlyDictionary[string, object], ApplyArgumentDictionary will be implicitly called instead.
 		/// </remarks>
-		public void ApplyArgumentValue(IDataSource dataSource, object argumentValue, DeleteOptions options)
+		public void ApplyArgumentValue(IDataSource dataSource, object argumentValue, DeleteOptions options, bool nonQuery)
 		{
-			ApplyArgumentValue(dataSource, OperationTypes.Delete, argumentValue, options.HasFlag(DeleteOptions.UseKeyAttribute), false);
+			ApplyArgumentValue(dataSource, OperationTypes.Delete, argumentValue, options.HasFlag(DeleteOptions.UseKeyAttribute), false, nonQuery);
 		}
 
 		/// <summary>
@@ -278,7 +293,7 @@ namespace Tortuga.Chain.CommandBuilders
 		/// </remarks>
 		public void ApplyArgumentValue(IDataSource dataSource, object argumentValue, UpsertOptions options)
 		{
-			ApplyArgumentValue(dataSource, OperationTypes.InsertOrUpdate, argumentValue, options.HasFlag(UpsertOptions.UseKeyAttribute), options.HasFlag(UpsertOptions.ChangedPropertiesOnly));
+			ApplyArgumentValue(dataSource, OperationTypes.InsertOrUpdate, argumentValue, options.HasFlag(UpsertOptions.UseKeyAttribute), options.HasFlag(UpsertOptions.ChangedPropertiesOnly), false);
 		}
 
 		/// <summary>
@@ -287,18 +302,19 @@ namespace Tortuga.Chain.CommandBuilders
 		/// <param name="dataSource">The data source.</param>
 		/// <param name="argumentValue">The value.</param>
 		/// <param name="options">The options.</param>
+		/// <param name="nonQueryDelete">No result will be read from this operation. This is ignored unless using UpdateOptions.SoftDelete.</param>
 		/// <exception cref="MappingException">This is thrown is no properties could be matched to a column. If strict mode, all properties must match columns.</exception>
 		/// <exception cref="ArgumentNullException">value;value is null.</exception>
 		/// <remarks>
 		/// If the object implements IReadOnlyDictionary[string, object], ApplyArgumentDictionary will be implicitly called instead.
 		/// If the object does not implement IPropertyChangeTracking and changedPropertiesOnly is set, an error will occur.
 		/// </remarks>
-		public void ApplyArgumentValue(IDataSource dataSource, object? argumentValue, UpdateOptions options)
+		public void ApplyArgumentValue(IDataSource dataSource, object? argumentValue, UpdateOptions options, bool nonQueryDelete)
 		{
 			if (options.HasFlag(UpdateOptions.SoftDelete))
-				ApplyArgumentValue(dataSource, OperationTypes.Delete, argumentValue, options.HasFlag(UpdateOptions.UseKeyAttribute), options.HasFlag(UpdateOptions.ChangedPropertiesOnly));
+				ApplyArgumentValue(dataSource, OperationTypes.Delete, argumentValue, options.HasFlag(UpdateOptions.UseKeyAttribute), options.HasFlag(UpdateOptions.ChangedPropertiesOnly), nonQueryDelete);
 			else
-				ApplyArgumentValue(dataSource, OperationTypes.Update, argumentValue, options.HasFlag(UpdateOptions.UseKeyAttribute), options.HasFlag(UpdateOptions.ChangedPropertiesOnly));
+				ApplyArgumentValue(dataSource, OperationTypes.Update, argumentValue, options.HasFlag(UpdateOptions.UseKeyAttribute), options.HasFlag(UpdateOptions.ChangedPropertiesOnly), false);
 		}
 
 		/// <summary>
@@ -1412,13 +1428,14 @@ namespace Tortuga.Chain.CommandBuilders
 		/// <param name="argumentValue">The argument value.</param>
 		/// <param name="useObjectDefinedKeys">if set to <c>true</c> use object defined keys.</param>
 		/// <param name="changedPropertiesOnly">if set to <c>true</c> filter the update list according to IPropertyChangeTracking.ChangedProperties.</param>
+		/// <param name="nonQueryDelete">No result will be read from this operation.</param>
 		/// <exception cref="MappingException">This is thrown is no properties could be matched to a column. If strict mode, all properties must match columns.</exception>
 		/// <exception cref="ArgumentNullException">value;value is null.</exception>
 		/// <remarks>
 		/// If the object implements IReadOnlyDictionary[string, object], ApplyArgumentDictionary will be implicitly called instead.
 		/// If the object does not implement IPropertyChangeTracking and changedPropertiesOnly is set, an error will occur.
 		/// </remarks>
-		void ApplyArgumentValue(IDataSource dataSource, OperationTypes operationType, object? argumentValue, bool useObjectDefinedKeys, bool changedPropertiesOnly)
+		void ApplyArgumentValue(IDataSource dataSource, OperationTypes operationType, object? argumentValue, bool useObjectDefinedKeys, bool changedPropertiesOnly, bool nonQueryDelete)
 		{
 			if (dataSource == null)
 				throw new ArgumentNullException(nameof(dataSource), $"{nameof(dataSource)} is null.");
@@ -1509,8 +1526,13 @@ namespace Tortuga.Chain.CommandBuilders
 							//break; In the case of TVFs, the same column may appear twice
 						}
 					}
-					if (StrictMode && !propertyFound)
+					if (StrictMode && !propertyFound && !nonQueryDelete)
+					{
+						//When in strict mode and a property wasn't found, throw an exception. This is to warn about possible data loss.
+						//Exception: If performing a non-query delete, we don't care about the unmatched properties.
+						//This can happen when using the TableAndView attribute and some columns are only on the view.
 						throw new MappingException($"Strict mode was enabled, but property {property.Name} could be matched to a column in {m_Name}. Disable strict mode or mark the property as NotMapped.");
+					}
 				}
 
 				if (!found)

@@ -201,7 +201,8 @@ namespace Tortuga.Chain
 			{
 				DefaultCommandTimeout = settings?.DefaultCommandTimeout ?? DefaultCommandTimeout,
 				SuppressGlobalEvents = settings?.SuppressGlobalEvents ?? SuppressGlobalEvents,
-				StrictMode = settings?.StrictMode ?? StrictMode
+				StrictMode = settings?.StrictMode ?? StrictMode,
+				SequentialAccessMode = settings?.SequentialAccessMode ?? SequentialAccessMode
 			};
 			var result = new MySqlDataSource(Name, m_ConnectionBuilder, mergedSettings, m_DatabaseMetadata, m_Cache, m_ExtensionCache);
 			result.m_DatabaseMetadata = m_DatabaseMetadata;

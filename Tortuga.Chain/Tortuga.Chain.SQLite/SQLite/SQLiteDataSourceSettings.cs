@@ -13,24 +13,15 @@ namespace Tortuga.Chain.SQLite
 		/// </summary>
 		public SQLiteDataSourceSettings() { }
 
-		internal SQLiteDataSourceSettings(SQLiteDataSourceBase dataSource)
+
+		internal SQLiteDataSourceSettings(SQLiteDataSource dataSource, bool forwardEvents = false)
 		{
 			if (dataSource == null)
 				throw new ArgumentNullException(nameof(dataSource), $"{nameof(dataSource)} is null.");
 
 			DefaultCommandTimeout = dataSource.DefaultCommandTimeout;
 			StrictMode = dataSource.StrictMode;
-			SuppressGlobalEvents = dataSource.SuppressGlobalEvents;
-			DisableLocks = dataSource.DisableLocks;
-		}
-
-		internal SQLiteDataSourceSettings(SQLiteDataSource dataSource, bool forwardEvents)
-		{
-			if (dataSource == null)
-				throw new ArgumentNullException(nameof(dataSource), $"{nameof(dataSource)} is null.");
-
-			DefaultCommandTimeout = dataSource.DefaultCommandTimeout;
-			StrictMode = dataSource.StrictMode;
+			SequentialAccessMode = dataSource.SequentialAccessMode;
 			SuppressGlobalEvents = dataSource.SuppressGlobalEvents || forwardEvents;
 			DisableLocks = dataSource.DisableLocks;
 			EnforceForeignKeys = dataSource.EnforceForeignKeys;

@@ -41,7 +41,7 @@ namespace Tortuga.Chain.Materializers
 			Table? table = null;
 			executionToken.Execute(cmd =>
 			{
-				using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess))
+				using (var reader = cmd.ExecuteReader(CommandBehavior))
 				{
 					table = new Table(reader);
 					return table.Rows.Count;
@@ -72,7 +72,7 @@ namespace Tortuga.Chain.Materializers
 			Table? table = null;
 			await executionToken.ExecuteAsync(async cmd =>
 			{
-				using (var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SequentialAccess, cancellationToken).ConfigureAwait(false))
+				using (var reader = await cmd.ExecuteReaderAsync(CommandBehavior, cancellationToken).ConfigureAwait(false))
 				{
 					table = new Table(reader);
 					return table.Rows.Count;

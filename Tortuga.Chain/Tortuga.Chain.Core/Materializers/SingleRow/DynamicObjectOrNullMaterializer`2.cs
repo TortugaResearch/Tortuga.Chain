@@ -48,7 +48,7 @@ namespace Tortuga.Chain.Materializers
 			ExpandoObject? row = null;
 			var rowCount = Prepare().Execute(cmd =>
 			{
-				using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess))
+				using (var reader = cmd.ExecuteReader(CommandBehavior))
 				{
 					if (reader.Read())
 					{
@@ -88,7 +88,7 @@ namespace Tortuga.Chain.Materializers
 
 			var rowCount = await Prepare().ExecuteAsync(async cmd =>
 			{
-				using (var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SequentialAccess, cancellationToken).ConfigureAwait(false))
+				using (var reader = await cmd.ExecuteReaderAsync(CommandBehavior, cancellationToken).ConfigureAwait(false))
 				{
 					if (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
 					{

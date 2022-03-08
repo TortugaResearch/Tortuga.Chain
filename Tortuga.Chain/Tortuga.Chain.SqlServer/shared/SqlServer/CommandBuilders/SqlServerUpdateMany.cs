@@ -123,8 +123,9 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 			SqlBuilder.CheckForOverlaps(m_UpdateArgumentValue, m_FilterValue, "The same parameter '{0}' appears in both the update expression argument and the filter object. Use an update expression or where expression to resolve the conflict.");
 
 			var sqlBuilder = m_Table.CreateSqlBuilder(StrictMode);
-			sqlBuilder.ApplyArgumentValue(DataSource, m_NewValues, m_Options);
-			sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
+			var desiredColumns = materializer.DesiredColumns();
+			sqlBuilder.ApplyArgumentValue(DataSource, m_NewValues, m_Options, desiredColumns == Materializer.NoColumns);
+			sqlBuilder.ApplyDesiredColumns(desiredColumns);
 
 			var prefix = m_Options.HasFlag(UpdateOptions.ReturnOldValues) ? "Deleted." : "Inserted.";
 

@@ -223,7 +223,7 @@ namespace Tortuga.Chain.Access
 				using (var connection = new OleDbConnection(m_ConnectionBuilder.ConnectionString))
 				{
 					connection.Open();
-					return connection.GetOleDbSchemaTable(sg, null);
+					return connection.GetOleDbSchemaTable(sg, null)!;
 				}
 			});
 		}
@@ -233,7 +233,7 @@ namespace Tortuga.Chain.Access
 			using (var connection = new OleDbConnection(m_ConnectionBuilder.ConnectionString))
 			{
 				connection.Open();
-				var dtTables = connection.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, null);
+				var dtTables = connection.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, null)!;
 				foreach (DataRow row in dtTables.Rows)
 				{
 					if (row["TABLE_TYPE"].ToString() != "TABLE")
@@ -251,7 +251,7 @@ namespace Tortuga.Chain.Access
 			using (var connection = new OleDbConnection(m_ConnectionBuilder.ConnectionString))
 			{
 				connection.Open();
-				var dtViews = connection.GetOleDbSchemaTable(OleDbSchemaGuid.Views, null);
+				var dtViews = connection.GetOleDbSchemaTable(OleDbSchemaGuid.Views, null)!;
 				foreach (DataRow row in dtViews.Rows)
 				{
 					var name = row["TABLE_NAME"].ToString()!;

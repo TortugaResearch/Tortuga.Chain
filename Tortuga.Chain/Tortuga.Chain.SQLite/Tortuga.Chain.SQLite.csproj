@@ -1,112 +1,110 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>net462;netstandard2.0;net5.0;net6.0</TargetFrameworks>
-    <Authors>David Tomcik, Jonathan Allen</Authors>
-    <Company>Tortuga Technologies</Company>
-    <Description>A fluent ORM and Database Reflection Library for PostgreSQL.</Description>
+	<PropertyGroup>
+		<TargetFrameworks>net462;netstandard2.0;net6.0</TargetFrameworks>
+		<Authors>David Tomcik, Jonathan Allen</Authors>
+		<Company>Tortuga Technologies</Company>
+		<Description>A fluent ORM and Database Reflection Library for PostgreSQL.</Description>
 
-    <PackageTags>ORM Fluent DB Reflection PostgreSQL</PackageTags>
-    <LangVersion>10.0</LangVersion>
-    <ProductName>Tortuga Chain</ProductName>
-    <Deterministic>true</Deterministic>
+		<PackageTags>ORM Fluent DB Reflection PostgreSQL</PackageTags>
+		<LangVersion>10.0</LangVersion>
+		<ProductName>Tortuga Chain</ProductName>
+		<Deterministic>true</Deterministic>
 
-    <AssemblyVersion>4.0.0</AssemblyVersion>
-    <Version>4.0.0</Version>
-    <FileVersion>4.0.0.0</FileVersion>
+		<AssemblyVersion>4.0.0</AssemblyVersion>
+		<Version>4.0.0</Version>
+		<FileVersion>4.0.0.0</FileVersion>
 
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 
-    <Copyright>David Tomcik, Jonathan Allen 2016-2019</Copyright>
+		<Copyright>David Tomcik, Jonathan Allen 2016-2019</Copyright>
 
-    <PackageProjectUrl>https://github.com/docevaad/Chain</PackageProjectUrl>
+		<PackageProjectUrl>https://github.com/docevaad/Chain</PackageProjectUrl>
 
-    <RepositoryUrl>https://github.com/docevaad/Chain.git</RepositoryUrl>
+		<RepositoryUrl>https://github.com/docevaad/Chain.git</RepositoryUrl>
 
-    <RepositoryType>git</RepositoryType>
-    <Nullable>enable</Nullable>
+		<RepositoryType>git</RepositoryType>
+		<Nullable>enable</Nullable>
 
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <WarningsAsErrors />
-    <RootNamespace>Tortuga.Chain</RootNamespace>
-    <PackageReleaseNotes>Consumers of .NET Framework version of this library may need to reference the System.Data.SQLite.Core package directly.</PackageReleaseNotes>
-    <DocumentationFile>Tortuga.Chain.SQLite.xml</DocumentationFile>
-  </PropertyGroup>
-
-  <ItemGroup>
-
-    <Compile Include="..\Shared\Legacy\**\*.cs">
-      <Link>referenced\Legacy\%(RecursiveDir)%(Filename)%(Extension)</Link>
-    </Compile>
-    <Compile Include="..\Shared\DataSource\**\*.cs">
-      <Link>referenced\DataSource\%(RecursiveDir)%(Filename)%(Extension)</Link>
-    </Compile>
-  </ItemGroup>
-
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net462'">
-    <DefineConstants>SQLITE;NULL_MISSING;CLASS_1;CLASS_2</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-    <DefineConstants>SQLITE;NULL_MISSING;CLASS_1;CLASS_2</DefineConstants>
-  </PropertyGroup>
-
-
-	<PropertyGroup Condition="'$(TargetFramework)' == 'net5.0'">
-		<DefineConstants>SQLITE;ORDINAL_STRINGS;CLASS_1;CLASS_2</DefineConstants>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<WarningsAsErrors />
+		<RootNamespace>Tortuga.Chain</RootNamespace>
+		<PackageReleaseNotes>Consumers of .NET Framework version of this library may need to reference the System.Data.SQLite.Core package directly.</PackageReleaseNotes>
+		<DocumentationFile>Tortuga.Chain.SQLite.xml</DocumentationFile>
 	</PropertyGroup>
+
+	<ItemGroup>
+
+		<Compile Include="..\Shared\Legacy\**\*.cs">
+			<Link>referenced\Legacy\%(RecursiveDir)%(Filename)%(Extension)</Link>
+		</Compile>
+		<Compile Include="..\Shared\DataSource\**\*.cs">
+			<Link>referenced\DataSource\%(RecursiveDir)%(Filename)%(Extension)</Link>
+		</Compile>
+	</ItemGroup>
+
+	<PropertyGroup Condition="'$(TargetFramework)' == 'net462'">
+		<DefineConstants>SQLITE;NULL_MISSING;CLASS_1;CLASS_2</DefineConstants>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+		<DefineConstants>SQLITE;NULL_MISSING;CLASS_1;CLASS_2</DefineConstants>
+	</PropertyGroup>
+
+
+
 
 	<PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
 		<DefineConstants>SQLITE;ORDINAL_STRINGS;CLASS_1;CLASS_2</DefineConstants>
 	</PropertyGroup>
 
-  <ItemGroup Condition="'$(Configuration)'=='Debug'">
-    <ProjectReference Include="..\Tortuga.Chain.Core\Tortuga.Chain.Core.csproj" />
-  </ItemGroup>
+	<ItemGroup Condition="'$(Configuration)'=='Debug'">
+		<ProjectReference Include="..\Tortuga.Chain.Core\Tortuga.Chain.Core.csproj" />
+	</ItemGroup>
 
-  <ItemGroup Condition="'$(Configuration)'=='Release'">
-    <PackageReference Include="Tortuga.Chain.Core" Version="4.0.0" />
-  </ItemGroup>
+	<ItemGroup Condition="'$(Configuration)'=='Release'">
+		<PackageReference Include="Tortuga.Chain.Core" Version="4.0.0" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Compile Remove="..\Shared\DataSource\DataSourceBase.Class3DataSource.cs" />
-    <Compile Remove="..\Shared\DataSource\DataSourceBase.IClass3DataSource.cs" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Remove="..\Shared\DataSource\DataSourceBase.Class3DataSource.cs" />
+		<Compile Remove="..\Shared\DataSource\DataSourceBase.IClass3DataSource.cs" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Compile Include="..\Shared\GlobalUsing.cs" Link="GlobalUsing.cs" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Include="..\Shared\GlobalUsing.cs" Link="GlobalUsing.cs" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Nito.AsyncEx" Version="5.1.0" />
-    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.113.7" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Nito.AsyncEx" Version="5.1.2" />
+		<PackageReference Include="System.Data.SQLite.Core" Version="1.0.115.5" />
+	</ItemGroup>
 
-  <!-- NuGet Packaging Boilerplate-->
-  <PropertyGroup Condition="'$(Configuration)'=='Release'">
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <GenerateNuspecDependsOn>$(GenerateNuspecDependsOn);ReadPackageVersionFromOutputAssembly</GenerateNuspecDependsOn>
-  </PropertyGroup>
+	<!-- NuGet Packaging Boilerplate-->
+	<PropertyGroup Condition="'$(Configuration)'=='Release'">
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<GenerateNuspecDependsOn>$(GenerateNuspecDependsOn);ReadPackageVersionFromOutputAssembly</GenerateNuspecDependsOn>
+	</PropertyGroup>
 
-  <Target Name="ReadPackageVersionFromOutputAssembly" DependsOnTargets="Build" Condition="'$(IsCrossTargetingBuild)' == 'true'">
+	<Target Name="ReadPackageVersionFromOutputAssembly" DependsOnTargets="Build" Condition="'$(IsCrossTargetingBuild)' == 'true'">
 
-    <PropertyGroup>
-      <FirstTargetFramework>$([System.String]::Copy($(TargetFrameworks)).Split(';').GetValue(0))</FirstTargetFramework>
-    </PropertyGroup>
-    <MSBuild Projects="$(MSBuildProjectFullPath)" Targets="ReadPackageVersionFromOutputAssemblySingleTfm" Properties="TargetFramework=$(FirstTargetFramework)">
-      <Output TaskParameter="TargetOutputs" ItemName="PackAssembly" />
-    </MSBuild>
-    <PropertyGroup>
-      <PackageVersion>%(PackAssembly.Version)</PackageVersion>
-    </PropertyGroup>
-  </Target>
+		<PropertyGroup>
+			<FirstTargetFramework>$([System.String]::Copy($(TargetFrameworks)).Split(';').GetValue(0))</FirstTargetFramework>
+		</PropertyGroup>
+		<MSBuild Projects="$(MSBuildProjectFullPath)" Targets="ReadPackageVersionFromOutputAssemblySingleTfm" Properties="TargetFramework=$(FirstTargetFramework)">
+			<Output TaskParameter="TargetOutputs" ItemName="PackAssembly" />
+		</MSBuild>
+		<PropertyGroup>
+			<PackageVersion>%(PackAssembly.Version)</PackageVersion>
+		</PropertyGroup>
+	</Target>
 
-  <Target Name="ReadPackageVersionFromOutputAssemblySingleTfm" Returns="@(PackAssembly)" Condition="'$(IsCrossTargetingBuild)' != 'true'">
-    <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
-      <Output TaskParameter="Assemblies" ItemName="PackAssembly" />
-    </GetAssemblyIdentity>
-    <PropertyGroup>
-      <PackageVersion>%(PackAssembly.Version)</PackageVersion>
-    </PropertyGroup>
-  </Target>
+	<Target Name="ReadPackageVersionFromOutputAssemblySingleTfm" Returns="@(PackAssembly)" Condition="'$(IsCrossTargetingBuild)' != 'true'">
+		<GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
+			<Output TaskParameter="Assemblies" ItemName="PackAssembly" />
+		</GetAssemblyIdentity>
+		<PropertyGroup>
+			<PackageVersion>%(PackAssembly.Version)</PackageVersion>
+		</PropertyGroup>
+	</Target>
 </Project>

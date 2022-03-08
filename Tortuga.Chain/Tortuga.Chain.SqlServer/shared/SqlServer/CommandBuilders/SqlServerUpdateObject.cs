@@ -53,8 +53,9 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 				throw new MappingException($"Cannot perform an update operation on {Table.Name} unless UpdateOptions.UseKeyAttribute or .WithKeys() is specified.");
 
 			var sqlBuilder = Table.CreateSqlBuilder(StrictMode);
-			sqlBuilder.ApplyArgumentValue(DataSource, ArgumentValue, m_Options);
-			sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
+			var desiredColumns = materializer.DesiredColumns();
+			sqlBuilder.ApplyArgumentValue(DataSource, ArgumentValue, m_Options, desiredColumns == Materializer.NoColumns);
+			sqlBuilder.ApplyDesiredColumns(desiredColumns);
 
 			if (KeyColumns.Count > 0)
 				sqlBuilder.OverrideKeys(KeyColumns);

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net462;netstandard2.0;net5.0;net6.0</TargetFrameworks>
+		<TargetFrameworks>net462;netstandard2.0;net6.0</TargetFrameworks>
 		<Authors>David Tomcik, Jonathan Allen</Authors>
 		<Company>Tortuga Technologies</Company>
 		<Description>A fluent ORM and Database Reflection Library for PostgreSQL.</Description>
@@ -49,9 +49,6 @@
 		<DefineConstants>POSTGRESQL;NULL_MISSING;CLASS_1;CLASS_2;CLASS_3</DefineConstants>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(TargetFramework)' == 'net5.0'">
-		<DefineConstants>POSTGRESQL;CLASS_1;CLASS_2;CLASS_3</DefineConstants>
-	</PropertyGroup>
 	<PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
 		<DefineConstants>POSTGRESQL;CLASS_1;CLASS_2;CLASS_3</DefineConstants>
 	</PropertyGroup>
@@ -69,7 +66,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Npgsql" Version="5.0.4" />
+		<PackageReference Include="Npgsql" Version="6.0.3" />
 	</ItemGroup>
 
 	<!-- NuGet Packaging Boilerplate-->

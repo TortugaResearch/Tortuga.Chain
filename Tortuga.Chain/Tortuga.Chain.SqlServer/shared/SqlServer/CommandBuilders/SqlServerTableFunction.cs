@@ -1,5 +1,4 @@
 ﻿using System.Text;
-using Tortuga.Chain.AuditRules;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
@@ -143,7 +142,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 			sqlBuilder.ApplyRulesForSelect(DataSource);
 
 			if (m_FunctionArgumentValue != null)
-				sqlBuilder.ApplyArgumentValue(DataSource, OperationTypes.None, m_FunctionArgumentValue);
+				sqlBuilder.ApplyArgumentValue(DataSource, m_FunctionArgumentValue);
 			if (m_SelectClause == null)
 			{
 				var desired = materializer.DesiredColumns();
