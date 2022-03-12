@@ -1,4 +1,5 @@
 ﻿using Tortuga.Chain.CommandBuilders;
+using Tortuga.Chain.DataSources;
 
 
 #if SQL_SERVER_SDS || SQL_SERVER_MDS
@@ -43,14 +44,14 @@ namespace Tortuga.Chain.PostgreSql
 			return Upsert(argumentValue, options);
 		}
 
-		ILink<int?> IClass2DataSource.Truncate(string tableName)
-		{
-			return Truncate(tableName);
-		}
+		//ILink<int?> IClass2DataSource.Truncate(string tableName)
+		//{
+		//	return Truncate(tableName);
+		//}
 
-		ILink<int?> IClass2DataSource.Truncate<TObject>() where TObject : class
-		{
-			return Truncate<TObject>();
-		}
+		//ILink<int?> IClass2DataSource.Truncate<TObject>() where TObject : class
+		//{
+		//	return Truncate<TObject>();
+		//}
 	}
 }

@@ -1,6 +1,6 @@
 using Tortuga.Chain.CommandBuilders;
 
-namespace Tortuga.Chain
+namespace Tortuga.Chain.DataSources
 {
 	/// <summary>
 	/// A class 3 data source that includes stored procedures and functions.

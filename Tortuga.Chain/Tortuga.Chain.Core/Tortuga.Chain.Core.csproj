@@ -58,6 +58,10 @@
 		<PackageReference Include="Tortuga.Anchor" Version="4.0.0" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <ProjectReference Include="..\Tortuga.Shipwright\Tortuga.Shipwright.csproj" />
+	</ItemGroup>
+
 	<!-- NuGet Packaging Boilerplate-->
 	<PropertyGroup Condition="'$(Configuration)'=='Release'">
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>

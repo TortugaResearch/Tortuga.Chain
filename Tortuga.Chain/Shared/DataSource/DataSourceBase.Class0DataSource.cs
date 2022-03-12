@@ -1,4 +1,5 @@
-﻿using Tortuga.Chain.CommandBuilders;
+﻿/*
+ * using Tortuga.Chain.CommandBuilders;
 
 
 #if SQL_SERVER_SDS || SQL_SERVER_MDS
@@ -61,3 +62,4 @@ namespace Tortuga.Chain.Access
 		}
 	}
 }
+*/

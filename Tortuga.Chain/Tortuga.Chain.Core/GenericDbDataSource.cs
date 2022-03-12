@@ -11,7 +11,7 @@ namespace Tortuga.Chain
 	/// <summary>
 	/// The GenericDbDataSource is the most simplistic of all of the data sources. The command builder only supports raw SQL, but you still have access to all of the materializers.
 	/// </summary>
-	public class GenericDbDataSource : DataSource<DbConnection, DbTransaction, DbCommand, DbParameter>, IClass0DataSource
+	public class GenericDbDataSource : DataSource<DbConnection, DbTransaction, DbCommand, DbParameter>, ISupportsSqlQueries
 	{
 		readonly ICacheAdapter m_Cache;
 		readonly DbConnectionStringBuilder m_ConnectionBuilder;
@@ -145,7 +145,7 @@ namespace Tortuga.Chain
 		/// <returns>SqlServerSqlCall.</returns>
 		public MultipleTableDbCommandBuilder<DbCommand, DbParameter> Sql(string sqlStatement, object argumentValue) => new GenericDbSqlCall(this, sqlStatement, argumentValue);
 
-		IMultipleTableDbCommandBuilder IClass0DataSource.Sql(string sqlStatement, object argumentValue) => Sql(sqlStatement, argumentValue);
+		IMultipleTableDbCommandBuilder ISupportsSqlQueries.Sql(string sqlStatement, object argumentValue) => Sql(sqlStatement, argumentValue);
 
 		/// <summary>
 		/// Tests the connection.

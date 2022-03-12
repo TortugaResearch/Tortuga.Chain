@@ -67,17 +67,17 @@ namespace Tortuga.Chain.Access
 		}
 
 
-		/// <summary>Truncates the specified table.</summary>
-		/// <param name="tableName">Name of the table to truncate.</param>
-		/// <returns>The number of rows deleted or null if the database doesn't provide that information.</returns>
-		public partial ILink<int?> Truncate(AbstractObjectName tableName);
+		///// <summary>Truncates the specified table.</summary>
+		///// <param name="tableName">Name of the table to truncate.</param>
+		///// <returns>The number of rows deleted or null if the database doesn't provide that information.</returns>
+		//public partial ILink<int?> Truncate(AbstractObjectName tableName);
 
-		/// <summary>Truncates the specified table.</summary>
-		/// <typeparam name="TObject">This class used to determine which table to truncate</typeparam>
-		/// <returns>The number of rows deleted or null if the database doesn't provide that information.</returns>
-		public ILink<int?> Truncate<TObject>() where TObject : class
-		{
-			return Truncate(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name);
-		}
+		///// <summary>Truncates the specified table.</summary>
+		///// <typeparam name="TObject">This class used to determine which table to truncate</typeparam>
+		///// <returns>The number of rows deleted or null if the database doesn't provide that information.</returns>
+		//public ILink<int?> Truncate<TObject>() where TObject : class
+		//{
+		//	return Truncate(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name);
+		//}
 	}
 }

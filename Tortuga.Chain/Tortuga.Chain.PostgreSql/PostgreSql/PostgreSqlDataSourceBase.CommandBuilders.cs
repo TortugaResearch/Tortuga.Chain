@@ -171,11 +171,6 @@ namespace Tortuga.Chain.PostgreSql
 			return new PostgreSqlInsertOrUpdateObject<TArgument>(this, tableName, argumentValue, options);
 		}
 
-		MultipleTableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> OnSql(string sqlStatement, object? argumentValue)
-		{
-			return new PostgreSqlSqlCall(this, sqlStatement, argumentValue);
-		}
-
 		IUpdateManyDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> OnUpdateMany(PostgreSqlObjectName tableName, string updateExpression, object? updateArgumentValue, UpdateOptions options)
 		{
 			return new PostgreSqlUpdateMany(this, tableName, updateExpression, updateArgumentValue, options);
@@ -294,12 +289,5 @@ WHERE ns.nspname = @Schema AND tab.relname = @Name;";
 		/// </summary>
 		public ILink<long> GetTableApproximateCount<TObject>() => GetTableApproximateCount(DatabaseObjectAsTableOrView<TObject>(OperationType.Select).Name);
 
-
-		public partial ILink<int?> Truncate(PostgreSqlObjectName tableName)
-		{
-			//Verify the table name actually exists.
-			var table = DatabaseMetadata.GetTableOrView(tableName);
-			return Sql("TRUNCATE " + table.Name.ToQuotedString() + ";").AsNonQuery();
-		}
 	}
 }

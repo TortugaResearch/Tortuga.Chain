@@ -320,11 +320,6 @@ namespace Tortuga.Chain.SqlServer
 			return new SqlServerInsertOrUpdateObject<TArgument>(this, tableName, argumentValue, options);
 		}
 
-		MultipleTableDbCommandBuilder<SqlCommand, SqlParameter> OnSql(string sqlStatement, object? argumentValue)
-		{
-			return new SqlServerSqlCall(this, sqlStatement, argumentValue);
-		}
-
 		IUpdateManyDbCommandBuilder<SqlCommand, SqlParameter> OnUpdateMany(SqlServerObjectName tableName, string updateExpression, object? updateArgumentValue, UpdateOptions options)
 		{
 			return new SqlServerUpdateMany(this, tableName, updateExpression, updateArgumentValue, options);
@@ -346,11 +341,5 @@ namespace Tortuga.Chain.SqlServer
 			return new SqlServerInsertBatch<TObject>(this, tableName, objects, options);
 		}
 
-		public partial ILink<int?> Truncate(SqlServerObjectName tableName)
-		{
-			//Verify the table name actually exists.
-			var table = DatabaseMetadata.GetTableOrView(tableName);
-			return Sql("TRUNCATE TABLE " + table.Name.ToQuotedString() + ";").AsNonQuery();
-		}
 	}
 }

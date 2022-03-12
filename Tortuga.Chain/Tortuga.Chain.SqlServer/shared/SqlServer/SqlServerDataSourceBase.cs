@@ -1,5 +1,4 @@
 using Tortuga.Chain.DataSources;
-using Tortuga.Chain.Metadata;
 
 #if SQL_SERVER_SDS
 
@@ -32,13 +31,6 @@ namespace Tortuga.Chain.SqlServer
 		/// <value>The database metadata.</value>
 		public abstract new SqlServerMetadataCache DatabaseMetadata { get; }
 
-		/// <summary>
-		/// Called when Database.DatabaseMetadata is invoked.
-		/// </summary>
-		/// <returns></returns>
-		protected override IDatabaseMetadataCache OnGetDatabaseMetadata()
-		{
-			return DatabaseMetadata;
-		}
+
 	}
 }

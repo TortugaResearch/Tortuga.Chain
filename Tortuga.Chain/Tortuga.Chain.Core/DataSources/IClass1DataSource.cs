@@ -1,12 +1,12 @@
 ﻿using Tortuga.Chain.CommandBuilders;
 
-namespace Tortuga.Chain
+namespace Tortuga.Chain.DataSources
 {
 	/// <summary>
 	/// A class 1 data source supports basic CRUD operations. This is the bare minimum needed to implement the repository pattern.
 	/// </summary>
 	/// <remarks>Warning: This interface is meant to simulate multiple inheritance and work-around some issues with exposing generic types. Do not implement it in client code, as new methods will be added over time.</remarks>
-	public interface IClass1DataSource : IClass0DataSource
+	public interface IClass1DataSource : IDataSource, ISupportsSqlQueries
 	{
 		/// <summary>
 		/// Delete an object model from the specified table.

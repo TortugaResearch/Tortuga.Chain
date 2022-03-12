@@ -165,10 +165,7 @@ namespace Tortuga.Chain.SqlServer
 			return new OleDbSqlServerInsertOrUpdateObject<TArgument>(this, tableName, argumentValue, options);
 		}
 
-		MultipleTableDbCommandBuilder<OleDbCommand, OleDbParameter> OnSql(string sqlStatement, object? argumentValue)
-		{
-			return new OleDbSqlServerSqlCall(this, sqlStatement, argumentValue);
-		}
+
 
 		IUpdateManyDbCommandBuilder<OleDbCommand, OleDbParameter> OnUpdateMany(SqlServerObjectName tableName, string? updateExpression, object? updateArgumentValue, UpdateOptions options)
 		{
@@ -185,11 +182,5 @@ namespace Tortuga.Chain.SqlServer
 			return new OleDbSqlServerUpdateObject<TArgument>(this, tableName, argumentValue, options);
 		}
 
-		public partial ILink<int?> Truncate(SqlServerObjectName tableName)
-		{
-			//Verify the table name actually exists.
-			var table = DatabaseMetadata.GetTableOrView(tableName);
-			return Sql("TRUNCATE TABLE " + table.Name.ToQuotedString() + ";").AsNonQuery();
-		}
 	}
 }

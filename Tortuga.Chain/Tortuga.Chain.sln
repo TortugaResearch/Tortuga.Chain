@@ -53,6 +53,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tortuga.Chain.CompiledMater
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocumentationDocNet", "DocumentationDocNet\DocumentationDocNet.csproj", "{64697C8B-60FD-4EE7-8560-37C4BD58580A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tortuga.Shipwright", "Tortuga.Shipwright\Tortuga.Shipwright.csproj", "{68BB26E7-42CC-4D19-9789-00A0529742FE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -145,6 +147,10 @@ Global
 		{64697C8B-60FD-4EE7-8560-37C4BD58580A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{64697C8B-60FD-4EE7-8560-37C4BD58580A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{64697C8B-60FD-4EE7-8560-37C4BD58580A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{68BB26E7-42CC-4D19-9789-00A0529742FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{68BB26E7-42CC-4D19-9789-00A0529742FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{68BB26E7-42CC-4D19-9789-00A0529742FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68BB26E7-42CC-4D19-9789-00A0529742FE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -17,6 +17,7 @@ namespace Tortuga.Chain.Access
 		/// <param name="settings">Optional settings object.</param>
 		protected AccessDataSourceBase(AccessDataSourceSettings? settings) : base(settings)
 		{
+			RegisterTraits();
 		}
 
 		/// <summary>
@@ -30,5 +31,7 @@ namespace Tortuga.Chain.Access
 		/// </summary>
 		/// <returns></returns>
 		protected override IDatabaseMetadataCache OnGetDatabaseMetadata() => DatabaseMetadata;
+
 	}
 }
+

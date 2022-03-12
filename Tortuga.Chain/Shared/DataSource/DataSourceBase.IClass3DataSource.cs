@@ -1,5 +1,5 @@
-﻿
-using Tortuga.Chain.CommandBuilders;
+﻿using Tortuga.Chain.CommandBuilders;
+using Tortuga.Chain.DataSources;
 
 #if MYSQL
 
@@ -11,7 +11,7 @@ using System;
 
 namespace Tortuga.Chain.SqlServer
 {
-    partial class SqlServerDataSourceBase : IClass3DataSource
+	partial class SqlServerDataSourceBase : IClass3DataSource
 
 #elif SQL_SERVER_OLEDB
 
@@ -58,7 +58,7 @@ namespace Tortuga.Chain.PostgreSql
 #if MYSQL
 			throw new NotSupportedException("MySQL does not support table-valued functions.");
 #else
-            return TableFunction(functionName);
+			return TableFunction(functionName);
 #endif
 		}
 
@@ -67,7 +67,7 @@ namespace Tortuga.Chain.PostgreSql
 #if MYSQL
 			throw new NotSupportedException("MySQL does not support table-valued functions.");
 #else
-            return TableFunction(functionName, functionArgumentValue);
+			return TableFunction(functionName, functionArgumentValue);
 #endif
 		}
 	}

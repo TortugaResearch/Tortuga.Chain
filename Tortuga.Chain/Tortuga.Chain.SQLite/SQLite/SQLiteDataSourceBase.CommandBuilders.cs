@@ -193,10 +193,6 @@ namespace Tortuga.Chain.SQLite
 			return new SQLiteInsertOrUpdateObject<TArgument>(this, tableName, argumentValue, options);
 		}
 
-		MultipleTableDbCommandBuilder<SQLiteCommand, SQLiteParameter> OnSql(string sqlStatement, object? argumentValue)
-		{
-			return new SQLiteSqlCall(this, sqlStatement, argumentValue, LockType.Write);
-		}
 
 		IUpdateManyDbCommandBuilder<SQLiteCommand, SQLiteParameter> OnUpdateMany(SQLiteObjectName tableName, string updateExpression, object? updateArgumentValue, UpdateOptions options)
 		{
@@ -219,12 +215,6 @@ namespace Tortuga.Chain.SQLite
 			return new SQLiteInsertBatch<TObject>(this, tableName, objects, options);
 		}
 
-		public partial ILink<int?> Truncate(SQLiteObjectName tableName)
-		{
-			//Verify the table name actually exists.
-			var table = DatabaseMetadata.GetTableOrView(tableName);
-			//In SQLite, a delete without a where clause is interpreted as a truncate
-			return Sql("DELETE FROM " + table.Name.ToQuotedString() + ";").AsNonQuery();
-		}
+
 	}
 }

@@ -171,11 +171,6 @@ namespace Tortuga.Chain.MySql
 			return new MySqlInsertOrUpdateObject<TArgument>(this, tableName, argumentValue, options);
 		}
 
-		MultipleTableDbCommandBuilder<MySqlCommand, MySqlParameter> OnSql(string sqlStatement, object? argumentValue)
-		{
-			return new MySqlSqlCall(this, sqlStatement, argumentValue);
-		}
-
 		IUpdateManyDbCommandBuilder<MySqlCommand, MySqlParameter> OnUpdateMany(MySqlObjectName tableName, string updateExpression, object? updateArgumentValue, UpdateOptions options)
 		{
 			return new MySqlUpdateMany(this, tableName, updateExpression, updateArgumentValue, options);
@@ -291,11 +286,6 @@ namespace Tortuga.Chain.MySql
 		/// </summary>
 		public ILink<long> GetTableApproximateCount<TObject>() => GetTableApproximateCount(DatabaseObjectAsTableOrView<TObject>(OperationType.Select).Name);
 
-		public partial ILink<int?> Truncate(MySqlObjectName tableName)
-		{
-			//Verify the table name actually exists.
-			var table = DatabaseMetadata.GetTableOrView(tableName);
-			return Sql("TRUNCATE " + table.Name.ToQuotedString() + ";").AsNonQuery();
-		}
+
 	}
 }

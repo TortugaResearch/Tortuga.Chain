@@ -1,6 +1,5 @@
 ﻿using MySqlConnector;
 using Tortuga.Chain.DataSources;
-using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.MySql
 {
@@ -22,13 +21,6 @@ namespace Tortuga.Chain.MySql
 		/// </summary>
 		public abstract new MySqlMetadataCache DatabaseMetadata { get; }
 
-		/// <summary>
-		/// Called when Database.DatabaseMetadata is invoked.
-		/// </summary>
-		/// <returns></returns>
-		protected override IDatabaseMetadataCache OnGetDatabaseMetadata()
-		{
-			return DatabaseMetadata;
-		}
+
 	}
 }

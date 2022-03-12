@@ -165,6 +165,7 @@ namespace Tortuga.Chain.Metadata
 
 		TableOrViewMetadata IDatabaseMetadataCache.GetTableOrView(string tableName) => GetTableOrView(ParseObjectName(tableName));
 
+
 		/// <summary>
 		/// Returns the table, view, function, or stored procedure derived from the class's name and/or Table attribute.
 		/// </summary>
@@ -174,6 +175,17 @@ namespace Tortuga.Chain.Metadata
 		public DatabaseObject GetDatabaseObjectFromClass<TObject>(OperationType operation)
 		{
 			var type = typeof(TObject);
+			return GetDatabaseObjectFromClass(type, operation);
+		}
+
+		/// <summary>
+		/// Returns the table, view, function, or stored procedure derived from the class's name and/or Table attribute.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <param name="operation">The operation.</param>
+		/// <returns>DatabaseObject.</returns>
+		public DatabaseObject GetDatabaseObjectFromClass(Type type, OperationType operation)
+		{
 			var cacheKey = (type, operation);
 
 			if (m_TypeTableMap.TryGetValue(cacheKey, out var cachedResult))

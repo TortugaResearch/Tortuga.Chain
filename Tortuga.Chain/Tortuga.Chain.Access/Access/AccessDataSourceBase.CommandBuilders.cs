@@ -164,10 +164,6 @@ namespace Tortuga.Chain.Access
 			return new AccessInsertObject<TArgument>(this, tableName, argumentValue, options);
 		}
 
-		MultipleTableDbCommandBuilder<OleDbCommand, OleDbParameter> OnSql(string sqlStatement, object? argumentValue)
-		{
-			return new AccessSqlCall(this, sqlStatement, argumentValue);
-		}
 
 		IUpdateManyDbCommandBuilder<OleDbCommand, OleDbParameter> OnUpdateMany(AccessObjectName tableName, string updateExpression, object? updateArgumentValue, UpdateOptions options)
 		{
