@@ -102,6 +102,16 @@ namespace Tortuga.Chain
 		}
 
 		/// <summary>
+		/// Gets or sets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
+		/// </summary>
+		public override Tortuga.Chain.Core.ICacheAdapter Cache
+		{
+			get
+			{
+				return __Trait0.Cache;
+			}
+		}
+		/// <summary>
 		/// Creates and opens a new Access connection
 		/// </summary>
 		/// <returns></returns>
@@ -145,6 +155,43 @@ namespace Tortuga.Chain
 			return __Trait0.CreateOpenDataSource();
 		}
 
+		/// <summary>
+		/// The extension cache is used by extensions to store data source specific information.
+		/// </summary>
+		/// <value>
+		/// The extension cache.
+		/// </value>
+		protected override System.Collections.Concurrent.ConcurrentDictionary<System.Type, object> ExtensionCache
+		{
+			get
+			{
+				return __Trait0.ExtensionCache;
+			}
+		}
+		
+		internal  Tortuga.Chain.Core.ICacheAdapter m_Cache
+		{
+			get
+			{
+				return __Trait0.m_Cache;
+			}
+			set
+			{
+				__Trait0.m_Cache = value;
+			}
+		}
+		
+		internal  System.Collections.Concurrent.ConcurrentDictionary<System.Type, object> m_ExtensionCache
+		{
+			get
+			{
+				return __Trait0.m_ExtensionCache;
+			}
+			set
+			{
+				__Trait0.m_ExtensionCache = value;
+			}
+		}
 		/// <summary>
 		/// Tests the connection.
 		/// </summary>

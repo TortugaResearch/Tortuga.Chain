@@ -1,5 +1,4 @@
-﻿using System.Collections.Concurrent;
-using Tortuga.Chain.AuditRules;
+﻿using Tortuga.Chain.AuditRules;
 using Tortuga.Chain.Core;
 
 #if SQL_SERVER_SDS || SQL_SERVER_MDS
@@ -44,26 +43,14 @@ namespace Tortuga.Chain
 	{
 
 #endif
-		internal ICacheAdapter m_Cache;
-		internal ConcurrentDictionary<Type, object> m_ExtensionCache;
 
-		/// <summary>
-		/// Gets or sets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
-		/// </summary>
-		public override ICacheAdapter Cache => m_Cache;
+
 
 		/// <summary>
 		/// This object can be used to access the database connection string.
 		/// </summary>
 		internal string ConnectionString => m_ConnectionBuilder.ConnectionString;
 
-		/// <summary>
-		/// The extension cache is used by extensions to store data source specific information.
-		/// </summary>
-		/// <value>
-		/// The extension cache.
-		/// </value>
-		protected override ConcurrentDictionary<Type, object> ExtensionCache => m_ExtensionCache;
 
 
 		/// <summary>

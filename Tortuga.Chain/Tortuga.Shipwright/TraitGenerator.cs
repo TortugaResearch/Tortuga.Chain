@@ -202,7 +202,35 @@ public class TraitGenerator : ISourceGenerator
 										break;
 
 									case IPropertySymbol propertySymbol:
-										//TODO
+										{
+											var propertyType = (INamedTypeSymbol)propertySymbol.Type;
+											var propertyTypeName = propertyType.FullName();
+
+											var signature = $"{accessibility} {inheritance} {propertyTypeName} {propertySymbol.Name}";
+
+											code.AppendMultipleLines(member.GetXmlDocs());
+											using (code.BeginScope(signature))
+											{
+												if (propertySymbol.CanRead())
+												{
+													//TODO: Add getter accessibility
+													using (code.BeginScope("get"))
+													{
+														code.AppendLine($"return {fieldReference}.{propertySymbol.Name};");
+													}
+												}
+												if (propertySymbol.CanWrite())
+												{
+													var setType = (propertySymbol.SetMethod!.IsInitOnly) ? "init" : "set";
+
+													//TODO: Add setter accessibility
+													using (code.BeginScope(setType))
+													{
+														code.AppendLine($"{fieldReference}.{propertySymbol.Name} = value;");
+													}
+												}
+											}
+										}
 										break;
 
 									case IEventSymbol eventSymbol:

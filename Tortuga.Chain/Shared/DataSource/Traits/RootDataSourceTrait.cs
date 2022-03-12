@@ -1,5 +1,7 @@
-﻿using System.Data.Common;
+﻿using System.Collections.Concurrent;
+using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
+using Tortuga.Chain.Core;
 using Tortuga.Chain.DataSources;
 using Tortuga.Shipwright;
 
@@ -15,11 +17,26 @@ class RootDataSourceTrait<TTransactionalDataSource, TOpenDataSource, TConnection
 {
 
 
-	//[Expose(Accessibility = Accessibility.Internal)]
-	//public ICacheAdapter m_Cache { get; set; }
+	[Expose(Accessibility = Accessibility.Internal)]
+	public ICacheAdapter m_Cache { get; set; } = null!;
 
-	//[Expose(Accessibility = Accessibility.Internal)]
-	//public ConcurrentDictionary<Type, object> m_ExtensionCache { get; set; }
+	[Expose(Accessibility = Accessibility.Internal)]
+	public ConcurrentDictionary<Type, object> m_ExtensionCache { get; set; } = null!;
+
+	/// <summary>
+	/// Gets or sets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
+	/// </summary>
+	[Expose(Inheritance = Inheritance.Override)]
+	public ICacheAdapter Cache => m_Cache;
+
+	/// <summary>
+	/// The extension cache is used by extensions to store data source specific information.
+	/// </summary>
+	/// <value>
+	/// The extension cache.
+	/// </value>
+	[Expose(Accessibility = Accessibility.Protected, Inheritance = Inheritance.Override)]
+	public ConcurrentDictionary<Type, object> ExtensionCache => m_ExtensionCache;
 
 
 	IOpenDataSource IRootDataSource.CreateOpenDataSource() => CreateOpenDataSource();
