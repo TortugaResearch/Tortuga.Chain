@@ -87,6 +87,10 @@
 		<Compile Remove="$(CompilerGeneratedFilesOutputPath)/*/**/*.cs" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Compile Remove="..\Shared\DataSource\DataSource.IRootDataSource.cs" />
+	</ItemGroup>
+
 
 	<!-- NuGet Packaging Boilerplate-->
 	<PropertyGroup Condition="'$(Configuration)'=='Release'">

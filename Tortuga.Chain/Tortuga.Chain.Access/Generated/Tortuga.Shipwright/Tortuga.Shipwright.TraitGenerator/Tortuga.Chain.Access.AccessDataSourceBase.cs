@@ -5,9 +5,27 @@ namespace Tortuga.Chain.Access
 	partial class AccessDataSourceBase: Tortuga.Chain.DataSources.ISupportsDeleteAll, Tortuga.Chain.DataSources.ISupportsSqlQueries
 	{
 
-		// These fields hold the traits. They should not be referenced directly.
-		private Traits.SupportsDeleteAllTrait<Tortuga.Chain.Access.AccessObjectName> __Trait0 = new();
-		private Traits.SupportsSqlQueriesTrait<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter> __Trait1 = new();
+		private bool __TraitsRegistered;
+
+		// These fields and/or properties hold the traits. They should not be referenced directly.
+		private Traits.SupportsDeleteAllTrait<Tortuga.Chain.Access.AccessObjectName> ___Trait0 = new();
+		private Traits.SupportsDeleteAllTrait<Tortuga.Chain.Access.AccessObjectName> __Trait0
+		{
+			get
+			{
+				if (!__TraitsRegistered) __RegisterTraits();
+				return ___Trait0;
+			}
+		}
+		private Traits.SupportsSqlQueriesTrait<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter> ___Trait1 = new();
+		private Traits.SupportsSqlQueriesTrait<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter> __Trait1
+		{
+			get
+			{
+				if (!__TraitsRegistered) __RegisterTraits();
+				return ___Trait1;
+			}
+		}
 
 		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsDeleteAll
 		Tortuga.Chain.ILink<int?> Tortuga.Chain.DataSources.ISupportsDeleteAll.DeleteAll(System.String tableName)
@@ -31,7 +49,7 @@ namespace Tortuga.Chain.Access
 		/// <summary>Deletes all records in the specified table.</summary>
 		/// <param name="tableName">Name of the table to clear.</param>
 		/// <returns>The number of rows deleted or null if the database doesn't provide that information.</returns>
-		public Tortuga.Chain.ILink<int?> DeleteAll(Tortuga.Chain.Access.AccessObjectName tableName)
+		public  Tortuga.Chain.ILink<int?> DeleteAll(Tortuga.Chain.Access.AccessObjectName tableName)
 		{
 			return __Trait0.DeleteAll(tableName);
 		}
@@ -39,7 +57,7 @@ namespace Tortuga.Chain.Access
 		/// <summary>Deletes all records in the specified table.</summary>
 		/// <typeparam name="TObject">This class used to determine which table to clear</typeparam>
 		/// <returns>The number of rows deleted or null if the database doesn't provide that information.</returns>
-		public Tortuga.Chain.ILink<int?> DeleteAll<TObject>()where TObject : class
+		public  Tortuga.Chain.ILink<int?> DeleteAll<TObject>()where TObject : class
 		{
 			return __Trait0.DeleteAll<TObject>();
 		}
@@ -51,7 +69,7 @@ namespace Tortuga.Chain.Access
 		/// </summary>
 		/// <param name="sqlStatement">The SQL statement.</param>
 		/// <returns></returns>
-		public Tortuga.Chain.CommandBuilders.MultipleTableDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter> Sql(System.String sqlStatement)
+		public  Tortuga.Chain.CommandBuilders.MultipleTableDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter> Sql(System.String sqlStatement)
 		{
 			return __Trait1.Sql(sqlStatement);
 		}
@@ -62,7 +80,7 @@ namespace Tortuga.Chain.Access
 		/// <param name="sqlStatement">The SQL statement.</param>
 		/// <param name="argumentValue">The argument value.</param>
 		/// <returns>SqlServerSqlCall.</returns>
-		public Tortuga.Chain.CommandBuilders.MultipleTableDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter> Sql(System.String sqlStatement, System.Object argumentValue)
+		public  Tortuga.Chain.CommandBuilders.MultipleTableDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter> Sql(System.String sqlStatement, System.Object argumentValue)
 		{
 			return __Trait1.Sql(sqlStatement, argumentValue);
 		}
@@ -76,8 +94,9 @@ namespace Tortuga.Chain.Access
 		private partial Tortuga.Chain.CommandBuilders.MultipleTableDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter> OnSql(System.String sqlStatement, System.Object? argumentValue );
 
 
-		private void RegisterTraits()
+		private void __RegisterTraits()
 		{
+			__TraitsRegistered = true;
 			__Trait0.OnGetTableOrViewNameFromClass = OnGetTableOrViewNameFromClass;
 			__Trait0.OnDeleteAll = OnDeleteAll;
 			__Trait0.OnParseObjectName = OnParseObjectName;

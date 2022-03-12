@@ -6,16 +6,6 @@ using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Metadata;
 using Tortuga.Chain.SqlServer.CommandBuilders;
 
-#if SQL_SERVER_SDS
-
-using System.Data.SqlClient;
-
-#elif SQL_SERVER_MDS
-
-using Microsoft.Data.SqlClient;
-
-#endif
-
 namespace Tortuga.Chain.SqlServer
 {
 	partial class SqlServerDataSourceBase

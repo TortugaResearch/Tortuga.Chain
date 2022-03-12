@@ -1,20 +1,9 @@
 ﻿using System.Collections.Immutable;
-using Tortuga.Chain.AuditRules;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
 using Tortuga.Chain.Metadata;
 using Tortuga.Chain.SqlServer.Materializers;
-
-#if SQL_SERVER_SDS
-
-using System.Data.SqlClient;
-
-#elif SQL_SERVER_MDS
-
-using Microsoft.Data.SqlClient;
-
-#endif
 
 namespace Tortuga.Chain.SqlServer.CommandBuilders
 {

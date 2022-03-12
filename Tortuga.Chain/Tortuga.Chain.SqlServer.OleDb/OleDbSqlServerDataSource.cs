@@ -159,10 +159,11 @@ namespace Tortuga.Chain
 		/// <param name="transactionName">Name of the transaction.</param>
 		/// <param name="isolationLevel">The isolation level.</param>
 		/// <param name="forwardEvents">if set to <c>true</c> [forward events].</param>
+		/// <param name="cancellationToken"></param>
 		/// <returns></returns>
-		public async Task<OleDbSqlServerTransactionalDataSource> BeginTransactionAsync(string? transactionName = null, IsolationLevel? isolationLevel = null, bool forwardEvents = true)
+		public async Task<OleDbSqlServerTransactionalDataSource> BeginTransactionAsync(string? transactionName = null, IsolationLevel? isolationLevel = null, bool forwardEvents = true, CancellationToken cancellationToken = default)
 		{
-			var connection = await CreateConnectionAsync().ConfigureAwait(false);
+			var connection = await CreateConnectionAsync(cancellationToken).ConfigureAwait(false);
 
 			OleDbTransaction transaction;
 			if (isolationLevel.HasValue)
@@ -196,33 +197,7 @@ namespace Tortuga.Chain
 			return result;
 		}
 
-		/// <summary>
-		/// Creates and opens a SQL connection.
-		/// </summary>
-		/// <returns></returns>
-		/// <remarks>The caller of this method is responsible for closing the connection.</remarks>
-		[SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-		internal OleDbConnection CreateConnection()
-		{
-			var con = new OleDbConnection(ConnectionString);
-			con.Open();
 
-			if (m_ServerDefaultSettings == null)
-			{
-				var temp = new OleDbSqlServerEffectiveSettings();
-				temp.Reload(con, null);
-				Thread.MemoryBarrier();
-				m_ServerDefaultSettings = temp;
-			}
-
-			var sql = BuildConnectionSettingsOverride();
-
-			if (sql != null)
-				using (var cmd = new OleDbCommand(sql, con))
-					cmd.ExecuteNonQuery();
-
-			return con;
-		}
 
 		/// <summary>
 		/// Executes the specified operation.
@@ -421,35 +396,7 @@ namespace Tortuga.Chain
 			return sql.ToString();
 		}
 
-		/// <summary>
-		/// Creates and opens a SQL connection.
-		/// </summary>
-		/// <param name="cancellationToken">The cancellation token.</param>
-		/// <returns></returns>
-		/// <remarks>
-		/// The caller of this method is responsible for closing the connection.
-		/// </remarks>
-		async Task<OleDbConnection> CreateConnectionAsync(CancellationToken cancellationToken = default(CancellationToken))
-		{
-			var con = new OleDbConnection(ConnectionString);
-			await con.OpenAsync(cancellationToken).ConfigureAwait(false);
 
-			if (m_ServerDefaultSettings == null)
-			{
-				var temp = new OleDbSqlServerEffectiveSettings();
-				await temp.ReloadAsync(con, null).ConfigureAwait(false);
-				Thread.MemoryBarrier();
-				m_ServerDefaultSettings = temp;
-			}
-
-			var sql = BuildConnectionSettingsOverride();
-
-			if (sql != null)
-				using (var cmd = new OleDbCommand(sql, con))
-					await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
-
-			return con;
-		}
 
 		/// <summary>
 		/// Creates a new data source with the indicated changes to the settings.
@@ -481,24 +428,5 @@ namespace Tortuga.Chain
 			return result;
 		}
 
-		/// <summary>
-		/// Creates an open data source using the supplied connection and optional transaction.
-		/// </summary>
-		/// <param name="connection">The connection.</param>
-		/// <param name="transaction">The transaction.</param>
-		/// <returns>OleDbSqlServerOpenDataSource.</returns>
-		public OleDbSqlServerOpenDataSource CreateOpenDataSource(OleDbConnection connection, OleDbTransaction? transaction = null)
-		{
-			return new OleDbSqlServerOpenDataSource(this, connection, transaction);
-		}
-
-		/// <summary>
-		/// Creates an open data source with a new connection.
-		/// </summary>
-		/// <remarks>WARNING: The caller of this method is responsible for closing the connection.</remarks>
-		public OleDbSqlServerOpenDataSource CreateOpenDataSource()
-		{
-			return new OleDbSqlServerOpenDataSource(this, CreateConnection(), null);
-		}
 	}
 }

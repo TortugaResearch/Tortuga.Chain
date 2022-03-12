@@ -5,10 +5,36 @@ namespace Tortuga.Chain.MySql
 	partial class MySqlDataSourceBase: Tortuga.Chain.DataSources.ISupportsDeleteAll, Tortuga.Chain.DataSources.ISupportsTruncate, Tortuga.Chain.DataSources.ISupportsSqlQueries
 	{
 
-		// These fields hold the traits. They should not be referenced directly.
-		private Traits.SupportsDeleteAllTrait<Tortuga.Chain.MySql.MySqlObjectName> __Trait0 = new();
-		private Traits.SupportsTruncateTrait<Tortuga.Chain.MySql.MySqlObjectName> __Trait1 = new();
-		private Traits.SupportsSqlQueriesTrait<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter> __Trait2 = new();
+		private bool __TraitsRegistered;
+
+		// These fields and/or properties hold the traits. They should not be referenced directly.
+		private Traits.SupportsDeleteAllTrait<Tortuga.Chain.MySql.MySqlObjectName> ___Trait0 = new();
+		private Traits.SupportsDeleteAllTrait<Tortuga.Chain.MySql.MySqlObjectName> __Trait0
+		{
+			get
+			{
+				if (!__TraitsRegistered) __RegisterTraits();
+				return ___Trait0;
+			}
+		}
+		private Traits.SupportsTruncateTrait<Tortuga.Chain.MySql.MySqlObjectName> ___Trait1 = new();
+		private Traits.SupportsTruncateTrait<Tortuga.Chain.MySql.MySqlObjectName> __Trait1
+		{
+			get
+			{
+				if (!__TraitsRegistered) __RegisterTraits();
+				return ___Trait1;
+			}
+		}
+		private Traits.SupportsSqlQueriesTrait<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter> ___Trait2 = new();
+		private Traits.SupportsSqlQueriesTrait<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter> __Trait2
+		{
+			get
+			{
+				if (!__TraitsRegistered) __RegisterTraits();
+				return ___Trait2;
+			}
+		}
 
 		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsDeleteAll
 		Tortuga.Chain.ILink<int?> Tortuga.Chain.DataSources.ISupportsDeleteAll.DeleteAll(System.String tableName)
@@ -43,7 +69,7 @@ namespace Tortuga.Chain.MySql
 		/// <summary>Deletes all records in the specified table.</summary>
 		/// <param name="tableName">Name of the table to clear.</param>
 		/// <returns>The number of rows deleted or null if the database doesn't provide that information.</returns>
-		public Tortuga.Chain.ILink<int?> DeleteAll(Tortuga.Chain.MySql.MySqlObjectName tableName)
+		public  Tortuga.Chain.ILink<int?> DeleteAll(Tortuga.Chain.MySql.MySqlObjectName tableName)
 		{
 			return __Trait0.DeleteAll(tableName);
 		}
@@ -51,7 +77,7 @@ namespace Tortuga.Chain.MySql
 		/// <summary>Deletes all records in the specified table.</summary>
 		/// <typeparam name="TObject">This class used to determine which table to clear</typeparam>
 		/// <returns>The number of rows deleted or null if the database doesn't provide that information.</returns>
-		public Tortuga.Chain.ILink<int?> DeleteAll<TObject>()where TObject : class
+		public  Tortuga.Chain.ILink<int?> DeleteAll<TObject>()where TObject : class
 		{
 			return __Trait0.DeleteAll<TObject>();
 		}
@@ -63,7 +89,7 @@ namespace Tortuga.Chain.MySql
 		/// </summary>
 		/// <param name="sqlStatement">The SQL statement.</param>
 		/// <returns></returns>
-		public Tortuga.Chain.CommandBuilders.MultipleTableDbCommandBuilder<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter> Sql(System.String sqlStatement)
+		public  Tortuga.Chain.CommandBuilders.MultipleTableDbCommandBuilder<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter> Sql(System.String sqlStatement)
 		{
 			return __Trait2.Sql(sqlStatement);
 		}
@@ -74,7 +100,7 @@ namespace Tortuga.Chain.MySql
 		/// <param name="sqlStatement">The SQL statement.</param>
 		/// <param name="argumentValue">The argument value.</param>
 		/// <returns>SqlServerSqlCall.</returns>
-		public Tortuga.Chain.CommandBuilders.MultipleTableDbCommandBuilder<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter> Sql(System.String sqlStatement, System.Object argumentValue)
+		public  Tortuga.Chain.CommandBuilders.MultipleTableDbCommandBuilder<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter> Sql(System.String sqlStatement, System.Object argumentValue)
 		{
 			return __Trait2.Sql(sqlStatement, argumentValue);
 		}
@@ -84,7 +110,7 @@ namespace Tortuga.Chain.MySql
 		/// <summary>Truncates the specified table.</summary>
 		/// <param name="tableName">Name of the table to Truncate.</param>
 		/// <returns>The number of rows deleted or null if the database doesn't provide that information.</returns>
-		public Tortuga.Chain.ILink<int?> Truncate(Tortuga.Chain.MySql.MySqlObjectName tableName)
+		public  Tortuga.Chain.ILink<int?> Truncate(Tortuga.Chain.MySql.MySqlObjectName tableName)
 		{
 			return __Trait1.Truncate(tableName);
 		}
@@ -92,7 +118,7 @@ namespace Tortuga.Chain.MySql
 		/// <summary>Truncates the specified table.</summary>
 		/// <typeparam name="TObject">This class used to determine which table to Truncate</typeparam>
 		/// <returns>The number of rows deleted or null if the database doesn't provide that information.</returns>
-		public Tortuga.Chain.ILink<int?> Truncate<TObject>()where TObject : class
+		public  Tortuga.Chain.ILink<int?> Truncate<TObject>()where TObject : class
 		{
 			return __Trait1.Truncate<TObject>();
 		}
@@ -112,8 +138,9 @@ namespace Tortuga.Chain.MySql
 		private partial Tortuga.Chain.ILink<int?> OnTruncate(Tortuga.Chain.MySql.MySqlObjectName tableName );
 
 
-		private void RegisterTraits()
+		private void __RegisterTraits()
 		{
+			__TraitsRegistered = true;
 			__Trait0.OnGetTableOrViewNameFromClass = OnGetTableOrViewNameFromClass;
 			__Trait0.OnDeleteAll = OnDeleteAll;
 			__Trait0.OnParseObjectName = OnParseObjectName;

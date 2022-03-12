@@ -1,4 +1,5 @@
-﻿global using AbstractCommand = Microsoft.Data.SqlClient.SqlCommand;
+﻿global using Microsoft.Data.SqlClient;
+global using AbstractCommand = Microsoft.Data.SqlClient.SqlCommand;
 global using AbstractConnection = Microsoft.Data.SqlClient.SqlConnection;
 global using AbstractParameter = Microsoft.Data.SqlClient.SqlParameter;
 global using AbstractTransaction = Microsoft.Data.SqlClient.SqlTransaction;

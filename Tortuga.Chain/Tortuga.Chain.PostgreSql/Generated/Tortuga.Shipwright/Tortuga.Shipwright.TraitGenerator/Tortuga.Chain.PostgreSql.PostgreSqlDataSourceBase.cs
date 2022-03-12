@@ -5,10 +5,36 @@ namespace Tortuga.Chain.PostgreSql
 	partial class PostgreSqlDataSourceBase: Tortuga.Chain.DataSources.ISupportsDeleteAll, Tortuga.Chain.DataSources.ISupportsTruncate, Tortuga.Chain.DataSources.ISupportsSqlQueries
 	{
 
-		// These fields hold the traits. They should not be referenced directly.
-		private Traits.SupportsDeleteAllTrait<Tortuga.Chain.PostgreSql.PostgreSqlObjectName> __Trait0 = new();
-		private Traits.SupportsTruncateTrait<Tortuga.Chain.PostgreSql.PostgreSqlObjectName> __Trait1 = new();
-		private Traits.SupportsSqlQueriesTrait<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter> __Trait2 = new();
+		private bool __TraitsRegistered;
+
+		// These fields and/or properties hold the traits. They should not be referenced directly.
+		private Traits.SupportsDeleteAllTrait<Tortuga.Chain.PostgreSql.PostgreSqlObjectName> ___Trait0 = new();
+		private Traits.SupportsDeleteAllTrait<Tortuga.Chain.PostgreSql.PostgreSqlObjectName> __Trait0
+		{
+			get
+			{
+				if (!__TraitsRegistered) __RegisterTraits();
+				return ___Trait0;
+			}
+		}
+		private Traits.SupportsTruncateTrait<Tortuga.Chain.PostgreSql.PostgreSqlObjectName> ___Trait1 = new();
+		private Traits.SupportsTruncateTrait<Tortuga.Chain.PostgreSql.PostgreSqlObjectName> __Trait1
+		{
+			get
+			{
+				if (!__TraitsRegistered) __RegisterTraits();
+				return ___Trait1;
+			}
+		}
+		private Traits.SupportsSqlQueriesTrait<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter> ___Trait2 = new();
+		private Traits.SupportsSqlQueriesTrait<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter> __Trait2
+		{
+			get
+			{
+				if (!__TraitsRegistered) __RegisterTraits();
+				return ___Trait2;
+			}
+		}
 
 		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsDeleteAll
 		Tortuga.Chain.ILink<int?> Tortuga.Chain.DataSources.ISupportsDeleteAll.DeleteAll(System.String tableName)
@@ -43,7 +69,7 @@ namespace Tortuga.Chain.PostgreSql
 		/// <summary>Deletes all records in the specified table.</summary>
 		/// <param name="tableName">Name of the table to clear.</param>
 		/// <returns>The number of rows deleted or null if the database doesn't provide that information.</returns>
-		public Tortuga.Chain.ILink<int?> DeleteAll(Tortuga.Chain.PostgreSql.PostgreSqlObjectName tableName)
+		public  Tortuga.Chain.ILink<int?> DeleteAll(Tortuga.Chain.PostgreSql.PostgreSqlObjectName tableName)
 		{
 			return __Trait0.DeleteAll(tableName);
 		}
@@ -51,7 +77,7 @@ namespace Tortuga.Chain.PostgreSql
 		/// <summary>Deletes all records in the specified table.</summary>
 		/// <typeparam name="TObject">This class used to determine which table to clear</typeparam>
 		/// <returns>The number of rows deleted or null if the database doesn't provide that information.</returns>
-		public Tortuga.Chain.ILink<int?> DeleteAll<TObject>()where TObject : class
+		public  Tortuga.Chain.ILink<int?> DeleteAll<TObject>()where TObject : class
 		{
 			return __Trait0.DeleteAll<TObject>();
 		}
@@ -63,7 +89,7 @@ namespace Tortuga.Chain.PostgreSql
 		/// </summary>
 		/// <param name="sqlStatement">The SQL statement.</param>
 		/// <returns></returns>
-		public Tortuga.Chain.CommandBuilders.MultipleTableDbCommandBuilder<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter> Sql(System.String sqlStatement)
+		public  Tortuga.Chain.CommandBuilders.MultipleTableDbCommandBuilder<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter> Sql(System.String sqlStatement)
 		{
 			return __Trait2.Sql(sqlStatement);
 		}
@@ -74,7 +100,7 @@ namespace Tortuga.Chain.PostgreSql
 		/// <param name="sqlStatement">The SQL statement.</param>
 		/// <param name="argumentValue">The argument value.</param>
 		/// <returns>SqlServerSqlCall.</returns>
-		public Tortuga.Chain.CommandBuilders.MultipleTableDbCommandBuilder<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter> Sql(System.String sqlStatement, System.Object argumentValue)
+		public  Tortuga.Chain.CommandBuilders.MultipleTableDbCommandBuilder<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter> Sql(System.String sqlStatement, System.Object argumentValue)
 		{
 			return __Trait2.Sql(sqlStatement, argumentValue);
 		}
@@ -84,7 +110,7 @@ namespace Tortuga.Chain.PostgreSql
 		/// <summary>Truncates the specified table.</summary>
 		/// <param name="tableName">Name of the table to Truncate.</param>
 		/// <returns>The number of rows deleted or null if the database doesn't provide that information.</returns>
-		public Tortuga.Chain.ILink<int?> Truncate(Tortuga.Chain.PostgreSql.PostgreSqlObjectName tableName)
+		public  Tortuga.Chain.ILink<int?> Truncate(Tortuga.Chain.PostgreSql.PostgreSqlObjectName tableName)
 		{
 			return __Trait1.Truncate(tableName);
 		}
@@ -92,7 +118,7 @@ namespace Tortuga.Chain.PostgreSql
 		/// <summary>Truncates the specified table.</summary>
 		/// <typeparam name="TObject">This class used to determine which table to Truncate</typeparam>
 		/// <returns>The number of rows deleted or null if the database doesn't provide that information.</returns>
-		public Tortuga.Chain.ILink<int?> Truncate<TObject>()where TObject : class
+		public  Tortuga.Chain.ILink<int?> Truncate<TObject>()where TObject : class
 		{
 			return __Trait1.Truncate<TObject>();
 		}
@@ -112,8 +138,9 @@ namespace Tortuga.Chain.PostgreSql
 		private partial Tortuga.Chain.ILink<int?> OnTruncate(Tortuga.Chain.PostgreSql.PostgreSqlObjectName tableName );
 
 
-		private void RegisterTraits()
+		private void __RegisterTraits()
 		{
+			__TraitsRegistered = true;
 			__Trait0.OnGetTableOrViewNameFromClass = OnGetTableOrViewNameFromClass;
 			__Trait0.OnDeleteAll = OnDeleteAll;
 			__Trait0.OnParseObjectName = OnParseObjectName;

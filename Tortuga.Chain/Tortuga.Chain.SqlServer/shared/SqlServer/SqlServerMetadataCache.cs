@@ -2,16 +2,6 @@
 using System.Diagnostics.CodeAnalysis;
 using Tortuga.Chain.Metadata;
 
-#if SQL_SERVER_SDS
-
-using System.Data.SqlClient;
-
-#elif SQL_SERVER_MDS
-
-using Microsoft.Data.SqlClient;
-
-#endif
-
 namespace Tortuga.Chain.SqlServer
 {
 	/// <summary>
