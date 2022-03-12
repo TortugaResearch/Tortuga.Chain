@@ -4,7 +4,7 @@ using Tortuga.Shipwright;
 
 namespace Tortuga.Chain;
 
-[UseTrait(typeof(Traits.RootDataSourceTrait<PostgreSqlTransactionalDataSource, PostgreSqlOpenDataSource, AbstractConnection, AbstractTransaction>))]
+[UseTrait(typeof(Traits.RootDataSourceTrait<PostgreSqlTransactionalDataSource, PostgreSqlOpenDataSource, AbstractConnection, AbstractTransaction, AbstractCommand>))]
 partial class PostgreSqlDataSource
 {
 

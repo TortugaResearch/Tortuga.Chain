@@ -65,26 +65,6 @@ namespace Tortuga.Chain
 		/// </value>
 		protected override ConcurrentDictionary<Type, object> ExtensionCache => m_ExtensionCache;
 
-		/// <summary>
-		/// Tests the connection.
-		/// </summary>
-		public override void TestConnection()
-		{
-			using (var con = CreateConnection())
-			using (var cmd = new AbstractCommand("SELECT 1", con))
-				cmd.ExecuteScalar();
-		}
-
-		/// <summary>
-		/// Tests the connection asynchronously.
-		/// </summary>
-		/// <returns></returns>
-		public override async Task TestConnectionAsync()
-		{
-			using (var con = await CreateConnectionAsync().ConfigureAwait(false))
-			using (var cmd = new AbstractCommand("SELECT 1", con))
-				await cmd.ExecuteScalarAsync().ConfigureAwait(false);
-		}
 
 		/// <summary>
 		/// Creates a new data source with the provided cache.

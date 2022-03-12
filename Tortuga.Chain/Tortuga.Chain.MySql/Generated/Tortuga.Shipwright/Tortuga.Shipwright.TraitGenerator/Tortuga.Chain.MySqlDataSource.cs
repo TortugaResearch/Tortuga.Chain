@@ -8,8 +8,8 @@ namespace Tortuga.Chain
 		private bool __TraitsRegistered;
 
 		// These fields and/or properties hold the traits. They should not be referenced directly.
-		private Traits.RootDataSourceTrait<Tortuga.Chain.MySql.MySqlTransactionalDataSource, Tortuga.Chain.MySql.MySqlOpenDataSource, MySqlConnector.MySqlConnection, MySqlConnector.MySqlTransaction> ___Trait0 = new();
-		private Traits.RootDataSourceTrait<Tortuga.Chain.MySql.MySqlTransactionalDataSource, Tortuga.Chain.MySql.MySqlOpenDataSource, MySqlConnector.MySqlConnection, MySqlConnector.MySqlTransaction> __Trait0
+		private Traits.RootDataSourceTrait<Tortuga.Chain.MySql.MySqlTransactionalDataSource, Tortuga.Chain.MySql.MySqlOpenDataSource, MySqlConnector.MySqlConnection, MySqlConnector.MySqlTransaction, MySqlConnector.MySqlCommand> ___Trait0 = new();
+		private Traits.RootDataSourceTrait<Tortuga.Chain.MySql.MySqlTransactionalDataSource, Tortuga.Chain.MySql.MySqlOpenDataSource, MySqlConnector.MySqlConnection, MySqlConnector.MySqlTransaction, MySqlConnector.MySqlCommand> __Trait0
 		{
 			get
 			{
@@ -54,7 +54,7 @@ namespace Tortuga.Chain
 			return ((Tortuga.Chain.DataSources.IRootDataSource)__Trait0).CreateOpenDataSource(connection, transaction);
 		}
 
-		// Exposing trait Traits.RootDataSourceTrait<Tortuga.Chain.MySql.MySqlTransactionalDataSource, Tortuga.Chain.MySql.MySqlOpenDataSource, MySqlConnector.MySqlConnection, MySqlConnector.MySqlTransaction>
+		// Exposing trait Traits.RootDataSourceTrait<Tortuga.Chain.MySql.MySqlTransactionalDataSource, Tortuga.Chain.MySql.MySqlOpenDataSource, MySqlConnector.MySqlConnection, MySqlConnector.MySqlTransaction, MySqlConnector.MySqlCommand>
 
 		/// <summary>
 		/// Creates a new transaction.
@@ -143,6 +143,23 @@ namespace Tortuga.Chain
 		public  Tortuga.Chain.MySql.MySqlOpenDataSource CreateOpenDataSource()
 		{
 			return __Trait0.CreateOpenDataSource();
+		}
+
+		/// <summary>
+		/// Tests the connection.
+		/// </summary>
+		public override void TestConnection()
+		{
+			__Trait0.TestConnection();
+		}
+
+		/// <summary>
+		/// Tests the connection asynchronously.
+		/// </summary>
+		/// <returns></returns>
+		public override System.Threading.Tasks.Task TestConnectionAsync()
+		{
+			return __Trait0.TestConnectionAsync();
 		}
 
 		private partial Tortuga.Chain.MySql.MySqlTransactionalDataSource OnBeginTransaction(System.Nullable<System.Data.IsolationLevel> isolationLevel, System.Boolean forwardEvents );

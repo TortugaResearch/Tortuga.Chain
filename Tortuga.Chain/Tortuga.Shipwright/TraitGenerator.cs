@@ -136,10 +136,37 @@ public class TraitGenerator : ISourceGenerator
 
 							foreach (var member in traitClass.GetMembers().Where(m => m.HasAttribute<ExposeAttribute>()).OrderBy(m => m.Name))
 							{
-								var exposeAttribute = member.GetAttribute<ExposeAttribute>();
-								var accessibility = "public"; //TODO: Read from exposeAttribute
-								var inhertiance = ""; //TODO: Read from exposeAttribute
+								var exposeAttribute = member.GetAttribute<ExposeAttribute>()!;
 
+								//receiver.Log.Add("Inheritance value type = " + exposeAttribute.NamedArguments.SingleOrDefault(x => x.Key == "Inheritance").Value.Value?.GetType().FullName);
+
+								var accessibilityOption = (Accessibility)(exposeAttribute.NamedArguments.SingleOrDefault(x => x.Key == "Accessibility").Value.Value ?? Accessibility.Public);
+
+								var inheritanceOption = (Inheritance)(exposeAttribute.NamedArguments.SingleOrDefault(x => x.Key == "Inheritance").Value.Value ?? Inheritance.None);
+
+								var accessibility = accessibilityOption switch
+								{
+									Accessibility.Public => "public",
+									Accessibility.Protected => "protected",
+									Accessibility.Internal => "internal",
+									Accessibility.ProtectedOrInternal => "protected internal",
+									Accessibility.Private => "private",
+									_ => throw new NotImplementedException($"Unknown accessibility value {accessibilityOption}")
+								};
+
+								var inheritance = inheritanceOption switch
+								{
+									Inheritance.None => "",
+									Inheritance.Abstract => "abstract",
+									Inheritance.AbstractOverride => "abstract override",
+									Inheritance.Override => "override",
+									Inheritance.Virtual => "virtual",
+									Inheritance.Sealed => "sealed",
+									Inheritance.SealedOverride => "sealed override",
+									_ => throw new NotImplementedException($"Unknown inheritance value {inheritanceOption}")
+								};
+
+								bool isAbstract = inheritanceOption.HasFlag(Inheritance.Abstract);
 
 								switch (member)
 								{
@@ -150,19 +177,27 @@ public class TraitGenerator : ISourceGenerator
 											var parameters = string.Join(", ",
 												methodSymbol.Parameters.Select(p => ParameterWithDefault(p)));
 
-											var signature = $"{accessibility} {inhertiance} {returnType} {methodSymbol.FullName()}({parameters}){methodSymbol.TypeConstraintString()}";
+											var signature = $"{accessibility} {inheritance} {returnType} {methodSymbol.FullName()}({parameters}){methodSymbol.TypeConstraintString()}";
 
 											var invokerPrefix = (methodSymbol.ReturnsVoid) ? "" : "return ";
 											var arguments = string.Join(", ", methodSymbol.Parameters.Select(p => p.Name));
 											var invoker = $"{invokerPrefix}{fieldReference}.{methodSymbol.FullName()}({arguments});";
 
 											code.AppendMultipleLines(member.GetXmlDocs());
-											using (code.BeginScope(signature))
-											{
-												code.AppendLine(invoker);
-											}
-											code.AppendLine();
 
+											if (isAbstract)
+											{
+												code.AppendLine(signature + " ;");
+											}
+											else
+											{
+												using (code.BeginScope(signature))
+												{
+													code.AppendLine(invoker);
+												}
+											}
+
+											code.AppendLine();
 										}
 										break;
 

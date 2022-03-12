@@ -8,8 +8,8 @@ namespace Tortuga.Chain
 		private bool __TraitsRegistered;
 
 		// These fields and/or properties hold the traits. They should not be referenced directly.
-		private Traits.RootDataSourceTrait<Tortuga.Chain.PostgreSql.PostgreSqlTransactionalDataSource, Tortuga.Chain.PostgreSql.PostgreSqlOpenDataSource, Npgsql.NpgsqlConnection, Npgsql.NpgsqlTransaction> ___Trait0 = new();
-		private Traits.RootDataSourceTrait<Tortuga.Chain.PostgreSql.PostgreSqlTransactionalDataSource, Tortuga.Chain.PostgreSql.PostgreSqlOpenDataSource, Npgsql.NpgsqlConnection, Npgsql.NpgsqlTransaction> __Trait0
+		private Traits.RootDataSourceTrait<Tortuga.Chain.PostgreSql.PostgreSqlTransactionalDataSource, Tortuga.Chain.PostgreSql.PostgreSqlOpenDataSource, Npgsql.NpgsqlConnection, Npgsql.NpgsqlTransaction, Npgsql.NpgsqlCommand> ___Trait0 = new();
+		private Traits.RootDataSourceTrait<Tortuga.Chain.PostgreSql.PostgreSqlTransactionalDataSource, Tortuga.Chain.PostgreSql.PostgreSqlOpenDataSource, Npgsql.NpgsqlConnection, Npgsql.NpgsqlTransaction, Npgsql.NpgsqlCommand> __Trait0
 		{
 			get
 			{
@@ -54,7 +54,7 @@ namespace Tortuga.Chain
 			return ((Tortuga.Chain.DataSources.IRootDataSource)__Trait0).CreateOpenDataSource(connection, transaction);
 		}
 
-		// Exposing trait Traits.RootDataSourceTrait<Tortuga.Chain.PostgreSql.PostgreSqlTransactionalDataSource, Tortuga.Chain.PostgreSql.PostgreSqlOpenDataSource, Npgsql.NpgsqlConnection, Npgsql.NpgsqlTransaction>
+		// Exposing trait Traits.RootDataSourceTrait<Tortuga.Chain.PostgreSql.PostgreSqlTransactionalDataSource, Tortuga.Chain.PostgreSql.PostgreSqlOpenDataSource, Npgsql.NpgsqlConnection, Npgsql.NpgsqlTransaction, Npgsql.NpgsqlCommand>
 
 		/// <summary>
 		/// Creates a new transaction.
@@ -143,6 +143,23 @@ namespace Tortuga.Chain
 		public  Tortuga.Chain.PostgreSql.PostgreSqlOpenDataSource CreateOpenDataSource()
 		{
 			return __Trait0.CreateOpenDataSource();
+		}
+
+		/// <summary>
+		/// Tests the connection.
+		/// </summary>
+		public override void TestConnection()
+		{
+			__Trait0.TestConnection();
+		}
+
+		/// <summary>
+		/// Tests the connection asynchronously.
+		/// </summary>
+		/// <returns></returns>
+		public override System.Threading.Tasks.Task TestConnectionAsync()
+		{
+			return __Trait0.TestConnectionAsync();
 		}
 
 		private partial Tortuga.Chain.PostgreSql.PostgreSqlTransactionalDataSource OnBeginTransaction(System.Nullable<System.Data.IsolationLevel> isolationLevel, System.Boolean forwardEvents );

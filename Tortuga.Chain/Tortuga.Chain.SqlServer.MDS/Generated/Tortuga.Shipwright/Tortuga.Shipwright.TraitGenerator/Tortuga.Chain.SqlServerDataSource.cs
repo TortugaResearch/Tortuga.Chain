@@ -8,8 +8,8 @@ namespace Tortuga.Chain
 		private bool __TraitsRegistered;
 
 		// These fields and/or properties hold the traits. They should not be referenced directly.
-		private Traits.RootDataSourceTrait<Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource, Tortuga.Chain.SqlServer.SqlServerOpenDataSource, Microsoft.Data.SqlClient.SqlConnection, Microsoft.Data.SqlClient.SqlTransaction> ___Trait0 = new();
-		private Traits.RootDataSourceTrait<Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource, Tortuga.Chain.SqlServer.SqlServerOpenDataSource, Microsoft.Data.SqlClient.SqlConnection, Microsoft.Data.SqlClient.SqlTransaction> __Trait0
+		private Traits.RootDataSourceTrait<Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource, Tortuga.Chain.SqlServer.SqlServerOpenDataSource, Microsoft.Data.SqlClient.SqlConnection, Microsoft.Data.SqlClient.SqlTransaction, Microsoft.Data.SqlClient.SqlCommand> ___Trait0 = new();
+		private Traits.RootDataSourceTrait<Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource, Tortuga.Chain.SqlServer.SqlServerOpenDataSource, Microsoft.Data.SqlClient.SqlConnection, Microsoft.Data.SqlClient.SqlTransaction, Microsoft.Data.SqlClient.SqlCommand> __Trait0
 		{
 			get
 			{
@@ -54,7 +54,7 @@ namespace Tortuga.Chain
 			return ((Tortuga.Chain.DataSources.IRootDataSource)__Trait0).CreateOpenDataSource(connection, transaction);
 		}
 
-		// Exposing trait Traits.RootDataSourceTrait<Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource, Tortuga.Chain.SqlServer.SqlServerOpenDataSource, Microsoft.Data.SqlClient.SqlConnection, Microsoft.Data.SqlClient.SqlTransaction>
+		// Exposing trait Traits.RootDataSourceTrait<Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource, Tortuga.Chain.SqlServer.SqlServerOpenDataSource, Microsoft.Data.SqlClient.SqlConnection, Microsoft.Data.SqlClient.SqlTransaction, Microsoft.Data.SqlClient.SqlCommand>
 
 		/// <summary>
 		/// Creates a new transaction.
@@ -143,6 +143,23 @@ namespace Tortuga.Chain
 		public  Tortuga.Chain.SqlServer.SqlServerOpenDataSource CreateOpenDataSource()
 		{
 			return __Trait0.CreateOpenDataSource();
+		}
+
+		/// <summary>
+		/// Tests the connection.
+		/// </summary>
+		public override void TestConnection()
+		{
+			__Trait0.TestConnection();
+		}
+
+		/// <summary>
+		/// Tests the connection asynchronously.
+		/// </summary>
+		/// <returns></returns>
+		public override System.Threading.Tasks.Task TestConnectionAsync()
+		{
+			return __Trait0.TestConnectionAsync();
 		}
 
 		private partial Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource OnBeginTransaction(System.Nullable<System.Data.IsolationLevel> isolationLevel, System.Boolean forwardEvents );

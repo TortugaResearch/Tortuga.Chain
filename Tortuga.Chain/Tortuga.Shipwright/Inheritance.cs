@@ -8,8 +8,10 @@
 	{
 		None = 0,
 		Virtual = 1,
-		Overrides = 2,
+		Override = 2,
 		Abstract = 4,
-		AbstractOverrides = Abstract | Overrides
+		AbstractOverride = Abstract | Override,
+		Sealed = 8,
+		SealedOverride = Sealed + Override
 	}
 }

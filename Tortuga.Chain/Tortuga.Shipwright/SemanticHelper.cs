@@ -4,7 +4,11 @@ using System.Diagnostics.CodeAnalysis;
 namespace Tortuga.Shipwright;
 static class SemanticHelper
 {
-
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="symbol"></param>
+	/// <returns></returns>
 	[return: NotNullIfNotNull("symbol")]
 	public static string? FullMetadataName(this INamedTypeSymbol? symbol)
 	{
@@ -12,19 +16,6 @@ static class SemanticHelper
 			return null;
 
 		var prefix = FullNamespace(symbol);
-		//var suffix = "";
-		//if (symbol.Arity > 0)
-		//{
-		//	suffix = "<" + string.Join(", ", symbol.TypeArguments.Select(targ =>
-		//	{
-		//		switch (targ)
-		//		{
-		//			case INamedTypeSymbol nts: return FullName(nts);
-		//			case ITypeParameterSymbol tps: return tps.Name;
-		//		}
-		//		throw new NotSupportedException($"Cannot generate type name from type argument {targ.GetType().FullName} in type {symbol.Name}");
-		//	})) + ">";
-		//}
 
 		if (prefix != "")
 			return prefix + "." + symbol.MetadataName;

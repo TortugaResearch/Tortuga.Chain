@@ -213,7 +213,27 @@ public class FromTests_PagingAndSorting : TestBase
 
 #endif
 
-
+	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	public void Sorting_BadColumn(string dataSourceName, DataSourceType mode)
+	{
+		var dataSource = DataSource(dataSourceName, mode);
+		try
+		{
+			try
+			{
+				var test1 = dataSource.From(EmployeeTableName, new { Title = "Test" }).WithSorting("Frank").ToCollection<Employee>().Execute();
+				Assert.Fail("This should have thrown an exception for the unknown sort column.");
+			}
+			catch (MappingException)
+			{
+				//pass
+			}
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
 
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
 	public void Sorting(string dataSourceName, DataSourceType mode)

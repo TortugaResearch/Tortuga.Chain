@@ -9,4 +9,5 @@ public enum Accessibility
 	Protected = 1,
 	Internal = 2,
 	ProtectedOrInternal = 3,
+	Private = 4,
 }

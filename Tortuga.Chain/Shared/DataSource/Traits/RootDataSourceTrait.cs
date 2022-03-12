@@ -6,12 +6,22 @@ using Tortuga.Shipwright;
 namespace Traits;
 
 [Trait]
-class RootDataSourceTrait<TTransactionalDataSource, TOpenDataSource, TConnection, TTransaction> : IRootDataSource
+class RootDataSourceTrait<TTransactionalDataSource, TOpenDataSource, TConnection, TTransaction, TCommand> : IRootDataSource
 	where TTransactionalDataSource : ITransactionalDataSource
 	where TOpenDataSource : IOpenDataSource
 	where TConnection : DbConnection
 	where TTransaction : DbTransaction
+	where TCommand : DbCommand, new()
 {
+
+
+	//[Expose(Accessibility = Accessibility.Internal)]
+	//public ICacheAdapter m_Cache { get; set; }
+
+	//[Expose(Accessibility = Accessibility.Internal)]
+	//public ConcurrentDictionary<Type, object> m_ExtensionCache { get; set; }
+
+
 	IOpenDataSource IRootDataSource.CreateOpenDataSource() => CreateOpenDataSource();
 
 	IOpenDataSource IRootDataSource.CreateOpenDataSource(DbConnection connection, DbTransaction? transaction)
@@ -127,6 +137,29 @@ class RootDataSourceTrait<TTransactionalDataSource, TOpenDataSource, TConnection
 	public async Task<TTransactionalDataSource> BeginTransactionAsync()
 		=> await OnBeginTransactionAsync(null, true, default).ConfigureAwait(false);
 
+
+	/// <summary>
+	/// Tests the connection.
+	/// </summary>
+	[Expose(Inheritance = Inheritance.Override)]
+	public void TestConnection()
+	{
+		using (var con = CreateConnection())
+		using (var cmd = new TCommand() { CommandText = "SELECT 1", Connection = con })
+			cmd.ExecuteScalar();
+	}
+
+	/// <summary>
+	/// Tests the connection asynchronously.
+	/// </summary>
+	/// <returns></returns>
+	[Expose(Inheritance = Inheritance.Override)]
+	public async Task TestConnectionAsync()
+	{
+		using (var con = await CreateConnectionAsync().ConfigureAwait(false))
+		using (var cmd = new TCommand() { CommandText = "SELECT 1", Connection = con })
+			await cmd.ExecuteScalarAsync().ConfigureAwait(false);
+	}
 
 	[Partial("cancellationToken")] public Func<CancellationToken, Task<TConnection>> OnCreateConnectionAsync { get; set; } = null!;
 	[Partial] public Func<TConnection> OnCreateConnection { get; set; } = null!;
