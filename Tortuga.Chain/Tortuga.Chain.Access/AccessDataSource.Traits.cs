@@ -1,11 +1,12 @@
 ﻿using System.Data.OleDb;
 using Tortuga.Chain.Access;
 using Tortuga.Chain.AuditRules;
+using Tortuga.Chain.Core;
 using Tortuga.Shipwright;
 
 namespace Tortuga.Chain;
 
-[UseTrait(typeof(Traits.RootDataSourceTrait<AccessDataSource, AccessTransactionalDataSource, AccessOpenDataSource, AbstractConnection, AbstractTransaction, AbstractCommand, OleDbConnectionStringBuilder>))]
+[UseTrait(typeof(Traits.RootDataSourceTrait<AbstractDataSource, AccessTransactionalDataSource, AccessOpenDataSource, AbstractConnection, AbstractTransaction, AbstractCommand, OleDbConnectionStringBuilder>))]
 partial class AccessDataSource
 {
 
@@ -54,7 +55,7 @@ partial class AccessDataSource
 
 	private partial AccessOpenDataSource OnCreateOpenDataSource(AbstractConnection connection, AbstractTransaction? transaction) => new AccessOpenDataSource(this, connection, transaction);
 
-	private partial Tortuga.Chain.AccessDataSource OnCloneWithOverrides(Tortuga.Chain.Core.ICacheAdapter? cache, System.Collections.Generic.IEnumerable<Tortuga.Chain.AuditRules.AuditRule>? additionalRules, System.Object? userValue)
+	private partial AbstractDataSource OnCloneWithOverrides(ICacheAdapter? cache, IEnumerable<AuditRule>? additionalRules, object? userValue)
 	{
 		var result = WithSettings(null);
 		if (cache != null)
@@ -62,7 +63,8 @@ partial class AccessDataSource
 		if (additionalRules != null)
 			result.AuditRules = new AuditRuleCollection(AuditRules, additionalRules);
 		if (userValue != null)
-			result.AuditRules = userValue;
+			result.UserValue = userValue;
+		return result;
 	}
 
 

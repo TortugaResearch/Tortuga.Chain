@@ -222,7 +222,7 @@ namespace Tortuga.Chain
 		/// </summary>
 		/// <param name="additionalRules">The additional rules.</param>
 		/// <returns></returns>
-		public Tortuga.Chain.AccessDataSource WithRules(params Type.Name = , Name = additionalRules)
+		public Tortuga.Chain.AccessDataSource WithRules(params Tortuga.Chain.AuditRules.AuditRule[] additionalRules)
 		{
 			return __Trait0.WithRules(additionalRules);
 		}

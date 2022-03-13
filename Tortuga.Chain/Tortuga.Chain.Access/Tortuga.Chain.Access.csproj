@@ -63,6 +63,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Compile Remove="..\Shared\DataSource\DataSource.Common.cs" />
 		<Compile Remove="..\Shared\DataSource\DataSourceBase.Class2DataSource.cs" />
 		<Compile Remove="..\Shared\DataSource\DataSourceBase.Class3DataSource.cs" />
 		<Compile Remove="..\Shared\DataSource\DataSourceBase.IClass2DataSource.cs" />

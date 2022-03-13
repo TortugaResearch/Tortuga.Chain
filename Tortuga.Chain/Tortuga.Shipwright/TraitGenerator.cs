@@ -351,7 +351,7 @@ public class TraitGenerator : ISourceGenerator
 	{
 		if (parameter.IsParams)
 		{
-			return $"params Type.Name = {parameter.Type.Name}, Name = {parameter.Name}";
+			return $"params {parameter.Type.TryFullName()} {parameter.Name}";
 		}
 
 		if (parameter.HasExplicitDefaultValue)

@@ -28,8 +28,13 @@ static class SemanticHelper
 	{
 		if (symbol == null)
 			return null;
+
+		if (symbol is IArrayTypeSymbol ats)
+			return $"{ats.ElementType.TryFullName()}[{(new string(',', ats.Rank - 1))}]";
+
 		if (symbol is not INamedTypeSymbol nts)
 			return symbol.Name;
+
 		return FullName(nts);
 	}
 
