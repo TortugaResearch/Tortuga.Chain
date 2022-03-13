@@ -32,11 +32,11 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(TargetFramework)' == 'net462'">
-		<DefineConstants>SQL_SERVER_MDS;NULL_MISSING;CLASS_1;CLASS_2;CLASS_3</DefineConstants>
+		<DefineConstants>SQL_SERVER_MDS;CLASS_1;CLASS_2;CLASS_3</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-		<DefineConstants>SQL_SERVER_MDS;NULL_MISSING;CLASS_1;CLASS_2;CLASS_3</DefineConstants>
+		<DefineConstants>SQL_SERVER_MDS;CLASS_1;CLASS_2;CLASS_3</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">

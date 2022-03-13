@@ -44,11 +44,11 @@
 	</ItemGroup>
 
 	<PropertyGroup Condition="'$(TargetFramework)' == 'net462'">
-		<DefineConstants>SQLITE;NULL_MISSING;CLASS_1;CLASS_2</DefineConstants>
+		<DefineConstants>SQLITE;CLASS_1;CLASS_2</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-		<DefineConstants>SQLITE;NULL_MISSING;CLASS_1;CLASS_2</DefineConstants>
+		<DefineConstants>SQLITE;CLASS_1;CLASS_2</DefineConstants>
 	</PropertyGroup>
 
 

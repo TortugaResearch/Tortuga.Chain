@@ -18,11 +18,6 @@
 	</ItemGroup>
 
 
-	<PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-		<DefineConstants>NULL_MISSING</DefineConstants>
-	</PropertyGroup>
-
-	
 	<!-- NuGet Packaging Boilerplate-->
 	<PropertyGroup Condition="'$(Configuration)'=='Release'">
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>

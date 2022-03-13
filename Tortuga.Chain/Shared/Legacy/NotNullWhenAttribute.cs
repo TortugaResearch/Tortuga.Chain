@@ -1,4 +1,4 @@
-﻿#if NULL_MISSING
+﻿#if !NETCOREAPP3_1_OR_GREATER
 
 namespace System.Diagnostics.CodeAnalysis
 {
