@@ -2,14 +2,14 @@
 
 namespace Tortuga.Chain.SqlServer
 {
-	partial class SqlServerDataSourceBase: Tortuga.Chain.DataSources.ISupportsDeleteAll, Tortuga.Chain.DataSources.ISupportsTruncate, Tortuga.Chain.DataSources.ISupportsSqlQueries, Tortuga.Chain.DataSources.ISupportsInsertBatch, Traits.IInsertBatchHelper<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName>
+	partial class SqlServerDataSourceBase: Tortuga.Chain.DataSources.ISupportsDeleteAll, Tortuga.Chain.DataSources.ISupportsTruncate, Tortuga.Chain.DataSources.ISupportsSqlQueries, Tortuga.Chain.DataSources.ISupportsInsertBatch, Traits.ICommandHelper<Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>, Traits.IInsertBatchHelper<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>
 	{
 
 		private bool __TraitsRegistered;
 
 		// These fields and/or properties hold the traits. They should not be referenced directly.
-		private Traits.SupportsDeleteAllTrait<Tortuga.Chain.SqlServer.SqlServerObjectName> ___Trait0 = new();
-		private Traits.SupportsDeleteAllTrait<Tortuga.Chain.SqlServer.SqlServerObjectName> __Trait0
+		private Traits.SupportsDeleteAllTrait<Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType> ___Trait0 = new();
+		private Traits.SupportsDeleteAllTrait<Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType> __Trait0
 		{
 			get
 			{
@@ -17,8 +17,8 @@ namespace Tortuga.Chain.SqlServer
 				return ___Trait0;
 			}
 		}
-		private Traits.SupportsTruncateTrait<Tortuga.Chain.SqlServer.SqlServerObjectName> ___Trait1 = new();
-		private Traits.SupportsTruncateTrait<Tortuga.Chain.SqlServer.SqlServerObjectName> __Trait1
+		private Traits.SupportsTruncateTrait<Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType> ___Trait1 = new();
+		private Traits.SupportsTruncateTrait<Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType> __Trait1
 		{
 			get
 			{
@@ -35,15 +35,7 @@ namespace Tortuga.Chain.SqlServer
 				return ___Trait2;
 			}
 		}
-		private Traits.SupportsInsertBatchTrait<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType, Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter>> ___Trait3 = new();
-		private Traits.SupportsInsertBatchTrait<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType, Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter>> __Trait3
-		{
-			get
-			{
-				if (!__TraitsRegistered) __RegisterTraits();
-				return ___Trait3;
-			}
-		}
+		private Traits.SupportsInsertBatchTrait<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType, Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter>> __Trait3 = new();
 
 		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsDeleteAll
 		Tortuga.Chain.ILink<int?> Tortuga.Chain.DataSources.ISupportsDeleteAll.DeleteAll(System.String tableName)
@@ -89,7 +81,7 @@ namespace Tortuga.Chain.SqlServer
 			return ((Tortuga.Chain.DataSources.ISupportsTruncate)__Trait1).Truncate<TObject>();
 		}
 
-		// Exposing trait Traits.SupportsDeleteAllTrait<Tortuga.Chain.SqlServer.SqlServerObjectName>
+		// Exposing trait Traits.SupportsDeleteAllTrait<Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>
 
 		/// <summary>Deletes all records in the specified table.</summary>
 		/// <param name="tableName">Name of the table to clear.</param>
@@ -183,7 +175,7 @@ namespace Tortuga.Chain.SqlServer
 			return __Trait2.Sql(sqlStatement, argumentValue);
 		}
 
-		// Exposing trait Traits.SupportsTruncateTrait<Tortuga.Chain.SqlServer.SqlServerObjectName>
+		// Exposing trait Traits.SupportsTruncateTrait<Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>
 
 		/// <summary>Truncates the specified table.</summary>
 		/// <param name="tableName">Name of the table to Truncate.</param>
@@ -203,20 +195,6 @@ namespace Tortuga.Chain.SqlServer
 
 		private partial Tortuga.Chain.ILink<int?> OnDeleteAll(Tortuga.Chain.SqlServer.SqlServerObjectName tableName );
 
-		private partial Tortuga.Chain.Metadata.DatabaseMetadataCache<Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType> OnGetDatabaseMetadata2( );
-
-		private partial System.Collections.Generic.List<System.Data.SqlClient.SqlParameter> OnGetParameters(Tortuga.Chain.CommandBuilders.SqlBuilder<System.Data.SqlDbType> builder );
-
-		private partial Tortuga.Chain.SqlServer.SqlServerObjectName OnGetTableOrViewNameFromClass(System.Type type, Tortuga.Chain.Metadata.OperationType operationType );
-
-		// Reusing the previously declared partial method named OnGetTableOrViewNameFromClass declared on trait Traits.SupportsDeleteAllTrait<Tortuga.Chain.SqlServer.SqlServerObjectName>
-
-		private partial Tortuga.Chain.SqlServer.SqlServerObjectName OnParseObjectName(System.String objectName );
-
-		// Reusing the previously declared partial method named OnParseObjectName declared on trait Traits.SupportsDeleteAllTrait<Tortuga.Chain.SqlServer.SqlServerObjectName>
-
-		// Reusing the previously declared partial method named OnParseObjectName declared on trait Traits.SupportsDeleteAllTrait<Tortuga.Chain.SqlServer.SqlServerObjectName>
-
 		private partial Tortuga.Chain.CommandBuilders.MultipleTableDbCommandBuilder<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter> OnSql(System.String sqlStatement, System.Object? argumentValue );
 
 		private partial Tortuga.Chain.ILink<int?> OnTruncate(Tortuga.Chain.SqlServer.SqlServerObjectName tableName );
@@ -225,18 +203,12 @@ namespace Tortuga.Chain.SqlServer
 		private void __RegisterTraits()
 		{
 			__TraitsRegistered = true;
-			__Trait0.OnGetTableOrViewNameFromClass = OnGetTableOrViewNameFromClass;
 			__Trait0.OnDeleteAll = OnDeleteAll;
-			__Trait0.OnParseObjectName = OnParseObjectName;
-			__Trait1.OnGetTableOrViewNameFromClass = OnGetTableOrViewNameFromClass;
-			__Trait1.OnParseObjectName = OnParseObjectName;
+			__Trait0.DataSource = this;
 			__Trait1.OnTruncate = OnTruncate;
+			__Trait1.DataSource = this;
 			__Trait2.OnSql = OnSql;
-			__Trait3.OnGetDatabaseMetadata2 = OnGetDatabaseMetadata2;
-			__Trait3.OnGetParameters = OnGetParameters;
-			__Trait3.OnParseObjectName = OnParseObjectName;
 			__Trait3.DataSource = this;
-			__Trait3.InsertBatchHelper = this;
 		}
 	}
 }

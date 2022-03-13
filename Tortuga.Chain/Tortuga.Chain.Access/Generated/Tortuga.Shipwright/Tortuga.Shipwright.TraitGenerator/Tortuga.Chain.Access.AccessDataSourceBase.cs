@@ -2,14 +2,14 @@
 
 namespace Tortuga.Chain.Access
 {
-	partial class AccessDataSourceBase: Tortuga.Chain.DataSources.ISupportsDeleteAll, Tortuga.Chain.DataSources.ISupportsSqlQueries
+	partial class AccessDataSourceBase: Tortuga.Chain.DataSources.ISupportsDeleteAll, Tortuga.Chain.DataSources.ISupportsSqlQueries, Traits.ICommandHelper<Tortuga.Chain.Access.AccessObjectName, System.Data.OleDb.OleDbType>
 	{
 
 		private bool __TraitsRegistered;
 
 		// These fields and/or properties hold the traits. They should not be referenced directly.
-		private Traits.SupportsDeleteAllTrait<Tortuga.Chain.Access.AccessObjectName> ___Trait0 = new();
-		private Traits.SupportsDeleteAllTrait<Tortuga.Chain.Access.AccessObjectName> __Trait0
+		private Traits.SupportsDeleteAllTrait<Tortuga.Chain.Access.AccessObjectName, System.Data.OleDb.OleDbType> ___Trait0 = new();
+		private Traits.SupportsDeleteAllTrait<Tortuga.Chain.Access.AccessObjectName, System.Data.OleDb.OleDbType> __Trait0
 		{
 			get
 			{
@@ -44,7 +44,7 @@ namespace Tortuga.Chain.Access
 			return ((Tortuga.Chain.DataSources.ISupportsSqlQueries)__Trait1).Sql(sqlStatement, argumentValue);
 		}
 
-		// Exposing trait Traits.SupportsDeleteAllTrait<Tortuga.Chain.Access.AccessObjectName>
+		// Exposing trait Traits.SupportsDeleteAllTrait<Tortuga.Chain.Access.AccessObjectName, System.Data.OleDb.OleDbType>
 
 		/// <summary>Deletes all records in the specified table.</summary>
 		/// <param name="tableName">Name of the table to clear.</param>
@@ -87,19 +87,14 @@ namespace Tortuga.Chain.Access
 
 		private partial Tortuga.Chain.ILink<int?> OnDeleteAll(Tortuga.Chain.Access.AccessObjectName tableName );
 
-		private partial Tortuga.Chain.Access.AccessObjectName OnGetTableOrViewNameFromClass(System.Type type, Tortuga.Chain.Metadata.OperationType operationType );
-
-		private partial Tortuga.Chain.Access.AccessObjectName OnParseObjectName(System.String objectName );
-
 		private partial Tortuga.Chain.CommandBuilders.MultipleTableDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter> OnSql(System.String sqlStatement, System.Object? argumentValue );
 
 
 		private void __RegisterTraits()
 		{
 			__TraitsRegistered = true;
-			__Trait0.OnGetTableOrViewNameFromClass = OnGetTableOrViewNameFromClass;
 			__Trait0.OnDeleteAll = OnDeleteAll;
-			__Trait0.OnParseObjectName = OnParseObjectName;
+			__Trait0.DataSource = this;
 			__Trait1.OnSql = OnSql;
 		}
 	}

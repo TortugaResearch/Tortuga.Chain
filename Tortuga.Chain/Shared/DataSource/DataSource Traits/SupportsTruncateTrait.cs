@@ -1,19 +1,19 @@
 ﻿using Tortuga.Chain;
 using Tortuga.Chain.DataSources;
-using Tortuga.Chain.Metadata;
 using Tortuga.Shipwright;
 
 namespace Traits;
 
 
 [Trait]
-class SupportsTruncateTrait<TObjectName> : ISupportsTruncate where TObjectName : struct
+class SupportsTruncateTrait<TObjectName, TDbType> : ISupportsTruncate
+	where TObjectName : struct
+	where TDbType : struct
 {
-	[Partial("type, operationType")] public Func<Type, OperationType, TObjectName> OnGetTableOrViewNameFromClass { get; set; } = null!;
-
-	[Partial("objectName")] public Func<string, TObjectName> OnParseObjectName { get; set; } = null!;
-
 	[Partial("tableName")] public Func<TObjectName, ILink<int?>> OnTruncate { get; set; } = null!;
+
+	[Owner(RegisterInterface = true)]
+	internal ICommandHelper<TObjectName, TDbType> DataSource { get; set; } = null!;
 
 	/// <summary>Truncates the specified table.</summary>
 	/// <param name="tableName">Name of the table to Truncate.</param>
@@ -26,11 +26,10 @@ class SupportsTruncateTrait<TObjectName> : ISupportsTruncate where TObjectName :
 	[Expose]
 	public ILink<int?> Truncate<TObject>() where TObject : class
 	{
-		return OnTruncate(OnGetTableOrViewNameFromClass(typeof(TObject), OperationType.All));
+		return OnTruncate(DataSource.DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name);
 	}
 
-	ILink<int?> ISupportsTruncate.Truncate(string tableName) => OnTruncate(OnParseObjectName(tableName));
-
+	ILink<int?> ISupportsTruncate.Truncate(string tableName) => OnTruncate(DataSource.ParseObjectName(tableName));
 
 	ILink<int?> ISupportsTruncate.Truncate<TObject>() => Truncate<TObject>();
 }

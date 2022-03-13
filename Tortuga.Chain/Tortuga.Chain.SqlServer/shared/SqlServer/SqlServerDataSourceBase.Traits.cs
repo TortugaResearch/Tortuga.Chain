@@ -6,19 +6,18 @@ using Traits;
 
 namespace Tortuga.Chain.SqlServer;
 
-[UseTrait(typeof(SupportsDeleteAllTrait<AbstractObjectName>))]
-[UseTrait(typeof(SupportsTruncateTrait<AbstractObjectName>))]
+[UseTrait(typeof(SupportsDeleteAllTrait<AbstractObjectName, AbstractDbType>))]
+[UseTrait(typeof(SupportsTruncateTrait<AbstractObjectName, AbstractDbType>))]
 [UseTrait(typeof(SupportsSqlQueriesTrait<AbstractCommand, AbstractParameter>))]
 [UseTrait(typeof(SupportsInsertBatchTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType,
 	MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter>>))]
 partial class SqlServerDataSourceBase
 {
+	DatabaseMetadataCache<AbstractObjectName, AbstractDbType> ICommandHelper<AbstractObjectName, AbstractDbType>.DatabaseMetadata => DatabaseMetadata;
 
-	private partial AbstractObjectName OnGetTableOrViewNameFromClass(Type type, OperationType operationType)
-	{
-		var table = (TableOrViewMetadata<AbstractObjectName, AbstractDbType>)DatabaseMetadata.GetDatabaseObjectFromClass(type, operationType)!;
-		return table.Name;
-	}
+	List<AbstractParameter> ICommandHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.GetParameters(SqlBuilder<AbstractDbType> builder) => builder.GetParameters();
+
+	AbstractObjectName ICommandHelper<AbstractObjectName, AbstractDbType>.ParseObjectName(string objectName) => new(objectName);
 
 	private partial ILink<int?> OnDeleteAll(AbstractObjectName tableName)
 	{
@@ -34,19 +33,12 @@ partial class SqlServerDataSourceBase
 		return Sql("TRUNCATE TABLE " + table.Name.ToQuotedString() + ";").AsNonQuery();
 	}
 
-	private partial AbstractObjectName OnParseObjectName(string objectName) { return new(objectName); }
-
 	private partial MultipleTableDbCommandBuilder<AbstractCommand, AbstractParameter> OnSql(string sqlStatement, object? argumentValue)
 	{
 		return new SqlServerSqlCall(this, sqlStatement, argumentValue);
 	}
 
-	private partial DatabaseMetadataCache<AbstractObjectName, AbstractDbType> OnGetDatabaseMetadata2() => DatabaseMetadata;
-
-	private partial List<AbstractParameter> OnGetParameters(SqlBuilder<AbstractDbType> builder)
-		=> builder.GetParameters();
-
-	DbCommandBuilder<AbstractCommand, AbstractParameter> IInsertBatchHelper<AbstractCommand, AbstractParameter, AbstractObjectName>.OnInsertBatch<TObject>(AbstractObjectName tableName, IEnumerable<TObject> objects, InsertOptions options)
+	DbCommandBuilder<AbstractCommand, AbstractParameter> IInsertBatchHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnInsertBatch<TObject>(AbstractObjectName tableName, IEnumerable<TObject> objects, InsertOptions options)
 	{
 		return new SqlServerInsertBatch<TObject>(this, tableName, objects, options); ;
 	}

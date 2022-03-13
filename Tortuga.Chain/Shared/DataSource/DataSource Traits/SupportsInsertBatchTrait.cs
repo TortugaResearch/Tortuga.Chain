@@ -5,15 +5,15 @@ using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Materializers;
-using Tortuga.Chain.Metadata;
 using Tortuga.Shipwright;
 
 namespace Traits;
 
-interface IInsertBatchHelper<TCommand, TParameter, TObjectName>
+interface IInsertBatchHelper<TCommand, TParameter, TObjectName, TDbType> : ICommandHelper<TCommand, TParameter, TObjectName, TDbType>
 	where TCommand : DbCommand
 	where TParameter : DbParameter
 	where TObjectName : struct
+	where TDbType : struct
 {
 	//This is needed because the trait generator can't create a matching Func<...> property with the TObject constraint.
 	DbCommandBuilder<TCommand, TParameter> OnInsertBatch<TObject>(TObjectName tableName, IEnumerable<TObject> objects, InsertOptions options)
@@ -31,18 +31,18 @@ class SupportsInsertBatchTrait<TCommand, TParameter, TObjectName, TDbType, TResu
 	where TResult : DbCommandBuilder<TCommand, TParameter>
 {
 
-	[Owner]
-	public IDataSource DataSource { get; set; } = null!;
+	//[Owner]
+	//public IDataSource DataSource { get; set; } = null!;
 
-	[Partial]
-	public Func<DatabaseMetadataCache<TObjectName, TDbType>> OnGetDatabaseMetadata2 { get; set; } = null!;
-	[Partial("builder")]
-	public Func<SqlBuilder<TDbType>, List<TParameter>> OnGetParameters { get; set; } = null!;
+	//[Partial]
+	//public Func<DatabaseMetadataCache<TObjectName, TDbType>> OnGetDatabaseMetadata2 { get; set; } = null!;
+	//[Partial("builder")]
+	//public Func<SqlBuilder<TDbType>, List<TParameter>> OnGetParameters { get; set; } = null!;
 
-	[Partial("objectName")] public Func<string, TObjectName> OnParseObjectName { get; set; } = null!;
+	//[Partial("objectName")] public Func<string, TObjectName> OnParseObjectName { get; set; } = null!;
 
 	[Owner(RegisterInterface = true)]
-	internal IInsertBatchHelper<TCommand, TParameter, TObjectName> InsertBatchHelper { get; set; } = null!;
+	internal IInsertBatchHelper<TCommand, TParameter, TObjectName, TDbType> DataSource { get; set; } = null!;
 
 	IDbCommandBuilder ISupportsInsertBatch.InsertBatch<TObject>(IEnumerable<TObject> objects, InsertOptions options)
 	{
@@ -75,12 +75,12 @@ class SupportsInsertBatchTrait<TCommand, TParameter, TObjectName, TDbType, TResu
 	public TResult InsertBatch<TObject>(IEnumerable<TObject> objects, InsertOptions options = InsertOptions.None)
 	where TObject : class
 	{
-		return InsertBatch<TObject>(OnGetDatabaseMetadata2().GetTableOrViewFromClass<TObject>().Name, objects, options);
+		return InsertBatch<TObject>(DataSource.DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, objects, options);
 	}
 
 	ILink<int> ISupportsInsertBatch.InsertMultipleBatch<TObject>(string tableName, IReadOnlyList<TObject> objects, InsertOptions options)
 	{
-		return InsertMultipleBatch(OnParseObjectName(tableName), objects, options);
+		return InsertMultipleBatch(DataSource.ParseObjectName(tableName), objects, options);
 	}
 
 	ILink<int> ISupportsInsertBatch.InsertMultipleBatch<TObject>(IReadOnlyList<TObject> objects, InsertOptions options)
@@ -123,14 +123,12 @@ class SupportsInsertBatchTrait<TCommand, TParameter, TObjectName, TDbType, TResu
 	public ILink<int> InsertMultipleBatch<TObject>(IReadOnlyList<TObject> objects, InsertOptions options = InsertOptions.None)
 	where TObject : class
 	{
-		var metadata = OnGetDatabaseMetadata2();
-
-		return InsertMultipleBatch(metadata.GetTableOrViewFromClass<TObject>().Name, objects, options);
+		return InsertMultipleBatch(DataSource.DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, objects, options);
 	}
 	int MaxObjectsPerBatch<TObject>(TObjectName tableName, TObject sampleObject, InsertOptions options)
 		where TObject : class
 	{
-		var metadata = OnGetDatabaseMetadata2();
+		var metadata = DataSource.DatabaseMetadata;
 
 		var table = metadata.GetTableOrView(tableName);
 		var sqlBuilder = table.CreateSqlBuilder(false);
@@ -138,7 +136,7 @@ class SupportsInsertBatchTrait<TCommand, TParameter, TObjectName, TDbType, TResu
 		sqlBuilder.ApplyArgumentValue(DataSource, sampleObject, options);
 		sqlBuilder.GetInsertColumns(options.HasFlag(InsertOptions.IdentityInsert)).Count(); //Call .Count() to trigger needed side-effects
 
-		var parametersPerRow = OnGetParameters(sqlBuilder).Count;
+		var parametersPerRow = DataSource.GetParameters(sqlBuilder).Count;
 
 		var maxParams = metadata.MaxParameters;
 		if (maxParams == null)
@@ -154,7 +152,7 @@ class SupportsInsertBatchTrait<TCommand, TParameter, TObjectName, TDbType, TResu
 	TResult OnInsertBatch<TObject>(TObjectName tableName, IEnumerable<TObject> objects, InsertOptions options)
 where TObject : class
 	{
-		return (TResult)InsertBatchHelper.OnInsertBatch(tableName, objects, options);
+		return (TResult)DataSource.OnInsertBatch(tableName, objects, options);
 	}
 
 

@@ -2,20 +2,18 @@ using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Metadata;
 using Tortuga.Chain.SqlServer.CommandBuilders;
 using Tortuga.Shipwright;
+using Traits;
 
 namespace Tortuga.Chain.SqlServer;
 
-[UseTrait(typeof(Traits.SupportsDeleteAllTrait<AbstractObjectName>))]
-[UseTrait(typeof(Traits.SupportsTruncateTrait<AbstractObjectName>))]
-[UseTrait(typeof(Traits.SupportsSqlQueriesTrait<AbstractCommand, AbstractParameter>))]
+[UseTrait(typeof(SupportsDeleteAllTrait<AbstractObjectName, AbstractDbType>))]
+[UseTrait(typeof(SupportsTruncateTrait<AbstractObjectName, AbstractDbType>))]
+[UseTrait(typeof(SupportsSqlQueriesTrait<AbstractCommand, AbstractParameter>))]
 partial class OleDbSqlServerDataSourceBase
 {
+	DatabaseMetadataCache<AbstractObjectName, AbstractDbType> ICommandHelper<AbstractObjectName, AbstractDbType>.DatabaseMetadata => DatabaseMetadata;
 
-	private partial AbstractObjectName OnGetTableOrViewNameFromClass(Type type, OperationType operationType)
-	{
-		var table = (TableOrViewMetadata<AbstractObjectName, AbstractDbType>)DatabaseMetadata.GetDatabaseObjectFromClass(type, operationType)!;
-		return table.Name;
-	}
+	AbstractObjectName ICommandHelper<AbstractObjectName, AbstractDbType>.ParseObjectName(string objectName) => new(objectName);
 
 	private partial ILink<int?> OnDeleteAll(AbstractObjectName tableName)
 	{
@@ -30,8 +28,6 @@ partial class OleDbSqlServerDataSourceBase
 		var table = DatabaseMetadata.GetTableOrView(tableName);
 		return Sql("TRUNCATE TABLE " + table.Name.ToQuotedString() + ";").AsNonQuery();
 	}
-
-	private partial AbstractObjectName OnParseObjectName(string objectName) { return new(objectName); }
 
 	private partial MultipleTableDbCommandBuilder<AbstractCommand, AbstractParameter> OnSql(string sqlStatement, object? argumentValue)
 	{

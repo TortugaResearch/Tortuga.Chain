@@ -1,13 +1,19 @@
 ﻿using Tortuga.Chain;
 using Tortuga.Chain.DataSources;
-using Tortuga.Chain.Metadata;
 using Tortuga.Shipwright;
 
 namespace Traits;
 
 [Trait]
-class SupportsDeleteAllTrait<TObjectName> : ISupportsDeleteAll where TObjectName : struct
+class SupportsDeleteAllTrait<TObjectName, TDbType> : ISupportsDeleteAll
+	where TObjectName : struct
+	where TDbType : struct
 {
+	[Partial("tableName")] public Func<TObjectName, ILink<int?>> OnDeleteAll { get; set; } = null!;
+
+	[Owner(RegisterInterface = true)]
+	internal ICommandHelper<TObjectName, TDbType> DataSource { get; set; } = null!;
+
 	/// <summary>Deletes all records in the specified table.</summary>
 	/// <param name="tableName">Name of the table to clear.</param>
 	/// <returns>The number of rows deleted or null if the database doesn't provide that information.</returns>
@@ -19,19 +25,11 @@ class SupportsDeleteAllTrait<TObjectName> : ISupportsDeleteAll where TObjectName
 	[Expose]
 	public ILink<int?> DeleteAll<TObject>() where TObject : class
 	{
-		return OnDeleteAll(OnGetTableOrViewNameFromClass(typeof(TObject), OperationType.All));
+		return OnDeleteAll(DataSource.DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name);
 	}
 
-	ILink<int?> ISupportsDeleteAll.DeleteAll(string tableName) => OnDeleteAll(OnParseObjectName(tableName));
+	ILink<int?> ISupportsDeleteAll.DeleteAll(string tableName) => OnDeleteAll(DataSource.ParseObjectName(tableName));
 
 
 	ILink<int?> ISupportsDeleteAll.DeleteAll<TObject>() => DeleteAll<TObject>();
-
-	[Partial("type, operationType")] public Func<Type, OperationType, TObjectName> OnGetTableOrViewNameFromClass { get; set; } = null!;
-	[Partial("tableName")] public Func<TObjectName, ILink<int?>> OnDeleteAll { get; set; } = null!;
-	[Partial("objectName")] public Func<string, TObjectName> OnParseObjectName { get; set; } = null!;
-
-
 }
-
-

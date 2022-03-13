@@ -2,14 +2,14 @@
 
 namespace Tortuga.Chain.SQLite
 {
-	partial class SQLiteDataSourceBase: Tortuga.Chain.DataSources.ISupportsDeleteAll, Tortuga.Chain.DataSources.ISupportsTruncate, Tortuga.Chain.DataSources.ISupportsSqlQueries, Tortuga.Chain.DataSources.ISupportsInsertBatch, Traits.IInsertBatchHelper<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter, Tortuga.Chain.SQLite.SQLiteObjectName>
+	partial class SQLiteDataSourceBase: Tortuga.Chain.DataSources.ISupportsDeleteAll, Tortuga.Chain.DataSources.ISupportsTruncate, Tortuga.Chain.DataSources.ISupportsSqlQueries, Tortuga.Chain.DataSources.ISupportsInsertBatch, Traits.ICommandHelper<Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType>, Traits.IInsertBatchHelper<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter, Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType>
 	{
 
 		private bool __TraitsRegistered;
 
 		// These fields and/or properties hold the traits. They should not be referenced directly.
-		private Traits.SupportsDeleteAllTrait<Tortuga.Chain.SQLite.SQLiteObjectName> ___Trait0 = new();
-		private Traits.SupportsDeleteAllTrait<Tortuga.Chain.SQLite.SQLiteObjectName> __Trait0
+		private Traits.SupportsDeleteAllTrait<Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType> ___Trait0 = new();
+		private Traits.SupportsDeleteAllTrait<Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType> __Trait0
 		{
 			get
 			{
@@ -17,8 +17,8 @@ namespace Tortuga.Chain.SQLite
 				return ___Trait0;
 			}
 		}
-		private Traits.SupportsTruncateTrait<Tortuga.Chain.SQLite.SQLiteObjectName> ___Trait1 = new();
-		private Traits.SupportsTruncateTrait<Tortuga.Chain.SQLite.SQLiteObjectName> __Trait1
+		private Traits.SupportsTruncateTrait<Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType> ___Trait1 = new();
+		private Traits.SupportsTruncateTrait<Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType> __Trait1
 		{
 			get
 			{
@@ -35,15 +35,7 @@ namespace Tortuga.Chain.SQLite
 				return ___Trait2;
 			}
 		}
-		private Traits.SupportsInsertBatchTrait<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter, Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType, Tortuga.Chain.CommandBuilders.DbCommandBuilder<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter>> ___Trait3 = new();
-		private Traits.SupportsInsertBatchTrait<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter, Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType, Tortuga.Chain.CommandBuilders.DbCommandBuilder<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter>> __Trait3
-		{
-			get
-			{
-				if (!__TraitsRegistered) __RegisterTraits();
-				return ___Trait3;
-			}
-		}
+		private Traits.SupportsInsertBatchTrait<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter, Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType, Tortuga.Chain.CommandBuilders.DbCommandBuilder<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter>> __Trait3 = new();
 
 		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsDeleteAll
 		Tortuga.Chain.ILink<int?> Tortuga.Chain.DataSources.ISupportsDeleteAll.DeleteAll(System.String tableName)
@@ -89,7 +81,7 @@ namespace Tortuga.Chain.SQLite
 			return ((Tortuga.Chain.DataSources.ISupportsTruncate)__Trait1).Truncate<TObject>();
 		}
 
-		// Exposing trait Traits.SupportsDeleteAllTrait<Tortuga.Chain.SQLite.SQLiteObjectName>
+		// Exposing trait Traits.SupportsDeleteAllTrait<Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType>
 
 		/// <summary>Deletes all records in the specified table.</summary>
 		/// <param name="tableName">Name of the table to clear.</param>
@@ -183,7 +175,7 @@ namespace Tortuga.Chain.SQLite
 			return __Trait2.Sql(sqlStatement, argumentValue);
 		}
 
-		// Exposing trait Traits.SupportsTruncateTrait<Tortuga.Chain.SQLite.SQLiteObjectName>
+		// Exposing trait Traits.SupportsTruncateTrait<Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType>
 
 		/// <summary>Truncates the specified table.</summary>
 		/// <param name="tableName">Name of the table to Truncate.</param>
@@ -203,20 +195,6 @@ namespace Tortuga.Chain.SQLite
 
 		private partial Tortuga.Chain.ILink<int?> OnDeleteAll(Tortuga.Chain.SQLite.SQLiteObjectName tableName );
 
-		private partial Tortuga.Chain.Metadata.DatabaseMetadataCache<Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType> OnGetDatabaseMetadata2( );
-
-		private partial System.Collections.Generic.List<System.Data.SQLite.SQLiteParameter> OnGetParameters(Tortuga.Chain.CommandBuilders.SqlBuilder<System.Data.DbType> builder );
-
-		private partial Tortuga.Chain.SQLite.SQLiteObjectName OnGetTableOrViewNameFromClass(System.Type type, Tortuga.Chain.Metadata.OperationType operationType );
-
-		// Reusing the previously declared partial method named OnGetTableOrViewNameFromClass declared on trait Traits.SupportsDeleteAllTrait<Tortuga.Chain.SQLite.SQLiteObjectName>
-
-		private partial Tortuga.Chain.SQLite.SQLiteObjectName OnParseObjectName(System.String objectName );
-
-		// Reusing the previously declared partial method named OnParseObjectName declared on trait Traits.SupportsDeleteAllTrait<Tortuga.Chain.SQLite.SQLiteObjectName>
-
-		// Reusing the previously declared partial method named OnParseObjectName declared on trait Traits.SupportsDeleteAllTrait<Tortuga.Chain.SQLite.SQLiteObjectName>
-
 		private partial Tortuga.Chain.CommandBuilders.MultipleTableDbCommandBuilder<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter> OnSql(System.String sqlStatement, System.Object? argumentValue );
 
 		private partial Tortuga.Chain.ILink<int?> OnTruncate(Tortuga.Chain.SQLite.SQLiteObjectName tableName );
@@ -225,18 +203,12 @@ namespace Tortuga.Chain.SQLite
 		private void __RegisterTraits()
 		{
 			__TraitsRegistered = true;
-			__Trait0.OnGetTableOrViewNameFromClass = OnGetTableOrViewNameFromClass;
 			__Trait0.OnDeleteAll = OnDeleteAll;
-			__Trait0.OnParseObjectName = OnParseObjectName;
-			__Trait1.OnGetTableOrViewNameFromClass = OnGetTableOrViewNameFromClass;
-			__Trait1.OnParseObjectName = OnParseObjectName;
+			__Trait0.DataSource = this;
 			__Trait1.OnTruncate = OnTruncate;
+			__Trait1.DataSource = this;
 			__Trait2.OnSql = OnSql;
-			__Trait3.OnGetDatabaseMetadata2 = OnGetDatabaseMetadata2;
-			__Trait3.OnGetParameters = OnGetParameters;
-			__Trait3.OnParseObjectName = OnParseObjectName;
 			__Trait3.DataSource = this;
-			__Trait3.InsertBatchHelper = this;
 		}
 	}
 }

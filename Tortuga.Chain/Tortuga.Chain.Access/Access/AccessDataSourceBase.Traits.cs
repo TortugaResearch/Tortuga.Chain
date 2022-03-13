@@ -3,18 +3,20 @@ using Tortuga.Chain.Access.CommandBuilders;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Metadata;
 using Tortuga.Shipwright;
+using Traits;
 
 namespace Tortuga.Chain.Access
 {
-	[UseTrait(typeof(Traits.SupportsDeleteAllTrait<AbstractObjectName>))]
-	[UseTrait(typeof(Traits.SupportsSqlQueriesTrait<AbstractCommand, AbstractParameter>))]
-	partial class AccessDataSourceBase
+	[UseTrait(typeof(SupportsDeleteAllTrait<AbstractObjectName, AbstractDbType>))]
+	//[UseTrait(typeof(SupportsDeleteByKeyList<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
+	[UseTrait(typeof(SupportsSqlQueriesTrait<AbstractCommand, AbstractParameter>))]
+	partial class AccessDataSourceBase //: ICommandHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>
 	{
-		private partial AccessObjectName OnGetTableOrViewNameFromClass(Type type, OperationType operationType)
-		{
-			var table = (TableOrViewMetadata<AccessObjectName, OleDbType>)DatabaseMetadata.GetDatabaseObjectFromClass(type, operationType)!;
-			return table.Name;
-		}
+		DatabaseMetadataCache<AbstractObjectName, AbstractDbType> ICommandHelper<AbstractObjectName, AbstractDbType>.DatabaseMetadata => DatabaseMetadata;
+
+		//List<AbstractParameter> ICommandHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.GetParameters(SqlBuilder<AbstractDbType> builder) => builder.GetParameters();
+
+		AbstractObjectName ICommandHelper<AbstractObjectName, AbstractDbType>.ParseObjectName(string objectName) => new(objectName);
 
 		private partial ILink<int?> OnDeleteAll(AccessObjectName tableName)
 		{
@@ -23,16 +25,12 @@ namespace Tortuga.Chain.Access
 			return Sql("DELETE FROM " + table.Name.ToQuotedString() + ";").AsNonQuery();
 		}
 
-		private partial AccessObjectName OnParseObjectName(string objectName) { return new(objectName); }
 
 
 		private partial MultipleTableDbCommandBuilder<OleDbCommand, OleDbParameter> OnSql(string sqlStatement, object? argumentValue)
 		{
 			return new AccessSqlCall(this, sqlStatement, argumentValue);
 		}
-
-
-
 	}
 }
 
