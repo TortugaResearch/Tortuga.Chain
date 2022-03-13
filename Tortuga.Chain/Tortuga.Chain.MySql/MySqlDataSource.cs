@@ -11,7 +11,6 @@ namespace Tortuga.Chain
 	/// <seealso cref="MySqlDataSourceBase" />
 	public partial class MySqlDataSource : MySqlDataSourceBase
 	{
-		readonly MySqlConnectionStringBuilder m_ConnectionBuilder;
 		MySqlMetadataCache m_DatabaseMetadata;
 
 		/// <summary>

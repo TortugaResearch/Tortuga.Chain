@@ -4,7 +4,7 @@ using Tortuga.Shipwright;
 
 namespace Tortuga.Chain;
 
-[UseTrait(typeof(Traits.RootDataSourceTrait<SQLiteTransactionalDataSource, SQLiteOpenDataSource, AbstractConnection, AbstractTransaction, AbstractCommand>))]
+[UseTrait(typeof(Traits.RootDataSourceTrait<SQLiteTransactionalDataSource, SQLiteOpenDataSource, AbstractConnection, AbstractTransaction, AbstractCommand, SQLiteConnectionStringBuilder>))]
 partial class SQLiteDataSource
 {
 

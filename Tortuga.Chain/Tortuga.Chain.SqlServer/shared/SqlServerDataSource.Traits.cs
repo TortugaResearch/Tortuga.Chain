@@ -3,7 +3,7 @@ using Tortuga.Shipwright;
 
 namespace Tortuga.Chain;
 
-[UseTrait(typeof(Traits.RootDataSourceTrait<SqlServerTransactionalDataSource, SqlServerOpenDataSource, AbstractConnection, AbstractTransaction, AbstractCommand>))]
+[UseTrait(typeof(Traits.RootDataSourceTrait<SqlServerTransactionalDataSource, SqlServerOpenDataSource, AbstractConnection, AbstractTransaction, AbstractCommand, SqlConnectionStringBuilder>))]
 partial class SqlServerDataSource
 {
 

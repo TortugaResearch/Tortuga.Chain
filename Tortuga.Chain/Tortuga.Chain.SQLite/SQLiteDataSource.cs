@@ -12,7 +12,6 @@ namespace Tortuga.Chain
 	/// </summary>
 	public partial class SQLiteDataSource : SQLiteDataSourceBase
 	{
-		readonly SQLiteConnectionStringBuilder m_ConnectionBuilder;
 		readonly AsyncReaderWriterLock m_SyncLock = new AsyncReaderWriterLock(); //Sqlite is single-threaded for writes. It says otherwise, but it spams the trace window with exceptions.
 		SQLiteMetadataCache m_DatabaseMetadata;
 

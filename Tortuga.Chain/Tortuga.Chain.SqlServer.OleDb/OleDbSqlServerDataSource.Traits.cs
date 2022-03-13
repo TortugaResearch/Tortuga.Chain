@@ -4,7 +4,7 @@ using Tortuga.Shipwright;
 
 namespace Tortuga.Chain;
 
-[UseTrait(typeof(Traits.RootDataSourceTrait<OleDbSqlServerTransactionalDataSource, OleDbSqlServerOpenDataSource, AbstractConnection, AbstractTransaction, AbstractCommand>))]
+[UseTrait(typeof(Traits.RootDataSourceTrait<OleDbSqlServerTransactionalDataSource, OleDbSqlServerOpenDataSource, AbstractConnection, AbstractTransaction, AbstractCommand, OleDbConnectionStringBuilder>))]
 partial class OleDbSqlServerDataSource
 {
 

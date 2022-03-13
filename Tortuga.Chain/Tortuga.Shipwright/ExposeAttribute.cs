@@ -12,4 +12,6 @@ public class ExposeAttribute : Attribute
 	/// <remarks>This defaults to Public</remarks>
 	public Accessibility Accessibility { get; set; } = Accessibility.Public;
 	public Inheritance Inheritance { get; set; } = Inheritance.None;
+	public Setter Setter { get; set; } = Setter.None;
+	public Getter Getter { get; set; } = Getter.None;
 }

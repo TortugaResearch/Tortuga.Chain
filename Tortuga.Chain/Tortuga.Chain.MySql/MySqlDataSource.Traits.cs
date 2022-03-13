@@ -4,7 +4,7 @@ using Tortuga.Shipwright;
 
 namespace Tortuga.Chain;
 
-[UseTrait(typeof(Traits.RootDataSourceTrait<MySqlTransactionalDataSource, MySqlOpenDataSource, AbstractConnection, AbstractTransaction, AbstractCommand>))]
+[UseTrait(typeof(Traits.RootDataSourceTrait<MySqlTransactionalDataSource, MySqlOpenDataSource, AbstractConnection, AbstractTransaction, AbstractCommand, MySqlConnectionStringBuilder>))]
 partial class MySqlDataSource
 {
 

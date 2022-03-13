@@ -13,7 +13,6 @@ namespace Tortuga.Chain
 	/// <seealso cref="OleDbSqlServerDataSource" />
 	public partial class OleDbSqlServerDataSource : OleDbSqlServerDataSourceBase
 	{
-		readonly OleDbConnectionStringBuilder m_ConnectionBuilder;
 		OleDbSqlServerMetadataCache m_DatabaseMetadata;
 
 		/// <summary>

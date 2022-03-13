@@ -146,23 +146,23 @@ public class TraitGenerator : ISourceGenerator
 
 								var accessibility = accessibilityOption switch
 								{
-									Accessibility.Public => "public",
-									Accessibility.Protected => "protected",
-									Accessibility.Internal => "internal",
-									Accessibility.ProtectedOrInternal => "protected internal",
-									Accessibility.Private => "private",
+									Accessibility.Public => "public ",
+									Accessibility.Protected => "protected ",
+									Accessibility.Internal => "internal ",
+									Accessibility.ProtectedOrInternal => "protected internal ",
+									Accessibility.Private => "private ",
 									_ => throw new NotImplementedException($"Unknown accessibility value {accessibilityOption}")
 								};
 
 								var inheritance = inheritanceOption switch
 								{
 									Inheritance.None => "",
-									Inheritance.Abstract => "abstract",
-									Inheritance.AbstractOverride => "abstract override",
-									Inheritance.Override => "override",
-									Inheritance.Virtual => "virtual",
-									Inheritance.Sealed => "sealed",
-									Inheritance.SealedOverride => "sealed override",
+									Inheritance.Abstract => "abstract ",
+									Inheritance.AbstractOverride => "abstract override ",
+									Inheritance.Override => "override ",
+									Inheritance.Virtual => "virtual ",
+									Inheritance.Sealed => "sealed ",
+									Inheritance.SealedOverride => "sealed override ",
 									_ => throw new NotImplementedException($"Unknown inheritance value {inheritanceOption}")
 								};
 
@@ -177,7 +177,7 @@ public class TraitGenerator : ISourceGenerator
 											var parameters = string.Join(", ",
 												methodSymbol.Parameters.Select(p => ParameterWithDefault(p)));
 
-											var signature = $"{accessibility} {inheritance} {returnType} {methodSymbol.FullName()}({parameters}){methodSymbol.TypeConstraintString()}";
+											var signature = $"{accessibility}{inheritance}{returnType} {methodSymbol.FullName()}({parameters}){methodSymbol.TypeConstraintString()}";
 
 											var invokerPrefix = (methodSymbol.ReturnsVoid) ? "" : "return ";
 											var arguments = string.Join(", ", methodSymbol.Parameters.Select(p => p.Name));
@@ -206,6 +206,11 @@ public class TraitGenerator : ISourceGenerator
 											var propertyType = (INamedTypeSymbol)propertySymbol.Type;
 											var propertyTypeName = propertyType.FullName();
 
+											var getterOption = (Getter)(exposeAttribute.NamedArguments.SingleOrDefault(x => x.Key == "Getter").Value.Value ?? Getter.None)
+												;
+											var setterOption = (Setter)(exposeAttribute.NamedArguments.SingleOrDefault(x => x.Key == "Setter").Value.Value ?? Setter.None);
+
+
 											var signature = $"{accessibility} {inheritance} {propertyTypeName} {propertySymbol.Name}";
 
 											code.AppendMultipleLines(member.GetXmlDocs());
@@ -213,18 +218,36 @@ public class TraitGenerator : ISourceGenerator
 											{
 												if (propertySymbol.CanRead())
 												{
-													//TODO: Add getter accessibility
-													using (code.BeginScope("get"))
+
+													var getAccessibility = getterOption switch
+													{
+														Getter.Protected => "protected ",
+														Getter.Internal => "internal ",
+														Getter.ProtectedOrInternal => "protected internal ",
+														Getter.Private => "private ",
+														_ => ""
+													};
+
+													using (code.BeginScope($"{getAccessibility}get"))
 													{
 														code.AppendLine($"return {fieldReference}.{propertySymbol.Name};");
 													}
 												}
 												if (propertySymbol.CanWrite())
 												{
-													var setType = (propertySymbol.SetMethod!.IsInitOnly) ? "init" : "set";
 
-													//TODO: Add setter accessibility
-													using (code.BeginScope(setType))
+													var setType = (setterOption.HasFlag(Setter.Init)) ? "init" : "set";
+
+													var setAccessibility = (setterOption & (Setter)7) switch
+													{
+														Setter.Protected => "protected ",
+														Setter.Internal => "internal ",
+														Setter.ProtectedOrInternal => "protected internal ",
+														Setter.Private => "private ",
+														_ => ""
+													};
+
+													using (code.BeginScope($"{setAccessibility}{setType}"))
 													{
 														code.AppendLine($"{fieldReference}.{propertySymbol.Name} = value;");
 													}

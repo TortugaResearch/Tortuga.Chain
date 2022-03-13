@@ -12,7 +12,6 @@ namespace Tortuga.Chain
 	/// <seealso cref="SqlServerDataSourceBase" />
 	public partial class SqlServerDataSource : SqlServerDataSourceBase
 	{
-		readonly SqlConnectionStringBuilder m_ConnectionBuilder;
 		SqlServerMetadataCache m_DatabaseMetadata;
 
 		readonly object m_SyncRoot = new object();

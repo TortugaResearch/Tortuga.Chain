@@ -11,7 +11,6 @@ namespace Tortuga.Chain
 	/// <seealso cref="PostgreSqlDataSourceBase" />
 	public partial class PostgreSqlDataSource : PostgreSqlDataSourceBase
 	{
-		readonly NpgsqlConnectionStringBuilder m_ConnectionBuilder;
 		PostgreSqlMetadataCache m_DatabaseMetadata;
 
 		/// <summary>

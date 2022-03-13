@@ -11,7 +11,7 @@ namespace Tortuga.Chain
 	/// </summary>
 	public partial class AccessDataSource : AccessDataSourceBase
 	{
-		readonly OleDbConnectionStringBuilder m_ConnectionBuilder;
+		//readonly OleDbConnectionStringBuilder m_ConnectionBuilder;
 		AccessMetadataCache m_DatabaseMetadata;
 
 		/// <summary>

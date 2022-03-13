@@ -69,7 +69,7 @@ namespace Tortuga.Chain.SqlServer
 		/// <summary>Deletes all records in the specified table.</summary>
 		/// <param name="tableName">Name of the table to clear.</param>
 		/// <returns>The number of rows deleted or null if the database doesn't provide that information.</returns>
-		public  Tortuga.Chain.ILink<int?> DeleteAll(Tortuga.Chain.SqlServer.SqlServerObjectName tableName)
+		public Tortuga.Chain.ILink<int?> DeleteAll(Tortuga.Chain.SqlServer.SqlServerObjectName tableName)
 		{
 			return __Trait0.DeleteAll(tableName);
 		}
@@ -77,7 +77,7 @@ namespace Tortuga.Chain.SqlServer
 		/// <summary>Deletes all records in the specified table.</summary>
 		/// <typeparam name="TObject">This class used to determine which table to clear</typeparam>
 		/// <returns>The number of rows deleted or null if the database doesn't provide that information.</returns>
-		public  Tortuga.Chain.ILink<int?> DeleteAll<TObject>()where TObject : class
+		public Tortuga.Chain.ILink<int?> DeleteAll<TObject>()where TObject : class
 		{
 			return __Trait0.DeleteAll<TObject>();
 		}
@@ -89,7 +89,7 @@ namespace Tortuga.Chain.SqlServer
 		/// </summary>
 		/// <param name="sqlStatement">The SQL statement.</param>
 		/// <returns></returns>
-		public  Tortuga.Chain.CommandBuilders.MultipleTableDbCommandBuilder<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter> Sql(System.String sqlStatement)
+		public Tortuga.Chain.CommandBuilders.MultipleTableDbCommandBuilder<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter> Sql(System.String sqlStatement)
 		{
 			return __Trait2.Sql(sqlStatement);
 		}
@@ -100,7 +100,7 @@ namespace Tortuga.Chain.SqlServer
 		/// <param name="sqlStatement">The SQL statement.</param>
 		/// <param name="argumentValue">The argument value.</param>
 		/// <returns>SqlServerSqlCall.</returns>
-		public  Tortuga.Chain.CommandBuilders.MultipleTableDbCommandBuilder<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter> Sql(System.String sqlStatement, System.Object argumentValue)
+		public Tortuga.Chain.CommandBuilders.MultipleTableDbCommandBuilder<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter> Sql(System.String sqlStatement, System.Object argumentValue)
 		{
 			return __Trait2.Sql(sqlStatement, argumentValue);
 		}
@@ -110,7 +110,7 @@ namespace Tortuga.Chain.SqlServer
 		/// <summary>Truncates the specified table.</summary>
 		/// <param name="tableName">Name of the table to Truncate.</param>
 		/// <returns>The number of rows deleted or null if the database doesn't provide that information.</returns>
-		public  Tortuga.Chain.ILink<int?> Truncate(Tortuga.Chain.SqlServer.SqlServerObjectName tableName)
+		public Tortuga.Chain.ILink<int?> Truncate(Tortuga.Chain.SqlServer.SqlServerObjectName tableName)
 		{
 			return __Trait1.Truncate(tableName);
 		}
@@ -118,7 +118,7 @@ namespace Tortuga.Chain.SqlServer
 		/// <summary>Truncates the specified table.</summary>
 		/// <typeparam name="TObject">This class used to determine which table to Truncate</typeparam>
 		/// <returns>The number of rows deleted or null if the database doesn't provide that information.</returns>
-		public  Tortuga.Chain.ILink<int?> Truncate<TObject>()where TObject : class
+		public Tortuga.Chain.ILink<int?> Truncate<TObject>()where TObject : class
 		{
 			return __Trait1.Truncate<TObject>();
 		}

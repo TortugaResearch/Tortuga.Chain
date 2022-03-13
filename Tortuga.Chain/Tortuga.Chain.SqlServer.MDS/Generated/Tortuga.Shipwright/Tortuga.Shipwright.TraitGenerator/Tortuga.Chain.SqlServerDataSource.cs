@@ -8,8 +8,8 @@ namespace Tortuga.Chain
 		private bool __TraitsRegistered;
 
 		// These fields and/or properties hold the traits. They should not be referenced directly.
-		private Traits.RootDataSourceTrait<Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource, Tortuga.Chain.SqlServer.SqlServerOpenDataSource, Microsoft.Data.SqlClient.SqlConnection, Microsoft.Data.SqlClient.SqlTransaction, Microsoft.Data.SqlClient.SqlCommand> ___Trait0 = new();
-		private Traits.RootDataSourceTrait<Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource, Tortuga.Chain.SqlServer.SqlServerOpenDataSource, Microsoft.Data.SqlClient.SqlConnection, Microsoft.Data.SqlClient.SqlTransaction, Microsoft.Data.SqlClient.SqlCommand> __Trait0
+		private Traits.RootDataSourceTrait<Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource, Tortuga.Chain.SqlServer.SqlServerOpenDataSource, Microsoft.Data.SqlClient.SqlConnection, Microsoft.Data.SqlClient.SqlTransaction, Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlConnectionStringBuilder> ___Trait0 = new();
+		private Traits.RootDataSourceTrait<Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource, Tortuga.Chain.SqlServer.SqlServerOpenDataSource, Microsoft.Data.SqlClient.SqlConnection, Microsoft.Data.SqlClient.SqlTransaction, Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlConnectionStringBuilder> __Trait0
 		{
 			get
 			{
@@ -54,14 +54,14 @@ namespace Tortuga.Chain
 			return ((Tortuga.Chain.DataSources.IRootDataSource)__Trait0).CreateOpenDataSource(connection, transaction);
 		}
 
-		// Exposing trait Traits.RootDataSourceTrait<Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource, Tortuga.Chain.SqlServer.SqlServerOpenDataSource, Microsoft.Data.SqlClient.SqlConnection, Microsoft.Data.SqlClient.SqlTransaction, Microsoft.Data.SqlClient.SqlCommand>
+		// Exposing trait Traits.RootDataSourceTrait<Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource, Tortuga.Chain.SqlServer.SqlServerOpenDataSource, Microsoft.Data.SqlClient.SqlConnection, Microsoft.Data.SqlClient.SqlTransaction, Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlConnectionStringBuilder>
 
 		/// <summary>
 		/// Creates a new transaction.
 		/// </summary>
 		/// <returns></returns>
 		/// <remarks>The caller of this method is responsible for closing the transaction.</remarks>
-		public  Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource BeginTransaction()
+		public Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource BeginTransaction()
 		{
 			return __Trait0.BeginTransaction();
 		}
@@ -73,7 +73,7 @@ namespace Tortuga.Chain
 		/// <param name="forwardEvents"></param>
 		/// <returns></returns>
 		/// <remarks>The caller of this method is responsible for closing the transaction.</remarks>
-		public  Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource BeginTransaction(System.Nullable<System.Data.IsolationLevel> isolationLevel = default, System.Boolean forwardEvents = true)
+		public Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource BeginTransaction(System.Nullable<System.Data.IsolationLevel> isolationLevel = default, System.Boolean forwardEvents = true)
 		{
 			return __Trait0.BeginTransaction(isolationLevel, forwardEvents);
 		}
@@ -86,7 +86,7 @@ namespace Tortuga.Chain
 		/// <param name="cancellationToken"></param>
 		/// <returns></returns>
 		/// <remarks>The caller of this method is responsible for closing the transaction.</remarks>
-		public  System.Threading.Tasks.Task<Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource> BeginTransactionAsync(System.Nullable<System.Data.IsolationLevel> isolationLevel = default, System.Boolean forwardEvents = true, System.Threading.CancellationToken cancellationToken = default)
+		public System.Threading.Tasks.Task<Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource> BeginTransactionAsync(System.Nullable<System.Data.IsolationLevel> isolationLevel = default, System.Boolean forwardEvents = true, System.Threading.CancellationToken cancellationToken = default)
 		{
 			return __Trait0.BeginTransactionAsync(isolationLevel, forwardEvents, cancellationToken);
 		}
@@ -96,7 +96,7 @@ namespace Tortuga.Chain
 		/// </summary>
 		/// <returns></returns>
 		/// <remarks>The caller of this method is responsible for closing the transaction.</remarks>
-		public  System.Threading.Tasks.Task<Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource> BeginTransactionAsync()
+		public System.Threading.Tasks.Task<Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource> BeginTransactionAsync()
 		{
 			return __Trait0.BeginTransactionAsync();
 		}
@@ -104,7 +104,7 @@ namespace Tortuga.Chain
 		/// <summary>
 		/// Gets or sets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
 		/// </summary>
-		public override Tortuga.Chain.Core.ICacheAdapter Cache
+		public  override  Tortuga.Chain.Core.ICacheAdapter Cache
 		{
 			get
 			{
@@ -116,7 +116,7 @@ namespace Tortuga.Chain
 		/// </summary>
 		/// <returns></returns>
 		/// <remarks>The caller of this method is responsible for closing the connection.</remarks>
-		public  Microsoft.Data.SqlClient.SqlConnection CreateConnection()
+		public Microsoft.Data.SqlClient.SqlConnection CreateConnection()
 		{
 			return __Trait0.CreateConnection();
 		}
@@ -129,7 +129,7 @@ namespace Tortuga.Chain
 		/// <remarks>
 		/// The caller of this method is responsible for closing the connection.
 		/// </remarks>
-		public  System.Threading.Tasks.Task<Microsoft.Data.SqlClient.SqlConnection> CreateConnectionAsync(System.Threading.CancellationToken cancellationToken = default)
+		public System.Threading.Tasks.Task<Microsoft.Data.SqlClient.SqlConnection> CreateConnectionAsync(System.Threading.CancellationToken cancellationToken = default)
 		{
 			return __Trait0.CreateConnectionAsync(cancellationToken);
 		}
@@ -141,7 +141,7 @@ namespace Tortuga.Chain
 		/// <param name="transaction">The transaction to wrap.</param>
 		/// <returns>IOpenDataSource.</returns>
 		/// <remarks>WARNING: The caller of this method is responsible for closing the connection.</remarks>
-		public  Tortuga.Chain.SqlServer.SqlServerOpenDataSource CreateOpenDataSource(Microsoft.Data.SqlClient.SqlConnection connection, Microsoft.Data.SqlClient.SqlTransaction? transaction = default)
+		public Tortuga.Chain.SqlServer.SqlServerOpenDataSource CreateOpenDataSource(Microsoft.Data.SqlClient.SqlConnection connection, Microsoft.Data.SqlClient.SqlTransaction? transaction = default)
 		{
 			return __Trait0.CreateOpenDataSource(connection, transaction);
 		}
@@ -150,7 +150,7 @@ namespace Tortuga.Chain
 		/// Creates an open data source with a new connection.
 		/// </summary>
 		/// <remarks>WARNING: The caller of this method is responsible for closing the connection.</remarks>
-		public  Tortuga.Chain.SqlServer.SqlServerOpenDataSource CreateOpenDataSource()
+		public Tortuga.Chain.SqlServer.SqlServerOpenDataSource CreateOpenDataSource()
 		{
 			return __Trait0.CreateOpenDataSource();
 		}
@@ -161,7 +161,7 @@ namespace Tortuga.Chain
 		/// <value>
 		/// The extension cache.
 		/// </value>
-		protected override System.Collections.Concurrent.ConcurrentDictionary<System.Type, object> ExtensionCache
+		protected  override  System.Collections.Concurrent.ConcurrentDictionary<System.Type, object> ExtensionCache
 		{
 			get
 			{
@@ -169,7 +169,7 @@ namespace Tortuga.Chain
 			}
 		}
 		
-		internal  Tortuga.Chain.Core.ICacheAdapter m_Cache
+		internal   Tortuga.Chain.Core.ICacheAdapter m_Cache
 		{
 			get
 			{
@@ -181,7 +181,19 @@ namespace Tortuga.Chain
 			}
 		}
 		
-		internal  System.Collections.Concurrent.ConcurrentDictionary<System.Type, object> m_ExtensionCache
+		private   Microsoft.Data.SqlClient.SqlConnectionStringBuilder m_ConnectionBuilder
+		{
+			get
+			{
+				return __Trait0.m_ConnectionBuilder;
+			}
+			init
+			{
+				__Trait0.m_ConnectionBuilder = value;
+			}
+		}
+		
+		internal   System.Collections.Concurrent.ConcurrentDictionary<System.Type, object> m_ExtensionCache
 		{
 			get
 			{
@@ -223,10 +235,10 @@ namespace Tortuga.Chain
 		private void __RegisterTraits()
 		{
 			__TraitsRegistered = true;
-			__Trait0.OnCreateConnectionAsync = OnCreateConnectionAsync;
-			__Trait0.OnCreateConnection = OnCreateConnection;
-			__Trait0.OnBeginTransactionAsync = OnBeginTransactionAsync;
 			__Trait0.OnBeginTransaction = OnBeginTransaction;
+			__Trait0.OnBeginTransactionAsync = OnBeginTransactionAsync;
+			__Trait0.OnCreateConnection = OnCreateConnection;
+			__Trait0.OnCreateConnectionAsync = OnCreateConnectionAsync;
 			__Trait0.OnCreateOpenDataSource = OnCreateOpenDataSource;
 		}
 	}
