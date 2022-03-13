@@ -46,10 +46,6 @@ namespace Tortuga.Chain
 
 
 
-		/// <summary>
-		/// This object can be used to access the database connection string.
-		/// </summary>
-		internal string ConnectionString => m_ConnectionBuilder.ConnectionString;
 
 
 

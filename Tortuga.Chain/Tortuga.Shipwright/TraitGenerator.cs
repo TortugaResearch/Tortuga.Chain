@@ -228,10 +228,7 @@ public class TraitGenerator : ISourceGenerator
 														_ => ""
 													};
 
-													using (code.BeginScope($"{getAccessibility}get"))
-													{
-														code.AppendLine($"return {fieldReference}.{propertySymbol.Name};");
-													}
+													code.AppendLine($"{getAccessibility}get => {fieldReference}.{propertySymbol.Name};");
 												}
 												if (propertySymbol.CanWrite())
 												{
@@ -247,10 +244,7 @@ public class TraitGenerator : ISourceGenerator
 														_ => ""
 													};
 
-													using (code.BeginScope($"{setAccessibility}{setType}"))
-													{
-														code.AppendLine($"{fieldReference}.{propertySymbol.Name} = value;");
-													}
+													code.AppendLine($"{setAccessibility}{setType} => {fieldReference}.{propertySymbol.Name} = value;");
 												}
 											}
 										}

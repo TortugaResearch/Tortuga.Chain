@@ -181,7 +181,19 @@ class RootDataSourceTrait<TTransactionalDataSource, TOpenDataSource, TConnection
 			await cmd.ExecuteScalarAsync().ConfigureAwait(false);
 	}
 
+
+	/// <summary>
+	/// This object can be used to access the database connection string.
+	/// </summary>
 	[Expose(Accessibility = Accessibility.Private, Setter = Setter.Init)]
 	public TConnectionStringBuilder m_ConnectionBuilder { get; set; } = null!;
+
+	/// <summary>
+	/// The composed connection string.
+	/// </summary>
+	/// <remarks>This is created and cached by a ConnectionStringBuilder.</remarks>
+	[Expose(Accessibility = Accessibility.Internal)]
+	public string ConnectionString => m_ConnectionBuilder.ConnectionString;
+
 
 }

@@ -106,10 +106,15 @@ namespace Tortuga.Chain
 		/// </summary>
 		public  override  Tortuga.Chain.Core.ICacheAdapter Cache
 		{
-			get
-			{
-				return __Trait0.Cache;
-			}
+			get => __Trait0.Cache;
+		}
+		/// <summary>
+		/// The composed connection string.
+		/// </summary>
+		/// <remarks>This is created and cached by a ConnectionStringBuilder.</remarks>
+		internal   System.String ConnectionString
+		{
+			get => __Trait0.ConnectionString;
 		}
 		/// <summary>
 		/// Creates and opens a new Access connection
@@ -163,46 +168,27 @@ namespace Tortuga.Chain
 		/// </value>
 		protected  override  System.Collections.Concurrent.ConcurrentDictionary<System.Type, object> ExtensionCache
 		{
-			get
-			{
-				return __Trait0.ExtensionCache;
-			}
+			get => __Trait0.ExtensionCache;
 		}
 		
 		internal   Tortuga.Chain.Core.ICacheAdapter m_Cache
 		{
-			get
-			{
-				return __Trait0.m_Cache;
-			}
-			set
-			{
-				__Trait0.m_Cache = value;
-			}
+			get => __Trait0.m_Cache;
+			set => __Trait0.m_Cache = value;
 		}
-		
+		/// <summary>
+		/// This object can be used to access the database connection string.
+		/// </summary>
 		private   Microsoft.Data.SqlClient.SqlConnectionStringBuilder m_ConnectionBuilder
 		{
-			get
-			{
-				return __Trait0.m_ConnectionBuilder;
-			}
-			init
-			{
-				__Trait0.m_ConnectionBuilder = value;
-			}
+			get => __Trait0.m_ConnectionBuilder;
+			init => __Trait0.m_ConnectionBuilder = value;
 		}
 		
 		internal   System.Collections.Concurrent.ConcurrentDictionary<System.Type, object> m_ExtensionCache
 		{
-			get
-			{
-				return __Trait0.m_ExtensionCache;
-			}
-			set
-			{
-				__Trait0.m_ExtensionCache = value;
-			}
+			get => __Trait0.m_ExtensionCache;
+			set => __Trait0.m_ExtensionCache = value;
 		}
 		/// <summary>
 		/// Tests the connection.
