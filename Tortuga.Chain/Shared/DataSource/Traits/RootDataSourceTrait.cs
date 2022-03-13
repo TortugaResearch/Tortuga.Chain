@@ -1,6 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
+using Tortuga.Chain.AuditRules;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.DataSources;
 using Tortuga.Shipwright;
@@ -8,7 +9,8 @@ using Tortuga.Shipwright;
 namespace Traits;
 
 [Trait]
-class RootDataSourceTrait<TTransactionalDataSource, TOpenDataSource, TConnection, TTransaction, TCommand, TConnectionStringBuilder> : IRootDataSource
+class RootDataSourceTrait<TRootDataSource, TTransactionalDataSource, TOpenDataSource, TConnection, TTransaction, TCommand, TConnectionStringBuilder> : IRootDataSource
+	where TRootDataSource : IRootDataSource
 	where TTransactionalDataSource : ITransactionalDataSource
 	where TOpenDataSource : IOpenDataSource
 	where TConnection : DbConnection
@@ -195,5 +197,55 @@ class RootDataSourceTrait<TTransactionalDataSource, TOpenDataSource, TConnection
 	[Expose(Accessibility = Accessibility.Internal)]
 	public string ConnectionString => m_ConnectionBuilder.ConnectionString;
 
+
+	/// <summary>
+	/// Creates a new data source with the provided cache.
+	/// </summary>
+	/// <param name="cache">The cache.</param>
+	/// <returns></returns>
+	[Expose]
+	public TRootDataSource WithCache(ICacheAdapter cache)
+	{
+		return OnCloneWithOverrides(cache, null, null);
+	}
+
+	/// <summary>
+	/// Creates a new data source with additional audit rules.
+	/// </summary>
+	/// <param name="additionalRules">The additional rules.</param>
+	/// <returns></returns>
+	[Expose]
+	public TRootDataSource WithRules(params AuditRule[] additionalRules)
+	{
+		return OnCloneWithOverrides(null, additionalRules, null);
+	}
+
+	/// <summary>
+	/// Creates a new data source with additional audit rules.
+	/// </summary>
+	/// <param name="additionalRules">The additional rules.</param>
+	/// <returns></returns>
+	[Expose]
+	public TRootDataSource WithRules(IEnumerable<AuditRule> additionalRules)
+	{
+		return OnCloneWithOverrides(null, additionalRules, null);
+	}
+
+	/// <summary>
+	/// Creates a new data source with the indicated user.
+	/// </summary>
+	/// <param name="userValue">The user value.</param>
+	/// <returns></returns>
+	/// <remarks>
+	/// This is used in conjunction with audit rules.
+	/// </remarks>
+	[Expose]
+	public TRootDataSource WithUser(object? userValue)
+	{
+		return OnCloneWithOverrides(null, null, userValue);
+	}
+
+	[Partial("cache,additionalRules,userValue")]
+	public Func<ICacheAdapter?, IEnumerable<AuditRule>?, object?, TRootDataSource> OnCloneWithOverrides { get; set; } = null!;
 
 }

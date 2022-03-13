@@ -8,8 +8,8 @@ namespace Tortuga.Chain
 		private bool __TraitsRegistered;
 
 		// These fields and/or properties hold the traits. They should not be referenced directly.
-		private Traits.RootDataSourceTrait<Tortuga.Chain.Access.AccessTransactionalDataSource, Tortuga.Chain.Access.AccessOpenDataSource, System.Data.OleDb.OleDbConnection, System.Data.OleDb.OleDbTransaction, System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbConnectionStringBuilder> ___Trait0 = new();
-		private Traits.RootDataSourceTrait<Tortuga.Chain.Access.AccessTransactionalDataSource, Tortuga.Chain.Access.AccessOpenDataSource, System.Data.OleDb.OleDbConnection, System.Data.OleDb.OleDbTransaction, System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbConnectionStringBuilder> __Trait0
+		private Traits.RootDataSourceTrait<Tortuga.Chain.AccessDataSource, Tortuga.Chain.Access.AccessTransactionalDataSource, Tortuga.Chain.Access.AccessOpenDataSource, System.Data.OleDb.OleDbConnection, System.Data.OleDb.OleDbTransaction, System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbConnectionStringBuilder> ___Trait0 = new();
+		private Traits.RootDataSourceTrait<Tortuga.Chain.AccessDataSource, Tortuga.Chain.Access.AccessTransactionalDataSource, Tortuga.Chain.Access.AccessOpenDataSource, System.Data.OleDb.OleDbConnection, System.Data.OleDb.OleDbTransaction, System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbConnectionStringBuilder> __Trait0
 		{
 			get
 			{
@@ -54,7 +54,7 @@ namespace Tortuga.Chain
 			return ((Tortuga.Chain.DataSources.IRootDataSource)__Trait0).CreateOpenDataSource(connection, transaction);
 		}
 
-		// Exposing trait Traits.RootDataSourceTrait<Tortuga.Chain.Access.AccessTransactionalDataSource, Tortuga.Chain.Access.AccessOpenDataSource, System.Data.OleDb.OleDbConnection, System.Data.OleDb.OleDbTransaction, System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbConnectionStringBuilder>
+		// Exposing trait Traits.RootDataSourceTrait<Tortuga.Chain.AccessDataSource, Tortuga.Chain.Access.AccessTransactionalDataSource, Tortuga.Chain.Access.AccessOpenDataSource, System.Data.OleDb.OleDbConnection, System.Data.OleDb.OleDbTransaction, System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbConnectionStringBuilder>
 
 		/// <summary>
 		/// Creates a new transaction.
@@ -207,9 +207,54 @@ namespace Tortuga.Chain
 			return __Trait0.TestConnectionAsync();
 		}
 
+		/// <summary>
+		/// Creates a new data source with the provided cache.
+		/// </summary>
+		/// <param name="cache">The cache.</param>
+		/// <returns></returns>
+		public Tortuga.Chain.AccessDataSource WithCache(Tortuga.Chain.Core.ICacheAdapter cache)
+		{
+			return __Trait0.WithCache(cache);
+		}
+
+		/// <summary>
+		/// Creates a new data source with additional audit rules.
+		/// </summary>
+		/// <param name="additionalRules">The additional rules.</param>
+		/// <returns></returns>
+		public Tortuga.Chain.AccessDataSource WithRules(params Type.Name = , Name = additionalRules)
+		{
+			return __Trait0.WithRules(additionalRules);
+		}
+
+		/// <summary>
+		/// Creates a new data source with additional audit rules.
+		/// </summary>
+		/// <param name="additionalRules">The additional rules.</param>
+		/// <returns></returns>
+		public Tortuga.Chain.AccessDataSource WithRules(System.Collections.Generic.IEnumerable<Tortuga.Chain.AuditRules.AuditRule> additionalRules)
+		{
+			return __Trait0.WithRules(additionalRules);
+		}
+
+		/// <summary>
+		/// Creates a new data source with the indicated user.
+		/// </summary>
+		/// <param name="userValue">The user value.</param>
+		/// <returns></returns>
+		/// <remarks>
+		/// This is used in conjunction with audit rules.
+		/// </remarks>
+		public Tortuga.Chain.AccessDataSource WithUser(System.Object? userValue)
+		{
+			return __Trait0.WithUser(userValue);
+		}
+
 		private partial Tortuga.Chain.Access.AccessTransactionalDataSource OnBeginTransaction(System.Nullable<System.Data.IsolationLevel> isolationLevel, System.Boolean forwardEvents );
 
 		private partial System.Threading.Tasks.Task<Tortuga.Chain.Access.AccessTransactionalDataSource> OnBeginTransactionAsync(System.Nullable<System.Data.IsolationLevel> isolationLevel, System.Boolean forwardEvents, System.Threading.CancellationToken cancellationToken );
+
+		private partial Tortuga.Chain.AccessDataSource OnCloneWithOverrides(Tortuga.Chain.Core.ICacheAdapter? cache, System.Collections.Generic.IEnumerable<Tortuga.Chain.AuditRules.AuditRule>? additionalRules, System.Object? userValue );
 
 		private partial System.Data.OleDb.OleDbConnection OnCreateConnection( );
 
@@ -226,6 +271,7 @@ namespace Tortuga.Chain
 			__Trait0.OnCreateConnection = OnCreateConnection;
 			__Trait0.OnCreateConnectionAsync = OnCreateConnectionAsync;
 			__Trait0.OnCreateOpenDataSource = OnCreateOpenDataSource;
+			__Trait0.OnCloneWithOverrides = OnCloneWithOverrides;
 		}
 	}
 }

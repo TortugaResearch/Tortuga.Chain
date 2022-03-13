@@ -349,6 +349,11 @@ public class TraitGenerator : ISourceGenerator
 
 	static string ParameterWithDefault(IParameterSymbol parameter)
 	{
+		if (parameter.IsParams)
+		{
+			return $"params Type.Name = {parameter.Type.Name}, Name = {parameter.Name}";
+		}
+
 		if (parameter.HasExplicitDefaultValue)
 		{
 			switch (parameter.ExplicitDefaultValue)
