@@ -2,6 +2,7 @@
 using System.Data.SQLite;
 using System.Diagnostics.CodeAnalysis;
 using Tortuga.Chain.DataSources;
+using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.SQLite
 {
@@ -28,6 +29,12 @@ namespace Tortuga.Chain.SQLite
 		/// </summary>
 		/// <value>The database metadata.</value>
 		public abstract new SQLiteMetadataCache DatabaseMetadata { get; }
+
+		/// <summary>
+		/// Called when Database.DatabaseMetadata is invoked.
+		/// </summary>
+		/// <returns></returns>
+		protected override IDatabaseMetadataCache OnGetDatabaseMetadata() => DatabaseMetadata;
 
 		/// <summary>
 		/// Normally we use a reader/writer lock to avoid simultaneous writes to a SQlite database. If you disable this locking, you may see extra noise in your tracing output or unexpected exceptions.

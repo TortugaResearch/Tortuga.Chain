@@ -2,7 +2,7 @@
 
 namespace Tortuga.Chain.SqlServer
 {
-	partial class SqlServerDataSourceBase: Tortuga.Chain.DataSources.ISupportsDeleteAll, Tortuga.Chain.DataSources.ISupportsTruncate, Tortuga.Chain.DataSources.ISupportsSqlQueries, Tortuga.Chain.DataSources.ISupportsInsertBatch
+	partial class SqlServerDataSourceBase: Tortuga.Chain.DataSources.ISupportsDeleteAll, Tortuga.Chain.DataSources.ISupportsTruncate, Tortuga.Chain.DataSources.ISupportsSqlQueries, Tortuga.Chain.DataSources.ISupportsInsertBatch, Traits.IInsertBatchHelper<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName>
 	{
 
 		private bool __TraitsRegistered;
@@ -35,8 +35,8 @@ namespace Tortuga.Chain.SqlServer
 				return ___Trait2;
 			}
 		}
-		private Traits.SupportsInsertBatchTrait<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType> ___Trait3 = new();
-		private Traits.SupportsInsertBatchTrait<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType> __Trait3
+		private Traits.SupportsInsertBatchTrait<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType, Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter>> ___Trait3 = new();
+		private Traits.SupportsInsertBatchTrait<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType, Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter>> __Trait3
 		{
 			get
 			{
@@ -57,7 +57,7 @@ namespace Tortuga.Chain.SqlServer
 		}
 
 		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsInsertBatch
-		Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder Tortuga.Chain.DataSources.ISupportsInsertBatch.InsertBatch<TObject>(System.Collections.Generic.IEnumerable<TObject> objects, Tortuga.Chain.InsertOptions options)
+		Tortuga.Chain.CommandBuilders.IDbCommandBuilder Tortuga.Chain.DataSources.ISupportsInsertBatch.InsertBatch<TObject>(System.Collections.Generic.IEnumerable<TObject> objects, Tortuga.Chain.InsertOptions options)
 		{
 			return ((Tortuga.Chain.DataSources.ISupportsInsertBatch)__Trait3).InsertBatch<TObject>(objects, options);
 		}
@@ -107,7 +107,58 @@ namespace Tortuga.Chain.SqlServer
 			return __Trait0.DeleteAll<TObject>();
 		}
 
-		// Exposing trait Traits.SupportsInsertBatchTrait<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>
+		// Exposing trait Traits.SupportsInsertBatchTrait<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType, Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter>>
+
+		/// <summary>
+		/// Inserts the batch of records as one operation.
+		/// </summary>
+		/// <typeparam name="TObject"></typeparam>
+		/// <param name="tableName">Name of the table.</param>
+		/// <param name="objects">The objects to insert.</param>
+		/// <param name="options">The options.</param>
+		/// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
+		public Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter> InsertBatch<TObject>(Tortuga.Chain.SqlServer.SqlServerObjectName tableName, System.Collections.Generic.IEnumerable<TObject> objects, Tortuga.Chain.InsertOptions options = 0)where TObject : class
+		{
+			return __Trait3.InsertBatch<TObject>(tableName, objects, options);
+		}
+
+		/// <summary>
+		/// Inserts the batch of records as one operation.
+		/// </summary>
+		/// <typeparam name="TObject"></typeparam>
+		/// <param name="objects">The objects to insert.</param>
+		/// <param name="options">The options.</param>
+		/// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
+		public Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter> InsertBatch<TObject>(System.Collections.Generic.IEnumerable<TObject> objects, Tortuga.Chain.InsertOptions options = 0)where TObject : class
+		{
+			return __Trait3.InsertBatch<TObject>(objects, options);
+		}
+
+		/// <summary>
+		/// Performs a series of batch inserts.
+		/// </summary>
+		/// <typeparam name="TObject">The type of the t object.</typeparam>
+		/// <param name="tableName">Name of the table.</param>
+		/// <param name="objects">The objects.</param>
+		/// <param name="options">The options.</param>
+		/// <returns>Tortuga.Chain.ILink&lt;System.Int32&gt;.</returns>
+		/// <remarks>This operation is not atomic. It should be wrapped in a transaction.</remarks>
+		public Tortuga.Chain.ILink<int> InsertMultipleBatch<TObject>(Tortuga.Chain.SqlServer.SqlServerObjectName tableName, System.Collections.Generic.IEnumerable<TObject> objects, Tortuga.Chain.InsertOptions options = 0)where TObject : class
+		{
+			return __Trait3.InsertMultipleBatch<TObject>(tableName, objects, options);
+		}
+
+		/// <summary>
+		/// Inserts the batch of records as one operation.
+		/// </summary>
+		/// <typeparam name="TObject"></typeparam>
+		/// <param name="objects">The objects to insert.</param>
+		/// <param name="options">The options.</param>
+		/// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
+		public Tortuga.Chain.ILink<int> InsertMultipleBatch<TObject>(System.Collections.Generic.IReadOnlyList<TObject> objects, Tortuga.Chain.InsertOptions options = 0)where TObject : class
+		{
+			return __Trait3.InsertMultipleBatch<TObject>(objects, options);
+		}
 
 		// Exposing trait Traits.SupportsSqlQueriesTrait<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter>
 
@@ -154,10 +205,6 @@ namespace Tortuga.Chain.SqlServer
 
 		private partial Tortuga.Chain.Metadata.DatabaseMetadataCache<Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType> OnGetDatabaseMetadata2( );
 
-		private partial Tortuga.Chain.DataSources.IDataSource OnGetDataSource( );
-
-		private partial Traits.IInsertBatchHelper OnGetInsertBatchHelper( );
-
 		private partial System.Collections.Generic.List<Microsoft.Data.SqlClient.SqlParameter> OnGetParameters(Tortuga.Chain.CommandBuilders.SqlBuilder<System.Data.SqlDbType> builder );
 
 		private partial Tortuga.Chain.SqlServer.SqlServerObjectName OnGetTableOrViewNameFromClass(System.Type type, Tortuga.Chain.Metadata.OperationType operationType );
@@ -186,10 +233,10 @@ namespace Tortuga.Chain.SqlServer
 			__Trait1.OnTruncate = OnTruncate;
 			__Trait2.OnSql = OnSql;
 			__Trait3.OnGetDatabaseMetadata2 = OnGetDatabaseMetadata2;
-			__Trait3.OnGetDataSource = OnGetDataSource;
 			__Trait3.OnGetParameters = OnGetParameters;
 			__Trait3.OnParseObjectName = OnParseObjectName;
-			__Trait3.OnGetInsertBatchHelper = OnGetInsertBatchHelper;
+			__Trait3.DataSource = this;
+			__Trait3.InsertBatchHelper = this;
 		}
 	}
 }

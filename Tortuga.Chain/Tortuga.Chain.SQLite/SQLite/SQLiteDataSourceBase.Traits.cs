@@ -2,23 +2,17 @@
 using Tortuga.Chain.Metadata;
 using Tortuga.Chain.SQLite.CommandBuilders;
 using Tortuga.Shipwright;
+using Traits;
 
 namespace Tortuga.Chain.SQLite
 {
-	[UseTrait(typeof(Traits.SupportsDeleteAllTrait<AbstractObjectName>))]
-	[UseTrait(typeof(Traits.SupportsTruncateTrait<AbstractObjectName>))]
-	[UseTrait(typeof(Traits.SupportsSqlQueriesTrait<AbstractCommand, AbstractParameter>))]
+	[UseTrait(typeof(SupportsDeleteAllTrait<AbstractObjectName>))]
+	[UseTrait(typeof(SupportsTruncateTrait<AbstractObjectName>))]
+	[UseTrait(typeof(SupportsSqlQueriesTrait<AbstractCommand, AbstractParameter>))]
+	[UseTrait(typeof(SupportsInsertBatchTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType,
+	DbCommandBuilder<AbstractCommand, AbstractParameter>>))]
 	partial class SQLiteDataSourceBase
 	{
-
-		/// <summary>
-		/// Called when Database.DatabaseMetadata is invoked.
-		/// </summary>
-		/// <returns></returns>
-		protected override IDatabaseMetadataCache OnGetDatabaseMetadata()
-		{
-			return DatabaseMetadata;
-		}
 
 		private partial AbstractObjectName OnGetTableOrViewNameFromClass(Type type, OperationType operationType)
 		{
@@ -47,7 +41,15 @@ namespace Tortuga.Chain.SQLite
 			return new SQLiteSqlCall(this, sqlStatement, argumentValue, LockType.Write);
 		}
 
+		private partial DatabaseMetadataCache<AbstractObjectName, AbstractDbType> OnGetDatabaseMetadata2() => DatabaseMetadata;
 
+		private partial List<AbstractParameter> OnGetParameters(SqlBuilder<AbstractDbType> builder)
+			=> builder.GetParameters();
+
+		DbCommandBuilder<AbstractCommand, AbstractParameter> IInsertBatchHelper<AbstractCommand, AbstractParameter, AbstractObjectName>.OnInsertBatch<TObject>(AbstractObjectName tableName, IEnumerable<TObject> objects, InsertOptions options)
+		{
+			return new SQLiteInsertBatch<TObject>(this, tableName, objects, options); ;
+		}
 	}
 }
 

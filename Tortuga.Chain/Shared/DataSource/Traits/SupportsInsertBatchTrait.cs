@@ -15,36 +15,36 @@ interface IInsertBatchHelper<TCommand, TParameter, TObjectName>
 	where TParameter : DbParameter
 	where TObjectName : struct
 {
-	MultipleRowDbCommandBuilder<TCommand, TParameter> OnInsertBatch<TObject>(TObjectName tableName, IEnumerable<TObject> objects, InsertOptions options)
+	//This is needed because the trait generator can't create a matching Func<...> property with the TObject constraint.
+	DbCommandBuilder<TCommand, TParameter> OnInsertBatch<TObject>(TObjectName tableName, IEnumerable<TObject> objects, InsertOptions options)
 where TObject : class;
 
 }
 
+
 [Trait]
-class SupportsInsertBatchTrait<TCommand, TParameter, TObjectName, TDbType> : ISupportsInsertBatch
+class SupportsInsertBatchTrait<TCommand, TParameter, TObjectName, TDbType, TResult> : ISupportsInsertBatch
 	where TCommand : DbCommand
 	where TParameter : DbParameter
 	where TObjectName : struct
 	where TDbType : struct
+	where TResult : DbCommandBuilder<TCommand, TParameter>
 {
-	// Can't create generic properties, so we use a helper interface instead.
-	public delegate DbCommandBuilder<TCommand, TParameter> InsertBatchDelegate<TObject>(
-		TObjectName tableName, IEnumerable<TObject> objects, InsertOptions options
-		) where TObject : class;
 
+	[Owner]
+	public IDataSource DataSource { get; set; } = null!;
 
 	[Partial]
 	public Func<DatabaseMetadataCache<TObjectName, TDbType>> OnGetDatabaseMetadata2 { get; set; } = null!;
-
-	[Partial]
-	public Func<IDataSource> OnGetDataSource { get; set; } = null!;
-
 	[Partial("builder")]
 	public Func<SqlBuilder<TDbType>, List<TParameter>> OnGetParameters { get; set; } = null!;
 
 	[Partial("objectName")] public Func<string, TObjectName> OnParseObjectName { get; set; } = null!;
 
-	IMultipleRowDbCommandBuilder ISupportsInsertBatch.InsertBatch<TObject>(IEnumerable<TObject> objects, InsertOptions options)
+	[Owner(RegisterInterface = true)]
+	internal IInsertBatchHelper<TCommand, TParameter, TObjectName> InsertBatchHelper { get; set; } = null!;
+
+	IDbCommandBuilder ISupportsInsertBatch.InsertBatch<TObject>(IEnumerable<TObject> objects, InsertOptions options)
 	{
 		return InsertBatch(objects, options);
 	}
@@ -58,7 +58,7 @@ class SupportsInsertBatchTrait<TCommand, TParameter, TObjectName, TDbType> : ISu
 	/// <param name="options">The options.</param>
 	/// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
 	[Expose]
-	public MultipleRowDbCommandBuilder<TCommand, TParameter> InsertBatch<TObject>(TObjectName tableName, IEnumerable<TObject> objects, InsertOptions options = InsertOptions.None)
+	public TResult InsertBatch<TObject>(TObjectName tableName, IEnumerable<TObject> objects, InsertOptions options = InsertOptions.None)
 	where TObject : class
 	{
 		return OnInsertBatch(tableName, objects, options);
@@ -72,7 +72,7 @@ class SupportsInsertBatchTrait<TCommand, TParameter, TObjectName, TDbType> : ISu
 	/// <param name="options">The options.</param>
 	/// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
 	[Expose]
-	public MultipleRowDbCommandBuilder<TCommand, TParameter> InsertBatch<TObject>(IEnumerable<TObject> objects, InsertOptions options = InsertOptions.None)
+	public TResult InsertBatch<TObject>(IEnumerable<TObject> objects, InsertOptions options = InsertOptions.None)
 	where TObject : class
 	{
 		return InsertBatch<TObject>(OnGetDatabaseMetadata2().GetTableOrViewFromClass<TObject>().Name, objects, options);
@@ -109,7 +109,7 @@ class SupportsInsertBatchTrait<TCommand, TParameter, TObjectName, TDbType> : ISu
 
 		Func<IEnumerable<TObject>, ILink<int>> callBack = (o) => (OnInsertBatch<TObject>(tableName, o, options)).AsNonQuery().NeverNull();
 
-		return new MultiBatcher<TObject>(OnGetDataSource(), callBack, objects, batchSize);
+		return new MultiBatcher<TObject>(DataSource, callBack, objects, batchSize);
 	}
 
 	/// <summary>
@@ -131,12 +131,11 @@ class SupportsInsertBatchTrait<TCommand, TParameter, TObjectName, TDbType> : ISu
 		where TObject : class
 	{
 		var metadata = OnGetDatabaseMetadata2();
-		var dataSource = OnGetDataSource();
 
 		var table = metadata.GetTableOrView(tableName);
 		var sqlBuilder = table.CreateSqlBuilder(false);
 		sqlBuilder.ApplyDesiredColumns(Materializer.NoColumns);
-		sqlBuilder.ApplyArgumentValue(dataSource, sampleObject, options);
+		sqlBuilder.ApplyArgumentValue(DataSource, sampleObject, options);
 		sqlBuilder.GetInsertColumns(options.HasFlag(InsertOptions.IdentityInsert)).Count(); //Call .Count() to trigger needed side-effects
 
 		var parametersPerRow = OnGetParameters(sqlBuilder).Count;
@@ -152,20 +151,17 @@ class SupportsInsertBatchTrait<TCommand, TParameter, TObjectName, TDbType> : ISu
 
 		return maxRows;
 	}
-	MultipleRowDbCommandBuilder<TCommand, TParameter> OnInsertBatch<TObject>(TObjectName tableName, IEnumerable<TObject> objects, InsertOptions options)
+	TResult OnInsertBatch<TObject>(TObjectName tableName, IEnumerable<TObject> objects, InsertOptions options)
 where TObject : class
 	{
-		return OnGetInsertBatchHelper().OnInsertBatch(tableName, objects, options);
+		return (TResult)InsertBatchHelper.OnInsertBatch(tableName, objects, options);
 	}
 
-
-	[Partial]
-	internal Func<IInsertBatchHelper<TCommand, TParameter, TObjectName>> OnGetInsertBatchHelper { get; set; } = null!;
 
 	/// <summary>
 	/// MultiBatcher is used by InsertMultipleBatch to perform a series of batch inserts.
 	/// </summary>
-	internal class MultiBatcher<TObject> : ILink<int>
+	class MultiBatcher<TObject> : ILink<int>
 	{
 		int m_BatchSize;
 
@@ -253,4 +249,3 @@ where TObject : class
 		}
 	}
 }
-

@@ -186,11 +186,6 @@ namespace Tortuga.Chain.MySql
 			return new MySqlUpdateObject<TArgument>(this, tableName, argumentValue, options);
 		}
 
-		DbCommandBuilder<MySqlCommand, MySqlParameter> OnInsertBatch<TObject>(MySqlObjectName tableName, IEnumerable<TObject> objects, InsertOptions options)
-	where TObject : class
-		{
-			return new MySqlInsertBatch<TObject>(this, tableName, objects, options);
-		}
 
 		/// <summary>
 		/// Inserts the batch of records using bulk insert.

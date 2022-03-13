@@ -11,15 +11,6 @@ namespace Tortuga.Chain.SqlServer;
 partial class OleDbSqlServerDataSourceBase
 {
 
-	/// <summary>
-	/// Called when Database.DatabaseMetadata is invoked.
-	/// </summary>
-	/// <returns></returns>
-	protected override IDatabaseMetadataCache OnGetDatabaseMetadata()
-	{
-		return DatabaseMetadata;
-	}
-
 	private partial AbstractObjectName OnGetTableOrViewNameFromClass(Type type, OperationType operationType)
 	{
 		var table = (TableOrViewMetadata<AbstractObjectName, AbstractDbType>)DatabaseMetadata.GetDatabaseObjectFromClass(type, operationType)!;

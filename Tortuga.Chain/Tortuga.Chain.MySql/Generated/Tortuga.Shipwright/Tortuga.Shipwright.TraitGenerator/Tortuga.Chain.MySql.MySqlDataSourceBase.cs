@@ -2,7 +2,7 @@
 
 namespace Tortuga.Chain.MySql
 {
-	partial class MySqlDataSourceBase: Tortuga.Chain.DataSources.ISupportsDeleteAll, Tortuga.Chain.DataSources.ISupportsTruncate, Tortuga.Chain.DataSources.ISupportsSqlQueries
+	partial class MySqlDataSourceBase: Tortuga.Chain.DataSources.ISupportsDeleteAll, Tortuga.Chain.DataSources.ISupportsTruncate, Tortuga.Chain.DataSources.ISupportsSqlQueries, Tortuga.Chain.DataSources.ISupportsInsertBatch, Traits.IInsertBatchHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName>
 	{
 
 		private bool __TraitsRegistered;
@@ -35,6 +35,15 @@ namespace Tortuga.Chain.MySql
 				return ___Trait2;
 			}
 		}
+		private Traits.SupportsInsertBatchTrait<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType, Tortuga.Chain.CommandBuilders.DbCommandBuilder<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter>> ___Trait3 = new();
+		private Traits.SupportsInsertBatchTrait<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType, Tortuga.Chain.CommandBuilders.DbCommandBuilder<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter>> __Trait3
+		{
+			get
+			{
+				if (!__TraitsRegistered) __RegisterTraits();
+				return ___Trait3;
+			}
+		}
 
 		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsDeleteAll
 		Tortuga.Chain.ILink<int?> Tortuga.Chain.DataSources.ISupportsDeleteAll.DeleteAll(System.String tableName)
@@ -45,6 +54,22 @@ namespace Tortuga.Chain.MySql
 		Tortuga.Chain.ILink<int?> Tortuga.Chain.DataSources.ISupportsDeleteAll.DeleteAll<TObject>()
 		{
 			return ((Tortuga.Chain.DataSources.ISupportsDeleteAll)__Trait0).DeleteAll<TObject>();
+		}
+
+		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsInsertBatch
+		Tortuga.Chain.CommandBuilders.IDbCommandBuilder Tortuga.Chain.DataSources.ISupportsInsertBatch.InsertBatch<TObject>(System.Collections.Generic.IEnumerable<TObject> objects, Tortuga.Chain.InsertOptions options)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsInsertBatch)__Trait3).InsertBatch<TObject>(objects, options);
+		}
+
+		Tortuga.Chain.ILink<int> Tortuga.Chain.DataSources.ISupportsInsertBatch.InsertMultipleBatch<TObject>(System.String tableName, System.Collections.Generic.IReadOnlyList<TObject> objects, Tortuga.Chain.InsertOptions options)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsInsertBatch)__Trait3).InsertMultipleBatch<TObject>(tableName, objects, options);
+		}
+
+		Tortuga.Chain.ILink<int> Tortuga.Chain.DataSources.ISupportsInsertBatch.InsertMultipleBatch<TObject>(System.Collections.Generic.IReadOnlyList<TObject> objects, Tortuga.Chain.InsertOptions options)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsInsertBatch)__Trait3).InsertMultipleBatch<TObject>(objects, options);
 		}
 
 		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsSqlQueries
@@ -80,6 +105,59 @@ namespace Tortuga.Chain.MySql
 		public Tortuga.Chain.ILink<int?> DeleteAll<TObject>()where TObject : class
 		{
 			return __Trait0.DeleteAll<TObject>();
+		}
+
+		// Exposing trait Traits.SupportsInsertBatchTrait<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType, Tortuga.Chain.CommandBuilders.DbCommandBuilder<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter>>
+
+		/// <summary>
+		/// Inserts the batch of records as one operation.
+		/// </summary>
+		/// <typeparam name="TObject"></typeparam>
+		/// <param name="tableName">Name of the table.</param>
+		/// <param name="objects">The objects to insert.</param>
+		/// <param name="options">The options.</param>
+		/// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
+		public Tortuga.Chain.CommandBuilders.DbCommandBuilder<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter> InsertBatch<TObject>(Tortuga.Chain.MySql.MySqlObjectName tableName, System.Collections.Generic.IEnumerable<TObject> objects, Tortuga.Chain.InsertOptions options = 0)where TObject : class
+		{
+			return __Trait3.InsertBatch<TObject>(tableName, objects, options);
+		}
+
+		/// <summary>
+		/// Inserts the batch of records as one operation.
+		/// </summary>
+		/// <typeparam name="TObject"></typeparam>
+		/// <param name="objects">The objects to insert.</param>
+		/// <param name="options">The options.</param>
+		/// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
+		public Tortuga.Chain.CommandBuilders.DbCommandBuilder<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter> InsertBatch<TObject>(System.Collections.Generic.IEnumerable<TObject> objects, Tortuga.Chain.InsertOptions options = 0)where TObject : class
+		{
+			return __Trait3.InsertBatch<TObject>(objects, options);
+		}
+
+		/// <summary>
+		/// Performs a series of batch inserts.
+		/// </summary>
+		/// <typeparam name="TObject">The type of the t object.</typeparam>
+		/// <param name="tableName">Name of the table.</param>
+		/// <param name="objects">The objects.</param>
+		/// <param name="options">The options.</param>
+		/// <returns>Tortuga.Chain.ILink&lt;System.Int32&gt;.</returns>
+		/// <remarks>This operation is not atomic. It should be wrapped in a transaction.</remarks>
+		public Tortuga.Chain.ILink<int> InsertMultipleBatch<TObject>(Tortuga.Chain.MySql.MySqlObjectName tableName, System.Collections.Generic.IEnumerable<TObject> objects, Tortuga.Chain.InsertOptions options = 0)where TObject : class
+		{
+			return __Trait3.InsertMultipleBatch<TObject>(tableName, objects, options);
+		}
+
+		/// <summary>
+		/// Inserts the batch of records as one operation.
+		/// </summary>
+		/// <typeparam name="TObject"></typeparam>
+		/// <param name="objects">The objects to insert.</param>
+		/// <param name="options">The options.</param>
+		/// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
+		public Tortuga.Chain.ILink<int> InsertMultipleBatch<TObject>(System.Collections.Generic.IReadOnlyList<TObject> objects, Tortuga.Chain.InsertOptions options = 0)where TObject : class
+		{
+			return __Trait3.InsertMultipleBatch<TObject>(objects, options);
 		}
 
 		// Exposing trait Traits.SupportsSqlQueriesTrait<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter>
@@ -125,11 +203,17 @@ namespace Tortuga.Chain.MySql
 
 		private partial Tortuga.Chain.ILink<int?> OnDeleteAll(Tortuga.Chain.MySql.MySqlObjectName tableName );
 
+		private partial Tortuga.Chain.Metadata.DatabaseMetadataCache<Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType> OnGetDatabaseMetadata2( );
+
+		private partial System.Collections.Generic.List<MySqlConnector.MySqlParameter> OnGetParameters(Tortuga.Chain.CommandBuilders.SqlBuilder<MySqlConnector.MySqlDbType> builder );
+
 		private partial Tortuga.Chain.MySql.MySqlObjectName OnGetTableOrViewNameFromClass(System.Type type, Tortuga.Chain.Metadata.OperationType operationType );
 
 		// Reusing the previously declared partial method named OnGetTableOrViewNameFromClass declared on trait Traits.SupportsDeleteAllTrait<Tortuga.Chain.MySql.MySqlObjectName>
 
 		private partial Tortuga.Chain.MySql.MySqlObjectName OnParseObjectName(System.String objectName );
+
+		// Reusing the previously declared partial method named OnParseObjectName declared on trait Traits.SupportsDeleteAllTrait<Tortuga.Chain.MySql.MySqlObjectName>
 
 		// Reusing the previously declared partial method named OnParseObjectName declared on trait Traits.SupportsDeleteAllTrait<Tortuga.Chain.MySql.MySqlObjectName>
 
@@ -148,6 +232,11 @@ namespace Tortuga.Chain.MySql
 			__Trait1.OnParseObjectName = OnParseObjectName;
 			__Trait1.OnTruncate = OnTruncate;
 			__Trait2.OnSql = OnSql;
+			__Trait3.OnGetDatabaseMetadata2 = OnGetDatabaseMetadata2;
+			__Trait3.OnGetParameters = OnGetParameters;
+			__Trait3.OnParseObjectName = OnParseObjectName;
+			__Trait3.DataSource = this;
+			__Trait3.InsertBatchHelper = this;
 		}
 	}
 }

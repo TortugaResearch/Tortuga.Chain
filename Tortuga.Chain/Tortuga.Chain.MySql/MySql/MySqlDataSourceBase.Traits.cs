@@ -2,23 +2,17 @@
 using Tortuga.Chain.Metadata;
 using Tortuga.Chain.MySql.CommandBuilders;
 using Tortuga.Shipwright;
+using Traits;
 
 namespace Tortuga.Chain.MySql
 {
-	[UseTrait(typeof(Traits.SupportsDeleteAllTrait<AbstractObjectName>))]
-	[UseTrait(typeof(Traits.SupportsTruncateTrait<AbstractObjectName>))]
-	[UseTrait(typeof(Traits.SupportsSqlQueriesTrait<AbstractCommand, AbstractParameter>))]
+	[UseTrait(typeof(SupportsDeleteAllTrait<AbstractObjectName>))]
+	[UseTrait(typeof(SupportsTruncateTrait<AbstractObjectName>))]
+	[UseTrait(typeof(SupportsSqlQueriesTrait<AbstractCommand, AbstractParameter>))]
+	[UseTrait(typeof(SupportsInsertBatchTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType,
+	DbCommandBuilder<AbstractCommand, AbstractParameter>>))]
 	partial class MySqlDataSourceBase
 	{
-
-		/// <summary>
-		/// Called when Database.DatabaseMetadata is invoked.
-		/// </summary>
-		/// <returns></returns>
-		protected override IDatabaseMetadataCache OnGetDatabaseMetadata()
-		{
-			return DatabaseMetadata;
-		}
 
 		private partial AbstractObjectName OnGetTableOrViewNameFromClass(Type type, OperationType operationType)
 		{
@@ -46,6 +40,14 @@ namespace Tortuga.Chain.MySql
 		{
 			return new MySqlSqlCall(this, sqlStatement, argumentValue);
 		}
+		private partial DatabaseMetadataCache<AbstractObjectName, AbstractDbType> OnGetDatabaseMetadata2() => DatabaseMetadata;
 
+		private partial List<AbstractParameter> OnGetParameters(SqlBuilder<AbstractDbType> builder)
+			=> builder.GetParameters();
+
+		DbCommandBuilder<AbstractCommand, AbstractParameter> IInsertBatchHelper<AbstractCommand, AbstractParameter, AbstractObjectName>.OnInsertBatch<TObject>(AbstractObjectName tableName, IEnumerable<TObject> objects, InsertOptions options)
+		{
+			return new MySqlInsertBatch<TObject>(this, tableName, objects, options); ;
+		}
 	}
 }

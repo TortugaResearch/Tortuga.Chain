@@ -2,6 +2,7 @@
 using System.Text;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.DataSources;
+using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.PostgreSql
 {
@@ -22,6 +23,12 @@ namespace Tortuga.Chain.PostgreSql
 		/// Gets the database metadata.
 		/// </summary>
 		public abstract new PostgreSqlMetadataCache DatabaseMetadata { get; }
+
+		/// <summary>
+		/// Called when Database.DatabaseMetadata is invoked.
+		/// </summary>
+		/// <returns></returns>
+		protected override IDatabaseMetadataCache OnGetDatabaseMetadata() => DatabaseMetadata;
 
 		/// <summary>
 		/// Dereferences cursors returned by a stored procedure.

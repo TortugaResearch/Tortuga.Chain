@@ -1,5 +1,6 @@
 using System.Data.OleDb;
 using Tortuga.Chain.DataSources;
+using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.SqlServer
 {
@@ -22,6 +23,11 @@ namespace Tortuga.Chain.SqlServer
 		/// <value>The database metadata.</value>
 		public abstract new OleDbSqlServerMetadataCache DatabaseMetadata { get; }
 
+		/// <summary>
+		/// Called when Database.DatabaseMetadata is invoked.
+		/// </summary>
+		/// <returns></returns>
+		protected override IDatabaseMetadataCache OnGetDatabaseMetadata() => DatabaseMetadata;
 
 	}
 }

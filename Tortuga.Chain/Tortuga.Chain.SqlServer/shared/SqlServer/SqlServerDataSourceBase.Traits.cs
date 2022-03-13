@@ -1,5 +1,4 @@
 using Tortuga.Chain.CommandBuilders;
-using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Metadata;
 using Tortuga.Chain.SqlServer.CommandBuilders;
 using Tortuga.Shipwright;
@@ -10,18 +9,10 @@ namespace Tortuga.Chain.SqlServer;
 [UseTrait(typeof(SupportsDeleteAllTrait<AbstractObjectName>))]
 [UseTrait(typeof(SupportsTruncateTrait<AbstractObjectName>))]
 [UseTrait(typeof(SupportsSqlQueriesTrait<AbstractCommand, AbstractParameter>))]
-[UseTrait(typeof(SupportsInsertBatchTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
-partial class SqlServerDataSourceBase : IInsertBatchHelper<SqlCommand, SqlParameter, SqlServerObjectName>
+[UseTrait(typeof(SupportsInsertBatchTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType,
+	MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter>>))]
+partial class SqlServerDataSourceBase
 {
-
-	/// <summary>
-	/// Called when Database.DatabaseMetadata is invoked.
-	/// </summary>
-	/// <returns></returns>
-	protected override IDatabaseMetadataCache OnGetDatabaseMetadata()
-	{
-		return DatabaseMetadata;
-	}
 
 	private partial AbstractObjectName OnGetTableOrViewNameFromClass(Type type, OperationType operationType)
 	{
@@ -50,16 +41,12 @@ partial class SqlServerDataSourceBase : IInsertBatchHelper<SqlCommand, SqlParame
 		return new SqlServerSqlCall(this, sqlStatement, argumentValue);
 	}
 
-	private partial DatabaseMetadataCache<SqlServerObjectName, SqlDbType> OnGetDatabaseMetadata2() => DatabaseMetadata;
+	private partial DatabaseMetadataCache<AbstractObjectName, AbstractDbType> OnGetDatabaseMetadata2() => DatabaseMetadata;
 
-	private partial IDataSource OnGetDataSource() => this;
-
-	private partial List<SqlParameter> OnGetParameters(SqlBuilder<SqlDbType> builder)
+	private partial List<AbstractParameter> OnGetParameters(SqlBuilder<AbstractDbType> builder)
 		=> builder.GetParameters();
 
-	private partial IInsertBatchHelper<SqlCommand, SqlParameter, SqlServerObjectName> OnGetInsertBatchHelper() => this;
-
-	MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> IInsertBatchHelper<SqlCommand, SqlParameter, SqlServerObjectName>.OnInsertBatch<TObject>(SqlServerObjectName tableName, IEnumerable<TObject> objects, InsertOptions options)
+	DbCommandBuilder<AbstractCommand, AbstractParameter> IInsertBatchHelper<AbstractCommand, AbstractParameter, AbstractObjectName>.OnInsertBatch<TObject>(AbstractObjectName tableName, IEnumerable<TObject> objects, InsertOptions options)
 	{
 		return new SqlServerInsertBatch<TObject>(this, tableName, objects, options); ;
 	}

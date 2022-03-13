@@ -28,9 +28,18 @@ public class TraitGenerator : ISourceGenerator
 
 				var partialProperties = workItem.TraitClasses.SelectMany(m => m.GetMembers()).OfType<IPropertySymbol>().Where(m => m.HasAttribute<PartialAttribute>()).ToList();
 
+				var ownerProperties = workItem.TraitClasses.SelectMany(m => m.GetMembers()).OfType<IPropertySymbol>().Where(m => m.HasAttribute<OwnerAttribute>()).ToList();
+
+				bool useRegisterTraits = partialProperties.Any() || ownerProperties.Any();
+
 
 				//Find the list of interfaces
-				var interfacesNames = workItem.TraitClasses.SelectMany(wi => wi.AllInterfaces).Distinct<INamedTypeSymbol>(SymbolEqualityComparer.Default).Select(i => i.FullName());
+				var interfacesNamesA = workItem.TraitClasses.SelectMany(wi => wi.AllInterfaces);
+				var interfacesNamesB = workItem.TraitClasses.SelectMany(x => x.GetMembers()).OfType<IPropertySymbol>()
+					.Where(x => (bool)(x.GetAttribute<OwnerAttribute>()?.NamedArguments.SingleOrDefault(x => x.Key == "RegisterInterface").Value.Value ?? false)).Select(x => x.Type).OfType<INamedTypeSymbol>();
+
+				var interfacesNames = interfacesNamesA.Concat(interfacesNamesB)
+					.Distinct<INamedTypeSymbol>(SymbolEqualityComparer.Default).Select(i => i.FullName()).ToList();
 				var interfaceString = interfacesNames.Any() ? ": " + string.Join(", ", interfacesNames) : "";
 
 
@@ -44,7 +53,7 @@ public class TraitGenerator : ISourceGenerator
 					using (code.BeginScope($"partial class {workItem.HostingClass.Name}{interfaceString}"))
 					{
 						code.AppendLine();
-						if (partialProperties.Any())
+						if (useRegisterTraits)
 						{
 							code.AppendLine("private bool __TraitsRegistered;");
 							code.AppendLine();
@@ -318,15 +327,25 @@ public class TraitGenerator : ISourceGenerator
 								code.AppendLine($"private partial {returnType} {propertySymbol.Name}({string.Join(", ", parameters) } );");
 								code.AppendLine();
 							}
+						}
 
+						if (useRegisterTraits)
+						{
 							code.AppendLine();
 							using (code.BeginScope("private void __RegisterTraits()"))
 							{
 								code.AppendLine("__TraitsRegistered = true;");
 								foreach (var traitClass in workItem.TraitClasses)
+								{
 									foreach (var partialProperty in traitClass.GetMembers()
 											.OfType<IPropertySymbol>().Where(m => m.HasAttribute<PartialAttribute>()))
 										code.AppendLine($"{traitFieldNames[traitClass]}.{partialProperty.Name} = {partialProperty.Name};");
+
+
+									foreach (var partialProperty in traitClass.GetMembers()
+											.OfType<IPropertySymbol>().Where(m => m.HasAttribute<OwnerAttribute>()))
+										code.AppendLine($"{traitFieldNames[traitClass]}.{partialProperty.Name} = this;");
+								}
 							}
 
 						}

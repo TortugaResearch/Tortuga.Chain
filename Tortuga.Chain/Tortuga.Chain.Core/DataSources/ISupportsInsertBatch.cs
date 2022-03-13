@@ -36,7 +36,7 @@ namespace Tortuga.Chain.DataSources
 		/// <param name="objects">The objects to insert.</param>
 		/// <param name="options">The options.</param>
 		/// <returns>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</returns>
-		IMultipleRowDbCommandBuilder InsertBatch<TObject>(IEnumerable<TObject> objects, InsertOptions options = InsertOptions.None)
+		IDbCommandBuilder InsertBatch<TObject>(IEnumerable<TObject> objects, InsertOptions options = InsertOptions.None)
 		where TObject : class;
 
 	}
