@@ -1,8 +1,10 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using Tortuga.Anchor.Modeling;
 
 namespace Tests.Models;
 
-[TableAndView(TestBase.EmployeeTableName, ViewName = TestBase.EmployeeViewName)]
+[Table(TestBase.EmployeeTableName)]
+[View(TestBase.EmployeeViewName)]
 public class EmployeeWithManager
 {
 	public int? EmployeeKey { get; set; }

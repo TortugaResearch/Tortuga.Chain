@@ -1,9 +1,10 @@
-using System;
+using System.ComponentModel.DataAnnotations.Schema;
 using Tortuga.Anchor.Modeling;
 
 namespace Tests.Models
 {
-	[TableAndView("Employee", Schema = "HR", ViewName = "EmployeeWithManager")]
+	[Table("Employee", Schema = "HR")]
+	[View("EmployeeWithManager", Schema = "HR")]
 	public class EmployeeWithView
 	{
 		[IgnoreOnInsert, IgnoreOnUpdate]
