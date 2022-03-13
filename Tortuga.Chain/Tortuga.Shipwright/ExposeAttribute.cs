@@ -15,3 +15,4 @@ public class ExposeAttribute : Attribute
 	public Setter Setter { get; set; } = Setter.None;
 	public Getter Getter { get; set; } = Getter.None;
 }
+

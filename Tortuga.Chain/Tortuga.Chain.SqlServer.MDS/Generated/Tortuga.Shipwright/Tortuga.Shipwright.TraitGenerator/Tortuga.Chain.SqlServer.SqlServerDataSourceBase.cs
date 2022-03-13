@@ -2,7 +2,7 @@
 
 namespace Tortuga.Chain.SqlServer
 {
-	partial class SqlServerDataSourceBase: Tortuga.Chain.DataSources.ISupportsDeleteAll, Tortuga.Chain.DataSources.ISupportsTruncate, Tortuga.Chain.DataSources.ISupportsSqlQueries
+	partial class SqlServerDataSourceBase: Tortuga.Chain.DataSources.ISupportsDeleteAll, Tortuga.Chain.DataSources.ISupportsTruncate, Tortuga.Chain.DataSources.ISupportsSqlQueries, Tortuga.Chain.DataSources.ISupportsInsertBatch
 	{
 
 		private bool __TraitsRegistered;
@@ -35,6 +35,15 @@ namespace Tortuga.Chain.SqlServer
 				return ___Trait2;
 			}
 		}
+		private Traits.SupportsInsertBatchTrait<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType> ___Trait3 = new();
+		private Traits.SupportsInsertBatchTrait<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType> __Trait3
+		{
+			get
+			{
+				if (!__TraitsRegistered) __RegisterTraits();
+				return ___Trait3;
+			}
+		}
 
 		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsDeleteAll
 		Tortuga.Chain.ILink<int?> Tortuga.Chain.DataSources.ISupportsDeleteAll.DeleteAll(System.String tableName)
@@ -45,6 +54,22 @@ namespace Tortuga.Chain.SqlServer
 		Tortuga.Chain.ILink<int?> Tortuga.Chain.DataSources.ISupportsDeleteAll.DeleteAll<TObject>()
 		{
 			return ((Tortuga.Chain.DataSources.ISupportsDeleteAll)__Trait0).DeleteAll<TObject>();
+		}
+
+		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsInsertBatch
+		Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder Tortuga.Chain.DataSources.ISupportsInsertBatch.InsertBatch<TObject>(System.Collections.Generic.IEnumerable<TObject> objects, Tortuga.Chain.InsertOptions options)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsInsertBatch)__Trait3).InsertBatch<TObject>(objects, options);
+		}
+
+		Tortuga.Chain.ILink<int> Tortuga.Chain.DataSources.ISupportsInsertBatch.InsertMultipleBatch<TObject>(System.String tableName, System.Collections.Generic.IReadOnlyList<TObject> objects, Tortuga.Chain.InsertOptions options)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsInsertBatch)__Trait3).InsertMultipleBatch<TObject>(tableName, objects, options);
+		}
+
+		Tortuga.Chain.ILink<int> Tortuga.Chain.DataSources.ISupportsInsertBatch.InsertMultipleBatch<TObject>(System.Collections.Generic.IReadOnlyList<TObject> objects, Tortuga.Chain.InsertOptions options)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsInsertBatch)__Trait3).InsertMultipleBatch<TObject>(objects, options);
 		}
 
 		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsSqlQueries
@@ -81,6 +106,8 @@ namespace Tortuga.Chain.SqlServer
 		{
 			return __Trait0.DeleteAll<TObject>();
 		}
+
+		// Exposing trait Traits.SupportsInsertBatchTrait<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>
 
 		// Exposing trait Traits.SupportsSqlQueriesTrait<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter>
 
@@ -125,11 +152,21 @@ namespace Tortuga.Chain.SqlServer
 
 		private partial Tortuga.Chain.ILink<int?> OnDeleteAll(Tortuga.Chain.SqlServer.SqlServerObjectName tableName );
 
+		private partial Tortuga.Chain.Metadata.DatabaseMetadataCache<Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType> OnGetDatabaseMetadata2( );
+
+		private partial Tortuga.Chain.DataSources.IDataSource OnGetDataSource( );
+
+		private partial Traits.IInsertBatchHelper OnGetInsertBatchHelper( );
+
+		private partial System.Collections.Generic.List<Microsoft.Data.SqlClient.SqlParameter> OnGetParameters(Tortuga.Chain.CommandBuilders.SqlBuilder<System.Data.SqlDbType> builder );
+
 		private partial Tortuga.Chain.SqlServer.SqlServerObjectName OnGetTableOrViewNameFromClass(System.Type type, Tortuga.Chain.Metadata.OperationType operationType );
 
 		// Reusing the previously declared partial method named OnGetTableOrViewNameFromClass declared on trait Traits.SupportsDeleteAllTrait<Tortuga.Chain.SqlServer.SqlServerObjectName>
 
 		private partial Tortuga.Chain.SqlServer.SqlServerObjectName OnParseObjectName(System.String objectName );
+
+		// Reusing the previously declared partial method named OnParseObjectName declared on trait Traits.SupportsDeleteAllTrait<Tortuga.Chain.SqlServer.SqlServerObjectName>
 
 		// Reusing the previously declared partial method named OnParseObjectName declared on trait Traits.SupportsDeleteAllTrait<Tortuga.Chain.SqlServer.SqlServerObjectName>
 
@@ -145,9 +182,14 @@ namespace Tortuga.Chain.SqlServer
 			__Trait0.OnDeleteAll = OnDeleteAll;
 			__Trait0.OnParseObjectName = OnParseObjectName;
 			__Trait1.OnGetTableOrViewNameFromClass = OnGetTableOrViewNameFromClass;
-			__Trait1.OnTruncate = OnTruncate;
 			__Trait1.OnParseObjectName = OnParseObjectName;
+			__Trait1.OnTruncate = OnTruncate;
 			__Trait2.OnSql = OnSql;
+			__Trait3.OnGetDatabaseMetadata2 = OnGetDatabaseMetadata2;
+			__Trait3.OnGetDataSource = OnGetDataSource;
+			__Trait3.OnGetParameters = OnGetParameters;
+			__Trait3.OnParseObjectName = OnParseObjectName;
+			__Trait3.OnGetInsertBatchHelper = OnGetInsertBatchHelper;
 		}
 	}
 }

@@ -31,6 +31,11 @@ namespace Tortuga.Chain.Metadata
 		public virtual int? MaxParameters => null;
 
 		/// <summary>
+		/// Get the maximum number of rows in a single SQL statement's Values clause.
+		/// </summary>
+		public virtual int? MaxRowsPerValuesClause => null;
+
+		/// <summary>
 		/// Gets the server version number.
 		/// </summary>
 		public virtual Version? ServerVersion => null;

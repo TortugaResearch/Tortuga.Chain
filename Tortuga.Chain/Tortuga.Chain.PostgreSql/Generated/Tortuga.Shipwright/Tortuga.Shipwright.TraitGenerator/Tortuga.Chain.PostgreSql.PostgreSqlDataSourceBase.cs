@@ -145,8 +145,8 @@ namespace Tortuga.Chain.PostgreSql
 			__Trait0.OnDeleteAll = OnDeleteAll;
 			__Trait0.OnParseObjectName = OnParseObjectName;
 			__Trait1.OnGetTableOrViewNameFromClass = OnGetTableOrViewNameFromClass;
-			__Trait1.OnTruncate = OnTruncate;
 			__Trait1.OnParseObjectName = OnParseObjectName;
+			__Trait1.OnTruncate = OnTruncate;
 			__Trait2.OnSql = OnSql;
 		}
 	}

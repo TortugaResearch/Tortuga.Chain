@@ -2,7 +2,6 @@ using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Runtime.Caching;
 using Tortuga.Chain.AuditRules;
-using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Metadata;
 
@@ -322,17 +321,17 @@ namespace Tortuga.Chain.DataSources
 		/// <returns></returns>
 		protected abstract IDatabaseMetadataCache OnGetDatabaseMetadata();
 
-		/// <summary>
-		/// Creates a multi-batcher. This is used by InsertMultipleBatch;
-		/// </summary>
-		/// <typeparam name="TObject">The type of the object.</typeparam>
-		/// <param name="callBack">The call back used to insert the batch.</param>
-		/// <param name="objects">The objects to insert.</param>
-		/// <param name="batchSize">Size of the batch.</param>
-		/// <returns>ILink&lt;System.Int32&gt;.</returns>
-		protected ILink<int> CreateMultiBatcher<TObject>(Func<IEnumerable<TObject>, ILink<int>> callBack, IEnumerable<TObject> objects, int batchSize)
-		{
-			return new MultiBatcher<TObject>(this, callBack, objects, batchSize);
-		}
+		///// <summary>
+		///// Creates a multi-batcher. This is used by InsertMultipleBatch;
+		///// </summary>
+		///// <typeparam name="TObject">The type of the object.</typeparam>
+		///// <param name="callBack">The call back used to insert the batch.</param>
+		///// <param name="objects">The objects to insert.</param>
+		///// <param name="batchSize">Size of the batch.</param>
+		///// <returns>ILink&lt;System.Int32&gt;.</returns>
+		//protected ILink<int> CreateMultiBatcher<TObject>(Func<IEnumerable<TObject>, ILink<int>> callBack, IEnumerable<TObject> objects, int batchSize)
+		//{
+		//	return new MultiBatcher<TObject>(this, callBack, objects, batchSize);
+		//}
 	}
 }

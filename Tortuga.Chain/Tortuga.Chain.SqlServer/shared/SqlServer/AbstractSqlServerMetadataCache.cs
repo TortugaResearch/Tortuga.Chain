@@ -286,5 +286,10 @@ namespace Tortuga.Chain.SqlServer
 		/// <value>The maximum number of parameters.</value>
 		/// <remarks>Note that the documentation says 2100, but you need to subtract one for the SQL statement itself. https://docs.microsoft.com/en-us/sql/sql-server/maximum-capacity-specifications-for-sql-server?view=sql-server-ver15</remarks>
 		public override int? MaxParameters => 2099;
+
+		/// <summary>
+		/// Get the maximum number of rows in a single SQL statement's Values clause.
+		/// </summary>
+		public override int? MaxRowsPerValuesClause => 1000;
 	}
 }

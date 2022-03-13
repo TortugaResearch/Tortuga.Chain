@@ -1,7 +1,7 @@
 namespace Tortuga.Chain.DataSources;
 
 /// <summary>
-/// Used to mark datasources that support the DeleteAll command.
+/// Used to mark data sources that support the DeleteAll command.
 /// </summary>
 public interface ISupportsDeleteAll
 {
