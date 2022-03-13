@@ -212,7 +212,7 @@ public class FromTests : TestBase
 		{
 			var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
 
-			var prep = ((IClass1DataSource)dataSource).From(tableName).WithLimits(10, limitOptions);
+			var prep = ((ICrudDataSource)dataSource).From(tableName).WithLimits(10, limitOptions);
 			switch (limitOptions)
 			{
 				case LimitOptions.RowsWithTies:
@@ -238,7 +238,7 @@ public class FromTests : TestBase
 		{
 			var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
 
-			var prep = ((IClass1DataSource)dataSource).From(tableName).WithLimits(10, limitOptions);
+			var prep = ((ICrudDataSource)dataSource).From(tableName).WithLimits(10, limitOptions);
 			switch (limitOptions)
 			{
 				case LimitOptions.RowsWithTies:

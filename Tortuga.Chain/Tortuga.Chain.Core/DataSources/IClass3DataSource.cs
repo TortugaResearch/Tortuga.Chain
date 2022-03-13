@@ -5,9 +5,9 @@ namespace Tortuga.Chain.DataSources
 	/// <summary>
 	/// A class 3 data source that includes stored procedures and functions.
 	/// </summary>
-	/// <seealso cref="IClass1DataSource" />
+	/// <seealso cref="ICrudDataSource" />
 	/// <remarks>Warning: This interface is meant to simulate multiple inheritance and work-around some issues with exposing generic types. Do not implement it in client code, as new methods will be added over time.</remarks>
-	public interface IClass3DataSource : IClass2DataSource
+	public interface IClass3DataSource : IAdvancedCrudDataSource
 	{
 		/// <summary>
 		/// Executes the indicated procedure.

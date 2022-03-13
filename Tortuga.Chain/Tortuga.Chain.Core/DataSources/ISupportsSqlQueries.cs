@@ -3,7 +3,7 @@ using Tortuga.Chain.CommandBuilders;
 namespace Tortuga.Chain.DataSources
 {
 	/// <summary>
-	/// This indicates that the data source supports raw SQL queries. 
+	/// Used to mark data sources that support raw SQL queries. 
 	/// </summary>
 	public interface ISupportsSqlQueries
 	{

@@ -26,7 +26,7 @@ partial class TestBase
 	}
 
 #if CLASS_2
-	public IClass2DataSource DataSource2(string name, DataSourceType mode, [CallerMemberName] string caller = null)
+	public IAdvancedCrudDataSource DataSource2(string name, DataSourceType mode, [CallerMemberName] string caller = null)
 	{
 		return DataSource(name, mode, caller);
 	}
@@ -121,7 +121,7 @@ partial class TestBase
 	{
 		var trans = dataSource.BeginTransaction();
 		{
-			var cds = (IClass1DataSource)trans;
+			var cds = (ICrudDataSource)trans;
 			EmployeeSearchKey1000 = Guid.NewGuid().ToString();
 			for (var i = 0; i < 1000; i++)
 				cds.Insert(EmployeeTableName, new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = EmployeeSearchKey1000, MiddleName = i % 2 == 0 ? "A" + i : null }).ToObject<Employee>().Execute();
@@ -134,7 +134,7 @@ partial class TestBase
 	{
 		EmployeeSearchKey1000 = Guid.NewGuid().ToString();
 		for (var i = 0; i < 1000; i++)
-			((IClass1DataSource)dataSource).Insert(EmployeeTableName, new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = EmployeeSearchKey1000, MiddleName = i % 2 == 0 ? "A" + i : null }).ToObject<Employee>().Execute();
+			((ICrudDataSource)dataSource).Insert(EmployeeTableName, new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = EmployeeSearchKey1000, MiddleName = i % 2 == 0 ? "A" + i : null }).ToObject<Employee>().Execute();
 	}
 
 	protected static string EmployeeSearchKey1000;

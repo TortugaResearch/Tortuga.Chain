@@ -6,40 +6,40 @@ using Tortuga.Chain.DataSources;
 
 namespace Tortuga.Chain.SqlServer
 {
-	partial class SqlServerDataSourceBase : IClass2DataSource
+	partial class SqlServerDataSourceBase : IAdvancedCrudDataSource
 #elif SQL_SERVER_OLEDB
 
 namespace Tortuga.Chain.SqlServer
 {
-    partial class OleDbSqlServerDataSourceBase : IClass1DataSource
+    partial class OleDbSqlServerDataSourceBase : IAdvancedCrudDataSource
 
 #elif SQLITE
 
 namespace Tortuga.Chain.SQLite
 {
-	partial class SQLiteDataSourceBase : IClass2DataSource
+	partial class SQLiteDataSourceBase : IAdvancedCrudDataSource
 
 #elif MYSQL
 
 namespace Tortuga.Chain.MySql
 {
-	partial class MySqlDataSourceBase : IClass1DataSource
+	partial class MySqlDataSourceBase : IAdvancedCrudDataSource
 
 #elif POSTGRESQL
 
 namespace Tortuga.Chain.PostgreSql
 {
-    partial class PostgreSqlDataSourceBase : IClass1DataSource
+    partial class PostgreSqlDataSourceBase : IAdvancedCrudDataSource
 
 #endif
 	{
 
-		IObjectDbCommandBuilder<TArgument> IClass2DataSource.Upsert<TArgument>(string tableName, TArgument argumentValue, UpsertOptions options)
+		IObjectDbCommandBuilder<TArgument> ISupportsUpsert.Upsert<TArgument>(string tableName, TArgument argumentValue, UpsertOptions options)
 		{
 			return Upsert(tableName, argumentValue, options);
 		}
 
-		IObjectDbCommandBuilder<TArgument> IClass2DataSource.Upsert<TArgument>(TArgument argumentValue, UpsertOptions options)
+		IObjectDbCommandBuilder<TArgument> ISupportsUpsert.Upsert<TArgument>(TArgument argumentValue, UpsertOptions options)
 		{
 			return Upsert(argumentValue, options);
 		}
