@@ -233,7 +233,7 @@ namespace Tortuga.Chain.MySql
 		/// <summary>
 		/// Gets a table's row count.
 		/// </summary>
-		public ILink<long> GetTableApproximateCount<TObject>() => GetTableApproximateCount(GetTableOrViewFromClass<TObject>(OperationType.Select).Name);
+		public ILink<long> GetTableApproximateCount<TObject>() => GetTableApproximateCount(DatabaseMetadata.GetTableOrViewFromClass<TObject>(OperationType.Select).Name);
 
 
 	}

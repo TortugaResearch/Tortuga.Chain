@@ -41,6 +41,7 @@ namespace Tortuga.Chain.Access
 
 #endif
 	{
+		/************************ ISupportsDelete ************************/
 		/// <summary>
 		/// Creates a command to perform a delete operation.
 		/// </summary>
@@ -83,6 +84,9 @@ namespace Tortuga.Chain.Access
 			return OnUpdateObject<TArgument>(table.Name, argumentValue, effectiveOptions);
 		}
 
+		/************************ ISupportsDeleteWithFilter ************************/
+
+
 		/// <summary>
 		/// Delete multiple records using a where expression.
 		/// </summary>
@@ -104,9 +108,12 @@ namespace Tortuga.Chain.Access
 		public MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> DeleteWithFilter<TObject>(string whereClause)
 			where TObject : class
 		{
-			var tableName = GetTableOrViewFromClass<TObject>(OperationType.All).Name;
+			var tableName = DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name;
 			return DeleteWithFilter(tableName, whereClause);
 		}
+
+		/************************ ISupportsUpdate ************************/
+
 
 		/// <summary>
 		/// Update an object in the specified table.
@@ -119,6 +126,9 @@ namespace Tortuga.Chain.Access
 		{
 			return Update(DatabaseMetadata.GetTableOrViewFromClass<TArgument>().Name, argumentValue, options);
 		}
+
+		/************************ ISupportsUpdateByKey ************************/
+
 
 		/// <summary>
 		/// Update a record by its primary key.
@@ -135,6 +145,9 @@ namespace Tortuga.Chain.Access
 		{
 			return UpdateByKeyList(tableName, newValues, new List<TKey> { key }, options);
 		}
+
+		/************************ ISupportsFrom ************************/
+
 
 		/// <summary>
 		/// Creates an operation to directly query a table or view
@@ -189,7 +202,7 @@ namespace Tortuga.Chain.Access
 		[SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
 		public TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption, TObject> From<TObject>() where TObject : class
 		{
-			return OnFromTableOrView<TObject>(GetTableOrViewFromClass<TObject>(OperationType.Select).Name, null, null);
+			return OnFromTableOrView<TObject>(DatabaseMetadata.GetTableOrViewFromClass<TObject>(OperationType.Select).Name, null, null);
 		}
 
 		/// <summary>
@@ -201,7 +214,7 @@ namespace Tortuga.Chain.Access
 		[SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
 		public TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption, TObject> From<TObject>(string whereClause) where TObject : class
 		{
-			return OnFromTableOrView<TObject>(GetTableOrViewFromClass<TObject>(OperationType.Select).Name, whereClause, null);
+			return OnFromTableOrView<TObject>(DatabaseMetadata.GetTableOrViewFromClass<TObject>(OperationType.Select).Name, whereClause, null);
 		}
 
 		/// <summary>
@@ -214,7 +227,7 @@ namespace Tortuga.Chain.Access
 		[SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
 		public TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption, TObject> From<TObject>(string whereClause, object argumentValue) where TObject : class
 		{
-			return OnFromTableOrView<TObject>(GetTableOrViewFromClass<TObject>(OperationType.Select).Name, whereClause, argumentValue);
+			return OnFromTableOrView<TObject>(DatabaseMetadata.GetTableOrViewFromClass<TObject>(OperationType.Select).Name, whereClause, argumentValue);
 		}
 
 		/// <summary>
@@ -227,8 +240,11 @@ namespace Tortuga.Chain.Access
 		[SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
 		public TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption, TObject> From<TObject>(object filterValue, FilterOptions filterOptions = FilterOptions.None) where TObject : class
 		{
-			return OnFromTableOrView<TObject>(GetTableOrViewFromClass<TObject>(OperationType.Select).Name, filterValue, filterOptions);
+			return OnFromTableOrView<TObject>(DatabaseMetadata.GetTableOrViewFromClass<TObject>(OperationType.Select).Name, filterValue, filterOptions);
 		}
+
+		/************************ ISupportsDeleteWithFilter ************************/
+
 
 		/// <summary>
 		/// Delete multiple records using a filter object.
@@ -253,7 +269,7 @@ namespace Tortuga.Chain.Access
 		public MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> DeleteWithFilter<TObject>(object filterValue, FilterOptions filterOptions = FilterOptions.None)
 			where TObject : class
 		{
-			var tableName = GetTableOrViewFromClass<TObject>(OperationType.All).Name;
+			var tableName = DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name;
 			return DeleteWithFilter(tableName, filterValue, filterOptions);
 		}
 
@@ -280,9 +296,12 @@ namespace Tortuga.Chain.Access
 		public MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> DeleteWithFilter<TObject>(string whereClause, object argumentValue)
 			where TObject : class
 		{
-			var tableName = GetTableOrViewFromClass<TObject>(OperationType.All).Name;
+			var tableName = DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name;
 			return DeleteWithFilter(tableName, whereClause, argumentValue);
 		}
+
+		/************************ ISupportsUpdateSet ************************/
+
 
 		/// <summary>
 		/// Update multiple records using an update expression.
@@ -309,6 +328,9 @@ namespace Tortuga.Chain.Access
 			return OnUpdateMany(tableName, newValues, options);
 		}
 
+		/************************ ISupportsGetByKey ************************/
+
+
 		/// <summary>
 		/// Gets a record by its primary key.
 		/// </summary>
@@ -319,7 +341,7 @@ namespace Tortuga.Chain.Access
 		public SingleRowDbCommandBuilder<AbstractCommand, AbstractParameter, TObject> GetByKey<TObject>(Guid key)
 			where TObject : class
 		{
-			return GetByKey<TObject, Guid>(GetTableOrViewFromClass<TObject>(OperationType.Select).Name, key);
+			return GetByKey<TObject, Guid>(DatabaseMetadata.GetTableOrViewFromClass<TObject>(OperationType.Select).Name, key);
 		}
 
 		/// <summary>
@@ -332,7 +354,7 @@ namespace Tortuga.Chain.Access
 		public SingleRowDbCommandBuilder<AbstractCommand, AbstractParameter, TObject> GetByKey<TObject>(long key)
 			where TObject : class
 		{
-			return GetByKey<TObject, long>(GetTableOrViewFromClass<TObject>(OperationType.Select).Name, key);
+			return GetByKey<TObject, long>(DatabaseMetadata.GetTableOrViewFromClass<TObject>(OperationType.Select).Name, key);
 		}
 
 		/// <summary>
@@ -345,7 +367,7 @@ namespace Tortuga.Chain.Access
 		public SingleRowDbCommandBuilder<AbstractCommand, AbstractParameter, TObject> GetByKey<TObject>(int key)
 			where TObject : class
 		{
-			return GetByKey<TObject, int>(GetTableOrViewFromClass<TObject>(OperationType.Select).Name, key);
+			return GetByKey<TObject, int>(DatabaseMetadata.GetTableOrViewFromClass<TObject>(OperationType.Select).Name, key);
 		}
 
 		/// <summary>
@@ -357,7 +379,7 @@ namespace Tortuga.Chain.Access
 		public SingleRowDbCommandBuilder<AbstractCommand, AbstractParameter, TObject> GetByKey<TObject>(string key)
 			where TObject : class
 		{
-			return GetByKey<TObject, string>(GetTableOrViewFromClass<TObject>(OperationType.Select).Name, key);
+			return GetByKey<TObject, string>(DatabaseMetadata.GetTableOrViewFromClass<TObject>(OperationType.Select).Name, key);
 		}
 
 		/// <summary>
@@ -369,6 +391,8 @@ namespace Tortuga.Chain.Access
 		{
 			return GetByKey<string>(tableName, key);
 		}
+
+		/************************ ISupportsInsert ************************/
 
 		/// <summary>
 		/// Inserts an object into the specified table.
@@ -382,6 +406,8 @@ namespace Tortuga.Chain.Access
 			return Insert(DatabaseMetadata.GetTableOrViewFromClass<TArgument>().Name, argumentValue, options);
 		}
 
+		/************************ ISupportsUpdate ************************/
+
 		/// <summary>
 		/// Creates a operation used to perform an update operation.
 		/// </summary>
@@ -394,6 +420,9 @@ namespace Tortuga.Chain.Access
 		{
 			return OnUpdateObject<TArgument>(tableName, argumentValue, options);
 		}
+
+		/************************ ISupportsUpdateByKey ************************/
+
 
 		/// <summary>
 		/// Update a record by its primary key.
@@ -409,6 +438,9 @@ namespace Tortuga.Chain.Access
 			return UpdateByKeyList(tableName, newValues, new List<string> { key }, options);
 		}
 
+		/************************ ISupportsInsert ************************/
+
+
 		/// <summary>
 		/// Creates an operation used to perform an insert operation.
 		/// </summary>
@@ -422,6 +454,9 @@ namespace Tortuga.Chain.Access
 			return OnInsertObject<TArgument>(tableName, argumentValue, options);
 		}
 
+		/************************ ISupportsUpdateSet ************************/
+
+
 		/// <summary>
 		/// Update multiple records using an update expression.
 		/// </summary>
@@ -433,6 +468,8 @@ namespace Tortuga.Chain.Access
 		{
 			return OnUpdateMany(tableName, updateExpression, null, options);
 		}
+
+		/************************ ISupportsGetByKey ************************/
 
 		/// <summary>
 		/// Gets a record by its primary key.
@@ -450,7 +487,7 @@ namespace Tortuga.Chain.Access
 
 			if (primaryKeys.Count == 0) //we're looking at a view. Try looking at the underlying table.
 			{
-				var alternateTableName = GetTableOrViewFromClass<TObject>(OperationType.All).Name;
+				var alternateTableName = DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name;
 				primaryKeys = DatabaseMetadata.GetTableOrView(alternateTableName).PrimaryKeyColumns;
 			}
 
@@ -477,6 +514,8 @@ namespace Tortuga.Chain.Access
 
 			return OnGetByKey<object, TKey>(tableName, primaryKeys.Single(), key);
 		}
+
+		/************************ ISupportsGetByKeyList ************************/
 
 		/// <summary>
 		/// Gets a set of records by their primary key.
@@ -548,12 +587,12 @@ namespace Tortuga.Chain.Access
 		public MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter, TObject> GetByKeyList<TObject, TKey>(IEnumerable<TKey> keys)
 			where TObject : class
 		{
-			var tableName = GetTableOrViewFromClass<TObject>(OperationType.Select).Name;
+			var tableName = DatabaseMetadata.GetTableOrViewFromClass<TObject>(OperationType.Select).Name;
 
 			var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).PrimaryKeyColumns;
 			if (primaryKeys.Count == 0) //we're looking at a view. Try looking at the underlying table.
 			{
-				var alternateTableName = GetTableOrViewFromClass<TObject>(OperationType.All).Name;
+				var alternateTableName = DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name;
 				primaryKeys = DatabaseMetadata.GetTableOrView(alternateTableName).PrimaryKeyColumns;
 			}
 
@@ -607,11 +646,7 @@ namespace Tortuga.Chain.Access
 			return GetByKeyList<TObject, string>(keys);
 		}
 
-
-		TableOrViewMetadata<AbstractObjectName, AbstractDbType> GetTableOrViewFromClass<TObject>(OperationType operationType)
-		{
-			return (TableOrViewMetadata<AbstractObjectName, AbstractDbType>)DatabaseMetadata.GetTableOrViewFromClass<TObject>(operationType);
-		}
+		/************************ ISupportsFrom ************************/
 
 		TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption> OnFromTableOrView(AbstractObjectName tableOrViewName, object filterValue, FilterOptions filterOptions)
 			=> OnFromTableOrView<object>(tableOrViewName, filterValue, filterOptions);
