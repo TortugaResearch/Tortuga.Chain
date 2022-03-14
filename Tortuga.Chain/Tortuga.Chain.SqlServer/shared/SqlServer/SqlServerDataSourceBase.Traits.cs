@@ -1,3 +1,4 @@
+using Tortuga.Anchor;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Metadata;
 using Tortuga.Chain.SqlServer.CommandBuilders;
@@ -11,6 +12,7 @@ namespace Tortuga.Chain.SqlServer;
 [UseTrait(typeof(SupportsSqlQueriesTrait<AbstractCommand, AbstractParameter>))]
 [UseTrait(typeof(SupportsInsertBatchTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType,
 	MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter>>))]
+[UseTrait(typeof(SupportsDeleteByKeyList<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
 partial class SqlServerDataSourceBase
 {
 	DatabaseMetadataCache<AbstractObjectName, AbstractDbType> ICommandHelper<AbstractObjectName, AbstractDbType>.DatabaseMetadata => DatabaseMetadata;
@@ -42,4 +44,43 @@ partial class SqlServerDataSourceBase
 	{
 		return new SqlServerInsertBatch<TObject>(this, tableName, objects, options); ;
 	}
+
+	MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> IDeleteByKeyHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnDeleteByKeyList<TKey>(AbstractObjectName tableName, IEnumerable<TKey> keys, DeleteOptions options)
+	{
+		var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).PrimaryKeyColumns;
+		if (primaryKeys.Count != 1)
+			throw new MappingException($"{nameof(DeleteByKeyList)} operation isn't allowed on {tableName} because it doesn't have a single primary key.");
+
+		var keyList = keys.AsList();
+		var columnMetadata = primaryKeys.Single();
+		string where;
+		if (keys.Count() > 1)
+			where = columnMetadata.SqlName + " IN (" + string.Join(", ", keyList.Select((s, i) => "@Param" + i)) + ")";
+		else
+			where = columnMetadata.SqlName + " = @Param0";
+
+		var parameters = new List<SqlParameter>();
+		for (var i = 0; i < keyList.Count; i++)
+		{
+			var param = new SqlParameter("@Param" + i, keyList[i]);
+			if (columnMetadata.DbType.HasValue)
+				param.SqlDbType = columnMetadata.DbType.Value;
+			parameters.Add(param);
+		}
+
+		var table = DatabaseMetadata.GetTableOrView(tableName);
+		if (!AuditRules.UseSoftDelete(table))
+			return new SqlServerDeleteMany(this, tableName, where, parameters, parameters.Count, options);
+
+		UpdateOptions effectiveOptions = UpdateOptions.SoftDelete;
+
+		if (!options.HasFlag(DeleteOptions.CheckRowsAffected))
+			effectiveOptions |= UpdateOptions.IgnoreRowsAffected;
+
+		if (options.HasFlag(DeleteOptions.UseKeyAttribute))
+			effectiveOptions |= UpdateOptions.UseKeyAttribute;
+
+		return new SqlServerUpdateMany(this, tableName, null, where, parameters, parameters.Count, effectiveOptions);
+	}
+
 }

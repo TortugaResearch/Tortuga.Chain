@@ -4,4 +4,5 @@ Added work item for Traits.SupportsDeleteAllTrait<Tortuga.Chain.SQLite.SQLiteObj
 Added work item for Traits.SupportsTruncateTrait<Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType> to Tortuga.Chain.SQLite.SQLiteDataSourceBase
 Added work item for Traits.SupportsSqlQueriesTrait<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter> to Tortuga.Chain.SQLite.SQLiteDataSourceBase
 Added work item for Traits.SupportsInsertBatchTrait<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter, Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType, Tortuga.Chain.CommandBuilders.DbCommandBuilder<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter>> to Tortuga.Chain.SQLite.SQLiteDataSourceBase
+Added work item for Traits.SupportsDeleteByKeyList<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter, Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType> to Tortuga.Chain.SQLite.SQLiteDataSourceBase
 */

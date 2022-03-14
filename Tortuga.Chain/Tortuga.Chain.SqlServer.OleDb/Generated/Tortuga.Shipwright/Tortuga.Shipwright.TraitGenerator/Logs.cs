@@ -3,4 +3,5 @@ Added work item for Traits.RootDataSourceTrait<Tortuga.Chain.OleDbSqlServerDataS
 Added work item for Traits.SupportsDeleteAllTrait<Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType> to Tortuga.Chain.SqlServer.OleDbSqlServerDataSourceBase
 Added work item for Traits.SupportsTruncateTrait<Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType> to Tortuga.Chain.SqlServer.OleDbSqlServerDataSourceBase
 Added work item for Traits.SupportsSqlQueriesTrait<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter> to Tortuga.Chain.SqlServer.OleDbSqlServerDataSourceBase
+Added work item for Traits.SupportsDeleteByKeyList<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType> to Tortuga.Chain.SqlServer.OleDbSqlServerDataSourceBase
 */

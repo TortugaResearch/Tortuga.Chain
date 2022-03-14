@@ -10,13 +10,13 @@ namespace Tortuga.Chain.SqlServer
 
 namespace Tortuga.Chain.SqlServer
 {
-    partial class OleDbSqlServerDataSourceBase : ICrudDataSource
+	partial class OleDbSqlServerDataSourceBase : ICrudDataSource
 
 #elif SQLITE
 
 namespace Tortuga.Chain.SQLite
 {
-    partial class SQLiteDataSourceBase : ICrudDataSource
+	partial class SQLiteDataSourceBase : ICrudDataSource
 
 #elif MYSQL
 
@@ -28,7 +28,7 @@ namespace Tortuga.Chain.MySql
 
 namespace Tortuga.Chain.PostgreSql
 {
-    partial class PostgreSqlDataSourceBase : ICrudDataSource
+	partial class PostgreSqlDataSourceBase : ICrudDataSource
 
 #elif ACCESS
 
@@ -46,21 +46,6 @@ namespace Tortuga.Chain.Access
 		IObjectDbCommandBuilder<TArgument> ISupportsDelete.Delete<TArgument>(TArgument argumentValue, DeleteOptions options)
 		{
 			return Delete(argumentValue, options);
-		}
-
-		ISingleRowDbCommandBuilder ISupportsDeleteByKey.DeleteByKey<TKey>(string tableName, TKey key, DeleteOptions options)
-		{
-			return DeleteByKey(tableName, key, options);
-		}
-
-		ISingleRowDbCommandBuilder ISupportsDeleteByKey.DeleteByKey(string tableName, string key, DeleteOptions options)
-		{
-			return DeleteByKey(tableName, key, options);
-		}
-
-		IMultipleRowDbCommandBuilder ISupportsDeleteByKeyList.DeleteByKeyList<TKey>(string tableName, IEnumerable<TKey> keys, DeleteOptions options)
-		{
-			return DeleteByKeyList(tableName, keys, options);
 		}
 
 		IMultipleRowDbCommandBuilder ISupportsDeleteWithFilter.DeleteWithFilter(string tableName, string whereClause)

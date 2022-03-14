@@ -2,7 +2,7 @@
 
 namespace Tortuga.Chain.SQLite
 {
-	partial class SQLiteDataSourceBase: Tortuga.Chain.DataSources.ISupportsDeleteAll, Tortuga.Chain.DataSources.ISupportsTruncate, Tortuga.Chain.DataSources.ISupportsSqlQueries, Tortuga.Chain.DataSources.ISupportsInsertBatch, Traits.ICommandHelper<Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType>, Traits.IInsertBatchHelper<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter, Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType>
+	partial class SQLiteDataSourceBase: Tortuga.Chain.DataSources.ISupportsDeleteAll, Tortuga.Chain.DataSources.ISupportsTruncate, Tortuga.Chain.DataSources.ISupportsSqlQueries, Tortuga.Chain.DataSources.ISupportsInsertBatch, Tortuga.Chain.DataSources.ISupportsDeleteByKeyList, Tortuga.Chain.DataSources.ISupportsDeleteByKey, Traits.ICommandHelper<Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType>, Traits.IInsertBatchHelper<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter, Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType>, Traits.IDeleteByKeyHelper<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter, Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType>
 	{
 
 		private bool __TraitsRegistered;
@@ -35,7 +35,24 @@ namespace Tortuga.Chain.SQLite
 				return ___Trait2;
 			}
 		}
-		private Traits.SupportsInsertBatchTrait<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter, Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType, Tortuga.Chain.CommandBuilders.DbCommandBuilder<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter>> __Trait3 = new();
+		private Traits.SupportsInsertBatchTrait<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter, Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType, Tortuga.Chain.CommandBuilders.DbCommandBuilder<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter>> ___Trait3 = new();
+		private Traits.SupportsInsertBatchTrait<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter, Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType, Tortuga.Chain.CommandBuilders.DbCommandBuilder<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter>> __Trait3
+		{
+			get
+			{
+				if (!__TraitsRegistered) __RegisterTraits();
+				return ___Trait3;
+			}
+		}
+		private Traits.SupportsDeleteByKeyList<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter, Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType> ___Trait4 = new();
+		private Traits.SupportsDeleteByKeyList<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter, Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType> __Trait4
+		{
+			get
+			{
+				if (!__TraitsRegistered) __RegisterTraits();
+				return ___Trait4;
+			}
+		}
 
 		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsDeleteAll
 		Tortuga.Chain.ILink<int?> Tortuga.Chain.DataSources.ISupportsDeleteAll.DeleteAll(System.String tableName)
@@ -46,6 +63,23 @@ namespace Tortuga.Chain.SQLite
 		Tortuga.Chain.ILink<int?> Tortuga.Chain.DataSources.ISupportsDeleteAll.DeleteAll<TObject>()
 		{
 			return ((Tortuga.Chain.DataSources.ISupportsDeleteAll)__Trait0).DeleteAll<TObject>();
+		}
+
+		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsDeleteByKey
+		Tortuga.Chain.CommandBuilders.ISingleRowDbCommandBuilder Tortuga.Chain.DataSources.ISupportsDeleteByKey.DeleteByKey<TKey>(System.String tableName, TKey key, Tortuga.Chain.DeleteOptions options)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsDeleteByKey)__Trait4).DeleteByKey<TKey>(tableName, key, options);
+		}
+
+		Tortuga.Chain.CommandBuilders.ISingleRowDbCommandBuilder Tortuga.Chain.DataSources.ISupportsDeleteByKey.DeleteByKey(System.String tableName, System.String key, Tortuga.Chain.DeleteOptions options)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsDeleteByKey)__Trait4).DeleteByKey(tableName, key, options);
+		}
+
+		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsDeleteByKeyList
+		Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder Tortuga.Chain.DataSources.ISupportsDeleteByKeyList.DeleteByKeyList<TKey>(System.String tableName, System.Collections.Generic.IEnumerable<TKey> keys, Tortuga.Chain.DeleteOptions options)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsDeleteByKeyList)__Trait4).DeleteByKeyList<TKey>(tableName, keys, options);
 		}
 
 		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsInsertBatch
@@ -97,6 +131,89 @@ namespace Tortuga.Chain.SQLite
 		public Tortuga.Chain.ILink<int?> DeleteAll<TObject>()where TObject : class
 		{
 			return __Trait0.DeleteAll<TObject>();
+		}
+
+		// Exposing trait Traits.SupportsDeleteByKeyList<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter, Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType>
+
+		/// <summary>
+		/// Delete a record by its primary key.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="tableName">Name of the table.</param>
+		/// <param name="key">The key.</param>
+		/// <param name="options">The options.</param>
+		/// <returns>MultipleRowDbCommandBuilder&lt;TCommand, TParameter&gt;.</returns>
+		public Tortuga.Chain.CommandBuilders.SingleRowDbCommandBuilder<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter> DeleteByKey<T>(Tortuga.Chain.SQLite.SQLiteObjectName tableName, T key, Tortuga.Chain.DeleteOptions options = 0)where T : struct
+		{
+			return __Trait4.DeleteByKey<T>(tableName, key, options);
+		}
+
+		/// <summary>
+		/// Delete a record by its primary key.
+		/// </summary>
+		/// <param name="tableName">Name of the table.</param>
+		/// <param name="key">The key.</param>
+		/// <param name="options">The options.</param>
+		public Tortuga.Chain.CommandBuilders.SingleRowDbCommandBuilder<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter> DeleteByKey(Tortuga.Chain.SQLite.SQLiteObjectName tableName, System.String key, Tortuga.Chain.DeleteOptions options = 0)
+		{
+			return __Trait4.DeleteByKey(tableName, key, options);
+		}
+
+		/// <summary>
+		/// Delete a record by its primary key.
+		/// </summary>
+		/// <typeparam name="TObject">Used to determine the table name</typeparam>
+		/// <param name="key">The key.</param>
+		/// <param name="options">The options.</param>
+		public Tortuga.Chain.CommandBuilders.SingleRowDbCommandBuilder<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter> DeleteByKey<TObject>(System.Guid key, Tortuga.Chain.DeleteOptions options = 0)where TObject : class
+		{
+			return __Trait4.DeleteByKey<TObject>(key, options);
+		}
+
+		/// <summary>
+		/// Delete a record by its primary key.
+		/// </summary>
+		/// <typeparam name="TObject">Used to determine the table name</typeparam>
+		/// <param name="key">The key.</param>
+		/// <param name="options">The options.</param>
+		public Tortuga.Chain.CommandBuilders.SingleRowDbCommandBuilder<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter> DeleteByKey<TObject>(System.Int64 key, Tortuga.Chain.DeleteOptions options = 0)where TObject : class
+		{
+			return __Trait4.DeleteByKey<TObject>(key, options);
+		}
+
+		/// <summary>
+		/// Delete a record by its primary key.
+		/// </summary>
+		/// <typeparam name="TObject">Used to determine the table name</typeparam>
+		/// <param name="key">The key.</param>
+		/// <param name="options">The options.</param>
+		public Tortuga.Chain.CommandBuilders.SingleRowDbCommandBuilder<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter> DeleteByKey<TObject>(System.Int32 key, Tortuga.Chain.DeleteOptions options = 0)where TObject : class
+		{
+			return __Trait4.DeleteByKey<TObject>(key, options);
+		}
+
+		/// <summary>
+		/// Delete a record by its primary key.
+		/// </summary>
+		/// <typeparam name="TObject">Used to determine the table name</typeparam>
+		/// <param name="key">The key.</param>
+		/// <param name="options">The options.</param>
+		public Tortuga.Chain.CommandBuilders.SingleRowDbCommandBuilder<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter> DeleteByKey<TObject>(System.String key, Tortuga.Chain.DeleteOptions options = 0)where TObject : class
+		{
+			return __Trait4.DeleteByKey<TObject>(key, options);
+		}
+
+		/// <summary>
+		/// Delete multiple rows by key.
+		/// </summary>
+		/// <typeparam name="TKey">The type of the t key.</typeparam>
+		/// <param name="tableName">Name of the table.</param>
+		/// <param name="keys">The keys.</param>
+		/// <param name="options">Delete options.</param>
+		/// <exception cref="T:Tortuga.Chain.MappingException"></exception>
+		public Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter> DeleteByKeyList<TKey>(Tortuga.Chain.SQLite.SQLiteObjectName tableName, System.Collections.Generic.IEnumerable<TKey> keys, Tortuga.Chain.DeleteOptions options = 0)
+		{
+			return __Trait4.DeleteByKeyList<TKey>(tableName, keys, options);
 		}
 
 		// Exposing trait Traits.SupportsInsertBatchTrait<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter, Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType, Tortuga.Chain.CommandBuilders.DbCommandBuilder<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter>>
@@ -209,6 +326,7 @@ namespace Tortuga.Chain.SQLite
 			__Trait1.DataSource = this;
 			__Trait2.OnSql = OnSql;
 			__Trait3.DataSource = this;
+			__Trait4.DataSource = this;
 		}
 	}
 }

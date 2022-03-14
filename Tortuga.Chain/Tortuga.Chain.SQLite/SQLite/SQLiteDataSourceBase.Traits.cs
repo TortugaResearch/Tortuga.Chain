@@ -1,4 +1,6 @@
-﻿using Tortuga.Chain.CommandBuilders;
+﻿using System.Data.SQLite;
+using Tortuga.Anchor;
+using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Metadata;
 using Tortuga.Chain.SQLite.CommandBuilders;
 using Tortuga.Shipwright;
@@ -11,6 +13,7 @@ namespace Tortuga.Chain.SQLite
 	[UseTrait(typeof(SupportsSqlQueriesTrait<AbstractCommand, AbstractParameter>))]
 	[UseTrait(typeof(SupportsInsertBatchTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType,
 	DbCommandBuilder<AbstractCommand, AbstractParameter>>))]
+	[UseTrait(typeof(SupportsDeleteByKeyList<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
 	partial class SQLiteDataSourceBase
 	{
 		DatabaseMetadataCache<AbstractObjectName, AbstractDbType> ICommandHelper<AbstractObjectName, AbstractDbType>.DatabaseMetadata => DatabaseMetadata;
@@ -41,6 +44,44 @@ namespace Tortuga.Chain.SQLite
 		DbCommandBuilder<AbstractCommand, AbstractParameter> IInsertBatchHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnInsertBatch<TObject>(AbstractObjectName tableName, IEnumerable<TObject> objects, InsertOptions options)
 		{
 			return new SQLiteInsertBatch<TObject>(this, tableName, objects, options); ;
+		}
+
+		MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> IDeleteByKeyHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnDeleteByKeyList<TKey>(AbstractObjectName tableName, IEnumerable<TKey> keys, DeleteOptions options)
+		{
+			var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).PrimaryKeyColumns;
+			if (primaryKeys.Count != 1)
+				throw new MappingException($"{nameof(DeleteByKeyList)} operation isn't allowed on {tableName} because it doesn't have a single primary key.");
+
+			var keyList = keys.AsList();
+			var columnMetadata = primaryKeys.Single();
+			string where;
+			if (keys.Count() > 1)
+				where = columnMetadata.SqlName + " IN (" + string.Join(", ", keyList.Select((s, i) => "@Param" + i)) + ")";
+			else
+				where = columnMetadata.SqlName + " = @Param0";
+
+			var parameters = new List<SQLiteParameter>();
+			for (var i = 0; i < keyList.Count; i++)
+			{
+				var param = new SQLiteParameter("@Param" + i, keyList[i]);
+				if (columnMetadata.DbType.HasValue)
+					param.DbType = columnMetadata.DbType.Value;
+				parameters.Add(param);
+			}
+
+			var table = DatabaseMetadata.GetTableOrView(tableName);
+			if (!AuditRules.UseSoftDelete(table))
+				return new SQLiteDeleteMany(this, tableName, where, parameters, parameters.Count, options);
+
+			UpdateOptions effectiveOptions = UpdateOptions.SoftDelete;
+
+			if (!options.HasFlag(DeleteOptions.CheckRowsAffected))
+				effectiveOptions |= UpdateOptions.IgnoreRowsAffected;
+
+			if (options.HasFlag(DeleteOptions.UseKeyAttribute))
+				effectiveOptions |= UpdateOptions.UseKeyAttribute;
+
+			return new SQLiteUpdateMany(this, tableName, null, where, parameters, parameters.Count, effectiveOptions);
 		}
 	}
 }

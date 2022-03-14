@@ -28,10 +28,14 @@ public class TraitGenerator : ISourceGenerator
 
 				var partialProperties = workItem.TraitClasses.SelectMany(m => m.GetMembers()).OfType<IPropertySymbol>().Where(m => m.HasAttribute<PartialAttribute>()).ToList();
 
+
 				var ownerProperties = workItem.TraitClasses.SelectMany(m => m.GetMembers()).OfType<IPropertySymbol>().Where(m => m.HasAttribute<OwnerAttribute>()).ToList();
 
 				bool useRegisterTraits = partialProperties.Any() || ownerProperties.Any();
 
+				//receiver.Log.Add($"Working on {workItem.HostingClass.Name}");
+				//receiver.Log.Add($"Found {partialProperties.Count} partial properties.");
+				//receiver.Log.Add($"Found {ownerProperties.Count} owner properties.");
 
 				//Find the list of interfaces
 				var interfacesNamesA = workItem.TraitClasses.SelectMany(wi => wi.AllInterfaces);
@@ -63,7 +67,9 @@ public class TraitGenerator : ISourceGenerator
 						code.AppendLine("// These fields and/or properties hold the traits. They should not be referenced directly.");
 						foreach (var item in traitFieldNames)
 						{
-							if (item.Key.GetMembers().OfType<IPropertySymbol>().Where(m => m.HasAttribute<PartialAttribute>()).Any())
+							//if (item.Key.GetMembers().OfType<IPropertySymbol>().Where(m => m.HasAttribute<PartialAttribute>()).Any())
+
+							if (useRegisterTraits)
 							{
 								code.AppendLine($"private {item.Key.FullName()} _{item.Value} = new();");
 								using (code.BeginScope($"private {item.Key.FullName()} {item.Value}"))

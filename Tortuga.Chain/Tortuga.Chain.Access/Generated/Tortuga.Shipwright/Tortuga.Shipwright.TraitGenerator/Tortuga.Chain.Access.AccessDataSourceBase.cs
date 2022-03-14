@@ -2,7 +2,7 @@
 
 namespace Tortuga.Chain.Access
 {
-	partial class AccessDataSourceBase: Tortuga.Chain.DataSources.ISupportsDeleteAll, Tortuga.Chain.DataSources.ISupportsSqlQueries, Traits.ICommandHelper<Tortuga.Chain.Access.AccessObjectName, System.Data.OleDb.OleDbType>
+	partial class AccessDataSourceBase: Tortuga.Chain.DataSources.ISupportsDeleteAll, Tortuga.Chain.DataSources.ISupportsDeleteByKeyList, Tortuga.Chain.DataSources.ISupportsDeleteByKey, Tortuga.Chain.DataSources.ISupportsSqlQueries, Traits.ICommandHelper<Tortuga.Chain.Access.AccessObjectName, System.Data.OleDb.OleDbType>, Traits.IDeleteByKeyHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.Access.AccessObjectName, System.Data.OleDb.OleDbType>
 	{
 
 		private bool __TraitsRegistered;
@@ -17,13 +17,22 @@ namespace Tortuga.Chain.Access
 				return ___Trait0;
 			}
 		}
-		private Traits.SupportsSqlQueriesTrait<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter> ___Trait1 = new();
-		private Traits.SupportsSqlQueriesTrait<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter> __Trait1
+		private Traits.SupportsDeleteByKeyList<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.Access.AccessObjectName, System.Data.OleDb.OleDbType> ___Trait1 = new();
+		private Traits.SupportsDeleteByKeyList<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.Access.AccessObjectName, System.Data.OleDb.OleDbType> __Trait1
 		{
 			get
 			{
 				if (!__TraitsRegistered) __RegisterTraits();
 				return ___Trait1;
+			}
+		}
+		private Traits.SupportsSqlQueriesTrait<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter> ___Trait2 = new();
+		private Traits.SupportsSqlQueriesTrait<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter> __Trait2
+		{
+			get
+			{
+				if (!__TraitsRegistered) __RegisterTraits();
+				return ___Trait2;
 			}
 		}
 
@@ -38,10 +47,27 @@ namespace Tortuga.Chain.Access
 			return ((Tortuga.Chain.DataSources.ISupportsDeleteAll)__Trait0).DeleteAll<TObject>();
 		}
 
+		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsDeleteByKey
+		Tortuga.Chain.CommandBuilders.ISingleRowDbCommandBuilder Tortuga.Chain.DataSources.ISupportsDeleteByKey.DeleteByKey<TKey>(System.String tableName, TKey key, Tortuga.Chain.DeleteOptions options)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsDeleteByKey)__Trait1).DeleteByKey<TKey>(tableName, key, options);
+		}
+
+		Tortuga.Chain.CommandBuilders.ISingleRowDbCommandBuilder Tortuga.Chain.DataSources.ISupportsDeleteByKey.DeleteByKey(System.String tableName, System.String key, Tortuga.Chain.DeleteOptions options)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsDeleteByKey)__Trait1).DeleteByKey(tableName, key, options);
+		}
+
+		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsDeleteByKeyList
+		Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder Tortuga.Chain.DataSources.ISupportsDeleteByKeyList.DeleteByKeyList<TKey>(System.String tableName, System.Collections.Generic.IEnumerable<TKey> keys, Tortuga.Chain.DeleteOptions options)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsDeleteByKeyList)__Trait1).DeleteByKeyList<TKey>(tableName, keys, options);
+		}
+
 		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsSqlQueries
 		Tortuga.Chain.CommandBuilders.IMultipleTableDbCommandBuilder Tortuga.Chain.DataSources.ISupportsSqlQueries.Sql(System.String sqlStatement, System.Object argumentValue)
 		{
-			return ((Tortuga.Chain.DataSources.ISupportsSqlQueries)__Trait1).Sql(sqlStatement, argumentValue);
+			return ((Tortuga.Chain.DataSources.ISupportsSqlQueries)__Trait2).Sql(sqlStatement, argumentValue);
 		}
 
 		// Exposing trait Traits.SupportsDeleteAllTrait<Tortuga.Chain.Access.AccessObjectName, System.Data.OleDb.OleDbType>
@@ -62,6 +88,89 @@ namespace Tortuga.Chain.Access
 			return __Trait0.DeleteAll<TObject>();
 		}
 
+		// Exposing trait Traits.SupportsDeleteByKeyList<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.Access.AccessObjectName, System.Data.OleDb.OleDbType>
+
+		/// <summary>
+		/// Delete a record by its primary key.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="tableName">Name of the table.</param>
+		/// <param name="key">The key.</param>
+		/// <param name="options">The options.</param>
+		/// <returns>MultipleRowDbCommandBuilder&lt;TCommand, TParameter&gt;.</returns>
+		public Tortuga.Chain.CommandBuilders.SingleRowDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter> DeleteByKey<T>(Tortuga.Chain.Access.AccessObjectName tableName, T key, Tortuga.Chain.DeleteOptions options = 0)where T : struct
+		{
+			return __Trait1.DeleteByKey<T>(tableName, key, options);
+		}
+
+		/// <summary>
+		/// Delete a record by its primary key.
+		/// </summary>
+		/// <param name="tableName">Name of the table.</param>
+		/// <param name="key">The key.</param>
+		/// <param name="options">The options.</param>
+		public Tortuga.Chain.CommandBuilders.SingleRowDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter> DeleteByKey(Tortuga.Chain.Access.AccessObjectName tableName, System.String key, Tortuga.Chain.DeleteOptions options = 0)
+		{
+			return __Trait1.DeleteByKey(tableName, key, options);
+		}
+
+		/// <summary>
+		/// Delete a record by its primary key.
+		/// </summary>
+		/// <typeparam name="TObject">Used to determine the table name</typeparam>
+		/// <param name="key">The key.</param>
+		/// <param name="options">The options.</param>
+		public Tortuga.Chain.CommandBuilders.SingleRowDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter> DeleteByKey<TObject>(System.Guid key, Tortuga.Chain.DeleteOptions options = 0)where TObject : class
+		{
+			return __Trait1.DeleteByKey<TObject>(key, options);
+		}
+
+		/// <summary>
+		/// Delete a record by its primary key.
+		/// </summary>
+		/// <typeparam name="TObject">Used to determine the table name</typeparam>
+		/// <param name="key">The key.</param>
+		/// <param name="options">The options.</param>
+		public Tortuga.Chain.CommandBuilders.SingleRowDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter> DeleteByKey<TObject>(System.Int64 key, Tortuga.Chain.DeleteOptions options = 0)where TObject : class
+		{
+			return __Trait1.DeleteByKey<TObject>(key, options);
+		}
+
+		/// <summary>
+		/// Delete a record by its primary key.
+		/// </summary>
+		/// <typeparam name="TObject">Used to determine the table name</typeparam>
+		/// <param name="key">The key.</param>
+		/// <param name="options">The options.</param>
+		public Tortuga.Chain.CommandBuilders.SingleRowDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter> DeleteByKey<TObject>(System.Int32 key, Tortuga.Chain.DeleteOptions options = 0)where TObject : class
+		{
+			return __Trait1.DeleteByKey<TObject>(key, options);
+		}
+
+		/// <summary>
+		/// Delete a record by its primary key.
+		/// </summary>
+		/// <typeparam name="TObject">Used to determine the table name</typeparam>
+		/// <param name="key">The key.</param>
+		/// <param name="options">The options.</param>
+		public Tortuga.Chain.CommandBuilders.SingleRowDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter> DeleteByKey<TObject>(System.String key, Tortuga.Chain.DeleteOptions options = 0)where TObject : class
+		{
+			return __Trait1.DeleteByKey<TObject>(key, options);
+		}
+
+		/// <summary>
+		/// Delete multiple rows by key.
+		/// </summary>
+		/// <typeparam name="TKey">The type of the t key.</typeparam>
+		/// <param name="tableName">Name of the table.</param>
+		/// <param name="keys">The keys.</param>
+		/// <param name="options">Delete options.</param>
+		/// <exception cref="T:Tortuga.Chain.MappingException"></exception>
+		public Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter> DeleteByKeyList<TKey>(Tortuga.Chain.Access.AccessObjectName tableName, System.Collections.Generic.IEnumerable<TKey> keys, Tortuga.Chain.DeleteOptions options = 0)
+		{
+			return __Trait1.DeleteByKeyList<TKey>(tableName, keys, options);
+		}
+
 		// Exposing trait Traits.SupportsSqlQueriesTrait<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter>
 
 		/// <summary>
@@ -71,7 +180,7 @@ namespace Tortuga.Chain.Access
 		/// <returns></returns>
 		public Tortuga.Chain.CommandBuilders.MultipleTableDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter> Sql(System.String sqlStatement)
 		{
-			return __Trait1.Sql(sqlStatement);
+			return __Trait2.Sql(sqlStatement);
 		}
 
 		/// <summary>
@@ -82,7 +191,7 @@ namespace Tortuga.Chain.Access
 		/// <returns>SqlServerSqlCall.</returns>
 		public Tortuga.Chain.CommandBuilders.MultipleTableDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter> Sql(System.String sqlStatement, System.Object argumentValue)
 		{
-			return __Trait1.Sql(sqlStatement, argumentValue);
+			return __Trait2.Sql(sqlStatement, argumentValue);
 		}
 
 		private partial Tortuga.Chain.ILink<int?> OnDeleteAll(Tortuga.Chain.Access.AccessObjectName tableName );
@@ -95,7 +204,8 @@ namespace Tortuga.Chain.Access
 			__TraitsRegistered = true;
 			__Trait0.OnDeleteAll = OnDeleteAll;
 			__Trait0.DataSource = this;
-			__Trait1.OnSql = OnSql;
+			__Trait1.DataSource = this;
+			__Trait2.OnSql = OnSql;
 		}
 	}
 }
