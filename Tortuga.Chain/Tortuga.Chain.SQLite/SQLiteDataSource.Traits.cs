@@ -42,6 +42,18 @@ partial class SQLiteDataSource
 		return new SQLiteTransactionalDataSource(this, forwardEvents, connection, transaction, lockToken);
 	}
 
+	private partial AbstractDataSource OnCloneWithOverrides(ICacheAdapter? cache, IEnumerable<AuditRule>? additionalRules, object? userValue)
+	{
+		var result = WithSettings(null);
+		if (cache != null)
+			result.m_Cache = cache;
+		if (additionalRules != null)
+			result.AuditRules = new AuditRuleCollection(AuditRules, additionalRules);
+		if (userValue != null)
+			result.UserValue = userValue;
+		return result;
+	}
+
 	private partial AbstractConnection OnCreateConnection()
 	{
 		var con = new SQLiteConnection(ConnectionString);
@@ -70,19 +82,5 @@ partial class SQLiteDataSource
 
 	private partial SQLiteOpenDataSource OnCreateOpenDataSource(AbstractConnection connection, AbstractTransaction? transaction)
 		=> new SQLiteOpenDataSource(this, connection, transaction);
-
-	private partial AbstractDataSource OnCloneWithOverrides(ICacheAdapter? cache, IEnumerable<AuditRule>? additionalRules, object? userValue)
-	{
-		var result = WithSettings(null);
-		if (cache != null)
-			result.m_Cache = cache;
-		if (additionalRules != null)
-			result.AuditRules = new AuditRuleCollection(AuditRules, additionalRules);
-		if (userValue != null)
-			result.UserValue = userValue;
-		return result;
-	}
-
-
 }
 

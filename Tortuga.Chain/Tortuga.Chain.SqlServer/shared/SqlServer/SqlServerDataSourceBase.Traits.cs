@@ -19,32 +19,6 @@ partial class SqlServerDataSourceBase
 
 	List<AbstractParameter> ICommandHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.GetParameters(SqlBuilder<AbstractDbType> builder) => builder.GetParameters();
 
-	AbstractObjectName ICommandHelper<AbstractObjectName, AbstractDbType>.ParseObjectName(string objectName) => new(objectName);
-
-	private partial ILink<int?> OnDeleteAll(AbstractObjectName tableName)
-	{
-		//Verify the table name actually exists.
-		var table = DatabaseMetadata.GetTableOrView(tableName);
-		return Sql("DELETE FROM " + table.Name.ToQuotedString() + ";").AsNonQuery();
-	}
-
-	private partial ILink<int?> OnTruncate(AbstractObjectName tableName)
-	{
-		//Verify the table name actually exists.
-		var table = DatabaseMetadata.GetTableOrView(tableName);
-		return Sql("TRUNCATE TABLE " + table.Name.ToQuotedString() + ";").AsNonQuery();
-	}
-
-	private partial MultipleTableDbCommandBuilder<AbstractCommand, AbstractParameter> OnSql(string sqlStatement, object? argumentValue)
-	{
-		return new SqlServerSqlCall(this, sqlStatement, argumentValue);
-	}
-
-	DbCommandBuilder<AbstractCommand, AbstractParameter> IInsertBatchHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnInsertBatch<TObject>(AbstractObjectName tableName, IEnumerable<TObject> objects, InsertOptions options)
-	{
-		return new SqlServerInsertBatch<TObject>(this, tableName, objects, options); ;
-	}
-
 	MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> IDeleteByKeyHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnDeleteByKeyList<TKey>(AbstractObjectName tableName, IEnumerable<TKey> keys, DeleteOptions options)
 	{
 		var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).PrimaryKeyColumns;
@@ -83,4 +57,29 @@ partial class SqlServerDataSourceBase
 		return new SqlServerUpdateMany(this, tableName, null, where, parameters, parameters.Count, effectiveOptions);
 	}
 
+	DbCommandBuilder<AbstractCommand, AbstractParameter> IInsertBatchHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnInsertBatch<TObject>(AbstractObjectName tableName, IEnumerable<TObject> objects, InsertOptions options)
+	{
+		return new SqlServerInsertBatch<TObject>(this, tableName, objects, options); ;
+	}
+
+	AbstractObjectName ICommandHelper<AbstractObjectName, AbstractDbType>.ParseObjectName(string objectName) => new(objectName);
+
+	private partial ILink<int?> OnDeleteAll(AbstractObjectName tableName)
+	{
+		//Verify the table name actually exists.
+		var table = DatabaseMetadata.GetTableOrView(tableName);
+		return Sql("DELETE FROM " + table.Name.ToQuotedString() + ";").AsNonQuery();
+	}
+
+	private partial MultipleTableDbCommandBuilder<AbstractCommand, AbstractParameter> OnSql(string sqlStatement, object? argumentValue)
+	{
+		return new SqlServerSqlCall(this, sqlStatement, argumentValue);
+	}
+
+	private partial ILink<int?> OnTruncate(AbstractObjectName tableName)
+	{
+		//Verify the table name actually exists.
+		var table = DatabaseMetadata.GetTableOrView(tableName);
+		return Sql("TRUNCATE TABLE " + table.Name.ToQuotedString() + ";").AsNonQuery();
+	}
 }

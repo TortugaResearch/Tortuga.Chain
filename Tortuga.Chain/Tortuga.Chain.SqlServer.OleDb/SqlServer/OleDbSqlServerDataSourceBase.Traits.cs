@@ -18,27 +18,6 @@ partial class OleDbSqlServerDataSourceBase
 
 	List<AbstractParameter> ICommandHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.GetParameters(SqlBuilder<AbstractDbType> builder) => builder.GetParameters();
 
-	AbstractObjectName ICommandHelper<AbstractObjectName, AbstractDbType>.ParseObjectName(string objectName) => new(objectName);
-
-	private partial ILink<int?> OnDeleteAll(AbstractObjectName tableName)
-	{
-		//Verify the table name actually exists.
-		var table = DatabaseMetadata.GetTableOrView(tableName);
-		return Sql("DELETE FROM " + table.Name.ToQuotedString() + ";").AsNonQuery();
-	}
-
-	private partial ILink<int?> OnTruncate(AbstractObjectName tableName)
-	{
-		//Verify the table name actually exists.
-		var table = DatabaseMetadata.GetTableOrView(tableName);
-		return Sql("TRUNCATE TABLE " + table.Name.ToQuotedString() + ";").AsNonQuery();
-	}
-
-	private partial MultipleTableDbCommandBuilder<AbstractCommand, AbstractParameter> OnSql(string sqlStatement, object? argumentValue)
-	{
-		return new OleDbSqlServerSqlCall(this, sqlStatement, argumentValue);
-	}
-
 	MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> IDeleteByKeyHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnDeleteByKeyList<TKey>(AbstractObjectName tableName, IEnumerable<TKey> keys, DeleteOptions options)
 	{
 		var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).PrimaryKeyColumns;
@@ -71,5 +50,26 @@ partial class OleDbSqlServerDataSourceBase
 			effectiveOptions = effectiveOptions | UpdateOptions.UseKeyAttribute;
 
 		return new OleDbSqlServerUpdateMany(this, tableName, null, where, parameters, parameters.Count, effectiveOptions);
+	}
+
+	AbstractObjectName ICommandHelper<AbstractObjectName, AbstractDbType>.ParseObjectName(string objectName) => new(objectName);
+
+	private partial ILink<int?> OnDeleteAll(AbstractObjectName tableName)
+	{
+		//Verify the table name actually exists.
+		var table = DatabaseMetadata.GetTableOrView(tableName);
+		return Sql("DELETE FROM " + table.Name.ToQuotedString() + ";").AsNonQuery();
+	}
+
+	private partial MultipleTableDbCommandBuilder<AbstractCommand, AbstractParameter> OnSql(string sqlStatement, object? argumentValue)
+	{
+		return new OleDbSqlServerSqlCall(this, sqlStatement, argumentValue);
+	}
+
+	private partial ILink<int?> OnTruncate(AbstractObjectName tableName)
+	{
+		//Verify the table name actually exists.
+		var table = DatabaseMetadata.GetTableOrView(tableName);
+		return Sql("TRUNCATE TABLE " + table.Name.ToQuotedString() + ";").AsNonQuery();
 	}
 }

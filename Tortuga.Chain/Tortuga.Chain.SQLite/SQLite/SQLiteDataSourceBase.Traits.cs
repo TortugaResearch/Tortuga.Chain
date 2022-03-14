@@ -20,32 +20,6 @@ namespace Tortuga.Chain.SQLite
 
 		List<AbstractParameter> ICommandHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.GetParameters(SqlBuilder<AbstractDbType> builder) => builder.GetParameters();
 
-		AbstractObjectName ICommandHelper<AbstractObjectName, AbstractDbType>.ParseObjectName(string objectName) => new(objectName);
-
-		private partial ILink<int?> OnDeleteAll(AbstractObjectName tableName)
-		{
-			//SQLite determines for itself if a delete all should be interpreted as a truncate.
-			return OnTruncate(tableName);
-		}
-
-		private partial ILink<int?> OnTruncate(AbstractObjectName tableName)
-		{
-			//Verify the table name actually exists.
-			var table = DatabaseMetadata.GetTableOrView(tableName);
-			//In SQLite, a delete without a where clause is interpreted as a truncate if other conditions are met.
-			return Sql("DELETE FROM " + table.Name.ToQuotedString() + ";").AsNonQuery();
-		}
-
-		private partial MultipleTableDbCommandBuilder<AbstractCommand, AbstractParameter> OnSql(string sqlStatement, object? argumentValue)
-		{
-			return new SQLiteSqlCall(this, sqlStatement, argumentValue, LockType.Write);
-		}
-
-		DbCommandBuilder<AbstractCommand, AbstractParameter> IInsertBatchHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnInsertBatch<TObject>(AbstractObjectName tableName, IEnumerable<TObject> objects, InsertOptions options)
-		{
-			return new SQLiteInsertBatch<TObject>(this, tableName, objects, options); ;
-		}
-
 		MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> IDeleteByKeyHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnDeleteByKeyList<TKey>(AbstractObjectName tableName, IEnumerable<TKey> keys, DeleteOptions options)
 		{
 			var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).PrimaryKeyColumns;
@@ -82,6 +56,32 @@ namespace Tortuga.Chain.SQLite
 				effectiveOptions |= UpdateOptions.UseKeyAttribute;
 
 			return new SQLiteUpdateMany(this, tableName, null, where, parameters, parameters.Count, effectiveOptions);
+		}
+
+		DbCommandBuilder<AbstractCommand, AbstractParameter> IInsertBatchHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnInsertBatch<TObject>(AbstractObjectName tableName, IEnumerable<TObject> objects, InsertOptions options)
+		{
+			return new SQLiteInsertBatch<TObject>(this, tableName, objects, options); ;
+		}
+
+		AbstractObjectName ICommandHelper<AbstractObjectName, AbstractDbType>.ParseObjectName(string objectName) => new(objectName);
+
+		private partial ILink<int?> OnDeleteAll(AbstractObjectName tableName)
+		{
+			//SQLite determines for itself if a delete all should be interpreted as a truncate.
+			return OnTruncate(tableName);
+		}
+
+		private partial MultipleTableDbCommandBuilder<AbstractCommand, AbstractParameter> OnSql(string sqlStatement, object? argumentValue)
+		{
+			return new SQLiteSqlCall(this, sqlStatement, argumentValue, LockType.Write);
+		}
+
+		private partial ILink<int?> OnTruncate(AbstractObjectName tableName)
+		{
+			//Verify the table name actually exists.
+			var table = DatabaseMetadata.GetTableOrView(tableName);
+			//In SQLite, a delete without a where clause is interpreted as a truncate if other conditions are met.
+			return Sql("DELETE FROM " + table.Name.ToQuotedString() + ";").AsNonQuery();
 		}
 	}
 }

@@ -21,6 +21,18 @@ partial class OleDbSqlServerDataSource
 
 	}
 
+	private partial AbstractDataSource OnCloneWithOverrides(ICacheAdapter? cache, IEnumerable<AuditRule>? additionalRules, object? userValue)
+	{
+		var result = WithSettings(null);
+		if (cache != null)
+			result.m_Cache = cache;
+		if (additionalRules != null)
+			result.AuditRules = new AuditRuleCollection(AuditRules, additionalRules);
+		if (userValue != null)
+			result.UserValue = userValue;
+		return result;
+	}
+
 	private partial AbstractConnection OnCreateConnection()
 	{
 		var con = new OleDbConnection(ConnectionString);
@@ -67,19 +79,5 @@ partial class OleDbSqlServerDataSource
 
 	private partial OleDbSqlServerOpenDataSource OnCreateOpenDataSource(AbstractConnection connection, AbstractTransaction? transaction)
 		=> new OleDbSqlServerOpenDataSource(this, connection, transaction);
-
-	private partial AbstractDataSource OnCloneWithOverrides(ICacheAdapter? cache, IEnumerable<AuditRule>? additionalRules, object? userValue)
-	{
-		var result = WithSettings(null);
-		if (cache != null)
-			result.m_Cache = cache;
-		if (additionalRules != null)
-			result.AuditRules = new AuditRuleCollection(AuditRules, additionalRules);
-		if (userValue != null)
-			result.UserValue = userValue;
-		return result;
-	}
-
-
 }
 

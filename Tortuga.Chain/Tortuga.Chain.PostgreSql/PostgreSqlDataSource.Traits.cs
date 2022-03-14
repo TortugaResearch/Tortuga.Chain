@@ -27,6 +27,18 @@ partial class PostgreSqlDataSource
 
 	}
 
+	private partial AbstractDataSource OnCloneWithOverrides(ICacheAdapter? cache, IEnumerable<AuditRule>? additionalRules, object? userValue)
+	{
+		var result = WithSettings(null);
+		if (cache != null)
+			result.m_Cache = cache;
+		if (additionalRules != null)
+			result.AuditRules = new AuditRuleCollection(AuditRules, additionalRules);
+		if (userValue != null)
+			result.UserValue = userValue;
+		return result;
+	}
+
 	private partial AbstractConnection OnCreateConnection()
 	{
 		var con = new NpgsqlConnection(ConnectionString);
@@ -49,19 +61,5 @@ partial class PostgreSqlDataSource
 
 	private partial PostgreSqlOpenDataSource OnCreateOpenDataSource(AbstractConnection connection, AbstractTransaction? transaction)
 		=> new PostgreSqlOpenDataSource(this, connection, transaction);
-
-	private partial AbstractDataSource OnCloneWithOverrides(ICacheAdapter? cache, IEnumerable<AuditRule>? additionalRules, object? userValue)
-	{
-		var result = WithSettings(null);
-		if (cache != null)
-			result.m_Cache = cache;
-		if (additionalRules != null)
-			result.AuditRules = new AuditRuleCollection(AuditRules, additionalRules);
-		if (userValue != null)
-			result.UserValue = userValue;
-		return result;
-	}
-
-
 }
 
