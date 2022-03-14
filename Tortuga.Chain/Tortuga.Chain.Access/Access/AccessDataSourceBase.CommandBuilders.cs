@@ -95,10 +95,7 @@ namespace Tortuga.Chain.Access
 			return new AccessDeleteMany(this, tableName, filterValue, filterOptions);
 		}
 
-		ObjectDbCommandBuilder<OleDbCommand, OleDbParameter, TArgument> OnDeleteObject<TArgument>(AccessObjectName tableName, TArgument argumentValue, DeleteOptions options) where TArgument : class
-		{
-			return new AccessDeleteObject<TArgument>(this, tableName, argumentValue, options);
-		}
+
 
 		TableDbCommandBuilder<OleDbCommand, OleDbParameter, AccessLimitOption, TObject> OnFromTableOrView<TObject>(AccessObjectName tableOrViewName, object filterValue, FilterOptions filterOptions)
 			where TObject : class
@@ -129,10 +126,7 @@ namespace Tortuga.Chain.Access
 			return new AccessUpdateMany(this, tableName, newValues, options);
 		}
 
-		ObjectDbCommandBuilder<OleDbCommand, OleDbParameter, TArgument> OnUpdateObject<TArgument>(AccessObjectName tableName, TArgument argumentValue, UpdateOptions options) where TArgument : class
-		{
-			return new AccessUpdateObject<TArgument>(this, tableName, argumentValue, options);
-		}
+
 
 	}
 }

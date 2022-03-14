@@ -2,10 +2,10 @@
 {
 
 	/// <summary>
-	/// When placed on a property, that property is automatically set to the owner of the trait object. 
+	/// When placed on a property, that property is automatically set to the container of the trait object. 
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
-	public class OwnerAttribute : Attribute
+	public class ContainerAttribute : Attribute
 	{
 
 		/// <summary>

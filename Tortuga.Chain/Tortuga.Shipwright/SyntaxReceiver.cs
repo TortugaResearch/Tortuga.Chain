@@ -47,14 +47,19 @@ class SyntaxReceiver : ISyntaxContextReceiver
 				//	}
 				//}
 
-				foreach (var useTraitAttribute in modifiedClass.GetAttributes<Tortuga.Shipwright.UseTraitAttribute>())
+				var useTraitAttributes = modifiedClass.GetAttributes<Tortuga.Shipwright.UseTraitAttribute>().ToList();
+				if (useTraitAttributes.Any())
 				{
-					var traitClass = (INamedTypeSymbol?)useTraitAttribute.ConstructorArguments[0].Value;
-
-					if (traitClass != null)
+					Log.Add($"Container class: {modifiedClass.FullName()}");
+					foreach (var useTraitAttribute in useTraitAttributes)
 					{
-						if (WorkItems[modifiedClass].TraitClasses.Add(traitClass))
-							Log.Add($"Added work item for {traitClass.FullName()} to {modifiedClass.FullName()}");
+						var traitClass = (INamedTypeSymbol?)useTraitAttribute.ConstructorArguments[0].Value;
+
+						if (traitClass != null)
+						{
+							if (WorkItems[modifiedClass].TraitClasses.Add(traitClass))
+								Log.Add($"\tAdding trait: {traitClass.FullName()}");
+						}
 					}
 				}
 			}

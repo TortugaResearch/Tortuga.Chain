@@ -119,10 +119,7 @@ namespace Tortuga.Chain.SQLite
 			return new SQLiteDeleteMany(this, tableName, filterValue, filterOptions);
 		}
 
-		ObjectDbCommandBuilder<SQLiteCommand, SQLiteParameter, TArgument> OnDeleteObject<TArgument>(SQLiteObjectName tableName, TArgument argumentValue, DeleteOptions options) where TArgument : class
-		{
-			return new SQLiteDeleteObject<TArgument>(this, tableName, argumentValue, options);
-		}
+
 
 		TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption, TObject> OnFromTableOrView<TObject>(SQLiteObjectName tableOrViewName, object filterValue, FilterOptions filterOptions)
 			where TObject : class
@@ -158,10 +155,7 @@ namespace Tortuga.Chain.SQLite
 			return new SQLiteUpdateMany(this, tableName, newValues, options);
 		}
 
-		ObjectDbCommandBuilder<SQLiteCommand, SQLiteParameter, TArgument> OnUpdateObject<TArgument>(SQLiteObjectName tableName, TArgument argumentValue, UpdateOptions options) where TArgument : class
-		{
-			return new SQLiteUpdateObject<TArgument>(this, tableName, argumentValue, options);
-		}
+
 
 
 

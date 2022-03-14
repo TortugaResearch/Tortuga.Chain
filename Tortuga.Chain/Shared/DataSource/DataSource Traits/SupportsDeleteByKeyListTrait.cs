@@ -7,13 +7,13 @@ using Tortuga.Shipwright;
 namespace Traits;
 
 [Trait]
-class SupportsDeleteByKeyList<TCommand, TParameter, TObjectName, TDbType> : ISupportsDeleteByKeyList, ISupportsDeleteByKey
+class SupportsDeleteByKeyListTrait<TCommand, TParameter, TObjectName, TDbType> : ISupportsDeleteByKeyList, ISupportsDeleteByKey
 	where TCommand : DbCommand
 	where TParameter : DbParameter
 	where TObjectName : struct
 	where TDbType : struct
 {
-	[Owner(RegisterInterface = true)]
+	[Container(RegisterInterface = true)]
 	internal IDeleteByKeyHelper<TCommand, TParameter, TObjectName, TDbType> DataSource { get; set; } = null!;
 
 	ISingleRowDbCommandBuilder ISupportsDeleteByKey.DeleteByKey<TKey>(string tableName, TKey key, DeleteOptions options) => DeleteByKey(DataSource.ParseObjectName(tableName), key, options);
@@ -104,11 +104,5 @@ class SupportsDeleteByKeyList<TCommand, TParameter, TObjectName, TDbType> : ISup
 		=> DataSource.OnDeleteByKeyList(tableName, keys, options);
 }
 
-interface IDeleteByKeyHelper<TCommand, TParameter, TObjectName, TDbType> : ICommandHelper<TCommand, TParameter, TObjectName, TDbType>
-	where TCommand : DbCommand
-	where TParameter : DbParameter
-	where TObjectName : struct
-	where TDbType : struct
-{
-	MultipleRowDbCommandBuilder<TCommand, TParameter> OnDeleteByKeyList<TKey>(TObjectName tableName, IEnumerable<TKey> keys, DeleteOptions options);
-}
+
+

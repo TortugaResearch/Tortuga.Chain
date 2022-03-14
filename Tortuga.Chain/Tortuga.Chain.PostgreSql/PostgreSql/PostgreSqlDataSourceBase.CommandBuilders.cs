@@ -97,10 +97,7 @@ namespace Tortuga.Chain.PostgreSql
 			return new PostgreSqlDeleteMany(this, tableName, filterValue, filterOptions);
 		}
 
-		ObjectDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, TArgument> OnDeleteObject<TArgument>(PostgreSqlObjectName tableName, TArgument argumentValue, DeleteOptions options) where TArgument : class
-		{
-			return new PostgreSqlDeleteObject<TArgument>(this, tableName, argumentValue, options);
-		}
+
 
 		TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption, TObject> OnFromTableOrView<TObject>(PostgreSqlObjectName tableOrViewName, object filterValue, FilterOptions filterOptions)
 			where TObject : class
@@ -135,10 +132,7 @@ namespace Tortuga.Chain.PostgreSql
 			return new PostgreSqlUpdateMany(this, tableName, newValues, options);
 		}
 
-		ObjectDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, TArgument> OnUpdateObject<TArgument>(PostgreSqlObjectName tableName, TArgument argumentValue, UpdateOptions options) where TArgument : class
-		{
-			return new PostgreSqlUpdateObject<TArgument>(this, tableName, argumentValue, options);
-		}
+
 
 		/// <summary>
 		/// Inserts the batch of records using bulk insert.

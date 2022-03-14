@@ -2,7 +2,7 @@
 
 namespace Tortuga.Chain.SqlServer
 {
-	partial class SqlServerDataSourceBase: Tortuga.Chain.DataSources.ISupportsDeleteAll, Tortuga.Chain.DataSources.ISupportsTruncate, Tortuga.Chain.DataSources.ISupportsSqlQueries, Tortuga.Chain.DataSources.ISupportsInsertBatch, Tortuga.Chain.DataSources.ISupportsDeleteByKeyList, Tortuga.Chain.DataSources.ISupportsDeleteByKey, Traits.ICommandHelper<Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>, Traits.IInsertBatchHelper<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>, Traits.IDeleteByKeyHelper<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>
+	partial class SqlServerDataSourceBase: Tortuga.Chain.DataSources.ISupportsDeleteAll, Tortuga.Chain.DataSources.ISupportsTruncate, Tortuga.Chain.DataSources.ISupportsSqlQueries, Tortuga.Chain.DataSources.ISupportsInsertBatch, Tortuga.Chain.DataSources.ISupportsDeleteByKeyList, Tortuga.Chain.DataSources.ISupportsDeleteByKey, Tortuga.Chain.DataSources.ISupportsDelete, Tortuga.Chain.DataSources.ISupportsUpdate, Traits.ICommandHelper<Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>, Traits.IInsertBatchHelper<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>, Traits.IDeleteByKeyHelper<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>, Traits.IUpdateDeleteHelper<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>
 	{
 
 		private bool __TraitsRegistered;
@@ -44,14 +44,43 @@ namespace Tortuga.Chain.SqlServer
 				return ___Trait3;
 			}
 		}
-		private Traits.SupportsDeleteByKeyList<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType> ___Trait4 = new();
-		private Traits.SupportsDeleteByKeyList<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType> __Trait4
+		private Traits.SupportsDeleteByKeyListTrait<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType> ___Trait4 = new();
+		private Traits.SupportsDeleteByKeyListTrait<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType> __Trait4
 		{
 			get
 			{
 				if (!__TraitsRegistered) __RegisterTraits();
 				return ___Trait4;
 			}
+		}
+		private Traits.SupportsDeleteTrait<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType> ___Trait5 = new();
+		private Traits.SupportsDeleteTrait<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType> __Trait5
+		{
+			get
+			{
+				if (!__TraitsRegistered) __RegisterTraits();
+				return ___Trait5;
+			}
+		}
+		private Traits.SupportsUpdateTrait<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType> ___Trait6 = new();
+		private Traits.SupportsUpdateTrait<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType> __Trait6
+		{
+			get
+			{
+				if (!__TraitsRegistered) __RegisterTraits();
+				return ___Trait6;
+			}
+		}
+
+		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsDelete
+		Tortuga.Chain.CommandBuilders.IObjectDbCommandBuilder<TArgument> Tortuga.Chain.DataSources.ISupportsDelete.Delete<TArgument>(System.String tableName, TArgument argumentValue, Tortuga.Chain.DeleteOptions options)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsDelete)__Trait5).Delete<TArgument>(tableName, argumentValue, options);
+		}
+
+		Tortuga.Chain.CommandBuilders.IObjectDbCommandBuilder<TArgument> Tortuga.Chain.DataSources.ISupportsDelete.Delete<TArgument>(TArgument argumentValue, Tortuga.Chain.DeleteOptions options)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsDelete)__Trait5).Delete<TArgument>(argumentValue, options);
 		}
 
 		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsDeleteAll
@@ -115,6 +144,17 @@ namespace Tortuga.Chain.SqlServer
 			return ((Tortuga.Chain.DataSources.ISupportsTruncate)__Trait1).Truncate<TObject>();
 		}
 
+		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsUpdate
+		Tortuga.Chain.CommandBuilders.IObjectDbCommandBuilder<TArgument> Tortuga.Chain.DataSources.ISupportsUpdate.Update<TArgument>(System.String tableName, TArgument argumentValue, Tortuga.Chain.UpdateOptions options)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsUpdate)__Trait6).Update<TArgument>(tableName, argumentValue, options);
+		}
+
+		Tortuga.Chain.CommandBuilders.IObjectDbCommandBuilder<TArgument> Tortuga.Chain.DataSources.ISupportsUpdate.Update<TArgument>(TArgument argumentValue, Tortuga.Chain.UpdateOptions options)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsUpdate)__Trait6).Update<TArgument>(argumentValue, options);
+		}
+
 		// Exposing trait Traits.SupportsDeleteAllTrait<Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>
 
 		/// <summary>Deletes all records in the specified table.</summary>
@@ -133,7 +173,7 @@ namespace Tortuga.Chain.SqlServer
 			return __Trait0.DeleteAll<TObject>();
 		}
 
-		// Exposing trait Traits.SupportsDeleteByKeyList<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>
+		// Exposing trait Traits.SupportsDeleteByKeyListTrait<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>
 
 		/// <summary>
 		/// Delete a record by its primary key.
@@ -214,6 +254,32 @@ namespace Tortuga.Chain.SqlServer
 		public Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter> DeleteByKeyList<TKey>(Tortuga.Chain.SqlServer.SqlServerObjectName tableName, System.Collections.Generic.IEnumerable<TKey> keys, Tortuga.Chain.DeleteOptions options = 0)
 		{
 			return __Trait4.DeleteByKeyList<TKey>(tableName, keys, options);
+		}
+
+		// Exposing trait Traits.SupportsDeleteTrait<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>
+
+		/// <summary>
+		/// Creates a command to perform a delete operation.
+		/// </summary>
+		/// <param name="tableName"></param>
+		/// <param name="argumentValue"></param>
+		/// <param name="options"></param>
+		/// <returns></returns>
+		public Tortuga.Chain.CommandBuilders.ObjectDbCommandBuilder<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, TArgument> Delete<TArgument>(Tortuga.Chain.SqlServer.SqlServerObjectName tableName, TArgument argumentValue, Tortuga.Chain.DeleteOptions options = 0)where TArgument : class
+		{
+			return __Trait5.Delete<TArgument>(tableName, argumentValue, options);
+		}
+
+		/// <summary>
+		/// Delete an object model from the table indicated by the class's Table attribute.
+		/// </summary>
+		/// <typeparam name="TArgument"></typeparam>
+		/// <param name="argumentValue">The argument value.</param>
+		/// <param name="options">The delete options.</param>
+		/// <returns></returns>
+		public Tortuga.Chain.CommandBuilders.ObjectDbCommandBuilder<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, TArgument> Delete<TArgument>(TArgument argumentValue, Tortuga.Chain.DeleteOptions options = 0)where TArgument : class
+		{
+			return __Trait5.Delete<TArgument>(argumentValue, options);
 		}
 
 		// Exposing trait Traits.SupportsInsertBatchTrait<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType, Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter>>
@@ -310,6 +376,32 @@ namespace Tortuga.Chain.SqlServer
 			return __Trait1.Truncate<TObject>();
 		}
 
+		// Exposing trait Traits.SupportsUpdateTrait<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>
+
+		/// <summary>
+		/// Update an object in the specified table.
+		/// </summary>
+		/// <typeparam name="TArgument"></typeparam>
+		/// <param name="argumentValue">The argument value.</param>
+		/// <param name="options">The update options.</param>
+		/// <returns></returns>
+		public Tortuga.Chain.CommandBuilders.ObjectDbCommandBuilder<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, TArgument> Update<TArgument>(TArgument argumentValue, Tortuga.Chain.UpdateOptions options = 0)where TArgument : class
+		{
+			return __Trait6.Update<TArgument>(argumentValue, options);
+		}
+
+		/// <summary>
+		/// Update an object in the specified table.
+		/// </summary>
+		/// <param name="tableName"></param>
+		/// <param name="argumentValue"></param>
+		/// <param name="options"></param>
+		/// <returns></returns>
+		public Tortuga.Chain.CommandBuilders.ObjectDbCommandBuilder<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, TArgument> Update<TArgument>(Tortuga.Chain.SqlServer.SqlServerObjectName tableName, TArgument argumentValue, Tortuga.Chain.UpdateOptions options = 0)where TArgument : class
+		{
+			return __Trait6.Update<TArgument>(tableName, argumentValue, options);
+		}
+
 		private partial Tortuga.Chain.ILink<int?> OnDeleteAll(Tortuga.Chain.SqlServer.SqlServerObjectName tableName );
 
 		private partial Tortuga.Chain.CommandBuilders.MultipleTableDbCommandBuilder<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter> OnSql(System.String sqlStatement, System.Object? argumentValue );
@@ -327,6 +419,8 @@ namespace Tortuga.Chain.SqlServer
 			__Trait2.OnSql = OnSql;
 			__Trait3.DataSource = this;
 			__Trait4.DataSource = this;
+			__Trait5.DataSource = this;
+			__Trait6.DataSource = this;
 		}
 	}
 }

@@ -9,18 +9,6 @@ using Tortuga.Shipwright;
 
 namespace Traits;
 
-interface IInsertBatchHelper<TCommand, TParameter, TObjectName, TDbType> : ICommandHelper<TCommand, TParameter, TObjectName, TDbType>
-	where TCommand : DbCommand
-	where TParameter : DbParameter
-	where TObjectName : struct
-	where TDbType : struct
-{
-	//This is needed because the trait generator can't create a matching Func<...> property with the TObject constraint.
-	DbCommandBuilder<TCommand, TParameter> OnInsertBatch<TObject>(TObjectName tableName, IEnumerable<TObject> objects, InsertOptions options)
-where TObject : class;
-
-}
-
 
 [Trait]
 class SupportsInsertBatchTrait<TCommand, TParameter, TObjectName, TDbType, TResult> : ISupportsInsertBatch
@@ -41,7 +29,7 @@ class SupportsInsertBatchTrait<TCommand, TParameter, TObjectName, TDbType, TResu
 
 	//[Partial("objectName")] public Func<string, TObjectName> OnParseObjectName { get; set; } = null!;
 
-	[Owner(RegisterInterface = true)]
+	[Container(RegisterInterface = true)]
 	internal IInsertBatchHelper<TCommand, TParameter, TObjectName, TDbType> DataSource { get; set; } = null!;
 
 	IDbCommandBuilder ISupportsInsertBatch.InsertBatch<TObject>(IEnumerable<TObject> objects, InsertOptions options)

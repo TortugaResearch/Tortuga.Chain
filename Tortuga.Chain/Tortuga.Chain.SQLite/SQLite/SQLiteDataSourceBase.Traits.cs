@@ -13,7 +13,9 @@ namespace Tortuga.Chain.SQLite
 	[UseTrait(typeof(SupportsSqlQueriesTrait<AbstractCommand, AbstractParameter>))]
 	[UseTrait(typeof(SupportsInsertBatchTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType,
 	DbCommandBuilder<AbstractCommand, AbstractParameter>>))]
-	[UseTrait(typeof(SupportsDeleteByKeyList<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
+	[UseTrait(typeof(SupportsDeleteByKeyListTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
+	[UseTrait(typeof(SupportsUpdateTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
+	[UseTrait(typeof(SupportsDeleteTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
 	partial class SQLiteDataSourceBase
 	{
 		DatabaseMetadataCache<AbstractObjectName, AbstractDbType> ICommandHelper<AbstractObjectName, AbstractDbType>.DatabaseMetadata => DatabaseMetadata;
@@ -82,6 +84,18 @@ namespace Tortuga.Chain.SQLite
 			var table = DatabaseMetadata.GetTableOrView(tableName);
 			//In SQLite, a delete without a where clause is interpreted as a truncate if other conditions are met.
 			return Sql("DELETE FROM " + table.Name.ToQuotedString() + ";").AsNonQuery();
+		}
+
+		ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> IUpdateDeleteHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnUpdateObject<TArgument>(AbstractObjectName tableName, TArgument argumentValue, UpdateOptions options)
+	where TArgument : class
+		{
+			return new SQLiteUpdateObject<TArgument>(this, tableName, argumentValue, options);
+		}
+
+		ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> IUpdateDeleteHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnDeleteObject<TArgument>(AbstractObjectName tableName, TArgument argumentValue, DeleteOptions options)
+			where TArgument : class
+		{
+			return new SQLiteDeleteObject<TArgument>(this, tableName, argumentValue, options);
 		}
 	}
 }

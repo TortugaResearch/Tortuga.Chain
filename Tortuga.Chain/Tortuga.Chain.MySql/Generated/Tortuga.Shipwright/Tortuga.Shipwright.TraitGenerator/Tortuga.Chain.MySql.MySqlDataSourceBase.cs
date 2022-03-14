@@ -2,7 +2,7 @@
 
 namespace Tortuga.Chain.MySql
 {
-	partial class MySqlDataSourceBase: Tortuga.Chain.DataSources.ISupportsDeleteAll, Tortuga.Chain.DataSources.ISupportsTruncate, Tortuga.Chain.DataSources.ISupportsSqlQueries, Tortuga.Chain.DataSources.ISupportsInsertBatch, Tortuga.Chain.DataSources.ISupportsDeleteByKeyList, Tortuga.Chain.DataSources.ISupportsDeleteByKey, Traits.ICommandHelper<Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IInsertBatchHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IDeleteByKeyHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>
+	partial class MySqlDataSourceBase: Tortuga.Chain.DataSources.ISupportsDeleteAll, Tortuga.Chain.DataSources.ISupportsTruncate, Tortuga.Chain.DataSources.ISupportsSqlQueries, Tortuga.Chain.DataSources.ISupportsInsertBatch, Tortuga.Chain.DataSources.ISupportsDeleteByKeyList, Tortuga.Chain.DataSources.ISupportsDeleteByKey, Tortuga.Chain.DataSources.ISupportsUpdate, Tortuga.Chain.DataSources.ISupportsDelete, Traits.ICommandHelper<Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IInsertBatchHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IDeleteByKeyHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IUpdateDeleteHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>
 	{
 
 		private bool __TraitsRegistered;
@@ -44,14 +44,43 @@ namespace Tortuga.Chain.MySql
 				return ___Trait3;
 			}
 		}
-		private Traits.SupportsDeleteByKeyList<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType> ___Trait4 = new();
-		private Traits.SupportsDeleteByKeyList<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType> __Trait4
+		private Traits.SupportsDeleteByKeyListTrait<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType> ___Trait4 = new();
+		private Traits.SupportsDeleteByKeyListTrait<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType> __Trait4
 		{
 			get
 			{
 				if (!__TraitsRegistered) __RegisterTraits();
 				return ___Trait4;
 			}
+		}
+		private Traits.SupportsUpdateTrait<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType> ___Trait5 = new();
+		private Traits.SupportsUpdateTrait<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType> __Trait5
+		{
+			get
+			{
+				if (!__TraitsRegistered) __RegisterTraits();
+				return ___Trait5;
+			}
+		}
+		private Traits.SupportsDeleteTrait<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType> ___Trait6 = new();
+		private Traits.SupportsDeleteTrait<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType> __Trait6
+		{
+			get
+			{
+				if (!__TraitsRegistered) __RegisterTraits();
+				return ___Trait6;
+			}
+		}
+
+		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsDelete
+		Tortuga.Chain.CommandBuilders.IObjectDbCommandBuilder<TArgument> Tortuga.Chain.DataSources.ISupportsDelete.Delete<TArgument>(System.String tableName, TArgument argumentValue, Tortuga.Chain.DeleteOptions options)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsDelete)__Trait6).Delete<TArgument>(tableName, argumentValue, options);
+		}
+
+		Tortuga.Chain.CommandBuilders.IObjectDbCommandBuilder<TArgument> Tortuga.Chain.DataSources.ISupportsDelete.Delete<TArgument>(TArgument argumentValue, Tortuga.Chain.DeleteOptions options)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsDelete)__Trait6).Delete<TArgument>(argumentValue, options);
 		}
 
 		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsDeleteAll
@@ -115,6 +144,17 @@ namespace Tortuga.Chain.MySql
 			return ((Tortuga.Chain.DataSources.ISupportsTruncate)__Trait1).Truncate<TObject>();
 		}
 
+		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsUpdate
+		Tortuga.Chain.CommandBuilders.IObjectDbCommandBuilder<TArgument> Tortuga.Chain.DataSources.ISupportsUpdate.Update<TArgument>(System.String tableName, TArgument argumentValue, Tortuga.Chain.UpdateOptions options)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsUpdate)__Trait5).Update<TArgument>(tableName, argumentValue, options);
+		}
+
+		Tortuga.Chain.CommandBuilders.IObjectDbCommandBuilder<TArgument> Tortuga.Chain.DataSources.ISupportsUpdate.Update<TArgument>(TArgument argumentValue, Tortuga.Chain.UpdateOptions options)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsUpdate)__Trait5).Update<TArgument>(argumentValue, options);
+		}
+
 		// Exposing trait Traits.SupportsDeleteAllTrait<Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>
 
 		/// <summary>Deletes all records in the specified table.</summary>
@@ -133,7 +173,7 @@ namespace Tortuga.Chain.MySql
 			return __Trait0.DeleteAll<TObject>();
 		}
 
-		// Exposing trait Traits.SupportsDeleteByKeyList<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>
+		// Exposing trait Traits.SupportsDeleteByKeyListTrait<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>
 
 		/// <summary>
 		/// Delete a record by its primary key.
@@ -214,6 +254,32 @@ namespace Tortuga.Chain.MySql
 		public Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter> DeleteByKeyList<TKey>(Tortuga.Chain.MySql.MySqlObjectName tableName, System.Collections.Generic.IEnumerable<TKey> keys, Tortuga.Chain.DeleteOptions options = 0)
 		{
 			return __Trait4.DeleteByKeyList<TKey>(tableName, keys, options);
+		}
+
+		// Exposing trait Traits.SupportsDeleteTrait<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>
+
+		/// <summary>
+		/// Creates a command to perform a delete operation.
+		/// </summary>
+		/// <param name="tableName"></param>
+		/// <param name="argumentValue"></param>
+		/// <param name="options"></param>
+		/// <returns></returns>
+		public Tortuga.Chain.CommandBuilders.ObjectDbCommandBuilder<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, TArgument> Delete<TArgument>(Tortuga.Chain.MySql.MySqlObjectName tableName, TArgument argumentValue, Tortuga.Chain.DeleteOptions options = 0)where TArgument : class
+		{
+			return __Trait6.Delete<TArgument>(tableName, argumentValue, options);
+		}
+
+		/// <summary>
+		/// Delete an object model from the table indicated by the class's Table attribute.
+		/// </summary>
+		/// <typeparam name="TArgument"></typeparam>
+		/// <param name="argumentValue">The argument value.</param>
+		/// <param name="options">The delete options.</param>
+		/// <returns></returns>
+		public Tortuga.Chain.CommandBuilders.ObjectDbCommandBuilder<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, TArgument> Delete<TArgument>(TArgument argumentValue, Tortuga.Chain.DeleteOptions options = 0)where TArgument : class
+		{
+			return __Trait6.Delete<TArgument>(argumentValue, options);
 		}
 
 		// Exposing trait Traits.SupportsInsertBatchTrait<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType, Tortuga.Chain.CommandBuilders.DbCommandBuilder<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter>>
@@ -310,6 +376,32 @@ namespace Tortuga.Chain.MySql
 			return __Trait1.Truncate<TObject>();
 		}
 
+		// Exposing trait Traits.SupportsUpdateTrait<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>
+
+		/// <summary>
+		/// Update an object in the specified table.
+		/// </summary>
+		/// <typeparam name="TArgument"></typeparam>
+		/// <param name="argumentValue">The argument value.</param>
+		/// <param name="options">The update options.</param>
+		/// <returns></returns>
+		public Tortuga.Chain.CommandBuilders.ObjectDbCommandBuilder<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, TArgument> Update<TArgument>(TArgument argumentValue, Tortuga.Chain.UpdateOptions options = 0)where TArgument : class
+		{
+			return __Trait5.Update<TArgument>(argumentValue, options);
+		}
+
+		/// <summary>
+		/// Update an object in the specified table.
+		/// </summary>
+		/// <param name="tableName"></param>
+		/// <param name="argumentValue"></param>
+		/// <param name="options"></param>
+		/// <returns></returns>
+		public Tortuga.Chain.CommandBuilders.ObjectDbCommandBuilder<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, TArgument> Update<TArgument>(Tortuga.Chain.MySql.MySqlObjectName tableName, TArgument argumentValue, Tortuga.Chain.UpdateOptions options = 0)where TArgument : class
+		{
+			return __Trait5.Update<TArgument>(tableName, argumentValue, options);
+		}
+
 		private partial Tortuga.Chain.ILink<int?> OnDeleteAll(Tortuga.Chain.MySql.MySqlObjectName tableName );
 
 		private partial Tortuga.Chain.CommandBuilders.MultipleTableDbCommandBuilder<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter> OnSql(System.String sqlStatement, System.Object? argumentValue );
@@ -327,6 +419,8 @@ namespace Tortuga.Chain.MySql
 			__Trait2.OnSql = OnSql;
 			__Trait3.DataSource = this;
 			__Trait4.DataSource = this;
+			__Trait5.DataSource = this;
+			__Trait6.DataSource = this;
 		}
 	}
 }

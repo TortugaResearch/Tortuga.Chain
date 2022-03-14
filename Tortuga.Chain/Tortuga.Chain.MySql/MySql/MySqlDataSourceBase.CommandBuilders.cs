@@ -97,10 +97,7 @@ namespace Tortuga.Chain.MySql
 			return new MySqlDeleteMany(this, tableName, filterValue, filterOptions);
 		}
 
-		ObjectDbCommandBuilder<MySqlCommand, MySqlParameter, TArgument> OnDeleteObject<TArgument>(MySqlObjectName tableName, TArgument argumentValue, DeleteOptions options) where TArgument : class
-		{
-			return new MySqlDeleteObject<TArgument>(this, tableName, argumentValue, options);
-		}
+
 
 		TableDbCommandBuilder<MySqlCommand, MySqlParameter, MySqlLimitOption, TObject> OnFromTableOrView<TObject>(MySqlObjectName tableOrViewName, object filterValue, FilterOptions filterOptions)
 			where TObject : class
@@ -135,10 +132,7 @@ namespace Tortuga.Chain.MySql
 			return new MySqlUpdateMany(this, tableName, newValues, options);
 		}
 
-		ObjectDbCommandBuilder<MySqlCommand, MySqlParameter, TArgument> OnUpdateObject<TArgument>(MySqlObjectName tableName, TArgument argumentValue, UpdateOptions options) where TArgument : class
-		{
-			return new MySqlUpdateObject<TArgument>(this, tableName, argumentValue, options);
-		}
+
 
 
 		/// <summary>

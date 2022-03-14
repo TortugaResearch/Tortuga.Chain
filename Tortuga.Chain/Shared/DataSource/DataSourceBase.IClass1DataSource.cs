@@ -38,15 +38,6 @@ namespace Tortuga.Chain.Access
 
 #endif
 	{
-		IObjectDbCommandBuilder<TArgument> ISupportsDelete.Delete<TArgument>(string tableName, TArgument argumentValue, DeleteOptions options)
-		{
-			return Delete(tableName, argumentValue, options);
-		}
-
-		IObjectDbCommandBuilder<TArgument> ISupportsDelete.Delete<TArgument>(TArgument argumentValue, DeleteOptions options)
-		{
-			return Delete(argumentValue, options);
-		}
 
 		IMultipleRowDbCommandBuilder ISupportsDeleteWithFilter.DeleteWithFilter(string tableName, string whereClause)
 		{
@@ -133,15 +124,9 @@ namespace Tortuga.Chain.Access
 			return Insert(argumentValue, options);
 		}
 
-		IObjectDbCommandBuilder<TArgument> ISupportsUpdate.Update<TArgument>(string tableName, TArgument argumentValue, UpdateOptions options)
-		{
-			return Update(tableName, argumentValue, options);
-		}
 
-		IObjectDbCommandBuilder<TArgument> ISupportsUpdate.Update<TArgument>(TArgument argumentValue, UpdateOptions options)
-		{
-			return Update(argumentValue, options);
-		}
+
+
 
 		ISingleRowDbCommandBuilder ISupportsUpdateByKey.UpdateByKey<TArgument, TKey>(string tableName, TArgument newValues, TKey key, UpdateOptions options)
 		{

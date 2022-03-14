@@ -10,7 +10,9 @@ using Traits;
 namespace Tortuga.Chain.Access
 {
 	[UseTrait(typeof(SupportsDeleteAllTrait<AbstractObjectName, AbstractDbType>))]
-	[UseTrait(typeof(SupportsDeleteByKeyList<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
+	[UseTrait(typeof(SupportsDeleteByKeyListTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
+	[UseTrait(typeof(SupportsUpdateTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
+	[UseTrait(typeof(SupportsDeleteTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
 	[UseTrait(typeof(SupportsSqlQueriesTrait<AbstractCommand, AbstractParameter>))]
 	partial class AccessDataSourceBase //: ICommandHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>
 	{
@@ -79,6 +81,21 @@ namespace Tortuga.Chain.Access
 		{
 			return new AccessSqlCall(this, sqlStatement, argumentValue);
 		}
+
+
+
+		ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> IUpdateDeleteHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnUpdateObject<TArgument>(AbstractObjectName tableName, TArgument argumentValue, UpdateOptions options)
+			where TArgument : class
+		{
+			return new AccessUpdateObject<TArgument>(this, tableName, argumentValue, options);
+		}
+
+		ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> IUpdateDeleteHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnDeleteObject<TArgument>(AbstractObjectName tableName, TArgument argumentValue, DeleteOptions options)
+			where TArgument : class
+		{
+			return new AccessDeleteObject<TArgument>(this, tableName, argumentValue, options);
+		}
+
 	}
 }
 

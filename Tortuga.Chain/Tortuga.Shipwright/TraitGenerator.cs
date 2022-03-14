@@ -29,7 +29,7 @@ public class TraitGenerator : ISourceGenerator
 				var partialProperties = workItem.TraitClasses.SelectMany(m => m.GetMembers()).OfType<IPropertySymbol>().Where(m => m.HasAttribute<PartialAttribute>()).ToList();
 
 
-				var ownerProperties = workItem.TraitClasses.SelectMany(m => m.GetMembers()).OfType<IPropertySymbol>().Where(m => m.HasAttribute<OwnerAttribute>()).ToList();
+				var ownerProperties = workItem.TraitClasses.SelectMany(m => m.GetMembers()).OfType<IPropertySymbol>().Where(m => m.HasAttribute<ContainerAttribute>()).ToList();
 
 				bool useRegisterTraits = partialProperties.Any() || ownerProperties.Any();
 
@@ -40,7 +40,7 @@ public class TraitGenerator : ISourceGenerator
 				//Find the list of interfaces
 				var interfacesNamesA = workItem.TraitClasses.SelectMany(wi => wi.AllInterfaces);
 				var interfacesNamesB = workItem.TraitClasses.SelectMany(x => x.GetMembers()).OfType<IPropertySymbol>()
-					.Where(x => (bool)(x.GetAttribute<OwnerAttribute>()?.NamedArguments.SingleOrDefault(x => x.Key == "RegisterInterface").Value.Value ?? false)).Select(x => x.Type).OfType<INamedTypeSymbol>();
+					.Where(x => (bool)(x.GetAttribute<ContainerAttribute>()?.NamedArguments.SingleOrDefault(x => x.Key == "RegisterInterface").Value.Value ?? false)).Select(x => x.Type).OfType<INamedTypeSymbol>();
 
 				var interfacesNames = interfacesNamesA.Concat(interfacesNamesB)
 					.Distinct<INamedTypeSymbol>(SymbolEqualityComparer.Default).Select(i => i.FullName()).ToList();
@@ -349,7 +349,7 @@ public class TraitGenerator : ISourceGenerator
 
 
 									foreach (var partialProperty in traitClass.GetMembers()
-											.OfType<IPropertySymbol>().Where(m => m.HasAttribute<OwnerAttribute>()))
+											.OfType<IPropertySymbol>().Where(m => m.HasAttribute<ContainerAttribute>()))
 										code.AppendLine($"{traitFieldNames[traitClass]}.{partialProperty.Name} = this;");
 								}
 							}

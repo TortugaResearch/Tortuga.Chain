@@ -11,7 +11,9 @@ namespace Tortuga.Chain.SqlServer;
 [UseTrait(typeof(SupportsDeleteAllTrait<AbstractObjectName, AbstractDbType>))]
 [UseTrait(typeof(SupportsTruncateTrait<AbstractObjectName, AbstractDbType>))]
 [UseTrait(typeof(SupportsSqlQueriesTrait<AbstractCommand, AbstractParameter>))]
-[UseTrait(typeof(SupportsDeleteByKeyList<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
+[UseTrait(typeof(SupportsDeleteByKeyListTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
+[UseTrait(typeof(SupportsDeleteTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
+[UseTrait(typeof(SupportsUpdateTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
 partial class OleDbSqlServerDataSourceBase
 {
 	DatabaseMetadataCache<AbstractObjectName, AbstractDbType> ICommandHelper<AbstractObjectName, AbstractDbType>.DatabaseMetadata => DatabaseMetadata;
@@ -71,5 +73,17 @@ partial class OleDbSqlServerDataSourceBase
 		//Verify the table name actually exists.
 		var table = DatabaseMetadata.GetTableOrView(tableName);
 		return Sql("TRUNCATE TABLE " + table.Name.ToQuotedString() + ";").AsNonQuery();
+	}
+
+	ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> IUpdateDeleteHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnUpdateObject<TArgument>(AbstractObjectName tableName, TArgument argumentValue, UpdateOptions options)
+where TArgument : class
+	{
+		return new OleDbSqlServerUpdateObject<TArgument>(this, tableName, argumentValue, options);
+	}
+
+	ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> IUpdateDeleteHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnDeleteObject<TArgument>(AbstractObjectName tableName, TArgument argumentValue, DeleteOptions options)
+		where TArgument : class
+	{
+		return new OleDbSqlServerDeleteObject<TArgument>(this, tableName, argumentValue, options);
 	}
 }

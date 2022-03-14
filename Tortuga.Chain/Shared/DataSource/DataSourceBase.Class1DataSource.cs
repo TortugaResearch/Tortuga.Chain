@@ -41,48 +41,8 @@ namespace Tortuga.Chain.Access
 
 #endif
 	{
-		/************************ ISupportsDelete ************************/
-		/// <summary>
-		/// Creates a command to perform a delete operation.
-		/// </summary>
-		/// <param name="tableName"></param>
-		/// <param name="argumentValue"></param>
-		/// <param name="options"></param>
-		/// <returns></returns>
-		public ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> Delete<TArgument>(AbstractObjectName tableName, TArgument argumentValue, DeleteOptions options = DeleteOptions.None)
-		where TArgument : class
-		{
-			var table = DatabaseMetadata.GetTableOrView(tableName);
-			if (!AuditRules.UseSoftDelete(table))
-				return OnDeleteObject<TArgument>(tableName, argumentValue, options);
 
-			UpdateOptions effectiveOptions = UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected;
-			if (options.HasFlag(DeleteOptions.UseKeyAttribute))
-				effectiveOptions = effectiveOptions | UpdateOptions.UseKeyAttribute;
 
-			return OnUpdateObject<TArgument>(tableName, argumentValue, effectiveOptions);
-		}
-
-		/// <summary>
-		/// Delete an object model from the table indicated by the class's Table attribute.
-		/// </summary>
-		/// <typeparam name="TArgument"></typeparam>
-		/// <param name="argumentValue">The argument value.</param>
-		/// <param name="options">The delete options.</param>
-		/// <returns></returns>
-		public ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> Delete<TArgument>(TArgument argumentValue, DeleteOptions options = DeleteOptions.None) where TArgument : class
-		{
-			var table = DatabaseMetadata.GetTableOrViewFromClass<TArgument>();
-
-			if (!AuditRules.UseSoftDelete(table))
-				return OnDeleteObject<TArgument>(table.Name, argumentValue, options);
-
-			UpdateOptions effectiveOptions = UpdateOptions.SoftDelete;
-			if (options.HasFlag(DeleteOptions.UseKeyAttribute))
-				effectiveOptions = effectiveOptions | UpdateOptions.UseKeyAttribute;
-
-			return OnUpdateObject<TArgument>(table.Name, argumentValue, effectiveOptions);
-		}
 
 		/************************ ISupportsDeleteWithFilter ************************/
 
@@ -112,20 +72,9 @@ namespace Tortuga.Chain.Access
 			return DeleteWithFilter(tableName, whereClause);
 		}
 
-		/************************ ISupportsUpdate ************************/
 
 
-		/// <summary>
-		/// Update an object in the specified table.
-		/// </summary>
-		/// <typeparam name="TArgument"></typeparam>
-		/// <param name="argumentValue">The argument value.</param>
-		/// <param name="options">The update options.</param>
-		/// <returns></returns>
-		public ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> Update<TArgument>(TArgument argumentValue, UpdateOptions options = UpdateOptions.None) where TArgument : class
-		{
-			return Update(DatabaseMetadata.GetTableOrViewFromClass<TArgument>().Name, argumentValue, options);
-		}
+
 
 		/************************ ISupportsUpdateByKey ************************/
 
@@ -406,20 +355,7 @@ namespace Tortuga.Chain.Access
 			return Insert(DatabaseMetadata.GetTableOrViewFromClass<TArgument>().Name, argumentValue, options);
 		}
 
-		/************************ ISupportsUpdate ************************/
 
-		/// <summary>
-		/// Creates a operation used to perform an update operation.
-		/// </summary>
-		/// <param name="tableName"></param>
-		/// <param name="argumentValue"></param>
-		/// <param name="options"></param>
-		/// <returns></returns>
-		public ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> Update<TArgument>(AbstractObjectName tableName, TArgument argumentValue, UpdateOptions options = UpdateOptions.None)
-		where TArgument : class
-		{
-			return OnUpdateObject<TArgument>(tableName, argumentValue, options);
-		}
 
 		/************************ ISupportsUpdateByKey ************************/
 

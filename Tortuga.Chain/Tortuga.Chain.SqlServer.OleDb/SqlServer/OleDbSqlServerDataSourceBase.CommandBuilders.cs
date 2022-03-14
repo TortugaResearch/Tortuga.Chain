@@ -95,10 +95,7 @@ namespace Tortuga.Chain.SqlServer
 			return new OleDbSqlServerDeleteMany(this, tableName, filterValue, filterOptions);
 		}
 
-		ObjectDbCommandBuilder<OleDbCommand, OleDbParameter, TArgument> OnDeleteObject<TArgument>(SqlServerObjectName tableName, TArgument argumentValue, DeleteOptions options) where TArgument : class
-		{
-			return new OleDbSqlServerDeleteObject<TArgument>(this, tableName, argumentValue, options);
-		}
+
 
 		TableDbCommandBuilder<OleDbCommand, OleDbParameter, SqlServerLimitOption, TObject> OnFromTableOrView<TObject>(SqlServerObjectName tableOrViewName, object filterValue, FilterOptions filterOptions)
 			where TObject : class
@@ -135,10 +132,7 @@ namespace Tortuga.Chain.SqlServer
 			return new OleDbSqlServerUpdateMany(this, tableName, newValues, options);
 		}
 
-		ObjectDbCommandBuilder<OleDbCommand, OleDbParameter, TArgument> OnUpdateObject<TArgument>(SqlServerObjectName tableName, TArgument argumentValue, UpdateOptions options) where TArgument : class
-		{
-			return new OleDbSqlServerUpdateObject<TArgument>(this, tableName, argumentValue, options);
-		}
+
 
 	}
 }

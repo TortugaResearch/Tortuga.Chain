@@ -12,7 +12,7 @@ class SupportsTruncateTrait<TObjectName, TDbType> : ISupportsTruncate
 {
 	[Partial("tableName")] public Func<TObjectName, ILink<int?>> OnTruncate { get; set; } = null!;
 
-	[Owner(RegisterInterface = true)]
+	[Container(RegisterInterface = true)]
 	internal ICommandHelper<TObjectName, TDbType> DataSource { get; set; } = null!;
 
 	/// <summary>Truncates the specified table.</summary>
