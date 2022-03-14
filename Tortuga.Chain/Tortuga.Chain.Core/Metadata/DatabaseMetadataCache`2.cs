@@ -22,7 +22,7 @@ namespace Tortuga.Chain.Metadata
 		/// <remarks>This is populated by the RegisterType method.</remarks>
 		readonly ConcurrentDictionary<string, TypeRegistration<TDbType>> m_RegisteredTypes = new ConcurrentDictionary<string, TypeRegistration<TDbType>>(StringComparer.OrdinalIgnoreCase);
 
-		private readonly ConcurrentDictionary<(Type, OperationType), DatabaseObject> m_TypeTableMap = new ConcurrentDictionary<(Type, OperationType), DatabaseObject>();
+		private readonly ConcurrentDictionary<(Type, OperationType), TableOrViewMetadata<TName, TDbType>> m_TypeTableMap = new ConcurrentDictionary<(Type, OperationType), TableOrViewMetadata<TName, TDbType>>();
 
 		/// <summary>
 		/// Gets the maximum number of parameters in a single SQL batch.
@@ -172,24 +172,24 @@ namespace Tortuga.Chain.Metadata
 
 
 		/// <summary>
-		/// Returns the table, view, function, or stored procedure derived from the class's name and/or Table attribute.
+		/// Returns the table or view derived from the class's name and/or Table attribute.
 		/// </summary>
 		/// <typeparam name="TObject">The type of the object.</typeparam>
 		/// <param name="operation">The operation.</param>
 		/// <returns>DatabaseObject.</returns>
-		public DatabaseObject GetDatabaseObjectFromClass<TObject>(OperationType operation)
+		public TableOrViewMetadata<TName, TDbType> GetTableOrViewFromClass<TObject>(OperationType operation = OperationType.All)
 		{
 			var type = typeof(TObject);
-			return GetDatabaseObjectFromClass(type, operation);
+			return GetTableOrViewFromClass(type, operation);
 		}
 
 		/// <summary>
-		/// Returns the table, view, function, or stored procedure derived from the class's name and/or Table attribute.
+		/// Returns the table or view derived from the class's name and/or Table attribute.
 		/// </summary>
 		/// <param name="type"></param>
 		/// <param name="operation">The operation.</param>
 		/// <returns>DatabaseObject.</returns>
-		public DatabaseObject GetDatabaseObjectFromClass(Type type, OperationType operation)
+		public TableOrViewMetadata<TName, TDbType> GetTableOrViewFromClass(Type type, OperationType operation = OperationType.All)
 		{
 			var cacheKey = (type, operation);
 
@@ -200,40 +200,17 @@ namespace Tortuga.Chain.Metadata
 			var typeInfo = MetadataCache.GetMetadata(type);
 			var objectName = typeInfo.MappedTableName;
 			var schemaName = typeInfo.MappedSchemaName;
-			var allowFunctions = false;
 
-			switch (operation)
+			//On reads we can use the view instead.
+			if (operation == OperationType.Select)
 			{
-				/* TASK-350: Reserved for future work
-                        case OperationType.Insert:
-                            objectName = typeInfo.MappedInsertFunctionName ?? objectName;
-                            allowFunctions = true;
-                            break;
-
-                        case OperationType.Update:
-                            objectName = typeInfo.MappedUpdateFunctionName ?? objectName;
-                            allowFunctions = true;
-                            break;
-
-                        case OperationType.Delete:
-                            objectName = typeInfo.MappedDeleteFunctionName ?? objectName;
-                            allowFunctions = true;
-                            break;
-                */
-
-				case OperationType.Select:
-					objectName = typeInfo.MappedViewName ?? objectName;
-					allowFunctions = false;
-					break;
+				objectName = typeInfo.MappedViewName ?? objectName;
+				schemaName = typeInfo.MappedViewSchemaName ?? schemaName;
 			}
 
 			if (!objectName.IsNullOrEmpty())
 			{
-				TName name;
-				if (schemaName.IsNullOrEmpty())
-					name = ParseObjectName(objectName);
-				else
-					name = ParseObjectName(schemaName, objectName);
+				var name = schemaName.IsNullOrEmpty() ? ParseObjectName(objectName) : ParseObjectName(schemaName, objectName);
 
 				if (TryGetTableOrView(name, out var tableResult))
 				{
@@ -241,31 +218,7 @@ namespace Tortuga.Chain.Metadata
 					return tableResult;
 				}
 
-				/* TASK-350: Reserved for future work
-                if (allowFunctions)
-                {
-                    if (TryGetStoredProcedure(name, out var procResult))
-                    {
-                        m_TypeTableMap[cacheKey] = procResult;
-                        return procResult;
-                    }
-                    if (TryGetTableFunction(name, out var tvfResult))
-                    {
-                        m_TypeTableMap[cacheKey] = tvfResult;
-                        return tvfResult;
-                    }
-                    if (TryGetScalarFunction(name, out var funcResult))
-                    {
-                        m_TypeTableMap[cacheKey] = funcResult;
-                        return funcResult;
-                    }
-                }
-                */
-
-				if (allowFunctions)
-					throw new MissingObjectException($"Cannot find a table, function, or stored procedure with the name {name}");
-				else
-					throw new MissingObjectException($"Cannot find a table or view with the name {name}");
+				throw new MissingObjectException($"Cannot find a table or view with the name {name}");
 			}
 
 			//This section infers the schema from namespace
@@ -294,29 +247,6 @@ namespace Tortuga.Chain.Metadata
 			}
 		}
 
-		/// <summary>
-		/// Returns the table or view derived from the class's name and/or Table attribute.
-		/// </summary>
-		/// <typeparam name="TObject">The type of the object.</typeparam>
-		/// <returns></returns>
-		[SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-		public TableOrViewMetadata<TName, TDbType> GetTableOrViewFromClass<TObject>() where TObject : class =>
-			(TableOrViewMetadata<TName, TDbType>)GetDatabaseObjectFromClass<TObject>(OperationType.All);
-
-		/// <summary>
-		/// Returns the table or view derived from the class's name and/or Table attribute.
-		/// </summary>
-		/// <typeparam name="TObject"></typeparam>
-		/// <returns></returns>
-		TableOrViewMetadata IDatabaseMetadataCache.GetTableOrViewFromClass<TObject>() => GetTableOrViewFromClass<TObject>();
-
-		/// <summary>
-		/// Returns the table, view, function, or stored procedure derived from the class's name and/or Table attribute.
-		/// </summary>
-		/// <typeparam name="TObject"></typeparam>
-		/// <param name="operation">The type of operation to be performed.</param>
-		/// <returns></returns>
-		DatabaseObject IDatabaseMetadataCache.GetDatabaseObjectFromClass<TObject>(OperationType operation) => GetDatabaseObjectFromClass<TObject>(operation);
 
 		/// <summary>DatabaseObject
 		/// Gets the tables and views that were loaded by this cache.
@@ -510,8 +440,17 @@ namespace Tortuga.Chain.Metadata
 		/// <param name="tableName">Name of the table or view.</param>
 		/// <param name="tableOrView">The table or view.</param>
 		/// <returns></returns>
-		public bool TryGetTableOrView(string tableName, [NotNullWhen(true)] out TableOrViewMetadata? tableOrView) =>
-			TryGetTableOrView(ParseObjectName(tableName), out tableOrView);
+		bool IDatabaseMetadataCache.TryGetTableOrView(string tableName, [NotNullWhen(true)] out TableOrViewMetadata? tableOrView)
+		{
+
+			if (TryGetTableOrView(ParseObjectName(tableName), out var result))
+			{
+				tableOrView = result;
+				return true;
+			}
+			tableOrView = null;
+			return false;
+		}
 
 		/// <summary>
 		/// Tries to get the metadata for a table or view.
@@ -519,7 +458,7 @@ namespace Tortuga.Chain.Metadata
 		/// <param name="tableName">Name of the table or view.</param>
 		/// <param name="tableOrView">The table or view.</param>
 		/// <returns></returns>
-		public bool TryGetTableOrView(TName tableName, [NotNullWhen(true)] out TableOrViewMetadata? tableOrView)
+		public bool TryGetTableOrView(TName tableName, [NotNullWhen(true)] out TableOrViewMetadata<TName, TDbType>? tableOrView)
 		{
 			try
 			{
@@ -679,5 +618,11 @@ namespace Tortuga.Chain.Metadata
 		{
 			return m_RegisteredTypes.TryGetValue(databaseTypeName, out registeredType!);
 		}
+
+		TableOrViewMetadata IDatabaseMetadataCache.GetTableOrViewFromClass<TObject>(OperationType operation)
+			=> GetTableOrViewFromClass<TObject>(operation);
+
+		TableOrViewMetadata IDatabaseMetadataCache.GetTableOrViewFromClass(Type type, OperationType operation)
+			=> GetTableOrViewFromClass(type, operation);
 	}
 }

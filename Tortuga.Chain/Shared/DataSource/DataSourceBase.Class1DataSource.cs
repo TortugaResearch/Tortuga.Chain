@@ -102,8 +102,9 @@ namespace Tortuga.Chain.Access
 		/// </summary>
 		/// <param name="whereClause">The where clause.</param>
 		public MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> DeleteWithFilter<TObject>(string whereClause)
+			where TObject : class
 		{
-			var tableName = DatabaseObjectAsTableOrView<TObject>(OperationType.All).Name;
+			var tableName = GetTableOrViewFromClass<TObject>(OperationType.All).Name;
 			return DeleteWithFilter(tableName, whereClause);
 		}
 
@@ -188,7 +189,7 @@ namespace Tortuga.Chain.Access
 		[SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
 		public TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption, TObject> From<TObject>() where TObject : class
 		{
-			return OnFromTableOrView<TObject>(DatabaseObjectAsTableOrView<TObject>(OperationType.Select).Name, null, null);
+			return OnFromTableOrView<TObject>(GetTableOrViewFromClass<TObject>(OperationType.Select).Name, null, null);
 		}
 
 		/// <summary>
@@ -200,7 +201,7 @@ namespace Tortuga.Chain.Access
 		[SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
 		public TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption, TObject> From<TObject>(string whereClause) where TObject : class
 		{
-			return OnFromTableOrView<TObject>(DatabaseObjectAsTableOrView<TObject>(OperationType.Select).Name, whereClause, null);
+			return OnFromTableOrView<TObject>(GetTableOrViewFromClass<TObject>(OperationType.Select).Name, whereClause, null);
 		}
 
 		/// <summary>
@@ -213,7 +214,7 @@ namespace Tortuga.Chain.Access
 		[SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
 		public TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption, TObject> From<TObject>(string whereClause, object argumentValue) where TObject : class
 		{
-			return OnFromTableOrView<TObject>(DatabaseObjectAsTableOrView<TObject>(OperationType.Select).Name, whereClause, argumentValue);
+			return OnFromTableOrView<TObject>(GetTableOrViewFromClass<TObject>(OperationType.Select).Name, whereClause, argumentValue);
 		}
 
 		/// <summary>
@@ -226,7 +227,7 @@ namespace Tortuga.Chain.Access
 		[SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
 		public TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption, TObject> From<TObject>(object filterValue, FilterOptions filterOptions = FilterOptions.None) where TObject : class
 		{
-			return OnFromTableOrView<TObject>(DatabaseObjectAsTableOrView<TObject>(OperationType.Select).Name, filterValue, filterOptions);
+			return OnFromTableOrView<TObject>(GetTableOrViewFromClass<TObject>(OperationType.Select).Name, filterValue, filterOptions);
 		}
 
 		/// <summary>
@@ -250,8 +251,9 @@ namespace Tortuga.Chain.Access
 		/// <param name="filterValue">The filter value.</param>
 		/// <param name="filterOptions">The options.</param>
 		public MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> DeleteWithFilter<TObject>(object filterValue, FilterOptions filterOptions = FilterOptions.None)
+			where TObject : class
 		{
-			var tableName = DatabaseObjectAsTableOrView<TObject>(OperationType.All).Name;
+			var tableName = GetTableOrViewFromClass<TObject>(OperationType.All).Name;
 			return DeleteWithFilter(tableName, filterValue, filterOptions);
 		}
 
@@ -276,8 +278,9 @@ namespace Tortuga.Chain.Access
 		/// <param name="whereClause">The where clause.</param>
 		/// <param name="argumentValue">The argument value for the where clause.</param>
 		public MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> DeleteWithFilter<TObject>(string whereClause, object argumentValue)
+			where TObject : class
 		{
-			var tableName = DatabaseObjectAsTableOrView<TObject>(OperationType.All).Name;
+			var tableName = GetTableOrViewFromClass<TObject>(OperationType.All).Name;
 			return DeleteWithFilter(tableName, whereClause, argumentValue);
 		}
 
@@ -316,7 +319,7 @@ namespace Tortuga.Chain.Access
 		public SingleRowDbCommandBuilder<AbstractCommand, AbstractParameter, TObject> GetByKey<TObject>(Guid key)
 			where TObject : class
 		{
-			return GetByKey<TObject, Guid>(DatabaseObjectAsTableOrView<TObject>(OperationType.Select).Name, key);
+			return GetByKey<TObject, Guid>(GetTableOrViewFromClass<TObject>(OperationType.Select).Name, key);
 		}
 
 		/// <summary>
@@ -329,7 +332,7 @@ namespace Tortuga.Chain.Access
 		public SingleRowDbCommandBuilder<AbstractCommand, AbstractParameter, TObject> GetByKey<TObject>(long key)
 			where TObject : class
 		{
-			return GetByKey<TObject, long>(DatabaseObjectAsTableOrView<TObject>(OperationType.Select).Name, key);
+			return GetByKey<TObject, long>(GetTableOrViewFromClass<TObject>(OperationType.Select).Name, key);
 		}
 
 		/// <summary>
@@ -342,7 +345,7 @@ namespace Tortuga.Chain.Access
 		public SingleRowDbCommandBuilder<AbstractCommand, AbstractParameter, TObject> GetByKey<TObject>(int key)
 			where TObject : class
 		{
-			return GetByKey<TObject, int>(DatabaseObjectAsTableOrView<TObject>(OperationType.Select).Name, key);
+			return GetByKey<TObject, int>(GetTableOrViewFromClass<TObject>(OperationType.Select).Name, key);
 		}
 
 		/// <summary>
@@ -354,7 +357,7 @@ namespace Tortuga.Chain.Access
 		public SingleRowDbCommandBuilder<AbstractCommand, AbstractParameter, TObject> GetByKey<TObject>(string key)
 			where TObject : class
 		{
-			return GetByKey<TObject, string>(DatabaseObjectAsTableOrView<TObject>(OperationType.Select).Name, key);
+			return GetByKey<TObject, string>(GetTableOrViewFromClass<TObject>(OperationType.Select).Name, key);
 		}
 
 		/// <summary>
@@ -447,7 +450,7 @@ namespace Tortuga.Chain.Access
 
 			if (primaryKeys.Count == 0) //we're looking at a view. Try looking at the underlying table.
 			{
-				var alternateTableName = DatabaseObjectAsTableOrView<TObject>(OperationType.All).Name;
+				var alternateTableName = GetTableOrViewFromClass<TObject>(OperationType.All).Name;
 				primaryKeys = DatabaseMetadata.GetTableOrView(alternateTableName).PrimaryKeyColumns;
 			}
 
@@ -545,12 +548,12 @@ namespace Tortuga.Chain.Access
 		public MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter, TObject> GetByKeyList<TObject, TKey>(IEnumerable<TKey> keys)
 			where TObject : class
 		{
-			var tableName = DatabaseObjectAsTableOrView<TObject>(OperationType.Select).Name;
+			var tableName = GetTableOrViewFromClass<TObject>(OperationType.Select).Name;
 
 			var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).PrimaryKeyColumns;
 			if (primaryKeys.Count == 0) //we're looking at a view. Try looking at the underlying table.
 			{
-				var alternateTableName = DatabaseObjectAsTableOrView<TObject>(OperationType.All).Name;
+				var alternateTableName = GetTableOrViewFromClass<TObject>(OperationType.All).Name;
 				primaryKeys = DatabaseMetadata.GetTableOrView(alternateTableName).PrimaryKeyColumns;
 			}
 
@@ -605,20 +608,9 @@ namespace Tortuga.Chain.Access
 		}
 
 
-		TableOrViewMetadata<AbstractObjectName, AbstractDbType> DatabaseObjectAsTableOrView<TObject>(OperationType operationType)
+		TableOrViewMetadata<AbstractObjectName, AbstractDbType> GetTableOrViewFromClass<TObject>(OperationType operationType)
 		{
-			var databaseObject = DatabaseMetadata.GetDatabaseObjectFromClass<TObject>(operationType);
-
-			if (databaseObject is TableOrViewMetadata<AbstractObjectName, AbstractDbType> table)
-				return table;
-			else if (databaseObject is StoredProcedureMetadata<AbstractObjectName, AbstractDbType>)
-				throw new ArgumentException($"Table or view expected. Use `Procedure<TObject>(value, OperationType.{operationType})` instead.");
-			else if (databaseObject is TableFunctionMetadata<AbstractObjectName, AbstractDbType>)
-				throw new ArgumentException($"Table or view expected. Use `TableFunction<TObject>(value, OperationType.{operationType})` instead.");
-			else if (databaseObject is ScalarFunctionMetadata<AbstractObjectName, AbstractDbType>)
-				throw new ArgumentException($"Table or view expected. Use `ScalarFunction<TObject>(value, OperationType.{operationType})` instead.");
-			else
-				throw new NotSupportedException($"Unexpected type {databaseObject.GetType()}");
+			return (TableOrViewMetadata<AbstractObjectName, AbstractDbType>)DatabaseMetadata.GetTableOrViewFromClass<TObject>(operationType);
 		}
 
 		TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption> OnFromTableOrView(AbstractObjectName tableOrViewName, object filterValue, FilterOptions filterOptions)

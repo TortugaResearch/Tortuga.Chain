@@ -235,7 +235,7 @@ WHERE ns.nspname = @Schema AND tab.relname = @Name;";
 		/// <summary>
 		/// Gets a table's row count.
 		/// </summary>
-		public ILink<long> GetTableApproximateCount<TObject>() => GetTableApproximateCount(DatabaseObjectAsTableOrView<TObject>(OperationType.Select).Name);
+		public ILink<long> GetTableApproximateCount<TObject>() => GetTableApproximateCount(GetTableOrViewFromClass<TObject>(OperationType.Select).Name);
 
 	}
 }
