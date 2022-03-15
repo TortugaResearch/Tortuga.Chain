@@ -24,30 +24,7 @@ class SyntaxReceiver : ISyntaxContextReceiver
 
 				WorkItems.Add(new(modifiedClass));
 
-				//Log.Add($"Found a class named {modifiedClass.FullName()}");
-				//var attributes = modifiedClass.GetAttributes();
-				//Log.Add($"    Found {attributes.Length} attributes");
-				//foreach (AttributeData att in attributes)
-				//{
-				//	Log.Add($"   Attribute: {att.AttributeClass!.Name} Full Name: {att.AttributeClass.FullNamespace()}");
-				//	foreach (var arg in att.ConstructorArguments)
-				//	{
-				//		Log.Add($"    ....Argument: Type='{arg.Type}' Value_Type='{arg.Value?.GetType().FullName}' Value='{arg.Value}'");
-
-				//		if (arg.Value is INamedTypeSymbol namedArgType)
-				//		{
-				//			Log.Add($"    ........Found a INamedTypeSymbol named '{namedArgType}'");
-				//			var members = namedArgType.GetMembers();
-				//			foreach (var member in members)
-				//			{
-				//				if (member is IPropertySymbol property)
-				//					Log.Add($"    ...........Property: {property.Name} CanRead:{property.GetMethod != null} CanWrite:{property.SetMethod != null}");
-				//			}
-				//		}
-				//	}
-				//}
-
-				var useTraitAttributes = modifiedClass.GetAttributes<Tortuga.Shipwright.UseTraitAttribute>().ToList();
+				var useTraitAttributes = modifiedClass.GetAttributes<UseTraitAttribute>().ToList();
 				if (useTraitAttributes.Any())
 				{
 					Log.Add($"Container class: {modifiedClass.FullName()}");
