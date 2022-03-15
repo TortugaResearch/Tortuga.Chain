@@ -2,46 +2,93 @@
 
 namespace Tortuga.Shipwright;
 
+/// <summary>
+/// This class is used to collect the generated source code prior to writing it to a file.
+/// </summary>
 class CodeWriter
 {
+	readonly StringBuilder m_Content = new();
+
+	/// <summary>
+	/// We only need one. It can be reused.
+	/// </summary>
+	readonly ScopeTracker m_ScopeTracker;
+
+	/// <summary>
+	/// Indent level is used to prepend tabs to each line.
+	/// </summary>
+	int m_IndentLevel;
+
 	public CodeWriter()
 	{
 		m_ScopeTracker = new(this); //We only need one. It can be reused.
 	}
-	StringBuilder Content { get; } = new();
-	int IndentLevel { get; set; }
-	ScopeTracker m_ScopeTracker { get; } //We only need one. It can be reused.
-	public void Append(string line) => Content.Append(line);
+	/// <summary>
+	/// Append text to the current line. This will not create a new line. This will not honor the indentation level.
+	/// </summary>
+	/// <param name="text"></param>
+	/// <remarks>Call StartLine before using this function.</remarks>
+	public void Append(string text) => m_Content.Append(text);
 
-	public void AppendLine(string? line) => Content.Append(new string('\t', IndentLevel)).AppendLine(line);
-	public void AppendLine() => Content.AppendLine();
-	public IDisposable BeginScope(string line)
+	/// <summary>
+	/// Indents the current line, appends the provided text, and creates a new line.
+	/// </summary>
+	/// <param name="text"></param>
+	public void AppendLine(string text) => m_Content.Append(new string('\t', m_IndentLevel)).AppendLine(text);
+
+	/// <summary>
+	/// Append a new line.
+	/// </summary>
+	public void AppendLine() => m_Content.AppendLine();
+
+	/// <summary>
+	/// Appends the multiple lines, ensuring the correct indentation is applied to each line.
+	/// </summary>
+	public void AppendMultipleLines(string? text)
 	{
-		AppendLine(line);
-		return BeginScope();
+		if (text == null)
+			return;
+
+		var lines = text.Split(new[] { "\r\n" }, StringSplitOptions.None);
+		foreach (var line in lines)
+			AppendLine(line);
 	}
-	public IDisposable BeginScope()
+
+	/// <summary>
+	/// Appends the provided text and a new line. The appends an opening brace and increased the indentation level. 
+	/// </summary>
+	/// <param name="text">Text to append before starting the block.</param>
+	/// <returns>An IDisposable marker that can be used to close the block.</returns>
+	public IDisposable BeginScope(string text)
 	{
-		Content.Append(new string('\t', IndentLevel)).AppendLine("{");
-		IndentLevel += 1;
+		AppendLine(text);
+
+		m_Content.Append(new string('\t', m_IndentLevel)).AppendLine("{");
+		m_IndentLevel += 1;
 		return m_ScopeTracker;
 	}
 
-	public void EndLine() => Content.AppendLine();
-
 	public void EndScope()
 	{
-		IndentLevel -= 1;
-		Content.Append(new string('\t', IndentLevel)).AppendLine("}");
+		m_IndentLevel -= 1;
+		m_Content.Append(new string('\t', m_IndentLevel)).AppendLine("}");
 	}
 
-	public void StartLine() => Content.Append(new string('\t', IndentLevel));
-	public override string ToString() => Content.ToString();
+	/// <summary>
+	/// Indents the current line, optioanlly adding the provided text.
+	/// </summary>
+	/// <param name="text">Text to append.</param>
+	/// <remarks>This is normally used in conjuction with Append.</remarks>
+	public void StartLine(string? text = null) => m_Content.Append(new string('\t', m_IndentLevel)).Append(text);
 
-	string EscapeString(string text) => text.Replace("\"", "\"\"");
+
+	/// <summary>Returns a string that represents the current object.</summary>
+	/// <returns>A string that represents the current object.</returns>
+	public override string ToString() => m_Content.ToString();
+
 
 	/// <summary>
-	/// This is used to close code blocks and remove indents.
+	/// Each time Dispose is called it will close the current code block and reduce the indent level by 1.
 	class ScopeTracker : IDisposable
 	{
 		public ScopeTracker(CodeWriter parent)
@@ -54,18 +101,5 @@ class CodeWriter
 		{
 			Parent.EndScope();
 		}
-	}
-
-	/// <summary>
-	/// Appends the multiple lines, ensuring the correct indentation is applied to each line.
-	/// </summary>
-	public void AppendMultipleLines(string? content)
-	{
-		if (content == null)
-			return;
-
-		var lines = content.Split(new[] { "\r\n" }, StringSplitOptions.None);
-		foreach (var line in lines)
-			AppendLine(line);
 	}
 }
