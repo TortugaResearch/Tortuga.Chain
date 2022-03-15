@@ -6,10 +6,10 @@ class WorkItem
 {
 	public WorkItem(INamedTypeSymbol hostingClass)
 	{
-		HostingClass = hostingClass ?? throw new ArgumentNullException(nameof(hostingClass));
+		ContainerClass = hostingClass ?? throw new ArgumentNullException(nameof(hostingClass));
 	}
 
-	public INamedTypeSymbol HostingClass { get; }
+	public INamedTypeSymbol ContainerClass { get; }
 	public HashSet<INamedTypeSymbol> TraitClasses { get; } = new(SymbolEqualityComparer.Default);
 }
 
