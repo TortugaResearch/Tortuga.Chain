@@ -171,6 +171,29 @@ static class SemanticHelper
 		return symbol.GetAttributes().Any(att => att.AttributeClass.FullName() == fullName);
 	}
 
+	public static T GetNamedArgument<T>(this AttributeData attribute, string name, T defaultValue)
+		where T : notnull
+	{
+		if (attribute == null)
+			throw new ArgumentNullException(nameof(attribute), $"{nameof(attribute)} is null.");
+
+		if (string.IsNullOrEmpty(name))
+			throw new ArgumentException($"{nameof(name)} is null or empty.", nameof(name));
+
+		return (T)(attribute.NamedArguments.SingleOrDefault(x => x.Key == name).Value.Value ?? defaultValue);
+	}
+
+	public static T? GetNamedArgumentOrNull<T>(this AttributeData attribute, string name)
+	{
+		if (attribute == null)
+			throw new ArgumentNullException(nameof(attribute), $"{nameof(attribute)} is null.");
+
+		if (string.IsNullOrEmpty(name))
+			throw new ArgumentException($"{nameof(name)} is null or empty.", nameof(name));
+
+		return (T?)(attribute.NamedArguments.SingleOrDefault(x => x.Key == name).Value.Value);
+	}
+
 	public static string? TypeConstraintString(this IMethodSymbol symbol)
 	{
 		if (!symbol.IsGenericMethod)

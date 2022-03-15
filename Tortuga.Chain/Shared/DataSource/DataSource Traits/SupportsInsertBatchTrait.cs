@@ -19,16 +19,6 @@ class SupportsInsertBatchTrait<TCommand, TParameter, TObjectName, TDbType, TResu
 	where TResult : DbCommandBuilder<TCommand, TParameter>
 {
 
-	//[Owner]
-	//public IDataSource DataSource { get; set; } = null!;
-
-	//[Partial]
-	//public Func<DatabaseMetadataCache<TObjectName, TDbType>> OnGetDatabaseMetadata2 { get; set; } = null!;
-	//[Partial("builder")]
-	//public Func<SqlBuilder<TDbType>, List<TParameter>> OnGetParameters { get; set; } = null!;
-
-	//[Partial("objectName")] public Func<string, TObjectName> OnParseObjectName { get; set; } = null!;
-
 	[Container(RegisterInterface = true)]
 	internal IInsertBatchHelper<TCommand, TParameter, TObjectName, TDbType> DataSource { get; set; } = null!;
 
@@ -63,7 +53,7 @@ class SupportsInsertBatchTrait<TCommand, TParameter, TObjectName, TDbType, TResu
 	public TResult InsertBatch<TObject>(IEnumerable<TObject> objects, InsertOptions options = InsertOptions.None)
 	where TObject : class
 	{
-		return InsertBatch<TObject>(DataSource.DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, objects, options);
+		return InsertBatch(DataSource.DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, objects, options);
 	}
 
 	ILink<int> ISupportsInsertBatch.InsertMultipleBatch<TObject>(string tableName, IReadOnlyList<TObject> objects, InsertOptions options)

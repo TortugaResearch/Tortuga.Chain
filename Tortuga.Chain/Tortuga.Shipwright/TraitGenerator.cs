@@ -155,9 +155,8 @@ public class TraitGenerator : ISourceGenerator
 
 								//receiver.Log.Add("Inheritance value type = " + exposeAttribute.NamedArguments.SingleOrDefault(x => x.Key == "Inheritance").Value.Value?.GetType().FullName);
 
-								var accessibilityOption = (Accessibility)(exposeAttribute.NamedArguments.SingleOrDefault(x => x.Key == "Accessibility").Value.Value ?? Accessibility.Public);
-
-								var inheritanceOption = (Inheritance)(exposeAttribute.NamedArguments.SingleOrDefault(x => x.Key == "Inheritance").Value.Value ?? Inheritance.None);
+								var accessibilityOption = exposeAttribute.GetNamedArgument("Accessibility", Accessibility.Public);
+								var inheritanceOption = exposeAttribute.GetNamedArgument("Inheritance", Inheritance.None);
 
 								var accessibility = accessibilityOption switch
 								{
