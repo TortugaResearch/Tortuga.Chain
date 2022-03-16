@@ -3,7 +3,7 @@
 	<PropertyGroup>
 		<TargetFrameworks>net462;netstandard2.0;net6.0-windows</TargetFrameworks>
 		<Authors>David Tomcik, Jonathan Allen</Authors>
-		<Company>Tortuga Technologies</Company>
+		<Company>Tortuga Research</Company>
 		<Description>A fluent ORM and Database Reflection Library for MS Access.</Description>
 		<PackageTags>ORM Fluent DB Reflection Access</PackageTags>
 		<LangVersion>10.0</LangVersion>
@@ -80,9 +80,9 @@
 
 	<!-- Code Generator -->
 	<ItemGroup>
-	  <ProjectReference Include="..\Tortuga.Shipwright\Tortuga.Shipwright.csproj" OutputItemType="Analyzer" />
+		<PackageReference Include="Tortuga.Shipwright" Version="0.1.0" />
 	</ItemGroup>
-
+	
 	<PropertyGroup>
 		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
 		<CompilerGeneratedFilesOutputPath>Generated</CompilerGeneratedFilesOutputPath>

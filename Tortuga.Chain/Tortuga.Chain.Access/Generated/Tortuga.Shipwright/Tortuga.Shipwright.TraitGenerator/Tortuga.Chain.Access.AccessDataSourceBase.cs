@@ -26,15 +26,15 @@ namespace Tortuga.Chain.Access
 				return ___Trait1;
 			}
 		}
-private Traits.SupportsUpdateTrait<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.Access.AccessObjectName, System.Data.OleDb.OleDbType> ___Trait2 = new();
-private Traits.SupportsUpdateTrait<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.Access.AccessObjectName, System.Data.OleDb.OleDbType> __Trait2
-{
-	get
-	{
-		if (!__TraitsRegistered) __RegisterTraits();
-		return ___Trait2;
-	}
-}
+		private Traits.SupportsUpdateTrait<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.Access.AccessObjectName, System.Data.OleDb.OleDbType> ___Trait2 = new();
+		private Traits.SupportsUpdateTrait<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.Access.AccessObjectName, System.Data.OleDb.OleDbType> __Trait2
+		{
+			get
+			{
+				if (!__TraitsRegistered) __RegisterTraits();
+				return ___Trait2;
+			}
+		}
 		private Traits.SupportsDeleteTrait<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.Access.AccessObjectName, System.Data.OleDb.OleDbType> ___Trait3 = new();
 		private Traits.SupportsDeleteTrait<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.Access.AccessObjectName, System.Data.OleDb.OleDbType> __Trait3
 		{
@@ -255,10 +255,10 @@ private Traits.SupportsUpdateTrait<System.Data.OleDb.OleDbCommand, System.Data.O
 		/// <param name="sqlStatement">The SQL statement.</param>
 		/// <param name="argumentValue">The argument value.</param>
 		/// <returns>SqlServerSqlCall.</returns>
-public Tortuga.Chain.CommandBuilders.MultipleTableDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter> Sql(System.String sqlStatement, System.Object argumentValue)
-{
-	return __Trait4.Sql(sqlStatement, argumentValue);
-}
+		public Tortuga.Chain.CommandBuilders.MultipleTableDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter> Sql(System.String sqlStatement, System.Object argumentValue)
+		{
+			return __Trait4.Sql(sqlStatement, argumentValue);
+		}
 
 		// Exposing trait Traits.SupportsUpdateTrait<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.Access.AccessObjectName, System.Data.OleDb.OleDbType>
 
@@ -291,15 +291,15 @@ public Tortuga.Chain.CommandBuilders.MultipleTableDbCommandBuilder<System.Data.O
 		private partial Tortuga.Chain.CommandBuilders.MultipleTableDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter> OnSql(System.String sqlStatement, System.Object? argumentValue );
 
 
-private void __RegisterTraits()
-{
-	__TraitsRegistered = true;
-	__Trait0.OnDeleteAll = OnDeleteAll;
-	__Trait0.DataSource = this;
-	__Trait1.DataSource = this;
-	__Trait2.DataSource = this;
-	__Trait3.DataSource = this;
-	__Trait4.OnSql = OnSql;
-}
+		private void __RegisterTraits()
+		{
+			__TraitsRegistered = true;
+			__Trait0.OnDeleteAll = OnDeleteAll;
+			__Trait0.DataSource = this;
+			__Trait1.DataSource = this;
+			__Trait2.DataSource = this;
+			__Trait3.DataSource = this;
+			__Trait4.OnSql = OnSql;
+		}
 	}
 }

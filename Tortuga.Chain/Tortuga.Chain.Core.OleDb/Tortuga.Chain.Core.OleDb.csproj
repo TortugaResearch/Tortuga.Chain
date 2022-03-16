@@ -4,7 +4,7 @@
 		<TargetFrameworks>net462;netstandard2.0;net6.0</TargetFrameworks>
 		<RootNamespace>Tortuga.Chain</RootNamespace>
 		<Authors>David Tomcik, Jonathan Allen</Authors>
-		<Company>Tortuga Technologies</Company>
+		<Company>Tortuga Research</Company>
 		<Description>A fluent ORM and Database Reflection Library for .NET and OleDB Databases.</Description>
 		<PackageTags>ORM Fluent DB Reflection</PackageTags>
 		<LangVersion>10.0</LangVersion>

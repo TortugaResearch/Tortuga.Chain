@@ -3,7 +3,7 @@
 	<PropertyGroup>
 		<TargetFrameworks>net462;netstandard2.0;netcoreapp3.1;net6.0</TargetFrameworks>
 		<Authors>David Tomcik, Jonathan Allen</Authors>
-		<Company>Tortuga Technologies</Company>
+		<Company>Tortuga Research</Company>
 		<Description>A fluent ORM and Database Reflection Library for .NET.</Description>
 		<PackageTags>ORM Fluent DB Reflection</PackageTags>
 		<LangVersion>10.0</LangVersion>
@@ -52,10 +52,7 @@
 		<PackageReference Include="Tortuga.Anchor" Version="4.0.0" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <ProjectReference Include="..\Tortuga.Shipwright\Tortuga.Shipwright.csproj" />
-	</ItemGroup>
-
+	
 	<!-- NuGet Packaging Boilerplate-->
 	<PropertyGroup Condition="'$(Configuration)'=='Release'">
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>

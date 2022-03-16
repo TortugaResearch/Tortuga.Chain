@@ -3,7 +3,7 @@
 	<PropertyGroup>
 		<TargetFrameworks>net462;netstandard2.0;net6.0</TargetFrameworks>
 		<Authors>David Tomcik, Jonathan Allen</Authors>
-		<Company>Tortuga Technologies</Company>
+		<Company>Tortuga Research</Company>
 		<Description>A fluent ORM and Database Reflection Library for SQL Server. This uses System.Data.SqlClient. For Microsoft.Data.SqlClient use the Tortuga.Chain.SqlServer.MDS package.</Description>
 		<PackageTags>ORM Fluent DB Reflection SQL Server</PackageTags>
 		<LangVersion>10.0</LangVersion>
@@ -71,7 +71,7 @@
 
 	<!-- Code Generator -->
 	<ItemGroup>
-		<ProjectReference Include="..\Tortuga.Shipwright\Tortuga.Shipwright.csproj" OutputItemType="Analyzer" />
+		<PackageReference Include="Tortuga.Shipwright" Version="0.1.0" />
 	</ItemGroup>
 
 	<PropertyGroup>
