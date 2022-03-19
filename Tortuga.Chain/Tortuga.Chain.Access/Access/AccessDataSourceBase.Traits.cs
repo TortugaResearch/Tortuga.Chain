@@ -14,6 +14,7 @@ namespace Tortuga.Chain.Access;
 [UseTrait(typeof(SupportsUpdateTrait<OleDbCommand, OleDbParameter, AccessObjectName, OleDbType>))]
 [UseTrait(typeof(SupportsDeleteTrait<OleDbCommand, OleDbParameter, AccessObjectName, OleDbType>))]
 [UseTrait(typeof(SupportsSqlQueriesTrait<OleDbCommand, OleDbParameter>))]
+[UseTrait(typeof(SupportsUpdateByKeyListTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
 partial class AccessDataSourceBase
 {
 	DatabaseMetadataCache<AbstractObjectName, AbstractDbType> ICommandHelper<AbstractObjectName, AbstractDbType>.DatabaseMetadata => DatabaseMetadata;
@@ -30,7 +31,7 @@ partial class AccessDataSourceBase
 	/// <returns>MultipleRowDbCommandBuilder&lt;OleDbCommand, OleDbParameter&gt;.</returns>
 	/// <exception cref="MappingException"></exception>
 	[SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "DeleteByKeyList")]
-	MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> IDeleteByKeyHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnDeleteByKeyList<TKey>(AccessObjectName tableName, IEnumerable<TKey> keys, DeleteOptions options)
+	MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> IUpdateDeleteByKeyHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnDeleteByKeyList<TKey>(AccessObjectName tableName, IEnumerable<TKey> keys, DeleteOptions options)
 	{
 		var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).PrimaryKeyColumns;
 		if (primaryKeys.Count != 1)
@@ -94,6 +95,34 @@ partial class AccessDataSourceBase
 		where TArgument : class
 	{
 		return new AccessDeleteObject<TArgument>(this, tableName, argumentValue, options);
+	}
+
+
+
+	MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> IUpdateDeleteByKeyHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnUpdateByKeyList<TArgument, TKey>(AccessObjectName tableName, TArgument newValues, IEnumerable<TKey> keys, UpdateOptions options)
+	{
+		var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).PrimaryKeyColumns;
+		if (primaryKeys.Count != 1)
+			throw new MappingException($"UpdateByKeyList operation isn't allowed on {tableName} because it doesn't have a single primary key.");
+
+		var keyList = keys.AsList();
+		var columnMetadata = primaryKeys.Single();
+		string where;
+		if (keys.Count() > 1)
+			where = columnMetadata.SqlName + " IN (" + string.Join(", ", keyList.Select((s, i) => "@Param" + i)) + ")";
+		else
+			where = columnMetadata.SqlName + " = @Param0";
+
+		var parameters = new List<OleDbParameter>();
+		for (var i = 0; i < keyList.Count; i++)
+		{
+			var param = new OleDbParameter("@Param" + i, keyList[i]);
+			if (columnMetadata.DbType.HasValue)
+				param.OleDbType = columnMetadata.DbType.Value;
+			parameters.Add(param);
+		}
+
+		return new AccessUpdateMany(this, tableName, newValues, where, parameters, parameters.Count, options);
 	}
 
 }

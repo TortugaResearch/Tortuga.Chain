@@ -126,23 +126,6 @@ namespace Tortuga.Chain.Access
 
 
 
-
-
-		ISingleRowDbCommandBuilder ISupportsUpdateByKey.UpdateByKey<TArgument, TKey>(string tableName, TArgument newValues, TKey key, UpdateOptions options)
-		{
-			return UpdateByKey(tableName, newValues, key, options);
-		}
-
-		ISingleRowDbCommandBuilder ISupportsUpdateByKey.UpdateByKey<TArgument>(string tableName, TArgument newValues, string key, UpdateOptions options)
-		{
-			return UpdateByKey(tableName, newValues, key, options);
-		}
-
-		IMultipleRowDbCommandBuilder ISupportsUpdateByKeyList.UpdateByKeyList<TArgument, TKey>(string tableName, TArgument newValues, IEnumerable<TKey> keys, UpdateOptions options)
-		{
-			return UpdateByKeyList(tableName, newValues, keys, options);
-		}
-
 		IUpdateManyDbCommandBuilder ISupportsUpdateSet.UpdateSet(string tableName, string updateExpression, UpdateOptions options)
 		{
 			return UpdateSet(tableName, updateExpression, options);

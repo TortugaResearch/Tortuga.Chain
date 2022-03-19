@@ -2,7 +2,7 @@
 
 namespace Tortuga.Chain.SqlServer
 {
-	partial class SqlServerDataSourceBase: Tortuga.Chain.DataSources.ISupportsDeleteAll, Tortuga.Chain.DataSources.ISupportsTruncate, Tortuga.Chain.DataSources.ISupportsSqlQueries, Tortuga.Chain.DataSources.ISupportsInsertBatch, Tortuga.Chain.DataSources.ISupportsDeleteByKeyList, Tortuga.Chain.DataSources.ISupportsDeleteByKey, Tortuga.Chain.DataSources.ISupportsDelete, Tortuga.Chain.DataSources.ISupportsUpdate, Traits.ICommandHelper<Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>, Traits.IInsertBatchHelper<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>, Traits.IDeleteByKeyHelper<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>, Traits.IUpdateDeleteHelper<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>
+	partial class SqlServerDataSourceBase: Tortuga.Chain.DataSources.ISupportsDeleteAll, Tortuga.Chain.DataSources.ISupportsTruncate, Tortuga.Chain.DataSources.ISupportsSqlQueries, Tortuga.Chain.DataSources.ISupportsInsertBatch, Tortuga.Chain.DataSources.ISupportsDeleteByKeyList, Tortuga.Chain.DataSources.ISupportsDeleteByKey, Tortuga.Chain.DataSources.ISupportsDelete, Tortuga.Chain.DataSources.ISupportsUpdate, Tortuga.Chain.DataSources.ISupportsUpdateByKey, Tortuga.Chain.DataSources.ISupportsUpdateByKeyList, Traits.ICommandHelper<Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>, Traits.IInsertBatchHelper<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>, Traits.IUpdateDeleteByKeyHelper<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>, Traits.IUpdateDeleteHelper<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>
 	{
 
 		private bool __TraitsRegistered;
@@ -69,6 +69,15 @@ namespace Tortuga.Chain.SqlServer
 			{
 				if (!__TraitsRegistered) __RegisterTraits();
 				return ___Trait6;
+			}
+		}
+		private Traits.SupportsUpdateByKeyListTrait<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType> ___Trait7 = new();
+		private Traits.SupportsUpdateByKeyListTrait<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType> __Trait7
+		{
+			get
+			{
+				if (!__TraitsRegistered) __RegisterTraits();
+				return ___Trait7;
 			}
 		}
 
@@ -153,6 +162,23 @@ namespace Tortuga.Chain.SqlServer
 		Tortuga.Chain.CommandBuilders.IObjectDbCommandBuilder<TArgument> Tortuga.Chain.DataSources.ISupportsUpdate.Update<TArgument>(TArgument argumentValue, Tortuga.Chain.UpdateOptions options)
 		{
 			return ((Tortuga.Chain.DataSources.ISupportsUpdate)__Trait6).Update<TArgument>(argumentValue, options);
+		}
+
+		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsUpdateByKey
+		Tortuga.Chain.CommandBuilders.ISingleRowDbCommandBuilder Tortuga.Chain.DataSources.ISupportsUpdateByKey.UpdateByKey<TArgument, TKey>(System.String tableName, TArgument newValues, TKey key, Tortuga.Chain.UpdateOptions options)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsUpdateByKey)__Trait7).UpdateByKey<TArgument, TKey>(tableName, newValues, key, options);
+		}
+
+		Tortuga.Chain.CommandBuilders.ISingleRowDbCommandBuilder Tortuga.Chain.DataSources.ISupportsUpdateByKey.UpdateByKey<TArgument>(System.String tableName, TArgument newValues, System.String key, Tortuga.Chain.UpdateOptions options)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsUpdateByKey)__Trait7).UpdateByKey<TArgument>(tableName, newValues, key, options);
+		}
+
+		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsUpdateByKeyList
+		Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder Tortuga.Chain.DataSources.ISupportsUpdateByKeyList.UpdateByKeyList<TArgument, TKey>(System.String tableName, TArgument newValues, System.Collections.Generic.IEnumerable<TKey> keys, Tortuga.Chain.UpdateOptions options)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsUpdateByKeyList)__Trait7).UpdateByKeyList<TArgument, TKey>(tableName, newValues, keys, options);
 		}
 
 		// Exposing trait Traits.SupportsDeleteAllTrait<Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>
@@ -376,6 +402,53 @@ namespace Tortuga.Chain.SqlServer
 			return __Trait1.Truncate<TObject>();
 		}
 
+		// Exposing trait Traits.SupportsUpdateByKeyListTrait<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>
+
+		/// <summary>
+		/// Update a record by its primary key.
+		/// </summary>
+		/// <typeparam name="TArgument">The type of the t argument.</typeparam>
+		/// <typeparam name="TKey"></typeparam>
+		/// <param name="tableName">Name of the table.</param>
+		/// <param name="newValues">The new values to use.</param>
+		/// <param name="key">The key.</param>
+		/// <param name="options">The options.</param>
+		/// <returns>MultipleRowDbCommandBuilder&lt;AbstractCommand, AbstractParameter&gt;.</returns>
+		public Tortuga.Chain.CommandBuilders.SingleRowDbCommandBuilder<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter> UpdateByKey<TArgument, TKey>(Tortuga.Chain.SqlServer.SqlServerObjectName tableName, TArgument newValues, TKey key, Tortuga.Chain.UpdateOptions options = 0)where TKey : struct
+		{
+			return __Trait7.UpdateByKey<TArgument, TKey>(tableName, newValues, key, options);
+		}
+
+		/// <summary>
+		/// Update a record by its primary key.
+		/// </summary>
+		/// <typeparam name="TArgument">The type of the t argument.</typeparam>
+		/// <param name="tableName">Name of the table.</param>
+		/// <param name="newValues">The new values to use.</param>
+		/// <param name="key">The key.</param>
+		/// <param name="options">The options.</param>
+		/// <returns>MultipleRowDbCommandBuilder&lt;OleDbCommand, OleDbParameter&gt;.</returns>
+		public Tortuga.Chain.CommandBuilders.SingleRowDbCommandBuilder<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter> UpdateByKey<TArgument>(Tortuga.Chain.SqlServer.SqlServerObjectName tableName, TArgument newValues, System.String key, Tortuga.Chain.UpdateOptions options = 0)
+		{
+			return __Trait7.UpdateByKey<TArgument>(tableName, newValues, key, options);
+		}
+
+		/// <summary>
+		/// Update multiple rows by key.
+		/// </summary>
+		/// <typeparam name="TArgument">The type of the t argument.</typeparam>
+		/// <typeparam name="TKey">The type of the t key.</typeparam>
+		/// <param name="tableName">Name of the table.</param>
+		/// <param name="newValues">The new values to use.</param>
+		/// <param name="keys">The keys.</param>
+		/// <param name="options">Update options.</param>
+		/// <returns>MultipleRowDbCommandBuilder&lt;OleDbCommand, OleDbParameter&gt;.</returns>
+		/// <exception cref="T:Tortuga.Chain.MappingException"></exception>
+		public Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter> UpdateByKeyList<TArgument, TKey>(Tortuga.Chain.SqlServer.SqlServerObjectName tableName, TArgument newValues, System.Collections.Generic.IEnumerable<TKey> keys, Tortuga.Chain.UpdateOptions options = 0)
+		{
+			return __Trait7.UpdateByKeyList<TArgument, TKey>(tableName, newValues, keys, options);
+		}
+
 		// Exposing trait Traits.SupportsUpdateTrait<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>
 
 		/// <summary>
@@ -417,9 +490,10 @@ namespace Tortuga.Chain.SqlServer
 			__Trait1.DataSource = this as Traits.ICommandHelper<Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>;
 			__Trait2.OnSql = OnSql;
 			__Trait3.DataSource = this as Traits.IInsertBatchHelper<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>;
-			__Trait4.DataSource = this as Traits.IDeleteByKeyHelper<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>;
+			__Trait4.DataSource = this as Traits.IUpdateDeleteByKeyHelper<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>;
 			__Trait5.DataSource = this as Traits.IUpdateDeleteHelper<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>;
 			__Trait6.DataSource = this as Traits.IUpdateDeleteHelper<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>;
+			__Trait7.DataSource = this as Traits.IUpdateDeleteByKeyHelper<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>;
 		}
 
 	}

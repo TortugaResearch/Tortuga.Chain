@@ -76,24 +76,9 @@ namespace Tortuga.Chain.Access
 
 
 
-		/************************ ISupportsUpdateByKey ************************/
 
 
-		/// <summary>
-		/// Update a record by its primary key.
-		/// </summary>
-		/// <typeparam name="TArgument">The type of the t argument.</typeparam>
-		/// <typeparam name="TKey"></typeparam>
-		/// <param name="tableName">Name of the table.</param>
-		/// <param name="newValues">The new values to use.</param>
-		/// <param name="key">The key.</param>
-		/// <param name="options">The options.</param>
-		/// <returns>MultipleRowDbCommandBuilder&lt;AbstractCommand, AbstractParameter&gt;.</returns>
-		public SingleRowDbCommandBuilder<AbstractCommand, AbstractParameter> UpdateByKey<TArgument, TKey>(AbstractObjectName tableName, TArgument newValues, TKey key, UpdateOptions options = UpdateOptions.None)
-			where TKey : struct
-		{
-			return UpdateByKeyList(tableName, newValues, new List<TKey> { key }, options);
-		}
+
 
 		/************************ ISupportsFrom ************************/
 
@@ -357,22 +342,7 @@ namespace Tortuga.Chain.Access
 
 
 
-		/************************ ISupportsUpdateByKey ************************/
 
-
-		/// <summary>
-		/// Update a record by its primary key.
-		/// </summary>
-		/// <typeparam name="TArgument">The type of the t argument.</typeparam>
-		/// <param name="tableName">Name of the table.</param>
-		/// <param name="newValues">The new values to use.</param>
-		/// <param name="key">The key.</param>
-		/// <param name="options">The options.</param>
-		/// <returns>MultipleRowDbCommandBuilder&lt;OleDbCommand, OleDbParameter&gt;.</returns>
-		public SingleRowDbCommandBuilder<AbstractCommand, AbstractParameter> UpdateByKey<TArgument>(AbstractObjectName tableName, TArgument newValues, string key, UpdateOptions options = UpdateOptions.None)
-		{
-			return UpdateByKeyList(tableName, newValues, new List<string> { key }, options);
-		}
 
 		/************************ ISupportsInsert ************************/
 

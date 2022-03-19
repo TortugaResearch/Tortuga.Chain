@@ -16,13 +16,14 @@ namespace Tortuga.Chain.SQLite
 	[UseTrait(typeof(SupportsDeleteByKeyListTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
 	[UseTrait(typeof(SupportsUpdateTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
 	[UseTrait(typeof(SupportsDeleteTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
+	[UseTrait(typeof(SupportsUpdateByKeyListTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
 	partial class SQLiteDataSourceBase
 	{
 		DatabaseMetadataCache<AbstractObjectName, AbstractDbType> ICommandHelper<AbstractObjectName, AbstractDbType>.DatabaseMetadata => DatabaseMetadata;
 
 		List<AbstractParameter> ICommandHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.GetParameters(SqlBuilder<AbstractDbType> builder) => builder.GetParameters();
 
-		MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> IDeleteByKeyHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnDeleteByKeyList<TKey>(AbstractObjectName tableName, IEnumerable<TKey> keys, DeleteOptions options)
+		MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> IUpdateDeleteByKeyHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnDeleteByKeyList<TKey>(AbstractObjectName tableName, IEnumerable<TKey> keys, DeleteOptions options)
 		{
 			var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).PrimaryKeyColumns;
 			if (primaryKeys.Count != 1)
@@ -96,6 +97,33 @@ namespace Tortuga.Chain.SQLite
 			where TArgument : class
 		{
 			return new SQLiteDeleteObject<TArgument>(this, tableName, argumentValue, options);
+		}
+
+		MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> IUpdateDeleteByKeyHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnUpdateByKeyList<TArgument, TKey>(AbstractObjectName tableName, TArgument newValues, IEnumerable<TKey> keys, UpdateOptions options)
+		{
+
+			var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).PrimaryKeyColumns;
+			if (primaryKeys.Count != 1)
+				throw new MappingException($"{nameof(UpdateByKeyList)} operation isn't allowed on {tableName} because it doesn't have a single primary key.");
+
+			var keyList = keys.AsList();
+			var columnMetadata = primaryKeys.Single();
+			string where;
+			if (keys.Count() > 1)
+				where = columnMetadata.SqlName + " IN (" + string.Join(", ", keyList.Select((s, i) => "@Param" + i)) + ")";
+			else
+				where = columnMetadata.SqlName + " = @Param0";
+
+			var parameters = new List<SQLiteParameter>();
+			for (var i = 0; i < keyList.Count; i++)
+			{
+				var param = new SQLiteParameter("@Param" + i, keyList[i]);
+				if (columnMetadata.DbType.HasValue)
+					param.DbType = columnMetadata.DbType.Value;
+				parameters.Add(param);
+			}
+
+			return new SQLiteUpdateMany(this, tableName, newValues, where, parameters, parameters.Count, options);
 		}
 	}
 }

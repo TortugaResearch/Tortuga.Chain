@@ -1,5 +1,4 @@
 ﻿using System.Data.SQLite;
-using System.Diagnostics.CodeAnalysis;
 using Tortuga.Anchor;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Metadata;
@@ -34,43 +33,7 @@ namespace Tortuga.Chain.SQLite
 			return new SQLiteSqlCall(this, sqlStatement, argumentValue, lockType);
 		}
 
-		/// <summary>
-		/// Update multiple rows by key.
-		/// </summary>
-		/// <typeparam name="TArgument">The type of the t argument.</typeparam>
-		/// <typeparam name="TKey">The type of the t key.</typeparam>
-		/// <param name="tableName">Name of the table.</param>
-		/// <param name="newValues">The new values to use.</param>
-		/// <param name="keys">The keys.</param>
-		/// <param name="options">Update options.</param>
-		/// <returns>MultipleRowDbCommandBuilder&lt;SQLiteCommand, SQLiteParameter&gt;.</returns>
-		/// <exception cref="MappingException"></exception>
-		[SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "UpdateByKeyList")]
-		public MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> UpdateByKeyList<TArgument, TKey>(SQLiteObjectName tableName, TArgument newValues, IEnumerable<TKey> keys, UpdateOptions options = UpdateOptions.None)
-		{
-			var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).PrimaryKeyColumns;
-			if (primaryKeys.Count != 1)
-				throw new MappingException($"{nameof(UpdateByKeyList)} operation isn't allowed on {tableName} because it doesn't have a single primary key.");
 
-			var keyList = keys.AsList();
-			var columnMetadata = primaryKeys.Single();
-			string where;
-			if (keys.Count() > 1)
-				where = columnMetadata.SqlName + " IN (" + string.Join(", ", keyList.Select((s, i) => "@Param" + i)) + ")";
-			else
-				where = columnMetadata.SqlName + " = @Param0";
-
-			var parameters = new List<SQLiteParameter>();
-			for (var i = 0; i < keyList.Count; i++)
-			{
-				var param = new SQLiteParameter("@Param" + i, keyList[i]);
-				if (columnMetadata.DbType.HasValue)
-					param.DbType = columnMetadata.DbType.Value;
-				parameters.Add(param);
-			}
-
-			return new SQLiteUpdateMany(this, tableName, newValues, where, parameters, parameters.Count, options);
-		}
 
 		SQLiteTableOrView<TObject> OnGetByKey<TObject, TKey>(SQLiteObjectName tableName, ColumnMetadata<DbType> columnMetadata, TKey key)
 			where TObject : class

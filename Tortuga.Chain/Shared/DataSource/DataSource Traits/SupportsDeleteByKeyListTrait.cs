@@ -14,7 +14,7 @@ class SupportsDeleteByKeyListTrait<TCommand, TParameter, TObjectName, TDbType> :
 	where TDbType : struct
 {
 	[Container(RegisterInterface = true)]
-	internal IDeleteByKeyHelper<TCommand, TParameter, TObjectName, TDbType> DataSource { get; set; } = null!;
+	internal IUpdateDeleteByKeyHelper<TCommand, TParameter, TObjectName, TDbType> DataSource { get; set; } = null!;
 
 	ISingleRowDbCommandBuilder ISupportsDeleteByKey.DeleteByKey<TKey>(string tableName, TKey key, DeleteOptions options) => DeleteByKey(DataSource.ParseObjectName(tableName), key, options);
 
