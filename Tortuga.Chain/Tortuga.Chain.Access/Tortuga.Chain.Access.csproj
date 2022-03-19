@@ -95,9 +95,7 @@
 		<Compile Remove="$(CompilerGeneratedFilesOutputPath)/*/**/*.cs" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Compile Update="..\Shared\DataSource\DataSource Traits\SupportsUpdateByKeyListTrait`4.cs" Link="SupportsUpdateByKeyListTrait`4.cs" />
-	</ItemGroup>
+	
 
 	<!-- NuGet Packaging Boilerplate-->
 	<PropertyGroup Condition="'$(Configuration)'=='Release'">

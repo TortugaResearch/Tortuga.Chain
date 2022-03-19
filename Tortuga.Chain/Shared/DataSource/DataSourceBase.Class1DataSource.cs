@@ -73,13 +73,6 @@ namespace Tortuga.Chain.Access
 		}
 
 
-
-
-
-
-
-
-
 		/************************ ISupportsFrom ************************/
 
 
@@ -326,39 +319,7 @@ namespace Tortuga.Chain.Access
 			return GetByKey<string>(tableName, key);
 		}
 
-		/************************ ISupportsInsert ************************/
 
-		/// <summary>
-		/// Inserts an object into the specified table.
-		/// </summary>
-		/// <typeparam name="TArgument"></typeparam>
-		/// <param name="argumentValue">The argument value.</param>
-		/// <param name="options">The options for how the insert occurs.</param>
-		/// <returns></returns>
-		public ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> Insert<TArgument>(TArgument argumentValue, InsertOptions options = InsertOptions.None) where TArgument : class
-		{
-			return Insert(DatabaseMetadata.GetTableOrViewFromClass<TArgument>().Name, argumentValue, options);
-		}
-
-
-
-
-
-		/************************ ISupportsInsert ************************/
-
-
-		/// <summary>
-		/// Creates an operation used to perform an insert operation.
-		/// </summary>
-		/// <param name="tableName">Name of the table.</param>
-		/// <param name="argumentValue">The argument value.</param>
-		/// <param name="options">The options.</param>
-		/// <returns></returns>
-		public ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> Insert<TArgument>(AbstractObjectName tableName, TArgument argumentValue, InsertOptions options = InsertOptions.None)
-		where TArgument : class
-		{
-			return OnInsertObject<TArgument>(tableName, argumentValue, options);
-		}
 
 		/************************ ISupportsUpdateSet ************************/
 

@@ -15,6 +15,8 @@ namespace Tortuga.Chain.Access;
 [UseTrait(typeof(SupportsDeleteTrait<OleDbCommand, OleDbParameter, AccessObjectName, OleDbType>))]
 [UseTrait(typeof(SupportsSqlQueriesTrait<OleDbCommand, OleDbParameter>))]
 [UseTrait(typeof(SupportsUpdateByKeyListTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
+[UseTrait(typeof(SupportsInsertTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
+
 partial class AccessDataSourceBase
 {
 	DatabaseMetadataCache<AbstractObjectName, AbstractDbType> ICommandHelper<AbstractObjectName, AbstractDbType>.DatabaseMetadata => DatabaseMetadata;
@@ -123,6 +125,13 @@ partial class AccessDataSourceBase
 		}
 
 		return new AccessUpdateMany(this, tableName, newValues, where, parameters, parameters.Count, options);
+	}
+
+
+	ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> IInsertHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnInsertObject<TArgument>(AbstractObjectName tableName, TArgument argumentValue, InsertOptions options)
+   where TArgument : class
+	{
+		return new AccessInsertObject<TArgument>(this, tableName, argumentValue, options);
 	}
 
 }
