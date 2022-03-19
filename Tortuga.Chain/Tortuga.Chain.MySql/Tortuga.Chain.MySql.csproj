@@ -72,7 +72,7 @@
 	
 	<!-- Code Generator -->
 	<ItemGroup>
-		<PackageReference Include="Tortuga.Shipwright" Version="0.2.0" />
+		<PackageReference Include="Tortuga.Shipwright" Version="0.3.0" />
 	</ItemGroup>
 
 	<PropertyGroup>

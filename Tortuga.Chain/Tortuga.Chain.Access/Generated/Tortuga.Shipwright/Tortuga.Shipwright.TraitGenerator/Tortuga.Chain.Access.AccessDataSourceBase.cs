@@ -367,12 +367,12 @@ namespace Tortuga.Chain.Access
 		{
 			__TraitsRegistered = true;
 			__Trait0.OnDeleteAll = OnDeleteAll;
-			__Trait0.DataSource = this as Traits.ICommandHelper<Tortuga.Chain.Access.AccessObjectName, System.Data.OleDb.OleDbType>;
-			__Trait1.DataSource = this as Traits.IUpdateDeleteByKeyHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.Access.AccessObjectName, System.Data.OleDb.OleDbType>;
-			__Trait2.DataSource = this as Traits.IUpdateDeleteHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.Access.AccessObjectName, System.Data.OleDb.OleDbType>;
-			__Trait3.DataSource = this as Traits.IUpdateDeleteHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.Access.AccessObjectName, System.Data.OleDb.OleDbType>;
+			__Trait0.DataSource = this;
+			__Trait1.DataSource = this;
+			__Trait2.DataSource = this;
+			__Trait3.DataSource = this;
 			__Trait4.OnSql = OnSql;
-			__Trait5.DataSource = this as Traits.IUpdateDeleteByKeyHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.Access.AccessObjectName, System.Data.OleDb.OleDbType>;
+			__Trait5.DataSource = this;
 		}
 
 	}
