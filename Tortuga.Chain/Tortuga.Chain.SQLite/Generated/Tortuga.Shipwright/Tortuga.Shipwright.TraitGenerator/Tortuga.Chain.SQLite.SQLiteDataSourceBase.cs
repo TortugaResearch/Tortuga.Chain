@@ -408,19 +408,19 @@ namespace Tortuga.Chain.SQLite
 
 		private partial Tortuga.Chain.ILink<int?> OnTruncate(Tortuga.Chain.SQLite.SQLiteObjectName tableName );
 
-
 		private void __RegisterTraits()
 		{
 			__TraitsRegistered = true;
 			__Trait0.OnDeleteAll = OnDeleteAll;
-			__Trait0.DataSource = this;
+			__Trait0.DataSource = this as Traits.ICommandHelper<Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType>;
 			__Trait1.OnTruncate = OnTruncate;
-			__Trait1.DataSource = this;
+			__Trait1.DataSource = this as Traits.ICommandHelper<Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType>;
 			__Trait2.OnSql = OnSql;
-			__Trait3.DataSource = this;
-			__Trait4.DataSource = this;
-			__Trait5.DataSource = this;
-			__Trait6.DataSource = this;
+			__Trait3.DataSource = this as Traits.IInsertBatchHelper<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter, Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType>;
+			__Trait4.DataSource = this as Traits.IDeleteByKeyHelper<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter, Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType>;
+			__Trait5.DataSource = this as Traits.IUpdateDeleteHelper<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter, Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType>;
+			__Trait6.DataSource = this as Traits.IUpdateDeleteHelper<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter, Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType>;
 		}
+
 	}
 }

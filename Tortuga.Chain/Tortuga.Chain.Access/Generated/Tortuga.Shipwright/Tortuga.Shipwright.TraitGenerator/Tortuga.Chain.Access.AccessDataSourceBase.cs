@@ -290,16 +290,16 @@ namespace Tortuga.Chain.Access
 
 		private partial Tortuga.Chain.CommandBuilders.MultipleTableDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter> OnSql(System.String sqlStatement, System.Object? argumentValue );
 
-
 		private void __RegisterTraits()
 		{
 			__TraitsRegistered = true;
 			__Trait0.OnDeleteAll = OnDeleteAll;
-			__Trait0.DataSource = this;
-			__Trait1.DataSource = this;
-			__Trait2.DataSource = this;
-			__Trait3.DataSource = this;
+			__Trait0.DataSource = this as Traits.ICommandHelper<Tortuga.Chain.Access.AccessObjectName, System.Data.OleDb.OleDbType>;
+			__Trait1.DataSource = this as Traits.IDeleteByKeyHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.Access.AccessObjectName, System.Data.OleDb.OleDbType>;
+			__Trait2.DataSource = this as Traits.IUpdateDeleteHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.Access.AccessObjectName, System.Data.OleDb.OleDbType>;
+			__Trait3.DataSource = this as Traits.IUpdateDeleteHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.Access.AccessObjectName, System.Data.OleDb.OleDbType>;
 			__Trait4.OnSql = OnSql;
 		}
+
 	}
 }

@@ -262,7 +262,6 @@ namespace Tortuga.Chain
 
 		private partial Tortuga.Chain.Access.AccessOpenDataSource OnCreateOpenDataSource(System.Data.OleDb.OleDbConnection connection, System.Data.OleDb.OleDbTransaction? transaction );
 
-
 		private void __RegisterTraits()
 		{
 			__TraitsRegistered = true;
@@ -273,5 +272,6 @@ namespace Tortuga.Chain
 			__Trait0.OnCreateOpenDataSource = OnCreateOpenDataSource;
 			__Trait0.OnCloneWithOverrides = OnCloneWithOverrides;
 		}
+
 	}
 }

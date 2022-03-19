@@ -262,7 +262,6 @@ namespace Tortuga.Chain
 
 		private partial Tortuga.Chain.PostgreSql.PostgreSqlOpenDataSource OnCreateOpenDataSource(Npgsql.NpgsqlConnection connection, Npgsql.NpgsqlTransaction? transaction );
 
-
 		private void __RegisterTraits()
 		{
 			__TraitsRegistered = true;
@@ -273,5 +272,6 @@ namespace Tortuga.Chain
 			__Trait0.OnCreateOpenDataSource = OnCreateOpenDataSource;
 			__Trait0.OnCloneWithOverrides = OnCloneWithOverrides;
 		}
+
 	}
 }

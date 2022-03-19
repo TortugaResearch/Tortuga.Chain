@@ -408,19 +408,19 @@ namespace Tortuga.Chain.PostgreSql
 
 		private partial Tortuga.Chain.ILink<int?> OnTruncate(Tortuga.Chain.PostgreSql.PostgreSqlObjectName tableName );
 
-
 		private void __RegisterTraits()
 		{
 			__TraitsRegistered = true;
 			__Trait0.OnDeleteAll = OnDeleteAll;
-			__Trait0.DataSource = this;
+			__Trait0.DataSource = this as Traits.ICommandHelper<Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>;
 			__Trait1.OnTruncate = OnTruncate;
-			__Trait1.DataSource = this;
+			__Trait1.DataSource = this as Traits.ICommandHelper<Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>;
 			__Trait2.OnSql = OnSql;
-			__Trait3.DataSource = this;
-			__Trait4.DataSource = this;
-			__Trait5.DataSource = this;
-			__Trait6.DataSource = this;
+			__Trait3.DataSource = this as Traits.IInsertBatchHelper<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>;
+			__Trait4.DataSource = this as Traits.IDeleteByKeyHelper<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>;
+			__Trait5.DataSource = this as Traits.IUpdateDeleteHelper<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>;
+			__Trait6.DataSource = this as Traits.IUpdateDeleteHelper<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>;
 		}
+
 	}
 }
