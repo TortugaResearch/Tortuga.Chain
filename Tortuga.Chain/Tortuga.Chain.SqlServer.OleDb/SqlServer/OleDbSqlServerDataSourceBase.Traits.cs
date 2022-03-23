@@ -15,6 +15,7 @@ namespace Tortuga.Chain.SqlServer;
 [UseTrait(typeof(SupportsDeleteTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
 [UseTrait(typeof(SupportsUpdateTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
 [UseTrait(typeof(SupportsUpdateByKeyListTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
+[UseTrait(typeof(SupportsInsertTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
 partial class OleDbSqlServerDataSourceBase
 {
 	DatabaseMetadataCache<AbstractObjectName, AbstractDbType> ICommandHelper<AbstractObjectName, AbstractDbType>.DatabaseMetadata => DatabaseMetadata;
@@ -113,5 +114,11 @@ where TArgument : class
 
 		return new OleDbSqlServerUpdateMany(this, tableName, newValues, where, parameters, parameters.Count, options);
 
+	}
+
+	ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> IInsertHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnInsertObject<TArgument>(AbstractObjectName tableName, TArgument argumentValue, InsertOptions options)
+where TArgument : class
+	{
+		return new OleDbSqlServerInsertObject<TArgument>(this, tableName, argumentValue, options);
 	}
 }

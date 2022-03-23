@@ -114,18 +114,6 @@ namespace Tortuga.Chain.Access
 			return GetByKeyList(tableName, keys);
 		}
 
-		IObjectDbCommandBuilder<TArgument> ISupportsInsert.Insert<TArgument>(string tableName, TArgument argumentValue, InsertOptions options)
-		{
-			return Insert(tableName, argumentValue, options);
-		}
-
-		IObjectDbCommandBuilder<TArgument> ISupportsInsert.Insert<TArgument>(TArgument argumentValue, InsertOptions options)
-		{
-			return Insert(argumentValue, options);
-		}
-
-
-
 		IUpdateManyDbCommandBuilder ISupportsUpdateSet.UpdateSet(string tableName, string updateExpression, UpdateOptions options)
 		{
 			return UpdateSet(tableName, updateExpression, options);

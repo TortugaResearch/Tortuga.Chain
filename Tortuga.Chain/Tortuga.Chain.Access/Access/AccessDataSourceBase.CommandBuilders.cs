@@ -72,11 +72,7 @@ namespace Tortuga.Chain.Access
 			return new AccessTableOrView<TObject>(this, tableOrViewName, whereClause, argumentValue);
 		}
 
-		ObjectDbCommandBuilder<OleDbCommand, OleDbParameter, TArgument> OnInsertObject<TArgument>(AccessObjectName tableName, TArgument argumentValue, InsertOptions options)
-			   where TArgument : class
-		{
-			return new AccessInsertObject<TArgument>(this, tableName, argumentValue, options);
-		}
+
 
 
 		IUpdateManyDbCommandBuilder<OleDbCommand, OleDbParameter> OnUpdateMany(AccessObjectName tableName, string updateExpression, object? updateArgumentValue, UpdateOptions options)
