@@ -457,11 +457,11 @@ namespace Tortuga.Chain.SqlServer
 			__Trait1.OnTruncate = OnTruncate;
 			__Trait1.DataSource = this;
 			__Trait2.OnSql = OnSql;
-			__Trait3.DataSource = this as Traits.IUpdateDeleteByKeyHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>;
-			__Trait4.DataSource = this as Traits.IUpdateDeleteHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>;
-			__Trait5.DataSource = this as Traits.IUpdateDeleteHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>;
-			__Trait6.DataSource = this as Traits.IUpdateDeleteByKeyHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>;
-			__Trait7.DataSource = this as Traits.IInsertHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>;
+			__Trait3.DataSource = this;
+			__Trait4.DataSource = this;
+			__Trait5.DataSource = this;
+			__Trait6.DataSource = this;
+			__Trait7.DataSource = this;
 		}
 
 	}

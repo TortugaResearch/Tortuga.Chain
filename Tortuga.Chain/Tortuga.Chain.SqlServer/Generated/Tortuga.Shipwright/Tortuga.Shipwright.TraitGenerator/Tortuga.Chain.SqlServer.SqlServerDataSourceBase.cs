@@ -535,12 +535,12 @@ namespace Tortuga.Chain.SqlServer
 			__Trait1.OnTruncate = OnTruncate;
 			__Trait1.DataSource = this;
 			__Trait2.OnSql = OnSql;
-			__Trait3.DataSource = this as Traits.IInsertBatchHelper<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>;
-			__Trait4.DataSource = this as Traits.IUpdateDeleteByKeyHelper<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>;
-			__Trait5.DataSource = this as Traits.IUpdateDeleteHelper<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>;
-			__Trait6.DataSource = this as Traits.IUpdateDeleteHelper<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>;
-			__Trait7.DataSource = this as Traits.IUpdateDeleteByKeyHelper<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>;
-			__Trait8.DataSource = this as Traits.IInsertHelper<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>;
+			__Trait3.DataSource = this;
+			__Trait4.DataSource = this;
+			__Trait5.DataSource = this;
+			__Trait6.DataSource = this;
+			__Trait7.DataSource = this;
+			__Trait8.DataSource = this;
 		}
 
 	}

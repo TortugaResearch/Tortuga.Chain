@@ -418,8 +418,8 @@ namespace Tortuga.Chain.Access
 			__Trait2.DataSource = this;
 			__Trait3.DataSource = this;
 			__Trait4.OnSql = OnSql;
-			__Trait5.DataSource = this as Traits.IUpdateDeleteByKeyHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.Access.AccessObjectName, System.Data.OleDb.OleDbType>;
-			__Trait6.DataSource = this as Traits.IInsertHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.Access.AccessObjectName, System.Data.OleDb.OleDbType>;
+			__Trait5.DataSource = this;
+			__Trait6.DataSource = this;
 		}
 
 	}

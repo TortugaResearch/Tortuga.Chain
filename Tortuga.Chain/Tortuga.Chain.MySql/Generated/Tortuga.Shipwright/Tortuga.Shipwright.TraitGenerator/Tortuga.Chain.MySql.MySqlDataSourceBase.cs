@@ -535,12 +535,12 @@ namespace Tortuga.Chain.MySql
 			__Trait1.OnTruncate = OnTruncate;
 			__Trait1.DataSource = this;
 			__Trait2.OnSql = OnSql;
-			__Trait3.DataSource = this as Traits.IInsertBatchHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>;
-			__Trait4.DataSource = this as Traits.IUpdateDeleteByKeyHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>;
-			__Trait5.DataSource = this as Traits.IUpdateDeleteHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>;
-			__Trait6.DataSource = this as Traits.IUpdateDeleteHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>;
-			__Trait7.DataSource = this as Traits.IUpdateDeleteByKeyHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>;
-			__Trait8.DataSource = this as Traits.IInsertHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>;
+			__Trait3.DataSource = this;
+			__Trait4.DataSource = this;
+			__Trait5.DataSource = this;
+			__Trait6.DataSource = this;
+			__Trait7.DataSource = this;
+			__Trait8.DataSource = this;
 		}
 
 	}
