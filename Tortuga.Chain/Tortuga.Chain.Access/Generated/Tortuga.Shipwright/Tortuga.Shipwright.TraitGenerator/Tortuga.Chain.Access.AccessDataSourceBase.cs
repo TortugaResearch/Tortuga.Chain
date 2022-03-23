@@ -285,6 +285,30 @@ namespace Tortuga.Chain.Access
 
 		// Exposing trait Traits.SupportsInsertTrait<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.Access.AccessObjectName, System.Data.OleDb.OleDbType>
 
+		/// <summary>
+		/// Inserts an object into the specified table.
+		/// </summary>
+		/// <typeparam name="TArgument"></typeparam>
+		/// <param name="argumentValue">The argument value.</param>
+		/// <param name="options">The options for how the insert occurs.</param>
+		/// <returns></returns>
+		public Tortuga.Chain.CommandBuilders.ObjectDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, TArgument> Insert<TArgument>(TArgument argumentValue, Tortuga.Chain.InsertOptions options = 0)where TArgument : class
+		{
+			return __Trait6.Insert<TArgument>(argumentValue, options);
+		}
+
+		/// <summary>
+		/// Creates an operation used to perform an insert operation.
+		/// </summary>
+		/// <param name="tableName">Name of the table.</param>
+		/// <param name="argumentValue">The argument value.</param>
+		/// <param name="options">The options.</param>
+		/// <returns></returns>
+		public Tortuga.Chain.CommandBuilders.ObjectDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, TArgument> Insert<TArgument>(Tortuga.Chain.Access.AccessObjectName tableName, TArgument argumentValue, Tortuga.Chain.InsertOptions options = 0)where TArgument : class
+		{
+			return __Trait6.Insert<TArgument>(tableName, argumentValue, options);
+		}
+
 		// Exposing trait Traits.SupportsSqlQueriesTrait<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter>
 
 		/// <summary>

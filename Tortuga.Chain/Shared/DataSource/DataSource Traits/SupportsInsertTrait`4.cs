@@ -36,6 +36,7 @@ namespace Traits
 		/// <param name="argumentValue">The argument value.</param>
 		/// <param name="options">The options for how the insert occurs.</param>
 		/// <returns></returns>
+		[Expose]
 		public ObjectDbCommandBuilder<TCommand, TParameter, TArgument> Insert<TArgument>(TArgument argumentValue, InsertOptions options = InsertOptions.None) where TArgument : class
 		{
 			return Insert(DataSource.DatabaseMetadata.GetTableOrViewFromClass<TArgument>().Name, argumentValue, options);
@@ -49,6 +50,7 @@ namespace Traits
 		/// <param name="argumentValue">The argument value.</param>
 		/// <param name="options">The options.</param>
 		/// <returns></returns>
+		[Expose]
 		public ObjectDbCommandBuilder<TCommand, TParameter, TArgument> Insert<TArgument>(TObjectName tableName, TArgument argumentValue, InsertOptions options = InsertOptions.None)
 		where TArgument : class
 		{

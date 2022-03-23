@@ -2,7 +2,7 @@
 
 namespace Tortuga.Chain.PostgreSql
 {
-	partial class PostgreSqlDataSourceBase: Tortuga.Chain.DataSources.ISupportsDeleteAll, Tortuga.Chain.DataSources.ISupportsTruncate, Tortuga.Chain.DataSources.ISupportsSqlQueries, Tortuga.Chain.DataSources.ISupportsInsertBatch, Tortuga.Chain.DataSources.ISupportsDeleteByKeyList, Tortuga.Chain.DataSources.ISupportsDeleteByKey, Tortuga.Chain.DataSources.ISupportsUpdate, Tortuga.Chain.DataSources.ISupportsDelete, Tortuga.Chain.DataSources.ISupportsUpdateByKey, Tortuga.Chain.DataSources.ISupportsUpdateByKeyList, Traits.ICommandHelper<Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>, Traits.IInsertBatchHelper<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>, Traits.IUpdateDeleteByKeyHelper<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>, Traits.IUpdateDeleteHelper<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>
+	partial class PostgreSqlDataSourceBase: Tortuga.Chain.DataSources.ISupportsDeleteAll, Tortuga.Chain.DataSources.ISupportsTruncate, Tortuga.Chain.DataSources.ISupportsSqlQueries, Tortuga.Chain.DataSources.ISupportsInsertBatch, Tortuga.Chain.DataSources.ISupportsDeleteByKeyList, Tortuga.Chain.DataSources.ISupportsDeleteByKey, Tortuga.Chain.DataSources.ISupportsUpdate, Tortuga.Chain.DataSources.ISupportsDelete, Tortuga.Chain.DataSources.ISupportsUpdateByKey, Tortuga.Chain.DataSources.ISupportsUpdateByKeyList, Tortuga.Chain.DataSources.ISupportsInsert, Traits.ICommandHelper<Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>, Traits.IInsertBatchHelper<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>, Traits.IUpdateDeleteByKeyHelper<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>, Traits.IUpdateDeleteHelper<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>, Traits.IInsertHelper<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>
 	{
 
 		private bool __TraitsRegistered;
@@ -80,6 +80,15 @@ namespace Tortuga.Chain.PostgreSql
 				return ___Trait7;
 			}
 		}
+		private Traits.SupportsInsertTrait<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType> ___Trait8 = new();
+		private Traits.SupportsInsertTrait<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType> __Trait8
+		{
+			get
+			{
+				if (!__TraitsRegistered) __RegisterTraits();
+				return ___Trait8;
+			}
+		}
 
 		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsDelete
 		Tortuga.Chain.CommandBuilders.IObjectDbCommandBuilder<TArgument> Tortuga.Chain.DataSources.ISupportsDelete.Delete<TArgument>(System.String tableName, TArgument argumentValue, Tortuga.Chain.DeleteOptions options)
@@ -118,6 +127,17 @@ namespace Tortuga.Chain.PostgreSql
 		Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder Tortuga.Chain.DataSources.ISupportsDeleteByKeyList.DeleteByKeyList<TKey>(System.String tableName, System.Collections.Generic.IEnumerable<TKey> keys, Tortuga.Chain.DeleteOptions options)
 		{
 			return ((Tortuga.Chain.DataSources.ISupportsDeleteByKeyList)__Trait4).DeleteByKeyList<TKey>(tableName, keys, options);
+		}
+
+		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsInsert
+		Tortuga.Chain.CommandBuilders.IObjectDbCommandBuilder<TArgument> Tortuga.Chain.DataSources.ISupportsInsert.Insert<TArgument>(System.String tableName, TArgument argumentValue, Tortuga.Chain.InsertOptions options)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsInsert)__Trait8).Insert<TArgument>(tableName, argumentValue, options);
+		}
+
+		Tortuga.Chain.CommandBuilders.IObjectDbCommandBuilder<TArgument> Tortuga.Chain.DataSources.ISupportsInsert.Insert<TArgument>(TArgument argumentValue, Tortuga.Chain.InsertOptions options)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsInsert)__Trait8).Insert<TArgument>(argumentValue, options);
 		}
 
 		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsInsertBatch
@@ -361,6 +381,32 @@ namespace Tortuga.Chain.PostgreSql
 			return __Trait3.InsertMultipleBatch<TObject>(objects, options);
 		}
 
+		// Exposing trait Traits.SupportsInsertTrait<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>
+
+		/// <summary>
+		/// Inserts an object into the specified table.
+		/// </summary>
+		/// <typeparam name="TArgument"></typeparam>
+		/// <param name="argumentValue">The argument value.</param>
+		/// <param name="options">The options for how the insert occurs.</param>
+		/// <returns></returns>
+		public Tortuga.Chain.CommandBuilders.ObjectDbCommandBuilder<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, TArgument> Insert<TArgument>(TArgument argumentValue, Tortuga.Chain.InsertOptions options = 0)where TArgument : class
+		{
+			return __Trait8.Insert<TArgument>(argumentValue, options);
+		}
+
+		/// <summary>
+		/// Creates an operation used to perform an insert operation.
+		/// </summary>
+		/// <param name="tableName">Name of the table.</param>
+		/// <param name="argumentValue">The argument value.</param>
+		/// <param name="options">The options.</param>
+		/// <returns></returns>
+		public Tortuga.Chain.CommandBuilders.ObjectDbCommandBuilder<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, TArgument> Insert<TArgument>(Tortuga.Chain.PostgreSql.PostgreSqlObjectName tableName, TArgument argumentValue, Tortuga.Chain.InsertOptions options = 0)where TArgument : class
+		{
+			return __Trait8.Insert<TArgument>(tableName, argumentValue, options);
+		}
+
 		// Exposing trait Traits.SupportsSqlQueriesTrait<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter>
 
 		/// <summary>
@@ -494,6 +540,7 @@ namespace Tortuga.Chain.PostgreSql
 			__Trait5.DataSource = this as Traits.IUpdateDeleteHelper<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>;
 			__Trait6.DataSource = this as Traits.IUpdateDeleteHelper<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>;
 			__Trait7.DataSource = this as Traits.IUpdateDeleteByKeyHelper<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>;
+			__Trait8.DataSource = this as Traits.IInsertHelper<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>;
 		}
 
 	}
