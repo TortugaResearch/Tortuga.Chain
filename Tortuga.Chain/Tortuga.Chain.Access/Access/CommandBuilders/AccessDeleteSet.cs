@@ -8,7 +8,7 @@ using Tortuga.Chain.Metadata;
 namespace Tortuga.Chain.Access.CommandBuilders
 {
 	/// <summary>
-	/// Class AccessDeleteWithFilter.
+	/// Class AccessDeleteSet.
 	/// </summary>
 	internal sealed class AccessDeleteSet : MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter>
 	{

@@ -48,15 +48,7 @@ namespace Tortuga.Chain.Access
 			return new MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter, TObject>(new AccessTableOrView<TObject>(this, tableName, where, parameters));
 		}
 
-		MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> OnDeleteSet(AccessObjectName tableName, string whereClause, object? argumentValue)
-		{
-			return new AccessDeleteSet(this, tableName, whereClause, argumentValue);
-		}
 
-		MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> OnDeleteSet(AccessObjectName tableName, object filterValue, FilterOptions filterOptions)
-		{
-			return new AccessDeleteSet(this, tableName, filterValue, filterOptions);
-		}
 
 
 

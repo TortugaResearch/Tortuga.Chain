@@ -16,6 +16,10 @@ namespace Traits
 
 		IUpdateSetDbCommandBuilder<TCommand, TParameter> OnUpdateSet(TObjectName tableName, object? newValues, UpdateOptions options);
 
+		MultipleRowDbCommandBuilder<TCommand, TParameter> OnDeleteSet(TObjectName tableName, string whereClause, object? argumentValue);
+
+		MultipleRowDbCommandBuilder<TCommand, TParameter> OnDeleteSet(TObjectName tableName, object filterValue, FilterOptions filterOptions);
+
 	}
 }
 

@@ -2,7 +2,7 @@
 
 namespace Tortuga.Chain.SqlServer
 {
-	partial class OleDbSqlServerDataSourceBase: Tortuga.Chain.DataSources.ISupportsDeleteAll, Tortuga.Chain.DataSources.ISupportsTruncate, Tortuga.Chain.DataSources.ISupportsSqlQueries, Tortuga.Chain.DataSources.ISupportsDeleteByKeyList, Tortuga.Chain.DataSources.ISupportsDeleteByKey, Tortuga.Chain.DataSources.ISupportsDelete, Tortuga.Chain.DataSources.ISupportsUpdate, Tortuga.Chain.DataSources.ISupportsUpdateByKey, Tortuga.Chain.DataSources.ISupportsUpdateByKeyList, Tortuga.Chain.DataSources.ISupportsInsert, Tortuga.Chain.DataSources.ISupportsUpdateSet, Traits.ICommandHelper<Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>, Traits.IUpdateDeleteByKeyHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>, Traits.IUpdateDeleteHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>, Traits.IInsertHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>, Traits.IUpdateDeleteSetHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>
+	partial class OleDbSqlServerDataSourceBase: Tortuga.Chain.DataSources.ISupportsDeleteAll, Tortuga.Chain.DataSources.ISupportsTruncate, Tortuga.Chain.DataSources.ISupportsSqlQueries, Tortuga.Chain.DataSources.ISupportsDeleteByKeyList, Tortuga.Chain.DataSources.ISupportsDeleteByKey, Tortuga.Chain.DataSources.ISupportsDelete, Tortuga.Chain.DataSources.ISupportsUpdate, Tortuga.Chain.DataSources.ISupportsUpdateByKey, Tortuga.Chain.DataSources.ISupportsUpdateByKeyList, Tortuga.Chain.DataSources.ISupportsInsert, Tortuga.Chain.DataSources.ISupportsUpdateSet, Tortuga.Chain.DataSources.ISupportsDeleteSet, Traits.ICommandHelper<Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>, Traits.IUpdateDeleteByKeyHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>, Traits.IUpdateDeleteHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>, Traits.IInsertHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>, Traits.IUpdateDeleteSetHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>
 	{
 
 		private bool __TraitsRegistered;
@@ -89,6 +89,15 @@ namespace Tortuga.Chain.SqlServer
 				return ___Trait8;
 			}
 		}
+		private Traits.SupportsDeleteSet<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType> ___Trait9 = new();
+		private Traits.SupportsDeleteSet<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType> __Trait9
+		{
+			get
+			{
+				if (!__TraitsRegistered) __RegisterTraits();
+				return ___Trait9;
+			}
+		}
 
 		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsDelete
 		Tortuga.Chain.CommandBuilders.IObjectDbCommandBuilder<TArgument> Tortuga.Chain.DataSources.ISupportsDelete.Delete<TArgument>(System.String tableName, TArgument argumentValue, Tortuga.Chain.DeleteOptions options)
@@ -127,6 +136,22 @@ namespace Tortuga.Chain.SqlServer
 		Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder Tortuga.Chain.DataSources.ISupportsDeleteByKeyList.DeleteByKeyList<TKey>(System.String tableName, System.Collections.Generic.IEnumerable<TKey> keys, Tortuga.Chain.DeleteOptions options)
 		{
 			return ((Tortuga.Chain.DataSources.ISupportsDeleteByKeyList)__Trait3).DeleteByKeyList<TKey>(tableName, keys, options);
+		}
+
+		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsDeleteSet
+		Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder Tortuga.Chain.DataSources.ISupportsDeleteSet.DeleteSet(System.String tableName, System.String whereClause)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsDeleteSet)__Trait9).DeleteSet(tableName, whereClause);
+		}
+
+		Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder Tortuga.Chain.DataSources.ISupportsDeleteSet.DeleteSet(System.String tableName, System.String whereClause, System.Object? argumentValue)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsDeleteSet)__Trait9).DeleteSet(tableName, whereClause, argumentValue);
+		}
+
+		Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder Tortuga.Chain.DataSources.ISupportsDeleteSet.DeleteSet(System.String tableName, System.Object filterValue, Tortuga.Chain.FilterOptions filterOptions)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsDeleteSet)__Trait9).DeleteSet(tableName, filterValue, filterOptions);
 		}
 
 		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsInsert
@@ -191,7 +216,7 @@ namespace Tortuga.Chain.SqlServer
 			return ((Tortuga.Chain.DataSources.ISupportsUpdateSet)__Trait8).UpdateSet(tableName, updateExpression, options);
 		}
 
-		Tortuga.Chain.CommandBuilders.IUpdateSetDbCommandBuilder Tortuga.Chain.DataSources.ISupportsUpdateSet.UpdateSet(System.String tableName, System.String updateExpression, System.Object updateArgumentValue, Tortuga.Chain.UpdateOptions options)
+		Tortuga.Chain.CommandBuilders.IUpdateSetDbCommandBuilder Tortuga.Chain.DataSources.ISupportsUpdateSet.UpdateSet(System.String tableName, System.String updateExpression, System.Object? updateArgumentValue, Tortuga.Chain.UpdateOptions options)
 		{
 			return ((Tortuga.Chain.DataSources.ISupportsUpdateSet)__Trait8).UpdateSet(tableName, updateExpression, updateArgumentValue, options);
 		}
@@ -300,6 +325,50 @@ namespace Tortuga.Chain.SqlServer
 		public Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter> DeleteByKeyList<TKey>(Tortuga.Chain.SqlServer.SqlServerObjectName tableName, System.Collections.Generic.IEnumerable<TKey> keys, Tortuga.Chain.DeleteOptions options = 0)
 		{
 			return __Trait3.DeleteByKeyList<TKey>(tableName, keys, options);
+		}
+
+		// Exposing trait Traits.SupportsDeleteSet<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>
+
+		/// <summary>
+		/// Delete multiple records using a filter object.
+		/// </summary>
+		/// <param name="tableName">Name of the table.</param>
+		/// <param name="filterValue">The filter value.</param>
+		/// <param name="filterOptions">The options.</param>
+		public Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter> DeleteSet(Tortuga.Chain.SqlServer.SqlServerObjectName tableName, System.Object filterValue, Tortuga.Chain.FilterOptions filterOptions = 0)
+		{
+			return __Trait9.DeleteSet(tableName, filterValue, filterOptions);
+		}
+
+		/// <summary>
+		/// Delete multiple records using a filter object.
+		/// </summary>
+		/// <param name="filterValue">The filter value.</param>
+		/// <param name="filterOptions">The options.</param>
+		public Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter> DeleteSet<TObject>(System.Object filterValue, Tortuga.Chain.FilterOptions filterOptions = 0)where TObject : class
+		{
+			return __Trait9.DeleteSet<TObject>(filterValue, filterOptions);
+		}
+
+		/// <summary>
+		/// Delete multiple records using a where expression.
+		/// </summary>
+		/// <param name="tableName">Name of the table.</param>
+		/// <param name="whereClause">The where clause.</param>
+		/// <param name="argumentValue">The argument value for the where clause.</param>
+		public Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter> DeleteSet(Tortuga.Chain.SqlServer.SqlServerObjectName tableName, System.String whereClause, System.Object? argumentValue = default)
+		{
+			return __Trait9.DeleteSet(tableName, whereClause, argumentValue);
+		}
+
+		/// <summary>
+		/// Delete multiple records using a where expression.
+		/// </summary>
+		/// <param name="whereClause">The where clause.</param>
+		/// <param name="argumentValue">The argument value for the where clause.</param>
+		public Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter> DeleteSet<TObject>(System.String whereClause, System.Object? argumentValue = default)where TObject : class
+		{
+			return __Trait9.DeleteSet<TObject>(whereClause, argumentValue);
 		}
 
 		// Exposing trait Traits.SupportsDeleteTrait<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>
@@ -452,7 +521,7 @@ namespace Tortuga.Chain.SqlServer
 		/// <param name="updateArgumentValue">The argument value.</param>
 		/// <param name="options">The update options.</param>
 		/// <remarks>Use .WithFilter to apply a WHERE clause.</remarks>
-		public Tortuga.Chain.CommandBuilders.IUpdateSetDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter> UpdateSet(Tortuga.Chain.SqlServer.SqlServerObjectName tableName, System.String updateExpression, System.Object updateArgumentValue, Tortuga.Chain.UpdateOptions options = 0)
+		public Tortuga.Chain.CommandBuilders.IUpdateSetDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter> UpdateSet(Tortuga.Chain.SqlServer.SqlServerObjectName tableName, System.String updateExpression, System.Object? updateArgumentValue, Tortuga.Chain.UpdateOptions options = 0)
 		{
 			return __Trait8.UpdateSet(tableName, updateExpression, updateArgumentValue, options);
 		}
@@ -564,6 +633,7 @@ namespace Tortuga.Chain.SqlServer
 			__Trait6.DataSource = this;
 			__Trait7.DataSource = this;
 			__Trait8.DataSource = this;
+			__Trait9.DataSource = this;
 		}
 
 	}

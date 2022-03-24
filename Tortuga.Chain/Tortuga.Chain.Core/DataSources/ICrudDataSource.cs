@@ -9,7 +9,7 @@ public interface ICrudDataSource :
 	ISupportsDelete,
 	ISupportsDeleteByKey,
 	ISupportsDeleteByKeyList,
-	ISupportsDeleteWithFilter,
+	ISupportsDeleteSet,
 	ISupportsDeleteAll,
 	ISupportsFrom,
 	ISupportsGetByKey,

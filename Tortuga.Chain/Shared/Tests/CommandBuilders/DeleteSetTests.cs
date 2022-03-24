@@ -3,11 +3,11 @@
 namespace Tests.CommandBuilders;
 
 [TestClass]
-public class DeleteWithFilterTests : TestBase
+public class DeleteSetTests : TestBase
 {
 
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
-	public void DeleteWithFilter_Where(string dataSourceName, DataSourceType mode)
+	public void DeleteSet_Where(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
 		try
@@ -19,7 +19,7 @@ public class DeleteWithFilterTests : TestBase
 			var allKeys = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToInt32List("EmployeeKey").Execute();
 			var keysToUpdate = allKeys.Take(5).ToList();
 
-			var updatedRows = dataSource.DeleteWithFilter(EmployeeTableName, $"Title = '{lookupKey}' AND MiddleName Is Null").ToCollection<Employee>().Execute();
+			var updatedRows = dataSource.DeleteSet(EmployeeTableName, $"Title = '{lookupKey}' AND MiddleName Is Null").ToCollection<Employee>().Execute();
 
 			Assert.AreEqual(5, updatedRows.Count, "The wrong number of rows were deleted");
 
@@ -34,7 +34,7 @@ public class DeleteWithFilterTests : TestBase
 
 
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
-	public void DeleteWithFilter_WhereArg(string dataSourceName, DataSourceType mode)
+	public void DeleteSet_WhereArg(string dataSourceName, DataSourceType mode)
 	{
 #if SQL_SERVER_OLEDB
 			var whereClause = "Title = ? AND MiddleName Is Null";
@@ -52,7 +52,7 @@ public class DeleteWithFilterTests : TestBase
 			var allKeys = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToInt32List("EmployeeKey").Execute();
 			var keysToUpdate = allKeys.Take(5).ToList();
 
-			var updatedRows = dataSource.DeleteWithFilter(EmployeeTableName, whereClause, new { @LookupKey = lookupKey }).ToCollection<Employee>().Execute();
+			var updatedRows = dataSource.DeleteSet(EmployeeTableName, whereClause, new { @LookupKey = lookupKey }).ToCollection<Employee>().Execute();
 
 			Assert.AreEqual(5, updatedRows.Count, "The wrong number of rows were deleted");
 
@@ -66,7 +66,7 @@ public class DeleteWithFilterTests : TestBase
 	}
 
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
-	public void DeleteWithFilter_Filter(string dataSourceName, DataSourceType mode)
+	public void DeleteSet_Filter(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
 		try
@@ -78,7 +78,7 @@ public class DeleteWithFilterTests : TestBase
 			var allKeys = dataSource.From(EmployeeTableName, new { Title = lookupKey }).ToInt32List("EmployeeKey").Execute();
 			var keysToUpdate = allKeys.Take(5).ToList();
 
-			var updatedRows = dataSource.DeleteWithFilter(EmployeeTableName, new { Title = lookupKey, MiddleName = (string)null }).ToCollection<Employee>().Execute();
+			var updatedRows = dataSource.DeleteSet(EmployeeTableName, new { Title = lookupKey, MiddleName = (string)null }).ToCollection<Employee>().Execute();
 
 			Assert.AreEqual(5, updatedRows.Count, "The wrong number of rows were deleted");
 
@@ -92,7 +92,7 @@ public class DeleteWithFilterTests : TestBase
 	}
 
 	[DataTestMethod, RootData(DataSourceGroup.Primary)]
-	public void DeleteWithFilter_Where_SoftDelete(string dataSourceName)
+	public void DeleteSet_Where_SoftDelete(string dataSourceName)
 	{
 		var dataSource = DataSource(dataSourceName);
 		try
@@ -106,7 +106,7 @@ public class DeleteWithFilterTests : TestBase
 			var allKeys = dataSourceRules.From(CustomerTableName, new { FullName = lookupKey }).ToInt32List("CustomerKey").Execute();
 			var keysToUpdate = allKeys.Take(5).ToList();
 
-			var updatedRows = dataSourceRules.DeleteWithFilter(CustomerTableName, $"FullName = '{lookupKey}' AND State = 'BB'").ToCollection<Customer>().Execute();
+			var updatedRows = dataSourceRules.DeleteSet(CustomerTableName, $"FullName = '{lookupKey}' AND State = 'BB'").ToCollection<Customer>().Execute();
 
 			Assert.AreEqual(5, updatedRows.Count, "The wrong number of rows were deleted");
 
@@ -120,7 +120,7 @@ public class DeleteWithFilterTests : TestBase
 	}
 
 	[DataTestMethod, RootData(DataSourceGroup.Primary)]
-	public void DeleteWithFilter_WhereArg_SoftDelete(string dataSourceName)
+	public void DeleteSet_WhereArg_SoftDelete(string dataSourceName)
 	{
 		var dataSource = DataSource(dataSourceName);
 		try
@@ -140,7 +140,7 @@ public class DeleteWithFilterTests : TestBase
 			var whereClause = "FullName = @Lookup AND State = @State";
 #endif
 
-			var updatedRows = dataSourceRules.DeleteWithFilter(CustomerTableName, whereClause, new { @Lookup = lookupKey, State = "BB" }).ToCollection<Customer>().Execute();
+			var updatedRows = dataSourceRules.DeleteSet(CustomerTableName, whereClause, new { @Lookup = lookupKey, State = "BB" }).ToCollection<Customer>().Execute();
 
 			Assert.AreEqual(5, updatedRows.Count, "The wrong number of rows were deleted");
 
@@ -154,7 +154,7 @@ public class DeleteWithFilterTests : TestBase
 	}
 
 	[DataTestMethod, RootData(DataSourceGroup.Primary)]
-	public void DeleteWithFilter_Filter_SoftDelete(string dataSourceName)
+	public void DeleteSet_Filter_SoftDelete(string dataSourceName)
 	{
 		var dataSource = DataSource(dataSourceName);
 		try
@@ -168,7 +168,7 @@ public class DeleteWithFilterTests : TestBase
 			var allKeys = dataSourceRules.From(CustomerTableName, new { FullName = lookupKey }).ToInt32List("CustomerKey").Execute();
 			var keysToUpdate = allKeys.Take(5).ToList();
 
-			var updatedRows = dataSourceRules.DeleteWithFilter(CustomerTableName, new { @FullName = lookupKey, State = "BB" }).ToCollection<Customer>().Execute();
+			var updatedRows = dataSourceRules.DeleteSet(CustomerTableName, new { @FullName = lookupKey, State = "BB" }).ToCollection<Customer>().Execute();
 
 			Assert.AreEqual(5, updatedRows.Count, "The wrong number of rows were deleted");
 

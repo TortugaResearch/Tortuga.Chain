@@ -42,46 +42,6 @@ namespace Tortuga.Chain.Access
 #endif
 	{
 
-		IUpdateSetDbCommandBuilder<AbstractCommand, AbstractParameter> OnUpdateSet(AbstractObjectName tableName, string updateExpression, object? updateArgumentValue, UpdateOptions options)
-		{
-			return ((Traits.IUpdateDeleteSetHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>)this).OnUpdateSet(tableName, updateExpression, updateArgumentValue, options);
-		}
-
-		IUpdateSetDbCommandBuilder<AbstractCommand, AbstractParameter> OnUpdateSet(AbstractObjectName tableName, object? newValues, UpdateOptions options)
-		{
-			return ((Traits.IUpdateDeleteSetHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>)this).OnUpdateSet(tableName.Name, newValues, options);
-		}
-
-
-		/************************ ISupportsDeleteWithFilter ************************/
-
-
-		/// <summary>
-		/// Delete multiple records using a where expression.
-		/// </summary>
-		/// <param name="tableName">Name of the table.</param>
-		/// <param name="whereClause">The where clause.</param>
-		public MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> DeleteWithFilter(AbstractObjectName tableName, string whereClause)
-		{
-			var table = DatabaseMetadata.GetTableOrView(tableName);
-			if (!AuditRules.UseSoftDelete(table))
-				return OnDeleteSet(tableName, whereClause, null);
-
-			return OnUpdateSet(tableName, null, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected).WithFilter(whereClause, null);
-		}
-
-		/// <summary>
-		/// Delete multiple records using a where expression.
-		/// </summary>
-		/// <param name="whereClause">The where clause.</param>
-		public MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> DeleteWithFilter<TObject>(string whereClause)
-			where TObject : class
-		{
-			var tableName = DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name;
-			return DeleteWithFilter(tableName, whereClause);
-		}
-
-
 		/************************ ISupportsFrom ************************/
 
 
@@ -179,62 +139,6 @@ namespace Tortuga.Chain.Access
 			return OnFromTableOrView<TObject>(DatabaseMetadata.GetTableOrViewFromClass<TObject>(OperationType.Select).Name, filterValue, filterOptions);
 		}
 
-		/************************ ISupportsDeleteWithFilter ************************/
-
-
-		/// <summary>
-		/// Delete multiple records using a filter object.
-		/// </summary>
-		/// <param name="tableName">Name of the table.</param>
-		/// <param name="filterValue">The filter value.</param>
-		/// <param name="filterOptions">The options.</param>
-		public MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> DeleteWithFilter(AbstractObjectName tableName, object filterValue, FilterOptions filterOptions = FilterOptions.None)
-		{
-			var table = DatabaseMetadata.GetTableOrView(tableName);
-			if (!AuditRules.UseSoftDelete(table))
-				return OnDeleteSet(tableName, filterValue, filterOptions);
-
-			return OnUpdateSet(tableName, null, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected).WithFilter(filterValue, filterOptions);
-		}
-
-		/// <summary>
-		/// Delete multiple records using a filter object.
-		/// </summary>
-		/// <param name="filterValue">The filter value.</param>
-		/// <param name="filterOptions">The options.</param>
-		public MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> DeleteWithFilter<TObject>(object filterValue, FilterOptions filterOptions = FilterOptions.None)
-			where TObject : class
-		{
-			var tableName = DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name;
-			return DeleteWithFilter(tableName, filterValue, filterOptions);
-		}
-
-		/// <summary>
-		/// Delete multiple records using a where expression.
-		/// </summary>
-		/// <param name="tableName">Name of the table.</param>
-		/// <param name="whereClause">The where clause.</param>
-		/// <param name="argumentValue">The argument value for the where clause.</param>
-		public MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> DeleteWithFilter(AbstractObjectName tableName, string whereClause, object argumentValue)
-		{
-			var table = DatabaseMetadata.GetTableOrView(tableName);
-			if (!AuditRules.UseSoftDelete(table))
-				return OnDeleteSet(tableName, whereClause, argumentValue);
-
-			return OnUpdateSet(tableName, null, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected).WithFilter(whereClause, argumentValue);
-		}
-
-		/// <summary>
-		/// Delete multiple records using a where expression.
-		/// </summary>
-		/// <param name="whereClause">The where clause.</param>
-		/// <param name="argumentValue">The argument value for the where clause.</param>
-		public MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> DeleteWithFilter<TObject>(string whereClause, object argumentValue)
-			where TObject : class
-		{
-			var tableName = DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name;
-			return DeleteWithFilter(tableName, whereClause, argumentValue);
-		}
 
 
 

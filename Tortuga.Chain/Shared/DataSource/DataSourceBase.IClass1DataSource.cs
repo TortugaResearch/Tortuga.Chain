@@ -39,20 +39,6 @@ namespace Tortuga.Chain.Access
 #endif
 	{
 
-		IMultipleRowDbCommandBuilder ISupportsDeleteWithFilter.DeleteWithFilter(string tableName, string whereClause)
-		{
-			return DeleteWithFilter(tableName, whereClause);
-		}
-
-		IMultipleRowDbCommandBuilder ISupportsDeleteWithFilter.DeleteWithFilter(string tableName, string whereClause, object argumentValue)
-		{
-			return DeleteWithFilter(tableName, whereClause, argumentValue);
-		}
-
-		IMultipleRowDbCommandBuilder ISupportsDeleteWithFilter.DeleteWithFilter(string tableName, object filterValue, FilterOptions filterOptions)
-		{
-			return DeleteWithFilter(tableName, filterValue, filterOptions);
-		}
 
 		ITableDbCommandBuilder ISupportsFrom.From(string tableOrViewName)
 		{

@@ -9,7 +9,7 @@ using Tortuga.Chain.Metadata;
 namespace Tortuga.Chain.PostgreSql.CommandBuilders
 {
 	/// <summary>
-	/// Class PostgreSqlDeleteWithFilter.
+	/// Class PostgreSqlDeleteSet.
 	/// </summary>
 	internal sealed class PostgreSqlDeleteSet : MultipleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter>
 	{

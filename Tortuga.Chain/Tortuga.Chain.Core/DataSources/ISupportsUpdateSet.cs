@@ -25,7 +25,7 @@ namespace Tortuga.Chain.DataSources
 		/// <param name="updateArgumentValue">The argument for the update expression.</param>
 		/// <param name="options">The update options.</param>
 		/// <remarks>Use .WithFilter to apply a WHERE clause.</remarks>
-		IUpdateSetDbCommandBuilder UpdateSet(string tableName, string updateExpression, object updateArgumentValue, UpdateOptions options = UpdateOptions.None);
+		IUpdateSetDbCommandBuilder UpdateSet(string tableName, string updateExpression, object? updateArgumentValue, UpdateOptions options = UpdateOptions.None);
 
 		/// <summary>
 		/// Update multiple records using an update value.

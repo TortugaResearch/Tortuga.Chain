@@ -8,7 +8,7 @@ using Tortuga.Chain.Metadata;
 namespace Tortuga.Chain.SQLite.CommandBuilders
 {
 	/// <summary>
-	/// Class SQLiteDeleteWithFilter.
+	/// Class SQLiteDeleteSet.
 	/// </summary>
 	internal sealed class SQLiteDeleteSet : MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter>
 	{

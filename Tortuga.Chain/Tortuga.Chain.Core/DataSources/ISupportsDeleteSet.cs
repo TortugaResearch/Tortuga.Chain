@@ -4,9 +4,9 @@ namespace Tortuga.Chain.DataSources
 {
 
 	/// <summary>
-	/// Used to mark data sources that support the DeleteWithFilter command.
+	/// Used to mark data sources that support the DeleteSet command.
 	/// </summary>
-	public interface ISupportsDeleteWithFilter
+	public interface ISupportsDeleteSet
 	{
 		/// <summary>
 		/// Delete multiple records using a where expression.
@@ -14,7 +14,7 @@ namespace Tortuga.Chain.DataSources
 		/// <param name="tableName">Name of the table.</param>
 		/// <param name="whereClause">The where clause.</param>
 		/// <returns>IMultipleRowDbCommandBuilder.</returns>
-		IMultipleRowDbCommandBuilder DeleteWithFilter(string tableName, string whereClause);
+		IMultipleRowDbCommandBuilder DeleteSet(string tableName, string whereClause);
 
 		/// <summary>
 		/// Delete multiple records using a where expression.
@@ -23,7 +23,7 @@ namespace Tortuga.Chain.DataSources
 		/// <param name="whereClause">The where clause.</param>
 		/// <param name="argumentValue">The argument value for the where clause.</param>
 		/// <returns>IMultipleRowDbCommandBuilder.</returns>
-		IMultipleRowDbCommandBuilder DeleteWithFilter(string tableName, string whereClause, object argumentValue);
+		IMultipleRowDbCommandBuilder DeleteSet(string tableName, string whereClause, object? argumentValue);
 
 
 		/// <summary>
@@ -32,7 +32,7 @@ namespace Tortuga.Chain.DataSources
 		/// <param name="tableName">Name of the table.</param>
 		/// <param name="filterValue">The filter value.</param>
 		/// <param name="filterOptions">The filter options.</param>
-		IMultipleRowDbCommandBuilder DeleteWithFilter(string tableName, object filterValue, FilterOptions filterOptions = FilterOptions.None);
+		IMultipleRowDbCommandBuilder DeleteSet(string tableName, object filterValue, FilterOptions filterOptions = FilterOptions.None);
 
 	}
 }
