@@ -5,7 +5,7 @@ namespace Tortuga.Chain.Metadata
 	/// </summary>
 	public abstract class IndexMetadata
 	{
-		/// <summary>Initializes a new instance of the <see cref="IndexMetadata{TName, TDbType}"/> class.</summary>
+		/// <summary>Initializes a new instance of the <see cref="IndexMetadata{TObjectName, TDbType}"/> class.</summary>
 		/// <param name="tableName">Name of the table (or view).</param>
 		/// <param name="name">The name.</param>
 		/// <param name="isPrimaryKey">if set to <c>true</c> is a primary key.</param>

@@ -33,7 +33,6 @@
 
 	<ItemGroup>
 		<PackageReference Include="CS-Script.Core" Version="2.0.0" />
-		<!-- Pinning to 3.9.0 to match the Source Generator. -->
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="4.1.0" />
 	</ItemGroup>
 

@@ -3,20 +3,20 @@ namespace Tortuga.Chain.Metadata
 	/// <summary>
 	/// This represents a foreign key relationship between two tables.
 	/// </summary>
-	/// <typeparam name="TName">The type of the name.</typeparam>
+	/// <typeparam name="TObjectName">The type of the name.</typeparam>
 	/// <typeparam name="TDbType">The database column type.</typeparam>
-	public class ForeignKeyConstraint<TName, TDbType> : ForeignKeyConstraint
-		where TName : struct
+	public class ForeignKeyConstraint<TObjectName, TDbType> : ForeignKeyConstraint
+		where TObjectName : struct
 		where TDbType : struct
 	{
 		/// <summary>
-		/// Initializes a new instance of the <see cref="ForeignKeyConstraint{TName, TDbType}" /> class.
+		/// Initializes a new instance of the <see cref="ForeignKeyConstraint{TObjectName, TDbType}" /> class.
 		/// </summary>
 		/// <param name="parentTableName">Name of the parent table.</param>
 		/// <param name="parentColumns">The parent columns.</param>
 		/// <param name="childTableName">Name of the child table.</param>
 		/// <param name="childColumns">The child columns.</param>
-		public ForeignKeyConstraint(TName parentTableName, ColumnMetadataCollection<TDbType> parentColumns, TName childTableName, ColumnMetadataCollection<TDbType> childColumns) : base(parentTableName.ToString()!, parentColumns?.GenericCollection!, childTableName.ToString()!, childColumns?.GenericCollection!)
+		public ForeignKeyConstraint(TObjectName parentTableName, ColumnMetadataCollection<TDbType> parentColumns, TObjectName childTableName, ColumnMetadataCollection<TDbType> childColumns) : base(parentTableName.ToString()!, parentColumns?.GenericCollection!, childTableName.ToString()!, childColumns?.GenericCollection!)
 		{
 			if (parentColumns == null || parentColumns.Count == 0)
 				throw new ArgumentException($"{nameof(parentColumns)} is null or empty.", nameof(parentColumns));
@@ -38,7 +38,7 @@ namespace Tortuga.Chain.Metadata
 		/// <summary>
 		/// Gets the name of the child table.
 		/// </summary>
-		public new TName ChildTableName { get; }
+		public new TObjectName ChildTableName { get; }
 
 		/// <summary>
 		/// Gets the columns in the parent table. This will usually be the primary key(s).
@@ -48,6 +48,6 @@ namespace Tortuga.Chain.Metadata
 		/// <summary>
 		/// Gets the name of the parent table.
 		/// </summary>
-		public new TName ParentTableName { get; }
+		public new TObjectName ParentTableName { get; }
 	}
 }

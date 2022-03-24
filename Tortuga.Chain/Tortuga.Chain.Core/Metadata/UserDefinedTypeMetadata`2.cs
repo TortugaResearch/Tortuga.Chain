@@ -3,18 +3,18 @@ namespace Tortuga.Chain.Metadata
 	/// <summary>
 	/// This class represents user defined table types.
 	/// </summary>
-	/// <typeparam name="TName">The type of the t name.</typeparam>
+	/// <typeparam name="TObjectName">The type of the t name.</typeparam>
 	/// <typeparam name="TDbType">The type of the t database type.</typeparam>
-	public sealed class UserDefinedTableTypeMetadata<TName, TDbType> : UserDefinedTableTypeMetadata
-		where TName : struct
+	public sealed class UserDefinedTableTypeMetadata<TObjectName, TDbType> : UserDefinedTableTypeMetadata
+		where TObjectName : struct
 		where TDbType : struct
 	{
 		/// <summary>
-		/// Initializes a new instance of the <see cref="UserDefinedTableTypeMetadata{TName, TDbType}" /> class.
+		/// Initializes a new instance of the <see cref="UserDefinedTableTypeMetadata{TObjectName, TDbType}" /> class.
 		/// </summary>
 		/// <param name="name">The name.</param>
 		/// <param name="columns">The columns.</param>
-		public UserDefinedTableTypeMetadata(TName name, ColumnMetadataCollection<TDbType> columns)
+		public UserDefinedTableTypeMetadata(TObjectName name, ColumnMetadataCollection<TDbType> columns)
 			: base(name.ToString()!, columns?.GenericCollection!)
 		{
 			Name = name;
@@ -35,6 +35,6 @@ namespace Tortuga.Chain.Metadata
 		/// <value>
 		/// The name.
 		/// </value>
-		public new TName Name { get; }
+		public new TObjectName Name { get; }
 	}
 }

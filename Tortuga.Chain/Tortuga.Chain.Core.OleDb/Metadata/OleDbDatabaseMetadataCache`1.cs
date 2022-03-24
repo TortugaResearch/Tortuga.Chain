@@ -6,9 +6,9 @@ namespace Tortuga.Chain.Metadata
 	/// <summary>
 	/// Meatadata cache base class for OleDB databases
 	/// </summary>
-	/// <typeparam name="TName">The type used to represent database object names.</typeparam>
-	public abstract class OleDbDatabaseMetadataCache<TName> : DatabaseMetadataCache<TName, OleDbType>
-		where TName : struct
+	/// <typeparam name="TObjectName">The type used to represent database object names.</typeparam>
+	public abstract class OleDbDatabaseMetadataCache<TObjectName> : DatabaseMetadataCache<TObjectName, OleDbType>
+		where TObjectName : struct
 	{
 		/// <summary>
 		/// Returns the CLR type that matches the indicated database column type.

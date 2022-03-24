@@ -40,45 +40,7 @@ namespace Tortuga.Chain.Access
 	{
 
 
-		ITableDbCommandBuilder ISupportsFrom.From(string tableOrViewName)
-		{
-			return From(tableOrViewName);
-		}
 
-		ITableDbCommandBuilder ISupportsFrom.From(string tableOrViewName, object filterValue, FilterOptions filterOptions)
-		{
-			return From(tableOrViewName, filterValue, filterOptions);
-		}
-
-		ITableDbCommandBuilder ISupportsFrom.From(string tableOrViewName, string whereClause)
-		{
-			return From(tableOrViewName, whereClause);
-		}
-
-		ITableDbCommandBuilder ISupportsFrom.From(string tableOrViewName, string whereClause, object argumentValue)
-		{
-			return From(tableOrViewName, whereClause, argumentValue);
-		}
-
-		ITableDbCommandBuilder<TObject> ISupportsFrom.From<TObject>()
-		{
-			return From<TObject>();
-		}
-
-		ITableDbCommandBuilder<TObject> ISupportsFrom.From<TObject>(string whereClause)
-		{
-			return From<TObject>(whereClause);
-		}
-
-		ITableDbCommandBuilder<TObject> ISupportsFrom.From<TObject>(string whereClause, object argumentValue)
-		{
-			return From<TObject>(whereClause, argumentValue);
-		}
-
-		ITableDbCommandBuilder<TObject> ISupportsFrom.From<TObject>(object filterValue)
-		{
-			return From<TObject>(filterValue);
-		}
 
 		ISingleRowDbCommandBuilder ISupportsGetByKey.GetByKey<TKey>(string tableName, TKey key)
 		{

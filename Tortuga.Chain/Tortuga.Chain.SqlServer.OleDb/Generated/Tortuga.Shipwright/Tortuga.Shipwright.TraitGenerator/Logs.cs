@@ -12,4 +12,5 @@ Container class: Tortuga.Chain.SqlServer.OleDbSqlServerDataSourceBase
 	Adding trait: Traits.SupportsInsertTrait<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>
 	Adding trait: Traits.SupportsUpdateSet<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>
 	Adding trait: Traits.SupportsDeleteSet<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>
+	Adding trait: Traits.SupportsFromTrait<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType, Tortuga.Chain.SqlServerLimitOption>
 */

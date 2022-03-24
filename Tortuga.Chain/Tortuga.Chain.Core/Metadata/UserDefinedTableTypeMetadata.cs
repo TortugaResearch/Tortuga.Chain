@@ -6,7 +6,7 @@ namespace Tortuga.Chain.Metadata
 	public abstract class UserDefinedTableTypeMetadata
 	{
 		/// <summary>
-		/// Initializes a new instance of the <see cref="UserDefinedTableTypeMetadata{TName, TDbType}" /> class.
+		/// Initializes a new instance of the <see cref="UserDefinedTableTypeMetadata{TObjectName, TDbType}" /> class.
 		/// </summary>
 		/// <param name="name">The name.</param>
 		/// <param name="columns">The columns.</param>

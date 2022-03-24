@@ -445,7 +445,7 @@ public class FromTests : TestBase
 			var emp2 = new Employee() { FirstName = "B", LastName = "2", Title = uniqueKey };
 			dataSource.Insert(EmployeeTableName, emp2).ToObject<Employee>().Execute();
 
-			var lookup = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToCollection<EmployeeLookup>().Execute();
+			var lookup = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).WithSorting("EmployeeKey").ToCollection<EmployeeLookup>().Execute();
 
 			Assert.AreEqual("A", lookup[0].FirstName, "First Name");
 			Assert.AreEqual("1", lookup[0].LastName, "Last Name");
@@ -471,7 +471,7 @@ public class FromTests : TestBase
 			var emp2 = new Employee() { FirstName = "B", LastName = "2", Title = uniqueKey };
 			dataSource.Insert(EmployeeTableName, emp2).ToObject<Employee>().Execute();
 
-			var lookup = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToImmutableList<EmployeeLookup>().Execute();
+			var lookup = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).WithSorting("EmployeeKey").ToImmutableList<EmployeeLookup>().Execute();
 
 			Assert.AreEqual("A", lookup[0].FirstName, "First Name");
 			Assert.AreEqual("1", lookup[0].LastName, "Last Name");
@@ -497,7 +497,7 @@ public class FromTests : TestBase
 			var emp2 = new Employee() { FirstName = "B", LastName = "2", Title = uniqueKey };
 			dataSource.Insert(EmployeeTableName, emp2).ToObject<Employee>().Execute();
 
-			var lookup = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToImmutableArray<EmployeeLookup>().Execute();
+			var lookup = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).WithSorting("EmployeeKey").ToImmutableArray<EmployeeLookup>().Execute();
 
 			Assert.AreEqual("A", lookup[0].FirstName, "First Name");
 			Assert.AreEqual("1", lookup[0].LastName, "Last Name");

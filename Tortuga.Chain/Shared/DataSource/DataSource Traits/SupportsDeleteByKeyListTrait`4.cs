@@ -1,10 +1,13 @@
 ﻿using System.Data.Common;
+using System.Diagnostics.CodeAnalysis;
 using Tortuga.Chain;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.DataSources;
+using Tortuga.Chain.Metadata;
 using Tortuga.Shipwright;
 
 namespace Traits;
+
 
 [Trait]
 class SupportsDeleteByKeyListTrait<TCommand, TParameter, TObjectName, TDbType> : ISupportsDeleteByKeyList, ISupportsDeleteByKey

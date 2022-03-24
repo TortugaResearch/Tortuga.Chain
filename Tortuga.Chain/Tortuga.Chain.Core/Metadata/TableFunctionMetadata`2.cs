@@ -5,19 +5,19 @@ namespace Tortuga.Chain.Metadata
 	/// <summary>
 	/// Metadata for a database table value function.
 	/// </summary>
-	/// <typeparam name="TName">The type used to represent database object names.</typeparam>
+	/// <typeparam name="TObjectName">The type used to represent database object names.</typeparam>
 	/// <typeparam name="TDbType">The variant of DbType used by this data source.</typeparam>
-	public sealed class TableFunctionMetadata<TName, TDbType> : TableFunctionMetadata
-		where TName : struct
+	public sealed class TableFunctionMetadata<TObjectName, TDbType> : TableFunctionMetadata
+		where TObjectName : struct
 		where TDbType : struct
 	{
 		readonly SqlBuilder<TDbType> m_Builder;
 
-		/// <summary>Initializes a new instance of the <see cref="Tortuga.Chain.Metadata.TableFunctionMetadata{TName, TDbType}"/> class.</summary>
+		/// <summary>Initializes a new instance of the <see cref="Tortuga.Chain.Metadata.TableFunctionMetadata{TObjectName, TDbType}"/> class.</summary>
 		/// <param name="name">The name.</param>
 		/// <param name="parameters">The parameters.</param>
 		/// <param name="columns">The columns.</param>
-		public TableFunctionMetadata(TName name, ParameterMetadataCollection<TDbType> parameters, ColumnMetadataCollection<TDbType> columns) : base(name.ToString()!, parameters?.GenericCollection!, columns?.GenericCollection!)
+		public TableFunctionMetadata(TObjectName name, ParameterMetadataCollection<TDbType> parameters, ColumnMetadataCollection<TDbType> columns) : base(name.ToString()!, parameters?.GenericCollection!, columns?.GenericCollection!)
 		{
 			Name = name;
 			Parameters = parameters ?? throw new ArgumentNullException(nameof(parameters), $"{nameof(parameters)} is null.");
@@ -39,7 +39,7 @@ namespace Tortuga.Chain.Metadata
 		/// <value>
 		/// The name.
 		/// </value>
-		public new TName Name { get; }
+		public new TObjectName Name { get; }
 
 		/// <summary>
 		/// Gets the parameters.

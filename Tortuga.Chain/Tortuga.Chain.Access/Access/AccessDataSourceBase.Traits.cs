@@ -18,6 +18,7 @@ namespace Tortuga.Chain.Access;
 [UseTrait(typeof(SupportsInsertTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
 [UseTrait(typeof(SupportsUpdateSet<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
 [UseTrait(typeof(SupportsDeleteSet<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
+[UseTrait(typeof(SupportsFromTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType, AbstractLimitOption>))]
 
 partial class AccessDataSourceBase
 {
@@ -155,5 +156,20 @@ partial class AccessDataSourceBase
 	{
 		return new AccessDeleteSet(this, tableName, filterValue, filterOptions);
 	}
+
+
+	TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption, TObject> IFromHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType, AbstractLimitOption>.OnFromTableOrView<TObject>(AbstractObjectName tableOrViewName, string? whereClause, object? argumentValue)
+		where TObject : class
+	{
+		return new AccessTableOrView<TObject>(this, tableOrViewName, whereClause, argumentValue);
+	}
+
+	TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption, TObject> IFromHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType, AbstractLimitOption>.OnFromTableOrView<TObject>(AbstractObjectName tableOrViewName, object filterValue, FilterOptions filterOptions)
+		where TObject : class
+	{
+		return new AccessTableOrView<TObject>(this, tableOrViewName, filterValue, filterOptions);
+	}
+
+
 }
 
