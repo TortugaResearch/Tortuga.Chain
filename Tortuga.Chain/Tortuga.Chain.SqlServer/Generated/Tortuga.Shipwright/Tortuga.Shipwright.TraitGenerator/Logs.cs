@@ -11,4 +11,5 @@ Container class: Tortuga.Chain.SqlServer.SqlServerDataSourceBase
 	Adding trait: Traits.SupportsUpdateTrait<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>
 	Adding trait: Traits.SupportsUpdateByKeyListTrait<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>
 	Adding trait: Traits.SupportsInsertTrait<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>
+	Adding trait: Traits.SupportsUpdateSet<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>
 */

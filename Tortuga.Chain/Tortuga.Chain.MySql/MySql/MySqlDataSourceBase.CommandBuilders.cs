@@ -51,14 +51,14 @@ namespace Tortuga.Chain.MySql
 			return new MultipleRowDbCommandBuilder<MySqlCommand, MySqlParameter, TObject>(new MySqlTableOrView<TObject>(this, tableName, where, parameters));
 		}
 
-		MultipleRowDbCommandBuilder<MySqlCommand, MySqlParameter> OnDeleteMany(MySqlObjectName tableName, string whereClause, object? argumentValue)
+		MultipleRowDbCommandBuilder<MySqlCommand, MySqlParameter> OnDeleteSet(MySqlObjectName tableName, string whereClause, object? argumentValue)
 		{
-			return new MySqlDeleteMany(this, tableName, whereClause, argumentValue);
+			return new MySqlDeleteSet(this, tableName, whereClause, argumentValue);
 		}
 
-		MultipleRowDbCommandBuilder<MySqlCommand, MySqlParameter> OnDeleteMany(MySqlObjectName tableName, object filterValue, FilterOptions filterOptions)
+		MultipleRowDbCommandBuilder<MySqlCommand, MySqlParameter> OnDeleteSet(MySqlObjectName tableName, object filterValue, FilterOptions filterOptions)
 		{
-			return new MySqlDeleteMany(this, tableName, filterValue, filterOptions);
+			return new MySqlDeleteSet(this, tableName, filterValue, filterOptions);
 		}
 
 
@@ -86,15 +86,7 @@ namespace Tortuga.Chain.MySql
 			return new MySqlInsertOrUpdateObject<TArgument>(this, tableName, argumentValue, options);
 		}
 
-		IUpdateManyDbCommandBuilder<MySqlCommand, MySqlParameter> OnUpdateMany(MySqlObjectName tableName, string updateExpression, object? updateArgumentValue, UpdateOptions options)
-		{
-			return new MySqlUpdateMany(this, tableName, updateExpression, updateArgumentValue, options);
-		}
 
-		IUpdateManyDbCommandBuilder<MySqlCommand, MySqlParameter> OnUpdateMany(MySqlObjectName tableName, object? newValues, UpdateOptions options)
-		{
-			return new MySqlUpdateMany(this, tableName, newValues, options);
-		}
 
 
 

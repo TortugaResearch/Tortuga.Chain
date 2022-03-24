@@ -3,12 +3,12 @@ using System.Data.Common;
 namespace Tortuga.Chain.CommandBuilders
 {
 	/// <summary>
-	/// Interface IUpdateManyCommandBuilder
+	/// Interface IUpdateSetCommandBuilder
 	/// </summary>
 	/// <typeparam name="TCommand">The type of the t command.</typeparam>
 	/// <typeparam name="TParameter">The type of the t parameter.</typeparam>
-	/// <seealso cref="Tortuga.Chain.CommandBuilders.IUpdateManyDbCommandBuilder" />
-	public interface IUpdateManyDbCommandBuilder<TCommand, TParameter> : IUpdateManyDbCommandBuilder
+	/// <seealso cref="Tortuga.Chain.CommandBuilders.IUpdateSetDbCommandBuilder" />
+	public interface IUpdateSetDbCommandBuilder<TCommand, TParameter> : IUpdateSetDbCommandBuilder
 					where TCommand : DbCommand
 			where TParameter : DbParameter
 	{

@@ -1,24 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.OleDb;
+﻿using MySqlConnector;
 using System.Text;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
 using Tortuga.Chain.Metadata;
 
-namespace Tortuga.Chain.SqlServer.CommandBuilders
+namespace Tortuga.Chain.MySql.CommandBuilders
 {
 	/// <summary>
-	/// Class OleDbSqlServerUpdateSet.
+	/// Class MySqlUpdateSet.
 	/// </summary>
-	internal sealed class OleDbSqlServerUpdateMany : UpdateManyDbCommandBuilder<OleDbCommand, OleDbParameter>
+	internal sealed class MySqlUpdateSet : UpdateSetDbCommandBuilder<MySqlCommand, MySqlParameter>
 	{
 		readonly int? m_ExpectedRowCount;
 		readonly object? m_NewValues;
 		readonly UpdateOptions m_Options;
-		readonly IEnumerable<OleDbParameter>? m_Parameters;
-		readonly SqlServerTableOrViewMetadata<OleDbType> m_Table;
+		readonly IEnumerable<MySqlParameter>? m_Parameters;
+		readonly TableOrViewMetadata<MySqlObjectName, MySqlDbType> m_Table;
 		readonly object? m_UpdateArgumentValue;
 		readonly string? m_UpdateExpression;
 		FilterOptions m_FilterOptions;
@@ -27,7 +25,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 		string? m_WhereClause;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="OleDbSqlServerUpdateMany" /> class.
+		/// Initializes a new instance of the <see cref="MySqlUpdateSet" /> class.
 		/// </summary>
 		/// <param name="dataSource">The data source.</param>
 		/// <param name="tableName">Name of the table.</param>
@@ -36,7 +34,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 		/// <param name="parameters">The parameters.</param>
 		/// <param name="expectedRowCount">The expected row count.</param>
 		/// <param name="options">The options.</param>
-		public OleDbSqlServerUpdateMany(OleDbSqlServerDataSourceBase dataSource, SqlServerObjectName tableName, object? newValues, string? whereClause, IEnumerable<OleDbParameter> parameters, int? expectedRowCount, UpdateOptions options) : base(dataSource)
+		public MySqlUpdateSet(MySqlDataSourceBase dataSource, MySqlObjectName tableName, object? newValues, string whereClause, IEnumerable<MySqlParameter> parameters, int? expectedRowCount, UpdateOptions options) : base(dataSource)
 		{
 			if (options.HasFlag(UpdateOptions.UseKeyAttribute))
 				throw new NotSupportedException("Cannot use Key attributes with this operation.");
@@ -50,14 +48,14 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="OleDbSqlServerUpdateMany" /> class.
+		/// Initializes a new instance of the <see cref="MySqlUpdateSet" /> class.
 		/// </summary>
 		/// <param name="dataSource">The data source.</param>
 		/// <param name="tableName">Name of the table.</param>
 		/// <param name="newValues">The new values.</param>
 		/// <param name="options">The options.</param>
 		/// <exception cref="System.NotSupportedException">Cannot use Key attributes with this operation.</exception>
-		public OleDbSqlServerUpdateMany(OleDbSqlServerDataSourceBase dataSource, SqlServerObjectName tableName, object? newValues, UpdateOptions options) : base(dataSource)
+		public MySqlUpdateSet(MySqlDataSourceBase dataSource, MySqlObjectName tableName, object? newValues, UpdateOptions options) : base(dataSource)
 		{
 			if (options.HasFlag(UpdateOptions.UseKeyAttribute))
 				throw new NotSupportedException("Cannot use Key attributes with this operation.");
@@ -68,7 +66,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="OleDbSqlServerUpdateMany" /> class.
+		/// Initializes a new instance of the <see cref="MySqlUpdateSet" /> class.
 		/// </summary>
 		/// <param name="dataSource">The data source.</param>
 		/// <param name="tableName">Name of the table.</param>
@@ -76,7 +74,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 		/// <param name="updateArgumentValue">The update argument value.</param>
 		/// <param name="options">The options.</param>
 		/// <exception cref="System.NotSupportedException">Cannot use Key attributes with this operation.</exception>
-		public OleDbSqlServerUpdateMany(OleDbSqlServerDataSourceBase dataSource, SqlServerObjectName tableName, string? updateExpression, object? updateArgumentValue, UpdateOptions options) : base(dataSource)
+		public MySqlUpdateSet(MySqlDataSourceBase dataSource, MySqlObjectName tableName, string updateExpression, object? updateArgumentValue, UpdateOptions options) : base(dataSource)
 		{
 			if (options.HasFlag(UpdateOptions.UseKeyAttribute))
 				throw new NotSupportedException("Cannot use Key attributes with this operation.");
@@ -91,7 +89,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 		/// Applies this command to all rows.
 		/// </summary>
 		/// <returns></returns>
-		public override UpdateManyDbCommandBuilder<OleDbCommand, OleDbParameter> All()
+		public override UpdateSetDbCommandBuilder<MySqlCommand, MySqlParameter> All()
 		{
 			m_WhereClause = null;
 			m_WhereArgumentValue = null;
@@ -100,7 +98,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 			return this;
 		}
 
-		public override CommandExecutionToken<OleDbCommand, OleDbParameter> Prepare(Materializer<OleDbCommand, OleDbParameter> materializer)
+		public override CommandExecutionToken<MySqlCommand, MySqlParameter> Prepare(Materializer<MySqlCommand, MySqlParameter> materializer)
 		{
 			if (materializer == null)
 				throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
@@ -114,55 +112,60 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 			sqlBuilder.ApplyArgumentValue(DataSource, m_NewValues, m_Options, false);
 			sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
-			var prefix = m_Options.HasFlag(UpdateOptions.ReturnOldValues) ? "Deleted." : "Inserted.";
-
 			var sql = new StringBuilder();
-			string? header;
-			string? intoClause;
-			string? footer;
+			if (sqlBuilder.HasReadFields && m_Options.HasFlag(UpdateOptions.ReturnOldValues))
+			{
+				sqlBuilder.BuildSelectClause(sql, "SELECT ", null, " FROM " + m_Table.Name.ToQuotedString());
+				if (m_FilterValue != null)
+					sql.Append(" WHERE " + sqlBuilder.ApplyFilterValue(m_FilterValue, m_FilterOptions));
+				else if (!string.IsNullOrWhiteSpace(m_WhereClause))
+					sql.Append(" WHERE " + m_WhereClause);
+				sql.AppendLine(";");
+			}
 
-			sqlBuilder.UseTableVariable(m_Table, out header, out intoClause, out footer);
-
-			sql.Append(header);
-			sql.Append($"UPDATE {m_Table.Name.ToQuotedString()}");
-			var parameters = new List<OleDbParameter>();
-
+			var parameters = new List<MySqlParameter>();
+			sql.Append("UPDATE " + m_Table.Name.ToQuotedString());
 			if (m_UpdateExpression == null)
 			{
-				sqlBuilder.BuildAnonymousSetClause(sql, " SET ", null, null);
+				sqlBuilder.BuildSetClause(sql, " SET ", null, null);
 			}
 			else
 			{
 				sql.Append(" SET " + m_UpdateExpression);
-				parameters.AddRange(SqlBuilder.GetParameters<OleDbParameter>(m_UpdateArgumentValue));
+				parameters.AddRange(SqlBuilder.GetParameters<MySqlParameter>(m_UpdateArgumentValue));
 			}
-
-			sqlBuilder.BuildSelectClause(sql, " OUTPUT ", prefix, intoClause);
 
 			if (m_FilterValue != null)
 			{
-				sql.Append(" WHERE " + sqlBuilder.ApplyAnonymousFilterValue(m_FilterValue, m_FilterOptions, true));
-
+				sql.Append(" WHERE " + sqlBuilder.ApplyFilterValue(m_FilterValue, m_FilterOptions));
 				parameters.AddRange(sqlBuilder.GetParameters());
 			}
 			else if (!string.IsNullOrWhiteSpace(m_WhereClause))
 			{
 				sql.Append(" WHERE " + m_WhereClause);
-
+				parameters.AddRange(SqlBuilder.GetParameters<MySqlParameter>(m_WhereArgumentValue));
 				parameters.AddRange(sqlBuilder.GetParameters());
-				parameters.AddRange(SqlBuilder.GetParameters<OleDbParameter>(m_WhereArgumentValue));
 			}
 			else
 			{
-				parameters.AddRange(sqlBuilder.GetParameters());
+				parameters = sqlBuilder.GetParameters();
 			}
-			sql.Append(";");
-			sql.Append(footer);
+			sql.AppendLine(";");
+
+			if (sqlBuilder.HasReadFields && !m_Options.HasFlag(UpdateOptions.ReturnOldValues))
+			{
+				sqlBuilder.BuildSelectClause(sql, "SELECT ", null, " FROM " + m_Table.Name.ToQuotedString());
+				if (m_FilterValue != null)
+					sql.Append(" WHERE " + sqlBuilder.ApplyFilterValue(m_FilterValue, m_FilterOptions));
+				else if (!string.IsNullOrWhiteSpace(m_WhereClause))
+					sql.Append(" WHERE " + m_WhereClause);
+				sql.AppendLine(";");
+			}
 
 			if (m_Parameters != null)
 				parameters.AddRange(m_Parameters);
 
-			return new OleDbCommandExecutionToken(DataSource, "Update " + m_Table.Name, sql.ToString(), parameters).CheckUpdateRowCount(m_Options, m_ExpectedRowCount);
+			return new MySqlCommandExecutionToken(DataSource, "Update " + m_Table.Name, sql.ToString(), parameters).CheckUpdateRowCount(m_Options, m_ExpectedRowCount);
 		}
 
 		/// <summary>
@@ -173,10 +176,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 		/// <remarks>
 		/// If the column name was not found, this will return null
 		/// </remarks>
-		public override ColumnMetadata? TryGetColumn(string columnName)
-		{
-			return m_Table.Columns.TryGetColumn(columnName);
-		}
+		public override ColumnMetadata? TryGetColumn(string columnName) => m_Table.Columns.TryGetColumn(columnName);
 
 		/// <summary>
 		/// Returns a list of columns known to be non-nullable.
@@ -194,7 +194,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 		/// </summary>
 		/// <param name="filterValue">The filter value.</param>
 		/// <param name="filterOptions">The filter options.</param>
-		public override UpdateManyDbCommandBuilder<OleDbCommand, OleDbParameter> WithFilter(object filterValue, FilterOptions filterOptions = FilterOptions.None)
+		public override UpdateSetDbCommandBuilder<MySqlCommand, MySqlParameter> WithFilter(object filterValue, FilterOptions filterOptions = FilterOptions.None)
 		{
 			m_WhereClause = null;
 			m_WhereArgumentValue = null;
@@ -208,7 +208,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 		/// </summary>
 		/// <param name="whereClause">The where clause.</param>
 		/// <returns></returns>
-		public override UpdateManyDbCommandBuilder<OleDbCommand, OleDbParameter> WithFilter(string whereClause)
+		public override UpdateSetDbCommandBuilder<MySqlCommand, MySqlParameter> WithFilter(string whereClause)
 		{
 			m_WhereClause = whereClause;
 			m_WhereArgumentValue = null;
@@ -223,7 +223,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 		/// <param name="whereClause">The where clause.</param>
 		/// <param name="argumentValue">The argument value.</param>
 		/// <returns></returns>
-		public override UpdateManyDbCommandBuilder<OleDbCommand, OleDbParameter> WithFilter(string whereClause, object? argumentValue)
+		public override UpdateSetDbCommandBuilder<MySqlCommand, MySqlParameter> WithFilter(string whereClause, object? argumentValue)
 		{
 			m_WhereClause = whereClause;
 			m_WhereArgumentValue = argumentValue;

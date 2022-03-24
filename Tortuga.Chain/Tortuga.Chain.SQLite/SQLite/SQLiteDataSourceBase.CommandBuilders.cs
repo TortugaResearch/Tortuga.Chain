@@ -72,14 +72,14 @@ namespace Tortuga.Chain.SQLite
 			return new MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter, TObject>(new SQLiteTableOrView<TObject>(this, tableName, where, parameters));
 		}
 
-		MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> OnDeleteMany(SQLiteObjectName tableName, string whereClause, object? argumentValue)
+		MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> OnDeleteSet(SQLiteObjectName tableName, string whereClause, object? argumentValue)
 		{
-			return new SQLiteDeleteMany(this, tableName, whereClause, argumentValue);
+			return new SQLiteDeleteSet(this, tableName, whereClause, argumentValue);
 		}
 
-		MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> OnDeleteMany(SQLiteObjectName tableName, object filterValue, FilterOptions filterOptions)
+		MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter> OnDeleteSet(SQLiteObjectName tableName, object filterValue, FilterOptions filterOptions)
 		{
-			return new SQLiteDeleteMany(this, tableName, filterValue, filterOptions);
+			return new SQLiteDeleteSet(this, tableName, filterValue, filterOptions);
 		}
 
 
@@ -108,15 +108,7 @@ namespace Tortuga.Chain.SQLite
 		}
 
 
-		IUpdateManyDbCommandBuilder<SQLiteCommand, SQLiteParameter> OnUpdateMany(SQLiteObjectName tableName, string updateExpression, object? updateArgumentValue, UpdateOptions options)
-		{
-			return new SQLiteUpdateMany(this, tableName, updateExpression, updateArgumentValue, options);
-		}
 
-		IUpdateManyDbCommandBuilder<SQLiteCommand, SQLiteParameter> OnUpdateMany(SQLiteObjectName tableName, object? newValues, UpdateOptions options)
-		{
-			return new SQLiteUpdateMany(this, tableName, newValues, options);
-		}
 
 
 

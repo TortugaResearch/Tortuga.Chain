@@ -2,7 +2,7 @@
 
 namespace Tortuga.Chain.MySql
 {
-	partial class MySqlDataSourceBase: Tortuga.Chain.DataSources.ISupportsDeleteAll, Tortuga.Chain.DataSources.ISupportsTruncate, Tortuga.Chain.DataSources.ISupportsSqlQueries, Tortuga.Chain.DataSources.ISupportsInsertBatch, Tortuga.Chain.DataSources.ISupportsDeleteByKeyList, Tortuga.Chain.DataSources.ISupportsDeleteByKey, Tortuga.Chain.DataSources.ISupportsUpdate, Tortuga.Chain.DataSources.ISupportsDelete, Tortuga.Chain.DataSources.ISupportsUpdateByKey, Tortuga.Chain.DataSources.ISupportsUpdateByKeyList, Tortuga.Chain.DataSources.ISupportsInsert, Traits.ICommandHelper<Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IInsertBatchHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IUpdateDeleteByKeyHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IUpdateDeleteHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IInsertHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>
+	partial class MySqlDataSourceBase: Tortuga.Chain.DataSources.ISupportsDeleteAll, Tortuga.Chain.DataSources.ISupportsTruncate, Tortuga.Chain.DataSources.ISupportsSqlQueries, Tortuga.Chain.DataSources.ISupportsInsertBatch, Tortuga.Chain.DataSources.ISupportsDeleteByKeyList, Tortuga.Chain.DataSources.ISupportsDeleteByKey, Tortuga.Chain.DataSources.ISupportsUpdate, Tortuga.Chain.DataSources.ISupportsDelete, Tortuga.Chain.DataSources.ISupportsUpdateByKey, Tortuga.Chain.DataSources.ISupportsUpdateByKeyList, Tortuga.Chain.DataSources.ISupportsInsert, Tortuga.Chain.DataSources.ISupportsUpdateSet, Traits.ICommandHelper<Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IInsertBatchHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IUpdateDeleteByKeyHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IUpdateDeleteHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IInsertHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IUpdateDeleteSetHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>
 	{
 
 		private bool __TraitsRegistered;
@@ -87,6 +87,15 @@ namespace Tortuga.Chain.MySql
 			{
 				if (!__TraitsRegistered) __RegisterTraits();
 				return ___Trait8;
+			}
+		}
+		private Traits.SupportsUpdateSet<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType> ___Trait9 = new();
+		private Traits.SupportsUpdateSet<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType> __Trait9
+		{
+			get
+			{
+				if (!__TraitsRegistered) __RegisterTraits();
+				return ___Trait9;
 			}
 		}
 
@@ -199,6 +208,22 @@ namespace Tortuga.Chain.MySql
 		Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder Tortuga.Chain.DataSources.ISupportsUpdateByKeyList.UpdateByKeyList<TArgument, TKey>(System.String tableName, TArgument newValues, System.Collections.Generic.IEnumerable<TKey> keys, Tortuga.Chain.UpdateOptions options)
 		{
 			return ((Tortuga.Chain.DataSources.ISupportsUpdateByKeyList)__Trait7).UpdateByKeyList<TArgument, TKey>(tableName, newValues, keys, options);
+		}
+
+		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsUpdateSet
+		Tortuga.Chain.CommandBuilders.IUpdateSetDbCommandBuilder Tortuga.Chain.DataSources.ISupportsUpdateSet.UpdateSet(System.String tableName, System.String updateExpression, Tortuga.Chain.UpdateOptions options)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsUpdateSet)__Trait9).UpdateSet(tableName, updateExpression, options);
+		}
+
+		Tortuga.Chain.CommandBuilders.IUpdateSetDbCommandBuilder Tortuga.Chain.DataSources.ISupportsUpdateSet.UpdateSet(System.String tableName, System.String updateExpression, System.Object updateArgumentValue, Tortuga.Chain.UpdateOptions options)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsUpdateSet)__Trait9).UpdateSet(tableName, updateExpression, updateArgumentValue, options);
+		}
+
+		Tortuga.Chain.CommandBuilders.IUpdateSetDbCommandBuilder Tortuga.Chain.DataSources.ISupportsUpdateSet.UpdateSet(System.String tableName, System.Object newValues, Tortuga.Chain.UpdateOptions options)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsUpdateSet)__Trait9).UpdateSet(tableName, newValues, options);
 		}
 
 		// Exposing trait Traits.SupportsDeleteAllTrait<Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>
@@ -495,6 +520,82 @@ namespace Tortuga.Chain.MySql
 			return __Trait7.UpdateByKeyList<TArgument, TKey>(tableName, newValues, keys, options);
 		}
 
+		// Exposing trait Traits.SupportsUpdateSet<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>
+
+		/// <summary>
+		/// Update multiple records using an update expression.
+		/// </summary>
+		/// <param name="tableName">Name of the table.</param>
+		/// <param name="updateExpression">The update expression.</param>
+		/// <param name="updateArgumentValue">The argument value.</param>
+		/// <param name="options">The update options.</param>
+		/// <remarks>Use .WithFilter to apply a WHERE clause.</remarks>
+		public Tortuga.Chain.CommandBuilders.IUpdateSetDbCommandBuilder<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter> UpdateSet(Tortuga.Chain.MySql.MySqlObjectName tableName, System.String updateExpression, System.Object updateArgumentValue, Tortuga.Chain.UpdateOptions options = 0)
+		{
+			return __Trait9.UpdateSet(tableName, updateExpression, updateArgumentValue, options);
+		}
+
+		/// <summary>
+		/// Update multiple records using an update value.
+		/// </summary>
+		/// <param name="tableName">Name of the table.</param>
+		/// <param name="newValues">The new values to use.</param>
+		/// <param name="options">The options.</param>
+		/// <remarks>Use .WithFilter to apply a WHERE clause.</remarks>
+		public Tortuga.Chain.CommandBuilders.IUpdateSetDbCommandBuilder<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter> UpdateSet(Tortuga.Chain.MySql.MySqlObjectName tableName, System.Object newValues, Tortuga.Chain.UpdateOptions options = 0)
+		{
+			return __Trait9.UpdateSet(tableName, newValues, options);
+		}
+
+		/// <summary>
+		/// Update multiple records using an update expression.
+		/// </summary>
+		/// <param name="tableName">Name of the table.</param>
+		/// <param name="updateExpression">The update expression.</param>
+		/// <param name="options">The update options.</param>
+		/// <remarks>Use .WithFilter to apply a WHERE clause.</remarks>
+		public Tortuga.Chain.CommandBuilders.IUpdateSetDbCommandBuilder<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter> UpdateSet(Tortuga.Chain.MySql.MySqlObjectName tableName, System.String updateExpression, Tortuga.Chain.UpdateOptions options = 0)
+		{
+			return __Trait9.UpdateSet(tableName, updateExpression, options);
+		}
+
+		/// <summary>
+		/// Update multiple records using an update expression.
+		/// </summary>
+		/// <typeparam name="TObject">Class used to determine the table name.</typeparam>
+		/// <param name="updateExpression">The update expression.</param>
+		/// <param name="updateArgumentValue">The argument for the update expression.</param>
+		/// <param name="options">The update options.</param>
+		/// <remarks>Use .WithFilter to apply a WHERE clause.</remarks>
+		public Tortuga.Chain.CommandBuilders.IUpdateSetDbCommandBuilder<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter> UpdateSet<TObject>(System.String updateExpression, System.Object updateArgumentValue, Tortuga.Chain.UpdateOptions options = 0)
+		{
+			return __Trait9.UpdateSet<TObject>(updateExpression, updateArgumentValue, options);
+		}
+
+		/// <summary>
+		/// Update multiple records using an update value.
+		/// </summary>
+		/// <typeparam name="TObject">Class used to determine the table name.</typeparam>
+		/// <param name="newValues">The new values to use.</param>
+		/// <param name="options">The options.</param>
+		/// <remarks>Use .WithFilter to apply a WHERE clause.</remarks>
+		public Tortuga.Chain.CommandBuilders.IUpdateSetDbCommandBuilder<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter> UpdateSet<TObject>(System.Object newValues, Tortuga.Chain.UpdateOptions options = 0)
+		{
+			return __Trait9.UpdateSet<TObject>(newValues, options);
+		}
+
+		/// <summary>
+		/// Update multiple records using an update expression.
+		/// </summary>
+		/// <typeparam name="TObject">Class used to determine the table name.</typeparam>
+		/// <param name="updateExpression">The update expression.</param>
+		/// <param name="options">The update options.</param>
+		/// <remarks>Use .WithFilter to apply a WHERE clause.</remarks>
+		public Tortuga.Chain.CommandBuilders.IUpdateSetDbCommandBuilder<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter> UpdateSet<TObject>(System.String updateExpression, Tortuga.Chain.UpdateOptions options = 0)
+		{
+			return __Trait9.UpdateSet<TObject>(updateExpression, options);
+		}
+
 		// Exposing trait Traits.SupportsUpdateTrait<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>
 
 		/// <summary>
@@ -541,6 +642,7 @@ namespace Tortuga.Chain.MySql
 			__Trait6.DataSource = this;
 			__Trait7.DataSource = this;
 			__Trait8.DataSource = this;
+			__Trait9.DataSource = this;
 		}
 
 	}

@@ -42,6 +42,15 @@ namespace Tortuga.Chain.Access
 #endif
 	{
 
+		IUpdateSetDbCommandBuilder<AbstractCommand, AbstractParameter> OnUpdateSet(AbstractObjectName tableName, string updateExpression, object? updateArgumentValue, UpdateOptions options)
+		{
+			return ((Traits.IUpdateDeleteSetHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>)this).OnUpdateSet(tableName, updateExpression, updateArgumentValue, options);
+		}
+
+		IUpdateSetDbCommandBuilder<AbstractCommand, AbstractParameter> OnUpdateSet(AbstractObjectName tableName, object? newValues, UpdateOptions options)
+		{
+			return ((Traits.IUpdateDeleteSetHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>)this).OnUpdateSet(tableName.Name, newValues, options);
+		}
 
 
 		/************************ ISupportsDeleteWithFilter ************************/
@@ -56,9 +65,9 @@ namespace Tortuga.Chain.Access
 		{
 			var table = DatabaseMetadata.GetTableOrView(tableName);
 			if (!AuditRules.UseSoftDelete(table))
-				return OnDeleteMany(tableName, whereClause, null);
+				return OnDeleteSet(tableName, whereClause, null);
 
-			return OnUpdateMany(tableName, null, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected).WithFilter(whereClause, null);
+			return OnUpdateSet(tableName, null, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected).WithFilter(whereClause, null);
 		}
 
 		/// <summary>
@@ -183,9 +192,9 @@ namespace Tortuga.Chain.Access
 		{
 			var table = DatabaseMetadata.GetTableOrView(tableName);
 			if (!AuditRules.UseSoftDelete(table))
-				return OnDeleteMany(tableName, filterValue, filterOptions);
+				return OnDeleteSet(tableName, filterValue, filterOptions);
 
-			return OnUpdateMany(tableName, null, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected).WithFilter(filterValue, filterOptions);
+			return OnUpdateSet(tableName, null, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected).WithFilter(filterValue, filterOptions);
 		}
 
 		/// <summary>
@@ -210,9 +219,9 @@ namespace Tortuga.Chain.Access
 		{
 			var table = DatabaseMetadata.GetTableOrView(tableName);
 			if (!AuditRules.UseSoftDelete(table))
-				return OnDeleteMany(tableName, whereClause, argumentValue);
+				return OnDeleteSet(tableName, whereClause, argumentValue);
 
-			return OnUpdateMany(tableName, null, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected).WithFilter(whereClause, argumentValue);
+			return OnUpdateSet(tableName, null, UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected).WithFilter(whereClause, argumentValue);
 		}
 
 		/// <summary>
@@ -227,33 +236,10 @@ namespace Tortuga.Chain.Access
 			return DeleteWithFilter(tableName, whereClause, argumentValue);
 		}
 
-		/************************ ISupportsUpdateSet ************************/
 
 
-		/// <summary>
-		/// Update multiple records using an update expression.
-		/// </summary>
-		/// <param name="tableName">Name of the table.</param>
-		/// <param name="updateExpression">The update expression.</param>
-		/// <param name="updateArgumentValue">The argument value.</param>
-		/// <param name="options">The update options.</param>
-		/// <remarks>Use .WithFilter to apply a WHERE clause.</remarks>
-		public IUpdateManyDbCommandBuilder<AbstractCommand, AbstractParameter> UpdateSet(AbstractObjectName tableName, string updateExpression, object updateArgumentValue, UpdateOptions options = UpdateOptions.None)
-		{
-			return OnUpdateMany(tableName, updateExpression, updateArgumentValue, options);
-		}
 
-		/// <summary>
-		/// Update multiple records using an update value.
-		/// </summary>
-		/// <param name="tableName">Name of the table.</param>
-		/// <param name="newValues">The new values to use.</param>
-		/// <param name="options">The options.</param>
-		/// <remarks>Use .WithFilter to apply a WHERE clause.</remarks>
-		public IUpdateManyDbCommandBuilder<AbstractCommand, AbstractParameter> UpdateSet(AbstractObjectName tableName, object newValues, UpdateOptions options = UpdateOptions.None)
-		{
-			return OnUpdateMany(tableName, newValues, options);
-		}
+
 
 		/************************ ISupportsGetByKey ************************/
 
@@ -321,20 +307,9 @@ namespace Tortuga.Chain.Access
 
 
 
-		/************************ ISupportsUpdateSet ************************/
 
 
-		/// <summary>
-		/// Update multiple records using an update expression.
-		/// </summary>
-		/// <param name="tableName">Name of the table.</param>
-		/// <param name="updateExpression">The update expression.</param>
-		/// <param name="options">The update options.</param>
-		/// <remarks>Use .WithFilter to apply a WHERE clause.</remarks>
-		public IUpdateManyDbCommandBuilder<AbstractCommand, AbstractParameter> UpdateSet(AbstractObjectName tableName, string updateExpression, UpdateOptions options = UpdateOptions.None)
-		{
-			return OnUpdateMany(tableName, updateExpression, null, options);
-		}
+
 
 		/************************ ISupportsGetByKey ************************/
 

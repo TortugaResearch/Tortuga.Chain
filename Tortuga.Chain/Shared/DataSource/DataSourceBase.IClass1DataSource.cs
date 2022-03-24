@@ -114,19 +114,6 @@ namespace Tortuga.Chain.Access
 			return GetByKeyList(tableName, keys);
 		}
 
-		IUpdateManyDbCommandBuilder ISupportsUpdateSet.UpdateSet(string tableName, string updateExpression, UpdateOptions options)
-		{
-			return UpdateSet(tableName, updateExpression, options);
-		}
 
-		IUpdateManyDbCommandBuilder ISupportsUpdateSet.UpdateSet(string tableName, string updateExpression, object updateArgumentValue, UpdateOptions options)
-		{
-			return UpdateSet(tableName, updateExpression, updateArgumentValue, options);
-		}
-
-		IUpdateManyDbCommandBuilder ISupportsUpdateSet.UpdateSet(string tableName, object newValues, UpdateOptions options)
-		{
-			return UpdateSet(tableName, newValues, options);
-		}
 	}
 }

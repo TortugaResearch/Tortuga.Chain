@@ -7,11 +7,10 @@ using Tortuga.Chain.Metadata;
 namespace Tortuga.Chain.SqlServer.CommandBuilders
 {
 	/// <summary>
-	/// Class SqlServerDeleteWithFilter.
+	/// Class SqlServerDeleteSet.
 	/// </summary>
-	internal sealed class SqlServerDeleteMany : MultipleRowDbCommandBuilder<SqlCommand, SqlParameter>
+	internal sealed class SqlServerDeleteSet : MultipleRowDbCommandBuilder<SqlCommand, SqlParameter>
 	{
-		//readonly DeleteOptions m_Options;
 		readonly IEnumerable<SqlParameter>? m_Parameters;
 
 		readonly SqlServerTableOrViewMetadata<SqlDbType> m_Table;
@@ -23,7 +22,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 		readonly int? m_ExpectedRowCount;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="SqlServerDeleteMany" /> class.
+		/// Initializes a new instance of the <see cref="SqlServerDeleteSet" /> class.
 		/// </summary>
 		/// <param name="dataSource">The data source.</param>
 		/// <param name="tableName">Name of the table.</param>
@@ -31,7 +30,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 		/// <param name="parameters">The parameters.</param>
 		/// <param name="expectedRowCount">The expected row count.</param>
 		/// <param name="options">The options.</param>
-		public SqlServerDeleteMany(SqlServerDataSourceBase dataSource, SqlServerObjectName tableName, string whereClause, IEnumerable<SqlParameter> parameters, int? expectedRowCount, DeleteOptions options) : base(dataSource)
+		public SqlServerDeleteSet(SqlServerDataSourceBase dataSource, SqlServerObjectName tableName, string whereClause, IEnumerable<SqlParameter> parameters, int? expectedRowCount, DeleteOptions options) : base(dataSource)
 		{
 			if (options.HasFlag(DeleteOptions.UseKeyAttribute))
 				throw new NotSupportedException("Cannot use Key attributes with this operation.");
@@ -44,13 +43,13 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="SqlServerDeleteMany"/> class.
+		/// Initializes a new instance of the <see cref="SqlServerDeleteSet"/> class.
 		/// </summary>
 		/// <param name="dataSource">The data source.</param>
 		/// <param name="tableName">Name of the table.</param>
 		/// <param name="whereClause">The where clause.</param>
 		/// <param name="argumentValue">The argument value.</param>
-		public SqlServerDeleteMany(SqlServerDataSourceBase dataSource, SqlServerObjectName tableName, string whereClause, object? argumentValue) : base(dataSource)
+		public SqlServerDeleteSet(SqlServerDataSourceBase dataSource, SqlServerObjectName tableName, string whereClause, object? argumentValue) : base(dataSource)
 		{
 			m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
 			m_WhereClause = whereClause;
@@ -58,13 +57,13 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="SqlServerDeleteMany"/> class.
+		/// Initializes a new instance of the <see cref="SqlServerDeleteSet"/> class.
 		/// </summary>
 		/// <param name="dataSource">The data source.</param>
 		/// <param name="tableName">Name of the table.</param>
 		/// <param name="filterValue">The filter value.</param>
 		/// <param name="filterOptions">The options.</param>
-		public SqlServerDeleteMany(SqlServerDataSourceBase dataSource, SqlServerObjectName tableName, object filterValue, FilterOptions filterOptions) : base(dataSource)
+		public SqlServerDeleteSet(SqlServerDataSourceBase dataSource, SqlServerObjectName tableName, object filterValue, FilterOptions filterOptions) : base(dataSource)
 		{
 			m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
 			m_FilterValue = filterValue;

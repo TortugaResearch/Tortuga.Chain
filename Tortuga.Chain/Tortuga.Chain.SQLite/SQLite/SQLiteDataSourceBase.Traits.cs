@@ -18,6 +18,7 @@ DbCommandBuilder<AbstractCommand, AbstractParameter>>))]
 [UseTrait(typeof(SupportsDeleteTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
 [UseTrait(typeof(SupportsUpdateByKeyListTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
 [UseTrait(typeof(SupportsInsertTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
+[UseTrait(typeof(SupportsUpdateSet<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
 partial class SQLiteDataSourceBase
 {
 	DatabaseMetadataCache<AbstractObjectName, AbstractDbType> ICommandHelper<AbstractObjectName, AbstractDbType>.DatabaseMetadata => DatabaseMetadata;
@@ -49,7 +50,7 @@ partial class SQLiteDataSourceBase
 
 		var table = DatabaseMetadata.GetTableOrView(tableName);
 		if (!AuditRules.UseSoftDelete(table))
-			return new SQLiteDeleteMany(this, tableName, where, parameters, parameters.Count, options);
+			return new SQLiteDeleteSet(this, tableName, where, parameters, parameters.Count, options);
 
 		UpdateOptions effectiveOptions = UpdateOptions.SoftDelete;
 
@@ -59,7 +60,7 @@ partial class SQLiteDataSourceBase
 		if (options.HasFlag(DeleteOptions.UseKeyAttribute))
 			effectiveOptions |= UpdateOptions.UseKeyAttribute;
 
-		return new SQLiteUpdateMany(this, tableName, null, where, parameters, parameters.Count, effectiveOptions);
+		return new SQLiteUpdateSet(this, tableName, null, where, parameters, parameters.Count, effectiveOptions);
 	}
 
 	DbCommandBuilder<AbstractCommand, AbstractParameter> IInsertBatchHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnInsertBatch<TObject>(AbstractObjectName tableName, IEnumerable<TObject> objects, InsertOptions options)
@@ -124,13 +125,23 @@ where TArgument : class
 			parameters.Add(param);
 		}
 
-		return new SQLiteUpdateMany(this, tableName, newValues, where, parameters, parameters.Count, options);
+		return new SQLiteUpdateSet(this, tableName, newValues, where, parameters, parameters.Count, options);
 	}
 
 	ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> IInsertHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnInsertObject<TArgument>(AbstractObjectName tableName, TArgument argumentValue, InsertOptions options)
 where TArgument : class
 	{
 		return new SQLiteInsertObject<TArgument>(this, tableName, argumentValue, options);
+	}
+
+	IUpdateSetDbCommandBuilder<AbstractCommand, AbstractParameter> IUpdateDeleteSetHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnUpdateSet(AbstractObjectName tableName, string updateExpression, object? updateArgumentValue, UpdateOptions options)
+	{
+		return new SQLiteUpdateSet(this, tableName, updateExpression, updateArgumentValue, options);
+	}
+
+	IUpdateSetDbCommandBuilder<AbstractCommand, AbstractParameter> IUpdateDeleteSetHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnUpdateSet(AbstractObjectName tableName, object? newValues, UpdateOptions options)
+	{
+		return new SQLiteUpdateSet(this, tableName, newValues, options);
 	}
 }
 

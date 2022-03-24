@@ -95,6 +95,10 @@
 		<Compile Remove="$(CompilerGeneratedFilesOutputPath)/*/**/*.cs" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Compile Update="..\Shared\DataSource\DataSource Traits\IUpdateDeleteSetHelper`4.cs" Link="IUpdateDeleteSetHelper`4.cs" />
+	</ItemGroup>
+
 	
 
 	<!-- NuGet Packaging Boilerplate-->

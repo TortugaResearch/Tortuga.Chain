@@ -189,14 +189,14 @@ namespace Tortuga.Chain.SqlServer
 			return new MultipleRowDbCommandBuilder<SqlCommand, SqlParameter, TObject>(new SqlServerTableOrView<TObject>(this, tableName, where, parameters));
 		}
 
-		MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> OnDeleteMany(SqlServerObjectName tableName, string whereClause, object? argumentValue)
+		MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> OnDeleteSet(SqlServerObjectName tableName, string whereClause, object? argumentValue)
 		{
-			return new SqlServerDeleteMany(this, tableName, whereClause, argumentValue);
+			return new SqlServerDeleteSet(this, tableName, whereClause, argumentValue);
 		}
 
-		MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> OnDeleteMany(SqlServerObjectName tableName, object filterValue, FilterOptions filterOptions)
+		MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> OnDeleteSet(SqlServerObjectName tableName, object filterValue, FilterOptions filterOptions)
 		{
-			return new SqlServerDeleteMany(this, tableName, filterValue, filterOptions);
+			return new SqlServerDeleteSet(this, tableName, filterValue, filterOptions);
 		}
 
 
@@ -223,20 +223,6 @@ namespace Tortuga.Chain.SqlServer
 		{
 			return new SqlServerInsertOrUpdateObject<TArgument>(this, tableName, argumentValue, options);
 		}
-
-		IUpdateManyDbCommandBuilder<SqlCommand, SqlParameter> OnUpdateMany(SqlServerObjectName tableName, string updateExpression, object? updateArgumentValue, UpdateOptions options)
-		{
-			return new SqlServerUpdateMany(this, tableName, updateExpression, updateArgumentValue, options);
-		}
-
-		IUpdateManyDbCommandBuilder<SqlCommand, SqlParameter> OnUpdateMany(SqlServerObjectName tableName, object? newValues, UpdateOptions options)
-		{
-			return new SqlServerUpdateMany(this, tableName, newValues, options);
-		}
-
-
-
-
 
 	}
 }

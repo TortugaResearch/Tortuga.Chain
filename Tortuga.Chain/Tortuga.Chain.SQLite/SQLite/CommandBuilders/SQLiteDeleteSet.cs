@@ -1,28 +1,32 @@
-﻿using MySqlConnector;
+﻿using System.Data.SQLite;
 using System.Text;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
 using Tortuga.Chain.Metadata;
 
-namespace Tortuga.Chain.MySql.CommandBuilders
+namespace Tortuga.Chain.SQLite.CommandBuilders
 {
 	/// <summary>
-	/// Class MySqlDeleteMany.
+	/// Class SQLiteDeleteWithFilter.
 	/// </summary>
-	internal sealed class MySqlDeleteMany : MultipleRowDbCommandBuilder<MySqlCommand, MySqlParameter>
+	internal sealed class SQLiteDeleteSet : MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter>
 	{
 		readonly object? m_ArgumentValue;
+
 		readonly FilterOptions m_FilterOptions;
+
 		readonly object? m_FilterValue;
-		readonly IEnumerable<MySqlParameter>? m_Parameters;
-		readonly TableOrViewMetadata<MySqlObjectName, MySqlDbType> m_Table;
-		readonly string? m_WhereClause;
 		readonly DeleteOptions m_Options;
+
+		readonly IEnumerable<SQLiteParameter>? m_Parameters;
+
+		readonly TableOrViewMetadata<SQLiteObjectName, DbType> m_Table;
+		readonly string? m_WhereClause;
 		readonly int? m_ExpectedRowCount;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="MySqlDeleteMany" /> class.
+		/// Initializes a new instance of the <see cref="SQLiteDeleteSet" /> class.
 		/// </summary>
 		/// <param name="dataSource">The data source.</param>
 		/// <param name="tableName">Name of the table.</param>
@@ -30,7 +34,7 @@ namespace Tortuga.Chain.MySql.CommandBuilders
 		/// <param name="parameters">The parameters.</param>
 		/// <param name="expectedRowCount">The expected row count.</param>
 		/// <param name="options">The options.</param>
-		public MySqlDeleteMany(MySqlDataSourceBase dataSource, MySqlObjectName tableName, string whereClause, IEnumerable<MySqlParameter> parameters, int? expectedRowCount, DeleteOptions options) : base(dataSource)
+		public SQLiteDeleteSet(SQLiteDataSourceBase dataSource, SQLiteObjectName tableName, string whereClause, IEnumerable<SQLiteParameter> parameters, int? expectedRowCount, DeleteOptions options) : base(dataSource)
 		{
 			if (options.HasFlag(DeleteOptions.UseKeyAttribute))
 				throw new NotSupportedException("Cannot use Key attributes with this operation.");
@@ -43,13 +47,13 @@ namespace Tortuga.Chain.MySql.CommandBuilders
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="MySqlDeleteMany"/> class.
+		/// Initializes a new instance of the <see cref="SQLiteDeleteSet"/> class.
 		/// </summary>
 		/// <param name="dataSource">The data source.</param>
 		/// <param name="tableName">Name of the table.</param>
 		/// <param name="whereClause">The where clause.</param>
 		/// <param name="argumentValue">The argument value.</param>
-		public MySqlDeleteMany(MySqlDataSourceBase dataSource, MySqlObjectName tableName, string whereClause, object? argumentValue) : base(dataSource)
+		public SQLiteDeleteSet(SQLiteDataSourceBase dataSource, SQLiteObjectName tableName, string whereClause, object? argumentValue) : base(dataSource)
 		{
 			m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
 			m_WhereClause = whereClause;
@@ -57,20 +61,20 @@ namespace Tortuga.Chain.MySql.CommandBuilders
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="MySqlDeleteMany"/> class.
+		/// Initializes a new instance of the <see cref="SQLiteDeleteSet"/> class.
 		/// </summary>
 		/// <param name="dataSource">The data source.</param>
 		/// <param name="tableName">Name of the table.</param>
 		/// <param name="filterValue">The filter value.</param>
 		/// <param name="filterOptions">The options.</param>
-		public MySqlDeleteMany(MySqlDataSourceBase dataSource, MySqlObjectName tableName, object filterValue, FilterOptions filterOptions) : base(dataSource)
+		public SQLiteDeleteSet(SQLiteDataSourceBase dataSource, SQLiteObjectName tableName, object filterValue, FilterOptions filterOptions) : base(dataSource)
 		{
 			m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
 			m_FilterValue = filterValue;
 			m_FilterOptions = filterOptions;
 		}
 
-		public override CommandExecutionToken<MySqlCommand, MySqlParameter> Prepare(Materializer<MySqlCommand, MySqlParameter> materializer)
+		public override CommandExecutionToken<SQLiteCommand, SQLiteParameter> Prepare(Materializer<SQLiteCommand, SQLiteParameter> materializer)
 		{
 			if (materializer == null)
 				throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
@@ -78,7 +82,7 @@ namespace Tortuga.Chain.MySql.CommandBuilders
 			var sqlBuilder = m_Table.CreateSqlBuilder(StrictMode);
 			sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
-			List<MySqlParameter> parameters;
+			List<SQLiteParameter> parameters;
 			var sql = new StringBuilder();
 
 			if (sqlBuilder.HasReadFields)
@@ -100,7 +104,7 @@ namespace Tortuga.Chain.MySql.CommandBuilders
 			else if (!string.IsNullOrWhiteSpace(m_WhereClause))
 			{
 				sql.Append(" WHERE " + m_WhereClause);
-				parameters = SqlBuilder.GetParameters<MySqlParameter>(m_ArgumentValue);
+				parameters = SqlBuilder.GetParameters<SQLiteParameter>(m_ArgumentValue);
 				parameters.AddRange(sqlBuilder.GetParameters());
 			}
 			else
@@ -112,7 +116,7 @@ namespace Tortuga.Chain.MySql.CommandBuilders
 			if (m_Parameters != null)
 				parameters.AddRange(m_Parameters);
 
-			return new MySqlCommandExecutionToken(DataSource, "Delete from " + m_Table.Name, sql.ToString(), parameters).CheckDeleteRowCount(m_Options, m_ExpectedRowCount);
+			return new SQLiteCommandExecutionToken(DataSource, "Delete from " + m_Table.Name, sql.ToString(), parameters, lockType: LockType.Write).CheckDeleteRowCount(m_Options, m_ExpectedRowCount);
 		}
 
 		/// <summary>
@@ -123,7 +127,10 @@ namespace Tortuga.Chain.MySql.CommandBuilders
 		/// <remarks>
 		/// If the column name was not found, this will return null
 		/// </remarks>
-		public override ColumnMetadata? TryGetColumn(string columnName) => m_Table.Columns.TryGetColumn(columnName);
+		public override ColumnMetadata? TryGetColumn(string columnName)
+		{
+			return m_Table.Columns.TryGetColumn(columnName);
+		}
 
 		/// <summary>
 		/// Returns a list of columns known to be non-nullable.

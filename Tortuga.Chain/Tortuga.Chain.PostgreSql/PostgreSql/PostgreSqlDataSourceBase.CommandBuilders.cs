@@ -51,14 +51,14 @@ namespace Tortuga.Chain.PostgreSql
 			return new MultipleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, TObject>(new PostgreSqlTableOrView<TObject>(this, tableName, where, parameters));
 		}
 
-		MultipleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> OnDeleteMany(PostgreSqlObjectName tableName, string whereClause, object? argumentValue)
+		MultipleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> OnDeleteSet(PostgreSqlObjectName tableName, string whereClause, object? argumentValue)
 		{
-			return new PostgreSqlDeleteMany(this, tableName, whereClause, argumentValue);
+			return new PostgreSqlDeleteSet(this, tableName, whereClause, argumentValue);
 		}
 
-		MultipleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> OnDeleteMany(PostgreSqlObjectName tableName, object filterValue, FilterOptions filterOptions)
+		MultipleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> OnDeleteSet(PostgreSqlObjectName tableName, object? filterValue, FilterOptions filterOptions)
 		{
-			return new PostgreSqlDeleteMany(this, tableName, filterValue, filterOptions);
+			return new PostgreSqlDeleteSet(this, tableName, filterValue, filterOptions);
 		}
 
 
@@ -86,15 +86,7 @@ namespace Tortuga.Chain.PostgreSql
 			return new PostgreSqlInsertOrUpdateObject<TArgument>(this, tableName, argumentValue, options);
 		}
 
-		IUpdateManyDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> OnUpdateMany(PostgreSqlObjectName tableName, string updateExpression, object? updateArgumentValue, UpdateOptions options)
-		{
-			return new PostgreSqlUpdateMany(this, tableName, updateExpression, updateArgumentValue, options);
-		}
 
-		IUpdateManyDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> OnUpdateMany(PostgreSqlObjectName tableName, object? newValues, UpdateOptions options)
-		{
-			return new PostgreSqlUpdateMany(this, tableName, newValues, options);
-		}
 
 
 

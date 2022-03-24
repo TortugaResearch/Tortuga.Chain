@@ -6,7 +6,6 @@ using Tortuga.Shipwright;
 
 namespace Traits;
 
-
 [Trait]
 class SupportsUpdateTrait<TCommand, TParameter, TObjectName, TDbType> : ISupportsUpdate
 where TCommand : DbCommand

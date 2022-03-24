@@ -1,23 +1,22 @@
-﻿using Npgsql;
-using NpgsqlTypes;
+﻿using System.Data.OleDb;
 using System.Text;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
 using Tortuga.Chain.Metadata;
 
-namespace Tortuga.Chain.PostgreSql.CommandBuilders
+namespace Tortuga.Chain.Access.CommandBuilders
 {
 	/// <summary>
-	/// Class PostgreSqlUpdateSet.
+	/// Class AccessUpdateSet.
 	/// </summary>
-	internal sealed class PostgreSqlUpdateMany : UpdateManyDbCommandBuilder<NpgsqlCommand, NpgsqlParameter>
+	internal sealed class AccessUpdateSet : UpdateSetDbCommandBuilder<OleDbCommand, OleDbParameter>
 	{
 		readonly int? m_ExpectedRowCount;
 		readonly object? m_NewValues;
 		readonly UpdateOptions m_Options;
-		readonly IEnumerable<NpgsqlParameter>? m_Parameters;
-		readonly TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType> m_Table;
+		readonly IEnumerable<OleDbParameter>? m_Parameters;
+		readonly TableOrViewMetadata<AccessObjectName, OleDbType> m_Table;
 		readonly object? m_UpdateArgumentValue;
 		readonly string? m_UpdateExpression;
 		FilterOptions m_FilterOptions;
@@ -26,7 +25,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 		string? m_WhereClause;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="PostgreSqlUpdateMany" /> class.
+		/// Initializes a new instance of the <see cref="AccessUpdateSet" /> class.
 		/// </summary>
 		/// <param name="dataSource">The data source.</param>
 		/// <param name="tableName">Name of the table.</param>
@@ -35,7 +34,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 		/// <param name="parameters">The parameters.</param>
 		/// <param name="expectedRowCount">The expected row count.</param>
 		/// <param name="options">The options.</param>
-		public PostgreSqlUpdateMany(PostgreSqlDataSourceBase dataSource, PostgreSqlObjectName tableName, object? newValues, string whereClause, IEnumerable<NpgsqlParameter> parameters, int? expectedRowCount, UpdateOptions options) : base(dataSource)
+		public AccessUpdateSet(AccessDataSourceBase dataSource, AccessObjectName tableName, object? newValues, string whereClause, IEnumerable<OleDbParameter> parameters, int? expectedRowCount, UpdateOptions options) : base(dataSource)
 		{
 			if (options.HasFlag(UpdateOptions.UseKeyAttribute))
 				throw new NotSupportedException("Cannot use Key attributes with this operation.");
@@ -49,14 +48,14 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="PostgreSqlUpdateMany" /> class.
+		/// Initializes a new instance of the <see cref="AccessUpdateSet" /> class.
 		/// </summary>
 		/// <param name="dataSource">The data source.</param>
 		/// <param name="tableName">Name of the table.</param>
 		/// <param name="newValues">The new values.</param>
 		/// <param name="options">The options.</param>
 		/// <exception cref="System.NotSupportedException">Cannot use Key attributes with this operation.</exception>
-		public PostgreSqlUpdateMany(PostgreSqlDataSourceBase dataSource, PostgreSqlObjectName tableName, object? newValues, UpdateOptions options) : base(dataSource)
+		public AccessUpdateSet(AccessDataSourceBase dataSource, AccessObjectName tableName, object? newValues, UpdateOptions options) : base(dataSource)
 		{
 			if (options.HasFlag(UpdateOptions.UseKeyAttribute))
 				throw new NotSupportedException("Cannot use Key attributes with this operation.");
@@ -67,7 +66,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="PostgreSqlUpdateMany" /> class.
+		/// Initializes a new instance of the <see cref="AccessUpdateSet" /> class.
 		/// </summary>
 		/// <param name="dataSource">The data source.</param>
 		/// <param name="tableName">Name of the table.</param>
@@ -75,7 +74,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 		/// <param name="updateArgumentValue">The update argument value.</param>
 		/// <param name="options">The options.</param>
 		/// <exception cref="System.NotSupportedException">Cannot use Key attributes with this operation.</exception>
-		public PostgreSqlUpdateMany(PostgreSqlDataSourceBase dataSource, PostgreSqlObjectName tableName, string updateExpression, object? updateArgumentValue, UpdateOptions options) : base(dataSource)
+		public AccessUpdateSet(AccessDataSourceBase dataSource, AccessObjectName tableName, string updateExpression, object? updateArgumentValue, UpdateOptions options) : base(dataSource)
 		{
 			if (options.HasFlag(UpdateOptions.UseKeyAttribute))
 				throw new NotSupportedException("Cannot use Key attributes with this operation.");
@@ -90,7 +89,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 		/// Applies this command to all rows.
 		/// </summary>
 		/// <returns></returns>
-		public override UpdateManyDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> All()
+		public override UpdateSetDbCommandBuilder<OleDbCommand, OleDbParameter> All()
 		{
 			m_WhereClause = null;
 			m_WhereArgumentValue = null;
@@ -99,7 +98,12 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 			return this;
 		}
 
-		public override CommandExecutionToken<NpgsqlCommand, NpgsqlParameter> Prepare(Materializer<NpgsqlCommand, NpgsqlParameter> materializer)
+		/// <summary>
+		/// Prepares the command for execution by generating any necessary SQL.
+		/// </summary>
+		/// <param name="materializer"></param>
+		/// <returns><see cref="AccessCommandExecutionToken" /></returns>
+		public override CommandExecutionToken<OleDbCommand, OleDbParameter> Prepare(Materializer<OleDbCommand, OleDbParameter> materializer)
 		{
 			if (materializer == null)
 				throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
@@ -113,23 +117,8 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 			sqlBuilder.ApplyArgumentValue(DataSource, m_NewValues, m_Options, false);
 			sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
-			var sql = new StringBuilder();
-			if (sqlBuilder.HasReadFields && m_Options.HasFlag(UpdateOptions.ReturnOldValues))
-			{
-				sqlBuilder.BuildSelectClause(sql, "SELECT ", null, " FROM " + m_Table.Name.ToQuotedString());
-				if (m_FilterValue != null)
-				{
-					sql.Append(" WHERE " + sqlBuilder.ApplyFilterValue(m_FilterValue, m_FilterOptions));
-				}
-				else if (!string.IsNullOrWhiteSpace(m_WhereClause))
-				{
-					sql.Append(" WHERE " + m_WhereClause);
-				}
-				sql.AppendLine(";");
-			}
-
-			var parameters = new List<NpgsqlParameter>();
-			sql.Append("UPDATE " + m_Table.Name.ToQuotedString());
+			var parameters = new List<OleDbParameter>();
+			var sql = new StringBuilder("UPDATE " + m_Table.Name.ToQuotedString());
 			if (m_UpdateExpression == null)
 			{
 				sqlBuilder.BuildSetClause(sql, " SET ", null, null);
@@ -137,37 +126,47 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 			else
 			{
 				sql.Append(" SET " + m_UpdateExpression);
-				parameters.AddRange(SqlBuilder.GetParameters<NpgsqlParameter>(m_UpdateArgumentValue));
+				parameters.AddRange(SqlBuilder.GetParameters<OleDbParameter>(m_UpdateArgumentValue));
 			}
 
 			if (m_FilterValue != null)
 			{
-				sql.Append(" WHERE " + sqlBuilder.ApplyFilterValue(m_FilterValue, m_FilterOptions));
-
-				parameters.AddRange(sqlBuilder.GetParameters());
+				sql.Append(" WHERE " + sqlBuilder.ApplyAnonymousFilterValue(m_FilterValue, m_FilterOptions, true));
+				parameters = sqlBuilder.GetParameters();
 			}
 			else if (!string.IsNullOrWhiteSpace(m_WhereClause))
 			{
 				sql.Append(" WHERE " + m_WhereClause);
-
-				parameters.AddRange(SqlBuilder.GetParameters<NpgsqlParameter>(m_WhereArgumentValue));
 				parameters.AddRange(sqlBuilder.GetParameters());
+				parameters.AddRange(SqlBuilder.GetParameters<OleDbParameter>(m_WhereArgumentValue));
 			}
 			else
 			{
 				parameters.AddRange(sqlBuilder.GetParameters());
-			}
-
-			if (!m_Options.HasFlag(UpdateOptions.ReturnOldValues))
-			{
-				sqlBuilder.BuildSelectClause(sql, " RETURNING ", null, null);
 			}
 			sql.Append(";");
 
 			if (m_Parameters != null)
 				parameters.AddRange(m_Parameters);
 
-			return new PostgreSqlCommandExecutionToken(DataSource, "Update " + m_Table.Name, sql.ToString(), parameters).CheckUpdateRowCount(m_Options, m_ExpectedRowCount);
+			var updateCommand = new AccessCommandExecutionToken(DataSource, "Update " + m_Table.Name, sql.ToString(), parameters).CheckUpdateRowCount(m_Options, m_ExpectedRowCount);
+			updateCommand.ExecutionMode = AccessCommandExecutionMode.NonQuery;
+
+			var desiredColumns = materializer.DesiredColumns();
+			if (desiredColumns == Materializer.NoColumns)
+				return updateCommand;
+
+			if (m_Options.HasFlag(UpdateOptions.ReturnOldValues))
+			{
+				var result = PrepareRead(desiredColumns);
+				result.NextCommand = updateCommand;
+				return result;
+			}
+			else
+			{
+				updateCommand.NextCommand = PrepareRead(desiredColumns);
+				return updateCommand;
+			}
 		}
 
 		/// <summary>
@@ -196,7 +195,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 		/// </summary>
 		/// <param name="filterValue">The filter value.</param>
 		/// <param name="filterOptions">The filter options.</param>
-		public override UpdateManyDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> WithFilter(object filterValue, FilterOptions filterOptions = FilterOptions.None)
+		public override UpdateSetDbCommandBuilder<OleDbCommand, OleDbParameter> WithFilter(object filterValue, FilterOptions filterOptions = FilterOptions.None)
 		{
 			m_WhereClause = null;
 			m_WhereArgumentValue = null;
@@ -210,7 +209,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 		/// </summary>
 		/// <param name="whereClause">The where clause.</param>
 		/// <returns></returns>
-		public override UpdateManyDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> WithFilter(string whereClause)
+		public override UpdateSetDbCommandBuilder<OleDbCommand, OleDbParameter> WithFilter(string whereClause)
 		{
 			m_WhereClause = whereClause;
 			m_WhereArgumentValue = null;
@@ -225,13 +224,45 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 		/// <param name="whereClause">The where clause.</param>
 		/// <param name="argumentValue">The argument value.</param>
 		/// <returns></returns>
-		public override UpdateManyDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> WithFilter(string whereClause, object? argumentValue)
+		public override UpdateSetDbCommandBuilder<OleDbCommand, OleDbParameter> WithFilter(string whereClause, object? argumentValue)
 		{
 			m_WhereClause = whereClause;
 			m_WhereArgumentValue = argumentValue;
 			m_FilterValue = null;
 			m_FilterOptions = FilterOptions.None;
 			return this;
+		}
+
+		AccessCommandExecutionToken PrepareRead(IReadOnlyList<string> desiredColumns)
+		{
+			var sqlBuilder = m_Table.CreateSqlBuilder(StrictMode);
+			sqlBuilder.ApplyDesiredColumns(desiredColumns);
+
+			List<OleDbParameter> parameters;
+			var sql = new StringBuilder();
+			sqlBuilder.BuildSelectClause(sql, "SELECT ", null, null);
+			sql.Append(" FROM " + m_Table.Name.ToQuotedString());
+			if (m_FilterValue != null)
+			{
+				sql.Append(" WHERE " + sqlBuilder.ApplyAnonymousFilterValue(m_FilterValue, m_FilterOptions));
+				parameters = sqlBuilder.GetParameters();
+			}
+			else if (!string.IsNullOrWhiteSpace(m_WhereClause))
+			{
+				sql.Append(" WHERE " + m_WhereClause);
+				parameters = SqlBuilder.GetParameters<OleDbParameter>(m_WhereArgumentValue);
+				parameters.AddRange(sqlBuilder.GetParameters());
+			}
+			else
+			{
+				parameters = sqlBuilder.GetParameters();
+			}
+			sql.Append(";");
+
+			if (m_Parameters != null)
+				parameters.AddRange(m_Parameters.Select(p => p.Clone()));
+
+			return new AccessCommandExecutionToken(DataSource, "Query after updating " + m_Table.Name, sql.ToString(), parameters);
 		}
 	}
 }

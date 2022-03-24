@@ -16,6 +16,7 @@ namespace Tortuga.Chain.SqlServer;
 [UseTrait(typeof(SupportsUpdateTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
 [UseTrait(typeof(SupportsUpdateByKeyListTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
 [UseTrait(typeof(SupportsInsertTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
+[UseTrait(typeof(SupportsUpdateSet<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
 partial class OleDbSqlServerDataSourceBase
 {
 	DatabaseMetadataCache<AbstractObjectName, AbstractDbType> ICommandHelper<AbstractObjectName, AbstractDbType>.DatabaseMetadata => DatabaseMetadata;
@@ -47,13 +48,13 @@ partial class OleDbSqlServerDataSourceBase
 
 		var table = DatabaseMetadata.GetTableOrView(tableName);
 		if (!AuditRules.UseSoftDelete(table))
-			return new OleDbSqlServerDeleteMany(this, tableName, where, parameters, parameters.Count, options);
+			return new OleDbSqlServerDeleteSet(this, tableName, where, parameters, parameters.Count, options);
 
 		UpdateOptions effectiveOptions = UpdateOptions.SoftDelete | UpdateOptions.IgnoreRowsAffected;
 		if (options.HasFlag(DeleteOptions.UseKeyAttribute))
 			effectiveOptions = effectiveOptions | UpdateOptions.UseKeyAttribute;
 
-		return new OleDbSqlServerUpdateMany(this, tableName, null, where, parameters, parameters.Count, effectiveOptions);
+		return new OleDbSqlServerUpdateSet(this, tableName, null, where, parameters, parameters.Count, effectiveOptions);
 	}
 
 	AbstractObjectName ICommandHelper<AbstractObjectName, AbstractDbType>.ParseObjectName(string objectName) => new(objectName);
@@ -112,7 +113,7 @@ where TArgument : class
 			parameters.Add(param);
 		}
 
-		return new OleDbSqlServerUpdateMany(this, tableName, newValues, where, parameters, parameters.Count, options);
+		return new OleDbSqlServerUpdateSet(this, tableName, newValues, where, parameters, parameters.Count, options);
 
 	}
 
@@ -120,5 +121,15 @@ where TArgument : class
 where TArgument : class
 	{
 		return new OleDbSqlServerInsertObject<TArgument>(this, tableName, argumentValue, options);
+	}
+
+	IUpdateSetDbCommandBuilder<AbstractCommand, AbstractParameter> IUpdateDeleteSetHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnUpdateSet(AbstractObjectName tableName, string updateExpression, object? updateArgumentValue, UpdateOptions options)
+	{
+		return new OleDbSqlServerUpdateSet(this, tableName, updateExpression, updateArgumentValue, options);
+	}
+
+	IUpdateSetDbCommandBuilder<AbstractCommand, AbstractParameter> IUpdateDeleteSetHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnUpdateSet(AbstractObjectName tableName, object? newValues, UpdateOptions options)
+	{
+		return new OleDbSqlServerUpdateSet(this, tableName, newValues, options);
 	}
 }

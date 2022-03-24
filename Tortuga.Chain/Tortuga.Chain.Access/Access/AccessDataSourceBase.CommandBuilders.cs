@@ -48,14 +48,14 @@ namespace Tortuga.Chain.Access
 			return new MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter, TObject>(new AccessTableOrView<TObject>(this, tableName, where, parameters));
 		}
 
-		MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> OnDeleteMany(AccessObjectName tableName, string whereClause, object? argumentValue)
+		MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> OnDeleteSet(AccessObjectName tableName, string whereClause, object? argumentValue)
 		{
-			return new AccessDeleteMany(this, tableName, whereClause, argumentValue);
+			return new AccessDeleteSet(this, tableName, whereClause, argumentValue);
 		}
 
-		MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> OnDeleteMany(AccessObjectName tableName, object filterValue, FilterOptions filterOptions)
+		MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter> OnDeleteSet(AccessObjectName tableName, object filterValue, FilterOptions filterOptions)
 		{
-			return new AccessDeleteMany(this, tableName, filterValue, filterOptions);
+			return new AccessDeleteSet(this, tableName, filterValue, filterOptions);
 		}
 
 
@@ -72,18 +72,6 @@ namespace Tortuga.Chain.Access
 			return new AccessTableOrView<TObject>(this, tableOrViewName, whereClause, argumentValue);
 		}
 
-
-
-
-		IUpdateManyDbCommandBuilder<OleDbCommand, OleDbParameter> OnUpdateMany(AccessObjectName tableName, string updateExpression, object? updateArgumentValue, UpdateOptions options)
-		{
-			return new AccessUpdateMany(this, tableName, updateExpression, updateArgumentValue, options);
-		}
-
-		IUpdateManyDbCommandBuilder<OleDbCommand, OleDbParameter> OnUpdateMany(AccessObjectName tableName, object? newValues, UpdateOptions options)
-		{
-			return new AccessUpdateMany(this, tableName, newValues, options);
-		}
 
 
 

@@ -2,7 +2,7 @@
 
 namespace Tortuga.Chain.SqlServer
 {
-	partial class SqlServerDataSourceBase: Tortuga.Chain.DataSources.ISupportsDeleteAll, Tortuga.Chain.DataSources.ISupportsTruncate, Tortuga.Chain.DataSources.ISupportsSqlQueries, Tortuga.Chain.DataSources.ISupportsInsertBatch, Tortuga.Chain.DataSources.ISupportsDeleteByKeyList, Tortuga.Chain.DataSources.ISupportsDeleteByKey, Tortuga.Chain.DataSources.ISupportsDelete, Tortuga.Chain.DataSources.ISupportsUpdate, Tortuga.Chain.DataSources.ISupportsUpdateByKey, Tortuga.Chain.DataSources.ISupportsUpdateByKeyList, Tortuga.Chain.DataSources.ISupportsInsert, Traits.ICommandHelper<Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>, Traits.IInsertBatchHelper<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>, Traits.IUpdateDeleteByKeyHelper<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>, Traits.IUpdateDeleteHelper<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>, Traits.IInsertHelper<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>
+	partial class SqlServerDataSourceBase: Tortuga.Chain.DataSources.ISupportsDeleteAll, Tortuga.Chain.DataSources.ISupportsTruncate, Tortuga.Chain.DataSources.ISupportsSqlQueries, Tortuga.Chain.DataSources.ISupportsInsertBatch, Tortuga.Chain.DataSources.ISupportsDeleteByKeyList, Tortuga.Chain.DataSources.ISupportsDeleteByKey, Tortuga.Chain.DataSources.ISupportsDelete, Tortuga.Chain.DataSources.ISupportsUpdate, Tortuga.Chain.DataSources.ISupportsUpdateByKey, Tortuga.Chain.DataSources.ISupportsUpdateByKeyList, Tortuga.Chain.DataSources.ISupportsInsert, Tortuga.Chain.DataSources.ISupportsUpdateSet, Traits.ICommandHelper<Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>, Traits.IInsertBatchHelper<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>, Traits.IUpdateDeleteByKeyHelper<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>, Traits.IUpdateDeleteHelper<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>, Traits.IInsertHelper<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>, Traits.IUpdateDeleteSetHelper<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>
 	{
 
 		private bool __TraitsRegistered;
@@ -87,6 +87,15 @@ namespace Tortuga.Chain.SqlServer
 			{
 				if (!__TraitsRegistered) __RegisterTraits();
 				return ___Trait8;
+			}
+		}
+		private Traits.SupportsUpdateSet<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType> ___Trait9 = new();
+		private Traits.SupportsUpdateSet<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType> __Trait9
+		{
+			get
+			{
+				if (!__TraitsRegistered) __RegisterTraits();
+				return ___Trait9;
 			}
 		}
 
@@ -199,6 +208,22 @@ namespace Tortuga.Chain.SqlServer
 		Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder Tortuga.Chain.DataSources.ISupportsUpdateByKeyList.UpdateByKeyList<TArgument, TKey>(System.String tableName, TArgument newValues, System.Collections.Generic.IEnumerable<TKey> keys, Tortuga.Chain.UpdateOptions options)
 		{
 			return ((Tortuga.Chain.DataSources.ISupportsUpdateByKeyList)__Trait7).UpdateByKeyList<TArgument, TKey>(tableName, newValues, keys, options);
+		}
+
+		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsUpdateSet
+		Tortuga.Chain.CommandBuilders.IUpdateSetDbCommandBuilder Tortuga.Chain.DataSources.ISupportsUpdateSet.UpdateSet(System.String tableName, System.String updateExpression, Tortuga.Chain.UpdateOptions options)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsUpdateSet)__Trait9).UpdateSet(tableName, updateExpression, options);
+		}
+
+		Tortuga.Chain.CommandBuilders.IUpdateSetDbCommandBuilder Tortuga.Chain.DataSources.ISupportsUpdateSet.UpdateSet(System.String tableName, System.String updateExpression, System.Object updateArgumentValue, Tortuga.Chain.UpdateOptions options)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsUpdateSet)__Trait9).UpdateSet(tableName, updateExpression, updateArgumentValue, options);
+		}
+
+		Tortuga.Chain.CommandBuilders.IUpdateSetDbCommandBuilder Tortuga.Chain.DataSources.ISupportsUpdateSet.UpdateSet(System.String tableName, System.Object newValues, Tortuga.Chain.UpdateOptions options)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsUpdateSet)__Trait9).UpdateSet(tableName, newValues, options);
 		}
 
 		// Exposing trait Traits.SupportsDeleteAllTrait<Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>
@@ -495,6 +520,82 @@ namespace Tortuga.Chain.SqlServer
 			return __Trait7.UpdateByKeyList<TArgument, TKey>(tableName, newValues, keys, options);
 		}
 
+		// Exposing trait Traits.SupportsUpdateSet<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>
+
+		/// <summary>
+		/// Update multiple records using an update expression.
+		/// </summary>
+		/// <param name="tableName">Name of the table.</param>
+		/// <param name="updateExpression">The update expression.</param>
+		/// <param name="updateArgumentValue">The argument value.</param>
+		/// <param name="options">The update options.</param>
+		/// <remarks>Use .WithFilter to apply a WHERE clause.</remarks>
+		public Tortuga.Chain.CommandBuilders.IUpdateSetDbCommandBuilder<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter> UpdateSet(Tortuga.Chain.SqlServer.SqlServerObjectName tableName, System.String updateExpression, System.Object updateArgumentValue, Tortuga.Chain.UpdateOptions options = 0)
+		{
+			return __Trait9.UpdateSet(tableName, updateExpression, updateArgumentValue, options);
+		}
+
+		/// <summary>
+		/// Update multiple records using an update value.
+		/// </summary>
+		/// <param name="tableName">Name of the table.</param>
+		/// <param name="newValues">The new values to use.</param>
+		/// <param name="options">The options.</param>
+		/// <remarks>Use .WithFilter to apply a WHERE clause.</remarks>
+		public Tortuga.Chain.CommandBuilders.IUpdateSetDbCommandBuilder<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter> UpdateSet(Tortuga.Chain.SqlServer.SqlServerObjectName tableName, System.Object newValues, Tortuga.Chain.UpdateOptions options = 0)
+		{
+			return __Trait9.UpdateSet(tableName, newValues, options);
+		}
+
+		/// <summary>
+		/// Update multiple records using an update expression.
+		/// </summary>
+		/// <param name="tableName">Name of the table.</param>
+		/// <param name="updateExpression">The update expression.</param>
+		/// <param name="options">The update options.</param>
+		/// <remarks>Use .WithFilter to apply a WHERE clause.</remarks>
+		public Tortuga.Chain.CommandBuilders.IUpdateSetDbCommandBuilder<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter> UpdateSet(Tortuga.Chain.SqlServer.SqlServerObjectName tableName, System.String updateExpression, Tortuga.Chain.UpdateOptions options = 0)
+		{
+			return __Trait9.UpdateSet(tableName, updateExpression, options);
+		}
+
+		/// <summary>
+		/// Update multiple records using an update expression.
+		/// </summary>
+		/// <typeparam name="TObject">Class used to determine the table name.</typeparam>
+		/// <param name="updateExpression">The update expression.</param>
+		/// <param name="updateArgumentValue">The argument for the update expression.</param>
+		/// <param name="options">The update options.</param>
+		/// <remarks>Use .WithFilter to apply a WHERE clause.</remarks>
+		public Tortuga.Chain.CommandBuilders.IUpdateSetDbCommandBuilder<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter> UpdateSet<TObject>(System.String updateExpression, System.Object updateArgumentValue, Tortuga.Chain.UpdateOptions options = 0)
+		{
+			return __Trait9.UpdateSet<TObject>(updateExpression, updateArgumentValue, options);
+		}
+
+		/// <summary>
+		/// Update multiple records using an update value.
+		/// </summary>
+		/// <typeparam name="TObject">Class used to determine the table name.</typeparam>
+		/// <param name="newValues">The new values to use.</param>
+		/// <param name="options">The options.</param>
+		/// <remarks>Use .WithFilter to apply a WHERE clause.</remarks>
+		public Tortuga.Chain.CommandBuilders.IUpdateSetDbCommandBuilder<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter> UpdateSet<TObject>(System.Object newValues, Tortuga.Chain.UpdateOptions options = 0)
+		{
+			return __Trait9.UpdateSet<TObject>(newValues, options);
+		}
+
+		/// <summary>
+		/// Update multiple records using an update expression.
+		/// </summary>
+		/// <typeparam name="TObject">Class used to determine the table name.</typeparam>
+		/// <param name="updateExpression">The update expression.</param>
+		/// <param name="options">The update options.</param>
+		/// <remarks>Use .WithFilter to apply a WHERE clause.</remarks>
+		public Tortuga.Chain.CommandBuilders.IUpdateSetDbCommandBuilder<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter> UpdateSet<TObject>(System.String updateExpression, Tortuga.Chain.UpdateOptions options = 0)
+		{
+			return __Trait9.UpdateSet<TObject>(updateExpression, options);
+		}
+
 		// Exposing trait Traits.SupportsUpdateTrait<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>
 
 		/// <summary>
@@ -541,6 +642,7 @@ namespace Tortuga.Chain.SqlServer
 			__Trait6.DataSource = this;
 			__Trait7.DataSource = this;
 			__Trait8.DataSource = this;
+			__Trait9.DataSource = this;
 		}
 
 	}

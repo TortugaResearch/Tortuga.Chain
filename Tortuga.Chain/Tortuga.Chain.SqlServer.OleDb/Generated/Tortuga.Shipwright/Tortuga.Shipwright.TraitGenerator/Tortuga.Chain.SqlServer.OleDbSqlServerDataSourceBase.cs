@@ -2,7 +2,7 @@
 
 namespace Tortuga.Chain.SqlServer
 {
-	partial class OleDbSqlServerDataSourceBase: Tortuga.Chain.DataSources.ISupportsDeleteAll, Tortuga.Chain.DataSources.ISupportsTruncate, Tortuga.Chain.DataSources.ISupportsSqlQueries, Tortuga.Chain.DataSources.ISupportsDeleteByKeyList, Tortuga.Chain.DataSources.ISupportsDeleteByKey, Tortuga.Chain.DataSources.ISupportsDelete, Tortuga.Chain.DataSources.ISupportsUpdate, Tortuga.Chain.DataSources.ISupportsUpdateByKey, Tortuga.Chain.DataSources.ISupportsUpdateByKeyList, Tortuga.Chain.DataSources.ISupportsInsert, Traits.ICommandHelper<Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>, Traits.IUpdateDeleteByKeyHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>, Traits.IUpdateDeleteHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>, Traits.IInsertHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>
+	partial class OleDbSqlServerDataSourceBase: Tortuga.Chain.DataSources.ISupportsDeleteAll, Tortuga.Chain.DataSources.ISupportsTruncate, Tortuga.Chain.DataSources.ISupportsSqlQueries, Tortuga.Chain.DataSources.ISupportsDeleteByKeyList, Tortuga.Chain.DataSources.ISupportsDeleteByKey, Tortuga.Chain.DataSources.ISupportsDelete, Tortuga.Chain.DataSources.ISupportsUpdate, Tortuga.Chain.DataSources.ISupportsUpdateByKey, Tortuga.Chain.DataSources.ISupportsUpdateByKeyList, Tortuga.Chain.DataSources.ISupportsInsert, Tortuga.Chain.DataSources.ISupportsUpdateSet, Traits.ICommandHelper<Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>, Traits.IUpdateDeleteByKeyHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>, Traits.IUpdateDeleteHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>, Traits.IInsertHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>, Traits.IUpdateDeleteSetHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>
 	{
 
 		private bool __TraitsRegistered;
@@ -78,6 +78,15 @@ namespace Tortuga.Chain.SqlServer
 			{
 				if (!__TraitsRegistered) __RegisterTraits();
 				return ___Trait7;
+			}
+		}
+		private Traits.SupportsUpdateSet<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType> ___Trait8 = new();
+		private Traits.SupportsUpdateSet<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType> __Trait8
+		{
+			get
+			{
+				if (!__TraitsRegistered) __RegisterTraits();
+				return ___Trait8;
 			}
 		}
 
@@ -174,6 +183,22 @@ namespace Tortuga.Chain.SqlServer
 		Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder Tortuga.Chain.DataSources.ISupportsUpdateByKeyList.UpdateByKeyList<TArgument, TKey>(System.String tableName, TArgument newValues, System.Collections.Generic.IEnumerable<TKey> keys, Tortuga.Chain.UpdateOptions options)
 		{
 			return ((Tortuga.Chain.DataSources.ISupportsUpdateByKeyList)__Trait6).UpdateByKeyList<TArgument, TKey>(tableName, newValues, keys, options);
+		}
+
+		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsUpdateSet
+		Tortuga.Chain.CommandBuilders.IUpdateSetDbCommandBuilder Tortuga.Chain.DataSources.ISupportsUpdateSet.UpdateSet(System.String tableName, System.String updateExpression, Tortuga.Chain.UpdateOptions options)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsUpdateSet)__Trait8).UpdateSet(tableName, updateExpression, options);
+		}
+
+		Tortuga.Chain.CommandBuilders.IUpdateSetDbCommandBuilder Tortuga.Chain.DataSources.ISupportsUpdateSet.UpdateSet(System.String tableName, System.String updateExpression, System.Object updateArgumentValue, Tortuga.Chain.UpdateOptions options)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsUpdateSet)__Trait8).UpdateSet(tableName, updateExpression, updateArgumentValue, options);
+		}
+
+		Tortuga.Chain.CommandBuilders.IUpdateSetDbCommandBuilder Tortuga.Chain.DataSources.ISupportsUpdateSet.UpdateSet(System.String tableName, System.Object newValues, Tortuga.Chain.UpdateOptions options)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsUpdateSet)__Trait8).UpdateSet(tableName, newValues, options);
 		}
 
 		// Exposing trait Traits.SupportsDeleteAllTrait<Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>
@@ -417,6 +442,82 @@ namespace Tortuga.Chain.SqlServer
 			return __Trait6.UpdateByKeyList<TArgument, TKey>(tableName, newValues, keys, options);
 		}
 
+		// Exposing trait Traits.SupportsUpdateSet<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>
+
+		/// <summary>
+		/// Update multiple records using an update expression.
+		/// </summary>
+		/// <param name="tableName">Name of the table.</param>
+		/// <param name="updateExpression">The update expression.</param>
+		/// <param name="updateArgumentValue">The argument value.</param>
+		/// <param name="options">The update options.</param>
+		/// <remarks>Use .WithFilter to apply a WHERE clause.</remarks>
+		public Tortuga.Chain.CommandBuilders.IUpdateSetDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter> UpdateSet(Tortuga.Chain.SqlServer.SqlServerObjectName tableName, System.String updateExpression, System.Object updateArgumentValue, Tortuga.Chain.UpdateOptions options = 0)
+		{
+			return __Trait8.UpdateSet(tableName, updateExpression, updateArgumentValue, options);
+		}
+
+		/// <summary>
+		/// Update multiple records using an update value.
+		/// </summary>
+		/// <param name="tableName">Name of the table.</param>
+		/// <param name="newValues">The new values to use.</param>
+		/// <param name="options">The options.</param>
+		/// <remarks>Use .WithFilter to apply a WHERE clause.</remarks>
+		public Tortuga.Chain.CommandBuilders.IUpdateSetDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter> UpdateSet(Tortuga.Chain.SqlServer.SqlServerObjectName tableName, System.Object newValues, Tortuga.Chain.UpdateOptions options = 0)
+		{
+			return __Trait8.UpdateSet(tableName, newValues, options);
+		}
+
+		/// <summary>
+		/// Update multiple records using an update expression.
+		/// </summary>
+		/// <param name="tableName">Name of the table.</param>
+		/// <param name="updateExpression">The update expression.</param>
+		/// <param name="options">The update options.</param>
+		/// <remarks>Use .WithFilter to apply a WHERE clause.</remarks>
+		public Tortuga.Chain.CommandBuilders.IUpdateSetDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter> UpdateSet(Tortuga.Chain.SqlServer.SqlServerObjectName tableName, System.String updateExpression, Tortuga.Chain.UpdateOptions options = 0)
+		{
+			return __Trait8.UpdateSet(tableName, updateExpression, options);
+		}
+
+		/// <summary>
+		/// Update multiple records using an update expression.
+		/// </summary>
+		/// <typeparam name="TObject">Class used to determine the table name.</typeparam>
+		/// <param name="updateExpression">The update expression.</param>
+		/// <param name="updateArgumentValue">The argument for the update expression.</param>
+		/// <param name="options">The update options.</param>
+		/// <remarks>Use .WithFilter to apply a WHERE clause.</remarks>
+		public Tortuga.Chain.CommandBuilders.IUpdateSetDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter> UpdateSet<TObject>(System.String updateExpression, System.Object updateArgumentValue, Tortuga.Chain.UpdateOptions options = 0)
+		{
+			return __Trait8.UpdateSet<TObject>(updateExpression, updateArgumentValue, options);
+		}
+
+		/// <summary>
+		/// Update multiple records using an update value.
+		/// </summary>
+		/// <typeparam name="TObject">Class used to determine the table name.</typeparam>
+		/// <param name="newValues">The new values to use.</param>
+		/// <param name="options">The options.</param>
+		/// <remarks>Use .WithFilter to apply a WHERE clause.</remarks>
+		public Tortuga.Chain.CommandBuilders.IUpdateSetDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter> UpdateSet<TObject>(System.Object newValues, Tortuga.Chain.UpdateOptions options = 0)
+		{
+			return __Trait8.UpdateSet<TObject>(newValues, options);
+		}
+
+		/// <summary>
+		/// Update multiple records using an update expression.
+		/// </summary>
+		/// <typeparam name="TObject">Class used to determine the table name.</typeparam>
+		/// <param name="updateExpression">The update expression.</param>
+		/// <param name="options">The update options.</param>
+		/// <remarks>Use .WithFilter to apply a WHERE clause.</remarks>
+		public Tortuga.Chain.CommandBuilders.IUpdateSetDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter> UpdateSet<TObject>(System.String updateExpression, Tortuga.Chain.UpdateOptions options = 0)
+		{
+			return __Trait8.UpdateSet<TObject>(updateExpression, options);
+		}
+
 		// Exposing trait Traits.SupportsUpdateTrait<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>
 
 		/// <summary>
@@ -462,6 +563,7 @@ namespace Tortuga.Chain.SqlServer
 			__Trait5.DataSource = this;
 			__Trait6.DataSource = this;
 			__Trait7.DataSource = this;
+			__Trait8.DataSource = this;
 		}
 
 	}

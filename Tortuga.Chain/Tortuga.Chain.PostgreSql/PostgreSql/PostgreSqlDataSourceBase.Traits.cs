@@ -18,6 +18,7 @@ MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter>>))]
 [UseTrait(typeof(SupportsDeleteTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
 [UseTrait(typeof(SupportsUpdateByKeyListTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
 [UseTrait(typeof(SupportsInsertTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
+[UseTrait(typeof(SupportsUpdateSet<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
 partial class PostgreSqlDataSourceBase
 {
 
@@ -50,7 +51,7 @@ partial class PostgreSqlDataSourceBase
 
 		var table = DatabaseMetadata.GetTableOrView(tableName);
 		if (!AuditRules.UseSoftDelete(table))
-			return new PostgreSqlDeleteMany(this, tableName, where, parameters, parameters.Count, options);
+			return new PostgreSqlDeleteSet(this, tableName, where, parameters, parameters.Count, options);
 
 		UpdateOptions effectiveOptions = UpdateOptions.SoftDelete;
 
@@ -60,7 +61,7 @@ partial class PostgreSqlDataSourceBase
 		if (options.HasFlag(DeleteOptions.UseKeyAttribute))
 			effectiveOptions |= UpdateOptions.UseKeyAttribute;
 
-		return new PostgreSqlUpdateMany(this, tableName, null, where, parameters, parameters.Count, effectiveOptions);
+		return new PostgreSqlUpdateSet(this, tableName, null, where, parameters, parameters.Count, effectiveOptions);
 	}
 
 	DbCommandBuilder<AbstractCommand, AbstractParameter> IInsertBatchHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnInsertBatch<TObject>(AbstractObjectName tableName, IEnumerable<TObject> objects, InsertOptions options)
@@ -124,7 +125,7 @@ where TArgument : class
 			parameters.Add(param);
 		}
 
-		return new PostgreSqlUpdateMany(this, tableName, newValues, where, parameters, parameters.Count, options);
+		return new PostgreSqlUpdateSet(this, tableName, newValues, where, parameters, parameters.Count, options);
 
 	}
 
@@ -132,5 +133,15 @@ where TArgument : class
 where TArgument : class
 	{
 		return new PostgreSqlInsertObject<TArgument>(this, tableName, argumentValue, options);
+	}
+
+	IUpdateSetDbCommandBuilder<AbstractCommand, AbstractParameter> IUpdateDeleteSetHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnUpdateSet(AbstractObjectName tableName, string updateExpression, object? updateArgumentValue, UpdateOptions options)
+	{
+		return new PostgreSqlUpdateSet(this, tableName, updateExpression, updateArgumentValue, options);
+	}
+
+	IUpdateSetDbCommandBuilder<AbstractCommand, AbstractParameter> IUpdateDeleteSetHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnUpdateSet(AbstractObjectName tableName, object? newValues, UpdateOptions options)
+	{
+		return new PostgreSqlUpdateSet(this, tableName, newValues, options);
 	}
 }

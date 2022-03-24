@@ -11,4 +11,5 @@ Container class: Tortuga.Chain.MySql.MySqlDataSourceBase
 	Adding trait: Traits.SupportsDeleteTrait<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>
 	Adding trait: Traits.SupportsUpdateByKeyListTrait<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>
 	Adding trait: Traits.SupportsInsertTrait<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>
+	Adding trait: Traits.SupportsUpdateSet<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>
 */
