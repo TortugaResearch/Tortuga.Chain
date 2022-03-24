@@ -381,6 +381,10 @@ namespace Tortuga.Chain.CommandBuilders
 				return;
 			}
 
+			//This has to go last. THe special case versions of desired columns also have 0 named columns.
+			if (desiredColumns.Count() == 0)
+				throw new ChainInternalException("No desired columns were requested.");
+
 			foreach (var column in desiredColumns)
 			{
 				var columnFound = false;

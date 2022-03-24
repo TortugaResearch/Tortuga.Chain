@@ -430,6 +430,84 @@ public class FromTests : TestBase
 		}
 	}
 
+	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	public void ToCollection_NoDefaultConstructor(string dataSourceName, DataSourceType mode)
+	{
+		var dataSource = DataSource(dataSourceName, mode);
+
+		try
+		{
+			var uniqueKey = Guid.NewGuid().ToString();
+
+			var emp1 = new Employee() { FirstName = "A", LastName = "1", Title = uniqueKey };
+			dataSource.Insert(EmployeeTableName, emp1).ToObject<Employee>().Execute();
+
+			var emp2 = new Employee() { FirstName = "B", LastName = "2", Title = uniqueKey };
+			dataSource.Insert(EmployeeTableName, emp2).ToObject<Employee>().Execute();
+
+			var lookup = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToCollection<EmployeeLookup>().Execute();
+
+			Assert.AreEqual("A", lookup[0].FirstName, "First Name");
+			Assert.AreEqual("1", lookup[0].LastName, "Last Name");
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
+
+	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	public void ToImmutableList_NoDefaultConstructor(string dataSourceName, DataSourceType mode)
+	{
+		var dataSource = DataSource(dataSourceName, mode);
+
+		try
+		{
+			var uniqueKey = Guid.NewGuid().ToString();
+
+			var emp1 = new Employee() { FirstName = "A", LastName = "1", Title = uniqueKey };
+			dataSource.Insert(EmployeeTableName, emp1).ToObject<Employee>().Execute();
+
+			var emp2 = new Employee() { FirstName = "B", LastName = "2", Title = uniqueKey };
+			dataSource.Insert(EmployeeTableName, emp2).ToObject<Employee>().Execute();
+
+			var lookup = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToImmutableList<EmployeeLookup>().Execute();
+
+			Assert.AreEqual("A", lookup[0].FirstName, "First Name");
+			Assert.AreEqual("1", lookup[0].LastName, "Last Name");
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
+
+	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	public void ToImmutableArray_NoDefaultConstructor(string dataSourceName, DataSourceType mode)
+	{
+		var dataSource = DataSource(dataSourceName, mode);
+
+		try
+		{
+			var uniqueKey = Guid.NewGuid().ToString();
+
+			var emp1 = new Employee() { FirstName = "A", LastName = "1", Title = uniqueKey };
+			dataSource.Insert(EmployeeTableName, emp1).ToObject<Employee>().Execute();
+
+			var emp2 = new Employee() { FirstName = "B", LastName = "2", Title = uniqueKey };
+			dataSource.Insert(EmployeeTableName, emp2).ToObject<Employee>().Execute();
+
+			var lookup = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToImmutableArray<EmployeeLookup>().Execute();
+
+			Assert.AreEqual("A", lookup[0].FirstName, "First Name");
+			Assert.AreEqual("1", lookup[0].LastName, "Last Name");
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
+
 
 
 

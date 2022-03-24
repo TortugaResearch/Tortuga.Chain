@@ -51,6 +51,26 @@ namespace Tortuga.Chain.Materializers
 		}
 
 		/// <summary>
+		/// Materializers use this to pick a constructor.
+		/// </summary>
+		/// <returns></returns>
+		/// <exception cref="MappingException"></exception>
+		protected ConstructorMetadata InferConstructor()
+		{
+			//This is here to make the error message more accurate.
+			if (ObjectMetadata.Constructors.Count == 0)
+				throw new MappingException($"Type {typeof(TObject).Name} has does not have any constructors.");
+
+			//For inference, we're looking for non-default constructors.
+			var constructors = ObjectMetadata.Constructors.Where(x => x.Signature.Length > 0).ToList();
+			if (constructors.Count == 0)
+				throw new MappingException($"Type {typeof(TObject).Name} has does not have any non-default constructors.");
+			if (constructors.Count > 1)
+				throw new MappingException($"Type {typeof(TObject).Name} has more than one non-default constructor. Please use the WithConstructor method to specify which one to use.");
+			return constructors.Single();
+		}
+
+		/// <summary>
 		/// Gets or sets the data reader constructor.
 		/// </summary>
 		/// <value>The data reader constructor.</value>
@@ -88,15 +108,24 @@ namespace Tortuga.Chain.Materializers
 		/// </remarks>
 		public override IReadOnlyList<string> DesiredColumns()
 		{
+			if (Constructor == null && !ObjectMetadata.Constructors.HasDefaultConstructor)
+			{
+				Constructor = InferConstructor();
+			}
+
 			if (Constructor == null)
 			{
+				IReadOnlyList<string> result = ObjectMetadata.ColumnsFor;
+
+				if (result.Count == 0)
+					throw new MappingException($"Type {typeof(TObject).Name} has no writable properties. Please use the InferConstructor option or the WithConstructor method.");
+
 				if (IncludedColumns != null && ExcludedColumns != null)
 					throw new InvalidOperationException("Cannot specify both included and excluded columns/properties.");
 
 				if (IncludedColumns != null)
 					return IncludedColumns;
 
-				IReadOnlyList<string> result = ObjectMetadata.ColumnsFor;
 				if (ExcludedColumns != null)
 					result = result.Where(x => !ExcludedColumns.Contains(x)).ToList();
 				return result;

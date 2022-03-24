@@ -268,4 +268,78 @@ public class FromTests_ToObject : TestBase
 	}
 
 #endif
+
+	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	public void ToObject_NoDefaultConstructor(string dataSourceName, DataSourceType mode)
+	{
+		var dataSource = DataSource(dataSourceName, mode);
+
+		try
+		{
+			var uniqueKey = Guid.NewGuid().ToString();
+
+			var emp1 = new Employee() { FirstName = "A", LastName = "1", Title = uniqueKey };
+			dataSource.Insert(EmployeeTableName, emp1).ToObject<Employee>().Execute();
+
+			var lookup = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToObject<EmployeeLookup>().Execute();
+
+			Assert.AreEqual("A", lookup.FirstName, "First Name");
+			Assert.AreEqual("1", lookup.LastName, "Last Name");
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
+
+	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	public void ToObject_InferCorrectConstructor(string dataSourceName, DataSourceType mode)
+	{
+		var dataSource = DataSource(dataSourceName, mode);
+
+		try
+		{
+			var uniqueKey = Guid.NewGuid().ToString();
+
+			var emp1 = new Employee() { FirstName = "A", LastName = "1", Title = uniqueKey };
+			dataSource.Insert(EmployeeTableName, emp1).ToObject<Employee>().Execute();
+
+			var lookup = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToObject<EmployeeLookupTwoConstructors>(RowOptions.InferConstructor).Execute();
+
+			Assert.AreEqual("A", lookup.FirstName, "First Name");
+			Assert.AreEqual("1", lookup.LastName, "Last Name");
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
+
+	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	public void ToObject_NoColumnsDefaultConstructor(string dataSourceName, DataSourceType mode)
+	{
+		var dataSource = DataSource(dataSourceName, mode);
+
+		try
+		{
+			var uniqueKey = Guid.NewGuid().ToString();
+
+			var emp1 = new Employee() { FirstName = "A", LastName = "1", Title = uniqueKey };
+			dataSource.Insert(EmployeeTableName, emp1).ToObject<Employee>().Execute();
+
+			try
+			{
+				var lookup = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToObject<EmployeeLookupTwoConstructors>().Execute();
+
+				Assert.Fail($"Expected a {nameof(MappingException)}");
+			}
+			catch (MappingException) { }
+
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
+
 }
