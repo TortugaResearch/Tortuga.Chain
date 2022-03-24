@@ -295,15 +295,6 @@ namespace Tortuga.Chain.Access
 			return GetByKeyList<TObject, string>(keys);
 		}
 
-		/************************ ISupportsFrom ************************/
-
-		TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption> OnFromTableOrView(AbstractObjectName tableOrViewName, object filterValue, FilterOptions filterOptions)
-			=> OnFromTableOrView<object>(tableOrViewName, filterValue, filterOptions);
-
-		TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption> OnFromTableOrView(AbstractObjectName tableOrViewName, string? whereClause, object? argumentValue)
-			=> OnFromTableOrView<object>(tableOrViewName, whereClause, argumentValue);
-
-
 
 	}
 }

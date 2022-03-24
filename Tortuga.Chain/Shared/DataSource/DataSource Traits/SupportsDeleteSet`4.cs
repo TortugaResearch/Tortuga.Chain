@@ -18,17 +18,17 @@ where TDbType : struct
 
 	IMultipleRowDbCommandBuilder ISupportsDeleteSet.DeleteSet(string tableName, string whereClause)
 	{
-		return DeleteSet(DataSource.ParseObjectName(tableName), whereClause, null);
+		return DeleteSet(DataSource.DatabaseMetadata.ParseObjectName(tableName), whereClause, null);
 	}
 
 	IMultipleRowDbCommandBuilder ISupportsDeleteSet.DeleteSet(string tableName, string whereClause, object? argumentValue)
 	{
-		return DeleteSet(DataSource.ParseObjectName(tableName), whereClause, argumentValue);
+		return DeleteSet(DataSource.DatabaseMetadata.ParseObjectName(tableName), whereClause, argumentValue);
 	}
 
 	IMultipleRowDbCommandBuilder ISupportsDeleteSet.DeleteSet(string tableName, object filterValue, FilterOptions filterOptions)
 	{
-		return DeleteSet(DataSource.ParseObjectName(tableName), filterValue, filterOptions);
+		return DeleteSet(DataSource.DatabaseMetadata.ParseObjectName(tableName), filterValue, filterOptions);
 	}
 
 

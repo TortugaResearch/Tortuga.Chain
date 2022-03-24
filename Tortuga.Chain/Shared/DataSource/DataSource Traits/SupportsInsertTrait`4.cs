@@ -19,7 +19,7 @@ where TDbType : struct
 
 	IObjectDbCommandBuilder<TArgument> ISupportsInsert.Insert<TArgument>(string tableName, TArgument argumentValue, InsertOptions options)
 	{
-		return DataSource.OnInsertObject(DataSource.ParseObjectName(tableName), argumentValue, options);
+		return DataSource.OnInsertObject(DataSource.DatabaseMetadata.ParseObjectName(tableName), argumentValue, options);
 	}
 
 	IObjectDbCommandBuilder<TArgument> ISupportsInsert.Insert<TArgument>(TArgument argumentValue, InsertOptions options)

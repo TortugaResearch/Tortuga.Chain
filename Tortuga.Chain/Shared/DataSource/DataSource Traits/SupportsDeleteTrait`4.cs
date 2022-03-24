@@ -18,7 +18,7 @@ class SupportsDeleteTrait<TCommand, TParameter, TObjectName, TDbType> : ISupport
 	internal IUpdateDeleteHelper<TCommand, TParameter, TObjectName, TDbType> DataSource { get; set; } = null!;
 
 	IObjectDbCommandBuilder<TArgument> ISupportsDelete.Delete<TArgument>(string tableName, TArgument argumentValue, DeleteOptions options)
-		=> DataSource.OnDeleteObject(DataSource.ParseObjectName(tableName), argumentValue, options);
+		=> DataSource.OnDeleteObject(DataSource.DatabaseMetadata.ParseObjectName(tableName), argumentValue, options);
 
 	IObjectDbCommandBuilder<TArgument> ISupportsDelete.Delete<TArgument>(TArgument argumentValue, DeleteOptions options)
 		=> DataSource.OnDeleteObject(DataSource.DatabaseMetadata.GetTableOrViewFromClass<TArgument>().Name, argumentValue, options);

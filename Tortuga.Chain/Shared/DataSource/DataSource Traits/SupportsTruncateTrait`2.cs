@@ -29,7 +29,7 @@ class SupportsTruncateTrait<TObjectName, TDbType> : ISupportsTruncate
 		return OnTruncate(DataSource.DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name);
 	}
 
-	ILink<int?> ISupportsTruncate.Truncate(string tableName) => OnTruncate(DataSource.ParseObjectName(tableName));
+	ILink<int?> ISupportsTruncate.Truncate(string tableName) => OnTruncate(DataSource.DatabaseMetadata.ParseObjectName(tableName));
 
 	ILink<int?> ISupportsTruncate.Truncate<TObject>() => Truncate<TObject>();
 }

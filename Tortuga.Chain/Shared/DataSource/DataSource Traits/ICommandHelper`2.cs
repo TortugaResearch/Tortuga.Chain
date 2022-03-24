@@ -10,7 +10,4 @@ interface ICommandHelper<TObjectName, TDbType> : IDataSource
 	where TDbType : struct
 {
 	new DatabaseMetadataCache<TObjectName, TDbType> DatabaseMetadata { get; }
-
-	TObjectName ParseObjectName(string objectName);
-
 }

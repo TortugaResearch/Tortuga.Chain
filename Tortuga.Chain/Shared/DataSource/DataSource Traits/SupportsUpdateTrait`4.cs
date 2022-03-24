@@ -18,7 +18,7 @@ where TDbType : struct
 	internal IUpdateDeleteHelper<TCommand, TParameter, TObjectName, TDbType> DataSource { get; set; } = null!;
 
 	IObjectDbCommandBuilder<TArgument> ISupportsUpdate.Update<TArgument>(string tableName, TArgument argumentValue, UpdateOptions options)
-		=> DataSource.OnUpdateObject(DataSource.ParseObjectName(tableName), argumentValue, options);
+		=> DataSource.OnUpdateObject(DataSource.DatabaseMetadata.ParseObjectName(tableName), argumentValue, options);
 
 	IObjectDbCommandBuilder<TArgument> ISupportsUpdate.Update<TArgument>(TArgument argumentValue, UpdateOptions options)
 		=> DataSource.OnUpdateObject(DataSource.DatabaseMetadata.GetTableOrViewFromClass<TArgument>().Name, argumentValue, options);

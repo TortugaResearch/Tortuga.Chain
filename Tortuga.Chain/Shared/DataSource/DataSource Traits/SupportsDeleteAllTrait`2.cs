@@ -28,7 +28,7 @@ class SupportsDeleteAllTrait<TObjectName, TDbType> : ISupportsDeleteAll
 		return OnDeleteAll(DataSource.DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name);
 	}
 
-	ILink<int?> ISupportsDeleteAll.DeleteAll(string tableName) => OnDeleteAll(DataSource.ParseObjectName(tableName));
+	ILink<int?> ISupportsDeleteAll.DeleteAll(string tableName) => OnDeleteAll(DataSource.DatabaseMetadata.ParseObjectName(tableName));
 
 
 	ILink<int?> ISupportsDeleteAll.DeleteAll<TObject>() => DeleteAll<TObject>();

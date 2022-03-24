@@ -58,7 +58,7 @@ class SupportsInsertBatchTrait<TCommand, TParameter, TObjectName, TDbType, TResu
 
 	ILink<int> ISupportsInsertBatch.InsertMultipleBatch<TObject>(string tableName, IReadOnlyList<TObject> objects, InsertOptions options)
 	{
-		return InsertMultipleBatch(DataSource.ParseObjectName(tableName), objects, options);
+		return InsertMultipleBatch(DataSource.DatabaseMetadata.ParseObjectName(tableName), objects, options);
 	}
 
 	ILink<int> ISupportsInsertBatch.InsertMultipleBatch<TObject>(IReadOnlyList<TObject> objects, InsertOptions options)

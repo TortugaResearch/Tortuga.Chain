@@ -71,8 +71,6 @@ partial class PostgreSqlDataSourceBase
 		return new PostgreSqlInsertBatch<TObject>(this, tableName, objects, options); ;
 	}
 
-	AbstractObjectName ICommandHelper<AbstractObjectName, AbstractDbType>.ParseObjectName(string objectName) => new(objectName);
-
 	private partial ILink<int?> OnDeleteAll(AbstractObjectName tableName)
 	{
 		//Verify the table name actually exists.

@@ -1,9 +1,7 @@
 ﻿using System.Data.Common;
-using System.Diagnostics.CodeAnalysis;
 using Tortuga.Chain;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.DataSources;
-using Tortuga.Chain.Metadata;
 using Tortuga.Shipwright;
 
 namespace Traits;
@@ -19,11 +17,11 @@ class SupportsDeleteByKeyListTrait<TCommand, TParameter, TObjectName, TDbType> :
 	[Container(RegisterInterface = true)]
 	internal IUpdateDeleteByKeyHelper<TCommand, TParameter, TObjectName, TDbType> DataSource { get; set; } = null!;
 
-	ISingleRowDbCommandBuilder ISupportsDeleteByKey.DeleteByKey<TKey>(string tableName, TKey key, DeleteOptions options) => DeleteByKey(DataSource.ParseObjectName(tableName), key, options);
+	ISingleRowDbCommandBuilder ISupportsDeleteByKey.DeleteByKey<TKey>(string tableName, TKey key, DeleteOptions options) => DeleteByKey(DataSource.DatabaseMetadata.ParseObjectName(tableName), key, options);
 
-	ISingleRowDbCommandBuilder ISupportsDeleteByKey.DeleteByKey(string tableName, string key, DeleteOptions options) => DeleteByKey(DataSource.ParseObjectName(tableName), key, options);
+	ISingleRowDbCommandBuilder ISupportsDeleteByKey.DeleteByKey(string tableName, string key, DeleteOptions options) => DeleteByKey(DataSource.DatabaseMetadata.ParseObjectName(tableName), key, options);
 
-	IMultipleRowDbCommandBuilder ISupportsDeleteByKeyList.DeleteByKeyList<TKey>(string tableName, IEnumerable<TKey> keys, DeleteOptions options) => DeleteByKeyList(DataSource.ParseObjectName(tableName), keys, options);
+	IMultipleRowDbCommandBuilder ISupportsDeleteByKeyList.DeleteByKeyList<TKey>(string tableName, IEnumerable<TKey> keys, DeleteOptions options) => DeleteByKeyList(DataSource.DatabaseMetadata.ParseObjectName(tableName), keys, options);
 
 
 	/// <summary>

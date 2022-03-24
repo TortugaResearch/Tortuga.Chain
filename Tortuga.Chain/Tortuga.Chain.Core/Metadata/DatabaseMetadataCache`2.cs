@@ -575,13 +575,13 @@ namespace Tortuga.Chain.Metadata
 		}
 
 		/// <summary>
-		/// Parse a string and return the database specific representation of the object name.
+		/// Parse a string and return the database specific representation of the database object's name.
 		/// </summary>
 		/// <param name="name"></param>
-		protected TObjectName ParseObjectName(string name) => ParseObjectName(null, name);
+		public TObjectName ParseObjectName(string name) => ParseObjectName(null, name);
 
 		/// <summary>
-		/// Parse a string and return the database specific representation of the object name.
+		/// Parse a string and return the database specific representation of the database object's name.
 		/// </summary>
 		/// <param name="schema"></param>
 		/// <param name="name"></param>
@@ -625,12 +625,5 @@ namespace Tortuga.Chain.Metadata
 		TableOrViewMetadata IDatabaseMetadataCache.GetTableOrViewFromClass(Type type, OperationType operation)
 			=> GetTableOrViewFromClass(type, operation);
 
-
-		///// <summary>
-		///// Parses the name of the object.
-		///// </summary>
-		///// <param name="objectName">Name of the object.</param>
-		///// <returns>AbstractObjectName.</returns>
-		//public TObjectName ParseObjectName(string objectName) => new(objectName);
 	}
 }

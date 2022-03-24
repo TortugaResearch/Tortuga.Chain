@@ -21,22 +21,22 @@ class SupportsFromTrait<TCommand, TParameter, TObjectName, TDbType, TLimitOption
 
 	ITableDbCommandBuilder ISupportsFrom.From(string tableOrViewName)
 	{
-		return From(DataSource.ParseObjectName(tableOrViewName));
+		return From(DataSource.DatabaseMetadata.ParseObjectName(tableOrViewName));
 	}
 
 	ITableDbCommandBuilder ISupportsFrom.From(string tableOrViewName, object filterValue, FilterOptions filterOptions)
 	{
-		return From(DataSource.ParseObjectName(tableOrViewName), filterValue, filterOptions);
+		return From(DataSource.DatabaseMetadata.ParseObjectName(tableOrViewName), filterValue, filterOptions);
 	}
 
 	ITableDbCommandBuilder ISupportsFrom.From(string tableOrViewName, string whereClause)
 	{
-		return From(DataSource.ParseObjectName(tableOrViewName), whereClause);
+		return From(DataSource.DatabaseMetadata.ParseObjectName(tableOrViewName), whereClause);
 	}
 
 	ITableDbCommandBuilder ISupportsFrom.From(string tableOrViewName, string whereClause, object argumentValue)
 	{
-		return From(DataSource.ParseObjectName(tableOrViewName), whereClause, argumentValue);
+		return From(DataSource.DatabaseMetadata.ParseObjectName(tableOrViewName), whereClause, argumentValue);
 	}
 
 	ITableDbCommandBuilder<TObject> ISupportsFrom.From<TObject>()

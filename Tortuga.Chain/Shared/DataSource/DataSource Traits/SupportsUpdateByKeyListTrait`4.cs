@@ -20,17 +20,17 @@ class SupportsUpdateByKeyListTrait<TCommand, TParameter, TObjectName, TDbType> :
 
 	ISingleRowDbCommandBuilder ISupportsUpdateByKey.UpdateByKey<TArgument, TKey>(string tableName, TArgument newValues, TKey key, UpdateOptions options)
 	{
-		return DataSource.OnUpdateByKeyList(DataSource.ParseObjectName(tableName), newValues, new List<TKey> { key }, options);
+		return DataSource.OnUpdateByKeyList(DataSource.DatabaseMetadata.ParseObjectName(tableName), newValues, new List<TKey> { key }, options);
 	}
 
 	ISingleRowDbCommandBuilder ISupportsUpdateByKey.UpdateByKey<TArgument>(string tableName, TArgument newValues, string key, UpdateOptions options)
 	{
-		return DataSource.OnUpdateByKeyList(DataSource.ParseObjectName(tableName), newValues, new List<string> { key }, options);
+		return DataSource.OnUpdateByKeyList(DataSource.DatabaseMetadata.ParseObjectName(tableName), newValues, new List<string> { key }, options);
 	}
 
 	IMultipleRowDbCommandBuilder ISupportsUpdateByKeyList.UpdateByKeyList<TArgument, TKey>(string tableName, TArgument newValues, IEnumerable<TKey> keys, UpdateOptions options)
 	{
-		return DataSource.OnUpdateByKeyList(DataSource.ParseObjectName(tableName), newValues, keys, options);
+		return DataSource.OnUpdateByKeyList(DataSource.DatabaseMetadata.ParseObjectName(tableName), newValues, keys, options);
 	}
 
 

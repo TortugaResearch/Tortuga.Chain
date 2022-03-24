@@ -74,8 +74,6 @@ partial class AccessDataSourceBase
 		return new AccessUpdateSet(this, tableName, null, where, parameters, parameters.Count, effectiveOptions);
 	}
 
-	AbstractObjectName ICommandHelper<AbstractObjectName, AbstractDbType>.ParseObjectName(string objectName) => new(objectName);
-
 	private partial ILink<int?> OnDeleteAll(AccessObjectName tableName)
 	{
 		//Verify the table name actually exists.

@@ -19,19 +19,19 @@ where TDbType : struct
 
 	IUpdateSetDbCommandBuilder ISupportsUpdateSet.UpdateSet(string tableName, string updateExpression, UpdateOptions options)
 	{
-		return DataSource.OnUpdateSet(DataSource.ParseObjectName(tableName), updateExpression, options);
+		return DataSource.OnUpdateSet(DataSource.DatabaseMetadata.ParseObjectName(tableName), updateExpression, options);
 	}
 
 	IUpdateSetDbCommandBuilder ISupportsUpdateSet.UpdateSet(string tableName, string updateExpression, object? updateArgumentValue, UpdateOptions options)
 	{
 		//`updateArgumentValue` isn't optional because it messes up method overloading with the `options` parameter.
 
-		return DataSource.OnUpdateSet(DataSource.ParseObjectName(tableName), updateExpression, updateArgumentValue, options);
+		return DataSource.OnUpdateSet(DataSource.DatabaseMetadata.ParseObjectName(tableName), updateExpression, updateArgumentValue, options);
 	}
 
 	IUpdateSetDbCommandBuilder ISupportsUpdateSet.UpdateSet(string tableName, object newValues, UpdateOptions options)
 	{
-		return DataSource.OnUpdateSet(DataSource.ParseObjectName(tableName), newValues, options);
+		return DataSource.OnUpdateSet(DataSource.DatabaseMetadata.ParseObjectName(tableName), newValues, options);
 	}
 
 	/// <summary>

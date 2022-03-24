@@ -70,8 +70,6 @@ partial class SQLiteDataSourceBase
 		return new SQLiteInsertBatch<TObject>(this, tableName, objects, options); ;
 	}
 
-	AbstractObjectName ICommandHelper<AbstractObjectName, AbstractDbType>.ParseObjectName(string objectName) => new(objectName);
-
 	private partial ILink<int?> OnDeleteAll(AbstractObjectName tableName)
 	{
 		//SQLite determines for itself if a delete all should be interpreted as a truncate.
