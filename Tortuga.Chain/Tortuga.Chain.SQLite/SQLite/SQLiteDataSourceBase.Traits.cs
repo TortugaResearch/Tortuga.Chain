@@ -23,7 +23,8 @@ DbCommandBuilder<AbstractCommand, AbstractParameter>>))]
 [UseTrait(typeof(SupportsDeleteSet<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
 [UseTrait(typeof(SupportsFromTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType, AbstractLimitOption>))]
 [UseTrait(typeof(SupportsGetByKeyListTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
-partial class SQLiteDataSourceBase : ICrudDataSource
+[UseTrait(typeof(SupportsUpsertTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
+partial class SQLiteDataSourceBase : ICrudDataSource, IAdvancedCrudDataSource
 {
 	DatabaseMetadataCache<AbstractObjectName, AbstractDbType> ICommandHelper<AbstractObjectName, AbstractDbType>.DatabaseMetadata => DatabaseMetadata;
 
@@ -204,6 +205,11 @@ where TArgument : class
 		var table = DatabaseMetadata.GetTableOrView(tableName);
 		//In SQLite, a delete without a where clause is interpreted as a truncate if other conditions are met.
 		return Sql("DELETE FROM " + table.Name.ToQuotedString() + ";").AsNonQuery();
+	}
+
+	ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> IUpsertHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnInsertOrUpdateObject<TArgument>(AbstractObjectName tableName, TArgument argumentValue, UpsertOptions options)
+	{
+		return new SQLiteInsertOrUpdateObject<TArgument>(this, tableName, argumentValue, options);
 	}
 }
 

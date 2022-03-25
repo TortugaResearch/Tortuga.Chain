@@ -7,6 +7,6 @@ namespace Tortuga.Chain.MySql;
 partial class MySqlTransactionalDataSource
 {
 
-	private partial void AdditionalDispose() { }
+
 
 }

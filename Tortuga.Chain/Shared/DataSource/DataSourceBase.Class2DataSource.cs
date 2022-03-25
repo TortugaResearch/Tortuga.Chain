@@ -1,7 +1,4 @@
-﻿using Tortuga.Chain.CommandBuilders;
-
-
-#if SQL_SERVER_SDS || SQL_SERVER_MDS
+﻿#if SQL_SERVER_SDS || SQL_SERVER_MDS
 
 namespace Tortuga.Chain.SqlServer
 {
@@ -41,30 +38,7 @@ namespace Tortuga.Chain.Access
 	{
 
 
-		/// <summary>
-		/// Creates a operation used to perform an "upsert" operation.
-		/// </summary>
-		/// <param name="tableName"></param>
-		/// <param name="argumentValue"></param>
-		/// <param name="options"></param>
-		/// <returns></returns>
-		public ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> Upsert<TArgument>(AbstractObjectName tableName, TArgument argumentValue, UpsertOptions options = UpsertOptions.None)
-		where TArgument : class
-		{
-			return OnInsertOrUpdateObject<TArgument>(tableName, argumentValue, options);
-		}
 
-		/// <summary>
-		/// Perform an insert or update operation as appropriate.
-		/// </summary>
-		/// <typeparam name="TArgument"></typeparam>
-		/// <param name="argumentValue">The argument value.</param>
-		/// <param name="options">The options for how the insert/update occurs.</param>
-		/// <returns></returns>
-		public ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> Upsert<TArgument>(TArgument argumentValue, UpsertOptions options = UpsertOptions.None) where TArgument : class
-		{
-			return OnInsertOrUpdateObject<TArgument>(DatabaseMetadata.GetTableOrViewFromClass<TArgument>().Name, argumentValue, options);
-		}
 
 
 		///// <summary>Truncates the specified table.</summary>

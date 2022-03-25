@@ -7,6 +7,5 @@ namespace Tortuga.Chain.SqlServer;
 [UseTrait(typeof(Traits.TransactionDataSourceTrait<OleDbSqlServerDataSource, OleDbConnection, OleDbTransaction, OleDbCommand>))]
 partial class OleDbSqlServerTransactionalDataSource
 {
-	private partial void AdditionalDispose() { }
 
 }

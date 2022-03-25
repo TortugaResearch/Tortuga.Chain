@@ -1,7 +1,5 @@
-﻿using MySqlConnector;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using Tortuga.Chain.AuditRules;
-using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Metadata;
 using Tortuga.Chain.MySql.CommandBuilders;
 
@@ -9,19 +7,6 @@ namespace Tortuga.Chain.MySql
 {
 	partial class MySqlDataSourceBase
 	{
-
-
-
-
-		ObjectDbCommandBuilder<MySqlCommand, MySqlParameter, TArgument> OnInsertOrUpdateObject<TArgument>(MySqlObjectName tableName, TArgument argumentValue, UpsertOptions options) where TArgument : class
-		{
-			return new MySqlInsertOrUpdateObject<TArgument>(this, tableName, argumentValue, options);
-		}
-
-
-
-
-
 
 		/// <summary>
 		/// Inserts the batch of records using bulk insert.

@@ -2,7 +2,7 @@
 
 namespace Tortuga.Chain.SqlServer
 {
-	partial class OleDbSqlServerDataSourceBase: Tortuga.Chain.DataSources.ISupportsDeleteAll, Tortuga.Chain.DataSources.ISupportsTruncate, Tortuga.Chain.DataSources.ISupportsSqlQueries, Tortuga.Chain.DataSources.ISupportsDeleteByKeyList, Tortuga.Chain.DataSources.ISupportsDeleteByKey, Tortuga.Chain.DataSources.ISupportsDelete, Tortuga.Chain.DataSources.ISupportsUpdate, Tortuga.Chain.DataSources.ISupportsUpdateByKey, Tortuga.Chain.DataSources.ISupportsUpdateByKeyList, Tortuga.Chain.DataSources.ISupportsInsert, Tortuga.Chain.DataSources.ISupportsUpdateSet, Tortuga.Chain.DataSources.ISupportsDeleteSet, Tortuga.Chain.DataSources.ISupportsFrom, Tortuga.Chain.DataSources.ISupportsGetByKeyList, Tortuga.Chain.DataSources.ISupportsGetByKey, Traits.ICommandHelper<Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>, Traits.IUpdateDeleteByKeyHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>, Traits.IUpdateDeleteHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>, Traits.IInsertHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>, Traits.IUpdateDeleteSetHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>, Traits.IFromHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType, Tortuga.Chain.SqlServerLimitOption>, Traits.IGetByKeyHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>
+	partial class OleDbSqlServerDataSourceBase: Tortuga.Chain.DataSources.ISupportsDeleteAll, Tortuga.Chain.DataSources.ISupportsTruncate, Tortuga.Chain.DataSources.ISupportsSqlQueries, Tortuga.Chain.DataSources.ISupportsDeleteByKeyList, Tortuga.Chain.DataSources.ISupportsDeleteByKey, Tortuga.Chain.DataSources.ISupportsDelete, Tortuga.Chain.DataSources.ISupportsUpdate, Tortuga.Chain.DataSources.ISupportsUpdateByKey, Tortuga.Chain.DataSources.ISupportsUpdateByKeyList, Tortuga.Chain.DataSources.ISupportsInsert, Tortuga.Chain.DataSources.ISupportsUpdateSet, Tortuga.Chain.DataSources.ISupportsDeleteSet, Tortuga.Chain.DataSources.ISupportsFrom, Tortuga.Chain.DataSources.ISupportsGetByKeyList, Tortuga.Chain.DataSources.ISupportsGetByKey, Tortuga.Chain.DataSources.ISupportsUpsert, Traits.ICommandHelper<Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>, Traits.IUpdateDeleteByKeyHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>, Traits.IUpdateDeleteHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>, Traits.IInsertHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>, Traits.IUpdateDeleteSetHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>, Traits.IFromHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType, Tortuga.Chain.SqlServerLimitOption>, Traits.IGetByKeyHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>, Traits.IUpsertHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>
 	{
 
 		private bool __TraitsRegistered;
@@ -114,6 +114,15 @@ namespace Tortuga.Chain.SqlServer
 			{
 				if (!__TraitsRegistered) __RegisterTraits();
 				return ___Trait11;
+			}
+		}
+		private Traits.SupportsUpsertTrait<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType> ___Trait12 = new();
+		private Traits.SupportsUpsertTrait<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType> __Trait12
+		{
+			get
+			{
+				if (!__TraitsRegistered) __RegisterTraits();
+				return ___Trait12;
 			}
 		}
 
@@ -352,6 +361,17 @@ namespace Tortuga.Chain.SqlServer
 		Tortuga.Chain.CommandBuilders.IUpdateSetDbCommandBuilder Tortuga.Chain.DataSources.ISupportsUpdateSet.UpdateSet(System.String tableName, System.Object newValues, Tortuga.Chain.UpdateOptions options)
 		{
 			return ((Tortuga.Chain.DataSources.ISupportsUpdateSet)__Trait8).UpdateSet(tableName, newValues, options);
+		}
+
+		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsUpsert
+		Tortuga.Chain.CommandBuilders.IObjectDbCommandBuilder<TArgument> Tortuga.Chain.DataSources.ISupportsUpsert.Upsert<TArgument>(System.String tableName, TArgument argumentValue, Tortuga.Chain.UpsertOptions options)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsUpsert)__Trait12).Upsert<TArgument>(tableName, argumentValue, options);
+		}
+
+		Tortuga.Chain.CommandBuilders.IObjectDbCommandBuilder<TArgument> Tortuga.Chain.DataSources.ISupportsUpsert.Upsert<TArgument>(TArgument argumentValue, Tortuga.Chain.UpsertOptions options)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsUpsert)__Trait12).Upsert<TArgument>(argumentValue, options);
 		}
 
 		// Exposing trait Traits.SupportsDeleteAllTrait<Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>
@@ -993,6 +1013,32 @@ namespace Tortuga.Chain.SqlServer
 			return __Trait5.Update<TArgument>(tableName, argumentValue, options);
 		}
 
+		// Exposing trait Traits.SupportsUpsertTrait<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>
+
+		/// <summary>
+		/// Creates a operation used to perform an "upsert" operation.
+		/// </summary>
+		/// <param name="tableName"></param>
+		/// <param name="argumentValue"></param>
+		/// <param name="options"></param>
+		/// <returns></returns>
+		public Tortuga.Chain.CommandBuilders.ObjectDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, TArgument> Upsert<TArgument>(Tortuga.Chain.SqlServer.SqlServerObjectName tableName, TArgument argumentValue, Tortuga.Chain.UpsertOptions options = 0)where TArgument : class
+		{
+			return __Trait12.Upsert<TArgument>(tableName, argumentValue, options);
+		}
+
+		/// <summary>
+		/// Perform an insert or update operation as appropriate.
+		/// </summary>
+		/// <typeparam name="TArgument"></typeparam>
+		/// <param name="argumentValue">The argument value.</param>
+		/// <param name="options">The options for how the insert/update occurs.</param>
+		/// <returns></returns>
+		public Tortuga.Chain.CommandBuilders.ObjectDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, TArgument> Upsert<TArgument>(TArgument argumentValue, Tortuga.Chain.UpsertOptions options = 0)where TArgument : class
+		{
+			return __Trait12.Upsert<TArgument>(argumentValue, options);
+		}
+
 		private partial Tortuga.Chain.ILink<int?> OnDeleteAll(Tortuga.Chain.SqlServer.SqlServerObjectName tableName );
 
 		private partial Tortuga.Chain.CommandBuilders.MultipleTableDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter> OnSql(System.String sqlStatement, System.Object? argumentValue );
@@ -1016,6 +1062,7 @@ namespace Tortuga.Chain.SqlServer
 			__Trait9.DataSource = this;
 			__Trait10.DataSource = this;
 			__Trait11.DataSource = this;
+			__Trait12.DataSource = this;
 		}
 
 	}

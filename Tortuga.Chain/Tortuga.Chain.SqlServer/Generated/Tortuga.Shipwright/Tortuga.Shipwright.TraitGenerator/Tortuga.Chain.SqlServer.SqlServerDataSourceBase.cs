@@ -2,7 +2,7 @@
 
 namespace Tortuga.Chain.SqlServer
 {
-	partial class SqlServerDataSourceBase: Tortuga.Chain.DataSources.ISupportsDeleteAll, Tortuga.Chain.DataSources.ISupportsTruncate, Tortuga.Chain.DataSources.ISupportsSqlQueries, Tortuga.Chain.DataSources.ISupportsInsertBatch, Tortuga.Chain.DataSources.ISupportsDeleteByKeyList, Tortuga.Chain.DataSources.ISupportsDeleteByKey, Tortuga.Chain.DataSources.ISupportsDelete, Tortuga.Chain.DataSources.ISupportsUpdate, Tortuga.Chain.DataSources.ISupportsUpdateByKey, Tortuga.Chain.DataSources.ISupportsUpdateByKeyList, Tortuga.Chain.DataSources.ISupportsInsert, Tortuga.Chain.DataSources.ISupportsUpdateSet, Tortuga.Chain.DataSources.ISupportsDeleteSet, Tortuga.Chain.DataSources.ISupportsFrom, Tortuga.Chain.DataSources.ISupportsGetByKeyList, Tortuga.Chain.DataSources.ISupportsGetByKey, Traits.ICommandHelper<Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>, Traits.IInsertBatchHelper<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>, Traits.IUpdateDeleteByKeyHelper<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>, Traits.IUpdateDeleteHelper<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>, Traits.IInsertHelper<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>, Traits.IUpdateDeleteSetHelper<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>, Traits.IFromHelper<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType, Tortuga.Chain.SqlServerLimitOption>, Traits.IGetByKeyHelper<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>
+	partial class SqlServerDataSourceBase: Tortuga.Chain.DataSources.ISupportsDeleteAll, Tortuga.Chain.DataSources.ISupportsTruncate, Tortuga.Chain.DataSources.ISupportsSqlQueries, Tortuga.Chain.DataSources.ISupportsInsertBatch, Tortuga.Chain.DataSources.ISupportsDeleteByKeyList, Tortuga.Chain.DataSources.ISupportsDeleteByKey, Tortuga.Chain.DataSources.ISupportsDelete, Tortuga.Chain.DataSources.ISupportsUpdate, Tortuga.Chain.DataSources.ISupportsUpdateByKey, Tortuga.Chain.DataSources.ISupportsUpdateByKeyList, Tortuga.Chain.DataSources.ISupportsInsert, Tortuga.Chain.DataSources.ISupportsUpdateSet, Tortuga.Chain.DataSources.ISupportsDeleteSet, Tortuga.Chain.DataSources.ISupportsFrom, Tortuga.Chain.DataSources.ISupportsGetByKeyList, Tortuga.Chain.DataSources.ISupportsGetByKey, Tortuga.Chain.DataSources.ISupportsUpsert, Traits.ICommandHelper<Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>, Traits.IInsertBatchHelper<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>, Traits.IUpdateDeleteByKeyHelper<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>, Traits.IUpdateDeleteHelper<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>, Traits.IInsertHelper<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>, Traits.IUpdateDeleteSetHelper<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>, Traits.IFromHelper<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType, Tortuga.Chain.SqlServerLimitOption>, Traits.IGetByKeyHelper<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>, Traits.IUpsertHelper<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>
 	{
 
 		private bool __TraitsRegistered;
@@ -123,6 +123,15 @@ namespace Tortuga.Chain.SqlServer
 			{
 				if (!__TraitsRegistered) __RegisterTraits();
 				return ___Trait12;
+			}
+		}
+		private Traits.SupportsUpsertTrait<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType> ___Trait13 = new();
+		private Traits.SupportsUpsertTrait<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType> __Trait13
+		{
+			get
+			{
+				if (!__TraitsRegistered) __RegisterTraits();
+				return ___Trait13;
 			}
 		}
 
@@ -377,6 +386,17 @@ namespace Tortuga.Chain.SqlServer
 		Tortuga.Chain.CommandBuilders.IUpdateSetDbCommandBuilder Tortuga.Chain.DataSources.ISupportsUpdateSet.UpdateSet(System.String tableName, System.Object newValues, Tortuga.Chain.UpdateOptions options)
 		{
 			return ((Tortuga.Chain.DataSources.ISupportsUpdateSet)__Trait9).UpdateSet(tableName, newValues, options);
+		}
+
+		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsUpsert
+		Tortuga.Chain.CommandBuilders.IObjectDbCommandBuilder<TArgument> Tortuga.Chain.DataSources.ISupportsUpsert.Upsert<TArgument>(System.String tableName, TArgument argumentValue, Tortuga.Chain.UpsertOptions options)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsUpsert)__Trait13).Upsert<TArgument>(tableName, argumentValue, options);
+		}
+
+		Tortuga.Chain.CommandBuilders.IObjectDbCommandBuilder<TArgument> Tortuga.Chain.DataSources.ISupportsUpsert.Upsert<TArgument>(TArgument argumentValue, Tortuga.Chain.UpsertOptions options)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsUpsert)__Trait13).Upsert<TArgument>(argumentValue, options);
 		}
 
 		// Exposing trait Traits.SupportsDeleteAllTrait<Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>
@@ -1071,6 +1091,32 @@ namespace Tortuga.Chain.SqlServer
 			return __Trait6.Update<TArgument>(tableName, argumentValue, options);
 		}
 
+		// Exposing trait Traits.SupportsUpsertTrait<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>
+
+		/// <summary>
+		/// Creates a operation used to perform an "upsert" operation.
+		/// </summary>
+		/// <param name="tableName"></param>
+		/// <param name="argumentValue"></param>
+		/// <param name="options"></param>
+		/// <returns></returns>
+		public Tortuga.Chain.CommandBuilders.ObjectDbCommandBuilder<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, TArgument> Upsert<TArgument>(Tortuga.Chain.SqlServer.SqlServerObjectName tableName, TArgument argumentValue, Tortuga.Chain.UpsertOptions options = 0)where TArgument : class
+		{
+			return __Trait13.Upsert<TArgument>(tableName, argumentValue, options);
+		}
+
+		/// <summary>
+		/// Perform an insert or update operation as appropriate.
+		/// </summary>
+		/// <typeparam name="TArgument"></typeparam>
+		/// <param name="argumentValue">The argument value.</param>
+		/// <param name="options">The options for how the insert/update occurs.</param>
+		/// <returns></returns>
+		public Tortuga.Chain.CommandBuilders.ObjectDbCommandBuilder<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, TArgument> Upsert<TArgument>(TArgument argumentValue, Tortuga.Chain.UpsertOptions options = 0)where TArgument : class
+		{
+			return __Trait13.Upsert<TArgument>(argumentValue, options);
+		}
+
 		private partial Tortuga.Chain.ILink<int?> OnDeleteAll(Tortuga.Chain.SqlServer.SqlServerObjectName tableName );
 
 		private partial Tortuga.Chain.CommandBuilders.MultipleTableDbCommandBuilder<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter> OnSql(System.String sqlStatement, System.Object? argumentValue );
@@ -1095,6 +1141,7 @@ namespace Tortuga.Chain.SqlServer
 			__Trait10.DataSource = this;
 			__Trait11.DataSource = this;
 			__Trait12.DataSource = this;
+			__Trait13.DataSource = this;
 		}
 
 	}

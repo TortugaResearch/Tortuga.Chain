@@ -7,6 +7,7 @@ using Tortuga.Shipwright;
 namespace Traits
 {
 
+
 	[Trait]
 	class TransactionDataSourceTrait<TRootDataSource, TConnection, TTransaction, TCommand> : ITransactionalDataSource, IDisposable
 		where TRootDataSource : class, IRootDataSource, IDataSource, IHasExtensionCache
@@ -17,6 +18,9 @@ namespace Traits
 
 		[Container]
 		public ITransactionalDataSource Container { get; set; } = null!;
+
+		[Container(IsOptional = true)]
+		public IHasOnDispose? DisposableContainer { get; set; }
 
 
 		[Expose(Accessibility = Accessibility.Private, Setter = Setter.Init)]
@@ -111,13 +115,10 @@ namespace Traits
 			{
 				m_Transaction.Dispose();
 				m_Connection.Dispose();
-				AdditionalDispose();
+				DisposableContainer?.OnDispose();
 				m_Disposed = true;
 			}
 		}
-
-		[Partial]
-		public Action AdditionalDispose { get; set; } = null!;
 
 		/// <summary>
 		/// The extension cache is used by extensions to store data source specific information.

@@ -158,13 +158,11 @@ namespace Tortuga.Chain.SQLite
 			return __Trait0.TestConnectionAsync();
 		}
 
-		private partial void AdditionalDispose( );
-
 		private void __RegisterTraits()
 		{
 			__TraitsRegistered = true;
-			__Trait0.AdditionalDispose = AdditionalDispose;
 			__Trait0.Container = this;
+			__Trait0.DisposableContainer = this as Traits.IHasOnDispose;
 		}
 
 	}

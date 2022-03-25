@@ -22,7 +22,8 @@ namespace Tortuga.Chain.SqlServer;
 [UseTrait(typeof(SupportsDeleteSet<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
 [UseTrait(typeof(SupportsFromTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType, AbstractLimitOption>))]
 [UseTrait(typeof(SupportsGetByKeyListTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
-partial class SqlServerDataSourceBase : ICrudDataSource
+[UseTrait(typeof(SupportsUpsertTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
+partial class SqlServerDataSourceBase : ICrudDataSource, IAdvancedCrudDataSource
 {
 	DatabaseMetadataCache<AbstractObjectName, AbstractDbType> ICommandHelper<AbstractObjectName, AbstractDbType>.DatabaseMetadata => DatabaseMetadata;
 
@@ -202,5 +203,10 @@ where TArgument : class
 		//Verify the table name actually exists.
 		var table = DatabaseMetadata.GetTableOrView(tableName);
 		return Sql("TRUNCATE TABLE " + table.Name.ToQuotedString() + ";").AsNonQuery();
+	}
+
+	ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> IUpsertHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnInsertOrUpdateObject<TArgument>(AbstractObjectName tableName, TArgument argumentValue, UpsertOptions options)
+	{
+		return new SqlServerInsertOrUpdateObject<TArgument>(this, tableName, argumentValue, options);
 	}
 }
