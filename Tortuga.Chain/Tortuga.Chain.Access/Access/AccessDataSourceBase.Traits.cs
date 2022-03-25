@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using Tortuga.Anchor;
 using Tortuga.Chain.Access.CommandBuilders;
 using Tortuga.Chain.CommandBuilders;
+using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Metadata;
 using Tortuga.Shipwright;
 using Traits;
@@ -19,8 +20,9 @@ namespace Tortuga.Chain.Access;
 [UseTrait(typeof(SupportsUpdateSet<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
 [UseTrait(typeof(SupportsDeleteSet<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
 [UseTrait(typeof(SupportsFromTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType, AbstractLimitOption>))]
+[UseTrait(typeof(SupportsGetByKeyListTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
 
-partial class AccessDataSourceBase
+partial class AccessDataSourceBase : ICrudDataSource
 {
 	DatabaseMetadataCache<AbstractObjectName, AbstractDbType> ICommandHelper<AbstractObjectName, AbstractDbType>.DatabaseMetadata => DatabaseMetadata;
 
@@ -74,33 +76,75 @@ partial class AccessDataSourceBase
 		return new AccessUpdateSet(this, tableName, null, where, parameters, parameters.Count, effectiveOptions);
 	}
 
-	private partial ILink<int?> OnDeleteAll(AccessObjectName tableName)
-	{
-		//Verify the table name actually exists.
-		var table = DatabaseMetadata.GetTableOrView(tableName);
-		return Sql("DELETE FROM " + table.Name.ToQuotedString() + ";").AsNonQuery();
-	}
-
-	private partial MultipleTableDbCommandBuilder<OleDbCommand, OleDbParameter> OnSql(string sqlStatement, object? argumentValue)
-	{
-		return new AccessSqlCall(this, sqlStatement, argumentValue);
-	}
-
-
-
-	ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> IUpdateDeleteHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnUpdateObject<TArgument>(AbstractObjectName tableName, TArgument argumentValue, UpdateOptions options)
-		where TArgument : class
-	{
-		return new AccessUpdateObject<TArgument>(this, tableName, argumentValue, options);
-	}
-
 	ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> IUpdateDeleteHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnDeleteObject<TArgument>(AbstractObjectName tableName, TArgument argumentValue, DeleteOptions options)
 		where TArgument : class
 	{
 		return new AccessDeleteObject<TArgument>(this, tableName, argumentValue, options);
 	}
 
+	MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> IUpdateDeleteSetHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnDeleteSet(AbstractObjectName tableName, string whereClause, object? argumentValue)
+	{
+		return new AccessDeleteSet(this, tableName, whereClause, argumentValue);
+	}
 
+	MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> IUpdateDeleteSetHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnDeleteSet(AbstractObjectName tableName, object filterValue, FilterOptions filterOptions)
+	{
+		return new AccessDeleteSet(this, tableName, filterValue, filterOptions);
+	}
+
+	TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption, TObject> IFromHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType, AbstractLimitOption>.OnFromTableOrView<TObject>(AbstractObjectName tableOrViewName, string? whereClause, object? argumentValue)
+		where TObject : class
+	{
+		return new AccessTableOrView<TObject>(this, tableOrViewName, whereClause, argumentValue);
+	}
+
+	TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption, TObject> IFromHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType, AbstractLimitOption>.OnFromTableOrView<TObject>(AbstractObjectName tableOrViewName, object filterValue, FilterOptions filterOptions)
+		where TObject : class
+	{
+		return new AccessTableOrView<TObject>(this, tableOrViewName, filterValue, filterOptions);
+	}
+
+	SingleRowDbCommandBuilder<AbstractCommand, AbstractParameter> IGetByKeyHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnGetByKey<TObject, TKey>(AbstractObjectName tableName, ColumnMetadata<AbstractDbType> keyColumn, TKey key)
+		where TObject : class
+	{
+		string where = keyColumn.SqlName + " = @Param0";
+
+		var parameters = new List<OleDbParameter>();
+		var param = new OleDbParameter("@Param0", key);
+		if (keyColumn.DbType.HasValue)
+			param.OleDbType = keyColumn.DbType.Value;
+		parameters.Add(param);
+
+		return new AccessTableOrView<TObject>(this, tableName, where, parameters);
+
+	}
+
+	MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> IGetByKeyHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnGetByKeyList<TObject, TKey>(AbstractObjectName tableName, ColumnMetadata<AbstractDbType> keyColumn, IEnumerable<TKey> keys) where TObject : class
+	{
+		var keyList = keys.AsList();
+		string where;
+		if (keys.Count() > 1)
+			where = keyColumn.SqlName + " IN (" + string.Join(", ", keyList.Select((s, i) => "@Param" + i)) + ")";
+		else
+			where = keyColumn.SqlName + " = @Param0";
+
+		var parameters = new List<OleDbParameter>();
+		for (var i = 0; i < keyList.Count; i++)
+		{
+			var param = new OleDbParameter("@Param" + i, keyList[i]);
+			if (keyColumn.DbType.HasValue)
+				param.OleDbType = keyColumn.DbType.Value;
+			parameters.Add(param);
+		}
+
+		return new MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter, TObject>(new AccessTableOrView<TObject>(this, tableName, where, parameters));
+	}
+
+	ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> IInsertHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnInsertObject<TArgument>(AbstractObjectName tableName, TArgument argumentValue, InsertOptions options)
+   where TArgument : class
+	{
+		return new AccessInsertObject<TArgument>(this, tableName, argumentValue, options);
+	}
 
 	MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> IUpdateDeleteByKeyHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnUpdateByKeyList<TArgument, TKey>(AccessObjectName tableName, TArgument newValues, IEnumerable<TKey> keys, UpdateOptions options)
 	{
@@ -128,11 +172,10 @@ partial class AccessDataSourceBase
 		return new AccessUpdateSet(this, tableName, newValues, where, parameters, parameters.Count, options);
 	}
 
-
-	ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> IInsertHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnInsertObject<TArgument>(AbstractObjectName tableName, TArgument argumentValue, InsertOptions options)
-   where TArgument : class
+	ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> IUpdateDeleteHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnUpdateObject<TArgument>(AbstractObjectName tableName, TArgument argumentValue, UpdateOptions options)
+		where TArgument : class
 	{
-		return new AccessInsertObject<TArgument>(this, tableName, argumentValue, options);
+		return new AccessUpdateObject<TArgument>(this, tableName, argumentValue, options);
 	}
 
 	IUpdateSetDbCommandBuilder<AbstractCommand, AbstractParameter> IUpdateDeleteSetHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnUpdateSet(AbstractObjectName tableName, string updateExpression, object? updateArgumentValue, UpdateOptions options)
@@ -145,29 +188,16 @@ partial class AccessDataSourceBase
 		return new AccessUpdateSet(this, tableName, newValues, options);
 	}
 
-	MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> IUpdateDeleteSetHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnDeleteSet(AbstractObjectName tableName, string whereClause, object? argumentValue)
+	private partial ILink<int?> OnDeleteAll(AccessObjectName tableName)
 	{
-		return new AccessDeleteSet(this, tableName, whereClause, argumentValue);
+		//Verify the table name actually exists.
+		var table = DatabaseMetadata.GetTableOrView(tableName);
+		return Sql("DELETE FROM " + table.Name.ToQuotedString() + ";").AsNonQuery();
 	}
 
-	MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> IUpdateDeleteSetHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnDeleteSet(AbstractObjectName tableName, object filterValue, FilterOptions filterOptions)
+	private partial MultipleTableDbCommandBuilder<OleDbCommand, OleDbParameter> OnSql(string sqlStatement, object? argumentValue)
 	{
-		return new AccessDeleteSet(this, tableName, filterValue, filterOptions);
+		return new AccessSqlCall(this, sqlStatement, argumentValue);
 	}
-
-
-	TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption, TObject> IFromHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType, AbstractLimitOption>.OnFromTableOrView<TObject>(AbstractObjectName tableOrViewName, string? whereClause, object? argumentValue)
-		where TObject : class
-	{
-		return new AccessTableOrView<TObject>(this, tableOrViewName, whereClause, argumentValue);
-	}
-
-	TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption, TObject> IFromHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType, AbstractLimitOption>.OnFromTableOrView<TObject>(AbstractObjectName tableOrViewName, object filterValue, FilterOptions filterOptions)
-		where TObject : class
-	{
-		return new AccessTableOrView<TObject>(this, tableOrViewName, filterValue, filterOptions);
-	}
-
-
 }
 

@@ -1,6 +1,7 @@
 ﻿using MySqlConnector;
 using Tortuga.Anchor;
 using Tortuga.Chain.CommandBuilders;
+using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Metadata;
 using Tortuga.Chain.MySql.CommandBuilders;
 using Tortuga.Shipwright;
@@ -21,7 +22,8 @@ DbCommandBuilder<AbstractCommand, AbstractParameter>>))]
 [UseTrait(typeof(SupportsUpdateSet<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
 [UseTrait(typeof(SupportsDeleteSet<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
 [UseTrait(typeof(SupportsFromTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType, AbstractLimitOption>))]
-partial class MySqlDataSourceBase
+[UseTrait(typeof(SupportsGetByKeyListTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
+partial class MySqlDataSourceBase : ICrudDataSource
 {
 	DatabaseMetadataCache<AbstractObjectName, AbstractDbType> ICommandHelper<AbstractObjectName, AbstractDbType>.DatabaseMetadata => DatabaseMetadata;
 
@@ -65,40 +67,81 @@ partial class MySqlDataSourceBase
 		return new MySqlUpdateSet(this, tableName, null, where, parameters, parameters.Count, effectiveOptions);
 	}
 
+	ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> IUpdateDeleteHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnDeleteObject<TArgument>(AbstractObjectName tableName, TArgument argumentValue, DeleteOptions options)
+		where TArgument : class
+	{
+		return new MySqlDeleteObject<TArgument>(this, tableName, argumentValue, options);
+	}
+
+	MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> IUpdateDeleteSetHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnDeleteSet(AbstractObjectName tableName, string whereClause, object? argumentValue)
+	{
+		return new MySqlDeleteSet(this, tableName, whereClause, argumentValue);
+	}
+
+	MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> IUpdateDeleteSetHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnDeleteSet(AbstractObjectName tableName, object filterValue, FilterOptions filterOptions)
+	{
+		return new MySqlDeleteSet(this, tableName, filterValue, filterOptions);
+	}
+
+	TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption, TObject> IFromHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType, AbstractLimitOption>.OnFromTableOrView<TObject>(AbstractObjectName tableOrViewName, string? whereClause, object? argumentValue)
+	where TObject : class
+	{
+		return new MySqlTableOrView<TObject>(this, tableOrViewName, whereClause, argumentValue);
+	}
+
+	TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption, TObject> IFromHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType, AbstractLimitOption>.OnFromTableOrView<TObject>(AbstractObjectName tableOrViewName, object filterValue, FilterOptions filterOptions)
+		where TObject : class
+	{
+		return new MySqlTableOrView<TObject>(this, tableOrViewName, filterValue, filterOptions);
+	}
+
+	SingleRowDbCommandBuilder<AbstractCommand, AbstractParameter> IGetByKeyHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnGetByKey<TObject, TKey>(AbstractObjectName tableName, ColumnMetadata<AbstractDbType> keyColumn, TKey key)
+		where TObject : class
+	{
+		string where = keyColumn.SqlName + " = @Param0";
+
+		var parameters = new List<MySqlParameter>();
+		var param = new MySqlParameter("@Param0", key);
+		if (keyColumn.DbType.HasValue)
+			param.MySqlDbType = keyColumn.DbType.Value;
+		parameters.Add(param);
+
+		return new MySqlTableOrView<TObject>(this, tableName, where, parameters);
+
+	}
+
+	MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> IGetByKeyHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnGetByKeyList<TObject, TKey>(AbstractObjectName tableName, ColumnMetadata<AbstractDbType> keyColumn, IEnumerable<TKey> keys) where TObject : class
+	{
+
+		var keyList = keys.AsList();
+
+		string where;
+		if (keys.Count() > 1)
+			where = keyColumn.SqlName + " IN (" + string.Join(", ", keyList.Select((s, i) => "@Param" + i)) + ")";
+		else
+			where = keyColumn.SqlName + " = @Param0";
+
+		var parameters = new List<MySqlParameter>();
+		for (var i = 0; i < keyList.Count; i++)
+		{
+			var param = new MySqlParameter("@Param" + i, keyList[i]);
+			if (keyColumn.DbType.HasValue)
+				param.MySqlDbType = keyColumn.DbType.Value;
+			parameters.Add(param);
+		}
+
+		return new MultipleRowDbCommandBuilder<MySqlCommand, MySqlParameter, TObject>(new MySqlTableOrView<TObject>(this, tableName, where, parameters));
+	}
+
 	DbCommandBuilder<AbstractCommand, AbstractParameter> IInsertBatchHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnInsertBatch<TObject>(AbstractObjectName tableName, IEnumerable<TObject> objects, InsertOptions options)
 	{
 		return new MySqlInsertBatch<TObject>(this, tableName, objects, options); ;
 	}
 
-	private partial ILink<int?> OnDeleteAll(AbstractObjectName tableName)
-	{
-		//Verify the table name actually exists.
-		var table = DatabaseMetadata.GetTableOrView(tableName);
-		return Sql("DELETE FROM " + table.Name.ToQuotedString() + ";").AsNonQuery();
-	}
-
-	private partial MultipleTableDbCommandBuilder<AbstractCommand, AbstractParameter> OnSql(string sqlStatement, object? argumentValue)
-	{
-		return new MySqlSqlCall(this, sqlStatement, argumentValue);
-	}
-
-	private partial ILink<int?> OnTruncate(AbstractObjectName tableName)
-	{
-		//Verify the table name actually exists.
-		var table = DatabaseMetadata.GetTableOrView(tableName);
-		return Sql("TRUNCATE TABLE " + table.Name.ToQuotedString() + ";").AsNonQuery();
-	}
-
-	ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> IUpdateDeleteHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnUpdateObject<TArgument>(AbstractObjectName tableName, TArgument argumentValue, UpdateOptions options)
+	ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> IInsertHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnInsertObject<TArgument>(AbstractObjectName tableName, TArgument argumentValue, InsertOptions options)
 where TArgument : class
 	{
-		return new MySqlUpdateObject<TArgument>(this, tableName, argumentValue, options);
-	}
-
-	ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> IUpdateDeleteHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnDeleteObject<TArgument>(AbstractObjectName tableName, TArgument argumentValue, DeleteOptions options)
-		where TArgument : class
-	{
-		return new MySqlDeleteObject<TArgument>(this, tableName, argumentValue, options);
+		return new MySqlInsertObject<TArgument>(this, tableName, argumentValue, options);
 	}
 
 	MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> IUpdateDeleteByKeyHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnUpdateByKeyList<TArgument, TKey>(AbstractObjectName tableName, TArgument newValues, IEnumerable<TKey> keys, UpdateOptions options)
@@ -128,12 +171,11 @@ where TArgument : class
 		return new MySqlUpdateSet(this, tableName, newValues, where, parameters, parameters.Count, options);
 	}
 
-	ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> IInsertHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnInsertObject<TArgument>(AbstractObjectName tableName, TArgument argumentValue, InsertOptions options)
+	ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> IUpdateDeleteHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnUpdateObject<TArgument>(AbstractObjectName tableName, TArgument argumentValue, UpdateOptions options)
 where TArgument : class
 	{
-		return new MySqlInsertObject<TArgument>(this, tableName, argumentValue, options);
+		return new MySqlUpdateObject<TArgument>(this, tableName, argumentValue, options);
 	}
-
 
 	IUpdateSetDbCommandBuilder<AbstractCommand, AbstractParameter> IUpdateDeleteSetHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnUpdateSet(AbstractObjectName tableName, string updateExpression, object? updateArgumentValue, UpdateOptions options)
 	{
@@ -145,25 +187,22 @@ where TArgument : class
 		return new MySqlUpdateSet(this, tableName, newValues, options);
 	}
 
-	MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> IUpdateDeleteSetHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnDeleteSet(AbstractObjectName tableName, string whereClause, object? argumentValue)
+	private partial ILink<int?> OnDeleteAll(AbstractObjectName tableName)
 	{
-		return new MySqlDeleteSet(this, tableName, whereClause, argumentValue);
+		//Verify the table name actually exists.
+		var table = DatabaseMetadata.GetTableOrView(tableName);
+		return Sql("DELETE FROM " + table.Name.ToQuotedString() + ";").AsNonQuery();
 	}
 
-	MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> IUpdateDeleteSetHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnDeleteSet(AbstractObjectName tableName, object filterValue, FilterOptions filterOptions)
+	private partial MultipleTableDbCommandBuilder<AbstractCommand, AbstractParameter> OnSql(string sqlStatement, object? argumentValue)
 	{
-		return new MySqlDeleteSet(this, tableName, filterValue, filterOptions);
+		return new MySqlSqlCall(this, sqlStatement, argumentValue);
 	}
 
-	TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption, TObject> IFromHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType, AbstractLimitOption>.OnFromTableOrView<TObject>(AbstractObjectName tableOrViewName, string? whereClause, object? argumentValue)
-	where TObject : class
+	private partial ILink<int?> OnTruncate(AbstractObjectName tableName)
 	{
-		return new MySqlTableOrView<TObject>(this, tableOrViewName, whereClause, argumentValue);
-	}
-
-	TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption, TObject> IFromHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType, AbstractLimitOption>.OnFromTableOrView<TObject>(AbstractObjectName tableOrViewName, object filterValue, FilterOptions filterOptions)
-		where TObject : class
-	{
-		return new MySqlTableOrView<TObject>(this, tableOrViewName, filterValue, filterOptions);
+		//Verify the table name actually exists.
+		var table = DatabaseMetadata.GetTableOrView(tableName);
+		return Sql("TRUNCATE TABLE " + table.Name.ToQuotedString() + ";").AsNonQuery();
 	}
 }

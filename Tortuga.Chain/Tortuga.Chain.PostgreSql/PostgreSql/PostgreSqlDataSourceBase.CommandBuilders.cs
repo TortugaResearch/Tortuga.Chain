@@ -1,7 +1,5 @@
 ﻿using Npgsql;
-using NpgsqlTypes;
 using System.Diagnostics.CodeAnalysis;
-using Tortuga.Anchor;
 using Tortuga.Chain.AuditRules;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Metadata;
@@ -12,44 +10,6 @@ namespace Tortuga.Chain.PostgreSql
 	partial class PostgreSqlDataSourceBase
 	{
 
-
-
-
-		PostgreSqlTableOrView<TObject> OnGetByKey<TObject, TKey>(PostgreSqlObjectName tableName, ColumnMetadata<NpgsqlDbType> columnMetadata, TKey key)
-			where TObject : class
-		{
-			string where = columnMetadata.SqlName + " = @Param0";
-
-			var parameters = new List<NpgsqlParameter>();
-			var param = new NpgsqlParameter("@Param0", key);
-			if (columnMetadata.DbType.HasValue)
-				param.NpgsqlDbType = columnMetadata.DbType.Value;
-			parameters.Add(param);
-
-			return new PostgreSqlTableOrView<TObject>(this, tableName, where, parameters);
-		}
-
-		MultipleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, TObject> OnGetByKeyList<TObject, TKey>(PostgreSqlObjectName tableName, ColumnMetadata<NpgsqlDbType> columnMetadata, IEnumerable<TKey> keys)
-			where TObject : class
-		{
-			var keyList = keys.AsList();
-			string where;
-			if (keys.Count() > 1)
-				where = columnMetadata.SqlName + " IN (" + string.Join(", ", keyList.Select((s, i) => "@Param" + i)) + ")";
-			else
-				where = columnMetadata.SqlName + " = @Param0";
-
-			var parameters = new List<NpgsqlParameter>();
-			for (var i = 0; i < keyList.Count; i++)
-			{
-				var param = new NpgsqlParameter("@Param" + i, keyList[i]);
-				if (columnMetadata.DbType.HasValue)
-					param.NpgsqlDbType = columnMetadata.DbType.Value;
-				parameters.Add(param);
-			}
-
-			return new MultipleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, TObject>(new PostgreSqlTableOrView<TObject>(this, tableName, where, parameters));
-		}
 
 		MultipleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter> OnDeleteSet(PostgreSqlObjectName tableName, string whereClause, object? argumentValue)
 		{

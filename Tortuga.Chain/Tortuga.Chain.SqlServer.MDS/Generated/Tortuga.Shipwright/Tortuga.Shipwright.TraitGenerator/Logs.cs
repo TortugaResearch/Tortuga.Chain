@@ -14,4 +14,5 @@ Container class: Tortuga.Chain.SqlServer.SqlServerDataSourceBase
 	Adding trait: Traits.SupportsUpdateSet<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>
 	Adding trait: Traits.SupportsDeleteSet<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>
 	Adding trait: Traits.SupportsFromTrait<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType, Tortuga.Chain.SqlServerLimitOption>
+	Adding trait: Traits.SupportsGetByKeyListTrait<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>
 */

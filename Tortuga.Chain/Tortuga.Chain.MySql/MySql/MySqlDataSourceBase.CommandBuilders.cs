@@ -1,6 +1,5 @@
 ﻿using MySqlConnector;
 using System.Diagnostics.CodeAnalysis;
-using Tortuga.Anchor;
 using Tortuga.Chain.AuditRules;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Metadata;
@@ -13,73 +12,6 @@ namespace Tortuga.Chain.MySql
 
 
 
-
-		MySqlTableOrView<TObject> OnGetByKey<TObject, TKey>(MySqlObjectName tableName, ColumnMetadata<MySqlDbType> columnMetadata, TKey key)
-			where TObject : class
-		{
-			string where = columnMetadata.SqlName + " = @Param0";
-
-			var parameters = new List<MySqlParameter>();
-			var param = new MySqlParameter("@Param0", key);
-			if (columnMetadata.DbType.HasValue)
-				param.MySqlDbType = columnMetadata.DbType.Value;
-			parameters.Add(param);
-
-			return new MySqlTableOrView<TObject>(this, tableName, where, parameters);
-		}
-
-		MultipleRowDbCommandBuilder<MySqlCommand, MySqlParameter, TObject> OnGetByKeyList<TObject, TKey>(MySqlObjectName tableName, ColumnMetadata<MySqlDbType> columnMetadata, IEnumerable<TKey> keys)
-			where TObject : class
-		{
-			var keyList = keys.AsList();
-
-			string where;
-			if (keys.Count() > 1)
-				where = columnMetadata.SqlName + " IN (" + string.Join(", ", keyList.Select((s, i) => "@Param" + i)) + ")";
-			else
-				where = columnMetadata.SqlName + " = @Param0";
-
-			var parameters = new List<MySqlParameter>();
-			for (var i = 0; i < keyList.Count; i++)
-			{
-				var param = new MySqlParameter("@Param" + i, keyList[i]);
-				if (columnMetadata.DbType.HasValue)
-					param.MySqlDbType = columnMetadata.DbType.Value;
-				parameters.Add(param);
-			}
-
-			return new MultipleRowDbCommandBuilder<MySqlCommand, MySqlParameter, TObject>(new MySqlTableOrView<TObject>(this, tableName, where, parameters));
-		}
-
-		MultipleRowDbCommandBuilder<MySqlCommand, MySqlParameter> OnDeleteSet(MySqlObjectName tableName, string whereClause, object? argumentValue)
-		{
-			return new MySqlDeleteSet(this, tableName, whereClause, argumentValue);
-		}
-
-		MultipleRowDbCommandBuilder<MySqlCommand, MySqlParameter> OnDeleteSet(MySqlObjectName tableName, object filterValue, FilterOptions filterOptions)
-		{
-			return new MySqlDeleteSet(this, tableName, filterValue, filterOptions);
-		}
-
-
-
-		TableDbCommandBuilder<MySqlCommand, MySqlParameter, MySqlLimitOption, TObject> OnFromTableOrView<TObject>(MySqlObjectName tableOrViewName, object filterValue, FilterOptions filterOptions)
-			where TObject : class
-		{
-			return new MySqlTableOrView<TObject>(this, tableOrViewName, filterValue, filterOptions);
-		}
-
-		TableDbCommandBuilder<MySqlCommand, MySqlParameter, MySqlLimitOption, TObject> OnFromTableOrView<TObject>(MySqlObjectName tableOrViewName, string? whereClause, object? argumentValue)
-			where TObject : class
-		{
-			return new MySqlTableOrView<TObject>(this, tableOrViewName, whereClause, argumentValue);
-		}
-
-		ObjectDbCommandBuilder<MySqlCommand, MySqlParameter, TArgument> OnInsertObject<TArgument>(MySqlObjectName tableName, TArgument argumentValue, InsertOptions options)
-			   where TArgument : class
-		{
-			return new MySqlInsertObject<TArgument>(this, tableName, argumentValue, options);
-		}
 
 		ObjectDbCommandBuilder<MySqlCommand, MySqlParameter, TArgument> OnInsertOrUpdateObject<TArgument>(MySqlObjectName tableName, TArgument argumentValue, UpsertOptions options) where TArgument : class
 		{

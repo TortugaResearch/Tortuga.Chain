@@ -12,4 +12,5 @@ Container class: Tortuga.Chain.Access.AccessDataSourceBase
 	Adding trait: Traits.SupportsUpdateSet<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.Access.AccessObjectName, System.Data.OleDb.OleDbType>
 	Adding trait: Traits.SupportsDeleteSet<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.Access.AccessObjectName, System.Data.OleDb.OleDbType>
 	Adding trait: Traits.SupportsFromTrait<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.Access.AccessObjectName, System.Data.OleDb.OleDbType, Tortuga.Chain.AccessLimitOption>
+	Adding trait: Traits.SupportsGetByKeyListTrait<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.Access.AccessObjectName, System.Data.OleDb.OleDbType>
 */

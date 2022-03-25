@@ -80,7 +80,7 @@
 
 	<!-- Code Generator -->
 	<ItemGroup>
-		<PackageReference Include="Tortuga.Shipwright" Version="0.3.0" />
+		<PackageReference Include="Tortuga.Shipwright" Version="0.5.0" />
 	</ItemGroup>
 	
 	<PropertyGroup>
@@ -94,12 +94,6 @@
   some other tool. -->
 		<Compile Remove="$(CompilerGeneratedFilesOutputPath)/*/**/*.cs" />
 	</ItemGroup>
-
-	<ItemGroup>
-	  <Compile Update="..\Shared\DataSource\DataSource Traits\IUpdateDeleteSetHelper`4.cs" Link="IUpdateDeleteSetHelper`4.cs" />
-	</ItemGroup>
-
-	
 
 	<!-- NuGet Packaging Boilerplate-->
 	<PropertyGroup Condition="'$(Configuration)'=='Release'">

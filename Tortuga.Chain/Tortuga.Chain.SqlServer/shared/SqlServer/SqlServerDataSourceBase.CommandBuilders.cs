@@ -1,9 +1,7 @@
 using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
-using Tortuga.Anchor;
 using Tortuga.Chain.AuditRules;
 using Tortuga.Chain.CommandBuilders;
-using Tortuga.Chain.Metadata;
 using Tortuga.Chain.SqlServer.CommandBuilders;
 
 namespace Tortuga.Chain.SqlServer
@@ -153,71 +151,19 @@ namespace Tortuga.Chain.SqlServer
 		}
 
 
-		SqlServerTableOrView<TObject> OnGetByKey<TObject, TKey>(SqlServerObjectName tableName, ColumnMetadata<SqlDbType> columnMetadata, TKey key)
-			where TObject : class
-		{
-			var where = columnMetadata.SqlName + " = @Param0";
-
-			var parameters = new List<SqlParameter>();
-			var param = new SqlParameter("@Param0", key);
-			if (columnMetadata.DbType.HasValue)
-				param.SqlDbType = columnMetadata.DbType.Value;
-			parameters.Add(param);
-
-			return new SqlServerTableOrView<TObject>(this, tableName, where, parameters);
-		}
-
-		MultipleRowDbCommandBuilder<SqlCommand, SqlParameter, TObject> OnGetByKeyList<TObject, TKey>(SqlServerObjectName tableName, ColumnMetadata<SqlDbType> columnMetadata, IEnumerable<TKey> keys)
-			where TObject : class
-		{
-			var keyList = keys.AsList();
-			string where;
-			if (keys.Count() > 1)
-				where = columnMetadata.SqlName + " IN (" + string.Join(", ", keyList.Select((s, i) => "@Param" + i)) + ")";
-			else
-				where = columnMetadata.SqlName + " = @Param0";
-
-			var parameters = new List<SqlParameter>();
-			for (var i = 0; i < keyList.Count; i++)
-			{
-				var param = new SqlParameter("@Param" + i, keyList[i]);
-				if (columnMetadata.DbType.HasValue)
-					param.SqlDbType = columnMetadata.DbType.Value;
-				parameters.Add(param);
-			}
-
-			return new MultipleRowDbCommandBuilder<SqlCommand, SqlParameter, TObject>(new SqlServerTableOrView<TObject>(this, tableName, where, parameters));
-		}
-
-		MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> OnDeleteSet(SqlServerObjectName tableName, string whereClause, object? argumentValue)
-		{
-			return new SqlServerDeleteSet(this, tableName, whereClause, argumentValue);
-		}
-
-		MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> OnDeleteSet(SqlServerObjectName tableName, object filterValue, FilterOptions filterOptions)
-		{
-			return new SqlServerDeleteSet(this, tableName, filterValue, filterOptions);
-		}
 
 
 
-		TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption, TObject> OnFromTableOrView<TObject>(SqlServerObjectName tableOrViewName, object filterValue, FilterOptions filterOptions)
-			where TObject : class
-		{
-			return new SqlServerTableOrView<TObject>(this, tableOrViewName, filterValue, filterOptions);
-		}
 
-		TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption, TObject> OnFromTableOrView<TObject>(SqlServerObjectName tableOrViewName, string? whereClause, object? argumentValue)
-			where TObject : class
-		{
-			return new SqlServerTableOrView<TObject>(this, tableOrViewName, whereClause, argumentValue);
-		}
 
-		ObjectDbCommandBuilder<SqlCommand, SqlParameter, TArgument> OnInsertObject<TArgument>(SqlServerObjectName tableName, TArgument argumentValue, InsertOptions options)
-			   where TArgument : class
-		{
-			return new SqlServerInsertObject<TArgument>(this, tableName, argumentValue, options);
-		}
+
+
+
+
+
+
+
+
 
 		ObjectDbCommandBuilder<SqlCommand, SqlParameter, TArgument> OnInsertOrUpdateObject<TArgument>(SqlServerObjectName tableName, TArgument argumentValue, UpsertOptions options) where TArgument : class
 		{

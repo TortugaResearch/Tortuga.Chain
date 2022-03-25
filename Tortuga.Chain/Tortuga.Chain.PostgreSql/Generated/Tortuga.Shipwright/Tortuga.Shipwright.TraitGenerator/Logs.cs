@@ -14,4 +14,5 @@ Container class: Tortuga.Chain.PostgreSql.PostgreSqlDataSourceBase
 	Adding trait: Traits.SupportsUpdateSet<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>
 	Adding trait: Traits.SupportsDeleteSet<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>
 	Adding trait: Traits.SupportsFromTrait<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType, Tortuga.Chain.PostgreSqlLimitOption>
+	Adding trait: Traits.SupportsGetByKeyListTrait<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>
 */

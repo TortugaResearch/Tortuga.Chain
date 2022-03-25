@@ -3,7 +3,6 @@ using Tortuga.Chain;
 using Tortuga.Chain.CommandBuilders;
 
 namespace Traits;
-
 interface IUpdateDeleteByKeyHelper<TCommand, TParameter, TObjectName, TDbType> : ICommandHelper<TCommand, TParameter, TObjectName, TDbType>
 	where TCommand : DbCommand
 	where TParameter : DbParameter

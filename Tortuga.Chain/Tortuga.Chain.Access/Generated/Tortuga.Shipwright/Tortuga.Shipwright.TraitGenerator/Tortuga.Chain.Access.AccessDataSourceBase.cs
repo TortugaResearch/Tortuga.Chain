@@ -2,7 +2,7 @@
 
 namespace Tortuga.Chain.Access
 {
-	partial class AccessDataSourceBase: Tortuga.Chain.DataSources.ISupportsDeleteAll, Tortuga.Chain.DataSources.ISupportsDeleteByKeyList, Tortuga.Chain.DataSources.ISupportsDeleteByKey, Tortuga.Chain.DataSources.ISupportsUpdate, Tortuga.Chain.DataSources.ISupportsDelete, Tortuga.Chain.DataSources.ISupportsSqlQueries, Tortuga.Chain.DataSources.ISupportsUpdateByKey, Tortuga.Chain.DataSources.ISupportsUpdateByKeyList, Tortuga.Chain.DataSources.ISupportsInsert, Tortuga.Chain.DataSources.ISupportsUpdateSet, Tortuga.Chain.DataSources.ISupportsDeleteSet, Tortuga.Chain.DataSources.ISupportsFrom, Traits.ICommandHelper<Tortuga.Chain.Access.AccessObjectName, System.Data.OleDb.OleDbType>, Traits.IUpdateDeleteByKeyHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.Access.AccessObjectName, System.Data.OleDb.OleDbType>, Traits.IUpdateDeleteHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.Access.AccessObjectName, System.Data.OleDb.OleDbType>, Traits.IInsertHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.Access.AccessObjectName, System.Data.OleDb.OleDbType>, Traits.IUpdateDeleteSetHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.Access.AccessObjectName, System.Data.OleDb.OleDbType>, Traits.IFromHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.Access.AccessObjectName, System.Data.OleDb.OleDbType, Tortuga.Chain.AccessLimitOption>
+	partial class AccessDataSourceBase: Tortuga.Chain.DataSources.ISupportsDeleteAll, Tortuga.Chain.DataSources.ISupportsDeleteByKeyList, Tortuga.Chain.DataSources.ISupportsDeleteByKey, Tortuga.Chain.DataSources.ISupportsUpdate, Tortuga.Chain.DataSources.ISupportsDelete, Tortuga.Chain.DataSources.ISupportsSqlQueries, Tortuga.Chain.DataSources.ISupportsUpdateByKey, Tortuga.Chain.DataSources.ISupportsUpdateByKeyList, Tortuga.Chain.DataSources.ISupportsInsert, Tortuga.Chain.DataSources.ISupportsUpdateSet, Tortuga.Chain.DataSources.ISupportsDeleteSet, Tortuga.Chain.DataSources.ISupportsFrom, Tortuga.Chain.DataSources.ISupportsGetByKeyList, Tortuga.Chain.DataSources.ISupportsGetByKey, Traits.ICommandHelper<Tortuga.Chain.Access.AccessObjectName, System.Data.OleDb.OleDbType>, Traits.IUpdateDeleteByKeyHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.Access.AccessObjectName, System.Data.OleDb.OleDbType>, Traits.IUpdateDeleteHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.Access.AccessObjectName, System.Data.OleDb.OleDbType>, Traits.IInsertHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.Access.AccessObjectName, System.Data.OleDb.OleDbType>, Traits.IUpdateDeleteSetHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.Access.AccessObjectName, System.Data.OleDb.OleDbType>, Traits.IFromHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.Access.AccessObjectName, System.Data.OleDb.OleDbType, Tortuga.Chain.AccessLimitOption>, Traits.IGetByKeyHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.Access.AccessObjectName, System.Data.OleDb.OleDbType>
 	{
 
 		private bool __TraitsRegistered;
@@ -96,6 +96,15 @@ namespace Tortuga.Chain.Access
 			{
 				if (!__TraitsRegistered) __RegisterTraits();
 				return ___Trait9;
+			}
+		}
+		private Traits.SupportsGetByKeyListTrait<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.Access.AccessObjectName, System.Data.OleDb.OleDbType> ___Trait10 = new();
+		private Traits.SupportsGetByKeyListTrait<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.Access.AccessObjectName, System.Data.OleDb.OleDbType> __Trait10
+		{
+			get
+			{
+				if (!__TraitsRegistered) __RegisterTraits();
+				return ___Trait10;
 			}
 		}
 
@@ -193,6 +202,75 @@ namespace Tortuga.Chain.Access
 		Tortuga.Chain.CommandBuilders.ITableDbCommandBuilder<TObject> Tortuga.Chain.DataSources.ISupportsFrom.From<TObject>(System.Object filterValue)
 		{
 			return ((Tortuga.Chain.DataSources.ISupportsFrom)__Trait9).From<TObject>(filterValue);
+		}
+
+		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsGetByKey
+		Tortuga.Chain.CommandBuilders.ISingleRowDbCommandBuilder Tortuga.Chain.DataSources.ISupportsGetByKey.GetByKey<TKey>(System.String tableName, TKey key)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsGetByKey)__Trait10).GetByKey<TKey>(tableName, key);
+		}
+
+		Tortuga.Chain.CommandBuilders.ISingleRowDbCommandBuilder Tortuga.Chain.DataSources.ISupportsGetByKey.GetByKey(System.String tableName, System.String key)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsGetByKey)__Trait10).GetByKey(tableName, key);
+		}
+
+		Tortuga.Chain.CommandBuilders.ISingleRowDbCommandBuilder<TObject> Tortuga.Chain.DataSources.ISupportsGetByKey.GetByKey<TObject, TKey>(TKey key)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsGetByKey)__Trait10).GetByKey<TObject, TKey>(key);
+		}
+
+		Tortuga.Chain.CommandBuilders.ISingleRowDbCommandBuilder<TObject> Tortuga.Chain.DataSources.ISupportsGetByKey.GetByKey<TObject>(System.String key)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsGetByKey)__Trait10).GetByKey<TObject>(key);
+		}
+
+		Tortuga.Chain.CommandBuilders.ISingleRowDbCommandBuilder<TObject> Tortuga.Chain.DataSources.ISupportsGetByKey.GetByKey<TObject>(System.Int32 key)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsGetByKey)__Trait10).GetByKey<TObject>(key);
+		}
+
+		Tortuga.Chain.CommandBuilders.ISingleRowDbCommandBuilder<TObject> Tortuga.Chain.DataSources.ISupportsGetByKey.GetByKey<TObject>(System.Int64 key)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsGetByKey)__Trait10).GetByKey<TObject>(key);
+		}
+
+		Tortuga.Chain.CommandBuilders.ISingleRowDbCommandBuilder<TObject> Tortuga.Chain.DataSources.ISupportsGetByKey.GetByKey<TObject>(System.Guid key)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsGetByKey)__Trait10).GetByKey<TObject>(key);
+		}
+
+		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsGetByKeyList
+		Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder Tortuga.Chain.DataSources.ISupportsGetByKeyList.GetByKeyList<TKey>(System.String tableName, System.Collections.Generic.IEnumerable<TKey> keys)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsGetByKeyList)__Trait10).GetByKeyList<TKey>(tableName, keys);
+		}
+
+		Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder<TObject> Tortuga.Chain.DataSources.ISupportsGetByKeyList.GetByKeyList<TObject, TKey>(System.Collections.Generic.IEnumerable<TKey> keys)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsGetByKeyList)__Trait10).GetByKeyList<TObject, TKey>(keys);
+		}
+
+		Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder<TObject> Tortuga.Chain.DataSources.ISupportsGetByKeyList.GetByKeyList<TObject>(System.Collections.Generic.IEnumerable<int> keys)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsGetByKeyList)__Trait10).GetByKeyList<TObject>(keys);
+		}
+
+		Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder<TObject> Tortuga.Chain.DataSources.ISupportsGetByKeyList.GetByKeyList<TObject>(System.Collections.Generic.IEnumerable<long> keys)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsGetByKeyList)__Trait10).GetByKeyList<TObject>(keys);
+		}
+
+		Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder<TObject> Tortuga.Chain.DataSources.ISupportsGetByKeyList.GetByKeyList<TObject>(System.Collections.Generic.IEnumerable<System.Guid> keys)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsGetByKeyList)__Trait10).GetByKeyList<TObject>(keys);
+		}
+
+		[System.Obsolete(@"This will be replaced by GetByColumn")]
+		[System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
+		Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder Tortuga.Chain.DataSources.ISupportsGetByKeyList.GetByKeyList<TKey>(System.String tableName, System.String keyColumn, System.Collections.Generic.IEnumerable<TKey> keys)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsGetByKeyList)__Trait10).GetByKeyList<TKey>(tableName, keyColumn, keys);
 		}
 
 		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsInsert
@@ -519,6 +597,166 @@ namespace Tortuga.Chain.Access
 			return __Trait9.From<TObject>(filterValue, filterOptions);
 		}
 
+		// Exposing trait Traits.SupportsGetByKeyListTrait<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.Access.AccessObjectName, System.Data.OleDb.OleDbType>
+
+		/// <summary>
+		/// Gets a record by its primary key.
+		/// </summary>
+		/// <typeparam name="TObject">The type of the object. Used to determine which table will be read.</typeparam>
+		/// <param name="key">The key.</param>
+		/// <returns></returns>
+		/// <remarks>This only works on tables that have a scalar primary key.</remarks>
+		public Tortuga.Chain.CommandBuilders.SingleRowDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, TObject> GetByKey<TObject>(System.Guid key)where TObject : class
+		{
+			return __Trait10.GetByKey<TObject>(key);
+		}
+
+		/// <summary>
+		/// Gets a record by its primary key.
+		/// </summary>
+		/// <typeparam name="TObject">The type of the object.</typeparam>
+		/// <param name="key">The key.</param>
+		/// <returns></returns>
+		/// <remarks>This only works on tables that have a scalar primary key.</remarks>
+		public Tortuga.Chain.CommandBuilders.SingleRowDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, TObject> GetByKey<TObject>(System.Int64 key)where TObject : class
+		{
+			return __Trait10.GetByKey<TObject>(key);
+		}
+
+		/// <summary>
+		/// Gets a record by its primary key.
+		/// </summary>
+		/// <typeparam name="TObject">The type of the object.</typeparam>
+		/// <param name="key">The key.</param>
+		/// <returns></returns>
+		/// <remarks>This only works on tables that have a scalar primary key.</remarks>
+		public Tortuga.Chain.CommandBuilders.SingleRowDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, TObject> GetByKey<TObject>(System.Int32 key)where TObject : class
+		{
+			return __Trait10.GetByKey<TObject>(key);
+		}
+
+		/// <summary>
+		/// Gets a record by its primary key.
+		/// </summary>
+		/// <typeparam name="TObject">The type of the object.</typeparam>
+		/// <param name="key">The key.</param>
+		/// <returns></returns>
+		public Tortuga.Chain.CommandBuilders.SingleRowDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, TObject> GetByKey<TObject>(System.String key)where TObject : class
+		{
+			return __Trait10.GetByKey<TObject>(key);
+		}
+
+		/// <summary>
+		/// Gets a record by its primary key.
+		/// </summary>
+		/// <typeparam name="TObject">The type of the object.</typeparam>
+		/// <typeparam name="TKey">The type of the key.</typeparam>
+		/// <param name="key">The key.</param>
+		/// <returns></returns>
+		public Tortuga.Chain.CommandBuilders.SingleRowDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, TObject> GetByKey<TObject, TKey>(TKey key)where TObject : class
+		{
+			return __Trait10.GetByKey<TObject, TKey>(key);
+		}
+
+		/// <summary>
+		/// Gets a record by its primary key.
+		/// </summary>
+		/// <param name="tableName">Name of the table.</param>
+		/// <param name="key">The key.</param>
+		public Tortuga.Chain.CommandBuilders.SingleRowDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter> GetByKey(Tortuga.Chain.Access.AccessObjectName tableName, System.String key)
+		{
+			return __Trait10.GetByKey(tableName, key);
+		}
+
+		/// <summary>
+		/// Gets a record by its primary key.
+		/// </summary>
+		/// <typeparam name="TKey"></typeparam>
+		/// <param name="tableName">Name of the table.</param>
+		/// <param name="key">The key.</param>
+		/// <remarks>This only works on tables that have a scalar primary key.</remarks>
+		public Tortuga.Chain.CommandBuilders.SingleRowDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter> GetByKey<TKey>(Tortuga.Chain.Access.AccessObjectName tableName, TKey key)
+		{
+			return __Trait10.GetByKey<TKey>(tableName, key);
+		}
+
+		/// <summary>
+		/// Gets a set of records by their primary key.
+		/// </summary>
+		/// <typeparam name="TKey"></typeparam>
+		/// <param name="tableName">Name of the table.</param>
+		/// <param name="keys">The keys.</param>
+		/// <returns></returns>
+		/// <remarks>This only works on tables that have a scalar primary key.</remarks>
+		public Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter> GetByKeyList<TKey>(Tortuga.Chain.Access.AccessObjectName tableName, System.Collections.Generic.IEnumerable<TKey> keys)
+		{
+			return __Trait10.GetByKeyList<TKey>(tableName, keys);
+		}
+
+		/// <summary>
+		/// Gets a set of records by a key list.
+		/// </summary>
+		/// <typeparam name="TObject">The type of the returned object.</typeparam>
+		/// <typeparam name="TKey">The type of the key.</typeparam>
+		/// <param name="keys">The keys.</param>
+		public Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, TObject> GetByKeyList<TObject, TKey>(System.Collections.Generic.IEnumerable<TKey> keys)where TObject : class
+		{
+			return __Trait10.GetByKeyList<TObject, TKey>(keys);
+		}
+
+		/// <summary>
+		/// Gets a set of records by a key list.
+		/// </summary>
+		/// <typeparam name="TObject">The type of the returned object.</typeparam>
+		/// <param name="keys">The keys.</param>
+		public Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, TObject> GetByKeyList<TObject>(System.Collections.Generic.IEnumerable<System.Guid> keys)where TObject : class
+		{
+			return __Trait10.GetByKeyList<TObject>(keys);
+		}
+
+		/// <summary>
+		/// Gets a set of records by a key list.
+		/// </summary>
+		/// <typeparam name="TObject">The type of the returned object.</typeparam>
+		/// <param name="keys">The keys.</param>
+		public Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, TObject> GetByKeyList<TObject>(System.Collections.Generic.IEnumerable<long> keys)where TObject : class
+		{
+			return __Trait10.GetByKeyList<TObject>(keys);
+		}
+
+		/// <summary>
+		/// Gets a set of records by a key list.
+		/// </summary>
+		/// <typeparam name="TObject">The type of the returned object.</typeparam>
+		/// <param name="keys">The keys.</param>
+		public Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, TObject> GetByKeyList<TObject>(System.Collections.Generic.IEnumerable<int> keys)where TObject : class
+		{
+			return __Trait10.GetByKeyList<TObject>(keys);
+		}
+
+		/// <summary>
+		/// Gets a set of records by a key list.
+		/// </summary>
+		/// <typeparam name="TObject">The type of the returned object.</typeparam>
+		/// <param name="keys">The keys.</param>
+		public Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, TObject> GetByKeyList<TObject>(System.Collections.Generic.IEnumerable<string> keys)where TObject : class
+		{
+			return __Trait10.GetByKeyList<TObject>(keys);
+		}
+
+		/// <summary>Gets a set of records by an unique key.</summary>
+		/// <typeparam name="TKey">The type of the t key.</typeparam>
+		/// <param name="tableName">Name of the table.</param>
+		/// <param name="keyColumn">Name of the key column. This should be a primary or unique key, but that's not enforced.</param>
+		/// <param name="keys">The keys.</param>
+		/// <returns>IMultipleRowDbCommandBuilder.</returns>
+		[System.Obsolete(@"This will be replaced by GetByColumn")]
+		[System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
+		public Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter> GetByKeyList<TKey>(System.String tableName, System.String keyColumn, System.Collections.Generic.IEnumerable<TKey> keys)
+		{
+			return __Trait10.GetByKeyList<TKey>(tableName, keyColumn, keys);
+		}
+
 		// Exposing trait Traits.SupportsInsertTrait<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.Access.AccessObjectName, System.Data.OleDb.OleDbType>
 
 		/// <summary>
@@ -735,6 +973,7 @@ namespace Tortuga.Chain.Access
 			__Trait7.DataSource = this;
 			__Trait8.DataSource = this;
 			__Trait9.DataSource = this;
+			__Trait10.DataSource = this;
 		}
 
 	}

@@ -1,6 +1,7 @@
 ﻿using System.Data.SQLite;
 using Tortuga.Anchor;
 using Tortuga.Chain.CommandBuilders;
+using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Metadata;
 using Tortuga.Chain.SQLite.CommandBuilders;
 using Tortuga.Shipwright;
@@ -21,7 +22,8 @@ DbCommandBuilder<AbstractCommand, AbstractParameter>>))]
 [UseTrait(typeof(SupportsUpdateSet<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
 [UseTrait(typeof(SupportsDeleteSet<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
 [UseTrait(typeof(SupportsFromTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType, AbstractLimitOption>))]
-partial class SQLiteDataSourceBase
+[UseTrait(typeof(SupportsGetByKeyListTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
+partial class SQLiteDataSourceBase : ICrudDataSource
 {
 	DatabaseMetadataCache<AbstractObjectName, AbstractDbType> ICommandHelper<AbstractObjectName, AbstractDbType>.DatabaseMetadata => DatabaseMetadata;
 
@@ -65,40 +67,81 @@ partial class SQLiteDataSourceBase
 		return new SQLiteUpdateSet(this, tableName, null, where, parameters, parameters.Count, effectiveOptions);
 	}
 
+	ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> IUpdateDeleteHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnDeleteObject<TArgument>(AbstractObjectName tableName, TArgument argumentValue, DeleteOptions options)
+		where TArgument : class
+	{
+		return new SQLiteDeleteObject<TArgument>(this, tableName, argumentValue, options);
+	}
+
+	MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> IUpdateDeleteSetHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnDeleteSet(AbstractObjectName tableName, string whereClause, object? argumentValue)
+	{
+		return new SQLiteDeleteSet(this, tableName, whereClause, argumentValue);
+	}
+
+	MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> IUpdateDeleteSetHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnDeleteSet(AbstractObjectName tableName, object filterValue, FilterOptions filterOptions)
+	{
+		return new SQLiteDeleteSet(this, tableName, filterValue, filterOptions);
+	}
+
+	TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption, TObject> IFromHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType, AbstractLimitOption>.OnFromTableOrView<TObject>(AbstractObjectName tableOrViewName, string? whereClause, object? argumentValue)
+	where TObject : class
+	{
+		return new SQLiteTableOrView<TObject>(this, tableOrViewName, whereClause, argumentValue);
+	}
+
+	TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption, TObject> IFromHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType, AbstractLimitOption>.OnFromTableOrView<TObject>(AbstractObjectName tableOrViewName, object filterValue, FilterOptions filterOptions)
+		where TObject : class
+	{
+		return new SQLiteTableOrView<TObject>(this, tableOrViewName, filterValue, filterOptions);
+	}
+
+	SingleRowDbCommandBuilder<AbstractCommand, AbstractParameter> IGetByKeyHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnGetByKey<TObject, TKey>(AbstractObjectName tableName, ColumnMetadata<AbstractDbType> keyColumn, TKey key)
+		where TObject : class
+	{
+
+		string where = keyColumn.SqlName + " = @Param0";
+
+		var parameters = new List<SQLiteParameter>();
+		var param = new SQLiteParameter("@Param0", key);
+		if (keyColumn.DbType.HasValue)
+			param.DbType = keyColumn.DbType.Value;
+		parameters.Add(param);
+
+		return new SQLiteTableOrView<TObject>(this, tableName, where, parameters);
+	}
+
+	MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> IGetByKeyHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnGetByKeyList<TObject, TKey>(AbstractObjectName tableName, ColumnMetadata<AbstractDbType> keyColumn, IEnumerable<TKey> keys) where TObject : class
+	{
+		var keyList = keys.AsList();
+
+		string where;
+		if (keys.Count() > 1)
+			where = keyColumn.SqlName + " IN (" + string.Join(", ", keyList.Select((s, i) => "@Param" + i)) + ")";
+		else
+			where = keyColumn.SqlName + " = @Param0";
+
+		var parameters = new List<SQLiteParameter>();
+		for (var i = 0; i < keyList.Count; i++)
+		{
+			var param = new SQLiteParameter("@Param" + i, keyList[i]);
+			if (keyColumn.DbType.HasValue)
+				param.DbType = keyColumn.DbType.Value;
+			parameters.Add(param);
+		}
+
+		return new MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter, TObject>(new SQLiteTableOrView<TObject>(this, tableName, where, parameters));
+
+	}
+
 	DbCommandBuilder<AbstractCommand, AbstractParameter> IInsertBatchHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnInsertBatch<TObject>(AbstractObjectName tableName, IEnumerable<TObject> objects, InsertOptions options)
 	{
 		return new SQLiteInsertBatch<TObject>(this, tableName, objects, options); ;
 	}
 
-	private partial ILink<int?> OnDeleteAll(AbstractObjectName tableName)
-	{
-		//SQLite determines for itself if a delete all should be interpreted as a truncate.
-		return OnTruncate(tableName);
-	}
-
-	private partial MultipleTableDbCommandBuilder<AbstractCommand, AbstractParameter> OnSql(string sqlStatement, object? argumentValue)
-	{
-		return new SQLiteSqlCall(this, sqlStatement, argumentValue, LockType.Write);
-	}
-
-	private partial ILink<int?> OnTruncate(AbstractObjectName tableName)
-	{
-		//Verify the table name actually exists.
-		var table = DatabaseMetadata.GetTableOrView(tableName);
-		//In SQLite, a delete without a where clause is interpreted as a truncate if other conditions are met.
-		return Sql("DELETE FROM " + table.Name.ToQuotedString() + ";").AsNonQuery();
-	}
-
-	ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> IUpdateDeleteHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnUpdateObject<TArgument>(AbstractObjectName tableName, TArgument argumentValue, UpdateOptions options)
+	ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> IInsertHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnInsertObject<TArgument>(AbstractObjectName tableName, TArgument argumentValue, InsertOptions options)
 where TArgument : class
 	{
-		return new SQLiteUpdateObject<TArgument>(this, tableName, argumentValue, options);
-	}
-
-	ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> IUpdateDeleteHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnDeleteObject<TArgument>(AbstractObjectName tableName, TArgument argumentValue, DeleteOptions options)
-		where TArgument : class
-	{
-		return new SQLiteDeleteObject<TArgument>(this, tableName, argumentValue, options);
+		return new SQLiteInsertObject<TArgument>(this, tableName, argumentValue, options);
 	}
 
 	MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> IUpdateDeleteByKeyHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnUpdateByKeyList<TArgument, TKey>(AbstractObjectName tableName, TArgument newValues, IEnumerable<TKey> keys, UpdateOptions options)
@@ -128,10 +171,10 @@ where TArgument : class
 		return new SQLiteUpdateSet(this, tableName, newValues, where, parameters, parameters.Count, options);
 	}
 
-	ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> IInsertHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnInsertObject<TArgument>(AbstractObjectName tableName, TArgument argumentValue, InsertOptions options)
+	ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> IUpdateDeleteHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnUpdateObject<TArgument>(AbstractObjectName tableName, TArgument argumentValue, UpdateOptions options)
 where TArgument : class
 	{
-		return new SQLiteInsertObject<TArgument>(this, tableName, argumentValue, options);
+		return new SQLiteUpdateObject<TArgument>(this, tableName, argumentValue, options);
 	}
 
 	IUpdateSetDbCommandBuilder<AbstractCommand, AbstractParameter> IUpdateDeleteSetHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnUpdateSet(AbstractObjectName tableName, string updateExpression, object? updateArgumentValue, UpdateOptions options)
@@ -144,26 +187,23 @@ where TArgument : class
 		return new SQLiteUpdateSet(this, tableName, newValues, options);
 	}
 
-	MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> IUpdateDeleteSetHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnDeleteSet(AbstractObjectName tableName, string whereClause, object? argumentValue)
+	private partial ILink<int?> OnDeleteAll(AbstractObjectName tableName)
 	{
-		return new SQLiteDeleteSet(this, tableName, whereClause, argumentValue);
+		//SQLite determines for itself if a delete all should be interpreted as a truncate.
+		return OnTruncate(tableName);
 	}
 
-	MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> IUpdateDeleteSetHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnDeleteSet(AbstractObjectName tableName, object filterValue, FilterOptions filterOptions)
+	private partial MultipleTableDbCommandBuilder<AbstractCommand, AbstractParameter> OnSql(string sqlStatement, object? argumentValue)
 	{
-		return new SQLiteDeleteSet(this, tableName, filterValue, filterOptions);
+		return new SQLiteSqlCall(this, sqlStatement, argumentValue, LockType.Write);
 	}
 
-	TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption, TObject> IFromHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType, AbstractLimitOption>.OnFromTableOrView<TObject>(AbstractObjectName tableOrViewName, string? whereClause, object? argumentValue)
-	where TObject : class
+	private partial ILink<int?> OnTruncate(AbstractObjectName tableName)
 	{
-		return new SQLiteTableOrView<TObject>(this, tableOrViewName, whereClause, argumentValue);
-	}
-
-	TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption, TObject> IFromHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType, AbstractLimitOption>.OnFromTableOrView<TObject>(AbstractObjectName tableOrViewName, object filterValue, FilterOptions filterOptions)
-		where TObject : class
-	{
-		return new SQLiteTableOrView<TObject>(this, tableOrViewName, filterValue, filterOptions);
+		//Verify the table name actually exists.
+		var table = DatabaseMetadata.GetTableOrView(tableName);
+		//In SQLite, a delete without a where clause is interpreted as a truncate if other conditions are met.
+		return Sql("DELETE FROM " + table.Name.ToQuotedString() + ";").AsNonQuery();
 	}
 }
 
