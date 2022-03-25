@@ -8,8 +8,13 @@ using Tortuga.Shipwright;
 
 namespace Traits;
 
+internal interface IHasExtensionCache
+{
+	ConcurrentDictionary<Type, object> ExtensionCache { get; }
+}
+
 [Trait]
-class RootDataSourceTrait<TRootDataSource, TTransactionalDataSource, TOpenDataSource, TConnection, TTransaction, TCommand, TConnectionStringBuilder> : IRootDataSource
+class RootDataSourceTrait<TRootDataSource, TTransactionalDataSource, TOpenDataSource, TConnection, TTransaction, TCommand, TConnectionStringBuilder> : IRootDataSource, IHasExtensionCache
 	where TRootDataSource : IRootDataSource
 	where TTransactionalDataSource : ITransactionalDataSource
 	where TOpenDataSource : IOpenDataSource

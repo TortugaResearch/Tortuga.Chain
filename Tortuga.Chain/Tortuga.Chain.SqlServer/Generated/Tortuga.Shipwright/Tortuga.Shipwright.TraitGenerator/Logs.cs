@@ -15,4 +15,9 @@ Container class: Tortuga.Chain.SqlServer.SqlServerDataSourceBase
 	Adding trait: Traits.SupportsDeleteSet<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>
 	Adding trait: Traits.SupportsFromTrait<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType, Tortuga.Chain.SqlServerLimitOption>
 	Adding trait: Traits.SupportsGetByKeyListTrait<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>
+Container class: Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource
+	Adding trait: Traits.TransactionDataSourceTrait<Tortuga.Chain.SqlServerDataSource, System.Data.SqlClient.SqlConnection, System.Data.SqlClient.SqlTransaction, System.Data.SqlClient.SqlCommand>
+Unable to process interface member of type Microsoft.CodeAnalysis.CSharp.Symbols.PublicModel.MethodSymbol named Traits.IHasExtensionCache.get_ExtensionCache
+Unable to process interface member of type Microsoft.CodeAnalysis.CSharp.Symbols.PublicModel.MethodSymbol named Tortuga.Chain.DataSources.IOpenDataSource.get_AssociatedConnection
+Unable to process interface member of type Microsoft.CodeAnalysis.CSharp.Symbols.PublicModel.MethodSymbol named Tortuga.Chain.DataSources.IOpenDataSource.get_AssociatedTransaction
 */

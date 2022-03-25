@@ -10,8 +10,6 @@ namespace Tortuga.Chain.PostgreSql
 	/// <seealso cref="IDisposable" />
 	public partial class PostgreSqlTransactionalDataSource : PostgreSqlDataSourceBase
 	{
-		private readonly PostgreSqlDataSource m_BaseDataSource;
-
 		/// <summary>
 		/// Initializes a new instance of the <see cref="PostgreSqlTransactionalDataSource"/> class.
 		/// </summary>

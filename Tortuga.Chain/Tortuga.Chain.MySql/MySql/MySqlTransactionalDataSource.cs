@@ -10,8 +10,6 @@ namespace Tortuga.Chain.MySql
 	/// <seealso cref="IDisposable" />
 	public partial class MySqlTransactionalDataSource : MySqlDataSourceBase
 	{
-		private readonly MySqlDataSource m_BaseDataSource;
-
 		/// <summary>
 		/// Initializes a new instance of the <see cref="MySqlTransactionalDataSource"/> class.
 		/// </summary>

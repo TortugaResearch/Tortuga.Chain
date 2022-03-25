@@ -7,7 +7,6 @@ namespace Tortuga.Chain.SqlServer
 	/// </summary>
 	public partial class SqlServerTransactionalDataSource : SqlServerDataSourceBase
 	{
-		private readonly SqlServerDataSource m_BaseDataSource;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="SqlServerTransactionalDataSource"/> class.
