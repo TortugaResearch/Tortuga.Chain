@@ -1,4 +1,4 @@
-﻿#if !ORDINAL_STRINGS
+﻿#if !NETCOREAPP3_1_OR_GREATER
 
 using System;
 using System.Globalization;

@@ -40,7 +40,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
-		<DefineConstants>SQL_SERVER_MDS;ORDINAL_STRINGS;CLASS_1;CLASS_2;CLASS_3</DefineConstants>
+		<DefineConstants>SQL_SERVER_MDS;CLASS_1;CLASS_2;CLASS_3</DefineConstants>
 	</PropertyGroup>
 
 	<ItemGroup>

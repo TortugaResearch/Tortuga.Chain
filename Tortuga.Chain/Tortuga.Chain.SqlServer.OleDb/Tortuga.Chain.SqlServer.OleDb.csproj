@@ -42,7 +42,7 @@
 
 
 	<PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
-		<DefineConstants>SQL_SERVER_OLEDB;ORDINAL_STRINGS</DefineConstants>
+		<DefineConstants>SQL_SERVER_OLEDB</DefineConstants>
 	</PropertyGroup>
 	<ItemGroup>
 

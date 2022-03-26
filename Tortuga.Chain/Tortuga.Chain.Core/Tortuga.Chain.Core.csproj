@@ -32,12 +32,6 @@
 		<DocumentationFile>Tortuga.Chain.Core.xml</DocumentationFile>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
-		<DefineConstants>ORDINAL_STRINGS</DefineConstants>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
-		<DefineConstants>ORDINAL_STRINGS</DefineConstants>
-	</PropertyGroup>
 	<ItemGroup>
 		<Compile Include="..\Shared\Legacy\**\*.cs">
 			<Link>referenced\Legacy\%(RecursiveDir)%(Filename)%(Extension)</Link>
