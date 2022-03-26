@@ -1,3 +1,5 @@
+global using AbstractDataSource = Tortuga.Chain.SqlServer.SqlServerDataSourceBase;
+
 namespace Tests;
 
 [TestClass]
@@ -13,4 +15,5 @@ public static class Setup
 	{
 		TestBase.SetupTestBase();
 	}
+
 }

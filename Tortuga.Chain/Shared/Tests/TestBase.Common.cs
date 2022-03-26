@@ -33,7 +33,7 @@ partial class TestBase
 #endif
 
 #if CLASS_3
-	public IClass3DataSource DataSource3(string name, DataSourceType mode, [CallerMemberName] string caller = null)
+	public AbstractDataSource DataSource3(string name, DataSourceType mode, [CallerMemberName] string caller = null)
 	{
 		return DataSource(name, mode, caller);
 	}
