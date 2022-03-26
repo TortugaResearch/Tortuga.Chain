@@ -2,7 +2,7 @@
 
 namespace Tortuga.Chain
 {
-	partial class MySqlDataSource: Tortuga.Chain.DataSources.IRootDataSource
+	partial class MySqlDataSource: Tortuga.Chain.DataSources.IRootDataSource, Traits.IHasExtensionCache
 	{
 
 		private bool __TraitsRegistered;
@@ -18,6 +18,11 @@ namespace Tortuga.Chain
 			}
 		}
 
+		// Explicit interface implementation Traits.IHasExtensionCache
+		System.Collections.Concurrent.ConcurrentDictionary<System.Type, object> Traits.IHasExtensionCache.ExtensionCache
+		{
+			get => ((Traits.IHasExtensionCache)__Trait0).ExtensionCache;
+		}
 		// Explicit interface implementation Tortuga.Chain.DataSources.IRootDataSource
 		Tortuga.Chain.DataSources.ITransactionalDataSource Tortuga.Chain.DataSources.IRootDataSource.BeginTransaction()
 		{

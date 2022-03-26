@@ -1,9 +1,7 @@
+using System.ComponentModel;
 using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
-using Tortuga.Anchor;
-using Tortuga.Chain.AuditRules;
 using Tortuga.Chain.CommandBuilders;
-using Tortuga.Chain.Metadata;
 using Tortuga.Chain.SqlServer.CommandBuilders;
 
 namespace Tortuga.Chain.SqlServer
@@ -76,9 +74,11 @@ namespace Tortuga.Chain.SqlServer
 		/// <param name="dataTable">The data table.</param>
 		/// <param name="options">The options.</param>
 		/// <returns>SqlServerInsertBulk.</returns>
-		public SqlServerInsertBulk InsertBulk(SqlServerObjectName tableName, DataTable dataTable, SqlBulkCopyOptions options = SqlBulkCopyOptions.Default)
+		[Obsolete("Use InsertBulk(...).WithOptions(SqlBulkCopyOptions) instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public SqlServerInsertBulk InsertBulk(SqlServerObjectName tableName, DataTable dataTable, SqlBulkCopyOptions options)
 		{
-			return new SqlServerInsertBulk(this, tableName, dataTable, options);
+			return InsertBulk(tableName, dataTable).WithOptions(options);
 		}
 
 		/// <summary>
@@ -88,9 +88,11 @@ namespace Tortuga.Chain.SqlServer
 		/// <param name="dataReader">The data reader.</param>
 		/// <param name="options">The options.</param>
 		/// <returns>SqlServerInsertBulk.</returns>
-		public SqlServerInsertBulk InsertBulk(SqlServerObjectName tableName, IDataReader dataReader, SqlBulkCopyOptions options = SqlBulkCopyOptions.Default)
+		[Obsolete("Use InsertBulk(...).WithOptions(SqlBulkCopyOptions) instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public SqlServerInsertBulk InsertBulk(SqlServerObjectName tableName, IDataReader dataReader, SqlBulkCopyOptions options)
 		{
-			return new SqlServerInsertBulk(this, tableName, dataReader, options);
+			return InsertBulk(tableName, dataReader).WithOptions(options);
 		}
 
 		/// <summary>
@@ -102,10 +104,11 @@ namespace Tortuga.Chain.SqlServer
 		/// <param name="options">The options.</param>
 		/// <returns>SqlServerInsertBulk.</returns>
 		[SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-		public SqlServerInsertBulk InsertBulk<TObject>(SqlServerObjectName tableName, IEnumerable<TObject> objects, SqlBulkCopyOptions options = SqlBulkCopyOptions.Default) where TObject : class
+		[Obsolete("Use InsertBulk(...).WithOptions(SqlBulkCopyOptions) instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public SqlServerInsertBulk InsertBulk<TObject>(SqlServerObjectName tableName, IEnumerable<TObject> objects, SqlBulkCopyOptions options) where TObject : class
 		{
-			var table = DatabaseMetadata.GetTableOrView(tableName);
-			return new SqlServerInsertBulk(this, tableName, new ObjectDataReader<TObject>(table, objects, OperationTypes.Insert), options);
+			return InsertBulk<TObject>(tableName, objects).WithOptions(options);
 		}
 
 		/// <summary>
@@ -118,9 +121,11 @@ namespace Tortuga.Chain.SqlServer
 		/// SqlServerInsertBulk.
 		/// </returns>
 		[SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-		public SqlServerInsertBulk InsertBulk<TObject>(DataTable dataTable, SqlBulkCopyOptions options = SqlBulkCopyOptions.Default) where TObject : class
+		[Obsolete("Use InsertBulk(...).WithOptions(SqlBulkCopyOptions) instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public SqlServerInsertBulk InsertBulk<TObject>(DataTable dataTable, SqlBulkCopyOptions options) where TObject : class
 		{
-			return InsertBulk(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, dataTable, options);
+			return InsertBulk<TObject>(dataTable).WithOptions(options);
 		}
 
 		/// <summary>
@@ -133,9 +138,11 @@ namespace Tortuga.Chain.SqlServer
 		/// SqlServerInsertBulk.
 		/// </returns>
 		[SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-		public SqlServerInsertBulk InsertBulk<TObject>(IDataReader dataReader, SqlBulkCopyOptions options = SqlBulkCopyOptions.Default) where TObject : class
+		[Obsolete("Use InsertBulk(...).WithOptions(SqlBulkCopyOptions) instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public SqlServerInsertBulk InsertBulk<TObject>(IDataReader dataReader, SqlBulkCopyOptions options) where TObject : class
 		{
-			return InsertBulk(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, dataReader, options);
+			return InsertBulk<TObject>(dataReader).WithOptions(options);
 		}
 
 		/// <summary>
@@ -147,95 +154,12 @@ namespace Tortuga.Chain.SqlServer
 		/// <returns>
 		/// SqlServerInsertBulk.
 		/// </returns>
-		public SqlServerInsertBulk InsertBulk<TObject>(IEnumerable<TObject> objects, SqlBulkCopyOptions options = SqlBulkCopyOptions.Default) where TObject : class
+		[Obsolete("Use InsertBulk(...).WithOptions(SqlBulkCopyOptions) instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public SqlServerInsertBulk InsertBulk<TObject>(IEnumerable<TObject> objects, SqlBulkCopyOptions options) where TObject : class
 		{
-			return InsertBulk(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, objects, options);
+			return InsertBulk<TObject>(objects).WithOptions(options);
 		}
-
-
-		SqlServerTableOrView<TObject> OnGetByKey<TObject, TKey>(SqlServerObjectName tableName, ColumnMetadata<SqlDbType> columnMetadata, TKey key)
-			where TObject : class
-		{
-			var where = columnMetadata.SqlName + " = @Param0";
-
-			var parameters = new List<SqlParameter>();
-			var param = new SqlParameter("@Param0", key);
-			if (columnMetadata.DbType.HasValue)
-				param.SqlDbType = columnMetadata.DbType.Value;
-			parameters.Add(param);
-
-			return new SqlServerTableOrView<TObject>(this, tableName, where, parameters);
-		}
-
-		MultipleRowDbCommandBuilder<SqlCommand, SqlParameter, TObject> OnGetByKeyList<TObject, TKey>(SqlServerObjectName tableName, ColumnMetadata<SqlDbType> columnMetadata, IEnumerable<TKey> keys)
-			where TObject : class
-		{
-			var keyList = keys.AsList();
-			string where;
-			if (keys.Count() > 1)
-				where = columnMetadata.SqlName + " IN (" + string.Join(", ", keyList.Select((s, i) => "@Param" + i)) + ")";
-			else
-				where = columnMetadata.SqlName + " = @Param0";
-
-			var parameters = new List<SqlParameter>();
-			for (var i = 0; i < keyList.Count; i++)
-			{
-				var param = new SqlParameter("@Param" + i, keyList[i]);
-				if (columnMetadata.DbType.HasValue)
-					param.SqlDbType = columnMetadata.DbType.Value;
-				parameters.Add(param);
-			}
-
-			return new MultipleRowDbCommandBuilder<SqlCommand, SqlParameter, TObject>(new SqlServerTableOrView<TObject>(this, tableName, where, parameters));
-		}
-
-		MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> OnDeleteMany(SqlServerObjectName tableName, string whereClause, object? argumentValue)
-		{
-			return new SqlServerDeleteMany(this, tableName, whereClause, argumentValue);
-		}
-
-		MultipleRowDbCommandBuilder<SqlCommand, SqlParameter> OnDeleteMany(SqlServerObjectName tableName, object filterValue, FilterOptions filterOptions)
-		{
-			return new SqlServerDeleteMany(this, tableName, filterValue, filterOptions);
-		}
-
-
-
-		TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption, TObject> OnFromTableOrView<TObject>(SqlServerObjectName tableOrViewName, object filterValue, FilterOptions filterOptions)
-			where TObject : class
-		{
-			return new SqlServerTableOrView<TObject>(this, tableOrViewName, filterValue, filterOptions);
-		}
-
-		TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption, TObject> OnFromTableOrView<TObject>(SqlServerObjectName tableOrViewName, string? whereClause, object? argumentValue)
-			where TObject : class
-		{
-			return new SqlServerTableOrView<TObject>(this, tableOrViewName, whereClause, argumentValue);
-		}
-
-		ObjectDbCommandBuilder<SqlCommand, SqlParameter, TArgument> OnInsertObject<TArgument>(SqlServerObjectName tableName, TArgument argumentValue, InsertOptions options)
-			   where TArgument : class
-		{
-			return new SqlServerInsertObject<TArgument>(this, tableName, argumentValue, options);
-		}
-
-		ObjectDbCommandBuilder<SqlCommand, SqlParameter, TArgument> OnInsertOrUpdateObject<TArgument>(SqlServerObjectName tableName, TArgument argumentValue, UpsertOptions options) where TArgument : class
-		{
-			return new SqlServerInsertOrUpdateObject<TArgument>(this, tableName, argumentValue, options);
-		}
-
-		IUpdateManyDbCommandBuilder<SqlCommand, SqlParameter> OnUpdateMany(SqlServerObjectName tableName, string updateExpression, object? updateArgumentValue, UpdateOptions options)
-		{
-			return new SqlServerUpdateMany(this, tableName, updateExpression, updateArgumentValue, options);
-		}
-
-		IUpdateManyDbCommandBuilder<SqlCommand, SqlParameter> OnUpdateMany(SqlServerObjectName tableName, object? newValues, UpdateOptions options)
-		{
-			return new SqlServerUpdateMany(this, tableName, newValues, options);
-		}
-
-
-
 
 
 	}

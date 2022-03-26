@@ -10,10 +10,10 @@ namespace Tortuga.Chain.Metadata
 	/// <summary>
 	/// An abstract database metadata cache
 	/// </summary>
-	/// <typeparam name="TName">The type used to represent database object names.</typeparam>
+	/// <typeparam name="TObjectName">The type used to represent database object names.</typeparam>
 	/// <typeparam name="TDbType">The variant of DbType used by this data source.</typeparam>
-	public abstract class DatabaseMetadataCache<TName, TDbType> : IDatabaseMetadataCache
-		where TName : struct
+	public abstract class DatabaseMetadataCache<TObjectName, TDbType> : IDatabaseMetadataCache
+		where TObjectName : struct
 		where TDbType : struct
 	{
 		/// <summary>
@@ -22,7 +22,7 @@ namespace Tortuga.Chain.Metadata
 		/// <remarks>This is populated by the RegisterType method.</remarks>
 		readonly ConcurrentDictionary<string, TypeRegistration<TDbType>> m_RegisteredTypes = new ConcurrentDictionary<string, TypeRegistration<TDbType>>(StringComparer.OrdinalIgnoreCase);
 
-		private readonly ConcurrentDictionary<(Type, OperationType), TableOrViewMetadata<TName, TDbType>> m_TypeTableMap = new ConcurrentDictionary<(Type, OperationType), TableOrViewMetadata<TName, TDbType>>();
+		private readonly ConcurrentDictionary<(Type, OperationType), TableOrViewMetadata<TObjectName, TDbType>> m_TypeTableMap = new ConcurrentDictionary<(Type, OperationType), TableOrViewMetadata<TObjectName, TDbType>>();
 
 		/// <summary>
 		/// Gets the maximum number of parameters in a single SQL batch.
@@ -61,7 +61,7 @@ namespace Tortuga.Chain.Metadata
 		/// <remarks>
 		/// This should be cached on a TableOrViewMetadata object.
 		/// </remarks>
-		public virtual ForeignKeyConstraintCollection<TName, TDbType> GetForeignKeysForTable(TName tableName)
+		public virtual ForeignKeyConstraintCollection<TObjectName, TDbType> GetForeignKeysForTable(TObjectName tableName)
 		{
 			throw new NotSupportedException("Foreign Keys are not supported by this data source");
 		}
@@ -75,7 +75,7 @@ namespace Tortuga.Chain.Metadata
 		/// <remarks>
 		/// This should be cached on a TableOrViewMetadata object.
 		/// </remarks>
-		public virtual IndexMetadataCollection<TName, TDbType> GetIndexesForTable(TName tableName)
+		public virtual IndexMetadataCollection<TObjectName, TDbType> GetIndexesForTable(TObjectName tableName)
 		{
 			throw new NotSupportedException("Indexes are not supported by this data source");
 		}
@@ -85,7 +85,7 @@ namespace Tortuga.Chain.Metadata
 		/// </summary>
 		/// <param name="scalarFunctionName">Name of the scalar function.</param>
 		/// <returns>Null if the object could not be found.</returns>
-		public virtual ScalarFunctionMetadata<TName, TDbType> GetScalarFunction(TName scalarFunctionName)
+		public virtual ScalarFunctionMetadata<TObjectName, TDbType> GetScalarFunction(TObjectName scalarFunctionName)
 		{
 			throw new NotSupportedException("Table value functions are not supported by this data source");
 		}
@@ -98,7 +98,7 @@ namespace Tortuga.Chain.Metadata
 		/// Call Preload before invoking this method to ensure that all scalar functions were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.
 		/// </remarks>
 		[SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
-		public virtual IReadOnlyCollection<ScalarFunctionMetadata<TName, TDbType>> GetScalarFunctions()
+		public virtual IReadOnlyCollection<ScalarFunctionMetadata<TObjectName, TDbType>> GetScalarFunctions()
 		{
 			throw new NotSupportedException("Table value functions are not supported by this data source");
 		}
@@ -108,7 +108,7 @@ namespace Tortuga.Chain.Metadata
 		/// </summary>
 		/// <param name="procedureName">Name of the procedure.</param>
 		/// <returns></returns>
-		public virtual StoredProcedureMetadata<TName, TDbType> GetStoredProcedure(TName procedureName)
+		public virtual StoredProcedureMetadata<TObjectName, TDbType> GetStoredProcedure(TObjectName procedureName)
 		{
 			throw new NotSupportedException("Stored procedures are not supported by this data source");
 		}
@@ -124,7 +124,7 @@ namespace Tortuga.Chain.Metadata
 		/// <returns></returns>
 		/// <remarks>Call Preload before invoking this method to ensure that all stored procedures were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.</remarks>
 		[SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
-		public virtual IReadOnlyCollection<StoredProcedureMetadata<TName, TDbType>> GetStoredProcedures()
+		public virtual IReadOnlyCollection<StoredProcedureMetadata<TObjectName, TDbType>> GetStoredProcedures()
 		{
 			throw new NotSupportedException("Stored procedures are not supported by this data source");
 		}
@@ -138,7 +138,7 @@ namespace Tortuga.Chain.Metadata
 		/// Gets the metadata for a table function.
 		/// </summary>
 		/// <param name="tableFunctionName">Name of the table function.</param>
-		public virtual TableFunctionMetadata<TName, TDbType> GetTableFunction(TName tableFunctionName)
+		public virtual TableFunctionMetadata<TObjectName, TDbType> GetTableFunction(TObjectName tableFunctionName)
 		{
 			throw new NotSupportedException("Table value functions are not supported by this data source");
 		}
@@ -154,7 +154,7 @@ namespace Tortuga.Chain.Metadata
 		/// <returns></returns>
 		/// <remarks>Call Preload before invoking this method to ensure that all table-valued functions were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.</remarks>
 		[SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
-		public virtual IReadOnlyCollection<TableFunctionMetadata<TName, TDbType>> GetTableFunctions()
+		public virtual IReadOnlyCollection<TableFunctionMetadata<TObjectName, TDbType>> GetTableFunctions()
 		{
 			throw new NotSupportedException("Table value functions are not supported by this data source");
 		}
@@ -166,7 +166,7 @@ namespace Tortuga.Chain.Metadata
 		/// </summary>
 		/// <param name="tableName">Name of the table.</param>
 		/// <returns></returns>
-		public abstract TableOrViewMetadata<TName, TDbType> GetTableOrView(TName tableName);
+		public abstract TableOrViewMetadata<TObjectName, TDbType> GetTableOrView(TObjectName tableName);
 
 		TableOrViewMetadata IDatabaseMetadataCache.GetTableOrView(string tableName) => GetTableOrView(ParseObjectName(tableName));
 
@@ -177,7 +177,7 @@ namespace Tortuga.Chain.Metadata
 		/// <typeparam name="TObject">The type of the object.</typeparam>
 		/// <param name="operation">The operation.</param>
 		/// <returns>DatabaseObject.</returns>
-		public TableOrViewMetadata<TName, TDbType> GetTableOrViewFromClass<TObject>(OperationType operation = OperationType.All)
+		public TableOrViewMetadata<TObjectName, TDbType> GetTableOrViewFromClass<TObject>(OperationType operation = OperationType.All)
 		{
 			var type = typeof(TObject);
 			return GetTableOrViewFromClass(type, operation);
@@ -189,7 +189,7 @@ namespace Tortuga.Chain.Metadata
 		/// <param name="type"></param>
 		/// <param name="operation">The operation.</param>
 		/// <returns>DatabaseObject.</returns>
-		public TableOrViewMetadata<TName, TDbType> GetTableOrViewFromClass(Type type, OperationType operation = OperationType.All)
+		public TableOrViewMetadata<TObjectName, TDbType> GetTableOrViewFromClass(Type type, OperationType operation = OperationType.All)
 		{
 			var cacheKey = (type, operation);
 
@@ -254,7 +254,7 @@ namespace Tortuga.Chain.Metadata
 		/// <returns></returns>
 		/// <remarks>Call Preload before invoking this method to ensure that all tables and views were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.</remarks>
 		[SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
-		public abstract IReadOnlyCollection<TableOrViewMetadata<TName, TDbType>> GetTablesAndViews();
+		public abstract IReadOnlyCollection<TableOrViewMetadata<TObjectName, TDbType>> GetTablesAndViews();
 
 		IReadOnlyCollection<TableOrViewMetadata> IDatabaseMetadataCache.GetTablesAndViews() => GetTablesAndViews();
 
@@ -263,7 +263,7 @@ namespace Tortuga.Chain.Metadata
 		/// </summary>
 		/// <param name="typeName">Name of the type.</param>
 		[SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
-		public virtual UserDefinedTableTypeMetadata<TName, TDbType> GetUserDefinedTableType(TName typeName)
+		public virtual UserDefinedTableTypeMetadata<TObjectName, TDbType> GetUserDefinedTableType(TObjectName typeName)
 		{
 			throw new NotSupportedException("User defined types are not supported by this data source");
 		}
@@ -278,7 +278,7 @@ namespace Tortuga.Chain.Metadata
 		/// <returns></returns>
 		/// <remarks>Call Preload before invoking this method to ensure that all table-valued functions were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.</remarks>
 		[SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
-		public virtual IReadOnlyCollection<UserDefinedTableTypeMetadata<TName, TDbType>> GetUserDefinedTableTypes()
+		public virtual IReadOnlyCollection<UserDefinedTableTypeMetadata<TObjectName, TDbType>> GetUserDefinedTableTypes()
 		{
 			throw new NotSupportedException("Table value functions are not supported by this data source");
 		}
@@ -347,7 +347,7 @@ namespace Tortuga.Chain.Metadata
 		/// <param name="procedureName">Name of the procedure.</param>
 		/// <param name="storedProcedure">The stored procedure.</param>
 		/// <returns></returns>
-		public bool TryGetStoredProcedure(TName procedureName, [NotNullWhen(true)] out StoredProcedureMetadata? storedProcedure)
+		public bool TryGetStoredProcedure(TObjectName procedureName, [NotNullWhen(true)] out StoredProcedureMetadata? storedProcedure)
 		{
 			try
 			{
@@ -381,7 +381,7 @@ namespace Tortuga.Chain.Metadata
 		/// <param name="tableFunctionName">Name of the table function.</param>
 		/// <param name="tableFunction">The table function.</param>
 		/// <returns></returns>
-		public bool TryGetTableFunction(TName tableFunctionName, [NotNullWhen(true)] out TableFunctionMetadata? tableFunction)
+		public bool TryGetTableFunction(TObjectName tableFunctionName, [NotNullWhen(true)] out TableFunctionMetadata? tableFunction)
 		{
 			try
 			{
@@ -415,7 +415,7 @@ namespace Tortuga.Chain.Metadata
 		/// <param name="scalarFunctionName">Name of the scalar function.</param>
 		/// <param name="scalarFunction">The scalar function.</param>
 		/// <returns></returns>
-		public bool TryGetScalarFunction(TName scalarFunctionName, [NotNullWhen(true)] out ScalarFunctionMetadata? scalarFunction)
+		public bool TryGetScalarFunction(TObjectName scalarFunctionName, [NotNullWhen(true)] out ScalarFunctionMetadata? scalarFunction)
 		{
 			try
 			{
@@ -458,7 +458,7 @@ namespace Tortuga.Chain.Metadata
 		/// <param name="tableName">Name of the table or view.</param>
 		/// <param name="tableOrView">The table or view.</param>
 		/// <returns></returns>
-		public bool TryGetTableOrView(TName tableName, [NotNullWhen(true)] out TableOrViewMetadata<TName, TDbType>? tableOrView)
+		public bool TryGetTableOrView(TObjectName tableName, [NotNullWhen(true)] out TableOrViewMetadata<TObjectName, TDbType>? tableOrView)
 		{
 			try
 			{
@@ -494,7 +494,7 @@ namespace Tortuga.Chain.Metadata
 		/// <param name="userDefinedTableType">Type of the user defined.</param>
 		/// <returns></returns>
 		[SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
-		public bool TryGetUserDefinedTableType(TName typeName, [NotNullWhen(true)] out UserDefinedTableTypeMetadata? userDefinedTableType)
+		public bool TryGetUserDefinedTableType(TObjectName typeName, [NotNullWhen(true)] out UserDefinedTableTypeMetadata? userDefinedTableType)
 		{
 			try
 			{
@@ -575,17 +575,17 @@ namespace Tortuga.Chain.Metadata
 		}
 
 		/// <summary>
-		/// Parse a string and return the database specific representation of the object name.
+		/// Parse a string and return the database specific representation of the database object's name.
 		/// </summary>
 		/// <param name="name"></param>
-		protected TName ParseObjectName(string name) => ParseObjectName(null, name);
+		public TObjectName ParseObjectName(string name) => ParseObjectName(null, name);
 
 		/// <summary>
-		/// Parse a string and return the database specific representation of the object name.
+		/// Parse a string and return the database specific representation of the database object's name.
 		/// </summary>
 		/// <param name="schema"></param>
 		/// <param name="name"></param>
-		protected abstract TName ParseObjectName(string? schema, string name);
+		protected abstract TObjectName ParseObjectName(string? schema, string name);
 
 		/// <summary>
 		/// Determines the database column type from the column type name.
@@ -624,5 +624,6 @@ namespace Tortuga.Chain.Metadata
 
 		TableOrViewMetadata IDatabaseMetadataCache.GetTableOrViewFromClass(Type type, OperationType operation)
 			=> GetTableOrViewFromClass(type, operation);
+
 	}
 }

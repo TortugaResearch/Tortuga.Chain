@@ -156,7 +156,7 @@ namespace Tortuga.Chain.DataSources
 		/// <returns>T.</returns>
 		/// <remarks><para>Chain extensions can use this to store data source specific data. The key should be a data type defined by the extension.</para>
 		/// <para>Transactional data sources should override this method and return the value held by their parent data source.</para></remarks>
-		public virtual TTKey GetExtensionData<TTKey>()
+		public TTKey GetExtensionData<TTKey>()
 			where TTKey : new()
 		{
 			return (TTKey)ExtensionCache.GetOrAdd(typeof(TTKey), x => new TTKey());

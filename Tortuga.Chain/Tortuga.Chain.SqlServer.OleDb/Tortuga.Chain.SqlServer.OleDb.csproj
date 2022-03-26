@@ -42,7 +42,7 @@
 
 
 	<PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
-		<DefineConstants>SQL_SERVER_OLEDB;ORDINAL_STRINGS</DefineConstants>
+		<DefineConstants>SQL_SERVER_OLEDB</DefineConstants>
 	</PropertyGroup>
 	<ItemGroup>
 
@@ -74,7 +74,7 @@
 
 	<!-- Code Generator -->
 	<ItemGroup>
-		<PackageReference Include="Tortuga.Shipwright" Version="0.3.0" />
+		<PackageReference Include="Tortuga.Shipwright" Version="0.6.0" />
 	</ItemGroup>
 
 	<PropertyGroup>

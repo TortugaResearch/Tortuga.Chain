@@ -82,18 +82,6 @@ namespace Tortuga.Chain.MySql
 		}
 
 		/// <summary>
-		/// Gets the extension data.
-		/// </summary>
-		/// <typeparam name="TTKey">The type of extension data desired.</typeparam>
-		/// <returns>T.</returns>
-		/// <remarks>Chain extensions can use this to store data source specific data. The key should be a data type defined by the extension.
-		/// Transactional data sources should override this method and return the value held by their parent data source.</remarks>
-		public override TTKey GetExtensionData<TTKey>()
-		{
-			return m_BaseDataSource.GetExtensionData<TTKey>();
-		}
-
-		/// <summary>
 		/// Tests the connection.
 		/// </summary>
 		public override void TestConnection()

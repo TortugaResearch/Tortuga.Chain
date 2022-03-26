@@ -33,7 +33,6 @@
 
 	<ItemGroup>
 		<PackageReference Include="CS-Script.Core" Version="2.0.0" />
-		<!-- Pinning to 3.9.0 to match the Source Generator. -->
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="4.1.0" />
 	</ItemGroup>
 
@@ -44,13 +43,6 @@
 	<ItemGroup Condition="'$(Configuration)'=='Release'">
 		<PackageReference Include="Tortuga.Chain.Core" Version="4.0.0" />
 	</ItemGroup>
-
-	<PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
-		<DefineConstants>ORDINAL_STRINGS</DefineConstants>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
-		<DefineConstants>ORDINAL_STRINGS</DefineConstants>
-	</PropertyGroup>
 
 	<ItemGroup>
 		<Compile Include="..\Shared\Legacy\**\*.cs">

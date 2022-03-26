@@ -34,14 +34,8 @@ namespace Tortuga.Chain.Materializers
 			m_RowOptions = rowOptions;
 
 			if (m_RowOptions.HasFlag(RowOptions.InferConstructor))
-			{
-				var constructors = ObjectMetadata.Constructors.Where(x => x.Signature.Length > 0).ToList();
-				if (constructors.Count == 0)
-					throw new MappingException($"Type {typeof(TObject).Name} has does not have any non-default constructors.");
-				if (constructors.Count > 1)
-					throw new MappingException($"Type {typeof(TObject).Name} has more than one non-default constructor. Please use the WithConstructor method to specify which one to use.");
-				Constructor = constructors[0];
-			}
+				Constructor = InferConstructor();
+
 		}
 
 		/// <summary>

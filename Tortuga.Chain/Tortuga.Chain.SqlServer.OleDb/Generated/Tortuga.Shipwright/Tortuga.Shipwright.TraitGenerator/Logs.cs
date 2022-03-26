@@ -9,4 +9,15 @@ Container class: Tortuga.Chain.SqlServer.OleDbSqlServerDataSourceBase
 	Adding trait: Traits.SupportsDeleteTrait<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>
 	Adding trait: Traits.SupportsUpdateTrait<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>
 	Adding trait: Traits.SupportsUpdateByKeyListTrait<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>
+	Adding trait: Traits.SupportsInsertTrait<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>
+	Adding trait: Traits.SupportsUpdateSet<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>
+	Adding trait: Traits.SupportsDeleteSet<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>
+	Adding trait: Traits.SupportsFromTrait<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType, Tortuga.Chain.SqlServerLimitOption>
+	Adding trait: Traits.SupportsGetByKeyListTrait<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>
+	Adding trait: Traits.SupportsUpsertTrait<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>
+Container class: Tortuga.Chain.SqlServer.OleDbSqlServerTransactionalDataSource
+	Adding trait: Traits.TransactionDataSourceTrait<Tortuga.Chain.OleDbSqlServerDataSource, System.Data.OleDb.OleDbConnection, System.Data.OleDb.OleDbTransaction, System.Data.OleDb.OleDbCommand>
+Unable to process interface member of type Microsoft.CodeAnalysis.CSharp.Symbols.PublicModel.MethodSymbol named Traits.IHasExtensionCache.get_ExtensionCache
+Unable to process interface member of type Microsoft.CodeAnalysis.CSharp.Symbols.PublicModel.MethodSymbol named Tortuga.Chain.DataSources.IOpenDataSource.get_AssociatedConnection
+Unable to process interface member of type Microsoft.CodeAnalysis.CSharp.Symbols.PublicModel.MethodSymbol named Tortuga.Chain.DataSources.IOpenDataSource.get_AssociatedTransaction
 */

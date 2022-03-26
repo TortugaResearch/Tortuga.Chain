@@ -9,7 +9,7 @@ namespace Tortuga.Chain.Access
 	/// </summary>
 	public partial class AccessTransactionalDataSource : AccessDataSourceBase
 	{
-		private readonly AccessDataSource m_BaseDataSource;
+
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="AccessTransactionalDataSource"/> class.

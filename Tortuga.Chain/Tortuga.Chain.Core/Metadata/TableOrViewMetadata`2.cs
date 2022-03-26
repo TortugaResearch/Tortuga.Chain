@@ -5,25 +5,25 @@ namespace Tortuga.Chain.Metadata
 	/// <summary>
 	/// Metadata for a database table or view.
 	/// </summary>
-	/// <typeparam name="TName">The type used to represent database object names.</typeparam>
+	/// <typeparam name="TObjectName">The type used to represent database object names.</typeparam>
 	/// <typeparam name="TDbType">The variant of DbType used by this data source.</typeparam>
-	public class TableOrViewMetadata<TName, TDbType> : TableOrViewMetadata
-		where TName : struct
+	public class TableOrViewMetadata<TObjectName, TDbType> : TableOrViewMetadata
+		where TObjectName : struct
 		where TDbType : struct
 	{
 		readonly SqlBuilder<TDbType> m_Builder;
-		readonly DatabaseMetadataCache<TName, TDbType> m_MetadataCache;
-		ForeignKeyConstraintCollection<TName, TDbType>? m_ForeignKeys;
-		IndexMetadataCollection<TName, TDbType>? m_Indexes;
+		readonly DatabaseMetadataCache<TObjectName, TDbType> m_MetadataCache;
+		ForeignKeyConstraintCollection<TObjectName, TDbType>? m_ForeignKeys;
+		IndexMetadataCollection<TObjectName, TDbType>? m_Indexes;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="TableOrViewMetadata{TName, TDbType}"/> class.
+		/// Initializes a new instance of the <see cref="TableOrViewMetadata{TObjectName, TDbType}"/> class.
 		/// </summary>
 		/// <param name="metadataCache">The metadata cache.</param>
 		/// <param name="name">The name.</param>
 		/// <param name="isTable">if set to <c>true</c> [is table].</param>
 		/// <param name="columns">The columns.</param>
-		public TableOrViewMetadata(DatabaseMetadataCache<TName, TDbType> metadataCache, TName name, bool isTable, ColumnMetadataCollection<TDbType> columns) : base(name.ToString()!, isTable, columns?.GenericCollection!)
+		public TableOrViewMetadata(DatabaseMetadataCache<TObjectName, TDbType> metadataCache, TObjectName name, bool isTable, ColumnMetadataCollection<TDbType> columns) : base(name.ToString()!, isTable, columns?.GenericCollection!)
 		{
 			m_MetadataCache = metadataCache ?? throw new ArgumentNullException(nameof(metadataCache), $"{nameof(metadataCache)} is null.");
 			Name = name;
@@ -46,7 +46,7 @@ namespace Tortuga.Chain.Metadata
 		/// <value>
 		/// The name.
 		/// </value>
-		public new TName Name { get; }
+		public new TObjectName Name { get; }
 
 		/// <summary>
 		/// Gets the columns that make up the primary key.
@@ -67,7 +67,7 @@ namespace Tortuga.Chain.Metadata
 		/// </summary>
 		/// <returns></returns>
 		/// <exception cref="NotSupportedException">Indexes are not supported by this data source</exception>
-		public ForeignKeyConstraintCollection<TName, TDbType> GetForeignKeys()
+		public ForeignKeyConstraintCollection<TObjectName, TDbType> GetForeignKeys()
 		{
 			if (m_ForeignKeys == null)
 				m_ForeignKeys = m_MetadataCache.GetForeignKeysForTable(Name);
@@ -78,7 +78,7 @@ namespace Tortuga.Chain.Metadata
 		/// Gets the indexes for this table or view.
 		/// </summary>
 		/// <returns></returns>
-		public IndexMetadataCollection<TName, TDbType> GetIndexes()
+		public IndexMetadataCollection<TObjectName, TDbType> GetIndexes()
 		{
 			if (m_Indexes == null)
 				m_Indexes = m_MetadataCache.GetIndexesForTable(Name);

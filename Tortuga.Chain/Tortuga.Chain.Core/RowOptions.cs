@@ -26,11 +26,13 @@ namespace Tortuga.Chain
 		/// An error will not be raised if extra rows are returned. The extras will be discarded.
 		/// </summary>
 		/// <remarks></remarks>
+		/// <remarks>If a class has more than one constructor, the default constructor will be used.</remarks>
 		DiscardExtraRows = 2,
 
 		/// <summary>
-		/// Infer which constructor to use. When this option is chosen, individual properties will not be set.
+		/// Infer which non-default constructor to use. When this option is chosen, individual properties will not be set.
 		/// </summary>
+		/// <remarks>This will throw an error unless there is exactly one public, non-default constructor.</remarks>
 		InferConstructor = 8,
 
 		/// <summary>

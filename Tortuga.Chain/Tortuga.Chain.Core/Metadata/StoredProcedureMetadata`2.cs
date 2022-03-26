@@ -5,20 +5,20 @@ namespace Tortuga.Chain.Metadata
 	/// <summary>
 	/// Class StoredProcedureMetadata.
 	/// </summary>
-	/// <typeparam name="TName">The type used to represent database object names.</typeparam>
+	/// <typeparam name="TObjectName">The type used to represent database object names.</typeparam>
 	/// <typeparam name="TDbType">The variant of DbType used by this data source.</typeparam>
-	public sealed class StoredProcedureMetadata<TName, TDbType> : StoredProcedureMetadata
-		where TName : struct
+	public sealed class StoredProcedureMetadata<TObjectName, TDbType> : StoredProcedureMetadata
+		where TObjectName : struct
 		where TDbType : struct
 	{
 		readonly SqlBuilder<TDbType> m_Builder;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="StoredProcedureMetadata{TName, TDbType}" /> class.
+		/// Initializes a new instance of the <see cref="StoredProcedureMetadata{TObjectName, TDbType}" /> class.
 		/// </summary>
 		/// <param name="name">The name.</param>
 		/// <param name="parameters">The parameters.</param>
-		public StoredProcedureMetadata(TName name, ParameterMetadataCollection<TDbType> parameters) : base(name.ToString()!, parameters?.GenericCollection!)
+		public StoredProcedureMetadata(TObjectName name, ParameterMetadataCollection<TDbType> parameters) : base(name.ToString()!, parameters?.GenericCollection!)
 		{
 			Name = name;
 			Parameters = parameters ?? throw new ArgumentNullException(nameof(parameters), $"{nameof(parameters)} is null.");
@@ -32,7 +32,7 @@ namespace Tortuga.Chain.Metadata
 		/// <value>
 		/// The name.
 		/// </value>
-		public new TName Name { get; }
+		public new TObjectName Name { get; }
 
 		/// <summary>
 		/// Gets the parameters.

@@ -11,7 +11,6 @@ namespace Tortuga.Chain.SQLite
 
 	public partial class SQLiteTransactionalDataSource : SQLiteDataSourceBase
 	{
-		private readonly SQLiteDataSource m_BaseDataSource;
 
 		[SuppressMessage("Microsoft.Usage", "CA2213")]
 		private IDisposable m_LockToken;
@@ -289,10 +288,5 @@ namespace Tortuga.Chain.SQLite
 			}
 		}
 
-		partial void AdditionalDispose()
-		{
-			if (m_LockToken != null)
-				m_LockToken.Dispose();
-		}
 	}
 }

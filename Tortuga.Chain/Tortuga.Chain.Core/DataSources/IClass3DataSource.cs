@@ -54,29 +54,11 @@ namespace Tortuga.Chain.DataSources
 		/// <returns></returns>
 		ITableDbCommandBuilder TableFunction(string functionName, object functionArgumentValue);
 
-		//        /// <summary>
-		//        /// Perform a bulk insert.
-		//        /// </summary>
-		//        /// <typeparam name="T"></typeparam>
-		//        /// <param name="tableName">Name of the target table.</param>
-		//        /// <param name="values">The values to be inserted.</param>
-		//        /// <returns></returns>
-		//        ILink BulkInsert<T>(string tableName, IEnumerable<T> values);
 
-		//        /// <summary>
-		//        /// Perform a bulk insert.
-		//        /// </summary>
-		//        /// <param name="tableName">Name of the target table.</param>
-		//        /// <param name="values">The values to be inserted.</param>
-		//        /// <returns></returns>
-		//        ILink InsertBulk(string tableName, DataTable values);
 
-		//        /// <summary>
-		//        /// Perform a bulk insert.
-		//        /// </summary>
-		//        /// <param name="tableName">Name of the target table.</param>
-		//        /// <param name="values">The values to be inserted.</param>
-		//        /// <returns></returns>
-		//        ILink InsertBulk(string tableName, IDataReader values);
+
+
+
+
 	}
 }

@@ -80,7 +80,7 @@
 
 	<!-- Code Generator -->
 	<ItemGroup>
-		<PackageReference Include="Tortuga.Shipwright" Version="0.3.0" />
+		<PackageReference Include="Tortuga.Shipwright" Version="0.6.0" />
 	</ItemGroup>
 	
 	<PropertyGroup>
@@ -93,10 +93,6 @@
   at least one subdirectory, which is our key that it's coming from a source generator as opposed to something that is coming from
   some other tool. -->
 		<Compile Remove="$(CompilerGeneratedFilesOutputPath)/*/**/*.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Compile Update="..\Shared\DataSource\DataSource Traits\SupportsUpdateByKeyListTrait`4.cs" Link="SupportsUpdateByKeyListTrait`4.cs" />
 	</ItemGroup>
 
 	<!-- NuGet Packaging Boilerplate-->
