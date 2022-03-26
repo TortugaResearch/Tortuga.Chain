@@ -1,51 +1,51 @@
 using Microsoft.Extensions.Configuration;
 using System.Data.OleDb;
 
-namespace Tests
+namespace Tests;
+
+[TestClass]
+public static class Setup
 {
-	[TestClass]
-	public static class Setup
+	const string s_DatabaseFileName = "AccessTestDatabase.mdb";
+
+	static int s_RunOnce;
+
+	[AssemblyCleanup]
+	public static void AssemblyCleanup()
 	{
-		const string s_DatabaseFileName = "AccessTestDatabase.mdb";
+		//File.Delete(databaseFileName);
+	}
 
-		static int s_RunOnce;
+	[AssemblyInitialize]
+	public static void AssemblyInit(TestContext context)
+	{
+		TestBase.SetupTestBase();
+	}
 
-		[AssemblyCleanup]
-		public static void AssemblyCleanup()
+	public static void CreateDatabase()
+	{
+		if (Interlocked.CompareExchange(ref s_RunOnce, 1, 0) == 1)
+			return;
+
+		File.Delete(s_DatabaseFileName);
+
+		var templateFile = new FileInfo(Path.Combine(@"Databases", s_DatabaseFileName));
+		templateFile.CopyTo(s_DatabaseFileName);
+
+		var configuration = new ConfigurationBuilder().SetBasePath(AppContext.BaseDirectory).AddJsonFile("appsettings.json").Build();
+
+		var connectionString = configuration.GetSection("ConnectionStrings").GetChildren().First().Value;
+
+		//var cat = new ADOX.Catalog();
+		//cat.Create(connectionString);
+
+		var dbConnection = new OleDbConnection(connectionString);
+
+		using (dbConnection)
 		{
-			//File.Delete(databaseFileName);
-		}
+			dbConnection.Open();
 
-		[AssemblyInitialize]
-		public static void AssemblyInit(TestContext context)
-		{
-			TestBase.SetupTestBase();
-		}
-
-		public static void CreateDatabase()
-		{
-			if (Interlocked.CompareExchange(ref s_RunOnce, 1, 0) == 1)
-				return;
-
-			File.Delete(s_DatabaseFileName);
-
-			var templateFile = new FileInfo(Path.Combine(@"Databases", s_DatabaseFileName));
-			templateFile.CopyTo(s_DatabaseFileName);
-
-			var configuration = new ConfigurationBuilder().SetBasePath(AppContext.BaseDirectory).AddJsonFile("appsettings.json").Build();
-
-			var connectionString = configuration.GetSection("ConnectionStrings").GetChildren().First().Value;
-
-			//var cat = new ADOX.Catalog();
-			//cat.Create(connectionString);
-
-			var dbConnection = new OleDbConnection(connectionString);
-
-			using (dbConnection)
-			{
-				dbConnection.Open();
-
-				string sql = @"
+			string sql = @"
 CREATE TABLE Employee
 (
 	EmployeeKey COUNTER PRIMARY KEY,
@@ -54,131 +54,130 @@ CREATE TABLE Employee
 	LastName TEXT(30) NOT NULL,
 	EmployeeId TEXT(50) NOT NULL,
 	Title TEXT(100) null,
-    OfficePhone TEXT(15) NULL,
-    CellPhone TEXT(15) NULL,
+	OfficePhone TEXT(15) NULL,
+	CellPhone TEXT(15) NULL,
 	ManagerKey LONG NULL REFERENCES Employee(EmployeeKey),
-    CreatedDate DateTime NOT NULL DEFAULT NOW(),
-    UpdatedDate DateTime NULL
+	CreatedDate DateTime NOT NULL DEFAULT NOW(),
+	UpdatedDate DateTime NULL
 )";
 
-				string sql2 = @"CREATE TABLE Customer
+			string sql2 = @"CREATE TABLE Customer
 (
 	CustomerKey COUNTER PRIMARY KEY,
-    FullName TEXT(100) NULL,
+	FullName TEXT(100) NULL,
 	State TEXT(2) NOT NULL,
-    CreatedByKey INTEGER NULL,
-    UpdatedByKey INTEGER NULL,
+	CreatedByKey INTEGER NULL,
+	UpdatedByKey INTEGER NULL,
 	CreatedDate DATETIME NULL DEFAULT NOW(),
-    UpdatedDate DATETIME NULL,
+	UpdatedDate DATETIME NULL,
 	DeletedFlag BIT NOT NULL DEFAULT 0,
 	DeletedDate DateTime NULL,
 	DeletedByKey INTEGER NULL
 )";
 
-				const string sql3 = "CREATE VIEW EmployeeLookup AS SELECT FirstName, LastName, EmployeeKey, EmployeeId FROM Employee";
+			const string sql3 = "CREATE VIEW EmployeeLookup AS SELECT FirstName, LastName, EmployeeKey, EmployeeId FROM Employee";
 
-				const string sql4 = @"CREATE VIEW EmployeeWithManager
+			const string sql4 = @"CREATE VIEW EmployeeWithManager
 AS
 SELECT  Employee_1.EmployeeKey ,
-        Employee_1.FirstName ,
-        Employee_1.MiddleName ,
-        Employee_1.LastName ,
-        Employee_1.Title ,
-        Employee_1.ManagerKey ,
-        Employee_1.OfficePhone ,
-        Employee_1.CellPhone ,
-        Employee_1.CreatedDate ,
-        Employee_1.UpdatedDate ,
+		Employee_1.FirstName ,
+		Employee_1.MiddleName ,
+		Employee_1.LastName ,
+		Employee_1.Title ,
+		Employee_1.ManagerKey ,
+		Employee_1.OfficePhone ,
+		Employee_1.CellPhone ,
+		Employee_1.CreatedDate ,
+		Employee_1.UpdatedDate ,
 		Employee_1.EmployeeId,
-        Employee_2.EmployeeKey AS ManagerEmployeeKey ,
-        Employee_2.FirstName AS ManagerFirstName ,
-        Employee_2.MiddleName AS ManagerMiddleName ,
-        Employee_2.LastName AS ManagerLastName ,
-        Employee_2.Title AS ManagerTitle ,
-        Employee_2.ManagerKey AS ManagerManagerKey ,
-        Employee_2.OfficePhone AS ManagerOfficePhone ,
-        Employee_2.CellPhone AS ManagerCellPhone ,
-        Employee_2.CreatedDate AS ManagerCreatedDate ,
-        Employee_2.UpdatedDate AS ManagerUpdatedDate
+		Employee_2.EmployeeKey AS ManagerEmployeeKey ,
+		Employee_2.FirstName AS ManagerFirstName ,
+		Employee_2.MiddleName AS ManagerMiddleName ,
+		Employee_2.LastName AS ManagerLastName ,
+		Employee_2.Title AS ManagerTitle ,
+		Employee_2.ManagerKey AS ManagerManagerKey ,
+		Employee_2.OfficePhone AS ManagerOfficePhone ,
+		Employee_2.CellPhone AS ManagerCellPhone ,
+		Employee_2.CreatedDate AS ManagerCreatedDate ,
+		Employee_2.UpdatedDate AS ManagerUpdatedDate
 FROM    Employee AS Employee_1
-        LEFT JOIN Employee AS Employee_2 ON Employee_2.EmployeeKey = Employee_1.ManagerKey";
+		LEFT JOIN Employee AS Employee_2 ON Employee_2.EmployeeKey = Employee_1.ManagerKey";
 
-				string sql5 = @"CREATE TABLE Location
+			string sql5 = @"CREATE TABLE Location
 (
 	LocationKey COUNTER PRIMARY KEY,
-    LocationName TEXT(100) NULL
+	LocationName TEXT(100) NULL
 )";
 
-				using (var command = new OleDbCommand(sql, dbConnection))
-					command.ExecuteNonQuery();
+			using (var command = new OleDbCommand(sql, dbConnection))
+				command.ExecuteNonQuery();
 
-				using (var command = new OleDbCommand(sql2, dbConnection))
-					command.ExecuteNonQuery();
+			using (var command = new OleDbCommand(sql2, dbConnection))
+				command.ExecuteNonQuery();
 
-				using (var command = new OleDbCommand(sql3, dbConnection))
-					command.ExecuteNonQuery();
+			using (var command = new OleDbCommand(sql3, dbConnection))
+				command.ExecuteNonQuery();
 
-				using (var command = new OleDbCommand(sql4, dbConnection))
-					command.ExecuteNonQuery();
+			using (var command = new OleDbCommand(sql4, dbConnection))
+				command.ExecuteNonQuery();
 
-				using (var command = new OleDbCommand(sql5, dbConnection))
-					command.ExecuteNonQuery();
+			using (var command = new OleDbCommand(sql5, dbConnection))
+				command.ExecuteNonQuery();
 
-				sql = "INSERT INTO Employee ([FirstName], [MiddleName], [LastName], [Title], [ManagerKey], [EmployeeId]) VALUES (@FirstName, @MiddleName, @LastName, @Title, @ManagerKey, @EmployeeId)";
+			sql = "INSERT INTO Employee ([FirstName], [MiddleName], [LastName], [Title], [ManagerKey], [EmployeeId]) VALUES (@FirstName, @MiddleName, @LastName, @Title, @ManagerKey, @EmployeeId)";
 
-				sql2 = "INSERT INTO Employee ([FirstName], [MiddleName], [LastName], [Title], [ManagerKey], [CreatedDate], [EmployeeId]) VALUES (@FirstName, @MiddleName, @LastName, @Title, @ManagerKey, @CreatedDate, @EmployeeId)";
+			sql2 = "INSERT INTO Employee ([FirstName], [MiddleName], [LastName], [Title], [ManagerKey], [CreatedDate], [EmployeeId]) VALUES (@FirstName, @MiddleName, @LastName, @Title, @ManagerKey, @CreatedDate, @EmployeeId)";
 
-				//Date/Time format - 4/30/2016 5:25:17 PM
-				const string DateTimeFormat = "M/d/yyyy h:mm:ss tt";
+			//Date/Time format - 4/30/2016 5:25:17 PM
+			const string DateTimeFormat = "M/d/yyyy h:mm:ss tt";
 
-				using (var command = new OleDbCommand(sql, dbConnection))
+			using (var command = new OleDbCommand(sql, dbConnection))
+			{
+				//command.Parameters.AddWithValue("@EmployeeKey", DBNull.Value);
+				command.Parameters.AddWithValue("@FirstName", "Tom");
+				command.Parameters.AddWithValue("@MiddleName", DBNull.Value);
+				command.Parameters.AddWithValue("@LastName", "Jones");
+				command.Parameters.AddWithValue("@Title", "CEO");
+				command.Parameters.AddWithValue("@ManagerKey", DBNull.Value);
+				command.Parameters.AddWithValue("@EmployeeId", Guid.NewGuid().ToString());
+				command.ExecuteNonQuery();
+			}
+
+			using (var command = new OleDbCommand(sql2, dbConnection))
+			{
+				//command.Parameters.AddWithValue("@EmployeeKey", DBNull.Value);
+				command.Parameters.AddWithValue("@FirstName", "Tom");
+				command.Parameters.AddWithValue("@MiddleName", DBNull.Value);
+				command.Parameters.AddWithValue("@LastName", "Jones");
+				command.Parameters.AddWithValue("@Title", "CEO");
+				command.Parameters.AddWithValue("@ManagerKey", DBNull.Value);
+				command.Parameters.AddWithValue("@CreatedDate", DateTime.Now.ToString(DateTimeFormat));
+				command.Parameters.AddWithValue("@EmployeeId", Guid.NewGuid().ToString());
+				command.ExecuteNonQuery();
+			}
+
+			using (var command = new OleDbCommand(sql2, dbConnection))
+			{
+				//command.Parameters.AddWithValue("@EmployeeKey", DBNull.Value);
+				command.Parameters.AddWithValue("@FirstName", "Tom");
+				command.Parameters.AddWithValue("@MiddleName", DBNull.Value);
+				command.Parameters.AddWithValue("@LastName", "Jones");
+				command.Parameters.AddWithValue("@Title", "CEO");
+				command.Parameters.AddWithValue("@ManagerKey", DBNull.Value);
+				var param = command.Parameters.AddWithValue("@CreatedDate", DateTime.Now);
+				param.OleDbType = OleDbType.Date;
+				command.Parameters.AddWithValue("@EmployeeId", Guid.NewGuid().ToString());
+				command.ExecuteNonQuery();
+			}
+
+			using (var command = new OleDbCommand("SELECT @@IDENTITY", dbConnection))
+			{
+				var key = command.ExecuteScalar();
+
+				using (var command2 = new OleDbCommand("UPDATE Employee SET MiddleName = 'Frank' WHERE EmployeeKey = @EmployeeKey", dbConnection))
 				{
-					//command.Parameters.AddWithValue("@EmployeeKey", DBNull.Value);
-					command.Parameters.AddWithValue("@FirstName", "Tom");
-					command.Parameters.AddWithValue("@MiddleName", DBNull.Value);
-					command.Parameters.AddWithValue("@LastName", "Jones");
-					command.Parameters.AddWithValue("@Title", "CEO");
-					command.Parameters.AddWithValue("@ManagerKey", DBNull.Value);
-					command.Parameters.AddWithValue("@EmployeeId", Guid.NewGuid().ToString());
-					command.ExecuteNonQuery();
-				}
-
-				using (var command = new OleDbCommand(sql2, dbConnection))
-				{
-					//command.Parameters.AddWithValue("@EmployeeKey", DBNull.Value);
-					command.Parameters.AddWithValue("@FirstName", "Tom");
-					command.Parameters.AddWithValue("@MiddleName", DBNull.Value);
-					command.Parameters.AddWithValue("@LastName", "Jones");
-					command.Parameters.AddWithValue("@Title", "CEO");
-					command.Parameters.AddWithValue("@ManagerKey", DBNull.Value);
-					command.Parameters.AddWithValue("@CreatedDate", DateTime.Now.ToString(DateTimeFormat));
-					command.Parameters.AddWithValue("@EmployeeId", Guid.NewGuid().ToString());
-					command.ExecuteNonQuery();
-				}
-
-				using (var command = new OleDbCommand(sql2, dbConnection))
-				{
-					//command.Parameters.AddWithValue("@EmployeeKey", DBNull.Value);
-					command.Parameters.AddWithValue("@FirstName", "Tom");
-					command.Parameters.AddWithValue("@MiddleName", DBNull.Value);
-					command.Parameters.AddWithValue("@LastName", "Jones");
-					command.Parameters.AddWithValue("@Title", "CEO");
-					command.Parameters.AddWithValue("@ManagerKey", DBNull.Value);
-					var param = command.Parameters.AddWithValue("@CreatedDate", DateTime.Now);
-					param.OleDbType = OleDbType.Date;
-					command.Parameters.AddWithValue("@EmployeeId", Guid.NewGuid().ToString());
-					command.ExecuteNonQuery();
-				}
-
-				using (var command = new OleDbCommand("SELECT @@IDENTITY", dbConnection))
-				{
-					var key = command.ExecuteScalar();
-
-					using (var command2 = new OleDbCommand("UPDATE Employee SET MiddleName = 'Frank' WHERE EmployeeKey = @EmployeeKey", dbConnection))
-					{
-						command2.Parameters.AddWithValue("@EmployeeKey", key);
-						var updateCount = command2.ExecuteNonQuery();
-					}
+					command2.Parameters.AddWithValue("@EmployeeKey", key);
+					var updateCount = command2.ExecuteNonQuery();
 				}
 			}
 		}

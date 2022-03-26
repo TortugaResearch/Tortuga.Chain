@@ -1,19 +1,16 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+namespace Tests;
 
-namespace Tests
+[TestClass]
+public static class Setup
 {
-	[TestClass]
-	public static class Setup
+	[AssemblyCleanup]
+	public static void AssemblyCleanup()
 	{
-		[AssemblyCleanup]
-		public static void AssemblyCleanup()
-		{
-		}
+	}
 
-		[AssemblyInitialize]
-		public static void AssemblyInit(TestContext context)
-		{
-			TestBase.SetupTestBase();
-		}
+	[AssemblyInitialize]
+	public static void AssemblyInit(TestContext context)
+	{
+		TestBase.SetupTestBase();
 	}
 }
