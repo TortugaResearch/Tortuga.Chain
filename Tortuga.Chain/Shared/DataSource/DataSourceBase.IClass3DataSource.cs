@@ -11,49 +11,49 @@ using System;
 
 namespace Tortuga.Chain.SqlServer
 {
-	partial class SqlServerDataSourceBase : IClass3DataSource
+	partial class SqlServerDataSourceBase : ISupportsProcedure, ISupportsScalarFunction, ISupportsTableFunction
 
 #elif SQL_SERVER_OLEDB
 
 namespace Tortuga.Chain.SqlServer
 {
-    partial class OleDbSqlServerDataSourceBase : IClass3DataSource
+    partial class OleDbSqlServerDataSourceBase : ISupportsProcedure, ISupportsScalarFunction, ISupportsTableFunction
 
 #elif MYSQL
 
 namespace Tortuga.Chain.MySql
 {
-	partial class MySqlDataSourceBase : IClass3DataSource
+	partial class MySqlDataSourceBase : ISupportsProcedure, ISupportsScalarFunction, ISupportsTableFunction
 
 #elif POSTGRESQL
 
 namespace Tortuga.Chain.PostgreSql
 {
-    partial class PostgreSqlDataSourceBase : IClass3DataSource
+	partial class PostgreSqlDataSourceBase : ISupportsProcedure, ISupportsScalarFunction, ISupportsTableFunction
 
 #endif
 	{
-		IProcedureDbCommandBuilder IClass3DataSource.Procedure(string procedureName)
+		IProcedureDbCommandBuilder ISupportsProcedure.Procedure(string procedureName)
 		{
 			return Procedure(procedureName);
 		}
 
-		IProcedureDbCommandBuilder IClass3DataSource.Procedure(string procedureName, object argumentValue)
+		IProcedureDbCommandBuilder ISupportsProcedure.Procedure(string procedureName, object argumentValue)
 		{
 			return Procedure(procedureName, argumentValue);
 		}
 
-		IScalarDbCommandBuilder IClass3DataSource.ScalarFunction(string scalarFunctionName)
+		IScalarDbCommandBuilder ISupportsScalarFunction.ScalarFunction(string scalarFunctionName)
 		{
 			return ScalarFunction(scalarFunctionName);
 		}
 
-		IScalarDbCommandBuilder IClass3DataSource.ScalarFunction(string scalarFunctionName, object functionArgumentValue)
+		IScalarDbCommandBuilder ISupportsScalarFunction.ScalarFunction(string scalarFunctionName, object functionArgumentValue)
 		{
 			return ScalarFunction(scalarFunctionName, functionArgumentValue);
 		}
 
-		ITableDbCommandBuilder IClass3DataSource.TableFunction(string functionName)
+		ITableDbCommandBuilder ISupportsTableFunction.TableFunction(string functionName)
 		{
 #if MYSQL
 			throw new NotSupportedException("MySQL does not support table-valued functions.");
@@ -62,7 +62,7 @@ namespace Tortuga.Chain.PostgreSql
 #endif
 		}
 
-		ITableDbCommandBuilder IClass3DataSource.TableFunction(string functionName, object functionArgumentValue)
+		ITableDbCommandBuilder ISupportsTableFunction.TableFunction(string functionName, object functionArgumentValue)
 		{
 #if MYSQL
 			throw new NotSupportedException("MySQL does not support table-valued functions.");
