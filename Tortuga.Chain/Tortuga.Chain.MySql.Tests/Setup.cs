@@ -1,3 +1,5 @@
+global using AbstractDataSource = Tortuga.Chain.MySql.MySqlDataSourceBase;
+
 using Microsoft.Extensions.Configuration;
 using MySqlConnector;
 

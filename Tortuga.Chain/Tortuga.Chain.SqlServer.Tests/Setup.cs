@@ -1,4 +1,4 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+global using AbstractDataSource = Tortuga.Chain.SqlServer.SqlServerDataSourceBase;
 
 namespace Tests
 {

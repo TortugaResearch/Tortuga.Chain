@@ -1,3 +1,5 @@
+global using AbstractDataSource = Tortuga.Chain.PostgreSql.PostgreSqlDataSourceBase;
+
 using Microsoft.Extensions.Configuration;
 using Npgsql;
 
