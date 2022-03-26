@@ -2,7 +2,7 @@
 
 namespace Tortuga.Chain.MySql
 {
-	partial class MySqlDataSourceBase: Tortuga.Chain.DataSources.ISupportsDeleteAll, Tortuga.Chain.DataSources.ISupportsTruncate, Tortuga.Chain.DataSources.ISupportsSqlQueries, Tortuga.Chain.DataSources.ISupportsInsertBatch, Tortuga.Chain.DataSources.ISupportsDeleteByKeyList, Tortuga.Chain.DataSources.ISupportsDeleteByKey, Tortuga.Chain.DataSources.ISupportsUpdate, Tortuga.Chain.DataSources.ISupportsDelete, Tortuga.Chain.DataSources.ISupportsUpdateByKey, Tortuga.Chain.DataSources.ISupportsUpdateByKeyList, Tortuga.Chain.DataSources.ISupportsInsert, Tortuga.Chain.DataSources.ISupportsUpdateSet, Tortuga.Chain.DataSources.ISupportsDeleteSet, Tortuga.Chain.DataSources.ISupportsFrom, Tortuga.Chain.DataSources.ISupportsGetByKeyList, Tortuga.Chain.DataSources.ISupportsGetByKey, Tortuga.Chain.DataSources.ISupportsUpsert, Traits.ICommandHelper<Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IInsertBatchHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IUpdateDeleteByKeyHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IUpdateDeleteHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IInsertHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IUpdateDeleteSetHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IFromHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType, Tortuga.Chain.MySqlLimitOption>, Traits.IGetByKeyHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IUpsertHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>
+	partial class MySqlDataSourceBase: Tortuga.Chain.DataSources.ISupportsDeleteAll, Tortuga.Chain.DataSources.ISupportsTruncate, Tortuga.Chain.DataSources.ISupportsSqlQueries, Tortuga.Chain.DataSources.ISupportsInsertBatch, Tortuga.Chain.DataSources.ISupportsDeleteByKeyList, Tortuga.Chain.DataSources.ISupportsDeleteByKey, Tortuga.Chain.DataSources.ISupportsUpdate, Tortuga.Chain.DataSources.ISupportsDelete, Tortuga.Chain.DataSources.ISupportsUpdateByKey, Tortuga.Chain.DataSources.ISupportsUpdateByKeyList, Tortuga.Chain.DataSources.ISupportsInsert, Tortuga.Chain.DataSources.ISupportsUpdateSet, Tortuga.Chain.DataSources.ISupportsDeleteSet, Tortuga.Chain.DataSources.ISupportsFrom, Tortuga.Chain.DataSources.ISupportsGetByKeyList, Tortuga.Chain.DataSources.ISupportsGetByKey, Tortuga.Chain.DataSources.ISupportsUpsert, Tortuga.Chain.DataSources.ISupportsInsertBulk, Traits.ICommandHelper<Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IInsertBatchHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IUpdateDeleteByKeyHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IUpdateDeleteHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IInsertHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IUpdateDeleteSetHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IFromHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType, Tortuga.Chain.MySqlLimitOption>, Traits.IGetByKeyHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IUpsertHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IInsertBulkHelper<Tortuga.Chain.MySql.CommandBuilders.MySqlInsertBulk, MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>
 	{
 
 		private bool __TraitsRegistered;
@@ -132,6 +132,15 @@ namespace Tortuga.Chain.MySql
 			{
 				if (!__TraitsRegistered) __RegisterTraits();
 				return ___Trait13;
+			}
+		}
+		private Traits.SupportsInsertBulkTrait<Tortuga.Chain.MySql.CommandBuilders.MySqlInsertBulk, MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType> ___Trait14 = new();
+		private Traits.SupportsInsertBulkTrait<Tortuga.Chain.MySql.CommandBuilders.MySqlInsertBulk, MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType> __Trait14
+		{
+			get
+			{
+				if (!__TraitsRegistered) __RegisterTraits();
+				return ___Trait14;
 			}
 		}
 
@@ -325,6 +334,37 @@ namespace Tortuga.Chain.MySql
 		Tortuga.Chain.ILink<int> Tortuga.Chain.DataSources.ISupportsInsertBatch.InsertMultipleBatch<TObject>(System.Collections.Generic.IReadOnlyList<TObject> objects, Tortuga.Chain.InsertOptions options)
 		{
 			return ((Tortuga.Chain.DataSources.ISupportsInsertBatch)__Trait3).InsertMultipleBatch<TObject>(objects, options);
+		}
+
+		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsInsertBulk
+		Tortuga.Chain.ILink<int> Tortuga.Chain.DataSources.ISupportsInsertBulk.InsertBulk(System.String tableName, System.Data.DataTable dataTable)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsInsertBulk)__Trait14).InsertBulk(tableName, dataTable);
+		}
+
+		Tortuga.Chain.ILink<int> Tortuga.Chain.DataSources.ISupportsInsertBulk.InsertBulk(System.String tableName, System.Data.IDataReader dataReader)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsInsertBulk)__Trait14).InsertBulk(tableName, dataReader);
+		}
+
+		Tortuga.Chain.ILink<int> Tortuga.Chain.DataSources.ISupportsInsertBulk.InsertBulk<TObject>(System.String tableName, System.Collections.Generic.IEnumerable<TObject> objects)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsInsertBulk)__Trait14).InsertBulk<TObject>(tableName, objects);
+		}
+
+		Tortuga.Chain.ILink<int> Tortuga.Chain.DataSources.ISupportsInsertBulk.InsertBulk<TObject>(System.Data.DataTable dataTable)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsInsertBulk)__Trait14).InsertBulk<TObject>(dataTable);
+		}
+
+		Tortuga.Chain.ILink<int> Tortuga.Chain.DataSources.ISupportsInsertBulk.InsertBulk<TObject>(System.Data.IDataReader dataReader)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsInsertBulk)__Trait14).InsertBulk<TObject>(dataReader);
+		}
+
+		Tortuga.Chain.ILink<int> Tortuga.Chain.DataSources.ISupportsInsertBulk.InsertBulk<TObject>(System.Collections.Generic.IEnumerable<TObject> objects)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsInsertBulk)__Trait14).InsertBulk<TObject>(objects);
 		}
 
 		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsSqlQueries
@@ -875,6 +915,81 @@ namespace Tortuga.Chain.MySql
 			return __Trait3.InsertMultipleBatch<TObject>(objects, options);
 		}
 
+		// Exposing trait Traits.SupportsInsertBulkTrait<Tortuga.Chain.MySql.CommandBuilders.MySqlInsertBulk, MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>
+
+		/// <summary>
+		/// Inserts the batch of records using bulk insert.
+		/// </summary>
+		/// <param name="tableName">Name of the table.</param>
+		/// <param name="dataTable">The data table.</param>
+		/// <returns>TInsertBulkCommand.</returns>
+		public Tortuga.Chain.MySql.CommandBuilders.MySqlInsertBulk InsertBulk(Tortuga.Chain.MySql.MySqlObjectName tableName, System.Data.DataTable dataTable)
+		{
+			return __Trait14.InsertBulk(tableName, dataTable);
+		}
+
+		/// <summary>
+		/// Inserts the batch of records using bulk insert.
+		/// </summary>
+		/// <param name="tableName">Name of the table.</param>
+		/// <param name="dataReader">The data reader.</param>
+		/// <returns>TInsertBulkCommand.</returns>
+		public Tortuga.Chain.MySql.CommandBuilders.MySqlInsertBulk InsertBulk(Tortuga.Chain.MySql.MySqlObjectName tableName, System.Data.IDataReader dataReader)
+		{
+			return __Trait14.InsertBulk(tableName, dataReader);
+		}
+
+		/// <summary>
+		/// Inserts the batch of records using bulk insert.
+		/// </summary>
+		/// <typeparam name="TObject"></typeparam>
+		/// <param name="tableName">Name of the table.</param>
+		/// <param name="objects">The objects.</param>
+		/// <returns>TInsertBulkCommand.</returns>
+		public Tortuga.Chain.MySql.CommandBuilders.MySqlInsertBulk InsertBulk<TObject>(Tortuga.Chain.MySql.MySqlObjectName tableName, System.Collections.Generic.IEnumerable<TObject> objects)where TObject : class
+		{
+			return __Trait14.InsertBulk<TObject>(tableName, objects);
+		}
+
+		/// <summary>
+		/// Inserts the batch of records using bulk insert.
+		/// </summary>
+		/// <typeparam name="TObject">The type of the object.</typeparam>
+		/// <param name="dataTable">The data table.</param>
+		/// <returns>
+		/// TInsertBulkCommand.
+		/// </returns>
+		public Tortuga.Chain.MySql.CommandBuilders.MySqlInsertBulk InsertBulk<TObject>(System.Data.DataTable dataTable)where TObject : class
+		{
+			return __Trait14.InsertBulk<TObject>(dataTable);
+		}
+
+		/// <summary>
+		/// Inserts the batch of records using bulk insert.
+		/// </summary>
+		/// <typeparam name="TObject">The type of the object.</typeparam>
+		/// <param name="dataReader">The data reader.</param>
+		/// <returns>
+		/// TInsertBulkCommand.
+		/// </returns>
+		public Tortuga.Chain.MySql.CommandBuilders.MySqlInsertBulk InsertBulk<TObject>(System.Data.IDataReader dataReader)where TObject : class
+		{
+			return __Trait14.InsertBulk<TObject>(dataReader);
+		}
+
+		/// <summary>
+		/// Inserts the batch of records using bulk insert.
+		/// </summary>
+		/// <typeparam name="TObject">The type of the object.</typeparam>
+		/// <param name="objects">The objects.</param>
+		/// <returns>
+		/// TInsertBulkCommand.
+		/// </returns>
+		public Tortuga.Chain.MySql.CommandBuilders.MySqlInsertBulk InsertBulk<TObject>(System.Collections.Generic.IEnumerable<TObject> objects)where TObject : class
+		{
+			return __Trait14.InsertBulk<TObject>(objects);
+		}
+
 		// Exposing trait Traits.SupportsInsertTrait<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>
 
 		/// <summary>
@@ -1142,6 +1257,7 @@ namespace Tortuga.Chain.MySql
 			__Trait11.DataSource = this;
 			__Trait12.DataSource = this;
 			__Trait13.DataSource = this;
+			__Trait14.DataSource = this;
 		}
 
 	}

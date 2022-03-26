@@ -23,6 +23,7 @@ namespace Tortuga.Chain.SqlServer;
 [UseTrait(typeof(SupportsFromTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType, AbstractLimitOption>))]
 [UseTrait(typeof(SupportsGetByKeyListTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
 [UseTrait(typeof(SupportsUpsertTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
+[UseTrait(typeof(SupportsInsertBulkTrait<SqlServerInsertBulk, AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
 partial class SqlServerDataSourceBase : ICrudDataSource, IAdvancedCrudDataSource
 {
 	DatabaseMetadataCache<AbstractObjectName, AbstractDbType> ICommandHelper<AbstractObjectName, AbstractDbType>.DatabaseMetadata => DatabaseMetadata;
@@ -208,5 +209,15 @@ where TArgument : class
 	ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> IUpsertHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnInsertOrUpdateObject<TArgument>(AbstractObjectName tableName, TArgument argumentValue, UpsertOptions options)
 	{
 		return new SqlServerInsertOrUpdateObject<TArgument>(this, tableName, argumentValue, options);
+	}
+
+	SqlServerInsertBulk IInsertBulkHelper<SqlServerInsertBulk, AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnInsertBulk(AbstractObjectName tableName, DataTable dataTable)
+	{
+		return new SqlServerInsertBulk(this, tableName, dataTable);
+	}
+
+	SqlServerInsertBulk IInsertBulkHelper<SqlServerInsertBulk, AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnInsertBulk(AbstractObjectName tableName, IDataReader dataReader)
+	{
+		return new SqlServerInsertBulk(this, tableName, dataReader);
 	}
 }

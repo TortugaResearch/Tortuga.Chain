@@ -24,6 +24,7 @@ DbCommandBuilder<AbstractCommand, AbstractParameter>>))]
 [UseTrait(typeof(SupportsFromTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType, AbstractLimitOption>))]
 [UseTrait(typeof(SupportsGetByKeyListTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
 [UseTrait(typeof(SupportsUpsertTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
+[UseTrait(typeof(SupportsInsertBulkTrait<MySqlInsertBulk, AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
 partial class MySqlDataSourceBase : ICrudDataSource, IAdvancedCrudDataSource
 {
 	DatabaseMetadataCache<AbstractObjectName, AbstractDbType> ICommandHelper<AbstractObjectName, AbstractDbType>.DatabaseMetadata => DatabaseMetadata;
@@ -211,4 +212,19 @@ where TArgument : class
 	{
 		return new MySqlInsertOrUpdateObject<TArgument>(this, tableName, argumentValue, options);
 	}
+
+
+	MySqlInsertBulk IInsertBulkHelper<MySqlInsertBulk, AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnInsertBulk(AbstractObjectName tableName, DataTable dataTable)
+	{
+		return new MySqlInsertBulk(this, tableName, dataTable);
+	}
+
+	MySqlInsertBulk IInsertBulkHelper<MySqlInsertBulk, AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnInsertBulk(AbstractObjectName tableName, IDataReader dataReader)
+	{
+		return new MySqlInsertBulk(this, tableName, dataReader);
+	}
 }
+
+
+
+

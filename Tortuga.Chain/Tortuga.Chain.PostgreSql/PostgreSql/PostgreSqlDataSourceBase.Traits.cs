@@ -24,6 +24,7 @@ MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter>>))]
 [UseTrait(typeof(SupportsFromTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType, AbstractLimitOption>))]
 [UseTrait(typeof(SupportsGetByKeyListTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
 [UseTrait(typeof(SupportsUpsertTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
+[UseTrait(typeof(SupportsInsertBulkTrait<PostgreSqlInsertBulk, AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
 partial class PostgreSqlDataSourceBase : ICrudDataSource, IAdvancedCrudDataSource
 {
 
@@ -210,5 +211,15 @@ where TArgument : class
 	ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> IUpsertHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnInsertOrUpdateObject<TArgument>(AbstractObjectName tableName, TArgument argumentValue, UpsertOptions options)
 	{
 		return new PostgreSqlInsertOrUpdateObject<TArgument>(this, tableName, argumentValue, options);
+	}
+
+	PostgreSqlInsertBulk IInsertBulkHelper<PostgreSqlInsertBulk, AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnInsertBulk(AbstractObjectName tableName, DataTable dataTable)
+	{
+		return new PostgreSqlInsertBulk(this, tableName, dataTable);
+	}
+
+	PostgreSqlInsertBulk IInsertBulkHelper<PostgreSqlInsertBulk, AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnInsertBulk(AbstractObjectName tableName, IDataReader dataReader)
+	{
+		return new PostgreSqlInsertBulk(this, tableName, dataReader);
 	}
 }

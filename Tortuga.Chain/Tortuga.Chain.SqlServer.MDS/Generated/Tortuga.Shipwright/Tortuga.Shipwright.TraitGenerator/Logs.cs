@@ -16,6 +16,7 @@ Container class: Tortuga.Chain.SqlServer.SqlServerDataSourceBase
 	Adding trait: Traits.SupportsFromTrait<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType, Tortuga.Chain.SqlServerLimitOption>
 	Adding trait: Traits.SupportsGetByKeyListTrait<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>
 	Adding trait: Traits.SupportsUpsertTrait<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>
+	Adding trait: Traits.SupportsInsertBulkTrait<Tortuga.Chain.SqlServer.CommandBuilders.SqlServerInsertBulk, Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>
 Container class: Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource
 	Adding trait: Traits.TransactionDataSourceTrait<Tortuga.Chain.SqlServerDataSource, Microsoft.Data.SqlClient.SqlConnection, Microsoft.Data.SqlClient.SqlTransaction, Microsoft.Data.SqlClient.SqlCommand>
 Unable to process interface member of type Microsoft.CodeAnalysis.CSharp.Symbols.PublicModel.MethodSymbol named Traits.IHasExtensionCache.get_ExtensionCache

@@ -2,7 +2,7 @@
 
 namespace Tortuga.Chain.PostgreSql
 {
-	partial class PostgreSqlDataSourceBase: Tortuga.Chain.DataSources.ISupportsDeleteAll, Tortuga.Chain.DataSources.ISupportsTruncate, Tortuga.Chain.DataSources.ISupportsSqlQueries, Tortuga.Chain.DataSources.ISupportsInsertBatch, Tortuga.Chain.DataSources.ISupportsDeleteByKeyList, Tortuga.Chain.DataSources.ISupportsDeleteByKey, Tortuga.Chain.DataSources.ISupportsUpdate, Tortuga.Chain.DataSources.ISupportsDelete, Tortuga.Chain.DataSources.ISupportsUpdateByKey, Tortuga.Chain.DataSources.ISupportsUpdateByKeyList, Tortuga.Chain.DataSources.ISupportsInsert, Tortuga.Chain.DataSources.ISupportsUpdateSet, Tortuga.Chain.DataSources.ISupportsDeleteSet, Tortuga.Chain.DataSources.ISupportsFrom, Tortuga.Chain.DataSources.ISupportsGetByKeyList, Tortuga.Chain.DataSources.ISupportsGetByKey, Tortuga.Chain.DataSources.ISupportsUpsert, Traits.ICommandHelper<Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>, Traits.IInsertBatchHelper<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>, Traits.IUpdateDeleteByKeyHelper<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>, Traits.IUpdateDeleteHelper<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>, Traits.IInsertHelper<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>, Traits.IUpdateDeleteSetHelper<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>, Traits.IFromHelper<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType, Tortuga.Chain.PostgreSqlLimitOption>, Traits.IGetByKeyHelper<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>, Traits.IUpsertHelper<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>
+	partial class PostgreSqlDataSourceBase: Tortuga.Chain.DataSources.ISupportsDeleteAll, Tortuga.Chain.DataSources.ISupportsTruncate, Tortuga.Chain.DataSources.ISupportsSqlQueries, Tortuga.Chain.DataSources.ISupportsInsertBatch, Tortuga.Chain.DataSources.ISupportsDeleteByKeyList, Tortuga.Chain.DataSources.ISupportsDeleteByKey, Tortuga.Chain.DataSources.ISupportsUpdate, Tortuga.Chain.DataSources.ISupportsDelete, Tortuga.Chain.DataSources.ISupportsUpdateByKey, Tortuga.Chain.DataSources.ISupportsUpdateByKeyList, Tortuga.Chain.DataSources.ISupportsInsert, Tortuga.Chain.DataSources.ISupportsUpdateSet, Tortuga.Chain.DataSources.ISupportsDeleteSet, Tortuga.Chain.DataSources.ISupportsFrom, Tortuga.Chain.DataSources.ISupportsGetByKeyList, Tortuga.Chain.DataSources.ISupportsGetByKey, Tortuga.Chain.DataSources.ISupportsUpsert, Tortuga.Chain.DataSources.ISupportsInsertBulk, Traits.ICommandHelper<Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>, Traits.IInsertBatchHelper<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>, Traits.IUpdateDeleteByKeyHelper<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>, Traits.IUpdateDeleteHelper<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>, Traits.IInsertHelper<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>, Traits.IUpdateDeleteSetHelper<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>, Traits.IFromHelper<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType, Tortuga.Chain.PostgreSqlLimitOption>, Traits.IGetByKeyHelper<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>, Traits.IUpsertHelper<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>, Traits.IInsertBulkHelper<Tortuga.Chain.PostgreSql.CommandBuilders.PostgreSqlInsertBulk, Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>
 	{
 
 		private bool __TraitsRegistered;
@@ -132,6 +132,15 @@ namespace Tortuga.Chain.PostgreSql
 			{
 				if (!__TraitsRegistered) __RegisterTraits();
 				return ___Trait13;
+			}
+		}
+		private Traits.SupportsInsertBulkTrait<Tortuga.Chain.PostgreSql.CommandBuilders.PostgreSqlInsertBulk, Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType> ___Trait14 = new();
+		private Traits.SupportsInsertBulkTrait<Tortuga.Chain.PostgreSql.CommandBuilders.PostgreSqlInsertBulk, Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType> __Trait14
+		{
+			get
+			{
+				if (!__TraitsRegistered) __RegisterTraits();
+				return ___Trait14;
 			}
 		}
 
@@ -325,6 +334,37 @@ namespace Tortuga.Chain.PostgreSql
 		Tortuga.Chain.ILink<int> Tortuga.Chain.DataSources.ISupportsInsertBatch.InsertMultipleBatch<TObject>(System.Collections.Generic.IReadOnlyList<TObject> objects, Tortuga.Chain.InsertOptions options)
 		{
 			return ((Tortuga.Chain.DataSources.ISupportsInsertBatch)__Trait3).InsertMultipleBatch<TObject>(objects, options);
+		}
+
+		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsInsertBulk
+		Tortuga.Chain.ILink<int> Tortuga.Chain.DataSources.ISupportsInsertBulk.InsertBulk(System.String tableName, System.Data.DataTable dataTable)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsInsertBulk)__Trait14).InsertBulk(tableName, dataTable);
+		}
+
+		Tortuga.Chain.ILink<int> Tortuga.Chain.DataSources.ISupportsInsertBulk.InsertBulk(System.String tableName, System.Data.IDataReader dataReader)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsInsertBulk)__Trait14).InsertBulk(tableName, dataReader);
+		}
+
+		Tortuga.Chain.ILink<int> Tortuga.Chain.DataSources.ISupportsInsertBulk.InsertBulk<TObject>(System.String tableName, System.Collections.Generic.IEnumerable<TObject> objects)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsInsertBulk)__Trait14).InsertBulk<TObject>(tableName, objects);
+		}
+
+		Tortuga.Chain.ILink<int> Tortuga.Chain.DataSources.ISupportsInsertBulk.InsertBulk<TObject>(System.Data.DataTable dataTable)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsInsertBulk)__Trait14).InsertBulk<TObject>(dataTable);
+		}
+
+		Tortuga.Chain.ILink<int> Tortuga.Chain.DataSources.ISupportsInsertBulk.InsertBulk<TObject>(System.Data.IDataReader dataReader)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsInsertBulk)__Trait14).InsertBulk<TObject>(dataReader);
+		}
+
+		Tortuga.Chain.ILink<int> Tortuga.Chain.DataSources.ISupportsInsertBulk.InsertBulk<TObject>(System.Collections.Generic.IEnumerable<TObject> objects)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsInsertBulk)__Trait14).InsertBulk<TObject>(objects);
 		}
 
 		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsSqlQueries
@@ -875,6 +915,81 @@ namespace Tortuga.Chain.PostgreSql
 			return __Trait3.InsertMultipleBatch<TObject>(objects, options);
 		}
 
+		// Exposing trait Traits.SupportsInsertBulkTrait<Tortuga.Chain.PostgreSql.CommandBuilders.PostgreSqlInsertBulk, Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>
+
+		/// <summary>
+		/// Inserts the batch of records using bulk insert.
+		/// </summary>
+		/// <param name="tableName">Name of the table.</param>
+		/// <param name="dataTable">The data table.</param>
+		/// <returns>TInsertBulkCommand.</returns>
+		public Tortuga.Chain.PostgreSql.CommandBuilders.PostgreSqlInsertBulk InsertBulk(Tortuga.Chain.PostgreSql.PostgreSqlObjectName tableName, System.Data.DataTable dataTable)
+		{
+			return __Trait14.InsertBulk(tableName, dataTable);
+		}
+
+		/// <summary>
+		/// Inserts the batch of records using bulk insert.
+		/// </summary>
+		/// <param name="tableName">Name of the table.</param>
+		/// <param name="dataReader">The data reader.</param>
+		/// <returns>TInsertBulkCommand.</returns>
+		public Tortuga.Chain.PostgreSql.CommandBuilders.PostgreSqlInsertBulk InsertBulk(Tortuga.Chain.PostgreSql.PostgreSqlObjectName tableName, System.Data.IDataReader dataReader)
+		{
+			return __Trait14.InsertBulk(tableName, dataReader);
+		}
+
+		/// <summary>
+		/// Inserts the batch of records using bulk insert.
+		/// </summary>
+		/// <typeparam name="TObject"></typeparam>
+		/// <param name="tableName">Name of the table.</param>
+		/// <param name="objects">The objects.</param>
+		/// <returns>TInsertBulkCommand.</returns>
+		public Tortuga.Chain.PostgreSql.CommandBuilders.PostgreSqlInsertBulk InsertBulk<TObject>(Tortuga.Chain.PostgreSql.PostgreSqlObjectName tableName, System.Collections.Generic.IEnumerable<TObject> objects)where TObject : class
+		{
+			return __Trait14.InsertBulk<TObject>(tableName, objects);
+		}
+
+		/// <summary>
+		/// Inserts the batch of records using bulk insert.
+		/// </summary>
+		/// <typeparam name="TObject">The type of the object.</typeparam>
+		/// <param name="dataTable">The data table.</param>
+		/// <returns>
+		/// TInsertBulkCommand.
+		/// </returns>
+		public Tortuga.Chain.PostgreSql.CommandBuilders.PostgreSqlInsertBulk InsertBulk<TObject>(System.Data.DataTable dataTable)where TObject : class
+		{
+			return __Trait14.InsertBulk<TObject>(dataTable);
+		}
+
+		/// <summary>
+		/// Inserts the batch of records using bulk insert.
+		/// </summary>
+		/// <typeparam name="TObject">The type of the object.</typeparam>
+		/// <param name="dataReader">The data reader.</param>
+		/// <returns>
+		/// TInsertBulkCommand.
+		/// </returns>
+		public Tortuga.Chain.PostgreSql.CommandBuilders.PostgreSqlInsertBulk InsertBulk<TObject>(System.Data.IDataReader dataReader)where TObject : class
+		{
+			return __Trait14.InsertBulk<TObject>(dataReader);
+		}
+
+		/// <summary>
+		/// Inserts the batch of records using bulk insert.
+		/// </summary>
+		/// <typeparam name="TObject">The type of the object.</typeparam>
+		/// <param name="objects">The objects.</param>
+		/// <returns>
+		/// TInsertBulkCommand.
+		/// </returns>
+		public Tortuga.Chain.PostgreSql.CommandBuilders.PostgreSqlInsertBulk InsertBulk<TObject>(System.Collections.Generic.IEnumerable<TObject> objects)where TObject : class
+		{
+			return __Trait14.InsertBulk<TObject>(objects);
+		}
+
 		// Exposing trait Traits.SupportsInsertTrait<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>
 
 		/// <summary>
@@ -1142,6 +1257,7 @@ namespace Tortuga.Chain.PostgreSql
 			__Trait11.DataSource = this;
 			__Trait12.DataSource = this;
 			__Trait13.DataSource = this;
+			__Trait14.DataSource = this;
 		}
 
 	}

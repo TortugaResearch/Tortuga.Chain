@@ -1,6 +1,6 @@
+using System.ComponentModel;
 using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
-using Tortuga.Chain.AuditRules;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.SqlServer.CommandBuilders;
 
@@ -74,9 +74,11 @@ namespace Tortuga.Chain.SqlServer
 		/// <param name="dataTable">The data table.</param>
 		/// <param name="options">The options.</param>
 		/// <returns>SqlServerInsertBulk.</returns>
-		public SqlServerInsertBulk InsertBulk(SqlServerObjectName tableName, DataTable dataTable, SqlBulkCopyOptions options = SqlBulkCopyOptions.Default)
+		[Obsolete("Use InsertBulk(...).WithOptions(SqlBulkCopyOptions) instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public SqlServerInsertBulk InsertBulk(SqlServerObjectName tableName, DataTable dataTable, SqlBulkCopyOptions options)
 		{
-			return new SqlServerInsertBulk(this, tableName, dataTable, options);
+			return InsertBulk(tableName, dataTable).WithOptions(options);
 		}
 
 		/// <summary>
@@ -86,9 +88,11 @@ namespace Tortuga.Chain.SqlServer
 		/// <param name="dataReader">The data reader.</param>
 		/// <param name="options">The options.</param>
 		/// <returns>SqlServerInsertBulk.</returns>
-		public SqlServerInsertBulk InsertBulk(SqlServerObjectName tableName, IDataReader dataReader, SqlBulkCopyOptions options = SqlBulkCopyOptions.Default)
+		[Obsolete("Use InsertBulk(...).WithOptions(SqlBulkCopyOptions) instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public SqlServerInsertBulk InsertBulk(SqlServerObjectName tableName, IDataReader dataReader, SqlBulkCopyOptions options)
 		{
-			return new SqlServerInsertBulk(this, tableName, dataReader, options);
+			return InsertBulk(tableName, dataReader).WithOptions(options);
 		}
 
 		/// <summary>
@@ -100,10 +104,11 @@ namespace Tortuga.Chain.SqlServer
 		/// <param name="options">The options.</param>
 		/// <returns>SqlServerInsertBulk.</returns>
 		[SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-		public SqlServerInsertBulk InsertBulk<TObject>(SqlServerObjectName tableName, IEnumerable<TObject> objects, SqlBulkCopyOptions options = SqlBulkCopyOptions.Default) where TObject : class
+		[Obsolete("Use InsertBulk(...).WithOptions(SqlBulkCopyOptions) instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public SqlServerInsertBulk InsertBulk<TObject>(SqlServerObjectName tableName, IEnumerable<TObject> objects, SqlBulkCopyOptions options) where TObject : class
 		{
-			var table = DatabaseMetadata.GetTableOrView(tableName);
-			return new SqlServerInsertBulk(this, tableName, new ObjectDataReader<TObject>(table, objects, OperationTypes.Insert), options);
+			return InsertBulk<TObject>(tableName, objects).WithOptions(options);
 		}
 
 		/// <summary>
@@ -116,9 +121,11 @@ namespace Tortuga.Chain.SqlServer
 		/// SqlServerInsertBulk.
 		/// </returns>
 		[SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-		public SqlServerInsertBulk InsertBulk<TObject>(DataTable dataTable, SqlBulkCopyOptions options = SqlBulkCopyOptions.Default) where TObject : class
+		[Obsolete("Use InsertBulk(...).WithOptions(SqlBulkCopyOptions) instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public SqlServerInsertBulk InsertBulk<TObject>(DataTable dataTable, SqlBulkCopyOptions options) where TObject : class
 		{
-			return InsertBulk(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, dataTable, options);
+			return InsertBulk<TObject>(dataTable).WithOptions(options);
 		}
 
 		/// <summary>
@@ -131,9 +138,11 @@ namespace Tortuga.Chain.SqlServer
 		/// SqlServerInsertBulk.
 		/// </returns>
 		[SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-		public SqlServerInsertBulk InsertBulk<TObject>(IDataReader dataReader, SqlBulkCopyOptions options = SqlBulkCopyOptions.Default) where TObject : class
+		[Obsolete("Use InsertBulk(...).WithOptions(SqlBulkCopyOptions) instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public SqlServerInsertBulk InsertBulk<TObject>(IDataReader dataReader, SqlBulkCopyOptions options) where TObject : class
 		{
-			return InsertBulk(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, dataReader, options);
+			return InsertBulk<TObject>(dataReader).WithOptions(options);
 		}
 
 		/// <summary>
@@ -145,30 +154,13 @@ namespace Tortuga.Chain.SqlServer
 		/// <returns>
 		/// SqlServerInsertBulk.
 		/// </returns>
-		public SqlServerInsertBulk InsertBulk<TObject>(IEnumerable<TObject> objects, SqlBulkCopyOptions options = SqlBulkCopyOptions.Default) where TObject : class
+		[Obsolete("Use InsertBulk(...).WithOptions(SqlBulkCopyOptions) instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public SqlServerInsertBulk InsertBulk<TObject>(IEnumerable<TObject> objects, SqlBulkCopyOptions options) where TObject : class
 		{
-			return InsertBulk(DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, objects, options);
+			return InsertBulk<TObject>(objects).WithOptions(options);
 		}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-		ObjectDbCommandBuilder<SqlCommand, SqlParameter, TArgument> OnInsertOrUpdateObject<TArgument>(SqlServerObjectName tableName, TArgument argumentValue, UpsertOptions options) where TArgument : class
-		{
-			return new SqlServerInsertOrUpdateObject<TArgument>(this, tableName, argumentValue, options);
-		}
 
 	}
 }
