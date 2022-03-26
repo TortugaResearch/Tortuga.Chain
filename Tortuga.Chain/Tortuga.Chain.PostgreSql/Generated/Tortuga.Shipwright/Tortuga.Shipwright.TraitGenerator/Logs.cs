@@ -17,6 +17,9 @@ Container class: Tortuga.Chain.PostgreSql.PostgreSqlDataSourceBase
 	Adding trait: Traits.SupportsGetByKeyListTrait<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>
 	Adding trait: Traits.SupportsUpsertTrait<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>
 	Adding trait: Traits.SupportsInsertBulkTrait<Tortuga.Chain.PostgreSql.CommandBuilders.PostgreSqlInsertBulk, Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>
+	Adding trait: Traits.SupportsScalarFunctionTrait<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>
+	Adding trait: Traits.SupportsProcedureTrait<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>
+	Adding trait: Traits.SupportsTableFunctionTrait<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType, Tortuga.Chain.PostgreSqlLimitOption>
 Container class: Tortuga.Chain.PostgreSql.PostgreSqlTransactionalDataSource
 	Adding trait: Traits.TransactionDataSourceTrait<Tortuga.Chain.PostgreSqlDataSource, Npgsql.NpgsqlConnection, Npgsql.NpgsqlTransaction, Npgsql.NpgsqlCommand>
 Unable to process interface member of type Microsoft.CodeAnalysis.CSharp.Symbols.PublicModel.MethodSymbol named Traits.IHasExtensionCache.get_ExtensionCache

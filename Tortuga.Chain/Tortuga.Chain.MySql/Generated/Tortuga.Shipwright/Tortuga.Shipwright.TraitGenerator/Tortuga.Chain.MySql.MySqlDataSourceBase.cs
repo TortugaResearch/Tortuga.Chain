@@ -2,7 +2,7 @@
 
 namespace Tortuga.Chain.MySql
 {
-	partial class MySqlDataSourceBase: Tortuga.Chain.DataSources.ISupportsDeleteAll, Tortuga.Chain.DataSources.ISupportsTruncate, Tortuga.Chain.DataSources.ISupportsSqlQueries, Tortuga.Chain.DataSources.ISupportsInsertBatch, Tortuga.Chain.DataSources.ISupportsDeleteByKeyList, Tortuga.Chain.DataSources.ISupportsDeleteByKey, Tortuga.Chain.DataSources.ISupportsUpdate, Tortuga.Chain.DataSources.ISupportsDelete, Tortuga.Chain.DataSources.ISupportsUpdateByKey, Tortuga.Chain.DataSources.ISupportsUpdateByKeyList, Tortuga.Chain.DataSources.ISupportsInsert, Tortuga.Chain.DataSources.ISupportsUpdateSet, Tortuga.Chain.DataSources.ISupportsDeleteSet, Tortuga.Chain.DataSources.ISupportsFrom, Tortuga.Chain.DataSources.ISupportsGetByKeyList, Tortuga.Chain.DataSources.ISupportsGetByKey, Tortuga.Chain.DataSources.ISupportsUpsert, Tortuga.Chain.DataSources.ISupportsInsertBulk, Traits.ICommandHelper<Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IInsertBatchHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IUpdateDeleteByKeyHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IUpdateDeleteHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IInsertHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IUpdateDeleteSetHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IFromHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType, Tortuga.Chain.MySqlLimitOption>, Traits.IGetByKeyHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IUpsertHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IInsertBulkHelper<Tortuga.Chain.MySql.CommandBuilders.MySqlInsertBulk, MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>
+	partial class MySqlDataSourceBase: Tortuga.Chain.DataSources.ISupportsDeleteAll, Tortuga.Chain.DataSources.ISupportsTruncate, Tortuga.Chain.DataSources.ISupportsSqlQueries, Tortuga.Chain.DataSources.ISupportsInsertBatch, Tortuga.Chain.DataSources.ISupportsDeleteByKeyList, Tortuga.Chain.DataSources.ISupportsDeleteByKey, Tortuga.Chain.DataSources.ISupportsUpdate, Tortuga.Chain.DataSources.ISupportsDelete, Tortuga.Chain.DataSources.ISupportsUpdateByKey, Tortuga.Chain.DataSources.ISupportsUpdateByKeyList, Tortuga.Chain.DataSources.ISupportsInsert, Tortuga.Chain.DataSources.ISupportsUpdateSet, Tortuga.Chain.DataSources.ISupportsDeleteSet, Tortuga.Chain.DataSources.ISupportsFrom, Tortuga.Chain.DataSources.ISupportsGetByKeyList, Tortuga.Chain.DataSources.ISupportsGetByKey, Tortuga.Chain.DataSources.ISupportsUpsert, Tortuga.Chain.DataSources.ISupportsInsertBulk, Tortuga.Chain.DataSources.ISupportsScalarFunction, Tortuga.Chain.DataSources.ISupportsProcedure, Traits.ICommandHelper<Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IInsertBatchHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IUpdateDeleteByKeyHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IUpdateDeleteHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IInsertHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IUpdateDeleteSetHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IFromHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType, Tortuga.Chain.MySqlLimitOption>, Traits.IGetByKeyHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IUpsertHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IInsertBulkHelper<Tortuga.Chain.MySql.CommandBuilders.MySqlInsertBulk, MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.ICommandHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>
 	{
 
 		private bool __TraitsRegistered;
@@ -141,6 +141,24 @@ namespace Tortuga.Chain.MySql
 			{
 				if (!__TraitsRegistered) __RegisterTraits();
 				return ___Trait14;
+			}
+		}
+		private Traits.SupportsScalarFunctionTrait<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType> ___Trait15 = new();
+		private Traits.SupportsScalarFunctionTrait<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType> __Trait15
+		{
+			get
+			{
+				if (!__TraitsRegistered) __RegisterTraits();
+				return ___Trait15;
+			}
+		}
+		private Traits.SupportsProcedureTrait<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType> ___Trait16 = new();
+		private Traits.SupportsProcedureTrait<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType> __Trait16
+		{
+			get
+			{
+				if (!__TraitsRegistered) __RegisterTraits();
+				return ___Trait16;
 			}
 		}
 
@@ -365,6 +383,28 @@ namespace Tortuga.Chain.MySql
 		Tortuga.Chain.ILink<int> Tortuga.Chain.DataSources.ISupportsInsertBulk.InsertBulk<TObject>(System.Collections.Generic.IEnumerable<TObject> objects)
 		{
 			return ((Tortuga.Chain.DataSources.ISupportsInsertBulk)__Trait14).InsertBulk<TObject>(objects);
+		}
+
+		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsProcedure
+		Tortuga.Chain.CommandBuilders.IProcedureDbCommandBuilder Tortuga.Chain.DataSources.ISupportsProcedure.Procedure(System.String procedureName)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsProcedure)__Trait16).Procedure(procedureName);
+		}
+
+		Tortuga.Chain.CommandBuilders.IProcedureDbCommandBuilder Tortuga.Chain.DataSources.ISupportsProcedure.Procedure(System.String procedureName, System.Object argumentValue)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsProcedure)__Trait16).Procedure(procedureName, argumentValue);
+		}
+
+		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsScalarFunction
+		Tortuga.Chain.CommandBuilders.IScalarDbCommandBuilder Tortuga.Chain.DataSources.ISupportsScalarFunction.ScalarFunction(System.String scalarFunctionName)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsScalarFunction)__Trait15).ScalarFunction(scalarFunctionName);
+		}
+
+		Tortuga.Chain.CommandBuilders.IScalarDbCommandBuilder Tortuga.Chain.DataSources.ISupportsScalarFunction.ScalarFunction(System.String scalarFunctionName, System.Object functionArgumentValue)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsScalarFunction)__Trait15).ScalarFunction(scalarFunctionName, functionArgumentValue);
 		}
 
 		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsSqlQueries
@@ -1016,6 +1056,55 @@ namespace Tortuga.Chain.MySql
 			return __Trait8.Insert<TArgument>(tableName, argumentValue, options);
 		}
 
+		// Exposing trait Traits.SupportsProcedureTrait<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>
+
+		/// <summary>
+		/// Loads a procedure definition
+		/// </summary>
+		/// <param name="procedureName">Name of the procedure.</param>
+		/// <returns></returns>
+		public Tortuga.Chain.CommandBuilders.ProcedureDbCommandBuilder<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter> Procedure(Tortuga.Chain.MySql.MySqlObjectName procedureName)
+		{
+			return __Trait16.Procedure(procedureName);
+		}
+
+		/// <summary>
+		/// Loads a procedure definition and populates it using the parameter object.
+		/// </summary>
+		/// <param name="procedureName">Name of the procedure.</param>
+		/// <param name="argumentValue">The argument value.</param>
+		/// <returns></returns>
+		/// <remarks>
+		/// The procedure's definition is loaded from the database and used to determine which properties on the parameter object to use.
+		/// </remarks>
+		public Tortuga.Chain.CommandBuilders.ProcedureDbCommandBuilder<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter> Procedure(Tortuga.Chain.MySql.MySqlObjectName procedureName, System.Object argumentValue)
+		{
+			return __Trait16.Procedure(procedureName, argumentValue);
+		}
+
+		// Exposing trait Traits.SupportsScalarFunctionTrait<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>
+
+		/// <summary>
+		/// This is used to query a scalar function.
+		/// </summary>
+		/// <param name="scalarFunctionName">Name of the scalar function.</param>
+		/// <returns></returns>
+		public Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter> ScalarFunction(Tortuga.Chain.MySql.MySqlObjectName scalarFunctionName)
+		{
+			return __Trait15.ScalarFunction(scalarFunctionName);
+		}
+
+		/// <summary>
+		/// This is used to query a scalar function.
+		/// </summary>
+		/// <param name="scalarFunctionName">Name of the scalar function.</param>
+		/// <param name="functionArgumentValue">The function argument.</param>
+		/// <returns></returns>
+		public Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter> ScalarFunction(Tortuga.Chain.MySql.MySqlObjectName scalarFunctionName, System.Object functionArgumentValue)
+		{
+			return __Trait15.ScalarFunction(scalarFunctionName, functionArgumentValue);
+		}
+
 		// Exposing trait Traits.SupportsSqlQueriesTrait<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter>
 
 		/// <summary>
@@ -1234,6 +1323,10 @@ namespace Tortuga.Chain.MySql
 
 		private partial Tortuga.Chain.ILink<int?> OnDeleteAll(Tortuga.Chain.MySql.MySqlObjectName tableName );
 
+		private partial Tortuga.Chain.CommandBuilders.ProcedureDbCommandBuilder<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter> OnProcedure(Tortuga.Chain.MySql.MySqlObjectName procedureName, System.Object? argumentValue );
+
+		private partial Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter> OnScalarFunction(Tortuga.Chain.MySql.MySqlObjectName scalarFunctionName, System.Object? argumentValue );
+
 		private partial Tortuga.Chain.CommandBuilders.MultipleTableDbCommandBuilder<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter> OnSql(System.String sqlStatement, System.Object? argumentValue );
 
 		private partial Tortuga.Chain.ILink<int?> OnTruncate(Tortuga.Chain.MySql.MySqlObjectName tableName );
@@ -1258,6 +1351,10 @@ namespace Tortuga.Chain.MySql
 			__Trait12.DataSource = this;
 			__Trait13.DataSource = this;
 			__Trait14.DataSource = this;
+			__Trait15.OnScalarFunction = OnScalarFunction;
+			__Trait15.DataSource = this;
+			__Trait16.OnProcedure = OnProcedure;
+			__Trait16.DataSource = this;
 		}
 
 	}

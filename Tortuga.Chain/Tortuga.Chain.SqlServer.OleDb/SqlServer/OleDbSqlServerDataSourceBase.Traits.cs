@@ -22,6 +22,9 @@ namespace Tortuga.Chain.SqlServer;
 [UseTrait(typeof(SupportsFromTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType, AbstractLimitOption>))]
 [UseTrait(typeof(SupportsGetByKeyListTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
 [UseTrait(typeof(SupportsUpsertTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
+[UseTrait(typeof(SupportsScalarFunctionTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
+[UseTrait(typeof(SupportsProcedureTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
+[UseTrait(typeof(SupportsTableFunctionTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType, AbstractLimitOption>))]
 partial class OleDbSqlServerDataSourceBase : ICrudDataSource, IAdvancedCrudDataSource
 {
 	DatabaseMetadataCache<AbstractObjectName, AbstractDbType> ICommandHelper<AbstractObjectName, AbstractDbType>.DatabaseMetadata => DatabaseMetadata;
@@ -133,6 +136,11 @@ where TArgument : class
 		return new OleDbSqlServerInsertObject<TArgument>(this, tableName, argumentValue, options);
 	}
 
+	ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> IUpsertHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnInsertOrUpdateObject<TArgument>(AbstractObjectName tableName, TArgument argumentValue, UpsertOptions options)
+	{
+		return new OleDbSqlServerInsertOrUpdateObject<TArgument>(this, tableName, argumentValue, options);
+	}
+
 	MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> IUpdateDeleteByKeyHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnUpdateByKeyList<TArgument, TKey>(AbstractObjectName tableName, TArgument newValues, IEnumerable<TKey> keys, UpdateOptions options)
 	{
 		var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).PrimaryKeyColumns;
@@ -183,9 +191,24 @@ where TArgument : class
 		return Sql("DELETE FROM " + table.Name.ToQuotedString() + ";").AsNonQuery();
 	}
 
+	private partial ProcedureDbCommandBuilder<AbstractCommand, AbstractParameter> OnProcedure(AbstractObjectName procedureName, object? argumentValue)
+	{
+		return new AbstractProcedureCall(this, procedureName, argumentValue);
+	}
+
+	private partial ScalarDbCommandBuilder<AbstractCommand, AbstractParameter> OnScalarFunction(AbstractObjectName scalarFunctionName, object? argumentValue)
+	{
+		return new AbstractScalarFunction(this, scalarFunctionName, argumentValue);
+	}
+
 	private partial MultipleTableDbCommandBuilder<AbstractCommand, AbstractParameter> OnSql(string sqlStatement, object? argumentValue)
 	{
 		return new OleDbSqlServerSqlCall(this, sqlStatement, argumentValue);
+	}
+
+	private partial TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption> OnTableFunction(AbstractObjectName tableFunctionName, object? functionArgumentValue)
+	{
+		return new AbstractTableFunction(this, tableFunctionName, functionArgumentValue);
 	}
 
 	private partial ILink<int?> OnTruncate(AbstractObjectName tableName)
@@ -193,10 +216,5 @@ where TArgument : class
 		//Verify the table name actually exists.
 		var table = DatabaseMetadata.GetTableOrView(tableName);
 		return Sql("TRUNCATE TABLE " + table.Name.ToQuotedString() + ";").AsNonQuery();
-	}
-
-	ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> IUpsertHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnInsertOrUpdateObject<TArgument>(AbstractObjectName tableName, TArgument argumentValue, UpsertOptions options)
-	{
-		return new OleDbSqlServerInsertOrUpdateObject<TArgument>(this, tableName, argumentValue, options);
 	}
 }

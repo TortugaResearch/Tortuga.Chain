@@ -2,7 +2,7 @@
 
 namespace Tortuga.Chain.SqlServer
 {
-	partial class OleDbSqlServerDataSourceBase: Tortuga.Chain.DataSources.ISupportsDeleteAll, Tortuga.Chain.DataSources.ISupportsTruncate, Tortuga.Chain.DataSources.ISupportsSqlQueries, Tortuga.Chain.DataSources.ISupportsDeleteByKeyList, Tortuga.Chain.DataSources.ISupportsDeleteByKey, Tortuga.Chain.DataSources.ISupportsDelete, Tortuga.Chain.DataSources.ISupportsUpdate, Tortuga.Chain.DataSources.ISupportsUpdateByKey, Tortuga.Chain.DataSources.ISupportsUpdateByKeyList, Tortuga.Chain.DataSources.ISupportsInsert, Tortuga.Chain.DataSources.ISupportsUpdateSet, Tortuga.Chain.DataSources.ISupportsDeleteSet, Tortuga.Chain.DataSources.ISupportsFrom, Tortuga.Chain.DataSources.ISupportsGetByKeyList, Tortuga.Chain.DataSources.ISupportsGetByKey, Tortuga.Chain.DataSources.ISupportsUpsert, Traits.ICommandHelper<Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>, Traits.IUpdateDeleteByKeyHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>, Traits.IUpdateDeleteHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>, Traits.IInsertHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>, Traits.IUpdateDeleteSetHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>, Traits.IFromHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType, Tortuga.Chain.SqlServerLimitOption>, Traits.IGetByKeyHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>, Traits.IUpsertHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>
+	partial class OleDbSqlServerDataSourceBase: Tortuga.Chain.DataSources.ISupportsDeleteAll, Tortuga.Chain.DataSources.ISupportsTruncate, Tortuga.Chain.DataSources.ISupportsSqlQueries, Tortuga.Chain.DataSources.ISupportsDeleteByKeyList, Tortuga.Chain.DataSources.ISupportsDeleteByKey, Tortuga.Chain.DataSources.ISupportsDelete, Tortuga.Chain.DataSources.ISupportsUpdate, Tortuga.Chain.DataSources.ISupportsUpdateByKey, Tortuga.Chain.DataSources.ISupportsUpdateByKeyList, Tortuga.Chain.DataSources.ISupportsInsert, Tortuga.Chain.DataSources.ISupportsUpdateSet, Tortuga.Chain.DataSources.ISupportsDeleteSet, Tortuga.Chain.DataSources.ISupportsFrom, Tortuga.Chain.DataSources.ISupportsGetByKeyList, Tortuga.Chain.DataSources.ISupportsGetByKey, Tortuga.Chain.DataSources.ISupportsUpsert, Tortuga.Chain.DataSources.ISupportsScalarFunction, Tortuga.Chain.DataSources.ISupportsProcedure, Tortuga.Chain.DataSources.ISupportsTableFunction, Traits.ICommandHelper<Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>, Traits.IUpdateDeleteByKeyHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>, Traits.IUpdateDeleteHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>, Traits.IInsertHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>, Traits.IUpdateDeleteSetHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>, Traits.IFromHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType, Tortuga.Chain.SqlServerLimitOption>, Traits.IGetByKeyHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>, Traits.IUpsertHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>, Traits.ICommandHelper<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>
 	{
 
 		private bool __TraitsRegistered;
@@ -123,6 +123,33 @@ namespace Tortuga.Chain.SqlServer
 			{
 				if (!__TraitsRegistered) __RegisterTraits();
 				return ___Trait12;
+			}
+		}
+		private Traits.SupportsScalarFunctionTrait<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType> ___Trait13 = new();
+		private Traits.SupportsScalarFunctionTrait<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType> __Trait13
+		{
+			get
+			{
+				if (!__TraitsRegistered) __RegisterTraits();
+				return ___Trait13;
+			}
+		}
+		private Traits.SupportsProcedureTrait<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType> ___Trait14 = new();
+		private Traits.SupportsProcedureTrait<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType> __Trait14
+		{
+			get
+			{
+				if (!__TraitsRegistered) __RegisterTraits();
+				return ___Trait14;
+			}
+		}
+		private Traits.SupportsTableFunctionTrait<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType, Tortuga.Chain.SqlServerLimitOption> ___Trait15 = new();
+		private Traits.SupportsTableFunctionTrait<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType, Tortuga.Chain.SqlServerLimitOption> __Trait15
+		{
+			get
+			{
+				if (!__TraitsRegistered) __RegisterTraits();
+				return ___Trait15;
 			}
 		}
 
@@ -302,10 +329,43 @@ namespace Tortuga.Chain.SqlServer
 			return ((Tortuga.Chain.DataSources.ISupportsInsert)__Trait7).Insert<TArgument>(argumentValue, options);
 		}
 
+		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsProcedure
+		Tortuga.Chain.CommandBuilders.IProcedureDbCommandBuilder Tortuga.Chain.DataSources.ISupportsProcedure.Procedure(System.String procedureName)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsProcedure)__Trait14).Procedure(procedureName);
+		}
+
+		Tortuga.Chain.CommandBuilders.IProcedureDbCommandBuilder Tortuga.Chain.DataSources.ISupportsProcedure.Procedure(System.String procedureName, System.Object argumentValue)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsProcedure)__Trait14).Procedure(procedureName, argumentValue);
+		}
+
+		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsScalarFunction
+		Tortuga.Chain.CommandBuilders.IScalarDbCommandBuilder Tortuga.Chain.DataSources.ISupportsScalarFunction.ScalarFunction(System.String scalarFunctionName)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsScalarFunction)__Trait13).ScalarFunction(scalarFunctionName);
+		}
+
+		Tortuga.Chain.CommandBuilders.IScalarDbCommandBuilder Tortuga.Chain.DataSources.ISupportsScalarFunction.ScalarFunction(System.String scalarFunctionName, System.Object functionArgumentValue)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsScalarFunction)__Trait13).ScalarFunction(scalarFunctionName, functionArgumentValue);
+		}
+
 		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsSqlQueries
 		Tortuga.Chain.CommandBuilders.IMultipleTableDbCommandBuilder Tortuga.Chain.DataSources.ISupportsSqlQueries.Sql(System.String sqlStatement, System.Object argumentValue)
 		{
 			return ((Tortuga.Chain.DataSources.ISupportsSqlQueries)__Trait2).Sql(sqlStatement, argumentValue);
+		}
+
+		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsTableFunction
+		Tortuga.Chain.CommandBuilders.ITableDbCommandBuilder Tortuga.Chain.DataSources.ISupportsTableFunction.TableFunction(System.String functionName)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsTableFunction)__Trait15).TableFunction(functionName);
+		}
+
+		Tortuga.Chain.CommandBuilders.ITableDbCommandBuilder Tortuga.Chain.DataSources.ISupportsTableFunction.TableFunction(System.String functionName, System.Object functionArgumentValue)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsTableFunction)__Trait15).TableFunction(functionName, functionArgumentValue);
 		}
 
 		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsTruncate
@@ -823,6 +883,55 @@ namespace Tortuga.Chain.SqlServer
 			return __Trait7.Insert<TArgument>(tableName, argumentValue, options);
 		}
 
+		// Exposing trait Traits.SupportsProcedureTrait<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>
+
+		/// <summary>
+		/// Loads a procedure definition
+		/// </summary>
+		/// <param name="procedureName">Name of the procedure.</param>
+		/// <returns></returns>
+		public Tortuga.Chain.CommandBuilders.ProcedureDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter> Procedure(Tortuga.Chain.SqlServer.SqlServerObjectName procedureName)
+		{
+			return __Trait14.Procedure(procedureName);
+		}
+
+		/// <summary>
+		/// Loads a procedure definition and populates it using the parameter object.
+		/// </summary>
+		/// <param name="procedureName">Name of the procedure.</param>
+		/// <param name="argumentValue">The argument value.</param>
+		/// <returns></returns>
+		/// <remarks>
+		/// The procedure's definition is loaded from the database and used to determine which properties on the parameter object to use.
+		/// </remarks>
+		public Tortuga.Chain.CommandBuilders.ProcedureDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter> Procedure(Tortuga.Chain.SqlServer.SqlServerObjectName procedureName, System.Object argumentValue)
+		{
+			return __Trait14.Procedure(procedureName, argumentValue);
+		}
+
+		// Exposing trait Traits.SupportsScalarFunctionTrait<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>
+
+		/// <summary>
+		/// This is used to query a scalar function.
+		/// </summary>
+		/// <param name="scalarFunctionName">Name of the scalar function.</param>
+		/// <returns></returns>
+		public Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter> ScalarFunction(Tortuga.Chain.SqlServer.SqlServerObjectName scalarFunctionName)
+		{
+			return __Trait13.ScalarFunction(scalarFunctionName);
+		}
+
+		/// <summary>
+		/// This is used to query a scalar function.
+		/// </summary>
+		/// <param name="scalarFunctionName">Name of the scalar function.</param>
+		/// <param name="functionArgumentValue">The function argument.</param>
+		/// <returns></returns>
+		public Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter> ScalarFunction(Tortuga.Chain.SqlServer.SqlServerObjectName scalarFunctionName, System.Object functionArgumentValue)
+		{
+			return __Trait13.ScalarFunction(scalarFunctionName, functionArgumentValue);
+		}
+
 		// Exposing trait Traits.SupportsSqlQueriesTrait<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter>
 
 		/// <summary>
@@ -844,6 +953,29 @@ namespace Tortuga.Chain.SqlServer
 		public Tortuga.Chain.CommandBuilders.MultipleTableDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter> Sql(System.String sqlStatement, System.Object argumentValue)
 		{
 			return __Trait2.Sql(sqlStatement, argumentValue);
+		}
+
+		// Exposing trait Traits.SupportsTableFunctionTrait<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType, Tortuga.Chain.SqlServerLimitOption>
+
+		/// <summary>
+		/// This is used to query a table valued function.
+		/// </summary>
+		/// <param name="tableFunctionName">Name of the table function.</param>
+		/// <returns></returns>
+		public Tortuga.Chain.CommandBuilders.TableDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServerLimitOption> TableFunction(Tortuga.Chain.SqlServer.SqlServerObjectName tableFunctionName)
+		{
+			return __Trait15.TableFunction(tableFunctionName);
+		}
+
+		/// <summary>
+		/// This is used to query a table valued function.
+		/// </summary>
+		/// <param name="tableFunctionName">Name of the table function.</param>
+		/// <param name="functionArgumentValue">The function argument.</param>
+		/// <returns></returns>
+		public Tortuga.Chain.CommandBuilders.TableDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServerLimitOption> TableFunction(Tortuga.Chain.SqlServer.SqlServerObjectName tableFunctionName, System.Object functionArgumentValue)
+		{
+			return __Trait15.TableFunction(tableFunctionName, functionArgumentValue);
 		}
 
 		// Exposing trait Traits.SupportsTruncateTrait<Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>
@@ -1041,7 +1173,13 @@ namespace Tortuga.Chain.SqlServer
 
 		private partial Tortuga.Chain.ILink<int?> OnDeleteAll(Tortuga.Chain.SqlServer.SqlServerObjectName tableName );
 
+		private partial Tortuga.Chain.CommandBuilders.ProcedureDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter> OnProcedure(Tortuga.Chain.SqlServer.SqlServerObjectName procedureName, System.Object? argumentValue );
+
+		private partial Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter> OnScalarFunction(Tortuga.Chain.SqlServer.SqlServerObjectName scalarFunctionName, System.Object? argumentValue );
+
 		private partial Tortuga.Chain.CommandBuilders.MultipleTableDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter> OnSql(System.String sqlStatement, System.Object? argumentValue );
+
+		private partial Tortuga.Chain.CommandBuilders.TableDbCommandBuilder<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServerLimitOption> OnTableFunction(Tortuga.Chain.SqlServer.SqlServerObjectName tableFunctionName, System.Object? functionArgumentValue );
 
 		private partial Tortuga.Chain.ILink<int?> OnTruncate(Tortuga.Chain.SqlServer.SqlServerObjectName tableName );
 
@@ -1063,6 +1201,12 @@ namespace Tortuga.Chain.SqlServer
 			__Trait10.DataSource = this;
 			__Trait11.DataSource = this;
 			__Trait12.DataSource = this;
+			__Trait13.OnScalarFunction = OnScalarFunction;
+			__Trait13.DataSource = this;
+			__Trait14.OnProcedure = OnProcedure;
+			__Trait14.DataSource = this;
+			__Trait15.OnTableFunction = OnTableFunction;
+			__Trait15.DataSource = this;
 		}
 
 	}

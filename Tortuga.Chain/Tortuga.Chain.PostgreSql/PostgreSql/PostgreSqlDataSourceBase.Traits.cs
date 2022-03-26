@@ -25,6 +25,9 @@ MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter>>))]
 [UseTrait(typeof(SupportsGetByKeyListTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
 [UseTrait(typeof(SupportsUpsertTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
 [UseTrait(typeof(SupportsInsertBulkTrait<PostgreSqlInsertBulk, AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
+[UseTrait(typeof(SupportsScalarFunctionTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
+[UseTrait(typeof(SupportsProcedureTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
+[UseTrait(typeof(SupportsTableFunctionTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType, AbstractLimitOption>))]
 partial class PostgreSqlDataSourceBase : ICrudDataSource, IAdvancedCrudDataSource
 {
 
@@ -221,5 +224,21 @@ where TArgument : class
 	PostgreSqlInsertBulk IInsertBulkHelper<PostgreSqlInsertBulk, AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnInsertBulk(AbstractObjectName tableName, IDataReader dataReader)
 	{
 		return new PostgreSqlInsertBulk(this, tableName, dataReader);
+	}
+
+
+	private partial ProcedureDbCommandBuilder<AbstractCommand, AbstractParameter> OnProcedure(AbstractObjectName procedureName, object? argumentValue)
+	{
+		return new AbstractProcedureCall(this, procedureName, argumentValue);
+	}
+
+	private partial ScalarDbCommandBuilder<AbstractCommand, AbstractParameter> OnScalarFunction(AbstractObjectName scalarFunctionName, object? argumentValue)
+	{
+		return new AbstractScalarFunction(this, scalarFunctionName, argumentValue);
+	}
+
+	private partial TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption> OnTableFunction(AbstractObjectName tableFunctionName, object? functionArgumentValue)
+	{
+		return new AbstractTableFunction(this, tableFunctionName, functionArgumentValue);
 	}
 }

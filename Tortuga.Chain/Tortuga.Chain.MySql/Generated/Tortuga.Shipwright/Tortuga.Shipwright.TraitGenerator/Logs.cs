@@ -17,6 +17,8 @@ Container class: Tortuga.Chain.MySql.MySqlDataSourceBase
 	Adding trait: Traits.SupportsGetByKeyListTrait<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>
 	Adding trait: Traits.SupportsUpsertTrait<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>
 	Adding trait: Traits.SupportsInsertBulkTrait<Tortuga.Chain.MySql.CommandBuilders.MySqlInsertBulk, MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>
+	Adding trait: Traits.SupportsScalarFunctionTrait<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>
+	Adding trait: Traits.SupportsProcedureTrait<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>
 Container class: Tortuga.Chain.MySql.MySqlTransactionalDataSource
 	Adding trait: Traits.TransactionDataSourceTrait<Tortuga.Chain.MySqlDataSource, MySqlConnector.MySqlConnection, MySqlConnector.MySqlTransaction, MySqlConnector.MySqlCommand>
 Unable to process interface member of type Microsoft.CodeAnalysis.CSharp.Symbols.PublicModel.MethodSymbol named Traits.IHasExtensionCache.get_ExtensionCache
