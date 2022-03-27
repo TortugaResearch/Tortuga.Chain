@@ -87,15 +87,6 @@
 		<Compile Remove="$(CompilerGeneratedFilesOutputPath)/*/**/*.cs" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Compile Remove="..\Shared\DataSource\DataSource.IRootDataSource.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Compile Update="..\Shared\DataSource\Types\IHasOnDispose.cs" Link="IHasOnDispose.cs" />
-	</ItemGroup>
-
-
 	<!-- NuGet Packaging Boilerplate-->
 	<PropertyGroup Condition="'$(Configuration)'=='Release'">
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
