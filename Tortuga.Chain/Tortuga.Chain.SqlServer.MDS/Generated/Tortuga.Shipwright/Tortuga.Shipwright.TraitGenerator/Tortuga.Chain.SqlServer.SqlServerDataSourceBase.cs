@@ -2,7 +2,7 @@
 
 namespace Tortuga.Chain.SqlServer
 {
-	partial class SqlServerDataSourceBase: Tortuga.Chain.DataSources.ISupportsDeleteAll, Tortuga.Chain.DataSources.ISupportsTruncate, Tortuga.Chain.DataSources.ISupportsSqlQueries, Tortuga.Chain.DataSources.ISupportsInsertBatch, Tortuga.Chain.DataSources.ISupportsDeleteByKeyList, Tortuga.Chain.DataSources.ISupportsDeleteByKey, Tortuga.Chain.DataSources.ISupportsDelete, Tortuga.Chain.DataSources.ISupportsUpdate, Tortuga.Chain.DataSources.ISupportsUpdateByKey, Tortuga.Chain.DataSources.ISupportsUpdateByKeyList, Tortuga.Chain.DataSources.ISupportsInsert, Tortuga.Chain.DataSources.ISupportsUpdateSet, Tortuga.Chain.DataSources.ISupportsDeleteSet, Tortuga.Chain.DataSources.ISupportsFrom, Tortuga.Chain.DataSources.ISupportsGetByKeyList, Tortuga.Chain.DataSources.ISupportsGetByKey, Tortuga.Chain.DataSources.ISupportsUpsert, Tortuga.Chain.DataSources.ISupportsInsertBulk, Traits.ICommandHelper<Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>, Traits.IInsertBatchHelper<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>, Traits.IUpdateDeleteByKeyHelper<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>, Traits.IUpdateDeleteHelper<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>, Traits.IInsertHelper<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>, Traits.IUpdateDeleteSetHelper<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>, Traits.IFromHelper<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType, Tortuga.Chain.SqlServerLimitOption>, Traits.IGetByKeyHelper<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>, Traits.IUpsertHelper<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>, Traits.IInsertBulkHelper<Tortuga.Chain.SqlServer.CommandBuilders.SqlServerInsertBulk, Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>
+	partial class SqlServerDataSourceBase: Tortuga.Chain.DataSources.ISupportsDeleteAll, Tortuga.Chain.DataSources.ISupportsTruncate, Tortuga.Chain.DataSources.ISupportsSqlQueries, Tortuga.Chain.DataSources.ISupportsInsertBatch, Tortuga.Chain.DataSources.ISupportsDeleteByKeyList, Tortuga.Chain.DataSources.ISupportsDeleteByKey, Tortuga.Chain.DataSources.ISupportsDelete, Tortuga.Chain.DataSources.ISupportsUpdate, Tortuga.Chain.DataSources.ISupportsUpdateByKey, Tortuga.Chain.DataSources.ISupportsUpdateByKeyList, Tortuga.Chain.DataSources.ISupportsInsert, Tortuga.Chain.DataSources.ISupportsUpdateSet, Tortuga.Chain.DataSources.ISupportsDeleteSet, Tortuga.Chain.DataSources.ISupportsFrom, Tortuga.Chain.DataSources.ISupportsGetByKeyList, Tortuga.Chain.DataSources.ISupportsGetByKey, Tortuga.Chain.DataSources.ISupportsUpsert, Tortuga.Chain.DataSources.ISupportsInsertBulk, Tortuga.Chain.DataSources.ISupportsScalarFunction, Tortuga.Chain.DataSources.ISupportsProcedure, Tortuga.Chain.DataSources.ISupportsTableFunction, Traits.ICommandHelper<Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>, Traits.IInsertBatchHelper<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>, Traits.IUpdateDeleteByKeyHelper<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>, Traits.IUpdateDeleteHelper<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>, Traits.IInsertHelper<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>, Traits.IUpdateDeleteSetHelper<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>, Traits.IFromHelper<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType, Tortuga.Chain.SqlServerLimitOption>, Traits.IGetByKeyHelper<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>, Traits.IUpsertHelper<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>, Traits.IInsertBulkHelper<Tortuga.Chain.SqlServer.CommandBuilders.SqlServerInsertBulk, Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>, Traits.ICommandHelper<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>
 	{
 
 		private bool __TraitsRegistered;
@@ -141,6 +141,33 @@ namespace Tortuga.Chain.SqlServer
 			{
 				if (!__TraitsRegistered) __RegisterTraits();
 				return ___Trait14;
+			}
+		}
+		private Traits.SupportsScalarFunctionTrait<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType> ___Trait15 = new();
+		private Traits.SupportsScalarFunctionTrait<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType> __Trait15
+		{
+			get
+			{
+				if (!__TraitsRegistered) __RegisterTraits();
+				return ___Trait15;
+			}
+		}
+		private Traits.SupportsProcedureTrait<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType> ___Trait16 = new();
+		private Traits.SupportsProcedureTrait<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType> __Trait16
+		{
+			get
+			{
+				if (!__TraitsRegistered) __RegisterTraits();
+				return ___Trait16;
+			}
+		}
+		private Traits.SupportsTableFunctionTrait<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType, Tortuga.Chain.SqlServerLimitOption> ___Trait17 = new();
+		private Traits.SupportsTableFunctionTrait<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType, Tortuga.Chain.SqlServerLimitOption> __Trait17
+		{
+			get
+			{
+				if (!__TraitsRegistered) __RegisterTraits();
+				return ___Trait17;
 			}
 		}
 
@@ -367,10 +394,43 @@ namespace Tortuga.Chain.SqlServer
 			return ((Tortuga.Chain.DataSources.ISupportsInsertBulk)__Trait14).InsertBulk<TObject>(objects);
 		}
 
+		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsProcedure
+		Tortuga.Chain.CommandBuilders.IProcedureDbCommandBuilder Tortuga.Chain.DataSources.ISupportsProcedure.Procedure(System.String procedureName)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsProcedure)__Trait16).Procedure(procedureName);
+		}
+
+		Tortuga.Chain.CommandBuilders.IProcedureDbCommandBuilder Tortuga.Chain.DataSources.ISupportsProcedure.Procedure(System.String procedureName, System.Object argumentValue)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsProcedure)__Trait16).Procedure(procedureName, argumentValue);
+		}
+
+		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsScalarFunction
+		Tortuga.Chain.CommandBuilders.IScalarDbCommandBuilder Tortuga.Chain.DataSources.ISupportsScalarFunction.ScalarFunction(System.String scalarFunctionName)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsScalarFunction)__Trait15).ScalarFunction(scalarFunctionName);
+		}
+
+		Tortuga.Chain.CommandBuilders.IScalarDbCommandBuilder Tortuga.Chain.DataSources.ISupportsScalarFunction.ScalarFunction(System.String scalarFunctionName, System.Object functionArgumentValue)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsScalarFunction)__Trait15).ScalarFunction(scalarFunctionName, functionArgumentValue);
+		}
+
 		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsSqlQueries
 		Tortuga.Chain.CommandBuilders.IMultipleTableDbCommandBuilder Tortuga.Chain.DataSources.ISupportsSqlQueries.Sql(System.String sqlStatement, System.Object argumentValue)
 		{
 			return ((Tortuga.Chain.DataSources.ISupportsSqlQueries)__Trait2).Sql(sqlStatement, argumentValue);
+		}
+
+		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsTableFunction
+		Tortuga.Chain.CommandBuilders.ITableDbCommandBuilder Tortuga.Chain.DataSources.ISupportsTableFunction.TableFunction(System.String functionName)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsTableFunction)__Trait17).TableFunction(functionName);
+		}
+
+		Tortuga.Chain.CommandBuilders.ITableDbCommandBuilder Tortuga.Chain.DataSources.ISupportsTableFunction.TableFunction(System.String functionName, System.Object functionArgumentValue)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsTableFunction)__Trait17).TableFunction(functionName, functionArgumentValue);
 		}
 
 		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsTruncate
@@ -1016,6 +1076,55 @@ namespace Tortuga.Chain.SqlServer
 			return __Trait8.Insert<TArgument>(tableName, argumentValue, options);
 		}
 
+		// Exposing trait Traits.SupportsProcedureTrait<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>
+
+		/// <summary>
+		/// Loads a procedure definition
+		/// </summary>
+		/// <param name="procedureName">Name of the procedure.</param>
+		/// <returns></returns>
+		public Tortuga.Chain.CommandBuilders.ProcedureDbCommandBuilder<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter> Procedure(Tortuga.Chain.SqlServer.SqlServerObjectName procedureName)
+		{
+			return __Trait16.Procedure(procedureName);
+		}
+
+		/// <summary>
+		/// Loads a procedure definition and populates it using the parameter object.
+		/// </summary>
+		/// <param name="procedureName">Name of the procedure.</param>
+		/// <param name="argumentValue">The argument value.</param>
+		/// <returns></returns>
+		/// <remarks>
+		/// The procedure's definition is loaded from the database and used to determine which properties on the parameter object to use.
+		/// </remarks>
+		public Tortuga.Chain.CommandBuilders.ProcedureDbCommandBuilder<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter> Procedure(Tortuga.Chain.SqlServer.SqlServerObjectName procedureName, System.Object argumentValue)
+		{
+			return __Trait16.Procedure(procedureName, argumentValue);
+		}
+
+		// Exposing trait Traits.SupportsScalarFunctionTrait<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>
+
+		/// <summary>
+		/// This is used to query a scalar function.
+		/// </summary>
+		/// <param name="scalarFunctionName">Name of the scalar function.</param>
+		/// <returns></returns>
+		public Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter> ScalarFunction(Tortuga.Chain.SqlServer.SqlServerObjectName scalarFunctionName)
+		{
+			return __Trait15.ScalarFunction(scalarFunctionName);
+		}
+
+		/// <summary>
+		/// This is used to query a scalar function.
+		/// </summary>
+		/// <param name="scalarFunctionName">Name of the scalar function.</param>
+		/// <param name="functionArgumentValue">The function argument.</param>
+		/// <returns></returns>
+		public Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter> ScalarFunction(Tortuga.Chain.SqlServer.SqlServerObjectName scalarFunctionName, System.Object functionArgumentValue)
+		{
+			return __Trait15.ScalarFunction(scalarFunctionName, functionArgumentValue);
+		}
+
 		// Exposing trait Traits.SupportsSqlQueriesTrait<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter>
 
 		/// <summary>
@@ -1037,6 +1146,29 @@ namespace Tortuga.Chain.SqlServer
 		public Tortuga.Chain.CommandBuilders.MultipleTableDbCommandBuilder<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter> Sql(System.String sqlStatement, System.Object argumentValue)
 		{
 			return __Trait2.Sql(sqlStatement, argumentValue);
+		}
+
+		// Exposing trait Traits.SupportsTableFunctionTrait<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType, Tortuga.Chain.SqlServerLimitOption>
+
+		/// <summary>
+		/// This is used to query a table valued function.
+		/// </summary>
+		/// <param name="tableFunctionName">Name of the table function.</param>
+		/// <returns></returns>
+		public Tortuga.Chain.CommandBuilders.TableDbCommandBuilder<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServerLimitOption> TableFunction(Tortuga.Chain.SqlServer.SqlServerObjectName tableFunctionName)
+		{
+			return __Trait17.TableFunction(tableFunctionName);
+		}
+
+		/// <summary>
+		/// This is used to query a table valued function.
+		/// </summary>
+		/// <param name="tableFunctionName">Name of the table function.</param>
+		/// <param name="functionArgumentValue">The function argument.</param>
+		/// <returns></returns>
+		public Tortuga.Chain.CommandBuilders.TableDbCommandBuilder<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServerLimitOption> TableFunction(Tortuga.Chain.SqlServer.SqlServerObjectName tableFunctionName, System.Object functionArgumentValue)
+		{
+			return __Trait17.TableFunction(tableFunctionName, functionArgumentValue);
 		}
 
 		// Exposing trait Traits.SupportsTruncateTrait<Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>
@@ -1234,7 +1366,13 @@ namespace Tortuga.Chain.SqlServer
 
 		private partial Tortuga.Chain.ILink<int?> OnDeleteAll(Tortuga.Chain.SqlServer.SqlServerObjectName tableName );
 
+		private partial Tortuga.Chain.CommandBuilders.ProcedureDbCommandBuilder<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter> OnProcedure(Tortuga.Chain.SqlServer.SqlServerObjectName procedureName, System.Object? argumentValue );
+
+		private partial Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter> OnScalarFunction(Tortuga.Chain.SqlServer.SqlServerObjectName scalarFunctionName, System.Object? argumentValue );
+
 		private partial Tortuga.Chain.CommandBuilders.MultipleTableDbCommandBuilder<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter> OnSql(System.String sqlStatement, System.Object? argumentValue );
+
+		private partial Tortuga.Chain.CommandBuilders.TableDbCommandBuilder<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServerLimitOption> OnTableFunction(Tortuga.Chain.SqlServer.SqlServerObjectName tableFunctionName, System.Object? functionArgumentValue );
 
 		private partial Tortuga.Chain.ILink<int?> OnTruncate(Tortuga.Chain.SqlServer.SqlServerObjectName tableName );
 
@@ -1258,6 +1396,12 @@ namespace Tortuga.Chain.SqlServer
 			__Trait12.DataSource = this;
 			__Trait13.DataSource = this;
 			__Trait14.DataSource = this;
+			__Trait15.OnScalarFunction = OnScalarFunction;
+			__Trait15.DataSource = this;
+			__Trait16.OnProcedure = OnProcedure;
+			__Trait16.DataSource = this;
+			__Trait17.OnTableFunction = OnTableFunction;
+			__Trait17.DataSource = this;
 		}
 
 	}

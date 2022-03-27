@@ -1,10 +1,12 @@
 using Tortuga.Chain.Core;
+using Tortuga.Shipwright;
 
 namespace Tortuga.Chain.SqlServer
 {
 	/// <summary>
 	/// Class SqlServerTransactionalDataSource.
 	/// </summary>
+	[UseTrait(typeof(Traits.TransactionalDataSourceTrait<SqlServerDataSource, SqlConnection, SqlTransaction, SqlCommand, SqlServerMetadataCache>))]
 	public partial class SqlServerTransactionalDataSource : SqlServerDataSourceBase
 	{
 
@@ -67,13 +69,7 @@ namespace Tortuga.Chain.SqlServer
 			UserValue = dataSource.UserValue;
 		}
 
-		/// <summary>
-		/// This object can be used to lookup database information.
-		/// </summary>
-		public override SqlServerMetadataCache DatabaseMetadata
-		{
-			get { return m_BaseDataSource.DatabaseMetadata; }
-		}
+
 
 		/// <summary>
 		/// Gets the name of the transaction.

@@ -2,26 +2,20 @@
 
 namespace Tortuga.Chain.MySql
 {
-	partial class MySqlTransactionalDataSource: Tortuga.Chain.DataSources.ITransactionalDataSource, Tortuga.Chain.DataSources.IOpenDataSource, System.IDisposable
+	partial class MySqlOpenDataSource: Tortuga.Chain.DataSources.IOpenDataSource
 	{
 
 		private bool __TraitsRegistered;
 
 		// These fields and/or properties hold the traits. They should not be referenced directly.
-		private Traits.TransactionalDataSourceTrait<Tortuga.Chain.MySqlDataSource, MySqlConnector.MySqlConnection, MySqlConnector.MySqlTransaction, MySqlConnector.MySqlCommand, Tortuga.Chain.MySql.MySqlMetadataCache> ___Trait0 = new();
-		private Traits.TransactionalDataSourceTrait<Tortuga.Chain.MySqlDataSource, MySqlConnector.MySqlConnection, MySqlConnector.MySqlTransaction, MySqlConnector.MySqlCommand, Tortuga.Chain.MySql.MySqlMetadataCache> __Trait0
+		private Traits.OpenDataSourceTrait<Tortuga.Chain.MySqlDataSource, Tortuga.Chain.MySql.MySqlOpenDataSource, MySqlConnector.MySqlConnection, MySqlConnector.MySqlTransaction, MySqlConnector.MySqlCommand, Tortuga.Chain.MySql.MySqlMetadataCache> ___Trait0 = new();
+		private Traits.OpenDataSourceTrait<Tortuga.Chain.MySqlDataSource, Tortuga.Chain.MySql.MySqlOpenDataSource, MySqlConnector.MySqlConnection, MySqlConnector.MySqlTransaction, MySqlConnector.MySqlCommand, Tortuga.Chain.MySql.MySqlMetadataCache> __Trait0
 		{
 			get
 			{
 				if (!__TraitsRegistered) __RegisterTraits();
 				return ___Trait0;
 			}
-		}
-
-		// Explicit interface implementation System.IDisposable
-		void System.IDisposable.Dispose()
-		{
-			((System.IDisposable)__Trait0).Dispose();
 		}
 
 		// Explicit interface implementation Tortuga.Chain.DataSources.IOpenDataSource
@@ -48,13 +42,7 @@ namespace Tortuga.Chain.MySql
 			return ((Tortuga.Chain.DataSources.IOpenDataSource)__Trait0).TryRollback();
 		}
 
-		// Explicit interface implementation Tortuga.Chain.DataSources.ITransactionalDataSource
-		void Tortuga.Chain.DataSources.ITransactionalDataSource.Commit()
-		{
-			((Tortuga.Chain.DataSources.ITransactionalDataSource)__Trait0).Commit();
-		}
-
-		// Exposing trait Traits.TransactionalDataSourceTrait<Tortuga.Chain.MySqlDataSource, MySqlConnector.MySqlConnection, MySqlConnector.MySqlTransaction, MySqlConnector.MySqlCommand, Tortuga.Chain.MySql.MySqlMetadataCache>
+		// Exposing trait Traits.OpenDataSourceTrait<Tortuga.Chain.MySqlDataSource, Tortuga.Chain.MySql.MySqlOpenDataSource, MySqlConnector.MySqlConnection, MySqlConnector.MySqlTransaction, MySqlConnector.MySqlCommand, Tortuga.Chain.MySql.MySqlMetadataCache>
 
 		/// <summary>
 		/// Returns the associated connection.
@@ -68,7 +56,7 @@ namespace Tortuga.Chain.MySql
 		/// Returns the associated transaction.
 		/// </summary>
 		/// <value>The associated transaction.</value>
-		public   MySqlConnector.MySqlTransaction AssociatedTransaction
+		public   MySqlConnector.MySqlTransaction? AssociatedTransaction
 		{
 			get => __Trait0.AssociatedTransaction;
 		}
@@ -80,11 +68,11 @@ namespace Tortuga.Chain.MySql
 			get => __Trait0.Cache;
 		}
 		/// <summary>
-		/// Commits the transaction and disposes the underlying connection.
+		/// Closes the connection and transaction associated with this data source.
 		/// </summary>
-		public void Commit()
+		public void Close()
 		{
-			__Trait0.Commit();
+			__Trait0.Close();
 		}
 
 		/// <summary>
@@ -94,23 +82,6 @@ namespace Tortuga.Chain.MySql
 		{
 			get => __Trait0.DatabaseMetadata;
 		}
-		/// <summary>
-		/// Closes the current transaction and connection. If not committed, the transaction is rolled back.
-		/// </summary>
-		public void Dispose()
-		{
-			__Trait0.Dispose();
-		}
-
-		/// <summary>
-		/// Closes the current transaction and connection. If not committed, the transaction is rolled back.
-		/// </summary>
-		/// <param name="disposing"></param>
-		protected virtual void Dispose(System.Boolean disposing)
-		{
-			__Trait0.Dispose(disposing);
-		}
-
 		/// <summary>
 		/// The extension cache is used by extensions to store data source specific information.
 		/// </summary>
@@ -134,25 +105,11 @@ namespace Tortuga.Chain.MySql
 			init => __Trait0.m_Connection = value;
 		}
 		
-		private   System.Boolean m_Disposed
-		{
-			get => __Trait0.m_Disposed;
-			set => __Trait0.m_Disposed = value;
-		}
-		
-		private   MySqlConnector.MySqlTransaction m_Transaction
+		private   MySqlConnector.MySqlTransaction? m_Transaction
 		{
 			get => __Trait0.m_Transaction;
 			init => __Trait0.m_Transaction = value;
 		}
-		/// <summary>
-		/// Rolls back the transaction and disposes the underlying connection.
-		/// </summary>
-		public void Rollback()
-		{
-			__Trait0.Rollback();
-		}
-
 		/// <summary>
 		/// Tests the connection.
 		/// </summary>
@@ -170,9 +127,63 @@ namespace Tortuga.Chain.MySql
 			return __Trait0.TestConnectionAsync();
 		}
 
+		/// <summary>
+		/// Tries the commit the transaction associated with this data source.
+		/// </summary>
+		/// <returns>True if there was an open transaction associated with this data source, otherwise false.</returns>
+		public System.Boolean TryCommit()
+		{
+			return __Trait0.TryCommit();
+		}
+
+		/// <summary>
+		/// Tries the rollback the transaction associated with this data source.
+		/// </summary>
+		/// <returns>True if there was an open transaction associated with this data source, otherwise false.</returns>
+		public System.Boolean TryRollback()
+		{
+			return __Trait0.TryRollback();
+		}
+
+		/// <summary>
+		/// Modifies this data source with additional audit rules.
+		/// </summary>
+		/// <param name="additionalRules">The additional rules.</param>
+		/// <returns></returns>
+		public Tortuga.Chain.MySql.MySqlOpenDataSource WithRules(params Tortuga.Chain.AuditRules.AuditRule[] additionalRules)
+		{
+			return __Trait0.WithRules(additionalRules);
+		}
+
+		/// <summary>
+		/// Modifies this data source with additional audit rules.
+		/// </summary>
+		/// <param name="additionalRules">The additional rules.</param>
+		/// <returns></returns>
+		public Tortuga.Chain.MySql.MySqlOpenDataSource WithRules(System.Collections.Generic.IEnumerable<Tortuga.Chain.AuditRules.AuditRule> additionalRules)
+		{
+			return __Trait0.WithRules(additionalRules);
+		}
+
+		/// <summary>
+		/// Modifies this data source to include the indicated user.
+		/// </summary>
+		/// <param name="userValue">The user value.</param>
+		/// <returns></returns>
+		/// <remarks>
+		/// This is used in conjunction with audit rules.
+		/// </remarks>
+		public Tortuga.Chain.MySql.MySqlOpenDataSource WithUser(System.Object? userValue)
+		{
+			return __Trait0.WithUser(userValue);
+		}
+
+		private partial Tortuga.Chain.MySql.MySqlOpenDataSource OnOverride(System.Collections.Generic.IEnumerable<Tortuga.Chain.AuditRules.AuditRule>? additionalRules, System.Object? userValue );
+
 		private void __RegisterTraits()
 		{
 			__TraitsRegistered = true;
+			__Trait0.OnOverride = OnOverride;
 			__Trait0.Container = this;
 			__Trait0.DisposableContainer = this as Traits.IHasOnDispose;
 		}

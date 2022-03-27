@@ -1,21 +1,16 @@
-using System.Collections.Concurrent;
-using System.Data.Common;
 using System.Data.OleDb;
 using Tortuga.Chain.AuditRules;
 using Tortuga.Chain.Core;
-using Tortuga.Chain.DataSources;
+using Tortuga.Shipwright;
 
 namespace Tortuga.Chain.SqlServer
 {
 	/// <summary>
 	/// Class SqlServerOpenDataSource.
 	/// </summary>
-	public class OleDbSqlServerOpenDataSource : OleDbSqlServerDataSourceBase, IOpenDataSource
+	[UseTrait(typeof(Traits.OpenDataSourceTrait<OleDbSqlServerDataSource, OleDbSqlServerOpenDataSource, OleDbConnection, OleDbTransaction, OleDbCommand, OleDbSqlServerMetadataCache>))]
+	public partial class OleDbSqlServerOpenDataSource : OleDbSqlServerDataSourceBase
 	{
-		readonly OleDbSqlServerDataSource m_BaseDataSource;
-		readonly OleDbConnection m_Connection;
-		readonly OleDbTransaction? m_Transaction;
-
 		internal OleDbSqlServerOpenDataSource(OleDbSqlServerDataSource dataSource, OleDbConnection connection, OleDbTransaction? transaction) : base(new SqlServerDataSourceSettings(dataSource))
 		{
 			if (connection == null)
@@ -26,137 +21,6 @@ namespace Tortuga.Chain.SqlServer
 			m_Transaction = transaction;
 		}
 
-		/// <summary>
-		/// Returns the associated connection.
-		/// </summary>
-		public DbConnection AssociatedConnection
-		{
-			get { return m_Connection; }
-		}
-
-		/// <summary>
-		/// Returns the associated transaction.
-		/// </summary>
-		public DbTransaction? AssociatedTransaction
-		{
-			get { return m_Transaction; }
-		}
-
-		/// <summary>
-		/// Gets or sets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
-		/// </summary>
-		public override ICacheAdapter Cache
-		{
-			get { return m_BaseDataSource.Cache; }
-		}
-
-		/// <summary>
-		/// Gets the database metadata.
-		/// </summary>
-		/// <value>The database metadata.</value>
-		public override OleDbSqlServerMetadataCache DatabaseMetadata
-		{
-			get { return m_BaseDataSource.DatabaseMetadata; }
-		}
-
-		/// <summary>
-		/// The extension cache is used by extensions to store data source specific information.
-		/// </summary>
-		/// <value>
-		/// The extension cache.
-		/// </value>
-		protected override ConcurrentDictionary<Type, object> ExtensionCache
-		{
-			get { return m_BaseDataSource.m_ExtensionCache; }
-		}
-
-		/// <summary>
-		/// Closes the connection and transaction associated with this data source.
-		/// </summary>
-		public void Close()
-		{
-			if (m_Transaction != null)
-				m_Transaction.Dispose();
-			m_Connection.Dispose();
-		}
-
-		/// <summary>
-		/// Tests the connection.
-		/// </summary>
-		public override void TestConnection()
-		{
-			using (var cmd = new OleDbCommand("SELECT 1", m_Connection))
-			{
-				if (m_Transaction != null)
-					cmd.Transaction = m_Transaction;
-				cmd.ExecuteScalar();
-			}
-		}
-
-		/// <summary>
-		/// Tests the connection asynchronously.
-		/// </summary>
-		/// <returns></returns>
-		public override async Task TestConnectionAsync()
-		{
-			using (var cmd = new OleDbCommand("SELECT 1", m_Connection))
-			{
-				if (m_Transaction != null)
-					cmd.Transaction = m_Transaction;
-				await cmd.ExecuteScalarAsync().ConfigureAwait(false);
-			}
-		}
-
-		/// <summary>
-		/// Tries the commit the transaction associated with this data source.
-		/// </summary>
-		/// <returns>
-		/// True if there was an open transaction associated with this data source, otherwise false.
-		/// </returns>
-		public bool TryCommit()
-		{
-			if (m_Transaction == null)
-				return false;
-
-			m_Transaction.Commit();
-			return true;
-		}
-
-		/// <summary>
-		/// Modifies this data source with additional audit rules.
-		/// </summary>
-		/// <param name="additionalRules">The additional rules.</param>
-		/// <returns></returns>
-		public OleDbSqlServerOpenDataSource WithRules(params AuditRule[] additionalRules)
-		{
-			AuditRules = new AuditRuleCollection(AuditRules, additionalRules);
-			return this;
-		}
-
-		/// <summary>
-		/// Modifies this data source with additional audit rules.
-		/// </summary>
-		/// <param name="additionalRules">The additional rules.</param>
-		/// <returns></returns>
-		public OleDbSqlServerOpenDataSource WithRules(IEnumerable<AuditRule> additionalRules)
-		{
-			AuditRules = new AuditRuleCollection(AuditRules, additionalRules);
-			return this;
-		}
-
-		/// <summary>
-		/// Modifies this data source to include the indicated user.
-		/// </summary>
-		/// <param name="userValue">The user value.</param>
-		/// <returns></returns>
-		/// <remarks>
-		/// This is used in conjunction with audit rules.
-		/// </remarks>
-		public OleDbSqlServerOpenDataSource WithUser(object? userValue)
-		{
-			UserValue = userValue;
-			return this;
-		}
 
 		/// <summary>
 		/// Executes the specified operation.
@@ -327,6 +191,16 @@ namespace Tortuga.Chain.SqlServer
 					throw;
 				}
 			}
+		}
+
+		private partial OleDbSqlServerOpenDataSource OnOverride(IEnumerable<AuditRule>? additionalRules, object? userValue)
+		{
+			if (userValue != null)
+				UserValue = userValue;
+			if (additionalRules != null)
+				AuditRules = new AuditRuleCollection(AuditRules, additionalRules);
+
+			return this;
 		}
 	}
 }

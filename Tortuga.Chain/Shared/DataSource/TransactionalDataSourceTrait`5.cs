@@ -2,6 +2,7 @@
 using System.Data.Common;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.DataSources;
+using Tortuga.Chain.Metadata;
 using Tortuga.Shipwright;
 
 namespace Traits
@@ -9,11 +10,12 @@ namespace Traits
 
 
 	[Trait]
-	class TransactionDataSourceTrait<TRootDataSource, TConnection, TTransaction, TCommand> : ITransactionalDataSource, IDisposable
+	class TransactionalDataSourceTrait<TRootDataSource, TConnection, TTransaction, TCommand, TDatabaseMetadata> : ITransactionalDataSource, IDisposable
 		where TRootDataSource : class, IRootDataSource, IDataSource, IHasExtensionCache
 		where TConnection : DbConnection
 		where TTransaction : DbTransaction
 		where TCommand : DbCommand, new()
+		where TDatabaseMetadata : IDatabaseMetadataCache
 	{
 
 		[Container]
@@ -72,6 +74,12 @@ namespace Traits
 		bool IOpenDataSource.TryCommit()
 		{
 			Commit();
+			return true;
+		}
+
+		bool IOpenDataSource.TryRollback()
+		{
+			Rollback();
 			return true;
 		}
 
@@ -176,6 +184,16 @@ namespace Traits
 		{
 			using (var cmd = new TCommand() { CommandText = "SELECT 1", Connection = m_Connection, Transaction = m_Transaction })
 				await cmd.ExecuteScalarAsync().ConfigureAwait(false);
+		}
+
+
+		/// <summary>
+		/// Gets the database metadata.
+		/// </summary>
+		[Expose(Inheritance = Inheritance.Override)]
+		public TDatabaseMetadata DatabaseMetadata
+		{
+			get { return (TDatabaseMetadata)m_BaseDataSource.DatabaseMetadata; }
 		}
 	}
 }

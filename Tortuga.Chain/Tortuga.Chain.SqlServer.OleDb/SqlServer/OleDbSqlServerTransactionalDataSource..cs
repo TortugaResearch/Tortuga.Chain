@@ -1,11 +1,13 @@
 using System.Data.OleDb;
 using Tortuga.Chain.Core;
+using Tortuga.Shipwright;
 
 namespace Tortuga.Chain.SqlServer
 {
 	/// <summary>
 	/// Class SqlServerTransactionalDataSource.
 	/// </summary>
+	[UseTrait(typeof(Traits.TransactionalDataSourceTrait<OleDbSqlServerDataSource, OleDbConnection, OleDbTransaction, OleDbCommand, OleDbSqlServerMetadataCache>))]
 	public partial class OleDbSqlServerTransactionalDataSource : OleDbSqlServerDataSourceBase
 	{
 		/// <summary>
@@ -67,13 +69,7 @@ namespace Tortuga.Chain.SqlServer
 			UserValue = dataSource.UserValue;
 		}
 
-		/// <summary>
-		/// This object can be used to lookup database information.
-		/// </summary>
-		public override OleDbSqlServerMetadataCache DatabaseMetadata
-		{
-			get { return m_BaseDataSource.DatabaseMetadata; }
-		}
+
 
 		/// <summary>
 		/// Gets the name of the transaction.
@@ -243,5 +239,8 @@ namespace Tortuga.Chain.SqlServer
 				}
 			}
 		}
+
+
+
 	}
 }

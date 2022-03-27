@@ -1,12 +1,14 @@
 ﻿using System.Data.OleDb;
 using System.Diagnostics.CodeAnalysis;
 using Tortuga.Chain.Core;
+using Tortuga.Shipwright;
 
 namespace Tortuga.Chain.Access
 {
 	/// <summary>
 	/// Class AccessTransactionalDataSource
 	/// </summary>
+	[UseTrait(typeof(Traits.TransactionalDataSourceTrait<AccessDataSource, OleDbConnection, OleDbTransaction, OleDbCommand, AccessMetadataCache>))]
 	public partial class AccessTransactionalDataSource : AccessDataSourceBase
 	{
 
@@ -80,11 +82,6 @@ namespace Tortuga.Chain.Access
 			UserValue = dataSource.UserValue;
 		}
 
-		/// <summary>
-		/// Gets the database metadata.
-		/// </summary>
-		/// <value>The database metadata.</value>
-		public override AccessMetadataCache DatabaseMetadata => m_BaseDataSource.DatabaseMetadata;
 
 		/// <summary>
 		/// Executes the specified execution token.

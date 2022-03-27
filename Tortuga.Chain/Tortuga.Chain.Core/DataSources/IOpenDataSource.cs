@@ -31,5 +31,11 @@ namespace Tortuga.Chain.DataSources
 		/// </summary>
 		/// <returns>True if there was an open transaction associated with this data source, otherwise false.</returns>
 		bool TryCommit();
+
+		/// <summary>
+		/// Tries the rollback the transaction associated with this data source.
+		/// </summary>
+		/// <returns>True if there was an open transaction associated with this data source, otherwise false.</returns>
+		bool TryRollback();
 	}
 }

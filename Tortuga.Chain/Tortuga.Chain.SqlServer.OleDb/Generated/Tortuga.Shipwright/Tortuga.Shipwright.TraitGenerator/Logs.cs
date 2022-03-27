@@ -18,9 +18,13 @@ Container class: Tortuga.Chain.SqlServer.OleDbSqlServerDataSourceBase
 	Adding trait: Traits.SupportsScalarFunctionTrait<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>
 	Adding trait: Traits.SupportsProcedureTrait<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType>
 	Adding trait: Traits.SupportsTableFunctionTrait<System.Data.OleDb.OleDbCommand, System.Data.OleDb.OleDbParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.OleDb.OleDbType, Tortuga.Chain.SqlServerLimitOption>
+Container class: Tortuga.Chain.SqlServer.OleDbSqlServerOpenDataSource
+	Adding trait: Traits.OpenDataSourceTrait<Tortuga.Chain.OleDbSqlServerDataSource, Tortuga.Chain.SqlServer.OleDbSqlServerOpenDataSource, System.Data.OleDb.OleDbConnection, System.Data.OleDb.OleDbTransaction, System.Data.OleDb.OleDbCommand, Tortuga.Chain.SqlServer.OleDbSqlServerMetadataCache>
 Container class: Tortuga.Chain.SqlServer.OleDbSqlServerTransactionalDataSource
-	Adding trait: Traits.TransactionDataSourceTrait<Tortuga.Chain.OleDbSqlServerDataSource, System.Data.OleDb.OleDbConnection, System.Data.OleDb.OleDbTransaction, System.Data.OleDb.OleDbCommand>
+	Adding trait: Traits.TransactionalDataSourceTrait<Tortuga.Chain.OleDbSqlServerDataSource, System.Data.OleDb.OleDbConnection, System.Data.OleDb.OleDbTransaction, System.Data.OleDb.OleDbCommand, Tortuga.Chain.SqlServer.OleDbSqlServerMetadataCache>
 Unable to process interface member of type Microsoft.CodeAnalysis.CSharp.Symbols.PublicModel.MethodSymbol named Traits.IHasExtensionCache.get_ExtensionCache
+Unable to process interface member of type Microsoft.CodeAnalysis.CSharp.Symbols.PublicModel.MethodSymbol named Tortuga.Chain.DataSources.IOpenDataSource.get_AssociatedConnection
+Unable to process interface member of type Microsoft.CodeAnalysis.CSharp.Symbols.PublicModel.MethodSymbol named Tortuga.Chain.DataSources.IOpenDataSource.get_AssociatedTransaction
 Unable to process interface member of type Microsoft.CodeAnalysis.CSharp.Symbols.PublicModel.MethodSymbol named Tortuga.Chain.DataSources.IOpenDataSource.get_AssociatedConnection
 Unable to process interface member of type Microsoft.CodeAnalysis.CSharp.Symbols.PublicModel.MethodSymbol named Tortuga.Chain.DataSources.IOpenDataSource.get_AssociatedTransaction
 */

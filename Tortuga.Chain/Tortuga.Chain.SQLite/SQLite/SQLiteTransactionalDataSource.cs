@@ -2,6 +2,8 @@
 using System.Data.SQLite;
 using System.Diagnostics.CodeAnalysis;
 using Tortuga.Chain.Core;
+using Tortuga.Shipwright;
+using Traits;
 
 namespace Tortuga.Chain.SQLite
 {
@@ -9,7 +11,8 @@ namespace Tortuga.Chain.SQLite
 	/// Class SQLiteTransactionalDataSource
 	/// </summary>
 
-	public partial class SQLiteTransactionalDataSource : SQLiteDataSourceBase
+	[UseTrait(typeof(TransactionalDataSourceTrait<SQLiteDataSource, SQLiteConnection, SQLiteTransaction, SQLiteCommand, SQLiteMetadataCache>))]
+	public partial class SQLiteTransactionalDataSource : SQLiteDataSourceBase, IHasOnDispose
 	{
 
 		[SuppressMessage("Microsoft.Usage", "CA2213")]
@@ -90,14 +93,7 @@ namespace Tortuga.Chain.SQLite
 			UserValue = dataSource.UserValue;
 		}
 
-		/// <summary>
-		/// Gets the database metadata.
-		/// </summary>
-		/// <value>The database metadata.</value>
-		public override SQLiteMetadataCache DatabaseMetadata
-		{
-			get { return m_BaseDataSource.DatabaseMetadata; }
-		}
+
 
 		internal override AsyncReaderWriterLock SyncLock
 		{
@@ -288,5 +284,10 @@ namespace Tortuga.Chain.SQLite
 			}
 		}
 
+		void IHasOnDispose.OnDispose()
+		{
+			if (m_LockToken != null)
+				m_LockToken.Dispose();
+		}
 	}
 }

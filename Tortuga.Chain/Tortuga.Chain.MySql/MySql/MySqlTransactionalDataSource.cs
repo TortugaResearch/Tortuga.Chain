@@ -1,5 +1,6 @@
 ﻿using MySqlConnector;
 using Tortuga.Chain.Core;
+using Tortuga.Shipwright;
 
 namespace Tortuga.Chain.MySql
 {
@@ -8,6 +9,7 @@ namespace Tortuga.Chain.MySql
 	/// </summary>
 	/// <seealso cref="MySqlDataSourceBase" />
 	/// <seealso cref="IDisposable" />
+	[UseTrait(typeof(Traits.TransactionalDataSourceTrait<MySqlDataSource, MySqlConnection, MySqlTransaction, MySqlCommand, MySqlMetadataCache>))]
 	public partial class MySqlTransactionalDataSource : MySqlDataSourceBase
 	{
 		/// <summary>
@@ -67,13 +69,7 @@ namespace Tortuga.Chain.MySql
 			UserValue = dataSource.UserValue;
 		}
 
-		/// <summary>
-		/// Gets the database metadata.
-		/// </summary>
-		public override MySqlMetadataCache DatabaseMetadata
-		{
-			get { return m_BaseDataSource.DatabaseMetadata; }
-		}
+
 
 		/// <summary>
 		/// Executes the specified operation.
