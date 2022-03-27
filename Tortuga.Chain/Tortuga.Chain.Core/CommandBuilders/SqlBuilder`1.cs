@@ -481,7 +481,7 @@ namespace Tortuga.Chain.CommandBuilders
 			}
 			else
 			{
-				foreach (var property in MetadataCache.GetMetadata(filterValue.GetType()).Properties.Where(p => p.MappedColumnName != null))
+				foreach (var property in MetadataCache.GetMetadata(filterValue.GetType()).Properties.Where(p => p.MappedColumnName != null && p.CanRead))
 				{
 					var propertyFound = false;
 					for (var i = 0; i < m_Entries.Length; i++)

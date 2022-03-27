@@ -508,7 +508,30 @@ public class FromTests : TestBase
 		}
 	}
 
+	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	public void FilterWithRecord(string dataSourceName, DataSourceType mode)
+	{
+		var dataSource = DataSource(dataSourceName, mode);
+		try
+		{
+			var emp1 = new EmployeeRecord() { FirstName = "A", LastName = "1" };
+			var emp2 = new EmployeeRecord() { FirstName = "B", LastName = "2" };
+			var emp3 = new EmployeeRecord() { FirstName = "C", LastName = "3" };
+			var emp4 = new EmployeeRecord() { FirstName = "D", LastName = "4" };
 
+			emp1 = dataSource.Insert(EmployeeTableName, emp1).ToObject<EmployeeRecord>().Execute();
+			emp2 = dataSource.Insert(EmployeeTableName, emp2).ToObject<EmployeeRecord>().Execute();
+			emp3 = dataSource.Insert(EmployeeTableName, emp3).ToObject<EmployeeRecord>().Execute();
+			emp4 = dataSource.Insert(EmployeeTableName, emp4).ToObject<EmployeeRecord>().Execute();
+
+			var find2 = dataSource.From<EmployeeRecord>(new EmployeeRecordFilter { EmployeeId = emp2.EmployeeId }).ToObject().Execute();
+			Assert.AreEqual(emp2.EmployeeKey, find2.EmployeeKey, "The wrong employee was returned");
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
 
 
 }
