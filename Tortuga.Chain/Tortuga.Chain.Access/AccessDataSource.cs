@@ -4,343 +4,341 @@ using System.Diagnostics.CodeAnalysis;
 using Tortuga.Chain.Access;
 using Tortuga.Chain.Core;
 
-namespace Tortuga.Chain
+namespace Tortuga.Chain;
+
+/// <summary>
+/// Class that represents a Access Data Source.
+/// </summary>
+public partial class AccessDataSource : AccessDataSourceBase
 {
+	AccessMetadataCache m_DatabaseMetadata;
+
 	/// <summary>
-	/// Class that represents a Access Data Source.
+	/// Initializes a new instance of the <see cref="AccessDataSource" /> class.
 	/// </summary>
-	public partial class AccessDataSource : AccessDataSourceBase
+	/// <param name="name">The name of the data source.</param>
+	/// <param name="connectionString">The connection string.</param>
+	/// <param name="settings">Optional settings object.</param>
+	/// <exception cref="ArgumentException">Connection string is null or empty.;connectionString</exception>
+	public AccessDataSource(string? name, string connectionString, AccessDataSourceSettings? settings = null) : base(settings)
 	{
-		AccessMetadataCache m_DatabaseMetadata;
+		if (string.IsNullOrEmpty(connectionString))
+			throw new ArgumentException($"{nameof(connectionString)} is null or empty.", nameof(connectionString));
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="AccessDataSource" /> class.
-		/// </summary>
-		/// <param name="name">The name of the data source.</param>
-		/// <param name="connectionString">The connection string.</param>
-		/// <param name="settings">Optional settings object.</param>
-		/// <exception cref="ArgumentException">Connection string is null or empty.;connectionString</exception>
-		public AccessDataSource(string? name, string connectionString, AccessDataSourceSettings? settings = null) : base(settings)
+		m_ConnectionBuilder = new OleDbConnectionStringBuilder(connectionString);
+		if (string.IsNullOrEmpty(name))
+			Name = m_ConnectionBuilder.DataSource;
+		else
+			Name = name;
+
+		m_DatabaseMetadata = new AccessMetadataCache(m_ConnectionBuilder);
+		m_ExtensionCache = new ConcurrentDictionary<Type, object>();
+		m_Cache = DefaultCache;
+	}
+
+	/// <summary>
+	/// Initializes a new instance of the <see cref="AccessDataSource" /> class.
+	/// </summary>
+	/// <param name="connectionString"></param>
+	/// <param name="settings">Optional settings object.</param>
+	public AccessDataSource(string connectionString, AccessDataSourceSettings? settings = null)
+		: this(null, connectionString, settings)
+	{
+	}
+
+	/// <summary>
+	/// Initializes a new instance of the <see cref="AccessDataSource" /> class.
+	/// </summary>
+	/// <param name="name">The name of the data source.</param>
+	/// <param name="connectionStringBuilder">The connection string builder.</param>
+	/// <param name="settings">Optional settings object.</param>
+	/// <exception cref="ArgumentNullException">connectionStringBuilder;connectionStringBuilder is null.</exception>
+	public AccessDataSource(string? name, OleDbConnectionStringBuilder connectionStringBuilder, AccessDataSourceSettings? settings = null) : base(settings)
+	{
+		m_ConnectionBuilder = connectionStringBuilder ?? throw new ArgumentNullException(nameof(connectionStringBuilder), $"{nameof(connectionStringBuilder)} is null.");
+
+		if (string.IsNullOrEmpty(name))
+			Name = m_ConnectionBuilder.DataSource;
+		else
+			Name = name;
+
+		m_DatabaseMetadata = new AccessMetadataCache(m_ConnectionBuilder);
+		m_ExtensionCache = new ConcurrentDictionary<Type, object>();
+		m_Cache = DefaultCache;
+	}
+
+	/// <summary>
+	/// Initializes a new instance of the <see cref="AccessDataSource" /> class.
+	/// </summary>
+	/// <param name="connectionStringBuilder"></param>
+	/// <param name="settings">Optional settings object.</param>
+	public AccessDataSource(OleDbConnectionStringBuilder connectionStringBuilder, AccessDataSourceSettings? settings = null)
+	 : this(null, connectionStringBuilder, settings)
+	{
+	}
+
+	AccessDataSource(string? name, OleDbConnectionStringBuilder connectionStringBuilder, AccessDataSourceSettings? settings, AccessMetadataCache databaseMetadata, ICacheAdapter cache, ConcurrentDictionary<Type, object> extensionCache) : base(settings)
+	{
+		if (connectionStringBuilder == null)
+			throw new ArgumentNullException(nameof(connectionStringBuilder), $"{nameof(connectionStringBuilder)} is null.");
+
+		m_ConnectionBuilder = connectionStringBuilder;
+		if (string.IsNullOrEmpty(name))
+			Name = m_ConnectionBuilder.DataSource;
+		else
+			Name = name;
+
+		m_DatabaseMetadata = databaseMetadata;
+		m_ExtensionCache = extensionCache;
+		m_Cache = cache;
+	}
+
+	/// <summary>
+	/// This object can be used to lookup database information.
+	/// </summary>
+	public override AccessMetadataCache DatabaseMetadata => m_DatabaseMetadata;
+
+	/// <summary>
+	/// Creates a new data source with the indicated changes to the settings.
+	/// </summary>
+	/// <param name="settings">The new settings to use.</param>
+	/// <returns></returns>
+	/// <remarks>The new data source will share the same database metadata cache.</remarks>
+	[SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
+	public AccessDataSource WithSettings(AccessDataSourceSettings? settings)
+	{
+		var mergedSettings = new AccessDataSourceSettings()
 		{
-			if (string.IsNullOrEmpty(connectionString))
-				throw new ArgumentException($"{nameof(connectionString)} is null or empty.", nameof(connectionString));
+			DefaultCommandTimeout = settings?.DefaultCommandTimeout ?? DefaultCommandTimeout,
+			SuppressGlobalEvents = settings?.SuppressGlobalEvents ?? SuppressGlobalEvents,
+			StrictMode = settings?.StrictMode ?? StrictMode,
+			SequentialAccessMode = settings?.SequentialAccessMode ?? SequentialAccessMode
+		};
+		var result = new AccessDataSource(Name, m_ConnectionBuilder, mergedSettings, m_DatabaseMetadata, m_Cache, m_ExtensionCache);
+		result.m_DatabaseMetadata = m_DatabaseMetadata;
+		result.AuditRules = AuditRules;
+		result.UserValue = UserValue;
 
-			m_ConnectionBuilder = new OleDbConnectionStringBuilder(connectionString);
-			if (string.IsNullOrEmpty(name))
-				Name = m_ConnectionBuilder.DataSource;
-			else
-				Name = name;
+		result.ExecutionStarted += (sender, e) => OnExecutionStarted(e);
+		result.ExecutionFinished += (sender, e) => OnExecutionFinished(e);
+		result.ExecutionError += (sender, e) => OnExecutionError(e);
+		result.ExecutionCanceled += (sender, e) => OnExecutionCanceled(e);
 
-			m_DatabaseMetadata = new AccessMetadataCache(m_ConnectionBuilder);
-			m_ExtensionCache = new ConcurrentDictionary<Type, object>();
-			m_Cache = DefaultCache;
-		}
+		return result;
+	}
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="AccessDataSource" /> class.
-		/// </summary>
-		/// <param name="connectionString"></param>
-		/// <param name="settings">Optional settings object.</param>
-		public AccessDataSource(string connectionString, AccessDataSourceSettings? settings = null)
-			: this(null, connectionString, settings)
+	/// <summary>
+	/// Executes the specified operation.
+	/// </summary>
+	/// <param name="executionToken"></param>
+	/// <param name="implementation"></param>
+	/// <param name="state"></param>
+	[SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
+	protected override int? Execute(CommandExecutionToken<OleDbCommand, OleDbParameter> executionToken, CommandImplementation<OleDbCommand> implementation, object? state)
+	{
+		if (executionToken == null)
+			throw new ArgumentNullException(nameof(executionToken), $"{nameof(executionToken)} is null.");
+		if (implementation == null)
+			throw new ArgumentNullException(nameof(implementation), $"{nameof(implementation)} is null.");
+		var currentToken = executionToken as AccessCommandExecutionToken;
+		if (currentToken == null)
+			throw new ArgumentNullException(nameof(executionToken), "only AccessCommandExecutionToken is supported.");
+
+		var startTime = DateTimeOffset.Now;
+
+		try
 		{
-		}
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="AccessDataSource" /> class.
-		/// </summary>
-		/// <param name="name">The name of the data source.</param>
-		/// <param name="connectionStringBuilder">The connection string builder.</param>
-		/// <param name="settings">Optional settings object.</param>
-		/// <exception cref="ArgumentNullException">connectionStringBuilder;connectionStringBuilder is null.</exception>
-		public AccessDataSource(string? name, OleDbConnectionStringBuilder connectionStringBuilder, AccessDataSourceSettings? settings = null) : base(settings)
-		{
-			m_ConnectionBuilder = connectionStringBuilder ?? throw new ArgumentNullException(nameof(connectionStringBuilder), $"{nameof(connectionStringBuilder)} is null.");
-
-			if (string.IsNullOrEmpty(name))
-				Name = m_ConnectionBuilder.DataSource;
-			else
-				Name = name;
-
-			m_DatabaseMetadata = new AccessMetadataCache(m_ConnectionBuilder);
-			m_ExtensionCache = new ConcurrentDictionary<Type, object>();
-			m_Cache = DefaultCache;
-		}
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="AccessDataSource" /> class.
-		/// </summary>
-		/// <param name="connectionStringBuilder"></param>
-		/// <param name="settings">Optional settings object.</param>
-		public AccessDataSource(OleDbConnectionStringBuilder connectionStringBuilder, AccessDataSourceSettings? settings = null)
-		 : this(null, connectionStringBuilder, settings)
-		{
-		}
-
-		AccessDataSource(string? name, OleDbConnectionStringBuilder connectionStringBuilder, AccessDataSourceSettings? settings, AccessMetadataCache databaseMetadata, ICacheAdapter cache, ConcurrentDictionary<Type, object> extensionCache) : base(settings)
-		{
-			if (connectionStringBuilder == null)
-				throw new ArgumentNullException(nameof(connectionStringBuilder), $"{nameof(connectionStringBuilder)} is null.");
-
-			m_ConnectionBuilder = connectionStringBuilder;
-			if (string.IsNullOrEmpty(name))
-				Name = m_ConnectionBuilder.DataSource;
-			else
-				Name = name;
-
-			m_DatabaseMetadata = databaseMetadata;
-			m_ExtensionCache = extensionCache;
-			m_Cache = cache;
-		}
-
-		/// <summary>
-		/// This object can be used to lookup database information.
-		/// </summary>
-		public override AccessMetadataCache DatabaseMetadata => m_DatabaseMetadata;
-
-
-		/// <summary>
-		/// Creates a new data source with the indicated changes to the settings.
-		/// </summary>
-		/// <param name="settings">The new settings to use.</param>
-		/// <returns></returns>
-		/// <remarks>The new data source will share the same database metadata cache.</remarks>
-		[SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
-		public AccessDataSource WithSettings(AccessDataSourceSettings? settings)
-		{
-			var mergedSettings = new AccessDataSourceSettings()
+			using (var con = CreateConnection())
 			{
-				DefaultCommandTimeout = settings?.DefaultCommandTimeout ?? DefaultCommandTimeout,
-				SuppressGlobalEvents = settings?.SuppressGlobalEvents ?? SuppressGlobalEvents,
-				StrictMode = settings?.StrictMode ?? StrictMode,
-				SequentialAccessMode = settings?.SequentialAccessMode ?? SequentialAccessMode
-			};
-			var result = new AccessDataSource(Name, m_ConnectionBuilder, mergedSettings, m_DatabaseMetadata, m_Cache, m_ExtensionCache);
-			result.m_DatabaseMetadata = m_DatabaseMetadata;
-			result.AuditRules = AuditRules;
-			result.UserValue = UserValue;
-
-			result.ExecutionStarted += (sender, e) => OnExecutionStarted(e);
-			result.ExecutionFinished += (sender, e) => OnExecutionFinished(e);
-			result.ExecutionError += (sender, e) => OnExecutionError(e);
-			result.ExecutionCanceled += (sender, e) => OnExecutionCanceled(e);
-
-			return result;
-		}
-
-		/// <summary>
-		/// Executes the specified operation.
-		/// </summary>
-		/// <param name="executionToken"></param>
-		/// <param name="implementation"></param>
-		/// <param name="state"></param>
-		[SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
-		protected override int? Execute(CommandExecutionToken<OleDbCommand, OleDbParameter> executionToken, CommandImplementation<OleDbCommand> implementation, object? state)
-		{
-			if (executionToken == null)
-				throw new ArgumentNullException(nameof(executionToken), $"{nameof(executionToken)} is null.");
-			if (implementation == null)
-				throw new ArgumentNullException(nameof(implementation), $"{nameof(implementation)} is null.");
-			var currentToken = executionToken as AccessCommandExecutionToken;
-			if (currentToken == null)
-				throw new ArgumentNullException(nameof(executionToken), "only AccessCommandExecutionToken is supported.");
-
-			var startTime = DateTimeOffset.Now;
-
-			try
-			{
-				using (var con = CreateConnection())
+				int? rows = null;
+				while (currentToken != null)
 				{
-					int? rows = null;
-					while (currentToken != null)
+					OnExecutionStarted(currentToken, startTime, state);
+					using (var cmd = new OleDbCommand())
 					{
-						OnExecutionStarted(currentToken, startTime, state);
-						using (var cmd = new OleDbCommand())
+						cmd.Connection = con;
+						if (DefaultCommandTimeout.HasValue)
+							cmd.CommandTimeout = (int)DefaultCommandTimeout.Value.TotalSeconds;
+						cmd.CommandText = currentToken.CommandText;
+						cmd.CommandType = currentToken.CommandType;
+						foreach (var param in currentToken.Parameters)
+							cmd.Parameters.Add(param);
+
+						currentToken.ApplyCommandOverrides(cmd);
+
+						if (currentToken.ExecutionMode == AccessCommandExecutionMode.Materializer)
+							rows = implementation(cmd);
+						else if (currentToken.ExecutionMode == AccessCommandExecutionMode.ExecuteScalarAndForward)
 						{
-							cmd.Connection = con;
-							if (DefaultCommandTimeout.HasValue)
-								cmd.CommandTimeout = (int)DefaultCommandTimeout.Value.TotalSeconds;
-							cmd.CommandText = currentToken.CommandText;
-							cmd.CommandType = currentToken.CommandType;
-							foreach (var param in currentToken.Parameters)
-								cmd.Parameters.Add(param);
+							if (currentToken.ForwardResult == null)
+								throw new InvalidOperationException("currentToken.ExecutionMode is ExecuteScalarAndForward, but currentToken.ForwardResult is null.");
 
-							currentToken.ApplyCommandOverrides(cmd);
-
-							if (currentToken.ExecutionMode == AccessCommandExecutionMode.Materializer)
-								rows = implementation(cmd);
-							else if (currentToken.ExecutionMode == AccessCommandExecutionMode.ExecuteScalarAndForward)
-							{
-								if (currentToken.ForwardResult == null)
-									throw new InvalidOperationException("currentToken.ExecutionMode is ExecuteScalarAndForward, but currentToken.ForwardResult is null.");
-
-								currentToken.ForwardResult(cmd.ExecuteScalar());
-							}
-							else
-								rows = cmd.ExecuteNonQuery();
-							currentToken.RaiseCommandExecuted(cmd, rows);
-							OnExecutionFinished(currentToken, startTime, DateTimeOffset.Now, rows, state);
+							currentToken.ForwardResult(cmd.ExecuteScalar());
 						}
-						currentToken = currentToken.NextCommand;
+						else
+							rows = cmd.ExecuteNonQuery();
+						currentToken.RaiseCommandExecuted(cmd, rows);
+						OnExecutionFinished(currentToken, startTime, DateTimeOffset.Now, rows, state);
 					}
-					return rows;
+					currentToken = currentToken.NextCommand;
 				}
+				return rows;
 			}
-			catch (Exception ex)
+		}
+		catch (Exception ex)
+		{
+			OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
+			throw;
+		}
+	}
+
+	/// <summary>
+	/// Executes the specified operation.
+	/// </summary>
+	/// <param name="executionToken">The execution token.</param>
+	/// <param name="implementation">The implementation.</param>
+	/// <param name="state">The state.</param>
+	/// <returns>System.Nullable&lt;System.Int32&gt;.</returns>
+	protected override int? Execute(OperationExecutionToken<OleDbConnection, OleDbTransaction> executionToken, OperationImplementation<OleDbConnection, OleDbTransaction> implementation, object? state)
+	{
+		if (executionToken == null)
+			throw new ArgumentNullException(nameof(executionToken), $"{nameof(executionToken)} is null.");
+		if (implementation == null)
+			throw new ArgumentNullException(nameof(implementation), $"{nameof(implementation)} is null.");
+
+		var startTime = DateTimeOffset.Now;
+		OnExecutionStarted(executionToken, startTime, state);
+
+		try
+		{
+			using (var con = CreateConnection())
+			{
+				var rows = implementation(con, null);
+				OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
+				return rows;
+			}
+		}
+		catch (Exception ex)
+		{
+			OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
+			throw;
+		}
+	}
+
+	/// <summary>
+	/// Executes the specified operation asynchronously.
+	/// </summary>
+	/// <param name="executionToken"></param>
+	/// <param name="implementation"></param>
+	/// <param name="cancellationToken"></param>
+	/// <param name="state"></param>
+	/// <returns></returns>
+	protected override async Task<int?> ExecuteAsync(CommandExecutionToken<OleDbCommand, OleDbParameter> executionToken, CommandImplementationAsync<OleDbCommand> implementation, CancellationToken cancellationToken, object? state)
+	{
+		if (executionToken == null)
+			throw new ArgumentNullException(nameof(executionToken), $"{nameof(executionToken)} is null.");
+		if (implementation == null)
+			throw new ArgumentNullException(nameof(implementation), $"{nameof(implementation)} is null.");
+		var currentToken = executionToken as AccessCommandExecutionToken;
+		if (currentToken == null)
+			throw new ArgumentNullException(nameof(executionToken), "only AccessCommandExecutionToken is supported.");
+
+		var startTime = DateTimeOffset.Now;
+
+		try
+		{
+			using (var con = await CreateConnectionAsync(cancellationToken).ConfigureAwait(false))
+			{
+				int? rows = null;
+				while (currentToken != null)
+				{
+					OnExecutionStarted(currentToken, startTime, state);
+					using (var cmd = new OleDbCommand())
+					{
+						cmd.Connection = con;
+						if (DefaultCommandTimeout.HasValue)
+							cmd.CommandTimeout = (int)DefaultCommandTimeout.Value.TotalSeconds;
+						cmd.CommandText = currentToken.CommandText;
+						cmd.CommandType = currentToken.CommandType;
+						foreach (var param in currentToken.Parameters)
+							cmd.Parameters.Add(param);
+
+						currentToken.ApplyCommandOverrides(cmd);
+
+						if (currentToken.ExecutionMode == AccessCommandExecutionMode.Materializer)
+							rows = await implementation(cmd).ConfigureAwait(false);
+						else if (currentToken.ExecutionMode == AccessCommandExecutionMode.ExecuteScalarAndForward)
+						{
+							if (currentToken.ForwardResult == null)
+								throw new InvalidOperationException("currentToken.ExecutionMode is ExecuteScalarAndForward, but currentToken.ForwardResult is null.");
+
+							currentToken.ForwardResult(await cmd.ExecuteScalarAsync().ConfigureAwait(false));
+						}
+						else
+							rows = await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
+						executionToken.RaiseCommandExecuted(cmd, rows);
+						OnExecutionFinished(currentToken, startTime, DateTimeOffset.Now, rows, state);
+					}
+					currentToken = currentToken.NextCommand;
+				}
+				return rows;
+			}
+		}
+		catch (Exception ex)
+		{
+			if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException
+			{
+				var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);
+				OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex2, state);
+				throw ex2;
+			}
+			else
 			{
 				OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
 				throw;
 			}
 		}
+	}
 
-		/// <summary>
-		/// Executes the specified operation.
-		/// </summary>
-		/// <param name="executionToken">The execution token.</param>
-		/// <param name="implementation">The implementation.</param>
-		/// <param name="state">The state.</param>
-		/// <returns>System.Nullable&lt;System.Int32&gt;.</returns>
-		protected override int? Execute(OperationExecutionToken<OleDbConnection, OleDbTransaction> executionToken, OperationImplementation<OleDbConnection, OleDbTransaction> implementation, object? state)
+	/// <summary>
+	/// execute as an asynchronous operation.
+	/// </summary>
+	/// <param name="executionToken">The execution token.</param>
+	/// <param name="implementation">The implementation.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <param name="state">The state.</param>
+	/// <returns>Task.</returns>
+	protected override async Task<int?> ExecuteAsync(OperationExecutionToken<OleDbConnection, OleDbTransaction> executionToken, OperationImplementationAsync<OleDbConnection, OleDbTransaction> implementation, CancellationToken cancellationToken, object? state)
+	{
+		if (executionToken == null)
+			throw new ArgumentNullException(nameof(executionToken), $"{nameof(executionToken)} is null.");
+		if (implementation == null)
+			throw new ArgumentNullException(nameof(implementation), $"{nameof(implementation)} is null.");
+
+		var startTime = DateTimeOffset.Now;
+		OnExecutionStarted(executionToken, startTime, state);
+
+		try
 		{
-			if (executionToken == null)
-				throw new ArgumentNullException(nameof(executionToken), $"{nameof(executionToken)} is null.");
-			if (implementation == null)
-				throw new ArgumentNullException(nameof(implementation), $"{nameof(implementation)} is null.");
-
-			var startTime = DateTimeOffset.Now;
-			OnExecutionStarted(executionToken, startTime, state);
-
-			try
+			using (var con = await CreateConnectionAsync(cancellationToken).ConfigureAwait(false))
 			{
-				using (var con = CreateConnection())
-				{
-					var rows = implementation(con, null);
-					OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
-					return rows;
-				}
+				var rows = await implementation(con, null, cancellationToken).ConfigureAwait(false);
+				OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
+				return rows;
 			}
-			catch (Exception ex)
+		}
+		catch (Exception ex)
+		{
+			if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException
+			{
+				var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);
+				OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex2, state);
+				throw ex2;
+			}
+			else
 			{
 				OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
 				throw;
-			}
-		}
-
-		/// <summary>
-		/// Executes the specified operation asynchronously.
-		/// </summary>
-		/// <param name="executionToken"></param>
-		/// <param name="implementation"></param>
-		/// <param name="cancellationToken"></param>
-		/// <param name="state"></param>
-		/// <returns></returns>
-		protected override async Task<int?> ExecuteAsync(CommandExecutionToken<OleDbCommand, OleDbParameter> executionToken, CommandImplementationAsync<OleDbCommand> implementation, CancellationToken cancellationToken, object? state)
-		{
-			if (executionToken == null)
-				throw new ArgumentNullException(nameof(executionToken), $"{nameof(executionToken)} is null.");
-			if (implementation == null)
-				throw new ArgumentNullException(nameof(implementation), $"{nameof(implementation)} is null.");
-			var currentToken = executionToken as AccessCommandExecutionToken;
-			if (currentToken == null)
-				throw new ArgumentNullException(nameof(executionToken), "only AccessCommandExecutionToken is supported.");
-
-			var startTime = DateTimeOffset.Now;
-
-			try
-			{
-				using (var con = await CreateConnectionAsync(cancellationToken).ConfigureAwait(false))
-				{
-					int? rows = null;
-					while (currentToken != null)
-					{
-						OnExecutionStarted(currentToken, startTime, state);
-						using (var cmd = new OleDbCommand())
-						{
-							cmd.Connection = con;
-							if (DefaultCommandTimeout.HasValue)
-								cmd.CommandTimeout = (int)DefaultCommandTimeout.Value.TotalSeconds;
-							cmd.CommandText = currentToken.CommandText;
-							cmd.CommandType = currentToken.CommandType;
-							foreach (var param in currentToken.Parameters)
-								cmd.Parameters.Add(param);
-
-							currentToken.ApplyCommandOverrides(cmd);
-
-							if (currentToken.ExecutionMode == AccessCommandExecutionMode.Materializer)
-								rows = await implementation(cmd).ConfigureAwait(false);
-							else if (currentToken.ExecutionMode == AccessCommandExecutionMode.ExecuteScalarAndForward)
-							{
-								if (currentToken.ForwardResult == null)
-									throw new InvalidOperationException("currentToken.ExecutionMode is ExecuteScalarAndForward, but currentToken.ForwardResult is null.");
-
-								currentToken.ForwardResult(await cmd.ExecuteScalarAsync().ConfigureAwait(false));
-							}
-							else
-								rows = await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
-							executionToken.RaiseCommandExecuted(cmd, rows);
-							OnExecutionFinished(currentToken, startTime, DateTimeOffset.Now, rows, state);
-						}
-						currentToken = currentToken.NextCommand;
-					}
-					return rows;
-				}
-			}
-			catch (Exception ex)
-			{
-				if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException
-				{
-					var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);
-					OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex2, state);
-					throw ex2;
-				}
-				else
-				{
-					OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
-					throw;
-				}
-			}
-		}
-
-		/// <summary>
-		/// execute as an asynchronous operation.
-		/// </summary>
-		/// <param name="executionToken">The execution token.</param>
-		/// <param name="implementation">The implementation.</param>
-		/// <param name="cancellationToken">The cancellation token.</param>
-		/// <param name="state">The state.</param>
-		/// <returns>Task.</returns>
-		protected override async Task<int?> ExecuteAsync(OperationExecutionToken<OleDbConnection, OleDbTransaction> executionToken, OperationImplementationAsync<OleDbConnection, OleDbTransaction> implementation, CancellationToken cancellationToken, object? state)
-		{
-			if (executionToken == null)
-				throw new ArgumentNullException(nameof(executionToken), $"{nameof(executionToken)} is null.");
-			if (implementation == null)
-				throw new ArgumentNullException(nameof(implementation), $"{nameof(implementation)} is null.");
-
-			var startTime = DateTimeOffset.Now;
-			OnExecutionStarted(executionToken, startTime, state);
-
-			try
-			{
-				using (var con = await CreateConnectionAsync(cancellationToken).ConfigureAwait(false))
-				{
-					var rows = await implementation(con, null, cancellationToken).ConfigureAwait(false);
-					OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
-					return rows;
-				}
-			}
-			catch (Exception ex)
-			{
-				if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException
-				{
-					var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);
-					OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex2, state);
-					throw ex2;
-				}
-				else
-				{
-					OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
-					throw;
-				}
 			}
 		}
 	}

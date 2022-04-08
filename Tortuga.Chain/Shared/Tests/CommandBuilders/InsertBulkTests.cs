@@ -212,6 +212,7 @@ public class InsertBulkTests : TestBase
 #if SQL_SERVER_SDS || SQL_SERVER_MDS
 
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	[Obsolete]
 	public void InsertBulk_IdentityInsert(string dataSourceName, DataSourceType mode)
 	{
 		var key1000 = Guid.NewGuid().ToString();

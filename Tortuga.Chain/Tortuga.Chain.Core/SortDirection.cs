@@ -1,21 +1,20 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace Tortuga.Chain
+namespace Tortuga.Chain;
+
+/// <summary>
+/// Used to indicate the sort direction
+/// </summary>
+[SuppressMessage("Microsoft.Design", "CA1028:EnumStorageShouldBeInt32")]
+public enum SortDirection : byte
 {
 	/// <summary>
-	/// Used to indicate the sort direction
+	/// Ascending
 	/// </summary>
-	[SuppressMessage("Microsoft.Design", "CA1028:EnumStorageShouldBeInt32")]
-	public enum SortDirection : byte
-	{
-		/// <summary>
-		/// Ascending
-		/// </summary>
-		Ascending = 0,
+	Ascending = 0,
 
-		/// <summary>
-		/// Descending
-		/// </summary>
-		Descending = 1
-	}
+	/// <summary>
+	/// Descending
+	/// </summary>
+	Descending = 1
 }

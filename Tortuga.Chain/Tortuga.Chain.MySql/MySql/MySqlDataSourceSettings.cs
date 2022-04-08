@@ -1,27 +1,26 @@
 ﻿using Tortuga.Chain.DataSources;
 
-namespace Tortuga.Chain.MySql
+namespace Tortuga.Chain.MySql;
+
+/// <summary>
+/// Class MySqlDataSourceSettings.
+/// </summary>
+/// <seealso cref="DataSourceSettings" />
+public class MySqlDataSourceSettings : DataSourceSettings
 {
 	/// <summary>
-	/// Class MySqlDataSourceSettings.
+	/// Initializes a new instance of the <see cref="MySqlDataSourceSettings"/> class.
 	/// </summary>
-	/// <seealso cref="DataSourceSettings" />
-	public class MySqlDataSourceSettings : DataSourceSettings
+	public MySqlDataSourceSettings() { }
+
+	internal MySqlDataSourceSettings(MySqlDataSource dataSource, bool forwardEvents = false)
 	{
-		/// <summary>
-		/// Initializes a new instance of the <see cref="MySqlDataSourceSettings"/> class.
-		/// </summary>
-		public MySqlDataSourceSettings() { }
+		if (dataSource == null)
+			throw new ArgumentNullException(nameof(dataSource), $"{nameof(dataSource)} is null.");
 
-		internal MySqlDataSourceSettings(MySqlDataSource dataSource, bool forwardEvents = false)
-		{
-			if (dataSource == null)
-				throw new ArgumentNullException(nameof(dataSource), $"{nameof(dataSource)} is null.");
-
-			DefaultCommandTimeout = dataSource.DefaultCommandTimeout;
-			StrictMode = dataSource.StrictMode;
-			SequentialAccessMode = dataSource.SequentialAccessMode;
-			SuppressGlobalEvents = dataSource.SuppressGlobalEvents || forwardEvents;
-		}
+		DefaultCommandTimeout = dataSource.DefaultCommandTimeout;
+		StrictMode = dataSource.StrictMode;
+		SequentialAccessMode = dataSource.SequentialAccessMode;
+		SuppressGlobalEvents = dataSource.SuppressGlobalEvents || forwardEvents;
 	}
 }

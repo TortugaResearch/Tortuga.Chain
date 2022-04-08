@@ -1,72 +1,70 @@
 ﻿using System.Data.Common;
 using Tortuga.Chain.CommandBuilders;
 
-namespace Tortuga.Chain.SqlServer
+namespace Tortuga.Chain.SqlServer;
+
+internal static class Utilities
 {
-	internal static class Utilities
+	/// <summary>
+	/// Gets the parameters from a SQL Builder.
+	/// </summary>
+	/// <param name="sqlBuilder">The SQL builder.</param>
+	/// <returns></returns>
+	public static List<SqlParameter> GetParameters(this SqlBuilder<SqlDbType> sqlBuilder)
 	{
-		/// <summary>
-		/// Gets the parameters from a SQL Builder.
-		/// </summary>
-		/// <param name="sqlBuilder">The SQL builder.</param>
-		/// <returns></returns>
-		public static List<SqlParameter> GetParameters(this SqlBuilder<SqlDbType> sqlBuilder)
+		return sqlBuilder.GetParameters(ParameterBuilderCallback);
+	}
+
+	public static SqlParameter ParameterBuilderCallback(SqlBuilderEntry<SqlDbType> entry)
+	{
+		var result = new SqlParameter();
+		result.ParameterName = entry.Details.SqlVariableName;
+		result.Value = entry.ParameterValue;
+
+		if (entry.Details.DbType.HasValue)
 		{
-			return sqlBuilder.GetParameters(ParameterBuilderCallback);
-		}
+			result.SqlDbType = entry.Details.DbType.Value;
 
-
-		public static SqlParameter ParameterBuilderCallback(SqlBuilderEntry<SqlDbType> entry)
-		{
-			var result = new SqlParameter();
-			result.ParameterName = entry.Details.SqlVariableName;
-			result.Value = entry.ParameterValue;
-
-			if (entry.Details.DbType.HasValue)
+			if (entry.Details.MaxLength.HasValue)
 			{
-				result.SqlDbType = entry.Details.DbType.Value;
-
-				if (entry.Details.MaxLength.HasValue)
+				switch (result.SqlDbType)
 				{
-					switch (result.SqlDbType)
-					{
-						case SqlDbType.Char:
-						case SqlDbType.VarChar:
-						case SqlDbType.NChar:
-						case SqlDbType.NVarChar:
-						case SqlDbType.Binary:
-						case SqlDbType.VarBinary:
-							result.Size = entry.Details.MaxLength.Value;
-							break;
-					}
+					case SqlDbType.Char:
+					case SqlDbType.VarChar:
+					case SqlDbType.NChar:
+					case SqlDbType.NVarChar:
+					case SqlDbType.Binary:
+					case SqlDbType.VarBinary:
+						result.Size = entry.Details.MaxLength.Value;
+						break;
 				}
 			}
-
-			if (entry.ParameterValue is DbDataReader)
-				result.SqlDbType = SqlDbType.Structured;
-
-			result.Direction = entry.Details.Direction;
-
-			return result;
 		}
 
-		/// <summary>
-		/// Triggers need special handling for OUTPUT clauses.
-		/// </summary>
-		public static void UseTableVariable<TDbType>(this SqlBuilder<TDbType> sqlBuilder, SqlServerTableOrViewMetadata<TDbType> Table, out string? header, out string? intoClause, out string? footer) where TDbType : struct
+		if (entry.ParameterValue is DbDataReader)
+			result.SqlDbType = SqlDbType.Structured;
+
+		result.Direction = entry.Details.Direction;
+
+		return result;
+	}
+
+	/// <summary>
+	/// Triggers need special handling for OUTPUT clauses.
+	/// </summary>
+	public static void UseTableVariable<TDbType>(this SqlBuilder<TDbType> sqlBuilder, SqlServerTableOrViewMetadata<TDbType> Table, out string? header, out string? intoClause, out string? footer) where TDbType : struct
+	{
+		if (sqlBuilder.HasReadFields && Table.HasTriggers)
 		{
-			if (sqlBuilder.HasReadFields && Table.HasTriggers)
-			{
-				header = "DECLARE @ResultTable TABLE( " + string.Join(", ", sqlBuilder.GetSelectColumnDetails().Select(c => c.QuotedSqlName + " " + c.FullTypeName + " NULL")) + ");" + Environment.NewLine;
-				intoClause = " INTO @ResultTable ";
-				footer = Environment.NewLine + "SELECT * FROM @ResultTable";
-			}
-			else
-			{
-				header = null;
-				intoClause = null;
-				footer = null;
-			}
+			header = "DECLARE @ResultTable TABLE( " + string.Join(", ", sqlBuilder.GetSelectColumnDetails().Select(c => c.QuotedSqlName + " " + c.FullTypeName + " NULL")) + ");" + Environment.NewLine;
+			intoClause = " INTO @ResultTable ";
+			footer = Environment.NewLine + "SELECT * FROM @ResultTable";
+		}
+		else
+		{
+			header = null;
+			intoClause = null;
+			footer = null;
 		}
 	}
 }

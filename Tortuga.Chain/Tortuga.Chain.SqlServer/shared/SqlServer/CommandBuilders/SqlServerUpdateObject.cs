@@ -3,71 +3,70 @@ using System.Text;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
 
-namespace Tortuga.Chain.SqlServer.CommandBuilders
+namespace Tortuga.Chain.SqlServer.CommandBuilders;
+
+/// <summary>
+/// Class SqlServerUpdateObject.
+/// </summary>
+internal sealed class SqlServerUpdateObject<TArgument> : SqlServerObjectCommand<TArgument>
+	where TArgument : class
 {
+	readonly UpdateOptions m_Options;
+
 	/// <summary>
-	/// Class SqlServerUpdateObject.
+	/// Initializes a new instance of the <see cref="SqlServerUpdateObject{TArgument}" /> class.
 	/// </summary>
-	internal sealed class SqlServerUpdateObject<TArgument> : SqlServerObjectCommand<TArgument>
-		where TArgument : class
+	/// <param name="dataSource">The data source.</param>
+	/// <param name="tableName">Name of the table.</param>
+	/// <param name="argumentValue">The argument value.</param>
+	/// <param name="options">The options.</param>
+	public SqlServerUpdateObject(SqlServerDataSourceBase dataSource, SqlServerObjectName tableName, TArgument argumentValue, UpdateOptions options) : base(dataSource, tableName, argumentValue)
 	{
-		readonly UpdateOptions m_Options;
+		m_Options = options;
+	}
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="SqlServerUpdateObject{TArgument}" /> class.
-		/// </summary>
-		/// <param name="dataSource">The data source.</param>
-		/// <param name="tableName">Name of the table.</param>
-		/// <param name="argumentValue">The argument value.</param>
-		/// <param name="options">The options.</param>
-		public SqlServerUpdateObject(SqlServerDataSourceBase dataSource, SqlServerObjectName tableName, TArgument argumentValue, UpdateOptions options) : base(dataSource, tableName, argumentValue)
-		{
-			m_Options = options;
-		}
+	/// <summary>
+	/// Prepares the command for execution by generating any necessary SQL.
+	/// </summary>
+	/// <param name="materializer">The materializer.</param>
+	/// <returns>ExecutionToken&lt;TCommand&gt;.</returns>
 
-		/// <summary>
-		/// Prepares the command for execution by generating any necessary SQL.
-		/// </summary>
-		/// <param name="materializer">The materializer.</param>
-		/// <returns>ExecutionToken&lt;TCommand&gt;.</returns>
+	[SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "UpdateOptions")]
+	[SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "UseKeyAttribute")]
+	[SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "WithKeys")]
+	public override CommandExecutionToken<SqlCommand, SqlParameter> Prepare(Materializer<SqlCommand, SqlParameter> materializer)
+	{
+		if (materializer == null)
+			throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
 
-		[SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "UpdateOptions")]
-		[SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "UseKeyAttribute")]
-		[SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "WithKeys")]
-		public override CommandExecutionToken<SqlCommand, SqlParameter> Prepare(Materializer<SqlCommand, SqlParameter> materializer)
-		{
-			if (materializer == null)
-				throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
+		if (!Table.HasPrimaryKey && !m_Options.HasFlag(UpdateOptions.UseKeyAttribute) && KeyColumns.Count == 0)
+			throw new MappingException($"Cannot perform an update operation on {Table.Name} unless UpdateOptions.UseKeyAttribute or .WithKeys() is specified.");
 
-			if (!Table.HasPrimaryKey && !m_Options.HasFlag(UpdateOptions.UseKeyAttribute) && KeyColumns.Count == 0)
-				throw new MappingException($"Cannot perform an update operation on {Table.Name} unless UpdateOptions.UseKeyAttribute or .WithKeys() is specified.");
+		var sqlBuilder = Table.CreateSqlBuilder(StrictMode);
+		var desiredColumns = materializer.DesiredColumns();
+		sqlBuilder.ApplyArgumentValue(DataSource, ArgumentValue, m_Options, desiredColumns == Materializer.NoColumns);
+		sqlBuilder.ApplyDesiredColumns(desiredColumns);
 
-			var sqlBuilder = Table.CreateSqlBuilder(StrictMode);
-			var desiredColumns = materializer.DesiredColumns();
-			sqlBuilder.ApplyArgumentValue(DataSource, ArgumentValue, m_Options, desiredColumns == Materializer.NoColumns);
-			sqlBuilder.ApplyDesiredColumns(desiredColumns);
+		if (KeyColumns.Count > 0)
+			sqlBuilder.OverrideKeys(KeyColumns);
 
-			if (KeyColumns.Count > 0)
-				sqlBuilder.OverrideKeys(KeyColumns);
+		var prefix = m_Options.HasFlag(UpdateOptions.ReturnOldValues) ? "Deleted." : "Inserted.";
 
-			var prefix = m_Options.HasFlag(UpdateOptions.ReturnOldValues) ? "Deleted." : "Inserted.";
+		var sql = new StringBuilder();
+		string? header;
+		string? intoClause;
+		string? footer;
 
-			var sql = new StringBuilder();
-			string? header;
-			string? intoClause;
-			string? footer;
+		sqlBuilder.UseTableVariable(Table, out header, out intoClause, out footer);
 
-			sqlBuilder.UseTableVariable(Table, out header, out intoClause, out footer);
+		sql.Append(header);
+		sql.Append($"UPDATE {Table.Name.ToQuotedString()}");
+		sqlBuilder.BuildSetClause(sql, " SET ", null, null);
+		sqlBuilder.BuildSelectClause(sql, " OUTPUT ", prefix, intoClause);
+		sqlBuilder.BuildWhereClause(sql, " WHERE ", null);
+		sql.Append(";");
+		sql.Append(footer);
 
-			sql.Append(header);
-			sql.Append($"UPDATE {Table.Name.ToQuotedString()}");
-			sqlBuilder.BuildSetClause(sql, " SET ", null, null);
-			sqlBuilder.BuildSelectClause(sql, " OUTPUT ", prefix, intoClause);
-			sqlBuilder.BuildWhereClause(sql, " WHERE ", null);
-			sql.Append(";");
-			sql.Append(footer);
-
-			return new SqlServerCommandExecutionToken(DataSource, "Update " + Table.Name, sql.ToString(), sqlBuilder.GetParameters()).CheckUpdateRowCount(m_Options);
-		}
+		return new SqlServerCommandExecutionToken(DataSource, "Update " + Table.Name, sql.ToString(), sqlBuilder.GetParameters()).CheckUpdateRowCount(m_Options);
 	}
 }

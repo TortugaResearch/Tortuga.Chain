@@ -1,9 +1,8 @@
-﻿namespace Tortuga.Chain.SqlServer.CommandBuilders
-{
-	interface ISupportsApproximateCount
-	{
-		ILink<long> AsCountApproximate(string columnName);
+﻿namespace Tortuga.Chain.SqlServer.CommandBuilders;
 
-		ILink<long> AsCountApproximate();
-	}
+interface ISupportsApproximateCount
+{
+	ILink<long> AsCountApproximate(string columnName);
+
+	ILink<long> AsCountApproximate();
 }
