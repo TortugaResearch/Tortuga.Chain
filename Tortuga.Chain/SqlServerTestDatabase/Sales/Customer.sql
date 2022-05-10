@@ -12,7 +12,10 @@
 
 	DeletedFlag BIT NOT NULL Default 0,
 	DeletedDate DATETIME2 NULL,
-	DeletedByKey INT NULL  REFERENCES HR.Employee(EmployeeKey)
+	DeletedByKey INT NULL  REFERENCES HR.Employee(EmployeeKey),
+
+	BirthDay Date NULL,
+	PreferredCallTime Time NULL
 
 )
 

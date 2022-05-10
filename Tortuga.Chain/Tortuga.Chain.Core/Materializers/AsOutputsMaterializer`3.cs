@@ -60,11 +60,11 @@ public class AsOutputsMaterializer<TCommand, TParameter, TObject> : Materializer
 		return CaptureOutputParameters(commandToken);
 	}
 
-	static TObject CaptureOutputParameters(CommandExecutionToken<TCommand, TParameter> commandToken)
+	TObject CaptureOutputParameters(CommandExecutionToken<TCommand, TParameter> commandToken)
 	{
 		var result = AsOutputsMaterializer<TCommand, TParameter>.CaptureOutputParameters(commandToken);
 		var objectResult = new TObject();
-		MaterializerUtilities.PopulateComplexObject(result, objectResult, null);
+		MaterializerUtilities.PopulateComplexObject(result, objectResult, null, Converter);
 		return objectResult;
 	}
 }

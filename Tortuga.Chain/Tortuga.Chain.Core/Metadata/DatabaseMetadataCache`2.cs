@@ -1,9 +1,11 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Immutable;
+using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using Tortuga.Anchor;
 using Tortuga.Anchor.Metadata;
+using Tortuga.Chain.CommandBuilders;
 
 namespace Tortuga.Chain.Metadata;
 
@@ -12,9 +14,11 @@ namespace Tortuga.Chain.Metadata;
 /// </summary>
 /// <typeparam name="TObjectName">The type used to represent database object names.</typeparam>
 /// <typeparam name="TDbType">The variant of DbType used by this data source.</typeparam>
-public abstract class DatabaseMetadataCache<TObjectName, TDbType> : IDatabaseMetadataCache
+/// <typeparam name="TParameter">The variant of DbParameter used by this data source.</typeparam>
+public abstract class DatabaseMetadataCache<TObjectName, TDbType, TParameter> : IDatabaseMetadataCache
 	where TObjectName : struct
 	where TDbType : struct
+	where TParameter : DbParameter
 {
 	/// <summary>
 	/// This dictionary is used to register customer database types. It is used by the ToClrType method and possibly parameter generation.
@@ -23,6 +27,12 @@ public abstract class DatabaseMetadataCache<TObjectName, TDbType> : IDatabaseMet
 	readonly ConcurrentDictionary<string, TypeRegistration<TDbType>> m_RegisteredTypes = new ConcurrentDictionary<string, TypeRegistration<TDbType>>(StringComparer.OrdinalIgnoreCase);
 
 	private readonly ConcurrentDictionary<(Type, OperationType), TableOrViewMetadata<TObjectName, TDbType>> m_TypeTableMap = new ConcurrentDictionary<(Type, OperationType), TableOrViewMetadata<TObjectName, TDbType>>();
+
+	/// <summary>
+	/// Gets the converter dictionary used by materializers.
+	/// </summary>
+	/// <value>The converter dictionary.</value>
+	public MaterializerTypeConverter Converter { get; } = new();
 
 	/// <summary>
 	/// Gets the maximum number of parameters in a single SQL batch.
@@ -78,6 +88,16 @@ public abstract class DatabaseMetadataCache<TObjectName, TDbType> : IDatabaseMet
 	public virtual IndexMetadataCollection<TObjectName, TDbType> GetIndexesForTable(TObjectName tableName)
 	{
 		throw new NotSupportedException("Indexes are not supported by this data source");
+	}
+
+	/// <summary>
+	/// Gets the parameters from a SQL Builder.
+	/// </summary>
+	/// <param name="sqlBuilder">The SQL builder.</param>
+	/// <returns></returns>
+	public List<TParameter> GetParameters(SqlBuilder<DbType> sqlBuilder)
+	{
+		return sqlBuilder.GetParameters(ParameterBuilderCallback);
 	}
 
 	/// <summary>
@@ -247,10 +267,10 @@ public abstract class DatabaseMetadataCache<TObjectName, TDbType> : IDatabaseMet
 	}
 
 	TableOrViewMetadata IDatabaseMetadataCache.GetTableOrViewFromClass<TObject>(OperationType operation)
-			=> GetTableOrViewFromClass<TObject>(operation);
+				=> GetTableOrViewFromClass<TObject>(operation);
 
 	TableOrViewMetadata IDatabaseMetadataCache.GetTableOrViewFromClass(Type type, OperationType operation)
-			=> GetTableOrViewFromClass(type, operation);
+				=> GetTableOrViewFromClass(type, operation);
 
 	/// <summary>DatabaseObject
 	/// Gets the tables and views that were loaded by this cache.
@@ -582,6 +602,12 @@ public abstract class DatabaseMetadataCache<TObjectName, TDbType> : IDatabaseMet
 					throw new NotSupportedException($"Converting a value of type {value.GetType().Name} is not supported. Try supplying a dbType or filing a bug report.");
 		}
 	}
+
+	/// <summary>
+	/// Callback for parameter builder.
+	/// </summary>
+	/// <param name="entry">The entry.</param>
+	protected abstract TParameter ParameterBuilderCallback(SqlBuilderEntry<DbType> entry);
 
 	/// <summary>
 	/// Parse a string and return the database specific representation of the database object's name.

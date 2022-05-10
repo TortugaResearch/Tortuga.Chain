@@ -44,7 +44,7 @@ internal sealed class ImmutableArrayMaterializer<TCommand, TParameter, TObject> 
 		ImmutableArray<TObject> result = default;
 		Prepare().Execute(cmd =>
 		{
-			using (var reader = cmd.ExecuteReader().AsObjectConstructor<TObject>(Constructor, CommandBuilder.TryGetNonNullableColumns()))
+			using (var reader = cmd.ExecuteReader().AsObjectConstructor<TObject>(Constructor, CommandBuilder.TryGetNonNullableColumns(), Converter))
 			{
 				result = reader.ToObjects().ToImmutableArray();
 				return result.Length;
@@ -65,7 +65,7 @@ internal sealed class ImmutableArrayMaterializer<TCommand, TParameter, TObject> 
 		ImmutableArray<TObject> result = default;
 		await Prepare().ExecuteAsync(async cmd =>
 		{
-			using (var reader = (await cmd.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false)).AsObjectConstructor<TObject>(Constructor, CommandBuilder.TryGetNonNullableColumns()))
+			using (var reader = (await cmd.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false)).AsObjectConstructor<TObject>(Constructor, CommandBuilder.TryGetNonNullableColumns(), Converter))
 			{
 				result = (await reader.ToListAsync().ConfigureAwait(false)).ToImmutableArray();
 				return result.Length;

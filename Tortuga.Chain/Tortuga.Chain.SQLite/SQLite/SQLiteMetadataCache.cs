@@ -2,6 +2,7 @@
 using System.Data.SQLite;
 using System.Diagnostics.CodeAnalysis;
 using Tortuga.Anchor;
+using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.SQLite
@@ -9,7 +10,7 @@ namespace Tortuga.Chain.SQLite
 	/// <summary>
 	/// Handles caching of metadata for various SQLite tables and views.
 	/// </summary>
-	public sealed class SQLiteMetadataCache : DbDatabaseMetadataCache<SQLiteObjectName>
+	public sealed class SQLiteMetadataCache : DbDatabaseMetadataCache<SQLiteObjectName, SqlDbType>
 	{
 		readonly SQLiteConnectionStringBuilder m_ConnectionBuilder;
 		readonly ConcurrentDictionary<SQLiteObjectName, TableOrViewMetadata<SQLiteObjectName, DbType>> m_Tables = new ConcurrentDictionary<SQLiteObjectName, TableOrViewMetadata<SQLiteObjectName, DbType>>();
@@ -330,6 +331,55 @@ namespace Tortuga.Chain.SQLite
 
 			var columns = GetColumns(tableName, isTable);
 			return new TableOrViewMetadata<SQLiteObjectName, DbType>(this, actualName, isTable, columns);
+		}
+
+		/// <summary>
+		/// Callback for parameter builder.
+		/// </summary>
+		/// <param name="entry">The entry.</param>
+		/// <returns>SqlDbType.</returns>
+		protected override SqlDbType ParameterBuilderCallback(SqlBuilderEntry<DbType> entry)
+		{
+			var result = new SqlParameter();
+			result.ParameterName = entry.Details.SqlVariableName;
+
+#if NET6_0_OR_GREATER
+		result.Value = entry.ParameterValue switch
+		{
+			DateOnly dateOnly => dateOnly.ToDateTime(default),
+			TimeOnly timeOnly => timeOnly.ToTimeSpan(),
+			_ => entry.ParameterValue
+		};
+#else
+			result.Value = entry.ParameterValue;
+#endif
+
+			if (entry.Details.DbType.HasValue)
+			{
+				result.SqlDbType = entry.Details.DbType.Value;
+
+				if (entry.Details.MaxLength.HasValue)
+				{
+					switch (result.SqlDbType)
+					{
+						case SqlDbType.Char:
+						case SqlDbType.VarChar:
+						case SqlDbType.NChar:
+						case SqlDbType.NVarChar:
+						case SqlDbType.Binary:
+						case SqlDbType.VarBinary:
+							result.Size = entry.Details.MaxLength.Value;
+							break;
+					}
+				}
+			}
+
+			if (entry.ParameterValue is DbDataReader)
+				result.SqlDbType = SqlDbType.Structured;
+
+			result.Direction = entry.Details.Direction;
+
+			return result;
 		}
 
 		/// <summary>

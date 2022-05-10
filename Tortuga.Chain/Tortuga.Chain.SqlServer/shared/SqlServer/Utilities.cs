@@ -19,7 +19,17 @@ internal static class Utilities
 	{
 		var result = new SqlParameter();
 		result.ParameterName = entry.Details.SqlVariableName;
+
+#if NET6_0_OR_GREATER
+		result.Value = entry.ParameterValue switch
+		{
+			DateOnly dateOnly => dateOnly.ToDateTime(default),
+			TimeOnly timeOnly => timeOnly.ToTimeSpan(),
+			_ => entry.ParameterValue
+		};
+#else
 		result.Value = entry.ParameterValue;
+#endif
 
 		if (entry.Details.DbType.HasValue)
 		{
