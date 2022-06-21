@@ -36,9 +36,10 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CD6AE0DA-EBF3-42EB-BC4B-D7370CCC8C84}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		Changelog.md = Changelog.md
 		Shared\GlobalUsing.cs = Shared\GlobalUsing.cs
 		Shared\GlobalUsingForTests.cs = Shared\GlobalUsingForTests.cs
-		Upgrade Notes.txt = Upgrade Notes.txt
+		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tortuga.Chain.PostgreSql", "Tortuga.Chain.PostgreSql\Tortuga.Chain.PostgreSql.csproj", "{037AFD5B-F427-4D35-9640-93835A610E2F}"
