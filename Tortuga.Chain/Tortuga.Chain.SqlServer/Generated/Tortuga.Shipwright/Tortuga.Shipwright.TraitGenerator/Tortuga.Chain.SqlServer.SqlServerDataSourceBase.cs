@@ -288,6 +288,11 @@ namespace Tortuga.Chain.SqlServer
 			return ((Tortuga.Chain.DataSources.ISupportsGetByKey)__Trait12).GetByKey<TObject>(key);
 		}
 
+		Tortuga.Chain.CommandBuilders.ISingleRowDbCommandBuilder<TObject> Tortuga.Chain.DataSources.ISupportsGetByKey.GetByKey<TObject>(System.Int16 key)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsGetByKey)__Trait12).GetByKey<TObject>(key);
+		}
+
 		Tortuga.Chain.CommandBuilders.ISingleRowDbCommandBuilder<TObject> Tortuga.Chain.DataSources.ISupportsGetByKey.GetByKey<TObject>(System.Int32 key)
 		{
 			return ((Tortuga.Chain.DataSources.ISupportsGetByKey)__Trait12).GetByKey<TObject>(key);
@@ -312,6 +317,11 @@ namespace Tortuga.Chain.SqlServer
 		Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder<TObject> Tortuga.Chain.DataSources.ISupportsGetByKeyList.GetByKeyList<TObject, TKey>(System.Collections.Generic.IEnumerable<TKey> keys)
 		{
 			return ((Tortuga.Chain.DataSources.ISupportsGetByKeyList)__Trait12).GetByKeyList<TObject, TKey>(keys);
+		}
+
+		Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder<TObject> Tortuga.Chain.DataSources.ISupportsGetByKeyList.GetByKeyList<TObject>(System.Collections.Generic.IEnumerable<short> keys)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsGetByKeyList)__Trait12).GetByKeyList<TObject>(keys);
 		}
 
 		Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder<TObject> Tortuga.Chain.DataSources.ISupportsGetByKeyList.GetByKeyList<TObject>(System.Collections.Generic.IEnumerable<int> keys)
@@ -795,6 +805,18 @@ namespace Tortuga.Chain.SqlServer
 		/// <param name="key">The key.</param>
 		/// <returns></returns>
 		/// <remarks>This only works on tables that have a scalar primary key.</remarks>
+		public Tortuga.Chain.CommandBuilders.SingleRowDbCommandBuilder<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, TObject> GetByKey<TObject>(System.Int16 key)where TObject : class
+		{
+			return __Trait12.GetByKey<TObject>(key);
+		}
+
+		/// <summary>
+		/// Gets a record by its primary key.
+		/// </summary>
+		/// <typeparam name="TObject">The type of the object.</typeparam>
+		/// <param name="key">The key.</param>
+		/// <returns></returns>
+		/// <remarks>This only works on tables that have a scalar primary key.</remarks>
 		public Tortuga.Chain.CommandBuilders.SingleRowDbCommandBuilder<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, TObject> GetByKey<TObject>(System.Int32 key)where TObject : class
 		{
 			return __Trait12.GetByKey<TObject>(key);
@@ -885,6 +907,16 @@ namespace Tortuga.Chain.SqlServer
 		/// <typeparam name="TObject">The type of the returned object.</typeparam>
 		/// <param name="keys">The keys.</param>
 		public Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, TObject> GetByKeyList<TObject>(System.Collections.Generic.IEnumerable<long> keys)where TObject : class
+		{
+			return __Trait12.GetByKeyList<TObject>(keys);
+		}
+
+		/// <summary>
+		/// Gets a set of records by a key list.
+		/// </summary>
+		/// <typeparam name="TObject">The type of the returned object.</typeparam>
+		/// <param name="keys">The keys.</param>
+		public Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, TObject> GetByKeyList<TObject>(System.Collections.Generic.IEnumerable<short> keys)where TObject : class
 		{
 			return __Trait12.GetByKeyList<TObject>(keys);
 		}
