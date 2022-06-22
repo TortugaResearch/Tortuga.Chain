@@ -144,7 +144,18 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
 				sqlBuilder.BuildSoftDeleteClause(sql, " WHERE ", DataSource, null);
 				parameters = sqlBuilder.GetParameters();
 			}
-			sqlBuilder.BuildOrderByClause(sql, " ORDER BY ", m_SortExpressions, null);
+
+			if (m_LimitOptions != default && !m_SortExpressions.Any())
+			{
+				if (m_Table.HasPrimaryKey)
+					sqlBuilder.BuildOrderByClause(sql, " ORDER BY ", m_Table.PrimaryKeyColumns.Select(x => new SortExpression(x.SqlName)), null);
+				else
+					throw new InvalidOperationException("Limits were requested, but no primary keys were detected. Use WithSorting to supply a sort order.");
+			}
+			else
+			{
+				sqlBuilder.BuildOrderByClause(sql, " ORDER BY ", m_SortExpressions, null);
+			}
 
 			switch (m_LimitOptions)
 			{
@@ -220,20 +231,6 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
 		}
 
 		/// <summary>
-		/// Adds sorting to the command builder.
-		/// </summary>
-		/// <param name="sortExpressions">The sort expressions.</param>
-		/// <returns></returns>
-		protected override TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> OnWithSorting(IEnumerable<SortExpression> sortExpressions)
-		{
-			if (sortExpressions == null)
-				throw new ArgumentNullException(nameof(sortExpressions), $"{nameof(sortExpressions)} is null.");
-
-			m_SortExpressions = sortExpressions;
-			return this;
-		}
-
-		/// <summary>
 		/// Adds limits to the command builder.
 		/// </summary>
 		/// <param name="skip">The number of rows to skip.</param>
@@ -264,6 +261,20 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
 			m_Skip = skip;
 			m_Take = take;
 			m_LimitOptions = (SQLiteLimitOption)limitOptions;
+			return this;
+		}
+
+		/// <summary>
+		/// Adds sorting to the command builder.
+		/// </summary>
+		/// <param name="sortExpressions">The sort expressions.</param>
+		/// <returns></returns>
+		protected override TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> OnWithSorting(IEnumerable<SortExpression> sortExpressions)
+		{
+			if (sortExpressions == null)
+				throw new ArgumentNullException(nameof(sortExpressions), $"{nameof(sortExpressions)} is null.");
+
+			m_SortExpressions = sortExpressions;
 			return this;
 		}
 	}

@@ -229,7 +229,18 @@ internal sealed partial class SqlServerTableOrView<TObject> : TableDbCommandBuil
 			sqlBuilder.BuildSoftDeleteClause(sql, " WHERE ", DataSource, null);
 			parameters = sqlBuilder.GetParameters();
 		}
-		sqlBuilder.BuildOrderByClause(sql, " ORDER BY ", m_SortExpressions, null);
+
+		if (m_LimitOptions != default && !m_SortExpressions.Any())
+		{
+			if (m_Table.HasPrimaryKey)
+				sqlBuilder.BuildOrderByClause(sql, " ORDER BY ", m_Table.PrimaryKeyColumns.Select(x => new SortExpression(x.SqlName)), null);
+			else
+				throw new InvalidOperationException("Limits were requested, but no primary keys were detected. Use WithSorting to supply a sort order.");
+		}
+		else
+		{
+			sqlBuilder.BuildOrderByClause(sql, " ORDER BY ", m_SortExpressions, null);
+		}
 
 		switch (m_LimitOptions)
 		{
