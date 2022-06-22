@@ -1,3 +1,15 @@
+## Version 4.1
+
+### Performance Enhancements
+
+Use `SqlCommand.EnableOptimizedParameterBinding` in SQL Server MDS.
+
+### Technical Debt
+
+Added test case for command timeout.
+
+Created `ExecutionToken.PopulateCommand` method. This eliminates a lot of copy & past text from the various `Execute`/`ExecuteAsync` methods.
+
 ## Version 4.0
 
 ### Cleanup NuGet package code
