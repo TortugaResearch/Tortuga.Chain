@@ -11,7 +11,6 @@ namespace Tortuga.Chain
 	/// <seealso cref="PostgreSqlDataSourceBase" />
 	public partial class PostgreSqlDataSource : PostgreSqlDataSourceBase
 	{
-		readonly NpgsqlConnectionStringBuilder m_ConnectionBuilder;
 		PostgreSqlMetadataCache m_DatabaseMetadata;
 
 		/// <summary>
@@ -99,89 +98,14 @@ namespace Tortuga.Chain
 		/// <value>The database metadata.</value>
 		public override PostgreSqlMetadataCache DatabaseMetadata => m_DatabaseMetadata;
 
-		/// <summary>
-		/// Begins the transaction.
-		/// </summary>
-		/// <param name="isolationLevel">The isolation level.</param>
-		/// <param name="forwardEvents">if set to <c>true</c> [forward events].</param>
-		/// <returns></returns>
-		public PostgreSqlTransactionalDataSource BeginTransaction(IsolationLevel? isolationLevel = null, bool forwardEvents = true)
-		{
-			return new PostgreSqlTransactionalDataSource(this, isolationLevel, forwardEvents);
-		}
 
-		/// <summary>
-		/// Begins the transaction.
-		/// </summary>
-		/// <param name="isolationLevel">The isolation level.</param>
-		/// <param name="forwardEvents">if set to <c>true</c> [forward events].</param>
-		/// <returns></returns>
-		public async Task<PostgreSqlTransactionalDataSource> BeginTransactionAsync(IsolationLevel? isolationLevel = null, bool forwardEvents = true)
-		{
-			var connection = await CreateConnectionAsync().ConfigureAwait(false);
-			NpgsqlTransaction transaction;
-			if (isolationLevel.HasValue)
-				transaction = connection.BeginTransaction(isolationLevel.Value);
-			else
-				transaction = connection.BeginTransaction();
-			return new PostgreSqlTransactionalDataSource(this, forwardEvents, connection, transaction);
-		}
 
-		/// <summary>
-		/// Creates the connection.
-		/// </summary>
-		/// <returns></returns>
-		/// <remarks>
-		/// The caller of this method is responsible for closing the connection.
-		/// </remarks>
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-		public NpgsqlConnection CreateConnection()
-		{
-			var con = new NpgsqlConnection(ConnectionString);
-			con.Open();
 
-			//TODO: Research server settings.
 
-			return con;
-		}
 
-		/// <summary>
-		/// Creates the connection asynchronous.
-		/// </summary>
-		/// <param name="cancellationToken">The cancellation token.</param>
-		/// <returns></returns>
-		/// <remarks>
-		/// The caller of this method is responsible for closing the connection.
-		/// </remarks>
-		public async Task<NpgsqlConnection> CreateConnectionAsync(CancellationToken cancellationToken = default(CancellationToken))
-		{
-			var con = new NpgsqlConnection(ConnectionString);
-			await con.OpenAsync(cancellationToken).ConfigureAwait(false);
 
-			//TODO: Research server settings.
 
-			return con;
-		}
 
-		/// <summary>
-		/// Creates an open data source using the supplied connection and optional transaction.
-		/// </summary>
-		/// <param name="connection">The connection to wrap.</param>
-		/// <param name="transaction">The transaction to wrap.</param>
-		/// <returns>IOpenDataSource.</returns>
-		public PostgreSqlOpenDataSource CreateOpenDataSource(NpgsqlConnection connection, NpgsqlTransaction? transaction = null)
-		{
-			return new PostgreSqlOpenDataSource(this, connection, transaction);
-		}
-
-		/// <summary>
-		/// Creates an open data source with a new connection.
-		/// </summary>
-		/// <remarks>WARNING: The caller of this method is responsible for closing the connection.</remarks>
-		public PostgreSqlOpenDataSource CreateOpenDataSource()
-		{
-			return new PostgreSqlOpenDataSource(this, CreateConnection(), null);
-		}
 
 		/// <summary>
 		/// Creates a new data source with the indicated changes to the settings.
@@ -196,7 +120,8 @@ namespace Tortuga.Chain
 			{
 				DefaultCommandTimeout = settings?.DefaultCommandTimeout ?? DefaultCommandTimeout,
 				SuppressGlobalEvents = settings?.SuppressGlobalEvents ?? SuppressGlobalEvents,
-				StrictMode = settings?.StrictMode ?? StrictMode
+				StrictMode = settings?.StrictMode ?? StrictMode,
+				SequentialAccessMode = settings?.SequentialAccessMode ?? SequentialAccessMode
 			};
 			var result = new PostgreSqlDataSource(Name, m_ConnectionBuilder, mergedSettings, m_DatabaseMetadata, m_Cache, m_ExtensionCache);
 			result.m_DatabaseMetadata = m_DatabaseMetadata;

@@ -1,16 +1,6 @@
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Metadata;
 
-#if SQL_SERVER_SDS
-
-using System.Data.SqlClient;
-
-#elif SQL_SERVER_MDS
-
-using Microsoft.Data.SqlClient;
-
-#endif
-
 namespace Tortuga.Chain.SqlServer
 {
 	/// <summary>
@@ -36,9 +26,6 @@ namespace Tortuga.Chain.SqlServer
 		/// Called when Database.DatabaseMetadata is invoked.
 		/// </summary>
 		/// <returns></returns>
-		protected override IDatabaseMetadataCache OnGetDatabaseMetadata()
-		{
-			return DatabaseMetadata;
-		}
+		protected override IDatabaseMetadataCache OnGetDatabaseMetadata() => DatabaseMetadata;
 	}
 }

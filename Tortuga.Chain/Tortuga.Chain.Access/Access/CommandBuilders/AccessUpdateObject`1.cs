@@ -43,7 +43,8 @@ namespace Tortuga.Chain.Access.CommandBuilders
 				throw new MappingException($"Cannot perform an update operation on {Table.Name} unless UpdateOptions.UseKeyAttribute or .WithKeys() is specified.");
 
 			var sqlBuilder = Table.CreateSqlBuilder(StrictMode);
-			sqlBuilder.ApplyArgumentValue(DataSource, ArgumentValue, m_Options);
+			var desiredColumns = materializer.DesiredColumns();
+			sqlBuilder.ApplyArgumentValue(DataSource, ArgumentValue, m_Options, desiredColumns == Materializer.NoColumns);
 			sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
 			if (KeyColumns.Count > 0)
@@ -57,7 +58,6 @@ namespace Tortuga.Chain.Access.CommandBuilders
 			var updateCommand = new AccessCommandExecutionToken(DataSource, "Update " + Table.Name, sql.ToString(), sqlBuilder.GetParametersKeysLast()).CheckUpdateRowCount(m_Options);
 			updateCommand.ExecutionMode = AccessCommandExecutionMode.NonQuery;
 
-			var desiredColumns = materializer.DesiredColumns();
 			if (desiredColumns == Materializer.NoColumns)
 				return updateCommand;
 
@@ -78,7 +78,7 @@ namespace Tortuga.Chain.Access.CommandBuilders
 		{
 			var sqlBuilder = Table.CreateSqlBuilder(StrictMode);
 			sqlBuilder.ApplyDesiredColumns(desiredColumns);
-			sqlBuilder.ApplyArgumentValue(DataSource, ArgumentValue, m_Options);
+			sqlBuilder.ApplyArgumentValue(DataSource, ArgumentValue, m_Options, false);
 
 			var sql = new StringBuilder();
 			sqlBuilder.BuildSelectClause(sql, "SELECT ", null, null);

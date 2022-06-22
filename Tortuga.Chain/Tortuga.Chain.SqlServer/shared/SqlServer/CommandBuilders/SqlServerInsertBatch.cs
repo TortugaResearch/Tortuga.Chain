@@ -1,19 +1,9 @@
 ﻿using System.Text;
+using Tortuga.Anchor;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
 using Tortuga.Chain.Metadata;
-using Tortuga.Anchor;
-
-#if SQL_SERVER_SDS
-
-using System.Data.SqlClient;
-
-#elif SQL_SERVER_MDS
-
-using Microsoft.Data.SqlClient;
-
-#endif
 
 namespace Tortuga.Chain.SqlServer.CommandBuilders
 {

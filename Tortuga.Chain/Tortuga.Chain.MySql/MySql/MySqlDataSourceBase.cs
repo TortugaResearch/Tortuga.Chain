@@ -26,9 +26,6 @@ namespace Tortuga.Chain.MySql
 		/// Called when Database.DatabaseMetadata is invoked.
 		/// </summary>
 		/// <returns></returns>
-		protected override IDatabaseMetadataCache OnGetDatabaseMetadata()
-		{
-			return DatabaseMetadata;
-		}
+		protected override IDatabaseMetadataCache OnGetDatabaseMetadata() => DatabaseMetadata;
 	}
 }

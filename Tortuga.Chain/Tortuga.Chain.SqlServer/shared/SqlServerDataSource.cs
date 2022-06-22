@@ -4,16 +4,6 @@ using System.Text;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.SqlServer;
 
-#if SQL_SERVER_SDS
-
-using System.Data.SqlClient;
-
-#elif SQL_SERVER_MDS
-
-using Microsoft.Data.SqlClient;
-
-#endif
-
 namespace Tortuga.Chain
 {
 	/// <summary>
@@ -22,13 +12,10 @@ namespace Tortuga.Chain
 	/// <seealso cref="SqlServerDataSourceBase" />
 	public partial class SqlServerDataSource : SqlServerDataSourceBase
 	{
-		readonly SqlConnectionStringBuilder m_ConnectionBuilder;
 		SqlServerMetadataCache m_DatabaseMetadata;
 
-#if !SqlDependency_Missing
 		readonly object m_SyncRoot = new object();
 		bool m_IsSqlDependencyActive;
-#endif
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="SqlServerDataSource" /> class.
@@ -147,7 +134,6 @@ namespace Tortuga.Chain
 			get { return m_DatabaseMetadata; }
 		}
 
-#if !SqlDependency_Missing
 
 		/// <summary>
 		/// Gets a value indicating whether SQL dependency support is active for this dispatcher.
@@ -158,7 +144,6 @@ namespace Tortuga.Chain
 			get { return m_IsSqlDependencyActive; }
 		}
 
-#endif
 
 		/// <summary>
 		/// Rolls back a transaction if a Transact-SQL statement raises a run-time error.
@@ -187,10 +172,11 @@ namespace Tortuga.Chain
 		/// <param name="transactionName">Name of the transaction.</param>
 		/// <param name="isolationLevel">The isolation level.</param>
 		/// <param name="forwardEvents">if set to <c>true</c> [forward events].</param>
+		/// <param name="cancellationToken"></param>
 		/// <returns></returns>
-		public async Task<SqlServerTransactionalDataSource> BeginTransactionAsync(string? transactionName = null, IsolationLevel? isolationLevel = null, bool forwardEvents = true)
+		public async Task<SqlServerTransactionalDataSource> BeginTransactionAsync(string? transactionName = null, IsolationLevel? isolationLevel = null, bool forwardEvents = true, CancellationToken cancellationToken = default)
 		{
-			var connection = await CreateConnectionAsync().ConfigureAwait(false);
+			var connection = await CreateConnectionAsync(cancellationToken).ConfigureAwait(false);
 
 			SqlTransaction transaction;
 			if (isolationLevel.HasValue)
@@ -224,7 +210,6 @@ namespace Tortuga.Chain
 			return result;
 		}
 
-#if !SqlDependency_Missing
 
 		/// <summary>
 		/// Starts SQL dependency on this connection string.
@@ -265,35 +250,7 @@ namespace Tortuga.Chain
 			}
 		}
 
-#endif
 
-		/// <summary>
-		/// Creates and opens a SQL connection.
-		/// </summary>
-		/// <returns></returns>
-		/// <remarks>The caller of this method is responsible for closing the connection.</remarks>
-		[SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-		public SqlConnection CreateConnection()
-		{
-			var con = new SqlConnection(ConnectionString);
-			con.Open();
-
-			if (DatabaseMetadata.ServerDefaultSettings == null)
-			{
-				var temp = new SqlServerEffectiveSettings();
-				temp.Reload(con, null);
-				Thread.MemoryBarrier();
-				DatabaseMetadata.ServerDefaultSettings = temp;
-			}
-
-			var sql = BuildConnectionSettingsOverride();
-
-			if (sql != null)
-				using (var cmd = new SqlCommand(sql, con))
-					cmd.ExecuteNonQuery();
-
-			return con;
-		}
 
 		/// <summary>
 		/// Executes the specified operation.
@@ -492,35 +449,6 @@ namespace Tortuga.Chain
 			return sql.ToString();
 		}
 
-		/// <summary>
-		/// Creates and opens a SQL connection.
-		/// </summary>
-		/// <param name="cancellationToken">The cancellation token.</param>
-		/// <returns></returns>
-		/// <remarks>
-		/// The caller of this method is responsible for closing the connection.
-		/// </remarks>
-		public async Task<SqlConnection> CreateConnectionAsync(CancellationToken cancellationToken = default(CancellationToken))
-		{
-			var con = new SqlConnection(ConnectionString);
-			await con.OpenAsync(cancellationToken).ConfigureAwait(false);
-
-			if (DatabaseMetadata.ServerDefaultSettings == null)
-			{
-				var temp = new SqlServerEffectiveSettings();
-				await temp.ReloadAsync(con, null).ConfigureAwait(false);
-				Thread.MemoryBarrier();
-				DatabaseMetadata.ServerDefaultSettings = temp;
-			}
-
-			var sql = BuildConnectionSettingsOverride();
-
-			if (sql != null)
-				using (var cmd = new SqlCommand(sql, con))
-					await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
-
-			return con;
-		}
 
 		/// <summary>
 		/// Creates a new data source with the indicated changes to the settings.
@@ -535,6 +463,7 @@ namespace Tortuga.Chain
 				DefaultCommandTimeout = settings?.DefaultCommandTimeout ?? DefaultCommandTimeout,
 				SuppressGlobalEvents = settings?.SuppressGlobalEvents ?? SuppressGlobalEvents,
 				StrictMode = settings?.StrictMode ?? StrictMode,
+				SequentialAccessMode = settings?.SequentialAccessMode ?? SequentialAccessMode,
 				XactAbort = settings?.XactAbort ?? XactAbort,
 				ArithAbort = settings?.ArithAbort ?? ArithAbort
 			};
@@ -551,24 +480,5 @@ namespace Tortuga.Chain
 			return result;
 		}
 
-		/// <summary>
-		/// Creates an open data source using the supplied connection and optional transaction.
-		/// </summary>
-		/// <param name="connection">The connection.</param>
-		/// <param name="transaction">The transaction.</param>
-		/// <returns>SqlServerOpenDataSource.</returns>
-		public SqlServerOpenDataSource CreateOpenDataSource(SqlConnection connection, SqlTransaction? transaction = null)
-		{
-			return new SqlServerOpenDataSource(this, connection, transaction);
-		}
-
-		/// <summary>
-		/// Creates an open data source with a new connection.
-		/// </summary>
-		/// <remarks>WARNING: The caller of this method is responsible for closing the connection.</remarks>
-		public SqlServerOpenDataSource CreateOpenDataSource()
-		{
-			return new SqlServerOpenDataSource(this, CreateConnection(), null);
-		}
 	}
 }

@@ -43,22 +43,24 @@ namespace Tortuga.Chain.Metadata
 		/// <returns></returns>
 		TableOrViewMetadata GetTableOrView(string tableName);
 
-		/// <summary>
-		/// Returns the table, view, function, or stored procedure derived from the class's name and/or Table attribute.
-		/// </summary>
-		/// <typeparam name="TObject">The type of the t object.</typeparam>
-		/// <param name="operation">The type of operation to be performed.</param>
-		/// <returns>TableOrViewMetadata.</returns>
-		[SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-		DatabaseObject GetDatabaseObjectFromClass<TObject>(OperationType operation) where TObject : class;
 
 		/// <summary>
 		/// Returns the table or view derived from the class's name and/or Table attribute.
 		/// </summary>
 		/// <typeparam name="TObject"></typeparam>
+		/// <param name="operation"></param>
 		/// <returns></returns>
 		[SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-		TableOrViewMetadata GetTableOrViewFromClass<TObject>() where TObject : class;
+		TableOrViewMetadata GetTableOrViewFromClass<TObject>(OperationType operation = OperationType.All);
+
+
+		/// <summary>
+		/// Returns the table or view derived from the class's name and/or Table attribute.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <param name="operation"></param>
+		/// <returns></returns>
+		TableOrViewMetadata GetTableOrViewFromClass(Type type, OperationType operation = OperationType.All);
 
 		/// <summary>
 		/// Gets the tables and views that were loaded by this cache.

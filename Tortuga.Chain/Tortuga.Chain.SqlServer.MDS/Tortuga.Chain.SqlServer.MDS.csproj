@@ -1,117 +1,103 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>net462;netstandard2.0;net5.0;net6.0</TargetFrameworks>
-    <Authors>David Tomcik, Jonathan Allen</Authors>
-    <Company>Tortuga Technologies</Company>
-    <Description>A fluent ORM and Database Reflection Library for SQL Server. This is a replacement for Tortuga.Chain.SqlServer. It uses Microsoft.Data.SqlClient instead of the legacy System.Data.SqlClient.</Description>
-    <PackageTags>ORM Fluent DB Reflection SQL Server</PackageTags>
-    <LangVersion>10.0</LangVersion>
-    <ProductName>Tortuga Chain</ProductName>
-    <Deterministic>true</Deterministic>
+	<PropertyGroup>
+		<TargetFrameworks>net462;netstandard2.0;net6.0</TargetFrameworks>
+		<Authors>David Tomcik, Jonathan Allen</Authors>
+		<Company>Tortuga Research</Company>
+		<Description>A fluent ORM and Database Reflection Library for SQL Server. This is a replacement for Tortuga.Chain.SqlServer. It uses Microsoft.Data.SqlClient instead of the legacy System.Data.SqlClient.</Description>
+		<PackageTags>ORM Fluent DB Reflection SQL Server</PackageTags>
+		<LangVersion>10.0</LangVersion>
+		<ProductName>Tortuga Chain</ProductName>
+		<Deterministic>true</Deterministic>
 
-    <AssemblyVersion>3.5.0</AssemblyVersion>
-    <Version>3.5.0</Version>
-    <FileVersion>3.5.0.0</FileVersion>
+		<Version>4.0.2</Version>
 
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 
-    <Copyright>David Tomcik, Jonathan Allen 2016-2019</Copyright>
+		<Copyright>David Tomcik, Jonathan Allen 2016-2019</Copyright>
 
-    <PackageProjectUrl>https://github.com/docevaad/Chain</PackageProjectUrl>
+		<PackageProjectUrl>https://github.com/docevaad/Chain</PackageProjectUrl>
 
-    <RepositoryUrl>https://github.com/docevaad/Chain.git</RepositoryUrl>
+		<RepositoryUrl>https://github.com/docevaad/Chain.git</RepositoryUrl>
 
-    <RepositoryType>git</RepositoryType>
-    <Nullable>enable</Nullable>
+		<RepositoryType>git</RepositoryType>
+		<Nullable>enable</Nullable>
 
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <WarningsAsErrors />
-    <RootNamespace>Tortuga.Chain</RootNamespace>
-    <DocumentationFile>Tortuga.Chain.SqlServer.MDS.xml</DocumentationFile>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net462'">
-    <!-- https://github.com/dotnet/SqlClient/issues/260 SqlDependency is not working against .NET 4.6.1 -->
-    <DefineConstants>SQL_SERVER_MDS;NULL_MISSING;SqlDependency_Missing</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-    <DefineConstants>SQL_SERVER_MDS;NULL_MISSING</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net5.0'">
-    <DefineConstants>SQL_SERVER_MDS;ORDINAL_STRINGS</DefineConstants>
-  </PropertyGroup>
-	<PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
-		<DefineConstants>SQL_SERVER_MDS;ORDINAL_STRINGS</DefineConstants>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<WarningsAsErrors />
+		<RootNamespace>Tortuga.Chain</RootNamespace>
+		<DocumentationFile>Tortuga.Chain.SqlServer.MDS.xml</DocumentationFile>
 	</PropertyGroup>
 
-  <ItemGroup>
-    <Compile Include="..\Tortuga.Chain.SqlServer\shared\**\*.cs">
-      <Link>referenced\%(RecursiveDir)%(Filename)%(Extension)</Link>
-    </Compile>
-  </ItemGroup>
+	<PropertyGroup Condition="'$(TargetFramework)' == 'net462'">
+		<DefineConstants>SQL_SERVER_MDS;CLASS_1;CLASS_2;CLASS_3</DefineConstants>
+	</PropertyGroup>
 
-  <ItemGroup>
+	<PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+		<DefineConstants>SQL_SERVER_MDS;CLASS_1;CLASS_2;CLASS_3</DefineConstants>
+	</PropertyGroup>
 
-    <Compile Include="..\Shared\Legacy\**\*.cs">
-      <Link>referenced\Legacy\%(RecursiveDir)%(Filename)%(Extension)</Link>
-    </Compile>
-    <Compile Include="..\Shared\DataSource\**\*.cs">
-      <Link>referenced\DataSource\%(RecursiveDir)%(Filename)%(Extension)</Link>
-    </Compile>
-  </ItemGroup>
+	<PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
+		<DefineConstants>SQL_SERVER_MDS;CLASS_1;CLASS_2;CLASS_3</DefineConstants>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Compile Include="..\Shared\GlobalUsing.cs" Link="GlobalUsing.cs" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Include="..\Tortuga.Chain.SqlServer\shared\**\*.cs">
+			<Link>referenced\%(RecursiveDir)%(Filename)%(Extension)</Link>
+		</Compile>
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="5.0.3">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="2.1.2" />
-  </ItemGroup>
+	<ItemGroup>
 
-  <ItemGroup Condition="'$(Configuration)'=='Debug'">
-    <ProjectReference Include="..\Tortuga.Chain.Core\Tortuga.Chain.Core.csproj" />
-  </ItemGroup>
+		<Compile Include="..\Shared\Legacy\**\*.cs">
+			<Link>referenced\Legacy\%(RecursiveDir)%(Filename)%(Extension)</Link>
+		</Compile>
+		<Compile Include="..\Shared\DataSource\**\*.cs">
+			<Link>referenced\DataSource\%(RecursiveDir)%(Filename)%(Extension)</Link>
+		</Compile>
+	</ItemGroup>
 
-  <ItemGroup Condition="'$(Configuration)'=='Release'">
-    <PackageReference Include="Tortuga.Chain.Core" Version="3.5.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Include="..\Shared\GlobalUsing.cs" Link="GlobalUsing.cs" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Compile Update="..\Tortuga.Chain.SqlServer\shared\SqlServer\CommandBuilders\ISupportsApproximateCount.cs" Link="ISupportsApproximateCount.cs" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Data.SqlClient" Version="4.1.0" />
+	</ItemGroup>
 
-  <!-- NuGet Packaging Boilerplate-->
-  <PropertyGroup Condition="'$(Configuration)'=='Release'">
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <GenerateNuspecDependsOn>$(GenerateNuspecDependsOn);ReadPackageVersionFromOutputAssembly</GenerateNuspecDependsOn>
-  </PropertyGroup>
+	<ItemGroup Condition="'$(Configuration)'=='Debug'">
+		<ProjectReference Include="..\Tortuga.Chain.Core\Tortuga.Chain.Core.csproj" />
+	</ItemGroup>
 
-  <Target Name="ReadPackageVersionFromOutputAssembly" DependsOnTargets="Build" Condition="'$(IsCrossTargetingBuild)' == 'true'">
+	<ItemGroup Condition="'$(Configuration)'=='Release'">
+		<PackageReference Include="Tortuga.Chain.Core" Version="4.0.0" />
+	</ItemGroup>
 
-    <PropertyGroup>
-      <FirstTargetFramework>$([System.String]::Copy($(TargetFrameworks)).Split(';').GetValue(0))</FirstTargetFramework>
-    </PropertyGroup>
-    <MSBuild Projects="$(MSBuildProjectFullPath)" Targets="ReadPackageVersionFromOutputAssemblySingleTfm" Properties="TargetFramework=$(FirstTargetFramework)">
-      <Output TaskParameter="TargetOutputs" ItemName="PackAssembly" />
-    </MSBuild>
-    <PropertyGroup>
-      <PackageVersion>%(PackAssembly.Version)</PackageVersion>
-    </PropertyGroup>
-  </Target>
+	<ItemGroup>
+		<Compile Update="..\Tortuga.Chain.SqlServer\shared\SqlServer\CommandBuilders\ISupportsApproximateCount.cs" Link="ISupportsApproximateCount.cs" />
+	</ItemGroup>
 
-  <Target Name="ReadPackageVersionFromOutputAssemblySingleTfm" Returns="@(PackAssembly)" Condition="'$(IsCrossTargetingBuild)' != 'true'">
-    <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
-      <Output TaskParameter="Assemblies" ItemName="PackAssembly" />
-    </GetAssemblyIdentity>
-    <PropertyGroup>
-      <PackageVersion>%(PackAssembly.Version)</PackageVersion>
-    </PropertyGroup>
-  </Target>
+	<!-- Code Generator -->
+	<ItemGroup>
+		<PackageReference Include="Tortuga.Shipwright" Version="0.9.0" >
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="Tortuga.Shipwright.Shared" Version="0.9.0" />
+	</ItemGroup>
+
+	<PropertyGroup>
+		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+		<CompilerGeneratedFilesOutputPath>Generated</CompilerGeneratedFilesOutputPath>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<!-- Don't include the output from a previous source generator execution into future runs; the */** trick here ensures that there's
+  at least one subdirectory, which is our key that it's coming from a source generator as opposed to something that is coming from
+  some other tool. -->
+		<Compile Remove="$(CompilerGeneratedFilesOutputPath)/*/**/*.cs" />
+	</ItemGroup>
+
+	<PropertyGroup Condition="'$(Configuration)'=='Release'">
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	</PropertyGroup>
 </Project>

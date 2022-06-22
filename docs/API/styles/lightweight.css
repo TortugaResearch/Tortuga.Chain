@@ -17,6 +17,8 @@ body {
 	padding-right:0;
 	padding-left:0;
 	word-wrap:break-word;
+        /*overflow: auto;*/
+        /*overflow-x: hidden;*/
 }
 
 p {

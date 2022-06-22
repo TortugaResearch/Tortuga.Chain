@@ -1,21 +1,10 @@
 ﻿using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
-using Tortuga.Chain.AuditRules;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
 using Tortuga.Chain.Metadata;
-
-#if SQL_SERVER_SDS
-
-using System.Data.SqlClient;
-
-#elif SQL_SERVER_MDS
-
-using Microsoft.Data.SqlClient;
-
-#endif
 
 namespace Tortuga.Chain.SqlServer.CommandBuilders
 {
@@ -57,7 +46,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 			sqlBuilder.ApplyRulesForSelect(DataSource);
 
 			if (m_FunctionArgumentValue != null)
-				sqlBuilder.ApplyArgumentValue(DataSource, OperationTypes.None, m_FunctionArgumentValue);
+				sqlBuilder.ApplyArgumentValue(DataSource, m_FunctionArgumentValue);
 
 			var sql = new StringBuilder();
 			sqlBuilder.BuildFromFunctionClause(sql, $"SELECT {m_Function.Name.ToQuotedString()} (", " )");

@@ -3,7 +3,7 @@
   <head><link rel="shortcut icon" href="../favicon.ico" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="save" content="history" />
-    <title>InsertBatch(TObject) Method (IEnumerable(TObject), InsertOptions)</title>
+    <title>InsertBatch(TObject) Method (IEnumerable(TObject), SqlServerObjectName, InsertOptions)</title>
     <link rel="stylesheet" type="text/css" href="../styles/lightweight.css" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:msxsl="urn:schemas-microsoft-com:xslt" />
     <link rel="stylesheet" type="text/css" href="../styles/lw-code.css" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:msxsl="urn:schemas-microsoft-com:xslt" />
     <script type="text/javascript" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:msxsl="urn:schemas-microsoft-com:xslt" src="../scripts/languageSelector.js"> </script>
@@ -11,10 +11,10 @@
     <meta name="file" content="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_1" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:msxsl="urn:schemas-microsoft-com:xslt" />
     <meta name="guid" content="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_1" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:msxsl="urn:schemas-microsoft-com:xslt" />
     <xml xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:msxsl="urn:schemas-microsoft-com:xslt">
-      <MSHelp:Attr Name="AssetID" Value="M:Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch``1(IEnumerable{``0},InsertOptions)" />
-      <MSHelp:TOCTitle Title="InsertBatch(TObject) Method (IEnumerable(TObject), InsertOptions)" />
-      <MSHelp:RLTitle Title="SqlServerDataSourceBase.InsertBatch(TObject) Method (IEnumerable(TObject), InsertOptions) (Tortuga.Chain.SqlServer)" />
-      <MSHelp:Keyword Index="A" Term="M:Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch``1(IEnumerable{``0},InsertOptions)" />
+      <MSHelp:Attr Name="AssetID" Value="M:Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch``1(IEnumerable{``0},SqlServerObjectName,InsertOptions)" />
+      <MSHelp:TOCTitle Title="InsertBatch(TObject) Method (IEnumerable(TObject), SqlServerObjectName, InsertOptions)" />
+      <MSHelp:RLTitle Title="SqlServerDataSourceBase.InsertBatch(TObject) Method (IEnumerable(TObject), SqlServerObjectName, InsertOptions) (Tortuga.Chain.SqlServer)" />
+      <MSHelp:Keyword Index="A" Term="M:Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch``1(IEnumerable{``0},SqlServerObjectName,InsertOptions)" />
       <MSHelp:Attr Name="APIType" Value="Managed" />
       <MSHelp:Attr Name="APILocation" Value="Tortuga.Chain.SqlServer.MDS.dll" />
       <MSHelp:Attr Name="APIName" Value="Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch" />
@@ -23,7 +23,7 @@
       <MSHelp:Attr Name="Locale" Value="en-us" />
       <MSHelp:Attr Name="TopicType" Value="kbSyntax" />
       <MSHelp:Attr Name="TopicType" Value="apiref" />
-      <MSHelp:Attr Name="Abstract" Value="Inserts the batch of records as one operation." />
+      <MSHelp:Attr Name="Abstract" Value="Inserts the batch of records as one operation.." />
       <MSHelp:Attr Name="AssemblyVersion" Value="" />
     </xml>
   <link rel="stylesheet" href="../TOC.css"><script type="text/javascript" src="../TOC.js"></script></head>
@@ -104,6 +104,11 @@
 <div class="Hidden">
 </div>
 </div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.ChainInternalException.htm" target="_self">ChainInternalException Class</a>
+<div class="Hidden">
+</div>
+</div>
 <div class="TreeItem">
 <img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="T-Tortuga.Chain.CollectionOptions.htm" target="_self">CollectionOptions Enumeration</a>
 </div>
@@ -143,21 +148,6 @@
 </div>
 <div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.ICacheLink-1.htm" target="_self">ICacheLink(TResult) Interface</a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.IClass0DataSource.htm" target="_self">IClass0DataSource Interface</a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.IClass1DataSource.htm" target="_self">IClass1DataSource Interface</a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.IClass2DataSource.htm" target="_self">IClass2DataSource Interface</a>
 <div class="Hidden">
 </div>
 </div>
@@ -548,12 +538,12 @@
 </div>
 </div>
 <div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.CommandBuilders.IUpdateManyDbCommandBuilder.htm" target="_self">IUpdateManyDbCommandBuilder Interface</a>
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.CommandBuilders.IUpdateSetDbCommandBuilder.htm" target="_self">IUpdateSetDbCommandBuilder Interface</a>
 <div class="Hidden">
 </div>
 </div>
 <div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.CommandBuilders.IUpdateManyDbCommandBuilder-2.htm" target="_self">IUpdateManyDbCommandBuilder(TCommand, TParameter) Interface</a>
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.CommandBuilders.IUpdateSetDbCommandBuilder-2.htm" target="_self">IUpdateSetDbCommandBuilder(TCommand, TParameter) Interface</a>
 <div class="Hidden">
 </div>
 </div>
@@ -626,7 +616,7 @@
 </div>
 </div>
 <div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.CommandBuilders.UpdateManyDbCommandBuilder-2.htm" target="_self">UpdateManyDbCommandBuilder(TCommand, TParameter) Class</a>
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.CommandBuilders.UpdateSetDbCommandBuilder-2.htm" target="_self">UpdateSetDbCommandBuilder(TCommand, TParameter) Class</a>
 <div class="Hidden">
 </div>
 </div>
@@ -728,7 +718,17 @@
 </div>
 </div>
 <div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.DataSources.IAdvancedCrudDataSource.htm" target="_self">IAdvancedCrudDataSource Interface</a>
+<div class="Hidden">
+</div>
+</div>
+<div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.DataSources.ICommandDataSource-2.htm" target="_self">ICommandDataSource(TCommand, TParameter) Interface</a>
+<div class="Hidden">
+</div>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.DataSources.ICrudDataSource.htm" target="_self">ICrudDataSource Interface</a>
 <div class="Hidden">
 </div>
 </div>
@@ -749,6 +749,111 @@
 </div>
 <div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.DataSources.IRootDataSource.htm" target="_self">IRootDataSource Interface</a>
+<div class="Hidden">
+</div>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.DataSources.ISupportsDelete.htm" target="_self">ISupportsDelete Interface</a>
+<div class="Hidden">
+</div>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.DataSources.ISupportsDeleteAll.htm" target="_self">ISupportsDeleteAll Interface</a>
+<div class="Hidden">
+</div>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.DataSources.ISupportsDeleteByKey.htm" target="_self">ISupportsDeleteByKey Interface</a>
+<div class="Hidden">
+</div>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.DataSources.ISupportsDeleteByKeyList.htm" target="_self">ISupportsDeleteByKeyList Interface</a>
+<div class="Hidden">
+</div>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.DataSources.ISupportsDeleteSet.htm" target="_self">ISupportsDeleteSet Interface</a>
+<div class="Hidden">
+</div>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.DataSources.ISupportsFrom.htm" target="_self">ISupportsFrom Interface</a>
+<div class="Hidden">
+</div>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.DataSources.ISupportsGetByKey.htm" target="_self">ISupportsGetByKey Interface</a>
+<div class="Hidden">
+</div>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.DataSources.ISupportsGetByKeyList.htm" target="_self">ISupportsGetByKeyList Interface</a>
+<div class="Hidden">
+</div>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.DataSources.ISupportsInsert.htm" target="_self">ISupportsInsert Interface</a>
+<div class="Hidden">
+</div>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.DataSources.ISupportsInsertBatch.htm" target="_self">ISupportsInsertBatch Interface</a>
+<div class="Hidden">
+</div>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.DataSources.ISupportsInsertBulk.htm" target="_self">ISupportsInsertBulk Interface</a>
+<div class="Hidden">
+</div>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.DataSources.ISupportsProcedure.htm" target="_self">ISupportsProcedure Interface</a>
+<div class="Hidden">
+</div>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.DataSources.ISupportsScalarFunction.htm" target="_self">ISupportsScalarFunction Interface</a>
+<div class="Hidden">
+</div>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.DataSources.ISupportsSqlQueries.htm" target="_self">ISupportsSqlQueries Interface</a>
+<div class="Hidden">
+</div>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.DataSources.ISupportsTableFunction.htm" target="_self">ISupportsTableFunction Interface</a>
+<div class="Hidden">
+</div>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.DataSources.ISupportsTruncate.htm" target="_self">ISupportsTruncate Interface</a>
+<div class="Hidden">
+</div>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.DataSources.ISupportsUpdate.htm" target="_self">ISupportsUpdate Interface</a>
+<div class="Hidden">
+</div>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.DataSources.ISupportsUpdateByKey.htm" target="_self">ISupportsUpdateByKey Interface</a>
+<div class="Hidden">
+</div>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.DataSources.ISupportsUpdateByKeyList.htm" target="_self">ISupportsUpdateByKeyList Interface</a>
+<div class="Hidden">
+</div>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.DataSources.ISupportsUpdateSet.htm" target="_self">ISupportsUpdateSet Interface</a>
+<div class="Hidden">
+</div>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.DataSources.ISupportsUpsert.htm" target="_self">ISupportsUpsert Interface</a>
 <div class="Hidden">
 </div>
 </div>
@@ -878,7 +983,7 @@
 </div>
 </div>
 <div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.Metadata.DatabaseMetadataCache-2.htm" target="_self">DatabaseMetadataCache(TName, TDbType) Class</a>
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.Metadata.DatabaseMetadataCache-2.htm" target="_self">DatabaseMetadataCache(TObjectName, TDbType) Class</a>
 <div class="Hidden">
 </div>
 </div>
@@ -888,7 +993,7 @@
 </div>
 </div>
 <div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.Metadata.DbDatabaseMetadataCache-1.htm" target="_self">DbDatabaseMetadataCache(TName) Class</a>
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.Metadata.DbDatabaseMetadataCache-1.htm" target="_self">DbDatabaseMetadataCache(TObjectName) Class</a>
 <div class="Hidden">
 </div>
 </div>
@@ -898,7 +1003,7 @@
 </div>
 </div>
 <div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.Metadata.ForeignKeyConstraint-2.htm" target="_self">ForeignKeyConstraint(TName, TDbType) Class</a>
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.Metadata.ForeignKeyConstraint-2.htm" target="_self">ForeignKeyConstraint(TObjectName, TDbType) Class</a>
 <div class="Hidden">
 </div>
 </div>
@@ -908,7 +1013,7 @@
 </div>
 </div>
 <div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.Metadata.ForeignKeyConstraintCollection-2.htm" target="_self">ForeignKeyConstraintCollection(TName, TDbType) Class</a>
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.Metadata.ForeignKeyConstraintCollection-2.htm" target="_self">ForeignKeyConstraintCollection(TObjectName, TDbType) Class</a>
 <div class="Hidden">
 </div>
 </div>
@@ -943,7 +1048,7 @@
 </div>
 </div>
 <div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.Metadata.IndexMetadata-2.htm" target="_self">IndexMetadata(TName, TDbType) Class</a>
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.Metadata.IndexMetadata-2.htm" target="_self">IndexMetadata(TObjectName, TDbType) Class</a>
 <div class="Hidden">
 </div>
 </div>
@@ -953,7 +1058,7 @@
 </div>
 </div>
 <div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.Metadata.IndexMetadataCollection-2.htm" target="_self">IndexMetadataCollection(TName, TDbType) Class</a>
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.Metadata.IndexMetadataCollection-2.htm" target="_self">IndexMetadataCollection(TObjectName, TDbType) Class</a>
 <div class="Hidden">
 </div>
 </div>
@@ -974,12 +1079,12 @@
 <img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="T-Tortuga.Chain.Metadata.NameGenerationOptions.htm" target="_self">NameGenerationOptions Enumeration</a>
 </div>
 <div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.Metadata.OdbcDatabaseMetadataCache-1.htm" target="_self">OdbcDatabaseMetadataCache(TName) Class</a>
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.Metadata.OdbcDatabaseMetadataCache-1.htm" target="_self">OdbcDatabaseMetadataCache(TObjectName) Class</a>
 <div class="Hidden">
 </div>
 </div>
 <div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.Metadata.OleDbDatabaseMetadataCache-1.htm" target="_self">OleDbDatabaseMetadataCache(TName) Class</a>
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.Metadata.OleDbDatabaseMetadataCache-1.htm" target="_self">OleDbDatabaseMetadataCache(TObjectName) Class</a>
 <div class="Hidden">
 </div>
 </div>
@@ -1012,7 +1117,7 @@
 </div>
 </div>
 <div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.Metadata.ScalarFunctionMetadata-2.htm" target="_self">ScalarFunctionMetadata(TName, TDbType) Class</a>
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.Metadata.ScalarFunctionMetadata-2.htm" target="_self">ScalarFunctionMetadata(TObjectName, TDbType) Class</a>
 <div class="Hidden">
 </div>
 </div>
@@ -1022,7 +1127,7 @@
 </div>
 </div>
 <div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.Metadata.StoredProcedureMetadata-2.htm" target="_self">StoredProcedureMetadata(TName, TDbType) Class</a>
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.Metadata.StoredProcedureMetadata-2.htm" target="_self">StoredProcedureMetadata(TObjectName, TDbType) Class</a>
 <div class="Hidden">
 </div>
 </div>
@@ -1032,7 +1137,7 @@
 </div>
 </div>
 <div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.Metadata.TableFunctionMetadata-2.htm" target="_self">TableFunctionMetadata(TName, TDbType) Class</a>
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.Metadata.TableFunctionMetadata-2.htm" target="_self">TableFunctionMetadata(TObjectName, TDbType) Class</a>
 <div class="Hidden">
 </div>
 </div>
@@ -1042,7 +1147,7 @@
 </div>
 </div>
 <div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.Metadata.TableOrViewMetadata-2.htm" target="_self">TableOrViewMetadata(TName, TDbType) Class</a>
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.Metadata.TableOrViewMetadata-2.htm" target="_self">TableOrViewMetadata(TObjectName, TDbType) Class</a>
 <div class="Hidden">
 </div>
 </div>
@@ -1057,7 +1162,7 @@
 </div>
 </div>
 <div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.Metadata.UserDefinedTableTypeMetadata-2.htm" target="_self">UserDefinedTableTypeMetadata(TName, TDbType) Class</a>
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.Metadata.UserDefinedTableTypeMetadata-2.htm" target="_self">UserDefinedTableTypeMetadata(TObjectName, TDbType) Class</a>
 <div class="Hidden">
 </div>
 </div>
@@ -1322,106 +1427,8 @@
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Methods.T-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.htm" target="_self">SqlServerDataSourceBase Methods</a>
 <div class="Hidden">
 <div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Delete-.htm" target="_self">Delete Method </a>
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch.htm" target="_self">InsertBatch Method </a>
 <div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Delete-.htm" target="_self">Delete Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.DeleteByKey-.htm" target="_self">DeleteByKey Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.DeleteByKey-.htm" target="_self">DeleteByKey Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.DeleteByKeyList-.htm" target="_self">DeleteByKeyList Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.DeleteByKeyList-.htm" target="_self">DeleteByKeyList Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.DeleteWithFilter.htm" target="_self">DeleteWithFilter Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.DeleteWithFilter.htm" target="_self">DeleteWithFilter Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.From.htm" target="_self">From Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.From.htm" target="_self">From Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.GetByKey-.htm" target="_self">GetByKey Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.GetByKey-.htm" target="_self">GetByKey Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.GetByKeyList-.htm" target="_self">GetByKeyList Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.GetByKeyList-.htm" target="_self">GetByKeyList Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Insert-.htm" target="_self">Insert Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Insert-.htm" target="_self">Insert Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch-.htm" target="_self">InsertBatch Method </a>
-<div class="Hidden">
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1.htm" target="_self">InsertBatch(TObject) Method (SqlServerObjectName, IEnumerable(TObject), InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1.htm" target="_self">InsertBatch(TObject) Method (SqlServerObjectName, IEnumerable(TObject), InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_1.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_1.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_2.htm" target="_self">InsertBatch(TObject) Method (String, IEnumerable(TObject), InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_2.htm" target="_self">InsertBatch(TObject) Method (String, IEnumerable(TObject), InsertOptions)</a>
-</div>
 <div class="TreeItem">
 <img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch.htm" target="_self">InsertBatch Method (SqlServerObjectName, DataTable, SqlServerObjectName, InsertOptions)</a>
 </div>
@@ -1435,65 +1442,23 @@
 <img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch_1.htm" target="_self">InsertBatch Method (SqlServerObjectName, DbDataReader, SqlServerObjectName, InsertOptions)</a>
 </div>
 <div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_3.htm" target="_self">InsertBatch(TObject) Method (SqlServerObjectName, IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1.htm" target="_self">InsertBatch(TObject) Method (SqlServerObjectName, IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
 </div>
 <div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_3.htm" target="_self">InsertBatch(TObject) Method (SqlServerObjectName, IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1.htm" target="_self">InsertBatch(TObject) Method (SqlServerObjectName, IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
 </div>
 <div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_4.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_1.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
 </div>
 <div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_4.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch_2.htm" target="_self">InsertBatch Method (String, DataTable, String, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch_2.htm" target="_self">InsertBatch Method (String, DataTable, String, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch_3.htm" target="_self">InsertBatch Method (String, DbDataReader, String, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch_3.htm" target="_self">InsertBatch Method (String, DbDataReader, String, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_5.htm" target="_self">InsertBatch(TObject) Method (String, IEnumerable(TObject), String, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_5.htm" target="_self">InsertBatch(TObject) Method (String, IEnumerable(TObject), String, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_6.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), String, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_6.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), String, InsertOptions)</a>
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_1.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
 </div>
 </div>
 </div>
 <div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch-.htm" target="_self">InsertBatch Method </a>
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch.htm" target="_self">InsertBatch Method </a>
 <div class="Hidden">
 <div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1.htm" target="_self">InsertBatch(TObject) Method (SqlServerObjectName, IEnumerable(TObject), InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1.htm" target="_self">InsertBatch(TObject) Method (SqlServerObjectName, IEnumerable(TObject), InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_1.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_1.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_2.htm" target="_self">InsertBatch(TObject) Method (String, IEnumerable(TObject), InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_2.htm" target="_self">InsertBatch(TObject) Method (String, IEnumerable(TObject), InsertOptions)</a>
-</div>
-<div class="TreeItem">
 <img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch.htm" target="_self">InsertBatch Method (SqlServerObjectName, DataTable, SqlServerObjectName, InsertOptions)</a>
 </div>
 <div class="TreeItem">
@@ -1506,40 +1471,16 @@
 <img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch_1.htm" target="_self">InsertBatch Method (SqlServerObjectName, DbDataReader, SqlServerObjectName, InsertOptions)</a>
 </div>
 <div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_3.htm" target="_self">InsertBatch(TObject) Method (SqlServerObjectName, IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1.htm" target="_self">InsertBatch(TObject) Method (SqlServerObjectName, IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
 </div>
 <div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_3.htm" target="_self">InsertBatch(TObject) Method (SqlServerObjectName, IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1.htm" target="_self">InsertBatch(TObject) Method (SqlServerObjectName, IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
 </div>
 <div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_4.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_1.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
 </div>
 <div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_4.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch_2.htm" target="_self">InsertBatch Method (String, DataTable, String, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch_2.htm" target="_self">InsertBatch Method (String, DataTable, String, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch_3.htm" target="_self">InsertBatch Method (String, DbDataReader, String, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch_3.htm" target="_self">InsertBatch Method (String, DbDataReader, String, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_5.htm" target="_self">InsertBatch(TObject) Method (String, IEnumerable(TObject), String, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_5.htm" target="_self">InsertBatch(TObject) Method (String, IEnumerable(TObject), String, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_6.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), String, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_6.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), String, InsertOptions)</a>
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_1.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
 </div>
 </div>
 </div>
@@ -1550,106 +1491,6 @@
 </div>
 <div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBulk.htm" target="_self">InsertBulk Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertMultipleBatch-.htm" target="_self">InsertMultipleBatch Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertMultipleBatch-.htm" target="_self">InsertMultipleBatch Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Procedure.htm" target="_self">Procedure Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Procedure.htm" target="_self">Procedure Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.ScalarFunction.htm" target="_self">ScalarFunction Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.ScalarFunction.htm" target="_self">ScalarFunction Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Sql.htm" target="_self">Sql Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Sql.htm" target="_self">Sql Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.TableFunction.htm" target="_self">TableFunction Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.TableFunction.htm" target="_self">TableFunction Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Update-.htm" target="_self">Update Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Update-.htm" target="_self">Update Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.UpdateByKey-.htm" target="_self">UpdateByKey Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.UpdateByKey-.htm" target="_self">UpdateByKey Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.UpdateByKeyList-.htm" target="_self">UpdateByKeyList Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.UpdateByKeyList-.htm" target="_self">UpdateByKeyList Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.UpdateSet.htm" target="_self">UpdateSet Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.UpdateSet.htm" target="_self">UpdateSet Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Upsert-.htm" target="_self">Upsert Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Upsert-.htm" target="_self">Upsert Method </a>
 <div class="Hidden">
 </div>
 </div>
@@ -1659,106 +1500,8 @@
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Methods.T-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.htm" target="_self">SqlServerDataSourceBase Methods</a>
 <div class="Hidden">
 <div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Delete-.htm" target="_self">Delete Method </a>
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch.htm" target="_self">InsertBatch Method </a>
 <div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Delete-.htm" target="_self">Delete Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.DeleteByKey-.htm" target="_self">DeleteByKey Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.DeleteByKey-.htm" target="_self">DeleteByKey Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.DeleteByKeyList-.htm" target="_self">DeleteByKeyList Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.DeleteByKeyList-.htm" target="_self">DeleteByKeyList Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.DeleteWithFilter.htm" target="_self">DeleteWithFilter Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.DeleteWithFilter.htm" target="_self">DeleteWithFilter Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.From.htm" target="_self">From Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.From.htm" target="_self">From Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.GetByKey-.htm" target="_self">GetByKey Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.GetByKey-.htm" target="_self">GetByKey Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.GetByKeyList-.htm" target="_self">GetByKeyList Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.GetByKeyList-.htm" target="_self">GetByKeyList Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Insert-.htm" target="_self">Insert Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Insert-.htm" target="_self">Insert Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch-.htm" target="_self">InsertBatch Method </a>
-<div class="Hidden">
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1.htm" target="_self">InsertBatch(TObject) Method (SqlServerObjectName, IEnumerable(TObject), InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1.htm" target="_self">InsertBatch(TObject) Method (SqlServerObjectName, IEnumerable(TObject), InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_1.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_1.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_2.htm" target="_self">InsertBatch(TObject) Method (String, IEnumerable(TObject), InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_2.htm" target="_self">InsertBatch(TObject) Method (String, IEnumerable(TObject), InsertOptions)</a>
-</div>
 <div class="TreeItem">
 <img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch.htm" target="_self">InsertBatch Method (SqlServerObjectName, DataTable, SqlServerObjectName, InsertOptions)</a>
 </div>
@@ -1772,65 +1515,23 @@
 <img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch_1.htm" target="_self">InsertBatch Method (SqlServerObjectName, DbDataReader, SqlServerObjectName, InsertOptions)</a>
 </div>
 <div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_3.htm" target="_self">InsertBatch(TObject) Method (SqlServerObjectName, IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1.htm" target="_self">InsertBatch(TObject) Method (SqlServerObjectName, IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
 </div>
 <div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_3.htm" target="_self">InsertBatch(TObject) Method (SqlServerObjectName, IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1.htm" target="_self">InsertBatch(TObject) Method (SqlServerObjectName, IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
 </div>
 <div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_4.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_1.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
 </div>
 <div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_4.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch_2.htm" target="_self">InsertBatch Method (String, DataTable, String, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch_2.htm" target="_self">InsertBatch Method (String, DataTable, String, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch_3.htm" target="_self">InsertBatch Method (String, DbDataReader, String, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch_3.htm" target="_self">InsertBatch Method (String, DbDataReader, String, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_5.htm" target="_self">InsertBatch(TObject) Method (String, IEnumerable(TObject), String, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_5.htm" target="_self">InsertBatch(TObject) Method (String, IEnumerable(TObject), String, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_6.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), String, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_6.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), String, InsertOptions)</a>
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_1.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
 </div>
 </div>
 </div>
 <div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch-.htm" target="_self">InsertBatch Method </a>
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch.htm" target="_self">InsertBatch Method </a>
 <div class="Hidden">
 <div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1.htm" target="_self">InsertBatch(TObject) Method (SqlServerObjectName, IEnumerable(TObject), InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1.htm" target="_self">InsertBatch(TObject) Method (SqlServerObjectName, IEnumerable(TObject), InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_1.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_1.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_2.htm" target="_self">InsertBatch(TObject) Method (String, IEnumerable(TObject), InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_2.htm" target="_self">InsertBatch(TObject) Method (String, IEnumerable(TObject), InsertOptions)</a>
-</div>
-<div class="TreeItem">
 <img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch.htm" target="_self">InsertBatch Method (SqlServerObjectName, DataTable, SqlServerObjectName, InsertOptions)</a>
 </div>
 <div class="TreeItem">
@@ -1843,40 +1544,16 @@
 <img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch_1.htm" target="_self">InsertBatch Method (SqlServerObjectName, DbDataReader, SqlServerObjectName, InsertOptions)</a>
 </div>
 <div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_3.htm" target="_self">InsertBatch(TObject) Method (SqlServerObjectName, IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1.htm" target="_self">InsertBatch(TObject) Method (SqlServerObjectName, IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
 </div>
 <div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_3.htm" target="_self">InsertBatch(TObject) Method (SqlServerObjectName, IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1.htm" target="_self">InsertBatch(TObject) Method (SqlServerObjectName, IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
 </div>
 <div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_4.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_1.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
 </div>
 <div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_4.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch_2.htm" target="_self">InsertBatch Method (String, DataTable, String, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch_2.htm" target="_self">InsertBatch Method (String, DataTable, String, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch_3.htm" target="_self">InsertBatch Method (String, DbDataReader, String, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch_3.htm" target="_self">InsertBatch Method (String, DbDataReader, String, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_5.htm" target="_self">InsertBatch(TObject) Method (String, IEnumerable(TObject), String, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_5.htm" target="_self">InsertBatch(TObject) Method (String, IEnumerable(TObject), String, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_6.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), String, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_6.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), String, InsertOptions)</a>
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_1.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
 </div>
 </div>
 </div>
@@ -1887,106 +1564,6 @@
 </div>
 <div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBulk.htm" target="_self">InsertBulk Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertMultipleBatch-.htm" target="_self">InsertMultipleBatch Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertMultipleBatch-.htm" target="_self">InsertMultipleBatch Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Procedure.htm" target="_self">Procedure Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Procedure.htm" target="_self">Procedure Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.ScalarFunction.htm" target="_self">ScalarFunction Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.ScalarFunction.htm" target="_self">ScalarFunction Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Sql.htm" target="_self">Sql Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Sql.htm" target="_self">Sql Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.TableFunction.htm" target="_self">TableFunction Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.TableFunction.htm" target="_self">TableFunction Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Update-.htm" target="_self">Update Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Update-.htm" target="_self">Update Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.UpdateByKey-.htm" target="_self">UpdateByKey Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.UpdateByKey-.htm" target="_self">UpdateByKey Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.UpdateByKeyList-.htm" target="_self">UpdateByKeyList Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.UpdateByKeyList-.htm" target="_self">UpdateByKeyList Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.UpdateSet.htm" target="_self">UpdateSet Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.UpdateSet.htm" target="_self">UpdateSet Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Upsert-.htm" target="_self">Upsert Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Upsert-.htm" target="_self">Upsert Method </a>
 <div class="Hidden">
 </div>
 </div>
@@ -2001,12 +1578,6 @@
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Properties.T-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.htm" target="_self">SqlServerDataSourceBase Properties</a>
 <div class="Hidden">
 </div>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="Events.T-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.htm" target="_self">SqlServerDataSourceBase Events</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="Events.T-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.htm" target="_self">SqlServerDataSourceBase Events</a>
 </div>
 </div>
 </div>
@@ -2023,106 +1594,8 @@
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Methods.T-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.htm" target="_self">SqlServerDataSourceBase Methods</a>
 <div class="Hidden">
 <div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Delete-.htm" target="_self">Delete Method </a>
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch.htm" target="_self">InsertBatch Method </a>
 <div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Delete-.htm" target="_self">Delete Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.DeleteByKey-.htm" target="_self">DeleteByKey Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.DeleteByKey-.htm" target="_self">DeleteByKey Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.DeleteByKeyList-.htm" target="_self">DeleteByKeyList Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.DeleteByKeyList-.htm" target="_self">DeleteByKeyList Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.DeleteWithFilter.htm" target="_self">DeleteWithFilter Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.DeleteWithFilter.htm" target="_self">DeleteWithFilter Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.From.htm" target="_self">From Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.From.htm" target="_self">From Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.GetByKey-.htm" target="_self">GetByKey Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.GetByKey-.htm" target="_self">GetByKey Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.GetByKeyList-.htm" target="_self">GetByKeyList Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.GetByKeyList-.htm" target="_self">GetByKeyList Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Insert-.htm" target="_self">Insert Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Insert-.htm" target="_self">Insert Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch-.htm" target="_self">InsertBatch Method </a>
-<div class="Hidden">
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1.htm" target="_self">InsertBatch(TObject) Method (SqlServerObjectName, IEnumerable(TObject), InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1.htm" target="_self">InsertBatch(TObject) Method (SqlServerObjectName, IEnumerable(TObject), InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_1.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_1.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_2.htm" target="_self">InsertBatch(TObject) Method (String, IEnumerable(TObject), InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_2.htm" target="_self">InsertBatch(TObject) Method (String, IEnumerable(TObject), InsertOptions)</a>
-</div>
 <div class="TreeItem">
 <img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch.htm" target="_self">InsertBatch Method (SqlServerObjectName, DataTable, SqlServerObjectName, InsertOptions)</a>
 </div>
@@ -2136,65 +1609,23 @@
 <img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch_1.htm" target="_self">InsertBatch Method (SqlServerObjectName, DbDataReader, SqlServerObjectName, InsertOptions)</a>
 </div>
 <div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_3.htm" target="_self">InsertBatch(TObject) Method (SqlServerObjectName, IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1.htm" target="_self">InsertBatch(TObject) Method (SqlServerObjectName, IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
 </div>
 <div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_3.htm" target="_self">InsertBatch(TObject) Method (SqlServerObjectName, IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1.htm" target="_self">InsertBatch(TObject) Method (SqlServerObjectName, IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
 </div>
 <div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_4.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_1.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
 </div>
 <div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_4.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch_2.htm" target="_self">InsertBatch Method (String, DataTable, String, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch_2.htm" target="_self">InsertBatch Method (String, DataTable, String, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch_3.htm" target="_self">InsertBatch Method (String, DbDataReader, String, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch_3.htm" target="_self">InsertBatch Method (String, DbDataReader, String, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_5.htm" target="_self">InsertBatch(TObject) Method (String, IEnumerable(TObject), String, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_5.htm" target="_self">InsertBatch(TObject) Method (String, IEnumerable(TObject), String, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_6.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), String, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_6.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), String, InsertOptions)</a>
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_1.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
 </div>
 </div>
 </div>
 <div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch-.htm" target="_self">InsertBatch Method </a>
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch.htm" target="_self">InsertBatch Method </a>
 <div class="Hidden">
 <div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1.htm" target="_self">InsertBatch(TObject) Method (SqlServerObjectName, IEnumerable(TObject), InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1.htm" target="_self">InsertBatch(TObject) Method (SqlServerObjectName, IEnumerable(TObject), InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_1.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_1.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_2.htm" target="_self">InsertBatch(TObject) Method (String, IEnumerable(TObject), InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_2.htm" target="_self">InsertBatch(TObject) Method (String, IEnumerable(TObject), InsertOptions)</a>
-</div>
-<div class="TreeItem">
 <img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch.htm" target="_self">InsertBatch Method (SqlServerObjectName, DataTable, SqlServerObjectName, InsertOptions)</a>
 </div>
 <div class="TreeItem">
@@ -2207,40 +1638,16 @@
 <img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch_1.htm" target="_self">InsertBatch Method (SqlServerObjectName, DbDataReader, SqlServerObjectName, InsertOptions)</a>
 </div>
 <div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_3.htm" target="_self">InsertBatch(TObject) Method (SqlServerObjectName, IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1.htm" target="_self">InsertBatch(TObject) Method (SqlServerObjectName, IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
 </div>
 <div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_3.htm" target="_self">InsertBatch(TObject) Method (SqlServerObjectName, IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1.htm" target="_self">InsertBatch(TObject) Method (SqlServerObjectName, IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
 </div>
 <div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_4.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_1.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
 </div>
 <div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_4.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch_2.htm" target="_self">InsertBatch Method (String, DataTable, String, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch_2.htm" target="_self">InsertBatch Method (String, DataTable, String, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch_3.htm" target="_self">InsertBatch Method (String, DbDataReader, String, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch_3.htm" target="_self">InsertBatch Method (String, DbDataReader, String, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_5.htm" target="_self">InsertBatch(TObject) Method (String, IEnumerable(TObject), String, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_5.htm" target="_self">InsertBatch(TObject) Method (String, IEnumerable(TObject), String, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_6.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), String, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_6.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), String, InsertOptions)</a>
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_1.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
 </div>
 </div>
 </div>
@@ -2251,106 +1658,6 @@
 </div>
 <div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBulk.htm" target="_self">InsertBulk Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertMultipleBatch-.htm" target="_self">InsertMultipleBatch Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertMultipleBatch-.htm" target="_self">InsertMultipleBatch Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Procedure.htm" target="_self">Procedure Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Procedure.htm" target="_self">Procedure Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.ScalarFunction.htm" target="_self">ScalarFunction Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.ScalarFunction.htm" target="_self">ScalarFunction Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Sql.htm" target="_self">Sql Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Sql.htm" target="_self">Sql Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.TableFunction.htm" target="_self">TableFunction Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.TableFunction.htm" target="_self">TableFunction Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Update-.htm" target="_self">Update Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Update-.htm" target="_self">Update Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.UpdateByKey-.htm" target="_self">UpdateByKey Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.UpdateByKey-.htm" target="_self">UpdateByKey Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.UpdateByKeyList-.htm" target="_self">UpdateByKeyList Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.UpdateByKeyList-.htm" target="_self">UpdateByKeyList Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.UpdateSet.htm" target="_self">UpdateSet Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.UpdateSet.htm" target="_self">UpdateSet Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Upsert-.htm" target="_self">Upsert Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Upsert-.htm" target="_self">Upsert Method </a>
 <div class="Hidden">
 </div>
 </div>
@@ -2360,106 +1667,8 @@
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Methods.T-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.htm" target="_self">SqlServerDataSourceBase Methods</a>
 <div class="Hidden">
 <div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Delete-.htm" target="_self">Delete Method </a>
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch.htm" target="_self">InsertBatch Method </a>
 <div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Delete-.htm" target="_self">Delete Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.DeleteByKey-.htm" target="_self">DeleteByKey Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.DeleteByKey-.htm" target="_self">DeleteByKey Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.DeleteByKeyList-.htm" target="_self">DeleteByKeyList Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.DeleteByKeyList-.htm" target="_self">DeleteByKeyList Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.DeleteWithFilter.htm" target="_self">DeleteWithFilter Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.DeleteWithFilter.htm" target="_self">DeleteWithFilter Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.From.htm" target="_self">From Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.From.htm" target="_self">From Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.GetByKey-.htm" target="_self">GetByKey Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.GetByKey-.htm" target="_self">GetByKey Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.GetByKeyList-.htm" target="_self">GetByKeyList Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.GetByKeyList-.htm" target="_self">GetByKeyList Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Insert-.htm" target="_self">Insert Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Insert-.htm" target="_self">Insert Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch-.htm" target="_self">InsertBatch Method </a>
-<div class="Hidden">
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1.htm" target="_self">InsertBatch(TObject) Method (SqlServerObjectName, IEnumerable(TObject), InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1.htm" target="_self">InsertBatch(TObject) Method (SqlServerObjectName, IEnumerable(TObject), InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_1.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_1.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_2.htm" target="_self">InsertBatch(TObject) Method (String, IEnumerable(TObject), InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_2.htm" target="_self">InsertBatch(TObject) Method (String, IEnumerable(TObject), InsertOptions)</a>
-</div>
 <div class="TreeItem">
 <img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch.htm" target="_self">InsertBatch Method (SqlServerObjectName, DataTable, SqlServerObjectName, InsertOptions)</a>
 </div>
@@ -2473,65 +1682,23 @@
 <img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch_1.htm" target="_self">InsertBatch Method (SqlServerObjectName, DbDataReader, SqlServerObjectName, InsertOptions)</a>
 </div>
 <div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_3.htm" target="_self">InsertBatch(TObject) Method (SqlServerObjectName, IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1.htm" target="_self">InsertBatch(TObject) Method (SqlServerObjectName, IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
 </div>
 <div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_3.htm" target="_self">InsertBatch(TObject) Method (SqlServerObjectName, IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1.htm" target="_self">InsertBatch(TObject) Method (SqlServerObjectName, IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
 </div>
 <div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_4.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_1.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
 </div>
 <div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_4.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch_2.htm" target="_self">InsertBatch Method (String, DataTable, String, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch_2.htm" target="_self">InsertBatch Method (String, DataTable, String, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch_3.htm" target="_self">InsertBatch Method (String, DbDataReader, String, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch_3.htm" target="_self">InsertBatch Method (String, DbDataReader, String, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_5.htm" target="_self">InsertBatch(TObject) Method (String, IEnumerable(TObject), String, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_5.htm" target="_self">InsertBatch(TObject) Method (String, IEnumerable(TObject), String, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_6.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), String, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_6.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), String, InsertOptions)</a>
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_1.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
 </div>
 </div>
 </div>
 <div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch-.htm" target="_self">InsertBatch Method </a>
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch.htm" target="_self">InsertBatch Method </a>
 <div class="Hidden">
 <div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1.htm" target="_self">InsertBatch(TObject) Method (SqlServerObjectName, IEnumerable(TObject), InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1.htm" target="_self">InsertBatch(TObject) Method (SqlServerObjectName, IEnumerable(TObject), InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_1.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_1.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_2.htm" target="_self">InsertBatch(TObject) Method (String, IEnumerable(TObject), InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_2.htm" target="_self">InsertBatch(TObject) Method (String, IEnumerable(TObject), InsertOptions)</a>
-</div>
-<div class="TreeItem">
 <img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch.htm" target="_self">InsertBatch Method (SqlServerObjectName, DataTable, SqlServerObjectName, InsertOptions)</a>
 </div>
 <div class="TreeItem">
@@ -2544,40 +1711,16 @@
 <img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch_1.htm" target="_self">InsertBatch Method (SqlServerObjectName, DbDataReader, SqlServerObjectName, InsertOptions)</a>
 </div>
 <div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_3.htm" target="_self">InsertBatch(TObject) Method (SqlServerObjectName, IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1.htm" target="_self">InsertBatch(TObject) Method (SqlServerObjectName, IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
 </div>
 <div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_3.htm" target="_self">InsertBatch(TObject) Method (SqlServerObjectName, IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1.htm" target="_self">InsertBatch(TObject) Method (SqlServerObjectName, IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
 </div>
 <div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_4.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_1.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
 </div>
 <div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_4.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch_2.htm" target="_self">InsertBatch Method (String, DataTable, String, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch_2.htm" target="_self">InsertBatch Method (String, DataTable, String, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch_3.htm" target="_self">InsertBatch Method (String, DbDataReader, String, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch_3.htm" target="_self">InsertBatch Method (String, DbDataReader, String, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_5.htm" target="_self">InsertBatch(TObject) Method (String, IEnumerable(TObject), String, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_5.htm" target="_self">InsertBatch(TObject) Method (String, IEnumerable(TObject), String, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_6.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), String, InsertOptions)</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_6.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), String, InsertOptions)</a>
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch--1_1.htm" target="_self">InsertBatch(TObject) Method (IEnumerable(TObject), SqlServerObjectName, InsertOptions)</a>
 </div>
 </div>
 </div>
@@ -2588,106 +1731,6 @@
 </div>
 <div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBulk.htm" target="_self">InsertBulk Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertMultipleBatch-.htm" target="_self">InsertMultipleBatch Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertMultipleBatch-.htm" target="_self">InsertMultipleBatch Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Procedure.htm" target="_self">Procedure Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Procedure.htm" target="_self">Procedure Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.ScalarFunction.htm" target="_self">ScalarFunction Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.ScalarFunction.htm" target="_self">ScalarFunction Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Sql.htm" target="_self">Sql Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Sql.htm" target="_self">Sql Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.TableFunction.htm" target="_self">TableFunction Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.TableFunction.htm" target="_self">TableFunction Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Update-.htm" target="_self">Update Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Update-.htm" target="_self">Update Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.UpdateByKey-.htm" target="_self">UpdateByKey Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.UpdateByKey-.htm" target="_self">UpdateByKey Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.UpdateByKeyList-.htm" target="_self">UpdateByKeyList Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.UpdateByKeyList-.htm" target="_self">UpdateByKeyList Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.UpdateSet.htm" target="_self">UpdateSet Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.UpdateSet.htm" target="_self">UpdateSet Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Upsert-.htm" target="_self">Upsert Method </a>
-<div class="Hidden">
-</div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.Upsert-.htm" target="_self">Upsert Method </a>
 <div class="Hidden">
 </div>
 </div>
@@ -2702,12 +1745,6 @@
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Properties.T-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.htm" target="_self">SqlServerDataSourceBase Properties</a>
 <div class="Hidden">
 </div>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="Events.T-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.htm" target="_self">SqlServerDataSourceBase Events</a>
-</div>
-<div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="Events.T-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.htm" target="_self">SqlServerDataSourceBase Events</a>
 </div>
 </div>
 </div>
@@ -2838,29 +1875,34 @@
         <div class="topicContainer">
           <div class="topic">
             <p class="majorTitle" />
-            <h1 class="title">SqlServerDataSourceBase<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span><span class="fs">.</span></span>InsertBatch<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span><span class="typeparameter">TObject</span><span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span> Method (IEnumerable<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span><span class="typeparameter">TObject</span><span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span>, InsertOptions)</h1>
+            <h1 class="title">SqlServerDataSourceBase<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span><span class="fs">.</span></span>InsertBatch<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span><span class="typeparameter">TObject</span><span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span> Method (IEnumerable<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span><span class="typeparameter">TObject</span><span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span>, SqlServerObjectName, InsertOptions)</h1>
             <div id="mainSection">
               <div id="mainBody">
                 <div class="summary">
-   Inserts the batch of records as one operation.
+   Inserts the batch of records as one operation..
    </div>
                 <p />
     <b>Namespace:</b> 
    <a href="N-Tortuga.Chain.SqlServer.htm">Tortuga.Chain.SqlServer</a><br />
     <b>Assembly:</b>
-   <span sdata="assembly">Tortuga.Chain.SqlServer.MDS</span> (in Tortuga.Chain.SqlServer.MDS.dll)<div class="LW_CollapsibleArea_Container"><div class="LW_CollapsibleArea_TitleDiv"><h2 class="LW_CollapsibleArea_Title">Syntax</h2><div class="LW_CollapsibleArea_HrDiv"><hr class="LW_CollapsibleArea_Hr" /></div></div><a id="syntaxSection"><!----></a><div class="CodeSnippetContainer"><div class="CodeSnippetContainerTabs"><div class="CodeSnippetContainerTabLeft"><!----></div><div class="CodeSnippetContainerTabFirst CSharpTab" id="CSharpTabId" style="background:white;border-bottom-color:white"><a href="javascript:setActiveTab('CodeSnippetContainerCode','CSharpCode','CSharpTabId');" title="C#">C#</a></div><div class="CodeSnippetContainerTab VisualBasicTab" id="VisualBasicTabId"><a href="javascript:setActiveTab('CodeSnippetContainerCode','VisualBasicCode','VisualBasicTabId');" title="Visual Basic">VB</a></div><div class="CodeSnippetContainerTab ManagedCPlusPlusTab" id="ManagedCPlusPlusTabId"><a href="javascript:setActiveTab('CodeSnippetContainerCode','ManagedCPlusPlusCode','ManagedCPlusPlusTabId');" title="Visual C++">C++</a></div><div class="CodeSnippetContainerTabRight"><!----></div></div><div class="CodeSnippetContainerCodeCollection"><div class="CodeSnippetToolBar"><div class="CodeSnippetToolBarText" /></div><div class="CodeSnippetContainerCode CSharpCode"><pre xml:space="preserve" class="libCScode"><span class="keyword">public</span> <a href="T-Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder-2.htm">MultipleRowDbCommandBuilder</a> <span class="identifier">InsertBatch</span>&lt;TObject&gt;(
-	<a href="http://msdn.microsoft.com/en-us/library/9eekhta0.aspx" target="_blank">IEnumerable</a>&lt;TObject&gt; <span class="parameter">objects</span>,
+   <span sdata="assembly">Tortuga.Chain.SqlServer.MDS</span> (in Tortuga.Chain.SqlServer.MDS.dll)<div class="LW_CollapsibleArea_Container"><div class="LW_CollapsibleArea_TitleDiv"><h2 class="LW_CollapsibleArea_Title">Syntax</h2><div class="LW_CollapsibleArea_HrDiv"><hr class="LW_CollapsibleArea_Hr" /></div></div><a id="syntaxSection"><!----></a><div class="CodeSnippetContainer"><div class="CodeSnippetContainerTabs"><div class="CodeSnippetContainerTabLeft"><!----></div><div class="CodeSnippetContainerTabFirst CSharpTab" id="CSharpTabId" style="background:white;border-bottom-color:white"><a href="javascript:setActiveTab('CodeSnippetContainerCode','CSharpCode','CSharpTabId');" title="C#">C#</a></div><div class="CodeSnippetContainerTab VisualBasicTab" id="VisualBasicTabId"><a href="javascript:setActiveTab('CodeSnippetContainerCode','VisualBasicCode','VisualBasicTabId');" title="Visual Basic">VB</a></div><div class="CodeSnippetContainerTab ManagedCPlusPlusTab" id="ManagedCPlusPlusTabId"><a href="javascript:setActiveTab('CodeSnippetContainerCode','ManagedCPlusPlusCode','ManagedCPlusPlusTabId');" title="Visual C++">C++</a></div><div class="CodeSnippetContainerTabRight"><!----></div></div><div class="CodeSnippetContainerCodeCollection"><div class="CodeSnippetToolBar"><div class="CodeSnippetToolBarText" /></div><div class="CodeSnippetContainerCode CSharpCode"><pre xml:space="preserve" class="libCScode"><span class="keyword">public</span> <span class="nolink">MultipleRowDbCommandBuilder</span>&lt;<span class="nolink">SqlCommand</span>, <span class="nolink">SqlParameter</span>&gt; <span class="identifier">InsertBatch</span>&lt;TObject&gt;(
+	<span class="nolink">IEnumerable</span>&lt;TObject&gt; <span class="parameter">objects</span>,
+	<a href="T-Tortuga.Chain.SqlServer.SqlServerObjectName.htm">SqlServerObjectName</a> <span class="parameter">tableTypeName</span>,
 	<a href="T-Tortuga.Chain.InsertOptions.htm">InsertOptions</a> <span class="parameter">options</span>
 )
 </pre></div><div class="CodeSnippetContainerCode VisualBasicCode"><pre xml:space="preserve" class="libCScode"><span class="keyword">Public</span> <span class="keyword">Function</span> <span class="identifier">InsertBatch</span>(<span class="keyword">Of</span> TObject) ( _
-	<span class="parameter">objects</span> <span class="keyword">As</span> <a href="http://msdn.microsoft.com/en-us/library/9eekhta0.aspx" target="_blank">IEnumerable</a>(<span class="keyword">Of</span> TObject), _
+	<span class="parameter">objects</span> <span class="keyword">As</span> <span class="nolink">IEnumerable</span>(<span class="keyword">Of</span> TObject), _
+	<span class="parameter">tableTypeName</span> <span class="keyword">As</span> <a href="T-Tortuga.Chain.SqlServer.SqlServerObjectName.htm">SqlServerObjectName</a>, _
 	<span class="parameter">options</span> <span class="keyword">As</span> <a href="T-Tortuga.Chain.InsertOptions.htm">InsertOptions</a> _
-) <span class="keyword">As</span> <a href="T-Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder-2.htm">MultipleRowDbCommandBuilder</a></pre></div><div class="CodeSnippetContainerCode ManagedCPlusPlusCode"><pre xml:space="preserve" class="libCScode"><span class="keyword">public</span>:
+) <span class="keyword">As</span> <span class="nolink">MultipleRowDbCommandBuilder</span>(<span class="keyword">Of</span> <span class="nolink">SqlCommand</span>, <span class="nolink">SqlParameter</span>)</pre></div><div class="CodeSnippetContainerCode ManagedCPlusPlusCode"><pre xml:space="preserve" class="libCScode"><span class="keyword">public</span>:
 <span class="keyword">generic</span>&lt;<span class="keyword">typename</span> TObject&gt;
-<a href="T-Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder-2.htm">MultipleRowDbCommandBuilder</a>^ <span class="identifier">InsertBatch</span>(
-	<a href="http://msdn.microsoft.com/en-us/library/9eekhta0.aspx" target="_blank">IEnumerable</a>&lt;TObject&gt;^ <span class="parameter">objects</span>, 
+<span class="nolink">MultipleRowDbCommandBuilder</span>&lt;<span class="nolink">SqlCommand</span>^, <span class="nolink">SqlParameter</span>^&gt;^ <span class="identifier">InsertBatch</span>(
+	<span class="nolink">IEnumerable</span>&lt;TObject&gt;^ <span class="parameter">objects</span>, 
+	<a href="T-Tortuga.Chain.SqlServer.SqlServerObjectName.htm">SqlServerObjectName</a>^ <span class="parameter">tableTypeName</span>, 
 	<a href="T-Tortuga.Chain.InsertOptions.htm">InsertOptions</a>^ <span class="parameter">options</span>
-)</pre></div></div></div><h4 class="subHeading">Type Parameters</h4><dl><dt><span class="parameterItalic">TObject</span></dt><dd /></dl><div id="parameters"><h4 class="subHeading">Parameters</h4><dl paramName="objects"><dt><span class="parameterItalic">objects</span></dt><dd>Type: <a href="http://msdn.microsoft.com/en-us/library/9eekhta0.aspx" target="_blank">IEnumerable</a><span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span><span class="selflink"><span class="typeparam">TObject</span></span><span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span><br />The objects to insert.</dd></dl><dl paramName="options"><dt><span class="parameterItalic">options</span></dt><dd>Type: <a href="T-Tortuga.Chain.InsertOptions.htm">Tortuga.Chain<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span><span class="fs">.</span></span>InsertOptions</a><br />The options.</dd></dl></div><h4 class="subHeading">Return Value</h4>MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.</div><div class="LW_CollapsibleArea_Container"><div class="LW_CollapsibleArea_TitleDiv"><h2 class="LW_CollapsibleArea_Title">See Also</h2><div class="LW_CollapsibleArea_HrDiv"><hr class="LW_CollapsibleArea_Hr" /></div></div><a id="seeAlsoSection"><!----></a><div class="seeAlsoStyle"><a href="T-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.htm">SqlServerDataSourceBase Class</a></div><div class="seeAlsoStyle"><a href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch-.htm">InsertBatch Overload</a></div><div class="seeAlsoStyle"><a href="N-Tortuga.Chain.SqlServer.htm">Tortuga.Chain.SqlServer Namespace</a></div></div></div>
+)</pre></div></div></div><h4 class="subHeading">Type Parameters</h4><dl><dt><span class="parameterItalic">TObject</span></dt><dd>The type of the object.</dd></dl><div id="parameters"><h4 class="subHeading">Parameters</h4><dl paramName="objects"><dt><span class="parameterItalic">objects</span></dt><dd>Type: <span class="nolink">IEnumerable</span><span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span><span class="selflink"><span class="typeparam">TObject</span></span><span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span><br />The objects.</dd></dl><dl paramName="tableTypeName"><dt><span class="parameterItalic">tableTypeName</span></dt><dd>Type: <a href="T-Tortuga.Chain.SqlServer.SqlServerObjectName.htm">Tortuga.Chain.SqlServer<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span><span class="fs">.</span></span>SqlServerObjectName</a><br />Name of the table type.</dd></dl><dl paramName="options"><dt><span class="parameterItalic">options</span></dt><dd>Type: <a href="T-Tortuga.Chain.InsertOptions.htm">Tortuga.Chain<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span><span class="fs">.</span></span>InsertOptions</a><br />The options.</dd></dl></div><h4 class="subHeading">Return Value</h4>
+   MultipleRowDbCommandBuilder&lt;SqlCommand, SqlParameter&gt;.
+   </div><div class="LW_CollapsibleArea_Container"><div class="LW_CollapsibleArea_TitleDiv"><h2 class="LW_CollapsibleArea_Title">See Also</h2><div class="LW_CollapsibleArea_HrDiv"><hr class="LW_CollapsibleArea_Hr" /></div></div><a id="seeAlsoSection"><!----></a><div class="seeAlsoStyle"><a href="T-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.htm">SqlServerDataSourceBase Class</a></div><div class="seeAlsoStyle"><a href="Overload-Tortuga.Chain.SqlServer.SqlServerDataSourceBase.InsertBatch.htm">InsertBatch Overload</a></div><div class="seeAlsoStyle"><a href="N-Tortuga.Chain.SqlServer.htm">Tortuga.Chain.SqlServer Namespace</a></div></div></div>
             </div>
           </div>
         </div>

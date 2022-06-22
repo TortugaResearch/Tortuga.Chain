@@ -31,14 +31,8 @@ namespace Tortuga.Chain.Materializers
 			m_DictionaryOptions = dictionaryOptions;
 
 			if (m_DictionaryOptions.HasFlag(DictionaryOptions.InferConstructor))
-			{
-				var constructors = ObjectMetadata.Constructors.Where(x => x.Signature.Length > 0).ToList();
-				if (constructors.Count == 0)
-					throw new MappingException($"Type {typeof(TObject).Name} has does not have any non-default constructors.");
-				if (constructors.Count > 1)
-					throw new MappingException($"Type {typeof(TObject).Name} has more than one non-default constructor. Please use the WithConstructor method to specify which one to use.");
-				Constructor = constructors[0];
-			}
+				Constructor = InferConstructor();
+
 		}
 
 		public ImmutableDictionaryMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, string keyColumn, DictionaryOptions dictionaryOptions) : base(commandBuilder)
@@ -50,34 +44,18 @@ namespace Tortuga.Chain.Materializers
 			m_DictionaryOptions = dictionaryOptions;
 
 			if (m_DictionaryOptions.HasFlag(DictionaryOptions.InferConstructor))
-			{
-				var constructors = ObjectMetadata.Constructors.Where(x => x.Signature.Length > 0).ToList();
-				if (constructors.Count == 0)
-					throw new MappingException($"Type {typeof(TObject).Name} has does not have any non-default constructors.");
-				if (constructors.Count > 1)
-					throw new MappingException($"Type {typeof(TObject).Name} has more than one non-default constructor. Please use the WithConstructor method to specify which one to use.");
-				Constructor = constructors[0];
-			}
+				Constructor = InferConstructor();
+
 		}
 
-		/// <summary>
-		/// Returns the list of columns the materializer would like to have.
-		/// </summary>
-		/// <returns></returns>
-		public override IReadOnlyList<string> DesiredColumns()
-		{
-			if (Constructor == null)
-				return ObjectMetadata.ColumnsFor;
 
-			return Constructor.ParameterNames;
-		}
 
 		public override ImmutableDictionary<TKey, TObject> Execute(object? state = null)
 		{
 			Table? table = null;
 			Prepare().Execute(cmd =>
 			{
-				using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess))
+				using (var reader = cmd.ExecuteReader(CommandBehavior))
 				{
 					table = new Table(reader);
 					return table.Rows.Count;
@@ -92,7 +70,7 @@ namespace Tortuga.Chain.Materializers
 			Table? table = null;
 			await Prepare().ExecuteAsync(async cmd =>
 			{
-				using (var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SequentialAccess, cancellationToken).ConfigureAwait(false))
+				using (var reader = await cmd.ExecuteReaderAsync(CommandBehavior, cancellationToken).ConfigureAwait(false))
 				{
 					table = new Table(reader);
 					return table.Rows.Count;

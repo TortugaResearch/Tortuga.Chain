@@ -1,15 +1,6 @@
 ﻿using Tortuga.Chain.Core;
 using Tortuga.Chain.DataSources;
 
-#if SQL_SERVER_SDS
-
-using System.Data.SqlClient;
-
-#elif SQL_SERVER_MDS
-
-using Microsoft.Data.SqlClient;
-
-#endif
 
 namespace Tortuga.Chain.SqlServer
 {

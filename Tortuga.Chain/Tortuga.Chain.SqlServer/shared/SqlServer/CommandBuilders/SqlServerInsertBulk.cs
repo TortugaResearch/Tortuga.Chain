@@ -2,16 +2,6 @@
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Metadata;
 
-#if SQL_SERVER_SDS
-
-using System.Data.SqlClient;
-
-#elif SQL_SERVER_MDS
-
-using Microsoft.Data.SqlClient;
-
-#endif
-
 namespace Tortuga.Chain.SqlServer.CommandBuilders
 {
 	/// <summary>
@@ -21,7 +11,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 	public sealed class SqlServerInsertBulk : DbOperationBuilder<SqlConnection, SqlTransaction>
 	{
 		readonly SqlServerDataSourceBase m_DataSource;
-		readonly SqlBulkCopyOptions m_Options;
+		SqlBulkCopyOptions m_Options;
 		readonly IDataReader m_Source;
 		readonly TableOrViewMetadata<SqlServerObjectName, SqlDbType> m_Table;
 		int? m_BatchSize;
@@ -29,7 +19,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 		EventHandler<AbortableOperationEventArgs>? m_EventHandler;
 		int? m_NotifyAfter;
 
-		internal SqlServerInsertBulk(SqlServerDataSourceBase dataSource, SqlServerObjectName tableName, DataTable dataTable, SqlBulkCopyOptions options) : base(dataSource)
+		internal SqlServerInsertBulk(SqlServerDataSourceBase dataSource, SqlServerObjectName tableName, DataTable dataTable) : base(dataSource)
 		{
 			if (dataSource == null)
 				throw new ArgumentNullException(nameof(dataSource), $"{nameof(dataSource)} is null.");
@@ -38,13 +28,12 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 
 			m_DataSource = dataSource;
 			m_Source = dataTable.CreateDataReader();
-			m_Options = options;
 			m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
 			if (!m_Table.IsTable)
 				throw new MappingException($"Cannot perform a bulk insert into the view {m_Table.Name}");
 		}
 
-		internal SqlServerInsertBulk(SqlServerDataSourceBase dataSource, SqlServerObjectName tableName, IDataReader dataReader, SqlBulkCopyOptions options) : base(dataSource)
+		internal SqlServerInsertBulk(SqlServerDataSourceBase dataSource, SqlServerObjectName tableName, IDataReader dataReader) : base(dataSource)
 		{
 			if (dataSource == null)
 				throw new ArgumentNullException(nameof(dataSource), $"{nameof(dataSource)} is null.");
@@ -53,7 +42,6 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 
 			m_DataSource = dataSource;
 			m_Source = dataReader;
-			m_Options = options;
 			m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
 			if (!m_Table.IsTable)
 				throw new MappingException($"Cannot perform a bulk insert into the view {m_Table.Name}");
@@ -97,6 +85,17 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 		public SqlServerInsertBulk WithBatchSize(int batchSize)
 		{
 			m_BatchSize = batchSize;
+			return this;
+		}
+
+		/// <summary>
+		/// Modifies the batch size.
+		/// </summary>
+		/// <param name="options">Bulk insert options.</param>
+		/// <returns>SqlServerInsertBulk.</returns>
+		public SqlServerInsertBulk WithOptions(SqlBulkCopyOptions options)
+		{
+			m_Options = options;
 			return this;
 		}
 

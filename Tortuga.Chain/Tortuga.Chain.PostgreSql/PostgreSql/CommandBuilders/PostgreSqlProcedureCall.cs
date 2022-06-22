@@ -57,7 +57,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 			else
 			{
 				var sqlBuilder = m_Procedure.CreateSqlBuilder(StrictMode);
-				sqlBuilder.ApplyArgumentValue(DataSource, OperationTypes.None, m_ArgumentValue);
+				sqlBuilder.ApplyArgumentValue(DataSource, m_ArgumentValue);
 				parameters = sqlBuilder.GetParameters();
 			}
 

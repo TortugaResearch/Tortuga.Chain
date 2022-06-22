@@ -9,7 +9,7 @@ namespace Tortuga.Chain
 	/// <typeparam name="TConnection">The type of the t connection.</typeparam>
 	/// <typeparam name="TCommand">The type of the t command.</typeparam>
 	/// <typeparam name="TParameter">The type of the t parameter.</typeparam>
-	public class GenericDbDataSource<TConnection, TCommand, TParameter> : GenericDbDataSource
+	public partial class GenericDbDataSource<TConnection, TCommand, TParameter> : GenericDbDataSource
 		where TConnection : DbConnection, new()
 		where TCommand : DbCommand, new()
 		where TParameter : DbParameter, new()

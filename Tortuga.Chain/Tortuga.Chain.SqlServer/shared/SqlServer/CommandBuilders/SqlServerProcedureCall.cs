@@ -1,25 +1,9 @@
 ﻿using System.Collections.Immutable;
-using Tortuga.Chain.AuditRules;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
 using Tortuga.Chain.Metadata;
-
-#if !SqlDependency_Missing
-
 using Tortuga.Chain.SqlServer.Materializers;
-
-#endif
-
-#if SQL_SERVER_SDS
-
-using System.Data.SqlClient;
-
-#elif SQL_SERVER_MDS
-
-using Microsoft.Data.SqlClient;
-
-#endif
 
 namespace Tortuga.Chain.SqlServer.CommandBuilders
 {
@@ -65,7 +49,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 			else
 			{
 				var sqlBuilder = m_Procedure.CreateSqlBuilder(StrictMode);
-				sqlBuilder.ApplyArgumentValue(DataSource, OperationTypes.None, m_ArgumentValue);
+				sqlBuilder.ApplyArgumentValue(DataSource, m_ArgumentValue);
 				parameters = sqlBuilder.GetParameters();
 			}
 
@@ -103,8 +87,6 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 		public override IReadOnlyList<ColumnMetadata> TryGetNonNullableColumns() => ImmutableList<ColumnMetadata>.Empty;
 	}
 
-#if !SqlDependency_Missing
-
 	partial class SqlServerProcedureCall : ISupportsChangeListener
 	{
 		/// <summary>
@@ -125,5 +107,4 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 		}
 	}
 
-#endif
 }

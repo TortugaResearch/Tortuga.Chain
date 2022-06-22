@@ -1,16 +1,6 @@
 ﻿using System.Data.Common;
 using Tortuga.Chain.CommandBuilders;
 
-#if SQL_SERVER_SDS
-
-using System.Data.SqlClient;
-
-#elif SQL_SERVER_MDS
-
-using Microsoft.Data.SqlClient;
-
-#endif
-
 namespace Tortuga.Chain.SqlServer
 {
 	internal static class Utilities
@@ -25,28 +15,6 @@ namespace Tortuga.Chain.SqlServer
 			return sqlBuilder.GetParameters(ParameterBuilderCallback);
 		}
 
-		//public static SqlParameter BuildOutputParameter(ParameterMetadata<SqlDbType> param)
-		//{
-		//    var result = new SqlParameter();
-
-		//    result.ParameterName = param.SqlVariableName;
-		//    result.Value = DBNull.Value;
-
-		//    if (param.MaxLength.HasValue)
-		//        result.Size = param.MaxLength.Value;
-
-		//    if (param.Scale.HasValue)
-		//        result.Scale = (byte)param.Scale.Value;
-
-		//    if (param.Precision.HasValue)
-		//        result.Precision = (byte)param.Precision.Value;
-
-		//    if (param.DbType.HasValue)
-		//        result.SqlDbType = param.DbType.Value;
-		//    result.Direction = param.Direction;
-
-		//    return result;
-		//}
 
 		public static SqlParameter ParameterBuilderCallback(SqlBuilderEntry<SqlDbType> entry)
 		{
@@ -55,7 +23,24 @@ namespace Tortuga.Chain.SqlServer
 			result.Value = entry.ParameterValue;
 
 			if (entry.Details.DbType.HasValue)
+			{
 				result.SqlDbType = entry.Details.DbType.Value;
+
+				if (entry.Details.MaxLength.HasValue)
+				{
+					switch (result.SqlDbType)
+					{
+						case SqlDbType.Char:
+						case SqlDbType.VarChar:
+						case SqlDbType.NChar:
+						case SqlDbType.NVarChar:
+						case SqlDbType.Binary:
+						case SqlDbType.VarBinary:
+							result.Size = entry.Details.MaxLength.Value;
+							break;
+					}
+				}
+			}
 
 			if (entry.ParameterValue is DbDataReader)
 				result.SqlDbType = SqlDbType.Structured;

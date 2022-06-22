@@ -4,20 +4,6 @@ using System.Diagnostics.CodeAnalysis;
 using Tortuga.Anchor;
 using Tortuga.Chain.Metadata;
 
-#if SQL_SERVER_SDS
-
-using AbstractDbType = System.Data.SqlDbType;
-
-#elif SQL_SERVER_MDS
-
-using AbstractDbType = System.Data.SqlDbType;
-
-#elif SQL_SERVER_OLEDB
-
-using AbstractDbType = System.Data.OleDb.OleDbType;
-
-#endif
-
 namespace Tortuga.Chain.SqlServer
 {
 #if SQL_SERVER_SDS || SQL_SERVER_MDS
@@ -26,8 +12,8 @@ namespace Tortuga.Chain.SqlServer
 	public abstract class AbstractSqlServerMetadataCache : DatabaseMetadataCache<SqlServerObjectName, AbstractDbType>
 #elif SQL_SERVER_OLEDB
 
-    /// <summary>Class AbstractSqlServerMetadataCache.</summary>
-    public abstract class AbstractOleDbSqlServerMetadataCache : OleDbDatabaseMetadataCache<SqlServerObjectName>
+	/// <summary>Class AbstractSqlServerMetadataCache.</summary>
+	public abstract class AbstractOleDbSqlServerMetadataCache : OleDbDatabaseMetadataCache<SqlServerObjectName>
 #endif
 
 	{
@@ -50,7 +36,7 @@ namespace Tortuga.Chain.SqlServer
 	partial class SqlServerMetadataCache : AbstractSqlServerMetadataCache
 #elif SQL_SERVER_OLEDB
 
-    partial class OleDbSqlServerMetadataCache : AbstractOleDbSqlServerMetadataCache
+	partial class OleDbSqlServerMetadataCache : AbstractOleDbSqlServerMetadataCache
 #endif
 	{
 		internal readonly DbConnectionStringBuilder m_ConnectionBuilder;
@@ -300,5 +286,10 @@ namespace Tortuga.Chain.SqlServer
 		/// <value>The maximum number of parameters.</value>
 		/// <remarks>Note that the documentation says 2100, but you need to subtract one for the SQL statement itself. https://docs.microsoft.com/en-us/sql/sql-server/maximum-capacity-specifications-for-sql-server?view=sql-server-ver15</remarks>
 		public override int? MaxParameters => 2099;
+
+		/// <summary>
+		/// Get the maximum number of rows in a single SQL statement's Values clause.
+		/// </summary>
+		public override int? MaxRowsPerValuesClause => 1000;
 	}
 }

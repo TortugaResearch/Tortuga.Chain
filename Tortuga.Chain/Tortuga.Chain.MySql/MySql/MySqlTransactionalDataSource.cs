@@ -1,5 +1,6 @@
 ﻿using MySqlConnector;
 using Tortuga.Chain.Core;
+using Tortuga.Shipwright;
 
 namespace Tortuga.Chain.MySql
 {
@@ -8,10 +9,9 @@ namespace Tortuga.Chain.MySql
 	/// </summary>
 	/// <seealso cref="MySqlDataSourceBase" />
 	/// <seealso cref="IDisposable" />
+	[UseTrait(typeof(Traits.TransactionalDataSourceTrait<MySqlDataSource, MySqlConnection, MySqlTransaction, MySqlCommand, MySqlMetadataCache>))]
 	public partial class MySqlTransactionalDataSource : MySqlDataSourceBase
 	{
-		private readonly MySqlDataSource m_BaseDataSource;
-
 		/// <summary>
 		/// Initializes a new instance of the <see cref="MySqlTransactionalDataSource"/> class.
 		/// </summary>
@@ -50,7 +50,7 @@ namespace Tortuga.Chain.MySql
 		/// <param name="connection">The connection.</param>
 		/// <param name="transaction">The transaction.</param>
 		internal MySqlTransactionalDataSource(MySqlDataSource dataSource, bool forwardEvents, MySqlConnection connection, MySqlTransaction transaction)
-			: base(new MySqlDataSourceSettings { DefaultCommandTimeout = dataSource.DefaultCommandTimeout, StrictMode = dataSource.StrictMode, SuppressGlobalEvents = dataSource.SuppressGlobalEvents || forwardEvents })
+			: base(new MySqlDataSourceSettings(dataSource, forwardEvents))
 		{
 			Name = dataSource.Name;
 
@@ -69,13 +69,7 @@ namespace Tortuga.Chain.MySql
 			UserValue = dataSource.UserValue;
 		}
 
-		/// <summary>
-		/// Gets the database metadata.
-		/// </summary>
-		public override MySqlMetadataCache DatabaseMetadata
-		{
-			get { return m_BaseDataSource.DatabaseMetadata; }
-		}
+
 
 		/// <summary>
 		/// Executes the specified operation.

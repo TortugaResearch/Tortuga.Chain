@@ -2,16 +2,6 @@
 using System.Diagnostics.CodeAnalysis;
 using Tortuga.Chain.Metadata;
 
-#if SQL_SERVER_SDS
-
-using System.Data.SqlClient;
-
-#elif SQL_SERVER_MDS
-
-using Microsoft.Data.SqlClient;
-
-#endif
-
 namespace Tortuga.Chain.SqlServer
 {
 	/// <summary>
@@ -961,7 +951,7 @@ WHERE	s.name = @Schema AND t.name = @Name AND t.is_table_type = 0;";
 				using (var cmd = new SqlCommand(ColumnSql, con))
 				{
 					cmd.Parameters.AddWithValue("@ObjectId", objectId);
-					using (var reader = cmd.ExecuteReader(/*CommandBehavior.SequentialAccess*/))
+					using (var reader = cmd.ExecuteReader())
 					{
 						while (reader.Read())
 						{

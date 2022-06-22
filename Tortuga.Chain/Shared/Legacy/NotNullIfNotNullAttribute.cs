@@ -1,17 +1,16 @@
-﻿#if NULL_MISSING
+﻿#if !NETCOREAPP3_1_OR_GREATER
 
-namespace System.Diagnostics.CodeAnalysis
+namespace System.Diagnostics.CodeAnalysis;
+
+[AttributeUsage(AttributeTargets.Property | AttributeTargets.Parameter | AttributeTargets.ReturnValue, AllowMultiple = true, Inherited = false)]
+internal sealed class NotNullIfNotNullAttribute : Attribute
 {
-	[AttributeUsage(AttributeTargets.Property | AttributeTargets.Parameter | AttributeTargets.ReturnValue, AllowMultiple = true, Inherited = false)]
-	internal sealed class NotNullIfNotNullAttribute : Attribute
+	public NotNullIfNotNullAttribute(string parameterName)
 	{
-		public NotNullIfNotNullAttribute(string parameterName)
-		{
-			ParameterName = parameterName;
-		}
-
-		public string ParameterName { get; }
+		ParameterName = parameterName;
 	}
+
+	public string ParameterName { get; }
 }
 
 #endif

@@ -76,7 +76,7 @@ namespace Tortuga.Chain.Materializers
 
 			await Prepare().ExecuteAsync(async cmd =>
 			{
-				using (var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SequentialAccess, cancellationToken).ConfigureAwait(false))
+				using (var reader = await cmd.ExecuteReaderAsync(CommandBehavior, cancellationToken).ConfigureAwait(false))
 				{
 					if (reader.FieldCount > 1 && !m_ListOptions.HasFlag(ListOptions.IgnoreExtraColumns))
 					{

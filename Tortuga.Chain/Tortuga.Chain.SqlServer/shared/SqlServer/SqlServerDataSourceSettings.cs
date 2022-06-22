@@ -17,27 +17,34 @@ namespace Tortuga.Chain.SqlServer
 
 #if SQL_SERVER_SDS || SQL_SERVER_MDS
 
-		internal SqlServerDataSourceSettings(SqlServerDataSource dataSource, bool forwardEvents)
+		internal SqlServerDataSourceSettings(SqlServerDataSource dataSource, bool forwardEvents = false)
 		{
 			if (dataSource == null)
 				throw new ArgumentNullException(nameof(dataSource), $"{nameof(dataSource)} is null.");
 
 			DefaultCommandTimeout = dataSource.DefaultCommandTimeout;
 			StrictMode = dataSource.StrictMode;
+			SequentialAccessMode = dataSource.SequentialAccessMode;
 			SuppressGlobalEvents = dataSource.SuppressGlobalEvents || forwardEvents;
+			SuppressGlobalEvents = dataSource.SuppressGlobalEvents || forwardEvents;
+			ArithAbort = dataSource.ArithAbort;
+			XactAbort = dataSource.XactAbort;
 		}
 
 #elif SQL_SERVER_OLEDB
 
-        internal SqlServerDataSourceSettings(OleDbSqlServerDataSource dataSource, bool forwardEvents)
-        {
-            if (dataSource == null)
-                throw new ArgumentNullException(nameof(dataSource), $"{nameof(dataSource)} is null.");
+		internal SqlServerDataSourceSettings(OleDbSqlServerDataSource dataSource, bool forwardEvents = false)
+		{
+			if (dataSource == null)
+				throw new ArgumentNullException(nameof(dataSource), $"{nameof(dataSource)} is null.");
 
-            DefaultCommandTimeout = dataSource.DefaultCommandTimeout;
-            StrictMode = dataSource.StrictMode;
-            SuppressGlobalEvents = dataSource.SuppressGlobalEvents || forwardEvents;
-        }
+			DefaultCommandTimeout = dataSource.DefaultCommandTimeout;
+			StrictMode = dataSource.StrictMode;
+			SequentialAccessMode = dataSource.SequentialAccessMode;
+			SuppressGlobalEvents = dataSource.SuppressGlobalEvents || forwardEvents;
+			ArithAbort = dataSource.ArithAbort;
+			XactAbort = dataSource.XactAbort;
+		}
 
 #endif
 

@@ -31,6 +31,12 @@ namespace Tortuga.Chain.SQLite
 		public abstract new SQLiteMetadataCache DatabaseMetadata { get; }
 
 		/// <summary>
+		/// Called when Database.DatabaseMetadata is invoked.
+		/// </summary>
+		/// <returns></returns>
+		protected override IDatabaseMetadataCache OnGetDatabaseMetadata() => DatabaseMetadata;
+
+		/// <summary>
 		/// Normally we use a reader/writer lock to avoid simultaneous writes to a SQlite database. If you disable this locking, you may see extra noise in your tracing output or unexpected exceptions.
 		/// </summary>
 		public bool DisableLocks { get; }
@@ -41,13 +47,8 @@ namespace Tortuga.Chain.SQLite
 		/// <value>The synchronize lock.</value>
 		internal abstract AsyncReaderWriterLock SyncLock { get; }
 
-		/// <summary>
-		/// Called when Database.DatabaseMetadata is invoked.
-		/// </summary>
-		/// <returns></returns>
-		protected override IDatabaseMetadataCache OnGetDatabaseMetadata()
-		{
-			return DatabaseMetadata;
-		}
+
 	}
 }
+
+

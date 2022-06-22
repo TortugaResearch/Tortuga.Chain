@@ -1,12 +1,11 @@
 using Tortuga.Anchor.Modeling;
 
-namespace Tests.Models
-{
-	public class Order
-	{
-		public int? OrderKey { get; set; }
+namespace Tests.Models;
 
-		[IgnoreOnUpdate]
-		public int CustomerKey { get; set; }
-	}
+public class Order
+{
+	public int? OrderKey { get; set; }
+
+	[IgnoreOnUpdate]
+	public int CustomerKey { get; set; }
 }

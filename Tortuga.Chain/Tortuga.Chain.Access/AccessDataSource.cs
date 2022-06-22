@@ -11,7 +11,6 @@ namespace Tortuga.Chain
 	/// </summary>
 	public partial class AccessDataSource : AccessDataSourceBase
 	{
-		readonly OleDbConnectionStringBuilder m_ConnectionBuilder;
 		AccessMetadataCache m_DatabaseMetadata;
 
 		/// <summary>
@@ -99,94 +98,6 @@ namespace Tortuga.Chain
 		/// </summary>
 		public override AccessMetadataCache DatabaseMetadata => m_DatabaseMetadata;
 
-		/// <summary>
-		/// Creates a new transaction.
-		/// </summary>
-		/// <param name="isolationLevel"></param>
-		/// <param name="forwardEvents"></param>
-		/// <returns></returns>
-		/// <remarks>The caller of this method is responsible for closing the transaction.</remarks>
-		public AccessTransactionalDataSource BeginTransaction(IsolationLevel? isolationLevel = null, bool forwardEvents = true)
-		{
-			var connection = CreateConnection();
-			OleDbTransaction transaction;
-			if (isolationLevel == null)
-				transaction = connection.BeginTransaction();
-			else
-				transaction = connection.BeginTransaction(isolationLevel.Value);
-
-			return new AccessTransactionalDataSource(this, forwardEvents, connection, transaction);
-		}
-
-		/// <summary>
-		/// Creates a new transaction.
-		/// </summary>
-		/// <param name="isolationLevel"></param>
-		/// <param name="forwardEvents"></param>
-		/// <returns></returns>
-		/// <remarks>The caller of this method is responsible for closing the transaction.</remarks>
-		public async Task<AccessTransactionalDataSource> BeginTransactionAsync(IsolationLevel? isolationLevel = null, bool forwardEvents = true)
-		{
-			var connection = await CreateConnectionAsync().ConfigureAwait(false);
-			OleDbTransaction transaction;
-			if (isolationLevel == null)
-				transaction = connection.BeginTransaction();
-			else
-				transaction = connection.BeginTransaction(isolationLevel.Value);
-
-			return new AccessTransactionalDataSource(this, forwardEvents, connection, transaction);
-		}
-
-		/// <summary>
-		/// Creates and opens a new Access connection
-		/// </summary>
-		/// <returns></returns>
-		/// <remarks>The caller of this method is responsible for closing the connection.</remarks>
-		[SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-		public OleDbConnection CreateConnection()
-		{
-			var con = new OleDbConnection(ConnectionString);
-			con.Open();
-
-			//TODO: Research any potential PRAGMA/Rollback options
-
-			return con;
-		}
-
-		/// <summary>
-		/// Creates the connection asynchronous.
-		/// </summary>
-		/// <param name="cancellationToken">The cancellation token.</param>
-		/// <returns></returns>
-		/// <remarks>
-		/// The caller of this method is responsible for closing the connection.
-		/// </remarks>
-		public async Task<OleDbConnection> CreateConnectionAsync(CancellationToken cancellationToken = default(CancellationToken))
-		{
-			var con = new OleDbConnection(ConnectionString);
-			await con.OpenAsync(cancellationToken).ConfigureAwait(false);
-			return con;
-		}
-
-		/// <summary>
-		/// Creates an open data source using the supplied connection and optional transaction.
-		/// </summary>
-		/// <param name="connection">The connection to wrap.</param>
-		/// <param name="transaction">The transaction to wrap.</param>
-		/// <returns>IOpenDataSource.</returns>
-		public AccessOpenDataSource CreateOpenDataSource(OleDbConnection connection, OleDbTransaction? transaction = null)
-		{
-			return new AccessOpenDataSource(this, connection, transaction);
-		}
-
-		/// <summary>
-		/// Creates an open data source with a new connection.
-		/// </summary>
-		/// <remarks>WARNING: The caller of this method is responsible for closing the connection.</remarks>
-		public AccessOpenDataSource CreateOpenDataSource()
-		{
-			return new AccessOpenDataSource(this, CreateConnection(), null);
-		}
 
 		/// <summary>
 		/// Creates a new data source with the indicated changes to the settings.
@@ -201,7 +112,8 @@ namespace Tortuga.Chain
 			{
 				DefaultCommandTimeout = settings?.DefaultCommandTimeout ?? DefaultCommandTimeout,
 				SuppressGlobalEvents = settings?.SuppressGlobalEvents ?? SuppressGlobalEvents,
-				StrictMode = settings?.StrictMode ?? StrictMode
+				StrictMode = settings?.StrictMode ?? StrictMode,
+				SequentialAccessMode = settings?.SequentialAccessMode ?? SequentialAccessMode
 			};
 			var result = new AccessDataSource(Name, m_ConnectionBuilder, mergedSettings, m_DatabaseMetadata, m_Cache, m_ExtensionCache);
 			result.m_DatabaseMetadata = m_DatabaseMetadata;

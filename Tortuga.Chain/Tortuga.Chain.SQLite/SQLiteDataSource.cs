@@ -12,7 +12,6 @@ namespace Tortuga.Chain
 	/// </summary>
 	public partial class SQLiteDataSource : SQLiteDataSourceBase
 	{
-		readonly SQLiteConnectionStringBuilder m_ConnectionBuilder;
 		readonly AsyncReaderWriterLock m_SyncLock = new AsyncReaderWriterLock(); //Sqlite is single-threaded for writes. It says otherwise, but it spams the trace window with exceptions.
 		SQLiteMetadataCache m_DatabaseMetadata;
 
@@ -123,111 +122,6 @@ namespace Tortuga.Chain
 			get { return m_SyncLock; }
 		}
 
-		/// <summary>
-		/// Creates a new transaction.
-		/// </summary>
-		/// <param name="isolationLevel"></param>
-		/// <param name="forwardEvents"></param>
-		/// <returns></returns>
-		/// <remarks>The caller of this method is responsible for closing the transaction.</remarks>
-		public SQLiteTransactionalDataSource BeginTransaction(IsolationLevel? isolationLevel = null, bool forwardEvents = true)
-		{
-			IDisposable? lockToken = null;
-			if (!DisableLocks)
-				lockToken = SyncLock.WriterLock();
-
-			var connection = CreateConnection();
-			SQLiteTransaction transaction;
-			if (isolationLevel == null)
-				transaction = connection.BeginTransaction();
-			else
-				transaction = connection.BeginTransaction(isolationLevel.Value);
-
-			return new SQLiteTransactionalDataSource(this, forwardEvents, connection, transaction, lockToken);
-		}
-
-		/// <summary>
-		/// Creates a new transaction.
-		/// </summary>
-		/// <param name="isolationLevel"></param>
-		/// <param name="forwardEvents"></param>
-		/// <returns></returns>
-		/// <remarks>The caller of this method is responsible for closing the transaction.</remarks>
-		public async Task<SQLiteTransactionalDataSource> BeginTransactionAsync(IsolationLevel? isolationLevel = null, bool forwardEvents = true)
-		{
-			IDisposable? lockToken = null;
-			if (!DisableLocks)
-				lockToken = await SyncLock.WriterLockAsync();
-
-			var connection = await CreateConnectionAsync().ConfigureAwait(false);
-			SQLiteTransaction transaction;
-			if (isolationLevel == null)
-				transaction = connection.BeginTransaction();
-			else
-				transaction = connection.BeginTransaction(isolationLevel.Value);
-
-			return new SQLiteTransactionalDataSource(this, forwardEvents, connection, transaction, lockToken);
-		}
-
-		/// <summary>
-		/// Creates and opens a new SQLite connection
-		/// </summary>
-		/// <returns></returns>
-		/// <remarks>The caller of this method is responsible for closing the connection.</remarks>
-		[SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-		public SQLiteConnection CreateConnection()
-		{
-			var con = new SQLiteConnection(ConnectionString);
-			con.Open();
-
-			//TODO: Research any potential PRAGMA/Rollback options
-			if (EnforceForeignKeys.HasValue)
-			{
-				var mode = EnforceForeignKeys == true ? "ON" : "OFF";
-				using (var cmd = new SQLiteCommand($"PRAGMA foreign_keys = {mode};", con))
-					cmd.ExecuteNonQuery();
-			}
-
-			return con;
-		}
-
-		/// <summary>
-		/// Creates the connection asynchronous.
-		/// </summary>
-		/// <param name="cancellationToken">The cancellation token.</param>
-		/// <returns></returns>
-		/// <remarks>
-		/// The caller of this method is responsible for closing the connection.
-		/// </remarks>
-		public async Task<SQLiteConnection> CreateConnectionAsync(CancellationToken cancellationToken = default(CancellationToken))
-		{
-			var con = new SQLiteConnection(ConnectionString);
-			await con.OpenAsync(cancellationToken).ConfigureAwait(false);
-
-			//TODO: Add in needed PRAGMA statements
-
-			return con;
-		}
-
-		/// <summary>
-		/// Creates an open data source using the supplied connection and optional transaction.
-		/// </summary>
-		/// <param name="connection">The connection.</param>
-		/// <param name="transaction">The transaction.</param>
-		/// <returns>SQLiteOpenDataSource.</returns>
-		public SQLiteOpenDataSource CreateOpenDataSource(SQLiteConnection connection, SQLiteTransaction? transaction = null)
-		{
-			return new SQLiteOpenDataSource(this, connection, transaction);
-		}
-
-		/// <summary>
-		/// Creates an open data source with a new connection.
-		/// </summary>
-		/// <remarks>WARNING: The caller of this method is responsible for closing the connection.</remarks>
-		public SQLiteOpenDataSource CreateOpenDataSource()
-		{
-			return new SQLiteOpenDataSource(this, CreateConnection(), null);
-		}
 
 		/// <summary>
 		/// Creates a new data source with the indicated changes to the settings.
@@ -242,6 +136,7 @@ namespace Tortuga.Chain
 				DefaultCommandTimeout = settings?.DefaultCommandTimeout ?? DefaultCommandTimeout,
 				SuppressGlobalEvents = settings?.SuppressGlobalEvents ?? SuppressGlobalEvents,
 				StrictMode = settings?.StrictMode ?? StrictMode,
+				SequentialAccessMode = settings?.SequentialAccessMode ?? SequentialAccessMode,
 				DisableLocks = settings?.DisableLocks ?? DisableLocks,
 				EnforceForeignKeys = settings?.EnforceForeignKeys ?? EnforceForeignKeys
 			};

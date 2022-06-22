@@ -8,6 +8,7 @@ A Fluent ORM for .NET
 * [API Reference](http://docevaad.github.io/Chain/API/Index.html)
 * [Chain Wiki](https://github.com/docevaad/Chain/wiki)
 * [Chain vs Dapper](https://github.com/docevaad/Chain/wiki/A-Chain-comparison-to-Dapper)
+* The [change log](Tortuga.Chain/Changelog.md) starts with version 4.0. 
 
 ## Getting Started
 

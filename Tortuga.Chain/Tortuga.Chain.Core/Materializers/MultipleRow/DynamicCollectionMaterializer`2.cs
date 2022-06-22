@@ -40,7 +40,7 @@ namespace Tortuga.Chain.Materializers
 			var result = new List<dynamic>();
 			Prepare().Execute(cmd =>
 			{
-				using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess))
+				using (var reader = cmd.ExecuteReader(CommandBehavior))
 				{
 					while (reader.Read())
 					{
@@ -73,7 +73,7 @@ namespace Tortuga.Chain.Materializers
 
 			await Prepare().ExecuteAsync(async cmd =>
 			{
-				using (var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SequentialAccess, cancellationToken).ConfigureAwait(false))
+				using (var reader = await cmd.ExecuteReaderAsync(CommandBehavior, cancellationToken).ConfigureAwait(false))
 				{
 					while (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
 					{

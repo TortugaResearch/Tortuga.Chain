@@ -1,15 +1,17 @@
 ﻿using System.Data.OleDb;
 using System.Diagnostics.CodeAnalysis;
 using Tortuga.Chain.Core;
+using Tortuga.Shipwright;
 
 namespace Tortuga.Chain.Access
 {
 	/// <summary>
 	/// Class AccessTransactionalDataSource
 	/// </summary>
+	[UseTrait(typeof(Traits.TransactionalDataSourceTrait<AccessDataSource, OleDbConnection, OleDbTransaction, OleDbCommand, AccessMetadataCache>))]
 	public partial class AccessTransactionalDataSource : AccessDataSourceBase
 	{
-		private readonly AccessDataSource m_BaseDataSource;
+
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="AccessTransactionalDataSource"/> class.
@@ -53,7 +55,7 @@ namespace Tortuga.Chain.Access
 		/// <param name="transaction">The transaction.</param>
 		/// <exception cref="System.ArgumentNullException">
 		/// </exception>
-		internal AccessTransactionalDataSource(AccessDataSource dataSource, bool forwardEvents, OleDbConnection connection, OleDbTransaction transaction) : base(new AccessDataSourceSettings() { DefaultCommandTimeout = dataSource.DefaultCommandTimeout, StrictMode = dataSource.StrictMode, SuppressGlobalEvents = dataSource.SuppressGlobalEvents || forwardEvents })
+		internal AccessTransactionalDataSource(AccessDataSource dataSource, bool forwardEvents, OleDbConnection connection, OleDbTransaction transaction) : base(new AccessDataSourceSettings(dataSource, forwardEvents))
 		{
 			if (dataSource == null)
 				throw new ArgumentNullException(nameof(dataSource), $"{nameof(dataSource)} is null.");
@@ -80,11 +82,6 @@ namespace Tortuga.Chain.Access
 			UserValue = dataSource.UserValue;
 		}
 
-		/// <summary>
-		/// Gets the database metadata.
-		/// </summary>
-		/// <value>The database metadata.</value>
-		public override AccessMetadataCache DatabaseMetadata => m_BaseDataSource.DatabaseMetadata;
 
 		/// <summary>
 		/// Executes the specified execution token.

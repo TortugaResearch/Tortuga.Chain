@@ -5,9 +5,9 @@ namespace Tortuga.Chain.Metadata
 	/// <summary>
 	/// Meatadata cache base class for DbType databases
 	/// </summary>
-	/// <typeparam name="TName">The type used to represent database object names.</typeparam>
-	public abstract class DbDatabaseMetadataCache<TName> : DatabaseMetadataCache<TName, DbType>
-		where TName : struct
+	/// <typeparam name="TObjectName">The type used to represent database object names.</typeparam>
+	public abstract class DbDatabaseMetadataCache<TObjectName> : DatabaseMetadataCache<TObjectName, DbType>
+		where TObjectName : struct
 	{
 		/// <summary>
 		/// Returns the CLR type that matches the indicated database column type.

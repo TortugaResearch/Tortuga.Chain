@@ -30,5 +30,7 @@ namespace Tortuga.Chain.Access
 		/// </summary>
 		/// <returns></returns>
 		protected override IDatabaseMetadataCache OnGetDatabaseMetadata() => DatabaseMetadata;
+
 	}
 }
+

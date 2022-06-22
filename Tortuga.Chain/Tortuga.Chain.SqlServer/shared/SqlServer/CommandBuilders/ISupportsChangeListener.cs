@@ -1,18 +1,4 @@
-#if !SqlDependency_Missing
-
-using System.Threading;
-using System.Threading.Tasks;
 using Tortuga.Chain.Materializers;
-
-#if SQL_SERVER_SDS
-
-using System.Data.SqlClient;
-
-#elif SQL_SERVER_MDS
-
-using Microsoft.Data.SqlClient;
-
-#endif
 
 namespace Tortuga.Chain.SqlServer.CommandBuilders
 {
@@ -37,5 +23,3 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 		SqlServerCommandExecutionToken Prepare(Materializer<SqlCommand, SqlParameter> materializer);
 	}
 }
-
-#endif

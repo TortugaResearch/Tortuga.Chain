@@ -1,18 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net462;netstandard2.0;netcoreapp3.1;net5.0;net6.0</TargetFrameworks>
+		<TargetFrameworks>net462;netstandard2.0;netcoreapp3.1;net6.0</TargetFrameworks>
 		<Authors>David Tomcik, Jonathan Allen</Authors>
-		<Company>Tortuga Technologies</Company>
+		<Company>Tortuga Research</Company>
 		<Description>This library adds compiled materializers to Tortuga Chain.</Description>
 		<PackageTags>ORM Fluent DB Reflection</PackageTags>
 		<LangVersion>10.0</LangVersion>
 		<ProductName>Tortuga Chain</ProductName>
 		<Deterministic>true</Deterministic>
 
-		<AssemblyVersion>3.5.0</AssemblyVersion>
-		<Version>3.5.0</Version>
-		<FileVersion>3.5.0.0</FileVersion>
+		<Version>4.0.0</Version>
 
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 
@@ -33,10 +31,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="CS-Script.Core" Version="2.0.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="5.0.3">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="4.1.0" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(Configuration)'=='Debug'">
@@ -44,24 +39,8 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(Configuration)'=='Release'">
-		<PackageReference Include="Tortuga.Chain.Core" Version="3.5.0" />
+		<PackageReference Include="Tortuga.Chain.Core" Version="4.0.0" />
 	</ItemGroup>
-
-	<PropertyGroup Condition="'$(TargetFramework)' == 'net462'">
-		<DefineConstants>NULL_MISSING</DefineConstants>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-		<DefineConstants>NULL_MISSING</DefineConstants>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
-		<DefineConstants>ORDINAL_STRINGS</DefineConstants>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(TargetFramework)' == 'net5.0'">
-		<DefineConstants>ORDINAL_STRINGS</DefineConstants>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
-		<DefineConstants>ORDINAL_STRINGS</DefineConstants>
-	</PropertyGroup>
 
 	<ItemGroup>
 		<Compile Include="..\Shared\Legacy\**\*.cs">
@@ -70,34 +49,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Include="..\Shared\GlobalUsing.cs" Link="GlobalUsing.cs" />
+		<Compile Include="..\Shared\GlobalUsing.cs" Link="GlobalUsing.cs" />
 	</ItemGroup>
 
-	<!-- NuGet Packaging Boilerplate-->
 	<PropertyGroup Condition="'$(Configuration)'=='Release'">
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<GenerateNuspecDependsOn>$(GenerateNuspecDependsOn);ReadPackageVersionFromOutputAssembly</GenerateNuspecDependsOn>
 	</PropertyGroup>
-
-	<Target Name="ReadPackageVersionFromOutputAssembly" DependsOnTargets="Build" Condition="'$(IsCrossTargetingBuild)' == 'true'">
-
-		<PropertyGroup>
-			<FirstTargetFramework>$([System.String]::Copy($(TargetFrameworks)).Split(';').GetValue(0))</FirstTargetFramework>
-		</PropertyGroup>
-		<MSBuild Projects="$(MSBuildProjectFullPath)" Targets="ReadPackageVersionFromOutputAssemblySingleTfm" Properties="TargetFramework=$(FirstTargetFramework)">
-			<Output TaskParameter="TargetOutputs" ItemName="PackAssembly" />
-		</MSBuild>
-		<PropertyGroup>
-			<PackageVersion>%(PackAssembly.Version)</PackageVersion>
-		</PropertyGroup>
-	</Target>
-
-	<Target Name="ReadPackageVersionFromOutputAssemblySingleTfm" Returns="@(PackAssembly)" Condition="'$(IsCrossTargetingBuild)' != 'true'">
-		<GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
-			<Output TaskParameter="Assemblies" ItemName="PackAssembly" />
-		</GetAssemblyIdentity>
-		<PropertyGroup>
-			<PackageVersion>%(PackAssembly.Version)</PackageVersion>
-		</PropertyGroup>
-	</Target>
 </Project>

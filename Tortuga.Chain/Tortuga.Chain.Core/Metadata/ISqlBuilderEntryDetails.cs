@@ -63,5 +63,13 @@
 		/// Indicates the direction of the parameter.
 		/// </summary>
 		ParameterDirection Direction { get; }
+
+		/// <summary>
+		/// Gets the maximum length.
+		/// </summary>
+		/// <value>
+		/// The maximum length.
+		/// </value>
+		int? MaxLength { get; }
 	}
 }

@@ -2,7 +2,6 @@ using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Runtime.Caching;
 using Tortuga.Chain.AuditRules;
-using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Metadata;
 
@@ -23,6 +22,7 @@ namespace Tortuga.Chain.DataSources
 			{
 				DefaultCommandTimeout = settings.DefaultCommandTimeout;
 				StrictMode = settings.StrictMode ?? false;
+				SequentialAccessMode = settings.SequentialAccessMode ?? false;
 				SuppressGlobalEvents = settings.SuppressGlobalEvents ?? false;
 			}
 		}
@@ -106,10 +106,20 @@ namespace Tortuga.Chain.DataSources
 		public string? Name { get; protected set; }
 
 		/// <summary>
-		/// Gets or sets a value indicating whether strict mode is enabled.
+		/// Gets a value indicating whether strict mode is enabled.
 		/// </summary>
 		/// <remarks>Strict mode requires all properties that don't represent columns to be marked with the NotMapped attribute.</remarks>
 		public bool StrictMode { get; }
+
+		/// <summary>
+		/// Gets a value indicating whether to use CommandBehavior.SequentialAccess.
+		/// </summary>
+		/// <value>If <c>true</c>, this data source will not honor global event handlers.</value>
+		/// <remarks>
+		/// Disable for general database access. Enable when working with very large objects. 
+		/// For more information see https://docs.microsoft.com/en-us/archive/blogs/adonet/using-sqldatareaders-new-async-methods-in-net-4-5
+		/// </remarks>
+		public bool SequentialAccessMode { get; }
 
 		/// <summary>
 		/// Gets or sets a value indicating whether to suppress global events.
@@ -146,7 +156,7 @@ namespace Tortuga.Chain.DataSources
 		/// <returns>T.</returns>
 		/// <remarks><para>Chain extensions can use this to store data source specific data. The key should be a data type defined by the extension.</para>
 		/// <para>Transactional data sources should override this method and return the value held by their parent data source.</para></remarks>
-		public virtual TTKey GetExtensionData<TTKey>()
+		public TTKey GetExtensionData<TTKey>()
 			where TTKey : new()
 		{
 			return (TTKey)ExtensionCache.GetOrAdd(typeof(TTKey), x => new TTKey());
@@ -311,17 +321,17 @@ namespace Tortuga.Chain.DataSources
 		/// <returns></returns>
 		protected abstract IDatabaseMetadataCache OnGetDatabaseMetadata();
 
-		/// <summary>
-		/// Creates a multi-batcher. This is used by InsertMultipleBatch;
-		/// </summary>
-		/// <typeparam name="TObject">The type of the object.</typeparam>
-		/// <param name="callBack">The call back used to insert the batch.</param>
-		/// <param name="objects">The objects to insert.</param>
-		/// <param name="batchSize">Size of the batch.</param>
-		/// <returns>ILink&lt;System.Int32&gt;.</returns>
-		protected ILink<int> CreateMultiBatcher<TObject>(Func<IEnumerable<TObject>, ILink<int>> callBack, IEnumerable<TObject> objects, int batchSize)
-		{
-			return new MultiBatcher<TObject>(this, callBack, objects, batchSize);
-		}
+		///// <summary>
+		///// Creates a multi-batcher. This is used by InsertMultipleBatch;
+		///// </summary>
+		///// <typeparam name="TObject">The type of the object.</typeparam>
+		///// <param name="callBack">The call back used to insert the batch.</param>
+		///// <param name="objects">The objects to insert.</param>
+		///// <param name="batchSize">Size of the batch.</param>
+		///// <returns>ILink&lt;System.Int32&gt;.</returns>
+		//protected ILink<int> CreateMultiBatcher<TObject>(Func<IEnumerable<TObject>, ILink<int>> callBack, IEnumerable<TObject> objects, int batchSize)
+		//{
+		//	return new MultiBatcher<TObject>(this, callBack, objects, batchSize);
+		//}
 	}
 }

@@ -1,17 +1,16 @@
-﻿#if NULL_MISSING
+﻿#if !NETCOREAPP3_1_OR_GREATER
 
-namespace System.Diagnostics.CodeAnalysis
+namespace System.Diagnostics.CodeAnalysis;
+
+[AttributeUsage(AttributeTargets.Parameter, Inherited = false)]
+sealed class NotNullWhenAttribute : Attribute
 {
-	[AttributeUsage(AttributeTargets.Parameter, Inherited = false)]
-	sealed class NotNullWhenAttribute : Attribute
+	public NotNullWhenAttribute(bool returnValue)
 	{
-		public NotNullWhenAttribute(bool returnValue)
-		{
-			ReturnValue = returnValue;
-		}
-
-		public bool ReturnValue { get; }
+		ReturnValue = returnValue;
 	}
+
+	public bool ReturnValue { get; }
 }
 
 #endif

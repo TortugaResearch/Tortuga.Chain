@@ -3,16 +3,6 @@ using System.Text;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
 
-#if SQL_SERVER_SDS
-
-using System.Data.SqlClient;
-
-#elif SQL_SERVER_MDS
-
-using Microsoft.Data.SqlClient;
-
-#endif
-
 namespace Tortuga.Chain.SqlServer.CommandBuilders
 {
 	/// <summary>
@@ -53,8 +43,9 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders
 				throw new MappingException($"Cannot perform an update operation on {Table.Name} unless UpdateOptions.UseKeyAttribute or .WithKeys() is specified.");
 
 			var sqlBuilder = Table.CreateSqlBuilder(StrictMode);
-			sqlBuilder.ApplyArgumentValue(DataSource, ArgumentValue, m_Options);
-			sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
+			var desiredColumns = materializer.DesiredColumns();
+			sqlBuilder.ApplyArgumentValue(DataSource, ArgumentValue, m_Options, desiredColumns == Materializer.NoColumns);
+			sqlBuilder.ApplyDesiredColumns(desiredColumns);
 
 			if (KeyColumns.Count > 0)
 				sqlBuilder.OverrideKeys(KeyColumns);

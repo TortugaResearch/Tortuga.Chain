@@ -1,19 +1,6 @@
-﻿#if !SqlDependency_Missing
-
-using System;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using Tortuga.Chain.Appenders;
 using Tortuga.Chain.Core;
-
-#if SQL_SERVER_SDS
-
-using System.Data.SqlClient;
-
-#elif SQL_SERVER_MDS
-
-using Microsoft.Data.SqlClient;
-
-#endif
 
 namespace Tortuga.Chain.SqlServer.Appenders
 {
@@ -51,4 +38,3 @@ namespace Tortuga.Chain.SqlServer.Appenders
 	}
 }
 
-#endif

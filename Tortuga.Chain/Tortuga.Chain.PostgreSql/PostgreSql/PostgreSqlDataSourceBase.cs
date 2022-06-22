@@ -25,6 +25,12 @@ namespace Tortuga.Chain.PostgreSql
 		public abstract new PostgreSqlMetadataCache DatabaseMetadata { get; }
 
 		/// <summary>
+		/// Called when Database.DatabaseMetadata is invoked.
+		/// </summary>
+		/// <returns></returns>
+		protected override IDatabaseMetadataCache OnGetDatabaseMetadata() => DatabaseMetadata;
+
+		/// <summary>
 		/// Dereferences cursors returned by a stored procedure.
 		/// </summary>
 		/// <param name="cmd">The command.</param>
@@ -49,7 +55,7 @@ namespace Tortuga.Chain.PostgreSql
 				}
 
 				var sql = new StringBuilder();
-				using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess))
+				using (var reader = cmd.ExecuteReader())
 					while (reader.Read())
 						sql.AppendLine($"FETCH ALL IN \"{ reader.GetString(0) }\";");
 
@@ -95,7 +101,7 @@ namespace Tortuga.Chain.PostgreSql
 				}
 
 				var sql = new StringBuilder();
-				using (var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SequentialAccess).ConfigureAwait(false))
+				using (var reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false))
 					while (await reader.ReadAsync().ConfigureAwait(false))
 						sql.AppendLine($"FETCH ALL IN \"{ reader.GetString(0) }\";");
 
@@ -116,10 +122,6 @@ namespace Tortuga.Chain.PostgreSql
 			}
 		}
 
-		/// <summary>
-		/// Called when Database.DatabaseMetadata is invoked.
-		/// </summary>
-		/// <returns></returns>
-		protected override IDatabaseMetadataCache OnGetDatabaseMetadata() => DatabaseMetadata;
+
 	}
 }

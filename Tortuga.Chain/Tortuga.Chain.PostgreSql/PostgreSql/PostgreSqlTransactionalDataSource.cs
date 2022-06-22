@@ -1,17 +1,15 @@
 ﻿using Npgsql;
 using Tortuga.Chain.Core;
+using Tortuga.Shipwright;
 
 namespace Tortuga.Chain.PostgreSql
 {
 	/// <summary>
 	/// Class PostgreSqlTransactionalDataSource
 	/// </summary>
-	/// <seealso cref="PostgreSqlDataSourceBase" />
-	/// <seealso cref="IDisposable" />
+	[UseTrait(typeof(Traits.TransactionalDataSourceTrait<PostgreSqlDataSource, NpgsqlConnection, NpgsqlTransaction, NpgsqlCommand, PostgreSqlMetadataCache>))]
 	public partial class PostgreSqlTransactionalDataSource : PostgreSqlDataSourceBase
 	{
-		private readonly PostgreSqlDataSource m_BaseDataSource;
-
 		/// <summary>
 		/// Initializes a new instance of the <see cref="PostgreSqlTransactionalDataSource"/> class.
 		/// </summary>
@@ -50,7 +48,7 @@ namespace Tortuga.Chain.PostgreSql
 		/// <param name="connection">The connection.</param>
 		/// <param name="transaction">The transaction.</param>
 		internal PostgreSqlTransactionalDataSource(PostgreSqlDataSource dataSource, bool forwardEvents, NpgsqlConnection connection, NpgsqlTransaction transaction)
-			: base(new PostgreSqlDataSourceSettings { DefaultCommandTimeout = dataSource.DefaultCommandTimeout, StrictMode = dataSource.StrictMode, SuppressGlobalEvents = dataSource.SuppressGlobalEvents || forwardEvents })
+			: base(new PostgreSqlDataSourceSettings(dataSource, forwardEvents))
 		{
 			Name = dataSource.Name;
 
@@ -69,13 +67,7 @@ namespace Tortuga.Chain.PostgreSql
 			UserValue = dataSource.UserValue;
 		}
 
-		/// <summary>
-		/// Gets the database metadata.
-		/// </summary>
-		public override PostgreSqlMetadataCache DatabaseMetadata
-		{
-			get { return m_BaseDataSource.DatabaseMetadata; }
-		}
+
 
 		/// <summary>
 		/// Executes the specified operation.

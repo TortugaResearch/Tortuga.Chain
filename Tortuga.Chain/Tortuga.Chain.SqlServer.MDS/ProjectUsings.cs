@@ -1,0 +1,13 @@
+﻿global using Microsoft.Data.SqlClient;
+global using AbstractCommand = Microsoft.Data.SqlClient.SqlCommand;
+global using AbstractConnection = Microsoft.Data.SqlClient.SqlConnection;
+global using AbstractParameter = Microsoft.Data.SqlClient.SqlParameter;
+global using AbstractTransaction = Microsoft.Data.SqlClient.SqlTransaction;
+global using AbstractDbType = System.Data.SqlDbType;
+global using InsertBatchResult = Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<Microsoft.Data.SqlClient.SqlCommand, Microsoft.Data.SqlClient.SqlParameter>;
+global using AbstractProcedureCall = Tortuga.Chain.SqlServer.CommandBuilders.SqlServerProcedureCall;
+global using AbstractScalarFunction = Tortuga.Chain.SqlServer.CommandBuilders.SqlServerScalarFunction;
+global using AbstractTableFunction = Tortuga.Chain.SqlServer.CommandBuilders.SqlServerTableFunction;
+global using AbstractObjectName = Tortuga.Chain.SqlServer.SqlServerObjectName;
+global using AbstractDataSource = Tortuga.Chain.SqlServerDataSource;
+global using AbstractLimitOption = Tortuga.Chain.SqlServerLimitOption;
