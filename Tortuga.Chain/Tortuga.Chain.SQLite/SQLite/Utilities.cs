@@ -26,5 +26,16 @@ namespace Tortuga.Chain.SQLite
 
 			return result;
 		}
+
+		public static bool RequiresSorting(this SQLiteLimitOption limitOption)
+		{
+			return limitOption switch
+			{
+				SQLiteLimitOption.None => false,
+				SQLiteLimitOption.Rows => true,
+				SQLiteLimitOption.RandomSampleRows => false,
+				_ => throw new ArgumentOutOfRangeException(nameof(limitOption), limitOption, "Unknown limit option")
+			};
+		}
 	}
 }

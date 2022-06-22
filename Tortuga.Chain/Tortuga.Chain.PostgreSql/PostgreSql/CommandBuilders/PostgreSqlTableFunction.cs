@@ -145,6 +145,10 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 				sqlBuilder.BuildSoftDeleteClause(sql, " WHERE ", DataSource, null);
 				parameters = sqlBuilder.GetParameters();
 			}
+
+			if (m_LimitOptions.RequiresSorting() && !m_SortExpressions.Any() && StrictMode)
+				throw new InvalidOperationException("Limits were requested without a sort order. Use WithSorting to supply a sort order or disable strict mode.");
+
 			sqlBuilder.BuildOrderByClause(sql, " ORDER BY ", m_SortExpressions, null);
 
 			switch (m_LimitOptions)
@@ -219,21 +223,6 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 		}
 
 		/// <summary>
-		/// Adds sorting to the command builder.
-		/// </summary>
-		/// <param name="sortExpressions">The sort expressions.</param>
-		/// <returns></returns>
-		/// <exception cref="ArgumentNullException"></exception>
-		protected override TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption> OnWithSorting(IEnumerable<SortExpression> sortExpressions)
-		{
-			if (sortExpressions == null)
-				throw new ArgumentNullException(nameof(sortExpressions), $"{nameof(sortExpressions)} is null.");
-
-			m_SortExpressions = sortExpressions;
-			return this;
-		}
-
-		/// <summary>
 		/// Adds limits to the command builder.
 		/// </summary>
 		/// <param name="skip">The number of rows to skip.</param>
@@ -262,6 +251,21 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 			m_Skip = skip;
 			m_Take = take;
 			m_LimitOptions = (PostgreSqlLimitOption)limitOptions;
+			return this;
+		}
+
+		/// <summary>
+		/// Adds sorting to the command builder.
+		/// </summary>
+		/// <param name="sortExpressions">The sort expressions.</param>
+		/// <returns></returns>
+		/// <exception cref="ArgumentNullException"></exception>
+		protected override TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption> OnWithSorting(IEnumerable<SortExpression> sortExpressions)
+		{
+			if (sortExpressions == null)
+				throw new ArgumentNullException(nameof(sortExpressions), $"{nameof(sortExpressions)} is null.");
+
+			m_SortExpressions = sortExpressions;
 			return this;
 		}
 	}

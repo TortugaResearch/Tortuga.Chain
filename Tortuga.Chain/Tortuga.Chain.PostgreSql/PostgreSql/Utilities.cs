@@ -36,5 +36,17 @@ namespace Tortuga.Chain.PostgreSql
 				return result;
 			}, out keyParameters);
 		}
+
+		public static bool RequiresSorting(this PostgreSqlLimitOption limitOption)
+		{
+			return limitOption switch
+			{
+				PostgreSqlLimitOption.None => false,
+				PostgreSqlLimitOption.Rows => true,
+				PostgreSqlLimitOption.TableSampleSystemPercentage => false,
+				PostgreSqlLimitOption.TableSampleBernoulliPercentage => false,
+				_ => throw new ArgumentOutOfRangeException(nameof(limitOption), limitOption, "Unknown limit option")
+			};
+		}
 	}
 }
