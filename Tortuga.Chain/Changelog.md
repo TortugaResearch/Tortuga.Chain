@@ -2,7 +2,8 @@
 
 ### Performance Enhancements
 
-Use `SqlCommand.EnableOptimizedParameterBinding` in SQL Server MDS.
+[#439 Use `SqlCommand.EnableOptimizedParameterBinding` in SQL Server MDS.](https://github.com/TortugaResearch/Chain/issues/439)
+
 
 ### Technical Debt
 
