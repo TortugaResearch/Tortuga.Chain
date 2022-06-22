@@ -32,6 +32,15 @@ public interface ISupportsGetByColumnList
 	/// <typeparam name="TObject">The type of the object. Used to determine which table will be read.</typeparam>
 	/// <param name="columnName">The name of the column to search.</param>
 	/// <param name="keys">The search keys.</param>
+	IMultipleRowDbCommandBuilder<TObject> GetByColumnList<TObject>(string columnName, IEnumerable<short> keys)
+		where TObject : class;
+
+	/// <summary>
+	/// Gets one or more records by an arbitrary column.
+	/// </summary>
+	/// <typeparam name="TObject">The type of the object. Used to determine which table will be read.</typeparam>
+	/// <param name="columnName">The name of the column to search.</param>
+	/// <param name="keys">The search keys.</param>
 	IMultipleRowDbCommandBuilder<TObject> GetByColumnList<TObject>(string columnName, IEnumerable<int> keys)
 		where TObject : class;
 

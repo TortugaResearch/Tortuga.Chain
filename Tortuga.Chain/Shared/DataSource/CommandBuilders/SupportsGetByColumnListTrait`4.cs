@@ -41,6 +41,12 @@ class SupportsGetByColumnListTrait<TCommand, TParameter, TObjectName, TDbType> :
 		return GetByColumn<TObject>(columnName, key);
 	}
 
+	IMultipleRowDbCommandBuilder<TObject> ISupportsGetByColumn.GetByColumn<TObject>(string columnName, short key)
+	where TObject : class
+	{
+		return GetByColumn<TObject>(columnName, key);
+	}
+
 	IMultipleRowDbCommandBuilder<TObject> ISupportsGetByColumn.GetByColumn<TObject>(string columnName, int key)
 		where TObject : class
 	{
@@ -60,7 +66,7 @@ class SupportsGetByColumnListTrait<TCommand, TParameter, TObjectName, TDbType> :
 	}
 
 	/// <summary>
-	/// Gets a record by its primary key.
+	/// Gets one or more records by an arbitrary column.
 	/// </summary>
 	/// <typeparam name="TObject">The type of the object. Used to determine which table will be read.</typeparam>
 	/// <param name="columnName">The name of the column to search.</param>
@@ -73,7 +79,7 @@ class SupportsGetByColumnListTrait<TCommand, TParameter, TObjectName, TDbType> :
 	}
 
 	/// <summary>
-	/// Gets a record by its primary key.
+	/// Gets one or more records by an arbitrary column.
 	/// </summary>
 	/// <typeparam name="TObject">The type of the object.</typeparam>
 	/// <param name="columnName">The name of the column to search.</param>
@@ -86,7 +92,20 @@ class SupportsGetByColumnListTrait<TCommand, TParameter, TObjectName, TDbType> :
 	}
 
 	/// <summary>
-	/// Gets a record by its primary key.
+	/// Gets one or more records by an arbitrary column.
+	/// </summary>
+	/// <typeparam name="TObject">The type of the object.</typeparam>
+	/// <param name="columnName">The name of the column to search.</param>
+	/// <param name="key">The search key.</param>
+	[Expose]
+	public MultipleRowDbCommandBuilder<TCommand, TParameter, TObject> GetByColumn<TObject>(string columnName, short key)
+		where TObject : class
+	{
+		return GetByColumnCore<TObject, short>(DataSource.DatabaseMetadata.GetTableOrViewFromClass<TObject>(OperationType.Select).Name, columnName, key);
+	}
+
+	/// <summary>
+	/// Gets one or more records by an arbitrary column.
 	/// </summary>
 	/// <typeparam name="TObject">The type of the object.</typeparam>
 	/// <param name="columnName">The name of the column to search.</param>
@@ -99,7 +118,7 @@ class SupportsGetByColumnListTrait<TCommand, TParameter, TObjectName, TDbType> :
 	}
 
 	/// <summary>
-	/// Gets a record by its primary key.
+	/// Gets one or more records by an arbitrary column.
 	/// </summary>
 	/// <typeparam name="TObject">The type of the object.</typeparam>
 	/// <param name="columnName">The name of the column to search.</param>
@@ -112,7 +131,7 @@ class SupportsGetByColumnListTrait<TCommand, TParameter, TObjectName, TDbType> :
 	}
 
 	/// <summary>
-	/// Gets a record by its primary key.
+	/// Gets one or more records by an arbitrary column.
 	/// </summary>
 	/// <typeparam name="TObject">The type of the object.</typeparam>
 	/// <typeparam name="TKey">The type of the key.</typeparam>
@@ -126,7 +145,7 @@ class SupportsGetByColumnListTrait<TCommand, TParameter, TObjectName, TDbType> :
 	}
 
 	/// <summary>
-	/// Gets a record by its primary key.
+	/// Gets one or more records by an arbitrary column.
 	/// </summary>
 	/// <param name="tableName">Name of the table.</param>
 	/// <param name="columnName">The name of the column to search.</param>
@@ -138,7 +157,7 @@ class SupportsGetByColumnListTrait<TCommand, TParameter, TObjectName, TDbType> :
 	}
 
 	/// <summary>
-	/// Gets a record by its primary key.
+	/// Gets one or more records by an arbitrary column.
 	/// </summary>
 	/// <typeparam name="TKey"></typeparam>
 	/// <param name="tableName">Name of the table.</param>
@@ -164,6 +183,11 @@ class SupportsGetByColumnListTrait<TCommand, TParameter, TObjectName, TDbType> :
 	IMultipleRowDbCommandBuilder<TObject> ISupportsGetByColumnList.GetByColumnList<TObject, TKey>(string columnName, IEnumerable<TKey> keys)
 	{
 		return GetByColumnList<TObject, TKey>(columnName, keys);
+	}
+
+	IMultipleRowDbCommandBuilder<TObject> ISupportsGetByColumnList.GetByColumnList<TObject>(string columnName, IEnumerable<short> keys)
+	{
+		return GetByColumnList<TObject>(columnName, keys);
 	}
 
 	IMultipleRowDbCommandBuilder<TObject> ISupportsGetByColumnList.GetByColumnList<TObject>(string columnName, IEnumerable<int> keys)
@@ -196,7 +220,7 @@ class SupportsGetByColumnListTrait<TCommand, TParameter, TObjectName, TDbType> :
 	}
 
 	/// <summary>
-	/// Gets a set of records by a key list.
+	/// Gets one or more records by an arbitrary column.
 	/// </summary>
 	/// <typeparam name="TObject">The type of the returned object.</typeparam>
 	/// <typeparam name="TKey">The type of the key.</typeparam>
@@ -210,7 +234,7 @@ class SupportsGetByColumnListTrait<TCommand, TParameter, TObjectName, TDbType> :
 	}
 
 	/// <summary>
-	/// Gets a set of records by a key list.
+	/// Gets one or more records by an arbitrary column.
 	/// </summary>
 	/// <typeparam name="TObject">The type of the returned object.</typeparam>
 	/// <param name="columnName">The name of the column to search.</param>
@@ -223,7 +247,7 @@ class SupportsGetByColumnListTrait<TCommand, TParameter, TObjectName, TDbType> :
 	}
 
 	/// <summary>
-	/// Gets a set of records by a key list.
+	/// Gets one or more records by an arbitrary column.
 	/// </summary>
 	/// <typeparam name="TObject">The type of the returned object.</typeparam>
 	/// <param name="columnName">The name of the column to search.</param>
@@ -236,7 +260,20 @@ class SupportsGetByColumnListTrait<TCommand, TParameter, TObjectName, TDbType> :
 	}
 
 	/// <summary>
-	/// Gets a set of records by a key list.
+	/// Gets one or more records by an arbitrary column.
+	/// </summary>
+	/// <typeparam name="TObject">The type of the returned object.</typeparam>
+	/// <param name="columnName">The name of the column to search.</param>
+	/// <param name="keys">The search keys.</param>
+	[Expose]
+	public MultipleRowDbCommandBuilder<TCommand, TParameter, TObject> GetByColumnList<TObject>(string columnName, IEnumerable<short> keys)
+		where TObject : class
+	{
+		return GetByColumnList<TObject, short>(columnName, keys);
+	}
+
+	/// <summary>
+	/// Gets one or more records by an arbitrary column.
 	/// </summary>
 	/// <typeparam name="TObject">The type of the returned object.</typeparam>
 	/// <param name="columnName">The name of the column to search.</param>
@@ -249,7 +286,7 @@ class SupportsGetByColumnListTrait<TCommand, TParameter, TObjectName, TDbType> :
 	}
 
 	/// <summary>
-	/// Gets a set of records by a key list.
+	/// Gets one or more records by an arbitrary column.
 	/// </summary>
 	/// <typeparam name="TObject">The type of the returned object.</typeparam>
 	/// <param name="columnName">The name of the column to search.</param>
