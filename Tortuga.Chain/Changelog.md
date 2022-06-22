@@ -1,5 +1,22 @@
 ## Version 4.1
 
+
+### Features with Breaking Changes
+
+[#440 Default Sorting for WithLimits](https://github.com/TortugaResearch/Chain/issues/440)
+
+If you use WithLimits without a sort order, then it will act non-deterministically. This is because the database could sort the results in any random order if not constrained.
+
+The fix is to default to sorting with primary key when using WithLimits. If there are no primary keys and no explicit sorting, then an exception will be thrown if in strict mode.
+
+This change also affects table-valued functions. Except these cannot infer the sort order as they do not have a primary key.
+
+### Features
+
+[#451 Add support for CommitAsync, Save(savepointName), SaveAsync(savepointName), Rollback(savepointName), and RollbackAsync](https://github.com/TortugaResearch/Chain/issues/451)
+
+We are only exposing these for .NET 6 and later.
+
 ### Performance Enhancements
 
 [#439 Use `SqlCommand.EnableOptimizedParameterBinding` in SQL Server MDS.](https://github.com/TortugaResearch/Chain/issues/439)
