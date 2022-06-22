@@ -10,13 +10,10 @@ namespace Traits
 		where TObjectName : struct
 		where TDbType : struct
 	{
-		SingleRowDbCommandBuilder<TCommand, TParameter> OnGetByKey<TObject, TKey>(TObjectName tableName, ColumnMetadata<TDbType> keyColumn, TKey key)
+		MultipleRowDbCommandBuilder<TCommand, TParameter> OnGetByKey<TObject, TKey>(TObjectName tableName, ColumnMetadata<TDbType> keyColumn, TKey key)
 			where TObject : class;
 
 		MultipleRowDbCommandBuilder<TCommand, TParameter> OnGetByKeyList<TObject, TKey>(TObjectName tableName, ColumnMetadata<TDbType> keyColumn, IEnumerable<TKey> keys)
 			where TObject : class;
 	}
 }
-
-
-

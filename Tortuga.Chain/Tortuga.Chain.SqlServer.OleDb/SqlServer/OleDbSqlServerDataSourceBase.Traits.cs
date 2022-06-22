@@ -93,10 +93,9 @@ partial class OleDbSqlServerDataSourceBase : ICrudDataSource, IAdvancedCrudDataS
 		return new OleDbSqlServerTableOrView<TObject>(this, tableOrViewName, filterValue, filterOptions);
 	}
 
-	SingleRowDbCommandBuilder<AbstractCommand, AbstractParameter> IGetByKeyHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnGetByKey<TObject, TKey>(AbstractObjectName tableName, ColumnMetadata<AbstractDbType> keyColumn, TKey key)
+	MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> IGetByKeyHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnGetByKey<TObject, TKey>(AbstractObjectName tableName, ColumnMetadata<AbstractDbType> keyColumn, TKey key)
 		where TObject : class
 	{
-
 		string where = keyColumn.SqlName + " = ?";
 
 		var parameters = new List<OleDbParameter>();
@@ -127,7 +126,6 @@ partial class OleDbSqlServerDataSourceBase : ICrudDataSource, IAdvancedCrudDataS
 		}
 
 		return new MultipleRowDbCommandBuilder<OleDbCommand, OleDbParameter, TObject>(new OleDbSqlServerTableOrView<TObject>(this, tableName, where, parameters));
-
 	}
 
 	ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> IInsertHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnInsertObject<TArgument>(AbstractObjectName tableName, TArgument argumentValue, InsertOptions options)
@@ -165,7 +163,6 @@ where TArgument : class
 		}
 
 		return new OleDbSqlServerUpdateSet(this, tableName, newValues, where, parameters, parameters.Count, options);
-
 	}
 
 	ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> IUpdateDeleteHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnUpdateObject<TArgument>(AbstractObjectName tableName, TArgument argumentValue, UpdateOptions options)

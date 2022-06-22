@@ -99,7 +99,7 @@ partial class SqlServerDataSourceBase : ICrudDataSource, IAdvancedCrudDataSource
 		return new SqlServerTableOrView<TObject>(this, tableOrViewName, filterValue, filterOptions);
 	}
 
-	SingleRowDbCommandBuilder<AbstractCommand, AbstractParameter> IGetByKeyHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnGetByKey<TObject, TKey>(AbstractObjectName tableName, ColumnMetadata<AbstractDbType> keyColumn, TKey key)
+	MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> IGetByKeyHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnGetByKey<TObject, TKey>(AbstractObjectName tableName, ColumnMetadata<AbstractDbType> keyColumn, TKey key)
 		where TObject : class
 	{
 		var where = keyColumn.SqlName + " = @Param0";
@@ -111,7 +111,6 @@ partial class SqlServerDataSourceBase : ICrudDataSource, IAdvancedCrudDataSource
 		parameters.Add(param);
 
 		return new SqlServerTableOrView<TObject>(this, tableName, where, parameters);
-
 	}
 
 	MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> IGetByKeyHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnGetByKeyList<TObject, TKey>(AbstractObjectName tableName, ColumnMetadata<AbstractDbType> keyColumn, IEnumerable<TKey> keys) where TObject : class
@@ -133,7 +132,6 @@ partial class SqlServerDataSourceBase : ICrudDataSource, IAdvancedCrudDataSource
 		}
 
 		return new MultipleRowDbCommandBuilder<SqlCommand, SqlParameter, TObject>(new SqlServerTableOrView<TObject>(this, tableName, where, parameters));
-
 	}
 
 	DbCommandBuilder<AbstractCommand, AbstractParameter> IInsertBatchHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnInsertBatch<TObject>(AbstractObjectName tableName, IEnumerable<TObject> objects, InsertOptions options)
@@ -164,7 +162,6 @@ partial class SqlServerDataSourceBase : ICrudDataSource, IAdvancedCrudDataSource
 
 	MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> IUpdateDeleteByKeyHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnUpdateByKeyList<TArgument, TKey>(AbstractObjectName tableName, TArgument newValues, IEnumerable<TKey> keys, UpdateOptions options)
 	{
-
 		var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).PrimaryKeyColumns;
 		if (primaryKeys.Count != 1)
 			throw new MappingException($"{nameof(UpdateByKeyList)} operation isn't allowed on {tableName} because it doesn't have a single primary key.");
