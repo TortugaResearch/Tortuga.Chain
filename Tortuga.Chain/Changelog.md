@@ -1,5 +1,12 @@
 ## Version 4.1
 
+
+### Features
+
+[#451 Add support for CommitAsync, Save(savepointName), SaveAsync(savepointName), Rollback(savepointName), and RollbackAsync](https://github.com/TortugaResearch/Chain/issues/451)
+
+We are only exposing these for .NET 6 and later.
+
 ### Performance Enhancements
 
 [#439 Use `SqlCommand.EnableOptimizedParameterBinding` in SQL Server MDS.](https://github.com/TortugaResearch/Chain/issues/439)
