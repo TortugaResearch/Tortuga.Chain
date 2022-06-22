@@ -17,6 +17,10 @@ This change also affects table-valued functions. Except these cannot infer the s
 
 We are only exposing these for .NET 6 and later.
 
+[#443 GetByKey, UpdateByKey, and DeleteByKey should support System.Int16](https://github.com/TortugaResearch/Chain/issues/443)
+
+This was done to improve support for lookup tables with small keys.
+
 ### Performance Enhancements
 
 [#439 Use `SqlCommand.EnableOptimizedParameterBinding` in SQL Server MDS.](https://github.com/TortugaResearch/Chain/issues/439)
