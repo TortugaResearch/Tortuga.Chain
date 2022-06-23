@@ -12,10 +12,8 @@ public class TimeSpanTests : TestBase
 	const long TimeSpanDelta = TimeSpan.TicksPerSecond * 60;
 
 #else
-	const long TimeSpanDelta = TimeSpan.TicksPerSecond ;
+	const long TimeSpanDelta = TimeSpan.TicksPerSecond;
 #endif
-
-#if NET6_0_OR_GREATER
 
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
 	public void ToObject_TimeSpanColumn(string dataSourceName, DataSourceType mode)
@@ -110,6 +108,4 @@ public class TimeSpanTests : TestBase
 			Release(dataSource);
 		}
 	}
-
-#endif
 }

@@ -18,6 +18,8 @@ public class GenericDbDataSource : DataSource<DbConnection, DbTransaction, DbCom
 	readonly ConcurrentDictionary<Type, object> m_ExtensionCache;
 	readonly DbProviderFactory? m_Factory;
 
+	GenericDatabaseMetadataCache m_DatabaseMetadataCache = new();
+
 	/// <summary>
 	/// Initializes a new instance of the <see cref="GenericDbDataSource{TConnection, TCommand, TParameter}" /> class.
 	/// </summary>
@@ -404,6 +406,6 @@ public class GenericDbDataSource : DataSource<DbConnection, DbTransaction, DbCom
 	/// <returns></returns>
 	protected override IDatabaseMetadataCache OnGetDatabaseMetadata()
 	{
-		throw new NotSupportedException("This data source does not expose database metadata");
+		return m_DatabaseMetadataCache;
 	}
 }

@@ -30,6 +30,8 @@ public class CustomerWithTime
 	public TimeOnly PreferredCallTime { get; set; }
 }
 
+#endif
+
 public class CustomerWithTimeSpan
 {
 	public int? CustomerKey { get; set; }
@@ -37,4 +39,3 @@ public class CustomerWithTimeSpan
 	public string State { get; set; }
 	public TimeSpan PreferredCallTime { get; set; }
 }
-#endif

@@ -20,16 +20,15 @@ namespace Tortuga.Chain.SQLite
 			var result = new SQLiteParameter();
 			result.ParameterName = entry.Details.SqlVariableName;
 
+			result.Value = entry.ParameterValue switch
+			{
 #if NET6_0_OR_GREATER
-		result.Value = entry.ParameterValue switch
-		{
 			DateOnly dateOnly => dateOnly.ToDateTime(default),
-			TimeOnly timeOnly => timeOnly.ToTimeSpan(),
-			_ => entry.ParameterValue
-		};
-#else
-			result.Value = entry.ParameterValue;
+			TimeOnly timeOnly => default(DateTime) + timeOnly.ToTimeSpan(),
 #endif
+				TimeSpan timeSpan => default(DateTime) + timeSpan,
+				_ => entry.ParameterValue
+			};
 
 			if (entry.Details.DbType.HasValue)
 				result.DbType = entry.Details.DbType.Value;

@@ -257,6 +257,7 @@ namespace Tortuga.Chain.SQLite
 				case "REAL": return DbType.Single;
 				case "SMALLINT": return DbType.Int16;
 				case "TEXT": return DbType.AnsiString;
+				case "TIME": return DbType.Time;
 				case "TINYINT": return DbType.SByte;
 				case "UNSIGNED BIG INT": return DbType.UInt64;
 				case "VARCHAR": return DbType.AnsiString;
