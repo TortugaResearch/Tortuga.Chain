@@ -13,6 +13,14 @@ This change also affects table-valued functions. Except these cannot infer the s
 
 ### Features
 
+[#445 Add support for DateOnly and TimeOnly](https://github.com/TortugaResearch/Tortuga.Chain/issues/445)
+
+On the parameter builder side, `DateOnly` and `TimeOnly` need to be converted into `DateTime` or `TimeSpan`. Which specific conversion is used depends on the database/driver combination.
+
+On the materializer side, a new class called `MaterializerTypeConverter` will be used. Moving forward, this will handle type conversions from the result set to the object.
+
+The `MaterializerTypeConverter` is owned by a `DatabaseMetadata` object, allowing additional conversions to be registered at runtime.
+
 [#451 Add support for CommitAsync, Save(savepointName), SaveAsync(savepointName), Rollback(savepointName), and RollbackAsync](https://github.com/TortugaResearch/Chain/issues/451)
 
 We are only exposing these for .NET 6 and later.

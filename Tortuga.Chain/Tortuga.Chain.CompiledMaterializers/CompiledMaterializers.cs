@@ -304,18 +304,33 @@ public static class CompiledMaterializers
 			{
 				var propertyTypeName = MetadataCache.GetMetadata(property.PropertyType).CSharpFullName;
 
+				string getterWithConversion;
+#if NET6_0_OR_GREATER
+				if (property.PropertyType == typeof(DateOnly) && column.ColumnType == typeof(DateTime))
+					getterWithConversion = $"DateOnly.FromDateTime({column.Getter}({column.Index}))";
+				else if (property.PropertyType == typeof(TimeOnly) && column.ColumnType == typeof(DateTime))
+					getterWithConversion = $"TimeOnly.FromDateTime({column.Getter}({column.Index}))";
+				else if (property.PropertyType == typeof(TimeOnly) && column.ColumnType == typeof(TimeSpan))
+					getterWithConversion = $"TimeOnly.FromTimeSpan({column.Getter}({column.Index}))";
+				else
+#endif
+				{
+					//simple casting
+					getterWithConversion = $"({propertyTypeName}){column.Getter}({column.Index})";
+				}
+
 				if (column.IsNullable && (property.PropertyType.IsClass || (string.Equals(property.PropertyType.Name, "Nullable`1", StringComparison.Ordinal) && property.PropertyType.IsGenericType)))
 				{
 					//null handler
 					code.AppendLine($"    if (reader.IsDBNull({column.Index}))");
 					code.AppendLine($"        {path}.{property.Name} = null;");
 					code.AppendLine($"    else");
-					code.AppendLine($"        {path}.{property.Name} = ({propertyTypeName}){column.Getter}({column.Index});");
+					code.AppendLine($"        {path}.{property.Name} = {getterWithConversion};");
 				}
 				else
 				{
 					//non-null handler
-					code.AppendLine($"    {path}.{property.Name} = ({propertyTypeName}){column.Getter}({column.Index});");
+					code.AppendLine($"    {path}.{property.Name} =  {getterWithConversion};");
 				}
 			}
 		}
