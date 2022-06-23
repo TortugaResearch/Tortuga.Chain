@@ -26,7 +26,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 		/// <summary>
 		/// Gets the table metadata.
 		/// </summary>
-		public TableOrViewMetadata<NpgsqlParameter, PostgreSqlObjectName, NpgsqlDbType> Table { get; }
+		public TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType> Table { get; }
 
 		/// <summary>
 		/// Called when ObjectDbCommandBuilder needs a reference to the associated table or view.

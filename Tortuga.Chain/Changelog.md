@@ -21,6 +21,10 @@ We are only exposing these for .NET 6 and later.
 
 This was done to improve support for lookup tables with small keys.
 
+### Bug Fixes
+
+The OleDB version of SQL Server was truncating fractional seconds when the column time is `time(n)` and `n>0`. To fix this, we have to force it to use `DateTime/DBTimeStamp` instead of `TimeSpan/DBTime`.
+
 ### Performance Enhancements
 
 [#439 Use `SqlCommand.EnableOptimizedParameterBinding` in SQL Server MDS.](https://github.com/TortugaResearch/Chain/issues/439)

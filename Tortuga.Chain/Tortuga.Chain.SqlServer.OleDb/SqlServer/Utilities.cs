@@ -1,5 +1,4 @@
-﻿using System.Data.Common;
-using System.Data.OleDb;
+﻿using System.Data.OleDb;
 using Tortuga.Chain.CommandBuilders;
 
 namespace Tortuga.Chain.SqlServer;
@@ -17,7 +16,17 @@ internal static class Utilities
 		{
 			var result = new OleDbParameter();
 			result.ParameterName = entry.Details.SqlVariableName;
+
+#if NET6_0_OR_GREATER
+		result.Value = entry.ParameterValue switch
+		{
+			DateOnly dateOnly => dateOnly.ToDateTime(default),
+			TimeOnly timeOnly => timeOnly.ToTimeSpan(),
+			_ => entry.ParameterValue
+		};
+#else
 			result.Value = entry.ParameterValue;
+#endif
 
 			if (entry.Details.DbType.HasValue)
 			{
@@ -25,6 +34,20 @@ internal static class Utilities
 
 				if (entry.Details.TypeName == "datetime2" && entry.Details.Scale.HasValue)
 					result.Scale = (byte)entry.Details.Scale.Value;
+				else if (entry.Details.TypeName == "time" && entry.Details.Scale > 0)
+				{
+					//If we need fractions of a second, force a type change.
+					//OleDbType.DBTime does not support milliseconds.
+					//OleDbType.DBTimeStamp only accepts DateTime.
+
+					result.OleDbType = OleDbType.DBTimeStamp;
+					result.Scale = (byte)entry.Details.Scale.Value;
+
+					if (result.Value is TimeSpan tv)
+					{
+						result.Value = default(DateTime) + tv;
+					}
+				}
 			}
 			return result;
 		});
@@ -33,8 +56,7 @@ internal static class Utilities
 	/// <summary>
 	/// Triggers need special handling for OUTPUT clauses.
 	/// </summary>
-	public static void UseTableVariable<TParameter, TDbType>(this SqlBuilder<TDbType> sqlBuilder, SqlServerTableOrViewMetadata<TParameter, TDbType> table, out string? header, out string? intoClause, out string? footer)
-		where TParameter : DbParameter
+	public static void UseTableVariable<TDbType>(this SqlBuilder<TDbType> sqlBuilder, SqlServerTableOrViewMetadata<TDbType> table, out string? header, out string? intoClause, out string? footer)
 		where TDbType : struct
 	{
 		if (sqlBuilder.HasReadFields && table.HasTriggers)

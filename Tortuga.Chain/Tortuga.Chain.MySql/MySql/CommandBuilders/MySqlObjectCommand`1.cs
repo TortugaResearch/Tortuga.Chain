@@ -25,7 +25,7 @@ internal abstract class MySqlObjectCommand<TArgument> : ObjectDbCommandBuilder<M
 	/// <summary>
 	/// Gets the table metadata.
 	/// </summary>
-	public TableOrViewMetadata<MySqlParameter, MySqlObjectName, MySqlDbType> Table { get; }
+	public TableOrViewMetadata<MySqlObjectName, MySqlDbType> Table { get; }
 
 	/// <summary>
 	/// Called when ObjectDbCommandBuilder needs a reference to the associated table or view.

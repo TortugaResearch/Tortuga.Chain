@@ -142,6 +142,13 @@ public class MaterializerTypeConverter
 					value = DateTimeOffset.Parse((string)value, CultureInfo.InvariantCulture);
 					return true;
 				}
+#if NET6_0_OR_GREATER
+				else if (targetType == typeof(TimeOnly))
+				{
+					value = TimeOnly.Parse((string)value, CultureInfo.InvariantCulture);
+					return true;
+				}
+#endif
 
 				return false;
 			}

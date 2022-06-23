@@ -16,7 +16,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
 	{
 		readonly InsertOptions m_Options;
 		readonly IReadOnlyList<TObject> m_SourceList;
-		readonly TableOrViewMetadata<SQLiteParameter, SQLiteObjectName, DbType> m_Table;
+		readonly TableOrViewMetadata<SQLiteObjectName, DbType> m_Table;
 
 		public SQLiteInsertBatch(SQLiteDataSourceBase dataSource, SQLiteObjectName tableName, IEnumerable<TObject> objects, InsertOptions options) : base(dataSource)
 		{

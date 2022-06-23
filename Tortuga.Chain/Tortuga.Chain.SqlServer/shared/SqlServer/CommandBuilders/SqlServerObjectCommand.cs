@@ -35,7 +35,7 @@ internal abstract class SqlServerObjectCommand<TArgument> : ObjectDbCommandBuild
 	/// Gets the table metadata.
 	/// </summary>
 	/// <value>The metadata.</value>
-	public SqlServerTableOrViewMetadata<SqlParameter, SqlDbType> Table { get; }
+	public SqlServerTableOrViewMetadata<SqlDbType> Table { get; }
 
 	/// <summary>
 	/// Called when ObjectDbCommandBuilder needs a reference to the associated table or view.

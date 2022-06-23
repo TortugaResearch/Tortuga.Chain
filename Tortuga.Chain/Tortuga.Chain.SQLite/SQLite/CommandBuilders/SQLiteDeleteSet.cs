@@ -22,7 +22,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
 
 		readonly IEnumerable<SQLiteParameter>? m_Parameters;
 
-		readonly TableOrViewMetadata<SQLiteParameter, SQLiteObjectName, DbType> m_Table;
+		readonly TableOrViewMetadata<SQLiteObjectName, DbType> m_Table;
 		readonly string? m_WhereClause;
 
 		/// <summary>

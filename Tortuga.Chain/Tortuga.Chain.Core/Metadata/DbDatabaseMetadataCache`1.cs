@@ -1,5 +1,4 @@
-﻿using System.Data.Common;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 
 namespace Tortuga.Chain.Metadata;
 
@@ -7,10 +6,8 @@ namespace Tortuga.Chain.Metadata;
 /// Meatadata cache base class for DbType databases
 /// </summary>
 /// <typeparam name="TObjectName">The type used to represent database object names.</typeparam>
-/// <typeparam name="TParameter">The variant of DbParameter used by this data source.</typeparam>
-public abstract class DbDatabaseMetadataCache<TParameter, TObjectName> : DatabaseMetadataCache<TParameter, TObjectName, DbType>
+public abstract class DbDatabaseMetadataCache<TObjectName> : DatabaseMetadataCache<TObjectName, DbType>
 	where TObjectName : struct
-	where TParameter : DbParameter
 {
 	/// <summary>
 	/// Returns the CLR type that matches the indicated database column type.

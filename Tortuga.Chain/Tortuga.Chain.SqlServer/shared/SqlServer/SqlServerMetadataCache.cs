@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.SqlServer;
@@ -156,7 +155,7 @@ WHERE o.name = @Name
 	/// </summary>
 	/// <param name="tableName">Name of the table.</param>
 	/// <returns>SqlServerTableOrViewMetadata&lt;TDbType&gt;.</returns>
-	public new SqlServerTableOrViewMetadata<SqlParameter, SqlDbType> GetTableOrView(SqlServerObjectName tableName)
+	public new SqlServerTableOrViewMetadata<SqlDbType> GetTableOrView(SqlServerObjectName tableName)
 	{
 		return m_Tables.GetOrAdd(tableName, GetTableOrViewInternal);
 	}
@@ -620,7 +619,7 @@ WHERE o.name = @Name
 		}
 	}
 
-	internal SqlServerTableOrViewMetadata<SqlParameter, SqlDbType> GetTableOrViewInternal(SqlServerObjectName tableName)
+	internal SqlServerTableOrViewMetadata<SqlDbType> GetTableOrViewInternal(SqlServerObjectName tableName)
 	{
 		const string TableSql =
 			@"SELECT
@@ -673,7 +672,7 @@ WHERE o.name = @Name
 
 		var columns = GetColumns(tableName.ToString(), objectId);
 
-		return new SqlServerTableOrViewMetadata<SqlParameter, SqlDbType>(this, new SqlServerObjectName(actualSchema, actualName), isTable, columns, hasTriggers);
+		return new SqlServerTableOrViewMetadata<SqlDbType>(this, new SqlServerObjectName(actualSchema, actualName), isTable, columns, hasTriggers);
 	}
 
 	internal UserDefinedTableTypeMetadata<SqlServerObjectName, SqlDbType> GetUserDefinedTableTypeInternal(SqlServerObjectName typeName)
@@ -775,17 +774,6 @@ WHERE	s.name = @Schema AND t.name = @Name AND t.is_table_type = 0;";
 			return new UserDefinedTableTypeMetadata<SqlServerObjectName, SqlDbType>(new SqlServerObjectName(actualSchema, actualName), isTableType, columns);
 		}
 		*/
-
-	/// <summary>
-	/// Callback for parameter builder.
-	/// </summary>
-	/// <param name="entry">The entry.</param>
-	/// <returns>SqlParameter.</returns>
-	/// <exception cref="System.NotImplementedException"></exception>
-	protected override SqlParameter ParameterBuilderCallback(SqlBuilderEntry<SqlDbType> entry)
-	{
-		throw new NotImplementedException();
-	}
 
 	/// <summary>
 	/// Determines the database column type from the column type name.

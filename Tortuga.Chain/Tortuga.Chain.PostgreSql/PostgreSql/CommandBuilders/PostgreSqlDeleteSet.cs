@@ -19,7 +19,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 		readonly object? m_FilterValue;
 		readonly DeleteOptions m_Options;
 		readonly IEnumerable<NpgsqlParameter>? m_Parameters;
-		readonly TableOrViewMetadata<NpgsqlParameter, PostgreSqlObjectName, NpgsqlDbType> m_Table;
+		readonly TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType> m_Table;
 		readonly string? m_WhereClause;
 
 		/// <summary>

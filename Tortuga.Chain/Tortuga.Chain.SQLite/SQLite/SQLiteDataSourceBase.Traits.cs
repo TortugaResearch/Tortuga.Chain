@@ -26,7 +26,7 @@ DbCommandBuilder<AbstractCommand, AbstractParameter>>))]
 [UseTrait(typeof(SupportsUpsertTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
 partial class SQLiteDataSourceBase : ICrudDataSource, IAdvancedCrudDataSource
 {
-	DatabaseMetadataCache<AbstractParameter, AbstractObjectName, AbstractDbType> ICommandHelper<AbstractParameter, AbstractObjectName, AbstractDbType>.DatabaseMetadata => DatabaseMetadata;
+	DatabaseMetadataCache<AbstractObjectName, AbstractDbType> ICommandHelper<AbstractObjectName, AbstractDbType>.DatabaseMetadata => DatabaseMetadata;
 
 	List<AbstractParameter> ICommandHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.GetParameters(SqlBuilder<AbstractDbType> builder) => builder.GetParameters();
 

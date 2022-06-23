@@ -1,5 +1,6 @@
 ﻿using System.Data.OleDb;
 using Tortuga.Chain.CommandBuilders;
+using Tortuga.Chain.DataSources;
 
 namespace Tortuga.Chain.Access;
 
@@ -24,38 +25,35 @@ internal static class Utilities
 		};
 	}
 
-	/// <summary>
-	/// Gets the parameters from a SQL Builder.
-	/// </summary>
-	/// <param name="sqlBuilder">The SQL builder.</param>
-	/// <returns></returns>
-	public static List<OleDbParameter> GetParameters(this SqlBuilder<OleDbType> sqlBuilder)
+	public static List<AbstractParameter> GetParameters(this SqlBuilder<AbstractDbType> sqlBuilder, IDataSource dataSource)
 	{
-		return sqlBuilder.GetParameters((SqlBuilderEntry<OleDbType> entry) =>
-		{
-			var result = new OleDbParameter();
-			result.ParameterName = entry.Details.SqlVariableName;
-			result.Value = entry.ParameterValue;
-
-			if (entry.Details.DbType.HasValue)
-				result.OleDbType = entry.Details.DbType.Value;
-
-			return result;
-		});
+		return sqlBuilder.GetParameters(ParameterBuilderCallback);
 	}
 
 	public static List<OleDbParameter> GetParametersKeysLast(this SqlBuilder<OleDbType> sqlBuilder)
 	{
-		return sqlBuilder.GetParametersKeysLast((SqlBuilderEntry<OleDbType> entry) =>
+		return sqlBuilder.GetParametersKeysLast(ParameterBuilderCallback);
+	}
+
+	public static OleDbParameter ParameterBuilderCallback(SqlBuilderEntry<OleDbType> entry)
+	{
+		var result = new OleDbParameter();
+		result.ParameterName = entry.Details.SqlVariableName;
+
+#if NET6_0_OR_GREATER
+		result.Value = entry.ParameterValue switch
 		{
-			var result = new OleDbParameter();
-			result.ParameterName = entry.Details.SqlVariableName;
-			result.Value = entry.ParameterValue;
+			DateOnly dateOnly => dateOnly.ToDateTime(default),
+			TimeOnly timeOnly => default(DateTime) + timeOnly.ToTimeSpan(),
+			_ => entry.ParameterValue
+		};
+#else
+		result.Value = entry.ParameterValue;
+#endif
 
-			if (entry.Details.DbType.HasValue)
-				result.OleDbType = entry.Details.DbType.Value;
+		if (entry.Details.DbType.HasValue)
+			result.OleDbType = entry.Details.DbType.Value;
 
-			return result;
-		});
+		return result;
 	}
 }

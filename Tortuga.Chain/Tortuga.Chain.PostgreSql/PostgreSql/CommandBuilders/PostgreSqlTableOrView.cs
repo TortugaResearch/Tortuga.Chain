@@ -14,7 +14,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 	public class PostgreSqlTableOrView<TObject> : TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption, TObject>
 		where TObject : class
 	{
-		readonly TableOrViewMetadata<NpgsqlParameter, PostgreSqlObjectName, NpgsqlDbType> m_Table;
+		readonly TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType> m_Table;
 		object? m_ArgumentValue;
 		FilterOptions m_FilterOptions;
 		object? m_FilterValue;

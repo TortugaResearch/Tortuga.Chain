@@ -2,7 +2,6 @@
 using System.Data.SQLite;
 using System.Diagnostics.CodeAnalysis;
 using Tortuga.Anchor;
-using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.SQLite
@@ -10,12 +9,12 @@ namespace Tortuga.Chain.SQLite
 	/// <summary>
 	/// Handles caching of metadata for various SQLite tables and views.
 	/// </summary>
-	public sealed class SQLiteMetadataCache : DbDatabaseMetadataCache<SQLiteParameter, SQLiteObjectName>
+	public sealed class SQLiteMetadataCache : DbDatabaseMetadataCache<SQLiteObjectName>
 	{
 		readonly SQLiteConnectionStringBuilder m_ConnectionBuilder;
-		readonly ConcurrentDictionary<SQLiteObjectName, TableOrViewMetadata<SQLiteParameter, SQLiteObjectName, DbType>> m_Tables = new();
+		readonly ConcurrentDictionary<SQLiteObjectName, TableOrViewMetadata<SQLiteObjectName, DbType>> m_Tables = new();
 
-		readonly ConcurrentDictionary<Type, TableOrViewMetadata<SQLiteParameter, SQLiteObjectName, DbType>> m_TypeTableMap = new();
+		readonly ConcurrentDictionary<Type, TableOrViewMetadata<SQLiteObjectName, DbType>> m_TypeTableMap = new();
 
 		/// <summary>
 		/// Creates a new instance of <see cref="SQLiteMetadataCache"/>
@@ -25,6 +24,13 @@ namespace Tortuga.Chain.SQLite
 		{
 			m_ConnectionBuilder = connectionBuilder;
 		}
+
+		/// <summary>
+		/// Gets the maximum number of parameters in a single SQL batch.
+		/// </summary>
+		/// <value>The maximum number of parameters.</value>
+		/// <remarks>https://sqlite.org/limits.html</remarks>
+		public override int? MaxParameters => 999;
 
 		/// <summary>
 		/// Gets the indexes for a table.
@@ -105,7 +111,7 @@ namespace Tortuga.Chain.SQLite
 		/// </summary>
 		/// <param name="tableName"></param>
 		/// <returns></returns>
-		public override TableOrViewMetadata<SQLiteParameter, SQLiteObjectName, DbType> GetTableOrView(SQLiteObjectName tableName)
+		public override TableOrViewMetadata<SQLiteObjectName, DbType> GetTableOrView(SQLiteObjectName tableName)
 		{
 			return m_Tables.GetOrAdd(tableName, GetTableOrViewInternal);
 		}
@@ -117,7 +123,7 @@ namespace Tortuga.Chain.SQLite
 		/// <remarks>
 		/// Call Preload before invoking this method to ensure that all tables and views were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.
 		/// </remarks>
-		public override IReadOnlyCollection<TableOrViewMetadata<SQLiteParameter, SQLiteObjectName, DbType>> GetTablesAndViews()
+		public override IReadOnlyCollection<TableOrViewMetadata<SQLiteObjectName, DbType>> GetTablesAndViews()
 		{
 			return m_Tables.GetValues();
 		}
@@ -139,9 +145,9 @@ namespace Tortuga.Chain.SQLite
 		{
 			const string tableSql =
 				@"SELECT
-                tbl_name as TableName
-                FROM sqlite_master
-                WHERE type = 'table'";
+				tbl_name as TableName
+				FROM sqlite_master
+				WHERE type = 'table'";
 
 			using (var con = new SQLiteConnection(m_ConnectionBuilder.ConnectionString))
 			{
@@ -168,9 +174,9 @@ namespace Tortuga.Chain.SQLite
 		{
 			const string viewSql =
 				@"SELECT
-                tbl_name as ViewName
-                FROM sqlite_master
-                WHERE type = 'view'";
+				tbl_name as ViewName
+				FROM sqlite_master
+				WHERE type = 'view'";
 
 			using (var con = new SQLiteConnection(m_ConnectionBuilder.ConnectionString))
 			{
@@ -263,8 +269,8 @@ namespace Tortuga.Chain.SQLite
 		ColumnMetadataCollection<DbType> GetColumns(SQLiteObjectName tableName, bool isTable)
 		{
 			/*  NOTE: Should be safe since GetTableOrViewInternal returns null after querying the table name with a
-            **  prepared statement, thus proving that the table name exists.
-            */
+			**  prepared statement, thus proving that the table name exists.
+			*/
 			var hasPrimarykey = false;
 			var columnSql = $"PRAGMA table_info('{tableName.Name}')";
 
@@ -298,15 +304,15 @@ namespace Tortuga.Chain.SQLite
 			return new ColumnMetadataCollection<DbType>(tableName.ToString(), columns);
 		}
 
-		private TableOrViewMetadata<SQLiteParameter, SQLiteObjectName, DbType> GetTableOrViewInternal(SQLiteObjectName tableName)
+		private TableOrViewMetadata<SQLiteObjectName, DbType> GetTableOrViewInternal(SQLiteObjectName tableName)
 		{
 			const string tableSql =
 				@"SELECT
-                type AS ObjectType,
-                tbl_name AS ObjectName
-                FROM sqlite_master
-                WHERE UPPER(tbl_name) = UPPER(@Name) AND
-                      (type='table' OR type='view')";
+				type AS ObjectType,
+				tbl_name AS ObjectName
+				FROM sqlite_master
+				WHERE UPPER(tbl_name) = UPPER(@Name) AND
+					  (type='table' OR type='view')";
 
 			string actualName;
 			bool isTable;
@@ -330,43 +336,7 @@ namespace Tortuga.Chain.SQLite
 			}
 
 			var columns = GetColumns(tableName, isTable);
-			return new TableOrViewMetadata<SQLiteParameter, SQLiteObjectName, DbType>(this, actualName, isTable, columns);
+			return new TableOrViewMetadata<SQLiteObjectName, DbType>(this, actualName, isTable, columns);
 		}
-
-		/// <summary>
-		/// Callback for parameter builder.
-		/// </summary>
-		/// <param name="entry">The entry.</param>
-		/// <returns>SqlDbType.</returns>
-		protected override SQLiteParameter ParameterBuilderCallback(SqlBuilderEntry<DbType> entry)
-		{
-			var result = new SQLiteParameter();
-			result.ParameterName = entry.Details.SqlVariableName;
-
-#if NET6_0_OR_GREATER
-		result.Value = entry.ParameterValue switch
-		{
-			DateOnly dateOnly => dateOnly.ToDateTime(default),
-			TimeOnly timeOnly => timeOnly.ToTimeSpan(),
-			_ => entry.ParameterValue
-		};
-#else
-			result.Value = entry.ParameterValue;
-#endif
-
-			if (entry.Details.DbType.HasValue)
-				result.DbType = entry.Details.DbType.Value;
-
-			result.Direction = entry.Details.Direction;
-
-			return result;
-		}
-
-		/// <summary>
-		/// Gets the maximum number of parameters in a single SQL batch.
-		/// </summary>
-		/// <value>The maximum number of parameters.</value>
-		/// <remarks>https://sqlite.org/limits.html</remarks>
-		public override int? MaxParameters => 999;
 	}
 }

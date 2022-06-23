@@ -25,7 +25,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
 		/// <summary>
 		/// Gets the table metadata.
 		/// </summary>
-		public TableOrViewMetadata<SQLiteParameter, SQLiteObjectName, DbType> Table { get; }
+		public TableOrViewMetadata<SQLiteObjectName, DbType> Table { get; }
 
 		/// <summary>
 		/// Called when ObjectDbCommandBuilder needs a reference to the associated table or view.

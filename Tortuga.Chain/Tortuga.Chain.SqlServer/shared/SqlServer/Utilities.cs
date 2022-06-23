@@ -62,8 +62,7 @@ internal static class Utilities
 	/// <summary>
 	/// Triggers need special handling for OUTPUT clauses.
 	/// </summary>
-	public static void UseTableVariable<TParameter, TDbType>(this SqlBuilder<TDbType> sqlBuilder, SqlServerTableOrViewMetadata<TParameter, TDbType> table, out string? header, out string? intoClause, out string? footer)
-		where TParameter : DbParameter
+	public static void UseTableVariable<TDbType>(this SqlBuilder<TDbType> sqlBuilder, SqlServerTableOrViewMetadata<TDbType> table, out string? header, out string? intoClause, out string? footer)
 		where TDbType : struct
 	{
 		if (sqlBuilder.HasReadFields && table.HasTriggers)

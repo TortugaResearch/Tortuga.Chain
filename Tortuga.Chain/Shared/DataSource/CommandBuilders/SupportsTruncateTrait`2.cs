@@ -14,7 +14,7 @@ class SupportsTruncateTrait<TParameter, TObjectName, TDbType> : ISupportsTruncat
 	[Partial("tableName")] public Func<TObjectName, ILink<int?>> OnTruncate { get; set; } = null!;
 
 	[Container(RegisterInterface = true)]
-	internal ICommandHelper<TParameter, TObjectName, TDbType> DataSource { get; set; } = null!;
+	internal ICommandHelper<TObjectName, TDbType> DataSource { get; set; } = null!;
 
 	/// <summary>Truncates the specified table.</summary>
 	/// <param name="tableName">Name of the table to Truncate.</param>

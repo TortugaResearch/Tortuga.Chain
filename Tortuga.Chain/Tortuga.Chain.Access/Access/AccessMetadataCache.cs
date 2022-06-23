@@ -3,7 +3,6 @@ using System.Data.OleDb;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using Tortuga.Anchor;
-using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.Access;
@@ -14,10 +13,10 @@ namespace Tortuga.Chain.Access;
 public sealed class AccessMetadataCache : OleDbDatabaseMetadataCache<AccessObjectName>
 {
 	readonly OleDbConnectionStringBuilder m_ConnectionBuilder;
-	readonly ConcurrentDictionary<AccessObjectName, TableOrViewMetadata<OleDbParameter, AccessObjectName, OleDbType>> m_Tables = new ConcurrentDictionary<AccessObjectName, TableOrViewMetadata<OleDbParameter, AccessObjectName, OleDbType>>();
-	readonly ConcurrentDictionary<Type, TableOrViewMetadata<OleDbParameter, AccessObjectName, OleDbType>> m_TypeTableMap = new ConcurrentDictionary<Type, TableOrViewMetadata<OleDbParameter, AccessObjectName, OleDbType>>();
+	readonly ConcurrentDictionary<AccessObjectName, TableOrViewMetadata<AccessObjectName, OleDbType>> m_Tables = new();
+	readonly ConcurrentDictionary<Type, TableOrViewMetadata<AccessObjectName, OleDbType>> m_TypeTableMap = new();
 
-	ConcurrentDictionary<Guid, DataTable> m_DataTableCache = new ConcurrentDictionary<Guid, DataTable>();
+	ConcurrentDictionary<Guid, DataTable> m_DataTableCache = new();
 	bool m_SchemaLoaded;
 
 	/// <summary>
@@ -78,12 +77,12 @@ public sealed class AccessMetadataCache : OleDbDatabaseMetadataCache<AccessObjec
 	/// </summary>
 	/// <param name="tableName"></param>
 	/// <returns></returns>
-	public override TableOrViewMetadata<OleDbParameter, AccessObjectName, OleDbType> GetTableOrView(AccessObjectName tableName)
+	public override TableOrViewMetadata<AccessObjectName, OleDbType> GetTableOrView(AccessObjectName tableName)
 	{
 		if (!m_SchemaLoaded)
 			Preload();
 
-		TableOrViewMetadata<OleDbParameter, AccessObjectName, OleDbType>? result;
+		TableOrViewMetadata<AccessObjectName, OleDbType>? result;
 		if (m_Tables.TryGetValue(tableName, out result))
 			return result;
 
@@ -97,7 +96,7 @@ public sealed class AccessMetadataCache : OleDbDatabaseMetadataCache<AccessObjec
 	/// <remarks>
 	/// Call Preload before invoking this method to ensure that all tables and views were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.
 	/// </remarks>
-	public override IReadOnlyCollection<TableOrViewMetadata<OleDbParameter, AccessObjectName, OleDbType>> GetTablesAndViews() => m_Tables.GetValues();
+	public override IReadOnlyCollection<TableOrViewMetadata<AccessObjectName, OleDbType>> GetTablesAndViews() => m_Tables.GetValues();
 
 	/// <summary>
 	/// Preloads all of the metadata for this data source.
@@ -134,17 +133,6 @@ public sealed class AccessMetadataCache : OleDbDatabaseMetadataCache<AccessObjec
 		m_Tables.Clear();
 		m_TypeTableMap.Clear();
 		m_SchemaLoaded = false;
-	}
-
-	/// <summary>
-	/// Callback for parameter builder.
-	/// </summary>
-	/// <param name="entry">The entry.</param>
-	/// <returns>OleDbParameter.</returns>
-	/// <exception cref="System.NotImplementedException"></exception>
-	protected override OleDbParameter ParameterBuilderCallback(SqlBuilderEntry<OleDbType> entry)
-	{
-		throw new NotImplementedException();
 	}
 
 	/// <summary>
@@ -260,7 +248,7 @@ public sealed class AccessMetadataCache : OleDbDatabaseMetadataCache<AccessObjec
 
 				var name = row["TABLE_NAME"].ToString()!;
 				var columns = GetColumns(name, columnsDataTable, primaryKeys);
-				m_Tables[name] = new TableOrViewMetadata<OleDbParameter, AccessObjectName, OleDbType>(this, name, true, columns);
+				m_Tables[name] = new TableOrViewMetadata<AccessObjectName, OleDbType>(this, name, true, columns);
 			}
 		}
 	}
@@ -275,7 +263,7 @@ public sealed class AccessMetadataCache : OleDbDatabaseMetadataCache<AccessObjec
 			{
 				var name = row["TABLE_NAME"].ToString()!;
 				var columns = GetColumns(name, columnsDataTable, null);
-				m_Tables[name] = new TableOrViewMetadata<OleDbParameter, AccessObjectName, OleDbType>(this, name, false, columns);
+				m_Tables[name] = new TableOrViewMetadata<AccessObjectName, OleDbType>(this, name, false, columns);
 			}
 		}
 	}

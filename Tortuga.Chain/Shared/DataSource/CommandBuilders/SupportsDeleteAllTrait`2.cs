@@ -14,7 +14,7 @@ class SupportsDeleteAllTrait<TParameter, TObjectName, TDbType> : ISupportsDelete
 	[Partial("tableName")] public Func<TObjectName, ILink<int?>> OnDeleteAll { get; set; } = null!;
 
 	[Container(RegisterInterface = true)]
-	internal ICommandHelper<TParameter, TObjectName, TDbType> DataSource { get; set; } = null!;
+	internal ICommandHelper<TObjectName, TDbType> DataSource { get; set; } = null!;
 
 	/// <summary>Deletes all records in the specified table.</summary>
 	/// <param name="tableName">Name of the table to clear.</param>

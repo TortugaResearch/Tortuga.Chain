@@ -1,7 +1,6 @@
 using System.Collections.Immutable;
 using System.Data.OleDb;
 using System.Diagnostics.CodeAnalysis;
-using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.SqlServer;
@@ -9,7 +8,7 @@ namespace Tortuga.Chain.SqlServer;
 /// <summary>
 /// Class OleDbSqlServerMetadataCache.
 /// </summary>
-/// <seealso cref="DatabaseMetadataCache{OleDbParameter, SqlServerObjectName, OleDbType}" />
+/// <seealso cref="DatabaseMetadataCache{ SqlServerObjectName, OleDbType}" />
 public sealed partial class OleDbSqlServerMetadataCache
 {
 	/// <summary>
@@ -79,7 +78,7 @@ public sealed partial class OleDbSqlServerMetadataCache
 	/// </summary>
 	/// <param name="tableName">Name of the table.</param>
 	/// <returns>SqlServerTableOrViewMetadata&lt;TDbType&gt;.</returns>
-	public new SqlServerTableOrViewMetadata<OleDbParameter, OleDbType> GetTableOrView(SqlServerObjectName tableName)
+	public new SqlServerTableOrViewMetadata<OleDbType> GetTableOrView(SqlServerObjectName tableName)
 	{
 		return m_Tables.GetOrAdd(tableName, GetTableOrViewInternal);
 	}
@@ -439,7 +438,7 @@ public sealed partial class OleDbSqlServerMetadataCache
 		return new TableFunctionMetadata<SqlServerObjectName, OleDbType>(objectName, parameters, columns);
 	}
 
-	internal SqlServerTableOrViewMetadata<OleDbParameter, OleDbType> GetTableOrViewInternal(SqlServerObjectName tableName)
+	internal SqlServerTableOrViewMetadata<OleDbType> GetTableOrViewInternal(SqlServerObjectName tableName)
 	{
 		const string TableSql =
 			@"SELECT
@@ -494,7 +493,7 @@ public sealed partial class OleDbSqlServerMetadataCache
 
 		var columns = GetColumns(tableName.ToString(), objectId);
 
-		return new SqlServerTableOrViewMetadata<OleDbParameter, OleDbType>(this, new SqlServerObjectName(actualSchema, actualName), isTable, columns, hasTriggers);
+		return new SqlServerTableOrViewMetadata<OleDbType>(this, new SqlServerObjectName(actualSchema, actualName), isTable, columns, hasTriggers);
 	}
 
 	internal UserDefinedTableTypeMetadata<SqlServerObjectName, OleDbType>
@@ -537,17 +536,6 @@ WHERE	s.name = ? AND t.name = ? AND t.is_table_type = 1;";
 		var columns = GetColumns(typeName.ToString(), objectId);
 
 		return new UserDefinedTableTypeMetadata<SqlServerObjectName, OleDbType>(new SqlServerObjectName(actualSchema, actualName), columns);
-	}
-
-	/// <summary>
-	/// Callback for parameter builder.
-	/// </summary>
-	/// <param name="entry">The entry.</param>
-	/// <returns>OleDbParameter.</returns>
-	/// <exception cref="System.NotImplementedException"></exception>
-	protected override OleDbParameter ParameterBuilderCallback(SqlBuilderEntry<OleDbType> entry)
-	{
-		throw new NotImplementedException();
 	}
 
 	/// <summary>

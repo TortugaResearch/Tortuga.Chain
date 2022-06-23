@@ -13,7 +13,7 @@ namespace Tortuga.Chain.Access.CommandBuilders;
 internal sealed class AccessTableOrView<TObject> : TableDbCommandBuilder<OleDbCommand, OleDbParameter, AccessLimitOption, TObject>
 	where TObject : class
 {
-	readonly TableOrViewMetadata<OleDbParameter, AccessObjectName, OleDbType> m_Table;
+	readonly TableOrViewMetadata<AccessObjectName, OleDbType> m_Table;
 	object? m_ArgumentValue;
 	FilterOptions m_FilterOptions;
 	object? m_FilterValue;
@@ -138,7 +138,7 @@ internal sealed class AccessTableOrView<TObject> : TableDbCommandBuilder<OleDbCo
 			sql.Append(" WHERE (" + sqlBuilder.ApplyFilterValue(m_FilterValue, m_FilterOptions) + ")");
 			sqlBuilder.BuildSoftDeleteClause(sql, " AND (", DataSource, ") ");
 
-			parameters = sqlBuilder.GetParameters();
+			parameters = sqlBuilder.GetParameters(DataSource);
 		}
 		else if (!string.IsNullOrWhiteSpace(m_WhereClause))
 		{
@@ -146,12 +146,12 @@ internal sealed class AccessTableOrView<TObject> : TableDbCommandBuilder<OleDbCo
 			sqlBuilder.BuildSoftDeleteClause(sql, " AND (", DataSource, ") ");
 
 			parameters = SqlBuilder.GetParameters<OleDbParameter>(m_ArgumentValue);
-			parameters.AddRange(sqlBuilder.GetParameters());
+			parameters.AddRange(sqlBuilder.GetParameters(DataSource));
 		}
 		else
 		{
 			sqlBuilder.BuildSoftDeleteClause(sql, " WHERE ", DataSource, null);
-			parameters = sqlBuilder.GetParameters();
+			parameters = sqlBuilder.GetParameters(DataSource);
 		}
 		sqlBuilder.BuildOrderByClause(sql, " ORDER BY ", m_SortExpressions, null);
 

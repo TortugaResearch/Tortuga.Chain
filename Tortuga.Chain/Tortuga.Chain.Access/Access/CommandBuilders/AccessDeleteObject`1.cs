@@ -49,6 +49,6 @@ internal sealed class AccessDeleteObject<TArgument> : AccessObjectCommand<TArgum
 		sqlBuilder.BuildWhereClause(sql, " WHERE ", null);
 		sql.Append(";");
 
-		return new AccessCommandExecutionToken(DataSource, "Delete from " + Table.Name, sql.ToString(), sqlBuilder.GetParameters()).CheckDeleteRowCount(m_Options);
+		return new AccessCommandExecutionToken(DataSource, "Delete from " + Table.Name, sql.ToString(), sqlBuilder.GetParameters(DataSource)).CheckDeleteRowCount(m_Options);
 	}
 }

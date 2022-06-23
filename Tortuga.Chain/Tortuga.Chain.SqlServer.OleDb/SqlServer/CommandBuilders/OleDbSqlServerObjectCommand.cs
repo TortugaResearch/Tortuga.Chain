@@ -36,7 +36,7 @@ internal abstract class OleDbSqlServerObjectCommand<TArgument> : ObjectDbCommand
 	/// Gets the table metadata.
 	/// </summary>
 	/// <value>The metadata.</value>
-	public SqlServerTableOrViewMetadata<OleDbParameter, OleDbType> Table { get; }
+	public SqlServerTableOrViewMetadata<OleDbType> Table { get; }
 
 	/// <summary>
 	/// Called when ObjectDbCommandBuilder needs a reference to the associated table or view.

@@ -16,7 +16,7 @@ internal class MySqlInsertBatch<TObject> : DbCommandBuilder<MySqlCommand, MySqlP
 {
 	readonly InsertOptions m_Options;
 	readonly IReadOnlyList<TObject> m_SourceList;
-	readonly TableOrViewMetadata<MySqlParameter, MySqlObjectName, MySqlDbType> m_Table;
+	readonly TableOrViewMetadata<MySqlObjectName, MySqlDbType> m_Table;
 
 	public MySqlInsertBatch(MySqlDataSourceBase dataSource, MySqlObjectName tableName, IEnumerable<TObject> objects, InsertOptions options) : base(dataSource)
 	{

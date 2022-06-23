@@ -13,7 +13,7 @@ namespace Tortuga.Chain.MySql.CommandBuilders;
 public class MySqlTableOrView<TObject> : TableDbCommandBuilder<MySqlCommand, MySqlParameter, MySqlLimitOption, TObject>
 	where TObject : class
 {
-	private readonly TableOrViewMetadata<MySqlParameter, MySqlObjectName, MySqlDbType> m_Table;
+	private readonly TableOrViewMetadata<MySqlObjectName, MySqlDbType> m_Table;
 	private object? m_ArgumentValue;
 	private FilterOptions m_FilterOptions;
 	private object? m_FilterValue;

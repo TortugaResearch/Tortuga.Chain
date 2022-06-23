@@ -30,7 +30,7 @@ MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter>>))]
 [UseTrait(typeof(SupportsTableFunctionTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType, AbstractLimitOption>))]
 partial class PostgreSqlDataSourceBase : ICrudDataSource, IAdvancedCrudDataSource
 {
-	DatabaseMetadataCache<AbstractParameter, AbstractObjectName, AbstractDbType> ICommandHelper<AbstractParameter, AbstractObjectName, AbstractDbType>.DatabaseMetadata => DatabaseMetadata;
+	DatabaseMetadataCache<AbstractObjectName, AbstractDbType> ICommandHelper<AbstractObjectName, AbstractDbType>.DatabaseMetadata => DatabaseMetadata;
 
 	List<AbstractParameter> ICommandHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.GetParameters(SqlBuilder<AbstractDbType> builder) => builder.GetParameters();
 

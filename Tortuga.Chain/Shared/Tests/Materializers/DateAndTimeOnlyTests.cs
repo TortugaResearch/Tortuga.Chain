@@ -38,7 +38,9 @@ public class DateAndTimeOnlyTests : TestBase
 			var key = dataSource.Insert(CustomerTableName, cust).ToInt32().Execute();
 
 			var lookup = dataSource.GetByKey(CustomerTableName, key).ToObject<CustomerWithTime>().Execute();
-			Assert.AreEqual(cust.PreferredCallTime, lookup.PreferredCallTime);
+
+			//To account for rounding, allow a 1 ms delta
+			Assert.AreEqual(cust.PreferredCallTime.Ticks, lookup.PreferredCallTime.Ticks, TimeSpan.TicksPerMillisecond * 2, $"Actual difference was {cust.PreferredCallTime.Ticks - lookup.PreferredCallTime.Ticks}");
 		}
 		finally
 		{
@@ -86,7 +88,9 @@ public class DateAndTimeOnlyTests : TestBase
 			dataSource.Insert(CustomerTableName, cust3).Execute();
 
 			var lookup = dataSource.From(CustomerTableName, new { FullName = uniqueKey }).WithSorting("CustomerKey").ToCollection<CustomerWithTime>().Execute();
-			Assert.AreEqual(cust1.PreferredCallTime, lookup[0].PreferredCallTime);
+
+			//To account for rounding, allow a 1 ms delta
+			Assert.AreEqual(cust1.PreferredCallTime.Ticks, lookup[0].PreferredCallTime.Ticks, TimeSpan.TicksPerMillisecond * 2, $"Actual difference was {cust1.PreferredCallTime.Ticks - lookup[0].PreferredCallTime.Ticks}");
 		}
 		finally
 		{

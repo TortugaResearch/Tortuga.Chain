@@ -29,7 +29,7 @@ DbCommandBuilder<AbstractCommand, AbstractParameter>>))]
 [UseTrait(typeof(SupportsProcedureTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
 partial class MySqlDataSourceBase : ICrudDataSource, IAdvancedCrudDataSource
 {
-	DatabaseMetadataCache<AbstractParameter, AbstractObjectName, AbstractDbType> ICommandHelper<AbstractParameter, AbstractObjectName, AbstractDbType>.DatabaseMetadata => DatabaseMetadata;
+	DatabaseMetadataCache<AbstractObjectName, AbstractDbType> ICommandHelper<AbstractObjectName, AbstractDbType>.DatabaseMetadata => DatabaseMetadata;
 
 	List<AbstractParameter> ICommandHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.GetParameters(SqlBuilder<AbstractDbType> builder) => builder.GetParameters();
 

@@ -17,7 +17,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 	{
 		readonly InsertOptions m_Options;
 		readonly IReadOnlyList<TObject> m_SourceList;
-		readonly TableOrViewMetadata<NpgsqlParameter, PostgreSqlObjectName, NpgsqlDbType> m_Table;
+		readonly TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType> m_Table;
 
 		public PostgreSqlInsertBatch(PostgreSqlDataSourceBase dataSource, PostgreSqlObjectName tableName, IEnumerable<TObject> objects, InsertOptions options) : base(dataSource)
 		{

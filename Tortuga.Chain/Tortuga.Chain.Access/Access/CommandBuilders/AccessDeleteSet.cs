@@ -18,7 +18,7 @@ internal sealed class AccessDeleteSet : MultipleRowDbCommandBuilder<OleDbCommand
 	readonly object? m_FilterValue;
 	readonly DeleteOptions m_Options;
 	readonly IEnumerable<OleDbParameter>? m_Parameters;
-	readonly TableOrViewMetadata<OleDbParameter, AccessObjectName, OleDbType> m_Table;
+	readonly TableOrViewMetadata<AccessObjectName, OleDbType> m_Table;
 	readonly string? m_WhereClause;
 
 	/// <summary>
@@ -85,17 +85,17 @@ internal sealed class AccessDeleteSet : MultipleRowDbCommandBuilder<OleDbCommand
 		if (m_FilterValue != null)
 		{
 			sql.Append(" WHERE " + sqlBuilder.ApplyFilterValue(m_FilterValue, m_FilterOptions));
-			parameters = sqlBuilder.GetParameters();
+			parameters = sqlBuilder.GetParameters(DataSource);
 		}
 		else if (!string.IsNullOrWhiteSpace(m_WhereClause))
 		{
 			sql.Append(" WHERE " + m_WhereClause);
 			parameters = SqlBuilder.GetParameters<OleDbParameter>(m_ArgumentValue);
-			parameters.AddRange(sqlBuilder.GetParameters());
+			parameters.AddRange(sqlBuilder.GetParameters(DataSource));
 		}
 		else
 		{
-			parameters = sqlBuilder.GetParameters();
+			parameters = sqlBuilder.GetParameters(DataSource);
 		}
 		sql.Append(";");
 		if (m_Parameters != null)
@@ -145,17 +145,17 @@ internal sealed class AccessDeleteSet : MultipleRowDbCommandBuilder<OleDbCommand
 		if (m_FilterValue != null)
 		{
 			sql.Append(" WHERE " + sqlBuilder.ApplyFilterValue(m_FilterValue, m_FilterOptions));
-			parameters = sqlBuilder.GetParameters();
+			parameters = sqlBuilder.GetParameters(DataSource);
 		}
 		else if (!string.IsNullOrWhiteSpace(m_WhereClause))
 		{
 			sql.Append(" WHERE " + m_WhereClause);
 			parameters = SqlBuilder.GetParameters<OleDbParameter>(m_ArgumentValue);
-			parameters.AddRange(sqlBuilder.GetParameters());
+			parameters.AddRange(sqlBuilder.GetParameters(DataSource));
 		}
 		else
 		{
-			parameters = sqlBuilder.GetParameters();
+			parameters = sqlBuilder.GetParameters(DataSource);
 		}
 		sql.Append(";");
 

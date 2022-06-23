@@ -15,7 +15,7 @@ internal sealed class SqlServerUpdateSet : UpdateSetDbCommandBuilder<SqlCommand,
 	readonly object? m_NewValues;
 	readonly UpdateOptions m_Options;
 	readonly IEnumerable<SqlParameter>? m_Parameters;
-	readonly SqlServerTableOrViewMetadata<SqlParameter, SqlDbType> m_Table;
+	readonly SqlServerTableOrViewMetadata<SqlDbType> m_Table;
 	readonly object? m_UpdateArgumentValue;
 	readonly string? m_UpdateExpression;
 	FilterOptions m_FilterOptions;
@@ -120,11 +120,8 @@ internal sealed class SqlServerUpdateSet : UpdateSetDbCommandBuilder<SqlCommand,
 		var prefix = m_Options.HasFlag(UpdateOptions.ReturnOldValues) ? "Deleted." : "Inserted.";
 
 		var sql = new StringBuilder();
-		string? header;
-		string? intoClause;
-		string? footer;
 
-		sqlBuilder.UseTableVariable(m_Table, out header, out intoClause, out footer);
+		sqlBuilder.UseTableVariable(m_Table, out var header, out var intoClause, out var footer);
 
 		sql.Append(header);
 		sql.Append($"UPDATE {m_Table.Name.ToQuotedString()}");

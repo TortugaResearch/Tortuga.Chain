@@ -13,7 +13,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 	{
 		readonly PostgreSqlDataSourceBase m_DataSource;
 		readonly IDataReader m_Source;
-		readonly TableOrViewMetadata<NpgsqlParameter, PostgreSqlObjectName, NpgsqlDbType> m_Table;
+		readonly TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType> m_Table;
 		EventHandler<AbortableOperationEventArgs>? m_EventHandler;
 		int? m_NotifyAfter;
 

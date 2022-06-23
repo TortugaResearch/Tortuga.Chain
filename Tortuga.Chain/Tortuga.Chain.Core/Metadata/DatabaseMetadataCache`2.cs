@@ -1,22 +1,18 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Immutable;
-using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using Tortuga.Anchor;
 using Tortuga.Anchor.Metadata;
-using Tortuga.Chain.CommandBuilders;
 
 namespace Tortuga.Chain.Metadata;
 
 /// <summary>
 /// An abstract database metadata cache
 /// </summary>
-/// <typeparam name="TParameter">The variant of DbParameter used by this data source.</typeparam>
 /// <typeparam name="TObjectName">The type used to represent database object names.</typeparam>
 /// <typeparam name="TDbType">The variant of DbType used by this data source.</typeparam>
-public abstract class DatabaseMetadataCache<TParameter, TObjectName, TDbType> : IDatabaseMetadataCache
-	where TParameter : DbParameter
+public abstract class DatabaseMetadataCache<TObjectName, TDbType> : IDatabaseMetadataCache
 	where TObjectName : struct
 	where TDbType : struct
 {
@@ -26,7 +22,7 @@ public abstract class DatabaseMetadataCache<TParameter, TObjectName, TDbType> : 
 	/// <remarks>This is populated by the RegisterType method.</remarks>
 	readonly ConcurrentDictionary<string, TypeRegistration<TDbType>> m_RegisteredTypes = new ConcurrentDictionary<string, TypeRegistration<TDbType>>(StringComparer.OrdinalIgnoreCase);
 
-	private readonly ConcurrentDictionary<(Type, OperationType), TableOrViewMetadata<TParameter, TObjectName, TDbType>> m_TypeTableMap = new ConcurrentDictionary<(Type, OperationType), TableOrViewMetadata<TParameter, TObjectName, TDbType>>();
+	private readonly ConcurrentDictionary<(Type, OperationType), TableOrViewMetadata<TObjectName, TDbType>> m_TypeTableMap = new ConcurrentDictionary<(Type, OperationType), TableOrViewMetadata<TObjectName, TDbType>>();
 
 	/// <summary>
 	/// Gets the converter dictionary used by materializers.
@@ -90,15 +86,15 @@ public abstract class DatabaseMetadataCache<TParameter, TObjectName, TDbType> : 
 		throw new NotSupportedException("Indexes are not supported by this data source");
 	}
 
-	/// <summary>
-	/// Gets the parameters from a SQL Builder.
-	/// </summary>
-	/// <param name="sqlBuilder">The SQL builder.</param>
-	/// <returns></returns>
-	public List<TParameter> GetParameters(SqlBuilder<TDbType> sqlBuilder)
-	{
-		return sqlBuilder.GetParameters(ParameterBuilderCallback);
-	}
+	///// <summary>
+	///// Gets the parameters from a SQL Builder.
+	///// </summary>
+	///// <param name="sqlBuilder">The SQL builder.</param>
+	///// <returns></returns>
+	//public List<TParameter> GetParameters(SqlBuilder<TDbType> sqlBuilder)
+	//{
+	//	return sqlBuilder.GetParameters(ParameterBuilderCallback);
+	//}
 
 	/// <summary>
 	/// Gets the metadata for a scalar function.
@@ -186,7 +182,7 @@ public abstract class DatabaseMetadataCache<TParameter, TObjectName, TDbType> : 
 	/// </summary>
 	/// <param name="tableName">Name of the table.</param>
 	/// <returns></returns>
-	public abstract TableOrViewMetadata<TParameter, TObjectName, TDbType> GetTableOrView(TObjectName tableName);
+	public abstract TableOrViewMetadata<TObjectName, TDbType> GetTableOrView(TObjectName tableName);
 
 	TableOrViewMetadata IDatabaseMetadataCache.GetTableOrView(string tableName) => GetTableOrView(ParseObjectName(tableName));
 
@@ -196,7 +192,7 @@ public abstract class DatabaseMetadataCache<TParameter, TObjectName, TDbType> : 
 	/// <typeparam name="TObject">The type of the object.</typeparam>
 	/// <param name="operation">The operation.</param>
 	/// <returns>DatabaseObject.</returns>
-	public TableOrViewMetadata<TParameter, TObjectName, TDbType> GetTableOrViewFromClass<TObject>(OperationType operation = OperationType.All)
+	public TableOrViewMetadata<TObjectName, TDbType> GetTableOrViewFromClass<TObject>(OperationType operation = OperationType.All)
 	{
 		var type = typeof(TObject);
 		return GetTableOrViewFromClass(type, operation);
@@ -208,7 +204,7 @@ public abstract class DatabaseMetadataCache<TParameter, TObjectName, TDbType> : 
 	/// <param name="type"></param>
 	/// <param name="operation">The operation.</param>
 	/// <returns>DatabaseObject.</returns>
-	public TableOrViewMetadata<TParameter, TObjectName, TDbType> GetTableOrViewFromClass(Type type, OperationType operation = OperationType.All)
+	public TableOrViewMetadata<TObjectName, TDbType> GetTableOrViewFromClass(Type type, OperationType operation = OperationType.All)
 	{
 		var cacheKey = (type, operation);
 
@@ -278,7 +274,7 @@ public abstract class DatabaseMetadataCache<TParameter, TObjectName, TDbType> : 
 	/// <returns></returns>
 	/// <remarks>Call Preload before invoking this method to ensure that all tables and views were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.</remarks>
 	[SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
-	public abstract IReadOnlyCollection<TableOrViewMetadata<TParameter, TObjectName, TDbType>> GetTablesAndViews();
+	public abstract IReadOnlyCollection<TableOrViewMetadata<TObjectName, TDbType>> GetTablesAndViews();
 
 	IReadOnlyCollection<TableOrViewMetadata> IDatabaseMetadataCache.GetTablesAndViews() => GetTablesAndViews();
 
@@ -487,7 +483,7 @@ public abstract class DatabaseMetadataCache<TParameter, TObjectName, TDbType> : 
 	/// <param name="tableName">Name of the table or view.</param>
 	/// <param name="tableOrView">The table or view.</param>
 	/// <returns></returns>
-	public bool TryGetTableOrView(TObjectName tableName, [NotNullWhen(true)] out TableOrViewMetadata<TParameter, TObjectName, TDbType>? tableOrView)
+	public bool TryGetTableOrView(TObjectName tableName, [NotNullWhen(true)] out TableOrViewMetadata<TObjectName, TDbType>? tableOrView)
 	{
 		try
 		{
@@ -602,12 +598,6 @@ public abstract class DatabaseMetadataCache<TParameter, TObjectName, TDbType> : 
 					throw new NotSupportedException($"Converting a value of type {value.GetType().Name} is not supported. Try supplying a dbType or filing a bug report.");
 		}
 	}
-
-	/// <summary>
-	/// Callback for parameter builder.
-	/// </summary>
-	/// <param name="entry">The entry.</param>
-	protected abstract TParameter ParameterBuilderCallback(SqlBuilderEntry<TDbType> entry);
 
 	/// <summary>
 	/// Parse a string and return the database specific representation of the database object's name.

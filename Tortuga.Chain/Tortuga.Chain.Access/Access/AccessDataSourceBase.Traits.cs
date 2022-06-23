@@ -23,9 +23,9 @@ namespace Tortuga.Chain.Access;
 [UseTrait(typeof(SupportsGetByKeyListTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
 partial class AccessDataSourceBase : ICrudDataSource
 {
-	DatabaseMetadataCache<AbstractParameter, AbstractObjectName, AbstractDbType> ICommandHelper<AbstractParameter, AbstractObjectName, AbstractDbType>.DatabaseMetadata => DatabaseMetadata;
+	DatabaseMetadataCache<AbstractObjectName, AbstractDbType> ICommandHelper<AbstractObjectName, AbstractDbType>.DatabaseMetadata => DatabaseMetadata;
 
-	List<AbstractParameter> ICommandHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.GetParameters(SqlBuilder<AbstractDbType> builder) => builder.GetParameters();
+	List<AbstractParameter> ICommandHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.GetParameters(SqlBuilder<AbstractDbType> builder) => builder.GetParameters(this);
 
 	/// <summary>
 	/// Delete multiple rows by key.
