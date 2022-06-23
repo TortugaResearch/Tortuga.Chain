@@ -6,6 +6,15 @@ namespace Tests.Materializers;
 [TestClass]
 public class DateAndTimeOnlyTests : TestBase
 {
+#if MYSQL
+
+	//Use a 1 second delta because MySQL doesn't support milliseconds.
+	const long TimeSpanDelta = TimeSpan.TicksPerSecond * 60;
+
+#else
+	const long TimeSpanDelta = TimeSpan.TicksPerSecond ;
+#endif
+
 #if NET6_0_OR_GREATER
 
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
@@ -41,7 +50,7 @@ public class DateAndTimeOnlyTests : TestBase
 			var lookup = dataSource.GetByKey(CustomerTableName, key).ToObject<CustomerWithTime>().Execute();
 
 			//To account for rounding, allow a 1 ms delta
-			Assert.AreEqual(cust.PreferredCallTime.Ticks, lookup.PreferredCallTime.Ticks, TimeSpan.TicksPerMillisecond * 2, $"Actual difference was {cust.PreferredCallTime.Ticks - lookup.PreferredCallTime.Ticks}");
+			Assert.IsTrue(cust.PreferredCallTime.Ticks - lookup.PreferredCallTime.Ticks < TimeSpanDelta, $"Actual difference was {cust.PreferredCallTime.Ticks - lookup.PreferredCallTime.Ticks}");
 		}
 		finally
 		{
@@ -91,7 +100,7 @@ public class DateAndTimeOnlyTests : TestBase
 			var lookup = dataSource.From(CustomerTableName, new { FullName = uniqueKey }).WithSorting("CustomerKey").ToCollection<CustomerWithTime>().Execute();
 
 			//To account for rounding, allow a 1 ms delta
-			Assert.AreEqual(cust1.PreferredCallTime.Ticks, lookup[0].PreferredCallTime.Ticks, TimeSpan.TicksPerMillisecond * 2, $"Actual difference was {cust1.PreferredCallTime.Ticks - lookup[0].PreferredCallTime.Ticks}");
+			Assert.IsTrue(cust1.PreferredCallTime.Ticks - lookup[0].PreferredCallTime.Ticks < TimeSpanDelta, $"Actual difference was {cust1.PreferredCallTime.Ticks - lookup[0].PreferredCallTime.Ticks}");
 		}
 		finally
 		{
@@ -132,7 +141,7 @@ public class DateAndTimeOnlyTests : TestBase
 			var lookup = dataSource.GetByKey(CustomerTableName, key).Compile().ToObject<CustomerWithTime>().Execute();
 
 			//To account for rounding, allow a 1 ms delta
-			Assert.AreEqual(cust.PreferredCallTime.Ticks, lookup.PreferredCallTime.Ticks, TimeSpan.TicksPerMillisecond * 2, $"Actual difference was {cust.PreferredCallTime.Ticks - lookup.PreferredCallTime.Ticks}");
+			Assert.IsTrue(cust.PreferredCallTime.Ticks - lookup.PreferredCallTime.Ticks < TimeSpanDelta, $"Actual difference was {cust.PreferredCallTime.Ticks - lookup.PreferredCallTime.Ticks}");
 		}
 		finally
 		{
@@ -182,7 +191,7 @@ public class DateAndTimeOnlyTests : TestBase
 			var lookup = dataSource.From(CustomerTableName, new { FullName = uniqueKey }).WithSorting("CustomerKey").Compile().ToCollection<CustomerWithTime>().Execute();
 
 			//To account for rounding, allow a 1 ms delta
-			Assert.AreEqual(cust1.PreferredCallTime.Ticks, lookup[0].PreferredCallTime.Ticks, TimeSpan.TicksPerMillisecond * 2, $"Actual difference was {cust1.PreferredCallTime.Ticks - lookup[0].PreferredCallTime.Ticks}");
+			Assert.IsTrue(cust1.PreferredCallTime.Ticks - lookup[0].PreferredCallTime.Ticks < TimeSpanDelta, $"Actual difference was {cust1.PreferredCallTime.Ticks - lookup[0].PreferredCallTime.Ticks}");
 		}
 		finally
 		{

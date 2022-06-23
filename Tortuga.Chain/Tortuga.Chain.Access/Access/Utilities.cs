@@ -40,16 +40,15 @@ internal static class Utilities
 		var result = new OleDbParameter();
 		result.ParameterName = entry.Details.SqlVariableName;
 
-#if NET6_0_OR_GREATER
 		result.Value = entry.ParameterValue switch
 		{
+#if NET6_0_OR_GREATER
 			DateOnly dateOnly => dateOnly.ToDateTime(default),
 			TimeOnly timeOnly => default(DateTime) + timeOnly.ToTimeSpan(),
+#endif
+			TimeSpan timeSpan => default(DateTime) + timeSpan,
 			_ => entry.ParameterValue
 		};
-#else
-		result.Value = entry.ParameterValue;
-#endif
 
 		if (entry.Details.DbType.HasValue)
 			result.OleDbType = entry.Details.DbType.Value;

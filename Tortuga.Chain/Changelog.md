@@ -13,6 +13,14 @@ This change also affects table-valued functions. Except these cannot infer the s
 
 ### Features
 
+[#459 Add TimeSpan support for Access and OleDB](https://github.com/TortugaResearch/Tortuga.Chain/issues/459)
+
+
+Access doesn't understand TimeSpan at all and treats it as a DateTime.
+
+OleDB for SQL Server is worse. It returns time(7) columns as strings with the column type set to object.
+
+
 [#445 Add support for DateOnly and TimeOnly](https://github.com/TortugaResearch/Tortuga.Chain/issues/445)
 
 On the parameter builder side, `DateOnly` and `TimeOnly` need to be converted into `DateTime` or `TimeSpan`. Which specific conversion is used depends on the database/driver combination.
@@ -31,7 +39,7 @@ This was done to improve support for lookup tables with small keys.
 
 ### Bug Fixes
 
-The OleDB version of SQL Server was truncating fractional seconds when the column time is `time(n)` and `n>0`. To fix this, we have to force it to use `DateTime/DBTimeStamp` instead of `TimeSpan/DBTime`.
+The OleDB version of SQL Server was truncating fractional seconds when the parameter type is `time(n)` and `n>0`. To fix this, we have to force it to use `DateTime/DBTimeStamp` instead of `TimeSpan/DBTime`.
 
 ### Performance Enhancements
 

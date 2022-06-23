@@ -137,6 +137,7 @@ public static class CompiledMaterializers
 			else if (columnType == typeof(byte)) getter = "reader.GetByte";
 			else if (columnType == typeof(char)) getter = "reader.GetChar";
 			else if (columnType == typeof(DateTime)) getter = "reader.GetDateTime";
+			else if (columnType == typeof(TimeSpan)) getter = "(System.TimeSpan)reader.GetValue";
 			else if (columnType == typeof(decimal)) getter = "reader.GetDecimal";
 			else if (columnType == typeof(double)) getter = "reader.GetDouble";
 			else if (columnType == typeof(float)) getter = "reader.GetFloat";
@@ -305,19 +306,32 @@ public static class CompiledMaterializers
 				var propertyTypeName = MetadataCache.GetMetadata(property.PropertyType).CSharpFullName;
 
 				string getterWithConversion;
+
+				//special handling for OleDB
+				if (property.PropertyType == typeof(TimeSpan) && column.ColumnType == typeof(string))
+					getterWithConversion = $"TimeSpan.Parse({column.Getter}({column.Index}), System.Globalization.CultureInfo.InvariantCulture);";
+				else if (property.PropertyType == typeof(TimeSpan) && column.ColumnType == typeof(object))
+					getterWithConversion = $"TimeSpan.Parse((string){column.Getter}({column.Index}), System.Globalization.CultureInfo.InvariantCulture);";
+				else if (property.PropertyType == typeof(TimeSpan) && column.ColumnType == typeof(DateTime))
+					getterWithConversion = $"({column.Getter}({column.Index})).TimeOfDay";
+
 #if NET6_0_OR_GREATER
-				if (property.PropertyType == typeof(DateOnly) && column.ColumnType == typeof(DateTime))
+				else if (property.PropertyType == typeof(DateOnly) && column.ColumnType == typeof(DateTime))
 					getterWithConversion = $"DateOnly.FromDateTime({column.Getter}({column.Index}))";
 				else if (property.PropertyType == typeof(TimeOnly) && column.ColumnType == typeof(DateTime))
 					getterWithConversion = $"TimeOnly.FromDateTime({column.Getter}({column.Index}))";
 				else if (property.PropertyType == typeof(TimeOnly) && column.ColumnType == typeof(TimeSpan))
 					getterWithConversion = $"TimeOnly.FromTimeSpan({column.Getter}({column.Index}))";
-				else
+
+				//special handling for OleDB
+				else if (property.PropertyType == typeof(TimeOnly) && column.ColumnType == typeof(string))
+					getterWithConversion = $"TimeOnly.Parse({column.Getter}({column.Index}), System.Globalization.CultureInfo.InvariantCulture);";
+				else if (property.PropertyType == typeof(TimeOnly) && column.ColumnType == typeof(object))
+					getterWithConversion = $"TimeOnly.Parse((string){column.Getter}({column.Index}), System.Globalization.CultureInfo.InvariantCulture);";
 #endif
-				{
+				else
 					//simple casting
 					getterWithConversion = $"({propertyTypeName}){column.Getter}({column.Index})";
-				}
 
 				if (column.IsNullable && (property.PropertyType.IsClass || (string.Equals(property.PropertyType.Name, "Nullable`1", StringComparison.Ordinal) && property.PropertyType.IsGenericType)))
 				{

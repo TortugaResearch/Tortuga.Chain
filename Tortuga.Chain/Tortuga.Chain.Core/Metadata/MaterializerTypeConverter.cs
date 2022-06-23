@@ -142,6 +142,11 @@ public class MaterializerTypeConverter
 					value = DateTimeOffset.Parse((string)value, CultureInfo.InvariantCulture);
 					return true;
 				}
+				else if (targetType == typeof(TimeSpan))
+				{
+					value = TimeSpan.Parse((string)value, CultureInfo.InvariantCulture);
+					return true;
+				}
 #if NET6_0_OR_GREATER
 				else if (targetType == typeof(TimeOnly))
 				{
@@ -156,9 +161,9 @@ public class MaterializerTypeConverter
 			if (targetTypeInfo.IsEnum)
 				value = Enum.ToObject(targetType, value);
 
-#if NET6_0_OR_GREATER
 			if (value is DateTime dt)
 			{
+#if NET6_0_OR_GREATER
 				if (targetType == typeof(DateOnly))
 				{
 					value = DateOnly.FromDateTime(dt);
@@ -169,17 +174,24 @@ public class MaterializerTypeConverter
 					value = TimeOnly.FromDateTime(dt);
 					return true;
 				}
+#endif
+				if (targetType == typeof(TimeSpan))
+				{
+					value = dt.TimeOfDay;
+					return true;
+				}
 			}
 
 			if (value is TimeSpan ts)
 			{
+#if NET6_0_OR_GREATER
 				if (targetType == typeof(TimeOnly))
 				{
 					value = TimeOnly.FromTimeSpan(ts);
 					return true;
 				}
-			}
 #endif
+			}
 
 			//this will handle numeric conversions
 			value = Convert.ChangeType(value, targetType, CultureInfo.InvariantCulture);
