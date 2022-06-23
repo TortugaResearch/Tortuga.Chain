@@ -9,8 +9,8 @@ using Traits;
 
 namespace Tortuga.Chain.PostgreSql;
 
-[UseTrait(typeof(SupportsDeleteAllTrait<AbstractObjectName, AbstractDbType>))]
-[UseTrait(typeof(SupportsTruncateTrait<AbstractObjectName, AbstractDbType>))]
+[UseTrait(typeof(SupportsDeleteAllTrait<AbstractParameter, AbstractObjectName, AbstractDbType>))]
+[UseTrait(typeof(SupportsTruncateTrait<AbstractParameter, AbstractObjectName, AbstractDbType>))]
 [UseTrait(typeof(SupportsSqlQueriesTrait<AbstractCommand, AbstractParameter>))]
 [UseTrait(typeof(SupportsInsertBatchTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType,
 MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter>>))]
@@ -30,8 +30,7 @@ MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter>>))]
 [UseTrait(typeof(SupportsTableFunctionTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType, AbstractLimitOption>))]
 partial class PostgreSqlDataSourceBase : ICrudDataSource, IAdvancedCrudDataSource
 {
-
-	DatabaseMetadataCache<AbstractObjectName, AbstractDbType> ICommandHelper<AbstractObjectName, AbstractDbType>.DatabaseMetadata => DatabaseMetadata;
+	DatabaseMetadataCache<AbstractParameter, AbstractObjectName, AbstractDbType> ICommandHelper<AbstractParameter, AbstractObjectName, AbstractDbType>.DatabaseMetadata => DatabaseMetadata;
 
 	List<AbstractParameter> ICommandHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.GetParameters(SqlBuilder<AbstractDbType> builder) => builder.GetParameters();
 
@@ -113,7 +112,6 @@ partial class PostgreSqlDataSourceBase : ICrudDataSource, IAdvancedCrudDataSourc
 		parameters.Add(param);
 
 		return new PostgreSqlTableOrView<TObject>(this, tableName, where, parameters);
-
 	}
 
 	MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> IGetByKeyHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnGetByKeyList<TObject, TKey>(AbstractObjectName tableName, ColumnMetadata<AbstractDbType> keyColumn, IEnumerable<TKey> keys) where TObject : class
@@ -135,7 +133,6 @@ partial class PostgreSqlDataSourceBase : ICrudDataSource, IAdvancedCrudDataSourc
 		}
 
 		return new MultipleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, TObject>(new PostgreSqlTableOrView<TObject>(this, tableName, where, parameters));
-
 	}
 
 	DbCommandBuilder<AbstractCommand, AbstractParameter> IInsertBatchHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnInsertBatch<TObject>(AbstractObjectName tableName, IEnumerable<TObject> objects, InsertOptions options)
@@ -143,10 +140,25 @@ partial class PostgreSqlDataSourceBase : ICrudDataSource, IAdvancedCrudDataSourc
 		return new PostgreSqlInsertBatch<TObject>(this, tableName, objects, options); ;
 	}
 
+	PostgreSqlInsertBulk IInsertBulkHelper<PostgreSqlInsertBulk, AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnInsertBulk(AbstractObjectName tableName, DataTable dataTable)
+	{
+		return new PostgreSqlInsertBulk(this, tableName, dataTable);
+	}
+
+	PostgreSqlInsertBulk IInsertBulkHelper<PostgreSqlInsertBulk, AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnInsertBulk(AbstractObjectName tableName, IDataReader dataReader)
+	{
+		return new PostgreSqlInsertBulk(this, tableName, dataReader);
+	}
+
 	ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> IInsertHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnInsertObject<TArgument>(AbstractObjectName tableName, TArgument argumentValue, InsertOptions options)
-where TArgument : class
+		where TArgument : class
 	{
 		return new PostgreSqlInsertObject<TArgument>(this, tableName, argumentValue, options);
+	}
+
+	ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> IUpsertHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnInsertOrUpdateObject<TArgument>(AbstractObjectName tableName, TArgument argumentValue, UpsertOptions options)
+	{
+		return new PostgreSqlInsertOrUpdateObject<TArgument>(this, tableName, argumentValue, options);
 	}
 
 	MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> IUpdateDeleteByKeyHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnUpdateByKeyList<TArgument, TKey>(AbstractObjectName tableName, TArgument newValues, IEnumerable<TKey> keys, UpdateOptions options)
@@ -173,7 +185,6 @@ where TArgument : class
 		}
 
 		return new PostgreSqlUpdateSet(this, tableName, newValues, where, parameters, parameters.Count, options);
-
 	}
 
 	ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> IUpdateDeleteHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnUpdateObject<TArgument>(AbstractObjectName tableName, TArgument argumentValue, UpdateOptions options)
@@ -199,34 +210,6 @@ where TArgument : class
 		return Sql("DELETE FROM " + table.Name.ToQuotedString() + ";").AsNonQuery();
 	}
 
-	private partial MultipleTableDbCommandBuilder<AbstractCommand, AbstractParameter> OnSql(string sqlStatement, object? argumentValue)
-	{
-		return new PostgreSqlSqlCall(this, sqlStatement, argumentValue);
-	}
-
-	private partial ILink<int?> OnTruncate(AbstractObjectName tableName)
-	{
-		//Verify the table name actually exists.
-		var table = DatabaseMetadata.GetTableOrView(tableName);
-		return Sql("TRUNCATE TABLE " + table.Name.ToQuotedString() + ";").AsNonQuery();
-	}
-
-	ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> IUpsertHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnInsertOrUpdateObject<TArgument>(AbstractObjectName tableName, TArgument argumentValue, UpsertOptions options)
-	{
-		return new PostgreSqlInsertOrUpdateObject<TArgument>(this, tableName, argumentValue, options);
-	}
-
-	PostgreSqlInsertBulk IInsertBulkHelper<PostgreSqlInsertBulk, AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnInsertBulk(AbstractObjectName tableName, DataTable dataTable)
-	{
-		return new PostgreSqlInsertBulk(this, tableName, dataTable);
-	}
-
-	PostgreSqlInsertBulk IInsertBulkHelper<PostgreSqlInsertBulk, AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnInsertBulk(AbstractObjectName tableName, IDataReader dataReader)
-	{
-		return new PostgreSqlInsertBulk(this, tableName, dataReader);
-	}
-
-
 	private partial ProcedureDbCommandBuilder<AbstractCommand, AbstractParameter> OnProcedure(AbstractObjectName procedureName, object? argumentValue)
 	{
 		return new AbstractProcedureCall(this, procedureName, argumentValue);
@@ -237,8 +220,20 @@ where TArgument : class
 		return new AbstractScalarFunction(this, scalarFunctionName, argumentValue);
 	}
 
+	private partial MultipleTableDbCommandBuilder<AbstractCommand, AbstractParameter> OnSql(string sqlStatement, object? argumentValue)
+	{
+		return new PostgreSqlSqlCall(this, sqlStatement, argumentValue);
+	}
+
 	private partial TableDbCommandBuilder<AbstractCommand, AbstractParameter, AbstractLimitOption> OnTableFunction(AbstractObjectName tableFunctionName, object? functionArgumentValue)
 	{
 		return new AbstractTableFunction(this, tableFunctionName, functionArgumentValue);
+	}
+
+	private partial ILink<int?> OnTruncate(AbstractObjectName tableName)
+	{
+		//Verify the table name actually exists.
+		var table = DatabaseMetadata.GetTableOrView(tableName);
+		return Sql("TRUNCATE TABLE " + table.Name.ToQuotedString() + ";").AsNonQuery();
 	}
 }

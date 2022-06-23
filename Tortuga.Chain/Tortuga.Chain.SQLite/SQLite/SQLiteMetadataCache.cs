@@ -10,12 +10,12 @@ namespace Tortuga.Chain.SQLite
 	/// <summary>
 	/// Handles caching of metadata for various SQLite tables and views.
 	/// </summary>
-	public sealed class SQLiteMetadataCache : DbDatabaseMetadataCache<SQLiteObjectName, SqlDbType>
+	public sealed class SQLiteMetadataCache : DbDatabaseMetadataCache<SQLiteParameter, SQLiteObjectName>
 	{
 		readonly SQLiteConnectionStringBuilder m_ConnectionBuilder;
-		readonly ConcurrentDictionary<SQLiteObjectName, TableOrViewMetadata<SQLiteObjectName, DbType>> m_Tables = new ConcurrentDictionary<SQLiteObjectName, TableOrViewMetadata<SQLiteObjectName, DbType>>();
+		readonly ConcurrentDictionary<SQLiteObjectName, TableOrViewMetadata<SQLiteParameter, SQLiteObjectName, DbType>> m_Tables = new();
 
-		readonly ConcurrentDictionary<Type, TableOrViewMetadata<SQLiteObjectName, DbType>> m_TypeTableMap = new ConcurrentDictionary<Type, TableOrViewMetadata<SQLiteObjectName, DbType>>();
+		readonly ConcurrentDictionary<Type, TableOrViewMetadata<SQLiteParameter, SQLiteObjectName, DbType>> m_TypeTableMap = new();
 
 		/// <summary>
 		/// Creates a new instance of <see cref="SQLiteMetadataCache"/>
@@ -105,7 +105,7 @@ namespace Tortuga.Chain.SQLite
 		/// </summary>
 		/// <param name="tableName"></param>
 		/// <returns></returns>
-		public override TableOrViewMetadata<SQLiteObjectName, DbType> GetTableOrView(SQLiteObjectName tableName)
+		public override TableOrViewMetadata<SQLiteParameter, SQLiteObjectName, DbType> GetTableOrView(SQLiteObjectName tableName)
 		{
 			return m_Tables.GetOrAdd(tableName, GetTableOrViewInternal);
 		}
@@ -117,7 +117,7 @@ namespace Tortuga.Chain.SQLite
 		/// <remarks>
 		/// Call Preload before invoking this method to ensure that all tables and views were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.
 		/// </remarks>
-		public override IReadOnlyCollection<TableOrViewMetadata<SQLiteObjectName, DbType>> GetTablesAndViews()
+		public override IReadOnlyCollection<TableOrViewMetadata<SQLiteParameter, SQLiteObjectName, DbType>> GetTablesAndViews()
 		{
 			return m_Tables.GetValues();
 		}
@@ -298,7 +298,7 @@ namespace Tortuga.Chain.SQLite
 			return new ColumnMetadataCollection<DbType>(tableName.ToString(), columns);
 		}
 
-		private TableOrViewMetadata<SQLiteObjectName, DbType> GetTableOrViewInternal(SQLiteObjectName tableName)
+		private TableOrViewMetadata<SQLiteParameter, SQLiteObjectName, DbType> GetTableOrViewInternal(SQLiteObjectName tableName)
 		{
 			const string tableSql =
 				@"SELECT
@@ -330,7 +330,7 @@ namespace Tortuga.Chain.SQLite
 			}
 
 			var columns = GetColumns(tableName, isTable);
-			return new TableOrViewMetadata<SQLiteObjectName, DbType>(this, actualName, isTable, columns);
+			return new TableOrViewMetadata<SQLiteParameter, SQLiteObjectName, DbType>(this, actualName, isTable, columns);
 		}
 
 		/// <summary>
@@ -338,9 +338,9 @@ namespace Tortuga.Chain.SQLite
 		/// </summary>
 		/// <param name="entry">The entry.</param>
 		/// <returns>SqlDbType.</returns>
-		protected override SqlDbType ParameterBuilderCallback(SqlBuilderEntry<DbType> entry)
+		protected override SQLiteParameter ParameterBuilderCallback(SqlBuilderEntry<DbType> entry)
 		{
-			var result = new SqlParameter();
+			var result = new SQLiteParameter();
 			result.ParameterName = entry.Details.SqlVariableName;
 
 #if NET6_0_OR_GREATER
@@ -355,27 +355,7 @@ namespace Tortuga.Chain.SQLite
 #endif
 
 			if (entry.Details.DbType.HasValue)
-			{
-				result.SqlDbType = entry.Details.DbType.Value;
-
-				if (entry.Details.MaxLength.HasValue)
-				{
-					switch (result.SqlDbType)
-					{
-						case SqlDbType.Char:
-						case SqlDbType.VarChar:
-						case SqlDbType.NChar:
-						case SqlDbType.NVarChar:
-						case SqlDbType.Binary:
-						case SqlDbType.VarBinary:
-							result.Size = entry.Details.MaxLength.Value;
-							break;
-					}
-				}
-			}
-
-			if (entry.ParameterValue is DbDataReader)
-				result.SqlDbType = SqlDbType.Structured;
+				result.DbType = entry.Details.DbType.Value;
 
 			result.Direction = entry.Details.Direction;
 

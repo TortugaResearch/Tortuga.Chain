@@ -17,7 +17,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 		readonly object? m_NewValues;
 		readonly UpdateOptions m_Options;
 		readonly IEnumerable<NpgsqlParameter>? m_Parameters;
-		readonly TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType> m_Table;
+		readonly TableOrViewMetadata<NpgsqlParameter, PostgreSqlObjectName, NpgsqlDbType> m_Table;
 		readonly object? m_UpdateArgumentValue;
 		readonly string? m_UpdateExpression;
 		FilterOptions m_FilterOptions;

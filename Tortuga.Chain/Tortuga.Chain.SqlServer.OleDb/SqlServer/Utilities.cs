@@ -1,4 +1,5 @@
-﻿using System.Data.OleDb;
+﻿using System.Data.Common;
+using System.Data.OleDb;
 using Tortuga.Chain.CommandBuilders;
 
 namespace Tortuga.Chain.SqlServer;
@@ -32,9 +33,11 @@ internal static class Utilities
 	/// <summary>
 	/// Triggers need special handling for OUTPUT clauses.
 	/// </summary>
-	public static void UseTableVariable<TDbType>(this SqlBuilder<TDbType> sqlBuilder, SqlServerTableOrViewMetadata<TDbType> Table, out string? header, out string? intoClause, out string? footer) where TDbType : struct
+	public static void UseTableVariable<TParameter, TDbType>(this SqlBuilder<TDbType> sqlBuilder, SqlServerTableOrViewMetadata<TParameter, TDbType> table, out string? header, out string? intoClause, out string? footer)
+		where TParameter : DbParameter
+		where TDbType : struct
 	{
-		if (sqlBuilder.HasReadFields && Table.HasTriggers)
+		if (sqlBuilder.HasReadFields && table.HasTriggers)
 		{
 			header = "DECLARE @ResultTable TABLE( " + string.Join(", ", sqlBuilder.GetSelectColumnDetails().Select(c => c.QuotedSqlName + " " + c.FullTypeName + " NULL")) + ");" + Environment.NewLine;
 			intoClause = " INTO @ResultTable ";

@@ -16,7 +16,7 @@ internal sealed class AccessUpdateSet : UpdateSetDbCommandBuilder<OleDbCommand, 
 	readonly object? m_NewValues;
 	readonly UpdateOptions m_Options;
 	readonly IEnumerable<OleDbParameter>? m_Parameters;
-	readonly TableOrViewMetadata<AccessObjectName, OleDbType> m_Table;
+	readonly TableOrViewMetadata<OleDbParameter, AccessObjectName, OleDbType> m_Table;
 	readonly object? m_UpdateArgumentValue;
 	readonly string? m_UpdateExpression;
 	FilterOptions m_FilterOptions;

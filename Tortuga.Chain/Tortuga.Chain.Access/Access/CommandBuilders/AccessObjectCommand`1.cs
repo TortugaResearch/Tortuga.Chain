@@ -25,7 +25,7 @@ internal abstract class AccessObjectCommand<TArgument> : ObjectDbCommandBuilder<
 	/// <summary>
 	/// Gets the table metadata.
 	/// </summary>
-	public TableOrViewMetadata<AccessObjectName, OleDbType> Table { get; }
+	public TableOrViewMetadata<OleDbParameter, AccessObjectName, OleDbType> Table { get; }
 
 	/// <summary>
 	/// Called when ObjectDbCommandBuilder needs a reference to the associated table or view.

@@ -8,7 +8,7 @@ namespace Tortuga.Chain.Metadata;
 /// </summary>
 /// <typeparam name="TObjectName">The type used to represent database object names.</typeparam>
 /// <typeparam name="TParameter">The variant of DbParameter used by this data source.</typeparam>
-public abstract class DbDatabaseMetadataCache<TObjectName, TParameter> : DatabaseMetadataCache<TObjectName, DbType, TParameter>
+public abstract class DbDatabaseMetadataCache<TParameter, TObjectName> : DatabaseMetadataCache<TParameter, TObjectName, DbType>
 	where TObjectName : struct
 	where TParameter : DbParameter
 {

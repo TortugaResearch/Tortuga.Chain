@@ -7,7 +7,7 @@ namespace Tortuga.Chain.Metadata
 	/// Meatadata cache base class for OleDB databases
 	/// </summary>
 	/// <typeparam name="TObjectName">The type used to represent database object names.</typeparam>
-	public abstract class OleDbDatabaseMetadataCache<TObjectName> : DatabaseMetadataCache<TObjectName, OleDbType>
+	public abstract class OleDbDatabaseMetadataCache<TObjectName> : DatabaseMetadataCache<OleDbParameter, TObjectName, OleDbType>
 		where TObjectName : struct
 	{
 		/// <summary>

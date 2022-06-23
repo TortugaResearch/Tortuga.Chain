@@ -7,7 +7,7 @@ namespace Tortuga.Chain.Metadata;
 /// Meatadata cache base class for ODBC databases
 /// </summary>
 /// <typeparam name="TObjectName">The type used to represent database object names.</typeparam>
-public abstract class OdbcDatabaseMetadataCache<TObjectName> : DatabaseMetadataCache<TObjectName, OdbcType>
+public abstract class OdbcDatabaseMetadataCache<TObjectName> : DatabaseMetadataCache<OdbcParameter, TObjectName, OdbcType>
 	where TObjectName : struct
 {
 	/// <summary>

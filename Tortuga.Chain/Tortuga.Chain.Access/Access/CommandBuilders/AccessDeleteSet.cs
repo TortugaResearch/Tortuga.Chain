@@ -18,7 +18,7 @@ internal sealed class AccessDeleteSet : MultipleRowDbCommandBuilder<OleDbCommand
 	readonly object? m_FilterValue;
 	readonly DeleteOptions m_Options;
 	readonly IEnumerable<OleDbParameter>? m_Parameters;
-	readonly TableOrViewMetadata<AccessObjectName, OleDbType> m_Table;
+	readonly TableOrViewMetadata<OleDbParameter, AccessObjectName, OleDbType> m_Table;
 	readonly string? m_WhereClause;
 
 	/// <summary>

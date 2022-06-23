@@ -18,7 +18,7 @@ internal sealed class OleDbSqlServerDeleteSet : MultipleRowDbCommandBuilder<OleD
 	readonly object? m_FilterValue;
 	readonly DeleteOptions m_Options;
 	readonly IEnumerable<OleDbParameter>? m_Parameters;
-	readonly SqlServerTableOrViewMetadata<OleDbType> m_Table;
+	readonly SqlServerTableOrViewMetadata<OleDbParameter, OleDbType> m_Table;
 	readonly string? m_WhereClause;
 
 	/// <summary>

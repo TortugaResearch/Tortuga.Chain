@@ -15,7 +15,7 @@ internal class SqlServerInsertBatch<TObject> : MultipleRowDbCommandBuilder<SqlCo
 {
 	readonly InsertOptions m_Options;
 	readonly IReadOnlyList<TObject> m_SourceList;
-	readonly TableOrViewMetadata<SqlServerObjectName, SqlDbType> m_Table;
+	readonly TableOrViewMetadata<SqlParameter, SqlServerObjectName, SqlDbType> m_Table;
 
 	public SqlServerInsertBatch(SqlServerDataSourceBase dataSource, SqlServerObjectName tableName, IEnumerable<TObject> objects, InsertOptions options) : base(dataSource)
 	{

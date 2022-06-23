@@ -9,7 +9,7 @@ namespace Tortuga.Chain.SqlServer;
 #if SQL_SERVER_SDS || SQL_SERVER_MDS
 
 /// <summary>Class AbstractSqlServerMetadataCache.</summary>
-public abstract class AbstractSqlServerMetadataCache : DatabaseMetadataCache<SqlServerObjectName, AbstractDbType>
+public abstract class AbstractSqlServerMetadataCache : DatabaseMetadataCache<SqlParameter, SqlServerObjectName, AbstractDbType>
 #elif SQL_SERVER_OLEDB
 
 /// <summary>Class AbstractSqlServerMetadataCache.</summary>
@@ -22,13 +22,13 @@ public abstract class AbstractOleDbSqlServerMetadataCache : OleDbDatabaseMetadat
 	/// </summary>
 	/// <param name="tableName">Name of the table.</param>
 	/// <returns></returns>
-	public override sealed TableOrViewMetadata<SqlServerObjectName, AbstractDbType> GetTableOrView(SqlServerObjectName tableName)
+	public override sealed TableOrViewMetadata<AbstractParameter, SqlServerObjectName, AbstractDbType> GetTableOrView(SqlServerObjectName tableName)
 	{
 		return OnGetTableOrView(tableName);
 	}
 
 	//C# doesn't allow us to change the return type so we're using this as a thunk.
-	internal abstract TableOrViewMetadata<SqlServerObjectName, AbstractDbType> OnGetTableOrView(SqlServerObjectName tableName);
+	internal abstract TableOrViewMetadata<AbstractParameter, SqlServerObjectName, AbstractDbType> OnGetTableOrView(SqlServerObjectName tableName);
 }
 
 #if SQL_SERVER_SDS || SQL_SERVER_MDS
@@ -46,9 +46,9 @@ partial class OleDbSqlServerMetadataCache : AbstractOleDbSqlServerMetadataCache
 
 	internal readonly ConcurrentDictionary<SqlServerObjectName, TableFunctionMetadata<SqlServerObjectName, AbstractDbType>> m_TableFunctions = new ConcurrentDictionary<SqlServerObjectName, TableFunctionMetadata<SqlServerObjectName, AbstractDbType>>();
 
-	internal readonly ConcurrentDictionary<SqlServerObjectName, SqlServerTableOrViewMetadata<AbstractDbType>> m_Tables = new ConcurrentDictionary<SqlServerObjectName, SqlServerTableOrViewMetadata<AbstractDbType>>();
+	internal readonly ConcurrentDictionary<SqlServerObjectName, SqlServerTableOrViewMetadata<AbstractParameter, AbstractDbType>> m_Tables = new ConcurrentDictionary<SqlServerObjectName, SqlServerTableOrViewMetadata<AbstractParameter, AbstractDbType>>();
 
-	internal readonly ConcurrentDictionary<Type, TableOrViewMetadata<SqlServerObjectName, AbstractDbType>> m_TypeTableMap = new ConcurrentDictionary<Type, TableOrViewMetadata<SqlServerObjectName, AbstractDbType>>();
+	internal readonly ConcurrentDictionary<Type, TableOrViewMetadata<AbstractParameter, SqlServerObjectName, AbstractDbType>> m_TypeTableMap = new ConcurrentDictionary<Type, TableOrViewMetadata<AbstractParameter, SqlServerObjectName, AbstractDbType>>();
 
 	internal readonly ConcurrentDictionary<SqlServerObjectName, UserDefinedTableTypeMetadata<SqlServerObjectName, AbstractDbType>> m_UserDefinedTableTypes = new ConcurrentDictionary<SqlServerObjectName, UserDefinedTableTypeMetadata<SqlServerObjectName, AbstractDbType>>();
 
@@ -128,7 +128,7 @@ partial class OleDbSqlServerMetadataCache : AbstractOleDbSqlServerMetadataCache
 	/// <remarks>
 	/// Call Preload before invoking this method to ensure that all tables and views were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.
 	/// </remarks>
-	public override IReadOnlyCollection<TableOrViewMetadata<SqlServerObjectName, AbstractDbType>> GetTablesAndViews()
+	public override IReadOnlyCollection<TableOrViewMetadata<AbstractParameter, SqlServerObjectName, AbstractDbType>> GetTablesAndViews()
 	{
 		return m_Tables.GetValues();
 	}
@@ -275,7 +275,7 @@ partial class OleDbSqlServerMetadataCache : AbstractOleDbSqlServerMetadataCache
 		return new SqlServerObjectName(schema, name);
 	}
 
-	internal override TableOrViewMetadata<SqlServerObjectName, AbstractDbType> OnGetTableOrView(SqlServerObjectName tableName)
+	internal override TableOrViewMetadata<AbstractParameter, SqlServerObjectName, AbstractDbType> OnGetTableOrView(SqlServerObjectName tableName)
 	{
 		return GetTableOrView(tableName);
 	}

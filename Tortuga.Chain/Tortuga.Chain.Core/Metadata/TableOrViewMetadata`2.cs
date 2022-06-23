@@ -1,29 +1,32 @@
-﻿using Tortuga.Chain.CommandBuilders;
+﻿using System.Data.Common;
+using Tortuga.Chain.CommandBuilders;
 
 namespace Tortuga.Chain.Metadata;
 
 /// <summary>
 /// Metadata for a database table or view.
 /// </summary>
+/// <typeparam name="TParameter">The variant of DbParameter used by this data source.</typeparam>
 /// <typeparam name="TObjectName">The type used to represent database object names.</typeparam>
 /// <typeparam name="TDbType">The variant of DbType used by this data source.</typeparam>
-public class TableOrViewMetadata<TObjectName, TDbType> : TableOrViewMetadata
+public class TableOrViewMetadata<TParameter, TObjectName, TDbType> : TableOrViewMetadata
+	where TParameter : DbParameter
 	where TObjectName : struct
 	where TDbType : struct
 {
 	readonly SqlBuilder<TDbType> m_Builder;
-	readonly DatabaseMetadataCache<TObjectName, TDbType> m_MetadataCache;
+	readonly DatabaseMetadataCache<TParameter, TObjectName, TDbType> m_MetadataCache;
 	ForeignKeyConstraintCollection<TObjectName, TDbType>? m_ForeignKeys;
 	IndexMetadataCollection<TObjectName, TDbType>? m_Indexes;
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="TableOrViewMetadata{TObjectName, TDbType}"/> class.
+	/// Initializes a new instance of the <see cref="TableOrViewMetadata{TParameter, TObjectName, TDbType}"/> class.
 	/// </summary>
 	/// <param name="metadataCache">The metadata cache.</param>
 	/// <param name="name">The name.</param>
 	/// <param name="isTable">if set to <c>true</c> [is table].</param>
 	/// <param name="columns">The columns.</param>
-	public TableOrViewMetadata(DatabaseMetadataCache<TObjectName, TDbType> metadataCache, TObjectName name, bool isTable, ColumnMetadataCollection<TDbType> columns) : base(name.ToString()!, isTable, columns?.GenericCollection!)
+	public TableOrViewMetadata(DatabaseMetadataCache<TParameter, TObjectName, TDbType> metadataCache, TObjectName name, bool isTable, ColumnMetadataCollection<TDbType> columns) : base(name.ToString()!, isTable, columns?.GenericCollection!)
 	{
 		m_MetadataCache = metadataCache ?? throw new ArgumentNullException(nameof(metadataCache), $"{nameof(metadataCache)} is null.");
 		Name = name;

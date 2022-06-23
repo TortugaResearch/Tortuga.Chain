@@ -7,6 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using Tortuga.Anchor;
+using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.PostgreSql
@@ -14,14 +15,14 @@ namespace Tortuga.Chain.PostgreSql
 	/// <summary>
 	/// Class PostgreSqlMetadataCache.
 	/// </summary>
-	public class PostgreSqlMetadataCache : DatabaseMetadataCache<PostgreSqlObjectName, NpgsqlDbType>
+	public class PostgreSqlMetadataCache : DatabaseMetadataCache<NpgsqlParameter, PostgreSqlObjectName, NpgsqlDbType>
 	{
 		readonly NpgsqlConnectionStringBuilder m_ConnectionBuilder;
 		readonly ConcurrentDictionary<PostgreSqlObjectName, ScalarFunctionMetadata<PostgreSqlObjectName, NpgsqlDbType>> m_ScalarFunctions = new ConcurrentDictionary<PostgreSqlObjectName, ScalarFunctionMetadata<PostgreSqlObjectName, NpgsqlDbType>>();
 		readonly ConcurrentDictionary<PostgreSqlObjectName, StoredProcedureMetadata<PostgreSqlObjectName, NpgsqlDbType>> m_StoredProcedures = new ConcurrentDictionary<PostgreSqlObjectName, StoredProcedureMetadata<PostgreSqlObjectName, NpgsqlDbType>>();
 		readonly ConcurrentDictionary<PostgreSqlObjectName, TableFunctionMetadata<PostgreSqlObjectName, NpgsqlDbType>> m_TableFunctions = new ConcurrentDictionary<PostgreSqlObjectName, TableFunctionMetadata<PostgreSqlObjectName, NpgsqlDbType>>();
-		readonly ConcurrentDictionary<PostgreSqlObjectName, TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType>> m_Tables = new ConcurrentDictionary<PostgreSqlObjectName, TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType>>();
-		readonly ConcurrentDictionary<Type, TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType>> m_TypeTableMap = new ConcurrentDictionary<Type, TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType>>();
+		readonly ConcurrentDictionary<PostgreSqlObjectName, TableOrViewMetadata<NpgsqlParameter, PostgreSqlObjectName, NpgsqlDbType>> m_Tables = new ConcurrentDictionary<PostgreSqlObjectName, TableOrViewMetadata<NpgsqlParameter, PostgreSqlObjectName, NpgsqlDbType>>();
+		readonly ConcurrentDictionary<Type, TableOrViewMetadata<NpgsqlParameter, PostgreSqlObjectName, NpgsqlDbType>> m_TypeTableMap = new ConcurrentDictionary<Type, TableOrViewMetadata<NpgsqlParameter, PostgreSqlObjectName, NpgsqlDbType>>();
 		string? m_DatabaseName;
 		ImmutableArray<string> m_DefaultSchemaList;
 		ImmutableDictionary<PostgreSqlObjectName, ImmutableHashSet<string>>? m_SequenceColumns;
@@ -342,7 +343,7 @@ WHERE ns.nspname = @Schema AND tab.relname = @Name";
 		/// <remarks>
 		/// Call Preload before invoking this method to ensure that all tables and views were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.
 		/// </remarks>
-		public override IReadOnlyCollection<TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType>> GetTablesAndViews()
+		public override IReadOnlyCollection<TableOrViewMetadata<NpgsqlParameter, PostgreSqlObjectName, NpgsqlDbType>> GetTablesAndViews()
 		{
 			return m_Tables.GetValues();
 		}
@@ -663,7 +664,6 @@ WHERE ns.nspname = @Schema AND tab.relname = @Name";
 "int4multirange",
 "nummultirange",
 "tstzmultirange"
-
 		});
 
 		/// <summary>
@@ -1139,7 +1139,7 @@ where s.relkind='S' and d.deptype='a'";
 		/// </summary>
 		/// <param name="tableName">Name of the table.</param>
 		/// <returns>SqlServerTableOrViewMetadata&lt;TDbType&gt;.</returns>
-		public override TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType> GetTableOrView(PostgreSqlObjectName tableName)
+		public override TableOrViewMetadata<NpgsqlParameter, PostgreSqlObjectName, NpgsqlDbType> GetTableOrView(PostgreSqlObjectName tableName)
 		{
 			return m_Tables.GetOrAdd(tableName, GetTableOrViewInternal);
 		}
@@ -1149,7 +1149,7 @@ where s.relkind='S' and d.deptype='a'";
 		/// </summary>
 		/// <param name="tableName">Name of the table.</param>
 		/// <exception cref="MissingObjectException">Could not find table or view {tableName}</exception>
-		public TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType> GetTableOrViewInternal(PostgreSqlObjectName tableName)
+		public TableOrViewMetadata<NpgsqlParameter, PostgreSqlObjectName, NpgsqlDbType> GetTableOrViewInternal(PostgreSqlObjectName tableName)
 		{
 			const string TableSql =
 				@"SELECT
@@ -1189,11 +1189,22 @@ where s.relkind='S' and d.deptype='a'";
 
 					var actualName = new PostgreSqlObjectName(actualSchema, actualTableName);
 					var columns = GetColumns(actualName, con);
-					return new TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType>(this, actualName, isTable, columns);
+					return new TableOrViewMetadata<NpgsqlParameter, PostgreSqlObjectName, NpgsqlDbType>(this, actualName, isTable, columns);
 				}
 			}
 
 			throw new MissingObjectException($"Could not find table or view {tableName}");
+		}
+
+		/// <summary>
+		/// Callback for parameter builder.
+		/// </summary>
+		/// <param name="entry">The entry.</param>
+		/// <returns>NpgsqlParameter.</returns>
+		/// <exception cref="System.NotImplementedException"></exception>
+		protected override NpgsqlParameter ParameterBuilderCallback(SqlBuilderEntry<DbType> entry)
+		{
+			throw new NotImplementedException();
 		}
 
 		/// <summary>

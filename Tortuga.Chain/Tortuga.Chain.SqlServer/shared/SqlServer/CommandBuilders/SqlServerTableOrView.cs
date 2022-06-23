@@ -13,7 +13,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders;
 internal sealed partial class SqlServerTableOrView<TObject> : TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption, TObject>, ISupportsApproximateCount
 	where TObject : class
 {
-	readonly TableOrViewMetadata<SqlServerObjectName, SqlDbType> m_Table;
+	readonly TableOrViewMetadata<SqlParameter, SqlServerObjectName, SqlDbType> m_Table;
 	object? m_ArgumentValue;
 	FilterOptions m_FilterOptions;
 	object? m_FilterValue;

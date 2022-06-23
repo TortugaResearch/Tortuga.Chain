@@ -14,7 +14,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders;
 internal sealed partial class OleDbSqlServerTableOrView<TObject> : TableDbCommandBuilder<OleDbCommand, OleDbParameter, SqlServerLimitOption, TObject>
 		where TObject : class
 {
-	readonly TableOrViewMetadata<SqlServerObjectName, OleDbType> m_Table;
+	readonly TableOrViewMetadata<OleDbParameter, SqlServerObjectName, OleDbType> m_Table;
 	object? m_ArgumentValue;
 	FilterOptions m_FilterOptions;
 	object? m_FilterValue;

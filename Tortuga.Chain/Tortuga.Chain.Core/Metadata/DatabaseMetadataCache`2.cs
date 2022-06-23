@@ -12,13 +12,13 @@ namespace Tortuga.Chain.Metadata;
 /// <summary>
 /// An abstract database metadata cache
 /// </summary>
+/// <typeparam name="TParameter">The variant of DbParameter used by this data source.</typeparam>
 /// <typeparam name="TObjectName">The type used to represent database object names.</typeparam>
 /// <typeparam name="TDbType">The variant of DbType used by this data source.</typeparam>
-/// <typeparam name="TParameter">The variant of DbParameter used by this data source.</typeparam>
-public abstract class DatabaseMetadataCache<TObjectName, TDbType, TParameter> : IDatabaseMetadataCache
+public abstract class DatabaseMetadataCache<TParameter, TObjectName, TDbType> : IDatabaseMetadataCache
+	where TParameter : DbParameter
 	where TObjectName : struct
 	where TDbType : struct
-	where TParameter : DbParameter
 {
 	/// <summary>
 	/// This dictionary is used to register customer database types. It is used by the ToClrType method and possibly parameter generation.
@@ -26,7 +26,7 @@ public abstract class DatabaseMetadataCache<TObjectName, TDbType, TParameter> : 
 	/// <remarks>This is populated by the RegisterType method.</remarks>
 	readonly ConcurrentDictionary<string, TypeRegistration<TDbType>> m_RegisteredTypes = new ConcurrentDictionary<string, TypeRegistration<TDbType>>(StringComparer.OrdinalIgnoreCase);
 
-	private readonly ConcurrentDictionary<(Type, OperationType), TableOrViewMetadata<TObjectName, TDbType>> m_TypeTableMap = new ConcurrentDictionary<(Type, OperationType), TableOrViewMetadata<TObjectName, TDbType>>();
+	private readonly ConcurrentDictionary<(Type, OperationType), TableOrViewMetadata<TParameter, TObjectName, TDbType>> m_TypeTableMap = new ConcurrentDictionary<(Type, OperationType), TableOrViewMetadata<TParameter, TObjectName, TDbType>>();
 
 	/// <summary>
 	/// Gets the converter dictionary used by materializers.
@@ -186,7 +186,7 @@ public abstract class DatabaseMetadataCache<TObjectName, TDbType, TParameter> : 
 	/// </summary>
 	/// <param name="tableName">Name of the table.</param>
 	/// <returns></returns>
-	public abstract TableOrViewMetadata<TObjectName, TDbType> GetTableOrView(TObjectName tableName);
+	public abstract TableOrViewMetadata<TParameter, TObjectName, TDbType> GetTableOrView(TObjectName tableName);
 
 	TableOrViewMetadata IDatabaseMetadataCache.GetTableOrView(string tableName) => GetTableOrView(ParseObjectName(tableName));
 
@@ -196,7 +196,7 @@ public abstract class DatabaseMetadataCache<TObjectName, TDbType, TParameter> : 
 	/// <typeparam name="TObject">The type of the object.</typeparam>
 	/// <param name="operation">The operation.</param>
 	/// <returns>DatabaseObject.</returns>
-	public TableOrViewMetadata<TObjectName, TDbType> GetTableOrViewFromClass<TObject>(OperationType operation = OperationType.All)
+	public TableOrViewMetadata<TParameter, TObjectName, TDbType> GetTableOrViewFromClass<TObject>(OperationType operation = OperationType.All)
 	{
 		var type = typeof(TObject);
 		return GetTableOrViewFromClass(type, operation);
@@ -208,7 +208,7 @@ public abstract class DatabaseMetadataCache<TObjectName, TDbType, TParameter> : 
 	/// <param name="type"></param>
 	/// <param name="operation">The operation.</param>
 	/// <returns>DatabaseObject.</returns>
-	public TableOrViewMetadata<TObjectName, TDbType> GetTableOrViewFromClass(Type type, OperationType operation = OperationType.All)
+	public TableOrViewMetadata<TParameter, TObjectName, TDbType> GetTableOrViewFromClass(Type type, OperationType operation = OperationType.All)
 	{
 		var cacheKey = (type, operation);
 
@@ -278,7 +278,7 @@ public abstract class DatabaseMetadataCache<TObjectName, TDbType, TParameter> : 
 	/// <returns></returns>
 	/// <remarks>Call Preload before invoking this method to ensure that all tables and views were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.</remarks>
 	[SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
-	public abstract IReadOnlyCollection<TableOrViewMetadata<TObjectName, TDbType>> GetTablesAndViews();
+	public abstract IReadOnlyCollection<TableOrViewMetadata<TParameter, TObjectName, TDbType>> GetTablesAndViews();
 
 	IReadOnlyCollection<TableOrViewMetadata> IDatabaseMetadataCache.GetTablesAndViews() => GetTablesAndViews();
 
@@ -487,7 +487,7 @@ public abstract class DatabaseMetadataCache<TObjectName, TDbType, TParameter> : 
 	/// <param name="tableName">Name of the table or view.</param>
 	/// <param name="tableOrView">The table or view.</param>
 	/// <returns></returns>
-	public bool TryGetTableOrView(TObjectName tableName, [NotNullWhen(true)] out TableOrViewMetadata<TObjectName, TDbType>? tableOrView)
+	public bool TryGetTableOrView(TObjectName tableName, [NotNullWhen(true)] out TableOrViewMetadata<TParameter, TObjectName, TDbType>? tableOrView)
 	{
 		try
 		{

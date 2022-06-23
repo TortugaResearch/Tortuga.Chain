@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using Tortuga.Anchor;
+using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Metadata;
 using Tortuga.Chain.SqlServer;
 
@@ -10,12 +11,12 @@ namespace Tortuga.Chain.MySql;
 /// <summary>
 /// Class MySqlMetadataCache.
 /// </summary>
-public class MySqlMetadataCache : DatabaseMetadataCache<MySqlObjectName, MySqlDbType>
+public class MySqlMetadataCache : DatabaseMetadataCache<MySqlParameter, MySqlObjectName, MySqlDbType>
 {
 	private readonly MySqlConnectionStringBuilder m_ConnectionBuilder;
 	private readonly ConcurrentDictionary<MySqlObjectName, ScalarFunctionMetadata<MySqlObjectName, MySqlDbType>> m_ScalarFunctions = new ConcurrentDictionary<MySqlObjectName, ScalarFunctionMetadata<MySqlObjectName, MySqlDbType>>();
 	private readonly ConcurrentDictionary<MySqlObjectName, StoredProcedureMetadata<MySqlObjectName, MySqlDbType>> m_StoredProcedures = new ConcurrentDictionary<MySqlObjectName, StoredProcedureMetadata<MySqlObjectName, MySqlDbType>>();
-	private readonly ConcurrentDictionary<MySqlObjectName, TableOrViewMetadata<MySqlObjectName, MySqlDbType>> m_Tables = new ConcurrentDictionary<MySqlObjectName, TableOrViewMetadata<MySqlObjectName, MySqlDbType>>();
+	private readonly ConcurrentDictionary<MySqlObjectName, TableOrViewMetadata<MySqlParameter, MySqlObjectName, MySqlDbType>> m_Tables = new ConcurrentDictionary<MySqlObjectName, TableOrViewMetadata<MySqlParameter, MySqlObjectName, MySqlDbType>>();
 	private readonly ConcurrentDictionary<(Type, OperationType), DatabaseObject> m_TypeTableMap = new ConcurrentDictionary<(Type, OperationType), DatabaseObject>();
 	private string? m_DefaultSchema;
 
@@ -170,7 +171,7 @@ public class MySqlMetadataCache : DatabaseMetadataCache<MySqlObjectName, MySqlDb
 	/// </summary>
 	/// <param name="tableName">Name of the table.</param>
 	/// <returns>TableOrViewMetadata&lt;MySqlObjectName, MySqlDbType&gt;.</returns>
-	public override TableOrViewMetadata<MySqlObjectName, MySqlDbType> GetTableOrView(MySqlObjectName tableName)
+	public override TableOrViewMetadata<MySqlParameter, MySqlObjectName, MySqlDbType> GetTableOrView(MySqlObjectName tableName)
 	{
 		return m_Tables.GetOrAdd(tableName, GetTableOrViewInternal);
 	}
@@ -182,7 +183,7 @@ public class MySqlMetadataCache : DatabaseMetadataCache<MySqlObjectName, MySqlDb
 	/// <remarks>
 	/// Call Preload before invoking this method to ensure that all tables and views were loaded from the database's schema. Otherwise only the objects that were actually used thus far will be returned.
 	/// </remarks>
-	public override IReadOnlyCollection<TableOrViewMetadata<MySqlObjectName, MySqlDbType>> GetTablesAndViews()
+	public override IReadOnlyCollection<TableOrViewMetadata<MySqlParameter, MySqlObjectName, MySqlDbType>> GetTablesAndViews()
 	{
 		return m_Tables.GetValues();
 	}
@@ -368,6 +369,17 @@ public class MySqlMetadataCache : DatabaseMetadataCache<MySqlObjectName, MySqlDb
 			default:
 				return base.ValueToSqlValue(value, dbType);
 		}
+	}
+
+	/// <summary>
+	/// Callback for parameter builder.
+	/// </summary>
+	/// <param name="entry">The entry.</param>
+	/// <returns>MySqlParameter.</returns>
+	/// <exception cref="System.NotImplementedException"></exception>
+	protected override MySqlParameter ParameterBuilderCallback(SqlBuilderEntry<DbType> entry)
+	{
+		throw new NotImplementedException();
 	}
 
 	/// <summary>
@@ -747,7 +759,7 @@ public class MySqlMetadataCache : DatabaseMetadataCache<MySqlObjectName, MySqlDb
 		return new StoredProcedureMetadata<MySqlObjectName, MySqlDbType>(objectName, parameters);
 	}
 
-	private TableOrViewMetadata<MySqlObjectName, MySqlDbType> GetTableOrViewInternal(MySqlObjectName tableName)
+	private TableOrViewMetadata<MySqlParameter, MySqlObjectName, MySqlDbType> GetTableOrViewInternal(MySqlObjectName tableName)
 	{
 		const string TableSql = @"SELECT TABLE_SCHEMA, TABLE_NAME, TABLE_TYPE, ENGINE FROM INFORMATION_SCHEMA.Tables WHERE TABLE_SCHEMA = @Schema AND TABLE_NAME = @Name";
 

@@ -16,7 +16,7 @@ internal sealed class MySqlUpdateSet : UpdateSetDbCommandBuilder<MySqlCommand, M
 	readonly object? m_NewValues;
 	readonly UpdateOptions m_Options;
 	readonly IEnumerable<MySqlParameter>? m_Parameters;
-	readonly TableOrViewMetadata<MySqlObjectName, MySqlDbType> m_Table;
+	readonly TableOrViewMetadata<MySqlParameter, MySqlObjectName, MySqlDbType> m_Table;
 	readonly object? m_UpdateArgumentValue;
 	readonly string? m_UpdateExpression;
 	FilterOptions m_FilterOptions;

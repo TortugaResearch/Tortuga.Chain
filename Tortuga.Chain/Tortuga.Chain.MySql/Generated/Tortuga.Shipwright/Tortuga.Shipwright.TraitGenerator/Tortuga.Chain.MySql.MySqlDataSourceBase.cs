@@ -2,14 +2,14 @@
 
 namespace Tortuga.Chain.MySql
 {
-	partial class MySqlDataSourceBase: Tortuga.Chain.DataSources.ISupportsDeleteAll, Tortuga.Chain.DataSources.ISupportsTruncate, Tortuga.Chain.DataSources.ISupportsSqlQueries, Tortuga.Chain.DataSources.ISupportsInsertBatch, Tortuga.Chain.DataSources.ISupportsDeleteByKeyList, Tortuga.Chain.DataSources.ISupportsDeleteByKey, Tortuga.Chain.DataSources.ISupportsUpdate, Tortuga.Chain.DataSources.ISupportsDelete, Tortuga.Chain.DataSources.ISupportsUpdateByKey, Tortuga.Chain.DataSources.ISupportsUpdateByKeyList, Tortuga.Chain.DataSources.ISupportsInsert, Tortuga.Chain.DataSources.ISupportsUpdateSet, Tortuga.Chain.DataSources.ISupportsDeleteSet, Tortuga.Chain.DataSources.ISupportsFrom, Tortuga.Chain.DataSources.ISupportsGetByKeyList, Tortuga.Chain.DataSources.ISupportsGetByKey, Tortuga.Chain.DataSources.ISupportsUpsert, Tortuga.Chain.DataSources.ISupportsInsertBulk, Tortuga.Chain.DataSources.ISupportsScalarFunction, Tortuga.Chain.DataSources.ISupportsProcedure, Traits.ICommandHelper<Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IInsertBatchHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IUpdateDeleteByKeyHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IUpdateDeleteHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IInsertHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IUpdateDeleteSetHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IFromHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType, Tortuga.Chain.MySqlLimitOption>, Traits.IGetByKeyHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IUpsertHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IInsertBulkHelper<Tortuga.Chain.MySql.CommandBuilders.MySqlInsertBulk, MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.ICommandHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>
+	partial class MySqlDataSourceBase: Tortuga.Chain.DataSources.ISupportsDeleteAll, Tortuga.Chain.DataSources.ISupportsTruncate, Tortuga.Chain.DataSources.ISupportsSqlQueries, Tortuga.Chain.DataSources.ISupportsInsertBatch, Tortuga.Chain.DataSources.ISupportsDeleteByKeyList, Tortuga.Chain.DataSources.ISupportsDeleteByKey, Tortuga.Chain.DataSources.ISupportsUpdate, Tortuga.Chain.DataSources.ISupportsDelete, Tortuga.Chain.DataSources.ISupportsUpdateByKey, Tortuga.Chain.DataSources.ISupportsUpdateByKeyList, Tortuga.Chain.DataSources.ISupportsInsert, Tortuga.Chain.DataSources.ISupportsUpdateSet, Tortuga.Chain.DataSources.ISupportsDeleteSet, Tortuga.Chain.DataSources.ISupportsFrom, Tortuga.Chain.DataSources.ISupportsGetByKeyList, Tortuga.Chain.DataSources.ISupportsGetByKey, Tortuga.Chain.DataSources.ISupportsUpsert, Tortuga.Chain.DataSources.ISupportsInsertBulk, Tortuga.Chain.DataSources.ISupportsScalarFunction, Tortuga.Chain.DataSources.ISupportsProcedure, Traits.ICommandHelper<MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IInsertBatchHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IUpdateDeleteByKeyHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IUpdateDeleteHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IInsertHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IUpdateDeleteSetHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IFromHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType, Tortuga.Chain.MySqlLimitOption>, Traits.IGetByKeyHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IUpsertHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.IInsertBulkHelper<Tortuga.Chain.MySql.CommandBuilders.MySqlInsertBulk, MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>, Traits.ICommandHelper<MySqlConnector.MySqlCommand, MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>
 	{
 
 		private bool __TraitsRegistered;
 
 		// These fields and/or properties hold the traits. They should not be referenced directly.
-		private Traits.SupportsDeleteAllTrait<Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType> ___Trait0 = new();
-		private Traits.SupportsDeleteAllTrait<Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType> __Trait0
+		private Traits.SupportsDeleteAllTrait<MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType> ___Trait0 = new();
+		private Traits.SupportsDeleteAllTrait<MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType> __Trait0
 		{
 			get
 			{
@@ -17,8 +17,8 @@ namespace Tortuga.Chain.MySql
 				return ___Trait0;
 			}
 		}
-		private Traits.SupportsTruncateTrait<Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType> ___Trait1 = new();
-		private Traits.SupportsTruncateTrait<Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType> __Trait1
+		private Traits.SupportsTruncateTrait<MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType> ___Trait1 = new();
+		private Traits.SupportsTruncateTrait<MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType> __Trait1
 		{
 			get
 			{
@@ -479,7 +479,7 @@ namespace Tortuga.Chain.MySql
 			return ((Tortuga.Chain.DataSources.ISupportsUpsert)__Trait13).Upsert<TArgument>(argumentValue, options);
 		}
 
-		// Exposing trait Traits.SupportsDeleteAllTrait<Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>
+		// Exposing trait Traits.SupportsDeleteAllTrait<MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>
 
 		/// <summary>Deletes all records in the specified table.</summary>
 		/// <param name="tableName">Name of the table to clear.</param>
@@ -1128,7 +1128,7 @@ namespace Tortuga.Chain.MySql
 			return __Trait2.Sql(sqlStatement, argumentValue);
 		}
 
-		// Exposing trait Traits.SupportsTruncateTrait<Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>
+		// Exposing trait Traits.SupportsTruncateTrait<MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>
 
 		/// <summary>Truncates the specified table.</summary>
 		/// <param name="tableName">Name of the table to Truncate.</param>

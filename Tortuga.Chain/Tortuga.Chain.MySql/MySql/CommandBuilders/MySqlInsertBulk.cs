@@ -15,7 +15,7 @@ public sealed class MySqlInsertBulk : DbOperationBuilder<MySqlConnection, MySqlT
 {
 	readonly MySqlDataSourceBase m_DataSource;
 	readonly IDataReader m_Source;
-	readonly TableOrViewMetadata<MySqlObjectName, MySqlDbType> m_Table;
+	readonly TableOrViewMetadata<MySqlParameter, MySqlObjectName, MySqlDbType> m_Table;
 	int? m_BatchSize;
 	EventHandler<AbortableOperationEventArgs>? m_EventHandler;
 	int? m_NotifyAfter;

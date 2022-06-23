@@ -46,7 +46,7 @@ public class MaterializerTypeConverter
 	/// <param name="targetType">Desired type</param>
 	/// <param name="value">The value to be converted.</param>
 	/// <param name="conversionException">If an exception occurs when converting, it will be returned here.</param>
-	/// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
+	/// <returns><c>true</c> if the conversion was successful, <c>false</c> otherwise.</returns>
 	public bool TryConvertType(Type targetType, ref object? value, out Exception? conversionException)
 	{
 		conversionException = null;

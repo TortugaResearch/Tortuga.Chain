@@ -16,7 +16,7 @@ internal class SqlServerInsertBatchTable : MultipleRowDbCommandBuilder<SqlComman
 	readonly InsertOptions m_Options;
 
 	readonly object m_Source;
-	readonly TableOrViewMetadata<SqlServerObjectName, SqlDbType> m_Table;
+	readonly TableOrViewMetadata<SqlParameter, SqlServerObjectName, SqlDbType> m_Table;
 	readonly UserDefinedTableTypeMetadata<SqlServerObjectName, SqlDbType> m_TableType;
 
 	public SqlServerInsertBatchTable(SqlServerDataSourceBase dataSource, SqlServerObjectName tableName, DataTable dataTable, SqlServerObjectName tableTypeName, InsertOptions options) : base(dataSource)

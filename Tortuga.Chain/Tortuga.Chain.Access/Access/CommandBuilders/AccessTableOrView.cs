@@ -13,7 +13,7 @@ namespace Tortuga.Chain.Access.CommandBuilders;
 internal sealed class AccessTableOrView<TObject> : TableDbCommandBuilder<OleDbCommand, OleDbParameter, AccessLimitOption, TObject>
 	where TObject : class
 {
-	readonly TableOrViewMetadata<AccessObjectName, OleDbType> m_Table;
+	readonly TableOrViewMetadata<OleDbParameter, AccessObjectName, OleDbType> m_Table;
 	object? m_ArgumentValue;
 	FilterOptions m_FilterOptions;
 	object? m_FilterValue;

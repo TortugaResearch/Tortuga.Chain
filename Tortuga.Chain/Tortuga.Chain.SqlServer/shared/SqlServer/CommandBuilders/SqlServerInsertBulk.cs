@@ -12,7 +12,7 @@ public sealed class SqlServerInsertBulk : DbOperationBuilder<SqlConnection, SqlT
 {
 	readonly SqlServerDataSourceBase m_DataSource;
 	readonly IDataReader m_Source;
-	readonly TableOrViewMetadata<SqlServerObjectName, SqlDbType> m_Table;
+	readonly TableOrViewMetadata<SqlParameter, SqlServerObjectName, SqlDbType> m_Table;
 	int? m_BatchSize;
 	bool m_EnableStreaming;
 	EventHandler<AbortableOperationEventArgs>? m_EventHandler;

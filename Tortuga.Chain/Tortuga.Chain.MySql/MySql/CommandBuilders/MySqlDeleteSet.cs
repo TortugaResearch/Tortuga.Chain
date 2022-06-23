@@ -18,7 +18,7 @@ internal sealed class MySqlDeleteSet : MultipleRowDbCommandBuilder<MySqlCommand,
 	readonly object? m_FilterValue;
 	readonly DeleteOptions m_Options;
 	readonly IEnumerable<MySqlParameter>? m_Parameters;
-	readonly TableOrViewMetadata<MySqlObjectName, MySqlDbType> m_Table;
+	readonly TableOrViewMetadata<MySqlParameter, MySqlObjectName, MySqlDbType> m_Table;
 	readonly string? m_WhereClause;
 
 	/// <summary>

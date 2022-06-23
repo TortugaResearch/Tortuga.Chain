@@ -14,13 +14,13 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 	internal sealed class PostgreSqlDeleteSet : MultipleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter>
 	{
 		readonly object? m_ArgumentValue;
+		readonly int? m_ExpectedRowCount;
 		readonly FilterOptions m_FilterOptions;
 		readonly object? m_FilterValue;
-		readonly IEnumerable<NpgsqlParameter>? m_Parameters;
-		readonly TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType> m_Table;
-		readonly string? m_WhereClause;
 		readonly DeleteOptions m_Options;
-		readonly int? m_ExpectedRowCount;
+		readonly IEnumerable<NpgsqlParameter>? m_Parameters;
+		readonly TableOrViewMetadata<NpgsqlParameter, PostgreSqlObjectName, NpgsqlDbType> m_Table;
+		readonly string? m_WhereClause;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="PostgreSqlDeleteSet" /> class.
