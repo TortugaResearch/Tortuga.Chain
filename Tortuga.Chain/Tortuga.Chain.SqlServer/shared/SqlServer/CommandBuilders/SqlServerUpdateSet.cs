@@ -15,7 +15,7 @@ internal sealed class SqlServerUpdateSet : UpdateSetDbCommandBuilder<SqlCommand,
 	readonly object? m_NewValues;
 	readonly UpdateOptions m_Options;
 	readonly IEnumerable<SqlParameter>? m_Parameters;
-	readonly SqlServerTableOrViewMetadata<SqlDbType> m_Table;
+	readonly SqlServerTableOrViewMetadata<SqlParameter, SqlDbType> m_Table;
 	readonly object? m_UpdateArgumentValue;
 	readonly string? m_UpdateExpression;
 	FilterOptions m_FilterOptions;

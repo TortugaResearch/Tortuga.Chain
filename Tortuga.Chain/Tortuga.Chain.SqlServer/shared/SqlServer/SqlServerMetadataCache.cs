@@ -87,20 +87,20 @@ public sealed partial class SqlServerMetadataCache
 	public override IndexMetadataCollection<SqlServerObjectName, SqlDbType> GetIndexesForTable(SqlServerObjectName tableName)
 	{
 		const string indexSql = @"SELECT i.name,
-       i.is_primary_key,
-       i.is_unique,
-       i.is_unique_constraint,
+	   i.is_primary_key,
+	   i.is_unique,
+	   i.is_unique_constraint,
 	   i.index_id,
-       i.type,
-       (SELECT SUM(used_page_count) * 8 FROM sys.dm_db_partition_stats ddps WHERE ddps.object_id=i.object_id AND ddps.index_id = i.index_id) AS IndexSizeKB,
-       (SELECT SUM(row_count) FROM sys.dm_db_partition_stats ddps WHERE ddps.object_id=i.object_id AND ddps.index_id = i.index_id) AS [RowCount]
+	   i.type,
+	   (SELECT SUM(used_page_count) * 8 FROM sys.dm_db_partition_stats ddps WHERE ddps.object_id=i.object_id AND ddps.index_id = i.index_id) AS IndexSizeKB,
+	   (SELECT SUM(row_count) FROM sys.dm_db_partition_stats ddps WHERE ddps.object_id=i.object_id AND ddps.index_id = i.index_id) AS [RowCount]
 FROM sys.indexes i
-    INNER JOIN sys.objects o
-        ON i.object_id = o.object_id
-    INNER JOIN sys.schemas s
-        ON o.schema_id = s.schema_id
+	INNER JOIN sys.objects o
+		ON i.object_id = o.object_id
+	INNER JOIN sys.schemas s
+		ON o.schema_id = s.schema_id
 WHERE o.name = @Name
-      AND s.name = @Schema;";
+	  AND s.name = @Schema;";
 
 		var allColumns = GetColumnsForIndex(tableName);
 
@@ -374,12 +374,12 @@ WHERE o.name = @Name
 		{
 			const string StoredProcedureSql =
 				@"SELECT
-				    s.name AS SchemaName,
-				    sp.name AS Name,
-				    sp.object_id AS ObjectId
-				    FROM SYS.procedures sp
-				    INNER JOIN sys.schemas s ON sp.schema_id = s.schema_id
-				    WHERE s.name = @Schema AND sp.Name = @Name";
+					s.name AS SchemaName,
+					sp.name AS Name,
+					sp.object_id AS ObjectId
+					FROM SYS.procedures sp
+					INNER JOIN sys.schemas s ON sp.schema_id = s.schema_id
+					WHERE s.name = @Schema AND sp.Name = @Name";
 
 			string actualSchema;
 			string actualName;
@@ -426,12 +426,12 @@ WHERE o.name = @Name
 		CONVERT(INT, COALESCE(p.precision, t.precision, t2.precision)) AS precision,
 		CONVERT(INT, COALESCE(p.scale, t.scale, t2.scale)) AS scale
 
-        FROM	sys.objects o
-        INNER JOIN sys.schemas s ON o.schema_id = s.schema_id
-        INNER JOIN sys.parameters p ON p.object_id = o.object_id AND p.parameter_id = 0
+		FROM	sys.objects o
+		INNER JOIN sys.schemas s ON o.schema_id = s.schema_id
+		INNER JOIN sys.parameters p ON p.object_id = o.object_id AND p.parameter_id = 0
 		LEFT JOIN sys.types t on p.system_type_id = t.user_type_id
 		LEFT JOIN sys.types t2 ON p.user_type_id = t2.user_type_id
-        WHERE	o.type IN ('FN')
+		WHERE	o.type IN ('FN')
 		AND s.name = @Schema
 		AND o.name = @Name;";
 
@@ -534,12 +534,12 @@ WHERE o.name = @Name
 		{
 			const string StoredProcedureSql =
 				@"SELECT
-				    s.name AS SchemaName,
-				    sp.name AS Name,
-				    sp.object_id AS ObjectId
-				    FROM SYS.all_objects sp
-				    INNER JOIN sys.schemas s ON sp.schema_id = s.schema_id
-				    WHERE s.name = @Schema AND sp.Name = @Name";
+					s.name AS SchemaName,
+					sp.name AS Name,
+					sp.object_id AS ObjectId
+					FROM SYS.all_objects sp
+					INNER JOIN sys.schemas s ON sp.schema_id = s.schema_id
+					WHERE s.name = @Schema AND sp.Name = @Name";
 
 			string actualSchema;
 			string actualName;
@@ -586,10 +586,10 @@ WHERE o.name = @Name
 				WHERE o.type in ('TF', 'IF', 'FT') AND s.name = @Schema AND o.Name = @Name";
 
 		/*
-             * TF = SQL table-valued-function
-             * IF = SQL inline table-valued function
-             * FT = Assembly (CLR) table-valued function
-             */
+			 * TF = SQL table-valued-function
+			 * IF = SQL inline table-valued function
+			 * FT = Assembly (CLR) table-valued function
+			 */
 
 		string actualSchema;
 		string actualName;
@@ -628,7 +628,7 @@ WHERE o.name = @Name
 				t.name AS Name,
 				t.object_id AS ObjectId,
 				CONVERT(BIT, 1) AS IsTable,
-		        (SELECT	COUNT(*) FROM sys.triggers t2 WHERE	t2.parent_id = t.object_id) AS Triggers
+				(SELECT	COUNT(*) FROM sys.triggers t2 WHERE	t2.parent_id = t.object_id) AS Triggers
 				FROM SYS.tables t
 				INNER JOIN sys.schemas s ON t.schema_id = s.schema_id
 				WHERE s.name = @Schema AND t.Name = @Name
@@ -640,7 +640,7 @@ WHERE o.name = @Name
 				t.name AS Name,
 				t.object_id AS ObjectId,
 				CONVERT(BIT, 0) AS IsTable,
-		        (SELECT	COUNT(*) FROM sys.triggers t2 WHERE	t2.parent_id = t.object_id) AS Triggers
+				(SELECT	COUNT(*) FROM sys.triggers t2 WHERE	t2.parent_id = t.object_id) AS Triggers
 				FROM SYS.views t
 				INNER JOIN sys.schemas s ON t.schema_id = s.schema_id
 				WHERE s.name = @Schema AND t.Name = @Name";
@@ -717,10 +717,10 @@ WHERE	s.name = @Schema AND t.name = @Name AND t.is_table_type = 1;";
 	}
 
 	/*
-        internal UserDefinedTypeMetadata<SqlServerObjectName, SqlDbType> GetUserDefinedTypeInternal(SqlServerObjectName typeName)
-        {
-            const string sql =
-                @"SELECT	s.name AS SchemaName,
+		internal UserDefinedTypeMetadata<SqlServerObjectName, SqlDbType> GetUserDefinedTypeInternal(SqlServerObjectName typeName)
+		{
+			const string sql =
+				@"SELECT	s.name AS SchemaName,
 	t.name AS Name,
 	t2.name AS BaseTypeName,
 	t.is_nullable,
@@ -732,49 +732,49 @@ FROM	sys.types t
 	LEFT JOIN sys.types t2 ON t.system_type_id = t2.user_type_id
 WHERE	s.name = @Schema AND t.name = @Name AND t.is_table_type = 0;";
 
-            string actualSchema;
-            string actualName;
-            string baseTypeName;
-            bool isTableType;
-            bool isNullable;
-            int? maxLength;
-            int? precision;
-            int? scale;
-            string fullTypeName;
+			string actualSchema;
+			string actualName;
+			string baseTypeName;
+			bool isTableType;
+			bool isNullable;
+			int? maxLength;
+			int? precision;
+			int? scale;
+			string fullTypeName;
 
-            using (var con = new SqlConnection(m_ConnectionBuilder.ConnectionString))
-            {
-                con.Open();
-                using (var cmd = new SqlCommand(sql, con))
-                {
-                    cmd.Parameters.AddWithValue("@Schema", typeName.Schema ?? DefaultSchema);
-                    cmd.Parameters.AddWithValue("@Name", typeName.Name);
-                    using (var reader = cmd.ExecuteReader())
-                    {
-                        if (!reader.Read())
-                            throw new MissingObjectException($"Could not find user defined type {typeName}");
+			using (var con = new SqlConnection(m_ConnectionBuilder.ConnectionString))
+			{
+				con.Open();
+				using (var cmd = new SqlCommand(sql, con))
+				{
+					cmd.Parameters.AddWithValue("@Schema", typeName.Schema ?? DefaultSchema);
+					cmd.Parameters.AddWithValue("@Name", typeName.Name);
+					using (var reader = cmd.ExecuteReader())
+					{
+						if (!reader.Read())
+							throw new MissingObjectException($"Could not find user defined type {typeName}");
 
-                        actualSchema = reader.GetString("SchemaName");
-                        actualName = reader.GetString("Name");
-                        baseTypeName = reader.GetString("BaseTypeName");
+						actualSchema = reader.GetString("SchemaName");
+						actualName = reader.GetString("Name");
+						baseTypeName = reader.GetString("BaseTypeName");
 
-                        isNullable = reader.GetBoolean("is_nullable");
-                        maxLength = reader.GetInt32("max_length");
-                        precision = reader.GetInt32("precision");
-                        scale = reader.GetInt32("scale");
+						isNullable = reader.GetBoolean("is_nullable");
+						maxLength = reader.GetInt32("max_length");
+						precision = reader.GetInt32("precision");
+						scale = reader.GetInt32("scale");
 
-                        AdjustTypeDetails(baseTypeName, ref maxLength, ref precision, ref scale, out fullTypeName);
-                    }
-                }
-            }
+						AdjustTypeDetails(baseTypeName, ref maxLength, ref precision, ref scale, out fullTypeName);
+					}
+				}
+			}
 
-                var column = new ColumnMetadata<SqlDbType>(null, false, false, false, baseTypeName, SqlTypeNameToDbType(baseTypeName), null, isNullable, maxLength, precision, scale, fullTypeName, ToClrType(baseTypeName, isNullable, maxLength));
+				var column = new ColumnMetadata<SqlDbType>(null, false, false, false, baseTypeName, SqlTypeNameToDbType(baseTypeName), null, isNullable, maxLength, precision, scale, fullTypeName, ToClrType(baseTypeName, isNullable, maxLength));
 
-                columns = new ColumnMetadataCollection<SqlDbType>(typeName.ToString(), new List<ColumnMetadata<SqlDbType>>() { column });
+				columns = new ColumnMetadataCollection<SqlDbType>(typeName.ToString(), new List<ColumnMetadata<SqlDbType>>() { column });
 
-            return new UserDefinedTableTypeMetadata<SqlServerObjectName, SqlDbType>(new SqlServerObjectName(actualSchema, actualName), isTableType, columns);
-        }
-        */
+			return new UserDefinedTableTypeMetadata<SqlServerObjectName, SqlDbType>(new SqlServerObjectName(actualSchema, actualName), isTableType, columns);
+		}
+		*/
 
 	/// <summary>
 	/// Callback for parameter builder.
@@ -782,7 +782,7 @@ WHERE	s.name = @Schema AND t.name = @Name AND t.is_table_type = 0;";
 	/// <param name="entry">The entry.</param>
 	/// <returns>SqlParameter.</returns>
 	/// <exception cref="System.NotImplementedException"></exception>
-	protected override SqlParameter ParameterBuilderCallback(SqlBuilderEntry<DbType> entry)
+	protected override SqlParameter ParameterBuilderCallback(SqlBuilderEntry<SqlDbType> entry)
 	{
 		throw new NotImplementedException();
 	}
@@ -946,14 +946,14 @@ WHERE	s.name = @Schema AND t.name = @Name AND t.is_table_type = 0;";
 							Convert(bit, ISNULL(PKS.is_primary_key, 0)) AS is_primary_key,
 							COALESCE(t.name, t2.name) AS TypeName,
 							c.is_nullable,
-		                    CONVERT(INT, COALESCE(c.max_length, t.max_length, t2.max_length)) AS max_length,
-		                    CONVERT(INT, COALESCE(c.precision, t.precision, t2.precision)) AS precision,
-		                    CONVERT(INT, COALESCE(c.scale, t.scale, t2.scale)) AS scale
+							CONVERT(INT, COALESCE(c.max_length, t.max_length, t2.max_length)) AS max_length,
+							CONVERT(INT, COALESCE(c.precision, t.precision, t2.precision)) AS precision,
+							CONVERT(INT, COALESCE(c.scale, t.scale, t2.scale)) AS scale
 					FROM    sys.columns c
 							LEFT JOIN PKS ON c.name = PKS.name
 							LEFT JOIN sys.types t on c.system_type_id = t.user_type_id
 							LEFT JOIN sys.types t2 ON c.user_type_id = t2.user_type_id
-                            WHERE   object_id = @ObjectId;";
+							WHERE   object_id = @ObjectId;";
 
 		var columns = new List<ColumnMetadata<SqlDbType>>();
 		using (var con = new SqlConnection(m_ConnectionBuilder.ConnectionString))
@@ -989,19 +989,19 @@ WHERE	s.name = @Schema AND t.name = @Name AND t.is_table_type = 0;";
 	List<SqlServerIndexColumnMetadata> GetColumnsForIndex(SqlServerObjectName tableName)
 	{
 		const string columnSql = @"SELECT c.name,
-       ic.is_descending_key,
-       ic.is_included_column,
-       ic.index_id
+	   ic.is_descending_key,
+	   ic.is_included_column,
+	   ic.index_id
 FROM sys.index_columns ic
-    INNER JOIN sys.objects o
-        ON ic.object_id = o.object_id
-    INNER JOIN sys.schemas s
-        ON o.schema_id = s.schema_id
-    INNER JOIN sys.columns c
-        ON ic.object_id = c.object_id
-           AND ic.column_id = c.column_id
+	INNER JOIN sys.objects o
+		ON ic.object_id = o.object_id
+	INNER JOIN sys.schemas s
+		ON o.schema_id = s.schema_id
+	INNER JOIN sys.columns c
+		ON ic.object_id = c.object_id
+		   AND ic.column_id = c.column_id
 WHERE o.name = @Name
-      AND s.name = @Schema
+	  AND s.name = @Schema
 ORDER BY ic.key_ordinal;";
 
 		var tableColumns = GetTableOrView(tableName).Columns;
@@ -1050,31 +1050,31 @@ ORDER BY ic.key_ordinal;";
 		{
 			const string ParameterSqlA =
 				@"SELECT  p.name AS ParameterName ,
-            COALESCE(t.name, t2.name) AS TypeName,
+			COALESCE(t.name, t2.name) AS TypeName,
 			COALESCE(t.is_nullable, t2.is_nullable)  as is_nullable,
-		    CONVERT(INT, t.max_length) AS max_length,
-		    CONVERT(INT, t.precision) AS precision,
-		    CONVERT(INT, t.scale) AS scale,
-		    p.is_output
-            FROM    sys.parameters p
-                    LEFT JOIN sys.types t ON p.system_type_id = t.user_type_id
-                    LEFT JOIN sys.types t2 ON p.user_type_id = t2.user_type_id
-            WHERE   p.object_id = @ObjectId AND p.parameter_id <> 0
-            ORDER BY p.parameter_id;";
+			CONVERT(INT, t.max_length) AS max_length,
+			CONVERT(INT, t.precision) AS precision,
+			CONVERT(INT, t.scale) AS scale,
+			p.is_output
+			FROM    sys.parameters p
+					LEFT JOIN sys.types t ON p.system_type_id = t.user_type_id
+					LEFT JOIN sys.types t2 ON p.user_type_id = t2.user_type_id
+			WHERE   p.object_id = @ObjectId AND p.parameter_id <> 0
+			ORDER BY p.parameter_id;";
 
 			const string ParameterSqlB =
 				@"SELECT  p.name AS ParameterName ,
-            COALESCE(t.name, t2.name) AS TypeName,
+			COALESCE(t.name, t2.name) AS TypeName,
 			COALESCE(t.is_nullable, t2.is_nullable)  as is_nullable,
-		    CONVERT(INT, t.max_length) AS max_length,
-		    CONVERT(INT, t.precision) AS precision,
-		    CONVERT(INT, t.scale) AS scale,
-		    p.is_output
-            FROM    sys.all_parameters p
-                    LEFT JOIN sys.types t ON p.system_type_id = t.user_type_id
-                    LEFT JOIN sys.types t2 ON p.user_type_id = t2.user_type_id
-            WHERE   p.object_id = @ObjectId AND p.parameter_id <> 0
-            ORDER BY p.parameter_id;";
+			CONVERT(INT, t.max_length) AS max_length,
+			CONVERT(INT, t.precision) AS precision,
+			CONVERT(INT, t.scale) AS scale,
+			p.is_output
+			FROM    sys.all_parameters p
+					LEFT JOIN sys.types t ON p.system_type_id = t.user_type_id
+					LEFT JOIN sys.types t2 ON p.user_type_id = t2.user_type_id
+			WHERE   p.object_id = @ObjectId AND p.parameter_id <> 0
+			ORDER BY p.parameter_id;";
 
 			//we exclude parameter_id 0 because it is the return type of scalar functions.
 			//we need to use all_parameters for system stored procedures

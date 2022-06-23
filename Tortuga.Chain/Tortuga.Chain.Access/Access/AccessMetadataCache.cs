@@ -142,7 +142,7 @@ public sealed class AccessMetadataCache : OleDbDatabaseMetadataCache<AccessObjec
 	/// <param name="entry">The entry.</param>
 	/// <returns>OleDbParameter.</returns>
 	/// <exception cref="System.NotImplementedException"></exception>
-	protected override OleDbParameter ParameterBuilderCallback(SqlBuilderEntry<DbType> entry)
+	protected override OleDbParameter ParameterBuilderCallback(SqlBuilderEntry<OleDbType> entry)
 	{
 		throw new NotImplementedException();
 	}

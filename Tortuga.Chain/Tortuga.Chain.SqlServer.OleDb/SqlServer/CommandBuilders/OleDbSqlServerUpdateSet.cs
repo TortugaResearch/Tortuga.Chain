@@ -16,7 +16,7 @@ internal sealed class OleDbSqlServerUpdateSet : UpdateSetDbCommandBuilder<OleDbC
 	readonly object? m_NewValues;
 	readonly UpdateOptions m_Options;
 	readonly IEnumerable<OleDbParameter>? m_Parameters;
-	readonly SqlServerTableOrViewMetadata<OleDbType> m_Table;
+	readonly SqlServerTableOrViewMetadata<OleDbParameter, OleDbType> m_Table;
 	readonly object? m_UpdateArgumentValue;
 	readonly string? m_UpdateExpression;
 	FilterOptions m_FilterOptions;

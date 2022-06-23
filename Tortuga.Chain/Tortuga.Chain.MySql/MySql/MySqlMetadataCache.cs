@@ -377,7 +377,7 @@ public class MySqlMetadataCache : DatabaseMetadataCache<MySqlParameter, MySqlObj
 	/// <param name="entry">The entry.</param>
 	/// <returns>MySqlParameter.</returns>
 	/// <exception cref="System.NotImplementedException"></exception>
-	protected override MySqlParameter ParameterBuilderCallback(SqlBuilderEntry<DbType> entry)
+	protected override MySqlParameter ParameterBuilderCallback(SqlBuilderEntry<MySqlDbType> entry)
 	{
 		throw new NotImplementedException();
 	}

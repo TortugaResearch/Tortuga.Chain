@@ -95,7 +95,7 @@ public abstract class DatabaseMetadataCache<TParameter, TObjectName, TDbType> : 
 	/// </summary>
 	/// <param name="sqlBuilder">The SQL builder.</param>
 	/// <returns></returns>
-	public List<TParameter> GetParameters(SqlBuilder<DbType> sqlBuilder)
+	public List<TParameter> GetParameters(SqlBuilder<TDbType> sqlBuilder)
 	{
 		return sqlBuilder.GetParameters(ParameterBuilderCallback);
 	}
@@ -607,7 +607,7 @@ public abstract class DatabaseMetadataCache<TParameter, TObjectName, TDbType> : 
 	/// Callback for parameter builder.
 	/// </summary>
 	/// <param name="entry">The entry.</param>
-	protected abstract TParameter ParameterBuilderCallback(SqlBuilderEntry<DbType> entry);
+	protected abstract TParameter ParameterBuilderCallback(SqlBuilderEntry<TDbType> entry);
 
 	/// <summary>
 	/// Parse a string and return the database specific representation of the database object's name.

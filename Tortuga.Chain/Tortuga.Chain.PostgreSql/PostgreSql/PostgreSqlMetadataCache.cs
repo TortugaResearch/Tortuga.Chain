@@ -1202,7 +1202,7 @@ where s.relkind='S' and d.deptype='a'";
 		/// <param name="entry">The entry.</param>
 		/// <returns>NpgsqlParameter.</returns>
 		/// <exception cref="System.NotImplementedException"></exception>
-		protected override NpgsqlParameter ParameterBuilderCallback(SqlBuilderEntry<DbType> entry)
+		protected override NpgsqlParameter ParameterBuilderCallback(SqlBuilderEntry<NpgsqlDbType> entry)
 		{
 			throw new NotImplementedException();
 		}
