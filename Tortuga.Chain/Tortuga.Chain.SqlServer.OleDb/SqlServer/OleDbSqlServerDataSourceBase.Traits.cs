@@ -25,6 +25,7 @@ namespace Tortuga.Chain.SqlServer;
 [UseTrait(typeof(SupportsScalarFunctionTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
 [UseTrait(typeof(SupportsProcedureTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
 [UseTrait(typeof(SupportsTableFunctionTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType, AbstractLimitOption>))]
+[UseTrait(typeof(SupportsGetByColumnListTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
 partial class OleDbSqlServerDataSourceBase : ICrudDataSource, IAdvancedCrudDataSource
 {
 	DatabaseMetadataCache<AbstractObjectName, AbstractDbType> ICommandHelper<AbstractObjectName, AbstractDbType>.DatabaseMetadata => DatabaseMetadata;

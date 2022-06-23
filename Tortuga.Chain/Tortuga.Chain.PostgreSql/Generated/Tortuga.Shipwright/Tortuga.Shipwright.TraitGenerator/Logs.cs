@@ -20,6 +20,7 @@ Container class: Tortuga.Chain.PostgreSql.PostgreSqlDataSourceBase
 	Adding trait: Traits.SupportsScalarFunctionTrait<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>
 	Adding trait: Traits.SupportsProcedureTrait<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>
 	Adding trait: Traits.SupportsTableFunctionTrait<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType, Tortuga.Chain.PostgreSqlLimitOption>
+	Adding trait: Traits.SupportsGetByColumnListTrait<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>
 Container class: Tortuga.Chain.PostgreSql.PostgreSqlOpenDataSource
 	Adding trait: Traits.OpenDataSourceTrait<Tortuga.Chain.PostgreSqlDataSource, Tortuga.Chain.PostgreSql.PostgreSqlOpenDataSource, Npgsql.NpgsqlConnection, Npgsql.NpgsqlTransaction, Npgsql.NpgsqlCommand, Tortuga.Chain.PostgreSql.PostgreSqlMetadataCache>
 Container class: Tortuga.Chain.PostgreSql.PostgreSqlTransactionalDataSource

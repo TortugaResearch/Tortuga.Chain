@@ -2,7 +2,7 @@
 
 namespace Tortuga.Chain.PostgreSql
 {
-	partial class PostgreSqlDataSourceBase: Tortuga.Chain.DataSources.ISupportsDeleteAll, Tortuga.Chain.DataSources.ISupportsTruncate, Tortuga.Chain.DataSources.ISupportsSqlQueries, Tortuga.Chain.DataSources.ISupportsInsertBatch, Tortuga.Chain.DataSources.ISupportsDeleteByKeyList, Tortuga.Chain.DataSources.ISupportsDeleteByKey, Tortuga.Chain.DataSources.ISupportsUpdate, Tortuga.Chain.DataSources.ISupportsDelete, Tortuga.Chain.DataSources.ISupportsUpdateByKey, Tortuga.Chain.DataSources.ISupportsUpdateByKeyList, Tortuga.Chain.DataSources.ISupportsInsert, Tortuga.Chain.DataSources.ISupportsUpdateSet, Tortuga.Chain.DataSources.ISupportsDeleteSet, Tortuga.Chain.DataSources.ISupportsFrom, Tortuga.Chain.DataSources.ISupportsGetByKeyList, Tortuga.Chain.DataSources.ISupportsGetByKey, Tortuga.Chain.DataSources.ISupportsUpsert, Tortuga.Chain.DataSources.ISupportsInsertBulk, Tortuga.Chain.DataSources.ISupportsScalarFunction, Tortuga.Chain.DataSources.ISupportsProcedure, Tortuga.Chain.DataSources.ISupportsTableFunction, Traits.ICommandHelper<Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>, Traits.IInsertBatchHelper<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>, Traits.IUpdateDeleteByKeyHelper<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>, Traits.IUpdateDeleteHelper<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>, Traits.IInsertHelper<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>, Traits.IUpdateDeleteSetHelper<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>, Traits.IFromHelper<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType, Tortuga.Chain.PostgreSqlLimitOption>, Traits.IGetByKeyHelper<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>, Traits.IUpsertHelper<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>, Traits.IInsertBulkHelper<Tortuga.Chain.PostgreSql.CommandBuilders.PostgreSqlInsertBulk, Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>, Traits.ICommandHelper<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>
+	partial class PostgreSqlDataSourceBase: Tortuga.Chain.DataSources.ISupportsDeleteAll, Tortuga.Chain.DataSources.ISupportsTruncate, Tortuga.Chain.DataSources.ISupportsSqlQueries, Tortuga.Chain.DataSources.ISupportsInsertBatch, Tortuga.Chain.DataSources.ISupportsDeleteByKeyList, Tortuga.Chain.DataSources.ISupportsDeleteByKey, Tortuga.Chain.DataSources.ISupportsUpdate, Tortuga.Chain.DataSources.ISupportsDelete, Tortuga.Chain.DataSources.ISupportsUpdateByKey, Tortuga.Chain.DataSources.ISupportsUpdateByKeyList, Tortuga.Chain.DataSources.ISupportsInsert, Tortuga.Chain.DataSources.ISupportsUpdateSet, Tortuga.Chain.DataSources.ISupportsDeleteSet, Tortuga.Chain.DataSources.ISupportsFrom, Tortuga.Chain.DataSources.ISupportsGetByKeyList, Tortuga.Chain.DataSources.ISupportsGetByKey, Tortuga.Chain.DataSources.ISupportsUpsert, Tortuga.Chain.DataSources.ISupportsInsertBulk, Tortuga.Chain.DataSources.ISupportsScalarFunction, Tortuga.Chain.DataSources.ISupportsProcedure, Tortuga.Chain.DataSources.ISupportsTableFunction, Tortuga.Chain.DataSources.ISupportsGetByColumnList, Tortuga.Chain.DataSources.ISupportsGetByColumn, Traits.ICommandHelper<Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>, Traits.IInsertBatchHelper<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>, Traits.IUpdateDeleteByKeyHelper<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>, Traits.IUpdateDeleteHelper<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>, Traits.IInsertHelper<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>, Traits.IUpdateDeleteSetHelper<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>, Traits.IFromHelper<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType, Tortuga.Chain.PostgreSqlLimitOption>, Traits.IGetByKeyHelper<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>, Traits.IUpsertHelper<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>, Traits.IInsertBulkHelper<Tortuga.Chain.PostgreSql.CommandBuilders.PostgreSqlInsertBulk, Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>, Traits.ICommandHelper<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>
 	{
 
 		private bool __TraitsRegistered;
@@ -170,6 +170,15 @@ namespace Tortuga.Chain.PostgreSql
 				return ___Trait17;
 			}
 		}
+		private Traits.SupportsGetByColumnListTrait<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType> ___Trait18 = new();
+		private Traits.SupportsGetByColumnListTrait<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType> __Trait18
+		{
+			get
+			{
+				if (!__TraitsRegistered) __RegisterTraits();
+				return ___Trait18;
+			}
+		}
 
 		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsDelete
 		Tortuga.Chain.CommandBuilders.IObjectDbCommandBuilder<TArgument> Tortuga.Chain.DataSources.ISupportsDelete.Delete<TArgument>(System.String tableName, TArgument argumentValue, Tortuga.Chain.DeleteOptions options)
@@ -265,6 +274,78 @@ namespace Tortuga.Chain.PostgreSql
 		Tortuga.Chain.CommandBuilders.ITableDbCommandBuilder<TObject> Tortuga.Chain.DataSources.ISupportsFrom.From<TObject>(System.Object filterValue)
 		{
 			return ((Tortuga.Chain.DataSources.ISupportsFrom)__Trait11).From<TObject>(filterValue);
+		}
+
+		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsGetByColumn
+		Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder Tortuga.Chain.DataSources.ISupportsGetByColumn.GetByColumn<TKey>(System.String tableName, System.String columnName, TKey key)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsGetByColumn)__Trait18).GetByColumn<TKey>(tableName, columnName, key);
+		}
+
+		Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder Tortuga.Chain.DataSources.ISupportsGetByColumn.GetByColumn(System.String tableName, System.String columnName, System.String key)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsGetByColumn)__Trait18).GetByColumn(tableName, columnName, key);
+		}
+
+		Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder<TObject> Tortuga.Chain.DataSources.ISupportsGetByColumn.GetByColumn<TObject, TKey>(System.String columnName, TKey key)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsGetByColumn)__Trait18).GetByColumn<TObject, TKey>(columnName, key);
+		}
+
+		Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder<TObject> Tortuga.Chain.DataSources.ISupportsGetByColumn.GetByColumn<TObject>(System.String columnName, System.String key)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsGetByColumn)__Trait18).GetByColumn<TObject>(columnName, key);
+		}
+
+		Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder<TObject> Tortuga.Chain.DataSources.ISupportsGetByColumn.GetByColumn<TObject>(System.String columnName, System.Int16 key)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsGetByColumn)__Trait18).GetByColumn<TObject>(columnName, key);
+		}
+
+		Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder<TObject> Tortuga.Chain.DataSources.ISupportsGetByColumn.GetByColumn<TObject>(System.String columnName, System.Int32 key)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsGetByColumn)__Trait18).GetByColumn<TObject>(columnName, key);
+		}
+
+		Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder<TObject> Tortuga.Chain.DataSources.ISupportsGetByColumn.GetByColumn<TObject>(System.String columnName, System.Int64 key)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsGetByColumn)__Trait18).GetByColumn<TObject>(columnName, key);
+		}
+
+		Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder<TObject> Tortuga.Chain.DataSources.ISupportsGetByColumn.GetByColumn<TObject>(System.String columnName, System.Guid key)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsGetByColumn)__Trait18).GetByColumn<TObject>(columnName, key);
+		}
+
+		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsGetByColumnList
+		Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder Tortuga.Chain.DataSources.ISupportsGetByColumnList.GetByColumnList<TKey>(System.String tableName, System.String columnName, System.Collections.Generic.IEnumerable<TKey> keys)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsGetByColumnList)__Trait18).GetByColumnList<TKey>(tableName, columnName, keys);
+		}
+
+		Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder<TObject> Tortuga.Chain.DataSources.ISupportsGetByColumnList.GetByColumnList<TObject, TKey>(System.String columnName, System.Collections.Generic.IEnumerable<TKey> keys)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsGetByColumnList)__Trait18).GetByColumnList<TObject, TKey>(columnName, keys);
+		}
+
+		Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder<TObject> Tortuga.Chain.DataSources.ISupportsGetByColumnList.GetByColumnList<TObject>(System.String columnName, System.Collections.Generic.IEnumerable<short> keys)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsGetByColumnList)__Trait18).GetByColumnList<TObject>(columnName, keys);
+		}
+
+		Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder<TObject> Tortuga.Chain.DataSources.ISupportsGetByColumnList.GetByColumnList<TObject>(System.String columnName, System.Collections.Generic.IEnumerable<int> keys)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsGetByColumnList)__Trait18).GetByColumnList<TObject>(columnName, keys);
+		}
+
+		Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder<TObject> Tortuga.Chain.DataSources.ISupportsGetByColumnList.GetByColumnList<TObject>(System.String columnName, System.Collections.Generic.IEnumerable<long> keys)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsGetByColumnList)__Trait18).GetByColumnList<TObject>(columnName, keys);
+		}
+
+		Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder<TObject> Tortuga.Chain.DataSources.ISupportsGetByColumnList.GetByColumnList<TObject>(System.String columnName, System.Collections.Generic.IEnumerable<System.Guid> keys)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsGetByColumnList)__Trait18).GetByColumnList<TObject>(columnName, keys);
 		}
 
 		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsGetByKey
@@ -760,6 +841,177 @@ namespace Tortuga.Chain.PostgreSql
 		public Tortuga.Chain.CommandBuilders.TableDbCommandBuilder<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSqlLimitOption, TObject> From<TObject>(System.Object filterValue, Tortuga.Chain.FilterOptions filterOptions = 0)where TObject : class
 		{
 			return __Trait11.From<TObject>(filterValue, filterOptions);
+		}
+
+		// Exposing trait Traits.SupportsGetByColumnListTrait<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>
+
+		/// <summary>
+		/// Gets one or more records by an arbitrary column.
+		/// </summary>
+		/// <typeparam name="TObject">The type of the object. Used to determine which table will be read.</typeparam>
+		/// <param name="columnName">The name of the column to search.</param>
+		/// <param name="key">The search key.</param>
+		public Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, TObject> GetByColumn<TObject>(System.String columnName, System.Guid key)where TObject : class
+		{
+			return __Trait18.GetByColumn<TObject>(columnName, key);
+		}
+
+		/// <summary>
+		/// Gets one or more records by an arbitrary column.
+		/// </summary>
+		/// <typeparam name="TObject">The type of the object.</typeparam>
+		/// <param name="columnName">The name of the column to search.</param>
+		/// <param name="key">The search key.</param>
+		public Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, TObject> GetByColumn<TObject>(System.String columnName, System.Int64 key)where TObject : class
+		{
+			return __Trait18.GetByColumn<TObject>(columnName, key);
+		}
+
+		/// <summary>
+		/// Gets one or more records by an arbitrary column.
+		/// </summary>
+		/// <typeparam name="TObject">The type of the object.</typeparam>
+		/// <param name="columnName">The name of the column to search.</param>
+		/// <param name="key">The search key.</param>
+		public Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, TObject> GetByColumn<TObject>(System.String columnName, System.Int16 key)where TObject : class
+		{
+			return __Trait18.GetByColumn<TObject>(columnName, key);
+		}
+
+		/// <summary>
+		/// Gets one or more records by an arbitrary column.
+		/// </summary>
+		/// <typeparam name="TObject">The type of the object.</typeparam>
+		/// <param name="columnName">The name of the column to search.</param>
+		/// <param name="key">The search key.</param>
+		public Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, TObject> GetByColumn<TObject>(System.String columnName, System.Int32 key)where TObject : class
+		{
+			return __Trait18.GetByColumn<TObject>(columnName, key);
+		}
+
+		/// <summary>
+		/// Gets one or more records by an arbitrary column.
+		/// </summary>
+		/// <typeparam name="TObject">The type of the object.</typeparam>
+		/// <param name="columnName">The name of the column to search.</param>
+		/// <param name="key">The search key.</param>
+		public Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, TObject> GetByColumn<TObject>(System.String columnName, System.String key)where TObject : class
+		{
+			return __Trait18.GetByColumn<TObject>(columnName, key);
+		}
+
+		/// <summary>
+		/// Gets one or more records by an arbitrary column.
+		/// </summary>
+		/// <typeparam name="TObject">The type of the object.</typeparam>
+		/// <typeparam name="TKey">The type of the key.</typeparam>
+		/// <param name="columnName">The name of the column to search.</param>
+		/// <param name="key">The search key.</param>
+		public Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, TObject> GetByColumn<TObject, TKey>(System.String columnName, TKey key)where TObject : class
+		{
+			return __Trait18.GetByColumn<TObject, TKey>(columnName, key);
+		}
+
+		/// <summary>
+		/// Gets one or more records by an arbitrary column.
+		/// </summary>
+		/// <param name="tableName">Name of the table.</param>
+		/// <param name="columnName">The name of the column to search.</param>
+		/// <param name="key">The search key.</param>
+		public Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter> GetByColumn(Tortuga.Chain.PostgreSql.PostgreSqlObjectName tableName, System.String columnName, System.String key)
+		{
+			return __Trait18.GetByColumn(tableName, columnName, key);
+		}
+
+		/// <summary>
+		/// Gets one or more records by an arbitrary column.
+		/// </summary>
+		/// <typeparam name="TKey"></typeparam>
+		/// <param name="tableName">Name of the table.</param>
+		/// <param name="columnName">The name of the column to search.</param>
+		/// <param name="key">The search key.</param>
+		public Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter> GetByColumn<TKey>(Tortuga.Chain.PostgreSql.PostgreSqlObjectName tableName, System.String columnName, TKey key)
+		{
+			return __Trait18.GetByColumn<TKey>(tableName, columnName, key);
+		}
+
+		/// <summary>
+		/// Gets a set of records by their primary key.
+		/// </summary>
+		/// <typeparam name="TKey"></typeparam>
+		/// <param name="tableName">Name of the table.</param>
+		/// <param name="columnName">The name of the column to search.</param>
+		/// <param name="keys">The search keys.</param>
+		public Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter> GetByColumnList<TKey>(Tortuga.Chain.PostgreSql.PostgreSqlObjectName tableName, System.String columnName, System.Collections.Generic.IEnumerable<TKey> keys)
+		{
+			return __Trait18.GetByColumnList<TKey>(tableName, columnName, keys);
+		}
+
+		/// <summary>
+		/// Gets one or more records by an arbitrary column.
+		/// </summary>
+		/// <typeparam name="TObject">The type of the returned object.</typeparam>
+		/// <typeparam name="TKey">The type of the key.</typeparam>
+		/// <param name="columnName">The name of the column to search.</param>
+		/// <param name="keys">The search keys.</param>
+		public Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, TObject> GetByColumnList<TObject, TKey>(System.String columnName, System.Collections.Generic.IEnumerable<TKey> keys)where TObject : class
+		{
+			return __Trait18.GetByColumnList<TObject, TKey>(columnName, keys);
+		}
+
+		/// <summary>
+		/// Gets one or more records by an arbitrary column.
+		/// </summary>
+		/// <typeparam name="TObject">The type of the returned object.</typeparam>
+		/// <param name="columnName">The name of the column to search.</param>
+		/// <param name="keys">The search keys.</param>
+		public Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, TObject> GetByColumnList<TObject>(System.String columnName, System.Collections.Generic.IEnumerable<System.Guid> keys)where TObject : class
+		{
+			return __Trait18.GetByColumnList<TObject>(columnName, keys);
+		}
+
+		/// <summary>
+		/// Gets one or more records by an arbitrary column.
+		/// </summary>
+		/// <typeparam name="TObject">The type of the returned object.</typeparam>
+		/// <param name="columnName">The name of the column to search.</param>
+		/// <param name="keys">The search keys.</param>
+		public Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, TObject> GetByColumnList<TObject>(System.String columnName, System.Collections.Generic.IEnumerable<long> keys)where TObject : class
+		{
+			return __Trait18.GetByColumnList<TObject>(columnName, keys);
+		}
+
+		/// <summary>
+		/// Gets one or more records by an arbitrary column.
+		/// </summary>
+		/// <typeparam name="TObject">The type of the returned object.</typeparam>
+		/// <param name="columnName">The name of the column to search.</param>
+		/// <param name="keys">The search keys.</param>
+		public Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, TObject> GetByColumnList<TObject>(System.String columnName, System.Collections.Generic.IEnumerable<short> keys)where TObject : class
+		{
+			return __Trait18.GetByColumnList<TObject>(columnName, keys);
+		}
+
+		/// <summary>
+		/// Gets one or more records by an arbitrary column.
+		/// </summary>
+		/// <typeparam name="TObject">The type of the returned object.</typeparam>
+		/// <param name="columnName">The name of the column to search.</param>
+		/// <param name="keys">The search keys.</param>
+		public Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, TObject> GetByColumnList<TObject>(System.String columnName, System.Collections.Generic.IEnumerable<int> keys)where TObject : class
+		{
+			return __Trait18.GetByColumnList<TObject>(columnName, keys);
+		}
+
+		/// <summary>
+		/// Gets one or more records by an arbitrary column.
+		/// </summary>
+		/// <typeparam name="TObject">The type of the returned object.</typeparam>
+		/// <param name="columnName">The name of the column to search.</param>
+		/// <param name="keys">The search keys.</param>
+		public Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, TObject> GetByColumnList<TObject>(System.String columnName, System.Collections.Generic.IEnumerable<string> keys)where TObject : class
+		{
+			return __Trait18.GetByColumnList<TObject>(columnName, keys);
 		}
 
 		// Exposing trait Traits.SupportsGetByKeyListTrait<Npgsql.NpgsqlCommand, Npgsql.NpgsqlParameter, Tortuga.Chain.PostgreSql.PostgreSqlObjectName, NpgsqlTypes.NpgsqlDbType>
@@ -1402,6 +1654,7 @@ namespace Tortuga.Chain.PostgreSql
 			__Trait16.DataSource = this;
 			__Trait17.OnTableFunction = OnTableFunction;
 			__Trait17.DataSource = this;
+			__Trait18.DataSource = this;
 		}
 
 	}

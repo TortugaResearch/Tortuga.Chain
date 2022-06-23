@@ -27,6 +27,7 @@ DbCommandBuilder<AbstractCommand, AbstractParameter>>))]
 [UseTrait(typeof(SupportsInsertBulkTrait<MySqlInsertBulk, AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
 [UseTrait(typeof(SupportsScalarFunctionTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
 [UseTrait(typeof(SupportsProcedureTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
+[UseTrait(typeof(SupportsGetByColumnListTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
 partial class MySqlDataSourceBase : ICrudDataSource, IAdvancedCrudDataSource
 {
 	DatabaseMetadataCache<AbstractObjectName, AbstractDbType> ICommandHelper<AbstractObjectName, AbstractDbType>.DatabaseMetadata => DatabaseMetadata;
