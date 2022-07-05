@@ -20,6 +20,7 @@ Container class: Tortuga.Chain.SqlServer.SqlServerDataSourceBase
 	Adding trait: Traits.SupportsScalarFunctionTrait<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>
 	Adding trait: Traits.SupportsProcedureTrait<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>
 	Adding trait: Traits.SupportsTableFunctionTrait<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType, Tortuga.Chain.SqlServerLimitOption>
+	Adding trait: Traits.SupportsGetByColumnListTrait<System.Data.SqlClient.SqlCommand, System.Data.SqlClient.SqlParameter, Tortuga.Chain.SqlServer.SqlServerObjectName, System.Data.SqlDbType>
 Container class: Tortuga.Chain.SqlServer.SqlServerOpenDataSource
 	Adding trait: Traits.OpenDataSourceTrait<Tortuga.Chain.SqlServerDataSource, Tortuga.Chain.SqlServer.SqlServerOpenDataSource, System.Data.SqlClient.SqlConnection, System.Data.SqlClient.SqlTransaction, System.Data.SqlClient.SqlCommand, Tortuga.Chain.SqlServer.SqlServerMetadataCache>
 Container class: Tortuga.Chain.SqlServer.SqlServerTransactionalDataSource

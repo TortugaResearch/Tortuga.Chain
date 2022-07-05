@@ -2,7 +2,7 @@
 
 namespace Tortuga.Chain.SQLite
 {
-	partial class SQLiteDataSourceBase: Tortuga.Chain.DataSources.ISupportsDeleteAll, Tortuga.Chain.DataSources.ISupportsTruncate, Tortuga.Chain.DataSources.ISupportsSqlQueries, Tortuga.Chain.DataSources.ISupportsInsertBatch, Tortuga.Chain.DataSources.ISupportsDeleteByKeyList, Tortuga.Chain.DataSources.ISupportsDeleteByKey, Tortuga.Chain.DataSources.ISupportsUpdate, Tortuga.Chain.DataSources.ISupportsDelete, Tortuga.Chain.DataSources.ISupportsUpdateByKey, Tortuga.Chain.DataSources.ISupportsUpdateByKeyList, Tortuga.Chain.DataSources.ISupportsInsert, Tortuga.Chain.DataSources.ISupportsUpdateSet, Tortuga.Chain.DataSources.ISupportsDeleteSet, Tortuga.Chain.DataSources.ISupportsFrom, Tortuga.Chain.DataSources.ISupportsGetByKeyList, Tortuga.Chain.DataSources.ISupportsGetByKey, Tortuga.Chain.DataSources.ISupportsUpsert, Traits.ICommandHelper<Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType>, Traits.IInsertBatchHelper<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter, Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType>, Traits.IUpdateDeleteByKeyHelper<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter, Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType>, Traits.IUpdateDeleteHelper<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter, Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType>, Traits.IInsertHelper<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter, Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType>, Traits.IUpdateDeleteSetHelper<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter, Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType>, Traits.IFromHelper<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter, Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType, Tortuga.Chain.SQLiteLimitOption>, Traits.IGetByKeyHelper<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter, Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType>, Traits.IUpsertHelper<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter, Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType>
+	partial class SQLiteDataSourceBase: Tortuga.Chain.DataSources.ISupportsDeleteAll, Tortuga.Chain.DataSources.ISupportsTruncate, Tortuga.Chain.DataSources.ISupportsSqlQueries, Tortuga.Chain.DataSources.ISupportsInsertBatch, Tortuga.Chain.DataSources.ISupportsDeleteByKeyList, Tortuga.Chain.DataSources.ISupportsDeleteByKey, Tortuga.Chain.DataSources.ISupportsUpdate, Tortuga.Chain.DataSources.ISupportsDelete, Tortuga.Chain.DataSources.ISupportsUpdateByKey, Tortuga.Chain.DataSources.ISupportsUpdateByKeyList, Tortuga.Chain.DataSources.ISupportsInsert, Tortuga.Chain.DataSources.ISupportsUpdateSet, Tortuga.Chain.DataSources.ISupportsDeleteSet, Tortuga.Chain.DataSources.ISupportsFrom, Tortuga.Chain.DataSources.ISupportsGetByKeyList, Tortuga.Chain.DataSources.ISupportsGetByKey, Tortuga.Chain.DataSources.ISupportsUpsert, Tortuga.Chain.DataSources.ISupportsGetByColumnList, Tortuga.Chain.DataSources.ISupportsGetByColumn, Traits.ICommandHelper<Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType>, Traits.IInsertBatchHelper<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter, Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType>, Traits.IUpdateDeleteByKeyHelper<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter, Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType>, Traits.IUpdateDeleteHelper<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter, Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType>, Traits.IInsertHelper<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter, Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType>, Traits.IUpdateDeleteSetHelper<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter, Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType>, Traits.IFromHelper<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter, Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType, Tortuga.Chain.SQLiteLimitOption>, Traits.IGetByKeyHelper<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter, Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType>, Traits.IUpsertHelper<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter, Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType>
 	{
 
 		private bool __TraitsRegistered;
@@ -134,6 +134,15 @@ namespace Tortuga.Chain.SQLite
 				return ___Trait13;
 			}
 		}
+		private Traits.SupportsGetByColumnListTrait<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter, Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType> ___Trait14 = new();
+		private Traits.SupportsGetByColumnListTrait<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter, Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType> __Trait14
+		{
+			get
+			{
+				if (!__TraitsRegistered) __RegisterTraits();
+				return ___Trait14;
+			}
+		}
 
 		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsDelete
 		Tortuga.Chain.CommandBuilders.IObjectDbCommandBuilder<TArgument> Tortuga.Chain.DataSources.ISupportsDelete.Delete<TArgument>(System.String tableName, TArgument argumentValue, Tortuga.Chain.DeleteOptions options)
@@ -229,6 +238,78 @@ namespace Tortuga.Chain.SQLite
 		Tortuga.Chain.CommandBuilders.ITableDbCommandBuilder<TObject> Tortuga.Chain.DataSources.ISupportsFrom.From<TObject>(System.Object filterValue)
 		{
 			return ((Tortuga.Chain.DataSources.ISupportsFrom)__Trait11).From<TObject>(filterValue);
+		}
+
+		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsGetByColumn
+		Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder Tortuga.Chain.DataSources.ISupportsGetByColumn.GetByColumn<TKey>(System.String tableName, System.String columnName, TKey key)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsGetByColumn)__Trait14).GetByColumn<TKey>(tableName, columnName, key);
+		}
+
+		Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder Tortuga.Chain.DataSources.ISupportsGetByColumn.GetByColumn(System.String tableName, System.String columnName, System.String key)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsGetByColumn)__Trait14).GetByColumn(tableName, columnName, key);
+		}
+
+		Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder<TObject> Tortuga.Chain.DataSources.ISupportsGetByColumn.GetByColumn<TObject, TKey>(System.String columnName, TKey key)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsGetByColumn)__Trait14).GetByColumn<TObject, TKey>(columnName, key);
+		}
+
+		Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder<TObject> Tortuga.Chain.DataSources.ISupportsGetByColumn.GetByColumn<TObject>(System.String columnName, System.String key)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsGetByColumn)__Trait14).GetByColumn<TObject>(columnName, key);
+		}
+
+		Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder<TObject> Tortuga.Chain.DataSources.ISupportsGetByColumn.GetByColumn<TObject>(System.String columnName, System.Int16 key)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsGetByColumn)__Trait14).GetByColumn<TObject>(columnName, key);
+		}
+
+		Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder<TObject> Tortuga.Chain.DataSources.ISupportsGetByColumn.GetByColumn<TObject>(System.String columnName, System.Int32 key)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsGetByColumn)__Trait14).GetByColumn<TObject>(columnName, key);
+		}
+
+		Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder<TObject> Tortuga.Chain.DataSources.ISupportsGetByColumn.GetByColumn<TObject>(System.String columnName, System.Int64 key)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsGetByColumn)__Trait14).GetByColumn<TObject>(columnName, key);
+		}
+
+		Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder<TObject> Tortuga.Chain.DataSources.ISupportsGetByColumn.GetByColumn<TObject>(System.String columnName, System.Guid key)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsGetByColumn)__Trait14).GetByColumn<TObject>(columnName, key);
+		}
+
+		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsGetByColumnList
+		Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder Tortuga.Chain.DataSources.ISupportsGetByColumnList.GetByColumnList<TKey>(System.String tableName, System.String columnName, System.Collections.Generic.IEnumerable<TKey> keys)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsGetByColumnList)__Trait14).GetByColumnList<TKey>(tableName, columnName, keys);
+		}
+
+		Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder<TObject> Tortuga.Chain.DataSources.ISupportsGetByColumnList.GetByColumnList<TObject, TKey>(System.String columnName, System.Collections.Generic.IEnumerable<TKey> keys)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsGetByColumnList)__Trait14).GetByColumnList<TObject, TKey>(columnName, keys);
+		}
+
+		Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder<TObject> Tortuga.Chain.DataSources.ISupportsGetByColumnList.GetByColumnList<TObject>(System.String columnName, System.Collections.Generic.IEnumerable<short> keys)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsGetByColumnList)__Trait14).GetByColumnList<TObject>(columnName, keys);
+		}
+
+		Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder<TObject> Tortuga.Chain.DataSources.ISupportsGetByColumnList.GetByColumnList<TObject>(System.String columnName, System.Collections.Generic.IEnumerable<int> keys)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsGetByColumnList)__Trait14).GetByColumnList<TObject>(columnName, keys);
+		}
+
+		Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder<TObject> Tortuga.Chain.DataSources.ISupportsGetByColumnList.GetByColumnList<TObject>(System.String columnName, System.Collections.Generic.IEnumerable<long> keys)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsGetByColumnList)__Trait14).GetByColumnList<TObject>(columnName, keys);
+		}
+
+		Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder<TObject> Tortuga.Chain.DataSources.ISupportsGetByColumnList.GetByColumnList<TObject>(System.String columnName, System.Collections.Generic.IEnumerable<System.Guid> keys)
+		{
+			return ((Tortuga.Chain.DataSources.ISupportsGetByColumnList)__Trait14).GetByColumnList<TObject>(columnName, keys);
 		}
 
 		// Explicit interface implementation Tortuga.Chain.DataSources.ISupportsGetByKey
@@ -670,6 +751,177 @@ namespace Tortuga.Chain.SQLite
 		public Tortuga.Chain.CommandBuilders.TableDbCommandBuilder<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter, Tortuga.Chain.SQLiteLimitOption, TObject> From<TObject>(System.Object filterValue, Tortuga.Chain.FilterOptions filterOptions = 0)where TObject : class
 		{
 			return __Trait11.From<TObject>(filterValue, filterOptions);
+		}
+
+		// Exposing trait Traits.SupportsGetByColumnListTrait<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter, Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType>
+
+		/// <summary>
+		/// Gets one or more records by an arbitrary column.
+		/// </summary>
+		/// <typeparam name="TObject">The type of the object. Used to determine which table will be read.</typeparam>
+		/// <param name="columnName">The name of the column to search.</param>
+		/// <param name="key">The search key.</param>
+		public Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter, TObject> GetByColumn<TObject>(System.String columnName, System.Guid key)where TObject : class
+		{
+			return __Trait14.GetByColumn<TObject>(columnName, key);
+		}
+
+		/// <summary>
+		/// Gets one or more records by an arbitrary column.
+		/// </summary>
+		/// <typeparam name="TObject">The type of the object.</typeparam>
+		/// <param name="columnName">The name of the column to search.</param>
+		/// <param name="key">The search key.</param>
+		public Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter, TObject> GetByColumn<TObject>(System.String columnName, System.Int64 key)where TObject : class
+		{
+			return __Trait14.GetByColumn<TObject>(columnName, key);
+		}
+
+		/// <summary>
+		/// Gets one or more records by an arbitrary column.
+		/// </summary>
+		/// <typeparam name="TObject">The type of the object.</typeparam>
+		/// <param name="columnName">The name of the column to search.</param>
+		/// <param name="key">The search key.</param>
+		public Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter, TObject> GetByColumn<TObject>(System.String columnName, System.Int16 key)where TObject : class
+		{
+			return __Trait14.GetByColumn<TObject>(columnName, key);
+		}
+
+		/// <summary>
+		/// Gets one or more records by an arbitrary column.
+		/// </summary>
+		/// <typeparam name="TObject">The type of the object.</typeparam>
+		/// <param name="columnName">The name of the column to search.</param>
+		/// <param name="key">The search key.</param>
+		public Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter, TObject> GetByColumn<TObject>(System.String columnName, System.Int32 key)where TObject : class
+		{
+			return __Trait14.GetByColumn<TObject>(columnName, key);
+		}
+
+		/// <summary>
+		/// Gets one or more records by an arbitrary column.
+		/// </summary>
+		/// <typeparam name="TObject">The type of the object.</typeparam>
+		/// <param name="columnName">The name of the column to search.</param>
+		/// <param name="key">The search key.</param>
+		public Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter, TObject> GetByColumn<TObject>(System.String columnName, System.String key)where TObject : class
+		{
+			return __Trait14.GetByColumn<TObject>(columnName, key);
+		}
+
+		/// <summary>
+		/// Gets one or more records by an arbitrary column.
+		/// </summary>
+		/// <typeparam name="TObject">The type of the object.</typeparam>
+		/// <typeparam name="TKey">The type of the key.</typeparam>
+		/// <param name="columnName">The name of the column to search.</param>
+		/// <param name="key">The search key.</param>
+		public Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter, TObject> GetByColumn<TObject, TKey>(System.String columnName, TKey key)where TObject : class
+		{
+			return __Trait14.GetByColumn<TObject, TKey>(columnName, key);
+		}
+
+		/// <summary>
+		/// Gets one or more records by an arbitrary column.
+		/// </summary>
+		/// <param name="tableName">Name of the table.</param>
+		/// <param name="columnName">The name of the column to search.</param>
+		/// <param name="key">The search key.</param>
+		public Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter> GetByColumn(Tortuga.Chain.SQLite.SQLiteObjectName tableName, System.String columnName, System.String key)
+		{
+			return __Trait14.GetByColumn(tableName, columnName, key);
+		}
+
+		/// <summary>
+		/// Gets one or more records by an arbitrary column.
+		/// </summary>
+		/// <typeparam name="TKey"></typeparam>
+		/// <param name="tableName">Name of the table.</param>
+		/// <param name="columnName">The name of the column to search.</param>
+		/// <param name="key">The search key.</param>
+		public Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter> GetByColumn<TKey>(Tortuga.Chain.SQLite.SQLiteObjectName tableName, System.String columnName, TKey key)
+		{
+			return __Trait14.GetByColumn<TKey>(tableName, columnName, key);
+		}
+
+		/// <summary>
+		/// Gets a set of records by their primary key.
+		/// </summary>
+		/// <typeparam name="TKey"></typeparam>
+		/// <param name="tableName">Name of the table.</param>
+		/// <param name="columnName">The name of the column to search.</param>
+		/// <param name="keys">The search keys.</param>
+		public Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter> GetByColumnList<TKey>(Tortuga.Chain.SQLite.SQLiteObjectName tableName, System.String columnName, System.Collections.Generic.IEnumerable<TKey> keys)
+		{
+			return __Trait14.GetByColumnList<TKey>(tableName, columnName, keys);
+		}
+
+		/// <summary>
+		/// Gets one or more records by an arbitrary column.
+		/// </summary>
+		/// <typeparam name="TObject">The type of the returned object.</typeparam>
+		/// <typeparam name="TKey">The type of the key.</typeparam>
+		/// <param name="columnName">The name of the column to search.</param>
+		/// <param name="keys">The search keys.</param>
+		public Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter, TObject> GetByColumnList<TObject, TKey>(System.String columnName, System.Collections.Generic.IEnumerable<TKey> keys)where TObject : class
+		{
+			return __Trait14.GetByColumnList<TObject, TKey>(columnName, keys);
+		}
+
+		/// <summary>
+		/// Gets one or more records by an arbitrary column.
+		/// </summary>
+		/// <typeparam name="TObject">The type of the returned object.</typeparam>
+		/// <param name="columnName">The name of the column to search.</param>
+		/// <param name="keys">The search keys.</param>
+		public Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter, TObject> GetByColumnList<TObject>(System.String columnName, System.Collections.Generic.IEnumerable<System.Guid> keys)where TObject : class
+		{
+			return __Trait14.GetByColumnList<TObject>(columnName, keys);
+		}
+
+		/// <summary>
+		/// Gets one or more records by an arbitrary column.
+		/// </summary>
+		/// <typeparam name="TObject">The type of the returned object.</typeparam>
+		/// <param name="columnName">The name of the column to search.</param>
+		/// <param name="keys">The search keys.</param>
+		public Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter, TObject> GetByColumnList<TObject>(System.String columnName, System.Collections.Generic.IEnumerable<long> keys)where TObject : class
+		{
+			return __Trait14.GetByColumnList<TObject>(columnName, keys);
+		}
+
+		/// <summary>
+		/// Gets one or more records by an arbitrary column.
+		/// </summary>
+		/// <typeparam name="TObject">The type of the returned object.</typeparam>
+		/// <param name="columnName">The name of the column to search.</param>
+		/// <param name="keys">The search keys.</param>
+		public Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter, TObject> GetByColumnList<TObject>(System.String columnName, System.Collections.Generic.IEnumerable<short> keys)where TObject : class
+		{
+			return __Trait14.GetByColumnList<TObject>(columnName, keys);
+		}
+
+		/// <summary>
+		/// Gets one or more records by an arbitrary column.
+		/// </summary>
+		/// <typeparam name="TObject">The type of the returned object.</typeparam>
+		/// <param name="columnName">The name of the column to search.</param>
+		/// <param name="keys">The search keys.</param>
+		public Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter, TObject> GetByColumnList<TObject>(System.String columnName, System.Collections.Generic.IEnumerable<int> keys)where TObject : class
+		{
+			return __Trait14.GetByColumnList<TObject>(columnName, keys);
+		}
+
+		/// <summary>
+		/// Gets one or more records by an arbitrary column.
+		/// </summary>
+		/// <typeparam name="TObject">The type of the returned object.</typeparam>
+		/// <param name="columnName">The name of the column to search.</param>
+		/// <param name="keys">The search keys.</param>
+		public Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter, TObject> GetByColumnList<TObject>(System.String columnName, System.Collections.Generic.IEnumerable<string> keys)where TObject : class
+		{
+			return __Trait14.GetByColumnList<TObject>(columnName, keys);
 		}
 
 		// Exposing trait Traits.SupportsGetByKeyListTrait<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter, Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType>
@@ -1174,6 +1426,7 @@ namespace Tortuga.Chain.SQLite
 			__Trait11.DataSource = this;
 			__Trait12.DataSource = this;
 			__Trait13.DataSource = this;
+			__Trait14.DataSource = this;
 		}
 
 	}

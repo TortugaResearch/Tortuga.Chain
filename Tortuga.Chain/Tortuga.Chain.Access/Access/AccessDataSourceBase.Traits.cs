@@ -21,6 +21,7 @@ namespace Tortuga.Chain.Access;
 [UseTrait(typeof(SupportsDeleteSet<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
 [UseTrait(typeof(SupportsFromTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType, AbstractLimitOption>))]
 [UseTrait(typeof(SupportsGetByKeyListTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
+[UseTrait(typeof(SupportsGetByColumnListTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
 partial class AccessDataSourceBase : ICrudDataSource
 {
 	DatabaseMetadataCache<AbstractObjectName, AbstractDbType> ICommandHelper<AbstractObjectName, AbstractDbType>.DatabaseMetadata => DatabaseMetadata;
@@ -103,7 +104,7 @@ partial class AccessDataSourceBase : ICrudDataSource
 		return new AccessTableOrView<TObject>(this, tableOrViewName, filterValue, filterOptions);
 	}
 
-	SingleRowDbCommandBuilder<AbstractCommand, AbstractParameter> IGetByKeyHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnGetByKey<TObject, TKey>(AbstractObjectName tableName, ColumnMetadata<AbstractDbType> keyColumn, TKey key)
+	MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> IGetByKeyHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnGetByKey<TObject, TKey>(AbstractObjectName tableName, ColumnMetadata<AbstractDbType> keyColumn, TKey key)
 		where TObject : class
 	{
 		string where = keyColumn.SqlName + " = @Param0";
