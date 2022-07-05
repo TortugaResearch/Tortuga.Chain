@@ -14,6 +14,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
 	{
 		readonly object? m_ArgumentValue;
 
+		readonly int? m_ExpectedRowCount;
 		readonly FilterOptions m_FilterOptions;
 
 		readonly object? m_FilterValue;
@@ -23,7 +24,6 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
 
 		readonly TableOrViewMetadata<SQLiteObjectName, DbType> m_Table;
 		readonly string? m_WhereClause;
-		readonly int? m_ExpectedRowCount;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="SQLiteDeleteSet" /> class.

@@ -1,3 +1,65 @@
+## Version 4.1
+
+
+### Features with Breaking Changes
+
+[#440 Default Sorting for WithLimits](https://github.com/TortugaResearch/Chain/issues/440)
+
+If you use WithLimits without a sort order, then it will act non-deterministically. This is because the database could sort the results in any random order if not constrained.
+
+The fix is to default to sorting with primary key when using WithLimits. If there are no primary keys and no explicit sorting, then an exception will be thrown if in strict mode.
+
+This change also affects table-valued functions. Except these cannot infer the sort order as they do not have a primary key.
+
+For reflection-based scenarios, the method `TableOrViewMetadata<TObjectName, TDbType>.GetDefaultSortOrder(int)` can be used to get a table's default sort order.
+
+### Features
+
+[#459 Add TimeSpan support for Access and OleDB](https://github.com/TortugaResearch/Tortuga.Chain/issues/459)
+
+
+Access doesn't understand TimeSpan at all and treats it as a DateTime.
+
+OleDB for SQL Server is worse. It returns time(7) columns as strings with the column type set to object.
+
+
+[#445 Add support for DateOnly and TimeOnly](https://github.com/TortugaResearch/Tortuga.Chain/issues/445)
+
+On the parameter builder side, `DateOnly` and `TimeOnly` need to be converted into `DateTime` or `TimeSpan`. Which specific conversion is used depends on the database/driver combination.
+
+On the materializer side, a new class called `MaterializerTypeConverter` will be used. Moving forward, this will handle type conversions from the result set to the object.
+
+The `MaterializerTypeConverter` is owned by a `DatabaseMetadata` object, allowing additional conversions to be registered at runtime.
+
+[#451 Add support for CommitAsync, Save(savepointName), SaveAsync(savepointName), Rollback(savepointName), and RollbackAsync](https://github.com/TortugaResearch/Chain/issues/451)
+
+We are only exposing these for .NET 6 and later.
+
+[#443 GetByKey, UpdateByKey, and DeleteByKey should support System.Int16](https://github.com/TortugaResearch/Chain/issues/443)
+
+This was done to improve support for lookup tables with small keys.
+
+### Bug Fixes
+
+The OleDB version of SQL Server was truncating fractional seconds when the parameter type is `time(n)` and `n>0`. To fix this, we have to force it to use `DateTime/DBTimeStamp` instead of `TimeSpan/DBTime`.
+
+[#465 OleDbSqlServerTableFunction doesn't support sorting with table limits](https://github.com/TortugaResearch/Tortuga.Chain/issues/465)
+
+
+Using either works, but there is an error if both are used.
+
+
+### Performance Enhancements
+
+[#439 Use `SqlCommand.EnableOptimizedParameterBinding` in SQL Server MDS.](https://github.com/TortugaResearch/Chain/issues/439)
+
+
+### Technical Debt
+
+Added test case for command timeout.
+
+Created `ExecutionToken.PopulateCommand` method. This eliminates a lot of copy & past text from the various `Execute`/`ExecuteAsync` methods.
+
 ## Version 4.0
 
 ### Architecture

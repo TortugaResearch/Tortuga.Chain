@@ -3,7 +3,6 @@ using Tortuga.Chain.CommandBuilders;
 
 namespace Traits;
 
-
 interface ICommandHelper<TCommand, TParameter, TObjectName, TDbType> : ICommandHelper<TObjectName, TDbType>
 	where TCommand : DbCommand
 	where TParameter : DbParameter

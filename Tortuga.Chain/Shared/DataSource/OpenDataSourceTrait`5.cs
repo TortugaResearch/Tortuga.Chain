@@ -8,8 +8,6 @@ using Tortuga.Shipwright;
 
 namespace Traits
 {
-
-
 	[Trait]
 	class OpenDataSourceTrait<TRootDataSource, TOpenDataSource, TConnection, TTransaction, TCommand, TDatabaseMetadata> : IOpenDataSource
 		where TRootDataSource : class, IRootDataSource, IDataSource, IHasExtensionCache
@@ -19,7 +17,6 @@ namespace Traits
 		where TCommand : DbCommand, new()
 		where TDatabaseMetadata : IDatabaseMetadataCache
 	{
-
 		[Container]
 		public IOpenDataSource Container { get; set; } = null!;
 
@@ -39,9 +36,6 @@ namespace Traits
 
 		DbTransaction? IOpenDataSource.AssociatedTransaction => m_Transaction;
 
-
-
-
 		/// <summary>
 		/// The extension cache is used by extensions to store data source specific information.
 		/// </summary>
@@ -53,7 +47,6 @@ namespace Traits
 		{
 			get { return m_BaseDataSource.ExtensionCache; }
 		}
-
 
 		/// <summary>
 		/// Gets or sets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
@@ -72,7 +65,6 @@ namespace Traits
 		{
 			get { return (TDatabaseMetadata)m_BaseDataSource.DatabaseMetadata; }
 		}
-
 
 		/// <summary>
 		/// Closes the connection and transaction associated with this data source.
@@ -106,7 +98,6 @@ namespace Traits
 				await cmd.ExecuteScalarAsync().ConfigureAwait(false);
 		}
 
-
 		/// <summary>
 		/// Tries the commit the transaction associated with this data source.
 		/// </summary>
@@ -120,9 +111,8 @@ namespace Traits
 			return true;
 		}
 
-
 		/// <summary>
-		/// Tries the rollback the transaction associated with this data source.
+		/// Tries to rollback the transaction associated with this data source.
 		/// </summary>
 		/// <returns>True if there was an open transaction associated with this data source, otherwise false.</returns>
 		[Expose]
@@ -133,7 +123,6 @@ namespace Traits
 			m_Transaction.Rollback();
 			return true;
 		}
-
 
 		/// <summary>
 		/// Returns the associated connection.
@@ -151,8 +140,6 @@ namespace Traits
 
 		[Partial("additionalRules,userValue")]
 		public Func<IEnumerable<AuditRule>?, object?, TOpenDataSource> OnOverride { get; set; } = null!;
-
-
 
 		/// <summary>
 		/// Modifies this data source with additional audit rules.
@@ -190,5 +177,98 @@ namespace Traits
 			return OnOverride(null, userValue);
 		}
 
+#if NET6_0_OR_GREATER
+		/// <summary>
+		/// Tries to commits the transaction and disposes the underlying connection.
+		/// </summary>
+		/// <returns>True if there was an open transaction associated with this data source, otherwise false.</returns>
+		[Expose]
+		public async Task<bool> TryCommitAsync(CancellationToken cancellationToken = default)
+		{
+			if (m_Transaction == null)
+				return false;
+
+			await m_Transaction.CommitAsync(cancellationToken).ConfigureAwait(false);
+
+			return true;
+		}
+
+		/// <summary>
+		/// Tries to roll back the transaction.
+		/// </summary>
+		/// <returns>True if there was an open transaction associated with this data source, otherwise false.</returns>
+		[Expose]
+		public async Task<bool> TryRollbackAsync(CancellationToken cancellationToken = default)
+		{
+			if (m_Transaction == null)
+				return false;
+
+			await m_Transaction.RollbackAsync(cancellationToken).ConfigureAwait(false);
+
+			return true;
+		}
+
+		/// <summary>
+		/// Tries to roll back the transaction to the indicated save point.
+		/// </summary>
+		/// <param name="savepointName">The name of the savepoint to roll back to.</param>
+		/// <param name="cancellationToken"></param>
+		/// <returns>True if there was an open transaction associated with this data source, otherwise false.</returns>
+		[Expose]
+		public async Task<bool> TryRollbackAsync(string savepointName, CancellationToken cancellationToken = default)
+		{
+			if (m_Transaction == null)
+				return false;
+
+			await m_Transaction.RollbackAsync(savepointName).ConfigureAwait(false);
+			return true;
+		}
+
+		/// <summary>
+		/// Tries to creates a savepoint in the transaction. This allows all commands that are executed after the savepoint was established to be rolled back, restoring the transaction state to what it was at the time of the savepoint.
+		/// </summary>
+		/// <param name="savepointName">The name of the savepoint to be created.</param>
+		/// <param name="cancellationToken"></param>
+		/// <returns>True if there was an open transaction associated with this data source, otherwise false.</returns>
+		[Expose]
+		public async Task<bool> TrySaveAsync(string savepointName, CancellationToken cancellationToken = default)
+		{
+			if (m_Transaction == null)
+				return false;
+
+			await m_Transaction.SaveAsync(savepointName, cancellationToken).ConfigureAwait(false);
+			return true;
+		}
+
+		/// <summary>
+		/// Tries to roll back the transaction to the indicated save point.
+		/// </summary>
+		/// <param name="savepointName">The name of the savepoint to roll back to.</param>
+		/// <returns>True if there was an open transaction associated with this data source, otherwise false.</returns>
+		[Expose]
+		public bool TryRollback(string savepointName)
+		{
+			if (m_Transaction == null)
+				return false;
+
+			m_Transaction.Rollback(savepointName);
+			return true;
+		}
+
+		/// <summary>
+		/// Tries to create a savepoint in the transaction. This allows all commands that are executed after the savepoint was established to be rolled back, restoring the transaction state to what it was at the time of the savepoint.
+		/// </summary>
+		/// <param name="savepointName">The name of the savepoint to be created.</param>
+		/// <returns>True if there was an open transaction associated with this data source, otherwise false.</returns>
+		[Expose]
+		public bool TrySave(string savepointName)
+		{
+			if (m_Transaction == null)
+				return false;
+			m_Transaction.Save(savepointName);
+			return true;
+		}
+
+#endif
 	}
 }

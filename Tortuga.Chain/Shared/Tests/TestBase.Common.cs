@@ -26,17 +26,21 @@ partial class TestBase
 	}
 
 #if CLASS_2
+
 	public IAdvancedCrudDataSource DataSource2(string name, DataSourceType mode, [CallerMemberName] string caller = null)
 	{
 		return DataSource(name, mode, caller);
 	}
+
 #endif
 
 #if CLASS_3
+
 	public AbstractDataSource DataSource3(string name, DataSourceType mode, [CallerMemberName] string caller = null)
 	{
 		return DataSource(name, mode, caller);
 	}
+
 #endif
 
 	public void Release(IDataSource dataSource)
@@ -84,7 +88,6 @@ partial class TestBase
 		WriteLine(e.Code);
 	}
 
-
 	private void DefaultDispatcher_ExecutionCanceled(object sender, ExecutionEventArgs e)
 	{
 		//WriteLine("******");
@@ -121,20 +124,26 @@ partial class TestBase
 	{
 		var trans = dataSource.BeginTransaction();
 		{
-			var cds = (ICrudDataSource)trans;
-			EmployeeSearchKey1000 = Guid.NewGuid().ToString();
-			for (var i = 0; i < 1000; i++)
-				cds.Insert(EmployeeTableName, new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = EmployeeSearchKey1000, MiddleName = i % 2 == 0 ? "A" + i : null }).ToObject<Employee>().Execute();
-
+			BuildEmployeeSearchKey1000_NoTrans((ICrudDataSource)trans);
 			trans.Commit();
 		}
 	}
 
-	static void BuildEmployeeSearchKey1000_NoTrans(IRootDataSource dataSource)
+	static void BuildEmployeeSearchKey1000_NoTrans(ICrudDataSource dataSource)
 	{
 		EmployeeSearchKey1000 = Guid.NewGuid().ToString();
+		var rows = new List<Employee>();
+
 		for (var i = 0; i < 1000; i++)
-			((ICrudDataSource)dataSource).Insert(EmployeeTableName, new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = EmployeeSearchKey1000, MiddleName = i % 2 == 0 ? "A" + i : null }).ToObject<Employee>().Execute();
+			rows.Add(new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = EmployeeSearchKey1000, MiddleName = i % 2 == 0 ? "A" + i : null });
+
+		if (dataSource is ISupportsInsertBulk bulk)
+			bulk.InsertBulk(EmployeeTableName, rows).Execute();
+		else if (dataSource is ISupportsInsertBatch batch)
+			batch.InsertMultipleBatch(EmployeeTableName, rows).Execute();
+		else
+			foreach (var row in rows)
+				dataSource.Insert(EmployeeTableName, row).Execute();
 	}
 
 	protected static string EmployeeSearchKey1000;

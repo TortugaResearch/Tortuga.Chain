@@ -70,9 +70,10 @@ CREATE TABLE Employee
 
 	DeletedFlag BIT NOT NULL Default 0,
 	DeletedDate DateTimeOffset NULL,
-	DeletedByKey INTEGER NULL
+	DeletedByKey INTEGER NULL,
+	BirthDay DATE NULL,
+	PreferredCallTime TIME
 )";
-
 
 			string sql3 = @"CREATE TABLE Location
 (

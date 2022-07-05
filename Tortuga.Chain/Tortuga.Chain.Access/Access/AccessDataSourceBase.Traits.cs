@@ -10,7 +10,7 @@ using Traits;
 
 namespace Tortuga.Chain.Access;
 
-[UseTrait(typeof(SupportsDeleteAllTrait<AbstractObjectName, AbstractDbType>))]
+[UseTrait(typeof(SupportsDeleteAllTrait<AbstractParameter, AbstractObjectName, AbstractDbType>))]
 [UseTrait(typeof(SupportsDeleteByKeyListTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
 [UseTrait(typeof(SupportsUpdateTrait<OleDbCommand, OleDbParameter, AccessObjectName, OleDbType>))]
 [UseTrait(typeof(SupportsDeleteTrait<OleDbCommand, OleDbParameter, AccessObjectName, OleDbType>))]
@@ -21,12 +21,12 @@ namespace Tortuga.Chain.Access;
 [UseTrait(typeof(SupportsDeleteSet<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
 [UseTrait(typeof(SupportsFromTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType, AbstractLimitOption>))]
 [UseTrait(typeof(SupportsGetByKeyListTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
-
+[UseTrait(typeof(SupportsGetByColumnListTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>))]
 partial class AccessDataSourceBase : ICrudDataSource
 {
 	DatabaseMetadataCache<AbstractObjectName, AbstractDbType> ICommandHelper<AbstractObjectName, AbstractDbType>.DatabaseMetadata => DatabaseMetadata;
 
-	List<AbstractParameter> ICommandHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.GetParameters(SqlBuilder<AbstractDbType> builder) => builder.GetParameters();
+	List<AbstractParameter> ICommandHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.GetParameters(SqlBuilder<AbstractDbType> builder) => builder.GetParameters(this);
 
 	/// <summary>
 	/// Delete multiple rows by key.
@@ -104,7 +104,7 @@ partial class AccessDataSourceBase : ICrudDataSource
 		return new AccessTableOrView<TObject>(this, tableOrViewName, filterValue, filterOptions);
 	}
 
-	SingleRowDbCommandBuilder<AbstractCommand, AbstractParameter> IGetByKeyHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnGetByKey<TObject, TKey>(AbstractObjectName tableName, ColumnMetadata<AbstractDbType> keyColumn, TKey key)
+	MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> IGetByKeyHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnGetByKey<TObject, TKey>(AbstractObjectName tableName, ColumnMetadata<AbstractDbType> keyColumn, TKey key)
 		where TObject : class
 	{
 		string where = keyColumn.SqlName + " = @Param0";
@@ -116,7 +116,6 @@ partial class AccessDataSourceBase : ICrudDataSource
 		parameters.Add(param);
 
 		return new AccessTableOrView<TObject>(this, tableName, where, parameters);
-
 	}
 
 	MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> IGetByKeyHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnGetByKeyList<TObject, TKey>(AbstractObjectName tableName, ColumnMetadata<AbstractDbType> keyColumn, IEnumerable<TKey> keys) where TObject : class
@@ -200,4 +199,3 @@ partial class AccessDataSourceBase : ICrudDataSource
 		return new AccessSqlCall(this, sqlStatement, argumentValue);
 	}
 }
-

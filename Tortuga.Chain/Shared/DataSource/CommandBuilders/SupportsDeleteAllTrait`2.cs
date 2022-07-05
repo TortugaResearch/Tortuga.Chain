@@ -1,13 +1,15 @@
-﻿using Tortuga.Chain;
+﻿using System.Data.Common;
+using Tortuga.Chain;
 using Tortuga.Chain.DataSources;
 using Tortuga.Shipwright;
 
 namespace Traits;
 
 [Trait]
-class SupportsDeleteAllTrait<TObjectName, TDbType> : ISupportsDeleteAll
+class SupportsDeleteAllTrait<TParameter, TObjectName, TDbType> : ISupportsDeleteAll
 	where TObjectName : struct
 	where TDbType : struct
+	where TParameter : DbParameter
 {
 	[Partial("tableName")] public Func<TObjectName, ILink<int?>> OnDeleteAll { get; set; } = null!;
 
@@ -29,7 +31,6 @@ class SupportsDeleteAllTrait<TObjectName, TDbType> : ISupportsDeleteAll
 	}
 
 	ILink<int?> ISupportsDeleteAll.DeleteAll(string tableName) => OnDeleteAll(DataSource.DatabaseMetadata.ParseObjectName(tableName));
-
 
 	ILink<int?> ISupportsDeleteAll.DeleteAll<TObject>() => DeleteAll<TObject>();
 }

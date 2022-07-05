@@ -9,7 +9,6 @@ namespace Tortuga.Chain;
 [UseTrait(typeof(Traits.RootDataSourceTrait<AbstractDataSource, AccessTransactionalDataSource, AccessOpenDataSource, AbstractConnection, AbstractTransaction, AbstractCommand, OleDbConnectionStringBuilder>))]
 partial class AccessDataSource
 {
-
 	private partial AccessTransactionalDataSource OnBeginTransaction(IsolationLevel? isolationLevel, bool forwardEvents)
 	{
 		var connection = CreateConnection();
@@ -20,7 +19,6 @@ partial class AccessDataSource
 			transaction = connection.BeginTransaction(isolationLevel.Value);
 
 		return new AccessTransactionalDataSource(this, forwardEvents, connection, transaction);
-
 	}
 
 	private partial async Task<AccessTransactionalDataSource> OnBeginTransactionAsync(IsolationLevel? isolationLevel, bool forwardEvents, CancellationToken cancellationToken)
@@ -33,7 +31,6 @@ partial class AccessDataSource
 			transaction = connection.BeginTransaction(isolationLevel.Value);
 
 		return new AccessTransactionalDataSource(this, forwardEvents, connection, transaction);
-
 	}
 
 	private partial AbstractDataSource OnCloneWithOverrides(ICacheAdapter? cache, IEnumerable<AuditRule>? additionalRules, object? userValue)
@@ -67,4 +64,3 @@ partial class AccessDataSource
 
 	private partial AccessOpenDataSource OnCreateOpenDataSource(AbstractConnection connection, AbstractTransaction? transaction) => new AccessOpenDataSource(this, connection, transaction);
 }
-

@@ -1,9 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
-using System.Reflection;
-using System.Xml.Linq;
 using Tortuga.Anchor.Metadata;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Metadata;
@@ -17,41 +14,6 @@ namespace Tortuga.Chain.Materializers
 	public static class MaterializerUtilities
 	{
 		static readonly Type[] s_EmptyTypeList = Array.Empty<Type>();
-
-		/// <summary>
-		/// Checks the update row count.
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="executionToken">The execution token.</param>
-		/// <param name="updateOptions">The update options.</param>
-		/// <param name="expectedRowCount">The expected row count.</param>
-		/// <returns>The execution token with an attached event handler.</returns>
-		public static T CheckUpdateRowCount<T>(this T executionToken, UpdateOptions updateOptions, int? expectedRowCount) where T : ExecutionToken
-		{
-			if (executionToken == null)
-				throw new ArgumentNullException(nameof(executionToken), $"{nameof(executionToken)} is null.");
-
-			if (expectedRowCount.HasValue && !updateOptions.HasFlag(UpdateOptions.IgnoreRowsAffected))
-				executionToken.CommandExecuted += (s, e) => CheckUpdateRowCount(s, e, expectedRowCount.Value);
-			return executionToken;
-		}
-
-		/// <summary>
-		/// Checks the update row count.
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="executionToken">The execution token.</param>
-		/// <param name="updateOptions">The update options.</param>
-		/// <returns>The execution token with an attached event handler.</returns>
-		public static T CheckUpdateRowCount<T>(this T executionToken, UpdateOptions updateOptions) where T : ExecutionToken
-		{
-			if (executionToken == null)
-				throw new ArgumentNullException(nameof(executionToken), $"{nameof(executionToken)} is null.");
-
-			if (!updateOptions.HasFlag(UpdateOptions.IgnoreRowsAffected))
-				executionToken.CommandExecuted += CheckUpdateRowCount;
-			return executionToken;
-		}
 
 		/// <summary>
 		/// Checks the delete row count.
@@ -88,19 +50,54 @@ namespace Tortuga.Chain.Materializers
 			return executionToken;
 		}
 
-		internal static StreamingObjectConstructor<T> AsObjectConstructor<T>(this DbDataReader reader, ConstructorMetadata? constructor, IReadOnlyList<ColumnMetadata> nonNullableColumns)
+		/// <summary>
+		/// Checks the update row count.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="executionToken">The execution token.</param>
+		/// <param name="updateOptions">The update options.</param>
+		/// <param name="expectedRowCount">The expected row count.</param>
+		/// <returns>The execution token with an attached event handler.</returns>
+		public static T CheckUpdateRowCount<T>(this T executionToken, UpdateOptions updateOptions, int? expectedRowCount) where T : ExecutionToken
+		{
+			if (executionToken == null)
+				throw new ArgumentNullException(nameof(executionToken), $"{nameof(executionToken)} is null.");
+
+			if (expectedRowCount.HasValue && !updateOptions.HasFlag(UpdateOptions.IgnoreRowsAffected))
+				executionToken.CommandExecuted += (s, e) => CheckUpdateRowCount(s, e, expectedRowCount.Value);
+			return executionToken;
+		}
+
+		/// <summary>
+		/// Checks the update row count.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="executionToken">The execution token.</param>
+		/// <param name="updateOptions">The update options.</param>
+		/// <returns>The execution token with an attached event handler.</returns>
+		public static T CheckUpdateRowCount<T>(this T executionToken, UpdateOptions updateOptions) where T : ExecutionToken
+		{
+			if (executionToken == null)
+				throw new ArgumentNullException(nameof(executionToken), $"{nameof(executionToken)} is null.");
+
+			if (!updateOptions.HasFlag(UpdateOptions.IgnoreRowsAffected))
+				executionToken.CommandExecuted += CheckUpdateRowCount;
+			return executionToken;
+		}
+
+		internal static StreamingObjectConstructor<T> AsObjectConstructor<T>(this DbDataReader reader, ConstructorMetadata? constructor, IReadOnlyList<ColumnMetadata> nonNullableColumns, MaterializerTypeConverter converter)
 			where T : class
 		{
-			return new StreamingObjectConstructor<T>(reader, constructor, nonNullableColumns);
+			return new StreamingObjectConstructor<T>(reader, constructor, nonNullableColumns, converter);
 		}
 
-		internal static StreamingObjectConstructor<T> AsObjectConstructor<T>(this DbDataReader reader, IReadOnlyList<Type>? constructorSignature, IReadOnlyList<ColumnMetadata> nonNullableColumns)
+		internal static StreamingObjectConstructor<T> AsObjectConstructor<T>(this DbDataReader reader, IReadOnlyList<Type>? constructorSignature, IReadOnlyList<ColumnMetadata> nonNullableColumns, MaterializerTypeConverter converter)
 	where T : class
 		{
-			return new StreamingObjectConstructor<T>(reader, constructorSignature, nonNullableColumns);
+			return new StreamingObjectConstructor<T>(reader, constructorSignature, nonNullableColumns, converter);
 		}
 
-		static internal T ConstructObject<T>(IReadOnlyDictionary<string, object?> source, ConstructorMetadata? constructor, bool? populateComplexObject = null)
+		static internal T ConstructObject<T>(IReadOnlyDictionary<string, object?> source, ConstructorMetadata? constructor, MaterializerTypeConverter converter, bool? populateComplexObject = null)
 			where T : class
 		{
 			//If we didn't get a constructor, look for a default constructor to use.
@@ -130,7 +127,7 @@ namespace Tortuga.Chain.Materializers
 			var result = (T)constructor.ConstructorInfo.Invoke(parameters);
 
 			if (populateComplexObject.Value) //Populate properties and child objects
-				PopulateComplexObject(source, result, null);
+				PopulateComplexObject(source, result, null, converter);
 
 			//Change tracking objects should be materialized as unchanged.
 			(result as IChangeTracking)?.AcceptChanges();
@@ -141,12 +138,16 @@ namespace Tortuga.Chain.Materializers
 		/// <summary>
 		/// Populates the complex object.
 		/// </summary>
+		/// <typeparam name="T"></typeparam>
 		/// <param name="source">The source.</param>
 		/// <param name="target">The object being populated.</param>
 		/// <param name="decompositionPrefix">The decomposition prefix.</param>
+		/// <param name="converter">The type converter.</param>
+		/// <exception cref="System.ArgumentNullException">source</exception>
+		/// <exception cref="System.ArgumentNullException">target</exception>
 		/// <remarks>This honors the Column and Decompose attributes.</remarks>
 		[SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
-		static internal void PopulateComplexObject<T>(IReadOnlyDictionary<string, object?> source, T target, string? decompositionPrefix)
+		static internal void PopulateComplexObject<T>(IReadOnlyDictionary<string, object?> source, T target, string? decompositionPrefix, MaterializerTypeConverter converter)
 			where T : class
 		{
 			if (source == null)
@@ -161,16 +162,16 @@ namespace Tortuga.Chain.Materializers
 				{
 					var value = source[mappedColumnName];
 
-					value = SetProperty(target, property, value, null);
+					value = SetProperty(target, property, value, null, converter);
 				}
 				else if (property.Decompose)
 				{
-					SetDecomposedProperty(source, target, decompositionPrefix, property);
+					SetDecomposedProperty(source, target, decompositionPrefix, property, converter);
 				}
 			}
 		}
 
-		static internal void PopulateComplexObject<T>(IReadOnlyDictionary<int, object?> source, T target, string? decompositionPrefix, IList<OrdinalMappedProperty<T>> mappedProperties, IList<MappedProperty<T>> decomposedProperties)
+		static internal void PopulateComplexObject<T>(IReadOnlyDictionary<int, object?> source, T target, string? decompositionPrefix, IList<OrdinalMappedProperty<T>> mappedProperties, IList<MappedProperty<T>> decomposedProperties, MaterializerTypeConverter converter)
 			where T : class
 		{
 			if (source == null)
@@ -182,12 +183,12 @@ namespace Tortuga.Chain.Materializers
 			{
 				var value = source[property.Ordinal];
 
-				SetProperty(target, property.PropertyMetadata, value, property);
+				SetProperty(target, property.PropertyMetadata, value, property, converter);
 			}
 
 			foreach (var property in decomposedProperties)
 			{
-				SetDecomposedProperty((IReadOnlyDictionary<string, object?>)source, target, decompositionPrefix, property.PropertyMetadata);
+				SetDecomposedProperty((IReadOnlyDictionary<string, object?>)source, target, decompositionPrefix, property.PropertyMetadata, converter);
 			}
 		}
 
@@ -242,40 +243,6 @@ namespace Tortuga.Chain.Materializers
 			return result;
 		}
 
-		[SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "UpdateOptions")]
-		[SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "IgnoreRowsAffected")]
-		static void CheckUpdateRowCount(object? sender, CommandExecutedEventArgs e)
-		{
-			if (sender == null)
-				throw new ArgumentNullException(nameof(sender), $"{nameof(sender)} is null.");
-
-			var token = (ExecutionToken)sender;
-
-			if (e.RowsAffected == null)
-				throw new InvalidOperationException($"The database did not report how many rows were affected by operation {token.OperationName}. Either use the  UpdateOptions.IgnoreRowsAffected flag or report this as an bug in {token.GetType().FullName}.");
-			else if (e.RowsAffected == 0)
-				throw new MissingDataException($"Expected one row to be affected by the operation {token.OperationName} but none were.");
-			else if (e.RowsAffected > 1)
-				throw new UnexpectedDataException($"Expected one row to be affected by the operation {token.OperationName} but {e.RowsAffected} were affected instead.");
-		}
-
-		[SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "IgnoreRowsAffected")]
-		[SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "UpdateOptions")]
-		static void CheckUpdateRowCount(object? sender, CommandExecutedEventArgs e, int expectedRowCount)
-		{
-			if (sender == null)
-				throw new ArgumentNullException(nameof(sender), $"{nameof(sender)} is null.");
-
-			var token = (ExecutionToken)sender;
-
-			if (e.RowsAffected == null)
-				throw new InvalidOperationException($"The database did not report how many rows were affected by operation {token.OperationName}. Either use the UpdateOptions.IgnoreRowsAffected flag or report this as an bug in {token.GetType().FullName}.");
-			else if (e.RowsAffected > expectedRowCount)
-				throw new UnexpectedDataException($"Expected {expectedRowCount} rows to be affected by the operation {token.OperationName} but {e.RowsAffected} were affected instead.");
-			else if (e.RowsAffected < expectedRowCount)
-				throw new MissingDataException($"Expected {expectedRowCount} rows to be affected by the operation {token.OperationName} but {e.RowsAffected} were affected instead.");
-		}
-
 		[SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "DeleteOptions")]
 		[SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "IgnoreRowsAffected")]
 		static void CheckDeleteRowCount(object? sender, CommandExecutedEventArgs e)
@@ -310,7 +277,41 @@ namespace Tortuga.Chain.Materializers
 				throw new MissingDataException($"Expected {expectedRowCount} rows to be affected by the operation {token.OperationName} but {e.RowsAffected} were affected instead.");
 		}
 
-		static void SetDecomposedProperty(IReadOnlyDictionary<string, object?> source, object target, string? decompositionPrefix, PropertyMetadata property)
+		[SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "UpdateOptions")]
+		[SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "IgnoreRowsAffected")]
+		static void CheckUpdateRowCount(object? sender, CommandExecutedEventArgs e)
+		{
+			if (sender == null)
+				throw new ArgumentNullException(nameof(sender), $"{nameof(sender)} is null.");
+
+			var token = (ExecutionToken)sender;
+
+			if (e.RowsAffected == null)
+				throw new InvalidOperationException($"The database did not report how many rows were affected by operation {token.OperationName}. Either use the  UpdateOptions.IgnoreRowsAffected flag or report this as an bug in {token.GetType().FullName}.");
+			else if (e.RowsAffected == 0)
+				throw new MissingDataException($"Expected one row to be affected by the operation {token.OperationName} but none were.");
+			else if (e.RowsAffected > 1)
+				throw new UnexpectedDataException($"Expected one row to be affected by the operation {token.OperationName} but {e.RowsAffected} were affected instead.");
+		}
+
+		[SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "IgnoreRowsAffected")]
+		[SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "UpdateOptions")]
+		static void CheckUpdateRowCount(object? sender, CommandExecutedEventArgs e, int expectedRowCount)
+		{
+			if (sender == null)
+				throw new ArgumentNullException(nameof(sender), $"{nameof(sender)} is null.");
+
+			var token = (ExecutionToken)sender;
+
+			if (e.RowsAffected == null)
+				throw new InvalidOperationException($"The database did not report how many rows were affected by operation {token.OperationName}. Either use the UpdateOptions.IgnoreRowsAffected flag or report this as an bug in {token.GetType().FullName}.");
+			else if (e.RowsAffected > expectedRowCount)
+				throw new UnexpectedDataException($"Expected {expectedRowCount} rows to be affected by the operation {token.OperationName} but {e.RowsAffected} were affected instead.");
+			else if (e.RowsAffected < expectedRowCount)
+				throw new MissingDataException($"Expected {expectedRowCount} rows to be affected by the operation {token.OperationName} but {e.RowsAffected} were affected instead.");
+		}
+
+		static void SetDecomposedProperty(IReadOnlyDictionary<string, object?> source, object target, string? decompositionPrefix, PropertyMetadata property, MaterializerTypeConverter converter)
 		{
 			object? child = null;
 
@@ -324,10 +325,10 @@ namespace Tortuga.Chain.Materializers
 			}
 
 			if (child != null)
-				PopulateComplexObject(source, child, decompositionPrefix + property.DecompositionPrefix);
+				PopulateComplexObject(source, child, decompositionPrefix + property.DecompositionPrefix, converter);
 		}
 
-		static object? SetProperty<T>(T target, PropertyMetadata property, object? value, OrdinalMappedProperty<T>? mapper)
+		static object? SetProperty<T>(T target, PropertyMetadata property, object? value, OrdinalMappedProperty<T>? mapper, MaterializerTypeConverter converter)
 			where T : class
 		{
 			if (target == null)
@@ -340,62 +341,9 @@ namespace Tortuga.Chain.Materializers
 
 			if (value != null && targetType != value.GetType())
 			{
-				var targetTypeInfo = targetType.GetTypeInfo();
-				//var isNullable = !targetTypeInfo.IsValueType;
-
-				//For Nullable<T>, we only care about the type parameter
-				if (targetType.Name == "Nullable`1" && targetTypeInfo.IsGenericType)
+				if (!converter.TryConvertType(targetType, ref value, out var conversionException))
 				{
-					//isNullable = true;
-					targetType = targetType.GenericTypeArguments[0];
-					targetTypeInfo = targetType.GetTypeInfo();
-				}
-
-				//some database return strings when we want strong types
-				if (value is string)
-				{
-					if (targetType == typeof(XElement))
-						value = XElement.Parse((string)value);
-					else if (targetType == typeof(XDocument))
-						value = XDocument.Parse((string)value);
-					else if (targetTypeInfo.IsEnum)
-						value = Enum.Parse(targetType, (string)value);
-					else if (targetType == typeof(bool))
-						value = bool.Parse((string)value);
-					else if (targetType == typeof(short))
-						value = short.Parse((string)value, CultureInfo.InvariantCulture);
-					else if (targetType == typeof(int))
-						value = int.Parse((string)value, CultureInfo.InvariantCulture);
-					else if (targetType == typeof(long))
-						value = long.Parse((string)value, CultureInfo.InvariantCulture);
-					else if (targetType == typeof(float))
-						value = float.Parse((string)value, CultureInfo.InvariantCulture);
-					else if (targetType == typeof(double))
-						value = double.Parse((string)value, CultureInfo.InvariantCulture);
-					else if (targetType == typeof(decimal))
-						value = decimal.Parse((string)value, CultureInfo.InvariantCulture);
-					else if (targetType == typeof(DateTime))
-						value = DateTime.Parse((string)value, CultureInfo.InvariantCulture);
-					else if (targetType == typeof(DateTimeOffset))
-						value = DateTimeOffset.Parse((string)value, CultureInfo.InvariantCulture);
-				}
-				else
-				{
-					if (targetTypeInfo.IsEnum)
-						value = Enum.ToObject(targetType, value);
-				}
-
-				//this will handle numeric conversions
-				if (value != null && targetType != value.GetType())
-				{
-					try
-					{
-						value = Convert.ChangeType(value, targetType, CultureInfo.InvariantCulture);
-					}
-					catch (Exception ex)
-					{
-						throw new MappingException($"Cannot map value of type {value.GetType().FullName} to property {property.Name} of type {targetType.Name}.", ex);
-					}
+					throw new MappingException($"Cannot map value of type {value!.GetType().FullName} to property {property.Name} of type {targetType.Name}.", conversionException);
 				}
 			}
 

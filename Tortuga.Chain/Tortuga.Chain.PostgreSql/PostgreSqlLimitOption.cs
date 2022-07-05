@@ -1,29 +1,28 @@
-﻿namespace Tortuga.Chain
+﻿namespace Tortuga.Chain;
+
+/// <summary>
+/// Limit options supported by PostgreSQL.
+/// </summary>
+/// <remarks>This is a strict subset of LimitOptions</remarks>
+public enum PostgreSqlLimitOption
 {
 	/// <summary>
-	/// Limit options supported by PostgreSQL.
+	/// No limits were applied.
 	/// </summary>
-	/// <remarks>This is a strict subset of LimitOptions</remarks>
-	public enum PostgreSqlLimitOption
-	{
-		/// <summary>
-		/// No limits were applied.
-		/// </summary>
-		None = LimitOptions.None,
+	None = LimitOptions.None,
 
-		/// <summary>
-		/// Returns the indicated number of rows with optional offset
-		/// </summary>
-		Rows = LimitOptions.Rows,
+	/// <summary>
+	/// Returns the indicated number of rows with optional offset
+	/// </summary>
+	Rows = LimitOptions.Rows,
 
-		/// <summary>
-		/// Randomly sample N percentage of rows using the Table Sample System algorithm.
-		/// </summary>
-		TableSampleSystemPercentage = LimitOptions.TableSampleSystemPercentage,
+	/// <summary>
+	/// Randomly sample N percentage of rows using the Table Sample System algorithm.
+	/// </summary>
+	TableSampleSystemPercentage = LimitOptions.TableSampleSystemPercentage,
 
-		/// <summary>
-		/// Randomly sample N percentage of rows using the Table Sample Bernoulli algorithm.
-		/// </summary>
-		TableSampleBernoulliPercentage = LimitOptions.TableSampleBernoulliPercentage,
-	}
+	/// <summary>
+	/// Randomly sample N percentage of rows using the Table Sample Bernoulli algorithm.
+	/// </summary>
+	TableSampleBernoulliPercentage = LimitOptions.TableSampleBernoulliPercentage,
 }

@@ -41,6 +41,12 @@ class SupportsGetByKeyListTrait<TCommand, TParameter, TObjectName, TDbType> : IS
 		return GetByKey<TObject>(key);
 	}
 
+	ISingleRowDbCommandBuilder<TObject> ISupportsGetByKey.GetByKey<TObject>(short key)
+	where TObject : class
+	{
+		return GetByKey<TObject>(key);
+	}
+
 	ISingleRowDbCommandBuilder<TObject> ISupportsGetByKey.GetByKey<TObject>(int key)
 		where TObject : class
 	{
@@ -58,7 +64,6 @@ class SupportsGetByKeyListTrait<TCommand, TParameter, TObjectName, TDbType> : IS
 	{
 		return GetByKey<TObject>(key);
 	}
-
 
 	/// <summary>
 	/// Gets a record by its primary key.
@@ -86,6 +91,20 @@ class SupportsGetByKeyListTrait<TCommand, TParameter, TObjectName, TDbType> : IS
 		where TObject : class
 	{
 		return GetByKeyCore<TObject, long>(DataSource.DatabaseMetadata.GetTableOrViewFromClass<TObject>(OperationType.Select).Name, key);
+	}
+
+	/// <summary>
+	/// Gets a record by its primary key.
+	/// </summary>
+	/// <typeparam name="TObject">The type of the object.</typeparam>
+	/// <param name="key">The key.</param>
+	/// <returns></returns>
+	/// <remarks>This only works on tables that have a scalar primary key.</remarks>
+	[Expose]
+	public SingleRowDbCommandBuilder<TCommand, TParameter, TObject> GetByKey<TObject>(short key)
+		where TObject : class
+	{
+		return GetByKeyCore<TObject, short>(DataSource.DatabaseMetadata.GetTableOrViewFromClass<TObject>(OperationType.Select).Name, key);
 	}
 
 	/// <summary>
@@ -159,41 +178,35 @@ class SupportsGetByKeyListTrait<TCommand, TParameter, TObjectName, TDbType> : IS
 		return DataSource.OnGetByKey<object, TKey>(tableName, primaryKeys.Single(), key);
 	}
 
-
-
 	IMultipleRowDbCommandBuilder ISupportsGetByKeyList.GetByKeyList<TKey>(string tableName, IEnumerable<TKey> keys)
 	{
 		return GetByKeyList(DataSource.DatabaseMetadata.ParseObjectName(tableName), keys);
 	}
-
-
 
 	IMultipleRowDbCommandBuilder<TObject> ISupportsGetByKeyList.GetByKeyList<TObject, TKey>(IEnumerable<TKey> keys)
 	{
 		return GetByKeyList<TObject, TKey>(keys);
 	}
 
-
+	IMultipleRowDbCommandBuilder<TObject> ISupportsGetByKeyList.GetByKeyList<TObject>(IEnumerable<short> keys)
+	{
+		return GetByKeyList<TObject>(keys);
+	}
 
 	IMultipleRowDbCommandBuilder<TObject> ISupportsGetByKeyList.GetByKeyList<TObject>(IEnumerable<int> keys)
 	{
 		return GetByKeyList<TObject>(keys);
 	}
 
-
-
 	IMultipleRowDbCommandBuilder<TObject> ISupportsGetByKeyList.GetByKeyList<TObject>(IEnumerable<long> keys)
 	{
 		return GetByKeyList<TObject>(keys);
 	}
 
-
-
 	IMultipleRowDbCommandBuilder<TObject> ISupportsGetByKeyList.GetByKeyList<TObject>(IEnumerable<Guid> keys)
 	{
 		return GetByKeyList<TObject>(keys);
 	}
-
 
 	/// <summary>
 	/// Gets a set of records by their primary key.
@@ -210,8 +223,6 @@ class SupportsGetByKeyListTrait<TCommand, TParameter, TObjectName, TDbType> : IS
 		return GetByKeyListCore<object, TKey>(tableName, keys);
 	}
 
-
-
 	/// <summary>
 	/// Gets a set of records by a key list.
 	/// </summary>
@@ -225,8 +236,6 @@ class SupportsGetByKeyListTrait<TCommand, TParameter, TObjectName, TDbType> : IS
 		return GetByKeyListCore<TObject, TKey>(DataSource.DatabaseMetadata.GetTableOrViewFromClass<TObject>(OperationType.Select).Name, keys);
 	}
 
-
-
 	/// <summary>
 	/// Gets a set of records by a key list.
 	/// </summary>
@@ -238,8 +247,6 @@ class SupportsGetByKeyListTrait<TCommand, TParameter, TObjectName, TDbType> : IS
 	{
 		return GetByKeyList<TObject, Guid>(keys);
 	}
-
-
 
 	/// <summary>
 	/// Gets a set of records by a key list.
@@ -259,13 +266,23 @@ class SupportsGetByKeyListTrait<TCommand, TParameter, TObjectName, TDbType> : IS
 	/// <typeparam name="TObject">The type of the returned object.</typeparam>
 	/// <param name="keys">The keys.</param>
 	[Expose]
+	public MultipleRowDbCommandBuilder<TCommand, TParameter, TObject> GetByKeyList<TObject>(IEnumerable<short> keys)
+		where TObject : class
+	{
+		return GetByKeyList<TObject, short>(keys);
+	}
+
+	/// <summary>
+	/// Gets a set of records by a key list.
+	/// </summary>
+	/// <typeparam name="TObject">The type of the returned object.</typeparam>
+	/// <param name="keys">The keys.</param>
+	[Expose]
 	public MultipleRowDbCommandBuilder<TCommand, TParameter, TObject> GetByKeyList<TObject>(IEnumerable<int> keys)
 		where TObject : class
 	{
 		return GetByKeyList<TObject, int>(keys);
 	}
-
-
 
 	/// <summary>
 	/// Gets a set of records by a key list.
@@ -279,11 +296,29 @@ class SupportsGetByKeyListTrait<TCommand, TParameter, TObjectName, TDbType> : IS
 		return GetByKeyList<TObject, string>(keys);
 	}
 
-
-
 	#region Core Functions
+
+	IMultipleRowDbCommandBuilder ISupportsGetByKeyList.GetByKeyList<TKey>(string tableName, string keyColumn, IEnumerable<TKey> keys)
+	{
+		return GetByKeyListCore<object, TKey>(DataSource.DatabaseMetadata.ParseObjectName(tableName), keyColumn, keys);
+	}
+
+	/// <summary>Gets a set of records by an unique key.</summary>
+	/// <typeparam name="TKey">The type of the t key.</typeparam>
+	/// <param name="tableName">Name of the table.</param>
+	/// <param name="keyColumn">Name of the key column. This should be a primary or unique key, but that's not enforced.</param>
+	/// <param name="keys">The keys.</param>
+	/// <returns>IMultipleRowDbCommandBuilder.</returns>
+	[Obsolete("This will be replaced by GetByColumn")]
+	[EditorBrowsable(EditorBrowsableState.Never)]
+	[Expose]
+	public MultipleRowDbCommandBuilder<TCommand, TParameter> GetByKeyList<TKey>(string tableName, string keyColumn, IEnumerable<TKey> keys)
+	{
+		return GetByKeyListCore<object, TKey>(DataSource.DatabaseMetadata.ParseObjectName(tableName), keyColumn, keys);
+	}
+
 	SingleRowDbCommandBuilder<TCommand, TParameter, TObject> GetByKeyCore<TObject, TKey>(TObjectName tableName, TKey key)
-	where TObject : class
+			where TObject : class
 	{
 		var primaryKeys = DataSource.DatabaseMetadata.GetTableOrView(tableName).PrimaryKeyColumns;
 
@@ -330,27 +365,6 @@ where TObject : class
 		return new MultipleRowDbCommandBuilder<TCommand, TParameter, TObject>(DataSource.OnGetByKeyList<TObject, TKey>(tableName, primaryKeys.Single(), keys));
 	}
 
-	IMultipleRowDbCommandBuilder ISupportsGetByKeyList.GetByKeyList<TKey>(string tableName, string keyColumn, IEnumerable<TKey> keys)
-	{
-		return GetByKeyListCore<object, TKey>(DataSource.DatabaseMetadata.ParseObjectName(tableName), keyColumn, keys);
-	}
-
-	/// <summary>Gets a set of records by an unique key.</summary>
-	/// <typeparam name="TKey">The type of the t key.</typeparam>
-	/// <param name="tableName">Name of the table.</param>
-	/// <param name="keyColumn">Name of the key column. This should be a primary or unique key, but that's not enforced.</param>
-	/// <param name="keys">The keys.</param>
-	/// <returns>IMultipleRowDbCommandBuilder.</returns>
-	[Obsolete("This will be replaced by GetByColumn")]
-	[EditorBrowsable(EditorBrowsableState.Never)]
-
-	[Expose]
-	public MultipleRowDbCommandBuilder<TCommand, TParameter> GetByKeyList<TKey>(string tableName, string keyColumn, IEnumerable<TKey> keys)
-	{
-		return GetByKeyListCore<object, TKey>(DataSource.DatabaseMetadata.ParseObjectName(tableName), keyColumn, keys);
-	}
-
-
 	//TODO-441 GetByColumn
 	MultipleRowDbCommandBuilder<TCommand, TParameter, TObject> GetByKeyListCore<TObject, TKey>(TObjectName tableName, string keyColumn, IEnumerable<TKey> keys)
 		where TObject : class
@@ -363,8 +377,5 @@ where TObject : class
 		return new MultipleRowDbCommandBuilder<TCommand, TParameter, TObject>(DataSource.OnGetByKeyList<TObject, TKey>(tableName, primaryKeys.Single(), keys));
 	}
 
-	#endregion
+	#endregion Core Functions
 }
-
-
-

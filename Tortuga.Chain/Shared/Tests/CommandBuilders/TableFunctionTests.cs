@@ -1,5 +1,4 @@
-﻿
-#if SQL_SERVER_SDS || SQL_SERVER_MDS
+﻿#if SQL_SERVER_SDS || SQL_SERVER_MDS
 
 using Tortuga.Chain.SqlServer;
 
@@ -67,7 +66,9 @@ public class TableFunctionTests : TestBase
 		var dataSource = DataSource(dataSourceName, mode);
 		try
 		{
-			var result = dataSource.TableFunction(TableFunction1Name, Parameter1).WithLimits(1).ToTable().Execute();
+			var table = dataSource.DatabaseMetadata.GetTableFunction(TableFunction1Name);
+
+			var result = dataSource.TableFunction(TableFunction1Name, Parameter1).WithLimits(1).WithSorting(table.GetDefaultSortOrder(1)).ToTable().Execute();
 		}
 		finally
 		{

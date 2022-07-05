@@ -7,8 +7,6 @@ using Tortuga.Shipwright;
 
 namespace Traits
 {
-
-
 	[Trait]
 	class TransactionalDataSourceTrait<TRootDataSource, TConnection, TTransaction, TCommand, TDatabaseMetadata> : ITransactionalDataSource, IDisposable
 		where TRootDataSource : class, IRootDataSource, IDataSource, IHasExtensionCache
@@ -17,13 +15,11 @@ namespace Traits
 		where TCommand : DbCommand, new()
 		where TDatabaseMetadata : IDatabaseMetadataCache
 	{
-
 		[Container]
 		public ITransactionalDataSource Container { get; set; } = null!;
 
 		[Container(IsOptional = true)]
 		public IHasOnDispose? DisposableContainer { get; set; }
-
 
 		[Expose(Accessibility = Accessibility.Private, Setter = Setter.Init)]
 		public TConnection m_Connection { get; set; } = null!;
@@ -31,10 +27,8 @@ namespace Traits
 		[Expose(Accessibility = Accessibility.Private, Setter = Setter.Init)]
 		public TTransaction m_Transaction { get; set; } = null!;
 
-
 		[Expose(Accessibility = Accessibility.Private, Setter = Setter.Init)]
 		public TRootDataSource m_BaseDataSource { get; set; } = null!;
-
 
 		[Expose(Accessibility = Accessibility.Private)]
 		public bool m_Disposed { get; set; }
@@ -83,7 +77,6 @@ namespace Traits
 			return true;
 		}
 
-
 		/// <summary>
 		/// Commits the transaction and disposes the underlying connection.
 		/// </summary>
@@ -97,6 +90,82 @@ namespace Traits
 			Dispose(true);
 		}
 
+#if NET6_0_OR_GREATER
+		/// <summary>
+		/// Commits the transaction and disposes the underlying connection.
+		/// </summary>
+		[Expose]
+		public async Task CommitAsync(CancellationToken cancellationToken = default)
+		{
+			if (m_Disposed)
+				throw new ObjectDisposedException("Transaction is disposed");
+
+			await m_Transaction.CommitAsync(cancellationToken).ConfigureAwait(false);
+			Dispose(true);
+		}
+
+		/// <summary>
+		/// Rolls back the transaction and disposes the underlying connection.
+		/// </summary>
+		[Expose]
+		public async Task RollbackAsync(CancellationToken cancellationToken = default)
+		{
+			if (m_Disposed)
+				throw new ObjectDisposedException("Transaction is disposed");
+
+			await m_Transaction.RollbackAsync(cancellationToken).ConfigureAwait(false);
+			Dispose(true);
+		}
+
+		/// <summary>
+		/// Rolls back the transaction to the indicated save point.
+		/// </summary>
+		/// <param name="savepointName">The name of the savepoint to roll back to.</param>
+		/// <param name="cancellationToken"></param>
+		[Expose]
+		public async Task RollbackAsync(string savepointName, CancellationToken cancellationToken = default)
+		{
+			if (m_Disposed)
+				throw new ObjectDisposedException("Transaction is disposed");
+
+			await m_Transaction.RollbackAsync(savepointName).ConfigureAwait(false);
+		}
+
+		/// <summary>
+		/// Creates a savepoint in the transaction. This allows all commands that are executed after the savepoint was established to be rolled back, restoring the transaction state to what it was at the time of the savepoint.
+		/// </summary>
+		/// <param name="savepointName">The name of the savepoint to be created.</param>
+		/// <param name="cancellationToken"></param>
+		[Expose]
+		public async Task SaveAsync(string savepointName, CancellationToken cancellationToken = default)
+		{
+			await m_Transaction.SaveAsync(savepointName, cancellationToken).ConfigureAwait(false);
+		}
+
+		/// <summary>
+		/// Rolls back the transaction to the indicated save point.
+		/// </summary>
+		/// <param name="savepointName">The name of the savepoint to roll back to.</param>
+		[Expose]
+		public void Rollback(string savepointName)
+		{
+			if (m_Disposed)
+				throw new ObjectDisposedException("Transaction is disposed");
+
+			m_Transaction.Rollback(savepointName);
+		}
+
+		/// <summary>
+		/// Creates a savepoint in the transaction. This allows all commands that are executed after the savepoint was established to be rolled back, restoring the transaction state to what it was at the time of the savepoint.
+		/// </summary>
+		/// <param name="savepointName">The name of the savepoint to be created.</param>
+		[Expose]
+		public void Save(string savepointName)
+		{
+			m_Transaction.Save(savepointName);
+		}
+
+#endif
 
 		/// <summary>
 		/// Closes the current transaction and connection. If not committed, the transaction is rolled back.
@@ -140,7 +209,6 @@ namespace Traits
 			get { return m_BaseDataSource.ExtensionCache; }
 		}
 
-
 		/// <summary>
 		/// Gets or sets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
 		/// </summary>
@@ -149,7 +217,6 @@ namespace Traits
 		{
 			get { return m_BaseDataSource.Cache; }
 		}
-
 
 		/// <summary>
 		/// Rolls back the transaction and disposes the underlying connection.
@@ -163,7 +230,6 @@ namespace Traits
 			m_Transaction.Rollback();
 			Dispose(true);
 		}
-
 
 		/// <summary>
 		/// Tests the connection.
@@ -185,7 +251,6 @@ namespace Traits
 			using (var cmd = new TCommand() { CommandText = "SELECT 1", Connection = m_Connection, Transaction = m_Transaction })
 				await cmd.ExecuteScalarAsync().ConfigureAwait(false);
 		}
-
 
 		/// <summary>
 		/// Gets the database metadata.
