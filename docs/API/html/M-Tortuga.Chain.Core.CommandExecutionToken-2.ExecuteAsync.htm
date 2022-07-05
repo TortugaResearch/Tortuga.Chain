@@ -11,10 +11,10 @@
     <meta name="file" content="M-Tortuga.Chain.Core.CommandExecutionToken-2.ExecuteAsync" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:msxsl="urn:schemas-microsoft-com:xslt" />
     <meta name="guid" content="M-Tortuga.Chain.Core.CommandExecutionToken-2.ExecuteAsync" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:msxsl="urn:schemas-microsoft-com:xslt" />
     <xml xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:msxsl="urn:schemas-microsoft-com:xslt">
-      <MSHelp:Attr Name="AssetID" Value="M:Tortuga.Chain.Core.CommandExecutionToken`2.ExecuteAsync(CommandImplementationAsync{`0},CancellationToken,System.Nullable{System.Object})" />
+      <MSHelp:Attr Name="AssetID" Value="M:Tortuga.Chain.Core.CommandExecutionToken`2.ExecuteAsync(Tortuga.Chain.Core.CommandImplementationAsync{`0},System.Threading.CancellationToken,System.Object)" />
       <MSHelp:TOCTitle Title="ExecuteAsync Method " />
       <MSHelp:RLTitle Title="CommandExecutionToken(TCommand, TParameter).ExecuteAsync Method  (Tortuga.Chain.Core)" />
-      <MSHelp:Keyword Index="A" Term="M:Tortuga.Chain.Core.CommandExecutionToken`2.ExecuteAsync(CommandImplementationAsync{`0},CancellationToken,System.Nullable{System.Object})" />
+      <MSHelp:Keyword Index="A" Term="M:Tortuga.Chain.Core.CommandExecutionToken`2.ExecuteAsync(Tortuga.Chain.Core.CommandImplementationAsync{`0},System.Threading.CancellationToken,System.Object)" />
       <MSHelp:Keyword Index="A" Term="frlrfTortugaChainCoreCommandExecutionToken2ClassExecuteAsyncTopic" />
       <MSHelp:Keyword Index="K" Term="ExecuteAsync method" />
       <MSHelp:Keyword Index="K" Term="CommandExecutionToken%3CTCommand%2C TParameter%3E.ExecuteAsync method" />
@@ -666,6 +666,9 @@
 <div class="TreeItem">
 <img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.Core.CommandExecutionToken-2.ExecuteAsync.htm" target="_self">ExecuteAsync Method </a>
 </div>
+<div class="TreeItem">
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.Core.CommandExecutionToken-2.PopulateCommand.htm" target="_self">PopulateCommand Method </a>
+</div>
 </div>
 </div>
 <div class="TreeNode">
@@ -750,20 +753,16 @@
 <div class="Hidden">
 </div>
 </div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.DataSources.IAdvancedCrudDataSource.htm" target="_self">IAdvancedCrudDataSource Interface</a>
-<div class="Hidden">
-</div>
+<div class="TreeItem">
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="T-Tortuga.Chain.DataSources.IAdvancedCrudDataSource.htm" target="_self">IAdvancedCrudDataSource Interface</a>
 </div>
 <div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.DataSources.ICommandDataSource-2.htm" target="_self">ICommandDataSource(TCommand, TParameter) Interface</a>
 <div class="Hidden">
 </div>
 </div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.DataSources.ICrudDataSource.htm" target="_self">ICrudDataSource Interface</a>
-<div class="Hidden">
-</div>
+<div class="TreeItem">
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="T-Tortuga.Chain.DataSources.ICrudDataSource.htm" target="_self">ICrudDataSource Interface</a>
 </div>
 <div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.DataSources.IDataSource.htm" target="_self">IDataSource Interface</a>
@@ -812,6 +811,16 @@
 </div>
 <div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.DataSources.ISupportsFrom.htm" target="_self">ISupportsFrom Interface</a>
+<div class="Hidden">
+</div>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.DataSources.ISupportsGetByColumn.htm" target="_self">ISupportsGetByColumn Interface</a>
+<div class="Hidden">
+</div>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.DataSources.ISupportsGetByColumnList.htm" target="_self">ISupportsGetByColumnList Interface</a>
 <div class="Hidden">
 </div>
 </div>
@@ -1108,18 +1117,19 @@
 <div class="Hidden">
 </div>
 </div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.Metadata.MaterializerTypeConverter.htm" target="_self">MaterializerTypeConverter Class</a>
+<div class="Hidden">
+</div>
+</div>
 <div class="TreeItem">
 <img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="T-Tortuga.Chain.Metadata.NameGenerationOptions.htm" target="_self">NameGenerationOptions Enumeration</a>
 </div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.Metadata.OdbcDatabaseMetadataCache-1.htm" target="_self">OdbcDatabaseMetadataCache(TObjectName) Class</a>
-<div class="Hidden">
+<div class="TreeItem">
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="T-Tortuga.Chain.Metadata.OdbcDatabaseMetadataCache-1.htm" target="_self">OdbcDatabaseMetadataCache(TObjectName) Class</a>
 </div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.Metadata.OleDbDatabaseMetadataCache-1.htm" target="_self">OleDbDatabaseMetadataCache(TObjectName) Class</a>
-<div class="Hidden">
-</div>
+<div class="TreeItem">
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="T-Tortuga.Chain.Metadata.OleDbDatabaseMetadataCache-1.htm" target="_self">OleDbDatabaseMetadataCache(TObjectName) Class</a>
 </div>
 <div class="TreeItem">
 <img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="T-Tortuga.Chain.Metadata.OperationType.htm" target="_self">OperationType Enumeration</a>
@@ -1588,26 +1598,26 @@
             <div id="mainSection">
               <div id="mainBody">
                 <div class="summary">
-   Executes the specified implementation asynchronously.
-   </div>
+Executes the specified implementation asynchronously.
+</div>
                 <p />
     <b>Namespace:</b> 
    <a href="N-Tortuga.Chain.Core.htm">Tortuga.Chain.Core</a><br />
     <b>Assembly:</b>
-   <span sdata="assembly">Tortuga.Chain.Core</span> (in Tortuga.Chain.Core.dll)<div class="LW_CollapsibleArea_Container"><div class="LW_CollapsibleArea_TitleDiv"><h2 class="LW_CollapsibleArea_Title">Syntax</h2><div class="LW_CollapsibleArea_HrDiv"><hr class="LW_CollapsibleArea_Hr" /></div></div><a id="syntaxSection"><!----></a><div class="CodeSnippetContainer"><div class="CodeSnippetContainerTabs"><div class="CodeSnippetContainerTabLeft"><!----></div><div class="CodeSnippetContainerTabFirst CSharpTab" id="CSharpTabId" style="background:white;border-bottom-color:white"><a href="javascript:setActiveTab('CodeSnippetContainerCode','CSharpCode','CSharpTabId');" title="C#">C#</a></div><div class="CodeSnippetContainerTab VisualBasicTab" id="VisualBasicTabId"><a href="javascript:setActiveTab('CodeSnippetContainerCode','VisualBasicCode','VisualBasicTabId');" title="Visual Basic">VB</a></div><div class="CodeSnippetContainerTab ManagedCPlusPlusTab" id="ManagedCPlusPlusTabId"><a href="javascript:setActiveTab('CodeSnippetContainerCode','ManagedCPlusPlusCode','ManagedCPlusPlusTabId');" title="Visual C++">C++</a></div><div class="CodeSnippetContainerTabRight"><!----></div></div><div class="CodeSnippetContainerCodeCollection"><div class="CodeSnippetToolBar"><div class="CodeSnippetToolBarText" /></div><div class="CodeSnippetContainerCode CSharpCode"><pre xml:space="preserve" class="libCScode"><span class="keyword">public</span> <span class="nolink">Task</span>&lt;<a href="http://msdn.microsoft.com/en-us/library/b3h38hb0.aspx" target="_blank">Nullable</a>&lt;<a href="http://msdn.microsoft.com/en-us/library/system.int32.aspx" target="_blank">int</a>&gt;&gt; <span class="identifier">ExecuteAsync</span>(
+   <span sdata="assembly">Tortuga.Chain.Core</span> (in Tortuga.Chain.Core.dll)<div class="LW_CollapsibleArea_Container"><div class="LW_CollapsibleArea_TitleDiv"><h2 class="LW_CollapsibleArea_Title">Syntax</h2><div class="LW_CollapsibleArea_HrDiv"><hr class="LW_CollapsibleArea_Hr" /></div></div><a id="syntaxSection"><!----></a><div class="CodeSnippetContainer"><div class="CodeSnippetContainerTabs"><div class="CodeSnippetContainerTabLeft"><!----></div><div class="CodeSnippetContainerTabFirst CSharpTab" id="CSharpTabId" style="background:white;border-bottom-color:white"><a href="javascript:setActiveTab('CodeSnippetContainerCode','CSharpCode','CSharpTabId');" title="C#">C#</a></div><div class="CodeSnippetContainerTab VisualBasicTab" id="VisualBasicTabId"><a href="javascript:setActiveTab('CodeSnippetContainerCode','VisualBasicCode','VisualBasicTabId');" title="Visual Basic">VB</a></div><div class="CodeSnippetContainerTab ManagedCPlusPlusTab" id="ManagedCPlusPlusTabId"><a href="javascript:setActiveTab('CodeSnippetContainerCode','ManagedCPlusPlusCode','ManagedCPlusPlusTabId');" title="Visual C++">C++</a></div><div class="CodeSnippetContainerTabRight"><!----></div></div><div class="CodeSnippetContainerCodeCollection"><div class="CodeSnippetToolBar"><div class="CodeSnippetToolBarText" /></div><div class="CodeSnippetContainerCode CSharpCode"><pre xml:space="preserve" class="libCScode"><span class="keyword">public</span> <a href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task-1" target="_blank">Task</a>&lt;<a href="https://docs.microsoft.com/en-us/dotnet/api/system.nullable-1" target="_blank">Nullable</a>&lt;<a href="https://docs.microsoft.com/en-us/dotnet/api/system.int32" target="_blank">int</a>&gt;&gt; <span class="identifier">ExecuteAsync</span>(
 	<a href="T-Tortuga.Chain.Core.CommandImplementationAsync-1.htm">CommandImplementationAsync</a>&lt;TCommand&gt; <span class="parameter">implementation</span>,
-	<span class="nolink">CancellationToken</span> <span class="parameter">cancellationToken</span>,
-	<a href="http://msdn.microsoft.com/en-us/library/b3h38hb0.aspx" target="_blank">Nullable</a>&lt;<a href="http://msdn.microsoft.com/en-us/library/system.object.aspx" target="_blank">Object</a>&gt; <span class="parameter">state</span>
+	<a href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.cancellationtoken" target="_blank">CancellationToken</a> <span class="parameter">cancellationToken</span>,
+	<a href="https://docs.microsoft.com/en-us/dotnet/api/system.object" target="_blank">Object</a> <span class="parameter">state</span>
 )</pre></div><div class="CodeSnippetContainerCode VisualBasicCode"><pre xml:space="preserve" class="libCScode"><span class="keyword">Public</span> <span class="keyword">Function</span> <span class="identifier">ExecuteAsync</span> ( _
 	<span class="parameter">implementation</span> <span class="keyword">As</span> <a href="T-Tortuga.Chain.Core.CommandImplementationAsync-1.htm">CommandImplementationAsync</a>(<span class="keyword">Of</span> TCommand), _
-	<span class="parameter">cancellationToken</span> <span class="keyword">As</span> <span class="nolink">CancellationToken</span>, _
-	<span class="parameter">state</span> <span class="keyword">As</span> <a href="http://msdn.microsoft.com/en-us/library/b3h38hb0.aspx" target="_blank">Nullable</a>(<span class="keyword">Of</span> <a href="http://msdn.microsoft.com/en-us/library/system.object.aspx" target="_blank">Object</a>) _
-) <span class="keyword">As</span> <span class="nolink">Task</span>(<span class="keyword">Of</span> <a href="http://msdn.microsoft.com/en-us/library/b3h38hb0.aspx" target="_blank">Nullable</a>(<span class="keyword">Of</span> <a href="http://msdn.microsoft.com/en-us/library/system.int32.aspx" target="_blank">Integer</a>))</pre></div><div class="CodeSnippetContainerCode ManagedCPlusPlusCode"><pre xml:space="preserve" class="libCScode"><span class="keyword">public</span>:
-<span class="nolink">Task</span>&lt;<a href="http://msdn.microsoft.com/en-us/library/b3h38hb0.aspx" target="_blank">Nullable</a>&lt;<a href="http://msdn.microsoft.com/en-us/library/system.int32.aspx" target="_blank">int</a>^&gt;&gt;^ <span class="identifier">ExecuteAsync</span>(
+	<span class="parameter">cancellationToken</span> <span class="keyword">As</span> <a href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.cancellationtoken" target="_blank">CancellationToken</a>, _
+	<span class="parameter">state</span> <span class="keyword">As</span> <a href="https://docs.microsoft.com/en-us/dotnet/api/system.object" target="_blank">Object</a> _
+) <span class="keyword">As</span> <a href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task-1" target="_blank">Task</a>(<span class="keyword">Of</span> <a href="https://docs.microsoft.com/en-us/dotnet/api/system.nullable-1" target="_blank">Nullable</a>(<span class="keyword">Of</span> <a href="https://docs.microsoft.com/en-us/dotnet/api/system.int32" target="_blank">Integer</a>))</pre></div><div class="CodeSnippetContainerCode ManagedCPlusPlusCode"><pre xml:space="preserve" class="libCScode"><span class="keyword">public</span>:
+<a href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task-1" target="_blank">Task</a>&lt;<a href="https://docs.microsoft.com/en-us/dotnet/api/system.nullable-1" target="_blank">Nullable</a>&lt;<a href="https://docs.microsoft.com/en-us/dotnet/api/system.int32" target="_blank">int</a>^&gt;&gt;^ <span class="identifier">ExecuteAsync</span>(
 	<a href="T-Tortuga.Chain.Core.CommandImplementationAsync-1.htm">CommandImplementationAsync</a>&lt;TCommand&gt;^ <span class="parameter">implementation</span>, 
-	<span class="nolink">CancellationToken</span>^ <span class="parameter">cancellationToken</span>, 
-	<a href="http://msdn.microsoft.com/en-us/library/b3h38hb0.aspx" target="_blank">Nullable</a>&lt;<a href="http://msdn.microsoft.com/en-us/library/system.object.aspx" target="_blank">Object</a>^&gt; <span class="parameter">state</span>
-)</pre></div></div></div><div id="parameters"><h4 class="subHeading">Parameters</h4><dl paramName="implementation"><dt><span class="parameterItalic">implementation</span></dt><dd>Type: <a href="T-Tortuga.Chain.Core.CommandImplementationAsync-1.htm">Tortuga.Chain.Core<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span><span class="fs">.</span></span>CommandImplementationAsync</a><span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span><a href="T-Tortuga.Chain.Core.CommandExecutionToken-2.htm"><span class="typeparam">TCommand</span></a><span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span><br />The implementation.</dd></dl><dl paramName="cancellationToken"><dt><span class="parameterItalic">cancellationToken</span></dt><dd>Type: <span class="nolink">CancellationToken</span><br />The cancellation token.</dd></dl><dl paramName="state"><dt><span class="parameterItalic">state</span></dt><dd>Type: <a href="http://msdn.microsoft.com/en-us/library/b3h38hb0.aspx" target="_blank">Nullable</a><span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span><a href="http://msdn.microsoft.com/en-us/library/system.object.aspx" target="_blank">Object</a><span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span><br />The state.</dd></dl></div><h4 class="subHeading">Return Value</h4>Task.</div><div class="LW_CollapsibleArea_Container"><div class="LW_CollapsibleArea_TitleDiv"><h2 class="LW_CollapsibleArea_Title">See Also</h2><div class="LW_CollapsibleArea_HrDiv"><hr class="LW_CollapsibleArea_Hr" /></div></div><a id="seeAlsoSection"><!----></a><div class="seeAlsoStyle"><a href="T-Tortuga.Chain.Core.CommandExecutionToken-2.htm">CommandExecutionToken<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span>TCommand, TParameter<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span> Class</a></div><div class="seeAlsoStyle"><a href="N-Tortuga.Chain.Core.htm">Tortuga.Chain.Core Namespace</a></div></div></div>
+	<a href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.cancellationtoken" target="_blank">CancellationToken</a>^ <span class="parameter">cancellationToken</span>, 
+	<a href="https://docs.microsoft.com/en-us/dotnet/api/system.object" target="_blank">Object</a>^ <span class="parameter">state</span>
+)</pre></div></div></div><div id="parameters"><h4 class="subHeading">Parameters</h4><dl paramName="implementation"><dt><span class="parameterItalic">implementation</span></dt><dd>Type: <a href="T-Tortuga.Chain.Core.CommandImplementationAsync-1.htm">Tortuga.Chain.Core<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span><span class="fs">.</span></span>CommandImplementationAsync</a><span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span><a href="T-Tortuga.Chain.Core.CommandExecutionToken-2.htm"><span class="typeparam">TCommand</span></a><span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span><br />The implementation.</dd></dl><dl paramName="cancellationToken"><dt><span class="parameterItalic">cancellationToken</span></dt><dd>Type: <a href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.cancellationtoken" target="_blank">CancellationToken</a><br />The cancellation token.</dd></dl><dl paramName="state"><dt><span class="parameterItalic">state</span></dt><dd>Type: <a href="https://docs.microsoft.com/en-us/dotnet/api/system.object" target="_blank">Object</a><br />The state.</dd></dl></div><h4 class="subHeading">Return Value</h4>Task.</div><div class="LW_CollapsibleArea_Container"><div class="LW_CollapsibleArea_TitleDiv"><h2 class="LW_CollapsibleArea_Title">See Also</h2><div class="LW_CollapsibleArea_HrDiv"><hr class="LW_CollapsibleArea_Hr" /></div></div><a id="seeAlsoSection"><!----></a><div class="seeAlsoStyle"><a href="T-Tortuga.Chain.Core.CommandExecutionToken-2.htm">CommandExecutionToken<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span>TCommand, TParameter<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span> Class</a></div><div class="seeAlsoStyle"><a href="N-Tortuga.Chain.Core.htm">Tortuga.Chain.Core Namespace</a></div></div></div>
             </div>
           </div>
         </div>

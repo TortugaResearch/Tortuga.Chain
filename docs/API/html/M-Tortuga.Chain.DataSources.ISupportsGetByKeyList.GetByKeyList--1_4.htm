@@ -3,7 +3,7 @@
   <head><link rel="shortcut icon" href="../favicon.ico" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="save" content="history" />
-    <title>GetByKeyList(TKey) Method (String, String, IEnumerable(TKey))</title>
+    <title>GetByKeyList(TObject) Method (IEnumerable(Guid))</title>
     <link rel="stylesheet" type="text/css" href="../styles/lightweight.css" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:msxsl="urn:schemas-microsoft-com:xslt" />
     <link rel="stylesheet" type="text/css" href="../styles/lw-code.css" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:msxsl="urn:schemas-microsoft-com:xslt" />
     <script type="text/javascript" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:msxsl="urn:schemas-microsoft-com:xslt" src="../scripts/languageSelector.js"> </script>
@@ -11,10 +11,10 @@
     <meta name="file" content="M-Tortuga.Chain.DataSources.ISupportsGetByKeyList.GetByKeyList--1_4" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:msxsl="urn:schemas-microsoft-com:xslt" />
     <meta name="guid" content="M-Tortuga.Chain.DataSources.ISupportsGetByKeyList.GetByKeyList--1_4" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:msxsl="urn:schemas-microsoft-com:xslt" />
     <xml xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:msxsl="urn:schemas-microsoft-com:xslt">
-      <MSHelp:Attr Name="AssetID" Value="M:Tortuga.Chain.DataSources.ISupportsGetByKeyList.GetByKeyList``1(System.String,System.String,IEnumerable{``0})" />
-      <MSHelp:TOCTitle Title="GetByKeyList(TKey) Method (String, String, IEnumerable(TKey))" />
-      <MSHelp:RLTitle Title="ISupportsGetByKeyList.GetByKeyList(TKey) Method (String, String, IEnumerable(TKey)) (Tortuga.Chain.DataSources)" />
-      <MSHelp:Keyword Index="A" Term="M:Tortuga.Chain.DataSources.ISupportsGetByKeyList.GetByKeyList``1(System.String,System.String,IEnumerable{``0})" />
+      <MSHelp:Attr Name="AssetID" Value="M:Tortuga.Chain.DataSources.ISupportsGetByKeyList.GetByKeyList``1(IEnumerable{Guid})" />
+      <MSHelp:TOCTitle Title="GetByKeyList(TObject) Method (IEnumerable(Guid))" />
+      <MSHelp:RLTitle Title="ISupportsGetByKeyList.GetByKeyList(TObject) Method (IEnumerable(Guid)) (Tortuga.Chain.DataSources)" />
+      <MSHelp:Keyword Index="A" Term="M:Tortuga.Chain.DataSources.ISupportsGetByKeyList.GetByKeyList``1(IEnumerable{Guid})" />
       <MSHelp:Attr Name="APIType" Value="Managed" />
       <MSHelp:Attr Name="APILocation" Value="Tortuga.Chain.Core.dll" />
       <MSHelp:Attr Name="APIName" Value="Tortuga.Chain.DataSources.ISupportsGetByKeyList.GetByKeyList" />
@@ -23,7 +23,7 @@
       <MSHelp:Attr Name="Locale" Value="en-us" />
       <MSHelp:Attr Name="TopicType" Value="kbSyntax" />
       <MSHelp:Attr Name="TopicType" Value="apiref" />
-      <MSHelp:Attr Name="Abstract" Value="Gets a set of records by an unique key." />
+      <MSHelp:Attr Name="Abstract" Value="Gets a set of records by their primary key." />
       <MSHelp:Attr Name="AssemblyVersion" Value="" />
     </xml>
   <link rel="stylesheet" href="../TOC.css"><script type="text/javascript" src="../TOC.js"></script></head>
@@ -717,20 +717,16 @@
 <div class="Hidden">
 </div>
 </div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.DataSources.IAdvancedCrudDataSource.htm" target="_self">IAdvancedCrudDataSource Interface</a>
-<div class="Hidden">
-</div>
+<div class="TreeItem">
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="T-Tortuga.Chain.DataSources.IAdvancedCrudDataSource.htm" target="_self">IAdvancedCrudDataSource Interface</a>
 </div>
 <div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.DataSources.ICommandDataSource-2.htm" target="_self">ICommandDataSource(TCommand, TParameter) Interface</a>
 <div class="Hidden">
 </div>
 </div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.DataSources.ICrudDataSource.htm" target="_self">ICrudDataSource Interface</a>
-<div class="Hidden">
-</div>
+<div class="TreeItem">
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="T-Tortuga.Chain.DataSources.ICrudDataSource.htm" target="_self">ICrudDataSource Interface</a>
 </div>
 <div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.DataSources.IDataSource.htm" target="_self">IDataSource Interface</a>
@@ -783,6 +779,16 @@
 </div>
 </div>
 <div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.DataSources.ISupportsGetByColumn.htm" target="_self">ISupportsGetByColumn Interface</a>
+<div class="Hidden">
+</div>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.DataSources.ISupportsGetByColumnList.htm" target="_self">ISupportsGetByColumnList Interface</a>
+<div class="Hidden">
+</div>
+</div>
+<div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.DataSources.ISupportsGetByKey.htm" target="_self">ISupportsGetByKey Interface</a>
 <div class="Hidden">
 </div>
@@ -806,16 +812,19 @@
 <img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.DataSources.ISupportsGetByKeyList.GetByKeyList--2.htm" target="_self">GetByKeyList(TObject, TKey) Method (IEnumerable(TKey))</a>
 </div>
 <div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.DataSources.ISupportsGetByKeyList.GetByKeyList--1_1.htm" target="_self">GetByKeyList(TObject) Method (IEnumerable(Int32))</a>
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.DataSources.ISupportsGetByKeyList.GetByKeyList--1_1.htm" target="_self">GetByKeyList(TObject) Method (IEnumerable(Int16))</a>
 </div>
 <div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.DataSources.ISupportsGetByKeyList.GetByKeyList--1_2.htm" target="_self">GetByKeyList(TObject) Method (IEnumerable(Int64))</a>
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.DataSources.ISupportsGetByKeyList.GetByKeyList--1_2.htm" target="_self">GetByKeyList(TObject) Method (IEnumerable(Int32))</a>
 </div>
 <div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.DataSources.ISupportsGetByKeyList.GetByKeyList--1_3.htm" target="_self">GetByKeyList(TObject) Method (IEnumerable(Guid))</a>
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.DataSources.ISupportsGetByKeyList.GetByKeyList--1_3.htm" target="_self">GetByKeyList(TObject) Method (IEnumerable(Int64))</a>
 </div>
 <div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.DataSources.ISupportsGetByKeyList.GetByKeyList--1_4.htm" target="_self">GetByKeyList(TKey) Method (String, String, IEnumerable(TKey))</a>
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.DataSources.ISupportsGetByKeyList.GetByKeyList--1_4.htm" target="_self">GetByKeyList(TObject) Method (IEnumerable(Guid))</a>
+</div>
+<div class="TreeItem">
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.DataSources.ISupportsGetByKeyList.GetByKeyList--1_5.htm" target="_self">GetByKeyList(TKey) Method (String, String, IEnumerable(TKey))</a>
 </div>
 </div>
 </div>
@@ -1106,18 +1115,19 @@
 <div class="Hidden">
 </div>
 </div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.Metadata.MaterializerTypeConverter.htm" target="_self">MaterializerTypeConverter Class</a>
+<div class="Hidden">
+</div>
+</div>
 <div class="TreeItem">
 <img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="T-Tortuga.Chain.Metadata.NameGenerationOptions.htm" target="_self">NameGenerationOptions Enumeration</a>
 </div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.Metadata.OdbcDatabaseMetadataCache-1.htm" target="_self">OdbcDatabaseMetadataCache(TObjectName) Class</a>
-<div class="Hidden">
+<div class="TreeItem">
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="T-Tortuga.Chain.Metadata.OdbcDatabaseMetadataCache-1.htm" target="_self">OdbcDatabaseMetadataCache(TObjectName) Class</a>
 </div>
-</div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.Metadata.OleDbDatabaseMetadataCache-1.htm" target="_self">OleDbDatabaseMetadataCache(TObjectName) Class</a>
-<div class="Hidden">
-</div>
+<div class="TreeItem">
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="T-Tortuga.Chain.Metadata.OleDbDatabaseMetadataCache-1.htm" target="_self">OleDbDatabaseMetadataCache(TObjectName) Class</a>
 </div>
 <div class="TreeItem">
 <img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="T-Tortuga.Chain.Metadata.OperationType.htm" target="_self">OperationType Enumeration</a>
@@ -1582,32 +1592,25 @@
         <div class="topicContainer">
           <div class="topic">
             <p class="majorTitle" />
-            <h1 class="title">ISupportsGetByKeyList<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span><span class="fs">.</span></span>GetByKeyList<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span><span class="typeparameter">TKey</span><span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span> Method (String, String, IEnumerable<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span><span class="typeparameter">TKey</span><span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span>)</h1>
+            <h1 class="title">ISupportsGetByKeyList<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span><span class="fs">.</span></span>GetByKeyList<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span><span class="typeparameter">TObject</span><span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span> Method (IEnumerable<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span>Guid<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span>)</h1>
             <div id="mainSection">
               <div id="mainBody">
-                <div class="summary">Gets a set of records by an unique key.</div>
+                <div class="summary">
+   Gets a set of records by their primary key.
+   </div>
                 <p />
     <b>Namespace:</b> 
    <a href="N-Tortuga.Chain.DataSources.htm">Tortuga.Chain.DataSources</a><br />
     <b>Assembly:</b>
-   <span sdata="assembly">Tortuga.Chain.Core</span> (in Tortuga.Chain.Core.dll)<div class="LW_CollapsibleArea_Container"><div class="LW_CollapsibleArea_TitleDiv"><h2 class="LW_CollapsibleArea_Title">Syntax</h2><div class="LW_CollapsibleArea_HrDiv"><hr class="LW_CollapsibleArea_Hr" /></div></div><a id="syntaxSection"><!----></a><div class="CodeSnippetContainer"><div class="CodeSnippetContainerTabs"><div class="CodeSnippetContainerTabLeft"><!----></div><div class="CodeSnippetContainerTabFirst CSharpTab" id="CSharpTabId" style="background:white;border-bottom-color:white"><a href="javascript:setActiveTab('CodeSnippetContainerCode','CSharpCode','CSharpTabId');" title="C#">C#</a></div><div class="CodeSnippetContainerTab VisualBasicTab" id="VisualBasicTabId"><a href="javascript:setActiveTab('CodeSnippetContainerCode','VisualBasicCode','VisualBasicTabId');" title="Visual Basic">VB</a></div><div class="CodeSnippetContainerTab ManagedCPlusPlusTab" id="ManagedCPlusPlusTabId"><a href="javascript:setActiveTab('CodeSnippetContainerCode','ManagedCPlusPlusCode','ManagedCPlusPlusTabId');" title="Visual C++">C++</a></div><div class="CodeSnippetContainerTabRight"><!----></div></div><div class="CodeSnippetContainerCodeCollection"><div class="CodeSnippetToolBar"><div class="CodeSnippetToolBarText" /></div><div class="CodeSnippetContainerCode CSharpCode"><pre xml:space="preserve" class="libCScode">[<a href="http://msdn.microsoft.com/en-us/library/system.componentmodel.editorbrowsableattribute.aspx" target="_blank">EditorBrowsableAttribute</a>]
-<a href="T-Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder.htm">IMultipleRowDbCommandBuilder</a> <span class="identifier">GetByKeyList</span>&lt;TKey&gt;(
-	<a href="http://msdn.microsoft.com/en-us/library/system.string.aspx" target="_blank">string</a> <span class="parameter">tableName</span>,
-	<a href="http://msdn.microsoft.com/en-us/library/system.string.aspx" target="_blank">string</a> <span class="parameter">keyColumn</span>,
-	<span class="nolink">IEnumerable</span>&lt;TKey&gt; <span class="parameter">keys</span>
+   <span sdata="assembly">Tortuga.Chain.Core</span> (in Tortuga.Chain.Core.dll)<div class="LW_CollapsibleArea_Container"><div class="LW_CollapsibleArea_TitleDiv"><h2 class="LW_CollapsibleArea_Title">Syntax</h2><div class="LW_CollapsibleArea_HrDiv"><hr class="LW_CollapsibleArea_Hr" /></div></div><a id="syntaxSection"><!----></a><div class="CodeSnippetContainer"><div class="CodeSnippetContainerTabs"><div class="CodeSnippetContainerTabLeft"><!----></div><div class="CodeSnippetContainerTabFirst CSharpTab" id="CSharpTabId" style="background:white;border-bottom-color:white"><a href="javascript:setActiveTab('CodeSnippetContainerCode','CSharpCode','CSharpTabId');" title="C#">C#</a></div><div class="CodeSnippetContainerTab VisualBasicTab" id="VisualBasicTabId"><a href="javascript:setActiveTab('CodeSnippetContainerCode','VisualBasicCode','VisualBasicTabId');" title="Visual Basic">VB</a></div><div class="CodeSnippetContainerTab ManagedCPlusPlusTab" id="ManagedCPlusPlusTabId"><a href="javascript:setActiveTab('CodeSnippetContainerCode','ManagedCPlusPlusCode','ManagedCPlusPlusTabId');" title="Visual C++">C++</a></div><div class="CodeSnippetContainerTabRight"><!----></div></div><div class="CodeSnippetContainerCodeCollection"><div class="CodeSnippetToolBar"><div class="CodeSnippetToolBarText" /></div><div class="CodeSnippetContainerCode CSharpCode"><pre xml:space="preserve" class="libCScode"><a href="T-Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder-1.htm">IMultipleRowDbCommandBuilder</a>&lt;TObject&gt; <span class="identifier">GetByKeyList</span>&lt;TObject&gt;(
+	<span class="nolink">IEnumerable</span>&lt;<span class="nolink">Guid</span>&gt; <span class="parameter">keys</span>
 )
-</pre></div><div class="CodeSnippetContainerCode VisualBasicCode"><pre xml:space="preserve" class="libCScode">&lt;<a href="http://msdn.microsoft.com/en-us/library/system.componentmodel.editorbrowsableattribute.aspx" target="_blank">EditorBrowsableAttribute</a>&gt; _
-<span class="keyword">Function</span> <span class="identifier">GetByKeyList</span>(<span class="keyword">Of</span> TKey) ( _
-	<span class="parameter">tableName</span> <span class="keyword">As</span> <a href="http://msdn.microsoft.com/en-us/library/system.string.aspx" target="_blank">String</a>, _
-	<span class="parameter">keyColumn</span> <span class="keyword">As</span> <a href="http://msdn.microsoft.com/en-us/library/system.string.aspx" target="_blank">String</a>, _
-	<span class="parameter">keys</span> <span class="keyword">As</span> <span class="nolink">IEnumerable</span>(<span class="keyword">Of</span> TKey) _
-) <span class="keyword">As</span> <a href="T-Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder.htm">IMultipleRowDbCommandBuilder</a></pre></div><div class="CodeSnippetContainerCode ManagedCPlusPlusCode"><pre xml:space="preserve" class="libCScode">[<a href="http://msdn.microsoft.com/en-us/library/system.componentmodel.editorbrowsableattribute.aspx" target="_blank">EditorBrowsableAttribute</a>]
-<span class="keyword">generic</span>&lt;<span class="keyword">typename</span> TKey&gt;
-<a href="T-Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder.htm">IMultipleRowDbCommandBuilder</a>^ <span class="identifier">GetByKeyList</span>(
-	<a href="http://msdn.microsoft.com/en-us/library/system.string.aspx" target="_blank">String</a>^ <span class="parameter">tableName</span>, 
-	<a href="http://msdn.microsoft.com/en-us/library/system.string.aspx" target="_blank">String</a>^ <span class="parameter">keyColumn</span>, 
-	<span class="nolink">IEnumerable</span>&lt;TKey&gt;^ <span class="parameter">keys</span>
-)</pre></div></div></div><h4 class="subHeading">Type Parameters</h4><dl><dt><span class="parameterItalic">TKey</span></dt><dd>The type of the t key.</dd></dl><div id="parameters"><h4 class="subHeading">Parameters</h4><dl paramName="tableName"><dt><span class="parameterItalic">tableName</span></dt><dd>Type: <a href="http://msdn.microsoft.com/en-us/library/system.string.aspx" target="_blank">String</a><br />Name of the table.</dd></dl><dl paramName="keyColumn"><dt><span class="parameterItalic">keyColumn</span></dt><dd>Type: <a href="http://msdn.microsoft.com/en-us/library/system.string.aspx" target="_blank">String</a><br />Name of the key column. This should be a primary or unique key, but that's not enforced.</dd></dl><dl paramName="keys"><dt><span class="parameterItalic">keys</span></dt><dd>Type: <span class="nolink">IEnumerable</span><span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span><span class="selflink"><span class="typeparam">TKey</span></span><span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span><br />The keys.</dd></dl></div><h4 class="subHeading">Return Value</h4>IMultipleRowDbCommandBuilder.</div><div class="LW_CollapsibleArea_Container"><div class="LW_CollapsibleArea_TitleDiv"><h2 class="LW_CollapsibleArea_Title">See Also</h2><div class="LW_CollapsibleArea_HrDiv"><hr class="LW_CollapsibleArea_Hr" /></div></div><a id="seeAlsoSection"><!----></a><div class="seeAlsoStyle"><a href="T-Tortuga.Chain.DataSources.ISupportsGetByKeyList.htm">ISupportsGetByKeyList Interface</a></div><div class="seeAlsoStyle"><a href="Overload-Tortuga.Chain.DataSources.ISupportsGetByKeyList.GetByKeyList-.htm">GetByKeyList Overload</a></div><div class="seeAlsoStyle"><a href="N-Tortuga.Chain.DataSources.htm">Tortuga.Chain.DataSources Namespace</a></div></div></div>
+</pre></div><div class="CodeSnippetContainerCode VisualBasicCode"><pre xml:space="preserve" class="libCScode"><span class="keyword">Function</span> <span class="identifier">GetByKeyList</span>(<span class="keyword">Of</span> TObject) ( _
+	<span class="parameter">keys</span> <span class="keyword">As</span> <span class="nolink">IEnumerable</span>(<span class="keyword">Of</span> <span class="nolink">Guid</span>) _
+) <span class="keyword">As</span> <a href="T-Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder-1.htm">IMultipleRowDbCommandBuilder</a>(<span class="keyword">Of</span> TObject)</pre></div><div class="CodeSnippetContainerCode ManagedCPlusPlusCode"><pre xml:space="preserve" class="libCScode"><span class="keyword">generic</span>&lt;<span class="keyword">typename</span> TObject&gt;
+<a href="T-Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder-1.htm">IMultipleRowDbCommandBuilder</a>&lt;TObject&gt;^ <span class="identifier">GetByKeyList</span>(
+	<span class="nolink">IEnumerable</span>&lt;<span class="nolink">Guid</span>^&gt;^ <span class="parameter">keys</span>
+)</pre></div></div></div><h4 class="subHeading">Type Parameters</h4><dl><dt><span class="parameterItalic">TObject</span></dt><dd>The type of the object. Used to determine which table will be read.</dd></dl><div id="parameters"><h4 class="subHeading">Parameters</h4><dl paramName="keys"><dt><span class="parameterItalic">keys</span></dt><dd>Type: <span class="nolink">IEnumerable</span><span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span><span class="nolink">Guid</span><span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span><br />The keys.</dd></dl></div><h4 class="subHeading">Return Value</h4></div><div class="LW_CollapsibleArea_Container"><div class="LW_CollapsibleArea_TitleDiv"><h2 class="LW_CollapsibleArea_Title">Remarks</h2><div class="LW_CollapsibleArea_HrDiv"><hr class="LW_CollapsibleArea_Hr" /></div></div><a id="remarksSection"><!----></a>This only works on tables that have a scalar primary key.</div><div class="LW_CollapsibleArea_Container"><div class="LW_CollapsibleArea_TitleDiv"><h2 class="LW_CollapsibleArea_Title">See Also</h2><div class="LW_CollapsibleArea_HrDiv"><hr class="LW_CollapsibleArea_Hr" /></div></div><a id="seeAlsoSection"><!----></a><div class="seeAlsoStyle"><a href="T-Tortuga.Chain.DataSources.ISupportsGetByKeyList.htm">ISupportsGetByKeyList Interface</a></div><div class="seeAlsoStyle"><a href="Overload-Tortuga.Chain.DataSources.ISupportsGetByKeyList.GetByKeyList-.htm">GetByKeyList Overload</a></div><div class="seeAlsoStyle"><a href="N-Tortuga.Chain.DataSources.htm">Tortuga.Chain.DataSources Namespace</a></div></div></div>
             </div>
           </div>
         </div>
