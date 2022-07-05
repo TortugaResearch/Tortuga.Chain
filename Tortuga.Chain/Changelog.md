@@ -1,5 +1,10 @@
 ## Version 4.2
 
+### Technical Debt
+
+[#400 Better Upsert Pattern for SQL Server](https://github.com/TortugaResearch/Tortuga.Chain/issues/400)
+
+Hint `UPDLOCK` and `SERIALIZABLE` when using `MERGE` to perform an upsert. This reduces, though not elimintates, the need to perform an upsert in a transaction.
 
 ## Version 4.1
 
