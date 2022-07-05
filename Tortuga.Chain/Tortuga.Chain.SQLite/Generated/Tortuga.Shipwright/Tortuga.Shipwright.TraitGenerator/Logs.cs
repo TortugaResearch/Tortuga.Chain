@@ -16,6 +16,7 @@ Container class: Tortuga.Chain.SQLite.SQLiteDataSourceBase
 	Adding trait: Traits.SupportsFromTrait<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter, Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType, Tortuga.Chain.SQLiteLimitOption>
 	Adding trait: Traits.SupportsGetByKeyListTrait<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter, Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType>
 	Adding trait: Traits.SupportsUpsertTrait<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter, Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType>
+	Adding trait: Traits.SupportsGetByColumnListTrait<System.Data.SQLite.SQLiteCommand, System.Data.SQLite.SQLiteParameter, Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType>
 Container class: Tortuga.Chain.SQLite.SQLiteOpenDataSource
 	Adding trait: Traits.OpenDataSourceTrait<Tortuga.Chain.SQLiteDataSource, Tortuga.Chain.SQLite.SQLiteOpenDataSource, System.Data.SQLite.SQLiteConnection, System.Data.SQLite.SQLiteTransaction, System.Data.SQLite.SQLiteCommand, Tortuga.Chain.SQLite.SQLiteMetadataCache>
 Container class: Tortuga.Chain.SQLite.SQLiteTransactionalDataSource
