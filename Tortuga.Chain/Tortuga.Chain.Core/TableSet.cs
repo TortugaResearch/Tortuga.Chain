@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.ObjectModel;
 using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
+using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain;
 
@@ -15,11 +16,13 @@ public sealed class TableSet : IReadOnlyList<Table>
 	readonly TSKeyedCollection m_Internal = new TSKeyedCollection();
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="TableSet"/> class.
+	/// Initializes a new instance of the <see cref="TableSet" /> class.
 	/// </summary>
 	/// <param name="reader">The data reader used to populate this TableSet.</param>
+	/// <param name="converter">The type converter.</param>
 	/// <param name="tableNames">Optional list of table names.</param>
-	public TableSet(DbDataReader reader, params string[] tableNames)
+	/// <exception cref="System.ArgumentNullException">reader</exception>
+	public TableSet(DbDataReader reader, MaterializerTypeConverter converter, params string[] tableNames)
 	{
 		if (reader == null)
 			throw new ArgumentNullException(nameof(reader), $"{nameof(reader)} is null.");
@@ -30,7 +33,7 @@ public sealed class TableSet : IReadOnlyList<Table>
 		do
 		{
 			var tableName = (index < tableNames.Length) ? tableNames[index] : ("Table " + index);
-			m_Internal.Add(new Table(tableName, reader));
+			m_Internal.Add(new Table(tableName, reader, converter));
 			index += 1;
 		}
 		while (reader.NextResult());

@@ -102,6 +102,6 @@ internal sealed class ObjectOrNullMaterializer<TCommand, TParameter, TObject> : 
 		{
 			throw new UnexpectedDataException($"Expected 1 row but received {rowCount} rows. If this was expected, use `RowOptions.DiscardExtraRows`.");
 		}
-		return MaterializerUtilities.ConstructObject<TObject>(row, Constructor);
+		return MaterializerUtilities.ConstructObject<TObject>(row, Constructor, Converter);
 	}
 }

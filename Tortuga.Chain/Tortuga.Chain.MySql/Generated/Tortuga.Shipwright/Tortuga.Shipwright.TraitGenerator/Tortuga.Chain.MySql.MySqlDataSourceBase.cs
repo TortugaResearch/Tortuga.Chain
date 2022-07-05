@@ -8,8 +8,8 @@ namespace Tortuga.Chain.MySql
 		private bool __TraitsRegistered;
 
 		// These fields and/or properties hold the traits. They should not be referenced directly.
-		private Traits.SupportsDeleteAllTrait<Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType> ___Trait0 = new();
-		private Traits.SupportsDeleteAllTrait<Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType> __Trait0
+		private Traits.SupportsDeleteAllTrait<MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType> ___Trait0 = new();
+		private Traits.SupportsDeleteAllTrait<MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType> __Trait0
 		{
 			get
 			{
@@ -17,8 +17,8 @@ namespace Tortuga.Chain.MySql
 				return ___Trait0;
 			}
 		}
-		private Traits.SupportsTruncateTrait<Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType> ___Trait1 = new();
-		private Traits.SupportsTruncateTrait<Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType> __Trait1
+		private Traits.SupportsTruncateTrait<MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType> ___Trait1 = new();
+		private Traits.SupportsTruncateTrait<MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType> __Trait1
 		{
 			get
 			{
@@ -479,7 +479,7 @@ namespace Tortuga.Chain.MySql
 			return ((Tortuga.Chain.DataSources.ISupportsUpsert)__Trait13).Upsert<TArgument>(argumentValue, options);
 		}
 
-		// Exposing trait Traits.SupportsDeleteAllTrait<Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>
+		// Exposing trait Traits.SupportsDeleteAllTrait<MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>
 
 		/// <summary>Deletes all records in the specified table.</summary>
 		/// <param name="tableName">Name of the table to clear.</param>
@@ -1128,7 +1128,7 @@ namespace Tortuga.Chain.MySql
 			return __Trait2.Sql(sqlStatement, argumentValue);
 		}
 
-		// Exposing trait Traits.SupportsTruncateTrait<Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>
+		// Exposing trait Traits.SupportsTruncateTrait<MySqlConnector.MySqlParameter, Tortuga.Chain.MySql.MySqlObjectName, MySqlConnector.MySqlDbType>
 
 		/// <summary>Truncates the specified table.</summary>
 		/// <param name="tableName">Name of the table to Truncate.</param>

@@ -12,9 +12,9 @@ namespace Tortuga.Chain.SQLite
 	public sealed class SQLiteMetadataCache : DbDatabaseMetadataCache<SQLiteObjectName>
 	{
 		readonly SQLiteConnectionStringBuilder m_ConnectionBuilder;
-		readonly ConcurrentDictionary<SQLiteObjectName, TableOrViewMetadata<SQLiteObjectName, DbType>> m_Tables = new ConcurrentDictionary<SQLiteObjectName, TableOrViewMetadata<SQLiteObjectName, DbType>>();
+		readonly ConcurrentDictionary<SQLiteObjectName, TableOrViewMetadata<SQLiteObjectName, DbType>> m_Tables = new();
 
-		readonly ConcurrentDictionary<Type, TableOrViewMetadata<SQLiteObjectName, DbType>> m_TypeTableMap = new ConcurrentDictionary<Type, TableOrViewMetadata<SQLiteObjectName, DbType>>();
+		readonly ConcurrentDictionary<Type, TableOrViewMetadata<SQLiteObjectName, DbType>> m_TypeTableMap = new();
 
 		/// <summary>
 		/// Creates a new instance of <see cref="SQLiteMetadataCache"/>
@@ -24,6 +24,13 @@ namespace Tortuga.Chain.SQLite
 		{
 			m_ConnectionBuilder = connectionBuilder;
 		}
+
+		/// <summary>
+		/// Gets the maximum number of parameters in a single SQL batch.
+		/// </summary>
+		/// <value>The maximum number of parameters.</value>
+		/// <remarks>https://sqlite.org/limits.html</remarks>
+		public override int? MaxParameters => 999;
 
 		/// <summary>
 		/// Gets the indexes for a table.
@@ -138,9 +145,9 @@ namespace Tortuga.Chain.SQLite
 		{
 			const string tableSql =
 				@"SELECT
-                tbl_name as TableName
-                FROM sqlite_master
-                WHERE type = 'table'";
+				tbl_name as TableName
+				FROM sqlite_master
+				WHERE type = 'table'";
 
 			using (var con = new SQLiteConnection(m_ConnectionBuilder.ConnectionString))
 			{
@@ -167,9 +174,9 @@ namespace Tortuga.Chain.SQLite
 		{
 			const string viewSql =
 				@"SELECT
-                tbl_name as ViewName
-                FROM sqlite_master
-                WHERE type = 'view'";
+				tbl_name as ViewName
+				FROM sqlite_master
+				WHERE type = 'view'";
 
 			using (var con = new SQLiteConnection(m_ConnectionBuilder.ConnectionString))
 			{
@@ -250,6 +257,7 @@ namespace Tortuga.Chain.SQLite
 				case "REAL": return DbType.Single;
 				case "SMALLINT": return DbType.Int16;
 				case "TEXT": return DbType.AnsiString;
+				case "TIME": return DbType.Time;
 				case "TINYINT": return DbType.SByte;
 				case "UNSIGNED BIG INT": return DbType.UInt64;
 				case "VARCHAR": return DbType.AnsiString;
@@ -262,8 +270,8 @@ namespace Tortuga.Chain.SQLite
 		ColumnMetadataCollection<DbType> GetColumns(SQLiteObjectName tableName, bool isTable)
 		{
 			/*  NOTE: Should be safe since GetTableOrViewInternal returns null after querying the table name with a
-            **  prepared statement, thus proving that the table name exists.
-            */
+			**  prepared statement, thus proving that the table name exists.
+			*/
 			var hasPrimarykey = false;
 			var columnSql = $"PRAGMA table_info('{tableName.Name}')";
 
@@ -301,11 +309,11 @@ namespace Tortuga.Chain.SQLite
 		{
 			const string tableSql =
 				@"SELECT
-                type AS ObjectType,
-                tbl_name AS ObjectName
-                FROM sqlite_master
-                WHERE UPPER(tbl_name) = UPPER(@Name) AND
-                      (type='table' OR type='view')";
+				type AS ObjectType,
+				tbl_name AS ObjectName
+				FROM sqlite_master
+				WHERE UPPER(tbl_name) = UPPER(@Name) AND
+					  (type='table' OR type='view')";
 
 			string actualName;
 			bool isTable;
@@ -331,12 +339,5 @@ namespace Tortuga.Chain.SQLite
 			var columns = GetColumns(tableName, isTable);
 			return new TableOrViewMetadata<SQLiteObjectName, DbType>(this, actualName, isTable, columns);
 		}
-
-		/// <summary>
-		/// Gets the maximum number of parameters in a single SQL batch.
-		/// </summary>
-		/// <value>The maximum number of parameters.</value>
-		/// <remarks>https://sqlite.org/limits.html</remarks>
-		public override int? MaxParameters => 999;
 	}
 }

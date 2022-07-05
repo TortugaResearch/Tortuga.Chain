@@ -41,16 +41,16 @@ partial class OleDbSqlServerMetadataCache : AbstractOleDbSqlServerMetadataCache
 {
 	internal readonly DbConnectionStringBuilder m_ConnectionBuilder;
 
-	internal readonly ConcurrentDictionary<SqlServerObjectName, ScalarFunctionMetadata<SqlServerObjectName, AbstractDbType>> m_ScalarFunctions = new ConcurrentDictionary<SqlServerObjectName, ScalarFunctionMetadata<SqlServerObjectName, AbstractDbType>>();
-	internal readonly ConcurrentDictionary<SqlServerObjectName, StoredProcedureMetadata<SqlServerObjectName, AbstractDbType>> m_StoredProcedures = new ConcurrentDictionary<SqlServerObjectName, StoredProcedureMetadata<SqlServerObjectName, AbstractDbType>>();
+	internal readonly ConcurrentDictionary<SqlServerObjectName, ScalarFunctionMetadata<SqlServerObjectName, AbstractDbType>> m_ScalarFunctions = new();
+	internal readonly ConcurrentDictionary<SqlServerObjectName, StoredProcedureMetadata<SqlServerObjectName, AbstractDbType>> m_StoredProcedures = new();
 
-	internal readonly ConcurrentDictionary<SqlServerObjectName, TableFunctionMetadata<SqlServerObjectName, AbstractDbType>> m_TableFunctions = new ConcurrentDictionary<SqlServerObjectName, TableFunctionMetadata<SqlServerObjectName, AbstractDbType>>();
+	internal readonly ConcurrentDictionary<SqlServerObjectName, TableFunctionMetadata<SqlServerObjectName, AbstractDbType>> m_TableFunctions = new();
 
-	internal readonly ConcurrentDictionary<SqlServerObjectName, SqlServerTableOrViewMetadata<AbstractDbType>> m_Tables = new ConcurrentDictionary<SqlServerObjectName, SqlServerTableOrViewMetadata<AbstractDbType>>();
+	internal readonly ConcurrentDictionary<SqlServerObjectName, SqlServerTableOrViewMetadata<AbstractDbType>> m_Tables = new();
 
-	internal readonly ConcurrentDictionary<Type, TableOrViewMetadata<SqlServerObjectName, AbstractDbType>> m_TypeTableMap = new ConcurrentDictionary<Type, TableOrViewMetadata<SqlServerObjectName, AbstractDbType>>();
+	internal readonly ConcurrentDictionary<Type, TableOrViewMetadata<SqlServerObjectName, AbstractDbType>> m_TypeTableMap = new();
 
-	internal readonly ConcurrentDictionary<SqlServerObjectName, UserDefinedTableTypeMetadata<SqlServerObjectName, AbstractDbType>> m_UserDefinedTableTypes = new ConcurrentDictionary<SqlServerObjectName, UserDefinedTableTypeMetadata<SqlServerObjectName, AbstractDbType>>();
+	internal readonly ConcurrentDictionary<SqlServerObjectName, UserDefinedTableTypeMetadata<SqlServerObjectName, AbstractDbType>> m_UserDefinedTableTypes = new();
 
 	internal string? m_DatabaseName;
 	internal string? m_DefaultSchema;

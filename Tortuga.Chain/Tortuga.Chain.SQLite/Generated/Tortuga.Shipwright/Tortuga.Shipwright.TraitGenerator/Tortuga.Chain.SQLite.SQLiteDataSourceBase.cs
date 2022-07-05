@@ -8,8 +8,8 @@ namespace Tortuga.Chain.SQLite
 		private bool __TraitsRegistered;
 
 		// These fields and/or properties hold the traits. They should not be referenced directly.
-		private Traits.SupportsDeleteAllTrait<Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType> ___Trait0 = new();
-		private Traits.SupportsDeleteAllTrait<Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType> __Trait0
+		private Traits.SupportsDeleteAllTrait<System.Data.SQLite.SQLiteParameter, Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType> ___Trait0 = new();
+		private Traits.SupportsDeleteAllTrait<System.Data.SQLite.SQLiteParameter, Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType> __Trait0
 		{
 			get
 			{
@@ -17,8 +17,8 @@ namespace Tortuga.Chain.SQLite
 				return ___Trait0;
 			}
 		}
-		private Traits.SupportsTruncateTrait<Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType> ___Trait1 = new();
-		private Traits.SupportsTruncateTrait<Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType> __Trait1
+		private Traits.SupportsTruncateTrait<System.Data.SQLite.SQLiteParameter, Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType> ___Trait1 = new();
+		private Traits.SupportsTruncateTrait<System.Data.SQLite.SQLiteParameter, Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType> __Trait1
 		{
 			get
 			{
@@ -399,7 +399,7 @@ namespace Tortuga.Chain.SQLite
 			return ((Tortuga.Chain.DataSources.ISupportsUpsert)__Trait13).Upsert<TArgument>(argumentValue, options);
 		}
 
-		// Exposing trait Traits.SupportsDeleteAllTrait<Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType>
+		// Exposing trait Traits.SupportsDeleteAllTrait<System.Data.SQLite.SQLiteParameter, Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType>
 
 		/// <summary>Deletes all records in the specified table.</summary>
 		/// <param name="tableName">Name of the table to clear.</param>
@@ -924,7 +924,7 @@ namespace Tortuga.Chain.SQLite
 			return __Trait2.Sql(sqlStatement, argumentValue);
 		}
 
-		// Exposing trait Traits.SupportsTruncateTrait<Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType>
+		// Exposing trait Traits.SupportsTruncateTrait<System.Data.SQLite.SQLiteParameter, Tortuga.Chain.SQLite.SQLiteObjectName, System.Data.DbType>
 
 		/// <summary>Truncates the specified table.</summary>
 		/// <param name="tableName">Name of the table to Truncate.</param>

@@ -13,10 +13,10 @@ namespace Tortuga.Chain.Access;
 public sealed class AccessMetadataCache : OleDbDatabaseMetadataCache<AccessObjectName>
 {
 	readonly OleDbConnectionStringBuilder m_ConnectionBuilder;
-	readonly ConcurrentDictionary<AccessObjectName, TableOrViewMetadata<AccessObjectName, OleDbType>> m_Tables = new ConcurrentDictionary<AccessObjectName, TableOrViewMetadata<AccessObjectName, OleDbType>>();
-	readonly ConcurrentDictionary<Type, TableOrViewMetadata<AccessObjectName, OleDbType>> m_TypeTableMap = new ConcurrentDictionary<Type, TableOrViewMetadata<AccessObjectName, OleDbType>>();
+	readonly ConcurrentDictionary<AccessObjectName, TableOrViewMetadata<AccessObjectName, OleDbType>> m_Tables = new();
+	readonly ConcurrentDictionary<Type, TableOrViewMetadata<AccessObjectName, OleDbType>> m_TypeTableMap = new();
 
-	ConcurrentDictionary<Guid, DataTable> m_DataTableCache = new ConcurrentDictionary<Guid, DataTable>();
+	ConcurrentDictionary<Guid, DataTable> m_DataTableCache = new();
 	bool m_SchemaLoaded;
 
 	/// <summary>

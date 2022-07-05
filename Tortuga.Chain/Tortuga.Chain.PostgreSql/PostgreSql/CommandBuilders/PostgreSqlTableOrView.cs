@@ -271,17 +271,6 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 		}
 
 		/// <summary>
-		/// Adds sorting to the command builder.
-		/// </summary>
-		/// <param name="sortExpressions">The sort expressions.</param>
-		/// <returns></returns>
-		protected override TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption> OnWithSorting(IEnumerable<SortExpression> sortExpressions)
-		{
-			m_SortExpressions = sortExpressions ?? throw new ArgumentNullException(nameof(sortExpressions), $"{nameof(sortExpressions)} is null.");
-			return this;
-		}
-
-		/// <summary>
 		/// Adds limits to the command builder.
 		/// </summary>
 		/// <param name="skip">The number of rows to skip.</param>
@@ -312,6 +301,17 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 			m_Skip = skip;
 			m_Take = take;
 			m_LimitOptions = (PostgreSqlLimitOption)limitOptions;
+			return this;
+		}
+
+		/// <summary>
+		/// Adds sorting to the command builder.
+		/// </summary>
+		/// <param name="sortExpressions">The sort expressions.</param>
+		/// <returns></returns>
+		protected override TableDbCommandBuilder<NpgsqlCommand, NpgsqlParameter, PostgreSqlLimitOption> OnWithSorting(IEnumerable<SortExpression> sortExpressions)
+		{
+			m_SortExpressions = sortExpressions ?? throw new ArgumentNullException(nameof(sortExpressions), $"{nameof(sortExpressions)} is null.");
 			return this;
 		}
 	}

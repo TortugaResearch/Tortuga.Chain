@@ -25,6 +25,12 @@ public abstract class DatabaseMetadataCache<TObjectName, TDbType> : IDatabaseMet
 	private readonly ConcurrentDictionary<(Type, OperationType), TableOrViewMetadata<TObjectName, TDbType>> m_TypeTableMap = new ConcurrentDictionary<(Type, OperationType), TableOrViewMetadata<TObjectName, TDbType>>();
 
 	/// <summary>
+	/// Gets the converter dictionary used by materializers.
+	/// </summary>
+	/// <value>The converter dictionary.</value>
+	public MaterializerTypeConverter Converter { get; } = new();
+
+	/// <summary>
 	/// Gets the maximum number of parameters in a single SQL batch.
 	/// </summary>
 	/// <value>The maximum number of parameters.</value>
@@ -79,6 +85,16 @@ public abstract class DatabaseMetadataCache<TObjectName, TDbType> : IDatabaseMet
 	{
 		throw new NotSupportedException("Indexes are not supported by this data source");
 	}
+
+	///// <summary>
+	///// Gets the parameters from a SQL Builder.
+	///// </summary>
+	///// <param name="sqlBuilder">The SQL builder.</param>
+	///// <returns></returns>
+	//public List<TParameter> GetParameters(SqlBuilder<TDbType> sqlBuilder)
+	//{
+	//	return sqlBuilder.GetParameters(ParameterBuilderCallback);
+	//}
 
 	/// <summary>
 	/// Gets the metadata for a scalar function.
@@ -247,10 +263,10 @@ public abstract class DatabaseMetadataCache<TObjectName, TDbType> : IDatabaseMet
 	}
 
 	TableOrViewMetadata IDatabaseMetadataCache.GetTableOrViewFromClass<TObject>(OperationType operation)
-			=> GetTableOrViewFromClass<TObject>(operation);
+				=> GetTableOrViewFromClass<TObject>(operation);
 
 	TableOrViewMetadata IDatabaseMetadataCache.GetTableOrViewFromClass(Type type, OperationType operation)
-			=> GetTableOrViewFromClass(type, operation);
+				=> GetTableOrViewFromClass(type, operation);
 
 	/// <summary>DatabaseObject
 	/// Gets the tables and views that were loaded by this cache.

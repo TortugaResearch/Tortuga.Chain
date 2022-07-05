@@ -86,6 +86,6 @@ internal sealed class AccessUpdateObject<TArgument> : AccessObjectCommand<TArgum
 		sqlBuilder.BuildWhereClause(sql, " WHERE ", null);
 		sql.Append(";");
 
-		return new AccessCommandExecutionToken(DataSource, $"Query {label} updating " + Table.Name, sql.ToString(), sqlBuilder.GetParameters());
+		return new AccessCommandExecutionToken(DataSource, $"Query {label} updating " + Table.Name, sql.ToString(), sqlBuilder.GetParameters(DataSource));
 	}
 }

@@ -44,11 +44,8 @@ internal sealed class SqlServerDeleteObject<TArgument> : SqlServerObjectCommand<
 			sqlBuilder.OverrideKeys(KeyColumns);
 
 		var sql = new StringBuilder();
-		string? header;
-		string? intoClause;
-		string? footer;
 
-		sqlBuilder.UseTableVariable(Table, out header, out intoClause, out footer);
+		sqlBuilder.UseTableVariable(Table, out var header, out var intoClause, out var footer);
 		sql.Append(header);
 		sql.Append("DELETE FROM " + Table.Name.ToQuotedString());
 		sqlBuilder.BuildSelectClause(sql, " OUTPUT ", "Deleted.", intoClause);

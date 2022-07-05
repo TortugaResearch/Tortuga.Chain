@@ -220,20 +220,6 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
 		}
 
 		/// <summary>
-		/// Adds sorting to the command builder.
-		/// </summary>
-		/// <param name="sortExpressions">The sort expressions.</param>
-		/// <returns></returns>
-		protected override TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> OnWithSorting(IEnumerable<SortExpression> sortExpressions)
-		{
-			if (sortExpressions == null)
-				throw new ArgumentNullException(nameof(sortExpressions), $"{nameof(sortExpressions)} is null.");
-
-			m_SortExpressions = sortExpressions;
-			return this;
-		}
-
-		/// <summary>
 		/// Adds limits to the command builder.
 		/// </summary>
 		/// <param name="skip">The number of rows to skip.</param>
@@ -264,6 +250,20 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
 			m_Skip = skip;
 			m_Take = take;
 			m_LimitOptions = (SQLiteLimitOption)limitOptions;
+			return this;
+		}
+
+		/// <summary>
+		/// Adds sorting to the command builder.
+		/// </summary>
+		/// <param name="sortExpressions">The sort expressions.</param>
+		/// <returns></returns>
+		protected override TableDbCommandBuilder<SQLiteCommand, SQLiteParameter, SQLiteLimitOption> OnWithSorting(IEnumerable<SortExpression> sortExpressions)
+		{
+			if (sortExpressions == null)
+				throw new ArgumentNullException(nameof(sortExpressions), $"{nameof(sortExpressions)} is null.");
+
+			m_SortExpressions = sortExpressions;
 			return this;
 		}
 	}

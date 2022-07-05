@@ -49,7 +49,7 @@ internal sealed class CollectionSetMaterializer<TCommand, TParameter, T1, T2> : 
 					{
 						using (var reader = cmd.ExecuteReader(CommandBehavior))
 						{
-							result = new TableSet(reader);
+							result = new TableSet(reader, Converter);
 							return result.Sum(t => t.Rows.Count);
 						}
 					}, state);
@@ -73,7 +73,7 @@ internal sealed class CollectionSetMaterializer<TCommand, TParameter, T1, T2> : 
 		{
 			using (var reader = await cmd.ExecuteReaderAsync(CommandBehavior).ConfigureAwait(false))
 			{
-				result = new TableSet(reader);
+				result = new TableSet(reader, Converter);
 				return result.Sum(t => t.Rows.Count);
 			}
 		}, cancellationToken, state).ConfigureAwait(false);

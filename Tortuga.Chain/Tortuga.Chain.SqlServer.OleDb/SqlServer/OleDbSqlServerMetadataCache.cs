@@ -8,7 +8,7 @@ namespace Tortuga.Chain.SqlServer;
 /// <summary>
 /// Class OleDbSqlServerMetadataCache.
 /// </summary>
-/// <seealso cref="DatabaseMetadataCache{SqlServerObjectName, OleDbType}" />
+/// <seealso cref="DatabaseMetadataCache{ SqlServerObjectName, OleDbType}" />
 public sealed partial class OleDbSqlServerMetadataCache
 {
 	/// <summary>
@@ -302,12 +302,12 @@ public sealed partial class OleDbSqlServerMetadataCache
 		CONVERT(INT, COALESCE(p.precision, t.precision, t2.precision)) AS precision,
 		CONVERT(INT, COALESCE(p.scale, t.scale, t2.scale)) AS scale
 
-        FROM	sys.objects o
-        INNER JOIN sys.schemas s ON o.schema_id = s.schema_id
-        INNER JOIN sys.parameters p ON p.object_id = o.object_id AND p.parameter_id = 0
+		FROM	sys.objects o
+		INNER JOIN sys.schemas s ON o.schema_id = s.schema_id
+		INNER JOIN sys.parameters p ON p.object_id = o.object_id AND p.parameter_id = 0
 		LEFT JOIN sys.types t on p.system_type_id = t.user_type_id
 		LEFT JOIN sys.types t2 ON p.user_type_id = t2.user_type_id
-        WHERE	o.type IN ('FN')
+		WHERE	o.type IN ('FN')
 		AND s.name = ?
 		AND o.name = ?;";
 
@@ -404,10 +404,10 @@ public sealed partial class OleDbSqlServerMetadataCache
 				WHERE o.type in ('TF', 'IF', 'FT') AND s.name = ? AND o.Name = ?";
 
 		/*
-             * TF = SQL table-valued-function
-             * IF = SQL inline table-valued function
-             * FT = Assembly (CLR) table-valued function
-             */
+			 * TF = SQL table-valued-function
+			 * IF = SQL inline table-valued function
+			 * FT = Assembly (CLR) table-valued function
+			 */
 
 		string actualSchema;
 		string actualName;
@@ -446,7 +446,7 @@ public sealed partial class OleDbSqlServerMetadataCache
 				t.name AS Name,
 				t.object_id AS ObjectId,
 				CONVERT(BIT, 1) AS IsTable,
-		        (SELECT	COUNT(*) FROM sys.triggers t2 WHERE	t2.parent_id = t.object_id) AS Triggers
+				(SELECT	COUNT(*) FROM sys.triggers t2 WHERE	t2.parent_id = t.object_id) AS Triggers
 				FROM SYS.tables t
 				INNER JOIN sys.schemas s ON t.schema_id = s.schema_id
 				WHERE s.name = ? AND t.Name = ?
@@ -458,7 +458,7 @@ public sealed partial class OleDbSqlServerMetadataCache
 				t.name AS Name,
 				t.object_id AS ObjectId,
 				CONVERT(BIT, 0) AS IsTable,
-		        (SELECT	COUNT(*) FROM sys.triggers t2 WHERE	t2.parent_id = t.object_id) AS Triggers
+				(SELECT	COUNT(*) FROM sys.triggers t2 WHERE	t2.parent_id = t.object_id) AS Triggers
 				FROM SYS.views t
 				INNER JOIN sys.schemas s ON t.schema_id = s.schema_id
 				WHERE s.name = ? AND t.Name = ?";
@@ -611,14 +611,14 @@ WHERE	s.name = ? AND t.name = ? AND t.is_table_type = 1;";
 							Convert(bit, ISNULL(PKS.is_primary_key, 0)) AS is_primary_key,
 							COALESCE(t.name, t2.name) AS TypeName,
 							c.is_nullable,
-		                    CONVERT(INT, COALESCE(c.max_length, t.max_length, t2.max_length)) AS max_length,
-		                    CONVERT(INT, COALESCE(c.precision, t.precision, t2.precision)) AS precision,
-		                    CONVERT(INT, COALESCE(c.scale, t.scale, t2.scale)) AS scale
+							CONVERT(INT, COALESCE(c.max_length, t.max_length, t2.max_length)) AS max_length,
+							CONVERT(INT, COALESCE(c.precision, t.precision, t2.precision)) AS precision,
+							CONVERT(INT, COALESCE(c.scale, t.scale, t2.scale)) AS scale
 					FROM    sys.columns c
 							LEFT JOIN PKS ON c.name = PKS.name
 							LEFT JOIN sys.types t on c.system_type_id = t.user_type_id
 							LEFT JOIN sys.types t2 ON c.user_type_id = t2.user_type_id
-                            WHERE   object_id = ?;";
+							WHERE   object_id = ?;";
 
 		var columns = new List<ColumnMetadata<OleDbType>>();
 		using (var con = new OleDbConnection(m_ConnectionBuilder.ConnectionString))
@@ -660,17 +660,17 @@ WHERE	s.name = ? AND t.name = ? AND t.is_table_type = 1;";
 		{
 			const string ParameterSql =
 				@"SELECT  p.name AS ParameterName ,
-            COALESCE(t.name, t2.name) AS TypeName,
+			COALESCE(t.name, t2.name) AS TypeName,
 			COALESCE(t.is_nullable, t2.is_nullable)  as is_nullable,
-		    CONVERT(INT, t.max_length) AS max_length,
-		    CONVERT(INT, t.precision) AS precision,
-		    CONVERT(INT, t.scale) AS scale,
-		    p.is_output
-            FROM    sys.parameters p
-                    LEFT JOIN sys.types t ON p.system_type_id = t.user_type_id
-                    LEFT JOIN sys.types t2 ON p.user_type_id = t2.user_type_id
-            WHERE   p.object_id = ? AND p.parameter_id <> 0
-            ORDER BY p.parameter_id;";
+			CONVERT(INT, t.max_length) AS max_length,
+			CONVERT(INT, t.precision) AS precision,
+			CONVERT(INT, t.scale) AS scale,
+			p.is_output
+			FROM    sys.parameters p
+					LEFT JOIN sys.types t ON p.system_type_id = t.user_type_id
+					LEFT JOIN sys.types t2 ON p.user_type_id = t2.user_type_id
+			WHERE   p.object_id = ? AND p.parameter_id <> 0
+			ORDER BY p.parameter_id;";
 
 			//we exclude parameter_id 0 because it is the return type of scalar functions.
 

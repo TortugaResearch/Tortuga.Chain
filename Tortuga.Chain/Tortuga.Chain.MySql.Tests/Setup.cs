@@ -75,7 +75,9 @@ public static class Setup
 
 					DeletedFlag boolean NOT NULL DEFAULT FALSE,
 					DeletedDate TIMESTAMP NULL,
-					DeletedByKey INTEGER NULL
+					DeletedByKey INTEGER NULL,
+					BirthDay DATE NULL,
+					PreferredCallTime TIME NULL
 				);
 				CREATE TABLE sales.location
 				(

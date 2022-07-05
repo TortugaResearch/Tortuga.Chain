@@ -13,10 +13,10 @@ namespace Tortuga.Chain.MySql;
 public class MySqlMetadataCache : DatabaseMetadataCache<MySqlObjectName, MySqlDbType>
 {
 	private readonly MySqlConnectionStringBuilder m_ConnectionBuilder;
-	private readonly ConcurrentDictionary<MySqlObjectName, ScalarFunctionMetadata<MySqlObjectName, MySqlDbType>> m_ScalarFunctions = new ConcurrentDictionary<MySqlObjectName, ScalarFunctionMetadata<MySqlObjectName, MySqlDbType>>();
-	private readonly ConcurrentDictionary<MySqlObjectName, StoredProcedureMetadata<MySqlObjectName, MySqlDbType>> m_StoredProcedures = new ConcurrentDictionary<MySqlObjectName, StoredProcedureMetadata<MySqlObjectName, MySqlDbType>>();
-	private readonly ConcurrentDictionary<MySqlObjectName, TableOrViewMetadata<MySqlObjectName, MySqlDbType>> m_Tables = new ConcurrentDictionary<MySqlObjectName, TableOrViewMetadata<MySqlObjectName, MySqlDbType>>();
-	private readonly ConcurrentDictionary<(Type, OperationType), DatabaseObject> m_TypeTableMap = new ConcurrentDictionary<(Type, OperationType), DatabaseObject>();
+	private readonly ConcurrentDictionary<MySqlObjectName, ScalarFunctionMetadata<MySqlObjectName, MySqlDbType>> m_ScalarFunctions = new();
+	private readonly ConcurrentDictionary<MySqlObjectName, StoredProcedureMetadata<MySqlObjectName, MySqlDbType>> m_StoredProcedures = new();
+	private readonly ConcurrentDictionary<MySqlObjectName, TableOrViewMetadata<MySqlObjectName, MySqlDbType>> m_Tables = new();
+	private readonly ConcurrentDictionary<(Type, OperationType), DatabaseObject> m_TypeTableMap = new();
 	private string? m_DefaultSchema;
 
 	/// <summary>

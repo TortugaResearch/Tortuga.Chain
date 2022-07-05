@@ -8,8 +8,8 @@ namespace Tortuga.Chain.Access
 		private bool __TraitsRegistered;
 
 		// These fields and/or properties hold the traits. They should not be referenced directly.
-		private Traits.SupportsDeleteAllTrait<Tortuga.Chain.Access.AccessObjectName, System.Data.OleDb.OleDbType> ___Trait0 = new();
-		private Traits.SupportsDeleteAllTrait<Tortuga.Chain.Access.AccessObjectName, System.Data.OleDb.OleDbType> __Trait0
+		private Traits.SupportsDeleteAllTrait<System.Data.OleDb.OleDbParameter, Tortuga.Chain.Access.AccessObjectName, System.Data.OleDb.OleDbType> ___Trait0 = new();
+		private Traits.SupportsDeleteAllTrait<System.Data.OleDb.OleDbParameter, Tortuga.Chain.Access.AccessObjectName, System.Data.OleDb.OleDbType> __Trait0
 		{
 			get
 			{
@@ -334,7 +334,7 @@ namespace Tortuga.Chain.Access
 			return ((Tortuga.Chain.DataSources.ISupportsUpdateSet)__Trait7).UpdateSet(tableName, newValues, options);
 		}
 
-		// Exposing trait Traits.SupportsDeleteAllTrait<Tortuga.Chain.Access.AccessObjectName, System.Data.OleDb.OleDbType>
+		// Exposing trait Traits.SupportsDeleteAllTrait<System.Data.OleDb.OleDbParameter, Tortuga.Chain.Access.AccessObjectName, System.Data.OleDb.OleDbType>
 
 		/// <summary>Deletes all records in the specified table.</summary>
 		/// <param name="tableName">Name of the table to clear.</param>

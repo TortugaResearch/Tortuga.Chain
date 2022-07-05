@@ -20,6 +20,7 @@ internal sealed class StreamingObjectConstructor<T> : IDisposable
 
 	readonly ConstructorMetadata m_Constructor;
 
+	readonly MaterializerTypeConverter m_Converter;
 	readonly StreamingObjectConstructorDictionary m_Dictionary;
 
 	readonly List<OrdinalMappedProperty<T>>? m_MappedProperties;
@@ -58,8 +59,9 @@ internal sealed class StreamingObjectConstructor<T> : IDisposable
 		s_DecomposedProperties = decomposedProperties.ToImmutableArray();
 	}
 
-	public StreamingObjectConstructor(DbDataReader source, ConstructorMetadata? constructor, IReadOnlyList<ColumnMetadata> nonNullableColumns)
+	public StreamingObjectConstructor(DbDataReader source, ConstructorMetadata? constructor, IReadOnlyList<ColumnMetadata> nonNullableColumns, MaterializerTypeConverter converter)
 	{
+		m_Converter = converter ?? new();
 		m_Source = source;
 		m_Ordinals = new Dictionary<string, int>(source.FieldCount, StringComparer.OrdinalIgnoreCase);
 		m_NullableColumns = new Dictionary<int, bool>(source.FieldCount);
@@ -100,8 +102,9 @@ internal sealed class StreamingObjectConstructor<T> : IDisposable
 		}
 	}
 
-	public StreamingObjectConstructor(DbDataReader source, IReadOnlyList<Type>? constructorSignature, IReadOnlyList<ColumnMetadata> nonNullableColumns)
+	public StreamingObjectConstructor(DbDataReader source, IReadOnlyList<Type>? constructorSignature, IReadOnlyList<ColumnMetadata> nonNullableColumns, MaterializerTypeConverter converter)
 	{
+		m_Converter = converter ?? new();
 		m_Source = source;
 		m_Ordinals = new Dictionary<string, int>(source.FieldCount, StringComparer.OrdinalIgnoreCase);
 		m_NullableColumns = new Dictionary<int, bool>(source.FieldCount);
@@ -236,7 +239,7 @@ internal sealed class StreamingObjectConstructor<T> : IDisposable
 		var result = (T)m_Constructor.ConstructorInfo.Invoke(parameters);
 
 		if (m_MappedProperties != null)
-			PopulateComplexObject(m_Dictionary, result, null, m_MappedProperties, s_DecomposedProperties);
+			PopulateComplexObject(m_Dictionary, result, null, m_MappedProperties, s_DecomposedProperties, m_Converter);
 
 		//Change tracking objects shouldn't be materialized as unchanged.
 		(result as IChangeTracking)?.AcceptChanges();

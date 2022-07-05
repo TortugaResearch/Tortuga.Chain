@@ -72,7 +72,9 @@ CREATE TABLE Employee
 	UpdatedDate DATETIME NULL,
 	DeletedFlag BIT NOT NULL DEFAULT 0,
 	DeletedDate DateTime NULL,
-	DeletedByKey INTEGER NULL
+	DeletedByKey INTEGER NULL,
+	BirthDay DATETIME NULL,
+	PreferredCallTime DATETIME NULL
 )";
 
 			const string sql3 = "CREATE VIEW EmployeeLookup AS SELECT FirstName, LastName, EmployeeKey, EmployeeId FROM Employee";
