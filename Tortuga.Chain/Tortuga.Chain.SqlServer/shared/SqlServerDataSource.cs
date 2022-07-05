@@ -300,14 +300,9 @@ public partial class SqlServerDataSource : SqlServerDataSourceBase
 				using (var cmd = new SqlCommand())
 				{
 					cmd.Connection = con;
-					if (DefaultCommandTimeout.HasValue)
-						cmd.CommandTimeout = (int)DefaultCommandTimeout.Value.TotalSeconds;
-					cmd.CommandText = executionToken.CommandText;
-					cmd.CommandType = executionToken.CommandType;
-					foreach (var param in executionToken.Parameters)
-						cmd.Parameters.Add(param);
+					executionToken.PopulateCommand(cmd, DefaultCommandTimeout);
 
-					executionToken.ApplyCommandOverrides(cmd);
+					CommandFixup(executionToken, cmd);
 
 					var rows = implementation(cmd);
 					executionToken.RaiseCommandExecuted(cmd, rows);
@@ -423,14 +418,9 @@ public partial class SqlServerDataSource : SqlServerDataSourceBase
 				using (var cmd = new SqlCommand())
 				{
 					cmd.Connection = con;
-					if (DefaultCommandTimeout.HasValue)
-						cmd.CommandTimeout = (int)DefaultCommandTimeout.Value.TotalSeconds;
-					cmd.CommandText = executionToken.CommandText;
-					cmd.CommandType = executionToken.CommandType;
-					foreach (var param in executionToken.Parameters)
-						cmd.Parameters.Add(param);
+					executionToken.PopulateCommand(cmd, DefaultCommandTimeout);
 
-					executionToken.ApplyCommandOverrides(cmd);
+					CommandFixup(executionToken, cmd);
 
 					var rows = await implementation(cmd).ConfigureAwait(false);
 					executionToken.RaiseCommandExecuted(cmd, rows);

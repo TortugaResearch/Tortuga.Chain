@@ -1,3 +1,4 @@
+using Tortuga.Chain.Core;
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Metadata;
 
@@ -27,4 +28,12 @@ public abstract partial class SqlServerDataSourceBase : DataSource<SqlConnection
 	/// </summary>
 	/// <returns></returns>
 	protected override IDatabaseMetadataCache OnGetDatabaseMetadata() => DatabaseMetadata;
+
+	private protected void CommandFixup(CommandExecutionToken<SqlCommand, SqlParameter> executionToken, SqlCommand cmd)
+	{
+#if SQL_SERVER_MDS
+		if (!executionToken.HasOutputParameters)
+			cmd.EnableOptimizedParameterBinding = true;
+#endif
+	}
 }

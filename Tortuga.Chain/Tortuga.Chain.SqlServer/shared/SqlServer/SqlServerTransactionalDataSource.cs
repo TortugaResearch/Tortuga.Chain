@@ -96,12 +96,9 @@ public partial class SqlServerTransactionalDataSource : SqlServerDataSourceBase
 			{
 				cmd.Connection = m_Connection;
 				cmd.Transaction = m_Transaction;
-				if (DefaultCommandTimeout.HasValue)
-					cmd.CommandTimeout = (int)DefaultCommandTimeout.Value.TotalSeconds;
-				cmd.CommandText = executionToken.CommandText;
-				cmd.CommandType = executionToken.CommandType;
-				foreach (var param in executionToken.Parameters)
-					cmd.Parameters.Add(param);
+				executionToken.PopulateCommand(cmd, DefaultCommandTimeout);
+
+				CommandFixup(executionToken, cmd);
 
 				var rows = implementation(cmd);
 				executionToken.RaiseCommandExecuted(cmd, rows);
@@ -170,12 +167,10 @@ public partial class SqlServerTransactionalDataSource : SqlServerDataSourceBase
 			{
 				cmd.Connection = m_Connection;
 				cmd.Transaction = m_Transaction;
-				if (DefaultCommandTimeout.HasValue)
-					cmd.CommandTimeout = (int)DefaultCommandTimeout.Value.TotalSeconds;
-				cmd.CommandText = executionToken.CommandText;
-				cmd.CommandType = executionToken.CommandType;
-				foreach (var param in executionToken.Parameters)
-					cmd.Parameters.Add(param);
+				executionToken.PopulateCommand(cmd, DefaultCommandTimeout);
+
+				CommandFixup(executionToken, cmd);
+
 				var rows = await implementation(cmd).ConfigureAwait(false);
 				executionToken.RaiseCommandExecuted(cmd, rows);
 				OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
