@@ -59,6 +59,21 @@ internal static class Utilities
 		return result;
 	}
 
+	public static bool RequiresSorting(this SqlServerLimitOption limitOption)
+	{
+		return limitOption switch
+		{
+			SqlServerLimitOption.None => false,
+			SqlServerLimitOption.Rows => true,
+			SqlServerLimitOption.Percentage => true,
+			SqlServerLimitOption.RowsWithTies => true,
+			SqlServerLimitOption.PercentageWithTies => true,
+			SqlServerLimitOption.TableSampleSystemRows => false,
+			SqlServerLimitOption.TableSampleSystemPercentage => false,
+			_ => throw new ArgumentOutOfRangeException(nameof(limitOption), limitOption, "Unknown limit option")
+		};
+	}
+
 	/// <summary>
 	/// Triggers need special handling for OUTPUT clauses.
 	/// </summary>

@@ -35,4 +35,15 @@ internal static class Utilities
 			return result;
 		}, out keyParameters);
 	}
+
+	public static bool RequiresSorting(this MySqlLimitOption limitOption)
+	{
+		return limitOption switch
+		{
+			MySqlLimitOption.None => false,
+			MySqlLimitOption.Rows => true,
+			MySqlLimitOption.RandomSampleRows => false,
+			_ => throw new ArgumentOutOfRangeException(nameof(limitOption), limitOption, "Unknown limit option")
+		};
+	}
 }

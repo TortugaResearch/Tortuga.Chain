@@ -26,14 +26,27 @@ internal static class Utilities
 		return result;
 	}
 
-	public static bool PrimaryKeyIsIdentity(this SqlBuilder<NpgsqlDbType> sqlBuilder, out List<NpgsqlParameter> keyParameters)
-	{
-		return sqlBuilder.PrimaryKeyIsIdentity((NpgsqlDbType? type) =>
+		public static bool PrimaryKeyIsIdentity(this SqlBuilder<NpgsqlDbType> sqlBuilder, out List<NpgsqlParameter> keyParameters)
 		{
-			var result = new NpgsqlParameter();
-			if (type.HasValue)
-				result.NpgsqlDbType = type.Value;
-			return result;
-		}, out keyParameters);
+			return sqlBuilder.PrimaryKeyIsIdentity((NpgsqlDbType? type) =>
+			{
+				var result = new NpgsqlParameter();
+				if (type.HasValue)
+					result.NpgsqlDbType = type.Value;
+				return result;
+			}, out keyParameters);
+		}
+
+		public static bool RequiresSorting(this PostgreSqlLimitOption limitOption)
+		{
+			return limitOption switch
+			{
+				PostgreSqlLimitOption.None => false,
+				PostgreSqlLimitOption.Rows => true,
+				PostgreSqlLimitOption.TableSampleSystemPercentage => false,
+				PostgreSqlLimitOption.TableSampleBernoulliPercentage => false,
+				_ => throw new ArgumentOutOfRangeException(nameof(limitOption), limitOption, "Unknown limit option")
+			};
+		}
 	}
 }

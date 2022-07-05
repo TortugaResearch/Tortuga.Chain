@@ -144,7 +144,18 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
 				sqlBuilder.BuildSoftDeleteClause(sql, " WHERE ", DataSource, null);
 				parameters = sqlBuilder.GetParameters();
 			}
-			sqlBuilder.BuildOrderByClause(sql, " ORDER BY ", m_SortExpressions, null);
+
+			if (m_LimitOptions.RequiresSorting() && !m_SortExpressions.Any())
+			{
+				if (m_Table.HasPrimaryKey)
+					sqlBuilder.BuildOrderByClause(sql, " ORDER BY ", m_Table.PrimaryKeyColumns.Select(x => new SortExpression(x.SqlName)), null);
+				else if (StrictMode)
+					throw new InvalidOperationException("Limits were requested, but no primary keys were detected. Use WithSorting to supply a sort order or disable strict mode.");
+			}
+			else
+			{
+				sqlBuilder.BuildOrderByClause(sql, " ORDER BY ", m_SortExpressions, null);
+			}
 
 			switch (m_LimitOptions)
 			{

@@ -55,4 +55,14 @@ internal static class Utilities
 
 		return result;
 	}
+
+	public static bool RequiresSorting(this AccessLimitOption limitOption)
+	{
+		return limitOption switch
+		{
+			AccessLimitOption.None => false,
+			AccessLimitOption.RowsWithTies => true,
+			_ => throw new ArgumentOutOfRangeException(nameof(limitOption), limitOption, "Unknown limit option")
+		};
+	}
 }
