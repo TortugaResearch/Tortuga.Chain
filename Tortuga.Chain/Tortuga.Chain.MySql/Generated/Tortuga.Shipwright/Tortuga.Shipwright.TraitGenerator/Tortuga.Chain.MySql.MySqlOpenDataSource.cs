@@ -137,72 +137,12 @@ namespace Tortuga.Chain.MySql
 		}
 
 		/// <summary>
-		/// Tries to commits the transaction and disposes the underlying connection.
-		/// </summary>
-		/// <returns>True if there was an open transaction associated with this data source, otherwise false.</returns>
-		public System.Threading.Tasks.Task<bool> TryCommitAsync(System.Threading.CancellationToken cancellationToken = default)
-		{
-			return __Trait0.TryCommitAsync(cancellationToken);
-		}
-
-		/// <summary>
 		/// Tries to rollback the transaction associated with this data source.
 		/// </summary>
 		/// <returns>True if there was an open transaction associated with this data source, otherwise false.</returns>
 		public System.Boolean TryRollback()
 		{
 			return __Trait0.TryRollback();
-		}
-
-		/// <summary>
-		/// Tries to roll back the transaction to the indicated save point.
-		/// </summary>
-		/// <param name="savepointName">The name of the savepoint to roll back to.</param>
-		/// <returns>True if there was an open transaction associated with this data source, otherwise false.</returns>
-		public System.Boolean TryRollback(System.String savepointName)
-		{
-			return __Trait0.TryRollback(savepointName);
-		}
-
-		/// <summary>
-		/// Tries to roll back the transaction.
-		/// </summary>
-		/// <returns>True if there was an open transaction associated with this data source, otherwise false.</returns>
-		public System.Threading.Tasks.Task<bool> TryRollbackAsync(System.Threading.CancellationToken cancellationToken = default)
-		{
-			return __Trait0.TryRollbackAsync(cancellationToken);
-		}
-
-		/// <summary>
-		/// Tries to roll back the transaction to the indicated save point.
-		/// </summary>
-		/// <param name="savepointName">The name of the savepoint to roll back to.</param>
-		/// <param name="cancellationToken"></param>
-		/// <returns>True if there was an open transaction associated with this data source, otherwise false.</returns>
-		public System.Threading.Tasks.Task<bool> TryRollbackAsync(System.String savepointName, System.Threading.CancellationToken cancellationToken = default)
-		{
-			return __Trait0.TryRollbackAsync(savepointName, cancellationToken);
-		}
-
-		/// <summary>
-		/// Tries to create a savepoint in the transaction. This allows all commands that are executed after the savepoint was established to be rolled back, restoring the transaction state to what it was at the time of the savepoint.
-		/// </summary>
-		/// <param name="savepointName">The name of the savepoint to be created.</param>
-		/// <returns>True if there was an open transaction associated with this data source, otherwise false.</returns>
-		public System.Boolean TrySave(System.String savepointName)
-		{
-			return __Trait0.TrySave(savepointName);
-		}
-
-		/// <summary>
-		/// Tries to creates a savepoint in the transaction. This allows all commands that are executed after the savepoint was established to be rolled back, restoring the transaction state to what it was at the time of the savepoint.
-		/// </summary>
-		/// <param name="savepointName">The name of the savepoint to be created.</param>
-		/// <param name="cancellationToken"></param>
-		/// <returns>True if there was an open transaction associated with this data source, otherwise false.</returns>
-		public System.Threading.Tasks.Task<bool> TrySaveAsync(System.String savepointName, System.Threading.CancellationToken cancellationToken = default)
-		{
-			return __Trait0.TrySaveAsync(savepointName, cancellationToken);
 		}
 
 		/// <summary>

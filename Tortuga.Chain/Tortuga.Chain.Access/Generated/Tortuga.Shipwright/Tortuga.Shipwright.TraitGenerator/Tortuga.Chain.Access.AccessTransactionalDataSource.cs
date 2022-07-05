@@ -88,14 +88,6 @@ namespace Tortuga.Chain.Access
 		}
 
 		/// <summary>
-		/// Commits the transaction and disposes the underlying connection.
-		/// </summary>
-		public System.Threading.Tasks.Task CommitAsync(System.Threading.CancellationToken cancellationToken = default)
-		{
-			return __Trait0.CommitAsync(cancellationToken);
-		}
-
-		/// <summary>
 		/// Gets the database metadata.
 		/// </summary>
 		public  override  Tortuga.Chain.Access.AccessMetadataCache DatabaseMetadata
@@ -154,57 +146,11 @@ namespace Tortuga.Chain.Access
 			init => __Trait0.m_Transaction = value;
 		}
 		/// <summary>
-		/// Rolls back the transaction to the indicated save point.
-		/// </summary>
-		/// <param name="savepointName">The name of the savepoint to roll back to.</param>
-		public void Rollback(System.String savepointName)
-		{
-			__Trait0.Rollback(savepointName);
-		}
-
-		/// <summary>
 		/// Rolls back the transaction and disposes the underlying connection.
 		/// </summary>
 		public void Rollback()
 		{
 			__Trait0.Rollback();
-		}
-
-		/// <summary>
-		/// Rolls back the transaction and disposes the underlying connection.
-		/// </summary>
-		public System.Threading.Tasks.Task RollbackAsync(System.Threading.CancellationToken cancellationToken = default)
-		{
-			return __Trait0.RollbackAsync(cancellationToken);
-		}
-
-		/// <summary>
-		/// Rolls back the transaction to the indicated save point.
-		/// </summary>
-		/// <param name="savepointName">The name of the savepoint to roll back to.</param>
-		/// <param name="cancellationToken"></param>
-		public System.Threading.Tasks.Task RollbackAsync(System.String savepointName, System.Threading.CancellationToken cancellationToken = default)
-		{
-			return __Trait0.RollbackAsync(savepointName, cancellationToken);
-		}
-
-		/// <summary>
-		/// Creates a savepoint in the transaction. This allows all commands that are executed after the savepoint was established to be rolled back, restoring the transaction state to what it was at the time of the savepoint.
-		/// </summary>
-		/// <param name="savepointName">The name of the savepoint to be created.</param>
-		public void Save(System.String savepointName)
-		{
-			__Trait0.Save(savepointName);
-		}
-
-		/// <summary>
-		/// Creates a savepoint in the transaction. This allows all commands that are executed after the savepoint was established to be rolled back, restoring the transaction state to what it was at the time of the savepoint.
-		/// </summary>
-		/// <param name="savepointName">The name of the savepoint to be created.</param>
-		/// <param name="cancellationToken"></param>
-		public System.Threading.Tasks.Task SaveAsync(System.String savepointName, System.Threading.CancellationToken cancellationToken = default)
-		{
-			return __Trait0.SaveAsync(savepointName, cancellationToken);
 		}
 
 		/// <summary>
