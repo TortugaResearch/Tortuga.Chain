@@ -14,7 +14,9 @@
       CreatedDate DATETIME2 NOT NULL
                             DEFAULT GETDATE() ,
       UpdatedDate DATETIME2 NULL,
-      EmployeeId NVARCHAR(50) NOT NULL CONSTRAINT UX_EmployeeWithTrigger_EmployeeId UNIQUE
+      EmployeeId NVARCHAR(50) NOT NULL CONSTRAINT UX_EmployeeWithTrigger_EmployeeId UNIQUE, 
+      Gender CHAR(1) NOT NULL,
+      Status CHAR(1) NULL
     );
 
 GO
