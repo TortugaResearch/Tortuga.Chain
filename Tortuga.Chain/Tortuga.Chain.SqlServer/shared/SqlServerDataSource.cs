@@ -158,7 +158,7 @@ public partial class SqlServerDataSource : SqlServerDataSourceBase
 	/// <remarks>
 	/// the caller of this function is responsible for closing the transaction.
 	/// </remarks>
-	public virtual SqlServerTransactionalDataSource BeginTransaction(string? transactionName = null, IsolationLevel? isolationLevel = null, bool forwardEvents = true)
+	public virtual SqlServerTransactionalDataSource BeginTransaction(string? transactionName, IsolationLevel? isolationLevel = null, bool forwardEvents = true)
 	{
 		return new SqlServerTransactionalDataSource(this, transactionName, isolationLevel, forwardEvents);
 	}
