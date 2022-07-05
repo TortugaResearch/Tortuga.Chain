@@ -44,14 +44,6 @@ public class FromTests : TestBase
 		}
 	}
 
-
-
-
-
-
-
-
-
 	[DataTestMethod, TablesAndViewData(DataSourceGroup.All)]
 	public void ToDataTable(string dataSourceName, DataSourceType mode, string tableName)
 	{
@@ -60,7 +52,7 @@ public class FromTests : TestBase
 		{
 			var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
 
-			var result = dataSource.From(tableName).WithLimits(10).ToDataTable().Execute();
+			var result = dataSource.From(tableName).WithLimits(10).WithSorting(table.GetDefaultSortOrder()).ToDataTable().Execute();
 			Assert.IsTrue(result.Rows.Count <= 10);
 			Assert.AreEqual(table.Columns.Count, result.Columns.Count);
 		}
@@ -78,7 +70,7 @@ public class FromTests : TestBase
 		{
 			var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
 
-			var result = await dataSource.From(tableName).WithLimits(10).ToDataTable().ExecuteAsync();
+			var result = await dataSource.From(tableName).WithLimits(10).WithSorting(table.GetDefaultSortOrder()).ToDataTable().ExecuteAsync();
 			Assert.IsTrue(result.Rows.Count <= 10);
 			Assert.AreEqual(table.Columns.Count, result.Columns.Count);
 		}
@@ -96,7 +88,7 @@ public class FromTests : TestBase
 		{
 			var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
 
-			var result = dataSource.From(tableName).WithLimits(1).ToDataRowOrNull().Execute();
+			var result = dataSource.From(tableName).WithLimits(1).WithSorting(table.GetDefaultSortOrder()).ToDataRowOrNull().Execute();
 			if (result != null)
 			{
 				Assert.AreEqual(table.Columns.Count, result.Table.Columns.Count);
@@ -116,7 +108,7 @@ public class FromTests : TestBase
 		{
 			var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
 
-			var result = await dataSource.From(tableName).WithLimits(1).ToDataRowOrNull().ExecuteAsync();
+			var result = await dataSource.From(tableName).WithLimits(1).WithSorting(table.GetDefaultSortOrder()).ToDataRowOrNull().ExecuteAsync();
 			if (result != null)
 			{
 				Assert.AreEqual(table.Columns.Count, result.Table.Columns.Count);
@@ -136,7 +128,7 @@ public class FromTests : TestBase
 		{
 			var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
 
-			var result = dataSource.From(tableName).WithLimits(10).ToTable().Execute();
+			var result = dataSource.From(tableName).WithLimits(10).WithSorting(table.GetDefaultSortOrder()).ToTable().Execute();
 			Assert.IsTrue(result.Rows.Count <= 10);
 			Assert.AreEqual(table.Columns.Count, result.ColumnNames.Count);
 		}
@@ -154,7 +146,7 @@ public class FromTests : TestBase
 		{
 			var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
 
-			var result = await dataSource.From(tableName).WithLimits(10).ToTable().ExecuteAsync();
+			var result = await dataSource.From(tableName).WithLimits(10).WithSorting(table.GetDefaultSortOrder()).ToTable().ExecuteAsync();
 			Assert.IsTrue(result.Rows.Count <= 10);
 			Assert.AreEqual(table.Columns.Count, result.ColumnNames.Count);
 		}
@@ -172,7 +164,7 @@ public class FromTests : TestBase
 		{
 			var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
 
-			var result = dataSource.From(tableName).WithLimits(1).ToRowOrNull().Execute();
+			var result = dataSource.From(tableName).WithLimits(1).WithSorting(table.GetDefaultSortOrder()).ToRowOrNull().Execute();
 			if (result != null)
 			{
 				Assert.AreEqual(table.Columns.Count, result.Count);
@@ -192,7 +184,7 @@ public class FromTests : TestBase
 		{
 			var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
 
-			var result = await dataSource.From(tableName).WithLimits(1).ToRowOrNull().ExecuteAsync();
+			var result = await dataSource.From(tableName).WithLimits(1).WithSorting(table.GetDefaultSortOrder()).ToRowOrNull().ExecuteAsync();
 			if (result != null)
 			{
 				Assert.AreEqual(table.Columns.Count, result.Count);
@@ -255,20 +247,6 @@ public class FromTests : TestBase
 			Release(dataSource);
 		}
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
 	public void FilterByObject(string dataSourceName, DataSourceType mode)
@@ -344,7 +322,6 @@ public class FromTests : TestBase
 			Release(dataSource);
 		}
 	}
-
 
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
 	public void ImmutableArray(string dataSourceName, DataSourceType mode)
@@ -532,6 +509,4 @@ public class FromTests : TestBase
 			Release(dataSource);
 		}
 	}
-
-
 }

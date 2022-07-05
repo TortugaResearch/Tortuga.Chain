@@ -3,7 +3,6 @@
 [TestClass]
 public class FromTests_ToDynamic : TestBase
 {
-
 	[DataTestMethod, TablesAndViewData(DataSourceGroup.All)]
 	public void ToDynamicCollection(string dataSourceName, DataSourceType mode, string tableName)
 	{
@@ -12,7 +11,7 @@ public class FromTests_ToDynamic : TestBase
 		{
 			var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
 
-			var result = dataSource.From(tableName).WithLimits(10).ToDynamicCollection().Execute();
+			var result = dataSource.From(tableName).WithLimits(10).WithSorting(table.GetDefaultSortOrder()).ToDynamicCollection().Execute();
 			Assert.IsTrue(result.Count <= 10);
 			if (result.Count > 0)
 			{
@@ -34,7 +33,7 @@ public class FromTests_ToDynamic : TestBase
 		{
 			var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
 
-			var result = await dataSource.From(tableName).WithLimits(10).ToDynamicCollection().ExecuteAsync();
+			var result = await dataSource.From(tableName).WithLimits(10).WithSorting(table.GetDefaultSortOrder()).ToDynamicCollection().ExecuteAsync();
 			Assert.IsTrue(result.Count <= 10);
 			if (result.Count > 0)
 			{
@@ -56,7 +55,7 @@ public class FromTests_ToDynamic : TestBase
 		{
 			var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
 
-			var result = dataSource.From(tableName).WithLimits(1).ToDynamicObjectOrNull().Execute();
+			var result = dataSource.From(tableName).WithLimits(1).WithSorting(table.GetDefaultSortOrder()).ToDynamicObjectOrNull().Execute();
 			if (result != null)
 			{
 				var row = (IDictionary<string, object>)result;
@@ -77,7 +76,7 @@ public class FromTests_ToDynamic : TestBase
 		{
 			var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
 
-			var result = await dataSource.From(tableName).WithLimits(1).ToDynamicObjectOrNull().ExecuteAsync();
+			var result = await dataSource.From(tableName).WithLimits(1).WithSorting(table.GetDefaultSortOrder()).ToDynamicObjectOrNull().ExecuteAsync();
 			if (result != null)
 			{
 				var row = (IDictionary<string, object>)result;

@@ -1,4 +1,5 @@
-﻿using Tortuga.Chain.CommandBuilders;
+﻿using System.Collections.Immutable;
+using Tortuga.Chain.CommandBuilders;
 
 namespace Tortuga.Chain.Metadata;
 
@@ -12,6 +13,7 @@ public class TableOrViewMetadata<TObjectName, TDbType> : TableOrViewMetadata
 	where TDbType : struct
 {
 	readonly SqlBuilder<TDbType> m_Builder;
+	readonly ImmutableArray<SortExpression> m_DefaultSortOrder;
 	readonly DatabaseMetadataCache<TObjectName, TDbType> m_MetadataCache;
 	ForeignKeyConstraintCollection<TObjectName, TDbType>? m_ForeignKeys;
 	IndexMetadataCollection<TObjectName, TDbType>? m_Indexes;
@@ -30,6 +32,13 @@ public class TableOrViewMetadata<TObjectName, TDbType> : TableOrViewMetadata
 		Columns = columns ?? throw new ArgumentNullException(nameof(columns), $"{nameof(columns)} is null.");
 		PrimaryKeyColumns = new ColumnMetadataCollection<TDbType>(name.ToString()!, columns.Where(c => c.IsPrimaryKey).ToList());
 		m_Builder = new SqlBuilder<TDbType>(Name.ToString()!, Columns);
+
+		if (columns.Count == 0)
+			m_DefaultSortOrder = ImmutableArray<SortExpression>.Empty;
+		else if (HasPrimaryKey)
+			m_DefaultSortOrder = PrimaryKeyColumns.Select(c => new SortExpression(c.SqlName)).ToImmutableArray();
+		else
+			m_DefaultSortOrder = Columns.Select(c => new SortExpression(c.SqlName)).ToImmutableArray();
 	}
 
 	/// <summary>
@@ -61,6 +70,19 @@ public class TableOrViewMetadata<TObjectName, TDbType> : TableOrViewMetadata
 	/// </summary>
 	/// <returns></returns>
 	public SqlBuilder<TDbType> CreateSqlBuilder(bool strictMode) => m_Builder.Clone(strictMode);
+
+	/// <summary>
+	/// Gets the default sort order. This will be the primary key(s) if they exist. Otherwise the columns will be used in declared order.
+	/// </summary>
+	/// <param name="columnsToUse">Sort by [columnsToUse] columns. If not specified, returns all columns in the default sort.</param>
+	/// <returns>If no valid sort columns are found, this will return an empty array.</returns>
+	public IEnumerable<SortExpression> GetDefaultSortOrder(int columnsToUse = int.MaxValue)
+	{
+		if (columnsToUse >= m_DefaultSortOrder.Length)
+			return m_DefaultSortOrder;
+		else
+			return m_DefaultSortOrder.Take(columnsToUse);
+	}
 
 	/// <summary>
 	/// Gets the indexes for this table or view.
