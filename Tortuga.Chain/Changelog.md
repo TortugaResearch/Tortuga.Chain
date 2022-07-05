@@ -11,6 +11,8 @@ The fix is to default to sorting with primary key when using WithLimits. If ther
 
 This change also affects table-valued functions. Except these cannot infer the sort order as they do not have a primary key.
 
+For reflection-based scenarios, the method `TableOrViewMetadata<TObjectName, TDbType>.GetDefaultSortOrder(int)` can be used to get a table's default sort order.
+
 ### Features
 
 [#459 Add TimeSpan support for Access and OleDB](https://github.com/TortugaResearch/Tortuga.Chain/issues/459)
@@ -40,6 +42,12 @@ This was done to improve support for lookup tables with small keys.
 ### Bug Fixes
 
 The OleDB version of SQL Server was truncating fractional seconds when the parameter type is `time(n)` and `n>0`. To fix this, we have to force it to use `DateTime/DBTimeStamp` instead of `TimeSpan/DBTime`.
+
+[#465 OleDbSqlServerTableFunction doesn't support sorting with table limits](https://github.com/TortugaResearch/Tortuga.Chain/issues/465)
+
+
+Using either works, but there is an error if both are used.
+
 
 ### Performance Enhancements
 

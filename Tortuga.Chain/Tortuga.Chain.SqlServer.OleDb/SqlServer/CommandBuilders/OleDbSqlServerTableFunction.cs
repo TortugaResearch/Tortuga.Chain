@@ -189,12 +189,12 @@ internal class OleDbSqlServerTableFunction : TableDbCommandBuilder<OleDbCommand,
 
 				if (m_SortExpressions.Any())
 				{
-					sql.Append(" OFFSET @offset_row_count_expression ROWS ");
+					sql.Append(" OFFSET ? ROWS ");
 					parameters.Add(new OleDbParameter("@offset_row_count_expression", m_Skip ?? 0));
 
 					if (m_Take.HasValue)
 					{
-						sql.Append(" FETCH NEXT @fetch_row_count_expression ROWS ONLY");
+						sql.Append(" FETCH NEXT ? ROWS ONLY");
 						parameters.Add(new OleDbParameter("@fetch_row_count_expression", m_Take));
 					}
 				}
