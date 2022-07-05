@@ -9,8 +9,8 @@ using Traits;
 
 namespace Tortuga.Chain.MySql;
 
-[UseTrait(typeof(SupportsDeleteAllTrait<AbstractObjectName, AbstractDbType>))]
-[UseTrait(typeof(SupportsTruncateTrait<AbstractObjectName, AbstractDbType>))]
+[UseTrait(typeof(SupportsDeleteAllTrait<AbstractParameter, AbstractObjectName, AbstractDbType>))]
+[UseTrait(typeof(SupportsTruncateTrait<AbstractParameter, AbstractObjectName, AbstractDbType>))]
 [UseTrait(typeof(SupportsSqlQueriesTrait<AbstractCommand, AbstractParameter>))]
 [UseTrait(typeof(SupportsInsertBatchTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType,
 DbCommandBuilder<AbstractCommand, AbstractParameter>>))]
@@ -152,7 +152,7 @@ partial class MySqlDataSourceBase : ICrudDataSource, IAdvancedCrudDataSource
 	}
 
 	ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> IInsertHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnInsertObject<TArgument>(AbstractObjectName tableName, TArgument argumentValue, InsertOptions options)
-		where TArgument : class
+				where TArgument : class
 	{
 		return new MySqlInsertObject<TArgument>(this, tableName, argumentValue, options);
 	}

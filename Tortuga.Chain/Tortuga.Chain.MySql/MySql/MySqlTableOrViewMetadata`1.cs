@@ -6,7 +6,7 @@ namespace Tortuga.Chain.MySql;
 /// <summary>
 /// Class MySqlTableOrViewMetadata.
 /// </summary>
-/// <seealso cref="TableOrViewMetadata{MySqlObjectName, MySqlDbType}" />
+/// <seealso cref="TableOrViewMetadata{ MySqlObjectName, MySqlDbType}" />
 public class MySqlTableOrViewMetadata : TableOrViewMetadata<MySqlObjectName, MySqlDbType>
 {
 	/// <summary>

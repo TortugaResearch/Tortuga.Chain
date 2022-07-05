@@ -9,8 +9,8 @@ using Traits;
 
 namespace Tortuga.Chain.SQLite;
 
-[UseTrait(typeof(SupportsDeleteAllTrait<AbstractObjectName, AbstractDbType>))]
-[UseTrait(typeof(SupportsTruncateTrait<AbstractObjectName, AbstractDbType>))]
+[UseTrait(typeof(SupportsDeleteAllTrait<AbstractParameter, AbstractObjectName, AbstractDbType>))]
+[UseTrait(typeof(SupportsTruncateTrait<AbstractParameter, AbstractObjectName, AbstractDbType>))]
 [UseTrait(typeof(SupportsSqlQueriesTrait<AbstractCommand, AbstractParameter>))]
 [UseTrait(typeof(SupportsInsertBatchTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType,
 DbCommandBuilder<AbstractCommand, AbstractParameter>>))]

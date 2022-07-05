@@ -46,22 +46,6 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 		}
 
 		/// <summary>
-		/// After notifyAfter records, the event handler may be fired. This can be used to abort the bulk insert.
-		/// </summary>
-		/// <param name="eventHandler">The event handler.</param>
-		/// <param name="notifyAfter">The notify after. This should be a multiple of the batch size.</param>
-		public PostgreSqlInsertBulk WithNotifications(EventHandler<AbortableOperationEventArgs> eventHandler, int notifyAfter)
-		{
-			if (eventHandler == null)
-				throw new ArgumentNullException(nameof(eventHandler), $"{nameof(eventHandler)} is null.");
-			if (notifyAfter <= 0)
-				throw new ArgumentException($"{nameof(notifyAfter)} must be greater than 0.", nameof(notifyAfter));
-			m_EventHandler = eventHandler;
-			m_NotifyAfter = notifyAfter;
-			return this;
-		}
-
-		/// <summary>
 		/// Prepares the command for execution by generating any necessary SQL.
 		/// </summary>
 		/// <returns>ExecutionToken&lt;TCommand&gt;.</returns>
@@ -90,6 +74,22 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 		/// This is used by materializers to skip IsNull checks.
 		/// </remarks>
 		public override IReadOnlyList<ColumnMetadata> TryGetNonNullableColumns() => m_Table.NonNullableColumns;
+
+		/// <summary>
+		/// After notifyAfter records, the event handler may be fired. This can be used to abort the bulk insert.
+		/// </summary>
+		/// <param name="eventHandler">The event handler.</param>
+		/// <param name="notifyAfter">The notify after. This should be a multiple of the batch size.</param>
+		public PostgreSqlInsertBulk WithNotifications(EventHandler<AbortableOperationEventArgs> eventHandler, int notifyAfter)
+		{
+			if (eventHandler == null)
+				throw new ArgumentNullException(nameof(eventHandler), $"{nameof(eventHandler)} is null.");
+			if (notifyAfter <= 0)
+				throw new ArgumentException($"{nameof(notifyAfter)} must be greater than 0.", nameof(notifyAfter));
+			m_EventHandler = eventHandler;
+			m_NotifyAfter = notifyAfter;
+			return this;
+		}
 
 		/// <summary>
 		/// Implementation the specified operation.
@@ -194,12 +194,6 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 			return rowCount;
 		}
 
-		string SetupSql(List<(int ColumnIndex, ColumnMetadata<NpgsqlDbType> Column)> columns)
-		{
-			var columnList = string.Join(",", columns.Select(c => c.Column.QuotedSqlName));
-			return $"copy {m_Table.Name.ToQuotedString() }({columnList}) from STDIN (FORMAT BINARY)";
-		}
-
 		List<(int ColumnIndex, ColumnMetadata<NpgsqlDbType> Column)> SetupColumns()
 		{
 			var mappedColumns = new List<(int ColumnIndex, ColumnMetadata<NpgsqlDbType> Column)>(m_Source.FieldCount);
@@ -222,6 +216,12 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 				throw new MappingException($"Could not find any properties that map to columns on the table {m_Table.Name.ToString()}");
 
 			return mappedColumns;
+		}
+
+		string SetupSql(List<(int ColumnIndex, ColumnMetadata<NpgsqlDbType> Column)> columns)
+		{
+			var columnList = string.Join(",", columns.Select(c => c.Column.QuotedSqlName));
+			return $"copy {m_Table.Name.ToQuotedString()}({columnList}) from STDIN (FORMAT BINARY)";
 		}
 	}
 }

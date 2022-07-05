@@ -1,6 +1,7 @@
 using System.Data.Common;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.DataSources;
+using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.Materializers;
 
@@ -30,6 +31,11 @@ public abstract class Materializer<TCommand, TParameter, TResult> : Materializer
 	/// </summary>
 	/// <value>The data source.</value>
 	public IDataSource DataSource => CommandBuilder.DataSource;
+
+	/// <summary>
+	/// Gets the type converter associated with this materializer.
+	/// </summary>
+	protected MaterializerTypeConverter Converter => CommandBuilder.DataSource.DatabaseMetadata.Converter;
 
 	/// <summary>
 	/// Execute the operation synchronously.

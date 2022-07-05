@@ -137,7 +137,7 @@ namespace Tortuga.Chain.SqlServer
 		}
 
 		/// <summary>
-		/// Tries the rollback the transaction associated with this data source.
+		/// Tries to rollback the transaction associated with this data source.
 		/// </summary>
 		/// <returns>True if there was an open transaction associated with this data source, otherwise false.</returns>
 		public System.Boolean TryRollback()

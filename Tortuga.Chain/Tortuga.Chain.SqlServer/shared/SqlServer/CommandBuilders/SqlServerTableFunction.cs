@@ -196,6 +196,10 @@ internal class SqlServerTableFunction : TableDbCommandBuilder<SqlCommand, SqlPar
 			sqlBuilder.BuildSoftDeleteClause(sql, " WHERE ", DataSource, null);
 			parameters = sqlBuilder.GetParameters();
 		}
+
+		if (m_LimitOptions.RequiresSorting() && !m_SortExpressions.Any() && StrictMode)
+			throw new InvalidOperationException("Limits were requested without a sort order. Use WithSorting to supply a sort order or disable strict mode.");
+
 		sqlBuilder.BuildOrderByClause(sql, " ORDER BY ", m_SortExpressions, null);
 
 		switch (m_LimitOptions)

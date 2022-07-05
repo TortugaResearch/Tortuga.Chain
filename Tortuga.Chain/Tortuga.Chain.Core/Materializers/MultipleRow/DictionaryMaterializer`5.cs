@@ -46,7 +46,7 @@ internal class DictionaryMaterializer<TCommand, TParameter, TKey, TObject, TDict
 		var result = new TDictionary();
 		Prepare().Execute(cmd =>
 		{
-			using (var reader = cmd.ExecuteReader().AsObjectConstructor<TObject>(Constructor, CommandBuilder.TryGetNonNullableColumns()))
+			using (var reader = cmd.ExecuteReader().AsObjectConstructor<TObject>(Constructor, CommandBuilder.TryGetNonNullableColumns(), Converter))
 			{
 				while (reader.Read(out var value))
 					AddToDictionary(result, reader, value);
@@ -63,7 +63,7 @@ internal class DictionaryMaterializer<TCommand, TParameter, TKey, TObject, TDict
 		var result = new TDictionary();
 		await Prepare().ExecuteAsync(async cmd =>
 		{
-			using (var reader = (await cmd.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false)).AsObjectConstructor<TObject>(Constructor, CommandBuilder.TryGetNonNullableColumns()))
+			using (var reader = (await cmd.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false)).AsObjectConstructor<TObject>(Constructor, CommandBuilder.TryGetNonNullableColumns(), Converter))
 			{
 				while (await reader.ReadAsync().ConfigureAwait(false))
 					AddToDictionary(result, reader, reader.Current!);

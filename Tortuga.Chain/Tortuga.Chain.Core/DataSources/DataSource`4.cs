@@ -12,7 +12,7 @@ namespace Tortuga.Chain.DataSources;
 /// <typeparam name="TParameter">The type of the t parameter type.</typeparam>
 /// <seealso cref="DataSource" />
 public abstract class DataSource<TConnection, TTransaction, TCommand, TParameter> : DataSource, ICommandDataSource<TCommand, TParameter>, IOperationDataSource<TConnection, TTransaction>
-	 where TConnection : DbConnection
+	where TConnection : DbConnection
 	where TTransaction : DbTransaction
 	where TCommand : DbCommand
 	where TParameter : DbParameter

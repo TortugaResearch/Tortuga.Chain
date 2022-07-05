@@ -51,7 +51,7 @@ internal sealed class AccessInsertObject<TArgument> : AccessObjectCommand<TArgum
 		sqlBuilder.BuildValuesClause(sql, " VALUES (", ")", identityInsert);
 		sql.Append(";");
 
-		var result = new AccessCommandExecutionToken(DataSource, "Insert into " + Table.Name, sql.ToString(), sqlBuilder.GetParameters());
+		var result = new AccessCommandExecutionToken(DataSource, "Insert into " + Table.Name, sql.ToString(), sqlBuilder.GetParameters(DataSource));
 		if (desiredColumns == Materializer.AutoSelectDesiredColumns)
 		{
 			result.ExecutionMode = AccessCommandExecutionMode.NonQuery;

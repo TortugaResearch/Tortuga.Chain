@@ -138,7 +138,7 @@ internal sealed class AccessTableOrView<TObject> : TableDbCommandBuilder<OleDbCo
 			sql.Append(" WHERE (" + sqlBuilder.ApplyFilterValue(m_FilterValue, m_FilterOptions) + ")");
 			sqlBuilder.BuildSoftDeleteClause(sql, " AND (", DataSource, ") ");
 
-			parameters = sqlBuilder.GetParameters();
+			parameters = sqlBuilder.GetParameters(DataSource);
 		}
 		else if (!string.IsNullOrWhiteSpace(m_WhereClause))
 		{
@@ -146,14 +146,25 @@ internal sealed class AccessTableOrView<TObject> : TableDbCommandBuilder<OleDbCo
 			sqlBuilder.BuildSoftDeleteClause(sql, " AND (", DataSource, ") ");
 
 			parameters = SqlBuilder.GetParameters<OleDbParameter>(m_ArgumentValue);
-			parameters.AddRange(sqlBuilder.GetParameters());
+			parameters.AddRange(sqlBuilder.GetParameters(DataSource));
 		}
 		else
 		{
 			sqlBuilder.BuildSoftDeleteClause(sql, " WHERE ", DataSource, null);
-			parameters = sqlBuilder.GetParameters();
+			parameters = sqlBuilder.GetParameters(DataSource);
 		}
-		sqlBuilder.BuildOrderByClause(sql, " ORDER BY ", m_SortExpressions, null);
+
+		if (m_LimitOptions.RequiresSorting() && !m_SortExpressions.Any())
+		{
+			if (m_Table.HasPrimaryKey)
+				sqlBuilder.BuildOrderByClause(sql, " ORDER BY ", m_Table.PrimaryKeyColumns.Select(x => new SortExpression(x.SqlName)), null);
+			else if (StrictMode)
+				throw new InvalidOperationException("Limits were requested, but no primary keys were detected. Use WithSorting to supply a sort order or disable strict mode.");
+		}
+		else
+		{
+			sqlBuilder.BuildOrderByClause(sql, " ORDER BY ", m_SortExpressions, null);
+		}
 
 		sql.Append(";");
 

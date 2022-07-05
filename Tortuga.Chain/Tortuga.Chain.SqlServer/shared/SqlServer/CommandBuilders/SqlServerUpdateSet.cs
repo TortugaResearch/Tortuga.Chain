@@ -120,11 +120,8 @@ internal sealed class SqlServerUpdateSet : UpdateSetDbCommandBuilder<SqlCommand,
 		var prefix = m_Options.HasFlag(UpdateOptions.ReturnOldValues) ? "Deleted." : "Inserted.";
 
 		var sql = new StringBuilder();
-		string? header;
-		string? intoClause;
-		string? footer;
 
-		sqlBuilder.UseTableVariable(m_Table, out header, out intoClause, out footer);
+		sqlBuilder.UseTableVariable(m_Table, out var header, out var intoClause, out var footer);
 
 		sql.Append(header);
 		sql.Append($"UPDATE {m_Table.Name.ToQuotedString()}");
