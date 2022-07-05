@@ -18,6 +18,8 @@ public class GenericDbDataSource : DataSource<DbConnection, DbTransaction, DbCom
 	readonly ConcurrentDictionary<Type, object> m_ExtensionCache;
 	readonly DbProviderFactory? m_Factory;
 
+	GenericDatabaseMetadataCache m_DatabaseMetadataCache = new();
+
 	/// <summary>
 	/// Initializes a new instance of the <see cref="GenericDbDataSource{TConnection, TCommand, TParameter}" /> class.
 	/// </summary>
@@ -238,14 +240,7 @@ public class GenericDbDataSource : DataSource<DbConnection, DbTransaction, DbCom
 				using (var cmd = CreateCommand())
 				{
 					cmd.Connection = con;
-					if (DefaultCommandTimeout.HasValue)
-						cmd.CommandTimeout = (int)DefaultCommandTimeout.Value.TotalSeconds;
-					cmd.CommandText = executionToken.CommandText;
-					cmd.CommandType = executionToken.CommandType;
-					foreach (var param in executionToken.Parameters)
-						cmd.Parameters.Add(param);
-
-					executionToken.ApplyCommandOverrides(cmd);
+					executionToken.PopulateCommand(cmd, DefaultCommandTimeout);
 
 					var rows = implementation(cmd);
 					executionToken.RaiseCommandExecuted(cmd, rows);
@@ -323,14 +318,7 @@ public class GenericDbDataSource : DataSource<DbConnection, DbTransaction, DbCom
 				using (var cmd = CreateCommand())
 				{
 					cmd.Connection = con;
-					if (DefaultCommandTimeout.HasValue)
-						cmd.CommandTimeout = (int)DefaultCommandTimeout.Value.TotalSeconds;
-					cmd.CommandText = executionToken.CommandText;
-					cmd.CommandType = executionToken.CommandType;
-					foreach (var param in executionToken.Parameters)
-						cmd.Parameters.Add(param);
-
-					executionToken.ApplyCommandOverrides(cmd);
+					executionToken.PopulateCommand(cmd, DefaultCommandTimeout);
 
 					var rows = await implementation(cmd).ConfigureAwait(false);
 					executionToken.RaiseCommandExecuted(cmd, rows);
@@ -404,6 +392,6 @@ public class GenericDbDataSource : DataSource<DbConnection, DbTransaction, DbCom
 	/// <returns></returns>
 	protected override IDatabaseMetadataCache OnGetDatabaseMetadata()
 	{
-		throw new NotSupportedException("This data source does not expose database metadata");
+		return m_DatabaseMetadataCache;
 	}
 }

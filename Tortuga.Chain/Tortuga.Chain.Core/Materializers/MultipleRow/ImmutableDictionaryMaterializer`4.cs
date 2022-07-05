@@ -53,7 +53,7 @@ internal class ImmutableDictionaryMaterializer<TCommand, TParameter, TKey, TObje
 		{
 			using (var reader = cmd.ExecuteReader(CommandBehavior))
 			{
-				table = new Table(reader);
+				table = new Table(reader, Converter);
 				return table.Rows.Count;
 			}
 		}, state);
@@ -68,7 +68,7 @@ internal class ImmutableDictionaryMaterializer<TCommand, TParameter, TKey, TObje
 		{
 			using (var reader = await cmd.ExecuteReaderAsync(CommandBehavior, cancellationToken).ConfigureAwait(false))
 			{
-				table = new Table(reader);
+				table = new Table(reader, Converter);
 				return table.Rows.Count;
 			}
 		}, cancellationToken, state).ConfigureAwait(false);

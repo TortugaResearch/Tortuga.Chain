@@ -5,6 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using Tortuga.Anchor.Metadata;
 using Tortuga.Chain.Materializers;
+using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain;
 
@@ -19,6 +20,7 @@ public sealed class Table
 {
 	readonly ReadOnlyCollection<string> m_Columns;
 	readonly ReadOnlyDictionary<string, Type> m_ColumnTypes;
+	readonly MaterializerTypeConverter m_Converter;
 	readonly RowCollection m_Rows;
 
 	/// <summary>
@@ -26,8 +28,9 @@ public sealed class Table
 	/// </summary>
 	/// <param name="tableName">Name of the table.</param>
 	/// <param name="source">The source.</param>
-	public Table(string tableName, IDataReader source)
-		: this(source)
+	/// <param name="converter">The type converter.</param>
+	public Table(string tableName, IDataReader source, MaterializerTypeConverter converter)
+		: this(source, converter)
 	{
 		TableName = tableName;
 	}
@@ -37,8 +40,9 @@ public sealed class Table
 	/// </summary>
 	/// <param name="tableName">Name of the table.</param>
 	/// <param name="source">The source.</param>
-	public Table(string tableName, DbDataReader source)
-		: this(source)
+	/// <param name="converter">The type converter.</param>
+	public Table(string tableName, DbDataReader source, MaterializerTypeConverter converter)
+		: this(source, converter)
 	{
 		TableName = tableName;
 	}
@@ -49,12 +53,15 @@ public sealed class Table
 	/// <param name="source">The source.</param>
 	/// <exception cref="ArgumentNullException">nameof(s - rce), "source is</exception>
 	/// <exception cref="ArgumentException">No columns were returned - source</exception>
-	public Table(DbDataReader source)
+	/// <param name="converter">The type converter.</param>
+	public Table(DbDataReader source, MaterializerTypeConverter converter)
 	{
 		if (source == null)
 			throw new ArgumentNullException(nameof(source), $"{nameof(source)} is null.");
 		if (source.FieldCount == 0)
 			throw new ArgumentException("No columns were returned", nameof(source));
+
+		m_Converter = converter ?? new();
 
 		TableName = "";
 
@@ -92,12 +99,15 @@ public sealed class Table
 	/// Creates a new Table from an IDataReader
 	/// </summary>
 	/// <param name="source"></param>
-	public Table(IDataReader source)
+	/// <param name="converter">The type converter.</param>
+	public Table(IDataReader source, MaterializerTypeConverter converter)
 	{
 		if (source == null)
 			throw new ArgumentNullException(nameof(source), $"{nameof(source)} is null.");
 		if (source.FieldCount == 0)
 			throw new ArgumentException("No columns were returned", nameof(source));
+
+		m_Converter = converter ?? new();
 
 		TableName = "";
 
@@ -132,6 +142,48 @@ public sealed class Table
 	}
 
 	/// <summary>
+	/// Creates a new NamedTable from an IDataReader
+	/// </summary>
+	/// <param name="tableName">Name of the table.</param>
+	/// <param name="source">The source.</param>
+	[Obsolete("Pass DataSource.DatabaseMetadata.Converter to the constructor")]
+	public Table(string tableName, IDataReader source)
+		: this(tableName, source, new())
+	{
+	}
+
+	/// <summary>
+	/// Creates a new NamedTable from an IDataReader
+	/// </summary>
+	/// <param name="tableName">Name of the table.</param>
+	/// <param name="source">The source.</param>
+	[Obsolete("Pass DataSource.DatabaseMetadata.Converter to the constructor")]
+	public Table(string tableName, DbDataReader source)
+		: this(tableName, source, new())
+	{
+	}
+
+	/// <summary>
+	/// Creates a new Table from an IDataReader
+	/// </summary>
+	/// <param name="source">The source.</param>
+	/// <exception cref="ArgumentNullException">nameof(s - rce), "source is</exception>
+	/// <exception cref="ArgumentException">No columns were returned - source</exception>
+	[Obsolete("Pass DataSource.DatabaseMetadata.Converter to the constructor")]
+	public Table(DbDataReader source) : this(source, new())
+	{
+	}
+
+	/// <summary>
+	/// Creates a new Table from an IDataReader
+	/// </summary>
+	/// <param name="source"></param>
+	[Obsolete("Pass DataSource.DatabaseMetadata.Converter to the constructor")]
+	public Table(IDataReader source) : this(source, new())
+	{
+	}
+
+	/// <summary>
 	/// List of column names in their original order.
 	/// </summary>
 	public IReadOnlyList<string> ColumnNames => m_Columns;
@@ -162,7 +214,7 @@ public sealed class Table
 		foreach (var row in Rows)
 		{
 			var item = new T();
-			MaterializerUtilities.PopulateComplexObject(row, item, null);
+			MaterializerUtilities.PopulateComplexObject(row, item, null, m_Converter);
 
 			//Change tracking objects shouldn't be materialized as unchanged.
 			var tracking = item as IChangeTracking;
@@ -290,7 +342,7 @@ public sealed class Table
 		foreach (var row in Rows)
 		{
 			var item = new T();
-			MaterializerUtilities.PopulateComplexObject(row, item, null);
+			MaterializerUtilities.PopulateComplexObject(row, item, null, m_Converter);
 
 			//Change tracking objects shouldn't be materialized as unchanged.
 			var tracking = item as IChangeTracking;

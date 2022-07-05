@@ -7,7 +7,8 @@ namespace Tortuga.Chain.SqlServer;
 /// </summary>
 /// <typeparam name="TDbType">The type of the t database type.</typeparam>
 /// <seealso cref="TableOrViewMetadata{SqlServerObjectName, TDbType}" />
-public class SqlServerTableOrViewMetadata<TDbType> : TableOrViewMetadata<SqlServerObjectName, TDbType> where TDbType : struct
+public class SqlServerTableOrViewMetadata<TDbType> : TableOrViewMetadata<SqlServerObjectName, TDbType>
+	where TDbType : struct
 {
 	/// <summary>
 	/// Initializes a new instance of the <see cref="SqlServerTableOrViewMetadata{TDbType}" /> class.

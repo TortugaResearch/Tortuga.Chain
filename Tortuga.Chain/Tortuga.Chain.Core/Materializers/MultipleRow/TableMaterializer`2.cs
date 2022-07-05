@@ -44,7 +44,7 @@ internal sealed class TableMaterializer<TCommand, TParameter> : Materializer<TCo
 		{
 			using (var reader = cmd.ExecuteReader(CommandBehavior))
 			{
-				table = new Table(reader);
+				table = new Table(reader, Converter);
 				return table.Rows.Count;
 			}
 		}, state);
@@ -65,7 +65,7 @@ internal sealed class TableMaterializer<TCommand, TParameter> : Materializer<TCo
 		{
 			using (var reader = await cmd.ExecuteReaderAsync(CommandBehavior, cancellationToken).ConfigureAwait(false))
 			{
-				table = new Table(reader);
+				table = new Table(reader, Converter);
 				return table.Rows.Count;
 			}
 		}, cancellationToken, state).ConfigureAwait(false);

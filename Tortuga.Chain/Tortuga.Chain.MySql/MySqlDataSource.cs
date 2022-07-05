@@ -164,14 +164,7 @@ public partial class MySqlDataSource : MySqlDataSourceBase
 				using (var cmd = new MySqlCommand())
 				{
 					cmd.Connection = con;
-					if (DefaultCommandTimeout.HasValue)
-						cmd.CommandTimeout = (int)DefaultCommandTimeout.Value.TotalSeconds;
-					cmd.CommandText = executionToken.CommandText;
-					cmd.CommandType = executionToken.CommandType;
-					foreach (var param in executionToken.Parameters)
-						cmd.Parameters.Add(param);
-
-					executionToken.ApplyCommandOverrides(cmd);
+					executionToken.PopulateCommand(cmd, DefaultCommandTimeout);
 
 					var rows = implementation(cmd);
 
@@ -256,14 +249,7 @@ public partial class MySqlDataSource : MySqlDataSourceBase
 				using (var cmd = new MySqlCommand())
 				{
 					cmd.Connection = con;
-					if (DefaultCommandTimeout.HasValue)
-						cmd.CommandTimeout = (int)DefaultCommandTimeout.Value.TotalSeconds;
-					cmd.CommandText = executionToken.CommandText;
-					cmd.CommandType = executionToken.CommandType;
-					foreach (var param in executionToken.Parameters)
-						cmd.Parameters.Add(param);
-
-					executionToken.ApplyCommandOverrides(cmd);
+					executionToken.PopulateCommand(cmd, DefaultCommandTimeout);
 
 					var rows = await implementation(cmd).ConfigureAwait(false);
 

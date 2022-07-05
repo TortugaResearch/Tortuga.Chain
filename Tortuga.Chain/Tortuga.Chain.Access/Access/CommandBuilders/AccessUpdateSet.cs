@@ -132,17 +132,17 @@ internal sealed class AccessUpdateSet : UpdateSetDbCommandBuilder<OleDbCommand, 
 		if (m_FilterValue != null)
 		{
 			sql.Append(" WHERE " + sqlBuilder.ApplyAnonymousFilterValue(m_FilterValue, m_FilterOptions, true));
-			parameters = sqlBuilder.GetParameters();
+			parameters = sqlBuilder.GetParameters(DataSource);
 		}
 		else if (!string.IsNullOrWhiteSpace(m_WhereClause))
 		{
 			sql.Append(" WHERE " + m_WhereClause);
-			parameters.AddRange(sqlBuilder.GetParameters());
+			parameters.AddRange(sqlBuilder.GetParameters(DataSource));
 			parameters.AddRange(SqlBuilder.GetParameters<OleDbParameter>(m_WhereArgumentValue));
 		}
 		else
 		{
-			parameters.AddRange(sqlBuilder.GetParameters());
+			parameters.AddRange(sqlBuilder.GetParameters(DataSource));
 		}
 		sql.Append(";");
 
@@ -245,17 +245,17 @@ internal sealed class AccessUpdateSet : UpdateSetDbCommandBuilder<OleDbCommand, 
 		if (m_FilterValue != null)
 		{
 			sql.Append(" WHERE " + sqlBuilder.ApplyAnonymousFilterValue(m_FilterValue, m_FilterOptions));
-			parameters = sqlBuilder.GetParameters();
+			parameters = sqlBuilder.GetParameters(DataSource);
 		}
 		else if (!string.IsNullOrWhiteSpace(m_WhereClause))
 		{
 			sql.Append(" WHERE " + m_WhereClause);
 			parameters = SqlBuilder.GetParameters<OleDbParameter>(m_WhereArgumentValue);
-			parameters.AddRange(sqlBuilder.GetParameters());
+			parameters.AddRange(sqlBuilder.GetParameters(DataSource));
 		}
 		else
 		{
-			parameters = sqlBuilder.GetParameters();
+			parameters = sqlBuilder.GetParameters(DataSource);
 		}
 		sql.Append(";");
 

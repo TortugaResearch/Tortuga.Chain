@@ -31,6 +31,11 @@ public class CommandExecutionToken<TCommand, TParameter> : ExecutionToken
 	}
 
 	/// <summary>
+	/// Returns True if any parameter is marked as Output or InputOutput
+	/// </summary>
+	public bool HasOutputParameters => Parameters.Any(x => x.Direction is ParameterDirection.Output or ParameterDirection.InputOutput);
+
+	/// <summary>
 	/// Gets the parameters.
 	/// </summary>
 	/// <value>The parameters.</value>
@@ -40,7 +45,7 @@ public class CommandExecutionToken<TCommand, TParameter> : ExecutionToken
 	/// Applies the command overrides by calling OnBuildCommand, then firing the CommandBuilt event.
 	/// </summary>
 	/// <param name="command">The command.</param>
-	public virtual void ApplyCommandOverrides(TCommand command)
+	public void ApplyCommandOverrides(TCommand command)
 	{
 		OnBuildCommand(command);
 		RaiseCommandBuild(command);
@@ -66,6 +71,24 @@ public class CommandExecutionToken<TCommand, TParameter> : ExecutionToken
 	public Task<int?> ExecuteAsync(CommandImplementationAsync<TCommand> implementation, CancellationToken cancellationToken, object? state)
 	{
 		return m_DataSource.ExecuteAsync(this, implementation, cancellationToken, state);
+	}
+
+	/// <summary>
+	/// Populates a DbCommand with the values in the execution token. Then calls OnBuildCommand/RaiseCommandBuild for any custom behavior.
+	/// </summary>
+	/// <param name="command">The command object to be populated.</param>
+	/// <param name="timeout">An optional command timeout.</param>
+	public void PopulateCommand(TCommand command, TimeSpan? timeout)
+	{
+		if (timeout.HasValue)
+			command.CommandTimeout = (int)timeout.Value.TotalSeconds;
+		command.CommandText = CommandText;
+		command.CommandType = CommandType;
+		foreach (var param in Parameters)
+			command.Parameters.Add(param);
+
+		OnBuildCommand(command);
+		RaiseCommandBuild(command);
 	}
 
 	/// <summary>

@@ -1,14 +1,15 @@
-﻿using Tortuga.Chain;
+﻿using System.Data.Common;
+using Tortuga.Chain;
 using Tortuga.Chain.DataSources;
 using Tortuga.Shipwright;
 
 namespace Traits;
 
-
 [Trait]
-class SupportsTruncateTrait<TObjectName, TDbType> : ISupportsTruncate
+class SupportsTruncateTrait<TParameter, TObjectName, TDbType> : ISupportsTruncate
 	where TObjectName : struct
 	where TDbType : struct
+	where TParameter : DbParameter
 {
 	[Partial("tableName")] public Func<TObjectName, ILink<int?>> OnTruncate { get; set; } = null!;
 
@@ -33,5 +34,3 @@ class SupportsTruncateTrait<TObjectName, TDbType> : ISupportsTruncate
 
 	ILink<int?> ISupportsTruncate.Truncate<TObject>() => Truncate<TObject>();
 }
-
-

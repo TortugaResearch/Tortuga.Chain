@@ -9,8 +9,8 @@ using Traits;
 
 namespace Tortuga.Chain.SQLite;
 
-[UseTrait(typeof(SupportsDeleteAllTrait<AbstractObjectName, AbstractDbType>))]
-[UseTrait(typeof(SupportsTruncateTrait<AbstractObjectName, AbstractDbType>))]
+[UseTrait(typeof(SupportsDeleteAllTrait<AbstractParameter, AbstractObjectName, AbstractDbType>))]
+[UseTrait(typeof(SupportsTruncateTrait<AbstractParameter, AbstractObjectName, AbstractDbType>))]
 [UseTrait(typeof(SupportsSqlQueriesTrait<AbstractCommand, AbstractParameter>))]
 [UseTrait(typeof(SupportsInsertBatchTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType,
 DbCommandBuilder<AbstractCommand, AbstractParameter>>))]
@@ -99,7 +99,6 @@ partial class SQLiteDataSourceBase : ICrudDataSource, IAdvancedCrudDataSource
 	SingleRowDbCommandBuilder<AbstractCommand, AbstractParameter> IGetByKeyHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnGetByKey<TObject, TKey>(AbstractObjectName tableName, ColumnMetadata<AbstractDbType> keyColumn, TKey key)
 		where TObject : class
 	{
-
 		string where = keyColumn.SqlName + " = @Param0";
 
 		var parameters = new List<SQLiteParameter>();
@@ -131,7 +130,6 @@ partial class SQLiteDataSourceBase : ICrudDataSource, IAdvancedCrudDataSource
 		}
 
 		return new MultipleRowDbCommandBuilder<SQLiteCommand, SQLiteParameter, TObject>(new SQLiteTableOrView<TObject>(this, tableName, where, parameters));
-
 	}
 
 	DbCommandBuilder<AbstractCommand, AbstractParameter> IInsertBatchHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnInsertBatch<TObject>(AbstractObjectName tableName, IEnumerable<TObject> objects, InsertOptions options)
@@ -145,9 +143,13 @@ where TArgument : class
 		return new SQLiteInsertObject<TArgument>(this, tableName, argumentValue, options);
 	}
 
+	ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> IUpsertHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnInsertOrUpdateObject<TArgument>(AbstractObjectName tableName, TArgument argumentValue, UpsertOptions options)
+	{
+		return new SQLiteInsertOrUpdateObject<TArgument>(this, tableName, argumentValue, options);
+	}
+
 	MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> IUpdateDeleteByKeyHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnUpdateByKeyList<TArgument, TKey>(AbstractObjectName tableName, TArgument newValues, IEnumerable<TKey> keys, UpdateOptions options)
 	{
-
 		var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).PrimaryKeyColumns;
 		if (primaryKeys.Count != 1)
 			throw new MappingException($"{nameof(UpdateByKeyList)} operation isn't allowed on {tableName} because it doesn't have a single primary key.");
@@ -206,11 +208,4 @@ where TArgument : class
 		//In SQLite, a delete without a where clause is interpreted as a truncate if other conditions are met.
 		return Sql("DELETE FROM " + table.Name.ToQuotedString() + ";").AsNonQuery();
 	}
-
-	ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> IUpsertHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnInsertOrUpdateObject<TArgument>(AbstractObjectName tableName, TArgument argumentValue, UpsertOptions options)
-	{
-		return new SQLiteInsertOrUpdateObject<TArgument>(this, tableName, argumentValue, options);
-	}
 }
-
-

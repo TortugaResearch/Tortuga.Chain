@@ -138,7 +138,7 @@ internal sealed class AccessTableOrView<TObject> : TableDbCommandBuilder<OleDbCo
 			sql.Append(" WHERE (" + sqlBuilder.ApplyFilterValue(m_FilterValue, m_FilterOptions) + ")");
 			sqlBuilder.BuildSoftDeleteClause(sql, " AND (", DataSource, ") ");
 
-			parameters = sqlBuilder.GetParameters();
+			parameters = sqlBuilder.GetParameters(DataSource);
 		}
 		else if (!string.IsNullOrWhiteSpace(m_WhereClause))
 		{
@@ -146,12 +146,12 @@ internal sealed class AccessTableOrView<TObject> : TableDbCommandBuilder<OleDbCo
 			sqlBuilder.BuildSoftDeleteClause(sql, " AND (", DataSource, ") ");
 
 			parameters = SqlBuilder.GetParameters<OleDbParameter>(m_ArgumentValue);
-			parameters.AddRange(sqlBuilder.GetParameters());
+			parameters.AddRange(sqlBuilder.GetParameters(DataSource));
 		}
 		else
 		{
 			sqlBuilder.BuildSoftDeleteClause(sql, " WHERE ", DataSource, null);
-			parameters = sqlBuilder.GetParameters();
+			parameters = sqlBuilder.GetParameters(DataSource);
 		}
 
 		if (m_LimitOptions.RequiresSorting() && !m_SortExpressions.Any())

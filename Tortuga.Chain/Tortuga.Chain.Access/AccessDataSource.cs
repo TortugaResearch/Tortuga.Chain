@@ -157,14 +157,7 @@ public partial class AccessDataSource : AccessDataSourceBase
 					using (var cmd = new OleDbCommand())
 					{
 						cmd.Connection = con;
-						if (DefaultCommandTimeout.HasValue)
-							cmd.CommandTimeout = (int)DefaultCommandTimeout.Value.TotalSeconds;
-						cmd.CommandText = currentToken.CommandText;
-						cmd.CommandType = currentToken.CommandType;
-						foreach (var param in currentToken.Parameters)
-							cmd.Parameters.Add(param);
-
-						currentToken.ApplyCommandOverrides(cmd);
+						currentToken.PopulateCommand(cmd, DefaultCommandTimeout);
 
 						if (currentToken.ExecutionMode == AccessCommandExecutionMode.Materializer)
 							rows = implementation(cmd);
@@ -256,14 +249,7 @@ public partial class AccessDataSource : AccessDataSourceBase
 					using (var cmd = new OleDbCommand())
 					{
 						cmd.Connection = con;
-						if (DefaultCommandTimeout.HasValue)
-							cmd.CommandTimeout = (int)DefaultCommandTimeout.Value.TotalSeconds;
-						cmd.CommandText = currentToken.CommandText;
-						cmd.CommandType = currentToken.CommandType;
-						foreach (var param in currentToken.Parameters)
-							cmd.Parameters.Add(param);
-
-						currentToken.ApplyCommandOverrides(cmd);
+						currentToken.PopulateCommand(cmd, DefaultCommandTimeout);
 
 						if (currentToken.ExecutionMode == AccessCommandExecutionMode.Materializer)
 							rows = await implementation(cmd).ConfigureAwait(false);

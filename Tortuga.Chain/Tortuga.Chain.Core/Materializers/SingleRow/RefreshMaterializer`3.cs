@@ -53,7 +53,7 @@ internal class RefreshMaterializer<TCommand, TParameter, TArgument> : Materializ
 			throw new DataException($"Expected 1 row but received {rowCount} rows.");
 
 		//update the ArgumentValue with any new keys, calculated fields, etc.
-		MaterializerUtilities.PopulateComplexObject(row, m_CommandBuilder.ArgumentValue, null);
+		MaterializerUtilities.PopulateComplexObject(row, m_CommandBuilder.ArgumentValue, null, Converter);
 
 		return m_CommandBuilder.ArgumentValue;
 	}
@@ -84,7 +84,7 @@ internal class RefreshMaterializer<TCommand, TParameter, TArgument> : Materializ
 			throw new DataException($"Expected 1 row but received {rowCount} rows.");
 
 		//update the ArgumentValue with any new keys, calculated fields, etc.
-		MaterializerUtilities.PopulateComplexObject(row, m_CommandBuilder.ArgumentValue, null);
+		MaterializerUtilities.PopulateComplexObject(row, m_CommandBuilder.ArgumentValue, null, Converter);
 
 		return m_CommandBuilder.ArgumentValue;
 	}

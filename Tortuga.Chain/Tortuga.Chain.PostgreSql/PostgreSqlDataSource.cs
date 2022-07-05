@@ -154,14 +154,7 @@ public partial class PostgreSqlDataSource : PostgreSqlDataSourceBase
 				using (var cmd = new NpgsqlCommand())
 				{
 					cmd.Connection = con;
-					if (DefaultCommandTimeout.HasValue)
-						cmd.CommandTimeout = (int)DefaultCommandTimeout.Value.TotalSeconds;
-					cmd.CommandText = executionToken.CommandText;
-					cmd.CommandType = executionToken.CommandType;
-					foreach (var param in executionToken.Parameters)
-						cmd.Parameters.Add(param);
-
-					executionToken.ApplyCommandOverrides(cmd);
+					executionToken.PopulateCommand(cmd, DefaultCommandTimeout);
 
 					int? rows;
 
@@ -251,14 +244,7 @@ public partial class PostgreSqlDataSource : PostgreSqlDataSourceBase
 				using (var cmd = new NpgsqlCommand())
 				{
 					cmd.Connection = con;
-					if (DefaultCommandTimeout.HasValue)
-						cmd.CommandTimeout = (int)DefaultCommandTimeout.Value.TotalSeconds;
-					cmd.CommandText = executionToken.CommandText;
-					cmd.CommandType = executionToken.CommandType;
-					foreach (var param in executionToken.Parameters)
-						cmd.Parameters.Add(param);
-
-					executionToken.ApplyCommandOverrides(cmd);
+					executionToken.PopulateCommand(cmd, DefaultCommandTimeout);
 
 					int? rows;
 					if (((PostgreSqlCommandExecutionToken)executionToken).DereferenceCursors)

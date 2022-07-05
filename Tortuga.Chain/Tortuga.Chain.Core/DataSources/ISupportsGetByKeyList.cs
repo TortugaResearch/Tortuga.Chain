@@ -36,6 +36,16 @@ public interface ISupportsGetByKeyList
 	/// <param name="keys">The keys.</param>
 	/// <returns></returns>
 	/// <remarks>This only works on tables that have a scalar primary key.</remarks>
+	IMultipleRowDbCommandBuilder<TObject> GetByKeyList<TObject>(IEnumerable<short> keys)
+		where TObject : class;
+
+	/// <summary>
+	/// Gets a set of records by their primary key.
+	/// </summary>
+	/// <typeparam name="TObject">The type of the object. Used to determine which table will be read.</typeparam>
+	/// <param name="keys">The keys.</param>
+	/// <returns></returns>
+	/// <remarks>This only works on tables that have a scalar primary key.</remarks>
 	IMultipleRowDbCommandBuilder<TObject> GetByKeyList<TObject>(IEnumerable<int> keys)
 		where TObject : class;
 

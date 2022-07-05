@@ -44,11 +44,8 @@ internal sealed class SqlServerInsertOrUpdateObject<TArgument> : SqlServerObject
 		var availableColumns = sqlBuilder.GetParameterizedColumns().ToList();
 
 		var sql = new StringBuilder();
-		string? header;
-		string? intoClause;
-		string? footer;
 
-		sqlBuilder.UseTableVariable(Table, out header, out intoClause, out footer);
+		sqlBuilder.UseTableVariable(Table, out var header, out var intoClause, out var footer);
 
 		sql.Append(header);
 

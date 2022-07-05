@@ -9,8 +9,8 @@ using Traits;
 
 namespace Tortuga.Chain.MySql;
 
-[UseTrait(typeof(SupportsDeleteAllTrait<AbstractObjectName, AbstractDbType>))]
-[UseTrait(typeof(SupportsTruncateTrait<AbstractObjectName, AbstractDbType>))]
+[UseTrait(typeof(SupportsDeleteAllTrait<AbstractParameter, AbstractObjectName, AbstractDbType>))]
+[UseTrait(typeof(SupportsTruncateTrait<AbstractParameter, AbstractObjectName, AbstractDbType>))]
 [UseTrait(typeof(SupportsSqlQueriesTrait<AbstractCommand, AbstractParameter>))]
 [UseTrait(typeof(SupportsInsertBatchTrait<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType,
 DbCommandBuilder<AbstractCommand, AbstractParameter>>))]
@@ -111,12 +111,10 @@ partial class MySqlDataSourceBase : ICrudDataSource, IAdvancedCrudDataSource
 		parameters.Add(param);
 
 		return new MySqlTableOrView<TObject>(this, tableName, where, parameters);
-
 	}
 
 	MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> IGetByKeyHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnGetByKeyList<TObject, TKey>(AbstractObjectName tableName, ColumnMetadata<AbstractDbType> keyColumn, IEnumerable<TKey> keys) where TObject : class
 	{
-
 		var keyList = keys.AsList();
 
 		string where;
@@ -142,15 +140,29 @@ partial class MySqlDataSourceBase : ICrudDataSource, IAdvancedCrudDataSource
 		return new MySqlInsertBatch<TObject>(this, tableName, objects, options); ;
 	}
 
+	MySqlInsertBulk IInsertBulkHelper<MySqlInsertBulk, AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnInsertBulk(AbstractObjectName tableName, DataTable dataTable)
+	{
+		return new MySqlInsertBulk(this, tableName, dataTable);
+	}
+
+	MySqlInsertBulk IInsertBulkHelper<MySqlInsertBulk, AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnInsertBulk(AbstractObjectName tableName, IDataReader dataReader)
+	{
+		return new MySqlInsertBulk(this, tableName, dataReader);
+	}
+
 	ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> IInsertHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnInsertObject<TArgument>(AbstractObjectName tableName, TArgument argumentValue, InsertOptions options)
-where TArgument : class
+		where TArgument : class
 	{
 		return new MySqlInsertObject<TArgument>(this, tableName, argumentValue, options);
 	}
 
+	ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> IUpsertHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnInsertOrUpdateObject<TArgument>(AbstractObjectName tableName, TArgument argumentValue, UpsertOptions options)
+	{
+		return new MySqlInsertOrUpdateObject<TArgument>(this, tableName, argumentValue, options);
+	}
+
 	MultipleRowDbCommandBuilder<AbstractCommand, AbstractParameter> IUpdateDeleteByKeyHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnUpdateByKeyList<TArgument, TKey>(AbstractObjectName tableName, TArgument newValues, IEnumerable<TKey> keys, UpdateOptions options)
 	{
-
 		var primaryKeys = DatabaseMetadata.GetTableOrView(tableName).PrimaryKeyColumns;
 		if (primaryKeys.Count != 1)
 			throw new MappingException($"{nameof(UpdateByKeyList)} operation isn't allowed on {tableName} because it doesn't have a single primary key.");
@@ -198,6 +210,16 @@ where TArgument : class
 		return Sql("DELETE FROM " + table.Name.ToQuotedString() + ";").AsNonQuery();
 	}
 
+	private partial ProcedureDbCommandBuilder<AbstractCommand, AbstractParameter> OnProcedure(AbstractObjectName procedureName, object? argumentValue)
+	{
+		return new AbstractProcedureCall(this, procedureName, argumentValue);
+	}
+
+	private partial ScalarDbCommandBuilder<AbstractCommand, AbstractParameter> OnScalarFunction(AbstractObjectName scalarFunctionName, object? argumentValue)
+	{
+		return new AbstractScalarFunction(this, scalarFunctionName, argumentValue);
+	}
+
 	private partial MultipleTableDbCommandBuilder<AbstractCommand, AbstractParameter> OnSql(string sqlStatement, object? argumentValue)
 	{
 		return new MySqlSqlCall(this, sqlStatement, argumentValue);
@@ -209,35 +231,4 @@ where TArgument : class
 		var table = DatabaseMetadata.GetTableOrView(tableName);
 		return Sql("TRUNCATE TABLE " + table.Name.ToQuotedString() + ";").AsNonQuery();
 	}
-
-	ObjectDbCommandBuilder<AbstractCommand, AbstractParameter, TArgument> IUpsertHelper<AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnInsertOrUpdateObject<TArgument>(AbstractObjectName tableName, TArgument argumentValue, UpsertOptions options)
-	{
-		return new MySqlInsertOrUpdateObject<TArgument>(this, tableName, argumentValue, options);
-	}
-
-
-	MySqlInsertBulk IInsertBulkHelper<MySqlInsertBulk, AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnInsertBulk(AbstractObjectName tableName, DataTable dataTable)
-	{
-		return new MySqlInsertBulk(this, tableName, dataTable);
-	}
-
-	MySqlInsertBulk IInsertBulkHelper<MySqlInsertBulk, AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>.OnInsertBulk(AbstractObjectName tableName, IDataReader dataReader)
-	{
-		return new MySqlInsertBulk(this, tableName, dataReader);
-	}
-
-	private partial ProcedureDbCommandBuilder<AbstractCommand, AbstractParameter> OnProcedure(AbstractObjectName procedureName, object? argumentValue)
-	{
-		return new AbstractProcedureCall(this, procedureName, argumentValue);
-	}
-
-	private partial ScalarDbCommandBuilder<AbstractCommand, AbstractParameter> OnScalarFunction(AbstractObjectName scalarFunctionName, object? argumentValue)
-	{
-		return new AbstractScalarFunction(this, scalarFunctionName, argumentValue);
-	}
-
 }
-
-
-
-

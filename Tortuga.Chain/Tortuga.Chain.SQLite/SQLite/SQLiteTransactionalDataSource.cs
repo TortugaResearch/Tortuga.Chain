@@ -14,7 +14,6 @@ namespace Tortuga.Chain.SQLite
 	[UseTrait(typeof(TransactionalDataSourceTrait<SQLiteDataSource, SQLiteConnection, SQLiteTransaction, SQLiteCommand, SQLiteMetadataCache>))]
 	public partial class SQLiteTransactionalDataSource : SQLiteDataSourceBase, IHasOnDispose
 	{
-
 		[SuppressMessage("Microsoft.Usage", "CA2213")]
 		private IDisposable m_LockToken;
 
@@ -93,11 +92,15 @@ namespace Tortuga.Chain.SQLite
 			UserValue = dataSource.UserValue;
 		}
 
-
-
 		internal override AsyncReaderWriterLock SyncLock
 		{
 			get { return m_BaseDataSource.SyncLock; }
+		}
+
+		void IHasOnDispose.OnDispose()
+		{
+			if (m_LockToken != null)
+				m_LockToken.Dispose();
 		}
 
 		/// <summary>
@@ -128,14 +131,7 @@ namespace Tortuga.Chain.SQLite
 				{
 					cmd.Connection = m_Connection;
 					cmd.Transaction = m_Transaction;
-					if (DefaultCommandTimeout.HasValue)
-						cmd.CommandTimeout = (int)DefaultCommandTimeout.Value.TotalSeconds;
-					cmd.CommandText = executionToken.CommandText;
-					cmd.CommandType = executionToken.CommandType;
-					foreach (var param in executionToken.Parameters)
-						cmd.Parameters.Add(param);
-
-					executionToken.ApplyCommandOverrides(cmd);
+					executionToken.PopulateCommand(cmd, DefaultCommandTimeout);
 
 					var rows = implementation(cmd);
 					executionToken.RaiseCommandExecuted(cmd, rows);
@@ -211,14 +207,7 @@ namespace Tortuga.Chain.SQLite
 				{
 					cmd.Connection = m_Connection;
 					cmd.Transaction = m_Transaction;
-					if (DefaultCommandTimeout.HasValue)
-						cmd.CommandTimeout = (int)DefaultCommandTimeout.Value.TotalSeconds;
-					cmd.CommandText = executionToken.CommandText;
-					cmd.CommandType = executionToken.CommandType;
-					foreach (var param in executionToken.Parameters)
-						cmd.Parameters.Add(param);
-
-					executionToken.ApplyCommandOverrides(cmd);
+					executionToken.PopulateCommand(cmd, DefaultCommandTimeout);
 
 					var rows = await implementation(cmd).ConfigureAwait(false);
 					executionToken.RaiseCommandExecuted(cmd, rows);
@@ -282,12 +271,6 @@ namespace Tortuga.Chain.SQLite
 					throw;
 				}
 			}
-		}
-
-		void IHasOnDispose.OnDispose()
-		{
-			if (m_LockToken != null)
-				m_LockToken.Dispose();
 		}
 	}
 }

@@ -8,6 +8,12 @@ namespace Tortuga.Chain.Metadata;
 public interface IDatabaseMetadataCache
 {
 	/// <summary>
+	/// Gets the converter dictionary used by materializers.
+	/// </summary>
+	/// <value>The converter dictionary.</value>
+	MaterializerTypeConverter Converter { get; }
+
+	/// <summary>
 	/// Gets the maximum number of parameters in a single SQL batch.
 	/// </summary>
 	/// <value>The maximum number of parameters.</value>

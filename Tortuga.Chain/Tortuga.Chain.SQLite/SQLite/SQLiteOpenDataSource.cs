@@ -14,7 +14,6 @@ namespace Tortuga.Chain.SQLite
 	[UseTrait(typeof(OpenDataSourceTrait<SQLiteDataSource, SQLiteOpenDataSource, SQLiteConnection, SQLiteTransaction, SQLiteCommand, SQLiteMetadataCache>))]
 	public partial class SQLiteOpenDataSource : SQLiteDataSourceBase
 	{
-
 		internal SQLiteOpenDataSource(SQLiteDataSource dataSource, SQLiteConnection connection, SQLiteTransaction? transaction) : base(new SQLiteDataSourceSettings(dataSource))
 		{
 			if (connection == null)
@@ -67,14 +66,7 @@ namespace Tortuga.Chain.SQLite
 					cmd.Connection = m_Connection;
 					if (m_Transaction != null)
 						cmd.Transaction = m_Transaction;
-					if (DefaultCommandTimeout.HasValue)
-						cmd.CommandTimeout = (int)DefaultCommandTimeout.Value.TotalSeconds;
-					cmd.CommandText = executionToken.CommandText;
-					cmd.CommandType = executionToken.CommandType;
-					foreach (var param in executionToken.Parameters)
-						cmd.Parameters.Add(param);
-
-					executionToken.ApplyCommandOverrides(cmd);
+					executionToken.PopulateCommand(cmd, DefaultCommandTimeout);
 
 					var rows = implementation(cmd);
 					executionToken.RaiseCommandExecuted(cmd, rows);
@@ -173,14 +165,7 @@ namespace Tortuga.Chain.SQLite
 					cmd.Connection = m_Connection;
 					if (m_Transaction != null)
 						cmd.Transaction = m_Transaction;
-					if (DefaultCommandTimeout.HasValue)
-						cmd.CommandTimeout = (int)DefaultCommandTimeout.Value.TotalSeconds;
-					cmd.CommandText = executionToken.CommandText;
-					cmd.CommandType = executionToken.CommandType;
-					foreach (var param in executionToken.Parameters)
-						cmd.Parameters.Add(param);
-
-					executionToken.ApplyCommandOverrides(cmd);
+					executionToken.PopulateCommand(cmd, DefaultCommandTimeout);
 
 					var rows = await implementation(cmd).ConfigureAwait(false);
 					executionToken.RaiseCommandExecuted(cmd, rows);

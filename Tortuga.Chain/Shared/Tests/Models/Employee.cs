@@ -27,6 +27,14 @@ public class Employee
 	public DateTime? UpdatedDate { get; set; }
 }
 
+
+[Table("Employee", Schema = "HR")]
+public record EmployeeRecordFilter
+{
+	public string EmployeeId { get; set; }
+}
+
+
 [Table("Employee", Schema = "HR")]
 public record EmployeeRecord
 {
