@@ -20,12 +20,13 @@ public enum ListOptions
 	DiscardNulls = 1,
 
 	/// <summary>
-	/// If extra columns are returned, all but the first will be ignored.
+	/// If extra columns are returned, do not throw an error. All but the first will be ignored unless FlattenExtraColumns is also used.
 	/// </summary>
 	IgnoreExtraColumns = 2,
 
 	/// <summary>
 	/// All columns will be incorporated into the result set. Values are read left to right, then top to bottom.
 	/// </summary>
+	/// <remarks>FlattenExtraColumns includes IgnoreExtraColumns</remarks>
 	FlattenExtraColumns = 2 + 4
 }

@@ -42,21 +42,17 @@ where TCollection : ICollection<TResult>, new()
 		{
 			using (var reader = cmd.ExecuteReader(CommandBehavior))
 			{
-				if (reader.FieldCount > 1 && !m_ListOptions.HasFlag(ListOptions.IgnoreExtraColumns))
-				{
-					throw new UnexpectedDataException($"Expected one column but found {reader.FieldCount} columns");
-				}
-
-				var columnCount = m_ListOptions.HasFlag(ListOptions.FlattenExtraColumns) ? reader.FieldCount : 1;
-				var discardNulls = m_ListOptions.HasFlag(ListOptions.DiscardNulls);
 				var rowCount = 0;
+				var matchingColumns = CalculateColumnsToRead(reader);
+				var discardNulls = m_ListOptions.HasFlag(ListOptions.DiscardNulls);
+
 				while (reader.Read())
 				{
 					rowCount++;
-					for (var i = 0; i < columnCount; i++)
+					foreach (var ordinal in matchingColumns)
 					{
-						if (!reader.IsDBNull(i))
-							result.Add(ReadValue(reader, i));
+						if (!reader.IsDBNull(ordinal))
+							result.Add(ReadValue(reader, ordinal));
 						else if (!discardNulls)
 						{
 							if (m_AllowNulls)
@@ -66,6 +62,7 @@ where TCollection : ICollection<TResult>, new()
 						}
 					}
 				}
+
 				return rowCount;
 			}
 		}, state);
@@ -87,22 +84,17 @@ where TCollection : ICollection<TResult>, new()
 		{
 			using (var reader = await cmd.ExecuteReaderAsync(CommandBehavior, cancellationToken).ConfigureAwait(false))
 			{
-				if (reader.FieldCount > 1 && !m_ListOptions.HasFlag(ListOptions.IgnoreExtraColumns))
-				{
-					throw new UnexpectedDataException($"Expected one column but found {reader.FieldCount} columns");
-				}
-
-				var columnCount = m_ListOptions.HasFlag(ListOptions.FlattenExtraColumns) ? reader.FieldCount : 1;
+				var rowCount = 0;
+				var matchingColumns = CalculateColumnsToRead(reader);
 				var discardNulls = m_ListOptions.HasFlag(ListOptions.DiscardNulls);
 
-				var rowCount = 0;
 				while (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
 				{
 					rowCount++;
-					for (var i = 0; i < columnCount; i++)
+					foreach (var ordinal in matchingColumns)
 					{
-						if (!reader.IsDBNull(i))
-							result.Add(ReadValue(reader, i));
+						if (!reader.IsDBNull(ordinal))
+							result.Add(ReadValue(reader, ordinal));
 						else if (!discardNulls)
 						{
 							if (m_AllowNulls)
@@ -126,4 +118,46 @@ where TCollection : ICollection<TResult>, new()
 	/// <param name="ordinal">The ordinal.</param>
 	/// <returns>TResult.</returns>
 	private protected abstract TResult ReadValue(DbDataReader reader, int ordinal);
+
+	List<int> CalculateColumnsToRead(DbDataReader reader)
+	{
+		List<int> matchingColumns;
+		if (ColumnName != null && reader.FieldCount > 1)//special handling for stored procedures
+		{
+			var columns = new (int ordinal, string columnName)[reader.FieldCount];
+			for (var i = 0; i < reader.FieldCount; i++)
+				columns[i] = (i, reader.GetName(i));
+
+			//We only care about columns that match the desired column name.
+			matchingColumns = columns.Where(c => ColumnName.Equals(c.columnName, StringComparison.InvariantCultureIgnoreCase)).Select(c => c.ordinal).ToList();
+
+			if (matchingColumns.Count > 1)
+			{
+				if (!m_ListOptions.HasFlag(ListOptions.IgnoreExtraColumns))
+
+					throw new UnexpectedDataException($"Found more than one column named '{ColumnName}'. If this was expected, use ListOptions.IgnoreExtraColumns or  ListOptions.FlattenExtraColumns.");
+
+				//If we aren't flattening, then only take the first column with a matching name.
+				if (!m_ListOptions.HasFlag(ListOptions.FlattenExtraColumns))
+					matchingColumns = matchingColumns.Take(1).ToList();
+			}
+			else if (matchingColumns.Count == 0)
+			{
+				throw new MappingException($"The column name '{ColumnName}' was provided, but none of the {reader.FieldCount} columns match that name.");
+			}
+		}
+		else //normal path
+		{
+			if (reader.FieldCount > 1 && !m_ListOptions.HasFlag(ListOptions.IgnoreExtraColumns))
+				throw new UnexpectedDataException($"Expected one column but found {reader.FieldCount} columns. If this was expected, use ListOptions.IgnoreExtraColumns or ListOptions.FlattenExtraColumns.");
+
+			var columnCount = m_ListOptions.HasFlag(ListOptions.FlattenExtraColumns) ? reader.FieldCount : 1;
+			matchingColumns = new();
+
+			for (var i = 0; i < columnCount; i++)
+				matchingColumns.Add(i);
+		}
+
+		return matchingColumns;
+	}
 }

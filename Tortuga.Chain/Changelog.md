@@ -17,6 +17,11 @@ Adds
 * `ToCharSet(...)`
 * `ToByteSet(...)`
 
+[#24 Improve column name support for list based materializers](https://github.com/TortugaResearch/Tortuga.Chain/issues/24)
+
+When using ToXxxList/ToXxxSet, you can specify a column name. If multiple columns are returned, which can happen with a stored procedure, it will only read the named column.
+
+
 ### Technical Debt
 
 [#474 Remove duplicate code in list/set based materialzers](https://github.com/TortugaResearch/Tortuga.Chain/issues/474)
