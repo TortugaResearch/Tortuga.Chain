@@ -58,7 +58,9 @@ INSERT  INTO dbo.AllTypes
           UniqueidentifierNull ,
           UniqueidentifierNotNull ,
           XmlNull ,
-          XmlNotNull
+          XmlNotNull,
+          CharOneNull,
+          CharOneNotNull
         )
 VALUES  ( 1, 'Example Aaa, 1, 1.1, Jan 1 2001 1:23.456789 AM' ,
           'Aaa' ,
@@ -116,7 +118,9 @@ VALUES  ( 1, 'Example Aaa, 1, 1.1, Jan 1 2001 1:23.456789 AM' ,
           '21EC2020-3AEA-4069-A2DD-08002B30309D' ,
           '21EC2020-3AEA-4069-A2DD-08002B30309D' ,
           '<Root/>' ,
-          '<Root/>'
+          '<Root/>',
+          'A',
+          'B'
         );
 
 
@@ -179,7 +183,9 @@ INSERT  INTO dbo.AllTypes
           UniqueidentifierNull ,
           UniqueidentifierNotNull ,
           XmlNull ,
-          XmlNotNull
+          XmlNotNull,
+          CharOneNull,
+          CharOneNotNull
         )
 VALUES  ( 2, 'Duplicate Aaa, 1, 1.1, Jan 1 2001 1:23' ,
           'Aaa' ,
@@ -237,7 +243,9 @@ VALUES  ( 2, 'Duplicate Aaa, 1, 1.1, Jan 1 2001 1:23' ,
           '21EC2020-3AEA-4069-A2DD-08002B30309D' ,
           '21EC2020-3AEA-4069-A2DD-08002B30309D' ,
           '<Root/>' ,
-          '<Root/>'
+          '<Root/>',
+          'A',
+          'B'
         );
 
 
@@ -300,7 +308,9 @@ INSERT  INTO dbo.AllTypes
           UniqueidentifierNull ,
           UniqueidentifierNotNull ,
           XmlNull ,
-          XmlNotNull
+          XmlNotNull,
+          CharOneNull,
+          CharOneNotNull
         )
 VALUES  ( 3, 'With nulls Aaa, 1, 1.1, Jan 1 2001 1:23' ,
           NULL ,
@@ -358,7 +368,9 @@ VALUES  ( 3, 'With nulls Aaa, 1, 1.1, Jan 1 2001 1:23' ,
           NULL ,
           '21EC2020-3AEA-4069-A2DD-08002B30309D' ,
           NULL ,
-          '<Root/>'
+          '<Root/>',
+          NULL,
+          'A'
         );
 
 
@@ -424,7 +436,9 @@ INSERT  INTO dbo.AllTypes
           UniqueidentifierNull ,
           UniqueidentifierNotNull ,
           XmlNull ,
-          XmlNotNull
+          XmlNotNull,
+          CharOneNull,
+          CharOneNotNull
         )
 VALUES  ( 4,'Example Bbb, 2, 2.2, Feb 2 2002 3:45' ,
           'Bbb' ,
@@ -482,7 +496,9 @@ VALUES  ( 4,'Example Bbb, 2, 2.2, Feb 2 2002 3:45' ,
           '21EC2020-3AEA-4069-A200-08002B30309D' ,
           '21EC2020-3AEA-4069-A200-08002B30309D' ,
           '<Top/>' ,
-          '<Top/>'
+          '<Top/>',
+          'A',
+          'B'
         );
 
 

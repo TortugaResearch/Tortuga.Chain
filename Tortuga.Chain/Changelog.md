@@ -1,5 +1,13 @@
 ## Version 4.2
 
+[#471 Add Scalar and List options for Char](https://github.com/TortugaResearch/Tortuga.Chain/issues/471)
+
+Adds
+
+* `ToChar(...)`
+* `ToCharOrNull(...)`
+* `ToCharList(...)`
+* `ToCharOrNullList(...)`
 
 ## Version 4.1
 

@@ -42,15 +42,39 @@ namespace Tortuga.Chain.Core.Tests
 		}
 
 		[TestMethod]
+		public async Task CharNotNull_Char_ListOrNullDiscardNullTest()
+		{
+			await ListOrNullDiscardNullTest<char?>("CharNotNull", typeof(CharOrNullListMaterializer<DbCommand, DbParameter>));
+		}
+
+		[TestMethod]
 		public async Task CharNotNull_String_ListOrNullDiscardNullTest()
 		{
 			await ListOrNullDiscardNullTest<string?>("CharNotNull", typeof(StringOrNullListMaterializer<DbCommand, DbParameter>));
 		}
 
 		[TestMethod]
+		public async Task CharNull_Char_ListOrNullDiscardNullTest()
+		{
+			await ListOrNullDiscardNullTest<char?>("CharNull", typeof(CharOrNullListMaterializer<DbCommand, DbParameter>));
+		}
+
+		[TestMethod]
 		public async Task CharNull_String_ListOrNullDiscardNullTest()
 		{
 			await ListOrNullDiscardNullTest<string?>("CharNull", typeof(StringOrNullListMaterializer<DbCommand, DbParameter>));
+		}
+
+		[TestMethod]
+		public async Task CharOneNotNull_Char_ListOrNullDiscardNullTest()
+		{
+			await ListOrNullDiscardNullTest<char?>("CharOneNotNull", typeof(CharOrNullListMaterializer<DbCommand, DbParameter>));
+		}
+
+		[TestMethod]
+		public async Task CharOneNull_Char_ListOrNullDiscardNullTest()
+		{
+			await ListOrNullDiscardNullTest<char?>("CharOneNull", typeof(CharOrNullListMaterializer<DbCommand, DbParameter>));
 		}
 
 		[TestMethod]

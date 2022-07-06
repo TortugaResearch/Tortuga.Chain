@@ -60,5 +60,7 @@
       UniqueidentifierNull UNIQUEIDENTIFIER NULL ,
       UniqueidentifierNotNull UNIQUEIDENTIFIER NOT NULL ,
       XmlNull XML NULL ,
-      XmlNotNull XML NOT NULL
+      XmlNotNull XML NOT NULL,
+      CharOneNull CHAR(1) NULL ,
+      CharOneNotNull CHAR(1) NOT NULL 
     );
