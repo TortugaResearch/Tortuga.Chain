@@ -20,6 +20,26 @@ public class ObjectCacheAdapter : ICacheAdapter
 	}
 
 	/// <summary>
+	/// Occurs when cache is cleared.
+	/// </summary>
+	public event EventHandler<CacheClearedEventArgs>? CacheCleared;
+
+	/// <summary>
+	/// Occurs when cache invalidated for a specific key.
+	/// </summary>
+	public event EventHandler<CacheInvalidatedEventArgs>? CacheInvalidated;
+
+	/// <summary>
+	/// Occurs when the cache is read.
+	/// </summary>
+	public event EventHandler<CacheReadEventArgs>? CacheRead;
+
+	/// <summary>
+	/// Occurs when the cache is written to.
+	/// </summary>
+	public event EventHandler<CacheWrittenEventArgs>? CacheWritten;
+
+	/// <summary>
 	/// Clears the cache.
 	/// </summary>
 	public void Clear()
@@ -28,6 +48,8 @@ public class ObjectCacheAdapter : ICacheAdapter
 		memoryCache?.Trim(100); //this wont' actually trim 100%, but it helps
 		foreach (var item in m_ObjectCache)
 			m_ObjectCache.Remove(item.Key);
+
+		CacheCleared?.Invoke(this, new());
 	}
 
 	/// <summary>
@@ -37,6 +59,7 @@ public class ObjectCacheAdapter : ICacheAdapter
 	public Task ClearAsync()
 	{
 		Clear();
+		CacheCleared?.Invoke(this, new());
 		return Task.CompletedTask;
 	}
 
@@ -51,6 +74,7 @@ public class ObjectCacheAdapter : ICacheAdapter
 			throw new ArgumentException($"{nameof(cacheKey)} is null or empty.", nameof(cacheKey));
 
 		m_ObjectCache.Remove(cacheKey);
+		CacheInvalidated?.Invoke(this, new(cacheKey));
 	}
 
 	/// <summary>
@@ -64,6 +88,7 @@ public class ObjectCacheAdapter : ICacheAdapter
 			throw new ArgumentException($"{nameof(cacheKey)} is null or empty.", nameof(cacheKey));
 
 		m_ObjectCache.Remove(cacheKey);
+		CacheInvalidated?.Invoke(this, new(cacheKey));
 		return Task.CompletedTask;
 	}
 
@@ -87,6 +112,7 @@ public class ObjectCacheAdapter : ICacheAdapter
 		if (cacheItem == null)
 		{
 			result = default;
+			CacheRead?.Invoke(this, new(cacheKey, false));
 			return false;
 		}
 
@@ -94,6 +120,7 @@ public class ObjectCacheAdapter : ICacheAdapter
 		if (cacheItem.Value == NullObject.Default)
 		{
 			result = default;
+			CacheRead?.Invoke(this, new(cacheKey, true));
 			return true;
 		}
 
@@ -102,6 +129,7 @@ public class ObjectCacheAdapter : ICacheAdapter
 
 		result = (T)cacheItem.Value;
 
+		CacheRead?.Invoke(this, new(cacheKey, true));
 		return true;
 	}
 
@@ -145,6 +173,7 @@ public class ObjectCacheAdapter : ICacheAdapter
 		}
 
 		m_ObjectCache.Set(new CacheItem(cacheKey, value), mappedPolicy);
+		CacheWritten?.Invoke(this, new(cacheKey));
 	}
 
 	/// <summary>
@@ -162,6 +191,9 @@ public class ObjectCacheAdapter : ICacheAdapter
 		return Task.CompletedTask;
 	}
 
+	/// <summary>
+	/// Class NullObject is used to store nulls in a cache that doesn't natively support it.
+	/// </summary>
 	class NullObject
 	{
 		public static readonly NullObject Default = new NullObject();
