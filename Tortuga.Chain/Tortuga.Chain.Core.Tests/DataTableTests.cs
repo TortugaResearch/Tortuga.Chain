@@ -3,7 +3,7 @@
 namespace Tortuga.Chain.Core.Tests;
 
 [TestClass]
-public class DataTableTests : GenericDbDataSource3_MaterializerTests
+public class DataTableTests : MaterializerTestBase
 {
 	const string CustomerWithOrdersByState = @"SELECT  *
     FROM    Sales.Customer c

@@ -126,6 +126,27 @@ public abstract class MultipleRowDbCommandBuilder<TCommand, TParameter> : Single
 	}
 
 	/// <summary>
+	/// Indicates the results should be materialized as a set of bytes.
+	/// </summary>
+	/// <param name="listOptions">The list options.</param>
+	/// <returns></returns>
+	public ILink<HashSet<byte>> ToByteSet(ListOptions listOptions = ListOptions.None)
+	{
+		return new ByteSetMaterializer<TCommand, TParameter>(this, null, listOptions);
+	}
+
+	/// <summary>
+	/// Indicates the results should be materialized as a list of bytes.
+	/// </summary>
+	/// <param name="columnName">Name of the desired column.</param>
+	/// <param name="listOptions">The list options.</param>
+	/// <returns></returns>
+	public ILink<HashSet<byte>> ToByteSet(string columnName, ListOptions listOptions = ListOptions.None)
+	{
+		return new ByteSetMaterializer<TCommand, TParameter>(this, columnName, listOptions);
+	}
+
+	/// <summary>
 	/// Indicates the results should be materialized as a list of chars.
 	/// </summary>
 	/// <param name="columnName">Name of the desired column.</param>
@@ -165,6 +186,27 @@ public abstract class MultipleRowDbCommandBuilder<TCommand, TParameter> : Single
 	public ILink<List<char?>> ToCharOrNullList(string columnName, ListOptions listOptions = ListOptions.None)
 	{
 		return new CharOrNullListMaterializer<TCommand, TParameter>(this, columnName, listOptions);
+	}
+
+	/// <summary>
+	/// Indicates the results should be materialized as a list of chars.
+	/// </summary>
+	/// <param name="columnName">Name of the desired column.</param>
+	/// <param name="listOptions">The list options.</param>
+	/// <returns></returns>
+	public ILink<HashSet<char>> ToCharSet(string columnName, ListOptions listOptions = ListOptions.None)
+	{
+		return new CharSetMaterializer<TCommand, TParameter>(this, columnName, listOptions);
+	}
+
+	/// <summary>
+	/// Indicates the results should be materialized as a list of chars.
+	/// </summary>
+	/// <param name="listOptions">The list options.</param>
+	/// <returns></returns>
+	public ILink<HashSet<char>> ToCharSet(ListOptions listOptions = ListOptions.None)
+	{
+		return new CharSetMaterializer<TCommand, TParameter>(this, null, listOptions);
 	}
 
 	/// <summary>
