@@ -1,13 +1,11 @@
 ﻿using Tests.Models;
 using Tortuga.Chain;
 
-
 namespace Tests.CommandBuilders;
 
 [TestClass]
 public class FromTests_ToObject : TestBase
 {
-
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
 	public void ToInferredObject(string dataSourceName, DataSourceType mode)
 	{
@@ -24,6 +22,30 @@ public class FromTests_ToObject : TestBase
 
 			Assert.AreEqual("A", lookup.FirstName, "First Name");
 			Assert.AreEqual("1", lookup.LastName, "Last Name");
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
+
+	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	public void ToObject_CharFilter(string dataSourceName, DataSourceType mode)
+	{
+		var dataSource = DataSource(dataSourceName, mode);
+
+		try
+		{
+			var uniqueKey = Guid.NewGuid().ToString();
+
+			var emp1 = new Employee() { FirstName = "A", LastName = "1", Title = uniqueKey, Gender = 'T' };
+			dataSource.Insert(EmployeeTableName, emp1).ToObject<Employee>().Execute();
+
+			var lookup = dataSource.From(EmployeeTableName, new { Title = uniqueKey, Gender = 'T' }).ToObject<Employee>().Execute();
+
+			Assert.AreEqual("A", lookup.FirstName, "First Name");
+			Assert.AreEqual("1", lookup.LastName, "Last Name");
+			Assert.AreEqual('T', lookup.Gender, "Gender");
 		}
 		finally
 		{
@@ -334,12 +356,10 @@ public class FromTests_ToObject : TestBase
 				Assert.Fail($"Expected a {nameof(MappingException)}");
 			}
 			catch (MappingException) { }
-
 		}
 		finally
 		{
 			Release(dataSource);
 		}
 	}
-
 }
