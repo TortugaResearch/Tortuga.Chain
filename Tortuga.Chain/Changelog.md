@@ -9,6 +9,20 @@ Adds
 * `ToCharList(...)`
 * `ToCharOrNullList(...)`
 
+
+[#475 Add ToCharSet and ToByteSet materializers](https://github.com/TortugaResearch/Tortuga.Chain/issues/475)
+
+Adds
+
+* `ToCharSet(...)`
+* `ToByteSet(...)`
+
+### Technical Debt
+
+[#474 Remove duplicate code in list/set based materialzers](https://github.com/TortugaResearch/Tortuga.Chain/issues/474)
+
+Removed roughly 60 lines of code in each column based materializer.
+
 ## Version 4.1
 
 
