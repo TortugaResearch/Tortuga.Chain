@@ -1,20 +1,22 @@
 using System.Data.Common;
+using System.Globalization;
 using Tortuga.Chain.CommandBuilders;
 
 namespace Tortuga.Chain.Materializers;
 
 /// <summary>
-/// Materializes the result set as a string.
+/// Materializes the result set as an char.
 /// </summary>
 /// <typeparam name="TCommand">The type of the t command type.</typeparam>
 /// <typeparam name="TParameter">The type of the t parameter type.</typeparam>
-internal sealed class StringOrNullMaterializer<TCommand, TParameter> : ScalarMaterializer<TCommand, TParameter, string?> where TCommand : DbCommand
+internal sealed class CharMaterializer<TCommand, TParameter> : ScalarMaterializer<TCommand, TParameter, char> where TCommand : DbCommand
 	where TParameter : DbParameter
 {
-	/// <summary>Initializes a new instance of the <see cref="Tortuga.Chain.Materializers.StringOrNullMaterializer{TCommand, TParameter}"/> class.</summary>
+	/// <summary>
+	/// </summary>
 	/// <param name="commandBuilder">The command builder.</param>
 	/// <param name="columnName">Name of the desired column.</param>
-	public StringOrNullMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, string? columnName = null)
+	public CharMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, string? columnName = null)
 		: base(commandBuilder, columnName)
 	{ }
 
@@ -22,14 +24,19 @@ internal sealed class StringOrNullMaterializer<TCommand, TParameter> : ScalarMat
 	/// Execute the operation synchronously.
 	/// </summary>
 	/// <returns></returns>
-	public override string? Execute(object? state = null)
+	public override char Execute(object? state = null)
 	{
 		object? temp = null;
 		ExecuteCore(cmd => temp = cmd.ExecuteScalar(), state);
-		if (temp == DBNull.Value)
-			return null;
 
-		return (string?)temp;
+		return temp switch
+		{
+			null => throw new MissingDataException("Unexpected null result"),
+			DBNull => throw new MissingDataException("Unexpected null result"),
+			char c => c,
+			string s => s.Length >= 1 ? s[0] : default,
+			_ => Convert.ToChar(temp, CultureInfo.InvariantCulture),
+		};
 	}
 
 	/// <summary>
@@ -38,13 +45,18 @@ internal sealed class StringOrNullMaterializer<TCommand, TParameter> : ScalarMat
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <param name="state">User defined state, usually used for logging.</param>
 	/// <returns></returns>
-	public override async Task<string?> ExecuteAsync(CancellationToken cancellationToken, object? state = null)
+	public override async Task<char> ExecuteAsync(CancellationToken cancellationToken, object? state = null)
 	{
 		object? temp = null;
 		await ExecuteCoreAsync(async cmd => temp = await cmd.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false), cancellationToken, state).ConfigureAwait(false);
-		if (temp == DBNull.Value)
-			return null;
 
-		return (string?)temp;
+		return temp switch
+		{
+			null => throw new MissingDataException("Unexpected null result"),
+			DBNull => throw new MissingDataException("Unexpected null result"),
+			char c => c,
+			string s => s.Length >= 1 ? s[0] : default,
+			_ => Convert.ToChar(temp, CultureInfo.InvariantCulture),
+		};
 	}
 }

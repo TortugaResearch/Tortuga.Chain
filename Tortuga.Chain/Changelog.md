@@ -8,11 +8,21 @@
 
 Allow an object to be used for determining which table to delete from instead of explicitly providing a table name.
 
+[#471 Add Scalar and List options for Char](https://github.com/TortugaResearch/Tortuga.Chain/issues/471)
+
+Adds
+
+* `ToChar(...)`
+* `ToCharOrNull(...)`
+* `ToCharList(...)`
+* `ToCharOrNullList(...)`
+
 ### Technical Debt
 
 [#400 Better Upsert Pattern for SQL Server](https://github.com/TortugaResearch/Tortuga.Chain/issues/400)
 
 Hint `UPDLOCK` and `SERIALIZABLE` when using `MERGE` to perform an upsert. This reduces, though not elimintates, the need to perform an upsert in a transaction.
+
 
 ## Version 4.1
 
