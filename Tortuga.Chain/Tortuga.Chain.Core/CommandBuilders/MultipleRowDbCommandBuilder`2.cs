@@ -883,6 +883,21 @@ where TObject : class
 	}
 
 	/// <summary>
+	/// Materializes the result as a list of master/detail records.
+	/// </summary>
+	/// <typeparam name="TMaster">The type of the master model.</typeparam>
+	/// <typeparam name="TDetail">The type of the detail model.</typeparam>
+	/// <param name="masterKeyColumn">The column used as the primary key for the master records.</param>
+	/// <param name="map">This is used to identify the detail collection property on the master object.</param>
+	/// <returns></returns>
+	public ILink<List<TMaster>> ToMasterDetailCollection<TMaster, TDetail>(string masterKeyColumn, Func<TMaster, ICollection<TDetail>> map)
+		where TMaster : class, new()
+		where TDetail : class, new()
+	{
+		return new MasterDetailCollectionMaterializer<TCommand, TParameter, TMaster, TDetail>(this, masterKeyColumn, map);
+	}
+
+	/// <summary>
 	/// Indicates the results should be materialized as a list of numbers.
 	/// </summary>
 	/// <param name="columnName">Name of the desired column.</param>
