@@ -1,5 +1,13 @@
 ## Version 4.2
 
+### Features
+
+[#463 ISupportsDeleteByKeyList should have the same overloads as ISupportsGetByKeyList](https://github.com/TortugaResearch/Chain/issues/463)
+
+[#464 ISupportsDeleteByKey should have the same overloads as ISupportsGetByKey](https://github.com/TortugaResearch/Chain/issues/464)
+
+Allow an object to be used for determining which table to delete from instead of explicitly providing a table name.
+
 ### Technical Debt
 
 [#400 Better Upsert Pattern for SQL Server](https://github.com/TortugaResearch/Tortuga.Chain/issues/400)
