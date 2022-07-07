@@ -8,7 +8,6 @@
 
 Allow an object to be used for determining which table to delete from instead of explicitly providing a table name.
 
-
 [#471 Add Scalar and List options for Char](https://github.com/TortugaResearch/Tortuga.Chain/issues/471)
 
 Adds
@@ -24,6 +23,10 @@ Adds
 
 * `ToCharSet(...)`
 * `ToByteSet(...)`
+
+[#24 Improve column name support for list based materializers](https://github.com/TortugaResearch/Tortuga.Chain/issues/24)
+
+When using ToXxxList/ToXxxSet, you can specify a column name. If multiple columns are returned, which can happen with a stored procedure, it will only read the named column.
 
 ## Bug Fixes
 
