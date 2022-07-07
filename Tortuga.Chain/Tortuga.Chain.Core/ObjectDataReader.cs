@@ -307,7 +307,18 @@ public class ObjectDataReader<TObject> : DbDataReader
 	/// </summary>
 	/// <param name="ordinal">The zero-based column ordinal.</param>
 	/// <returns>The value of the specified column.</returns>
-	public override string GetString(int ordinal) => (string)(this[ordinal] ?? throw new InvalidOperationException($"Value in ordinal {ordinal} is null. Use IsDBNull before calling this method."));
+	public override string GetString(int ordinal)
+	{
+		switch (this[ordinal])
+		{
+			case string s: return s;
+			case char c: return c.ToString();
+			case DBNull:
+			case null:
+				throw new InvalidOperationException($"Value in ordinal {ordinal} is null. Use IsDBNull before calling this method.");
+		}
+		throw new InvalidOperationException($"Value in ordinal {ordinal} is not a string or char. It is a {ordinal.GetType().Name}.");
+	}
 
 	/// <summary>
 	/// Gets the value of the specified column as an instance of <see cref="System.Object" />.

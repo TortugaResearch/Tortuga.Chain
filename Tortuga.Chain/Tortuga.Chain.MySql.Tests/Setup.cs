@@ -52,7 +52,9 @@ public static class Setup
 					CellPhone VARCHAR(15) NULL ,
 					CreatedDate TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 					UpdatedDate TIMESTAMP NULL,
-					EmployeeId VARCHAR(50) NOT NULL
+					EmployeeId VARCHAR(50) NOT NULL,
+					Gender Char(1) NOT NULL,
+					Status Char(1) NULL
 				)";
 
 			string index = @"CREATE UNIQUE INDEX index_name ON hr.employee(EmployeeId);";
@@ -98,6 +100,7 @@ public static class Setup
 						e.CreatedDate ,
 						e.UpdatedDate ,
 						e.EmployeeId ,
+						e.Gender ,
 						m.EmployeeKey AS ManagerEmployeeKey ,
 						m.FirstName AS ManagerFirstName ,
 						m.MiddleName AS ManagerMiddleName ,
@@ -107,7 +110,8 @@ public static class Setup
 						m.OfficePhone AS ManagerOfficePhone ,
 						m.CellPhone AS ManagerCellPhone ,
 						m.CreatedDate AS ManagerCreatedDate ,
-						m.UpdatedDate AS ManagerUpdatedDate
+						m.UpdatedDate AS ManagerUpdatedDate ,
+						m.Gender AS ManagerGender
 				FROM    HR.Employee e
 						LEFT JOIN HR.Employee m ON m.EmployeeKey = e.ManagerKey;";
 

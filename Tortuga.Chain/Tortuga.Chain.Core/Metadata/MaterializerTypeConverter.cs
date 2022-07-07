@@ -80,77 +80,82 @@ public class MaterializerTypeConverter
 			}
 
 			//some database return strings when we want strong types
-			if (value is string)
+			if (value is string stringValue)
 			{
-				if (targetType == typeof(XElement))
+				if (targetType == typeof(char))
 				{
-					value = XElement.Parse((string)value);
+					value = stringValue.Length >= 1 ? stringValue[0] : default(char);
+					return true;
+				}
+				else if (targetType == typeof(XElement))
+				{
+					value = XElement.Parse(stringValue);
 					return true;
 				}
 				else if (targetType == typeof(XDocument))
 				{
-					value = XDocument.Parse((string)value);
+					value = XDocument.Parse(stringValue);
 					return true;
 				}
 				else if (targetTypeInfo.IsEnum)
 				{
-					value = Enum.Parse(targetType, (string)value);
+					value = Enum.Parse(targetType, stringValue);
 					return true;
 				}
 				else if (targetType == typeof(bool))
 				{
-					value = bool.Parse((string)value);
+					value = bool.Parse(stringValue);
 					return true;
 				}
 				else if (targetType == typeof(short))
 				{
-					value = short.Parse((string)value, CultureInfo.InvariantCulture);
+					value = short.Parse(stringValue, CultureInfo.InvariantCulture);
 					return true;
 				}
 				else if (targetType == typeof(int))
 				{
-					value = int.Parse((string)value, CultureInfo.InvariantCulture);
+					value = int.Parse(stringValue, CultureInfo.InvariantCulture);
 					return true;
 				}
 				else if (targetType == typeof(long))
 				{
-					value = long.Parse((string)value, CultureInfo.InvariantCulture);
+					value = long.Parse(stringValue, CultureInfo.InvariantCulture);
 					return true;
 				}
 				else if (targetType == typeof(float))
 				{
-					value = float.Parse((string)value, CultureInfo.InvariantCulture);
+					value = float.Parse(stringValue, CultureInfo.InvariantCulture);
 					return true;
 				}
 				else if (targetType == typeof(double))
 				{
-					value = double.Parse((string)value, CultureInfo.InvariantCulture);
+					value = double.Parse(stringValue, CultureInfo.InvariantCulture);
 					return true;
 				}
 				else if (targetType == typeof(decimal))
 				{
-					value = decimal.Parse((string)value, CultureInfo.InvariantCulture);
+					value = decimal.Parse(stringValue, CultureInfo.InvariantCulture);
 					return true;
 				}
 				else if (targetType == typeof(DateTime))
 				{
-					value = DateTime.Parse((string)value, CultureInfo.InvariantCulture);
+					value = DateTime.Parse(stringValue, CultureInfo.InvariantCulture);
 					return true;
 				}
 				else if (targetType == typeof(DateTimeOffset))
 				{
-					value = DateTimeOffset.Parse((string)value, CultureInfo.InvariantCulture);
+					value = DateTimeOffset.Parse(stringValue, CultureInfo.InvariantCulture);
 					return true;
 				}
 				else if (targetType == typeof(TimeSpan))
 				{
-					value = TimeSpan.Parse((string)value, CultureInfo.InvariantCulture);
+					value = TimeSpan.Parse(stringValue, CultureInfo.InvariantCulture);
 					return true;
 				}
 #if NET6_0_OR_GREATER
 				else if (targetType == typeof(TimeOnly))
 				{
-					value = TimeOnly.Parse((string)value, CultureInfo.InvariantCulture);
+					value = TimeOnly.Parse(stringValue, CultureInfo.InvariantCulture);
 					return true;
 				}
 #endif
