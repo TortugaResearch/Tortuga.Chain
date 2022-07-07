@@ -8,6 +8,7 @@
 
 Allow an object to be used for determining which table to delete from instead of explicitly providing a table name.
 
+
 [#471 Add Scalar and List options for Char](https://github.com/TortugaResearch/Tortuga.Chain/issues/471)
 
 Adds
@@ -16,6 +17,14 @@ Adds
 * `ToCharOrNull(...)`
 * `ToCharList(...)`
 * `ToCharOrNullList(...)`
+
+## Bug Fixes
+
+[#469 Tortuga.Chain.MappingException: 'Cannot map value of type System.String to property Gender of type Char.' ](https://github.com/TortugaResearch/Tortuga.Chain/issues/469)
+
+Adds mapping between `string` columns and `char` properties. Previously the property had to be a string.
+
+
 
 ### Technical Debt
 
