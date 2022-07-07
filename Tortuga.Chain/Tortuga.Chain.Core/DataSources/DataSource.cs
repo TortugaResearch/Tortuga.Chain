@@ -78,7 +78,7 @@ public abstract class DataSource : IDataSource
 	public AuditRuleCollection AuditRules { get; protected set; } = AuditRuleCollection.Empty;
 
 	/// <summary>
-	/// Gets or sets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
+	/// Gets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
 	/// </summary>
 	public abstract ICacheAdapter Cache { get; }
 

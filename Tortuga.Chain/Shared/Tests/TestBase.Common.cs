@@ -135,7 +135,7 @@ partial class TestBase
 		var rows = new List<Employee>();
 
 		for (var i = 0; i < 1000; i++)
-			rows.Add(new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = EmployeeSearchKey1000, MiddleName = i % 2 == 0 ? "A" + i : null });
+			rows.Add(new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = EmployeeSearchKey1000, MiddleName = i % 2 == 0 ? "A" + i : null, Gender = 'X' });
 
 		if (dataSource is ISupportsInsertBulk bulk)
 			bulk.InsertBulk(EmployeeTableName, rows).Execute();

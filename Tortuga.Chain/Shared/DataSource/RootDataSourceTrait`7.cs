@@ -23,13 +23,18 @@ class RootDataSourceTrait<TRootDataSource, TTransactionalDataSource, TOpenDataSo
 	where TCommand : DbCommand, new()
 	where TConnectionStringBuilder : DbConnectionStringBuilder, new()
 {
-
-
 	/// <summary>
-	/// Gets or sets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
+	/// Gets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
 	/// </summary>
 	[Expose(Inheritance = Inheritance.Override)]
 	public ICacheAdapter Cache => m_Cache;
+
+	/// <summary>
+	/// The composed connection string.
+	/// </summary>
+	/// <remarks>This is created and cached by a ConnectionStringBuilder.</remarks>
+	[Expose(Accessibility = Accessibility.Internal)]
+	public string ConnectionString => m_ConnectionBuilder.ConnectionString;
 
 	/// <summary>
 	/// The extension cache is used by extensions to store data source specific information.
@@ -43,11 +48,21 @@ class RootDataSourceTrait<TRootDataSource, TTransactionalDataSource, TOpenDataSo
 	[Expose(Accessibility = Accessibility.Internal)]
 	public ICacheAdapter m_Cache { get; set; } = null!;
 
+	/// <summary>
+	/// This object can be used to access the database connection string.
+	/// </summary>
+	[Expose(Accessibility = Accessibility.Private, Setter = Setter.Init)]
+	public TConnectionStringBuilder m_ConnectionBuilder { get; set; } = null!;
+
 	[Expose(Accessibility = Accessibility.Internal)]
 	public ConcurrentDictionary<Type, object> m_ExtensionCache { get; set; } = null!;
+
 	[Partial("isolationLevel,forwardEvents")] public Func<IsolationLevel?, bool, TTransactionalDataSource> OnBeginTransaction { get; set; } = null!;
 
 	[Partial("isolationLevel,forwardEvents,cancellationToken")] public Func<IsolationLevel?, bool, CancellationToken, Task<TTransactionalDataSource>> OnBeginTransactionAsync { get; set; } = null!;
+
+	[Partial("cache,additionalRules,userValue")]
+	public Func<ICacheAdapter?, IEnumerable<AuditRule>?, object?, TRootDataSource> OnCloneWithOverrides { get; set; } = null!;
 
 	[Partial] public Func<TConnection> OnCreateConnection { get; set; } = null!;
 
@@ -143,6 +158,7 @@ class RootDataSourceTrait<TRootDataSource, TTransactionalDataSource, TOpenDataSo
 	{
 		return CreateOpenDataSource((TConnection)connection, (TTransaction?)transaction);
 	}
+
 	/// <summary>
 	/// Creates an open data source using the supplied connection and optional transaction.
 	/// </summary>
@@ -165,6 +181,7 @@ class RootDataSourceTrait<TRootDataSource, TTransactionalDataSource, TOpenDataSo
 	{
 		return OnCreateOpenDataSource(OnCreateConnection(), null);
 	}
+
 	/// <summary>
 	/// Tests the connection.
 	/// </summary>
@@ -187,21 +204,6 @@ class RootDataSourceTrait<TRootDataSource, TTransactionalDataSource, TOpenDataSo
 		using (var cmd = new TCommand() { CommandText = "SELECT 1", Connection = con })
 			await cmd.ExecuteScalarAsync().ConfigureAwait(false);
 	}
-
-
-	/// <summary>
-	/// This object can be used to access the database connection string.
-	/// </summary>
-	[Expose(Accessibility = Accessibility.Private, Setter = Setter.Init)]
-	public TConnectionStringBuilder m_ConnectionBuilder { get; set; } = null!;
-
-	/// <summary>
-	/// The composed connection string.
-	/// </summary>
-	/// <remarks>This is created and cached by a ConnectionStringBuilder.</remarks>
-	[Expose(Accessibility = Accessibility.Internal)]
-	public string ConnectionString => m_ConnectionBuilder.ConnectionString;
-
 
 	/// <summary>
 	/// Creates a new data source with the provided cache.
@@ -249,8 +251,4 @@ class RootDataSourceTrait<TRootDataSource, TTransactionalDataSource, TOpenDataSo
 	{
 		return OnCloneWithOverrides(null, null, userValue);
 	}
-
-	[Partial("cache,additionalRules,userValue")]
-	public Func<ICacheAdapter?, IEnumerable<AuditRule>?, object?, TRootDataSource> OnCloneWithOverrides { get; set; } = null!;
-
 }

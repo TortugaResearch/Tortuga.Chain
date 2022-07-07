@@ -25,4 +25,54 @@ public interface ISupportsDeleteByKey
 	/// <param name="options">The options.</param>
 	/// <returns>ISingleRowDbCommandBuilder.</returns>
 	ISingleRowDbCommandBuilder DeleteByKey(string tableName, string key, DeleteOptions options = DeleteOptions.None);
+
+	/// <summary>
+	/// Delete by key.
+	/// </summary>
+	/// <typeparam name="TObject">The type of the object. Used to determine which table will be modified.</typeparam>
+	/// <param name="key">The key.</param>
+	/// <param name="options">The options.</param>
+	/// <returns>ISingleRowDbCommandBuilder.</returns>
+	ISingleRowDbCommandBuilder<TObject> DeleteByKey<TObject>(string key, DeleteOptions options = DeleteOptions.None)
+		where TObject : class;
+
+	/// <summary>
+	/// Delete by key.
+	/// </summary>
+	/// <typeparam name="TObject">The type of the object. Used to determine which table will be modified.</typeparam>
+	/// <param name="key">The key.</param>
+	/// <param name="options">The options.</param>
+	/// <returns>ISingleRowDbCommandBuilder.</returns>
+	ISingleRowDbCommandBuilder<TObject> DeleteByKey<TObject>(short key, DeleteOptions options = DeleteOptions.None)
+		where TObject : class;
+
+	/// <summary>
+	/// Delete by key.
+	/// </summary>
+	/// <typeparam name="TObject">The type of the object. Used to determine which table will be modified.</typeparam>
+	/// <param name="key">The key.</param>
+	/// <param name="options">The options.</param>
+	/// <returns>ISingleRowDbCommandBuilder.</returns>
+	ISingleRowDbCommandBuilder<TObject> DeleteByKey<TObject>(int key, DeleteOptions options = DeleteOptions.None)
+		where TObject : class;
+
+	/// <summary>
+	/// Delete by key.
+	/// </summary>
+	/// <typeparam name="TObject">The type of the object. Used to determine which table will be modified.</typeparam>
+	/// <param name="key">The key.</param>
+	/// <param name="options">The options.</param>
+	/// <returns>ISingleRowDbCommandBuilder.</returns>
+	ISingleRowDbCommandBuilder<TObject> DeleteByKey<TObject>(long key, DeleteOptions options = DeleteOptions.None)
+		where TObject : class;
+
+	/// <summary>
+	/// Delete by key.
+	/// </summary>
+	/// <typeparam name="TObject">The type of the object. Used to determine which table will be modified.</typeparam>
+	/// <param name="key">The key.</param>
+	/// <param name="options">The options.</param>
+	/// <returns>ISingleRowDbCommandBuilder.</returns>
+	ISingleRowDbCommandBuilder<TObject> DeleteByKey<TObject>(Guid key, DeleteOptions options = DeleteOptions.None)
+		where TObject : class;
 }

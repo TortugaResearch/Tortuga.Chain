@@ -14,7 +14,9 @@
     UpdatedDate DATETIME2 NULL,
     EmployeeId NVARCHAR(50) NOT NULL
         CONSTRAINT UX_Employee_EmployeeId
-        UNIQUE
+        UNIQUE, 
+    Gender CHAR(1) NOT NULL,
+    Status CHAR(1) NULL
 );
 
 GO

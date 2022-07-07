@@ -5,7 +5,6 @@ namespace Tests.CommandBuilders;
 [TestClass]
 public class DeleteSetTests : TestBase
 {
-
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
 	public void DeleteSet_Where(string dataSourceName, DataSourceType mode)
 	{
@@ -31,7 +30,6 @@ public class DeleteSetTests : TestBase
 			Release(dataSource);
 		}
 	}
-
 
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
 	public void DeleteSet_WhereArg(string dataSourceName, DataSourceType mode)

@@ -4,7 +4,9 @@ using Tortuga.Anchor.Modeling;
 #if SQLITE
 using KeyType = System.Int64;
 #else
+
 using KeyType = System.Int32;
+
 #endif
 
 namespace Tests.Models;
@@ -25,15 +27,16 @@ public class Employee
 
 	[IgnoreOnUpdate]
 	public DateTime? UpdatedDate { get; set; }
-}
 
+	public char Gender { get; set; } = ' ';
+	public char? Status { get; set; }
+}
 
 [Table("Employee", Schema = "HR")]
 public record EmployeeRecordFilter
 {
 	public string EmployeeId { get; set; }
 }
-
 
 [Table("Employee", Schema = "HR")]
 public record EmployeeRecord
@@ -51,6 +54,7 @@ public record EmployeeRecord
 
 	[IgnoreOnUpdate]
 	public DateTime? UpdatedDate { get; set; }
+	public char Gender { get; set; } = ' ';
 }
 
 public class EmployeeWithName
@@ -75,6 +79,6 @@ public class EmployeeWithoutKey
 
 	[IgnoreOnUpdate]
 	public DateTime? UpdatedDate { get; set; }
+
+	public char Gender { get; set; } = ' ';
 }
-
-

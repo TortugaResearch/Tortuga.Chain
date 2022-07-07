@@ -1,5 +1,13 @@
 ## Version 4.2
 
+### Features
+
+[#463 ISupportsDeleteByKeyList should have the same overloads as ISupportsGetByKeyList](https://github.com/TortugaResearch/Chain/issues/463)
+
+[#464 ISupportsDeleteByKey should have the same overloads as ISupportsGetByKey](https://github.com/TortugaResearch/Chain/issues/464)
+
+Allow an object to be used for determining which table to delete from instead of explicitly providing a table name.
+
 [#471 Add Scalar and List options for Char](https://github.com/TortugaResearch/Tortuga.Chain/issues/471)
 
 Adds
@@ -8,7 +16,6 @@ Adds
 * `ToCharOrNull(...)`
 * `ToCharList(...)`
 * `ToCharOrNullList(...)`
-
 
 [#475 Add ToCharSet and ToByteSet materializers](https://github.com/TortugaResearch/Tortuga.Chain/issues/475)
 
@@ -21,12 +28,22 @@ Adds
 
 When using ToXxxList/ToXxxSet, you can specify a column name. If multiple columns are returned, which can happen with a stored procedure, it will only read the named column.
 
+## Bug Fixes
+
+[#469 Tortuga.Chain.MappingException: 'Cannot map value of type System.String to property Gender of type Char.' ](https://github.com/TortugaResearch/Tortuga.Chain/issues/469)
+
+Adds mapping between `string` columns and `char` properties. Previously the property had to be a string.
 
 ### Technical Debt
+
+[#400 Better Upsert Pattern for SQL Server](https://github.com/TortugaResearch/Tortuga.Chain/issues/400)
+
+Hint `UPDLOCK` and `SERIALIZABLE` when using `MERGE` to perform an upsert. This reduces, though not elimintates, the need to perform an upsert in a transaction.
 
 [#474 Remove duplicate code in list/set based materialzers](https://github.com/TortugaResearch/Tortuga.Chain/issues/474)
 
 Removed roughly 60 lines of code in each column based materializer.
+
 
 ## Version 4.1
 
