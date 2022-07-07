@@ -46,7 +46,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 
 			var identityInsert = m_Options.HasFlag(InsertOptions.IdentityInsert);
 			if (identityInsert)
-				throw new NotImplementedException("See issue 256. https://github.com/docevaad/Chain/issues/256");
+				throw new NotImplementedException("See issue 256. https://github.com/TortugaResearch/Tortuga.Chain/issues/256");
 
 			var sqlBuilder = m_Table.CreateSqlBuilder(StrictMode);
 			sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
