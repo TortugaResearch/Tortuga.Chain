@@ -8,13 +8,13 @@ namespace Tortuga.Chain.Materializers;
 /// </summary>
 /// <typeparam name="TCommand">The type of the t command type.</typeparam>
 /// <typeparam name="TParameter">The type of the t parameter type.</typeparam>
-internal sealed class StringMaterializerOrNull<TCommand, TParameter> : ScalarMaterializer<TCommand, TParameter, string?> where TCommand : DbCommand
+internal sealed class StringOrNullMaterializer<TCommand, TParameter> : ScalarMaterializer<TCommand, TParameter, string?> where TCommand : DbCommand
 	where TParameter : DbParameter
 {
-	/// <summary>Initializes a new instance of the <see cref="Tortuga.Chain.Materializers.StringMaterializerOrNull{TCommand, TParameter}"/> class.</summary>
+	/// <summary>Initializes a new instance of the <see cref="Tortuga.Chain.Materializers.StringOrNullMaterializer{TCommand, TParameter}"/> class.</summary>
 	/// <param name="commandBuilder">The command builder.</param>
 	/// <param name="columnName">Name of the desired column.</param>
-	public StringMaterializerOrNull(DbCommandBuilder<TCommand, TParameter> commandBuilder, string? columnName = null)
+	public StringOrNullMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, string? columnName = null)
 		: base(commandBuilder, columnName)
 	{ }
 

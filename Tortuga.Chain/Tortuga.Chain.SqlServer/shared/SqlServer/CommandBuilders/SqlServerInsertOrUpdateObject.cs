@@ -54,7 +54,7 @@ internal sealed class SqlServerInsertOrUpdateObject<TArgument> : SqlServerObject
 		if (identityInsert)
 			sql.AppendLine($"SET IDENTITY_INSERT {Table.Name.ToQuotedString()} ON;");
 
-		sql.Append($"MERGE INTO {Table.Name.ToQuotedString()} target USING "); sql.Append("(VALUES (" + string.Join(", ", availableColumns.Select(c => c.SqlVariableName)) + ")) AS source (" + string.Join(", ", availableColumns.Select(c => c.QuotedSqlName)) + ")");
+		sql.Append($"MERGE INTO {Table.Name.ToQuotedString()} WITH ( UPDLOCK, SERIALIZABLE ) target USING "); sql.Append("(VALUES (" + string.Join(", ", availableColumns.Select(c => c.SqlVariableName)) + ")) AS source (" + string.Join(", ", availableColumns.Select(c => c.QuotedSqlName)) + ")");
 		sql.Append(" ON ");
 		sql.Append(string.Join(" AND ", sqlBuilder.GetKeyColumns().ToList().Select(c => $"target.{c.QuotedSqlName} = source.{c.QuotedSqlName}")));
 

@@ -3,7 +3,7 @@
   <head><link rel="shortcut icon" href="../favicon.ico" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="save" content="history" />
-    <title>DeleteByKeyList(TKey) Method </title>
+    <title>DeleteByKeyList(TKey) Method (String, IEnumerable(TKey), DeleteOptions)</title>
     <link rel="stylesheet" type="text/css" href="../styles/lightweight.css" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:msxsl="urn:schemas-microsoft-com:xslt" />
     <link rel="stylesheet" type="text/css" href="../styles/lw-code.css" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:msxsl="urn:schemas-microsoft-com:xslt" />
     <script type="text/javascript" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:msxsl="urn:schemas-microsoft-com:xslt" src="../scripts/languageSelector.js"> </script>
@@ -12,15 +12,9 @@
     <meta name="guid" content="M-Tortuga.Chain.DataSources.ISupportsDeleteByKeyList.DeleteByKeyList--1" xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:msxsl="urn:schemas-microsoft-com:xslt" />
     <xml xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:msxsl="urn:schemas-microsoft-com:xslt">
       <MSHelp:Attr Name="AssetID" Value="M:Tortuga.Chain.DataSources.ISupportsDeleteByKeyList.DeleteByKeyList``1(System.String,IEnumerable{``0},DeleteOptions)" />
-      <MSHelp:TOCTitle Title="DeleteByKeyList(TKey) Method " />
-      <MSHelp:RLTitle Title="ISupportsDeleteByKeyList.DeleteByKeyList(TKey) Method  (Tortuga.Chain.DataSources)" />
+      <MSHelp:TOCTitle Title="DeleteByKeyList(TKey) Method (String, IEnumerable(TKey), DeleteOptions)" />
+      <MSHelp:RLTitle Title="ISupportsDeleteByKeyList.DeleteByKeyList(TKey) Method (String, IEnumerable(TKey), DeleteOptions) (Tortuga.Chain.DataSources)" />
       <MSHelp:Keyword Index="A" Term="M:Tortuga.Chain.DataSources.ISupportsDeleteByKeyList.DeleteByKeyList``1(System.String,IEnumerable{``0},DeleteOptions)" />
-      <MSHelp:Keyword Index="A" Term="frlrfTortugaChainDataSourcesISupportsDeleteByKeyListClassDeleteByKeyListTopic" />
-      <MSHelp:Keyword Index="K" Term="DeleteByKeyList%3CTKey%3E method" />
-      <MSHelp:Keyword Index="K" Term="DeleteByKeyList(Of TKey) method" />
-      <MSHelp:Keyword Index="K" Term="ISupportsDeleteByKeyList.DeleteByKeyList%3CTKey%3E method" />
-      <MSHelp:Keyword Index="K" Term="ISupportsDeleteByKeyList.DeleteByKeyList(Of TKey) method" />
-      <MSHelp:Keyword Index="F" Term="Tortuga.Chain.DataSources.ISupportsDeleteByKeyList.DeleteByKeyList" />
       <MSHelp:Attr Name="APIType" Value="Managed" />
       <MSHelp:Attr Name="APILocation" Value="Tortuga.Chain.Core.dll" />
       <MSHelp:Attr Name="APIName" Value="Tortuga.Chain.DataSources.ISupportsDeleteByKeyList.DeleteByKeyList" />
@@ -29,7 +23,7 @@
       <MSHelp:Attr Name="Locale" Value="en-us" />
       <MSHelp:Attr Name="TopicType" Value="kbSyntax" />
       <MSHelp:Attr Name="TopicType" Value="apiref" />
-      <MSHelp:Attr Name="Abstract" Value="Delete by key." />
+      <MSHelp:Attr Name="Abstract" Value="Deletes a set of records by their primary key." />
       <MSHelp:Attr Name="AssemblyVersion" Value="" />
     </xml>
   <link rel="stylesheet" href="../TOC.css"><script type="text/javascript" src="../TOC.js"></script></head>
@@ -632,7 +626,27 @@
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="N-Tortuga.Chain.Core.htm" target="_self">Tortuga.Chain.Core Namespace</a>
 <div class="Hidden">
 <div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.Core.CacheClearedEventArgs.htm" target="_self">CacheClearedEventArgs Class</a>
+<div class="Hidden">
+</div>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.Core.CacheInvalidatedEventArgs.htm" target="_self">CacheInvalidatedEventArgs Class</a>
+<div class="Hidden">
+</div>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.Core.CacheReadEventArgs.htm" target="_self">CacheReadEventArgs Class</a>
+<div class="Hidden">
+</div>
+</div>
+<div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.Core.CacheReadResult-1.htm" target="_self">CacheReadResult(T) Structure</a>
+<div class="Hidden">
+</div>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.Core.CacheWrittenEventArgs.htm" target="_self">CacheWrittenEventArgs Class</a>
 <div class="Hidden">
 </div>
 </div>
@@ -778,8 +792,28 @@
 <div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Methods.T-Tortuga.Chain.DataSources.ISupportsDeleteByKeyList.htm" target="_self">ISupportsDeleteByKeyList Methods</a>
 <div class="Hidden">
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="Overload-Tortuga.Chain.DataSources.ISupportsDeleteByKeyList.DeleteByKeyList-.htm" target="_self">DeleteByKeyList Method </a>
+<div class="Hidden">
 <div class="TreeItem">
-<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.DataSources.ISupportsDeleteByKeyList.DeleteByKeyList--1.htm" target="_self">DeleteByKeyList(TKey) Method </a>
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.DataSources.ISupportsDeleteByKeyList.DeleteByKeyList--1.htm" target="_self">DeleteByKeyList(TKey) Method (String, IEnumerable(TKey), DeleteOptions)</a>
+</div>
+<div class="TreeItem">
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.DataSources.ISupportsDeleteByKeyList.DeleteByKeyList--2.htm" target="_self">DeleteByKeyList(TObject, TKey) Method (IEnumerable(TKey), DeleteOptions)</a>
+</div>
+<div class="TreeItem">
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.DataSources.ISupportsDeleteByKeyList.DeleteByKeyList--1_1.htm" target="_self">DeleteByKeyList(TObject) Method (IEnumerable(Int16), DeleteOptions)</a>
+</div>
+<div class="TreeItem">
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.DataSources.ISupportsDeleteByKeyList.DeleteByKeyList--1_2.htm" target="_self">DeleteByKeyList(TObject) Method (IEnumerable(Int32), DeleteOptions)</a>
+</div>
+<div class="TreeItem">
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.DataSources.ISupportsDeleteByKeyList.DeleteByKeyList--1_3.htm" target="_self">DeleteByKeyList(TObject) Method (IEnumerable(Int64), DeleteOptions)</a>
+</div>
+<div class="TreeItem">
+<img src="../Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="M-Tortuga.Chain.DataSources.ISupportsDeleteByKeyList.DeleteByKeyList--1_4.htm" target="_self">DeleteByKeyList(TObject) Method (IEnumerable(Guid), DeleteOptions)</a>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -901,6 +935,11 @@
 </div>
 </div>
 <div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.Materializers.CollectionColumnMaterializer-4.htm" target="_self">CollectionColumnMaterializer(TCommand, TParameter, TCollection, TResult) Class</a>
+<div class="Hidden">
+</div>
+</div>
+<div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.Materializers.CompiledMultipleRow-2.htm" target="_self">CompiledMultipleRow(TCommand, TParameter) Structure</a>
 <div class="Hidden">
 </div>
@@ -927,6 +966,11 @@
 </div>
 <div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.Materializers.ConstructibleMaterializer-4.htm" target="_self">ConstructibleMaterializer(TCommand, TParameter, TResult, TObject) Class</a>
+<div class="Hidden">
+</div>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.Materializers.ListColumnMaterializer-3.htm" target="_self">ListColumnMaterializer(TCommand, TParameter, TResult) Class</a>
 <div class="Hidden">
 </div>
 </div>
@@ -962,6 +1006,11 @@
 </div>
 <div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.Materializers.ScalarMaterializer-3.htm" target="_self">ScalarMaterializer(TCommand, TParameter, TResult) Class</a>
+<div class="Hidden">
+</div>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="../Collapsed.png"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="T-Tortuga.Chain.Materializers.SetColumnMaterializer-3.htm" target="_self">SetColumnMaterializer(TCommand, TParameter, TResult) Class</a>
 <div class="Hidden">
 </div>
 </div>
@@ -1575,11 +1624,11 @@
         <div class="topicContainer">
           <div class="topic">
             <p class="majorTitle" />
-            <h1 class="title">ISupportsDeleteByKeyList<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span><span class="fs">.</span></span>DeleteByKeyList<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span><span class="typeparameter">TKey</span><span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span> Method </h1>
+            <h1 class="title">ISupportsDeleteByKeyList<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span><span class="fs">.</span></span>DeleteByKeyList<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span><span class="typeparameter">TKey</span><span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span> Method (String, IEnumerable<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span><span class="typeparameter">TKey</span><span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span>, DeleteOptions)</h1>
             <div id="mainSection">
               <div id="mainBody">
                 <div class="summary">
-   Delete by key.
+   Deletes a set of records by their primary key.
    </div>
                 <p />
     <b>Namespace:</b> 
@@ -1599,7 +1648,7 @@
 	<a href="https://docs.microsoft.com/en-us/dotnet/api/system.string" target="_blank">String</a>^ <span class="parameter">tableName</span>, 
 	<span class="nolink">IEnumerable</span>&lt;TKey&gt;^ <span class="parameter">keys</span>, 
 	<a href="T-Tortuga.Chain.DeleteOptions.htm">DeleteOptions</a>^ <span class="parameter">options</span>
-)</pre></div></div></div><h4 class="subHeading">Type Parameters</h4><dl><dt><span class="parameterItalic">TKey</span></dt><dd>The type of the t key.</dd></dl><div id="parameters"><h4 class="subHeading">Parameters</h4><dl paramName="tableName"><dt><span class="parameterItalic">tableName</span></dt><dd>Type: <a href="https://docs.microsoft.com/en-us/dotnet/api/system.string" target="_blank">String</a><br />Name of the table.</dd></dl><dl paramName="keys"><dt><span class="parameterItalic">keys</span></dt><dd>Type: <span class="nolink">IEnumerable</span><span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span><span class="selflink"><span class="typeparam">TKey</span></span><span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span><br />The keys.</dd></dl><dl paramName="options"><dt><span class="parameterItalic">options</span></dt><dd>Type: <a href="T-Tortuga.Chain.DeleteOptions.htm">Tortuga.Chain<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span><span class="fs">.</span></span>DeleteOptions</a><br />The options.</dd></dl></div><h4 class="subHeading">Return Value</h4>IMultipleRowDbCommandBuilder.</div><div class="LW_CollapsibleArea_Container"><div class="LW_CollapsibleArea_TitleDiv"><h2 class="LW_CollapsibleArea_Title">See Also</h2><div class="LW_CollapsibleArea_HrDiv"><hr class="LW_CollapsibleArea_Hr" /></div></div><a id="seeAlsoSection"><!----></a><div class="seeAlsoStyle"><a href="T-Tortuga.Chain.DataSources.ISupportsDeleteByKeyList.htm">ISupportsDeleteByKeyList Interface</a></div><div class="seeAlsoStyle"><a href="N-Tortuga.Chain.DataSources.htm">Tortuga.Chain.DataSources Namespace</a></div></div></div>
+)</pre></div></div></div><h4 class="subHeading">Type Parameters</h4><dl><dt><span class="parameterItalic">TKey</span></dt><dd>The type of the t key.</dd></dl><div id="parameters"><h4 class="subHeading">Parameters</h4><dl paramName="tableName"><dt><span class="parameterItalic">tableName</span></dt><dd>Type: <a href="https://docs.microsoft.com/en-us/dotnet/api/system.string" target="_blank">String</a><br />Name of the table.</dd></dl><dl paramName="keys"><dt><span class="parameterItalic">keys</span></dt><dd>Type: <span class="nolink">IEnumerable</span><span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span><span class="selflink"><span class="typeparam">TKey</span></span><span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span><br />The keys.</dd></dl><dl paramName="options"><dt><span class="parameterItalic">options</span></dt><dd>Type: <a href="T-Tortuga.Chain.DeleteOptions.htm">Tortuga.Chain<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span><span class="fs">.</span></span>DeleteOptions</a><br />The options.</dd></dl></div><h4 class="subHeading">Return Value</h4>IMultipleRowDbCommandBuilder.</div><div class="LW_CollapsibleArea_Container"><div class="LW_CollapsibleArea_TitleDiv"><h2 class="LW_CollapsibleArea_Title">See Also</h2><div class="LW_CollapsibleArea_HrDiv"><hr class="LW_CollapsibleArea_Hr" /></div></div><a id="seeAlsoSection"><!----></a><div class="seeAlsoStyle"><a href="T-Tortuga.Chain.DataSources.ISupportsDeleteByKeyList.htm">ISupportsDeleteByKeyList Interface</a></div><div class="seeAlsoStyle"><a href="Overload-Tortuga.Chain.DataSources.ISupportsDeleteByKeyList.DeleteByKeyList-.htm">DeleteByKeyList Overload</a></div><div class="seeAlsoStyle"><a href="N-Tortuga.Chain.DataSources.htm">Tortuga.Chain.DataSources Namespace</a></div></div></div>
             </div>
           </div>
         </div>

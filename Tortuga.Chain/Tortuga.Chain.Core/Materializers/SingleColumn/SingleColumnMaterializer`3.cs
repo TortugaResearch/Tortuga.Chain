@@ -11,8 +11,6 @@ public abstract class SingleColumnMaterializer<TCommand, TParameter, TResult> : 
 		where TCommand : DbCommand
 	where TParameter : DbParameter
 {
-	readonly string? m_DesiredColumn;
-
 	/// <summary>
 	/// Initializes a new instance of the <see cref="SingleColumnMaterializer{TCommand, TParameter, TResult}" /> class.
 	/// </summary>
@@ -21,16 +19,18 @@ public abstract class SingleColumnMaterializer<TCommand, TParameter, TResult> : 
 	protected SingleColumnMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, string? columnName)
 		: base(commandBuilder)
 	{
-		m_DesiredColumn = columnName;
+		ColumnName = columnName;
 	}
+
+	private protected string? ColumnName { get; }
 
 	/// <summary>
 	/// Returns the list of columns the result materializer would like to have.
 	/// </summary>
 	public override IReadOnlyList<string> DesiredColumns()
 	{
-		if (m_DesiredColumn != null)
-			return ImmutableArray.Create(m_DesiredColumn);
+		if (ColumnName != null)
+			return ImmutableArray.Create(ColumnName);
 		else
 			return base.DesiredColumns();
 	}

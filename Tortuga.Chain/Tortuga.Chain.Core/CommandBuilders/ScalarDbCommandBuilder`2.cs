@@ -88,6 +88,31 @@ public abstract class ScalarDbCommandBuilder<TCommand, TParameter> : DbCommandBu
 	public ILink<byte?> ToByteOrNull(string columnName) => new ByteOrNullMaterializer<TCommand, TParameter>(this, columnName);
 
 	/// <summary>
+	/// Indicates the results should be materialized as a non-nullable char.
+	/// </summary>
+	/// <returns></returns>
+	public ILink<char> ToChar() => new CharMaterializer<TCommand, TParameter>(this);
+
+	/// <summary>
+	/// Indicates the results should be materialized as a non-nullable char.
+	/// </summary>
+	/// <returns></returns>
+	public ILink<char> ToChar(string columnName) => new CharMaterializer<TCommand, TParameter>(this, columnName);
+
+	/// <summary>
+	/// Indicates the results should be materialized as a nullable char.
+	/// </summary>
+	/// <returns></returns>
+	/// <param name="columnName">Name of the desired column.</param>
+	public ILink<char?> ToCharOrNull(string columnName) => new CharOrNullMaterializer<TCommand, TParameter>(this, columnName);
+
+	/// <summary>
+	/// Indicates the results should be materialized as a nullable char.
+	/// </summary>
+	/// <returns></returns>
+	public ILink<char?> ToCharOrNull() => new CharOrNullMaterializer<TCommand, TParameter>(this);
+
+	/// <summary>
 	/// Indicates the results should be materialized as a DateTime.
 	/// </summary>
 	public ILink<DateTime> ToDateTime() => new DateTimeMaterializer<TCommand, TParameter>(this);
@@ -300,13 +325,13 @@ public abstract class ScalarDbCommandBuilder<TCommand, TParameter> : DbCommandBu
 	/// </summary>
 	/// <returns></returns>
 	/// <param name="columnName">Name of the desired column.</param>
-	public ILink<string?> ToStringOrNull(string columnName) => new StringMaterializerOrNull<TCommand, TParameter>(this, columnName);
+	public ILink<string?> ToStringOrNull(string columnName) => new StringOrNullMaterializer<TCommand, TParameter>(this, columnName);
 
 	/// <summary>
 	/// Indicates the results should be materialized as a nullable string.
 	/// </summary>
 	/// <returns></returns>
-	public ILink<string?> ToStringOrNull() => new StringMaterializerOrNull<TCommand, TParameter>(this);
+	public ILink<string?> ToStringOrNull() => new StringOrNullMaterializer<TCommand, TParameter>(this);
 
 	/// <summary>
 	/// Indicates the results should be materialized as a TimeSpan.

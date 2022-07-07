@@ -401,6 +401,31 @@
   <HelpKINode Title="Cache property" Url="html/P-Tortuga.Chain.GenericDbDataSource.Cache.htm" />
   <HelpKINode Title="CacheAllItems(Of TCollection, TItem) method" Url="html/M-Tortuga.Chain.CommonAppenders.CacheAllItems--2.htm" />
   <HelpKINode Title="CacheAllItems&lt;TCollection, TItem&gt; method" Url="html/M-Tortuga.Chain.CommonAppenders.CacheAllItems--2.htm" />
+  <HelpKINode Title="CacheCleared event" Url="html/E-Tortuga.Chain.Core.ICacheAdapter.CacheCleared.htm" />
+  <HelpKINode Title="CacheCleared event" Url="html/E-Tortuga.Chain.Core.ObjectCacheAdapter.CacheCleared.htm" />
+  <HelpKINode Title="CacheClearedEventArgs class" Url="html/AllMembers.T-Tortuga.Chain.Core.CacheClearedEventArgs.htm" />
+  <HelpKINode Title="CacheClearedEventArgs class" Url="html/T-Tortuga.Chain.Core.CacheClearedEventArgs.htm" />
+  <HelpKINode Title="CacheClearedEventArgs class">
+    <HelpKINode Title="about CacheClearedEventArgs class" Url="html/T-Tortuga.Chain.Core.CacheClearedEventArgs.htm" />
+    <HelpKINode Title="all members" Url="html/AllMembers.T-Tortuga.Chain.Core.CacheClearedEventArgs.htm" />
+    <HelpKINode Title="constructor" Url="html/M-Tortuga.Chain.Core.CacheClearedEventArgs.-ctor.htm" />
+  </HelpKINode>
+  <HelpKINode Title="CacheClearedEventArgs.CacheClearedEventArgs constructor" Url="html/M-Tortuga.Chain.Core.CacheClearedEventArgs.-ctor.htm" />
+  <HelpKINode Title="CacheInvalidated event" Url="html/E-Tortuga.Chain.Core.ICacheAdapter.CacheInvalidated.htm" />
+  <HelpKINode Title="CacheInvalidated event" Url="html/E-Tortuga.Chain.Core.ObjectCacheAdapter.CacheInvalidated.htm" />
+  <HelpKINode Title="CacheInvalidatedEventArgs class" Url="html/AllMembers.T-Tortuga.Chain.Core.CacheInvalidatedEventArgs.htm" />
+  <HelpKINode Title="CacheInvalidatedEventArgs class" Url="html/T-Tortuga.Chain.Core.CacheInvalidatedEventArgs.htm" />
+  <HelpKINode Title="CacheInvalidatedEventArgs class">
+    <HelpKINode Title="about CacheInvalidatedEventArgs class" Url="html/T-Tortuga.Chain.Core.CacheInvalidatedEventArgs.htm" />
+    <HelpKINode Title="all members" Url="html/AllMembers.T-Tortuga.Chain.Core.CacheInvalidatedEventArgs.htm" />
+    <HelpKINode Title="constructor" Url="html/M-Tortuga.Chain.Core.CacheInvalidatedEventArgs.-ctor.htm" />
+    <HelpKINode Title="properties" Url="html/Properties.T-Tortuga.Chain.Core.CacheInvalidatedEventArgs.htm" />
+  </HelpKINode>
+  <HelpKINode Title="CacheInvalidatedEventArgs.CacheInvalidatedEventArgs constructor" Url="html/M-Tortuga.Chain.Core.CacheInvalidatedEventArgs.-ctor.htm" />
+  <HelpKINode Title="CacheInvalidatedEventArgs.CacheKey property" Url="html/P-Tortuga.Chain.Core.CacheInvalidatedEventArgs.CacheKey.htm" />
+  <HelpKINode Title="CacheKey property" Url="html/P-Tortuga.Chain.Core.CacheInvalidatedEventArgs.CacheKey.htm" />
+  <HelpKINode Title="CacheKey property" Url="html/P-Tortuga.Chain.Core.CacheReadEventArgs.CacheKey.htm" />
+  <HelpKINode Title="CacheKey property" Url="html/P-Tortuga.Chain.Core.CacheWrittenEventArgs.CacheKey.htm" />
   <HelpKINode Title="CachePolicy class" Url="html/AllMembers.T-Tortuga.Chain.CachePolicy.htm" />
   <HelpKINode Title="CachePolicy class" Url="html/T-Tortuga.Chain.CachePolicy.htm" />
   <HelpKINode Title="CachePolicy class">
@@ -412,6 +437,19 @@
   <HelpKINode Title="CachePolicy.AbsoluteExpiration property" Url="html/P-Tortuga.Chain.CachePolicy.AbsoluteExpiration.htm" />
   <HelpKINode Title="CachePolicy.CachePolicy constructor" Url="html/Overload-Tortuga.Chain.CachePolicy.-ctor.htm" />
   <HelpKINode Title="CachePolicy.SlidingExpiration property" Url="html/P-Tortuga.Chain.CachePolicy.SlidingExpiration.htm" />
+  <HelpKINode Title="CacheRead event" Url="html/E-Tortuga.Chain.Core.ICacheAdapter.CacheRead.htm" />
+  <HelpKINode Title="CacheRead event" Url="html/E-Tortuga.Chain.Core.ObjectCacheAdapter.CacheRead.htm" />
+  <HelpKINode Title="CacheReadEventArgs class" Url="html/AllMembers.T-Tortuga.Chain.Core.CacheReadEventArgs.htm" />
+  <HelpKINode Title="CacheReadEventArgs class" Url="html/T-Tortuga.Chain.Core.CacheReadEventArgs.htm" />
+  <HelpKINode Title="CacheReadEventArgs class">
+    <HelpKINode Title="about CacheReadEventArgs class" Url="html/T-Tortuga.Chain.Core.CacheReadEventArgs.htm" />
+    <HelpKINode Title="all members" Url="html/AllMembers.T-Tortuga.Chain.Core.CacheReadEventArgs.htm" />
+    <HelpKINode Title="constructor" Url="html/M-Tortuga.Chain.Core.CacheReadEventArgs.-ctor.htm" />
+    <HelpKINode Title="properties" Url="html/Properties.T-Tortuga.Chain.Core.CacheReadEventArgs.htm" />
+  </HelpKINode>
+  <HelpKINode Title="CacheReadEventArgs.CacheKey property" Url="html/P-Tortuga.Chain.Core.CacheReadEventArgs.CacheKey.htm" />
+  <HelpKINode Title="CacheReadEventArgs.CacheReadEventArgs constructor" Url="html/M-Tortuga.Chain.Core.CacheReadEventArgs.-ctor.htm" />
+  <HelpKINode Title="CacheReadEventArgs.Found property" Url="html/P-Tortuga.Chain.Core.CacheReadEventArgs.Found.htm" />
   <HelpKINode Title="CacheReadResult(Of T) structure" Url="html/AllMembers.T-Tortuga.Chain.Core.CacheReadResult-1.htm" />
   <HelpKINode Title="CacheReadResult(Of T) structure" Url="html/T-Tortuga.Chain.Core.CacheReadResult-1.htm" />
   <HelpKINode Title="CacheReadResult(Of T) structure">
@@ -434,6 +472,18 @@
   <HelpKINode Title="CacheReadResult&lt;T&gt;.CacheReadResult constructor" Url="html/M-Tortuga.Chain.Core.CacheReadResult-1.-ctor.htm" />
   <HelpKINode Title="CacheReadResult&lt;T&gt;.KeyFound property" Url="html/P-Tortuga.Chain.Core.CacheReadResult-1.KeyFound.htm" />
   <HelpKINode Title="CacheReadResult&lt;T&gt;.Value property" Url="html/P-Tortuga.Chain.Core.CacheReadResult-1.Value.htm" />
+  <HelpKINode Title="CacheWritten event" Url="html/E-Tortuga.Chain.Core.ICacheAdapter.CacheWritten.htm" />
+  <HelpKINode Title="CacheWritten event" Url="html/E-Tortuga.Chain.Core.ObjectCacheAdapter.CacheWritten.htm" />
+  <HelpKINode Title="CacheWrittenEventArgs class" Url="html/AllMembers.T-Tortuga.Chain.Core.CacheWrittenEventArgs.htm" />
+  <HelpKINode Title="CacheWrittenEventArgs class" Url="html/T-Tortuga.Chain.Core.CacheWrittenEventArgs.htm" />
+  <HelpKINode Title="CacheWrittenEventArgs class">
+    <HelpKINode Title="about CacheWrittenEventArgs class" Url="html/T-Tortuga.Chain.Core.CacheWrittenEventArgs.htm" />
+    <HelpKINode Title="all members" Url="html/AllMembers.T-Tortuga.Chain.Core.CacheWrittenEventArgs.htm" />
+    <HelpKINode Title="constructor" Url="html/M-Tortuga.Chain.Core.CacheWrittenEventArgs.-ctor.htm" />
+    <HelpKINode Title="properties" Url="html/Properties.T-Tortuga.Chain.Core.CacheWrittenEventArgs.htm" />
+  </HelpKINode>
+  <HelpKINode Title="CacheWrittenEventArgs.CacheKey property" Url="html/P-Tortuga.Chain.Core.CacheWrittenEventArgs.CacheKey.htm" />
+  <HelpKINode Title="CacheWrittenEventArgs.CacheWrittenEventArgs constructor" Url="html/M-Tortuga.Chain.Core.CacheWrittenEventArgs.-ctor.htm" />
   <HelpKINode Title="ChainInternalException class" Url="html/AllMembers.T-Tortuga.Chain.ChainInternalException.htm" />
   <HelpKINode Title="ChainInternalException class" Url="html/T-Tortuga.Chain.ChainInternalException.htm" />
   <HelpKINode Title="ChainInternalException class">
@@ -478,6 +528,30 @@
   <HelpKINode Title="ClusteredColumnstoreIndex enumeration member" Url="html/T-Tortuga.Chain.Metadata.IndexType.htm" />
   <HelpKINode Title="ClusteredColumnstoreIndex field" Url="html/F-Tortuga.Chain.Metadata.IndexType.ClusteredColumnstoreIndex.htm" />
   <HelpKINode Title="Code property" Url="html/P-Tortuga.Chain.MaterializerCompilerEventArgs.Code.htm" />
+  <HelpKINode Title="CollectionColumnMaterializer(Of TCommand, TParameter, TCollection, TResult) class" Url="html/AllMembers.T-Tortuga.Chain.Materializers.CollectionColumnMaterializer-4.htm" />
+  <HelpKINode Title="CollectionColumnMaterializer(Of TCommand, TParameter, TCollection, TResult) class" Url="html/T-Tortuga.Chain.Materializers.CollectionColumnMaterializer-4.htm" />
+  <HelpKINode Title="CollectionColumnMaterializer(Of TCommand, TParameter, TCollection, TResult) class">
+    <HelpKINode Title="about CollectionColumnMaterializer(Of TCommand, TParameter, TCollection, TResult) class" Url="html/T-Tortuga.Chain.Materializers.CollectionColumnMaterializer-4.htm" />
+    <HelpKINode Title="all members" Url="html/AllMembers.T-Tortuga.Chain.Materializers.CollectionColumnMaterializer-4.htm" />
+    <HelpKINode Title="events" Url="html/Events.T-Tortuga.Chain.Materializers.CollectionColumnMaterializer-4.htm" />
+    <HelpKINode Title="methods" Url="html/Methods.T-Tortuga.Chain.Materializers.CollectionColumnMaterializer-4.htm" />
+    <HelpKINode Title="properties" Url="html/Properties.T-Tortuga.Chain.Materializers.CollectionColumnMaterializer-4.htm" />
+  </HelpKINode>
+  <HelpKINode Title="CollectionColumnMaterializer(Of TCommand, TParameter, TCollection, TResult).Execute method" Url="html/M-Tortuga.Chain.Materializers.CollectionColumnMaterializer-4.Execute.htm" />
+  <HelpKINode Title="CollectionColumnMaterializer(Of TCommand, TParameter, TCollection, TResult).ExecuteAsync method" Url="html/M-Tortuga.Chain.Materializers.CollectionColumnMaterializer-4.ExecuteAsync.htm" />
+  <HelpKINode Title="CollectionColumnMaterializer(Of TCommand, TParameter, TCollection, TResult).ExecuteAsync method" Url="html/Overload-Tortuga.Chain.Materializers.CollectionColumnMaterializer-4.ExecuteAsync.htm" />
+  <HelpKINode Title="CollectionColumnMaterializer&lt;TCommand, TParameter, TCollection, TResult&gt; class" Url="html/AllMembers.T-Tortuga.Chain.Materializers.CollectionColumnMaterializer-4.htm" />
+  <HelpKINode Title="CollectionColumnMaterializer&lt;TCommand, TParameter, TCollection, TResult&gt; class" Url="html/T-Tortuga.Chain.Materializers.CollectionColumnMaterializer-4.htm" />
+  <HelpKINode Title="CollectionColumnMaterializer&lt;TCommand, TParameter, TCollection, TResult&gt; class">
+    <HelpKINode Title="about CollectionColumnMaterializer&lt;TCommand, TParameter, TCollection, TResult&gt; class" Url="html/T-Tortuga.Chain.Materializers.CollectionColumnMaterializer-4.htm" />
+    <HelpKINode Title="all members" Url="html/AllMembers.T-Tortuga.Chain.Materializers.CollectionColumnMaterializer-4.htm" />
+    <HelpKINode Title="events" Url="html/Events.T-Tortuga.Chain.Materializers.CollectionColumnMaterializer-4.htm" />
+    <HelpKINode Title="methods" Url="html/Methods.T-Tortuga.Chain.Materializers.CollectionColumnMaterializer-4.htm" />
+    <HelpKINode Title="properties" Url="html/Properties.T-Tortuga.Chain.Materializers.CollectionColumnMaterializer-4.htm" />
+  </HelpKINode>
+  <HelpKINode Title="CollectionColumnMaterializer&lt;TCommand, TParameter, TCollection, TResult&gt;.Execute method" Url="html/M-Tortuga.Chain.Materializers.CollectionColumnMaterializer-4.Execute.htm" />
+  <HelpKINode Title="CollectionColumnMaterializer&lt;TCommand, TParameter, TCollection, TResult&gt;.ExecuteAsync method" Url="html/M-Tortuga.Chain.Materializers.CollectionColumnMaterializer-4.ExecuteAsync.htm" />
+  <HelpKINode Title="CollectionColumnMaterializer&lt;TCommand, TParameter, TCollection, TResult&gt;.ExecuteAsync method" Url="html/Overload-Tortuga.Chain.Materializers.CollectionColumnMaterializer-4.ExecuteAsync.htm" />
   <HelpKINode Title="CollectionOptions enumeration" Url="html/T-Tortuga.Chain.CollectionOptions.htm" />
   <HelpKINode Title="CollectionOptions.InferConstructor field" Url="html/F-Tortuga.Chain.CollectionOptions.InferConstructor.htm" />
   <HelpKINode Title="CollectionOptions.None field" Url="html/F-Tortuga.Chain.CollectionOptions.None.htm" />
@@ -1180,8 +1254,8 @@
   <HelpKINode Title="Delete enumeration member" Url="html/T-Tortuga.Chain.AuditRules.OperationTypes.htm" />
   <HelpKINode Title="Delete field" Url="html/F-Tortuga.Chain.AuditRules.OperationTypes.Delete.htm" />
   <HelpKINode Title="Delete method" Url="html/Overload-Tortuga.Chain.DataSources.ISupportsDelete.Delete-.htm" />
-  <HelpKINode Title="DeleteByKeyList(Of TKey) method" Url="html/M-Tortuga.Chain.DataSources.ISupportsDeleteByKeyList.DeleteByKeyList--1.htm" />
-  <HelpKINode Title="DeleteByKeyList&lt;TKey&gt; method" Url="html/M-Tortuga.Chain.DataSources.ISupportsDeleteByKeyList.DeleteByKeyList--1.htm" />
+  <HelpKINode Title="DeleteByKey method" Url="html/Overload-Tortuga.Chain.DataSources.ISupportsDeleteByKey.DeleteByKey-.htm" />
+  <HelpKINode Title="DeleteByKeyList method" Url="html/Overload-Tortuga.Chain.DataSources.ISupportsDeleteByKeyList.DeleteByKeyList-.htm" />
   <HelpKINode Title="DeletedValue property" Url="html/P-Tortuga.Chain.AuditRules.SoftDeleteRule.DeletedValue.htm" />
   <HelpKINode Title="DeleteOptions enumeration" Url="html/T-Tortuga.Chain.DeleteOptions.htm" />
   <HelpKINode Title="DeleteOptions.CheckRowsAffected field" Url="html/F-Tortuga.Chain.DeleteOptions.CheckRowsAffected.htm" />
@@ -1261,6 +1335,7 @@
   <HelpKINode Title="Execute method" Url="html/M-Tortuga.Chain.ILink-1.Execute.htm" />
   <HelpKINode Title="Execute method" Url="html/M-Tortuga.Chain.Materializers.AsOutputsMaterializer-2.Execute.htm" />
   <HelpKINode Title="Execute method" Url="html/M-Tortuga.Chain.Materializers.AsOutputsMaterializer-3.Execute.htm" />
+  <HelpKINode Title="Execute method" Url="html/M-Tortuga.Chain.Materializers.CollectionColumnMaterializer-4.Execute.htm" />
   <HelpKINode Title="Execute method" Url="html/M-Tortuga.Chain.Materializers.Materializer-3.Execute.htm" />
   <HelpKINode Title="Execute method" Url="html/M-Tortuga.Chain.Materializers.NonQueryMaterializer-2.Execute.htm" />
   <HelpKINode Title="Execute method" Url="html/M-Tortuga.Chain.Materializers.Operation-2.Execute.htm" />
@@ -1270,6 +1345,7 @@
   <HelpKINode Title="ExecuteAsync method" Url="html/M-Tortuga.Chain.DataSources.IOperationDataSource-2.ExecuteAsync.htm" />
   <HelpKINode Title="ExecuteAsync method" Url="html/M-Tortuga.Chain.Materializers.AsOutputsMaterializer-2.ExecuteAsync.htm" />
   <HelpKINode Title="ExecuteAsync method" Url="html/M-Tortuga.Chain.Materializers.AsOutputsMaterializer-3.ExecuteAsync.htm" />
+  <HelpKINode Title="ExecuteAsync method" Url="html/M-Tortuga.Chain.Materializers.CollectionColumnMaterializer-4.ExecuteAsync.htm" />
   <HelpKINode Title="ExecuteAsync method" Url="html/M-Tortuga.Chain.Materializers.NonQueryMaterializer-2.ExecuteAsync.htm" />
   <HelpKINode Title="ExecuteAsync method" Url="html/Overload-Tortuga.Chain.Appenders.Appender-1.ExecuteAsync.htm" />
   <HelpKINode Title="ExecuteAsync method" Url="html/Overload-Tortuga.Chain.Appenders.Appender-2.ExecuteAsync.htm" />
@@ -1278,6 +1354,7 @@
   <HelpKINode Title="ExecuteAsync method" Url="html/Overload-Tortuga.Chain.ILink-1.ExecuteAsync.htm" />
   <HelpKINode Title="ExecuteAsync method" Url="html/Overload-Tortuga.Chain.Materializers.AsOutputsMaterializer-2.ExecuteAsync.htm" />
   <HelpKINode Title="ExecuteAsync method" Url="html/Overload-Tortuga.Chain.Materializers.AsOutputsMaterializer-3.ExecuteAsync.htm" />
+  <HelpKINode Title="ExecuteAsync method" Url="html/Overload-Tortuga.Chain.Materializers.CollectionColumnMaterializer-4.ExecuteAsync.htm" />
   <HelpKINode Title="ExecuteAsync method" Url="html/Overload-Tortuga.Chain.Materializers.Materializer-3.ExecuteAsync.htm" />
   <HelpKINode Title="ExecuteAsync method" Url="html/Overload-Tortuga.Chain.Materializers.NonQueryMaterializer-2.ExecuteAsync.htm" />
   <HelpKINode Title="ExecuteAsync method" Url="html/Overload-Tortuga.Chain.Materializers.Operation-2.ExecuteAsync.htm" />
@@ -1432,6 +1509,7 @@
   </HelpKINode>
   <HelpKINode Title="ForeignKeyConstraintCollection&lt;TObjectName, TDbType&gt;.ForeignKeyConstraintCollection constructor" Url="html/M-Tortuga.Chain.Metadata.ForeignKeyConstraintCollection-2.-ctor.htm" />
   <HelpKINode Title="ForeignKeyConstraintCollection&lt;TObjectName, TDbType&gt;.GenericCollection property" Url="html/P-Tortuga.Chain.Metadata.ForeignKeyConstraintCollection-2.GenericCollection.htm" />
+  <HelpKINode Title="Found property" Url="html/P-Tortuga.Chain.Core.CacheReadEventArgs.Found.htm" />
   <HelpKINode Title="From method" Url="html/Overload-Tortuga.Chain.DataSources.ISupportsFrom.From.htm" />
   <HelpKINode Title="FSharp enumeration member" Url="html/T-Tortuga.Chain.Metadata.NameGenerationOptions.htm" />
   <HelpKINode Title="FSharp field" Url="html/F-Tortuga.Chain.Metadata.NameGenerationOptions.FSharp.htm" />
@@ -1649,8 +1727,13 @@
   <HelpKINode Title="ICacheAdapter interface">
     <HelpKINode Title="about ICacheAdapter interface" Url="html/T-Tortuga.Chain.Core.ICacheAdapter.htm" />
     <HelpKINode Title="all members" Url="html/AllMembers.T-Tortuga.Chain.Core.ICacheAdapter.htm" />
+    <HelpKINode Title="events" Url="html/Events.T-Tortuga.Chain.Core.ICacheAdapter.htm" />
     <HelpKINode Title="methods" Url="html/Methods.T-Tortuga.Chain.Core.ICacheAdapter.htm" />
   </HelpKINode>
+  <HelpKINode Title="ICacheAdapter.CacheCleared event" Url="html/E-Tortuga.Chain.Core.ICacheAdapter.CacheCleared.htm" />
+  <HelpKINode Title="ICacheAdapter.CacheInvalidated event" Url="html/E-Tortuga.Chain.Core.ICacheAdapter.CacheInvalidated.htm" />
+  <HelpKINode Title="ICacheAdapter.CacheRead event" Url="html/E-Tortuga.Chain.Core.ICacheAdapter.CacheRead.htm" />
+  <HelpKINode Title="ICacheAdapter.CacheWritten event" Url="html/E-Tortuga.Chain.Core.ICacheAdapter.CacheWritten.htm" />
   <HelpKINode Title="ICacheAdapter.Clear method" Url="html/M-Tortuga.Chain.Core.ICacheAdapter.Clear.htm" />
   <HelpKINode Title="ICacheAdapter.ClearAsync method" Url="html/M-Tortuga.Chain.Core.ICacheAdapter.ClearAsync.htm" />
   <HelpKINode Title="ICacheAdapter.Invalidate method" Url="html/M-Tortuga.Chain.Core.ICacheAdapter.Invalidate.htm" />
@@ -2293,6 +2376,7 @@
     <HelpKINode Title="all members" Url="html/AllMembers.T-Tortuga.Chain.DataSources.ISupportsDeleteByKey.htm" />
     <HelpKINode Title="methods" Url="html/Methods.T-Tortuga.Chain.DataSources.ISupportsDeleteByKey.htm" />
   </HelpKINode>
+  <HelpKINode Title="ISupportsDeleteByKey.DeleteByKey method" Url="html/Overload-Tortuga.Chain.DataSources.ISupportsDeleteByKey.DeleteByKey-.htm" />
   <HelpKINode Title="ISupportsDeleteByKeyList interface" Url="html/AllMembers.T-Tortuga.Chain.DataSources.ISupportsDeleteByKeyList.htm" />
   <HelpKINode Title="ISupportsDeleteByKeyList interface" Url="html/T-Tortuga.Chain.DataSources.ISupportsDeleteByKeyList.htm" />
   <HelpKINode Title="ISupportsDeleteByKeyList interface">
@@ -2300,8 +2384,7 @@
     <HelpKINode Title="all members" Url="html/AllMembers.T-Tortuga.Chain.DataSources.ISupportsDeleteByKeyList.htm" />
     <HelpKINode Title="methods" Url="html/Methods.T-Tortuga.Chain.DataSources.ISupportsDeleteByKeyList.htm" />
   </HelpKINode>
-  <HelpKINode Title="ISupportsDeleteByKeyList.DeleteByKeyList(Of TKey) method" Url="html/M-Tortuga.Chain.DataSources.ISupportsDeleteByKeyList.DeleteByKeyList--1.htm" />
-  <HelpKINode Title="ISupportsDeleteByKeyList.DeleteByKeyList&lt;TKey&gt; method" Url="html/M-Tortuga.Chain.DataSources.ISupportsDeleteByKeyList.DeleteByKeyList--1.htm" />
+  <HelpKINode Title="ISupportsDeleteByKeyList.DeleteByKeyList method" Url="html/Overload-Tortuga.Chain.DataSources.ISupportsDeleteByKeyList.DeleteByKeyList-.htm" />
   <HelpKINode Title="ISupportsDeleteSet interface" Url="html/AllMembers.T-Tortuga.Chain.DataSources.ISupportsDeleteSet.htm" />
   <HelpKINode Title="ISupportsDeleteSet interface" Url="html/T-Tortuga.Chain.DataSources.ISupportsDeleteSet.htm" />
   <HelpKINode Title="ISupportsDeleteSet interface">
@@ -2554,6 +2637,24 @@
   <HelpKINode Title="LimitOptions.TableSampleSystemPercentage field" Url="html/F-Tortuga.Chain.LimitOptions.TableSampleSystemPercentage.htm" />
   <HelpKINode Title="LimitOptions.TableSampleSystemRows field" Url="html/F-Tortuga.Chain.LimitOptions.TableSampleSystemRows.htm" />
   <HelpKINode Title="LimitOptions.WithTies field" Url="html/F-Tortuga.Chain.LimitOptions.WithTies.htm" />
+  <HelpKINode Title="ListColumnMaterializer(Of TCommand, TParameter, TResult) class" Url="html/AllMembers.T-Tortuga.Chain.Materializers.ListColumnMaterializer-3.htm" />
+  <HelpKINode Title="ListColumnMaterializer(Of TCommand, TParameter, TResult) class" Url="html/T-Tortuga.Chain.Materializers.ListColumnMaterializer-3.htm" />
+  <HelpKINode Title="ListColumnMaterializer(Of TCommand, TParameter, TResult) class">
+    <HelpKINode Title="about ListColumnMaterializer(Of TCommand, TParameter, TResult) class" Url="html/T-Tortuga.Chain.Materializers.ListColumnMaterializer-3.htm" />
+    <HelpKINode Title="all members" Url="html/AllMembers.T-Tortuga.Chain.Materializers.ListColumnMaterializer-3.htm" />
+    <HelpKINode Title="events" Url="html/Events.T-Tortuga.Chain.Materializers.ListColumnMaterializer-3.htm" />
+    <HelpKINode Title="methods" Url="html/Methods.T-Tortuga.Chain.Materializers.ListColumnMaterializer-3.htm" />
+    <HelpKINode Title="properties" Url="html/Properties.T-Tortuga.Chain.Materializers.ListColumnMaterializer-3.htm" />
+  </HelpKINode>
+  <HelpKINode Title="ListColumnMaterializer&lt;TCommand, TParameter, TResult&gt; class" Url="html/AllMembers.T-Tortuga.Chain.Materializers.ListColumnMaterializer-3.htm" />
+  <HelpKINode Title="ListColumnMaterializer&lt;TCommand, TParameter, TResult&gt; class" Url="html/T-Tortuga.Chain.Materializers.ListColumnMaterializer-3.htm" />
+  <HelpKINode Title="ListColumnMaterializer&lt;TCommand, TParameter, TResult&gt; class">
+    <HelpKINode Title="about ListColumnMaterializer&lt;TCommand, TParameter, TResult&gt; class" Url="html/T-Tortuga.Chain.Materializers.ListColumnMaterializer-3.htm" />
+    <HelpKINode Title="all members" Url="html/AllMembers.T-Tortuga.Chain.Materializers.ListColumnMaterializer-3.htm" />
+    <HelpKINode Title="events" Url="html/Events.T-Tortuga.Chain.Materializers.ListColumnMaterializer-3.htm" />
+    <HelpKINode Title="methods" Url="html/Methods.T-Tortuga.Chain.Materializers.ListColumnMaterializer-3.htm" />
+    <HelpKINode Title="properties" Url="html/Properties.T-Tortuga.Chain.Materializers.ListColumnMaterializer-3.htm" />
+  </HelpKINode>
   <HelpKINode Title="ListOptions enumeration" Url="html/T-Tortuga.Chain.ListOptions.htm" />
   <HelpKINode Title="ListOptions.DiscardNulls field" Url="html/F-Tortuga.Chain.ListOptions.DiscardNulls.htm" />
   <HelpKINode Title="ListOptions.FlattenExtraColumns field" Url="html/F-Tortuga.Chain.ListOptions.FlattenExtraColumns.htm" />
@@ -2721,6 +2822,10 @@
   <HelpKINode Title="MultipleRowDbCommandBuilder(Of TCommand, TParameter).ToByteArrayList method" Url="html/Overload-Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder-2.ToByteArrayList.htm" />
   <HelpKINode Title="MultipleRowDbCommandBuilder(Of TCommand, TParameter).ToByteArrayOrNullList method" Url="html/Overload-Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder-2.ToByteArrayOrNullList.htm" />
   <HelpKINode Title="MultipleRowDbCommandBuilder(Of TCommand, TParameter).ToByteList method" Url="html/Overload-Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder-2.ToByteList.htm" />
+  <HelpKINode Title="MultipleRowDbCommandBuilder(Of TCommand, TParameter).ToByteSet method" Url="html/Overload-Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder-2.ToByteSet.htm" />
+  <HelpKINode Title="MultipleRowDbCommandBuilder(Of TCommand, TParameter).ToCharList method" Url="html/Overload-Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder-2.ToCharList.htm" />
+  <HelpKINode Title="MultipleRowDbCommandBuilder(Of TCommand, TParameter).ToCharOrNullList method" Url="html/Overload-Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder-2.ToCharOrNullList.htm" />
+  <HelpKINode Title="MultipleRowDbCommandBuilder(Of TCommand, TParameter).ToCharSet method" Url="html/Overload-Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder-2.ToCharSet.htm" />
   <HelpKINode Title="MultipleRowDbCommandBuilder(Of TCommand, TParameter).ToDataTable method" Url="html/M-Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder-2.ToDataTable.htm" />
   <HelpKINode Title="MultipleRowDbCommandBuilder(Of TCommand, TParameter).ToDateTimeList method" Url="html/Overload-Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder-2.ToDateTimeList.htm" />
   <HelpKINode Title="MultipleRowDbCommandBuilder(Of TCommand, TParameter).ToDateTimeOffsetList method" Url="html/Overload-Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder-2.ToDateTimeOffsetList.htm" />
@@ -2816,6 +2921,10 @@
   <HelpKINode Title="MultipleRowDbCommandBuilder&lt;TCommand, TParameter&gt;.ToByteArrayList method" Url="html/Overload-Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder-2.ToByteArrayList.htm" />
   <HelpKINode Title="MultipleRowDbCommandBuilder&lt;TCommand, TParameter&gt;.ToByteArrayOrNullList method" Url="html/Overload-Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder-2.ToByteArrayOrNullList.htm" />
   <HelpKINode Title="MultipleRowDbCommandBuilder&lt;TCommand, TParameter&gt;.ToByteList method" Url="html/Overload-Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder-2.ToByteList.htm" />
+  <HelpKINode Title="MultipleRowDbCommandBuilder&lt;TCommand, TParameter&gt;.ToByteSet method" Url="html/Overload-Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder-2.ToByteSet.htm" />
+  <HelpKINode Title="MultipleRowDbCommandBuilder&lt;TCommand, TParameter&gt;.ToCharList method" Url="html/Overload-Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder-2.ToCharList.htm" />
+  <HelpKINode Title="MultipleRowDbCommandBuilder&lt;TCommand, TParameter&gt;.ToCharOrNullList method" Url="html/Overload-Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder-2.ToCharOrNullList.htm" />
+  <HelpKINode Title="MultipleRowDbCommandBuilder&lt;TCommand, TParameter&gt;.ToCharSet method" Url="html/Overload-Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder-2.ToCharSet.htm" />
   <HelpKINode Title="MultipleRowDbCommandBuilder&lt;TCommand, TParameter&gt;.ToDataTable method" Url="html/M-Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder-2.ToDataTable.htm" />
   <HelpKINode Title="MultipleRowDbCommandBuilder&lt;TCommand, TParameter&gt;.ToDateTimeList method" Url="html/Overload-Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder-2.ToDateTimeList.htm" />
   <HelpKINode Title="MultipleRowDbCommandBuilder&lt;TCommand, TParameter&gt;.ToDateTimeOffsetList method" Url="html/Overload-Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder-2.ToDateTimeOffsetList.htm" />
@@ -3165,8 +3274,13 @@
     <HelpKINode Title="about ObjectCacheAdapter class" Url="html/T-Tortuga.Chain.Core.ObjectCacheAdapter.htm" />
     <HelpKINode Title="all members" Url="html/AllMembers.T-Tortuga.Chain.Core.ObjectCacheAdapter.htm" />
     <HelpKINode Title="constructor" Url="html/M-Tortuga.Chain.Core.ObjectCacheAdapter.-ctor.htm" />
+    <HelpKINode Title="events" Url="html/Events.T-Tortuga.Chain.Core.ObjectCacheAdapter.htm" />
     <HelpKINode Title="methods" Url="html/Methods.T-Tortuga.Chain.Core.ObjectCacheAdapter.htm" />
   </HelpKINode>
+  <HelpKINode Title="ObjectCacheAdapter.CacheCleared event" Url="html/E-Tortuga.Chain.Core.ObjectCacheAdapter.CacheCleared.htm" />
+  <HelpKINode Title="ObjectCacheAdapter.CacheInvalidated event" Url="html/E-Tortuga.Chain.Core.ObjectCacheAdapter.CacheInvalidated.htm" />
+  <HelpKINode Title="ObjectCacheAdapter.CacheRead event" Url="html/E-Tortuga.Chain.Core.ObjectCacheAdapter.CacheRead.htm" />
+  <HelpKINode Title="ObjectCacheAdapter.CacheWritten event" Url="html/E-Tortuga.Chain.Core.ObjectCacheAdapter.CacheWritten.htm" />
   <HelpKINode Title="ObjectCacheAdapter.Clear method" Url="html/M-Tortuga.Chain.Core.ObjectCacheAdapter.Clear.htm" />
   <HelpKINode Title="ObjectCacheAdapter.ClearAsync method" Url="html/M-Tortuga.Chain.Core.ObjectCacheAdapter.ClearAsync.htm" />
   <HelpKINode Title="ObjectCacheAdapter.Invalidate method" Url="html/M-Tortuga.Chain.Core.ObjectCacheAdapter.Invalidate.htm" />
@@ -3979,6 +4093,8 @@
   <HelpKINode Title="ScalarDbCommandBuilder(Of TCommand, TParameter).ToByteArray method" Url="html/Overload-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToByteArray.htm" />
   <HelpKINode Title="ScalarDbCommandBuilder(Of TCommand, TParameter).ToByteArrayOrNull method" Url="html/Overload-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToByteArrayOrNull.htm" />
   <HelpKINode Title="ScalarDbCommandBuilder(Of TCommand, TParameter).ToByteOrNull method" Url="html/Overload-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToByteOrNull.htm" />
+  <HelpKINode Title="ScalarDbCommandBuilder(Of TCommand, TParameter).ToChar method" Url="html/Overload-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToChar.htm" />
+  <HelpKINode Title="ScalarDbCommandBuilder(Of TCommand, TParameter).ToCharOrNull method" Url="html/Overload-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToCharOrNull.htm" />
   <HelpKINode Title="ScalarDbCommandBuilder(Of TCommand, TParameter).ToDateTime method" Url="html/Overload-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToDateTime.htm" />
   <HelpKINode Title="ScalarDbCommandBuilder(Of TCommand, TParameter).ToDateTimeOffset method" Url="html/Overload-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToDateTimeOffset.htm" />
   <HelpKINode Title="ScalarDbCommandBuilder(Of TCommand, TParameter).ToDateTimeOffsetOrNull method" Url="html/Overload-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToDateTimeOffsetOrNull.htm" />
@@ -4017,6 +4133,8 @@
   <HelpKINode Title="ScalarDbCommandBuilder&lt;TCommand, TParameter&gt;.ToByteArray method" Url="html/Overload-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToByteArray.htm" />
   <HelpKINode Title="ScalarDbCommandBuilder&lt;TCommand, TParameter&gt;.ToByteArrayOrNull method" Url="html/Overload-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToByteArrayOrNull.htm" />
   <HelpKINode Title="ScalarDbCommandBuilder&lt;TCommand, TParameter&gt;.ToByteOrNull method" Url="html/Overload-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToByteOrNull.htm" />
+  <HelpKINode Title="ScalarDbCommandBuilder&lt;TCommand, TParameter&gt;.ToChar method" Url="html/Overload-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToChar.htm" />
+  <HelpKINode Title="ScalarDbCommandBuilder&lt;TCommand, TParameter&gt;.ToCharOrNull method" Url="html/Overload-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToCharOrNull.htm" />
   <HelpKINode Title="ScalarDbCommandBuilder&lt;TCommand, TParameter&gt;.ToDateTime method" Url="html/Overload-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToDateTime.htm" />
   <HelpKINode Title="ScalarDbCommandBuilder&lt;TCommand, TParameter&gt;.ToDateTimeOffset method" Url="html/Overload-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToDateTimeOffset.htm" />
   <HelpKINode Title="ScalarDbCommandBuilder&lt;TCommand, TParameter&gt;.ToDateTimeOffsetOrNull method" Url="html/Overload-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToDateTimeOffsetOrNull.htm" />
@@ -4125,6 +4243,24 @@
   <HelpKINode Title="ServerVersion property" Url="html/P-Tortuga.Chain.PostgreSql.PostgreSqlMetadataCache.ServerVersion.htm" />
   <HelpKINode Title="ServerVersionName property" Url="html/P-Tortuga.Chain.Metadata.DatabaseMetadataCache-2.ServerVersionName.htm" />
   <HelpKINode Title="ServerVersionName property" Url="html/P-Tortuga.Chain.PostgreSql.PostgreSqlMetadataCache.ServerVersionName.htm" />
+  <HelpKINode Title="SetColumnMaterializer(Of TCommand, TParameter, TResult) class" Url="html/AllMembers.T-Tortuga.Chain.Materializers.SetColumnMaterializer-3.htm" />
+  <HelpKINode Title="SetColumnMaterializer(Of TCommand, TParameter, TResult) class" Url="html/T-Tortuga.Chain.Materializers.SetColumnMaterializer-3.htm" />
+  <HelpKINode Title="SetColumnMaterializer(Of TCommand, TParameter, TResult) class">
+    <HelpKINode Title="about SetColumnMaterializer(Of TCommand, TParameter, TResult) class" Url="html/T-Tortuga.Chain.Materializers.SetColumnMaterializer-3.htm" />
+    <HelpKINode Title="all members" Url="html/AllMembers.T-Tortuga.Chain.Materializers.SetColumnMaterializer-3.htm" />
+    <HelpKINode Title="events" Url="html/Events.T-Tortuga.Chain.Materializers.SetColumnMaterializer-3.htm" />
+    <HelpKINode Title="methods" Url="html/Methods.T-Tortuga.Chain.Materializers.SetColumnMaterializer-3.htm" />
+    <HelpKINode Title="properties" Url="html/Properties.T-Tortuga.Chain.Materializers.SetColumnMaterializer-3.htm" />
+  </HelpKINode>
+  <HelpKINode Title="SetColumnMaterializer&lt;TCommand, TParameter, TResult&gt; class" Url="html/AllMembers.T-Tortuga.Chain.Materializers.SetColumnMaterializer-3.htm" />
+  <HelpKINode Title="SetColumnMaterializer&lt;TCommand, TParameter, TResult&gt; class" Url="html/T-Tortuga.Chain.Materializers.SetColumnMaterializer-3.htm" />
+  <HelpKINode Title="SetColumnMaterializer&lt;TCommand, TParameter, TResult&gt; class">
+    <HelpKINode Title="about SetColumnMaterializer&lt;TCommand, TParameter, TResult&gt; class" Url="html/T-Tortuga.Chain.Materializers.SetColumnMaterializer-3.htm" />
+    <HelpKINode Title="all members" Url="html/AllMembers.T-Tortuga.Chain.Materializers.SetColumnMaterializer-3.htm" />
+    <HelpKINode Title="events" Url="html/Events.T-Tortuga.Chain.Materializers.SetColumnMaterializer-3.htm" />
+    <HelpKINode Title="methods" Url="html/Methods.T-Tortuga.Chain.Materializers.SetColumnMaterializer-3.htm" />
+    <HelpKINode Title="properties" Url="html/Properties.T-Tortuga.Chain.Materializers.SetColumnMaterializer-3.htm" />
+  </HelpKINode>
   <HelpKINode Title="SetSequentialAccessMode(Of TResult) method" Url="html/M-Tortuga.Chain.CommonAppenders.SetSequentialAccessMode--1.htm" />
   <HelpKINode Title="SetSequentialAccessMode&lt;TResult&gt; method" Url="html/M-Tortuga.Chain.CommonAppenders.SetSequentialAccessMode--1.htm" />
   <HelpKINode Title="SetStrictMode(Of TResult) method" Url="html/M-Tortuga.Chain.CommonAppenders.SetStrictMode--1.htm" />
@@ -5010,6 +5146,12 @@
   <HelpKINode Title="ToByteList method" Url="html/Overload-Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder-2.ToByteList.htm" />
   <HelpKINode Title="ToByteOrNull method" Url="html/Overload-Tortuga.Chain.CommandBuilders.IScalarDbCommandBuilder.ToByteOrNull.htm" />
   <HelpKINode Title="ToByteOrNull method" Url="html/Overload-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToByteOrNull.htm" />
+  <HelpKINode Title="ToByteSet method" Url="html/Overload-Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder-2.ToByteSet.htm" />
+  <HelpKINode Title="ToChar method" Url="html/Overload-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToChar.htm" />
+  <HelpKINode Title="ToCharList method" Url="html/Overload-Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder-2.ToCharList.htm" />
+  <HelpKINode Title="ToCharOrNull method" Url="html/Overload-Tortuga.Chain.CommandBuilders.ScalarDbCommandBuilder-2.ToCharOrNull.htm" />
+  <HelpKINode Title="ToCharOrNullList method" Url="html/Overload-Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder-2.ToCharOrNullList.htm" />
+  <HelpKINode Title="ToCharSet method" Url="html/Overload-Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder-2.ToCharSet.htm" />
   <HelpKINode Title="ToCollection method" Url="html/M-Tortuga.Chain.CommandBuilders.IMultipleRowDbCommandBuilder-1.ToCollection.htm" />
   <HelpKINode Title="ToCollection method" Url="html/M-Tortuga.Chain.CommandBuilders.MultipleRowDbCommandBuilder-3.ToCollection.htm" />
   <HelpKINode Title="ToCollection method" Url="html/M-Tortuga.Chain.CommandBuilders.TableDbCommandBuilder-4.ToCollection.htm" />
@@ -5353,10 +5495,18 @@
   <HelpKINode Title="Tortuga.Chain.CompiledMaterializers class" Url="html/AllMembers.T-Tortuga.Chain.CompiledMaterializers.htm" />
   <HelpKINode Title="Tortuga.Chain.CompiledMaterializers class" Url="html/T-Tortuga.Chain.CompiledMaterializers.htm" />
   <HelpKINode Title="Tortuga.Chain.Core namespace" Url="html/N-Tortuga.Chain.Core.htm" />
+  <HelpKINode Title="Tortuga.Chain.Core.CacheClearedEventArgs class" Url="html/AllMembers.T-Tortuga.Chain.Core.CacheClearedEventArgs.htm" />
+  <HelpKINode Title="Tortuga.Chain.Core.CacheClearedEventArgs class" Url="html/T-Tortuga.Chain.Core.CacheClearedEventArgs.htm" />
+  <HelpKINode Title="Tortuga.Chain.Core.CacheInvalidatedEventArgs class" Url="html/AllMembers.T-Tortuga.Chain.Core.CacheInvalidatedEventArgs.htm" />
+  <HelpKINode Title="Tortuga.Chain.Core.CacheInvalidatedEventArgs class" Url="html/T-Tortuga.Chain.Core.CacheInvalidatedEventArgs.htm" />
+  <HelpKINode Title="Tortuga.Chain.Core.CacheReadEventArgs class" Url="html/AllMembers.T-Tortuga.Chain.Core.CacheReadEventArgs.htm" />
+  <HelpKINode Title="Tortuga.Chain.Core.CacheReadEventArgs class" Url="html/T-Tortuga.Chain.Core.CacheReadEventArgs.htm" />
   <HelpKINode Title="Tortuga.Chain.Core.CacheReadResult(Of T) structure" Url="html/AllMembers.T-Tortuga.Chain.Core.CacheReadResult-1.htm" />
   <HelpKINode Title="Tortuga.Chain.Core.CacheReadResult(Of T) structure" Url="html/T-Tortuga.Chain.Core.CacheReadResult-1.htm" />
   <HelpKINode Title="Tortuga.Chain.Core.CacheReadResult&lt;T&gt; structure" Url="html/AllMembers.T-Tortuga.Chain.Core.CacheReadResult-1.htm" />
   <HelpKINode Title="Tortuga.Chain.Core.CacheReadResult&lt;T&gt; structure" Url="html/T-Tortuga.Chain.Core.CacheReadResult-1.htm" />
+  <HelpKINode Title="Tortuga.Chain.Core.CacheWrittenEventArgs class" Url="html/AllMembers.T-Tortuga.Chain.Core.CacheWrittenEventArgs.htm" />
+  <HelpKINode Title="Tortuga.Chain.Core.CacheWrittenEventArgs class" Url="html/T-Tortuga.Chain.Core.CacheWrittenEventArgs.htm" />
   <HelpKINode Title="Tortuga.Chain.Core.CommandBuiltEventArgs class" Url="html/AllMembers.T-Tortuga.Chain.Core.CommandBuiltEventArgs.htm" />
   <HelpKINode Title="Tortuga.Chain.Core.CommandBuiltEventArgs class" Url="html/T-Tortuga.Chain.Core.CommandBuiltEventArgs.htm" />
   <HelpKINode Title="Tortuga.Chain.Core.CommandExecutedEventArgs class" Url="html/AllMembers.T-Tortuga.Chain.Core.CommandExecutedEventArgs.htm" />
@@ -5499,6 +5649,10 @@
   <HelpKINode Title="Tortuga.Chain.Materializers.AsOutputsMaterializer&lt;TCommand, TParameter, TObject&gt; class" Url="html/T-Tortuga.Chain.Materializers.AsOutputsMaterializer-3.htm" />
   <HelpKINode Title="Tortuga.Chain.Materializers.AsOutputsMaterializer&lt;TCommand, TParameter&gt; class" Url="html/AllMembers.T-Tortuga.Chain.Materializers.AsOutputsMaterializer-2.htm" />
   <HelpKINode Title="Tortuga.Chain.Materializers.AsOutputsMaterializer&lt;TCommand, TParameter&gt; class" Url="html/T-Tortuga.Chain.Materializers.AsOutputsMaterializer-2.htm" />
+  <HelpKINode Title="Tortuga.Chain.Materializers.CollectionColumnMaterializer(Of TCommand, TParameter, TCollection, TResult) class" Url="html/AllMembers.T-Tortuga.Chain.Materializers.CollectionColumnMaterializer-4.htm" />
+  <HelpKINode Title="Tortuga.Chain.Materializers.CollectionColumnMaterializer(Of TCommand, TParameter, TCollection, TResult) class" Url="html/T-Tortuga.Chain.Materializers.CollectionColumnMaterializer-4.htm" />
+  <HelpKINode Title="Tortuga.Chain.Materializers.CollectionColumnMaterializer&lt;TCommand, TParameter, TCollection, TResult&gt; class" Url="html/AllMembers.T-Tortuga.Chain.Materializers.CollectionColumnMaterializer-4.htm" />
+  <HelpKINode Title="Tortuga.Chain.Materializers.CollectionColumnMaterializer&lt;TCommand, TParameter, TCollection, TResult&gt; class" Url="html/T-Tortuga.Chain.Materializers.CollectionColumnMaterializer-4.htm" />
   <HelpKINode Title="Tortuga.Chain.Materializers.CompiledMultipleRow(Of TCommand, TParameter) structure" Url="html/AllMembers.T-Tortuga.Chain.Materializers.CompiledMultipleRow-2.htm" />
   <HelpKINode Title="Tortuga.Chain.Materializers.CompiledMultipleRow(Of TCommand, TParameter) structure" Url="html/T-Tortuga.Chain.Materializers.CompiledMultipleRow-2.htm" />
   <HelpKINode Title="Tortuga.Chain.Materializers.CompiledMultipleRow(Of TCommand, TParameter, TObject) structure" Url="html/AllMembers.T-Tortuga.Chain.Materializers.CompiledMultipleRow-3.htm" />
@@ -5523,6 +5677,10 @@
   <HelpKINode Title="Tortuga.Chain.Materializers.ConstructibleMaterializer(Of TCommand, TParameter, TResult, TObject) class" Url="html/T-Tortuga.Chain.Materializers.ConstructibleMaterializer-4.htm" />
   <HelpKINode Title="Tortuga.Chain.Materializers.ConstructibleMaterializer&lt;TCommand, TParameter, TResult, TObject&gt; class" Url="html/AllMembers.T-Tortuga.Chain.Materializers.ConstructibleMaterializer-4.htm" />
   <HelpKINode Title="Tortuga.Chain.Materializers.ConstructibleMaterializer&lt;TCommand, TParameter, TResult, TObject&gt; class" Url="html/T-Tortuga.Chain.Materializers.ConstructibleMaterializer-4.htm" />
+  <HelpKINode Title="Tortuga.Chain.Materializers.ListColumnMaterializer(Of TCommand, TParameter, TResult) class" Url="html/AllMembers.T-Tortuga.Chain.Materializers.ListColumnMaterializer-3.htm" />
+  <HelpKINode Title="Tortuga.Chain.Materializers.ListColumnMaterializer(Of TCommand, TParameter, TResult) class" Url="html/T-Tortuga.Chain.Materializers.ListColumnMaterializer-3.htm" />
+  <HelpKINode Title="Tortuga.Chain.Materializers.ListColumnMaterializer&lt;TCommand, TParameter, TResult&gt; class" Url="html/AllMembers.T-Tortuga.Chain.Materializers.ListColumnMaterializer-3.htm" />
+  <HelpKINode Title="Tortuga.Chain.Materializers.ListColumnMaterializer&lt;TCommand, TParameter, TResult&gt; class" Url="html/T-Tortuga.Chain.Materializers.ListColumnMaterializer-3.htm" />
   <HelpKINode Title="Tortuga.Chain.Materializers.Materializer class" Url="html/AllMembers.T-Tortuga.Chain.Materializers.Materializer.htm" />
   <HelpKINode Title="Tortuga.Chain.Materializers.Materializer class" Url="html/T-Tortuga.Chain.Materializers.Materializer.htm" />
   <HelpKINode Title="Tortuga.Chain.Materializers.Materializer(Of TCommand, TParameter) class" Url="html/AllMembers.T-Tortuga.Chain.Materializers.Materializer-2.htm" />
@@ -5547,6 +5705,10 @@
   <HelpKINode Title="Tortuga.Chain.Materializers.ScalarMaterializer(Of TCommand, TParameter, TResult) class" Url="html/T-Tortuga.Chain.Materializers.ScalarMaterializer-3.htm" />
   <HelpKINode Title="Tortuga.Chain.Materializers.ScalarMaterializer&lt;TCommand, TParameter, TResult&gt; class" Url="html/AllMembers.T-Tortuga.Chain.Materializers.ScalarMaterializer-3.htm" />
   <HelpKINode Title="Tortuga.Chain.Materializers.ScalarMaterializer&lt;TCommand, TParameter, TResult&gt; class" Url="html/T-Tortuga.Chain.Materializers.ScalarMaterializer-3.htm" />
+  <HelpKINode Title="Tortuga.Chain.Materializers.SetColumnMaterializer(Of TCommand, TParameter, TResult) class" Url="html/AllMembers.T-Tortuga.Chain.Materializers.SetColumnMaterializer-3.htm" />
+  <HelpKINode Title="Tortuga.Chain.Materializers.SetColumnMaterializer(Of TCommand, TParameter, TResult) class" Url="html/T-Tortuga.Chain.Materializers.SetColumnMaterializer-3.htm" />
+  <HelpKINode Title="Tortuga.Chain.Materializers.SetColumnMaterializer&lt;TCommand, TParameter, TResult&gt; class" Url="html/AllMembers.T-Tortuga.Chain.Materializers.SetColumnMaterializer-3.htm" />
+  <HelpKINode Title="Tortuga.Chain.Materializers.SetColumnMaterializer&lt;TCommand, TParameter, TResult&gt; class" Url="html/T-Tortuga.Chain.Materializers.SetColumnMaterializer-3.htm" />
   <HelpKINode Title="Tortuga.Chain.Materializers.SingleColumnMaterializer(Of TCommand, TParameter, TResult) class" Url="html/AllMembers.T-Tortuga.Chain.Materializers.SingleColumnMaterializer-3.htm" />
   <HelpKINode Title="Tortuga.Chain.Materializers.SingleColumnMaterializer(Of TCommand, TParameter, TResult) class" Url="html/T-Tortuga.Chain.Materializers.SingleColumnMaterializer-3.htm" />
   <HelpKINode Title="Tortuga.Chain.Materializers.SingleColumnMaterializer&lt;TCommand, TParameter, TResult&gt; class" Url="html/AllMembers.T-Tortuga.Chain.Materializers.SingleColumnMaterializer-3.htm" />

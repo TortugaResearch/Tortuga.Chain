@@ -126,6 +126,90 @@ public abstract class MultipleRowDbCommandBuilder<TCommand, TParameter> : Single
 	}
 
 	/// <summary>
+	/// Indicates the results should be materialized as a set of bytes.
+	/// </summary>
+	/// <param name="listOptions">The list options.</param>
+	/// <returns></returns>
+	public ILink<HashSet<byte>> ToByteSet(ListOptions listOptions = ListOptions.None)
+	{
+		return new ByteSetMaterializer<TCommand, TParameter>(this, null, listOptions);
+	}
+
+	/// <summary>
+	/// Indicates the results should be materialized as a list of bytes.
+	/// </summary>
+	/// <param name="columnName">Name of the desired column.</param>
+	/// <param name="listOptions">The list options.</param>
+	/// <returns></returns>
+	public ILink<HashSet<byte>> ToByteSet(string columnName, ListOptions listOptions = ListOptions.None)
+	{
+		return new ByteSetMaterializer<TCommand, TParameter>(this, columnName, listOptions);
+	}
+
+	/// <summary>
+	/// Indicates the results should be materialized as a list of chars.
+	/// </summary>
+	/// <param name="columnName">Name of the desired column.</param>
+	/// <param name="listOptions">The list options.</param>
+	/// <returns></returns>
+	public ILink<List<char>> ToCharList(string columnName, ListOptions listOptions = ListOptions.None)
+	{
+		return new CharListMaterializer<TCommand, TParameter>(this, columnName, listOptions);
+	}
+
+	/// <summary>
+	/// Indicates the results should be materialized as a list of chars.
+	/// </summary>
+	/// <param name="listOptions">The list options.</param>
+	/// <returns></returns>
+	public ILink<List<char>> ToCharList(ListOptions listOptions = ListOptions.None)
+	{
+		return new CharListMaterializer<TCommand, TParameter>(this, null, listOptions);
+	}
+
+	/// <summary>
+	/// Indicates the results should be materialized as a list of chars.
+	/// </summary>
+	/// <param name="listOptions">The list options.</param>
+	/// <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;System.Char&gt;&gt;.</returns>
+	public ILink<List<char?>> ToCharOrNullList(ListOptions listOptions = ListOptions.None)
+	{
+		return new CharOrNullListMaterializer<TCommand, TParameter>(this, null, listOptions);
+	}
+
+	/// <summary>
+	/// Indicates the results should be materialized as a list of chars.
+	/// </summary>
+	/// <param name="columnName">Name of the desired column.</param>
+	/// <param name="listOptions">The list options.</param>
+	/// <returns>Tortuga.Chain.ILink&lt;System.Collections.Generic.List&lt;System.Char&gt;&gt;.</returns>
+	public ILink<List<char?>> ToCharOrNullList(string columnName, ListOptions listOptions = ListOptions.None)
+	{
+		return new CharOrNullListMaterializer<TCommand, TParameter>(this, columnName, listOptions);
+	}
+
+	/// <summary>
+	/// Indicates the results should be materialized as a list of chars.
+	/// </summary>
+	/// <param name="columnName">Name of the desired column.</param>
+	/// <param name="listOptions">The list options.</param>
+	/// <returns></returns>
+	public ILink<HashSet<char>> ToCharSet(string columnName, ListOptions listOptions = ListOptions.None)
+	{
+		return new CharSetMaterializer<TCommand, TParameter>(this, columnName, listOptions);
+	}
+
+	/// <summary>
+	/// Indicates the results should be materialized as a list of chars.
+	/// </summary>
+	/// <param name="listOptions">The list options.</param>
+	/// <returns></returns>
+	public ILink<HashSet<char>> ToCharSet(ListOptions listOptions = ListOptions.None)
+	{
+		return new CharSetMaterializer<TCommand, TParameter>(this, null, listOptions);
+	}
+
+	/// <summary>
 	/// Materializes the result as a list of objects.
 	/// </summary>
 	/// <typeparam name="TObject">The type of the model.</typeparam>

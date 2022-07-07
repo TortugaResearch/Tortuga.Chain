@@ -10,15 +10,15 @@
 		<ProductName>Tortuga Chain</ProductName>
 		<Deterministic>true</Deterministic>
 
-		<Version>4.1.0</Version>
+		<Version>4.2.0</Version>
 
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 
 		<Copyright>David Tomcik, Jonathan Allen 2016-2019</Copyright>
 
-		<PackageProjectUrl>https://github.com/docevaad/Chain</PackageProjectUrl>
+		<PackageProjectUrl>https://github.com/TortugaResearch/Tortuga.Chain</PackageProjectUrl>
 
-		<RepositoryUrl>https://github.com/docevaad/Chain.git</RepositoryUrl>
+		<RepositoryUrl>https://github.com/TortugaResearch/Tortuga.Chain.git</RepositoryUrl>
 
 		<RepositoryType>git</RepositoryType>
 		<Nullable>enable</Nullable>
@@ -56,7 +56,7 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(Configuration)'=='Release'">
-		<PackageReference Include="Tortuga.Chain.Core" Version="4.1.0" />
+		<PackageReference Include="Tortuga.Chain.Core" Version="4.2.0" />
 	</ItemGroup>
 
 	<ItemGroup>

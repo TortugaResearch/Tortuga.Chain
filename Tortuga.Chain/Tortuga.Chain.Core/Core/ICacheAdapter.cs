@@ -6,6 +6,26 @@
 public interface ICacheAdapter
 {
 	/// <summary>
+	/// Occurs when cache is cleared.
+	/// </summary>
+	event EventHandler<CacheClearedEventArgs>? CacheCleared;
+
+	/// <summary>
+	/// Occurs when cache invalidated for a specific key.
+	/// </summary>
+	event EventHandler<CacheInvalidatedEventArgs>? CacheInvalidated;
+
+	/// <summary>
+	/// Occurs when the cache is read.
+	/// </summary>
+	event EventHandler<CacheReadEventArgs>? CacheRead;
+
+	/// <summary>
+	/// Occurs when the cache is written to.
+	/// </summary>
+	event EventHandler<CacheWrittenEventArgs>? CacheWritten;
+
+	/// <summary>
 	/// Clears the cache.
 	/// </summary>
 	void Clear();
