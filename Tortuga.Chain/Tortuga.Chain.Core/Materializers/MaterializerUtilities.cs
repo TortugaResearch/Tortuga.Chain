@@ -136,6 +136,48 @@ namespace Tortuga.Chain.Materializers
 		}
 
 		/// <summary>
+		/// Materializers use this to pick a constructor. It will prefer a default constructor.
+		/// </summary>
+		/// <returns></returns>
+		/// <exception cref="MappingException"></exception>
+		internal static ConstructorMetadata DefaultConstructor(ClassMetadata metatdata)
+		{
+			//This is here to make the error message more accurate.
+			if (metatdata.Constructors.Count == 0)
+				throw new MappingException($"Type {metatdata.TypeInfo.Name} has does not have any constructors.");
+
+			//Return the default constructor if it has one.
+			if (metatdata.Constructors.HasDefaultConstructor)
+				return metatdata.Constructors.Find(s_EmptyTypeList)!;
+
+			//Look for a single constructor.
+
+			if (metatdata.Constructors.Count > 1)
+				throw new MappingException($"Type {metatdata.TypeInfo.Name} has more than one constructor and no default constructor. Please use the WithConstructor method to specify which one to use.");
+			return metatdata.Constructors.Single();
+		}
+
+		/// <summary>
+		/// Materializers use this to pick a non-default constructor.
+		/// </summary>
+		/// <returns></returns>
+		/// <exception cref="MappingException"></exception>
+		internal static ConstructorMetadata InferConstructor(ClassMetadata metatdata)
+		{
+			//This is here to make the error message more accurate.
+			if (metatdata.Constructors.Count == 0)
+				throw new MappingException($"Type {metatdata.TypeInfo.Name} has does not have any constructors.");
+
+			//For inference, we're looking for non-default constructors.
+			var constructors = metatdata.Constructors.Where(x => x.Signature.Length > 0).ToList();
+			if (constructors.Count == 0)
+				throw new MappingException($"Type {metatdata.TypeInfo.Name} has does not have any non-default constructors.");
+			if (constructors.Count > 1)
+				throw new MappingException($"Type {metatdata.TypeInfo.Name} has more than one non-default constructor. Please use the WithConstructor method to specify which one to use.");
+			return constructors.Single();
+		}
+
+		/// <summary>
 		/// Populates the complex object.
 		/// </summary>
 		/// <typeparam name="T"></typeparam>

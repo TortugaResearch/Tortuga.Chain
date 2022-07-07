@@ -889,12 +889,14 @@ where TObject : class
 	/// <typeparam name="TDetail">The type of the detail model.</typeparam>
 	/// <param name="masterKeyColumn">The column used as the primary key for the master records.</param>
 	/// <param name="map">This is used to identify the detail collection property on the master object.</param>
+	/// <param name="masterOptions">Options for handling extraneous rows and constructor selection for the master object.</param>
+	/// <param name="detailOptions">Options for handling constructor selection for the detail objects</param>
 	/// <returns></returns>
-	public ILink<List<TMaster>> ToMasterDetailCollection<TMaster, TDetail>(string masterKeyColumn, Func<TMaster, ICollection<TDetail>> map)
-		where TMaster : class, new()
-		where TDetail : class, new()
+	public ILink<List<TMaster>> ToMasterDetailCollection<TMaster, TDetail>(string masterKeyColumn, Func<TMaster, ICollection<TDetail>> map, CollectionOptions masterOptions = CollectionOptions.None, CollectionOptions detailOptions = CollectionOptions.None)
+		where TMaster : class
+		where TDetail : class
 	{
-		return new MasterDetailCollectionMaterializer<TCommand, TParameter, TMaster, TDetail>(this, masterKeyColumn, map);
+		return new MasterDetailCollectionMaterializer<TCommand, TParameter, TMaster, TDetail>(this, masterKeyColumn, map, masterOptions, detailOptions);
 	}
 
 	/// <summary>

@@ -8,19 +8,26 @@ namespace Tortuga.Chain.Materializers;
 internal sealed class MasterDetailCollectionMaterializer<TCommand, TParameter, TMaster, TDetail> : Materializer<TCommand, TParameter, List<TMaster>>
 	where TCommand : DbCommand
 	where TParameter : DbParameter
-	where TMaster : class, new()
-	where TDetail : class, new()
+	where TMaster : class
+	where TDetail : class
 
 {
 	static readonly ImmutableArray<string> s_DesiredColumns = MetadataCache.GetMetadata<TMaster>().ColumnsFor.Union(MetadataCache.GetMetadata<TMaster>().ColumnsFor).ToImmutableArray();
+	static readonly ClassMetadata s_DetailMetadata = MetadataCache.GetMetadata<TMaster>();
+	static readonly ClassMetadata s_MasterMetadata = MetadataCache.GetMetadata<TMaster>();
+	readonly DbCommandBuilder<TCommand, TParameter> commandBuilder;
+	readonly CollectionOptions m_DetailOptions;
 	readonly Func<TMaster, ICollection<TDetail>> m_Map;
 	readonly string m_MasterKeyColumn;
+	readonly CollectionOptions m_MasterOptions;
 
-	public MasterDetailCollectionMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, string masterKeyColumn, Func<TMaster, ICollection<TDetail>> map) : base(commandBuilder)
+	public MasterDetailCollectionMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, string masterKeyColumn, Func<TMaster, ICollection<TDetail>> map, CollectionOptions masterOptions, CollectionOptions detailOptions) : base(commandBuilder)
 	{
+		this.commandBuilder = commandBuilder;
 		m_MasterKeyColumn = masterKeyColumn;
 		m_Map = map;
-
+		m_MasterOptions = masterOptions;
+		m_DetailOptions = detailOptions;
 		if (!s_DesiredColumns.Contains(masterKeyColumn))
 			throw new MappingException($"Cannot find column '{masterKeyColumn}' in the list of columns for {typeof(TMaster).Name}");
 	}
@@ -94,14 +101,28 @@ internal sealed class MasterDetailCollectionMaterializer<TCommand, TParameter, T
 			group.Add(row);
 		}
 
+		//As a future enhancement, consider supporting constructor inference.
+		ConstructorMetadata? masterConstructor = null;
+		ConstructorMetadata? detailConstructor = null;
+
+		//We are caching the default constructor for performance reasons.
+		if (m_MasterOptions.HasFlag(CollectionOptions.InferConstructor))
+			masterConstructor = MaterializerUtilities.InferConstructor(s_MasterMetadata);
+		else
+			masterConstructor = MaterializerUtilities.DefaultConstructor(s_MasterMetadata);
+
+		if (m_DetailOptions.HasFlag(CollectionOptions.InferConstructor))
+			detailConstructor = MaterializerUtilities.InferConstructor(s_DetailMetadata);
+		else
+			detailConstructor = MaterializerUtilities.DefaultConstructor(s_MasterMetadata);
+
 		var result = new List<TMaster>();
 		foreach (var group in groups.Values)
 		{
-			//As a future enhancement, consider supporting constructor inference.
-			var master = table.ToObject<TMaster>(group[0]);
+			var master = MaterializerUtilities.ConstructObject<TMaster>(group[0], masterConstructor, Converter);
 			var target = m_Map(master);
 			foreach (var row in group)
-				target.Add(table.ToObject<TDetail>(row));
+				target.Add(MaterializerUtilities.ConstructObject<TDetail>(row, detailConstructor, Converter));
 		}
 
 		return result;

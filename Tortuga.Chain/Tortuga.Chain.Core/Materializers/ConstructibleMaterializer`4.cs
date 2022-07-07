@@ -330,17 +330,7 @@ public abstract class ConstructibleMaterializer<TCommand, TParameter, TResult, T
 	/// <exception cref="MappingException"></exception>
 	protected ConstructorMetadata InferConstructor()
 	{
-		//This is here to make the error message more accurate.
-		if (ObjectMetadata.Constructors.Count == 0)
-			throw new MappingException($"Type {typeof(TObject).Name} has does not have any constructors.");
-
-		//For inference, we're looking for non-default constructors.
-		var constructors = ObjectMetadata.Constructors.Where(x => x.Signature.Length > 0).ToList();
-		if (constructors.Count == 0)
-			throw new MappingException($"Type {typeof(TObject).Name} has does not have any non-default constructors.");
-		if (constructors.Count > 1)
-			throw new MappingException($"Type {typeof(TObject).Name} has more than one non-default constructor. Please use the WithConstructor method to specify which one to use.");
-		return constructors.Single();
+		return MaterializerUtilities.InferConstructor(ObjectMetadata);
 	}
 
 	/// <summary>
