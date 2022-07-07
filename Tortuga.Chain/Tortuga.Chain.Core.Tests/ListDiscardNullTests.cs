@@ -6,7 +6,7 @@ using Tortuga.Chain.Materializers;
 namespace Tortuga.Chain.Core.Tests;
 
 [TestClass]
-public class ListDiscardNullTests : GenericDbDataSource3_MaterializerTests
+public class ListDiscardNullTests : MaterializerTestBase
 {
 	[TestMethod]
 	public async Task BigIntNotNull_Int64_ListDiscardNullTest()
@@ -353,7 +353,7 @@ public class ListDiscardNullTests : GenericDbDataSource3_MaterializerTests
 	async Task ListDiscardNullTest<TResult>(string columnName, Type materializerType)
 	{
 		var cb1 = DataSource.Sql($"SELECT {columnName} FROM dbo.AllTypes WHERE Id In (1, 2, 3, 4)");
-		ILink<List<TResult>> materializer1 = (ILink<List<TResult>>)Activator.CreateInstance(materializerType, new object[] { cb1, columnName, ListOptions.DiscardNulls });
+		var materializer1 = (ILink<List<TResult>>)Activator.CreateInstance(materializerType, new object[] { cb1, columnName, ListOptions.DiscardNulls });
 		var result1 = materializer1.Execute();
 		var result1a = await materializer1.ExecuteAsync();
 		Assert.AreEqual(result1.Count, result1a.Count, "Results don't match");

@@ -6,7 +6,7 @@ using Tortuga.Chain.Materializers;
 namespace Tortuga.Chain.Core.Tests
 {
 	[TestClass]
-	public class FailedListWithNullsTests : GenericDbDataSource3_MaterializerTests
+	public class FailedListWithNullsTests : MaterializerTestBase
 	{
 		[TestMethod]
 		public async Task BigIntNull_Int64_ListWithNullsTest()
@@ -186,7 +186,7 @@ namespace Tortuga.Chain.Core.Tests
 		{
 			var cb1 = DataSource.Sql($"SELECT {columnName} FROM dbo.AllTypes WHERE Id In (1, 2, 3, 4)");
 
-			ILink<List<TResult>> materializer1 = (ILink<List<TResult>>)Activator.CreateInstance(materializerType, new object[] { cb1, columnName, ListOptions.None });
+			var materializer1 = (ILink<List<TResult>>)Activator.CreateInstance(materializerType, new object[] { cb1, columnName, ListOptions.None });
 			try
 			{
 				var result1 = materializer1.Execute();

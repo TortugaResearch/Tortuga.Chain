@@ -7,7 +7,7 @@ using Tortuga.Chain.Materializers;
 namespace Tortuga.Chain.Core.Tests;
 
 [TestClass]
-public class ListTests : GenericDbDataSource3_MaterializerTests
+public class ListTests : MaterializerTestBase
 {
 	[TestMethod]
 	public async Task BigIntNotNull_Int64_ListTest()
@@ -79,14 +79,6 @@ public class ListTests : GenericDbDataSource3_MaterializerTests
 	public async Task CharOneNull_Char_ListTest()
 	{
 		await ListTest<char>("CharOneNull", typeof(CharListMaterializer<DbCommand, DbParameter>));
-	}
-
-	[TestMethod]
-	public async Task DataTable()
-	{
-		var materializer = DataSource.Sql($"SELECT * FROM dbo.AllTypes").ToDataTable();
-		var result1 = materializer.Execute();
-		var result1a = await materializer.ExecuteAsync();
 	}
 
 	[TestMethod]
@@ -388,9 +380,10 @@ public class ListTests : GenericDbDataSource3_MaterializerTests
 	async Task ListTest<TResult>(string columnName, Type materializerType)
 	{
 		var cb1 = DataSource.Sql($"SELECT {columnName} FROM dbo.AllTypes WHERE Id In (1, 2, 4)");
-		ILink<List<TResult>> materializer1 = (ILink<List<TResult>>)Activator.CreateInstance(materializerType, new object[] { cb1, columnName, ListOptions.None });
+		var materializer1 = (ILink<List<TResult>>)Activator.CreateInstance(materializerType, new object[] { cb1, columnName, ListOptions.None });
 		var result1 = materializer1.Execute();
 		var result1a = await materializer1.ExecuteAsync();
 		Assert.AreEqual(result1.Count, result1a.Count, "Results don't match");
+		Assert.AreEqual(3, result1.Count, "Count is wrong.");
 	}
 }

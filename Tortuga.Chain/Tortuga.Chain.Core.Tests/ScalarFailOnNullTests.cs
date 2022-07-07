@@ -6,7 +6,7 @@ using Tortuga.Chain.Materializers;
 namespace Tortuga.Chain.Core.Tests;
 
 [TestClass]
-public class ScalarFailOnNullTests : GenericDbDataSource3_MaterializerTests
+public class ScalarFailOnNullTests : MaterializerTestBase
 {
 	[TestMethod]
 	public async Task BigIntNull_Int64_ScalarFailOnNullTest()
@@ -144,7 +144,7 @@ public class ScalarFailOnNullTests : GenericDbDataSource3_MaterializerTests
 	{
 		var cb1 = DataSource.Sql($"SELECT {columnName} FROM dbo.AllTypes WHERE Id In (3)");
 
-		ILink<TResult> materializer1 = (ILink<TResult>)Activator.CreateInstance(materializerType, new object[] { cb1, columnName });
+		var materializer1 = (ILink<TResult>)Activator.CreateInstance(materializerType, new object[] { cb1, columnName });
 		try
 		{
 			var result1 = materializer1.Execute();

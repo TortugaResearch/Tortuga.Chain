@@ -6,7 +6,7 @@ using Tortuga.Chain.Materializers;
 namespace Tortuga.Chain.Core.Tests;
 
 [TestClass]
-public class ScalarOrNullTests : GenericDbDataSource3_MaterializerTests
+public class ScalarOrNullTests : MaterializerTestBase
 {
 	[TestMethod]
 	public async Task BigIntNull_Int64_ScalarOrNullTest()
@@ -179,7 +179,7 @@ public class ScalarOrNullTests : GenericDbDataSource3_MaterializerTests
 	async Task ScalarOrNullTest<TResult>(string columnName, Type materializerType)
 	{
 		var cb1 = DataSource.Sql($"SELECT {columnName} FROM dbo.AllTypes WHERE Id = 1");
-		ILink<TResult> materializer1 = (ILink<TResult>)Activator.CreateInstance(materializerType, new object[] { cb1, columnName });
+		var materializer1 = (ILink<TResult>)Activator.CreateInstance(materializerType, new object[] { cb1, columnName });
 		var result1 = materializer1.Execute();
 		var result1a = await materializer1.ExecuteAsync();
 		if (typeof(TResult) == typeof(byte[]))
@@ -193,8 +193,7 @@ public class ScalarOrNullTests : GenericDbDataSource3_MaterializerTests
 			Assert.AreEqual(result1, result1a, "Results don't match");
 		}
 
-		var cb3 = DataSource.Sql($"SELECT {columnName} FROM dbo.AllTypes WHERE Id = 3");
-		ILink<TResult> materializer3 = (ILink<TResult>)Activator.CreateInstance(materializerType, new object[] { cb1, columnName });
+		var materializer3 = (ILink<TResult>)Activator.CreateInstance(materializerType, new object[] { cb1, columnName });
 		var result3 = materializer3.Execute();
 		var result3a = await materializer3.ExecuteAsync();
 		if (typeof(TResult) == typeof(byte[]))
