@@ -58,7 +58,9 @@ CREATE TABLE Employee
 	CellPhone TEXT(15) NULL,
 	ManagerKey LONG NULL REFERENCES Employee(EmployeeKey),
 	CreatedDate DateTime NOT NULL DEFAULT NOW(),
-	UpdatedDate DateTime NULL
+	UpdatedDate DateTime NULL,
+	Gender Char(1) NOT NULL,
+	Status Char(1) NULL
 )";
 
 			string sql2 = @"CREATE TABLE Customer
@@ -92,6 +94,7 @@ SELECT  Employee_1.EmployeeKey ,
 		Employee_1.CreatedDate ,
 		Employee_1.UpdatedDate ,
 		Employee_1.EmployeeId,
+		Employee_1.Gender,
 		Employee_2.EmployeeKey AS ManagerEmployeeKey ,
 		Employee_2.FirstName AS ManagerFirstName ,
 		Employee_2.MiddleName AS ManagerMiddleName ,
@@ -101,7 +104,8 @@ SELECT  Employee_1.EmployeeKey ,
 		Employee_2.OfficePhone AS ManagerOfficePhone ,
 		Employee_2.CellPhone AS ManagerCellPhone ,
 		Employee_2.CreatedDate AS ManagerCreatedDate ,
-		Employee_2.UpdatedDate AS ManagerUpdatedDate
+		Employee_2.UpdatedDate AS ManagerUpdatedDate ,
+		Employee_2.Gender AS ManagerGender
 FROM    Employee AS Employee_1
 		LEFT JOIN Employee AS Employee_2 ON Employee_2.EmployeeKey = Employee_1.ManagerKey";
 
@@ -126,9 +130,9 @@ FROM    Employee AS Employee_1
 			using (var command = new OleDbCommand(sql5, dbConnection))
 				command.ExecuteNonQuery();
 
-			sql = "INSERT INTO Employee ([FirstName], [MiddleName], [LastName], [Title], [ManagerKey], [EmployeeId]) VALUES (@FirstName, @MiddleName, @LastName, @Title, @ManagerKey, @EmployeeId)";
+			sql = "INSERT INTO Employee ([FirstName], [MiddleName], [LastName], [Title], [ManagerKey], [EmployeeId], Gender) VALUES (@FirstName, @MiddleName, @LastName, @Title, @ManagerKey, @EmployeeId, @Gender)";
 
-			sql2 = "INSERT INTO Employee ([FirstName], [MiddleName], [LastName], [Title], [ManagerKey], [CreatedDate], [EmployeeId]) VALUES (@FirstName, @MiddleName, @LastName, @Title, @ManagerKey, @CreatedDate, @EmployeeId)";
+			sql2 = "INSERT INTO Employee ([FirstName], [MiddleName], [LastName], [Title], [ManagerKey], [CreatedDate], [EmployeeId], Gender) VALUES (@FirstName, @MiddleName, @LastName, @Title, @ManagerKey, @CreatedDate, @EmployeeId, @Gender)";
 
 			//Date/Time format - 4/30/2016 5:25:17 PM
 			const string DateTimeFormat = "M/d/yyyy h:mm:ss tt";
@@ -142,6 +146,7 @@ FROM    Employee AS Employee_1
 				command.Parameters.AddWithValue("@Title", "CEO");
 				command.Parameters.AddWithValue("@ManagerKey", DBNull.Value);
 				command.Parameters.AddWithValue("@EmployeeId", Guid.NewGuid().ToString());
+				command.Parameters.AddWithValue("@Gender", 'X');
 				command.ExecuteNonQuery();
 			}
 
@@ -155,6 +160,7 @@ FROM    Employee AS Employee_1
 				command.Parameters.AddWithValue("@ManagerKey", DBNull.Value);
 				command.Parameters.AddWithValue("@CreatedDate", DateTime.Now.ToString(DateTimeFormat));
 				command.Parameters.AddWithValue("@EmployeeId", Guid.NewGuid().ToString());
+				command.Parameters.AddWithValue("@Gender", 'X');
 				command.ExecuteNonQuery();
 			}
 
@@ -169,6 +175,7 @@ FROM    Employee AS Employee_1
 				var param = command.Parameters.AddWithValue("@CreatedDate", DateTime.Now);
 				param.OleDbType = OleDbType.Date;
 				command.Parameters.AddWithValue("@EmployeeId", Guid.NewGuid().ToString());
+				command.Parameters.AddWithValue("@Gender", 'X');
 				command.ExecuteNonQuery();
 			}
 

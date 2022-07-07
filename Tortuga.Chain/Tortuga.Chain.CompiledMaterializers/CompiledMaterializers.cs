@@ -306,27 +306,40 @@ public static class CompiledMaterializers
 				var propertyTypeName = MetadataCache.GetMetadata(property.PropertyType).CSharpFullName;
 
 				string getterWithConversion;
+				string? tempVariable = null;
 
 				//special handling for OleDB
-				if (property.PropertyType == typeof(TimeSpan) && column.ColumnType == typeof(string))
+				if ((property.PropertyType == typeof(TimeSpan) || property.PropertyType == typeof(TimeSpan?)) && column.ColumnType == typeof(string))
 					getterWithConversion = $"TimeSpan.Parse({column.Getter}({column.Index}), System.Globalization.CultureInfo.InvariantCulture);";
-				else if (property.PropertyType == typeof(TimeSpan) && column.ColumnType == typeof(object))
+				else if ((property.PropertyType == typeof(TimeSpan) || property.PropertyType == typeof(TimeSpan?)) && column.ColumnType == typeof(object))
 					getterWithConversion = $"TimeSpan.Parse((string){column.Getter}({column.Index}), System.Globalization.CultureInfo.InvariantCulture);";
-				else if (property.PropertyType == typeof(TimeSpan) && column.ColumnType == typeof(DateTime))
+				else if ((property.PropertyType == typeof(TimeSpan) || property.PropertyType == typeof(TimeSpan?)) && column.ColumnType == typeof(DateTime))
 					getterWithConversion = $"({column.Getter}({column.Index})).TimeOfDay";
+				else if ((property.PropertyType == typeof(TimeSpan) || property.PropertyType == typeof(TimeSpan?)) && column.ColumnType == typeof(DateTime))
+					getterWithConversion = $"({column.Getter}({column.Index})).TimeOfDay";
+				else if (property.PropertyType == typeof(char) && column.ColumnType == typeof(string))
+				{
+					tempVariable = $"var temp{column.Index} = {column.Getter}({column.Index});";
+					getterWithConversion = $"temp{column.Index}.Length >= 1 ? temp{column.Index}[0] : default(char)";
+				}
+				else if (property.PropertyType == typeof(char?) && column.ColumnType == typeof(string))
+				{
+					tempVariable = $"var temp{column.Index} = {column.Getter}({column.Index});";
+					getterWithConversion = $"temp{column.Index}.Length >= 1 ? temp{column.Index}[0] : null";
+				}
 
 #if NET6_0_OR_GREATER
-				else if (property.PropertyType == typeof(DateOnly) && column.ColumnType == typeof(DateTime))
+				else if ((property.PropertyType == typeof(DateOnly) || property.PropertyType == typeof(DateOnly?)) && column.ColumnType == typeof(DateTime))
 					getterWithConversion = $"DateOnly.FromDateTime({column.Getter}({column.Index}))";
-				else if (property.PropertyType == typeof(TimeOnly) && column.ColumnType == typeof(DateTime))
+				else if ((property.PropertyType == typeof(TimeOnly) || property.PropertyType == typeof(TimeOnly?)) && column.ColumnType == typeof(DateTime))
 					getterWithConversion = $"TimeOnly.FromDateTime({column.Getter}({column.Index}))";
-				else if (property.PropertyType == typeof(TimeOnly) && column.ColumnType == typeof(TimeSpan))
+				else if ((property.PropertyType == typeof(TimeOnly) || property.PropertyType == typeof(TimeOnly?)) && column.ColumnType == typeof(TimeSpan))
 					getterWithConversion = $"TimeOnly.FromTimeSpan({column.Getter}({column.Index}))";
 
 				//special handling for OleDB
-				else if (property.PropertyType == typeof(TimeOnly) && column.ColumnType == typeof(string))
+				else if ((property.PropertyType == typeof(TimeOnly) || property.PropertyType == typeof(TimeOnly?)) && column.ColumnType == typeof(string))
 					getterWithConversion = $"TimeOnly.Parse({column.Getter}({column.Index}), System.Globalization.CultureInfo.InvariantCulture);";
-				else if (property.PropertyType == typeof(TimeOnly) && column.ColumnType == typeof(object))
+				else if ((property.PropertyType == typeof(TimeOnly) || property.PropertyType == typeof(TimeOnly?)) && column.ColumnType == typeof(object))
 					getterWithConversion = $"TimeOnly.Parse((string){column.Getter}({column.Index}), System.Globalization.CultureInfo.InvariantCulture);";
 #endif
 				else
@@ -339,11 +352,17 @@ public static class CompiledMaterializers
 					code.AppendLine($"    if (reader.IsDBNull({column.Index}))");
 					code.AppendLine($"        {path}.{property.Name} = null;");
 					code.AppendLine($"    else");
+					code.AppendLine("    {");
+					if (tempVariable != null)
+						code.AppendLine(tempVariable);
 					code.AppendLine($"        {path}.{property.Name} = {getterWithConversion};");
+					code.AppendLine("    }");
 				}
 				else
 				{
 					//non-null handler
+					if (tempVariable != null)
+						code.AppendLine(tempVariable);
 					code.AppendLine($"    {path}.{property.Name} =  {getterWithConversion};");
 				}
 			}
