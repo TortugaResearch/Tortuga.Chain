@@ -14,4 +14,4 @@ This appender accepts an `OnChangeEventHandler` delegate, which will be fired on
 
 ## Roadmap
 
-Automatic cache invalidation is planned for the future. https://github.com/docevaad/Chain/issues/23
+Automatic cache invalidation is planned for the future. https://github.com/TortugaResearch/Tortuga.Chain/issues/23

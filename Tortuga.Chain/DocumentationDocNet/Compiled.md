@@ -34,9 +34,9 @@ Object/Collection materializers can only populate public properties. It cannot s
 
 Compiled Object/Collection materializers only support public types. Because it does not use reflection, it cannot sidestep the visibility restrictions like the non-compiled versions can.
 
-Compiled Object/Collection materializers do not support generic types (other than Nullable<T>). This is not a design limitation and will be fixed in a later version. https://github.com/docevaad/Chain/issues/64
+Compiled Object/Collection materializers do not support generic types (other than Nullable<T>). This is not a design limitation and will be fixed in a later version. https://github.com/TortugaResearch/Tortuga.Chain/issues/64
 
-Compiled Object/Collection materializers do not support nested types. This is not a design limitation and will be fixed in a later version. https://github.com/docevaad/Chain/issues/63
+Compiled Object/Collection materializers do not support nested types. This is not a design limitation and will be fixed in a later version. https://github.com/TortugaResearch/Tortuga.Chain/issues/63
 
 Compiled Object/Collection materializers are less tolerant of column/property type mis-matches. For example, if you database column is a `Long`, you can't use a property of type `Nullable<int>`.
 

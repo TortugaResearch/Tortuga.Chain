@@ -124,8 +124,8 @@
 <p>Object/Collection materializers require that the <code>Decompose</code> attribute be applied correctly. The materializer needs to walk the entire object graph, and if there are any cycles represented by decomposed properties then a stack overflow exception will occur.</p>
 <p>Object/Collection materializers can only populate public properties. It cannot set fields or non-public properties.</p>
 <p>Compiled Object/Collection materializers only support public types. Because it does not use reflection, it cannot sidestep the visibility restrictions like the non-compiled versions can.</p>
-<p>Compiled Object/Collection materializers do not support generic types (other than Nullable<T>). This is not a design limitation and will be fixed in a later version. https://github.com/docevaad/Chain/issues/64</p>
-<p>Compiled Object/Collection materializers do not support nested types. This is not a design limitation and will be fixed in a later version. https://github.com/docevaad/Chain/issues/63</p>
+<p>Compiled Object/Collection materializers do not support generic types (other than Nullable<T>). This is not a design limitation and will be fixed in a later version. https://github.com/TortugaResearch/Tortuga.Chain/issues/64</p>
+<p>Compiled Object/Collection materializers do not support nested types. This is not a design limitation and will be fixed in a later version. https://github.com/TortugaResearch/Tortuga.Chain/issues/63</p>
 <p>Compiled Object/Collection materializers are less tolerant of column/property type mis-matches. For example, if you database column is a <code>Long</code>, you can't use a property of type <code>Nullable&lt;int&gt;</code>.</p>
 <h2 id="internals">Internals<a class="headerlink" href="#internals" title="Permalink to this headline"><i class="fa fa-link" aria-hidden="true"></i></a></h2>
 <p>Compiled Object/Collection materializers use CS Script to generate the population methods.</p>
@@ -137,7 +137,7 @@
                 <footer>
                     <hr />
                     <div role="contentinfo">
-Tortuga Chain. <a href='https://github.com/docevaad/Chain/' target='_blank'>Visit us at GitHub</a>.
+Tortuga Chain. <a href='https://github.com/TortugaResearch/Tortuga.Chain/' target='_blank'>Visit us at GitHub</a>.
                     </div>
                 </footer>
             </div>
