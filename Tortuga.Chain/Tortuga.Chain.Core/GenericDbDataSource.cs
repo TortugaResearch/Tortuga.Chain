@@ -81,7 +81,7 @@ public class GenericDbDataSource : DataSource<DbConnection, DbTransaction, DbCom
 	}
 
 	/// <summary>
-	/// Gets or sets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
+	/// Gets the cache to be used by this data source. The default is .NET's System.Runtime.Caching.MemoryCache.
 	/// </summary>
 	public override ICacheAdapter Cache => m_Cache;
 

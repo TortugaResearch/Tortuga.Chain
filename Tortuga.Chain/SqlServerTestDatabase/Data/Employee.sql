@@ -9,7 +9,8 @@ DECLARE @Employee TABLE
     MiddleName NVARCHAR(25) NULL,
     LastName NVARCHAR(25) NOT NULL,
     Title NVARCHAR(100) NULL,
-    ManagerKey INT NULL
+    ManagerKey INT NULL,
+    Gender CHAR(1)
 );
 
 INSERT INTO @Employee
@@ -19,13 +20,14 @@ INSERT INTO @Employee
     MiddleName,
     LastName,
     Title,
-    ManagerKey
+    ManagerKey,
+    Gender 
 )
 VALUES
-(1, 'Richard', 'C.', 'King', 'CEO', NULL),
-(2, 'Patrick', 'G.', 'Kimmell', 'VP Sales', 1),
-(3, 'Henry', 'W.', 'Brown', 'VP Finance', 1),
-(4, 'Raquel', 'W.', 'Wilkerson', 'VP Operations', 1);
+(1, 'Richard', 'C.', 'King', 'CEO', NULL, 'M'),
+(2, 'Patrick', 'G.', 'Kimmell', 'VP Sales', 1, 'M'),
+(3, 'Henry', 'W.', 'Brown', 'VP Finance', 1, 'M'),
+(4, 'Raquel', 'W.', 'Wilkerson', 'VP Operations', 1, 'F');
 
 
 SET IDENTITY_INSERT HR.Employee ON;
@@ -42,10 +44,12 @@ WHEN NOT MATCHED THEN
         LastName,
         Title,
         ManagerKey,
-        EmployeeId
+        EmployeeId,
+    Gender 
     )
     VALUES
-    (s.EmployeeKey, s.FirstName, s.MiddleName, s.LastName, s.Title, s.ManagerKey, s.EmployeeKey --just copy the employee key into the employee id
+    (s.EmployeeKey, s.FirstName, s.MiddleName, s.LastName, s.Title, s.ManagerKey, s.EmployeeKey ,    Gender 
+    --just copy the employee key into the employee id
         );
 
 

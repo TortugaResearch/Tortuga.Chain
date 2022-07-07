@@ -1,4 +1,5 @@
 ﻿#if CLASS_2
+
 using Tests.Models;
 
 namespace Tests.CommandBuilders;
@@ -6,7 +7,6 @@ namespace Tests.CommandBuilders;
 [TestClass]
 public class UpsertTests : TestBase
 {
-
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
 	public void BasicUpsertTest(string dataSourceName, DataSourceType mode)
 	{
@@ -46,7 +46,8 @@ public class UpsertTests : TestBase
 			{
 				FirstName = "Test",
 				LastName = "Employee" + Guid.NewGuid().ToString(),
-				Title = "Mail Room"
+				Title = "Mail Room",
+				Gender = 'F'
 			};
 
 			var employeeKey = dataSource.Upsert(EmployeeTableName, original).ToObject<Employee>().Execute().EmployeeKey;
@@ -56,7 +57,8 @@ public class UpsertTests : TestBase
 				EmployeeId = original.EmployeeId,
 				FirstName = "Changed",
 				Title = "Also Changed",
-				LastName = original.LastName
+				LastName = original.LastName,
+				Gender = original.Gender
 			};
 
 			var updated = dataSource.Upsert(EmployeeTableName, updater).WithKeys("EmployeeId").ToObject<Employee>().Execute();
@@ -145,7 +147,6 @@ public class UpsertTests : TestBase
 	}
 
 #endif
-
 }
 
 #endif

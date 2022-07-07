@@ -60,7 +60,9 @@ CREATE TABLE hr.employee
 	CellPhone VARCHAR(15) NULL ,
 	CreatedDate TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	UpdatedDate TIMESTAMP NULL,
-	EmployeeId VARCHAR(50) NOT NULL
+	EmployeeId VARCHAR(50) NOT NULL,
+	Gender Char(1) NOT NULL,
+	Status Char(1) NULL
 )";
 
 			string index = @"CREATE UNIQUE INDEX UX_Employee_EmployeeId ON hr.employee(EmployeeId);";
@@ -120,6 +122,7 @@ SELECT  e.EmployeeKey ,
 		e.CellPhone ,
 		e.CreatedDate ,
 		e.UpdatedDate ,
+		e.Gender ,
 		m.EmployeeKey AS ManagerEmployeeKey ,
 		m.FirstName AS ManagerFirstName ,
 		m.MiddleName AS ManagerMiddleName ,
@@ -130,6 +133,7 @@ SELECT  e.EmployeeKey ,
 		m.CellPhone AS ManagerCellPhone ,
 		m.CreatedDate AS ManagerCreatedDate ,
 		m.UpdatedDate AS ManagerUpdatedDate,
+		m.Gender AS ManagerGender,
 		e.EmployeeId
 FROM    HR.Employee e
 		LEFT JOIN HR.Employee m ON m.EmployeeKey = e.ManagerKey;";

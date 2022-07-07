@@ -78,6 +78,51 @@ public class InsertTests : TestBase
 	}
 
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	public void InsertEchoObject_CheckChar(string dataSourceName, DataSourceType mode)
+	{
+		var dataSource = DataSource(dataSourceName, mode);
+		try
+		{
+			var list = new List<Employee>();
+			var lookupKey = Guid.NewGuid().ToString();
+			for (var i = 0; i < 10; i++)
+			{
+				var original = new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = lookupKey, MiddleName = i % 2 == 0 ? "A" + i : null, Gender = i % 2 == 0 ? 'M' : 'F' };
+				var echo = dataSource.Insert(EmployeeTableName, original).ToObject<Employee>().Execute();
+
+				Assert.AreEqual(original.Gender, echo.Gender);
+			}
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
+
+	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	public void InsertEchoObject_CheckChar_Compiled(string dataSourceName, DataSourceType mode)
+	{
+		var dataSource = DataSource(dataSourceName, mode);
+		try
+		{
+			var list = new List<Employee>();
+			var lookupKey = Guid.NewGuid().ToString();
+			for (var i = 0; i < 10; i++)
+			{
+				var original = new Employee() { FirstName = i.ToString("0000"), LastName = "Z" + (int.MaxValue - i), Title = lookupKey, MiddleName = i % 2 == 0 ? "A" + i : null, Gender = i % 2 == 0 ? 'M' : 'F', Status = i % 2 == 0 ? 'A' : null };
+				var echo = dataSource.Insert(EmployeeTableName, original).Compile().ToObject<Employee>().Execute();
+
+				Assert.AreEqual(original.Gender, echo.Gender);
+				Assert.AreEqual(original.Status, echo.Status);
+			}
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
+
+	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
 	public void InsertEchoNewKey(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);

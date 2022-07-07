@@ -29,6 +29,12 @@ public class ChangeTrackingEmployee : ChangeTrackingModelBase
 		set { Set(value); }
 	}
 
+	public char Gender
+	{
+		get { return GetDefault<char>(' '); }
+		set { Set(value); }
+	}
+
 	public string LastName
 	{
 		get { return Get<string>(); }
