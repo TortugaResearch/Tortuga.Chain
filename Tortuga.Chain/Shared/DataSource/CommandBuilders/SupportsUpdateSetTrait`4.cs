@@ -7,7 +7,7 @@ using Tortuga.Shipwright;
 namespace Traits;
 
 [Trait]
-class SupportsUpdateSet<TCommand, TParameter, TObjectName, TDbType> : ISupportsUpdateSet
+class SupportsUpdateSetTrait<TCommand, TParameter, TObjectName, TDbType> : ISupportsUpdateSet
 where TCommand : DbCommand
 where TParameter : DbParameter
 where TObjectName : struct
@@ -15,7 +15,6 @@ where TDbType : struct
 {
 	[Container(RegisterInterface = true)]
 	internal IUpdateDeleteSetHelper<TCommand, TParameter, TObjectName, TDbType> DataSource { get; set; } = null!;
-
 
 	IUpdateSetDbCommandBuilder ISupportsUpdateSet.UpdateSet(string tableName, string updateExpression, UpdateOptions options)
 	{
@@ -76,8 +75,6 @@ where TDbType : struct
 		return DataSource.OnUpdateSet(tableName, updateExpression, null, options);
 	}
 
-
-
 	/// <summary>
 	/// Update multiple records using an update expression.
 	/// </summary>
@@ -119,10 +116,4 @@ where TDbType : struct
 	{
 		return DataSource.OnUpdateSet(DataSource.DatabaseMetadata.GetTableOrViewFromClass<TObject>().Name, updateExpression, null, options);
 	}
-
-
-
 }
-
-
-
