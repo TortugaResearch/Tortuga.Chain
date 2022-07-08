@@ -6,7 +6,8 @@ using Tortuga.Chain.CommandBuilders;
 
 namespace Tortuga.Chain.Materializers;
 
-internal sealed class MasterDetailCollectionMaterializer<TCommand, TParameter, TMaster, TDetail> : Materializer<TCommand, TParameter, List<TMaster>>
+sealed partial class MasterDetailCollectionMaterializer<TCommand, TParameter, TMaster, TDetail> : Materializer<TCommand, TParameter, List<TMaster>>
+
 	where TCommand : DbCommand
 	where TParameter : DbParameter
 	where TMaster : class
@@ -15,46 +16,87 @@ internal sealed class MasterDetailCollectionMaterializer<TCommand, TParameter, T
 {
 	static readonly ClassMetadata s_DetailMetadata = MetadataCache.GetMetadata<TDetail>();
 	static readonly ClassMetadata s_MasterMetadata = MetadataCache.GetMetadata<TMaster>();
-	readonly CollectionOptions m_DetailOptions;
+
+	readonly bool m_DiscardExtraRows;
 	readonly Func<TMaster, ICollection<TDetail>> m_Map;
 	readonly string m_MasterKeyColumn;
-	readonly CollectionOptions m_MasterOptions;
+	readonly bool m_PreventEmptyResults;
+
+	ConstructorMetadata? m_DetailConstructor;
+	IReadOnlyList<string>? m_ExcludedColumns;
+	IReadOnlyList<string>? m_IncludedColumns;
+	ConstructorMetadata? m_MasterConstructor;
 
 	public MasterDetailCollectionMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, string masterKeyColumn, Func<TMaster, ICollection<TDetail>> map, CollectionOptions masterOptions, CollectionOptions detailOptions) : base(commandBuilder)
 	{
 		m_MasterKeyColumn = masterKeyColumn;
 		m_Map = map;
-		m_MasterOptions = masterOptions;
-		m_DetailOptions = detailOptions;
+
+		if (masterOptions.HasFlag(CollectionOptions.InferConstructor))
+			m_MasterConstructor = MaterializerUtilities.InferConstructor(s_MasterMetadata);
+		if (detailOptions.HasFlag(CollectionOptions.InferConstructor))
+			m_DetailConstructor = MaterializerUtilities.InferConstructor(s_DetailMetadata);
 	}
 
-	ConstructorMetadata? DetailConstructor { get; set; }
-	ConstructorMetadata? MasterConstructor { get; set; }
+	/// <summary>
+	/// This is the constructor to use when you want a MasterDetailObjectOrNull materializer
+	/// </summary>
+	public MasterDetailCollectionMaterializer(SingleRowDbCommandBuilder<TCommand, TParameter> commandBuilder, string masterKeyColumn, Func<TMaster, ICollection<TDetail>> map, RowOptions masterOptions, CollectionOptions detailOptions) :
+
+		//We're taking advantage of the fact that the RowOptions/CollectionOptions flags are in the same position.
+		this(commandBuilder, masterKeyColumn, map, (CollectionOptions)((int)masterOptions & (int)CollectionOptions.InferConstructor), detailOptions)
+	{
+		m_DiscardExtraRows = masterOptions.HasFlag(RowOptions.DiscardExtraRows);
+		m_PreventEmptyResults = masterOptions.HasFlag(RowOptions.PreventEmptyResults);
+	}
 
 	public override IReadOnlyList<string> DesiredColumns()
 	{
 		//We need to pick the constructor now so that we have the right columns in the SQL.
 		//If we wait until materialization, we could have missing or extra columns.
 
-		if (MasterConstructor == null && !s_MasterMetadata.Constructors.HasDefaultConstructor)
-			MasterConstructor = MaterializerUtilities.InferConstructor(s_MasterMetadata);
+		if (m_MasterConstructor == null && !s_MasterMetadata.Constructors.HasDefaultConstructor)
+			m_MasterConstructor = MaterializerUtilities.InferConstructor(s_MasterMetadata);
 
-		if (DetailConstructor == null && !s_DetailMetadata.Constructors.HasDefaultConstructor)
-			DetailConstructor = MaterializerUtilities.InferConstructor(s_DetailMetadata);
+		if (m_DetailConstructor == null && !s_DetailMetadata.Constructors.HasDefaultConstructor)
+			m_DetailConstructor = MaterializerUtilities.InferConstructor(s_DetailMetadata);
+
+		var masterColumns = (m_MasterConstructor == null) ? s_MasterMetadata.ColumnsFor : m_MasterConstructor.ParameterNames;
+		var detailColumns = (m_DetailConstructor == null) ? s_DetailMetadata.ColumnsFor : m_DetailConstructor.ParameterNames;
+
+		//Sanity checks
+
+		if (m_IncludedColumns != null && m_ExcludedColumns != null)
+			throw new InvalidOperationException("Cannot specify both included and excluded columns/properties.");
+
+		if (m_ExcludedColumns != null && (m_MasterConstructor != null || m_DetailConstructor != null))
+			throw new InvalidOperationException("Cannot specify excluded columns/properties with non-default constructors.");
+
+		if (masterColumns.Length == 0)
+			throw new MappingException($"Type {typeof(TMaster).Name} has no writable properties. Please use the InferConstructor option or the WithMasterConstructor method.");
+
+		if (detailColumns.Length == 0)
+			throw new MappingException($"Type {typeof(TDetail).Name} has no writable properties. Please use the InferConstructor option or the WithMasterConstructor method.");
+
+		//Assembly the list
 
 		var columnNames = new HashSet<string>(); //using this to filter out duplicates
-		columnNames.Add(m_MasterKeyColumn);
 
-		if (MasterConstructor == null)
-			columnNames.AddRange(s_MasterMetadata.ColumnsFor);
-		else
-			columnNames.AddRange(MasterConstructor.ParameterNames);
+		if (m_IncludedColumns != null)
+		{
+			columnNames.AddRange(m_IncludedColumns);
+		}
+		else //Use the previously found values
+		{
+			columnNames.AddRange(masterColumns);
+			columnNames.AddRange(detailColumns);
 
-		if (DetailConstructor == null)
-			columnNames.AddRange(s_DetailMetadata.ColumnsFor);
-		else
-			columnNames.AddRange(DetailConstructor.ParameterNames);
+			if (m_ExcludedColumns != null)
+				foreach (var column in m_ExcludedColumns)
+					columnNames.Remove(column);
+		}
 
+		columnNames.Add(m_MasterKeyColumn); //Force this to always be included.
 		return columnNames.ToImmutableArray();
 	}
 
@@ -86,6 +128,36 @@ internal sealed class MasterDetailCollectionMaterializer<TCommand, TParameter, T
 		}, cancellationToken, state).ConfigureAwait(false);
 
 		return GenerateObjects(table!);
+	}
+
+	/// <summary>
+	/// Excludes the properties from the list of what will be populated in the object.
+	/// </summary>
+	/// <param name="propertiesToOmit">The properties to omit.</param>
+	/// <returns>ILink&lt;TResult&gt;.</returns>
+	void ExceptProperties(string[] propertiesToOmit)
+	{
+		if (propertiesToOmit == null || propertiesToOmit.Length == 0)
+			return;
+
+		var result = new HashSet<string>();
+
+		foreach (var propertyName in propertiesToOmit)
+		{
+			//A given property may be in either or both classes
+			if (s_MasterMetadata.Properties.TryGetValue(propertyName, out var property1))
+			{
+				if (property1.MappedColumnName != null)
+					result.Add(property1.MappedColumnName);
+			}
+			if (s_DetailMetadata.Properties.TryGetValue(propertyName, out var property2))
+			{
+				if (property2.MappedColumnName != null)
+					result.Add(property2.MappedColumnName);
+			}
+		}
+
+		m_ExcludedColumns = result.ToList();
 	}
 
 	List<TMaster> GenerateObjects(Table table)
@@ -130,69 +202,89 @@ internal sealed class MasterDetailCollectionMaterializer<TCommand, TParameter, T
 		var result = new List<TMaster>();
 		foreach (var group in groups.Values)
 		{
-			var master = MaterializerUtilities.ConstructObject<TMaster>(group[0], MasterConstructor, Converter);
+			var master = MaterializerUtilities.ConstructObject<TMaster>(group[0], m_MasterConstructor, Converter);
 			var target = m_Map(master);
 			foreach (var row in group)
-				target.Add(MaterializerUtilities.ConstructObject<TDetail>(row, DetailConstructor, Converter));
+				target.Add(MaterializerUtilities.ConstructObject<TDetail>(row, m_DetailConstructor, Converter));
 			result.Add(master);
 		}
 
 		return result;
 	}
 
-	class DateTimeEqualityComparer : IEqualityComparer<object>
+	/// <summary>
+	/// Sets the detail object constructor using a signature.
+	/// </summary>
+	/// <param name="signature">The constructor signature.</param>
+	/// <exception cref="MappingException">Cannot find a matching detail object constructor for the desired type</exception>
+	void SetDetailConstructor(IReadOnlyList<Type>? signature)
 	{
-		public new bool Equals(object? x, object? y) => (DateTime)x! == (DateTime)y!;
-
-		public int GetHashCode(object obj) => obj.GetHashCode();
+		if (signature == null)
+		{
+			m_DetailConstructor = null;
+		}
+		else
+		{
+			var constructor = s_DetailMetadata.Constructors.Find(signature);
+			if (constructor == null)
+			{
+				var types = string.Join(", ", signature.Select(t => t.Name));
+				throw new MappingException($"Cannot find a constructor on {typeof(Type).Name} with the types [{types}]");
+			}
+			m_DetailConstructor = constructor;
+		}
 	}
 
-	class DateTimeOffsetEqualityComparer : IEqualityComparer<object>
+	/// <summary>
+	/// Sets the master object constructor using a signature.
+	/// </summary>
+	/// <param name="signature">The constructor signature.</param>
+	/// <exception cref="MappingException">Cannot find a matching master object constructor for the desired type</exception>
+	void SetMasterConstructor(IReadOnlyList<Type>? signature)
 	{
-		public new bool Equals(object? x, object? y) => (DateTimeOffset)x! == (DateTimeOffset)y!;
-
-		public int GetHashCode(object obj) => obj.GetHashCode();
+		if (signature == null)
+		{
+			m_MasterConstructor = null;
+		}
+		else
+		{
+			var constructor = s_MasterMetadata.Constructors.Find(signature);
+			if (constructor == null)
+			{
+				var types = string.Join(", ", signature.Select(t => t.Name));
+				throw new MappingException($"Cannot find a constructor on {typeof(Type).Name} with the types [{types}]");
+			}
+			m_MasterConstructor = constructor;
+		}
 	}
 
-	class GuidEqualityComparer : IEqualityComparer<object>
+	/// <summary>
+	/// Limits the list of properties to populate to just the indicated list.
+	/// </summary>
+	/// <param name="propertiesToPopulate">The properties of the object to populate.</param>
+	/// <returns>ILink&lt;TResult&gt;.</returns>
+	void WithProperties(string[] propertiesToPopulate)
 	{
-		public new bool Equals(object? x, object? y) => (Guid)x! == (Guid)y!;
+		if (propertiesToPopulate == null || propertiesToPopulate.Length == 0)
+			return;
 
-		public int GetHashCode(object obj) => obj.GetHashCode();
-	}
+		var result = new HashSet<string>();
 
-	class Int16EqualityComparer : IEqualityComparer<object>
-	{
-		public new bool Equals(object? x, object? y) => (short)x! == (short)y!;
+		foreach (var propertyName in propertiesToPopulate)
+		{
+			//A given property may be in either or both classes
+			if (s_MasterMetadata.Properties.TryGetValue(propertyName, out var property1))
+			{
+				if (property1.MappedColumnName != null)
+					result.Add(property1.MappedColumnName);
+			}
+			if (s_DetailMetadata.Properties.TryGetValue(propertyName, out var property2))
+			{
+				if (property2.MappedColumnName != null)
+					result.Add(property2.MappedColumnName);
+			}
+		}
 
-		public int GetHashCode(object obj) => obj.GetHashCode();
-	}
-
-	class Int32EqualityComparer : IEqualityComparer<object>
-	{
-		public new bool Equals(object? x, object? y) => (int)x! == (int)y!;
-
-		public int GetHashCode(object obj) => obj.GetHashCode();
-	}
-
-	class Int64EqualityComparer : IEqualityComparer<object>
-	{
-		public new bool Equals(object? x, object? y) => (long)x! == (long)y!;
-
-		public int GetHashCode(object obj) => obj.GetHashCode();
-	}
-
-	class StringEqualityComparer : IEqualityComparer<object>
-	{
-		public new bool Equals(object? x, object? y) => string.Equals((string)x!, (string)y!, StringComparison.OrdinalIgnoreCase);
-
-		public int GetHashCode(object obj) => ((string)obj).GetHashCode(StringComparison.OrdinalIgnoreCase);
-	}
-
-	class UInt64EqualityComparer : IEqualityComparer<object>
-	{
-		public new bool Equals(object? x, object? y) => (ulong)x! == (ulong)y!;
-
-		public int GetHashCode(object obj) => obj.GetHashCode();
+		m_IncludedColumns = result.ToList();
 	}
 }

@@ -91,10 +91,10 @@ public abstract class ConstructibleMaterializer<TCommand, TParameter, TResult, T
 		}
 
 		if (IncludedColumns != null)
-			throw new NotImplementedException("Cannot specify included columns/properties with constructors. See #295");
+			throw new NotImplementedException("Cannot specify included columns/properties with non-default constructors. See #295");
 
 		if (ExcludedColumns != null)
-			throw new InvalidOperationException("Cannot specify excluded columns/properties with constructors.");
+			throw new InvalidOperationException("Cannot specify excluded columns/properties with non-default constructors.");
 
 		return Constructor.ParameterNames;
 	}

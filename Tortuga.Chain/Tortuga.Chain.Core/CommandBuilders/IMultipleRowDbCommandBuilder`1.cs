@@ -85,6 +85,6 @@ public interface IMultipleRowDbCommandBuilder<TObject> : IMultipleRowDbCommandBu
 	/// <param name="masterOptions">Options for handling extraneous rows and constructor selection for the master object.</param>
 	/// <param name="detailOptions">Options for handling constructor selection for the detail objects</param>
 	/// <returns></returns>
-	public ILink<List<TObject>> ToMasterDetailCollection<TDetail>(string masterKeyColumn, Func<TObject, ICollection<TDetail>> map, CollectionOptions masterOptions = CollectionOptions.None, CollectionOptions detailOptions = CollectionOptions.None)
+	public IMasterDetailMaterializer<List<TObject>> ToMasterDetailCollection<TDetail>(string masterKeyColumn, Func<TObject, ICollection<TDetail>> map, CollectionOptions masterOptions = CollectionOptions.None, CollectionOptions detailOptions = CollectionOptions.None)
 		where TDetail : class;
 }

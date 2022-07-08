@@ -135,7 +135,7 @@ public class MultipleRowDbCommandBuilder<TCommand, TParameter, TObject> : Multip
 	/// <param name="masterOptions">Options for handling extraneous rows and constructor selection for the master object.</param>
 	/// <param name="detailOptions">Options for handling constructor selection for the detail objects</param>
 	/// <returns></returns>
-	public ILink<List<TObject>> ToMasterDetailCollection<TDetail>(string masterKeyColumn, Func<TObject, ICollection<TDetail>> map, CollectionOptions masterOptions = CollectionOptions.None, CollectionOptions detailOptions = CollectionOptions.None)
+	public IMasterDetailMaterializer<List<TObject>> ToMasterDetailCollection<TDetail>(string masterKeyColumn, Func<TObject, ICollection<TDetail>> map, CollectionOptions masterOptions = CollectionOptions.None, CollectionOptions detailOptions = CollectionOptions.None)
 		where TDetail : class
 	{
 		return ToMasterDetailCollection<TObject, TDetail>(masterKeyColumn, map, masterOptions, detailOptions);
@@ -150,10 +150,25 @@ public class MultipleRowDbCommandBuilder<TCommand, TParameter, TObject> : Multip
 	/// <param name="masterOptions">Options for handling extraneous rows and constructor selection for the master object.</param>
 	/// <param name="detailOptions">Options for handling constructor selection for the detail objects</param>
 	/// <returns></returns>
-	public ILink<TObject> ToMasterDetailObject<TDetail>(string masterKeyColumn, Func<TObject, ICollection<TDetail>> map, RowOptions masterOptions = RowOptions.None, CollectionOptions detailOptions = CollectionOptions.None)
+	public IMasterDetailMaterializer<TObject> ToMasterDetailObject<TDetail>(string masterKeyColumn, Func<TObject, ICollection<TDetail>> map, RowOptions masterOptions = RowOptions.None, CollectionOptions detailOptions = CollectionOptions.None)
 		where TDetail : class
 	{
 		return ToMasterDetailObject<TObject, TDetail>(masterKeyColumn, map, masterOptions, detailOptions);
+	}
+
+	/// <summary>
+	/// Materializes the result as a master object with detail records.
+	/// </summary>
+	/// <typeparam name="TDetail">The type of the detail model.</typeparam>
+	/// <param name="masterKeyColumn">The column used as the primary key for the master records.</param>
+	/// <param name="map">This is used to identify the detail collection property on the master object.</param>
+	/// <param name="masterOptions">Options for handling extraneous rows and constructor selection for the master object.</param>
+	/// <param name="detailOptions">Options for handling constructor selection for the detail objects</param>
+	/// <returns></returns>
+	public IMasterDetailMaterializer<TObject?> ToMasterDetailObjectOrNull<TDetail>(string masterKeyColumn, Func<TObject, ICollection<TDetail>> map, RowOptions masterOptions = RowOptions.None, CollectionOptions detailOptions = CollectionOptions.None)
+		where TDetail : class
+	{
+		return ToMasterDetailObjectOrNull<TObject, TDetail>(masterKeyColumn, map, masterOptions, detailOptions);
 	}
 
 	/// <summary>

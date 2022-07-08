@@ -892,7 +892,7 @@ where TObject : class
 	/// <param name="masterOptions">Options for handling extraneous rows and constructor selection for the master object.</param>
 	/// <param name="detailOptions">Options for handling constructor selection for the detail objects</param>
 	/// <returns></returns>
-	public ILink<List<TMaster>> ToMasterDetailCollection<TMaster, TDetail>(string masterKeyColumn, Func<TMaster, ICollection<TDetail>> map, CollectionOptions masterOptions = CollectionOptions.None, CollectionOptions detailOptions = CollectionOptions.None)
+	public IMasterDetailMaterializer<List<TMaster>> ToMasterDetailCollection<TMaster, TDetail>(string masterKeyColumn, Func<TMaster, ICollection<TDetail>> map, CollectionOptions masterOptions = CollectionOptions.None, CollectionOptions detailOptions = CollectionOptions.None)
 		where TMaster : class
 		where TDetail : class
 	{
