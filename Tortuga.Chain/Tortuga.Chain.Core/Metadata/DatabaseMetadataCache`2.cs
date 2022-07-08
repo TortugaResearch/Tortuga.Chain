@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using Tortuga.Anchor;
 using Tortuga.Anchor.Metadata;
+using Tortuga.Chain.Aggregation;
 
 namespace Tortuga.Chain.Metadata;
 
@@ -57,6 +58,36 @@ public abstract class DatabaseMetadataCache<TObjectName, TDbType> : IDatabaseMet
 	/// <value>Case-insensitive list of database-specific type names</value>
 	/// <remarks>This list is based on driver limitations.</remarks>
 	public virtual ImmutableHashSet<string> UnsupportedSqlTypeNames => ImmutableHashSet<string>.Empty;
+
+	/// <summary>
+	/// Gets an aggregation function.
+	/// </summary>
+	/// <param name="aggregationType">Type of the aggregation.</param>
+	/// <param name="columnName">Name of the column to insert into the function.</param>
+	/// <returns>A string suitable for use in an aggregation.</returns>
+	public virtual string GetAggregationFunction(AggregationType aggregationType, string columnName)
+	{
+		switch (aggregationType)
+		{
+			case AggregationType.Min:
+				return $"MIN({QuoteColumnName(columnName!)})";
+
+			case AggregationType.Max:
+				return $"MAX({QuoteColumnName(columnName!)})";
+
+			case AggregationType.Average:
+				return $"AVG({QuoteColumnName(columnName!)})";
+
+			case AggregationType.Count:
+				return $"COUNT({QuoteColumnName(columnName!)})";
+
+			case AggregationType.CountDistinct:
+				return $"COUNT(DISTINCT {QuoteColumnName(columnName!)})";
+
+			default:
+				throw new ArgumentOutOfRangeException(nameof(AggregationType));
+		}
+	}
 
 	/// <summary>
 	/// Gets the foreign keys for a table.
@@ -313,6 +344,14 @@ public abstract class DatabaseMetadataCache<TObjectName, TDbType> : IDatabaseMet
 	/// Preloads all of the metadata for this data source.
 	/// </summary>
 	public abstract void Preload();
+
+	/// <summary>
+	/// Quotes the name of the column.
+	/// </summary>
+	/// <param name="columnName">Name of the column.</param>
+	/// <returns>System.String.</returns>
+	/// <remarks>This assumes the column name wasn't already quoted.</remarks>
+	public abstract string QuoteColumnName(string columnName);
 
 	/// <summary>
 	/// Registers a database type and its CLR equivalent.

@@ -18,8 +18,9 @@ internal sealed class AccessTableOrView<TObject> : TableDbCommandBuilder<OleDbCo
 	FilterOptions m_FilterOptions;
 	object? m_FilterValue;
 	AccessLimitOption m_LimitOptions;
-	string? m_SelectClause;
+
 	IEnumerable<SortExpression> m_SortExpressions = Enumerable.Empty<SortExpression>();
+
 	int? m_Take;
 	string? m_WhereClause;
 
@@ -54,6 +55,12 @@ internal sealed class AccessTableOrView<TObject> : TableDbCommandBuilder<OleDbCo
 	}
 
 	/// <summary>
+	/// Gets the columns from the metadata.
+	/// </summary>
+	/// <value>The columns.</value>
+	protected override ColumnMetadataCollection Columns => m_Table.Columns.GenericCollection;
+
+	/// <summary>
 	/// Gets the default limit option.
 	/// </summary>
 	/// <value>
@@ -63,33 +70,6 @@ internal sealed class AccessTableOrView<TObject> : TableDbCommandBuilder<OleDbCo
 	/// For most data sources, this will be LimitOptions.Rows.
 	/// </remarks>
 	protected override LimitOptions DefaultLimitOption => LimitOptions.RowsWithTies;
-
-	/// <summary>
-	/// Returns the row count using a <c>SELECT COUNT_BIG(*)</c> style query.
-	/// </summary>
-	/// <returns></returns>
-	public override ILink<long> AsCount()
-	{
-		m_SelectClause = "COUNT(*)";
-		return ToInt64();
-	}
-
-	/// <summary>
-	/// Returns the row count for a given column. <c>SELECT COUNT_BIG(columnName)</c>
-	/// </summary>
-	/// <param name="columnName">Name of the column.</param>
-	/// <param name="distinct">if set to <c>true</c> use <c>SELECT COUNT_BIG(DISTINCT columnName)</c>.</param>
-	/// <returns></returns>
-	public override ILink<long> AsCount(string columnName, bool distinct = false)
-	{
-		if (distinct)
-			throw new NotSupportedException("Access does not support distinct counts.");
-
-		var column = m_Table.Columns[columnName];
-		m_SelectClause = $"COUNT({column.QuotedSqlName})";
-
-		return ToInt64();
-	}
 
 	/// <summary>
 	/// Prepares the command for execution by generating any necessary SQL.
@@ -103,7 +83,8 @@ internal sealed class AccessTableOrView<TObject> : TableDbCommandBuilder<OleDbCo
 
 		var sqlBuilder = m_Table.CreateSqlBuilder(StrictMode);
 		sqlBuilder.ApplyRulesForSelect(DataSource);
-		sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
+		if (AggregationColumns.IsEmpty)
+			sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
 		//Support check
 		if (!Enum.IsDefined(typeof(AccessLimitOption), m_LimitOptions))
@@ -126,10 +107,10 @@ internal sealed class AccessTableOrView<TObject> : TableDbCommandBuilder<OleDbCo
 				break;
 		}
 
-		if (m_SelectClause != null)
-			sql.Append($"SELECT {topClause} {m_SelectClause} ");
-		else
+		if (AggregationColumns.IsEmpty)
 			sqlBuilder.BuildSelectClause(sql, "SELECT " + topClause, null, null);
+		else
+			AggregationColumns.BuildSelectClause(sql, "SELECT " + topClause, DataSource, null);
 
 		sql.Append(" FROM " + m_Table.Name.ToQuotedString());
 
@@ -153,6 +134,9 @@ internal sealed class AccessTableOrView<TObject> : TableDbCommandBuilder<OleDbCo
 			sqlBuilder.BuildSoftDeleteClause(sql, " WHERE ", DataSource, null);
 			parameters = sqlBuilder.GetParameters(DataSource);
 		}
+
+		if (AggregationColumns.HasGroupBy)
+			AggregationColumns.BuildGroupByClause(sql, " GROUP BY ", DataSource, null);
 
 		if (m_LimitOptions.RequiresSorting() && !m_SortExpressions.Any())
 		{

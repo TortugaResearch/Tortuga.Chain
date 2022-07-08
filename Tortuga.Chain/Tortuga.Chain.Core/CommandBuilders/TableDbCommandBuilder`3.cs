@@ -1,6 +1,8 @@
 ﻿using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
+using Tortuga.Chain.Aggregation;
 using Tortuga.Chain.DataSources;
+using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.CommandBuilders;
 
@@ -27,6 +29,17 @@ public abstract class TableDbCommandBuilder<TCommand, TParameter, TLimit> : Mult
 	}
 
 	/// <summary>
+	/// Gets the aggregation columns.
+	/// </summary>
+	/// <value>The aggregation columns.</value>
+	protected AggregationColumnCollection AggregationColumns { get; } = new();
+
+	/// <summary>
+	/// Gets the columns from the metadata.
+	/// </summary>
+	protected abstract ColumnMetadataCollection Columns { get; }
+
+	/// <summary>
 	/// Gets the default limit option.
 	/// </summary>
 	/// <value>
@@ -36,10 +49,25 @@ public abstract class TableDbCommandBuilder<TCommand, TParameter, TLimit> : Mult
 	protected virtual LimitOptions DefaultLimitOption => LimitOptions.Rows;
 
 	/// <summary>
+	/// Gets the average value for the indicated column.
+	/// </summary>
+	/// <param name="columnName">Name of the column.</param>
+	public ScalarDbCommandBuilder<TCommand, TParameter> AsAverage(string columnName)
+	{
+		var column = Columns[columnName];
+		AggregationColumns.Add(new AggregationColumn(AggregationType.Average, column.SqlName, column.SqlName));
+		return this;
+	}
+
+	/// <summary>
 	/// Returns the row count using a <c>SELECT Count(*)</c> style query.
 	/// </summary>
 	/// <returns></returns>
-	public abstract ILink<long> AsCount();
+	public ILink<long> AsCount()
+	{
+		AggregationColumns.Add(new AggregationColumn(AggregationType.Count, "*", "RowCount"));
+		return ToInt64();
+	}
 
 	/// <summary>
 	/// Returns the row count for a given column. <c>SELECT Count(columnName)</c>
@@ -47,7 +75,47 @@ public abstract class TableDbCommandBuilder<TCommand, TParameter, TLimit> : Mult
 	/// <param name="columnName">Name of the column.</param>
 	/// <param name="distinct">if set to <c>true</c> use <c>SELECT COUNT(DISTINCT columnName)</c>.</param>
 	/// <returns></returns>
-	public abstract ILink<long> AsCount(string columnName, bool distinct = false);
+	public ILink<long> AsCount(string columnName, bool distinct = false)
+	{
+		var column = Columns[columnName];
+		AggregationColumns.Add(new AggregationColumn(distinct ? AggregationType.CountDistinct : AggregationType.Count, column.SqlName, column.SqlName));
+
+		return ToInt64();
+	}
+
+	/// <summary>
+	/// Gets the maximum value for the indicated column.
+	/// </summary>
+	/// <param name="columnName">Name of the column.</param>
+	public ScalarDbCommandBuilder<TCommand, TParameter> AsMax(string columnName)
+	{
+		var column = Columns[columnName];
+		AggregationColumns.Add(new AggregationColumn(AggregationType.Max, column.SqlName, column.SqlName));
+		return this;
+	}
+
+	/// <summary>
+	/// Gets the minimum value for the indicated column.
+	/// </summary>
+	/// <param name="columnName">Name of the column.</param>
+	public ScalarDbCommandBuilder<TCommand, TParameter> AsMin(string columnName)
+	{
+		var column = Columns[columnName];
+		AggregationColumns.Add(new AggregationColumn(AggregationType.Min, column.SqlName, column.SqlName));
+		return this;
+	}
+
+	/// <summary>
+	/// Gets the sum of non-null values the indicated column.
+	/// </summary>
+	/// <param name="columnName">Name of the column.</param>
+	/// <param name="distinct">If true, only include distinct rows.</param>
+	public ScalarDbCommandBuilder<TCommand, TParameter> AsSum(string columnName, bool distinct = false)
+	{
+		var column = Columns[columnName];
+		AggregationColumns.Add(new AggregationColumn(distinct ? AggregationType.SumDistinct : AggregationType.Sum, column.SqlName, column.SqlName));
+		return this;
+	}
 
 	/// <summary>
 	/// Adds (or replaces) the filter on this command builder.

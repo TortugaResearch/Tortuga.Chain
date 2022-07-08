@@ -3,6 +3,7 @@ using System.Data.OleDb;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using Tortuga.Anchor;
+using Tortuga.Chain.Aggregation;
 using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.Access;
@@ -34,6 +35,24 @@ public sealed class AccessMetadataCache : OleDbDatabaseMetadataCache<AccessObjec
 	/// <value>The maximum number of parameters.</value>
 	/// <remarks>https://stackoverflow.com/a/54149292/5274</remarks>
 	public override int? MaxParameters => 768;
+
+	/// <summary>
+	/// Gets an aggregation function.
+	/// </summary>
+	/// <param name="aggregationType">Type of the aggregation.</param>
+	/// <param name="columnName">Name of the column to insert into the function.</param>
+	/// <returns>A string suitable for use in an aggregation.</returns>
+	/// <exception cref="System.NotSupportedException">Access does not support distinct counts.</exception>
+	/// <exception cref="System.NotSupportedException">Access does not support distinct sums.</exception>
+	public override string GetAggregationFunction(AggregationType aggregationType, string columnName)
+	{
+		if (aggregationType == AggregationType.CountDistinct)
+			throw new NotSupportedException("Access does not support distinct counts.");
+		if (aggregationType == AggregationType.SumDistinct)
+			throw new NotSupportedException("Access does not support distinct sums.");
+
+		return base.GetAggregationFunction(aggregationType, columnName);
+	}
 
 	/// <summary>
 	/// Gets the indexes for a table.
@@ -125,6 +144,19 @@ public sealed class AccessMetadataCache : OleDbDatabaseMetadataCache<AccessObjec
 	public void PreloadViews() => PreloadViews(GetColumnsDataTable());
 
 	/// <summary>
+	/// Quotes the name of the column.
+	/// </summary>
+	/// <param name="columnName">Name of the column.</param>
+	/// <remarks>This assumes the column name wasn't already quoted.</remarks>
+	public override string QuoteColumnName(string columnName)
+	{
+		if (columnName == "*")
+			return columnName;
+
+		return $"[{columnName}]";
+	}
+
+	/// <summary>
 	/// Resets the metadata cache, clearing out all cached metadata.
 	/// </summary>
 	public override void Reset()
@@ -213,7 +245,7 @@ public sealed class AccessMetadataCache : OleDbDatabaseMetadataCache<AccessObjec
 				clrType = ToClrType(type.Value, isNullable ?? true, (int?)maxLength);
 			}
 
-			result.Add(new ColumnMetadata<OleDbType>(name, false, isPrimaryKey, isIdentity, typeName, type ?? OleDbType.Empty, $"[{name}]", isNullable, (int?)maxLength, precision, scale, fullTypeName, clrType));
+			result.Add(new ColumnMetadata<OleDbType>(name, false, isPrimaryKey, isIdentity, typeName, type ?? OleDbType.Empty, QuoteColumnName(name), isNullable, (int?)maxLength, precision, scale, fullTypeName, clrType));
 		}
 
 		return new ColumnMetadataCollection<OleDbType>(tableName, result);

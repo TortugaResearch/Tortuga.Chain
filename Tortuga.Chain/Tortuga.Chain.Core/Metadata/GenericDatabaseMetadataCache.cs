@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Tortuga.Chain.Aggregation;
 
 namespace Tortuga.Chain.Metadata;
 
@@ -18,6 +19,11 @@ sealed class GenericDatabaseMetadataCache : IDatabaseMetadataCache
 	public MaterializerTypeConverter Converter { get; } = new();
 
 	int? IDatabaseMetadataCache.MaxParameters => null;
+
+	string IDatabaseMetadataCache.GetAggregationFunction(AggregationType aggregationType, string columnName)
+	{
+		throw new NotImplementedException(NotSupportedMessage);
+	}
 
 	StoredProcedureMetadata IDatabaseMetadataCache.GetStoredProcedure(string procedureName)
 	{
@@ -71,6 +77,11 @@ sealed class GenericDatabaseMetadataCache : IDatabaseMetadataCache
 
 	void IDatabaseMetadataCache.Preload()
 	{
+	}
+
+	string IDatabaseMetadataCache.QuoteColumnName(string columnName)
+	{
+		throw new NotImplementedException(NotSupportedMessage);
 	}
 
 	void IDatabaseMetadataCache.Reset()

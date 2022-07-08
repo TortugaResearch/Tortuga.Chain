@@ -2,6 +2,25 @@
 
 ### Features
 
+[#88 Simple Aggregators](https://github.com/TortugaResearch/Tortuga.Chain/issues/88)
+
+The "simple aggregators" agument the `AsCount` method. Each returns a single value for the desired column.
+
+* `AsAverage(columnName)`
+* `AsMax(columnName)`
+* `AsMin(columnName)`
+* `AsSum(columnName, distinct)`
+
+These all return a `ScalarDbCommandBuilder` with which the caller can specify the return type. They are built on the `AggregateColumn` model, which overrides the usual column selection process.
+
+For more complex aggregation, use the `AsAggregate` method. This accepts a collection of `AggregateColumn` objects, which can be used for both aggregegate functions and grouping.
+
+The original `AsCount` methods were reworked to fit into this model.
+
+## Version 4.2
+
+### Features
+
 [#463 ISupportsDeleteByKeyList should have the same overloads as ISupportsGetByKeyList](https://github.com/TortugaResearch/Chain/issues/463)
 
 [#464 ISupportsDeleteByKey should have the same overloads as ISupportsGetByKey](https://github.com/TortugaResearch/Chain/issues/464)

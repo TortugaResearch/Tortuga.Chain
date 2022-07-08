@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using Tortuga.Chain.Aggregation;
 
 namespace Tortuga.Chain.Metadata;
 
@@ -18,6 +19,14 @@ public interface IDatabaseMetadataCache
 	/// </summary>
 	/// <value>The maximum number of parameters.</value>
 	int? MaxParameters { get; }
+
+	/// <summary>
+	/// Gets an aggregation function.
+	/// </summary>
+	/// <param name="aggregationType">Type of the aggregation.</param>
+	/// <param name="columnName">Name of the column to insert into the function.</param>
+	/// <returns>A string suitable for use in an aggregation.</returns>
+	string GetAggregationFunction(AggregationType aggregationType, string columnName);
 
 	/// <summary>
 	/// Gets the stored procedure's metadata.
@@ -109,6 +118,13 @@ public interface IDatabaseMetadataCache
 	///// Preloads all of the views for this data source.
 	///// </summary>
 	//void PreloadViews();
+
+	/// <summary>
+	/// Quotes the name of the column.
+	/// </summary>
+	/// <param name="columnName">Name of the column.</param>
+	/// <remarks>This assumes the column name wasn't already quoted.</remarks>
+	abstract string QuoteColumnName(string columnName);
 
 	/// <summary>
 	/// Resets the metadata cache, clearing out all cached metadata.

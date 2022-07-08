@@ -20,7 +20,7 @@ internal class OleDbSqlServerTableFunction : TableDbCommandBuilder<OleDbCommand,
 	object? m_FilterValue;
 	SqlServerLimitOption m_LimitOptions;
 	int? m_Seed;
-	string? m_SelectClause;
+
 	int? m_Skip;
 	IEnumerable<SortExpression> m_SortExpressions = Enumerable.Empty<SortExpression>();
 	int? m_Take;
@@ -42,37 +42,13 @@ internal class OleDbSqlServerTableFunction : TableDbCommandBuilder<OleDbCommand,
 	/// Gets the data source.
 	/// </summary>
 	/// <value>The data source.</value>
-	public new OleDbSqlServerDataSourceBase DataSource
-	{
-		get { return (OleDbSqlServerDataSourceBase)base.DataSource; }
-	}
+	public new OleDbSqlServerDataSourceBase DataSource => (OleDbSqlServerDataSourceBase)base.DataSource;
 
 	/// <summary>
-	/// Returns the row count using a <c>SELECT Count(*)</c> style query.
+	/// Gets the columns from the metadata.
 	/// </summary>
-	/// <returns></returns>
-	public override ILink<long> AsCount()
-	{
-		m_SelectClause = "COUNT_BIG(*)";
-		return ToInt64();
-	}
-
-	/// <summary>
-	/// Returns the row count for a given column. <c>SELECT Count(columnName)</c>
-	/// </summary>
-	/// <param name="columnName">Name of the column.</param>
-	/// <param name="distinct">if set to <c>true</c> use <c>SELECT COUNT(DISTINCT columnName)</c>.</param>
-	/// <returns></returns>
-	public override ILink<long> AsCount(string columnName, bool distinct = false)
-	{
-		var column = m_Table.Columns[columnName];
-		if (distinct)
-			m_SelectClause = $"COUNT_BIG(DISTINCT {column.QuotedSqlName})";
-		else
-			m_SelectClause = $"COUNT_BIG({column.QuotedSqlName})";
-
-		return ToInt64();
-	}
+	/// <value>The columns.</value>
+	protected override ColumnMetadataCollection Columns => m_Table.Columns.GenericCollection;
 
 	/// <summary>
 	/// Prepares the command for execution by generating any necessary SQL.
@@ -93,7 +69,7 @@ internal class OleDbSqlServerTableFunction : TableDbCommandBuilder<OleDbCommand,
 
 		if (m_FunctionArgumentValue != null)
 			sqlBuilder.ApplyArgumentValue(DataSource, m_FunctionArgumentValue);
-		if (m_SelectClause == null)
+		if (AggregationColumns.IsEmpty)
 		{
 			var desired = materializer.DesiredColumns();
 			if (desired == Materializer.AutoSelectDesiredColumns)
@@ -150,10 +126,10 @@ internal class OleDbSqlServerTableFunction : TableDbCommandBuilder<OleDbCommand,
 				break;
 		}
 
-		if (m_SelectClause != null)
-			sql.Append($"SELECT {topClause} {m_SelectClause} ");
-		else
+		if (AggregationColumns.IsEmpty)
 			sqlBuilder.BuildSelectClause(sql, "SELECT " + topClause, null, null);
+		else
+			AggregationColumns.BuildSelectClause(sql, "SELECT ", DataSource, null);
 
 		sqlBuilder.BuildAnonymousFromFunctionClause(sql, $" FROM {m_Table.Name.ToQuotedString()} (", " ) ");
 
@@ -177,6 +153,9 @@ internal class OleDbSqlServerTableFunction : TableDbCommandBuilder<OleDbCommand,
 			sqlBuilder.BuildAnonymousSoftDeleteClause(sql, " WHERE ", DataSource, null);
 			parameters = sqlBuilder.GetParameters();
 		}
+
+		if (AggregationColumns.HasGroupBy)
+			AggregationColumns.BuildGroupByClause(sql, " GROUP BY ", DataSource, null);
 
 		if (m_LimitOptions.RequiresSorting() && !m_SortExpressions.Any() && StrictMode)
 			throw new InvalidOperationException("Limits were requested without a sort order. Use WithSorting to supply a sort order or disable strict mode.");

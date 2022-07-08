@@ -19,7 +19,6 @@ public class MySqlTableOrView<TObject> : TableDbCommandBuilder<MySqlCommand, MyS
 	private object? m_FilterValue;
 	private MySqlLimitOption m_LimitOptions;
 	private int? m_Seed;
-	private string? m_SelectClause;
 	private int? m_Skip;
 	private IEnumerable<SortExpression> m_SortExpressions = Enumerable.Empty<SortExpression>();
 	private int? m_Take;
@@ -83,37 +82,13 @@ public class MySqlTableOrView<TObject> : TableDbCommandBuilder<MySqlCommand, MyS
 	/// Gets the data source.
 	/// </summary>
 	/// <value>The data source.</value>
-	public new MySqlDataSourceBase DataSource
-	{
-		get { return (MySqlDataSourceBase)base.DataSource; }
-	}
+	public new MySqlDataSourceBase DataSource => (MySqlDataSourceBase)base.DataSource;
 
 	/// <summary>
-	/// Returns the row count using a <c>SELECT COUNT_BIG(*)</c> style query.
+	/// Gets the columns from the metadata.
 	/// </summary>
-	/// <returns></returns>
-	public override ILink<long> AsCount()
-	{
-		m_SelectClause = "COUNT(*)";
-		return ToInt64();
-	}
-
-	/// <summary>
-	/// Returns the row count for a given column. <c>SELECT COUNT_BIG(columnName)</c>
-	/// </summary>
-	/// <param name="columnName">Name of the column.</param>
-	/// <param name="distinct">if set to <c>true</c> use <c>SELECT COUNT_BIG(DISTINCT columnName)</c>.</param>
-	/// <returns></returns>
-	public override ILink<long> AsCount(string columnName, bool distinct = false)
-	{
-		var column = m_Table.Columns[columnName];
-		if (distinct)
-			m_SelectClause = $"COUNT(DISTINCT {column.QuotedSqlName})";
-		else
-			m_SelectClause = $"COUNT({column.QuotedSqlName})";
-
-		return ToInt64();
-	}
+	/// <value>The columns.</value>
+	protected override ColumnMetadataCollection Columns => m_Table.Columns.GenericCollection;
 
 	/// <summary>
 	/// Prepares the command for execution by generating any necessary SQL.
@@ -130,7 +105,7 @@ public class MySqlTableOrView<TObject> : TableDbCommandBuilder<MySqlCommand, MyS
 		var sqlBuilder = m_Table.CreateSqlBuilder(StrictMode);
 		sqlBuilder.ApplyRulesForSelect(DataSource);
 
-		if (m_SelectClause == null)
+		if (AggregationColumns.IsEmpty)
 			sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
 		//Support check
@@ -154,10 +129,10 @@ public class MySqlTableOrView<TObject> : TableDbCommandBuilder<MySqlCommand, MyS
 		List<MySqlParameter> parameters;
 		var sql = new StringBuilder();
 
-		if (m_SelectClause != null)
-			sql.Append($"SELECT {m_SelectClause} ");
-		else
+		if (AggregationColumns.IsEmpty)
 			sqlBuilder.BuildSelectClause(sql, "SELECT ", null, null);
+		else
+			AggregationColumns.BuildSelectClause(sql, "SELECT ", DataSource, null);
 
 		sql.Append(" FROM " + m_Table.Name);
 
@@ -181,6 +156,9 @@ public class MySqlTableOrView<TObject> : TableDbCommandBuilder<MySqlCommand, MyS
 			sqlBuilder.BuildSoftDeleteClause(sql, " WHERE ", DataSource, null);
 			parameters = sqlBuilder.GetParameters();
 		}
+
+		if (AggregationColumns.HasGroupBy)
+			AggregationColumns.BuildGroupByClause(sql, " GROUP BY ", DataSource, null);
 
 		switch (m_LimitOptions)
 		{
@@ -239,10 +217,7 @@ public class MySqlTableOrView<TObject> : TableDbCommandBuilder<MySqlCommand, MyS
 	/// <remarks>
 	/// If the column name was not found, this will return null
 	/// </remarks>
-	public override ColumnMetadata? TryGetColumn(string columnName)
-	{
-		return m_Table.Columns.TryGetColumn(columnName);
-	}
+	public override ColumnMetadata? TryGetColumn(string columnName) => m_Table.Columns.TryGetColumn(columnName);
 
 	/// <summary>
 	/// Returns a list of columns known to be non-nullable.

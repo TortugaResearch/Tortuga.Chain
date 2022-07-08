@@ -1,6 +1,7 @@
 using System.Collections.Immutable;
 using System.Data.OleDb;
 using System.Diagnostics.CodeAnalysis;
+using Tortuga.Chain.Aggregation;
 using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.SqlServer;
@@ -72,6 +73,22 @@ public sealed partial class OleDbSqlServerMetadataCache
 	/// <value>Case-insensitive list of database-specific type names</value>
 	/// <remarks>This list is based on driver limitations.</remarks>
 	public override ImmutableHashSet<string> UnsupportedSqlTypeNames { get; } = ImmutableHashSet.Create(StringComparer.OrdinalIgnoreCase, new[] { "datetimeoffset", "geography", "geometry", "hierarchyid", "image", "sql_variant", "sysname", "xml" });
+
+	/// <summary>
+	/// Gets an aggregation function.
+	/// </summary>
+	/// <param name="aggregationType">Type of the aggregation.</param>
+	/// <param name="columnName">Name of the column to insert into the function.</param>
+	/// <returns>A string suitable for use in an aggregation.</returns>
+	public override string GetAggregationFunction(AggregationType aggregationType, string columnName)
+	{
+		return aggregationType switch
+		{
+			AggregationType.Count => $"COUNT_BIG({QuoteColumnName(columnName!)})",
+			AggregationType.CountDistinct => $"COUNT_BIG(DISTINCT {QuoteColumnName(columnName!)})",
+			_ => base.GetAggregationFunction(aggregationType, columnName),
+		};
+	}
 
 	/// <summary>
 	/// Gets the detailed metadata for a table or view.
@@ -253,6 +270,20 @@ public sealed partial class OleDbSqlServerMetadataCache
 				}
 			}
 		}
+	}
+
+	/// <summary>
+	/// Quotes the name of the column.
+	/// </summary>
+	/// <param name="columnName">Name of the column.</param>
+	/// <returns>System.String.</returns>
+	/// <remarks>This assumes the column name wasn't already quoted.</remarks>
+	public override string QuoteColumnName(string columnName)
+	{
+		if (columnName == "*")
+			return columnName;
+
+		return "[" + columnName + "]";
 	}
 
 	/// <summary>
@@ -646,7 +677,7 @@ WHERE	s.name = ? AND t.name = ? AND t.is_table_type = 1;";
 						string fullTypeName;
 						AdjustTypeDetails(typeName, ref maxLength, ref precision, ref scale, out fullTypeName);
 
-						columns.Add(new ColumnMetadata<OleDbType>(name, computed, primary, isIdentity, typeName, SqlTypeNameToDbType(typeName), "[" + name + "]", isNullable, maxLength, precision, scale, fullTypeName, ToClrType(typeName, isNullable, maxLength)));
+						columns.Add(new ColumnMetadata<OleDbType>(name, computed, primary, isIdentity, typeName, SqlTypeNameToDbType(typeName), QuoteColumnName(name), isNullable, maxLength, precision, scale, fullTypeName, ToClrType(typeName, isNullable, maxLength)));
 					}
 				}
 			}

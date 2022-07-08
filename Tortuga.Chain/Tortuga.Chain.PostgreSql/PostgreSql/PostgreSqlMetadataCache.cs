@@ -841,12 +841,26 @@ WHERE c.relname ILIKE @Name AND
 							break;
 					}
 
-					columns.Add(new ColumnMetadata<NpgsqlDbType>(name, false, isPrimary, isIdentity, typeName, dbType, "\"" + name + "\"", isNullable, maxLength, precision, scale, fullTypeName, ToClrType(typeName, isNullable, maxLength)));
+					columns.Add(new ColumnMetadata<NpgsqlDbType>(name, false, isPrimary, isIdentity, typeName, dbType, QuoteColumnName(name), isNullable, maxLength, precision, scale, fullTypeName, ToClrType(typeName, isNullable, maxLength)));
 				}
 			}
 		}
 
 		return new ColumnMetadataCollection<NpgsqlDbType>(tableName.ToString(), columns);
+	}
+
+	/// <summary>
+	/// Quotes the name of the column.
+	/// </summary>
+	/// <param name="columnName">Name of the column.</param>
+	/// <returns>System.String.</returns>
+	/// <remarks>This assumes the column name wasn't already quoted.</remarks>
+	public override string QuoteColumnName(string columnName)
+	{
+		if (columnName == "*")
+			return columnName;
+
+		return "\"" + columnName + "\"";
 	}
 
 	/// <summary>

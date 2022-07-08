@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Tortuga.Chain.Aggregation;
 using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.SqlServer;
@@ -74,6 +75,22 @@ public sealed partial class SqlServerMetadataCache
 	/// This is used to decide which option overrides to set when establishing a connection.
 	/// </summary>
 	internal SqlServerEffectiveSettings? ServerDefaultSettings { get; set; }
+
+	/// <summary>
+	/// Gets an aggregation function.
+	/// </summary>
+	/// <param name="aggregationType">Type of the aggregation.</param>
+	/// <param name="columnName">Name of the column to insert into the function.</param>
+	/// <returns>A string suitable for use in an aggregation.</returns>
+	public override string GetAggregationFunction(AggregationType aggregationType, string columnName)
+	{
+		return aggregationType switch
+		{
+			AggregationType.Count => $"COUNT_BIG({QuoteColumnName(columnName!)})",
+			AggregationType.CountDistinct => $"COUNT_BIG(DISTINCT {QuoteColumnName(columnName!)})",
+			_ => base.GetAggregationFunction(aggregationType, columnName),
+		};
+	}
 
 	/// <summary>
 	/// Gets the indexes for a table.
@@ -330,6 +347,20 @@ WHERE o.name = @Name
 				}
 			}
 		}
+	}
+
+	/// <summary>
+	/// Quotes the name of the column.
+	/// </summary>
+	/// <param name="columnName">Name of the column.</param>
+	/// <returns>System.String.</returns>
+	/// <remarks>This assumes the column name wasn't already quoted.</remarks>
+	public override string QuoteColumnName(string columnName)
+	{
+		if (columnName == "*")
+			return columnName;
+
+		return $"[{columnName}]";
 	}
 
 	/// <summary>
@@ -966,7 +997,7 @@ WHERE	s.name = @Schema AND t.name = @Name AND t.is_table_type = 0;";
 						string fullTypeName;
 						AdjustTypeDetails(typeName, ref maxLength, ref precision, ref scale, out fullTypeName);
 
-						columns.Add(new ColumnMetadata<SqlDbType>(name, computed, primary, isIdentity, typeName, SqlTypeNameToDbType(typeName), "[" + name + "]", isNullable, maxLength, precision, scale, fullTypeName, ToClrType(typeName, isNullable, maxLength)));
+						columns.Add(new ColumnMetadata<SqlDbType>(name, computed, primary, isIdentity, typeName, SqlTypeNameToDbType(typeName), QuoteColumnName(name), isNullable, maxLength, precision, scale, fullTypeName, ToClrType(typeName, isNullable, maxLength)));
 					}
 				}
 			}

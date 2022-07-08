@@ -10,7 +10,7 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders;
 /// <summary>
 /// SqlServerTableOrView supports queries against tables and views.
 /// </summary>
-internal sealed partial class SqlServerTableOrView<TObject> : TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption, TObject>, ISupportsApproximateCount
+internal sealed partial class SqlServerTableOrView<TObject> : TableDbCommandBuilder<SqlCommand, SqlParameter, SqlServerLimitOption, TObject>, ISupportsApproximateCount, ISupportsChangeListener
 	where TObject : class
 {
 	readonly TableOrViewMetadata<SqlServerObjectName, SqlDbType> m_Table;
@@ -19,7 +19,7 @@ internal sealed partial class SqlServerTableOrView<TObject> : TableDbCommandBuil
 	object? m_FilterValue;
 	SqlServerLimitOption m_LimitOptions;
 	int? m_Seed;
-	string? m_SelectClause;
+
 	int? m_Skip;
 	IEnumerable<SortExpression> m_SortExpressions = Enumerable.Empty<SortExpression>();
 	int? m_Take;
@@ -70,31 +70,10 @@ internal sealed partial class SqlServerTableOrView<TObject> : TableDbCommandBuil
 	}
 
 	/// <summary>
-	/// Returns the row count using a <c>SELECT COUNT_BIG(*)</c> style query.
+	/// Gets the columns from the metadata.
 	/// </summary>
-	/// <returns></returns>
-	public override ILink<long> AsCount()
-	{
-		m_SelectClause = "COUNT_BIG(*)";
-		return ToInt64();
-	}
-
-	/// <summary>
-	/// Returns the row count for a given column. <c>SELECT COUNT_BIG(columnName)</c>
-	/// </summary>
-	/// <param name="columnName">Name of the column.</param>
-	/// <param name="distinct">if set to <c>true</c> use <c>SELECT COUNT_BIG(DISTINCT columnName)</c>.</param>
-	/// <returns></returns>
-	public override ILink<long> AsCount(string columnName, bool distinct = false)
-	{
-		var column = m_Table.Columns[columnName];
-		if (distinct)
-			m_SelectClause = $"COUNT_BIG(DISTINCT {column.QuotedSqlName})";
-		else
-			m_SelectClause = $"COUNT_BIG({column.QuotedSqlName})";
-
-		return ToInt64();
-	}
+	/// <value>The columns.</value>
+	protected override ColumnMetadataCollection Columns => m_Table.Columns.GenericCollection;
 
 	/// <summary>
 	/// Return the approximate distinct count using the APPROX_COUNT_DISTINCT function.
@@ -103,7 +82,7 @@ internal sealed partial class SqlServerTableOrView<TObject> : TableDbCommandBuil
 	public ILink<long> AsCountApproximate(string columnName)
 	{
 		var column = m_Table.Columns[columnName];
-		m_SelectClause = $"APPROX_COUNT_DISTINCT({column.QuotedSqlName})";
+		AggregationColumns.Add(new($"APPROX_COUNT_DISTINCT({column.QuotedSqlName})", "RowCount"));
 
 		return ToInt64();
 	}
@@ -118,7 +97,7 @@ internal sealed partial class SqlServerTableOrView<TObject> : TableDbCommandBuil
 		if (primaryKeys.Count != 1)
 			throw new MappingException($"{nameof(AsCountApproximate)}() operation isn't allowed on {m_Table.Name} because it doesn't have a single primary key. Please provide a column name.");
 
-		m_SelectClause = $"APPROX_COUNT_DISTINCT({primaryKeys.Single().QuotedSqlName})";
+		AggregationColumns.Add(new($"APPROX_COUNT_DISTINCT({primaryKeys.Single().QuotedSqlName})", "RowCount"));
 
 		return ToInt64();
 	}
@@ -136,7 +115,7 @@ internal sealed partial class SqlServerTableOrView<TObject> : TableDbCommandBuil
 		var sqlBuilder = m_Table.CreateSqlBuilder(StrictMode);
 		sqlBuilder.ApplyRulesForSelect(DataSource);
 
-		if (m_SelectClause == null)
+		if (AggregationColumns.IsEmpty)
 			sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
 
 		//Support check
@@ -187,10 +166,10 @@ internal sealed partial class SqlServerTableOrView<TObject> : TableDbCommandBuil
 				break;
 		}
 
-		if (m_SelectClause != null)
-			sql.Append($"SELECT {topClause} {m_SelectClause} ");
-		else
+		if (AggregationColumns.IsEmpty)
 			sqlBuilder.BuildSelectClause(sql, "SELECT " + topClause, null, null);
+		else
+			AggregationColumns.BuildSelectClause(sql, "SELECT ", DataSource, null);
 
 		sql.Append(" FROM " + m_Table.Name.ToQuotedString());
 
@@ -229,6 +208,9 @@ internal sealed partial class SqlServerTableOrView<TObject> : TableDbCommandBuil
 			sqlBuilder.BuildSoftDeleteClause(sql, " WHERE ", DataSource, null);
 			parameters = sqlBuilder.GetParameters();
 		}
+
+		if (AggregationColumns.HasGroupBy)
+			AggregationColumns.BuildGroupByClause(sql, " GROUP BY ", DataSource, null);
 
 		if (m_LimitOptions.RequiresSorting() && !m_SortExpressions.Any())
 		{
@@ -276,6 +258,11 @@ internal sealed partial class SqlServerTableOrView<TObject> : TableDbCommandBuil
 		return new SqlServerCommandExecutionToken(DataSource, "Query " + m_Table.Name, sql.ToString(), parameters);
 	}
 
+	SqlServerCommandExecutionToken ISupportsChangeListener.Prepare(Materializer<SqlCommand, SqlParameter> materializer)
+	{
+		return (SqlServerCommandExecutionToken)Prepare(materializer);
+	}
+
 	/// <summary>
 	/// Returns the column associated with the column name.
 	/// </summary>
@@ -284,10 +271,7 @@ internal sealed partial class SqlServerTableOrView<TObject> : TableDbCommandBuil
 	/// <remarks>
 	/// If the column name was not found, this will return null
 	/// </remarks>
-	public override ColumnMetadata? TryGetColumn(string columnName)
-	{
-		return m_Table.Columns.TryGetColumn(columnName);
-	}
+	public override ColumnMetadata? TryGetColumn(string columnName) => m_Table.Columns.TryGetColumn(columnName);
 
 	/// <summary>
 	/// Returns a list of columns known to be non-nullable.
@@ -299,6 +283,18 @@ internal sealed partial class SqlServerTableOrView<TObject> : TableDbCommandBuil
 	/// This is used by materializers to skip IsNull checks.
 	/// </remarks>
 	public override IReadOnlyList<ColumnMetadata> TryGetNonNullableColumns() => m_Table.NonNullableColumns;
+
+	/// <summary>
+	/// Waits for change in the data that is returned by this operation.
+	/// </summary>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <param name="state">User defined state, usually used for logging.</param>
+	/// <returns>Task that can be waited for.</returns>
+	/// <remarks>This requires the use of SQL Dependency</remarks>
+	public Task WaitForChange(CancellationToken cancellationToken, object? state = null)
+	{
+		return WaitForChangeMaterializer.GenerateTask(this, cancellationToken, state);
+	}
 
 	/// <summary>
 	/// Adds (or replaces) the filter on this command builder.
@@ -375,25 +371,5 @@ internal sealed partial class SqlServerTableOrView<TObject> : TableDbCommandBuil
 
 		m_SortExpressions = sortExpressions;
 		return this;
-	}
-}
-
-partial class SqlServerTableOrView<TObject> : ISupportsChangeListener
-{
-	SqlServerCommandExecutionToken ISupportsChangeListener.Prepare(Materializer<SqlCommand, SqlParameter> materializer)
-	{
-		return (SqlServerCommandExecutionToken)Prepare(materializer);
-	}
-
-	/// <summary>
-	/// Waits for change in the data that is returned by this operation.
-	/// </summary>
-	/// <param name="cancellationToken">The cancellation token.</param>
-	/// <param name="state">User defined state, usually used for logging.</param>
-	/// <returns>Task that can be waited for.</returns>
-	/// <remarks>This requires the use of SQL Dependency</remarks>
-	public Task WaitForChange(CancellationToken cancellationToken, object? state = null)
-	{
-		return WaitForChangeMaterializer.GenerateTask(this, cancellationToken, state);
 	}
 }
