@@ -65,7 +65,7 @@ where TParameter : DbParameter
 		{
 			if (x.Count == 0)
 				throw new MissingDataException("No records were returned");
-			if (x.Count > 0 && !masterOptions.HasFlag(RowOptions.DiscardExtraRows))
+			if (x.Count > 1 && !masterOptions.HasFlag(RowOptions.DiscardExtraRows))
 				throw new UnexpectedDataException("More records were returned than expected");
 			return x[0];
 		});

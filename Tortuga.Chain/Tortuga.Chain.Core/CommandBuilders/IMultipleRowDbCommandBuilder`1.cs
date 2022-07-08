@@ -75,4 +75,16 @@ public interface IMultipleRowDbCommandBuilder<TObject> : IMultipleRowDbCommandBu
 	/// <exception cref="MappingException"></exception>
 	/// <remarks>In theory this will offer better performance than ToImmutableArray if you intend to further modify the result.</remarks>
 	IConstructibleMaterializer<ImmutableList<TObject>> ToImmutableList(CollectionOptions collectionOptions = CollectionOptions.None);
+
+	/// <summary>
+	/// Materializes the result as a list of master/detail records.
+	/// </summary>
+	/// <typeparam name="TDetail">The type of the detail model.</typeparam>
+	/// <param name="masterKeyColumn">The column used as the primary key for the master records.</param>
+	/// <param name="map">This is used to identify the detail collection property on the master object.</param>
+	/// <param name="masterOptions">Options for handling extraneous rows and constructor selection for the master object.</param>
+	/// <param name="detailOptions">Options for handling constructor selection for the detail objects</param>
+	/// <returns></returns>
+	public ILink<List<TObject>> ToMasterDetailCollection<TDetail>(string masterKeyColumn, Func<TObject, ICollection<TDetail>> map, CollectionOptions masterOptions = CollectionOptions.None, CollectionOptions detailOptions = CollectionOptions.None)
+		where TDetail : class;
 }

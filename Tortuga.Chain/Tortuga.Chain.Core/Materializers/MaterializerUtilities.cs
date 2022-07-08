@@ -136,28 +136,6 @@ namespace Tortuga.Chain.Materializers
 		}
 
 		/// <summary>
-		/// Materializers use this to pick a constructor. It will prefer a default constructor.
-		/// </summary>
-		/// <returns></returns>
-		/// <exception cref="MappingException"></exception>
-		internal static ConstructorMetadata DefaultConstructor(ClassMetadata metatdata)
-		{
-			//This is here to make the error message more accurate.
-			if (metatdata.Constructors.Count == 0)
-				throw new MappingException($"Type {metatdata.TypeInfo.Name} has does not have any constructors.");
-
-			//Return the default constructor if it has one.
-			if (metatdata.Constructors.HasDefaultConstructor)
-				return metatdata.Constructors.Find(s_EmptyTypeList)!;
-
-			//Look for a single constructor.
-
-			if (metatdata.Constructors.Count > 1)
-				throw new MappingException($"Type {metatdata.TypeInfo.Name} has more than one constructor and no default constructor. Please use the WithConstructor method to specify which one to use.");
-			return metatdata.Constructors.Single();
-		}
-
-		/// <summary>
 		/// Materializers use this to pick a non-default constructor.
 		/// </summary>
 		/// <returns></returns>

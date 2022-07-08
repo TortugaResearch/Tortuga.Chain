@@ -18,13 +18,17 @@ public abstract class ConstructibleMaterializer<TCommand, TParameter, TResult, T
 	where TParameter : DbParameter
 {
 	/// <summary>
+	/// Gets the TObject metadata.
+	/// </summary>
+	protected static ClassMetadata ObjectMetadata = MetadataCache.GetMetadata(typeof(TObject));
+
+	/// <summary>
 	/// Initializes a new instance of the <see cref="ConstructibleMaterializer{TCommand,
 	/// TParameter, TResult, TObject}"/> class.
 	/// </summary>
 	/// <param name="commandBuilder">The associated operation.</param>
 	protected ConstructibleMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder) : base(commandBuilder)
 	{
-		ObjectMetadata = MetadataCache.GetMetadata(typeof(TObject));
 	}
 
 	/// <summary>
@@ -45,11 +49,7 @@ public abstract class ConstructibleMaterializer<TCommand, TParameter, TResult, T
 	/// <value>The included columns.</value>
 	protected IReadOnlyList<string>? IncludedColumns { get; private set; }
 
-	/// <summary>
-	/// Gets or sets the TObject metadata.
-	/// </summary>
-	/// <value>The object metadata.</value>
-	protected ClassMetadata ObjectMetadata { get; }
+	//protected ClassMetadata ObjectMetadata { get; }
 
 	/// <summary>
 	/// Returns the list of columns the result materializer would like to have.
@@ -65,6 +65,8 @@ public abstract class ConstructibleMaterializer<TCommand, TParameter, TResult, T
 	/// </remarks>
 	public override IReadOnlyList<string> DesiredColumns()
 	{
+		//We need to pick the constructor now so that we have the right columns in the SQL.
+		//If we wait until materialization, we could have missing or extra columns.
 		if (Constructor == null && !ObjectMetadata.Constructors.HasDefaultConstructor)
 		{
 			Constructor = InferConstructor();

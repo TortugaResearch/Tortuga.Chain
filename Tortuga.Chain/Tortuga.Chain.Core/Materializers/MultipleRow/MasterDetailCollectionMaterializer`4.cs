@@ -1,5 +1,6 @@
 using System.Collections.Immutable;
 using System.Data.Common;
+using Tortuga.Anchor;
 using Tortuga.Anchor.Metadata;
 using Tortuga.Chain.CommandBuilders;
 
@@ -12,10 +13,8 @@ internal sealed class MasterDetailCollectionMaterializer<TCommand, TParameter, T
 	where TDetail : class
 
 {
-	static readonly ImmutableArray<string> s_DesiredColumns = MetadataCache.GetMetadata<TMaster>().ColumnsFor.Union(MetadataCache.GetMetadata<TMaster>().ColumnsFor).ToImmutableArray();
-	static readonly ClassMetadata s_DetailMetadata = MetadataCache.GetMetadata<TMaster>();
+	static readonly ClassMetadata s_DetailMetadata = MetadataCache.GetMetadata<TDetail>();
 	static readonly ClassMetadata s_MasterMetadata = MetadataCache.GetMetadata<TMaster>();
-	readonly DbCommandBuilder<TCommand, TParameter> commandBuilder;
 	readonly CollectionOptions m_DetailOptions;
 	readonly Func<TMaster, ICollection<TDetail>> m_Map;
 	readonly string m_MasterKeyColumn;
@@ -23,16 +22,41 @@ internal sealed class MasterDetailCollectionMaterializer<TCommand, TParameter, T
 
 	public MasterDetailCollectionMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder, string masterKeyColumn, Func<TMaster, ICollection<TDetail>> map, CollectionOptions masterOptions, CollectionOptions detailOptions) : base(commandBuilder)
 	{
-		this.commandBuilder = commandBuilder;
 		m_MasterKeyColumn = masterKeyColumn;
 		m_Map = map;
 		m_MasterOptions = masterOptions;
 		m_DetailOptions = detailOptions;
-		if (!s_DesiredColumns.Contains(masterKeyColumn))
-			throw new MappingException($"Cannot find column '{masterKeyColumn}' in the list of columns for {typeof(TMaster).Name}");
 	}
 
-	public override IReadOnlyList<string> DesiredColumns() => s_DesiredColumns;
+	ConstructorMetadata? DetailConstructor { get; set; }
+	ConstructorMetadata? MasterConstructor { get; set; }
+
+	public override IReadOnlyList<string> DesiredColumns()
+	{
+		//We need to pick the constructor now so that we have the right columns in the SQL.
+		//If we wait until materialization, we could have missing or extra columns.
+
+		if (MasterConstructor == null && !s_MasterMetadata.Constructors.HasDefaultConstructor)
+			MasterConstructor = MaterializerUtilities.InferConstructor(s_MasterMetadata);
+
+		if (DetailConstructor == null && !s_DetailMetadata.Constructors.HasDefaultConstructor)
+			DetailConstructor = MaterializerUtilities.InferConstructor(s_DetailMetadata);
+
+		var columnNames = new HashSet<string>(); //using this to filter out duplicates
+		columnNames.Add(m_MasterKeyColumn);
+
+		if (MasterConstructor == null)
+			columnNames.AddRange(s_MasterMetadata.ColumnsFor);
+		else
+			columnNames.AddRange(MasterConstructor.ParameterNames);
+
+		if (DetailConstructor == null)
+			columnNames.AddRange(s_DetailMetadata.ColumnsFor);
+		else
+			columnNames.AddRange(DetailConstructor.ParameterNames);
+
+		return columnNames.ToImmutableArray();
+	}
 
 	public override List<TMaster> Execute(object? state = null)
 	{
@@ -83,6 +107,8 @@ internal sealed class MasterDetailCollectionMaterializer<TCommand, TParameter, T
 			comparer = new DateTimeEqualityComparer();
 		else if (columnType == typeof(DateTimeOffset))
 			comparer = new DateTimeOffsetEqualityComparer();
+		else if (columnType == typeof(ulong))
+			comparer = new UInt64EqualityComparer();
 		else
 			throw new NotSupportedException($"Key column of type '{columnType.Name}' is not supported for Master/Detail collections.");
 
@@ -101,28 +127,14 @@ internal sealed class MasterDetailCollectionMaterializer<TCommand, TParameter, T
 			group.Add(row);
 		}
 
-		//As a future enhancement, consider supporting constructor inference.
-		ConstructorMetadata? masterConstructor = null;
-		ConstructorMetadata? detailConstructor = null;
-
-		//We are caching the default constructor for performance reasons.
-		if (m_MasterOptions.HasFlag(CollectionOptions.InferConstructor))
-			masterConstructor = MaterializerUtilities.InferConstructor(s_MasterMetadata);
-		else
-			masterConstructor = MaterializerUtilities.DefaultConstructor(s_MasterMetadata);
-
-		if (m_DetailOptions.HasFlag(CollectionOptions.InferConstructor))
-			detailConstructor = MaterializerUtilities.InferConstructor(s_DetailMetadata);
-		else
-			detailConstructor = MaterializerUtilities.DefaultConstructor(s_MasterMetadata);
-
 		var result = new List<TMaster>();
 		foreach (var group in groups.Values)
 		{
-			var master = MaterializerUtilities.ConstructObject<TMaster>(group[0], masterConstructor, Converter);
+			var master = MaterializerUtilities.ConstructObject<TMaster>(group[0], MasterConstructor, Converter);
 			var target = m_Map(master);
 			foreach (var row in group)
-				target.Add(MaterializerUtilities.ConstructObject<TDetail>(row, detailConstructor, Converter));
+				target.Add(MaterializerUtilities.ConstructObject<TDetail>(row, DetailConstructor, Converter));
+			result.Add(master);
 		}
 
 		return result;
@@ -175,5 +187,12 @@ internal sealed class MasterDetailCollectionMaterializer<TCommand, TParameter, T
 		public new bool Equals(object? x, object? y) => string.Equals((string)x!, (string)y!, StringComparison.OrdinalIgnoreCase);
 
 		public int GetHashCode(object obj) => ((string)obj).GetHashCode(StringComparison.OrdinalIgnoreCase);
+	}
+
+	class UInt64EqualityComparer : IEqualityComparer<object>
+	{
+		public new bool Equals(object? x, object? y) => (ulong)x! == (ulong)y!;
+
+		public int GetHashCode(object obj) => obj.GetHashCode();
 	}
 }
