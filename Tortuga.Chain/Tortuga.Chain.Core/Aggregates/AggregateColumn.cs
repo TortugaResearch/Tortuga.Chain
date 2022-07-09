@@ -12,90 +12,64 @@ public class AggregateColumn
 	/// </summary>
 	/// <param name="aggregateType">Type of the aggregate. Cannot be Custom.</param>
 	/// <param name="columnName">Name of the column.</param>
-	/// <param name="asColumnName">Name of as column.</param>
+	/// <param name="outputColumnName">Name of output column.</param>
 	/// <exception cref="System.ArgumentOutOfRangeException">aggregateType - Cannot use this overload with AggregateType.Custom. Use the one with a SelectExpression.</exception>
 	/// <exception cref="System.ArgumentException">columnName is null or empty.</exception>
 	/// <exception cref="System.ArgumentException">asColumnName is null or empty.</exception>
-	public AggregateColumn(AggregateType aggregateType, string columnName, string asColumnName)
+	public AggregateColumn(AggregateType aggregateType, string columnName, string outputColumnName)
 	{
 		if (!Enum.IsDefined(typeof(AggregateType), aggregateType))
 			throw new ArgumentOutOfRangeException(nameof(aggregateType), aggregateType, $"{nameof(aggregateType)} is not defined.");
 
 		if (aggregateType == AggregateType.Custom)
-			throw new ArgumentOutOfRangeException(nameof(aggregateType), aggregateType, $"Cannot use this overload with AggregateType.Custom. Use the one with a SelectExpression.");
+			throw new ArgumentOutOfRangeException(nameof(aggregateType), aggregateType, $"AggregateType.Custom cannot be used here. Create a CustomAggregateColumn instead.");
 
 		if (string.IsNullOrEmpty(columnName))
 			throw new ArgumentException($"{nameof(columnName)} is null or empty.", nameof(columnName));
 
-		if (string.IsNullOrEmpty(asColumnName))
-			throw new ArgumentException($"{nameof(asColumnName)} is null or empty.", nameof(asColumnName));
+		if (string.IsNullOrEmpty(outputColumnName))
+			throw new ArgumentException($"{nameof(outputColumnName)} is null or empty.", nameof(outputColumnName));
 
 		AggregateType = aggregateType;
 		ColumnName = columnName;
-		AsColumnName = asColumnName;
+		OutputColumnName = outputColumnName;
 	}
 
 	/// <summary>
-	/// Create a group by column.
+	/// Initializes a new instance of the <see cref="AggregateColumn"/> class.
 	/// </summary>
-	/// <param name="columnName">Name of the column to group by.</param>
-	/// <exception cref="System.ArgumentException">columnName is null or empty.</exception>
-	public AggregateColumn(string columnName)
+	/// <remarks>Subclasses are expected to properly set the properties.</remarks>
+	protected AggregateColumn()
 	{
-		if (string.IsNullOrEmpty(columnName))
-			throw new ArgumentException($"{nameof(columnName)} is null or empty.", nameof(columnName));
-
-		AggregateType = AggregateType.None;
-		ColumnName = columnName;
-		AsColumnName = columnName;
-		GroupBy = true;
-	}
-
-	/// <summary>
-	/// Create a custom aggregate column.
-	/// </summary>
-	/// <param name="selectExpression">The SQL expression to use.</param>
-	/// <param name="asColumnName">Name of as column.</param>
-	/// <exception cref="System.ArgumentException">asColumnName is null or empty.</exception>
-	public AggregateColumn(string selectExpression, string asColumnName)
-	{
-		if (string.IsNullOrEmpty(selectExpression))
-			throw new ArgumentException($"{nameof(selectExpression)} is null or empty.", nameof(selectExpression));
-
-		if (string.IsNullOrEmpty(asColumnName))
-			throw new ArgumentException($"{nameof(asColumnName)} is null or empty.", nameof(asColumnName));
-
-		AggregateType = AggregateType.Custom;
-		SelectExpression = selectExpression;
-		AsColumnName = asColumnName;
 	}
 
 	/// <summary>
 	/// Gets the type of the aggregate to be performed.
 	/// </summary>
 	/// <value>The type of the aggregate.</value>
-	public AggregateType AggregateType { get; }
-
-	/// <summary>
-	/// Gets the column name to be used in the result set.
-	/// </summary>
-	public string AsColumnName { get; }
+	public AggregateType AggregateType { get; protected init; }
 
 	/// <summary>
 	/// Gets the name of the source column to be provided to the aggregate function.
 	/// </summary>
-	public string? ColumnName { get; }
+	public string? ColumnName { get; protected init; }
 
 	/// <summary>
 	/// If true, group by this column.
 	/// </summary>
-	public bool GroupBy { get; }
+	/// <remarks>This may be set to true by subclasses.</remarks>
+	public bool GroupBy { get; protected init; }
+
+	/// <summary>
+	/// Gets the column name to be used in the result set.
+	/// </summary>
+	public string? OutputColumnName { get; protected init; }
 
 	/// <summary>
 	/// Gets the custom select expression to be used. Only applicable when AggregateType is Custom.
 	/// </summary>
 	/// <value>The select expression.</value>
-	public string? SelectExpression { get; }
+	public string? SelectExpression { get; protected init; }
 
 	internal string ToGroupBySql(IDatabaseMetadataCache metadataCache)
 	{
@@ -108,11 +82,16 @@ public class AggregateColumn
 
 	internal string ToSelectSql(IDatabaseMetadataCache metadataCache)
 	{
+		if (AggregateType != AggregateType.Custom && ColumnName == null)
+			throw new Exception();
+
+		var asClause = !string.IsNullOrEmpty(OutputColumnName) ? $" AS {metadataCache.QuoteColumnName(OutputColumnName!)}" : null;
+
 		return AggregateType switch
 		{
-			AggregateType.None => $"{metadataCache.QuoteColumnName(ColumnName!)} AS {metadataCache.QuoteColumnName(AsColumnName)}",
-			AggregateType.Custom => $"{SelectExpression} AS {metadataCache.QuoteColumnName(AsColumnName)}",
-			_ => $"{metadataCache.GetAggregateFunction(AggregateType, ColumnName!)} AS {metadataCache.QuoteColumnName(AsColumnName)}",
+			AggregateType.None => $"{metadataCache.QuoteColumnName(ColumnName!)}{asClause}",
+			AggregateType.Custom => $"{SelectExpression}{asClause}",
+			_ => $"{metadataCache.GetAggregateFunction(AggregateType, ColumnName!)}{asClause}",
 		};
 	}
 }
