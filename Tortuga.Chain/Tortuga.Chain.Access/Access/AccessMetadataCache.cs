@@ -3,7 +3,7 @@ using System.Data.OleDb;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using Tortuga.Anchor;
-using Tortuga.Chain.Aggregation;
+using Tortuga.Chain.Aggregates;
 using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.Access;
@@ -37,21 +37,21 @@ public sealed class AccessMetadataCache : OleDbDatabaseMetadataCache<AccessObjec
 	public override int? MaxParameters => 768;
 
 	/// <summary>
-	/// Gets an aggregation function.
+	/// Gets an aggregate function.
 	/// </summary>
-	/// <param name="aggregationType">Type of the aggregation.</param>
+	/// <param name="aggregateType">Type of the aggregate.</param>
 	/// <param name="columnName">Name of the column to insert into the function.</param>
-	/// <returns>A string suitable for use in an aggregation.</returns>
+	/// <returns>A string suitable for use in an aggregate.</returns>
 	/// <exception cref="System.NotSupportedException">Access does not support distinct counts.</exception>
 	/// <exception cref="System.NotSupportedException">Access does not support distinct sums.</exception>
-	public override string GetAggregationFunction(AggregationType aggregationType, string columnName)
+	public override string GetAggregateFunction(AggregateType aggregateType, string columnName)
 	{
-		if (aggregationType == AggregationType.CountDistinct)
+		if (aggregateType == AggregateType.CountDistinct)
 			throw new NotSupportedException("Access does not support distinct counts.");
-		if (aggregationType == AggregationType.SumDistinct)
+		if (aggregateType == AggregateType.SumDistinct)
 			throw new NotSupportedException("Access does not support distinct sums.");
 
-		return base.GetAggregationFunction(aggregationType, columnName);
+		return base.GetAggregateFunction(aggregateType, columnName);
 	}
 
 	/// <summary>

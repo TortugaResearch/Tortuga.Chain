@@ -71,7 +71,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 
 			if (m_FunctionArgumentValue != null)
 				sqlBuilder.ApplyArgumentValue(DataSource, m_FunctionArgumentValue);
-			if (AggregationColumns.IsEmpty)
+			if (AggregateColumns.IsEmpty)
 			{
 				var desired = materializer.DesiredColumns();
 				if (desired == Materializer.AutoSelectDesiredColumns)
@@ -97,10 +97,10 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 			List<NpgsqlParameter> parameters;
 			var sql = new StringBuilder();
 
-			if (AggregationColumns.IsEmpty)
+			if (AggregateColumns.IsEmpty)
 				sqlBuilder.BuildSelectClause(sql, "SELECT ", null, null);
 			else
-				AggregationColumns.BuildSelectClause(sql, "SELECT ", DataSource, null);
+				AggregateColumns.BuildSelectClause(sql, "SELECT ", DataSource, null);
 
 			sqlBuilder.BuildFromFunctionClause(sql, $" FROM {m_Table.Name.ToQuotedString()} (", " ) ");
 
@@ -125,8 +125,8 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 				parameters = sqlBuilder.GetParameters();
 			}
 
-			if (AggregationColumns.HasGroupBy)
-				AggregationColumns.BuildGroupByClause(sql, " GROUP BY ", DataSource, null);
+			if (AggregateColumns.HasGroupBy)
+				AggregateColumns.BuildGroupByClause(sql, " GROUP BY ", DataSource, null);
 
 			if (m_LimitOptions.RequiresSorting() && !m_SortExpressions.Any() && StrictMode)
 				throw new InvalidOperationException("Limits were requested without a sort order. Use WithSorting to supply a sort order or disable strict mode.");

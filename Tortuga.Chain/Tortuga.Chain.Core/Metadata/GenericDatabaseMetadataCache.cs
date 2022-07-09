@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using Tortuga.Chain.Aggregation;
+using Tortuga.Chain.Aggregates;
 
 namespace Tortuga.Chain.Metadata;
 
@@ -20,7 +20,7 @@ sealed class GenericDatabaseMetadataCache : IDatabaseMetadataCache
 
 	int? IDatabaseMetadataCache.MaxParameters => null;
 
-	string IDatabaseMetadataCache.GetAggregationFunction(AggregationType aggregationType, string columnName)
+	string IDatabaseMetadataCache.GetAggregateFunction(AggregateType aggregateType, string columnName)
 	{
 		throw new NotImplementedException(NotSupportedMessage);
 	}

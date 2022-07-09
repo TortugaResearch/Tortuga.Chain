@@ -1,6 +1,7 @@
 ﻿using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
-using Tortuga.Chain.Aggregation;
+using Tortuga.Anchor;
+using Tortuga.Chain.Aggregates;
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Metadata;
 
@@ -29,10 +30,10 @@ public abstract class TableDbCommandBuilder<TCommand, TParameter, TLimit> : Mult
 	}
 
 	/// <summary>
-	/// Gets the aggregation columns.
+	/// Gets the aggregate columns.
 	/// </summary>
-	/// <value>The aggregation columns.</value>
-	protected AggregationColumnCollection AggregationColumns { get; } = new();
+	/// <value>The aggregate columns.</value>
+	protected AggregateColumnCollection AggregateColumns { get; } = new();
 
 	/// <summary>
 	/// Gets the columns from the metadata.
@@ -49,13 +50,33 @@ public abstract class TableDbCommandBuilder<TCommand, TParameter, TLimit> : Mult
 	protected virtual LimitOptions DefaultLimitOption => LimitOptions.Rows;
 
 	/// <summary>
+	/// Performs an aggregation on the table.
+	/// </summary>
+	/// <param name="aggregateColumns">The aggregate columns.</param>
+	public MultipleRowDbCommandBuilder<TCommand, TParameter> AsAggregate(IEnumerable<AggregateColumn> aggregateColumns)
+	{
+		AggregateColumns.Clear();
+		AggregateColumns.AddRange(aggregateColumns);
+		return this;
+	}
+
+	/// <summary>
+	/// Performs an aggregation on the table.
+	/// </summary>
+	/// <param name="aggregateColumns">The aggregate columns.</param>
+	public MultipleRowDbCommandBuilder<TCommand, TParameter> AsAggregate(params AggregateColumn[] aggregateColumns)
+	{
+		return AsAggregate((IEnumerable<AggregateColumn>)aggregateColumns);
+	}
+
+	/// <summary>
 	/// Gets the average value for the indicated column.
 	/// </summary>
 	/// <param name="columnName">Name of the column.</param>
 	public ScalarDbCommandBuilder<TCommand, TParameter> AsAverage(string columnName)
 	{
 		var column = Columns[columnName];
-		AggregationColumns.Add(new AggregationColumn(AggregationType.Average, column.SqlName, column.SqlName));
+		AggregateColumns.Add(new AggregateColumn(AggregateType.Average, column.SqlName, column.SqlName));
 		return this;
 	}
 
@@ -65,7 +86,7 @@ public abstract class TableDbCommandBuilder<TCommand, TParameter, TLimit> : Mult
 	/// <returns></returns>
 	public ILink<long> AsCount()
 	{
-		AggregationColumns.Add(new AggregationColumn(AggregationType.Count, "*", "RowCount"));
+		AggregateColumns.Add(new AggregateColumn(AggregateType.Count, "*", "RowCount"));
 		return ToInt64();
 	}
 
@@ -78,7 +99,7 @@ public abstract class TableDbCommandBuilder<TCommand, TParameter, TLimit> : Mult
 	public ILink<long> AsCount(string columnName, bool distinct = false)
 	{
 		var column = Columns[columnName];
-		AggregationColumns.Add(new AggregationColumn(distinct ? AggregationType.CountDistinct : AggregationType.Count, column.SqlName, column.SqlName));
+		AggregateColumns.Add(new AggregateColumn(distinct ? AggregateType.CountDistinct : AggregateType.Count, column.SqlName, column.SqlName));
 
 		return ToInt64();
 	}
@@ -90,7 +111,7 @@ public abstract class TableDbCommandBuilder<TCommand, TParameter, TLimit> : Mult
 	public ScalarDbCommandBuilder<TCommand, TParameter> AsMax(string columnName)
 	{
 		var column = Columns[columnName];
-		AggregationColumns.Add(new AggregationColumn(AggregationType.Max, column.SqlName, column.SqlName));
+		AggregateColumns.Add(new AggregateColumn(AggregateType.Max, column.SqlName, column.SqlName));
 		return this;
 	}
 
@@ -101,7 +122,7 @@ public abstract class TableDbCommandBuilder<TCommand, TParameter, TLimit> : Mult
 	public ScalarDbCommandBuilder<TCommand, TParameter> AsMin(string columnName)
 	{
 		var column = Columns[columnName];
-		AggregationColumns.Add(new AggregationColumn(AggregationType.Min, column.SqlName, column.SqlName));
+		AggregateColumns.Add(new AggregateColumn(AggregateType.Min, column.SqlName, column.SqlName));
 		return this;
 	}
 
@@ -113,7 +134,7 @@ public abstract class TableDbCommandBuilder<TCommand, TParameter, TLimit> : Mult
 	public ScalarDbCommandBuilder<TCommand, TParameter> AsSum(string columnName, bool distinct = false)
 	{
 		var column = Columns[columnName];
-		AggregationColumns.Add(new AggregationColumn(distinct ? AggregationType.SumDistinct : AggregationType.Sum, column.SqlName, column.SqlName));
+		AggregateColumns.Add(new AggregateColumn(distinct ? AggregateType.SumDistinct : AggregateType.Sum, column.SqlName, column.SqlName));
 		return this;
 	}
 

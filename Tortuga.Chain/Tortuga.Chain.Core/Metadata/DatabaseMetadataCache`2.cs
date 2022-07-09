@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using Tortuga.Anchor;
 using Tortuga.Anchor.Metadata;
-using Tortuga.Chain.Aggregation;
+using Tortuga.Chain.Aggregates;
 
 namespace Tortuga.Chain.Metadata;
 
@@ -60,32 +60,38 @@ public abstract class DatabaseMetadataCache<TObjectName, TDbType> : IDatabaseMet
 	public virtual ImmutableHashSet<string> UnsupportedSqlTypeNames => ImmutableHashSet<string>.Empty;
 
 	/// <summary>
-	/// Gets an aggregation function.
+	/// Gets an aggregate function.
 	/// </summary>
-	/// <param name="aggregationType">Type of the aggregation.</param>
+	/// <param name="aggregateType">Type of the aggregate.</param>
 	/// <param name="columnName">Name of the column to insert into the function.</param>
-	/// <returns>A string suitable for use in an aggregation.</returns>
-	public virtual string GetAggregationFunction(AggregationType aggregationType, string columnName)
+	/// <returns>A string suitable for use in an aggregate.</returns>
+	public virtual string GetAggregateFunction(AggregateType aggregateType, string columnName)
 	{
-		switch (aggregationType)
+		switch (aggregateType)
 		{
-			case AggregationType.Min:
+			case AggregateType.Min:
 				return $"MIN({QuoteColumnName(columnName!)})";
 
-			case AggregationType.Max:
+			case AggregateType.Max:
 				return $"MAX({QuoteColumnName(columnName!)})";
 
-			case AggregationType.Average:
+			case AggregateType.Average:
 				return $"AVG({QuoteColumnName(columnName!)})";
 
-			case AggregationType.Count:
+			case AggregateType.Count:
 				return $"COUNT({QuoteColumnName(columnName!)})";
 
-			case AggregationType.CountDistinct:
+			case AggregateType.CountDistinct:
 				return $"COUNT(DISTINCT {QuoteColumnName(columnName!)})";
 
+			case AggregateType.Sum:
+				return $"SUM({QuoteColumnName(columnName!)})";
+
+			case AggregateType.SumDistinct:
+				return $"SUM(DISTINCT {QuoteColumnName(columnName!)})";
+
 			default:
-				throw new ArgumentOutOfRangeException(nameof(AggregationType));
+				throw new ArgumentOutOfRangeException(nameof(AggregateType));
 		}
 	}
 

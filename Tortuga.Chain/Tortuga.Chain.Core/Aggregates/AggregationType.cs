@@ -1,17 +1,17 @@
-﻿namespace Tortuga.Chain.Aggregation;
+﻿namespace Tortuga.Chain.Aggregates;
 
 /// <summary>
-/// Gets the type of the aggregation to be performed.
+/// Gets the type of the aggregate to be performed.
 /// </summary>
-public enum AggregationType
+public enum AggregateType
 {
 	/// <summary>
-	/// No aggregation. Usually used for GroupBy columns.
+	/// No aggregate. Usually used for GroupBy columns.
 	/// </summary>
 	None = 0,
 
 	/// <summary>
-	/// Custom aggregation. Uses the SelectExpression function.
+	/// Custom aggregate. Uses the SelectExpression function.
 	/// </summary>
 	Custom,
 

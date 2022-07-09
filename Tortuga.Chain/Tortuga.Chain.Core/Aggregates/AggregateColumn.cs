@@ -1,28 +1,28 @@
 ﻿using Tortuga.Chain.Metadata;
 
-namespace Tortuga.Chain.Aggregation;
+namespace Tortuga.Chain.Aggregates;
 
 /// <summary>
-/// An AggregationColumn is used to generate aggregations in the SQL generation.
+/// An AggregateColumn is used to generate aggregates in the SQL generation.
 /// </summary>
-public class AggregationColumn
+public class AggregateColumn
 {
 	/// <summary>
-	/// Create a non-custom aggregation column.
+	/// Create a non-custom aggregate column.
 	/// </summary>
-	/// <param name="aggregationType">Type of the aggregation. Cannot be Custom.</param>
+	/// <param name="aggregateType">Type of the aggregate. Cannot be Custom.</param>
 	/// <param name="columnName">Name of the column.</param>
 	/// <param name="asColumnName">Name of as column.</param>
-	/// <exception cref="System.ArgumentOutOfRangeException">aggregationType - Cannot use this overload with AggregationType.Custom. Use the one with a SelectExpression.</exception>
+	/// <exception cref="System.ArgumentOutOfRangeException">aggregateType - Cannot use this overload with AggregateType.Custom. Use the one with a SelectExpression.</exception>
 	/// <exception cref="System.ArgumentException">columnName is null or empty.</exception>
 	/// <exception cref="System.ArgumentException">asColumnName is null or empty.</exception>
-	public AggregationColumn(AggregationType aggregationType, string columnName, string asColumnName)
+	public AggregateColumn(AggregateType aggregateType, string columnName, string asColumnName)
 	{
-		if (!Enum.IsDefined(typeof(AggregationType), aggregationType))
-			throw new ArgumentOutOfRangeException(nameof(aggregationType), aggregationType, $"{nameof(aggregationType)} is not defined.");
+		if (!Enum.IsDefined(typeof(AggregateType), aggregateType))
+			throw new ArgumentOutOfRangeException(nameof(aggregateType), aggregateType, $"{nameof(aggregateType)} is not defined.");
 
-		if (aggregationType == AggregationType.Custom)
-			throw new ArgumentOutOfRangeException(nameof(aggregationType), aggregationType, $"Cannot use this overload with AggregationType.Custom. Use the one with a SelectExpression.");
+		if (aggregateType == AggregateType.Custom)
+			throw new ArgumentOutOfRangeException(nameof(aggregateType), aggregateType, $"Cannot use this overload with AggregateType.Custom. Use the one with a SelectExpression.");
 
 		if (string.IsNullOrEmpty(columnName))
 			throw new ArgumentException($"{nameof(columnName)} is null or empty.", nameof(columnName));
@@ -30,7 +30,7 @@ public class AggregationColumn
 		if (string.IsNullOrEmpty(asColumnName))
 			throw new ArgumentException($"{nameof(asColumnName)} is null or empty.", nameof(asColumnName));
 
-		AggregationType = aggregationType;
+		AggregateType = aggregateType;
 		ColumnName = columnName;
 		AsColumnName = asColumnName;
 	}
@@ -40,24 +40,24 @@ public class AggregationColumn
 	/// </summary>
 	/// <param name="columnName">Name of the column to group by.</param>
 	/// <exception cref="System.ArgumentException">columnName is null or empty.</exception>
-	public AggregationColumn(string columnName)
+	public AggregateColumn(string columnName)
 	{
 		if (string.IsNullOrEmpty(columnName))
 			throw new ArgumentException($"{nameof(columnName)} is null or empty.", nameof(columnName));
 
-		AggregationType = AggregationType.None;
+		AggregateType = AggregateType.None;
 		ColumnName = columnName;
 		AsColumnName = columnName;
 		GroupBy = true;
 	}
 
 	/// <summary>
-	/// Create a non-custom aggregation column.
+	/// Create a custom aggregate column.
 	/// </summary>
 	/// <param name="selectExpression">The SQL expression to use.</param>
 	/// <param name="asColumnName">Name of as column.</param>
 	/// <exception cref="System.ArgumentException">asColumnName is null or empty.</exception>
-	public AggregationColumn(string selectExpression, string asColumnName)
+	public AggregateColumn(string selectExpression, string asColumnName)
 	{
 		if (string.IsNullOrEmpty(selectExpression))
 			throw new ArgumentException($"{nameof(selectExpression)} is null or empty.", nameof(selectExpression));
@@ -65,16 +65,16 @@ public class AggregationColumn
 		if (string.IsNullOrEmpty(asColumnName))
 			throw new ArgumentException($"{nameof(asColumnName)} is null or empty.", nameof(asColumnName));
 
-		AggregationType = AggregationType.Custom;
+		AggregateType = AggregateType.Custom;
 		SelectExpression = selectExpression;
 		AsColumnName = asColumnName;
 	}
 
 	/// <summary>
-	/// Gets the type of the aggregation to be performed.
+	/// Gets the type of the aggregate to be performed.
 	/// </summary>
-	/// <value>The type of the aggregation.</value>
-	public AggregationType AggregationType { get; }
+	/// <value>The type of the aggregate.</value>
+	public AggregateType AggregateType { get; }
 
 	/// <summary>
 	/// Gets the column name to be used in the result set.
@@ -92,7 +92,7 @@ public class AggregationColumn
 	public bool GroupBy { get; }
 
 	/// <summary>
-	/// Gets the custom select expression to be used. Only applicable when AggregationType is Custom.
+	/// Gets the custom select expression to be used. Only applicable when AggregateType is Custom.
 	/// </summary>
 	/// <value>The select expression.</value>
 	public string? SelectExpression { get; }
@@ -108,11 +108,11 @@ public class AggregationColumn
 
 	internal string ToSelectSql(IDatabaseMetadataCache metadataCache)
 	{
-		return AggregationType switch
+		return AggregateType switch
 		{
-			AggregationType.None => $"{metadataCache.QuoteColumnName(ColumnName!)} AS {metadataCache.QuoteColumnName(AsColumnName)}",
-			AggregationType.Custom => $"{SelectExpression} AS {metadataCache.QuoteColumnName(AsColumnName)}",
-			_ => $"{metadataCache.GetAggregationFunction(AggregationType, ColumnName!)} AS {metadataCache.QuoteColumnName(AsColumnName)}",
+			AggregateType.None => $"{metadataCache.QuoteColumnName(ColumnName!)} AS {metadataCache.QuoteColumnName(AsColumnName)}",
+			AggregateType.Custom => $"{SelectExpression} AS {metadataCache.QuoteColumnName(AsColumnName)}",
+			_ => $"{metadataCache.GetAggregateFunction(AggregateType, ColumnName!)} AS {metadataCache.QuoteColumnName(AsColumnName)}",
 		};
 	}
 }

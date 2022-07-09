@@ -1,12 +1,12 @@
 ﻿using System.Text;
 using Tortuga.Chain.DataSources;
 
-namespace Tortuga.Chain.Aggregation;
+namespace Tortuga.Chain.Aggregates;
 
 /// <summary>
-/// Class AggregationColumnCollection.
+/// Class AggregateColumnCollection.
 /// </summary>
-public class AggregationColumnCollection : System.Collections.ObjectModel.Collection<AggregationColumn>
+public class AggregateColumnCollection : System.Collections.ObjectModel.Collection<AggregateColumn>
 {
 	/// <summary>
 	/// If this returns true, there are columns that need to go into a GROUP BY clause.
