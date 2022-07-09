@@ -8,17 +8,17 @@ public class GroupByColumn : AggregateColumn
 	/// <summary>
 	/// Create a group by column.
 	/// </summary>
-	/// <param name="columnName">Name of the column to group by.</param>
-	/// <param name="asColumnName"></param>
+	/// <param name="sourceColumnName">Name of the column to group by.</param>
+	/// <param name="outputColumnName">If null, the sourceColumnName will be used.</param>
 	/// <exception cref="ArgumentException">columnName is null or empty.</exception>
-	public GroupByColumn(string columnName, string? asColumnName = "")
+	public GroupByColumn(string sourceColumnName, string? outputColumnName)
 	{
-		if (string.IsNullOrEmpty(columnName))
-			throw new ArgumentException($"{nameof(columnName)} is null or empty.", nameof(columnName));
+		if (string.IsNullOrEmpty(sourceColumnName))
+			throw new ArgumentException($"{nameof(sourceColumnName)} is null or empty.", nameof(sourceColumnName));
 
 		AggregateType = AggregateType.None;
-		ColumnName = columnName;
-		OutputColumnName = asColumnName ?? columnName;
+		SourceColumnName = sourceColumnName;
+		OutputColumnName = outputColumnName ?? sourceColumnName;
 		GroupBy = true;
 	}
 }

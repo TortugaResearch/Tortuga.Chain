@@ -1,6 +1,7 @@
 ﻿using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
 using Tortuga.Anchor;
+using Tortuga.Anchor.Metadata;
 using Tortuga.Chain.Aggregates;
 using Tortuga.Chain.DataSources;
 using Tortuga.Chain.Metadata;
@@ -48,6 +49,58 @@ public abstract class TableDbCommandBuilder<TCommand, TParameter, TLimit> : Mult
 	/// </value>
 	/// <remarks>For most data sources, this will be LimitOptions.Rows. </remarks>
 	protected virtual LimitOptions DefaultLimitOption => LimitOptions.Rows;
+
+	/// <summary>
+	/// Performs an aggregation on the table using the provided object.
+	/// </summary>
+	/// <typeparam name="TObject">The type of the t object.</typeparam>
+	/// <returns>ObjectMultipleRow&lt;TCommand, TParameter, TObject&gt;.</returns>
+	public ObjectMultipleRow<TCommand, TParameter, TObject> AsAggregate<TObject>()
+		where TObject : class
+	{
+		//TODO: Waiting on Anchor 4.1 - JLA
+		//TODO: Need to deal with group by order! - JLA
+		var properties = MetadataCache.GetMetadata<TObject>().Properties;
+
+		AggregateColumns.Clear();
+		foreach (var property in properties)
+		{
+			var found = 0;
+			if (property.MappedColumnName == null)
+				continue; //Property has a NotMappedAttribute
+
+			AggregateColumnAttribute? aggregateColumn = property.Attributes.GetAttribute<AggregateColumnAttribute>();
+			GroupByColumnAttribute? groupByColumn = property.Attributes.GetAttribute<GroupByColumnAttribute>();
+			CustomAggregateColumnAttribute? customAggregateColumn = property.Attributes.GetAttribute<CustomAggregateColumnAttribute>();
+
+			if (aggregateColumn != null)
+			{
+				found += 1;
+				AggregateColumns.Add(new AggregateColumn(aggregateColumn.AggregateType, aggregateColumn.SourceColumnName, property.MappedColumnName));
+			}
+			if (groupByColumn != null)
+			{
+				found += 1;
+				AggregateColumns.Add(new GroupByColumn(groupByColumn.SourceColumnName ?? property.MappedColumnName, property.MappedColumnName));
+			}
+			if (customAggregateColumn != null)
+			{
+				found += 1;
+				AggregateColumns.Add(new CustomAggregateColumn(customAggregateColumn.SelectExpression, property.MappedColumnName, customAggregateColumn.GroupBy));
+			}
+
+			if (found == 0)
+			{
+				AggregateColumns.Add(new AggregateColumn(AggregateType.None, property.MappedColumnName, property.MappedColumnName));
+				continue;
+			}
+
+			if (found > 1)
+				throw new MappingException($"Only one of {nameof(AggregateColumnAttribute)}, {nameof(GroupByColumnAttribute)}, or {nameof(CustomAggregateColumnAttribute)} may be on a given property.");
+		}
+
+		return new ObjectMultipleRow<TCommand, TParameter, TObject>(this);
+	}
 
 	/// <summary>
 	/// Performs an aggregation on the table.
