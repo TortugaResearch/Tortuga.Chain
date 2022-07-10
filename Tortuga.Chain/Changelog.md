@@ -1,3 +1,11 @@
+## Version 4.3
+
+### Technical Debt
+
+[#488 Add IAsyncDisposable support](https://github.com/TortugaResearch/Tortuga.Chain/issues/488)
+
+Added support for `IAsyncDisposable` to transactional data sources.
+
 ## Version 4.2
 
 ### Features
