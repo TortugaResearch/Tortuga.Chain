@@ -1,4 +1,5 @@
-﻿using System.Data.Common;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
 using Tortuga.Anchor;
 using Tortuga.Anchor.Metadata;
@@ -62,41 +63,42 @@ public abstract class TableDbCommandBuilder<TCommand, TParameter, TLimit> : Mult
 		//TODO: Need to deal with group by order! - JLA
 		var properties = MetadataCache.GetMetadata<TObject>().Properties;
 
+		var map = properties.Select(p => new { Property = p, Aggregates = p.Attributes.OfType<BaseAggregateAttribute>().ToList() })
+			.Where(p => p.Aggregates.Count > 0)
+			.OrderBy(p => p.Aggregates[0].Order ?? int.MaxValue) //Properties without an order go to the end of the line.
+			.ToList();
+
+		//Sanity checks.
+		foreach (var item in map.Where(p => p.Aggregates.Count > 1))
+			throw new MappingException($"The property {item.Property.Name} on class {nameof(TObject)} has more than one aggregate attribute. Only one of {nameof(AggregateColumnAttribute)}, {nameof(GroupByColumnAttribute)}, or {nameof(CustomAggregateColumnAttribute)} may be on a given property.");
+		foreach (var item in map.Where(p => p.Property.MappedColumnName is null))
+			throw new MappingException($"The property {item.Property.Name} on class {nameof(TObject)} cannot have the {nameof(NotMappedAttribute)} and one of {nameof(AggregateColumnAttribute)}, {nameof(GroupByColumnAttribute)}, or {nameof(CustomAggregateColumnAttribute)} at the same time.");
+
 		AggregateColumns.Clear();
-		foreach (var property in properties)
+		foreach (var item in map)
 		{
-			var found = 0;
-			if (property.MappedColumnName == null)
-				continue; //Property has a NotMappedAttribute
-
-			AggregateColumnAttribute? aggregateColumn = property.Attributes.GetAttribute<AggregateColumnAttribute>();
-			GroupByColumnAttribute? groupByColumn = property.Attributes.GetAttribute<GroupByColumnAttribute>();
-			CustomAggregateColumnAttribute? customAggregateColumn = property.Attributes.GetAttribute<CustomAggregateColumnAttribute>();
-
-			if (aggregateColumn != null)
+			switch (item.Aggregates[0])
 			{
-				found += 1;
-				AggregateColumns.Add(new AggregateColumn(aggregateColumn.AggregateType, aggregateColumn.SourceColumnName, property.MappedColumnName));
-			}
-			if (groupByColumn != null)
-			{
-				found += 1;
-				AggregateColumns.Add(new GroupByColumn(groupByColumn.SourceColumnName ?? property.MappedColumnName, property.MappedColumnName));
-			}
-			if (customAggregateColumn != null)
-			{
-				found += 1;
-				AggregateColumns.Add(new CustomAggregateColumn(customAggregateColumn.SelectExpression, property.MappedColumnName, customAggregateColumn.GroupBy));
-			}
+				case AggregateColumnAttribute aggregateColumn:
+					{
+						var sourceColumn = Columns[aggregateColumn.SourceColumnName].SqlName;
+						AggregateColumns.Add(new AggregateColumn(aggregateColumn.AggregateType, sourceColumn, item.Property.MappedColumnName!));
+						break;
+					}
 
-			if (found == 0)
-			{
-				AggregateColumns.Add(new AggregateColumn(AggregateType.None, property.MappedColumnName, property.MappedColumnName));
-				continue;
-			}
+				case GroupByColumnAttribute groupByColumn:
+					{
+						var sourceColumn = Columns[groupByColumn.SourceColumnName ?? item.Property.MappedColumnName!].SqlName;
+						AggregateColumns.Add(new GroupByColumn(sourceColumn, item.Property.MappedColumnName));
+						break;
+					}
 
-			if (found > 1)
-				throw new MappingException($"Only one of {nameof(AggregateColumnAttribute)}, {nameof(GroupByColumnAttribute)}, or {nameof(CustomAggregateColumnAttribute)} may be on a given property.");
+				case CustomAggregateColumnAttribute customAggregateColumn:
+					{
+						AggregateColumns.Add(new CustomAggregateColumn(customAggregateColumn.SelectExpression, item.Property.MappedColumnName!, customAggregateColumn.GroupBy));
+						break;
+					}
+			}
 		}
 
 		return new ObjectMultipleRow<TCommand, TParameter, TObject>(this);

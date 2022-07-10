@@ -1,5 +1,7 @@
 ## Version 4.3
 
+Updated dependency to Anchor 4.1.
+
 ### Features
 
 [#88 Simple Aggregators](https://github.com/TortugaResearch/Tortuga.Chain/issues/88)
@@ -16,6 +18,44 @@ These all return a `ScalarDbCommandBuilder` with which the caller can specify th
 For more complex aggregation, use the `AsAggregate` method. This accepts a collection of `AggregateColumn` objects, which can be used for both aggregegate functions and grouping.
 
 The original `AsCount` methods were reworked to fit into this model.
+
+[#89 Declarative Aggregators](https://github.com/TortugaResearch/Tortuga.Chain/issues/89)
+
+Attributes can now be used to declare aggregations directly in a model.
+
+```csharp
+[Table("Sales.EmployeeSalesView"]
+public class SalesFigures
+{
+	[AggregateColumn(AggregateType.Min, "TotalPrice")]
+	public decimal SmallestSale { get; set; }
+
+	[AggregateColumn(AggregateType.Max, "TotalPrice")]
+	public decimal LargestSale { get; set; }
+
+	[AggregateColumn(AggregateType.Average, "TotalPrice")]
+	public decimal AverageSale { get; set; }
+
+	[CustomAggregateColumn("Max(TotalPrice) - Min(TotalPrice)")]
+	public decimal Range { get; set; }
+
+	[GroupByColumn]
+	public int EmployeeKey { get; set; }
+
+	[GroupByColumn]
+	public string EmployeeName { get; set; }
+}
+
+```
+
+To use this feature, you need use either of these patterns:
+
+```csharp
+datasource.FromTable(tableName, filter).ToAggregate<TObject>().ToCollection().Execute();
+datasource.FromTable<TObject>(filter).ToAggregate().ToCollection().Execute();
+```
+
+In the second version, the table or view name is extracted from the class.
 
 ## Version 4.2
 

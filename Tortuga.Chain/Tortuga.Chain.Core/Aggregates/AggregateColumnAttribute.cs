@@ -6,7 +6,7 @@
 /// </summary>
 /// <seealso cref="Attribute" />
 [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
-public class AggregateColumnAttribute : Attribute
+public class AggregateColumnAttribute : BaseAggregateAttribute
 {
 	/// <summary>
 	/// Initializes a new instance of the <see cref="AggregateColumnAttribute"/> class.
@@ -15,7 +15,7 @@ public class AggregateColumnAttribute : Attribute
 	/// <param name="sourceColumnName">Name of the source column.</param>
 	public AggregateColumnAttribute(AggregateType aggregateType, string sourceColumnName)
 	{
-		AggregateType = AggregateType;
+		AggregateType = aggregateType;
 		SourceColumnName = sourceColumnName;
 	}
 

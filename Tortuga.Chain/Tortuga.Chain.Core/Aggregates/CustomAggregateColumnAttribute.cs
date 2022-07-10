@@ -6,32 +6,31 @@
 	/// </summary>
 	/// <seealso cref="Attribute" />
 	[AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
-	public class CustomAggregateColumnAttribute : Attribute
+	public class CustomAggregateColumnAttribute : BaseAggregateAttribute
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="GroupByColumnAttribute"/> class.
 		/// </summary>
 		/// <param name="selectExpression">The SQL expression to use.</param>
 		/// <param name="groupBy">Indicates whether the expression is also used for grouping.</param>
-		/// <param name="groupingOrder">The order to apply the group by columns. If null, uses the order the properties appear in reflection.</param>
-		public CustomAggregateColumnAttribute(string selectExpression, bool groupBy = false, int? groupingOrder = null)
+		/// <param name="order">The order is important for group by columns. If tied or null, uses the order the properties appear in reflection.</param>
+		public CustomAggregateColumnAttribute(string selectExpression, bool groupBy, int order)
 		{
 			SelectExpression = selectExpression;
 			GroupBy = groupBy;
-			GroupingOrder = groupingOrder ?? int.MaxValue;
+			Order = order;
 		}
 
 		/// <summary>
-		/// If true, group by this column.
+		/// Initializes a new instance of the <see cref="GroupByColumnAttribute"/> class.
 		/// </summary>
-		public bool GroupBy { get; }
-
-		/// <summary>
-		/// The order to apply the group by columns. If tied, uses the order the properties appear in reflection.
-		/// </summary>
-		/// <value>The grouping order.</value>
-		/// <remarks>Defaults to Int32.MaxValue</remarks>
-		public int GroupingOrder { get; }
+		/// <param name="selectExpression">The SQL expression to use.</param>
+		/// <param name="groupBy">Indicates whether the expression is also used for grouping.</param>
+		public CustomAggregateColumnAttribute(string selectExpression, bool groupBy = false)
+		{
+			SelectExpression = selectExpression;
+			GroupBy = groupBy;
+		}
 
 		/// <summary>
 		/// Gets the name of the source column to be provided to the aggregate function.
