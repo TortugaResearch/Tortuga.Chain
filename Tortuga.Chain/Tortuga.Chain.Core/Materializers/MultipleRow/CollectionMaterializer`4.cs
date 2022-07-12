@@ -45,7 +45,7 @@ internal sealed class CollectionMaterializer<TCommand, TParameter, TObject, TCol
 		var result = new TCollection();
 		Prepare().Execute(cmd =>
 		{
-			using (var reader = cmd.ExecuteReader().AsObjectConstructor<TObject>(Constructor, CommandBuilder.TryGetNonNullableColumns(), Converter))
+			using (var reader = cmd.ExecuteReader(CommandBehavior).AsObjectConstructor<TObject>(Constructor, CommandBuilder.TryGetNonNullableColumns(), Converter))
 			{
 				while (reader.Read(out var value))
 					result.Add(value);
@@ -68,7 +68,7 @@ internal sealed class CollectionMaterializer<TCommand, TParameter, TObject, TCol
 
 		await Prepare().ExecuteAsync(async cmd =>
 		{
-			using (var reader = (await cmd.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false)).AsObjectConstructor<TObject>(Constructor, CommandBuilder.TryGetNonNullableColumns(), Converter))
+			using (var reader = (await cmd.ExecuteReaderAsync(CommandBehavior, cancellationToken).ConfigureAwait(false)).AsObjectConstructor<TObject>(Constructor, CommandBuilder.TryGetNonNullableColumns(), Converter))
 			{
 				while (await reader.ReadAsync().ConfigureAwait(false))
 					result.Add(reader.Current!);

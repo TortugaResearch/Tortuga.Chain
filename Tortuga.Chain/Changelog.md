@@ -1,3 +1,45 @@
+
+
+[#92 ToObjectStream](https://github.com/TortugaResearch/Tortuga.Chain/issues/92)
+
+Previously, Chain would fully manage database connections by default. Specifically, it would open and close connections automatically unless a transaction was involved. In that case, the developer only needed to manage the transactional data source itself.
+
+However, there are times when a result set is too large to handle at one time. In this case the developer will want an `IEnumerable` or `IAsyncEnumerable` instead of a collection. To support this, the `ToObjectStream` materializer was created.
+
+When used in place of `ToCollection`, the caller gets a `ObjectStream` object. This object implements `IEnumerable<TObject>`, `IDisposable`, `IAsyncDisposable`, abd `IAsyncEnumerable<TObject>`. (That latter two are only available in .NET 6 or later.)
+
+This object stream may be used directly, as shown below, or attached to an RX Observable or TPL Dataflow just like any other enumerable data structure.
+
+```csharp
+//sync pattern
+
+using var objectStream = dataSource.From<Employee>(new { Title = uniqueKey }).ToObjectStream<Employee>().Execute();
+foreach (var item in objectStream)
+{
+	Assert.AreEqual(uniqueKey, item.Title);
+}
+
+//async pattern
+
+await using var objectStream = await dataSource.From<Employee>(new { Title = uniqueKey }).ToObjectStream<Employee>().ExecuteAsync();
+await foreach (var item in objectStream)
+{
+	Assert.AreEqual(uniqueKey, item.Title);
+}
+
+```
+
+It is vital that the object stream is disposed after use. If that doesn't occur, the database can suffer from thread exhaustion or deadlocks.
+
+
+
+### Bugs
+
+[#490 Command Timeout is not being honored in PostgreSQL and MySQL](https://github.com/TortugaResearch/Tortuga.Chain/issues/490)
+
+See the ticket for an explaination for why this was broken.
+
+
 ## Version 4.2
 
 ### Features

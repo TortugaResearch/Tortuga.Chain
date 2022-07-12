@@ -883,6 +883,17 @@ where TObject : class
 	}
 
 	/// <summary>
+	/// Indicates the results should be materialized as a stream of objects. This can be either IEnumerable ot IAsyncEnumerable.
+	/// </summary>
+	/// <typeparam name="TObject">The type of the model.</typeparam>
+	/// <param name="collectionOptions">The collection options.</param>
+	public IConstructibleMaterializer<ObjectStream<TObject>> ToObjectStream<TObject>(CollectionOptions collectionOptions = CollectionOptions.None)
+		where TObject : class
+	{
+		return new ObjectStreamMaterializer<TCommand, TParameter, TObject>(this, collectionOptions);
+	}
+
+	/// <summary>
 	/// Indicates the results should be materialized as a list of numbers.
 	/// </summary>
 	/// <param name="columnName">Name of the desired column.</param>

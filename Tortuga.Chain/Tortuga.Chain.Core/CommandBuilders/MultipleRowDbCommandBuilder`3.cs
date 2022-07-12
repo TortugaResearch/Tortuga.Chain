@@ -57,7 +57,6 @@ public class MultipleRowDbCommandBuilder<TCommand, TParameter, TObject> : Multip
 	/// <param name="keyColumn">The key column.</param>
 	/// <param name="dictionaryOptions">The dictionary options.</param>
 	/// <returns>IConstructibleMaterializer&lt;Dictionary&lt;TKey, TObject&gt;&gt;.</returns>
-	/// <exception cref="System.NotImplementedException"></exception>
 	public IConstructibleMaterializer<Dictionary<TKey, TObject>> ToDictionary<TKey>(string keyColumn, DictionaryOptions dictionaryOptions = DictionaryOptions.None)
 		where TKey : notnull
 	{

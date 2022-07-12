@@ -123,6 +123,125 @@ public partial class SQLiteDataSource : SQLiteDataSourceBase
 	}
 
 	/// <summary>
+	/// Executes the specified implementation.
+	/// </summary>
+	/// <param name="executionToken">The execution token.</param>
+	/// <param name="implementation">The implementation.</param>
+	/// <param name="state">The state.</param>
+	/// <returns>The caller is expected to use the StreamingCommandCompletionToken to close any lingering connections and fire appropriate events.</returns>
+	public override StreamingCommandCompletionToken ExecuteStream(CommandExecutionToken<SQLiteCommand, SQLiteParameter> executionToken, StreamingCommandImplementation<SQLiteCommand> implementation, object? state)
+	{
+		if (executionToken == null)
+			throw new ArgumentNullException(nameof(executionToken), $"{nameof(executionToken)} is null.");
+		if (implementation == null)
+			throw new ArgumentNullException(nameof(implementation), $"{nameof(implementation)} is null.");
+
+		var mode = DisableLocks ? LockType.None : (executionToken as SQLiteCommandExecutionToken)?.LockType ?? LockType.Write;
+
+		var startTime = DateTimeOffset.Now;
+		OnExecutionStarted(executionToken, startTime, state);
+
+		IDisposable? lockToken = null;
+		SQLiteConnection? con = null;
+
+		try
+		{
+			switch (mode)
+			{
+				case LockType.Read: lockToken = SyncLock.ReaderLock(); break;
+				case LockType.Write: lockToken = SyncLock.WriterLock(); break;
+			}
+
+			con = CreateConnection();
+
+			var cmd = new SQLiteCommand();
+
+			cmd.Connection = con;
+			executionToken.PopulateCommand(cmd, DefaultCommandTimeout);
+
+			implementation(cmd);
+
+			return new StreamingCommandCompletionToken(this, executionToken, startTime, state, cmd, con) { LockToken = lockToken };
+		}
+		catch (Exception ex)
+		{
+			lockToken?.Dispose();
+
+			con?.Dispose();
+
+			OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
+			throw;
+		}
+	}
+
+	/// <summary>
+	/// Executes the specified implementation asynchronously.
+	/// </summary>
+	/// <param name="executionToken">The execution token.</param>
+	/// <param name="implementation">The implementation.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <param name="state">The state.</param>
+	/// <returns>The caller is expected to use the StreamingCommandCompletionToken to close any lingering connections and fire appropriate events.</returns>
+	public override async Task<StreamingCommandCompletionToken> ExecuteStreamAsync(CommandExecutionToken<SQLiteCommand, SQLiteParameter> executionToken, StreamingCommandImplementationAsync<SQLiteCommand> implementation, CancellationToken cancellationToken, object? state)
+	{
+		if (executionToken == null)
+			throw new ArgumentNullException(nameof(executionToken), $"{nameof(executionToken)} is null.");
+		if (implementation == null)
+			throw new ArgumentNullException(nameof(implementation), $"{nameof(implementation)} is null.");
+
+		var mode = DisableLocks ? LockType.None : (executionToken as SQLiteCommandExecutionToken)?.LockType ?? LockType.Write;
+
+		var startTime = DateTimeOffset.Now;
+		OnExecutionStarted(executionToken, startTime, state);
+
+		IDisposable? lockToken = null;
+		SQLiteConnection? con = null;
+
+		try
+		{
+			switch (mode)
+			{
+				case LockType.Read: lockToken = await SyncLock.ReaderLockAsync().ConfigureAwait(false); break;
+				case LockType.Write: lockToken = await SyncLock.WriterLockAsync().ConfigureAwait(false); break;
+			}
+
+			con = await CreateConnectionAsync(cancellationToken).ConfigureAwait(false);
+
+			var cmd = new SQLiteCommand();
+
+			cmd.Connection = con;
+			executionToken.PopulateCommand(cmd, DefaultCommandTimeout);
+
+			await implementation(cmd).ConfigureAwait(false);
+
+			return new StreamingCommandCompletionToken(this, executionToken, startTime, state, cmd, con) { LockToken = lockToken };
+		}
+		catch (Exception ex)
+		{
+			lockToken?.Dispose();
+
+#if NET6_0_OR_GREATER
+			if (con != null)
+				await con.DisposeAsync().ConfigureAwait(false);
+#else
+			con?.Dispose();
+#endif
+
+			if (cancellationToken.IsCancellationRequested) //convert SQLiteException into a OperationCanceledException
+			{
+				var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);
+				OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex2, state);
+				throw ex2;
+			}
+			else
+			{
+				OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
+				throw;
+			}
+		}
+	}
+
+	/// <summary>
 	/// Creates a new data source with the indicated changes to the settings.
 	/// </summary>
 	/// <param name="settings">The new settings to use.</param>
