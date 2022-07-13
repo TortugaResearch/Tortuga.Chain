@@ -64,18 +64,19 @@ public class SingleRowDbCommandBuilder<TCommand, TParameter, TObject> : SingleRo
 	/// </summary>
 	/// <param name="columnName">Name of the column.</param>
 	/// <returns>If the column name was not found, this will return null</returns>
-	public override ColumnMetadata? TryGetColumn(string columnName)
-	{
-		return m_CommandBuilder.TryGetColumn(columnName);
-	}
+	public override ColumnMetadata? TryGetColumn(string columnName) => m_CommandBuilder.TryGetColumn(columnName);
+
+	/// <summary>
+	/// Returns a list of columns.
+	/// </summary>
+	/// <returns>If the command builder doesn't know which columns are available, an empty list will be returned.</returns>
+	/// <remarks>This is used by materializers to skip exclude columns.</remarks>
+	public override IReadOnlyList<ColumnMetadata> TryGetColumns() => m_CommandBuilder.TryGetColumns();
 
 	/// <summary>
 	/// Returns a list of columns known to be non-nullable.
 	/// </summary>
 	/// <returns>If the command builder doesn't know which columns are non-nullable, an empty list will be returned.</returns>
 	/// <remarks>This is used by materializers to skip IsNull checks.</remarks>
-	public override IReadOnlyList<ColumnMetadata> TryGetNonNullableColumns()
-	{
-		return m_CommandBuilder.TryGetNonNullableColumns();
-	}
+	public override IReadOnlyList<ColumnMetadata> TryGetNonNullableColumns() => m_CommandBuilder.TryGetNonNullableColumns();
 }

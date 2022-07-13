@@ -58,6 +58,13 @@ public abstract class DbCommandBuilder : IDbCommandBuilder
 	public abstract ColumnMetadata? TryGetColumn(string columnName);
 
 	/// <summary>
+	/// Returns a list of columns.
+	/// </summary>
+	/// <returns>If the command builder doesn't know which columns are available, an empty list will be returned.</returns>
+	/// <remarks>This is used by materializers to skip exclude columns.</remarks>
+	public abstract IReadOnlyList<ColumnMetadata> TryGetColumns();
+
+	/// <summary>
 	/// Returns a list of columns known to be non-nullable.
 	/// </summary>
 	/// <returns>If the command builder doesn't know which columns are non-nullable, an empty list will be returned.</returns>

@@ -334,7 +334,7 @@ public interface IMultipleRowDbCommandBuilder : ISingleRowDbCommandBuilder
 	/// Materializes the result as a list of dynamically typed objects.
 	/// </summary>
 	/// <returns></returns>
-	ILink<List<dynamic>> ToDynamicCollection();
+	IColumnSelectingMaterializer<List<dynamic>> ToDynamicCollection();
 
 	/// <summary>
 	/// Indicates the results should be materialized as a list of Guids.

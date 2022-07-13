@@ -1,3 +1,15 @@
+
+
+[#98 Dynamic Materializers and Desired Columns](https://github.com/TortugaResearch/Tortuga.Chain/issues/98)
+
+Allow the use of `WithProperties` or `ExcludeProperties` to be used with...
+
+* `.ToDynamicObject`
+* `.ToDynamicObjectOrNull`
+* `.ToDynamicCollection`
+
+
+
 ## Version 4.2
 
 ### Features

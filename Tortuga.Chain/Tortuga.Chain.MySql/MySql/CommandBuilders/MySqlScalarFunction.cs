@@ -1,5 +1,4 @@
 ﻿using MySqlConnector;
-using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Tortuga.Chain.CommandBuilders;
@@ -13,10 +12,9 @@ namespace Tortuga.Chain.MySql.CommandBuilders;
 /// Use for scalar functions.
 /// </summary>
 /// <seealso cref="ScalarDbCommandBuilder{MySqlCommand, MySqlParameter}" />
-internal class MySqlScalarFunction : ScalarDbCommandBuilder<MySqlCommand, MySqlParameter>
+internal class MySqlScalarFunction : ScalarFunctionCommandBuilder<MySqlCommand, MySqlParameter>
 {
 	private readonly ScalarFunctionMetadata<MySqlObjectName, MySqlDbType> m_Function;
-	private readonly object? m_FunctionArgumentValue;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="MySqlScalarFunction" /> class.
@@ -24,10 +22,9 @@ internal class MySqlScalarFunction : ScalarDbCommandBuilder<MySqlCommand, MySqlP
 	/// <param name="dataSource">The data source.</param>
 	/// <param name="scalarFunctionName">Name of the scalar function.</param>
 	/// <param name="functionArgumentValue">The function argument.</param>
-	public MySqlScalarFunction(MySqlDataSourceBase dataSource, MySqlObjectName scalarFunctionName, object? functionArgumentValue) : base(dataSource)
+	public MySqlScalarFunction(MySqlDataSourceBase dataSource, MySqlObjectName scalarFunctionName, object? functionArgumentValue) : base(dataSource, functionArgumentValue)
 	{
 		m_Function = dataSource.DatabaseMetadata.GetScalarFunction(scalarFunctionName);
-		m_FunctionArgumentValue = functionArgumentValue;
 	}
 
 	/// <summary>
@@ -52,8 +49,8 @@ internal class MySqlScalarFunction : ScalarDbCommandBuilder<MySqlCommand, MySqlP
 		var sqlBuilder = m_Function.CreateSqlBuilder(StrictMode);
 		sqlBuilder.ApplyRulesForSelect(DataSource);
 
-		if (m_FunctionArgumentValue != null)
-			sqlBuilder.ApplyArgumentValue(DataSource, m_FunctionArgumentValue);
+		if (FunctionArgumentValue != null)
+			sqlBuilder.ApplyArgumentValue(DataSource, FunctionArgumentValue);
 
 		var sql = new StringBuilder();
 		sqlBuilder.BuildFromFunctionClause(sql, $"SELECT {m_Function.Name.ToQuotedString()} (", " )", "?");
@@ -64,23 +61,4 @@ internal class MySqlScalarFunction : ScalarDbCommandBuilder<MySqlCommand, MySqlP
 
 		return new MySqlCommandExecutionToken(DataSource, "Query Function " + m_Function.Name, sql.ToString(), parameters);
 	}
-
-	/// <summary>
-	/// Returns the column associated with the column name.
-	/// </summary>
-	/// <param name="columnName">Name of the column.</param>
-	/// <returns>ColumnMetadata.</returns>
-	/// <remarks>Always returns null since this command builder has no columns</remarks>
-	public override ColumnMetadata? TryGetColumn(string columnName) => null;
-
-	/// <summary>
-	/// Returns a list of columns known to be non-nullable.
-	/// </summary>
-	/// <returns>
-	/// If the command builder doesn't know which columns are non-nullable, an empty list will be returned.
-	/// </returns>
-	/// <remarks>
-	/// This is used by materializers to skip IsNull checks.
-	/// </remarks>
-	public override IReadOnlyList<ColumnMetadata> TryGetNonNullableColumns() => ImmutableList<ColumnMetadata>.Empty;
 }

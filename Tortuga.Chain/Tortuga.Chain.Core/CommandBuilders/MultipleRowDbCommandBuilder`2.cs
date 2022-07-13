@@ -566,7 +566,7 @@ public abstract class MultipleRowDbCommandBuilder<TCommand, TParameter> : Single
 	/// Materializes the result as a list of dynamically typed objects.
 	/// </summary>
 	/// <returns></returns>
-	public ILink<List<dynamic>> ToDynamicCollection()
+	public IColumnSelectingMaterializer<List<dynamic>> ToDynamicCollection()
 	{
 		return new DynamicCollectionMaterializer<TCommand, TParameter>(this);
 	}

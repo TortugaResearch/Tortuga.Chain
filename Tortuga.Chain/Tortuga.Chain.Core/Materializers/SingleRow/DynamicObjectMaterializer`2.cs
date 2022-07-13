@@ -9,7 +9,8 @@ namespace Tortuga.Chain.Materializers;
 /// </summary>
 /// <typeparam name="TCommand">The type of the t command type.</typeparam>
 /// <typeparam name="TParameter">The type of the t parameter type.</typeparam>
-internal sealed class DynamicObjectMaterializer<TCommand, TParameter> : Materializer<TCommand, TParameter, dynamic> where TCommand : DbCommand
+internal sealed class DynamicObjectMaterializer<TCommand, TParameter> : ColumnSelectingMaterializer<TCommand, TParameter, dynamic>
+	where TCommand : DbCommand
 	where TParameter : DbParameter
 {
 	readonly RowOptions m_RowOptions;
@@ -24,17 +25,6 @@ internal sealed class DynamicObjectMaterializer<TCommand, TParameter> : Material
 	{
 		m_RowOptions = rowOptions;
 	}
-
-	/// <summary>
-	/// Returns the list of columns the materializer would like to have.
-	/// </summary>
-	/// <returns>
-	/// IReadOnlyList&lt;System.String&gt;.
-	/// </returns>
-	/// <remarks>
-	/// If AutoSelectDesiredColumns is returned, the command builder is allowed to choose which columns to return. If NoColumns is returned, the command builder should omit the SELECT/OUTPUT clause.
-	/// </remarks>
-	public override IReadOnlyList<string> DesiredColumns() => AllColumns;
 
 	/// <summary>
 	/// Execute the operation synchronously.
