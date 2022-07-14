@@ -930,10 +930,10 @@ public sealed class SqlBuilder<TDbType>
 	/// <summary>
 	/// Builds the soft delete clause.
 	/// </summary>
-	/// <param name="sql">The SQL.</param>
-	/// <param name="header">The header.</param>
+	/// <param name="sql">The SQL being generated.</param>
+	/// <param name="header">The optional header. Usually not used.</param>
 	/// <param name="dataSource">The data source.</param>
-	/// <param name="footer">The footer.</param>
+	/// <param name="footer">The optional footer. Usually not used.</param>
 	/// <exception cref="ArgumentNullException"></exception>
 	public void BuildSoftDeleteClause(StringBuilder sql, string? header, IDataSource dataSource, string? footer)
 	{

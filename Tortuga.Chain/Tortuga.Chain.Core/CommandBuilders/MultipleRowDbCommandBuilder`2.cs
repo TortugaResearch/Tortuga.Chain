@@ -883,6 +883,34 @@ where TObject : class
 	}
 
 	/// <summary>
+	/// Materializes the result as a list of master/detail records.
+	/// </summary>
+	/// <typeparam name="TMaster">The type of the master model.</typeparam>
+	/// <typeparam name="TDetail">The type of the detail model.</typeparam>
+	/// <param name="masterKeyColumn">The column used as the primary key for the master records.</param>
+	/// <param name="map">This is used to identify the detail collection property on the master object.</param>
+	/// <param name="masterOptions">Options for handling extraneous rows and constructor selection for the master object.</param>
+	/// <param name="detailOptions">Options for handling constructor selection for the detail objects</param>
+	/// <returns></returns>
+	public IMasterDetailMaterializer<List<TMaster>> ToMasterDetailCollection<TMaster, TDetail>(string masterKeyColumn, Func<TMaster, ICollection<TDetail>> map, CollectionOptions masterOptions = CollectionOptions.None, CollectionOptions detailOptions = CollectionOptions.None)
+		where TMaster : class
+		where TDetail : class
+	{
+		return new MasterDetailCollectionMaterializer<TCommand, TParameter, TMaster, TDetail>(this, masterKeyColumn, map, masterOptions, detailOptions);
+	}
+
+	/// <summary>
+	/// Indicates the results should be materialized as a stream of objects. This can be either IEnumerable ot IAsyncEnumerable.
+	/// </summary>
+	/// <typeparam name="TObject">The type of the model.</typeparam>
+	/// <param name="collectionOptions">The collection options.</param>
+	public IConstructibleMaterializer<ObjectStream<TObject>> ToObjectStream<TObject>(CollectionOptions collectionOptions = CollectionOptions.None)
+		where TObject : class
+	{
+		return new ObjectStreamMaterializer<TCommand, TParameter, TObject>(this, collectionOptions);
+	}
+
+	/// <summary>
 	/// Indicates the results should be materialized as a list of numbers.
 	/// </summary>
 	/// <param name="columnName">Name of the desired column.</param>

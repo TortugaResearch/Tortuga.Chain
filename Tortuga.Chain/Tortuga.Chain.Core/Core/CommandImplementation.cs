@@ -9,5 +9,4 @@ namespace Tortuga.Chain.Core;
 /// <param name="command">The command.</param>
 /// <returns>System.Nullable&lt;System.Int32&gt;.</returns>
 public delegate int? CommandImplementation<TCommand>(TCommand command)
-		   where TCommand : DbCommand
-;
+		   where TCommand : DbCommand;

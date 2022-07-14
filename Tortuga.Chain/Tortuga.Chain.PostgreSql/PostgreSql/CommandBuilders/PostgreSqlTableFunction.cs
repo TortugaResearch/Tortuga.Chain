@@ -20,7 +20,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 		FilterOptions m_FilterOptions;
 		object? m_FilterValue;
 		PostgreSqlLimitOption m_LimitOptions;
-		string? m_SelectClause;
+
 		int? m_Skip;
 		IEnumerable<SortExpression> m_SortExpressions = Enumerable.Empty<SortExpression>();
 		int? m_Take;
@@ -48,31 +48,10 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 		public new PostgreSqlDataSourceBase DataSource => (PostgreSqlDataSourceBase)base.DataSource;
 
 		/// <summary>
-		/// Returns the row count using a <c>SELECT COUNT_BIG(*)</c> style query.
+		/// Gets the columns from the metadata.
 		/// </summary>
-		/// <returns></returns>
-		public override ILink<long> AsCount()
-		{
-			m_SelectClause = "COUNT(*)";
-			return ToInt64();
-		}
-
-		/// <summary>
-		/// Returns the row count for a given column. <c>SELECT COUNT_BIG(columnName)</c>
-		/// </summary>
-		/// <param name="columnName">Name of the column.</param>
-		/// <param name="distinct">if set to <c>true</c> use <c>SELECT COUNT_BIG(DISTINCT columnName)</c>.</param>
-		/// <returns></returns>
-		public override ILink<long> AsCount(string columnName, bool distinct = false)
-		{
-			var column = m_Table.Columns[columnName];
-			if (distinct)
-				m_SelectClause = $"COUNT(DISTINCT {column.QuotedSqlName})";
-			else
-				m_SelectClause = $"COUNT({column.QuotedSqlName})";
-
-			return ToInt64();
-		}
+		/// <value>The columns.</value>
+		protected override ColumnMetadataCollection Columns => m_Table.Columns.GenericCollection;
 
 		/// <summary>
 		/// Prepares the command for execution by generating any necessary SQL.
@@ -92,7 +71,7 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 
 			if (m_FunctionArgumentValue != null)
 				sqlBuilder.ApplyArgumentValue(DataSource, m_FunctionArgumentValue);
-			if (m_SelectClause == null)
+			if (AggregateColumns.IsEmpty)
 			{
 				var desired = materializer.DesiredColumns();
 				if (desired == Materializer.AutoSelectDesiredColumns)
@@ -118,10 +97,10 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 			List<NpgsqlParameter> parameters;
 			var sql = new StringBuilder();
 
-			if (m_SelectClause != null)
-				sql.Append($"SELECT {m_SelectClause} ");
-			else
+			if (AggregateColumns.IsEmpty)
 				sqlBuilder.BuildSelectClause(sql, "SELECT ", null, null);
+			else
+				AggregateColumns.BuildSelectClause(sql, "SELECT ", DataSource, null);
 
 			sqlBuilder.BuildFromFunctionClause(sql, $" FROM {m_Table.Name.ToQuotedString()} (", " ) ");
 
@@ -145,6 +124,9 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 				sqlBuilder.BuildSoftDeleteClause(sql, " WHERE ", DataSource, null);
 				parameters = sqlBuilder.GetParameters();
 			}
+
+			if (AggregateColumns.HasGroupBy)
+				AggregateColumns.BuildGroupByClause(sql, " GROUP BY ", DataSource, null);
 
 			if (m_LimitOptions.RequiresSorting() && !m_SortExpressions.Any() && StrictMode)
 				throw new InvalidOperationException("Limits were requested without a sort order. Use WithSorting to supply a sort order or disable strict mode.");

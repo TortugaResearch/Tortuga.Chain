@@ -18,13 +18,17 @@ where TCommand : DbCommand
 where TParameter : DbParameter
 {
 	/// <summary>
+	/// Gets the TObject metadata.
+	/// </summary>
+	protected static ClassMetadata ObjectMetadata = MetadataCache.GetMetadata(typeof(TObject));
+
+	/// <summary>
 	/// Initializes a new instance of the <see cref="ConstructibleMaterializer{TCommand,
 	/// TParameter, TResult, TObject}"/> class.
 	/// </summary>
 	/// <param name="commandBuilder">The associated operation.</param>
 	protected ConstructibleMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder) : base(commandBuilder)
 	{
-		ObjectMetadata = MetadataCache.GetMetadata(typeof(TObject));
 	}
 
 	/// <summary>
@@ -32,12 +36,6 @@ where TParameter : DbParameter
 	/// </summary>
 	/// <value>The data reader constructor.</value>
 	protected ConstructorMetadata? Constructor { get; set; }
-
-	/// <summary>
-	/// Gets or sets the TObject metadata.
-	/// </summary>
-	/// <value>The object metadata.</value>
-	protected ClassMetadata ObjectMetadata { get; }
 
 	/// <summary>
 	/// Returns the list of columns the result materializer would like to have.
@@ -53,6 +51,8 @@ where TParameter : DbParameter
 	/// </remarks>
 	public override IReadOnlyList<string> DesiredColumns()
 	{
+		//We need to pick the constructor now so that we have the right columns in the SQL.
+		//If we wait until materialization, we could have missing or extra columns.
 		if (Constructor == null && !ObjectMetadata.Constructors.HasDefaultConstructor)
 		{
 			Constructor = InferConstructor();
@@ -77,10 +77,10 @@ where TParameter : DbParameter
 		}
 
 		if (IncludedColumns != null)
-			throw new NotImplementedException("Cannot specify included columns/properties with constructors. See #295");
+			throw new NotImplementedException("Cannot specify included columns/properties with non-default constructors. See #295");
 
 		if (ExcludedColumns != null)
-			throw new InvalidOperationException("Cannot specify excluded columns/properties with constructors.");
+			throw new InvalidOperationException("Cannot specify excluded columns/properties with non-default constructors.");
 
 		return Constructor.ParameterNames;
 	}
@@ -318,17 +318,7 @@ where TParameter : DbParameter
 	/// <exception cref="MappingException"></exception>
 	protected ConstructorMetadata InferConstructor()
 	{
-		//This is here to make the error message more accurate.
-		if (ObjectMetadata.Constructors.Count == 0)
-			throw new MappingException($"Type {typeof(TObject).Name} has does not have any constructors.");
-
-		//For inference, we're looking for non-default constructors.
-		var constructors = ObjectMetadata.Constructors.Where(x => x.Signature.Length > 0).ToList();
-		if (constructors.Count == 0)
-			throw new MappingException($"Type {typeof(TObject).Name} has does not have any non-default constructors.");
-		if (constructors.Count > 1)
-			throw new MappingException($"Type {typeof(TObject).Name} has more than one non-default constructor. Please use the WithConstructor method to specify which one to use.");
-		return constructors.Single();
+		return MaterializerUtilities.InferConstructor(ObjectMetadata);
 	}
 
 	/// <summary>
