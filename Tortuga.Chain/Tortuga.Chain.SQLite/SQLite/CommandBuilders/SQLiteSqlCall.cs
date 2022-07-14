@@ -1,20 +1,16 @@
-﻿using System.Collections.Immutable;
-using System.Data.SQLite;
+﻿using System.Data.SQLite;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
-using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.SQLite.CommandBuilders
 {
 	/// <summary>
 	/// Class that represents an operation based on a raw SQL statement.
 	/// </summary>
-	internal sealed class SQLiteSqlCall : MultipleTableDbCommandBuilder<SQLiteCommand, SQLiteParameter>
+	internal sealed class SQLiteSqlCall : DbSqlCall<SQLiteCommand, SQLiteParameter>
 	{
-		readonly object? m_ArgumentValue;
 		readonly LockType m_LockType;
-		readonly string m_SqlStatement;
 
 		/// <summary>
 		/// Creates a new instance of <see cref="SQLiteSqlCall" />
@@ -25,14 +21,11 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
 		/// <param name="lockType">Type of the lock.</param>
 		/// <exception cref="ArgumentException">SQL statement is null or empty.;sqlStatement</exception>
 		public SQLiteSqlCall(SQLiteDataSourceBase dataSource, string sqlStatement, object? argumentValue, LockType lockType) :
-			base(dataSource)
+			base(dataSource, sqlStatement, argumentValue)
 		{
 			m_LockType = lockType;
 			if (string.IsNullOrEmpty(sqlStatement))
 				throw new ArgumentException("SQL statement is null or empty.", nameof(sqlStatement));
-
-			m_SqlStatement = sqlStatement;
-			m_ArgumentValue = argumentValue;
 		}
 
 		/// <summary>
@@ -42,28 +35,7 @@ namespace Tortuga.Chain.SQLite.CommandBuilders
 		/// <returns></returns>
 		public override CommandExecutionToken<SQLiteCommand, SQLiteParameter> Prepare(Materializer<SQLiteCommand, SQLiteParameter> materializer)
 		{
-			return new SQLiteCommandExecutionToken(DataSource, "Raw SQL call", m_SqlStatement, SqlBuilder.GetParameters<SQLiteParameter>(m_ArgumentValue), lockType: m_LockType);
+			return new SQLiteCommandExecutionToken(DataSource, "Raw SQL call", SqlStatement, SqlBuilder.GetParameters<SQLiteParameter>(ArgumentValue), lockType: m_LockType);
 		}
-
-		/// <summary>
-		/// Returns the column associated with the column name.
-		/// </summary>
-		/// <param name="columnName">Name of the column.</param>
-		/// <returns></returns>
-		/// <remarks>
-		/// If the column name was not found, this will return null
-		/// </remarks>
-		public override ColumnMetadata? TryGetColumn(string columnName) => null;
-
-		/// <summary>
-		/// Returns a list of columns known to be non-nullable.
-		/// </summary>
-		/// <returns>
-		/// If the command builder doesn't know which columns are non-nullable, an empty list will be returned.
-		/// </returns>
-		/// <remarks>
-		/// This is used by materializers to skip IsNull checks.
-		/// </remarks>
-		public override IReadOnlyList<ColumnMetadata> TryGetNonNullableColumns() => ImmutableList<ColumnMetadata>.Empty;
 	}
 }

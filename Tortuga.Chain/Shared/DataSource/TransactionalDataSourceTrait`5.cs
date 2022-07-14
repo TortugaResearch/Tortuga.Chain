@@ -9,6 +9,9 @@ namespace Traits
 {
 	[Trait]
 	class TransactionalDataSourceTrait<TRootDataSource, TConnection, TTransaction, TCommand, TDatabaseMetadata> : ITransactionalDataSource, IDisposable
+#if NET6_0_OR_GREATER
+, IAsyncDisposable
+#endif
 		where TRootDataSource : class, IRootDataSource, IDataSource, IHasExtensionCache
 		where TConnection : DbConnection
 		where TTransaction : DbTransaction
@@ -196,6 +199,36 @@ namespace Traits
 				m_Disposed = true;
 			}
 		}
+
+#if NET6_0_OR_GREATER
+		/// <summary>
+		/// Closes the current transaction and connection. If not committed, the transaction is rolled back.
+		/// </summary>
+		[Expose]
+		public ValueTask DisposeAsync()
+		{
+			return DisposeAsync(true);
+		}
+
+		/// <summary>
+		/// Closes the current transaction and connection. If not committed, the transaction is rolled back.
+		/// </summary>
+		/// <param name="disposing"></param>
+		[Expose(Accessibility = Accessibility.Protected, Inheritance = Inheritance.Virtual)]
+		public async ValueTask DisposeAsync(bool disposing)
+		{
+			if (m_Disposed)
+				return;
+
+			if (disposing)
+			{
+				await m_Transaction.DisposeAsync().ConfigureAwait(false);
+				await m_Connection.DisposeAsync().ConfigureAwait(false);
+				DisposableContainer?.OnDispose();
+				m_Disposed = true;
+			}
+		}
+#endif
 
 		/// <summary>
 		/// The extension cache is used by extensions to store data source specific information.

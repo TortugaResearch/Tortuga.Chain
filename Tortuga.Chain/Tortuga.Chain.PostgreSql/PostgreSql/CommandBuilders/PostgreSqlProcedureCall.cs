@@ -1,7 +1,5 @@
 ﻿using Npgsql;
 using NpgsqlTypes;
-using System.Collections.Immutable;
-using Tortuga.Chain.AuditRules;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
@@ -14,7 +12,6 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 	/// </summary>
 	internal sealed class PostgreSqlProcedureCall : ProcedureDbCommandBuilder<NpgsqlCommand, NpgsqlParameter>
 	{
-		readonly object? m_ArgumentValue;
 		readonly StoredProcedureMetadata<PostgreSqlObjectName, NpgsqlDbType> m_Procedure;
 
 		/// <summary>
@@ -23,12 +20,11 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 		/// <param name="dataSource">The data source.</param>
 		/// <param name="procedureName">Name of the procedure.</param>
 		/// <param name="argumentValue">The argument value.</param>
-		internal PostgreSqlProcedureCall(PostgreSqlDataSourceBase dataSource, PostgreSqlObjectName procedureName, object? argumentValue = null) : base(dataSource)
+		internal PostgreSqlProcedureCall(PostgreSqlDataSourceBase dataSource, PostgreSqlObjectName procedureName, object? argumentValue) : base(dataSource, argumentValue)
 		{
 			if (procedureName == PostgreSqlObjectName.Empty)
 				throw new ArgumentException($"{nameof(procedureName)} is empty", nameof(procedureName));
 
-			m_ArgumentValue = argumentValue;
 			m_Procedure = DataSource.DatabaseMetadata.GetStoredProcedure(procedureName);
 		}
 
@@ -50,39 +46,18 @@ namespace Tortuga.Chain.PostgreSql.CommandBuilders
 
 			List<NpgsqlParameter> parameters;
 
-			if (m_ArgumentValue is IEnumerable<NpgsqlParameter>)
+			if (ArgumentValue is IEnumerable<NpgsqlParameter>)
 			{
-				parameters = ((IEnumerable<NpgsqlParameter>)m_ArgumentValue).ToList();
+				parameters = ((IEnumerable<NpgsqlParameter>)ArgumentValue).ToList();
 			}
 			else
 			{
 				var sqlBuilder = m_Procedure.CreateSqlBuilder(StrictMode);
-				sqlBuilder.ApplyArgumentValue(DataSource, m_ArgumentValue);
+				sqlBuilder.ApplyArgumentValue(DataSource, ArgumentValue);
 				parameters = sqlBuilder.GetParameters();
 			}
 
 			return new PostgreSqlCommandExecutionToken(DataSource, m_Procedure.Name.ToString(), m_Procedure.Name.ToQuotedString(), parameters, CommandType.StoredProcedure, true);
 		}
-
-		/// <summary>
-		/// Returns the column associated with the column name.
-		/// </summary>
-		/// <param name="columnName">Name of the column.</param>
-		/// <returns></returns>
-		/// <remarks>
-		/// If the column name was not found, this will return null
-		/// </remarks>
-		public override ColumnMetadata? TryGetColumn(string columnName) => null;
-
-		/// <summary>
-		/// Returns a list of columns known to be non-nullable.
-		/// </summary>
-		/// <returns>
-		/// If the command builder doesn't know which columns are non-nullable, an empty list will be returned.
-		/// </returns>
-		/// <remarks>
-		/// This is used by materializers to skip IsNull checks.
-		/// </remarks>
-		public override IReadOnlyList<ColumnMetadata> TryGetNonNullableColumns() => ImmutableList<ColumnMetadata>.Empty;
 	}
 }

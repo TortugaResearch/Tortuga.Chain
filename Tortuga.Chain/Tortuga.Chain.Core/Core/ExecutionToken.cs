@@ -76,7 +76,7 @@ public abstract class ExecutionToken
 		CommandExecuted?.Invoke(this, new CommandExecutedEventArgs(command, rowsAffected));
 	}
 
-	internal void RaiseCommandBuild(DbCommand command)
+	internal void RaiseCommandBuilt(DbCommand command)
 	{
 		CommandBuilt?.Invoke(this, new CommandBuiltEventArgs(command));
 	}

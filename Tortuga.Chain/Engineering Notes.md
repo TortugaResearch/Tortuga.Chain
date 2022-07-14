@@ -19,3 +19,10 @@ When used...
 <AbstractConnection, AbstractTransaction, AbstractCommand, AbstractParameter, AbstractObjectName, AbstractDbType>
 ```
 
+## Aggregates
+
+Standard aggregate functions are listed in `AggregateType`.
+
+To convert the enum to a database specific function, use `DatabaseMetadataCache.GetAggregateFunction`.
+
+If the database doesn't support a given aggregation, override `GetAggregateFunction` and throw a `NotSupportedException`.

@@ -213,14 +213,7 @@ public sealed class Table
 	{
 		foreach (var row in Rows)
 		{
-			var item = new T();
-			MaterializerUtilities.PopulateComplexObject(row, item, null, m_Converter);
-
-			//Change tracking objects shouldn't be materialized as unchanged.
-			var tracking = item as IChangeTracking;
-			tracking?.AcceptChanges();
-
-			yield return item;
+			yield return ToObject<T>(row);
 		}
 	}
 
@@ -258,6 +251,18 @@ public sealed class Table
 		}
 		else
 			return ToObjects_Core<T>(constructor);
+	}
+
+	internal T ToObject<T>(Row row)
+		where T : class, new()
+	{
+		var result = new T();
+		MaterializerUtilities.PopulateComplexObject(row, result, null, m_Converter);
+
+		//Change tracking objects shouldn't be materialized as unchanged.
+		var tracking = result as IChangeTracking;
+		tracking?.AcceptChanges();
+		return result;
 	}
 
 	internal IEnumerable<T> ToObjects_Core<T>(IReadOnlyList<Type> constructorSignature)

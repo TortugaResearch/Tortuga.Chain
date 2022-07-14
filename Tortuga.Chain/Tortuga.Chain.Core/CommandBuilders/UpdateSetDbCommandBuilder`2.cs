@@ -1,6 +1,7 @@
 using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
 using Tortuga.Chain.DataSources;
+using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.CommandBuilders;
 
@@ -32,6 +33,37 @@ public abstract class UpdateSetDbCommandBuilder<TCommand, TParameter> : Multiple
 	MultipleRowDbCommandBuilder<TCommand, TParameter> IUpdateSetDbCommandBuilder<TCommand, TParameter>.All() => All();
 
 	IMultipleRowDbCommandBuilder IUpdateSetDbCommandBuilder.All() => All();
+
+	/// <summary>
+	/// Returns the column associated with the column name.
+	/// </summary>
+	/// <param name="columnName">Name of the column.</param>
+	/// <returns></returns>
+	/// <remarks>
+	/// If the column name was not found, this will return null
+	/// </remarks>
+	public override sealed ColumnMetadata? TryGetColumn(string columnName)
+	{
+		return OnGetTable().Columns.TryGetColumn(columnName);
+	}
+
+	/// <summary>
+	/// Returns a list of columns.
+	/// </summary>
+	/// <returns>If the command builder doesn't know which columns are available, an empty list will be returned.</returns>
+	/// <remarks>This is used by materializers to skip exclude columns.</remarks>
+	public sealed override IReadOnlyList<ColumnMetadata> TryGetColumns() => OnGetTable().Columns;
+
+	/// <summary>
+	/// Returns a list of columns known to be non-nullable.
+	/// </summary>
+	/// <returns>
+	/// If the command builder doesn't know which columns are non-nullable, an empty list will be returned.
+	/// </returns>
+	/// <remarks>
+	/// This is used by materializers to skip IsNull checks.
+	/// </remarks>
+	public sealed override IReadOnlyList<ColumnMetadata> TryGetNonNullableColumns() => OnGetTable().NonNullableColumns;
 
 	/// <summary>
 	/// Adds (or replaces) the filter on this command builder.
@@ -66,4 +98,10 @@ public abstract class UpdateSetDbCommandBuilder<TCommand, TParameter> : Multiple
 	MultipleRowDbCommandBuilder<TCommand, TParameter> IUpdateSetDbCommandBuilder<TCommand, TParameter>.WithFilter(string whereClause) => WithFilter(whereClause);
 
 	MultipleRowDbCommandBuilder<TCommand, TParameter> IUpdateSetDbCommandBuilder<TCommand, TParameter>.WithFilter(string whereClause, object? argumentValue) => WithFilter(whereClause, argumentValue);
+
+	/// <summary>
+	/// Called when ObjectDbCommandBuilder needs a reference to the associated table or view.
+	/// </summary>
+	/// <returns></returns>
+	protected abstract TableOrViewMetadata OnGetTable();
 }

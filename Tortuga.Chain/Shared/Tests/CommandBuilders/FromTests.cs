@@ -1,6 +1,5 @@
 ﻿using Tests.Models;
 using Tortuga.Chain;
-using Tortuga.Chain.DataSources;
 
 #if SQL_SERVER_SDS || SQL_SERVER_MDS
 
@@ -37,210 +36,6 @@ public class FromTests : TestBase
 				Assert.AreEqual(manager.FirstName, echo.Manager.FirstName);
 				Assert.AreEqual(manager.LastName, echo.Manager.LastName);
 			}
-		}
-		finally
-		{
-			Release(dataSource);
-		}
-	}
-
-	[DataTestMethod, TablesAndViewData(DataSourceGroup.All)]
-	public void ToDataTable(string dataSourceName, DataSourceType mode, string tableName)
-	{
-		var dataSource = DataSource(dataSourceName, mode);
-		try
-		{
-			var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
-
-			var result = dataSource.From(tableName).WithLimits(10).WithSorting(table.GetDefaultSortOrder()).ToDataTable().Execute();
-			Assert.IsTrue(result.Rows.Count <= 10);
-			Assert.AreEqual(table.Columns.Count, result.Columns.Count);
-		}
-		finally
-		{
-			Release(dataSource);
-		}
-	}
-
-	[DataTestMethod, TablesAndViewData(DataSourceGroup.All)]
-	public async Task ToDataTable_Async(string dataSourceName, DataSourceType mode, string tableName)
-	{
-		var dataSource = await DataSourceAsync(dataSourceName, mode);
-		try
-		{
-			var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
-
-			var result = await dataSource.From(tableName).WithLimits(10).WithSorting(table.GetDefaultSortOrder()).ToDataTable().ExecuteAsync();
-			Assert.IsTrue(result.Rows.Count <= 10);
-			Assert.AreEqual(table.Columns.Count, result.Columns.Count);
-		}
-		finally
-		{
-			Release(dataSource);
-		}
-	}
-
-	[DataTestMethod, TablesAndViewData(DataSourceGroup.All)]
-	public void ToDataRow(string dataSourceName, DataSourceType mode, string tableName)
-	{
-		var dataSource = DataSource(dataSourceName, mode);
-		try
-		{
-			var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
-
-			var result = dataSource.From(tableName).WithLimits(1).WithSorting(table.GetDefaultSortOrder()).ToDataRowOrNull().Execute();
-			if (result != null)
-			{
-				Assert.AreEqual(table.Columns.Count, result.Table.Columns.Count);
-			}
-		}
-		finally
-		{
-			Release(dataSource);
-		}
-	}
-
-	[DataTestMethod, TablesAndViewData(DataSourceGroup.All)]
-	public async Task ToDataRow_Async(string dataSourceName, DataSourceType mode, string tableName)
-	{
-		var dataSource = await DataSourceAsync(dataSourceName, mode);
-		try
-		{
-			var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
-
-			var result = await dataSource.From(tableName).WithLimits(1).WithSorting(table.GetDefaultSortOrder()).ToDataRowOrNull().ExecuteAsync();
-			if (result != null)
-			{
-				Assert.AreEqual(table.Columns.Count, result.Table.Columns.Count);
-			}
-		}
-		finally
-		{
-			Release(dataSource);
-		}
-	}
-
-	[DataTestMethod, TablesAndViewData(DataSourceGroup.All)]
-	public void ToTable(string dataSourceName, DataSourceType mode, string tableName)
-	{
-		var dataSource = DataSource(dataSourceName, mode);
-		try
-		{
-			var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
-
-			var result = dataSource.From(tableName).WithLimits(10).WithSorting(table.GetDefaultSortOrder()).ToTable().Execute();
-			Assert.IsTrue(result.Rows.Count <= 10);
-			Assert.AreEqual(table.Columns.Count, result.ColumnNames.Count);
-		}
-		finally
-		{
-			Release(dataSource);
-		}
-	}
-
-	[DataTestMethod, TablesAndViewData(DataSourceGroup.All)]
-	public async Task ToTable_Async(string dataSourceName, DataSourceType mode, string tableName)
-	{
-		var dataSource = await DataSourceAsync(dataSourceName, mode);
-		try
-		{
-			var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
-
-			var result = await dataSource.From(tableName).WithLimits(10).WithSorting(table.GetDefaultSortOrder()).ToTable().ExecuteAsync();
-			Assert.IsTrue(result.Rows.Count <= 10);
-			Assert.AreEqual(table.Columns.Count, result.ColumnNames.Count);
-		}
-		finally
-		{
-			Release(dataSource);
-		}
-	}
-
-	[DataTestMethod, TablesAndViewData(DataSourceGroup.All)]
-	public void ToRow(string dataSourceName, DataSourceType mode, string tableName)
-	{
-		var dataSource = DataSource(dataSourceName, mode);
-		try
-		{
-			var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
-
-			var result = dataSource.From(tableName).WithLimits(1).WithSorting(table.GetDefaultSortOrder()).ToRowOrNull().Execute();
-			if (result != null)
-			{
-				Assert.AreEqual(table.Columns.Count, result.Count);
-			}
-		}
-		finally
-		{
-			Release(dataSource);
-		}
-	}
-
-	[DataTestMethod, TablesAndViewData(DataSourceGroup.All)]
-	public async Task ToRow_Async(string dataSourceName, DataSourceType mode, string tableName)
-	{
-		var dataSource = await DataSourceAsync(dataSourceName, mode);
-		try
-		{
-			var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
-
-			var result = await dataSource.From(tableName).WithLimits(1).WithSorting(table.GetDefaultSortOrder()).ToRowOrNull().ExecuteAsync();
-			if (result != null)
-			{
-				Assert.AreEqual(table.Columns.Count, result.Count);
-			}
-		}
-		finally
-		{
-			Release(dataSource);
-		}
-	}
-
-	[DataTestMethod, TablesAndViewLimitData(DataSourceGroup.AllNormalOnly)]
-	public void ToTable_WithLimit(string dataSourceName, DataSourceType mode, string tableName, LimitOptions limitOptions)
-	{
-		var dataSource = DataSource(dataSourceName, mode);
-		try
-		{
-			var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
-
-			var prep = ((ICrudDataSource)dataSource).From(tableName).WithLimits(10, limitOptions);
-			switch (limitOptions)
-			{
-				case LimitOptions.RowsWithTies:
-				case LimitOptions.PercentageWithTies:
-					prep = prep.WithSorting(table.Columns[0].SqlName);
-					break;
-			}
-			var result = prep.ToTable().Execute();
-			//Assert.IsTrue(result.Rows.Count <= 10, $"Row count was {result.Rows.Count}");
-			Assert.AreEqual(table.Columns.Count, result.ColumnNames.Count);
-		}
-		finally
-		{
-			Release(dataSource);
-		}
-	}
-
-	[DataTestMethod, TablesAndViewLimitData(DataSourceGroup.AllNormalOnly)]
-	public async Task ToTable_WithLimit_Async(string dataSourceName, DataSourceType mode, string tableName, LimitOptions limitOptions)
-	{
-		var dataSource = await DataSourceAsync(dataSourceName, mode);
-		try
-		{
-			var table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
-
-			var prep = ((ICrudDataSource)dataSource).From(tableName).WithLimits(10, limitOptions);
-			switch (limitOptions)
-			{
-				case LimitOptions.RowsWithTies:
-				case LimitOptions.PercentageWithTies:
-					prep = prep.WithSorting(table.Columns[0].SqlName);
-					break;
-			}
-			var result = await prep.ToTable().ExecuteAsync();
-			//Assert.IsTrue(result.Rows.Count <= 10, $"Row count was {result.Rows.Count}");
-			Assert.AreEqual(table.Columns.Count, result.ColumnNames.Count);
 		}
 		finally
 		{
@@ -324,7 +119,7 @@ public class FromTests : TestBase
 	}
 
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
-	public void ImmutableArray(string dataSourceName, DataSourceType mode)
+	public void ToImmutableArray(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
 		try
@@ -366,7 +161,7 @@ public class FromTests : TestBase
 	}
 
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
-	public void ImmutableList(string dataSourceName, DataSourceType mode)
+	public void ToImmutableList(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
 		try
@@ -400,32 +195,6 @@ public class FromTests : TestBase
 			Assert.AreEqual(emp4.EmployeeKey, test3[1].EmployeeKey);
 			Assert.AreEqual(emp1.EmployeeKey, test3[2].EmployeeKey);
 			Assert.AreEqual(emp2.EmployeeKey, test3[3].EmployeeKey);
-		}
-		finally
-		{
-			Release(dataSource);
-		}
-	}
-
-	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
-	public void ToCollection_NoDefaultConstructor(string dataSourceName, DataSourceType mode)
-	{
-		var dataSource = DataSource(dataSourceName, mode);
-
-		try
-		{
-			var uniqueKey = Guid.NewGuid().ToString();
-
-			var emp1 = new Employee() { FirstName = "A", LastName = "1", Title = uniqueKey };
-			dataSource.Insert(EmployeeTableName, emp1).ToObject<Employee>().Execute();
-
-			var emp2 = new Employee() { FirstName = "B", LastName = "2", Title = uniqueKey };
-			dataSource.Insert(EmployeeTableName, emp2).ToObject<Employee>().Execute();
-
-			var lookup = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).WithSorting("EmployeeKey").ToCollection<EmployeeLookup>().Execute();
-
-			Assert.AreEqual("A", lookup[0].FirstName, "First Name");
-			Assert.AreEqual("1", lookup[0].LastName, "Last Name");
 		}
 		finally
 		{

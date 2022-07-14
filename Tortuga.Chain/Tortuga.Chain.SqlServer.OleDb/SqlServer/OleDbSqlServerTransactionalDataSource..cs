@@ -76,6 +76,90 @@ public partial class OleDbSqlServerTransactionalDataSource : OleDbSqlServerDataS
 	public string? TransactionName { get; }
 
 	/// <summary>
+	/// Executes the specified implementation.
+	/// </summary>
+	/// <param name="executionToken">The execution token.</param>
+	/// <param name="implementation">The implementation.</param>
+	/// <param name="state">The state.</param>
+	/// <returns>The caller is expected to use the StreamingCommandCompletionToken to close any lingering connections and fire appropriate events.</returns>
+	/// <exception cref="System.NotImplementedException"></exception>
+	public override StreamingCommandCompletionToken ExecuteStream(CommandExecutionToken<OleDbCommand, OleDbParameter> executionToken, StreamingCommandImplementation<OleDbCommand> implementation, object? state)
+	{
+		if (executionToken == null)
+			throw new ArgumentNullException(nameof(executionToken), $"{nameof(executionToken)} is null.");
+		if (implementation == null)
+			throw new ArgumentNullException(nameof(implementation), $"{nameof(implementation)} is null.");
+
+		var startTime = DateTimeOffset.Now;
+		OnExecutionStarted(executionToken, startTime, state);
+
+		try
+		{
+			var cmd = new OleDbCommand();
+
+			cmd.Connection = m_Connection;
+			cmd.Transaction = m_Transaction;
+			executionToken.PopulateCommand(cmd, DefaultCommandTimeout);
+
+			implementation(cmd);
+
+			return new StreamingCommandCompletionToken(this, executionToken, startTime, state, cmd);
+		}
+		catch (Exception ex)
+		{
+			OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
+			throw;
+		}
+	}
+
+	/// <summary>
+	/// Executes the specified implementation asynchronously.
+	/// </summary>
+	/// <param name="executionToken">The execution token.</param>
+	/// <param name="implementation">The implementation.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <param name="state">The state.</param>
+	/// <returns>The caller is expected to use the StreamingCommandCompletionToken to close any lingering connections and fire appropriate events.</returns>
+	/// <exception cref="System.NotImplementedException"></exception>
+	public override async Task<StreamingCommandCompletionToken> ExecuteStreamAsync(CommandExecutionToken<OleDbCommand, OleDbParameter> executionToken, StreamingCommandImplementationAsync<OleDbCommand> implementation, CancellationToken cancellationToken, object? state)
+	{
+		if (executionToken == null)
+			throw new ArgumentNullException(nameof(executionToken), $"{nameof(executionToken)} is null.");
+		if (implementation == null)
+			throw new ArgumentNullException(nameof(implementation), $"{nameof(implementation)} is null.");
+
+		var startTime = DateTimeOffset.Now;
+		OnExecutionStarted(executionToken, startTime, state);
+
+		try
+		{
+			var cmd = new OleDbCommand();
+
+			cmd.Connection = m_Connection;
+			cmd.Transaction = m_Transaction;
+			executionToken.PopulateCommand(cmd, DefaultCommandTimeout);
+
+			await implementation(cmd).ConfigureAwait(false);
+
+			return new StreamingCommandCompletionToken(this, executionToken, startTime, state, cmd);
+		}
+		catch (Exception ex)
+		{
+			if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException
+			{
+				var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);
+				OnExecutionCanceled(executionToken, startTime, DateTimeOffset.Now, state);
+				throw ex2;
+			}
+			else
+			{
+				OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
+				throw;
+			}
+		}
+	}
+
+	/// <summary>
 	/// Executes the specified operation.
 	/// </summary>
 	/// <param name="executionToken">The execution token.</param>
@@ -97,12 +181,7 @@ public partial class OleDbSqlServerTransactionalDataSource : OleDbSqlServerDataS
 			{
 				cmd.Connection = m_Connection;
 				cmd.Transaction = m_Transaction;
-				if (DefaultCommandTimeout.HasValue)
-					cmd.CommandTimeout = (int)DefaultCommandTimeout.Value.TotalSeconds;
-				cmd.CommandText = executionToken.CommandText;
-				cmd.CommandType = executionToken.CommandType;
-				foreach (var param in executionToken.Parameters)
-					cmd.Parameters.Add(param);
+				executionToken.PopulateCommand(cmd, DefaultCommandTimeout);
 
 				var rows = implementation(cmd);
 				executionToken.RaiseCommandExecuted(cmd, rows);
@@ -170,12 +249,8 @@ public partial class OleDbSqlServerTransactionalDataSource : OleDbSqlServerDataS
 			{
 				cmd.Connection = m_Connection;
 				cmd.Transaction = m_Transaction;
-				if (DefaultCommandTimeout.HasValue)
-					cmd.CommandTimeout = (int)DefaultCommandTimeout.Value.TotalSeconds;
-				cmd.CommandText = executionToken.CommandText;
-				cmd.CommandType = executionToken.CommandType;
-				foreach (var param in executionToken.Parameters)
-					cmd.Parameters.Add(param);
+				executionToken.PopulateCommand(cmd, DefaultCommandTimeout);
+
 				var rows = await implementation(cmd).ConfigureAwait(false);
 				executionToken.RaiseCommandExecuted(cmd, rows);
 				OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);

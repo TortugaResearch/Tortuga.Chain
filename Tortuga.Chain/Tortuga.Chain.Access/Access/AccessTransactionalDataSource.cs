@@ -81,6 +81,134 @@ public partial class AccessTransactionalDataSource : AccessDataSourceBase
 	}
 
 	/// <summary>
+	/// Executes the stream.
+	/// </summary>
+	/// <param name="executionToken">The execution token.</param>
+	/// <param name="implementation">The implementation.</param>
+	/// <param name="state">The state.</param>
+	/// <returns>StreamingCommandCompletionToken.</returns>
+	public override StreamingCommandCompletionToken ExecuteStream(CommandExecutionToken<OleDbCommand, OleDbParameter> executionToken, StreamingCommandImplementation<OleDbCommand> implementation, object? state)
+	{
+		if (executionToken == null)
+			throw new ArgumentNullException(nameof(executionToken), $"{nameof(executionToken)} is null.");
+		if (implementation == null)
+			throw new ArgumentNullException(nameof(implementation), $"{nameof(implementation)} is null.");
+		var currentToken = executionToken as AccessCommandExecutionToken;
+		if (currentToken == null)
+			throw new ArgumentNullException(nameof(executionToken), "only AccessCommandExecutionToken is supported.");
+
+		var startTime = DateTimeOffset.Now;
+		OnExecutionStarted(executionToken, startTime, state);
+
+		try
+		{
+			OleDbCommand? cmdToReturn = null;
+			while (currentToken != null)
+			{
+				OnExecutionStarted(currentToken, startTime, state);
+				var cmd = new OleDbCommand();
+
+				cmd.Connection = m_Connection;
+				cmd.Transaction = m_Transaction;
+
+				currentToken.PopulateCommand(cmd, DefaultCommandTimeout);
+
+				if (currentToken.ExecutionMode == AccessCommandExecutionMode.Materializer)
+				{
+					implementation(cmd);
+					cmdToReturn = cmd;
+				}
+				else if (currentToken.ExecutionMode == AccessCommandExecutionMode.ExecuteScalarAndForward)
+				{
+					if (currentToken.ForwardResult == null)
+						throw new InvalidOperationException("currentToken.ExecutionMode is ExecuteScalarAndForward, but currentToken.ForwardResult is null.");
+
+					currentToken.ForwardResult(cmd.ExecuteScalar());
+				}
+				else
+					cmd.ExecuteNonQuery();
+
+				currentToken = currentToken.NextCommand;
+			}
+			return new StreamingCommandCompletionToken(this, executionToken, startTime, state, cmdToReturn, null);
+		}
+		catch (Exception ex)
+		{
+			OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
+			throw;
+		}
+	}
+
+	/// <summary>
+	/// Executes the stream asynchronous.
+	/// </summary>
+	/// <param name="executionToken">The execution token.</param>
+	/// <param name="implementation">The implementation.</param>
+	/// <param name="cancellationToken">The cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+	/// <param name="state">The state.</param>
+	/// <returns>Task&lt;StreamingCommandCompletionToken&gt;.</returns>
+	public override async Task<StreamingCommandCompletionToken> ExecuteStreamAsync(CommandExecutionToken<OleDbCommand, OleDbParameter> executionToken, StreamingCommandImplementationAsync<OleDbCommand> implementation, CancellationToken cancellationToken, object? state)
+	{
+		if (executionToken == null)
+			throw new ArgumentNullException(nameof(executionToken), $"{nameof(executionToken)} is null.");
+		if (implementation == null)
+			throw new ArgumentNullException(nameof(implementation), $"{nameof(implementation)} is null.");
+		var currentToken = executionToken as AccessCommandExecutionToken;
+		if (currentToken == null)
+			throw new ArgumentNullException(nameof(executionToken), "only AccessCommandExecutionToken is supported.");
+
+		var startTime = DateTimeOffset.Now;
+		OnExecutionStarted(executionToken, startTime, state);
+
+		try
+		{
+			OleDbCommand? cmdToReturn = null;
+
+			while (currentToken != null)
+			{
+				OnExecutionStarted(currentToken, startTime, state);
+				using (var cmd = new OleDbCommand())
+				{
+					cmd.Connection = m_Connection;
+					cmd.Transaction = m_Transaction;
+					currentToken.PopulateCommand(cmd, DefaultCommandTimeout);
+
+					if (currentToken.ExecutionMode == AccessCommandExecutionMode.Materializer)
+					{
+						await implementation(cmd).ConfigureAwait(false);
+						cmdToReturn = cmd;
+					}
+					else if (currentToken.ExecutionMode == AccessCommandExecutionMode.ExecuteScalarAndForward)
+					{
+						if (currentToken.ForwardResult == null)
+							throw new InvalidOperationException("currentToken.ExecutionMode is ExecuteScalarAndForward, but currentToken.ForwardResult is null.");
+
+						currentToken.ForwardResult(await cmd.ExecuteScalarAsync().ConfigureAwait(false));
+					}
+					else
+						await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
+				}
+				currentToken = currentToken.NextCommand;
+			}
+			return new StreamingCommandCompletionToken(this, executionToken, startTime, state, cmdToReturn, null);
+		}
+		catch (Exception ex)
+		{
+			if (cancellationToken.IsCancellationRequested) //convert AccessException into a OperationCanceledException
+			{
+				var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);
+				OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex2, state);
+				throw ex2;
+			}
+			else
+			{
+				OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
+				throw;
+			}
+		}
+	}
+
+	/// <summary>
 	/// Executes the specified execution token.
 	/// </summary>
 	/// <param name="executionToken">The execution token.</param>

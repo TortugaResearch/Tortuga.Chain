@@ -1,3 +1,120 @@
+## Version 4.3
+
+Updated dependency to Anchor 4.1.
+
+### Features
+
+[#88 Simple Aggregators](https://github.com/TortugaResearch/Tortuga.Chain/issues/88)
+
+The "simple aggregators" agument the `AsCount` method. Each returns a single value for the desired column.
+
+* `AsAverage(columnName)`
+* `AsMax(columnName)`
+* `AsMin(columnName)`
+* `AsSum(columnName, distinct)`
+
+These all return a `ScalarDbCommandBuilder` with which the caller can specify the return type. They are built on the `AggregateColumn` model, which overrides the usual column selection process.
+
+For more complex aggregation, use the `AsAggregate` method. This accepts a collection of `AggregateColumn` objects, which can be used for both aggregegate functions and grouping.
+
+The original `AsCount` methods were reworked to fit into this model.
+
+[#89 Declarative Aggregators](https://github.com/TortugaResearch/Tortuga.Chain/issues/89)
+
+Attributes can now be used to declare aggregations directly in a model.
+
+```csharp
+[Table("Sales.EmployeeSalesView"]
+public class SalesFigures
+{
+	[AggregateColumn(AggregateType.Min, "TotalPrice")]
+	public decimal SmallestSale { get; set; }
+
+	[AggregateColumn(AggregateType.Max, "TotalPrice")]
+	public decimal LargestSale { get; set; }
+
+	[AggregateColumn(AggregateType.Average, "TotalPrice")]
+	public decimal AverageSale { get; set; }
+
+	[CustomAggregateColumn("Max(TotalPrice) - Min(TotalPrice)")]
+	public decimal Range { get; set; }
+
+	[GroupByColumn]
+	public int EmployeeKey { get; set; }
+
+	[GroupByColumn]
+	public string EmployeeName { get; set; }
+}
+```
+
+To use this feature, you need use either of these patterns:
+
+```csharp
+datasource.FromTable(tableName, filter).ToAggregate<TObject>().ToCollection().Execute();
+datasource.FromTable<TObject>(filter).ToAggregate().ToCollection().Execute();
+```
+
+In the second version, the table or view name is extracted from the class.
+
+
+[#92 ToObjectStream](https://github.com/TortugaResearch/Tortuga.Chain/issues/92)
+
+Previously, Chain would fully manage database connections by default. Specifically, it would open and close connections automatically unless a transaction was involved. In that case, the developer only needed to manage the transactional data source itself.
+
+However, there are times when a result set is too large to handle at one time. In this case the developer will want an `IEnumerable` or `IAsyncEnumerable` instead of a collection. To support this, the `ToObjectStream` materializer was created.
+
+When used in place of `ToCollection`, the caller gets a `ObjectStream` object. This object implements `IEnumerable<TObject>`, `IDisposable`, `IAsyncDisposable`, abd `IAsyncEnumerable<TObject>`. (That latter two are only available in .NET 6 or later.)
+
+This object stream may be used directly, as shown below, or attached to an RX Observable or TPL Dataflow just like any other enumerable data structure.
+
+```csharp
+//sync pattern
+
+using var objectStream = dataSource.From<Employee>(new { Title = uniqueKey }).ToObjectStream<Employee>().Execute();
+foreach (var item in objectStream)
+{
+	Assert.AreEqual(uniqueKey, item.Title);
+}
+
+//async pattern
+
+await using var objectStream = await dataSource.From<Employee>(new { Title = uniqueKey }).ToObjectStream<Employee>().ExecuteAsync();
+await foreach (var item in objectStream)
+{
+	Assert.AreEqual(uniqueKey, item.Title);
+}
+```
+It is vital that the object stream is disposed after use. If that doesn't occur, the database can suffer from thread exhaustion or deadlocks.
+
+
+[#98 Dynamic Materializers and Desired Columns](https://github.com/TortugaResearch/Tortuga.Chain/issues/98)
+
+Allow the use of `WithProperties` or `ExcludeProperties` to be used with...
+
+* `.ToDynamicObject`
+* `.ToDynamicObjectOrNull`
+* `.ToDynamicCollection`
+
+
+### Bugs
+
+[#490 Command Timeout is not being honored in PostgreSQL and MySQL](https://github.com/TortugaResearch/Tortuga.Chain/issues/490)
+
+See the ticket for an explaination for why this was broken.
+
+### Technical Debt
+
+[#488 Add IAsyncDisposable support](https://github.com/TortugaResearch/Tortuga.Chain/issues/488)
+
+Added support for `IAsyncDisposable` to transactional data sources.
+
+
+
+
+
+
+
+
 ## Version 4.2
 
 ### Features

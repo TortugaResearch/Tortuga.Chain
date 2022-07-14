@@ -2,6 +2,7 @@
 using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
 using Tortuga.Chain.DataSources;
+using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.CommandBuilders;
 
@@ -27,6 +28,15 @@ public abstract class TableDbCommandBuilder<TCommand, TParameter, TLimit, TObjec
 	/// <param name="dataSource">The data source.</param>
 	protected TableDbCommandBuilder(ICommandDataSource<TCommand, TParameter> dataSource) : base(dataSource)
 	{
+	}
+
+	/// <summary>
+	/// Performs an aggregation on the table using the provided object.
+	/// </summary>
+	/// <returns>ObjectMultipleRow&lt;TCommand, TParameter, TObject&gt;.</returns>
+	public ObjectMultipleRow<TCommand, TParameter, TObject> AsAggregate()
+	{
+		return AsAggregate<TObject>();
 	}
 
 	/// <summary>
@@ -103,6 +113,51 @@ public abstract class TableDbCommandBuilder<TCommand, TParameter, TLimit, TObjec
 		=> ToImmutableList<TObject>(collectionOptions);
 
 	/// <summary>
+	/// Materializes the result as a list of master/detail records.
+	/// </summary>
+	/// <typeparam name="TDetail">The type of the detail model.</typeparam>
+	/// <param name="masterKeyColumn">The column used as the primary key for the master records.</param>
+	/// <param name="map">This is used to identify the detail collection property on the master object.</param>
+	/// <param name="masterOptions">Options for handling extraneous rows and constructor selection for the master object.</param>
+	/// <param name="detailOptions">Options for handling constructor selection for the detail objects</param>
+	/// <returns></returns>
+	public IMasterDetailMaterializer<List<TObject>> ToMasterDetailCollection<TDetail>(string masterKeyColumn, Func<TObject, ICollection<TDetail>> map, CollectionOptions masterOptions = CollectionOptions.None, CollectionOptions detailOptions = CollectionOptions.None)
+		where TDetail : class
+	{
+		return ToMasterDetailCollection<TObject, TDetail>(masterKeyColumn, map, masterOptions, detailOptions);
+	}
+
+	/// <summary>
+	/// Materializes the result as a master object with detail records.
+	/// </summary>
+	/// <typeparam name="TDetail">The type of the detail model.</typeparam>
+	/// <param name="masterKeyColumn">The column used as the primary key for the master records.</param>
+	/// <param name="map">This is used to identify the detail collection property on the master object.</param>
+	/// <param name="masterOptions">Options for handling extraneous rows and constructor selection for the master object.</param>
+	/// <param name="detailOptions">Options for handling constructor selection for the detail objects</param>
+	/// <returns></returns>
+	public IMasterDetailMaterializer<TObject> ToMasterDetailObject<TDetail>(string masterKeyColumn, Func<TObject, ICollection<TDetail>> map, RowOptions masterOptions = RowOptions.None, CollectionOptions detailOptions = CollectionOptions.None)
+		where TDetail : class
+	{
+		return ToMasterDetailObject<TObject, TDetail>(masterKeyColumn, map, masterOptions, detailOptions);
+	}
+
+	/// <summary>
+	/// Materializes the result as a master object with detail records.
+	/// </summary>
+	/// <typeparam name="TDetail">The type of the detail model.</typeparam>
+	/// <param name="masterKeyColumn">The column used as the primary key for the master records.</param>
+	/// <param name="map">This is used to identify the detail collection property on the master object.</param>
+	/// <param name="masterOptions">Options for handling extraneous rows and constructor selection for the master object.</param>
+	/// <param name="detailOptions">Options for handling constructor selection for the detail objects</param>
+	/// <returns></returns>
+	public IMasterDetailMaterializer<TObject?> ToMasterDetailObjectOrNull<TDetail>(string masterKeyColumn, Func<TObject, ICollection<TDetail>> map, RowOptions masterOptions = RowOptions.None, CollectionOptions detailOptions = CollectionOptions.None)
+		where TDetail : class
+	{
+		return ToMasterDetailObjectOrNull<TObject, TDetail>(masterKeyColumn, map, masterOptions, detailOptions);
+	}
+
+	/// <summary>
 	/// Materializes the result as an instance of the indicated type
 	/// </summary>
 	/// <param name="rowOptions">The row options.</param>
@@ -119,6 +174,37 @@ public abstract class TableDbCommandBuilder<TCommand, TParameter, TLimit, TObjec
 		=> ToObjectOrNull<TObject>(rowOptions);
 
 	/************************************************************************************************/
+
+	/// <summary>
+	/// Returns the column associated with the column name.
+	/// </summary>
+	/// <param name="columnName">Name of the column.</param>
+	/// <returns></returns>
+	/// <remarks>
+	/// If the column name was not found, this will return null
+	/// </remarks>
+	public override sealed ColumnMetadata? TryGetColumn(string columnName)
+	{
+		return OnGetTable().Columns.TryGetColumn(columnName);
+	}
+
+	/// <summary>
+	/// Returns a list of columns.
+	/// </summary>
+	/// <returns>If the command builder doesn't know which columns are available, an empty list will be returned.</returns>
+	/// <remarks>This is used by materializers to skip exclude columns.</remarks>
+	public sealed override IReadOnlyList<ColumnMetadata> TryGetColumns() => OnGetTable().Columns;
+
+	/// <summary>
+	/// Returns a list of columns known to be non-nullable.
+	/// </summary>
+	/// <returns>
+	/// If the command builder doesn't know which columns are non-nullable, an empty list will be returned.
+	/// </returns>
+	/// <remarks>
+	/// This is used by materializers to skip IsNull checks.
+	/// </remarks>
+	public sealed override IReadOnlyList<ColumnMetadata> TryGetNonNullableColumns() => OnGetTable().NonNullableColumns;
 
 	/// <summary>
 	/// Adds (or replaces) the filter on this command builder.
@@ -204,6 +290,12 @@ public abstract class TableDbCommandBuilder<TCommand, TParameter, TLimit, TObjec
 	ITableDbCommandBuilder<TObject> ITableDbCommandBuilder<TObject>.WithSorting(IEnumerable<SortExpression> sortExpressions) => WithSorting(sortExpressions);
 
 	ITableDbCommandBuilder<TObject> ITableDbCommandBuilder<TObject>.WithSorting(params SortExpression[] sortExpressions) => WithSorting((IEnumerable<SortExpression>)sortExpressions);
+
+	/// <summary>
+	/// Called when ObjectDbCommandBuilder needs a reference to the associated table or view.
+	/// </summary>
+	/// <returns></returns>
+	protected abstract TableOrViewMetadata OnGetTable();
 
 	/// <summary>
 	/// Adds (or replaces) the filter on this command builder.

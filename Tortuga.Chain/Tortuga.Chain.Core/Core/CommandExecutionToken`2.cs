@@ -48,7 +48,7 @@ public class CommandExecutionToken<TCommand, TParameter> : ExecutionToken
 	public void ApplyCommandOverrides(TCommand command)
 	{
 		OnBuildCommand(command);
-		RaiseCommandBuild(command);
+		RaiseCommandBuilt(command);
 	}
 
 	/// <summary>
@@ -74,7 +74,30 @@ public class CommandExecutionToken<TCommand, TParameter> : ExecutionToken
 	}
 
 	/// <summary>
-	/// Populates a DbCommand with the values in the execution token. Then calls OnBuildCommand/RaiseCommandBuild for any custom behavior.
+	/// Executes the specified implementation.
+	/// </summary>
+	/// <param name="implementation">The implementation.</param>
+	/// <param name="state">The state.</param>
+	/// <returns>The caller is expected to use the StreamingCommandCompletionToken to close any lingering connections and fire appropriate events.</returns>
+	public StreamingCommandCompletionToken ExecuteStream(StreamingCommandImplementation<TCommand> implementation, object? state)
+	{
+		return m_DataSource.ExecuteStream(this, implementation, state);
+	}
+
+	/// <summary>
+	/// Executes the specified implementation asynchronously.
+	/// </summary>
+	/// <param name="implementation">The implementation.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <param name="state">The state.</param>
+	/// <returns>The caller is expected to use the StreamingCommandCompletionToken to close any lingering connections and fire appropriate events.</returns>
+	public Task<StreamingCommandCompletionToken> ExecuteStreamAsync(StreamingCommandImplementationAsync<TCommand> implementation, CancellationToken cancellationToken, object? state)
+	{
+		return m_DataSource.ExecuteStreamAsync(this, implementation, cancellationToken, state);
+	}
+
+	/// <summary>
+	/// Populates a DbCommand with the values in the execution token. Then calls OnBuildCommand/RaiseCommandBuilt for any custom behavior.
 	/// </summary>
 	/// <param name="command">The command object to be populated.</param>
 	/// <param name="timeout">An optional command timeout.</param>
@@ -88,7 +111,7 @@ public class CommandExecutionToken<TCommand, TParameter> : ExecutionToken
 			command.Parameters.Add(param);
 
 		OnBuildCommand(command);
-		RaiseCommandBuild(command);
+		RaiseCommandBuilt(command);
 	}
 
 	/// <summary>

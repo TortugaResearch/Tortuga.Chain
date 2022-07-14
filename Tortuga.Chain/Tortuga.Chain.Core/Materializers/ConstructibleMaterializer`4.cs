@@ -13,10 +13,15 @@ namespace Tortuga.Chain.Materializers;
 /// <typeparam name="TObject">The type of the object that will be returned.</typeparam>
 /// <seealso cref="Materializer{TCommand, TParameter, TResult}"/>
 /// <seealso cref="IConstructibleMaterializer{TResult}"/>
-public abstract class ConstructibleMaterializer<TCommand, TParameter, TResult, TObject> : Materializer<TCommand, TParameter, TResult>, IConstructibleMaterializer<TResult>
-	where TCommand : DbCommand
-	where TParameter : DbParameter
+public abstract class ConstructibleMaterializer<TCommand, TParameter, TResult, TObject> : ColumnSelectingMaterializer<TCommand, TParameter, TResult>, IConstructibleMaterializer<TResult>
+where TCommand : DbCommand
+where TParameter : DbParameter
 {
+	/// <summary>
+	/// Gets the TObject metadata.
+	/// </summary>
+	protected static ClassMetadata ObjectMetadata = MetadataCache.GetMetadata(typeof(TObject));
+
 	/// <summary>
 	/// Initializes a new instance of the <see cref="ConstructibleMaterializer{TCommand,
 	/// TParameter, TResult, TObject}"/> class.
@@ -24,7 +29,6 @@ public abstract class ConstructibleMaterializer<TCommand, TParameter, TResult, T
 	/// <param name="commandBuilder">The associated operation.</param>
 	protected ConstructibleMaterializer(DbCommandBuilder<TCommand, TParameter> commandBuilder) : base(commandBuilder)
 	{
-		ObjectMetadata = MetadataCache.GetMetadata(typeof(TObject));
 	}
 
 	/// <summary>
@@ -32,24 +36,6 @@ public abstract class ConstructibleMaterializer<TCommand, TParameter, TResult, T
 	/// </summary>
 	/// <value>The data reader constructor.</value>
 	protected ConstructorMetadata? Constructor { get; set; }
-
-	/// <summary>
-	/// Columns to ignore when generating the list of desired columns.
-	/// </summary>
-	/// <value>The excluded columns.</value>
-	protected IReadOnlyList<string>? ExcludedColumns { get; private set; }
-
-	/// <summary>
-	/// Only include the indicated columns when generating the list of desired columns.
-	/// </summary>
-	/// <value>The included columns.</value>
-	protected IReadOnlyList<string>? IncludedColumns { get; private set; }
-
-	/// <summary>
-	/// Gets or sets the TObject metadata.
-	/// </summary>
-	/// <value>The object metadata.</value>
-	protected ClassMetadata ObjectMetadata { get; }
 
 	/// <summary>
 	/// Returns the list of columns the result materializer would like to have.
@@ -65,6 +51,8 @@ public abstract class ConstructibleMaterializer<TCommand, TParameter, TResult, T
 	/// </remarks>
 	public override IReadOnlyList<string> DesiredColumns()
 	{
+		//We need to pick the constructor now so that we have the right columns in the SQL.
+		//If we wait until materialization, we could have missing or extra columns.
 		if (Constructor == null && !ObjectMetadata.Constructors.HasDefaultConstructor)
 		{
 			Constructor = InferConstructor();
@@ -89,10 +77,10 @@ public abstract class ConstructibleMaterializer<TCommand, TParameter, TResult, T
 		}
 
 		if (IncludedColumns != null)
-			throw new NotImplementedException("Cannot specify included columns/properties with constructors. See #295");
+			throw new NotImplementedException("Cannot specify included columns/properties with non-default constructors. See #295");
 
 		if (ExcludedColumns != null)
-			throw new InvalidOperationException("Cannot specify excluded columns/properties with constructors.");
+			throw new InvalidOperationException("Cannot specify excluded columns/properties with non-default constructors.");
 
 		return Constructor.ParameterNames;
 	}
@@ -101,7 +89,7 @@ public abstract class ConstructibleMaterializer<TCommand, TParameter, TResult, T
 	/// Excludes the properties from the list of what will be populated in the object.
 	/// </summary>
 	/// <param name="propertiesToOmit">The properties to omit.</param>
-	public ILink<TResult> ExceptProperties(params string[] propertiesToOmit)
+	public override ILink<TResult> ExceptProperties(params string[] propertiesToOmit)
 	{
 		if (propertiesToOmit == null || propertiesToOmit.Length == 0)
 			return this;
@@ -303,7 +291,7 @@ public abstract class ConstructibleMaterializer<TCommand, TParameter, TResult, T
 	/// </summary>
 	/// <param name="propertiesToPopulate">The properties of the object to populate.</param>
 	/// <returns>ILink&lt;TResult&gt;.</returns>
-	public ILink<TResult> WithProperties(params string[] propertiesToPopulate)
+	public override ILink<TResult> WithProperties(params string[] propertiesToPopulate)
 	{
 		if (propertiesToPopulate == null || propertiesToPopulate.Length == 0)
 			return this;
@@ -330,17 +318,7 @@ public abstract class ConstructibleMaterializer<TCommand, TParameter, TResult, T
 	/// <exception cref="MappingException"></exception>
 	protected ConstructorMetadata InferConstructor()
 	{
-		//This is here to make the error message more accurate.
-		if (ObjectMetadata.Constructors.Count == 0)
-			throw new MappingException($"Type {typeof(TObject).Name} has does not have any constructors.");
-
-		//For inference, we're looking for non-default constructors.
-		var constructors = ObjectMetadata.Constructors.Where(x => x.Signature.Length > 0).ToList();
-		if (constructors.Count == 0)
-			throw new MappingException($"Type {typeof(TObject).Name} has does not have any non-default constructors.");
-		if (constructors.Count > 1)
-			throw new MappingException($"Type {typeof(TObject).Name} has more than one non-default constructor. Please use the WithConstructor method to specify which one to use.");
-		return constructors.Single();
+		return MaterializerUtilities.InferConstructor(ObjectMetadata);
 	}
 
 	/// <summary>

@@ -94,6 +94,13 @@ internal class SqlServerInsertBatch<TObject> : MultipleRowDbCommandBuilder<SqlCo
 	}
 
 	/// <summary>
+	/// Returns a list of columns.
+	/// </summary>
+	/// <returns>If the command builder doesn't know which columns are available, an empty list will be returned.</returns>
+	/// <remarks>This is used by materializers to skip exclude columns.</remarks>
+	public override IReadOnlyList<ColumnMetadata> TryGetColumns() => m_Table.Columns;
+
+	/// <summary>
 	/// Returns a list of columns known to be non-nullable.
 	/// </summary>
 	/// <returns>
