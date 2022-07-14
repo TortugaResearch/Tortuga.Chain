@@ -57,6 +57,13 @@ datasource.FromTable<TObject>(filter).ToAggregate().ToCollection().Execute();
 
 In the second version, the table or view name is extracted from the class.
 
+### Technical Debt
+
+[#488 Add IAsyncDisposable support](https://github.com/TortugaResearch/Tortuga.Chain/issues/488)
+
+Added support for `IAsyncDisposable` to transactional data sources.
+
+
 ## Version 4.2
 
 ### Features
