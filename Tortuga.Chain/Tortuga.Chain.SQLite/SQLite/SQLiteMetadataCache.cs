@@ -32,6 +32,31 @@ namespace Tortuga.Chain.SQLite
 		/// <remarks>https://sqlite.org/limits.html</remarks>
 		public override int? MaxParameters => 999;
 
+		internal string ClrTypeToSqlTypeName<T>()
+		{
+			var type = typeof(T);
+			if (type == typeof(string)) return "TEXT";
+			if (type == typeof(char)) return "TEXT";
+			if (type == typeof(short)) return "INTEGER";
+			if (type == typeof(int)) return "INTEGER";
+			if (type == typeof(long)) return "INTEGER";
+			if (type == typeof(ushort)) return "INTEGER";
+			if (type == typeof(uint)) return "INTEGER";
+			if (type == typeof(ulong)) return "INTEGER";
+			if (type == typeof(float)) return "REAL";
+			if (type == typeof(double)) return "REAL";
+			if (type == typeof(decimal)) return "REAL";
+			if (type == typeof(Guid)) return "TEXT";
+#if NET6_0_OR_GREATER
+			if (type == typeof(DateOnly)) return "TEXT";
+			if (type == typeof(TimeOnly)) return "TEXT";
+#endif
+			if (type == typeof(DateTime)) return "TEXT";
+			if (type == typeof(TimeSpan)) return "TEXT";
+			if (type == typeof(DateTimeOffset)) return "TEXT";
+			throw new ArgumentOutOfRangeException($"Cannot map {type.Name} to a SQLite type");
+		}
+
 		/// <summary>
 		/// Gets the indexes for a table.
 		/// </summary>
@@ -228,42 +253,42 @@ namespace Tortuga.Chain.SQLite
 			if (cleanTypeName.IndexOf("(", StringComparison.OrdinalIgnoreCase) >= 0)
 				cleanTypeName = cleanTypeName.Substring(0, cleanTypeName.IndexOf("(", StringComparison.OrdinalIgnoreCase));
 
-			switch (cleanTypeName)
+			return cleanTypeName switch
 			{
-				case "BIGINT": return DbType.Int64;
-				case "BIT": return DbType.Boolean;
-				case "BLOB": return DbType.Binary;
-				case "BOOLEAN": return DbType.Boolean;
-				case "CHAR": return DbType.AnsiString;
-				case "CHARACTER": return DbType.AnsiString;
-				case "CLOB": return DbType.String;
-				case "DATE": return DbType.Date;
-				case "DATETIME": return DbType.DateTime;
-				case "DATETIME2": return DbType.DateTime2;
-				case "DATETIMEOFFSET": return DbType.DateTimeOffset;
-				case "DECIMAL": return DbType.Decimal;
-				case "DOUBLE PRECISION": return DbType.Double;
-				case "DOUBLE": return DbType.Double;
-				case "FLOAT": return DbType.Single;
-				case "INT": return DbType.Int64;
-				case "INT2": return DbType.Int16;
-				case "INT8": return DbType.Int64;
-				case "INTEGER": return DbType.Int64;
-				case "MEDIUMINT": return DbType.Int32;
-				case "NATIVE CHARACTER": return DbType.String;
-				case "NCHAR": return DbType.String;
-				case "NUMERIC": return DbType.Decimal;
-				case "NVARCHAR": return DbType.String;
-				case "REAL": return DbType.Single;
-				case "SMALLINT": return DbType.Int16;
-				case "TEXT": return DbType.AnsiString;
-				case "TIME": return DbType.Time;
-				case "TINYINT": return DbType.SByte;
-				case "UNSIGNED BIG INT": return DbType.UInt64;
-				case "VARCHAR": return DbType.AnsiString;
-				case "VARYING CHARACTER": return DbType.AnsiString;
-				default: return null;
-			}
+				"BIGINT" => DbType.Int64,
+				"BIT" => DbType.Boolean,
+				"BLOB" => DbType.Binary,
+				"BOOLEAN" => DbType.Boolean,
+				"CHAR" => DbType.AnsiString,
+				"CHARACTER" => DbType.AnsiString,
+				"CLOB" => DbType.String,
+				"DATE" => DbType.Date,
+				"DATETIME" => DbType.DateTime,
+				"DATETIME2" => DbType.DateTime2,
+				"DATETIMEOFFSET" => DbType.DateTimeOffset,
+				"DECIMAL" => DbType.Decimal,
+				"DOUBLE PRECISION" => DbType.Double,
+				"DOUBLE" => DbType.Double,
+				"FLOAT" => DbType.Single,
+				"INT" => DbType.Int64,
+				"INT2" => DbType.Int16,
+				"INT8" => DbType.Int64,
+				"INTEGER" => DbType.Int64,
+				"MEDIUMINT" => DbType.Int32,
+				"NATIVE CHARACTER" => DbType.String,
+				"NCHAR" => DbType.String,
+				"NUMERIC" => DbType.Decimal,
+				"NVARCHAR" => DbType.String,
+				"REAL" => DbType.Single,
+				"SMALLINT" => DbType.Int16,
+				"TEXT" => DbType.AnsiString,
+				"TIME" => DbType.Time,
+				"TINYINT" => DbType.SByte,
+				"UNSIGNED BIG INT" => DbType.UInt64,
+				"VARCHAR" => DbType.AnsiString,
+				"VARYING CHARACTER" => DbType.AnsiString,
+				_ => null,
+			};
 		}
 
 		[SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
