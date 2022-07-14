@@ -1,6 +1,11 @@
-﻿using System.Data.Common;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
+using Tortuga.Anchor;
+using Tortuga.Anchor.Metadata;
+using Tortuga.Chain.Aggregates;
 using Tortuga.Chain.DataSources;
+using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.CommandBuilders;
 
@@ -27,6 +32,17 @@ public abstract class TableDbCommandBuilder<TCommand, TParameter, TLimit> : Mult
 	}
 
 	/// <summary>
+	/// Gets the aggregate columns.
+	/// </summary>
+	/// <value>The aggregate columns.</value>
+	protected AggregateColumnCollection AggregateColumns { get; } = new();
+
+	/// <summary>
+	/// Gets the columns from the metadata.
+	/// </summary>
+	protected abstract ColumnMetadataCollection Columns { get; }
+
+	/// <summary>
 	/// Gets the default limit option.
 	/// </summary>
 	/// <value>
@@ -36,10 +52,98 @@ public abstract class TableDbCommandBuilder<TCommand, TParameter, TLimit> : Mult
 	protected virtual LimitOptions DefaultLimitOption => LimitOptions.Rows;
 
 	/// <summary>
+	/// Performs an aggregation on the table using the provided object.
+	/// </summary>
+	/// <typeparam name="TObject">The type of the t object.</typeparam>
+	/// <returns>ObjectMultipleRow&lt;TCommand, TParameter, TObject&gt;.</returns>
+	public ObjectMultipleRow<TCommand, TParameter, TObject> AsAggregate<TObject>()
+		where TObject : class
+	{
+		//TODO: Waiting on Anchor 4.1 - JLA
+		//TODO: Need to deal with group by order! - JLA
+		var properties = MetadataCache.GetMetadata<TObject>().Properties;
+
+		var map = properties.Select(p => new { Property = p, Aggregates = p.Attributes.OfType<BaseAggregateAttribute>().ToList() })
+			.Where(p => p.Aggregates.Count > 0)
+			.OrderBy(p => p.Aggregates[0].Order ?? int.MaxValue) //Properties without an order go to the end of the line.
+			.ToList();
+
+		//Sanity checks.
+		foreach (var item in map.Where(p => p.Aggregates.Count > 1))
+			throw new MappingException($"The property {item.Property.Name} on class {nameof(TObject)} has more than one aggregate attribute. Only one of {nameof(AggregateColumnAttribute)}, {nameof(GroupByColumnAttribute)}, or {nameof(CustomAggregateColumnAttribute)} may be on a given property.");
+		foreach (var item in map.Where(p => p.Property.MappedColumnName is null))
+			throw new MappingException($"The property {item.Property.Name} on class {nameof(TObject)} cannot have the {nameof(NotMappedAttribute)} and one of {nameof(AggregateColumnAttribute)}, {nameof(GroupByColumnAttribute)}, or {nameof(CustomAggregateColumnAttribute)} at the same time.");
+
+		AggregateColumns.Clear();
+		foreach (var item in map)
+		{
+			switch (item.Aggregates[0])
+			{
+				case AggregateColumnAttribute aggregateColumn:
+					{
+						var sourceColumn = Columns[aggregateColumn.SourceColumnName].SqlName;
+						AggregateColumns.Add(new AggregateColumn(aggregateColumn.AggregateType, sourceColumn, item.Property.MappedColumnName!));
+						break;
+					}
+
+				case GroupByColumnAttribute groupByColumn:
+					{
+						var sourceColumn = Columns[groupByColumn.SourceColumnName ?? item.Property.MappedColumnName!].SqlName;
+						AggregateColumns.Add(new GroupByColumn(sourceColumn, item.Property.MappedColumnName));
+						break;
+					}
+
+				case CustomAggregateColumnAttribute customAggregateColumn:
+					{
+						AggregateColumns.Add(new CustomAggregateColumn(customAggregateColumn.SelectExpression, item.Property.MappedColumnName!, customAggregateColumn.GroupBy));
+						break;
+					}
+			}
+		}
+
+		return new ObjectMultipleRow<TCommand, TParameter, TObject>(this);
+	}
+
+	/// <summary>
+	/// Performs an aggregation on the table.
+	/// </summary>
+	/// <param name="aggregateColumns">The aggregate columns.</param>
+	public MultipleRowDbCommandBuilder<TCommand, TParameter> AsAggregate(IEnumerable<AggregateColumn> aggregateColumns)
+	{
+		AggregateColumns.Clear();
+		AggregateColumns.AddRange(aggregateColumns);
+		return this;
+	}
+
+	/// <summary>
+	/// Performs an aggregation on the table.
+	/// </summary>
+	/// <param name="aggregateColumns">The aggregate columns.</param>
+	public MultipleRowDbCommandBuilder<TCommand, TParameter> AsAggregate(params AggregateColumn[] aggregateColumns)
+	{
+		return AsAggregate((IEnumerable<AggregateColumn>)aggregateColumns);
+	}
+
+	/// <summary>
+	/// Gets the average value for the indicated column.
+	/// </summary>
+	/// <param name="columnName">Name of the column.</param>
+	public ScalarDbCommandBuilder<TCommand, TParameter> AsAverage(string columnName)
+	{
+		var column = Columns[columnName];
+		AggregateColumns.Add(new AggregateColumn(AggregateType.Average, column.SqlName, column.SqlName));
+		return this;
+	}
+
+	/// <summary>
 	/// Returns the row count using a <c>SELECT Count(*)</c> style query.
 	/// </summary>
 	/// <returns></returns>
-	public abstract ILink<long> AsCount();
+	public ILink<long> AsCount()
+	{
+		AggregateColumns.Add(new AggregateColumn(AggregateType.Count, "*", "RowCount"));
+		return ToInt64();
+	}
 
 	/// <summary>
 	/// Returns the row count for a given column. <c>SELECT Count(columnName)</c>
@@ -47,7 +151,47 @@ public abstract class TableDbCommandBuilder<TCommand, TParameter, TLimit> : Mult
 	/// <param name="columnName">Name of the column.</param>
 	/// <param name="distinct">if set to <c>true</c> use <c>SELECT COUNT(DISTINCT columnName)</c>.</param>
 	/// <returns></returns>
-	public abstract ILink<long> AsCount(string columnName, bool distinct = false);
+	public ILink<long> AsCount(string columnName, bool distinct = false)
+	{
+		var column = Columns[columnName];
+		AggregateColumns.Add(new AggregateColumn(distinct ? AggregateType.CountDistinct : AggregateType.Count, column.SqlName, column.SqlName));
+
+		return ToInt64();
+	}
+
+	/// <summary>
+	/// Gets the maximum value for the indicated column.
+	/// </summary>
+	/// <param name="columnName">Name of the column.</param>
+	public ScalarDbCommandBuilder<TCommand, TParameter> AsMax(string columnName)
+	{
+		var column = Columns[columnName];
+		AggregateColumns.Add(new AggregateColumn(AggregateType.Max, column.SqlName, column.SqlName));
+		return this;
+	}
+
+	/// <summary>
+	/// Gets the minimum value for the indicated column.
+	/// </summary>
+	/// <param name="columnName">Name of the column.</param>
+	public ScalarDbCommandBuilder<TCommand, TParameter> AsMin(string columnName)
+	{
+		var column = Columns[columnName];
+		AggregateColumns.Add(new AggregateColumn(AggregateType.Min, column.SqlName, column.SqlName));
+		return this;
+	}
+
+	/// <summary>
+	/// Gets the sum of non-null values the indicated column.
+	/// </summary>
+	/// <param name="columnName">Name of the column.</param>
+	/// <param name="distinct">If true, only include distinct rows.</param>
+	public ScalarDbCommandBuilder<TCommand, TParameter> AsSum(string columnName, bool distinct = false)
+	{
+		var column = Columns[columnName];
+		AggregateColumns.Add(new AggregateColumn(distinct ? AggregateType.SumDistinct : AggregateType.Sum, column.SqlName, column.SqlName));
+		return this;
+	}
 
 	/// <summary>
 	/// Adds (or replaces) the filter on this command builder.

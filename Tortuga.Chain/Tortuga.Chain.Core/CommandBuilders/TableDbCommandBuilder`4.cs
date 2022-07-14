@@ -30,6 +30,15 @@ public abstract class TableDbCommandBuilder<TCommand, TParameter, TLimit, TObjec
 	}
 
 	/// <summary>
+	/// Performs an aggregation on the table using the provided object.
+	/// </summary>
+	/// <returns>ObjectMultipleRow&lt;TCommand, TParameter, TObject&gt;.</returns>
+	public ObjectMultipleRow<TCommand, TParameter, TObject> AsAggregate()
+	{
+		return AsAggregate<TObject>();
+	}
+
+	/// <summary>
 	/// Materializes the result as a list of objects.
 	/// </summary>
 	/// <param name="collectionOptions">The collection options.</param>
