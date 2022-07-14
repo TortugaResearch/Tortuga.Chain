@@ -30,6 +30,15 @@ public abstract class TableDbCommandBuilder<TCommand, TParameter, TLimit, TObjec
 	}
 
 	/// <summary>
+	/// Performs an aggregation on the table using the provided object.
+	/// </summary>
+	/// <returns>ObjectMultipleRow&lt;TCommand, TParameter, TObject&gt;.</returns>
+	public ObjectMultipleRow<TCommand, TParameter, TObject> AsAggregate()
+	{
+		return AsAggregate<TObject>();
+	}
+
+	/// <summary>
 	/// Materializes the result as a list of objects.
 	/// </summary>
 	/// <param name="collectionOptions">The collection options.</param>
@@ -101,6 +110,51 @@ public abstract class TableDbCommandBuilder<TCommand, TParameter, TLimit, TObjec
 	/// <remarks>In theory this will offer better performance than ToImmutableArray if you intend to further modify the result.</remarks>
 	public IConstructibleMaterializer<ImmutableList<TObject>> ToImmutableList(CollectionOptions collectionOptions = CollectionOptions.None)
 		=> ToImmutableList<TObject>(collectionOptions);
+
+	/// <summary>
+	/// Materializes the result as a list of master/detail records.
+	/// </summary>
+	/// <typeparam name="TDetail">The type of the detail model.</typeparam>
+	/// <param name="masterKeyColumn">The column used as the primary key for the master records.</param>
+	/// <param name="map">This is used to identify the detail collection property on the master object.</param>
+	/// <param name="masterOptions">Options for handling extraneous rows and constructor selection for the master object.</param>
+	/// <param name="detailOptions">Options for handling constructor selection for the detail objects</param>
+	/// <returns></returns>
+	public IMasterDetailMaterializer<List<TObject>> ToMasterDetailCollection<TDetail>(string masterKeyColumn, Func<TObject, ICollection<TDetail>> map, CollectionOptions masterOptions = CollectionOptions.None, CollectionOptions detailOptions = CollectionOptions.None)
+		where TDetail : class
+	{
+		return ToMasterDetailCollection<TObject, TDetail>(masterKeyColumn, map, masterOptions, detailOptions);
+	}
+
+	/// <summary>
+	/// Materializes the result as a master object with detail records.
+	/// </summary>
+	/// <typeparam name="TDetail">The type of the detail model.</typeparam>
+	/// <param name="masterKeyColumn">The column used as the primary key for the master records.</param>
+	/// <param name="map">This is used to identify the detail collection property on the master object.</param>
+	/// <param name="masterOptions">Options for handling extraneous rows and constructor selection for the master object.</param>
+	/// <param name="detailOptions">Options for handling constructor selection for the detail objects</param>
+	/// <returns></returns>
+	public IMasterDetailMaterializer<TObject> ToMasterDetailObject<TDetail>(string masterKeyColumn, Func<TObject, ICollection<TDetail>> map, RowOptions masterOptions = RowOptions.None, CollectionOptions detailOptions = CollectionOptions.None)
+		where TDetail : class
+	{
+		return ToMasterDetailObject<TObject, TDetail>(masterKeyColumn, map, masterOptions, detailOptions);
+	}
+
+	/// <summary>
+	/// Materializes the result as a master object with detail records.
+	/// </summary>
+	/// <typeparam name="TDetail">The type of the detail model.</typeparam>
+	/// <param name="masterKeyColumn">The column used as the primary key for the master records.</param>
+	/// <param name="map">This is used to identify the detail collection property on the master object.</param>
+	/// <param name="masterOptions">Options for handling extraneous rows and constructor selection for the master object.</param>
+	/// <param name="detailOptions">Options for handling constructor selection for the detail objects</param>
+	/// <returns></returns>
+	public IMasterDetailMaterializer<TObject?> ToMasterDetailObjectOrNull<TDetail>(string masterKeyColumn, Func<TObject, ICollection<TDetail>> map, RowOptions masterOptions = RowOptions.None, CollectionOptions detailOptions = CollectionOptions.None)
+		where TDetail : class
+	{
+		return ToMasterDetailObjectOrNull<TObject, TDetail>(masterKeyColumn, map, masterOptions, detailOptions);
+	}
 
 	/// <summary>
 	/// Materializes the result as an instance of the indicated type

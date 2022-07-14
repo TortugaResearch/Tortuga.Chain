@@ -1,3 +1,60 @@
+## Version 4.3
+
+Updated dependency to Anchor 4.1.
+
+### Features
+
+[#88 Simple Aggregators](https://github.com/TortugaResearch/Tortuga.Chain/issues/88)
+
+The "simple aggregators" agument the `AsCount` method. Each returns a single value for the desired column.
+
+* `AsAverage(columnName)`
+* `AsMax(columnName)`
+* `AsMin(columnName)`
+* `AsSum(columnName, distinct)`
+
+These all return a `ScalarDbCommandBuilder` with which the caller can specify the return type. They are built on the `AggregateColumn` model, which overrides the usual column selection process.
+
+For more complex aggregation, use the `AsAggregate` method. This accepts a collection of `AggregateColumn` objects, which can be used for both aggregegate functions and grouping.
+
+The original `AsCount` methods were reworked to fit into this model.
+
+[#89 Declarative Aggregators](https://github.com/TortugaResearch/Tortuga.Chain/issues/89)
+
+Attributes can now be used to declare aggregations directly in a model.
+
+```csharp
+[Table("Sales.EmployeeSalesView"]
+public class SalesFigures
+{
+	[AggregateColumn(AggregateType.Min, "TotalPrice")]
+	public decimal SmallestSale { get; set; }
+
+	[AggregateColumn(AggregateType.Max, "TotalPrice")]
+	public decimal LargestSale { get; set; }
+
+	[AggregateColumn(AggregateType.Average, "TotalPrice")]
+	public decimal AverageSale { get; set; }
+
+	[CustomAggregateColumn("Max(TotalPrice) - Min(TotalPrice)")]
+	public decimal Range { get; set; }
+
+	[GroupByColumn]
+	public int EmployeeKey { get; set; }
+
+	[GroupByColumn]
+	public string EmployeeName { get; set; }
+}
+```
+
+To use this feature, you need use either of these patterns:
+
+```csharp
+datasource.FromTable(tableName, filter).ToAggregate<TObject>().ToCollection().Execute();
+datasource.FromTable<TObject>(filter).ToAggregate().ToCollection().Execute();
+```
+
+In the second version, the table or view name is extracted from the class.
 
 
 [#92 ToObjectStream](https://github.com/TortugaResearch/Tortuga.Chain/issues/92)
@@ -26,18 +83,20 @@ await foreach (var item in objectStream)
 {
 	Assert.AreEqual(uniqueKey, item.Title);
 }
-
 ```
-
 It is vital that the object stream is disposed after use. If that doesn't occur, the database can suffer from thread exhaustion or deadlocks.
-
-
 
 ### Bugs
 
 [#490 Command Timeout is not being honored in PostgreSQL and MySQL](https://github.com/TortugaResearch/Tortuga.Chain/issues/490)
 
 See the ticket for an explaination for why this was broken.
+
+### Technical Debt
+
+[#488 Add IAsyncDisposable support](https://github.com/TortugaResearch/Tortuga.Chain/issues/488)
+
+Added support for `IAsyncDisposable` to transactional data sources.
 
 
 ## Version 4.2

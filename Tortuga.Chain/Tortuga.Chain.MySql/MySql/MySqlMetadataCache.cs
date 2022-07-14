@@ -299,6 +299,20 @@ public class MySqlMetadataCache : DatabaseMetadataCache<MySqlObjectName, MySqlDb
 	}
 
 	/// <summary>
+	/// Quotes the name of the column.
+	/// </summary>
+	/// <param name="columnName">Name of the column.</param>
+	/// <returns>System.String.</returns>
+	/// <remarks>This assumes the column name wasn't already quoted.</remarks>
+	public override string QuoteColumnName(string columnName)
+	{
+		if (columnName == "*")
+			return columnName;
+
+		return "`" + columnName + "`";
+	}
+
+	/// <summary>
 	/// Resets the metadata cache, clearing out all cached metadata.
 	/// </summary>
 	public override void Reset()
@@ -605,7 +619,7 @@ public class MySqlMetadataCache : DatabaseMetadataCache<MySqlObjectName, MySqlDb
 
 						var dbType = SqlTypeNameToDbType(typeName, isUnsigned);
 
-						columns.Add(new ColumnMetadata<MySqlDbType>(name, computed, primary, isIdentity, typeName, dbType, "`" + name + "`", isNullable, (int?)maxLength, precision, scale, fullTypeName, ToClrType(typeName, isNullable, (int?)maxLength, isUnsigned)));
+						columns.Add(new ColumnMetadata<MySqlDbType>(name, computed, primary, isIdentity, typeName, dbType, QuoteColumnName(name), isNullable, (int?)maxLength, precision, scale, fullTypeName, ToClrType(typeName, isNullable, (int?)maxLength, isUnsigned)));
 					}
 				}
 			}
