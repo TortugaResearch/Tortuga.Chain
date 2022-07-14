@@ -50,7 +50,7 @@ internal sealed class SQLiteDeleteSet : DeleteSetDbCommandBuilder<SQLiteCommand,
 	/// <param name="tableName">Name of the table.</param>
 	/// <param name="filterValue">The filter value.</param>
 	/// <param name="filterOptions">The options.</param>
-	public SQLiteDeleteSet(SQLiteDataSourceBase dataSource, SQLiteObjectName tableName, object filterValue, FilterOptions filterOptions) : base(dataSource, filterOptions, filterOptions)
+	public SQLiteDeleteSet(SQLiteDataSourceBase dataSource, SQLiteObjectName tableName, object filterValue, FilterOptions filterOptions) : base(dataSource, filterValue, filterOptions)
 	{
 		m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
 	}

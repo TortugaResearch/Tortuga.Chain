@@ -76,7 +76,7 @@ public class SimpleAggregateTests : TestBase
 		//WriteLine($"Table {tableName}");
 		try
 		{
-			var minValue = dataSource.From<Employee>().AsSum("EmployeeKey", true).ToInt32().Execute();
+			var minValue = dataSource.From<Employee>(Filter).AsSum("EmployeeKey", true).ToInt32().Execute();
 		}
 		finally
 		{

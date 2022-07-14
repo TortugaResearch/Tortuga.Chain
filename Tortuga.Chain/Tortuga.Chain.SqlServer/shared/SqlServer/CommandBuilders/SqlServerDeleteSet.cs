@@ -49,7 +49,7 @@ internal sealed class SqlServerDeleteSet : DeleteSetDbCommandBuilder<SqlCommand,
 	/// <param name="tableName">Name of the table.</param>
 	/// <param name="filterValue">The filter value.</param>
 	/// <param name="filterOptions">The options.</param>
-	public SqlServerDeleteSet(SqlServerDataSourceBase dataSource, SqlServerObjectName tableName, object filterValue, FilterOptions filterOptions) : base(dataSource, filterOptions, filterOptions)
+	public SqlServerDeleteSet(SqlServerDataSourceBase dataSource, SqlServerObjectName tableName, object filterValue, FilterOptions filterOptions) : base(dataSource, filterValue, filterOptions)
 	{
 		m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
 	}
