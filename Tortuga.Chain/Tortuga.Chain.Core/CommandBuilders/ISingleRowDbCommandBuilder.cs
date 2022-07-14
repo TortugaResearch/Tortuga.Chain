@@ -21,14 +21,14 @@ public interface ISingleRowDbCommandBuilder : IScalarDbCommandBuilder
 	/// </summary>
 	/// <param name="rowOptions">The row options.</param>
 	/// <returns></returns>
-	ILink<dynamic> ToDynamicObject(RowOptions rowOptions = RowOptions.None);
+	IColumnSelectingMaterializer<dynamic> ToDynamicObject(RowOptions rowOptions = RowOptions.None);
 
 	/// <summary>
 	/// Materializes the result as a dynamic object
 	/// </summary>
 	/// <param name="rowOptions">The row options.</param>
 	/// <returns></returns>
-	ILink<dynamic?> ToDynamicObjectOrNull(RowOptions rowOptions = RowOptions.None);
+	IColumnSelectingMaterializer<dynamic?> ToDynamicObjectOrNull(RowOptions rowOptions = RowOptions.None);
 
 	/// <summary>
 	/// Materializes the result as an instance of the indicated type

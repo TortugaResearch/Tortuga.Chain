@@ -6,127 +6,96 @@ using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
 using Tortuga.Chain.Metadata;
 
-namespace Tortuga.Chain.PostgreSql.CommandBuilders
+namespace Tortuga.Chain.PostgreSql.CommandBuilders;
+
+/// <summary>
+/// Class PostgreSqlDeleteSet.
+/// </summary>
+internal sealed class PostgreSqlDeleteSet : DeleteSetDbCommandBuilder<NpgsqlCommand, NpgsqlParameter>
 {
+	readonly TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType> m_Table;
+
 	/// <summary>
-	/// Class PostgreSqlDeleteSet.
+	/// Initializes a new instance of the <see cref="PostgreSqlDeleteSet" /> class.
 	/// </summary>
-	internal sealed class PostgreSqlDeleteSet : MultipleRowDbCommandBuilder<NpgsqlCommand, NpgsqlParameter>
+	/// <param name="dataSource">The data source.</param>
+	/// <param name="tableName">Name of the table.</param>
+	/// <param name="whereClause">The where clause.</param>
+	/// <param name="parameters">The parameters.</param>
+	/// <param name="expectedRowCount">The expected row count.</param>
+	/// <param name="options">The options.</param>
+	public PostgreSqlDeleteSet(PostgreSqlDataSourceBase dataSource, PostgreSqlObjectName tableName, string whereClause, IEnumerable<NpgsqlParameter> parameters, int? expectedRowCount, DeleteOptions options) : base(dataSource, whereClause, parameters, expectedRowCount, options)
 	{
-		readonly object? m_ArgumentValue;
-		readonly int? m_ExpectedRowCount;
-		readonly FilterOptions m_FilterOptions;
-		readonly object? m_FilterValue;
-		readonly DeleteOptions m_Options;
-		readonly IEnumerable<NpgsqlParameter>? m_Parameters;
-		readonly TableOrViewMetadata<PostgreSqlObjectName, NpgsqlDbType> m_Table;
-		readonly string? m_WhereClause;
+		if (options.HasFlag(DeleteOptions.UseKeyAttribute))
+			throw new NotSupportedException("Cannot use Key attributes with this operation.");
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="PostgreSqlDeleteSet" /> class.
-		/// </summary>
-		/// <param name="dataSource">The data source.</param>
-		/// <param name="tableName">Name of the table.</param>
-		/// <param name="whereClause">The where clause.</param>
-		/// <param name="parameters">The parameters.</param>
-		/// <param name="expectedRowCount">The expected row count.</param>
-		/// <param name="options">The options.</param>
-		public PostgreSqlDeleteSet(PostgreSqlDataSourceBase dataSource, PostgreSqlObjectName tableName, string whereClause, IEnumerable<NpgsqlParameter> parameters, int? expectedRowCount, DeleteOptions options) : base(dataSource)
-		{
-			if (options.HasFlag(DeleteOptions.UseKeyAttribute))
-				throw new NotSupportedException("Cannot use Key attributes with this operation.");
-
-			m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
-			m_WhereClause = whereClause;
-			m_Parameters = parameters;
-			m_Options = options;
-			m_ExpectedRowCount = expectedRowCount;
-		}
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="PostgreSqlDeleteSet"/> class.
-		/// </summary>
-		/// <param name="dataSource">The data source.</param>
-		/// <param name="tableName">Name of the table.</param>
-		/// <param name="whereClause">The where clause.</param>
-		/// <param name="argumentValue">The argument value.</param>
-		public PostgreSqlDeleteSet(PostgreSqlDataSourceBase dataSource, PostgreSqlObjectName tableName, string whereClause, object? argumentValue) : base(dataSource)
-		{
-			m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
-			m_WhereClause = whereClause;
-			m_ArgumentValue = argumentValue;
-		}
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="PostgreSqlDeleteSet"/> class.
-		/// </summary>
-		/// <param name="dataSource">The data source.</param>
-		/// <param name="tableName">Name of the table.</param>
-		/// <param name="filterValue">The filter value.</param>
-		/// <param name="filterOptions">The options.</param>
-		public PostgreSqlDeleteSet(PostgreSqlDataSourceBase dataSource, PostgreSqlObjectName tableName, object? filterValue, FilterOptions filterOptions) : base(dataSource)
-		{
-			m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
-			m_FilterValue = filterValue;
-			m_FilterOptions = filterOptions;
-		}
-
-		public override CommandExecutionToken<NpgsqlCommand, NpgsqlParameter> Prepare(Materializer<NpgsqlCommand, NpgsqlParameter> materializer)
-		{
-			if (materializer == null)
-				throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
-
-			var sqlBuilder = m_Table.CreateSqlBuilder(StrictMode);
-			sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
-
-			List<NpgsqlParameter> parameters;
-			var sql = new StringBuilder();
-			sql.Append("DELETE FROM " + m_Table.Name.ToQuotedString());
-			if (m_FilterValue != null)
-			{
-				sql.Append(" WHERE " + sqlBuilder.ApplyFilterValue(m_FilterValue, m_FilterOptions));
-
-				parameters = sqlBuilder.GetParameters();
-			}
-			else if (!string.IsNullOrWhiteSpace(m_WhereClause))
-			{
-				sql.Append(" WHERE " + m_WhereClause);
-
-				parameters = SqlBuilder.GetParameters<NpgsqlParameter>(m_ArgumentValue);
-				parameters.AddRange(sqlBuilder.GetParameters());
-			}
-			else
-			{
-				parameters = sqlBuilder.GetParameters();
-			}
-			sqlBuilder.BuildSelectClause(sql, " RETURNING ", null, null);
-			sql.Append(";");
-
-			if (m_Parameters != null)
-				parameters.AddRange(m_Parameters);
-
-			return new PostgreSqlCommandExecutionToken(DataSource, "Delete from " + m_Table.Name, sql.ToString(), parameters).CheckDeleteRowCount(m_Options, m_ExpectedRowCount);
-		}
-
-		/// <summary>
-		/// Returns the column associated with the column name.
-		/// </summary>
-		/// <param name="columnName">Name of the column.</param>
-		/// <returns></returns>
-		/// <remarks>
-		/// If the column name was not found, this will return null
-		/// </remarks>
-		public override ColumnMetadata? TryGetColumn(string columnName) => m_Table.Columns.TryGetColumn(columnName);
-
-		/// <summary>
-		/// Returns a list of columns known to be non-nullable.
-		/// </summary>
-		/// <returns>
-		/// If the command builder doesn't know which columns are non-nullable, an empty list will be returned.
-		/// </returns>
-		/// <remarks>
-		/// This is used by materializers to skip IsNull checks.
-		/// </remarks>
-		public override IReadOnlyList<ColumnMetadata> TryGetNonNullableColumns() => m_Table.NonNullableColumns;
+		m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
 	}
+
+	/// <summary>
+	/// Initializes a new instance of the <see cref="PostgreSqlDeleteSet"/> class.
+	/// </summary>
+	/// <param name="dataSource">The data source.</param>
+	/// <param name="tableName">Name of the table.</param>
+	/// <param name="whereClause">The where clause.</param>
+	/// <param name="argumentValue">The argument value.</param>
+	public PostgreSqlDeleteSet(PostgreSqlDataSourceBase dataSource, PostgreSqlObjectName tableName, string whereClause, object? argumentValue) : base(dataSource, whereClause, argumentValue)
+	{
+		m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
+	}
+
+	/// <summary>
+	/// Initializes a new instance of the <see cref="PostgreSqlDeleteSet"/> class.
+	/// </summary>
+	/// <param name="dataSource">The data source.</param>
+	/// <param name="tableName">Name of the table.</param>
+	/// <param name="filterValue">The filter value.</param>
+	/// <param name="filterOptions">The options.</param>
+	public PostgreSqlDeleteSet(PostgreSqlDataSourceBase dataSource, PostgreSqlObjectName tableName, object? filterValue, FilterOptions filterOptions) : base(dataSource, filterOptions, filterOptions)
+	{
+		m_Table = dataSource.DatabaseMetadata.GetTableOrView(tableName);
+	}
+
+	public override CommandExecutionToken<NpgsqlCommand, NpgsqlParameter> Prepare(Materializer<NpgsqlCommand, NpgsqlParameter> materializer)
+	{
+		if (materializer == null)
+			throw new ArgumentNullException(nameof(materializer), $"{nameof(materializer)} is null.");
+
+		var sqlBuilder = m_Table.CreateSqlBuilder(StrictMode);
+		sqlBuilder.ApplyDesiredColumns(materializer.DesiredColumns());
+
+		List<NpgsqlParameter> parameters;
+		var sql = new StringBuilder();
+		sql.Append("DELETE FROM " + m_Table.Name.ToQuotedString());
+		if (FilterValue != null)
+		{
+			sql.Append(" WHERE " + sqlBuilder.ApplyFilterValue(FilterValue, FilterOptions));
+
+			parameters = sqlBuilder.GetParameters();
+		}
+		else if (!string.IsNullOrWhiteSpace(WhereClause))
+		{
+			sql.Append(" WHERE " + WhereClause);
+
+			parameters = SqlBuilder.GetParameters<NpgsqlParameter>(ArgumentValue);
+			parameters.AddRange(sqlBuilder.GetParameters());
+		}
+		else
+		{
+			parameters = sqlBuilder.GetParameters();
+		}
+		sqlBuilder.BuildSelectClause(sql, " RETURNING ", null, null);
+		sql.Append(";");
+
+		if (Parameters != null)
+			parameters.AddRange(Parameters);
+
+		return new PostgreSqlCommandExecutionToken(DataSource, "Delete from " + m_Table.Name, sql.ToString(), parameters).CheckDeleteRowCount(Options, ExpectedRowCount);
+	}
+
+	/// <summary>
+	/// Called when ObjectDbCommandBuilder needs a reference to the associated table or view.
+	/// </summary>
+	/// <returns>TableOrViewMetadata.</returns>
+	protected override TableOrViewMetadata OnGetTable() => m_Table;
 }

@@ -1,5 +1,4 @@
-﻿using System.Collections.Immutable;
-using System.Data.OleDb;
+﻿using System.Data.OleDb;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
@@ -12,7 +11,6 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders;
 /// </summary>
 internal sealed class OleDbSqlServerProcedureCall : ProcedureDbCommandBuilder<OleDbCommand, OleDbParameter>
 {
-	readonly object? m_ArgumentValue;
 	readonly StoredProcedureMetadata<SqlServerObjectName, OleDbType> m_Procedure;
 
 	/// <summary>
@@ -21,12 +19,11 @@ internal sealed class OleDbSqlServerProcedureCall : ProcedureDbCommandBuilder<Ol
 	/// <param name="dataSource">The data source.</param>
 	/// <param name="procedureName">Name of the procedure.</param>
 	/// <param name="argumentValue">The argument value.</param>
-	internal OleDbSqlServerProcedureCall(OleDbSqlServerDataSourceBase dataSource, SqlServerObjectName procedureName, object? argumentValue = null) : base(dataSource)
+	internal OleDbSqlServerProcedureCall(OleDbSqlServerDataSourceBase dataSource, SqlServerObjectName procedureName, object? argumentValue) : base(dataSource, argumentValue)
 	{
 		if (procedureName == SqlServerObjectName.Empty)
 			throw new ArgumentException($"{nameof(procedureName)} is empty", nameof(procedureName));
 
-		m_ArgumentValue = argumentValue;
 		m_Procedure = DataSource.DatabaseMetadata.GetStoredProcedure(procedureName);
 	}
 
@@ -51,41 +48,17 @@ internal sealed class OleDbSqlServerProcedureCall : ProcedureDbCommandBuilder<Ol
 
 		List<OleDbParameter> parameters;
 
-		if (m_ArgumentValue is IEnumerable<OleDbParameter>)
+		if (ArgumentValue is IEnumerable<OleDbParameter>)
 		{
-			parameters = ((IEnumerable<OleDbParameter>)m_ArgumentValue).ToList();
+			parameters = ((IEnumerable<OleDbParameter>)ArgumentValue).ToList();
 		}
 		else
 		{
 			var sqlBuilder = m_Procedure.CreateSqlBuilder(StrictMode);
-			sqlBuilder.ApplyArgumentValue(DataSource, m_ArgumentValue);
+			sqlBuilder.ApplyArgumentValue(DataSource, ArgumentValue);
 			parameters = sqlBuilder.GetParameters();
 		}
 
 		return new OleDbCommandExecutionToken(DataSource, m_Procedure.Name.ToString(), m_Procedure.Name.ToQuotedString(), parameters, CommandType.StoredProcedure);
 	}
-
-	/// <summary>
-	/// Returns the column associated with the column name.
-	/// </summary>
-	/// <param name="columnName">Name of the column.</param>
-	/// <returns></returns>
-	/// <remarks>
-	/// If the column name was not found, this will return null
-	/// </remarks>
-	public override ColumnMetadata? TryGetColumn(string columnName)
-	{
-		return null;
-	}
-
-	/// <summary>
-	/// Returns a list of columns known to be non-nullable.
-	/// </summary>
-	/// <returns>
-	/// If the command builder doesn't know which columns are non-nullable, an empty list will be returned.
-	/// </returns>
-	/// <remarks>
-	/// This is used by materializers to skip IsNull checks.
-	/// </remarks>
-	public override IReadOnlyList<ColumnMetadata> TryGetNonNullableColumns() => ImmutableList<ColumnMetadata>.Empty;
 }

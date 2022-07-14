@@ -207,16 +207,23 @@ internal class OleDbSqlServerTableFunction : TableDbCommandBuilder<OleDbCommand,
         return m_Table.Columns.TryGetColumn(columnName);
     }
 
-    /// <summary>
-    /// Returns a list of columns known to be non-nullable.
-    /// </summary>
-    /// <returns>
-    /// If the command builder doesn't know which columns are non-nullable, an empty list will be returned.
-    /// </returns>
-    /// <remarks>
-    /// This is used by materializers to skip IsNull checks.
-    /// </remarks>
-    public override IReadOnlyList<ColumnMetadata> TryGetNonNullableColumns() => m_Table.NullableColumns;
+	/// <summary>
+	/// Returns a list of columns.
+	/// </summary>
+	/// <returns>If the command builder doesn't know which columns are available, an empty list will be returned.</returns>
+	/// <remarks>This is used by materializers to skip exclude columns.</remarks>
+	public override IReadOnlyList<ColumnMetadata> TryGetColumns() => m_Table.Columns;
+
+	/// <summary>
+	/// Returns a list of columns known to be non-nullable.
+	/// </summary>
+	/// <returns>
+	/// If the command builder doesn't know which columns are non-nullable, an empty list will be returned.
+	/// </returns>
+	/// <remarks>
+	/// This is used by materializers to skip IsNull checks.
+	/// </remarks>
+	public override IReadOnlyList<ColumnMetadata> TryGetNonNullableColumns() => m_Table.NullableColumns;
 
     /// <summary>
     /// Adds (or replaces) the filter on this command builder.

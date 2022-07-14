@@ -8,15 +8,8 @@ namespace Tortuga.Chain;
 /// </summary>
 /// <typeparam name="TResult">The type of the t result.</typeparam>
 /// <seealso cref="ILink{TResult}"/>
-public interface IConstructibleMaterializer<TResult> : ILink<TResult>
+public interface IConstructibleMaterializer<TResult> : IColumnSelectingMaterializer<TResult>
 {
-	/// <summary>
-	/// Excludes the properties from the list of what will be populated in the object.
-	/// </summary>
-	/// <param name="propertiesToOmit">The properties to omit.</param>
-	/// <returns>ILink&lt;TResult&gt;.</returns>
-	ILink<TResult> ExceptProperties(params string[] propertiesToOmit);
-
 	/// <summary>
 	/// Appends the indicated constructor onto the materializer.
 	/// </summary>
@@ -147,11 +140,4 @@ public interface IConstructibleMaterializer<TResult> : ILink<TResult>
 	/// <returns>ILink&lt;TResult&gt;.</returns>
 	[SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
 	ILink<TResult> WithConstructor<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>();
-
-	/// <summary>
-	/// Limits the list of properties to populate to just the indicated list.
-	/// </summary>
-	/// <param name="propertiesToPopulate">The properties of the object to populate.</param>
-	/// <returns>ILink&lt;TResult&gt;.</returns>
-	ILink<TResult> WithProperties(params string[] propertiesToPopulate);
 }

@@ -35,14 +35,14 @@ where TParameter : DbParameter
 	/// </summary>
 	/// <param name="rowOptions">The row options.</param>
 	/// <returns></returns>
-	public ILink<dynamic> ToDynamicObject(RowOptions rowOptions = RowOptions.None) => new DynamicObjectMaterializer<TCommand, TParameter>(this, rowOptions);
+	public IColumnSelectingMaterializer<dynamic> ToDynamicObject(RowOptions rowOptions = RowOptions.None) => new DynamicObjectMaterializer<TCommand, TParameter>(this, rowOptions);
 
 	/// <summary>
 	/// Materializes the result as a dynamic object
 	/// </summary>
 	/// <param name="rowOptions">The row options.</param>
 	/// <returns></returns>
-	public ILink<dynamic?> ToDynamicObjectOrNull(RowOptions rowOptions = RowOptions.None) => new DynamicObjectOrNullMaterializer<TCommand, TParameter>(this, rowOptions);
+	public IColumnSelectingMaterializer<dynamic?> ToDynamicObjectOrNull(RowOptions rowOptions = RowOptions.None) => new DynamicObjectOrNullMaterializer<TCommand, TParameter>(this, rowOptions);
 
 	/// <summary>
 	/// Materializes the result as a master object with detail records.

@@ -86,6 +86,16 @@ await foreach (var item in objectStream)
 ```
 It is vital that the object stream is disposed after use. If that doesn't occur, the database can suffer from thread exhaustion or deadlocks.
 
+
+[#98 Dynamic Materializers and Desired Columns](https://github.com/TortugaResearch/Tortuga.Chain/issues/98)
+
+Allow the use of `WithProperties` or `ExcludeProperties` to be used with...
+
+* `.ToDynamicObject`
+* `.ToDynamicObjectOrNull`
+* `.ToDynamicCollection`
+
+
 ### Bugs
 
 [#490 Command Timeout is not being honored in PostgreSQL and MySQL](https://github.com/TortugaResearch/Tortuga.Chain/issues/490)
@@ -97,6 +107,12 @@ See the ticket for an explaination for why this was broken.
 [#488 Add IAsyncDisposable support](https://github.com/TortugaResearch/Tortuga.Chain/issues/488)
 
 Added support for `IAsyncDisposable` to transactional data sources.
+
+
+
+
+
+
 
 
 ## Version 4.2

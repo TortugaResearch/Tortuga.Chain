@@ -265,27 +265,6 @@ internal sealed partial class SqlServerTableOrView<TObject> : TableDbCommandBuil
 	}
 
 	/// <summary>
-	/// Returns the column associated with the column name.
-	/// </summary>
-	/// <param name="columnName">Name of the column.</param>
-	/// <returns></returns>
-	/// <remarks>
-	/// If the column name was not found, this will return null
-	/// </remarks>
-	public override ColumnMetadata? TryGetColumn(string columnName) => m_Table.Columns.TryGetColumn(columnName);
-
-	/// <summary>
-	/// Returns a list of columns known to be non-nullable.
-	/// </summary>
-	/// <returns>
-	/// If the command builder doesn't know which columns are non-nullable, an empty list will be returned.
-	/// </returns>
-	/// <remarks>
-	/// This is used by materializers to skip IsNull checks.
-	/// </remarks>
-	public override IReadOnlyList<ColumnMetadata> TryGetNonNullableColumns() => m_Table.NonNullableColumns;
-
-	/// <summary>
 	/// Waits for change in the data that is returned by this operation.
 	/// </summary>
 	/// <param name="cancellationToken">The cancellation token.</param>
@@ -296,6 +275,12 @@ internal sealed partial class SqlServerTableOrView<TObject> : TableDbCommandBuil
 	{
 		return WaitForChangeMaterializer.GenerateTask(this, cancellationToken, state);
 	}
+
+	/// <summary>
+	/// Called when ObjectDbCommandBuilder needs a reference to the associated table or view.
+	/// </summary>
+	/// <returns>TableOrViewMetadata.</returns>
+	protected override TableOrViewMetadata OnGetTable() => m_Table;
 
 	/// <summary>
 	/// Adds (or replaces) the filter on this command builder.

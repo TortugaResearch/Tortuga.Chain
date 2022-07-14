@@ -155,26 +155,11 @@ internal sealed class AccessTableOrView<TObject> : TableDbCommandBuilder<OleDbCo
         return new AccessCommandExecutionToken(DataSource, "Query " + m_Table.Name, sql.ToString(), parameters);
     }
 
-    /// <summary>
-    /// Returns the column associated with the column name.
-    /// </summary>
-    /// <param name="columnName">Name of the column.</param>
-    /// <returns></returns>
-    /// <remarks>
-    /// If the column name was not found, this will return null
-    /// </remarks>
-    public override ColumnMetadata? TryGetColumn(string columnName) => m_Table.Columns.TryGetColumn(columnName);
-
-    /// <summary>
-    /// Returns a list of columns known to be non-nullable.
-    /// </summary>
-    /// <returns>
-    /// If the command builder doesn't know which columns are non-nullable, an empty list will be returned.
-    /// </returns>
-    /// <remarks>
-    /// This is used by materializers to skip IsNull checks.
-    /// </remarks>
-    public override IReadOnlyList<ColumnMetadata> TryGetNonNullableColumns() => m_Table.NonNullableColumns;
+	/// <summary>
+	/// Called when ObjectDbCommandBuilder needs a reference to the associated table or view.
+	/// </summary>
+	/// <returns>TableOrViewMetadata.</returns>
+	protected override TableOrViewMetadata OnGetTable() => m_Table;
 
     /// <summary>
     /// Adds (or replaces) the filter on this command builder.
@@ -245,14 +230,14 @@ internal sealed class AccessTableOrView<TObject> : TableDbCommandBuilder<OleDbCo
         return this;
     }
 
-    /// <summary>
-    /// Adds sorting to the command builder.
-    /// </summary>
-    /// <param name="sortExpressions">The sort expressions.</param>
-    /// <returns></returns>
-    protected override TableDbCommandBuilder<OleDbCommand, OleDbParameter, AccessLimitOption> OnWithSorting(IEnumerable<SortExpression> sortExpressions)
-    {
-        m_SortExpressions = sortExpressions ?? throw new ArgumentNullException(nameof(sortExpressions), $"{nameof(sortExpressions)} is null.");
-        return this;
-    }
+	/// <summary>
+	/// Adds sorting to the command builder.
+	/// </summary>
+	/// <param name="sortExpressions">The sort expressions.</param>
+	/// <returns></returns>
+	protected override TableDbCommandBuilder<OleDbCommand, OleDbParameter, AccessLimitOption> OnWithSorting(IEnumerable<SortExpression> sortExpressions)
+	{
+		m_SortExpressions = sortExpressions ?? throw new ArgumentNullException(nameof(sortExpressions), $"{nameof(sortExpressions)} is null.");
+		return this;
+	}
 }

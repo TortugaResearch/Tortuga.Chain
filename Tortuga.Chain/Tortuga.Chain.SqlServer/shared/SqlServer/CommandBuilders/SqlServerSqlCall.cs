@@ -1,8 +1,6 @@
-using System.Collections.Immutable;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
-using Tortuga.Chain.Metadata;
 using Tortuga.Chain.SqlServer.Materializers;
 
 namespace Tortuga.Chain.SqlServer.CommandBuilders;
@@ -10,11 +8,8 @@ namespace Tortuga.Chain.SqlServer.CommandBuilders;
 /// <summary>
 /// Class SqlServerSqlCall.
 /// </summary>
-internal sealed partial class SqlServerSqlCall : MultipleTableDbCommandBuilder<SqlCommand, SqlParameter>
+internal sealed partial class SqlServerSqlCall : DbSqlCall<SqlCommand, SqlParameter>
 {
-	readonly object? m_ArgumentValue;
-	readonly string m_SqlStatement;
-
 	/// <summary>
 	/// Initializes a new instance of the <see cref="SqlServerSqlCall" /> class.
 	/// </summary>
@@ -22,13 +17,10 @@ internal sealed partial class SqlServerSqlCall : MultipleTableDbCommandBuilder<S
 	/// <param name="sqlStatement">The SQL statement.</param>
 	/// <param name="argumentValue">The argument value.</param>
 	/// <exception cref="ArgumentException">sqlStatement is null or empty.;sqlStatement</exception>
-	public SqlServerSqlCall(SqlServerDataSourceBase dataSource, string sqlStatement, object? argumentValue) : base(dataSource)
+	public SqlServerSqlCall(SqlServerDataSourceBase dataSource, string sqlStatement, object? argumentValue) : base(dataSource, sqlStatement, argumentValue)
 	{
 		if (string.IsNullOrEmpty(sqlStatement))
 			throw new ArgumentException($"{nameof(sqlStatement)} is null or empty.", nameof(sqlStatement));
-
-		m_SqlStatement = sqlStatement;
-		m_ArgumentValue = argumentValue;
 	}
 
 	/// <summary>
@@ -38,29 +30,8 @@ internal sealed partial class SqlServerSqlCall : MultipleTableDbCommandBuilder<S
 	/// <returns>ExecutionToken&lt;TCommand&gt;.</returns>
 	public override CommandExecutionToken<SqlCommand, SqlParameter> Prepare(Materializer<SqlCommand, SqlParameter> materializer)
 	{
-		return new SqlServerCommandExecutionToken(DataSource, "Raw SQL call", m_SqlStatement, SqlBuilder.GetParameters<SqlParameter>(m_ArgumentValue));
+		return new SqlServerCommandExecutionToken(DataSource, "Raw SQL call", SqlStatement, SqlBuilder.GetParameters<SqlParameter>(ArgumentValue));
 	}
-
-	/// <summary>
-	/// Returns the column associated with the column name.
-	/// </summary>
-	/// <param name="columnName">Name of the column.</param>
-	/// <returns></returns>
-	/// <remarks>
-	/// If the column name was not found, this will return null
-	/// </remarks>
-	public override ColumnMetadata? TryGetColumn(string columnName) => null;
-
-	/// <summary>
-	/// Returns a list of columns known to be non-nullable.
-	/// </summary>
-	/// <returns>
-	/// If the command builder doesn't know which columns are non-nullable, an empty list will be returned.
-	/// </returns>
-	/// <remarks>
-	/// This is used by materializers to skip IsNull checks.
-	/// </remarks>
-	public override IReadOnlyList<ColumnMetadata> TryGetNonNullableColumns() => ImmutableList<ColumnMetadata>.Empty;
 }
 
 partial class SqlServerSqlCall : ISupportsChangeListener

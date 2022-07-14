@@ -1,24 +1,31 @@
-using System.Collections.Immutable;
+﻿using System.Collections.Immutable;
 using System.Data.Common;
 using Tortuga.Chain.DataSources;
-using Tortuga.Chain.Materializers;
 using Tortuga.Chain.Metadata;
 
 namespace Tortuga.Chain.CommandBuilders;
 
 /// <summary>
-/// This is the base class for command builders that represent stored procedures.
+/// Class DbSqlCall.
+/// Implements the <see cref="MultipleTableDbCommandBuilder{TCommand, TParameter}" />
 /// </summary>
-public abstract class ProcedureDbCommandBuilder<TCommand, TParameter> : MultipleTableDbCommandBuilder<TCommand, TParameter>, IProcedureDbCommandBuilder
+/// <typeparam name="TCommand">The type of the t command.</typeparam>
+/// <typeparam name="TParameter">The type of the t parameter.</typeparam>
+/// <seealso cref="MultipleTableDbCommandBuilder{TCommand, TParameter}" />
+public abstract class DbSqlCall<TCommand, TParameter> : MultipleTableDbCommandBuilder<TCommand, TParameter>
 	where TCommand : DbCommand
 	where TParameter : DbParameter
 {
-	/// <summary>Initializes a new instance of the <see cref="Tortuga.Chain.CommandBuilders.ProcedureDbCommandBuilder{TCommand, TParameter}"/> class.</summary>
+	/// <summary>
+	/// Initializes a new instance of the <see cref="GenericDbSqlCall"/> class.
+	/// </summary>
 	/// <param name="dataSource">The data source.</param>
+	/// <param name="sqlStatement">The SQL statement.</param>
 	/// <param name="argumentValue">The argument value.</param>
-	protected ProcedureDbCommandBuilder(ICommandDataSource<TCommand, TParameter> dataSource, object? argumentValue)
-		: base(dataSource)
+	/// <exception cref="ArgumentException">sqlStatement is null or empty.;sqlStatement</exception>
+	public DbSqlCall(ICommandDataSource<TCommand, TParameter> dataSource, string sqlStatement, object? argumentValue) : base(dataSource)
 	{
+		SqlStatement = sqlStatement;
 		ArgumentValue = argumentValue;
 	}
 
@@ -29,25 +36,10 @@ public abstract class ProcedureDbCommandBuilder<TCommand, TParameter> : Multiple
 	protected object? ArgumentValue { get; }
 
 	/// <summary>
-	/// Captures the output parameters as a dictionary.
+	/// Gets the SQL statement.
 	/// </summary>
-	/// <returns>The output parameters as a dictionary.</returns>
-	/// <remarks>This will throw an exception if there are no output parameters.</remarks>
-	public ILink<Dictionary<string, object?>> AsOutputs()
-	{
-		return new AsOutputsMaterializer<TCommand, TParameter>(this);
-	}
-
-	/// <summary>
-	/// Captures the output parameters and use them to populate a new object.
-	/// </summary>
-	/// <typeparam name="TObject">The type that will hold the output parameters.</typeparam>
-	/// <returns>The output parameters as an object.</returns>
-	/// <remarks>This will throw an exception if there are no output parameters.</remarks>
-	public ILink<TObject> AsOutputs<TObject>() where TObject : class, new()
-	{
-		return new AsOutputsMaterializer<TCommand, TParameter, TObject>(this);
-	}
+	/// <value>The SQL statement.</value>
+	protected string SqlStatement { get; }
 
 	/// <summary>
 	/// Returns the column associated with the column name.
