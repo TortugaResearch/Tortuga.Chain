@@ -883,17 +883,6 @@ where TObject : class
 	}
 
 	/// <summary>
-	/// Indicates the results should be materialized as a stream of objects. This can be either IEnumerable ot IAsyncEnumerable.
-	/// </summary>
-	/// <typeparam name="TObject">The type of the model.</typeparam>
-	/// <param name="collectionOptions">The collection options.</param>
-	public IConstructibleMaterializer<ObjectStream<TObject>> ToObjectStream<TObject>(CollectionOptions collectionOptions = CollectionOptions.None)
-		where TObject : class
-	{
-		return new ObjectStreamMaterializer<TCommand, TParameter, TObject>(this, collectionOptions);
-	}
-  
-
 	/// Materializes the result as a list of master/detail records.
 	/// </summary>
 	/// <typeparam name="TMaster">The type of the master model.</typeparam>
@@ -908,6 +897,17 @@ where TObject : class
 		where TDetail : class
 	{
 		return new MasterDetailCollectionMaterializer<TCommand, TParameter, TMaster, TDetail>(this, masterKeyColumn, map, masterOptions, detailOptions);
+	}
+
+	/// <summary>
+	/// Indicates the results should be materialized as a stream of objects. This can be either IEnumerable ot IAsyncEnumerable.
+	/// </summary>
+	/// <typeparam name="TObject">The type of the model.</typeparam>
+	/// <param name="collectionOptions">The collection options.</param>
+	public IConstructibleMaterializer<ObjectStream<TObject>> ToObjectStream<TObject>(CollectionOptions collectionOptions = CollectionOptions.None)
+		where TObject : class
+	{
+		return new ObjectStreamMaterializer<TCommand, TParameter, TObject>(this, collectionOptions);
 	}
 
 	/// <summary>
