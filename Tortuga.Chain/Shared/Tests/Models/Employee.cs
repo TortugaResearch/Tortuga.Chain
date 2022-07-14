@@ -82,3 +82,18 @@ public class EmployeeWithoutKey
 
 	public char Gender { get; set; } = ' ';
 }
+
+[View("EmployeeWithManager", Schema = "HR")]
+public class ManagerWithEmployees
+{
+	public int? ManagerEmployeeKey { get; set; }
+	public string ManagerFirstName { get; set; }
+	public string ManagerLastName { get; set; }
+	public int? ManagerManagerKey { get; set; }
+	public string ManagerMiddleName { get; set; }
+	public string ManagerTitle { get; set; }
+
+	public char ManagerGender { get; set; } = ' ';
+
+	public List<EmployeeWithName> DirectReports { get; } = new();
+}

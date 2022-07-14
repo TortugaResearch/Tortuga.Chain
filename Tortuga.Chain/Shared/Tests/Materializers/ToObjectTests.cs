@@ -1,13 +1,43 @@
 ﻿using Tests.Models;
 using Tortuga.Chain;
 
-namespace Tests.CommandBuilders;
+namespace Tests.Materializers;
 
 [TestClass]
-public class FromTests_ToObject : TestBase
+public class ToObjectTests : TestBase
 {
 	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
-	public void ToInferredObject(string dataSourceName, DataSourceType mode)
+	public void ToMasterDetailObject(string dataSourceName, DataSourceType mode)
+	{
+		var dataSource = DataSource(dataSourceName, mode);
+
+		try
+		{
+			var uniqueKey = Guid.NewGuid().ToString();
+			var managerUniqueKey = Guid.NewGuid().ToString();
+
+			var managerA = new Employee() { FirstName = "A", LastName = "1", Title = managerUniqueKey };
+			var managerAKey = dataSource.Insert(EmployeeTableName, managerA).ToInt32().Execute();
+
+			var empA1 = new Employee() { FirstName = "A", LastName = "1", Title = uniqueKey, ManagerKey = managerAKey };
+			dataSource.Insert(EmployeeTableName, empA1).ToObject<Employee>().Execute();
+
+			var empA2 = new Employee() { FirstName = "B", LastName = "2", Title = uniqueKey, ManagerKey = managerAKey };
+			dataSource.Insert(EmployeeTableName, empA2).ToObject<Employee>().Execute();
+
+			var lookup = dataSource.From<ManagerWithEmployees>(new { ManagerTitle = managerUniqueKey }).ToMasterDetailObject("ManagerEmployeeKey", m => m.DirectReports).Execute();
+
+			Assert.AreEqual(managerAKey, lookup.ManagerEmployeeKey);
+			Assert.AreEqual(2, lookup.DirectReports.Count);
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
+
+	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	public void ToObject_InferredConstructor(string dataSourceName, DataSourceType mode)
 	{
 		var dataSource = DataSource(dataSourceName, mode);
 
@@ -19,6 +49,29 @@ public class FromTests_ToObject : TestBase
 			dataSource.Insert(EmployeeTableName, emp1).ToObject<Employee>().Execute();
 
 			var lookup = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToObject<EmployeeLookup>(RowOptions.InferConstructor).Execute();
+
+			Assert.AreEqual("A", lookup.FirstName, "First Name");
+			Assert.AreEqual("1", lookup.LastName, "Last Name");
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
+
+	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	public void ToObject_InferredConstructor_WithDefaultConstructor(string dataSourceName, DataSourceType mode)
+	{
+		var dataSource = DataSource(dataSourceName, mode);
+
+		try
+		{
+			var uniqueKey = Guid.NewGuid().ToString();
+
+			var emp1 = new Employee() { FirstName = "A", LastName = "1", Title = uniqueKey };
+			dataSource.Insert(EmployeeTableName, emp1).ToObject<Employee>().Execute();
+
+			var lookup = dataSource.From(EmployeeTableName, new { Title = uniqueKey }).ToObject<EmployeeLookup_InferConstructor>(RowOptions.InferConstructor).Execute();
 
 			Assert.AreEqual("A", lookup.FirstName, "First Name");
 			Assert.AreEqual("1", lookup.LastName, "Last Name");
