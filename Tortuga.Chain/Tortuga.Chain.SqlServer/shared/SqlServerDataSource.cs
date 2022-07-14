@@ -184,6 +184,104 @@ public partial class SqlServerDataSource : SqlServerDataSourceBase
 	}
 
 	/// <summary>
+	/// Executes the specified implementation.
+	/// </summary>
+	/// <param name="executionToken">The execution token.</param>
+	/// <param name="implementation">The implementation.</param>
+	/// <param name="state">The state.</param>
+	/// <returns>The caller is expected to use the StreamingCommandCompletionToken to close any lingering connections and fire appropriate events.</returns>
+	/// <exception cref="System.NotImplementedException"></exception>
+	public override StreamingCommandCompletionToken ExecuteStream(CommandExecutionToken<SqlCommand, SqlParameter> executionToken, StreamingCommandImplementation<SqlCommand> implementation, object? state)
+	{
+		if (executionToken == null)
+			throw new ArgumentNullException(nameof(executionToken), $"{nameof(executionToken)} is null.");
+		if (implementation == null)
+			throw new ArgumentNullException(nameof(implementation), $"{nameof(implementation)} is null.");
+
+		var startTime = DateTimeOffset.Now;
+		OnExecutionStarted(executionToken, startTime, state);
+
+		SqlConnection? con = null;
+		try
+		{
+			con = CreateConnection();
+
+			var cmd = new SqlCommand();
+
+			cmd.Connection = con;
+			executionToken.PopulateCommand(cmd, DefaultCommandTimeout);
+
+			implementation(cmd);
+
+			return new StreamingCommandCompletionToken(this, executionToken, startTime, state, cmd, con);
+		}
+		catch (Exception ex)
+		{
+			con?.Dispose();
+
+			OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
+			throw;
+		}
+	}
+
+	/// <summary>
+	/// Executes the specified implementation asynchronously.
+	/// </summary>
+	/// <param name="executionToken">The execution token.</param>
+	/// <param name="implementation">The implementation.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <param name="state">The state.</param>
+	/// <returns>The caller is expected to use the StreamingCommandCompletionToken to close any lingering connections and fire appropriate events.</returns>
+	/// <exception cref="System.NotImplementedException"></exception>
+	public override async Task<StreamingCommandCompletionToken> ExecuteStreamAsync(CommandExecutionToken<SqlCommand, SqlParameter> executionToken, StreamingCommandImplementationAsync<SqlCommand> implementation, CancellationToken cancellationToken, object? state)
+	{
+		if (executionToken == null)
+			throw new ArgumentNullException(nameof(executionToken), $"{nameof(executionToken)} is null.");
+		if (implementation == null)
+			throw new ArgumentNullException(nameof(implementation), $"{nameof(implementation)} is null.");
+
+		var startTime = DateTimeOffset.Now;
+		OnExecutionStarted(executionToken, startTime, state);
+
+		SqlConnection? con = null;
+
+		try
+		{
+			con = await CreateConnectionAsync(cancellationToken).ConfigureAwait(false);
+
+			var cmd = new SqlCommand();
+
+			cmd.Connection = con;
+			executionToken.PopulateCommand(cmd, DefaultCommandTimeout);
+
+			await implementation(cmd).ConfigureAwait(false);
+
+			return new StreamingCommandCompletionToken(this, executionToken, startTime, state, cmd, con);
+		}
+		catch (Exception ex)
+		{
+#if NET6_0_OR_GREATER
+			if (con != null)
+				await con.DisposeAsync().ConfigureAwait(false);
+#else
+			con?.Dispose();
+#endif
+
+			if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException
+			{
+				var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);
+				OnExecutionCanceled(executionToken, startTime, DateTimeOffset.Now, state);
+				throw ex2;
+			}
+			else
+			{
+				OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
+				throw;
+			}
+		}
+	}
+
+	/// <summary>
 	/// Gets the options that are currently in effect. This takes into account server-defined defaults.
 	/// </summary>
 	[SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
@@ -302,8 +400,6 @@ public partial class SqlServerDataSource : SqlServerDataSourceBase
 					cmd.Connection = con;
 					executionToken.PopulateCommand(cmd, DefaultCommandTimeout);
 
-					CommandFixup(executionToken, cmd);
-
 					var rows = implementation(cmd);
 					executionToken.RaiseCommandExecuted(cmd, rows);
 					OnExecutionFinished(executionToken, startTime, DateTimeOffset.Now, rows, state);
@@ -419,8 +515,6 @@ public partial class SqlServerDataSource : SqlServerDataSourceBase
 				{
 					cmd.Connection = con;
 					executionToken.PopulateCommand(cmd, DefaultCommandTimeout);
-
-					CommandFixup(executionToken, cmd);
 
 					var rows = await implementation(cmd).ConfigureAwait(false);
 					executionToken.RaiseCommandExecuted(cmd, rows);

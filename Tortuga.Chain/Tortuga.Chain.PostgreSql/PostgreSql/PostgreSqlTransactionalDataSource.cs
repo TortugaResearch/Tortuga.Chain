@@ -67,7 +67,94 @@ namespace Tortuga.Chain.PostgreSql
 			UserValue = dataSource.UserValue;
 		}
 
+		/// <summary>
+		/// Executes the specified implementation.
+		/// </summary>
+		/// <param name="executionToken">The execution token.</param>
+		/// <param name="implementation">The implementation.</param>
+		/// <param name="state">The state.</param>
+		/// <returns>The caller is expected to use the StreamingCommandCompletionToken to close any lingering connections and fire appropriate events.</returns>
+		/// <exception cref="System.NotImplementedException"></exception>
+		public override StreamingCommandCompletionToken ExecuteStream(CommandExecutionToken<NpgsqlCommand, NpgsqlParameter> executionToken, StreamingCommandImplementation<NpgsqlCommand> implementation, object? state)
+		{
+			if (executionToken == null)
+				throw new ArgumentNullException(nameof(executionToken), $"{nameof(executionToken)} is null.");
+			if (implementation == null)
+				throw new ArgumentNullException(nameof(implementation), $"{nameof(implementation)} is null.");
 
+			var startTime = DateTimeOffset.Now;
+			OnExecutionStarted(executionToken, startTime, state);
+
+			try
+			{
+				var cmd = new NpgsqlCommand();
+
+				cmd.Connection = m_Connection;
+				cmd.Transaction = m_Transaction;
+				executionToken.PopulateCommand(cmd, DefaultCommandTimeout);
+
+				if (((PostgreSqlCommandExecutionToken)executionToken).DereferenceCursors)
+					DereferenceCursors(cmd, implementation);
+				else
+					implementation(cmd);
+
+				return new StreamingCommandCompletionToken(this, executionToken, startTime, state, cmd);
+			}
+			catch (Exception ex)
+			{
+				OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
+				throw;
+			}
+		}
+
+		/// <summary>
+		/// Executes the specified implementation asynchronously.
+		/// </summary>
+		/// <param name="executionToken">The execution token.</param>
+		/// <param name="implementation">The implementation.</param>
+		/// <param name="cancellationToken">The cancellation token.</param>
+		/// <param name="state">The state.</param>
+		/// <returns>The caller is expected to use the StreamingCommandCompletionToken to close any lingering connections and fire appropriate events.</returns>
+		/// <exception cref="System.NotImplementedException"></exception>
+		public override async Task<StreamingCommandCompletionToken> ExecuteStreamAsync(CommandExecutionToken<NpgsqlCommand, NpgsqlParameter> executionToken, StreamingCommandImplementationAsync<NpgsqlCommand> implementation, CancellationToken cancellationToken, object? state)
+		{
+			if (executionToken == null)
+				throw new ArgumentNullException(nameof(executionToken), $"{nameof(executionToken)} is null.");
+			if (implementation == null)
+				throw new ArgumentNullException(nameof(implementation), $"{nameof(implementation)} is null.");
+
+			var startTime = DateTimeOffset.Now;
+			OnExecutionStarted(executionToken, startTime, state);
+
+			try
+			{
+				var cmd = new NpgsqlCommand();
+
+				cmd.Connection = m_Connection;
+				cmd.Transaction = m_Transaction;
+				executionToken.PopulateCommand(cmd, DefaultCommandTimeout);
+				if (((PostgreSqlCommandExecutionToken)executionToken).DereferenceCursors)
+					await DereferenceCursorsAsync(cmd, implementation).ConfigureAwait(false);
+				else
+					await implementation(cmd).ConfigureAwait(false);
+
+				return new StreamingCommandCompletionToken(this, executionToken, startTime, state, cmd);
+			}
+			catch (Exception ex)
+			{
+				if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException
+				{
+					var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);
+					OnExecutionCanceled(executionToken, startTime, DateTimeOffset.Now, state);
+					throw ex2;
+				}
+				else
+				{
+					OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
+					throw;
+				}
+			}
+		}
 
 		/// <summary>
 		/// Executes the specified operation.
@@ -97,13 +184,7 @@ namespace Tortuga.Chain.PostgreSql
 				{
 					cmd.Connection = m_Connection;
 					cmd.Transaction = m_Transaction;
-					if (DefaultCommandTimeout.HasValue)
-						cmd.CommandTimeout = (int)DefaultCommandTimeout.Value.TotalSeconds;
-					cmd.CommandText = executionToken.CommandText;
-					cmd.CommandType = executionToken.CommandType;
-					foreach (var param in executionToken.Parameters)
-						cmd.Parameters.Add(param);
-
+					executionToken.PopulateCommand(cmd, DefaultCommandTimeout);
 					int? rows;
 
 					if (((PostgreSqlCommandExecutionToken)executionToken).DereferenceCursors)
@@ -189,12 +270,7 @@ namespace Tortuga.Chain.PostgreSql
 				{
 					cmd.Connection = m_Connection;
 					cmd.Transaction = m_Transaction;
-					if (DefaultCommandTimeout.HasValue)
-						cmd.CommandTimeout = (int)DefaultCommandTimeout.Value.TotalSeconds;
-					cmd.CommandText = executionToken.CommandText;
-					cmd.CommandType = executionToken.CommandType;
-					foreach (var param in executionToken.Parameters)
-						cmd.Parameters.Add(param);
+					executionToken.PopulateCommand(cmd, DefaultCommandTimeout);
 
 					int? rows;
 					if (((PostgreSqlCommandExecutionToken)executionToken).DereferenceCursors)

@@ -99,6 +99,106 @@ public partial class PostgreSqlDataSource : PostgreSqlDataSourceBase
 	public override PostgreSqlMetadataCache DatabaseMetadata => m_DatabaseMetadata;
 
 	/// <summary>
+	/// Executes the specified implementation.
+	/// </summary>
+	/// <param name="executionToken">The execution token.</param>
+	/// <param name="implementation">The implementation.</param>
+	/// <param name="state">The state.</param>
+	/// <returns>The caller is expected to use the StreamingCommandCompletionToken to close any lingering connections and fire appropriate events.</returns>
+	/// <exception cref="System.NotImplementedException"></exception>
+	public override StreamingCommandCompletionToken ExecuteStream(CommandExecutionToken<NpgsqlCommand, NpgsqlParameter> executionToken, StreamingCommandImplementation<NpgsqlCommand> implementation, object? state)
+	{
+		if (executionToken == null)
+			throw new ArgumentNullException(nameof(executionToken), $"{nameof(executionToken)} is null.");
+		if (implementation == null)
+			throw new ArgumentNullException(nameof(implementation), $"{nameof(implementation)} is null.");
+
+		var startTime = DateTimeOffset.Now;
+		OnExecutionStarted(executionToken, startTime, state);
+
+		NpgsqlConnection? con = null;
+		try
+		{
+			con = CreateConnection();
+
+			var cmd = new NpgsqlCommand();
+			NpgsqlTransaction? transactionToClose = null;
+
+			cmd.Connection = con;
+			executionToken.PopulateCommand(cmd, DefaultCommandTimeout);
+
+			if (((PostgreSqlCommandExecutionToken)executionToken).DereferenceCursors)
+				transactionToClose = DereferenceCursors(cmd, implementation);
+			else
+				implementation(cmd);
+
+			return new StreamingCommandCompletionToken(this, executionToken, startTime, state, cmd, con) { Transaction = transactionToClose };
+		}
+		catch (Exception ex)
+		{
+			con?.Dispose();
+			OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
+			throw;
+		}
+	}
+
+	/// <summary>
+	/// Executes the specified implementation asynchronously.
+	/// </summary>
+	/// <param name="executionToken">The execution token.</param>
+	/// <param name="implementation">The implementation.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <param name="state">The state.</param>
+	/// <returns>The caller is expected to use the StreamingCommandCompletionToken to close any lingering connections and fire appropriate events.</returns>
+	/// <exception cref="System.NotImplementedException"></exception>
+	public override async Task<StreamingCommandCompletionToken> ExecuteStreamAsync(CommandExecutionToken<NpgsqlCommand, NpgsqlParameter> executionToken, StreamingCommandImplementationAsync<NpgsqlCommand> implementation, CancellationToken cancellationToken, object? state)
+	{
+		if (executionToken == null)
+			throw new ArgumentNullException(nameof(executionToken), $"{nameof(executionToken)} is null.");
+		if (implementation == null)
+			throw new ArgumentNullException(nameof(implementation), $"{nameof(implementation)} is null.");
+
+		var startTime = DateTimeOffset.Now;
+		OnExecutionStarted(executionToken, startTime, state);
+
+		NpgsqlConnection? con = null;
+		try
+		{
+			con = await CreateConnectionAsync(cancellationToken).ConfigureAwait(false);
+
+			var cmd = new NpgsqlCommand();
+			NpgsqlTransaction? transactionToClose = null;
+
+			cmd.Connection = con;
+			executionToken.PopulateCommand(cmd, DefaultCommandTimeout);
+
+			if (((PostgreSqlCommandExecutionToken)executionToken).DereferenceCursors)
+				transactionToClose = await DereferenceCursorsAsync(cmd, implementation).ConfigureAwait(false);
+			else
+				await implementation(cmd).ConfigureAwait(false);
+
+			return new StreamingCommandCompletionToken(this, executionToken, startTime, state, cmd, con) { Transaction = transactionToClose };
+		}
+		catch (Exception ex)
+		{
+			if (con != null)
+				await con.DisposeAsync().ConfigureAwait(false);
+
+			if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException
+			{
+				var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);
+				OnExecutionCanceled(executionToken, startTime, DateTimeOffset.Now, state);
+				throw ex2;
+			}
+			else
+			{
+				OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
+				throw;
+			}
+		}
+	}
+
+	/// <summary>
 	/// Creates a new data source with the indicated changes to the settings.
 	/// </summary>
 	/// <param name="settings">The new settings to use.</param>

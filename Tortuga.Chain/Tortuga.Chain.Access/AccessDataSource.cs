@@ -99,6 +99,152 @@ public partial class AccessDataSource : AccessDataSourceBase
 	public override AccessMetadataCache DatabaseMetadata => m_DatabaseMetadata;
 
 	/// <summary>
+	/// Executes the stream.
+	/// </summary>
+	/// <param name="executionToken">The execution token.</param>
+	/// <param name="implementation">The implementation.</param>
+	/// <param name="state">The state.</param>
+	/// <returns>StreamingCommandCompletionToken.</returns>
+	/// <exception cref="System.ArgumentNullException">executionToken</exception>
+	/// <exception cref="System.ArgumentNullException">implementation</exception>
+	/// <exception cref="System.ArgumentNullException">executionToken - only AccessCommandExecutionToken is supported.</exception>
+	/// <exception cref="System.InvalidOperationException">currentToken.ExecutionMode is ExecuteScalarAndForward, but currentToken.ForwardResult is null.</exception>
+	public override StreamingCommandCompletionToken ExecuteStream(CommandExecutionToken<OleDbCommand, OleDbParameter> executionToken, StreamingCommandImplementation<OleDbCommand> implementation, object? state)
+	{
+		if (executionToken == null)
+			throw new ArgumentNullException(nameof(executionToken), $"{nameof(executionToken)} is null.");
+		if (implementation == null)
+			throw new ArgumentNullException(nameof(implementation), $"{nameof(implementation)} is null.");
+		var currentToken = executionToken as AccessCommandExecutionToken;
+		if (currentToken == null)
+			throw new ArgumentNullException(nameof(executionToken), "only AccessCommandExecutionToken is supported.");
+
+		var startTime = DateTimeOffset.Now;
+
+		OleDbConnection? con = null;
+		try
+		{
+			con = CreateConnection();
+
+			OleDbCommand? cmdToReturn = null;
+			while (currentToken != null)
+			{
+				OnExecutionStarted(currentToken, startTime, state);
+				var cmd = new OleDbCommand();
+
+				cmd.Connection = con;
+				currentToken.PopulateCommand(cmd, DefaultCommandTimeout);
+
+				if (currentToken.ExecutionMode == AccessCommandExecutionMode.Materializer)
+				{
+					implementation(cmd);
+					cmdToReturn = cmd;
+				}
+				else if (currentToken.ExecutionMode == AccessCommandExecutionMode.ExecuteScalarAndForward)
+				{
+					if (currentToken.ForwardResult == null)
+						throw new InvalidOperationException("currentToken.ExecutionMode is ExecuteScalarAndForward, but currentToken.ForwardResult is null.");
+
+					currentToken.ForwardResult(cmd.ExecuteScalar());
+				}
+				else
+					cmd.ExecuteNonQuery();
+
+				currentToken = currentToken.NextCommand;
+			}
+
+			return new StreamingCommandCompletionToken(this, executionToken, startTime, state, cmdToReturn, con);
+		}
+		catch (Exception ex)
+		{
+			con?.Dispose();
+			OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
+			throw;
+		}
+	}
+
+	/// <summary>
+	/// Execute stream as an asynchronous operation.
+	/// </summary>
+	/// <param name="executionToken">The execution token.</param>
+	/// <param name="implementation">The implementation.</param>
+	/// <param name="cancellationToken">The cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+	/// <param name="state">The state.</param>
+	/// <returns>A Task&lt;StreamingCommandCompletionToken&gt; representing the asynchronous operation.</returns>
+	/// <exception cref="System.ArgumentNullException">executionToken</exception>
+	/// <exception cref="System.ArgumentNullException">implementation</exception>
+	/// <exception cref="System.ArgumentNullException">executionToken - only AccessCommandExecutionToken is supported.</exception>
+	/// <exception cref="System.InvalidOperationException">currentToken.ExecutionMode is ExecuteScalarAndForward, but currentToken.ForwardResult is null.</exception>
+	public override async Task<StreamingCommandCompletionToken> ExecuteStreamAsync(CommandExecutionToken<OleDbCommand, OleDbParameter> executionToken, StreamingCommandImplementationAsync<OleDbCommand> implementation, CancellationToken cancellationToken, object? state)
+	{
+		if (executionToken == null)
+			throw new ArgumentNullException(nameof(executionToken), $"{nameof(executionToken)} is null.");
+		if (implementation == null)
+			throw new ArgumentNullException(nameof(implementation), $"{nameof(implementation)} is null.");
+		var currentToken = executionToken as AccessCommandExecutionToken;
+		if (currentToken == null)
+			throw new ArgumentNullException(nameof(executionToken), "only AccessCommandExecutionToken is supported.");
+
+		var startTime = DateTimeOffset.Now;
+
+		OleDbConnection? con = null;
+		try
+		{
+			con = await CreateConnectionAsync(cancellationToken).ConfigureAwait(false);
+
+			OleDbCommand? cmdToReturn = null;
+			while (currentToken != null)
+			{
+				OnExecutionStarted(currentToken, startTime, state);
+				using (var cmd = new OleDbCommand())
+				{
+					cmd.Connection = con;
+					currentToken.PopulateCommand(cmd, DefaultCommandTimeout);
+
+					if (currentToken.ExecutionMode == AccessCommandExecutionMode.Materializer)
+					{
+						await implementation(cmd).ConfigureAwait(false);
+						cmdToReturn = cmd;
+					}
+					else if (currentToken.ExecutionMode == AccessCommandExecutionMode.ExecuteScalarAndForward)
+					{
+						if (currentToken.ForwardResult == null)
+							throw new InvalidOperationException("currentToken.ExecutionMode is ExecuteScalarAndForward, but currentToken.ForwardResult is null.");
+
+						currentToken.ForwardResult(await cmd.ExecuteScalarAsync().ConfigureAwait(false));
+					}
+					else
+						await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
+				}
+				currentToken = currentToken.NextCommand;
+			}
+
+			return new StreamingCommandCompletionToken(this, executionToken, startTime, state, cmdToReturn, con);
+		}
+		catch (Exception ex)
+		{
+#if NET6_0_OR_GREATER
+		if (con != null)
+		    await con.DisposeAsync().ConfigureAwait(false);
+#else
+			con?.Dispose();
+#endif
+
+			if (cancellationToken.IsCancellationRequested) //convert Exception into a OperationCanceledException
+			{
+				var ex2 = new OperationCanceledException("Operation was canceled.", ex, cancellationToken);
+				OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex2, state);
+				throw ex2;
+			}
+			else
+			{
+				OnExecutionError(executionToken, startTime, DateTimeOffset.Now, ex, state);
+				throw;
+			}
+		}
+	}
+
+	/// <summary>
 	/// Creates a new data source with the indicated changes to the settings.
 	/// </summary>
 	/// <param name="settings">The new settings to use.</param>

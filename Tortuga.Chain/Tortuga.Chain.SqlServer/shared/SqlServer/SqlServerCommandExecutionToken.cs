@@ -55,5 +55,10 @@ public sealed class SqlServerCommandExecutionToken : CommandExecutionToken<SqlCo
 			var sd = new SqlDependency(command);
 			sd.OnChange += m_OnChangeEventHandler;
 		}
+
+#if SQL_SERVER_MDS
+		if (!HasOutputParameters)
+			command.EnableOptimizedParameterBinding = true;
+#endif
 	}
 }
