@@ -57,7 +57,6 @@ public class MultipleRowDbCommandBuilder<TCommand, TParameter, TObject> : Multip
 	/// <param name="keyColumn">The key column.</param>
 	/// <param name="dictionaryOptions">The dictionary options.</param>
 	/// <returns>IConstructibleMaterializer&lt;Dictionary&lt;TKey, TObject&gt;&gt;.</returns>
-	/// <exception cref="System.NotImplementedException"></exception>
 	public IConstructibleMaterializer<Dictionary<TKey, TObject>> ToDictionary<TKey>(string keyColumn, DictionaryOptions dictionaryOptions = DictionaryOptions.None)
 		where TKey : notnull
 	{
@@ -127,6 +126,51 @@ public class MultipleRowDbCommandBuilder<TCommand, TParameter, TObject> : Multip
 	}
 
 	/// <summary>
+	/// Materializes the result as a list of master/detail records.
+	/// </summary>
+	/// <typeparam name="TDetail">The type of the detail model.</typeparam>
+	/// <param name="masterKeyColumn">The column used as the primary key for the master records.</param>
+	/// <param name="map">This is used to identify the detail collection property on the master object.</param>
+	/// <param name="masterOptions">Options for handling extraneous rows and constructor selection for the master object.</param>
+	/// <param name="detailOptions">Options for handling constructor selection for the detail objects</param>
+	/// <returns></returns>
+	public IMasterDetailMaterializer<List<TObject>> ToMasterDetailCollection<TDetail>(string masterKeyColumn, Func<TObject, ICollection<TDetail>> map, CollectionOptions masterOptions = CollectionOptions.None, CollectionOptions detailOptions = CollectionOptions.None)
+		where TDetail : class
+	{
+		return ToMasterDetailCollection<TObject, TDetail>(masterKeyColumn, map, masterOptions, detailOptions);
+	}
+
+	/// <summary>
+	/// Materializes the result as a master object with detail records.
+	/// </summary>
+	/// <typeparam name="TDetail">The type of the detail model.</typeparam>
+	/// <param name="masterKeyColumn">The column used as the primary key for the master records.</param>
+	/// <param name="map">This is used to identify the detail collection property on the master object.</param>
+	/// <param name="masterOptions">Options for handling extraneous rows and constructor selection for the master object.</param>
+	/// <param name="detailOptions">Options for handling constructor selection for the detail objects</param>
+	/// <returns></returns>
+	public IMasterDetailMaterializer<TObject> ToMasterDetailObject<TDetail>(string masterKeyColumn, Func<TObject, ICollection<TDetail>> map, RowOptions masterOptions = RowOptions.None, CollectionOptions detailOptions = CollectionOptions.None)
+		where TDetail : class
+	{
+		return ToMasterDetailObject<TObject, TDetail>(masterKeyColumn, map, masterOptions, detailOptions);
+	}
+
+	/// <summary>
+	/// Materializes the result as a master object with detail records.
+	/// </summary>
+	/// <typeparam name="TDetail">The type of the detail model.</typeparam>
+	/// <param name="masterKeyColumn">The column used as the primary key for the master records.</param>
+	/// <param name="map">This is used to identify the detail collection property on the master object.</param>
+	/// <param name="masterOptions">Options for handling extraneous rows and constructor selection for the master object.</param>
+	/// <param name="detailOptions">Options for handling constructor selection for the detail objects</param>
+	/// <returns></returns>
+	public IMasterDetailMaterializer<TObject?> ToMasterDetailObjectOrNull<TDetail>(string masterKeyColumn, Func<TObject, ICollection<TDetail>> map, RowOptions masterOptions = RowOptions.None, CollectionOptions detailOptions = CollectionOptions.None)
+		where TDetail : class
+	{
+		return ToMasterDetailObjectOrNull<TObject, TDetail>(masterKeyColumn, map, masterOptions, detailOptions);
+	}
+
+	/// <summary>
 	/// Materializes the result as an instance of the indicated type
 	/// </summary>
 	/// <param name="rowOptions">The row options.</param>
@@ -151,18 +195,19 @@ public class MultipleRowDbCommandBuilder<TCommand, TParameter, TObject> : Multip
 	/// </summary>
 	/// <param name="columnName">Name of the column.</param>
 	/// <returns>If the column name was not found, this will return null</returns>
-	public override ColumnMetadata? TryGetColumn(string columnName)
-	{
-		return m_CommandBuilder.TryGetColumn(columnName);
-	}
+	public override ColumnMetadata? TryGetColumn(string columnName) => m_CommandBuilder.TryGetColumn(columnName);
+
+	/// <summary>
+	/// Returns a list of columns.
+	/// </summary>
+	/// <returns>If the command builder doesn't know which columns are available, an empty list will be returned.</returns>
+	/// <remarks>This is used by materializers to skip exclude columns.</remarks>
+	public override IReadOnlyList<ColumnMetadata> TryGetColumns() => m_CommandBuilder.TryGetColumns();
 
 	/// <summary>
 	/// Returns a list of columns known to be non-nullable.
 	/// </summary>
 	/// <returns>If the command builder doesn't know which columns are non-nullable, an empty list will be returned.</returns>
 	/// <remarks>This is used by materializers to skip IsNull checks.</remarks>
-	public override IReadOnlyList<ColumnMetadata> TryGetNonNullableColumns()
-	{
-		return m_CommandBuilder.TryGetNonNullableColumns();
-	}
+	public override IReadOnlyList<ColumnMetadata> TryGetNonNullableColumns() => m_CommandBuilder.TryGetNonNullableColumns();
 }

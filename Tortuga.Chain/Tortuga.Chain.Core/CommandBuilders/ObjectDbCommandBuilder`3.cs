@@ -71,6 +71,13 @@ public abstract class ObjectDbCommandBuilder<TCommand, TParameter, TArgument> : 
 	}
 
 	/// <summary>
+	/// Returns a list of columns.
+	/// </summary>
+	/// <returns>If the command builder doesn't know which columns are available, an empty list will be returned.</returns>
+	/// <remarks>This is used by materializers to skip exclude columns.</remarks>
+	public sealed override IReadOnlyList<ColumnMetadata> TryGetColumns() => OnGetTable().Columns;
+
+	/// <summary>
 	/// Returns a list of columns known to be non-nullable.
 	/// </summary>
 	/// <returns>
@@ -79,7 +86,7 @@ public abstract class ObjectDbCommandBuilder<TCommand, TParameter, TArgument> : 
 	/// <remarks>
 	/// This is used by materializers to skip IsNull checks.
 	/// </remarks>
-	public override sealed IReadOnlyList<ColumnMetadata> TryGetNonNullableColumns() => OnGetTable().NonNullableColumns;
+	public sealed override IReadOnlyList<ColumnMetadata> TryGetNonNullableColumns() => OnGetTable().NonNullableColumns;
 
 	/// <summary>
 	/// Uses an explicitly specified set of key column(s). This overrides the UseKeyAttribute option.

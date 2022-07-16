@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using Tortuga.Anchor;
 using Tortuga.Anchor.Metadata;
+using Tortuga.Chain.Aggregates;
 
 namespace Tortuga.Chain.Metadata;
 
@@ -57,6 +58,42 @@ public abstract class DatabaseMetadataCache<TObjectName, TDbType> : IDatabaseMet
 	/// <value>Case-insensitive list of database-specific type names</value>
 	/// <remarks>This list is based on driver limitations.</remarks>
 	public virtual ImmutableHashSet<string> UnsupportedSqlTypeNames => ImmutableHashSet<string>.Empty;
+
+	/// <summary>
+	/// Gets an aggregate function.
+	/// </summary>
+	/// <param name="aggregateType">Type of the aggregate.</param>
+	/// <param name="columnName">Name of the column to insert into the function.</param>
+	/// <returns>A string suitable for use in an aggregate.</returns>
+	public virtual string GetAggregateFunction(AggregateType aggregateType, string columnName)
+	{
+		switch (aggregateType)
+		{
+			case AggregateType.Min:
+				return $"MIN({QuoteColumnName(columnName!)})";
+
+			case AggregateType.Max:
+				return $"MAX({QuoteColumnName(columnName!)})";
+
+			case AggregateType.Average:
+				return $"AVG({QuoteColumnName(columnName!)})";
+
+			case AggregateType.Count:
+				return $"COUNT({QuoteColumnName(columnName!)})";
+
+			case AggregateType.CountDistinct:
+				return $"COUNT(DISTINCT {QuoteColumnName(columnName!)})";
+
+			case AggregateType.Sum:
+				return $"SUM({QuoteColumnName(columnName!)})";
+
+			case AggregateType.SumDistinct:
+				return $"SUM(DISTINCT {QuoteColumnName(columnName!)})";
+
+			default:
+				throw new ArgumentOutOfRangeException(nameof(AggregateType));
+		}
+	}
 
 	/// <summary>
 	/// Gets the foreign keys for a table.
@@ -313,6 +350,14 @@ public abstract class DatabaseMetadataCache<TObjectName, TDbType> : IDatabaseMet
 	/// Preloads all of the metadata for this data source.
 	/// </summary>
 	public abstract void Preload();
+
+	/// <summary>
+	/// Quotes the name of the column.
+	/// </summary>
+	/// <param name="columnName">Name of the column.</param>
+	/// <returns>System.String.</returns>
+	/// <remarks>This assumes the column name wasn't already quoted.</remarks>
+	public abstract string QuoteColumnName(string columnName);
 
 	/// <summary>
 	/// Registers a database type and its CLR equivalent.

@@ -11,6 +11,9 @@ using static Tortuga.Chain.Materializers.MaterializerUtilities;
 namespace Tortuga.Chain.Materializers;
 
 internal sealed class StreamingObjectConstructor<T> : IDisposable
+#if NET6_0_OR_GREATER
+	, IAsyncDisposable
+#endif
 	where T : class
 {
 	static readonly ImmutableArray<MappedProperty<T>> s_AllMappedProperties;
@@ -173,6 +176,17 @@ internal sealed class StreamingObjectConstructor<T> : IDisposable
 		m_Source = null;
 	}
 
+#if NET6_0_OR_GREATER
+	public async ValueTask DisposeAsync()
+	{
+		if (m_Source == null)
+			return;
+
+		await m_Source.DisposeAsync().ConfigureAwait(false); ;
+		m_Source = null;
+	}
+#endif
+
 	public bool Read([NotNullWhen(true)] out T? value)
 	{
 		var result = Source.Read();
@@ -188,9 +202,9 @@ internal sealed class StreamingObjectConstructor<T> : IDisposable
 		return result;
 	}
 
-	public async Task<bool> ReadAsync()
+	public async Task<bool> ReadAsync(CancellationToken cancellationToken = default)
 	{
-		var result = await Source.ReadAsync().ConfigureAwait(false);
+		var result = await Source.ReadAsync(cancellationToken).ConfigureAwait(false);
 		if (result)
 		{
 			Current = ConstructObject();

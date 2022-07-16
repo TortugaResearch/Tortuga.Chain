@@ -9,7 +9,6 @@ namespace Tortuga.Chain.DataSources;
 ///// <remarks>Warning: This interface is meant to simulate multiple inheritance and work-around some issues with exposing generic types. Do not implement it in client code, as new methods will be added over time.</remarks>
 //public interface IClass3DataSource : IAdvancedCrudDataSource, ISupportsProcedure, ISupportsScalarFunction, ISupportsTableFunction
 //{
-
 //}
 
 /// <summary>
@@ -52,16 +51,13 @@ public interface ISupportsScalarFunction
 	/// <param name="functionArgumentValue">The function arguments.</param>
 	/// <returns></returns>
 	IScalarDbCommandBuilder ScalarFunction(string scalarFunctionName, object functionArgumentValue);
-
 }
-
 
 /// <summary>
 /// Used to mark data sources that supports table-valued functions
 /// </summary>
 public interface ISupportsTableFunction
 {
-
 	/// <summary>
 	/// Selects from the indicated table-value function.
 	/// </summary>

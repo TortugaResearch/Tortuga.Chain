@@ -1,4 +1,6 @@
-﻿namespace Tests.CommandBuilders;
+﻿using Tests.Models;
+
+namespace Tests.CommandBuilders;
 
 [TestClass]
 public class FromTests_ToDynamic : TestBase
@@ -46,6 +48,246 @@ public class FromTests_ToDynamic : TestBase
 			Release(dataSource);
 		}
 	}
+
+#if POSTGRESQL
+
+	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	public void ToDynamicCollection_IncludeColumns(string dataSourceName, DataSourceType mode)
+	{
+		var dataSource = DataSource(dataSourceName, mode);
+		try
+		{
+			var uniqueKey = Guid.NewGuid().ToString();
+
+			var emp1 = new Employee() { FirstName = "A", LastName = "1", Title = uniqueKey };
+			var emp2 = new Employee() { FirstName = "B", LastName = "2", Title = uniqueKey };
+			var emp3 = new Employee() { FirstName = "C", LastName = "3", Title = uniqueKey };
+			var emp4 = new Employee() { FirstName = "D", LastName = "4", Title = uniqueKey };
+
+			emp1 = dataSource.Insert(emp1).ToObject().Execute();
+			emp2 = dataSource.Insert(emp2).ToObject().Execute();
+			emp3 = dataSource.Insert(emp3).ToObject().Execute();
+			emp4 = dataSource.Insert(emp4).ToObject().Execute();
+
+			var list = dataSource.From<Employee>(new { Title = uniqueKey }).ToDynamicCollection().WithProperties("FirstName", "LastName", "Title").Execute();
+
+			Assert.AreEqual(4, list.Count);
+			var test1 = list.Single(x => x.firstname == "A");
+
+			Assert.AreEqual("1", test1.lastname);
+			Assert.AreEqual(uniqueKey, test1.title);
+
+			var test1Internal = (IDictionary<string, object>)test1;
+			Assert.IsTrue(!test1Internal.ContainsKey("employeeid"));
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
+
+	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	public void ToDynamicObject_ExcludeColumns(string dataSourceName, DataSourceType mode)
+	{
+		var dataSource = DataSource(dataSourceName, mode);
+		try
+		{
+			var uniqueKey = Guid.NewGuid().ToString();
+
+			var emp1 = new Employee() { FirstName = "A", LastName = "1", Title = uniqueKey };
+
+			emp1 = dataSource.Insert(emp1).ToObject().Execute();
+
+			var test1 = dataSource.From<Employee>(new { Title = uniqueKey }).ToDynamicObject().ExceptProperties("employeeid").Execute();
+
+			Assert.AreEqual("A", test1.firstname);
+			Assert.AreEqual("1", test1.lastname);
+			Assert.AreEqual(uniqueKey, test1.title);
+
+			var test1Internal = (IDictionary<string, object>)test1;
+			Assert.IsTrue(!test1Internal.ContainsKey("employeeid"));
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
+
+	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	public void ToDynamicObject_IncludeColumns(string dataSourceName, DataSourceType mode)
+	{
+		var dataSource = DataSource(dataSourceName, mode);
+		try
+		{
+			var uniqueKey = Guid.NewGuid().ToString();
+
+			var emp1 = new Employee() { FirstName = "A", LastName = "1", Title = uniqueKey };
+
+			emp1 = dataSource.Insert(emp1).ToObject().Execute();
+
+			var test1 = dataSource.From<Employee>(new { Title = uniqueKey }).ToDynamicObject().WithProperties("FirstName", "LastName", "Title").Execute();
+
+			Assert.AreEqual("A", test1.firstname);
+			Assert.AreEqual("1", test1.lastname);
+			Assert.AreEqual(uniqueKey, test1.title);
+
+			var test1Internal = (IDictionary<string, object>)test1;
+			Assert.IsTrue(!test1Internal.ContainsKey("employeeid"));
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
+
+	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	public void ToDynamicObjectOrNull_IncludeColumns(string dataSourceName, DataSourceType mode)
+	{
+		var dataSource = DataSource(dataSourceName, mode);
+		try
+		{
+			var uniqueKey = Guid.NewGuid().ToString();
+
+			var emp1 = new Employee() { FirstName = "A", LastName = "1", Title = uniqueKey };
+
+			emp1 = dataSource.Insert(emp1).ToObject().Execute();
+
+			var test1 = dataSource.From<Employee>(new { Title = uniqueKey }).ToDynamicObjectOrNull().WithProperties("FirstName", "LastName", "Title").Execute();
+
+			Assert.IsNotNull(test1);
+
+			Assert.AreEqual("A", test1.firstname);
+			Assert.AreEqual("1", test1.lastname);
+			Assert.AreEqual(uniqueKey, test1.title);
+
+			var test1Internal = (IDictionary<string, object>)test1;
+			Assert.IsTrue(!test1Internal.ContainsKey("employeeid"));
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
+
+#else
+	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	public void ToDynamicCollection_IncludeColumns(string dataSourceName, DataSourceType mode)
+	{
+		var dataSource = DataSource(dataSourceName, mode);
+		try
+		{
+			var uniqueKey = Guid.NewGuid().ToString();
+
+			var emp1 = new Employee() { FirstName = "A", LastName = "1", Title = uniqueKey };
+			var emp2 = new Employee() { FirstName = "B", LastName = "2", Title = uniqueKey };
+			var emp3 = new Employee() { FirstName = "C", LastName = "3", Title = uniqueKey };
+			var emp4 = new Employee() { FirstName = "D", LastName = "4", Title = uniqueKey };
+
+			emp1 = dataSource.Insert(emp1).ToObject().Execute();
+			emp2 = dataSource.Insert(emp2).ToObject().Execute();
+			emp3 = dataSource.Insert(emp3).ToObject().Execute();
+			emp4 = dataSource.Insert(emp4).ToObject().Execute();
+
+			var list = dataSource.From<Employee>(new { Title = uniqueKey }).ToDynamicCollection().WithProperties("FirstName", "LastName", "Title").Execute();
+
+			Assert.AreEqual(4, list.Count);
+			var test1 = list.Single(x => x.FirstName == "A");
+
+			Assert.AreEqual("1", test1.LastName);
+			Assert.AreEqual(uniqueKey, test1.Title);
+
+			var test1Internal = (IDictionary<string, object>)test1;
+			Assert.IsTrue(!test1Internal.ContainsKey("EmployeeId"));
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
+
+		[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	public void ToDynamicObject_ExcludeColumns(string dataSourceName, DataSourceType mode)
+	{
+		var dataSource = DataSource(dataSourceName, mode);
+		try
+		{
+			var uniqueKey = Guid.NewGuid().ToString();
+
+			var emp1 = new Employee() { FirstName = "A", LastName = "1", Title = uniqueKey };
+
+			emp1 = dataSource.Insert(emp1).ToObject().Execute();
+
+			var test1 = dataSource.From<Employee>(new { Title = uniqueKey }).ToDynamicObject().ExceptProperties("EmployeeId").Execute();
+
+			Assert.AreEqual("A", test1.FirstName);
+			Assert.AreEqual("1", test1.LastName);
+			Assert.AreEqual(uniqueKey, test1.Title);
+
+			var test1Internal = (IDictionary<string, object>)test1;
+			Assert.IsTrue(!test1Internal.ContainsKey("EmployeeId"));
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
+
+	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	public void ToDynamicObject_IncludeColumns(string dataSourceName, DataSourceType mode)
+	{
+		var dataSource = DataSource(dataSourceName, mode);
+		try
+		{
+			var uniqueKey = Guid.NewGuid().ToString();
+
+			var emp1 = new Employee() { FirstName = "A", LastName = "1", Title = uniqueKey };
+
+			emp1 = dataSource.Insert(emp1).ToObject().Execute();
+
+			var test1 = dataSource.From<Employee>(new { Title = uniqueKey }).ToDynamicObject().WithProperties("FirstName", "LastName", "Title").Execute();
+
+			Assert.AreEqual("A", test1.FirstName);
+			Assert.AreEqual("1", test1.LastName);
+			Assert.AreEqual(uniqueKey, test1.Title);
+
+			var test1Internal = (IDictionary<string, object>)test1;
+			Assert.IsTrue(!test1Internal.ContainsKey("EmployeeId"));
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
+
+	[DataTestMethod, BasicData(DataSourceGroup.Primary)]
+	public void ToDynamicObjectOrNull_IncludeColumns(string dataSourceName, DataSourceType mode)
+	{
+		var dataSource = DataSource(dataSourceName, mode);
+		try
+		{
+			var uniqueKey = Guid.NewGuid().ToString();
+
+			var emp1 = new Employee() { FirstName = "A", LastName = "1", Title = uniqueKey };
+
+			emp1 = dataSource.Insert(emp1).ToObject().Execute();
+
+			var test1 = dataSource.From<Employee>(new { Title = uniqueKey }).ToDynamicObjectOrNull().WithProperties("FirstName", "LastName", "Title").Execute();
+
+			Assert.IsNotNull(test1);
+
+			Assert.AreEqual("A", test1.FirstName);
+			Assert.AreEqual("1", test1.LastName);
+			Assert.AreEqual(uniqueKey, test1.Title);
+
+			var test1Internal = (IDictionary<string, object>)test1;
+			Assert.IsTrue(!test1Internal.ContainsKey("EmployeeId"));
+		}
+		finally
+		{
+			Release(dataSource);
+		}
+	}
+#endif
 
 	[DataTestMethod, TablesAndViewData(DataSourceGroup.All)]
 	public void ToDynamicObject(string dataSourceName, DataSourceType mode, string tableName)

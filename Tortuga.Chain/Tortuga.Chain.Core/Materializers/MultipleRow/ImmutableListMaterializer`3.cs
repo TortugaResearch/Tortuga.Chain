@@ -66,7 +66,7 @@ internal sealed class ImmutableListMaterializer<TCommand, TParameter, TObject> :
 		ImmutableList<TObject>? result = null;
 		await Prepare().ExecuteAsync(async cmd =>
 		{
-			using (var reader = (await cmd.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false)).AsObjectConstructor<TObject>(Constructor, CommandBuilder.TryGetNonNullableColumns(), Converter))
+			using (var reader = (await cmd.ExecuteReaderAsync(CommandBehavior, cancellationToken).ConfigureAwait(false)).AsObjectConstructor<TObject>(Constructor, CommandBuilder.TryGetNonNullableColumns(), Converter))
 			{
 				result = (await reader.ToListAsync().ConfigureAwait(false)).ToImmutableList();
 				return result.Count;

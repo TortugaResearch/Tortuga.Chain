@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using Tortuga.Chain.Aggregates;
 using Tortuga.Chain.CommandBuilders;
 using Tortuga.Chain.Core;
 using Tortuga.Chain.Materializers;
@@ -19,7 +20,7 @@ internal class SqlServerTableFunction : TableDbCommandBuilder<SqlCommand, SqlPar
 	object? m_FilterValue;
 	SqlServerLimitOption m_LimitOptions;
 	int? m_Seed;
-	string? m_SelectClause;
+
 	int? m_Skip;
 	IEnumerable<SortExpression> m_SortExpressions = Enumerable.Empty<SortExpression>();
 	int? m_Take;
@@ -41,37 +42,13 @@ internal class SqlServerTableFunction : TableDbCommandBuilder<SqlCommand, SqlPar
 	/// Gets the data source.
 	/// </summary>
 	/// <value>The data source.</value>
-	public new SqlServerDataSourceBase DataSource
-	{
-		get { return (SqlServerDataSourceBase)base.DataSource; }
-	}
+	public new SqlServerDataSourceBase DataSource => (SqlServerDataSourceBase)base.DataSource;
 
 	/// <summary>
-	/// Returns the row count using a <c>SELECT Count(*)</c> style query.
+	/// Gets the columns from the metadata.
 	/// </summary>
-	/// <returns></returns>
-	public override ILink<long> AsCount()
-	{
-		m_SelectClause = "COUNT_BIG(*)";
-		return ToInt64();
-	}
-
-	/// <summary>
-	/// Returns the row count for a given column. <c>SELECT Count(columnName)</c>
-	/// </summary>
-	/// <param name="columnName">Name of the column.</param>
-	/// <param name="distinct">if set to <c>true</c> use <c>SELECT COUNT(DISTINCT columnName)</c>.</param>
-	/// <returns></returns>
-	public override ILink<long> AsCount(string columnName, bool distinct = false)
-	{
-		var column = m_Table.Columns[columnName];
-		if (distinct)
-			m_SelectClause = $"COUNT_BIG(DISTINCT {column.QuotedSqlName})";
-		else
-			m_SelectClause = $"COUNT_BIG({column.QuotedSqlName})";
-
-		return ToInt64();
-	}
+	/// <value>The columns.</value>
+	protected override ColumnMetadataCollection Columns => m_Table.Columns.GenericCollection;
 
 	/// <summary>
 	/// Return the approximate distinct count using the APPROX_COUNT_DISTINCT function.
@@ -80,7 +57,7 @@ internal class SqlServerTableFunction : TableDbCommandBuilder<SqlCommand, SqlPar
 	public ILink<long> AsCountApproximate(string columnName)
 	{
 		var column = m_Table.Columns[columnName];
-		m_SelectClause = $"APPROX_COUNT_DISTINCT({column.QuotedSqlName})";
+		AggregateColumns.Add(new CustomAggregateColumn($"APPROX_COUNT_DISTINCT({column.QuotedSqlName})", "RowCount"));
 
 		return ToInt64();
 	}
@@ -112,7 +89,7 @@ internal class SqlServerTableFunction : TableDbCommandBuilder<SqlCommand, SqlPar
 
 		if (m_FunctionArgumentValue != null)
 			sqlBuilder.ApplyArgumentValue(DataSource, m_FunctionArgumentValue);
-		if (m_SelectClause == null)
+		if (AggregateColumns.IsEmpty)
 		{
 			var desired = materializer.DesiredColumns();
 			if (desired == Materializer.AutoSelectDesiredColumns)
@@ -169,10 +146,10 @@ internal class SqlServerTableFunction : TableDbCommandBuilder<SqlCommand, SqlPar
 				break;
 		}
 
-		if (m_SelectClause != null)
-			sql.Append($"SELECT {topClause} {m_SelectClause} ");
-		else
+		if (AggregateColumns.IsEmpty)
 			sqlBuilder.BuildSelectClause(sql, "SELECT " + topClause, null, null);
+		else
+			AggregateColumns.BuildSelectClause(sql, "SELECT ", DataSource, null);
 
 		sqlBuilder.BuildFromFunctionClause(sql, $" FROM {m_Table.Name.ToQuotedString()} (", " ) ");
 
@@ -196,6 +173,9 @@ internal class SqlServerTableFunction : TableDbCommandBuilder<SqlCommand, SqlPar
 			sqlBuilder.BuildSoftDeleteClause(sql, " WHERE ", DataSource, null);
 			parameters = sqlBuilder.GetParameters();
 		}
+
+		if (AggregateColumns.HasGroupBy)
+			AggregateColumns.BuildGroupByClause(sql, " GROUP BY ", DataSource, null);
 
 		if (m_LimitOptions.RequiresSorting() && !m_SortExpressions.Any() && StrictMode)
 			throw new InvalidOperationException("Limits were requested without a sort order. Use WithSorting to supply a sort order or disable strict mode.");
@@ -247,6 +227,13 @@ internal class SqlServerTableFunction : TableDbCommandBuilder<SqlCommand, SqlPar
 	{
 		return m_Table.Columns.TryGetColumn(columnName);
 	}
+
+	/// <summary>
+	/// Returns a list of columns.
+	/// </summary>
+	/// <returns>If the command builder doesn't know which columns are available, an empty list will be returned.</returns>
+	/// <remarks>This is used by materializers to skip exclude columns.</remarks>
+	public override IReadOnlyList<ColumnMetadata> TryGetColumns() => m_Table.Columns;
 
 	/// <summary>
 	/// Returns a list of columns known to be non-nullable.
