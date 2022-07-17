@@ -91,6 +91,31 @@ public interface IScalarDbCommandBuilder : IDbCommandBuilder
 
 
 	/// <summary>
+	/// Indicates the results should be materialized as a non-nullable char.
+	/// </summary>
+	/// <returns></returns>
+	ILink<char> ToChar();
+
+	/// <summary>
+	/// Indicates the results should be materialized as a non-nullable char.
+	/// </summary>
+	/// <returns></returns>
+	ILink<char> ToChar(string columnName);
+
+	/// <summary>
+	/// Indicates the results should be materialized as a nullable char.
+	/// </summary>
+	/// <returns></returns>
+	/// <param name="columnName">Name of the desired column.</param>
+	ILink<char?> ToCharOrNull(string columnName);
+
+	/// <summary>
+	/// Indicates the results should be materialized as a nullable char.
+	/// </summary>
+	/// <returns></returns>
+	ILink<char?> ToCharOrNull();
+
+	/// <summary>
 	/// Indicates the results should be materialized as a DateTime.
 	/// </summary>
 	ILink<DateTime> ToDateTime();
